@@ -1,5 +1,5 @@
-import ProofChecker.ProofSystem.Derivation
-import ProofChecker.ProofSystem.Axioms
+import Logos.ProofSystem.Derivation
+import Logos.ProofSystem.Axioms
 
 /-!
 # Modal Logic Proof Examples
@@ -39,8 +39,8 @@ which is appropriate for metaphysical necessity (truth in all possible worlds).
 
 namespace Archive.ModalProofs
 
-open ProofChecker.Syntax
-open ProofChecker.ProofSystem
+open Logos.Syntax
+open Logos.ProofSystem
 
 /-!
 ## Axiom T: Reflexivity (`□φ → φ`)

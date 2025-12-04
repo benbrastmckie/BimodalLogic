@@ -1,6 +1,6 @@
 import Mathlib.Algebra.Order.Group.Int
-import ProofChecker.Semantics.TaskFrame
-import ProofChecker.Semantics.WorldHistory
+import Logos.Semantics.TaskFrame
+import Logos.Semantics.WorldHistory
 
 /-!
 # Temporal Structures - Example Frame Instantiations
@@ -52,7 +52,7 @@ any type `T` that has a `LinearOrderedAddCommGroup` instance. This includes:
 
 namespace Archive
 
-open ProofChecker.Semantics
+open Logos.Semantics
 
 /-! ## Integer Time Examples (Standard) -/
 

@@ -1,2 +1,0 @@
-import ProofCheckerTest.Semantics.TaskFrameTest
-import ProofCheckerTest.Semantics.TruthTest

@@ -1,5 +1,5 @@
-import ProofChecker.Theorems.Perpetuity
-import ProofChecker.ProofSystem.Derivation
+import Logos.Theorems.Perpetuity
+import Logos.ProofSystem.Derivation
 
 /-!
 # Bimodal Proof Examples
@@ -36,9 +36,9 @@ This file demonstrates both available notation styles:
 
 namespace Archive.BimodalProofs
 
-open ProofChecker.Syntax
-open ProofChecker.ProofSystem
-open ProofChecker.Theorems.Perpetuity
+open Logos.Syntax
+open Logos.ProofSystem
+open Logos.Theorems.Perpetuity
 
 /-!
 ## P1: Necessary Implies Always

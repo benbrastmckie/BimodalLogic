@@ -1,5 +1,5 @@
-import ProofChecker.ProofSystem.Derivation
-import ProofChecker.ProofSystem.Axioms
+import Logos.ProofSystem.Derivation
+import Logos.ProofSystem.Axioms
 
 /-!
 # Temporal Logic Proof Examples
@@ -52,8 +52,8 @@ The TM system has a duality between past and future operators:
 
 namespace Archive.TemporalProofs
 
-open ProofChecker.Syntax
-open ProofChecker.ProofSystem
+open Logos.Syntax
+open Logos.ProofSystem
 
 /-!
 ## Axiom T4: Temporal Transitivity (`Fφ → FFφ`)
