@@ -1,5 +1,5 @@
-import Logos.ProofSystem.Axioms
-import Logos.ProofSystem.Derivation
+import Logos.Core.ProofSystem.Axioms
+import Logos.Core.ProofSystem.Derivation
 
 /-!
 # ProofSystem - TM Proof System Module
@@ -14,9 +14,9 @@ This module exports all components of the TM proof system.
 ## Usage
 
 ```lean
-import Logos.ProofSystem
+import Logos.Core.ProofSystem
 
-open Logos.ProofSystem
+open Logos.Core.ProofSystem
 
 -- Derive Modal T axiom
 example (p : String) : ⊢ (Formula.box (Formula.atom p)).imp (Formula.atom p) := by

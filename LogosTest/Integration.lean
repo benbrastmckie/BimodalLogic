@@ -1,1 +1,1 @@
-import LogosTest.Integration.EndToEndTest
+import LogosTest.Core.Integration.EndToEndTest

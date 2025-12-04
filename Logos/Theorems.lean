@@ -1,5 +1,5 @@
 -- Re-export Theorems submodules
-import Logos.Theorems.Perpetuity
+import Logos.Core.Theorems.Perpetuity
 
 /-!
 # Theorems Module Root

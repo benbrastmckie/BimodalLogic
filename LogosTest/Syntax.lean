@@ -1,5 +1,5 @@
-import LogosTest.Syntax.FormulaTest
-import LogosTest.Syntax.ContextTest
+import LogosTest.Core.Syntax.FormulaTest
+import LogosTest.Core.Syntax.ContextTest
 
 /-!
 # Syntax Test Module
@@ -7,5 +7,5 @@ import LogosTest.Syntax.ContextTest
 Tests for the Syntax module (Formula and Context).
 -/
 
-namespace LogosTest.Syntax
-end LogosTest.Syntax
+namespace LogosTest.Core.Syntax
+end LogosTest.Core.Syntax

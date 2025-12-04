@@ -1,10 +1,5 @@
 -- Re-export public API
-import Logos.Syntax
-import Logos.ProofSystem
-import Logos.Semantics
-import Logos.Metalogic
-import Logos.Theorems
-import Logos.Automation
+import Logos.Core
 
 /-!
 # Logos Library Root
@@ -28,12 +23,12 @@ Logos provides:
 
 The library is organized into the following submodules:
 
-- `Logos.Syntax`: Formula types, parsing, DSL
-- `Logos.ProofSystem`: Axioms and inference rules
-- `Logos.Semantics`: Task frame semantics
-- `Logos.Metalogic`: Soundness and completeness proofs
-- `Logos.Theorems`: Key theorems (perpetuity principles, etc.)
-- `Logos.Automation`: Proof automation tactics
+- `Logos.Core.Syntax`: Formula types, parsing, DSL
+- `Logos.Core.ProofSystem`: Axioms and inference rules
+- `Logos.Core.Semantics`: Task frame semantics
+- `Logos.Core.Metalogic`: Soundness and completeness proofs
+- `Logos.Core.Theorems`: Key theorems (perpetuity principles, etc.)
+- `Logos.Core.Automation`: Proof automation tactics
 
 ## Usage
 
@@ -44,8 +39,8 @@ import Logos
 
 Or import specific modules:
 ```lean
-import Logos.Syntax.Formula
-import Logos.ProofSystem.Axioms
+import Logos.Core.Syntax.Formula
+import Logos.Core.ProofSystem.Axioms
 ```
 -/
 

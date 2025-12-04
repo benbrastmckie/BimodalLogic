@@ -1,5 +1,5 @@
-import Logos.ProofSystem.Derivation
-import Logos.ProofSystem.Axioms
+import Logos.Core.ProofSystem.Derivation
+import Logos.Core.ProofSystem.Axioms
 
 /-!
 # Temporal Logic Proof Examples
@@ -52,8 +52,8 @@ The TM system has a duality between past and future operators:
 
 namespace Archive.TemporalProofs
 
-open Logos.Syntax
-open Logos.ProofSystem
+open Logos.Core.Syntax
+open Logos.Core.ProofSystem
 
 /-!
 ## Axiom T4: Temporal Transitivity (`Fφ → FFφ`)

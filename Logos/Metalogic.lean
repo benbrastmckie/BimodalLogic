@@ -1,6 +1,6 @@
-import Logos.Metalogic.Soundness
-import Logos.Metalogic.Completeness
--- import Logos.Metalogic.Decidability  -- Future work
+import Logos.Core.Metalogic.Soundness
+import Logos.Core.Metalogic.Completeness
+-- import Logos.Core.Metalogic.Decidability  -- Future work
 
 /-!
 # Metalogic - Soundness and Completeness for TM

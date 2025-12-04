@@ -337,7 +337,7 @@ done
 
 **Expected Duration**: 4-6 hours
 
-### Phase 7: Layer Organization (Add Core/) [NOT STARTED]
+### Phase 7: Layer Organization (Add Core/) [COMPLETE]
 dependencies: [6]
 
 **Objective**: Reorganize Logos/ into Logos/Core/ layer structure
@@ -345,14 +345,14 @@ dependencies: [6]
 **Complexity**: High
 
 **Tasks**:
-- [ ] Create Logos/Core/ subdirectory
-- [ ] Move all existing Logos/ modules into Logos/Core/: `mv Logos/Syntax Logos/Core/Syntax` (repeat for all modules)
-- [ ] Create Logos/Core/Core.lean aggregator file importing all Core modules
-- [ ] Update Logos.lean to import Logos.Core
-- [ ] Update all namespace declarations: `namespace Logos.Syntax` → `namespace Logos.Core.Syntax`
-- [ ] Update all imports: `import Logos.Syntax` → `import Logos.Core.Syntax`
-- [ ] Update LogosTest/ namespace declarations: `namespace LogosTest.Syntax` → `namespace LogosTest.Core.Syntax`
-- [ ] Full rebuild and test: `lake clean && lake build && lake test`
+- [x] Create Logos/Core/ subdirectory
+- [x] Move all existing Logos/ modules into Logos/Core/: `mv Logos/Syntax Logos/Core/Syntax` (repeat for all modules)
+- [x] Create Logos/Core/Core.lean aggregator file importing all Core modules
+- [x] Update Logos.lean to import Logos.Core
+- [x] Update all namespace declarations: `namespace Logos.Syntax` → `namespace Logos.Core.Syntax`
+- [x] Update all imports: `import Logos.Syntax` → `import Logos.Core.Syntax`
+- [x] Update LogosTest/ namespace declarations: `namespace LogosTest.Syntax` → `namespace LogosTest.Core.Syntax`
+- [x] Full rebuild and test: `lake clean && lake build && lake test`
 
 **Testing**:
 ```bash
