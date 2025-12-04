@@ -1,10 +1,10 @@
-# ProofChecker Integration Guide
+# Logos Integration Guide
 
-This document describes how to integrate ProofChecker with the Model-Checker to create a comprehensive dual verification architecture for Logos.
+This document describes how to integrate Logos with the Model-Checker to create a comprehensive dual verification architecture for Logos.
 
 ## 1. Overview
 
-ProofChecker and Model-Checker form a **dual verification architecture** providing complementary syntactic and semantic verification:
+Logos and Model-Checker form a **dual verification architecture** providing complementary syntactic and semantic verification:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -12,7 +12,7 @@ ProofChecker and Model-Checker form a **dual verification architecture** providi
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │      ┌───────────────┐                  ┌───────────┐      │
-│      │ ProofChecker  │◀────────────────▶│  Model-   │      │
+│      │ Logos  │◀────────────────▶│  Model-   │      │
 │      │   (LEAN 4)    │  Formula         │  Checker  │      │
 │      │               │  Exchange        │  (Python) │      │
 │      └───────────────┘                  └───────────┘      │
@@ -37,7 +37,7 @@ ProofChecker and Model-Checker form a **dual verification architecture** providi
 
 ### Export to Model-Checker
 
-Convert ProofChecker formulas to Model-Checker format:
+Convert Logos formulas to Model-Checker format:
 
 ```lean
 /-- Export formula to SMT-LIB format for model checking -/
@@ -127,7 +127,7 @@ def FormulaExchange.deserialize (s : String) : Option FormulaExchange :=
 
 ### Generic Inference API
 
-ProofChecker provides a generic inference verification API for external tools:
+Logos provides a generic inference verification API for external tools:
 
 ```lean
 /-- Generic inference verification request -/
@@ -197,7 +197,7 @@ def api_check_satisfiability (Γ : Context) : IO Bool := do
 
 ### Layer 1-3 Operator Extensions
 
-ProofChecker's layered architecture supports extensions:
+Logos's layered architecture supports extensions:
 
 ```lean
 /-- Layer 1: Explanatory operators -/
@@ -271,7 +271,7 @@ structure ExtendedTaskModel (F : TaskFrame) extends TaskModel F where
 
 ### Semantic Versioning
 
-ProofChecker uses semantic versioning:
+Logos uses semantic versioning:
 
 - **MAJOR**: Breaking API changes
 - **MINOR**: New features, backward compatible
@@ -279,7 +279,7 @@ ProofChecker uses semantic versioning:
 
 ### Compatibility Matrix
 
-| ProofChecker | Model-Checker |
+| Logos | Model-Checker |
 |--------------|---------------|
 | 0.1.x | 1.0.x, 1.1.x, 1.2.x |
 | 0.2.x | 1.2.x+ |
@@ -330,7 +330,7 @@ def handle_integration_error (e : IntegrationError) : IO Unit := do
 ### Integration Test Setup
 
 ```lean
--- ProofCheckerTest/Integration/ModelCheckerTest.lean
+-- LogosTest/Integration/ModelCheckerTest.lean
 
 /-- Test round-trip serialization -/
 example (φ : Formula) : deserialize (serialize φ) = some φ := by

@@ -13,8 +13,8 @@ This document establishes standards for directory-level README files in LEAN 4 p
 ### Scope
 
 **In Scope (Covered by This Standard)**:
-- LEAN source directories (`ProofChecker/`, `ProofChecker/Syntax/`, etc.)
-- LEAN test directories (`ProofCheckerTest/`, `ProofCheckerTest/Syntax/`, etc.)
+- LEAN source directories (`Logos/`, `Logos/Syntax/`, etc.)
+- LEAN test directories (`LogosTest/`, `LogosTest/Syntax/`, etc.)
 - LEAN example/archive directories (`Archive/`, `Archive/Examples/`, etc.)
 - Documentation organization directories (`Documentation/`, `Documentation/UserGuide/`, etc.)
 
@@ -36,8 +36,8 @@ This standard **extends** and **complements**:
 ### Classification Rules
 
 **✓ README Required**:
-1. **Top-level LEAN source directory** (`ProofChecker/`): Module organization overview
-2. **Test directory with 3+ subdirectories** (`ProofCheckerTest/`): Test organization and running instructions
+1. **Top-level LEAN source directory** (`Logos/`): Module organization overview
+2. **Test directory with 3+ subdirectories** (`LogosTest/`): Test organization and running instructions
 3. **Example/Archive directory** (`Archive/`): Learning paths and pedagogical guidance
 4. **Multi-subdirectory documentation root** (`Documentation/`): Documentation navigation
 
@@ -60,7 +60,7 @@ Otherwise → NO README needed (rely on .lean module documentation)
 
 ## 3. Template D: LEAN Source Directory (Lightweight)
 
-**Use Case**: Top-level source directory (`ProofChecker/`) or major submodule with multiple components
+**Use Case**: Top-level source directory (`Logos/`) or major submodule with multiple components
 
 **Structure**:
 ```markdown
@@ -89,13 +89,13 @@ Where to find specific functionality:
 lake build
 
 # Type-check specific file
-lake env lean ProofChecker/Syntax/Formula.lean
+lake env lean Logos/Syntax/Formula.lean
 ```
 
 ## API Documentation
 
 For detailed API documentation, see:
-- Module overview: [ProofChecker.lean](../ProofChecker.lean)
+- Module overview: [Logos.lean](../Logos.lean)
 - Generated docs: Run `lake build :docs`
 - Architecture guide: [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md)
 
@@ -141,11 +141,11 @@ lake test
 ### Run Specific Module Tests
 ```bash
 # Test specific module
-lake test ProofCheckerTest.Syntax
-lake test ProofCheckerTest.ProofSystem
+lake test LogosTest.Syntax
+lake test LogosTest.ProofSystem
 
 # Test specific file
-lake env lean ProofCheckerTest/Syntax/FormulaTest.lean
+lake env lean LogosTest/Syntax/FormulaTest.lean
 ```
 
 ### Interpreting Output
@@ -455,7 +455,7 @@ For truth evaluation details, see `truth_at` in [Semantics/Truth.lean](Semantics
 
 **Fix**: Only create READMEs where they add genuine navigation value. For simple directories, excellent `.lean` module documentation suffices.
 
-## 9. Examples from ProofChecker
+## 9. Examples from Logos
 
 ### Good Example: Archive/README.md
 
@@ -468,11 +468,11 @@ Following Template F (Pedagogical), this README provides:
 
 **Why Good**: Navigation-focused, provides learning context, doesn't duplicate BimodalProofs.lean docstrings.
 
-### Good Example: ProofCheckerTest/README.md
+### Good Example: LogosTest/README.md
 
 Following Template E (Test Directory), this README provides:
 - Test organization by module
-- Running tests: `lake test`, `lake test ProofCheckerTest.Syntax`
+- Running tests: `lake test`, `lake test LogosTest.Syntax`
 - Adding new tests: file placement and naming conventions
 - Test categories: unit, integration, property-based
 - Links to TESTING_STANDARDS.md for detailed requirements
@@ -534,4 +534,4 @@ When reviewing directory README:
 
 **Version**: 1.0.0
 **Last Updated**: 2025-12-02
-**Maintained By**: ProofChecker project
+**Maintained By**: Logos project

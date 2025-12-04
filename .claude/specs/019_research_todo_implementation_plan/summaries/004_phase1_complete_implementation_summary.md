@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-Phase 1 (Wave 1 High Priority Foundations) is now **COMPLETE**. All 6 tasks have been successfully implemented, tested, and verified. This phase establishes the foundational propositional reasoning infrastructure and creates comprehensive pedagogical examples for the ProofChecker library.
+Phase 1 (Wave 1 High Priority Foundations) is now **COMPLETE**. All 6 tasks have been successfully implemented, tested, and verified. This phase establishes the foundational propositional reasoning infrastructure and creates comprehensive pedagogical examples for the Logos library.
 
 **Key Achievements**:
 - ✅ Propositional axioms K and S added (10 axiom schemata total, up from 8)
@@ -21,7 +21,7 @@ Phase 1 (Wave 1 High Priority Foundations) is now **COMPLETE**. All 6 tasks have
 
 ### Task 1.2: Add Propositional Axioms K and S ✅
 
-**Files Modified**: `ProofChecker/ProofSystem/Axioms.lean`
+**Files Modified**: `Logos/ProofSystem/Axioms.lean`
 
 **Changes**:
 - Added `prop_k` axiom: `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))` (distribution)
@@ -31,13 +31,13 @@ Phase 1 (Wave 1 High Priority Foundations) is now **COMPLETE**. All 6 tasks have
 
 **Verification**:
 ```bash
-$ lake build ProofChecker.ProofSystem.Axioms
+$ lake build Logos.ProofSystem.Axioms
 ✔ Build completed successfully
 ```
 
 ### Task 1.3: Prove Propositional Helpers ✅
 
-**Files Modified**: `ProofChecker/Theorems/Perpetuity.lean`
+**Files Modified**: `Logos/Theorems/Perpetuity.lean`
 
 **Changes**:
 - **FULLY PROVEN**: `imp_trans` theorem (lines 86-99) - **ZERO SORRY**
@@ -53,7 +53,7 @@ $ lake build ProofChecker.ProofSystem.Axioms
 
 **Verification**:
 ```bash
-$ lake build ProofChecker.Theorems.Perpetuity
+$ lake build Logos.Theorems.Perpetuity
 ⚠ Built with 4 sorry warnings (contraposition + P4-P6)
 ```
 
@@ -139,7 +139,7 @@ $ lake build Archive.Archive
 
 ### Propositional Axiom Tests (9 tests)
 
-**File**: `ProofCheckerTest/ProofSystem/AxiomsTest.lean`
+**File**: `LogosTest/ProofSystem/AxiomsTest.lean`
 
 **Coverage**:
 - Propositional K: 3 tests (atoms, complex formulas, nested implications)
@@ -147,7 +147,7 @@ $ lake build Archive.Archive
 
 ### Propositional Helper Tests (4 tests)
 
-**File**: `ProofCheckerTest/Theorems/PerpetuityTest.lean`
+**File**: `LogosTest/Theorems/PerpetuityTest.lean`
 
 **Coverage**:
 - `imp_trans`: 4 tests (generic, concrete axioms, composition chains)
@@ -155,10 +155,10 @@ $ lake build Archive.Archive
 
 **All Tests Build Successfully**:
 ```bash
-$ lake build ProofCheckerTest.ProofSystem.AxiomsTest
+$ lake build LogosTest.ProofSystem.AxiomsTest
 ✔ Build completed successfully
 
-$ lake build ProofCheckerTest.Theorems.PerpetuityTest
+$ lake build LogosTest.Theorems.PerpetuityTest
 ✔ Build completed successfully
 ```
 
@@ -177,13 +177,13 @@ $ lake build ProofCheckerTest.Theorems.PerpetuityTest
 - **Added**: prop_k, prop_s
 
 ### Lines of Code
-- **ProofChecker/ProofSystem/Axioms.lean**: +30 lines
-- **ProofChecker/Theorems/Perpetuity.lean**: +20 lines (proof expansion)
+- **Logos/ProofSystem/Axioms.lean**: +30 lines
+- **Logos/Theorems/Perpetuity.lean**: +20 lines (proof expansion)
 - **Archive/ModalProofs.lean**: +245 lines (NEW)
 - **Archive/TemporalProofs.lean**: +287 lines (NEW)
 - **Archive/Archive.lean**: +3 lines (imports)
-- **ProofCheckerTest/ProofSystem/AxiomsTest.lean**: +35 lines
-- **ProofCheckerTest/Theorems/PerpetuityTest.lean**: +34 lines
+- **LogosTest/ProofSystem/AxiomsTest.lean**: +35 lines
+- **LogosTest/Theorems/PerpetuityTest.lean**: +34 lines
 - **Total**: ~654 new lines of code
 
 ### Test Coverage
@@ -200,13 +200,13 @@ $ lake build ProofCheckerTest.Theorems.PerpetuityTest
 ## Files Changed
 
 ```
-M ProofChecker/ProofSystem/Axioms.lean (added 2 axioms, updated docs)
-M ProofChecker/Theorems/Perpetuity.lean (proved imp_trans, documented contraposition)
+M Logos/ProofSystem/Axioms.lean (added 2 axioms, updated docs)
+M Logos/Theorems/Perpetuity.lean (proved imp_trans, documented contraposition)
 A Archive/ModalProofs.lean (NEW - 245 lines, 20+ examples)
 A Archive/TemporalProofs.lean (NEW - 287 lines, 25+ examples)
 M Archive/Archive.lean (enabled re-exports)
-M ProofCheckerTest/ProofSystem/AxiomsTest.lean (added 9 tests)
-M ProofCheckerTest/Theorems/PerpetuityTest.lean (added 4 tests)
+M LogosTest/ProofSystem/AxiomsTest.lean (added 9 tests)
+M LogosTest/Theorems/PerpetuityTest.lean (added 4 tests)
 ```
 
 ## Known Limitations

@@ -1,8 +1,8 @@
-# File Structure Research Report: ProofChecker Refactoring
+# File Structure Research Report: Logos Refactoring
 
 ## Executive Summary
 
-This report analyzes the current ProofChecker project structure and provides research-based recommendations for refactoring the directory organization to align with Lean 4 conventions and improve maintainability. The research identifies three main issues:
+This report analyzes the current Logos project structure and provides research-based recommendations for refactoring the directory organization to align with Lean 4 conventions and improve maintainability. The research identifies three main issues:
 
 1. **Directory naming inconsistency**: Current mix of PascalCase (`Archive`, `Counterexamples`) and lowercase (`docs`, `src`) directories
 2. **Dual documentation structure**: User docs in `docs/` vs developer standards in `src/docs/`
@@ -13,14 +13,14 @@ This report analyzes the current ProofChecker project structure and provides res
 ### 1.1 Directory Inventory
 
 ```
-ProofChecker/
+Logos/
 ├── Archive/                    # Pedagogical examples (1 file)
 ├── Counterexamples/           # Invalidity demonstrations (1 file)
 ├── docs/                      # User documentation (6 files)
 ├── src/docs/                  # Developer standards (6 files)
-├── ProofChecker/              # Main library (6 subdirs: Automation, Metalogic, ProofSystem, Semantics, Syntax, Theorems)
-├── ProofCheckerTest/          # Test suite (5 subdirs: Integration, Metalogic, ProofSystem, Semantics, Syntax)
-├── ProofChecker.lean          # Library root
+├── Logos/              # Main library (6 subdirs: Automation, Metalogic, ProofSystem, Semantics, Syntax, Theorems)
+├── LogosTest/          # Test suite (5 subdirs: Integration, Metalogic, ProofSystem, Semantics, Syntax)
+├── Logos.lean          # Library root
 ├── lakefile.toml              # Build configuration
 ├── lean-toolchain             # Lean version
 └── README.md
@@ -29,8 +29,8 @@ ProofChecker/
 ### 1.2 Current Lake Configuration
 
 The `lakefile.toml` defines four libraries:
-- `ProofChecker` (main library)
-- `ProofCheckerTest` (test suite)
+- `Logos` (main library)
+- `LogosTest` (test suite)
 - `Archive` (pedagogical examples)
 - `Counterexamples` (invalidity demonstrations)
 
@@ -156,7 +156,7 @@ Mathlib4's `lakefile.lean` defines separate libraries:
 
 ### 4.1 Current State
 
-ProofChecker currently has:
+Logos currently has:
 - `Archive/` with plans for `ModalProofs.lean`, `TemporalProofs.lean`, `BimodalProofs.lean`
 - `docs/EXAMPLES.md` (10.4KB) with usage examples in markdown
 
@@ -171,7 +171,7 @@ ProofChecker currently has:
 ### 4.3 Recommendation: Keep Archive
 
 **Reasoning**:
-1. **Alignment with Mathlib4**: ProofChecker already follows Mathlib4's Archive pattern
+1. **Alignment with Mathlib4**: Logos already follows Mathlib4's Archive pattern
 2. **Semantic distinction**: "Archive" suggests curated, maintained examples vs. throwaway demos
 3. **Existing documentation**: CLAUDE.md already documents Archive as pedagogical examples
 4. **Lake configuration**: Already defined as a separate library
@@ -209,13 +209,13 @@ ProofChecker currently has:
 
 ### 5.4 The src/ Directory Issue
 
-**Current Problem**: ProofChecker has `src/docs/` containing developer standards, but:
+**Current Problem**: Logos has `src/docs/` containing developer standards, but:
 - No other code in `src/`
 - `src/` typically contains source code in software projects
 - Creates confusion: "Is this source code or documentation?"
 
 **Research Finding**: In Lean 4 projects:
-- Source code goes in `ProjectName/` directory (e.g., `ProofChecker/`)
+- Source code goes in `ProjectName/` directory (e.g., `Logos/`)
 - `src/` is not a standard Lean 4 convention for library code
 - Lake expects code in directories matching library names
 
@@ -370,13 +370,13 @@ git mv src/docs/ docs/development/
 ### 8.1 Option A: Full PascalCase Consistency
 
 ```
-ProofChecker/
+Logos/
 ├── Archive/
 ├── Counterexamples/
 ├── Docs/
 │   └── Development/
-├── ProofChecker/
-└── ProofCheckerTest/
+├── Logos/
+└── LogosTest/
 ```
 
 **Pros**:
@@ -391,13 +391,13 @@ ProofChecker/
 ### 8.2 Option B: Metadata Convention (RECOMMENDED)
 
 ```
-ProofChecker/
+Logos/
 ├── Archive/                 # Lean library (PascalCase)
 ├── Counterexamples/         # Lean library (PascalCase)
 ├── docs/                    # Project metadata (lowercase)
 │   └── development/
-├── ProofChecker/            # Lean library (PascalCase)
-└── ProofCheckerTest/        # Lean library (PascalCase)
+├── Logos/            # Lean library (PascalCase)
+└── LogosTest/        # Lean library (PascalCase)
 ```
 
 **Pros**:
@@ -412,13 +412,13 @@ ProofChecker/
 ### 8.3 Option C: Minimal Change
 
 ```
-ProofChecker/
+Logos/
 ├── Archive/
 ├── Counterexamples/
 ├── docs/                    # User docs (keep as-is)
 │   └── developer/          # Rename from src/docs/
-├── ProofChecker/
-└── ProofCheckerTest/
+├── Logos/
+└── LogosTest/
 ```
 
 **Pros**:
@@ -435,7 +435,7 @@ ProofChecker/
 
 **Directory Structure**:
 ```
-ProofChecker/
+Logos/
 ├── Archive/                          # Pedagogical examples (PascalCase)
 │   ├── Archive.lean
 │   ├── Modal/
@@ -458,12 +458,12 @@ ProofChecker/
 │       ├── TESTING_STANDARDS.md
 │       ├── TACTIC_DEVELOPMENT.md
 │       └── QUALITY_METRICS.md
-├── ProofChecker/                     # Main library (PascalCase)
-└── ProofCheckerTest/                 # Test suite (PascalCase)
+├── Logos/                     # Main library (PascalCase)
+└── LogosTest/                 # Test suite (PascalCase)
 ```
 
 **Rationale**:
-1. **Lean libraries in PascalCase**: `Archive/`, `Counterexamples/`, `ProofChecker/`, `ProofCheckerTest/`
+1. **Lean libraries in PascalCase**: `Archive/`, `Counterexamples/`, `Logos/`, `LogosTest/`
 2. **Project metadata in lowercase**: `docs/` treated as non-Lean project documentation
 3. **Clear organization**: User docs at `docs/`, developer docs at `docs/development/`
 4. **Familiar convention**: Open-source contributors recognize `docs/` directory
@@ -555,7 +555,7 @@ ProofChecker/
 
 ## 11. Conclusion
 
-The ProofChecker project currently has a well-structured codebase that largely follows Lean 4 conventions. The primary issues are:
+The Logos project currently has a well-structured codebase that largely follows Lean 4 conventions. The primary issues are:
 
 1. **src/docs/ location**: Developer standards are in an unusual location (`src/docs/`) that doesn't align with typical project structure
 2. **Documentation consolidation**: User and developer documentation should be unified under a single `docs/` directory
@@ -564,7 +564,7 @@ The ProofChecker project currently has a well-structured codebase that largely f
 **Recommended approach**: Adopt Option B (Metadata Convention), which:
 - Moves developer standards from `src/docs/` to `docs/development/`
 - Keeps `docs/` lowercase as project metadata (like `.github/`)
-- Maintains PascalCase for all Lean libraries (`Archive/`, `Counterexamples/`, `ProofChecker/`, `ProofCheckerTest/`)
+- Maintains PascalCase for all Lean libraries (`Archive/`, `Counterexamples/`, `Logos/`, `LogosTest/`)
 - Provides clear distinction between Lean code and project documentation
 - Minimizes disruption while improving organization
 

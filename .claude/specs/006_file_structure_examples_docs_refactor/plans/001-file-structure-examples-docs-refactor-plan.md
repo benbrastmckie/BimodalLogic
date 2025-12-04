@@ -6,17 +6,17 @@
 - **Scope**: Refactor directory organization to align with Lean 4 conventions, consolidate documentation, and organize examples
 - **Estimated Phases**: 6
 - **Estimated Hours**: 8
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Status**: [COMPLETE]
 - **Complexity**: Medium
 - **Structure Level**: 0
 - **Complexity Score**: 92.0
 - **Research Reports**:
-  - [File Structure Research Report](/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/006_file_structure_examples_docs_refactor/reports/001-file-structure-research.md)
+  - [File Structure Research Report](/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/006_file_structure_examples_docs_refactor/reports/001-file-structure-research.md)
 
 ## Overview
 
-This plan refactors the ProofChecker project's directory structure to improve organization and align with Lean 4 ecosystem conventions. The current structure has three main issues:
+This plan refactors the Logos project's directory structure to improve organization and align with Lean 4 ecosystem conventions. The current structure has three main issues:
 
 1. **Mixed naming conventions**: PascalCase (`Archive/`, `Counterexamples/`) vs lowercase (`docs/`, `src/`)
 2. **Dual documentation structure**: User docs in `docs/` vs developer standards in `src/docs/`
@@ -65,14 +65,14 @@ The research report analyzed Lean 4 naming conventions and Mathlib4 organization
 ### Architecture Overview
 
 The refactoring follows a **metadata convention pattern**:
-- **Lean Libraries** (PascalCase): `Archive/`, `Counterexamples/`, `ProofChecker/`, `ProofCheckerTest/`
+- **Lean Libraries** (PascalCase): `Archive/`, `Counterexamples/`, `Logos/`, `LogosTest/`
 - **Project Metadata** (lowercase): `docs/`, `.github/`, `.gitignore`, etc.
 
 ### Directory Structure Changes
 
 **Before**:
 ```
-ProofChecker/
+Logos/
 ├── Archive/                    # PascalCase Lean library
 ├── Counterexamples/           # PascalCase Lean library
 ├── docs/                      # lowercase user docs
@@ -90,13 +90,13 @@ ProofChecker/
 │       ├── TACTIC_DEVELOPMENT.md
 │       ├── QUALITY_METRICS.md
 │       └── README.md (empty)
-├── ProofChecker/              # PascalCase Lean library
-└── ProofCheckerTest/          # PascalCase Lean library
+├── Logos/              # PascalCase Lean library
+└── LogosTest/          # PascalCase Lean library
 ```
 
 **After**:
 ```
-ProofChecker/
+Logos/
 ├── Archive/                    # PascalCase Lean library (pedagogical examples)
 │   ├── Archive.lean
 │   ├── Modal/                 # Organized subdirectories (future)
@@ -118,8 +118,8 @@ ProofChecker/
 │       ├── TESTING_STANDARDS.md
 │       ├── TACTIC_DEVELOPMENT.md
 │       └── QUALITY_METRICS.md
-├── ProofChecker/              # PascalCase Lean library
-└── ProofCheckerTest/          # PascalCase Lean library
+├── Logos/              # PascalCase Lean library
+└── LogosTest/          # PascalCase Lean library
 ```
 
 ### User Decision Point: Archive vs Examples Naming
@@ -175,7 +175,7 @@ dependencies: []
 - [x] Verify current build state: `lake clean && lake build`
 - [x] Verify current test state: `lake test`
 - [x] Document current directory structure: `tree -L 2 > structure-before.txt`
-- [x] Review lakefile.toml configuration (file: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/lakefile.toml)
+- [x] Review lakefile.toml configuration (file: /home/benjamin/Documents/Philosophy/Projects/Logos/lakefile.toml)
 
 **Testing**:
 ```bash
@@ -315,7 +315,7 @@ dependencies: [2]
 - [x] Rename Archive to Examples: `git mv Archive Examples`
 - [x] Rename Archive.lean to Examples.lean: `git mv Examples/Archive.lean Examples/Examples.lean`
 - [x] Update lakefile.toml: Change `name = "Archive"` to `name = "Examples"`
-- [x] Update ProofChecker.lean imports (if any)
+- [x] Update Logos.lean imports (if any)
 - [x] Update CLAUDE.md references from Archive to Examples
 - [x] Create subdirectory stubs: `mkdir -p Examples/Modal Examples/Temporal Examples/Bimodal`
 - [x] Add placeholder .lean files
@@ -443,7 +443,7 @@ Refactor: Reorganize project documentation structure
 - Preserve git history using git mv operations
 
 This refactoring aligns with Lean 4 metadata conventions:
-- Lean libraries (PascalCase): Archive, Counterexamples, ProofChecker, ProofCheckerTest
+- Lean libraries (PascalCase): Archive, Counterexamples, Logos, LogosTest
 - Project metadata (lowercase): docs/, .github/, etc.
 
 All builds and tests passing after refactoring.
@@ -618,7 +618,7 @@ Using `git mv` instead of `mv` + `git add` ensures:
 ### Build System Impact
 
 **No impact expected** because:
-- Lean libraries (Archive, Counterexamples, ProofChecker, ProofCheckerTest) unchanged
+- Lean libraries (Archive, Counterexamples, Logos, LogosTest) unchanged
 - Documentation is not part of Lake build process
 - lakefile.toml only changes if Option B (rename Archive to Examples) is chosen
 

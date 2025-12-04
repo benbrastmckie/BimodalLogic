@@ -1,6 +1,6 @@
 # Phase 5 Implementation Summary: Complete Soundness
 
-**Plan**: [001-architecture-mvp-strategy-plan.md](/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/011_architecture_mvp_strategy/plans/001-architecture-mvp-strategy-plan.md)
+**Plan**: [001-architecture-mvp-strategy-plan.md](/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/011_architecture_mvp_strategy/plans/001-architecture-mvp-strategy-plan.md)
 
 ## Work Status
 Completion: Partial (4/8 axiom validity proofs, 0/3 inference rule soundness cases)
@@ -9,7 +9,7 @@ Completion: Partial (4/8 axiom validity proofs, 0/3 inference rule soundness cas
 
 ### 1. Bug Fixes in Temporal Operators (Critical)
 
-Fixed incorrect definitions of existential temporal operators in `ProofChecker/Syntax/Formula.lean`:
+Fixed incorrect definitions of existential temporal operators in `Logos/Syntax/Formula.lean`:
 
 **`sometimes` (exists future time where φ)**:
 - **Before (wrong)**: `φ.always.neg.neg` = ¬¬Gφ
@@ -23,7 +23,7 @@ These bugs would have caused semantic incorrectness in any reasoning about exist
 
 ### 2. Axiom Definition Correction
 
-Fixed `temp_a` axiom in `ProofChecker/ProofSystem/Axioms.lean`:
+Fixed `temp_a` axiom in `Logos/ProofSystem/Axioms.lean`:
 
 **Before**: `φ → F(Pφ)` using universal past operator
 **After**: `φ → F(sometime_past φ)` using existential past operator
@@ -32,7 +32,7 @@ This matches the standard temporal logic axiom TA for connectedness.
 
 ### 3. Proven Axiom Validity Lemmas
 
-In `ProofChecker/Metalogic/Soundness.lean`:
+In `Logos/Metalogic/Soundness.lean`:
 
 | Axiom | Status | Notes |
 |-------|--------|-------|
@@ -60,9 +60,9 @@ In `ProofChecker/Metalogic/Soundness.lean`:
 ### 5. Test Updates
 
 Updated tests in:
-- `ProofCheckerTest/Syntax/FormulaTest.lean`
-- `ProofCheckerTest/ProofSystem/AxiomsTest.lean`
-- `ProofCheckerTest/ProofSystem/DerivationTest.lean`
+- `LogosTest/Syntax/FormulaTest.lean`
+- `LogosTest/ProofSystem/AxiomsTest.lean`
+- `LogosTest/ProofSystem/DerivationTest.lean`
 
 All tests now pass with the corrected definitions.
 
@@ -102,12 +102,12 @@ Several axioms and inference rules are NOT provable in the current semantic fram
 
 ## Files Modified
 
-- `ProofChecker/Syntax/Formula.lean` - Fixed `sometimes` and `sometime_past` definitions
-- `ProofChecker/ProofSystem/Axioms.lean` - Fixed `temp_a` axiom, updated docstrings for `temp_l`
-- `ProofChecker/Metalogic/Soundness.lean` - Added proofs for 4 axiom validity lemmas, detailed comments for blocked cases
-- `ProofCheckerTest/Syntax/FormulaTest.lean` - Updated tests for corrected definitions
-- `ProofCheckerTest/ProofSystem/AxiomsTest.lean` - Updated tests for corrected axiom
-- `ProofCheckerTest/ProofSystem/DerivationTest.lean` - Updated tests for corrected axiom
+- `Logos/Syntax/Formula.lean` - Fixed `sometimes` and `sometime_past` definitions
+- `Logos/ProofSystem/Axioms.lean` - Fixed `temp_a` axiom, updated docstrings for `temp_l`
+- `Logos/Metalogic/Soundness.lean` - Added proofs for 4 axiom validity lemmas, detailed comments for blocked cases
+- `LogosTest/Syntax/FormulaTest.lean` - Updated tests for corrected definitions
+- `LogosTest/ProofSystem/AxiomsTest.lean` - Updated tests for corrected axiom
+- `LogosTest/ProofSystem/DerivationTest.lean` - Updated tests for corrected axiom
 
 ## Build Status
 

@@ -1,6 +1,6 @@
-# LEAN Style Guide for ProofChecker
+# LEAN Style Guide for Logos
 
-This document defines coding conventions for the ProofChecker project, adapted from Mathlib4 conventions with project-specific additions.
+This document defines coding conventions for the Logos project, adapted from Mathlib4 conventions with project-specific additions.
 
 ## 1. Naming Conventions
 
@@ -59,14 +59,14 @@ def truthAt ...                 -- camelCase
 ```
 
 ### Namespaces
-- Match directory structure: `ProofChecker.Syntax`, `ProofChecker.ProofSystem`
+- Match directory structure: `Logos.Syntax`, `Logos.ProofSystem`
 - Use descriptive, hierarchical names
 - Open namespaces sparingly; prefer qualified names for clarity
 
 ```lean
 -- Good
-namespace ProofChecker.Syntax
-namespace ProofChecker.Semantics.TaskFrame
+namespace Logos.Syntax
+namespace Logos.Semantics.TaskFrame
 
 -- Avoid
 namespace Syntax                -- missing project prefix
@@ -219,7 +219,7 @@ theorem soundness (Γ : Context) (φ : Formula) : Γ ⊢ φ → Γ ⊨ φ := by
 
 ### Unicode Operator Notation
 
-ProofChecker uses Unicode symbols for logical operators with prefix notation declarations. When using or defining notation, follow these guidelines:
+Logos uses Unicode symbols for logical operators with prefix notation declarations. When using or defining notation, follow these guidelines:
 
 **Available Notations**:
 ```lean
@@ -263,7 +263,7 @@ theorem perpetuity_2 (φ : Formula) : ⊢ (sometimes φ → ◇φ) := by sorry  
 ### Import Order
 1. Standard library imports
 2. Mathlib imports (when used)
-3. Project imports (ProofChecker.*)
+3. Project imports (Logos.*)
 4. Blank line between groups
 
 ```lean
@@ -272,9 +272,9 @@ import Init.Data.List
 import Mathlib.Order.Basic
 import Mathlib.Data.Set.Basic
 
-import ProofChecker.Syntax.Formula
-import ProofChecker.Syntax.Context
-import ProofChecker.ProofSystem.Axioms
+import Logos.Syntax.Formula
+import Logos.Syntax.Context
+import Logos.ProofSystem.Axioms
 ```
 
 ### Relative vs Absolute Imports
@@ -282,9 +282,9 @@ import ProofChecker.ProofSystem.Axioms
 - Use relative imports within the same package/directory
 
 ```lean
--- In ProofChecker/Semantics/Truth.lean
-import ProofChecker.Syntax.Formula        -- absolute (different package)
-import ProofChecker.Semantics.TaskFrame   -- relative would also work
+-- In Logos/Semantics/Truth.lean
+import Logos.Syntax.Formula        -- absolute (different package)
+import Logos.Semantics.TaskFrame   -- relative would also work
 ```
 
 ## 4. Documentation Requirements
@@ -316,7 +316,7 @@ constrained by a task relation that captures transitions between states.
 ## References
 
 * "Possible Worlds" paper - TM logic specification
-* ProofChecker Architecture Guide - Documentation/UserGuide/ARCHITECTURE.md
+* Logos Architecture Guide - Documentation/UserGuide/ARCHITECTURE.md
 -/
 ```
 
@@ -480,4 +480,4 @@ def very_complex := (fun x => (fun y => x + y + (if x > 0 then 1 else 0)) 3) 2  
 
 - [Mathlib4 Style Guide](https://leanprover-community.github.io/contribute/style.html)
 - [LEAN 4 Documentation](https://lean-lang.org/documentation/)
-- [ProofChecker Architecture](../UserGuide/ARCHITECTURE.md)
+- [Logos Architecture](../UserGuide/ARCHITECTURE.md)

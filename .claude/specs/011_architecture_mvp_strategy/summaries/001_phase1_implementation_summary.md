@@ -11,14 +11,14 @@
 #### Files Created
 
 **Source Files**:
-- `ProofChecker/Syntax.lean` - Module root with exports
-- `ProofChecker/Syntax/Formula.lean` - Core formula inductive type
-- `ProofChecker/Syntax/Context.lean` - Context type for proof contexts
+- `Logos/Syntax.lean` - Module root with exports
+- `Logos/Syntax/Formula.lean` - Core formula inductive type
+- `Logos/Syntax/Context.lean` - Context type for proof contexts
 
 **Test Files**:
-- `ProofCheckerTest/Syntax.lean` - Test module root
-- `ProofCheckerTest/Syntax/FormulaTest.lean` - Comprehensive formula tests
-- `ProofCheckerTest/Syntax/ContextTest.lean` - Context operation tests
+- `LogosTest/Syntax.lean` - Test module root
+- `LogosTest/Syntax/FormulaTest.lean` - Comprehensive formula tests
+- `LogosTest/Syntax/ContextTest.lean` - Context operation tests
 
 #### Implementation Details
 
@@ -90,8 +90,8 @@ Build completed successfully.
 ## Testing Strategy
 
 ### Test Files Created
-- `ProofCheckerTest/Syntax/FormulaTest.lean`
-- `ProofCheckerTest/Syntax/ContextTest.lean`
+- `LogosTest/Syntax/FormulaTest.lean`
+- `LogosTest/Syntax/ContextTest.lean`
 
 ### Test Execution Requirements
 ```bash
@@ -99,7 +99,7 @@ Build completed successfully.
 lake build && lake test
 
 # Run specific module tests
-lake test ProofCheckerTest.Syntax
+lake test LogosTest.Syntax
 ```
 
 ### Coverage Target
@@ -110,14 +110,14 @@ lake test ProofCheckerTest.Syntax
 ## Artifacts Created
 
 ### Source Files
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax.lean`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax/Formula.lean`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax/Context.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax/Formula.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax/Context.lean`
 
 ### Test Files
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Syntax.lean`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Syntax/FormulaTest.lean`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Syntax/ContextTest.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Syntax.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Syntax/FormulaTest.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Syntax/ContextTest.lean`
 
 ## Notes
 

@@ -157,7 +157,7 @@ The Logos documentation and existing Documentation have **significant conceptual
 - TheoremEntry structure, pattern matching algorithms
 
 **NOT in Documentation**:
-- No proof library implementation in ProofChecker
+- No proof library implementation in Logos
 - No caching architecture documented
 - No pattern matching infrastructure
 
@@ -358,7 +358,7 @@ The Logos documentation and existing Documentation have **significant conceptual
 4. **Proof Library**: No documentation of caching architecture (because not implemented)
 5. **Philosophical Foundations**: Minimal discussion of hyperintensional semantics, Kit Fine's work
 6. **Application Motivation**: No domain examples (medical, legal, negotiation scenarios)
-7. **AI Safety Context**: Documentation doesn't position ProofChecker in AI safety landscape
+7. **AI Safety Context**: Documentation doesn't position Logos in AI safety landscape
 8. **External Research**: Minimal references to broader research program
 
 ### Gaps in Both (Content Missing Entirely)
@@ -441,7 +441,7 @@ The Logos documentation and existing Documentation have **significant conceptual
 
 **ARCHITECTURE.md Section 8** serves as explicit integration point:
 - Lines 1140-1282 describe "Integration with Logos Architecture"
-- Maps Logos layers to ProofChecker implementation
+- Maps Logos layers to Logos implementation
 - Aligns operator sets
 - Describes task semantics alignment
 - Defines bidirectional verification

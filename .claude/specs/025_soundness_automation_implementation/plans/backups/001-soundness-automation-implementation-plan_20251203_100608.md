@@ -12,7 +12,7 @@
 
 ## Executive Summary
 
-This implementation plan covers four high/medium-priority tasks from ProofChecker TODO.md:
+This implementation plan covers four high/medium-priority tasks from Logos TODO.md:
 
 1. **Task 5**: Fix Modal K and Temporal K Rule Implementations (CRITICAL - code-paper alignment)
 2. **Task 5b**: Complete Temporal Duality Soundness
@@ -123,7 +123,7 @@ Fix the Modal K and Temporal K inference rule definitions in Derivation.lean to 
 
 ### File Changes
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/Derivation.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/Derivation.lean`
 
 **Change 1**: Fix modal_k rule (lines 90-91)
 
@@ -241,7 +241,7 @@ The corrected rule is straightforward to prove sound:
 
 ### File Changes
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean`
 
 **Change 1**: Replace `sorry` at line 551 with corrected proof (AFTER Phase 0)
 
@@ -273,17 +273,17 @@ The corrected rule is straightforward to prove sound:
 
 ### Test Requirements
 
-**File**: Create `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Metalogic/SoundnessRulesTest.lean`
+**File**: Create `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Metalogic/SoundnessRulesTest.lean`
 
 ```lean
-import ProofChecker.Metalogic.Soundness
-import ProofChecker.ProofSystem.Derivation
+import Logos.Metalogic.Soundness
+import Logos.ProofSystem.Derivation
 
-namespace ProofCheckerTest.Metalogic
+namespace LogosTest.Metalogic
 
-open ProofChecker.Metalogic (soundness)
-open ProofChecker.ProofSystem (Derivable)
-open ProofChecker.Syntax (Formula)
+open Logos.Metalogic (soundness)
+open Logos.ProofSystem (Derivable)
+open Logos.Syntax (Formula)
 
 /-- Test modal_k soundness: Γ ⊢ φ ⟹ □Γ ⊢ □φ -/
 def test_modal_k_soundness (φ : Formula) :
@@ -301,7 +301,7 @@ def test_modal_k_preserves_validity (P : Formula) :
   let _ := soundness h_box_phi
   True := trivial
 
-end ProofCheckerTest.Metalogic
+end LogosTest.Metalogic
 ```
 
 ### Quality Gates
@@ -314,7 +314,7 @@ end ProofCheckerTest.Metalogic
 
 ### Documentation Updates
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md`
 
 **REMOVE** the code-paper alignment warning (since rule is now fixed):
 ```markdown
@@ -362,7 +362,7 @@ The corrected rule is straightforward to prove sound:
 
 ### File Changes
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean`
 
 **Change 1**: Replace `sorry` at line 569 with corrected proof (AFTER Phase 0)
 
@@ -394,7 +394,7 @@ The corrected rule is straightforward to prove sound:
 
 ### Test Requirements
 
-Add to `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Metalogic/SoundnessRulesTest.lean`:
+Add to `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Metalogic/SoundnessRulesTest.lean`:
 
 ```lean
 /-- Test temporal_k soundness: Γ ⊢ φ ⟹ FΓ ⊢ Fφ -/
@@ -449,7 +449,7 @@ Prove soundness of temporal_duality rule for symmetric task frames. This is weak
 
 ### Technical Approach
 
-**Current Code** (`ProofChecker/Metalogic/Soundness.lean`, line 571):
+**Current Code** (`Logos/Metalogic/Soundness.lean`, line 571):
 ```lean
 | @temporal_duality φ' _ ih =>
   -- IH: [] ⊨ φ'
@@ -470,16 +470,16 @@ Temporal duality requires showing: if φ is valid, then swap_past_future(φ) is 
 
 ### File Changes
 
-**File 1**: Create `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/TemporalDuality.lean`
+**File 1**: Create `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/TemporalDuality.lean`
 
 ```lean
-import ProofChecker.Semantics.Truth
-import ProofChecker.Syntax.Formula
+import Logos.Semantics.Truth
+import Logos.Syntax.Formula
 
-namespace ProofChecker.Metalogic
+namespace Logos.Metalogic
 
-open ProofChecker.Semantics (truth_at)
-open ProofChecker.Syntax (Formula)
+open Logos.Semantics (truth_at)
+open Logos.Syntax (Formula)
 
 /--
 Symmetric frame constraint: task relation is bidirectional.
@@ -523,10 +523,10 @@ theorem swap_past_future_preserves_validity_symmetric
     -- Future becomes Past under swap, use symmetry
     sorry
 
-end ProofChecker.Metalogic
+end Logos.Metalogic
 ```
 
-**File 2**: Update `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean`
+**File 2**: Update `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean`
 
 ```lean
 | @temporal_duality φ' _ ih =>
@@ -638,7 +638,7 @@ elab_rules : tactic
 
 ### File Changes
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Automation/Tactics.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Automation/Tactics.lean`
 
 **Change 1**: Remove axiom stubs, add imports
 
@@ -646,14 +646,14 @@ elab_rules : tactic
 -- Replace lines 1-10 with:
 import Lean.Elab.Tactic
 import Lean.Meta.Basic
-import ProofChecker.ProofSystem.Axioms
-import ProofChecker.ProofSystem.Derivation
+import Logos.ProofSystem.Axioms
+import Logos.ProofSystem.Derivation
 
-namespace ProofChecker.Automation
+namespace Logos.Automation
 
 open Lean Elab Tactic Meta
-open ProofChecker.ProofSystem (Axiom Derivable)
-open ProofChecker.Syntax (Formula)
+open Logos.ProofSystem (Axiom Derivable)
+open Logos.Syntax (Formula)
 ```
 
 **Change 2**: Replace `modal_k_tactic_stub` section (lines 89-102) with implementations
@@ -716,18 +716,18 @@ elab_rules : tactic
 
 ### Test Requirements (TDD - Written First!)
 
-**File**: Create `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Automation/TacticsTest.lean`
+**File**: Create `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Automation/TacticsTest.lean`
 
 ```lean
-import ProofChecker.Automation.Tactics
-import ProofChecker.Syntax.Formula
-import ProofChecker.ProofSystem.Derivation
-import ProofChecker.ProofSystem.Axioms
+import Logos.Automation.Tactics
+import Logos.Syntax.Formula
+import Logos.ProofSystem.Derivation
+import Logos.ProofSystem.Axioms
 
-namespace ProofCheckerTest.Automation
+namespace LogosTest.Automation
 
-open ProofChecker.Syntax (Formula)
-open ProofChecker.ProofSystem (Derivable Axiom)
+open Logos.Syntax (Formula)
+open Logos.ProofSystem (Derivable Axiom)
 
 /-!
 ## Unit Tests for apply_axiom
@@ -780,7 +780,7 @@ example : True := by
   -- have goal : Derivable [] (Formula.box P) := by modal_t
   trivial
 
-end ProofCheckerTest.Automation
+end LogosTest.Automation
 ```
 
 ### Quality Gates
@@ -789,11 +789,11 @@ end ProofCheckerTest.Automation
 - [ ] `modal_t` elab_rules compiles and pattern-matches correctly
 - [ ] All unit tests pass (≥6 tests)
 - [ ] Error messages are clear and helpful
-- [ ] `lake test ProofCheckerTest.Automation.TacticsTest` succeeds
+- [ ] `lake test LogosTest.Automation.TacticsTest` succeeds
 
 ### Documentation Updates
 
-Update `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Development/TACTIC_DEVELOPMENT.md`:
+Update `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Development/TACTIC_DEVELOPMENT.md`:
 
 Add section:
 ```markdown
@@ -811,7 +811,7 @@ example (P : Formula) : [] ⊢ □P → P := by
   apply_axiom Axiom.modal_t
 \`\`\`
 
-**Source**: ProofChecker/Automation/Tactics.lean (lines XX-YY)
+**Source**: Logos/Automation/Tactics.lean (lines XX-YY)
 
 ### modal_t (Pattern-Matched)
 
@@ -827,7 +827,7 @@ example (P : Formula) : [] ⊢ □P → P := by
 
 **Error Handling**: Fails with clear message if goal is not `□φ → φ` pattern
 
-**Source**: ProofChecker/Automation/Tactics.lean (lines XX-YY)
+**Source**: Logos/Automation/Tactics.lean (lines XX-YY)
 ```
 
 ---
@@ -842,7 +842,7 @@ example (P : Formula) : [] ⊢ □P → P := by
 
 ### Objective
 
-Integrate Aesop proof search framework with ProofChecker TM logic by:
+Integrate Aesop proof search framework with Logos TM logic by:
 1. Declaring custom `TMLogic` rule set
 2. Marking 10 axiom validity theorems as `@[aesop safe [TMLogic]]`
 3. Marking 6 perpetuity theorems as `@[aesop safe [TMLogic]]`
@@ -871,7 +871,7 @@ macro "tm_auto" : tactic =>
 
 ### File Changes
 
-**File 1**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Automation/Tactics.lean`
+**File 1**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Automation/Tactics.lean`
 
 **Change 1**: Add Aesop import and rule set declaration
 
@@ -911,7 +911,7 @@ macro "tm_auto" : tactic =>
   `(tactic| aesop (rule_sets [TMLogic]))
 ```
 
-**File 2**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean`
+**File 2**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean`
 
 **Change 1**: Add Aesop import
 
@@ -953,7 +953,7 @@ theorem modal_t_valid (φ : Formula) : ⊨ (φ.box.imp φ) := by
 -- temporal_future_valid (line 379)
 ```
 
-**File 3**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Theorems/Perpetuity.lean`
+**File 3**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Theorems/Perpetuity.lean`
 
 **Change 1**: Add Aesop import and attributes to P1-P6
 
@@ -971,7 +971,7 @@ theorem P1 (φ : Formula) : Derivable [] (Formula.box φ).imp φ.always := by
 
 ### Test Requirements (TDD)
 
-Add to `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Automation/TacticsTest.lean`:
+Add to `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Automation/TacticsTest.lean`:
 
 ```lean
 /-!
@@ -1103,7 +1103,7 @@ elab "assumption_search" : tactic => do
 
 ### File Changes
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Automation/Tactics.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Automation/Tactics.lean`
 
 **Change 1**: Replace `assumption_search_stub` (line 123) with implementation
 
@@ -1223,14 +1223,14 @@ Create comprehensive test suite for all automation tactics following TDD methodo
 
 ### Test Organization
 
-**File 1**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Automation/TacticsTest.lean`
+**File 1**: `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Automation/TacticsTest.lean`
 - Unit tests for each tactic (correctness)
 - Negative tests (error handling)
 - Integration tests (tactic combinations)
 - Performance tests (benchmarking)
 - Edge case tests (boundary conditions)
 
-**File 2**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Automation/ProofSearchTest.lean`
+**File 2**: `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Automation/ProofSearchTest.lean`
 - Placeholder for future proof search tests
 - Currently: basic structure with comments
 
@@ -1296,14 +1296,14 @@ Create comprehensive test suite for all automation tactics following TDD methodo
 **TacticsTest.lean** (created in Phase 4, expanded in Phases 5-6):
 
 ```lean
-import ProofChecker.Automation.Tactics
-import ProofChecker.Syntax.Formula
-import ProofChecker.ProofSystem.Derivation
+import Logos.Automation.Tactics
+import Logos.Syntax.Formula
+import Logos.ProofSystem.Derivation
 
-namespace ProofCheckerTest.Automation
+namespace LogosTest.Automation
 
-open ProofChecker.Syntax (Formula)
-open ProofChecker.ProofSystem (Derivable)
+open Logos.Syntax (Formula)
+open Logos.ProofSystem (Derivable)
 
 /-!
 ## Unit Tests - apply_axiom
@@ -1351,15 +1351,15 @@ Written before implementation (TDD)
 
 -- Boundary condition tests...
 
-end ProofCheckerTest.Automation
+end LogosTest.Automation
 ```
 
 **ProofSearchTest.lean** (placeholder for future):
 
 ```lean
-import ProofChecker.Automation.ProofSearch
+import Logos.Automation.ProofSearch
 
-namespace ProofCheckerTest.Automation
+namespace LogosTest.Automation
 
 /-!
 ## Proof Search Tests (Future Work)
@@ -1373,7 +1373,7 @@ are planned but not yet implemented.
 
 -- Placeholder tests with sorry
 
-end ProofCheckerTest.Automation
+end LogosTest.Automation
 ```
 
 ### Quality Gates
@@ -1391,7 +1391,7 @@ Add to TESTING_STANDARDS.md:
 ```markdown
 ## Automation Testing
 
-**Test File**: ProofCheckerTest/Automation/TacticsTest.lean
+**Test File**: LogosTest/Automation/TacticsTest.lean
 
 **Coverage Target**: ≥80%
 
@@ -1406,7 +1406,7 @@ Add to TESTING_STANDARDS.md:
 
 **Verification**:
 \`\`\`bash
-lake test ProofCheckerTest.Automation.TacticsTest
+lake test LogosTest.Automation.TacticsTest
 \`\`\`
 ```
 
@@ -1425,7 +1425,7 @@ Synchronize all documentation with completed implementation changes. Update stat
 
 ### File Changes
 
-**File 1**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
+**File 1**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
 
 **Change 1**: Update Soundness module status (lines 200-250)
 
@@ -1456,8 +1456,8 @@ Synchronize all documentation with completed implementation changes. Update stat
 
 **Verification**:
 \`\`\`bash
-grep -c "sorry" ProofChecker/Metalogic/Soundness.lean  # Should return 0
-lake test ProofCheckerTest.Metalogic.SoundnessTest
+grep -c "sorry" Logos/Metalogic/Soundness.lean  # Should return 0
+lake test LogosTest.Metalogic.SoundnessTest
 \`\`\`
 ```
 
@@ -1493,7 +1493,7 @@ lake test ProofCheckerTest.Metalogic.SoundnessTest
 
 **Verification**:
 \`\`\`bash
-lake test ProofCheckerTest.Automation.TacticsTest
+lake test LogosTest.Automation.TacticsTest
 \`\`\`
 
 #### ProofSearch.lean
@@ -1503,7 +1503,7 @@ lake test ProofCheckerTest.Automation.TacticsTest
 **Priority**: Low (deferred to future work)
 ```
 
-**File 2**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md`
+**File 2**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md`
 
 **Change 1**: Add Soundness Rule Restrictions section (after line 50)
 
@@ -1513,7 +1513,7 @@ lake test ProofCheckerTest.Automation.TacticsTest
 ### Modal K Rule Soundness
 
 **Status**: Proven with restrictions
-**File**: ProofChecker/Metalogic/Soundness.lean (line 535)
+**File**: Logos/Metalogic/Soundness.lean (line 535)
 
 **Restriction**: The modal_k inference rule is proven sound for contexts consisting of:
 1. Empty context (theorems derivable from `[]`)
@@ -1534,7 +1534,7 @@ lake test ProofCheckerTest.Automation.TacticsTest
 ### Temporal K Rule Soundness
 
 **Status**: Proven with restrictions
-**File**: ProofChecker/Metalogic/Soundness.lean (line 553)
+**File**: Logos/Metalogic/Soundness.lean (line 553)
 
 **Restriction**: The temporal_k inference rule is proven sound for contexts consisting of:
 1. Empty context (theorems)
@@ -1549,7 +1549,7 @@ lake test ProofCheckerTest.Automation.TacticsTest
 ### Temporal Duality Soundness
 
 **Status**: Proven for symmetric frames
-**File**: ProofChecker/Metalogic/Soundness.lean (line 571)
+**File**: Logos/Metalogic/Soundness.lean (line 571)
 
 **Restriction**: The temporal_duality rule is proven sound for task frames satisfying:
 ```lean
@@ -1567,7 +1567,7 @@ SymmetricFrame F := ∀ w w' d, F.task_rel w d w' ↔ F.task_rel w' d w
 **Future Work**: General temporal duality proof for arbitrary frames (requires canonical model construction).
 ```
 
-**File 3**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md`
+**File 3**: `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md`
 
 **Change 1**: Update Task 5 status (lines 135-169)
 
@@ -1641,7 +1641,7 @@ SymmetricFrame F := ∀ w w' d, F.task_rel w d w' ↔ F.task_rel w' d w
 **Completion Date**: 2025-12-03 (Phase 7 - concurrent with Phases 4-6)
 ```
 
-**File 4**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md`
+**File 4**: `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md`
 
 **Change 1**: Update Implementation Status section (lines 18-25)
 
@@ -1826,7 +1826,7 @@ SymmetricFrame F := ∀ w w' d, F.task_rel w d w' ↔ F.task_rel w' d w
 - [ ] All 6 perpetuity theorems marked `@[aesop safe [TMLogic]]`
 - [ ] ≥25 tests passing for automation
 - [ ] Documentation includes usage examples and limitations
-- [ ] `lake test ProofCheckerTest.Automation.TacticsTest` succeeds
+- [ ] `lake test LogosTest.Automation.TacticsTest` succeeds
 - [ ] IMPLEMENTATION_STATUS.md updated (Automation: 40%)
 
 ### Task 12 Complete When:
@@ -1854,61 +1854,61 @@ After implementation, run these commands to verify completion:
 ### Phase 0 Verification (Rule Fix)
 ```bash
 # Verify Modal K rule direction (should show: Derivable Γ φ → Derivable (Γ.map box) (box φ))
-grep -A2 "| modal_k" ProofChecker/ProofSystem/Derivation.lean
+grep -A2 "| modal_k" Logos/ProofSystem/Derivation.lean
 
 # Verify Temporal K rule direction (should show: Derivable Γ φ → Derivable (Γ.map future) (future φ))
-grep -A2 "| temporal_k" ProofChecker/ProofSystem/Derivation.lean
+grep -A2 "| temporal_k" Logos/ProofSystem/Derivation.lean
 
 # Verify paper references in docstrings
-grep -B5 "modal_k" ProofChecker/ProofSystem/Derivation.lean | grep "line 1030"
-grep -B5 "temporal_k" ProofChecker/ProofSystem/Derivation.lean | grep "line 1037"
+grep -B5 "modal_k" Logos/ProofSystem/Derivation.lean | grep "line 1030"
+grep -B5 "temporal_k" Logos/ProofSystem/Derivation.lean | grep "line 1037"
 
 # Build to verify no type errors
-lake build ProofChecker.ProofSystem.Derivation
+lake build Logos.ProofSystem.Derivation
 
 # Check for any code using old signatures that needs updating
-grep -rn "modal_k" ProofChecker/ ProofCheckerTest/ --include="*.lean"
-grep -rn "temporal_k" ProofChecker/ ProofCheckerTest/ --include="*.lean"
+grep -rn "modal_k" Logos/ LogosTest/ --include="*.lean"
+grep -rn "temporal_k" Logos/ LogosTest/ --include="*.lean"
 ```
 
 ### Soundness Verification (After Phase 0)
 ```bash
 # Check no sorry in rule cases
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean
+grep -n "sorry" Logos/Metalogic/Soundness.lean
 # Should return only temporal_duality (symmetric frame restriction)
 
 # Build soundness module
-lake build ProofChecker.Metalogic.Soundness
+lake build Logos.Metalogic.Soundness
 
 # Run soundness tests
-lake test ProofCheckerTest.Metalogic.SoundnessTest
+lake test LogosTest.Metalogic.SoundnessTest
 ```
 
 ### Automation Verification
 ```bash
 # Check tactic implementations exist
-grep -n "macro \"apply_axiom\"" ProofChecker/Automation/Tactics.lean
-grep -n "elab_rules : tactic" ProofChecker/Automation/Tactics.lean
-grep -n "def assumption_search_impl" ProofChecker/Automation/Tactics.lean
+grep -n "macro \"apply_axiom\"" Logos/Automation/Tactics.lean
+grep -n "elab_rules : tactic" Logos/Automation/Tactics.lean
+grep -n "def assumption_search_impl" Logos/Automation/Tactics.lean
 
 # Verify Aesop attributes
-grep -n "@\[aesop safe \[TMLogic\]\]" ProofChecker/Metalogic/Soundness.lean | wc -l
+grep -n "@\[aesop safe \[TMLogic\]\]" Logos/Metalogic/Soundness.lean | wc -l
 # Should return 10 (one per axiom)
 
-grep -n "@\[aesop safe \[TMLogic\]\]" ProofChecker/Theorems/Perpetuity.lean | wc -l
+grep -n "@\[aesop safe \[TMLogic\]\]" Logos/Theorems/Perpetuity.lean | wc -l
 # Should return 6 (one per perpetuity principle)
 
 # Build automation
-lake build ProofChecker.Automation.Tactics
+lake build Logos.Automation.Tactics
 
 # Run automation tests
-lake test ProofCheckerTest.Automation.TacticsTest
+lake test LogosTest.Automation.TacticsTest
 ```
 
 ### Test Suite Verification
 ```bash
 # Count tests
-grep -c "def test_" ProofCheckerTest/Automation/TacticsTest.lean
+grep -c "def test_" LogosTest/Automation/TacticsTest.lean
 # Should be ≥50
 
 # Run all tests
@@ -1981,22 +1981,22 @@ grep "Task 12.*COMPLETE" TODO.md
 ### Source Files Modified
 
 **Phase 0 (CRITICAL - Rule Fix)**:
-- `ProofChecker/ProofSystem/Derivation.lean` (lines 82-112 - fix modal_k and temporal_k rule definitions)
+- `Logos/ProofSystem/Derivation.lean` (lines 82-112 - fix modal_k and temporal_k rule definitions)
 - Any files using modal_k/temporal_k (search and update)
 
 **Soundness Track (Phases 1-3)**:
-- `ProofChecker/Metalogic/Soundness.lean` (lines ~535, ~553, ~571 - soundness proofs)
-- `ProofChecker/Metalogic/TemporalDuality.lean` (new file - symmetric frame helper)
+- `Logos/Metalogic/Soundness.lean` (lines ~535, ~553, ~571 - soundness proofs)
+- `Logos/Metalogic/TemporalDuality.lean` (new file - symmetric frame helper)
 
 **Automation Track (Phases 4-6)**:
-- `ProofChecker/Automation/Tactics.lean` (complete rewrite, remove stubs)
-- `ProofChecker/Metalogic/Soundness.lean` (add Aesop attributes)
-- `ProofChecker/Theorems/Perpetuity.lean` (add Aesop attributes)
+- `Logos/Automation/Tactics.lean` (complete rewrite, remove stubs)
+- `Logos/Metalogic/Soundness.lean` (add Aesop attributes)
+- `Logos/Theorems/Perpetuity.lean` (add Aesop attributes)
 
 **Testing Track (Phase 7)**:
-- `ProofCheckerTest/Automation/TacticsTest.lean` (new file)
-- `ProofCheckerTest/Automation/ProofSearchTest.lean` (new file, placeholder)
-- `ProofCheckerTest/Metalogic/SoundnessRulesTest.lean` (new file)
+- `LogosTest/Automation/TacticsTest.lean` (new file)
+- `LogosTest/Automation/ProofSearchTest.lean` (new file, placeholder)
+- `LogosTest/Metalogic/SoundnessRulesTest.lean` (new file)
 
 **Documentation Track (Phase 8)**:
 - `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` (status updates)
@@ -2088,4 +2088,4 @@ Individual phases can be executed with:
 
 **END OF PLAN**
 
-**PLAN_CREATED**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/025_soundness_automation_implementation/plans/001-soundness-automation-implementation-plan.md
+**PLAN_CREATED**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/025_soundness_automation_implementation/plans/001-soundness-automation-implementation-plan.md

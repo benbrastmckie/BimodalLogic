@@ -5,7 +5,7 @@
 - **Feature**: Decidability module implementation and Layer 1/2/3 architecture planning
 - **Status**: [NOT STARTED]
 - **Estimated Hours**: 60-100 hours (40-60 hours Phase 8a + 20-40 hours Phase 8b)
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Parent Plan**: [001-research-todo-implementation-plan.md](./001-research-todo-implementation-plan.md)
 - **Research Reports**:
   - [TODO Implementation Systematic Plan](../reports/001-todo-implementation-systematic-plan.md)
@@ -76,7 +76,7 @@ Decidability is the final metalogic property for Layer 0 completion. This sub-ph
 **Objective**: Design comprehensive tableau-based decision procedure architecture with complexity analysis framework
 
 **Files to Create**:
-- `ProofChecker/Metalogic/Decidability.lean` (new module, ~800-1000 lines estimated)
+- `Logos/Metalogic/Decidability.lean` (new module, ~800-1000 lines estimated)
 
 **Research Requirements**:
 1. Review S5 modal tableau methods (Fitting, Goré)
@@ -103,7 +103,7 @@ Decidability is the final metalogic property for Layer 0 completion. This sub-ph
 
 **Deliverables**:
 ```lean
--- File: ProofChecker/Metalogic/Decidability.lean
+-- File: Logos/Metalogic/Decidability.lean
 
 /-!
 # Decidability Module
@@ -126,10 +126,10 @@ Tableau-based decision procedure for TM logic satisfiability.
 ## References
 - Fitting's modal tableaux (S5 prefixed tableau)
 - Vardi-Wolper LTL decision procedures
-- Task semantics integration (ProofChecker-specific)
+- Task semantics integration (Logos-specific)
 -/
 
-namespace ProofChecker.Metalogic
+namespace Logos.Metalogic
 
 -- Tableau node: represents a formula at a world-time pair
 structure TableauNode where
@@ -180,7 +180,7 @@ axiom time_complexity : ∀ φ : Formula,
 axiom space_complexity : ∀ φ : Formula,
   tableau_space φ ≤ polynomial (formula_size φ)
 
-end ProofChecker.Metalogic
+end Logos.Metalogic
 ```
 
 **Architecture Documentation**:
@@ -193,10 +193,10 @@ end ProofChecker.Metalogic
 **Testing Strategy**:
 ```bash
 # Verify architecture compiles
-lake build ProofChecker.Metalogic.Decidability
+lake build Logos.Metalogic.Decidability
 
 # Verify all axioms declared (not yet proven)
-grep -c "axiom" ProofChecker/Metalogic/Decidability.lean  # Expected: 4
+grep -c "axiom" Logos/Metalogic/Decidability.lean  # Expected: 4
 ```
 
 **Expected Duration**: 8-12 hours
@@ -409,16 +409,16 @@ def construct_tableau (φ : Formula) (maxDepth : ℕ) : TableauTree :=
 **Testing Strategy**:
 ```bash
 # Test propositional tableau
-lake test ProofCheckerTest.Metalogic.DecidabilityTest  -- Test: p → (q → p) satisfiable
+lake test LogosTest.Metalogic.DecidabilityTest  -- Test: p → (q → p) satisfiable
 
 # Test modal tableau
-lake test ProofCheckerTest.Metalogic.DecidabilityTest  -- Test: □p → p satisfiable (modal T)
+lake test LogosTest.Metalogic.DecidabilityTest  -- Test: □p → p satisfiable (modal T)
 
 # Test temporal tableau
-lake test ProofCheckerTest.Metalogic.DecidabilityTest  -- Test: Fp ∨ ¬Fp satisfiable
+lake test LogosTest.Metalogic.DecidabilityTest  -- Test: Fp ∨ ¬Fp satisfiable
 
 # Test closure detection
-lake test ProofCheckerTest.Metalogic.DecidabilityTest  -- Test: p ∧ ¬p unsatisfiable
+lake test LogosTest.Metalogic.DecidabilityTest  -- Test: p ∧ ¬p unsatisfiable
 ```
 
 **Expected Duration**: 20-30 hours
@@ -540,7 +540,7 @@ Create `Documentation/Reference/DECIDABILITY.md` complexity section:
 |--------------|-----------------|------------------|-----------|
 | S5 Modal     | EXPTIME         | PSPACE           | Ladner 1977 |
 | LTL          | PSPACE          | PSPACE           | Sistla-Clarke 1985 |
-| **TM (This work)** | **EXPTIME** | **PSPACE**   | ProofChecker |
+| **TM (This work)** | **EXPTIME** | **PSPACE**   | Logos |
 
 **Conclusion**: TM logic decidability inherits S5 time complexity (dominant factor) while maintaining LTL space efficiency.
 ```
@@ -568,14 +568,14 @@ theorem space_complexity (φ : Formula) :
 **Testing Strategy**:
 ```bash
 # Verify complexity bounds on small examples
-lake test ProofCheckerTest.Metalogic.DecidabilityTest  -- Test: time_complexity_small
-lake test ProofCheckerTest.Metalogic.DecidabilityTest  -- Test: space_complexity_small
+lake test LogosTest.Metalogic.DecidabilityTest  -- Test: time_complexity_small
+lake test LogosTest.Metalogic.DecidabilityTest  -- Test: space_complexity_small
 
 # Verify soundness theorem proven
-grep "theorem tableau_soundness" ProofChecker/Metalogic/Decidability.lean
+grep "theorem tableau_soundness" Logos/Metalogic/Decidability.lean
 
 # Verify completeness theorem proven
-grep "theorem tableau_completeness" ProofChecker/Metalogic/Decidability.lean
+grep "theorem tableau_completeness" Logos/Metalogic/Decidability.lean
 ```
 
 **Expected Duration**: 8-12 hours
@@ -589,12 +589,12 @@ grep "theorem tableau_completeness" ProofChecker/Metalogic/Decidability.lean
 **Test File Structure**:
 
 ```lean
--- File: ProofCheckerTest/Metalogic/DecidabilityTest.lean
+-- File: LogosTest/Metalogic/DecidabilityTest.lean
 
-import ProofChecker.Metalogic.Decidability
-import ProofCheckerTest.TestFramework
+import Logos.Metalogic.Decidability
+import LogosTest.TestFramework
 
-namespace ProofCheckerTest.Metalogic
+namespace LogosTest.Metalogic
 
 /-!
 # Decidability Module Tests
@@ -730,19 +730,19 @@ def all_decidability_tests : List TestCase := [
   test_satisfiability_validity_agree
 ]
 
-end ProofCheckerTest.Metalogic
+end LogosTest.Metalogic
 ```
 
 **Test Execution**:
 ```bash
 # Run decidability test suite
-lake test ProofCheckerTest.Metalogic.DecidabilityTest
+lake test LogosTest.Metalogic.DecidabilityTest
 
 # Verify all tests pass
 echo "Expected: 12/12 tests passing"
 
 # Run with verbose output for debugging
-lake test ProofCheckerTest.Metalogic.DecidabilityTest --verbose
+lake test LogosTest.Metalogic.DecidabilityTest --verbose
 ```
 
 **Expected Duration**: 4-6 hours
@@ -765,7 +765,7 @@ lake test ProofCheckerTest.Metalogic.DecidabilityTest --verbose
 **Priority**: Low (future work, Layer 0 theoretical completion)
 
 **Completion Summary**:
-- Created ProofChecker/Metalogic/Decidability.lean (~1000 lines)
+- Created Logos/Metalogic/Decidability.lean (~1000 lines)
 - Implemented tableau method with 12 expansion rules
 - Proved soundness and completeness theorems
 - Analyzed EXPTIME time complexity, PSPACE space complexity
@@ -773,8 +773,8 @@ lake test ProofCheckerTest.Metalogic.DecidabilityTest --verbose
 - Updated IMPLEMENTATION_STATUS.md and KNOWN_LIMITATIONS.md
 
 **Files Created**:
-- ProofChecker/Metalogic/Decidability.lean
-- ProofCheckerTest/Metalogic/DecidabilityTest.lean
+- Logos/Metalogic/Decidability.lean
+- LogosTest/Metalogic/DecidabilityTest.lean
 - Documentation/Reference/DECIDABILITY.md
 ```
 
@@ -860,14 +860,14 @@ Add Decidability section to Metalogic architecture:
 **Testing Strategy**:
 ```bash
 # Verify decidability module complete
-lake build ProofChecker.Metalogic.Decidability
-lake test ProofCheckerTest.Metalogic.DecidabilityTest
+lake build Logos.Metalogic.Decidability
+lake test LogosTest.Metalogic.DecidabilityTest
 
 # Verify zero sorry in Decidability.lean
-grep -c "sorry" ProofChecker/Metalogic/Decidability.lean  # Expected: 0
+grep -c "sorry" Logos/Metalogic/Decidability.lean  # Expected: 0
 
 # Verify zero axiom in Decidability.lean (soundness/completeness should be theorems)
-grep -c "axiom" ProofChecker/Metalogic/Decidability.lean  # Expected: 0
+grep -c "axiom" Logos/Metalogic/Decidability.lean  # Expected: 0
 
 # Verify documentation updated
 grep "Decidability" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
@@ -883,7 +883,7 @@ grep "Decidability" CLAUDE.md
 
 ### Overview
 
-Phase 8b represents strategic architectural planning for ProofChecker's future development beyond Layer 0 (Core TM). This sub-phase designs three planned operator extensions:
+Phase 8b represents strategic architectural planning for Logos's future development beyond Layer 0 (Core TM). This sub-phase designs three planned operator extensions:
 
 **Layer 1 (Counterfactuals)**: Would-counterfactuals (`□c`) and might-counterfactuals (`◇m`) with task-relative evaluation semantics
 
@@ -1782,7 +1782,7 @@ Update `Documentation/UserGuide/ARCHITECTURE.md` with full layer roadmap:
 ```markdown
 ## Layer Architecture Roadmap
 
-ProofChecker is designed as a layered logic system with incremental operator extensions:
+Logos is designed as a layered logic system with incremental operator extensions:
 
 ### Layer 0: Core TM (COMPLETE)
 - **Operators**: Metaphysical modality (`□`, `◇`), Temporal operators (`P`, `F`)
@@ -1907,7 +1907,7 @@ Add Layer Planning section:
 ```markdown
 ## 1. Project Overview
 
-ProofChecker is a LEAN 4 implementation of an axiomatic proof system for the bimodal logic TM (Tense and Modality) with task semantics. It provides:
+Logos is a LEAN 4 implementation of an axiomatic proof system for the bimodal logic TM (Tense and Modality) with task semantics. It provides:
 
 - **Bimodal Logic TM**: Combining S5 modal logic (metaphysical necessity/possibility) with linear temporal logic (past/future operators)
 - **Task Semantics**: Possible worlds as functions from times to world states constrained by task relations
@@ -1934,7 +1934,7 @@ Add Layer 0 completion milestone and future roadmap:
 
 **Layer 0 (Core TM): COMPLETE ✓**
 
-ProofChecker has achieved full Layer 0 implementation with zero `sorry` placeholders:
+Logos has achieved full Layer 0 implementation with zero `sorry` placeholders:
 - ✓ All 10 TM axioms proven sound
 - ✓ All 7 inference rules proven sound
 - ✓ Weak and strong completeness proven (canonical model construction)
@@ -1955,7 +1955,7 @@ See [ARCHITECTURE.md](Documentation/UserGuide/ARCHITECTURE.md) for complete laye
 **Final Verification Commands**:
 ```bash
 # Verify Layer 0 complete (zero sorry)
-grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l  # Expected: 0
+grep -r "sorry" Logos/ --include="*.lean" | wc -l  # Expected: 0
 
 # Verify all 11 TODO.md tasks complete
 grep "Status Summary" TODO.md  # Should show 11/11 (100%)
@@ -1983,7 +1983,7 @@ lake build :docs
 ## Phase 8 Success Criteria
 
 **Phase 8a (Decidability Module) Complete**:
-- [ ] `ProofChecker/Metalogic/Decidability.lean` created (~1000 lines)
+- [ ] `Logos/Metalogic/Decidability.lean` created (~1000 lines)
 - [ ] Tableau method implemented with 12 expansion rules
 - [ ] Soundness theorem proven (open tableau ⇒ satisfiable)
 - [ ] Completeness theorem proven (satisfiable ⇒ open tableau)
@@ -2003,7 +2003,7 @@ lake build :docs
 
 **Layer 0 Full Completion Verified**:
 - [ ] TODO.md shows 11/11 tasks complete (100%)
-- [ ] Zero `sorry` placeholders in all ProofChecker/ modules
+- [ ] Zero `sorry` placeholders in all Logos/ modules
 - [ ] `lake test` passes with zero failures
 - [ ] `lake lint` returns zero warnings
 - [ ] `lake build` succeeds cleanly
@@ -2025,7 +2025,7 @@ lake build :docs
 - Guides future contributors
 - Demonstrates theoretical extensibility of task semantics
 
-**Post-Phase 8 Completion**: ProofChecker will have:
+**Post-Phase 8 Completion**: Logos will have:
 - Complete Layer 0 implementation (zero technical debt)
 - Comprehensive architectural roadmap for three future layers
 - Total estimated future effort: 103-161 hours for full Layer 1-3 implementation
@@ -2038,13 +2038,13 @@ lake build :docs
 ### Phase 8a Testing
 ```bash
 # Unit tests for tableau components
-lake test ProofCheckerTest.Metalogic.DecidabilityTest
+lake test LogosTest.Metalogic.DecidabilityTest
 
 # Integration tests with Layer 0
-lake test ProofCheckerTest.Integration.DecidabilityIntegrationTest
+lake test LogosTest.Integration.DecidabilityIntegrationTest
 
 # Complexity verification tests
-lake test ProofCheckerTest.Metalogic.DecidabilityComplexityTest
+lake test LogosTest.Metalogic.DecidabilityComplexityTest
 ```
 
 ### Phase 8b Testing

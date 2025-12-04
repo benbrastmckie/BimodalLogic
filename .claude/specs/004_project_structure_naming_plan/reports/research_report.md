@@ -1,6 +1,6 @@
 # Project Structure and Naming Conventions Research Report
 
-**Project**: ProofChecker
+**Project**: Logos
 **Research Date**: 2025-12-01
 **Research Complexity**: 3
 **Researcher**: Claude (research-specialist agent)
@@ -9,11 +9,11 @@
 
 ## Executive Summary
 
-This report analyzes the current ProofChecker project structure against LEAN 4 community standards (primarily mathlib4 and std4) to determine optimal file and directory naming conventions. The research reveals significant misalignment between the current planned structure in CLAUDE.md and LEAN 4 community standards, particularly regarding directory naming conventions.
+This report analyzes the current Logos project structure against LEAN 4 community standards (primarily mathlib4 and std4) to determine optimal file and directory naming conventions. The research reveals significant misalignment between the current planned structure in CLAUDE.md and LEAN 4 community standards, particularly regarding directory naming conventions.
 
 **Key Findings**:
 1. LEAN 4 uses **PascalCase** (UpperCamelCase) for all files and directories
-2. Current ProofChecker plan uses inconsistent casing with PascalCase directories (ProofChecker/, Syntax/, ProofSystem/, etc.)
+2. Current Logos plan uses inconsistent casing with PascalCase directories (Logos/, Syntax/, ProofSystem/, etc.)
 3. User preference for snake_case lowercase directories conflicts with LEAN 4 community standards
 4. Test directories in mathlib4 use PascalCase (MathlibTest, not Tests or tests)
 5. Example directories in mathlib4 use PascalCase (Counterexamples, Archive, not Examples)
@@ -24,10 +24,10 @@ This report analyzes the current ProofChecker project structure against LEAN 4 c
 
 ### 1.1 Current Directory Structure
 
-From examination of `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/`:
+From examination of `/home/benjamin/Documents/Philosophy/Projects/Logos/`:
 
 ```
-ProofChecker/
+Logos/
 ├── .claude/
 ├── .github/
 ├── .git/
@@ -45,9 +45,9 @@ ProofChecker/
 ### 1.2 Planned Structure (from CLAUDE.md)
 
 ```
-ProofChecker/
-├── ProofChecker.lean           # Library root
-├── ProofChecker/               # Main source directory
+Logos/
+├── Logos.lean           # Library root
+├── Logos/               # Main source directory
 │   ├── Syntax/
 │   ├── ProofSystem/
 │   ├── Semantics/
@@ -68,13 +68,13 @@ ProofChecker/
 
 ### 1.3 Lakefile Configuration
 
-From `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/lakefile.toml`:
+From `/home/benjamin/Documents/Philosophy/Projects/Logos/lakefile.toml`:
 
 ```toml
 [[lean_lib]]
-name = "ProofChecker"
-roots = ["ProofChecker"]
-globs = ["ProofChecker/**"]
+name = "Logos"
+roots = ["Logos"]
+globs = ["Logos/**"]
 
 [[lean_lib]]
 name = "Examples"
@@ -86,7 +86,7 @@ name = "tests"
 root = "Tests"
 ```
 
-**Analysis**: The lakefile expects PascalCase directories (ProofChecker, Examples, Tests).
+**Analysis**: The lakefile expects PascalCase directories (Logos, Examples, Tests).
 
 ---
 
@@ -217,13 +217,13 @@ From mathlib4 root:
 
 | Aspect | Current Plan | LEAN 4 Standard | Alignment |
 |--------|--------------|-----------------|-----------|
-| **Main source directory** | `ProofChecker/` | PascalCase | ✓ ALIGNED |
+| **Main source directory** | `Logos/` | PascalCase | ✓ ALIGNED |
 | **Subdirectories** | `Syntax/`, `ProofSystem/`, `Semantics/` | PascalCase | ✓ ALIGNED |
 | **Test directory** | `Tests/` | `MathlibTest` pattern | ⚠ PARTIAL |
 | **Examples directory** | `Examples/` | `Archive`/`Counterexamples` | ⚠ PARTIAL |
 | **File names** | `.lean` files | PascalCase | ✓ ALIGNED |
 | **Documentation** | `docs/`, `src/docs/` | lowercase docs | ✓ ALIGNED |
-| **Root files** | `ProofChecker.lean` | PascalCase | ✓ ALIGNED |
+| **Root files** | `Logos.lean` | PascalCase | ✓ ALIGNED |
 
 ### 3.2 User Preference vs. Standard
 
@@ -241,7 +241,7 @@ From mathlib4 root:
 
 1. **Test Directory Naming**
    - Current: `Tests/`
-   - Standard: `ProofCheckerTest/` or `Test/` (following mathlib4 pattern)
+   - Standard: `LogosTest/` or `Test/` (following mathlib4 pattern)
    - Gap: Plural form inconsistent with mathlib4
 
 2. **Examples Directory Organization**
@@ -268,9 +268,9 @@ From mathlib4 root:
 Based on LEAN 4 standards and mathlib4 patterns:
 
 ```
-ProofChecker/                      # Root project directory
-├── ProofChecker.lean              # Library root (re-exports)
-├── ProofChecker/                  # Main source library
+Logos/                      # Root project directory
+├── Logos.lean              # Library root (re-exports)
+├── Logos/                  # Main source library
 │   ├── Syntax/
 │   │   ├── Formula.lean
 │   │   ├── Context.lean
@@ -299,8 +299,8 @@ ProofChecker/                      # Root project directory
 │       ├── Tactics.lean
 │       ├── ProofSearch.lean
 │       └── Templates.lean
-├── ProofCheckerTest/              # Test suite (NOT Tests/)
-│   ├── ProofCheckerTest.lean     # Test library root
+├── LogosTest/              # Test suite (NOT Tests/)
+│   ├── LogosTest.lean     # Test library root
 │   ├── Syntax/                    # Mirror main structure
 │   │   ├── FormulaTest.lean
 │   │   └── ContextTest.lean
@@ -341,7 +341,7 @@ ProofChecker/                      # Root project directory
 
 ### 4.2 Rationale for Changes
 
-1. **`Tests/` → `ProofCheckerTest/`**
+1. **`Tests/` → `LogosTest/`**
    - Follows mathlib4 pattern (`MathlibTest`)
    - Singular form consistent with LEAN 4
    - Project-prefixed for clarity
@@ -352,7 +352,7 @@ ProofChecker/                      # Root project directory
    - `Counterexamples/`: Invalidity demonstrations, edge cases
    - More discoverable and organized
 
-3. **Keep `ProofChecker/` subdirectories as PascalCase**
+3. **Keep `Logos/` subdirectories as PascalCase**
    - Already aligned with standard
    - No changes needed
 
@@ -369,9 +369,9 @@ ProofChecker/                      # Root project directory
 If preferring minimal disruption to existing planning:
 
 ```
-ProofChecker/
-├── ProofChecker.lean
-├── ProofChecker/              # No change
+Logos/
+├── Logos.lean
+├── Logos/              # No change
 │   ├── Syntax/                # No change
 │   ├── ProofSystem/           # No change
 │   ├── Semantics/             # No change
@@ -403,10 +403,10 @@ ProofChecker/
 ### 5.1 Recommended Lakefile (lakefile.toml)
 
 ```toml
-# lakefile.toml - LEAN 4 Build Configuration for ProofChecker
+# lakefile.toml - LEAN 4 Build Configuration for Logos
 
 [package]
-name = "ProofChecker"
+name = "Logos"
 version = "0.1.0"
 keywords = ["logic", "modal-logic", "temporal-logic", "proof-system", "lean4"]
 license = "MIT"
@@ -418,15 +418,15 @@ precompileModules = true
 
 # Main library
 [[lean_lib]]
-name = "ProofChecker"
-roots = ["ProofChecker"]
-globs = ["ProofChecker/**"]
+name = "Logos"
+roots = ["Logos"]
+globs = ["Logos/**"]
 
 # Test suite
 [[lean_lib]]
-name = "ProofCheckerTest"
-roots = ["ProofCheckerTest"]
-globs = ["ProofCheckerTest/**"]
+name = "LogosTest"
+roots = ["LogosTest"]
+globs = ["LogosTest/**"]
 
 # Examples - Archive
 [[lean_lib]]
@@ -443,7 +443,7 @@ globs = ["Counterexamples/**"]
 # Test executable
 [[lean_exe]]
 name = "test"
-root = "ProofCheckerTest"
+root = "LogosTest"
 
 # Dependencies
 # [[require]]
@@ -458,9 +458,9 @@ root = "ProofCheckerTest"
 # Minimal change from current plan
 
 [[lean_lib]]
-name = "ProofChecker"
-roots = ["ProofChecker"]
-globs = ["ProofChecker/**"]
+name = "Logos"
+roots = ["Logos"]
+globs = ["Logos/**"]
 
 [[lean_lib]]
 name = "Test"                    # Changed from "tests"
@@ -495,21 +495,21 @@ Since no LEAN code exists yet, this is actually a **pre-implementation structure
 
 1. **Create main source directory**:
    ```bash
-   mkdir -p ProofChecker/Syntax
-   mkdir -p ProofChecker/ProofSystem
-   mkdir -p ProofChecker/Semantics
-   mkdir -p ProofChecker/Metalogic
-   mkdir -p ProofChecker/Theorems
-   mkdir -p ProofChecker/Automation
+   mkdir -p Logos/Syntax
+   mkdir -p Logos/ProofSystem
+   mkdir -p Logos/Semantics
+   mkdir -p Logos/Metalogic
+   mkdir -p Logos/Theorems
+   mkdir -p Logos/Automation
    ```
 
 2. **Create test directory** (recommended naming):
    ```bash
-   mkdir -p ProofCheckerTest/Syntax
-   mkdir -p ProofCheckerTest/ProofSystem
-   mkdir -p ProofCheckerTest/Semantics
-   mkdir -p ProofCheckerTest/Integration
-   mkdir -p ProofCheckerTest/Metalogic
+   mkdir -p LogosTest/Syntax
+   mkdir -p LogosTest/ProofSystem
+   mkdir -p LogosTest/Semantics
+   mkdir -p LogosTest/Integration
+   mkdir -p LogosTest/Metalogic
    ```
 
 3. **Create example directories**:
@@ -522,8 +522,8 @@ Since no LEAN code exists yet, this is actually a **pre-implementation structure
 
 5. **Create root files**:
    ```bash
-   touch ProofChecker.lean
-   touch ProofCheckerTest/ProofCheckerTest.lean
+   touch Logos.lean
+   touch LogosTest/LogosTest.lean
    touch Archive/Archive.lean
    touch Counterexamples/Counterexamples.lean
    ```
@@ -543,7 +543,7 @@ Since no LEAN code exists yet, this is actually a **pre-implementation structure
 
 ### 6.3 If Preferring Minimal Change
 
-If opting for minimal change (singular Test/Example instead of ProofCheckerTest/Archive):
+If opting for minimal change (singular Test/Example instead of LogosTest/Archive):
 
 1. **Create directories**:
    ```bash
@@ -565,15 +565,15 @@ If opting for minimal change (singular Test/Example instead of ProofCheckerTest/
 From MODULE_ORGANIZATION.md and CLAUDE.md:
 
 ```lean
-namespace ProofChecker
+namespace Logos
 
-namespace ProofChecker.Syntax
+namespace Logos.Syntax
 -- ...
-end ProofChecker.Syntax
+end Logos.Syntax
 
-namespace ProofChecker.ProofSystem
+namespace Logos.ProofSystem
 -- ...
-end ProofChecker.ProofSystem
+end Logos.ProofSystem
 
 -- etc.
 ```
@@ -583,13 +583,13 @@ end ProofChecker.ProofSystem
 ### 7.2 Test Namespace Recommendations
 
 ```lean
--- In ProofCheckerTest/Syntax/FormulaTest.lean
-namespace ProofCheckerTest.Syntax
+-- In LogosTest/Syntax/FormulaTest.lean
+namespace LogosTest.Syntax
 
 -- Tests for Formula
 def test_formula_complexity : TestResult := ...
 
-end ProofCheckerTest.Syntax
+end LogosTest.Syntax
 ```
 
 Alternative if using `Test/` directory:
@@ -609,8 +609,8 @@ end Test.Unit.Syntax
 -- In Archive/ModalProofs.lean
 namespace Archive.ModalProofs
 
-open ProofChecker.Syntax
-open ProofChecker.ProofSystem
+open Logos.Syntax
+open Logos.ProofSystem
 
 -- Examples
 example (P : Formula) : ⊢ (P.box.imp P) := by
@@ -655,8 +655,8 @@ end Archive.ModalProofs
 
 | Directory Type | Standard | Example |
 |----------------|----------|---------|
-| LEAN source | PascalCase | `ProofChecker/`, `Syntax/` |
-| LEAN tests | PascalCase | `ProofCheckerTest/` or `Test/` |
+| LEAN source | PascalCase | `Logos/`, `Syntax/` |
+| LEAN tests | PascalCase | `LogosTest/` or `Test/` |
 | LEAN examples | PascalCase | `Archive/`, `Counterexamples/` |
 | Documentation | lowercase | `docs/` |
 | Git config | lowercase | `.git/`, `.github/` |
@@ -670,10 +670,10 @@ end Archive.ModalProofs
 
 1. **Directory Naming**:
    - Use PascalCase for all LEAN source directories
-   - Already compliant: `ProofChecker/`, `Syntax/`, etc.
+   - Already compliant: `Logos/`, `Syntax/`, etc.
 
 2. **Test Directory**:
-   - **Recommended**: `ProofCheckerTest/` (follows mathlib4 pattern)
+   - **Recommended**: `LogosTest/` (follows mathlib4 pattern)
    - **Alternative**: `Test/` (singular, minimal change)
    - **Avoid**: `Tests/`, `tests/`, `test/`
 
@@ -713,24 +713,24 @@ end Archive.ModalProofs
 
 ### 10.1 Summary of Findings
 
-The ProofChecker project's planned structure is **largely aligned** with LEAN 4 community standards, with a few notable exceptions:
+The Logos project's planned structure is **largely aligned** with LEAN 4 community standards, with a few notable exceptions:
 
 **Already Compliant**:
-- ✓ Main source directory (`ProofChecker/`)
+- ✓ Main source directory (`Logos/`)
 - ✓ Subdirectory naming (`Syntax/`, `ProofSystem/`, etc.)
 - ✓ File naming conventions (PascalCase)
 - ✓ Namespace structure
 - ✓ Documentation directory naming
 
 **Requires Adjustment**:
-- ⚠ Test directory: `Tests/` → `ProofCheckerTest/` or `Test/`
+- ⚠ Test directory: `Tests/` → `LogosTest/` or `Test/`
 - ⚠ Examples directory: `Examples/` → `Archive/` + `Counterexamples/` or `Example/`
 - ⚠ Test file naming: Consider `*Test.lean` suffix consistency
 
 ### 10.2 Recommended Action Plan
 
 **Priority 1** (High Impact, Pre-Implementation):
-1. Decide on test directory name: `ProofCheckerTest/` (recommended) or `Test/` (minimal)
+1. Decide on test directory name: `LogosTest/` (recommended) or `Test/` (minimal)
 2. Decide on examples organization: `Archive/` + `Counterexamples/` (recommended) or `Example/` (minimal)
 3. Create directory structure before starting implementation
 4. Update lakefile.toml accordingly
@@ -738,7 +738,7 @@ The ProofChecker project's planned structure is **largely aligned** with LEAN 4 
 
 **Priority 2** (Medium Impact):
 1. Establish test file naming convention (`*Test.lean`)
-2. Create root files for each library (`ProofChecker.lean`, `ProofCheckerTest.lean`, etc.)
+2. Create root files for each library (`Logos.lean`, `LogosTest.lean`, etc.)
 3. Document namespace conventions clearly
 
 **Priority 3** (Low Impact, Can Evolve):
@@ -751,16 +751,16 @@ The ProofChecker project's planned structure is **largely aligned** with LEAN 4 
 **Recommended Structure** (Best alignment with LEAN 4 standards):
 
 ```
-ProofChecker/
-├── ProofChecker.lean
-├── ProofChecker/          # Main library (PascalCase subdirs)
+Logos/
+├── Logos.lean
+├── Logos/          # Main library (PascalCase subdirs)
 │   ├── Syntax/
 │   ├── ProofSystem/
 │   ├── Semantics/
 │   ├── Metalogic/
 │   ├── Theorems/
 │   └── Automation/
-├── ProofCheckerTest/      # Test suite (NOT Tests)
+├── LogosTest/      # Test suite (NOT Tests)
 │   ├── Syntax/
 │   ├── ProofSystem/
 │   ├── Semantics/
@@ -789,9 +789,9 @@ This structure:
 2. [Library Style Guidelines](https://leanprover-community.github.io/contribute/style.html) - LEAN 4 style guide
 3. [Mathlib4 Repository](https://github.com/leanprover-community/mathlib4) - Reference implementation
 4. [Lean Projects Guide](https://leanprover-community.github.io/install/project.html) - Project setup guide
-5. [ProofChecker CLAUDE.md](file:///home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md) - Current project configuration
-6. [ProofChecker ARCHITECTURE.md](file:///home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md) - Architecture specification
-7. [ProofChecker MODULE_ORGANIZATION.md](file:///home/benjamin/Documents/Philosophy/Projects/ProofChecker/src/docs/MODULE_ORGANIZATION.md) - Current module organization plan
+5. [Logos CLAUDE.md](file:///home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md) - Current project configuration
+6. [Logos ARCHITECTURE.md](file:///home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md) - Architecture specification
+7. [Logos MODULE_ORGANIZATION.md](file:///home/benjamin/Documents/Philosophy/Projects/Logos/src/docs/MODULE_ORGANIZATION.md) - Current module organization plan
 
 ---
 

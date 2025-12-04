@@ -6,8 +6,8 @@
 - **Complexity**: 2 (Moderate)
 - **Status**: COMPLETE
 - **Parent Spec**: 019_research_todo_implementation_plan
-- **Main Plan**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/001-research-todo-implementation-plan.md
-- **Expanded Plan**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_3_wave2_parallel_soundness_automation_worldhistory/phase_3_wave2_parallel_soundness_automation_worldhistory.md
+- **Main Plan**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/plans/001-research-todo-implementation-plan.md
+- **Expanded Plan**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/plans/phase_3_wave2_parallel_soundness_automation_worldhistory/phase_3_wave2_parallel_soundness_automation_worldhistory.md
 
 ## Executive Summary
 
@@ -445,7 +445,7 @@ The expanded Phase 3 plan integration into the main TODO Implementation Plan is 
 
 ## Completion Signal
 
-REPORT_CREATED: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/reports/003-phase-3-expanded-plan-integration-analysis.md
+REPORT_CREATED: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/reports/003-phase-3-expanded-plan-integration-analysis.md
 
 **Research Summary**:
 - **Integration Status**: ✅ 96% compliant with established patterns

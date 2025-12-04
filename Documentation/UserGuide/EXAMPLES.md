@@ -1,6 +1,6 @@
-# ProofChecker Examples
+# Logos Examples
 
-This document provides comprehensive examples of modal, temporal, and bimodal reasoning using ProofChecker.
+This document provides comprehensive examples of modal, temporal, and bimodal reasoning using Logos.
 
 ## 1. Modal Logic Examples
 

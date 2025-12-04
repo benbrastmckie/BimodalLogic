@@ -3,18 +3,18 @@
 **Research Date**: 2025-12-01
 **Workflow Type**: research-and-plan
 **Complexity**: 3
-**Target Document**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+**Target Document**: /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 ## Executive Summary
 
 This report documents research findings for two NOTE tags in README.md requiring refactoring:
 
-1. **NOTE 1 (line 3)**: Clarify that ProofChecker provides proof theory and metalogic for the Logos, beginning with the core layer (TM) with tense, modal, and extensional operators
+1. **NOTE 1 (line 3)**: Clarify that Logos provides proof theory and metalogic for the Logos, beginning with the core layer (TM) with tense, modal, and extensional operators
 2. **NOTE 2 (line 46)**: Verify emoji prohibition in project standards and remove all emojis from README.md
 
 ### Key Findings
 
-- **Logos Context**: ProofChecker is Layer 0 (Core Layer) of the Logos formal language of thought project
+- **Logos Context**: Logos is Layer 0 (Core Layer) of the Logos formal language of thought project
 - **Extensional Operators**: Boolean/propositional operators (¬, ∧, ∨, →) derived from ⊥ and → primitives
 - **Emoji Policy**: Documentation standards explicitly prohibit emojis (U+1F300-U+1F9FF) but permit Unicode symbols
 - **Emoji Occurrences**: Four emojis found on lines 40-58 (✓, ⚠️, 🏗️, 📋) requiring replacement
@@ -29,7 +29,7 @@ This report documents research findings for two NOTE tags in README.md requiring
 
 The **Logos** is a formal language of thought designed for scalable oversight in AI reasoning. It consists of:
 
-**Core Layer (Layer 0) - ProofChecker's Domain**:
+**Core Layer (Layer 0) - Logos's Domain**:
 - **Extensional operators**: ¬ (negation), ∧ (conjunction), ∨ (disjunction), → (implication)
 - **Modal operators**: □ (necessity), ◇ (possibility), Ca (ability/capacity)
 - **Temporal operators**: P (past), F (future), G (always future), H (always past)
@@ -49,11 +49,11 @@ The **Logos** is a formal language of thought designed for scalable oversight in
 - Preference operators: ≺
 - Normative explanatory: ⟼
 
-#### ProofChecker's Role in Logos
+#### Logos's Role in Logos
 
-**Source**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md (lines 15-24)
+**Source**: /home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md (lines 15-24)
 
-ProofChecker implements:
+Logos implements:
 - **Layer 0 (Core Layer)**: TM (Tense and Modality) logic with complete soundness/completeness proofs
 - **Future Layers 1-3**: Planned extensions for explanatory, epistemic, and normative operators
 - **Verification**: All valid reasoning verified by LEAN proof-checker
@@ -69,13 +69,13 @@ ProofChecker implements:
 2. **Model-Checker**: Finds counterexamples to invalid inferences (Z3-based)
 3. **Proof-Checker**: Verifies valid reasoning patterns (LEAN-based)
 
-**ProofChecker is the third package**, providing verified reasoning for Layer 0 (Core TM) with planned extensions.
+**Logos is the third package**, providing verified reasoning for Layer 0 (Core TM) with planned extensions.
 
 ### 2. Extensional Operators
 
 #### Definition
 
-**Source**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md (lines 31-51)
+**Source**: /home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md (lines 31-51)
 
 **Extensional operators** are the Boolean/propositional operators:
 - **Primitives**: ⊥ (falsity), → (material implication)
@@ -107,13 +107,13 @@ Logos Core Layer lists extensional operators as:
 - `∨` (disjunction)
 - `→` (implication)
 
-These are the **same operators** ProofChecker implements as Layer 0 derived operators.
+These are the **same operators** Logos implements as Layer 0 derived operators.
 
 ### 3. Project Standards on Emojis
 
 #### Documentation Standards Policy
 
-**Source**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md (lines 340-354)
+**Source**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md (lines 340-354)
 
 **Allowed Unicode Characters**:
 - Box-drawing (U+2500-U+257F): ├ │ └ ─ ┌ ┐ ┤ ┬ ┴ ┼
@@ -131,7 +131,7 @@ These are the **same operators** ProofChecker implements as Layer 0 derived oper
 
 #### LEAN Style Guide Policy
 
-**Source**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/LEAN_STYLE_GUIDE.md
+**Source**: /home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/LEAN_STYLE_GUIDE.md
 
 **No explicit emoji policy found** in LEAN Style Guide. The style guide focuses on LEAN code conventions, not markdown documentation.
 
@@ -141,7 +141,7 @@ These are the **same operators** ProofChecker implements as Layer 0 derived oper
 
 #### Full Emoji Inventory
 
-**Source**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md (lines 40-58)
+**Source**: /home/benjamin/Documents/Philosophy/Projects/Logos/README.md (lines 40-58)
 
 | Line | Section | Emoji | Unicode | Status | Replacement Recommendation |
 |------|---------|-------|---------|--------|----------------------------|
@@ -161,7 +161,7 @@ These are the **same operators** ProofChecker implements as Layer 0 derived oper
 
 #### TM Logic Specification
 
-**Source**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md (lines 26-28)
+**Source**: /home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md (lines 26-28)
 
 The bimodal logic **TM** (Tense and Modality) combines:
 - **S5 Modal Logic**: Axioms MT, M4, MB for metaphysical necessity/possibility
@@ -175,7 +175,7 @@ The bimodal logic **TM** (Tense and Modality) combines:
 
 #### Perpetuity Principles
 
-**Source**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md (lines 28-34)
+**Source**: /home/benjamin/Documents/Philosophy/Projects/Logos/README.md (lines 28-34)
 
 Six theorems connecting modal and temporal operators:
 - P1: □φ → △φ (necessary implies always)
@@ -200,7 +200,7 @@ These demonstrate the **interaction between modal and temporal operators** that 
 ```markdown
 ## Project Context
 
-ProofChecker provides the **proof theory and metalogic** for the **Logos**, a formal language of thought for scalable oversight in AI reasoning. This package implements **Layer 0 (Core Layer)** of the Logos architecture, which combines:
+Logos provides the **proof theory and metalogic** for the **Logos**, a formal language of thought for scalable oversight in AI reasoning. This package implements **Layer 0 (Core Layer)** of the Logos architecture, which combines:
 
 - **Extensional operators**: Boolean/propositional logic (¬, ∧, ∨, →)
 - **Modal operators**: S5 modal logic for metaphysical necessity/possibility (□, ◇)
@@ -208,7 +208,7 @@ ProofChecker provides the **proof theory and metalogic** for the **Logos**, a fo
 
 The bimodal logic **TM** (Tense and Modality) provides verified reasoning for Core Layer operators, with planned extensions for explanatory, epistemic, and normative operators in future layers.
 
-**Logos Integration**: ProofChecker is one of three packages in the Logos framework:
+**Logos Integration**: Logos is one of three packages in the Logos framework:
 - **Model-Builder**: Constructs semantic models from natural language
 - **Model-Checker**: Finds counterexamples to invalid inferences (Z3)
 - **Proof-Checker**: Verifies valid reasoning patterns (LEAN)
@@ -217,7 +217,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for complete TM logic specifica
 ```
 
 **Rationale**:
-- Explicitly states ProofChecker's role in Logos architecture
+- Explicitly states Logos's role in Logos architecture
 - Clarifies "extensional operators" as Boolean/propositional operators
 - Positions TM as Layer 0 (Core Layer) with future extensions
 - Links to detailed architecture documentation
@@ -306,17 +306,17 @@ If visual indicators are desired, use only permitted Unicode symbols:
 ## File References
 
 ### Primary Sources
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md` - Target document (lines 3, 40-58)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` - Target document (lines 3, 40-58)
 - `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` - Logos project overview (lines 1-99)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md` - TM logic specification (lines 15-51)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md` - Project configuration (lines 1-50)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md` - TM logic specification (lines 15-51)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md` - Project configuration (lines 1-50)
 
 ### Standards Documentation
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md` - Emoji policy (lines 340-354)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/LEAN_STYLE_GUIDE.md` - LEAN coding conventions (no emoji policy)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md` - Emoji policy (lines 340-354)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/LEAN_STYLE_GUIDE.md` - LEAN coding conventions (no emoji policy)
 
 ### Supporting Context
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/INTEGRATION.md` - Logos integration details
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/INTEGRATION.md` - Logos integration details
 - `.claude/specs/001_proof_checker_package_docs/reports/001-research-the-proof-checker-package-descr.md` - Historical context on Logos relationship
 
 ## Conflicts and Considerations
@@ -338,7 +338,7 @@ If visual indicators are desired, use only permitted Unicode symbols:
 ## Next Steps for Implementation Plan
 
 ### Phase 1: Logos Context Addition
-1. Draft "Project Context" section explaining ProofChecker's role in Logos
+1. Draft "Project Context" section explaining Logos's role in Logos
 2. Clarify extensional operators as Boolean/propositional operators
 3. Position TM as Layer 0 with future layer extensions
 4. Add Logos three-package architecture overview
@@ -359,7 +359,7 @@ If visual indicators are desired, use only permitted Unicode symbols:
 
 Both NOTE requirements can be fully addressed:
 
-1. **NOTE 1 (Logos Context)**: ProofChecker implements Layer 0 (Core Layer) of the Logos formal language, providing proof theory and metalogic for extensional (Boolean), modal (S5), and temporal (LTL) operators in the bimodal logic TM.
+1. **NOTE 1 (Logos Context)**: Logos implements Layer 0 (Core Layer) of the Logos formal language, providing proof theory and metalogic for extensional (Boolean), modal (S5), and temporal (LTL) operators in the bimodal logic TM.
 
 2. **NOTE 2 (Emoji Policy)**: Documentation standards explicitly prohibit emojis (U+1F300-U+1F9FF). Two emoji violations identified on lines 53 and 57 requiring removal. Symbols ✓ and ⚠️ are technically permitted but recommended for removal for consistency.
 
@@ -367,4 +367,4 @@ The refactoring plan should add comprehensive Logos context early in README.md a
 
 ---
 
-**REPORT_CREATED**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/015_readme_note_refactor_plan/reports/001-readme-note-research-report.md
+**REPORT_CREATED**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/015_readme_note_refactor_plan/reports/001-readme-note-research-report.md

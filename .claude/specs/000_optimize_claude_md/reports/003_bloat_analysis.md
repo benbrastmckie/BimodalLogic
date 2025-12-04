@@ -4,8 +4,8 @@
 - Date: 2025-12-01T00:00:00Z
 - Analyzer: docs-bloat-analyzer (Opus 4.5)
 - Input Reports:
-  - CLAUDE.md analysis: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_optimize_claude_md/reports/001_claude_md_analysis.md
-  - Docs structure analysis: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_optimize_claude_md/reports/002_docs_structure_analysis.md
+  - CLAUDE.md analysis: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/000_optimize_claude_md/reports/001_claude_md_analysis.md
+  - Docs structure analysis: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/000_optimize_claude_md/reports/002_docs_structure_analysis.md
 
 ## Executive Summary
 
@@ -200,9 +200,9 @@ Replace merged sections with:
 **Task 1.1: Read Target File Sizes**
 ```bash
 # Read current sizes of all target files
-wc -l /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md
-wc -l /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/testing-protocols.md
-wc -l /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md
+wc -l /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md
+wc -l /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/testing-protocols.md
+wc -l /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md
 ```
 
 **Task 1.2: Calculate Projected Post-Merge Sizes**
@@ -467,4 +467,4 @@ merge_with_bloat_guard() {
 
 ---
 
-REPORT_CREATED: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_optimize_claude_md/reports/003_bloat_analysis.md
+REPORT_CREATED: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/000_optimize_claude_md/reports/003_bloat_analysis.md

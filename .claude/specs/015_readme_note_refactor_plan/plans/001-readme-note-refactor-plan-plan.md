@@ -6,7 +6,7 @@
 - **Scope**: Address two NOTE comments in README.md by adding Project Context section and removing emoji violations
 - **Estimated Phases**: 3
 - **Estimated Hours**: 1.5
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Status**: [COMPLETE]
 - **Structure Level**: 0 (Single File)
 - **Complexity Score**: 22.5
@@ -17,18 +17,18 @@
 
 This plan addresses two NOTE tags in README.md requiring refactoring:
 
-1. **NOTE 1 (line 3)**: Add comprehensive Logos project context explaining that ProofChecker provides proof theory and metalogic for the Logos formal language of thought, implementing Layer 0 (Core Layer) with extensional, modal, and temporal operators.
+1. **NOTE 1 (line 3)**: Add comprehensive Logos project context explaining that Logos provides proof theory and metalogic for the Logos formal language of thought, implementing Layer 0 (Core Layer) with extensional, modal, and temporal operators.
 
 2. **NOTE 2 (line 46)**: Remove prohibited emojis (🏗️ on line 53, 📋 on line 57) per documentation standards. Optionally remove permitted but inconsistent symbols (✓ on line 40, ⚠️ on line 48) for plain text consistency.
 
-The refactor will improve clarity about ProofChecker's role in the Logos architecture and ensure standards compliance for emoji usage.
+The refactor will improve clarity about Logos's role in the Logos architecture and ensure standards compliance for emoji usage.
 
 ## Research Summary
 
 The research report identified the following key findings:
 
 **Logos Project Context**:
-- ProofChecker is the third package in the Logos architecture (Model-Builder, Model-Checker, Proof-Checker)
+- Logos is the third package in the Logos architecture (Model-Builder, Model-Checker, Proof-Checker)
 - Implements Layer 0 (Core Layer) of Logos formal language with extensional (Boolean/propositional), modal (S5), and temporal (LTL) operators
 - TM bimodal logic combines metaphysical necessity/possibility with past/future reasoning
 - Future layers planned for explanatory (counterfactual), epistemic (belief), and normative (deontic) operators
@@ -52,7 +52,7 @@ The research report identified the following key findings:
 
 ## Success Criteria
 - [ ] NOTE comment on line 3 removed
-- [ ] New "Project Context" section added after line 5 explaining ProofChecker's role in Logos
+- [ ] New "Project Context" section added after line 5 explaining Logos's role in Logos
 - [ ] Extensional, modal, and temporal operators clearly described in context section
 - [ ] Logos three-package architecture (Model-Builder, Model-Checker, Proof-Checker) mentioned
 - [ ] Link to ARCHITECTURE.md provided for detailed specification
@@ -74,7 +74,7 @@ Use the Edit tool to make targeted changes to README.md, preserving all existing
 - Location: After line 5 (after "A LEAN 4 implementation of an axiomatic proof system...")
 - Content: New "## Project Context" section (approximately 15 lines)
 - Includes:
-  - ProofChecker's role as proof theory/metalogic for Logos
+  - Logos's role as proof theory/metalogic for Logos
   - Layer 0 (Core Layer) implementation with three operator types
   - Bimodal logic TM description
   - Logos three-package architecture overview
@@ -95,7 +95,7 @@ Use the Edit tool to make targeted changes to README.md, preserving all existing
 
 ### Design Rationale
 
-**Why Add Context Early**: Establishing ProofChecker's role in Logos immediately after the opening description provides essential context for understanding the project's scope and purpose. Users need to know this is Layer 0 of a larger formal language framework.
+**Why Add Context Early**: Establishing Logos's role in Logos immediately after the opening description provides essential context for understanding the project's scope and purpose. Users need to know this is Layer 0 of a larger formal language framework.
 
 **Why Remove All Symbols**: While ✓ and ⚠️ are technically permitted Unicode symbols (U+2600-U+26FF), removing them ensures:
 1. Maximum terminal/editor compatibility
@@ -122,12 +122,12 @@ Use the Edit tool to make targeted changes to README.md, preserving all existing
 ### Phase 1: Add Project Context Section [COMPLETE]
 dependencies: []
 
-**Objective**: Insert new "Project Context" section after line 5 to explain ProofChecker's role in Logos architecture.
+**Objective**: Insert new "Project Context" section after line 5 to explain Logos's role in Logos architecture.
 
 **Complexity**: Low
 
 **Tasks**:
-- [x] Use Edit tool to insert new section after line 5 (file: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md)
+- [x] Use Edit tool to insert new section after line 5 (file: /home/benjamin/Documents/Philosophy/Projects/Logos/README.md)
 - [x] Include subsection describing extensional operators (Boolean/propositional: ¬, ∧, ∨, →)
 - [x] Include subsection describing modal operators (S5: □, ◇)
 - [x] Include subsection describing temporal operators (LTL: Past, Future, always, sometimes)
@@ -138,18 +138,18 @@ dependencies: []
 **Testing**:
 ```bash
 # Verify section added correctly
-grep -q "## Project Context" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep -q "## Project Context" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 # Verify Logos mentioned
-grep -q "Logos" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep -q "Logos" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 # Verify three operator types mentioned
-grep -q "Extensional operators" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-grep -q "Modal operators" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-grep -q "Temporal operators" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep -q "Extensional operators" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+grep -q "Modal operators" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+grep -q "Temporal operators" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 # Verify architecture link present
-grep -q "docs/ARCHITECTURE.md" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep -q "docs/ARCHITECTURE.md" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 ```
 
 **Expected Duration**: 0.5 hours
@@ -164,7 +164,7 @@ dependencies: [1]
 **Complexity**: Low
 
 **Tasks**:
-- [x] Use Edit tool to remove ✓ from line 40 heading (file: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md)
+- [x] Use Edit tool to remove ✓ from line 40 heading (file: /home/benjamin/Documents/Philosophy/Projects/Logos/README.md)
 - [x] Use Edit tool to remove ⚠️ from line 48 heading
 - [x] Use Edit tool to remove 🏗️ from line 53 heading
 - [x] Use Edit tool to remove 📋 from line 57 heading
@@ -174,17 +174,17 @@ dependencies: [1]
 **Testing**:
 ```bash
 # Verify no prohibited emojis remain (U+1F300-U+1F9FF range)
-! grep -P '[\x{1F300}-\x{1F9FF}]' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+! grep -P '[\x{1F300}-\x{1F9FF}]' /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 # Verify specific emojis removed
-! grep "🏗️" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-! grep "📋" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+! grep "🏗️" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+! grep "📋" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 # Verify section headers are plain text
-grep "^### Completed Modules$" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-grep "^### Partial Modules$" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-grep "^### Infrastructure Only$" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-grep "^### Planned$" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep "^### Completed Modules$" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+grep "^### Partial Modules$" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+grep "^### Infrastructure Only$" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+grep "^### Planned$" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 ```
 
 **Expected Duration**: 0.25 hours
@@ -199,7 +199,7 @@ dependencies: [1, 2]
 **Complexity**: Low
 
 **Tasks**:
-- [x] Use Edit tool to delete NOTE comment on line 3 (file: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md)
+- [x] Use Edit tool to delete NOTE comment on line 3 (file: /home/benjamin/Documents/Philosophy/Projects/Logos/README.md)
 - [x] Use Edit tool to delete NOTE comment on line 46
 - [x] Verify no remaining NOTE comments in README.md
 - [x] Verify all markdown links are valid (especially ARCHITECTURE.md link added in Phase 1)
@@ -210,21 +210,21 @@ dependencies: [1, 2]
 **Testing**:
 ```bash
 # Verify no NOTE comments remain
-! grep "<!-- NOTE:" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+! grep "<!-- NOTE:" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 # Verify ARCHITECTURE.md link is valid
-test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md
+test -f /home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md
 
 # Verify other documentation links still valid
-test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/IMPLEMENTATION_STATUS.md
-test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/KNOWN_LIMITATIONS.md
-test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md
+test -f /home/benjamin/Documents/Philosophy/Projects/Logos/docs/IMPLEMENTATION_STATUS.md
+test -f /home/benjamin/Documents/Philosophy/Projects/Logos/docs/KNOWN_LIMITATIONS.md
+test -f /home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md
 
 # Run markdown linter (if markdownlint is available)
-command -v markdownlint >/dev/null 2>&1 && markdownlint /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md || echo "markdownlint not available, skipping"
+command -v markdownlint >/dev/null 2>&1 && markdownlint /home/benjamin/Documents/Philosophy/Projects/Logos/README.md || echo "markdownlint not available, skipping"
 
 # Verify README.md is valid UTF-8
-file /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md | grep -q "UTF-8"
+file /home/benjamin/Documents/Philosophy/Projects/Logos/README.md | grep -q "UTF-8"
 ```
 
 **Expected Duration**: 0.75 hours
@@ -313,13 +313,13 @@ None. This refactor requires only standard Unix tools (grep, file) available on 
 ### Project Dependencies
 
 **Existing Documentation Files**:
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md (must exist for link validation)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/IMPLEMENTATION_STATUS.md (existing link)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/KNOWN_LIMITATIONS.md (existing link)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md (existing link)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md (must exist for link validation)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/docs/IMPLEMENTATION_STATUS.md (existing link)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/docs/KNOWN_LIMITATIONS.md (existing link)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md (existing link)
 
 **Research Reports**:
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/015_readme_note_refactor_plan/reports/001-readme-note-research-report.md (informs refactor decisions)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/015_readme_note_refactor_plan/reports/001-readme-note-research-report.md (informs refactor decisions)
 
 ### Prerequisites
 
@@ -332,7 +332,7 @@ None. README.md exists and is ready for refactoring.
 This refactor has minimal risk because:
 1. Changes are isolated to README.md (no code changes)
 2. Edit tool preserves file history and enables easy rollback
-3. No functional impact on ProofChecker implementation
+3. No functional impact on Logos implementation
 4. All existing content preserved (only additions and emoji removals)
 
 ### Potential Issues

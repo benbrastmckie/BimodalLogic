@@ -118,11 +118,11 @@ This would deliver immediate value (working tactics) while deferring the archite
 **If Proceeding with Option B** (conditional validity):
 
 ### Test Files to Create
-- `ProofCheckerTest/Metalogic/SoundnessTest.lean` (6 new tests)
+- `LogosTest/Metalogic/SoundnessTest.lean` (6 new tests)
 
 ### Test Execution Requirements
 - Framework: LEAN 4 test framework via `lake test`
-- Command: `lake test ProofCheckerTest.Metalogic.SoundnessTest`
+- Command: `lake test LogosTest.Metalogic.SoundnessTest`
 - Expected: All conditional validity tests pass
 
 ### Coverage Target
@@ -146,16 +146,16 @@ This would deliver immediate value (working tactics) while deferring the archite
 ## Files Requiring Attention
 
 ### Source Files
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskFrame.lean` - May need frame constraint additions
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean` - 6 sorry to address
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskFrame.lean` - May need frame constraint additions
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean` - 6 sorry to address
 
 ### Test Files (to be created)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Metalogic/SoundnessTest.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Metalogic/SoundnessTest.lean`
 
 ### Documentation Files (to be updated)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md`
 
 ## Next Steps
 
@@ -192,9 +192,9 @@ This would deliver immediate value (working tactics) while deferring the archite
 
 ```
 IMPLEMENTATION_COMPLETE: 0
-plan_file: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/001-research-todo-implementation-plan.md
-topic_path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan
-summary_path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/summaries/001-implement-phase3-initial-assessment.md
+plan_file: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/plans/001-research-todo-implementation-plan.md
+topic_path: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan
+summary_path: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/summaries/001-implement-phase3-initial-assessment.md
 work_remaining: Phase_3_SubA Phase_3_SubB Phase_3_SubC Phase_4 Phase_5 Phase_6 Phase_7 Phase_8
 context_exhausted: false
 context_usage_percent: 32%

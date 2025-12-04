@@ -41,14 +41,14 @@ Phase 3 implementation has begun with completion of Sub-Phase 3C (WorldHistory) 
 **Objective**: Document conditional validity of universal history helper
 
 **Implementation**:
-- Enhanced docstring for `universal` function in `ProofChecker/Semantics/WorldHistory.lean`
+- Enhanced docstring for `universal` function in `Logos/Semantics/WorldHistory.lean`
 - Documented **ReflexiveTaskFrame** requirement: `∀ w d, task_rel w d w`
 - Provided frame examples: trivialFrame (reflexive), natFrame (reflexive), identityFrame (not reflexive)
 - Explained why nullity + compositionality insufficient for arbitrary-duration self-loops
 - Sorry remains intentionally (conditional validity, not removed)
 
 **Files Modified**:
-- `ProofChecker/Semantics/WorldHistory.lean` (lines 63-101): Comprehensive conditional validity docstring
+- `Logos/Semantics/WorldHistory.lean` (lines 63-101): Comprehensive conditional validity docstring
 
 **Build Status**: ✅ Clean build with expected sorry warning
 
@@ -74,7 +74,7 @@ Phase 3 implementation has begun with completion of Sub-Phase 3C (WorldHistory) 
   - Examples: time-invariant necessity frames
 
 **Files Modified**:
-- `ProofChecker/Metalogic/Soundness.lean` (lines 78-137): Frame property definitions and documentation
+- `Logos/Metalogic/Soundness.lean` (lines 78-137): Frame property definitions and documentation
 
 **Build Status**: ✅ Definitions type-check correctly
 
@@ -94,7 +94,7 @@ Phase 3 implementation has begun with completion of Sub-Phase 3C (WorldHistory) 
 - Updated `axiom_valid` theorem with prop_k and prop_s cases
 
 **Files Modified**:
-- `ProofChecker/Metalogic/Soundness.lean` (lines 139-165, 420-432):
+- `Logos/Metalogic/Soundness.lean` (lines 139-165, 420-432):
   - Added 2 validity theorems
   - Updated axiom_valid cases
 
@@ -110,12 +110,12 @@ Phase 3 implementation has begun with completion of Sub-Phase 3C (WorldHistory) 
 ## Files Changed
 
 ```
-M ProofChecker/Semantics/WorldHistory.lean
+M Logos/Semantics/WorldHistory.lean
   - Lines 63-101: Enhanced universal helper docstring
   - Documented ReflexiveTaskFrame requirement
   - Sorry remains (conditional validity)
 
-M ProofChecker/Metalogic/Soundness.lean
+M Logos/Metalogic/Soundness.lean
   - Lines 78-137: Added frame property definitions
   - Lines 139-165: Added prop_k_valid and prop_s_valid theorems
   - Lines 420-432: Updated axiom_valid with prop_k/prop_s cases
@@ -169,19 +169,19 @@ M ProofChecker/Metalogic/Soundness.lean
 
 ```bash
 # Verify builds
-lake build ProofChecker.Semantics.WorldHistory  # ✅ Success
-lake build ProofChecker.Metalogic.Soundness      # ✅ Success
+lake build Logos.Semantics.WorldHistory  # ✅ Success
+lake build Logos.Metalogic.Soundness      # ✅ Success
 
 # Check sorry count (should remain 37)
-grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
+grep -r "sorry" Logos/ --include="*.lean" | wc -l
 # Expected: ~37 (varies with Archive examples)
 
 # Verify frame property definitions
-grep -n "BackwardPersistence\|ModalTemporalPersistence" ProofChecker/Metalogic/Soundness.lean
+grep -n "BackwardPersistence\|ModalTemporalPersistence" Logos/Metalogic/Soundness.lean
 # Expected: 2 definitions at lines ~107 and ~133
 
 # Verify propositional axiom validity
-grep -n "prop_k_valid\|prop_s_valid" ProofChecker/Metalogic/Soundness.lean
+grep -n "prop_k_valid\|prop_s_valid" Logos/Metalogic/Soundness.lean
 # Expected: 2 theorems at lines ~147 and ~161
 ```
 

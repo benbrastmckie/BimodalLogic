@@ -6,14 +6,14 @@
 - **Feature**: CLAUDE.md context optimization
 - **Agent**: cleanup-plan-architect
 - **Research Reports**:
-  - /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_optimize_claude_md/reports/001_claude_md_analysis.md
-  - /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_optimize_claude_md/reports/002_docs_structure_analysis.md
-  - /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_optimize_claude_md/reports/003_bloat_analysis.md
-  - /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_optimize_claude_md/reports/004_accuracy_analysis.md
+  - /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/000_optimize_claude_md/reports/001_claude_md_analysis.md
+  - /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/000_optimize_claude_md/reports/002_docs_structure_analysis.md
+  - /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/000_optimize_claude_md/reports/003_bloat_analysis.md
+  - /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/000_optimize_claude_md/reports/004_accuracy_analysis.md
 - **Scope**: Consolidate overlapping standards content, fix critical errors, improve documentation quality
 - **Estimated Phases**: 9 phases
 - **Complexity**: Medium
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 
 ## Overview
 
@@ -53,11 +53,11 @@ This plan optimizes CLAUDE.md through strategic consolidation rather than extrac
 **Bloat Risk**: ZERO - Read-only validation phase
 
 **Tasks**:
-- [x] Create backup: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/backups/CLAUDE.md.20251201-[timestamp]
+- [x] Create backup: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/backups/CLAUDE.md.20251201-[timestamp]
 - [x] **Pre-merge size validation** (CRITICAL - MUST complete before any merges):
-  - Read current size of /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md
-  - Read current size of /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/testing-protocols.md
-  - Read current size of /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md
+  - Read current size of /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md
+  - Read current size of /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/testing-protocols.md
+  - Read current size of /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md
   - Calculate projected sizes (current + additions)
   - **ABORT CRITERIA**: If ANY projected size >400 lines, STOP and revise plan with split strategy
 - [x] Record baseline sizes in checkpoint log
@@ -66,13 +66,13 @@ This plan optimizes CLAUDE.md through strategic consolidation rather than extrac
 **Testing**:
 ```bash
 # Verify backup created
-BACKUP_FILE="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/backups/CLAUDE.md.$(date +%Y%m%d-%H%M%S)"
+BACKUP_FILE="/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/backups/CLAUDE.md.$(date +%Y%m%d-%H%M%S)"
 test -f "$BACKUP_FILE" && echo "✓ Backup exists" || echo "✗ Backup missing"
 
 # Pre-merge size validation
-CODE_STD="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md"
-TEST_PROT="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/testing-protocols.md"
-DOC_STD="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md"
+CODE_STD="/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md"
+TEST_PROT="/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/testing-protocols.md"
+DOC_STD="/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md"
 
 echo "=== PRE-MERGE SIZE VALIDATION ==="
 CODE_SIZE=$(wc -l < "$CODE_STD" 2>/dev/null || echo "0")
@@ -116,7 +116,7 @@ echo "✓ All projections within threshold - safe to proceed"
 **Bloat Risk**: LOW (projected addition ~51 lines, target file likely <150 lines currently)
 
 **Tasks**:
-- [ ] Read current content of /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md
+- [ ] Read current content of /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md
 - [ ] Extract CLAUDE.md Section 5 "Development Principles" content (lines 119-142):
   - Test-Driven Development (TDD) - MANDATORY
   - Fail-Fast Philosophy
@@ -135,7 +135,7 @@ echo "✓ All projections within threshold - safe to proceed"
   - Add "### LEAN 4 Common Patterns" section
   - Add "### LEAN 4 Common Errors" section
 - [ ] Preserve existing code-standards.md content
-- [ ] Add frontmatter noting ProofChecker integration
+- [ ] Add frontmatter noting Logos integration
 - [ ] **Post-merge size verification**:
   - Check actual file size ≤400 lines
   - If >400 lines: ROLLBACK and create split plan
@@ -144,7 +144,7 @@ echo "✓ All projections within threshold - safe to proceed"
 **Testing**:
 ```bash
 # Verify merge completed
-CODE_STD="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md"
+CODE_STD="/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md"
 test -f "$CODE_STD" && echo "✓ File exists" || echo "✗ File missing"
 
 # Verify size within threshold
@@ -166,7 +166,7 @@ echo "✓ Code standards merge successful"
 
 **Rollback** (if size >400 lines):
 ```bash
-git checkout HEAD -- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md
+git checkout HEAD -- /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md
 echo "Rollback complete - revise plan with split strategy"
 ```
 
@@ -181,9 +181,9 @@ echo "Rollback complete - revise plan with split strategy"
 **Bloat Risk**: LOW (projected addition ~48 lines, target file likely <150 lines currently)
 
 **Tasks**:
-- [ ] Read current content of /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/testing-protocols.md
+- [ ] Read current content of /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/testing-protocols.md
 - [ ] Extract CLAUDE.md Section 7 "Testing Architecture" content (lines 176-199):
-  - ProofChecker test directory structure
+  - Logos test directory structure
   - Test naming convention: `test_<feature>_<expected_behavior>`
   - File naming: `<Module>Test.lean`
 - [ ] Extract CLAUDE.md Section 8 "Quality Standards" content (lines 200-224):
@@ -192,9 +192,9 @@ echo "Rollback complete - revise plan with split strategy"
   - Performance benchmarks: Build <2min, Test <30sec, Proof search <1sec
   - Complexity limits: Function <50 lines, Module <1000 lines, Nesting depth <4, Proof tactics <20
 - [ ] MERGE extracted content into testing-protocols.md under new sections:
-  - Add "### LEAN 4 Test Organization" section with ProofCheckerTest/ structure
+  - Add "### LEAN 4 Test Organization" section with LogosTest/ structure
   - Add "### LEAN 4 Test Naming Conventions" section
-  - Add "### Coverage Targets" section (ProofChecker-specific)
+  - Add "### Coverage Targets" section (Logos-specific)
   - Add "### Performance Benchmarks" section (LEAN 4 builds)
   - Add "### Complexity Limits" section (LEAN 4 functions)
 - [ ] Preserve existing testing-protocols.md content
@@ -206,7 +206,7 @@ echo "Rollback complete - revise plan with split strategy"
 **Testing**:
 ```bash
 # Verify merge completed
-TEST_PROT="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/testing-protocols.md"
+TEST_PROT="/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/testing-protocols.md"
 test -f "$TEST_PROT" && echo "✓ File exists" || echo "✗ File missing"
 
 # Verify size within threshold
@@ -220,7 +220,7 @@ fi
 
 # Verify new sections added
 grep -q "test_<feature>_<expected_behavior>" "$TEST_PROT" || echo "✗ Test naming missing"
-grep -q "ProofCheckerTest" "$TEST_PROT" || echo "✗ Test structure missing"
+grep -q "LogosTest" "$TEST_PROT" || echo "✗ Test structure missing"
 grep -q "Coverage Targets" "$TEST_PROT" || echo "✗ Coverage section missing"
 
 echo "✓ Testing standards merge successful"
@@ -228,7 +228,7 @@ echo "✓ Testing standards merge successful"
 
 **Rollback** (if size >400 lines):
 ```bash
-git checkout HEAD -- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/testing-protocols.md
+git checkout HEAD -- /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/testing-protocols.md
 echo "Rollback complete - revise plan with split strategy"
 ```
 
@@ -243,7 +243,7 @@ echo "Rollback complete - revise plan with split strategy"
 **Bloat Risk**: VERY LOW (projected addition ~5 lines, minimal impact)
 
 **Tasks**:
-- [ ] Read current content of /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md
+- [ ] Read current content of /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md
 - [ ] Extract CLAUDE.md Section 5 "Documentation Required" content (lines 133-137):
   - Every public def/theorem/lemma/structure/inductive requires docstring
   - Module docstrings (/-! ... -/) at top of every file
@@ -261,7 +261,7 @@ echo "Rollback complete - revise plan with split strategy"
 **Testing**:
 ```bash
 # Verify merge completed
-DOC_STD="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md"
+DOC_STD="/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md"
 test -f "$DOC_STD" && echo "✓ File exists" || echo "✗ File missing"
 
 # Verify size within threshold
@@ -293,7 +293,7 @@ echo "✓ Documentation standards merge successful"
   ```markdown
   ## 5. Development Principles
 
-  ProofChecker follows rigorous development standards including Test-Driven Development (TDD), fail-fast error handling, comprehensive documentation requirements, and lint compliance.
+  Logos follows rigorous development standards including Test-Driven Development (TDD), fail-fast error handling, comprehensive documentation requirements, and lint compliance.
 
   **For complete guidelines**, see:
   - [Code Standards](.claude/docs/reference/standards/code-standards.md) - TDD principles, fail-fast philosophy, LEAN 4 syntax patterns, common errors
@@ -312,15 +312,15 @@ echo "✓ Documentation standards merge successful"
 **Testing**:
 ```bash
 # Verify section replaced
-CLAUDE_MD="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md"
+CLAUDE_MD="/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md"
 grep -q "## 5. Development Principles" "$CLAUDE_MD" || echo "✗ Section 5 heading missing"
 grep -q "Code Standards.*code-standards.md" "$CLAUDE_MD" || echo "✗ code-standards link missing"
 grep -q "\*\*Quick Reference\*\*:" "$CLAUDE_MD" || echo "✗ Quick reference missing"
 
 # Verify links resolve
-test -f "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md" || echo "✗ code-standards.md missing"
-test -f "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/testing-protocols.md" || echo "✗ testing-protocols.md missing"
-test -f "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md" || echo "✗ documentation-standards.md missing"
+test -f "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md" || echo "✗ code-standards.md missing"
+test -f "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/testing-protocols.md" || echo "✗ testing-protocols.md missing"
+test -f "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md" || echo "✗ documentation-standards.md missing"
 
 echo "✓ Section 5 replacement successful"
 ```
@@ -340,7 +340,7 @@ echo "✓ Section 5 replacement successful"
   ```markdown
   ## 7. Testing Architecture
 
-  ProofChecker test suite is organized in ProofCheckerTest/ directory with unit tests (Syntax/, ProofSystem/, Semantics/), integration tests (Integration/), and metalogic property tests (Metalogic/).
+  Logos test suite is organized in LogosTest/ directory with unit tests (Syntax/, ProofSystem/, Semantics/), integration tests (Integration/), and metalogic property tests (Metalogic/).
 
   **Test Naming Convention**:
   - Files: `<Module>Test.lean` (e.g., `FormulaTest.lean`)
@@ -364,14 +364,14 @@ echo "✓ Section 5 replacement successful"
 **Testing**:
 ```bash
 # Verify sections replaced
-CLAUDE_MD="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md"
+CLAUDE_MD="/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md"
 grep -q "## 7. Testing Architecture" "$CLAUDE_MD" || echo "✗ Section 7 heading missing"
 grep -q "## 8. Quality Standards" "$CLAUDE_MD" || echo "✗ Section 8 heading missing"
 grep -q "Testing Protocols.*testing-protocols.md" "$CLAUDE_MD" || echo "✗ testing-protocols link missing"
 grep -q "test_<feature>_<expected_behavior>" "$CLAUDE_MD" || echo "✗ Test naming convention missing"
 
 # Verify link resolves
-test -f "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/testing-protocols.md" || echo "✗ testing-protocols.md missing"
+test -f "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/testing-protocols.md" || echo "✗ testing-protocols.md missing"
 
 echo "✓ Sections 7-8 replacement successful"
 ```
@@ -407,15 +407,15 @@ echo "✓ Sections 7-8 replacement successful"
 **Testing**:
 ```bash
 # Verify section replaced
-CLAUDE_MD="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md"
+CLAUDE_MD="/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md"
 grep -q "## 10. Notes for Claude Code" "$CLAUDE_MD" || echo "✗ Section 10 heading missing"
 grep -q "Code Standards.*code-standards.md" "$CLAUDE_MD" || echo "✗ code-standards link missing"
 grep -q "LEAN Style Guide" "$CLAUDE_MD" || echo "✗ LEAN Style Guide link missing"
 grep -q "\*\*TDD Enforcement\*\*:" "$CLAUDE_MD" || echo "✗ TDD enforcement missing"
 
 # Verify links resolve
-test -f "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md" || echo "✗ code-standards.md missing"
-test -f "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/LEAN_STYLE_GUIDE.md" || echo "✗ LEAN_STYLE_GUIDE.md missing"
+test -f "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md" || echo "✗ code-standards.md missing"
+test -f "/home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/LEAN_STYLE_GUIDE.md" || echo "✗ LEAN_STYLE_GUIDE.md missing"
 
 echo "✓ Section 10 replacement successful"
 ```
@@ -448,17 +448,17 @@ echo "✓ Section 10 replacement successful"
 **Testing**:
 ```bash
 # Verify subsection added
-CLAUDE_MD="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md"
+CLAUDE_MD="/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md"
 grep -q "### Claude Code Framework Documentation" "$CLAUDE_MD" || echo "✗ Subsection heading missing"
 grep -q "Code Standards.*code-standards.md" "$CLAUDE_MD" || echo "✗ Code Standards link missing"
 grep -q "Command Development.*command-development-fundamentals.md" "$CLAUDE_MD" || echo "✗ Command Development link missing"
 
 # Verify all links resolve
-test -f "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md" || echo "✗ code-standards.md missing"
-test -f "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/testing-protocols.md" || echo "✗ testing-protocols.md missing"
-test -f "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md" || echo "✗ documentation-standards.md missing"
-test -f "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/guides/development/command-development/command-development-fundamentals.md" || echo "✗ command-development-fundamentals.md missing"
-test -f "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/guides/development/agent-development/agent-development-fundamentals.md" || echo "✗ agent-development-fundamentals.md missing"
+test -f "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md" || echo "✗ code-standards.md missing"
+test -f "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/testing-protocols.md" || echo "✗ testing-protocols.md missing"
+test -f "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md" || echo "✗ documentation-standards.md missing"
+test -f "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/guides/development/command-development/command-development-fundamentals.md" || echo "✗ command-development-fundamentals.md missing"
+test -f "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/guides/development/agent-development/agent-development-fundamentals.md" || echo "✗ agent-development-fundamentals.md missing"
 
 echo "✓ Section 4 enhancement successful"
 ```
@@ -490,10 +490,10 @@ echo "✓ Section 4 enhancement successful"
 **Testing**:
 ```bash
 # Comprehensive validation
-CLAUDE_MD="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md"
-CODE_STD="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md"
-TEST_PROT="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/testing-protocols.md"
-DOC_STD="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md"
+CLAUDE_MD="/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md"
+CODE_STD="/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md"
+TEST_PROT="/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/testing-protocols.md"
+DOC_STD="/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md"
 
 echo "=== FINAL SIZE VERIFICATION ==="
 CLAUDE_SIZE=$(wc -l < "$CLAUDE_MD")
@@ -533,7 +533,7 @@ echo "✓ All files within bloat threshold"
 echo ""
 echo "=== LINK VALIDATION ==="
 # Check that all new links exist
-PROJECT_ROOT="/home/benjamin/Documents/Philosophy/Projects/ProofChecker"
+PROJECT_ROOT="/home/benjamin/Documents/Philosophy/Projects/Logos"
 cd "$PROJECT_ROOT"
 
 BROKEN_LINKS=0
@@ -583,13 +583,13 @@ echo "✓ Structure and content integrity maintained"
 **Rollback** (if any validation fails):
 ```bash
 # Restore from backup
-BACKUP_FILE="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/backups/CLAUDE.md.20251201-[timestamp]"
-cp "$BACKUP_FILE" "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md"
+BACKUP_FILE="/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/backups/CLAUDE.md.20251201-[timestamp]"
+cp "$BACKUP_FILE" "/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md"
 
 # Restore target files if modified
-git checkout HEAD -- "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md"
-git checkout HEAD -- "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/testing-protocols.md"
-git checkout HEAD -- "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md"
+git checkout HEAD -- "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md"
+git checkout HEAD -- "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/testing-protocols.md"
+git checkout HEAD -- "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md"
 
 echo "Rollback complete - all files restored to pre-optimization state"
 ```
@@ -622,17 +622,17 @@ If any phase fails or validation errors occur:
 
 ```bash
 # Restore CLAUDE.md from backup
-BACKUP_FILE="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/backups/CLAUDE.md.20251201-[timestamp]"
-cp "$BACKUP_FILE" "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md"
+BACKUP_FILE="/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/backups/CLAUDE.md.20251201-[timestamp]"
+cp "$BACKUP_FILE" "/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md"
 
 # Verify restoration
-CLAUDE_SIZE=$(wc -l < "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md")
+CLAUDE_SIZE=$(wc -l < "/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md")
 echo "CLAUDE.md restored: $CLAUDE_SIZE lines (should be 279 lines)"
 
 # Restore modified .claude/docs files
-git checkout HEAD -- "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md"
-git checkout HEAD -- "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/testing-protocols.md"
-git checkout HEAD -- "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md"
+git checkout HEAD -- "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md"
+git checkout HEAD -- "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/testing-protocols.md"
+git checkout HEAD -- "/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md"
 
 echo "✓ Rollback complete - all files restored to pre-optimization state"
 ```

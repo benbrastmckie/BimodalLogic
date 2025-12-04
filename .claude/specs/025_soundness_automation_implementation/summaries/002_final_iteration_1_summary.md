@@ -56,7 +56,7 @@ For any (M, τ, t) where □Γ true:
 
 **Verification**:
 ```bash
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean | grep modal_k
+grep -n "sorry" Logos/Metalogic/Soundness.lean | grep modal_k
 # NO RESULTS - zero sorry
 ```
 
@@ -77,7 +77,7 @@ For any (M, τ, t) where FΓ true:
 
 **Verification**:
 ```bash
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean | grep temporal_k
+grep -n "sorry" Logos/Metalogic/Soundness.lean | grep temporal_k
 # NO RESULTS - zero sorry
 ```
 
@@ -107,7 +107,7 @@ SymmetricFrame F : Prop :=
 
 ### Phase 4: Basic Tactics Implementation ✓
 
-**File**: `ProofChecker/Automation/Tactics.lean` (126 lines)
+**File**: `Logos/Automation/Tactics.lean` (126 lines)
 
 **Tactics Implemented**:
 
@@ -135,8 +135,8 @@ SymmetricFrame F : Prop :=
 
 **Verification**:
 ```bash
-lake build ProofChecker.Automation.Tactics
-✔ [7/7] Built ProofChecker.Automation.Tactics
+lake build Logos.Automation.Tactics
+✔ [7/7] Built Logos.Automation.Tactics
 Build completed successfully.
 ```
 
@@ -217,18 +217,18 @@ Build completed successfully.
 
 ## Modified Files Summary
 
-### 1. ProofChecker/ProofSystem/Derivation.lean
+### 1. Logos/ProofSystem/Derivation.lean
 **Lines Modified**: 17-27, 82-106
 **Changes**: Fixed modal_k and temporal_k rule directions to match paper
 
-### 2. ProofChecker/Metalogic/Soundness.lean
+### 2. Logos/Metalogic/Soundness.lean
 **Lines Modified**: 535-632
 **Changes**:
 - modal_k soundness proof (zero sorry)
 - temporal_k soundness proof (zero sorry)
 - temporal_duality documentation enhancement
 
-### 3. ProofChecker/Automation/Tactics.lean
+### 3. Logos/Automation/Tactics.lean
 **Lines Modified**: Entire file (126 lines)
 **Changes**:
 - Implemented apply_axiom macro
@@ -247,19 +247,19 @@ Build completed successfully.
 
 ### Module-Specific Builds
 ```bash
-$ lake build ProofChecker.ProofSystem.Derivation
-✔ [5/5] Built ProofChecker.ProofSystem.Derivation
+$ lake build Logos.ProofSystem.Derivation
+✔ [5/5] Built Logos.ProofSystem.Derivation
 
-$ lake build ProofChecker.Metalogic.Soundness
-✔ [11/11] Built ProofChecker.Metalogic.Soundness
+$ lake build Logos.Metalogic.Soundness
+✔ [11/11] Built Logos.Metalogic.Soundness
 
-$ lake build ProofChecker.Automation.Tactics
-✔ [7/7] Built ProofChecker.Automation.Tactics
+$ lake build Logos.Automation.Tactics
+✔ [7/7] Built Logos.Automation.Tactics
 ```
 
 ### Sorry Count Reduction
 ```bash
-$ grep -c "sorry" ProofChecker/Metalogic/Soundness.lean
+$ grep -c "sorry" Logos/Metalogic/Soundness.lean
 1  # Only temporal_duality remains (documented limitation)
 ```
 
@@ -341,21 +341,21 @@ $ grep -c "sorry" ProofChecker/Metalogic/Soundness.lean
 2. `summaries/002_final_iteration_1_summary.md` - This file (final summary)
 
 ### Modified Source Files
-1. `ProofChecker/ProofSystem/Derivation.lean` - Rule fixes
-2. `ProofChecker/Metalogic/Soundness.lean` - Soundness proofs
-3. `ProofChecker/Automation/Tactics.lean` - Basic tactics
+1. `Logos/ProofSystem/Derivation.lean` - Rule fixes
+2. `Logos/Metalogic/Soundness.lean` - Soundness proofs
+3. `Logos/Automation/Tactics.lean` - Basic tactics
 
 ### Verification Commands
 ```bash
 # Verify rule changes
-grep -A2 "| modal_k" ProofChecker/ProofSystem/Derivation.lean
-grep -A2 "| temporal_k" ProofChecker/ProofSystem/Derivation.lean
+grep -A2 "| modal_k" Logos/ProofSystem/Derivation.lean
+grep -A2 "| temporal_k" Logos/ProofSystem/Derivation.lean
 
 # Verify soundness (zero sorry for modal_k, temporal_k)
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean
+grep -n "sorry" Logos/Metalogic/Soundness.lean
 
 # Verify tactics build
-lake build ProofChecker.Automation.Tactics
+lake build Logos.Automation.Tactics
 
 # Full build
 lake clean && lake build
@@ -399,7 +399,7 @@ lake clean && lake build
 
 ### Temporal Duality Future Work
 When implementing temporal_duality soundness:
-1. Create `ProofChecker/Metalogic/TemporalDuality.lean`
+1. Create `Logos/Metalogic/TemporalDuality.lean`
 2. Define `class SymmetricFrame (F : TaskFrame)`
 3. Define `reverse_history : WorldHistory F → WorldHistory F`
 4. Prove `reverse_history_preserves_truth` lemma

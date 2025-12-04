@@ -1,10 +1,10 @@
-# Versioning Policy for ProofChecker
+# Versioning Policy for Logos
 
-This document describes the versioning policy, deprecation timeline, and release process for ProofChecker.
+This document describes the versioning policy, deprecation timeline, and release process for Logos.
 
 ## 1. Semantic Versioning Policy
 
-ProofChecker follows [Semantic Versioning 2.0.0](https://semver.org/):
+Logos follows [Semantic Versioning 2.0.0](https://semver.org/):
 
 ```
 MAJOR.MINOR.PATCH
@@ -174,7 +174,7 @@ New way:
 
 ### Compatibility Policy
 
-**Limited backward compatibility**: ProofChecker prioritizes clean design over backward compatibility.
+**Limited backward compatibility**: Logos prioritizes clean design over backward compatibility.
 
 | Aspect | Policy |
 |--------|--------|
@@ -214,7 +214,7 @@ When making breaking changes:
 ```markdown
 # Changelog
 
-All notable changes to ProofChecker are documented in this file.
+All notable changes to Logos are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
@@ -273,7 +273,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ```lean
 -- In code
-#eval ProofChecker.version  -- "0.2.0"
+#eval Logos.version  -- "0.2.0"
 
 -- From command line
 lake env lean --version
@@ -285,7 +285,7 @@ cat lakefile.toml | grep version
 ```lean
 /-- Check minimum version requirement -/
 def require_version (min_version : String) : Bool :=
-  version_compare ProofChecker.version min_version ≥ 0
+  version_compare Logos.version min_version ≥ 0
 
 -- Use in code
 #guard require_version "0.2.0"

@@ -880,9 +880,9 @@ structure ProofStatistics :=
 The project structure reflects the layered operator architecture following LEAN 4 community standards with PascalCase directories:
 
 ```
-ProofChecker/
-├── ProofChecker.lean                     # Library root (re-exports public API)
-├── ProofChecker/                         # Main source directory
+Logos/
+├── Logos.lean                     # Library root (re-exports public API)
+├── Logos/                         # Main source directory
 │   ├── Syntax/
 │   │   ├── Formula.lean                  # Core formula inductive type
 │   │   ├── Context.lean                  # Proof context management
@@ -906,8 +906,8 @@ ProofChecker/
 │   └── Automation/
 │       ├── Tactics.lean                  # Custom tactics (modal_k, temporal_k, etc.)
 │       └── ProofSearch.lean              # Automated proof search
-├── ProofCheckerTest/                     # Test suite
-│   ├── ProofCheckerTest.lean             # Test library root
+├── LogosTest/                     # Test suite
+│   ├── LogosTest.lean             # Test library root
 │   ├── Syntax/                           # Syntax tests
 │   │   └── FormulaTest.lean
 │   ├── ProofSystem/                      # Proof system tests
@@ -972,7 +972,7 @@ def verify_with_model_checker (Γ : Context) (φ : Formula) :
 
 #### Future Natural Language Interface
 
-ProofChecker's primary interface is LEAN 4 code for direct theorem proving and verification. Future work may explore natural language interfaces for making formal verification more accessible to domain experts, potentially integrating with external natural language processing systems to translate informal reasoning into formal proofs.
+Logos's primary interface is LEAN 4 code for direct theorem proving and verification. Future work may explore natural language interfaces for making formal verification more accessible to domain experts, potentially integrating with external natural language processing systems to translate informal reasoning into formal proofs.
 
 **Potential Interface Capabilities**:
 - Natural language theorem statement translation to Formula syntax
@@ -980,7 +980,7 @@ ProofChecker's primary interface is LEAN 4 code for direct theorem proving and v
 - Plain language counterexample explanations from model-checker results
 - Domain-specific terminology mapping to formal operators
 
-**Note**: Such interfaces would be external tools consuming ProofChecker's API, not core components of the verification architecture.
+**Note**: Such interfaces would be external tools consuming Logos's API, not core components of the verification architecture.
 
 ```lean
 -- Example: Generic inference verification API
@@ -1157,7 +1157,7 @@ example (P Q : ExtendedFormula) :
 
 ## 8. Integration with Logos Architecture
 
-ProofChecker implements the Logos formal language of thought. For philosophical foundations and research context, see [METHODOLOGY.md](METHODOLOGY.md).
+Logos implements the Logos formal language of thought. For philosophical foundations and research context, see [METHODOLOGY.md](METHODOLOGY.md).
 
 ### Implementation Status
 
@@ -1184,23 +1184,23 @@ See [Research/PROOF_LIBRARY_DESIGN.md](../Research/PROOF_LIBRARY_DESIGN.md) for 
 
 ### 8.5 Operator Layer Alignment
 
-This section maps Logos operators to their ProofChecker LEAN 4 implementations and underlying semantic systems.
+This section maps Logos operators to their Logos LEAN 4 implementations and underlying semantic systems.
 
 **Core Layer (Layer 0) Operators**:
 
 **Boolean Operators** (Extensional Logic):
 - **Logos Operators**: `¬`, `∧`, `∨`, `→`, `↔`, `⊥`, `⊤`
-- **ProofChecker Implementation**: Defined operators from `⊥` and `→` (Formula.imp, Formula.bot)
+- **Logos Implementation**: Defined operators from `⊥` and `→` (Formula.imp, Formula.bot)
 - **Semantic System**: Classical propositional logic (base for TM)
 
 **Modal Operators** (Metaphysical Modality):
 - **Logos Operators**: `□` (necessity), `◇` (possibility)
-- **ProofChecker Implementation**: `□`, `◇` with S5 axioms (MT, M4, MB, MK) in ProofSystem/Axioms.lean
+- **Logos Implementation**: `□`, `◇` with S5 axioms (MT, M4, MB, MK) in ProofSystem/Axioms.lean
 - **Semantic System**: S5 modal logic component of TM with task frame semantics
 
 **Temporal Operators** (Linear Time):
 - **Logos Operators**: `P`, `F`, `G`, `H` (past/future operators), `△` (always), `▽` (sometimes)
-- **ProofChecker Implementation**: `Past`, `Future`, `past`, `future`, `always`, `sometimes` in Syntax/Formula.lean
+- **Logos Implementation**: `Past`, `Future`, `past`, `future`, `always`, `sometimes` in Syntax/Formula.lean
 - **Semantic System**: Linear temporal logic component of TM with bimodal interaction axioms (MF, TF)
 
 **Explanatory Extension (Layer 1) Operators** - Planned:
@@ -1302,7 +1302,7 @@ These extensions allow the proof-checker to reason about different time structur
 
 ---
 
-This architecture provides a comprehensive foundation for developing a sophisticated axiomatic proof system in LEAN implementing the layered operator approach. Layer 0 delivers the foundational bimodal logic TM (Tense and Modality) for Boolean, modal, and temporal reasoning with task semantics and partial metalogic implementation. Layers 1-3 provide a clear extension path for counterfactual/constitutive/causal operators (Explanatory), belief/probability/knowledge operators (Epistemic), and deontic/preference/normative operators (Normative). The architecture implements progressive operator extensibility as a core principle, enabling domain-specific operator combinations while maintaining mathematical rigor. ProofChecker integrates seamlessly with the Model-Checker component to create a comprehensive dual verification architecture for training AI systems.
+This architecture provides a comprehensive foundation for developing a sophisticated axiomatic proof system in LEAN implementing the layered operator approach. Layer 0 delivers the foundational bimodal logic TM (Tense and Modality) for Boolean, modal, and temporal reasoning with task semantics and partial metalogic implementation. Layers 1-3 provide a clear extension path for counterfactual/constitutive/causal operators (Explanatory), belief/probability/knowledge operators (Epistemic), and deontic/preference/normative operators (Normative). The architecture implements progressive operator extensibility as a core principle, enabling domain-specific operator combinations while maintaining mathematical rigor. Logos integrates seamlessly with the Model-Checker component to create a comprehensive dual verification architecture for training AI systems.
 
 ---
 

@@ -2,11 +2,11 @@
 
 ## Metadata
 - **Date**: 2025-12-01
-- **Feature**: Update repository documentation for comprehensive coverage of implemented ProofChecker MVP
+- **Feature**: Update repository documentation for comprehensive coverage of implemented Logos MVP
 - **Scope**: Address critical documentation gaps, create missing status documentation, update user-facing docs with accurate implementation status
 - **Estimated Phases**: 7
 - **Estimated Hours**: 12
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Status**: [COMPLETE]
 - **Structure Level**: 0
 - **Complexity Score**: 68.0
@@ -15,7 +15,7 @@
 
 ## Overview
 
-The ProofChecker project has completed 8 major implementation phases delivering a functional TM bimodal logic proof system. However, documentation contains significant gaps and inaccuracies compared to actual implementation. This plan addresses critical documentation issues identified through comprehensive codebase analysis, ensuring users have accurate information about what's implemented versus planned.
+The Logos project has completed 8 major implementation phases delivering a functional TM bimodal logic proof system. However, documentation contains significant gaps and inaccuracies compared to actual implementation. This plan addresses critical documentation issues identified through comprehensive codebase analysis, ensuring users have accurate information about what's implemented versus planned.
 
 **Key Problems**:
 1. README/CLAUDE.md claim "Complete Metalogic" but soundness has 6 `sorry` placeholders
@@ -165,7 +165,7 @@ dependencies: [1]
 - [x] Add "Why These Limitations Exist" explanations for each gap
 - [x] Add "Roadmap for Completion" with effort estimates
 - [x] Add cross-references to IMPLEMENTATION_STATUS.md and source files
-- [x] Add "Using ProofChecker Despite Limitations" guide
+- [x] Add "Using Logos Despite Limitations" guide
 
 **Testing**:
 ```bash
@@ -394,10 +394,10 @@ grep -q "⚠️" docs/TUTORIAL.md || echo "ERROR: TUTORIAL.md missing warnings"
 grep -q "⚠️" docs/EXAMPLES.md || echo "ERROR: EXAMPLES.md missing warnings"
 
 # Count sorry occurrences and compare to documentation
-SOUNDNESS_SORRY=$(grep -c "sorry" ProofChecker/Metalogic/Soundness.lean || echo 0)
+SOUNDNESS_SORRY=$(grep -c "sorry" Logos/Metalogic/Soundness.lean || echo 0)
 echo "Soundness sorry count: $SOUNDNESS_SORRY (should be 6)"
 
-PERPETUITY_SORRY=$(grep -c "sorry" ProofChecker/Theorems/Perpetuity.lean || echo 0)
+PERPETUITY_SORRY=$(grep -c "sorry" Logos/Theorems/Perpetuity.lean || echo 0)
 echo "Perpetuity sorry count: $PERPETUITY_SORRY (should be 3-6 for P4-P6)"
 
 # Verify links to new docs
@@ -447,10 +447,10 @@ All updated documentation must follow CLAUDE.md standards:
 
 ### Documentation Dependencies
 - Access to source files for verification:
-  - ProofChecker/Metalogic/Soundness.lean (verify sorry count)
-  - ProofChecker/Metalogic/Completeness.lean (verify axiom usage)
-  - ProofChecker/Theorems/Perpetuity.lean (verify P4-P6 sorry)
-  - ProofChecker/Automation/Tactics.lean (verify stub status)
+  - Logos/Metalogic/Soundness.lean (verify sorry count)
+  - Logos/Metalogic/Completeness.lean (verify axiom usage)
+  - Logos/Theorems/Perpetuity.lean (verify P4-P6 sorry)
+  - Logos/Automation/Tactics.lean (verify stub status)
 
 ## Risk Assessment
 

@@ -8,10 +8,10 @@
 - **Estimated Hours**: 8
 - **Structure Level**: 0 (single file)
 - **Complexity Score**: 42.0
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Status**: [COMPLETE]
 - **Research Reports**:
-  - [Unicode Symbol Analysis](/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/009_unicode_symbol_standardization/reports/001-unicode-symbol-analysis.md)
+  - [Unicode Symbol Analysis](/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/009_unicode_symbol_standardization/reports/001-unicode-symbol-analysis.md)
 
 ## Overview
 
@@ -28,7 +28,7 @@ This implementation addresses critical Unicode corruption in README.md affecting
 
 The research report identified extensive Unicode corruption in README.md through hexdump analysis, revealing 45+ replacement characters (U+FFFD, byte pattern `ef bf bd`) where modal/temporal logic symbols should be. Corrupted sections include modal operators (line 18), axiom schemas (lines 23-25), perpetuity principles (lines 28-33), and code examples (lines 61-75). The root cause is likely editing with a non-UTF-8 compliant editor or corrupted copy/paste operations.
 
-The Logos project glossary provides an excellent pattern for formal operator documentation with: hierarchical category organization (propositional, modal, temporal, meta-logical), comprehensive entry structure (symbol, pronunciation, natural language description, formal definition, interdefinability, examples, cross-references), and consistent formatting standards. ProofChecker's existing LEAN Style Guide already establishes Unicode variable conventions (φ, ψ, χ for formulas; Γ, Δ for contexts) that should be extended to README documentation.
+The Logos project glossary provides an excellent pattern for formal operator documentation with: hierarchical category organization (propositional, modal, temporal, meta-logical), comprehensive entry structure (symbol, pronunciation, natural language description, formal definition, interdefinability, examples, cross-references), and consistent formatting standards. Logos's existing LEAN Style Guide already establishes Unicode variable conventions (φ, ψ, χ for formulas; Γ, Δ for contexts) that should be extended to README documentation.
 
 Documentation standards analysis confirms Unicode box-drawing characters (U+2500-U+257F) are approved for technical documentation while emojis are prohibited. CLAUDE.md demonstrates proper file tree formatting (lines 41-99) that should be adopted in README.md to replace the current indentation-only approach.
 
@@ -99,7 +99,7 @@ Directory/
 
 ### Glossary Structure
 
-Following Logos pattern with ProofChecker-specific categories:
+Following Logos pattern with Logos-specific categories:
 
 1. **Header Navigation**: Breadcrumb links to parent docs
 2. **Purpose Statement**: Glossary scope and audience
@@ -237,7 +237,7 @@ dependencies: []
 
 **Tasks**:
 - [x] Read CLAUDE.md lines 41-99 to extract exact formatting pattern (file: CLAUDE.md)
-- [x] Design ProofChecker file tree with box-drawing characters matching project structure
+- [x] Design Logos file tree with box-drawing characters matching project structure
 - [x] Edit README.md lines 94-107 to replace current tree with formatted version (file: README.md)
 - [x] Align comments at consistent column (column 40 for consistency with CLAUDE.md)
 - [x] Add glossary directory entry: `docs/glossary/` with `logical-operators.md` file
@@ -247,9 +247,9 @@ dependencies: []
 
 **File Tree Content** (to replace lines 94-107):
 ```
-ProofChecker/
-├── ProofChecker.lean           # Library root (re-exports all public modules)
-├── ProofChecker/               # Main source directory
+Logos/
+├── Logos.lean           # Library root (re-exports all public modules)
+├── Logos/               # Main source directory
 │   ├── Syntax/                 # Formula types, parsing, DSL
 │   │   ├── Formula.lean        # Core formula inductive type
 │   │   ├── Context.lean        # Proof context (premise lists)
@@ -273,8 +273,8 @@ ProofChecker/
 │   └── Automation/             # Proof automation
 │       ├── Tactics.lean        # Custom tactics
 │       └── ProofSearch.lean    # Automated proof search
-├── ProofCheckerTest/           # Test suite
-│   ├── ProofCheckerTest.lean   # Test library root
+├── LogosTest/           # Test suite
+│   ├── LogosTest.lean   # Test library root
 │   ├── Syntax/                 # Tests for formula construction
 │   ├── ProofSystem/            # Tests for axioms and rules
 │   ├── Semantics/              # Tests for semantics
@@ -338,7 +338,7 @@ dependencies: []
 **Complexity**: Medium
 
 **Tasks**:
-- [x] Create docs/glossary/ directory (directory: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/)
+- [x] Create docs/glossary/ directory (directory: /home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/)
 - [x] Write logical-operators.md with complete structure (file: docs/glossary/logical-operators.md)
 - [x] Add header navigation with breadcrumb links to parent documentation
 - [x] Write purpose statement describing glossary scope for TM logic
@@ -362,7 +362,7 @@ Natural language description of operator meaning.
 **LEAN Code**: `Formula.operation` or derived definition
 **Semantics**: Truth conditions in task frame models
 **See also**: Links to related operators
-**Examples**: Concrete usage in ProofChecker context
+**Examples**: Concrete usage in Logos context
 ```
 
 **Testing**:
@@ -421,7 +421,7 @@ dependencies: [3]
 ```markdown
 - [Architecture Guide](docs/ARCHITECTURE.md) - System design and TM logic specification
 - [Logical Operators Glossary](docs/glossary/logical-operators.md) - Formal symbols reference
-- [Tutorial](docs/TUTORIAL.md) - Getting started with ProofChecker
+- [Tutorial](docs/TUTORIAL.md) - Getting started with Logos
 ```
 
 **CLAUDE.md Edit** (after line 111):
@@ -429,7 +429,7 @@ dependencies: [3]
 ### User Documentation (docs/)
 - [Architecture Guide](docs/ARCHITECTURE.md) - System design and TM logic specification
 - [Logical Operators Glossary](docs/glossary/logical-operators.md) - Formal symbols reference
-- [Tutorial](docs/TUTORIAL.md) - Getting started with ProofChecker
+- [Tutorial](docs/TUTORIAL.md) - Getting started with Logos
 ```
 
 **Testing**:
@@ -537,7 +537,7 @@ ProjectName/
 
 **Validation**: Visual inspection - file tree hierarchy should be immediately clear and unambiguous.
 
-**Reference Implementation**: See CLAUDE.md lines 41-99 for canonical ProofChecker file tree.
+**Reference Implementation**: See CLAUDE.md lines 41-99 for canonical Logos file tree.
 ```
 
 **Testing**:
@@ -666,7 +666,7 @@ Not applicable - this is a documentation-only update with no runtime performance
 
 **Standards Coverage**: File tree formatting standards must cover all use cases: nested directories, siblings, last items, comments
 
-**Glossary Coverage**: All TM logic operators used in ProofChecker must be documented (20+ operators across 5 categories)
+**Glossary Coverage**: All TM logic operators used in Logos must be documented (20+ operators across 5 categories)
 
 ## Documentation Requirements
 
@@ -716,7 +716,7 @@ Not applicable - this is a documentation-only update with no runtime performance
 
 **docs/glossary/logical-operators.md** (NEW FILE, ~600 lines):
 - Comprehensive catalog of TM logic operators
-- Structured following Logos pattern with ProofChecker-specific content
+- Structured following Logos pattern with Logos-specific content
 - Includes all operator categories: propositional, modal, temporal, meta-logical, perpetuity
 - Extensive cross-references and LEAN code examples
 - Variable conventions reference for consistency
@@ -748,7 +748,7 @@ Not applicable - this is a documentation-only update with no runtime performance
 - Unicode character encoding fundamentals (UTF-8 byte sequences)
 - Markdown syntax and rendering behavior
 - Git workflow for creating backups and committing changes
-- ProofChecker TM logic fundamentals (for accurate glossary entries)
+- Logos TM logic fundamentals (for accurate glossary entries)
 - LEAN 4 syntax basics (for LEAN code references in glossary)
 
 ### System Requirements
@@ -775,7 +775,7 @@ Score = Base(feature type) + Tasks/2 + Files*3 + Integrations*5
 
 ### Standards Compliance
 
-This plan adheres to ProofChecker standards:
+This plan adheres to Logos standards:
 
 - **TDD Principles**: Each phase includes comprehensive testing strategies with specific validation commands
 - **Documentation Requirements**: All changes include docstring-equivalent documentation (glossary entries, standards sections)
@@ -806,7 +806,7 @@ This plan adheres to ProofChecker standards:
 4. Add meta-logical symbols with soundness/completeness context
 5. Add perpetuity principles with LEAN theorem references
 6. Cross-reference extensively (every major operator should reference related operators)
-7. Include concrete examples from ProofChecker codebase when possible
+7. Include concrete examples from Logos codebase when possible
 
 **Quality Assurance**:
 1. After each phase, run all phase-specific validation commands

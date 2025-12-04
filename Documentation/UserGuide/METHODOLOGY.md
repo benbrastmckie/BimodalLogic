@@ -22,7 +22,7 @@ The verification architecture employs bilateral state-based semantics where prop
 
 ### Task Semantics Framework
 
-ProofChecker implements task semantics for the bimodal logic TM (Tense and Modality), where possible worlds are functions from times to world states constrained by task relations. Task semantics provides mathematical foundations for combining metaphysical necessity (S5 modal logic) with temporal reasoning (linear temporal logic) through bimodal interaction axioms.
+Logos implements task semantics for the bimodal logic TM (Tense and Modality), where possible worlds are functions from times to world states constrained by task relations. Task semantics provides mathematical foundations for combining metaphysical necessity (S5 modal logic) with temporal reasoning (linear temporal logic) through bimodal interaction axioms.
 
 ### Progressive Operator Methodology
 
@@ -145,7 +145,7 @@ See [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) for curr
 
 ### Implementation Repositories
 
-**ProofChecker**: https://github.com/benbrastmckie/ProofChecker - LEAN 4 implementation of formal verification for Logos.
+**Logos**: https://github.com/benbrastmckie/Logos - LEAN 4 implementation of formal verification for Logos.
 
 **ModelChecker**: https://github.com/benbrastmckie/ModelChecker - Z3-based semantic verification for Logos (v0.9.26).
 

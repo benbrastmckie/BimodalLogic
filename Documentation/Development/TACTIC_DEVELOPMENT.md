@@ -1,6 +1,6 @@
-# Tactic Development Guide for ProofChecker
+# Tactic Development Guide for Logos
 
-This document provides guidelines for developing custom tactics for the ProofChecker
+This document provides guidelines for developing custom tactics for the Logos
 proof automation system.
 
 ## 1. Custom Tactics Roadmap
@@ -109,8 +109,8 @@ handling for the modal axiom MT (`□φ → φ`).
 
 ```lean
 import Lean.Elab.Tactic
-import ProofChecker.ProofSystem.Axioms
-import ProofChecker.ProofSystem.Derivation
+import Logos.ProofSystem.Axioms
+import Logos.ProofSystem.Derivation
 
 open Lean Elab Tactic Meta
 
@@ -282,7 +282,7 @@ elab "modal_search" depth:num : tactic => do
 ## 4. Aesop Integration for TM Logic
 
 Aesop is LEAN 4's general-purpose proof search automation tool. This section explains
-how to integrate ProofChecker's TM logic axioms and lemmas with Aesop for automated
+how to integrate Logos's TM logic axioms and lemmas with Aesop for automated
 proof construction.
 
 ### Aesop Rule Attribution
@@ -733,5 +733,5 @@ throwError "tactic failed"
 - [LEAN 4 Metaprogramming Book](https://leanprover-community.github.io/lean4-metaprogramming-book/)
 - [Aesop Documentation](https://github.com/leanprover-community/aesop)
 - [Mathlib4 Tactics](https://leanprover-community.github.io/mathlib4_docs/)
-- [ProofChecker Architecture](../UserGuide/ARCHITECTURE.md)
+- [Logos Architecture](../UserGuide/ARCHITECTURE.md)
 - [Testing Standards](TESTING_STANDARDS.md)

@@ -108,7 +108,7 @@ if [[ "$FEATURE_DESCRIPTION" =~ --project[[:space:]]+([^[:space:]]+) ]]; then
   FEATURE_DESCRIPTION=$(echo "$FEATURE_DESCRIPTION" | sed 's/--project[[:space:]]*[^[:space:]]*//' | xargs)
 elif [[ "$FEATURE_DESCRIPTION" =~ --project ]]; then
   echo "ERROR: --project flag requires a path argument" >&2
-  echo "Usage: /lean-plan \"formalize theorems\" --project ~/ProofChecker" >&2
+  echo "Usage: /lean-plan \"formalize theorems\" --project ~/Logos" >&2
   exit 1
 fi
 
@@ -132,7 +132,7 @@ if [ -z "${LEAN_PROJECT_PATH:-}" ]; then
   echo "ERROR: No Lean project found" >&2
   echo "No lakefile.toml detected in current directory or parent directories" >&2
   echo "Use --project flag to specify Lean project path:" >&2
-  echo "  /lean:plan \"formalize theorems\" --project ~/ProofChecker" >&2
+  echo "  /lean:plan \"formalize theorems\" --project ~/Logos" >&2
   exit 1
 fi
 

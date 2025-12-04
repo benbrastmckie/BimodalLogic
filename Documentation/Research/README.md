@@ -1,12 +1,12 @@
 # Research Documentation
 
-This directory contains research vision documents describing planned features and future directions for ProofChecker. For current implementation progress, see [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md).
+This directory contains research vision documents describing planned features and future directions for Logos. For current implementation progress, see [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md).
 
 ## Status Legend
 
 Documents in this directory describe planned or research-phase work. The following conventions clarify implementation status:
 
-- **Implemented**: Feature available in ProofChecker - see [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md)
+- **Implemented**: Feature available in Logos - see [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md)
 - **Research**: Planned architecture in design phase
 - **Roadmap**: Future development planned
 
@@ -62,7 +62,7 @@ Specifications for Layers 1-3 operator extensions building on Core Layer (Layer 
 ## Navigation
 
 - [Documentation Index](../README.md) - Complete documentation overview
-- [Project Root](../../README.md) - ProofChecker repository root
+- [Project Root](../../README.md) - Logos repository root
 
 ---
 

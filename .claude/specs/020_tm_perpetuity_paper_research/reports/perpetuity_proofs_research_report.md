@@ -5,7 +5,7 @@
 **Researcher**: Research Specialist Agent
 **Workflow**: Research and Plan (Complexity 1)
 **Source Document**: `/home/benjamin/Documents/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`
-**Target Implementation**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_2_wave2_task6_complete_perpetuity_proofs.md`
+**Target Implementation**: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/plans/phase_2_wave2_task6_complete_perpetuity_proofs.md`
 
 ---
 
@@ -500,16 +500,16 @@ The paper derives **14 additional** interaction principles in §4.1 Proof Theory
 
 ### 8.2 Operator Notation Differences
 
-**Paper notation** vs **ProofChecker notation**:
+**Paper notation** vs **Logos notation**:
 - Paper: `△φ` defined as `Pφ ∧ φ ∧ Fφ` (always = past ∧ present ∧ future)
-- ProofChecker: `△φ` defined as `Fφ` (always = future only)
+- Logos: `△φ` defined as `Fφ` (always = future only)
 
 **Analysis**:
-- ProofChecker definition is **simplified** (future-only)
+- Logos definition is **simplified** (future-only)
 - Paper definition is **more general** (past + present + future)
 - This is noted in plan (line 34): "always φ = future φ"
 
-**Impact**: Derivations in paper use full definition, but since ProofChecker uses simplified version, some steps may differ. However, the core proof strategies remain valid.
+**Impact**: Derivations in paper use full definition, but since Logos uses simplified version, some steps may differ. However, the core proof strategies remain valid.
 
 ### 8.3 Propositional Axioms in TM
 
@@ -521,7 +521,7 @@ The paper derives **14 additional** interaction principles in §4.1 Proof Theory
 - `contraposition` is derivable (contraposition is a tautology)
 - All propositional reasoning is justified
 
-**Current Issue**: ProofChecker's `Derivable` type (Phase 1) needs to include propositional tautologies. The plan addresses this with "propositional axioms K and S" but should explicitly include **all tautologies** or at least the **tautology inference rule**:
+**Current Issue**: Logos's `Derivable` type (Phase 1) needs to include propositional tautologies. The plan addresses this with "propositional axioms K and S" but should explicitly include **all tautologies** or at least the **tautology inference rule**:
 
 ```lean
 -- Add to Derivable inductive type:
@@ -645,8 +645,8 @@ Based on paper research, here's a **streamlined roadmap** for Task 6:
 
 ### Implementation Files
 
-- **Target**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Theorems/Perpetuity.lean`
-- **Plan**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_2_wave2_task6_complete_perpetuity_proofs.md`
+- **Target**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Theorems/Perpetuity.lean`
+- **Plan**: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/plans/phase_2_wave2_task6_complete_perpetuity_proofs.md`
 
 ### Key Lemmas and Theorems
 
@@ -662,4 +662,4 @@ Based on paper research, here's a **streamlined roadmap** for Task 6:
 
 **End of Research Report**
 
-**Report Completion Signal**: REPORT_CREATED: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/020_tm_perpetuity_paper_research/reports/perpetuity_proofs_research_report.md`
+**Report Completion Signal**: REPORT_CREATED: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/020_tm_perpetuity_paper_research/reports/perpetuity_proofs_research_report.md`

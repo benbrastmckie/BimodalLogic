@@ -192,7 +192,7 @@ structure TaskFrame where
 ## Artifacts Created
 
 ### Source Code
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean`
   - Enhanced module documentation (lines 4-70)
   - 5 proven axiom validity lemmas (lines 42-174)
   - 3 incomplete axiom validity lemmas with detailed comments (lines 176-281)
@@ -200,7 +200,7 @@ structure TaskFrame where
   - `soundness` theorem with 4/7 cases proven (lines 300-398)
 
 ### Test Code
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Metalogic/SoundnessTest.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Metalogic/SoundnessTest.lean`
   - 5 axiom validity tests (lines 17-34)
   - 5 axiom derivability tests (lines 36-58)
   - 5 soundness application tests (lines 60-87)
@@ -218,8 +218,8 @@ structure TaskFrame where
 
 ## Git Status
 
-- Modified: `ProofChecker/Metalogic/Soundness.lean`
-- Modified: `ProofCheckerTest/Metalogic/SoundnessTest.lean`
+- Modified: `Logos/Metalogic/Soundness.lean`
+- Modified: `LogosTest/Metalogic/SoundnessTest.lean`
 - Not committed (awaiting architectural decision on how to proceed)
 
 ## Work Remaining
@@ -275,7 +275,7 @@ The perpetuity principles (P1-P6) in Phase 6 depend on some of the incomplete ax
 
 ## Conclusion
 
-Phase 5 successfully identified and documented a fundamental semantic gap in the current ProofChecker implementation. While partial soundness was achieved (5/8 axioms, 4/7 inference rules), completing full soundness requires either:
+Phase 5 successfully identified and documented a fundamental semantic gap in the current Logos implementation. While partial soundness was achieved (5/8 axioms, 4/7 inference rules), completing full soundness requires either:
 
 1. **Enriching the semantics** with additional frame constraints, or
 2. **Weakening the syntax** by removing unprovable axioms

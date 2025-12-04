@@ -1,6 +1,6 @@
-# Testing Standards for ProofChecker
+# Testing Standards for Logos
 
-This document defines testing requirements, organization, and best practices for the ProofChecker project.
+This document defines testing requirements, organization, and best practices for the Logos project.
 
 ## 1. Test Organization Structure
 
@@ -42,11 +42,11 @@ Test individual functions and definitions in isolation.
 
 ```lean
 -- Tests/Unit/Syntax/FormulaTests.lean
-import ProofChecker.Syntax.Formula
+import Logos.Syntax.Formula
 
-namespace ProofChecker.Tests.Unit.Syntax
+namespace Logos.Tests.Unit.Syntax
 
-open ProofChecker.Syntax
+open Logos.Syntax
 
 /-- Test formula complexity calculation for atoms -/
 #guard (Formula.atom "p").complexity = 1
@@ -63,7 +63,7 @@ example : neg (Formula.atom "p") = (Formula.atom "p").imp Formula.bot := rfl
 /-- Test diamond definition -/
 example : diamond (Formula.atom "p") = neg (Formula.box (neg (Formula.atom "p"))) := rfl
 
-end ProofChecker.Tests.Unit.Syntax
+end Logos.Tests.Unit.Syntax
 ```
 
 ### Example-Based Tests
@@ -71,13 +71,13 @@ Test that example proofs compile and type-check.
 
 ```lean
 -- Tests/Examples/PerpetuityTests.lean
-import ProofChecker
+import Logos
 
-namespace ProofChecker.Tests.Examples
+namespace Logos.Tests.Examples
 
-open ProofChecker.Syntax
-open ProofChecker.ProofSystem
-open ProofChecker.Theorems
+open Logos.Syntax
+open Logos.ProofSystem
+open Logos.Theorems
 
 /-- Test P1: □φ → always φ is derivable -/
 example (φ : Formula) : ⊢ (φ.box.imp (always φ)) := perpetuity_1 φ
@@ -91,7 +91,7 @@ example (P Q : Formula) : [P.imp Q, P] ⊢ Q := by
   · apply Derivable.assumption; simp
   · apply Derivable.assumption; simp
 
-end ProofChecker.Tests.Examples
+end Logos.Tests.Examples
 ```
 
 ### Property Tests
@@ -99,13 +99,13 @@ Test properties that should hold for all inputs.
 
 ```lean
 -- Tests/Metalogic/ConsistencyTests.lean
-import ProofChecker
+import Logos
 
-namespace ProofChecker.Tests.Metalogic
+namespace Logos.Tests.Metalogic
 
-open ProofChecker.Syntax
-open ProofChecker.ProofSystem
-open ProofChecker.Semantics
+open Logos.Syntax
+open Logos.ProofSystem
+open Logos.Semantics
 
 /-- Axiom MT is valid (property test) -/
 theorem test_modal_t_valid (φ : Formula) :
@@ -119,7 +119,7 @@ theorem test_soundness_empty (φ : Formula) :
 theorem test_weakening (Γ Δ : Context) (φ : Formula) (h1 : Γ ⊢ φ) (h2 : Γ ⊆ Δ) :
   Δ ⊢ φ := Derivable.weakening Γ Δ φ h1 h2
 
-end ProofChecker.Tests.Metalogic
+end Logos.Tests.Metalogic
 ```
 
 ### Regression Tests
@@ -127,12 +127,12 @@ Test specific bugs that were fixed.
 
 ```lean
 -- Tests/Unit/ProofSystem/RegressionTests.lean
-import ProofChecker
+import Logos
 
-namespace ProofChecker.Tests.Regression
+namespace Logos.Tests.Regression
 
-open ProofChecker.Syntax
-open ProofChecker.ProofSystem
+open Logos.Syntax
+open Logos.ProofSystem
 
 /-- Regression test for issue #42: Nested modal formulas -/
 example : ⊢ ((Formula.box (Formula.box (Formula.atom "p"))).imp
@@ -141,7 +141,7 @@ example : ⊢ ((Formula.box (Formula.box (Formula.atom "p"))).imp
   apply Derivable.axiom
   apply Axiom.modal_t
 
-end ProofChecker.Tests.Regression
+end Logos.Tests.Regression
 ```
 
 ## 3. Test Naming Conventions
@@ -169,13 +169,13 @@ example my_test : ...
 ```
 
 ### Namespace Organization
-Tests live in `ProofChecker.Tests.<Category>.<Module>`:
+Tests live in `Logos.Tests.<Category>.<Module>`:
 
 ```lean
-namespace ProofChecker.Tests.Unit.Syntax
-namespace ProofChecker.Tests.Integration
-namespace ProofChecker.Tests.Examples
-namespace ProofChecker.Tests.Metalogic
+namespace Logos.Tests.Unit.Syntax
+namespace Logos.Tests.Integration
+namespace Logos.Tests.Examples
+namespace Logos.Tests.Metalogic
 ```
 
 ## 4. Coverage Requirements
@@ -267,7 +267,7 @@ example (φ : Formula) : ⊢ (φ.new_operator.imp φ) := by
 
 **2. GREEN: Implement minimal code to pass**
 ```lean
--- ProofChecker/ProofSystem/Axioms.lean
+-- Logos/ProofSystem/Axioms.lean
 inductive Axiom : Formula → Prop
   | ...
   | new_axiom_x (φ : Formula) : Axiom (φ.new_operator.imp φ)
@@ -395,7 +395,7 @@ theorem formula_complexity_positive (φ : Formula) : φ.complexity > 0 := by
 /-!
 # Formula Tests
 
-Unit tests for the Formula type defined in ProofChecker.Syntax.Formula.
+Unit tests for the Formula type defined in Logos.Syntax.Formula.
 
 ## Test Categories
 
@@ -409,7 +409,7 @@ Unit tests for the Formula type defined in ProofChecker.Syntax.Formula.
 These tests achieve 95% coverage of Formula.lean.
 -/
 
-namespace ProofChecker.Tests.Unit.Syntax
+namespace Logos.Tests.Unit.Syntax
 
 /-- Test that atom complexity is 1.
 Atoms are the simplest formulas with no subformulas. -/

@@ -674,16 +674,16 @@ The three remaining `sorry` cases in `truth_swap_of_valid_at_triple` represent a
 ## 9. References
 
 ### Code Files
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean` (lines 491-717)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Validity.lean` (lines 45-47)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax/Formula.lean` (lines 166-187)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/Derivation.lean` (lines 107-113)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/WorldHistory.lean` (lines 262-310)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean` (lines 491-717)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Validity.lean` (lines 45-47)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax/Formula.lean` (lines 166-187)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/Derivation.lean` (lines 107-113)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/WorldHistory.lean` (lines 262-310)
 
 ### Prior Research
 - `.claude/specs/026_temporal_symmetry_derivation/reports/001-temporal-symmetry-analysis.md` (temporal symmetry foundations)
 - `.claude/specs/026_temporal_symmetry_derivation/summaries/002-phase2-partial-completion-summary.md` (current status)
-- `.claude/specs/lean_ProofChecker_Metalogic_Soundness_lean/summaries/temporal_duality_soundness_proof.md` (initial attempt)
+- `.claude/specs/lean_Logos_Metalogic_Soundness_lean/summaries/temporal_duality_soundness_proof.md` (initial attempt)
 
 ### JPL Paper References
 - app:TaskSemantics, def:world-history (line 1849): Convex domains

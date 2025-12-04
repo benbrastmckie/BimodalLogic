@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-This report analyzes the frame constraint requirements for proving soundness of three incomplete TM axioms (TL, MF, TF) in the ProofChecker metalogic. The research confirms that these axioms require **additional semantic properties beyond the current TaskFrame structure** (nullity + compositionality) to be provable.
+This report analyzes the frame constraint requirements for proving soundness of three incomplete TM axioms (TL, MF, TF) in the Logos metalogic. The research confirms that these axioms require **additional semantic properties beyond the current TaskFrame structure** (nullity + compositionality) to be provable.
 
 **Key Finding**: **Option B (conditional validity documentation)** is the recommended pragmatic approach for MVP completion, avoiding invasive architectural changes while providing clear semantic specifications.
 
@@ -19,7 +19,7 @@ This report analyzes the frame constraint requirements for proving soundness of 
 
 ### 1.1 TaskFrame Structure (Current Implementation)
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskFrame.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskFrame.lean`
 
 **Current Structure** (Lines 43-62):
 ```lean
@@ -39,7 +39,7 @@ structure TaskFrame where
 
 ### 1.2 Soundness Module Status
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean`
 
 **Proven Axioms** (5/8 complete):
 - ✓ MT (modal_t): `□φ → φ` - Line 86 (proven)
@@ -342,7 +342,7 @@ frames that satisfy the backward persistence property.
 
 For frames that do NOT satisfy this property, the TL axiom may fail.
 
-**Usage in ProofChecker**: When using TL axiom in derivations, be aware that
+**Usage in Logos**: When using TL axiom in derivations, be aware that
 soundness holds only for models with backward persistent frames. For general
 task semantics, this may be an additional assumption.
 -/
@@ -1090,11 +1090,11 @@ def ModalTemporalPersistence (F : TaskFrame) : Prop :=
 ## Appendix B: References
 
 **Source Files Analyzed**:
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md` (Lines 130-165)
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean` (Lines 240-325)
-3. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskFrame.lean` (Lines 43-62)
-4. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/ARCHITECTURE.md` (Complete file)
-5. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_3_wave2_parallel_soundness_automation_worldhistory.md` (Lines 1-1951)
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md` (Lines 130-165)
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean` (Lines 240-325)
+3. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskFrame.lean` (Lines 43-62)
+4. `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/ARCHITECTURE.md` (Complete file)
+5. `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/plans/phase_3_wave2_parallel_soundness_automation_worldhistory.md` (Lines 1-1951)
 
 **Key Documentation References**:
 - TODO.md Task 5 (Lines 130-164): Frame constraint task description
@@ -1103,4 +1103,4 @@ def ModalTemporalPersistence (F : TaskFrame) : Prop :=
 
 ---
 
-**REPORT_CREATED**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/reports/frame_constraints_soundness_analysis.md
+**REPORT_CREATED**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/reports/frame_constraints_soundness_analysis.md

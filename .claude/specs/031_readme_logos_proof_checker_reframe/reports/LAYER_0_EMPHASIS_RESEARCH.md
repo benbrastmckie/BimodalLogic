@@ -80,15 +80,15 @@ Explicitly shows 8 valid combinations from "Core only" to "Core + Layers 1,2,3" 
 
 **Issue 1: Subordinate Positioning** (lines 104-124):
 ```
-ProofChecker is the third package in the Logos architecture
+Logos is the third package in the Logos architecture
 ```
-This incorrectly positions ProofChecker as "third package" in 3-component system rather than **primary Logos implementation**.
+This incorrectly positions Logos as "third package" in 3-component system rather than **primary Logos implementation**.
 
 **Issue 2: Logos as Software System** (lines 104-124):
 README presents Logos as 3-package software system:
 1. Model-Builder
 2. Model-Checker
-3. ProofChecker
+3. Logos
 
 This **contradicts** LOGOS_PHILOSOPHY.md definition of Logos as "formal language of thought" (line 1).
 
@@ -107,7 +107,7 @@ This **contradicts** LOGOS_PHILOSOPHY.md definition of Logos as "formal language
 - Section "Architecture & Extensibility" (lines 142-153) mentions layered strategy
 
 **Assessment**: README.md requires **major reframing** as existing plan specifies. The current narrative obscures that:
-1. ProofChecker IS the Logos implementation
+1. Logos IS the Logos implementation
 2. TM (Layer 0) IS the foundation
 3. Layers 1-3 ARE planned extensions
 4. Extensibility IS a core methodology
@@ -204,8 +204,8 @@ Based on existing plan (001-readme-logos-proof-checker-reframe-plan.md) and this
 #### Phase 1: README.md Core Reframing (Lines 1-286)
 
 **Section 1: Title & Introduction** (Lines 1-7)
-- **Current**: "ProofChecker provides syntactic verification for the Logos"
-- **Needed**: "ProofChecker: LEAN 4 Implementation of Logos Layer 0 (Core TM)"
+- **Current**: "Logos provides syntactic verification for the Logos"
+- **Needed**: "Logos: LEAN 4 Implementation of Logos Layer 0 (Core TM)"
 - **Add**: Early mention that Layer 0 provides foundation for planned extensions
 
 **Section 2: Logos Description** (Lines 9-31)
@@ -221,11 +221,11 @@ Based on existing plan (001-readme-logos-proof-checker-reframe-plan.md) and this
 
 **Section 4: Architecture & Extensibility** (Lines 104-124)
 **CRITICAL REFRAME**:
-- **Remove**: "ProofChecker is the third package in the Logos architecture"
+- **Remove**: "Logos is the third package in the Logos architecture"
 - **Remove**: Numbered list with Model-Builder
 - **Replace with**: "Dual Verification Architecture" section:
   ```
-  ProofChecker implements Layer 0 (Core TM) of the Logos formal language,
+  Logos implements Layer 0 (Core TM) of the Logos formal language,
   providing syntactic verification via LEAN 4 proofs. Model-Checker provides
   complementary semantic verification via Z3. Together they enable verified
   AI reasoning through computational oversight.
@@ -272,7 +272,7 @@ Based on existing plan (001-readme-logos-proof-checker-reframe-plan.md) and this
 #### Phase 3: INTEGRATION.md Dual Verification Focus
 
 **Existing plan covers this** - update:
-- ASCII architecture diagram (line 15): Show ProofChecker ↔ Model-Checker only
+- ASCII architecture diagram (line 15): Show Logos ↔ Model-Checker only
 - Integration points table (line 31): Remove Model-Builder row
 - Code examples (lines 129-136): Repurpose for generic inference API
 
@@ -284,9 +284,9 @@ Based on existing plan (001-readme-logos-proof-checker-reframe-plan.md) and this
 
 ### 1. Core Repositioning Needed
 
-**Current Problem**: README.md positions ProofChecker as "third package" in Logos software ecosystem.
+**Current Problem**: README.md positions Logos as "third package" in Logos software ecosystem.
 
-**Correct Positioning**: ProofChecker IS the Logos Layer 0 implementation, with Model-Checker providing complementary verification.
+**Correct Positioning**: Logos IS the Logos Layer 0 implementation, with Model-Checker providing complementary verification.
 
 **Revision Strategy**:
 - Reframe title/introduction to emphasize "Layer 0 implementation"
@@ -340,7 +340,7 @@ Based on existing plan (001-readme-logos-proof-checker-reframe-plan.md) and this
 
 **Alignment Strategy**: Existing plan achieves consistency by:
 - Removing model-builder contamination (all 3 files)
-- Reframing ProofChecker as primary Logos implementation (README)
+- Reframing Logos as primary Logos implementation (README)
 - Establishing dual verification architecture (README, INTEGRATION)
 
 ---
@@ -371,8 +371,8 @@ Based on existing plan (001-readme-logos-proof-checker-reframe-plan.md) and this
 **Current Plan**: Mentions reframing but doesn't explicitly emphasize Layer 0 as foundation.
 
 **Recommended Enhancement**:
-- **Title**: "ProofChecker: LEAN 4 Implementation of Logos Layer 0 (Core TM)"
-- **Introduction**: "ProofChecker implements Layer 0 (Core TM) of the Logos formal language, providing the foundational bimodal logic for progressive extension"
+- **Title**: "Logos: LEAN 4 Implementation of Logos Layer 0 (Core TM)"
+- **Introduction**: "Logos implements Layer 0 (Core TM) of the Logos formal language, providing the foundational bimodal logic for progressive extension"
 - **Implementation Status**: Lead with "Layer 0 (Core TM) MVP Complete - Foundation for Planned Extensions"
 
 **Rationale**: User insight stresses importance of positioning TM as Layer 0 foundation - requires explicit emphasis throughout.
@@ -386,9 +386,9 @@ Based on existing plan (001-readme-logos-proof-checker-reframe-plan.md) and this
 **Recommended Clarification**:
 Ensure consistent messaging:
 - Logos = Formal language of thought (not software)
-- ProofChecker = LEAN 4 implementation of Logos Layer 0
+- Logos = LEAN 4 implementation of Logos Layer 0
 - Model-Checker = Complementary semantic verification
-- Dual Verification = ProofChecker + Model-Checker (complete architecture)
+- Dual Verification = Logos + Model-Checker (complete architecture)
 
 **Rationale**: Existing plan addresses this but should explicitly call out the 4-part distinction.
 
@@ -445,7 +445,7 @@ grep -h "Logos.*formal language" README.md ARCHITECTURE.md INTEGRATION.md
 
 **Existing Plan Success Criteria** (from lines 43-54):
 1. ✓ All model-builder references removed
-2. ✓ README presents ProofChecker as primary Logos implementation
+2. ✓ README presents Logos as primary Logos implementation
 3. ✓ Logos defined consistently as formal language
 4. ✓ Dual verification architecture clearly explained
 5. ✓ Model-Checker positioned as complementary tool
@@ -465,11 +465,11 @@ grep -h "Logos.*formal language" README.md ARCHITECTURE.md INTEGRATION.md
 ## References
 
 ### Documentation Analyzed
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md` (lines 1-324)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/LOGOS_PHILOSOPHY.md` (lines 1-163)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/ARCHITECTURE.md` (lines 1-1327)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Research/LAYER_EXTENSIONS.md` (lines 1-454)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` (lines 1-681)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` (lines 1-324)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/LOGOS_PHILOSOPHY.md` (lines 1-163)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/ARCHITECTURE.md` (lines 1-1327)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Research/LAYER_EXTENSIONS.md` (lines 1-454)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` (lines 1-681)
 
 ### Existing Plan
 - `.claude/specs/031_readme_logos_proof_checker_reframe/plans/001-readme-logos-proof-checker-reframe-plan.md`

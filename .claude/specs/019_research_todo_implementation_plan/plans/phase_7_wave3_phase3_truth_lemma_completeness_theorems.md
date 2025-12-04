@@ -49,7 +49,7 @@ Therefore φ derivable (⊢ φ)
 
 ### Key Axiom Declarations to Replace (4 total)
 
-From `ProofChecker/Metalogic/Completeness.lean`:
+From `Logos/Metalogic/Completeness.lean`:
 
 1. **Line 263**: `canonical_history` - construct world history from maximal sets
 2. **Line 297**: `truth_lemma` - prove membership ↔ truth correspondence
@@ -75,7 +75,7 @@ From `ProofChecker/Metalogic/Completeness.lean`:
 
 ### Task 7.1: Define canonical_history for Temporal Operators
 
-**File**: `ProofChecker/Metalogic/Completeness.lean` (line 263)
+**File**: `Logos/Metalogic/Completeness.lean` (line 263)
 **Objective**: Replace axiom declaration with actual construction of world histories that respect temporal operators
 **Estimated Time**: 5-7 hours
 
@@ -171,7 +171,7 @@ def canonical_state_at_time (Γ : CanonicalWorldState) (t : Int) : CanonicalWorl
 
 ```bash
 # Test canonical history construction
-lake test ProofCheckerTest.Metalogic.CompletenessTest
+lake test LogosTest.Metalogic.CompletenessTest
 
 # Specific test cases:
 -- Test 1: History domain is all integers
@@ -193,7 +193,7 @@ lake test ProofCheckerTest.Metalogic.CompletenessTest
 
 ### Task 7.2: Prove truth_lemma by Induction
 
-**File**: `ProofChecker/Metalogic/Completeness.lean` (line 297)
+**File**: `Logos/Metalogic/Completeness.lean` (line 297)
 **Objective**: Replace axiom declaration with actual proof of truth lemma (most complex proof in completeness)
 **Estimated Time**: 10-12 hours
 
@@ -420,7 +420,7 @@ lemma neg_imp_decomposition (Γ : CanonicalWorldState) (ψ χ : Formula) :
 
 ```bash
 # Test truth lemma for each formula type
-lake test ProofCheckerTest.Metalogic.CompletenessTest
+lake test LogosTest.Metalogic.CompletenessTest
 
 # Specific test cases:
 -- Test 1: Atoms - truth correspondence
@@ -436,7 +436,7 @@ lake test ProofCheckerTest.Metalogic.CompletenessTest
 
 ### Task 7.3: Prove weak_completeness
 
-**File**: `ProofChecker/Metalogic/Completeness.lean` (line 326)
+**File**: `Logos/Metalogic/Completeness.lean` (line 326)
 **Objective**: Replace axiom declaration with actual proof of weak completeness (`⊨ φ → ⊢ φ`)
 **Estimated Time**: 3-4 hours
 
@@ -529,7 +529,7 @@ theorem weak_completeness (φ : Formula) : valid φ → Derivable [] φ := by
 
 ```bash
 # Test weak completeness with valid formulas
-lake test ProofCheckerTest.Metalogic.CompletenessTest
+lake test LogosTest.Metalogic.CompletenessTest
 
 # Specific test cases:
 -- Test 1: Tautologies - p → p is valid and derivable
@@ -541,7 +541,7 @@ lake test ProofCheckerTest.Metalogic.CompletenessTest
 
 ### Task 7.4: Prove strong_completeness
 
-**File**: `ProofChecker/Metalogic/Completeness.lean` (line 346)
+**File**: `Logos/Metalogic/Completeness.lean` (line 346)
 **Objective**: Replace axiom declaration with actual proof of strong completeness (`Γ ⊨ φ → Γ ⊢ φ`)
 **Estimated Time**: 2-3 hours
 
@@ -632,7 +632,7 @@ The proof structure is nearly identical, with the key difference being that we e
 
 ```bash
 # Test strong completeness with semantic consequence
-lake test ProofCheckerTest.Metalogic.CompletenessTest
+lake test LogosTest.Metalogic.CompletenessTest
 
 # Specific test cases:
 -- Test 1: {p, p → q} ⊨ q and {p, p → q} ⊢ q
@@ -645,22 +645,22 @@ lake test ProofCheckerTest.Metalogic.CompletenessTest
 
 ### Task 7.5: Write Comprehensive Completeness Tests
 
-**File**: `ProofCheckerTest/Metalogic/CompletenessTest.lean`
+**File**: `LogosTest/Metalogic/CompletenessTest.lean`
 **Objective**: Comprehensive test suite for all completeness components
 **Estimated Time**: 2-3 hours
 
 #### Test Organization
 
 ```lean
-import ProofChecker.Metalogic.Completeness
-import ProofCheckerTest.TestFramework
+import Logos.Metalogic.Completeness
+import LogosTest.TestFramework
 
-namespace ProofCheckerTest.Metalogic.CompletenessTest
+namespace LogosTest.Metalogic.CompletenessTest
 
-open ProofChecker.Syntax
-open ProofChecker.ProofSystem
-open ProofChecker.Semantics
-open ProofChecker.Metalogic
+open Logos.Syntax
+open Logos.ProofSystem
+open Logos.Semantics
+open Logos.Metalogic
 
 /-! ## Canonical History Tests -/
 
@@ -1025,15 +1025,15 @@ def run_all_tests : IO Unit := do
 
   IO.println "All Phase 7 Completeness Tests Passed! ✓"
 
-end ProofCheckerTest.Metalogic.CompletenessTest
+end LogosTest.Metalogic.CompletenessTest
 ```
 
 #### Test Execution
 
 ```bash
 # Run completeness tests
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
-lake test ProofCheckerTest.Metalogic.CompletenessTest
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
+lake test LogosTest.Metalogic.CompletenessTest
 
 # Expected output:
 # Running Phase 7 Completeness Tests...
@@ -1103,11 +1103,11 @@ lake test ProofCheckerTest.Metalogic.CompletenessTest
 - [x] Phase 2: Canonical model construction (4 axioms → proofs/definitions)
 - [x] Phase 3: Truth lemma and completeness theorems (4 axioms → proofs)
 
-**Files modified**: `ProofChecker/Metalogic/Completeness.lean` (11 axioms → 11 proofs/definitions)
+**Files modified**: `Logos/Metalogic/Completeness.lean` (11 axioms → 11 proofs/definitions)
 
 **Sorry count change**: 11 axiom declarations → 0 (may have temporary sorry in proof internals)
 
-**Verification**: `grep -c "axiom" ProofChecker/Metalogic/Completeness.lean` returns 0
+**Verification**: `grep -c "axiom" Logos/Metalogic/Completeness.lean` returns 0
 ```
 
 **2. TODO.md Sorry Placeholder Registry**:
@@ -1115,7 +1115,7 @@ lake test ProofCheckerTest.Metalogic.CompletenessTest
 ## Sorry Placeholder Registry
 
 ### Wave 3 (Low Priority - Completeness)
-- `ProofChecker/Metalogic/Completeness.lean`:
+- `Logos/Metalogic/Completeness.lean`:
   - ~~Line 116: `lindenbaum` - axiom → proved~~ ✓
   - ~~Line 140: `maximal_consistent_closed` - axiom → proved~~ ✓
   - ~~Line 154: `maximal_negation_complete` - axiom → proved~~ ✓
@@ -1194,7 +1194,7 @@ lake test ProofCheckerTest.Metalogic.CompletenessTest
 - Truth lemma proved by induction on formula structure
 - Weak and strong completeness theorems proved
 
-**Files Updated**: `ProofChecker/Metalogic/Completeness.lean`
+**Files Updated**: `Logos/Metalogic/Completeness.lean`
 ```
 
 **Update Section 5 (Remaining Gaps)**:
@@ -1267,21 +1267,21 @@ After completing all tasks in Phase 7:
 
 ```bash
 # Navigate to project directory
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 
 # Verify no axiom declarations remain in Completeness.lean
 echo "Axiom count in Completeness.lean:"
-grep -c "axiom" ProofChecker/Metalogic/Completeness.lean
+grep -c "axiom" Logos/Metalogic/Completeness.lean
 # Expected: 0
 
 # Verify completeness theorems are now theorems (not axioms)
 echo "Completeness theorem declarations:"
-grep "theorem weak_completeness" ProofChecker/Metalogic/Completeness.lean
-grep "theorem strong_completeness" ProofChecker/Metalogic/Completeness.lean
+grep "theorem weak_completeness" Logos/Metalogic/Completeness.lean
+grep "theorem strong_completeness" Logos/Metalogic/Completeness.lean
 # Expected: Both should appear as "theorem" declarations
 
 # Verify all tests pass
-lake test ProofCheckerTest.Metalogic.CompletenessTest
+lake test LogosTest.Metalogic.CompletenessTest
 # Expected: All tests pass
 
 # Verify overall project builds
@@ -1293,8 +1293,8 @@ lake lint
 # Expected: Zero warnings
 
 # Verify sorry count decreased
-echo "Remaining sorry count in ProofChecker/:"
-grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
+echo "Remaining sorry count in Logos/:"
+grep -r "sorry" Logos/ --include="*.lean" | wc -l
 # Expected: 11 (from Wave 3 Phase 3 completeness work resolved)
 # Remaining sorry: 3 ProofSearch + 8 Tactics stubs = 11 total
 
@@ -1413,13 +1413,13 @@ Upon completion of Phase 7, verify:
 
 ### Project Documentation
 
-1. **LEAN Style Guide**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Development/LEAN_STYLE_GUIDE.md`
+1. **LEAN Style Guide**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Development/LEAN_STYLE_GUIDE.md`
    - Follow naming conventions and proof formatting
 
-2. **Testing Standards**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Development/TESTING_STANDARDS.md`
+2. **Testing Standards**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Development/TESTING_STANDARDS.md`
    - Test coverage requirements (Metalogic ≥90%)
 
-3. **Architecture Guide**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/ARCHITECTURE.md`
+3. **Architecture Guide**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/ARCHITECTURE.md`
    - Task semantics specification for canonical model design
 
 ---

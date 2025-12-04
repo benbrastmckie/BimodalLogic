@@ -3,8 +3,8 @@
 ## Metadata
 - **Date**: 2025-12-01
 - **Agent**: docs-structure-analyzer
-- **Directory Analyzed**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs
-- **Project Root**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+- **Directory Analyzed**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs
+- **Project Root**: /home/benjamin/Documents/Philosophy/Projects/Logos
 - **Report Type**: Documentation Organization Analysis
 
 ## Summary
@@ -553,7 +553,7 @@ The .claude/docs/ directory contains 248 markdown files organized using the Diat
 #### 5. **Directory Organization** (CLAUDE.md overlaps with concepts/directory-organization.md)
 **CLAUDE.md Content**: Section 3 "Project Structure" (lines 40-100) - project directory tree
 **Existing .claude/docs File**: concepts/directory-organization.md, concepts/directory-protocols.md
-**Overlap Percentage**: Complementary (CLAUDE.md shows ProofChecker structure, .claude/docs shows .claude/ structure)
+**Overlap Percentage**: Complementary (CLAUDE.md shows Logos structure, .claude/docs shows .claude/ structure)
 **Resolution**: KEEP both - different scopes (project structure vs .claude/ structure)
 
 ### Summary of Overlaps
@@ -568,7 +568,7 @@ The .claude/docs/ directory contains 248 markdown files organized using the Diat
 #### 1. **MERGE Code Standards Content**
 **Action**: Extract CLAUDE.md code standards sections and merge into reference/standards/code-standards.md
 **Source**: CLAUDE.md lines 119-141 (Development Principles), 252-279 (Notes for Claude Code)
-**Target**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md
+**Target**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md
 **Rationale**:
 - Eliminates 70% duplication
 - Creates single source of truth for coding standards
@@ -585,7 +585,7 @@ The .claude/docs/ directory contains 248 markdown files organized using the Diat
 #### 2. **MERGE Testing Standards Content**
 **Action**: Extract CLAUDE.md testing sections and merge into reference/standards/testing-protocols.md
 **Source**: CLAUDE.md lines 176-199 (Testing Architecture), 200-223 (Quality Standards)
-**Target**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/testing-protocols.md
+**Target**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/testing-protocols.md
 **Rationale**:
 - Eliminates 60% duplication
 - Consolidates testing standards in authoritative location
@@ -593,7 +593,7 @@ The .claude/docs/ directory contains 248 markdown files organized using the Diat
 - Improves testing standard discoverability
 
 **Merge Details**:
-- Add ProofChecker test directory structure to testing-protocols.md
+- Add Logos test directory structure to testing-protocols.md
 - Add test naming convention: `test_<feature>_<expected_behavior>`
 - Add coverage targets: Overall ≥85%, Metalogic ≥90%, Automation ≥80%, Error handling ≥75%
 - Add lint requirements, performance benchmarks, complexity limits
@@ -602,7 +602,7 @@ The .claude/docs/ directory contains 248 markdown files organized using the Diat
 #### 3. **MERGE Documentation Standards Content**
 **Action**: Extract CLAUDE.md documentation requirements and merge into reference/standards/documentation-standards.md
 **Source**: CLAUDE.md lines 133-137 (Documentation Required)
-**Target**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md
+**Target**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md
 **Rationale**:
 - Eliminates 50% duplication
 - Creates comprehensive documentation standards reference
@@ -617,7 +617,7 @@ The .claude/docs/ directory contains 248 markdown files organized using the Diat
 #### 4. **REPLACE Hierarchical Agent Content with Links**
 **Action**: Replace CLAUDE.md hierarchical agent references with links to comprehensive docs
 **Source**: CLAUDE.md scattered references to hierarchical agents
-**Target**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/concepts/hierarchical-agents-overview.md
+**Target**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/concepts/hierarchical-agents-overview.md
 **Rationale**:
 - .claude/docs/ contains comprehensive 6-file hierarchical agent documentation
 - CLAUDE.md should link to detailed documentation rather than duplicate
@@ -650,7 +650,7 @@ The .claude/docs/ directory contains 248 markdown files organized using the Diat
 **Source**: CLAUDE.md Section 3 "Project Structure" (lines 40-100)
 **Target**: concepts/directory-organization.md, concepts/directory-protocols.md
 **Rationale**:
-- CLAUDE.md shows ProofChecker-specific structure
+- CLAUDE.md shows Logos-specific structure
 - .claude/docs shows .claude/ configuration structure
 - Both are valuable, cross-reference improves navigation
 
@@ -659,12 +659,12 @@ The .claude/docs/ directory contains 248 markdown files organized using the Diat
 
 ### Low Priority
 
-#### 7. **ADD ProofChecker-Specific Content to Archive**
-**Action**: Consider adding ProofChecker-specific examples to .claude/docs/archive/ for reference
+#### 7. **ADD Logos-Specific Content to Archive**
+**Action**: Consider adding Logos-specific examples to .claude/docs/archive/ for reference
 **Source**: CLAUDE.md Section 6 "Key Packages" (lines 143-175)
 **Target**: New file: archive/examples/proofchecker-packages.md
 **Rationale**:
-- Preserves ProofChecker-specific examples
+- Preserves Logos-specific examples
 - Makes examples available to other projects via .claude/docs/
 - Low priority - not urgent, just future consideration
 
@@ -681,7 +681,7 @@ The .claude/docs/ directory contains 248 markdown files organized using the Diat
 
 #### 9. **UPDATE Main README Navigation**
 **Action**: Update .claude/docs/README.md to reflect CLAUDE.md integration
-**Source**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/README.md
+**Source**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/README.md
 **Changes**:
 - Add "CLAUDE.md Integration" section
 - Document which CLAUDE.md sections link to .claude/docs/

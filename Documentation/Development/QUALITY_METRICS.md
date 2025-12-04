@@ -1,6 +1,6 @@
-# Quality Metrics for ProofChecker
+# Quality Metrics for Logos
 
-This document defines quality targets, measurement methods, and compliance requirements for the ProofChecker project.
+This document defines quality targets, measurement methods, and compliance requirements for the Logos project.
 
 ## 1. Code Coverage Targets
 
@@ -174,7 +174,7 @@ Refactor when:
 ### Key Metrics Summary
 
 ```
-ProofChecker Quality Dashboard
+Logos Quality Dashboard
 ==============================
 
 Coverage

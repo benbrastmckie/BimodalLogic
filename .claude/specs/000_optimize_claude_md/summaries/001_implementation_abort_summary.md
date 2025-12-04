@@ -4,9 +4,9 @@
 
 **Date**: 2025-12-01
 **Agent**: implementer-coordinator
-**Plan**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_optimize_claude_md/plans/001_optimization_plan.md
+**Plan**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/000_optimize_claude_md/plans/001_optimization_plan.md
 **Status**: Phase 1 completed, Phases 2-9 ABORTED per plan criteria
-**Backup**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/backups/CLAUDE.md.20251201-135232
+**Backup**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/backups/CLAUDE.md.20251201-135232
 
 ---
 
@@ -171,15 +171,15 @@ Despite the abort, several plan elements remain valid:
 ## Artifacts Created
 
 ### Backup
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/backups/CLAUDE.md.20251201-135232`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/backups/CLAUDE.md.20251201-135232`
 - Original CLAUDE.md (279 lines) preserved for rollback
 
 ### Checkpoint Log
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_optimize_claude_md/checkpoints/phase1_abort_checkpoint.log`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/000_optimize_claude_md/checkpoints/phase1_abort_checkpoint.log`
 - Detailed record of abort trigger and baseline sizes
 
 ### Implementation Summary
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_optimize_claude_md/summaries/001_implementation_abort_summary.md` (this document)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/000_optimize_claude_md/summaries/001_implementation_abort_summary.md` (this document)
 
 ---
 
@@ -275,7 +275,7 @@ Phase 1 abort criteria **worked as designed**, preventing the creation of bloate
 ## References
 
 ### Plan Files
-- Original plan: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_optimize_claude_md/plans/001_optimization_plan.md`
+- Original plan: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/000_optimize_claude_md/plans/001_optimization_plan.md`
 - Research reports:
   - `reports/001_claude_md_analysis.md`
   - `reports/002_docs_structure_analysis.md`

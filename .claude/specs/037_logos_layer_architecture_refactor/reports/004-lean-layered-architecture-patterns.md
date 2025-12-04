@@ -120,7 +120,7 @@ Mathlib/
 **Recommended Structure for Logos**:
 ```
 Logos/
-├── Core/            # Layer 0 (current ProofChecker)
+├── Core/            # Layer 0 (current Logos)
 │   ├── Syntax/
 │   ├── ProofSystem/
 │   ├── Semantics/
@@ -823,13 +823,13 @@ Archive/                            # Pedagogical examples
 
 **Changes**:
 ```
-ProofChecker/ → Logos/
-ProofCheckerTest/ → LogosTest/
-ProofChecker.lean → Logos.lean
-ProofCheckerTest.lean → LogosTest.lean
+Logos/ → Logos/
+LogosTest/ → LogosTest/
+Logos.lean → Logos.lean
+LogosTest.lean → LogosTest.lean
 
-namespace ProofChecker → namespace Logos
-namespace ProofCheckerTest → namespace LogosTest
+namespace Logos → namespace Logos
+namespace LogosTest → namespace LogosTest
 ```
 
 **Benefit**: Minimal changes, easy to verify.
@@ -899,7 +899,7 @@ end Logos.Explanatory
 ### 10.4 Recommended Timeline
 
 **Phase 1** (Immediate):
-- Rename ProofChecker → Logos
+- Rename Logos → Logos
 - Update all namespaces and imports
 - Verify build and tests
 
@@ -1000,7 +1000,7 @@ enabling seamless use of core formulas in explanatory contexts via coercion.
 
 ### 12.2 Recommended Refactoring Strategy
 
-**Step 1**: Phase 1 rename (ProofChecker → Logos)
+**Step 1**: Phase 1 rename (Logos → Logos)
 - Minimal disruption
 - Easy to verify
 - Immediate benefits
@@ -1023,7 +1023,7 @@ enabling seamless use of core formulas in explanatory contexts via coercion.
 ### 12.3 Critical Decisions
 
 **Decision 1: Directory Rename**
-- **Recommendation**: Rename `ProofChecker/` directory to `Logos/`
+- **Recommendation**: Rename `Logos/` directory to `Logos/`
 - **Rationale**: Full consistency, clearer project identity
 
 **Decision 2: Layer Organization Timing**
@@ -1048,4 +1048,4 @@ enabling seamless use of core formulas in explanatory contexts via coercion.
 - [GitHub Issue: Resolution with duplicated namespaces](https://github.com/leanprover/lean4/issues/1224)
 - [Stack Overflow: How to resolve namespace conflict in Lean4](https://stackoverflow.com/questions/79500457/how-to-resolve-namespace-conflict-in-lean4)
 - Mathlib4 organizational patterns (observed)
-- Current ProofChecker codebase analysis
+- Current Logos codebase analysis

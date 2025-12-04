@@ -3,7 +3,7 @@
 ## Metadata
 - **Date**: 2025-12-01
 - **Agent**: research-specialist
-- **Topic**: Comparative analysis of provability-fabric's LEAN+Rust+Python integration vs. RL research recommendations for ProofChecker project
+- **Topic**: Comparative analysis of provability-fabric's LEAN+Rust+Python integration vs. RL research recommendations for Logos project
 - **Report Type**: Architectural comparison and recommendations
 - **Research Complexity**: 2
 - **Workflow**: research-only
@@ -16,7 +16,7 @@ This research reveals **fundamentally different integration patterns** between:
 
 **Key Finding**: Provability-fabric demonstrates a **"verify once, enforce everywhere"** pattern where LEAN proofs are compiled into runtime policies enforced by Rust, with Python providing developer tooling. This differs from RL systems where Python continuously queries LEAN during training.
 
-**Recommendation for ProofChecker**:
+**Recommendation for Logos**:
 - **Core proof system**: Pure LEAN 4 (per previous report)
 - **RL training infrastructure** (if needed): Separate Python+LEAN process-based architecture (LeanDojo/Pantograph)
 - **Performance-critical tools** (optional): Rust for proof checking acceleration, verification tools
@@ -433,7 +433,7 @@ lake build
 - **Overhead**: Zero runtime LEAN overhead (pre-compiled)
 - **Trade-off**: Must rebuild for policy changes (acceptable for deployment model)
 
-### 4. Recommendations for ProofChecker Project
+### 4. Recommendations for Logos Project
 
 #### 4.1 Core Proof System: Pure LEAN 4 (High Confidence)
 
@@ -446,9 +446,9 @@ lake build
 
 **Implementation:**
 ```
-ProofChecker/
-├── ProofChecker.lean           # Library root
-├── ProofChecker/
+Logos/
+├── Logos.lean           # Library root
+├── Logos/
 │   ├── Syntax/
 │   │   ├── Formula.lean        # Pure LEAN inductive types
 │   │   └── Context.lean
@@ -477,19 +477,19 @@ ProofChecker/
 
 **Architecture:**
 ```python
-# Separate repository: ProofChecker-RL
+# Separate repository: Logos-RL
 import leandojo
-from proofchecker import ProofChecker  # LEAN library
+from proofchecker import Logos  # LEAN library
 
-# LeanDojo traces ProofChecker proofs
-repo = leandojo.trace("/path/to/ProofChecker")
+# LeanDojo traces Logos proofs
+repo = leandojo.trace("/path/to/Logos")
 
 # Train model to generate tactics for TM logic
 policy = train_rl_prover(repo, base_model="deepseek-coder-1.3b")
 ```
 
 **When NOT to use this:**
-- If ProofChecker is only for human-written proofs (not ML-generated)
+- If Logos is only for human-written proofs (not ML-generated)
 - If you're not building an automated theorem prover
 - If you're only implementing the proof system itself
 
@@ -502,14 +502,14 @@ policy = train_rl_prover(repo, base_model="deepseek-coder-1.3b")
 
 **Provability-fabric's lesson**: Rust excels at runtime enforcement, not static verification.
 
-**ProofChecker context**:
+**Logos context**:
 - Proof checking is offline (not latency-sensitive)
 - LEAN 4 compiler already fast (~seconds for complex proofs)
 - Premature optimization likely
 
 **If you do use Rust:**
 ```rust
-// ProofChecker-Accelerator (separate crate)
+// Logos-Accelerator (separate crate)
 // Implements proof checking in Rust for speed
 
 use lean_sys::*;  // FFI bindings to LEAN runtime
@@ -584,7 +584,7 @@ def check_proof_quality():
 # scripts/gen_docs.py
 def extract_theorems_from_lean():
     # Parse LEAN files
-    theorems = parse_lean_theorems("ProofChecker/Metalogic/")
+    theorems = parse_lean_theorems("Logos/Metalogic/")
 
     # Generate markdown documentation
     generate_markdown(theorems, "docs/theorems.md")
@@ -596,7 +596,7 @@ def extract_theorems_from_lean():
 - Python for developer tooling
 - **Not** for performance-critical proof checking
 
-#### 4.5 Comparison Table: ProofChecker Recommendations
+#### 4.5 Comparison Table: Logos Recommendations
 
 | Component | Language | Rationale | Priority |
 |-----------|----------|-----------|----------|
@@ -630,7 +630,7 @@ pub fn check_tm_derivation(
 **Why it's wrong:**
 - Loses formal verification guarantees
 - Creates maintenance burden (two implementations)
-- ProofChecker's theorem proving isn't performance-critical like provability-fabric's runtime enforcement
+- Logos's theorem proving isn't performance-critical like provability-fabric's runtime enforcement
 
 **Correct Approach:**
 ```lean
@@ -688,13 +688,13 @@ def Formula.toString : Formula → String
   -- LEAN 4 already efficient for this
 ```
 
-### 6. Lessons from Provability-Fabric for ProofChecker
+### 6. Lessons from Provability-Fabric for Logos
 
 #### 6.1 Applicable Lessons
 
 1. **Proof Quality Gates:**
    - Provability-fabric's `lean_gate.py` enforces no `sorry` older than 48 hours
-   - **Apply to ProofChecker**: CI/CD should reject incomplete proofs
+   - **Apply to Logos**: CI/CD should reject incomplete proofs
    ```bash
    # Add to .github/workflows/ci.yml
    - name: Check Proof Quality
@@ -703,7 +703,7 @@ def Formula.toString : Formula → String
 
 2. **Automated Policy Extraction:**
    - Python scripts extract machine-readable artifacts from LEAN
-   - **Apply to ProofChecker**: Generate documentation from LEAN theorems
+   - **Apply to Logos**: Generate documentation from LEAN theorems
    ```python
    # scripts/extract_theorems.py
    def extract_perpetuity_principles():
@@ -713,36 +713,36 @@ def Formula.toString : Formula → String
 
 3. **Separation of Concerns:**
    - LEAN for verification, Rust for enforcement, Python for tooling
-   - **Apply to ProofChecker**: LEAN for proofs, Python for build/test
+   - **Apply to Logos**: LEAN for proofs, Python for build/test
 
 4. **Bundling and Signing:**
    - Cryptographic signatures ensure proof integrity
-   - **Apply to ProofChecker**: Sign released proof artifacts
+   - **Apply to Logos**: Sign released proof artifacts
    ```bash
-   pf sign --bundle ProofChecker-v1.0.tar.gz
+   pf sign --bundle Logos-v1.0.tar.gz
    ```
 
 #### 6.2 Non-Applicable Lessons
 
 1. **Runtime Enforcement:**
    - Provability-fabric's Rust sidecars are for runtime policy enforcement
-   - **Not applicable**: ProofChecker doesn't have runtime enforcement needs
+   - **Not applicable**: Logos doesn't have runtime enforcement needs
 
 2. **JSON Allowlists:**
    - Provability-fabric exports LEAN policies to JSON for Rust runtime
-   - **Not applicable**: ProofChecker's LEAN proofs are the end product
+   - **Not applicable**: Logos's LEAN proofs are the end product
 
 3. **Kubernetes Deployment:**
    - Provability-fabric deploys as container sidecars
-   - **Not applicable**: ProofChecker is a library, not a service
+   - **Not applicable**: Logos is a library, not a service
 
 4. **Multi-Language SDK:**
    - Provability-fabric provides TypeScript/Go/Rust clients
-   - **Not applicable**: ProofChecker's API is LEAN's module system
+   - **Not applicable**: Logos's API is LEAN's module system
 
 ### 7. Detailed Decision Framework
 
-#### 7.1 When to Use LEAN Only (ProofChecker Core)
+#### 7.1 When to Use LEAN Only (Logos Core)
 
 **Use pure LEAN when:**
 - ✅ Formal verification is primary goal
@@ -751,15 +751,15 @@ def Formula.toString : Formula → String
 - ✅ End product is verified theorems
 - ✅ Users are proof engineers/mathematicians
 
-**ProofChecker components:**
-- All of `ProofChecker/Syntax/`
-- All of `ProofChecker/ProofSystem/`
-- All of `ProofChecker/Semantics/`
-- All of `ProofChecker/Metalogic/`
-- All of `ProofChecker/Theorems/`
-- All of `ProofChecker/Automation/` (LEAN tactics)
+**Logos components:**
+- All of `Logos/Syntax/`
+- All of `Logos/ProofSystem/`
+- All of `Logos/Semantics/`
+- All of `Logos/Metalogic/`
+- All of `Logos/Theorems/`
+- All of `Logos/Automation/` (LEAN tactics)
 
-#### 7.2 When to Add Python (ProofChecker Tooling)
+#### 7.2 When to Add Python (Logos Tooling)
 
 **Add Python when:**
 - ✅ Need integration with external tools (pytest, CI/CD)
@@ -768,7 +768,7 @@ def Formula.toString : Formula → String
 - ✅ Test data generation
 - ✅ Prototyping experimental features
 
-**ProofChecker Python use cases:**
+**Logos Python use cases:**
 - `scripts/build.py`: Build automation
 - `scripts/generate_test_cases.py`: Test case generation
 - `scripts/check_coverage.py`: Test coverage analysis
@@ -776,16 +776,16 @@ def Formula.toString : Formula → String
 - `tests/integration/*.py`: Integration tests
 - `.github/workflows/*.py`: CI/CD helpers
 
-#### 7.3 When to Add Rust (ProofChecker Accelerators)
+#### 7.3 When to Add Rust (Logos Accelerators)
 
 **Add Rust when:**
 - ✅ Profiling shows LEAN proof checking is bottleneck
 - ✅ Interactive latency matters (<100ms feedback)
 - ✅ Processing millions of proofs per second
 - ✅ FFI to external libraries needed (e.g., SAT solvers)
-- ✅ Embedding ProofChecker in non-LEAN applications
+- ✅ Embedding Logos in non-LEAN applications
 
-**ProofChecker Rust use cases (all low priority):**
+**Logos Rust use cases (all low priority):**
 ```rust
 // Only if proven necessary:
 // 1. Fast proof checker for IDE autocomplete
@@ -816,12 +816,12 @@ async fn main() {
 - ❌ Just because provability-fabric does it
 - ❌ Would duplicate LEAN logic without verification
 
-### 8. Recommended ProofChecker Architecture
+### 8. Recommended Logos Architecture
 
 ```
-ProofChecker/                        # Git repository
-├── ProofChecker.lean                # LEAN library root
-├── ProofChecker/                    # Pure LEAN 4 implementation
+Logos/                        # Git repository
+├── Logos.lean                # LEAN library root
+├── Logos/                    # Pure LEAN 4 implementation
 │   ├── Syntax/                      # [LEAN] Formula types
 │   ├── ProofSystem/                 # [LEAN] Axioms, rules
 │   ├── Semantics/                   # [LEAN] Task frames
@@ -847,14 +847,14 @@ ProofChecker/                        # Git repository
 └── README.md                        # Project overview
 
 # Optional (only if needed):
-ProofChecker-RL/                     # Separate repository for RL
+Logos-RL/                     # Separate repository for RL
 ├── train_prover.py                  # [Python] RL training
 ├── models/                          # [Python] PyTorch models
 ├── data/                            # Training datasets
 └── leandojo_env.py                  # [Python] Gym environment
 
 # Optional (only if proven bottleneck):
-ProofChecker-FFI/                    # Separate repository for Rust
+Logos-FFI/                    # Separate repository for Rust
 ├── Cargo.toml                       # Rust workspace
 ├── src/
 │   ├── lib.rs                       # [Rust] FFI bindings
@@ -909,7 +909,7 @@ EOF
 def extract_theorems():
     import re
     theorems = []
-    for lean_file in glob("ProofChecker/**/*.lean"):
+    for lean_file in glob("Logos/**/*.lean"):
         with open(lean_file) as f:
             content = f.read()
         matches = re.findall(r"theorem\s+(\w+)\s*:", content)
@@ -917,14 +917,14 @@ def extract_theorems():
 
     # Generate docs/theorems.md
     with open("docs/theorems.md", "w") as f:
-        f.write("# ProofChecker Theorems\n\n")
+        f.write("# Logos Theorems\n\n")
         for thm in theorems:
             f.write(f"- {thm}\n")
 ```
 
 **Phase 4: Rust Integration (Only If Profiling Shows Bottleneck)**
 ```rust
-// Create separate ProofChecker-FFI repository
+// Create separate Logos-FFI repository
 // Implement C-compatible API
 #[no_mangle]
 pub extern "C" fn pc_check_derivable(
@@ -945,9 +945,9 @@ pub extern "C" fn pc_check_derivable(
 
 #### 10.1 Key Takeaways
 
-1. **Provability-fabric's integration pattern is NOT applicable to ProofChecker's core**:
+1. **Provability-fabric's integration pattern is NOT applicable to Logos's core**:
    - Provability-fabric: Runtime enforcement → needs Rust performance
-   - ProofChecker: Static verification → LEAN performance sufficient
+   - Logos: Static verification → LEAN performance sufficient
 
 2. **Python+LEAN pattern from RL research IS applicable for ML training**:
    - Only if building automated theorem prover
@@ -959,12 +959,12 @@ pub extern "C" fn pc_check_derivable(
    - Enhances developer workflow
    - No impact on formal verification
 
-4. **Rust is low priority for ProofChecker**:
+4. **Rust is low priority for Logos**:
    - No runtime performance requirement
    - LEAN 4 compiler already efficient
    - Would add complexity without clear benefit
 
-#### 10.2 Specific Recommendations for ProofChecker
+#### 10.2 Specific Recommendations for Logos
 
 **DO:**
 - ✅ Implement all proof system logic in pure LEAN 4
@@ -984,7 +984,7 @@ pub extern "C" fn pc_check_derivable(
 #### 10.3 Integration Decision Tree
 
 ```
-Does ProofChecker need this component?
+Does Logos need this component?
 ├─ Core proof system logic?
 │  └─ YES → Pure LEAN 4 (CRITICAL)
 ├─ Soundness/completeness proofs?
@@ -1012,11 +1012,11 @@ Does ProofChecker need this component?
 |---------|------------|------------|--------------|---------|
 | **Provability-Fabric** | Static verification (build time) | Runtime enforcement (production) | Tooling & extraction | Verify once, enforce everywhere |
 | **RL Systems** | Continuous verification (training) | Not used | ML training orchestration | Python queries LEAN millions of times |
-| **ProofChecker (Recommended)** | Static verification + theorems | Not needed (yet) | Build automation & testing | Pure LEAN core + Python tooling |
+| **Logos (Recommended)** | Static verification + theorems | Not needed (yet) | Build automation & testing | Pure LEAN core + Python tooling |
 
 #### 10.5 Final Verdict
 
-**ProofChecker should:**
+**Logos should:**
 1. **Follow RL research recommendation**: Pure LEAN 4 core
 2. **Adopt provability-fabric's tooling approach**: Python for build/test
 3. **Reject provability-fabric's runtime pattern**: No Rust enforcement needed
@@ -1025,7 +1025,7 @@ Does ProofChecker need this component?
 **The key insight**: Provability-fabric and RL training systems solve fundamentally different problems:
 - **Provability-fabric**: Runtime performance → Rust
 - **RL training**: ML ecosystem → Python
-- **ProofChecker**: Formal verification → LEAN
+- **Logos**: Formal verification → LEAN
 
 Choose the language that matches your problem domain, not what other projects happen to use.
 
@@ -1039,7 +1039,7 @@ Choose the language that matches your problem domain, not what other projects ha
    - Rust runtime: 84 source files in runtime/
    - Python tooling: tools/, tests/, scripts/
 
-2. **RL Research Report**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/007_rl_proof_reasoning_lean/reports/001-i-am-specifically-interested-in-developi.md
+2. **RL Research Report**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/007_rl_proof_reasoning_lean/reports/001-i-am-specifically-interested-in-developi.md
    - Recommendation: Python+LEAN process-based architecture for RL training
    - Key systems: AlphaProof, DeepSeek-Prover-V2, LeanDojo, Pantograph
    - Pattern: Python ML frameworks + LEAN verification oracle
@@ -1049,11 +1049,11 @@ Choose the language that matches your problem domain, not what other projects ha
    - Lake build system: Native build orchestration
    - FFI: Marked as unstable, breaking changes expected
 
-4. **ProofChecker Project**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/
+4. **Logos Project**: /home/benjamin/Documents/Philosophy/Projects/Logos/
    - Current state: Pure LEAN 4 implementation planned
    - Goal: Bimodal logic TM with task semantics
    - Focus: Soundness and completeness proofs
 
 ---
 
-**REPORT_CREATED**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/008_lean_rust_python_integration_research/reports/001-provability-fabric-comparison.md
+**REPORT_CREATED**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/008_lean_rust_python_integration_research/reports/001-provability-fabric-comparison.md

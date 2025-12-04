@@ -1,8 +1,8 @@
-# ProofChecker Development Standards Implementation Plan
+# Logos Development Standards Implementation Plan
 
 ## Metadata
 - **Date**: 2025-12-01
-- **Feature**: Comprehensive development standards for ProofChecker LEAN 4 package
+- **Feature**: Comprehensive development standards for Logos LEAN 4 package
 - **Scope**: Create 14 standards documents across LEAN-specific, user documentation, configuration, and maintenance categories
 - **Estimated Phases**: 6
 - **Estimated Hours**: 22
@@ -11,19 +11,19 @@
 - **Complexity Score**: 142.0
 - **Structure Level**: 0
 - **Research Reports**:
-  - [ProofChecker Package Documentation](../../../001_proof_checker_package_docs/reports/001-research-the-proof-checker-package-descr.md)
+  - [Logos Package Documentation](../../../001_proof_checker_package_docs/reports/001-research-the-proof-checker-package-descr.md)
   - [LEAN 4 Best Practices](../../../002_lean4_proof_checker_best_practices/reports/001-research-the-best-practices-online-for-d.md)
   - [Coding and Documentation Standards](../../../000_no_name_error/reports/001-i-just-created-this-proof-checker-repo-a.md)
 
 ## Overview
 
-This plan establishes comprehensive development standards for the ProofChecker LEAN 4 package by synthesizing research from three foundational sources: (1) ProofChecker package specifications defining the TM bimodal logic system, (2) LEAN 4 best practices from Mathlib4 and FormalizedFormalLogic/Foundation, and (3) coding/documentation standards from the ModelChecker project.
+This plan establishes comprehensive development standards for the Logos LEAN 4 package by synthesizing research from three foundational sources: (1) Logos package specifications defining the TM bimodal logic system, (2) LEAN 4 best practices from Mathlib4 and FormalizedFormalLogic/Foundation, and (3) coding/documentation standards from the ModelChecker project.
 
 The plan creates 14 critical standards documents distributed between `src/docs/` (code-specific technical standards) and `docs/` (general project and user documentation), plus essential configuration files (`CLAUDE.md`, `lakefile.toml`, CI/CD). These standards will streamline LEAN 4 development by leveraging the mature LEAN ecosystem while maintaining consistency with the broader Logos project.
 
 ## Research Summary
 
-**ProofChecker Package Specifications (Report 001):**
+**Logos Package Specifications (Report 001):**
 - Bimodal TM logic system with S5 modal (□, ◇) and temporal (Past, Future) operators
 - Layered architecture: Layer 0 (core TM) is current focus, Layers 1-3 are future extensions
 - Planned directory structure: Syntax/, ProofSystem/, Semantics/, Metalogic/, Theorems/, Automation/
@@ -46,12 +46,12 @@ The plan creates 14 critical standards documents distributed between `src/docs/`
 - Specs directory protocol: plans/, research/, summaries/, findings/, debug/, baselines/
 
 **Recommended Approach:**
-Adopt LEAN 4 ecosystem standards (Mathlib4 style guide, Lake configuration) as foundation, adapt high-level ModelChecker principles (TDD, fail-fast, coverage targets), and organize documentation around ProofChecker's specific TM logic architecture. Prioritize standards documents in three phases: Phase 1 (critical foundations before implementation), Phase 2 (development infrastructure during implementation), Phase 3 (integration and maintenance before release).
+Adopt LEAN 4 ecosystem standards (Mathlib4 style guide, Lake configuration) as foundation, adapt high-level ModelChecker principles (TDD, fail-fast, coverage targets), and organize documentation around Logos's specific TM logic architecture. Prioritize standards documents in three phases: Phase 1 (critical foundations before implementation), Phase 2 (development infrastructure during implementation), Phase 3 (integration and maintenance before release).
 
 ## Success Criteria
 
 - [ ] All 14 standards documents created and populated
-- [ ] `CLAUDE.md` configured with ProofChecker project structure
+- [ ] `CLAUDE.md` configured with Logos project structure
 - [ ] `lakefile.toml` and `lean-toolchain` created for LEAN 4 build
 - [ ] `.gitignore` configured to exclude `.lake/` and build artifacts
 - [ ] CI/CD pipeline (`ci.yml`) configured with build/test/lint/docs automation
@@ -95,13 +95,13 @@ The standards infrastructure organizes into three logical layers:
 ### Key Design Decisions
 
 **1. LEAN 4 vs Python Standards:**
-ProofChecker uses LEAN 4, not Python. ModelChecker standards provide high-level principles (TDD, fail-fast, coverage) but specific conventions (naming, formatting, documentation syntax) come from Mathlib4 style guide. Implementation will translate Python examples to LEAN equivalents.
+Logos uses LEAN 4, not Python. ModelChecker standards provide high-level principles (TDD, fail-fast, coverage) but specific conventions (naming, formatting, documentation syntax) come from Mathlib4 style guide. Implementation will translate Python examples to LEAN equivalents.
 
 **2. src/docs/ vs docs/ Distribution:**
 Following ModelChecker pattern: `src/docs/` for "START HERE for developers" technical standards, `docs/` for user-facing documentation. Rationale: developers need code-specific guidance separate from user tutorials.
 
 **3. LEAN Ecosystem Integration:**
-Adopt FormalizedFormalLogic/Foundation modal logic patterns rather than reinventing. Leverage Lake package manager, VS Code extension, Aesop tactic framework. ProofChecker's temporal logic will be novel (no existing LEAN 4 implementations found).
+Adopt FormalizedFormalLogic/Foundation modal logic patterns rather than reinventing. Leverage Lake package manager, VS Code extension, Aesop tactic framework. Logos's temporal logic will be novel (no existing LEAN 4 implementations found).
 
 **4. Layered Architecture Support:**
 Standards documents focus on Layer 0 (TM core) but designed for extensibility to Layers 1-3. `MODULE_ORGANIZATION.md` specifies dependency layering; `VERSIONING.md` addresses API stability for extensions.
@@ -143,10 +143,10 @@ dependencies: []
 **Complexity**: Medium
 
 **Tasks**:
-- [ ] Create `CLAUDE.md` at project root with 10-section structure (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md`)
-  - Project overview section with ProofChecker description
+- [ ] Create `CLAUDE.md` at project root with 10-section structure (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md`)
+  - Project overview section with Logos description
   - Essential commands (lake build, lake test, #lint, lake clean)
-  - Project structure diagram (ProofChecker.lean, ProofChecker/, Examples/, Tests/, docs/, src/docs/)
+  - Project structure diagram (Logos.lean, Logos/, Examples/, Tests/, docs/, src/docs/)
   - Documentation index with links to all 14 standards documents
   - Development principles (TDD required, fail-fast, documentation required, lint compliance)
   - Key packages (Syntax, ProofSystem, Semantics, Metalogic, Theorems, Automation)
@@ -155,31 +155,31 @@ dependencies: []
   - Common tasks (add axiom, create tactic, add theorem)
   - Notes for Claude Code (LEAN 4 syntax strict, use #check/#eval, refer to style guide, TDD enforced)
 
-- [ ] Create `lakefile.toml` with build configuration (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/lakefile.toml`)
+- [ ] Create `lakefile.toml` with build configuration (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/lakefile.toml`)
   - Package metadata (name, version, description, keywords, license)
   - Library configuration with roots and globs
   - Build settings (buildType = debug, precompileModules = true)
   - Test driver configuration
   - Lint driver configuration
 
-- [ ] Create `lean-toolchain` pinning LEAN version (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/lean-toolchain`)
+- [ ] Create `lean-toolchain` pinning LEAN version (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/lean-toolchain`)
   - Pin to leanprover/lean4:v4.26.0 or latest stable
 
-- [ ] Create `.gitignore` with LEAN-specific exclusions (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.gitignore`)
+- [ ] Create `.gitignore` with LEAN-specific exclusions (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/.gitignore`)
   - Exclude .lake/, build/, *.olean, .DS_Store
 
-- [ ] Populate `README.md` with project overview (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`)
+- [ ] Populate `README.md` with project overview (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`)
   - Project description (LEAN 4 bimodal TM logic)
   - Features (TM logic, Layer 0, task semantics, automation, Mathlib4 compatible)
   - Logic TM section (operators, axioms, perpetuity principles)
   - Installation requirements (LEAN 4 v4.26.0+, Lake, VS Code)
   - Build and test commands
-  - Quick start example (import ProofChecker, define formula, prove MT axiom)
+  - Quick start example (import Logos, define formula, prove MT axiom)
   - Documentation links (architecture.md, TUTORIAL.md, EXAMPLES.md, API reference, CONTRIBUTING.md)
   - Related projects (Logos, Foundation, Mathlib4)
   - License and citation
 
-- [ ] Create `.github/workflows/ci.yml` CI/CD pipeline (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.github/workflows/ci.yml`)
+- [ ] Create `.github/workflows/ci.yml` CI/CD pipeline (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/.github/workflows/ci.yml`)
   - Trigger on push and pull_request
   - Use leanprover/lean4-action@v1 with LEAN v4.26.0
   - Build step (lake build)
@@ -218,7 +218,7 @@ dependencies: [1]
 **Complexity**: High
 
 **Tasks**:
-- [ ] Create `src/docs/LEAN_STYLE_GUIDE.md` (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/src/docs/LEAN_STYLE_GUIDE.md`)
+- [ ] Create `src/docs/LEAN_STYLE_GUIDE.md` (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/src/docs/LEAN_STYLE_GUIDE.md`)
   - Naming conventions section (variables: Greek letters for types, h for hypotheses; modules: lowercase; constants: PascalCase for types, snake_case for functions)
   - Formatting standards (100-char line limit, 2-space indent, flush-left declarations, spacing rules)
   - Import organization (standard library first, Mathlib second, local third, relative imports for same-package)
@@ -226,15 +226,15 @@ dependencies: [1]
   - Deprecation protocol (`@[deprecated (since := "YYYY-MM-DD")]`, 6-month deletion window, alias creation)
   - Code examples in LEAN (not Python) showing correct and incorrect patterns
 
-- [ ] Create `src/docs/MODULE_ORGANIZATION.md` (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/src/docs/MODULE_ORGANIZATION.md`)
+- [ ] Create `src/docs/MODULE_ORGANIZATION.md` (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/src/docs/MODULE_ORGANIZATION.md`)
   - Directory structure specification (Syntax/, ProofSystem/, Semantics/, Metalogic/, Theorems/, Automation/, Examples/, Tests/)
-  - Namespace conventions (ProofChecker.Syntax, ProofChecker.ProofSystem, etc.)
+  - Namespace conventions (Logos.Syntax, Logos.ProofSystem, etc.)
   - Module dependencies (layered architecture: Layer 0 → Layer 1 → Layer 2 → Layer 3, avoiding circular dependencies)
   - File structure template (copyright header, import statements, module docstring, namespace declarations, definitions/theorems)
-  - Library root file explanation (ProofChecker.lean re-exports all public modules)
+  - Library root file explanation (Logos.lean re-exports all public modules)
   - Organizing public API vs internal implementation
 
-- [ ] Create `src/docs/TESTING_STANDARDS.md` (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/src/docs/TESTING_STANDARDS.md`)
+- [ ] Create `src/docs/TESTING_STANDARDS.md` (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/src/docs/TESTING_STANDARDS.md`)
   - Test organization structure (Tests/Unit/, Tests/Integration/, Tests/Examples/, Tests/Metalogic/)
   - Test types (unit tests with `#guard`, example-based tests for proof automation, property tests for metalogic, regression tests)
   - Test naming conventions (test_<feature>_<behavior>.lean, descriptive names, avoid generic names)
@@ -242,7 +242,7 @@ dependencies: [1]
   - CI/CD integration (GitHub Actions workflow, automated testing on commits/PRs, lint checking, documentation generation)
   - TDD workflow (RED: write failing test, GREEN: minimal implementation, REFACTOR: improve code quality)
 
-- [ ] Create `src/docs/QUALITY_METRICS.md` (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/src/docs/QUALITY_METRICS.md`)
+- [ ] Create `src/docs/QUALITY_METRICS.md` (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/src/docs/QUALITY_METRICS.md`)
   - Code coverage targets (overall ≥85%, Metalogic/ ≥90%, Automation/ ≥80%, error handling ≥75%)
   - Lint compliance (zero `#lint` warnings, `docBlame` all definitions documented, `docBlameThm` all theorems documented)
   - Documentation completeness (100% public definitions have docstrings, all modules have module docstrings, examples for all custom tactics, tutorial covers all major features)
@@ -276,7 +276,7 @@ dependencies: [2]
 **Complexity**: High
 
 **Tasks**:
-- [ ] Create `src/docs/TACTIC_DEVELOPMENT.md` (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/src/docs/TACTIC_DEVELOPMENT.md`)
+- [ ] Create `src/docs/TACTIC_DEVELOPMENT.md` (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/src/docs/TACTIC_DEVELOPMENT.md`)
   - Custom tactics roadmap (priority tactics: modal_k, temporal_k, s5_simp, temporal_simp, bimodal; advanced: perpetuity, modal_search, tm_auto)
   - Tactic implementation patterns (using Lean.Elab.Tactic module, syntax macros with macro_rules, Aesop integration with @[aesop safe] and @[aesop norm])
   - Testing tactics (unit tests for each tactic, example-based validation, performance benchmarking)
@@ -308,7 +308,7 @@ dependencies: [2]
 **Complexity**: Medium
 
 **Tasks**:
-- [ ] Create `docs/TUTORIAL.md` (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/TUTORIAL.md`)
+- [ ] Create `docs/TUTORIAL.md` (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/TUTORIAL.md`)
   - Getting Started section (installation: LEAN 4 v4.26.0+, setup: VS Code extension and lake build, first proof example)
   - Basic Formulas section (constructing TM formulas, using operators □/◇/Past/Future, DSL syntax)
   - Proof Basics section (manual proofs with axioms, applying inference rules, using derived operators)
@@ -316,26 +316,26 @@ dependencies: [2]
   - Semantics section (defining task frames, creating models, truth evaluation)
   - Advanced Topics section (understanding soundness/completeness, extending with Layer 1-3 operators, integration with Model-Checker)
 
-- [ ] Create `docs/EXAMPLES.md` (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/EXAMPLES.md`)
+- [ ] Create `docs/EXAMPLES.md` (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/EXAMPLES.md`)
   - Modal Logic Examples (S5 axioms MT/M4/MB, diamond as derived operator, key S5 theorems)
   - Temporal Logic Examples (temporal axioms T4/TA/TL, past and future operators, temporal properties)
   - Bimodal Interaction Examples (MF and TF axioms, perpetuity principles P1-P6, always and sometimes operators)
   - Advanced Examples (soundness theorem structure, completeness proof outline, custom tactic usage)
 
-- [ ] Create `docs/CONTRIBUTING.md` (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/CONTRIBUTING.md`)
+- [ ] Create `docs/CONTRIBUTING.md` (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/CONTRIBUTING.md`)
   - Getting Started (fork and clone, install LEAN 4 and VS Code, run lake test)
   - Development Workflow (TDD process: RED → GREEN → REFACTOR, code style compliance with #lint, documentation requirements)
   - Pull Request Process (branch naming, commit message format, PR description template, review checklist)
   - Code Review Checklist (all definitions have docstrings, tests added for features, no #lint warnings, follows naming conventions, line length ≤100)
   - Community Resources (Lean Zulip Chat #lean4/#mathlib4/#logic, issue reporting, feature requests)
 
-- [ ] Create `docs/INTEGRATION.md` (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/INTEGRATION.md`)
+- [ ] Create `docs/INTEGRATION.md` (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/INTEGRATION.md`)
   - Model-Checker Integration (export formulas to SMT-LIB format, import validation results, coordinated proof search workflow)
   - API Design (formula exchange interface, serialization formats, error handling)
   - Extension Points (Layer 1-3 operator extensions, custom operator integration, semantic extension)
   - Versioning and Compatibility (semantic versioning policy, deprecation timeline, backward compatibility limited)
 
-- [ ] Revise `docs/architecture.md` to remove broken links and update context (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/architecture.md`)
+- [ ] Revise `docs/architecture.md` to remove broken links and update context (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/architecture.md`)
   - Remove links to ../README.md, ../../docs/proof-checker.md, ../../docs/foundations/expressive_power.md
   - Remove links to ../model-builder/architecture.md, ../model-checker/architecture.md
   - Remove links to ../../docs/glossary/logical-operators.md, ../../.claude/specs/...
@@ -354,7 +354,7 @@ ls -1 docs/*.md
 grep -o '\[.*\](.*\.md)' docs/architecture.md
 
 # Verify TUTORIAL.md has working examples
-grep -q "import ProofChecker" docs/TUTORIAL.md
+grep -q "import Logos" docs/TUTORIAL.md
 
 # Verify EXAMPLES.md covers all categories
 grep -q "Modal Logic Examples\|Temporal Logic Examples\|Bimodal Interaction" docs/EXAMPLES.md
@@ -372,7 +372,7 @@ dependencies: [4]
 **Complexity**: Low
 
 **Tasks**:
-- [ ] Create `docs/VERSIONING.md` (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/VERSIONING.md`)
+- [ ] Create `docs/VERSIONING.md` (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/VERSIONING.md`)
   - Semantic Versioning Policy (MAJOR: breaking changes to public API, MINOR: new features backward-compatible, PATCH: bug fixes no API changes)
   - Deprecation Timeline (`@[deprecated (since := "YYYY-MM-DD")]`, 6-month window before deletion, document breaking changes in CHANGELOG.md)
   - Release Process (tag releases v0.1.0/v0.2.0/v1.0.0, update CHANGELOG.md, generate release notes, deploy documentation)
@@ -575,7 +575,7 @@ All documents follow:
 ### Internal Dependencies
 
 - **Research Reports**: Three foundational reports provide source material
-  - Report 001: ProofChecker package specifications
+  - Report 001: Logos package specifications
   - Report 002: LEAN 4 best practices
   - Report 000: Coding and documentation standards
 
@@ -634,7 +634,7 @@ After Layer 0 (TM core) implementation:
 
 **From Report 002 (LEAN 4 Best Practices):**
 - FormalizedFormalLogic/Foundation provides modal logic patterns to adopt
-- No existing temporal logic implementations - ProofChecker will be novel
+- No existing temporal logic implementations - Logos will be novel
 - Lake package manager is standard (2025), use `lakefile.toml`
 - Custom tactics are essential for usability - prioritize tactic development standards
 

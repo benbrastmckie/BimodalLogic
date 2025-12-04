@@ -2,12 +2,12 @@
 
 ## Metadata
 - **Date**: 2025-12-04
-- **Feature**: Rename project from ProofChecker to Logos and reorganize into layered architecture with Core layer containing current implementation and extension points for future Explanatory, Epistemic, and Normative layers
+- **Feature**: Rename project from Logos to Logos and reorganize into layered architecture with Core layer containing current implementation and extension points for future Explanatory, Epistemic, and Normative layers
 - **Status**: [IN PROGRESS]
 - **Estimated Hours**: 28-40 hours
 - **Complexity Score**: 247
 - **Structure Level**: 0 (single file - will expand during implementation if needed)
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Research Reports**:
   - [Current Structure Analysis](../reports/001-current-structure-analysis.md)
   - [Layer Architecture Requirements](../reports/002-layer-architecture-requirements.md)
@@ -16,10 +16,10 @@
 
 ## Overview
 
-This plan implements a comprehensive refactoring to rename the ProofChecker project to Logos and reorganize it into a layered architecture. The refactoring affects 100+ files including 33 Lean source files, 40+ documentation files, and critical build configuration. The new structure creates `Logos.Core` for the current Layer 0 implementation and establishes extension points for future layers (Explanatory, Epistemic, Normative).
+This plan implements a comprehensive refactoring to rename the Logos project to Logos and reorganize it into a layered architecture. The refactoring affects 100+ files including 33 Lean source files, 40+ documentation files, and critical build configuration. The new structure creates `Logos.Core` for the current Layer 0 implementation and establishes extension points for future layers (Explanatory, Epistemic, Normative).
 
 **Key Changes**:
-1. Rename project from ProofChecker to Logos across all files
+1. Rename project from Logos to Logos across all files
 2. Reorganize into `Logos/Core/` layer structure
 3. Update 33 Lean files (namespace declarations, imports)
 4. Update 40+ documentation files
@@ -28,7 +28,7 @@ This plan implements a comprehensive refactoring to rename the ProofChecker proj
 
 ## Research Summary
 
-**Current Structure**: ProofChecker uses flat namespace (`ProofChecker.Syntax`, `ProofChecker.Semantics`, etc.) with 43 Lean files, 50+ documentation files, comprehensive test suite, and complete MVP for Layer 0 (Core TM logic).
+**Current Structure**: Logos uses flat namespace (`Logos.Syntax`, `Logos.Semantics`, etc.) with 43 Lean files, 50+ documentation files, comprehensive test suite, and complete MVP for Layer 0 (Core TM logic).
 
 **Layer Architecture Requirements**: Four-layer system where Core (Layer 0) provides TM logic with point-based world states, while future layers extend with structured semantics:
 - Layer 1 (Explanatory): Counterfactual, constitutive, causal operators with maximal-state semantics
@@ -43,7 +43,7 @@ This plan implements a comprehensive refactoring to rename the ProofChecker proj
 
 - [ ] `lake build` succeeds with zero errors
 - [ ] `lake test` passes all existing tests
-- [ ] No "ProofChecker" namespace references remain in Lean code
+- [ ] No "Logos" namespace references remain in Lean code
 - [ ] All imports resolve correctly to `Logos.*` namespaces
 - [ ] lakefile.toml correctly configured with "Logos" package name
 - [ ] README.md fully updated with new project name and structure
@@ -59,7 +59,7 @@ This plan implements a comprehensive refactoring to rename the ProofChecker proj
 **Target Namespace Hierarchy**:
 ```
 Logos                                  # Root namespace
-├── Logos.Core                         # Layer 0 (current ProofChecker)
+├── Logos.Core                         # Layer 0 (current Logos)
 │   ├── Logos.Core.Syntax              # Formula types
 │   ├── Logos.Core.ProofSystem         # Axioms and derivation
 │   ├── Logos.Core.Semantics           # Task semantics
@@ -85,7 +85,7 @@ LogosTest                              # Root test namespace (separate from Logo
 
 **Phase 1 (Simple Rename)**:
 ```
-Logos/                                 # Renamed from ProofChecker/
+Logos/                                 # Renamed from Logos/
 ├── Logos.lean                         # Root library file
 ├── Syntax/
 ├── ProofSystem/
@@ -94,7 +94,7 @@ Logos/                                 # Renamed from ProofChecker/
 ├── Theorems/
 └── Automation/
 
-LogosTest/                             # Renamed from ProofCheckerTest/
+LogosTest/                             # Renamed from LogosTest/
 ├── LogosTest.lean
 └── (test subdirectories)
 
@@ -126,26 +126,26 @@ Logos/
 **Namespace Update**:
 ```bash
 # Updates namespace declarations (preserves structure)
-find Logos -name "*.lean" -exec sed -i 's/^namespace ProofChecker/namespace Logos/g' {} +
-find Logos -name "*.lean" -exec sed -i 's/^end ProofChecker/end Logos/g' {} +
-find LogosTest -name "*.lean" -exec sed -i 's/^namespace ProofCheckerTest/namespace LogosTest/g' {} +
-find LogosTest -name "*.lean" -exec sed -i 's/^end ProofCheckerTest/end LogosTest/g' {} +
+find Logos -name "*.lean" -exec sed -i 's/^namespace Logos/namespace Logos/g' {} +
+find Logos -name "*.lean" -exec sed -i 's/^end Logos/end Logos/g' {} +
+find LogosTest -name "*.lean" -exec sed -i 's/^namespace LogosTest/namespace LogosTest/g' {} +
+find LogosTest -name "*.lean" -exec sed -i 's/^end LogosTest/end LogosTest/g' {} +
 ```
 
 **Import Update**:
 ```bash
 # Updates import statements
-find . -name "*.lean" -exec sed -i 's/import ProofChecker\./import Logos./g' {} +
-find . -name "*.lean" -exec sed -i 's/import ProofChecker$/import Logos/g' {} +
-find . -name "*.lean" -exec sed -i 's/import ProofCheckerTest\./import LogosTest./g' {} +
+find . -name "*.lean" -exec sed -i 's/import Logos\./import Logos./g' {} +
+find . -name "*.lean" -exec sed -i 's/import Logos$/import Logos/g' {} +
+find . -name "*.lean" -exec sed -i 's/import LogosTest\./import LogosTest./g' {} +
 ```
 
 **Documentation Update**:
 ```bash
 # Updates markdown references
-find Documentation -name "*.md" -exec sed -i 's/ProofChecker/Logos/g' {} +
-find Documentation -name "*.md" -exec sed -i 's|ProofChecker/|Logos/|g' {} +
-sed -i 's/ProofChecker/Logos/g' README.md CLAUDE.md
+find Documentation -name "*.md" -exec sed -i 's/Logos/Logos/g' {} +
+find Documentation -name "*.md" -exec sed -i 's|Logos/|Logos/|g' {} +
+sed -i 's/Logos/Logos/g' README.md CLAUDE.md
 ```
 
 ### Critical Semantic Preservation
@@ -174,8 +174,8 @@ dependencies: []
 - [x] Create refactor branch: `git checkout -b refactor/logos-layer-architecture`
 - [x] Create backup: `tar -czf proofchecker-backup-$(date +%Y%m%d).tar.gz .`
 - [x] Update lakefile.toml: Change project name to "Logos", library names to "Logos"/"LogosTest"
-- [x] Rename directories: `mv ProofChecker Logos && mv ProofCheckerTest LogosTest`
-- [x] Rename root files: `mv ProofChecker.lean Logos.lean && mv ProofCheckerTest.lean LogosTest.lean`
+- [x] Rename directories: `mv Logos Logos && mv LogosTest LogosTest`
+- [x] Rename root files: `mv Logos.lean Logos.lean && mv LogosTest.lean LogosTest.lean`
 - [x] Run `lake clean` to remove old build artifacts
 
 **Testing**:
@@ -199,17 +199,17 @@ dependencies: [1]
 **Complexity**: Medium
 
 **Tasks**:
-- [x] Update namespace declarations in Logos/ source files (15 files): `namespace ProofChecker` → `namespace Logos`
-- [x] Update namespace declarations in LogosTest/ test files (10+ files): `namespace ProofCheckerTest` → `namespace LogosTest`
+- [x] Update namespace declarations in Logos/ source files (15 files): `namespace Logos` → `namespace Logos`
+- [x] Update namespace declarations in LogosTest/ test files (10+ files): `namespace LogosTest` → `namespace LogosTest`
 - [x] Update namespace declarations in Archive/ examples (4 files)
 - [x] Run automated namespace update script (verify changes before committing)
 - [x] Manually verify critical files (TaskFrame.lean, Formula.lean, Soundness.lean)
 
 **Testing**:
 ```bash
-# Check for remaining ProofChecker namespace declarations
-! grep -r "^namespace ProofChecker" --include="*.lean" Logos/ LogosTest/ Archive/
-echo "✓ No ProofChecker namespace declarations remain"
+# Check for remaining Logos namespace declarations
+! grep -r "^namespace Logos" --include="*.lean" Logos/ LogosTest/ Archive/
+echo "✓ No Logos namespace declarations remain"
 
 # Verify Logos namespaces exist
 grep -q "^namespace Logos" Logos.lean
@@ -235,9 +235,9 @@ dependencies: [2]
 
 **Testing**:
 ```bash
-# Check for remaining ProofChecker imports
-! grep -r "import ProofChecker" --include="*.lean" .
-echo "✓ No ProofChecker imports remain"
+# Check for remaining Logos imports
+! grep -r "import Logos" --include="*.lean" .
+echo "✓ No Logos imports remain"
 
 # Verify Logos imports functional
 lake build Logos.Syntax.Formula
@@ -277,7 +277,7 @@ echo "✓ All tests pass"
 
 **Expected Duration**: 1-2 hours
 
-### Phase 5: Core Documentation Updates [NOT STARTED]
+### Phase 5: Core Documentation Updates [COMPLETE]
 dependencies: [4]
 
 **Objective**: Update critical documentation files (README, CLAUDE, UserGuide)
@@ -285,13 +285,13 @@ dependencies: [4]
 **Complexity**: Medium
 
 **Tasks**:
-- [ ] Update README.md: Project name, installation instructions, structure diagram, citations
-- [ ] Update CLAUDE.md: Project overview, directory structure, namespace examples, command examples
-- [ ] Update Documentation/UserGuide/ARCHITECTURE.md: Namespace references, import examples
-- [ ] Update Documentation/UserGuide/METHODOLOGY.md: Project name references
-- [ ] Update Documentation/UserGuide/TUTORIAL.md: Import statements, command examples
-- [ ] Update Documentation/UserGuide/EXAMPLES.md: Namespace declarations in code examples
-- [ ] Update Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md: Module names, verification commands
+- [x] Update README.md: Project name, installation instructions, structure diagram, citations
+- [x] Update CLAUDE.md: Project overview, directory structure, namespace examples, command examples
+- [x] Update Documentation/UserGuide/ARCHITECTURE.md: Namespace references, import examples
+- [x] Update Documentation/UserGuide/METHODOLOGY.md: Project name references
+- [x] Update Documentation/UserGuide/TUTORIAL.md: Import statements, command examples
+- [x] Update Documentation/UserGuide/EXAMPLES.md: Namespace declarations in code examples
+- [x] Update Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md: Module names, verification commands
 
 **Testing**:
 ```bash
@@ -301,14 +301,14 @@ grep -q "Logos" CLAUDE.md
 grep -q "Logos.Core" Documentation/UserGuide/ARCHITECTURE.md
 echo "✓ Core documentation updated"
 
-# Check for remaining ProofChecker references
-! grep "ProofChecker" README.md CLAUDE.md Documentation/UserGuide/
-echo "✓ No ProofChecker references in core docs"
+# Check for remaining Logos references
+! grep "Logos" README.md CLAUDE.md Documentation/UserGuide/
+echo "✓ No Logos references in core docs"
 ```
 
 **Expected Duration**: 4-6 hours
 
-### Phase 6: Extended Documentation Updates [NOT STARTED]
+### Phase 6: Extended Documentation Updates [COMPLETE]
 dependencies: [5]
 
 **Objective**: Update remaining documentation files (Development, Research, Reference)
@@ -316,17 +316,17 @@ dependencies: [5]
 **Complexity**: Medium
 
 **Tasks**:
-- [ ] Update Documentation/Development/ files (10+ files): LEAN_STYLE_GUIDE.md, MODULE_ORGANIZATION.md, TESTING_STANDARDS.md
-- [ ] Update Documentation/Research/ files (3 files): LAYER_EXTENSIONS.md, DUAL_VERIFICATION.md, PROOF_LIBRARY_DESIGN.md
-- [ ] Update Documentation/Reference/ files (2 files): OPERATORS.md, GLOSSARY.md
-- [ ] Update module READMEs (Logos/README.md, LogosTest/README.md, Archive/README.md)
-- [ ] Run automated documentation update script
-- [ ] Manually review all cross-references and file paths
+- [x] Update Documentation/Development/ files (10+ files): LEAN_STYLE_GUIDE.md, MODULE_ORGANIZATION.md, TESTING_STANDARDS.md
+- [x] Update Documentation/Research/ files (3 files): LAYER_EXTENSIONS.md, DUAL_VERIFICATION.md, PROOF_LIBRARY_DESIGN.md
+- [x] Update Documentation/Reference/ files (2 files): OPERATORS.md, GLOSSARY.md
+- [x] Update module READMEs (Logos/README.md, LogosTest/README.md, Archive/README.md)
+- [x] Run automated documentation update script
+- [x] Manually review all cross-references and file paths
 
 **Testing**:
 ```bash
 # Verify extended docs updated
-find Documentation -name "*.md" -exec grep -l "ProofChecker" {} + | wc -l
+find Documentation -name "*.md" -exec grep -l "Logos" {} + | wc -l
 # Should be 0
 
 # Verify cross-references functional
@@ -446,7 +446,7 @@ dependencies: [8]
 **Testing**:
 ```bash
 # Verify all documentation current
-grep -r "ProofChecker" --include="*.md" . | wc -l
+grep -r "Logos" --include="*.md" . | wc -l
 # Should be 0 (except MIGRATION.md historical references)
 
 # Verify cross-references functional
@@ -466,7 +466,7 @@ dependencies: [9]
 
 **Tasks**:
 - [ ] Run complete verification script (build, test, documentation)
-- [ ] Create comprehensive commit: `git add -A && git commit -m "Refactor: Rename ProofChecker to Logos with layered architecture"`
+- [ ] Create comprehensive commit: `git add -A && git commit -m "Refactor: Rename Logos to Logos with layered architecture"`
 - [ ] Push refactor branch: `git push origin refactor/logos-layer-architecture`
 - [ ] Create detailed pull request with migration notes
 - [ ] Review all changes in PR diff
@@ -502,25 +502,25 @@ echo "✓ All tests pass"
 
 # 3. Namespace verification
 echo "3. Verifying namespaces..."
-if grep -r "namespace ProofChecker" --include="*.lean" Logos/ LogosTest/; then
-  echo "✖ ProofChecker namespaces remain"
+if grep -r "namespace Logos" --include="*.lean" Logos/ LogosTest/; then
+  echo "✖ Logos namespaces remain"
   exit 1
 fi
-echo "✓ No ProofChecker namespaces remain"
+echo "✓ No Logos namespaces remain"
 
 # 4. Import verification
 echo "4. Verifying imports..."
-if grep -r "import ProofChecker" --include="*.lean" .; then
-  echo "✖ ProofChecker imports remain"
+if grep -r "import Logos" --include="*.lean" .; then
+  echo "✖ Logos imports remain"
   exit 1
 fi
-echo "✓ No ProofChecker imports remain"
+echo "✓ No Logos imports remain"
 
 # 5. Documentation verification
 echo "5. Verifying documentation..."
-doc_refs=$(grep -r "ProofChecker" --include="*.md" . | grep -v MIGRATION.md | wc -l)
+doc_refs=$(grep -r "Logos" --include="*.md" . | grep -v MIGRATION.md | wc -l)
 if [ "$doc_refs" -gt 0 ]; then
-  echo "⚠ Warning: $doc_refs ProofChecker references in documentation (excluding MIGRATION.md)"
+  echo "⚠ Warning: $doc_refs Logos references in documentation (excluding MIGRATION.md)"
 fi
 
 # 6. Layer structure verification
@@ -589,7 +589,7 @@ If critical issues discovered:
 - **Low Priority**: Module READMEs (3 files), Archive documentation
 
 ### New Documentation
-- MIGRATION.md: Step-by-step guide for users upgrading from ProofChecker naming
+- MIGRATION.md: Step-by-step guide for users upgrading from Logos naming
 - Logos/Explanatory/README.md: Future Layer 1 implementation guide
 - Logos/Epistemic/README.md: Future Layer 2 implementation guide
 - Logos/Normative/README.md: Future Layer 3 implementation guide
@@ -598,7 +598,7 @@ If critical issues discovered:
 - All file paths must use absolute paths or correct relative paths
 - All cross-references must resolve correctly
 - All code examples must use updated namespaces (Logos.Core.*)
-- All command examples must reference "Logos" not "ProofChecker"
+- All command examples must reference "Logos" not "Logos"
 
 ## Dependencies
 

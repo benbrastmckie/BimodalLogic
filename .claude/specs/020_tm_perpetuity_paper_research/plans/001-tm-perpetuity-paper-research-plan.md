@@ -3,10 +3,10 @@
 ## Metadata
 - **Date**: 2025-12-02
 - **Feature**: Complete perpetuity proofs P4-P6 using paper-based derivation strategies
-- **Scope**: Implement P4, P5, P6 proofs in ProofChecker/Theorems/Perpetuity.lean using simplified derivation strategies from paper source (§3.2 lines 1056-1093), reducing complexity from 4 modal-temporal lemmas to 2 propositional helpers plus direct axiom application
+- **Scope**: Implement P4, P5, P6 proofs in Logos/Theorems/Perpetuity.lean using simplified derivation strategies from paper source (§3.2 lines 1056-1093), reducing complexity from 4 modal-temporal lemmas to 2 propositional helpers plus direct axiom application
 - **Status**: [COMPLETE]
 - **Estimated Hours**: 13-20 hours
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Complexity Score**: 65.0
 - **Structure Level**: 0
 - **Estimated Phases**: 4
@@ -15,7 +15,7 @@
 
 ## Overview
 
-This plan implements the remaining perpetuity principles P4-P6 in `ProofChecker/Theorems/Perpetuity.lean` using **simplified proof strategies** derived from the paper source `/home/benjamin/Documents/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` (Section §3.2, lines 1056-1093).
+This plan implements the remaining perpetuity principles P4-P6 in `Logos/Theorems/Perpetuity.lean` using **simplified proof strategies** derived from the paper source `/home/benjamin/Documents/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` (Section §3.2, lines 1056-1093).
 
 **Key Simplification**: Research analysis reveals the original plan (Wave 2 Task 6) overestimated complexity. The paper's derivations show:
 - **P4**: Uses contraposition of P3 for `¬φ` (no complex modal-temporal lemmas needed)
@@ -64,7 +64,7 @@ Research report synthesizes perpetuity principle derivations from paper §3.2:
 - [ ] `perpetuity_4` theorem proven (zero sorry at line 225)
 - [ ] `perpetuity_5` theorem proven (zero sorry at line 252)
 - [ ] `perpetuity_6` theorem proven or axiomatized with justification (zero sorry at line 280)
-- [ ] All perpetuity tests pass (`lake test ProofCheckerTest.Theorems.PerpetuityTest`)
+- [ ] All perpetuity tests pass (`lake test LogosTest.Theorems.PerpetuityTest`)
 - [ ] Phase 1 propositional helpers (`imp_trans`, `contraposition`) verified complete
 - [ ] Proofs reference paper source (§3.2) in docstrings
 - [ ] Type conversion lemmas added if needed for P4
@@ -76,7 +76,7 @@ Research report synthesizes perpetuity principle derivations from paper §3.2:
 
 ### Architecture Overview
 
-**Module**: `ProofChecker/Theorems/Perpetuity.lean`
+**Module**: `Logos/Theorems/Perpetuity.lean`
 
 **Current State**:
 - P1 (`□φ → △φ`): Uses `imp_trans` (line 88, assuming Phase 1 complete)
@@ -168,7 +168,7 @@ axiom perpetuity_6 (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box
 
 ### Testing Strategy
 
-**Test Suite**: `ProofCheckerTest/Theorems/PerpetuityTest.lean`
+**Test Suite**: `LogosTest/Theorems/PerpetuityTest.lean`
 
 **Test Coverage**:
 - P4: 6 test cases (atom, negation, implication, modal, temporal, compound)
@@ -181,10 +181,10 @@ axiom perpetuity_6 (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box
 **Test Validation**:
 ```bash
 # Run full perpetuity test suite
-lake test ProofCheckerTest.Theorems.PerpetuityTest
+lake test LogosTest.Theorems.PerpetuityTest
 
 # Verify zero sorry in Perpetuity.lean
-grep -c "sorry" ProofChecker/Theorems/Perpetuity.lean  # Expected: 0
+grep -c "sorry" Logos/Theorems/Perpetuity.lean  # Expected: 0
 ```
 
 ## Implementation Phases
@@ -211,14 +211,14 @@ dependencies: []
 **Testing**:
 ```bash
 # Verify prerequisites
-grep -A5 "theorem imp_trans" ProofChecker/Theorems/Perpetuity.lean | grep -c "sorry"
+grep -A5 "theorem imp_trans" Logos/Theorems/Perpetuity.lean | grep -c "sorry"
 # Expected: 0
 
-grep -A5 "theorem contraposition" ProofChecker/Theorems/Perpetuity.lean | grep -c "sorry"
+grep -A5 "theorem contraposition" Logos/Theorems/Perpetuity.lean | grep -c "sorry"
 # Expected: 0
 
 # Test P4 implementation
-lake test ProofCheckerTest.Theorems.PerpetuityTest  # P4 tests should pass
+lake test LogosTest.Theorems.PerpetuityTest  # P4 tests should pass
 ```
 
 **Expected Duration**: 3-4 hours
@@ -258,11 +258,11 @@ dependencies: [1]
 **Testing**:
 ```bash
 # Verify P5 implementation
-grep -n "sorry" ProofChecker/Theorems/Perpetuity.lean | grep "252:"
+grep -n "sorry" Logos/Theorems/Perpetuity.lean | grep "252:"
 # Expected: no output (sorry removed)
 
 # Test P5 functionality
-lake test ProofCheckerTest.Theorems.PerpetuityTest  # P5 tests should pass
+lake test LogosTest.Theorems.PerpetuityTest  # P5 tests should pass
 ```
 
 **Expected Duration**: 4-6 hours
@@ -304,14 +304,14 @@ dependencies: [2]
 **Testing**:
 ```bash
 # Verify P6 implementation
-grep -n "sorry" ProofChecker/Theorems/Perpetuity.lean | grep "280:"
+grep -n "sorry" Logos/Theorems/Perpetuity.lean | grep "280:"
 # Expected: no output (sorry removed or replaced with axiom)
 
 # Test P6 functionality
-lake test ProofCheckerTest.Theorems.PerpetuityTest  # P6 tests should pass
+lake test LogosTest.Theorems.PerpetuityTest  # P6 tests should pass
 
 # If axiomatized, verify documentation
-grep -A10 "axiom perpetuity_6" ProofChecker/Theorems/Perpetuity.lean
+grep -A10 "axiom perpetuity_6" Logos/Theorems/Perpetuity.lean
 # Should include justification citing Corollary 2.11
 ```
 
@@ -339,7 +339,7 @@ dependencies: [1, 2, 3]
 - [x] Write integration test: All six perpetuity principles derivable
 - [x] Run full perpetuity test suite and verify all 21+ tests pass
 - [x] Run `lake build` and verify zero errors
-- [x] Run `lake lint ProofChecker/Theorems/Perpetuity.lean` and verify zero warnings
+- [x] Run `lake lint Logos/Theorems/Perpetuity.lean` and verify zero warnings
 - [x] Update TODO.md:
   - Mark Task 6 complete with completion date
   - Update Status Summary (8/11 tasks complete)
@@ -368,7 +368,7 @@ lake build
 # Expected: Clean build, zero errors
 
 # Final test verification
-lake test ProofCheckerTest.Theorems.PerpetuityTest
+lake test LogosTest.Theorems.PerpetuityTest
 # Expected: All tests pass
 ```
 
@@ -426,9 +426,9 @@ theorem perpetuity_4 (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond :=
 - P6 flexible strategy (attempts may use P5 in equivalence proof)
 - Documentation phase depends on all three proofs complete
 
-### LEAN 4 and ProofChecker
+### LEAN 4 and Logos
 - LEAN 4 toolchain (version from lean-toolchain file)
-- ProofChecker modules: Syntax, ProofSystem (Axioms, Derivation), Theorems
+- Logos modules: Syntax, ProofSystem (Axioms, Derivation), Theorems
 
 ## Risk Analysis
 
@@ -560,11 +560,11 @@ Before marking plan complete, verify:
 ### Code Verification
 ```bash
 # 1. Zero sorry in Perpetuity.lean
-grep -c "sorry" ProofChecker/Theorems/Perpetuity.lean
+grep -c "sorry" Logos/Theorems/Perpetuity.lean
 # Expected: 0
 
 # 2. All 6 perpetuity theorems defined
-grep -c "theorem perpetuity_[1-6]" ProofChecker/Theorems/Perpetuity.lean
+grep -c "theorem perpetuity_[1-6]" Logos/Theorems/Perpetuity.lean
 # Expected: 6 (or 5 + 1 axiom)
 
 # 3. Build succeeds
@@ -572,11 +572,11 @@ lake build
 # Expected: Clean build, zero errors
 
 # 4. Tests pass
-lake test ProofCheckerTest.Theorems.PerpetuityTest
+lake test LogosTest.Theorems.PerpetuityTest
 # Expected: All 21+ tests pass
 
 # 5. Zero lint warnings
-lake lint ProofChecker/Theorems/Perpetuity.lean
+lake lint Logos/Theorems/Perpetuity.lean
 # Expected: Zero warnings
 ```
 

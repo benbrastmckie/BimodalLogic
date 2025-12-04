@@ -1,6 +1,6 @@
 # Terminology Glossary
 
-This glossary maps terminology between Logos and ProofChecker documentation, providing definitions for key concepts and operators.
+This glossary maps terminology between Logos and Logos documentation, providing definitions for key concepts and operators.
 
 ## Layer Architecture
 
@@ -35,7 +35,7 @@ This glossary maps terminology between Logos and ProofChecker documentation, pro
 | `◇` | Possibility | "It is possible that" (dual of necessity) | diamond |
 | `Ca` | Ability | "Is able to" or "has the capacity to" | can |
 
-**S5 Modal Logic**: ProofChecker implements S5 axioms (MT, M4, MB) ensuring reflexivity, transitivity, and symmetry for modal accessibility relation.
+**S5 Modal Logic**: Logos implements S5 axioms (MT, M4, MB) ensuring reflexivity, transitivity, and symmetry for modal accessibility relation.
 
 ## Temporal Operators (Layer 0)
 

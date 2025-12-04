@@ -1,5 +1,5 @@
-# Research Report: ProofChecker README Introduction Update
-## Contextualizing ProofChecker within the Logos Project
+# Research Report: Logos README Introduction Update
+## Contextualizing Logos within the Logos Project
 
 **Report ID**: 023-001
 **Date**: 2025-12-02
@@ -12,7 +12,7 @@
 
 ## Executive Summary
 
-This research report analyzes the ProofChecker project to inform updates to `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md` and `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/packages/proof-checker.md`. The goal is to improve the ProofChecker introduction by:
+This research report analyzes the Logos project to inform updates to `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` and `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/packages/proof-checker.md`. The goal is to improve the Logos introduction by:
 
 1. Contextualizing it within the broader Logos project architecture
 2. Highlighting the theoretical foundations from recent academic papers
@@ -25,9 +25,9 @@ The research reveals a sophisticated formal verification system implementing bim
 
 ## 1. Current Status Analysis
 
-### 1.1 ProofChecker README.md Current State
+### 1.1 Logos README.md Current State
 
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 
 **Strengths**:
 - Clear technical structure with well-organized sections
@@ -38,7 +38,7 @@ The research reveals a sophisticated formal verification system implementing bim
 **Weaknesses**:
 - **Minimal Logos context**: Only briefly mentions "third package in the Logos architecture" (lines 32-38)
 - **No theoretical grounding**: Missing references to the foundational papers (possible worlds semantics, hyperintensional semantics)
-- **Incomplete positioning**: Doesn't explain WHY ProofChecker matters beyond technical implementation
+- **Incomplete positioning**: Doesn't explain WHY Logos matters beyond technical implementation
 - **Missing integration story**: Limited explanation of how it fits with model-builder and model-checker
 - **Buried advantages**: Key benefits are scattered rather than prominently featured
 
@@ -60,7 +60,7 @@ The research reveals a sophisticated formal verification system implementing bim
 - Strong utility-based proof library concept
 
 **Weaknesses**:
-- **Outdated content**: Describes planned features that conflict with actual ProofChecker implementation
+- **Outdated content**: Describes planned features that conflict with actual Logos implementation
 - **Wrong architecture description**: Mentions "proof library (proof_lib)" which doesn't exist in current implementation
 - **Misleading DSL claims**: Presents DSL as implemented when it's actually planned (Syntax/DSL.lean incomplete)
 - **Inconsistent with reality**: Layer 0 MVP status not reflected in documentation
@@ -75,7 +75,7 @@ The research reveals a sophisticated formal verification system implementing bim
 
 ---
 
-## 2. ProofChecker Project Deep Dive
+## 2. Logos Project Deep Dive
 
 ### 2.1 Core Implementation: Bimodal Logic TM
 
@@ -118,7 +118,7 @@ Task Relation = w ⇒ₓ w' (state w performs task for duration x to reach w')
 2. **Compositionality**: `w ⇒ₓ u ∧ u ⇒ᵧ v → w ⇒ₓ₊ᵧ v` (task composition)
 3. **Convexity**: World histories span continuous time intervals (no gaps)
 
-**Implementation in ProofChecker**:
+**Implementation in Logos**:
 - `TaskFrame.lean` (145 LOC): Task relation structure
 - `WorldHistory.lean` (120 LOC): Possible worlds as functions
 - `TaskModel.lean` (75 LOC): Valuation over task frames
@@ -232,14 +232,14 @@ Task Relation = w ⇒ₓ w' (state w performs task for duration x to reach w')
 3. TM bimodal logic axiomatization
 4. Perpetuity principles (P1-P6) connecting modal and temporal
 
-**ProofChecker Implementation**:
+**Logos Implementation**:
 - Direct formalization of task frame structure
 - Implementation of all TM axioms
 - Partial proof of perpetuity principles
 - Soundness verification for core axioms
 
 **Relevance to README**:
-This paper provides the theoretical foundation for ProofChecker's semantics. The task relation formalization is the core innovation distinguishing this from standard modal logic implementations.
+This paper provides the theoretical foundation for Logos's semantics. The task relation formalization is the core innovation distinguishing this from standard modal logic implementations.
 
 ### 3.2 Hyperintensional Semantics Papers
 
@@ -264,10 +264,10 @@ This paper provides the theoretical foundation for ProofChecker's semantics. The
 **Model-Checker Connection** (from Logos README):
 - Model-checker implements hyperintensional semantics in Z3
 - Current version: v1.2.12
-- Provides semantic verification for ProofChecker theorems
+- Provides semantic verification for Logos theorems
 - Generates counterexamples for invalid inferences
 
-**ProofChecker Role**:
+**Logos Role**:
 - Provides syntactic verification (proof theory)
 - Complements semantic verification (model theory)
 - Enables dual verification: proof + countermodel checking
@@ -275,7 +275,7 @@ This paper provides the theoretical foundation for ProofChecker's semantics. The
 
 **Bidirectional Flow**:
 ```
-ProofChecker ⟺ Model-Checker ⟺ Model-Builder
+Logos ⟺ Model-Checker ⟺ Model-Builder
    (Syntax)      (Semantics)    (NL Interface)
      LEAN            Z3             LLM
 ```
@@ -303,7 +303,7 @@ ProofChecker ⟺ Model-Checker ⟺ Model-Builder
    - Generates counterexamples for invalid inferences
    - Provides corrective RL training signals
 
-3. **ProofChecker** (Layer 0 MVP Complete)
+3. **Logos** (Layer 0 MVP Complete)
    - LEAN 4 proof theory implementation
    - Syntactic verification of inferences
    - Generates valid theorems as training data
@@ -314,7 +314,7 @@ ProofChecker ⟺ Model-Checker ⟺ Model-Builder
 **Core Insight** (from transparency.md):
 > "Models in logic are used TO interpret formal languages. Instead of referring to LLMs as 'models,' it makes better sense to refer to these structures simply as AIs or LLMs."
 
-**ProofChecker's Role in Transparency**:
+**Logos's Role in Transparency**:
 1. **Verifiable Reasoning**: Every proof step can be independently checked
 2. **Auditable Inferences**: Proof receipts provide mathematical certainty
 3. **Transparent Semantics**: Task models explicitly represent world states
@@ -323,14 +323,14 @@ ProofChecker ⟺ Model-Checker ⟺ Model-Builder
 **Human Cognition Parallel**:
 > "Adult human agents are expected to be able to accurately account for why they acted as they have... The aim of this project is to equip AI systems with a capacity for interpretation, self-reflection, and transparent reasoning."
 
-ProofChecker provides the formal reasoning infrastructure enabling this transparent accountability.
+Logos provides the formal reasoning infrastructure enabling this transparent accountability.
 
 ### 4.3 Dual Verification Training Architecture
 
 **Training Data Generation**:
 
 ```
-Positive RL Signals (ProofChecker):
+Positive RL Signals (Logos):
 ├── Unlimited valid theorems from axioms
 ├── Proof receipts with mathematical certainty
 └── Immediate verification feedback
@@ -347,7 +347,7 @@ Corrective RL Signals (Model-Checker):
 - Countermodels = corrective training signal
 - Scales with computational resources, not annotation
 
-**ProofChecker's Contribution**:
+**Logos's Contribution**:
 - Generates infinite theorems through systematic derivation
 - Provides positive reinforcement for valid inferences
 - Creates cached proof library for efficient reasoning
@@ -358,7 +358,7 @@ Corrective RL Signals (Model-Checker):
 **Vision** (from scalable_oversight.md):
 > "Verification is integrated into training rather than imposed as an external bottleneck."
 
-**ProofChecker's Oversight Role**:
+**Logos's Oversight Role**:
 
 1. **Proof Library Caching**:
    - Stores verified inference patterns
@@ -374,7 +374,7 @@ Corrective RL Signals (Model-Checker):
 
 3. **Verification Before Deployment**:
    - Model-builder constructs semantic models
-   - ProofChecker verifies inferences syntactically
+   - Logos verifies inferences syntactically
    - Model-checker validates semantically
    - Combined verification ensures correctness
 
@@ -459,7 +459,7 @@ Corrective RL Signals (Model-Checker):
 - Self-supervised learning signals
 - Systematic pattern mastery
 
-### 5.3 What Makes ProofChecker Unique
+### 5.3 What Makes Logos Unique
 
 **Compared to Standard Modal Logic Implementations**:
 - Task semantics (not primitive possible worlds)
@@ -483,25 +483,25 @@ Corrective RL Signals (Model-Checker):
 
 ## 6. Update Strategy Recommendations
 
-### 6.1 ProofChecker README.md Updates
+### 6.1 Logos README.md Updates
 
 **Opening Section Improvements**:
 
 Current (lines 1-3):
 ```markdown
-# ProofChecker
+# Logos
 
-ProofChecker provides the proof theory and metalogic for **Logos**...
+Logos provides the proof theory and metalogic for **Logos**...
 ```
 
 Recommended:
 ```markdown
-# ProofChecker: Formal Verification for Transparent AI Reasoning
+# Logos: Formal Verification for Transparent AI Reasoning
 
-ProofChecker is a LEAN 4 implementation of the bimodal logic TM (Tense and Modality)
+Logos is a LEAN 4 implementation of the bimodal logic TM (Tense and Modality)
 with task semantics, providing the syntactic verification pillar in the **Logos**
 three-package architecture for transparent AI reasoning. By implementing cutting-edge
-formal semantics from recent research, ProofChecker enables AI systems to generate
+formal semantics from recent research, Logos enables AI systems to generate
 unlimited verified inferences for self-supervised learning while maintaining the
 mathematical certainty and auditability essential for trustworthy AI.
 ```
@@ -511,7 +511,7 @@ mathematical certainty and auditability essential for trustworthy AI.
 ```markdown
 ## Theoretical Foundations
 
-ProofChecker implements formal semantics developed in recent research:
+Logos implements formal semantics developed in recent research:
 
 ### Task Semantics for Possible Worlds
 - **Paper**: [Possible Worlds](https://www.benbrastmckie.com/wp-content/uploads/2025/11/possible_worlds.pdf) (Brast-McKie, 2025)
@@ -529,7 +529,7 @@ ProofChecker implements formal semantics developed in recent research:
 - **Relevance**: Foundation for Layer 1 extensions (counterfactual, causal, constitutive
   operators)
 
-These theoretical advances provide the formal foundation for ProofChecker's semantics
+These theoretical advances provide the formal foundation for Logos's semantics
 and enable systematic extension to explanatory, epistemic, and normative reasoning.
 ```
 
@@ -538,7 +538,7 @@ and enable systematic extension to explanatory, epistemic, and normative reasoni
 ```markdown
 ### Logos Integration: Three-Package Architecture
 
-ProofChecker provides **syntactic verification** as the third component in Logos:
+Logos provides **syntactic verification** as the third component in Logos:
 
 1. **Model-Builder** (Design Phase): Transforms natural language → formal semantic models
    - Extracts formal language fragments (FLF)
@@ -550,12 +550,12 @@ ProofChecker provides **syntactic verification** as the third component in Logos
    - Generates counterexamples for invalid inferences
    - Provides corrective RL training signals
 
-3. **ProofChecker** (Layer 0 MVP): Syntactic verification via LEAN 4
+3. **Logos** (Layer 0 MVP): Syntactic verification via LEAN 4
    - Derives valid theorems from TM axioms
    - Provides proof receipts with mathematical certainty
    - Generates positive RL training signals
 
-**Dual Verification Architecture**: ProofChecker's syntactic proofs and Model-Checker's
+**Dual Verification Architecture**: Logos's syntactic proofs and Model-Checker's
 semantic countermodels create comprehensive learning signals for AI training without
 human annotation. This enables scalable oversight through computation rather than
 labor.
@@ -579,7 +579,7 @@ labor.
 - **Systematic Pattern Mastery**: Enables learning logical reasoning systematically
 
 ### 3. Integrated Verification Architecture
-- **Dual Checking**: Syntactic proofs (ProofChecker) + semantic validation (Model-Checker)
+- **Dual Checking**: Syntactic proofs (Logos) + semantic validation (Model-Checker)
 - **Rapid Prototyping**: Model-Checker tests theorems before proof attempts
 - **Counterexample Learning**: Invalid reasoning generates corrective training signals
 - **Scalable Oversight**: Verification scales with computation, not human effort
@@ -601,7 +601,7 @@ Each layer provides independent value while building toward comprehensive AI rea
 
 ### 6.2 Logos proof-checker.md Updates
 
-**Critical Need**: Complete rewrite to align with actual ProofChecker implementation.
+**Critical Need**: Complete rewrite to align with actual Logos implementation.
 
 **Recommended Structure**:
 
@@ -609,24 +609,24 @@ Each layer provides independent value while building toward comprehensive AI rea
 # Proof Checker
 
 _[Return to Package Docs](README.md) | [Architecture](../../architecture/proof-checker/architecture.md) |
-[GitHub](https://github.com/benbrastmckie/ProofChecker) | [Model-Checker](model-checker.md)_
+[GitHub](https://github.com/benbrastmckie/Logos) | [Model-Checker](model-checker.md)_
 
-The ProofChecker is a LEAN 4 implementation of bimodal logic TM (Tense and Modality)
+The Logos is a LEAN 4 implementation of bimodal logic TM (Tense and Modality)
 with task semantics, providing the syntactic verification component in the Logos
 three-package architecture. By formalizing cutting-edge research on task semantics
-and hyperintensional logic, ProofChecker enables AI systems to generate unlimited
+and hyperintensional logic, Logos enables AI systems to generate unlimited
 verified inferences for self-supervised learning while maintaining mathematical
 certainty and transparency essential for trustworthy AI reasoning.
 
 ## Overview
 
-ProofChecker implements the proof theory and metalogic for the Logos formal language,
+Logos implements the proof theory and metalogic for the Logos formal language,
 combining S5 modal logic with linear temporal logic through bimodal interaction axioms.
 The current Layer 0 MVP provides complete syntax, proof system, and semantics packages
 with partial metalogic, serving as the foundation for future extensions to explanatory,
 epistemic, and normative reasoning.
 
-- **GitHub Repository**: [github.com/benbrastmckie/ProofChecker](https://github.com/benbrastmckie/ProofChecker)
+- **GitHub Repository**: [github.com/benbrastmckie/Logos](https://github.com/benbrastmckie/Logos)
 - **Current Status**: Layer 0 (Core TM) MVP Complete
 - **LEAN Version**: 4.14.0 or later
 
@@ -634,7 +634,7 @@ epistemic, and normative reasoning.
 
 ### Task Semantics Innovation
 
-ProofChecker implements the task semantics developed in Brast-McKie's [Possible Worlds paper](https://www.benbrastmckie.com/wp-content/uploads/2025/11/possible_worlds.pdf),
+Logos implements the task semantics developed in Brast-McKie's [Possible Worlds paper](https://www.benbrastmckie.com/wp-content/uploads/2025/11/possible_worlds.pdf),
 providing a compositional account of possible worlds as functions from times to world
 states constrained by task relations:
 
@@ -642,7 +642,7 @@ states constrained by task relations:
 - **Task Relation**: `w ⇒ₓ w'` (state w performs task for duration x to reach w')
 - **Key Properties**: Nullity (`w ⇒₀ w`), Compositionality (task composition)
 
-This innovation provides the formal foundation for ProofChecker's semantics and enables
+This innovation provides the formal foundation for Logos's semantics and enables
 extensions to counterfactual reasoning about alternative task sequences.
 
 ### Hyperintensional Extensions Foundation
@@ -726,14 +726,14 @@ causal, and constitutive operators for explanatory reasoning.
 - ✗ Syntax/DSL: Planned (not yet implemented)
 - ✗ Metalogic/Decidability: Not started
 
-See [IMPLEMENTATION_STATUS.md](https://github.com/benbrastmckie/ProofChecker/blob/main/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)
+See [IMPLEMENTATION_STATUS.md](https://github.com/benbrastmckie/Logos/blob/main/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)
 for detailed module-by-module status.
 
 ## Logos Integration
 
 ### Three-Package Architecture
 
-ProofChecker provides **syntactic verification** complementing:
+Logos provides **syntactic verification** complementing:
 
 1. **Model-Builder** (Design Phase):
    - Transforms natural language → formal semantic models
@@ -745,14 +745,14 @@ ProofChecker provides **syntactic verification** complementing:
    - Generates counterexamples for invalid inferences
    - Implements hyperintensional semantics
 
-3. **ProofChecker** (Layer 0 MVP):
+3. **Logos** (Layer 0 MVP):
    - LEAN 4 syntactic verification
    - Generates valid theorems as training data
    - Provides proof receipts with mathematical certainty
 
 ### Dual Verification Training
 
-**Positive RL Signals** (ProofChecker):
+**Positive RL Signals** (Logos):
 - Unlimited valid theorems from TM axioms
 - Proof receipts provide mathematical certainty
 - Immediate verification feedback
@@ -805,8 +805,8 @@ Each layer provides independent value while building comprehensive AI reasoning.
 
 ```bash
 # Requirements: LEAN 4 v4.14.0 or later
-git clone https://github.com/benbrastmckie/ProofChecker.git
-cd ProofChecker
+git clone https://github.com/benbrastmckie/Logos.git
+cd Logos
 lake build
 lake test
 ```
@@ -814,7 +814,7 @@ lake test
 ### Quick Example
 
 ```lean
-import ProofChecker
+import Logos
 
 -- Prove modal T axiom: □p → p
 example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p") := by
@@ -828,15 +828,15 @@ example (φ : Formula) : ⊢ φ.box.imp (φ.always.box) :=
 
 ## Documentation
 
-- **[Architecture Guide](https://github.com/benbrastmckie/ProofChecker/blob/main/Documentation/UserGuide/ARCHITECTURE.md)**:
+- **[Architecture Guide](https://github.com/benbrastmckie/Logos/blob/main/Documentation/UserGuide/ARCHITECTURE.md)**:
   TM logic specification and design
-- **[Implementation Status](https://github.com/benbrastmckie/ProofChecker/blob/main/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)**:
+- **[Implementation Status](https://github.com/benbrastmckie/Logos/blob/main/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)**:
   Module-by-module completion tracking
-- **[Known Limitations](https://github.com/benbrastmckie/ProofChecker/blob/main/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md)**:
+- **[Known Limitations](https://github.com/benbrastmckie/Logos/blob/main/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md)**:
   Gaps, workarounds, and completion roadmap
-- **[Tutorial](https://github.com/benbrastmckie/ProofChecker/blob/main/Documentation/UserGuide/TUTORIAL.md)**:
+- **[Tutorial](https://github.com/benbrastmckie/Logos/blob/main/Documentation/UserGuide/TUTORIAL.md)**:
   Getting started guide
-- **[Contributing](https://github.com/benbrastmckie/ProofChecker/blob/main/Documentation/ProjectInfo/CONTRIBUTING.md)**:
+- **[Contributing](https://github.com/benbrastmckie/Logos/blob/main/Documentation/ProjectInfo/CONTRIBUTING.md)**:
   How to contribute
 
 ## Future Directions
@@ -878,7 +878,7 @@ _Last updated: December 2025_
 **Duration**: 2-3 hours
 
 **Tasks**:
-1. Complete rewrite aligning with actual ProofChecker implementation
+1. Complete rewrite aligning with actual Logos implementation
 2. Remove outdated features (proof_lib, DSL claims, axiom minimization)
 3. Add current status section (Layer 0 MVP, partial metalogic)
 4. Include theoretical foundations (task semantics, hyperintensional papers)
@@ -888,7 +888,7 @@ _Last updated: December 2025_
 
 **Deliverable**: Updated `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/packages/proof-checker.md`
 
-### Phase 2: Update ProofChecker README.md
+### Phase 2: Update Logos README.md
 **Duration**: 1-2 hours
 
 **Tasks**:
@@ -900,7 +900,7 @@ _Last updated: December 2025_
 6. Update related projects section
 7. Ensure consistency with updated proof-checker.md
 
-**Deliverable**: Updated `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+**Deliverable**: Updated `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 
 ### Phase 3: Verification
 **Duration**: 30 minutes
@@ -967,7 +967,7 @@ _Last updated: December 2025_
 2. Identity and Aboutness: https://link.springer.com/article/10.1007/s10992-021-09612-w
 3. Counterfactual Worlds: https://link.springer.com/article/10.1007/s10992-025-09793-8
 4. Model-Checker GitHub: https://github.com/benbrastmckie/ModelChecker
-5. ProofChecker GitHub: https://github.com/benbrastmckie/ProofChecker
+5. Logos GitHub: https://github.com/benbrastmckie/Logos
 
 **Internal Documentation Links**:
 1. IMPLEMENTATION_STATUS.md
@@ -981,7 +981,7 @@ _Last updated: December 2025_
 ## 9. Success Criteria
 
 **Updated Documents Should**:
-1. ✓ Clearly position ProofChecker within Logos three-package architecture
+1. ✓ Clearly position Logos within Logos three-package architecture
 2. ✓ Highlight theoretical foundations from recent papers
 3. ✓ Accurately represent current MVP status
 4. ✓ Explain dual verification training paradigm
@@ -993,7 +993,7 @@ _Last updated: December 2025_
 10. ✓ Create compelling narrative for project value
 
 **Readers Should Understand**:
-1. What ProofChecker does (bimodal logic TM verification)
+1. What Logos does (bimodal logic TM verification)
 2. Why it matters (transparent AI reasoning, self-supervised training)
 3. How it fits (third pillar in Logos architecture)
 4. Theoretical basis (task semantics, hyperintensional foundations)
@@ -1004,16 +1004,16 @@ _Last updated: December 2025_
 
 ## 10. Conclusion
 
-This research establishes that ProofChecker is a sophisticated formal verification system implementing cutting-edge theoretical advances in task semantics and bimodal logic. Its integration into the Logos three-package architecture positions it as a critical component for transparent, verifiable AI reasoning.
+This research establishes that Logos is a sophisticated formal verification system implementing cutting-edge theoretical advances in task semantics and bimodal logic. Its integration into the Logos three-package architecture positions it as a critical component for transparent, verifiable AI reasoning.
 
 The recommended updates will:
 1. Correct outdated information in Logos proof-checker.md
-2. Enhance ProofChecker README.md with Logos context
+2. Enhance Logos README.md with Logos context
 3. Highlight theoretical foundations from recent papers
 4. Emphasize transparent reasoning advantages
-5. Position ProofChecker as foundational for AI safety
+5. Position Logos as foundational for AI safety
 
-By implementing these recommendations, both documents will provide clear, accurate, and compelling introductions to ProofChecker that serve both technical readers and those seeking to understand its role in the broader Logos vision.
+By implementing these recommendations, both documents will provide clear, accurate, and compelling introductions to Logos that serve both technical readers and those seeking to understand its role in the broader Logos vision.
 
 ---
 
@@ -1025,22 +1025,22 @@ By implementing these recommendations, both documents will provide clear, accura
 
 ### Current vs. Recommended Opening
 
-**ProofChecker README.md - Current**:
+**Logos README.md - Current**:
 ```markdown
-# ProofChecker
+# Logos
 
-ProofChecker provides the proof theory and metalogic for **Logos**, an interpreted
+Logos provides the proof theory and metalogic for **Logos**, an interpreted
 formal language of thought for auto-verified AI reasoning.
 ```
 
-**ProofChecker README.md - Recommended**:
+**Logos README.md - Recommended**:
 ```markdown
-# ProofChecker: Formal Verification for Transparent AI Reasoning
+# Logos: Formal Verification for Transparent AI Reasoning
 
-ProofChecker is a LEAN 4 implementation of the bimodal logic TM (Tense and Modality)
+Logos is a LEAN 4 implementation of the bimodal logic TM (Tense and Modality)
 with task semantics, providing the syntactic verification pillar in the **Logos**
 three-package architecture for transparent AI reasoning. By implementing cutting-edge
-formal semantics from recent research, ProofChecker enables AI systems to generate
+formal semantics from recent research, Logos enables AI systems to generate
 unlimited verified inferences for self-supervised learning while maintaining the
 mathematical certainty and auditability essential for trustworthy AI.
 ```
@@ -1058,10 +1058,10 @@ proof management organized by utility ranking for optimal efficiency.
 ```markdown
 # Proof Checker
 
-The ProofChecker is a LEAN 4 implementation of bimodal logic TM (Tense and Modality)
+The Logos is a LEAN 4 implementation of bimodal logic TM (Tense and Modality)
 with task semantics, providing the syntactic verification component in the Logos
 three-package architecture. By formalizing cutting-edge research on task semantics
-and hyperintensional logic, ProofChecker enables AI systems to generate unlimited
+and hyperintensional logic, Logos enables AI systems to generate unlimited
 verified inferences for self-supervised learning while maintaining mathematical
 certainty and transparency essential for trustworthy AI reasoning.
 ```

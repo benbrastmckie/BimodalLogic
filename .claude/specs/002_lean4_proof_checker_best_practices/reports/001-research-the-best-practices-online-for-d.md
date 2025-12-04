@@ -1,4 +1,4 @@
-# LEAN 4 Best Practices for ProofChecker Package Development
+# LEAN 4 Best Practices for Logos Package Development
 
 ## Metadata
 - **Date**: 2025-12-01
@@ -10,7 +10,7 @@
 
 ## Executive Summary
 
-This report synthesizes LEAN 4 best practices for developing the ProofChecker package as of November 2025. LEAN 4 has matured significantly with comprehensive tooling (Lake package manager, VS Code integration), extensive documentation (Theorem Proving in Lean 4, Functional Programming in Lean, Mathematics in Lean), and a growing ecosystem. While Mathlib4 does not include complete modal or temporal logic implementations, active community projects demonstrate modal logic formalization (particularly the FormalizedFormalLogic/Foundation project with Kripke semantics). The research identifies critical best practices for project structure, documentation standards, tactic development, and testing strategies specifically applicable to the bimodal TM logic system being implemented.
+This report synthesizes LEAN 4 best practices for developing the Logos package as of November 2025. LEAN 4 has matured significantly with comprehensive tooling (Lake package manager, VS Code integration), extensive documentation (Theorem Proving in Lean 4, Functional Programming in Lean, Mathematics in Lean), and a growing ecosystem. While Mathlib4 does not include complete modal or temporal logic implementations, active community projects demonstrate modal logic formalization (particularly the FormalizedFormalLogic/Foundation project with Kripke semantics). The research identifies critical best practices for project structure, documentation standards, tactic development, and testing strategies specifically applicable to the bimodal TM logic system being implemented.
 
 ## Findings
 
@@ -77,11 +77,11 @@ This report synthesizes LEAN 4 best practices for developing the ProofChecker pa
 
 **Standard Directory Layout:**
 ```
-ProofChecker/
+Logos/
 ├── lakefile.toml              # Package configuration (preferred format)
 ├── lean-toolchain             # LEAN version specification
-├── ProofChecker.lean          # Library root file (re-exports modules)
-├── ProofChecker/
+├── Logos.lean          # Library root file (re-exports modules)
+├── Logos/
 │   ├── Syntax/
 │   │   ├── Formula.lean       # Core formula type
 │   │   ├── Context.lean       # Proof context
@@ -119,7 +119,7 @@ ProofChecker/
 
 **Key Conventions:**
 - Directory structure mirrors module namespace hierarchy
-- `ProofChecker/Syntax/Formula.lean` → `ProofChecker.Syntax.Formula` module
+- `Logos/Syntax/Formula.lean` → `Logos.Syntax.Formula` module
 - Top-level `.lean` file re-exports all public modules
 - `.lake/` directory contains build artifacts (add to `.gitignore`)
 
@@ -127,15 +127,15 @@ ProofChecker/
 
 **Essential Metadata:**
 ```toml
-name = "ProofChecker"
+name = "Logos"
 version = "0.1.0"
 description = "LEAN-based formal verification for bimodal TM logic"
 keywords = ["modal-logic", "temporal-logic", "proof-assistant", "formal-verification"]
 license = "Apache-2.0"  # Or MIT, use SPDX identifiers
 
 [[lean_lib]]
-name = "ProofChecker"
-roots = ["ProofChecker"]
+name = "Logos"
+roots = ["Logos"]
 globs = ["."]
 ```
 
@@ -159,14 +159,14 @@ globs = ["."]
 
 **Namespace Conventions:**
 ```lean
-namespace ProofChecker.Syntax
+namespace Logos.Syntax
 
 -- Use nested namespaces for logical grouping
 namespace Formula
   -- Formula-specific definitions
 end Formula
 
-end ProofChecker.Syntax
+end Logos.Syntax
 ```
 
 **File Structure (Every Module):**
@@ -196,7 +196,7 @@ end ProofChecker.Syntax
 - Rings: `R`
 - Fields: `K` or `𝕜`
 - Vector spaces: `E`
-- World states (for ProofChecker): `W`
+- World states (for Logos): `W`
 - Time: `T`
 
 #### 3.2 Formatting Standards
@@ -342,7 +342,7 @@ alias old_formula_name := new_formula_name
 **Search Results:** No public LEAN 4 temporal logic implementations found (as of Nov 2025)
 - GitHub code search returned zero results for "lean4 temporal logic"
 - Temporal logic is less represented than modal logic in LEAN ecosystem
-- **Recommendation:** ProofChecker's TM system may be among first public temporal+modal implementations
+- **Recommendation:** Logos's TM system may be among first public temporal+modal implementations
 
 #### 4.3 Mathlib4 Logic Foundations
 
@@ -353,7 +353,7 @@ alias old_formula_name := new_formula_name
 - **No dedicated modal or temporal logic modules** (as of Nov 2025)
 - Kripke-related structures exist but not specifically for modal logic
 
-**Implication for ProofChecker:**
+**Implication for Logos:**
 - Build on Mathlib's logic foundations
 - Implement custom Kripke frames and task semantics
 - Can reference Foundation project patterns for modal logic structure
@@ -395,7 +395,7 @@ alias old_formula_name := new_formula_name
 - LEAN is "fully extensible" - customizable parser, elaborator, tactics, codegen
 - Theorem Proving in Lean 4 covers tactic implementation
 
-**Recommended Tactics for ProofChecker:**
+**Recommended Tactics for Logos:**
 1. **Modal K Rule Tactic** - Automate `MK: □Γ ⊢ φ → Γ ⊢ □φ`
 2. **Temporal K Rule Tactic** - Automate `TK: Future Γ ⊢ φ → Γ ⊢ Future φ`
 3. **S5 Automation** - Chain MT, M4, MB axioms
@@ -410,7 +410,7 @@ alias old_formula_name := new_formula_name
 - Extensible with custom rules
 - Good for automating routine modal/temporal reasoning
 
-**Design Pattern for ProofChecker:**
+**Design Pattern for Logos:**
 ```lean
 -- Register axioms as simp lemmas
 @[simp] theorem mt : □φ → φ := ...
@@ -513,7 +513,7 @@ lake build :docs
 
 **README.md (Repository Root):**
 ```markdown
-# ProofChecker
+# Logos
 
 LEAN-based formal verification for bimodal TM logic
 
@@ -609,7 +609,7 @@ build/
 
 #### 10.1 Model-Checker Integration (Z3)
 
-**Approach for ProofChecker:**
+**Approach for Logos:**
 - Export LEAN formulas to SMT-LIB format
 - Call Z3 for semantic validation
 - Import results back to LEAN
@@ -641,7 +641,7 @@ theorem valid_if_z3_sat :
 
 #### 11.1 Lean Zulip Chat
 
-**Key Channels for ProofChecker:**
+**Key Channels for Logos:**
 - `#new members` - Getting started help
 - `#lean4` - LEAN 4 specific discussions
 - `#mathlib4` - Mathlib questions
@@ -668,14 +668,14 @@ theorem valid_if_z3_sat :
 1. Study Foundation's modal logic module structure at https://formalizedformallogic.github.io/Foundation/book/Modal-Logic/
 2. Adopt their Kripke frame formalization patterns as a template
 3. Extend their accessibility relation approach for task semantics
-4. Reference their completeness proof structure for ProofChecker's own completeness theorem
+4. Reference their completeness proof structure for Logos's own completeness theorem
 5. Consider contributing bimodal/temporal extensions back to Foundation project
 
 **Expected Benefit:** Accelerate development by building on proven patterns, ensure compatibility with existing LEAN 4 modal logic work, potential for code reuse and collaboration.
 
 ### Recommendation 2: Implement Layered Development with Comprehensive Testing
 
-**Rationale:** ProofChecker has a clear layered architecture (Layer 0-3). Build incrementally with test coverage at each layer.
+**Rationale:** Logos has a clear layered architecture (Layer 0-3). Build incrementally with test coverage at each layer.
 
 **Action Items:**
 1. **Phase 1: Layer 0 Core (TM System)**
@@ -708,7 +708,7 @@ theorem valid_if_z3_sat :
 
 **Action Items:**
 1. **Project Initialization:**
-   - Use `lake new ProofChecker` to generate standard structure
+   - Use `lake new Logos` to generate standard structure
    - Configure `lakefile.toml` with metadata, keywords, license
    - Create `lean-toolchain` pinning LEAN version (recommend v4.26.0 or latest stable)
    - Set up `.gitignore` for `.lake/` directory
@@ -837,11 +837,11 @@ theorem valid_if_z3_sat :
    - Links to documentation
    - Citation information for academic use
 
-**Expected Benefit:** Lower barrier to entry, facilitate teaching and learning, enable researchers to build on ProofChecker, demonstrate practical applications, attract contributors.
+**Expected Benefit:** Lower barrier to entry, facilitate teaching and learning, enable researchers to build on Logos, demonstrate practical applications, attract contributors.
 
 ### Recommendation 7: Plan for Integration with Model-Checker and Future Extensions
 
-**Rationale:** ProofChecker is part of a larger Logos ecosystem. Design with integration in mind from the start.
+**Rationale:** Logos is part of a larger Logos ecosystem. Design with integration in mind from the start.
 
 **Action Items:**
 1. **Export/Import Interface:**
@@ -946,10 +946,10 @@ theorem valid_if_z3_sat :
 - **Lean Game Server** - Gamified learning environment
 - **Natural Number Game** - Interactive proof introduction
 
-### Related to ProofChecker Development
+### Related to Logos Development
 
-- **Package Description Report** - `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/001_proof_checker_package_docs/reports/001-research-the-proof-checker-package-descr.md`
-  - ProofChecker overview, TM logic specification, architecture
+- **Package Description Report** - `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/001_proof_checker_package_docs/reports/001-research-the-proof-checker-package-descr.md`
+  - Logos overview, TM logic specification, architecture
 
 - **Logos Project Documentation** - `/home/benjamin/Documents/Philosophy/Projects/Logos/`
   - Original three-package architecture (Model-Builder, Model-Checker, Proof-Checker)

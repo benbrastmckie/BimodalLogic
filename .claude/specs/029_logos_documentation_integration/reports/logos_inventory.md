@@ -1,17 +1,17 @@
 # Logos Directory Inventory
 
 **Research Date**: 2025-12-03
-**Directory**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/`
+**Directory**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/`
 **Total Files**: 4 Markdown files
 
 ## Overview
 
-The Logos directory contains comprehensive documentation describing the dual verification training architecture and layered operator extensibility for the ProofChecker/ModelChecker ecosystem. This documentation appears to have originated from a separate repository and has been recently integrated into the ProofChecker repository.
+The Logos directory contains comprehensive documentation describing the dual verification training architecture and layered operator extensibility for the Logos/ModelChecker ecosystem. This documentation appears to have originated from a separate repository and has been recently integrated into the Logos repository.
 
 ## File Inventory
 
 ### 1. README.md (11,285 bytes)
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/README.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/README.md`
 **Purpose**: Documentation suite overview and navigation hub
 **Last Updated**: December 2025
 
@@ -31,14 +31,14 @@ The Logos directory contains comprehensive documentation describing the dual ver
 - Proof library for computational scaling
 
 **External References**:
-- GitHub: https://github.com/benbrastmckie/ProofChecker
+- GitHub: https://github.com/benbrastmckie/Logos
 - GitHub: https://github.com/benbrastmckie/ModelChecker
 - PyPI: https://pypi.org/project/model-checker/
 - Research: "Counterfactual Worlds" (2025) by Brast-McKie
 - Research: Kit Fine's hyperintensional semantics work
 
 ### 2. LOGOS_LAYERS.md (32,331 bytes)
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/LOGOS_LAYERS.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/LOGOS_LAYERS.md`
 **Purpose**: Comprehensive specification of Logos layer architecture and operator extensibility
 **Last Updated**: December 2025
 
@@ -89,7 +89,7 @@ The Logos directory contains comprehensive documentation describing the dual ver
 - Phase 4: Layer 3 - "Post Layer 2 completion"
 
 ### 3. PROOF_LIBRARY.md (17,739 bytes)
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/PROOF_LIBRARY.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/PROOF_LIBRARY.md`
 **Purpose**: Documentation of proof library architecture for theorem caching and fast inference
 **Last Updated**: December 2025
 
@@ -129,7 +129,7 @@ The Logos directory contains comprehensive documentation describing the dual ver
 - Composed patterns (multi-step derivations)
 
 ### 4. RL_TRAINING.md (29,193 bytes)
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/RL_TRAINING.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/RL_TRAINING.md`
 **Purpose**: Comprehensive documentation of dual verification training loop architecture
 **Last Updated**: December 2025
 
@@ -212,14 +212,14 @@ All Logos files follow consistent standards:
 - Focus on "verified AI reasoning"
 - Emphasis on "AI safety" and "mathematical certainty"
 
-## Relationship to ProofChecker Implementation
+## Relationship to Logos Implementation
 
 **Alignment Claims**:
-- Logos Layer 0 = ProofChecker TM logic implementation
-- 8 axiom schemata match ProofChecker axioms
-- 7 inference rules match ProofChecker rules
+- Logos Layer 0 = Logos TM logic implementation
+- 8 axiom schemata match Logos axioms
+- 7 inference rules match Logos rules
 - Perpetuity principles P1-P6 mentioned as theorems
-- Task semantics matches ProofChecker semantic framework
+- Task semantics matches Logos semantic framework
 
 **Status Claims**:
 - "Layer 0 MVP complete" (needs verification against actual implementation)
@@ -229,14 +229,14 @@ All Logos files follow consistent standards:
 
 ## Gaps and Questions for Further Analysis
 
-1. **Accuracy of Status Claims**: Do implementation status claims match actual ProofChecker code?
-2. **Terminology Consistency**: Does ProofChecker use "Logos" terminology elsewhere?
+1. **Accuracy of Status Claims**: Do implementation status claims match actual Logos code?
+2. **Terminology Consistency**: Does Logos use "Logos" terminology elsewhere?
 3. **Dual Verification Implementation**: Is model-checker integration actually implemented?
 4. **RL Training Architecture**: Is this training loop actually implemented anywhere?
-5. **Proof Library**: Does ProofChecker have a proof library implementation?
-6. **Layer Extensions**: Are Layer 1-3 operators defined in ProofChecker code?
+5. **Proof Library**: Does Logos have a proof library implementation?
+6. **Layer Extensions**: Are Layer 1-3 operators defined in Logos code?
 7. **Application Examples**: Are medical/legal/negotiation examples implemented?
-8. **Research Foundations**: How do these docs relate to ProofChecker's academic foundation?
+8. **Research Foundations**: How do these docs relate to Logos's academic foundation?
 
 ## Recommended Next Steps
 

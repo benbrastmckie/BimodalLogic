@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-This report analyzes the feasibility and approach for replacing the temporal operators `always` and `sometimes` in ProofChecker with Unicode triangle characters (△ for always, ▽ for sometimes). Current analysis shows these operators are defined as derived functions in `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax/Formula.lean` with `always` aliasing `future` and `sometimes` defined as the dual. The replacement would require: (1) adding LEAN 4 notation declarations, (2) updating 28 LEAN source files, (3) revising 20+ documentation files, (4) updating the logical operators glossary, and (5) ensuring LEAN 4 notation system compatibility with Unicode mathematical operators U+25B3 and U+25BD.
+This report analyzes the feasibility and approach for replacing the temporal operators `always` and `sometimes` in Logos with Unicode triangle characters (△ for always, ▽ for sometimes). Current analysis shows these operators are defined as derived functions in `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax/Formula.lean` with `always` aliasing `future` and `sometimes` defined as the dual. The replacement would require: (1) adding LEAN 4 notation declarations, (2) updating 28 LEAN source files, (3) revising 20+ documentation files, (4) updating the logical operators glossary, and (5) ensuring LEAN 4 notation system compatibility with Unicode mathematical operators U+25B3 and U+25BD.
 
 ## Findings
 
@@ -17,7 +17,7 @@ This report analyzes the feasibility and approach for replacing the temporal ope
 
 #### 1.1 Current Operator Definitions
 
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax/Formula.lean:94-123`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax/Formula.lean:94-123`
 
 The `always` and `sometimes` operators are currently defined as derived functions:
 
@@ -48,7 +48,7 @@ def sometimes (φ : Formula) : Formula := φ.neg.always.neg
 
 #### 1.2 Documentation Definitions
 
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md:157-176`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md:157-176`
 
 The glossary defines these operators using text names:
 
@@ -79,7 +79,7 @@ Combined modal-temporal operator - expresses that a formula holds at some time.
 
 #### 1.3 Architecture Documentation
 
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md:48-49`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md:48-49`
 
 ```lean
 def always (φ : Formula) : Formula := and (and (Formula.past φ) φ) (Formula.future φ)
@@ -135,26 +135,26 @@ These are well-established Unicode characters with broad font support.
 Search results show **32 LEAN files** in the codebase, with **always** appearing in 10 LEAN files and **sometimes** in 5 LEAN files:
 
 **Files with `always`**:
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax/Formula.lean:98` (definition)
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax/Formula.lean:103` (used in `sometimes` definition)
-3. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/Axioms.lean:25` (TL axiom comment)
-4. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/Axioms.lean:81` (comment)
-5. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/Axioms.lean:98-99` (comments)
-6. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/Axioms.lean:122` (comment)
-7. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Syntax/FormulaTest.lean:15` (test comment)
-8. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Syntax/FormulaTest.lean:85-86` (test cases)
-9. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Syntax/FormulaTest.lean:89-90` (test cases)
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax/Formula.lean:98` (definition)
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax/Formula.lean:103` (used in `sometimes` definition)
+3. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/Axioms.lean:25` (TL axiom comment)
+4. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/Axioms.lean:81` (comment)
+5. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/Axioms.lean:98-99` (comments)
+6. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/Axioms.lean:122` (comment)
+7. `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Syntax/FormulaTest.lean:15` (test comment)
+8. `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Syntax/FormulaTest.lean:85-86` (test cases)
+9. `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Syntax/FormulaTest.lean:89-90` (test cases)
 
 **Files with `sometimes`**:
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax/Formula.lean:106` (definition)
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax/Formula.lean:121-123` (related operator)
-3. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Syntax/FormulaTest.lean:15` (test comment)
-4. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Syntax/FormulaTest.lean:88-90` (test cases)
-5. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Syntax/FormulaTest.lean:97` (test case)
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax/Formula.lean:106` (definition)
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax/Formula.lean:121-123` (related operator)
+3. `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Syntax/FormulaTest.lean:15` (test comment)
+4. `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Syntax/FormulaTest.lean:88-90` (test cases)
+5. `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Syntax/FormulaTest.lean:97` (test case)
 
 #### 3.2 Test Coverage Analysis
 
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Syntax/FormulaTest.lean:85-97`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Syntax/FormulaTest.lean:85-97`
 
 ```lean
 -- Test: Derived 'always' temporal operator (future for all times)
@@ -175,27 +175,27 @@ Tests validate the current definitions using propositional equality (`rfl`).
 Search shows **always** in 93 files and **sometimes** in 28 files across documentation:
 
 **Key Documentation Files**:
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md` (multiple references)
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md` (project overview)
-3. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md` (operator definitions)
-4. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md` (formal specification)
-5. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/TUTORIAL.md` (usage examples)
-6. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/EXAMPLES.md` (code examples)
-7. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/TESTING_STANDARDS.md`
-8. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/LEAN_STYLE_GUIDE.md`
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` (multiple references)
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md` (project overview)
+3. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md` (operator definitions)
+4. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md` (formal specification)
+5. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/TUTORIAL.md` (usage examples)
+6. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/EXAMPLES.md` (code examples)
+7. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/TESTING_STANDARDS.md`
+8. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/LEAN_STYLE_GUIDE.md`
 
 ### 4. LEAN 4 Notation System Requirements
 
 #### 4.1 Existing Notation Patterns
 
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Validity.lean:52,68`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Validity.lean:52,68`
 
 ```lean
 notation:50 "⊨ " φ:50 => valid φ
 notation:50 Γ:50 " ⊨ " φ:50 => semantic_consequence Γ φ
 ```
 
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/Derivation.lean:128,133`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/Derivation.lean:128,133`
 
 ```lean
 notation:50 Γ " ⊢ " φ => Derivable Γ φ
@@ -313,7 +313,7 @@ Before adding triangle notation, resolve the semantic mismatch between glossary 
 Implement Unicode triangle operators using prefix notation pattern:
 
 ```lean
--- In ProofChecker/Syntax/Formula.lean (after line 106)
+-- In Logos/Syntax/Formula.lean (after line 106)
 
 /-- Notation for temporal 'always' operator using upward triangle -/
 prefix:80 "△" => Formula.always
@@ -408,7 +408,7 @@ Implement comprehensive testing for notation changes:
 5. **Encoding Tests**: Verify UTF-8 encoding preserved after edits
 
 **Test File Updates Required**:
-- `ProofCheckerTest/Syntax/FormulaTest.lean`: Add notation tests
+- `LogosTest/Syntax/FormulaTest.lean`: Add notation tests
 - Update existing tests on lines 85-97 to include symbol notation
 - Add examples: `example : △p = p.always := rfl`
 
@@ -441,19 +441,19 @@ If full replacement is too disruptive, consider gradual introduction:
 ### Codebase Files Analyzed
 
 **LEAN Source Files** (with line numbers):
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax/Formula.lean:94-123` — Current operator definitions
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/Axioms.lean:25,81,98-99,122` — Axiom usage in comments
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Validity.lean:52,68` — Notation pattern examples
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/Derivation.lean:128,133` — Notation pattern examples
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Syntax/FormulaTest.lean:15,85-97` — Test cases for operators
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax/Formula.lean:94-123` — Current operator definitions
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/Axioms.lean:25,81,98-99,122` — Axiom usage in comments
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Validity.lean:52,68` — Notation pattern examples
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/Derivation.lean:128,133` — Notation pattern examples
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Syntax/FormulaTest.lean:15,85-97` — Test cases for operators
 
 **Documentation Files**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md:157-176` — Operator glossary entries
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md:48-49` — Formal language definition
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md` — Project overview
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md` — Development guide
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/TUTORIAL.md` — Usage tutorial
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/EXAMPLES.md` — Code examples
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md:157-176` — Operator glossary entries
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md:48-49` — Formal language definition
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` — Project overview
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md` — Development guide
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/TUTORIAL.md` — Usage tutorial
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/EXAMPLES.md` — Code examples
 
 **Previous Related Work**:
 - `.claude/specs/009_unicode_symbol_standardization/reports/001-unicode-symbol-analysis.md` — Unicode standardization research

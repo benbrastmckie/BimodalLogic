@@ -74,7 +74,7 @@ warning: declaration uses 'sorry' (line 577 - expected, pre-existing)
    - Does not affect soundness of completed theorems
 
 ## Files Modified
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean`
 
 ## Key Learnings
 

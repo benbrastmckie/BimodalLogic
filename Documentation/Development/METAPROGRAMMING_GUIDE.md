@@ -1,17 +1,17 @@
-# LEAN 4 Metaprogramming Guide for ProofChecker
+# LEAN 4 Metaprogramming Guide for Logos
 
 ## 1. Introduction
 
 ### Purpose
 
 This guide provides systematic coverage of LEAN 4 metaprogramming fundamentals for
-implementing custom tactics in ProofChecker's automation package. It focuses on the
+implementing custom tactics in Logos's automation package. It focuses on the
 `Lean.Elab.Tactic` API, expression manipulation, goal management, and proof term
 construction required for Task 7 (Implement Core Automation, 40-60 hours).
 
 ### Audience
 
-This guide targets developers implementing custom tactics for ProofChecker,
+This guide targets developers implementing custom tactics for Logos,
 particularly those working on:
 
 - `apply_axiom` - Apply specific TM axiom to goal (8-10 hours)
@@ -24,7 +24,7 @@ particularly those working on:
 Before reading this guide, you should have:
 
 1. **Basic LEAN 4 Syntax**: Functions, types, inductive types, pattern matching
-2. **ProofChecker Architecture**: Understanding of `Formula`, `Derivable`, `Axiom`
+2. **Logos Architecture**: Understanding of `Formula`, `Derivable`, `Axiom`
    types (see `Documentation/UserGuide/ARCHITECTURE.md`)
 3. **Proof System Knowledge**: Familiarity with TM axioms (MT, M4, MB, T4, TA, TL,
    MF, TF) and inference rules (MP, MK, TK, TD)
@@ -53,14 +53,14 @@ import Lean.MVarId            -- Goal identifier and operations
 open Lean Elab Tactic Meta
 ```
 
-### ProofChecker-Specific Imports
+### Logos-Specific Imports
 
-Import ProofChecker modules for TM logic types and operations:
+Import Logos modules for TM logic types and operations:
 
 ```lean
-import ProofChecker.Syntax.Formula         -- Formula inductive type
-import ProofChecker.ProofSystem.Axioms     -- TM axiom schemata
-import ProofChecker.ProofSystem.Derivation -- Derivable relation, inference rules
+import Logos.Syntax.Formula         -- Formula inductive type
+import Logos.ProofSystem.Axioms     -- TM axiom schemata
+import Logos.ProofSystem.Derivation -- Derivable relation, inference rules
 ```
 
 ### Complete Working Example
@@ -68,25 +68,25 @@ import ProofChecker.ProofSystem.Derivation -- Derivable relation, inference rule
 Full import block for a tactic file:
 
 ```lean
--- File: ProofChecker/Automation/Tactics.lean
+-- File: Logos/Automation/Tactics.lean
 import Lean.Elab.Tactic
 import Lean.Meta.Basic
 import Lean.Expr
 import Lean.MVarId
 
-import ProofChecker.Syntax.Formula
-import ProofChecker.ProofSystem.Axioms
-import ProofChecker.ProofSystem.Derivation
+import Logos.Syntax.Formula
+import Logos.ProofSystem.Axioms
+import Logos.ProofSystem.Derivation
 
-namespace ProofChecker.Automation
+namespace Logos.Automation
 
 open Lean Elab Tactic Meta
-open ProofChecker.Syntax (Formula)
-open ProofChecker.ProofSystem (Axiom Derivable)
+open Logos.Syntax (Formula)
+open Logos.ProofSystem (Axiom Derivable)
 
 -- Tactic implementations here...
 
-end ProofChecker.Automation
+end Logos.Automation
 ```
 
 ## 3. Goal Management
@@ -709,7 +709,7 @@ elab "assumption_search" : tactic => do
   09_tactics.html)
 - [LEAN 4 API Documentation](https://leanprover-community.github.io/mathlib4_docs/)
 
-### ProofChecker Documentation
+### Logos Documentation
 
 - [TACTIC_DEVELOPMENT.md](TACTIC_DEVELOPMENT.md) - Tactic patterns and Aesop
   integration

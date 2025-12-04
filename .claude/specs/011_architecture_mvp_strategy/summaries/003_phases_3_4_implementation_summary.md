@@ -23,34 +23,34 @@ Post-MVP phases (not started):
 ### Artifacts Created
 
 #### Module Root
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics.lean` - Module root exporting all semantic components
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics.lean` - Module root exporting all semantic components
 
 #### Core Structures
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskFrame.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskFrame.lean`
   - `TaskFrame` structure with world states, times, task relation
   - Nullity constraint: `∀ w, task_rel w 0 w`
   - Compositionality constraint: sequential task composition
   - `intFrame` example for testing
 
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/WorldHistory.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/WorldHistory.lean`
   - `IsConvex` predicate for time sets
   - Convexity lemmas (empty, singleton, interval)
   - `WorldHistory` structure with convex domain and task respect
   - Dependent type for state assignment: `(t : F.Time) → t ∈ domain → F.WorldState`
 
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskModel.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskModel.lean`
   - `TaskModel` structure extending frame with valuation
   - Helper models: `allFalse`, `allTrue`, `fromList`
 
 #### Truth Evaluation
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean`
   - `truth_at` recursive function with 6 cases (atom, bot, imp, box, past, future)
   - Notation: `M, τ, t, ht ⊨ φ`
   - Truth lemmas: `bot_false`, `imp_iff`, `atom_iff`, `box_iff`, `past_iff`, `future_iff`
   - Derived operators: `neg_iff`, `diamond_iff`
 
 #### Validity
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Validity.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Validity.lean`
   - `valid` predicate: truth in all models
   - `semantic_consequence`: `Γ ⊨ φ` relation
   - `satisfiable` predicate for contexts
@@ -58,12 +58,12 @@ Post-MVP phases (not started):
   - Validity lemmas: monotonicity, consequence relationships
 
 #### Tests Created
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Semantics/TaskFrameTest.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Semantics/TaskFrameTest.lean`
   - TaskFrame construction tests
   - Nullity and compositionality verification
   - `simpleFrame` example
 
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Semantics/TruthTest.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Semantics/TruthTest.lean`
   - Truth evaluation tests for atoms, bot
   - `testFrame`, `testModel`, `testHistory` helpers
 
@@ -82,10 +82,10 @@ Post-MVP phases (not started):
 ### Artifacts Created
 
 #### Module Root
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic.lean` - Module root for metalogical results
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic.lean` - Module root for metalogical results
 
 #### Soundness Proof
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean`
   - **`modal_t_valid`**: Fully proven validity of Modal T axiom (`□φ → φ`)
   - **`axiom_valid`**: Helper showing all axioms valid
   - **`soundness`**: Main theorem `Γ ⊢ φ → Γ ⊨ φ`
@@ -113,13 +113,13 @@ Axiom validity (1 proven, 7 placeholders):
 - `temp_future_valid`: Placeholder
 
 #### Tests Created
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Metalogic/SoundnessTest.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Metalogic/SoundnessTest.lean`
   - Modal T validity test
   - Modal T derivation test
   - Soundness application tests
   - Modus ponens soundness test
 
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Integration/EndToEndTest.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Integration/EndToEndTest.lean`
   - Integration Test 1: Derive Modal T
   - Integration Test 2: Soundness gives validity
   - Integration Test 3: Direct validity proof
@@ -146,14 +146,14 @@ Axiom validity (1 proven, 7 placeholders):
 
 ### Module Structure
 ```
-ProofChecker/
+Logos/
 ├── Syntax/ (2 files: Formula, Context)
 ├── ProofSystem/ (2 files: Axioms, Derivation)
 ├── Semantics/ (5 files: TaskFrame, WorldHistory, TaskModel, Truth, Validity)
 ├── Metalogic/ (1 file: Soundness)
 └── 4 module roots (Syntax, ProofSystem, Semantics, Metalogic)
 
-ProofCheckerTest/
+LogosTest/
 ├── Syntax/ (2 files)
 ├── ProofSystem/ (2 files)
 ├── Semantics/ (2 files)

@@ -1,6 +1,6 @@
-# ProofCheckerTest
+# LogosTest
 
-Comprehensive test suite for ProofChecker, organized by module.
+Comprehensive test suite for Logos, organized by module.
 
 ## Test Organization
 
@@ -45,17 +45,17 @@ lake test
 
 ```bash
 # Test specific module
-lake test ProofCheckerTest.Syntax
-lake test ProofCheckerTest.ProofSystem
-lake test ProofCheckerTest.Semantics
-lake test ProofCheckerTest.Integration
-lake test ProofCheckerTest.Metalogic
-lake test ProofCheckerTest.Theorems
-lake test ProofCheckerTest.Automation
+lake test LogosTest.Syntax
+lake test LogosTest.ProofSystem
+lake test LogosTest.Semantics
+lake test LogosTest.Integration
+lake test LogosTest.Metalogic
+lake test LogosTest.Theorems
+lake test LogosTest.Automation
 
 # Test specific file
-lake env lean ProofCheckerTest/Syntax/FormulaTest.lean
-lake env lean ProofCheckerTest/ProofSystem/AxiomsTest.lean
+lake env lean LogosTest/Syntax/FormulaTest.lean
+lake env lean LogosTest/ProofSystem/AxiomsTest.lean
 ```
 
 ### Interpreting Output
@@ -105,8 +105,8 @@ lake env lean ProofCheckerTest/ProofSystem/AxiomsTest.lean
 **Tests**: `test_<feature>_<expected_behavior>`
 - Example: `test_imp_reflexivity`, `test_modal_t_valid`, `test_modus_ponens`
 
-**Modules**: `ProofCheckerTest.<Category>.<Module>Test`
-- Example: `ProofCheckerTest.Syntax.FormulaTest`
+**Modules**: `LogosTest.<Category>.<Module>Test`
+- Example: `LogosTest.Syntax.FormulaTest`
 
 ### Test Categories
 
@@ -138,9 +138,9 @@ lake env lean ProofCheckerTest/ProofSystem/AxiomsTest.lean
 Tests for [module description].
 -/
 
-import ProofChecker.[Module]
+import Logos.[Module]
 
-namespace ProofCheckerTest.[Module]Test
+namespace LogosTest.[Module]Test
 
 -- Test helper functions (if needed)
 def test_helper : Type := sorry
@@ -156,7 +156,7 @@ theorem test_property_holds : ∀ (x : Type), property x := by
   -- Property proof
   sorry
 
-end ProofCheckerTest.[Module]Test
+end LogosTest.[Module]Test
 ```
 
 ## Test Quality Standards
@@ -290,7 +290,7 @@ Coverage reports show:
 
 ## Navigation
 
-- **Up**: [ProofChecker Root](../)
-- **Source Code**: [ProofChecker/](../ProofChecker/)
+- **Up**: [Logos Root](../)
+- **Source Code**: [Logos/](../Logos/)
 - **Documentation**: [Documentation/](../Documentation/)
 - **Examples**: [Archive/](../Archive/)

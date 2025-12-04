@@ -1,11 +1,11 @@
-# Integration Recommendations: Logos Documentation into ProofChecker
+# Integration Recommendations: Logos Documentation into Logos
 
 **Research Date**: 2025-12-03
-**Purpose**: Provide specific, actionable recommendations for integrating Logos/ documents into ProofChecker Documentation/
+**Purpose**: Provide specific, actionable recommendations for integrating Logos/ documents into Logos Documentation/
 
 ## Executive Summary
 
-**Recommendation**: **INTEGRATE WITH RESTRUCTURING** - The Logos documentation provides valuable conceptual and motivational content that should be integrated into the ProofChecker documentation ecosystem, but requires significant updates for accuracy and clear separation of "implemented" vs "planned" features.
+**Recommendation**: **INTEGRATE WITH RESTRUCTURING** - The Logos documentation provides valuable conceptual and motivational content that should be integrated into the Logos documentation ecosystem, but requires significant updates for accuracy and clear separation of "implemented" vs "planned" features.
 
 **Integration Strategy**: Three-tier approach:
 1. **Tier 1 (High Priority)**: Update Logos docs for accuracy, move to appropriate Documentation locations
@@ -20,7 +20,7 @@
 
 **Logos Provides Value**:
 1. **Philosophical Motivation**: Connects implementation to research foundations
-2. **AI Safety Context**: Positions ProofChecker in broader AI reasoning landscape
+2. **AI Safety Context**: Positions Logos in broader AI reasoning landscape
 3. **Application Examples**: Medical, legal, negotiation scenarios motivate operator extensions
 4. **Dual Verification Framework**: Explains proof-checker + model-checker coordination
 5. **Training Architecture**: Describes RL training vision (even if not implemented)
@@ -99,7 +99,7 @@
 ```markdown
 > **Implementation Status**: This document describes the **planned architecture** for a proof
 > library with theorem caching and pattern matching. The proof library is **not yet implemented**
-> in the ProofChecker repository. Current status: Design phase, no code implementation.
+> in the Logos repository. Current status: Design phase, no code implementation.
 >
 > See [IMPLEMENTATION_STATUS.md](../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) for
 > actual implementation progress.
@@ -111,11 +111,11 @@
 ```markdown
 > **Implementation Status**: This document describes the **research vision** for reinforcement
 > learning training using dual verification. The RL training loop is **not yet implemented** in
-> the ProofChecker repository. Current status: Conceptual framework, proof-checker component
+> the Logos repository. Current status: Conceptual framework, proof-checker component
 > implemented, training integration planned.
 >
 > **Implemented Components**:
-> - ✓ Proof-checker (syntactic verification) - ProofChecker repository
+> - ✓ Proof-checker (syntactic verification) - Logos repository
 > - ✓ Model-checker (semantic verification) - Separate repository
 > - ✗ Training loop coordination - Not implemented
 > - ✗ RL signal generation - Not implemented
@@ -132,7 +132,7 @@
 
 The Logos documentation describes both **implemented features** and **planned architecture**:
 
-**Implemented in ProofChecker** ✓:
+**Implemented in Logos** ✓:
 - Layer 0 (Core TM): Syntax, proof system, semantics packages complete
 - Task frame semantics with world histories
 - 8 TM axioms with validity proofs (soundness: 8/8 axioms, 4/7 rules)
@@ -233,7 +233,7 @@ Documentation/
 # Research Documentation
 
 This directory contains research vision documents describing planned features,
-architectural designs, and future directions for ProofChecker. These documents
+architectural designs, and future directions for Logos. These documents
 describe **research goals** and **planned architecture**, not necessarily
 implemented features.
 
@@ -323,7 +323,7 @@ When implementing features, research documents should be:
    ```markdown
    ## 8. Logos Architecture Integration
 
-   ProofChecker implements the Logos formal language of thought, a layered
+   Logos implements the Logos formal language of thought, a layered
    operator architecture designed for verified AI reasoning. For philosophical
    foundations and research context, see [LOGOS_PHILOSOPHY.md](LOGOS_PHILOSOPHY.md).
 
@@ -341,7 +341,7 @@ When implementing features, research documents should be:
 
    ### Dual Verification Architecture
 
-   ProofChecker provides syntactic verification (proof construction) while
+   Logos provides syntactic verification (proof construction) while
    model-checker provides semantic verification (countermodel search). See
    [Research/DUAL_VERIFICATION.md](../Research/DUAL_VERIFICATION.md) for the
    dual verification training architecture.
@@ -352,7 +352,7 @@ When implementing features, research documents should be:
    This layered approach provides conceptual clarity, enables parallel development,
    and allows delivery of verified reasoning capabilities incrementally.
 
-   **Philosophical Foundations**: ProofChecker implements the Logos formal language
+   **Philosophical Foundations**: Logos implements the Logos formal language
    of thought. See [LOGOS_PHILOSOPHY.md](LOGOS_PHILOSOPHY.md) for motivation and
    research context. This architecture guide focuses on LEAN implementation details.
    ```
@@ -396,13 +396,13 @@ Research vision and planned architecture:
 
 **File**: `Documentation/Reference/GLOSSARY.md`
 
-**Purpose**: Map terminology between Logos and ProofChecker documentation
+**Purpose**: Map terminology between Logos and Logos documentation
 
 **Structure**:
 ```markdown
 # Terminology Glossary
 
-This glossary maps terminology used across different ProofChecker documentation.
+This glossary maps terminology used across different Logos documentation.
 
 ## Layer Architecture
 
@@ -440,20 +440,20 @@ This glossary maps terminology used across different ProofChecker documentation.
 
 ## Cross-References
 
-- **Logos → ProofChecker**: "Logos formal language" = TM logic implementation
-- **ProofChecker → Logos**: "Layer 0" = Core Layer with Boolean + Modal + Temporal
-- **Status terms**: "Axiomatized" (ProofChecker) = semantic justification without syntactic proof
+- **Logos → Logos**: "Logos formal language" = TM logic implementation
+- **Logos → Logos**: "Layer 0" = Core Layer with Boolean + Modal + Temporal
+- **Status terms**: "Axiomatized" (Logos) = semantic justification without syntactic proof
 ```
 
 **Estimated Time**: 2-3 hours
 
 ### Task 3.4: Update CLAUDE.md
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md`
 
 **Update Project Overview** (lines 7-19):
 ```diff
- ProofChecker is a LEAN 4 implementation of an axiomatic proof system for the bimodal
+ Logos is a LEAN 4 implementation of an axiomatic proof system for the bimodal
 -logic TM (Tense and Modality) with task semantics. It provides:
 +logic TM (Tense and Modality) with task semantics, implementing the Logos formal
 +language of thought. It provides:
@@ -532,7 +532,7 @@ mkdir -p Archive/logos-original
 mv Logos/* Archive/logos-original/
 echo "# Original Logos Documentation
 
-These files are the original Logos documentation integrated into the ProofChecker
+These files are the original Logos documentation integrated into the Logos
 repository. This content has been reorganized and integrated into the main
 Documentation/ directory.
 

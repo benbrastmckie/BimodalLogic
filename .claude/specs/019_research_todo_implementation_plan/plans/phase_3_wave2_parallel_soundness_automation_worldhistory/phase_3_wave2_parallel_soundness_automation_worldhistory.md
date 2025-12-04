@@ -29,7 +29,7 @@
 ### Completed Work
 
 #### Task 3A.1: TL Axiom Proof ✅ COMPLETE
-**File**: `ProofChecker/Metalogic/Soundness.lean`
+**File**: `Logos/Metalogic/Soundness.lean`
 
 **What was done**:
 1. Added classical logic helper `and_of_not_imp_not` to extract conjunction from negated implication encoding
@@ -41,7 +41,7 @@
 **Paper Correspondence**: Follows paper proof at line 2334 - given `always φ` (φ at all times), proving `Future Past φ` is immediate since any past time of any future time is still "all times."
 
 #### Task 3A.2: Time-Shift Infrastructure ✅ COMPLETE
-**File**: `ProofChecker/Semantics/WorldHistory.lean`
+**File**: `Logos/Semantics/WorldHistory.lean`
 
 **What was implemented**:
 ```lean
@@ -72,7 +72,7 @@ def time_shift (σ : WorldHistory F) (Δ : Int) : WorldHistory F where
 - `time_shift_inverse_domain`: Double shift cancellation
 
 #### Task 3A.4: MF Axiom Proof ✅ COMPLETE
-**File**: `ProofChecker/Metalogic/Soundness.lean` (lines 400-423)
+**File**: `Logos/Metalogic/Soundness.lean` (lines 400-423)
 
 **What was done**:
 Proved `modal_future_valid` using time-shift preservation:
@@ -91,7 +91,7 @@ theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.future).box))
 ```
 
 #### Task 3A.5: TF Axiom Proof ✅ COMPLETE
-**File**: `ProofChecker/Metalogic/Soundness.lean` (lines 452-475)
+**File**: `Logos/Metalogic/Soundness.lean` (lines 452-475)
 
 **What was done**:
 Proved `temp_future_valid` using time-shift preservation (symmetric to MF).
@@ -99,7 +99,7 @@ Proved `temp_future_valid` using time-shift preservation (symmetric to MF).
 **Key Achievement**: All 10 TM axioms now have validity lemmas!
 
 #### Task 3A.6: Transport Lemmas ✅ COMPLETE (2025-12-03)
-**File**: `ProofChecker/Semantics/WorldHistory.lean`
+**File**: `Logos/Semantics/WorldHistory.lean`
 
 **Lemmas implemented**:
 
@@ -113,7 +113,7 @@ Proved `temp_future_valid` using time-shift preservation (symmetric to MF).
 | `time_shift_time_shift_neg_states` | Double shift states equal original |
 
 #### Task 3A.7: Time-Shift Preservation Lemma ✅ COMPLETE (2025-12-03)
-**File**: `ProofChecker/Semantics/Truth.lean`
+**File**: `Logos/Semantics/Truth.lean`
 
 **What was done**:
 1. Added `truth_proof_irrel` - Truth independent of domain membership proof
@@ -222,7 +222,7 @@ Current state (2025-12-03 post-completion):
 | Soundness.lean | 584 | temporal_duality | Deferred (semantic duality) |
 | WorldHistory.lean | 119 | universal | Documented limitation |
 
-**Total sorry in ProofChecker/**: 5 (in core files) + 4 (in Automation stubs) = 9
+**Total sorry in Logos/**: 5 (in core files) + 4 (in Automation stubs) = 9
 
 ---
 
@@ -230,8 +230,8 @@ Current state (2025-12-03 post-completion):
 
 - **Summary**: [lean_proof_phase3_transport.md](../summaries/lean_proof_phase3_transport.md)
 - **Files Modified**:
-  - `ProofChecker/Semantics/WorldHistory.lean` (lines 200-260: 6 transport lemmas)
-  - `ProofChecker/Semantics/Truth.lean` (lines 162-538: helper lemmas + completed proof)
+  - `Logos/Semantics/WorldHistory.lean` (lines 200-260: 6 transport lemmas)
+  - `Logos/Semantics/Truth.lean` (lines 162-538: helper lemmas + completed proof)
 
 ---
 

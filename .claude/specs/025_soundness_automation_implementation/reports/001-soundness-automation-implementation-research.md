@@ -30,7 +30,7 @@ This report provides comprehensive research and technical analysis for implement
 
 ### 1.1 Soundness Proofs Status (Task 5)
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean`
 
 **Completed Components** (8 axioms, 4 rules):
 - **Axioms**: All 10 axioms proven sound (MT, M4, MB, T4, TA, TL, MF, TF, prop_k, prop_s)
@@ -82,8 +82,8 @@ This report provides comprehensive research and technical analysis for implement
 ### 1.2 Automation Package Status (Task 7)
 
 **File Structure**:
-- `/ProofChecker/Automation/Tactics.lean` - Custom tactic declarations (8 axiom stubs)
-- `/ProofChecker/Automation/ProofSearch.lean` - Proof search functions (8 axiom stubs)
+- `/Logos/Automation/Tactics.lean` - Custom tactic declarations (8 axiom stubs)
+- `/Logos/Automation/ProofSearch.lean` - Proof search functions (8 axiom stubs)
 
 **Current Implementation**: Documentation-only stubs with `axiom` declarations (no implementations)
 
@@ -120,8 +120,8 @@ This report provides comprehensive research and technical analysis for implement
 **Current State**: No automation test files exist
 
 **Required Files**:
-- `/ProofCheckerTest/Automation/TacticsTest.lean` (to be created)
-- `/ProofCheckerTest/Automation/ProofSearchTest.lean` (to be created)
+- `/LogosTest/Automation/TacticsTest.lean` (to be created)
+- `/LogosTest/Automation/ProofSearchTest.lean` (to be created)
 
 **Test Patterns** (from TACTIC_DEVELOPMENT.md, lines 577-619):
 - Unit tests for individual tactic correctness
@@ -383,7 +383,7 @@ example (P : Formula) : [] ⊢ (Formula.box P).imp (Formula.box (Formula.box P))
 
 **Implementation Steps**:
 1. Add macro definition to `Automation/Tactics.lean`
-2. Write unit tests in `ProofCheckerTest/Automation/TacticsTest.lean`:
+2. Write unit tests in `LogosTest/Automation/TacticsTest.lean`:
    - Test each axiom (MT, M4, MB, T4, TA, TL, MF, TF, prop_k, prop_s)
    - Test failure on non-axiom goals
 3. Document in module docstring
@@ -604,7 +604,7 @@ example (P Q : Formula) (h1 : [] ⊢ P.imp Q) (h2 : [] ⊢ P) : [] ⊢ Q := by
 
 **File Structure**:
 ```
-ProofCheckerTest/Automation/
+LogosTest/Automation/
 ├── TacticsTest.lean          # Unit tests for all tactics
 └── ProofSearchTest.lean      # Proof search tests (future)
 ```
@@ -1150,14 +1150,14 @@ All major risks have clear mitigation strategies. The phased approach for Task 7
 
 ### 8.1 Source Files Analyzed
 
-1. `/ProofChecker/TODO.md` (lines 135-295) - Task definitions and estimates
-2. `/ProofChecker/ProofChecker/Metalogic/Soundness.lean` - Current soundness implementation
-3. `/ProofChecker/ProofChecker/Automation/Tactics.lean` - Tactic stubs
-4. `/ProofChecker/ProofChecker/Automation/ProofSearch.lean` - Proof search stubs
-5. `/ProofChecker/Documentation/Development/TACTIC_DEVELOPMENT.md` - Tactic patterns and Aesop integration
-6. `/ProofChecker/Documentation/Development/METAPROGRAMMING_GUIDE.md` - LEAN 4 metaprogramming reference
-7. `/ProofChecker/ProofChecker/Semantics/Truth.lean` - Truth evaluation and time-shift preservation
-8. `/ProofChecker/ProofChecker/Semantics/WorldHistory.lean` - World history time-shift infrastructure
+1. `/Logos/TODO.md` (lines 135-295) - Task definitions and estimates
+2. `/Logos/Logos/Metalogic/Soundness.lean` - Current soundness implementation
+3. `/Logos/Logos/Automation/Tactics.lean` - Tactic stubs
+4. `/Logos/Logos/Automation/ProofSearch.lean` - Proof search stubs
+5. `/Logos/Documentation/Development/TACTIC_DEVELOPMENT.md` - Tactic patterns and Aesop integration
+6. `/Logos/Documentation/Development/METAPROGRAMMING_GUIDE.md` - LEAN 4 metaprogramming reference
+7. `/Logos/Logos/Semantics/Truth.lean` - Truth evaluation and time-shift preservation
+8. `/Logos/Logos/Semantics/WorldHistory.lean` - World history time-shift infrastructure
 
 ### 8.2 Key Documentation References
 
@@ -1223,7 +1223,7 @@ from Phases 1-4. Actual remaining work is tactic implementation + Aesop attribut
 ### B.1 Task 7 Phase 1: `apply_axiom` (Ready to implement)
 
 ```lean
--- Add to ProofChecker/Automation/Tactics.lean
+-- Add to Logos/Automation/Tactics.lean
 /-- Apply specific TM axiom by name
 Usage:
   example (P : Formula) : [] ⊢ (Formula.box P).imp P := by
@@ -1236,7 +1236,7 @@ macro "apply_axiom" ax:ident : tactic =>
 ### B.2 Task 7 Phase 2: Aesop Setup (Ready to implement)
 
 ```lean
--- Add to ProofChecker/Automation/Tactics.lean
+-- Add to Logos/Automation/Tactics.lean
 -- Step 1: Declare rule set
 declare_aesop_rule_sets [TMLogic]
 
@@ -1256,15 +1256,15 @@ macro "tm_auto" : tactic =>
 ### B.3 Task 12: Basic Test Template (Ready to use)
 
 ```lean
--- Create ProofCheckerTest/Automation/TacticsTest.lean
-import ProofChecker.Automation.Tactics
-import ProofChecker.Syntax.Formula
-import ProofChecker.ProofSystem.Derivation
+-- Create LogosTest/Automation/TacticsTest.lean
+import Logos.Automation.Tactics
+import Logos.Syntax.Formula
+import Logos.ProofSystem.Derivation
 
-namespace ProofCheckerTest.Automation
+namespace LogosTest.Automation
 
-open ProofChecker.Syntax (Formula)
-open ProofChecker.ProofSystem (Derivable)
+open Logos.Syntax (Formula)
+open Logos.ProofSystem (Derivable)
 
 /-- Test apply_axiom with modal_t -/
 def test_apply_axiom_modal_t (P : Formula) : Derivable [] ((Formula.box P).imp P) := by
@@ -1276,11 +1276,11 @@ def test_modal_t_basic (P : Formula) : Derivable [] ((Formula.box P).imp P) := b
 
 -- Add more tests...
 
-end ProofCheckerTest.Automation
+end LogosTest.Automation
 ```
 
 ---
 
 **END OF REPORT**
 
-**REPORT_CREATED**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/025_soundness_automation_implementation/reports/001-soundness-automation-implementation-research.md
+**REPORT_CREATED**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/025_soundness_automation_implementation/reports/001-soundness-automation-implementation-research.md

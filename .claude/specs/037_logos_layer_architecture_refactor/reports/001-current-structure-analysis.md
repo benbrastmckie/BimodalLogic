@@ -1,13 +1,13 @@
 # Current Project Structure Analysis
 
 **Report Date**: 2025-12-04
-**Analysis Scope**: ProofChecker repository comprehensive structure inventory
+**Analysis Scope**: Logos repository comprehensive structure inventory
 **Purpose**: Document baseline for Logos rename and layer architecture refactoring
 
 ## Executive Summary
 
-ProofChecker currently implements a single-namespace architecture with all TM logic (Layer 0) components under the `ProofChecker` namespace. The refactoring will:
-1. Rename the project from ProofChecker to Logos
+Logos currently implements a single-namespace architecture with all TM logic (Layer 0) components under the `Logos` namespace. The refactoring will:
+1. Rename the project from Logos to Logos
 2. Reorganize into a layered architecture with `Logos.Core` for Layer 0
 3. Create extension points for future layers (Explanatory, Epistemic, Normative)
 
@@ -16,9 +16,9 @@ ProofChecker currently implements a single-namespace architecture with all TM lo
 ### Main Source Directories
 
 ```
-ProofChecker/                           # Root project directory
-├── ProofChecker.lean                   # Library root (re-exports all modules)
-├── ProofChecker/                       # Main source directory
+Logos/                           # Root project directory
+├── Logos.lean                   # Library root (re-exports all modules)
+├── Logos/                       # Main source directory
 │   ├── Syntax/                         # Formula types and parsing
 │   │   ├── Formula.lean                # Core formula inductive type
 │   │   └── Context.lean                # Proof context management
@@ -39,8 +39,8 @@ ProofChecker/                           # Root project directory
 │   └── Automation/                     # Proof automation
 │       ├── Tactics.lean                # Custom tactics (4/12 implemented)
 │       └── ProofSearch.lean            # Automated proof search (planned)
-├── ProofCheckerTest/                   # Test suite
-│   ├── ProofCheckerTest.lean           # Test library root
+├── LogosTest/                   # Test suite
+│   ├── LogosTest.lean           # Test library root
 │   ├── Syntax/                         # Syntax tests
 │   ├── ProofSystem/                    # ProofSystem tests
 │   ├── Semantics/                      # Semantics tests
@@ -59,15 +59,15 @@ ProofChecker/                           # Root project directory
 
 ### Current Namespace Hierarchy
 
-All Lean files use the `ProofChecker` namespace:
+All Lean files use the `Logos` namespace:
 
 ```lean
--- ProofChecker.lean (root)
-namespace ProofChecker
+-- Logos.lean (root)
+namespace Logos
   -- Re-exports all public modules
 
--- ProofChecker/Syntax/Formula.lean
-namespace ProofChecker.Syntax
+-- Logos/Syntax/Formula.lean
+namespace Logos.Syntax
   inductive Formula : Type
     | atom : String → Formula
     | bot : Formula
@@ -76,16 +76,16 @@ namespace ProofChecker.Syntax
     | past : Formula → Formula
     | future : Formula → Formula
 
--- ProofChecker/Semantics/TaskFrame.lean
-namespace ProofChecker.Semantics
+-- Logos/Semantics/TaskFrame.lean
+namespace Logos.Semantics
   structure TaskFrame (T : Type) [LinearOrderedAddCommGroup T] where
     WorldState : Type
     task_rel : WorldState → T → WorldState → Prop
     nullity : ∀ w, task_rel w 0 w
     compositionality : ∀ w u v x y, task_rel w x u → task_rel u y v → task_rel w (x + y) v
 
--- ProofChecker/Semantics/WorldHistory.lean
-namespace ProofChecker.Semantics
+-- Logos/Semantics/WorldHistory.lean
+namespace Logos.Semantics
   structure WorldHistory (F : TaskFrame T) where
     domain : T → Prop
     convex : ∀ x z, domain x → domain z → x ≤ z → ∀ y, x ≤ y → y ≤ z → domain y
@@ -96,22 +96,22 @@ namespace ProofChecker.Semantics
 
 ### Import Pattern Analysis
 
-**Files Importing ProofChecker Modules** (30+ files):
-- All test files import from `ProofChecker.*`
-- Archive examples import from `ProofChecker.*`
+**Files Importing Logos Modules** (30+ files):
+- All test files import from `Logos.*`
+- Archive examples import from `Logos.*`
 - Internal module dependencies follow hierarchical pattern
 
 **Example Import Chains**:
 ```lean
 -- Truth.lean imports TaskModel, WorldHistory, Formula
-import ProofChecker.Semantics.TaskModel
-import ProofChecker.Semantics.WorldHistory
-import ProofChecker.Syntax.Formula
+import Logos.Semantics.TaskModel
+import Logos.Semantics.WorldHistory
+import Logos.Syntax.Formula
 
 -- Soundness.lean imports multiple modules
-import ProofChecker.Syntax.Formula
-import ProofChecker.ProofSystem.Derivation
-import ProofChecker.Semantics.Validity
+import Logos.Syntax.Formula
+import Logos.ProofSystem.Derivation
+import Logos.Semantics.Validity
 ```
 
 ## 3. Configuration Files
@@ -119,7 +119,7 @@ import ProofChecker.Semantics.Validity
 ### lakefile.toml
 
 ```toml
-name = "ProofChecker"
+name = "Logos"
 version = "0.1.0"
 keywords = ["logic", "modal-logic", "temporal-logic", "proof-system", "lean4"]
 license = "MIT"
@@ -130,20 +130,20 @@ git = "https://github.com/leanprover-community/mathlib4.git"
 rev = "v4.14.0"
 
 [[lean_lib]]
-name = "ProofChecker"
+name = "Logos"
 
 [[lean_lib]]
-name = "ProofCheckerTest"
+name = "LogosTest"
 
 [[lean_lib]]
 name = "Archive"
 
 [[lean_exe]]
 name = "test"
-root = "ProofCheckerTest.Main"
+root = "LogosTest.Main"
 ```
 
-**Impact**: Project name, library names, and test executable root all reference ProofChecker.
+**Impact**: Project name, library names, and test executable root all reference Logos.
 
 ### lean-toolchain
 
@@ -151,13 +151,13 @@ root = "ProofCheckerTest.Main"
 leanprover/lean4:v4.14.0
 ```
 
-**Impact**: No direct ProofChecker references, but version compatibility must be maintained.
+**Impact**: No direct Logos references, but version compatibility must be maintained.
 
 ## 4. Key Semantic Definitions
 
 ### TaskFrame (Core Layer Foundation)
 
-**File**: `ProofChecker/Semantics/TaskFrame.lean`
+**File**: `Logos/Semantics/TaskFrame.lean`
 
 **Current Definition**:
 ```lean
@@ -181,7 +181,7 @@ structure TaskFrame (T : Type) [LinearOrderedAddCommGroup T] where
 
 ### WorldHistory (Possible Worlds)
 
-**File**: `ProofChecker/Semantics/WorldHistory.lean`
+**File**: `Logos/Semantics/WorldHistory.lean`
 
 **Current Definition**:
 ```lean
@@ -203,7 +203,7 @@ structure WorldHistory (F : TaskFrame T) where
 
 ### Truth Evaluation
 
-**File**: `ProofChecker/Semantics/Truth.lean`
+**File**: `Logos/Semantics/Truth.lean`
 
 **Current Pattern**:
 ```lean
@@ -227,25 +227,25 @@ def truth_at (M : TaskModel T) (τ : WorldHistory M.frame) (t : T)
 ### Lean Source Files
 
 **Total Lean Files**: 43 (excluding .lake/ packages)
-- ProofChecker/ source: 15 files
-- ProofCheckerTest/ tests: 21 files
+- Logos/ source: 15 files
+- LogosTest/ tests: 21 files
 - Archive/ examples: 4 files
-- Root level: 3 files (ProofChecker.lean, Archive.lean, ProofCheckerTest.lean)
+- Root level: 3 files (Logos.lean, Archive.lean, LogosTest.lean)
 
-### Files Containing "ProofChecker" in Name or Content
+### Files Containing "Logos" in Name or Content
 
 **Directory/File Names**: 3 directories + multiple files
-- `ProofChecker/` (main source directory)
-- `ProofCheckerTest/` (test directory)
-- `ProofChecker.lean` (root file)
-- `ProofCheckerTest.lean` (test root file)
+- `Logos/` (main source directory)
+- `LogosTest/` (test directory)
+- `Logos.lean` (root file)
+- `LogosTest.lean` (test root file)
 
-**Namespace Declarations**: 33 files with `namespace ProofChecker`
+**Namespace Declarations**: 33 files with `namespace Logos`
 - All main source files
 - All test files
 - All archive examples
 
-**Import Statements**: 30+ files with `import ProofChecker.*`
+**Import Statements**: 30+ files with `import Logos.*`
 
 ### Documentation Files
 
@@ -255,7 +255,7 @@ def truth_at (M : TaskModel T) (τ : WorldHistory M.frame) (t : T)
 - Documentation/ directory: 30+ files
 - .claude/ directory: 20+ files (specs, reports, docs)
 
-**Files Referencing "ProofChecker"**: 40+ markdown files
+**Files Referencing "Logos"**: 40+ markdown files
 - Project name in titles and descriptions
 - File paths in documentation
 - Command examples
@@ -310,8 +310,8 @@ Tactics (Automation) ← imports Derivation, Soundness
 
 **Test Structure Pattern**:
 ```lean
-import ProofChecker.Syntax.Formula
-namespace ProofCheckerTest.Syntax.FormulaTest
+import Logos.Syntax.Formula
+namespace LogosTest.Syntax.FormulaTest
 
 def test_atom_construction : Bool :=
   -- test implementation
@@ -324,7 +324,7 @@ def test_modal_box_diamond_duality : Bool :=
 #guard test_atom_construction
 #guard test_modal_box_diamond_duality
 
-end ProofCheckerTest.Syntax.FormulaTest
+end LogosTest.Syntax.FormulaTest
 ```
 
 **Test Categories**:
@@ -347,7 +347,7 @@ end ProofCheckerTest.Syntax.FormulaTest
 
 **Pattern**:
 ```lean
-import ProofChecker
+import Logos
 
 namespace Archive.ModalProofs
 
@@ -374,15 +374,15 @@ end Archive.ModalProofs
 ```
 .lake/
 ├── build/
-│   ├── lib/ProofChecker/          # Compiled library files
-│   ├── ir/ProofChecker/            # Intermediate representation
+│   ├── lib/Logos/          # Compiled library files
+│   ├── ir/Logos/            # Intermediate representation
 │   └── doc/                        # Generated documentation
 └── packages/
     ├── mathlib/                    # External dependency
     └── aesop/                      # External dependency
 ```
 
-**Impact**: Build artifacts reference ProofChecker namespace and will be regenerated during refactor.
+**Impact**: Build artifacts reference Logos namespace and will be regenerated during refactor.
 
 ## 10. CI/CD Configuration
 
@@ -399,7 +399,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build ProofChecker
+      - name: Build Logos
         run: lake build
       - name: Run tests
         run: lake test
@@ -433,8 +433,8 @@ b159d2d finished soundness
 
 ### High-Impact Changes
 
-1. **Namespace Renaming**: All 33 Lean files with `namespace ProofChecker`
-2. **Import Statements**: All 30+ files importing from `ProofChecker.*`
+1. **Namespace Renaming**: All 33 Lean files with `namespace Logos`
+2. **Import Statements**: All 30+ files importing from `Logos.*`
 3. **File/Directory Names**: 3 directories + root files need renaming
 4. **lakefile.toml**: Library names and package configuration
 5. **Documentation**: 40+ markdown files with project name references
@@ -458,7 +458,7 @@ b159d2d finished soundness
 
 ### Core Layer (Layer 0) Components
 
-**All existing ProofChecker modules become Logos.Core**:
+**All existing Logos modules become Logos.Core**:
 - `Logos.Core.Syntax` (Formula, Context)
 - `Logos.Core.ProofSystem` (Axioms, Derivation)
 - `Logos.Core.Semantics` (TaskFrame, WorldHistory, TaskModel, Truth, Validity)
@@ -529,7 +529,7 @@ b159d2d finished soundness
 2. **Incremental Commits**: Commit after each phase for easy rollback
 3. **Test After Each Phase**: Ensure `lake build` and `lake test` pass
 4. **Documentation Updates**: Update docs immediately after code changes
-5. **Backup Current State**: Archive current ProofChecker structure
+5. **Backup Current State**: Archive current Logos structure
 
 ### Critical Path Items
 

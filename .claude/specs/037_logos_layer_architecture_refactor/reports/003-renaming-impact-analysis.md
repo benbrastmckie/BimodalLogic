@@ -1,12 +1,12 @@
-# Renaming Impact Analysis: ProofChecker → Logos
+# Renaming Impact Analysis: Logos → Logos
 
 **Report Date**: 2025-12-04
-**Analysis Scope**: Complete impact assessment of renaming project from ProofChecker to Logos
+**Analysis Scope**: Complete impact assessment of renaming project from Logos to Logos
 **Purpose**: Identify all files, references, and configurations requiring changes
 
 ## Executive Summary
 
-Renaming ProofChecker to Logos affects 100+ files across source code, tests, documentation, and configuration. This report provides a comprehensive inventory of changes needed, organized by impact level and file type.
+Renaming Logos to Logos affects 100+ files across source code, tests, documentation, and configuration. This report provides a comprehensive inventory of changes needed, organized by impact level and file type.
 
 ## 1. High-Impact Changes (Build-Breaking)
 
@@ -14,27 +14,27 @@ Renaming ProofChecker to Logos affects 100+ files across source code, tests, doc
 
 #### lakefile.toml (CRITICAL)
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/lakefile.toml`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/lakefile.toml`
 
 **Current Content**:
 ```toml
-name = "ProofChecker"
+name = "Logos"
 version = "0.1.0"
 keywords = ["logic", "modal-logic", "temporal-logic", "proof-system", "lean4"]
 license = "MIT"
 
 [[lean_lib]]
-name = "ProofChecker"
+name = "Logos"
 
 [[lean_lib]]
-name = "ProofCheckerTest"
+name = "LogosTest"
 
 [[lean_lib]]
 name = "Archive"
 
 [[lean_exe]]
 name = "test"
-root = "ProofCheckerTest.Main"
+root = "LogosTest.Main"
 ```
 
 **Required Changes**:
@@ -62,7 +62,7 @@ root = "LogosTest.Main"                 # Update test root
 
 ### 1.2 Root Directory Rename
 
-**Current**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/`
+**Current**: `/home/benjamin/Documents/Philosophy/Projects/Logos/`
 **Target**: `/home/benjamin/Documents/Philosophy/Projects/Logos/`
 
 **Decision Point**: Should the repository directory be renamed?
@@ -73,12 +73,12 @@ root = "LogosTest.Main"                 # Update test root
 
 ### 1.3 Main Source Directory
 
-**Current**: `ProofChecker/` (source directory)
+**Current**: `Logos/` (source directory)
 **Target**: `Logos/Core/` (with layer organization)
 
 **Files to Rename**:
 ```
-ProofChecker/ → Logos/Core/
+Logos/ → Logos/Core/
   ├── Syntax/ → Logos/Core/Syntax/
   ├── ProofSystem/ → Logos/Core/ProofSystem/
   ├── Semantics/ → Logos/Core/Semantics/
@@ -89,7 +89,7 @@ ProofChecker/ → Logos/Core/
 
 **Alternative (Simpler for Phase 1)**:
 ```
-ProofChecker/ → Logos/
+Logos/ → Logos/
   (Keep subdirectories as-is, add Core/ layer in Phase 2)
 ```
 
@@ -97,24 +97,24 @@ ProofChecker/ → Logos/
 
 ### 1.4 Root Library Files
 
-#### ProofChecker.lean → Logos.lean
+#### Logos.lean → Logos.lean
 
-**Current**: `ProofChecker.lean`
+**Current**: `Logos.lean`
 **Target**: `Logos.lean`
 
 **Current Content**:
 ```lean
 -- Re-export public API
-import ProofChecker.Syntax
-import ProofChecker.ProofSystem
-import ProofChecker.Semantics
-import ProofChecker.Metalogic
-import ProofChecker.Theorems
-import ProofChecker.Automation
+import Logos.Syntax
+import Logos.ProofSystem
+import Logos.Semantics
+import Logos.Metalogic
+import Logos.Theorems
+import Logos.Automation
 
-namespace ProofChecker
+namespace Logos
 def version : String := "0.1.0"
-end ProofChecker
+end Logos
 ```
 
 **Required Changes**:
@@ -132,17 +132,17 @@ def version : String := "0.1.0"
 end Logos
 ```
 
-**Impact**: All imports of `ProofChecker` will break.
+**Impact**: All imports of `Logos` will break.
 
 ### 1.5 Test Directory
 
-**Current**: `ProofCheckerTest/`
+**Current**: `LogosTest/`
 **Target**: `LogosTest/`
 
 **Files to Rename**:
 ```
-ProofCheckerTest/ → LogosTest/
-  ├── ProofCheckerTest.lean → LogosTest.lean
+LogosTest/ → LogosTest/
+  ├── LogosTest.lean → LogosTest.lean
   ├── Main.lean (update imports)
   ├── Syntax/ (update namespace declarations)
   ├── ProofSystem/ (update namespace declarations)
@@ -153,15 +153,15 @@ ProofCheckerTest/ → LogosTest/
   └── Automation/ (update namespace declarations)
 ```
 
-#### ProofCheckerTest.lean → LogosTest.lean
+#### LogosTest.lean → LogosTest.lean
 
 **Current Content**:
 ```lean
-import ProofChecker
+import Logos
 
-namespace ProofCheckerTest
+namespace LogosTest
 -- Test infrastructure
-end ProofCheckerTest
+end LogosTest
 ```
 
 **Required Changes**:
@@ -175,7 +175,7 @@ end LogosTest
 
 ### 1.6 Build Artifacts Directory
 
-**Current**: `.lake/build/lib/ProofChecker/`
+**Current**: `.lake/build/lib/Logos/`
 **Target**: `.lake/build/lib/Logos/`
 
 **Impact**: Will be regenerated automatically during `lake build`. No manual changes needed, but users should run `lake clean` before rebuild.
@@ -186,11 +186,11 @@ end LogosTest
 
 **Pattern to Change**:
 ```lean
-namespace ProofChecker
+namespace Logos
   -- or --
-namespace ProofChecker.Syntax
+namespace Logos.Syntax
   -- or --
-namespace ProofChecker.Semantics
+namespace Logos.Semantics
   -- etc.
 ```
 
@@ -207,43 +207,43 @@ namespace Logos.Semantics
 **Files Requiring Namespace Changes** (33 files):
 
 #### Main Source Files (15 files)
-1. `ProofChecker/Syntax/Formula.lean` → `namespace Logos.Syntax`
-2. `ProofChecker/Syntax/Context.lean` → `namespace Logos.Syntax`
-3. `ProofChecker/ProofSystem/Axioms.lean` → `namespace Logos.ProofSystem`
-4. `ProofChecker/ProofSystem/Derivation.lean` → `namespace Logos.ProofSystem`
-5. `ProofChecker/Semantics/TaskFrame.lean` → `namespace Logos.Semantics`
-6. `ProofChecker/Semantics/WorldHistory.lean` → `namespace Logos.Semantics`
-7. `ProofChecker/Semantics/TaskModel.lean` → `namespace Logos.Semantics`
-8. `ProofChecker/Semantics/Truth.lean` → `namespace Logos.Semantics`
-9. `ProofChecker/Semantics/Validity.lean` → `namespace Logos.Semantics`
-10. `ProofChecker/Metalogic/Soundness.lean` → `namespace Logos.Metalogic`
-11. `ProofChecker/Metalogic/Completeness.lean` → `namespace Logos.Metalogic`
-12. `ProofChecker/Theorems/Perpetuity.lean` → `namespace Logos.Theorems`
-13. `ProofChecker/Automation/Tactics.lean` → `namespace Logos.Automation`
-14. `ProofChecker/Automation/ProofSearch.lean` → `namespace Logos.Automation`
-15. `ProofChecker.lean` (root) → `namespace Logos`
+1. `Logos/Syntax/Formula.lean` → `namespace Logos.Syntax`
+2. `Logos/Syntax/Context.lean` → `namespace Logos.Syntax`
+3. `Logos/ProofSystem/Axioms.lean` → `namespace Logos.ProofSystem`
+4. `Logos/ProofSystem/Derivation.lean` → `namespace Logos.ProofSystem`
+5. `Logos/Semantics/TaskFrame.lean` → `namespace Logos.Semantics`
+6. `Logos/Semantics/WorldHistory.lean` → `namespace Logos.Semantics`
+7. `Logos/Semantics/TaskModel.lean` → `namespace Logos.Semantics`
+8. `Logos/Semantics/Truth.lean` → `namespace Logos.Semantics`
+9. `Logos/Semantics/Validity.lean` → `namespace Logos.Semantics`
+10. `Logos/Metalogic/Soundness.lean` → `namespace Logos.Metalogic`
+11. `Logos/Metalogic/Completeness.lean` → `namespace Logos.Metalogic`
+12. `Logos/Theorems/Perpetuity.lean` → `namespace Logos.Theorems`
+13. `Logos/Automation/Tactics.lean` → `namespace Logos.Automation`
+14. `Logos/Automation/ProofSearch.lean` → `namespace Logos.Automation`
+15. `Logos.lean` (root) → `namespace Logos`
 
 #### Module Aggregator Files (6 files)
-16. `ProofChecker/Syntax.lean` → `namespace Logos.Syntax`
-17. `ProofChecker/ProofSystem.lean` → `namespace Logos.ProofSystem`
-18. `ProofChecker/Semantics.lean` → `namespace Logos.Semantics`
-19. `ProofChecker/Metalogic.lean` → `namespace Logos.Metalogic`
-20. `ProofChecker/Theorems.lean` → `namespace Logos.Theorems`
-21. `ProofChecker/Automation.lean` → `namespace Logos.Automation`
+16. `Logos/Syntax.lean` → `namespace Logos.Syntax`
+17. `Logos/ProofSystem.lean` → `namespace Logos.ProofSystem`
+18. `Logos/Semantics.lean` → `namespace Logos.Semantics`
+19. `Logos/Metalogic.lean` → `namespace Logos.Metalogic`
+20. `Logos/Theorems.lean` → `namespace Logos.Theorems`
+21. `Logos/Automation.lean` → `namespace Logos.Automation`
 
 #### Test Files (10+ files)
-22. `ProofCheckerTest/Syntax/FormulaTest.lean` → `namespace LogosTest.Syntax.FormulaTest`
-23. `ProofCheckerTest/Syntax/ContextTest.lean` → `namespace LogosTest.Syntax.ContextTest`
-24. `ProofCheckerTest/ProofSystem/AxiomsTest.lean` → `namespace LogosTest.ProofSystem.AxiomsTest`
-25. `ProofCheckerTest/ProofSystem/DerivationTest.lean` → `namespace LogosTest.ProofSystem.DerivationTest`
-26. `ProofCheckerTest/Semantics/TaskFrameTest.lean` → `namespace LogosTest.Semantics.TaskFrameTest`
-27. `ProofCheckerTest/Semantics/TruthTest.lean` → `namespace LogosTest.Semantics.TruthTest`
-28. `ProofCheckerTest/Integration/EndToEndTest.lean` → `namespace LogosTest.Integration.EndToEndTest`
-29. `ProofCheckerTest/Metalogic/SoundnessTest.lean` → `namespace LogosTest.Metalogic.SoundnessTest`
-30. `ProofCheckerTest/Metalogic/CompletenessTest.lean` → `namespace LogosTest.Metalogic.CompletenessTest`
-31. `ProofCheckerTest/Theorems/PerpetuityTest.lean` → `namespace LogosTest.Theorems.PerpetuityTest`
-32. `ProofCheckerTest/Automation/TacticsTest.lean` → `namespace LogosTest.Automation.TacticsTest`
-33. `ProofCheckerTest/Automation/TacticsTest_Simple.lean` → `namespace LogosTest.Automation.TacticsTest_Simple`
+22. `LogosTest/Syntax/FormulaTest.lean` → `namespace LogosTest.Syntax.FormulaTest`
+23. `LogosTest/Syntax/ContextTest.lean` → `namespace LogosTest.Syntax.ContextTest`
+24. `LogosTest/ProofSystem/AxiomsTest.lean` → `namespace LogosTest.ProofSystem.AxiomsTest`
+25. `LogosTest/ProofSystem/DerivationTest.lean` → `namespace LogosTest.ProofSystem.DerivationTest`
+26. `LogosTest/Semantics/TaskFrameTest.lean` → `namespace LogosTest.Semantics.TaskFrameTest`
+27. `LogosTest/Semantics/TruthTest.lean` → `namespace LogosTest.Semantics.TruthTest`
+28. `LogosTest/Integration/EndToEndTest.lean` → `namespace LogosTest.Integration.EndToEndTest`
+29. `LogosTest/Metalogic/SoundnessTest.lean` → `namespace LogosTest.Metalogic.SoundnessTest`
+30. `LogosTest/Metalogic/CompletenessTest.lean` → `namespace LogosTest.Metalogic.CompletenessTest`
+31. `LogosTest/Theorems/PerpetuityTest.lean` → `namespace LogosTest.Theorems.PerpetuityTest`
+32. `LogosTest/Automation/TacticsTest.lean` → `namespace LogosTest.Automation.TacticsTest`
+33. `LogosTest/Automation/TacticsTest_Simple.lean` → `namespace LogosTest.Automation.TacticsTest_Simple`
 
 #### Archive Files (4 files)
 34. `Archive/ModalProofs.lean` → `namespace Archive.ModalProofs` (imports change)
@@ -255,9 +255,9 @@ namespace Logos.Semantics
 
 **Pattern to Change**:
 ```lean
-import ProofChecker.Syntax.Formula
-import ProofChecker.Semantics.TaskFrame
-import ProofChecker
+import Logos.Syntax.Formula
+import Logos.Semantics.TaskFrame
+import Logos
 ```
 
 **Target Pattern**:
@@ -268,13 +268,13 @@ import Logos
 ```
 
 **Files with Import Statements** (30+ files):
-- All test files import from `ProofChecker.*`
-- All archive examples import from `ProofChecker.*`
-- Internal modules import from `ProofChecker.*`
+- All test files import from `Logos.*`
+- All archive examples import from `Logos.*`
+- Internal modules import from `Logos.*`
 
 **Systematic Search Command**:
 ```bash
-grep -r "import ProofChecker" --include="*.lean" | wc -l
+grep -r "import Logos" --include="*.lean" | wc -l
 # Expected: 30+ occurrences
 ```
 
@@ -282,11 +282,11 @@ grep -r "import ProofChecker" --include="*.lean" | wc -l
 
 **Current Content** (abbreviated):
 ```lean
-import ProofChecker.Semantics.TaskModel
-import ProofChecker.Semantics.WorldHistory
-import ProofChecker.Syntax.Formula
+import Logos.Semantics.TaskModel
+import Logos.Semantics.WorldHistory
+import Logos.Syntax.Formula
 
-namespace ProofChecker.Semantics
+namespace Logos.Semantics
 
 def truth_at (M : TaskModel T) (τ : WorldHistory M.frame) (t : T)
   (h : τ.domain t) : Formula → Prop
@@ -300,7 +300,7 @@ def truth_at (M : TaskModel T) (τ : WorldHistory M.frame) (t : T)
   | Formula.future φ => ∀ (t' : T) (h' : τ.domain t'), t < t' →
       truth_at M τ t' h' φ
 
-end ProofChecker.Semantics
+end Logos.Semantics
 ```
 
 **Required Changes**:
@@ -332,25 +332,25 @@ end Logos.Semantics
 
 ### 3.1 README.md (ROOT)
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 
-**Current Title**: "# ProofChecker: LEAN 4 Proof Assistant for Logos"
+**Current Title**: "# Logos: LEAN 4 Proof Assistant for Logos"
 
 **Required Changes**:
 1. Update title: "# Logos: Formal Language of Thought with Proof Verification"
-2. Update opening paragraph: "ProofChecker is a..." → "Logos is a formal language of thought with..."
-3. Update repository structure diagram (ProofChecker/ → Logos/)
-4. Update command examples (`lake build ProofChecker` → `lake build Logos`)
+2. Update opening paragraph: "Logos is a..." → "Logos is a formal language of thought with..."
+3. Update repository structure diagram (Logos/ → Logos/)
+4. Update command examples (`lake build Logos` → `lake build Logos`)
 5. Update installation instructions (git clone URL, cd command)
 6. Update citation BibTeX entry (title, repository name)
 
-**Estimated Changes**: 30+ occurrences of "ProofChecker"
+**Estimated Changes**: 30+ occurrences of "Logos"
 
 ### 3.2 CLAUDE.md
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md`
 
-**Current Title**: "# CLAUDE.md - ProofChecker Project Configuration"
+**Current Title**: "# CLAUDE.md - Logos Project Configuration"
 
 **Required Changes**:
 1. Update title and project name
@@ -361,7 +361,7 @@ end Logos.Semantics
 6. Update import examples
 7. Update file path references
 
-**Estimated Changes**: 50+ occurrences of "ProofChecker"
+**Estimated Changes**: 50+ occurrences of "Logos"
 
 ### 3.3 Documentation/ Directory
 
@@ -391,14 +391,14 @@ end Logos.Semantics
    - **Estimated Changes**: 20+ occurrences
 
 5. **INTEGRATION.md**
-   - Update ProofChecker references
+   - Update Logos references
    - Update component names
    - **Estimated Changes**: 15+ occurrences
 
 #### ProjectInfo/ Files (4 files)
 
 1. **IMPLEMENTATION_STATUS.md**
-   - Update title ("ProofChecker MVP" → "Logos Core Layer MVP")
+   - Update title ("Logos MVP" → "Logos Core Layer MVP")
    - Update module names
    - Update verification commands
    - **Estimated Changes**: 30+ occurrences
@@ -456,7 +456,7 @@ end Logos.Semantics
    - **Estimated Changes**: 10+ occurrences
 
 2. **DUAL_VERIFICATION.md**
-   - Update ProofChecker component names
+   - Update Logos component names
    - Update architecture diagrams
    - **Estimated Changes**: 20+ occurrences
 
@@ -472,17 +472,17 @@ end Logos.Semantics
    - **Estimated Changes**: 5+ occurrences
 
 2. **GLOSSARY.md**
-   - Update ProofChecker definition entry
+   - Update Logos definition entry
    - **Estimated Changes**: 5+ occurrences
 
 ### 3.4 Module READMEs
 
 **Files**:
-1. `ProofChecker/README.md` → `Logos/README.md`
-2. `ProofCheckerTest/README.md` → `LogosTest/README.md`
+1. `Logos/README.md` → `Logos/README.md`
+2. `LogosTest/README.md` → `LogosTest/README.md`
 3. `Archive/README.md` (update references)
 
-**Changes per File**: 20+ occurrences of "ProofChecker"
+**Changes per File**: 20+ occurrences of "Logos"
 
 ### 3.5 Archive Documentation
 
@@ -523,7 +523,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build ProofChecker
+      - name: Build Logos
         run: lake build
       - name: Run tests
         run: lake test
@@ -566,9 +566,9 @@ jobs:
 
 **Location**: `.claude/specs/`
 
-**Relevant Specs**: Any specs referencing ProofChecker structure or files
+**Relevant Specs**: Any specs referencing Logos structure or files
 
-**Estimated Impact**: 10+ specification documents may reference ProofChecker
+**Estimated Impact**: 10+ specification documents may reference Logos
 
 **Action**: Update after main refactor, or note in specs that structure has changed.
 
@@ -576,15 +576,15 @@ jobs:
 
 **Location**: `.claude/tests/`
 
-**Estimated Impact**: Minimal (tests are for Claude Code framework, not ProofChecker)
+**Estimated Impact**: Minimal (tests are for Claude Code framework, not Logos)
 
-**Action**: No changes needed unless tests reference ProofChecker structure.
+**Action**: No changes needed unless tests reference Logos structure.
 
 ## 6. External References
 
 ### 6.1 GitHub Repository
 
-**Current URL** (assumed): `https://github.com/benbrastmckie/ProofChecker`
+**Current URL** (assumed): `https://github.com/benbrastmckie/Logos`
 **Target URL**: `https://github.com/benbrastmckie/Logos`
 
 **Required Actions**:
@@ -602,7 +602,7 @@ jobs:
 
 **Example**:
 ```markdown
-See [ProofChecker/README.md](ProofChecker/README.md) for details.
+See [Logos/README.md](Logos/README.md) for details.
 ```
 
 **Target**:
@@ -617,10 +617,10 @@ See [Logos/README.md](Logos/README.md) for details.
 **Current Citation** (from README.md):
 ```bibtex
 @software{proofchecker2025,
-  title = {ProofChecker: LEAN 4 Proof System for Bimodal Logic TM},
+  title = {Logos: LEAN 4 Proof System for Bimodal Logic TM},
   author = {Your Name},
   year = {2025},
-  url = {https://github.com/yourusername/ProofChecker}
+  url = {https://github.com/yourusername/Logos}
 }
 ```
 
@@ -643,7 +643,7 @@ See [Logos/README.md](Logos/README.md) for details.
 **Total Files**: 5
 1. lakefile.toml (1 file)
 2. Root library files (3 files: Logos.lean, LogosTest.lean, Archive.lean)
-3. Directory names (2 directories: ProofChecker/ → Logos/, ProofCheckerTest/ → LogosTest/)
+3. Directory names (2 directories: Logos/ → Logos/, LogosTest/ → LogosTest/)
 
 **Priority**: HIGHEST - must be done first and correctly
 
@@ -682,12 +682,12 @@ See [Logos/README.md](Logos/README.md) for details.
 **Steps**:
 1. Create new git branch: `git checkout -b refactor/logos-rename`
 2. Rename directories:
-   - `mv ProofChecker Logos`
-   - `mv ProofCheckerTest LogosTest`
+   - `mv Logos Logos`
+   - `mv LogosTest LogosTest`
 3. Update lakefile.toml
 4. Rename root files:
-   - `mv ProofChecker.lean Logos.lean`
-   - `mv ProofCheckerTest.lean LogosTest.lean`
+   - `mv Logos.lean Logos.lean`
+   - `mv LogosTest.lean LogosTest.lean`
 5. Run `lake clean`
 6. Test: `lake build` (expect many errors at this point)
 
@@ -703,9 +703,9 @@ See [Logos/README.md](Logos/README.md) for details.
 
 **Automated Script** (for import statements):
 ```bash
-find . -name "*.lean" -type f -exec sed -i 's/import ProofChecker/import Logos/g' {} +
-find . -name "*.lean" -type f -exec sed -i 's/namespace ProofChecker/namespace Logos/g' {} +
-find . -name "*.lean" -type f -exec sed -i 's/ProofCheckerTest/LogosTest/g' {} +
+find . -name "*.lean" -type f -exec sed -i 's/import Logos/import Logos/g' {} +
+find . -name "*.lean" -type f -exec sed -i 's/namespace Logos/namespace Logos/g' {} +
+find . -name "*.lean" -type f -exec sed -i 's/LogosTest/LogosTest/g' {} +
 ```
 
 **Warning**: Review changes carefully, don't blindly apply to all files.
@@ -724,7 +724,7 @@ find . -name "*.lean" -type f -exec sed -i 's/ProofCheckerTest/LogosTest/g' {} +
 
 **Automated Search-Replace** (use carefully):
 ```bash
-find Documentation -name "*.md" -type f -exec sed -i 's/ProofChecker/Logos/g' {} +
+find Documentation -name "*.md" -type f -exec sed -i 's/Logos/Logos/g' {} +
 # Then manually review for false positives
 ```
 
@@ -736,12 +736,12 @@ find Documentation -name "*.md" -type f -exec sed -i 's/ProofChecker/Logos/g' {}
 3. Build documentation: `lake build :docs`
 4. Check all README files render correctly
 5. Verify all cross-references work
-6. Check for remaining "ProofChecker" references: `grep -r "ProofChecker" --include="*.md" --include="*.lean"`
+6. Check for remaining "Logos" references: `grep -r "Logos" --include="*.md" --include="*.lean"`
 
 ### 8.5 Phase 5: External Updates (Day 4+)
 
 **Steps**:
-1. Commit changes: `git add -A && git commit -m "Refactor: Rename ProofChecker to Logos"`
+1. Commit changes: `git add -A && git commit -m "Refactor: Rename Logos to Logos"`
 2. Push to remote: `git push origin refactor/logos-rename`
 3. Create pull request and review
 4. Merge to main
@@ -760,12 +760,12 @@ find Documentation -name "*.md" -type f -exec sed -i 's/ProofChecker/Logos/g' {}
 echo "Updating namespace declarations..."
 
 # Main source files
-find Logos -name "*.lean" -type f -exec sed -i 's/^namespace ProofChecker/namespace Logos/g' {} +
-find Logos -name "*.lean" -type f -exec sed -i 's/^end ProofChecker/end Logos/g' {} +
+find Logos -name "*.lean" -type f -exec sed -i 's/^namespace Logos/namespace Logos/g' {} +
+find Logos -name "*.lean" -type f -exec sed -i 's/^end Logos/end Logos/g' {} +
 
 # Test files
-find LogosTest -name "*.lean" -type f -exec sed -i 's/^namespace ProofCheckerTest/namespace LogosTest/g' {} +
-find LogosTest -name "*.lean" -type f -exec sed -i 's/^end ProofCheckerTest/end LogosTest/g' {} +
+find LogosTest -name "*.lean" -type f -exec sed -i 's/^namespace LogosTest/namespace LogosTest/g' {} +
+find LogosTest -name "*.lean" -type f -exec sed -i 's/^end LogosTest/end LogosTest/g' {} +
 
 echo "Namespace declarations updated."
 ```
@@ -778,13 +778,13 @@ echo "Namespace declarations updated."
 
 echo "Updating import statements..."
 
-# Update ProofChecker imports to Logos
-find . -name "*.lean" -type f -exec sed -i 's/import ProofChecker\./import Logos./g' {} +
-find . -name "*.lean" -type f -exec sed -i 's/import ProofChecker$/import Logos/g' {} +
+# Update Logos imports to Logos
+find . -name "*.lean" -type f -exec sed -i 's/import Logos\./import Logos./g' {} +
+find . -name "*.lean" -type f -exec sed -i 's/import Logos$/import Logos/g' {} +
 
-# Update ProofCheckerTest imports to LogosTest
-find . -name "*.lean" -type f -exec sed -i 's/import ProofCheckerTest\./import LogosTest./g' {} +
-find . -name "*.lean" -type f -exec sed -i 's/import ProofCheckerTest$/import LogosTest/g' {} +
+# Update LogosTest imports to LogosTest
+find . -name "*.lean" -type f -exec sed -i 's/import LogosTest\./import LogosTest./g' {} +
+find . -name "*.lean" -type f -exec sed -i 's/import LogosTest$/import LogosTest/g' {} +
 
 echo "Import statements updated."
 ```
@@ -798,16 +798,16 @@ echo "Import statements updated."
 echo "Updating documentation references..."
 
 # Update markdown files in Documentation/
-find Documentation -name "*.md" -type f -exec sed -i 's/ProofChecker/Logos/g' {} +
+find Documentation -name "*.md" -type f -exec sed -i 's/Logos/Logos/g' {} +
 
 # Update README files
-sed -i 's/ProofChecker/Logos/g' README.md
-sed -i 's/ProofChecker/Logos/g' CLAUDE.md
-find . -maxdepth 2 -name "README.md" -type f -exec sed -i 's/ProofChecker/Logos/g' {} +
+sed -i 's/Logos/Logos/g' README.md
+sed -i 's/Logos/Logos/g' CLAUDE.md
+find . -maxdepth 2 -name "README.md" -type f -exec sed -i 's/Logos/Logos/g' {} +
 
 # Update file path references
-find Documentation -name "*.md" -type f -exec sed -i 's|ProofChecker/|Logos/|g' {} +
-find Documentation -name "*.md" -type f -exec sed -i 's|ProofCheckerTest/|LogosTest/|g' {} +
+find Documentation -name "*.md" -type f -exec sed -i 's|Logos/|Logos/|g' {} +
+find Documentation -name "*.md" -type f -exec sed -i 's|LogosTest/|LogosTest/|g' {} +
 
 echo "Documentation updated."
 ```
@@ -820,13 +820,13 @@ echo "Documentation updated."
 
 echo "Verifying rename completeness..."
 
-# Check for remaining ProofChecker references in Lean files
+# Check for remaining Logos references in Lean files
 echo "Checking Lean source files..."
-grep -r "ProofChecker" --include="*.lean" Logos/ LogosTest/ Archive/ && echo "WARNING: Found ProofChecker references in Lean files" || echo "✓ No ProofChecker in Lean files"
+grep -r "Logos" --include="*.lean" Logos/ LogosTest/ Archive/ && echo "WARNING: Found Logos references in Lean files" || echo "✓ No Logos in Lean files"
 
-# Check for remaining ProofChecker references in documentation
+# Check for remaining Logos references in documentation
 echo "Checking documentation files..."
-grep -r "ProofChecker" --include="*.md" Documentation/ README.md CLAUDE.md && echo "WARNING: Found ProofChecker references in documentation" || echo "✓ No ProofChecker in documentation"
+grep -r "Logos" --include="*.md" Documentation/ README.md CLAUDE.md && echo "WARNING: Found Logos references in documentation" || echo "✓ No Logos in documentation"
 
 # Check build succeeds
 echo "Testing build..."
@@ -843,7 +843,7 @@ echo "Verification complete."
 
 ### 10.1 Pre-Refactoring Checklist
 
-- [ ] Create full backup: `tar -czf proofchecker-backup-$(date +%Y%m%d).tar.gz ProofChecker/`
+- [ ] Create full backup: `tar -czf proofchecker-backup-$(date +%Y%m%d).tar.gz Logos/`
 - [ ] Commit all current work: `git add -A && git commit -m "Pre-refactor checkpoint"`
 - [ ] Create refactor branch: `git checkout -b refactor/logos-rename`
 - [ ] Document current git status: `git status > pre-refactor-status.txt`
@@ -855,8 +855,8 @@ echo "Verification complete."
 - [ ] Build succeeds: `lake clean && lake build`
 - [ ] Tests pass: `lake test`
 - [ ] Documentation builds: `lake build :docs`
-- [ ] No ProofChecker references in code: `grep -r "ProofChecker" --include="*.lean"`
-- [ ] No ProofChecker references in docs: `grep -r "ProofChecker" --include="*.md"`
+- [ ] No Logos references in code: `grep -r "Logos" --include="*.lean"`
+- [ ] No Logos references in docs: `grep -r "Logos" --include="*.md"`
 - [ ] All README files render correctly
 - [ ] Git history preserved: `git log` shows complete history
 
@@ -909,7 +909,7 @@ echo "Verification complete."
 ### Must-Have (Blocking)
 - [ ] `lake build` succeeds with zero errors
 - [ ] `lake test` passes all tests
-- [ ] No "ProofChecker" namespace references in Lean code
+- [ ] No "Logos" namespace references in Lean code
 - [ ] lakefile.toml correctly configured
 - [ ] All imports resolve correctly
 
@@ -917,7 +917,7 @@ echo "Verification complete."
 - [ ] README.md fully updated
 - [ ] CLAUDE.md fully updated
 - [ ] Core documentation files updated (UserGuide/, ProjectInfo/)
-- [ ] No "ProofChecker" references in documentation
+- [ ] No "Logos" references in documentation
 - [ ] Module READMEs updated
 
 ### Nice-to-Have (Optional)

@@ -54,8 +54,8 @@ The `/lean-implement` command successfully completed the remaining phases (5-8) 
 
 ```bash
 lake build Archive.TemporalStructures  # SUCCESS
-lake build ProofCheckerTest.Semantics.TaskFrameTest  # SUCCESS
-lake build ProofCheckerTest.Semantics.TruthTest  # SUCCESS (1 sorry warning in Truth.lean:577)
+lake build LogosTest.Semantics.TaskFrameTest  # SUCCESS
+lake build LogosTest.Semantics.TruthTest  # SUCCESS (1 sorry warning in Truth.lean:577)
 lake build  # SUCCESS (full project)
 ```
 
@@ -74,7 +74,7 @@ None for temporal generalization. The plan is complete.
 - Plan: `.claude/specs/035_semantics_temporal_order_generalization/plans/001-semantics-temporal-order-generalization-plan.md`
 - Research: `.claude/specs/035_semantics_temporal_order_generalization/reports/001-semantics-temporal-order-generalization-research.md`
 - Examples: `Archive/TemporalStructures.lean`
-- Tests: `ProofCheckerTest/Semantics/TaskFrameTest.lean`, `ProofCheckerTest/Semantics/TruthTest.lean`
+- Tests: `LogosTest/Semantics/TaskFrameTest.lean`, `LogosTest/Semantics/TruthTest.lean`
 
 work_remaining: 0
 context_exhausted: false

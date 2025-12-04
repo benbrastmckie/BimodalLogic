@@ -5,7 +5,7 @@
 ---
 
 ## Fix #1: LICENSE (Line 165)
-**Create new file**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/LICENSE`
+**Create new file**: `/home/benjamin/Documents/Philosophy/Projects/Logos/LICENSE`
 **Content**: MIT License text (see https://opensource.org/licenses/MIT)
 
 ---
@@ -86,7 +86,7 @@
 
 ```bash
 # After fixes, verify all links point to existing files:
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 
 # Check LICENSE
 ls -la LICENSE

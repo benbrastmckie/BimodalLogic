@@ -5,13 +5,13 @@
 - **Status**: [IN PROGRESS]
 - **Created**: 2025-12-03
 - **Estimated Hours**: 5-7 hours total
-- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/WorldHistory.lean
-- **Lean Project**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/WorldHistory.lean
+- **Lean Project**: /home/benjamin/Documents/Philosophy/Projects/Logos
 - **Based On**: Tasks 8 and 12 from TODO.md
 
 ## Overview
 
-This plan implements two medium-priority tasks from the ProofChecker TODO.md:
+This plan implements two medium-priority tasks from the Logos TODO.md:
 
 1. **Task 8**: Fix WorldHistory Universal Helper - Prove or refactor the `respects_task` sorry at WorldHistory.lean:119
 2. **Task 12**: Expand Tactic Test Suite - Add 19 tests to reach 50+ comprehensive coverage

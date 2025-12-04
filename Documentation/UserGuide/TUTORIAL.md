@@ -1,6 +1,6 @@
-# ProofChecker Tutorial
+# Logos Tutorial
 
-This tutorial guides you through using ProofChecker, a LEAN 4 proof system for the bimodal logic TM (Tense and Modality).
+This tutorial guides you through using Logos, a LEAN 4 proof system for the bimodal logic TM (Tense and Modality).
 
 ## 1. Getting Started
 
@@ -22,12 +22,12 @@ lean --version
 lake --version
 ```
 
-#### Setup ProofChecker
+#### Setup Logos
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/ProofChecker.git
-cd ProofChecker
+git clone https://github.com/yourusername/Logos.git
+cd Logos
 
 # Build the project
 lake build
@@ -39,7 +39,7 @@ lake test
 #### VS Code Setup
 
 1. Install the "lean4" extension from VS Code marketplace
-2. Open the ProofChecker directory in VS Code
+2. Open the Logos directory in VS Code
 3. Wait for Lake to build dependencies
 4. You should see syntax highlighting and type information
 
@@ -48,10 +48,10 @@ lake test
 Create a new file `MyFirstProof.lean`:
 
 ```lean
-import ProofChecker
+import Logos
 
-open ProofChecker.Syntax
-open ProofChecker.ProofSystem
+open Logos.Syntax
+open Logos.ProofSystem
 
 -- Define a simple formula: □p → p
 def my_formula : Formula := (Formula.atom "p").box.imp (Formula.atom "p")
@@ -213,7 +213,7 @@ example (φ : Formula) (h : [Formula.future (Formula.atom "p")] ⊢ φ) :
 
 ### Custom Tactics
 
-ProofChecker provides custom tactics for common proof patterns:
+Logos provides custom tactics for common proof patterns:
 
 ```lean
 -- Apply modal axiom MT
@@ -352,7 +352,7 @@ theorem perpetuity_2 (φ : Formula) : ⊢ ((▽φ).imp (diamond φ)) := by
 
 ### Extension Layers
 
-ProofChecker supports future extensions:
+Logos supports future extensions:
 
 - **Layer 1 (Explanatory)**: Counterfactual (□→), grounding (≤), causation (○→)
 - **Layer 2 (Epistemic)**: Belief, probability operators

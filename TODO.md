@@ -1,8 +1,8 @@
-# TODO.md - ProofChecker Task Tracking
+# TODO.md - Logos Task Tracking
 
 ## Overview
 
-This file serves as the central task tracking system for ProofChecker development. It organizes all pending work by priority (High/Medium/Low), tracks `sorry` placeholders requiring resolution, documents missing files, and provides actionable next steps for systematic project development.
+This file serves as the central task tracking system for Logos development. It organizes all pending work by priority (High/Medium/Low), tracks `sorry` placeholders requiring resolution, documents missing files, and provides actionable next steps for systematic project development.
 
 **Purpose**: Maintain a comprehensive view of remaining implementation work for Layer 0 (Core TM) completion and beyond.
 
@@ -60,8 +60,8 @@ This file serves as the central task tracking system for ProofChecker developmen
 **Description**: Implement 3-4 most useful tactics to replace axiom stubs with real implementations using LEAN 4's `Lean.Elab.Tactic` API.
 
 **Files**:
-- `ProofChecker/Automation/Tactics.lean` (175 lines, working tactics)
-- `ProofCheckerTest/Automation/TacticsTest.lean` (31 tests)
+- `Logos/Automation/Tactics.lean` (175 lines, working tactics)
+- `LogosTest/Automation/TacticsTest.lean` (31 tests)
 
 **Completed Actions** (2025-12-03):
 1. ✓ Implemented `apply_axiom` macro (generic axiom application for all 10 TM axioms)
@@ -69,7 +69,7 @@ This file serves as the central task tracking system for ProofChecker developmen
 3. ✓ Implemented `tm_auto` macro (native implementation using `first` combinator)
 4. ✓ Implemented `assumption_search` elab (TacticM-based context search)
 5. ✓ Implemented 4 helper functions (is_box_formula, is_future_formula, extract_from_box, extract_from_future)
-6. ✓ Created 31 tests in `ProofCheckerTest/Automation/TacticsTest.lean`
+6. ✓ Created 31 tests in `LogosTest/Automation/TacticsTest.lean`
 7. ✓ Updated IMPLEMENTATION_STATUS.md Automation status (0% → 33%)
 
 **Blocker Documented**: Aesop integration blocked by Batteries dependency breaking Truth.lean. Native `tm_auto` implemented as MVP alternative.
@@ -94,7 +94,7 @@ This file serves as the central task tracking system for ProofChecker developmen
 **Description**: After aligning the `always` operator with the JPL paper definition (`Pφ ∧ φ ∧ Fφ`), the TL, MF, and TF axiom proofs no longer require frame constraints. Remove the unused `BackwardPersistence` and `ModalTemporalPersistence` definitions and update all associated documentation that incorrectly claims these constraints are required.
 
 **Files**:
-- `ProofChecker/Metalogic/Soundness.lean` (primary - remove definitions, update docstrings)
+- `Logos/Metalogic/Soundness.lean` (primary - remove definitions, update docstrings)
 - `CLAUDE.md` (update implementation status)
 - `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` (update frame constraint references)
 - `Documentation/ProjectInfo/KNOWN_LIMITATIONS.md` (remove outdated limitation sections)
@@ -135,7 +135,7 @@ This file serves as the central task tracking system for ProofChecker developmen
 **Status**: COMPLETE (2025-12-04)
 **Priority**: Low (architectural improvement, paper alignment)
 
-**Description**: Generalize ProofChecker's temporal domain from hardcoded `Int` to polymorphic `LinearOrderedAddCommGroup` typeclass, matching the JPL paper specification. This enables support for rational/real time models, bounded temporal domains, and custom temporal structures while maintaining alignment with the paper's formal semantics.
+**Description**: Generalize Logos's temporal domain from hardcoded `Int` to polymorphic `LinearOrderedAddCommGroup` typeclass, matching the JPL paper specification. This enables support for rational/real time models, bounded temporal domains, and custom temporal structures while maintaining alignment with the paper's formal semantics.
 
 **Paper Reference**: JPL Paper §app:TaskSemantics (lines 1835-1867)
 - def:frame (line 1835): "A totally ordered abelian group T = ⟨T, +, ≤⟩"
@@ -143,11 +143,11 @@ This file serves as the central task tracking system for ProofChecker developmen
 - Current implementation uses `Int` (specific abelian group, line 39 TaskFrame.lean)
 
 **Files**:
-- `ProofChecker/Semantics/TaskFrame.lean` (parameterize by T)
-- `ProofChecker/Semantics/WorldHistory.lean` (add convexity constraint)
-- `ProofChecker/Semantics/Truth.lean` (polymorphic temporal type)
-- `ProofChecker/Semantics/Validity.lean` (update quantification)
-- `ProofChecker/Semantics/TaskModel.lean` (minor updates)
+- `Logos/Semantics/TaskFrame.lean` (parameterize by T)
+- `Logos/Semantics/WorldHistory.lean` (add convexity constraint)
+- `Logos/Semantics/Truth.lean` (polymorphic temporal type)
+- `Logos/Semantics/Validity.lean` (update quantification)
+- `Logos/Semantics/TaskModel.lean` (minor updates)
 
 **Benefits**:
 1. **Paper Alignment**: Direct correspondence with JPL paper specification
@@ -212,7 +212,7 @@ abbrev WorldHistoryInt := WorldHistory (F : TaskFrame Int)
 **Description**: Implement canonical model construction and prove completeness theorems (weak and strong). This is a major undertaking requiring significant effort.
 
 **Files**:
-- `ProofChecker/Metalogic/Completeness.lean`
+- `Logos/Metalogic/Completeness.lean`
   - Line 116: lindenbaum (maximal consistent extension)
   - Line 140: maximal_consistent_closed (closure under MP)
   - Line 154: maximal_negation_complete (negation completeness)
@@ -241,7 +241,7 @@ abbrev WorldHistoryInt := WorldHistory (F : TaskFrame Int)
    - Prove weak_completeness from truth lemma
    - Prove strong_completeness from weak completeness
 4. Replace all 11 axiom declarations with actual proofs
-5. Write comprehensive tests in `ProofCheckerTest/Metalogic/CompletenessTest.lean`
+5. Write comprehensive tests in `LogosTest/Metalogic/CompletenessTest.lean`
 6. Update IMPLEMENTATION_STATUS.md Completeness status (0% → 100%)
 
 **Blocking**: None (metalogic property, doesn't block derivations or applications)
@@ -259,10 +259,10 @@ abbrev WorldHistoryInt := WorldHistory (F : TaskFrame Int)
 **Status**: Not Started
 **Priority**: Low (future enhancement, not in MVP)
 
-**Description**: Create ProofChecker/Metalogic/Decidability.lean module with tableau method for validity checking and satisfiability decision procedures.
+**Description**: Create Logos/Metalogic/Decidability.lean module with tableau method for validity checking and satisfiability decision procedures.
 
 **Files**:
-- `ProofChecker/Metalogic/Decidability.lean` (does not exist, planned in CLAUDE.md line 318)
+- `Logos/Metalogic/Decidability.lean` (does not exist, planned in CLAUDE.md line 318)
 
 **Action Items**:
 1. **Phase 1** (15-20 hours): Design decidability architecture
@@ -277,7 +277,7 @@ abbrev WorldHistoryInt := WorldHistory (F : TaskFrame Int)
    - Prove tableau method sound and complete
    - Analyze time/space complexity
    - Document complexity bounds
-4. Write comprehensive tests in `ProofCheckerTest/Metalogic/DecidabilityTest.lean`
+4. Write comprehensive tests in `LogosTest/Metalogic/DecidabilityTest.lean`
 5. Update documentation with decidability results
 6. Update IMPLEMENTATION_STATUS.md to add Decidability module
 
@@ -332,7 +332,7 @@ abbrev WorldHistoryInt := WorldHistory (F : TaskFrame Int)
 
 **Description**: Create Archive/ examples demonstrating common proof strategies and
 patterns for TM derivations. Provides pedagogical value for new users, students, and
-researchers learning TM logic and ProofChecker usage.
+researchers learning TM logic and Logos usage.
 
 **Files**:
 - `Archive/ModalProofStrategies.lean` (to be created)
@@ -368,7 +368,7 @@ Can be deferred until after core implementation is stable.
 
 This section lists all 41 `sorry` placeholders in the codebase that require resolution. Each entry includes the file, line number, context, and recommended resolution approach.
 
-### ProofChecker/Semantics/WorldHistory.lean ✓ COMPLETE (0 sorry)
+### Logos/Semantics/WorldHistory.lean ✓ COMPLETE (0 sorry)
 
 - **WorldHistory.lean:119** - `universal` helper function ✓ RESOLVED (2025-12-03)
   - **Context**: Universal history that maps all times to the same world state
@@ -376,7 +376,7 @@ This section lists all 41 `sorry` placeholders in the codebase that require reso
   - **Added**: `universal_trivialFrame`, `universal_natFrame` for reflexive frames
   - **See**: Task 8 (COMPLETE)
 
-### ProofChecker/Theorems/Perpetuity.lean (14 sorry)
+### Logos/Theorems/Perpetuity.lean (14 sorry)
 
 **Propositional Helpers** (2 sorry):
 - **Perpetuity.lean:88** - `imp_trans` propositional helper
@@ -410,7 +410,7 @@ This section lists all 41 `sorry` placeholders in the codebase that require reso
   - **Effort**: 10-12 hours (complex modal-temporal interaction)
   - **See**: Task 6 (Complete Perpetuity Proofs)
 
-### ProofChecker/Automation/ProofSearch.lean (3 sorry)
+### Logos/Automation/ProofSearch.lean (3 sorry)
 
 - **ProofSearch.lean:186** - Example usage documentation
   - **Context**: Example proof search usage (documentation `sorry`)
@@ -430,7 +430,7 @@ This section lists all 41 `sorry` placeholders in the codebase that require reso
   - **Effort**: 1 hour (after search implemented)
   - **See**: Task 7 (Implement Core Automation)
 
-### ProofChecker/Metalogic/Soundness.lean (1 sorry remaining)
+### Logos/Metalogic/Soundness.lean (1 sorry remaining)
 
 **Axiom Soundness** - ✓ ALL COMPLETE (2025-12-03):
 - TL axiom (`△φ → F(Pφ)`): PROVEN
@@ -455,7 +455,7 @@ This section lists all 41 `sorry` placeholders in the codebase that require reso
   - **Effort**: 5-10 hours (when needed)
   - **See**: Task 5b (DOCUMENTED AS LIMITATION)
 
-### ProofChecker/Metalogic/Completeness.lean (11 axiom declarations)
+### Logos/Metalogic/Completeness.lean (11 axiom declarations)
 
 **Note**: These are axiom declarations (unproven theorems), not `sorry` placeholders, but require the same resolution attention.
 
@@ -525,7 +525,7 @@ This section lists all 41 `sorry` placeholders in the codebase that require reso
   - **Effort**: 5-7 hours
   - **See**: Task 9 (Begin Completeness Proofs), Phase 3
 
-### ProofChecker/Automation/Tactics.lean (1 axiom declaration remaining)
+### Logos/Automation/Tactics.lean (1 axiom declaration remaining)
 
 **Note**: Most tactic stubs have been replaced with real implementations (2025-12-03).
 
@@ -546,7 +546,7 @@ This section lists all 41 `sorry` placeholders in the codebase that require reso
   - **Workaround**: Native `tm_auto` macro provides working alternative
   - **See**: Task 7 (Aesop blocker documented)
 
-### ProofChecker/Automation/ProofSearch.lean (8 axiom declarations)
+### Logos/Automation/ProofSearch.lean (8 axiom declarations)
 
 - **ProofSearch.lean:133** - bounded_search
   - **Resolution**: Implement depth-bounded search
@@ -599,16 +599,16 @@ This section lists files that are referenced in documentation but do not exist i
 **Effort**: 3-5 hours
 **Status**: COMPLETE (2025-12-02, Phase 1)
 
-**Description**: Pedagogical examples for S5 modal logic proofs using ProofChecker.
+**Description**: Pedagogical examples for S5 modal logic proofs using Logos.
 
 ### 2. Archive/TemporalProofs.lean ✓ CREATED
 **Priority**: High
 **Effort**: 3-5 hours
 **Status**: COMPLETE (2025-12-02, Phase 1)
 
-**Description**: Pedagogical examples for temporal logic proofs using ProofChecker.
+**Description**: Pedagogical examples for temporal logic proofs using Logos.
 
-### 3. ProofChecker/Metalogic/Decidability.lean
+### 3. Logos/Metalogic/Decidability.lean
 **Priority**: Low
 **Effort**: 40-60 hours
 **Referenced In**: CLAUDE.md (line 318), IMPLEMENTATION_STATUS.md (line 319)
@@ -880,7 +880,7 @@ When adding new tasks:
 
 ## Notes
 
-- This TODO.md is the **central task tracking system** for ProofChecker development
+- This TODO.md is the **central task tracking system** for Logos development
 - For detailed module status and completion tracking, see [IMPLEMENTATION_STATUS.md](docs/IMPLEMENTATION_STATUS.md)
 - For comprehensive gap documentation and workarounds, see [KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md)
 - For system design and TM logic specification, see [ARCHITECTURE.md](docs/ARCHITECTURE.md)

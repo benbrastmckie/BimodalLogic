@@ -36,7 +36,7 @@ This stage implements Phase 2 of the three-phase automation roadmap:
 - [ ] `tm_auto` macro implemented: `aesop (rule_sets [TMLogic])`
 - [ ] Aesop search depth and heuristics configured appropriately
 - [ ] Comprehensive test suite with complex TM proofs (≥8 tests)
-- [ ] All tests pass: `lake test ProofCheckerTest.Automation.TacticsTest`
+- [ ] All tests pass: `lake test LogosTest.Automation.TacticsTest`
 - [ ] 1 sorry removed from `Tactics.lean` (line 205)
 - [ ] Zero #lint warnings
 - [ ] Documentation updated with Aesop integration patterns
@@ -78,7 +78,7 @@ This stage implements Phase 2 of the three-phase automation roadmap:
 
 **Objective**: Create custom TM logic rule set for Aesop automation
 
-**File**: `ProofChecker/Automation/Tactics.lean` (add after imports)
+**File**: `Logos/Automation/Tactics.lean` (add after imports)
 
 **Implementation**:
 
@@ -106,7 +106,7 @@ declare_aesop_rule_sets [TMLogic]
 - [ ] Add `declare_aesop_rule_sets [TMLogic]` after namespace declaration
 - [ ] Add comprehensive docstring explaining rule set purpose
 - [ ] Document which rule categories will be included
-- [ ] Verify compilation: `lake build ProofChecker.Automation.Tactics`
+- [ ] Verify compilation: `lake build Logos.Automation.Tactics`
 
 **Expected Output**: TMLogic rule set declared, ready for rule attribution.
 
@@ -116,7 +116,7 @@ declare_aesop_rule_sets [TMLogic]
 
 **Objective**: Attribute all 8 TM axioms as safe Aesop rules in TMLogic rule set
 
-**File**: `ProofChecker/ProofSystem/Axioms.lean`
+**File**: `Logos/ProofSystem/Axioms.lean`
 
 **Approach**: Add `@[aesop safe [TMLogic]]` to axiom validity theorems
 
@@ -127,11 +127,11 @@ declare_aesop_rule_sets [TMLogic]
 Create helper theorems that convert axiom constructors to `Derivable` proofs, then mark as safe rules:
 
 ```lean
--- File: ProofChecker/ProofSystem/Axioms.lean (add after axiom definitions)
+-- File: Logos/ProofSystem/Axioms.lean (add after axiom definitions)
 
 import Lean.Elab.Tactic
 
-namespace ProofChecker.ProofSystem
+namespace Logos.ProofSystem
 
 /-! ## Aesop Safe Rules for TM Axioms -/
 
@@ -191,7 +191,7 @@ theorem temporal_future_derivable (φ : Formula) :
   apply Derivable.axiom
   exact Axiom.temporal_future φ
 
-end ProofChecker.ProofSystem
+end Logos.ProofSystem
 ```
 
 **Reference**: TACTIC_DEVELOPMENT.md lines 314-335
@@ -201,7 +201,7 @@ end ProofChecker.ProofSystem
 - [ ] Create derivability wrapper for each axiom (8 theorems)
 - [ ] Mark each with `@[aesop safe [TMLogic]]`
 - [ ] Add docstrings explaining safe rule purpose
-- [ ] Verify compilation: `lake build ProofChecker.ProofSystem.Axioms`
+- [ ] Verify compilation: `lake build Logos.ProofSystem.Axioms`
 - [ ] Check Aesop can see rules: Run simple test with `tm_auto`
 
 **Expected Output**: 8 axiom safe rules registered in TMLogic rule set.
@@ -212,12 +212,12 @@ end ProofChecker.ProofSystem
 
 **Objective**: Attribute modus ponens and modal/temporal K rules as safe Aesop rules
 
-**File**: `ProofChecker/ProofSystem/Derivation.lean`
+**File**: `Logos/ProofSystem/Derivation.lean`
 
 **Implementation**:
 
 ```lean
--- File: ProofChecker/ProofSystem/Derivation.lean (add after Derivable inductive)
+-- File: Logos/ProofSystem/Derivation.lean (add after Derivable inductive)
 
 /-! ## Aesop Forward Reasoning Rules -/
 
@@ -264,7 +264,7 @@ theorem temporal_duality_forward (φ : Formula) (Γ : Context)
 - [ ] Create forward wrapper for each inference rule (4 rules)
 - [ ] Mark each with `@[aesop safe forward [TMLogic]]`
 - [ ] Add docstrings explaining forward chaining
-- [ ] Verify compilation: `lake build ProofChecker.ProofSystem.Derivation`
+- [ ] Verify compilation: `lake build Logos.ProofSystem.Derivation`
 
 **Expected Output**: 4 inference rule safe forward rules registered in TMLogic rule set.
 
@@ -274,7 +274,7 @@ theorem temporal_duality_forward (φ : Formula) (Γ : Context)
 
 **Objective**: Implement `tm_auto` macro that invokes Aesop with TMLogic rule set
 
-**File**: `ProofChecker/Automation/Tactics.lean`
+**File**: `Logos/Automation/Tactics.lean`
 
 **Current State** (Lines 195-205):
 ```lean
@@ -354,7 +354,7 @@ macro "tm_auto_trace" : tactic =>
 - [ ] Add comprehensive docstring with usage examples
 - [ ] Implement 3 macro variants (basic, depth-configurable, tracing)
 - [ ] Document limitations and error messages
-- [ ] Test compilation: `lake build ProofChecker.Automation.Tactics`
+- [ ] Test compilation: `lake build Logos.Automation.Tactics`
 
 **Expected Output**: `tm_auto` macro invokes Aesop with TMLogic rule set successfully.
 
@@ -408,7 +408,7 @@ def tmAutoExhaustiveConfig : Aesop.Options := {
 
 **Objective**: Test `tm_auto` on progressively complex TM proofs
 
-**File**: `ProofCheckerTest/Automation/TacticsTest.lean` (extend)
+**File**: `LogosTest/Automation/TacticsTest.lean` (extend)
 
 **Test Categories**:
 
@@ -429,7 +429,7 @@ def tmAutoExhaustiveConfig : Aesop.Options := {
 **Implementation Template**:
 
 ```lean
--- File: ProofCheckerTest/Automation/TacticsTest.lean (extend automation_phase2_suite)
+-- File: LogosTest/Automation/TacticsTest.lean (extend automation_phase2_suite)
 
 /-! ## tm_auto Tests (Phase 2) -/
 
@@ -509,7 +509,7 @@ def automation_phase2_suite : TestSuite := {
 - [ ] Add 8 tm_auto tests to TacticsTest.lean
 - [ ] Include single-axiom, multi-step, and complex tests
 - [ ] Document expected Aesop behavior in comments
-- [ ] Run tests: `lake test ProofCheckerTest.Automation.TacticsTest`
+- [ ] Run tests: `lake test LogosTest.Automation.TacticsTest`
 - [ ] Verify all 8 tests pass
 - [ ] Measure test execution time (should be <5 seconds per test)
 
@@ -525,28 +525,28 @@ def automation_phase2_suite : TestSuite := {
 
 ```bash
 # 1. Verify TMLogic rule set declared
-lake build ProofChecker.Automation.Tactics
+lake build Logos.Automation.Tactics
 # Expected: Build succeeds, Aesop recognizes TMLogic rule set
 
 # 2. Verify axiom safe rules registered
-grep -c "@\[aesop safe \[TMLogic\]\]" ProofChecker/ProofSystem/Axioms.lean
+grep -c "@\[aesop safe \[TMLogic\]\]" Logos/ProofSystem/Axioms.lean
 # Expected: 8 (one per axiom)
 
 # 3. Verify inference rule forward rules registered
-grep -c "@\[aesop safe forward \[TMLogic\]\]" ProofChecker/ProofSystem/Derivation.lean
+grep -c "@\[aesop safe forward \[TMLogic\]\]" Logos/ProofSystem/Derivation.lean
 # Expected: 4 (MP, MK, TK, TD)
 
 # 4. Run full Phase 2 test suite
-lake test ProofCheckerTest.Automation.TacticsTest::automation_phase2_suite
+lake test LogosTest.Automation.TacticsTest::automation_phase2_suite
 # Expected: 8 tests pass
 
 # 5. Verify sorry count decreased
-grep -c "sorry" ProofChecker/Automation/Tactics.lean
+grep -c "sorry" Logos/Automation/Tactics.lean
 # Expected: 9 (down from 10)
 # 1 sorry removed: tm_auto (line 205)
 
 # 6. Run lint checks
-lake exe lean --run ProofChecker/Automation/Tactics.lean 2>&1 | grep -i "warning"
+lake exe lean --run Logos/Automation/Tactics.lean 2>&1 | grep -i "warning"
 # Expected: Zero warnings
 
 # 7. Test Aesop tracing (debugging)
@@ -559,7 +559,7 @@ lake exe lean --run ProofChecker/Automation/Tactics.lean 2>&1 | grep -i "warning
 
 ```bash
 # Benchmark tm_auto performance on complex formula
-time lake test ProofCheckerTest.Automation.TacticsTest::test_tm_auto_nested_boxes
+time lake test LogosTest.Automation.TacticsTest::test_tm_auto_nested_boxes
 # Expected: <2 seconds (Aesop bounded search is fast)
 
 # Benchmark tm_auto with increased depth
@@ -606,7 +606,7 @@ time lake test ProofCheckerTest.Automation.TacticsTest::test_tm_auto_nested_boxe
 ```markdown
 ## 4. Aesop Integration for TM Logic ✅ Implemented
 
-This section documents Aesop integration patterns for ProofChecker's TM logic automation.
+This section documents Aesop integration patterns for Logos's TM logic automation.
 
 ### Implementation Status
 
@@ -618,7 +618,7 @@ This section documents Aesop integration patterns for ProofChecker's TM logic au
 
 ### Usage Examples
 
-See `ProofCheckerTest/Automation/TacticsTest.lean::automation_phase2_suite` for working examples.
+See `LogosTest/Automation/TacticsTest.lean::automation_phase2_suite` for working examples.
 
 **Simple Axiom Application**:
 ```lean
@@ -688,7 +688,7 @@ tm_auto
 **Solution**:
 - Verify axiom safe rules registered: `grep "@\[aesop safe \[TMLogic\]\]" Axioms.lean`
 - Verify TMLogic rule set declared: Check `declare_aesop_rule_sets [TMLogic]`
-- Rebuild: `lake build ProofChecker`
+- Rebuild: `lake build Logos`
 
 **Error 3: Search depth exceeded**
 ```
@@ -735,13 +735,13 @@ tm_auto takes >10 seconds on simple proof
 
 ```bash
 # Run all Phase 2 tests
-lake test ProofCheckerTest.Automation.TacticsTest::automation_phase2_suite
+lake test LogosTest.Automation.TacticsTest::automation_phase2_suite
 
 # Run specific test
-lake test ProofCheckerTest.Automation.TacticsTest::test_tm_auto_modal_k
+lake test LogosTest.Automation.TacticsTest::test_tm_auto_modal_k
 
 # Run with timing
-time lake test ProofCheckerTest.Automation.TacticsTest
+time lake test LogosTest.Automation.TacticsTest
 
 # Expected: All 8 tests pass in <30 seconds total
 ```
@@ -786,8 +786,8 @@ Before marking this stage complete, verify ALL items:
 - [ ] References to test suite included
 
 ### Verification
-- [ ] Build succeeds: `lake build ProofChecker`
-- [ ] Tests pass: `lake test ProofCheckerTest.Automation.TacticsTest`
+- [ ] Build succeeds: `lake build Logos`
+- [ ] Tests pass: `lake test LogosTest.Automation.TacticsTest`
 - [ ] Lint clean: Zero warnings across all files
 - [ ] Performance meets targets: All tests <5 seconds
 - [ ] Aesop integration verified: Rule set recognized

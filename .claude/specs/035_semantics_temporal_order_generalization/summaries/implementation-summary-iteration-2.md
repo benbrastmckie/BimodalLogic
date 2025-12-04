@@ -26,8 +26,8 @@
 - Updated temporal duality theorems with polymorphic types
 
 **Files Modified**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean` - Generalized truth evaluation
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskModel.lean` - Added temporal type parameter
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean` - Generalized truth evaluation
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskModel.lean` - Added temporal type parameter
 
 **Compilation Issues** (Remaining):
 1. **Group lemma mismatch** (line 356): `sub_add_cancel x y` gives `x - y + y = x` but need `y + (x - y) = x`
@@ -49,13 +49,13 @@
 ### Phase 1: TaskFrame Generalization [COMPLETE]
 - Generalized `TaskFrame` to `TaskFrame (T : Type*) [LinearOrderedAddCommGroup T]`
 - Updated all example frames (trivialFrame, identityFrame, natFrame)
-- Build successful: `lake build ProofChecker.Semantics.TaskFrame` passes
+- Build successful: `lake build Logos.Semantics.TaskFrame` passes
 
 ### Phase 2: WorldHistory Generalization and Convexity [COMPLETE]
 - Generalized `WorldHistory {T : Type*} [LinearOrderedAddCommGroup T] (F : TaskFrame T)`
 - Added `convex` field to enforce paper requirement (JPL line 1849)
 - Updated all lemmas to use group theory instead of omega
-- Build successful: `lake build ProofChecker.Semantics.WorldHistory` passes
+- Build successful: `lake build Logos.Semantics.WorldHistory` passes
 
 ## Remaining Phases
 
@@ -132,7 +132,7 @@
    - Line 356: Use `add_comm` before `add_sub_cancel`
    - Line 368: Sequence `← add_assoc, sub_add_cancel, add_sub_cancel`
    - Line 414: Use `sub_sub` with correct lemma chaining
-2. Verify Truth.lean builds: `lake build ProofChecker.Semantics.Truth`
+2. Verify Truth.lean builds: `lake build Logos.Semantics.Truth`
 3. Begin Phase 4: Validity and Model Generalization
 
 ### Continuation Strategy
@@ -144,21 +144,21 @@
 ## File Change Summary
 
 ### Modified Files (Iteration 2)
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean`
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean`
    - Generalized `truth_at` to polymorphic temporal type `T`
    - Replaced all `omega` tactics with group lemmas
    - Updated temporal duality section with polymorphic types
    - **Status**: DOES NOT COMPILE (3 remaining errors)
 
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskModel.lean`
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskModel.lean`
    - Added temporal type parameter `{T : Type*} [LinearOrderedAddCommGroup T]`
    - Updated all example models (allFalse, allTrue, fromList)
    - **Status**: COMPILES SUCCESSFULLY
 
 ### Modified Files (Iteration 1)
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/lakefile.toml` - Mathlib dependency
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskFrame.lean` - Generalized
-3. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/WorldHistory.lean` - Generalized with convexity
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/lakefile.toml` - Mathlib dependency
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskFrame.lean` - Generalized
+3. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/WorldHistory.lean` - Generalized with convexity
 
 ## Metrics
 

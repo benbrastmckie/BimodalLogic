@@ -1,12 +1,12 @@
 # Documentation Directory Inventory
 
 **Research Date**: 2025-12-03
-**Directory**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/`
+**Directory**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/`
 **Total Files**: 18 Markdown files across 4 subdirectories
 
 ## Overview
 
-The Documentation directory contains comprehensive technical documentation for ProofChecker organized into four categories: UserGuide, ProjectInfo, Development, and Reference. This documentation focuses on the implemented TM logic proof system and development standards.
+The Documentation directory contains comprehensive technical documentation for Logos organized into four categories: UserGuide, ProjectInfo, Development, and Reference. This documentation focuses on the implemented TM logic proof system and development standards.
 
 ## Directory Structure
 
@@ -24,7 +24,7 @@ Documentation/
 ### Root Level
 
 #### README.md (184 lines)
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/README.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/README.md`
 **Purpose**: Documentation hub and navigation guide
 
 **Content Summary**:
@@ -45,7 +45,7 @@ Documentation/
 ### UserGuide/ (User-Facing Documentation)
 
 #### 1. ARCHITECTURE.md (1,298 lines)
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/ARCHITECTURE.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/ARCHITECTURE.md`
 **Purpose**: System design and TM logic specification
 **Last Updated**: December 2025
 
@@ -76,7 +76,7 @@ Documentation/
 
 **Logos Integration Section** (lines 1140-1282):
 - Explicitly describes "Integration with Logos Architecture"
-- Maps Logos layers to ProofChecker implementation
+- Maps Logos layers to Logos implementation
 - Aligns operator sets between model-builder and proof-checker
 - Describes task semantics alignment
 - Defines layered development strategy
@@ -88,7 +88,7 @@ Documentation/
 - Layers 1-3 as "future work"
 
 #### 2. TUTORIAL.md
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/TUTORIAL.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/TUTORIAL.md`
 **Purpose**: Getting started guide for new users
 **Assumed Audience**: Users of the library, learners, researchers
 
@@ -99,7 +99,7 @@ Documentation/
 - Common patterns
 
 #### 3. EXAMPLES.md
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/EXAMPLES.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/EXAMPLES.md`
 **Purpose**: Usage examples and proof patterns
 **Assumed Audience**: Users learning by example
 
@@ -110,7 +110,7 @@ Documentation/
 - Perpetuity principle usage
 
 #### 4. INTEGRATION.md
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/INTEGRATION.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/INTEGRATION.md`
 **Purpose**: Model-Checker integration documentation
 **Assumed Audience**: Users integrating with model-checker
 
@@ -122,7 +122,7 @@ Documentation/
 ### ProjectInfo/ (Project Status and Contribution)
 
 #### 1. IMPLEMENTATION_STATUS.md (681 lines)
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
 **Purpose**: Module-by-module status tracking with verification commands
 **Last Updated**: 2025-12-03
 
@@ -174,13 +174,13 @@ Documentation/
 
 **Verification Commands Provided**:
 ```bash
-grep -c "sorry" ProofChecker/Metalogic/Soundness.lean  # Should be 6
-grep -c "^axiom" ProofChecker/Metalogic/Completeness.lean  # Should be 8
+grep -c "sorry" Logos/Metalogic/Soundness.lean  # Should be 6
+grep -c "^axiom" Logos/Metalogic/Completeness.lean  # Should be 8
 lake test
 ```
 
 #### 2. KNOWN_LIMITATIONS.md
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md`
 **Purpose**: Gaps, explanations, workarounds, and roadmap
 **Assumed Audience**: Contributors, users encountering limitations
 
@@ -192,12 +192,12 @@ lake test
 - Roadmap for addressing gaps
 
 #### 3. CONTRIBUTING.md
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/CONTRIBUTING.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/CONTRIBUTING.md`
 **Purpose**: Contribution guidelines and workflow
 **Assumed Audience**: Contributors, potential contributors
 
 #### 4. VERSIONING.md
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/VERSIONING.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/VERSIONING.md`
 **Purpose**: Semantic versioning policy
 **Assumed Audience**: Maintainers, contributors
 
@@ -253,7 +253,7 @@ The Development subdirectory contains 9 files establishing coding standards and 
 ### Reference/
 
 #### OPERATORS.md
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Reference/OPERATORS.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Reference/OPERATORS.md`
 **Purpose**: Formal symbols reference (Unicode notation guide)
 **Assumed Audience**: All users (quick reference)
 
@@ -298,7 +298,7 @@ All Documentation files follow consistent standards:
 
 1. **ARCHITECTURE.md Section 8**: "Integration with Logos Architecture"
    - Lines 1140-1282 explicitly describe Logos alignment
-   - Maps Logos layers to ProofChecker implementation
+   - Maps Logos layers to Logos implementation
    - References "model-builder" component
    - Describes operator layer alignment
 
@@ -340,7 +340,7 @@ All Documentation files follow consistent standards:
 - IMPLEMENTATION_STATUS.md (focus on implementation status)
 - KNOWN_LIMITATIONS.md (focus on gaps)
 - All Development/ standards files (focus on coding standards)
-- README.md (focuses on ProofChecker as standalone project)
+- README.md (focuses on Logos as standalone project)
 
 ## Documentation Quality Assessment
 

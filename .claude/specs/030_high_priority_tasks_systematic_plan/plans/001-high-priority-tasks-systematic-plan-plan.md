@@ -5,11 +5,11 @@
 - **Feature**: Systematic implementation of remaining High Priority Tasks from TODO.md
 - **Status**: [NOT STARTED]
 - **Estimated Hours**: 125-175 hours
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Research Reports**:
   - [Remaining Tasks Lean Research](../reports/001_remaining_tasks_lean_research.md)
-- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Completeness.lean
-- **Lean Project**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Completeness.lean
+- **Lean Project**: /home/benjamin/Documents/Philosophy/Projects/Logos
 
 ## Overview
 
@@ -71,11 +71,11 @@ dependencies: []
 **Testing**:
 ```bash
 # Verify Batteries import works
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 lake build
 
 # Verify no regressions in Truth.lean
-lake test ProofCheckerTest.Semantics.TruthTest
+lake test LogosTest.Semantics.TruthTest
 
 # Check no new type errors
 grep -c "error:" $(lake build 2>&1)
@@ -121,13 +121,13 @@ dependencies: [1]
 **Testing**:
 ```bash
 # Verify Aesop integration
-lake build ProofChecker.Automation.Tactics
+lake build Logos.Automation.Tactics
 
 # Test tm_auto with Aesop backend
-lake test ProofCheckerTest.Automation.TacticsTest
+lake test LogosTest.Automation.TacticsTest
 
 # Verify rule set includes all axioms
-grep -c "@\[aesop safe \[TMLogic\]\]" ProofChecker/Automation/Tactics.lean
+grep -c "@\[aesop safe \[TMLogic\]\]" Logos/Automation/Tactics.lean
 ```
 
 **Expected Duration**: 6-8 hours
@@ -165,10 +165,10 @@ dependencies: []
 **Testing**:
 ```bash
 # Verify completeness theorems
-lake build ProofChecker.Metalogic.Completeness
+lake build Logos.Metalogic.Completeness
 
 # Check no sorry markers in maximal set proofs
-grep -A5 "lindenbaum\|maximal_consistent_closed\|maximal_negation_complete" ProofChecker/Metalogic/Completeness.lean | grep -c "sorry"
+grep -A5 "lindenbaum\|maximal_consistent_closed\|maximal_negation_complete" Logos/Metalogic/Completeness.lean | grep -c "sorry"
 
 # Verify Mathlib imports work
 lake build | grep -i "Mathlib.Order.Zorn"
@@ -215,13 +215,13 @@ dependencies: [3]
 **Testing**:
 ```bash
 # Verify frame construction
-lake build ProofChecker.Metalogic.Completeness
+lake build Logos.Metalogic.Completeness
 
 # Test canonical frame properties
-lake test ProofCheckerTest.Metalogic.CompletenessTest
+lake test LogosTest.Metalogic.CompletenessTest
 
 # Verify no axiom declarations remain in frame section
-grep -A10 "canonical_task_rel\|canonical_frame" ProofChecker/Metalogic/Completeness.lean | grep -c "^axiom"
+grep -A10 "canonical_task_rel\|canonical_frame" Logos/Metalogic/Completeness.lean | grep -c "^axiom"
 ```
 
 **Expected Duration**: 22-28 hours
@@ -266,16 +266,16 @@ dependencies: [4]
 **Testing**:
 ```bash
 # Verify truth lemma and completeness
-lake build ProofChecker.Metalogic.Completeness
+lake build Logos.Metalogic.Completeness
 
 # Verify no axiom declarations in completeness section
-grep -c "^axiom" ProofChecker/Metalogic/Completeness.lean
+grep -c "^axiom" Logos/Metalogic/Completeness.lean
 
 # Run completeness property tests
-lake test ProofCheckerTest.Metalogic.CompletenessTest
+lake test LogosTest.Metalogic.CompletenessTest
 
 # Verify all 11 theorems proven
-grep -E "theorem (lindenbaum|maximal|canonical|truth_lemma|weak_completeness|strong_completeness)" ProofChecker/Metalogic/Completeness.lean | wc -l
+grep -E "theorem (lindenbaum|maximal|canonical|truth_lemma|weak_completeness|strong_completeness)" Logos/Metalogic/Completeness.lean | wc -l
 ```
 
 **Expected Duration**: 33-44 hours
@@ -334,16 +334,16 @@ dependencies: [5]
 **Testing**:
 ```bash
 # Verify decidability module exists
-lake build ProofChecker.Metalogic.Decidability
+lake build Logos.Metalogic.Decidability
 
 # Test tableau on example formulas
-lake test ProofCheckerTest.Metalogic.DecidabilityTest
+lake test LogosTest.Metalogic.DecidabilityTest
 
 # Verify complexity analysis documented
-grep -c "EXPTIME\|PSPACE" ProofChecker/Metalogic/Decidability.lean
+grep -c "EXPTIME\|PSPACE" Logos/Metalogic/Decidability.lean
 
 # Check no axiom declarations
-grep -c "^axiom" ProofChecker/Metalogic/Decidability.lean
+grep -c "^axiom" Logos/Metalogic/Decidability.lean
 ```
 
 **Expected Duration**: 41-60 hours
@@ -406,9 +406,9 @@ lake test
 lake lint
 
 # Check test counts
-grep -c "^def test_" ProofCheckerTest/Automation/TacticsTest.lean
-grep -c "^def test_" ProofCheckerTest/Metalogic/CompletenessTest.lean
-grep -c "^def test_" ProofCheckerTest/Metalogic/DecidabilityTest.lean
+grep -c "^def test_" LogosTest/Automation/TacticsTest.lean
+grep -c "^def test_" LogosTest/Metalogic/CompletenessTest.lean
+grep -c "^def test_" LogosTest/Metalogic/DecidabilityTest.lean
 ```
 
 **Expected Duration**: 15-23 hours

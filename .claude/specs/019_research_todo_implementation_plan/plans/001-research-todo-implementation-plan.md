@@ -6,7 +6,7 @@
 - **Scope**: Complete all 11 tasks tracked in TODO.md, organized in 4 phased waves with parallel execution opportunities
 - **Estimated Phases**: 8
 - **Estimated Hours**: 119-164 (parallel execution, revised from 130-180) / 212-317 (sequential with all low priority, revised from 223-333)
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Status**: [IN PROGRESS]
 - **Complexity Score**: 285.5 (Base: 10 + Tasks: 55 + Files: 129 + Integrations: 25)
 - **Structure Level**: 1 (main plan with expanded phases)
@@ -23,7 +23,7 @@
 
 ## Overview
 
-ProofChecker has 11 well-documented tasks in TODO.md with 1/11 complete (9% overall). This plan provides a systematic phased approach to implementing all remaining tasks using 4 execution waves with parallel opportunities to reduce sequential time from 212-317 hours to 119-164 hours (25-34% time savings, revised from 25-32% with spec 022 documentation improvements).
+Logos has 11 well-documented tasks in TODO.md with 1/11 complete (9% overall). This plan provides a systematic phased approach to implementing all remaining tasks using 4 execution waves with parallel opportunities to reduce sequential time from 212-317 hours to 119-164 hours (25-34% time savings, revised from 25-32% with spec 022 documentation improvements).
 
 **Key Objectives**:
 1. Complete high-priority blocking tasks (CI fixes, propositional axioms, archive examples)
@@ -42,7 +42,7 @@ Research findings from the TODO Implementation Systematic Plan report indicate:
 3. **Parallel Execution Opportunities**: 4 execution waves enable 25-32% time savings (170-252 hours sequential → 130-180 hours parallel)
 4. **Documentation Consistency**: Perfect alignment between TODO.md, IMPLEMENTATION_STATUS.md, and KNOWN_LIMITATIONS.md
 5. **Sorry Distribution**: 41 placeholders verified (15 in Soundness.lean, 14 in Perpetuity.lean, 8 in Tactics.lean, 3 in ProofSearch.lean, 1 in WorldHistory.lean)
-6. **Missing Files**: 3 files genuinely missing (Archive/ModalProofs.lean, Archive/TemporalProofs.lean, ProofChecker/Metalogic/Decidability.lean)
+6. **Missing Files**: 3 files genuinely missing (Archive/ModalProofs.lean, Archive/TemporalProofs.lean, Logos/Metalogic/Decidability.lean)
 7. **CI Technical Debt**: 4 continue-on-error flags masking failures (lines 45, 49, 77, 86 in .github/workflows/ci.yml)
 
 **Recommended Approach**: Execute tasks in 4 waves (Wave 1: High Priority parallel, Wave 2: Medium Priority parallel after Task 2, Wave 3: Completeness sequential, Wave 4: Future planning)
@@ -152,13 +152,13 @@ dependencies: []
   - Test GitHub Pages deployment - remove flag if successful (line 86)
   - Add build status badge to README.md
 - [x] **Task 1.2**: Add propositional axioms K and S (CRITICAL PATH)
-  - File: `ProofChecker/ProofSystem/Axioms.lean`
+  - File: `Logos/ProofSystem/Axioms.lean`
   - Add `prop_k` axiom: `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))`
   - Add `prop_s` axiom: `φ → (ψ → φ)`
-  - Update `ProofChecker/ProofSystem/Derivation.lean` with new axioms
-  - Write tests in `ProofCheckerTest/ProofSystem/AxiomsTest.lean`
+  - Update `Logos/ProofSystem/Derivation.lean` with new axioms
+  - Write tests in `LogosTest/ProofSystem/AxiomsTest.lean`
 - [x] **Task 1.3**: Prove propositional helpers (removes 2 sorry)
-  - File: `ProofChecker/Theorems/Perpetuity.lean`
+  - File: `Logos/Theorems/Perpetuity.lean`
   - Prove `imp_trans` from K and S (remove sorry at line 88)
   - Prove `contraposition` from K and S (remove sorry at line 139)
   - Add tests for propositional helpers
@@ -181,21 +181,21 @@ dependencies: []
 **Testing**:
 ```bash
 # Verify CI improvements
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 lake test  # Should pass (or flag at line 45 stays)
 lake lint  # Should return zero warnings (or flag at line 49 stays)
 lake build :docs  # Should succeed (or flag at line 77 stays)
 
 # Verify propositional axioms
-lake test ProofCheckerTest.ProofSystem.AxiomsTest  # New propositional axiom tests
-lake test ProofCheckerTest.Theorems.PerpetuityTest  # Helper tests
+lake test LogosTest.ProofSystem.AxiomsTest  # New propositional axiom tests
+lake test LogosTest.Theorems.PerpetuityTest  # Helper tests
 
 # Verify Archive examples
 lake build Archive.ModalProofs
 lake build Archive.TemporalProofs
 
 # Verify sorry count decreased
-grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l  # Expected: 39 (41 - 2)
+grep -r "sorry" Logos/ --include="*.lean" | wc -l  # Expected: 39 (41 - 2)
 ```
 
 **Expected Duration**: 16-27 hours sequential, ~15 hours parallel (bottleneck is Task 1.2-1.3)
@@ -298,7 +298,7 @@ dependencies: [2, 3]
 **Testing**:
 ```bash
 # Comprehensive Layer 0 verification
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 
 # Verify build
 lake build
@@ -310,7 +310,7 @@ lake test
 lake lint
 
 # Verify sorry count
-echo "Remaining sorry count: $(grep -r 'sorry' ProofChecker/ --include='*.lean' | wc -l)"
+echo "Remaining sorry count: $(grep -r 'sorry' Logos/ --include='*.lean' | wc -l)"
 # Expected: 22 (3 ProofSearch + 11 Completeness axioms + 8 Tactics stubs)
 
 # Verify documentation consistency
@@ -392,9 +392,9 @@ dependencies: [7]
 - Maintain 85%+ overall test coverage (target from CLAUDE.md)
 
 **Test Organization**:
-- Unit tests in `ProofCheckerTest/` mirroring `ProofChecker/` structure
-- Integration tests in `ProofCheckerTest/Integration/`
-- Metalogic property tests in `ProofCheckerTest/Metalogic/`
+- Unit tests in `LogosTest/` mirroring `Logos/` structure
+- Integration tests in `LogosTest/Integration/`
+- Metalogic property tests in `LogosTest/Metalogic/`
 
 **Coverage Targets** (from CLAUDE.md):
 - Overall: ≥85%
@@ -406,22 +406,22 @@ dependencies: [7]
 
 **Phase 1 (Wave 1 High Priority)**:
 ```bash
-lake test ProofCheckerTest.ProofSystem.AxiomsTest  # New propositional axioms
-lake test ProofCheckerTest.Theorems.PerpetuityTest  # Propositional helpers
+lake test LogosTest.ProofSystem.AxiomsTest  # New propositional axioms
+lake test LogosTest.Theorems.PerpetuityTest  # Propositional helpers
 lake build Archive.ModalProofs  # Archive examples
 lake build Archive.TemporalProofs
 ```
 
 **Phase 2 (Wave 2 Task 6 Perpetuity)**:
 ```bash
-lake test ProofCheckerTest.Theorems.PerpetuityTest  # P4-P6 proofs
+lake test LogosTest.Theorems.PerpetuityTest  # P4-P6 proofs
 ```
 
 **Phase 3 (Wave 2 Parallel Tasks 5, 7, 8)**:
 ```bash
-lake test ProofCheckerTest.Metalogic.SoundnessTest  # Soundness proofs
-lake test ProofCheckerTest.Automation.TacticsTest  # Automation tactics
-lake test ProofCheckerTest.Semantics.WorldHistoryTest  # WorldHistory fix
+lake test LogosTest.Metalogic.SoundnessTest  # Soundness proofs
+lake test LogosTest.Automation.TacticsTest  # Automation tactics
+lake test LogosTest.Semantics.WorldHistoryTest  # WorldHistory fix
 ```
 
 **Phase 4 (Wave 2 Completion)**:
@@ -433,12 +433,12 @@ lake build  # Clean build
 
 **Phases 5-7 (Wave 3 Completeness)**:
 ```bash
-lake test ProofCheckerTest.Metalogic.CompletenessTest  # Each phase
+lake test LogosTest.Metalogic.CompletenessTest  # Each phase
 ```
 
 **Phase 8 (Wave 4 Future Work)**:
 ```bash
-lake test ProofCheckerTest.Metalogic.DecidabilityTest  # Decidability
+lake test LogosTest.Metalogic.DecidabilityTest  # Decidability
 lake test  # Final full verification
 ```
 
@@ -456,7 +456,7 @@ lake test
 lake lint
 
 # Verify sorry count decreasing
-echo "Sorry count: $(grep -r 'sorry' ProofChecker/ --include='*.lean' | wc -l)"
+echo "Sorry count: $(grep -r 'sorry' Logos/ --include='*.lean' | wc -l)"
 
 # Verify documentation consistency
 diff <(grep -A5 "Status Summary" TODO.md) <(grep -A5 "Quick Summary" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)
@@ -503,7 +503,7 @@ grep "tasks complete" TODO.md
 grep "Status.*Complete" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
 
 # Verify KNOWN_LIMITATIONS.md gaps align with sorry counts
-grep -c "sorry" ProofChecker/ --include="*.lean"
+grep -c "sorry" Logos/ --include="*.lean"
 grep "Remaining.*sorry" Documentation/ProjectInfo/KNOWN_LIMITATIONS.md
 ```
 
@@ -588,7 +588,7 @@ grep "Remaining.*sorry" Documentation/ProjectInfo/KNOWN_LIMITATIONS.md
   - **Mitigation**: Phased approach (3 phases) allows learning curve and incremental progress
 
 **Current Sorry Count** (as of 2025-12-03):
-- **Total**: 9 sorry markers in ProofChecker/
+- **Total**: 9 sorry markers in Logos/
   - Soundness.lean: 3 (inference rules: modal_k, temporal_k, temporal_duality)
   - Completeness.lean: 1 (completeness theorem)
   - WorldHistory.lean: 1 (universal constructor - documented limitation)

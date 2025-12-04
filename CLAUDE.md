@@ -1,8 +1,8 @@
-# CLAUDE.md - ProofChecker Project Configuration
+# CLAUDE.md - Logos Project Configuration
 
 ## 1. Project Overview
 
-ProofChecker is a LEAN 4 implementation of an axiomatic proof system for the bimodal
+Logos is a LEAN 4 implementation of an axiomatic proof system for the bimodal
 logic TM (Tense and Modality) with task semantics. It provides:
 
 - **Bimodal Logic TM**: Combining S5 modal logic (metaphysical necessity/possibility) with linear temporal logic (past/future operators)
@@ -49,9 +49,9 @@ lake env lean <path/to/file.lean>
 ## 3. Project Structure
 
 ```
-ProofChecker/
-├── ProofChecker.lean           # Library root (re-exports all public modules)
-├── ProofChecker/               # Main source directory (see ProofChecker/README.md)
+Logos/
+├── Logos.lean           # Library root (re-exports all public modules)
+├── Logos/               # Main source directory (see Logos/README.md)
 │   ├── Syntax/                 # Formula types, parsing, DSL
 │   │   ├── Formula.lean        # Core formula inductive type
 │   │   └── Context.lean        # Proof context (premise lists)
@@ -72,8 +72,8 @@ ProofChecker/
 │   └── Automation/             # Proof automation
 │       ├── Tactics.lean        # Custom tactics (modal_k, temporal_k, etc.)
 │       └── ProofSearch.lean    # Automated proof search
-├── ProofCheckerTest/           # Test suite (see ProofCheckerTest/README.md)
-│   ├── ProofCheckerTest.lean   # Test library root
+├── LogosTest/           # Test suite (see LogosTest/README.md)
+│   ├── LogosTest.lean   # Test library root
 │   ├── Syntax/                 # Tests for formula construction and parsing
 │   ├── ProofSystem/            # Tests for axioms and inference rules
 │   ├── Semantics/              # Tests for task semantics and validity
@@ -127,7 +127,7 @@ ProofChecker/
 - [Architecture Guide](Documentation/UserGuide/ARCHITECTURE.md) - System design and TM logic specification
 - [Logical Operators Glossary](Documentation/Reference/OPERATORS.md) - Formal symbols reference
 - [Terminology Glossary](Documentation/Reference/GLOSSARY.md) - Key concepts and definitions
-- [Tutorial](Documentation/UserGuide/TUTORIAL.md) - Getting started with ProofChecker
+- [Tutorial](Documentation/UserGuide/TUTORIAL.md) - Getting started with Logos
 - [Examples](Documentation/UserGuide/EXAMPLES.md) - Modal, temporal, bimodal examples
 - [Contributing](Documentation/ProjectInfo/CONTRIBUTING.md) - How to contribute
 - [Integration](Documentation/UserGuide/INTEGRATION.md) - Model-Checker integration
@@ -154,7 +154,7 @@ For comprehensive Claude Code development standards and patterns, see:
 
 ## 5. Development Principles
 
-ProofChecker follows rigorous development standards including Test-Driven Development (TDD), fail-fast error handling, comprehensive documentation requirements, and lint compliance.
+Logos follows rigorous development standards including Test-Driven Development (TDD), fail-fast error handling, comprehensive documentation requirements, and lint compliance.
 
 **For complete guidelines**, see:
 - [Code Standards](.claude/docs/reference/standards/code-standards.md) - TDD principles, fail-fast philosophy, LEAN 4 syntax patterns, common errors
@@ -213,7 +213,7 @@ ProofChecker follows rigorous development standards including Test-Driven Develo
 
 ## 7. Testing Architecture
 
-ProofChecker test suite is organized in ProofCheckerTest/ directory with unit tests (Syntax/, ProofSystem/, Semantics/), integration tests (Integration/), and metalogic property tests (Metalogic/).
+Logos test suite is organized in LogosTest/ directory with unit tests (Syntax/, ProofSystem/, Semantics/), integration tests (Integration/), and metalogic property tests (Metalogic/).
 
 **Test Naming Convention**:
 - Files: `<Module>Test.lean` (e.g., `FormulaTest.lean`)
@@ -237,17 +237,17 @@ ProofChecker test suite is organized in ProofCheckerTest/ directory with unit te
 1. Define axiom schema in `ProofSystem/Axioms.lean`
 2. Add case to `Derivable` in `ProofSystem/Derivation.lean`
 3. Prove validity lemma in `Metalogic/Soundness.lean`
-4. Write tests in `ProofCheckerTest/ProofSystem/`
+4. Write tests in `LogosTest/ProofSystem/`
 5. Document with examples
 
 ### Create a Custom Tactic
 1. Define tactic in `Automation/Tactics.lean`
-2. Write unit tests in `ProofCheckerTest/Automation/`
+2. Write unit tests in `LogosTest/Automation/`
 3. Add example usage to `Archive/`
 4. Document in `Documentation/Development/TACTIC_DEVELOPMENT.md`
 
 ### Add a New Theorem
-1. Write failing test in appropriate `ProofCheckerTest/` directory
+1. Write failing test in appropriate `LogosTest/` directory
 2. Prove theorem in `Theorems/` or relevant module
 3. Add docstring with mathematical statement and proof sketch
 4. Update documentation if theorem is significant
@@ -282,7 +282,7 @@ ProofChecker test suite is organized in ProofCheckerTest/ directory with unit te
 ### LEAN 4 Metaprogramming and Automation Quick Reference
 
 This section provides quick reference for implementing custom tactics and automation
-for ProofChecker's TM logic.
+for Logos's TM logic.
 
 **Tactic Development Approach**:
 - Use `elab_rules` for pattern-matched tactics (recommended for most tactics)

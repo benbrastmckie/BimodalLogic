@@ -2,21 +2,21 @@
 
 ## Metadata
 - **Date**: 2025-12-04
-- **Feature**: Generalize ProofChecker temporal domain from `Int` to polymorphic `LinearOrderedAddCommGroup` typeclass matching JPL paper specification
+- **Feature**: Generalize Logos temporal domain from `Int` to polymorphic `LinearOrderedAddCommGroup` typeclass matching JPL paper specification
 - **Status**: [IN PROGRESS]
 - **Estimated Hours**: 30-47 hours
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Research Reports**:
   - [Semantics Temporal Order Generalization Research](../reports/001-semantics-temporal-order-generalization-research.md)
-- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskFrame.lean
-- **Lean Project**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskFrame.lean
+- **Lean Project**: /home/benjamin/Documents/Philosophy/Projects/Logos
 - **Paper Reference**: /home/benjamin/Documents/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (§app:TaskSemantics, lines 1835-1867)
 
 ---
 
 ## Executive Summary
 
-This plan systematically generalizes ProofChecker's temporal semantics from hardcoded `Int` to the polymorphic `LinearOrderedAddCommGroup` typeclass, achieving exact alignment with the JPL paper "The Perpetuity Calculus of Agency" (§app:TaskSemantics). The generalization enables support for rational/real time models, bounded temporal domains, and custom temporal structures while maintaining all existing proofs.
+This plan systematically generalizes Logos's temporal semantics from hardcoded `Int` to the polymorphic `LinearOrderedAddCommGroup` typeclass, achieving exact alignment with the JPL paper "The Perpetuity Calculus of Agency" (§app:TaskSemantics). The generalization enables support for rational/real time models, bounded temporal domains, and custom temporal structures while maintaining all existing proofs.
 
 **Key Changes**:
 1. **TaskFrame**: Add type parameter `T : Type*` with `[LinearOrderedAddCommGroup T]` constraint
@@ -74,7 +74,7 @@ import Mathlib.Algebra.Order.Group.Defs
 EOF
 
 # Verify lakefile.toml Mathlib version
-grep "mathlib" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/lakefile.toml
+grep "mathlib" /home/benjamin/Documents/Philosophy/Projects/Logos/lakefile.toml
 ```
 
 **Expected Duration**: 2 hours
@@ -93,7 +93,7 @@ dependencies: [0]
 
 **Complexity**: Medium
 
-**File**: ProofChecker/Semantics/TaskFrame.lean
+**File**: Logos/Semantics/TaskFrame.lean
 
 **Theorems/Changes**:
 - [x] Generalize `TaskFrame` structure definition
@@ -141,15 +141,15 @@ dependencies: [0]
 **Testing**:
 ```bash
 # Build TaskFrame module
-lake build ProofChecker.Semantics.TaskFrame
+lake build Logos.Semantics.TaskFrame
 
 # Verify no errors
-lake env lean ProofChecker/Semantics/TaskFrame.lean
+lake env lean Logos/Semantics/TaskFrame.lean
 
 # Check example frames compile with Int
 lake env lean --run <<EOF
-import ProofChecker.Semantics.TaskFrame
-open ProofChecker.Semantics
+import Logos.Semantics.TaskFrame
+open Logos.Semantics
 #check @TaskFrame.trivialFrame Int _
 #check @TaskFrame.natFrame Int _
 EOF
@@ -161,7 +161,7 @@ EOF
 - [ ] `TaskFrame` structure has type parameter `T` with `LinearOrderedAddCommGroup` constraint
 - [ ] All `Int` occurrences replaced with `T`
 - [ ] All example frames generalized and compile
-- [ ] `lake build ProofChecker.Semantics.TaskFrame` succeeds
+- [ ] `lake build Logos.Semantics.TaskFrame` succeeds
 - [ ] Docstring references JPL paper def:frame
 
 ---
@@ -173,7 +173,7 @@ dependencies: [1]
 
 **Complexity**: High
 
-**File**: ProofChecker/Semantics/WorldHistory.lean
+**File**: Logos/Semantics/WorldHistory.lean
 
 **Theorems/Changes**:
 - [x] Generalize `WorldHistory` structure definition
@@ -245,15 +245,15 @@ dependencies: [1]
 **Testing**:
 ```bash
 # Build WorldHistory module
-lake build ProofChecker.Semantics.WorldHistory
+lake build Logos.Semantics.WorldHistory
 
 # Verify no errors
-lake env lean ProofChecker/Semantics/WorldHistory.lean
+lake env lean Logos/Semantics/WorldHistory.lean
 
 # Check time_shift preserves convexity
 lake env lean --run <<EOF
-import ProofChecker.Semantics.WorldHistory
-open ProofChecker.Semantics
+import Logos.Semantics.WorldHistory
+open Logos.Semantics
 variable {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
 variable (σ : WorldHistory F) (Δ : T)
 #check time_shift_preserves_convex σ Δ
@@ -269,7 +269,7 @@ EOF
 - [ ] `time_shift_preserves_convex` theorem proven
 - [ ] All time-shift lemmas use polymorphic type `T`
 - [ ] Order reversal lemmas generalized to group inverse
-- [ ] `lake build ProofChecker.Semantics.WorldHistory` succeeds
+- [ ] `lake build Logos.Semantics.WorldHistory` succeeds
 - [ ] Docstring references paper convexity requirement
 
 ---
@@ -281,7 +281,7 @@ dependencies: [2]
 
 **Complexity**: Medium-High
 
-**File**: ProofChecker/Semantics/Truth.lean
+**File**: Logos/Semantics/Truth.lean
 
 **Theorems/Changes**:
 - [x] Generalize `truth_at` function signature
@@ -323,22 +323,22 @@ dependencies: [2]
 **Testing**:
 ```bash
 # Build Truth module
-lake build ProofChecker.Semantics.Truth
+lake build Logos.Semantics.Truth
 
 # Verify no errors
-lake env lean ProofChecker/Semantics/Truth.lean
+lake env lean Logos/Semantics/Truth.lean
 
 # Check truth_at compiles with different time types
 lake env lean --run <<EOF
-import ProofChecker.Semantics.Truth
-open ProofChecker.Semantics
+import Logos.Semantics.Truth
+open Logos.Semantics
 #check @truth_at Int _
 #check @truth_at Rat _
 #check @truth_at Real _
 EOF
 
 # Run existing tests with Int
-lake test ProofCheckerTest.Semantics.TruthTest
+lake test LogosTest.Semantics.TruthTest
 ```
 
 **Expected Duration**: 10 hours
@@ -349,7 +349,7 @@ lake test ProofCheckerTest.Semantics.TruthTest
 - [ ] `time_shift_preserves_truth` proven with group lemmas
 - [ ] Temporal duality uses group inverse for time reversal
 - [ ] All helper lemmas generalized
-- [ ] `lake build ProofChecker.Semantics.Truth` succeeds
+- [ ] `lake build Logos.Semantics.Truth` succeeds
 - [ ] All existing tests pass with `Int` instance
 
 ---
@@ -362,8 +362,8 @@ dependencies: [3]
 **Complexity**: Low-Medium
 
 **Files**:
-- ProofChecker/Semantics/Validity.lean
-- ProofChecker/Semantics/TaskModel.lean
+- Logos/Semantics/Validity.lean
+- Logos/Semantics/TaskModel.lean
 
 **Theorems/Changes**:
 - [ ] Generalize `valid` definition
@@ -399,21 +399,21 @@ dependencies: [3]
 **Testing**:
 ```bash
 # Build Validity module
-lake build ProofChecker.Semantics.Validity
+lake build Logos.Semantics.Validity
 
 # Build TaskModel module
-lake build ProofChecker.Semantics.TaskModel
+lake build Logos.Semantics.TaskModel
 
 # Verify polymorphic validity works
 lake env lean --run <<EOF
-import ProofChecker.Semantics.Validity
-open ProofChecker.Semantics
+import Logos.Semantics.Validity
+open Logos.Semantics
 -- Check validity definition is polymorphic
 #check @valid
 EOF
 
 # Run existing validity tests
-lake test ProofCheckerTest.Semantics.ValidityTest
+lake test LogosTest.Semantics.ValidityTest
 ```
 
 **Expected Duration**: 4 hours
@@ -423,7 +423,7 @@ lake test ProofCheckerTest.Semantics.ValidityTest
 - [ ] `semantic_consequence` quantifies over all temporal types
 - [ ] `satisfiable` uses polymorphic temporal type
 - [ ] All validity lemmas compile and type-check
-- [ ] `lake build ProofChecker.Semantics` succeeds
+- [ ] `lake build Logos.Semantics` succeeds
 - [ ] All existing semantic tests pass
 
 ---
@@ -491,10 +491,10 @@ dependencies: [4]
 **Complexity**: Low-Medium
 
 **Files**:
-- ProofCheckerTest/Semantics/TaskFrameTest.lean
-- ProofCheckerTest/Semantics/WorldHistoryTest.lean
-- ProofCheckerTest/Semantics/TruthTest.lean
-- ProofCheckerTest/Semantics/ValidityTest.lean
+- LogosTest/Semantics/TaskFrameTest.lean
+- LogosTest/Semantics/WorldHistoryTest.lean
+- LogosTest/Semantics/TruthTest.lean
+- LogosTest/Semantics/ValidityTest.lean
 
 **Theorems/Changes**:
 - [ ] Update TaskFrame tests to use explicit `Int` instance
@@ -524,13 +524,13 @@ dependencies: [4]
 **Testing**:
 ```bash
 # Run all semantic tests
-lake test ProofCheckerTest.Semantics
+lake test LogosTest.Semantics
 
 # Verify convexity tests
-lake test ProofCheckerTest.Semantics.WorldHistoryTest
+lake test LogosTest.Semantics.WorldHistoryTest
 
 # Check polymorphic time tests
-lake test ProofCheckerTest.Semantics.TruthTest
+lake test LogosTest.Semantics.TruthTest
 ```
 
 **Expected Duration**: 6 hours
@@ -540,7 +540,7 @@ lake test ProofCheckerTest.Semantics.TruthTest
 - [ ] Convexity tests added and passing
 - [ ] Polymorphic time tests added (Rat, Real) and passing
 - [ ] Time-shift tests work with different temporal types
-- [ ] `lake test ProofCheckerTest.Semantics` succeeds with zero failures
+- [ ] `lake test LogosTest.Semantics` succeeds with zero failures
 
 ---
 
@@ -690,9 +690,9 @@ If generalization causes unexpected issues, rollback in reverse phase order:
 **Rollback Verification**:
 ```bash
 # Verify original Int-based code compiles
-git checkout HEAD~N ProofChecker/Semantics/
-lake build ProofChecker.Semantics
-lake test ProofCheckerTest.Semantics
+git checkout HEAD~N Logos/Semantics/
+lake build Logos.Semantics
+lake test LogosTest.Semantics
 
 # Confirm all tests pass
 echo "Rollback successful if build and tests pass"
@@ -792,7 +792,7 @@ echo "Rollback successful if build and tests pass"
 - `Mathlib.Algebra.Order.Group.Defs`: `LinearOrderedAddCommGroup` typeclass
 - Standard instances: `Int`, `Rat`, `Real` with `LinearOrderedAddCommGroup`
 
-**ProofChecker Documentation**:
+**Logos Documentation**:
 - CLAUDE.md: Project standards and structure
 - ARCHITECTURE.md: Task semantics specification
 - KNOWN_LIMITATIONS.md: Current temporal domain limitation (to be removed)

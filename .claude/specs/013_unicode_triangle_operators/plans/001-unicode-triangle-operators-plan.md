@@ -6,7 +6,7 @@
 - **Scope**: Add Unicode notation (△ for always, ▽ for sometimes) while maintaining backward compatibility
 - **Estimated Phases**: 5
 - **Estimated Hours**: 8
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Status**: [COMPLETE]
 - **Structure Level**: 0
 - **Complexity Score**: 62.0
@@ -16,7 +16,7 @@
 
 ## Overview
 
-This plan implements Unicode triangle notation (△ for `always`, ▽ for `sometimes`) as an alternative syntax for temporal operators in the ProofChecker bimodal logic system. The implementation adds prefix notation declarations using LEAN 4's notation system while maintaining full backward compatibility with existing function-based syntax. The plan addresses a critical semantic discrepancy between glossary documentation and actual implementation before proceeding with notation changes.
+This plan implements Unicode triangle notation (△ for `always`, ▽ for `sometimes`) as an alternative syntax for temporal operators in the Logos bimodal logic system. The implementation adds prefix notation declarations using LEAN 4's notation system while maintaining full backward compatibility with existing function-based syntax. The plan addresses a critical semantic discrepancy between glossary documentation and actual implementation before proceeding with notation changes.
 
 **Key Goals**:
 1. Resolve semantic discrepancy between glossary and implementation
@@ -84,7 +84,7 @@ Research analysis reveals:
 
 #### 1. LEAN 4 Notation System Integration
 
-**File**: `ProofChecker/Syntax/Formula.lean` (after line 106)
+**File**: `Logos/Syntax/Formula.lean` (after line 106)
 
 Add prefix notation declarations:
 ```lean
@@ -139,7 +139,7 @@ All documentation updates must follow established backtick standard:
 5. **Integration**: Verify notation works in proof contexts
 
 #### Test File Updates
-- `ProofCheckerTest/Syntax/FormulaTest.lean`: Add notation tests after line 97
+- `LogosTest/Syntax/FormulaTest.lean`: Add notation tests after line 97
 - Keep existing tests (lines 85-97) to verify backward compatibility
 - Add new examples demonstrating triangle notation
 
@@ -170,7 +170,7 @@ dependencies: []
 - [x] Update `docs/ARCHITECTURE.md` lines 48-49 to match implementation (file: docs/ARCHITECTURE.md)
   - Ensure definitions align with Formula.lean:94-106
   - Remove three-time quantifier references
-- [x] Add explanatory comment in `ProofChecker/Syntax/Formula.lean` line 94 (file: ProofChecker/Syntax/Formula.lean)
+- [x] Add explanatory comment in `Logos/Syntax/Formula.lean` line 94 (file: Logos/Syntax/Formula.lean)
   - Clarify that `always` is "henceforth" (future only) not "eternal truth" (past+present+future)
   - Reference glossary for formal definition
 - [x] Verify UTF-8 encoding preserved: `file -b --mime-encoding docs/glossary/logical-operators.md`
@@ -178,13 +178,13 @@ dependencies: []
 **Testing**:
 ```bash
 # Verify glossary updated correctly
-grep -q "always φ := Future φ" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md
+grep -q "always φ := Future φ" /home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md
 
 # Verify ARCHITECTURE.md consistency
-grep -q "def always (φ : Formula) : Formula := φ.future" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md
+grep -q "def always (φ : Formula) : Formula := φ.future" /home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md
 
 # Verify UTF-8 encoding
-file -b --mime-encoding /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md | grep -q "utf-8"
+file -b --mime-encoding /home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md | grep -q "utf-8"
 ```
 
 **Expected Duration**: 1.5 hours
@@ -199,11 +199,11 @@ dependencies: [1]
 **Complexity**: Medium
 
 **Tasks**:
-- [x] Add `△` prefix notation declaration after line 106 in Formula.lean (file: ProofChecker/Syntax/Formula.lean)
+- [x] Add `△` prefix notation declaration after line 106 in Formula.lean (file: Logos/Syntax/Formula.lean)
   - Use pattern: `prefix:80 "△" => Formula.always`
   - Include docstring explaining △ symbol (U+25B3) and semantics
   - Set precedence to 80 (matches modal operators)
-- [x] Add `▽` prefix notation declaration in Formula.lean (file: ProofChecker/Syntax/Formula.lean)
+- [x] Add `▽` prefix notation declaration in Formula.lean (file: Logos/Syntax/Formula.lean)
   - Use pattern: `prefix:80 "▽" => Formula.sometimes`
   - Include docstring explaining ▽ symbol (U+25BD) and duality with △
   - Set precedence to 80 for consistency
@@ -211,19 +211,19 @@ dependencies: [1]
   - Check no existing prefix/infix/postfix notation uses △ or ▽
   - Run `lake build` to catch syntax errors
 - [x] Update module docstring in Formula.lean to mention new notation
-- [x] Verify UTF-8 encoding: `file -b --mime-encoding ProofChecker/Syntax/Formula.lean`
+- [x] Verify UTF-8 encoding: `file -b --mime-encoding Logos/Syntax/Formula.lean`
 
 **Testing**:
 ```bash
 # Build test - verify notation parses
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
-lake build ProofChecker.Syntax.Formula
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
+lake build Logos.Syntax.Formula
 
 # Verify zero lint warnings
-lake lint ProofChecker/Syntax/Formula.lean
+lake lint Logos/Syntax/Formula.lean
 
 # Verify UTF-8 encoding preserved
-file -b --mime-encoding ProofChecker/Syntax/Formula.lean | grep -q "utf-8"
+file -b --mime-encoding Logos/Syntax/Formula.lean | grep -q "utf-8"
 ```
 
 **Expected Duration**: 2 hours
@@ -238,16 +238,16 @@ dependencies: [2]
 **Complexity**: Medium
 
 **Tasks**:
-- [x] Add notation parsing tests in FormulaTest.lean after line 97 (file: ProofCheckerTest/Syntax/FormulaTest.lean)
+- [x] Add notation parsing tests in FormulaTest.lean after line 97 (file: LogosTest/Syntax/FormulaTest.lean)
   - Test: `example (p : Formula) : △p = p.always := rfl`
   - Test: `example (p : Formula) : ▽p = p.sometimes := rfl`
-- [x] Add notation composition tests (file: ProofCheckerTest/Syntax/FormulaTest.lean)
+- [x] Add notation composition tests (file: LogosTest/Syntax/FormulaTest.lean)
   - Test: `example (p : Formula) : △(p.imp q) = (p.imp q).always := rfl`
   - Test: `example (p : Formula) : ▽p.neg = p.neg.sometimes := rfl`
-- [x] Add backward compatibility tests (file: ProofCheckerTest/Syntax/FormulaTest.lean)
+- [x] Add backward compatibility tests (file: LogosTest/Syntax/FormulaTest.lean)
   - Verify existing tests on lines 85-97 still pass
   - Verify dot notation unchanged: `p.always`, `p.sometimes`
-- [x] Add integration test with modal operators (file: ProofCheckerTest/Syntax/FormulaTest.lean)
+- [x] Add integration test with modal operators (file: LogosTest/Syntax/FormulaTest.lean)
   - Test: `example (p : Formula) : △(p.box) = p.box.always := rfl`
   - Test combination of temporal and modal notation
 - [x] Document test structure in file header comment
@@ -255,14 +255,14 @@ dependencies: [2]
 **Testing**:
 ```bash
 # Run syntax tests specifically
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
-lake test ProofCheckerTest.Syntax.FormulaTest
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
+lake test LogosTest.Syntax.FormulaTest
 
 # Run full test suite to verify no regressions
 lake test
 
 # Verify zero lint warnings
-lake lint ProofCheckerTest/Syntax/FormulaTest.lean
+lake lint LogosTest/Syntax/FormulaTest.lean
 ```
 
 **Expected Duration**: 2 hours
@@ -300,18 +300,18 @@ dependencies: [3]
 **Testing**:
 ```bash
 # Verify backtick compliance (all symbols in backticks)
-grep -E '△|▽' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md | grep -v '`△`\|`▽`' && echo "ERROR: Symbols without backticks found" || echo "✓ Backtick standard verified"
+grep -E '△|▽' /home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md | grep -v '`△`\|`▽`' && echo "ERROR: Symbols without backticks found" || echo "✓ Backtick standard verified"
 
 # Verify UTF-8 encoding for all docs
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 for file in docs/glossary/logical-operators.md docs/ARCHITECTURE.md README.md CLAUDE.md; do
   encoding=$(file -b --mime-encoding "$file")
   [ "$encoding" = "utf-8" ] && echo "✓ $file: utf-8" || echo "✗ $file: $encoding"
 done
 
 # Verify Unicode codepoints documented
-grep -q "U+25B3" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md
-grep -q "U+25BD" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md
+grep -q "U+25B3" /home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md
+grep -q "U+25BD" /home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md
 ```
 
 **Expected Duration**: 1.5 hours
@@ -351,7 +351,7 @@ dependencies: [4]
 **Testing**:
 ```bash
 # Final build verification
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 lake clean
 lake build
 
@@ -408,7 +408,7 @@ done
 lake test
 
 # Module-specific test
-lake test ProofCheckerTest.Syntax.FormulaTest
+lake test LogosTest.Syntax.FormulaTest
 
 # Lint verification (zero warnings)
 lake lint
@@ -417,7 +417,7 @@ lake lint
 lake build
 
 # UTF-8 encoding check
-file -b --mime-encoding ProofChecker/Syntax/Formula.lean
+file -b --mime-encoding Logos/Syntax/Formula.lean
 ```
 
 ## Documentation Requirements
@@ -425,8 +425,8 @@ file -b --mime-encoding ProofChecker/Syntax/Formula.lean
 ### Files Requiring Updates
 
 **LEAN Source Files** (2 files):
-1. `ProofChecker/Syntax/Formula.lean` — Add notation declarations and clarifying comments
-2. `ProofCheckerTest/Syntax/FormulaTest.lean` — Add notation tests
+1. `Logos/Syntax/Formula.lean` — Add notation declarations and clarifying comments
+2. `LogosTest/Syntax/FormulaTest.lean` — Add notation tests
 
 **Core Documentation** (4 files):
 1. `docs/glossary/logical-operators.md` — Fix definitions, add triangle symbols
@@ -470,7 +470,7 @@ None — uses existing LEAN 4 notation system and Unicode standard characters
 ### Prerequisite Knowledge
 - LEAN 4 notation system syntax
 - Unicode character encoding standards
-- ProofChecker temporal logic semantics
+- Logos temporal logic semantics
 
 ### Integration Points
 - Formula.lean: Core syntax module

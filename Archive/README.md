@@ -1,13 +1,13 @@
-# ProofChecker Archive
+# Logos Archive
 
-Pedagogical examples demonstrating the ProofChecker library and bimodal logic TM (Tense and Modality), designed for learning and reference.
+Pedagogical examples demonstrating the Logos library and bimodal logic TM (Tense and Modality), designed for learning and reference.
 
 ## Purpose
 
 These examples illustrate:
 - Key concepts in bimodal logic TM (modal necessity/possibility + temporal past/future)
 - Idiomatic proof patterns for TM theorems
-- Practical usage of the ProofChecker library
+- Practical usage of the Logos library
 - Perpetuity principles connecting modal and temporal operators
 
 ## Example Categories
@@ -34,12 +34,12 @@ These examples illustrate:
 
 ## Learning Path
 
-For newcomers to TM logic and ProofChecker, we recommend this progression:
+For newcomers to TM logic and Logos, we recommend this progression:
 
 1. **Start here**: Read [TUTORIAL.md](../Documentation/UserGuide/TUTORIAL.md) for basic concepts
 2. **Then**: Study [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md) for TM logic specification
 3. **Practice**: Explore `BimodalProofs.lean` for perpetuity principles
-4. **Advanced**: Read perpetuity principle proofs in `ProofChecker/Theorems/Perpetuity.lean`
+4. **Advanced**: Read perpetuity principle proofs in `Logos/Theorems/Perpetuity.lean`
 
 ## How to Run Examples
 
@@ -120,15 +120,15 @@ For detailed implementation status, see [IMPLEMENTATION_STATUS.md](../Documentat
 
 ## Related Documentation
 
-- [Tutorial](../Documentation/UserGuide/TUTORIAL.md) - Getting started with ProofChecker
+- [Tutorial](../Documentation/UserGuide/TUTORIAL.md) - Getting started with Logos
 - [Examples](../Documentation/UserGuide/EXAMPLES.md) - Usage examples and patterns
 - [Architecture](../Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
-- [Perpetuity Module](../ProofChecker/Theorems/Perpetuity.lean) - Perpetuity principle proofs (P1-P6)
+- [Perpetuity Module](../Logos/Theorems/Perpetuity.lean) - Perpetuity principle proofs (P1-P6)
 - [Archive.lean](Archive.lean) - Archive module documentation
 
 ## Navigation
 
-- **Up**: [ProofChecker Root](../)
+- **Up**: [Logos Root](../)
 - **Documentation**: [Documentation/](../Documentation/)
-- **Source Code**: [ProofChecker/](../ProofChecker/)
-- **Tests**: [ProofCheckerTest/](../ProofCheckerTest/)
+- **Source Code**: [Logos/](../Logos/)
+- **Tests**: [LogosTest/](../LogosTest/)

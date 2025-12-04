@@ -1,13 +1,13 @@
-# ProofChecker Documentation
+# Logos Documentation
 
-Comprehensive documentation hub for the ProofChecker project.
+Comprehensive documentation hub for the Logos project.
 
 ## Documentation Organization
 
 Documentation is organized into five categories:
 
 ### UserGuide/
-User-facing documentation for working with ProofChecker:
+User-facing documentation for working with Logos:
 - **METHODOLOGY.md**: Philosophical foundations and Logos layer architecture
 - **ARCHITECTURE.md**: System design and TM logic specification
 - **TUTORIAL.md**: Getting started guide for new users
@@ -154,7 +154,7 @@ All Markdown documentation can be read:
 ## Finding Information
 
 ### "How do I...?"
-- **Learn ProofChecker**: Start with [TUTORIAL.md](UserGuide/TUTORIAL.md)
+- **Learn Logos**: Start with [TUTORIAL.md](UserGuide/TUTORIAL.md)
 - **Understand TM logic**: Read [ARCHITECTURE.md](UserGuide/ARCHITECTURE.md)
 - **See examples**: Check [EXAMPLES.md](UserGuide/EXAMPLES.md)
 - **Contribute**: Read [CONTRIBUTING.md](ProjectInfo/CONTRIBUTING.md)
@@ -191,12 +191,12 @@ If you find documentation issues:
 - [../README.md](../README.md) - Project overview and installation
 - [../CLAUDE.md](../CLAUDE.md) - AI assistant configuration
 - [../Archive/README.md](../Archive/README.md) - Pedagogical examples
-- [../ProofChecker/README.md](../ProofChecker/README.md) - Source directory guide
-- [../ProofCheckerTest/README.md](../ProofCheckerTest/README.md) - Test suite guide
+- [../Logos/README.md](../Logos/README.md) - Source directory guide
+- [../LogosTest/README.md](../LogosTest/README.md) - Test suite guide
 
 ## Navigation
 
-- **Up**: [ProofChecker Root](../)
-- **Source Code**: [ProofChecker/](../ProofChecker/)
-- **Tests**: [ProofCheckerTest/](../ProofCheckerTest/)
+- **Up**: [Logos Root](../)
+- **Source Code**: [Logos/](../Logos/)
+- **Tests**: [LogosTest/](../LogosTest/)
 - **Examples**: [Archive/](../Archive/)

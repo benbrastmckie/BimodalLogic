@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-This research analyzed missing files documented in README.md and CLAUDE.md, the need for directory README.md files, and established requirements for a documentation standard. Key findings: (1) Three missing files documented but not implemented: DSL.lean, Rules.lean, and Decidability.lean; (2) Counterexamples/ directory is stub-only with minimal usage; (3) Major directories (Archive/, Documentation/, ProofChecker/, ProofCheckerTest/) lack README.md files; (4) A Documentation/Development/ standard is needed for LEAN 4 project directory documentation.
+This research analyzed missing files documented in README.md and CLAUDE.md, the need for directory README.md files, and established requirements for a documentation standard. Key findings: (1) Three missing files documented but not implemented: DSL.lean, Rules.lean, and Decidability.lean; (2) Counterexamples/ directory is stub-only with minimal usage; (3) Major directories (Archive/, Documentation/, Logos/, LogosTest/) lack README.md files; (4) A Documentation/Development/ standard is needed for LEAN 4 project directory documentation.
 
 ## Findings
 
@@ -18,27 +18,27 @@ This research analyzed missing files documented in README.md and CLAUDE.md, the 
 
 The following files are documented in both README.md and CLAUDE.md but do not exist in the codebase:
 
-**ProofChecker/Syntax/DSL.lean**
+**Logos/Syntax/DSL.lean**
 - Documented in: README.md:185, CLAUDE.md:56
 - Purpose: Domain-specific syntax for readable formula construction
 - Status: Not implemented
 - Impact: DSL functionality may be embedded in other files or not yet implemented
-- References in code: ProofChecker/Syntax.lean does not import DSL module (line 1-2: only Formula and Context imported)
+- References in code: Logos/Syntax.lean does not import DSL module (line 1-2: only Formula and Context imported)
 
-**ProofChecker/ProofSystem/Rules.lean**
+**Logos/ProofSystem/Rules.lean**
 - Documented in: README.md:188, CLAUDE.md:59
 - Purpose: Inference rules (MP, MK, TK, TD)
 - Status: Not implemented as separate file
-- Actual location: Rules are defined in ProofChecker/ProofSystem/Derivation.lean
+- Actual location: Rules are defined in Logos/ProofSystem/Derivation.lean
 - Impact: Documentation inaccuracy - rules exist but not in separate file
-- Evidence: ProofChecker/ProofSystem.lean:1-2 imports only Axioms and Derivation modules
+- Evidence: Logos/ProofSystem.lean:1-2 imports only Axioms and Derivation modules
 
-**ProofChecker/Metalogic/Decidability.lean**
+**Logos/Metalogic/Decidability.lean**
 - Documented in: README.md:199, CLAUDE.md:70
 - Purpose: Decision procedures for TM logic
 - Status: Planned but not started (confirmed in README.md:98)
 - Impact: Future implementation, documentation is aspirational
-- Evidence: ProofChecker/Metalogic/ directory contains only Soundness.lean and Completeness.lean
+- Evidence: Logos/Metalogic/ directory contains only Soundness.lean and Completeness.lean
 
 #### 1.2 Archive Examples Files
 
@@ -60,7 +60,7 @@ The following Archive example files are documented but not fully implemented:
 #### 2.1 Current Status
 
 **Directory structure:**
-- Location: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Counterexamples/
+- Location: /home/benjamin/Documents/Philosophy/Projects/Logos/Counterexamples/
 - Contents: Single file Counterexamples.lean (1772 bytes, stub implementation)
 - Purpose: Documented as "Invalidity demonstrations" per README.md:217-218
 
@@ -82,7 +82,7 @@ The following Archive example files are documented but not fully implemented:
 The Counterexamples/ directory should be removed because:
 
 1. **Stub-only implementation**: Contains only namespace declaration and documentation, no actual counterexamples
-2. **No dependencies**: No code in ProofChecker or tests depends on Counterexamples module
+2. **No dependencies**: No code in Logos or tests depends on Counterexamples module
 3. **Premature structure**: Creating structure before implementation violates TDD principles (CLAUDE.md:157-161)
 4. **Documentation overhead**: Maintaining documentation for non-existent functionality
 5. **Future restoration**: Can be restored when actually needed following Archive/ directory pattern
@@ -106,16 +106,16 @@ The following major directories lack README.md files:
 - Need: Navigation guide for 13+ documentation files across 4 subdirectories
 - Classification: Active Development Directory (documentation is code)
 
-**ProofChecker/**
+**Logos/**
 - Purpose: Main source directory with 6 submodules (Syntax, ProofSystem, Semantics, Metalogic, Theorems, Automation)
-- Current documentation: ProofChecker.lean (lines 1-58) contains library root documentation
+- Current documentation: Logos.lean (lines 1-58) contains library root documentation
 - Need: Directory README.md mapping source organization to module structure
 - Classification: Active Development Directory (source code)
 
-**ProofCheckerTest/**
+**LogosTest/**
 - Purpose: Test suite organized by module (Syntax/, ProofSystem/, Semantics/, etc.)
 - Contains: 8 subdirectories with test files
-- Current state: ProofCheckerTest.lean provides imports but no directory guide
+- Current state: LogosTest.lean provides imports but no directory guide
 - Need: README.md explaining test organization, running tests, adding new tests
 - Classification: Active Development Directory (test code)
 
@@ -135,19 +135,19 @@ However, this standard is:
 
 ### 4. LEAN 4 Project Documentation Patterns
 
-#### 4.1 Observed Patterns in ProofChecker
+#### 4.1 Observed Patterns in Logos
 
-**Module root files** (e.g., ProofChecker.lean, Archive.lean, Counterexamples.lean):
+**Module root files** (e.g., Logos.lean, Archive.lean, Counterexamples.lean):
 - Use `/-! ... -/` documentation comments
 - Include: Overview, module structure, usage examples, references
 - Follow mathlib4 pattern for library documentation
-- Located at: ProofChecker.lean:9-50, Archive.lean:1-62, Counterexamples.lean:1-52
+- Located at: Logos.lean:9-50, Archive.lean:1-62, Counterexamples.lean:1-52
 
-**Submodule files** (e.g., ProofChecker/Syntax.lean, ProofChecker/ProofSystem.lean):
+**Submodule files** (e.g., Logos/Syntax.lean, Logos/ProofSystem.lean):
 - Import and re-export submodules
 - Document exports and usage patterns
 - Provide namespace organization
-- Examples: ProofChecker/Syntax.lean:1-40, ProofChecker/ProofSystem.lean:1-37
+- Examples: Logos/Syntax.lean:1-40, Logos/ProofSystem.lean:1-37
 
 **Documentation relationship**:
 - Module .lean files serve as primary API documentation (for doc-gen4)
@@ -196,7 +196,7 @@ Based on web research of mathlib4 project:
 
 A new documentation standard is needed for LEAN 4 project directories:
 
-**Scope**: Archive/, Documentation/, ProofChecker/, ProofCheckerTest/ directories
+**Scope**: Archive/, Documentation/, Logos/, LogosTest/ directories
 
 **Key requirements:**
 1. **Complementary to .lean documentation**: README.md complements module .lean files, not duplicates
@@ -223,13 +223,13 @@ A new documentation standard is needed for LEAN 4 project directories:
 **Action items:**
 
 1. **DSL.lean decision:**
-   - Option A: Implement DSL macros in ProofChecker/Syntax/DSL.lean for formula construction syntax
+   - Option A: Implement DSL macros in Logos/Syntax/DSL.lean for formula construction syntax
    - Option B: Remove DSL.lean references from README.md and CLAUDE.md if functionality not needed
    - Recommendation: Investigate if DSL functionality exists elsewhere (e.g., in Formula.lean) before deciding
 
 2. **Rules.lean clarification:**
    - Update documentation to reflect that inference rules are in Derivation.lean, not separate Rules.lean
-   - Rationale: Rules are implemented as constructors of Derivable inductive type (ProofChecker/ProofSystem/Derivation.lean)
+   - Rationale: Rules are implemented as constructors of Derivable inductive type (Logos/ProofSystem/Derivation.lean)
    - Changes needed: README.md:188, CLAUDE.md:59, both project structure diagrams
 
 3. **Decidability.lean documentation:**
@@ -259,7 +259,7 @@ A new documentation standard is needed for LEAN 4 project directories:
 2. Update documentation references:
    - README.md: Remove lines 217-218 (project structure), line 99 (implementation status)
    - CLAUDE.md: Remove lines 88-89 (project structure)
-   - ProofChecker.lean: No changes needed (doesn't import Counterexamples)
+   - Logos.lean: No changes needed (doesn't import Counterexamples)
    - lakefile.toml: Remove Counterexamples module if referenced
 3. Archive deletion in git commit message: "Remove stub-only Counterexamples/ directory - will be restored when needed following Archive/ pattern"
 4. Document in KNOWN_LIMITATIONS.md that counterexamples are planned for future implementation
@@ -274,7 +274,7 @@ A new documentation standard is needed for LEAN 4 project directories:
 1. **Create Documentation/Development/DIRECTORY_README_STANDARD.md** with sections:
    - Purpose and scope (LEAN 4 project directories)
    - When README.md is required vs. when .lean module documentation suffices
-   - Template for source directories (ProofChecker/, ProofCheckerTest/)
+   - Template for source directories (Logos/, LogosTest/)
    - Template for example directories (Archive/)
    - Template for documentation directories (Documentation/)
    - Relationship to doc-gen4 automatic documentation
@@ -282,8 +282,8 @@ A new documentation standard is needed for LEAN 4 project directories:
    - Anti-patterns (duplication of .lean module documentation)
 
 2. **Specify classification rules:**
-   - Source directories (ProofChecker/): README optional if module .lean file exists
-   - Test directories (ProofCheckerTest/): README required for test organization
+   - Source directories (Logos/): README optional if module .lean file exists
+   - Test directories (LogosTest/): README required for test organization
    - Example directories (Archive/): README required for pedagogical navigation
    - Documentation directories (Documentation/): README required for navigation
 
@@ -319,16 +319,16 @@ A new documentation standard is needed for LEAN 4 project directories:
    - Documentation update workflow
    - Link to documentation standards
 
-3. **ProofChecker/README.md** (optional based on standard):
+3. **Logos/README.md** (optional based on standard):
    - Module organization (6 submodules)
    - Source file map (where to find specific functionality)
-   - Link to ProofChecker.lean for API overview
+   - Link to Logos.lean for API overview
    - Link to ARCHITECTURE.md for logic specification
    - Build and type-check commands
 
-4. **ProofCheckerTest/README.md**:
+4. **LogosTest/README.md**:
    - Test organization by module
-   - Running tests (`lake test`, `lake test ProofCheckerTest.Syntax`)
+   - Running tests (`lake test`, `lake test LogosTest.Syntax`)
    - Adding new tests (naming conventions, file placement)
    - Test categories (unit, integration, property-based)
    - Coverage requirements (link to TESTING_STANDARDS.md)
@@ -350,8 +350,8 @@ A new documentation standard is needed for LEAN 4 project directories:
 2. **Add README.md files to structure diagrams:**
    - Archive/README.md
    - Documentation/README.md
-   - ProofChecker/README.md (if created)
-   - ProofCheckerTest/README.md
+   - Logos/README.md (if created)
+   - LogosTest/README.md
 
 3. **Cross-reference documentation standard:**
    - Add DIRECTORY_README_STANDARD.md to Documentation/Development/ section
@@ -384,27 +384,27 @@ A new documentation standard is needed for LEAN 4 project directories:
 
 ### Project Files Analyzed
 
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md:1-295 (root project documentation)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md:1-273 (project configuration)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker.lean:1-58 (library root documentation)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax.lean:1-40 (Syntax module exports)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem.lean:1-37 (ProofSystem module exports)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Archive/Archive.lean:1-62 (Archive module documentation)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Counterexamples/Counterexamples.lean:1-63 (stub implementation)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/README.md:1-295 (root project documentation)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md:1-273 (project configuration)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/Logos.lean:1-58 (library root documentation)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax.lean:1-40 (Syntax module exports)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem.lean:1-37 (ProofSystem module exports)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/Archive/Archive.lean:1-62 (Archive module documentation)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/Counterexamples/Counterexamples.lean:1-63 (stub implementation)
 
 ### Directory Structure Analysis
 
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax/ (2 files: Context.lean, Formula.lean - no DSL.lean)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/ (2 files: Axioms.lean, Derivation.lean - no Rules.lean)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/ (2 files: Soundness.lean, Completeness.lean - no Decidability.lean)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Archive/ (2 files: Archive.lean, BimodalProofs.lean - missing ModalProofs.lean, TemporalProofs.lean)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Development/ (5 files, no DIRECTORY_README_STANDARD.md)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax/ (2 files: Context.lean, Formula.lean - no DSL.lean)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/ (2 files: Axioms.lean, Derivation.lean - no Rules.lean)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/ (2 files: Soundness.lean, Completeness.lean - no Decidability.lean)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/Archive/ (2 files: Archive.lean, BimodalProofs.lean - missing ModalProofs.lean, TemporalProofs.lean)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Development/ (5 files, no DIRECTORY_README_STANDARD.md)
 
 ### Existing Standards Referenced
 
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md:1-250 (README requirements for .claude/ system)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/lib/README.md:1-50 (example of template usage)
-- /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Development/LEAN_STYLE_GUIDE.md (code-level documentation standard)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md:1-250 (README requirements for .claude/ system)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/lib/README.md:1-50 (example of template usage)
+- /home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Development/LEAN_STYLE_GUIDE.md (code-level documentation standard)
 
 ### External Resources
 

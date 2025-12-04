@@ -23,7 +23,7 @@
 
 ### Action 1: Create LICENSE File
 **Priority**: HIGH
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/LICENSE`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/LICENSE`
 **Issue**: README.md line 165 references LICENSE file that doesn't exist
 **Action**: Create MIT License file in project root
 
@@ -39,7 +39,7 @@
 
 ### Action 2: Fix Developer Standards Links (4 Links)
 **Priority**: HIGH
-**Files**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+**Files**: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 **Issue**: Lines 88-91 point to non-existent `src/docs/` directory
 **Action**: Update all 4 links to correct `docs/development/` path
 
@@ -75,7 +75,7 @@
 
 ### Action 3: Fix API Reference Link
 **Priority**: MEDIUM
-**Files**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+**Files**: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 **Issue**: Line 85 points to non-existent `doc/` directory
 **Action**: Update link and add clarification about documentation generation
 
@@ -107,31 +107,31 @@
 
 ### Update Placeholder URLs (Optional - before publication)
 **Priority**: LOW (can be deferred until publication)
-**Files**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+**Files**: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 **Lines**: 46, 176, 191
 **Issue**: Contains placeholder `yourusername` in GitHub URLs
 **Action**: Replace with actual repository URL when ready to publish
 
 **Example**:
 ```diff
--git clone https://github.com/yourusername/ProofChecker.git
-+git clone https://github.com/actualusername/ProofChecker.git
+-git clone https://github.com/yourusername/Logos.git
++git clone https://github.com/actualusername/Logos.git
 ```
 
 ---
 
 ### Add Implementation Status Indicators (Optional - enhancement)
 **Priority**: LOW (enhancement)
-**Files**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+**Files**: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 **Section**: Project Structure (lines 93-155)
 **Issue**: Structure lists many unimplemented files without status indicators
 **Action**: Add visual indicators for implementation status
 
 **Example Enhancement**:
 ```markdown
-ProofChecker/
-├── ProofChecker.lean           # Library root ✓
-├── ProofChecker/               # Main source directory
+Logos/
+├── Logos.lean           # Library root ✓
+├── Logos/               # Main source directory
 │   ├── Syntax/                 # Formula types, parsing, DSL
 │   │   ├── Formula.lean        # Core formula inductive type ✓
 │   │   ├── Context.lean        # Proof context ✓
@@ -208,7 +208,7 @@ If issues occur:
 ## Related Files
 
 - Analysis: `broken-links-analysis.md`
-- Source: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+- Source: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 - Target files verified in analysis report
 
 ---

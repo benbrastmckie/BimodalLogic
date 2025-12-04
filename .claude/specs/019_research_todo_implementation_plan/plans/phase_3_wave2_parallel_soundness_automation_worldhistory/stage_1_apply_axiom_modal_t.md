@@ -12,7 +12,7 @@
 
 ## Objective
 
-Implement `apply_axiom` (macro-based) and `modal_t` (pattern-matched) tactics as foundation for ProofChecker automation. Replace 2 sorry placeholders in `Tactics.lean` with working implementations following TDD approach.
+Implement `apply_axiom` (macro-based) and `modal_t` (pattern-matched) tactics as foundation for Logos automation. Replace 2 sorry placeholders in `Tactics.lean` with working implementations following TDD approach.
 
 ## Context
 
@@ -33,7 +33,7 @@ This stage implements Phase 1 of the three-phase automation roadmap:
 - [ ] `apply_axiom` tactic works for all 8 TM axioms (MT, M4, MB, T4, TA, TL, MF, TF)
 - [ ] `modal_t` tactic automatically applies modal T axiom when goal matches `□φ → φ` pattern
 - [ ] Comprehensive test suite created in `TacticsTest.lean` with ≥12 tests
-- [ ] All tests pass: `lake test ProofCheckerTest.Automation.TacticsTest`
+- [ ] All tests pass: `lake test LogosTest.Automation.TacticsTest`
 - [ ] 2 sorry removed from `Tactics.lean` (lines 112, 141)
 - [ ] Zero #lint warnings in `Tactics.lean`
 - [ ] Documentation updated with working examples
@@ -78,7 +78,7 @@ This stage implements Phase 1 of the three-phase automation roadmap:
 
 **Objective**: Write failing tests BEFORE implementation (TDD enforcement)
 
-**File**: `ProofCheckerTest/Automation/TacticsTest.lean`
+**File**: `LogosTest/Automation/TacticsTest.lean`
 
 **Test Categories**:
 
@@ -101,15 +101,15 @@ This stage implements Phase 1 of the three-phase automation roadmap:
 **Implementation Template**:
 
 ```lean
--- File: ProofCheckerTest/Automation/TacticsTest.lean
-import ProofChecker.Automation.Tactics
-import ProofChecker.Syntax.Formula
-import ProofChecker.ProofSystem.Derivation
+-- File: LogosTest/Automation/TacticsTest.lean
+import Logos.Automation.Tactics
+import Logos.Syntax.Formula
+import Logos.ProofSystem.Derivation
 
-namespace ProofCheckerTest.Automation.TacticsTest
+namespace LogosTest.Automation.TacticsTest
 
-open ProofChecker.Syntax (Formula)
-open ProofChecker.ProofSystem (Derivable Axiom)
+open Logos.Syntax (Formula)
+open Logos.ProofSystem (Derivable Axiom)
 
 /-! ## apply_axiom Tests -/
 
@@ -170,14 +170,14 @@ theorem test_modal_t_complex (P Q : Formula) :
 --   modal_t
 --   -- Expected: Error: "Goal does not match modal T pattern"
 
-end ProofCheckerTest.Automation.TacticsTest
+end LogosTest.Automation.TacticsTest
 ```
 
 **Action Items**:
-- [ ] Create `ProofCheckerTest/Automation/TacticsTest.lean`
+- [ ] Create `LogosTest/Automation/TacticsTest.lean`
 - [ ] Write 8 apply_axiom tests (one per axiom)
 - [ ] Write 4 modal_t tests (success + failure cases)
-- [ ] Verify tests fail with expected errors: `lake test ProofCheckerTest.Automation.TacticsTest`
+- [ ] Verify tests fail with expected errors: `lake test LogosTest.Automation.TacticsTest`
 - [ ] Document expected error messages in comments
 
 **Expected Output**: 12 failing tests with clear error messages indicating missing tactic implementations.
@@ -188,7 +188,7 @@ end ProofCheckerTest.Automation.TacticsTest
 
 **Objective**: Implement `apply_axiom` using `elab_rules` approach for all 8 TM axioms
 
-**File**: `ProofChecker/Automation/Tactics.lean`
+**File**: `Logos/Automation/Tactics.lean`
 
 **Current State** (Lines 102-112):
 ```lean
@@ -204,21 +204,21 @@ macro_rules
 **Step 3.1**: Add Required Imports
 
 ```lean
--- At top of ProofChecker/Automation/Tactics.lean
+-- At top of Logos/Automation/Tactics.lean
 import Lean.Elab.Tactic
 import Lean.Meta.Basic
 import Lean.Expr
 import Lean.MVarId
 
-import ProofChecker.Syntax.Formula
-import ProofChecker.ProofSystem.Axioms
-import ProofChecker.ProofSystem.Derivation
+import Logos.Syntax.Formula
+import Logos.ProofSystem.Axioms
+import Logos.ProofSystem.Derivation
 
-namespace ProofChecker.Automation
+namespace Logos.Automation
 
 open Lean Elab Tactic Meta
-open ProofChecker.Syntax (Formula)
-open ProofChecker.ProofSystem (Axiom Derivable)
+open Logos.Syntax (Formula)
+open Logos.ProofSystem (Axiom Derivable)
 ```
 
 **Step 3.2**: Implement apply_axiom with elab_rules
@@ -227,7 +227,7 @@ open ProofChecker.ProofSystem (Axiom Derivable)
 /-- Apply a named axiom schema to the current goal.
 
 Parses axiom name identifier and formula arguments, looks up the corresponding
-axiom from `ProofChecker.ProofSystem.Axioms`, instantiates it with provided
+axiom from `Logos.ProofSystem.Axioms`, instantiates it with provided
 formulas, and applies to the current goal.
 
 **Supported Axioms**:
@@ -323,8 +323,8 @@ elab_rules : tactic
 - [ ] Add required imports to `Tactics.lean`
 - [ ] Replace lines 102-112 with full `apply_axiom` implementation
 - [ ] Add comprehensive docstring with usage examples
-- [ ] Test compilation: `lake build ProofChecker.Automation.Tactics`
-- [ ] Run tests: `lake test ProofCheckerTest.Automation.TacticsTest`
+- [ ] Test compilation: `lake build Logos.Automation.Tactics`
+- [ ] Run tests: `lake test LogosTest.Automation.TacticsTest`
 - [ ] Verify 8 apply_axiom tests pass
 
 **Expected Output**: All 8 apply_axiom tests pass successfully.
@@ -335,7 +335,7 @@ elab_rules : tactic
 
 **Objective**: Implement `modal_t` using `elab` approach with goal pattern matching
 
-**File**: `ProofChecker/Automation/Tactics.lean`
+**File**: `Logos/Automation/Tactics.lean`
 
 **Current State** (Lines 118-141):
 ```lean
@@ -438,8 +438,8 @@ elab_rules : tactic
 **Action Items**:
 - [ ] Replace lines 118-141 with full `modal_t` implementation
 - [ ] Add comprehensive docstring with usage examples and error messages
-- [ ] Test compilation: `lake build ProofChecker.Automation.Tactics`
-- [ ] Run tests: `lake test ProofCheckerTest.Automation.TacticsTest`
+- [ ] Test compilation: `lake build Logos.Automation.Tactics`
+- [ ] Run tests: `lake test LogosTest.Automation.TacticsTest`
 - [ ] Verify 4 modal_t tests pass (2 success, 2 expected failures)
 
 **Expected Output**: All 4 modal_t tests behave as expected (2 pass, 2 fail gracefully with informative errors).
@@ -454,25 +454,25 @@ elab_rules : tactic
 
 ```bash
 # 1. Verify tactics compile without errors
-lake build ProofChecker.Automation.Tactics
+lake build Logos.Automation.Tactics
 # Expected: Build succeeds, zero errors
 
 # 2. Run full tactic test suite
-lake test ProofCheckerTest.Automation.TacticsTest
+lake test LogosTest.Automation.TacticsTest
 # Expected: 10 tests pass (8 apply_axiom + 2 modal_t success cases)
 # Expected: 2 tests fail gracefully (2 modal_t error cases documented in comments)
 
 # 3. Verify sorry count decreased
-grep -c "sorry" ProofChecker/Automation/Tactics.lean
+grep -c "sorry" Logos/Automation/Tactics.lean
 # Expected: 10 (down from 12)
 # 2 sorry removed: apply_axiom (line 112) and modal_t (line 141)
 
 # 4. Run lint checks
-lake exe lean --run ProofChecker/Automation/Tactics.lean 2>&1 | grep -i "warning"
+lake exe lean --run Logos/Automation/Tactics.lean 2>&1 | grep -i "warning"
 # Expected: Zero warnings
 
 # 5. Check test coverage
-lake test --coverage ProofCheckerTest.Automation.TacticsTest
+lake test --coverage LogosTest.Automation.TacticsTest
 # Expected: ≥80% coverage for Tactics.lean
 ```
 
@@ -512,7 +512,7 @@ lake test --coverage ProofCheckerTest.Automation.TacticsTest
 
 ```lean
 /-!
-# Automation Tactics for ProofChecker TM Logic
+# Automation Tactics for Logos TM Logic
 
 This module provides custom tactics for automated proof construction in the
 TM (Tense and Modality) bimodal logic system.
@@ -561,9 +561,9 @@ theorem modal_t_nested (P Q : Formula) :
 
 ## Testing
 
-See `ProofCheckerTest/Automation/TacticsTest.lean` for comprehensive test suite.
+See `LogosTest/Automation/TacticsTest.lean` for comprehensive test suite.
 
-Run tests: `lake test ProofCheckerTest.Automation.TacticsTest`
+Run tests: `lake test LogosTest.Automation.TacticsTest`
 
 ## References
 
@@ -642,13 +642,13 @@ theorem test (P : Formula) : (Formula.box P).imp P := by
 
 ```bash
 # Run all tests
-lake test ProofCheckerTest.Automation.TacticsTest
+lake test LogosTest.Automation.TacticsTest
 
 # Run specific test
-lake test ProofCheckerTest.Automation.TacticsTest::test_apply_axiom_mt
+lake test LogosTest.Automation.TacticsTest::test_apply_axiom_mt
 
 # Run with coverage
-lake test --coverage ProofCheckerTest.Automation.TacticsTest
+lake test --coverage LogosTest.Automation.TacticsTest
 
 # Expected: ≥80% coverage per CLAUDE.md Automation module target
 ```
@@ -671,7 +671,7 @@ Before marking this stage complete, verify ALL items:
 - [ ] All apply_axiom tests pass (8 tests)
 - [ ] modal_t success tests pass (2 tests)
 - [ ] modal_t failure tests documented (2 tests)
-- [ ] Test suite runs successfully: `lake test ProofCheckerTest.Automation.TacticsTest`
+- [ ] Test suite runs successfully: `lake test LogosTest.Automation.TacticsTest`
 - [ ] Coverage ≥80% for implemented tactics
 
 ### Quality
@@ -688,8 +688,8 @@ Before marking this stage complete, verify ALL items:
 - [ ] References to test suite included
 
 ### Verification
-- [ ] Build succeeds: `lake build ProofChecker.Automation.Tactics`
-- [ ] Tests pass: `lake test ProofCheckerTest.Automation.TacticsTest`
+- [ ] Build succeeds: `lake build Logos.Automation.Tactics`
+- [ ] Tests pass: `lake test LogosTest.Automation.TacticsTest`
 - [ ] Lint clean: Zero warnings
 - [ ] Coverage meets target: ≥80%
 

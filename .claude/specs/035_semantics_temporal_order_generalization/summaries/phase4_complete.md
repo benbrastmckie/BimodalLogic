@@ -75,7 +75,7 @@ Using `Type` (fixed universe) simplifies proofs while still supporting standard 
 ## Test Results
 
 ```bash
-$ lake build ProofChecker.Semantics
+$ lake build Logos.Semantics
 Build completed successfully.
 
 $ lake build
@@ -83,7 +83,7 @@ Build completed successfully.
 ```
 
 ## Files Modified
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Validity.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Validity.lean`
 
 ## Paper Alignment
 

@@ -299,7 +299,7 @@ Might-counterfactual: Drug B might cause stroke (possible but not certain).
 
 **Status**: Planned for future development
 **Model-Checker**: Constitutive operators (`≤`, `⊑`, `≡`) implemented in v0.9.26
-**ProofChecker**: Not yet started
+**Logos**: Not yet started
 **Estimated Development**: Post Layer 0 completion
 
 **Source**: LAYER_EXTENSIONS.md Section 1
@@ -588,7 +588,7 @@ Believing another prefers y leads to negotiating toward y.
 - Non-deterministic dynamical systems foundation
 - Complete implementation in Semantics/ package (Layer 0)
 
-**Current Implementation**: Fully realized in ProofChecker (TaskFrame, WorldHistory, TaskModel, Truth evaluation)
+**Current Implementation**: Fully realized in Logos (TaskFrame, WorldHistory, TaskModel, Truth evaluation)
 
 ### 7.2 Hyperintensional Semantics
 
@@ -761,7 +761,7 @@ inductive ExplanatoryFormula : Type
 3. Documentation refinement
 
 **Refactoring Requirements**:
-1. Rename namespace ProofChecker → Logos.Core
+1. Rename namespace Logos → Logos.Core
 2. No semantic changes needed
 3. Maintain existing test suite
 
@@ -826,7 +826,7 @@ inductive ExplanatoryFormula : Type
 **Recommended Structure**:
 ```
 Logos/                           # Root namespace
-├── Core/                        # Layer 0 (current ProofChecker)
+├── Core/                        # Layer 0 (current Logos)
 │   ├── Syntax/
 │   ├── ProofSystem/
 │   ├── Semantics/

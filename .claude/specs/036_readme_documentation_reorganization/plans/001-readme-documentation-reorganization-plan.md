@@ -5,7 +5,7 @@
 - **Feature**: Systematic remediation of 5 NOTE tags in README.md
 - **Status**: [COMPLETE]
 - **Estimated Hours**: 2-3 hours
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Research Reports**:
   - [README.md NOTE Tags Analysis](../reports/001-readme-note-tags-analysis.md)
 - **Complexity Score**: 28.5
@@ -81,18 +81,18 @@ dependencies: []
 **Testing**:
 ```bash
 # Verify Medical Planning includes epistemic operators
-grep -A 5 "Medical Planning" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md | grep -q "Epistemic"
+grep -A 5 "Medical Planning" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md | grep -q "Epistemic"
 
 # Verify Legal Reasoning includes normative operators
-grep -A 5 "Legal Reasoning" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md | grep -q "Normative"
+grep -A 5 "Legal Reasoning" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md | grep -q "Normative"
 
 # Verify LOGOS_PHILOSOPHY.md corrections applied
-grep -A 5 "Medical Planning" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/LOGOS_PHILOSOPHY.md | grep -q "Epistemic"
-grep -A 5 "Legal Reasoning" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/LOGOS_PHILOSOPHY.md | grep -q "Normative"
+grep -A 5 "Medical Planning" /home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/LOGOS_PHILOSOPHY.md | grep -q "Epistemic"
+grep -A 5 "Legal Reasoning" /home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/LOGOS_PHILOSOPHY.md | grep -q "Normative"
 
 # Verify NOTE tags removed
-! grep -n "NOTE.*medical needs epistemic" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-! grep -n "NOTE.*legal needs normative" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+! grep -n "NOTE.*medical needs epistemic" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+! grep -n "NOTE.*legal needs normative" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 ```
 
 **Expected Duration**: 30 minutes
@@ -120,25 +120,25 @@ dependencies: [1]
 **Testing**:
 ```bash
 # Verify Implementation Status section ≤10 lines
-SECTION_START=$(grep -n "^## Implementation Status" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md | cut -d: -f1)
-SECTION_END=$(tail -n +$SECTION_START /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md | grep -n "^##" | head -2 | tail -1 | cut -d: -f1)
+SECTION_START=$(grep -n "^## Implementation Status" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md | cut -d: -f1)
+SECTION_END=$(tail -n +$SECTION_START /home/benjamin/Documents/Philosophy/Projects/Logos/README.md | grep -n "^##" | head -2 | tail -1 | cut -d: -f1)
 LINE_COUNT=$((SECTION_END - 1))
 [ "$LINE_COUNT" -le 10 ] || echo "ERROR: Implementation Status section exceeds 10 lines ($LINE_COUNT)"
 
 # Verify no duplicate "Core Principle" content
-CORE_PRINCIPLE_COUNT=$(grep -c "^### Core Principle" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md)
+CORE_PRINCIPLE_COUNT=$(grep -c "^### Core Principle" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md)
 [ "$CORE_PRINCIPLE_COUNT" -eq 0 ] || echo "ERROR: Duplicate Core Principle sections found ($CORE_PRINCIPLE_COUNT)"
 
 # Verify no duplicate "Extension Strategy" content
-EXTENSION_STRATEGY_COUNT=$(grep -c "^### Extension Strategy" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md)
+EXTENSION_STRATEGY_COUNT=$(grep -c "^### Extension Strategy" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md)
 [ "$EXTENSION_STRATEGY_COUNT" -eq 0 ] || echo "ERROR: Duplicate Extension Strategy sections found ($EXTENSION_STRATEGY_COUNT)"
 
 # Verify NOTE tags removed
-! grep -n "NOTE.*maintenance burden" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-! grep -n "NOTE.*repetitive" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+! grep -n "NOTE.*maintenance burden" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+! grep -n "NOTE.*repetitive" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 # Verify section renamed
-grep -q "^## Application Domains" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep -q "^## Application Domains" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 ```
 
 **Expected Duration**: 45 minutes
@@ -176,22 +176,22 @@ dependencies: [1, 2]
 **Testing**:
 ```bash
 # Verify file renamed
-test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/METHODOLOGY.md || echo "ERROR: METHODOLOGY.md not found"
-! test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/LOGOS_PHILOSOPHY.md || echo "ERROR: LOGOS_PHILOSOPHY.md still exists"
+test -f /home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/METHODOLOGY.md || echo "ERROR: METHODOLOGY.md not found"
+! test -f /home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/LOGOS_PHILOSOPHY.md || echo "ERROR: LOGOS_PHILOSOPHY.md still exists"
 
 # Verify no remaining references to LOGOS_PHILOSOPHY
-REMAINING_REFS=$(grep -r "LOGOS_PHILOSOPHY" /home/benjamin/Documents/Philosophy/Projects/ProofChecker --exclude-dir=.git | wc -l)
+REMAINING_REFS=$(grep -r "LOGOS_PHILOSOPHY" /home/benjamin/Documents/Philosophy/Projects/Logos --exclude-dir=.git | wc -l)
 [ "$REMAINING_REFS" -eq 0 ] || echo "ERROR: $REMAINING_REFS references to LOGOS_PHILOSOPHY remain"
 
 # Verify markdown links resolve
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 grep -h "METHODOLOGY\.md" README.md Documentation/**/*.md | while read -r line; do
   FILE_PATH=$(echo "$line" | sed -n 's/.*(\(.*METHODOLOGY\.md\)).*/\1/p')
   [ -f "$FILE_PATH" ] || echo "ERROR: Broken link to $FILE_PATH"
 done
 
 # Verify NOTE tag removed
-! grep -n "NOTE.*LOGOS_PHILOSOPHY\.md.*METHODOLOGY\.md" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+! grep -n "NOTE.*LOGOS_PHILOSOPHY\.md.*METHODOLOGY\.md" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 ```
 
 **Expected Duration**: 20 minutes
@@ -212,7 +212,7 @@ Each phase includes verification commands testing specific success criteria:
 After all phases complete, run comprehensive verification:
 
 ```bash
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 
 # 1. Verify all NOTE tags removed (zero results expected)
 NOTE_COUNT=$(grep -c "NOTE:" README.md)

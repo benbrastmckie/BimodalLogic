@@ -55,14 +55,14 @@ Implemented the Perpetuity Principles (P1-P6) as derived theorems in the TM proo
 ## Files Created/Modified
 
 ### New Files
-1. `ProofChecker/Theorems.lean` - Module root for Theorems package
-2. `ProofChecker/Theorems/Perpetuity.lean` - P1-P6 implementations
-3. `ProofCheckerTest/Theorems.lean` - Test module root
-4. `ProofCheckerTest/Theorems/PerpetuityTest.lean` - Tests for all principles
+1. `Logos/Theorems.lean` - Module root for Theorems package
+2. `Logos/Theorems/Perpetuity.lean` - P1-P6 implementations
+3. `LogosTest/Theorems.lean` - Test module root
+4. `LogosTest/Theorems/PerpetuityTest.lean` - Tests for all principles
 
 ### Modified Files
-1. `ProofChecker.lean` - Added Theorems module export
-2. `ProofCheckerTest/ProofCheckerTest.lean` - Added Theorems test import
+1. `Logos.lean` - Added Theorems module export
+2. `LogosTest/LogosTest.lean` - Added Theorems test import
 
 ## Technical Notes
 

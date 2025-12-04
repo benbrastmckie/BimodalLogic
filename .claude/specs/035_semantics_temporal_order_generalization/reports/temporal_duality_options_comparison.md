@@ -1,7 +1,7 @@
 # Temporal Duality Options Comparison: Research Report
 
 **Date:** 2025-12-04
-**Context:** Generalization of ProofChecker temporal semantics from `Int` to polymorphic `T : Type*` with `LinearOrderedAddCommGroup T`
+**Context:** Generalization of Logos temporal semantics from `Int` to polymorphic `T : Type*` with `LinearOrderedAddCommGroup T`
 **Issue:** `is_valid` definition causing universe level mismatches in TemporalDuality section
 
 ---
@@ -241,9 +241,9 @@ def Theory.IsSatisfiable (T : Theory L) : Prop :=
 
 **Key Observation:** Satisfiability is relative to a **fixed language** `L`, not quantifying over all languages.
 
-**Parallel to ProofChecker:**
+**Parallel to Logos:**
 - Mathlib: Satisfiability at fixed signature `L`
-- ProofChecker: Validity at fixed temporal type `T`
+- Logos: Validity at fixed temporal type `T`
 
 ### 4.2 Universe Polymorphism Guidelines
 
@@ -397,7 +397,7 @@ theorem valid_at_triple {φ : Formula} (h_valid : is_valid φ)
 
 **Step 4:** Verify compilation (5 minutes)
 ```bash
-lake build ProofChecker.Semantics.Truth
+lake build Logos.Semantics.Truth
 ```
 
 **Total Time:** 35 minutes
@@ -485,7 +485,7 @@ With Option B, this metatheorem is **impossible to state** because `is_valid` al
 
 ### 9.4 Long-Term Impact
 
-Option A positions ProofChecker for:
+Option A positions Logos for:
 - Clean integration with model checkers (specific temporal domains)
 - Metatheorems about temporal structure embeddings
 - Future layers (counterfactual, epistemic) with different temporal constraints

@@ -57,7 +57,7 @@ Successfully completed all 6 phases of the implementation plan:
 **Results**:
 - WorldHistory.lean sorry count: 1 → 0
 - Build status: ✅ Success
-- File: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/WorldHistory.lean`
+- File: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/WorldHistory.lean`
 
 ---
 
@@ -241,7 +241,7 @@ Added tests 48-50 to TacticsTest.lean:
 ## Files Modified
 
 ### 1. WorldHistory.lean
-**Path**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/WorldHistory.lean`
+**Path**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/WorldHistory.lean`
 
 **Changes**:
 - Added `universal_trivialFrame` (lines 133-146): 14 lines
@@ -255,7 +255,7 @@ Added tests 48-50 to TacticsTest.lean:
 - API change: `universal` now requires reflexivity proof (breaking change, but well-documented)
 
 ### 2. TacticsTest.lean
-**Path**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Automation/TacticsTest.lean`
+**Path**: `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Automation/TacticsTest.lean`
 
 **Changes**:
 - Updated header documentation (lines 4-35): Test count and organization
@@ -355,9 +355,9 @@ but is expected to have type
 ## Dependencies and Assumptions
 
 ### Dependencies
-- `ProofChecker.Semantics.TaskFrame`: Provides trivialFrame, natFrame, identityFrame
-- `ProofChecker.Automation.Tactics`: Provides apply_axiom, tm_auto, assumption_search
-- `ProofChecker.ProofSystem.Axioms`: Provides all 10 TM axioms
+- `Logos.Semantics.TaskFrame`: Provides trivialFrame, natFrame, identityFrame
+- `Logos.Automation.Tactics`: Provides apply_axiom, tm_auto, assumption_search
+- `Logos.ProofSystem.Axioms`: Provides all 10 TM axioms
 
 ### Assumptions
 1. **Reflexive frames assumption**: Only trivialFrame and natFrame are reflexive (task_rel is always True)
@@ -376,13 +376,13 @@ lake build
 
 ### Sorry count verification
 ```bash
-grep -r "sorry" ProofChecker/Semantics/WorldHistory.lean
+grep -r "sorry" Logos/Semantics/WorldHistory.lean
 # Output: (no matches)
 ```
 
 ### Test count verification
 ```bash
-grep -c "^/-- Test [0-9]" ProofCheckerTest/Automation/TacticsTest.lean
+grep -c "^/-- Test [0-9]" LogosTest/Automation/TacticsTest.lean
 # Output: 48 (executable tests)
 # Plus 2 documented negative tests = 50 total
 ```

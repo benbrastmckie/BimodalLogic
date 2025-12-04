@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Date**: 2025-12-03
-- **File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean
+- **File**: /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean
 - **Theorem**: `truth_swap_of_valid_at_triple` and `valid_swap_of_valid`
 - **Status**: PARTIAL (3/6 cases complete, 3 sorry remaining)
 - **Attempts**: 1/3
@@ -66,7 +66,7 @@ The goal is to prove that validity is preserved under the `swap_past_future` tra
 
 ## Mathlib Theorems Referenced
 
-- None (uses only ProofChecker definitions)
+- None (uses only Logos definitions)
 
 ## Key Lemmas Defined
 
@@ -158,7 +158,7 @@ Context exhausted: **No**
 - Changes are backward compatible (no API changes)
 - New local definitions are private to TemporalDuality namespace
 - Completed box case reduces sorry count from 4 to 3
-- File compiles successfully with `lake build ProofChecker.Semantics.Truth`
+- File compiles successfully with `lake build Logos.Semantics.Truth`
 
 ## Testing Strategy
 

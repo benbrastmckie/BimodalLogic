@@ -4,7 +4,7 @@
 - **Date**: 2025-12-03
 - **Iteration**: 2 of 5
 - **Plan**: 028_temporal_symmetry_phase2_plan
-- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean
+- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean
 - **Execution Model**: Sequential (Phase 3 → Phase 4)
 
 ## Work Status
@@ -151,15 +151,15 @@
 ## Artifacts Created
 
 ### Modified Files (Iteration 2)
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean`
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean`
    - Added imports: ProofSystem.Axioms, ProofSystem.Derivation
-   - Added open declarations: ProofChecker.ProofSystem (Axiom Derivable)
+   - Added open declarations: Logos.ProofSystem (Axiom Derivable)
    - Lines 942-987: Phase 3 rule preservation proofs
    - Lines 989-1036: Phase 4 axiom_swap_valid master theorem
    - Lines 1038-1123: Phase 4 derivable_implies_swap_valid main theorem
    - Total additions: ~228 lines (including documentation)
 
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/028_temporal_symmetry_phase2_plan/summaries/002_temporal_symmetry_iteration2_summary.md`
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/028_temporal_symmetry_phase2_plan/summaries/002_temporal_symmetry_iteration2_summary.md`
    - This file - comprehensive iteration 2 summary
 
 ## Recommendations for Continuation

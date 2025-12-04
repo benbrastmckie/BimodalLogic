@@ -1,4 +1,4 @@
-# ProofChecker Test Results
+# Logos Test Results
 
 ## Metadata
 - **Date**: 2025-12-02T05:26:16Z
@@ -13,7 +13,7 @@
 - **Exit Code**: 0
 
 ### Test Framework
-ProofChecker uses LEAN 4's compile-time verification system. Tests are implemented as `example` declarations that must type-check during compilation.
+Logos uses LEAN 4's compile-time verification system. Tests are implemented as `example` declarations that must type-check during compilation.
 
 ### Test Statistics
 tests_passed: 200

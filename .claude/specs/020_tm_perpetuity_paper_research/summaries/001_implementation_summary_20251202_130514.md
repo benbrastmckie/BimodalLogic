@@ -24,7 +24,7 @@
 
 ## Summary
 
-Successfully completed all six perpetuity principles (P1-P6) in the ProofChecker TM logic system. The implementation takes a pragmatic approach, providing:
+Successfully completed all six perpetuity principles (P1-P6) in the Logos TM logic system. The implementation takes a pragmatic approach, providing:
 - **2 fully proven principles** (P1, P3): Complete syntactic derivations from TM axioms
 - **4 axiomatized principles** (P2, P4, P5, P6): Semantically justified using paper's Corollary 2.11
 
@@ -115,7 +115,7 @@ All principles are available for use and theoretically sound. The axiomatization
 ## Testing Strategy
 
 ### Test Files
-**Primary Test File**: `ProofCheckerTest/Theorems/PerpetuityTest.lean`
+**Primary Test File**: `LogosTest/Theorems/PerpetuityTest.lean`
 
 **Test Coverage**:
 - Helper tests: `imp_trans`, `mp` (modus ponens)
@@ -133,7 +133,7 @@ All principles are available for use and theoretically sound. The axiomatization
 ### Test Execution
 ```bash
 # Type-check tests
-lake env lean ProofCheckerTest/Theorems/PerpetuityTest.lean
+lake env lean LogosTest/Theorems/PerpetuityTest.lean
 # Result: Success (no errors)
 
 # Full build with tests
@@ -149,7 +149,7 @@ lake build
 ## Files Modified
 
 ### Implementation Files
-1. **ProofChecker/Theorems/Perpetuity.lean** (~370 lines)
+1. **Logos/Theorems/Perpetuity.lean** (~370 lines)
    - Axiomatized `contraposition` (line 163)
    - Axiomatized `perpetuity_4` (line 262)
    - Axiomatized `perpetuity_5` (line 285)
@@ -171,7 +171,7 @@ lake build
    - Updated Last Updated date: 2025-12-02
 
 ### Test Files
-**No changes required**: Existing tests in `ProofCheckerTest/Theorems/PerpetuityTest.lean` already covered all P1-P6. Tests now pass with axiomatized implementations.
+**No changes required**: Existing tests in `LogosTest/Theorems/PerpetuityTest.lean` already covered all P1-P6. Tests now pass with axiomatized implementations.
 
 ---
 
@@ -180,11 +180,11 @@ lake build
 ### Code Quality
 ```bash
 # Zero sorry in code
-grep -c "sorry" ProofChecker/Theorems/Perpetuity.lean
+grep -c "sorry" Logos/Theorems/Perpetuity.lean
 # Output: 0 (comments may mention "sorry" but no actual uses)
 
 # All 6 perpetuity principles defined
-grep -c "perpetuity_[1-6]" ProofChecker/Theorems/Perpetuity.lean
+grep -c "perpetuity_[1-6]" Logos/Theorems/Perpetuity.lean
 # Output: 12 (6 definitions + 6 example usages)
 
 # Build succeeds
@@ -195,7 +195,7 @@ lake build
 ### Testing
 ```bash
 # Tests pass
-lake env lean ProofCheckerTest/Theorems/PerpetuityTest.lean
+lake env lean LogosTest/Theorems/PerpetuityTest.lean
 # Output: No errors (type-checks successfully)
 ```
 
@@ -287,8 +287,8 @@ All success criteria from the plan are met:
 **Requires Continuation**: false
 **Stuck Detected**: false
 
-**Plan File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/020_tm_perpetuity_paper_research/plans/001-tm-perpetuity-paper-research-plan.md`
+**Plan File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/020_tm_perpetuity_paper_research/plans/001-tm-perpetuity-paper-research-plan.md`
 
-**Topic Path**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/020_tm_perpetuity_paper_research`
+**Topic Path**: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/020_tm_perpetuity_paper_research`
 
-**Summary Path**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/020_tm_perpetuity_paper_research/summaries/001_implementation_summary_20251202_130514.md`
+**Summary Path**: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/020_tm_perpetuity_paper_research/summaries/001_implementation_summary_20251202_130514.md`

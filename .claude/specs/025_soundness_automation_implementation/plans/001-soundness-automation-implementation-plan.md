@@ -7,14 +7,14 @@
 - **Estimated Hours**: 70-105 hours
 - **Complexity Score**: 180
 - **Structure Level**: 0
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
-- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
+- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean
 - **Research Reports**:
   - [Soundness Automation Research](../reports/001-soundness-automation-implementation-research.md)
 
 ## Overview
 
-This implementation plan covers four high/medium-priority tasks from ProofChecker TODO.md:
+This implementation plan covers four high/medium-priority tasks from Logos TODO.md:
 
 1. **Task 5**: Fix Modal K and Temporal K Rule Implementations (CRITICAL - code-paper alignment)
 2. **Task 5b**: Complete Temporal Duality Soundness
@@ -55,17 +55,17 @@ Key findings from research report:
 
 ### Architecture Overview
 
-**Phase 0 (Rule Fix)**: Modify `ProofChecker/ProofSystem/Derivation.lean` to fix rule directions:
+**Phase 0 (Rule Fix)**: Modify `Logos/ProofSystem/Derivation.lean` to fix rule directions:
 - Change modal_k: `Derivable Γ φ → Derivable (Γ.map box) (box φ)`
 - Change temporal_k: `Derivable Γ φ → Derivable (Γ.map future) (future φ)`
 
-**Phases 1-3 (Soundness)**: Update `ProofChecker/Metalogic/Soundness.lean`:
+**Phases 1-3 (Soundness)**: Update `Logos/Metalogic/Soundness.lean`:
 - After rule fix, soundness proofs use standard modal logic techniques
 - Modal K: If `Γ ⊨ φ` then `□Γ ⊨ □φ` (direct from semantics)
 - Temporal K: If `Γ ⊨ φ` then `FΓ ⊨ Fφ` (parallel structure)
 - Temporal Duality: Requires symmetric frame constraint (documented restriction)
 
-**Phases 4-6 (Automation)**: Replace stubs in `ProofChecker/Automation/Tactics.lean`:
+**Phases 4-6 (Automation)**: Replace stubs in `Logos/Automation/Tactics.lean`:
 - apply_axiom: Macro-based axiom application
 - modal_t: elab_rules pattern-matched tactic
 - tm_auto: Aesop integration with TMLogic rule set
@@ -107,11 +107,11 @@ Tasks:
 Testing:
 ```bash
 # Verify rule signatures changed
-grep -A2 "| modal_k" ProofChecker/ProofSystem/Derivation.lean
-grep -A2 "| temporal_k" ProofChecker/ProofSystem/Derivation.lean
+grep -A2 "| modal_k" Logos/ProofSystem/Derivation.lean
+grep -A2 "| temporal_k" Logos/ProofSystem/Derivation.lean
 
 # Build verification
-lake build ProofChecker.ProofSystem.Derivation
+lake build Logos.ProofSystem.Derivation
 lake build
 ```
 
@@ -135,8 +135,8 @@ Tasks:
 
 Testing:
 ```bash
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean | grep -v temporal_duality
-lake build ProofChecker.Metalogic.Soundness
+grep -n "sorry" Logos/Metalogic/Soundness.lean | grep -v temporal_duality
+lake build Logos.Metalogic.Soundness
 ```
 
 **Expected Duration**: 3-5 hours
@@ -159,8 +159,8 @@ Tasks:
 
 Testing:
 ```bash
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean
-lake build ProofChecker.Metalogic.Soundness
+grep -n "sorry" Logos/Metalogic/Soundness.lean
+lake build Logos.Metalogic.Soundness
 ```
 
 **Expected Duration**: 3-5 hours
@@ -184,9 +184,9 @@ Tasks:
 
 Testing:
 ```bash
-lake build ProofChecker.Metalogic.Soundness
-lake build ProofChecker.Metalogic.TemporalDuality
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean
+lake build Logos.Metalogic.Soundness
+lake build Logos.Metalogic.TemporalDuality
+grep -n "sorry" Logos/Metalogic/Soundness.lean
 ```
 
 **Expected Duration**: 5-10 hours
@@ -212,8 +212,8 @@ Tasks:
 
 Testing:
 ```bash
-lake build ProofChecker.Automation.Tactics
-lake test ProofCheckerTest.Automation.TacticsTest
+lake build Logos.Automation.Tactics
+lake test LogosTest.Automation.TacticsTest
 ```
 
 **Expected Duration**: 5-8 hours
@@ -239,11 +239,11 @@ Tasks:
 Testing:
 ```bash
 # Verify Aesop attributes
-grep -c "@\[aesop safe \[TMLogic\]\]" ProofChecker/Metalogic/Soundness.lean
-grep -c "@\[aesop safe \[TMLogic\]\]" ProofChecker/Theorems/Perpetuity.lean
+grep -c "@\[aesop safe \[TMLogic\]\]" Logos/Metalogic/Soundness.lean
+grep -c "@\[aesop safe \[TMLogic\]\]" Logos/Theorems/Perpetuity.lean
 
-lake build ProofChecker.Automation.Tactics
-lake test ProofCheckerTest.Automation.TacticsTest
+lake build Logos.Automation.Tactics
+lake test LogosTest.Automation.TacticsTest
 ```
 
 **Expected Duration**: 6-8 hours
@@ -269,8 +269,8 @@ Tasks:
 
 Testing:
 ```bash
-lake build ProofChecker.Automation.Tactics
-lake test ProofCheckerTest.Automation.TacticsTest
+lake build Logos.Automation.Tactics
+lake test LogosTest.Automation.TacticsTest
 ```
 
 **Expected Duration**: 8-12 hours
@@ -297,7 +297,7 @@ Tasks:
 
 Testing:
 ```bash
-grep -c "def test_" ProofCheckerTest/Automation/TacticsTest.lean
+grep -c "def test_" LogosTest/Automation/TacticsTest.lean
 lake test
 ```
 

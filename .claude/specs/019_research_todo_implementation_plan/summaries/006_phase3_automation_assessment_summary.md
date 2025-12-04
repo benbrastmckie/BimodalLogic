@@ -39,7 +39,7 @@ This iteration assessed Sub-Phase 3B (Implement Core Automation) and determined 
 
 #### Current State
 
-**File**: `ProofChecker/Automation/Tactics.lean`
+**File**: `Logos/Automation/Tactics.lean`
 - Current implementation: Legacy axiom-based stubs (lines 1-144)
 - Status: 12 axiom declarations with `sorry` placeholders
 - Approach: Old stub pattern, not modern `syntax`/`elab` pattern
@@ -56,13 +56,13 @@ This iteration assessed Sub-Phase 3B (Implement Core Automation) and determined 
 - Implement `apply_axiom` tactic (macro-based approach)
   - Parse axiom name identifier (MT, M4, MB, T4, TA, TL, MF, TF)
   - Parse formula arguments (1-2 formulas depending on axiom)
-  - Look up axiom from `ProofChecker.ProofSystem.Axioms`
+  - Look up axiom from `Logos.ProofSystem.Axioms`
   - Apply to goal using `elab_rules`
 - Implement `modal_t` tactic (pattern-matched approach)
   - Detect `□φ → φ` goal pattern
   - Extract formula φ
   - Apply modal T axiom automatically
-- Create comprehensive tests in `ProofCheckerTest/Automation/TacticsTest.lean`
+- Create comprehensive tests in `LogosTest/Automation/TacticsTest.lean`
 
 **Task 3B.2: Phase 2 - tm_auto with Aesop** (12-15 hours)
 - Declare TMLogic Aesop rule set
@@ -152,7 +152,7 @@ This iteration assessed Sub-Phase 3B (Implement Core Automation) and determined 
 ## Files Analyzed
 
 ```
-ProofChecker/Automation/Tactics.lean (144 lines)
+Logos/Automation/Tactics.lean (144 lines)
   - Lines 1-79: Module docstring (legacy stub approach documentation)
   - Lines 81-143: Axiom-based stubs (12 declarations)
   - Status: Requires complete rewrite to modern tactic syntax
@@ -208,7 +208,7 @@ Documentation/Development/TACTIC_DEVELOPMENT.md
 
 **Test Execution Requirements**:
 - Framework: LEAN 4 built-in test framework
-- Run: `lake test ProofCheckerTest.Automation.TacticsTest`
+- Run: `lake test LogosTest.Automation.TacticsTest`
 - Coverage Target: ≥80% (Automation module target from CLAUDE.md)
 
 **Testing Approach**:
@@ -405,8 +405,8 @@ This iteration completed assessment of Sub-Phase 3B (Core Automation) and determ
 - [ ] Rewrite Tactics.lean module docstring
 - [ ] Implement apply_axiom tactic (elab_rules approach)
 - [ ] Implement modal_t tactic (elab approach)
-- [ ] Verify tests pass: `lake test ProofCheckerTest.Automation.TacticsTest`
-- [ ] Verify build: `lake build ProofChecker.Automation.Tactics`
+- [ ] Verify tests pass: `lake test LogosTest.Automation.TacticsTest`
+- [ ] Verify build: `lake build Logos.Automation.Tactics`
 - [ ] Update documentation with working examples
 
 ### Phase 2 Implementation (12-15 hours, optional)

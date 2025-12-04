@@ -1,11 +1,11 @@
-# Known Limitations - ProofChecker MVP
+# Known Limitations - Logos MVP
 
 **Last Updated**: 2025-12-03
 **Project Version**: 0.1.0-mvp
 
 ## Overview
 
-This document documents actual implementation gaps in ProofChecker MVP that users should be aware of.
+This document documents actual implementation gaps in Logos MVP that users should be aware of.
 
 **Quick Navigation**:
 1. [Completeness Status](#1-completeness-status)
@@ -59,7 +59,7 @@ The `Completeness.lean` module contains `axiom` declarations for:
 
 ### 2.3 Aesop Integration Blocked
 
-**Issue**: Adding Aesop/Batteries breaks `ProofChecker.Semantics.Truth` due to integer simplification behavior changes.
+**Issue**: Adding Aesop/Batteries breaks `Logos.Semantics.Truth` due to integer simplification behavior changes.
 
 **Workaround**: Native `tm_auto` using `first` combinator works for MVP.
 

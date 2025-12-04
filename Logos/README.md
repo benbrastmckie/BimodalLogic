@@ -1,6 +1,6 @@
-# ProofChecker Source
+# Logos Source
 
-Main source directory for the ProofChecker TM logic implementation.
+Main source directory for the Logos TM logic implementation.
 
 ## Purpose
 
@@ -57,16 +57,16 @@ This directory contains the core implementation of the bimodal logic TM (Tense a
 ## Building and Type-Checking
 
 ```bash
-# Build entire ProofChecker module
-lake build ProofChecker
+# Build entire Logos module
+lake build Logos
 
 # Build entire project
 lake build
 
 # Type-check specific file
-lake env lean ProofChecker/Syntax/Formula.lean
-lake env lean ProofChecker/ProofSystem/Axioms.lean
-lake env lean ProofChecker/Semantics/TaskFrame.lean
+lake env lean Logos/Syntax/Formula.lean
+lake env lean Logos/ProofSystem/Axioms.lean
+lake env lean Logos/Semantics/TaskFrame.lean
 
 # Interactive mode (load and explore)
 lake env lean --run
@@ -74,7 +74,7 @@ lake env lean --run
 
 ## Module Structure
 
-The ProofChecker module follows a layered architecture:
+The Logos module follows a layered architecture:
 
 1. **Layer 0 (Foundation)**: Syntax and ProofSystem
    - Define formulas and axioms
@@ -122,14 +122,14 @@ For detailed status, see [IMPLEMENTATION_STATUS.md](../Documentation/ProjectInfo
 
 For detailed API documentation:
 
-- **Module overview**: See [ProofChecker.lean](../ProofChecker.lean) for top-level re-exports
+- **Module overview**: See [Logos.lean](../Logos.lean) for top-level re-exports
 - **Generated docs**: Run `lake build :docs` to generate doc-gen4 API documentation
 - **Architecture guide**: [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md) for TM logic specification
 - **Code comments**: All public definitions have comprehensive docstrings
 
 ## Development Guidelines
 
-When working on ProofChecker source code:
+When working on Logos source code:
 
 - **Follow style guide**: [LEAN_STYLE_GUIDE.md](../Documentation/Development/LEAN_STYLE_GUIDE.md)
 - **Write tests first**: [TESTING_STANDARDS.md](../Documentation/Development/TESTING_STANDARDS.md)
@@ -145,7 +145,7 @@ When working on ProofChecker source code:
 2. Write comprehensive docstring
 3. Implement definition
 4. Add to module export list
-5. Write tests in `ProofCheckerTest/`
+5. Write tests in `LogosTest/`
 6. Update documentation if significant
 
 ### Proving a New Theorem
@@ -161,7 +161,7 @@ When working on ProofChecker source code:
 1. Add axiom schema to `ProofSystem/Axioms.lean`
 2. Add case to `Derivable` in `ProofSystem/Derivation.lean`
 3. Prove validity in `Metalogic/Soundness.lean`
-4. Write tests in `ProofCheckerTest/ProofSystem/`
+4. Write tests in `LogosTest/ProofSystem/`
 5. Update ARCHITECTURE.md if significant
 
 ## Related Documentation
@@ -175,7 +175,7 @@ When working on ProofChecker source code:
 
 ## Navigation
 
-- **Up**: [ProofChecker Root](../)
-- **Tests**: [ProofCheckerTest/](../ProofCheckerTest/)
+- **Up**: [Logos Root](../)
+- **Tests**: [LogosTest/](../LogosTest/)
 - **Documentation**: [Documentation/](../Documentation/)
 - **Examples**: [Archive/](../Archive/)

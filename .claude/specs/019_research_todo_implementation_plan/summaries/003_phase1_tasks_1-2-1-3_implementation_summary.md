@@ -10,7 +10,7 @@
 ### Task 1.2: Add Propositional Axioms K and S
 
 **Files Modified**:
-- `ProofChecker/ProofSystem/Axioms.lean`:175-176
+- `Logos/ProofSystem/Axioms.lean`:175-176
   - Added `prop_k` axiom: `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))` (distribution axiom)
   - Added `prop_s` axiom: `φ → (ψ → φ)` (weakening axiom)
   - Updated module docstring from 8 to 10 axiom schemata
@@ -18,14 +18,14 @@
 
 **Verification**:
 ```bash
-$ lake build ProofChecker.ProofSystem.Axioms
+$ lake build Logos.ProofSystem.Axioms
 ✔ Build completed successfully
 ```
 
 ### Task 1.3: Prove Propositional Helpers
 
 **Files Modified**:
-- `ProofChecker/Theorems/Perpetuity.lean:86-99`
+- `Logos/Theorems/Perpetuity.lean:86-99`
   - **FULLY PROVEN**: `imp_trans` theorem (transitivity of implication)
   - Proof uses propositional K and S axioms with modus ponens
   - Removed sorry placeholder (line 88)
@@ -40,29 +40,29 @@ $ lake build ProofChecker.ProofSystem.Axioms
 
 **Verification**:
 ```bash
-$ lake build ProofChecker.Theorems.Perpetuity
+$ lake build Logos.Theorems.Perpetuity
 ⚠ Built with 4 sorry warnings (down from 6 originally)
 ```
 
 ### Tests Added
 
 **Files Modified**:
-- `ProofCheckerTest/ProofSystem/AxiomsTest.lean:22-56`
+- `LogosTest/ProofSystem/AxiomsTest.lean:22-56`
   - Added 6 tests for propositional K axiom
   - Added 3 tests for propositional S axiom
   - Tests cover atoms, complex formulas, and nested implications
 
-- `ProofCheckerTest/Theorems/PerpetuityTest.lean:25-58`
+- `LogosTest/Theorems/PerpetuityTest.lean:25-58`
   - Added 4 tests for `imp_trans` helper lemma
   - Tests cover generic formulas, concrete modal axioms, and composition
   - Tests verify transitivity chains work correctly
 
 **Verification**:
 ```bash
-$ lake build ProofCheckerTest.ProofSystem.AxiomsTest
+$ lake build LogosTest.ProofSystem.AxiomsTest
 ✔ Build completed successfully
 
-$ lake build ProofCheckerTest.Theorems.PerpetuityTest
+$ lake build LogosTest.Theorems.PerpetuityTest
 ✔ Build completed successfully
 
 $ lake build
@@ -131,10 +131,10 @@ With propositional axioms K and S added and `imp_trans` proven:
 
 **Modified Files**:
 ```
-ProofChecker/ProofSystem/Axioms.lean (docstring + 2 axioms)
-ProofChecker/Theorems/Perpetuity.lean (1 proof complete, 1 documented)
-ProofCheckerTest/ProofSystem/AxiomsTest.lean (9 tests added)
-ProofCheckerTest/Theorems/PerpetuityTest.lean (4 tests added)
+Logos/ProofSystem/Axioms.lean (docstring + 2 axioms)
+Logos/Theorems/Perpetuity.lean (1 proof complete, 1 documented)
+LogosTest/ProofSystem/AxiomsTest.lean (9 tests added)
+LogosTest/Theorems/PerpetuityTest.lean (4 tests added)
 ```
 
 **Summary Files**:

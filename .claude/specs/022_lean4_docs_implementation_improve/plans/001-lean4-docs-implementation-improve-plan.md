@@ -6,7 +6,7 @@
 - **Scope**: Documentation enhancement covering metaprogramming guides, tactic development examples, phased implementation roadmap, CLAUDE.md consolidation, and TODO.md task additions derived from best practices report (report 021)
 - **Estimated Phases**: 7
 - **Estimated Hours**: 27-42 hours
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Status**: [COMPLETE]
 - **Research Reports**:
   - [LEAN 4 Modal Logic Implementation Best Practices](../../../021_lean4_bimodal_logic_best_practices/reports/001-lean-4-modal-logic-implementation-best.md)
@@ -16,7 +16,7 @@
 
 ## Overview
 
-This plan systematically improves ProofChecker's documentation infrastructure by addressing critical gaps in tactic development guidance, metaprogramming resources, and implementation roadmap clarity identified through comprehensive analysis of LEAN 4 modal logic best practices (report 021). While existing documentation provides solid TM logic architecture and status tracking, it lacks concrete metaprogramming examples, Aesop integration patterns, and phased implementation strategies essential for completing the 0%-complete automation package. Key improvements include expanding TACTIC_DEVELOPMENT.md with Lean.Elab.Tactic examples, creating new METAPROGRAMMING_GUIDE.md for systematic tactic implementation patterns, adding PHASED_IMPLEMENTATION.md for Wave 1-4 execution strategy, streamlining CLAUDE.md references to consolidate LEAN 4 guidance, and updating TODO.md with 2 new tasks derived from best practices recommendations. These enhancements will accelerate automation implementation from 0% to 40-50% completion within 40-60 hours by providing developers with concrete, actionable guidance that eliminates external research dependencies.
+This plan systematically improves Logos's documentation infrastructure by addressing critical gaps in tactic development guidance, metaprogramming resources, and implementation roadmap clarity identified through comprehensive analysis of LEAN 4 modal logic best practices (report 021). While existing documentation provides solid TM logic architecture and status tracking, it lacks concrete metaprogramming examples, Aesop integration patterns, and phased implementation strategies essential for completing the 0%-complete automation package. Key improvements include expanding TACTIC_DEVELOPMENT.md with Lean.Elab.Tactic examples, creating new METAPROGRAMMING_GUIDE.md for systematic tactic implementation patterns, adding PHASED_IMPLEMENTATION.md for Wave 1-4 execution strategy, streamlining CLAUDE.md references to consolidate LEAN 4 guidance, and updating TODO.md with 2 new tasks derived from best practices recommendations. These enhancements will accelerate automation implementation from 0% to 40-50% completion within 40-60 hours by providing developers with concrete, actionable guidance that eliminates external research dependencies.
 
 ## Research Summary
 
@@ -119,16 +119,16 @@ Phase 7 (Update README navigation)
 ### File Modification Strategy
 
 **Files to Create** (5 new files):
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Development/METAPROGRAMMING_GUIDE.md` (Phase 2)
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Development/PHASED_IMPLEMENTATION.md` (Phase 3)
-3. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Development/DOC_QUALITY_CHECKLIST.md` (Phase 6)
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Development/METAPROGRAMMING_GUIDE.md` (Phase 2)
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Development/PHASED_IMPLEMENTATION.md` (Phase 3)
+3. `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Development/DOC_QUALITY_CHECKLIST.md` (Phase 6)
 4. (No Archive files created - Phase 5 Task 13 defers Archive file creation to future implementation)
 
 **Files to Modify** (3 existing files):
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Development/TACTIC_DEVELOPMENT.md` (Phase 1)
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md` (Phase 4)
-3. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md` (Phase 5)
-4. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/README.md` (Phase 7)
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Development/TACTIC_DEVELOPMENT.md` (Phase 1)
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md` (Phase 4)
+3. `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md` (Phase 5)
+4. `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/README.md` (Phase 7)
 
 **Modification Approach**:
 - Use Edit tool (not Write) for all existing file modifications to preserve history
@@ -216,9 +216,9 @@ dependencies: [1]
 **Tasks**:
 - [x] Create file at Documentation/Development/METAPROGRAMMING_GUIDE.md with frontmatter
 - [x] Section 1: Introduction (purpose, audience, prerequisites)
-  - Purpose: Systematic guide to LEAN 4 metaprogramming for ProofChecker automation
+  - Purpose: Systematic guide to LEAN 4 metaprogramming for Logos automation
   - Audience: Developers implementing custom tactics (Task 7)
-  - Prerequisites: Basic LEAN 4 syntax, understanding of ProofChecker proof system
+  - Prerequisites: Basic LEAN 4 syntax, understanding of Logos proof system
 - [x] Section 2: Core Modules and Imports
   - Lean.Elab.Tactic (high-level tactic monad)
   - Lean.Meta.Basic (meta-level operations)
@@ -410,7 +410,7 @@ dependencies: [4]
   - Status: Not Started
   - Priority: Medium (concurrent with Task 7)
   - Description: Develop comprehensive test suite for automation package following test patterns from LEAN 4 best practices
-  - Files: ProofCheckerTest/Automation/TacticsTest.lean (to be created), ProofCheckerTest/Automation/ProofSearchTest.lean (to be created)
+  - Files: LogosTest/Automation/TacticsTest.lean (to be created), LogosTest/Automation/ProofSearchTest.lean (to be created)
   - Action Items: 8 items from report 022 lines 416-431
   - Blocking: None (tests can be written before implementation using sorry placeholders)
   - Dependencies: CONCURRENT WITH Task 7, follows TDD approach
@@ -849,7 +849,7 @@ Phase 7 (Update Documentation/README.md)
 
 ### Blocking Relationships
 
-**No External Blockers**: This plan addresses documentation gaps and does not require implementation work to proceed. All phases can execute without waiting for ProofChecker implementation changes.
+**No External Blockers**: This plan addresses documentation gaps and does not require implementation work to proceed. All phases can execute without waiting for Logos implementation changes.
 
 **Sequential Phase Execution Required**: Phases 1-7 must execute sequentially due to cross-reference dependencies. Phase N requires Phase N-1 complete before starting.
 

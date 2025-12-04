@@ -1070,13 +1070,13 @@ Based on previous report (pure LEAN 4 for proof-checker) and current research (P
 - **Monitoring**: TensorBoard, Weights & Biases integration
 - **Process-based communication**: Standard, stable, no FFI complexity
 
-#### 8.3 Architecture Recommendation for Your ProofChecker Project
+#### 8.3 Architecture Recommendation for Your Logos Project
 
 **Recommended Structure:**
 
 ```
-ProofChecker/
-├── ProofChecker/              # Pure LEAN 4 (Core Implementation)
+Logos/
+├── Logos/              # Pure LEAN 4 (Core Implementation)
 │   ├── Syntax/                # Formula, Context, DSL
 │   ├── ProofSystem/           # Axioms, Rules, Derivation
 │   ├── Semantics/             # TaskFrame, Truth, Validity
@@ -1084,7 +1084,7 @@ ProofChecker/
 │   ├── Theorems/              # Perpetuity principles
 │   └── Automation/            # Custom tactics (modal_k, temporal_k)
 │
-├── ProofCheckerRL/            # Python RL Training Infrastructure
+├── LogosRL/            # Python RL Training Infrastructure
 │   ├── environment/           # LEAN 4 gym wrapper
 │   │   ├── lean_env.py        # LeanDojo/Pantograph integration
 │   │   ├── proof_state.py     # State representation
@@ -1098,7 +1098,7 @@ ProofChecker/
 │   │   ├── ppo.py             # Proximal Policy Optimization
 │   │   └── expert_iter.py     # Expert iteration
 │   ├── data/                  # Dataset management
-│   │   ├── extraction.py      # Extract from ProofChecker LEAN code
+│   │   ├── extraction.py      # Extract from Logos LEAN code
 │   │   ├── augmentation.py    # Data augmentation (Lean4trace style)
 │   │   └── curriculum.py      # Curriculum learning logic
 │   ├── training/              # Training loops
@@ -1110,7 +1110,7 @@ ProofChecker/
 │       └── expert_iter_config.yaml
 │
 ├── scripts/                   # Utility scripts
-│   ├── trace_proofchecker.py # Trace ProofChecker for LeanDojo
+│   ├── trace_proofchecker.py # Trace Logos for LeanDojo
 │   ├── export_dataset.py     # Export training data
 │   └── benchmark.py           # Run evaluation benchmarks
 │
@@ -1122,20 +1122,20 @@ ProofChecker/
 **Key Design Principles:**
 
 1. **Clear Separation:**
-   - ProofChecker: Pure LEAN 4, no Python dependencies
-   - ProofCheckerRL: Pure Python, interfaces with LEAN via subprocess
+   - Logos: Pure LEAN 4, no Python dependencies
+   - LogosRL: Pure Python, interfaces with LEAN via subprocess
 
 2. **Communication:**
-   - ProofCheckerRL uses LeanDojo or Pantograph to interact with ProofChecker
-   - One-time tracing of ProofChecker LEAN code
+   - LogosRL uses LeanDojo or Pantograph to interact with Logos
+   - One-time tracing of Logos LEAN code
    - Cached proof state interactions
 
 3. **Training Workflow:**
    ```
-   1. Develop proof system in LEAN 4 (ProofChecker/)
-   2. Trace ProofChecker with LeanDojo (one-time)
+   1. Develop proof system in LEAN 4 (Logos/)
+   2. Trace Logos with LeanDojo (one-time)
    3. Extract training data (theorems, tactics, proof states)
-   4. Train policy network in Python (ProofCheckerRL/)
+   4. Train policy network in Python (LogosRL/)
    5. Evaluate on held-out theorems
    6. Deploy trained policy as proof search assistant
    ```
@@ -1192,7 +1192,7 @@ From previous report: Model-Checker (Python/Z3) ↔ Proof-Checker (LEAN 4) via s
 - LEAN's type system catches errors at compile time
 - Python slower than compiled LEAN for intensive proof checking
 
-### 9. Implementation Roadmap for Your ProofChecker + RL System
+### 9. Implementation Roadmap for Your Logos + RL System
 
 Based on research findings and your project goals:
 
@@ -1205,13 +1205,13 @@ Based on research findings and your project goals:
 - Model-checker integration via serialization
 
 **Deliverables:**
-- Working ProofChecker in LEAN 4 with all axioms, rules, theorems
+- Working Logos in LEAN 4 with all axioms, rules, theorems
 - Test suite passing
 - Documentation complete
 - Model-checker integration functional
 
 #### Phase 1: Data Extraction Setup (2-4 weeks)
-🎯 **Goal:** Prepare ProofChecker for RL training data extraction
+🎯 **Goal:** Prepare Logos for RL training data extraction
 
 **Tasks:**
 1. **Install LeanDojo or Pantograph:**
@@ -1219,13 +1219,13 @@ Based on research findings and your project goals:
    pip install leandojo  # or lean-interact for simpler approach
    ```
 
-2. **Trace ProofChecker Repository:**
+2. **Trace Logos Repository:**
    ```python
    from lean_dojo import LeanGitRepo, trace
 
    repo = LeanGitRepo(
-       "ProofChecker",
-       path="/home/benjamin/Documents/Philosophy/Projects/ProofChecker"
+       "Logos",
+       path="/home/benjamin/Documents/Philosophy/Projects/Logos"
    )
    traced_repo = trace(repo)
    ```
@@ -1242,17 +1242,17 @@ Based on research findings and your project goals:
    - Ensure premise annotations correct
 
 **Deliverables:**
-- Traced ProofChecker repository cached
+- Traced Logos repository cached
 - Extracted dataset of theorems, proof states, tactics
 - Data validation script
 
 #### Phase 2: RL Environment Setup (3-6 weeks)
-🎯 **Goal:** Create gym-like environment for RL agents to interact with ProofChecker
+🎯 **Goal:** Create gym-like environment for RL agents to interact with Logos
 
 **Tasks:**
 1. **Implement Gym Wrapper:**
    ```python
-   class ProofCheckerEnv:
+   class LogosEnv:
        def __init__(self, leandojo_repo):
            self.repo = leandojo_repo
            self.theorems = load_theorems()
@@ -1287,12 +1287,12 @@ Based on research findings and your project goals:
    - Measure communication latency (should be <100ms per step)
 
 3. **Implement Premise Retrieval:**
-   - Index ProofChecker definitions and theorems
+   - Index Logos definitions and theorems
    - Simple BM25 retrieval initially
    - Later: Dense embeddings with SBERT
 
 **Deliverables:**
-- ProofCheckerEnv gym wrapper functional
+- LogosEnv gym wrapper functional
 - Test suite for environment (10+ test theorems)
 - Premise retrieval system operational
 
@@ -1454,7 +1454,7 @@ Based on research findings and your project goals:
 - State-of-the-art performance on your TM proof system
 
 #### Phase 7: Integration and Deployment (4-8 weeks)
-🎯 **Goal:** Deploy trained policy as proof assistant for ProofChecker users
+🎯 **Goal:** Deploy trained policy as proof assistant for Logos users
 
 **Tasks:**
 1. **Proof Search Tool:**
@@ -1487,7 +1487,7 @@ Based on research findings and your project goals:
 
 | Phase | Duration | Key Milestone |
 |-------|----------|---------------|
-| Phase 0 | Ongoing | Complete ProofChecker (pure LEAN 4) |
+| Phase 0 | Ongoing | Complete Logos (pure LEAN 4) |
 | Phase 1 | 2-4 weeks | Data extraction setup |
 | Phase 2 | 3-6 weeks | RL environment operational |
 | Phase 3 | 4-8 weeks | Baseline policy (20%+ success) |
@@ -1584,7 +1584,7 @@ source proofchecker_rl/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Trace ProofChecker (one-time)
+# Trace Logos (one-time)
 python scripts/trace_proofchecker.py
 ```
 
@@ -1606,12 +1606,12 @@ python scripts/trace_proofchecker.py
 #### 10.4 Team and Skills
 
 **Minimal Team (Solo Researcher):**
-- Strong LEAN 4 skills (Phase 0: ProofChecker implementation)
+- Strong LEAN 4 skills (Phase 0: Logos implementation)
 - Python ML skills (Phases 1-5: RL training)
 - Time commitment: 20-30 hours/week for 9-18 months
 
 **Recommended Team (2-3 People):**
-- **Person 1**: LEAN 4 expert (ProofChecker development, custom tactics)
+- **Person 1**: LEAN 4 expert (Logos development, custom tactics)
 - **Person 2**: ML engineer (RL training, model architecture)
 - **Person 3**: DevOps/Infrastructure (Optional, for scaling)
 
@@ -1754,8 +1754,8 @@ python scripts/trace_proofchecker.py
 - Flexibility: Easy to swap RL algorithms, models, hyperparameters without modifying LEAN code
 
 **Implementation:**
-- Keep ProofChecker in pure LEAN 4 (per previous report recommendation)
-- Build separate ProofCheckerRL Python package for RL training infrastructure
+- Keep Logos in pure LEAN 4 (per previous report recommendation)
+- Build separate LogosRL Python package for RL training infrastructure
 - Use LeanDojo or Pantograph for gym-like environment
 
 **Evidence:**
@@ -2035,7 +2035,7 @@ from modelchecker import check_validity, get_counterexample
 from lean_dojo import LeanGitRepo, Dojo
 
 # Component 3: RL Training (new, Python + PyTorch)
-from proofcheckerrl import ProofPolicy, ProofCheckerEnv
+from proofcheckerrl import ProofPolicy, LogosEnv
 
 # Coordinated verification workflow
 def hybrid_verification(formula):
@@ -2093,10 +2093,10 @@ This research establishes that **developing RL training loops for AI systems rea
 
 5. **Data is Critical**: Extract training data from LEAN repos using tools like Lean4trace (augmentation), LeanNavigator (state graph traversal), and LEAN-GitHub (large-scale datasets)
 
-**Recommendations for ProofChecker Project:**
+**Recommendations for Logos Project:**
 
 - **Implement proof-checker in pure LEAN 4** (per previous report): TM bimodal logic, axioms, soundness, completeness, custom tactics
-- **Build separate Python RL infrastructure**: ProofCheckerRL package with gym environment, policy networks, GRPO training
+- **Build separate Python RL infrastructure**: LogosRL package with gym environment, policy networks, GRPO training
 - **Use LeanDojo or Pantograph**: Start with LeanDojo (easier), migrate to Pantograph if adding MCTS
 - **Training pipeline**: Supervised baseline → expert iteration → GRPO fine-tuning → advanced techniques (MCTS, test-time adaptation)
 - **Three-component architecture**: Model-Checker (Python/Z3) ↔ Proof-Checker (LEAN 4) ↔ RL Training (Python) all via data exchange
@@ -2106,7 +2106,7 @@ The research clearly demonstrates that while pure LEAN 4 remains the best choice
 ## References
 
 ### Previous Research Report
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/005_lean4_language_research/reports/001-i-am-looking-to-build-a-proof-checker-pa.md` - LEAN 4 language integration research (conclusion: pure LEAN 4 optimal for proof-checker, Python+LEAN via serialization for model-checker integration)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/005_lean4_language_research/reports/001-i-am-looking-to-build-a-proof-checker-pa.md` - LEAN 4 language integration research (conclusion: pure LEAN 4 optimal for proof-checker, Python+LEAN via serialization for model-checker integration)
 
 ### AlphaProof and AlphaZero-Inspired Systems
 - [AlphaProof Paper - Julian's Blog](https://www.julian.ac/blog/2025/11/13/alphaproof-paper/)

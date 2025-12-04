@@ -18,7 +18,7 @@ Successfully migrated triangle notation (`△` for always, `▽` for sometimes) 
 
 ### 1. Enhanced Perpetuity.lean Examples
 
-**File**: `ProofChecker/Theorems/Perpetuity.lean`
+**File**: `Logos/Theorems/Perpetuity.lean`
 
 Added new section with example usages demonstrating triangle notation:
 - P1 with `△p`: necessary implies always
@@ -28,7 +28,7 @@ Added new section with example usages demonstrating triangle notation:
 
 ### 2. Expanded Test Coverage
 
-**File**: `ProofCheckerTest/Theorems/PerpetuityTest.lean`
+**File**: `LogosTest/Theorems/PerpetuityTest.lean`
 
 Added comprehensive triangle notation tests:
 - P3-P6 with triangle notation: `□φ → □△φ`, `◇▽φ → ◇φ`, etc.
@@ -52,14 +52,14 @@ Created comprehensive demonstration file with:
 1. `Archive/BimodalProofs.lean` - Bimodal proof examples with dual notation
 
 ### Modified Files
-1. `ProofChecker/Theorems/Perpetuity.lean` - Added triangle notation examples section
-2. `ProofCheckerTest/Theorems/PerpetuityTest.lean` - Added 8 new triangle notation tests
+1. `Logos/Theorems/Perpetuity.lean` - Added triangle notation examples section
+2. `LogosTest/Theorems/PerpetuityTest.lean` - Added 8 new triangle notation tests
 
 ## Technical Implementation
 
 ### Notation System
 
-The triangle notation was already defined in `ProofChecker/Syntax/Formula.lean`:
+The triangle notation was already defined in `Logos/Syntax/Formula.lean`:
 ```lean
 prefix:80 "△" => Formula.always
 prefix:80 "▽" => Formula.sometimes
@@ -96,8 +96,8 @@ Based on implementation, we recommend:
 
 ```
 ✔ lake build - Success (no errors)
-✔ ProofChecker/Theorems/Perpetuity.lean - Type-checked successfully
-✔ ProofCheckerTest/Theorems/PerpetuityTest.lean - All examples valid
+✔ Logos/Theorems/Perpetuity.lean - Type-checked successfully
+✔ LogosTest/Theorems/PerpetuityTest.lean - All examples valid
 ✔ Archive/BimodalProofs.lean - Type-checked successfully
 ```
 

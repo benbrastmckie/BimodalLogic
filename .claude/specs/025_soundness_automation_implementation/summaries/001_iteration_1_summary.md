@@ -3,8 +3,8 @@
 ## Metadata
 - **Date**: 2025-12-03
 - **Iteration**: 1 of 5
-- **Plan File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/025_soundness_automation_implementation/plans/001-soundness-automation-implementation-plan.md
-- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean
+- **Plan File**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/025_soundness_automation_implementation/plans/001-soundness-automation-implementation-plan.md
+- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean
 - **Status**: PARTIAL (Phases 0-3 Complete, Phases 4-8 Remaining)
 
 ## Work Completed
@@ -24,7 +24,7 @@
 
 **Verification**:
 ```bash
-lake build ProofChecker.ProofSystem.Derivation  # SUCCESS
+lake build Logos.ProofSystem.Derivation  # SUCCESS
 lake build  # SUCCESS (full project)
 ```
 
@@ -59,7 +59,7 @@ lake build  # SUCCESS (full project)
 
 **Verification**:
 ```bash
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean | grep modal_k
+grep -n "sorry" Logos/Metalogic/Soundness.lean | grep modal_k
 # NO RESULTS - zero sorry in modal_k case
 lake build  # SUCCESS
 ```
@@ -95,7 +95,7 @@ lake build  # SUCCESS
 
 **Verification**:
 ```bash
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean | grep temporal_k
+grep -n "sorry" Logos/Metalogic/Soundness.lean | grep temporal_k
 # NO RESULTS - zero sorry in temporal_k case
 lake build  # SUCCESS
 ```
@@ -167,7 +167,7 @@ lake build  # SUCCESS
 
 ## Modified Files
 
-### 1. ProofChecker/ProofSystem/Derivation.lean
+### 1. Logos/ProofSystem/Derivation.lean
 **Lines Changed**: 17-27 (module docs), 82-106 (rule definitions)
 
 **Changes**:
@@ -193,7 +193,7 @@ lake build  # SUCCESS
 +      (h : Derivable Γ φ) : Derivable (Context.map Formula.future Γ) (Formula.future φ)
 ```
 
-### 2. ProofChecker/Metalogic/Soundness.lean
+### 2. Logos/Metalogic/Soundness.lean
 **Lines Changed**: 535-632 (soundness proof cases)
 
 **Changes**:
@@ -219,16 +219,16 @@ Build completed successfully.
 
 ### Specific Module Builds
 ```bash
-$ lake build ProofChecker.ProofSystem.Derivation
-✔ [5/5] Built ProofChecker.ProofSystem.Derivation
+$ lake build Logos.ProofSystem.Derivation
+✔ [5/5] Built Logos.ProofSystem.Derivation
 
-$ lake build ProofChecker.Metalogic.Soundness
-✔ [11/11] Built ProofChecker.Metalogic.Soundness
+$ lake build Logos.Metalogic.Soundness
+✔ [11/11] Built Logos.Metalogic.Soundness
 ```
 
 ### Sorry Count Reduction
 ```bash
-$ grep -c "sorry" ProofChecker/Metalogic/Soundness.lean
+$ grep -c "sorry" Logos/Metalogic/Soundness.lean
 1  # Only temporal_duality remains
 ```
 
@@ -396,22 +396,22 @@ $ grep -c "sorry" ProofChecker/Metalogic/Soundness.lean
 ## Artifacts Created
 
 ### Summary File
-- **Path**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/025_soundness_automation_implementation/summaries/001_iteration_1_summary.md
+- **Path**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/025_soundness_automation_implementation/summaries/001_iteration_1_summary.md
 - **Size**: ~8000 tokens
 - **Purpose**: Continuation context for iteration 2 (if needed)
 
 ### Modified Source Files
-1. `ProofChecker/ProofSystem/Derivation.lean` - Rule fixes
-2. `ProofChecker/Metalogic/Soundness.lean` - Soundness proofs
+1. `Logos/ProofSystem/Derivation.lean` - Rule fixes
+2. `Logos/Metalogic/Soundness.lean` - Soundness proofs
 
 ### Verification Commands
 ```bash
 # Verify rule changes
-grep -A2 "| modal_k" ProofChecker/ProofSystem/Derivation.lean
-grep -A2 "| temporal_k" ProofChecker/ProofSystem/Derivation.lean
+grep -A2 "| modal_k" Logos/ProofSystem/Derivation.lean
+grep -A2 "| temporal_k" Logos/ProofSystem/Derivation.lean
 
 # Verify soundness proofs (zero sorry)
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean
+grep -n "sorry" Logos/Metalogic/Soundness.lean
 
 # Build verification
 lake clean && lake build
@@ -423,7 +423,7 @@ lake clean && lake build
 
 ### Temporal Duality Implementation Path
 When implementing temporal_duality soundness:
-1. Create `ProofChecker/Metalogic/TemporalDuality.lean`
+1. Create `Logos/Metalogic/TemporalDuality.lean`
 2. Define `class SymmetricFrame (F : TaskFrame)` typeclass
 3. Define `reverse_history : WorldHistory F → WorldHistory F`
 4. Prove `reverse_history_preserves_truth` lemma

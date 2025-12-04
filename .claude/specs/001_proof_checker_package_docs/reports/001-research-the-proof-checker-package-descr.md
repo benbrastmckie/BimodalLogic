@@ -1,6 +1,6 @@
-# Research Report: ProofChecker Package Documentation
+# Research Report: Logos Package Documentation
 
-**Research Topic:** Extract proof-checker package information from Logos project documentation to populate ProofChecker repository README.md and revise architecture.md
+**Research Topic:** Extract proof-checker package information from Logos project documentation to populate Logos repository README.md and revise architecture.md
 
 **Date:** 2025-12-01
 **Complexity:** 2 (Medium)
@@ -10,19 +10,19 @@
 
 ## Executive Summary
 
-This report analyzes the proof-checker package as described in the Logos project documentation (`/home/benjamin/Documents/Philosophy/Projects/Logos/`) to provide the information needed to populate the ProofChecker repository's README.md and revise its architecture.md file (currently copy-pasted from Logos with broken relative links).
+This report analyzes the proof-checker package as described in the Logos project documentation (`/home/benjamin/Documents/Philosophy/Projects/Logos/`) to provide the information needed to populate the Logos repository's README.md and revise its architecture.md file (currently copy-pasted from Logos with broken relative links).
 
 ---
 
 ## Findings
 
-### 1. ProofChecker Project Overview
+### 1. Logos Project Overview
 
 Based on `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`:
 
 #### 1.1 Project Purpose
 
-The ProofChecker is a LEAN-based formal verification system that:
+The Logos is a LEAN-based formal verification system that:
 - Constructs machine-checkable proofs to provide verified reasoning in the Logos formal language
 - Provides essential RL feedback for training AI systems to reason in the Logos
 - Translates human-readable proof justifications into valid natural language arguments
@@ -31,7 +31,7 @@ The ProofChecker is a LEAN-based formal verification system that:
 
 #### 1.2 Role in Three-Package Architecture
 
-The ProofChecker is one of three integrated packages in the Logos framework:
+The Logos is one of three integrated packages in the Logos framework:
 
 1. **Model-Builder** - Converts natural language to formal semantic models
 2. **Model-Checker** - Z3-based semantic verification (validates inferences, generates counterexamples)
@@ -237,11 +237,11 @@ proof-checker/
 
 ### 5. Issues with Current architecture.md
 
-The file at `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/architecture.md` has the following issues:
+The file at `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/architecture.md` has the following issues:
 
 #### 5.1 Broken Relative Links
 
-These links point to files that don't exist in ProofChecker:
+These links point to files that don't exist in Logos:
 
 ```markdown
 - _[Return to Package Overview](../README.md)_ - Links to wrong location
@@ -257,7 +257,7 @@ These links point to files that don't exist in ProofChecker:
 
 #### 5.2 Context References
 
-The file references "Logos project" and "model-builder/model-checker" integration throughout, which should be updated for the standalone ProofChecker context.
+The file references "Logos project" and "model-builder/model-checker" integration throughout, which should be updated for the standalone Logos context.
 
 ---
 
@@ -266,7 +266,7 @@ The file references "Logos project" and "model-builder/model-checker" integratio
 #### 6.1 README.md Content Structure
 
 ```markdown
-# ProofChecker
+# Logos
 
 A LEAN-based formal verification system for the Logos formal language.
 
@@ -317,10 +317,10 @@ Links to architecture.md and other docs.
 - `/home/benjamin/Documents/Philosophy/Projects/Logos/specifications/proof-checker/architecture.md` - Complete technical specification
 - `/home/benjamin/Documents/Philosophy/Projects/Logos/specifications/README.md` - Package integration overview
 
-### Target Files (ProofChecker Repository)
+### Target Files (Logos Repository)
 
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md` - Currently empty, needs population
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/architecture.md` - Copy from Logos, needs revision
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` - Currently empty, needs population
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/architecture.md` - Copy from Logos, needs revision
 
 ---
 

@@ -86,7 +86,7 @@ The theorems should rely on Lean's type inference to match the `T` in `is_valid`
 - This matches the "simplify" instructions in Phase 3 tasks
 
 ## Files Modified
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean`
 
 ## Test Status
 - **Build Status**: FAILS (18+ typeclass instance errors)

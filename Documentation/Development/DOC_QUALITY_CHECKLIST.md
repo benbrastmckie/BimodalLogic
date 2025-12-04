@@ -2,7 +2,7 @@
 
 ## Overview
 
-This checklist provides systematic verification procedures for ensuring ProofChecker
+This checklist provides systematic verification procedures for ensuring Logos
 documentation remains accurate, consistent, and complete as implementation progresses.
 Use this checklist before major releases, after significant implementation changes, and
 quarterly for ongoing quality assurance.
@@ -36,7 +36,7 @@ These checks verify that information is consistent across all documentation file
 **Verification**:
 ```bash
 # Count tactic declarations in Tactics.lean
-TACTICS_IMPL=$(grep -c "^axiom \|^def \|^elab " ProofChecker/Automation/Tactics.lean)
+TACTICS_IMPL=$(grep -c "^axiom \|^def \|^elab " Logos/Automation/Tactics.lean)
 
 # Count tactic references in TACTIC_DEVELOPMENT.md
 TACTICS_DOC=$(grep -c "^\#\#\# " Documentation/Development/TACTIC_DEVELOPMENT.md)
@@ -85,7 +85,7 @@ and implementation gaps.
 **Verification**:
 ```bash
 # Verify sorry count in Perpetuity.lean
-PERPETUITY_SORRY=$(grep -c "sorry" ProofChecker/Theorems/Perpetuity.lean)
+PERPETUITY_SORRY=$(grep -c "sorry" Logos/Theorems/Perpetuity.lean)
 echo "Perpetuity.lean sorry count: $PERPETUITY_SORRY"
 
 # Check KNOWN_LIMITATIONS.md claims
@@ -110,7 +110,7 @@ and KNOWN_LIMITATIONS.md.
 **Verification**:
 ```bash
 # Count total sorry placeholders in codebase
-TOTAL_SORRY=$(find ProofChecker -name "*.lean" -type f -exec grep -c "sorry" {} + |
+TOTAL_SORRY=$(find Logos -name "*.lean" -type f -exec grep -c "sorry" {} + |
               awk '{sum+=$1} END {print sum}')
 echo "Total sorry placeholders in codebase: $TOTAL_SORRY"
 
@@ -142,7 +142,7 @@ These checks verify that all required documentation exists and is comprehensive.
 **Verification**:
 ```bash
 # Check for undocumented public definitions (requires LEAN lint)
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 lake lint | grep "docBlame\|docBlameThm"
 
 # Expected output: Zero docBlame warnings (100% docstring coverage)
@@ -163,7 +163,7 @@ LEAN Style Guide format.
 **Verification**:
 ```bash
 # Check for missing README.md files in main directories
-for dir in ProofChecker/*/ ProofCheckerTest/*/ Archive/ Documentation/*/; do
+for dir in Logos/*/ LogosTest/*/ Archive/ Documentation/*/; do
   if [ ! -f "$dir/README.md" ]; then
     echo "Missing README.md in $dir"
   fi
@@ -237,13 +237,13 @@ These checks verify that documentation claims are accurate and verifiable.
 **Verification**:
 ```bash
 # Test status verification commands from IMPLEMENTATION_STATUS.md
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 
 # Example: Verify Soundness module sorry count
-grep -c "sorry" ProofChecker/Metalogic/Soundness.lean
+grep -c "sorry" Logos/Metalogic/Soundness.lean
 
 # Example: Verify Automation package completion
-ls ProofChecker/Automation/*.lean
+ls Logos/Automation/*.lean
 
 # Manual verification: Run verification commands from IMPLEMENTATION_STATUS.md
 # and confirm results match documented status
@@ -267,7 +267,7 @@ verification commands.
 # (Manual process - requires LEAN environment)
 
 # For TACTIC_DEVELOPMENT.md examples:
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 # Copy code examples to temporary .lean file and run:
 # lake env lean temp_example.lean
 
@@ -278,7 +278,7 @@ cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
 and TUTORIAL.md should compile successfully.
 
 **Action if Failed**: Fix code examples to match current LEAN 4 syntax and
-ProofChecker API.
+Logos API.
 
 ---
 
@@ -483,7 +483,7 @@ priorities.
 ```bash
 # Count tasks in TODO.md
 TASK_COUNT=$(grep -E "^### [0-9]+\. [A-Z]" TODO.md | grep -v "Archive/" |
-             grep -v "ProofChecker/" | wc -l)
+             grep -v "Logos/" | wc -l)
 echo "Total tasks in TODO.md: $TASK_COUNT"
 
 # Expected: 13 tasks (11 original + 2 new from best practices)
@@ -511,9 +511,9 @@ current priorities.
 # IMPLEMENTATION_STATUS.md claims "50% complete (P1-P3 proven, P4-P6 incomplete)"
 
 # Verify P1-P3 status
-grep -A5 "theorem p1" ProofChecker/Theorems/Perpetuity.lean | grep "sorry"
-grep -A5 "theorem p2" ProofChecker/Theorems/Perpetuity.lean | grep "sorry"
-grep -A5 "theorem p3" ProofChecker/Theorems/Perpetuity.lean | grep "sorry"
+grep -A5 "theorem p1" Logos/Theorems/Perpetuity.lean | grep "sorry"
+grep -A5 "theorem p2" Logos/Theorems/Perpetuity.lean | grep "sorry"
+grep -A5 "theorem p3" Logos/Theorems/Perpetuity.lean | grep "sorry"
 
 # Expected: P1-P2 have sorry in helpers, P3 has zero sorry
 

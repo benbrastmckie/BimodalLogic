@@ -43,7 +43,7 @@ High - Requires frame constraint research, Option B architectural implementation
 ### Tasks
 
 #### Task 3A.1: Document Frame Constraints for TL, MF, TF Axioms
-**File**: `ProofChecker/Metalogic/Soundness.lean`
+**File**: `Logos/Metalogic/Soundness.lean`
 
 **Objective**: Document frame properties required to validate TL, MF, TF axioms based on research findings
 
@@ -100,7 +100,7 @@ def ModalTemporalPersistence (F : TaskFrame) : Prop :=
 **Testing**:
 ```bash
 # Verify frame property definitions added
-grep -n "BackwardPersistence\|ModalTemporalPersistence" ProofChecker/Metalogic/Soundness.lean
+grep -n "BackwardPersistence\|ModalTemporalPersistence" Logos/Metalogic/Soundness.lean
 ```
 
 **Time Estimate**: 2-3 hours (reduced from 3-5)
@@ -164,7 +164,7 @@ theorem temp_l_valid (φ : Formula) : ⊨ ((Formula.future φ).imp (Formula.futu
 **Testing**:
 ```bash
 # Verify conditional validity documentation added
-grep -A 10 "conditional on" ProofChecker/Metalogic/Soundness.lean
+grep -A 10 "conditional on" Logos/Metalogic/Soundness.lean
 ```
 
 **Time Estimate**: 2-3 hours
@@ -172,7 +172,7 @@ grep -A 10 "conditional on" ProofChecker/Metalogic/Soundness.lean
 ---
 
 #### Task 3A.3: Document Conditional Validity for TL, MF, TF Axioms
-**File**: `ProofChecker/Metalogic/Soundness.lean`
+**File**: `Logos/Metalogic/Soundness.lean`
 
 **Objective**: Add comprehensive conditional validity documentation to axiom theorems using research-provided templates
 
@@ -285,11 +285,11 @@ theorem temp_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.box).future)) 
 **Testing**:
 ```bash
 # Verify conditional validity documentation exists
-grep -B 5 "Frame Constraint Required" ProofChecker/Metalogic/Soundness.lean
+grep -B 5 "Frame Constraint Required" Logos/Metalogic/Soundness.lean
 # Expected: 3 results (TL, MF, TF)
 
 # Verify sorry still present (MVP approach keeps them with documentation)
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean | grep -E "252|295|324"
+grep -n "sorry" Logos/Metalogic/Soundness.lean | grep -E "252|295|324"
 # Expected: 3 results (documented conditional sorry)
 ```
 
@@ -298,7 +298,7 @@ grep -n "sorry" ProofChecker/Metalogic/Soundness.lean | grep -E "252|295|324"
 ---
 
 #### Task 3A.4: Document Conditional Validity for Inference Rules
-**File**: `ProofChecker/Metalogic/Soundness.lean`
+**File**: `Logos/Metalogic/Soundness.lean`
 
 **Objective**: Add conditional validity documentation for modal_k, temporal_k, temporal_duality rules
 
@@ -374,11 +374,11 @@ theorem temporal_duality_sound (φ : Formula) :
 **Testing**:
 ```bash
 # Verify conditional documentation added
-grep -B 3 "Conditional Requirement\|Semantic Requirement" ProofChecker/Metalogic/Soundness.lean
+grep -B 3 "Conditional Requirement\|Semantic Requirement" Logos/Metalogic/Soundness.lean
 # Expected: 3 results
 
 # Verify sorry still present (MVP approach)
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean | grep -E "398|416|431"
+grep -n "sorry" Logos/Metalogic/Soundness.lean | grep -E "398|416|431"
 # Expected: 3 results
 ```
 
@@ -387,38 +387,38 @@ grep -n "sorry" ProofChecker/Metalogic/Soundness.lean | grep -E "398|416|431"
 ---
 
 #### Task 3A.5: Verify Conditional Documentation and Update Tests
-**File**: `ProofChecker/Metalogic/Soundness.lean`, `ProofCheckerTest/Metalogic/SoundnessTest.lean`
+**File**: `Logos/Metalogic/Soundness.lean`, `LogosTest/Metalogic/SoundnessTest.lean`
 
 **Objective**: Verify conditional validity documentation is complete and update test suite
 
 **Verification Steps** (Corrected based on research findings):
 1. **Count Documented Sorry** (should remain 6, not be removed):
    ```bash
-   grep -c "sorry" ProofChecker/Metalogic/Soundness.lean
+   grep -c "sorry" Logos/Metalogic/Soundness.lean
    # Expected: 6 (TL, MF, TF axioms + modal_k, temporal_k, temporal_duality rules)
    # Note: These are INTENTIONAL conditional sorry with documentation
    ```
 
 2. **Verify Frame Property Definitions Added**:
    ```bash
-   grep -n "def BackwardPersistence\|def ModalTemporalPersistence" ProofChecker/Metalogic/Soundness.lean
+   grep -n "def BackwardPersistence\|def ModalTemporalPersistence" Logos/Metalogic/Soundness.lean
    # Expected: 2 results (property definitions added)
    ```
 
 3. **Verify Conditional Validity Documentation Complete**:
    ```bash
-   grep -c "Frame Constraint Required\|Conditional Requirement\|Semantic Requirement" ProofChecker/Metalogic/Soundness.lean
+   grep -c "Frame Constraint Required\|Conditional Requirement\|Semantic Requirement" Logos/Metalogic/Soundness.lean
    # Expected: 6 (TL, MF, TF + 3 rules)
    ```
 
 **Test Updates** (Document conditional validity, not prove absolute validity):
-**File**: `ProofCheckerTest/Metalogic/SoundnessTest.lean`
+**File**: `LogosTest/Metalogic/SoundnessTest.lean`
 
 ```lean
-import ProofChecker.Metalogic.Soundness
-import ProofCheckerTest.TestFramework
+import Logos.Metalogic.Soundness
+import LogosTest.TestFramework
 
-namespace ProofCheckerTest.Metalogic.SoundnessTest
+namespace LogosTest.Metalogic.SoundnessTest
 
 -- Test frame property definitions exist
 def test_frame_properties_defined : TestCase := {
@@ -467,7 +467,7 @@ def soundness_conditional_test_suite : TestSuite := {
   ]
 }
 
-end ProofCheckerTest.Metalogic.SoundnessTest
+end LogosTest.Metalogic.SoundnessTest
 ```
 
 **Expected Outcomes**:
@@ -480,19 +480,19 @@ end ProofCheckerTest.Metalogic.SoundnessTest
 **Testing**:
 ```bash
 # Verify conditional sorry count (should stay 6)
-grep -c "sorry" ProofChecker/Metalogic/Soundness.lean
+grep -c "sorry" Logos/Metalogic/Soundness.lean
 # Expected: 6 (TL, MF, TF + modal_k, temporal_k, temporal_duality)
 
 # Verify frame properties defined
-grep -n "def BackwardPersistence\|def ModalTemporalPersistence" ProofChecker/Metalogic/Soundness.lean
+grep -n "def BackwardPersistence\|def ModalTemporalPersistence" Logos/Metalogic/Soundness.lean
 # Expected: 2 results
 
 # Run documentation tests
-lake test ProofCheckerTest.Metalogic.SoundnessTest
+lake test LogosTest.Metalogic.SoundnessTest
 # Expected: All tests pass
 
 # Verify overall sorry count unchanged (conditional documentation doesn't remove sorry)
-grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
+grep -r "sorry" Logos/ --include="*.lean" | wc -l
 # Expected: 41 (same as before Sub-Phase 3A - conditional approach)
 ```
 
@@ -507,9 +507,9 @@ grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
 **Sorry Status**: 6 conditional sorry REMAIN (documented, not removed) in Soundness.lean
 **Implementation Approach**: Option B (Conditional Validity Documentation)
 **Files Modified**:
-- `ProofChecker/Metalogic/Soundness.lean` (frame property definitions + conditional documentation)
+- `Logos/Metalogic/Soundness.lean` (frame property definitions + conditional documentation)
 **Files Created**:
-- Tests in `ProofCheckerTest/Metalogic/SoundnessTest.lean`
+- Tests in `LogosTest/Metalogic/SoundnessTest.lean`
 
 **Key Research Findings Applied**:
 - Actual sorry count: 6 (not 15 as originally estimated)
@@ -527,7 +527,7 @@ grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
 - [ ] All 6 conditional sorry remain with comprehensive documentation
 - [ ] 4 new documentation tests passing
 - [ ] lake build succeeds
-- [ ] lake test ProofCheckerTest.Metalogic.SoundnessTest passes
+- [ ] lake test LogosTest.Metalogic.SoundnessTest passes
 
 ---
 
@@ -556,7 +556,7 @@ Breaking automation into 3 phases allows:
 
 ### Task 3B.1: Phase 1 - Implement apply_axiom and modal_t Tactics
 
-**File**: `ProofChecker/Automation/Tactics.lean`
+**File**: `Logos/Automation/Tactics.lean`
 
 **Objective**: Replace apply_axiom and modal_t stubs with real implementations
 
@@ -577,14 +577,14 @@ macro_rules
 **Implementation Requirements**:
 1. Parse axiom name identifier ("MT", "M4", "MB", etc.)
 2. Parse formula arguments (e.g., φ, ψ for multi-argument axioms)
-3. Look up axiom from `ProofChecker.ProofSystem.Axioms`
+3. Look up axiom from `Logos.ProofSystem.Axioms`
 4. Instantiate axiom with provided formulas
 5. Apply to current goal using `apply` tactic
 
 **Implementation**:
 ```lean
 import Lean.Elab.Tactic
-import ProofChecker.ProofSystem.Axioms
+import Logos.ProofSystem.Axioms
 
 open Lean Elab Tactic Meta
 
@@ -713,13 +713,13 @@ elab "modal_t" : tactic => do
 - 2 sorry removed (lines 112, 141 in Tactics.lean)
 
 **Testing**:
-**File**: `ProofCheckerTest/Automation/TacticsTest.lean`
+**File**: `LogosTest/Automation/TacticsTest.lean`
 
 ```lean
-import ProofChecker.Automation.Tactics
-import ProofCheckerTest.TestFramework
+import Logos.Automation.Tactics
+import LogosTest.TestFramework
 
-namespace ProofCheckerTest.Automation.TacticsTest
+namespace LogosTest.Automation.TacticsTest
 
 -- Test apply_axiom with MT
 def test_apply_axiom_mt : TestCase := {
@@ -778,19 +778,19 @@ def automation_phase1_suite : TestSuite := {
   ]
 }
 
-end ProofCheckerTest.Automation.TacticsTest
+end LogosTest.Automation.TacticsTest
 ```
 
 **Testing Commands**:
 ```bash
 # Verify tactics compile
-lake build ProofChecker.Automation.Tactics
+lake build Logos.Automation.Tactics
 
 # Run Phase 1 tests
-lake test ProofCheckerTest.Automation.TacticsTest
+lake test LogosTest.Automation.TacticsTest
 
 # Verify sorry count decreased
-grep -c "sorry" ProofChecker/Automation/Tactics.lean
+grep -c "sorry" Logos/Automation/Tactics.lean
 # Expected: 10 (12 - 2 from Phase 1)
 ```
 
@@ -800,7 +800,7 @@ grep -c "sorry" ProofChecker/Automation/Tactics.lean
 
 ### Task 3B.2: Phase 2 - Implement tm_auto Tactic
 
-**File**: `ProofChecker/Automation/Tactics.lean`
+**File**: `Logos/Automation/Tactics.lean`
 
 **Objective**: Implement tm_auto tactic combining apply_axiom and modal_t for simple automation
 
@@ -905,7 +905,7 @@ elab "tm_auto" : tactic => do
 - Provides foundation for more sophisticated automation in future
 
 **Testing**:
-**File**: `ProofCheckerTest/Automation/TacticsTest.lean` (extend)
+**File**: `LogosTest/Automation/TacticsTest.lean` (extend)
 
 ```lean
 -- Test tm_auto with modal T pattern
@@ -956,10 +956,10 @@ def automation_phase2_suite : TestSuite := {
 **Testing Commands**:
 ```bash
 # Run Phase 2 tests
-lake test ProofCheckerTest.Automation.TacticsTest
+lake test LogosTest.Automation.TacticsTest
 
 # Verify sorry count decreased
-grep -c "sorry" ProofChecker/Automation/Tactics.lean
+grep -c "sorry" Logos/Automation/Tactics.lean
 # Expected: 9 (10 - 1 from Phase 2)
 ```
 
@@ -969,7 +969,7 @@ grep -c "sorry" ProofChecker/Automation/Tactics.lean
 
 ### Task 3B.3: Phase 3 - Implement assumption_search and Helper Functions
 
-**File**: `ProofChecker/Automation/Tactics.lean`
+**File**: `Logos/Automation/Tactics.lean`
 
 **Objective**: Implement assumption_search for premise searching and helper functions for formula inspection
 
@@ -1091,7 +1091,7 @@ def is_past_formula (f : Formula) : Bool :=
 - 4 sorry removed (lines 150, 155, 160, 172 in Tactics.lean)
 
 **Testing**:
-**File**: `ProofCheckerTest/Automation/TacticsTest.lean` (extend)
+**File**: `LogosTest/Automation/TacticsTest.lean` (extend)
 
 ```lean
 -- Test assumption_search
@@ -1160,10 +1160,10 @@ def automation_phase3_suite : TestSuite := {
 **Testing Commands**:
 ```bash
 # Run Phase 3 tests
-lake test ProofCheckerTest.Automation.TacticsTest
+lake test LogosTest.Automation.TacticsTest
 
 # Verify sorry count decreased
-grep -c "sorry" ProofChecker/Automation/Tactics.lean
+grep -c "sorry" Logos/Automation/Tactics.lean
 # Expected: 5 (9 - 4 from Phase 3)
 ```
 
@@ -1320,10 +1320,10 @@ Check formula structure:
 **Tactics Implemented**: 3 (apply_axiom, modal_t, tm_auto)
 **Helpers Implemented**: 4 (assumption_search, is_box_formula, is_future_formula, is_past_formula)
 **Files Modified**:
-- `ProofChecker/Automation/Tactics.lean` (implementations)
+- `Logos/Automation/Tactics.lean` (implementations)
 - `Documentation/Development/TACTIC_DEVELOPMENT.md` (documentation)
 **Files Created**:
-- Tests in `ProofCheckerTest/Automation/TacticsTest.lean`
+- Tests in `LogosTest/Automation/TacticsTest.lean`
 
 **Success Criteria**:
 - [ ] apply_axiom tactic works for all 8 axioms
@@ -1335,7 +1335,7 @@ Check formula structure:
 - [ ] TACTIC_DEVELOPMENT.md updated with examples
 - [ ] All automation tests passing
 - [ ] lake build succeeds
-- [ ] lake test ProofCheckerTest.Automation.TacticsTest passes
+- [ ] lake test LogosTest.Automation.TacticsTest passes
 
 ---
 
@@ -1358,7 +1358,7 @@ Low - Single property proof for existing helper function
 
 #### Task 3C.1: Prove respects_task Property for Universal Helper
 
-**File**: `ProofChecker/Semantics/WorldHistory.lean`
+**File**: `Logos/Semantics/WorldHistory.lean`
 
 **Objective**: Complete proof of respects_task property at line 75
 
@@ -1425,12 +1425,12 @@ def universal_history (frame : TaskFrame) (w : frame.WorldState) : WorldHistory 
       -- This holds for frames where constant histories are task-respecting
 
       -- Complete proof requires frame-specific analysis
-      -- For the ProofChecker's TaskFrame, verify this property holds
+      -- For the Logos's TaskFrame, verify this property holds
       admit  -- Placeholder for frame-specific proof
   }
 ```
 
-**Note**: The complete proof depends on specific properties of the TaskFrame used in ProofChecker. The universal helper may require additional frame constraints or may only be valid for certain frame classes.
+**Note**: The complete proof depends on specific properties of the TaskFrame used in Logos. The universal helper may require additional frame constraints or may only be valid for certain frame classes.
 
 **Alternative Approach** (If proof is complex):
 Document the universal_history as conditional on a frame property:
@@ -1461,10 +1461,10 @@ def universal_history (frame : TaskFrame) (w : frame.WorldState)
 **Testing**:
 ```bash
 # Verify WorldHistory compiles
-lake build ProofChecker.Semantics.WorldHistory
+lake build Logos.Semantics.WorldHistory
 
 # Check for remaining sorry
-grep -n "sorry" ProofChecker/Semantics/WorldHistory.lean
+grep -n "sorry" Logos/Semantics/WorldHistory.lean
 # Expected: 0 results at line 75
 ```
 
@@ -1474,16 +1474,16 @@ grep -n "sorry" ProofChecker/Semantics/WorldHistory.lean
 
 #### Task 3C.2: Add Test Case for Universal History
 
-**File**: `ProofCheckerTest/Semantics/WorldHistoryTest.lean`
+**File**: `LogosTest/Semantics/WorldHistoryTest.lean`
 
 **Objective**: Test universal history helper with various frames
 
 **Test Implementation**:
 ```lean
-import ProofChecker.Semantics.WorldHistory
-import ProofCheckerTest.TestFramework
+import Logos.Semantics.WorldHistory
+import LogosTest.TestFramework
 
-namespace ProofCheckerTest.Semantics.WorldHistoryTest
+namespace LogosTest.Semantics.WorldHistoryTest
 
 -- Test universal history construction
 def test_universal_history_construction : TestCase := {
@@ -1536,7 +1536,7 @@ def world_history_test_suite : TestSuite := {
   ]
 }
 
-end ProofCheckerTest.Semantics.WorldHistoryTest
+end LogosTest.Semantics.WorldHistoryTest
 ```
 
 **Expected Outcomes**:
@@ -1547,10 +1547,10 @@ end ProofCheckerTest.Semantics.WorldHistoryTest
 **Testing Commands**:
 ```bash
 # Run WorldHistory tests
-lake test ProofCheckerTest.Semantics.WorldHistoryTest
+lake test LogosTest.Semantics.WorldHistoryTest
 
 # Verify overall sorry count decreased
-grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
+grep -r "sorry" Logos/ --include="*.lean" | wc -l
 # Expected: 25 (26 - 1 from WorldHistory)
 ```
 
@@ -1564,9 +1564,9 @@ grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
 **Estimated Time**: 1-2 hours
 **Sorry Removed**: 1 (WorldHistory.lean line 75)
 **Files Modified**:
-- `ProofChecker/Semantics/WorldHistory.lean` (proof)
+- `Logos/Semantics/WorldHistory.lean` (proof)
 **Files Created**:
-- Tests in `ProofCheckerTest/Semantics/WorldHistoryTest.lean`
+- Tests in `LogosTest/Semantics/WorldHistoryTest.lean`
 
 **Success Criteria**:
 - [ ] respects_task property proven for universal_history
@@ -1574,7 +1574,7 @@ grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
 - [ ] 2 tests added for universal history
 - [ ] All WorldHistory tests passing
 - [ ] lake build succeeds
-- [ ] lake test ProofCheckerTest.Semantics.WorldHistoryTest passes
+- [ ] lake test LogosTest.Semantics.WorldHistoryTest passes
 
 ---
 
@@ -1741,7 +1741,7 @@ grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
 - modal_k, temporal_k, temporal_duality rule soundness proven
 - Soundness module 100% complete (0 sorry remaining)
 
-See `ProofChecker/Metalogic/Soundness.lean` for complete proofs.
+See `Logos/Metalogic/Soundness.lean` for complete proofs.
 ```
 
 **2. Remove Perpetuity P4-P6 Gaps** (Section 3 subsection):
@@ -1755,7 +1755,7 @@ See `ProofChecker/Metalogic/Soundness.lean` for complete proofs.
 - P5: `◇▽φ → △◇φ` proven using modal-temporal interaction lemmas
 - P6: `▽□φ → □△φ` proven using modal-temporal interaction lemmas
 
-See `ProofChecker/Theorems/Perpetuity.lean` for complete proofs.
+See `Logos/Theorems/Perpetuity.lean` for complete proofs.
 ```
 
 **3. Update Automation Section** (Section 4):
@@ -1791,7 +1791,7 @@ See `ProofChecker/Theorems/Perpetuity.lean` for complete proofs.
 
 **Resolution** (2025-12-XX): Property proven in Wave 2 Task 8.
 
-See `ProofChecker/Semantics/WorldHistory.lean` line 75 for complete proof.
+See `Logos/Semantics/WorldHistory.lean` line 75 for complete proof.
 ```
 
 ---
@@ -1823,7 +1823,7 @@ grep "Sorry Count.*22" TODO.md
 # Expected: match found
 
 # Verify sorry count matches documentation
-grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
+grep -r "sorry" Logos/ --include="*.lean" | wc -l
 # Expected: 22 (matching TODO.md claim)
 ```
 
@@ -1865,15 +1865,15 @@ Time Savings: 13-19 hours (20-24%)
 ### Files Modified
 
 **Source Files**:
-- ProofChecker/Semantics/TaskFrame.lean (documentation)
-- ProofChecker/Metalogic/Soundness.lean (15 proofs)
-- ProofChecker/Automation/Tactics.lean (7 implementations)
-- ProofChecker/Semantics/WorldHistory.lean (1 proof)
+- Logos/Semantics/TaskFrame.lean (documentation)
+- Logos/Metalogic/Soundness.lean (15 proofs)
+- Logos/Automation/Tactics.lean (7 implementations)
+- Logos/Semantics/WorldHistory.lean (1 proof)
 
 **Test Files**:
-- ProofCheckerTest/Metalogic/SoundnessTest.lean (6 new tests)
-- ProofCheckerTest/Automation/TacticsTest.lean (extensive test suite)
-- ProofCheckerTest/Semantics/WorldHistoryTest.lean (2 new tests)
+- LogosTest/Metalogic/SoundnessTest.lean (6 new tests)
+- LogosTest/Automation/TacticsTest.lean (extensive test suite)
+- LogosTest/Semantics/WorldHistoryTest.lean (2 new tests)
 
 **Documentation Files**:
 - TODO.md (task status, sorry count)
@@ -1886,13 +1886,13 @@ Time Savings: 13-19 hours (20-24%)
 **After Each Sub-Phase**:
 ```bash
 # Sub-Phase 3A completion
-lake test ProofCheckerTest.Metalogic.SoundnessTest
+lake test LogosTest.Metalogic.SoundnessTest
 
 # Sub-Phase 3B completion (after each phase)
-lake test ProofCheckerTest.Automation.TacticsTest
+lake test LogosTest.Automation.TacticsTest
 
 # Sub-Phase 3C completion
-lake test ProofCheckerTest.Semantics.WorldHistoryTest
+lake test LogosTest.Semantics.WorldHistoryTest
 ```
 
 **Phase 3 Final Verification**:
@@ -1907,7 +1907,7 @@ lake test
 lake lint
 
 # Sorry count verification
-grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
+grep -r "sorry" Logos/ --include="*.lean" | wc -l
 # Expected: 22 (down from 41)
 
 # Documentation consistency check
@@ -1947,7 +1947,7 @@ grep "100%" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md | grep -E "Soundn
 When Phase 3 is complete, return:
 
 ```
-PHASE_EXPANDED: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_3_wave2_parallel_soundness_automation_worldhistory.md
+PHASE_EXPANDED: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/plans/phase_3_wave2_parallel_soundness_automation_worldhistory.md
 
 Sub-Phases: 3
 Estimated Hours: 56-82 sequential, 40-60 parallel

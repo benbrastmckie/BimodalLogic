@@ -196,7 +196,7 @@ Keep Python/Z3 in model-checker, implement proof-checker in pure LEAN 4, communi
 - PascalCase directories (LEAN 4 community convention)
 - Module hierarchy prevents circular dependencies
 - Directory dependency linter enforces import order
-- Library root re-exports public API (ProofChecker.lean pattern)
+- Library root re-exports public API (Logos.lean pattern)
 
 **Integration with External Tools:**
 - mathlib4 inherits executables from dependencies via `lean_exe`
@@ -221,7 +221,7 @@ Your integration already uses the recommended pattern:
 - Formula exchange via serialization (not FFI)
 - SMT-LIB export format (lines 41-55)
 - JSON-based API (InferenceRequest/Response structures)
-- Clear separation: Python Model-Checker ↔ LEAN ProofChecker via data exchange
+- Clear separation: Python Model-Checker ↔ LEAN Logos via data exchange
 
 **Integration Points:**
 1. Export to Model-Checker: LEAN formulas → SMT-LIB strings
@@ -478,7 +478,7 @@ LEAN 4 alone is the optimal choice. The model-checker stays in Python/Z3 (existi
 - LEAN's dependent types enable property-based testing
 
 **Implementation Path:**
-- Unit tests for LEAN proof system (in ProofCheckerTest/)
+- Unit tests for LEAN proof system (in LogosTest/)
 - Mock model-checker for proof-checker isolation (INTEGRATION.md:349-356)
 - Integration tests for serialization round-trips
 - Property tests for soundness/completeness verification
@@ -491,9 +491,9 @@ LEAN 4 alone is the optimal choice. The model-checker stays in Python/Z3 (existi
 ## References
 
 ### Project Documentation (Absolute Paths)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md` (lines 1-100: Project overview, 42-99: Project structure, 183-227: Testing architecture)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md` (lines 1-1294: Complete architecture, 866-929: Project structure standards, 26-87: Layer 0 language definition)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/INTEGRATION.md` (lines 1-364: Complete integration guide, 36-56: SMT-LIB export, 108-124: Formula exchange interface, 79-104: Coordinated verification, 349-356: Mock model-checker)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md` (lines 1-100: Project overview, 42-99: Project structure, 183-227: Testing architecture)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md` (lines 1-1294: Complete architecture, 866-929: Project structure standards, 26-87: Layer 0 language definition)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/INTEGRATION.md` (lines 1-364: Complete integration guide, 36-56: SMT-LIB export, 108-124: Formula exchange interface, 79-104: Coordinated verification, 349-356: Mock model-checker)
 
 ### Web Sources - LEAN 4 FFI and Language Interoperability
 - [LEAN 4 Foreign Function Interface Documentation](https://lean-lang.org/doc/reference/4.21.0/Run-Time-Code/Foreign-Function-Interface/)

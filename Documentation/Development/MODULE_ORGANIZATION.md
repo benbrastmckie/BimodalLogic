@@ -1,13 +1,13 @@
-# Module Organization for ProofChecker
+# Module Organization for Logos
 
-This document specifies the directory structure, namespace conventions, and module organization for the ProofChecker project.
+This document specifies the directory structure, namespace conventions, and module organization for the Logos project.
 
 ## 1. Directory Structure
 
 ```
-ProofChecker/
-├── ProofChecker.lean              # Library root (re-exports all public modules)
-├── ProofChecker/                  # Main source directory
+Logos/
+├── Logos.lean              # Library root (re-exports all public modules)
+├── Logos/                  # Main source directory
 │   ├── Syntax/                    # Formula types, parsing, DSL
 │   │   ├── Formula.lean           # Core formula inductive type
 │   │   ├── Context.lean           # Proof context (premise lists)
@@ -69,14 +69,14 @@ ProofChecker/
 ## 2. Namespace Conventions
 
 ### Root Namespace
-All ProofChecker code lives under the `ProofChecker` namespace:
+All Logos code lives under the `Logos` namespace:
 
 ```lean
-namespace ProofChecker
+namespace Logos
 
 -- All definitions here
 
-end ProofChecker
+end Logos
 ```
 
 ### Hierarchical Namespaces
@@ -84,19 +84,19 @@ Namespaces mirror directory structure:
 
 | Directory | Namespace |
 |-----------|-----------|
-| `ProofChecker/Syntax/` | `ProofChecker.Syntax` |
-| `ProofChecker/ProofSystem/` | `ProofChecker.ProofSystem` |
-| `ProofChecker/Semantics/` | `ProofChecker.Semantics` |
-| `ProofChecker/Metalogic/` | `ProofChecker.Metalogic` |
-| `ProofChecker/Theorems/` | `ProofChecker.Theorems` |
-| `ProofChecker/Automation/` | `ProofChecker.Automation` |
+| `Logos/Syntax/` | `Logos.Syntax` |
+| `Logos/ProofSystem/` | `Logos.ProofSystem` |
+| `Logos/Semantics/` | `Logos.Semantics` |
+| `Logos/Metalogic/` | `Logos.Metalogic` |
+| `Logos/Theorems/` | `Logos.Theorems` |
+| `Logos/Automation/` | `Logos.Automation` |
 
 ### Nested Namespaces
 Use nested namespaces for logical grouping within a file:
 
 ```lean
--- In ProofChecker/Syntax/Formula.lean
-namespace ProofChecker.Syntax
+-- In Logos/Syntax/Formula.lean
+namespace Logos.Syntax
 
 inductive Formula : Type
   | atom : String → Formula
@@ -119,7 +119,7 @@ def complexity : Formula → Nat
 
 end Formula
 
-end ProofChecker.Syntax
+end Logos.Syntax
 ```
 
 ## 3. Module Dependencies
@@ -151,15 +151,15 @@ Layer 0: Syntax (no internal dependencies)
 ### Import Guidelines
 
 ```lean
--- ProofChecker/ProofSystem/Derivation.lean
+-- Logos/ProofSystem/Derivation.lean
 -- Good: Only imports from Syntax (lower layer)
-import ProofChecker.Syntax.Formula
-import ProofChecker.Syntax.Context
-import ProofChecker.ProofSystem.Axioms
-import ProofChecker.ProofSystem.Rules
+import Logos.Syntax.Formula
+import Logos.Syntax.Context
+import Logos.ProofSystem.Axioms
+import Logos.ProofSystem.Rules
 
 -- Bad: Would create circular dependency
--- import ProofChecker.Semantics.Truth  -- Semantics depends on ProofSystem!
+-- import Logos.Semantics.Truth  -- Semantics depends on ProofSystem!
 ```
 
 ### Detecting Circular Dependencies
@@ -200,10 +200,10 @@ Any important implementation details or design decisions.
 
 -- 1. Imports (ordered by: standard library, mathlib, project)
 import Init.Data.List
-import ProofChecker.Syntax.Formula
+import Logos.Syntax.Formula
 
 -- 2. Namespace opening
-namespace ProofChecker.ModuleName
+namespace Logos.ModuleName
 
 -- 3. Local notation (if needed)
 local notation "⊥" => Formula.bot
@@ -227,16 +227,16 @@ instance : Inhabited MyStructure where
   default := { field1 := Unit, field2 := Unit }
 
 -- 8. Namespace closing
-end ProofChecker.ModuleName
+end Logos.ModuleName
 ```
 
 ## 5. Library Root File
 
-The `ProofChecker.lean` file re-exports all public modules:
+The `Logos.lean` file re-exports all public modules:
 
 ```lean
 /-!
-# ProofChecker
+# Logos
 
 LEAN 4 implementation of an axiomatic proof system for the bimodal logic TM
 with task semantics.
@@ -244,56 +244,56 @@ with task semantics.
 ## Modules
 
 ### Syntax
-* `ProofChecker.Syntax.Formula` - Formula type for TM logic
-* `ProofChecker.Syntax.Context` - Proof contexts
-* `ProofChecker.Syntax.Operators` - Derived operators
-* `ProofChecker.Syntax.DSL` - Domain-specific syntax
+* `Logos.Syntax.Formula` - Formula type for TM logic
+* `Logos.Syntax.Context` - Proof contexts
+* `Logos.Syntax.Operators` - Derived operators
+* `Logos.Syntax.DSL` - Domain-specific syntax
 
 ### Proof System
-* `ProofChecker.ProofSystem.Axioms` - TM axiom schemata
-* `ProofChecker.ProofSystem.Rules` - Inference rules
-* `ProofChecker.ProofSystem.Derivation` - Derivability relation
+* `Logos.ProofSystem.Axioms` - TM axiom schemata
+* `Logos.ProofSystem.Rules` - Inference rules
+* `Logos.ProofSystem.Derivation` - Derivability relation
 
 ### Semantics
-* `ProofChecker.Semantics.TaskFrame` - Task frame structure
-* `ProofChecker.Semantics.WorldHistory` - World histories
-* `ProofChecker.Semantics.TaskModel` - Task models
-* `ProofChecker.Semantics.Truth` - Truth evaluation
-* `ProofChecker.Semantics.Validity` - Validity and consequence
+* `Logos.Semantics.TaskFrame` - Task frame structure
+* `Logos.Semantics.WorldHistory` - World histories
+* `Logos.Semantics.TaskModel` - Task models
+* `Logos.Semantics.Truth` - Truth evaluation
+* `Logos.Semantics.Validity` - Validity and consequence
 
 ### Metalogic
-* `ProofChecker.Metalogic.Soundness` - Soundness theorem
-* `ProofChecker.Metalogic.Completeness` - Completeness theorem
+* `Logos.Metalogic.Soundness` - Soundness theorem
+* `Logos.Metalogic.Completeness` - Completeness theorem
 
 ### Theorems
-* `ProofChecker.Theorems.Perpetuity` - Perpetuity principles P1-P6
+* `Logos.Theorems.Perpetuity` - Perpetuity principles P1-P6
 
 ### Automation
-* `ProofChecker.Automation.Tactics` - Custom tactics
+* `Logos.Automation.Tactics` - Custom tactics
 -/
 
 -- Re-export all public modules
-import ProofChecker.Syntax.Formula
-import ProofChecker.Syntax.Context
-import ProofChecker.Syntax.Operators
-import ProofChecker.Syntax.DSL
+import Logos.Syntax.Formula
+import Logos.Syntax.Context
+import Logos.Syntax.Operators
+import Logos.Syntax.DSL
 
-import ProofChecker.ProofSystem.Axioms
-import ProofChecker.ProofSystem.Rules
-import ProofChecker.ProofSystem.Derivation
+import Logos.ProofSystem.Axioms
+import Logos.ProofSystem.Rules
+import Logos.ProofSystem.Derivation
 
-import ProofChecker.Semantics.TaskFrame
-import ProofChecker.Semantics.WorldHistory
-import ProofChecker.Semantics.TaskModel
-import ProofChecker.Semantics.Truth
-import ProofChecker.Semantics.Validity
+import Logos.Semantics.TaskFrame
+import Logos.Semantics.WorldHistory
+import Logos.Semantics.TaskModel
+import Logos.Semantics.Truth
+import Logos.Semantics.Validity
 
-import ProofChecker.Metalogic.Soundness
-import ProofChecker.Metalogic.Completeness
+import Logos.Metalogic.Soundness
+import Logos.Metalogic.Completeness
 
-import ProofChecker.Theorems.Perpetuity
+import Logos.Theorems.Perpetuity
 
-import ProofChecker.Automation.Tactics
+import Logos.Automation.Tactics
 ```
 
 ## 6. Public API vs Internal Implementation
@@ -302,7 +302,7 @@ import ProofChecker.Automation.Tactics
 Definitions that users should use directly:
 
 - Marked with docstrings
-- Re-exported from `ProofChecker.lean`
+- Re-exported from `Logos.lean`
 - Stable across versions
 
 ```lean
@@ -325,19 +325,19 @@ Helper functions and intermediate definitions:
 - May change between versions
 
 ```lean
-namespace ProofChecker.Semantics.Internal
+namespace Logos.Semantics.Internal
 
 /-- Internal helper for canonical model construction. -/
 def extend_consistent_set (Γ : Context) : Context := ...
 
-end ProofChecker.Semantics.Internal
+end Logos.Semantics.Internal
 ```
 
 ### Access Control Pattern
 
 ```lean
--- In ProofChecker/Semantics/Canonical.lean
-namespace ProofChecker.Semantics
+-- In Logos/Semantics/Canonical.lean
+namespace Logos.Semantics
 
 namespace Internal
 
@@ -352,7 +352,7 @@ end Internal
 def canonical_model : TaskModel canonical_frame :=
   { valuation := Internal.helper1 ... }
 
-end ProofChecker.Semantics
+end Logos.Semantics
 ```
 
 ## 7. Module Size Guidelines
@@ -384,13 +384,13 @@ The `Examples/` directory contains usage examples:
 /-!
 # S5 Modal Logic Examples
 
-Examples of modal reasoning using the ProofChecker library.
+Examples of modal reasoning using the Logos library.
 -/
 
-import ProofChecker
+import Logos
 
-open ProofChecker.Syntax
-open ProofChecker.ProofSystem
+open Logos.Syntax
+open Logos.ProofSystem
 
 /-- Example: Prove □p → p using axiom MT -/
 example (P : Formula) : ⊢ (P.box.imp P) := by
@@ -409,7 +409,7 @@ example (P Q : Formula) : [P.imp Q, P] ⊢ Q := by
 See [TESTING_STANDARDS.md](TESTING_STANDARDS.md) for detailed test organization.
 
 Summary:
-- `Tests/Unit/` mirrors `ProofChecker/` structure
+- `Tests/Unit/` mirrors `Logos/` structure
 - `Tests/Integration/` for cross-module tests
 - `Tests/Metalogic/` for property-based tests
 - Test files named `<Module>Tests.lean`

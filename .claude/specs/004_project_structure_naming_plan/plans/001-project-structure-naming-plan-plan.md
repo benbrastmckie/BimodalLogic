@@ -6,19 +6,19 @@
 - **Scope**: Directory reorganization, file naming updates, lakefile.toml configuration, and documentation updates
 - **Estimated Phases**: 5
 - **Estimated Hours**: 8
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Status**: [COMPLETE]
 - **Structure Level**: 0
 - **Complexity Score**: 47.0
 - **Research Reports**:
-  - [Project Structure and Naming Conventions Research Report](/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/004_project_structure_naming_plan/reports/research_report.md)
+  - [Project Structure and Naming Conventions Research Report](/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/004_project_structure_naming_plan/reports/research_report.md)
 
 ## Overview
 
-This plan implements a refactor of the ProofChecker project's directory structure and naming conventions to align with LEAN 4 community standards as documented in the mathlib4 repository and official LEAN community style guidelines. The project is currently in the planning phase with no LEAN source code implemented yet, making this the optimal time to establish the correct structure before implementation begins.
+This plan implements a refactor of the Logos project's directory structure and naming conventions to align with LEAN 4 community standards as documented in the mathlib4 repository and official LEAN community style guidelines. The project is currently in the planning phase with no LEAN source code implemented yet, making this the optimal time to establish the correct structure before implementation begins.
 
 The key changes include:
-1. Renaming test directory from `Tests/` to `ProofCheckerTest/` to follow mathlib4 pattern
+1. Renaming test directory from `Tests/` to `LogosTest/` to follow mathlib4 pattern
 2. Reorganizing examples into semantic categories (`Archive/` for pedagogical examples, `Counterexamples/` for invalidity demonstrations)
 3. Updating lakefile.toml to reflect new structure
 4. Updating all documentation to reflect corrected structure
@@ -34,17 +34,17 @@ The research report analyzed LEAN 4 community standards from mathlib4 and identi
 2. **Test Directories**: mathlib4 uses `MathlibTest/` (singular, project-prefixed) not `Tests/`
 3. **Example Directories**: mathlib4 uses semantic categorization (`Archive/` for historical examples, `Counterexamples/` for counterexample constructions) not monolithic `Examples/`
 4. **File Naming**: All `.lean` files use PascalCase (e.g., `Formula.lean`, `TaskFrame.lean`)
-5. **Current Alignment**: ProofChecker's planned structure is largely aligned with standards except for test and examples directories
+5. **Current Alignment**: Logos's planned structure is largely aligned with standards except for test and examples directories
 
 The research recommends following LEAN 4 standards over personal preferences to ensure smooth integration with ecosystem tooling and community expectations.
 
 ## Success Criteria
 
 - [ ] Directory structure matches LEAN 4 community standards (PascalCase for source, lowercase for meta)
-- [ ] Test directory renamed to `ProofCheckerTest/` with mirrored source structure
+- [ ] Test directory renamed to `LogosTest/` with mirrored source structure
 - [ ] Examples organized into `Archive/` and `Counterexamples/` directories
 - [ ] lakefile.toml updated with correct library configurations
-- [ ] All root files created (ProofChecker.lean, ProofCheckerTest/ProofCheckerTest.lean, Archive/Archive.lean, Counterexamples/Counterexamples.lean)
+- [ ] All root files created (Logos.lean, LogosTest/LogosTest.lean, Archive/Archive.lean, Counterexamples/Counterexamples.lean)
 - [ ] CLAUDE.md updated with corrected project structure section
 - [ ] docs/ARCHITECTURE.md updated with corrected file paths and structure
 - [ ] All documentation cross-references updated to new structure
@@ -58,13 +58,13 @@ The research recommends following LEAN 4 standards over personal preferences to 
 The refactor implements LEAN 4 community standards for project organization:
 
 **Directory Structure Changes**:
-- `Tests/` → `ProofCheckerTest/` (follows mathlib4 `MathlibTest/` pattern)
+- `Tests/` → `LogosTest/` (follows mathlib4 `MathlibTest/` pattern)
 - `Examples/` → split into `Archive/` + `Counterexamples/` (semantic categorization)
-- Maintain existing `ProofChecker/` source structure (already aligned)
+- Maintain existing `Logos/` source structure (already aligned)
 
 **Naming Conventions**:
-- **LEAN source directories**: PascalCase (ProofChecker/, Syntax/, ProofSystem/)
-- **Test directories**: PascalCase (ProofCheckerTest/, Syntax/, Integration/)
+- **LEAN source directories**: PascalCase (Logos/, Syntax/, ProofSystem/)
+- **Test directories**: PascalCase (LogosTest/, Syntax/, Integration/)
 - **Example directories**: PascalCase (Archive/, Counterexamples/)
 - **Meta directories**: lowercase (docs/, .claude/, .github/)
 - **LEAN files**: PascalCase with .lean extension (Formula.lean, TaskFrame.lean)
@@ -79,15 +79,15 @@ The refactor implements LEAN 4 community standards for project organization:
 
 ### Component Design
 
-**1. Main Source Directory** (`ProofChecker/`):
+**1. Main Source Directory** (`Logos/`):
 - No changes needed (already aligned with standards)
-- Structure: ProofChecker/{Syntax, ProofSystem, Semantics, Metalogic, Theorems, Automation}/
+- Structure: Logos/{Syntax, ProofSystem, Semantics, Metalogic, Theorems, Automation}/
 
-**2. Test Directory** (`ProofCheckerTest/`):
+**2. Test Directory** (`LogosTest/`):
 - Mirror main source structure for discoverability
-- Structure: ProofCheckerTest/{Syntax, ProofSystem, Semantics, Integration, Metalogic}/
+- Structure: LogosTest/{Syntax, ProofSystem, Semantics, Integration, Metalogic}/
 - Test files use `*Test.lean` suffix (e.g., FormulaTest.lean, AxiomsTest.lean)
-- Root file: ProofCheckerTest/ProofCheckerTest.lean (library root)
+- Root file: LogosTest/LogosTest.lean (library root)
 
 **3. Example Directories**:
 - **Archive/**: Pedagogical examples, famous proofs, historical examples
@@ -100,7 +100,7 @@ The refactor implements LEAN 4 community standards for project organization:
 **4. lakefile.toml Configuration**:
 ```toml
 [package]
-name = "ProofChecker"
+name = "Logos"
 version = "0.1.0"
 keywords = ["logic", "modal-logic", "temporal-logic", "proof-system", "lean4"]
 license = "MIT"
@@ -108,15 +108,15 @@ description = "LEAN 4 implementation of axiomatic proof system for bimodal logic
 
 # Main library
 [[lean_lib]]
-name = "ProofChecker"
-roots = ["ProofChecker"]
-globs = ["ProofChecker/**"]
+name = "Logos"
+roots = ["Logos"]
+globs = ["Logos/**"]
 
 # Test suite
 [[lean_lib]]
-name = "ProofCheckerTest"
-roots = ["ProofCheckerTest"]
-globs = ["ProofCheckerTest/**"]
+name = "LogosTest"
+roots = ["LogosTest"]
+globs = ["LogosTest/**"]
 
 # Examples - Archive
 [[lean_lib]]
@@ -133,7 +133,7 @@ globs = ["Counterexamples/**"]
 # Test executable
 [[lean_exe]]
 name = "test"
-root = "ProofCheckerTest"
+root = "LogosTest"
 ```
 
 **5. Documentation Updates**:
@@ -175,13 +175,13 @@ dependencies: []
 **Complexity**: Low
 
 **Tasks**:
-- [x] Create main source directories (ProofChecker/ subdirectories)
+- [x] Create main source directories (Logos/ subdirectories)
   ```bash
-  mkdir -p ProofChecker/{Syntax,ProofSystem,Semantics,Metalogic,Theorems,Automation}
+  mkdir -p Logos/{Syntax,ProofSystem,Semantics,Metalogic,Theorems,Automation}
   ```
-- [x] Create test directory structure (ProofCheckerTest/ subdirectories)
+- [x] Create test directory structure (LogosTest/ subdirectories)
   ```bash
-  mkdir -p ProofCheckerTest/{Syntax,ProofSystem,Semantics,Integration,Metalogic}
+  mkdir -p LogosTest/{Syntax,ProofSystem,Semantics,Integration,Metalogic}
   ```
 - [x] Create example directories (Archive/, Counterexamples/)
   ```bash
@@ -194,14 +194,14 @@ dependencies: []
 **Testing**:
 ```bash
 # Verify directories exist
-test -d ProofChecker/Syntax || echo "ERROR: ProofChecker/Syntax not found"
-test -d ProofCheckerTest/Syntax || echo "ERROR: ProofCheckerTest/Syntax not found"
+test -d Logos/Syntax || echo "ERROR: Logos/Syntax not found"
+test -d LogosTest/Syntax || echo "ERROR: LogosTest/Syntax not found"
 test -d Archive || echo "ERROR: Archive not found"
 test -d Counterexamples || echo "ERROR: Counterexamples not found"
 
 # Verify directory count
-find ProofChecker -type d | wc -l  # Should be 7 (root + 6 subdirs)
-find ProofCheckerTest -type d | wc -l  # Should be 6 (root + 5 subdirs)
+find Logos -type d | wc -l  # Should be 7 (root + 6 subdirs)
+find LogosTest -type d | wc -l  # Should be 6 (root + 5 subdirs)
 
 echo "✓ Phase 1 complete: Directory structure created"
 ```
@@ -216,31 +216,31 @@ dependencies: [1]
 **Complexity**: Low
 
 **Tasks**:
-- [x] Create ProofChecker.lean (main library root with re-exports)
+- [x] Create Logos.lean (main library root with re-exports)
   - Content: Module docstring and re-export statements for public API
-  - Path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker.lean
-- [x] Create ProofCheckerTest/ProofCheckerTest.lean (test library root)
+  - Path: /home/benjamin/Documents/Philosophy/Projects/Logos/Logos.lean
+- [x] Create LogosTest/LogosTest.lean (test library root)
   - Content: Module docstring and test suite organization
-  - Path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/ProofCheckerTest.lean
+  - Path: /home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/LogosTest.lean
 - [x] Create Archive/Archive.lean (archive library root)
   - Content: Module docstring explaining pedagogical examples
-  - Path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Archive/Archive.lean
+  - Path: /home/benjamin/Documents/Philosophy/Projects/Logos/Archive/Archive.lean
 - [x] Create Counterexamples/Counterexamples.lean (counterexamples library root)
   - Content: Module docstring explaining counterexample constructions
-  - Path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Counterexamples/Counterexamples.lean
+  - Path: /home/benjamin/Documents/Philosophy/Projects/Logos/Counterexamples/Counterexamples.lean
 - [x] Verify all root files created with correct headers
 
 **Testing**:
 ```bash
 # Verify root files exist
-test -f ProofChecker.lean || echo "ERROR: ProofChecker.lean not found"
-test -f ProofCheckerTest/ProofCheckerTest.lean || echo "ERROR: ProofCheckerTest.lean not found"
+test -f Logos.lean || echo "ERROR: Logos.lean not found"
+test -f LogosTest/LogosTest.lean || echo "ERROR: LogosTest.lean not found"
 test -f Archive/Archive.lean || echo "ERROR: Archive.lean not found"
 test -f Counterexamples/Counterexamples.lean || echo "ERROR: Counterexamples.lean not found"
 
 # Verify files contain module docstrings
-grep -q "/-!" ProofChecker.lean || echo "WARNING: Missing module docstring in ProofChecker.lean"
-grep -q "namespace" ProofChecker.lean || echo "WARNING: Missing namespace in ProofChecker.lean"
+grep -q "/-!" Logos.lean || echo "WARNING: Missing module docstring in Logos.lean"
+grep -q "namespace" Logos.lean || echo "WARNING: Missing namespace in Logos.lean"
 
 echo "✓ Phase 2 complete: Root files created"
 ```
@@ -256,11 +256,11 @@ dependencies: [1, 2]
 
 **Tasks**:
 - [x] Read current lakefile.toml to understand existing configuration
-  - Path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/lakefile.toml
+  - Path: /home/benjamin/Documents/Philosophy/Projects/Logos/lakefile.toml
 - [x] Update lakefile.toml with new library configurations
   - Replace `[[lean_lib]] name = "Examples"` with separate Archive and Counterexamples libraries
-  - Replace `[[lean_lib]] name = "tests"` with ProofCheckerTest library
-  - Update `[[lean_exe]]` root from "Tests" to "ProofCheckerTest"
+  - Replace `[[lean_lib]] name = "tests"` with LogosTest library
+  - Update `[[lean_exe]]` root from "Tests" to "LogosTest"
   - Add package metadata (version, keywords, license, description)
 - [x] Verify lakefile.toml syntax is valid TOML
 - [x] Document changes in phase completion notes
@@ -271,10 +271,10 @@ dependencies: [1, 2]
 lake --version || echo "ERROR: lake not installed"
 
 # Verify lakefile configuration
-grep -q "name = \"ProofCheckerTest\"" lakefile.toml || echo "ERROR: ProofCheckerTest library not configured"
+grep -q "name = \"LogosTest\"" lakefile.toml || echo "ERROR: LogosTest library not configured"
 grep -q "name = \"Archive\"" lakefile.toml || echo "ERROR: Archive library not configured"
 grep -q "name = \"Counterexamples\"" lakefile.toml || echo "ERROR: Counterexamples library not configured"
-grep -q "root = \"ProofCheckerTest\"" lakefile.toml || echo "ERROR: Test executable root not updated"
+grep -q "root = \"LogosTest\"" lakefile.toml || echo "ERROR: Test executable root not updated"
 
 # Attempt to build (should succeed even with empty files)
 lake build || echo "WARNING: lake build failed (expected if dependencies missing)"
@@ -293,15 +293,15 @@ dependencies: [3]
 
 **Tasks**:
 - [x] Update CLAUDE.md section 3 (Project Structure) with new directory tree
-  - Path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+  - Path: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
   - Replace `Examples/` with `Archive/` and `Counterexamples/`
-  - Replace `Tests/` with `ProofCheckerTest/`
+  - Replace `Tests/` with `LogosTest/`
   - Update all file paths in examples
 - [x] Update CLAUDE.md section 7 (Testing Architecture) with new test paths
-  - Replace all `Tests/` references with `ProofCheckerTest/`
+  - Replace all `Tests/` references with `LogosTest/`
   - Update test file naming examples
 - [x] Update docs/ARCHITECTURE.md section 6.1 (Project Structure) with new paths
-  - Path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md
+  - Path: /home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md
   - Update directory tree diagram
   - Update all file path references in code examples
 - [x] Search for and update all other `Tests/` and `Examples/` references
@@ -318,12 +318,12 @@ grep -r "Tests/" CLAUDE.md && echo "ERROR: 'Tests/' still referenced in CLAUDE.m
 grep -r "Examples/" CLAUDE.md && echo "ERROR: 'Examples/' still referenced in CLAUDE.md" || echo "✓ No 'Examples/' in CLAUDE.md"
 
 # Verify new structure documented
-grep -q "ProofCheckerTest/" CLAUDE.md || echo "ERROR: ProofCheckerTest/ not documented in CLAUDE.md"
+grep -q "LogosTest/" CLAUDE.md || echo "ERROR: LogosTest/ not documented in CLAUDE.md"
 grep -q "Archive/" CLAUDE.md || echo "ERROR: Archive/ not documented in CLAUDE.md"
 grep -q "Counterexamples/" CLAUDE.md || echo "ERROR: Counterexamples/ not documented in CLAUDE.md"
 
 # Verify ARCHITECTURE.md updated
-grep -q "ProofCheckerTest/" docs/ARCHITECTURE.md || echo "ERROR: ARCHITECTURE.md not updated"
+grep -q "LogosTest/" docs/ARCHITECTURE.md || echo "ERROR: ARCHITECTURE.md not updated"
 
 echo "✓ Phase 4 complete: Documentation updated"
 ```
@@ -354,40 +354,40 @@ echo "=== Project Structure Validation ==="
 
 # 1. Directory structure check
 echo "Checking directory structure..."
-test -d ProofChecker/Syntax && echo "✓ ProofChecker/Syntax exists" || echo "✗ Missing ProofChecker/Syntax"
-test -d ProofChecker/ProofSystem && echo "✓ ProofChecker/ProofSystem exists" || echo "✗ Missing ProofChecker/ProofSystem"
-test -d ProofChecker/Semantics && echo "✓ ProofChecker/Semantics exists" || echo "✗ Missing ProofChecker/Semantics"
-test -d ProofChecker/Metalogic && echo "✓ ProofChecker/Metalogic exists" || echo "✗ Missing ProofChecker/Metalogic"
-test -d ProofChecker/Theorems && echo "✓ ProofChecker/Theorems exists" || echo "✗ Missing ProofChecker/Theorems"
-test -d ProofChecker/Automation && echo "✓ ProofChecker/Automation exists" || echo "✗ Missing ProofChecker/Automation"
+test -d Logos/Syntax && echo "✓ Logos/Syntax exists" || echo "✗ Missing Logos/Syntax"
+test -d Logos/ProofSystem && echo "✓ Logos/ProofSystem exists" || echo "✗ Missing Logos/ProofSystem"
+test -d Logos/Semantics && echo "✓ Logos/Semantics exists" || echo "✗ Missing Logos/Semantics"
+test -d Logos/Metalogic && echo "✓ Logos/Metalogic exists" || echo "✗ Missing Logos/Metalogic"
+test -d Logos/Theorems && echo "✓ Logos/Theorems exists" || echo "✗ Missing Logos/Theorems"
+test -d Logos/Automation && echo "✓ Logos/Automation exists" || echo "✗ Missing Logos/Automation"
 
-test -d ProofCheckerTest/Syntax && echo "✓ ProofCheckerTest/Syntax exists" || echo "✗ Missing ProofCheckerTest/Syntax"
-test -d ProofCheckerTest/ProofSystem && echo "✓ ProofCheckerTest/ProofSystem exists" || echo "✗ Missing ProofCheckerTest/ProofSystem"
-test -d ProofCheckerTest/Semantics && echo "✓ ProofCheckerTest/Semantics exists" || echo "✗ Missing ProofCheckerTest/Semantics"
-test -d ProofCheckerTest/Integration && echo "✓ ProofCheckerTest/Integration exists" || echo "✗ Missing ProofCheckerTest/Integration"
-test -d ProofCheckerTest/Metalogic && echo "✓ ProofCheckerTest/Metalogic exists" || echo "✗ Missing ProofCheckerTest/Metalogic"
+test -d LogosTest/Syntax && echo "✓ LogosTest/Syntax exists" || echo "✗ Missing LogosTest/Syntax"
+test -d LogosTest/ProofSystem && echo "✓ LogosTest/ProofSystem exists" || echo "✗ Missing LogosTest/ProofSystem"
+test -d LogosTest/Semantics && echo "✓ LogosTest/Semantics exists" || echo "✗ Missing LogosTest/Semantics"
+test -d LogosTest/Integration && echo "✓ LogosTest/Integration exists" || echo "✗ Missing LogosTest/Integration"
+test -d LogosTest/Metalogic && echo "✓ LogosTest/Metalogic exists" || echo "✗ Missing LogosTest/Metalogic"
 
 test -d Archive && echo "✓ Archive exists" || echo "✗ Missing Archive"
 test -d Counterexamples && echo "✓ Counterexamples exists" || echo "✗ Missing Counterexamples"
 
 # 2. Root files check
 echo "Checking root files..."
-test -f ProofChecker.lean && echo "✓ ProofChecker.lean exists" || echo "✗ Missing ProofChecker.lean"
-test -f ProofCheckerTest/ProofCheckerTest.lean && echo "✓ ProofCheckerTest.lean exists" || echo "✗ Missing ProofCheckerTest.lean"
+test -f Logos.lean && echo "✓ Logos.lean exists" || echo "✗ Missing Logos.lean"
+test -f LogosTest/LogosTest.lean && echo "✓ LogosTest.lean exists" || echo "✗ Missing LogosTest.lean"
 test -f Archive/Archive.lean && echo "✓ Archive.lean exists" || echo "✗ Missing Archive.lean"
 test -f Counterexamples/Counterexamples.lean && echo "✓ Counterexamples.lean exists" || echo "✗ Missing Counterexamples.lean"
 
 # 3. lakefile.toml check
 echo "Checking lakefile.toml..."
-grep -q "name = \"ProofCheckerTest\"" lakefile.toml && echo "✓ ProofCheckerTest library configured" || echo "✗ ProofCheckerTest not configured"
+grep -q "name = \"LogosTest\"" lakefile.toml && echo "✓ LogosTest library configured" || echo "✗ LogosTest not configured"
 grep -q "name = \"Archive\"" lakefile.toml && echo "✓ Archive library configured" || echo "✗ Archive not configured"
 grep -q "name = \"Counterexamples\"" lakefile.toml && echo "✓ Counterexamples library configured" || echo "✗ Counterexamples not configured"
 
 # 4. Documentation check
 echo "Checking documentation..."
-grep -q "ProofCheckerTest/" CLAUDE.md && echo "✓ CLAUDE.md updated" || echo "✗ CLAUDE.md not updated"
+grep -q "LogosTest/" CLAUDE.md && echo "✓ CLAUDE.md updated" || echo "✗ CLAUDE.md not updated"
 grep -q "Archive/" CLAUDE.md && echo "✓ Archive documented" || echo "✗ Archive not documented"
-grep -q "ProofCheckerTest/" docs/ARCHITECTURE.md && echo "✓ ARCHITECTURE.md updated" || echo "✗ ARCHITECTURE.md not updated"
+grep -q "LogosTest/" docs/ARCHITECTURE.md && echo "✓ ARCHITECTURE.md updated" || echo "✗ ARCHITECTURE.md not updated"
 
 # 5. Old reference check
 echo "Checking for old references..."
@@ -505,7 +505,7 @@ If issues discovered:
 ## Notes
 
 ### Key Decision Points
-1. **Chosen Structure**: ProofCheckerTest/ + Archive/ + Counterexamples/ (recommended option from research)
+1. **Chosen Structure**: LogosTest/ + Archive/ + Counterexamples/ (recommended option from research)
 2. **Alternative Rejected**: Test/ + Example/ (minimal change option)
 3. **Rationale**: Better alignment with mathlib4 patterns, semantic organization for examples
 

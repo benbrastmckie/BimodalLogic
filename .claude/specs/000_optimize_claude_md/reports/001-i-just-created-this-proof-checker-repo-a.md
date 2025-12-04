@@ -1,6 +1,6 @@
-# Research Report: Code and Documentation Standards for ProofChecker
+# Research Report: Code and Documentation Standards for Logos
 
-**Research Topic:** Establishing coding standards, documentation practices, and best practices for the ProofChecker repository based on ModelChecker standards and industry best practices
+**Research Topic:** Establishing coding standards, documentation practices, and best practices for the Logos repository based on ModelChecker standards and industry best practices
 
 **Date:** 2025-12-01
 **Complexity:** 2 (Medium)
@@ -10,7 +10,7 @@
 
 ## Executive Summary
 
-This report analyzes the coding standards, documentation practices, and development principles from the ModelChecker repository (`/home/benjamin/Documents/Philosophy/Projects/ModelChecker/CLAUDE.md` and associated documentation) to establish similar standards for the ProofChecker project. The research also incorporates industry best practices from online sources for Python code quality, testing, and CLAUDE.md configuration.
+This report analyzes the coding standards, documentation practices, and development principles from the ModelChecker repository (`/home/benjamin/Documents/Philosophy/Projects/ModelChecker/CLAUDE.md` and associated documentation) to establish similar standards for the Logos project. The research also incorporates industry best practices from online sources for Python code quality, testing, and CLAUDE.md configuration.
 
 ---
 
@@ -348,7 +348,7 @@ def test_formula():
 
 ```python
 # Good: Composition-based design
-class ProofChecker:
+class Logos:
     def __init__(self, validator=None, runner=None, formatter=None):
         self.validator = validator or DefaultValidator()
         self.runner = runner or DefaultRunner()
@@ -429,15 +429,15 @@ if not os.path.exists(filepath):
 #### 6.2 Custom Exception Hierarchy
 
 ```python
-class ProofCheckerError(Exception):
-    """Base exception for ProofChecker framework."""
+class LogosError(Exception):
+    """Base exception for Logos framework."""
     pass
 
-class FormulaValidationError(ProofCheckerError):
+class FormulaValidationError(LogosError):
     """Raised when formula validation fails."""
     pass
 
-class ProofLoadError(ProofCheckerError):
+class ProofLoadError(LogosError):
     """Raised when proof loading fails."""
     pass
 ```
@@ -451,7 +451,7 @@ class ProofLoadError(ProofCheckerError):
 **Source:** `CLAUDE.md:42-53`
 
 ```
-ProofChecker/
+Logos/
 ├── Code/                    # Main implementation
 │   ├── src/proof_checker/   # Source code
 │   ├── docs/                # Technical standards (START HERE for dev)
@@ -550,7 +550,7 @@ Recommended tools:
 
 ### Immediate Actions
 
-1. **Create CLAUDE.md** for ProofChecker following ModelChecker's structure
+1. **Create CLAUDE.md** for Logos following ModelChecker's structure
 2. **Establish `Code/docs/` directory** with core standards:
    - `CODE_STANDARDS.md`
    - `TESTING_GUIDE.md`
@@ -560,7 +560,7 @@ Recommended tools:
 
 ### Standards to Adopt
 
-| Standard | ModelChecker Value | Recommendation for ProofChecker |
+| Standard | ModelChecker Value | Recommendation for Logos |
 |----------|-------------------|--------------------------------|
 | Test Coverage | ≥85% overall, ≥90% critical | Same |
 | Type Coverage | >90% | Same |
@@ -572,7 +572,7 @@ Recommended tools:
 
 ### Key Differences to Consider
 
-ProofChecker may have different needs based on:
+Logos may have different needs based on:
 1. **Proof system type** (natural deduction, sequent calculus, etc.)
 2. **Underlying logic** (propositional, first-order, modal)
 3. **Solver integration** (Z3, custom, or other)

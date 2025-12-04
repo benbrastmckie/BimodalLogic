@@ -53,14 +53,14 @@ All phases complete:
 
 ## Files Modified
 
-- `ProofChecker/Semantics/Truth.lean`
+- `Logos/Semantics/Truth.lean`
   - Completed `swap_axiom_tl_valid`, `swap_axiom_mf_valid`, `swap_axiom_tf_valid`
   - Completed `axiom_swap_valid` master theorem
   - Completed `derivable_implies_swap_valid` main theorem
   - Updated docstrings to reflect COMPLETE status
   - Updated module docstring with Approach D explanation
 
-- `ProofChecker/Metalogic/Soundness.lean`
+- `Logos/Metalogic/Soundness.lean`
   - Updated temporal_duality case to use `derivable_implies_swap_valid`
   - Zero sorry remaining in Soundness.lean
 
@@ -83,7 +83,7 @@ All phases complete:
 
 ```
 lake build: Build completed successfully.
-grep -c "sorry" ProofChecker/Metalogic/Soundness.lean: 0
+grep -c "sorry" Logos/Metalogic/Soundness.lean: 0
 ```
 
 ## Diagnostic Summary

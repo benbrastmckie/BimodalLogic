@@ -1,4 +1,4 @@
-# Implementation Summary: ProofChecker Development Standards
+# Implementation Summary: Logos Development Standards
 
 **Plan**: [001-proof-checker-dev-standards-plan.md](../plans/001-proof-checker-dev-standards-plan.md)
 **Status**: COMPLETE
@@ -60,7 +60,7 @@ Verification completed:
 ## Success Criteria Met
 
 - [x] All 14+ standards documents created and populated
-- [x] `CLAUDE.md` configured with ProofChecker project structure
+- [x] `CLAUDE.md` configured with Logos project structure
 - [x] `lakefile.toml` and `lean-toolchain` created for LEAN 4 build
 - [x] `.gitignore` configured to exclude `.lake/` and build artifacts
 - [x] CI/CD pipeline (`ci.yml`) configured with build/test/lint/docs automation
@@ -75,7 +75,7 @@ Verification completed:
 ## Files Created
 
 ```
-ProofChecker/
+Logos/
 ├── CLAUDE.md                           # NEW
 ├── lakefile.toml                       # NEW
 ├── lean-toolchain                      # NEW

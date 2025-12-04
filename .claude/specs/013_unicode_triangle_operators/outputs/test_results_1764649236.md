@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Date**: 2025-12-01 16:40:36
-- **Plan**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/013_unicode_triangle_operators/plans/001-unicode-triangle-operators-plan.md
+- **Plan**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/013_unicode_triangle_operators/plans/001-unicode-triangle-operators-plan.md
 - **Test Framework**: LEAN 4 (lake build)
 - **Test Command**: lake build
 - **Exit Code**: 0
@@ -23,7 +23,7 @@ None - all tests passed.
 ## Test Breakdown by Module
 
 ### Syntax Tests (56 tests)
-- **ProofCheckerTest/Syntax/FormulaTest.lean**: 41 tests
+- **LogosTest/Syntax/FormulaTest.lean**: 41 tests
   - Formula construction tests (6)
   - Decidable equality tests (5)
   - Complexity measure tests (5)
@@ -31,21 +31,21 @@ None - all tests passed.
   - **Triangle notation tests (11)** - NEW IN THIS IMPLEMENTATION
   - Temporal duality tests (6)
   - Backward compatibility tests (2)
-- **ProofCheckerTest/Syntax/ContextTest.lean**: 15 tests
+- **LogosTest/Syntax/ContextTest.lean**: 15 tests
 
 ### ProofSystem Tests (44 tests)
-- **ProofCheckerTest/ProofSystem/DerivationTest.lean**: 28 tests
-- **ProofCheckerTest/ProofSystem/AxiomsTest.lean**: 16 tests
+- **LogosTest/ProofSystem/DerivationTest.lean**: 28 tests
+- **LogosTest/ProofSystem/AxiomsTest.lean**: 16 tests
 
 ### Semantics Tests (13 tests)
-- **ProofCheckerTest/Semantics/TaskFrameTest.lean**: 8 tests
-- **ProofCheckerTest/Semantics/TruthTest.lean**: 5 tests
+- **LogosTest/Semantics/TaskFrameTest.lean**: 8 tests
+- **LogosTest/Semantics/TruthTest.lean**: 5 tests
 
 ### Metalogic Tests (19 tests)
-- **ProofCheckerTest/Metalogic/SoundnessTest.lean**: 19 tests
+- **LogosTest/Metalogic/SoundnessTest.lean**: 19 tests
 
 ### Integration Tests (6 tests)
-- **ProofCheckerTest/Integration/EndToEndTest.lean**: 6 tests
+- **LogosTest/Integration/EndToEndTest.lean**: 6 tests
 
 ## Triangle Notation Tests (Phase 3 Implementation)
 
@@ -133,14 +133,14 @@ LEAN 4 uses compile-time verification where tests are written as `example`, `the
 All tests pass if the build succeeds (type-checking verification).
 
 ## Test Files and Counts
-- ProofCheckerTest/Syntax/FormulaTest.lean: 41 tests
-- ProofCheckerTest/ProofSystem/DerivationTest.lean: 28 tests
-- ProofCheckerTest/Metalogic/SoundnessTest.lean: 19 tests
-- ProofCheckerTest/ProofSystem/AxiomsTest.lean: 16 tests
-- ProofCheckerTest/Syntax/ContextTest.lean: 15 tests
-- ProofCheckerTest/Semantics/TaskFrameTest.lean: 8 tests
-- ProofCheckerTest/Integration/EndToEndTest.lean: 6 tests
-- ProofCheckerTest/Semantics/TruthTest.lean: 5 tests
+- LogosTest/Syntax/FormulaTest.lean: 41 tests
+- LogosTest/ProofSystem/DerivationTest.lean: 28 tests
+- LogosTest/Metalogic/SoundnessTest.lean: 19 tests
+- LogosTest/ProofSystem/AxiomsTest.lean: 16 tests
+- LogosTest/Syntax/ContextTest.lean: 15 tests
+- LogosTest/Semantics/TaskFrameTest.lean: 8 tests
+- LogosTest/Integration/EndToEndTest.lean: 6 tests
+- LogosTest/Semantics/TruthTest.lean: 5 tests
 
 ## Total Test Assertions: 138
 

@@ -8,14 +8,14 @@
 - **Estimated Hours**: 20-30 hours
 - **Complexity**: High
 - **Dependencies**: Phase 4 (Wave 2 Completion)
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Parent Plan**: [TODO Implementation Systematic Plan](../plans/001-research-todo-implementation-plan.md)
 - **Research Reports**:
   - [TODO Implementation Systematic Plan Report](../reports/001-todo-implementation-systematic-plan.md)
 
 ## Overview
 
-This phase begins the completeness proof work by establishing the foundational properties of maximal consistent sets. This is the first of three phases in Wave 3 that will complete the metalogic proofs for TM logic. The phase focuses on replacing 3 axiom declarations in `ProofChecker/Metalogic/Completeness.lean` with actual proofs.
+This phase begins the completeness proof work by establishing the foundational properties of maximal consistent sets. This is the first of three phases in Wave 3 that will complete the metalogic proofs for TM logic. The phase focuses on replacing 3 axiom declarations in `Logos/Metalogic/Completeness.lean` with actual proofs.
 
 **Current State**:
 - `lindenbaum` (line 116): Declared as `axiom`, needs proof using Zorn's lemma or transfinite induction
@@ -26,7 +26,7 @@ This phase begins the completeness proof work by establishing the foundational p
 **Target State**:
 - All 3 theorems proven with zero `sorry` placeholders
 - Axiom count decreased: 11 → 8
-- Comprehensive tests in `ProofCheckerTest/Metalogic/CompletenessTest.lean`
+- Comprehensive tests in `LogosTest/Metalogic/CompletenessTest.lean`
 - Documentation updated to reflect progress
 
 **Why This Phase First**:
@@ -38,7 +38,7 @@ These three lemmas establish the fundamental properties of maximal consistent se
 - [ ] `maximal_consistent_closed` proven: Maximal sets closed under modus ponens
 - [ ] `maximal_negation_complete` proven: Maximal sets contain `φ` or `¬φ` for all formulas
 - [ ] Axiom count decreased from 11 to 8 in Completeness.lean
-- [ ] All tests pass: `lake test ProofCheckerTest.Metalogic.CompletenessTest`
+- [ ] All tests pass: `lake test LogosTest.Metalogic.CompletenessTest`
 - [ ] Zero `sorry` placeholders in the 3 proven theorems
 - [ ] Documentation updated: TODO.md, IMPLEMENTATION_STATUS.md
 
@@ -110,7 +110,7 @@ Phase 6: canonical_task_rel, canonical_frame (use all 3 properties)
 ```
 
 **Options**:
-1. **Prove deduction theorem** in `ProofChecker/ProofSystem/Derivation.lean` (estimated 5-8 hours)
+1. **Prove deduction theorem** in `Logos/ProofSystem/Derivation.lean` (estimated 5-8 hours)
 2. **Axiomatize deduction theorem** as a meta-property of the derivability relation (estimated 1 hour, but adds axiom)
 3. **Use proof-theoretic shortcuts** specific to TM logic (estimated 3-5 hours, research needed)
 
@@ -210,7 +210,7 @@ lemma derivable_finitary (Γ : Context) (φ : Formula) :
 
 **Testing Strategy**:
 ```lean
--- ProofCheckerTest/Metalogic/CompletenessTest.lean
+-- LogosTest/Metalogic/CompletenessTest.lean
 #test "lindenbaum_empty_context"
   let h : Consistent [] := fun h_bot =>
     match h_bot with
@@ -229,7 +229,7 @@ lemma derivable_finitary (Γ : Context) (φ : Formula) :
 ```
 
 **File Changes**:
-- File: `ProofChecker/Metalogic/Completeness.lean`
+- File: `Logos/Metalogic/Completeness.lean`
 - Lines: 116-117 (replace `axiom lindenbaum` with `theorem lindenbaum`)
 - New imports: Add `import Mathlib.Order.Zorn` at top
 - New definitions: `ConsistentExtensions`, `PartialOrder` instance, helper lemmas
@@ -248,7 +248,7 @@ lemma derivable_finitary (Γ : Context) (φ : Formula) :
 
 1. **Prove Deduction Theorem** (if not already proven) (3-4 hours)
 ```lean
--- File: ProofChecker/ProofSystem/Derivation.lean (new theorem)
+-- File: Logos/ProofSystem/Derivation.lean (new theorem)
 /-- Deduction theorem for TM logic -/
 theorem deduction (Γ : Context) (φ ψ : Formula) :
     Derivable (φ :: Γ) ψ → Derivable Γ (φ.imp ψ) := by
@@ -299,7 +299,7 @@ theorem maximal_consistent_closed (Γ : Context) (φ : Formula) :
 
 **Testing Strategy**:
 ```lean
--- ProofCheckerTest/Metalogic/CompletenessTest.lean
+-- LogosTest/Metalogic/CompletenessTest.lean
 #test "maximal_closed_simple"
   -- Create maximal consistent set (using lindenbaum on {p})
   let Γ := [Formula.atom "p"]
@@ -319,9 +319,9 @@ theorem maximal_consistent_closed (Γ : Context) (φ : Formula) :
 ```
 
 **File Changes**:
-- File: `ProofChecker/ProofSystem/Derivation.lean`
+- File: `Logos/ProofSystem/Derivation.lean`
   - Add `theorem deduction` (new, ~30 lines)
-- File: `ProofChecker/Metalogic/Completeness.lean`
+- File: `Logos/Metalogic/Completeness.lean`
   - Lines: 140-141 (replace `axiom maximal_consistent_closed` with `theorem maximal_consistent_closed`)
 
 **Estimated Time**: 4-6 hours (including deduction theorem)
@@ -358,11 +358,11 @@ theorem maximal_negation_complete (Γ : Context) (φ : Formula) :
   sorry
 ```
 
-**Note on Negation Definition**: Need to verify how `Formula.neg` is defined in `ProofChecker/Syntax/Formula.lean`. If it's defined as `imp bot`, proof is immediate. Otherwise, need equivalence lemma.
+**Note on Negation Definition**: Need to verify how `Formula.neg` is defined in `Logos/Syntax/Formula.lean`. If it's defined as `imp bot`, proof is immediate. Otherwise, need equivalence lemma.
 
 **Testing Strategy**:
 ```lean
--- ProofCheckerTest/Metalogic/CompletenessTest.lean
+-- LogosTest/Metalogic/CompletenessTest.lean
 #test "maximal_negation_complete_simple"
   -- Create maximal consistent set
   let Γ := [Formula.atom "p"]
@@ -384,9 +384,9 @@ theorem maximal_negation_complete (Γ : Context) (φ : Formula) :
 ```
 
 **File Changes**:
-- File: `ProofChecker/Metalogic/Completeness.lean`
+- File: `Logos/Metalogic/Completeness.lean`
   - Lines: 154-155 (replace `axiom maximal_negation_complete` with `theorem maximal_negation_complete`)
-- File: `ProofChecker/Syntax/Formula.lean` (potential)
+- File: `Logos/Syntax/Formula.lean` (potential)
   - Verify `Formula.neg` definition (read only, no changes expected)
 
 **Estimated Time**: 2-3 hours
@@ -399,9 +399,9 @@ theorem maximal_negation_complete (Γ : Context) (φ : Formula) :
 
 **Test Organization**:
 ```lean
--- ProofCheckerTest/Metalogic/CompletenessTest.lean
+-- LogosTest/Metalogic/CompletenessTest.lean
 
-namespace ProofChecker.Test.Metalogic.Completeness
+namespace Logos.Test.Metalogic.Completeness
 
 -- Helper: Create simple consistent contexts
 def simple_consistent_contexts : List Context :=
@@ -433,7 +433,7 @@ def simple_consistent_contexts : List Context :=
 #test "maximal_has_all_three_properties" := ...
 #test "lindenbaum_then_closed_then_negation" := ...
 
-end ProofChecker.Test.Metalogic.Completeness
+end Logos.Test.Metalogic.Completeness
 ```
 
 **Detailed Test Specifications**:
@@ -511,9 +511,9 @@ end ProofChecker.Test.Metalogic.Completeness
 ```
 
 **File Changes**:
-- File: `ProofCheckerTest/Metalogic/CompletenessTest.lean`
+- File: `LogosTest/Metalogic/CompletenessTest.lean`
   - Add ~15-20 test cases (new file or append to existing)
-  - Import: `import ProofChecker.Metalogic.Completeness`
+  - Import: `import Logos.Metalogic.Completeness`
 
 **Estimated Time**: 2-4 hours
 
@@ -547,9 +547,9 @@ Result: 3 axiom declarations → 3 theorems, 11 axioms → 8 axioms
 
 ## Sorry Placeholder Resolution (Update Registry)
 Remove these 3 entries:
-- ~~ProofChecker/Metalogic/Completeness.lean:116 - lindenbaum axiom~~
-- ~~ProofChecker/Metalogic/Completeness.lean:140 - maximal_consistent_closed axiom~~
-- ~~ProofChecker/Metalogic/Completeness.lean:154 - maximal_negation_complete axiom~~
+- ~~Logos/Metalogic/Completeness.lean:116 - lindenbaum axiom~~
+- ~~Logos/Metalogic/Completeness.lean:140 - maximal_consistent_closed axiom~~
+- ~~Logos/Metalogic/Completeness.lean:154 - maximal_negation_complete axiom~~
 
 Updated count: 22 total (was 22, no new sorry added, 3 axioms converted to theorems)
 ```
@@ -613,15 +613,15 @@ Opportunities for contribution:
 **Verification Commands**:
 ```bash
 # Verify axiom count decreased
-grep -c "axiom" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Completeness.lean
+grep -c "axiom" /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Completeness.lean
 # Expected: 8 (was 11)
 
 # Verify documentation consistency
-grep "Status.*Complete" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md | grep -i completeness
+grep "Status.*Complete" /home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md | grep -i completeness
 # Should show 27% or similar
 
 # Verify TODO.md updated
-grep "Task 9.*\[IN PROGRESS\]" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md
+grep "Task 9.*\[IN PROGRESS\]" /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md
 # Should match
 ```
 
@@ -643,7 +643,7 @@ grep "Task 9.*\[IN PROGRESS\]" /home/benjamin/Documents/Philosophy/Projects/Proo
 
 ### Test Organization
 
-All tests in: `ProofCheckerTest/Metalogic/CompletenessTest.lean`
+All tests in: `LogosTest/Metalogic/CompletenessTest.lean`
 
 **Test Groups**:
 1. Lindenbaum Lemma Tests (5 tests)
@@ -657,29 +657,29 @@ All tests in: `ProofCheckerTest/Metalogic/CompletenessTest.lean`
 
 **After Each Task**:
 ```bash
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 
 # Build specific module
-lake build ProofChecker.Metalogic.Completeness
+lake build Logos.Metalogic.Completeness
 
 # Run completeness tests
-lake test ProofCheckerTest.Metalogic.CompletenessTest
+lake test LogosTest.Metalogic.CompletenessTest
 
 # Verify no sorry in proven theorems
-grep -A 20 "theorem lindenbaum" ProofChecker/Metalogic/Completeness.lean | grep -c "sorry"
+grep -A 20 "theorem lindenbaum" Logos/Metalogic/Completeness.lean | grep -c "sorry"
 # Expected: 0
 
-grep -A 10 "theorem maximal_consistent_closed" ProofChecker/Metalogic/Completeness.lean | grep -c "sorry"
+grep -A 10 "theorem maximal_consistent_closed" Logos/Metalogic/Completeness.lean | grep -c "sorry"
 # Expected: 0
 
-grep -A 10 "theorem maximal_negation_complete" ProofChecker/Metalogic/Completeness.lean | grep -c "sorry"
+grep -A 10 "theorem maximal_negation_complete" Logos/Metalogic/Completeness.lean | grep -c "sorry"
 # Expected: 0
 ```
 
 **Phase Completion Verification**:
 ```bash
 # Verify axiom count
-echo "Axiom count: $(grep -c '^axiom' ProofChecker/Metalogic/Completeness.lean)"
+echo "Axiom count: $(grep -c '^axiom' Logos/Metalogic/Completeness.lean)"
 # Expected: 8
 
 # Verify all tests pass
@@ -775,7 +775,7 @@ From CLAUDE.md Testing Standards:
 **Impact**: +1-2 hours to Task 5.3
 
 **Mitigation**:
-- Check `ProofChecker/Syntax/Formula.lean` definition at start of phase
+- Check `Logos/Syntax/Formula.lean` definition at start of phase
 - If mismatch, prove equivalence lemma: `neg φ ↔ (φ.imp bot)`
 - Budget 3 hours for Task 5.3 (upper estimate)
 
@@ -826,7 +826,7 @@ Before marking Phase 5 complete, verify:
 - [ ] `theorem maximal_negation_complete` proven with zero `sorry` (Completeness.lean:154)
 - [ ] Deduction theorem proven in `Derivation.lean` (if needed)
 - [ ] Axiom count: 8 (decreased from 11)
-- [ ] All tests pass: `lake test ProofCheckerTest.Metalogic.CompletenessTest`
+- [ ] All tests pass: `lake test LogosTest.Metalogic.CompletenessTest`
 - [ ] Overall build passes: `lake build`
 - [ ] Lint clean: `lake lint` returns zero warnings
 - [ ] TODO.md updated: Task 9 Phase 1 marked `[COMPLETE]`, sorry registry updated

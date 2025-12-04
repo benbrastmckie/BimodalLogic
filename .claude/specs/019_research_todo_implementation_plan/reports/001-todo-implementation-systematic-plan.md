@@ -6,17 +6,17 @@
 - **Topic**: TODO.md Implementation Systematic Plan
 - **Report Type**: codebase analysis + implementation planning
 - **Complexity**: 3 (High)
-- **Source File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md
+- **Source File**: /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md
 
 ## Executive Summary
 
-The ProofChecker project has 11 well-documented tasks tracked in TODO.md, with 1/11 complete (9% overall). This report provides a comprehensive analysis of the TODO structure, validates task definitions against codebase reality, and proposes a systematic phased implementation approach. The TODO file is exceptionally well-organized with accurate sorry counts (41 placeholders verified), clear dependency tracking, and realistic effort estimates. Research findings indicate the critical path requires completing propositional axioms first (Task 2, 10-15 hours) to unblock perpetuity proofs (Task 6, 20-30 hours dependent on Task 2). The optimal implementation strategy uses 4 waves of parallel execution to reduce sequential time from 93-140 hours to 70-95 hours (25-32% time savings).
+The Logos project has 11 well-documented tasks tracked in TODO.md, with 1/11 complete (9% overall). This report provides a comprehensive analysis of the TODO structure, validates task definitions against codebase reality, and proposes a systematic phased implementation approach. The TODO file is exceptionally well-organized with accurate sorry counts (41 placeholders verified), clear dependency tracking, and realistic effort estimates. Research findings indicate the critical path requires completing propositional axioms first (Task 2, 10-15 hours) to unblock perpetuity proofs (Task 6, 20-30 hours dependent on Task 2). The optimal implementation strategy uses 4 waves of parallel execution to reduce sequential time from 93-140 hours to 70-95 hours (25-32% time savings).
 
 ## Findings
 
 ### 1. TODO.md Structure Analysis
 
-**File Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md`
+**File Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md`
 **Total Lines**: 957
 **Last Updated**: 2025-12-01
 **Structure Quality**: Excellent
@@ -48,12 +48,12 @@ The TODO.md file follows a sophisticated hierarchical organization:
 The TODO.md claims 41 sorry placeholders. Verification using Grep:
 
 ```bash
-grep -c "sorry" ProofChecker/Semantics/WorldHistory.lean  # Expected: 1
-grep -c "sorry" ProofChecker/Theorems/Perpetuity.lean      # Expected: 14
-grep -c "sorry" ProofChecker/Automation/ProofSearch.lean    # Expected: 3
-grep -c "sorry" ProofChecker/Metalogic/Soundness.lean       # Expected: 15
-grep -c "sorry" ProofChecker/Metalogic/Completeness.lean    # Expected: 0 (axiom declarations)
-grep -c "sorry" ProofChecker/Automation/Tactics.lean        # Expected: 8
+grep -c "sorry" Logos/Semantics/WorldHistory.lean  # Expected: 1
+grep -c "sorry" Logos/Theorems/Perpetuity.lean      # Expected: 14
+grep -c "sorry" Logos/Automation/ProofSearch.lean    # Expected: 3
+grep -c "sorry" Logos/Metalogic/Soundness.lean       # Expected: 15
+grep -c "sorry" Logos/Metalogic/Completeness.lean    # Expected: 0 (axiom declarations)
+grep -c "sorry" Logos/Automation/Tactics.lean        # Expected: 8
 ```
 
 **Finding**: Total sorry count across codebase verified at 41 placeholders (excluding axiom declarations). The TODO.md registry is accurate.
@@ -90,8 +90,8 @@ grep -n "continue-on-error: true" .github/workflows/ci.yml
 - **Dependencies**: None
 - **Blocking**: Task 6 (Perpetuity proofs P1-P2, P4-P6)
 - **Files**:
-  - ProofChecker/ProofSystem/Axioms.lean
-  - ProofChecker/Theorems/Perpetuity.lean (lines 88, 139)
+  - Logos/ProofSystem/Axioms.lean
+  - Logos/Theorems/Perpetuity.lean (lines 88, 139)
 
 **Analysis**: This is the CRITICAL PATH task for Layer 0 completion. The TM proof system lacks basic propositional reasoning infrastructure (K and S axioms). This gap blocks:
 1. Perpetuity P1 (uses imp_trans at line 88 with sorry)
@@ -130,7 +130,7 @@ From these, derive:
 - **Status**: Not Started
 - **Dependencies**: None (independent, benefits from Task 2)
 - **Blocking**: None (metalogic property)
-- **Files**: ProofChecker/Metalogic/Soundness.lean
+- **Files**: Logos/Metalogic/Soundness.lean
 - **Sorry Count**: 15 placeholders
 
 **Incomplete Components**:
@@ -155,7 +155,7 @@ From KNOWN_LIMITATIONS.md (lines 20-209), the frame constraints needed are non-t
 - **Effort**: 20-30 hours
 - **Status**: Not Started
 - **Dependencies**: REQUIRES Task 2 (blocking dependency)
-- **Files**: ProofChecker/Theorems/Perpetuity.lean
+- **Files**: Logos/Theorems/Perpetuity.lean
 - **Sorry Count**: 3 perpetuity principles (P4, P5, P6)
 
 **Analysis**: P1-P3 have complete proof structures but P1 and P2 use propositional helpers with sorry. P3 is fully proven (zero sorry). P4-P6 require complex modal-temporal interaction lemmas that don't exist yet.
@@ -173,8 +173,8 @@ From KNOWN_LIMITATIONS.md (lines 20-209), the frame constraints needed are non-t
 - **Status**: Not Started
 - **Dependencies**: None (benefits from all proven theorems)
 - **Files**:
-  - ProofChecker/Automation/Tactics.lean (8 stubs)
-  - ProofChecker/Automation/ProofSearch.lean (8 stubs)
+  - Logos/Automation/Tactics.lean (8 stubs)
+  - Logos/Automation/ProofSearch.lean (8 stubs)
 
 **Analysis**: All 12 tactics are function signatures with sorry bodies. From KNOWN_LIMITATIONS.md (lines 415-505), tactic implementation requires LEAN 4 meta-programming expertise:
 - Meta-programming with Lean.Elab.Tactic monad
@@ -191,7 +191,7 @@ Estimated 35-55 hours per tactic. Phased approach recommended:
 - **Effort**: 1-2 hours
 - **Status**: Not Started
 - **Dependencies**: None
-- **Files**: ProofChecker/Semantics/WorldHistory.lean (line 75)
+- **Files**: Logos/Semantics/WorldHistory.lean (line 75)
 
 **Analysis**: Single sorry in respects_task property for universal history helper. Low complexity, isolated scope.
 
@@ -201,7 +201,7 @@ Estimated 35-55 hours per tactic. Phased approach recommended:
 - **Effort**: 70-90 hours (phased, 3 phases)
 - **Status**: Not Started
 - **Dependencies**: Benefits from Tasks 2, 5
-- **Files**: ProofChecker/Metalogic/Completeness.lean
+- **Files**: Logos/Metalogic/Completeness.lean
 - **Axiom Count**: 11 unproven axiom declarations
 
 **Analysis**: From IMPLEMENTATION_STATUS.md (lines 280-316), this is infrastructure only. All theorems use axiom keyword (unproven assumptions). This is the largest single task.
@@ -298,7 +298,7 @@ grep -n "ModalProofs" README.md  # Line 214
 - Purpose: Temporal logic pedagogical examples
 - Effort: 3-5 hours
 
-**3. ProofChecker/Metalogic/Decidability.lean**
+**3. Logos/Metalogic/Decidability.lean**
 - Referenced: CLAUDE.md line 318
 - Purpose: Decidability module (planned)
 - Effort: 40-60 hours (Task 10)
@@ -370,8 +370,8 @@ The TODO.md proposes 4 execution waves (lines 772-806):
 Total LEAN files: 43 (verified via find command)
 
 **Breakdown by directory**:
-- ProofChecker/: ~20 files (implementation)
-- ProofCheckerTest/: ~15 files (tests)
+- Logos/: ~20 files (implementation)
+- LogosTest/: ~15 files (tests)
 - Archive/: ~3 files (examples)
 - Counterexamples/: ~1 file
 - Root: 4 files (.lean library roots)
@@ -383,11 +383,11 @@ From grep analysis (439 total "sorry" mentions across 45 files):
 - Documentation mentions: ~398 (in MD files discussing sorry)
 
 **Code Sorry Locations**:
-- ProofChecker/Metalogic/Soundness.lean: 15
-- ProofChecker/Theorems/Perpetuity.lean: 14
-- ProofChecker/Automation/Tactics.lean: 8
-- ProofChecker/Automation/ProofSearch.lean: 3
-- ProofChecker/Semantics/WorldHistory.lean: 1
+- Logos/Metalogic/Soundness.lean: 15
+- Logos/Theorems/Perpetuity.lean: 14
+- Logos/Automation/Tactics.lean: 8
+- Logos/Automation/ProofSearch.lean: 3
+- Logos/Semantics/WorldHistory.lean: 1
 - **Total**: 41 sorry placeholders
 
 #### 8.3 Test Coverage Reality
@@ -469,7 +469,7 @@ Execute all three independent high-priority tasks in parallel:
 - Prove imp_trans from K and S (remove sorry at Perpetuity.lean:88)
 - Prove contraposition from K and S (remove sorry at Perpetuity.lean:139)
 - Update ProofSystem/Derivation.lean
-- Write tests in ProofCheckerTest/ProofSystem/AxiomsTest.lean
+- Write tests in LogosTest/ProofSystem/AxiomsTest.lean
 - Update IMPLEMENTATION_STATUS.md (8 → 10 axioms)
 
 # Task 3: Complete Archive examples (5-10 hours)
@@ -592,7 +592,7 @@ After Layer 0 complete:
 
 **Use /todo command**:
 ```bash
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 /todo --dry-run  # Preview changes
 /todo           # Update TODO.md automatically
 ```
@@ -629,7 +629,7 @@ cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
 
 ```bash
 # Verify sorry count
-grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
+grep -r "sorry" Logos/ --include="*.lean" | wc -l
 # Expected to decrease with each task
 
 # Verify tests pass
@@ -652,8 +652,8 @@ lake test --coverage  # If coverage tool available
 ```bash
 #!/bin/bash
 # verify-progress.sh
-echo "=== ProofChecker Progress Verification ==="
-echo "Sorry count: $(grep -r 'sorry' ProofChecker/ --include='*.lean' | wc -l)"
+echo "=== Logos Progress Verification ==="
+echo "Sorry count: $(grep -r 'sorry' Logos/ --include='*.lean' | wc -l)"
 echo "Running tests..."
 lake test && echo "✓ Tests pass" || echo "✗ Tests fail"
 echo "Running lint..."
@@ -712,14 +712,14 @@ lake build && echo "✓ Build success" || echo "✗ Build failed"
 ## References
 
 **Source Files Analyzed**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md` (957 lines)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` (611 lines)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md` (782 lines)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md` (957 lines)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md` (957 lines)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` (611 lines)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md` (782 lines)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md` (957 lines)
 
 **Verification Commands Used**:
 ```bash
-grep -c "sorry" ProofChecker/**/*.lean
+grep -c "sorry" Logos/**/*.lean
 find . -name "*.lean" -type f | wc -l
 grep -n "continue-on-error" .github/workflows/ci.yml
 grep -rn "ModalProofs\|TemporalProofs" Documentation/ README.md CLAUDE.md

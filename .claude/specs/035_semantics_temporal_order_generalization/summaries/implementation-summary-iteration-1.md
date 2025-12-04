@@ -16,7 +16,7 @@
 - Documented typeclass parameter convention: `(T : Type*)` explicit, `[LinearOrderedAddCommGroup T]` implicit
 
 **Files Modified**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/lakefile.toml` - Added Mathlib dependency
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/lakefile.toml` - Added Mathlib dependency
 
 **Testing**: Successfully imported `Mathlib.Algebra.Order.Group.Defs` and verified typeclass instances
 
@@ -27,10 +27,10 @@
 - Updated module docstring to reference JPL paper specification exactly
 - Generalized all example frames: `trivialFrame`, `identityFrame`, `natFrame`
 - All frames now polymorphic over temporal type `T`
-- Build successful: `lake build ProofChecker.Semantics.TaskFrame` passes
+- Build successful: `lake build Logos.Semantics.TaskFrame` passes
 
 **Files Modified**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskFrame.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskFrame.lean`
 
 **Breaking Changes**:
 - `TaskFrame` → `TaskFrame T` (explicit type parameter required)
@@ -52,10 +52,10 @@
   - `neg_add_cancel` for inverse cancellation
   - `neg_lt_neg` and `neg_le_neg` for order reversal
 - Updated order reversal lemmas to use group inverse (polymorphic negation)
-- Build successful: `lake build ProofChecker.Semantics.WorldHistory` passes
+- Build successful: `lake build Logos.Semantics.WorldHistory` passes
 
 **Files Modified**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/WorldHistory.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/WorldHistory.lean`
 
 **New Constraints**:
 - All world histories must prove domain convexity
@@ -147,20 +147,20 @@ Successfully replaced integer-specific `omega` tactics with polymorphic group le
 **Phase 0-2 Testing**:
 ```bash
 # Build verification
-lake build ProofChecker.Semantics.TaskFrame
-lake build ProofChecker.Semantics.WorldHistory
+lake build Logos.Semantics.TaskFrame
+lake build Logos.Semantics.WorldHistory
 
 # Check polymorphic instances
 lake env lean --run <<EOF
-import ProofChecker.Semantics.TaskFrame
-open ProofChecker.Semantics
+import Logos.Semantics.TaskFrame
+open Logos.Semantics
 #check @TaskFrame.trivialFrame Int _
 #check @TaskFrame.trivialFrame Rat _
 EOF
 ```
 
 **Planned Testing** (Phases 6+):
-- Unit tests: `lake test ProofCheckerTest.Semantics`
+- Unit tests: `lake test LogosTest.Semantics`
 - Convexity tests: Verify non-convex domains rejected
 - Polymorphic tests: Test with Int, Rat, Real instances
 - Coverage target: 85% overall, 90% for Semantics
@@ -192,7 +192,7 @@ None - Phases 0-2 complete successfully
 
 ### Immediate Actions (Iteration 1 continuation)
 1. Start Phase 3: Truth Evaluation Generalization
-   - Read `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean`
+   - Read `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean`
    - Generalize `truth_at` function signature
    - Update Past/Future quantification
    - Begin `time_shift_preserves_truth` theorem migration
@@ -227,15 +227,15 @@ If creating checkpoint:
 ## File Change Summary
 
 ### Modified Files
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/lakefile.toml`
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/lakefile.toml`
    - Added Mathlib v4.14.0 dependency
 
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskFrame.lean`
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskFrame.lean`
    - Generalized structure to `TaskFrame (T : Type*) [LinearOrderedAddCommGroup T]`
    - Updated docstring with paper alignment
    - Generalized all example frames
 
-3. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/WorldHistory.lean`
+3. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/WorldHistory.lean`
    - Generalized structure with implicit `{T : Type*}` parameter
    - Added `convex` field to structure
    - Updated all lemmas to use group theory
@@ -243,9 +243,9 @@ If creating checkpoint:
    - All builds successful
 
 ### Created Files
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/035_semantics_temporal_order_generalization/debug/test_mathlib.lean`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/035_semantics_temporal_order_generalization/debug/test_mathlib2.lean`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/035_semantics_temporal_order_generalization/debug/test_int_imports.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/035_semantics_temporal_order_generalization/debug/test_mathlib.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/035_semantics_temporal_order_generalization/debug/test_mathlib2.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/035_semantics_temporal_order_generalization/debug/test_int_imports.lean`
 - (Debug/test files for Phase 0 verification)
 
 ## Metrics

@@ -173,7 +173,7 @@ All implemented with simple recursive pattern matching.
 
 **Attempted**: Adding Aesop and Batteries as dependencies in `lakefile.toml`
 
-**Result**: Build failure in `ProofChecker/Semantics/Truth.lean`
+**Result**: Build failure in `Logos/Semantics/Truth.lean`
 
 **Error Location**: Lines 476-481
 
@@ -240,17 +240,17 @@ Build completed successfully.
 ### Module-Specific Builds
 
 ```bash
-$ lake build ProofChecker.Automation.Tactics
-✔ [7/7] Built ProofChecker.Automation.Tactics
+$ lake build Logos.Automation.Tactics
+✔ [7/7] Built Logos.Automation.Tactics
 
-$ lake build ProofChecker.Metalogic.Soundness
-✔ [11/11] Built ProofChecker.Metalogic.Soundness
+$ lake build Logos.Metalogic.Soundness
+✔ [11/11] Built Logos.Metalogic.Soundness
 ```
 
 ### Sorry Count (Zero in Tactics)
 
 ```bash
-$ grep -c "sorry" ProofChecker/Automation/Tactics.lean
+$ grep -c "sorry" Logos/Automation/Tactics.lean
 0  # All implemented tactics complete
 ```
 
@@ -258,7 +258,7 @@ $ grep -c "sorry" ProofChecker/Automation/Tactics.lean
 
 ## Modified Files Summary
 
-### 1. ProofChecker/Automation/Tactics.lean
+### 1. Logos/Automation/Tactics.lean
 **Lines**: 175 total
 **Changes**:
 - Lines 72-73: `apply_axiom` macro (unchanged from iteration 2)
@@ -267,7 +267,7 @@ $ grep -c "sorry" ProofChecker/Automation/Tactics.lean
 - Lines 129-144: `assumption_search` elab (unchanged from iteration 2)
 - Lines 152-171: Helper functions (unchanged from iteration 2)
 
-### 2. ProofCheckerTest/Automation/TacticsTest.lean
+### 2. LogosTest/Automation/TacticsTest.lean
 **Lines**: 174 total
 **Changes**:
 - Simplified test approach (direct Derivable.axiom calls for axiom tests)
@@ -411,8 +411,8 @@ $ grep -c "sorry" ProofChecker/Automation/Tactics.lean
 4. `summaries/004_iteration_3_final_summary.md` - **This file (Iteration 3, FINAL)**
 
 ### Modified Source Files
-1. `ProofChecker/Automation/Tactics.lean` - Native `tm_auto` implementation
-2. `ProofCheckerTest/Automation/TacticsTest.lean` - 31 tests for 4 tactics + helpers
+1. `Logos/Automation/Tactics.lean` - Native `tm_auto` implementation
+2. `LogosTest/Automation/TacticsTest.lean` - 31 tests for 4 tactics + helpers
 3. `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` - Automation status update
 4. `Documentation/ProjectInfo/KNOWN_LIMITATIONS.md` - Aesop blocker documentation
 
@@ -420,13 +420,13 @@ $ grep -c "sorry" ProofChecker/Automation/Tactics.lean
 
 ```bash
 # Verify tactics build
-lake build ProofChecker.Automation.Tactics
+lake build Logos.Automation.Tactics
 
 # Verify tests build
-lake build ProofCheckerTest.Automation.TacticsTest
+lake build LogosTest.Automation.TacticsTest
 
 # Verify soundness (should still have 0 sorry in implemented parts)
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean | grep -v temporal_duality
+grep -n "sorry" Logos/Metalogic/Soundness.lean | grep -v temporal_duality
 
 # Full clean build
 lake clean && lake build

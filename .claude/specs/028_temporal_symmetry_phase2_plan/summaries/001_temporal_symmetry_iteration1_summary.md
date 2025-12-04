@@ -4,7 +4,7 @@
 - **Date**: 2025-12-03
 - **Iteration**: 1 of 5
 - **Plan**: 028_temporal_symmetry_phase2_plan
-- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean
+- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean
 - **Execution Model**: Sequential waves (no parallelization possible)
 
 ## Work Status
@@ -148,12 +148,12 @@
 ## Artifacts Created
 
 ### Modified Files
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean`
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean`
    - Added section "## Axiom Swap Validity (Approach D: Derivation-Indexed Proof)"
    - Lines 716-905: New axiom swap validity theorems
    - 5 theorems fully proven, 3 with sorry placeholders
 
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/028_temporal_symmetry_phase2_plan/plans/001-temporal-symmetry-phase2-plan-plan.md`
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/028_temporal_symmetry_phase2_plan/plans/001-temporal-symmetry-phase2-plan-plan.md`
    - Updated Phase 1 status: [IN PROGRESS] → [COMPLETE]
    - Updated Phase 2 status: → [PARTIAL]
    - Added task completion markers

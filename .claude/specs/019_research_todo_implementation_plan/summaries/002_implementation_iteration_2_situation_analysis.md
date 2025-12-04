@@ -20,7 +20,7 @@ This iteration was instructed to start from Phase 2, but analysis reveals signif
 **Reality Check**:
 ```bash
 # Check for propositional axioms K and S (Task 1.2)
-grep -n "prop_k\|prop_s" ProofChecker/ProofSystem/Axioms.lean
+grep -n "prop_k\|prop_s" Logos/ProofSystem/Axioms.lean
 # Result: NO MATCHES (axioms not added)
 
 # Check for Archive files (Tasks 1.4-1.5)
@@ -28,7 +28,7 @@ ls Archive/ModalProofs.lean Archive/TemporalProofs.lean
 # Result: Files NOT FOUND (never created)
 
 # Check sorry count in Perpetuity.lean (Task 1.3)
-grep -c "sorry" ProofChecker/Theorems/Perpetuity.lean
+grep -c "sorry" Logos/Theorems/Perpetuity.lean
 # Result: 3 sorries still present (helpers not proven)
 ```
 
@@ -216,7 +216,7 @@ Current markers use [IN PROGRESS] for "Attempted" and [COMPLETE] for "Planned bu
 ### Stage 1: Archive Examples Creation (8-10 hours)
 
 #### Task 2.1: Create Archive/ModalProofs.lean
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Archive/ModalProofs.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Archive/ModalProofs.lean`
 
 **Scope**:
 - S5 modal logic theorem examples
@@ -227,7 +227,7 @@ Current markers use [IN PROGRESS] for "Attempted" and [COMPLETE] for "Planned bu
 **Deliverable**: Working LEAN 4 file with 5-8 modal proof examples
 
 #### Task 2.2: Create Archive/TemporalProofs.lean
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Archive/TemporalProofs.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Archive/TemporalProofs.lean`
 
 **Scope**:
 - Temporal axiom examples (TA, TL, TF)
@@ -238,7 +238,7 @@ Current markers use [IN PROGRESS] for "Attempted" and [COMPLETE] for "Planned bu
 **Deliverable**: Working LEAN 4 file with 5-8 temporal proof examples
 
 #### Task 2.3: Update Archive/Archive.lean
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Archive/Archive.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Archive/Archive.lean`
 
 **Scope**:
 - Add `import Archive.ModalProofs`
@@ -250,7 +250,7 @@ Current markers use [IN PROGRESS] for "Attempted" and [COMPLETE] for "Planned bu
 ### Stage 2: WorldHistory Fix (1-2 hours)
 
 #### Task 2.4: Fix WorldHistory Universal Helper
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/WorldHistory.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/WorldHistory.lean`
 
 **Current Sorry**: Line 75 (respects_task property)
 
@@ -262,7 +262,7 @@ Current markers use [IN PROGRESS] for "Attempted" and [COMPLETE] for "Planned bu
 **Deliverable**: Zero sorry in WorldHistory.lean
 
 #### Task 2.5: Test WorldHistory Fix
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Semantics/WorldHistoryTest.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Semantics/WorldHistoryTest.lean`
 
 **Scope**:
 - Write test cases for respects_task property
@@ -274,7 +274,7 @@ Current markers use [IN PROGRESS] for "Attempted" and [COMPLETE] for "Planned bu
 ### Stage 3: Documentation and Status Reconciliation (1 hour)
 
 #### Task 2.6: Update Plan Status Markers
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/001-research-todo-implementation-plan.md`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/plans/001-research-todo-implementation-plan.md`
 
 **Scope**:
 - Change Phase 1 from [COMPLETE] to [NOT STARTED]
@@ -320,23 +320,23 @@ Current markers use [IN PROGRESS] for "Attempted" and [COMPLETE] for "Planned bu
 ls -l Archive/ModalProofs.lean Archive/TemporalProofs.lean
 
 # Verify WorldHistory fixed
-grep -c "sorry" ProofChecker/Semantics/WorldHistory.lean  # Expected: 0
+grep -c "sorry" Logos/Semantics/WorldHistory.lean  # Expected: 0
 
 # Verify build passes
 lake build
 
 # Verify sorry count decreased
-grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l  # Expected: 36 (down from 37)
+grep -r "sorry" Logos/ --include="*.lean" | wc -l  # Expected: 36 (down from 37)
 ```
 
 ## Testing Strategy
 
 ### Test Files Created This Iteration
-1. `ProofCheckerTest/Semantics/WorldHistoryTest.lean` - Tests for WorldHistory fix
+1. `LogosTest/Semantics/WorldHistoryTest.lean` - Tests for WorldHistory fix
 
 ### Test Execution Requirements
 - Framework: LEAN 4 test framework (when configured)
-- Command: `lake test ProofCheckerTest.Semantics.WorldHistoryTest` (after test driver setup)
+- Command: `lake test LogosTest.Semantics.WorldHistoryTest` (after test driver setup)
 - Expected: All WorldHistory tests pass
 
 ### Coverage Target
@@ -395,9 +395,9 @@ grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l  # Expected: 36 (down f
 
 ```
 IMPLEMENTATION_COMPLETE: 0
-plan_file: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/001-research-todo-implementation-plan.md
-topic_path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan
-summary_path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/summaries/002_implementation_iteration_2_situation_analysis.md
+plan_file: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/plans/001-research-todo-implementation-plan.md
+topic_path: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan
+summary_path: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/summaries/002_implementation_iteration_2_situation_analysis.md
 work_remaining: Phase_1_Task1.2-1.3 Phase_2 Phase_3_SubA Phase_3_SubB Phase_4 Phase_5 Phase_6 Phase_7 Phase_8
 context_exhausted: false
 context_usage_percent: 30%

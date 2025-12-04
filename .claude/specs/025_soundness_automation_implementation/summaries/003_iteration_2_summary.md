@@ -10,7 +10,7 @@
 
 ### Critical Blockers Identified
 
-**Aesop Integration BLOCKED**: Adding Aesop/Batteries as dependencies breaks existing ProofChecker code:
+**Aesop Integration BLOCKED**: Adding Aesop/Batteries as dependencies breaks existing Logos code:
 - **Issue**: Truth.lean lines 476-481 fail to build with Batteries imported
 - **Error**: Type mismatch in time_shift proof due to changed simplification behavior
 - **Impact**: Phase 5 (tm_auto with Aesop) cannot be completed without fixing Truth.lean
@@ -39,7 +39,7 @@
 
 ### Phase 4: Basic Tactics (apply_axiom + modal_t) ✓
 
-**File**: `ProofChecker/Automation/Tactics.lean`
+**File**: `Logos/Automation/Tactics.lean`
 
 **Implementations**:
 
@@ -67,15 +67,15 @@
 
 **Verification**:
 ```bash
-lake build ProofChecker.Automation.Tactics
-✔ [7/7] Built ProofChecker.Automation.Tactics
+lake build Logos.Automation.Tactics
+✔ [7/7] Built Logos.Automation.Tactics
 ```
 
 ---
 
 ### Phase 6: assumption_search Tactic ✓
 
-**File**: `ProofChecker/Automation/Tactics.lean` (lines 129-144)
+**File**: `Logos/Automation/Tactics.lean` (lines 129-144)
 
 **Implementation**:
 ```lean
@@ -106,7 +106,7 @@ elab "assumption_search" : tactic => do
 
 **Verification**:
 ```bash
-lake build ProofChecker.Automation.Tactics
+lake build Logos.Automation.Tactics
 Build completed successfully.
 ```
 
@@ -118,7 +118,7 @@ Build completed successfully.
 
 **Error Details**:
 ```
-error: ././././ProofChecker/Semantics/Truth.lean:481:57: application type mismatch
+error: ././././Logos/Semantics/Truth.lean:481:57: application type mismatch
   (truth_proof_irrel M (σ.time_shift (y - x)) s' hs' hs'_cast ψ).mp h_ih
 argument
   h_ih
@@ -143,7 +143,7 @@ but is expected to have type
 ## Phase 5: tm_auto (Placeholder)
 
 **IMPLEMENTATION NOTE**: Aesop integration was attempted but blocked by incompatibility
-with existing ProofChecker code (Batteries dependency causes type errors in Truth.lean).
+with existing Logos code (Batteries dependency causes type errors in Truth.lean).
 
 **Future Work**: Either (a) fix Truth.lean to be compatible with Batteries, or
 (b) implement tm_auto using native Lean 4 proof search without Aesop.
@@ -163,7 +163,7 @@ For MVP, use `apply_axiom` and `modal_t` for basic automation.
 
 ## Modified Files Summary
 
-### 1. ProofChecker/Automation/Tactics.lean
+### 1. Logos/Automation/Tactics.lean
 **Lines Added/Modified**: 70 lines (126 total)
 **Changes**:
 - Implemented `apply_axiom` macro
@@ -176,7 +176,7 @@ For MVP, use `apply_axiom` and `modal_t` for basic automation.
 **Changes**: Aesop dependency removed (reverted after blocker found)
 **Status**: No net changes from iteration start
 
-### 3. ProofCheckerTest/Automation/TacticsTest.lean
+### 3. LogosTest/Automation/TacticsTest.lean
 **Status**: Attempted test additions, but syntax issues remain
 **Note**: Tests compile warnings but build still has issues with test examples
 
@@ -192,16 +192,16 @@ Build completed successfully.
 
 ### Module-Specific Builds
 ```bash
-$ lake build ProofChecker.Automation.Tactics
-✔ [7/7] Built ProofChecker.Automation.Tactics
+$ lake build Logos.Automation.Tactics
+✔ [7/7] Built Logos.Automation.Tactics
 
-$ lake build ProofChecker.Metalogic.Soundness
-✔ [11/11] Built ProofChecker.Metalogic.Soundness
+$ lake build Logos.Metalogic.Soundness
+✔ [11/11] Built Logos.Metalogic.Soundness
 ```
 
 ### Sorry Count (No Change)
 ```bash
-$ grep -c "sorry" ProofChecker/Metalogic/Soundness.lean
+$ grep -c "sorry" Logos/Metalogic/Soundness.lean
 1  # Only temporal_duality remains (documented limitation)
 ```
 
@@ -308,17 +308,17 @@ $ grep -c "sorry" ProofChecker/Metalogic/Soundness.lean
 3. `summaries/003_iteration_2_summary.md` - This file (Iteration 2 summary)
 
 ### Modified Source Files
-1. `ProofChecker/Automation/Tactics.lean` - Basic tactics + assumption_search
+1. `Logos/Automation/Tactics.lean` - Basic tactics + assumption_search
 2. `lakefile.toml` - No net changes (Aesop reverted)
-3. `ProofCheckerTest/Automation/TacticsTest.lean` - Test attempts (incomplete)
+3. `LogosTest/Automation/TacticsTest.lean` - Test attempts (incomplete)
 
 ### Verification Commands
 ```bash
 # Verify tactics build
-lake build ProofChecker.Automation.Tactics
+lake build Logos.Automation.Tactics
 
 # Verify soundness (no changes, should still have 1 sorry)
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean
+grep -n "sorry" Logos/Metalogic/Soundness.lean
 
 # Full build
 lake clean && lake build

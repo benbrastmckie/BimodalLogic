@@ -6,8 +6,8 @@
 - **Status**: [NOT STARTED]
 - **Complexity**: 2 (Low-Medium)
 - **Estimated Hours**: 3-5 hours
-- **Lean Project**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker
-- **Lean File**: ProofChecker/Metalogic/Soundness.lean
+- **Lean Project**: /home/benjamin/Documents/Philosophy/Projects/Logos
+- **Lean File**: Logos/Metalogic/Soundness.lean
 
 ## Summary
 
@@ -23,7 +23,7 @@ After aligning the `always` operator with the JPL paper definition (`Pφ ∧ φ 
 
 **Objective**: Remove dead code definitions from Soundness.lean
 
-**Lean File**: ProofChecker/Metalogic/Soundness.lean
+**Lean File**: Logos/Metalogic/Soundness.lean
 
 ### Tasks
 
@@ -44,14 +44,14 @@ After aligning the `always` operator with the JPL paper definition (`Pφ ∧ φ 
 - [ ] BackwardPersistence definition removed from Soundness.lean
 - [ ] ModalTemporalPersistence definition removed from Soundness.lean
 - [ ] `lake build` succeeds with zero errors
-- [ ] No remaining references to removed definitions in ProofChecker/
+- [ ] No remaining references to removed definitions in Logos/
 
 ### Verification
 
 ```bash
 # Verify definitions removed
-grep -c "def BackwardPersistence" ProofChecker/Metalogic/Soundness.lean  # Should be 0
-grep -c "def ModalTemporalPersistence" ProofChecker/Metalogic/Soundness.lean  # Should be 0
+grep -c "def BackwardPersistence" Logos/Metalogic/Soundness.lean  # Should be 0
+grep -c "def ModalTemporalPersistence" Logos/Metalogic/Soundness.lean  # Should be 0
 
 # Verify build
 lake build
@@ -63,7 +63,7 @@ lake build
 
 **Objective**: Update the module-level docstring to accurately reflect current implementation
 
-**Lean File**: ProofChecker/Metalogic/Soundness.lean (lines 1-70)
+**Lean File**: Logos/Metalogic/Soundness.lean (lines 1-70)
 
 ### Tasks
 
@@ -101,7 +101,7 @@ lake build
 
 **Objective**: Update docstrings for temp_l_valid, modal_future_valid, temp_future_valid
 
-**Lean File**: ProofChecker/Metalogic/Soundness.lean
+**Lean File**: Logos/Metalogic/Soundness.lean
 
 ### Tasks
 
@@ -186,8 +186,8 @@ lake build
 
 ```bash
 # Check no remaining references in source
-grep -r "BackwardPersistence" ProofChecker/ --include="*.lean"  # Should be empty
-grep -r "ModalTemporalPersistence" ProofChecker/ --include="*.lean"  # Should be empty
+grep -r "BackwardPersistence" Logos/ --include="*.lean"  # Should be empty
+grep -r "ModalTemporalPersistence" Logos/ --include="*.lean"  # Should be empty
 
 # Check documentation
 grep -r "require.*frame constraint" Documentation/ CLAUDE.md README.md | grep -v ".claude/"
@@ -198,8 +198,8 @@ lake build && lake test
 
 ### Success Criteria
 
-- [ ] No remaining BackwardPersistence references in ProofChecker/
-- [ ] No remaining ModalTemporalPersistence references in ProofChecker/
+- [ ] No remaining BackwardPersistence references in Logos/
+- [ ] No remaining ModalTemporalPersistence references in Logos/
 - [ ] `lake build` succeeds
 - [ ] `lake test` passes (if tests exist)
 

@@ -28,9 +28,9 @@ This phase constructs the canonical model components for completeness proofs in 
 
 ### Task Semantics Review
 
-The ProofChecker implements **task semantics** for TM logic where possible worlds are modeled as **task-constrained world histories**. Key concepts:
+The Logos implements **task semantics** for TM logic where possible worlds are modeled as **task-constrained world histories**. Key concepts:
 
-**TaskFrame Structure** (from `ProofChecker/Semantics/TaskFrame.lean`):
+**TaskFrame Structure** (from `Logos/Semantics/TaskFrame.lean`):
 ```lean
 structure TaskFrame where
   WorldState : Type
@@ -44,7 +44,7 @@ structure TaskFrame where
 - **Nullity**: Zero-duration task is identity (reflexivity)
 - **Compositionality**: Sequential tasks compose with additive time (transitivity)
 
-**WorldHistory Structure** (from `ProofChecker/Semantics/WorldHistory.lean`):
+**WorldHistory Structure** (from `Logos/Semantics/WorldHistory.lean`):
 ```lean
 structure WorldHistory (F : TaskFrame) where
   domain : Int → Prop
@@ -98,7 +98,7 @@ The canonical task relation must ensure:
 
 ### Task 6.1: Define Canonical Task Relation
 
-**File**: `ProofChecker/Metalogic/Completeness.lean` (line 199)
+**File**: `Logos/Metalogic/Completeness.lean` (line 199)
 
 **Current Code**:
 ```lean
@@ -171,7 +171,7 @@ example (Γ Δ : CanonicalWorldState) (φ : Formula) (t : Int) :
 
 ### Task 6.2: Construct Canonical Frame
 
-**File**: `ProofChecker/Metalogic/Completeness.lean` (line 210)
+**File**: `Logos/Metalogic/Completeness.lean` (line 210)
 
 **Current Code**:
 ```lean
@@ -315,7 +315,7 @@ example (Γ Δ Σ : CanonicalWorldState) (t₁ t₂ : Int) :
 
 ### Task 6.3: Define Canonical Valuation
 
-**File**: `ProofChecker/Metalogic/Completeness.lean` (line 235)
+**File**: `Logos/Metalogic/Completeness.lean` (line 235)
 
 **Current Code**:
 ```lean
@@ -344,7 +344,7 @@ def canonical_valuation : CanonicalWorldState → String → Bool :=
 ```
 
 **Proof Obligations**:
-1. **Decidability**: Requires `DecidableEq Formula` (already declared in `ProofChecker/Syntax/Formula.lean` line 81)
+1. **Decidability**: Requires `DecidableEq Formula` (already declared in `Logos/Syntax/Formula.lean` line 81)
 2. **Membership Check**: Requires decidable list membership for Context (List Formula)
 3. **Correctness**: Truth lemma (Phase 7) will verify this definition
 
@@ -385,7 +385,7 @@ example (Γ : CanonicalWorldState) (p : String) (h : Formula.atom p ∉ Γ.val) 
 
 ### Task 6.4: Construct Canonical Model
 
-**File**: `ProofChecker/Metalogic/Completeness.lean` (line 242)
+**File**: `Logos/Metalogic/Completeness.lean` (line 242)
 
 **Current Code**:
 ```lean
@@ -409,14 +409,14 @@ Canonical model for TM logic.
 - Strong completeness: `Γ ⊨ φ → Γ ⊢ φ`
 
 **Implementation Notes**:
-- Requires `TaskModel` structure definition from `ProofChecker/Semantics/TaskModel.lean`
+- Requires `TaskModel` structure definition from `Logos/Semantics/TaskModel.lean`
 - TaskModel wraps TaskFrame with valuation function
 -/
 def canonical_model : TaskModel canonical_frame where
   valuation := canonical_valuation
 ```
 
-**TaskModel Structure Review** (from `ProofChecker/Semantics/TaskModel.lean`):
+**TaskModel Structure Review** (from `Logos/Semantics/TaskModel.lean`):
 ```lean
 structure TaskModel (F : TaskFrame) where
   valuation : F.WorldState → String → Bool
@@ -462,7 +462,7 @@ structure TaskModel (F : TaskFrame) where
 
 ### Task 6.5: Write Tests for Canonical Model
 
-**File**: `ProofCheckerTest/Metalogic/CompletenessTest.lean`
+**File**: `LogosTest/Metalogic/CompletenessTest.lean`
 
 **Test Categories**:
 
@@ -641,10 +641,10 @@ def canonical_model_test_suite : TestSuite :=
 **Test Execution**:
 ```bash
 # Run completeness test suite
-lake test ProofCheckerTest.Metalogic.CompletenessTest
+lake test LogosTest.Metalogic.CompletenessTest
 
 # Run specific test
-lake test ProofCheckerTest.Metalogic.CompletenessTest::canonical_model_test_suite
+lake test LogosTest.Metalogic.CompletenessTest::canonical_model_test_suite
 ```
 
 **Estimated Effort**: 4-6 hours (comprehensive test coverage with 13 test cases)
@@ -656,7 +656,7 @@ lake test ProofCheckerTest.Metalogic.CompletenessTest::canonical_model_test_suit
 **Files to Update**:
 
 #### 1. TODO.md
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md`
 
 **Updates**:
 ```markdown
@@ -682,31 +682,31 @@ lake test ProofCheckerTest.Metalogic.CompletenessTest::canonical_model_test_suit
 ## Sorry Placeholder Resolution
 
 **Phase 5 (Wave 3 Phase 1) Completions**:
-- ~~`ProofChecker/Metalogic/Completeness.lean:116` - Lindenbaum lemma (axiom → proof)~~
-- ~~`ProofChecker/Metalogic/Completeness.lean:140` - maximal_consistent_closed (axiom → proof)~~
-- ~~`ProofChecker/Metalogic/Completeness.lean:154` - maximal_negation_complete (axiom → proof)~~
+- ~~`Logos/Metalogic/Completeness.lean:116` - Lindenbaum lemma (axiom → proof)~~
+- ~~`Logos/Metalogic/Completeness.lean:140` - maximal_consistent_closed (axiom → proof)~~
+- ~~`Logos/Metalogic/Completeness.lean:154` - maximal_negation_complete (axiom → proof)~~
 
 **Phase 6 (Wave 3 Phase 2) Completions**:
-- ~~`ProofChecker/Metalogic/Completeness.lean:199` - canonical_task_rel (axiom → definition)~~
-- ~~`ProofChecker/Metalogic/Completeness.lean:210` - canonical_frame (axiom → construction with proofs)~~
-- ~~`ProofChecker/Metalogic/Completeness.lean:235` - canonical_valuation (axiom → definition)~~
-- ~~`ProofChecker/Metalogic/Completeness.lean:242` - canonical_model (axiom → construction)~~
+- ~~`Logos/Metalogic/Completeness.lean:199` - canonical_task_rel (axiom → definition)~~
+- ~~`Logos/Metalogic/Completeness.lean:210` - canonical_frame (axiom → construction with proofs)~~
+- ~~`Logos/Metalogic/Completeness.lean:235` - canonical_valuation (axiom → definition)~~
+- ~~`Logos/Metalogic/Completeness.lean:242` - canonical_model (axiom → construction)~~
 
 **Remaining Axioms** (4 total):
-- `ProofChecker/Metalogic/Completeness.lean:263` - canonical_history (axiom, Phase 7)
-- `ProofChecker/Metalogic/Completeness.lean:297` - truth_lemma (axiom, Phase 7)
-- `ProofChecker/Metalogic/Completeness.lean:326` - weak_completeness (axiom, Phase 7)
-- `ProofChecker/Metalogic/Completeness.lean:346` - strong_completeness (axiom, Phase 7)
+- `Logos/Metalogic/Completeness.lean:263` - canonical_history (axiom, Phase 7)
+- `Logos/Metalogic/Completeness.lean:297` - truth_lemma (axiom, Phase 7)
+- `Logos/Metalogic/Completeness.lean:326` - weak_completeness (axiom, Phase 7)
+- `Logos/Metalogic/Completeness.lean:346` - strong_completeness (axiom, Phase 7)
 
 **Total Axioms**: 11 → 4 (7 resolved via Phases 5-6)
 ```
 
 #### 2. IMPLEMENTATION_STATUS.md
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
 
 **Updates**:
 ```markdown
-### Metalogic Package (`ProofChecker/Metalogic/`)
+### Metalogic Package (`Logos/Metalogic/`)
 
 #### Completeness.lean
 - **Status**: ~64% complete (7/11 axioms replaced with proofs/definitions)
@@ -726,13 +726,13 @@ lake test ProofCheckerTest.Metalogic.CompletenessTest::canonical_model_test_suit
   - ⚠️  Strong completeness (axiom, Phase 7 pending)
 - **Gaps**: 4 axioms remain (canonical history, truth lemma, weak/strong completeness)
 - **Sorry Count**: 4 axioms (reduced from 11)
-- **Verification**: Run `grep -c "axiom" ProofChecker/Metalogic/Completeness.lean` (expected: 4)
-- **Tests**: `lake test ProofCheckerTest.Metalogic.CompletenessTest`
+- **Verification**: Run `grep -c "axiom" Logos/Metalogic/Completeness.lean` (expected: 4)
+- **Tests**: `lake test LogosTest.Metalogic.CompletenessTest`
 - **Phase**: Wave 3 Phase 2 complete (canonical model construction), Phase 3 pending
 ```
 
 #### 3. KNOWN_LIMITATIONS.md
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md`
 
 **Updates**:
 ```markdown
@@ -751,10 +751,10 @@ lake test ProofCheckerTest.Metalogic.CompletenessTest::canonical_model_test_suit
 **Verification**:
 ```bash
 # Verify axiom count decreased from 11 → 4
-grep -c "axiom" ProofChecker/Metalogic/Completeness.lean  # Expected: 4
+grep -c "axiom" Logos/Metalogic/Completeness.lean  # Expected: 4
 
 # Verify tests pass
-lake test ProofCheckerTest.Metalogic.CompletenessTest
+lake test LogosTest.Metalogic.CompletenessTest
 ```
 
 ### Remaining Completeness Gaps (Wave 3 Phase 3 Pending)
@@ -775,7 +775,7 @@ lake test ProofCheckerTest.Metalogic.CompletenessTest
 ```
 
 #### 4. Completeness.lean Inline Documentation
-**Location**: `ProofChecker/Metalogic/Completeness.lean` (header section)
+**Location**: `Logos/Metalogic/Completeness.lean` (header section)
 
 **Updates**:
 ```lean
@@ -818,67 +818,67 @@ Estimated effort remaining: 20-30 hours (Wave 3 Phase 3).
 
 **After Task 6.1 (Canonical Task Relation)**:
 ```bash
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 
 # Verify definition compiles
-lake build ProofChecker.Metalogic.Completeness
+lake build Logos.Metalogic.Completeness
 
 # Run task relation tests
-lake test ProofCheckerTest.Metalogic.CompletenessTest::canonical_task_rel
+lake test LogosTest.Metalogic.CompletenessTest::canonical_task_rel
 
 # Verify axiom count decreased (11 → 10)
-grep -c "axiom" ProofChecker/Metalogic/Completeness.lean
+grep -c "axiom" Logos/Metalogic/Completeness.lean
 ```
 
 **After Task 6.2 (Canonical Frame)**:
 ```bash
 # Verify frame construction
-lake build ProofChecker.Metalogic.Completeness
+lake build Logos.Metalogic.Completeness
 
 # Test nullity property
-lake test ProofCheckerTest.Metalogic.CompletenessTest::canonical_frame_nullity
+lake test LogosTest.Metalogic.CompletenessTest::canonical_frame_nullity
 
 # Test compositionality property
-lake test ProofCheckerTest.Metalogic.CompletenessTest::canonical_frame_compositionality
+lake test LogosTest.Metalogic.CompletenessTest::canonical_frame_compositionality
 
 # Verify axiom count (10 → 9)
-grep -c "axiom" ProofChecker/Metalogic/Completeness.lean
+grep -c "axiom" Logos/Metalogic/Completeness.lean
 ```
 
 **After Task 6.3 (Canonical Valuation)**:
 ```bash
 # Verify valuation definition
-lake build ProofChecker.Metalogic.Completeness
+lake build Logos.Metalogic.Completeness
 
 # Test valuation correctness
-lake test ProofCheckerTest.Metalogic.CompletenessTest::canonical_valuation
+lake test LogosTest.Metalogic.CompletenessTest::canonical_valuation
 
 # Verify axiom count (9 → 8)
-grep -c "axiom" ProofChecker/Metalogic/Completeness.lean
+grep -c "axiom" Logos/Metalogic/Completeness.lean
 ```
 
 **After Task 6.4 (Canonical Model)**:
 ```bash
 # Verify model construction
-lake build ProofChecker.Metalogic.Completeness
+lake build Logos.Metalogic.Completeness
 
 # Test model assembly
-lake test ProofCheckerTest.Metalogic.CompletenessTest::canonical_model
+lake test LogosTest.Metalogic.CompletenessTest::canonical_model
 
 # Verify axiom count (8 → 4, removing 4 axioms total in Phase 6)
-grep -c "axiom" ProofChecker/Metalogic/Completeness.lean
+grep -c "axiom" Logos/Metalogic/Completeness.lean
 ```
 
 **After Task 6.5 (Tests)**:
 ```bash
 # Run full completeness test suite
-lake test ProofCheckerTest.Metalogic.CompletenessTest
+lake test LogosTest.Metalogic.CompletenessTest
 
 # Verify test coverage
-lake test --coverage ProofCheckerTest.Metalogic.CompletenessTest
+lake test --coverage LogosTest.Metalogic.CompletenessTest
 
 # Check test count
-grep -c "def test_canonical" ProofCheckerTest/Metalogic/CompletenessTest.lean
+grep -c "def test_canonical" LogosTest/Metalogic/CompletenessTest.lean
 ```
 
 **After Task 6.6 (Documentation)**:
@@ -889,7 +889,7 @@ grep "Completeness" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
 grep "Canonical Model" Documentation/ProjectInfo/KNOWN_LIMITATIONS.md
 
 # Verify axiom count in documentation matches actual
-ACTUAL_AXIOMS=$(grep -c "axiom" ProofChecker/Metalogic/Completeness.lean)
+ACTUAL_AXIOMS=$(grep -c "axiom" Logos/Metalogic/Completeness.lean)
 DOC_AXIOMS=$(grep -oP "axiom.*\K\d+" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md | head -1)
 [ "$ACTUAL_AXIOMS" -eq "$DOC_AXIOMS" ] && echo "✓ Documentation consistent" || echo "✗ Documentation inconsistent"
 ```
@@ -897,30 +897,30 @@ DOC_AXIOMS=$(grep -oP "axiom.*\K\d+" Documentation/ProjectInfo/IMPLEMENTATION_ST
 **Final Phase 6 Verification**:
 ```bash
 # Comprehensive Phase 6 verification
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 
 echo "=== Phase 6 Verification ==="
 
 # 1. Build verification
 echo "1. Building Completeness module..."
-lake build ProofChecker.Metalogic.Completeness || exit 1
+lake build Logos.Metalogic.Completeness || exit 1
 
 # 2. Test verification
 echo "2. Running completeness tests..."
-lake test ProofCheckerTest.Metalogic.CompletenessTest || exit 1
+lake test LogosTest.Metalogic.CompletenessTest || exit 1
 
 # 3. Axiom count verification
 echo "3. Verifying axiom count..."
-AXIOM_COUNT=$(grep -c "axiom" ProofChecker/Metalogic/Completeness.lean)
+AXIOM_COUNT=$(grep -c "axiom" Logos/Metalogic/Completeness.lean)
 echo "   Axiom count: $AXIOM_COUNT (expected: 4)"
 [ "$AXIOM_COUNT" -eq 4 ] || { echo "   ✗ FAILED: Expected 4 axioms, found $AXIOM_COUNT"; exit 1; }
 
 # 4. Definition verification
 echo "4. Verifying definitions exist..."
-grep -q "^def canonical_task_rel" ProofChecker/Metalogic/Completeness.lean || exit 1
-grep -q "^def canonical_frame" ProofChecker/Metalogic/Completeness.lean || exit 1
-grep -q "^def canonical_valuation" ProofChecker/Metalogic/Completeness.lean || exit 1
-grep -q "^def canonical_model" ProofChecker/Metalogic/Completeness.lean || exit 1
+grep -q "^def canonical_task_rel" Logos/Metalogic/Completeness.lean || exit 1
+grep -q "^def canonical_frame" Logos/Metalogic/Completeness.lean || exit 1
+grep -q "^def canonical_valuation" Logos/Metalogic/Completeness.lean || exit 1
+grep -q "^def canonical_model" Logos/Metalogic/Completeness.lean || exit 1
 
 # 5. Documentation verification
 echo "5. Verifying documentation updated..."
@@ -943,11 +943,11 @@ echo "✓ Phase 6 verification complete"
 ```bash
 # 1. Write test_canonical_task_rel_modal_transfer in CompletenessTest.lean
 # 2. Run test (should fail with "axiom canonical_task_rel not defined")
-lake test ProofCheckerTest.Metalogic.CompletenessTest::test_canonical_task_rel_modal_transfer
+lake test LogosTest.Metalogic.CompletenessTest::test_canonical_task_rel_modal_transfer
 
 # 3. Implement canonical_task_rel definition in Completeness.lean
 # 4. Run test (should pass)
-lake test ProofCheckerTest.Metalogic.CompletenessTest::test_canonical_task_rel_modal_transfer
+lake test LogosTest.Metalogic.CompletenessTest::test_canonical_task_rel_modal_transfer
 
 # 5. Refactor definition if needed (cleaner formulation, better performance)
 ```
@@ -1053,7 +1053,7 @@ Before marking Phase 6 complete, verify ALL criteria:
 
 ### Testing Completeness
 - [x] All 13 tests in Task 6.5 implemented
-- [x] `lake test ProofCheckerTest.Metalogic.CompletenessTest` passes
+- [x] `lake test LogosTest.Metalogic.CompletenessTest` passes
 - [x] Test coverage ≥90% for canonical model code (Metalogic target from CLAUDE.md)
 - [x] Integration test verifies full pipeline (consistent set → canonical model)
 
@@ -1064,9 +1064,9 @@ Before marking Phase 6 complete, verify ALL criteria:
 - [x] Completeness.lean header updated: Implementation status reflects Phase 6 completion
 
 ### Verification Commands Pass
-- [x] `lake build ProofChecker.Metalogic.Completeness` succeeds
-- [x] `lake test ProofCheckerTest.Metalogic.CompletenessTest` passes
-- [x] `grep -c "axiom" ProofChecker/Metalogic/Completeness.lean` returns 4
+- [x] `lake build Logos.Metalogic.Completeness` succeeds
+- [x] `lake test LogosTest.Metalogic.CompletenessTest` passes
+- [x] `grep -c "axiom" Logos/Metalogic/Completeness.lean` returns 4
 - [x] Final Phase 6 verification script passes (all 5 checks)
 
 ### Standards Compliance
@@ -1115,7 +1115,7 @@ Before marking Phase 6 complete, verify ALL criteria:
 
 1. **Modal Logic**, Patrick Blackburn, Maarten de Rijke, Yde Venema (2001) - Chapter 4: Canonical Models
 2. **Handbook of Modal Logic**, Patrick Blackburn, Johan van Benthem, Frank Wolter (2006) - Completeness via canonical models
-3. **ProofChecker Architecture Guide** - `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/ARCHITECTURE.md` - Task semantics specification
+3. **Logos Architecture Guide** - `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/ARCHITECTURE.md` - Task semantics specification
 4. **LEAN 4 Documentation** - https://lean-lang.org/documentation/ - Dependent types, structure syntax, tactics
 5. **Mathlib Order Theory** - Zorn's lemma and well-ordering (used in Phase 5, referenced in Phase 6)
 6. **TODO Implementation Systematic Plan** - Parent plan with overall strategy and wave coordination

@@ -15,7 +15,7 @@ This report documents critical Unicode corruption in README.md (45+ replacement 
 
 ### 1. README.md Unicode Corruption Analysis
 
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 
 **Critical Issues Identified**:
 
@@ -69,8 +69,8 @@ The README.md file contains extensive Unicode corruption with replacement charac
 
 **Current State**:
 ```
-ProofChecker/
-   ProofChecker/          # Main source
+Logos/
+   Logos/          # Main source
       Syntax/            # Formula types, DSL
       ProofSystem/       # Axioms, rules, derivability
       Semantics/         # Task frame semantics
@@ -93,15 +93,15 @@ ProofChecker/
 
 **Recommended Format** (following CLAUDE.md style in line 1-150):
 ```
-ProofChecker/
-├── ProofChecker/           # Main source directory
+Logos/
+├── Logos/           # Main source directory
 │   ├── Syntax/            # Formula types, parsing, DSL
 │   ├── ProofSystem/       # Axioms and inference rules
 │   ├── Semantics/         # Task frame semantics
 │   ├── Metalogic/         # Soundness and completeness
 │   ├── Theorems/          # Key theorems (perpetuity)
 │   └── Automation/        # Tactics, proof search
-├── ProofCheckerTest/      # Test suite
+├── LogosTest/      # Test suite
 ├── Archive/               # Pedagogical examples
 ├── docs/                  # User documentation
 └── lakefile.toml          # Build configuration
@@ -146,7 +146,7 @@ The Logos glossary demonstrates excellent organization for formal operator docum
 - References to architecture documentation where applicable
 - Last updated timestamp (line 216)
 
-**Key Insights for ProofChecker**:
+**Key Insights for Logos**:
 1. Glossary should be separate file in `docs/glossary/` directory
 2. Operators grouped by logic type (modal, temporal, propositional)
 3. Each entry includes symbol, meaning, and formal definition
@@ -155,7 +155,7 @@ The Logos glossary demonstrates excellent organization for formal operator docum
 
 ### 4. Documentation Standards Analysis
 
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md`
 
 **Relevant Standards for Unicode** (lines 340-354):
 
@@ -178,7 +178,7 @@ The Logos glossary demonstrates excellent organization for formal operator docum
 - Intersections: ├ ┤ ┬ ┴ ┼
 - Example reference: See .claude/README.md for workflow diagrams
 
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/LEAN_STYLE_GUIDE.md`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/LEAN_STYLE_GUIDE.md`
 
 **Variable Naming Conventions** (lines 6-24):
 - Formulas: Use `φ`, `ψ`, `χ` (phi, psi, chi)
@@ -186,11 +186,11 @@ The Logos glossary demonstrates excellent organization for formal operator docum
 - Times: Use `τ`, `σ` (tau, sigma)
 - World histories: Use `τ`, `σ` (tau, sigma)
 
-**Implication**: ProofChecker already has documentation standards for Unicode symbols in LEAN code. README.md should follow same conventions for consistency.
+**Implication**: Logos already has documentation standards for Unicode symbols in LEAN code. README.md should follow same conventions for consistency.
 
 ### 5. Unicode Best Practices for TM Logic
 
-Based on research and Logos patterns, here are the standard Unicode symbols ProofChecker should use:
+Based on research and Logos patterns, here are the standard Unicode symbols Logos should use:
 
 **Modal Logic Operators**:
 - Necessity: `□` (U+25A1, WHITE SQUARE) - standard in modal logic
@@ -202,7 +202,7 @@ Based on research and Logos patterns, here are the standard Unicode symbols Proo
 - Disjunction: `∨` (U+2228, LOGICAL OR)
 
 **Temporal Operators**:
-- ProofChecker uses English words: `Past`, `Future`, `always`, `sometimes`
+- Logos uses English words: `Past`, `Future`, `always`, `sometimes`
 - Alternative symbols if needed:
   - Always (G): `G` or `□` with subscript
   - Sometimes (F): `F` or `◇` with subscript
@@ -243,17 +243,17 @@ Based on research and Logos patterns, here are the standard Unicode symbols Proo
 ### 6. Existing Documentation Structure
 
 **Current Documentation Files**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/TUTORIAL.md`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/EXAMPLES.md`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/CONTRIBUTING.md`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/INTEGRATION.md`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/VERSIONING.md`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/` (5 files)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/TUTORIAL.md`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/EXAMPLES.md`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/CONTRIBUTING.md`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/INTEGRATION.md`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/VERSIONING.md`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/` (5 files)
 
 **Gap Identified**: No `docs/glossary/` directory exists. This should be created following Logos pattern.
 
-**Recommended Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md`
+**Recommended Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md`
 
 **Integration Point**: README.md should link to glossary in documentation section (around line 78-84).
 
@@ -298,9 +298,9 @@ grep -n "□\|◇\|→\|φ" README.md
 ## Project Structure
 
 ```
-ProofChecker/
-├── ProofChecker.lean           # Library root (re-exports all public modules)
-├── ProofChecker/               # Main source directory
+Logos/
+├── Logos.lean           # Library root (re-exports all public modules)
+├── Logos/               # Main source directory
 │   ├── Syntax/                 # Formula types, parsing, DSL
 │   │   ├── Formula.lean        # Core formula inductive type
 │   │   ├── Context.lean        # Proof context (premise lists)
@@ -324,8 +324,8 @@ ProofChecker/
 │   └── Automation/             # Proof automation
 │       ├── Tactics.lean        # Custom tactics
 │       └── ProofSearch.lean    # Automated proof search
-├── ProofCheckerTest/           # Test suite
-│   ├── ProofCheckerTest.lean   # Test library root
+├── LogosTest/           # Test suite
+│   ├── LogosTest.lean   # Test library root
 │   ├── Syntax/                 # Tests for formula construction
 │   ├── ProofSystem/            # Tests for axioms and rules
 │   ├── Semantics/              # Tests for semantics
@@ -367,16 +367,16 @@ ProofChecker/
 
 ### Recommendation 3: Create Formal Symbols Glossary
 
-**Action**: Create `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md` following Logos pattern.
+**Action**: Create `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md` following Logos pattern.
 
 **Structure** (based on Logos glossary lines 1-216):
 
 ```markdown
 # Logical Operators
 
-_[Return to Documentation](../README.md) | [ProofChecker Root](../../README.md) | [CLAUDE.md](../../CLAUDE.md)_
+_[Return to Documentation](../README.md) | [Logos Root](../../README.md) | [CLAUDE.md](../../CLAUDE.md)_
 
-Comprehensive catalog of formal operators used in the ProofChecker bimodal logic TM (Tense and Modality) implementation. These operators provide the expressive power for combining S5 modal logic with linear temporal logic in task semantics.
+Comprehensive catalog of formal operators used in the Logos bimodal logic TM (Tense and Modality) implementation. These operators provide the expressive power for combining S5 modal logic with linear temporal logic in task semantics.
 
 ## Terms
 
@@ -406,7 +406,7 @@ Logical "or" operator. True when at least one operand is true.
 #### → (implication)
 Logical "if...then" operator. False only when antecedent is true and consequent is false.
 
-**Primitive operator** in ProofChecker's formula type.
+**Primitive operator** in Logos's formula type.
 
 **LEAN Code**: `Formula.imp φ ψ`
 
@@ -418,7 +418,7 @@ Logical "if and only if" operator. True when both operands have the same truth v
 #### ⊥ (bottom/falsum)
 Logical constant representing falsity.
 
-**Primitive operator** in ProofChecker's formula type.
+**Primitive operator** in Logos's formula type.
 
 **LEAN Code**: `Formula.bot`
 
@@ -432,7 +432,7 @@ Logical constant representing truth.
 #### □ (box/necessity)
 Necessity operator: "it is necessary that" or "it is necessarily the case that".
 
-**Primitive operator** in ProofChecker's formula type.
+**Primitive operator** in Logos's formula type.
 
 **LEAN Code**: `Formula.box φ`
 
@@ -461,7 +461,7 @@ Possibility operator: "it is possible that". Dual of necessity.
 #### Past (universal past)
 Universal past operator: "it has always been the case that" or "at all past times".
 
-**Primitive operator** in ProofChecker's formula type.
+**Primitive operator** in Logos's formula type.
 
 **LEAN Code**: `Formula.past φ`
 
@@ -470,7 +470,7 @@ Universal past operator: "it has always been the case that" or "at all past time
 #### Future (universal future)
 Universal future operator: "it will always be the case that" or "at all future times".
 
-**Primitive operator** in ProofChecker's formula type.
+**Primitive operator** in Logos's formula type.
 
 **LEAN Code**: `Formula.future φ`
 
@@ -538,7 +538,7 @@ What is necessary is always the case (at all times).
 
 **LEAN Code**: `theorem perpetuity_1 (φ : Formula) : ⊢ (φ.box.imp (always φ))`
 
-**Location**: `ProofChecker/Theorems/Perpetuity.lean`
+**Location**: `Logos/Theorems/Perpetuity.lean`
 
 #### P2 (Temporal Occurrence Implies Possibility)
 `sometimes φ → ◇φ`
@@ -577,7 +577,7 @@ Temporal occurrence of necessity implies necessary perpetuity.
 
 ## Variable Conventions
 
-Following ProofChecker LEAN Style Guide conventions:
+Following Logos LEAN Style Guide conventions:
 
 - **Formulas**: `φ`, `ψ`, `χ` (phi, psi, chi)
 - **Contexts**: `Γ`, `Δ` (Gamma, Delta)
@@ -679,13 +679,13 @@ See CLAUDE.md lines 41-77 for reference implementation.
 
 **Action**: Update CLAUDE.md section 4 (Documentation Index) to include glossary reference.
 
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md` lines 80-93
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md` lines 80-93
 
 **Current Content**:
 ```markdown
 ### User Documentation (docs/)
 - [Architecture Guide](docs/ARCHITECTURE.md) - System design and TM logic specification
-- [Tutorial](docs/TUTORIAL.md) - Getting started with ProofChecker
+- [Tutorial](docs/TUTORIAL.md) - Getting started with Logos
 - [Examples](docs/EXAMPLES.md) - Modal, temporal, bimodal examples
 - [Contributing](docs/CONTRIBUTING.md) - How to contribute
 - [Integration](docs/INTEGRATION.md) - Model-Checker integration
@@ -724,12 +724,12 @@ See CLAUDE.md lines 41-77 for reference implementation.
 ## References
 
 ### Files Analyzed
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md` - Lines 1-158 (entire file)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` - Lines 1-158 (entire file)
 - `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md` - Lines 1-216 (entire file)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md` - Lines 1-465 (entire file, focus on 340-359)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/LEAN_STYLE_GUIDE.md` - Lines 1-382 (entire file, focus on 6-24)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md` - Lines 41-150 (file tree reference)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md` - Lines 1-466 (standards context)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md` - Lines 1-465 (entire file, focus on 340-359)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/LEAN_STYLE_GUIDE.md` - Lines 1-382 (entire file, focus on 6-24)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md` - Lines 41-150 (file tree reference)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md` - Lines 1-466 (standards context)
 
 ### Hexdump Analysis
 - Corruption offsets: 0x2b0-0x2d0, 0x3c0-0x4d0, 0x500-0x690, 0x820-0x9f0
@@ -746,7 +746,7 @@ See CLAUDE.md lines 41-77 for reference implementation.
 - CommonMark Specification: https://commonmark.org/
 - Unicode Standard: https://unicode.org/charts/
 - Logos Project Glossary Pattern: Proven in production documentation
-- Mathlib4 Naming Conventions: Adapted for ProofChecker LEAN code
+- Mathlib4 Naming Conventions: Adapted for Logos LEAN code
 
 ---
 

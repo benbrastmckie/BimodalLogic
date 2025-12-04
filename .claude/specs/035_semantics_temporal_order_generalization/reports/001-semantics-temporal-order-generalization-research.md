@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-This report provides a systematic comparison between ProofChecker's current semantic definitions and the JPL paper "The Perpetuity Calculus of Agency" (§app:TaskSemantics). The key finding is that ProofChecker uses `Int` (integers) as the temporal domain, while the paper defines a general **totally ordered abelian group** `T = ⟨T, +, ≤⟩`. This generalization enables broader applicability (rational/real time, bounded systems) without compromising correctness.
+This report provides a systematic comparison between Logos's current semantic definitions and the JPL paper "The Perpetuity Calculus of Agency" (§app:TaskSemantics). The key finding is that Logos uses `Int` (integers) as the temporal domain, while the paper defines a general **totally ordered abelian group** `T = ⟨T, +, ≤⟩`. This generalization enables broader applicability (rational/real time, bounded systems) without compromising correctness.
 
 **Key Findings**:
 1. **Current Implementation**: Uses `Int` for temporal order (specific abelian group)
@@ -87,7 +87,7 @@ This report provides a systematic comparison between ProofChecker's current sema
 
 ---
 
-## 2. ProofChecker Implementation Analysis
+## 2. Logos Implementation Analysis
 
 ### 2.1 Current Implementation Summary
 
@@ -101,7 +101,7 @@ This report provides a systematic comparison between ProofChecker's current sema
 
 ### 2.2 TaskFrame.lean (Current Implementation)
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskFrame.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskFrame.lean`
 
 ```lean
 structure TaskFrame where
@@ -128,7 +128,7 @@ This is **correct** but **incomplete**: Int is a *specific* abelian group, not t
 
 ### 2.3 WorldHistory.lean (Current Implementation)
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/WorldHistory.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/WorldHistory.lean`
 
 ```lean
 structure WorldHistory (F : TaskFrame) where
@@ -152,11 +152,11 @@ structure WorldHistory (F : TaskFrame) where
 > - Domain is represented as a predicate on Int
 > - Convexity is simplified for MVP (not formally enforced)"
 
-This is a **critical limitation**: The paper requires convex domains, ProofChecker does not enforce this.
+This is a **critical limitation**: The paper requires convex domains, Logos does not enforce this.
 
 ### 2.4 Truth.lean (Current Implementation)
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean`
 
 ```lean
 def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : Int) (ht : τ.domain t) :
@@ -184,7 +184,7 @@ The documentation correctly notes that Past/Future quantify over times in the **
 
 ### 2.5 Validity.lean (Current Implementation)
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Validity.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Validity.lean`
 
 ```lean
 def valid (φ : Formula) : Prop :=
@@ -237,7 +237,7 @@ Mathlib provides `LinearOrderedAddCommGroup` instances for:
 - `Real` (real numbers)
 
 **Implication**: Generalizing to `LinearOrderedAddCommGroup` enables:
-1. **Integer time**: `Int` (current ProofChecker implementation)
+1. **Integer time**: `Int` (current Logos implementation)
 2. **Rational time**: `Rat` (dense temporal structures)
 3. **Real time**: `Real` (continuous time physics models)
 4. **Custom groups**: User-defined temporal structures
@@ -248,7 +248,7 @@ Mathlib provides `LinearOrderedAddCommGroup` instances for:
 
 ### 4.1 Critical Discrepancies
 
-| Component | ProofChecker | JPL Paper | Impact |
+| Component | Logos | JPL Paper | Impact |
 |-----------|-------------|-----------|---------|
 | **Temporal Type** | `Int` (hardcoded) | `T : Type` (polymorphic) | HIGH - Limits expressivity |
 | **Frame Time** | `task_rel : WorldState → Int → WorldState → Prop` | `task_rel : WorldState → T → WorldState → Prop` | HIGH - Hardcodes integers |
@@ -276,7 +276,7 @@ Mathlib provides `LinearOrderedAddCommGroup` instances for:
 ∀ x, z ∈ X, ∀ y ∈ T, x ≤ y ≤ z → y ∈ X
 ```
 
-**ProofChecker Status** (WorldHistory.lean:38):
+**Logos Status** (WorldHistory.lean:38):
 > "Convexity is simplified for MVP (not formally enforced)"
 
 **Soundness Impact**:
@@ -294,7 +294,7 @@ Mathlib provides `LinearOrderedAddCommGroup` instances for:
 
 **Goal**: Parameterize TaskFrame by temporal group type
 
-**File**: `ProofChecker/Semantics/TaskFrame.lean`
+**File**: `Logos/Semantics/TaskFrame.lean`
 
 **Changes**:
 ```lean
@@ -332,7 +332,7 @@ structure TaskFrame (T : Type*) [LinearOrderedAddCommGroup T] where
 
 **Goal**: Parameterize WorldHistory by temporal group, add convexity constraint
 
-**File**: `ProofChecker/Semantics/WorldHistory.lean`
+**File**: `Logos/Semantics/WorldHistory.lean`
 
 **Changes**:
 ```lean
@@ -375,7 +375,7 @@ structure WorldHistory {T : Type*} [LinearOrderedAddCommGroup T] (F : TaskFrame 
 
 **Goal**: Update truth evaluation to work with polymorphic temporal type
 
-**File**: `ProofChecker/Semantics/Truth.lean`
+**File**: `Logos/Semantics/Truth.lean`
 
 **Changes**:
 ```lean
@@ -415,8 +415,8 @@ def truth_at {T : Type*} [LinearOrderedAddCommGroup T]
 **Goal**: Update validity definitions and model structures
 
 **Files**:
-- `ProofChecker/Semantics/Validity.lean`
-- `ProofChecker/Semantics/TaskModel.lean`
+- `Logos/Semantics/Validity.lean`
+- `Logos/Semantics/TaskModel.lean`
 
 **Changes**:
 ```lean
@@ -449,7 +449,7 @@ def valid (φ : Formula) : Prop :=
 - `CLAUDE.md`
 - `Documentation/UserGuide/ARCHITECTURE.md`
 - `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
-- `ProofCheckerTest/Semantics/*Test.lean`
+- `LogosTest/Semantics/*Test.lean`
 
 **Action Items**:
 1. Update CLAUDE.md to reflect generalized temporal type
@@ -598,7 +598,7 @@ This allows gradual migration without breaking existing code.
 
    **Status**: LIMITATION (Int hardcoded)
 
-   ProofChecker currently uses `Int` for temporal domains, while the JPL paper
+   Logos currently uses `Int` for temporal domains, while the JPL paper
    specifies arbitrary totally ordered abelian groups. This limits applicability
    to integer-time systems.
 
@@ -643,10 +643,10 @@ This allows gradual migration without breaking existing code.
 
 ### 10.2 Implementation References
 
-- **TaskFrame.lean**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskFrame.lean`
-- **WorldHistory.lean**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/WorldHistory.lean`
-- **Truth.lean**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean`
-- **Validity.lean**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Validity.lean`
+- **TaskFrame.lean**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskFrame.lean`
+- **WorldHistory.lean**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/WorldHistory.lean`
+- **Truth.lean**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean`
+- **Validity.lean**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Validity.lean`
 
 ### 10.3 Mathlib References
 
@@ -658,7 +658,7 @@ This allows gradual migration without breaking existing code.
 
 ## Appendix A: Complete Discrepancy Table
 
-| Component | Line | ProofChecker | JPL Paper | Severity |
+| Component | Line | Logos | JPL Paper | Severity |
 |-----------|------|-------------|-----------|----------|
 | TaskFrame.WorldState | 67 | `WorldState : Type` | `W : Set` | LOW (equivalent) |
 | TaskFrame.task_rel | 69 | `task_rel : WorldState → Int → WorldState → Prop` | `task_rel : W × T → P(W)` | HIGH (Int vs T) |

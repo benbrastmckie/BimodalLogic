@@ -67,7 +67,7 @@ But fails for:
 
 ## Files Modified
 
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/Truth.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/Truth.lean`
   - Fixed lines 174-192, 202, 391, 415, 442, 465
   - Updated lines 551-691 with improved documentation
 
@@ -83,7 +83,7 @@ But fails for:
 
 ```yaml
 IMPLEMENTATION_COMPLETE: 0
-summary_path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/026_temporal_symmetry_derivation/summaries/002-phase2-partial-completion-summary.md
+summary_path: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/026_temporal_symmetry_derivation/summaries/002-phase2-partial-completion-summary.md
 theorems_proven: []
 theorems_partial: [truth_swap_of_valid_at_triple, valid_swap_of_valid]
 tactics_used: [simp only, intro, exact, have, cases, rfl]

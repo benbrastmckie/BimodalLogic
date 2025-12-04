@@ -6,13 +6,13 @@
 - **Research Topic**: Task semantics analysis from JPL possible worlds paper
 - **Complexity**: 2
 - **Source Paper**: `/home/benjamin/Documents/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`
-- **Implementation Files**: ProofChecker TaskFrame.lean, Soundness.lean, TODO.md
+- **Implementation Files**: Logos TaskFrame.lean, Soundness.lean, TODO.md
 
 ## Executive Summary
 
-This report analyzes the formal task semantics definition from the JPL paper's Appendix (Section `app:TaskSemantics`, lines 1826-2025) and compares it with the current ProofChecker implementation. The analysis reveals **excellent semantic alignment** with only **minor notational differences** and **one significant implementation gap** regarding temporal order structure.
+This report analyzes the formal task semantics definition from the JPL paper's Appendix (Section `app:TaskSemantics`, lines 1826-2025) and compares it with the current Logos implementation. The analysis reveals **excellent semantic alignment** with only **minor notational differences** and **one significant implementation gap** regarding temporal order structure.
 
-**Key Finding**: The ProofChecker implementation faithfully implements the core task semantics from the paper, but **simplifies the temporal order** from a totally ordered abelian group to integers (Int) for MVP purposes. This simplification is explicitly documented and does not affect soundness for the axioms that have been proven.
+**Key Finding**: The Logos implementation faithfully implements the core task semantics from the paper, but **simplifies the temporal order** from a totally ordered abelian group to integers (Int) for MVP purposes. This simplification is explicitly documented and does not affect soundness for the axioms that have been proven.
 
 ## Paper Task Semantics Specification
 
@@ -96,11 +96,11 @@ Where:
 
 **Validity Proof** (app:valid, lines 1984-2005): The paper proves P1 and P2 are valid over all task semantic models using time-shift automorphisms.
 
-## ProofChecker Implementation Analysis
+## Logos Implementation Analysis
 
 ### TaskFrame.lean Implementation
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/TaskFrame.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/TaskFrame.lean`
 
 ```lean
 structure TaskFrame where
@@ -116,7 +116,7 @@ structure TaskFrame where
 
 **Comparison with Paper**:
 
-| Aspect | Paper Spec | ProofChecker Implementation | Alignment |
+| Aspect | Paper Spec | Logos Implementation | Alignment |
 |--------|-----------|----------------------------|-----------|
 | **World States** | Nonempty set W | `WorldState : Type` | ✓ Perfect |
 | **Temporal Order** | Totally ordered abelian group `⟨T, +, ≤⟩` | `Int` (integers with standard + and ≤) | ⚠️ **Simplified** |
@@ -132,12 +132,12 @@ structure TaskFrame where
 
 **Semantic Alignment Assessment**:
 - ✓ **Core semantics perfectly aligned**: World states, task relation structure, nullity, compositionality all match
-- ⚠️ **Temporal order simplified**: Paper uses abstract totally ordered abelian group; ProofChecker uses concrete `Int`
-- ✓ **Notational difference only**: `w ⇒ₓ u` (paper) vs `task_rel w x u` (ProofChecker) are equivalent
+- ⚠️ **Temporal order simplified**: Paper uses abstract totally ordered abelian group; Logos uses concrete `Int`
+- ✓ **Notational difference only**: `w ⇒ₓ u` (paper) vs `task_rel w x u` (Logos) are equivalent
 
 ### WorldHistory Implementation Gap
 
-**ProofChecker Status**: The file `ProofChecker/Semantics/WorldHistory.lean` exists but was **not readable in the initial analysis** (will need separate verification).
+**Logos Status**: The file `Logos/Semantics/WorldHistory.lean` exists but was **not readable in the initial analysis** (will need separate verification).
 
 **Expected Implementation** (based on paper spec):
 ```lean
@@ -160,7 +160,7 @@ structure WorldHistory (F : TaskFrame) where
 
 ### Truth Semantics Implementation
 
-**Expected Location**: `ProofChecker/Semantics/Truth.lean`
+**Expected Location**: `Logos/Semantics/Truth.lean`
 
 **Paper Box Semantics** (line 1863):
 ```latex
@@ -169,14 +169,14 @@ M,τ,x ⊨ □φ  iff  M,σ,x ⊨ φ for all σ ∈ H_F
 
 **Critical Interpretation**: The box operator quantifies over **all world histories σ in H_F** where x is in σ's domain, NOT just histories agreeing with τ up to time x.
 
-**ProofChecker Alignment Check Needed**:
+**Logos Alignment Check Needed**:
 1. Does `truth_at M τ t (Formula.box φ)` quantify over all histories σ at time t?
 2. Is the quantification restricted to histories containing t in their domain?
 3. Does this match the paper's "for all σ ∈ H_F" semantics?
 
 ### Soundness.lean Frame Constraints
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean`
 
 **Proven Axioms** (lines 86-218):
 - ✓ Modal T (MT): `□φ → φ` - **Proven** (line 86)
@@ -206,7 +206,7 @@ The file documents three incomplete axiom validity lemmas requiring frame constr
 
 ### TODO.md Documentation
 
-**File**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md`
+**File**: `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md`
 
 **Task 5: Complete Soundness Proofs** (lines 130-164):
 - Status: Not Started
@@ -218,7 +218,7 @@ The file documents three incomplete axiom validity lemmas requiring frame constr
 **Action Items**:
 1. Analyze frame constraints required for TL, MF, TF axioms
 2. Design frame constraint architecture:
-   - Option A: Add constraints to `ProofChecker/Semantics/TaskFrame.lean`
+   - Option A: Add constraints to `Logos/Semantics/TaskFrame.lean`
    - Option B: Document axioms as conditional on frame properties
 3. Implement chosen approach
 ```
@@ -229,26 +229,26 @@ The file documents three incomplete axiom validity lemmas requiring frame constr
 
 1. **World States Concept**:
    - Paper: "Maximal possible ways for things to be at an instant" (line 381)
-   - ProofChecker: `WorldState : Type` with identical semantic role
+   - Logos: `WorldState : Type` with identical semantic role
 
 2. **Task Relation Structure**:
    - Paper: Parameterized relation `w ⇒ₓ u` with nullity and compositionality
-   - ProofChecker: `task_rel w x u` with nullity and compositionality constraints
+   - Logos: `task_rel w x u` with nullity and compositionality constraints
    - **Perfect 1-to-1 correspondence**
 
 3. **Nullity Property**:
    - Paper: `w ⇒₀ w` (identity at zero duration)
-   - ProofChecker: `∀ w, task_rel w 0 w`
+   - Logos: `∀ w, task_rel w 0 w`
    - **Identical semantic content**
 
 4. **Compositionality Property**:
    - Paper: `w ⇒ₓ u ∧ u ⇒ᵧ v → w ⇒_{x+y} v`
-   - ProofChecker: `∀ w u v x y, task_rel w x u → task_rel u y v → task_rel w (x + y) v`
+   - Logos: `∀ w u v x y, task_rel w x u → task_rel u y v → task_rel w (x + y) v`
    - **Identical semantic content**
 
 5. **Proven Axiom Soundness**:
    - Paper validates P1 (`□φ → △φ`) and P2 (`▽φ → ◇φ`) as theorems
-   - ProofChecker proves MT, M4, MB, T4, TA axiom validity
+   - Logos proves MT, M4, MB, T4, TA axiom validity
    - **Alignment confirmed for proven cases**
 
 ### Implementation Gaps and Simplifications ⚠️
@@ -270,7 +270,7 @@ Temporal Order: A totally ordered abelian group T = ⟨T, +, ≤⟩
 - Rationals (ℚ, +, ≤)
 - Reals (ℝ, +, ≤)
 
-**ProofChecker Implementation** (TaskFrame.lean line 18):
+**Logos Implementation** (TaskFrame.lean line 18):
 ```lean
 -- Times are integers (Int) for MVP simplicity
 ```
@@ -288,7 +288,7 @@ Temporal Order: A totally ordered abelian group T = ⟨T, +, ≤⟩
 
 **Paper Context**: The paper does not explicitly prove TL, MF, TF axioms in the appendix. The focus is on validating the perpetuity principles P1 and P2.
 
-**ProofChecker Status**:
+**Logos Status**:
 - TL, MF, TF axioms included in system but soundness proofs incomplete
 - Lines 238-324 document these as requiring additional frame constraints
 - Three specific frame properties identified:
@@ -297,31 +297,31 @@ Temporal Order: A totally ordered abelian group T = ⟨T, +, ≤⟩
 
 **Alignment Assessment**:
 - ✓ **Not a misalignment**: Paper doesn't claim these axioms are valid over unrestricted models
-- ✓ **Proper documentation**: ProofChecker explicitly documents requirements
+- ✓ **Proper documentation**: Logos explicitly documents requirements
 - ⚠️ **Implementation decision needed**: Choose between Option A (add constraints) or Option B (document as conditional)
 
-**Recommendation**: This is an **implementation extension** beyond the paper's explicit proofs, not a semantic misalignment. The paper proves P1/P2; ProofChecker extends to TL/MF/TF with documented gaps.
+**Recommendation**: This is an **implementation extension** beyond the paper's explicit proofs, not a semantic misalignment. The paper proves P1/P2; Logos extends to TL/MF/TF with documented gaps.
 
 ### Notational Differences (Non-Semantic) 📝
 
 1. **Task Relation Notation**:
    - Paper: `w ⇒ₓ u` (subscript parameterization)
-   - ProofChecker: `task_rel w x u` (curried function application)
+   - Logos: `task_rel w x u` (curried function application)
    - **Same semantics, different syntax**
 
 2. **Modal Operator Names**:
    - Paper: `□φ` (LaTeX box), `◇φ` (LaTeX diamond)
-   - ProofChecker: `Formula.box φ`, `Formula.diamond φ`
+   - Logos: `Formula.box φ`, `Formula.diamond φ`
    - **Same semantics, LEAN 4 syntax conventions**
 
 3. **Temporal Operator Names**:
    - Paper: `Past φ`, `Future φ` (capitalized universal operators)
-   - ProofChecker: `Formula.past φ`, `Formula.future φ`
+   - Logos: `Formula.past φ`, `Formula.future φ`
    - **Same semantics, LEAN 4 naming**
 
 4. **Model Structure**:
    - Paper: `M = ⟨W, T, ⇒, |·|⟩` (tuple notation)
-   - ProofChecker: `structure TaskModel` with fields
+   - Logos: `structure TaskModel` with fields
    - **Same semantics, LEAN 4 structure syntax**
 
 ## Recommended Plan Revisions
@@ -396,7 +396,7 @@ of "The Construction of Possible Worlds" (Brast-McKie, JPL).
 
 ### Revision 3: Add Paper Cross-References
 
-**Objective**: Link ProofChecker implementation to paper specification throughout codebase
+**Objective**: Link Logos implementation to paper specification throughout codebase
 
 **Files to Update**:
 
@@ -474,7 +474,7 @@ of "The Construction of Possible Worlds" (Brast-McKie, JPL).
 
 ### Difference 1: No Semantic Misalignment Found
 
-**Finding**: The ProofChecker implementation **faithfully represents** the paper's task semantics with only:
+**Finding**: The Logos implementation **faithfully represents** the paper's task semantics with only:
 1. Notational differences (expected for LEAN 4 vs LaTeX)
 2. MVP simplification (Int vs abstract group, explicitly documented)
 3. Extension beyond paper (TL/MF/TF axioms, with documented gaps)
@@ -491,7 +491,7 @@ M,τ,x ⊨ Future φ  iff  M,τ,y ⊨ φ for all y ∈ T where x < y
 
 **Critical Detail**: Quantification is over **all times y in T**, not just y in dom(τ).
 
-**Verification Needed**: Check if ProofChecker's `truth_at` for `Formula.past` and `Formula.future` restricts to `y ∈ τ.domain` or quantifies over all y in Int.
+**Verification Needed**: Check if Logos's `truth_at` for `Formula.past` and `Formula.future` restricts to `y ∈ τ.domain` or quantifies over all y in Int.
 
 **Expected Correct Implementation**:
 ```lean
@@ -546,7 +546,7 @@ truth_at M τ t (Formula.future φ) :=
 
 **New Task 3A.7**: Verify Temporal Operator Truth Conditions
 
-**Objective**: Confirm ProofChecker temporal operators match paper specification exactly
+**Objective**: Confirm Logos temporal operators match paper specification exactly
 
 **Estimated Time**: 1 hour
 
@@ -579,7 +579,7 @@ truth_at M τ t (Formula.future φ) :=
 
 ## Conclusion
 
-**Primary Finding**: The ProofChecker implementation demonstrates **excellent semantic alignment** with the authoritative JPL paper's task semantics specification. There are **no fundamental misalignments** requiring correction.
+**Primary Finding**: The Logos implementation demonstrates **excellent semantic alignment** with the authoritative JPL paper's task semantics specification. There are **no fundamental misalignments** requiring correction.
 
 **Key Strengths**:
 1. ✓ World states, task relation, nullity, compositionality: **Perfect 1-to-1 correspondence**
@@ -604,9 +604,9 @@ truth_at M τ t (Formula.future φ) :=
 
 ## Research Completion
 
-**Report Created**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/reports/task_semantics_alignment_analysis.md`
+**Report Created**: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/reports/task_semantics_alignment_analysis.md`
 
-**Primary Deliverable**: Comprehensive semantic alignment analysis confirming ProofChecker faithfully implements paper's task semantics
+**Primary Deliverable**: Comprehensive semantic alignment analysis confirming Logos faithfully implements paper's task semantics
 
 **Secondary Deliverables**:
 - Frame constraint recommendations for Task 3A (Option B)
@@ -622,6 +622,6 @@ truth_at M τ t (Formula.future φ) :=
 
 **Research Quality**: High confidence in findings based on:
 - Direct reading of paper's formal appendix (app:TaskSemantics)
-- Line-by-line comparison with ProofChecker source code
+- Line-by-line comparison with Logos source code
 - Verification of all core semantic components
 - Cross-validation with existing documentation (TODO.md, Soundness.lean)

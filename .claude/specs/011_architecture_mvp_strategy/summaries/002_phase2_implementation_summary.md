@@ -15,14 +15,14 @@
 #### Files Created
 
 **Source Files**:
-- `ProofChecker/ProofSystem.lean` - Module root with exports
-- `ProofChecker/ProofSystem/Axioms.lean` - 8 TM axiom schemata
-- `ProofChecker/ProofSystem/Derivation.lean` - Derivability relation with 7 inference rules
+- `Logos/ProofSystem.lean` - Module root with exports
+- `Logos/ProofSystem/Axioms.lean` - 8 TM axiom schemata
+- `Logos/ProofSystem/Derivation.lean` - Derivability relation with 7 inference rules
 
 **Test Files**:
-- `ProofCheckerTest/ProofSystem.lean` - Test module root
-- `ProofCheckerTest/ProofSystem/AxiomsTest.lean` - Comprehensive axiom tests
-- `ProofCheckerTest/ProofSystem/DerivationTest.lean` - Derivation rule tests
+- `LogosTest/ProofSystem.lean` - Test module root
+- `LogosTest/ProofSystem/AxiomsTest.lean` - Comprehensive axiom tests
+- `LogosTest/ProofSystem/DerivationTest.lean` - Derivation rule tests
 
 #### Implementation Details
 
@@ -103,10 +103,10 @@ Build completed successfully.
 ## Testing Strategy
 
 ### Test Files Created
-- `ProofCheckerTest/Syntax/FormulaTest.lean`
-- `ProofCheckerTest/Syntax/ContextTest.lean`
-- `ProofCheckerTest/ProofSystem/AxiomsTest.lean`
-- `ProofCheckerTest/ProofSystem/DerivationTest.lean`
+- `LogosTest/Syntax/FormulaTest.lean`
+- `LogosTest/Syntax/ContextTest.lean`
+- `LogosTest/ProofSystem/AxiomsTest.lean`
+- `LogosTest/ProofSystem/DerivationTest.lean`
 
 ### Test Execution Requirements
 ```bash
@@ -114,7 +114,7 @@ Build completed successfully.
 lake build && lake test
 
 # Run specific module tests
-lake test ProofCheckerTest.ProofSystem
+lake test LogosTest.ProofSystem
 ```
 
 ### Coverage Target
@@ -125,14 +125,14 @@ lake test ProofCheckerTest.ProofSystem
 ## Artifacts Created
 
 ### Source Files
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem.lean`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/Axioms.lean`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/Derivation.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/Axioms.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/Derivation.lean`
 
 ### Test Files
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/ProofSystem.lean`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/ProofSystem/AxiomsTest.lean`
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/ProofSystem/DerivationTest.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/ProofSystem.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/ProofSystem/AxiomsTest.lean`
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/ProofSystem/DerivationTest.lean`
 
 ## Notes
 

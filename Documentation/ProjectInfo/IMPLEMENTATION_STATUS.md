@@ -1,4 +1,4 @@
-# Implementation Status - ProofChecker MVP
+# Implementation Status - Logos MVP
 
 **Last Updated**: 2025-12-03
 **Project Version**: 0.1.0-mvp
@@ -6,7 +6,7 @@
 
 ## Overview
 
-ProofChecker has completed its MVP phase with a functional implementation of the TM bimodal logic proof system. This document provides module-by-module status tracking with accurate accounting of completed vs. partial vs. planned work.
+Logos has completed its MVP phase with a functional implementation of the TM bimodal logic proof system. This document provides module-by-module status tracking with accurate accounting of completed vs. partial vs. planned work.
 
 **Quick Summary**:
 - **Completed Modules**: 5/8 (63%)
@@ -20,17 +20,17 @@ All status claims in this document can be verified by inspecting the source code
 
 ```bash
 # Count sorry placeholders in Metalogic
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean
-grep -n "sorry" ProofChecker/Metalogic/Completeness.lean
+grep -n "sorry" Logos/Metalogic/Soundness.lean
+grep -n "sorry" Logos/Metalogic/Completeness.lean
 
 # Count sorry placeholders in Theorems
-grep -n "sorry" ProofChecker/Theorems/Perpetuity.lean
+grep -n "sorry" Logos/Theorems/Perpetuity.lean
 
 # Verify axiom usage in Completeness
-grep -n "axiom" ProofChecker/Metalogic/Completeness.lean
+grep -n "axiom" Logos/Metalogic/Completeness.lean
 
 # Check tactic implementations
-cat ProofChecker/Automation/Tactics.lean
+cat Logos/Automation/Tactics.lean
 
 # Run test suite
 lake test
@@ -82,8 +82,8 @@ All syntax modules fully implemented with comprehensive tests.
 **Package Verification**:
 ```bash
 # All Syntax tests pass
-lake test ProofCheckerTest.Syntax.FormulaTest
-lake test ProofCheckerTest.Syntax.ContextTest
+lake test LogosTest.Syntax.FormulaTest
+lake test LogosTest.Syntax.ContextTest
 ```
 
 ---
@@ -136,9 +136,9 @@ All proof system modules fully implemented with comprehensive tests.
 **Package Verification**:
 ```bash
 # All ProofSystem tests pass
-lake test ProofCheckerTest.ProofSystem.AxiomsTest
-lake test ProofCheckerTest.ProofSystem.RulesTest
-lake test ProofCheckerTest.ProofSystem.DerivationTest
+lake test LogosTest.ProofSystem.AxiomsTest
+lake test LogosTest.ProofSystem.RulesTest
+lake test LogosTest.ProofSystem.DerivationTest
 ```
 
 ---
@@ -227,11 +227,11 @@ All semantics modules fully implemented with comprehensive tests.
 **Package Verification**:
 ```bash
 # All Semantics tests pass
-lake test ProofCheckerTest.Semantics.TaskFrameTest
-lake test ProofCheckerTest.Semantics.WorldHistoryTest
-lake test ProofCheckerTest.Semantics.TaskModelTest
-lake test ProofCheckerTest.Semantics.TruthTest
-lake test ProofCheckerTest.Semantics.ValidityTest
+lake test LogosTest.Semantics.TaskFrameTest
+lake test LogosTest.Semantics.WorldHistoryTest
+lake test LogosTest.Semantics.TaskModelTest
+lake test LogosTest.Semantics.TruthTest
+lake test LogosTest.Semantics.ValidityTest
 ```
 
 ---
@@ -298,11 +298,11 @@ The two remaining incomplete rule soundness cases (modal_k, temporal_k) require 
 **Verification**:
 ```bash
 # Count sorry placeholders (should be 0)
-grep -c "sorry" ProofChecker/Metalogic/Soundness.lean
+grep -c "sorry" Logos/Metalogic/Soundness.lean
 # Output: 0
 
 # Verify temporal_duality case complete
-grep -A5 "temporal_duality" ProofChecker/Metalogic/Soundness.lean | grep -v sorry
+grep -A5 "temporal_duality" Logos/Metalogic/Soundness.lean | grep -v sorry
 ```
 
 ### Completeness.lean
@@ -336,11 +336,11 @@ These are deep metalogical results requiring significant formalization effort. T
 **Verification**:
 ```bash
 # Count axiom usage (should be 8)
-grep -c "^axiom" ProofChecker/Metalogic/Completeness.lean
+grep -c "^axiom" Logos/Metalogic/Completeness.lean
 # Output: 8
 
 # Find exact axiom declarations
-grep -n "^axiom" ProofChecker/Metalogic/Completeness.lean
+grep -n "^axiom" Logos/Metalogic/Completeness.lean
 ```
 
 ### Decidability.lean
@@ -425,19 +425,19 @@ All six perpetuity principles are available for use in proofs. The MVP pragmatic
 **Verification**:
 ```bash
 # Verify zero sorry in code (comments may mention "sorry")
-grep -c "sorry" ProofChecker/Theorems/Perpetuity.lean
+grep -c "sorry" Logos/Theorems/Perpetuity.lean
 # Output: 0
 
 # Verify all 6 perpetuity principles defined
-grep -c "perpetuity_[1-6]" ProofChecker/Theorems/Perpetuity.lean
+grep -c "perpetuity_[1-6]" Logos/Theorems/Perpetuity.lean
 # Output: 12 (6 definitions + 6 example usages)
 
 # Verify build succeeds
-lake build ProofChecker.Theorems.Perpetuity
+lake build Logos.Theorems.Perpetuity
 # Output: Build completed successfully.
 
 # Verify tests pass
-lake env lean ProofCheckerTest/Theorems/PerpetuityTest.lean
+lake env lean LogosTest/Theorems/PerpetuityTest.lean
 # Output: No errors (type-checks successfully)
 ```
 
@@ -513,15 +513,15 @@ lake env lean ProofCheckerTest/Theorems/PerpetuityTest.lean
 **Verification**:
 ```bash
 # Verify tactics build
-lake build ProofChecker.Automation.Tactics
+lake build Logos.Automation.Tactics
 # Output: Build completed successfully.
 
 # Check no sorry in implemented tactics
-grep -c "sorry" ProofChecker/Automation/Tactics.lean
+grep -c "sorry" Logos/Automation/Tactics.lean
 # Output: 0
 
 # Run tactic tests (50 tests for implemented features)
-lake build ProofCheckerTest.Automation.TacticsTest
+lake build LogosTest.Automation.TacticsTest
 # Status: Builds successfully (50 tests covering all axioms, helpers, and edge cases)
 ```
 
@@ -548,11 +548,11 @@ lake build ProofCheckerTest.Automation.TacticsTest
 All modules with complete implementations have corresponding test suites with high coverage.
 
 ### Test Organization
-- `ProofCheckerTest/Syntax/` - 100% coverage of Syntax package
-- `ProofCheckerTest/ProofSystem/` - 100% coverage of ProofSystem package
-- `ProofCheckerTest/Semantics/` - 100% coverage of Semantics package
-- `ProofCheckerTest/Integration/` - Cross-module integration tests
-- `ProofCheckerTest/Metalogic/` - Tests for proven metalogic components
+- `LogosTest/Syntax/` - 100% coverage of Syntax package
+- `LogosTest/ProofSystem/` - 100% coverage of ProofSystem package
+- `LogosTest/Semantics/` - 100% coverage of Semantics package
+- `LogosTest/Integration/` - Cross-module integration tests
+- `LogosTest/Metalogic/` - Tests for proven metalogic components
 
 ### Test Execution
 ```bash
@@ -560,10 +560,10 @@ All modules with complete implementations have corresponding test suites with hi
 lake test
 
 # Run specific test suites
-lake test ProofCheckerTest.Syntax
-lake test ProofCheckerTest.ProofSystem
-lake test ProofCheckerTest.Semantics
-lake test ProofCheckerTest.Integration
+lake test LogosTest.Syntax
+lake test LogosTest.ProofSystem
+lake test LogosTest.Semantics
+lake test LogosTest.Integration
 ```
 
 ### Test Coverage Targets

@@ -34,7 +34,7 @@ This stage implements Phase 3 of the three-phase automation roadmap:
 - [ ] Helper tactics implemented: `modal_k`, `temporal_k`, `mp_chain`
 - [ ] Helper functions implemented: `is_box_formula`, `is_future_formula`, `assumption_search` (function)
 - [ ] Integration tests created combining multiple tactics (≥5 tests)
-- [ ] All tests pass: `lake test ProofCheckerTest.Automation.TacticsTest`
+- [ ] All tests pass: `lake test LogosTest.Automation.TacticsTest`
 - [ ] 5 sorry removed from `Tactics.lean` (helper functions)
 - [ ] Zero #lint warnings
 - [ ] TACTIC_DEVELOPMENT.md completed with all working examples
@@ -78,7 +78,7 @@ This stage implements Phase 3 of the three-phase automation roadmap:
 
 **Objective**: Implement simple helper functions for formula inspection and pattern matching
 
-**File**: `ProofChecker/Automation/Tactics.lean`
+**File**: `Logos/Automation/Tactics.lean`
 
 **Helper Functions to Implement**:
 
@@ -89,7 +89,7 @@ This stage implements Phase 3 of the three-phase automation roadmap:
 **Implementation**:
 
 ```lean
--- File: ProofChecker/Automation/Tactics.lean
+-- File: Logos/Automation/Tactics.lean
 
 /-! ## Helper Functions for Formula Inspection -/
 
@@ -196,7 +196,7 @@ def assumption_search (pattern : Formula) (ctx : Context) : Option Formula :=
 - [ ] Add `is_past_formula` helper (bonus, useful for completeness)
 - [ ] Replace lines 163-172 with `assumption_search` function implementation
 - [ ] Add comprehensive docstrings with usage examples
-- [ ] Test compilation: `lake build ProofChecker.Automation.Tactics`
+- [ ] Test compilation: `lake build Logos.Automation.Tactics`
 - [ ] Write unit tests for helper functions
 
 **Expected Output**: 3 helper functions implemented and compiling successfully.
@@ -207,7 +207,7 @@ def assumption_search (pattern : Formula) (ctx : Context) : Option Formula :=
 
 **Objective**: Implement `assumption_search` tactic using TacticM monad with context iteration
 
-**File**: `ProofChecker/Automation/Tactics.lean`
+**File**: `Logos/Automation/Tactics.lean`
 
 **Current State**: No tactic syntax defined (new implementation)
 
@@ -304,7 +304,7 @@ elab "assumption_search" : tactic => do
 **Action Items**:
 - [ ] Add `assumption_search` syntax and implementation
 - [ ] Add comprehensive docstring with usage examples
-- [ ] Test compilation: `lake build ProofChecker.Automation.Tactics`
+- [ ] Test compilation: `lake build Logos.Automation.Tactics`
 - [ ] Write tests for assumption_search tactic
 - [ ] Verify error message clarity on failure case
 
@@ -316,7 +316,7 @@ elab "assumption_search" : tactic => do
 
 **Objective**: Implement `modal_k`, `temporal_k`, and `mp_chain` tactics for inference rules
 
-**File**: `ProofChecker/Automation/Tactics.lean`
+**File**: `Logos/Automation/Tactics.lean`
 
 **Implementation**:
 
@@ -484,7 +484,7 @@ macro "mp_chain" "[" steps:term,* "]" base:term : tactic =>
 - [ ] Implement `mp` tactic (modus ponens)
 - [ ] Implement `mp_chain` tactic (multi-step MP, simplified version)
 - [ ] Add comprehensive docstrings with usage examples
-- [ ] Test compilation: `lake build ProofChecker.Automation.Tactics`
+- [ ] Test compilation: `lake build Logos.Automation.Tactics`
 - [ ] Write tests for all helper tactics
 
 **Expected Output**: 4 helper tactics implemented and compiling successfully.
@@ -495,7 +495,7 @@ macro "mp_chain" "[" steps:term,* "]" base:term : tactic =>
 
 **Objective**: Test tactics in combination, simulating realistic proof workflows
 
-**File**: `ProofCheckerTest/Automation/TacticsTest.lean` (extend)
+**File**: `LogosTest/Automation/TacticsTest.lean` (extend)
 
 **Integration Test Categories**:
 
@@ -518,7 +518,7 @@ macro "mp_chain" "[" steps:term,* "]" base:term : tactic =>
 **Implementation Template**:
 
 ```lean
--- File: ProofCheckerTest/Automation/TacticsTest.lean (extend)
+-- File: LogosTest/Automation/TacticsTest.lean (extend)
 
 /-! ## assumption_search Tests (Phase 3) -/
 
@@ -637,7 +637,7 @@ def automation_phase3_suite : TestSuite := {
 - [ ] Include 4 helper tactic tests
 - [ ] Include 3 integration tests combining tactics
 - [ ] Document expected behavior in comments
-- [ ] Run tests: `lake test ProofCheckerTest.Automation.TacticsTest`
+- [ ] Run tests: `lake test LogosTest.Automation.TacticsTest`
 - [ ] Verify all tests pass
 
 **Expected Output**: 10 integration and helper tests passing successfully.
@@ -652,32 +652,32 @@ def automation_phase3_suite : TestSuite := {
 
 ```bash
 # 1. Verify tactics compile
-lake build ProofChecker.Automation.Tactics
+lake build Logos.Automation.Tactics
 # Expected: Build succeeds, all tactics compile
 
 # 2. Run full Phase 3 test suite
-lake test ProofCheckerTest.Automation.TacticsTest::automation_phase3_suite
+lake test LogosTest.Automation.TacticsTest::automation_phase3_suite
 # Expected: 10 tests pass
 
 # 3. Run combined test suite (all phases)
-lake test ProofCheckerTest.Automation.TacticsTest
+lake test LogosTest.Automation.TacticsTest
 # Expected: Phase 1 (10) + Phase 2 (8, if complete) + Phase 3 (10) = 28 tests pass
 
 # 4. Verify sorry count decreased
-grep -c "sorry" ProofChecker/Automation/Tactics.lean
+grep -c "sorry" Logos/Automation/Tactics.lean
 # Expected: 7 (down from 12 originally)
 # 5 sorry removed: is_box_formula, is_future_formula, assumption_search function + 2 tactics
 
 # 5. Run lint checks
-lake exe lean --run ProofChecker/Automation/Tactics.lean 2>&1 | grep -i "warning"
+lake exe lean --run Logos/Automation/Tactics.lean 2>&1 | grep -i "warning"
 # Expected: Zero warnings
 
 # 6. Check test coverage
-lake test --coverage ProofCheckerTest.Automation.TacticsTest
+lake test --coverage LogosTest.Automation.TacticsTest
 # Expected: ≥80% coverage for Tactics.lean (Automation module target)
 
 # 7. Measure performance
-time lake test ProofCheckerTest.Automation.TacticsTest
+time lake test LogosTest.Automation.TacticsTest
 # Expected: All tests complete in <1 minute total
 ```
 
@@ -747,7 +747,7 @@ def assumption_search_impl (goal : MVarId) : TacticM Unit := do
   throwError "assumption_search: no matching assumption found"
 ```
 
-**See**: `ProofCheckerTest/Automation/TacticsTest.lean::test_assumption_search_*` for working examples.
+**See**: `LogosTest/Automation/TacticsTest.lean::test_assumption_search_*` for working examples.
 
 ---
 
@@ -792,7 +792,7 @@ theorem example (P Q : Formula)
   mp h1 h2
 ```
 
-**See**: `ProofCheckerTest/Automation/TacticsTest.lean::test_modal_k`, `test_temporal_k`,
+**See**: `LogosTest/Automation/TacticsTest.lean::test_modal_k`, `test_temporal_k`,
 `test_mp` for working examples.
 ```
 
@@ -874,13 +874,13 @@ mp_chain [h1, h2, h3] h0  -- 3 steps but only 2 implications
 
 ```bash
 # Run Phase 3 tests only
-lake test ProofCheckerTest.Automation.TacticsTest::automation_phase3_suite
+lake test LogosTest.Automation.TacticsTest::automation_phase3_suite
 
 # Run all automation tests (all phases)
-lake test ProofCheckerTest.Automation.TacticsTest
+lake test LogosTest.Automation.TacticsTest
 
 # Run with coverage analysis
-lake test --coverage ProofCheckerTest.Automation.TacticsTest
+lake test --coverage LogosTest.Automation.TacticsTest
 
 # Expected: ≥80% coverage, all tests pass
 ```
@@ -927,8 +927,8 @@ Before marking this stage complete, verify ALL items:
 - [ ] References to test suite included
 
 ### Verification
-- [ ] Build succeeds: `lake build ProofChecker.Automation.Tactics`
-- [ ] Tests pass: `lake test ProofCheckerTest.Automation.TacticsTest`
+- [ ] Build succeeds: `lake build Logos.Automation.Tactics`
+- [ ] Tests pass: `lake test LogosTest.Automation.TacticsTest`
 - [ ] Lint clean: Zero warnings
 - [ ] Coverage meets target: ≥80%
 - [ ] Performance acceptable: <1 minute for all tests

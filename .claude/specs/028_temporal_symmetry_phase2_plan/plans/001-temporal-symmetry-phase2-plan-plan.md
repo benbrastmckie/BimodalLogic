@@ -8,8 +8,8 @@
 - **Actual Hours**: ~4 hours
 - **Complexity Score**: 95
 - **Structure Level**: 0
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
-- **Parent Plan**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/026_temporal_symmetry_derivation/plans/001-temporal-symmetry-derivation-plan.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
+- **Parent Plan**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/026_temporal_symmetry_derivation/plans/001-temporal-symmetry-derivation-plan.md
 - **Research Reports**:
   - [Phase 2 Completion Strategy](../reports/001-phase2-completion-strategy.md)
   - [Temporal Duality Sorry Resolution](../../027_temporal_duality_sorry_resolution/reports/001-temporal-duality-sorry-resolution.md)
@@ -114,12 +114,12 @@ Tasks:
 - [x] Add `swap_axiom_m4_valid` theorem: swap of M4 axiom is valid
 - [x] Add `swap_axiom_mb_valid` theorem: swap of MB axiom is valid
 - [x] Add helper lemmas for box/diamond interaction with swap
-- [x] Run `lake build ProofChecker.Semantics.Truth` to verify
+- [x] Run `lake build Logos.Semantics.Truth` to verify
 
 Testing:
 ```bash
-lake build ProofChecker.Semantics.Truth
-grep -c "swap_axiom_m" ProofChecker/Semantics/Truth.lean
+lake build Logos.Semantics.Truth
+grep -c "swap_axiom_m" Logos/Semantics/Truth.lean
 ```
 
 **Expected Duration**: 2-3 hours
@@ -148,8 +148,8 @@ Tasks:
 
 Testing:
 ```bash
-lake build ProofChecker.Semantics.Truth
-grep -n "swap_axiom" ProofChecker/Semantics/Truth.lean
+lake build Logos.Semantics.Truth
+grep -n "swap_axiom" Logos/Semantics/Truth.lean
 ```
 
 **Expected Duration**: 4-6 hours
@@ -176,8 +176,8 @@ Tasks:
 
 Testing:
 ```bash
-lake build ProofChecker.Semantics.Truth
-grep -c "preserves_swap" ProofChecker/Semantics/Truth.lean
+lake build Logos.Semantics.Truth
+grep -c "preserves_swap" Logos/Semantics/Truth.lean
 ```
 
 **Expected Duration**: 3-4 hours
@@ -206,7 +206,7 @@ Testing:
 ```bash
 lake build
 lake test
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean
+grep -n "sorry" Logos/Metalogic/Soundness.lean
 ```
 
 **Expected Duration**: 2-3 hours
@@ -272,7 +272,7 @@ grep "temporal_duality" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
 ## Dependencies
 
 ### External Dependencies
-- None (uses only LEAN 4 standard library and existing ProofChecker modules)
+- None (uses only LEAN 4 standard library and existing Logos modules)
 
 ### Internal Dependencies
 - Phase 1 must complete before Phase 2 (self-dual before temporal axioms)

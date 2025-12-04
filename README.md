@@ -1,8 +1,8 @@
-# ProofChecker: LEAN 4 Proof Assistant for Logos
+# Logos: LEAN 4 Proof Assistant for Logos
 
-ProofChecker is a LEAN 4 proof assistant for **Logos** - a formal language of thought designed for verified AI reasoning. Built on hyperintensional task semantics (possible worlds as functions from times to world-states), ProofChecker provides machine-verifiable proofs with mathematical certainty, enabling scalable AI oversight through computation rather than human annotation.
+Logos is a LEAN 4 proof assistant for **Logos** - a formal language of thought designed for verified AI reasoning. Built on hyperintensional task semantics (possible worlds as functions from times to world-states), Logos provides machine-verifiable proofs with mathematical certainty, enabling scalable AI oversight through computation rather than human annotation.
 
-ProofChecker integrates with the [Model-Checker](https://github.com/benbrastmckie/ModelChecker) to create a dual verification architecture for transparent AI reasoning. For theoretical foundations, see [LogicNotes](https://github.com/benbrastmckie/LogicNotes).
+Logos integrates with the [Model-Checker](https://github.com/benbrastmckie/ModelChecker) to create a dual verification architecture for transparent AI reasoning. For theoretical foundations, see [LogicNotes](https://github.com/benbrastmckie/LogicNotes).
 
 ## Logos: Formal Language of Thought
 
@@ -15,14 +15,14 @@ ProofChecker integrates with the [Model-Checker](https://github.com/benbrastmcki
 
 The language is open to further extensions beyond these four layers. All layers share a common semantic foundation: hyperintensional task semantics where possible worlds are functions from times to world-states, constrained by task relations.
 
-ProofChecker currently implements the Core Layer. Future development will add the explanatory, epistemic, and normative layers.
+Logos currently implements the Core Layer. Future development will add the explanatory, epistemic, and normative layers.
 
 **For philosophical foundations**: See [METHODOLOGY.md](Documentation/UserGuide/METHODOLOGY.md)
 **For extension specifications**: See [LAYER_EXTENSIONS.md](Documentation/Research/LAYER_EXTENSIONS.md)
 
 ## Current Implementation
 
-ProofChecker currently implements the Core Layer of Logos - the bimodal logic TM providing the foundation for all planned extensions.
+Logos currently implements the Core Layer of Logos - the bimodal logic TM providing the foundation for all planned extensions.
 
 #### Operators
 
@@ -59,14 +59,14 @@ ProofChecker currently implements the Core Layer of Logos - the bimodal logic TM
 - **Systematic Pattern Mastery**: Enables learning logical reasoning systematically
 
 ### 3. Dual Verification Architecture
-- **Syntactic Proofs**: ProofChecker derives valid theorems from TM axioms with LEAN 4 proof receipts
+- **Syntactic Proofs**: Logos derives valid theorems from TM axioms with LEAN 4 proof receipts
 - **Semantic Validation**: Model-Checker tests theorems via Z3-based hyperintensional semantics
 - **Complementary Signals**: Proof receipts provide positive reinforcement, counterexamples provide corrective feedback
 - **Rapid Prototyping**: Model-Checker tests theorems before proof attempts, reducing wasted effort
 - **Scalable Oversight**: Verification scales with computation, not human annotation
 
 ### 4. Progressive Extension Strategy
-ProofChecker's layered architecture enables incremental extension from core TM logic to explanatory, epistemic, and normative reasoning. Each extension provides independent value while building toward comprehensive AI reasoning capabilities (see [Progressive Extension Methodology](#progressive-extension-methodology) for details).
+Logos's layered architecture enables incremental extension from core TM logic to explanatory, epistemic, and normative reasoning. Each extension provides independent value while building toward comprehensive AI reasoning capabilities (see [Progressive Extension Methodology](#progressive-extension-methodology) for details).
 
 ### 5. Theoretical Innovation
 - **Task Semantics**: Compositional account of possible worlds from [Possible Worlds paper](https://www.benbrastmckie.com/wp-content/uploads/2025/11/possible_worlds.pdf)
@@ -88,9 +88,9 @@ ProofChecker's layered architecture enables incremental extension from core TM l
 
 ## Dual Verification Architecture
 
-ProofChecker and Model-Checker form a **complementary dual verification architecture** providing comprehensive training signals for AI systems learning to reason in Logos.
+Logos and Model-Checker form a **complementary dual verification architecture** providing comprehensive training signals for AI systems learning to reason in Logos.
 
-### ProofChecker: Syntactic Verification
+### Logos: Syntactic Verification
 
 **Role**: LEAN 4 proof assistant for Logos
 - Derives valid theorems from TM axioms via formal proof
@@ -114,7 +114,7 @@ ProofChecker and Model-Checker form a **complementary dual verification architec
 
 The dual verification architecture creates comprehensive learning signals without human annotation:
 
-1. **Positive Signals**: ProofChecker generates valid theorems with proof receipts
+1. **Positive Signals**: Logos generates valid theorems with proof receipts
 2. **Corrective Signals**: Model-Checker generates counterexamples for invalid inferences
 3. **Scalable Oversight**: Both tools scale with computation, enabling unlimited training data
 4. **Mathematical Certainty**: LEAN 4 proofs provide verifiable justifications, Z3 countermodels refute invalid claims
@@ -153,7 +153,7 @@ The Logos architecture enables domain-specific operator combinations, demonstrat
 
 ## Theoretical Foundations
 
-ProofChecker implements formal semantics developed in recent research:
+Logos implements formal semantics developed in recent research:
 
 **Task Semantics for Possible Worlds**:
 - **Paper**: ["The Construction of Possible Worlds"](https://www.benbrastmckie.com/wp-content/uploads/2025/11/possible_worlds.pdf) (Brast-McKie, 2025)
@@ -177,8 +177,8 @@ ProofChecker implements formal semantics developed in recent research:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/ProofChecker.git
-cd ProofChecker
+git clone https://github.com/yourusername/Logos.git
+cd Logos
 
 # Build the project
 lake build
@@ -191,7 +191,7 @@ lake test
 
 ### Getting Started (New Users)
 
-- [Tutorial](Documentation/UserGuide/TUTORIAL.md) - Getting started with ProofChecker
+- [Tutorial](Documentation/UserGuide/TUTORIAL.md) - Getting started with Logos
 - [Examples](Documentation/UserGuide/EXAMPLES.md) - Modal, temporal, and bimodal examples
 - [Logical Operators Glossary](Documentation/Reference/OPERATORS.md) - Formal symbols reference
 
@@ -237,9 +237,9 @@ lake test
 ## Project Structure
 
 ```
-ProofChecker/
-├── ProofChecker.lean           # Library root (re-exports all public modules)
-├── ProofChecker/               # Main source directory (see ProofChecker/README.md)
+Logos/
+├── Logos.lean           # Library root (re-exports all public modules)
+├── Logos/               # Main source directory (see Logos/README.md)
 │   ├── Syntax/                 # Formula types, parsing, DSL
 │   │   ├── Formula.lean        # Core formula inductive type
 │   │   └── Context.lean        # Proof context (premise lists)
@@ -260,8 +260,8 @@ ProofChecker/
 │   └── Automation/             # Proof automation
 │       ├── Tactics.lean        # Custom tactics
 │       └── ProofSearch.lean    # Automated proof search
-├── ProofCheckerTest/           # Test suite (see ProofCheckerTest/README.md)
-│   ├── ProofCheckerTest.lean   # Test library root
+├── LogosTest/           # Test suite (see LogosTest/README.md)
+│   ├── LogosTest.lean   # Test library root
 │   ├── Syntax/                 # Tests for formula construction
 │   ├── ProofSystem/            # Tests for axioms and rules
 │   ├── Semantics/              # Tests for semantics
@@ -318,14 +318,14 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Citation
 
-If you use ProofChecker in your research, please cite:
+If you use Logos in your research, please cite:
 
 ```bibtex
 @software{proofchecker2025,
-  title = {ProofChecker: LEAN 4 Proof System for Bimodal Logic TM},
+  title = {Logos: LEAN 4 Proof System for Bimodal Logic TM},
   author = {Your Name},
   year = {2025},
-  url = {https://github.com/yourusername/ProofChecker}
+  url = {https://github.com/yourusername/Logos}
 }
 ```
 
@@ -340,8 +340,8 @@ Contributions are welcome! Please read [CONTRIBUTING.md](Documentation/ProjectIn
 curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
 
 # Clone and build
-git clone https://github.com/yourusername/ProofChecker.git
-cd ProofChecker
+git clone https://github.com/yourusername/Logos.git
+cd Logos
 lake build
 
 # Run tests before submitting PR

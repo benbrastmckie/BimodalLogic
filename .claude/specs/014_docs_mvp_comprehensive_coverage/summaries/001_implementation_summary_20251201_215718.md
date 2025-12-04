@@ -3,7 +3,7 @@
 **Workflow**: implement
 **Date**: 2025-12-01
 **Iteration**: 1/5
-**Plan**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/014_docs_mvp_comprehensive_coverage/plans/001-docs-mvp-comprehensive-coverage-plan.md
+**Plan**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/014_docs_mvp_comprehensive_coverage/plans/001-docs-mvp-comprehensive-coverage-plan.md
 
 ---
 
@@ -28,7 +28,7 @@
 **Objective**: Create comprehensive IMPLEMENTATION_STATUS.md tracking all modules
 
 **Deliverables**:
-- Created `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/IMPLEMENTATION_STATUS.md`
+- Created `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/IMPLEMENTATION_STATUS.md`
 - Module-by-module breakdown with status tracking
 - Accurate sorry counts: Soundness (15), Perpetuity (14), Tactics (12)
 - Verification commands provided for all claims
@@ -49,7 +49,7 @@
 **Objective**: Create KNOWN_LIMITATIONS.md documenting all gaps with explanations
 
 **Deliverables**:
-- Created `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/KNOWN_LIMITATIONS.md`
+- Created `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/KNOWN_LIMITATIONS.md`
 - Detailed analysis of 6 soundness proof gaps (TL, MF, TF axioms; modal_k, temporal_k, temporal_duality rules)
 - Completeness status explanation (infrastructure only, 70-90 hours estimated)
 - Perpetuity partial implementation analysis (propositional gaps + complex modal-temporal)
@@ -196,10 +196,10 @@ Users needing detailed implementation status are directed to:
 
 4. **Sorry Count Verification**:
    ```bash
-   grep -c "sorry" ProofChecker/Metalogic/Soundness.lean
+   grep -c "sorry" Logos/Metalogic/Soundness.lean
    # Output: 15 ✓ (matches documentation)
 
-   grep -c "sorry" ProofChecker/Theorems/Perpetuity.lean
+   grep -c "sorry" Logos/Theorems/Perpetuity.lean
    # Output: 14 ✓ (matches documentation)
    ```
 
@@ -228,14 +228,14 @@ Users needing detailed implementation status are directed to:
 ## Artifacts Created
 
 ### New Documentation Files
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/IMPLEMENTATION_STATUS.md` (588 lines)
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/IMPLEMENTATION_STATUS.md` (588 lines)
    - Comprehensive module-by-module status tracking
    - Sorry counts with line number references
    - Verification commands for all claims
    - Summary table with percentages
    - Next steps and references
 
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/KNOWN_LIMITATIONS.md` (745 lines)
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/KNOWN_LIMITATIONS.md` (745 lines)
    - Detailed gap analysis for 6 soundness issues
    - Frame constraint explanations
    - Completeness infrastructure analysis
@@ -245,13 +245,13 @@ Users needing detailed implementation status are directed to:
    - Roadmap with effort estimates
 
 ### Updated Documentation Files
-3. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+3. `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
    - Added Implementation Status section (32 lines)
    - Updated Features section (accurate claims)
    - Updated Documentation section (new links)
    - Updated Status section (MVP complete note)
 
-4. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md`
+4. `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md`
    - Updated Project Overview (accurate metalogic description)
    - Added Implementation Status section
    - Updated Documentation Index (new links)
@@ -372,7 +372,7 @@ From plan section "Success Criteria":
 4. **User-Facing Warnings**:
    - README.md upfront Implementation Status section warns users immediately
    - CLAUDE.md provides developer-specific guidance
-   - KNOWN_LIMITATIONS.md Section 7 "Using ProofChecker Despite Limitations"
+   - KNOWN_LIMITATIONS.md Section 7 "Using Logos Despite Limitations"
 
 ### Context Usage
 
@@ -426,7 +426,7 @@ From plan section "Success Criteria":
 
 ## Summary
 
-Successfully updated ProofChecker documentation to accurately reflect MVP implementation status. All critical gaps addressed, comprehensive status tracking in place, and clear guidance provided for users working with partial implementation.
+Successfully updated Logos documentation to accurately reflect MVP implementation status. All critical gaps addressed, comprehensive status tracking in place, and clear guidance provided for users working with partial implementation.
 
 **Key Achievements**:
 1. Created 1,333 lines of new comprehensive documentation
@@ -446,4 +446,4 @@ Successfully updated ProofChecker documentation to accurately reflect MVP implem
 - Perpetuity: 50% complete (P1-P3 proven, P4-P6 partial)
 - Automation: Stubs only (0% implementation)
 
-Users can now confidently use ProofChecker for core TM reasoning while understanding exactly what works and what requires workarounds.
+Users can now confidently use Logos for core TM reasoning while understanding exactly what works and what requires workarounds.

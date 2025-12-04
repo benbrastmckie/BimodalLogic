@@ -1,15 +1,15 @@
 # Architecture MVP Strategy Research Report
 
-**Research Topic**: Strategic Task List for ProofChecker MVP Development
+**Research Topic**: Strategic Task List for Logos MVP Development
 **Research Date**: 2025-12-01
 **Complexity Level**: 3
-**Source Document**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md`
+**Source Document**: `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md`
 
 ---
 
 ## Executive Summary
 
-This report analyzes the ARCHITECTURE.md specification (1294 lines) to develop a strategic task list for building a Minimum Viable Product (MVP) of the ProofChecker LEAN 4 library. The project implements bimodal logic TM (Tense and Modality) with task semantics.
+This report analyzes the ARCHITECTURE.md specification (1294 lines) to develop a strategic task list for building a Minimum Viable Product (MVP) of the Logos LEAN 4 library. The project implements bimodal logic TM (Tense and Modality) with task semantics.
 
 **Current Project State**:
 - Directory structure fully created (6 module directories)
@@ -45,7 +45,7 @@ The ARCHITECTURE.md defines a **layered operator architecture**:
 
 #### 1.1.1 Syntax Components (Section 1.1)
 
-**Formula Inductive Type** (`ProofChecker/Syntax/Formula.lean`):
+**Formula Inductive Type** (`Logos/Syntax/Formula.lean`):
 ```lean
 inductive Formula : Type
   | atom : String → Formula        -- Sentence letters
@@ -75,7 +75,7 @@ inductive Formula : Type
 
 #### 1.1.2 Proof System Components (Section 1.2)
 
-**TM Axiom Schemata** (`ProofChecker/ProofSystem/Axioms.lean`):
+**TM Axiom Schemata** (`Logos/ProofSystem/Axioms.lean`):
 
 | Axiom | Schema | Category | Semantic Property |
 |-------|--------|----------|-------------------|
@@ -90,7 +90,7 @@ inductive Formula : Type
 
 **NOTE**: Architecture assumes classical propositional tautologies as base system.
 
-**Inference Rules** (`ProofChecker/ProofSystem/Derivation.lean`):
+**Inference Rules** (`Logos/ProofSystem/Derivation.lean`):
 
 ```lean
 inductive Derivable : Context → Formula → Prop
@@ -112,7 +112,7 @@ inductive Derivable : Context → Formula → Prop
 
 #### 1.1.3 Semantics Components (Section 3.1)
 
-**Task Frame Structure** (`ProofChecker/Semantics/TaskFrame.lean`):
+**Task Frame Structure** (`Logos/Semantics/TaskFrame.lean`):
 
 ```lean
 structure TaskFrame where
@@ -128,7 +128,7 @@ structure TaskFrame where
     task_rel w (x + y) v                      -- w ⇒ₓ u ∧ u ⇒ᵧ v → w ⇒ₓ₊ᵧ v
 ```
 
-**World History** (`ProofChecker/Semantics/WorldHistory.lean`):
+**World History** (`Logos/Semantics/WorldHistory.lean`):
 
 ```lean
 structure WorldHistory (F : TaskFrame) where
@@ -139,14 +139,14 @@ structure WorldHistory (F : TaskFrame) where
     F.task_rel (states x hx) y (states (x + y) hxy)  -- τ(x) ⇒ᵧ τ(x+y)
 ```
 
-**Task Model** (`ProofChecker/Semantics/TaskModel.lean`):
+**Task Model** (`Logos/Semantics/TaskModel.lean`):
 
 ```lean
 structure TaskModel (F : TaskFrame) where
   valuation : String → Set F.WorldState      -- |p| ⊆ W
 ```
 
-**Truth Evaluation** (`ProofChecker/Semantics/Truth.lean`):
+**Truth Evaluation** (`Logos/Semantics/Truth.lean`):
 
 ```lean
 def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : F.Time) : Formula → Prop
@@ -158,7 +158,7 @@ def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : F.Time) : Formula → 
   | Formula.future φ => ∀ s > t, truth_at M τ s φ
 ```
 
-**Validity** (`ProofChecker/Semantics/Validity.lean`):
+**Validity** (`Logos/Semantics/Validity.lean`):
 
 ```lean
 def valid (φ : Formula) : Prop :=
@@ -181,7 +181,7 @@ def semantic_consequence (Γ : Context) (φ : Formula) : Prop :=
 
 #### 1.1.4 Metalogic Components (Section 4)
 
-**Soundness Theorem** (`ProofChecker/Metalogic/Soundness.lean`):
+**Soundness Theorem** (`Logos/Metalogic/Soundness.lean`):
 
 ```lean
 theorem soundness (Γ : Context) (φ : Formula) :
@@ -205,7 +205,7 @@ theorem soundness (Γ : Context) (φ : Formula) :
 
 **Complexity**: VERY HIGH (core metalogic proof)
 
-**Completeness Theorem** (`ProofChecker/Metalogic/Completeness.lean`):
+**Completeness Theorem** (`Logos/Metalogic/Completeness.lean`):
 
 ```lean
 theorem weak_completeness (φ : Formula) : ⊨ φ → ⊢ φ
@@ -224,7 +224,7 @@ theorem strong_completeness (Γ : Context) (φ : Formula) : Γ ⊨ φ → Γ ⊢
 
 #### 1.1.5 Theorems Components (Section 1.2)
 
-**Perpetuity Principles** (`ProofChecker/Theorems/Perpetuity.lean`):
+**Perpetuity Principles** (`Logos/Theorems/Perpetuity.lean`):
 
 Six derived theorems connecting modal and temporal operators:
 
@@ -243,12 +243,12 @@ Six derived theorems connecting modal and temporal operators:
 
 #### 1.1.6 Automation Components (Section 2)
 
-**Custom Tactics** (`ProofChecker/Automation/Tactics.lean`):
+**Custom Tactics** (`Logos/Automation/Tactics.lean`):
 - `modal_reasoning`: Automate S5 modal proofs
 - `propositional_reasoning`: Automate propositional steps
 - `temporal_reasoning`: Automate temporal steps
 
-**Proof Search** (`ProofChecker/Automation/ProofSearch.lean`):
+**Proof Search** (`Logos/Automation/ProofSearch.lean`):
 - `auto_prove`: Bounded depth-first search
 - Proof caching mechanisms
 
@@ -347,35 +347,35 @@ A **Minimum Viable Product** must demonstrate:
 
 **Phase 1: Foundation** (Est. 20% of total effort)
 ```
-ProofChecker/Syntax/Formula.lean         [~150 lines]
-ProofChecker/Syntax/Context.lean         [~50 lines]
-ProofCheckerTest/Syntax/FormulaTest.lean [~100 lines]
+Logos/Syntax/Formula.lean         [~150 lines]
+Logos/Syntax/Context.lean         [~50 lines]
+LogosTest/Syntax/FormulaTest.lean [~100 lines]
 ```
 
 **Phase 2: Proof System** (Est. 15% of total effort)
 ```
-ProofChecker/ProofSystem/Axioms.lean           [~100 lines]
-ProofChecker/ProofSystem/Derivation.lean       [~150 lines]
-ProofCheckerTest/ProofSystem/AxiomsTest.lean   [~80 lines]
-ProofCheckerTest/ProofSystem/DerivationTest.lean [~120 lines]
+Logos/ProofSystem/Axioms.lean           [~100 lines]
+Logos/ProofSystem/Derivation.lean       [~150 lines]
+LogosTest/ProofSystem/AxiomsTest.lean   [~80 lines]
+LogosTest/ProofSystem/DerivationTest.lean [~120 lines]
 ```
 
 **Phase 3: Semantics** (Est. 40% of total effort)
 ```
-ProofChecker/Semantics/TaskFrame.lean          [~120 lines]
-ProofChecker/Semantics/WorldHistory.lean       [~180 lines]
-ProofChecker/Semantics/TaskModel.lean          [~80 lines]
-ProofChecker/Semantics/Truth.lean              [~150 lines]
-ProofChecker/Semantics/Validity.lean           [~100 lines]
-ProofCheckerTest/Semantics/TaskFrameTest.lean  [~100 lines]
-ProofCheckerTest/Semantics/TruthTest.lean      [~150 lines]
-ProofCheckerTest/Semantics/ValidityTest.lean   [~100 lines]
+Logos/Semantics/TaskFrame.lean          [~120 lines]
+Logos/Semantics/WorldHistory.lean       [~180 lines]
+Logos/Semantics/TaskModel.lean          [~80 lines]
+Logos/Semantics/Truth.lean              [~150 lines]
+Logos/Semantics/Validity.lean           [~100 lines]
+LogosTest/Semantics/TaskFrameTest.lean  [~100 lines]
+LogosTest/Semantics/TruthTest.lean      [~150 lines]
+LogosTest/Semantics/ValidityTest.lean   [~100 lines]
 ```
 
 **Phase 4: MVP Metalogic** (Est. 25% of total effort)
 ```
-ProofChecker/Metalogic/Soundness.lean          [~200 lines - ONE axiom proof]
-ProofCheckerTest/Metalogic/SoundnessTest.lean  [~80 lines]
+Logos/Metalogic/Soundness.lean          [~200 lines - ONE axiom proof]
+LogosTest/Metalogic/SoundnessTest.lean  [~80 lines]
 ```
 
 **Total MVP Estimate**: ~1,910 lines of code (implementation + tests)
@@ -436,7 +436,7 @@ More complex but demonstrates bimodal interaction.
 5. P5: `◇sometimes φ → always ◇φ` (complex, builds on P2)
 6. P6: `sometimes □φ → □always φ` (most complex)
 
-**File**: `ProofChecker/Theorems/Perpetuity.lean`
+**File**: `Logos/Theorems/Perpetuity.lean`
 
 **Challenge**: Manual proofs will be lengthy; basic automation would help significantly.
 
@@ -445,13 +445,13 @@ More complex but demonstrates bimodal interaction.
 **Goal**: Implement basic proof tactics to assist theorem proving
 
 **Components**:
-1. `ProofChecker/Automation/Tactics.lean`:
+1. `Logos/Automation/Tactics.lean`:
    - `modal_k_tactic`: Apply modal K rule automatically
    - `temporal_k_tactic`: Apply temporal K rule automatically
    - `mp_chain`: Chain modus ponens applications
    - `assumption_search`: Find assumptions in context
 
-2. Basic proof search (`ProofChecker/Automation/ProofSearch.lean`):
+2. Basic proof search (`Logos/Automation/ProofSearch.lean`):
    - Bounded depth-first search (depth ≤ 5)
    - Simple heuristics (prefer axioms over complex rules)
 
@@ -478,7 +478,7 @@ More complex but demonstrates bimodal interaction.
    - Weak completeness: `⊨ φ → ⊢ φ`
    - Strong completeness: `Γ ⊨ φ → Γ ⊢ φ`
 
-**File**: `ProofChecker/Metalogic/Completeness.lean` (~500-700 lines)
+**File**: `Logos/Metalogic/Completeness.lean` (~500-700 lines)
 
 **Challenge**: Most mathematically complex component; requires advanced LEAN skills.
 
@@ -498,7 +498,7 @@ Per CLAUDE.md standards, follow strict TDD:
 
 **Phase 1 Tests** (Syntax):
 ```lean
--- ProofCheckerTest/Syntax/FormulaTest.lean
+-- LogosTest/Syntax/FormulaTest.lean
 
 -- Test formula construction
 def test_atom_construction : Formula := Formula.atom "p"
@@ -520,7 +520,7 @@ example : (Formula.atom "p") ≠ (Formula.atom "q") := by decide
 
 **Phase 2 Tests** (Proof System):
 ```lean
--- ProofCheckerTest/ProofSystem/DerivationTest.lean
+-- LogosTest/ProofSystem/DerivationTest.lean
 
 -- Test axiom application
 example : ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")) := by
@@ -542,7 +542,7 @@ example (p : Formula) : [p.box] ⊢ p.box.box := by
 
 **Phase 3 Tests** (Semantics):
 ```lean
--- ProofCheckerTest/Semantics/TaskFrameTest.lean
+-- LogosTest/Semantics/TaskFrameTest.lean
 
 -- Test task frame construction
 def test_frame : TaskFrame := {
@@ -554,7 +554,7 @@ def test_frame : TaskFrame := {
   compositionality := by intros; simp [add_assoc]
 }
 
--- ProofCheckerTest/Semantics/TruthTest.lean
+-- LogosTest/Semantics/TruthTest.lean
 
 -- Test truth evaluation for atoms
 example (M : TaskModel test_frame) (τ : WorldHistory test_frame) (t : ℤ) :
@@ -570,7 +570,7 @@ example (M : TaskModel test_frame) (τ : WorldHistory test_frame) (t : ℤ) :
 
 **Phase 4 Tests** (Soundness):
 ```lean
--- ProofCheckerTest/Metalogic/SoundnessTest.lean
+-- LogosTest/Metalogic/SoundnessTest.lean
 
 -- Test modal T soundness
 example : valid ((Formula.atom "p").box.imp (Formula.atom "p")) :=
@@ -586,7 +586,7 @@ example (p : Formula) (h : ⊢ p) : ⊨ p :=
 **Post-MVP**: Create integration tests combining multiple modules:
 
 ```lean
--- ProofCheckerTest/Integration/EndToEndTest.lean
+-- LogosTest/Integration/EndToEndTest.lean
 
 -- Test: Derive theorem, verify it's valid, check soundness
 example : True := by
@@ -851,9 +851,9 @@ The TODO.md should organize tasks into clear phases with:
 **Tasks**:
 
 1. **Setup Syntax Directory Structure**
-   - Create `ProofChecker/Syntax.lean` (module root)
+   - Create `Logos/Syntax.lean` (module root)
    - Files: `Formula.lean`, `Context.lean`
-   - Test directory: `ProofCheckerTest/Syntax/`
+   - Test directory: `LogosTest/Syntax/`
 
 2. **Implement Formula Inductive Type** [`Syntax/Formula.lean`]
    - Define `Formula` with 6 constructors
@@ -879,7 +879,7 @@ The TODO.md should organize tasks into clear phases with:
    - **Test**: `ContextTest.lean` - context operations
 
 6. **Phase 1 Integration**
-   - Update `ProofChecker.lean` to export Syntax module
+   - Update `Logos.lean` to export Syntax module
    - Verify full module builds
    - Run all Syntax tests
    - Update TODO.md with Phase 1 completion
@@ -914,7 +914,7 @@ The TODO.md should organize tasks into clear phases with:
    - **Test**: `DerivationTest.lean` - example proofs as tests
 
 4. **Phase 2 Integration**
-   - Update `ProofChecker.lean` to export ProofSystem module
+   - Update `Logos.lean` to export ProofSystem module
    - Verify proof system builds
    - Run all ProofSystem tests
    - Update TODO.md
@@ -976,7 +976,7 @@ The TODO.md should organize tasks into clear phases with:
    - **Test**: Integration test using example
 
 8. **Phase 3 Integration**
-   - Update `ProofChecker.lean` to export Semantics module
+   - Update `Logos.lean` to export Semantics module
    - Verify semantics builds
    - Run all Semantics tests
    - Update TODO.md
@@ -1016,7 +1016,7 @@ The TODO.md should organize tasks into clear phases with:
    - Leave inference rule cases (modal_k, temporal_k, temporal_duality) as `sorry`
    - **Test**: Expand `SoundnessTest.lean` for proven cases
 
-5. **Create End-to-End Integration Test** [`ProofCheckerTest/Integration/`]
+5. **Create End-to-End Integration Test** [`LogosTest/Integration/`]
    - Test: Derive theorem using MT
    - Test: Apply soundness to get validity
    - Test: Verify validity directly in semantics
@@ -1026,7 +1026,7 @@ The TODO.md should organize tasks into clear phases with:
 6. **MVP Documentation and Cleanup**
    - Verify all public definitions have docstrings
    - Run `#lint` on all modules, fix warnings
-   - Update `ProofChecker.lean` with all exports
+   - Update `Logos.lean` with all exports
    - Write MVP completion summary in TODO.md
    - Tag git commit: `v0.1.0-mvp`
 
@@ -1149,7 +1149,7 @@ standard Hilbert-style formulation. Modal `box` and temporal
 * "Possible Worlds" paper - Source for TM logic specification
 -/
 
-namespace ProofChecker.Syntax
+namespace Logos.Syntax
 
 /-! ### Formula Definition -/
 
@@ -1249,7 +1249,7 @@ instance : DecidableEq Formula := by
   -- Similar for other cases...
   sorry  -- Complete remaining cases
 
-end ProofChecker.Syntax
+end Logos.Syntax
 ```
 
 ### 9.2 Test Template (FormulaTest.lean)
@@ -1272,11 +1272,11 @@ and formula properties.
 - Decidable equality
 -/
 
-import ProofChecker.Syntax.Formula
+import Logos.Syntax.Formula
 
-namespace ProofCheckerTest.Syntax
+namespace LogosTest.Syntax
 
-open ProofChecker.Syntax
+open Logos.Syntax
 
 /-! ### Constructor Tests -/
 
@@ -1387,7 +1387,7 @@ example (φ : Formula) :
   swap_past_future (swap_past_future φ) = φ := by
   induction φ <;> simp [swap_past_future, *]
 
-end ProofCheckerTest.Syntax
+end LogosTest.Syntax
 ```
 
 ---
@@ -1404,7 +1404,7 @@ end ProofCheckerTest.Syntax
 - [ ] `lake test` passes all tests
 - [ ] `#lint` produces zero warnings
 - [ ] All public definitions have docstrings
-- [ ] Module exported in `ProofChecker.lean`
+- [ ] Module exported in `Logos.lean`
 - [ ] TODO.md updated with completion status
 - [ ] Git commit tagged with phase name
 - [ ] Phase retrospective notes added to project log
@@ -1549,7 +1549,7 @@ end ProofCheckerTest.Syntax
 - Can apply `soundness` to connect derivation and validity
 - All 7 MVP success criteria met (Section 3.1)
 
-**This report provides the strategic foundation for systematic ProofChecker development from empty stubs to working MVP and beyond.**
+**This report provides the strategic foundation for systematic Logos development from empty stubs to working MVP and beyond.**
 
 ---
 
@@ -1557,21 +1557,21 @@ end ProofCheckerTest.Syntax
 
 | File Path | Category | Est. Lines | Complexity | Dependencies | Priority |
 |-----------|----------|------------|------------|--------------|----------|
-| `ProofChecker/Syntax/Formula.lean` | Syntax | 150 | LOW | None | P1 (MVP) |
-| `ProofChecker/Syntax/Context.lean` | Syntax | 50 | LOW | Formula | P1 (MVP) |
-| `ProofChecker/ProofSystem/Axioms.lean` | Proof | 100 | LOW | Formula | P2 (MVP) |
-| `ProofChecker/ProofSystem/Derivation.lean` | Proof | 150 | MEDIUM | Axioms, Context | P2 (MVP) |
-| `ProofChecker/Semantics/TaskFrame.lean` | Semantics | 120 | MEDIUM | None | P3 (MVP) |
-| `ProofChecker/Semantics/WorldHistory.lean` | Semantics | 180 | HIGH | TaskFrame | P3 (MVP) |
-| `ProofChecker/Semantics/TaskModel.lean` | Semantics | 80 | MEDIUM | TaskFrame | P3 (MVP) |
-| `ProofChecker/Semantics/Truth.lean` | Semantics | 150 | HIGH | TaskModel, WorldHistory, Formula | P3 (MVP) |
-| `ProofChecker/Semantics/Validity.lean` | Semantics | 100 | MEDIUM | Truth | P3 (MVP) |
-| `ProofChecker/Metalogic/Soundness.lean` | Metalogic | 200 | VERY HIGH | Derivation, Validity | P4 (MVP) |
-| `ProofChecker/Theorems/Perpetuity.lean` | Theorems | 300 | HIGH | Derivation | P6 (Post) |
-| `ProofChecker/Automation/Tactics.lean` | Automation | 200 | MEDIUM-HIGH | Derivation | P7 (Post) |
-| `ProofChecker/Automation/ProofSearch.lean` | Automation | 250 | HIGH | Tactics | P7 (Post) |
-| `ProofChecker/Metalogic/Completeness.lean` | Metalogic | 600 | VERY HIGH | Soundness | P8 (Post) |
-| `ProofChecker/Metalogic/Decidability.lean` | Metalogic | 300 | HIGH | Completeness | P8 (Post) |
+| `Logos/Syntax/Formula.lean` | Syntax | 150 | LOW | None | P1 (MVP) |
+| `Logos/Syntax/Context.lean` | Syntax | 50 | LOW | Formula | P1 (MVP) |
+| `Logos/ProofSystem/Axioms.lean` | Proof | 100 | LOW | Formula | P2 (MVP) |
+| `Logos/ProofSystem/Derivation.lean` | Proof | 150 | MEDIUM | Axioms, Context | P2 (MVP) |
+| `Logos/Semantics/TaskFrame.lean` | Semantics | 120 | MEDIUM | None | P3 (MVP) |
+| `Logos/Semantics/WorldHistory.lean` | Semantics | 180 | HIGH | TaskFrame | P3 (MVP) |
+| `Logos/Semantics/TaskModel.lean` | Semantics | 80 | MEDIUM | TaskFrame | P3 (MVP) |
+| `Logos/Semantics/Truth.lean` | Semantics | 150 | HIGH | TaskModel, WorldHistory, Formula | P3 (MVP) |
+| `Logos/Semantics/Validity.lean` | Semantics | 100 | MEDIUM | Truth | P3 (MVP) |
+| `Logos/Metalogic/Soundness.lean` | Metalogic | 200 | VERY HIGH | Derivation, Validity | P4 (MVP) |
+| `Logos/Theorems/Perpetuity.lean` | Theorems | 300 | HIGH | Derivation | P6 (Post) |
+| `Logos/Automation/Tactics.lean` | Automation | 200 | MEDIUM-HIGH | Derivation | P7 (Post) |
+| `Logos/Automation/ProofSearch.lean` | Automation | 250 | HIGH | Tactics | P7 (Post) |
+| `Logos/Metalogic/Completeness.lean` | Metalogic | 600 | VERY HIGH | Soundness | P8 (Post) |
+| `Logos/Metalogic/Decidability.lean` | Metalogic | 300 | HIGH | Completeness | P8 (Post) |
 
 **MVP Total**: ~1,280 implementation lines + ~630 test lines = 1,910 lines
 
@@ -1593,7 +1593,7 @@ end ProofCheckerTest.Syntax
 - Mathlib4 Documentation: https://leanprover-community.github.io/mathlib4_docs/
 - LEAN 4 Examples: https://github.com/leanprover/lean4/tree/master/tests
 
-### Relevant Mathlib4 Modules for ProofChecker
+### Relevant Mathlib4 Modules for Logos
 - `Mathlib.Data.Set.Basic`: Set operations for WorldHistory domains
 - `Mathlib.Algebra.Group.Defs`: OrderedAddCommGroup for Time structure
 - `Mathlib.Order.Basic`: Order relations for temporal operators

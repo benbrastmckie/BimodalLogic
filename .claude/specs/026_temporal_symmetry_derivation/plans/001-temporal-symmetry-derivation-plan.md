@@ -9,8 +9,8 @@
 - **Estimated Hours**: 14-19 hours
 - **Complexity Score**: 120
 - **Structure Level**: 0
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
-- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Metalogic/Soundness.lean
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
+- **Lean File**: /home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Metalogic/Soundness.lean
 - **Research Reports**:
   - [Temporal Symmetry Analysis](../reports/001-temporal-symmetry-analysis.md)
 - **Child Plans**:
@@ -114,13 +114,13 @@ Tasks:
 - [x] Add neg_neg_eq theorem: `-(-t) = t`
 - [x] Add neg_injective theorem: `-s = -t ↔ s = t`
 - [ ] Add negated_domain helper definition and lemmas
-- [x] Run `lake build ProofChecker.Semantics.WorldHistory` to verify
+- [x] Run `lake build Logos.Semantics.WorldHistory` to verify
 - [ ] Add test cases in WorldHistoryTest.lean
 
 Testing:
 ```bash
-lake build ProofChecker.Semantics.WorldHistory
-grep -c "neg_lt_neg_iff\|neg_le_neg_iff" ProofChecker/Semantics/WorldHistory.lean
+lake build Logos.Semantics.WorldHistory
+grep -c "neg_lt_neg_iff\|neg_le_neg_iff" Logos/Semantics/WorldHistory.lean
 ```
 
 **Expected Duration**: 3-4 hours
@@ -149,7 +149,7 @@ dependencies: [1]
 - [x] `swap_axiom_tf_valid`: TF axiom swap validity (time_shift_preserves_truth)
 - [x] `axiom_swap_valid`: Master theorem for all 10 TM axioms
 - [x] `derivable_implies_swap_valid`: Main theorem via derivation induction
-- [x] Run `lake build ProofChecker.Semantics.Truth` to verify - builds successfully
+- [x] Run `lake build Logos.Semantics.Truth` to verify - builds successfully
 
 **See**: [Plan 028](../../028_temporal_symmetry_phase2_plan/plans/001-temporal-symmetry-phase2-plan-plan.md) for detailed implementation
 
@@ -170,13 +170,13 @@ Tasks:
 - [x] Apply valid_swap_of_valid to complete proof
 - [x] Remove sorry at line 642
 - [x] Update docstring to document proof strategy
-- [x] Run `lake build ProofChecker.Metalogic.Soundness` to verify
+- [x] Run `lake build Logos.Metalogic.Soundness` to verify
 - [x] Verify zero sorry in temporal_duality case
 
 Testing:
 ```bash
-lake build ProofChecker.Metalogic.Soundness
-grep -n "sorry" ProofChecker/Metalogic/Soundness.lean
+lake build Logos.Metalogic.Soundness
+grep -n "sorry" Logos/Metalogic/Soundness.lean
 lake build
 ```
 
@@ -208,7 +208,7 @@ Tasks:
 Testing:
 ```bash
 lake build
-grep -c "sorry" ProofChecker/Metalogic/Soundness.lean
+grep -c "sorry" Logos/Metalogic/Soundness.lean
 # Output: 0
 ```
 
@@ -249,7 +249,7 @@ grep -c "sorry" ProofChecker/Metalogic/Soundness.lean
 ## Dependencies
 
 ### External Dependencies
-- None (uses only LEAN 4 standard library and existing ProofChecker modules)
+- None (uses only LEAN 4 standard library and existing Logos modules)
 
 ### Internal Dependencies
 - Phase 1 must complete before Phase 2 (order reversal lemmas needed)
@@ -290,8 +290,8 @@ The original plan (formula induction) was impossible due to:
 
 ### Files Modified
 
-- `ProofChecker/Semantics/Truth.lean` - Swap validity theorems
-- `ProofChecker/Metalogic/Soundness.lean` - Temporal duality case complete
+- `Logos/Semantics/Truth.lean` - Swap validity theorems
+- `Logos/Metalogic/Soundness.lean` - Temporal duality case complete
 - `Documentation/ProjectInfo/KNOWN_LIMITATIONS.md` - Section 1.7 COMPLETE
 - `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` - Temporal duality complete
 - `TODO.md` - Task 5b marked COMPLETE
@@ -300,5 +300,5 @@ The original plan (formula induction) was impossible due to:
 
 ```bash
 lake build  # Build completed successfully
-grep -c "sorry" ProofChecker/Metalogic/Soundness.lean  # Output: 0
+grep -c "sorry" Logos/Metalogic/Soundness.lean  # Output: 0
 ```

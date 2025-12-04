@@ -1,22 +1,22 @@
-# Development Standards Plan for ProofChecker
+# Development Standards Plan for Logos
 
 ## Metadata
 - **Date**: 2025-12-01
 - **Agent**: research-specialist
-- **Topic**: Development standards plan for ProofChecker project
+- **Topic**: Development standards plan for Logos project
 - **Report Type**: research-and-plan
 - **Complexity**: 3
 
 ## Executive Summary
 
-This report synthesizes research from three foundational sources to create a comprehensive development standards plan for the ProofChecker LEAN 4 package: (1) ProofChecker package specifications defining the TM bimodal logic system, (2) LEAN 4 best practices from the mature ecosystem including Mathlib4 style guide and FormalizedFormalLogic/Foundation modal logic patterns, and (3) coding/documentation standards from the ModelChecker project. The plan identifies 12 critical standards documents needed across three categories: LEAN-specific standards (Lake configuration, code style, tactic development), project organization standards (directory structure, testing, documentation), and maintenance standards (CLAUDE.md configuration, quality metrics, CI/CD). These documents will be distributed between `src/docs/` (code-specific) and `docs/` (general project documentation), creating a streamlined development workflow that leverages LEAN 4's mature tooling while maintaining consistency with the broader Logos project ecosystem.
+This report synthesizes research from three foundational sources to create a comprehensive development standards plan for the Logos LEAN 4 package: (1) Logos package specifications defining the TM bimodal logic system, (2) LEAN 4 best practices from the mature ecosystem including Mathlib4 style guide and FormalizedFormalLogic/Foundation modal logic patterns, and (3) coding/documentation standards from the ModelChecker project. The plan identifies 12 critical standards documents needed across three categories: LEAN-specific standards (Lake configuration, code style, tactic development), project organization standards (directory structure, testing, documentation), and maintenance standards (CLAUDE.md configuration, quality metrics, CI/CD). These documents will be distributed between `src/docs/` (code-specific) and `docs/` (general project documentation), creating a streamlined development workflow that leverages LEAN 4's mature tooling while maintaining consistency with the broader Logos project ecosystem.
 
 ## Findings
 
 ### 1. Current Project State Analysis
 
 **Existing Structure:**
-- Root: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/`
+- Root: `/home/benjamin/Documents/Philosophy/Projects/Logos/`
 - Key directories:
   - `docs/` - Contains `architecture.md` (copied from Logos, has broken links)
   - `src/docs/` - Empty except for placeholder `README.md`
@@ -36,12 +36,12 @@ This report synthesizes research from three foundational sources to create a com
 
 ### 2. LEAN 4 Ecosystem Requirements (from Report 002)
 
-**Source:** `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/002_lean4_proof_checker_best_practices/reports/001-research-the-best-practices-online-for-d.md`
+**Source:** `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/002_lean4_proof_checker_best_practices/reports/001-research-the-best-practices-online-for-d.md`
 
 #### 2.1 Critical LEAN 4 Standards
 
 **Lake Package Manager (Lines 76-157):**
-- Standard directory layout: `ProofChecker/` root with `.lean` library root file
+- Standard directory layout: `Logos/` root with `.lean` library root file
 - Module namespace mirrors directory structure
 - `lakefile.toml` configuration with metadata, dependencies, build settings
 - `.lake/` directory for build artifacts (must be gitignored)
@@ -68,8 +68,8 @@ This report synthesizes research from three foundational sources to create a com
 - **FormalizedFormalLogic/Foundation** is the most comprehensive modal logic implementation
 - Provides Kripke semantics formalization patterns
 - Includes completeness theorem structure
-- ProofChecker should adopt their patterns for consistency
-- **No existing temporal logic implementations found** - ProofChecker will be among the first
+- Logos should adopt their patterns for consistency
+- **No existing temporal logic implementations found** - Logos will be among the first
 
 #### 2.2 Development Workflow Requirements
 
@@ -92,9 +92,9 @@ This report synthesizes research from three foundational sources to create a com
 
 ### 3. Python/General Standards from ModelChecker (from Report 000)
 
-**Source:** `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_no_name_error/reports/001-i-just-created-this-proof-checker-repo-a.md`
+**Source:** `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/000_no_name_error/reports/001-i-just-created-this-proof-checker-repo-a.md`
 
-**Note:** While ModelChecker uses Python and ProofChecker uses LEAN 4, several high-level principles are language-agnostic:
+**Note:** While ModelChecker uses Python and Logos uses LEAN 4, several high-level principles are language-agnostic:
 
 #### 3.1 Core Development Principles (Lines 20-111)
 
@@ -187,9 +187,9 @@ Project/
 - Document repeated commands
 - Capture architectural context
 
-### 4. ProofChecker Package Specifications (from Report 001)
+### 4. Logos Package Specifications (from Report 001)
 
-**Source:** `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/001_proof_checker_package_docs/reports/001-research-the-proof-checker-package-descr.md`
+**Source:** `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/001_proof_checker_package_docs/reports/001-research-the-proof-checker-package-descr.md`
 
 #### 4.1 Technical Architecture (Lines 59-160)
 
@@ -299,7 +299,7 @@ proof-checker/
   - `CODE_STANDARDS.md`
   - `TESTING_GUIDE.md`
   - `ARCHITECTURE.md`
-- **ProofChecker adaptation:**
+- **Logos adaptation:**
   - `LEAN_STYLE_GUIDE.md`
   - `TACTIC_DEVELOPMENT.md`
   - `MODULE_ORGANIZATION.md`
@@ -364,7 +364,7 @@ Create four foundational standards documents that developers must read before co
    - 6-month deletion window
    - Alias creation for renamed declarations
 
-**Rationale:** LEAN 4 has specific syntax and conventions that differ significantly from Python. This document codifies Mathlib4 best practices for ProofChecker.
+**Rationale:** LEAN 4 has specific syntax and conventions that differ significantly from Python. This document codifies Mathlib4 best practices for Logos.
 
 **Success Metric:** All LEAN code passes `#lint` with zero warnings.
 
@@ -389,7 +389,7 @@ Create four foundational standards documents that developers must read before co
    - Definitions and theorems
 
 4. **Library Root File** (from Report 002, Lines 82-84)
-   - `ProofChecker.lean` re-exports all public modules
+   - `Logos.lean` re-exports all public modules
    - Organizing public API
 
 **Rationale:** Clear module organization prevents architectural drift and ensures maintainability as the project grows.
@@ -418,7 +418,7 @@ Create four foundational standards documents that developers must read before co
    - Usage examples
    - Limitations documentation
 
-**Rationale:** Custom tactics are central to ProofChecker's usability. This guide ensures consistent development patterns and thorough testing.
+**Rationale:** Custom tactics are central to Logos's usability. This guide ensures consistent development patterns and thorough testing.
 
 **Success Metric:** All custom tactics have documented usage examples and passing tests.
 
@@ -556,7 +556,7 @@ Create comprehensive user documentation for external users and contributors:
    - Deprecation timeline
    - Backward compatibility (limited)
 
-**Rationale:** ProofChecker is part of Logos ecosystem; clear integration protocols enable seamless cooperation with Model-Checker.
+**Rationale:** Logos is part of Logos ecosystem; clear integration protocols enable seamless cooperation with Model-Checker.
 
 **Success Metric:** Integration examples successfully demonstrate Model-Checker coordination.
 
@@ -571,18 +571,18 @@ Create comprehensive user documentation for external users and contributors:
 2. **Update Context** (Lines 258-262)
    - Frame as standalone project with optional Logos integration
    - Remove pervasive "Logos project" references
-   - Update integration section to reflect ProofChecker perspective
+   - Update integration section to reflect Logos perspective
 
 3. **Fix Related Documentation Section**
    - Point to local files only (`docs/tutorial.md`, `src/docs/LEAN_STYLE_GUIDE.md`)
-   - Link to ProofChecker-specific resources
+   - Link to Logos-specific resources
 
 4. **Keep Technical Content**
    - LEAN code examples are correct
    - TM logic specification is accurate
    - Architecture diagrams are valid
 
-**Rationale:** Current architecture.md is copy-pasted from Logos with broken links, making it unusable for ProofChecker development.
+**Rationale:** Current architecture.md is copy-pasted from Logos with broken links, making it unusable for Logos development.
 
 **Success Metric:** All links in architecture.md resolve correctly, no references to non-existent files.
 
@@ -632,7 +632,7 @@ Create comprehensive user documentation for external users and contributors:
 **Content Structure:** (from Report 000, Lines 482-517)
 1. **Project Overview**
    ```markdown
-   # ProofChecker
+   # Logos
 
    LEAN-based formal verification system for bimodal TM logic.
 
@@ -651,9 +651,9 @@ Create comprehensive user documentation for external users and contributors:
 
 3. **Project Structure**
    ```
-   ProofChecker/
-   ├── ProofChecker.lean        # Library root
-   ├── ProofChecker/
+   Logos/
+   ├── Logos.lean        # Library root
+   ├── Logos/
    │   ├── Syntax/              # Formula types
    │   ├── ProofSystem/         # Axioms and rules
    │   ├── Semantics/           # Task semantics
@@ -679,10 +679,10 @@ Create comprehensive user documentation for external users and contributors:
    - **Lint Compliance:** All code must pass `#lint`
 
 6. **Key Packages**
-   - `ProofChecker.Syntax` - Formula construction and parsing
-   - `ProofChecker.ProofSystem` - Axioms, rules, derivations
-   - `ProofChecker.Semantics` - Task frames and truth evaluation
-   - `ProofChecker.Metalogic` - Soundness and completeness proofs
+   - `Logos.Syntax` - Formula construction and parsing
+   - `Logos.ProofSystem` - Axioms, rules, derivations
+   - `Logos.Semantics` - Task frames and truth evaluation
+   - `Logos.Metalogic` - Soundness and completeness proofs
 
 7. **Testing Architecture**
    - Unit tests: `Tests/Unit/`
@@ -716,15 +716,15 @@ Create comprehensive user documentation for external users and contributors:
 
 **Content Structure:** (from Report 002, Lines 126-157)
 ```toml
-name = "ProofChecker"
+name = "Logos"
 version = "0.1.0"
 description = "LEAN-based formal verification for bimodal TM logic"
 keywords = ["modal-logic", "temporal-logic", "proof-assistant", "formal-verification"]
 license = "Apache-2.0"
 
 [[lean_lib]]
-name = "ProofChecker"
-roots = ["ProofChecker"]
+name = "Logos"
+roots = ["Logos"]
 globs = ["."]
 
 # Build configuration
@@ -794,13 +794,13 @@ jobs:
 
 **Content Structure:** (from Report 001, Lines 264-300)
 ```markdown
-# ProofChecker
+# Logos
 
 A LEAN 4-based formal verification system for bimodal TM (Tense and Modality) logic.
 
 ## Overview
 
-ProofChecker constructs machine-checkable proofs for the Logos formal language, providing:
+Logos constructs machine-checkable proofs for the Logos formal language, providing:
 - Verified reasoning in bimodal TM logic
 - S5 modal logic (necessity and possibility)
 - Temporal logic (past and future operators)
@@ -844,8 +844,8 @@ ProofChecker constructs machine-checkable proofs for the Logos formal language, 
 
 ### Build
 ```bash
-git clone https://github.com/[username]/ProofChecker.git
-cd ProofChecker
+git clone https://github.com/[username]/Logos.git
+cd Logos
 lake build
 ```
 
@@ -857,7 +857,7 @@ lake test
 ## Quick Start
 
 ```lean
-import ProofChecker
+import Logos
 
 -- Define a modal formula
 def φ : Formula := box (atom "p")
@@ -887,7 +887,7 @@ Apache-2.0
 
 ## Citation
 
-If using ProofChecker in academic research, please cite:
+If using Logos in academic research, please cite:
 ```
 [Citation information to be added]
 ```
@@ -1029,17 +1029,17 @@ Create two additional standards documents for long-term maintenance:
 ### Primary Research Reports
 
 1. **Package Description Report**
-   - Path: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/001_proof_checker_package_docs/reports/001-research-the-proof-checker-package-descr.md`
+   - Path: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/001_proof_checker_package_docs/reports/001-research-the-proof-checker-package-descr.md`
    - Lines referenced: 1-328 (entire report)
-   - Content: ProofChecker overview, TM logic specification, architecture, integration requirements
+   - Content: Logos overview, TM logic specification, architecture, integration requirements
 
 2. **LEAN 4 Best Practices Report**
-   - Path: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/002_lean4_proof_checker_best_practices/reports/001-research-the-best-practices-online-for-d.md`
+   - Path: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/002_lean4_proof_checker_best_practices/reports/001-research-the-best-practices-online-for-d.md`
    - Lines referenced: 1-957 (entire report)
    - Content: LEAN 4 ecosystem, Lake configuration, Mathlib4 style guide, modal logic patterns, tactic development, testing strategies
 
 3. **Coding Standards Report**
-   - Path: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_no_name_error/reports/001-i-just-created-this-proof-checker-repo-a.md`
+   - Path: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/000_no_name_error/reports/001-i-just-created-this-proof-checker-repo-a.md`
    - Lines referenced: 1-607 (entire report)
    - Content: ModelChecker development principles, Python standards (adapted for LEAN), testing standards, CLAUDE.md best practices
 
@@ -1060,9 +1060,9 @@ Create two additional standards documents for long-term maintenance:
 
 ### Project Files Referenced
 
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/architecture.md` (Lines 1-52164, requires revision)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md` (currently empty)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/src/docs/README.md` (currently empty)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/architecture.md` (Lines 1-52164, requires revision)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` (currently empty)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/src/docs/README.md` (currently empty)
 
 ---
 

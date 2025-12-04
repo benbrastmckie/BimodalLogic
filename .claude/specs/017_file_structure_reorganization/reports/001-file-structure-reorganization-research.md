@@ -9,20 +9,20 @@
 
 ## Executive Summary
 
-The ProofChecker project exhibits several structural inconsistencies between documentation and actual file organization. Key issues include: (1) "aggregator" files (e.g., `Syntax.lean`, `Semantics.lean`) in `ProofChecker/ProofChecker/` that re-export subdirectory modules, creating parallel structures that confuse the directory hierarchy; (2) missing DSL.lean and other files documented in README.md and CLAUDE.md but not present in codebase; (3) inconsistent directory naming where `docs/` uses lowercase while most project directories use PascalCase; (4) test files in `ProofCheckerTest/` following the same aggregator pattern as source files. These issues create navigation confusion and violate the principle of single source of truth for module organization.
+The Logos project exhibits several structural inconsistencies between documentation and actual file organization. Key issues include: (1) "aggregator" files (e.g., `Syntax.lean`, `Semantics.lean`) in `Logos/Logos/` that re-export subdirectory modules, creating parallel structures that confuse the directory hierarchy; (2) missing DSL.lean and other files documented in README.md and CLAUDE.md but not present in codebase; (3) inconsistent directory naming where `docs/` uses lowercase while most project directories use PascalCase; (4) test files in `LogosTest/` following the same aggregator pattern as source files. These issues create navigation confusion and violate the principle of single source of truth for module organization.
 
 ## Findings
 
 ### Current State Analysis
 
-#### 1. Aggregator Files in ProofChecker/ProofChecker/
+#### 1. Aggregator Files in Logos/Logos/
 
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/`
 
 **Observed Pattern**: The main source directory contains both subdirectories AND top-level files with matching names:
 
 ```
-ProofChecker/ProofChecker/
+Logos/Logos/
 ├── Syntax/                  # Subdirectory with actual implementations
 │   ├── Formula.lean
 │   └── Context.lean
@@ -53,13 +53,13 @@ ProofChecker/ProofChecker/
 
 **Evidence from Syntax.lean** (lines 1-40):
 ```lean
-import ProofChecker.Syntax.Formula
-import ProofChecker.Syntax.Context
+import Logos.Syntax.Formula
+import Logos.Syntax.Context
 
 /-!
 # Syntax Module
 
-This module provides the syntax foundation for ProofChecker's bimodal logic TM.
+This module provides the syntax foundation for Logos's bimodal logic TM.
 
 ## Exports
 
@@ -68,13 +68,13 @@ This module provides the syntax foundation for ProofChecker's bimodal logic TM.
 ...
 -/
 
-namespace ProofChecker
+namespace Logos
 
 -- Re-export Syntax namespace for convenient access
 namespace Syntax
 end Syntax
 
-end ProofChecker
+end Logos
 ```
 
 **Analysis**: These aggregator files serve as re-export points for their corresponding subdirectories. This is a valid LEAN 4 pattern for organizing module hierarchies, but creates the appearance of duplicate structure.
@@ -108,7 +108,7 @@ end ProofChecker
 │   │   └── DSL.lean               # Domain-specific syntax macros
 ```
 
-**Actual State** (`ls ProofChecker/Syntax/`):
+**Actual State** (`ls Logos/Syntax/`):
 ```
 Context.lean
 Formula.lean
@@ -128,12 +128,12 @@ Formula.lean
 
 #### 3. Test Directory Parallel Structure
 
-**Location**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/`
+**Location**: `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/`
 
 **Observed Pattern**: Test directory mirrors the aggregator pattern:
 
 ```
-ProofCheckerTest/
+LogosTest/
 ├── Syntax/                 # Test subdirectory
 │   ├── FormulaTest.lean
 │   └── ContextTest.lean
@@ -149,10 +149,10 @@ ProofCheckerTest/
 └── ...
 ```
 
-**From ProofCheckerTest/Syntax.lean** (lines 1-12):
+**From LogosTest/Syntax.lean** (lines 1-12):
 ```lean
-import ProofCheckerTest.Syntax.FormulaTest
-import ProofCheckerTest.Syntax.ContextTest
+import LogosTest.Syntax.FormulaTest
+import LogosTest.Syntax.ContextTest
 
 /-!
 # Syntax Test Module
@@ -160,8 +160,8 @@ import ProofCheckerTest.Syntax.ContextTest
 Tests for the Syntax module (Formula and Context).
 -/
 
-namespace ProofCheckerTest.Syntax
-end ProofCheckerTest.Syntax
+namespace LogosTest.Syntax
+end LogosTest.Syntax
 ```
 
 **Analysis**: The test suite replicates the same aggregator pattern as the main source. This is consistent but adds to the confusion about which files are "real" implementations vs. organizational conveniences.
@@ -171,8 +171,8 @@ end ProofCheckerTest.Syntax
 **Issue**: The `docs/` directory uses lowercase naming while most project directories use PascalCase or specific naming conventions.
 
 **Current Directory Naming**:
-- `ProofChecker/` - PascalCase (LEAN library convention)
-- `ProofCheckerTest/` - PascalCase (LEAN library convention)
+- `Logos/` - PascalCase (LEAN library convention)
+- `LogosTest/` - PascalCase (LEAN library convention)
 - `Archive/` - PascalCase (LEAN library convention)
 - `Counterexamples/` - PascalCase (LEAN library convention)
 - `docs/` - lowercase (common convention for documentation)
@@ -232,42 +232,42 @@ Documentation/
 
 From analyzing import statements in the codebase:
 
-1. **Library Root** (`ProofChecker.lean` lines 1-7):
+1. **Library Root** (`Logos.lean` lines 1-7):
 ```lean
 -- Re-export public API
-import ProofChecker.Syntax
-import ProofChecker.ProofSystem
-import ProofChecker.Semantics
-import ProofChecker.Metalogic
-import ProofChecker.Theorems
-import ProofChecker.Automation
+import Logos.Syntax
+import Logos.ProofSystem
+import Logos.Semantics
+import Logos.Metalogic
+import Logos.Theorems
+import Logos.Automation
 ```
 
 The root file imports the aggregator files, which in turn import the subdirectory files.
 
-2. **Aggregator Pattern** (`ProofChecker/Semantics.lean` lines 1-5):
+2. **Aggregator Pattern** (`Logos/Semantics.lean` lines 1-5):
 ```lean
-import ProofChecker.Semantics.TaskFrame
-import ProofChecker.Semantics.WorldHistory
-import ProofChecker.Semantics.TaskModel
-import ProofChecker.Semantics.Truth
-import ProofChecker.Semantics.Validity
+import Logos.Semantics.TaskFrame
+import Logos.Semantics.WorldHistory
+import Logos.Semantics.TaskModel
+import Logos.Semantics.Truth
+import Logos.Semantics.Validity
 ```
 
 3. **Direct Imports in Implementation Files**:
 Most implementation files import directly from subdirectories, bypassing aggregators:
 
-- `ProofChecker/Semantics/Truth.lean` lines 1-3:
+- `Logos/Semantics/Truth.lean` lines 1-3:
 ```lean
-import ProofChecker.Semantics.TaskModel
-import ProofChecker.Semantics.WorldHistory
-import ProofChecker.Syntax.Formula
+import Logos.Semantics.TaskModel
+import Logos.Semantics.WorldHistory
+import Logos.Syntax.Formula
 ```
 
-- `ProofChecker/Metalogic/Soundness.lean` lines 1-2:
+- `Logos/Metalogic/Soundness.lean` lines 1-2:
 ```lean
-import ProofChecker.ProofSystem.Derivation
-import ProofChecker.Semantics.Validity
+import Logos.ProofSystem.Derivation
+import Logos.Semantics.Validity
 ```
 
 **Conclusion**: The aggregator files are organizational conveniences for the public API. Internal implementation files import directly from subdirectories. This is standard LEAN 4 practice.
@@ -276,16 +276,16 @@ import ProofChecker.Semantics.Validity
 
 **From lakefile.toml** (lines 1-21):
 ```toml
-name = "ProofChecker"
+name = "Logos"
 version = "0.1.0"
 keywords = ["logic", "modal-logic", "temporal-logic", "proof-system", "lean4"]
 license = "MIT"
 
 [[lean_lib]]
-name = "ProofChecker"
+name = "Logos"
 
 [[lean_lib]]
-name = "ProofCheckerTest"
+name = "LogosTest"
 
 [[lean_lib]]
 name = "Archive"
@@ -295,7 +295,7 @@ name = "Counterexamples"
 
 [[lean_exe]]
 name = "test"
-root = "ProofCheckerTest.Main"
+root = "LogosTest.Main"
 ```
 
 **Analysis**: Lake recognizes libraries by top-level directory names. The aggregator pattern is transparent to Lake - it only cares about the library name matching the directory.
@@ -312,20 +312,20 @@ root = "ProofCheckerTest.Main"
 ```markdown
 ### File Organization Pattern
 
-ProofChecker uses LEAN 4's aggregator pattern for module organization:
+Logos uses LEAN 4's aggregator pattern for module organization:
 
-- **Subdirectories** (e.g., `ProofChecker/Syntax/`) contain actual implementations
-- **Aggregator files** (e.g., `ProofChecker/Syntax.lean`) re-export subdirectory modules for public API
-- **Library root** (`ProofChecker.lean`) imports all aggregator files
+- **Subdirectories** (e.g., `Logos/Syntax/`) contain actual implementations
+- **Aggregator files** (e.g., `Logos/Syntax.lean`) re-export subdirectory modules for public API
+- **Library root** (`Logos.lean`) imports all aggregator files
 
 Example:
-- `ProofChecker/Syntax/Formula.lean` - Implementation of Formula type
-- `ProofChecker/Syntax.lean` - Re-exports Formula and other Syntax modules
-- `ProofChecker.lean` - Re-exports all top-level modules
+- `Logos/Syntax/Formula.lean` - Implementation of Formula type
+- `Logos/Syntax.lean` - Re-exports Formula and other Syntax modules
+- `Logos.lean` - Re-exports all top-level modules
 
 Users can import either:
-- `import ProofChecker` - Everything via aggregators (recommended for external use)
-- `import ProofChecker.Syntax.Formula` - Specific module (for internal development)
+- `import Logos` - Everything via aggregators (recommended for external use)
+- `import Logos.Syntax.Formula` - Specific module (for internal development)
 ```
 
 ### 2. Audit and Sync Documentation with Actual Files
@@ -353,7 +353,7 @@ Users can import either:
 **Evidence of DSL References**:
 - README.md line 184: "└── DSL.lean            # Domain-specific syntax"
 - CLAUDE.md line 55: "└── DSL.lean            # Domain-specific syntax"
-- ProofChecker/Syntax.lean lines 10-13: Mentions "Derived operators" and "Helper functions"
+- Logos/Syntax.lean lines 10-13: Mentions "Derived operators" and "Helper functions"
 
 ### 4. Consider Documentation Directory Reorganization
 
@@ -398,22 +398,22 @@ Documentation/
 ```markdown
 ## Aggregator Files vs Implementation Files
 
-ProofChecker uses two types of `.lean` files:
+Logos uses two types of `.lean` files:
 
 ### Implementation Files (in subdirectories)
 - Contain actual type definitions, functions, theorems
-- Located in subdirectories: `ProofChecker/Syntax/`, `ProofChecker/Semantics/`, etc.
+- Located in subdirectories: `Logos/Syntax/`, `Logos/Semantics/`, etc.
 - Imported directly by other implementation files
 
 ### Aggregator Files (in parent directories)
 - Re-export modules from subdirectories
-- Located at: `ProofChecker/Syntax.lean`, `ProofChecker/Semantics.lean`, etc.
+- Located at: `Logos/Syntax.lean`, `Logos/Semantics.lean`, etc.
 - Provide convenient single-import access to all submodules
 - Used by library root and external consumers
 
 ### Example Structure
 ```
-ProofChecker/
+Logos/
 ├── Syntax.lean           ← Aggregator: imports from Syntax/ subdirectory
 ├── Syntax/               ← Implementation directory
 │   ├── Formula.lean      ← Implementation: defines Formula type
@@ -432,9 +432,9 @@ ProofChecker/
 ## Project Structure
 
 ```
-ProofChecker/
-├── ProofChecker.lean           # Library root (re-exports all public modules)
-├── ProofChecker/               # Main source directory
+Logos/
+├── Logos.lean           # Library root (re-exports all public modules)
+├── Logos/               # Main source directory
 │   ├── Syntax.lean             # [1] Aggregator for Syntax modules
 │   ├── Syntax/                 # Implementation directory
 │   │   ├── Formula.lean        # Core formula inductive type
@@ -499,26 +499,26 @@ For each documented-but-missing file, make a decision:
 ### Files Analyzed
 
 **Documentation Files**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md` (lines 1-291)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md` (lines 1-267)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/MODULE_ORGANIZATION.md` (lines 1-422)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` (lines 1-291)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md` (lines 1-267)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/MODULE_ORGANIZATION.md` (lines 1-422)
 
 **Source Structure**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/` (directory tree)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax.lean` (lines 1-40)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics.lean` (lines 1-40)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/Derivation.lean` (lines 1-50)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/` (directory tree)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax.lean` (lines 1-40)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics.lean` (lines 1-40)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/Derivation.lean` (lines 1-50)
 
 **Test Structure**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/` (directory tree)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Syntax.lean` (lines 1-12)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/` (directory tree)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Syntax.lean` (lines 1-12)
 
 **Build Configuration**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/lakefile.toml` (lines 1-21)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/lakefile.toml` (lines 1-21)
 
 **Import Analysis**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker.lean` (lines 1-58)
-- Import statements across 20+ LEAN files in ProofChecker/ directory
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos.lean` (lines 1-58)
+- Import statements across 20+ LEAN files in Logos/ directory
 
 ### External References
 

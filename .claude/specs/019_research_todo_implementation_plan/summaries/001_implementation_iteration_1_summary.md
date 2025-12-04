@@ -15,12 +15,12 @@ This iteration performed initial analysis and discovery for the systematic TODO 
 
 **Findings**:
 1. **lake test**: No test driver configured in lakefile.toml
-   - Current status: `error: ProofChecker: no test driver configured`
+   - Current status: `error: Logos: no test driver configured`
    - Test files exist but need proper configuration
    - CI flag at line 45 should remain until test driver configured
 
 2. **lake lint**: No lint driver configured in lakefile.toml
-   - Current status: `error: ProofChecker: no lint driver configured`
+   - Current status: `error: Logos: no lint driver configured`
    - CI flag at line 49 should remain until lint driver configured
 
 3. **lake build**: WORKS successfully
@@ -59,10 +59,10 @@ This iteration performed initial analysis and discovery for the systematic TODO 
 **Estimated Effort**: 10-15 hours
 **Critical Dependency**: Blocks P1-P2 and P4-P6 perpetuity proofs
 **Files**:
-- ProofChecker/ProofSystem/Axioms.lean (add K, S axioms)
-- ProofChecker/Theorems/Perpetuity.lean (prove imp_trans, contraposition helpers)
-- ProofChecker/ProofSystem/Derivation.lean (integrate new axioms)
-- ProofCheckerTest/ProofSystem/AxiomsTest.lean (write tests)
+- Logos/ProofSystem/Axioms.lean (add K, S axioms)
+- Logos/Theorems/Perpetuity.lean (prove imp_trans, contraposition helpers)
+- Logos/ProofSystem/Derivation.lean (integrate new axioms)
+- LogosTest/ProofSystem/AxiomsTest.lean (write tests)
 
 **Scope**: Requires understanding of:
 - LEAN 4 propositional logic encoding
@@ -114,8 +114,8 @@ This iteration performed initial analysis and discovery for the systematic TODO 
 ### Current Test Infrastructure
 
 **Existing**:
-- ProofCheckerTest/Main.lean: Test entry point (minimal)
-- ProofCheckerTest/ProofCheckerTest.lean: Test suite root
+- LogosTest/Main.lean: Test entry point (minimal)
+- LogosTest/LogosTest.lean: Test suite root
 - Test directory structure exists
 - No actual test implementations found
 
@@ -148,7 +148,7 @@ Overall ≥85% for Layer 0 completion.
 
 ### Immediate Next Steps (Phase 1 Continuation)
 1. **Task 1.2-1.3**: Add propositional axioms K and S (10-15 hours)
-   - Study ProofChecker/ProofSystem/Axioms.lean structure
+   - Study Logos/ProofSystem/Axioms.lean structure
    - Implement K axiom: `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))`
    - Implement S axiom: `φ → (ψ → φ)`
    - Prove imp_trans and contraposition helpers
@@ -218,7 +218,7 @@ This allows incremental progress with checkpoints after each milestone.
 
 ## Artifacts Created
 
-1. **This Summary**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/summaries/001_implementation_iteration_1_summary.md`
+1. **This Summary**: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/summaries/001_implementation_iteration_1_summary.md`
 2. **CI Audit Findings**: Documented in this summary
 3. **Codebase Metrics**: 20 files, 37 sorries, 117 axioms, build passing
 

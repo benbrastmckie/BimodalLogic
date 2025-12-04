@@ -6,7 +6,7 @@
 - **Scope**: Create systematic task tracking file at project root from research analysis
 - **Estimated Phases**: 5
 - **Estimated Hours**: 3-4 hours
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Status**: [COMPLETE]
 - **Structure Level**: 0
 - **Complexity Score**: 32.5
@@ -15,9 +15,9 @@
 
 ## Overview
 
-This plan creates a comprehensive TODO.md file at the project root that serves as the central task tracking system for ProofChecker development. The TODO.md will organize tasks by priority (High/Medium/Low), track dependencies between tasks, maintain a registry of all `sorry` placeholders requiring resolution, document missing files and documentation gaps, and provide actionable next steps for systematic project development.
+This plan creates a comprehensive TODO.md file at the project root that serves as the central task tracking system for Logos development. The TODO.md will organize tasks by priority (High/Medium/Low), track dependencies between tasks, maintain a registry of all `sorry` placeholders requiring resolution, document missing files and documentation gaps, and provide actionable next steps for systematic project development.
 
-**Deliverable**: Single file `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md`
+**Deliverable**: Single file `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md`
 
 ## Research Summary
 
@@ -41,7 +41,7 @@ The repository state analysis report provides detailed findings:
 **Missing Files**:
 - Archive/ModalProofs.lean (referenced in CLAUDE.md, README.md)
 - Archive/TemporalProofs.lean (referenced in CLAUDE.md, README.md)
-- ProofChecker/Metalogic/Decidability.lean (planned, documented but not created)
+- Logos/Metalogic/Decidability.lean (planned, documented but not created)
 
 **Technical Debt**:
 - Propositional reasoning infrastructure missing (K/S axioms needed for P1-P2)
@@ -59,7 +59,7 @@ The repository state analysis report provides detailed findings:
 - Total Layer 0 completion: 155-215 hours
 
 ## Success Criteria
-- [ ] TODO.md file created at `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md`
+- [ ] TODO.md file created at `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md`
 - [ ] File contains all 41 `sorry` placeholders with line references and resolution approaches
 - [ ] Tasks organized by priority levels (High/Medium/Low) matching research recommendations
 - [ ] Dependency graph section shows task ordering and prerequisites
@@ -138,7 +138,7 @@ dependencies: []
 **Complexity**: Low
 
 **Tasks**:
-- [x] Create file at `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md`
+- [x] Create file at `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md`
 - [x] Add overview section explaining purpose and organization
 - [x] Add section headers: High/Medium/Low Priority, Sorry Registry, Missing Files, Dependencies, CI Debt, Progress
 - [x] Add cross-references to IMPLEMENTATION_STATUS.md and KNOWN_LIMITATIONS.md
@@ -147,9 +147,9 @@ dependencies: []
 **Testing**:
 ```bash
 # Verify file exists and has structure
-test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md
-grep -q "## High Priority Tasks" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md
-grep -q "## Sorry Placeholder Registry" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md
+test -f /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md
+grep -q "## High Priority Tasks" /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md
+grep -q "## Sorry Placeholder Registry" /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md
 ```
 
 **Expected Duration**: 0.5 hours
@@ -167,21 +167,21 @@ dependencies: [1]
   - Lines: 45, 49, 77, 86
   - Action: Audit `lake test`, `lake lint`, `lake build :docs` and remove flags if working
 - [x] Add "Add Propositional Axioms" task (10-15 hours)
-  - File: `ProofChecker/ProofSystem/Axioms.lean`
+  - File: `Logos/ProofSystem/Axioms.lean`
   - Action: Add K axiom `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))` and S axiom `φ → (ψ → φ)`
   - Dependency: Unblocks P1-P2 in Perpetuity.lean
 - [x] Add "Complete Archive Examples" task (5-10 hours)
   - Files: `Archive/ModalProofs.lean`, `Archive/TemporalProofs.lean`
   - Action: Create missing example files, update IMPLEMENTATION_STATUS.md
 - [x] Add "Create TODO.md" task (2-3 hours) - mark as COMPLETE after this plan executes
-  - File: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md`
+  - File: `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md`
   - Action: This plan
 - [x] Format each task with: Title, Effort, Files, Dependencies, Blocking status
 
 **Testing**:
 ```bash
 # Verify high priority section populated
-TASK_COUNT=$(grep -c "^###" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md | grep -A 50 "High Priority")
+TASK_COUNT=$(grep -c "^###" /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md | grep -A 50 "High Priority")
 [ "$TASK_COUNT" -ge 4 ] || echo "Missing high priority tasks"
 ```
 
@@ -196,18 +196,18 @@ dependencies: [1, 2]
 
 **Tasks**:
 - [x] Add "Complete Soundness Proofs" task (15-20 hours)
-  - File: `ProofChecker/Metalogic/Soundness.lean`
+  - File: `Logos/Metalogic/Soundness.lean`
   - Lines: 252 (TL), 294 (MF), 324 (TF), 398 (modal_k), 416 (temporal_k), 431 (temporal_duality)
   - Action: Analyze frame constraints, add to TaskFrame or document as conditional
 - [x] Add "Complete Perpetuity Proofs" task (20-30 hours)
-  - File: `ProofChecker/Theorems/Perpetuity.lean`
+  - File: `Logos/Theorems/Perpetuity.lean`
   - Lines: 225 (P4), 252 (P5), 280 (P6)
   - Dependencies: Requires propositional axioms from high priority
 - [x] Add "Implement Core Automation" task (40-60 hours)
-  - Files: `ProofChecker/Automation/Tactics.lean`, `ProofChecker/Automation/ProofSearch.lean`
+  - Files: `Logos/Automation/Tactics.lean`, `Logos/Automation/ProofSearch.lean`
   - Action: Implement 3-4 most useful tactics (apply_axiom, modal_t, tm_auto)
 - [x] Add "Fix WorldHistory Universal Helper" task (1-2 hours)
-  - File: `ProofChecker/Semantics/WorldHistory.lean`
+  - File: `Logos/Semantics/WorldHistory.lean`
   - Line: 75
   - Action: Prove `respects_task` for universal history
 - [x] Format each task with effort estimates and dependency links
@@ -215,8 +215,8 @@ dependencies: [1, 2]
 **Testing**:
 ```bash
 # Verify medium priority section populated
-grep -q "Complete Soundness Proofs" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md
-grep -q "Complete Perpetuity Proofs" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md
+grep -q "Complete Soundness Proofs" /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md
+grep -q "Complete Perpetuity Proofs" /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md
 ```
 
 **Expected Duration**: 1 hour
@@ -230,11 +230,11 @@ dependencies: [1, 2, 3]
 
 **Tasks**:
 - [x] Add "Begin Completeness Proofs" task (70-90 hours)
-  - File: `ProofChecker/Metalogic/Completeness.lean`
+  - File: `Logos/Metalogic/Completeness.lean`
   - Action: Implement canonical model construction, prove truth lemma
   - 11 axiom declarations need real proofs
 - [x] Add "Create Decidability Module" task (40-60 hours)
-  - File: `ProofChecker/Metalogic/Decidability.lean` (does not exist)
+  - File: `Logos/Metalogic/Decidability.lean` (does not exist)
   - Action: Implement tableau method, satisfiability decision procedure
 - [x] Add "Plan Layer 1/2/3 Extensions" task (research phase)
   - Action: Design counterfactual, epistemic, normative operators
@@ -244,8 +244,8 @@ dependencies: [1, 2, 3]
 **Testing**:
 ```bash
 # Verify low priority section exists
-grep -q "## Low Priority Tasks" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md
-grep -q "Begin Completeness Proofs" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md
+grep -q "## Low Priority Tasks" /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md
+grep -q "Begin Completeness Proofs" /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md
 ```
 
 **Expected Duration**: 0.5 hours
@@ -266,7 +266,7 @@ dependencies: [1, 2, 3, 4]
 - [x] Populate "Missing Files" section
   - Archive/ModalProofs.lean - referenced in CLAUDE.md line 494, README.md line 214
   - Archive/TemporalProofs.lean - referenced in CLAUDE.md line 499, README.md line 215
-  - ProofChecker/Metalogic/Decidability.lean - planned in docs
+  - Logos/Metalogic/Decidability.lean - planned in docs
   - Add creation priority and estimated effort for each
 - [x] Populate "Dependency Graph" section
   - Extract dependency chains from research recommendations (lines 436-458)
@@ -284,15 +284,15 @@ dependencies: [1, 2, 3, 4]
 **Testing**:
 ```bash
 # Verify tracking sections populated
-SORRY_COUNT=$(grep -c "ProofChecker/.*\.lean:[0-9]" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md)
+SORRY_COUNT=$(grep -c "Logos/.*\.lean:[0-9]" /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md)
 [ "$SORRY_COUNT" -ge 40 ] || echo "Missing sorry placeholders"
 
 # Verify missing files section
-grep -q "Archive/ModalProofs.lean" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md
-grep -q "Decidability.lean" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md
+grep -q "Archive/ModalProofs.lean" /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md
+grep -q "Decidability.lean" /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md
 
 # Verify dependency graph
-grep -q "Dependency Graph" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md
+grep -q "Dependency Graph" /home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md
 ```
 
 **Expected Duration**: 1 hour
@@ -311,7 +311,7 @@ grep -q "Dependency Graph" /home/benjamin/Documents/Philosophy/Projects/ProofChe
 **Final Validation**:
 ```bash
 # Comprehensive TODO.md validation
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 
 # 1. File exists
 test -f TODO.md || { echo "FAIL: TODO.md not found"; exit 1; }
@@ -322,7 +322,7 @@ for section in "High Priority" "Medium Priority" "Low Priority" "Sorry Placehold
 done
 
 # 3. Sorry count matches research (41 total)
-SORRY_COUNT=$(grep -c "ProofChecker/.*\.lean:[0-9]" TODO.md)
+SORRY_COUNT=$(grep -c "Logos/.*\.lean:[0-9]" TODO.md)
 [ "$SORRY_COUNT" -ge 40 ] || echo "WARNING: Expected ~41 sorry entries, found $SORRY_COUNT"
 
 # 4. Missing files listed (3 total)
@@ -359,7 +359,7 @@ echo "✓ TODO.md validation complete"
 3. KNOWN_LIMITATIONS.md (for workarounds and alternatives)
 
 **Prerequisite Knowledge**:
-- Understanding of ProofChecker module structure
+- Understanding of Logos module structure
 - Familiarity with LEAN 4 `sorry` placeholder convention
 - Knowledge of CI workflow configuration
 

@@ -15,7 +15,7 @@ This report analyzes how to complete Phase 2 of the temporal symmetry derivation
 ### Location of Sorry Cases
 
 ```
-ProofChecker/Semantics/Truth.lean:
+Logos/Semantics/Truth.lean:
 - Line 589: imp case in truth_swap_of_valid_at_triple
 - Line 668: past case (subproof for h_psi_valid)
 - Line 690: future case (subproof for h_psi_valid)
@@ -125,6 +125,6 @@ The current Phase 2 approach (structural induction on formulas) is fundamentally
 
 ## References
 
-- Primary analysis: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/027_temporal_duality_sorry_resolution/reports/001-temporal-duality-sorry-resolution.md`
-- Current plan: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/026_temporal_symmetry_derivation/plans/001-temporal-symmetry-derivation-plan.md`
-- Code location: `ProofChecker/Semantics/Truth.lean` (lines 491-717)
+- Primary analysis: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/027_temporal_duality_sorry_resolution/reports/001-temporal-duality-sorry-resolution.md`
+- Current plan: `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/026_temporal_symmetry_derivation/plans/001-temporal-symmetry-derivation-plan.md`
+- Code location: `Logos/Semantics/Truth.lean` (lines 491-717)

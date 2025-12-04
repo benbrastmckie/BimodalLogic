@@ -1,42 +1,42 @@
-# Implementation Plan: ProofChecker README Introduction Update
-## Contextualizing ProofChecker within Logos Project
+# Implementation Plan: Logos README Introduction Update
+## Contextualizing Logos within Logos Project
 
 ## Metadata
 - **Date**: 2025-12-02
-- **Feature**: Update ProofChecker and Logos documentation to better contextualize ProofChecker within the Logos project architecture while highlighting theoretical foundations
+- **Feature**: Update Logos and Logos documentation to better contextualize Logos within the Logos project architecture while highlighting theoretical foundations
 - **Status**: [COMPLETE]
 - **Estimated Hours**: 4-6 hours
 - **Complexity Score**: 42 (3-phase documentation update with research integration)
 - **Structure Level**: 0
 - **Estimated Phases**: 3
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Research Reports**:
-  - [ProofChecker Context and Foundations](../reports/001-research-proofchecker-context-and-foundations.md)
+  - [Logos Context and Foundations](../reports/001-research-proofchecker-context-and-foundations.md)
 
 ## Overview
 
-This plan updates two key documentation files to improve ProofChecker's introduction by contextualizing it within the Logos project, highlighting theoretical foundations from academic papers, and emphasizing primary features and advantages. The updates will correct outdated information, add academic citations, and create compelling narratives for both technical and general audiences.
+This plan updates two key documentation files to improve Logos's introduction by contextualizing it within the Logos project, highlighting theoretical foundations from academic papers, and emphasizing primary features and advantages. The updates will correct outdated information, add academic citations, and create compelling narratives for both technical and general audiences.
 
 ## Research Summary
 
-The research report reveals that ProofChecker is a sophisticated LEAN 4 implementation of bimodal logic TM (Tense and Modality) with task semantics, serving as the syntactic verification pillar in the Logos three-package architecture. Key findings:
+The research report reveals that Logos is a sophisticated LEAN 4 implementation of bimodal logic TM (Tense and Modality) with task semantics, serving as the syntactic verification pillar in the Logos three-package architecture. Key findings:
 
 1. **Current Status**: Layer 0 MVP complete (63% overall: Syntax, ProofSystem, Semantics 100%; Metalogic 60%; Perpetuity 50%)
 2. **Theoretical Foundation**: Implements task semantics from "Possible Worlds" paper (Brast-McKie 2025) and hyperintensional semantics from 2021/2025 papers
 3. **Critical Gaps**: Logos proof-checker.md contains outdated claims (DSL, proof library, utility ranking) not matching actual implementation
-4. **Integration Story**: Part of dual verification architecture (ProofChecker + Model-Checker) enabling self-supervised training data generation
+4. **Integration Story**: Part of dual verification architecture (Logos + Model-Checker) enabling self-supervised training data generation
 5. **Primary Value**: Transparent reasoning, scalable oversight, unlimited training data, progressive layer strategy
 
 **Recommendations from research**:
 - Update Logos proof-checker.md with complete rewrite aligned to actual implementation
-- Enhance ProofChecker README.md with Logos context and theoretical foundations
+- Enhance Logos README.md with Logos context and theoretical foundations
 - Add links to three foundational papers (bimodal logic, hyperintensional semantics papers)
 - Emphasize dual verification training paradigm and transparent AI reasoning
 
 ## Success Criteria
 
-- [ ] Logos proof-checker.md accurately reflects ProofChecker's current Layer 0 MVP status
-- [ ] ProofChecker README.md clearly positions project within Logos three-package architecture
+- [ ] Logos proof-checker.md accurately reflects Logos's current Layer 0 MVP status
+- [ ] Logos README.md clearly positions project within Logos three-package architecture
 - [ ] Both documents include links to all three foundational papers
 - [ ] Theoretical foundations section added explaining task semantics and hyperintensional basis
 - [ ] Dual verification training paradigm clearly explained
@@ -52,7 +52,7 @@ The research report reveals that ProofChecker is a sophisticated LEAN 4 implemen
 
 **Two-Document Update Strategy**:
 1. **Logos proof-checker.md** (complete rewrite): Correct outdated content, align with actual implementation
-2. **ProofChecker README.md** (targeted enhancements): Add context without major restructuring
+2. **Logos README.md** (targeted enhancements): Add context without major restructuring
 
 **Content Hierarchy**:
 ```
@@ -75,7 +75,7 @@ Core Components/Features
 Logos Integration (enhanced section)
 ├── Three-Package Architecture
 ├── Dual Verification Training
-├── Model-Builder + Model-Checker + ProofChecker
+├── Model-Builder + Model-Checker + Logos
 └── Self-Supervised Learning Signals
 
 Primary Advantages (new/enhanced section)
@@ -125,7 +125,7 @@ Future Directions
 ### Phase 1: Update Logos proof-checker.md [COMPLETE]
 dependencies: []
 
-**Objective**: Complete rewrite of Logos proof-checker.md to align with actual ProofChecker implementation, removing outdated claims and adding accurate current status.
+**Objective**: Complete rewrite of Logos proof-checker.md to align with actual Logos implementation, removing outdated claims and adding accurate current status.
 
 **Complexity**: Medium
 
@@ -139,7 +139,7 @@ dependencies: []
 - [x] Rewrite "Logos Integration" section with accurate three-package architecture and dual verification
 - [x] Add "Primary Advantages" section (5 advantages: transparent reasoning, self-supervised training, theoretical innovation, scalable oversight, progressive layers)
 - [x] Update "Getting Started" section with real installation steps and working code examples
-- [x] Add "Documentation" section with links to ProofChecker GitHub docs
+- [x] Add "Documentation" section with links to Logos GitHub docs
 - [x] Update "Future Directions" to match Layer 1-3 extensions plan
 - [x] Remove all references to unimplemented features (proof_lib, utility ranking, DSL syntax examples, axiom minimization)
 - [x] Verify all links work (GitHub, papers, internal docs)
@@ -166,15 +166,15 @@ grep -q "Layer 0 MVP" /home/benjamin/Documents/Philosophy/Projects/Logos/docs/pa
 
 ---
 
-### Phase 2: Update ProofChecker README.md [COMPLETE]
+### Phase 2: Update Logos README.md [COMPLETE]
 dependencies: [1]
 
-**Objective**: Enhance ProofChecker README.md with Logos context, theoretical foundations, and primary advantages while maintaining existing structure.
+**Objective**: Enhance Logos README.md with Logos context, theoretical foundations, and primary advantages while maintaining existing structure.
 
 **Complexity**: Low-Medium
 
 **Tasks**:
-- [x] Read current ProofChecker README.md (file: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md)
+- [x] Read current Logos README.md (file: /home/benjamin/Documents/Philosophy/Projects/Logos/README.md)
 - [x] Create backup of current version
 - [x] Enhance opening paragraph (lines 1-3) with Logos context, transparent AI reasoning, and dual verification
 - [x] Add "Theoretical Foundations" section after "Logic TM" section (around line 50) with task semantics explanation and three paper links
@@ -190,20 +190,20 @@ dependencies: [1]
 **Testing**:
 ```bash
 # Verify file updated correctly
-test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+test -f /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 # Check paper links added
-grep -q "https://www.benbrastmckie.com/wp-content/uploads/2025/11/possible_worlds.pdf" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-grep -q "https://link.springer.com/article/10.1007/s10992-021-09612-w" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-grep -q "https://link.springer.com/article/10.1007/s10992-025-09793-8" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep -q "https://www.benbrastmckie.com/wp-content/uploads/2025/11/possible_worlds.pdf" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+grep -q "https://link.springer.com/article/10.1007/s10992-021-09612-w" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+grep -q "https://link.springer.com/article/10.1007/s10992-025-09793-8" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 # Verify new sections added
-grep -q "## Theoretical Foundations" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-grep -q "## Primary Advantages" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep -q "## Theoretical Foundations" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+grep -q "## Primary Advantages" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 # Check Logos context enhanced
-grep -q "three-package architecture" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-grep -q "dual verification" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep -q "three-package architecture" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+grep -q "dual verification" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 ```
 
 **Expected Duration**: 1-2 hours
@@ -218,9 +218,9 @@ dependencies: [1, 2]
 **Complexity**: Low
 
 **Tasks**:
-- [x] Compare Logos proof-checker.md and ProofChecker README.md for consistency
+- [x] Compare Logos proof-checker.md and Logos README.md for consistency
 - [x] Verify all three paper links work in both documents
-- [x] Check all GitHub links (ProofChecker repo, Model-Checker repo)
+- [x] Check all GitHub links (Logos repo, Model-Checker repo)
 - [x] Verify all internal documentation links work (ARCHITECTURE.md, IMPLEMENTATION_STATUS.md, etc.)
 - [x] Test code examples in Logos proof-checker.md (if possible)
 - [x] Check markdown formatting (headings, lists, code blocks, links)
@@ -249,11 +249,11 @@ curl -I -s https://link.springer.com/article/10.1007/s10992-025-09793-8 | grep -
 # Check both documents mention same key concepts
 for term in "task semantics" "dual verification" "Layer 0 MVP" "three-package"; do
   grep -q "$term" /home/benjamin/Documents/Philosophy/Projects/Logos/docs/packages/proof-checker.md
-  grep -q "$term" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+  grep -q "$term" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 done
 
 # Verify research report updated
-grep -q "001-research-proofchecker-readme-intro-plan.md" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/023_research_proofchecker_readme_intro/reports/001-research-proofchecker-context-and-foundations.md
+grep -q "001-research-proofchecker-readme-intro-plan.md" /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/023_research_proofchecker_readme_intro/reports/001-research-proofchecker-context-and-foundations.md
 ```
 
 **Expected Duration**: 30 minutes - 1 hour
@@ -290,7 +290,7 @@ Phase 3 includes cross-document consistency checks:
 
 ### Updated Files
 1. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/packages/proof-checker.md` - Complete rewrite
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md` - Targeted enhancements
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` - Targeted enhancements
 
 ### Backups Created
 - Backup current versions before editing (Phase 1 and 2 will create backups)
@@ -306,7 +306,7 @@ This plan only updates existing documentation, no new files required.
 
 ### External Dependencies
 - Access to paper URLs (verify links work)
-- Access to ProofChecker GitHub repository (for link verification)
+- Access to Logos GitHub repository (for link verification)
 - Access to Logos project directory structure
 
 ### Internal Dependencies

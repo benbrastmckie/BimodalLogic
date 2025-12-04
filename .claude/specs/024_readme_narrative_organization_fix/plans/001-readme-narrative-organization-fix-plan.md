@@ -8,7 +8,7 @@
 - **Estimated Hours**: 8-12 hours
 - **Complexity Score**: 18
 - **Structure Level**: 0
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Status**: [IN PROGRESS]
 - **Research Reports**:
   - [README Narrative Arc Analysis](../reports/001-readme-narrative-analysis.md)
@@ -86,7 +86,7 @@ L2: Status (duplicate of Implementation Status)
 L1: Opening (3 paragraphs: What/Why/How)
 L2: Quick Start (moved up - show before tell)
 L2: Core Features (capabilities only)
-L2: Why ProofChecker? (benefits and use cases)
+L2: Why Logos? (benefits and use cases)
 L2: Installation
 L2: Logic TM Specification
 L2: Implementation Status (consolidated, single detailed section)
@@ -132,8 +132,8 @@ dependencies: []
 **Complexity**: Low
 
 **Tasks**:
-- [x] Replace lines 1-3 with three-paragraph opening (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`)
-  - Paragraph 1 (What): Clear one-sentence description of ProofChecker
+- [x] Replace lines 1-3 with three-paragraph opening (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`)
+  - Paragraph 1 (What): Clear one-sentence description of Logos
   - Paragraph 2 (Why): Primary value proposition for AI reasoning
   - Paragraph 3 (How): Brief TM logic and task semantics explanation
 - [x] Keep LogicNotes reference (line 5) in new structure
@@ -142,10 +142,10 @@ dependencies: []
 **Testing**:
 ```bash
 # Verify opening structure
-head -n 10 /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+head -n 10 /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 # Check line count (should be similar, better organized)
-wc -l /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+wc -l /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 ```
 
 **Expected Duration**: 1 hour
@@ -160,7 +160,7 @@ dependencies: [1]
 **Complexity**: Medium
 
 **Tasks**:
-- [x] Create new "Architecture & Extensibility" section after Implementation Status (~line 160) (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`)
+- [x] Create new "Architecture & Extensibility" section after Implementation Status (~line 160) (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`)
   - Subsection: "Layered Operator Architecture" (Layer 0-3 definitions)
   - Format: Layer 0 (Current - MVP Complete), Layer 1-3 (Planned)
   - Reference: Link to IMPLEMENTATION_STATUS.md for roadmap
@@ -174,10 +174,10 @@ dependencies: [1]
 **Testing**:
 ```bash
 # Count layer architecture mentions (should be 1 primary + short references)
-grep -n "Layer 0\|Layer 1\|Layer 2\|Layer 3" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md | wc -l
+grep -n "Layer 0\|Layer 1\|Layer 2\|Layer 3" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md | wc -l
 
 # Verify new section exists
-grep -A 10 "Architecture & Extensibility" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep -A 10 "Architecture & Extensibility" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 ```
 
 **Expected Duration**: 2 hours
@@ -192,7 +192,7 @@ dependencies: [2]
 **Complexity**: Medium
 
 **Tasks**:
-- [x] Enhance Implementation Status section (lines 121-159) with completion percentages (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`)
+- [x] Enhance Implementation Status section (lines 121-159) with completion percentages (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`)
   - Add visual indicators: ✓ Completed, ⚠ Partial, ⚠ Infrastructure Only
   - Format: "Completed Modules (5/8 - 63%)"
   - Keep detailed breakdown
@@ -205,14 +205,14 @@ dependencies: [2]
 **Testing**:
 ```bash
 # Verify only one detailed status section exists
-grep -n "^## Implementation Status" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep -n "^## Implementation Status" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 # Verify duplicate Status section removed (lines 345-352 should not exist)
-sed -n '345,352p' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md | grep -c "^## Status"
+sed -n '345,352p' /home/benjamin/Documents/Philosophy/Projects/Logos/README.md | grep -c "^## Status"
 # Expected: 0 (section removed)
 
 # Check total line count reduction
-wc -l /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+wc -l /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 # Expected: ~340 lines (down from 353)
 ```
 
@@ -228,28 +228,28 @@ dependencies: [3]
 **Complexity**: High
 
 **Tasks**:
-- [x] Move Quick Start section from line 183 to line 10 (after opening, before Features) (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`)
-- [x] Create new "Architecture & Ecosystem" section combining: (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`)
+- [x] Move Quick Start section from line 183 to line 10 (after opening, before Features) (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`)
+- [x] Create new "Architecture & Ecosystem" section combining: (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`)
   - Layer Strategy (from Phase 2 new section)
   - Logos Integration (move from lines 7-30)
   - Theoretical Foundations (move from lines 32-51)
 - [x] Place "Architecture & Ecosystem" after Implementation Status (~line 160)
-- [x] Rewrite Features section (lines 53-61) as pure capabilities: (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`)
+- [x] Rewrite Features section (lines 53-61) as pure capabilities: (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`)
   - Remove "Partial Metalogic" (status, not feature)
   - Remove "Layered Architecture" (design, not capability)
   - Keep: Bimodal Logic TM, Task Semantics, Transparent Reasoning, Self-Supervised Training
-- [x] Rename "Primary Advantages" to "Why ProofChecker?" for clarity
+- [x] Rename "Primary Advantages" to "Why Logos?" for clarity
 - [x] Verify new section order matches target structure from Technical Design
 
 **Testing**:
 ```bash
 # Verify section order
-grep "^## " /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md | head -n 12
+grep "^## " /home/benjamin/Documents/Philosophy/Projects/Logos/README.md | head -n 12
 
 # Expected order:
 # ## Quick Start
 # ## Core Features
-# ## Why ProofChecker?
+# ## Why Logos?
 # ## Installation
 # ## Logic TM
 # ## Implementation Status
@@ -258,7 +258,7 @@ grep "^## " /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md 
 # ...
 
 # Verify Features section contains only capabilities (no status/architecture)
-sed -n '/^## Core Features/,/^## /p' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md | grep -i "partial\|layer\|mvp\|complete"
+sed -n '/^## Core Features/,/^## /p' /home/benjamin/Documents/Philosophy/Projects/Logos/README.md | grep -i "partial\|layer\|mvp\|complete"
 # Expected: No matches (pure capabilities only)
 ```
 
@@ -274,7 +274,7 @@ dependencies: [4]
 **Complexity**: Low
 
 **Tasks**:
-- [x] Restructure Documentation section (lines 208-233) into 6 categories: (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`)
+- [x] Restructure Documentation section (lines 208-233) into 6 categories: (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`)
   - Getting Started (New Users): Tutorial, Examples, Quick Reference
   - Architecture & Design: ARCHITECTURE.md, Integration Guide
   - Development (Contributing): CONTRIBUTING.md, LEAN Style Guide, Testing Standards, Tactic Development
@@ -283,7 +283,7 @@ dependencies: [4]
   - API Reference: Generated docs
 - [x] Add priority ordering (beginner docs first)
 - [x] Verify all 23 links preserved (zero information loss)
-- [x] Run final validation: check total line count (file: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`)
+- [x] Run final validation: check total line count (file: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`)
 - [x] Verify target line count: 320-330 lines (7-9% reduction from 353 lines)
 - [x] Verify all Success Criteria met (checklist above)
 - [x] Create backup of original README.md before finalizing changes
@@ -291,26 +291,26 @@ dependencies: [4]
 **Testing**:
 ```bash
 # Verify documentation categories
-grep -A 20 "^## Documentation" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md | grep "^### "
+grep -A 20 "^## Documentation" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md | grep "^### "
 # Expected: 6 category headings
 
 # Count documentation links (should be 23 preserved)
-grep -A 50 "^## Documentation" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md | grep -c "\[.*\](.*\.md)"
+grep -A 50 "^## Documentation" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md | grep -c "\[.*\](.*\.md)"
 
 # Final line count validation
-wc -l /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+wc -l /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 # Expected: 320-330 lines (target: 7-9% reduction)
 
 # Verify no duplicate sections
-grep "^## Status" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep "^## Status" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 # Expected: No matches (duplicate removed)
 
 # Verify pyramid structure (Quick Start early)
-grep -n "^## Quick Start" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep -n "^## Quick Start" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 # Expected: Line number < 50 (early in document)
 
 # Create backup before finalizing
-cp /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.backups/README_$(date +%Y%m%d_%H%M%S).md
+cp /home/benjamin/Documents/Philosophy/Projects/Logos/README.md /home/benjamin/Documents/Philosophy/Projects/Logos/.backups/README_$(date +%Y%m%d_%H%M%S).md
 ```
 
 **Expected Duration**: 2 hours
@@ -337,7 +337,7 @@ cp /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md /home/ben
 ### Automation
 ```bash
 # Comprehensive validation script
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 
 # 1. Line count check
 LINE_COUNT=$(wc -l < README.md)
@@ -402,7 +402,7 @@ echo "Validation complete. Review output above for any failures."
 ## Dependencies
 
 ### Prerequisites
-- Current README.md at `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md` (353 lines)
+- Current README.md at `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` (353 lines)
 - Research report at `../reports/001-readme-narrative-analysis.md`
 - Git for version control (enables rollback if needed)
 

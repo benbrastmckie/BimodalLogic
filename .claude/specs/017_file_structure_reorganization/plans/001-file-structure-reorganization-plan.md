@@ -6,7 +6,7 @@
 - **Scope**: Rename docs/ to Documentation/, reorganize documentation files into subdirectories, update all references in CLAUDE.md, README.md, and documentation files
 - **Estimated Phases**: 5
 - **Estimated Hours**: 12
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Status**: [COMPLETE]
 - **Complexity Score**: 165.0
 - **Structure Level**: 0
@@ -15,9 +15,9 @@
 
 ## Overview
 
-The ProofChecker project requires file structure improvements to enhance consistency and clarity. This plan addresses three main concerns:
+The Logos project requires file structure improvements to enhance consistency and clarity. This plan addresses three main concerns:
 
-1. **Documentation directory naming inconsistency**: The `docs/` directory uses lowercase naming while LEAN library directories use PascalCase (`ProofChecker/`, `ProofCheckerTest/`, `Archive/`, `Counterexamples/`). Renaming to `Documentation/` will establish uniform styling across all project directories.
+1. **Documentation directory naming inconsistency**: The `docs/` directory uses lowercase naming while LEAN library directories use PascalCase (`Logos/`, `LogosTest/`, `Archive/`, `Counterexamples/`). Renaming to `Documentation/` will establish uniform styling across all project directories.
 
 2. **Documentation file organization**: Currently, documentation files (ARCHITECTURE.md, TUTORIAL.md, etc.) live at the root of `docs/`. These should be organized into subdirectories for better categorization and navigation.
 
@@ -32,7 +32,7 @@ Based on the comprehensive research analysis:
 **Aggregator Pattern (No Action Required)**:
 - The research identified that files like `Syntax.lean`, `Semantics.lean`, etc. are aggregator files that re-export subdirectory modules
 - This is standard LEAN 4 practice for organizing module hierarchies
-- Subdirectories (`ProofChecker/Syntax/`, `ProofChecker/Semantics/`, etc.) contain actual implementations
+- Subdirectories (`Logos/Syntax/`, `Logos/Semantics/`, etc.) contain actual implementations
 - Aggregator files provide convenient single-import access to all submodules
 - This pattern is transparent to Lake build system and is the correct approach
 - **Recommendation**: Documentation should clarify this pattern but no code changes needed
@@ -100,7 +100,7 @@ Documentation/
 ```
 
 **Rationale**:
-- **UserGuide/**: User-facing documentation for understanding and using ProofChecker
+- **UserGuide/**: User-facing documentation for understanding and using Logos
 - **ProjectInfo/**: Project status, limitations, and contribution information
 - **Development/**: Developer standards and conventions (consolidates existing `docs/development/`)
 - **Reference/**: Reference materials like glossaries (consolidates existing `docs/glossary/`)
@@ -132,7 +132,7 @@ Documentation/
 ### Standards Compliance
 
 **Directory Naming (from CLAUDE.md)**:
-- LEAN library directories use PascalCase: `ProofChecker/`, `ProofCheckerTest/`, `Archive/`, `Counterexamples/`
+- LEAN library directories use PascalCase: `Logos/`, `LogosTest/`, `Archive/`, `Counterexamples/`
 - Documentation directory should match: `Documentation/` (not `docs/`)
 - Subdirectories within Documentation/ use PascalCase: `UserGuide/`, `Development/`, `ProjectInfo/`, `Reference/`
 
@@ -283,15 +283,15 @@ dependencies: [2]
 **Testing**:
 ```bash
 # Verify no old docs/ references remain
-if grep -q "docs/" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md; then
+if grep -q "docs/" /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md; then
   echo "ERROR: Old docs/ references still exist in CLAUDE.md"
-  grep -n "docs/" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+  grep -n "docs/" /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 else
   echo "✓ No old docs/ references in CLAUDE.md"
 fi
 
 # Verify new Documentation/ references exist
-DOC_REF_COUNT=$(grep -c "Documentation/" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md)
+DOC_REF_COUNT=$(grep -c "Documentation/" /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md)
 if [ "$DOC_REF_COUNT" -lt 20 ]; then
   echo "WARNING: Expected at least 20 Documentation/ references, found $DOC_REF_COUNT"
 else
@@ -300,8 +300,8 @@ fi
 
 # Verify all referenced paths exist
 echo "Checking for broken links in CLAUDE.md..."
-grep -o "Documentation/[^)]*\.md" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md | sort -u | while read path; do
-  if [ ! -f "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/$path" ]; then
+grep -o "Documentation/[^)]*\.md" /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md | sort -u | while read path; do
+  if [ ! -f "/home/benjamin/Documents/Philosophy/Projects/Logos/$path" ]; then
     echo "ERROR: Broken link in CLAUDE.md: $path"
   fi
 done
@@ -348,17 +348,17 @@ dependencies: [3]
 **Testing**:
 ```bash
 # Verify no old docs/ references in README.md
-if grep -q "docs/" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md; then
+if grep -q "docs/" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md; then
   echo "ERROR: Old docs/ references still exist in README.md"
-  grep -n "docs/" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+  grep -n "docs/" /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 else
   echo "✓ No old docs/ references in README.md"
 fi
 
 # Verify no old docs/ references in any documentation files
-if grep -r "docs/" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ 2>/dev/null; then
+if grep -r "docs/" /home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ 2>/dev/null; then
   echo "ERROR: Old docs/ references still exist in documentation files"
-  grep -rn "docs/" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/
+  grep -rn "docs/" /home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/
 else
   echo "✓ No old docs/ references in Documentation/"
 fi
@@ -366,7 +366,7 @@ fi
 # Create comprehensive link validation script
 cat > /tmp/validate_links.sh << 'EOF'
 #!/bin/bash
-PROJECT_ROOT="/home/benjamin/Documents/Philosophy/Projects/ProofChecker"
+PROJECT_ROOT="/home/benjamin/Documents/Philosophy/Projects/Logos"
 ERRORS=0
 
 # Find all markdown files and extract links
@@ -448,7 +448,7 @@ lake build || { echo "ERROR: lake build failed"; exit 1; }
 lake test || { echo "ERROR: lake test failed"; exit 1; }
 
 # Verify old docs/ removed
-if [ -d /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs ]; then
+if [ -d /home/benjamin/Documents/Philosophy/Projects/Logos/docs ]; then
   echo "ERROR: Old docs/ directory still exists"
   exit 1
 else
@@ -457,7 +457,7 @@ fi
 
 # Verify new structure exists
 for dir in Documentation/UserGuide Documentation/ProjectInfo Documentation/Development Documentation/Reference/Glossary; do
-  if [ ! -d "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/$dir" ]; then
+  if [ ! -d "/home/benjamin/Documents/Philosophy/Projects/Logos/$dir" ]; then
     echo "ERROR: Directory $dir does not exist"
     exit 1
   fi
@@ -465,10 +465,10 @@ done
 echo "✓ New Documentation/ structure verified"
 
 # Count files in each subdirectory
-USERGUIDE_COUNT=$(find /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide -maxdepth 1 -type f -name "*.md" | wc -l)
-PROJECTINFO_COUNT=$(find /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo -maxdepth 1 -type f -name "*.md" | wc -l)
-DEVELOPMENT_COUNT=$(find /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Development -maxdepth 1 -type f -name "*.md" | wc -l)
-GLOSSARY_COUNT=$(find /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Reference/Glossary -maxdepth 1 -type f -name "*.md" | wc -l)
+USERGUIDE_COUNT=$(find /home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide -maxdepth 1 -type f -name "*.md" | wc -l)
+PROJECTINFO_COUNT=$(find /home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo -maxdepth 1 -type f -name "*.md" | wc -l)
+DEVELOPMENT_COUNT=$(find /home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Development -maxdepth 1 -type f -name "*.md" | wc -l)
+GLOSSARY_COUNT=$(find /home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Reference/Glossary -maxdepth 1 -type f -name "*.md" | wc -l)
 
 echo "File counts:"
 echo "  UserGuide: $USERGUIDE_COUNT (expected 4)"
@@ -594,7 +594,7 @@ See [Known Limitations](../ProjectInfo/KNOWN_LIMITATIONS.md)
 
 **Directory Naming Conventions**:
 - PascalCase for all directory names: `Documentation/`, `UserGuide/`, `ProjectInfo/`, `Development/`, `Reference/`
-- Matches LEAN library directory conventions: `ProofChecker/`, `ProofCheckerTest/`, `Archive/`, `Counterexamples/`
+- Matches LEAN library directory conventions: `Logos/`, `LogosTest/`, `Archive/`, `Counterexamples/`
 
 ## Dependencies
 
@@ -642,11 +642,11 @@ See [Known Limitations](../ProjectInfo/KNOWN_LIMITATIONS.md)
 ### Aggregator Pattern Clarification
 
 **Important Context from Research**:
-The research identified that files like `Syntax.lean`, `Semantics.lean`, etc. at the root of `ProofChecker/ProofChecker/` are **aggregator files** that re-export subdirectory modules. This is **standard LEAN 4 practice** and is the correct organizational pattern.
+The research identified that files like `Syntax.lean`, `Semantics.lean`, etc. at the root of `Logos/Logos/` are **aggregator files** that re-export subdirectory modules. This is **standard LEAN 4 practice** and is the correct organizational pattern.
 
 **No Action Required on LEAN Source**:
-- Aggregator files (`ProofChecker/Syntax.lean`, etc.) are correct and should be preserved
-- Subdirectories (`ProofChecker/Syntax/`, etc.) contain actual implementations
+- Aggregator files (`Logos/Syntax.lean`, etc.) are correct and should be preserved
+- Subdirectories (`Logos/Syntax/`, etc.) contain actual implementations
 - This pattern is transparent to Lake build system
 - Documentation should clarify this pattern but no code changes needed
 
@@ -656,7 +656,7 @@ Consider adding a section to `Documentation/Development/MODULE_ORGANIZATION.md` 
 ### Out of Scope
 
 This plan explicitly does NOT include:
-1. Moving or renaming any LEAN source files (`.lean` files in `ProofChecker/`, `ProofCheckerTest/`, etc.)
+1. Moving or renaming any LEAN source files (`.lean` files in `Logos/`, `LogosTest/`, etc.)
 2. Modifying LEAN source code structure
 3. Addressing missing files documented in README.md/CLAUDE.md (DSL.lean, Rules.lean, etc.)
 4. Updating lakefile.toml (no changes needed for documentation reorganization)
@@ -667,7 +667,7 @@ This plan explicitly does NOT include:
 
 **Directory Naming Consistency**:
 This plan aligns with the project's use of PascalCase for directory names:
-- LEAN libraries: `ProofChecker/`, `ProofCheckerTest/`, `Archive/`, `Counterexamples/`
+- LEAN libraries: `Logos/`, `LogosTest/`, `Archive/`, `Counterexamples/`
 - Documentation: `Documentation/`, `UserGuide/`, `ProjectInfo/`, `Development/`, `Reference/`
 
 **Git Best Practices**:

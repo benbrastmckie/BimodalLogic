@@ -21,7 +21,7 @@ Both definitions exist in code but are never referenced by any proof.
 
 #### 1.1 BackwardPersistence (Lines 99-123)
 
-**Location**: `ProofChecker/Metalogic/Soundness.lean:119-123`
+**Location**: `Logos/Metalogic/Soundness.lean:119-123`
 
 ```lean
 def BackwardPersistence (F : TaskFrame) : Prop :=
@@ -40,7 +40,7 @@ def BackwardPersistence (F : TaskFrame) : Prop :=
 
 #### 1.2 ModalTemporalPersistence (Lines 125-149)
 
-**Location**: `ProofChecker/Metalogic/Soundness.lean:145-149`
+**Location**: `Logos/Metalogic/Soundness.lean:145-149`
 
 ```lean
 def ModalTemporalPersistence (F : TaskFrame) : Prop :=
@@ -158,10 +158,10 @@ The `.claude/specs/` directory contains many historical references to BackwardPe
 
 ```bash
 # Verify BackwardPersistence is unused in actual proofs
-grep -n "BackwardPersistence" ProofChecker/Metalogic/Soundness.lean | grep -v "def\|/--\|--"
+grep -n "BackwardPersistence" Logos/Metalogic/Soundness.lean | grep -v "def\|/--\|--"
 
 # Verify ModalTemporalPersistence is unused in actual proofs
-grep -n "ModalTemporalPersistence" ProofChecker/Metalogic/Soundness.lean | grep -v "def\|/--\|--"
+grep -n "ModalTemporalPersistence" Logos/Metalogic/Soundness.lean | grep -v "def\|/--\|--"
 
 # Check build still works after removal
 lake build

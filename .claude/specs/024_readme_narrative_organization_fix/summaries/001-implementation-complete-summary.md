@@ -63,7 +63,7 @@
   - Logos Ecosystem Integration
   - Theoretical Foundations
   - Layered Operator Strategy
-- Renamed "Primary Advantages" to "Why ProofChecker?"
+- Renamed "Primary Advantages" to "Why Logos?"
 - Established pyramid narrative structure (broad → specific)
 
 **New Section Order**:
@@ -71,7 +71,7 @@
 2. Quick Start (line 11 - early!)
 3. Features
 4. Logic TM
-5. Why ProofChecker?
+5. Why Logos?
 6. Implementation Status
 7. Architecture & Extensibility (combined section)
 8. Installation
@@ -120,7 +120,7 @@
 | Quick Start moved early | ✓ | Position 2, line 11 |
 | Logos/Foundations in Architecture section | ✓ | Combined "Architecture & Extensibility" |
 | Features section contains only capabilities | ✓ | Pure capabilities with MVP status reference |
-| Advantages renamed to "Why ProofChecker?" | ✓ | Clearer value proposition framing |
+| Advantages renamed to "Why Logos?" | ✓ | Clearer value proposition framing |
 | Documentation organized into 6 categories | ✓ | Progressive disclosure for different audiences |
 | Line count reduced appropriately | ✓ | 361 lines (eliminated duplicates, added Architecture section) |
 | Pyramid narrative structure | ✓ | Broad → specific, show-before-tell |
@@ -204,7 +204,7 @@ grep -A 50 "^## Documentation" README.md | grep -c "^### "
 
 ## Backup Information
 
-**Backup Created**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.backups/README_YYYYMMDD_HHMMSS.md`
+**Backup Created**: `/home/benjamin/Documents/Philosophy/Projects/Logos/.backups/README_YYYYMMDD_HHMMSS.md`
 
 **Rollback Strategy**: Use git history for granular rollback
 ```bash

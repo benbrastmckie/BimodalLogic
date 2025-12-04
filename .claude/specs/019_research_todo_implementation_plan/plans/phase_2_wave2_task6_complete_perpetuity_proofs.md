@@ -120,7 +120,7 @@ axiom modal_t (φ : Formula) : Axiom (φ.box.imp φ)
 
 ### Task 2.1: Verify Phase 1 Propositional Helpers Available
 
-**File**: `ProofChecker/Theorems/Perpetuity.lean`
+**File**: `Logos/Theorems/Perpetuity.lean`
 
 **Objective**: Confirm Phase 1 completion before proceeding with P4-P6 proofs.
 
@@ -129,7 +129,7 @@ axiom modal_t (φ : Formula) : Axiom (φ.box.imp φ)
 1. **Confirm `imp_trans` proven** (line 88):
 ```bash
 # Check that imp_trans no longer uses sorry
-grep -A10 "theorem imp_trans" ProofChecker/Theorems/Perpetuity.lean | grep -c "sorry"
+grep -A10 "theorem imp_trans" Logos/Theorems/Perpetuity.lean | grep -c "sorry"
 # Expected: 0
 ```
 
@@ -151,7 +151,7 @@ theorem imp_trans {A B C : Formula}
 2. **Confirm `contraposition` proven** (line 139):
 ```bash
 # Check that contraposition no longer uses sorry
-grep -A10 "theorem contraposition" ProofChecker/Theorems/Perpetuity.lean | grep -c "sorry"
+grep -A10 "theorem contraposition" Logos/Theorems/Perpetuity.lean | grep -c "sorry"
 # Expected: 0
 ```
 
@@ -170,7 +170,7 @@ theorem contraposition {A B : Formula}
 3. **Verify P1 and P2 now fully functional**:
 ```bash
 # Run perpetuity tests
-lake test ProofCheckerTest.Theorems.PerpetuityTest
+lake test LogosTest.Theorems.PerpetuityTest
 ```
 
 **Acceptance Criteria**:
@@ -186,7 +186,7 @@ lake test ProofCheckerTest.Theorems.PerpetuityTest
 
 ### Task 2.2: Develop Modal-Temporal Interaction Lemmas
 
-**File**: `ProofChecker/Theorems/Perpetuity.lean`
+**File**: `Logos/Theorems/Perpetuity.lean`
 
 **Objective**: Create helper lemmas that capture common modal-temporal interaction patterns needed for P4, P5, P6.
 
@@ -269,17 +269,17 @@ theorem box_always_composition (φ : Formula) :
 
 **Testing Strategy**:
 
-Create test file `ProofCheckerTest/Theorems/ModalTemporalInteractionTest.lean`:
+Create test file `LogosTest/Theorems/ModalTemporalInteractionTest.lean`:
 
 ```lean
-import ProofCheckerTest.Testing
-import ProofChecker.Theorems.Perpetuity
+import LogosTest.Testing
+import Logos.Theorems.Perpetuity
 
-namespace ProofCheckerTest.Theorems.ModalTemporalInteraction
+namespace LogosTest.Theorems.ModalTemporalInteraction
 
-open ProofChecker.Syntax
-open ProofChecker.ProofSystem
-open ProofChecker.Theorems.Perpetuity
+open Logos.Syntax
+open Logos.ProofSystem
+open Logos.Theorems.Perpetuity
 
 -- Test box_future_neg_dist
 example : ⊢ (p.neg.future).box.imp (p.box.future).neg :=
@@ -297,7 +297,7 @@ example : ⊢ (p.sometimes.diamond).imp (p.diamond.sometimes) :=
 example : ⊢ p.box.imp (p.always.box) :=
   box_always_composition p
 
-end ProofCheckerTest.Theorems.ModalTemporalInteraction
+end LogosTest.Theorems.ModalTemporalInteraction
 ```
 
 **Acceptance Criteria**:
@@ -312,7 +312,7 @@ end ProofCheckerTest.Theorems.ModalTemporalInteraction
 
 ### Task 2.3: Prove P4 (`◇▽φ → ◇φ`) - Possibility of Occurrence
 
-**File**: `ProofChecker/Theorems/Perpetuity.lean` (line 225)
+**File**: `Logos/Theorems/Perpetuity.lean` (line 225)
 
 **Objective**: Complete the proof of P4 using corrected contraposition helper and type unfolding.
 
@@ -404,7 +404,7 @@ lemma diamond_unfold (φ : Formula) :
 
 **Testing**:
 
-Add to `ProofCheckerTest/Theorems/PerpetuityTest.lean`:
+Add to `LogosTest/Theorems/PerpetuityTest.lean`:
 
 ```lean
 -- Test P4 with various formula instances
@@ -449,7 +449,7 @@ def test_p4_nested_modal : TestCase := {
 
 ### Task 2.4: Prove P5 (`◇▽φ → △◇φ`) - Persistent Possibility
 
-**File**: `ProofChecker/Theorems/Perpetuity.lean` (line 252)
+**File**: `Logos/Theorems/Perpetuity.lean` (line 252)
 
 **Objective**: Complete the proof of P5 using modal-temporal interaction lemmas.
 
@@ -568,7 +568,7 @@ theorem possibility_persists_future (φ : Formula) :
 
 **Testing**:
 
-Add to `ProofCheckerTest/Theorems/PerpetuityTest.lean`:
+Add to `LogosTest/Theorems/PerpetuityTest.lean`:
 
 ```lean
 -- Test P5 with modal-temporal combinations
@@ -613,7 +613,7 @@ def test_p5_temporal_formula : TestCase := {
 
 ### Task 2.5: Prove P6 (`▽□φ → □△φ`) - Occurrent Necessity is Perpetual
 
-**File**: `ProofChecker/Theorems/Perpetuity.lean` (line 280)
+**File**: `Logos/Theorems/Perpetuity.lean` (line 280)
 
 **Objective**: Complete the proof of P6 using modal-temporal interaction lemmas.
 
@@ -779,7 +779,7 @@ theorem perpetuity_6 (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box := 
 
 **Testing**:
 
-Add to `ProofCheckerTest/Theorems/PerpetuityTest.lean`:
+Add to `LogosTest/Theorems/PerpetuityTest.lean`:
 
 ```lean
 -- Test P6 with occurrent necessity cases
@@ -829,21 +829,21 @@ def test_p6_nested_temporal : TestCase := {
 
 ### Task 2.6: Write Comprehensive Tests for P4-P6
 
-**File**: `ProofCheckerTest/Theorems/PerpetuityTest.lean`
+**File**: `LogosTest/Theorems/PerpetuityTest.lean`
 
 **Objective**: Ensure P4, P5, P6 are thoroughly tested with various formula types.
 
 **Test Organization**:
 
 ```lean
-import ProofCheckerTest.Testing
-import ProofChecker.Theorems.Perpetuity
+import LogosTest.Testing
+import Logos.Theorems.Perpetuity
 
-namespace ProofCheckerTest.Theorems.Perpetuity
+namespace LogosTest.Theorems.Perpetuity
 
-open ProofChecker.Syntax
-open ProofChecker.ProofSystem
-open ProofChecker.Theorems.Perpetuity
+open Logos.Syntax
+open Logos.ProofSystem
+open Logos.Theorems.Perpetuity
 
 /-!
 ## Perpetuity Principles P4-P6 Test Suite
@@ -1073,17 +1073,17 @@ def perpetuity_p4_p6_test_suite : TestSuite := {
   ]
 }
 
-end ProofCheckerTest.Theorems.Perpetuity
+end LogosTest.Theorems.Perpetuity
 ```
 
 **Testing Commands**:
 
 ```bash
 # Run full perpetuity test suite
-lake test ProofCheckerTest.Theorems.PerpetuityTest
+lake test LogosTest.Theorems.PerpetuityTest
 
 # Run specific test subsections
-lake test ProofCheckerTest.Theorems.Perpetuity.perpetuity_p4_p6_test_suite
+lake test LogosTest.Theorems.Perpetuity.perpetuity_p4_p6_test_suite
 
 # Check for test failures
 lake test 2>&1 | grep -i "fail"
@@ -1210,10 +1210,10 @@ All theorem modules fully implemented with comprehensive tests.
 **Package Verification**:
 ```bash
 # All Theorems tests pass
-lake test ProofCheckerTest.Theorems.PerpetuityTest
+lake test LogosTest.Theorems.PerpetuityTest
 
 # Verify zero sorry in Perpetuity.lean
-grep -c "sorry" ProofChecker/Theorems/Perpetuity.lean  # Expected: 0
+grep -c "sorry" Logos/Theorems/Perpetuity.lean  # Expected: 0
 ```
 ```
 
@@ -1221,7 +1221,7 @@ b) **Update Quick Summary**:
 ```markdown
 ## Overview
 
-ProofChecker has completed its MVP phase with a functional implementation of the TM bimodal logic proof system. This document provides module-by-module status tracking with accurate accounting of completed vs. partial vs. planned work.
+Logos has completed its MVP phase with a functional implementation of the TM bimodal logic proof system. This document provides module-by-module status tracking with accurate accounting of completed vs. partial vs. planned work.
 
 **Quick Summary**:
 - **Completed Modules**: 6/8 (75%) (was 5/8)
@@ -1277,8 +1277,8 @@ All perpetuity principles (P1-P6) are now complete with zero sorry placeholders:
 
 **Verification**:
 ```bash
-grep -n "sorry" ProofChecker/Theorems/Perpetuity.lean  # Expected: 0 matches
-lake test ProofCheckerTest.Theorems.PerpetuityTest    # Expected: all pass
+grep -n "sorry" Logos/Theorems/Perpetuity.lean  # Expected: 0 matches
+lake test LogosTest.Theorems.PerpetuityTest    # Expected: all pass
 ```
 ```
 
@@ -1308,7 +1308,7 @@ echo ""
 
 # 1. Verify zero sorry in Perpetuity.lean
 echo "1. Checking sorry count in Perpetuity.lean..."
-SORRY_COUNT=$(grep -c "sorry" ProofChecker/Theorems/Perpetuity.lean)
+SORRY_COUNT=$(grep -c "sorry" Logos/Theorems/Perpetuity.lean)
 if [ "$SORRY_COUNT" -eq 0 ]; then
   echo "   ✓ Zero sorry placeholders (expected: 0, actual: $SORRY_COUNT)"
 else
@@ -1320,7 +1320,7 @@ echo ""
 # 2. Verify all 6 perpetuity theorems defined
 echo "2. Checking all 6 perpetuity theorems defined..."
 for i in 1 2 3 4 5 6; do
-  if grep -q "theorem perpetuity_$i" ProofChecker/Theorems/Perpetuity.lean; then
+  if grep -q "theorem perpetuity_$i" Logos/Theorems/Perpetuity.lean; then
     echo "   ✓ P$i defined"
   else
     echo "   ✗ FAIL: P$i not found"
@@ -1331,7 +1331,7 @@ echo ""
 
 # 3. Run perpetuity tests
 echo "3. Running perpetuity test suite..."
-if lake test ProofCheckerTest.Theorems.PerpetuityTest; then
+if lake test LogosTest.Theorems.PerpetuityTest; then
   echo "   ✓ All perpetuity tests pass"
 else
   echo "   ✗ FAIL: Perpetuity tests failed"
@@ -1358,7 +1358,7 @@ echo ""
 
 # 5. Overall sorry count check
 echo "5. Checking overall sorry count..."
-TOTAL_SORRY=$(grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l)
+TOTAL_SORRY=$(grep -r "sorry" Logos/ --include="*.lean" | wc -l)
 echo "   Total sorry count: $TOTAL_SORRY (expected: ≤22)"
 if [ "$TOTAL_SORRY" -le 22 ]; then
   echo "   ✓ Sorry count acceptable"
@@ -1401,7 +1401,7 @@ chmod +x scripts/verify_task6_completion.sh
 ### Testing
 - [ ] Perpetuity test suite passes (21+ test cases)
 - [ ] Integration tests verify P4-P5-P6 compatibility
-- [ ] `lake test ProofCheckerTest.Theorems.PerpetuityTest` returns zero failures
+- [ ] `lake test LogosTest.Theorems.PerpetuityTest` returns zero failures
 - [ ] `lake build` succeeds with zero errors
 
 ### Documentation
@@ -1424,19 +1424,19 @@ chmod +x scripts/verify_task6_completion.sh
 
 ```bash
 # 1. Verify zero sorry in Perpetuity.lean
-grep -n "sorry" ProofChecker/Theorems/Perpetuity.lean
+grep -n "sorry" Logos/Theorems/Perpetuity.lean
 # Expected: no output
 
 # 2. Verify all 6 perpetuity theorems proven
-grep -n "theorem perpetuity_[1-6]" ProofChecker/Theorems/Perpetuity.lean
+grep -n "theorem perpetuity_[1-6]" Logos/Theorems/Perpetuity.lean
 # Expected: 6 matches
 
 # 3. Run perpetuity tests
-lake test ProofCheckerTest.Theorems.PerpetuityTest
+lake test LogosTest.Theorems.PerpetuityTest
 # Expected: all tests pass
 
 # 4. Check overall sorry count
-grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
+grep -r "sorry" Logos/ --include="*.lean" | wc -l
 # Expected: 22 (down from 25 before Phase 2)
 
 # 5. Run verification script
@@ -1448,7 +1448,7 @@ lake build
 # Expected: clean build, zero errors
 
 # 7. Run lint
-lake lint ProofChecker/Theorems/Perpetuity.lean
+lake lint Logos/Theorems/Perpetuity.lean
 # Expected: zero warnings
 ```
 
@@ -1504,8 +1504,8 @@ Error: Cannot derive ▽□φ → □△φ without temporal frame constraints
 
 If stuck during Phase 2 implementation:
 
-1. **Review TM axioms**: Consult `ProofChecker/ProofSystem/Axioms.lean` for MF, TF, MT axioms
-2. **Check semantic definitions**: Review `ProofChecker/Semantics/Truth.lean` for operator semantics
+1. **Review TM axioms**: Consult `Logos/ProofSystem/Axioms.lean` for MF, TF, MT axioms
+2. **Check semantic definitions**: Review `Logos/Semantics/Truth.lean` for operator semantics
 3. **Examine P1-P3 proofs**: Use completed principles as templates
 4. **Consult ARCHITECTURE.md**: Review TM logic specification
 5. **Run verification commands**: Use verification script to identify specific failures
@@ -1514,10 +1514,10 @@ If stuck during Phase 2 implementation:
 
 - **Parent Plan**: [TODO Implementation Systematic Plan](../plans/001-research-todo-implementation-plan.md)
 - **Phase 1**: [Wave 1 High Priority Foundations](./phase_1_wave1_high_priority_foundations.md)
-- **Perpetuity.lean**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Theorems/Perpetuity.lean`
-- **Axioms.lean**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/ProofSystem/Axioms.lean`
-- **ARCHITECTURE.md**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/ARCHITECTURE.md`
-- **LEAN Style Guide**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Development/LEAN_STYLE_GUIDE.md`
+- **Perpetuity.lean**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Theorems/Perpetuity.lean`
+- **Axioms.lean**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/ProofSystem/Axioms.lean`
+- **ARCHITECTURE.md**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/ARCHITECTURE.md`
+- **LEAN Style Guide**: `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Development/LEAN_STYLE_GUIDE.md`
 
 ---
 

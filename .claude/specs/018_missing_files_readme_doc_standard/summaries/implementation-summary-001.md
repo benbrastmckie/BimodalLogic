@@ -17,8 +17,8 @@
 - [x] Phase 3: Remove Counterexamples Directory
 - [x] Phase 4: Create DIRECTORY_README_STANDARD.md
 - [x] Phase 5: Create Archive/README.md
-- [x] Phase 6: Create Documentation/README.md and ProofCheckerTest/README.md
-- [x] Phase 7: Create ProofChecker/README.md and Update Cross-References
+- [x] Phase 6: Create Documentation/README.md and LogosTest/README.md
+- [x] Phase 7: Create Logos/README.md and Update Cross-References
 
 ---
 
@@ -104,7 +104,7 @@ lake build  # Build succeeded
 6. **Template G**: Documentation Directory (navigation and audience guidance)
 7. **Relationship to doc-gen4**: Avoid duplicating .lean module documentation
 8. **Anti-patterns**: Over-documentation, stale docs, missing READMEs, unnecessary READMEs
-9. **Examples from ProofChecker**: Good examples of each template
+9. **Examples from Logos**: Good examples of each template
 10. **Maintenance Guidelines**: When to update, review checklist
 11. **References**: Links to related standards
 
@@ -151,13 +151,13 @@ grep -q "Purpose\|Example Categories\|Learning Path\|How to Run Examples" Archiv
 wc -l Archive/README.md  # 134 lines (within 50-100 target range)
 ```
 
-### Phase 6: Create Documentation/README.md and ProofCheckerTest/README.md
+### Phase 6: Create Documentation/README.md and LogosTest/README.md
 **Duration**: 2.5 hours
 **Status**: COMPLETE
 
 **Created Files**:
 1. `Documentation/README.md` (177 lines) - Template G
-2. `ProofCheckerTest/README.md` (296 lines) - Template E
+2. `LogosTest/README.md` (296 lines) - Template E
 
 **Documentation/README.md Structure**:
 - Documentation organization: 4 subdirectories with audience guidance
@@ -173,7 +173,7 @@ wc -l Archive/README.md  # 134 lines (within 50-100 target range)
 - Documentation quality: Accuracy, completeness, clarity principles
 - Related files and navigation
 
-**ProofCheckerTest/README.md Structure**:
+**LogosTest/README.md Structure**:
 - Test organization: 8 subdirectories mapped to modules
 - Running tests: `lake test` variations, VS Code workflow
 - Interpreting output: Success/failure patterns, common errors
@@ -190,34 +190,34 @@ wc -l Archive/README.md  # 134 lines (within 50-100 target range)
 
 **Key Features**:
 - Documentation/README.md focuses on **audience guidance** and **navigation**
-- ProofCheckerTest/README.md is **comprehensive** with practical instructions
+- LogosTest/README.md is **comprehensive** with practical instructions
 - Both provide **clear workflows** for common tasks
 - Extensive **cross-referencing** to related documentation
 
 **Verification**:
 ```bash
 test -f Documentation/README.md && echo "Documentation README created"
-test -f ProofCheckerTest/README.md && echo "ProofCheckerTest README created"
+test -f LogosTest/README.md && echo "LogosTest README created"
 grep -q "UserGuide\|ProjectInfo\|Development\|Quick Links" Documentation/README.md
-grep -q "Running Tests\|Adding New Tests\|lake test" ProofCheckerTest/README.md
+grep -q "Running Tests\|Adding New Tests\|lake test" LogosTest/README.md
 wc -l Documentation/README.md  # 177 lines
-wc -l ProofCheckerTest/README.md  # 296 lines
+wc -l LogosTest/README.md  # 296 lines
 ```
 
-### Phase 7: Create ProofChecker/README.md and Update Cross-References
+### Phase 7: Create Logos/README.md and Update Cross-References
 **Duration**: 2.5 hours
 **Status**: COMPLETE
 
-**Created File**: `ProofChecker/README.md` (154 lines)
+**Created File**: `Logos/README.md` (154 lines)
 
-**ProofChecker/README.md Structure** (following Template D):
+**Logos/README.md Structure** (following Template D):
 - Purpose statement: Core implementation of TM logic
 - Submodules: 6 subdirectories with descriptions
 - Quick reference: Where to find specific functionality (formulas, axioms, models, etc.)
 - Building and type-checking: Command examples
 - Module structure: 5-layer architecture (Foundation → Automation)
 - Implementation status: Complete, partial, planned by layer
-- API documentation: Links to ProofChecker.lean, doc-gen4, ARCHITECTURE.md
+- API documentation: Links to Logos.lean, doc-gen4, ARCHITECTURE.md
 - Development guidelines: Style guide, TDD, documentation, lint requirements
 - Common tasks: Adding definitions, proving theorems, adding axioms
 - Related documentation: Links to standards and guides
@@ -228,32 +228,32 @@ wc -l ProofCheckerTest/README.md  # 296 lines
 1. **CLAUDE.md Updates**:
    - Added DIRECTORY_README_STANDARD.md to Documentation Index
    - Updated project structure diagram to reference READMEs:
-     - ProofChecker/ (see ProofChecker/README.md)
-     - ProofCheckerTest/ (see ProofCheckerTest/README.md)
+     - Logos/ (see Logos/README.md)
+     - LogosTest/ (see LogosTest/README.md)
      - Archive/ (see Archive/README.md)
      - Documentation/ (see Documentation/README.md)
 
 2. **README.md Updates**:
    - Updated project structure diagram to reference READMEs:
-     - ProofChecker/ (see ProofChecker/README.md)
-     - ProofCheckerTest/ (see ProofCheckerTest/README.md)
+     - Logos/ (see Logos/README.md)
+     - LogosTest/ (see LogosTest/README.md)
      - Archive/ (see Archive/README.md)
      - Documentation/ (see Documentation/README.md)
 
 **Key Features**:
-- ProofChecker/README.md is **lightweight** (Template D guidelines)
+- Logos/README.md is **lightweight** (Template D guidelines)
 - Focus on **navigation** and **quick reference**
 - **Layered architecture** explanation for understanding module organization
 - All cross-references are **bidirectional** (parent → child, child → parent)
 
 **Verification**:
 ```bash
-test -f ProofChecker/README.md && echo "ProofChecker README created"
-grep -q "Purpose\|Submodules\|Building and Type-Checking" ProofChecker/README.md
+test -f Logos/README.md && echo "Logos README created"
+grep -q "Purpose\|Submodules\|Building and Type-Checking" Logos/README.md
 grep -q "DIRECTORY_README_STANDARD.md" CLAUDE.md
-grep -q "Archive/README.md\|Documentation/README.md\|ProofChecker/README.md\|ProofCheckerTest/README.md" README.md
-grep -q "Archive/README.md\|Documentation/README.md\|ProofChecker/README.md\|ProofCheckerTest/README.md" CLAUDE.md
-wc -l ProofChecker/README.md  # 154 lines
+grep -q "Archive/README.md\|Documentation/README.md\|Logos/README.md\|LogosTest/README.md" README.md
+grep -q "Archive/README.md\|Documentation/README.md\|Logos/README.md\|LogosTest/README.md" CLAUDE.md
+wc -l Logos/README.md  # 154 lines
 lake build  # Build succeeded
 ```
 
@@ -277,11 +277,11 @@ lake build  # Build succeeded
    - Template G: Documentation navigation hub
    - Audience guidance and quick links
 
-4. **ProofCheckerTest/README.md** (296 lines)
+4. **LogosTest/README.md** (296 lines)
    - Template E: Test suite directory
    - Comprehensive test running and contribution guide
 
-5. **ProofChecker/README.md** (154 lines)
+5. **Logos/README.md** (154 lines)
    - Template D: Source directory (lightweight)
    - Quick reference and navigation
 
@@ -350,8 +350,8 @@ lake build
 # Verify all directory READMEs exist
 test -f Archive/README.md && \
 test -f Documentation/README.md && \
-test -f ProofCheckerTest/README.md && \
-test -f ProofChecker/README.md && \
+test -f LogosTest/README.md && \
+test -f Logos/README.md && \
 echo "All directory READMEs exist"
 
 # Verify documentation standard exists
@@ -389,8 +389,8 @@ All success criteria from the plan have been met:
 - [x] DIRECTORY_README_STANDARD.md created in Documentation/Development/
 - [x] Archive/README.md created following new standard
 - [x] Documentation/README.md created following new standard
-- [x] ProofCheckerTest/README.md created following new standard
-- [x] ProofChecker/README.md created following new standard (lightweight)
+- [x] LogosTest/README.md created following new standard
+- [x] Logos/README.md created following new standard (lightweight)
 - [x] All directory READMEs provide clear navigation and purpose
 - [x] Project builds successfully: `lake build` ✓
 - [x] No broken links in documentation (verified manually)
@@ -404,7 +404,7 @@ This implementation **extends** and **complements** existing standards:
 
 1. **LEAN_STYLE_GUIDE.md**: Directory READMEs complement code-level documentation
 2. **documentation-standards.md**: Adapted .claude/ patterns for LEAN 4 projects
-3. **TESTING_STANDARDS.md**: Referenced in ProofCheckerTest/README.md
+3. **TESTING_STANDARDS.md**: Referenced in LogosTest/README.md
 4. **MODULE_ORGANIZATION.md**: Directory structure aligned with organization patterns
 
 ### Navigation Structure
@@ -427,7 +427,7 @@ Created **bidirectional navigation**:
 - `lake test` command fails with "no test driver configured"
   - **Not an issue**: Project uses executable test runner, not `lake test`
   - Tests run via `lake build` and test executable
-  - Documented in ProofCheckerTest/README.md
+  - Documented in LogosTest/README.md
 
 ### Future Enhancements (Optional)
 1. **Link Checker**: Automated tool to verify all Markdown links are valid
@@ -481,8 +481,8 @@ Successfully completed all 7 phases of the missing files, README documentation, 
 3. **Removed Counterexamples/**: Cleaned up stub-only directory violating TDD principles
 4. **Created DIRECTORY_README_STANDARD.md**: Comprehensive 537-line standard with 4 templates
 5. **Created Archive/README.md**: Pedagogical examples navigation following Template F
-6. **Created Documentation/README.md and ProofCheckerTest/README.md**: Documentation hub (Template G) and test guide (Template E)
-7. **Created ProofChecker/README.md**: Lightweight source directory guide (Template D) with cross-reference updates
+6. **Created Documentation/README.md and LogosTest/README.md**: Documentation hub (Template G) and test guide (Template E)
+7. **Created Logos/README.md**: Lightweight source directory guide (Template D) with cross-reference updates
 
 **Key Achievements**:
 - Established **comprehensive directory documentation standard** for LEAN 4 projects

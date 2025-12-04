@@ -1,4 +1,4 @@
-# High Priority Tasks Analysis - ProofChecker TODO.md
+# High Priority Tasks Analysis - Logos TODO.md
 
 ## Metadata
 - **Date**: 2025-12-03
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-ProofChecker's TODO.md contains 5 high-priority tasks (Tasks 1-5, plus Task 8 and 12 at medium priority). Tasks 1-5 are now complete (100%), with Tasks 7, 8, and 12 at partial completion. This analysis examines the advantages, motivations, and implementation costs for the remaining high-priority work. Key findings: (1) All critical blocking dependencies have been resolved, (2) The remaining work consists primarily of future enhancements rather than blockers, (3) Cost-benefit analysis strongly favors completing the partial tasks (15-25 hours) before moving to low-priority completeness proofs (135-200 hours).
+Logos's TODO.md contains 5 high-priority tasks (Tasks 1-5, plus Task 8 and 12 at medium priority). Tasks 1-5 are now complete (100%), with Tasks 7, 8, and 12 at partial completion. This analysis examines the advantages, motivations, and implementation costs for the remaining high-priority work. Key findings: (1) All critical blocking dependencies have been resolved, (2) The remaining work consists primarily of future enhancements rather than blockers, (3) Cost-benefit analysis strongly favors completing the partial tasks (15-25 hours) before moving to low-priority completeness proofs (135-200 hours).
 
 ## Findings
 
@@ -54,14 +54,14 @@ According to TODO.md lines 716-722:
 5. **Research Value**: Automation infrastructure enables proof search experiments for future work
 
 **Motivations**:
-- **User Experience**: ProofChecker should be usable by logicians and philosophers, not just LEAN experts
-- **Competitive Feature**: Other proof assistants (Coq, Isabelle) provide extensive automation - ProofChecker needs parity
+- **User Experience**: Logos should be usable by logicians and philosophers, not just LEAN experts
+- **Competitive Feature**: Other proof assistants (Coq, Isabelle) provide extensive automation - Logos needs parity
 - **Layer 1-3 Preparation**: Future counterfactual/epistemic/normative layers will require even more automation
 
 **Evidence from Codebase**:
 - Archive/BimodalProofs.lean shows manual proofs require 15-25 lines for simple theorems
 - With `tm_auto`, same theorems reduce to 3-5 lines (see TacticsTest.lean lines 85-110)
-- Current implementation (ProofChecker/Automation/Tactics.lean:127-139) shows native `tm_auto` works but is limited compared to Aesop integration
+- Current implementation (Logos/Automation/Tactics.lean:127-139) shows native `tm_auto` works but is limited compared to Aesop integration
 
 #### Task 8: Fix WorldHistory Universal Helper
 
@@ -93,12 +93,12 @@ According to TODO.md lines 716-722:
 5. **Confidence**: High test coverage enables refactoring without fear
 
 **Motivations**:
-- **Standards Enforcement**: ProofChecker requires ≥85% coverage (Testing Protocols standard)
+- **Standards Enforcement**: Logos requires ≥85% coverage (Testing Protocols standard)
 - **Automation Reliability**: Users must trust tactics produce correct proofs
 - **Concurrent Development**: TDD approach means tests should accompany Task 7 implementation
 
 **Evidence from Codebase**:
-- ProofCheckerTest/Automation/TacticsTest.lean: 31 tests implemented (174 lines)
+- LogosTest/Automation/TacticsTest.lean: 31 tests implemented (174 lines)
 - Tests cover: 10 direct axiom applications, 8 tactic tests, 6 tm_auto tests, 5 assumption_search tests, 8 helper function tests
 - Testing Standards (.claude/docs/reference/standards/testing-protocols.md) require comprehensive test suites for all automation
 
@@ -146,7 +146,7 @@ According to TODO.md lines 716-722:
    - Complexity: Low (straightforward proof)
 
 3. **Add Test Case** (15-30 min)
-   - Add test in ProofCheckerTest/Semantics/WorldHistoryTest.lean
+   - Add test in LogosTest/Semantics/WorldHistoryTest.lean
    - Verify universal history construction
 
 4. **Update Documentation** (15-30 min)
@@ -271,7 +271,7 @@ Estimated Parallel Time: ~70-95 hours (25-32% time savings)
 4. Expand test suite to 50+ tests with negative tests and benchmarks (5-10 hours)
 5. Update IMPLEMENTATION_STATUS.md Automation status (33% → 100%)
 
-**Expected Outcome**: ProofChecker with production-ready automation, enabling efficient proof development for Layers 1-3
+**Expected Outcome**: Logos with production-ready automation, enabling efficient proof development for Layers 1-3
 
 ### Recommendation 2: Accept Task 8 as Documented Limitation (0 hours)
 
@@ -292,14 +292,14 @@ Estimated Parallel Time: ~70-95 hours (25-32% time savings)
 **Action**: Do NOT start Tasks 9, 10, 11, 13 until Layer 0 automation and documentation are production-ready.
 
 **Rationale**:
-- **Premature Optimization**: Completeness proofs (Task 9) don't affect ProofChecker functionality
-- **Research vs. Tool**: ProofChecker is a proof tool first, metalogic research project second
+- **Premature Optimization**: Completeness proofs (Task 9) don't affect Logos functionality
+- **Research vs. Tool**: Logos is a proof tool first, metalogic research project second
 - **User Value**: Users need automation (Task 7) more than completeness proofs (Task 9)
 - **Layered Approach**: Stable Layer 0 → extend to Layer 1 (counterfactuals) → then return to metalogic
 
 **Priority**: **DEFER** - Revisit after Layer 1 (counterfactual operators) planning
 
-**Exception**: If ProofChecker is intended for academic publication, completeness proofs may be required. In that case:
+**Exception**: If Logos is intended for academic publication, completeness proofs may be required. In that case:
 - Prioritize Task 9 (Completeness) after Task 7 (Automation) complete
 - Budget 70-90 hours for 3-phase completeness implementation
 - Task 10 (Decidability) remains deferred (research project, not tool feature)
@@ -336,7 +336,7 @@ Estimated Parallel Time: ~70-95 hours (25-32% time savings)
 ## References
 
 ### Primary Sources (TODO.md Analysis)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md` (lines 1-828)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md` (lines 1-828)
   - Task 7 description: lines 55-84
   - Task 8 description: lines 87-108
   - Task 12 description: lines 110-139
@@ -348,30 +348,30 @@ Estimated Parallel Time: ~70-95 hours (25-32% time savings)
   - Dependency graph: lines 568-689
 
 ### Implementation Status
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` (lines 1-200)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` (lines 1-200)
   - Automation status: 33% complete (lines 167-179)
   - Semantics sorry count: 2 remaining (line 167)
 
 ### Known Limitations
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md` (lines 1-200)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md` (lines 1-200)
   - Task 8 documented limitation: lines 87-108
   - Temporal Duality limitation: lines 138-164
 
 ### Project Configuration
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md` (referenced throughout)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md` (referenced throughout)
   - Quality standards: coverage ≥85%, lint zero warnings
   - Performance benchmarks: build <2min, test <30sec, proof search <1sec
 
 ### Implementation Plans
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/001-research-todo-implementation-plan.md` (lines 1-150)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/019_research_todo_implementation_plan/plans/001-research-todo-implementation-plan.md` (lines 1-150)
   - Wave 1-4 execution strategy
   - Parallel execution opportunities
   - Time savings analysis (25-34% reduction)
 
 ### Code Files Referenced
-- `ProofChecker/Automation/Tactics.lean`: Current automation implementation (4/12 tactics)
-- `ProofChecker/Semantics/WorldHistory.lean:75`: Universal helper sorry
-- `ProofCheckerTest/Automation/TacticsTest.lean`: 31 tests implemented
+- `Logos/Automation/Tactics.lean`: Current automation implementation (4/12 tactics)
+- `Logos/Semantics/WorldHistory.lean:75`: Universal helper sorry
+- `LogosTest/Automation/TacticsTest.lean`: 31 tests implemented
 - `Archive/BimodalProofs.lean`: Manual proof examples (15-25 lines per theorem)
 
 ### Research Reports

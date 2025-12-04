@@ -8,7 +8,7 @@
 
 ## Files Modified
 
-### 1. ProofChecker/Semantics/WorldHistory.lean
+### 1. Logos/Semantics/WorldHistory.lean
 
 **Changes**:
 1. Added `universal_trivialFrame` constructor (lines 133-146)
@@ -27,7 +27,7 @@
 
 ---
 
-### 2. ProofCheckerTest/Automation/TacticsTest.lean
+### 2. LogosTest/Automation/TacticsTest.lean
 
 **Changes**:
 1. Updated header documentation (lines 4-35)

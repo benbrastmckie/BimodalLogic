@@ -4,9 +4,9 @@
 
 ## Purpose
 
-This glossary provides a comprehensive reference for all logical operators, symbols, and principles used in the ProofChecker bimodal logic TM system. It serves as a single source of truth for symbol meanings, formal definitions, LEAN code representations, and semantic interpretations.
+This glossary provides a comprehensive reference for all logical operators, symbols, and principles used in the Logos bimodal logic TM system. It serves as a single source of truth for symbol meanings, formal definitions, LEAN code representations, and semantic interpretations.
 
-**Audience**: Developers, researchers, and users working with ProofChecker's formal proof system.
+**Audience**: Developers, researchers, and users working with Logos's formal proof system.
 
 ---
 
@@ -305,7 +305,7 @@ The perpetuity principles (P1-P6) are key derived theorems in TM logic connectin
 
 ## Variable Conventions
 
-ProofChecker follows consistent naming conventions for variables across documentation and code. These conventions are established in the [LEAN Style Guide](../../Development/LEAN_STYLE_GUIDE.md).
+Logos follows consistent naming conventions for variables across documentation and code. These conventions are established in the [LEAN Style Guide](../../Development/LEAN_STYLE_GUIDE.md).
 
 ### Formulas
 - **φ** (phi) - Primary formula variable
@@ -361,4 +361,4 @@ ProofChecker follows consistent naming conventions for variables across document
 
 **Last Updated**: 2025-12-01
 **Version**: 1.0
-**Maintainer**: ProofChecker Development Team
+**Maintainer**: Logos Development Team

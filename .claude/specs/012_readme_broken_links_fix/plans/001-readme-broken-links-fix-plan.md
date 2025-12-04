@@ -10,7 +10,7 @@
 
 ## Overview
 
-This plan addresses 6 broken links in `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md` identified through comprehensive research analysis. The broken links prevent users from accessing critical documentation and legal information.
+This plan addresses 6 broken links in `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` identified through comprehensive research analysis. The broken links prevent users from accessing critical documentation and legal information.
 
 ### Broken Links Summary
 
@@ -51,7 +51,7 @@ Create MIT License file in project root to satisfy legal requirements and fix br
 
 ### Stage 1.1: Create LICENSE File with MIT License Text
 
-**File to Create**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/LICENSE`
+**File to Create**: `/home/benjamin/Documents/Philosophy/Projects/Logos/LICENSE`
 
 **Actions**:
 1. Create new file `LICENSE` in project root
@@ -87,10 +87,10 @@ SOFTWARE.
 **Verification**:
 ```bash
 # Verify LICENSE file exists
-test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/LICENSE && echo "✓ LICENSE exists" || echo "✗ LICENSE missing"
+test -f /home/benjamin/Documents/Philosophy/Projects/Logos/LICENSE && echo "✓ LICENSE exists" || echo "✗ LICENSE missing"
 
 # Verify file is not empty
-test -s /home/benjamin/Documents/Philosophy/Projects/ProofChecker/LICENSE && echo "✓ LICENSE has content" || echo "✗ LICENSE is empty"
+test -s /home/benjamin/Documents/Philosophy/Projects/Logos/LICENSE && echo "✓ LICENSE has content" || echo "✗ LICENSE is empty"
 ```
 
 **Expected Outcome**:
@@ -112,7 +112,7 @@ Update 4 broken links (lines 88-91) that incorrectly point to `src/docs/` direct
 
 ### Stage 2.1: Fix LEAN Style Guide Link (Line 88)
 
-**File to Edit**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+**File to Edit**: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 
 **Change**:
 ```diff
@@ -125,12 +125,12 @@ Update 4 broken links (lines 88-91) that incorrectly point to `src/docs/` direct
 **Verification**:
 ```bash
 # Verify target file exists
-test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/LEAN_STYLE_GUIDE.md && echo "✓ File exists" || echo "✗ File missing"
+test -f /home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/LEAN_STYLE_GUIDE.md && echo "✓ File exists" || echo "✗ File missing"
 ```
 
 ### Stage 2.2: Fix Module Organization Link (Line 89)
 
-**File to Edit**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+**File to Edit**: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 
 **Change**:
 ```diff
@@ -143,12 +143,12 @@ test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/developme
 **Verification**:
 ```bash
 # Verify target file exists
-test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/MODULE_ORGANIZATION.md && echo "✓ File exists" || echo "✗ File missing"
+test -f /home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/MODULE_ORGANIZATION.md && echo "✓ File exists" || echo "✗ File missing"
 ```
 
 ### Stage 2.3: Fix Testing Standards Link (Line 90)
 
-**File to Edit**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+**File to Edit**: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 
 **Change**:
 ```diff
@@ -161,12 +161,12 @@ test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/developme
 **Verification**:
 ```bash
 # Verify target file exists
-test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/TESTING_STANDARDS.md && echo "✓ File exists" || echo "✗ File missing"
+test -f /home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/TESTING_STANDARDS.md && echo "✓ File exists" || echo "✗ File missing"
 ```
 
 ### Stage 2.4: Fix Tactic Development Link (Line 91)
 
-**File to Edit**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+**File to Edit**: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 
 **Change**:
 ```diff
@@ -179,7 +179,7 @@ test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/developme
 **Verification**:
 ```bash
 # Verify target file exists
-test -f /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/TACTIC_DEVELOPMENT.md && echo "✓ File exists" || echo "✗ File missing"
+test -f /home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/TACTIC_DEVELOPMENT.md && echo "✓ File exists" || echo "✗ File missing"
 ```
 
 **Expected Outcome**:
@@ -200,7 +200,7 @@ Update API Reference link (line 85) to point to correct Lake documentation outpu
 
 ### Stage 3.1: Update API Reference Link and Clarification Text
 
-**File to Edit**: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+**File to Edit**: `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
 
 **Change**:
 ```diff
@@ -218,7 +218,7 @@ Update API Reference link (line 85) to point to correct Lake documentation outpu
 **Verification**:
 ```bash
 # Generate documentation
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 lake build :docs
 
 # Verify documentation was generated
@@ -250,7 +250,7 @@ Comprehensive testing to ensure all broken links are fixed and no new issues int
 
 **Verification Commands**:
 ```bash
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 
 # 1. Verify LICENSE exists
 test -f LICENSE && echo "✓ LICENSE exists" || echo "✗ LICENSE missing"
@@ -334,7 +334,7 @@ git diff --stat
 
 ### Prerequisites
 - Git repository access
-- Write permissions to ProofChecker directory
+- Write permissions to Logos directory
 - Lake build tools installed (for API docs verification)
 - Markdown editor/viewer for testing
 
@@ -349,7 +349,7 @@ Execute phases in sequential order:
 All changes are documentation-only and easily reversible:
 ```bash
 # If issues occur, revert changes
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker
+cd /home/benjamin/Documents/Philosophy/Projects/Logos
 git checkout README.md
 git clean -f LICENSE  # If LICENSE creation was problematic
 ```
@@ -406,9 +406,9 @@ git clean -f LICENSE  # If LICENSE creation was problematic
 ## Research Reports Reference
 
 This plan is based on comprehensive research documented in:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/012_readme_broken_links_fix/reports/broken-links-analysis.md` - Detailed analysis of all 16 links
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/012_readme_broken_links_fix/reports/action-plan.md` - Implementation strategy
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/012_readme_broken_links_fix/reports/quick-fix-reference.md` - Quick reference for fixes
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/012_readme_broken_links_fix/reports/broken-links-analysis.md` - Detailed analysis of all 16 links
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/012_readme_broken_links_fix/reports/action-plan.md` - Implementation strategy
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/012_readme_broken_links_fix/reports/quick-fix-reference.md` - Quick reference for fixes
 
 ---
 

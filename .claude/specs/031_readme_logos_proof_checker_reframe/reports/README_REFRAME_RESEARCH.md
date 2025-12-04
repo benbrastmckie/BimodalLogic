@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-This research analyzes the current README.md and identifies all model-builder references across the ProofChecker repository to support reframing the document with:
+This research analyzes the current README.md and identifies all model-builder references across the Logos repository to support reframing the document with:
 - **Primary focus**: Proof-Checker (LEAN 4 syntactic verification)
 - **Secondary integration**: Model-Checker (where relevant for training signal discussion)
 - **Removal**: All model-builder references
@@ -14,9 +14,9 @@ This research analyzes the current README.md and identifies all model-builder re
 ### Key Findings
 
 1. **Model-Builder References Found**: 9 occurrences across 4 files
-2. **Current Narrative Problem**: README presents ProofChecker as "third package" in 3-component architecture, creating confusion about project scope
+2. **Current Narrative Problem**: README presents Logos as "third package" in 3-component architecture, creating confusion about project scope
 3. **Logos Presentation**: README conflates Logos (the formal language) with a 3-package implementation architecture
-4. **Recommended Approach**: Reframe Logos as the formal language implemented by ProofChecker, with Model-Checker providing complementary verification
+4. **Recommended Approach**: Reframe Logos as the formal language implemented by Logos, with Model-Checker providing complementary verification
 
 ## 1. Current README.md Analysis
 
@@ -24,7 +24,7 @@ This research analyzes the current README.md and identifies all model-builder re
 
 The current README.md (324 lines) has the following structure:
 
-1. **Title & Introduction** (Lines 1-7): Introduces ProofChecker as syntactic verification for "the Logos"
+1. **Title & Introduction** (Lines 1-7): Introduces Logos as syntactic verification for "the Logos"
 2. **Logos Section** (Lines 9-31): Describes TM operators, axioms, perpetuity principles
 3. **Core Capabilities** (Lines 33-60): Lists 5 capabilities including dual verification
 4. **Implementation Status** (Lines 62-100): MVP completion with partial metalogic
@@ -40,7 +40,7 @@ The current README.md (324 lines) has the following structure:
 #### Problem 1: "Third Package" Framing (Lines 106-122)
 
 ```markdown
-ProofChecker is the third package in the Logos architecture, providing **syntactic verification** complementing:
+Logos is the third package in the Logos architecture, providing **syntactic verification** complementing:
 
 1. **Model-Builder** (Design Phase): Transforms natural language → formal semantic models
    - Extracts formal language fragments (FLF)
@@ -52,13 +52,13 @@ ProofChecker is the third package in the Logos architecture, providing **syntact
    - Generates counterexamples for invalid inferences
    - Provides corrective RL training signals
 
-3. **ProofChecker**: Syntactic verification via LEAN 4
+3. **Logos**: Syntactic verification via LEAN 4
    - Derives valid theorems from TM axioms
    - Provides proof receipts with mathematical certainty
    - Generates positive RL training signals
 ```
 
-**Issue**: Positions ProofChecker as subordinate component in larger system rather than primary implementation of Logos formal language.
+**Issue**: Positions Logos as subordinate component in larger system rather than primary implementation of Logos formal language.
 
 #### Problem 2: Model-Builder in Related Projects (Lines 282-286)
 
@@ -73,7 +73,7 @@ ProofChecker is the third package in the Logos architecture, providing **syntact
 #### Problem 3: Dual Verification Framing (Line 124)
 
 ```markdown
-**Dual Verification Architecture**: ProofChecker's syntactic proofs and Model-Checker's semantic countermodels create comprehensive learning signals for AI training without human annotation.
+**Dual Verification Architecture**: Logos's syntactic proofs and Model-Checker's semantic countermodels create comprehensive learning signals for AI training without human annotation.
 ```
 
 **Current**: Dual = Proof-Checker + Model-Checker (correct)
@@ -124,7 +124,7 @@ ProofChecker is the third package in the Logos architecture, providing **syntact
 
 **Line 108-111**: Part of numbered list presenting "Logos architecture" as 3-package system
 - **Problem**: Defines project scope incorrectly
-- **Solution**: Reframe as "ProofChecker implements Logos formal language, with Model-Checker providing complementary semantic verification"
+- **Solution**: Reframe as "Logos implements Logos formal language, with Model-Checker providing complementary semantic verification"
 
 **Line 284**: Related Projects section
 - **Problem**: Suggests model-builder is related project
@@ -150,9 +150,9 @@ ProofChecker is the third package in the Logos architecture, providing **syntact
 #### INTEGRATION.md (3 occurrences)
 
 **Line 15**: ASCII architecture diagram
-- **Context**: Shows 3-box diagram with Model-Builder, ProofChecker, Model-Checker
+- **Context**: Shows 3-box diagram with Model-Builder, Logos, Model-Checker
 - **Problem**: Visual reinforcement of 3-component architecture
-- **Solution**: Replace with 2-component diagram: ProofChecker ↔ Model-Checker
+- **Solution**: Replace with 2-component diagram: Logos ↔ Model-Checker
 
 **Line 31**: Integration Points table
 - **Context**: Lists Model-Builder as integration point
@@ -176,7 +176,7 @@ ProofChecker is the third package in the Logos architecture, providing **syntact
 ```markdown
 ### Logos Ecosystem Integration
 
-ProofChecker is the third package in the Logos architecture...
+Logos is the third package in the Logos architecture...
 ```
 
 **Evidence from LOGOS_PHILOSOPHY.md Lines 1-7**:
@@ -186,7 +186,7 @@ ProofChecker is the third package in the Logos architecture...
 Logos is a formal language of thought designed to enable verified AI reasoning through progressive operator extensibility.
 ```
 
-**Correct Understanding**: Logos is the formal language, ProofChecker is the implementation.
+**Correct Understanding**: Logos is the formal language, Logos is the implementation.
 
 ### 3.2 Recommended Logos Framing
 
@@ -198,35 +198,35 @@ Logos is a formal language of thought designed to enable verified AI reasoning t
 
 **What Logos is NOT**:
 - A 3-package software system
-- A parent project containing ProofChecker as subcomponent
+- A parent project containing Logos as subcomponent
 - An ecosystem requiring model-builder for operation
 
-**ProofChecker's Relationship to Logos**:
-- ProofChecker IS the LEAN 4 implementation of Logos formal language
-- ProofChecker provides syntactic verification for Logos inferences
+**Logos's Relationship to Logos**:
+- Logos IS the LEAN 4 implementation of Logos formal language
+- Logos provides syntactic verification for Logos inferences
 - Model-Checker provides complementary semantic verification (dual verification architecture)
 
 ### 3.3 Correct Narrative Structure
 
 **Recommended Flow**:
 
-1. **Introduce ProofChecker**: LEAN 4 implementation of Logos formal language for verified AI reasoning
+1. **Introduce Logos**: LEAN 4 implementation of Logos formal language for verified AI reasoning
 2. **Define Logos**: Formal language (TM bimodal logic) with progressive operator extensibility
-3. **Explain Dual Verification**: ProofChecker (syntactic) + Model-Checker (semantic) = complete verification
+3. **Explain Dual Verification**: Logos (syntactic) + Model-Checker (semantic) = complete verification
 4. **Describe Training Signal**: How dual verification enables RL training without human annotation
 5. **Detail Implementation**: Current Layer 0 status, planned Layer 1-3 extensions
 
 **Key Positioning Statement**:
-> ProofChecker implements the Logos formal language—a bimodal logic combining tense and modality with progressive operator extensions for explanatory, epistemic, and normative reasoning. Built on LEAN 4, ProofChecker provides syntactic verification complemented by the Model-Checker's semantic validation, creating a dual verification architecture for training AI systems to reason with mathematical certainty.
+> Logos implements the Logos formal language—a bimodal logic combining tense and modality with progressive operator extensions for explanatory, epistemic, and normative reasoning. Built on LEAN 4, Logos provides syntactic verification complemented by the Model-Checker's semantic validation, creating a dual verification architecture for training AI systems to reason with mathematical certainty.
 
 ## 4. Documentation File Analysis
 
 ### 4.1 Files Referencing Model-Builder
 
 **Primary Documentation**:
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/ARCHITECTURE.md`
-3. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/INTEGRATION.md`
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/ARCHITECTURE.md`
+3. `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/INTEGRATION.md`
 
 **Backup Files** (no changes needed):
 - `.backups/README_backup_20251202.md`
@@ -238,13 +238,13 @@ Logos is a formal language of thought designed to enable verified AI reasoning t
 ### 4.2 Files NOT Referencing Model-Builder (No Changes)
 
 **Key Documentation Files Clean**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md` ✓
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/LOGOS_PHILOSOPHY.md` ✓
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Research/DUAL_VERIFICATION.md` ✓
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/TUTORIAL.md` ✓
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/UserGuide/EXAMPLES.md` ✓
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md` ✓
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/LOGOS_PHILOSOPHY.md` ✓
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/Research/DUAL_VERIFICATION.md` ✓
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/TUTORIAL.md` ✓
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Documentation/UserGuide/EXAMPLES.md` ✓
 
-**Analysis**: Core documentation correctly focuses on ProofChecker implementation without model-builder references.
+**Analysis**: Core documentation correctly focuses on Logos implementation without model-builder references.
 
 ## 5. Model-Checker Integration Analysis
 
@@ -271,7 +271,7 @@ Logos is a formal language of thought designed to enable verified AI reasoning t
 
 **Correct Framing**:
 ```markdown
-ProofChecker (syntactic verification) works in concert with the Model-Checker
+Logos (syntactic verification) works in concert with the Model-Checker
 (semantic verification) to create comprehensive training signals:
 
 - **Proof-Checker**: Generates proof receipts for valid inferences (positive RL signal)
@@ -280,7 +280,7 @@ ProofChecker (syntactic verification) works in concert with the Model-Checker
 
 **Incorrect Framing** (to avoid):
 ```markdown
-ProofChecker is one of three packages in the Logos ecosystem...
+Logos is one of three packages in the Logos ecosystem...
 ```
 
 ### 5.3 Training Signal Discussion
@@ -288,7 +288,7 @@ ProofChecker is one of three packages in the Logos ecosystem...
 **Where to Mention Model-Checker for Training**:
 
 **Section: Self-Supervised Training Data Generation**
-- Proof receipts = positive reinforcement (ProofChecker)
+- Proof receipts = positive reinforcement (Logos)
 - Counterexamples = corrective feedback (Model-Checker)
 - Unlimited training data without human annotation (dual verification)
 
@@ -306,29 +306,29 @@ ProofChecker is one of three packages in the Logos ecosystem...
 
 **Current** (Lines 1-7):
 ```markdown
-# ProofChecker: Formal Verification for Transparent AI Reasoning
+# Logos: Formal Verification for Transparent AI Reasoning
 
-ProofChecker provides syntactic verification for the Logos, a comprehensive
+Logos provides syntactic verification for the Logos, a comprehensive
 framework for transparent AI reasoning in interpreted formal languages...
 ```
 
 **Proposed**:
 ```markdown
-# ProofChecker: LEAN 4 Implementation of Logos Formal Language
+# Logos: LEAN 4 Implementation of Logos Formal Language
 
-ProofChecker is a LEAN 4 implementation of Logos—a formal language of thought
+Logos is a LEAN 4 implementation of Logos—a formal language of thought
 combining tense and modality for verified AI reasoning. The system implements
 the bimodal logic TM (Tense and Modality) with progressive operator extensions,
 enabling AI systems to reason with mathematical certainty through dual
-verification: syntactic proofs (ProofChecker) complemented by semantic
+verification: syntactic proofs (Logos) complemented by semantic
 validation (Model-Checker).
 ```
 
 **Rationale**:
-- Clearly positions ProofChecker as Logos implementation
+- Clearly positions Logos as Logos implementation
 - Introduces dual verification early
 - Removes "the Logos" phrasing (sounds like external system)
-- Focuses on what ProofChecker IS rather than what it provides for something else
+- Focuses on what Logos IS rather than what it provides for something else
 
 ### 6.2 Architecture Section Rewrite
 
@@ -336,14 +336,14 @@ validation (Model-Checker).
 ```markdown
 ### Logos Ecosystem Integration
 
-ProofChecker is the third package in the Logos architecture, providing
+Logos is the third package in the Logos architecture, providing
 **syntactic verification** complementing:
 
 1. **Model-Builder** (Design Phase): Transforms natural language → formal models
 2. **Model-Checker** ([v1.2.12]...): Semantic verification via Z3
-3. **ProofChecker**: Syntactic verification via LEAN 4
+3. **Logos**: Syntactic verification via LEAN 4
 
-**Dual Verification Architecture**: ProofChecker's syntactic proofs and
+**Dual Verification Architecture**: Logos's syntactic proofs and
 Model-Checker's semantic countermodels create comprehensive learning signals...
 ```
 
@@ -351,10 +351,10 @@ Model-Checker's semantic countermodels create comprehensive learning signals...
 ```markdown
 ### Dual Verification Architecture
 
-ProofChecker implements Logos formal language with dual verification for
+Logos implements Logos formal language with dual verification for
 training AI systems without human annotation:
 
-**Syntactic Verification** (ProofChecker - LEAN 4):
+**Syntactic Verification** (Logos - LEAN 4):
 - Derives valid theorems from TM axioms and inference rules
 - Generates proof receipts providing mathematical certainty
 - Produces positive RL training signals for valid inferences
@@ -402,7 +402,7 @@ axiomatic foundations.
 ```
 
 **Rationale**:
-- Removes Logos as "parent project" (implies ProofChecker is subcomponent)
+- Removes Logos as "parent project" (implies Logos is subcomponent)
 - Removes Model-Builder entirely
 - Adds LogicNotes for theoretical background
 - Clarifies Model-Checker relationship (complementary tool, not co-equal package)
@@ -421,7 +421,7 @@ Layer 0 implements the foundational bimodal logic TM (Tense and Modality)...
 ## Logos Formal Language: Tense and Modal Reasoning
 
 Logos is a formal language of thought with progressive operator extensibility,
-designed to enable verified AI reasoning across multiple domains. ProofChecker
+designed to enable verified AI reasoning across multiple domains. Logos
 implements the core language (Layer 0: TM bimodal logic) with planned extensions
 for explanatory, epistemic, and normative reasoning.
 
@@ -433,7 +433,7 @@ temporal logic through task semantics...
 
 **Rationale**:
 - Defines Logos clearly as formal language
-- Positions ProofChecker as implementation
+- Positions Logos as implementation
 - Maintains progressive extension narrative
 - Clearer section hierarchy
 
@@ -474,24 +474,24 @@ temporal logic through task semantics...
 
 **Adopt the following core narrative**:
 
-1. **What ProofChecker IS**: LEAN 4 implementation of Logos formal language
+1. **What Logos IS**: LEAN 4 implementation of Logos formal language
 2. **What Logos IS**: Formal language of thought (TM bimodal logic + progressive extensions)
-3. **What Dual Verification IS**: ProofChecker (syntactic) + Model-Checker (semantic) = complete verification
+3. **What Dual Verification IS**: Logos (syntactic) + Model-Checker (semantic) = complete verification
 4. **What Model-Checker IS**: Complementary semantic verification tool for training signal generation
-5. **What Model-Builder IS NOT**: Not part of ProofChecker scope, not in Logos "architecture"
+5. **What Model-Builder IS NOT**: Not part of Logos scope, not in Logos "architecture"
 
 ### 8.2 Documentation Consistency Guidelines
 
 **Use this language**:
-- ✓ "ProofChecker implements Logos formal language"
+- ✓ "Logos implements Logos formal language"
 - ✓ "Dual verification architecture (syntactic + semantic)"
 - ✓ "Model-Checker provides complementary semantic validation"
-- ✓ "ProofChecker and Model-Checker create training signals together"
+- ✓ "Logos and Model-Checker create training signals together"
 
 **Avoid this language**:
-- ✗ "ProofChecker is the third package in Logos architecture"
+- ✗ "Logos is the third package in Logos architecture"
 - ✗ "Logos ecosystem with three components"
-- ✗ "ProofChecker provides syntactic verification for the Logos"
+- ✗ "Logos provides syntactic verification for the Logos"
 - ✗ "Model-Builder integration" (in any context)
 
 ### 8.3 Section Ordering Recommendation
@@ -516,7 +516,7 @@ temporal logic through task semantics...
 ### 8.4 Long-Term Maintenance
 
 **Document Standards**:
-1. Add to CONTRIBUTING.md: "Model-builder is outside ProofChecker scope. Do not add model-builder references to documentation."
+1. Add to CONTRIBUTING.md: "Model-builder is outside Logos scope. Do not add model-builder references to documentation."
 2. Update documentation review checklist to flag any model-builder mentions
 3. Add ARCHITECTURE.md note: "For natural language interfaces to Logos, see future extension plans in Research/ directory"
 
@@ -574,12 +574,12 @@ temporal logic through task semantics...
 This research has identified all model-builder references and analyzed the narrative structure needed to reframe README.md with appropriate Logos focus. The core issue is conflation of Logos (formal language) with a 3-package architecture, when the correct framing is:
 
 **Logos** = Formal language of thought (TM bimodal logic)
-**ProofChecker** = LEAN 4 implementation of Logos
+**Logos** = LEAN 4 implementation of Logos
 **Model-Checker** = Complementary semantic verification tool
-**Dual Verification** = ProofChecker + Model-Checker (complete architecture)
+**Dual Verification** = Logos + Model-Checker (complete architecture)
 
-Removing model-builder and adopting this clear narrative will eliminate confusion and properly position ProofChecker as the primary implementation of Logos formal language.
+Removing model-builder and adopting this clear narrative will eliminate confusion and properly position Logos as the primary implementation of Logos formal language.
 
 ---
 
-**REPORT_CREATED**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/031_readme_logos_proof_checker_reframe/reports/README_REFRAME_RESEARCH.md
+**REPORT_CREATED**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/031_readme_logos_proof_checker_reframe/reports/README_REFRAME_RESEARCH.md

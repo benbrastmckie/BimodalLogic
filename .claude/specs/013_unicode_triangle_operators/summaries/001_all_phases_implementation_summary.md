@@ -13,7 +13,7 @@
 
 ## Implementation Overview
 
-Successfully implemented Unicode triangle notation (`△` for always, `▽` for sometimes) as alternative syntax for temporal operators in ProofChecker bimodal logic system. Implementation resolved critical semantic discrepancies, added LEAN 4 prefix notation, comprehensive tests, and complete documentation updates while maintaining 100% backward compatibility.
+Successfully implemented Unicode triangle notation (`△` for always, `▽` for sometimes) as alternative syntax for temporal operators in Logos bimodal logic system. Implementation resolved critical semantic discrepancies, added LEAN 4 prefix notation, comprehensive tests, and complete documentation updates while maintaining 100% backward compatibility.
 
 ## Phase 1: Semantic Resolution ✓
 
@@ -34,7 +34,7 @@ Resolved critical discrepancy between glossary documentation and actual implemen
    - Fixed `sometimes` definition: `neg (always (neg φ))`
    - Added clarifying comments explaining henceforth vs eternal truth semantics
 
-3. **Updated ProofChecker/Syntax/Formula.lean**:
+3. **Updated Logos/Syntax/Formula.lean**:
    - Enhanced `always` docstring to clarify it's henceforth operator (Future φ only)
    - Enhanced `sometimes` docstring to explain dual relationship to always
    - Added note distinguishing from three-time quantifier interpretation
@@ -52,7 +52,7 @@ Implement Unicode triangle prefix notation in Formula.lean with comprehensive do
 ### Work Completed
 
 #### LEAN 4 Notation Declarations
-Added to `ProofChecker/Syntax/Formula.lean` after line 113:
+Added to `Logos/Syntax/Formula.lean` after line 113:
 
 ```lean
 /-- Notation for temporal 'always' operator using upward triangle.
@@ -75,7 +75,7 @@ prefix:80 "▽" => Formula.sometimes
 - **Full Docstrings**: Include Unicode codepoints and semantic explanations
 
 ### Verification
-- ✓ Build successful: `lake build ProofChecker.Syntax.Formula`
+- ✓ Build successful: `lake build Logos.Syntax.Formula`
 - ✓ No syntax conflicts detected
 - ✓ Notation properly integrated with LEAN 4 parser
 
@@ -87,7 +87,7 @@ Implement comprehensive test suite for triangle notation parsing and equivalence
 ### Work Completed
 
 #### Test Suite Additions
-Added 13 new tests to `ProofCheckerTest/Syntax/FormulaTest.lean`:
+Added 13 new tests to `LogosTest/Syntax/FormulaTest.lean`:
 
 1. **Notation Parsing Tests**:
    - `△p = p.always` equivalence
@@ -110,7 +110,7 @@ Added 13 new tests to `ProofCheckerTest/Syntax/FormulaTest.lean`:
    - Dot notation for sometimes: `p.sometimes = p.neg.always.neg`
 
 ### Verification
-- ✓ All tests compile: `lake build ProofCheckerTest.Syntax.FormulaTest`
+- ✓ All tests compile: `lake build LogosTest.Syntax.FormulaTest`
 - ✓ Full project build succeeds: `lake build`
 - ✓ No regressions in existing tests
 
@@ -217,40 +217,40 @@ Complete documentation update across tutorial, examples, and developer guides.
 ## Files Modified
 
 ### LEAN Source Files (2)
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Syntax/Formula.lean`
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Syntax/Formula.lean`
    - Added triangle notation declarations
    - Enhanced docstrings
 
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Syntax/FormulaTest.lean`
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Syntax/FormulaTest.lean`
    - Added 13 notation tests
 
 ### Core Documentation (4)
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md`
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/glossary/logical-operators.md`
    - Fixed semantic definitions
    - Added triangle notation
 
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md`
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md`
    - Fixed operator definitions
    - Added notation to DSL section
 
-3. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md`
+3. `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md`
    - Updated operators section
    - Updated perpetuity principles
 
-4. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md`
+4. `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md`
    - Updated perpetuity principles
    - Added notation note
 
 ### Tutorial Documentation (2)
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/TUTORIAL.md`
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/TUTORIAL.md`
    - Added triangle notation examples
    - Updated perpetuity section
 
-2. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/EXAMPLES.md`
+2. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/EXAMPLES.md`
    - Updated all perpetuity examples
 
 ### Developer Documentation (1)
-1. `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/LEAN_STYLE_GUIDE.md`
+1. `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/LEAN_STYLE_GUIDE.md`
    - Added Unicode Operator Notation section
 
 **Total Files Modified**: 10
@@ -316,7 +316,7 @@ Successfully implemented Unicode triangle operators with zero breaking changes, 
 ---
 
 **Implementation Date**: 2025-12-01
-**Plan**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/013_unicode_triangle_operators/plans/001-unicode-triangle-operators-plan.md
+**Plan**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/013_unicode_triangle_operators/plans/001-unicode-triangle-operators-plan.md
 **Status**: Complete
 **Build Status**: ✓ Passing
 **Test Status**: ✓ All tests pass

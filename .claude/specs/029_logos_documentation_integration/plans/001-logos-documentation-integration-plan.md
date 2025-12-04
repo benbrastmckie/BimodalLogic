@@ -2,12 +2,12 @@
 
 ## Metadata
 - **Date**: 2025-12-03 (Revised: 2025-12-03)
-- **Feature**: Integrate Logos documentation into ProofChecker documentation ecosystem
+- **Feature**: Integrate Logos documentation into Logos documentation ecosystem
 - **Status**: [COMPLETE]
 - **Estimated Hours**: 27-33 hours
 - **Complexity Score**: 3 (Medium-High)
 - **Structure Level**: 0
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Status Tracking**: [IMPLEMENTATION_STATUS.md](../../../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)
 - **Research Reports**:
   - [logos_inventory.md](../reports/logos_inventory.md)
@@ -18,7 +18,7 @@
 
 ## Executive Summary
 
-This plan integrates the Logos documentation from `/Logos/` into the ProofChecker documentation
+This plan integrates the Logos documentation from `/Logos/` into the Logos documentation
 ecosystem at `/Documentation/`. The Logos documentation provides philosophical foundations,
 AI safety context, and research vision that complement the existing technical documentation.
 It requires accuracy updates and clear separation between "implemented" and "planned" features.
@@ -213,7 +213,7 @@ See [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) for curr
 # Research Documentation
 
 This directory contains research vision documents describing planned features and
-future directions for ProofChecker. For current implementation progress, see
+future directions for Logos. For current implementation progress, see
 [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md).
 
 ## Status Legend
@@ -221,7 +221,7 @@ future directions for ProofChecker. For current implementation progress, see
 Documents in this directory describe planned or research-phase work. The following
 conventions clarify implementation status:
 
-- **Implemented**: Feature available in ProofChecker - see IMPLEMENTATION_STATUS.md
+- **Implemented**: Feature available in Logos - see IMPLEMENTATION_STATUS.md
 - **Research**: Planned architecture in design phase
 - **Roadmap**: Future development planned
 
@@ -398,7 +398,7 @@ Tasks:
 ```markdown
 # Terminology Glossary
 
-This glossary maps terminology between Logos and ProofChecker documentation.
+This glossary maps terminology between Logos and Logos documentation.
 
 ## Layer Architecture
 | Term | Definition | Related Terms |
@@ -432,7 +432,7 @@ For all implementation status information, see
 ```markdown
 ## 8. Logos Architecture Integration
 
-ProofChecker implements the Logos formal language of thought. For philosophical
+Logos implements the Logos formal language of thought. For philosophical
 foundations and research context, see [LOGOS_PHILOSOPHY.md](LOGOS_PHILOSOPHY.md).
 
 ### Layer 0 (Core TM)

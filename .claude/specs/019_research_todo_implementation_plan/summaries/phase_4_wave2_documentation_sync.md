@@ -114,7 +114,7 @@ Phase 4 successfully synchronized all documentation to reflect Wave 2 achievemen
 - T4, TA: Temporal properties
 - TL, MF, TF: Modal-temporal interactions (completed in Phase 3)
 
-This represents a major metalogic milestone for the ProofChecker project.
+This represents a major metalogic milestone for the Logos project.
 
 ## Testing Strategy
 
@@ -140,18 +140,18 @@ lake build
 ### Sorry Count Verification
 ```bash
 # Total sorry count
-grep -r "sorry" ProofChecker/ --include="*.lean" | wc -l
+grep -r "sorry" Logos/ --include="*.lean" | wc -l
 # Result: 17
 
 # Breakdown by file
-find ProofChecker/ -name "*.lean" -type f -exec sh -c 'count=$(grep -c "sorry" "$1" 2>/dev/null || echo 0); if [ "$count" -gt 0 ]; then echo "$1: $count"; fi' _ {} \;
+find Logos/ -name "*.lean" -type f -exec sh -c 'count=$(grep -c "sorry" "$1" 2>/dev/null || echo 0); if [ "$count" -gt 0 ]; then echo "$1: $count"; fi' _ {} \;
 # Results:
-# ProofChecker/Automation.lean: 1
-# ProofChecker/Automation/ProofSearch.lean: 3
-# ProofChecker/Theorems/Perpetuity.lean: 2
-# ProofChecker/Metalogic/Soundness.lean: 6
-# ProofChecker/Metalogic/Completeness.lean: 3
-# ProofChecker/Semantics/WorldHistory.lean: 2
+# Logos/Automation.lean: 1
+# Logos/Automation/ProofSearch.lean: 3
+# Logos/Theorems/Perpetuity.lean: 2
+# Logos/Metalogic/Soundness.lean: 6
+# Logos/Metalogic/Completeness.lean: 3
+# Logos/Semantics/WorldHistory.lean: 2
 ```
 
 ### Documentation Consistency
@@ -222,4 +222,4 @@ Both `lake test` and `lake lint` are not configured (no drivers). This is docume
 
 Phase 4 successfully synchronized all documentation to reflect Wave 2 partial completion. The major milestone of completing all 8 TM axiom soundness proofs is now properly documented across all three documentation files. The project has reduced sorry count from 41 to 17 (59% reduction), with clear documentation of remaining work.
 
-**Key Achievement**: All 8 TM axioms are now proven sound, representing a significant metalogic milestone for ProofChecker.
+**Key Achievement**: All 8 TM axioms are now proven sound, representing a significant metalogic milestone for Logos.

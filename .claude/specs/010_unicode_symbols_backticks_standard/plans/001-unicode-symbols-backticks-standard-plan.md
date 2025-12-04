@@ -6,17 +6,17 @@
 - **Scope**: Documentation standards, existing documentation updates, LEAN style guide revisions
 - **Estimated Phases**: 5
 - **Estimated Hours**: 8
-- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+- **Standards File**: /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 - **Status**: [COMPLETE]
 - **Complexity**: Low
 - **Structure Level**: 0
 - **Complexity Score**: 32.0
 - **Research Reports**:
-  - [Unicode Symbol Backtick Standardization Research Report](/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/010_unicode_symbols_backticks_standard/reports/001-unicode-symbols-backticks-standard.md)
+  - [Unicode Symbol Backtick Standardization Research Report](/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/010_unicode_symbols_backticks_standard/reports/001-unicode-symbols-backticks-standard.md)
 
 ## Overview
 
-This plan implements a mandatory backtick standard for all formal Unicode symbols in ProofChecker documentation. The research report identified 700+ instances of formal symbols (□, ◇, ⊢, ⊨, φ, ψ, →, ∧, ∨, ¬) used without backticks across 23 Markdown files, creating visual ambiguity and rendering inconsistency. This implementation will:
+This plan implements a mandatory backtick standard for all formal Unicode symbols in Logos documentation. The research report identified 700+ instances of formal symbols (□, ◇, ⊢, ⊨, φ, ψ, →, ∧, ∨, ¬) used without backticks across 23 Markdown files, creating visual ambiguity and rendering inconsistency. This implementation will:
 
 1. Establish formal symbol backtick requirements in documentation standards
 2. Update LEAN style guide with code comment formatting standards
@@ -136,10 +136,10 @@ dependencies: []
 **Testing**:
 ```bash
 # Verify section added correctly
-grep -A 20 "Formal Symbol Backtick Standard" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md
+grep -A 20 "Formal Symbol Backtick Standard" /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md
 
 # Verify examples are properly formatted
-grep '`□φ → φ`' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md
+grep '`□φ → φ`' /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md
 ```
 
 **Expected Duration**: 1 hour
@@ -163,10 +163,10 @@ dependencies: [1]
 **Testing**:
 ```bash
 # Verify section added
-grep -A 15 "Code Comments with Formal Symbols" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/LEAN_STYLE_GUIDE.md
+grep -A 15 "Code Comments with Formal Symbols" /home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/LEAN_STYLE_GUIDE.md
 
 # Check for example code blocks
-grep -A 3 '-- MT:' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/LEAN_STYLE_GUIDE.md | grep '`□φ → φ`'
+grep -A 3 '-- MT:' /home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/LEAN_STYLE_GUIDE.md | grep '`□φ → φ`'
 ```
 
 **Expected Duration**: 1 hour
@@ -193,18 +193,18 @@ dependencies: [1, 2]
 **Testing**:
 ```bash
 # Verify backticks added to axiom schemas in README
-grep -n '`MT.*`\|`M4.*`\|`MB.*`' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
+grep -n '`MT.*`\|`M4.*`\|`MB.*`' /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
 
 # Verify perpetuity principles have backticks in both files
-grep -n 'P[1-6]:.*`□.*`' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-grep -n 'P[1-6]:.*`□.*`' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+grep -n 'P[1-6]:.*`□.*`' /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+grep -n 'P[1-6]:.*`□.*`' /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 
 # Verify metalogic theorems updated
-grep -n '`Γ ⊢ φ.*Γ ⊨ φ`' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+grep -n '`Γ ⊢ φ.*Γ ⊨ φ`' /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 
 # Check for remaining unbackticked symbols (should return no results)
-grep -E '^[^`]*[MTPF][0-9]?:[^`]*(□|◇|φ|ψ)[^`]*$' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md
-grep -E '^[^`]*P[1-6]:[^`]*(□|◇|φ)[^`]*$' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+grep -E '^[^`]*[MTPF][0-9]?:[^`]*(□|◇|φ|ψ)[^`]*$' /home/benjamin/Documents/Philosophy/Projects/Logos/README.md
+grep -E '^[^`]*P[1-6]:[^`]*(□|◇|φ)[^`]*$' /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 ```
 
 **Expected Duration**: 2 hours
@@ -237,13 +237,13 @@ dependencies: [3]
 **Testing**:
 ```bash
 # Verify TUTORIAL.md updated
-grep -c '`□\|`◇\|`⊢\|`⊨\|`φ\|`ψ' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/TUTORIAL.md
+grep -c '`□\|`◇\|`⊢\|`⊨\|`φ\|`ψ' /home/benjamin/Documents/Philosophy/Projects/Logos/docs/TUTORIAL.md
 
 # Verify ARCHITECTURE.md updated
-grep -c '`□\|`◇\|`⊢\|`⊨\|`φ' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md
+grep -c '`□\|`◇\|`⊢\|`⊨\|`φ' /home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md
 
 # Verify EXAMPLES.md updated
-grep -c '`□\|`◇\|`φ' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/EXAMPLES.md
+grep -c '`□\|`◇\|`φ' /home/benjamin/Documents/Philosophy/Projects/Logos/docs/EXAMPLES.md
 
 # Visual inspection: Check markdown rendering
 # (Manual review in VS Code or GitHub preview)
@@ -277,17 +277,17 @@ dependencies: [4]
 **Testing**:
 ```bash
 # Verify CLAUDE.md index updated
-grep -A 3 "Symbol Formatting Standards" /home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md
+grep -A 3 "Symbol Formatting Standards" /home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md
 
 # Comprehensive validation: Check all high-priority files
 for FILE in README.md CLAUDE.md docs/TUTORIAL.md docs/ARCHITECTURE.md docs/EXAMPLES.md; do
   echo "Checking $FILE..."
   # Count backticked formal symbols (should be high)
-  grep -c '`□\|`◇\|`⊢\|`⊨\|`φ\|`ψ' /home/benjamin/Documents/Philosophy/Projects/ProofChecker/$FILE || echo "No backticked symbols found"
+  grep -c '`□\|`◇\|`⊢\|`⊨\|`φ\|`ψ' /home/benjamin/Documents/Philosophy/Projects/Logos/$FILE || echo "No backticked symbols found"
 done
 
 # Build verification (ensure no code changes)
-cd /home/benjamin/Documents/Philosophy/Projects/ProofChecker && lake build
+cd /home/benjamin/Documents/Philosophy/Projects/Logos && lake build
 
 # Expected result: Build succeeds with no errors (documentation changes are non-breaking)
 ```
@@ -352,13 +352,13 @@ This plan updates existing documentation only. No new README files, guides, or r
 
 ### External Dependencies
 
-**None**: This implementation is self-contained within the ProofChecker repository.
+**None**: This implementation is self-contained within the Logos repository.
 
 ### Internal Prerequisites
 
 **Required Knowledge**:
 - Markdown syntax and rendering behavior
-- ProofChecker formal symbol conventions (modal, temporal, meta-logical)
+- Logos formal symbol conventions (modal, temporal, meta-logical)
 - Location of project documentation standards files
 
 **Tool Requirements**:

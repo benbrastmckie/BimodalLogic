@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-This research analyzes two medium-priority tasks from ProofChecker's TODO.md:
+This research analyzes two medium-priority tasks from Logos's TODO.md:
 
 1. **Task 8 - WorldHistory Universal Helper**: A 1 sorry placeholder at WorldHistory.lean:119 requiring proof of `respects_task` property for the universal history constructor
 2. **Task 12 - Tactic Test Suite Expansion**: 31/50+ tests currently implemented, needing 19 additional tests for comprehensive coverage
@@ -216,7 +216,7 @@ Tests 48-50+
 4. `test_time_shift_states` - time shift maps states correctly
 5. `test_time_shift_inverse` - double shift cancels
 
-**File Location**: `ProofCheckerTest/Semantics/WorldHistoryTest.lean`
+**File Location**: `LogosTest/Semantics/WorldHistoryTest.lean`
 
 **Estimated Effort**: 1 hour
 
@@ -242,19 +242,19 @@ Tests 48-50+
 ## Dependencies
 
 ### Task 8 Dependencies
-- `ProofChecker/Semantics/TaskFrame.lean` - TaskFrame structure
-- `ProofChecker/Semantics/WorldHistory.lean` - WorldHistory definition
+- `Logos/Semantics/TaskFrame.lean` - TaskFrame structure
+- `Logos/Semantics/WorldHistory.lean` - WorldHistory definition
 
 ### Task 12 Dependencies
-- `ProofChecker/Automation/Tactics.lean` - Tactic definitions
-- `ProofChecker/ProofSystem.lean` - Derivability and axioms
+- `Logos/Automation/Tactics.lean` - Tactic definitions
+- `Logos/ProofSystem.lean` - Derivability and axioms
 
 ## References
 
 ### Primary Sources
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofChecker/Semantics/WorldHistory.lean` (lines 110-119)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/ProofCheckerTest/Automation/TacticsTest.lean` (174 lines, 31 tests)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md` (lines 87-139)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/Logos/Semantics/WorldHistory.lean` (lines 110-119)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/LogosTest/Automation/TacticsTest.lean` (174 lines, 31 tests)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/TODO.md` (lines 87-139)
 
 ### Mathlib References
 - Reflexivity patterns: Mathlib.Order.Basic

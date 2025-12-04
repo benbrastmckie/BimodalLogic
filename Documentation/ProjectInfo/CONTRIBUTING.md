@@ -1,6 +1,6 @@
-# Contributing to ProofChecker
+# Contributing to Logos
 
-Thank you for your interest in contributing to ProofChecker! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to Logos! This document provides guidelines for contributing to the project.
 
 ## 1. Getting Started
 
@@ -15,11 +15,11 @@ Thank you for your interest in contributing to ProofChecker! This document provi
 
 ```bash
 # Fork the repository on GitHub, then clone your fork
-git clone https://github.com/YOUR-USERNAME/ProofChecker.git
-cd ProofChecker
+git clone https://github.com/YOUR-USERNAME/Logos.git
+cd Logos
 
 # Add upstream remote
-git remote add upstream https://github.com/ORIGINAL-OWNER/ProofChecker.git
+git remote add upstream https://github.com/ORIGINAL-OWNER/Logos.git
 
 # Install dependencies and build
 lake update
@@ -46,12 +46,12 @@ lake lint
 
 ### Test-Driven Development (TDD)
 
-ProofChecker requires TDD for all new features:
+Logos requires TDD for all new features:
 
 #### 1. RED: Write a Failing Test
 
 ```lean
--- ProofCheckerTest/ProofSystem/NewFeatureTest.lean
+-- LogosTest/ProofSystem/NewFeatureTest.lean
 
 /-- Test new theorem is provable -/
 example : ⊢ my_new_theorem := by
@@ -61,7 +61,7 @@ example : ⊢ my_new_theorem := by
 #### 2. GREEN: Implement Minimal Code
 
 ```lean
--- ProofChecker/Theorems/NewTheorem.lean
+-- Logos/Theorems/NewTheorem.lean
 
 /-- New theorem: description -/
 theorem my_new_theorem : ⊢ ... := by

@@ -5,19 +5,19 @@
 - **Agent**: research-specialist
 - **Topic**: Unicode Symbol Backtick Standardization
 - **Report Type**: codebase analysis
-- **Specs Directory**: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/010_unicode_symbols_backticks_standard
+- **Specs Directory**: /home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/010_unicode_symbols_backticks_standard
 - **Report Number**: 001
 - **Workflow**: research-and-plan
 
 ## Executive Summary
 
-Analysis of ProofChecker documentation reveals inconsistent backtick usage around formal Unicode symbols (□, ◇, ⊢, ⊨, φ, ψ, →, ∧, ∨, ¬). While some files like README.md:18 properly use backticks (`` `□` (necessity) ``), most axiom and theorem formulas (23+ instances in README.md, 8+ in CLAUDE.md, 40+ in docs/) lack backticks around formal logic expressions, reducing readability. Implementing a mandatory backtick standard for all inline formal symbols will improve visual distinction between formal notation and prose, prevent rendering ambiguities, and align with technical documentation best practices.
+Analysis of Logos documentation reveals inconsistent backtick usage around formal Unicode symbols (□, ◇, ⊢, ⊨, φ, ψ, →, ∧, ∨, ¬). While some files like README.md:18 properly use backticks (`` `□` (necessity) ``), most axiom and theorem formulas (23+ instances in README.md, 8+ in CLAUDE.md, 40+ in docs/) lack backticks around formal logic expressions, reducing readability. Implementing a mandatory backtick standard for all inline formal symbols will improve visual distinction between formal notation and prose, prevent rendering ambiguities, and align with technical documentation best practices.
 
 ## Findings
 
 ### Current State Analysis
 
-**Location**: ProofChecker repository documentation (`.md` files)
+**Location**: Logos repository documentation (`.md` files)
 
 **Issue Identified**: Inconsistent backtick usage for formal Unicode symbols across documentation
 
@@ -227,7 +227,7 @@ Rendered in monospace font, the backticked version provides:
   - Function names: `` `map` ``, `` `filter` ``
   - BUT: Formal logic symbols in docstrings are inconsistent
 
-**ProofChecker's Own LEAN Style Guide** (docs/development/LEAN_STYLE_GUIDE.md):
+**Logos's Own LEAN Style Guide** (docs/development/LEAN_STYLE_GUIDE.md):
 - Line 10: "Formulas: Use `φ`, `ψ`, `χ` (phi, psi, chi)" - uses backticks in the guide itself!
 - This creates a precedent: the style guide uses backticks when referring to symbols
 - Implementation should follow this example throughout all documentation
@@ -544,19 +544,19 @@ fi
 ### Files Analyzed
 
 **Documentation Files** (Markdown):
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md` (lines 1-206, full analysis)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/CLAUDE.md` (lines 1-233, full analysis)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/TUTORIAL.md` (lines 1-400+, focused on 80-180)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/ARCHITECTURE.md` (lines 1-100, 150-204, 567-574)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/EXAMPLES.md` (lines 1-150)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/development/LEAN_STYLE_GUIDE.md` (lines 1-382, full analysis)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/README.md` (lines 1-206, full analysis)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/CLAUDE.md` (lines 1-233, full analysis)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/TUTORIAL.md` (lines 1-400+, focused on 80-180)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/ARCHITECTURE.md` (lines 1-100, 150-204, 567-574)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/EXAMPLES.md` (lines 1-150)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/docs/development/LEAN_STYLE_GUIDE.md` (lines 1-382, full analysis)
 
 **Standards Files**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/code-standards.md` (lines 1-200)
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/docs/reference/standards/documentation-standards.md` (lines 1-200)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/code-standards.md` (lines 1-200)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/docs/reference/standards/documentation-standards.md` (lines 1-200)
 
 **Related Specifications**:
-- `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/009_unicode_symbol_standardization/reports/001-unicode-symbol-analysis.md` (complete file, 763 lines)
+- `/home/benjamin/Documents/Philosophy/Projects/Logos/.claude/specs/009_unicode_symbol_standardization/reports/001-unicode-symbol-analysis.md` (complete file, 763 lines)
 
 ### Symbol Occurrence Statistics
 
@@ -592,7 +592,7 @@ fi
 - Knuth, Donald E. _The TeXbook_. Addison-Wesley, 1984. (Mathematical symbol rendering consistency)
 - Unicode Technical Report #25: Mathematical typesetting - https://www.unicode.org/reports/tr25/
 
-**Related ProofChecker Work**:
+**Related Logos Work**:
 - Spec 009: Unicode Symbol Standardization (addresses corruption, glossary creation)
 - Current spec 010: Extends 009 with backtick readability standard
 
@@ -618,4 +618,4 @@ fi
 
 **Temporal Operators** (when using symbols):
 - `P` (Past), `F` (Future), `G` (Always), `H` (Historically) - if abbreviated
-- ProofChecker uses English words, but if symbolic: require backticks
+- Logos uses English words, but if symbolic: require backticks

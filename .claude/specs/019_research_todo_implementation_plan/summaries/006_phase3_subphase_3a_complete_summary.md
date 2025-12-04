@@ -125,7 +125,7 @@ accept conditional soundness (current MVP approach).
 ```
 
 **Files Modified**:
-- `ProofChecker/Metalogic/Soundness.lean` (lines 309-444): Comprehensive conditional validity docstrings
+- `Logos/Metalogic/Soundness.lean` (lines 309-444): Comprehensive conditional validity docstrings
 
 **Impact**: All three conditional axioms now have clear frame requirements documented
 
@@ -141,13 +141,13 @@ accept conditional soundness (current MVP approach).
 - Paper reference: `app:TaskSemantics, def:frame, line 1835`
 - Documents paper's definition: `F = (W, G, ·)` where G is abelian group
 - **Int Simplification**: Explicitly documented that `Int` with addition is a specific abelian group satisfying all paper requirements
-- Alignment verification: Maps paper's nullity and compositionality to ProofChecker equivalents
+- Alignment verification: Maps paper's nullity and compositionality to Logos equivalents
 - Cross-reference to paper's formal task frame definition
 
 **WorldHistory.lean** (lines 1-44):
 - Paper reference: `app:TaskSemantics, def:world-history, line 1849`
 - Documents paper's definition: `τ: T → W` where `T ⊆ G` is convex subset
-- Maps ProofChecker implementation to paper specification
+- Maps Logos implementation to paper specification
 - Critical semantic points: Box vs Past/Future quantification clarified
 - Cross-reference to paper's formal world history definition
 
@@ -161,15 +161,15 @@ accept conditional soundness (current MVP approach).
 **Soundness.lean** (lines 1-69):
 - Paper reference: `app:valid, line 1984`
 - Documents perpetuity principles P1/P2 proven in paper using time-shift automorphisms
-- Notes ProofChecker extensions beyond paper (TL, MF, TF conditional axioms)
+- Notes Logos extensions beyond paper (TL, MF, TF conditional axioms)
 - Proven axioms aligned with paper's S5 modal and linear temporal components
 - Cross-reference to paper's perpetuity principle validity proofs
 
 **Files Modified**:
-- `ProofChecker/Semantics/TaskFrame.lean` (lines 1-47)
-- `ProofChecker/Semantics/WorldHistory.lean` (lines 1-44)
-- `ProofChecker/Semantics/Truth.lean` (lines 1-56)
-- `ProofChecker/Metalogic/Soundness.lean` (lines 1-69)
+- `Logos/Semantics/TaskFrame.lean` (lines 1-47)
+- `Logos/Semantics/WorldHistory.lean` (lines 1-44)
+- `Logos/Semantics/Truth.lean` (lines 1-56)
+- `Logos/Metalogic/Soundness.lean` (lines 1-69)
 
 **Impact**: All semantic modules now have explicit paper cross-references for verification
 
@@ -177,7 +177,7 @@ accept conditional soundness (current MVP approach).
 
 ### Task 3A.7: Verify Temporal Operator Semantics (COMPLETE)
 
-**Objective**: Verify ProofChecker's temporal operators match JPL paper specification
+**Objective**: Verify Logos's temporal operators match JPL paper specification
 
 **Verification Result**: ✅ **EXACT MATCH CONFIRMED**
 
@@ -187,7 +187,7 @@ M,τ,x ⊨ Past φ  iff  M,τ,y ⊨ φ for all y ∈ T where y < x
 M,τ,x ⊨ Future φ  iff  M,τ,y ⊨ φ for all y ∈ T where x < y
 ```
 
-**ProofChecker Implementation** (Truth.lean, lines 64-65):
+**Logos Implementation** (Truth.lean, lines 64-65):
 ```lean
 | Formula.past φ => ∀ (s : Int) (hs : τ.domain s), s < t → truth_at M τ s hs φ
 | Formula.future φ => ∀ (s : Int) (hs : τ.domain s), t < s → truth_at M τ s hs φ
@@ -199,34 +199,34 @@ M,τ,x ⊨ Future φ  iff  M,τ,y ⊨ φ for all y ∈ T where x < y
 3. ✅ Future: `t < s` matches paper's `x < y`
 4. ✅ Domain restriction `(hs : τ.domain s)` matches paper's `y ∈ T`
 
-**Conclusion**: ProofChecker temporal operators are semantically correct per JPL paper
+**Conclusion**: Logos temporal operators are semantically correct per JPL paper
 
 **Documentation**: Verification documented in Truth.lean module docstring (lines 29-32)
 
-**Impact**: Confirms ProofChecker's temporal semantics are faithful to paper specification
+**Impact**: Confirms Logos's temporal semantics are faithful to paper specification
 
 ---
 
 ## Files Changed
 
 ```
-M ProofChecker/Metalogic/Soundness.lean
+M Logos/Metalogic/Soundness.lean
   - Lines 1-69: Updated module docstring with paper references and Option B documentation
   - Lines 309-349: TL axiom conditional validity documentation
   - Lines 369-406: MF axiom conditional validity documentation
   - Lines 408-444: TF axiom conditional validity documentation
   - Build succeeds with 6 expected sorry warnings (3 axioms + 3 rules)
 
-M ProofChecker/Semantics/TaskFrame.lean
+M Logos/Semantics/TaskFrame.lean
   - Lines 1-47: Added paper cross-references and Int simplification documentation
   - Documented abelian group correspondence
   - Build succeeds
 
-M ProofChecker/Semantics/WorldHistory.lean
+M Logos/Semantics/WorldHistory.lean
   - Lines 1-44: Added paper cross-references and critical semantic points
   - Build succeeds with 1 expected sorry warning (universal helper)
 
-M ProofChecker/Semantics/Truth.lean
+M Logos/Semantics/Truth.lean
   - Lines 1-56: Added paper cross-references and temporal operator verification
   - Documented exact alignment with paper's 6 truth evaluation clauses
   - Build succeeds
@@ -258,29 +258,29 @@ M ProofChecker/Semantics/Truth.lean
 
 ```bash
 # Verify builds
-lake build ProofChecker.Metalogic.Soundness      # ✅ Success
-lake build ProofChecker.Semantics.TaskFrame      # ✅ Success
-lake build ProofChecker.Semantics.WorldHistory   # ✅ Success
-lake build ProofChecker.Semantics.Truth          # ✅ Success
+lake build Logos.Metalogic.Soundness      # ✅ Success
+lake build Logos.Semantics.TaskFrame      # ✅ Success
+lake build Logos.Semantics.WorldHistory   # ✅ Success
+lake build Logos.Semantics.Truth          # ✅ Success
 
 # Verify paper references added
 grep -n "app:TaskSemantics\|def:frame\|def:world-history\|def:BL-semantics\|app:valid" \
-  ProofChecker/Semantics/TaskFrame.lean \
-  ProofChecker/Semantics/WorldHistory.lean \
-  ProofChecker/Semantics/Truth.lean \
-  ProofChecker/Metalogic/Soundness.lean
+  Logos/Semantics/TaskFrame.lean \
+  Logos/Semantics/WorldHistory.lean \
+  Logos/Semantics/Truth.lean \
+  Logos/Metalogic/Soundness.lean
 # Expected: 4 results (one per file) ✅
 
 # Verify Int simplification documented
-grep -n "abelian group" ProofChecker/Semantics/TaskFrame.lean
+grep -n "abelian group" Logos/Semantics/TaskFrame.lean
 # Expected: Multiple results ✅
 
 # Verify temporal operator domain restriction
-grep "τ.domain" ProofChecker/Semantics/Truth.lean | grep -E "past|future"
+grep "τ.domain" Logos/Semantics/Truth.lean | grep -E "past|future"
 # Expected: 2 results ✅
 
 # Verify conditional validity documentation
-grep -A 10 "conditional on" ProofChecker/Metalogic/Soundness.lean
+grep -A 10 "conditional on" Logos/Metalogic/Soundness.lean
 # Expected: 3 axiom docstrings ✅
 ```
 
