@@ -49,9 +49,9 @@ lake env lean <path/to/file.lean>
 ## 3. Project Structure
 
 ```
-Logos/
+Logos/Core/
 ├── Logos.lean           # Library root (re-exports all public modules)
-├── Logos/               # Main source directory (see Logos/README.md)
+├── Logos/Core/               # Main source directory (see Logos/Core/README.md)
 │   ├── Syntax/                 # Formula types, parsing, DSL
 │   │   ├── Formula.lean        # Core formula inductive type
 │   │   └── Context.lean        # Proof context (premise lists)
