@@ -331,7 +331,12 @@ mkdir -p "$(dirname "$TOPIC_NAME_FILE")" 2>/dev/null || true
 
 # === PATH MISMATCH DIAGNOSTIC ===
 # Verify STATE_FILE uses CLAUDE_PROJECT_DIR (not HOME) to prevent exit 127 errors
-if [[ "$STATE_FILE" =~ ^${HOME}/ ]]; then
+# Skip PATH MISMATCH check when PROJECT_DIR is subdirectory of HOME (valid configuration)
+if [[ "$CLAUDE_PROJECT_DIR" =~ ^${HOME}/ ]]; then
+  # PROJECT_DIR legitimately under HOME - skip PATH MISMATCH validation
+  :
+elif [[ "$STATE_FILE" =~ ^${HOME}/ ]]; then
+  # Only flag as error if PROJECT_DIR is NOT under HOME but STATE_FILE uses HOME
   log_command_error \
     "$COMMAND_NAME" \
     "$WORKFLOW_ID" \
@@ -551,6 +556,13 @@ else
   echo "ERROR: State file not found: $STATE_FILE" >&2
   exit 1
 fi
+
+# === DEFENSIVE VARIABLE INITIALIZATION ===
+# Initialize potentially unbound variables with defaults to prevent unbound variable errors
+# These variables may not be set in state file depending on user input
+ORIGINAL_PROMPT_FILE_PATH="${ORIGINAL_PROMPT_FILE_PATH:-}"
+RESEARCH_COMPLEXITY="${RESEARCH_COMPLEXITY:-2}"
+WORKFLOW_DESCRIPTION="${WORKFLOW_DESCRIPTION:-}"
 
 # WORKFLOW_DESCRIPTION should be in state file, but also check temp file as backup
 # CRITICAL: Use CLAUDE_PROJECT_DIR for consistent path

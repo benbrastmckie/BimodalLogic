@@ -30,6 +30,8 @@ Research vision and planned architecture. For implementation status, see [Projec
 Project status and contribution information:
 - **IMPLEMENTATION_STATUS.md**: Module-by-module status tracking with verification commands
 - **KNOWN_LIMITATIONS.md**: Gaps, explanations, workarounds, and roadmap
+- **SORRY_REGISTRY.md**: Technical debt tracking (sorry placeholders with resolution context)
+- **MAINTENANCE.md**: TODO management workflow (git-based history model)
 - **CONTRIBUTING.md**: Contribution guidelines and workflow
 - **VERSIONING.md**: Semantic versioning policy
 
@@ -66,6 +68,8 @@ Reference materials:
 ### For Contributors
 - [Implementation Status](ProjectInfo/IMPLEMENTATION_STATUS.md) - What's implemented
 - [Known Limitations](ProjectInfo/KNOWN_LIMITATIONS.md) - What needs work
+- [Sorry Registry](ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking
+- [Maintenance Workflow](ProjectInfo/MAINTENANCE.md) - TODO and documentation procedures
 - [Contributing Guidelines](ProjectInfo/CONTRIBUTING.md) - How to contribute
 - [Style Guide](Development/LEAN_STYLE_GUIDE.md) - Coding standards
 

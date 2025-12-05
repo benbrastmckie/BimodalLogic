@@ -7,6 +7,12 @@
 
 This document documents actual implementation gaps in Logos MVP that users should be aware of.
 
+**Related Documentation**:
+- [TODO.md](../../TODO.md) - Active tasks addressing these limitations
+- [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Technical debt details (sorry placeholders)
+- [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Module completion status
+- [MAINTENANCE.md](MAINTENANCE.md) - Documentation update workflow
+
 **Quick Navigation**:
 1. [Completeness Status](#1-completeness-status)
 2. [Automation Limitations](#2-automation-limitations)

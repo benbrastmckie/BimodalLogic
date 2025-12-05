@@ -28,6 +28,20 @@ Logos implements task semantics for the bimodal logic TM (Tense and Modality), w
 
 The Logos architecture follows a progressive extension strategy where operators are organized into layers building incrementally from foundational logic. This methodology enables domain-specific customization while maintaining mathematical rigor, allowing applications to use precisely the operators needed without carrying overhead from unused extensions.
 
+#### Future Extensibility: Operator Discovery
+
+This training methodology extends naturally to operator discovery. AI systems can learn to:
+- Identify reasoning patterns in natural language involving operators not yet formalized
+- Predict logics for new operators by constraining their semantic consequences
+- Systematically explore the unbounded space of logical operators worth theorizing
+
+Just as the space of theorems for any proof system and the space of models for any semantics are both infinite, the space of logical operators is unbounded. Formal logic provides an infinitely extensible supply of training resources that is:
+- **Perfectly clean**: Soundness guarantees mathematical certainty
+- **Perfectly consistent**: No contradictions or ambiguities
+- **Unlimited by compute**: Not constrained by finite, noisy human-generated datasets
+
+This contrasts sharply with natural language reasoning data, which is typically finite, noisy, and inconsistent—especially for sophisticated reasoning involving complex operator interactions that most humans cannot reliably perform without formal support. Like arithmetic computation, which vastly outstrips unaided human capability, complex logical reasoning requires formal systems to achieve accuracy and scale.
+
 ## Layer Architecture
 
 ### Layer 0 (Core TM): Boolean, Modal, Temporal
@@ -109,6 +123,71 @@ Logos enables verified AI reasoning through complementary syntactic and semantic
 **Model-Checker** (Z3): Searches for countermodels in finite state spaces, generating concrete semantic scenarios showing exactly why invalid inferences fail.
 
 This dual verification creates unlimited training data for reinforcement learning without human annotation, enabling scalable oversight through computational verification.
+
+### Complete Classification of Inference Space
+
+The dual verification architecture provides binary classification covering the entire space of possible inferences. In a complete logic, every inference is either:
+- **Derivable**: Can be proven from axioms (positive training signal from proof-checker)
+- **Invalid**: Has a counterexample where premises are true but conclusion false (corrective training signal from model-checker)
+
+Even in incomplete logics, additional valid principles can be consistently added as axioms to strengthen the system. This completeness property ensures comprehensive coverage of the inference space, creating an unbounded yet perfectly clean training environment.
+
+### Three Dimensions of Training Mastery
+
+By defining a proof system that is sound over a semantic model theory, the combined space of theorems and countermodels provides an infinite training ground limited only by computational resources:
+
+1. **Reasoning WITH operators**: Master the inference patterns for modal, temporal, and bimodal operators by accumulating derivations and countermodels
+2. **Finding derivations**: Learn to construct proofs within the axiom system—a challenging search problem even when validity is known
+3. **Finding countermodels**: Learn to construct semantic models that refute invalid claims—the dual search problem
+
+### Three Modes of Reasoning
+
+The semantic model theory underlying Logos enables not just **deductive reasoning** (deriving conclusions from premises) but also **abductive reasoning** (generating hypotheses) and **inductive reasoning** (testing hypotheses with empirical feedback). This provides a comprehensive framework for AI reasoning across all three inference modes.
+
+#### Deductive Reasoning
+
+**Process**: From premises to conclusions via proof derivation within the axiom system
+
+**Validation Mechanism**: The dual verification architecture validates deductions:
+- If the inference is valid, the proof-checker derives it with a machine-checkable proof (positive training signal)
+- If the inference is invalid, the model-checker refutes it with a counterexample (corrective training signal)
+
+**Current Focus**: The implemented Core Layer provides complete infrastructure for training deductive reasoning with modal and temporal operators.
+
+#### Abductive Reasoning
+
+**Process**: Generate hypotheses by constructing semantic models that explain observations
+
+**Methodology**: Given a goal or observed phenomenon, construct a semantic model (consisting of world states, task transitions, times, and valuations) that makes the desired claim true. The semantics then reveals:
+- Which claims are **already true** given the current model
+- Which claims **can be made true** by extending the model in specific ways
+- What **must be added** to the model to achieve goals
+
+**Future Capability**: Planned extensions (counterfactual, causal operators in Layer 1) will enable systematic hypothesis generation for explanatory reasoning.
+
+#### Inductive Reasoning
+
+**Process**: Test hypothesized models against empirical feedback and iteratively refine them
+
+**Methodology**:
+1. Construct a hypothesized semantic model (abduction)
+2. Derive testable predictions from the model (deduction)
+3. Collect empirical evidence to evaluate predictions
+4. Refine the model based on consistency with evidence
+
+**Future Capability**: Integration with empirical model-checking will enable systematic hypothesis testing and model refinement.
+
+#### Example: Medical Treatment Planning
+
+Consider evaluating treatment strategies for hypertension when a patient is already taking medication that interacts with some drugs:
+
+**Deductive Reasoning**: "If we prescribe Drug A while the patient takes Medication X, liver damage will occur" (derive from known drug interaction model)
+
+**Abductive Reasoning**: "What treatment would normalize blood pressure without side effects?" (hypothesize model extensions: alternative drugs, dosage adjustments, lifestyle interventions)
+
+**Inductive Reasoning**: "Does empirical data support our drug interaction model?" (test predictions against clinical trials, refine interaction model based on evidence)
+
+Training AI systems to reason in Logos—interpreted through semantic models with explicit semantic clauses—provides a pathway for mastering all three inference modes systematically.
 
 **For detailed RL training architecture**, see [Research/DUAL_VERIFICATION.md](../Research/DUAL_VERIFICATION.md).
 

@@ -549,6 +549,8 @@ Context Exhausted: {yes|no}
   - WRONG: `work_remaining: [Phase 4, Phase 5, Phase 6]` ✗ (triggers state_error)
 - The parent workflow uses `append_workflow_state()` which only accepts scalar values
 - JSON arrays cause type validation failures and state_error log entries
+- **CRITICAL**: The `work_remaining` and `requires_continuation` fields must satisfy the contract invariant (see "Return Signal Contract" section below)
+- Contract violations trigger defensive override by orchestrator with `validation_error` log entry
 
 ```yaml
 IMPLEMENTATION_COMPLETE:
@@ -565,6 +567,47 @@ IMPLEMENTATION_COMPLETE:
   stuck_detected: true|false
   phases_with_markers: N  # Number of phases with [COMPLETE] marker (informational)
 ```
+
+### Return Signal Contract
+
+**CRITICAL INVARIANT**: The `requires_continuation` and `work_remaining` fields MUST satisfy this relationship:
+
+| work_remaining | requires_continuation | Valid? | Description |
+|----------------|----------------------|---------|-------------|
+| Non-empty (e.g., "Phase_4 Phase_5") | true | ✓ Valid | Work remains, continuation needed |
+| Empty/0/"[]" | false | ✓ Valid | No work remains, halt workflow |
+| Empty/0/"[]" | true | ⚠ Suboptimal | No work remains but requesting continuation (wastes iterations) |
+| Non-empty (e.g., "Phase_4 Phase_5") | false | ✗ INVALID | Contract violation - orchestrator will override |
+
+**Defensive Orchestrator Behavior**:
+
+The /implement orchestrator validates this invariant in Block 1c (defensive validation section). If `work_remaining` is non-empty and `requires_continuation=false`, the orchestrator will:
+
+1. Log a `validation_error` to errors.jsonl with details of the contract violation
+2. Override `requires_continuation` to `true` (defensive override)
+3. Continue to next iteration with warning message
+4. The workflow continues instead of halting prematurely
+
+This defensive pattern prevents agent bugs from causing workflow halt with incomplete work.
+
+**Implementation Note for Agent Developers**:
+
+Always set `requires_continuation=true` when `work_remaining` contains any phase identifiers. The relationship is simple:
+- If phases remain → `requires_continuation: true`
+- If no phases remain → `requires_continuation: false`
+
+Example of correct signal logic:
+```bash
+if [ -n "$WORK_REMAINING" ] && [ "$WORK_REMAINING" != "0" ] && [ "$WORK_REMAINING" != "[]" ]; then
+  REQUIRES_CONTINUATION="true"
+else
+  REQUIRES_CONTINUATION="false"
+fi
+```
+
+**Diagnostics**:
+
+If you see contract violations in error logs, use `/errors --type validation_error --command /implement` to query logged violations and identify agent bugs.
 
 If failures:
 ```

@@ -17,7 +17,9 @@ logic TM (Tense and Modality) with task semantics. It provides:
 
 **For detailed status**: See [Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)
 **For limitations**: See [Documentation/ProjectInfo/KNOWN_LIMITATIONS.md](Documentation/ProjectInfo/KNOWN_LIMITATIONS.md)
-**For task tracking**: See [TODO.md](TODO.md)
+**For task tracking**: See [TODO.md](TODO.md) (active work only - git history for completed tasks)
+**For technical debt**: See [Documentation/ProjectInfo/SORRY_REGISTRY.md](Documentation/ProjectInfo/SORRY_REGISTRY.md)
+**For maintenance workflow**: See [Documentation/ProjectInfo/MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md)
 
 ## 2. Essential Commands
 
@@ -91,6 +93,8 @@ Logos/Core/
 │   ├── ProjectInfo/            # Project status and contribution info
 │   │   ├── IMPLEMENTATION_STATUS.md  # Module-by-module status tracking
 │   │   ├── KNOWN_LIMITATIONS.md      # Gaps, explanations, workarounds
+│   │   ├── SORRY_REGISTRY.md         # Technical debt (sorry placeholders)
+│   │   ├── MAINTENANCE.md            # TODO management workflow
 │   │   ├── CONTRIBUTING.md           # Contribution guidelines
 │   │   └── VERSIONING.md             # Semantic versioning policy
 │   ├── Development/            # Developer standards
@@ -118,9 +122,11 @@ Logos/Core/
 - [Directory README Standard](Documentation/Development/DIRECTORY_README_STANDARD.md) - Directory-level documentation standard
 
 ### Project Status (Keep Updated)
-- [TODO.md](TODO.md) - **Task tracking and progress** (central task management)
+- [TODO.md](TODO.md) - **Active task tracking** (uses git-based history model)
 - [Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module status tracking
 - [Known Limitations](Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) - Gaps and workarounds
+- [Sorry Registry](Documentation/ProjectInfo/SORRY_REGISTRY.md) - Technical debt (sorry placeholders)
+- [Maintenance Workflow](Documentation/ProjectInfo/MAINTENANCE.md) - TODO management procedures
 
 ### User Documentation (Documentation/UserGuide/ and Documentation/ProjectInfo/)
 - [Logos Methodology](Documentation/UserGuide/METHODOLOGY.md) - Philosophical foundations and layer architecture

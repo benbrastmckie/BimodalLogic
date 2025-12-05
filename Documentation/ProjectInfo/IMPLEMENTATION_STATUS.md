@@ -8,6 +8,12 @@
 
 Logos has completed its MVP phase with a functional implementation of the TM bimodal logic proof system. This document provides module-by-module status tracking with accurate accounting of completed vs. partial vs. planned work.
 
+**Related Documentation**:
+- [TODO.md](../../TODO.md) - Active task tracking
+- [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders with resolution context)
+- [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) - Gaps and workarounds
+- [MAINTENANCE.md](MAINTENANCE.md) - TODO management workflow
+
 **Quick Summary**:
 - **Completed Modules**: 5/8 (63%)
 - **Partial Modules**: 2/8 (25%)

@@ -28,6 +28,7 @@ See [Command Architecture Standards](../architecture/overview.md) for complete s
 - [/lean-build](#lean-build)
 - [/lean-implement](#lean-implement)
 - [/lean-plan](#lean-plan)
+- [/lean-update](#lean-update)
 - [/list](#list)
 - [/optimize-claude](#optimize-claude)
 - [/create-plan](#create-plan)
@@ -524,6 +525,70 @@ See [Command Architecture Standards](../architecture/overview.md) for complete s
 **Integration**: Plans execute with `/lean-build` or `/lean-implement` command for automated proving
 
 **See**: [lean-plan-command-guide.md](../../guides/commands/lean-plan-command-guide.md)
+
+---
+
+### /lean-update
+**Purpose**: Update Lean project maintenance documentation by scanning for sorry placeholders and synchronizing six-document ecosystem
+
+**Usage**: `/lean-update [--verify] [--with-build] [--dry-run]`
+
+**Type**: maintenance (Lean specialization)
+
+**Arguments**:
+- `--verify` (optional): Check cross-reference integrity without modifications
+- `--with-build` (optional): Include `lake build` and `lake test` verification
+- `--dry-run` (optional): Preview changes without applying updates
+
+**Agents Used**: lean-maintenance-analyzer
+
+**Output**: Updated maintenance documents (TODO.md, SORRY_REGISTRY.md, IMPLEMENTATION_STATUS.md, KNOWN_LIMITATIONS.md, MAINTENANCE.md, CLAUDE.md)
+
+**Modes**:
+1. **Scan Mode** (default): Update all maintenance documents based on current project state
+2. **Verify Mode** (`--verify`): Check cross-reference integrity without modifications
+3. **Build Mode** (`--with-build`): Include build/test verification
+4. **Dry-Run Mode** (`--dry-run`): Preview changes without applying
+
+**Key Features**:
+- Automated sorry placeholder detection via grep
+- Module completion percentage calculation
+- Cross-reference integrity validation
+- Preservation of manually-curated sections (Backlog, Saved, Resolved Placeholders)
+- Git snapshot before updates (recovery mechanism)
+- Multi-file atomic updates
+
+**Preservation Policy**:
+- TODO.md: Preserves Backlog and Saved sections
+- SORRY_REGISTRY.md: Preserves Resolved Placeholders section
+- IMPLEMENTATION_STATUS.md: Preserves lines with `<!-- MANUAL -->` comment
+- Other docs: Preserves sections marked with `<!-- CUSTOM -->` or `<!-- MANUAL -->`
+
+**Examples**:
+```bash
+# Standard workflow: Update all maintenance docs
+/lean-update
+
+# Check cross-references without modifying files
+/lean-update --verify
+
+# Preview changes before applying
+/lean-update --dry-run
+
+# Full verification including build/test
+/lean-update --with-build
+```
+
+**Recovery**:
+```bash
+# View changes since snapshot
+git diff <snapshot-hash>
+
+# Restore specific file
+git restore --source=<snapshot-hash> -- Documentation/ProjectInfo/SORRY_REGISTRY.md
+```
+
+**See**: [lean-update.md](../../commands/lean-update.md), [Lean Update Command Guide](../../docs/guides/commands/lean-update-command-guide.md)
 
 ---
 
