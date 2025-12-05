@@ -86,45 +86,117 @@ This file serves as the central task tracking system for Logos development. It o
 
 ## Medium Priority Tasks
 
-### 14. Clean Up 'Always' Operator Definition Cruft
-**Effort**: 3-5 hours
-**Status**: Not Started
+### 14. Temporal Operator Convention Refactoring ✓ PARTIAL COMPLETE
+**Effort**: 6-8 hours (revised from 3-5)
+**Status**: PARTIAL COMPLETE (2025-12-04) - Phases 1-2 done, Phases 3-7 pending
 **Priority**: Medium (code clarity and documentation accuracy)
 
-**Description**: After aligning the `always` operator with the JPL paper definition (`Pφ ∧ φ ∧ Fφ`), the TL, MF, and TF axiom proofs no longer require frame constraints. Remove the unused `BackwardPersistence` and `ModalTemporalPersistence` definitions and update all associated documentation that incorrectly claims these constraints are required.
+**Description**: Comprehensive refactoring to clean up temporal operator naming conventions:
+1. Remove unused `BackwardPersistence` and `ModalTemporalPersistence` frame constraints ✓
+2. Rename constructors: `past` → `all_past`, `future` → `all_future` ✓
+3. Rename derived operators: `sometime_past` → `some_past`, `sometime_future` → `some_future`
+4. Add DSL notation: `H`/`G`/`P`/`F` for formal expressions (following `box`/`□` pattern)
+5. Update all code, tests, archive examples, and documentation
 
 **Files**:
-- `Logos/Metalogic/Soundness.lean` (primary - remove definitions, update docstrings)
-- `CLAUDE.md` (update implementation status)
-- `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` (update frame constraint references)
-- `Documentation/ProjectInfo/KNOWN_LIMITATIONS.md` (remove outdated limitation sections)
+- `Logos/Core/Syntax/Formula.lean` (primary - constructors and operators) ✓
+- `Logos/Core/Semantics/Truth.lean` (pattern matches) ✓
+- `Logos/Core/Metalogic/Soundness.lean` (remove definitions, update docstrings) ✓
+- `Logos/Core/ProofSystem/Axioms.lean` ✓
+- `Logos/Core/ProofSystem/Derivation.lean` ✓
+- `Logos/Core/Theorems/Perpetuity.lean` ✓ (renamed, but has logic errors - see Task 16)
+- `Logos/Core/Automation/Tactics.lean` ✓
+- LogosTest/ (test files)
+- Archive/ (example files)
+- Documentation/ (markdown documentation)
 
-**Action Items**:
-1. **Phase 1** (1 hour): Remove unused frame constraint definitions
-   - Delete `BackwardPersistence` definition (Soundness.lean:99-123)
-   - Delete `ModalTemporalPersistence` definition (Soundness.lean:125-149)
-   - Verify `lake build` succeeds
-2. **Phase 2** (1 hour): Update Soundness.lean docstrings
-   - Remove all references to conditional validity and frame constraints
-   - Update module docstring (lines 1-70)
-   - Update `temp_l_valid`, `modal_future_valid`, `temp_future_valid` docstrings
-3. **Phase 3** (1-2 hours): Update external documentation
-   - Update CLAUDE.md line 191 (remove "require frame constraints")
-   - Review and update IMPLEMENTATION_STATUS.md
-   - Review and update KNOWN_LIMITATIONS.md
-4. **Phase 4** (0.5 hours): Final verification
-   - Grep for remaining BackwardPersistence/ModalTemporalPersistence references
-   - Run `lake build && lake test`
+**Completed** (2025-12-04):
+- ✓ Phase 1: Remove BackwardPersistence/ModalTemporalPersistence definitions
+- ✓ Phase 2: Rename constructors `past`→`all_past`, `future`→`all_future`
+- ✓ Phase 2: Rename `swap_past_future`→`swap_temporal` (with backward compat alias)
+- ✓ Phase 2: Update all pattern matches across 7 Lean files
 
-**Blocking**: None (cleanup task, doesn't affect functionality)
-
-**Dependencies**: None (can be done anytime)
+**Remaining**:
+- Phase 3: Rename `sometime_past`→`some_past`, `sometime_future`→`some_future`
+- Phase 3: Add H/G/P/F DSL notation
+- Phase 4: Update test files
+- Phase 5: Update archive examples
+- Phase 6: Update documentation
+- Phase 7: Final verification
 
 **Research/Plan Reference**:
-- [Research Report](.claude/specs/034_always_operator_cleanup_alignment/reports/001-always-operator-cruft-analysis.md)
-- [Implementation Plan](.claude/specs/034_always_operator_cleanup_alignment/plans/001-always-operator-cleanup-plan.md)
+- [Implementation Plan](.claude/specs/038_temporal_conventions_refactor/plans/001-temporal-conventions-refactor-plan.md)
+- [Research Report](.claude/specs/038_temporal_conventions_refactor/reports/001-temporal-conventions-research.md)
 
-**Notes**: The definitions were never used in actual proofs - they were documented as "required" but the proofs use time-shift infrastructure (MF, TF) or the correct `always` definition (TL) instead.
+**Notes**: Phases 1-2 committed. Pre-existing build errors in Soundness.lean and Perpetuity.lean discovered during implementation - see Tasks 16 and 17.
+
+---
+
+### 16. Fix Perpetuity Theorem Logic Errors (NEW)
+**Effort**: 4-6 hours
+**Status**: Not Started
+**Priority**: High (correctness bug)
+
+**Description**: The Perpetuity.lean theorems have logic errors - they incorrectly assumed `△φ = Fφ` when the correct definition is `△φ = Hφ ∧ φ ∧ Gφ` (equivalently `all_past φ ∧ φ ∧ all_future φ`). This was exposed during the temporal constructor rename in Task 14.
+
+**Affected Theorems**:
+- `perpetuity_1` (P1: `□φ → △φ`) - Proof uses MF axiom but △φ is not the same as Gφ
+- `perpetuity_3` (P3: `□φ → □△φ`) - Proof claims MF axiom is "exactly" this, but types don't match
+
+**Incorrect Comments to Fix**:
+- `Logos/Core/Theorems/Perpetuity.lean:127`: "△φ = Fφ (since always = future)" - WRONG
+- `Logos/Core/Theorems/Perpetuity.lean:177`: "▽φ = ¬(future (¬φ))" - WRONG
+- `Logos/Core/Theorems/Perpetuity.lean:183-185`: Claims about future operator - WRONG
+- `Logos/Core/Theorems/Perpetuity.lean:202`: "△φ = Fφ" - WRONG
+- `Logos/Core/Theorems/Perpetuity.lean:205`: "□(△φ) = □(Fφ)" - WRONG
+
+**Correct Definitions**:
+- `△φ` (always φ) = `Hφ ∧ φ ∧ Gφ` = `all_past φ ∧ φ ∧ all_future φ`
+- `▽φ` (sometimes φ) = `¬(always ¬φ)` = `Pφ ∨ φ ∨ Fφ` (dual)
+
+**Action Items**:
+1. Update all incorrect comments to use correct definitions
+2. Fix P1 theorem proof (need to derive full conjunction, not just Gφ)
+3. Fix P3 theorem proof (MF gives `□φ → □Gφ`, need to extend to full △φ)
+4. Verify P2, P4, P5, P6 proofs are still correct under new understanding
+5. Run `lake build` to verify all changes compile
+
+**Blocking**: Task 14 completion (temporal constructor rename)
+
+**Dependencies**: Task 14 Phase 2 must be complete (✓)
+
+---
+
+### 17. Fix Pre-existing Soundness.lean Type Mismatch Errors (NEW)
+**Effort**: 2-4 hours
+**Status**: Not Started
+**Priority**: Medium (pre-existing bug, not blocking)
+
+**Description**: Pre-existing type mismatch errors in Soundness.lean at lines 501 and 545 in the `temporal_k` and `weakening` soundness cases. These errors existed before the temporal refactor and are unrelated to Task 14.
+
+**Error Details**:
+```
+error: ././././Logos/Core/Metalogic/Soundness.lean:501:15: application type mismatch
+  ih F M
+argument M has type LinearOrderedAddCommGroup F : Type
+but is expected to have type TaskFrame F : Type 1
+```
+
+**Affected Code**:
+- `Soundness.lean:501` - `temporal_k` case
+- `Soundness.lean:545` - `weakening` case
+
+**Root Cause**: The variable `F` is being shadowed or type inference is failing due to the polymorphic temporal domain generalization (Task 15).
+
+**Action Items**:
+1. Investigate type shadowing in soundness theorem cases
+2. Add explicit type annotations where needed
+3. Verify fixes don't break other proofs
+4. Run full `lake build`
+
+**Blocking**: None (pre-existing, doesn't block other work)
+
+**Dependencies**: None
 
 ---
 
@@ -785,17 +857,21 @@ This section tracks task completion with date stamps. Mark tasks complete here w
 
 **Medium Priority**:
 - [x] **Task 5b**: Temporal Duality Soundness - DOCUMENTED AS LIMITATION (2025-12-03)
-- [x] **Task 6**: Complete Perpetuity Proofs - COMPLETE (2025-12-02, Phase 2)
+- [x] **Task 6**: Complete Perpetuity Proofs - COMPLETE (2025-12-02, Phase 2) ⚠️ See Task 16 for logic errors
 - [x] **Task 7**: Implement Core Automation - PARTIAL COMPLETE (2025-12-03, 4/12 tactics)
 - [x] **Task 8**: WorldHistory Universal Helper - COMPLETE (2025-12-03, zero sorry)
 - [x] **Task 12**: Create Tactic Test Suite - COMPLETE (2025-12-03, 50 tests)
+- [ ] **Task 14**: Temporal Operator Refactoring - PARTIAL COMPLETE (2025-12-04, Phases 1-2 of 7)
+- [ ] **Task 16**: Fix Perpetuity Theorem Logic Errors - Not Started (NEW)
+- [ ] **Task 17**: Fix Soundness.lean Type Mismatch Errors - Not Started (NEW)
 
 **Low Priority**:
-- [ ] None yet
+- [x] **Task 15**: Temporal Generalization - COMPLETE (2025-12-04)
 
 ### In Progress
 
 - **Task 7**: Remaining automation work (Aesop integration blocked, 8 tactics remaining)
+- **Task 14**: Temporal operator refactoring (Phases 3-7 pending)
 
 ### Completion Log
 
@@ -817,14 +893,21 @@ This section tracks task completion with date stamps. Mark tasks complete here w
 | 2025-12-03 | **Task 8: WorldHistory** | COMPLETE: Removed sorry at line 119. Added universal_trivialFrame, universal_natFrame constructors. Refactored universal to require reflexivity proof. Zero sorry in WorldHistory.lean. |
 | 2025-12-03 | **Task 12: Test Expansion** | COMPLETE: Expanded TacticsTest.lean from 31 to 50 tests. Added tm_auto coverage (4 tests), negative tests (8 tests), context tests (4 tests), edge cases (3 tests). |
 | 2025-12-04 | **Task 15: Temporal Generalization** | COMPLETE: Generalized temporal domain from `Int` to `LinearOrderedAddCommGroup`. TaskFrame, WorldHistory, Truth, Validity all updated. Tests updated with explicit Int types. Archive/TemporalStructures.lean created with polymorphic examples. JPL paper alignment achieved. |
+| 2025-12-04 | **Task 14: Temporal Refactor (Phases 1-2)** | PARTIAL: Removed BackwardPersistence/ModalTemporalPersistence. Renamed constructors past→all_past, future→all_future. Renamed swap_past_future→swap_temporal. Updated 7 Lean files. Discovered pre-existing bugs → created Tasks 16, 17. |
+| 2025-12-04 | **Task 16: Perpetuity Logic Errors** | NEW: Discovered theorems incorrectly assumed △φ = Fφ. Correct definition is △φ = Hφ ∧ φ ∧ Gφ. Affects P1 and P3 proofs. |
+| 2025-12-04 | **Task 17: Soundness Type Errors** | NEW: Pre-existing type mismatch in temporal_k and weakening cases. Variable F shadowing issue from Task 15 generalization. |
 
 ### Status Summary
 
 **Layer 0 Completion Progress**:
 - High Priority: 5/5 tasks complete (100%) ✓
-- Medium Priority: 5/6 tasks complete (83%) (Task 14 pending)
+- Medium Priority: 5/8 tasks complete (62%) (Tasks 14, 16, 17 pending)
 - Low Priority: 1/5 tasks complete (20%) (Task 15 complete)
-- **Overall**: 11/16 tasks complete or partial (69%)
+- **Overall**: 11/18 tasks complete or partial (61%)
+
+**New Tasks Discovered** (2025-12-04):
+- Task 16: Fix Perpetuity theorem logic errors (△φ ≠ Fφ, should be △φ = Hφ ∧ φ ∧ Gφ)
+- Task 17: Fix Soundness.lean pre-existing type mismatch errors
 
 **Implementation Plan Progress** ([Plan Link](.claude/specs/019_research_todo_implementation_plan/plans/001-research-todo-implementation-plan.md)):
 - Wave 1 (Phase 1): COMPLETE - High priority foundations
@@ -889,4 +972,4 @@ When adding new tasks:
 - Dependencies are explicitly tracked; always check Dependency Graph before starting a task
 - CI technical debt should be resolved early to ensure reliable test feedback
 
-**Last Updated**: 2025-12-04 (Task 15 added - Temporal order generalization to LinearOrderedAddCommGroup)
+**Last Updated**: 2025-12-04 (Task 14 Phases 1-2 complete; Tasks 16, 17 added for discovered bugs; △φ definition corrected to Hφ ∧ φ ∧ Gφ)
