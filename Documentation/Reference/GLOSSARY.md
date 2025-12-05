@@ -45,8 +45,8 @@ This glossary maps terminology between Logos and Logos documentation, providing 
 | `P` | Some Past | `some_past` | "It has been the case that" (existential past) | - |
 | `G` | All Future | `all_future` | "It is always going to be the case that" (universal future) | always |
 | `F` | Some Future | `some_future` | "It is going to be the case that" (existential future) | - |
-| `△` | Always | `always` | "It is always the case that" (universal temporal, henceforth) | triangle_always |
-| `▽` | Sometimes | `sometimes` | "It is sometimes the case that" (existential temporal, eventually) | triangle_sometimes |
+| `△` | Always | `always` | "It is always the case that" (universal temporal, at all times) | triangle_always |
+| `▽` | Sometimes | `sometimes` | "It is sometimes the case that" (existential temporal, at some time) | triangle_sometimes |
 
 **Note**: `△A := HA ∧ A ∧ GA` (held at all past times, holds now, will hold at all future times)
 

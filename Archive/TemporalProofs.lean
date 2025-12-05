@@ -10,10 +10,12 @@ focusing on the temporal operators future (`F`), past (`P`), and their duals.
 ## Linear Temporal Logic
 
 The TM system includes temporal operators for reasoning about time:
-- **F** (future): `Fφ` means "φ will always be true" (henceforth/perpetually)
-- **P** (past): `Pφ` means "φ was always true" (has always been)
-- **some_past**: `¬P¬φ` means "φ was true at some past time"
-- **always/sometimes**: Alternative names for future operators
+- **G** (all_future): `Gφ` means "φ will always be true" (for all future times)
+- **H** (all_past): `Hφ` means "φ was always true" (for all past times)
+- **F** (some_future): `Fφ = ¬G¬φ` means "φ will be true at some future time"
+- **P** (some_past): `Pφ = ¬H¬φ` means "φ was true at some past time"
+- **always** (`△`): `Hφ ∧ φ ∧ Gφ` means "φ at all times" (past, present, future)
+- **sometimes** (`▽`): `¬(always ¬φ)` means "φ at some time" (past, present, or future)
 
 ## Temporal Axioms
 
@@ -35,13 +37,14 @@ The TM system has a duality between past and future operators:
 
 ## Notation
 
-- `φ.all_future` = `Fφ` (always/henceforth - for all future times)
-- `φ.all_past` = `Pφ` (has always been - for all past times)
-- `φ.some_past` = `¬P¬φ` (was true at some past time)
-- `φ.always` = `φ.all_future` (synonym for future)
-- `φ.sometimes` = `¬F¬φ` (will be true at some future time)
-- `△φ` = always φ (triangle notation for perpetuity)
-- `▽φ` = sometimes φ (triangle notation for eventuality)
+- `φ.all_future` = `Gφ` (for all future times)
+- `φ.all_past` = `Hφ` (for all past times)
+- `φ.some_future` = `Fφ = ¬G¬φ` (at some future time)
+- `φ.some_past` = `Pφ = ¬H¬φ` (at some past time)
+- `φ.always` = `Hφ ∧ φ ∧ Gφ` (at all times: past, present, future)
+- `φ.sometimes` = `¬(always ¬φ)` (at some time: past, present, or future)
+- `△φ` = always φ (at all times)
+- `▽φ` = sometimes φ (at some time)
 
 ## References
 
@@ -78,8 +81,8 @@ example (φ : Formula) : ⊢ φ.all_future.all_future.imp φ.all_future.all_futu
 example : ⊢ (Formula.atom "always_true").all_future.imp (Formula.atom "always_true").all_future.all_future :=
   Derivable.axiom [] _ (Axiom.temp_4 (Formula.atom "always_true"))
 
-/-- Temporal 4 using always notation (synonym for future) -/
-example (φ : Formula) : ⊢ φ.always.imp φ.always.always :=
+/-- Temporal 4: G(Gφ) follows from Gφ -/
+example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future :=
   Derivable.axiom [] _ (Axiom.temp_4 φ)
 
 /-!
@@ -106,28 +109,29 @@ example : ⊢ (Formula.atom "now").imp (Formula.atom "now").some_past.all_future
   Derivable.axiom [] _ (Axiom.temp_a (Formula.atom "now"))
 
 /-!
-## Axiom TL: Temporal Perpetuity (`Fφ → FPφ`)
+## Axiom TL: Temporal Perpetuity (`△φ → G(Hφ)`)
 
-If something will always be true in the future, then at all future times
+If something is true at all times (always), then at all future times
 it was always true in the past.
 
 This is a strong axiom that connects temporal perpetuity across past and future.
+Note: TL uses `always` (△ = H ∧ present ∧ G), not just `all_future` (G).
 -/
 
-/-- Temporal L on atomic formula -/
-example : ⊢ (Formula.atom "p").all_future.imp (Formula.atom "p").all_past.all_future :=
+/-- Temporal L on atomic formula: △p → G(Hp) -/
+example : ⊢ (Formula.atom "p").always.imp (Formula.atom "p").all_past.all_future :=
   Derivable.axiom [] _ (Axiom.temp_l (Formula.atom "p"))
 
-/-- Temporal L using always notation: `always φ → always (past φ)` -/
-example (φ : Formula) : ⊢ φ.always.imp φ.all_past.always :=
+/-- Temporal L: always φ → G(Hφ) -/
+example (φ : Formula) : ⊢ φ.always.imp φ.all_past.all_future :=
   Derivable.axiom [] _ (Axiom.temp_l φ)
 
-/-- Temporal L on complex formula -/
-example (p q : Formula) : ⊢ (p.or q).all_future.imp (p.or q).all_past.all_future :=
+/-- Temporal L on complex formula: △(p ∨ q) → G(H(p ∨ q)) -/
+example (p q : Formula) : ⊢ (p.or q).always.imp (p.or q).all_past.all_future :=
   Derivable.axiom [] _ (Axiom.temp_l (p.or q))
 
 /-- Temporal L demonstrates perpetuity preservation -/
-example : ⊢ (Formula.atom "eternal").all_future.imp (Formula.atom "eternal").all_past.all_future :=
+example : ⊢ (Formula.atom "eternal").always.imp (Formula.atom "eternal").all_past.all_future :=
   Derivable.axiom [] _ (Axiom.temp_l (Formula.atom "eternal"))
 
 /-!
@@ -158,18 +162,17 @@ The temporal K rule distributes `F` over derivations:
 If `FΓ ⊢ φ` then `Γ ⊢ Fφ`.
 -/
 
-/-- Using temporal K rule: if `FΓ ⊢ φ` then `Γ ⊢ Fφ` -/
+/-- Using temporal K rule: if `GΓ ⊢ φ` then `Γ ⊢ Gφ` -/
 example (p : Formula) : [p] ⊢ p.all_future := by
-  apply Derivable.temporal_k [p] p
-  -- Now need to show: [Fp] ⊢ p
-  -- The mapped context is [Fp], and we need to derive p from it
-  -- We can use weakening from empty context axiom
+  -- The temporal K rule has specific requirements about the context
+  -- This is a simplified example that would need proper setup
   sorry  -- Would require temporal axioms for proper derivation
 
 /-!
-## Future Operator (F) Examples
+## Future Operator (G) Examples
 
-The future operator `F` (or `always`) expresses perpetual truth.
+The all_future operator `G` expresses truth at all future times.
+Note: `G` (all_future) is different from `always` (`△` = H ∧ present ∧ G).
 -/
 
 /-- Future on atomic formula -/
@@ -177,7 +180,7 @@ example (p : Formula) : [p] ⊢ p.all_future := by
   -- Would use temporal K rule to lift p to Fp
   sorry
 
-/-- Always notation (synonym for all_future) -/
+/-- Always (at all times) = H ∧ present ∧ G -/
 example (φ : Formula) : φ.always = φ.all_past.and (φ.and φ.all_future) := rfl
 
 /-- Triangle notation for always -/
@@ -202,9 +205,9 @@ example : [(Formula.atom "p").all_past] ⊢ (Formula.atom "p").all_past :=
 /-- Some past: `¬P¬φ` means φ was true at some past time -/
 example (φ : Formula) : φ.some_past = φ.neg.all_past.neg := rfl
 
-/-- Past and future interact via temporal axioms -/
-example (φ : Formula) : ⊢ φ.all_future.imp φ.all_past.all_future :=
-  -- This is the TL axiom
+/-- Past and future interact via temporal axioms: △φ → G(Hφ) -/
+example (φ : Formula) : ⊢ φ.always.imp φ.all_past.all_future :=
+  -- This is the TL axiom: always φ → G(Hφ)
   Derivable.axiom [] _ (Axiom.temp_l φ)
 
 /-!
@@ -240,8 +243,8 @@ example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future :=
 example (φ : Formula) : ⊢ φ.imp φ.some_past.all_future :=
   Derivable.axiom [] _ (Axiom.temp_a φ)
 
-/-- Perpetuity preservation: TL axiom pattern -/
-example (φ : Formula) : ⊢ φ.all_future.imp φ.all_past.all_future :=
+/-- Perpetuity preservation: TL axiom pattern △φ → G(Hφ) -/
+example (φ : Formula) : ⊢ φ.always.imp φ.all_past.all_future :=
   Derivable.axiom [] _ (Axiom.temp_l φ)
 
 /-!
@@ -280,12 +283,12 @@ example : ⊢ (Formula.atom "sun_rises").all_future.imp (Formula.atom "sun_rises
 example : ⊢ (Formula.atom "today").imp (Formula.atom "today").some_past.all_future :=
   Derivable.axiom [] _ (Axiom.temp_a (Formula.atom "today"))
 
-/-- Example: Eternal truths were always true -/
-example : ⊢ (Formula.atom "2+2=4").all_future.imp (Formula.atom "2+2=4").all_past.all_future :=
+/-- Example: Eternal truths (TL axiom): △"2+2=4" → G(H"2+2=4") -/
+example : ⊢ (Formula.atom "2+2=4").always.imp (Formula.atom "2+2=4").all_past.all_future :=
   Derivable.axiom [] _ (Axiom.temp_l (Formula.atom "2+2=4"))
 
-/-- Example: Future using always notation -/
-example : ⊢ (Formula.atom "inevitable").always.imp (Formula.atom "inevitable").always.always :=
+/-- Example: Future transitivity (T4 axiom): G"inevitable" → GG"inevitable" -/
+example : ⊢ (Formula.atom "inevitable").all_future.imp (Formula.atom "inevitable").all_future.all_future :=
   Derivable.axiom [] _ (Axiom.temp_4 (Formula.atom "inevitable"))
 
 /-- Example: Sometimes notation (eventuality) -/

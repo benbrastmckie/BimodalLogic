@@ -210,7 +210,7 @@ Logos follows rigorous development standards including Test-Driven Development (
   - P4: `◇▽φ → ◇φ` (possibility of occurrence) - **Partial (complex nested formulas)**
   - P5: `◇▽φ → △◇φ` (persistent possibility) - **Partial (modal-temporal interaction)**
   - P6: `▽□φ → □△φ` (occurrent necessity is perpetual) - **Partial (modal-temporal interaction)**
-- Note: `△` (always/henceforth) and `▽` (sometimes/eventually) are Unicode triangle notation alternatives
+- Note: `△` (always/at all times) and `▽` (sometimes/at some time) are Unicode triangle notation alternatives
 
 ### Automation Package
 - `Tactics`: Custom tactic declarations **(stubs only, no implementations)**

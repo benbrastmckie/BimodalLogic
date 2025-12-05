@@ -82,19 +82,22 @@ example (p q : Formula) : (p.or q) = (p.neg.imp q) := rfl
 -- Test: Derived diamond (possibility) operator
 example (p : Formula) : p.diamond = p.neg.box.neg := rfl
 
--- Test: Derived 'always' temporal operator (all_future for all times)
-example (p : Formula) : p.always = p.all_future := rfl
+-- Test: Derived 'always' temporal operator (at all times: past ∧ present ∧ future)
+-- Definition: always φ = H φ ∧ φ ∧ G φ (all_past φ ∧ φ ∧ all_future φ)
+example (p : Formula) : p.always = p.all_past.and (p.and p.all_future) := rfl
 
--- Test: Derived 'sometimes' temporal operator (∃ future time)
--- Correctly defined as ¬G¬φ = (φ.neg).always.neg
+-- Test: Derived 'sometimes' temporal operator (at some time: past ∨ present ∨ future)
+-- Definition: sometimes φ = ¬always¬φ = ¬(H¬φ ∧ ¬φ ∧ G¬φ)
 example (p : Formula) : p.sometimes = p.neg.always.neg := rfl
 
--- Test: Derived 'some_past' operator
--- Correctly defined as ¬H¬φ = (φ.neg).all_past.neg
+-- Test: Derived 'some_past' operator (at some past time)
+-- Definition: some_past φ = ¬H¬φ = ¬(all_past ¬φ)
 example (p : Formula) : p.some_past = p.neg.all_past.neg := rfl
 
--- Test: Derived 'some_future' operator
-example (p : Formula) : p.some_future = p.sometimes := rfl
+-- Test: Derived 'some_future' operator (at some future time)
+-- Definition: some_future φ = ¬G¬φ = ¬(all_future ¬φ)
+-- Note: some_future ≠ sometimes (sometimes covers past, present, AND future)
+example (p : Formula) : p.some_future = p.neg.all_future.neg := rfl
 
 -- Test: Triangle notation parsing - always (△)
 example (p : Formula) : △p = p.always := rfl
@@ -102,8 +105,8 @@ example (p : Formula) : △p = p.always := rfl
 -- Test: Triangle notation parsing - sometimes (▽)
 example (p : Formula) : ▽p = p.sometimes := rfl
 
--- Test: Triangle notation equivalence - always is all_future
-example (p : Formula) : △p = p.all_future := rfl
+-- Test: Triangle notation equivalence - always is all times (H ∧ present ∧ G)
+example (p : Formula) : △p = p.all_past.and (p.and p.all_future) := rfl
 
 -- Test: Triangle notation equivalence - sometimes is dual
 example (p : Formula) : ▽p = p.neg.always.neg := rfl
@@ -120,13 +123,13 @@ example (p : Formula) : △(p.box) = p.box.always := rfl
 -- Test: Triangle notation with modal operators - diamond
 example (p : Formula) : ▽(p.diamond) = p.diamond.sometimes := rfl
 
--- Test: Mixed temporal-modal notation
-example (p : Formula) : △(p.box) = p.box.all_future := rfl
+-- Test: Mixed temporal-modal notation - always applied to box
+example (p : Formula) : △(p.box) = p.box.always := rfl
 
--- Test: Backward compatibility - dot notation still works
-example (p : Formula) : p.always = p.all_future := rfl
+-- Test: always definition consistency - verify H ∧ present ∧ G structure
+example (p : Formula) : p.always = p.all_past.and (p.and p.all_future) := rfl
 
--- Test: Backward compatibility - sometimes dot notation
+-- Test: sometimes definition consistency - verify dual of always
 example (p : Formula) : p.sometimes = p.neg.always.neg := rfl
 
 -- Test: swap_temporal on atom (unchanged)

@@ -6,11 +6,11 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 
 **Layer 0 Completion Progress**:
 - High Priority: COMPLETE (all blocking tasks done)
-- Medium Priority: 3 active tasks (16, 17, and remaining Task 7 work)
+- Medium Priority: 3 active tasks (16 partial, 17, and remaining Task 7 work)
 - Low Priority: 4 tasks pending (9, 10, 11, 13)
 - **Active Tasks**: 7
 
-**Next Milestone**: Complete temporal refactor bug fixes (Tasks 16, 17)
+**Next Milestone**: Complete Task 16 remaining work (perpetuity proofs), then Task 17
 
 ---
 
@@ -96,38 +96,40 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 ---
 
 ### 16. Fix Perpetuity Theorem Logic Errors
-**Effort**: 4-6 hours
-**Status**: Not Started
+**Effort**: 4-6 hours (remaining: 2-4 hours)
+**Status**: PARTIAL COMPLETE (documentation fixed, proofs need rewriting)
 **Priority**: Medium (correctness bug discovered during temporal refactor)
 **Blocking**: None (Task 14 Phase 2 complete)
 **Dependencies**: None
 
-**Description**: The Perpetuity.lean theorems have logic errors - they incorrectly assumed `triangle phi = F phi` when the correct definition is `triangle phi = H phi and phi and G phi` (equivalently `all_past phi and phi and all_future phi`). This was exposed during the temporal constructor rename in Task 14.
+**Description**: The Perpetuity.lean theorems had logic errors - they incorrectly assumed `triangle phi = F phi` when the correct definition is `triangle phi = H phi and phi and G phi` (equivalently `all_past phi and phi and all_future phi`). This was exposed during the temporal constructor rename in Task 14.
 
-**Affected Theorems**:
-- `perpetuity_1` (P1: `box phi -> triangle phi`) - Proof uses MF axiom but triangle phi is not the same as G phi
-- `perpetuity_3` (P3: `box phi -> box (triangle phi)`) - Proof claims MF axiom is "exactly" this, but types don't match
+**Completed** (2025-12-05):
+- Fixed all incorrect comments throughout Perpetuity.lean
+- Fixed all incorrect comments in documentation (OPERATORS.md, GLOSSARY.md, TUTORIAL.md, ARCHITECTURE.md, etc.)
+- Fixed FormulaTest.lean tests that incorrectly claimed `always = all_future`
+- Fixed Archive/TemporalProofs.lean examples that conflated `always` with `all_future`
+- Added `sorry` placeholders for proofs that need rewriting
 
-**Incorrect Comments to Fix**:
-- `Logos/Core/Theorems/Perpetuity.lean:127`: "triangle phi = F phi (since always = future)" - WRONG
-- `Logos/Core/Theorems/Perpetuity.lean:177`: "nabla phi = neg(future (neg phi))" - WRONG
-- `Logos/Core/Theorems/Perpetuity.lean:183-185`: Claims about future operator - WRONG
-- `Logos/Core/Theorems/Perpetuity.lean:202`: "triangle phi = F phi" - WRONG
-- `Logos/Core/Theorems/Perpetuity.lean:205`: "box(triangle phi) = box(F phi)" - WRONG
+**Remaining Work**:
+- Rewrite P1 proof to derive full conjunction `□φ → (Hφ ∧ φ ∧ Gφ)` (2-3 hours)
+- Rewrite P3 proof to derive `□φ → □(Hφ ∧ φ ∧ Gφ)` (1-2 hours)
 
-**Correct Definitions**:
+**Correct Definitions** (now documented properly):
 - `triangle phi` (always phi) = `H phi and phi and G phi` = `all_past phi and phi and all_future phi`
 - `nabla phi` (sometimes phi) = `neg(always (neg phi))` = `P phi or phi or F phi` (dual)
 
-**Action Items**:
-1. Update all incorrect comments to use correct definitions
-2. Fix P1 theorem proof (need to derive full conjunction, not just G phi)
-3. Fix P3 theorem proof (MF gives `box phi -> box (G phi)`, need to extend to full triangle phi)
-4. Verify P2, P4, P5, P6 proofs are still correct under new understanding
-5. Run `lake build` to verify all changes compile
+**New Sorry Placeholders** (added during fix):
+- `Logos/Core/Theorems/Perpetuity.lean:127` - perpetuity_1 (P1)
+- `Logos/Core/Theorems/Perpetuity.lean:205` - perpetuity_3 (P3)
 
-**Files**:
-- `Logos/Core/Theorems/Perpetuity.lean`
+**Files Modified**:
+- `Logos/Core/Theorems/Perpetuity.lean` - Comments fixed, proofs have sorry
+- `Logos/Core/Syntax/Formula.lean` - Notation docstrings fixed
+- `LogosTest/Core/Syntax/FormulaTest.lean` - Tests fixed
+- `Archive/TemporalProofs.lean` - Examples fixed
+- `Archive/BimodalProofs.lean` - Comments fixed
+- Documentation files (OPERATORS.md, GLOSSARY.md, TUTORIAL.md, ARCHITECTURE.md, LEAN_STYLE_GUIDE.md, CLAUDE.md)
 
 ---
 
@@ -267,4 +269,4 @@ See [MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md) for complete work
 
 ---
 
-**Last Updated**: 2025-12-05 (Refactored to Git-based history model)
+**Last Updated**: 2025-12-05 (Task 16 partial completion - documentation and tests fixed)

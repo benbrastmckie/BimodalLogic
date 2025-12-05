@@ -228,8 +228,8 @@ Logos uses Unicode symbols for logical operators with prefix notation declaratio
 ◇φ    -- Possibility (diamond)
 
 -- Temporal operators
-△φ    -- Always/henceforth (upward triangle, U+25B3)
-▽φ    -- Sometimes/eventually (downward triangle, U+25BD)
+△φ    -- Always/at all times (upward triangle, U+25B3)
+▽φ    -- Sometimes/at some time (downward triangle, U+25BD)
 ```
 
 **Usage Guidelines**:

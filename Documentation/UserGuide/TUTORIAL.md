@@ -88,8 +88,8 @@ def possible_p : Formula := diamond p           -- `◇p` (defined as `¬□¬p`
 -- Temporal operators
 def always_past : Formula := Formula.all_past p     -- Hφ (always in past)
 def always_future : Formula := Formula.all_future p -- Gφ (always in future)
-def henceforth_p : Formula := p.always              -- △φ (henceforth/always from now)
-def eventually_p : Formula := p.sometimes           -- ▽φ (eventually/sometimes from now)
+def always_p : Formula := p.always                  -- △φ (at all times: H ∧ present ∧ G)
+def sometimes_p : Formula := p.sometimes            -- ▽φ (at some time: P ∨ present ∨ F)
 def sometime_past_p : Formula := some_past p        -- Pφ (some time in past)
 def sometime_future_p : Formula := some_future p    -- Fφ (some time in future)
 ```
@@ -106,12 +106,12 @@ def p_and_q : Formula := and p q
 -- Disjunction: `φ ∨ ψ ≡ ¬φ → ψ`
 def p_or_q : Formula := or p q
 
--- Always/henceforth (from now onwards): `△φ ≡ Gφ`
-def always_p : Formula := always p
+-- Always (at all times): `△φ ≡ Hφ ∧ φ ∧ Gφ`
+def always_φ : Formula := always p
 def triangle_always : Formula := △p  -- Unicode triangle notation
 
--- Sometimes/eventually (at some future time): `▽φ ≡ ¬△¬φ`
-def sometimes_p : Formula := sometimes p
+-- Sometimes (at some time): `▽φ ≡ ¬△¬φ ≡ Pφ ∨ φ ∨ Fφ`
+def sometimes_φ : Formula := sometimes p
 def triangle_sometimes : Formula := ▽p  -- Unicode triangle notation
 ```
 
@@ -128,8 +128,8 @@ example : Formula := H "p"          -- Hφ (always in past)
 example : Formula := G "p"          -- Gφ (always in future)
 example : Formula := P "p"          -- Pφ (some past time)
 example : Formula := F "p"          -- Fφ (some future time)
-example : Formula := △"p"           -- `△p` (henceforth p)
-example : Formula := ▽"p"           -- `▽p` (eventually p)
+example : Formula := △"p"           -- `△p` (always p, at all times)
+example : Formula := ▽"p"           -- `▽p` (sometimes p, at some time)
 ```
 
 ## 3. Proof Basics

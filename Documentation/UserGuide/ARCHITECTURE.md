@@ -45,9 +45,9 @@ def or (φ ψ : Formula) : Formula := (neg φ).imp ψ
 def diamond (φ : Formula) : Formula := neg (Formula.box (neg φ))
 def some_past (φ : Formula) : Formula := neg (Formula.all_past (neg φ))
 def some_future (φ : Formula) : Formula := neg (Formula.all_future (neg φ))
--- Note: 'always' is alias for 'all_future' (henceforth operator, not eternal truth)
-def always (φ : Formula) : Formula := Formula.all_future φ
--- Note: 'sometimes' is dual of 'always' (eventually operator)
+-- 'always' is eternal truth: φ holds at all times (past, present, and future)
+def always (φ : Formula) : Formula := (Formula.all_past φ).and (φ.and (Formula.all_future φ))
+-- 'sometimes' is dual of 'always': φ holds at some time (past, present, or future)
 def sometimes (φ : Formula) : Formula := neg (always (neg φ))
 
 -- Temporal duality: swap all_past and all_future operators
@@ -72,8 +72,8 @@ syntax "H" term : term                        -- Universal past (all_past)
 syntax "G" term : term                        -- Universal future (all_future)
 syntax "P" term : term                        -- Existential past (some_past)
 syntax "F" term : term                        -- Existential future (some_future)
-syntax "always" term : term                   -- Always (henceforth)
-syntax "sometimes" term : term                -- Sometimes (eventually)
+syntax "always" term : term                   -- Always (at all times)
+syntax "sometimes" term : term                -- Sometimes (at some time)
 prefix:80 "△" => Formula.always               -- Triangle notation for always
 prefix:80 "▽" => Formula.sometimes            -- Triangle notation for sometimes
 

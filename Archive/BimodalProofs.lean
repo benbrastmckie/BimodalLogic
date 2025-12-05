@@ -15,12 +15,12 @@ This file demonstrates both available notation styles:
 **Dot Notation** (function-based):
 - `φ.box` = `□φ` (necessity)
 - `φ.diamond` = `◇φ` (possibility)
-- `φ.always` = always φ = `Fφ` (henceforth)
-- `φ.sometimes` = sometimes φ = `¬F¬φ` (eventually)
+- `φ.always` = always φ = `Hφ ∧ φ ∧ Gφ` (at all times)
+- `φ.sometimes` = sometimes φ = `¬(always ¬φ)` (at some time)
 
 **Unicode Triangle Notation** (prefix):
-- `△φ` = always φ (henceforth/perpetually)
-- `▽φ` = sometimes φ (eventually/at some point)
+- `△φ` = always φ (at all times: past, present, future)
+- `▽φ` = sometimes φ (at some time: past, present, or future)
 
 ## Main Examples
 

@@ -143,14 +143,15 @@ Equivalently, `sometimes φ = ¬(always ¬φ)` by De Morgan's laws.
 def sometimes (φ : Formula) : Formula := φ.neg.always.neg
 
 /-- Notation for temporal 'always' operator using upward triangle.
-    Represents universal temporal quantification: φ holds at all future times.
+    Represents universal temporal quantification: φ holds at all times (past, present, future).
+    Defined as: H φ ∧ φ ∧ G φ
     Unicode: U+25B3 WHITE UP-POINTING TRIANGLE
 -/
 prefix:80 "△" => Formula.always
 
 /-- Notation for temporal 'sometimes' operator using downward triangle.
-    Represents existential temporal quantification: φ holds at some future time.
-    Defined as dual: ¬△¬φ
+    Represents existential temporal quantification: φ holds at some time (past, present, or future).
+    Defined as dual: ¬△¬φ (equivalently, P φ ∨ φ ∨ F φ)
     Unicode: U+25BD WHITE DOWN-POINTING TRIANGLE
 -/
 prefix:80 "▽" => Formula.sometimes

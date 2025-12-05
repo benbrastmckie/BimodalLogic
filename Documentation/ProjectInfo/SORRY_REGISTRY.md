@@ -1,7 +1,7 @@
 # Sorry Placeholder Registry
 
 **Last Updated**: 2025-12-05
-**Total Active Placeholders**: 1
+**Total Active Placeholders**: 3
 **Total Resolved**: 40
 
 This document tracks `sorry` placeholders (unproven theorems) and `axiom` declarations (unproven lemmas) in the Logos codebase. It provides resolution context, effort estimates, and cross-references to related tasks.
@@ -37,6 +37,24 @@ grep -rn "axiom " Logos/Core/**/*.lean 2>/dev/null
 ---
 
 ## Active Placeholders
+
+### Logos/Core/Theorems/Perpetuity.lean (2 placeholders)
+
+These placeholders were added when fixing Task 16 (incorrect `always` definition). The original proofs assumed `always = all_future` but the correct definition is `always = H ∧ present ∧ G`.
+
+- **Perpetuity.lean:127** - `perpetuity_1` (P1: `□φ → △φ`)
+  - **Context**: Proof needs to derive full conjunction `□φ → (Hφ ∧ φ ∧ Gφ)`
+  - **Resolution**: Prove all three components using MF, MT, and temporal axioms
+  - **Effort**: 2-3 hours
+  - **Task**: Task 16 (Fix Perpetuity Theorem Logic Errors) - remaining work
+  - **Status**: NOT STARTED
+
+- **Perpetuity.lean:205** - `perpetuity_3` (P3: `□φ → □△φ`)
+  - **Context**: Proof needs to derive `□φ → □(Hφ ∧ φ ∧ Gφ)`
+  - **Resolution**: Prove modal distribution over the conjunction
+  - **Effort**: 1-2 hours
+  - **Task**: Task 16 (Fix Perpetuity Theorem Logic Errors) - remaining work
+  - **Status**: NOT STARTED
 
 ### Logos/Core/Automation/Tactics.lean (1 placeholder)
 
@@ -251,13 +269,14 @@ git log --all -S "sorry" -- Logos/Core/Semantics/Truth.lean
 
 | Category | Count | Status |
 |----------|-------|--------|
-| Active `sorry` | 1 | BLOCKED (Aesop integration) |
+| Active `sorry` (Perpetuity) | 2 | Task 16 remaining (3-5 hours) |
+| Active `sorry` (Tactics) | 1 | BLOCKED (Aesop integration) |
 | Completeness `axiom` | 11 | Task 9 (70-90 hours) |
 | ProofSearch `axiom` | 8 | Task 7 remaining (30-40 hours) |
 | Documentation `sorry` | 3 | Task 7 (after search implemented) |
-| **Total Requiring Work** | **23** | |
+| **Total Requiring Work** | **25** | |
 
-**Next Priority**: Complete active tasks (16, 17) before addressing completeness proofs.
+**Next Priority**: Complete Task 16 remaining work (rewrite perpetuity proofs for correct `always` definition), then address Tasks 17 and completeness proofs.
 
 ---
 

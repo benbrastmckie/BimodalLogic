@@ -18,8 +18,8 @@ between modal necessity (□) and temporal operators (always △, sometimes ▽)
 
 ## Notation
 
-- `△φ` = `always φ` = `future φ` (for all future times, φ)
-- `▽φ` = `sometimes φ` = `¬△¬φ` (there exists a future time where φ)
+- `△φ` = `always φ` = `Hφ ∧ φ ∧ Gφ` (φ at all times: past, present, future)
+- `▽φ` = `sometimes φ` = `¬△¬φ` (φ at some time: past, present, or future)
 - `◇φ` = `diamond φ` = `¬□¬φ` (φ is possible)
 
 ## Implementation Notes
@@ -31,7 +31,7 @@ the TM axiom system, particularly:
 - MT (Modal T): `□φ → φ`
 - Modal and temporal K rules
 
-Note: `always φ = future φ` in our system, so `△φ = Fφ`.
+Note: `always φ = Hφ ∧ φ ∧ Gφ` (past, present, and future), so `△φ` covers all times.
 
 ## Propositional Derivation Challenges
 
@@ -107,37 +107,38 @@ theorem mp {A B : Formula} (h1 : ⊢ A) (h2 : ⊢ A.imp B) : ⊢ B := by
 /-!
 ## P1: Necessary Implies Always
 
-`□φ → △φ` (or equivalently, `□φ → Fφ` since always = future)
+`□φ → △φ`
 
 If φ is metaphysically necessary (true in all possible worlds),
-then φ is always true (true at all future times).
+then φ is always true (true at all times: past, present, and future).
 -/
 
 /--
 P1: `□φ → △φ` (necessary implies always)
 
 Derivation:
-1. MF axiom: `□φ → □(Fφ)` (what's necessary remains necessary in future)
-2. MT axiom (for Fφ): `□(Fφ) → Fφ`
-3. By transitivity: `□φ → Fφ`
+1. MF axiom: `□φ → □(Gφ)` (what's necessary remains necessary in future)
+2. MT axiom (for Gφ): `□(Gφ) → Gφ`
+3. By transitivity: `□φ → Gφ`
 
-Since `△φ = always φ = future φ = Fφ`, we get `□φ → △φ`.
+Note: The actual definition `△φ = Hφ ∧ φ ∧ Gφ` requires proving all three components.
+This proof shows the MF-based derivation for the future component.
 -/
 theorem perpetuity_1 (φ : Formula) : ⊢ φ.box.imp φ.always := by
-  -- Goal: ⊢ □φ → △φ = ⊢ □φ → Fφ (since always = future)
-  -- Step 1: MF gives □φ → □(Fφ)
-  have h1 : ⊢ φ.box.imp (φ.all_future.box) := Derivable.axiom [] _ (Axiom.modal_future φ)
-  -- Step 2: MT for (Fφ) gives □(Fφ) → Fφ
-  have h2 : ⊢ (φ.all_future.box).imp φ.all_future := Derivable.axiom [] _ (Axiom.modal_t φ.all_future)
-  -- Step 3: Transitivity gives □φ → Fφ
-  exact imp_trans h1 h2
+  -- Goal: ⊢ □φ → △φ where △φ = Hφ ∧ φ ∧ Gφ
+  -- The proof requires showing □φ implies all three components:
+  --   1. □φ → Hφ (past): via temporal duality and modal axioms
+  --   2. □φ → φ (present): via MT axiom
+  --   3. □φ → Gφ (future): via MF and MT axioms
+  -- TODO: Complete proof for full always definition (H ∧ present ∧ G)
+  sorry
 
 /-!
 ## P2: Sometimes Implies Possible
 
 `▽φ → ◇φ` (sometimes implies possible)
 
-If φ happens at some future time, then φ is possible.
+If φ happens at some time (past, present, or future), then φ is possible.
 -/
 
 /--
@@ -174,15 +175,15 @@ Derivation via contraposition of P1:
 -/
 theorem perpetuity_2 (φ : Formula) : ⊢ φ.sometimes.imp φ.diamond := by
   -- Goal: ⊢ ▽φ → ◇φ
-  -- Recall: ▽φ = sometimes φ = ¬(always ¬φ) = ¬(future (¬φ)) = (φ.neg.future).neg
+  -- Recall: ▽φ = sometimes φ = ¬(always ¬φ) = ¬(H¬φ ∧ ¬φ ∧ G¬φ)
   -- Recall: ◇φ = diamond φ = ¬□¬φ = (φ.neg.box).neg
-  -- By P1 for ¬φ: □(¬φ) → △(¬φ) = □(¬φ) → future(¬φ)
-  -- By contraposition: ¬(future(¬φ)) → ¬(□(¬φ))
+  -- By P1 for ¬φ: □(¬φ) → △(¬φ) = □(¬φ) → always(¬φ)
+  -- By contraposition: ¬(always(¬φ)) → ¬(□(¬φ))
   -- Which is: sometimes φ → diamond φ = ▽φ → ◇φ
   have h1 : ⊢ φ.neg.box.imp φ.neg.always := perpetuity_1 φ.neg
-  -- Unfold: always (neg φ) = future (neg φ) = neg φ |>.future
-  -- So h1 : ⊢ (¬φ).box → (¬φ).all_future
-  -- We need: ⊢ ¬((¬φ).all_future) → ¬((¬φ).box)
+  -- Unfold: always (neg φ) = H(neg φ) ∧ neg φ ∧ G(neg φ)
+  -- So h1 : ⊢ (¬φ).box → (¬φ).always
+  -- We need: ⊢ ¬((¬φ).always) → ¬((¬φ).box)
   -- Which is: ⊢ sometimes φ → diamond φ
   exact contraposition h1
 
@@ -198,20 +199,22 @@ What is necessary is necessarily always true.
 P3: `□φ → □△φ` (necessity of perpetuity)
 
 Derivation:
-This is exactly the MF (Modal-Future) axiom: `□φ → □(Fφ)`.
-Since `△φ = Fφ`, we have `□φ → □△φ`.
+Uses MF (Modal-Future) axiom: `□φ → □(Gφ)`.
+Note: The full proof requires extending to show `□φ → □(Hφ ∧ φ ∧ Gφ)`.
 -/
 theorem perpetuity_3 (φ : Formula) : ⊢ φ.box.imp (φ.always.box) := by
-  -- Goal: ⊢ □φ → □(△φ) = ⊢ □φ → □(Fφ)
-  -- This is exactly MF axiom
-  exact Derivable.axiom [] _ (Axiom.modal_future φ)
+  -- Goal: ⊢ □φ → □(△φ) where △φ = Hφ ∧ φ ∧ Gφ
+  -- The proof requires showing □φ → □(Hφ ∧ φ ∧ Gφ)
+  -- This requires modal distribution over conjunction
+  -- TODO: Complete proof for full always definition (H ∧ present ∧ G)
+  sorry
 
 /-!
 ## P4: Possibility of Occurrence
 
 `◇▽φ → ◇φ` (possibility of occurrence)
 
-If it's possible that φ happens sometime, then φ is possible.
+If it's possible that φ happens at some time (past, present, or future), then φ is possible.
 -/
 
 /--
@@ -289,7 +292,7 @@ axiom perpetuity_5 (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond.alwa
 
 `▽□φ → □△φ` (occurrent necessity is perpetual)
 
-If necessity occurs at some future time, then it's always necessary.
+If necessity occurs at some time (past, present, or future), then it's always necessary.
 -/
 
 /--
@@ -299,9 +302,9 @@ P6: `▽□φ → □△φ` (occurrent necessity is perpetual)
 The paper states P6 is "equivalent" to P5. This suggests they can be derived from each other.
 
 **Informal Proof Sketch**:
-1. TF axiom gives: `□φ → F□φ`, which means `□φ → △□φ` (since △ = F)
-2. If `▽□φ` (necessity occurs sometime), then at some future time `□φ` holds
-3. At that time, by step 1, `△□φ` holds (necessity is perpetual from that point)
+1. TF axiom gives: `□φ → G□φ` (necessity persists to future)
+2. If `▽□φ` (necessity occurs at some time), then at some time `□φ` holds
+3. At that time, by step 1, `G□φ` holds (necessity is perpetual from that point)
 4. By modal reasoning about temporal points: `▽□φ → □△φ`
 
 **Alternative via P5 Equivalence**:
