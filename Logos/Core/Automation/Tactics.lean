@@ -186,7 +186,7 @@ def is_box_formula : Formula → Bool
 
 /-- Check if formula has form `Fφ` for some `φ`. -/
 def is_future_formula : Formula → Bool
-  | Formula.future _ => true
+  | Formula.all_future _ => true
   | _ => false
 
 /-- Extract `φ` from `□φ`, returns none if not a box formula. -/
@@ -196,7 +196,7 @@ def extract_from_box : Formula → Option Formula
 
 /-- Extract `φ` from `Fφ`, returns none if not a future formula. -/
 def extract_from_future : Formula → Option Formula
-  | Formula.future φ => some φ
+  | Formula.all_future φ => some φ
   | _ => none
 
 end Logos.Core.Automation

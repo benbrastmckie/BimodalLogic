@@ -1,3 +1,11 @@
+-- Re-export all Core layer modules
+import Logos.Core.Syntax
+import Logos.Core.ProofSystem
+import Logos.Core.Semantics
+import Logos.Core.Metalogic
+import Logos.Core.Theorems
+import Logos.Core.Automation
+
 /-!
 # Logos.Core - Layer 0 (Core TM)
 
@@ -26,14 +34,6 @@ import Logos.Core.Syntax.Formula
 import Logos.Core.ProofSystem.Axioms
 ```
 -/
-
--- Re-export all Core layer modules
-import Logos.Core.Syntax
-import Logos.Core.ProofSystem
-import Logos.Core.Semantics
-import Logos.Core.Metalogic
-import Logos.Core.Theorems
-import Logos.Core.Automation
 
 namespace Logos.Core
 

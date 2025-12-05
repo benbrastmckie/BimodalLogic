@@ -103,7 +103,7 @@ inductive Derivable : Context → Formula → Prop where
   Paper reference: JPL §sec:Appendix, line 1037
   -/
   | temporal_k (Γ : Context) (φ : Formula)
-      (h : Derivable Γ φ) : Derivable (Context.map Formula.future Γ) (Formula.future φ)
+      (h : Derivable Γ φ) : Derivable (Context.map Formula.all_future Γ) (Formula.all_future φ)
 
   /--
   Temporal duality rule: Swapping past and future in theorems.

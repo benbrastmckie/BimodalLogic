@@ -126,9 +126,9 @@ Since `△φ = always φ = future φ = Fφ`, we get `□φ → △φ`.
 theorem perpetuity_1 (φ : Formula) : ⊢ φ.box.imp φ.always := by
   -- Goal: ⊢ □φ → △φ = ⊢ □φ → Fφ (since always = future)
   -- Step 1: MF gives □φ → □(Fφ)
-  have h1 : ⊢ φ.box.imp (φ.future.box) := Derivable.axiom [] _ (Axiom.modal_future φ)
+  have h1 : ⊢ φ.box.imp (φ.all_future.box) := Derivable.axiom [] _ (Axiom.modal_future φ)
   -- Step 2: MT for (Fφ) gives □(Fφ) → Fφ
-  have h2 : ⊢ (φ.future.box).imp φ.future := Derivable.axiom [] _ (Axiom.modal_t φ.future)
+  have h2 : ⊢ (φ.all_future.box).imp φ.all_future := Derivable.axiom [] _ (Axiom.modal_t φ.all_future)
   -- Step 3: Transitivity gives □φ → Fφ
   exact imp_trans h1 h2
 
@@ -181,8 +181,8 @@ theorem perpetuity_2 (φ : Formula) : ⊢ φ.sometimes.imp φ.diamond := by
   -- Which is: sometimes φ → diamond φ = ▽φ → ◇φ
   have h1 : ⊢ φ.neg.box.imp φ.neg.always := perpetuity_1 φ.neg
   -- Unfold: always (neg φ) = future (neg φ) = neg φ |>.future
-  -- So h1 : ⊢ (¬φ).box → (¬φ).future
-  -- We need: ⊢ ¬((¬φ).future) → ¬((¬φ).box)
+  -- So h1 : ⊢ (¬φ).box → (¬φ).all_future
+  -- We need: ⊢ ¬((¬φ).all_future) → ¬((¬φ).box)
   -- Which is: ⊢ sometimes φ → diamond φ
   exact contraposition h1
 

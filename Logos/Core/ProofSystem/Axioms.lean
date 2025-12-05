@@ -103,7 +103,7 @@ inductive Axiom : Formula → Prop where
 
   If something will always be true, it will always be true that it will always be true.
   -/
-  | temp_4 (φ : Formula) : Axiom ((Formula.future φ).imp (Formula.future (Formula.future φ)))
+  | temp_4 (φ : Formula) : Axiom ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)))
 
   /--
   Temporal A axiom: `φ → F(sometime_past φ)` (temporal connectedness).
@@ -113,7 +113,7 @@ inductive Axiom : Formula → Prop where
 
   Note: Uses existential `sometime_past` (¬P¬φ) not universal `past` (Pφ).
   -/
-  | temp_a (φ : Formula) : Axiom (φ.imp (Formula.future φ.sometime_past))
+  | temp_a (φ : Formula) : Axiom (φ.imp (Formula.all_future φ.sometime_past))
 
   /--
   Temporal L axiom: `△φ → F(Pφ)` (temporal introspection).
@@ -131,20 +131,20 @@ inductive Axiom : Formula → Prop where
   This axiom is trivially valid because the premise (φ at ALL times)
   immediately implies the conclusion (φ at times w < z for any z).
   -/
-  | temp_l (φ : Formula) : Axiom (φ.always.imp (Formula.future (Formula.past φ)))
+  | temp_l (φ : Formula) : Axiom (φ.always.imp (Formula.all_future (Formula.all_past φ)))
 
   /--
   Modal-Future axiom: `□φ → □Fφ` (modal-future interaction).
 
   Necessary truths remain necessary in the future.
   -/
-  | modal_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.box (Formula.future φ)))
+  | modal_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.box (Formula.all_future φ)))
 
   /--
   Temporal-Future axiom: `□φ → F□φ` (temporal-modal interaction).
 
   Necessary truths will always be necessary.
   -/
-  | temp_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.future (Formula.box φ)))
+  | temp_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.all_future (Formula.box φ)))
 
 end Logos.Core.ProofSystem

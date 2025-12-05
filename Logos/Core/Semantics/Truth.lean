@@ -107,8 +107,8 @@ def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : T) (ht : τ.domain t) 
   | Formula.bot => False
   | Formula.imp φ ψ => truth_at M τ t ht φ → truth_at M τ t ht ψ
   | Formula.box φ => ∀ (σ : WorldHistory F) (hs : σ.domain t), truth_at M σ t hs φ
-  | Formula.past φ => ∀ (s : T) (hs : τ.domain s), s < t → truth_at M τ s hs φ
-  | Formula.future φ => ∀ (s : T) (hs : τ.domain s), t < s → truth_at M τ s hs φ
+  | Formula.all_past φ => ∀ (s : T) (hs : τ.domain s), s < t → truth_at M τ s hs φ
+  | Formula.all_future φ => ∀ (s : T) (hs : τ.domain s), t < s → truth_at M τ s hs φ
 
 -- Note: We avoid defining a notation for truth_at as it causes parsing conflicts
 -- with the validity notation in Validity.lean. Use truth_at directly.
@@ -153,7 +153,7 @@ Truth of past: formula true at all earlier times in history.
 -/
 theorem past_iff {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F} {t : T} {ht : τ.domain t}
     (φ : Formula) :
-    (truth_at M τ t ht φ.past) ↔
+    (truth_at M τ t ht φ.all_past) ↔
       ∀ (s : T) (hs : τ.domain s), s < t → (truth_at M τ s hs φ) := by
   rfl
 
@@ -162,7 +162,7 @@ Truth of future: formula true at all later times in history.
 -/
 theorem future_iff {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F} {t : T} {ht : τ.domain t}
     (φ : Formula) :
-    (truth_at M τ t ht φ.future) ↔
+    (truth_at M τ t ht φ.all_future) ↔
       ∀ (s : T) (hs : τ.domain s), t < s → (truth_at M τ s hs φ) := by
   rfl
 
@@ -206,9 +206,9 @@ theorem truth_proof_irrel (M : TaskModel F) (τ : WorldHistory F) (t : T)
       exact (ih_χ t ht₁ ht₂).mpr (h this)
   | box ψ _ =>
     rfl
-  | past ψ _ =>
+  | all_past ψ _ =>
     rfl
-  | future ψ _ =>
+  | all_future ψ _ =>
     rfl
 
 /--
@@ -253,7 +253,7 @@ theorem truth_double_shift_cancel (M : TaskModel F) (σ : WorldHistory F) (Δ : 
     simp only [truth_at]
     -- Box quantifies over ALL histories at time t, independent of current history
     -- Both sides quantify over the same set of histories
-  | past ψ ih =>
+  | all_past ψ ih =>
     simp only [truth_at]
     constructor
     · intro h s hs h_lt
@@ -266,7 +266,7 @@ theorem truth_double_shift_cancel (M : TaskModel F) (σ : WorldHistory F) (Δ : 
       have hs : σ.domain s := by
         exact (WorldHistory.time_shift_time_shift_neg_domain_iff σ Δ s).mp hs'
       exact (ih s hs hs').mpr (h s hs h_lt)
-  | future ψ ih =>
+  | all_future ψ ih =>
     simp only [truth_at]
     constructor
     · intro h s hs h_lt
@@ -385,7 +385,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (σ : WorldHistory F) (x y 
       -- Use truth_double_shift_cancel to transport from double-shifted history to original
       exact (truth_double_shift_cancel M ρ (x - y) x hρ_x hρ_x'' ψ).mp h2'
 
-  | past ψ ih =>
+  | all_past ψ ih =>
     -- Past quantifies over earlier times in the same history
     -- Times shift together: r < y in σ corresponds to r-(y-x) < x in shifted history
     simp only [truth_at]
@@ -444,7 +444,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (σ : WorldHistory F) (x y 
       -- Transport using history equality
       exact (truth_history_eq M _ _ s' hs'_ih hs' h_hist_eq ψ).mp h_ih
 
-  | future ψ ih =>
+  | all_future ψ ih =>
     -- Similar to past case: r > y in σ corresponds to r-(y-x) > x in shifted history
     simp only [truth_at]
     constructor
@@ -652,7 +652,7 @@ theorem truth_swap_of_valid_at_triple (φ : Formula) (F : TaskFrame T) (M : Task
     -- By IH, since ψ is valid, swap(ψ) is true at (M, σ, t, hs)
     exact ih F M σ t hs h_ψ_valid
 
-  | past ψ ih =>
+  | all_past ψ ih =>
     -- swap_past_future (past ψ) = future (swap ψ)
     simp only [Formula.swap_past_future, truth_at]
     intro s hs h_t_lt_s
@@ -714,7 +714,7 @@ theorem truth_swap_of_valid_at_triple (φ : Formula) (F : TaskFrame T) (M : Task
       sorry
     exact ih F M τ s hs h_ψ_valid
 
-  | future ψ ih =>
+  | all_future ψ ih =>
     -- swap_past_future (future ψ) = past (swap ψ)
     simp only [Formula.swap_past_future, truth_at]
     intro s hs h_s_lt_t
@@ -842,7 +842,7 @@ To show PP(swap φ), for any r < t, we need P(swap φ) at r.
 For any u < r, we need swap φ at u. Since u < r < t, swap φ at u follows from P(swap φ) at t.
 -/
 theorem swap_axiom_t4_valid (φ : Formula) :
-    is_valid T ((Formula.future φ).imp (Formula.future (Formula.future φ))).swap_past_future := by
+    is_valid T ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ))).swap_past_future := by
   intro F M τ t ht
   simp only [Formula.swap_past_future, truth_at]
   intro h_past_swap r hr h_r_lt_t u hu h_u_lt_r
@@ -865,7 +865,7 @@ We can choose u = t, since t > s and swap φ holds at t.
 Note: sometime_future φ = ¬(past (¬φ))
 -/
 theorem swap_axiom_ta_valid (φ : Formula) :
-    is_valid T (φ.imp (Formula.future φ.sometime_past)).swap_past_future := by
+    is_valid T (φ.imp (Formula.all_future φ.sometime_past)).swap_past_future := by
   intro F M τ t ht
   simp only [Formula.swap_past_future, Formula.sometime_past, Formula.sometime_future, truth_at]
   intro h_swap_φ s hs h_s_lt_t
@@ -897,7 +897,7 @@ double-negation encoding of conjunction.
 **Proof Status**: COMPLETE
 -/
 theorem swap_axiom_tl_valid (φ : Formula) :
-    is_valid T (φ.always.imp (Formula.future (Formula.past φ))).swap_past_future := by
+    is_valid T (φ.always.imp (Formula.all_future (Formula.all_past φ))).swap_past_future := by
   intro F M τ t ht
   -- Swapped form: (always φ).swap → (future (past φ)).swap
   --             = always (swap φ) → past (future (swap φ))
@@ -969,7 +969,7 @@ at time t, P(swap φ) holds at σ (i.e., swap φ holds at all times s < t in σ)
 **Proof Status**: COMPLETE
 -/
 theorem swap_axiom_mf_valid (φ : Formula) :
-    is_valid T ((Formula.box φ).imp (Formula.box (Formula.future φ))).swap_past_future := by
+    is_valid T ((Formula.box φ).imp (Formula.box (Formula.all_future φ))).swap_past_future := by
   intro F M τ t ht
   simp only [Formula.swap_past_future, truth_at]
   intro h_box_swap σ hs s hs_s h_s_lt_t
@@ -1034,7 +1034,7 @@ and truth preservation establishes the result.
 **Proof Status**: COMPLETE
 -/
 theorem swap_axiom_tf_valid (φ : Formula) :
-    is_valid T ((Formula.box φ).imp (Formula.future (Formula.box φ))).swap_past_future := by
+    is_valid T ((Formula.box φ).imp (Formula.all_future (Formula.box φ))).swap_past_future := by
   intro F M τ t ht
   simp only [Formula.swap_past_future, truth_at]
   intro h_box_swap s hs h_s_lt_t σ hs_σ
@@ -1102,7 +1102,7 @@ at all times s < t in τ's domain, `φ.swap` is true at (M, τ, s). This is exac
 -/
 theorem temporal_k_preserves_swap_valid (φ : Formula)
     (h : is_valid T φ.swap_past_future) :
-    is_valid T (Formula.future φ).swap_past_future := by
+    is_valid T (Formula.all_future φ).swap_past_future := by
   intro F M τ t ht
   simp only [Formula.swap_past_future, truth_at]
   intro s hs h_s_lt_t
@@ -1239,7 +1239,7 @@ theorem derivable_implies_swap_valid :
 
     | temporal_k Γ' ψ' h_ψ' ih =>
       intro h_eq
-      -- h_eq says: Context.map Formula.future Γ' = []
+      -- h_eq says: Context.map Formula.all_future Γ' = []
       -- This implies Γ' = []
       have h_gamma_empty : Γ' = [] := by
         cases Γ' with
