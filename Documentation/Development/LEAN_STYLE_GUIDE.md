@@ -41,8 +41,8 @@ structure task_frame where      -- snake_case for type
 ```
 
 ### Functions, Definitions, and Theorems
-- **Functions**: snake_case (`truth_at`, `swap_past_future`, `canonical_history`)
-- **Definitions**: snake_case (`neg`, `diamond`, `always`)
+- **Functions**: snake_case (`truth_at`, `swap_temporal`, `canonical_history`)
+- **Definitions**: snake_case (`neg`, `diamond`, `always`, `some_past`, `some_future`)
 - **Theorems**: snake_case with descriptive name (`soundness`, `weak_completeness`)
 - **Lemmas**: snake_case, often prefixed by subject (`modal_saturation`, `truth_lemma`)
 
@@ -102,8 +102,8 @@ def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : F.Time) :
   | Formula.bot => False
   | Formula.imp φ ψ => truth_at M τ t φ → truth_at M τ t ψ
   | Formula.box φ => ∀ σ : WorldHistory F, truth_at M σ t φ
-  | Formula.past φ => ∀ s < t, truth_at M τ s φ
-  | Formula.future φ => ∀ s > t, truth_at M τ s φ
+  | Formula.all_past φ => ∀ s < t, truth_at M τ s φ
+  | Formula.all_future φ => ∀ s > t, truth_at M τ s φ
 
 theorem soundness (Γ : Context) (φ : Formula) :
   Γ ⊢ φ → Γ ⊨ φ := by
@@ -412,8 +412,8 @@ def complexity : Formula → Nat
   | Formula.bot => 1
   | Formula.imp φ ψ => φ.complexity + ψ.complexity + 1
   | Formula.box φ => φ.complexity + 1
-  | Formula.past φ => φ.complexity + 1
-  | Formula.future φ => φ.complexity + 1
+  | Formula.all_past φ => φ.complexity + 1
+  | Formula.all_future φ => φ.complexity + 1
 
 -- Using `by` for tactic proofs
 theorem modal_t_implies_reflexive (φ : Formula) :

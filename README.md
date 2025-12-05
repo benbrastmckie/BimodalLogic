@@ -6,10 +6,14 @@
 
 Training AI systems to reason reliably requires both positive signals (valid inferences) and corrective signals (invalid inferences with counterexamples where the premises are true and the conclusion is false):
 
+<!-- NOTE: the sentence above and the table below say the same thing. Better to make the sentence above both introduce the section and set up the table below to deliver the primary contrast. -->
+
 | Component | Role | Training Signal |
 |-----------|------|-----------------|
 | **LEAN 4 Proof System** | Derives valid theorems with machine-checkable proofs | Positive RL signal |
 | **Model-Checker** | Identifies invalid inferences with explicit countermodels | Corrective RL signal |
+
+<!-- NOTE: Now explain the significance of having both types of signals since, in principle, every case case is either derivable or invalid if the logic is complete (it is strong enough to derive all valid principles), and if the logic is incomplete, the additional axioms and rules that are not derivable can be consistently added to strengthen the logic. -->
 
 This dual verification approach offers three key advantages:
 
@@ -17,42 +21,60 @@ This dual verification approach offers three key advantages:
 2. **Clean**: Soundness guarantees only valid inferences are derivable
 3. **Justified**: LEAN 4 proofs provide verifiable receipts; Z3 countermodels refute invalid claims
 
+<!-- NOTE: By defining a proof system that is sound over a semantics, the space of theorems and countermodels provides an infinite training ground upon which to challenge AI systems to get better at both reasoning with the operators included in the Logos (given the accumulation of derivations and known countermodels) and even more importantly, finding correct derivations within a proof system and finding countermodels within a semantics. This training methodology may eventually be extended further to include the identification of patterns of reasoning in natural language with operators of interest that have not yet been implemented in order to being to predict their logics, setting constraints on the logical consequences that a successful semantics for those operators would have to predict. Just as the space of theorems for any proof system, or space of models for any semantics are both infinite, so too the space of logical operators worth theorizing is unbounded. These ways in which reasoning are all infinitely extensible provides a supply of resources with which to train AI systems that is limited only by compute, and is perfectly clean and consistent. This contrasts sharply with other realms of training data which are typically finite and of limited quality, especially for sophisticated forms of reasoning with complex interactions between many different logical operators, something most humans are in no position to supply. A natural comparison here is with arithmetic which, although simple sums can be computed without at least a pen and paper, even these are typically memorized or computed by simulating computation by pen and paper in one's mind. By contrast, implementing arithmetic computations by hand or with a computer vastly outstrips what humans are naturally capable of. Something similar holds for logical reasoning which also requires a proof system and semantics in place of an arithmetic to compute accurately at any level of complexity. -->
+
 Reasoning in Logos can be interpreted using the semantic clauses for the language, offering scalable transparency and oversight for sophisticated AI reasoning.
 
-For theoretical background, see the [LogicNotes](https://github.com/benbrastmckie/LogicNotes).
+<!-- NOTE: The point above needs to be expanded to emphasize that in addition to reasoning from premises to a conclusion, the semantics in particular provides a means by which to evaluate the truth values of complex sentences with operators of interest if a model can be produced. For instance, if an accurate model (consisting of states, tasks which are transitions between states, times, priority orderings, credence functions, etc.) can be produced that satisfies the definition of the semantic models for some fragment of the Logos that includes counterfactual and causal operators, then we can read off which claims are already true that can be articulated in that language, and more importantly which claims can be made true by extending the semantic model in one way or another, providing a methodology for abductive reasoning by which claims are hypothesized, used to draw inferences that are easy to test, and then either refuted or supported if the tests can be shown to be consistent with the hypothesis. Training AI systems to reason in the Logos which is interpreted by semantic models together with the semantic clauses for the operators provides a pathway not just systematic deductive reasoning, but abductive reasoning which draws the best explanation as an inference, and inductive reasoning which tests those explanations by collecting empirical feedback. -->
+
+For theoretical background, see the [LogicNotes](https://github.com/benbrastmckie/LogicNotes) which aims to articulate the formal theory for the Logos in a human readable notation to complement its encoding in Lean and the Model-Checker.
 
 ## Layered Architecture
 
 Logos has a **layered architecture** supporting progressive extensibility. All layers share a common semantic foundation: hyperintensional task semantics where possible worlds are functions from times to world-states, constrained by task relations.
 
+<!-- NOTE: Don't use any formal symbols in the table below for compactness and consistency. Also include the extensional operators in 'Core'. And Explanatory  -->
+
 | Layer | Operators | Purpose |
 |-------|-----------|---------|
-| **Core** (implemented) | Modal (`□`, `◇`) + Temporal (`Past`, `Future`) | Foundation for all reasoning |
-| **Explanatory** (planned) | Counterfactual, causal, constitutive | Reasoning about what would happen |
-| **Epistemic** (planned) | Belief, probability, knowledge | Reasoning under uncertainty |
-| **Normative** (planned) | Deontic, preference | Ethical and cooperative reasoning |
+| **Core** (implemented) | Extensional, modal, temporal | Foundation for all reasoning |
+| **Explanatory** (planned) | Counterfactual, causal, constitutive | Reasoning about what would happen and why|
+| **Epistemic** (planned) | Belief, probability, indicative | Reasoning under uncertainty |
+| **Normative** (planned) | Deontic, agential, preferential | Ethical and cooperative reasoning |
 
 The language is open to further extensions beyond these four layers.
+
+<!-- NOTE: Make the below brief like 'See also: link | link | ...' -->
 
 **For philosophical foundations**: See [METHODOLOGY.md](Documentation/UserGuide/METHODOLOGY.md)
 **For extension specifications**: See [LAYER_EXTENSIONS.md](Documentation/Research/LAYER_EXTENSIONS.md)
 
 ## Current Implementation
 
+<!-- NOTE: these subsections below need to be expanded to explain what these operators are useful (what contingent examples they can be used to express and evaluate) and what theorems can be shown to be valid, providing general laws of thought for reasoning about any subject-matter -->
+
 Logos currently implements the Core Layer of Logos - the bimodal logic TM providing the foundation for all planned extensions.
 
 #### Operators
+
+<!-- NOTE: use the glossary conventions 'H', 'G', 'F', 'P' -->
 
 - **Modal**: `□` (necessity), `◇` (possibility) - S5 modal logic
 - **Temporal**: `Past` (universal past), `Future` (universal future), `past` (sometime past), `future` (sometime future), `always`/`△` (at all times), `sometimes`/`▽` (at a time)
 
 #### Axioms
 
+<!-- NOTE: use the glossary conventions 'H', 'G', 'F', 'P' -->
+
 - **S5 Modal**: MT (`□φ → φ`), M4 (`□φ → □□φ`), MB (`φ → □◇φ`)
 - **Temporal**: T4 (`Future φ → Future Future φ`), TA (`φ → Future past φ`), TL (`△ φ → Future Past φ`)
 - **Bimodal Interaction**: MF (`□φ → □Future φ`), TF (`□φ → Future □φ`)
 
+<!-- NOTE: give an concrete example or two -->
+
 #### Perpetuity Principles (Key Theorems)
+
+<!-- NOTE: mention that in addition to describing inferences with a single operator like the introduction or elimination rules for conjunction, or the inferences with some collection of operators of a single type of operators like the extensional operators, there is also a question of how two types of operators interact like the modal and extensional operators, or the modal, extensional, and tense operators as below  -->
 
 - **P1**: `□φ → △φ` (what is necessary is always the case)
 - **P2**: `▽φ → ◇φ` (what is sometimes the case is possible)
@@ -60,6 +82,8 @@ Logos currently implements the Core Layer of Logos - the bimodal logic TM provid
 - **P4**: `◇▽φ → ◇φ` (possibility of occurrence)
 - **P5**: `◇▽φ → △◇φ` (persistent possibility)
 - **P6**: `▽□φ → □△φ` (occurrent necessity is perpetual)
+
+<!-- NOTE: give an concrete example or two -->
 
 ## Core Capabilities
 

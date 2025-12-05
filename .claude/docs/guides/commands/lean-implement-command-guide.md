@@ -39,14 +39,15 @@ The `/lean-implement` command automatically classifies each phase and routes it 
 
 ## Phase Classification
 
-The command uses a 2-tier detection algorithm:
+The command uses a 3-tier detection algorithm with explicit `implementer:` field support:
 
-### Tier 1: Phase Metadata (Strongest Signal)
+### Tier 1: Explicit Implementer Field (Strongest Signal)
 
-If a phase contains `lean_file:` metadata, it is classified as a Lean phase:
+Phases can explicitly specify which coordinator to use:
 
 ```markdown
 ### Phase 1: Prove Modal Axioms [NOT STARTED]
+implementer: lean
 lean_file: /path/to/Modal.lean
 
 Tasks:
@@ -54,7 +55,22 @@ Tasks:
 - [ ] Prove theorem_T
 ```
 
-### Tier 2: Keyword and Extension Analysis
+Valid `implementer:` values:
+- `lean`: Route to lean-coordinator
+- `software`: Route to implementer-coordinator
+
+Invalid values trigger a warning and default to `software`.
+
+### Tier 2: lean_file Metadata (Backward Compatibility)
+
+If a phase contains `lean_file:` metadata without explicit `implementer:`, it is classified as a Lean phase:
+
+```markdown
+### Phase 1: Prove Modal Axioms [NOT STARTED]
+lean_file: /path/to/Modal.lean
+```
+
+### Tier 3: Keyword and Extension Analysis (Legacy Fallback)
 
 If no explicit metadata, the algorithm analyzes content:
 
@@ -150,14 +166,51 @@ The command builds a routing map that tracks:
 - Phase number
 - Phase type (lean/software)
 - Lean file path (for Lean phases)
-- Completion status
+- Implementer name (coordinator to invoke)
 
 Example routing map (stored in workspace):
 ```
-1:lean:/home/user/project/Modal.lean
-2:software:none
-3:lean:/home/user/project/Modal.lean
+1:lean:/home/user/project/Modal.lean:lean-coordinator
+2:software:none:implementer-coordinator
+3:lean:/home/user/project/Modal.lean:lean-coordinator
 ```
+
+The enhanced format includes the coordinator name for explicit routing and better diagnostics.
+
+## Hard Barrier Pattern
+
+The `/lean-implement` command uses a **hard barrier pattern** to enforce mandatory coordinator delegation and prevent implementation work from being performed directly by the orchestrator.
+
+### Architecture
+
+**Block 1b: Coordinator Routing [HARD BARRIER]**
+- Determines coordinator name based on phase type
+- Persists `COORDINATOR_NAME` to workflow state
+- Invokes appropriate coordinator via Task tool (no conditionals)
+
+**Block 1c: Verification Checkpoint [HARD BARRIER]**
+- **MUST** validate summary file exists in summaries directory
+- **MUST** validate summary file size ≥ 100 bytes
+- **MUST** parse TASK_ERROR signals from coordinator
+- **FAILS FAST** if coordinator did not create summary (delegation bypass detected)
+
+### Error Messages
+
+If the hard barrier detects delegation bypass:
+
+```
+ERROR: HARD BARRIER FAILED - Summary not created by lean-coordinator
+Expected: Summary file in /path/to/summaries/
+```
+
+Enhanced diagnostics search alternate locations and provide detailed error context.
+
+### Benefits
+
+1. **Architectural Enforcement**: Runtime validation ensures delegation happens
+2. **Clear Diagnostics**: Error messages include coordinator name and search results
+3. **Fail-Fast Behavior**: Delegation failures detected immediately, not silently ignored
+4. **Context Protection**: Prevents orchestrator context exhaustion from direct implementation work
 
 ## Coordinator Integration
 
@@ -215,11 +268,35 @@ IMPLEMENTATION_COMPLETE:
 
 ## Troubleshooting
 
+### Hard Barrier Failures
+
+**Problem**: `HARD BARRIER FAILED - Summary not created by <coordinator-name>`
+
+**Root Cause**: The coordinator did not create a summary file, indicating delegation bypass or coordinator failure.
+
+**Diagnostic Steps**:
+1. Check the alternate location search results in error output
+2. Review coordinator output for TASK_ERROR signals
+3. Check error log: `/errors --command /lean-implement --since 1h`
+4. Verify summaries directory is writable
+
+**Solution**:
+- If coordinator crashed: Fix the underlying issue and retry
+- If summary in wrong location: Check coordinator implementation
+- If no summary at all: Coordinator delegation failed (architectural bug)
+
 ### Phase Misclassified
 
 **Problem**: A phase is routed to the wrong coordinator.
 
-**Solution**: Add explicit `lean_file:` metadata for Lean phases:
+**Solution**: Add explicit `implementer:` field for precise routing:
+```markdown
+### Phase N: Name [NOT STARTED]
+implementer: lean
+lean_file: /path/to/file.lean
+```
+
+Or use `lean_file:` metadata for backward compatibility:
 ```markdown
 ### Phase N: Name [NOT STARTED]
 lean_file: /path/to/file.lean

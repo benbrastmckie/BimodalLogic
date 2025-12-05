@@ -399,10 +399,10 @@ echo "Ready for topic-naming-agent invocation"
 
 **EXECUTE NOW**: USE the Task tool to invoke the topic-naming-agent for semantic topic directory naming.
 
-Task {
-  subagent_type: "general-purpose"
-  description: "Generate semantic topic directory name"
-  prompt: "
+You MUST use the Task tool with these EXACT parameters:
+- **subagent_type**: "general-purpose"
+- **description**: "Generate semantic topic directory name"
+- **prompt**:
     Read and follow ALL behavioral guidelines from:
     ${CLAUDE_PROJECT_DIR}/.claude/agents/topic-naming-agent.md
 
@@ -425,8 +425,8 @@ Task {
 
     If you encounter an error, return:
     TASK_ERROR: <error_type> - <error_message>
-  "
-}
+
+The Task tool invocation is MANDATORY.
 
 ## Block 1c: Hard Barrier Validation
 
@@ -846,14 +846,118 @@ echo "Plans directory: $PLANS_DIR"
 echo "Topic name: $TOPIC_NAME (strategy: $NAMING_STRATEGY)"
 ```
 
-## Block 1d: Research Initiation
+## Block 1e: Research Setup and Context Barrier
+
+**EXECUTE NOW**: Execute the bash block below to prepare for research delegation.
+
+```bash
+set +H  # CRITICAL: Disable history expansion
+
+# === DETECT PROJECT DIRECTORY ===
+if command -v git &>/dev/null && git rev-parse --git-dir >/dev/null 2>&1; then
+  CLAUDE_PROJECT_DIR="$(git rev-parse --show-toplevel)"
+else
+  current_dir="$(pwd)"
+  while [ "$current_dir" != "/" ]; do
+    if [ -d "$current_dir/.claude" ]; then
+      CLAUDE_PROJECT_DIR="$current_dir"
+      break
+    fi
+    current_dir="$(dirname "$current_dir")"
+  done
+fi
+
+if [ -z "$CLAUDE_PROJECT_DIR" ] || [ ! -d "$CLAUDE_PROJECT_DIR/.claude" ]; then
+  echo "ERROR: Failed to detect project directory" >&2
+  exit 1
+fi
+
+export CLAUDE_PROJECT_DIR
+
+# === RESTORE STATE FROM BLOCK 1C ===
+STATE_ID_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/plan_state_id.txt"
+WORKFLOW_ID=$(cat "$STATE_ID_FILE" 2>/dev/null)
+
+if [ -z "$WORKFLOW_ID" ]; then
+  echo "ERROR: Failed to restore WORKFLOW_ID" >&2
+  exit 1
+fi
+
+# Restore workflow state
+STATE_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/workflow_${WORKFLOW_ID}.sh"
+if [ -f "$STATE_FILE" ]; then
+  source "$STATE_FILE"
+else
+  echo "ERROR: State file not found: $STATE_FILE" >&2
+  exit 1
+fi
+
+COMMAND_NAME="/create-plan"
+USER_ARGS="${FEATURE_DESCRIPTION:-}"
+export COMMAND_NAME USER_ARGS
+
+# Source libraries
+source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/error-handling.sh" 2>/dev/null || {
+  echo "ERROR: Failed to source error-handling.sh" >&2
+  exit 1
+}
+
+source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/state-persistence.sh" 2>/dev/null || {
+  echo "ERROR: Failed to source state-persistence.sh" >&2
+  exit 1
+}
+
+# Setup bash error trap
+setup_bash_error_trap "$COMMAND_NAME" "$WORKFLOW_ID" "$USER_ARGS"
+
+# === PRE-CALCULATE REPORT PATH (Hard Barrier Pattern) ===
+# Calculate exact path BEFORE agent invocation for hard barrier validation
+REPORT_NUMBER="001"
+REPORT_FILENAME="${REPORT_NUMBER}-$(echo "${TOPIC_NAME:-no_name}" | tr '_' '-' | cut -c1-40)-analysis.md"
+REPORT_PATH="${RESEARCH_DIR}/${REPORT_FILENAME}"
+
+# Validate path is absolute
+if [[ "$REPORT_PATH" =~ ^/ ]]; then
+  : # Path is absolute, continue
+else
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "validation_error" \
+    "Calculated REPORT_PATH is not absolute" \
+    "bash_block_1e" \
+    "$(jq -n --arg path "$REPORT_PATH" '{report_path: $path}')"
+  echo "ERROR: REPORT_PATH is not absolute: $REPORT_PATH" >&2
+  exit 1
+fi
+
+# Ensure parent directory exists
+mkdir -p "$(dirname "$REPORT_PATH")" 2>/dev/null || true
+
+# Persist for Block 1e-exec and Block 1f
+append_workflow_state "REPORT_PATH" "$REPORT_PATH" || {
+  echo "export REPORT_PATH=\"$REPORT_PATH\"" >> "$STATE_FILE"
+}
+
+echo ""
+echo "=== Research Setup Complete ==="
+echo "  Report Path: $REPORT_PATH"
+echo "  Workflow ID: $WORKFLOW_ID"
+echo ""
+echo "CHECKPOINT: Research setup complete, ready for Task invocation"
+```
+
+## Block 1e-exec: Research Specialist Invocation
+
+**CRITICAL BARRIER**: The bash block above MUST complete before proceeding.
 
 **EXECUTE NOW**: USE the Task tool to invoke the research-specialist agent.
 
-Task {
-  subagent_type: "general-purpose"
-  description: "Research ${FEATURE_DESCRIPTION} with mandatory file creation"
-  prompt: "
+You MUST use the Task tool with these EXACT parameters:
+- **subagent_type**: "general-purpose"
+- **description**: "Research ${FEATURE_DESCRIPTION} with mandatory file creation"
+- **prompt**:
     Read and follow ALL behavioral guidelines from:
     ${CLAUDE_PROJECT_DIR}/.claude/agents/research-specialist.md
 
@@ -863,16 +967,146 @@ Task {
     - Research Topic: ${FEATURE_DESCRIPTION}
     - Research Complexity: ${RESEARCH_COMPLEXITY}
     - Output Directory: ${RESEARCH_DIR}
+    - Expected Output Path: ${REPORT_PATH}
     - Workflow Type: research-and-plan
     - Original Prompt File: ${ORIGINAL_PROMPT_FILE_PATH:-none}
     - Archived Prompt File: ${ARCHIVED_PROMPT_PATH:-none}
+
+    **CRITICAL**: You MUST write the research report to the EXACT path specified above.
+    The orchestrator has pre-calculated this path and will validate it exists after you return.
+    Do NOT derive or calculate your own path.
 
     If an archived prompt file is provided (not 'none'), read it for complete context.
 
     Execute research according to behavioral guidelines and return completion signal:
     REPORT_CREATED: [path to created report]
-  "
+
+DO NOT perform research directly. DO NOT use Read/Grep/Glob for research purposes.
+DO NOT use Write to create research reports directly.
+The Task tool invocation is MANDATORY.
+
+## Block 1f: Research Output Verification
+
+**EXECUTE NOW**: Validate that research-specialist created the output file at the pre-calculated path.
+
+This is the **hard barrier** - the workflow CANNOT proceed unless the research report exists.
+
+```bash
+set +H  # CRITICAL: Disable history expansion
+
+# === DETECT PROJECT DIRECTORY ===
+if command -v git &>/dev/null && git rev-parse --git-dir >/dev/null 2>&1; then
+  CLAUDE_PROJECT_DIR="$(git rev-parse --show-toplevel)"
+else
+  current_dir="$(pwd)"
+  while [ "$current_dir" != "/" ]; do
+    if [ -d "$current_dir/.claude" ]; then
+      CLAUDE_PROJECT_DIR="$current_dir"
+      break
+    fi
+    current_dir="$(dirname "$current_dir")"
+  done
+fi
+
+if [ -z "$CLAUDE_PROJECT_DIR" ] || [ ! -d "$CLAUDE_PROJECT_DIR/.claude" ]; then
+  echo "ERROR: Failed to detect project directory" >&2
+  exit 1
+fi
+
+export CLAUDE_PROJECT_DIR
+
+# === RESTORE STATE FROM BLOCK 1E ===
+STATE_ID_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/plan_state_id.txt"
+WORKFLOW_ID=$(cat "$STATE_ID_FILE" 2>/dev/null)
+
+if [ -z "$WORKFLOW_ID" ]; then
+  echo "ERROR: Failed to restore WORKFLOW_ID" >&2
+  exit 1
+fi
+
+# Restore workflow state
+STATE_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/workflow_${WORKFLOW_ID}.sh"
+if [ -f "$STATE_FILE" ]; then
+  source "$STATE_FILE"
+else
+  echo "ERROR: State file not found: $STATE_FILE" >&2
+  exit 1
+fi
+
+COMMAND_NAME="/create-plan"
+USER_ARGS="${FEATURE_DESCRIPTION:-}"
+export COMMAND_NAME USER_ARGS WORKFLOW_ID
+
+# Source libraries
+source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/error-handling.sh" 2>/dev/null || {
+  echo "ERROR: Failed to source error-handling.sh" >&2
+  exit 1
 }
+
+# Source validation utilities for agent artifact validation
+source "${CLAUDE_PROJECT_DIR}/.claude/lib/workflow/validation-utils.sh" 2>/dev/null || {
+  echo "ERROR: Cannot load validation-utils.sh - required for workflow validation" >&2
+  exit 1
+}
+
+# Setup bash error trap
+setup_bash_error_trap "$COMMAND_NAME" "$WORKFLOW_ID" "$USER_ARGS"
+
+echo ""
+echo "=== Research Output Hard Barrier Validation ==="
+echo ""
+
+# === HARD BARRIER VALIDATION ===
+# Validate REPORT_PATH is set (from Block 1e)
+if [ -z "${REPORT_PATH:-}" ]; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "state_error" \
+    "REPORT_PATH not restored from Block 1e state" \
+    "bash_block_1f" \
+    "$(jq -n '{report_path: "missing"}')"
+  echo "ERROR: REPORT_PATH not set - state restoration failed" >&2
+  exit 1
+fi
+
+echo "Expected report file: $REPORT_PATH"
+
+# HARD BARRIER: Validate agent artifact using validation-utils.sh
+# validate_agent_artifact checks file existence and minimum size (100 bytes)
+if ! validate_agent_artifact "$REPORT_PATH" 100 "research report"; then
+  # Error already logged by validate_agent_artifact
+  echo "ERROR: HARD BARRIER FAILED - Research specialist validation failed" >&2
+  echo "" >&2
+  echo "This indicates the research-specialist did not create valid output." >&2
+  echo "" >&2
+  echo "Recovery steps:" >&2
+  echo "1. Check research-specialist agent log for errors" >&2
+  echo "2. Verify research-specialist.md behavioral file compliance" >&2
+  echo "3. Re-run: /create-plan \"${FEATURE_DESCRIPTION}\"" >&2
+  echo "" >&2
+  exit 1
+fi
+
+# Content validation: Check for ## Findings section
+if ! grep -q "^## Findings" "$REPORT_PATH"; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "validation_error" \
+    "Research report missing required ## Findings section" \
+    "bash_block_1f" \
+    "$(jq -n --arg path "$REPORT_PATH" '{report_path: $path}')"
+  echo "ERROR: Research report missing ## Findings section" >&2
+  echo "Report path: $REPORT_PATH" >&2
+  exit 1
+fi
+
+echo "✓ Hard barrier passed - research report validated"
+echo ""
+```
 
 ## Block 2: Research Verification and Planning Setup
 
@@ -1196,14 +1430,21 @@ if [ -n "$FORMATTED_STANDARDS" ]; then
 else
   echo "No standards extracted (graceful degradation)"
 fi
+
+echo ""
+echo "CHECKPOINT: Planning setup complete, ready for Task invocation"
 ```
+
+## Block 2-exec: Plan-Architect Invocation
+
+**CRITICAL BARRIER**: The bash block above MUST complete before proceeding.
 
 **EXECUTE NOW**: USE the Task tool to invoke the plan-architect agent.
 
-Task {
-  subagent_type: "general-purpose"
-  description: "Create implementation plan for ${FEATURE_DESCRIPTION} with mandatory file creation"
-  prompt: "
+You MUST use the Task tool with these EXACT parameters:
+- **subagent_type**: "general-purpose"
+- **description**: "Create implementation plan for ${FEATURE_DESCRIPTION} with mandatory file creation"
+- **prompt**:
     Read and follow ALL behavioral guidelines from:
     ${CLAUDE_PROJECT_DIR}/.claude/agents/plan-architect.md
 
@@ -1220,6 +1461,10 @@ Task {
 
     **Project Standards**:
     ${FORMATTED_STANDARDS}
+
+    **CRITICAL**: You MUST write the plan to the EXACT path specified above.
+    The orchestrator has pre-calculated this path and will validate it exists after you return.
+    Do NOT derive or calculate your own path.
 
     If an archived prompt file is provided (not 'none'), reference it for complete context.
 
@@ -1261,8 +1506,147 @@ Task {
 
     Execute planning according to behavioral guidelines and return completion signal:
     PLAN_CREATED: ${PLAN_PATH}
-  "
+
+DO NOT write the plan file directly. DO NOT use Write tool for plan creation.
+The Task tool invocation is MANDATORY.
+
+## Block 3a: Planning Output Verification
+
+**EXECUTE NOW**: Validate that plan-architect created the output file at the pre-calculated path.
+
+This is the **hard barrier** - the workflow CANNOT proceed unless the plan file exists.
+
+```bash
+set +H  # CRITICAL: Disable history expansion
+
+# === DETECT PROJECT DIRECTORY ===
+if command -v git &>/dev/null && git rev-parse --git-dir >/dev/null 2>&1; then
+  CLAUDE_PROJECT_DIR="$(git rev-parse --show-toplevel)"
+else
+  current_dir="$(pwd)"
+  while [ "$current_dir" != "/" ]; do
+    if [ -d "$current_dir/.claude" ]; then
+      CLAUDE_PROJECT_DIR="$current_dir"
+      break
+    fi
+    current_dir="$(dirname "$current_dir")"
+  done
+fi
+
+if [ -z "$CLAUDE_PROJECT_DIR" ] || [ ! -d "$CLAUDE_PROJECT_DIR/.claude" ]; then
+  echo "ERROR: Failed to detect project directory" >&2
+  exit 1
+fi
+
+export CLAUDE_PROJECT_DIR
+
+# === RESTORE STATE FROM BLOCK 2 ===
+STATE_ID_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/plan_state_id.txt"
+WORKFLOW_ID=$(cat "$STATE_ID_FILE" 2>/dev/null)
+
+if [ -z "$WORKFLOW_ID" ]; then
+  echo "ERROR: Failed to restore WORKFLOW_ID" >&2
+  exit 1
+fi
+
+# Restore workflow state
+STATE_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/workflow_${WORKFLOW_ID}.sh"
+if [ -f "$STATE_FILE" ]; then
+  source "$STATE_FILE"
+else
+  echo "ERROR: State file not found: $STATE_FILE" >&2
+  exit 1
+fi
+
+COMMAND_NAME="/create-plan"
+USER_ARGS="${FEATURE_DESCRIPTION:-}"
+export COMMAND_NAME USER_ARGS WORKFLOW_ID
+
+# Source libraries
+source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/error-handling.sh" 2>/dev/null || {
+  echo "ERROR: Failed to source error-handling.sh" >&2
+  exit 1
 }
+
+# Source validation utilities for agent artifact validation
+source "${CLAUDE_PROJECT_DIR}/.claude/lib/workflow/validation-utils.sh" 2>/dev/null || {
+  echo "ERROR: Cannot load validation-utils.sh - required for workflow validation" >&2
+  exit 1
+}
+
+# Setup bash error trap
+setup_bash_error_trap "$COMMAND_NAME" "$WORKFLOW_ID" "$USER_ARGS"
+
+echo ""
+echo "=== Planning Output Hard Barrier Validation ==="
+echo ""
+
+# === HARD BARRIER VALIDATION ===
+# Validate PLAN_PATH is set (from Block 2)
+if [ -z "${PLAN_PATH:-}" ]; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "state_error" \
+    "PLAN_PATH not restored from Block 2 state" \
+    "bash_block_3a" \
+    "$(jq -n '{plan_path: "missing"}')"
+  echo "ERROR: PLAN_PATH not set - state restoration failed" >&2
+  exit 1
+fi
+
+echo "Expected plan file: $PLAN_PATH"
+
+# HARD BARRIER: Validate agent artifact using validation-utils.sh
+# validate_agent_artifact checks file existence and minimum size (500 bytes)
+if ! validate_agent_artifact "$PLAN_PATH" 500 "implementation plan"; then
+  # Error already logged by validate_agent_artifact
+  echo "ERROR: HARD BARRIER FAILED - Plan-architect validation failed" >&2
+  echo "" >&2
+  echo "This indicates the plan-architect did not create valid output." >&2
+  echo "" >&2
+  echo "Recovery steps:" >&2
+  echo "1. Check plan-architect agent log for errors" >&2
+  echo "2. Verify plan-architect.md behavioral file compliance" >&2
+  echo "3. Re-run: /create-plan \"${FEATURE_DESCRIPTION}\"" >&2
+  echo "" >&2
+  exit 1
+fi
+
+# Structure validation: Check for ## Metadata section
+if ! grep -q "^## Metadata" "$PLAN_PATH"; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "validation_error" \
+    "Plan file missing required ## Metadata section" \
+    "bash_block_3a" \
+    "$(jq -n --arg path "$PLAN_PATH" '{plan_path: $path}')"
+  echo "ERROR: Plan file missing ## Metadata section" >&2
+  echo "Plan path: $PLAN_PATH" >&2
+  exit 1
+fi
+
+# Structure validation: Check for phase headings
+if ! grep -q "^### Phase [0-9]" "$PLAN_PATH"; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "validation_error" \
+    "Plan file missing phase headings" \
+    "bash_block_3a" \
+    "$(jq -n --arg path "$PLAN_PATH" '{plan_path: $path}')"
+  echo "ERROR: Plan file missing phase headings" >&2
+  echo "Plan path: $PLAN_PATH" >&2
+  exit 1
+fi
+
+echo "✓ Hard barrier passed - plan file validated"
+echo ""
+```
 
 ## Block 3: Plan Verification and Completion
 

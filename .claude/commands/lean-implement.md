@@ -427,18 +427,38 @@ echo "=== Phase Classification ==="
 echo ""
 
 # === PHASE TYPE DETECTION FUNCTION ===
-# 2-tier classification algorithm
+# 2-tier classification algorithm with implementer: field support
 detect_phase_type() {
   local phase_content="$1"
   local phase_num="$2"
 
-  # Tier 1: Check for lean_file metadata (strongest signal)
+  # Tier 1: Check for explicit implementer: field (strongest signal)
+  local implementer_value=$(echo "$phase_content" | grep -E "^implementer:" | sed 's/^implementer:[[:space:]]*//' | head -1)
+  if [ -n "$implementer_value" ]; then
+    case "$implementer_value" in
+      lean)
+        echo "lean"
+        return 0
+        ;;
+      software)
+        echo "software"
+        return 0
+        ;;
+      *)
+        echo "WARNING: Invalid implementer value '$implementer_value' in phase $phase_num, defaulting to software" >&2
+        echo "software"
+        return 0
+        ;;
+    esac
+  fi
+
+  # Tier 2: Check for lean_file metadata (backward compatibility)
   if echo "$phase_content" | grep -qE "^lean_file:"; then
     echo "lean"
     return 0
   fi
 
-  # Tier 2: Keyword and extension analysis
+  # Tier 3: Keyword and extension analysis (legacy fallback)
   # Lean indicators
   if echo "$phase_content" | grep -qiE '\.(lean)\b|theorem\b|lemma\b|sorry\b|tactic\b|mathlib\b|lean_(goal|build|leansearch)'; then
     echo "lean"
@@ -510,6 +530,13 @@ for phase_num in $(seq 1 "$TOTAL_PHASES"); do
     LEAN_FILE_PATH=$(echo "$PHASE_CONTENT" | grep -E "^lean_file:" | sed 's/^lean_file:[[:space:]]*//' | head -1)
   fi
 
+  # Determine implementer name for routing map
+  if [ "$PHASE_TYPE" = "lean" ]; then
+    IMPLEMENTER_NAME="lean-coordinator"
+  else
+    IMPLEMENTER_NAME="implementer-coordinator"
+  fi
+
   # Apply mode filter
   case "$EXECUTION_MODE" in
     lean-only)
@@ -526,12 +553,12 @@ for phase_num in $(seq 1 "$TOTAL_PHASES"); do
       ;;
   esac
 
-  # Add to routing map
+  # Add to routing map (enhanced format: phase_num:type:lean_file:implementer)
   if [ -n "$ROUTING_MAP" ]; then
     ROUTING_MAP="${ROUTING_MAP}
 "
   fi
-  ROUTING_MAP="${ROUTING_MAP}${phase_num}:${PHASE_TYPE}:${LEAN_FILE_PATH:-none}"
+  ROUTING_MAP="${ROUTING_MAP}${phase_num}:${PHASE_TYPE}:${LEAN_FILE_PATH:-none}:${IMPLEMENTER_NAME}"
 
   if [ "$PHASE_TYPE" = "lean" ]; then
     LEAN_PHASES="${LEAN_PHASES}${phase_num} "
@@ -649,13 +676,15 @@ if [ -z "$PHASE_ENTRY" ]; then
   exit 1
 fi
 
-# Parse phase entry: phase_num:type:lean_file
+# Parse phase entry: phase_num:type:lean_file:implementer
 PHASE_NUM=$(echo "$PHASE_ENTRY" | cut -d: -f1)
 PHASE_TYPE=$(echo "$PHASE_ENTRY" | cut -d: -f2)
-LEAN_FILE_PATH=$(echo "$PHASE_ENTRY" | cut -d: -f3-)
+LEAN_FILE_PATH=$(echo "$PHASE_ENTRY" | cut -d: -f3)
+IMPLEMENTER_FROM_MAP=$(echo "$PHASE_ENTRY" | cut -d: -f4)
 
 echo "Current Phase: $PHASE_NUM"
 echo "Phase Type: $PHASE_TYPE"
+echo "Implementer: $IMPLEMENTER_FROM_MAP"
 if [ "$PHASE_TYPE" = "lean" ] && [ "$LEAN_FILE_PATH" != "none" ]; then
   echo "Lean File: $LEAN_FILE_PATH"
 fi
@@ -666,15 +695,24 @@ append_workflow_state "CURRENT_PHASE" "$CURRENT_PHASE"
 append_workflow_state "CURRENT_PHASE_TYPE" "$PHASE_TYPE"
 append_workflow_state "CURRENT_LEAN_FILE" "$LEAN_FILE_PATH"
 
-echo "Routing to ${PHASE_TYPE}-coordinator..."
+# === DETERMINE COORDINATOR NAME [HARD BARRIER] ===
+# Based on phase type, determine which coordinator to invoke
+if [ "$PHASE_TYPE" = "lean" ]; then
+  COORDINATOR_NAME="lean-coordinator"
+else
+  COORDINATOR_NAME="implementer-coordinator"
+fi
+
+# Persist coordinator name for verification in Block 1c
+append_workflow_state "COORDINATOR_NAME" "$COORDINATOR_NAME"
+
+echo "Routing to ${COORDINATOR_NAME}..."
 echo ""
 ```
 
-**COORDINATOR INVOCATION DECISION**:
+Based on the phase type, invoke the appropriate coordinator:
 
-Based on the CURRENT_PHASE_TYPE from Block 1b state:
-
-**If CURRENT_PHASE_TYPE is "lean"**:
+**If phase type is "lean", invoke lean-coordinator**:
 
 **EXECUTE NOW**: USE the Task tool to invoke the lean-coordinator agent.
 
@@ -708,6 +746,8 @@ Task {
     - Source checkbox utilities: source ${CLAUDE_PROJECT_DIR}/.claude/lib/plan/checkbox-utils.sh
     - Before starting phase: add_in_progress_marker '${PLAN_FILE}' ${CURRENT_PHASE}
     - After completing phase: mark_phase_complete '${PLAN_FILE}' ${CURRENT_PHASE} && add_complete_marker '${PLAN_FILE}' ${CURRENT_PHASE}
+    - This creates visible progress: [NOT STARTED] -> [IN PROGRESS] -> [COMPLETE]
+    - Note: Progress tracking gracefully degrades if unavailable (non-fatal)
 
     **CRITICAL**: Create proof summary in ${SUMMARIES_DIR}/
     The orchestrator will validate the summary exists after you return.
@@ -722,7 +762,7 @@ Task {
   "
 }
 
-**If CURRENT_PHASE_TYPE is "software"**:
+**If phase type is "software", invoke implementer-coordinator**:
 
 **EXECUTE NOW**: USE the Task tool to invoke the implementer-coordinator agent.
 
@@ -756,6 +796,8 @@ Task {
     - Source checkbox utilities: source ${CLAUDE_PROJECT_DIR}/.claude/lib/plan/checkbox-utils.sh
     - Before starting phase: add_in_progress_marker '${PLAN_FILE}' ${CURRENT_PHASE}
     - After completing phase: mark_phase_complete '${PLAN_FILE}' ${CURRENT_PHASE} && add_complete_marker '${PLAN_FILE}' ${CURRENT_PHASE}
+    - This creates visible progress: [NOT STARTED] -> [IN PROGRESS] -> [COMPLETE]
+    - Note: Progress tracking gracefully degrades if unavailable (non-fatal)
 
     **CRITICAL**: Create implementation summary in ${SUMMARIES_DIR}/
     The orchestrator will validate the summary exists after you return.
@@ -820,21 +862,36 @@ echo ""
 echo "=== Hard Barrier Verification ==="
 echo ""
 
-# === VALIDATE SUMMARY EXISTENCE ===
+# === VALIDATE SUMMARY EXISTENCE [HARD BARRIER] ===
 LATEST_SUMMARY=$(find "$SUMMARIES_DIR" -name "*.md" -type f -mmin -10 2>/dev/null | sort | tail -1)
 
 if [ -z "$LATEST_SUMMARY" ] || [ ! -f "$LATEST_SUMMARY" ]; then
+  # Enhanced diagnostics: Search alternate locations
+  echo "ERROR: HARD BARRIER FAILED - Summary not created by $COORDINATOR_NAME" >&2
+  echo "Expected: Summary file in $SUMMARIES_DIR" >&2
+  echo "" >&2
+  echo "Alternate location search:" >&2
+
+  # Check topic path root
+  ALTERNATE_SUMMARIES=$(find "$TOPIC_PATH" -name "*.md" -type f -mmin -10 2>/dev/null | grep -v "/plans/" | grep -v "/reports/" | head -5)
+  if [ -n "$ALTERNATE_SUMMARIES" ]; then
+    echo "  Found recent .md files in topic path:" >&2
+    echo "$ALTERNATE_SUMMARIES" | sed 's/^/    /' >&2
+  else
+    echo "  No recent .md files found in topic path" >&2
+  fi
+  echo "" >&2
+
   log_command_error \
     "$COMMAND_NAME" \
     "$WORKFLOW_ID" \
     "$USER_ARGS" \
     "agent_error" \
-    "Coordinator did not create summary file" \
+    "Coordinator $COORDINATOR_NAME did not create summary file" \
     "bash_block_1c" \
-    "$(jq -n --arg dir "$SUMMARIES_DIR" '{summaries_dir: $dir}')"
+    "$(jq -n --arg coord "$COORDINATOR_NAME" --arg dir "$SUMMARIES_DIR" \
+       '{coordinator: $coord, summaries_dir: $dir}')"
 
-  echo "ERROR: HARD BARRIER FAILED - Summary not created" >&2
-  echo "Expected: Summary file in $SUMMARIES_DIR" >&2
   exit 1
 fi
 
@@ -845,17 +902,36 @@ if [ "$SUMMARY_SIZE" -lt 100 ]; then
     "$WORKFLOW_ID" \
     "$USER_ARGS" \
     "validation_error" \
-    "Summary file too small" \
+    "Summary file from $COORDINATOR_NAME too small" \
     "bash_block_1c" \
-    "$(jq -n --arg path "$LATEST_SUMMARY" --argjson size "$SUMMARY_SIZE" \
-       '{summary_path: $path, size_bytes: $size}')"
+    "$(jq -n --arg coord "$COORDINATOR_NAME" --arg path "$LATEST_SUMMARY" --argjson size "$SUMMARY_SIZE" \
+       '{coordinator: $coord, summary_path: $path, size_bytes: $size}')"
 
-  echo "ERROR: Summary file too small ($SUMMARY_SIZE bytes)" >&2
+  echo "ERROR: HARD BARRIER FAILED - Summary file from $COORDINATOR_NAME too small ($SUMMARY_SIZE bytes)" >&2
   exit 1
 fi
 
 echo "[OK] Summary validated: $LATEST_SUMMARY ($SUMMARY_SIZE bytes)"
 echo ""
+
+# === PARSE ERROR SIGNALS FROM COORDINATOR ===
+# Check if coordinator returned a TASK_ERROR signal in summary
+if grep -q "^TASK_ERROR:" "$LATEST_SUMMARY" 2>/dev/null; then
+  COORDINATOR_ERROR=$(grep "^TASK_ERROR:" "$LATEST_SUMMARY" | head -1 | sed 's/^TASK_ERROR:[[:space:]]*//')
+
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "agent_error" \
+    "Coordinator failed: $COORDINATOR_ERROR" \
+    "bash_block_1c" \
+    "$(jq -n --arg coord "$COORDINATOR_NAME" --arg phase "$CURRENT_PHASE" --arg error "$COORDINATOR_ERROR" \
+       '{coordinator: $coord, phase: $phase, error_detail: $error}')"
+
+  echo "ERROR: Coordinator $COORDINATOR_NAME failed: $COORDINATOR_ERROR" >&2
+  exit 1
+fi
 
 # === PARSE COORDINATOR OUTPUT ===
 WORK_REMAINING_NEW=""
@@ -1021,8 +1097,8 @@ echo "=== Phase Marker Validation and Recovery ==="
 echo ""
 
 # Count total phases and phases with [COMPLETE] marker
-TOTAL_PHASES=$(grep -c "^### Phase" "$PLAN_FILE" 2>/dev/null || echo "0")
-PHASES_WITH_MARKER=$(grep -c "^### Phase.*\[COMPLETE\]" "$PLAN_FILE" 2>/dev/null || echo "0")
+TOTAL_PHASES=$(grep -c "^### Phase [0-9]" "$PLAN_FILE" 2>/dev/null || echo "0")
+PHASES_WITH_MARKER=$(grep -c "^### Phase [0-9].*\[COMPLETE\]" "$PLAN_FILE" 2>/dev/null || echo "0")
 
 echo "Total phases: $TOTAL_PHASES"
 echo "Phases with [COMPLETE] marker: $PHASES_WITH_MARKER"

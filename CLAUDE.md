@@ -170,9 +170,11 @@ Logos follows rigorous development standards including Test-Driven Development (
 ## 6. Key Packages
 
 ### Syntax Package
-- `Formula`: Inductive type for TM formulas (atom, bot, imp, box, past, future)
+- `Formula`: Inductive type for TM formulas (atom, bot, imp, box, all_past, all_future)
 - `Context`: Proof contexts (premise lists)
 - DSL macros for readable formula construction **(planned)**
+- Derived operators: `some_past`, `some_future`, `always`, `sometimes`
+- Temporal duality: `swap_temporal` swaps all_past and all_future
 
 ### ProofSystem Package
 - `Axiom`: TM axiom schemata (MT, M4, MB, T4, TA, TL, MF, TF)

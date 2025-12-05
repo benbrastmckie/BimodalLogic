@@ -92,52 +92,52 @@ example : Axiom ((Formula.atom "p").imp (Formula.atom "p").diamond.box) := Axiom
 example : Axiom ((Formula.atom "p").box.imp (Formula.atom "p").box.diamond.box) := Axiom.modal_b (Formula.atom "p").box
 
 -- ============================================================
--- Temporal 4 Axiom Tests: Fφ → FFφ
+-- Temporal 4 Axiom Tests: Gφ → GGφ
 -- ============================================================
 
 -- Test: Temporal 4 axiom on atom
-example : Axiom ((Formula.atom "p").future.imp (Formula.atom "p").future.future) := Axiom.temp_4 (Formula.atom "p")
+example : Axiom ((Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future) := Axiom.temp_4 (Formula.atom "p")
 
 -- Test: Temporal 4 axiom on complex formula
-example : Axiom ((Formula.atom "p").box.future.imp (Formula.atom "p").box.future.future) := Axiom.temp_4 (Formula.atom "p").box
+example : Axiom ((Formula.atom "p").box.all_future.imp (Formula.atom "p").box.all_future.all_future) := Axiom.temp_4 (Formula.atom "p").box
 
 -- ============================================================
--- Temporal A Axiom Tests: φ → F(sometime_past φ)
+-- Temporal A Axiom Tests: φ → G(some_past φ)
 -- ============================================================
 
 -- Test: Temporal A axiom on atom
-example : Axiom ((Formula.atom "p").imp ((Formula.atom "p").sometime_past.future)) := Axiom.temp_a (Formula.atom "p")
+example : Axiom ((Formula.atom "p").imp ((Formula.atom "p").some_past.all_future)) := Axiom.temp_a (Formula.atom "p")
 
 -- Test: Temporal A axiom on negation
-example : Axiom ((Formula.atom "p").neg.imp ((Formula.atom "p").neg.sometime_past.future)) := Axiom.temp_a (Formula.atom "p").neg
+example : Axiom ((Formula.atom "p").neg.imp ((Formula.atom "p").neg.some_past.all_future)) := Axiom.temp_a (Formula.atom "p").neg
 
 -- ============================================================
--- Temporal L Axiom Tests: Gφ → FPφ (G = future in our formalization)
+-- Temporal L Axiom Tests: Gφ → GHφ (G = all_future in our formalization)
 -- ============================================================
 
 -- Test: Temporal L axiom on atom
-example : Axiom ((Formula.atom "p").future.imp ((Formula.atom "p").past.future)) := Axiom.temp_l (Formula.atom "p")
+example : Axiom ((Formula.atom "p").all_future.imp ((Formula.atom "p").all_past.all_future)) := Axiom.temp_l (Formula.atom "p")
 
 -- ============================================================
--- Modal-Future Axiom Tests: □φ → □Fφ
+-- Modal-Future Axiom Tests: □φ → □Gφ
 -- ============================================================
 
 -- Test: Modal-Future axiom on atom
-example : Axiom ((Formula.atom "p").box.imp (Formula.atom "p").future.box) := Axiom.modal_future (Formula.atom "p")
+example : Axiom ((Formula.atom "p").box.imp (Formula.atom "p").all_future.box) := Axiom.modal_future (Formula.atom "p")
 
 -- Test: Modal-Future axiom on implication
-example : Axiom (((Formula.atom "p").imp (Formula.atom "q")).box.imp ((Formula.atom "p").imp (Formula.atom "q")).future.box) :=
+example : Axiom (((Formula.atom "p").imp (Formula.atom "q")).box.imp ((Formula.atom "p").imp (Formula.atom "q")).all_future.box) :=
   Axiom.modal_future ((Formula.atom "p").imp (Formula.atom "q"))
 
 -- ============================================================
--- Temporal-Future Axiom Tests: □φ → F□φ
+-- Temporal-Future Axiom Tests: □φ → G□φ
 -- ============================================================
 
 -- Test: Temporal-Future axiom on atom
-example : Axiom ((Formula.atom "p").box.imp (Formula.atom "p").box.future) := Axiom.temp_future (Formula.atom "p")
+example : Axiom ((Formula.atom "p").box.imp (Formula.atom "p").box.all_future) := Axiom.temp_future (Formula.atom "p")
 
 -- Test: Temporal-Future axiom on complex formula
-example : Axiom (((Formula.atom "p").and (Formula.atom "q")).box.imp ((Formula.atom "p").and (Formula.atom "q")).box.future) :=
+example : Axiom (((Formula.atom "p").and (Formula.atom "q")).box.imp ((Formula.atom "p").and (Formula.atom "q")).box.all_future) :=
   Axiom.temp_future ((Formula.atom "p").and (Formula.atom "q"))
 
 -- ============================================================

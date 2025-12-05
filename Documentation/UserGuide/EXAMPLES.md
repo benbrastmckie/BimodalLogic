@@ -98,29 +98,29 @@ theorem diamond_box_collapse (P : Formula) :
 
 ### Temporal Axiom Proofs
 
-#### Axiom T4: Future φ → Future Future φ
+#### Axiom T4: Gφ → GGφ
 
 ```lean
-/-- Future iterates: what will always be will always always be -/
-example (P : Formula) : ⊢ ((Formula.future P).imp (Formula.future (Formula.future P))) := by
+/-- All-future iterates: what will always be will always always be -/
+example (P : Formula) : ⊢ ((Formula.all_future P).imp (Formula.all_future (Formula.all_future P))) := by
   apply Derivable.axiom
   apply Axiom.temp_4
 ```
 
-#### Axiom TA: φ → Future past φ
+#### Axiom TA: φ → G(Pφ)
 
 ```lean
 /-- Present implies future past: now will have been -/
-example (P : Formula) : ⊢ (P.imp (Formula.future (sometime_past P))) := by
+example (P : Formula) : ⊢ (P.imp (Formula.all_future (some_past P))) := by
   apply Derivable.axiom
   apply Axiom.temp_a
 ```
 
-#### Axiom TL: always φ → Future Past φ
+#### Axiom TL: △φ → G(Hφ)
 
 ```lean
 /-- Linearity: if always, then future has past -/
-example (P : Formula) : ⊢ ((always P).imp (Formula.future (Formula.past P))) := by
+example (P : Formula) : ⊢ ((always P).imp (Formula.all_future (Formula.all_past P))) := by
   apply Derivable.axiom
   apply Axiom.temp_l
 ```
@@ -128,70 +128,70 @@ example (P : Formula) : ⊢ ((always P).imp (Formula.future (Formula.past P))) :
 ### Past and Future Operators
 
 ```lean
-/-- Universal past: P holds at all past times -/
-example (P : Formula) : Formula := Formula.past P
+/-- Universal past (H): P holds at all past times -/
+example (P : Formula) : Formula := Formula.all_past P
 
-/-- Universal future: P holds at all future times -/
-example (P : Formula) : Formula := Formula.future P
+/-- Universal future (G): P holds at all future times -/
+example (P : Formula) : Formula := Formula.all_future P
 
-/-- Sometime past: P held at some past time -/
-example (P : Formula) : Formula := sometime_past P  -- ¬Past¬P
+/-- Existential past (P): P held at some past time -/
+example (P : Formula) : Formula := some_past P  -- ¬H¬P
 
-/-- Sometime future: P will hold at some future time -/
-example (P : Formula) : Formula := sometime_future P  -- ¬Future¬P
+/-- Existential future (F): P will hold at some future time -/
+example (P : Formula) : Formula := some_future P  -- ¬G¬P
 ```
 
 ### Temporal Properties
 
 ```lean
-/-- Always operator: Past ∧ present ∧ Future -/
-example (P : Formula) : always P = and (and (Formula.past P) P) (Formula.future P) := rfl
+/-- Always operator: Hφ ∧ φ ∧ Gφ -/
+example (P : Formula) : always P = and (and (Formula.all_past P) P) (Formula.all_future P) := rfl
 
-/-- Sometimes operator: past ∨ present ∨ future -/
-example (P : Formula) : sometimes P = or (or (sometime_past P) P) (sometime_future P) := rfl
+/-- Sometimes operator: Pφ ∨ φ ∨ Fφ -/
+example (P : Formula) : sometimes P = or (or (some_past P) P) (some_future P) := rfl
 
 /-- From always, derive present -/
 example (P : Formula) : [always P] ⊢ P := by
-  -- always P = Past P ∧ P ∧ Future P
-  -- Extract P from the conjunction
+  -- always P = Hφ ∧ φ ∧ Gφ
+  -- Extract φ from the conjunction
   sorry
 
-/-- From always, derive Past -/
-example (P : Formula) : [always P] ⊢ Formula.past P := by
+/-- From always, derive all_past -/
+example (P : Formula) : [always P] ⊢ Formula.all_past P := by
   sorry
 
-/-- From always, derive Future -/
-example (P : Formula) : [always P] ⊢ Formula.future P := by
+/-- From always, derive all_future -/
+example (P : Formula) : [always P] ⊢ Formula.all_future P := by
   sorry
 ```
 
 ## 3. Bimodal Interaction Examples
 
-### MF Axiom: □φ → □Future φ
+### MF Axiom: □φ → □Gφ
 
 ```lean
 /-- What is necessary will always be necessary -/
-example (P : Formula) : ⊢ (P.box.imp (Formula.box (Formula.future P))) := by
+example (P : Formula) : ⊢ (P.box.imp (Formula.box (Formula.all_future P))) := by
   apply Derivable.axiom
   apply Axiom.modal_future
 
-/-- Derive □Future p from □p -/
-example (P : Formula) : [P.box] ⊢ Formula.box (Formula.future P) := by
+/-- Derive □Gp from □p -/
+example (P : Formula) : [P.box] ⊢ Formula.box (Formula.all_future P) := by
   apply Derivable.modus_ponens
   · apply Derivable.axiom; apply Axiom.modal_future
   · apply Derivable.assumption; simp
 ```
 
-### TF Axiom: □φ → Future □φ
+### TF Axiom: □φ → G□φ
 
 ```lean
 /-- What is necessary will remain necessary -/
-example (P : Formula) : ⊢ (P.box.imp (Formula.future P.box)) := by
+example (P : Formula) : ⊢ (P.box.imp (Formula.all_future P.box)) := by
   apply Derivable.axiom
   apply Axiom.temp_future
 
-/-- Derive Future □p from □p -/
-example (P : Formula) : [P.box] ⊢ Formula.future P.box := by
+/-- Derive G□p from □p -/
+example (P : Formula) : [P.box] ⊢ Formula.all_future P.box := by
   apply Derivable.modus_ponens
   · apply Derivable.axiom; apply Axiom.temp_future
   · apply Derivable.assumption; simp
@@ -200,14 +200,14 @@ example (P : Formula) : [P.box] ⊢ Formula.future P.box := by
 ### Combined Modal-Temporal Reasoning
 
 ```lean
-/-- From `□p`, derive both `□Future p` and `Future □p` -/
-example (P : Formula) : [P.box] ⊢ and (Formula.box (Formula.future P)) (Formula.future P.box) := by
+/-- From `□p`, derive both `□Gp` and `G□p` -/
+example (P : Formula) : [P.box] ⊢ and (Formula.box (Formula.all_future P)) (Formula.all_future P.box) := by
   -- Use MF for first conjunct, TF for second
   sorry
 
 /-- Modal necessity implies temporal persistence -/
 example (P : Formula) : [P.box] ⊢ always P := by
-  -- This is essentially P1: `□φ → always φ`
+  -- This is essentially P1: `□φ → △φ`
   -- Requires proving from MF, TF, MT, and temporal duality
   sorry
 ```
@@ -314,13 +314,13 @@ example (P : Formula) : ¬consistent [P.box, diamond (neg P)] := by
 ### Temporal Duality Example
 
 ```lean
-/-- Temporal duality: swapping Past and Future preserves provability -/
-example (P : Formula) (h : ⊢ P) : ⊢ (swap_past_future P) := by
+/-- Temporal duality: swapping all_past and all_future preserves provability -/
+example (P : Formula) (h : ⊢ P) : ⊢ (swap_temporal P) := by
   apply Derivable.temporal_duality
   exact h
 
-/-- Example: if ⊢ Future p → Future Future p, then ⊢ Past p → Past Past p -/
-example (P : Formula) : ⊢ (Formula.past P).imp (Formula.past (Formula.past P)) := by
+/-- Example: if ⊢ Gp → GGp, then ⊢ Hp → HHp -/
+example (P : Formula) : ⊢ (Formula.all_past P).imp (Formula.all_past (Formula.all_past P)) := by
   -- By TD applied to T4
   apply Derivable.temporal_duality
   apply Derivable.axiom

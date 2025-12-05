@@ -120,7 +120,7 @@ All proof system modules fully implemented with comprehensive tests.
   - `modus_ponens`: From `φ → ψ` and `φ`, derive `ψ`
   - `modal_k`: From `Γ.map box ⊢ φ`, derive `Γ ⊢ □φ`
   - `temporal_k`: From `Γ.map future ⊢ φ`, derive `Γ ⊢ Fφ`
-  - `temporal_duality`: From `[] ⊢ φ`, derive `[] ⊢ swap_past_future φ`
+  - `temporal_duality`: From `[] ⊢ φ`, derive `[] ⊢ swap_temporal φ`
   - `weakening`: From `Γ ⊢ φ` and `Γ ⊆ Δ`, derive `Δ ⊢ φ`
 
 ### Derivation.lean

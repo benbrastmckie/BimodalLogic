@@ -68,10 +68,10 @@ example :
   Context.map Formula.box [Formula.atom "p", Formula.atom "q"] =
   [Formula.box (Formula.atom "p"), Formula.box (Formula.atom "q")] := rfl
 
--- Test: Map with future operator
+-- Test: Map with all_future operator
 example :
-  Context.map Formula.future [Formula.atom "p", Formula.atom "q"] =
-  [Formula.future (Formula.atom "p"), Formula.future (Formula.atom "q")] := rfl
+  Context.map Formula.all_future [Formula.atom "p", Formula.atom "q"] =
+  [Formula.all_future (Formula.atom "p"), Formula.all_future (Formula.atom "q")] := rfl
 
 -- Test: Map composition
 example (f g : Formula → Formula) (Γ : Context) :

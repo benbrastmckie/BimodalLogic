@@ -12,8 +12,8 @@ Tests for the Formula inductive type and derived operators.
 - Structural complexity measure
 - Derived Boolean operators (neg, and, or)
 - Derived modal operators (diamond)
-- Derived temporal operators (always, sometimes, sometime_past, sometime_future)
-- Temporal duality (swap_past_future)
+- Derived temporal operators (always, sometimes, some_past, some_future)
+- Temporal duality (swap_temporal)
 -/
 
 namespace LogosTest.Core.Syntax
@@ -32,11 +32,11 @@ example (p q : Formula) : (Formula.imp p q) = (Formula.imp p q) := rfl
 -- Test: Formula box construction
 example (p : Formula) : (Formula.box p) = (Formula.box p) := rfl
 
--- Test: Formula past construction
-example (p : Formula) : (Formula.past p) = (Formula.past p) := rfl
+-- Test: Formula all_past construction
+example (p : Formula) : (Formula.all_past p) = (Formula.all_past p) := rfl
 
--- Test: Formula future construction
-example (p : Formula) : (Formula.future p) = (Formula.future p) := rfl
+-- Test: Formula all_future construction
+example (p : Formula) : (Formula.all_future p) = (Formula.all_future p) := rfl
 
 -- Test: Decidable equality - same atoms
 example : (Formula.atom "p") = (Formula.atom "p") := rfl
@@ -82,19 +82,19 @@ example (p q : Formula) : (p.or q) = (p.neg.imp q) := rfl
 -- Test: Derived diamond (possibility) operator
 example (p : Formula) : p.diamond = p.neg.box.neg := rfl
 
--- Test: Derived 'always' temporal operator (future for all times)
-example (p : Formula) : p.always = p.future := rfl
+-- Test: Derived 'always' temporal operator (all_future for all times)
+example (p : Formula) : p.always = p.all_future := rfl
 
 -- Test: Derived 'sometimes' temporal operator (∃ future time)
 -- Correctly defined as ¬G¬φ = (φ.neg).always.neg
 example (p : Formula) : p.sometimes = p.neg.always.neg := rfl
 
--- Test: Derived 'sometime_past' operator
--- Correctly defined as ¬H¬φ = (φ.neg).past.neg
-example (p : Formula) : p.sometime_past = p.neg.past.neg := rfl
+-- Test: Derived 'some_past' operator
+-- Correctly defined as ¬H¬φ = (φ.neg).all_past.neg
+example (p : Formula) : p.some_past = p.neg.all_past.neg := rfl
 
--- Test: Derived 'sometime_future' operator
-example (p : Formula) : p.sometime_future = p.sometimes := rfl
+-- Test: Derived 'some_future' operator
+example (p : Formula) : p.some_future = p.sometimes := rfl
 
 -- Test: Triangle notation parsing - always (△)
 example (p : Formula) : △p = p.always := rfl
@@ -102,8 +102,8 @@ example (p : Formula) : △p = p.always := rfl
 -- Test: Triangle notation parsing - sometimes (▽)
 example (p : Formula) : ▽p = p.sometimes := rfl
 
--- Test: Triangle notation equivalence - always is future
-example (p : Formula) : △p = p.future := rfl
+-- Test: Triangle notation equivalence - always is all_future
+example (p : Formula) : △p = p.all_future := rfl
 
 -- Test: Triangle notation equivalence - sometimes is dual
 example (p : Formula) : ▽p = p.neg.always.neg := rfl
@@ -121,41 +121,41 @@ example (p : Formula) : △(p.box) = p.box.always := rfl
 example (p : Formula) : ▽(p.diamond) = p.diamond.sometimes := rfl
 
 -- Test: Mixed temporal-modal notation
-example (p : Formula) : △(p.box) = p.box.future := rfl
+example (p : Formula) : △(p.box) = p.box.all_future := rfl
 
 -- Test: Backward compatibility - dot notation still works
-example (p : Formula) : p.always = p.future := rfl
+example (p : Formula) : p.always = p.all_future := rfl
 
 -- Test: Backward compatibility - sometimes dot notation
 example (p : Formula) : p.sometimes = p.neg.always.neg := rfl
 
--- Test: swap_past_future on atom (unchanged)
-example : (Formula.atom "p").swap_past_future = Formula.atom "p" := rfl
+-- Test: swap_temporal on atom (unchanged)
+example : (Formula.atom "p").swap_temporal = Formula.atom "p" := rfl
 
--- Test: swap_past_future on bot (unchanged)
-example : Formula.bot.swap_past_future = Formula.bot := rfl
+-- Test: swap_temporal on bot (unchanged)
+example : Formula.bot.swap_temporal = Formula.bot := rfl
 
--- Test: swap_past_future on implication (recursive)
+-- Test: swap_temporal on implication (recursive)
 example (p q : Formula) :
-  (p.imp q).swap_past_future = (p.swap_past_future.imp q.swap_past_future) := rfl
+  (p.imp q).swap_temporal = (p.swap_temporal.imp q.swap_temporal) := rfl
 
--- Test: swap_past_future on box (unchanged)
-example (p : Formula) : (p.box).swap_past_future = p.swap_past_future.box := rfl
+-- Test: swap_temporal on box (unchanged)
+example (p : Formula) : (p.box).swap_temporal = p.swap_temporal.box := rfl
 
--- Test: swap_past_future on past (becomes future)
-example (p : Formula) : (p.past).swap_past_future = p.swap_past_future.future := rfl
+-- Test: swap_temporal on all_past (becomes all_future)
+example (p : Formula) : (p.all_past).swap_temporal = p.swap_temporal.all_future := rfl
 
--- Test: swap_past_future on future (becomes past)
-example (p : Formula) : (p.future).swap_past_future = p.swap_past_future.past := rfl
+-- Test: swap_temporal on all_future (becomes all_past)
+example (p : Formula) : (p.all_future).swap_temporal = p.swap_temporal.all_past := rfl
 
--- Test: swap_past_future is involution (applying twice gives identity)
-example (p : Formula) : p.swap_past_future.swap_past_future = p := by
+-- Test: swap_temporal is involution (applying twice gives identity)
+example (p : Formula) : p.swap_temporal.swap_temporal = p := by
   induction p with
   | atom _ => rfl
   | bot => rfl
-  | imp p q ihp ihq => simp [Formula.swap_past_future, ihp, ihq]
-  | box p ih => simp [Formula.swap_past_future, ih]
-  | past p ih => simp [Formula.swap_past_future, ih]
-  | future p ih => simp [Formula.swap_past_future, ih]
+  | imp p q ihp ihq => simp [Formula.swap_temporal, ihp, ihq]
+  | box p ih => simp [Formula.swap_temporal, ih]
+  | all_past p ih => simp [Formula.swap_temporal, ih]
+  | all_future p ih => simp [Formula.swap_temporal, ih]
 
 end LogosTest.Core.Syntax

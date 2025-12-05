@@ -115,54 +115,58 @@ Modal possibility operator from S5 modal logic - expresses metaphysical possibil
 
 ## Temporal Operators
 
-### Past (universal past)
+### H (all_past / universal past)
 Universal past operator - expresses that a formula held at all past times.
 
 **Formal Definition**: Primitive temporal operator quantifying over past times
-**LEAN Code**: `Formula.past φ` (universal past)
-**Semantics**: `M,h,t ⊨ Past φ` iff for all times t' < t in domain(h), `M,h,t' ⊨ φ`
-**See also**: [past (existential past)](#past-existential-past), [Future](#future-universal-future)
-**Examples**: `Past p` means "p has always been true (in the past)"
+**LEAN Code**: `Formula.all_past φ`
+**Alternative Notation**: `H` (from "Historically" or "Has always been")
+**Semantics**: `M,h,t ⊨ H φ` iff for all times t' < t in domain(h), `M,h,t' ⊨ φ`
+**See also**: [P (some_past)](#p-some_past--existential-past), [G (all_future)](#g-all_future--universal-future)
+**Examples**: `H p` means "p has always been true (in the past)"
 
-### past (existential past / sometime past)
+### P (some_past / existential past)
 Existential past operator - expresses that a formula held at some past time.
 
-**Formal Definition**: `past φ := ¬Past¬φ` (dual of universal past)
-**LEAN Code**: Defined via `Formula.past` (universal) and negation
-**Semantics**: `M,h,t ⊨ past φ` iff there exists time t' < t in domain(h) such that `M,h,t' ⊨ φ`
-**See also**: [Past (universal past)](#past-universal-past), [future](#future-existential-future)
-**Duality**: `past φ ↔ ¬Past¬φ`
-**Examples**: `past □p` means "at some past time, p was necessary"
+**Formal Definition**: `P φ := ¬H¬φ` (dual of universal past)
+**LEAN Code**: Defined via `Formula.all_past` and negation as `some_past`
+**Alternative Notation**: `P` (from "Previously" or "Past occurrence")
+**Semantics**: `M,h,t ⊨ P φ` iff there exists time t' < t in domain(h) such that `M,h,t' ⊨ φ`
+**See also**: [H (all_past)](#h-all_past--universal-past), [F (some_future)](#f-some_future--existential-future)
+**Duality**: `P φ ↔ ¬H¬φ`
+**Examples**: `P □p` means "at some past time, p was necessary"
 
-### Future (universal future)
+### G (all_future / universal future)
 Universal future operator - expresses that a formula will hold at all future times.
 
 **Formal Definition**: Primitive temporal operator quantifying over future times
-**LEAN Code**: `Formula.future φ` (universal future)
-**Semantics**: `M,h,t ⊨ Future φ` iff for all times t' > t in domain(h), `M,h,t' ⊨ φ`
-**Axioms**: T4 (`Future φ → Future Future φ`), TA (`φ → Future past φ`)
-**See also**: [future (existential future)](#future-existential-future), [Past](#past-universal-past)
-**Examples**: `Future p` means "p will always be true (in the future)"
+**LEAN Code**: `Formula.all_future φ`
+**Alternative Notation**: `G` (from "Globally" or "Going to always be")
+**Semantics**: `M,h,t ⊨ G φ` iff for all times t' > t in domain(h), `M,h,t' ⊨ φ`
+**Axioms**: T4 (`G φ → G G φ`), TA (`φ → G P φ`)
+**See also**: [F (some_future)](#f-some_future--existential-future), [H (all_past)](#h-all_past--universal-past)
+**Examples**: `G p` means "p will always be true (in the future)"
 
-### future (existential future / sometime future)
+### F (some_future / existential future)
 Existential future operator - expresses that a formula will hold at some future time.
 
-**Formal Definition**: `future φ := ¬Future¬φ` (dual of universal future)
-**LEAN Code**: Defined via `Formula.future` (universal) and negation
-**Semantics**: `M,h,t ⊨ future φ` iff there exists time t' > t in domain(h) such that `M,h,t' ⊨ φ`
-**See also**: [Future (universal future)](#future-universal-future), [past](#past-existential-past)
-**Duality**: `future φ ↔ ¬Future¬φ`
-**Examples**: `future ◇p` means "at some future time, p will be possible"
+**Formal Definition**: `F φ := ¬G¬φ` (dual of universal future)
+**LEAN Code**: Defined via `Formula.all_future` and negation as `some_future`
+**Alternative Notation**: `F` (from "Future occurrence" or "Finally")
+**Semantics**: `M,h,t ⊨ F φ` iff there exists time t' > t in domain(h) such that `M,h,t' ⊨ φ`
+**See also**: [G (all_future)](#g-all_future--universal-future), [P (some_past)](#p-some_past--existential-past)
+**Duality**: `F φ ↔ ¬G¬φ`
+**Examples**: `F ◇p` means "at some future time, p will be possible"
 
 ### always (henceforth operator)
 Temporal operator - expresses that a formula holds at all future times (including now).
 
-**Formal Definition**: `always φ := Future φ` (henceforth operator)
+**Formal Definition**: `always φ := all_future φ` (henceforth operator)
 **Alternative Notation**: `△φ` (U+25B3 WHITE UP-POINTING TRIANGLE)
-**LEAN Code**: Defined as alias to `Formula.future`, notation `prefix:80 "△" => Formula.always`
+**LEAN Code**: Defined as alias to `Formula.all_future`, notation `prefix:80 "△" => Formula.always`
 **Semantics**: `M,h,t ⊨ always φ` iff for all times t' ≥ t in domain(h), `M,h,t' ⊨ φ`
 **Note**: This is "henceforth" (from now onwards), not "eternal truth" (all past, present, and future times)
-**See also**: [sometimes](#sometimes-eventual-occurrence), [Future](#future-universal-future)
+**See also**: [sometimes](#sometimes-eventual-occurrence), [G (all_future)](#g-all_future--universal-future)
 **Perpetuity**: Used in P1-P6 to connect necessity and temporal truth
 **Examples**: `always □p` or `△□p` means "from now on, p is necessary"
 
@@ -174,7 +178,7 @@ Temporal operator - expresses that a formula holds at some future time (includin
 **LEAN Code**: Defined as `φ.neg.always.neg`, notation `prefix:80 "▽" => Formula.sometimes`
 **Semantics**: `M,h,t ⊨ sometimes φ` iff there exists time t' ≥ t in domain(h) such that `M,h,t' ⊨ φ`
 **Note**: This is "eventually" (at some point from now onwards), dual to "henceforth"
-**See also**: [always](#always-henceforth-operator), [future](#future-existential-future)
+**See also**: [always](#always-henceforth-operator), [F (some_future)](#f-some_future--existential-future)
 **Perpetuity**: Used in P2, P4, P5, P6 perpetuity principles
 **Duality**: `sometimes φ ↔ ¬always¬φ` or equivalently `▽φ ↔ ¬△¬φ`
 **Examples**: `sometimes □p` or `▽□p` means "at some future time, p will be necessary"

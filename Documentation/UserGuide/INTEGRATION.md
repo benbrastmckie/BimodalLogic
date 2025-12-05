@@ -47,8 +47,8 @@ def export_to_smt_lib (φ : Formula) : String :=
   | Formula.bot => "(false)"
   | Formula.imp ψ χ => s!"(=> {export_to_smt_lib ψ} {export_to_smt_lib χ})"
   | Formula.box ψ => s!"(box {export_to_smt_lib ψ})"
-  | Formula.past ψ => s!"(past {export_to_smt_lib ψ})"
-  | Formula.future ψ => s!"(future {export_to_smt_lib ψ})"
+  | Formula.all_past ψ => s!"(all-past {export_to_smt_lib ψ})"
+  | Formula.all_future ψ => s!"(all-future {export_to_smt_lib ψ})"
 
 /-- Export context and formula for validity check -/
 def export_validity_query (Γ : Context) (φ : Formula) : String :=

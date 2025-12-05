@@ -53,8 +53,51 @@ The `/plan` command provides a research-and-plan workflow that creates comprehen
 
 - **State-Based Orchestration**: (state-based-orchestration-overview.md) Two-state workflow
 - **Behavioral Injection**: (behavioral-injection.md) Agent behavior separated from orchestration
+- **Mandatory Subagent Delegation**: (hierarchical-agents-overview.md) All research and planning MUST be delegated via Task tool
+- **Hard Barrier Verification**: Pre-calculated paths validated after agent execution
+- **Context Barrier Separation**: CHECKPOINT bash blocks separate setup from Task invocations
+- **Imperative Directive Pattern**: Task invocations use `**EXECUTE NOW**: USE the Task tool` directives
 - **Fail-Fast Verification**: (Standard 0) File and size verification
 - **Topic-Based Structure**: (directory-protocols.md) Numbered topic directories with plans/ and reports/
+
+### Mandatory Delegation Architecture
+
+The `/create-plan` command enforces strict subagent delegation for BOTH research AND planning phases. The primary orchestrator performs NO direct research or planning work:
+
+**Research Delegation** (Block 1e-exec):
+- Primary orchestrator pre-calculates REPORT_PATH in Block 1e
+- Invokes research-specialist via Task tool with imperative directive
+- Block 1f validates report exists at REPORT_PATH (hard barrier)
+- Workflow FAILS if research-specialist doesn't create output
+
+**Planning Delegation** (Block 2-exec):
+- Primary orchestrator pre-calculates PLAN_PATH in Block 2
+- Invokes plan-architect via Task tool with imperative directive
+- Block 3a validates plan exists at PLAN_PATH (hard barrier)
+- Workflow FAILS if plan-architect doesn't create output
+
+**Critical Pattern: Context Barriers**
+
+Bash blocks MUST complete and emit CHECKPOINT before Task invocations:
+```markdown
+## Block 1e: Research Setup and Context Barrier
+\`\`\`bash
+# ... setup code ...
+echo "CHECKPOINT: Research setup complete, ready for Task invocation"
+\`\`\`
+
+## Block 1e-exec: Research Specialist Invocation
+**CRITICAL BARRIER**: The bash block above MUST complete before proceeding.
+**EXECUTE NOW**: USE the Task tool to invoke the research-specialist agent.
+```
+
+This pattern prevents the primary agent from performing work directly.
+
+**Why This Matters**:
+- **Separation of Concerns**: Research and planning require specialized agent behavior
+- **Hard Barrier Safety**: Pre-calculated paths prevent path mismatch bugs
+- **Delegation Enforcement**: Imperative directives ensure Task tool is actually invoked
+- **Fail-Fast**: Validation blocks catch agent failures immediately
 
 ### Workflow States
 
@@ -428,7 +471,124 @@ Research-specialist agent failed or feature description too vague.
 cat .claude/agents/research-specialist.md
 ```
 
-#### Issue 3: Planning Phase Failed
+#### Issue 3: Research Delegation Failed (Hard Barrier)
+
+**Symptoms**:
+- Error: "HARD BARRIER FAILED - Research specialist validation failed"
+- Error: "Research report missing required ## Findings section"
+- Workflow stops after Block 1f
+
+**Cause**:
+The research-specialist agent did not create output at the expected REPORT_PATH, or the report is malformed.
+
+**Why This Happens**:
+/create-plan uses hard barrier verification - the orchestrator pre-calculates the output path BEFORE invoking the agent, then validates the file exists AFTER. If the agent doesn't write to the exact path, the workflow fails.
+
+**Solution**:
+```bash
+# 1. Check research-specialist agent log for errors
+/errors --command /create-plan --type agent_error --limit 5
+
+# 2. Verify research-specialist.md behavioral file compliance
+cat .claude/agents/research-specialist.md
+
+# 3. Check if agent created output in wrong location
+find .claude/specs -name "*.md" -type f -mmin -5
+
+# 4. Re-run with same feature description
+/create-plan"<your feature description>"
+```
+
+**Recovery Hints**:
+- The error message shows expected REPORT_PATH
+- Agent MUST write to EXACT path (no path derivation allowed)
+- Report MUST contain ## Findings section
+- Report MUST be ≥100 bytes
+
+#### Issue 4: Planning Delegation Failed (Hard Barrier)
+
+**Symptoms**:
+- Error: "HARD BARRIER FAILED - Plan-architect validation failed"
+- Error: "Plan file missing required ## Metadata section"
+- Workflow stops after Block 3a
+
+**Cause**:
+The plan-architect agent did not create output at the expected PLAN_PATH, or the plan is malformed.
+
+**Why This Happens**:
+Similar to research delegation, planning uses hard barrier verification. The orchestrator pre-calculates PLAN_PATH in Block 2, invokes plan-architect via Task tool, then validates the file exists in Block 3a.
+
+**Solution**:
+```bash
+# 1. Check plan-architect agent log for errors
+/errors --command /create-plan --type agent_error --limit 5
+
+# 2. Verify plan-architect.md behavioral file compliance
+cat .claude/agents/plan-architect.md
+
+# 3. Check if agent created output in wrong location
+find .claude/specs -name "*-plan.md" -type f -mmin -5
+
+# 4. Re-run workflow
+/create-plan"<your feature description>"
+```
+
+**Recovery Hints**:
+- Error message shows expected PLAN_PATH
+- Agent MUST write to EXACT path (no path derivation allowed)
+- Plan MUST contain ## Metadata section
+- Plan MUST contain ### Phase N headings
+- Plan MUST be ≥500 bytes
+
+#### Issue 5: Primary Orchestrator Performing Direct Work
+
+**Symptoms**:
+- Orchestrator output shows Read(), Grep(), Glob() tool usage for research
+- Orchestrator output shows Write() tool usage for plan creation
+- No Task tool invocation in orchestrator output
+
+**Cause**:
+The imperative directive pattern is broken, causing the orchestrator to interpret Task invocations as descriptive text rather than actual tool calls.
+
+**Why This Happens**:
+Pseudo-code syntax like `Task { ... }` is interpreted as documentation, not a tool invocation. The orchestrator then performs the work directly instead of delegating.
+
+**Solution**:
+```bash
+# 1. Verify command file uses imperative directive pattern
+grep -A 5 "EXECUTE NOW.*Task tool" .claude/commands/create-plan.md
+
+# 2. Check for prohibited pseudo-code syntax
+grep "^Task {" .claude/commands/create-plan.md
+
+# 3. If pseudo-code found, command file needs repair
+# Expected pattern: **EXECUTE NOW**: USE the Task tool to invoke...
+# Prohibited pattern: Task { ... }
+```
+
+**Expected Pattern** (correct):
+```markdown
+**EXECUTE NOW**: USE the Task tool to invoke the research-specialist agent.
+
+You MUST use the Task tool with these EXACT parameters:
+- **subagent_type**: "general-purpose"
+- **description**: "Research ${FEATURE_DESCRIPTION}"
+- **prompt**: [prompt text]
+
+DO NOT perform research directly.
+The Task tool invocation is MANDATORY.
+```
+
+**Prohibited Pattern** (causes bypass):
+```markdown
+Task {
+  subagent_type: "general-purpose"
+  description: "Research ${FEATURE_DESCRIPTION}"
+  prompt: "..."
+}
+```
+
+#### Issue 6: Planning Phase Failed
 
 **Symptoms**:
 - Error: "Planning phase failed to create plan file"

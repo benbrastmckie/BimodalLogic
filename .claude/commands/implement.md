@@ -1157,12 +1157,12 @@ sleep 0.1  # 100ms delay for filesystem consistency
 # Count total phases and phases with [COMPLETE] marker
 # Apply defensive sanitization pattern to prevent bash conditional syntax errors
 # from grep output containing embedded newlines (Pattern from complexity-utils.sh)
-TOTAL_PHASES=$(grep -c "^### Phase" "$PLAN_FILE" 2>/dev/null || echo "0")
+TOTAL_PHASES=$(grep -c "^### Phase [0-9]" "$PLAN_FILE" 2>/dev/null || echo "0")
 TOTAL_PHASES=$(echo "$TOTAL_PHASES" | tr -d '\n' | tr -d ' ')
 TOTAL_PHASES=${TOTAL_PHASES:-0}
 [[ "$TOTAL_PHASES" =~ ^[0-9]+$ ]] || TOTAL_PHASES=0
 
-PHASES_WITH_MARKER=$(grep -c "^### Phase.*\[COMPLETE\]" "$PLAN_FILE" 2>/dev/null || echo "0")
+PHASES_WITH_MARKER=$(grep -c "^### Phase [0-9].*\[COMPLETE\]" "$PLAN_FILE" 2>/dev/null || echo "0")
 PHASES_WITH_MARKER=$(echo "$PHASES_WITH_MARKER" | tr -d '\n' | tr -d ' ')
 PHASES_WITH_MARKER=${PHASES_WITH_MARKER:-0}
 [[ "$PHASES_WITH_MARKER" =~ ^[0-9]+$ ]] || PHASES_WITH_MARKER=0

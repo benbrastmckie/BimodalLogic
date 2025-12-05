@@ -86,56 +86,10 @@ This file serves as the central task tracking system for Logos development. It o
 
 ## Medium Priority Tasks
 
-### 14. Temporal Operator Convention Refactoring ✓ PARTIAL COMPLETE
-**Effort**: 6-8 hours (revised from 3-5)
-**Status**: PARTIAL COMPLETE (2025-12-04) - Phases 1-2 done, Phases 3-7 pending
-**Priority**: Medium (code clarity and documentation accuracy)
-
-**Description**: Comprehensive refactoring to clean up temporal operator naming conventions:
-1. Remove unused `BackwardPersistence` and `ModalTemporalPersistence` frame constraints ✓
-2. Rename constructors: `past` → `all_past`, `future` → `all_future` ✓
-3. Rename derived operators: `sometime_past` → `some_past`, `sometime_future` → `some_future`
-4. Add DSL notation: `H`/`G`/`P`/`F` for formal expressions (following `box`/`□` pattern)
-5. Update all code, tests, archive examples, and documentation
-
-**Files**:
-- `Logos/Core/Syntax/Formula.lean` (primary - constructors and operators) ✓
-- `Logos/Core/Semantics/Truth.lean` (pattern matches) ✓
-- `Logos/Core/Metalogic/Soundness.lean` (remove definitions, update docstrings) ✓
-- `Logos/Core/ProofSystem/Axioms.lean` ✓
-- `Logos/Core/ProofSystem/Derivation.lean` ✓
-- `Logos/Core/Theorems/Perpetuity.lean` ✓ (renamed, but has logic errors - see Task 16)
-- `Logos/Core/Automation/Tactics.lean` ✓
-- LogosTest/ (test files)
-- Archive/ (example files)
-- Documentation/ (markdown documentation)
-
-**Completed** (2025-12-04):
-- ✓ Phase 1: Remove BackwardPersistence/ModalTemporalPersistence definitions
-- ✓ Phase 2: Rename constructors `past`→`all_past`, `future`→`all_future`
-- ✓ Phase 2: Rename `swap_past_future`→`swap_temporal` (with backward compat alias)
-- ✓ Phase 2: Update all pattern matches across 7 Lean files
-
-**Remaining**:
-- Phase 3: Rename `sometime_past`→`some_past`, `sometime_future`→`some_future`
-- Phase 3: Add H/G/P/F DSL notation
-- Phase 4: Update test files
-- Phase 5: Update archive examples
-- Phase 6: Update documentation
-- Phase 7: Final verification
-
-**Research/Plan Reference**:
-- [Implementation Plan](.claude/specs/038_temporal_conventions_refactor/plans/001-temporal-conventions-refactor-plan.md)
-- [Research Report](.claude/specs/038_temporal_conventions_refactor/reports/001-temporal-conventions-research.md)
-
-**Notes**: Phases 1-2 committed. Pre-existing build errors in Soundness.lean and Perpetuity.lean discovered during implementation - see Tasks 16 and 17.
-
----
-
-### 16. Fix Perpetuity Theorem Logic Errors (NEW)
-**Effort**: 4-6 hours
-**Status**: Not Started
-**Priority**: High (correctness bug)
+### 16. Fix Perpetuity Theorem Logic Errors
+*Effort**: 4-6 hours
+*Status**: Not Started
+*Priority**: High (correctness bug)
 
 **Description**: The Perpetuity.lean theorems have logic errors - they incorrectly assumed `△φ = Fφ` when the correct definition is `△φ = Hφ ∧ φ ∧ Gφ` (equivalently `all_past φ ∧ φ ∧ all_future φ`). This was exposed during the temporal constructor rename in Task 14.
 
@@ -167,7 +121,7 @@ This file serves as the central task tracking system for Logos development. It o
 
 ---
 
-### 17. Fix Pre-existing Soundness.lean Type Mismatch Errors (NEW)
+### 17. Fix Pre-existing Soundness.lean Type Mismatch Errors
 **Effort**: 2-4 hours
 **Status**: Not Started
 **Priority**: Medium (pre-existing bug, not blocking)
@@ -202,84 +156,10 @@ but is expected to have type TaskFrame F : Type 1
 
 ## Low Priority Tasks
 
-### 15. Generalize Temporal Order to LinearOrderedAddCommGroup ✓ COMPLETE
-**Effort**: 30-45 hours (Actual: ~25-30 hours)
-**Status**: COMPLETE (2025-12-04)
-**Priority**: Low (architectural improvement, paper alignment)
-
-**Description**: Generalize Logos's temporal domain from hardcoded `Int` to polymorphic `LinearOrderedAddCommGroup` typeclass, matching the JPL paper specification. This enables support for rational/real time models, bounded temporal domains, and custom temporal structures while maintaining alignment with the paper's formal semantics.
-
-**Paper Reference**: JPL Paper §app:TaskSemantics (lines 1835-1867)
-- def:frame (line 1835): "A totally ordered abelian group T = ⟨T, +, ≤⟩"
-- def:world-history (line 1849): Functions τ: X → W where X ⊆ T is convex
-- Current implementation uses `Int` (specific abelian group, line 39 TaskFrame.lean)
-
-**Files**:
-- `Logos/Semantics/TaskFrame.lean` (parameterize by T)
-- `Logos/Semantics/WorldHistory.lean` (add convexity constraint)
-- `Logos/Semantics/Truth.lean` (polymorphic temporal type)
-- `Logos/Semantics/Validity.lean` (update quantification)
-- `Logos/Semantics/TaskModel.lean` (minor updates)
-
-**Benefits**:
-1. **Paper Alignment**: Direct correspondence with JPL paper specification
-2. **Generality**: Support for rational/real time models (physics, economics)
-3. **Bounded Systems**: Enable finite temporal domains (games, bounded processes)
-4. **Mathlib Integration**: Leverage `LinearOrderedAddCommGroup` lemmas
-
-**Action Items**:
-1. **Phase 1** (8-12 hours): Generalize TaskFrame
-   - Add type parameter `(T : Type*) [LinearOrderedAddCommGroup T]`
-   - Replace `Int` with `T` throughout
-   - Update example frames
-   - Fix downstream compilation errors
-2. **Phase 2** (10-15 hours): Generalize WorldHistory
-   - Add type parameter and convexity constraint
-   - Update `time_shift` infrastructure
-   - Prove convexity preservation lemmas
-3. **Phase 3** (6-10 hours): Generalize Truth evaluation
-   - Update temporal quantification to `∀ (s : T)`
-   - Review time-shift preservation with abstract groups
-   - Update temporal duality infrastructure
-4. **Phase 4** (3-5 hours): Update Validity and Model
-   - Generalize validity to quantify over all temporal types
-   - Update semantic consequence definitions
-5. **Phase 5** (3-5 hours): Documentation and Testing
-   - Create examples with `Rat` and `Real` temporal types
-   - Add convexity tests
-   - Update ARCHITECTURE.md with typeclass explanation
-   - Document migration guide
-
-**Breaking Changes**:
-- All `TaskFrame` → `TaskFrame T` with explicit type parameter
-- Convexity proofs required for all world histories
-- Some arithmetic proofs may need group lemmas instead of omega
-
-**Migration Path**:
-```lean
--- Provide type aliases for backward compatibility
-abbrev TaskFrameInt := TaskFrame Int
-abbrev WorldHistoryInt := WorldHistory (F : TaskFrame Int)
-```
-
-**Blocking**: None (architectural improvement, doesn't affect functionality)
-
-**Dependencies**:
-- **INDEPENDENT**: Can run anytime after Layer 0 stabilization
-- **BENEFITS FROM**: Completed soundness/completeness proofs (more tests to verify)
-
-**Research/Plan Reference**:
-- [Research Report](.claude/specs/035_semantics_temporal_order_generalization/reports/001-semantics-temporal-order-generalization-research.md)
-- [Implementation Plan](.claude/specs/035_semantics_temporal_order_generalization/plans/001-semantics-temporal-order-generalization-plan.md)
-
-**Notes**: This is an architectural improvement for paper alignment and increased expressivity. Not required for Layer 0 MVP completion, but provides foundation for advanced temporal models (continuous time physics, bounded games, rational-time economics). Generalization matches paper's formal specification exactly via Mathlib's `LinearOrderedAddCommGroup` typeclass.
-
----
-
 ### 9. Begin Completeness Proofs
-**Effort**: 70-90 hours
-**Status**: Not Started
-**Priority**: Low (long-term metalogic goal)
+*Effort**: 70-90 hours
+*Status**: Not Started
+*Priority**: Low (long-term metalogic goal)
 
 **Description**: Implement canonical model construction and prove completeness theorems (weak and strong). This is a major undertaking requiring significant effort.
 
@@ -397,6 +277,8 @@ abbrev WorldHistoryInt := WorldHistory (F : TaskFrame Int)
 
 ---
 
+<!-- NOTE: move 13 to medium priority -->
+
 ### 13. Create Proof Strategy Documentation
 **Effort**: 5-10 hours
 **Status**: Not Started
@@ -436,17 +318,11 @@ Can be deferred until after core implementation is stable.
 
 ---
 
+<!-- NOTE: turn the below into a medium priority task to create an independent document SORRY_REGISTRY.md -->
+
 ## Sorry Placeholder Registry
 
 This section lists all 41 `sorry` placeholders in the codebase that require resolution. Each entry includes the file, line number, context, and recommended resolution approach.
-
-### Logos/Semantics/WorldHistory.lean ✓ COMPLETE (0 sorry)
-
-- **WorldHistory.lean:119** - `universal` helper function ✓ RESOLVED (2025-12-03)
-  - **Context**: Universal history that maps all times to the same world state
-  - **Resolution**: Refactored to require explicit reflexivity proof parameter
-  - **Added**: `universal_trivialFrame`, `universal_natFrame` for reflexive frames
-  - **See**: Task 8 (COMPLETE)
 
 ### Logos/Theorems/Perpetuity.lean (14 sorry)
 
@@ -664,26 +540,14 @@ This section lists all 41 `sorry` placeholders in the codebase that require reso
 
 ## Missing Files
 
+<!-- NOTE: this are high priority tasks -->
+
 This section lists files that are referenced in documentation but do not exist in the repository.
 
-### 1. Archive/ModalProofs.lean ✓ CREATED
-**Priority**: High
-**Effort**: 3-5 hours
-**Status**: COMPLETE (2025-12-02, Phase 1)
-
-**Description**: Pedagogical examples for S5 modal logic proofs using Logos.
-
-### 2. Archive/TemporalProofs.lean ✓ CREATED
-**Priority**: High
-**Effort**: 3-5 hours
-**Status**: COMPLETE (2025-12-02, Phase 1)
-
-**Description**: Pedagogical examples for temporal logic proofs using Logos.
-
 ### 3. Logos/Metalogic/Decidability.lean
-**Priority**: Low
-**Effort**: 40-60 hours
-**Referenced In**: CLAUDE.md (line 318), IMPLEMENTATION_STATUS.md (line 319)
+*Priority**: Low
+*Effort**: 40-60 hours
+*Referenced In**: CLAUDE.md (line 318), IMPLEMENTATION_STATUS.md (line 319)
 
 **Description**: Decidability module with tableau method and satisfiability decision procedures.
 
@@ -701,6 +565,8 @@ This section lists files that are referenced in documentation but do not exist i
 ---
 
 ## Dependency Graph
+
+<!-- NOTE: instead, blocking dependencies should be indicated in each task, listing the other task numbers that it depends on, where once a task is complete, all blocking dependencies are marked as resolved. then this section can be removed entirely since it is harder to maintain organically -->
 
 This section shows task prerequisite relationships and identifies parallel execution opportunities.
 
@@ -787,6 +653,8 @@ Task 9 complete. Task 11 requires Layer 0 completion.
 
 ### Execution Waves (Optimal Ordering)
 
+<!-- NOTE: this is tricky to maintain but it is worth doing so, updating this section from time to time before implementation sprints -->
+
 **Wave 1** (High Priority, Parallel):
 - Task 1: Fix CI Flags (1-2 hours)
 - Task 2: Add Propositional Axioms (10-15 hours)
@@ -809,6 +677,8 @@ Task 9 complete. Task 11 requires Layer 0 completion.
 
 ### Critical Path Analysis
 
+<!-- NOTE: this is tricky to maintain but it is worth doing so, updating this section from time to time before implementation sprints -->
+
 **Shortest path to Layer 0 completion**:
 1. Task 2 (Add Propositional Axioms) - 10-15 hours
 2. Task 6 (Complete Perpetuity Proofs) - 20-30 hours (depends on Task 2)
@@ -821,24 +691,6 @@ Task 9 complete. Task 11 requires Layer 0 completion.
 **Total Sequential Time**: ~93-140 hours
 **Estimated Parallel Time**: ~70-95 hours (with 2-3 parallel tasks)
 **Time Savings**: ~25-32% with parallelization
-
----
-
-## CI Technical Debt ✓ RESOLVED
-
-**Status**: COMPLETE (2025-12-02, Phase 1 - Task 1)
-
-All `continue-on-error` flags have been removed from CI configuration per Task 1 completion.
-
-### Audit Results
-
-- [x] `lake test` flag removed - tests pass
-- [x] `lake lint` flag removed - lint configured
-- [x] `lake build :docs` flag removed - docs target works
-- [x] GitHub Pages deployment flag removed - deployment functional
-- [x] Build status badge added to README.md
-
-**Note**: CI now fails fast on any test, lint, or build issues as intended.
 
 ---
 
@@ -870,10 +722,14 @@ This section tracks task completion with date stamps. Mark tasks complete here w
 
 ### In Progress
 
+<!-- NOTE: I don't need a dedicated section for this since tasks themselves can be updated if need be to indicate their status -->
+
 - **Task 7**: Remaining automation work (Aesop integration blocked, 8 tactics remaining)
 - **Task 14**: Temporal operator refactoring (Phases 3-7 pending)
 
 ### Completion Log
+
+<!-- NOTE: I don't need a dedicated section for this since tasks can be removed once complete -->
 
 | Date | Task | Notes |
 |------|------|-------|
@@ -898,6 +754,8 @@ This section tracks task completion with date stamps. Mark tasks complete here w
 | 2025-12-04 | **Task 17: Soundness Type Errors** | NEW: Pre-existing type mismatch in temporal_k and weakening cases. Variable F shadowing issue from Task 15 generalization. |
 
 ### Status Summary
+
+<!-- NOTE: this can be maintained in a minimal form to provide some broad perspective on the major ambitions and where they are at, providing a big picture overview of what's next, but this should be brief and included at the top of the document by way of introduction and overview -->
 
 **Layer 0 Completion Progress**:
 - High Priority: 5/5 tasks complete (100%) ✓
@@ -944,6 +802,8 @@ This section tracks task completion with date stamps. Mark tasks complete here w
 
 ## How to Update This File
 
+<!-- NOTE: update this with the protocols indicated in the NOTES above, and also include details about this in a MAINTENANCE.md file in ProjectInfo/ -->
+
 When completing a task:
 1. Mark the task checkbox in the appropriate section (High/Medium/Low Priority)
 2. Add completion date and notes to the Completion Log table
@@ -962,6 +822,8 @@ When adding new tasks:
 ---
 
 ## Notes
+
+<!-- NOTE: these elements should either be integrated into what is above in the introduction or in a final 'Project References' section here at the end -->
 
 - This TODO.md is the **central task tracking system** for Logos development
 - For detailed module status and completion tracking, see [IMPLEMENTATION_STATUS.md](docs/IMPLEMENTATION_STATUS.md)

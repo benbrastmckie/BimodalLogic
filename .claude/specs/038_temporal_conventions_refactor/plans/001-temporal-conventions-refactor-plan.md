@@ -3,7 +3,7 @@
 **Plan ID**: 038-001
 **Created**: 2025-12-04
 **Revised**: 2025-12-04
-**Status**: [NOT STARTED]
+**Status**: [SUPERSEDED]
 **Estimated Hours**: 6-8 hours
 **Complexity**: Medium-High
 
@@ -37,7 +37,9 @@ The revised naming follows the established `box`/`□` pattern:
 
 ---
 
-## Phase 0: Pre-Flight Verification [NOT STARTED]
+## Implementation Phases
+
+### Phase 0: Pre-Flight Verification [NOT STARTED]
 
 **Goal**: Verify codebase state before making changes
 
@@ -61,7 +63,7 @@ git status --short
 
 ---
 
-## Phase 1: Remove Unused Frame Constraint Cruft [COMPLETE]
+### Phase 1: Remove Unused Frame Constraint Cruft [COMPLETE]
 
 **Goal**: Delete BackwardPersistence and ModalTemporalPersistence definitions and update documentation
 
@@ -118,7 +120,7 @@ grep -rn "BackwardPersistence\|ModalTemporalPersistence" Logos/
 
 ---
 
-## Phase 2: Rename Temporal Constructors [COMPLETE]
+### Phase 2: Rename Temporal Constructors [COMPLETE]
 
 **Goal**: Rename `past` → `all_past` and `future` → `all_future` in Formula.lean and all dependent files
 
@@ -212,7 +214,7 @@ grep -rn "| past \|| future " Logos/
 
 ---
 
-## Phase 3: Rename Derived Temporal Operators and Add DSL Notation [COMPLETE]
+### Phase 3: Rename Derived Temporal Operators and Add DSL Notation [COMPLETE]
 
 **Goal**: Rename `sometime_past` → `some_past`, `sometime_future` → `some_future`, and add H/G/P/F DSL notation
 
@@ -295,7 +297,7 @@ grep -rn "some_past\|some_future" Logos/Core/Syntax/Formula.lean
 
 ---
 
-## Phase 4: Update Test Files [NOT STARTED]
+### Phase 4: Update Test Files [IN PROGRESS]
 
 **Goal**: Update all test files to use new operator names
 
@@ -336,7 +338,7 @@ lake test
 
 ---
 
-## Phase 5: Update Archive Examples [NOT STARTED]
+### Phase 5: Update Archive Examples [NOT STARTED]
 
 **Goal**: Update pedagogical examples in Archive/
 
@@ -361,7 +363,7 @@ lake build
 
 ---
 
-## Phase 6: Update Documentation [NOT STARTED]
+### Phase 6: Update Documentation [NOT STARTED]
 
 **Goal**: Update all markdown documentation for consistency with new naming
 
@@ -420,7 +422,7 @@ grep -rn "all_past\|all_future\|some_past\|some_future" Documentation/
 
 ---
 
-## Phase 7: Final Verification and Cleanup [NOT STARTED]
+### Phase 7: Final Verification and Cleanup [NOT STARTED]
 
 **Goal**: Comprehensive verification that all changes are complete and consistent
 

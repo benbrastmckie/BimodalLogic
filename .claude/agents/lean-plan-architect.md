@@ -128,8 +128,12 @@ For each phase, you MUST specify the primary Lean file where theorems will be pr
    ## Metadata
    - **Date**: YYYY-MM-DD
    - **Feature**: [One-line formalization description]
+   - **Scope**: [Mathematical domain and formalization approach - see Scope Field Guidelines below]
    - **Status**: [NOT STARTED]
    - **Estimated Hours**: [low]-[high] hours
+   - **Complexity Score**: [Numeric value from STEP 1 complexity calculation]
+   - **Structure Level**: 0
+   - **Estimated Phases**: [N from STEP 1 analysis]
    - **Standards File**: [Absolute path to CLAUDE.md]
    - **Research Reports**:
      - [Link to Mathlib research report](../reports/001-name.md)
@@ -138,12 +142,66 @@ For each phase, you MUST specify the primary Lean file where theorems will be pr
    - **Lean Project**: [Absolute path to lakefile.toml location]
    ```
 
-4. **Create Theorem-Level Phases**:
+   **Scope Field Guidelines**:
+   The **Scope** field should provide mathematical context for Lean formalization plans:
+   - Mathematical domain (e.g., algebra, analysis, topology, category theory)
+   - Specific theorem category or topic being formalized
+   - Formalization methodology (e.g., blueprint-based, interactive, direct translation)
+   - Expected deliverables (theorem count, module names, proof completeness)
+
+   **Example Scope**:
+   ```markdown
+   - **Scope**: Formalize group homomorphism preservation properties in abstract algebra. Prove 8 theorems covering identity preservation, inverse preservation, and composition. Output: ProofChecker/GroupHom.lean module with complete proofs.
+   ```
+
+   **Complexity Score Calculation**:
+   Calculate complexity score based on formalization characteristics:
+   ```
+   Base (formalization type):
+   - New formalization: 15
+   - Extend existing: 10
+   - Refactor proofs: 7
+
+   + (Theorems × 3)  # Number of theorems to prove
+   + (Files × 2)      # Number of .lean files to modify
+   + (Complex Proofs × 5)  # Theorems requiring custom lemmas or induction
+   ```
+
+   **Example**: 8 theorems, 1 file, 2 complex proofs → 15 + (8×3) + (1×2) + (2×5) = 51
+
+   **Structure Level for Lean Plans**:
+   - Lean formalization plans always use **Structure Level: 0** (single-file plans)
+   - Phase expansion to Level 1 not supported for theorem-proving workflows
+   - All phases remain in single plan file with per-phase `lean_file:` targeting
+
+4. **Add Phase Routing Summary**:
+
+After the "## Implementation Phases" heading, add a Phase Routing Summary table:
+
+```markdown
+## Implementation Phases
+
+### Phase Routing Summary
+| Phase | Type | Implementer Agent |
+|-------|------|-------------------|
+| 1 | lean | lean-implementer |
+| 2 | software | implementer-coordinator |
+| 3 | lean | lean-implementer |
+```
+
+**Phase Type Determination**:
+- **lean**: Phase involves theorem proving, formalization, or Lean code development (has `lean_file:` field)
+- **software**: Phase involves tooling, infrastructure, test setup, or non-Lean tasks
+
+This summary enables /lean-implement to route phases to appropriate implementer agents upfront.
+
+5. **Create Theorem-Level Phases**:
 
 Each phase should represent one or more related theorems with this format:
 
 ```markdown
 ### Phase 1: [Theorem Category Name] [NOT STARTED]
+implementer: lean
 lean_file: /absolute/path/to/file.lean
 dependencies: []
 
@@ -181,6 +239,11 @@ grep -c "sorry" path/to/file.lean
 ---
 ```
 
+**Implementer Field Values**:
+- Use `implementer: lean` for theorem-proving phases (phases with `lean_file:` field and theorem lists)
+- Use `implementer: software` for infrastructure phases (tooling setup, test harness, documentation)
+- The `implementer:` field appears immediately after the phase heading, before `lean_file:` and `dependencies:`
+
 **Dependency Syntax**:
 - `dependencies: []` for independent phases (Wave 1)
 - `dependencies: [1]` for phases depending on Phase 1
@@ -188,8 +251,11 @@ grep -c "sorry" path/to/file.lean
 
 **CRITICAL FORMAT REQUIREMENTS FOR NEW PLANS**:
 - Metadata **Status** MUST be `[NOT STARTED]` (not [IN PROGRESS] or [COMPLETE])
+- Metadata fields MUST follow standard order: Date, Feature, Scope, Status, Estimated Hours, Complexity Score, Structure Level, Estimated Phases, Standards File, Research Reports, Lean File, Lean Project
+- Phase Routing Summary table MUST appear immediately after "## Implementation Phases" heading
 - ALL phase headings MUST use `### Phase N:` format (level 3, matching /create-plan standard)
-- ALL phases MUST have `lean_file:` field immediately after heading (Tier 1 format)
+- ALL phases MUST have `implementer:` field immediately after heading (values: "lean" or "software")
+- ALL phases MUST have `lean_file:` field after implementer (for lean phases - Tier 1 format)
 - ALL phase headings MUST include `[NOT STARTED]` marker
 - ALL theorem checkboxes MUST use `- [ ]` (unchecked)
 - ALL theorems MUST have Goal specification (Lean 4 type)

@@ -27,11 +27,11 @@ example (φ : Formula) : ⊨ ((φ.box).imp (φ.box.box)) := modal_4_valid φ
 -- Test: Modal B is valid (φ → □◇φ)
 example (φ : Formula) : ⊨ (φ.imp (φ.diamond.box)) := modal_b_valid φ
 
--- Test: Temporal 4 is valid (Fφ → FFφ)
-example (φ : Formula) : ⊨ ((φ.future).imp (φ.future.future)) := temp_4_valid φ
+-- Test: Temporal 4 is valid (Gφ → GGφ)
+example (φ : Formula) : ⊨ ((φ.all_future).imp (φ.all_future.all_future)) := temp_4_valid φ
 
--- Test: Temporal A is valid (φ → F(sometime_past φ))
-example (φ : Formula) : ⊨ (φ.imp (Formula.future φ.sometime_past)) := temp_a_valid φ
+-- Test: Temporal A is valid (φ → G(some_past φ))
+example (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.some_past)) := temp_a_valid φ
 
 -- ========================================
 -- Axiom Derivability Tests
@@ -50,11 +50,11 @@ example (φ : Formula) : ⊢ (φ.imp (φ.diamond.box)) :=
   Derivable.axiom [] _ (Axiom.modal_b φ)
 
 -- Test: Temporal 4 axiom is derivable
-example (φ : Formula) : ⊢ ((φ.future).imp (φ.future.future)) :=
+example (φ : Formula) : ⊢ ((φ.all_future).imp (φ.all_future.all_future)) :=
   Derivable.axiom [] _ (Axiom.temp_4 φ)
 
 -- Test: Temporal A axiom is derivable
-example (φ : Formula) : ⊢ (φ.imp (Formula.future φ.sometime_past)) :=
+example (φ : Formula) : ⊢ (φ.imp (Formula.all_future φ.some_past)) :=
   Derivable.axiom [] _ (Axiom.temp_a φ)
 
 -- ========================================
@@ -77,14 +77,14 @@ example (φ : Formula) : [] ⊨ (φ.imp (φ.diamond.box)) := by
   exact soundness [] (φ.imp (φ.diamond.box)) deriv
 
 -- Test: Soundness applies to Temporal 4 derivation
-example (φ : Formula) : [] ⊨ ((φ.future).imp (φ.future.future)) := by
-  let deriv : ⊢ ((φ.future).imp (φ.future.future)) := Derivable.axiom [] _ (Axiom.temp_4 φ)
-  exact soundness [] ((φ.future).imp (φ.future.future)) deriv
+example (φ : Formula) : [] ⊨ ((φ.all_future).imp (φ.all_future.all_future)) := by
+  let deriv : ⊢ ((φ.all_future).imp (φ.all_future.all_future)) := Derivable.axiom [] _ (Axiom.temp_4 φ)
+  exact soundness [] ((φ.all_future).imp (φ.all_future.all_future)) deriv
 
 -- Test: Soundness applies to Temporal A derivation
-example (φ : Formula) : [] ⊨ (φ.imp (Formula.future φ.sometime_past)) := by
-  let deriv : ⊢ (φ.imp (Formula.future φ.sometime_past)) := Derivable.axiom [] _ (Axiom.temp_a φ)
-  exact soundness [] (φ.imp (Formula.future φ.sometime_past)) deriv
+example (φ : Formula) : [] ⊨ (φ.imp (Formula.all_future φ.some_past)) := by
+  let deriv : ⊢ (φ.imp (Formula.all_future φ.some_past)) := Derivable.axiom [] _ (Axiom.temp_a φ)
+  exact soundness [] (φ.imp (Formula.all_future φ.some_past)) deriv
 
 -- ========================================
 -- Inference Rule Soundness Tests

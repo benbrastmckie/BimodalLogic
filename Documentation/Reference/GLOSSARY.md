@@ -39,18 +39,24 @@ This glossary maps terminology between Logos and Logos documentation, providing 
 
 ## Temporal Operators (Layer 0)
 
-| Symbol | Name | Definition | Aliases |
-|--------|------|------------|---------|
-| `P` | Past | "It has been the case that" (existential past) | sometime_past |
-| `F` | Future | "It is going to be the case that" (existential future) | sometime_future |
-| `H` | Always Past | "It always has been the case that" (universal past) | - |
-| `G` | Always Future | "It is always going to be the case that" (universal future) | always |
-| `△` | Always | "It is always the case that" (universal temporal) | triangle_always |
-| `▽` | Sometimes | "It is sometimes the case that" (existential temporal) | triangle_sometimes |
+| Symbol | Name | Function Name | Definition | Aliases |
+|--------|------|---------------|------------|---------|
+| `H` | All Past | `all_past` | "It always has been the case that" (universal past) | - |
+| `P` | Some Past | `some_past` | "It has been the case that" (existential past) | - |
+| `G` | All Future | `all_future` | "It is always going to be the case that" (universal future) | always |
+| `F` | Some Future | `some_future` | "It is going to be the case that" (existential future) | - |
+| `△` | Always | `always` | "It is always the case that" (universal temporal, henceforth) | triangle_always |
+| `▽` | Sometimes | `sometimes` | "It is sometimes the case that" (existential temporal, eventually) | triangle_sometimes |
 
 **Note**: `△A := HA ∧ A ∧ GA` (held at all past times, holds now, will hold at all future times)
 
 **Note**: `▽A := PA ∨ A ∨ FA` (held at some past time, holds now, or will hold at some future time)
+
+**LEAN Code Mapping**:
+- `H φ` → `Formula.all_past φ` (universal past, primitive)
+- `P φ` → `some_past φ` (existential past, derived via `¬(all_past ¬φ)`)
+- `G φ` → `Formula.all_future φ` (universal future, primitive)
+- `F φ` → `some_future φ` (existential future, derived via `¬(all_future ¬φ)`)
 
 ## Bimodal Interaction (Layer 0)
 
@@ -134,11 +140,11 @@ This glossary maps terminology between Logos and Logos documentation, providing 
 | MT (Modal T) | `□φ → φ` | Necessity implies truth (reflexivity) |
 | M4 (Modal 4) | `□φ → □□φ` | Positive introspection (transitivity) |
 | MB (Modal B) | `φ → □◇φ` | Symmetry |
-| T4 (Temporal 4) | `Fφ → FFφ` | Temporal transitivity |
-| TA (Temporal A) | `φ → F(Pφ)` | Temporal accessibility |
-| TL (Temporal L) | `△φ → F(Hφ)` | Temporal perpetuity |
-| MF (Modal-Future) | `□φ → □Fφ` | Modal persistence |
-| TF (Temporal-Future) | `□φ → F□φ` | Temporal persistence of necessity |
+| T4 (Temporal 4) | `Gφ → GGφ` | Temporal transitivity (all_future iterates) |
+| TA (Temporal A) | `φ → G(Pφ)` | Temporal accessibility (now will have been) |
+| TL (Temporal L) | `△φ → G(Hφ)` | Temporal perpetuity (always implies future all-past) |
+| MF (Modal-Future) | `□φ → □Gφ` | Modal persistence (necessary implies necessarily all-future) |
+| TF (Temporal-Future) | `□φ → G□φ` | Temporal persistence of necessity (necessary remains necessary) |
 
 ## Status Information
 

@@ -87,8 +87,12 @@ dependencies: []
 ## Metadata
 - **Date**: 2025-12-04
 - **Feature**: Formalize group properties
+- **Scope**: Formalize basic group theory properties including associativity and identity. Output: Groups.lean with 5 theorems.
 - **Status**: [NOT STARTED]
 - **Estimated Hours**: 4-6 hours
+- **Complexity Score**: 30.0
+- **Structure Level**: 0
+- **Estimated Phases**: 2
 - **Standards File**: /home/user/project/CLAUDE.md
 - **Research Reports**: [Link to research](../reports/001-research.md)
 - **Lean File**: /home/user/ProofChecker/ProofChecker/Groups.lean
@@ -247,14 +251,28 @@ For formalizations spanning multiple Lean files, `/lean-plan` generates phase-sp
 ## Metadata
 - **Date**: 2025-12-04
 - **Feature**: Formalize task execution framework
+- **Scope**: Formalize task execution framework with state transitions and task composition. Output: 3 modules (TaskFrame.lean, WorldHistory.lean, Truth.lean) with 15 theorems.
 - **Status**: [NOT STARTED]
 - **Estimated Hours**: 12-18 hours
+- **Complexity Score**: 75.0
+- **Structure Level**: 0
+- **Estimated Phases**: 3
 - **Standards File**: /home/user/project/CLAUDE.md
 - **Research Reports**: [Mathlib Research](../reports/001-mathlib-research.md)
 - **Lean File**: /home/user/ProofChecker/ProofChecker/TaskFrame.lean  # Tier 2 fallback
 - **Lean Project**: /home/user/ProofChecker/
 
+## Implementation Phases
+
+### Phase Routing Summary
+| Phase | Type | Implementer Agent |
+|-------|------|-------------------|
+| 1 | lean | lean-implementer |
+| 2 | lean | lean-implementer |
+| 3 | lean | lean-implementer |
+
 ### Phase 1: Task Frame Theorems [NOT STARTED]
+implementer: lean
 lean_file: /home/user/ProofChecker/ProofChecker/TaskFrame.lean
 dependencies: []
 
@@ -366,14 +384,40 @@ The `/lean-plan` command is designed to integrate seamlessly with the `/lean` ex
 
 ### Metadata Section
 
-Plans created by `/lean-plan` include standard metadata plus Lean-specific fields:
+Plans created by `/lean-plan` include standard metadata plus Lean-specific fields.
+
+**Field Order** (following [Plan Metadata Standard](../../reference/standards/plan-metadata-standard.md)):
+
+1. **Required Fields**:
+   - **Date**: Plan creation date (YYYY-MM-DD format)
+   - **Feature**: One-line formalization description (50-100 chars)
+   - **Status**: Current plan status ([NOT STARTED], [IN PROGRESS], [COMPLETE], [BLOCKED])
+   - **Estimated Hours**: Time estimate as numeric range (e.g., "8-12 hours")
+   - **Standards File**: Absolute path to CLAUDE.md
+   - **Research Reports**: Links to Mathlib and proof pattern research reports
+
+2. **Recommended Optional Fields**:
+   - **Scope**: Mathematical domain and formalization approach (detailed context)
+   - **Complexity Score**: Numeric complexity value from formalization analysis
+   - **Structure Level**: Always 0 for Lean plans (single-file structure)
+   - **Estimated Phases**: Phase count from initial analysis
+
+3. **Lean-Specific Workflow Extensions**:
+   - **Lean File**: Absolute path to target .lean file (Tier 2 discovery fallback)
+   - **Lean Project**: Absolute path to Lean project root (lakefile.toml location)
+
+**Example Metadata Block**:
 
 ```markdown
 ## Metadata
-- **Date**: 2025-12-03
-- **Feature**: Formalize group homomorphism properties
+- **Date**: 2025-12-04
+- **Feature**: Formalize group homomorphism preservation properties
+- **Scope**: Formalize group homomorphism preservation in abstract algebra. Prove 8 theorems covering identity preservation, inverse preservation, and composition. Output: ProofChecker/GroupHom.lean module with complete proofs.
 - **Status**: [NOT STARTED]
 - **Estimated Hours**: 8-12 hours
+- **Complexity Score**: 51.0
+- **Structure Level**: 0
+- **Estimated Phases**: 3
 - **Standards File**: /home/user/project/CLAUDE.md
 - **Research Reports**:
   - [Mathlib Research](../reports/001-mathlib-research.md)
@@ -382,9 +426,45 @@ Plans created by `/lean-plan` include standard metadata plus Lean-specific field
 - **Lean Project**: /home/user/ProofChecker/
 ```
 
-**Lean-Specific Fields**:
-- **Lean File**: Absolute path to target .lean file (enables Tier 1 discovery in `/lean`)
-- **Lean Project**: Absolute path to Lean project root (lakefile.toml location)
+**Field Details**:
+
+- **Scope Field**: Provides mathematical context for formalization plans
+  - Mathematical domain (algebra, analysis, topology, etc.)
+  - Specific theorem category being formalized
+  - Formalization methodology (blueprint-based, interactive, etc.)
+  - Expected deliverables (theorem count, module names)
+
+- **Complexity Score**: Calculated based on formalization characteristics
+  - Base: 15 (new), 10 (extend), 7 (refactor)
+  - Plus: (Theorems × 3) + (Files × 2) + (Complex Proofs × 5)
+
+- **Lean File** (Tier 2): Global fallback when phase-specific file not specified
+- **Lean Project**: Project root for `lake build` and dependency resolution
+
+### Phase Routing Summary
+
+Plans include a Phase Routing Summary table after the "## Implementation Phases" heading to indicate which implementer agent should handle each phase. This enables `/lean-implement` to route phases upfront without parsing the entire plan.
+
+**Format**:
+
+```markdown
+## Implementation Phases
+
+### Phase Routing Summary
+| Phase | Type | Implementer Agent |
+|-------|------|-------------------|
+| 1 | lean | lean-implementer |
+| 2 | software | implementer-coordinator |
+| 3 | lean | lean-implementer |
+```
+
+**Phase Types**:
+- **lean**: Theorem proving, formalization, or Lean code development
+- **software**: Tooling, infrastructure, test setup, or non-Lean tasks
+
+**Routing Logic**:
+- Phases with `lean_file:` field and theorem lists → `lean` type
+- Phases involving project setup, testing, or documentation → `software` type
 
 ### Theorem Phase Structure
 
@@ -392,6 +472,8 @@ Each phase represents one or more theorems with specifications:
 
 ```markdown
 ### Phase 1: Identity Preservation [NOT STARTED]
+implementer: lean
+lean_file: /home/user/ProofChecker/ProofChecker/GroupHom.lean
 dependencies: []
 
 **Objective**: Prove group homomorphisms preserve identity element
@@ -417,10 +499,17 @@ grep -c "sorry" ProofChecker/GroupHom.lean
 ```
 
 **Key Components**:
+- **Implementer**: Agent type ("lean" or "software") for phase routing
+- **Lean File**: Absolute path to .lean file (Tier 1 discovery, for lean phases)
 - **Goal**: Formal Lean 4 type signature (what to prove)
 - **Strategy**: Proof approach with specific tactics and Mathlib theorems
 - **Complexity**: Simple/Medium/Complex effort estimate
 - **Dependencies**: Phase prerequisite tracking for wave execution
+
+**Implementer Field**:
+- Appears immediately after phase heading
+- Values: `implementer: lean` (theorem proving) or `implementer: software` (tooling/infrastructure)
+- Used by `/lean-implement` to route phases to appropriate agent
 
 ### Dependency Syntax
 
@@ -428,12 +517,18 @@ Phase dependencies enable wave-based parallel execution:
 
 ```markdown
 ### Phase 1: Basic Properties [NOT STARTED]
+implementer: lean
+lean_file: /home/user/ProofChecker/ProofChecker/Groups.lean
 dependencies: []
 
 ### Phase 2: Derived Properties [NOT STARTED]
+implementer: lean
+lean_file: /home/user/ProofChecker/ProofChecker/Groups.lean
 dependencies: [1]  # Depends on Phase 1
 
 ### Phase 3: Composition [NOT STARTED]
+implementer: lean
+lean_file: /home/user/ProofChecker/ProofChecker/Groups.lean
 dependencies: [1, 2]  # Depends on both Phases 1 and 2
 ```
 
@@ -531,6 +626,12 @@ Test that `/lean-build` correctly discovers phase-specific files:
 
 ```markdown
 ## Metadata
+- **Date**: 2025-12-04
+- **Feature**: Formalize group theory
+- **Status**: [NOT STARTED]
+- **Estimated Hours**: 8-12 hours
+- **Standards File**: /home/user/project/CLAUDE.md
+- **Research Reports**: none
 - **Lean File**: /home/user/ProofChecker/ProofChecker/Groups.lean
 - **Lean Project**: /home/user/ProofChecker/
 
@@ -545,14 +646,22 @@ dependencies: [1]
 
 ```markdown
 ## Metadata
+- **Date**: 2025-12-04
+- **Feature**: Formalize group theory
+- **Status**: [NOT STARTED]
+- **Estimated Hours**: 8-12 hours
+- **Standards File**: /home/user/project/CLAUDE.md
+- **Research Reports**: none
 - **Lean File**: /home/user/ProofChecker/ProofChecker/Groups/Basic.lean  # Tier 2 fallback
 - **Lean Project**: /home/user/ProofChecker/
 
 ### Phase 1: Basic Properties [NOT STARTED]
+implementer: lean
 lean_file: /home/user/ProofChecker/ProofChecker/Groups/Basic.lean
 dependencies: []
 
 ### Phase 2: Homomorphisms [NOT STARTED]
+implementer: lean
 lean_file: /home/user/ProofChecker/ProofChecker/Groups/Hom.lean
 dependencies: [1]
 ```

@@ -86,12 +86,12 @@ def necessary_p : Formula := Formula.box p      -- `□p`
 def possible_p : Formula := diamond p           -- `◇p` (defined as `¬□¬p`)
 
 -- Temporal operators
-def always_past : Formula := Formula.past p     -- Past p (always in past)
-def always_future : Formula := Formula.future p -- Future p (always in future)
-def henceforth_p : Formula := p.always          -- △p (henceforth/always from now)
-def eventually_p : Formula := p.sometimes       -- ▽p (eventually/sometimes from now)
-def sometime_past_p : Formula := sometime_past p   -- ∃ time in past where p
-def sometime_future_p : Formula := sometime_future p -- ∃ time in future where p
+def always_past : Formula := Formula.all_past p     -- Hφ (always in past)
+def always_future : Formula := Formula.all_future p -- Gφ (always in future)
+def henceforth_p : Formula := p.always              -- △φ (henceforth/always from now)
+def eventually_p : Formula := p.sometimes           -- ▽φ (eventually/sometimes from now)
+def sometime_past_p : Formula := some_past p        -- Pφ (some time in past)
+def sometime_future_p : Formula := some_future p    -- Fφ (some time in future)
 ```
 
 ### Derived Operators
@@ -106,7 +106,7 @@ def p_and_q : Formula := and p q
 -- Disjunction: `φ ∨ ψ ≡ ¬φ → ψ`
 def p_or_q : Formula := or p q
 
--- Always/henceforth (from now onwards): `△φ ≡ Future φ`
+-- Always/henceforth (from now onwards): `△φ ≡ Gφ`
 def always_p : Formula := always p
 def triangle_always : Formula := △p  -- Unicode triangle notation
 
@@ -124,8 +124,10 @@ With DSL macros enabled:
 example : Formula := □"p"           -- `□p` (necessary p)
 example : Formula := ◇"p"           -- `◇p` (possible p)
 example : Formula := "p" → "q"      -- `p → q` (p implies q)
-example : Formula := Past "p"       -- Past p (always in past)
-example : Formula := Future "p"     -- Future p (always in future)
+example : Formula := H "p"          -- Hφ (always in past)
+example : Formula := G "p"          -- Gφ (always in future)
+example : Formula := P "p"          -- Pφ (some past time)
+example : Formula := F "p"          -- Fφ (some future time)
 example : Formula := △"p"           -- `△p` (henceforth p)
 example : Formula := ▽"p"           -- `▽p` (eventually p)
 ```
@@ -203,9 +205,9 @@ example (φ : Formula) (h : [Formula.box (Formula.atom "p")] ⊢ φ) :
   [Formula.atom "p"] ⊢ Formula.box φ := by
   sorry -- Requires MK rule application
 
--- Temporal K (TK): If `Future Γ ⊢ φ` then `Γ ⊢ Future φ`
-example (φ : Formula) (h : [Formula.future (Formula.atom "p")] ⊢ φ) :
-  [Formula.atom "p"] ⊢ Formula.future φ := by
+-- Temporal K (TK): If `GΓ ⊢ φ` then `Γ ⊢ Gφ`
+example (φ : Formula) (h : [Formula.all_future (Formula.atom "p")] ⊢ φ) :
+  [Formula.atom "p"] ⊢ Formula.all_future φ := by
   sorry -- Requires TK rule application
 ```
 
@@ -288,8 +290,8 @@ def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : F.Time) :
   | Formula.bot => False
   | Formula.imp φ ψ => truth_at M τ t φ → truth_at M τ t ψ
   | Formula.box φ => ∀ σ : WorldHistory F, truth_at M σ t φ
-  | Formula.past φ => ∀ s < t, truth_at M τ s φ
-  | Formula.future φ => ∀ s > t, truth_at M τ s φ
+  | Formula.all_past φ => ∀ s < t, truth_at M τ s φ
+  | Formula.all_future φ => ∀ s > t, truth_at M τ s φ
 ```
 
 ### Validity

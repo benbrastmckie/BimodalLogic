@@ -42,27 +42,27 @@ example : ⊢ (Formula.atom "p").imp (Formula.box (Formula.atom "p").diamond) :=
   apply Axiom.modal_b
 
 -- Test: Temporal 4 is derivable
-example : ⊢ (Formula.future (Formula.atom "p")).imp (Formula.future (Formula.future (Formula.atom "p"))) := by
+example : ⊢ (Formula.all_future (Formula.atom "p")).imp (Formula.all_future (Formula.all_future (Formula.atom "p"))) := by
   apply Derivable.axiom
   apply Axiom.temp_4
 
--- Test: Temporal A is derivable (φ → F(sometime_past φ))
-example : ⊢ (Formula.atom "p").imp (Formula.future (Formula.atom "p").sometime_past) := by
+-- Test: Temporal A is derivable (φ → F(some_past φ))
+example : ⊢ (Formula.atom "p").imp (Formula.all_future (Formula.atom "p").some_past) := by
   apply Derivable.axiom
   apply Axiom.temp_a
 
 -- Test: Temporal L is derivable
-example : ⊢ (Formula.future (Formula.atom "p")).imp (Formula.future (Formula.past (Formula.atom "p"))) := by
+example : ⊢ (Formula.all_future (Formula.atom "p")).imp (Formula.all_future (Formula.all_past (Formula.atom "p"))) := by
   apply Derivable.axiom
   apply Axiom.temp_l
 
 -- Test: Modal-Future is derivable
-example : ⊢ (Formula.box (Formula.atom "p")).imp (Formula.box (Formula.future (Formula.atom "p"))) := by
+example : ⊢ (Formula.box (Formula.atom "p")).imp (Formula.box (Formula.all_future (Formula.atom "p"))) := by
   apply Derivable.axiom
   apply Axiom.modal_future
 
 -- Test: Temporal-Future is derivable
-example : ⊢ (Formula.box (Formula.atom "p")).imp (Formula.future (Formula.box (Formula.atom "p"))) := by
+example : ⊢ (Formula.box (Formula.atom "p")).imp (Formula.all_future (Formula.box (Formula.atom "p"))) := by
   apply Derivable.axiom
   apply Axiom.temp_future
 
@@ -139,14 +139,14 @@ example (φ : Formula) (h : ⊢ φ) : ⊢ φ.box := by
 -- ============================================================
 
 -- Test: Temporal K with axiom (from empty context)
-example : ([] : Context) ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")).future := by
+example : ([] : Context) ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")).all_future := by
   apply Derivable.temporal_k
   apply Derivable.axiom
   apply Axiom.modal_t
 
 -- Test: Temporal K preserves theorem status
 -- If ⊢ φ then ⊢ Fφ
-example (φ : Formula) (h : ⊢ φ) : ⊢ φ.future := by
+example (φ : Formula) (h : ⊢ φ) : ⊢ φ.all_future := by
   apply Derivable.temporal_k
   exact h
 
@@ -159,14 +159,14 @@ example : ⊢ (Formula.box (Formula.atom "p")).imp (Formula.atom "p") := by
   apply Derivable.axiom
   apply Axiom.modal_t
 
--- Test: Temporal duality swaps past/future
--- If ⊢ φ then ⊢ swap_past_future φ
-example : ⊢ ((Formula.future (Formula.atom "p")).imp (Formula.future (Formula.future (Formula.atom "p")))).swap_past_future := by
+-- Test: Temporal duality swaps all_past/all_future
+-- If ⊢ φ then ⊢ swap_temporal φ
+example : ⊢ ((Formula.all_future (Formula.atom "p")).imp (Formula.all_future (Formula.all_future (Formula.atom "p")))).swap_temporal := by
   apply Derivable.temporal_duality
   apply Derivable.axiom
   apply Axiom.temp_4
 
--- The above should derive: ⊢ P p → P P p (swapped from F p → F F p)
+-- The above should derive: ⊢ H p → H H p (swapped from G p → G G p)
 
 -- ============================================================
 -- Weakening Rule Tests

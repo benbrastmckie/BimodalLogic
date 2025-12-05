@@ -66,24 +66,24 @@ example : Derivable [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.bo
 example : Derivable [] (Formula.imp (Formula.atom "p") (Formula.box (Formula.diamond (Formula.atom "p")))) :=
   Derivable.axiom [] _ (Axiom.modal_b _)
 
-/-- Test 6: temp_4 axiom (Fp → FFp) -/
-example : Derivable [] (Formula.imp (Formula.future (Formula.atom "p")) (Formula.future (Formula.future (Formula.atom "p")))) :=
+/-- Test 6: temp_4 axiom (Gp → GGp) -/
+example : Derivable [] (Formula.imp (Formula.all_future (Formula.atom "p")) (Formula.all_future (Formula.all_future (Formula.atom "p")))) :=
   Derivable.axiom [] _ (Axiom.temp_4 _)
 
-/-- Test 7: temp_a axiom (p → FPp) -/
-example : Derivable [] (Formula.imp (Formula.atom "p") (Formula.future (Formula.sometime_past (Formula.atom "p")))) :=
+/-- Test 7: temp_a axiom (p → GPp) -/
+example : Derivable [] (Formula.imp (Formula.atom "p") (Formula.all_future (Formula.some_past (Formula.atom "p")))) :=
   Derivable.axiom [] _ (Axiom.temp_a _)
 
-/-- Test 8: temp_l axiom (always p → Fp) -/
-example : Derivable [] (Formula.imp (Formula.sometime_past (Formula.atom "p")) (Formula.future (Formula.atom "p"))) :=
+/-- Test 8: temp_l axiom (always p → Gp) -/
+example : Derivable [] (Formula.imp (Formula.some_past (Formula.atom "p")) (Formula.all_future (Formula.atom "p"))) :=
   Derivable.axiom [] _ (Axiom.temp_l _)
 
-/-- Test 9: modal_future axiom (□p → F□p) -/
-example : Derivable [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.future (Formula.box (Formula.atom "p")))) :=
+/-- Test 9: modal_future axiom (□p → G□p) -/
+example : Derivable [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.all_future (Formula.box (Formula.atom "p")))) :=
   Derivable.axiom [] _ (Axiom.modal_future _)
 
-/-- Test 10: temp_future axiom (Fp → □Fp) -/
-example : Derivable [] (Formula.imp (Formula.future (Formula.atom "p")) (Formula.box (Formula.future (Formula.atom "p")))) :=
+/-- Test 10: temp_future axiom (Gp → □Gp) -/
+example : Derivable [] (Formula.imp (Formula.all_future (Formula.atom "p")) (Formula.box (Formula.all_future (Formula.atom "p")))) :=
   Derivable.axiom [] _ (Axiom.temp_future _)
 
 /-- Test 11: apply_axiom tactic unifies with modal_t -/
@@ -109,19 +109,19 @@ example : Derivable [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.bo
   tm_auto
 
 /-- Test 15: tm_auto finds temp_4 axiom -/
-example : Derivable [] (Formula.imp (Formula.future (Formula.atom "p")) (Formula.future (Formula.future (Formula.atom "p")))) := by
+example : Derivable [] (Formula.imp (Formula.all_future (Formula.atom "p")) (Formula.all_future (Formula.all_future (Formula.atom "p")))) := by
   tm_auto
 
 /-- Test 16: tm_auto finds temp_a axiom -/
-example : Derivable [] (Formula.imp (Formula.atom "p") (Formula.future (Formula.sometime_past (Formula.atom "p")))) := by
+example : Derivable [] (Formula.imp (Formula.atom "p") (Formula.all_future (Formula.some_past (Formula.atom "p")))) := by
   tm_auto
 
 /-- Test 17: tm_auto finds modal_future axiom -/
-example : Derivable [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.future (Formula.box (Formula.atom "p")))) := by
+example : Derivable [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.all_future (Formula.box (Formula.atom "p")))) := by
   tm_auto
 
 /-- Test 18: tm_auto finds temp_future axiom -/
-example : Derivable [] (Formula.imp (Formula.future (Formula.atom "p")) (Formula.box (Formula.future (Formula.atom "p")))) := by
+example : Derivable [] (Formula.imp (Formula.all_future (Formula.atom "p")) (Formula.box (Formula.all_future (Formula.atom "p")))) := by
   tm_auto
 
 /-!
@@ -145,7 +145,7 @@ example : Derivable [] (Formula.imp (Formula.atom "p") (Formula.box (Formula.dia
   tm_auto
 
 /-- Test 35: tm_auto finds temp_l axiom -/
-example : Derivable [] (Formula.imp (Formula.sometime_past (Formula.atom "p")) (Formula.future (Formula.atom "p"))) := by
+example : Derivable [] (Formula.imp (Formula.some_past (Formula.atom "p")) (Formula.all_future (Formula.atom "p"))) := by
   tm_auto
 
 /-!
@@ -187,11 +187,11 @@ example : is_box_formula (Formula.box (Formula.atom "p")) = true := rfl
 /-- Test 25: is_box_formula rejects non-box formulas -/
 example : is_box_formula (Formula.atom "p") = false := rfl
 
-/-- Test 26: is_future_formula recognizes future formulas -/
-example : is_future_formula (Formula.future (Formula.atom "p")) = true := rfl
+/-- Test 26: is_all_future_formula recognizes all_future formulas -/
+example : is_all_future_formula (Formula.all_future (Formula.atom "p")) = true := rfl
 
-/-- Test 27: is_future_formula rejects non-future formulas -/
-example : is_future_formula (Formula.atom "p") = false := rfl
+/-- Test 27: is_all_future_formula rejects non-all_future formulas -/
+example : is_all_future_formula (Formula.atom "p") = false := rfl
 
 /-- Test 28: extract_from_box extracts inner formula -/
 example : extract_from_box (Formula.box (Formula.atom "p")) = some (Formula.atom "p") := rfl
@@ -199,11 +199,11 @@ example : extract_from_box (Formula.box (Formula.atom "p")) = some (Formula.atom
 /-- Test 29: extract_from_box returns none for non-box -/
 example : extract_from_box (Formula.atom "p") = none := rfl
 
-/-- Test 30: extract_from_future extracts inner formula -/
-example : extract_from_future (Formula.future (Formula.atom "p")) = some (Formula.atom "p") := rfl
+/-- Test 30: extract_from_all_future extracts inner formula -/
+example : extract_from_all_future (Formula.all_future (Formula.atom "p")) = some (Formula.atom "p") := rfl
 
-/-- Test 31: extract_from_future returns none for non-future -/
-example : extract_from_future (Formula.atom "p") = none := rfl
+/-- Test 31: extract_from_all_future returns none for non-all_future -/
+example : extract_from_all_future (Formula.atom "p") = none := rfl
 
 /-!
 ## Phase 8: Negative and Edge Case Tests
@@ -228,20 +228,20 @@ This is documented as expected behavior.
 /-- Test 38: is_box_formula recognizes nested box -/
 example : is_box_formula (Formula.box (Formula.box (Formula.atom "p"))) = true := rfl
 
-/-- Test 39: is_future_formula recognizes nested future -/
-example : is_future_formula (Formula.future (Formula.future (Formula.atom "p"))) = true := rfl
+/-- Test 39: is_all_future_formula recognizes nested all_future -/
+example : is_all_future_formula (Formula.all_future (Formula.all_future (Formula.atom "p"))) = true := rfl
 
 /-- Test 40: extract_from_box extracts outer box content from nested -/
 example : extract_from_box (Formula.box (Formula.box (Formula.atom "p"))) = some (Formula.box (Formula.atom "p")) := rfl
 
-/-- Test 41: extract_from_future extracts outer future content from nested -/
-example : extract_from_future (Formula.future (Formula.future (Formula.atom "p"))) = some (Formula.future (Formula.atom "p")) := rfl
+/-- Test 41: extract_from_all_future extracts outer all_future content from nested -/
+example : extract_from_all_future (Formula.all_future (Formula.all_future (Formula.atom "p"))) = some (Formula.all_future (Formula.atom "p")) := rfl
 
 /-- Test 42: is_box_formula rejects implication -/
 example : is_box_formula (Formula.imp (Formula.atom "p") (Formula.atom "q")) = false := rfl
 
-/-- Test 43: is_future_formula rejects past -/
-example : is_future_formula (Formula.sometime_past (Formula.atom "p")) = false := rfl
+/-- Test 43: is_all_future_formula rejects some_past -/
+example : is_all_future_formula (Formula.some_past (Formula.atom "p")) = false := rfl
 
 /-!
 ## Phase 9: Context Variation Tests
@@ -275,7 +275,7 @@ Tests for deep nesting and complex formulas.
 example : is_box_formula (Formula.box (Formula.box (Formula.box (Formula.atom "p")))) = true := rfl
 
 /-- Test 49: Complex bimodal formula via axiom -/
-example : Derivable [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.future (Formula.box (Formula.atom "p")))) := by
+example : Derivable [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.all_future (Formula.box (Formula.atom "p")))) := by
   apply_axiom
 
 /-- Test 50: assumption_search with long context -/

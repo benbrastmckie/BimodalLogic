@@ -300,8 +300,8 @@ This axiom expresses that the new operator preserves truth.
 #guard Formula.bot.complexity = 1
 #guard (Formula.imp (Formula.atom "p") (Formula.atom "q")).complexity = 3
 #guard (Formula.box (Formula.atom "p")).complexity = 2
-#guard (Formula.past (Formula.atom "p")).complexity = 2
-#guard (Formula.future (Formula.atom "p")).complexity = 2
+#guard (Formula.all_past (Formula.atom "p")).complexity = 2
+#guard (Formula.all_future (Formula.atom "p")).complexity = 2
 ```
 
 ### Testing Functions
