@@ -10,7 +10,7 @@ This document tracks `sorry` placeholders (unproven theorems) and `axiom` declar
 
 - [TODO.md](../../TODO.md) - Active tasks addressing these items
 - [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking (canonical sorry counts)
-- [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) - Blockers and workarounds affecting resolution
+- [IMPLEMENTATION_STATUS.md - Known Limitations](IMPLEMENTATION_STATUS.md#known-limitations) - Blockers and workarounds affecting resolution
 
 ## Verification Commands
 

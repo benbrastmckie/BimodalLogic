@@ -12,7 +12,7 @@ dependencies:
 
 ## Purpose
 
-Automate maintenance documentation updates for Lean theorem proving projects by scanning source trees for sorry placeholders, updating module completion percentages, validating cross-references, and synchronizing the six-document ecosystem (TODO.md, SORRY_REGISTRY.md, MAINTENANCE.md, IMPLEMENTATION_STATUS.md, KNOWN_LIMITATIONS.md, CLAUDE.md).
+Automate maintenance documentation updates for Lean theorem proving projects by scanning source trees for sorry placeholders, updating module completion percentages, validating cross-references, and synchronizing the five-document ecosystem (TODO.md, SORRY_REGISTRY.md, MAINTENANCE.md, IMPLEMENTATION_STATUS.md, CLAUDE.md).
 
 ## Modes
 
@@ -195,10 +195,9 @@ echo "   ✓ Documentation directory: $DOCS_DIR"
 # Locate maintenance documents (some may not exist in all projects)
 SORRY_REGISTRY_PATH=""
 IMPL_STATUS_PATH=""
-KNOWN_LIMITS_PATH=""
 MAINTENANCE_PATH=""
 
-for file in "SORRY_REGISTRY.md" "IMPLEMENTATION_STATUS.md" "KNOWN_LIMITATIONS.md" "MAINTENANCE.md"; do
+for file in "SORRY_REGISTRY.md" "IMPLEMENTATION_STATUS.md" "MAINTENANCE.md"; do
   if [[ -f "$DOCS_DIR/$file" ]]; then
     case "$file" in
       "SORRY_REGISTRY.md")
@@ -208,10 +207,6 @@ for file in "SORRY_REGISTRY.md" "IMPLEMENTATION_STATUS.md" "KNOWN_LIMITATIONS.md
       "IMPLEMENTATION_STATUS.md")
         IMPL_STATUS_PATH="$DOCS_DIR/$file"
         echo "   ✓ Found: IMPLEMENTATION_STATUS.md"
-        ;;
-      "KNOWN_LIMITATIONS.md")
-        KNOWN_LIMITS_PATH="$DOCS_DIR/$file"
-        echo "   ✓ Found: KNOWN_LIMITATIONS.md"
         ;;
       "MAINTENANCE.md")
         MAINTENANCE_PATH="$DOCS_DIR/$file"
@@ -317,7 +312,7 @@ for path_var in TODO_PATH CLAUDE_PATH SORRY_REGISTRY_PATH IMPL_STATUS_PATH KNOWN
 done
 
 # Persist all paths to state
-persist_state TODO_PATH CLAUDE_PATH SORRY_REGISTRY_PATH IMPL_STATUS_PATH KNOWN_LIMITS_PATH MAINTENANCE_PATH ANALYSIS_REPORT_PATH
+persist_state TODO_PATH CLAUDE_PATH SORRY_REGISTRY_PATH IMPL_STATUS_PATH MAINTENANCE_PATH ANALYSIS_REPORT_PATH
 
 echo "   ✓ Analysis report path: $ANALYSIS_REPORT_PATH"
 echo "   ✓ TODO.md: $TODO_PATH"
@@ -327,9 +322,6 @@ if [[ -n "$SORRY_REGISTRY_PATH" ]]; then
 fi
 if [[ -n "$IMPL_STATUS_PATH" ]]; then
   echo "   ✓ IMPLEMENTATION_STATUS.md: $IMPL_STATUS_PATH"
-fi
-if [[ -n "$KNOWN_LIMITS_PATH" ]]; then
-  echo "   ✓ KNOWN_LIMITATIONS.md: $KNOWN_LIMITS_PATH"
 fi
 if [[ -n "$MAINTENANCE_PATH" ]]; then
   echo "   ✓ MAINTENANCE.md: $MAINTENANCE_PATH"
@@ -378,11 +370,6 @@ if [[ -n "$IMPL_STATUS_PATH" ]]; then
 - IMPLEMENTATION_STATUS.md: $IMPL_STATUS_PATH"
 fi
 
-if [[ -n "$KNOWN_LIMITS_PATH" ]]; then
-  AGENT_INPUT+="
-- KNOWN_LIMITATIONS.md: $KNOWN_LIMITS_PATH"
-fi
-
 if [[ -n "$MAINTENANCE_PATH" ]]; then
   AGENT_INPUT+="
 - MAINTENANCE.md: $MAINTENANCE_PATH"
@@ -423,7 +410,6 @@ The following sections must NEVER be modified:
 - TODO.md: Backlog, Saved sections
 - SORRY_REGISTRY.md: Resolved Placeholders section
 - IMPLEMENTATION_STATUS.md: Lines with <!-- MANUAL --> comments
-- KNOWN_LIMITATIONS.md: Workaround details (if marked manual)
 - MAINTENANCE.md: Custom procedures (if marked manual)
 - CLAUDE.md: Project-specific standards (if marked manual)
 
@@ -891,10 +877,6 @@ if [[ -n "$IMPL_STATUS_PATH" ]]; then
   echo "  📄 IMPLEMENTATION_STATUS.md: $IMPL_STATUS_PATH"
 fi
 
-if [[ -n "$KNOWN_LIMITS_PATH" ]]; then
-  echo "  📄 KNOWN_LIMITATIONS.md: $KNOWN_LIMITS_PATH"
-fi
-
 if [[ -n "$MAINTENANCE_PATH" ]]; then
   echo "  📄 MAINTENANCE.md: $MAINTENANCE_PATH"
 fi
@@ -961,7 +943,6 @@ The command validates bidirectional links between maintenance documents:
 
 - **TODO.md ↔ SORRY_REGISTRY.md**: Active tasks reference tech debt
 - **SORRY_REGISTRY.md ↔ IMPLEMENTATION_STATUS.md**: Sorry counts match module status
-- **SORRY_REGISTRY.md ↔ KNOWN_LIMITATIONS.md**: Gaps linked to sorry placeholders
 - **MAINTENANCE.md**: References all other maintenance docs
 
 ## Preservation Policy
@@ -973,7 +954,6 @@ Manual curation is preserved across updates:
 | TODO.md | Backlog, Saved |
 | SORRY_REGISTRY.md | Resolved Placeholders |
 | IMPLEMENTATION_STATUS.md | Lines with `<!-- MANUAL -->` |
-| KNOWN_LIMITATIONS.md | Workaround details (if marked manual) |
 | MAINTENANCE.md | Custom procedures (if marked manual) |
 | CLAUDE.md | Project-specific standards (if marked manual) |
 

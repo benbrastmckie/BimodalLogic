@@ -28,8 +28,7 @@ Research vision and planned architecture. For implementation status, see [Projec
 
 ### ProjectInfo/
 Project status and contribution information:
-- **IMPLEMENTATION_STATUS.md**: Module-by-module status tracking with verification commands
-- **KNOWN_LIMITATIONS.md**: Gaps, explanations, workarounds, and roadmap
+- **IMPLEMENTATION_STATUS.md**: Module-by-module status tracking with verification commands (includes Known Limitations section)
 - **SORRY_REGISTRY.md**: Technical debt tracking (sorry placeholders with resolution context)
 - **MAINTENANCE.md**: TODO management workflow (git-based history model)
 - **CONTRIBUTING.md**: Contribution guidelines and workflow
@@ -67,7 +66,7 @@ Reference materials:
 
 ### For Contributors
 - [Implementation Status](ProjectInfo/IMPLEMENTATION_STATUS.md) - What's implemented
-- [Known Limitations](ProjectInfo/KNOWN_LIMITATIONS.md) - What needs work
+- [Implementation Status - Known Limitations](ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) - What needs work
 - [Sorry Registry](ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking
 - [Maintenance Workflow](ProjectInfo/MAINTENANCE.md) - TODO and documentation procedures
 - [Contributing Guidelines](ProjectInfo/CONTRIBUTING.md) - How to contribute
@@ -106,7 +105,7 @@ When updating documentation:
    - Update completion percentages
    - Add verification commands
 
-3. **New limitations**: Document in ProjectInfo/KNOWN_LIMITATIONS.md
+3. **New limitations**: Document in ProjectInfo/IMPLEMENTATION_STATUS.md Known Limitations section
    - Explain why limitation exists
    - Provide workarounds
    - Add to roadmap
@@ -166,8 +165,8 @@ All Markdown documentation can be read:
 
 ### "What is the status of...?"
 - **Module completion**: Check [IMPLEMENTATION_STATUS.md](ProjectInfo/IMPLEMENTATION_STATUS.md)
-- **Known issues**: See [KNOWN_LIMITATIONS.md](ProjectInfo/KNOWN_LIMITATIONS.md)
-- **Planned features**: Look in KNOWN_LIMITATIONS.md Section 7
+- **Known issues**: See [IMPLEMENTATION_STATUS.md - Known Limitations](ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations)
+- **Planned features**: Look in IMPLEMENTATION_STATUS.md Known Limitations section
 
 ### "Where is the specification for...?"
 - **TM logic axioms**: [ARCHITECTURE.md](UserGuide/ARCHITECTURE.md) Section 2

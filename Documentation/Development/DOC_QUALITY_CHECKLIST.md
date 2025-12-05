@@ -88,14 +88,14 @@ and implementation gaps.
 PERPETUITY_SORRY=$(grep -c "sorry" Logos/Theorems/Perpetuity.lean)
 echo "Perpetuity.lean sorry count: $PERPETUITY_SORRY"
 
-# Check KNOWN_LIMITATIONS.md claims
-grep "Perpetuity.lean.*sorry" Documentation/ProjectInfo/KNOWN_LIMITATIONS.md
+# Check IMPLEMENTATION_STATUS.md Known Limitations section claims
+grep "Perpetuity.lean.*sorry" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
 
 # Manual verification: Line numbers in documentation match actual source locations
 ```
 
-**Expected**: Line numbers referenced in KNOWN_LIMITATIONS.md, TODO.md, and
-IMPLEMENTATION_STATUS.md should match actual source code locations.
+**Expected**: Line numbers referenced in IMPLEMENTATION_STATUS.md, TODO.md, and
+other documentation should match actual source code locations.
 
 **Action if Failed**: Update line number references in documentation to match
 current source code.
@@ -105,7 +105,7 @@ current source code.
 ### 1.4 Sorry Placeholder Count
 
 **Check**: Total `sorry` count matches across Sorry Placeholder Registry in TODO.md
-and KNOWN_LIMITATIONS.md.
+and IMPLEMENTATION_STATUS.md Known Limitations section.
 
 **Verification**:
 ```bash
@@ -117,17 +117,17 @@ echo "Total sorry placeholders in codebase: $TOTAL_SORRY"
 # Check TODO.md registry
 grep "Total:.*placeholders" TODO.md
 
-# Check KNOWN_LIMITATIONS.md
-grep "sorry.*placeholder" Documentation/ProjectInfo/KNOWN_LIMITATIONS.md | wc -l
+# Check IMPLEMENTATION_STATUS.md Known Limitations section
+grep "sorry.*placeholder" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md | wc -l
 
 # Manual verification: Counts should match
 ```
 
-**Expected**: All three sources (codebase, TODO.md, KNOWN_LIMITATIONS.md) show
+**Expected**: All three sources (codebase, TODO.md, IMPLEMENTATION_STATUS.md) show
 identical `sorry` counts. Currently 41 total placeholders.
 
 **Action if Failed**: Update TODO.md Sorry Placeholder Registry and
-KNOWN_LIMITATIONS.md to reflect current state.
+IMPLEMENTATION_STATUS.md Known Limitations section to reflect current state.
 
 ---
 
@@ -183,12 +183,12 @@ DIRECTORY_README_STANDARD.md format.
 
 ### 2.3 Limitations Documentation
 
-**Check**: All known limitations documented in KNOWN_LIMITATIONS.md with workarounds.
+**Check**: All known limitations documented in IMPLEMENTATION_STATUS.md Known Limitations section with workarounds.
 
 **Verification**:
 ```bash
-# Check KNOWN_LIMITATIONS.md has all modules with incomplete implementation
-grep -E "^### [0-9]+\." Documentation/ProjectInfo/KNOWN_LIMITATIONS.md
+# Check IMPLEMENTATION_STATUS.md Known Limitations section has all modules with incomplete implementation
+grep -E "^### [0-9]+\." Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md | grep -A 5 "Known Limitations"
 
 # Manual verification: Ensure each limitation has:
 # - Clear description
@@ -198,9 +198,9 @@ grep -E "^### [0-9]+\." Documentation/ProjectInfo/KNOWN_LIMITATIONS.md
 ```
 
 **Expected**: Every `sorry` placeholder or incomplete implementation should have
-corresponding KNOWN_LIMITATIONS.md entry with workaround.
+corresponding entry in IMPLEMENTATION_STATUS.md Known Limitations section with workaround.
 
-**Action if Failed**: Add missing limitation entries to KNOWN_LIMITATIONS.md.
+**Action if Failed**: Add missing limitation entries to IMPLEMENTATION_STATUS.md Known Limitations section.
 
 ---
 
@@ -543,7 +543,7 @@ implementation state or fix incorrect status claims.
 1. Run Completeness Checks (Section 2) to ensure new code is documented
 2. Run Consistency Checks (Section 1) to update counts and percentages
 3. Run Accuracy Checks (Section 3) to verify status claims
-4. Update IMPLEMENTATION_STATUS.md and KNOWN_LIMITATIONS.md as needed
+4. Update IMPLEMENTATION_STATUS.md (including Known Limitations section) as needed
 
 ### Quarterly Quality Assurance
 
@@ -583,8 +583,7 @@ When adding new documentation standards:
 - [Directory README Standard](DIRECTORY_README_STANDARD.md)
 
 **Implementation Tracking**:
-- [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md)
-- [KNOWN_LIMITATIONS.md](../ProjectInfo/KNOWN_LIMITATIONS.md)
+- [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) (includes Known Limitations section)
 - [TODO.md](../../TODO.md)
 
 **Best Practices Report**:

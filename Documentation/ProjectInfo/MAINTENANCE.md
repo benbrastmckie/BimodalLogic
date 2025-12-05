@@ -6,9 +6,9 @@ This document describes the workflow for maintaining TODO.md and related project
 
 ## Related Documentation
 
+**Three-Document Model** (consolidated from four documents on 2025-12-05):
 - [TODO.md](../../TODO.md) - Active task tracking (active work only)
-- [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking
-- [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) - Gaps, workarounds, and blockers
+- [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking (includes Known Limitations section)
 - [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
 
 ---
@@ -83,8 +83,7 @@ This model provides:
 1. Create implementation summary in spec directory (if spec exists)
 
 2. Update related documentation:
-   - **IMPLEMENTATION_STATUS.md**: Update module status, sorry counts
-   - **KNOWN_LIMITATIONS.md**: Remove resolved gaps and workarounds
+   - **IMPLEMENTATION_STATUS.md**: Update module status, sorry counts, and Known Limitations section
    - **SORRY_REGISTRY.md**: Remove resolved placeholders
 
 3. **Remove completed task from TODO.md entirely** (don't mark as complete)
@@ -126,11 +125,10 @@ Update these files in order:
 | Order | File | Updates |
 |-------|------|---------|
 | 1 | Spec summaries | Create completion summary |
-| 2 | IMPLEMENTATION_STATUS.md | Module %, sorry counts |
-| 3 | KNOWN_LIMITATIONS.md | Remove fixed gaps |
-| 4 | SORRY_REGISTRY.md | Remove resolved items |
-| 5 | TODO.md | Remove task, update counts |
-| 6 | Git commit | Comprehensive message |
+| 2 | IMPLEMENTATION_STATUS.md | Module %, sorry counts, Known Limitations section |
+| 3 | SORRY_REGISTRY.md | Remove resolved items |
+| 4 | TODO.md | Remove task, update counts |
+| 5 | Git commit | Comprehensive message |
 
 ### Decision Tree: Which Document to Update
 
@@ -139,7 +137,7 @@ Is this about module completion %?
   -> IMPLEMENTATION_STATUS.md
 
 Is this about a gap/limitation being fixed?
-  -> KNOWN_LIMITATIONS.md (remove entry)
+  -> IMPLEMENTATION_STATUS.md Known Limitations section (remove entry)
 
 Is this about a sorry placeholder?
   -> SORRY_REGISTRY.md (remove/move to resolved)
@@ -159,12 +157,11 @@ After major updates, verify bidirectional links work:
 # Check SORRY_REGISTRY.md references
 grep -l "SORRY_REGISTRY.md" TODO.md Documentation/ProjectInfo/*.md
 
-# Check all four docs reference each other appropriately
+# Check all three core docs reference each other appropriately
 for doc in TODO.md Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md \
-           Documentation/ProjectInfo/KNOWN_LIMITATIONS.md \
            Documentation/ProjectInfo/SORRY_REGISTRY.md; do
   echo "=== $doc ==="
-  grep -E "(TODO\.md|IMPLEMENTATION_STATUS|KNOWN_LIMITATIONS|SORRY_REGISTRY|MAINTENANCE)" "$doc"
+  grep -E "(TODO\.md|IMPLEMENTATION_STATUS|SORRY_REGISTRY|MAINTENANCE)" "$doc"
 done
 ```
 
@@ -254,7 +251,7 @@ git log --all -S "sorry" -- Logos/Core/Semantics/Truth.lean
 
 2. Review resolution guidance and effort estimate
 
-3. Check for blockers in [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md)
+3. Check for blockers in [IMPLEMENTATION_STATUS.md - Known Limitations](IMPLEMENTATION_STATUS.md#known-limitations)
 
 4. Implement proof/function to remove sorry
 
@@ -276,7 +273,7 @@ git log --all -S "sorry" -- Logos/Core/Semantics/Truth.lean
 If resolution is blocked:
 
 1. Document blocker in SORRY_REGISTRY.md entry
-2. Cross-reference to KNOWN_LIMITATIONS.md
+2. Cross-reference to IMPLEMENTATION_STATUS.md Known Limitations section
 3. Mark status as BLOCKED
 4. Create workaround if possible
 5. Create task in TODO.md if unblocking requires significant work

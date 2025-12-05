@@ -16,7 +16,7 @@ logic TM (Tense and Modality) with task semantics. It provides:
 **MVP Completion**: Layer 0 (Core TM) MVP complete with full soundness
 
 **For detailed status**: See [Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)
-**For limitations**: See [Documentation/ProjectInfo/KNOWN_LIMITATIONS.md](Documentation/ProjectInfo/KNOWN_LIMITATIONS.md)
+**For limitations**: See [Implementation Status - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations)
 **For task tracking**: See [TODO.md](TODO.md) (active work only - git history for completed tasks)
 **For technical debt**: See [Documentation/ProjectInfo/SORRY_REGISTRY.md](Documentation/ProjectInfo/SORRY_REGISTRY.md)
 **For maintenance workflow**: See [Documentation/ProjectInfo/MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md)
@@ -91,8 +91,7 @@ Logos/Core/
 │   │   ├── EXAMPLES.md             # Usage examples
 │   │   └── INTEGRATION.md          # Model-Checker integration
 │   ├── ProjectInfo/            # Project status and contribution info
-│   │   ├── IMPLEMENTATION_STATUS.md  # Module-by-module status tracking
-│   │   ├── KNOWN_LIMITATIONS.md      # Gaps, explanations, workarounds
+│   │   ├── IMPLEMENTATION_STATUS.md  # Module-by-module status tracking (includes Known Limitations)
 │   │   ├── SORRY_REGISTRY.md         # Technical debt (sorry placeholders)
 │   │   ├── MAINTENANCE.md            # TODO management workflow
 │   │   ├── CONTRIBUTING.md           # Contribution guidelines
@@ -124,7 +123,7 @@ Logos/Core/
 ### Project Status (Keep Updated)
 - [TODO.md](TODO.md) - **Active task tracking** (uses git-based history model)
 - [Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module status tracking
-- [Known Limitations](Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) - Gaps and workarounds
+- [Implementation Status - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) - Gaps and workarounds
 - [Sorry Registry](Documentation/ProjectInfo/SORRY_REGISTRY.md) - Technical debt (sorry placeholders)
 - [Maintenance Workflow](Documentation/ProjectInfo/MAINTENANCE.md) - TODO management procedures
 
@@ -283,7 +282,7 @@ Logos test suite is organized in LogosTest/ directory with unit tests (Syntax/, 
 - **Avoid incomplete axioms**: TL, MF, TF have incomplete soundness proofs
 - **Perpetuity P3 is safe**: Only P3 is fully proven (zero sorry)
 - **No automation available**: All tactics are stubs, use manual proof construction
-- See [KNOWN_LIMITATIONS.md](Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) for workarounds and alternatives
+- See [Implementation Status - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) for workarounds and alternatives
 - See [IMPLEMENTATION_STATUS.md](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)
   for verification commands
 

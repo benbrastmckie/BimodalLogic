@@ -538,7 +538,7 @@ If working alone, prioritize critical path to minimize project duration:
 
 - [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-
   module status tracking
-- [KNOWN_LIMITATIONS.md](../ProjectInfo/KNOWN_LIMITATIONS.md) - Gaps and workarounds
+- [IMPLEMENTATION_STATUS.md - Known Limitations](../ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) - Gaps and workarounds
 - [CONTRIBUTING.md](../ProjectInfo/CONTRIBUTING.md) - Contribution guidelines
 
 ### Related Guides

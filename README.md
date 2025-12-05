@@ -80,9 +80,8 @@ The Core Layer implements TM (Tense and Modality) - a bimodal logic combining S5
 | Category        | Operators                                                                          | Meaning                     |
 | --------------- | ---------------------------------------------------------------------------------- | --------------------------- |
 | **Extensional** | `¬`, `∧`, `∨`, `→`, `↔`, `⊥`, `⊤`                                                 | Boolean connectives         |
-| **Modal**       | `□` (necessity), `◇` (possibility)                                                 | S5 metaphysical modality    |
-| **Temporal**    | `H` (always past), `G` (always future), `P` (sometime past), `F` (sometime future) | Linear temporal operators   |
-| **Bimodal**     | `△` (always/henceforth), `▽` (sometimes/eventually)                                | Modal-temporal combinations |
+| **Modal**       | `□` (necessity), `◇` (possibility)                                                 | S5 historical modality    |
+| **Temporal**    | `H` (always past), `G` (always future), `P` (sometime past), `F` (sometime future), `△` (always), `▽` (sometimes) | Linear temporal operators   |
 
 **For operator details**: [Operators Glossary](Documentation/Reference/OPERATORS.md) | [Architecture Guide](Documentation/UserGuide/ARCHITECTURE.md)
 
@@ -292,7 +291,7 @@ lake test
 ### Project Status
 
 - [Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module status
-- [Known Limitations](Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) - Gaps and workarounds
+- [Implementation Status - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) - Gaps and workarounds
 - [TODO](TODO.md) - Active task tracking
 
 ### Advanced Topics

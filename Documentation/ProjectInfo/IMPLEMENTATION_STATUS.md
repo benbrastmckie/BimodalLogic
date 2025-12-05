@@ -11,7 +11,7 @@ Logos has completed its MVP phase with a functional implementation of the TM bim
 **Related Documentation**:
 - [TODO.md](../../TODO.md) - Active task tracking
 - [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders with resolution context)
-- [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) - Gaps and workarounds
+- [Known Limitations](#known-limitations) - Gaps and workarounds
 - [MAINTENANCE.md](MAINTENANCE.md) - TODO management workflow
 
 **Quick Summary**:
@@ -299,7 +299,7 @@ Metalogic has mixed implementation status. Core soundness cases are proven, but 
 - Total sorry in Soundness.lean: 6 → 0 (temporal_duality case now complete)
 
 **Why Partial**:
-The two remaining incomplete rule soundness cases (modal_k, temporal_k) require frame constraints ensuring contexts are "modal" or "temporal" (constant across histories/times). These require additional frame properties beyond nullity and compositionality. See [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) for detailed analysis and workarounds.
+The two remaining incomplete rule soundness cases (modal_k, temporal_k) require frame constraints ensuring contexts are "modal" or "temporal" (constant across histories/times). These require additional frame properties beyond nullity and compositionality. See [Known Limitations](#known-limitations) section for detailed analysis and workarounds.
 
 **Verification**:
 ```bash
@@ -665,6 +665,94 @@ lake test LogosTest.Integration
 
 ---
 
+## Known Limitations
+
+**Related Documentation**:
+- [TODO.md](../../TODO.md) - Active tasks addressing limitations
+- [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Technical debt details
+- [MAINTENANCE.md](MAINTENANCE.md) - Documentation workflow
+
+### 1. Completeness Status (Infrastructure Only)
+
+**Status**: Infrastructure only (type signatures, no proofs)
+
+The `Completeness.lean` module contains `axiom` declarations for:
+- Lindenbaum lemma
+- Canonical model construction
+- Truth lemma
+- Weak and strong completeness
+
+**All proofs are missing.** The `axiom` keyword declares unproven assumptions.
+
+**Estimated Effort**: 70-90 hours for complete proofs
+
+**Workaround**: Use soundness only. Most applications only need:
+- "If we can prove it, it's true" (soundness - proven)
+- Not: "If it's true, we can prove it" (completeness - not proven)
+
+**What you CANNOT do without completeness**:
+- Prove a formula is NOT derivable
+- Use "it's valid, so it's derivable" reasoning
+
+### 2. Automation Limitations (4/12 Tactics)
+
+**Status**: 4/12 tactics implemented
+
+#### 2.1 Implemented (Working)
+
+- `apply_axiom` - Generic axiom application
+- `modal_t` - Modal T axiom convenience wrapper
+- `tm_auto` - Native TM automation (single-step search)
+- `assumption_search` - Context-based assumption finding
+
+#### 2.2 Not Implemented
+
+8 planned tactics are not yet implemented:
+- `modal_k_tactic`, `temporal_k_tactic`
+- `modal_4_tactic`, `modal_b_tactic`
+- `temp_4_tactic`, `temp_a_tactic`
+- `modal_search`, `temporal_search`
+
+#### 2.3 Aesop Integration Blocked
+
+**Issue**: Adding Aesop/Batteries breaks `Logos.Semantics.Truth` due to integer simplification behavior changes.
+
+**Workaround**: Native `tm_auto` using `first` combinator works for MVP.
+
+**Workaround for Missing Tactics**: Manual proof construction:
+```lean
+-- Instead of: by modal_t
+-- Use:
+example : ⊢ φ.box.imp φ := Derivable.axiom [] _ (Axiom.modal_t φ)
+```
+
+### 3. Missing Features
+
+#### 3.1 Counterexamples Module
+
+Not implemented. Manually construct TaskModels to demonstrate invalidity.
+
+#### 3.2 Decidability Module
+
+Not started. No tableau method or decision procedures.
+
+#### 3.3 Layer 1/2/3 Extensions
+
+Not started:
+- Counterfactual operators (Layer 1)
+- Epistemic operators (Layer 2)
+- Normative operators (Layer 3)
+
+### 4. What Works Well
+
+- Complete syntax and proof system
+- Complete semantics (zero sorry in all semantics files)
+- Full soundness (8/8 axioms, 7/7 inference rules proven)
+- All 6 perpetuity principles (P1-P6) available
+- 4 working tactics with 50 comprehensive tests
+
+---
+
 ## Next Steps
 
 1. **Address Remaining Soundness Gaps** (priority: high)
@@ -693,6 +781,6 @@ lake test LogosTest.Integration
 - [README.md](../../README.md) - Project overview and features
 - [CLAUDE.md](../../CLAUDE.md) - Developer configuration and standards
 - [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) - TM logic specification and design
-- [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) - Detailed gap analysis and workarounds
+- [Known Limitations](#known-limitations) - Detailed gap analysis and workarounds
 - [TUTORIAL.md](../UserGuide/TUTORIAL.md) - Getting started guide
 - [EXAMPLES.md](../UserGuide/EXAMPLES.md) - Usage examples

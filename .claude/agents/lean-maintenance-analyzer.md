@@ -70,9 +70,8 @@ Before generating updates, read the current state of all maintenance documents:
 1. **Read TODO.md**: Active tasks, priorities, Backlog, Saved sections
 2. **Read CLAUDE.md**: Project overview, standards, documentation index
 3. **Read SORRY_REGISTRY.md** (if exists): Active sorries, resolved sorries
-4. **Read IMPLEMENTATION_STATUS.md** (if exists): Module completion percentages
-5. **Read KNOWN_LIMITATIONS.md** (if exists): Documented gaps and limitations
-6. **Read MAINTENANCE.md** (if exists): Workflow documentation
+4. **Read IMPLEMENTATION_STATUS.md** (if exists): Module completion percentages (includes Known Limitations section)
+5. **Read MAINTENANCE.md** (if exists): Workflow documentation
 
 **IMPORTANT**: Identify preservation sections in each document:
 - TODO.md: `## Backlog`, `## Saved` sections
@@ -177,14 +176,7 @@ Check if:
 - Cross-references to other docs are current
 - Preserve `## Backlog` and `## Saved` sections (NEVER modify)
 
-#### 4.4 KNOWN_LIMITATIONS.md Updates
-
-Check if:
-- Limitations are still current (compare with source)
-- Any gaps have been resolved (sorry count = 0 for module)
-- Cross-references to SORRY_REGISTRY.md are valid
-
-#### 4.5 MAINTENANCE.md Updates
+#### 4.4 MAINTENANCE.md Updates
 
 Rarely needs updates unless:
 - Workflow procedures have changed
@@ -390,7 +382,6 @@ preservation_sections: 4
 | TODO.md | `## Backlog` section, `## Saved` section |
 | SORRY_REGISTRY.md | `## Resolved Placeholders` section |
 | IMPLEMENTATION_STATUS.md | Lines containing `<!-- MANUAL -->` |
-| KNOWN_LIMITATIONS.md | Sections marked `<!-- MANUAL -->` |
 | MAINTENANCE.md | Sections marked `<!-- CUSTOM -->` |
 | CLAUDE.md | Sections marked `<!-- CUSTOM -->` |
 

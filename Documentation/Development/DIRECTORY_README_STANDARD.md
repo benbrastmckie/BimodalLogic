@@ -295,8 +295,7 @@ User-facing documentation for working with [project]:
 
 ### ProjectInfo/
 Project status and contribution information:
-- **IMPLEMENTATION_STATUS.md**: Module-by-module status tracking
-- **KNOWN_LIMITATIONS.md**: Gaps, explanations, workarounds
+- **IMPLEMENTATION_STATUS.md**: Module-by-module status tracking (includes Known Limitations section)
 - **CONTRIBUTING.md**: Contribution guidelines
 - **VERSIONING.md**: Semantic versioning policy
 
@@ -332,7 +331,7 @@ When updating documentation:
 
 1. **User-facing changes**: Update relevant UserGuide/ files first
 2. **Implementation changes**: Update ProjectInfo/IMPLEMENTATION_STATUS.md
-3. **New limitations**: Document in ProjectInfo/KNOWN_LIMITATIONS.md
+3. **New limitations**: Document in ProjectInfo/IMPLEMENTATION_STATUS.md Known Limitations section
 4. **Style changes**: Update Development/ standards files
 5. **Cross-references**: Ensure all links remain valid
 

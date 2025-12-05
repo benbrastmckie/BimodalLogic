@@ -542,7 +542,7 @@ See [Command Architecture Standards](../architecture/overview.md) for complete s
 
 **Agents Used**: lean-maintenance-analyzer
 
-**Output**: Updated maintenance documents (TODO.md, SORRY_REGISTRY.md, IMPLEMENTATION_STATUS.md, KNOWN_LIMITATIONS.md, MAINTENANCE.md, CLAUDE.md)
+**Output**: Updated maintenance documents (TODO.md, SORRY_REGISTRY.md, IMPLEMENTATION_STATUS.md, MAINTENANCE.md, CLAUDE.md)
 
 **Modes**:
 1. **Scan Mode** (default): Update all maintenance documents based on current project state
