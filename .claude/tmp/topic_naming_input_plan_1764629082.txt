@@ -1,1 +1,0 @@
-It is important that all formal unicode symbols are inside backticks to improve readability. revise all relevant documentation to impose this standard and update the repo standards to enforce this standard going forward.

@@ -1,1 +1,0 @@
-Update repository documentation for comprehensive coverage of implemented ProofChecker MVP

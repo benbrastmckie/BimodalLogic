@@ -1,4 +1,0 @@
-EXISTING_PLAN_PATH=/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/035_semantics_temporal_order_generalization/plans/001-semantics-temporal-order-generalization-plan.md
-REFERENCE_REPORT=/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/035_semantics_temporal_order_generalization/reports/temporal_duality_options_comparison.md
-REVISION_DETAILS=Research option A from /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/035_semantics_temporal_order_generalization/reports/temporal_duality_options_comparison.md and the current implementation to revise plan, updating phase 3 or adding new phases as needed
-RESEARCH_COMPLEXITY=2

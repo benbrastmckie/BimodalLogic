@@ -1,8 +1,8 @@
 # Logos: A Formal Language of Thought
 
-The **Logos** is designed to train AI systems in verified reasoning in a formal language of though that is interpreted by explicit semantic models. Including tense, modal, causal, counterfactual, epistemic, and normative operators, the Logos equips AI systems to engage in complex reasoning tasks for planning and evaluating actions.
+The **Logos** is designed to train AI systems to conduct verified reasoning in a formal language of thought that is interpreted by explicit semantic models. Including extensional, tense, modal, causal, counterfactual, epistemic, and normative operators in the Logos equips AI systems to perform complex reasoning tasks for planning and evaluating actions in coordination with other agents under conditions of uncertainty.
 
-By combining an **axiomatic proof system** implemented in LEAN 4 with a **recursive semantic theory** implemented in the [Model-Checker](https://github.com/benbrastmckie/ModelChecker), creating a dual verification architecture that generates comprehensive training signals without human annotation.
+Combining an **axiomatic proof system** implemented in LEAN 4 with a **recursive semantic theory** implemented in the [Model-Checker](https://github.com/benbrastmckie/ModelChecker) creates a dual verification architecture that generates comprehensive training signals without human annotation.
 
 | Component               | Role                                                      | Training Signal      |
 | ----------------------- | --------------------------------------------------------- | -------------------- |
@@ -50,7 +50,7 @@ Training AI systems to reason reliably requires both positive signals (valid inf
 2. **Clean**: Soundness guarantees only valid inferences are derivable
 3. **Justified**: LEAN 4 proofs provide verifiable receipts; Z3 countermodels refute invalid claims
 
-Reasoning in Logos can be interpreted using the semantic clauses for the language, offering scalable transparency and oversight for sophisticated AI reasoning.
+By contrast, human reasoning data is limited, inconsistent, and prone to error, providing a poor training source. Beyond pattern matching, reasoning in the Logos provides proof receipts which ensure validity where the semantic theory for the Logos provide interpretability over explicit semantic models, offering scalable oversight for sophisticated forms of AI reasoning with an extensible set of operators.
 
 **See also**: [Dual Verification Research](Documentation/Research/DUAL_VERIFICATION.md) | [Integration Guide](Documentation/UserGuide/INTEGRATION.md) | [LogicNotes](https://github.com/benbrastmckie/LogicNotes)
 

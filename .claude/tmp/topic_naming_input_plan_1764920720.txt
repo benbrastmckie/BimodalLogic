@@ -1,1 +1,0 @@
-Research the NOTE tags in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md in order to create a plan to fully address all issues raised, providing an improved approach to managing the TODO.md documents that removes all completed tasks, relying on git for history of what has been completed to avoid cluttering the TODO.md file.

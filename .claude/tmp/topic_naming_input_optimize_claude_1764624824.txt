@@ -1,1 +1,0 @@
-Optimize CLAUDE.md structure and documentation

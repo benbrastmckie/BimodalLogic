@@ -1,1 +1,0 @@
-I want to use a triangle unicode character for 'always' operator and an upside-down triangle for 'sometimes'. Research the operators in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/docs/glossary/logical-operators.md in order to create a plan to systematically replace the 'always' and 'sometimes' operators with these symbols.
