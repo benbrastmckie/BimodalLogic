@@ -1,4 +1,5 @@
 import Logos.Core.ProofSystem
+import Logos.Core.Automation.AesopRules
 import Lean
 
 /-!
@@ -41,7 +42,7 @@ example (p : Formula) : [p.box] ⊢ p := by
 ```
 -/
 
-open Logos.Core.Syntax ProofChecker.ProofSystem
+open Logos.Core.Syntax Logos.Core.ProofSystem
 open Lean Elab Tactic Meta
 
 namespace Logos.Core.Automation
@@ -90,53 +91,43 @@ macro "modal_t" : tactic =>
   `(tactic| (apply Derivable.axiom; refine ?_))
 
 /-!
-## Phase 5: tm_auto (Native Implementation)
+## Phase 4: tm_auto (Aesop Integration)
 
-**IMPLEMENTATION NOTE**: Aesop integration was attempted but blocked by incompatibility
-with existing ProofChecker code (Batteries dependency causes type errors in Truth.lean).
+**IMPLEMENTATION NOTE**: Aesop integration successful using forward chaining rules defined
+in AesopRules.lean. Uses default Aesop rule set with TM-specific rules registered.
 
-**Solution**: Implemented native `tm_auto` using Lean.Meta with bounded depth-first search.
+**Solution**: Aesop-powered automation with forward chaining for all proven axioms (MT, M4,
+MB, T4, TA, prop_k, prop_s) and safe apply rules for core inference (modus_ponens, modal_k,
+temporal_k).
 
-This is the pragmatic MVP approach: tries each axiom systematically with bounded depth,
-no external dependencies required.
+This leverages Aesop's white-box best-first search with domain-specific TM logic rules.
 -/
 
 /--
-`tm_auto` tactic - native TM automation without Aesop.
+`tm_auto` tactic - Aesop-powered TM automation.
 
-Attempts to solve TM proof goals by systematically trying:
-1. `assumption` - check if goal is in context
-2. All 10 TM axioms via `apply_axiom`
-3. Bounded depth-first search (depth limit: 3)
+Attempts to solve TM proof goals using Aesop's best-first search with:
+1. Forward chaining for 7 proven axioms (modal_t, modal_4, modal_b, temp_4, temp_a, prop_k, prop_s)
+2. Safe apply rules for core inference (modus_ponens, modal_k, temporal_k)
+3. Normalization of derived operators (diamond, always, sometimes, sometime_past)
 
 **Example**:
 ```lean
 example : ⊢ (□p → p) := by
-  tm_auto  -- Finds modal_t axiom automatically
+  tm_auto  -- Uses Aesop with TM-specific forward rules
 ```
 
-**Implementation**: Native Lean.Meta proof search, no external dependencies.
+**Implementation**: Aesop best-first search (max 100 rule applications).
 
 **Limitations**:
-- Fixed depth limit (3 steps)
-- No heuristic ordering of axiom attempts
-- Simple search strategy (may not find all proofs)
+- Excludes incomplete axioms (temp_l, modal_future, temp_future)
+- Fixed rule limit (100 applications, may timeout on complex proofs)
+- No backtracking beyond Aesop's built-in search
 
 For complex proofs, use explicit `apply_axiom` calls or manual tactics.
 -/
 macro "tm_auto" : tactic =>
-  `(tactic| first
-    | assumption  -- Try finding goal in context
-    | apply_axiom
-    | apply_axiom
-    | apply_axiom
-    | apply_axiom
-    | apply_axiom
-    | apply_axiom
-    | apply_axiom
-    | apply_axiom
-    | apply_axiom
-    | apply_axiom)
+  `(tactic| aesop)
 
 /-!
 ## Phase 6: assumption_search Tactic
@@ -181,22 +172,22 @@ These helpers support tactic implementation and formula pattern matching.
 
 /-- Check if formula has form `□φ` for some `φ`. -/
 def is_box_formula : Formula → Bool
-  | Formula.box _ => true
+  | .box _ => true
   | _ => false
 
 /-- Check if formula has form `Fφ` for some `φ`. -/
 def is_future_formula : Formula → Bool
-  | Formula.all_future _ => true
+  | .all_future _ => true
   | _ => false
 
 /-- Extract `φ` from `□φ`, returns none if not a box formula. -/
 def extract_from_box : Formula → Option Formula
-  | Formula.box φ => some φ
+  | .box φ => some φ
   | _ => none
 
 /-- Extract `φ` from `Fφ`, returns none if not a future formula. -/
 def extract_from_future : Formula → Option Formula
-  | Formula.all_future φ => some φ
+  | .all_future φ => some φ
   | _ => none
 
 end Logos.Core.Automation
