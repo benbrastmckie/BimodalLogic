@@ -21,7 +21,7 @@ documentation: See .claude/docs/guides/commands/lean-implement-command-guide.md 
 
 YOU ARE EXECUTING a hybrid implementation workflow that intelligently routes plan phases to appropriate coordinators: lean-coordinator for theorem proving (Lean) phases and implementer-coordinator for software implementation phases.
 
-**Workflow Type**: lean-implement-hybrid
+**Workflow Type**: implement-only
 **Expected Input**: Plan file with mixed Lean/software phases
 **Expected Output**: Completed implementation with proofs and code
 
@@ -242,7 +242,7 @@ if [ "$DRY_RUN" = "true" ]; then
 fi
 
 # === INITIALIZE WORKFLOW STATE ===
-WORKFLOW_TYPE="lean-implement-hybrid"
+WORKFLOW_TYPE="implement-only"
 COMMAND_NAME="/lean-implement"
 USER_ARGS="$PLAN_FILE"
 

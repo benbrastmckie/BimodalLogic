@@ -60,7 +60,7 @@ The `/lean-plan` command generates plans with 2-tier Lean file discovery to supp
 **Example**:
 ```markdown
 ### Phase 1: Basic Commutativity Properties [NOT STARTED]
-lean_file: /home/user/Logos/Logos/Basics.lean
+lean_file: /home/user/ProofChecker/ProofChecker/Basics.lean
 dependencies: []
 
 **Objective**: Prove commutativity for addition and multiplication
@@ -91,8 +91,8 @@ dependencies: []
 - **Estimated Hours**: 4-6 hours
 - **Standards File**: /home/user/project/CLAUDE.md
 - **Research Reports**: [Link to research](../reports/001-research.md)
-- **Lean File**: /home/user/Logos/Logos/Groups.lean
-- **Lean Project**: /home/user/Logos/
+- **Lean File**: /home/user/ProofChecker/ProofChecker/Groups.lean
+- **Lean Project**: /home/user/ProofChecker/
 ```
 
 **Discovery Priority**: Tier 2 is checked ONLY if Tier 1 discovery returns empty
@@ -148,7 +148,7 @@ For each phase:
 ### Example 1: Basic Usage
 
 ```bash
-cd ~/Logos
+cd ~/ProofChecker
 /lean-plan "formalize basic arithmetic commutativity theorems"
 ```
 
@@ -189,13 +189,13 @@ EOF
 ```bash
 # Working from different directory
 cd ~/Documents
-/lean-plan "prove list reversal properties" --project ~/Logos
+/lean-plan "prove list reversal properties" --project ~/ProofChecker
 ```
 
 **Result**:
-- Uses Lean project at `~/Logos` (not current directory)
+- Uses Lean project at `~/ProofChecker` (not current directory)
 - Searches for existing proofs in that project
-- Creates specs in `.claude/specs/` within Logos project
+- Creates specs in `.claude/specs/` within ProofChecker project
 
 ### Example 4: Using `--complexity` Flag
 
@@ -251,11 +251,11 @@ For formalizations spanning multiple Lean files, `/lean-plan` generates phase-sp
 - **Estimated Hours**: 12-18 hours
 - **Standards File**: /home/user/project/CLAUDE.md
 - **Research Reports**: [Mathlib Research](../reports/001-mathlib-research.md)
-- **Lean File**: /home/user/Logos/Logos/TaskFrame.lean  # Tier 2 fallback
-- **Lean Project**: /home/user/Logos/
+- **Lean File**: /home/user/ProofChecker/ProofChecker/TaskFrame.lean  # Tier 2 fallback
+- **Lean Project**: /home/user/ProofChecker/
 
 ### Phase 1: Task Frame Theorems [NOT STARTED]
-lean_file: /home/user/Logos/Logos/TaskFrame.lean
+lean_file: /home/user/ProofChecker/ProofChecker/TaskFrame.lean
 dependencies: []
 
 **Objective**: Prove basic task execution properties
@@ -270,7 +270,7 @@ dependencies: []
 ---
 
 ### Phase 2: World History Theorems [NOT STARTED]
-lean_file: /home/user/Logos/Logos/WorldHistory.lean
+lean_file: /home/user/ProofChecker/ProofChecker/WorldHistory.lean
 dependencies: [1]
 
 **Objective**: Prove world state evolution properties
@@ -285,7 +285,7 @@ dependencies: [1]
 ---
 
 ### Phase 3: Truth Preservation [NOT STARTED]
-lean_file: /home/user/Logos/Logos/Truth.lean
+lean_file: /home/user/ProofChecker/ProofChecker/Truth.lean
 dependencies: [1, 2]
 
 **Objective**: Prove truth preservation across task execution
@@ -378,8 +378,8 @@ Plans created by `/lean-plan` include standard metadata plus Lean-specific field
 - **Research Reports**:
   - [Mathlib Research](../reports/001-mathlib-research.md)
   - [Proof Patterns](../reports/002-proof-patterns.md)
-- **Lean File**: /home/user/Logos/Logos/GroupHom.lean
-- **Lean Project**: /home/user/Logos/
+- **Lean File**: /home/user/ProofChecker/ProofChecker/GroupHom.lean
+- **Lean Project**: /home/user/ProofChecker/
 ```
 
 **Lean-Specific Fields**:
@@ -408,7 +408,7 @@ dependencies: []
 **Testing**:
 ```bash
 lake build
-grep -c "sorry" Logos/GroupHom.lean
+grep -c "sorry" ProofChecker/GroupHom.lean
 ```
 
 **Expected Duration**: 0.5 hours
@@ -494,7 +494,7 @@ dependencies: []
 **After** (Tier 1 + Tier 2):
 ```markdown
 ### Phase 1: Task Frame Theorems [NOT STARTED]
-lean_file: /home/user/Logos/Logos/TaskFrame.lean
+lean_file: /home/user/ProofChecker/ProofChecker/TaskFrame.lean
 dependencies: []
 
 **Objective**: Prove basic task execution properties
@@ -508,8 +508,8 @@ Retain Tier 2 global `**Lean File**` for backward compatibility:
 ## Metadata
 - **Date**: 2025-12-04
 - **Feature**: Task execution framework
-- **Lean File**: /home/user/Logos/Logos/TaskFrame.lean  # Tier 2 fallback
-- **Lean Project**: /home/user/Logos/
+- **Lean File**: /home/user/ProofChecker/ProofChecker/TaskFrame.lean  # Tier 2 fallback
+- **Lean Project**: /home/user/ProofChecker/
 ```
 
 **Step 4: Validate Tier 1 Discovery**
@@ -531,8 +531,8 @@ Test that `/lean-build` correctly discovers phase-specific files:
 
 ```markdown
 ## Metadata
-- **Lean File**: /home/user/Logos/Logos/Groups.lean
-- **Lean Project**: /home/user/Logos/
+- **Lean File**: /home/user/ProofChecker/ProofChecker/Groups.lean
+- **Lean Project**: /home/user/ProofChecker/
 
 ### Phase 1: Basic Properties [NOT STARTED]
 dependencies: []
@@ -545,15 +545,15 @@ dependencies: [1]
 
 ```markdown
 ## Metadata
-- **Lean File**: /home/user/Logos/Logos/Groups/Basic.lean  # Tier 2 fallback
-- **Lean Project**: /home/user/Logos/
+- **Lean File**: /home/user/ProofChecker/ProofChecker/Groups/Basic.lean  # Tier 2 fallback
+- **Lean Project**: /home/user/ProofChecker/
 
 ### Phase 1: Basic Properties [NOT STARTED]
-lean_file: /home/user/Logos/Logos/Groups/Basic.lean
+lean_file: /home/user/ProofChecker/ProofChecker/Groups/Basic.lean
 dependencies: []
 
 ### Phase 2: Homomorphisms [NOT STARTED]
-lean_file: /home/user/Logos/Logos/Groups/Hom.lean
+lean_file: /home/user/ProofChecker/ProofChecker/Groups/Hom.lean
 dependencies: [1]
 ```
 
@@ -590,9 +590,9 @@ Use --project flag to specify Lean project path
 **Cause**: Not in a Lean project directory and no `--project` flag
 
 **Solutions**:
-1. Change to project directory: `cd ~/Logos`
-2. Use `--project` flag: `/lean-plan "formalize theorems" --project ~/Logos`
-3. Create Lean project: `lake init Logos`
+1. Change to project directory: `cd ~/ProofChecker`
+2. Use `--project` flag: `/lean-plan "formalize theorems" --project ~/ProofChecker`
+3. Create Lean project: `lake init ProofChecker`
 
 ### Error: Invalid Lean project structure
 
@@ -697,7 +697,7 @@ ERROR: Research report(s) too small (< 100 bytes)
 
 **Symptom**:
 ```
-ERROR: Phase 2 Lean file not found: /home/user/Logos/Logos/NonExistent.lean
+ERROR: Phase 2 Lean file not found: /home/user/ProofChecker/ProofChecker/NonExistent.lean
 Tier 1 discovery returned invalid path
 ```
 
@@ -706,12 +706,12 @@ Tier 1 discovery returned invalid path
 **Solutions**:
 1. Verify file path exists:
    ```bash
-   ls -la /home/user/Logos/Logos/NonExistent.lean
+   ls -la /home/user/ProofChecker/ProofChecker/NonExistent.lean
    ```
 2. Fix path in plan (correct typo or use existing file)
 3. Create missing file if needed:
    ```bash
-   touch /home/user/Logos/Logos/NonExistent.lean
+   touch /home/user/ProofChecker/ProofChecker/NonExistent.lean
    ```
 4. Remove `lean_file:` to fall back to Tier 2 global metadata
 
@@ -796,7 +796,7 @@ Cannot proceed without file specification
 
 **Symptom**:
 ```
-WARNING: Relative path detected in lean_file: Logos/Basics.lean
+WARNING: Relative path detected in lean_file: ProofChecker/Basics.lean
 Use absolute paths for Tier 1 discovery
 ```
 
@@ -806,11 +806,11 @@ Use absolute paths for Tier 1 discovery
 1. Convert to absolute path:
    ```bash
    # Get absolute path
-   readlink -f Logos/Basics.lean
+   readlink -f ProofChecker/Basics.lean
    ```
 2. Update plan with absolute path:
    ```markdown
-   lean_file: /home/user/Logos/Logos/Basics.lean
+   lean_file: /home/user/ProofChecker/ProofChecker/Basics.lean
    ```
 
 #### Debugging Tier 1/Tier 2 Discovery
@@ -852,7 +852,7 @@ If your project has `LEAN_STYLE_GUIDE.md`, it's automatically extracted and prov
 
 ```bash
 # Create style guide in Lean project root
-cat > ~/Logos/LEAN_STYLE_GUIDE.md <<EOF
+cat > ~/ProofChecker/LEAN_STYLE_GUIDE.md <<EOF
 # Lean Style Guide
 
 ## Theorem Naming
@@ -867,7 +867,7 @@ cat > ~/Logos/LEAN_STYLE_GUIDE.md <<EOF
 EOF
 
 # Run /lean-plan (style guide automatically used)
-/lean-plan "formalize theorems" --project ~/Logos
+/lean-plan "formalize theorems" --project ~/ProofChecker
 ```
 
 ### Multi-File Formalization

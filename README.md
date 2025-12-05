@@ -1,21 +1,38 @@
-# Logos: LEAN 4 Proof Assistant for Logos
+# Logos: A Formal Language of Thought
 
-Logos is a LEAN 4 proof assistant for **Logos** - a formal language of thought designed for verified AI reasoning. Built on hyperintensional task semantics (possible worlds as functions from times to world-states), Logos provides machine-verifiable proofs with mathematical certainty, enabling scalable AI oversight through computation rather than human annotation.
+**Logos** is a formal language of thought designed for training AI systems in verified reasoning. It combines a **proof system** implemented in LEAN 4 with a **recursive semantic theory** implemented in the [Model-Checker](https://github.com/benbrastmckie/ModelChecker), creating a dual verification architecture that generates comprehensive training signals without human annotation.
 
-Logos integrates with the [Model-Checker](https://github.com/benbrastmckie/ModelChecker) to create a dual verification architecture for transparent AI reasoning. For theoretical foundations, see [LogicNotes](https://github.com/benbrastmckie/LogicNotes).
+## Motivations
 
-## Logos: Formal Language of Thought
+Training AI systems to reason reliably requires both positive signals (valid inferences) and corrective signals (invalid inferences with counterexamples where the premises are true and the conclusion is false):
 
-**Logos** is a formal language of thought with a layered architecture supporting progressive extensibility:
+| Component | Role | Training Signal |
+|-----------|------|-----------------|
+| **LEAN 4 Proof System** | Derives valid theorems with machine-checkable proofs | Positive RL signal |
+| **Model-Checker** | Identifies invalid inferences with explicit countermodels | Corrective RL signal |
 
-- **Core Layer**: Modal logic (necessity/possibility) and temporal logic (past/future) in a unified bimodal framework
-- **Explanatory Layer**: Counterfactual, causal, and constitutive operators for reasoning about what would happen
-- **Epistemic Layer**: Belief, probability, and knowledge operators for reasoning under uncertainty
-- **Normative Layer**: Deontic and preference operators for ethical and cooperative reasoning
+This dual verification approach offers three key advantages:
 
-The language is open to further extensions beyond these four layers. All layers share a common semantic foundation: hyperintensional task semantics where possible worlds are functions from times to world-states, constrained by task relations.
+1. **Unbounded**: Infinite theorems are derivable from the axiom system
+2. **Clean**: Soundness guarantees only valid inferences are derivable
+3. **Justified**: LEAN 4 proofs provide verifiable receipts; Z3 countermodels refute invalid claims
 
-Logos currently implements the Core Layer. Future development will add the explanatory, epistemic, and normative layers.
+Reasoning in Logos can be interpreted using the semantic clauses for the language, offering scalable transparency and oversight for sophisticated AI reasoning.
+
+For theoretical background, see the [LogicNotes](https://github.com/benbrastmckie/LogicNotes).
+
+## Layered Architecture
+
+Logos has a **layered architecture** supporting progressive extensibility. All layers share a common semantic foundation: hyperintensional task semantics where possible worlds are functions from times to world-states, constrained by task relations.
+
+| Layer | Operators | Purpose |
+|-------|-----------|---------|
+| **Core** (implemented) | Modal (`□`, `◇`) + Temporal (`Past`, `Future`) | Foundation for all reasoning |
+| **Explanatory** (planned) | Counterfactual, causal, constitutive | Reasoning about what would happen |
+| **Epistemic** (planned) | Belief, probability, knowledge | Reasoning under uncertainty |
+| **Normative** (planned) | Deontic, preference | Ethical and cooperative reasoning |
+
+The language is open to further extensions beyond these four layers.
 
 **For philosophical foundations**: See [METHODOLOGY.md](Documentation/UserGuide/METHODOLOGY.md)
 **For extension specifications**: See [LAYER_EXTENSIONS.md](Documentation/Research/LAYER_EXTENSIONS.md)
@@ -49,7 +66,7 @@ Logos currently implements the Core Layer of Logos - the bimodal logic TM provid
 ### 1. Transparent Reasoning Infrastructure
 - **Mathematical Certainty**: LEAN 4 proof receipts provide verifiable justifications
 - **Auditable Inferences**: Every reasoning step can be independently checked
-- **Explicit Semantics**: Task models make world states and temporal evolution explicit
+- **Explicit Semantics**: Task semantic models make world states and possible temporal evolutions explicit
 - **Accountability**: Formal proofs enable trustworthy AI decision-making
 
 ### 2. Self-Supervised Training Data Generation

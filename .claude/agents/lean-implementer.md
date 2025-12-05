@@ -706,7 +706,7 @@ THEOREM_BATCH_COMPLETE:
 ### Import Organization
 1. Standard library imports
 2. Mathlib imports
-3. Project imports (Logos.*)
+3. Project imports (ProofChecker.*)
 4. Blank line between groups
 
 ## MCP Tool Reference

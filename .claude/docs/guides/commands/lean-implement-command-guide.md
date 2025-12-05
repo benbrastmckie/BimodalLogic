@@ -307,3 +307,15 @@ Check error log for structured errors:
             +-- Display console summary
             +-- Emit IMPLEMENTATION_COMPLETE
 ```
+
+## Technical Details
+
+### Workflow Type
+
+The command uses the `implement-only` workflow type for state machine orchestration. This workflow type:
+- Implements all phases without running test suites
+- Terminates at `STATE_IMPLEMENT` (does not transition to testing/debugging)
+- Shares workflow semantics with `/implement` command
+- Is independent of phase routing (Lean vs software classification is an implementation detail)
+
+The hybrid routing logic (lean-coordinator vs implementer-coordinator) operates within the implementation scope and does not require a separate workflow type enum.

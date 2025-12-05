@@ -89,7 +89,7 @@ For each phase, you MUST specify the primary Lean file where theorems will be pr
 
 1. **Review Formalization Goal**: Identify which modules/files are affected by this phase's theorems
 2. **Identify Primary File**: Select one Lean file that contains the majority of theorems for this phase
-3. **Use Absolute Paths**: Generate absolute path to .lean file (e.g., `/home/user/lean-project/Logos/Basics.lean`)
+3. **Use Absolute Paths**: Generate absolute path to .lean file (e.g., `/home/user/lean-project/ProofChecker/Basics.lean`)
 4. **Add lean_file Field**: Include `lean_file: /absolute/path` immediately after phase heading, before `dependencies:`
 5. **Multi-File Plans**: For plans affecting multiple files, assign each phase to its primary file
    - Example: Phase 1 → TaskFrame.lean, Phase 2 → WorldHistory.lean, Phase 3 → Truth.lean
@@ -355,7 +355,7 @@ grep -c "sorry" path/to/file.lean  # Ensure no incomplete proofs
 
 ```markdown
 ### Phase 1: Basic Commutativity Properties [NOT STARTED]
-lean_file: /home/user/lean-project/Logos/Basics.lean
+lean_file: /home/user/lean-project/ProofChecker/Basics.lean
 dependencies: []
 
 **Objective**: Prove commutativity for addition and multiplication
@@ -378,7 +378,7 @@ dependencies: []
 **Testing**:
 ```bash
 lake build
-grep -c "sorry" Logos/Basics.lean
+grep -c "sorry" ProofChecker/Basics.lean
 ```
 
 **Expected Duration**: 1 hour

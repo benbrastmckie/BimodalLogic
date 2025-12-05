@@ -108,7 +108,7 @@ if [[ "$FEATURE_DESCRIPTION" =~ --project[[:space:]]+([^[:space:]]+) ]]; then
   FEATURE_DESCRIPTION=$(echo "$FEATURE_DESCRIPTION" | sed 's/--project[[:space:]]*[^[:space:]]*//' | xargs)
 elif [[ "$FEATURE_DESCRIPTION" =~ --project ]]; then
   echo "ERROR: --project flag requires a path argument" >&2
-  echo "Usage: /lean-plan \"formalize theorems\" --project ~/Logos" >&2
+  echo "Usage: /lean-plan \"formalize theorems\" --project ~/ProofChecker" >&2
   exit 1
 fi
 
@@ -132,7 +132,7 @@ if [ -z "${LEAN_PROJECT_PATH:-}" ]; then
   echo "ERROR: No Lean project found" >&2
   echo "No lakefile.toml detected in current directory or parent directories" >&2
   echo "Use --project flag to specify Lean project path:" >&2
-  echo "  /lean:plan \"formalize theorems\" --project ~/Logos" >&2
+  echo "  /lean:plan \"formalize theorems\" --project ~/ProofChecker" >&2
   exit 1
 fi
 
@@ -816,23 +816,137 @@ echo "Topic name: $TOPIC_NAME (strategy: $NAMING_STRATEGY)"
 echo "Lean project: $LEAN_PROJECT_PATH"
 ```
 
-## Block 1e: Research Initiation
+## Block 1d-calc: Research Report Path Pre-Calculation (Hard Barrier Pattern)
 
-**EXECUTE NOW**: USE the Task tool to invoke the lean-research-specialist agent.
+**EXECUTE NOW**: Pre-calculate REPORT_PATH before subagent invocation:
+
+```bash
+set +H  # CRITICAL: Disable history expansion
+
+# === PRE-TRAP ERROR BUFFER ===
+# Initialize error buffer BEFORE any library sourcing
+declare -a _EARLY_ERROR_BUFFER=()
+
+# === DETECT PROJECT DIRECTORY ===
+# CRITICAL: Detect project directory FIRST before using CLAUDE_PROJECT_DIR
+if [ -z "${CLAUDE_PROJECT_DIR:-}" ]; then
+  if command -v git &>/dev/null && git rev-parse --git-dir >/dev/null 2>&1; then
+    CLAUDE_PROJECT_DIR="$(git rev-parse --show-toplevel)"
+  else
+    current_dir="$(pwd)"
+    while [ "$current_dir" != "/" ]; do
+      [ -d "$current_dir/.claude" ] && { CLAUDE_PROJECT_DIR="$current_dir"; break; }
+      current_dir="$(dirname "$current_dir")"
+    done
+  fi
+  export CLAUDE_PROJECT_DIR
+fi
+
+# === LOAD STATE ===
+# CRITICAL: Use CLAUDE_PROJECT_DIR for consistent path (now guaranteed to be set)
+STATE_ID_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/lean_plan_state_id.txt"
+
+if [ ! -f "$STATE_ID_FILE" ]; then
+  echo "ERROR: State ID file not found: $STATE_ID_FILE" >&2
+  echo "Block 1d must run before Block 1d-calc" >&2
+  exit 1
+fi
+
+WORKFLOW_ID=$(cat "$STATE_ID_FILE")
+if [ -z "$WORKFLOW_ID" ]; then
+  echo "ERROR: STATE_ID_FILE exists but is empty" >&2
+  exit 1
+fi
+
+STATE_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/workflow_${WORKFLOW_ID}.sh"
+
+if [ ! -f "$STATE_FILE" ]; then
+  echo "ERROR: Workflow state file not found: $STATE_FILE" >&2
+  exit 1
+fi
+
+source "$STATE_FILE" || {
+  echo "ERROR: Failed to restore workflow state from $STATE_FILE" >&2
+  exit 1
+}
+
+# === SOURCE LIBRARIES IN CORRECT ORDER ===
+# CRITICAL: Source libraries BEFORE any function calls or trap setup
+# Order matters: error-handling -> state-persistence
+
+# 1. Source error-handling.sh FIRST (provides setup_bash_error_trap and logging)
+source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/error-handling.sh" 2>/dev/null || {
+  echo "ERROR: Failed to source error-handling.sh" >&2
+  exit 1
+}
+
+# 2. Source state-persistence.sh SECOND (provides validate_workflow_id, append_workflow_state)
+_source_with_diagnostics "${CLAUDE_PROJECT_DIR}/.claude/lib/core/state-persistence.sh" || exit 1
+
+# === SETUP ERROR TRAP ===
+# CRITICAL: Setup trap AFTER sourcing error-handling.sh
+setup_bash_error_trap
+
+# === PRE-CALCULATE RESEARCH REPORT PATH ===
+# Hard Barrier Pattern: Calculate exact output path BEFORE subagent invocation
+REPORT_PATH="${RESEARCH_DIR}/001-lean-mathlib-research.md"
+
+# Validate REPORT_PATH is absolute (defensive programming)
+if [[ ! "$REPORT_PATH" =~ ^/ ]]; then
+  log_command_error "validation_error" \
+    "REPORT_PATH is not absolute" \
+    "REPORT_PATH=$REPORT_PATH must start with / for Hard Barrier Pattern compliance"
+  echo "ERROR: REPORT_PATH must be absolute path: $REPORT_PATH" >&2
+  exit 1
+fi
+
+# Create parent directory if needed
+mkdir -p "$(dirname "$REPORT_PATH")" || {
+  echo "ERROR: Failed to create report directory: $(dirname "$REPORT_PATH")" >&2
+  exit 1
+}
+
+# Persist REPORT_PATH to state for Block 1f validation
+append_workflow_state "REPORT_PATH" "$REPORT_PATH" || {
+  echo "ERROR: Failed to persist REPORT_PATH to state" >&2
+  exit 1
+}
+
+# Console output
+echo ""
+echo "=== Research Report Path Pre-Calculation ==="
+echo "Report path: $REPORT_PATH"
+echo "Workflow ID: $WORKFLOW_ID"
+echo "Hard Barrier Pattern: Path pre-calculated for subagent contract"
+echo ""
+```
+
+## Block 1e-exec: Research Execution (Hard Barrier Invocation)
+
+**EXECUTE NOW**: USE the Task tool to invoke the lean-research-specialist agent with mandatory file creation.
 
 Task {
   subagent_type: "general-purpose"
-  description: "Research ${FEATURE_DESCRIPTION} with Mathlib discovery and proof pattern analysis"
+  description: "Research ${FEATURE_DESCRIPTION} with Mathlib discovery, proof pattern analysis, and mandatory file creation"
   prompt: "
     Read and follow ALL behavioral guidelines from:
     ${CLAUDE_PROJECT_DIR}/.claude/agents/lean-research-specialist.md
 
     You are conducting Lean formalization research for: lean-plan workflow
 
+    **Input Contract (Hard Barrier Pattern)**:
+    - REPORT_PATH: ${REPORT_PATH}
+    - LEAN_PROJECT_PATH: ${LEAN_PROJECT_PATH}
+    - FEATURE_DESCRIPTION: ${FEATURE_DESCRIPTION}
+    - RESEARCH_COMPLEXITY: ${RESEARCH_COMPLEXITY}
+
+    **CRITICAL**: You MUST write the research report to the EXACT path specified in REPORT_PATH.
+    The orchestrator has pre-calculated this path and will validate the file exists after you return.
+    DO NOT calculate your own output path - use REPORT_PATH exactly as provided.
+
     **Workflow-Specific Context**:
     - Research Topic: ${FEATURE_DESCRIPTION}
     - Research Complexity: ${RESEARCH_COMPLEXITY}
-    - Output Directory: ${RESEARCH_DIR}
     - Workflow Type: research-and-plan (Lean specialization)
     - Lean Project Path: ${LEAN_PROJECT_PATH}
     - Original Prompt File: ${ORIGINAL_PROMPT_FILE_PATH:-none}
@@ -845,12 +959,113 @@ Task {
     2. Proof pattern analysis (tactic sequences, common approaches)
     3. Project architecture review (module structure, naming conventions)
     4. Documentation survey (LEAN_STYLE_GUIDE.md if exists)
-    5. Create comprehensive research reports
+    5. Create comprehensive research report at REPORT_PATH
 
     Return completion signal:
-    REPORT_CREATED: [path to created report]
+    REPORT_CREATED: ${REPORT_PATH}
   "
 }
+
+## Block 1f: Research Report Hard Barrier Validation
+
+**EXECUTE NOW**: Validate research report artifact exists at pre-calculated path:
+
+```bash
+set +H  # CRITICAL: Disable history expansion
+
+# === PRE-TRAP ERROR BUFFER ===
+# Initialize error buffer BEFORE any library sourcing
+declare -a _EARLY_ERROR_BUFFER=()
+
+# === DETECT PROJECT DIRECTORY ===
+# CRITICAL: Detect project directory FIRST before using CLAUDE_PROJECT_DIR
+if [ -z "${CLAUDE_PROJECT_DIR:-}" ]; then
+  if command -v git &>/dev/null && git rev-parse --git-dir >/dev/null 2>&1; then
+    CLAUDE_PROJECT_DIR="$(git rev-parse --show-toplevel)"
+  else
+    current_dir="$(pwd)"
+    while [ "$current_dir" != "/" ]; do
+      [ -d "$current_dir/.claude" ] && { CLAUDE_PROJECT_DIR="$current_dir"; break; }
+      current_dir="$(dirname "$current_dir")"
+    done
+  fi
+  export CLAUDE_PROJECT_DIR
+fi
+
+# === LOAD STATE ===
+# CRITICAL: Use CLAUDE_PROJECT_DIR for consistent path (now guaranteed to be set)
+STATE_ID_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/lean_plan_state_id.txt"
+
+if [ ! -f "$STATE_ID_FILE" ]; then
+  echo "ERROR: State ID file not found: $STATE_ID_FILE" >&2
+  echo "Block 1d-calc must run before Block 1f" >&2
+  exit 1
+fi
+
+WORKFLOW_ID=$(cat "$STATE_ID_FILE")
+if [ -z "$WORKFLOW_ID" ]; then
+  echo "ERROR: STATE_ID_FILE exists but is empty" >&2
+  exit 1
+fi
+
+STATE_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/workflow_${WORKFLOW_ID}.sh"
+
+if [ ! -f "$STATE_FILE" ]; then
+  echo "ERROR: Workflow state file not found: $STATE_FILE" >&2
+  exit 1
+fi
+
+source "$STATE_FILE" || {
+  echo "ERROR: Failed to restore workflow state from $STATE_FILE" >&2
+  exit 1
+}
+
+# === SOURCE LIBRARIES IN CORRECT ORDER ===
+# CRITICAL: Source libraries BEFORE any function calls or trap setup
+# Order matters: error-handling -> validation-utils
+
+# 1. Source error-handling.sh FIRST (provides setup_bash_error_trap and logging)
+source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/error-handling.sh" 2>/dev/null || {
+  echo "ERROR: Failed to source error-handling.sh" >&2
+  exit 1
+}
+
+# 2. Source validation-utils.sh SECOND (provides validate_agent_artifact)
+_source_with_diagnostics "${CLAUDE_PROJECT_DIR}/.claude/lib/workflow/validation-utils.sh" || exit 1
+
+# === SETUP ERROR TRAP ===
+# CRITICAL: Setup trap AFTER sourcing error-handling.sh
+setup_bash_error_trap
+
+# === HARD BARRIER VALIDATION ===
+echo ""
+echo "=== Research Report Hard Barrier Validation ==="
+
+# Validate REPORT_PATH was set by Block 1d-calc
+if [ -z "${REPORT_PATH:-}" ]; then
+  log_command_error "state_error" \
+    "REPORT_PATH not found in workflow state" \
+    "Block 1d-calc must persist REPORT_PATH before Block 1f validation"
+  echo "ERROR: REPORT_PATH not found in workflow state" >&2
+  echo "Block 1d-calc must run successfully before Block 1f" >&2
+  exit 1
+fi
+
+echo "Expected report file: $REPORT_PATH"
+
+# Validate research report artifact (minimum 500 bytes for comprehensive content)
+if ! validate_agent_artifact "$REPORT_PATH" 500 "research report"; then
+  log_command_error "validation_error" \
+    "Lean research specialist validation failed" \
+    "REPORT_PATH=$REPORT_PATH does not exist or is too small (<500 bytes)"
+  echo "ERROR: HARD BARRIER FAILED - Lean research specialist validation failed" >&2
+  echo "Expected report at: $REPORT_PATH" >&2
+  exit 1
+fi
+
+echo "✓ Hard barrier passed - research report file validated"
+echo ""
+```
 
 ## Block 2: Research Verification and Planning Setup
 
@@ -1111,10 +1326,19 @@ fi
 echo "=== Phase 2: Planning ==="
 echo ""
 
-# === PREPARE PLAN PATH ===
+# === PREPARE PLAN PATH (Hard Barrier Pattern) ===
 PLAN_NUMBER="001"
 PLAN_FILENAME="${PLAN_NUMBER}-$(echo "$TOPIC_NAME" | tr '_' '-' | cut -c1-40)-plan.md"
 PLAN_PATH="${PLANS_DIR}/${PLAN_FILENAME}"
+
+# Validate PLAN_PATH is absolute (defensive programming)
+if [[ ! "$PLAN_PATH" =~ ^/ ]]; then
+  log_command_error "validation_error" \
+    "PLAN_PATH is not absolute" \
+    "PLAN_PATH=$PLAN_PATH must start with / for Hard Barrier Pattern compliance"
+  echo "ERROR: PLAN_PATH must be absolute path: $PLAN_PATH" >&2
+  exit 1
+fi
 
 # Collect research report paths
 REPORT_PATHS=$(find "$RESEARCH_DIR" -name '*.md' -type f | sort)
@@ -1202,9 +1426,18 @@ Task {
 
     You are creating a Lean formalization implementation plan for: lean-plan workflow
 
+    **Input Contract (Hard Barrier Pattern)**:
+    - PLAN_PATH: ${PLAN_PATH}
+    - REPORT_PATHS_LIST: ${REPORT_PATHS_LIST}
+    - FEATURE_DESCRIPTION: ${FEATURE_DESCRIPTION}
+    - LEAN_PROJECT_PATH: ${LEAN_PROJECT_PATH}
+
+    **CRITICAL**: You MUST write the implementation plan to the EXACT path specified in PLAN_PATH.
+    The orchestrator has pre-calculated this path and will validate the file exists after you return.
+    DO NOT calculate your own output path - use PLAN_PATH exactly as provided.
+
     **Workflow-Specific Context**:
     - Feature Description: ${FEATURE_DESCRIPTION}
-    - Output Path: ${PLAN_PATH}
     - Research Reports: ${REPORT_PATHS_LIST}
     - Workflow Type: research-and-plan (Lean specialization)
     - Operation Mode: new plan creation

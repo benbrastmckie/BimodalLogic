@@ -240,7 +240,7 @@ theorem mul_comm (a b : Nat) : a * b = b * a := by
 ## Metadata
 - **Date**: 2025-12-03
 - **Feature**: TM Modal Axioms
-- **Lean File**: /home/user/Logos/TM/Axioms.lean
+- **Lean File**: /home/user/ProofChecker/TM/Axioms.lean
 
 ### Phase 1: Axiom MT [NOT STARTED]
 - [ ] Prove MT axiom: □(φ → ψ) → (◇φ → ◇ψ)

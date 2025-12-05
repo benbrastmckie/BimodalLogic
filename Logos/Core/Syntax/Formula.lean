@@ -28,9 +28,12 @@ combining S5 modal logic with linear temporal logic.
 
 ## Naming Convention
 
-Follows the `box`/`□` pattern:
-- Descriptive function names: `all_past`, `all_future`, `some_past`, `some_future`
-- Concise DSL notation: `H` (Historically), `G` (Globally), `P` (Past), `F` (Future)
+Follows the `box`/`□` pattern with descriptive function names:
+- Universal temporal: `all_past` (H), `all_future` (G)
+- Existential temporal: `some_past` (P), `some_future` (F)
+- Derived: `always` (△), `sometimes` (▽)
+
+Use method syntax: `φ.all_past`, `φ.some_future`, etc.
 
 ## References
 
@@ -133,7 +136,7 @@ This means φ holds at some past time, or at the present time, or at some future
 This is the "sometime" or existential temporal operator, dual to `always`.
 
 **Paper Reference**: Line 427 defines `▽φ := pφ ∨ φ ∨ fφ`
-where p = sometime_past and f = sometime_future (existential duals).
+where p = some_past and f = some_future (existential duals).
 
 Equivalently, `sometimes φ = ¬(always ¬φ)` by De Morgan's laws.
 -/
@@ -153,21 +156,39 @@ prefix:80 "△" => Formula.always
 prefix:80 "▽" => Formula.sometimes
 
 /--
-Temporal 'sometime in the past' operator (Pφ in classical notation).
+Existential past operator (Pφ, "φ was true at some past time").
 
 Derived as: ¬H¬φ = ¬(all_past (¬φ)) (not for-all-past not φ).
 This means: there exists a past time where φ is true.
 
+**DSL Notation**: `P φ` for "Past" / "Previously"
+
 Note: H (always in past) is our `all_past`, and P (sometime past) is this operator.
 -/
-def sometime_past (φ : Formula) : Formula := φ.neg.all_past.neg
+def some_past (φ : Formula) : Formula := φ.neg.all_past.neg
 
 /--
-Temporal 'sometime in the future' operator.
+Existential future operator (Fφ, "φ will be true at some future time").
 
-This is the same as `sometimes`.
+Derived as: ¬G¬φ = ¬(all_future (¬φ)) (not for-all-future not φ).
+This means: there exists a future time where φ is true.
+
+**DSL Notation**: `F φ` for "Future" / "Finally"
+
+Note: G (always in future) is our `all_future`, and F (sometime future) is this operator.
 -/
-def sometime_future (φ : Formula) : Formula := φ.sometimes
+def some_future (φ : Formula) : Formula := φ.neg.all_future.neg
+
+
+/-- Alias for backward compatibility during refactoring.
+    Use `some_past` instead.
+-/
+abbrev sometime_past := some_past
+
+/-- Alias for backward compatibility during refactoring.
+    Use `some_future` instead.
+-/
+abbrev sometime_future := some_future
 
 /--
 Swap temporal operators (past ↔ future) in a formula.
