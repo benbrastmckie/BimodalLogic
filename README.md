@@ -11,7 +11,7 @@ Combining an **axiomatic proof system** implemented in LEAN 4 with a **recursive
 
 AI reasoning in the Logos is both **verified** by proof receipts for all inferences and **interpreted** by explicit semantic models, providing **scalable oversight** for sophisticated reasoning. The Logos implements a layered operator architecture for modularity and extensibility with the Core Layer (TM bimodal logic) as the foundation for the explanatory, epistemic, and normative layers which provide important extensions.
 
-For theoretical background, see the [LogicNotes](https://github.com/benbrastmckie/LogicNotes) which seeks to provide a human readable overview of the Logos systems.
+See [Theoretical Foundations](#theoretical-foundations) below and the [LogicNotes](https://github.com/benbrastmckie/LogicNotes) for a compressed human readable overview of the Logos subsystems.
 
 ## Table of Contents
 
@@ -318,14 +318,14 @@ Logos implements formal semantics developed in recent research:
 ### ["Counterfactual Worlds"](https://link.springer.com/article/10.1007/s10992-025-09793-8) (Brast-McKie 2025)
 
   - Hyperintensional semantics for counterfactual conditionals distinguishing necessarily equivalent antecedents
-  - Foundation for the Explanatory Layer extensions (counterfactual `□→`, causal, and constitutive operators)
+  - Foundation for the explanatory layer extension (counterfactual `□→` and causal `○→` operators)
   - Integrates with task semantics to evaluate counterfactual reasoning across possible world histories
 
 ### ["Identity and Aboutness"](https://link.springer.com/article/10.1007/s10992-021-09612-w) (Brast-McKie 2021)
 
   - State-based semantics using verifier/falsifier pairs to capture fine-grained propositional content
   - Enables distinctions between necessarily equivalent propositions based on what they are *about*
-  - Theoretical foundation for constitutive explanatory reasoning and subject-matter sensitivity
+  - Theoretical foundation for constitutive explanatory reasoning (grounding `≤`, essence `⊑`, and propositional identity `≡` operators)
 
 ---
 

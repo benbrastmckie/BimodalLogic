@@ -709,7 +709,7 @@ Eight axiom declarations need implementation:
 
 ```
 Task 16 (Perpetuity fixes) ─┐
-                             ├─→ Documentation updates
+                            ├─→ Documentation updates
 Task 17 (Soundness verify) ─┘
 
 Task 9.1 (Lindenbaum) ──→ Task 9.2 (Canonical model) ──→ Task 9.3 (Truth lemma) ──→ Task 9.4 (Completeness)
