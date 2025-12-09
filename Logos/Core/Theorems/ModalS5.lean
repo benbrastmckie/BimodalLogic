@@ -404,5 +404,115 @@ theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.o
 
   sorry -- Requires De Morgan laws and disjunction/conjunction duality lemmas
 
+/-!
+## Phase 4: Advanced Modal S5 Theorems
+-/
+
+/--
+Task 33: S5-Diamond-Box Collapse - `⊢ ◇□A ↔ □A`.
+
+In S5, if necessary-A is possible, then A is necessary (and vice versa).
+This is the characteristic S5 property showing the collapse of nested modalities.
+
+**Proof Strategy**:
+- Backward direction `□A → ◇□A`: Direct from modal_b
+- Forward direction `◇□A → □A`: Use modal_5 and modal_t with diamond elimination
+
+**Status**: Partial (backward proven, forward blocked)
+-/
+theorem s5_diamond_box (A : Formula) : ⊢ iff (A.box.diamond) A.box := by
+  -- Goal: iff (◇□A) □A which is (◇□A → □A) ∧ (□A → ◇□A)
+
+  -- Backward direction: □A → ◇□A
+  have backward : ⊢ A.box.imp (A.box.diamond) := by
+    -- We need: □A → ◇□A
+    -- Approach: From □A, derive □□A (by modal_4), then ◇□A (by t_box_to_diamond)
+
+    -- modal_4: □φ → □□φ, so with φ = A: □A → □□A
+    have modal_4_a : ⊢ A.box.imp A.box.box :=
+      Derivable.axiom [] _ (Axiom.modal_4 A)
+
+    -- t_box_to_diamond: □B → ◇B, so with B = □A: □□A → ◇□A
+    have box_box_to_diamond : ⊢ A.box.box.imp A.box.diamond :=
+      t_box_to_diamond A.box
+
+    -- Compose: □A → □□A → ◇□A
+    exact imp_trans modal_4_a box_box_to_diamond
+
+  -- Forward direction: ◇□A → □A
+  have forward : ⊢ (A.box.diamond).imp A.box := by
+    -- ◇□A means □A is possible
+    -- In S5, if □A is possible, it must be actual (necessity doesn't vary across worlds)
+    -- This requires showing: if ◇□A, then at the actual world, □A holds
+
+    -- Use modal_5: ◇B → □◇B
+    -- With B = □A: ◇□A → □◇□A
+
+    -- Then we need □◇□A → □A
+    -- From □◇□A, we have at all worlds, ◇□A
+    -- But how to extract □A?
+
+    -- In S5, ◇□A means □A is possible
+    -- But by the characteristic S5 axiom, ◇□A ↔ ◇A (anything possible-necessary is just possible)
+    -- Then ◇A with modal_b gives □◇A, but we need □A
+
+    -- Actually the characteristic theorem is: ◇□A → □A
+    -- This requires: if □A is possible, then □A is actual
+    -- Proof: Assume ◇□A. By modal_5, □◇□A.
+    -- At any accessible world w, ◇□A holds.
+    -- So □A is accessible from w.
+    -- By transitivity (S4), from actual world to w to □A-world.
+    -- But this needs model-theoretic reasoning.
+
+    -- Let me try a syntactic approach.
+    -- We have: ◇□A which is ¬□¬□A
+    -- We want: □A
+
+    -- By contraposition: ◇A → □◇A (modal_5)
+    -- Contrapose: ¬□◇A → ¬◇A which is □¬A → □¬◇A? No.
+
+    -- Actually, the syntactic proof is non-trivial and may require:
+    -- 1. The characteristic S5 axiom: □◇A → ◇A (Brouwersche axiom reverse)
+    -- 2. Or elaborate modal reasoning
+
+    sorry  -- Requires S5 characteristic axiom or elaborate modal proof
+
+  -- Combine using pairing to build biconditional
+  -- pairing: A → B → (A ∧ B)
+  -- We need: (◇□A → □A) → (□A → ◇□A) → ((◇□A → □A) ∧ (□A → ◇□A))
+  -- iff definition: iff X Y = (X → Y) ∧ (Y → X)
+  -- So iff (◇□A) □A = (◇□A → □A) ∧ (□A → ◇□A)
+
+  have pair_forward_backward : ⊢ (A.box.diamond.imp A.box).imp ((A.box.imp A.box.diamond).imp ((A.box.diamond.imp A.box).and (A.box.imp A.box.diamond))) :=
+    pairing (A.box.diamond.imp A.box) (A.box.imp A.box.diamond)
+
+  have step1 : ⊢ (A.box.imp A.box.diamond).imp ((A.box.diamond.imp A.box).and (A.box.imp A.box.diamond)) :=
+    Derivable.modus_ponens [] _ _ pair_forward_backward forward
+
+  have result : ⊢ (A.box.diamond.imp A.box).and (A.box.imp A.box.diamond) :=
+    Derivable.modus_ponens [] _ _ step1 backward
+
+  -- result has type (◇□A → □A) ∧ (□A → ◇□A)
+  -- iff (◇□A) (□A) expands to the same type
+  exact result
+
+/--
+Task 37: S5-Diamond-Box-to-Truth - `⊢ ◇□A → A`.
+
+In S5, if necessarily-A is possible, then A is true.
+
+**Proof Strategy**: Compose s5_diamond_box with modal_t.
+
+**Dependencies**: Task 33 (s5_diamond_box)
+
+**Status**: Blocked on Task 33 forward direction
+-/
+theorem s5_diamond_box_to_truth (A : Formula) : ⊢ (A.box.diamond).imp A := by
+  -- ◇□A → □A (from s5_diamond_box forward direction)
+  -- □A → A (from modal_t)
+  -- Compose: ◇□A → A
+
+  sorry  -- Blocked on s5_diamond_box forward direction
+
 end Logos.Core.Theorems.ModalS5
 

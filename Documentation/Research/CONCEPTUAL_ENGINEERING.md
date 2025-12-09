@@ -1,10 +1,45 @@
 # Conceptual Engineering: Philosophical Foundations for the Logos Layer Architecture
 
-> NOTE: this document is still full of AI slop, and still needs heavy revisions
+> NOTE: this document is still full of AI slop, requiring heavy revision
 
 ## Introduction: Formal Logic as Conceptual Engineering
 
+### Terminology: README to Technical Mapping
+
+This document expands on the conceptual foundations introduced in [README.md § Motivations](../../README.md#motivations) (lines 61-68). The following terminology mapping connects README's concise formulations to this document's technical exposition:
+
+| README Term (lines 61-68) | Technical Elaboration in This Document |
+|----------------------------|----------------------------------------|
+| **Historical modal operators** | S5 modal operators (`□`, `◇`) quantifying over alternative world-histories (§ Extensible Operator Methodology) |
+| **Tense operators** | Linear temporal operators (`G`, `F`, `H`, `P`) for past/future quantification within world-histories (§ World-Histories and Temporal Evolution) |
+| **Future contingency** | Bimodal combinations of tense and historical modal operators representing alternative possible futures (§ From Tense to Modality) |
+| **Counterfactual scrutiny** | Comparative evaluation of plan expected values against counterfactual alternatives (§ Expected Value via Counterfactual Scrutiny) |
+| **Conceptual engineering** | Normative methodology for stipulating logical operators fit for systematic reasoning applications (§ Formal Logic as Conceptual Engineering) |
+
+For comprehensive definitions, see [GLOSSARY.md](../Reference/GLOSSARY.md). For operator notation, see [OPERATORS.md](../Reference/OPERATORS.md).
+
+### How to Read This Document
+
+**For readers coming from README.md**: This document expands on [README.md § Motivations](../../README.md#motivations) (lines 61-68) and [§ RL TRAINING](../../README.md#rl-training) (lines 45-56). The README provides concise motivations; this document provides philosophical foundations and technical elaboration. Key section mappings:
+- README "conceptual engineering" → § Formal Logic as Conceptual Engineering
+- README "planning under uncertainty" → § Planning Under Uncertainty: The Pragmatic Motivation
+- README "dual verification" → § Dual Verification: Training Signal Architecture
+- README "extensible operators" → § Extensible Operator Methodology, § Epistemic and Normative Extensions
+
+**For readers seeking technical specifications**: This document focuses on conceptual motivations, not implementation details. For formal specifications:
+- Axiom schemata and soundness proofs → [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md)
+- Layer 1-3 operator semantics → [LAYER_EXTENSIONS.md](LAYER_EXTENSIONS.md)
+- Implementation status → [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md)
+- LEAN 4 source code → [Logos/Core/](../../Logos/Core/)
+
+**Reading paths**:
+- **Overview path**: Read § Introduction and § Conclusion only
+- **Planning motivation path**: §§ Introduction, Planning Under Uncertainty, Dual Verification
+- **Layer architecture path**: §§ Introduction, Planning Under Uncertainty, From Tense to Counterfactual, Epistemic and Normative Extensions, Conclusion
+
 ### Formal Logic as Conceptual Engineering
+
+> **README Context**: This section elaborates on [README.md § Motivations](../../README.md#motivations) lines 61-62, which frames formal logic as conceptual engineering analogous to material science refining raw materials into materials fit for building.
 
 Natural language semantics is **descriptive**: analyzing how reasoning expressions like
 "if...then" work in ordinary language to understand their actual usage patterns. By contrast,
@@ -12,15 +47,7 @@ formal logic is **normative**: engineering logical operators with precise truth 
 systematic reasoning, even when these operators differ from natural language usage. Designing operators we ought to have for rigorous reasoning, not merely describing operators we do
 have.
 
-Consider the material conditional (`→`) as a paradigmatic case. The material conditional does not
-match English "if...then"—it is counterintuitive that "if it is raining, the sky will fall
-tomorrow" is true whenever it is not raining. However, the material conditional enables useful
-formal regimentation. To express "all humans are mammals" formally, we write `∀x(Human(x) →
-Mammal(x))`, where the conditional can be regimented using material implication. The material
-conditional abstracts a concept not found in English but useful for expressing universal
-quantification, mathematical proofs, and truth-functional reasoning. This is semantic engineering:
-refining natural language notions into formal operators with different but theoretically valuable
-properties.
+The material conditional (`→`) exemplifies this approach: though counterintuitive as English "if...then" (making "if it is raining, the sky will fall tomorrow" true whenever it is not raining), it enables formal regimentation of universal quantification (`∀x(Human(x) → Mammal(x))`) and truth-functional reasoning—refining natural language into operators with theoretically valuable properties.
 
 Just as material science refine glass from sand or steel from iron ore by transforming raw natural
 materials into materials fit for building, philosophical logic engineers theoretical concepts from
@@ -30,10 +57,10 @@ knowledge, and obligation. These conceptual targets are then refined into precis
 with clearly defined truth conditions over explicit semantic models.
 
 This engineering perspective has crucial implications for AI reasoning systems. Operators with
-precise semantics and axiomatic proof theories generate unlimited clean training data about valid
+precise semantics and axiomatic proof theories generate unlimited clean training signals about valid
 and invalid inferences. Theorem proving produces verified derivations guaranteed sound by
 metalogical proofs, while model checking produces countermodels refuting invalid claims. This dual
-verification architecture provides consistent, verifiable training data not achievable by
+verification architecture provides consistent, verifiable training signals not achievable by
 formalizing inconsistent natural language reasoning patterns.
 
 The normative approach preserves context through evaluation parameters—sentences are evaluated at
@@ -63,23 +90,7 @@ all metaphysically possible worlds."
 
 ### Normative Logic vs Descriptive Semantics
 
-The distinction between normative and descriptive logic reflects a deeper question: what is the purpose of formal logic? If the purpose is understanding human reasoning, descriptive analysis is appropriate. If the purpose is building AI reasoning systems with verified inference and explicit semantics, normative specification is essential.
-
-**Descriptive Logic** analyzes natural language reasoning patterns:
-- **Data source**: How humans actually reason in natural language
-- **Goal**: Formalize existing argument structures
-- **Validity**: An argument is valid if it matches human intuitive standards
-- **Semantics**: Truth conditions approximate natural language usage
-- **Operators**: Determined by analyzing linguistic data
-
-**Normative Logic** stipulates operators for verified reasoning:
-- **Data source**: Requirements from AI applications (planning, verification, oversight)
-- **Goal**: Specify operators with precise computational semantics
-- **Validity**: An argument is valid if it satisfies formal semantic clauses
-- **Semantics**: Truth conditions are engineered for clarity and compositionality
-- **Operators**: Determined by reasoning requirements, not linguistic usage
-
-For AI systems, the normative approach has decisive advantages. Human reasoning data is limited, inconsistent, and prone to error. Training language models on human reasoning patterns replicates these inconsistencies at scale. By contrast, operators with explicit semantic clauses provide clean training data: theorem proving generates valid inferences guaranteed by soundness proofs, while model checking generates countermodels refuting invalid claims. This dual verification architecture (see [DUAL_VERIFICATION.md](DUAL_VERIFICATION.md)) produces consistent, verifiable training data not achievable through descriptive formalization of human reasoning.
+Descriptive logic analyzes natural language reasoning patterns to formalize existing argument structures. Normative logic stipulates operators for verified reasoning based on AI application requirements (planning, verification, oversight). For AI systems, the normative approach has decisive advantages: human reasoning data is limited and inconsistent, while operators with explicit semantic clauses provide clean training signals through dual verification (theorem proving generates valid inferences, model checking generates countermodels). See [DUAL_VERIFICATION.md](DUAL_VERIFICATION.md) for architecture details.
 
 The conceptual engineering approach also enables **interpretability** crucial for scalable oversight. Each operator in the Logos has explicit truth conditions defined over task semantic models (possible worlds as functions from times to world-states). When an AI system derives `□△φ` (necessarily, always `φ`), the semantic clause specifies precisely what this means: `φ` holds at all accessible worlds at all times in their temporal domains. This explicit semantics allows human overseers to verify whether derivations accurately represent the intended claims, providing transparency unavailable in purely pattern-matching approaches.
 
@@ -87,7 +98,7 @@ The conceptual engineering approach also enables **interpretability** crucial fo
 
 The Logos layer architecture embodies the conceptual engineering approach through **progressive extensibility**: applications select precisely the operators needed for their domain without carrying unused overhead. This methodology treats logical operators as modular components with clear compositional semantics.
 
-**Layer 0 (Core TM)** provides the foundation: S5 modal operators (`□`, `◇` for necessity and possibility) combined with linear temporal operators (`G`, `F`, `H`, `P` for future and past quantification). This bimodal logic TM (Tense and Modality) supports reasoning about metaphysical necessity and temporal evolution. The core layer is complete—all axioms proven sound, all inference rules verified—providing a stable foundation for extensions.
+**Layer 0 (Core TM)** provides the foundation: S5 historical modal operators (`□`, `◇` for necessity and possibility) combined with linear tense operators (`G`, `F`, `H`, `P` for future and past quantification). This bimodal logic TM (Tense and Modality) supports reasoning about metaphysical necessity and temporal evolution. The core layer is complete—all axioms proven sound, all inference rules verified—providing a stable foundation for extensions.
 
 **Layer 1 (Explanatory)** adds counterfactual (`□→`, `◇→`) and causal (`○→`) operators building on the core temporal-modal foundation. These operators require enhanced semantic structure (mereological parthood relations over world-states) but preserve the task semantics framework where possible worlds are functions from times to world-states.
 
@@ -108,6 +119,8 @@ The extensibility is **unbounded**: future layers can add operators for addition
 For detailed dual verification architecture supporting this methodology, see [METHODOLOGY.md](../UserGuide/METHODOLOGY.md). For technical layer specifications, see [LAYER_EXTENSIONS.md](LAYER_EXTENSIONS.md). For the Core Layer formal axiomatization, see [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md).
 
 ## Planning Under Uncertainty: The Pragmatic Motivation
+
+> **README Context**: This section elaborates on [README.md § Motivations](../../README.md#motivations) lines 63-66, which identifies planning under uncertainty as the core pragmatic motivation for the Logos architecture.
 
 ### Plans as High Expected Value Futures
 
@@ -132,23 +145,13 @@ To evaluate expected value, the system must represent:
 - `◇F(project_x_succeeds) ∧ ◇F(project_y_succeeds)`: Both outcomes are possible futures
 - `Pr(F(project_x_succeeds)) > Pr(F(project_y_succeeds))`: Project X has higher probability of success
 
-The tense operators provide the temporal structure (representing that success occurs in the future), while modal and probabilistic operators enable comparing alternative possible futures. Without tense operators, we cannot distinguish between Plan A succeeding eventually (`F(success)`) versus Plan A succeeding immediately (`success`). Without modal operators, we cannot represent that both plans are possible alternatives to be compared.
+The tense operators provide the temporal structure (representing that success occurs in the future), while historical modal and probabilistic operators enable comparing alternative possible futures. Without tense operators, we cannot distinguish between Plan A succeeding eventually (`F(success)`) versus Plan A succeeding immediately (`success`). Without historical modal operators, we cannot represent that both plans are possible alternatives to be compared.
 
 ### World-Histories and Temporal Evolution
 
 The semantic foundation for planning requires distinguishing two levels of analysis:
 
-**Semantic Level (World-Histories)**: In the formal semantics (TaskFrame.lean,
-WorldHistory.lean), a world-history is a **complete function** `w: T → S` where:
-- `T` is a convex subset of times (no temporal gaps)
-- `S` is a set of world-states
-- `w(t)` determinately specifies the world-state at every time `t ∈ T`
-- `w` respects the task relation: for all `s ≤ t` in `T`,
-  `F.task_rel (w(s)) (t-s) (w(t))`
-
-This completeness is essential for recursive truth evaluation: to evaluate `Gφ` at `(w,t)`,
-we must check `φ` at all `t' > t` in `w`'s domain, which requires `w` to specify states at
-all such times.
+**Semantic Level (World-Histories)**: In the formal semantics, a world-history is a complete function `w: T → S` from convex time subsets to world-states, respecting the task relation. This completeness enables recursive truth evaluation for tense operators. See [WorldHistory.lean](../../Logos/Core/Semantics/WorldHistory.lean) for formal specification.
 
 **Pragmatic Level (Plan Specifications)**: Real-world plans do not specify complete
 world-histories. A plan like "launch product by Q4 2026" provides only **partial
@@ -170,74 +173,15 @@ Plan = {w : WorldHistory F |
 This set contains all physically possible complete temporal evolutions satisfying the
 plan's constraints.
 
-**Task Relation as Causal Constraint**: The task relation
-`F.task_rel : WorldState → T → WorldState → Prop` constrains which world-histories are
-accessible from a given world-state-time triple, modeling **physical and causal
-constraints** on plan execution.
-
-**Formal Constraint**: A world-history `w` is accessible from state `s` at time `t` only
-if `w` respects the task relation: for all times `t₁ ≤ t₂` in `w`'s domain,
-`F.task_rel (w(t₁)) (t₂ - t₁) (w(t₂))`.
-
-**Planning Interpretation**: This constraint ensures that only **physically achievable**
-temporal evolutions are considered. If transitioning from state `s₁` to state `s₂` in
-duration `Δ` is physically impossible (task relation does not hold), then no accessible
-world-history can have `w(t) = s₁` and `w(t + Δ) = s₂`.
-
-**Task Relation Properties**:
-
-1. **Nullity** (`∀ w, task_rel w 0 w`): Every state can transition to itself in zero time
-   - Planning Interpretation: The "identity task" (do nothing) is always achievable
-
-2. **Compositionality** (`task_rel w x u ∧ task_rel u y v → task_rel w (x+y) v`): If
-   state `w` can reach state `u` in time `x`, and `u` can reach `v` in time `y`, then `w`
-   can reach `v` in time `x+y`
-   - Planning Interpretation: Sequential task composition—executing Task₁ then Task₂
-     achieves the combined effect in combined duration
-
-**Why This Matters for Planning**: The task relation ensures modal operators `◇` and `□`
-quantify over **achievable** plans, not arbitrary mathematical world-histories. When
-evaluating `◇Gφ` ("there exists an achievable plan where `φ` always holds"), the
-existential quantification is restricted to world-histories satisfying the task relation
-from the current state.
+**Task Relation as Causal Constraint**: The task relation `F.task_rel : WorldState → T → WorldState → Prop` constrains accessible world-histories to physically achievable temporal evolutions, with nullity (identity task always achievable) and compositionality (sequential task composition). This ensures historical modal operators quantify over achievable plans, not arbitrary mathematical possibilities. See [TaskFrame.lean](../../Logos/Core/Semantics/TaskFrame.lean) for formal properties.
 
 ### Truth Conditions for Tense Operators in Planning Contexts
 
-Tense operators quantify over times **within a single world-history**, enabling
-representation of temporal evolution under a specific plan:
-
-**Intra-World Temporal Quantification**:
-
-- `Gφ` (always in the future): `φ` holds at **all** future times in the current
-  world-history
-  - **Planning Interpretation**: Under this plan, `φ` will hold throughout the future
-  - **Truth Condition**: `truth_at M w t φ.all_future` iff
-    `∀ t' > t, t' ∈ w.domain → truth_at M w t' φ`
-
-- `Fφ` (sometime in the future): `φ` holds at **some** future time in the current
-  world-history
-  - **Planning Interpretation**: Under this plan, `φ` will eventually occur
-  - **Truth Condition**: `truth_at M w t (¬Gφ.not)` iff
-    `∃ t' > t, t' ∈ w.domain ∧ truth_at M w t' φ`
-
-- `Hφ` (always in the past): `φ` held at **all** past times in the current world-history
-  - **Planning Interpretation**: Looking back from now, `φ` has consistently held
-  - **Truth Condition**: `truth_at M w t φ.all_past` iff
-    `∀ t' < t, t' ∈ w.domain → truth_at M w t' φ`
-
-- `Pφ` (sometime in the past): `φ` held at **some** past time in the current
-  world-history
-  - **Planning Interpretation**: Looking back from now, `φ` occurred at least once
-  - **Truth Condition**: `truth_at M w t (¬Hφ.not)` iff
-    `∃ t' < t, t' ∈ w.domain ∧ truth_at M w t' φ`
-
-**Key Semantic Property**: Tense operators do not introduce alternative worlds—they
-quantify over times in the **same** world-history. This represents temporal evolution
-under a **fixed** plan execution.
+Tense operators quantify over times within a single world-history, representing temporal evolution under a fixed plan: `Gφ` (always in future), `Fφ` (sometime in future), `Hφ` (always in past), `Pφ` (sometime in past). These operators enable intra-world temporal quantification without introducing alternative worlds. For formal truth conditions, see [Truth.lean](../../Logos/Core/Semantics/Truth.lean) lines 110-123.
 
 **Inter-World Plan Comparison via Modal Operators**:
 
-To compare alternative plans, we need modal operators quantifying over **different
+To compare alternative plans, we need historical modal operators quantifying over **different
 world-histories**:
 
 - `◇Gφ` (possibly, always φ): There exists a plan where `φ` holds throughout the future
@@ -258,13 +202,13 @@ across alternative scenarios (modal). Pure temporal logic cannot represent alter
 plans; pure modal logic cannot represent temporal evolution within plans. The TM bimodal
 logic provides both dimensions.
 
-### Expected Value via Counterfactual Comparison
+### Expected Value via Counterfactual Scrutiny
 
-Planning requires comparing the expected value of executed plans against **counterfactual alternatives**—ways the world could have evolved if different actions had been taken. This comparative evaluation is the core of rational decision-making under uncertainty.
+Planning requires comparing the expected value of executed plans against **counterfactual alternatives**—ways the world could have evolved if different actions had been taken. This counterfactual scrutiny is the core of rational decision-making under uncertainty.
 
 The expected value of a plan is not an absolute measure but a **relative comparison**: Plan A has positive expected value relative to Plan B if the likely outcomes of Plan A are preferable to the likely outcomes of Plan B. This comparison is inherently counterfactual: when evaluating Plan A, we ask "How would the world evolve under Plan A compared to how it would evolve under Plan B?"
 
-**Why tense operators are essential**: Counterfactual comparison requires representing alternative temporal evolutions from the same decision point. At time `t_0`, the AI system faces a choice: execute Plan A or Plan B. The expected value comparison requires representing:
+**Why tense operators are essential**: Counterfactual scrutiny requires representing alternative temporal evolutions from the same decision point. At time `t_0`, the AI system faces a choice: execute Plan A or Plan B. The expected value comparison requires representing:
 1. **Actual evolution under Plan A**: World-histories where Plan A is executed from `t_0`
 2. **Counterfactual evolution under Plan B**: World-histories where Plan B is executed from `t_0` instead
 3. **Temporal divergence**: Both evolution classes agree on states before `t_0` but diverge after `t_0`
@@ -273,9 +217,9 @@ Tense operators enable this representation. Let `plan_A_executed` be true iff Pl
 - `plan_A_executed ∧ Fφ_A`: If Plan A is executed, then `φ_A` will hold in the future
 - `plan_B_executed ∧ Fφ_B`: If Plan B is executed, then `φ_B` will hold in the future
 
-The counterfactual comparison asks: "Suppose Plan A is executed (actual) versus suppose Plan B is executed (counterfactual)—which future evolution is preferable?" This requires tense operators to represent future evolution under each plan, plus modal or counterfactual operators to represent the comparison between actual and counterfactual evolutions.
+Counterfactual scrutiny asks: "Suppose Plan A is executed (actual) versus suppose Plan B is executed (counterfactual)—which future evolution is preferable?" This requires tense operators to represent future evolution under each plan, plus historical modal or counterfactual operators to represent the comparison between actual and counterfactual evolutions.
 
-**Perpetuity principles and temporal quantification**: The Logos Core Layer includes derived operators `△φ` (always, at all times) and `▽φ` (sometimes, at some time) for temporal quantification. These operators, combined with modal operators, enable expressing claims about persistent properties across temporal evolutions:
+**Perpetuity principles and temporal quantification**: The Logos Core Layer includes derived operators `△φ` (always, at all times) and `▽φ` (sometimes, at some time) for temporal quantification. These operators, combined with historical modal operators, enable expressing claims about persistent properties across temporal evolutions:
 - `□△φ`: Necessarily, always `φ` (metaphysical necessity of perpetuity)
 - `◇▽φ`: Possibly, sometimes `φ` (metaphysical possibility of occurrence)
 - `△◇φ`: Always possibly `φ` (persistent possibility)
@@ -287,15 +231,15 @@ The perpetuity principles (P1-P6) formalize relationships between modal and temp
 
 ### From Tense to Modality
 
-Planning under uncertainty requires both temporal and modal operators working in tandem. Tense operators represent temporal evolution within a single possible world, while modal operators represent alternative possible worlds for comparison. This bimodal structure—tense plus modality—is essential for capturing both aspects of planning.
+Planning under uncertainty requires both tense and historical modal operators working in tandem. Tense operators represent temporal evolution within a single possible world, while historical modal operators represent alternative possible worlds for comparison. This bimodal structure—tense plus modality—is essential for capturing both aspects of planning.
 
-**Why tense alone is insufficient**: Pure temporal logic (tense operators without modality) can represent evolution over time but cannot represent alternative possibilities. If the future is deterministic—only one possible evolution from each state-time point—then planning reduces to prediction. But genuine planning under uncertainty requires representing multiple possible futures, comparing their expected values, and selecting actions likely to produce preferable outcomes. This requires modal operators to represent the space of possibilities.
+**Why tense alone is insufficient**: Pure temporal logic (tense operators without modality) can represent evolution over time but cannot represent alternative possibilities. If the future is deterministic—only one possible evolution from each state-time point—then planning reduces to prediction. But genuine planning under uncertainty requires representing multiple possible futures, comparing their expected values, and selecting actions likely to produce preferable outcomes. This requires historical modal operators to represent the space of possibilities.
 
-**Why modality alone is insufficient**: Pure modal logic (modal operators without tense) can represent alternative possible worlds but cannot represent temporal evolution within those worlds. Without temporal structure, we cannot distinguish between "Plan A eventually succeeds" (temporal evolution to success) and "Plan A immediately succeeds" (success at current time). Planning requires representing that actions have temporal consequences: executing action `A` at time `t` affects world-states at later times `t' > t`.
+**Why modality alone is insufficient**: Pure modal logic (historical modal operators without tense) can represent alternative possible worlds but cannot represent temporal evolution within those worlds. Without temporal structure, we cannot distinguish between "Plan A eventually succeeds" (temporal evolution to success) and "Plan A immediately succeeds" (success at current time). Planning requires representing that actions have temporal consequences: executing action `A` at time `t` affects world-states at later times `t' > t`.
 
 **Bimodal integration**: The TM logic (Tense and Modality) combines both dimensions:
 - **Temporal evolution within worlds**: Tense operators (`G`, `F`, `H`, `P`) quantify over times within a world-history
-- **Alternative evolutions across worlds**: Modal operators (`□`, `◇`) quantify over alternative world-histories
+- **Alternative evolutions across worlds**: Historical modal operators (`□`, `◇`) quantify over alternative world-histories
 - **Task semantics coordination**: All world-histories share temporal structure (times from convex real number subsets) and are constrained by the task relation
 
 This bimodal structure enables representing planning claims like:
@@ -305,6 +249,54 @@ This bimodal structure enables representing planning claims like:
 - `F□φ`: Eventually, `φ` becomes necessary (future certainty)
 
 For the formal axiomatization of TM bimodal logic, including axiom schemata and soundness proofs, see [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md). The Core Layer implementation provides all axioms and inference rules with verified soundness, creating a stable foundation for the layer extensions discussed in subsequent sections.
+
+## Dual Verification: Training Signal Architecture
+
+> **README Context**: This section elaborates on [README.md § RL TRAINING](../../README.md#rl-training) (lines 45-56), which frames dual verification as the methodology for generating clean training signals combining theorem proving (valid inferences) with model checking (countermodel refutations).
+
+### Training Signal Requirements for AI Reasoning
+
+The conceptual engineering approach to logical operators creates unique opportunities for training AI reasoning systems. Unlike natural language reasoning data—which is limited, inconsistent, and prone to error—formal operators with explicit semantic clauses enable **systematic generation of verified training signals**.
+
+**The training signal challenge**: Effective AI reasoning requires both positive signals (examples of valid inferences) and corrective signals (examples of invalid inferences with concrete counterexamples). Human reasoning data provides neither reliably: human inferences may be invalid despite appearing sound, and human error identification rarely includes formal countermodels demonstrating why an inference fails.
+
+**Dual verification solution**: The Logos addresses this through **dual verification architecture** combining:
+1. **Theorem proving (LEAN 4)**: Generates positive training signals as verified derivations
+2. **Model checking (Z3)**: Generates corrective training signals as countermodels refuting invalid claims
+
+This architecture produces training signals with three essential properties ([README.md § RL TRAINING](../../README.md#rl-training) lines 49-51):
+- **Unbounded**: Infinite theorems are derivable from the axiom system
+- **Clean**: Soundness guarantees only valid inferences are derivable
+- **Justified**: LEAN 4 proofs provide verifiable receipts; Z3 countermodels refute invalid claims
+
+### Dual Verification Implementation
+
+**Theorem proving generates valid inferences**: The LEAN 4 implementation proves theorems deriving formulas from axioms via sound inference rules. Each derivation `Γ ⊢ φ` (premises `Γ` derive conclusion `φ`) is a verified proof receipt demonstrating that `φ` follows from `Γ` by valid reasoning. The soundness proofs guarantee that derivable formulas are semantically valid: if `Γ ⊢ φ`, then `Γ ⊨ φ` (semantic consequence).
+
+**Model checking refutes invalid claims**: The Z3 implementation searches for countermodels demonstrating that formulas are not valid. A countermodel for `φ` is a task semantic model where `φ` is false, proving that `φ` is not a logical truth. Countermodels provide concrete refutations with explicit world-history-time triples where the formula fails, enabling AI systems to understand **why** an inference is invalid.
+
+**Training signal generation**: The dual verification architecture produces training signal pairs:
+- **Positive examples**: (formula, derivation) pairs where LEAN 4 proves the formula
+- **Negative examples**: (formula, countermodel) pairs where Z3 refutes the formula
+
+These training signals are qualitatively superior to human reasoning data because:
+1. **Consistency**: Soundness guarantees prevent deriving contradictions
+2. **Completeness coverage**: Systematic exploration of formula space via proof search
+3. **Verifiable receipts**: Each example includes verification (proof or countermodel)
+4. **Explicit semantics**: Countermodels demonstrate truth conditions concretely over task semantic models
+
+### Scalable Oversight Through Explicit Semantics
+
+Beyond training signal generation, the dual verification architecture enables **scalable oversight** of AI reasoning ([README.md § RL TRAINING](../../README.md#rl-training) line 53). Each operator has explicit truth conditions defined over task semantic models (world-histories as functions from times to world-states). When an AI system derives `□△φ` (necessarily, always `φ`), the semantic clause specifies precisely what this means: `φ` holds at all accessible world-histories at all times in their temporal domains.
+
+This explicit semantics provides interpretability unavailable in pattern-matching approaches:
+- **Proof receipts**: Human overseers can verify LEAN 4 derivations step-by-step
+- **Countermodel inspection**: Human overseers can examine Z3 countermodels to understand inference failures
+- **Semantic grounding**: Operators have precise meanings independent of training data patterns
+
+The combination of verified derivations and refutational countermodels creates a foundation for reliable AI reasoning with human oversight at scale. For detailed dual verification architecture including RL training specification, see [DUAL_VERIFICATION.md](DUAL_VERIFICATION.md).
+
+**Conceptual bridge to Layer 1**: While the Core Layer's dual verification architecture provides clean training signals for tense and historical modal reasoning, extending to counterfactual and causal operators (Layer 1) requires enriched semantic structure. The mereological framework discussed in the next section enables dual verification for counterfactual scrutiny—generating training signals about comparative plan evaluation and causal relationships.
 
 ## From Tense to Counterfactual: Layer 1 Requirements
 
@@ -376,9 +368,9 @@ Partial_Plan_Spec ⟿ {w : WorldHistory F | w satisfies all specified constraint
   `∃ w ∈ Plan, truth_at M w t φ`
 
 **Adequacy for Core Layer**: This approximation works well for temporal and modal
-reasoning because tense and modal operators naturally quantify over sets:
+reasoning because tense and historical modal operators naturally quantify over sets:
 - Tense operators: quantify over times within each world-history in the set
-- Modal operators: quantify over alternative world-histories (the set members)
+- Historical modal operators: quantify over alternative world-histories (the set members)
 
 **Inadequacy for Layer 1 Counterfactuals**: The set-based approximation breaks down when
 evaluating counterfactuals like "If we had allocated more resources to marketing, the
@@ -446,7 +438,7 @@ For detailed causal operator semantics and axiomatization, see [LAYER_EXTENSIONS
 
 ### Integration with Core Layer
 
-Layer 1 extends the Core Layer without replacing it. The tense and modal operators from TM logic continue to operate as defined, but now over semantic models enriched with mereological structure. This integration preserves several key properties:
+Layer 1 extends the Core Layer without replacing it. The tense and historical modal operators from TM logic continue to operate as defined, but now over semantic models enriched with mereological structure. This integration preserves several key properties:
 
 **Semantic continuity**: Core Layer formulas have identical truth conditions in Layer 1 models when evaluated over complete world-histories. The mereological structure only affects evaluation of formulas involving counterfactual or causal operators.
 
@@ -459,6 +451,10 @@ Layer 1 extends the Core Layer without replacing it. The tense and modal operato
 The next section examines Layers 2-3, which build on Layer 1's mereological foundation to add epistemic and normative operators for reasoning under uncertainty and multi-agent coordination.
 
 ## Epistemic and Normative Extensions: Layers 2-3 Requirements
+
+> **README Context**: This section elaborates on [README.md § Motivations](../../README.md#motivations) lines 67-68, which identifies the need for explanatory, epistemic, and normative operators as part of the extensible layer architecture.
+
+**Conceptual bridge from Layer 1**: Layer 1's counterfactual and causal operators enable representing plan evaluation and causal mechanisms. However, real-world planning rarely operates with complete information. Layers 2-3 address this limitation by adding epistemic operators (representing knowledge and uncertainty) and normative operators (representing obligations and preferences), enabling AI systems to reason about plans under realistic conditions of incomplete information and multi-agent coordination.
 
 ### Causation Under Epistemic Assumptions
 
@@ -578,7 +574,7 @@ This normative approach has decisive advantages for AI systems:
 5. **Extensibility**: New operators can be added systematically without disrupting existing semantics
 
 The Logos demonstrates this methodology across four layers:
-- **Layer 0 (Core TM)**: Tense and modal operators for temporal evolution and alternative possibilities
+- **Layer 0 (Core TM)**: Tense and historical modal operators for temporal evolution and alternative possibilities
 - **Layer 1 (Explanatory)**: Counterfactual and causal operators building on mereological structure
 - **Layer 2 (Epistemic)**: Knowledge, belief, and probabilistic operators for reasoning under uncertainty
 - **Layer 3 (Normative)**: Deontic operators for obligations, permissions, and multi-agent coordination
@@ -614,42 +610,18 @@ This systematic process ensures that layer extensions maintain the quality stand
 
 This modularity prevents operator bloat: applications carry only the semantic structure and verification overhead required for their actual reasoning tasks.
 
-### Dual Verification Connection
-
-Conceptual engineering provides the foundation for the Logos **dual verification architecture**: combining theorem proving (LEAN 4) with model checking (Z3) to generate clean training data for AI reasoning systems.
-
-**Theorem proving generates valid inferences**: The LEAN 4 implementation proves theorems deriving formulas from axioms via sound inference rules. Each derivation `Γ ⊢ φ` (premises `Γ` derive conclusion `φ`) is a verified proof receipt demonstrating that `φ` follows from `Γ` by valid reasoning. The soundness proofs guarantee that derivable formulas are semantically valid: if `Γ ⊢ φ`, then `Γ ⊨ φ` (semantic consequence).
-
-**Model checking refutes invalid claims**: The Z3 implementation searches for countermodels demonstrating that formulas are not valid. A countermodel for `φ` is a task semantic model where `φ` is false, proving that `φ` is not a logical truth. Countermodels provide concrete refutations: "Here is a specific world-history-time triple where `φ` fails."
-
-**Training data generation**: The dual verification architecture produces training data pairs:
-- **Positive examples**: (formula, derivation) pairs where LEAN 4 proves the formula
-- **Negative examples**: (formula, countermodel) pairs where Z3 refutes the formula
-
-This training data is qualitatively superior to human reasoning data because:
-1. **Consistency**: Soundness guarantees prevent deriving contradictions
-2. **Completeness coverage**: Systematic exploration of formula space via proof search
-3. **Verifiable receipts**: Each example includes verification (proof or countermodel)
-4. **Explicit semantics**: Countermodels demonstrate truth conditions concretely
-
-For detailed dual verification architecture including RL training specification, see [DUAL_VERIFICATION.md](DUAL_VERIFICATION.md). For implementation status and known limitations, see [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md).
-
 ### Implementation Status and Future Work
 
-The Logos Core Layer (Layer 0) implementation is complete:
-- **12 axioms proven sound**: MT, M4, MB, T4, TA, TL, MF, TF, modal_k_dist, double_negation, prop_k, prop_s
-- **8 inference rules proven**: axiom, assumption, modus_ponens, weakening, modal_k, temporal_k, temporal_duality, necessitation
-- **Perpetuity principles**: P1-P4 fully proven with zero sorry placeholders, P5-P6 axiomatized
-- **Automation tactics**: 12 custom tactics including `tm_auto` (Aesop integration) for proof automation
+Core Layer (Layer 0) implementation is complete with 12 axioms proven sound, 8 inference rules proven, perpetuity principles P1-P6 fully proven, and 12 automation tactics. Future work includes implementing Layers 1-3 (counterfactual/causal, epistemic, normative operators), Z3 model checking integration, and RL training pipeline. See [LAYER_EXTENSIONS.md](LAYER_EXTENSIONS.md) for specifications.
 
-This complete Core Layer provides a stable foundation for implementing Layers 1-3. The extension specifications in [LAYER_EXTENSIONS.md](LAYER_EXTENSIONS.md) provide detailed operator semantics, axiom schemata, and inference rules ready for LEAN 4 implementation. Future work will:
+### Related Documentation
 
-1. **Implement Layer 1**: Mereological structure, counterfactual and causal operators, soundness proofs
-2. **Implement Layer 2**: Epistemic operators, accessibility relations for knowledge/belief, axiomatization
-3. **Implement Layer 3**: Normative operators, deontic accessibility, preference orderings
-4. **Dual verification integration**: Z3 model checking for Layers 1-3 formulas
-5. **RL training pipeline**: Automated training data generation via dual verification
+This document integrates with the following project documentation:
 
-The conceptual engineering methodology ensures that these extensions maintain the same rigorous standards as the Core Layer: explicit semantics, proven soundness, comprehensive testing, and verified automation.
-
-For current implementation status including module-by-module completion and known limitations, see [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md). For contribution guidelines and development standards, see [CONTRIBUTING.md](../Development/CONTRIBUTING.md).
+- **[README.md](../../README.md)**: Project overview with concise motivations for the Logos architecture (§ Motivations lines 61-68, § RL TRAINING lines 45-56)
+- **[ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md)**: Formal axiomatization of Core Layer TM bimodal logic with soundness proofs
+- **[LAYER_EXTENSIONS.md](LAYER_EXTENSIONS.md)**: Technical specifications for Layers 1-3 (counterfactual, epistemic, normative operators)
+- **[DUAL_VERIFICATION.md](DUAL_VERIFICATION.md)**: RL training architecture combining theorem proving (LEAN 4) with model checking (Z3)
+- **[IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md)**: Module-by-module completion tracking and known limitations
+- **[METHODOLOGY.md](../UserGuide/METHODOLOGY.md)**: Philosophical methodology and layer architecture design principles
+- **[CONTRIBUTING.md](../Development/CONTRIBUTING.md)**: Contribution guidelines and development standards

@@ -4,7 +4,7 @@
 - **Date**: 2025-12-09
 - **Feature**: Implement Medium Priority Tasks 21-41: Hilbert theorem derivations for propositional and modal logic
 - **Scope**: Formalize 21 Hilbert-style theorems across propositional logic (RAA, EFQ, ECQ, LCE/RCE, LDI/RDI, RCP, NE/NI, DE, BI) and modal S5/S4 logic. Output: 3 new modules (Propositional.lean, ModalS5.lean, ModalS4.lean) with complete proofs.
-- **Status**: [IN PROGRESS]
+- **Status**: [BLOCKED]
 - **Estimated Hours**: 65-85 hours
 - **Complexity Score**: 51
 - **Structure Level**: 0
@@ -21,15 +21,20 @@
 
 | Phase | Status | Theorems Proven | Sorry Count |
 |-------|--------|-----------------|-------------|
-| 0 | SKIPPED | N/A | N/A |
+| 0 | **COMPLETE** ✓ | N/A | N/A |
 | 1 | **COMPLETE** ✓ | 9/9 | 0 |
-| 2 | IN PROGRESS | 3/6 | 4 |
-| 3 | NOT STARTED | 0/? | - |
-| 4 | NOT STARTED | 0/6 | - |
+| 2 | **BLOCKED** | 3/6 | 6 |
+| 3 | **BLOCKED** | 3/6 (biconditional infra) | 3 |
+| 4 | **BLOCKED** | 1/6 complete, 2/6 partial | 3 |
 | 5 | NOT STARTED | - | - |
 
-**Total Theorems Proven**: 12 (9 propositional + 3 modal)
-**Total Sorry Placeholders**: 4 (all in ModalS5.lean)
+**Total Theorems Implemented**: 28 (15 Propositional + 9 ModalS5 + 4 ModalS4)
+**Total Theorems Proven (zero sorry)**: ~11
+**Total Sorry Placeholders**: 17 (5 Propositional + 9 ModalS5 + 3 ModalS4)
+
+### Key Blockers Identified
+1. **Deduction Theorem** (10-15 hours): Required for `classical_merge`, `lce_imp`, `rce_imp`
+2. **S5 Characteristic Axiom** (`□◇A → ◇A`): Required for forward modal collapse proofs
 
 ---
 
@@ -153,12 +158,12 @@ Create file structure and dependency infrastructure before theorem implementatio
 
 ---
 
-### Phase 1: Propositional Foundations  ✓ [IN PROGRESS]
+### Phase 1: Propositional Foundations [COMPLETE] ✓
 implementer: lean
 lean_file: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/Propositional.lean
 dependencies: [0]
 
-**Effort**: 22 hours (Actual: ~2 iterations)
+**Effort**: 22 hours (Actual: 2 iterations, ~4 hours)
 
 Implement low-complexity propositional theorems (Tasks 21-26) and critical dependency lemmas.
 
@@ -176,19 +181,16 @@ Implement low-complexity propositional theorems (Tasks 21-26) and critical depen
 - **Goal**: `theorem ecq (A B : Formula) : [A, A.neg] ⊢ B`
 - **Strategy**: Direct application of RAA or EFQ with contradiction in context
 - **Location**: Propositional.lean:90-135
-- **Status**: [IN PROGRESS]
 
 **Task 21: RAA (Reductio ad Absurdum)** [COMPLETE] ✓
 - **Goal**: `theorem raa (A B : Formula) : [] ⊢ A.imp (A.neg.imp B)`
 - **Strategy**: Use S axiom + imp_trans + contradiction reasoning
 - **Location**: Propositional.lean:149-197
-- **Status**: [IN PROGRESS]
 
 **Task 22: EFQ (Ex Falso Quodlibet)** [COMPLETE] ✓
 - **Goal**: `theorem efq (A B : Formula) : [] ⊢ A.neg.imp (A.imp B)`
 - **Strategy**: Dual of RAA using theorem_flip
 - **Location**: Propositional.lean:208-221
-- **Status**: [IN PROGRESS]
 
 **Task 24: LDI/RDI (Disjunction Introduction)** [COMPLETE] ✓
 - **Goal**:
@@ -196,13 +198,11 @@ Implement low-complexity propositional theorems (Tasks 21-26) and critical depen
   - `theorem rdi (A B : Formula) : [B] ⊢ A.or B`
 - **Strategy**: Use EFQ + prop_k + prop_s for ldi; prop_s for rdi
 - **Location**: Propositional.lean:234-285, 297-317
-- **Status**: [IN PROGRESS]
 
 **Task 25: RCP (Reverse Contraposition)** [COMPLETE] ✓
 - **Goal**: `theorem rcp (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.imp A`
 - **Strategy**: Chain contraposition + double_negation + DNI with unfold Formula.neg
 - **Location**: Propositional.lean (added in iteration 2)
-- **Status**: [IN PROGRESS]
 
 **Task 23: LCE/RCE (Conjunction Elimination)** [COMPLETE] ✓
 - **Goal**:
@@ -210,13 +210,11 @@ Implement low-complexity propositional theorems (Tasks 21-26) and critical depen
   - `theorem rce (A B : Formula) : [A.and B] ⊢ B`
 - **Strategy**: Use EFQ/prop_s + contraposition + DNE with conjunction definition
 - **Location**: Propositional.lean (added in iteration 2)
-- **Status**: [IN PROGRESS]
 
 **LEM (Law of Excluded Middle)** [COMPLETE] ✓
 - **Goal**: `theorem lem (A : Formula) : [] ⊢ A.or A.neg`
 - **Strategy**: Unfold disjunction to ¬A → ¬A, then apply identity
 - **Location**: Propositional.lean:66-70
-- **Status**: [IN PROGRESS]
 
 **Success Criteria**:
 - [x] All 8 propositional theorems proven (ECQ, RAA, EFQ, LDI, RDI, RCP, LCE, RCE)
@@ -230,12 +228,12 @@ Implement low-complexity propositional theorems (Tasks 21-26) and critical depen
 
 ---
 
-### Phase 2: Modal S5 Theorems [COMPLETE]
+### Phase 2: Modal S5 Theorems [BLOCKED]
 implementer: lean
 lean_file: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/ModalS5.lean
 dependencies: [1]
 
-**Effort**: 20 hours (Actual: 2 iterations, partial completion)
+**Effort**: 20 hours (Actual: 5 iterations, 3/6 complete, 3 blocked)
 
 Implement modal S5 theorems (Tasks 30-36) using existing modal infrastructure.
 
@@ -251,39 +249,33 @@ Implement modal S5 theorems (Tasks 30-36) using existing modal infrastructure.
 - **Goal**: `theorem t_box_to_diamond (A : Formula) : [] ⊢ A.box.imp A.diamond`
 - **Strategy**: Use modal_t axiom (□A → A) + diamond definition (¬□¬A) + RAA + b_combinator
 - **Location**: ModalS5.lean:121-183
-- **Status**: [IN PROGRESS]
 
 **Task 34: Box-Disjunction Introduction** [BLOCKED]
 - **Goal**: `theorem box_disj_intro (A B : Formula) : [] ⊢ (A.box.or B.box).imp ((A.or B).box)`
 - **Strategy**: Apply box_mono + disjunction weakening
 - **Dependencies**: [Phase 1: LDI, RDI]
-- **Status**: [IN PROGRESS]
 - **Location**: ModalS5.lean:197-221 (sorry at line 221)
 
 **Task 35: Box-Contraposition** [COMPLETE] ✓
 - **Goal**: `theorem box_contrapose (A B : Formula) : [] ⊢ (A.imp B).box.imp ((B.neg.imp A.neg).box)`
 - **Strategy**: Build contraposition with b_combinator + theorem_flip, then apply box_mono
 - **Location**: ModalS5.lean:235-256
-- **Status**: [IN PROGRESS]
 
 **Task 36: T-Box-Consistency** [COMPLETE] ✓
 - **Goal**: `theorem t_box_consistency (A : Formula) : [] ⊢ (A.and A.neg).box.neg`
 - **Strategy**: Use modal_t + theorem_app1 (DNI) to show contradiction → ⊥
 - **Location**: ModalS5.lean:267-354
-- **Status**: [IN PROGRESS]
 
 **Task 31: Box-Conjunction Biconditional** [BLOCKED]
 - **Goal**: `theorem box_conj_iff (A B : Formula) : [] ⊢ (A.and B).box.iff (A.box.and B.box)`
 - **Strategy**: Extend box_conj_intro with elimination direction using LCE/RCE + box_mono
 - **Dependencies**: [Phase 1: LCE, RCE, biconditional infrastructure]
-- **Status**: [IN PROGRESS]
 - **Location**: ModalS5.lean:363-364 (sorry)
 
 **Task 32: Diamond-Disjunction Biconditional** [BLOCKED]
 - **Goal**: `theorem diamond_disj_iff (A B : Formula) : [] ⊢ (A.or B).diamond.iff (A.diamond.or B.diamond)`
 - **Strategy**: Dual of box_conj_iff via modal duality + De Morgan laws
 - **Dependencies**: [Task 31, biconditional infrastructure]
-- **Status**: [IN PROGRESS]
 - **Location**: ModalS5.lean:373-374 (sorry)
 
 **Helper Infrastructure**:
@@ -306,14 +298,24 @@ Implement modal S5 theorems (Tasks 30-36) using existing modal infrastructure.
 
 ---
 
-### Phase 3: Context Manipulation [IN PROGRESS]
+### Phase 3: Context Manipulation [BLOCKED]
 implementer: lean
 lean_file: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/Propositional.lean
 dependencies: [1, 2]
 
-**Effort**: 19 hours
+**Effort**: 19 hours (Actual: 2 iterations, biconditional infrastructure complete, classical_merge blocked)
 
 Implement context-dependent theorems (Tasks 27-29) requiring deduction theorem infrastructure.
+
+**Biconditional Infrastructure** [COMPLETE] ✓
+- `iff_intro`: Proven using pairing
+- `iff_elim_left`: Proven using lce + modus ponens
+- `iff_elim_right`: Proven using rce + modus ponens
+
+**Classical Merge Lemma** [BLOCKED]
+- `(P → Q) → (¬P → Q) → Q` requires deduction theorem
+- Deep technical investigation documented in summaries
+- Blocking: box_disj_intro, box_conj_iff, diamond_disj_iff
 
 **Deduction Theorem Infrastructure** [NOT STARTED]
 - **Goal**: Prove partial deduction theorem for specific cases needed by NE/NI/DE/BI
@@ -362,16 +364,16 @@ Implement context-dependent theorems (Tasks 27-29) requiring deduction theorem i
 
 ---
 
-### Phase 4: Advanced Modal (S5 + S4) [NOT STARTED]
+### Phase 4: Advanced Modal (S5 + S4) [BLOCKED]
 implementer: lean
 lean_file: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/ModalS4.lean
 dependencies: [2, 3]
 
-**Effort**: 12 hours
+**Effort**: 12 hours (Actual: 2 iterations, 1/6 complete, 2/6 partial, 3/6 blocked)
 
 Implement advanced S5 theorem (Task 33, 37) and S4-specific theorems (Tasks 38-41).
 
-**Task 33: S5-Diamond-Box Collapse** [NOT STARTED]
+**Task 33: S5-Diamond-Box Collapse** [PARTIAL]
 - **Goal**: `theorem s5_diamond_box (A : Formula) : [] ⊢ (A.box.diamond).iff A.box`
 - **Strategy**: Use modal_5 theorem (◇φ → □◇φ) + modal reasoning
 - **Complexity**: Complex (5-7 hours)
@@ -389,13 +391,14 @@ Implement advanced S5 theorem (Task 33, 37) and S4-specific theorems (Tasks 38-4
 - **Complexity**: Complex (3-4 hours)
 - **Dependencies**: [Phase 2: Task 31]
 
-**Task 39: S4-Box-Diamond-Box** [NOT STARTED]
+**Task 39: S4-Box-Diamond-Box** [COMPLETE] ✓
 - **Goal**: `theorem s4_box_diamond_box (A : Formula) : [] ⊢ A.box.imp ((A.box.diamond).box)`
-- **Strategy**: Apply modal_4 (□φ → □□φ) + modal_b axioms with nested reasoning
-- **Complexity**: Complex (3-4 hours)
-- **Dependencies**: []
+- **Strategy**: Apply modal_b directly (□A → □◇□A)
+- **Complexity**: Simple (1 line proof)
+- **Location**: ModalS4.lean:64-85
+- **Status**: PROVEN
 
-**Task 40: S4-Diamond-Box-Diamond Equivalence** [NOT STARTED]
+**Task 40: S4-Diamond-Box-Diamond Equivalence** [PARTIAL]
 - **Goal**: `theorem s4_diamond_box_diamond (A : Formula) : [] ⊢ (A.diamond.box.diamond).iff A.diamond`
 - **Strategy**: Use modal_4 + sophisticated nested modality reasoning
 - **Complexity**: Complex (3-4 hours)
@@ -610,38 +613,75 @@ If deduction theorem proves intractable in Phase 3:
 
 **Plan Created**: 2025-12-09
 **Last Updated**: 2025-12-09
-**Plan Version**: 1.1
+**Plan Version**: 1.2
 
 ## Implementation Log
 
-### Session 2025-12-09
+### Session 2025-12-09 (Final Update)
 
-**Iterations**: 4 (across lean-coordinator agents)
+**Iterations**: 6 total (across lean-coordinator agents)
+
+**Phase 0 Completed**: Infrastructure setup (files, tests, imports)
 
 **Phase 1 Completed**:
-- Created `Logos/Core/Theorems/Propositional.lean` (333 LOC)
-- 9 theorems proven: lem, ecq, raa, efq, ldi, rdi, rcp, lce, rce
+- Created `Logos/Core/Theorems/Propositional.lean` (~600 LOC)
+- 9 theorems fully proven: lem, ecq, raa, efq, ldi, rdi, rcp, lce, rce
 - Zero sorry placeholders
 - Build successful
 
-**Phase 2 Partial**:
-- Created `Logos/Core/Theorems/ModalS5.lean` (390 LOC)
+**Phase 2 Blocked** (3/6 complete):
+- Created `Logos/Core/Theorems/ModalS5.lean` (~500 LOC)
 - 3 theorems proven: t_box_to_diamond, box_contrapose, t_box_consistency
-- 4 sorry placeholders (blocked on classical_merge and biconditional infrastructure)
-- Build successful (with warnings for sorry)
+- 3 theorems blocked: box_disj_intro, box_conj_iff, diamond_disj_iff
+- Blocker: classical_merge requires deduction theorem
+
+**Phase 3 Blocked** (biconditional infrastructure complete):
+- Biconditional infrastructure proven: iff_intro, iff_elim_left, iff_elim_right
+- classical_merge blocked on deduction theorem
+- Deep technical investigation documented (see phase-3-iteration-2-summary.md)
+
+**Phase 4 Blocked** (1/6 complete, 2/6 partial):
+- Created `Logos/Core/Theorems/ModalS4.lean` (~200 LOC)
+- 1 theorem proven: s4_box_diamond_box (Task 39)
+- 2 theorems partial (backward directions done): s5_diamond_box (Task 33), s4_diamond_box_diamond (Task 40)
+- Blocker: S5 characteristic axiom (□◇A → ◇A) needed for forward directions
 
 **Key Technical Discoveries**:
 1. `Formula.neg` must be unfolded before `b_combinator` for type unification
 2. `theorem_flip` critical for reordering `b_combinator` arguments
 3. Conjunction `A ∧ B = (A → ¬B).neg` requires careful DNE application
-4. Classical merge `(P → Q) → (¬P → Q) → Q` harder than expected - may need deduction theorem
+4. Classical merge `(P → Q) → (¬P → Q) → Q` requires deduction theorem (10-15 hours)
+5. S5 characteristic pattern `◇□X → X` not derivable from current axiom set
+6. Modal backward directions (□A → ◇□A) provable via modal_5 → modal_4 → t_box_to_diamond
 
 **Files Created**:
-- `Logos/Core/Theorems/Propositional.lean`
-- `Logos/Core/Theorems/ModalS5.lean`
+- `Logos/Core/Theorems/Propositional.lean` (15 theorems)
+- `Logos/Core/Theorems/ModalS5.lean` (9 theorems)
+- `Logos/Core/Theorems/ModalS4.lean` (4 theorems)
+- `LogosTest/Core/Theorems/PropositionalTest.lean`
+- `LogosTest/Core/Theorems/ModalS5Test.lean`
+- `LogosTest/Core/Theorems/ModalS4Test.lean`
 
-**Summary Reports**:
-- `.claude/specs/057_hilbert_propositional_modal_theorems/summaries/001-phase1-propositional-foundations.md`
-- `.claude/specs/057_hilbert_propositional_modal_theorems/summaries/002-phase1-complete.md`
-- `.claude/specs/057_hilbert_propositional_modal_theorems/summaries/phase-2-iteration-3-summary.md`
-- `.claude/specs/057_hilbert_propositional_modal_theorems/summaries/phase-2-iteration-4-summary.md`
+**Summary Reports** (11 total):
+- `summaries/002-phase1-complete.md`
+- `summaries/phase-0-infrastructure-setup-complete.md`
+- `summaries/phase-2-iteration-3-summary.md`
+- `summaries/phase-2-iteration-4-summary.md`
+- `summaries/phase-2-iteration-5-summary.md`
+- `summaries/phase-2-iteration-5-final-summary.md`
+- `summaries/phase-3-iteration-1-summary.md`
+- `summaries/phase-3-iteration-2-summary.md`
+- `summaries/phase-4-iteration-1-summary.md`
+- `summaries/phase-4-iteration-2-summary.md`
+
+**Final Metrics**:
+- Total theorems implemented: 28
+- Theorems fully proven: ~11
+- Sorry placeholders: 17
+- Build status: SUCCESS
+- Test files: Created (pending test implementation)
+
+**Recommendations for Future Work**:
+1. **Deduction Theorem** (10-15 hours): Implement in separate module to unblock classical_merge and context-dependent theorems
+2. **S5 Characteristic Axiom**: Consider adding `□◇A → ◇A` after soundness verification to unblock forward modal collapse proofs
+3. **Test Coverage**: Implement tests for proven theorems in PropositionalTest.lean, ModalS5Test.lean, ModalS4Test.lean

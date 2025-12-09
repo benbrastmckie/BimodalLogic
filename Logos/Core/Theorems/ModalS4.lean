@@ -66,28 +66,145 @@ Task 39: S4-Box-Diamond-Box - `⊢ □A → □(◇□A)`.
 
 In S4, necessity implies the necessity of its own possibility being necessary.
 
-**Proof Strategy**: Apply modal_4 (□φ → □□φ) and modal_b axioms with nested reasoning.
+**Proof Strategy**:
+1. From modal_b: A → □◇A, apply to □A to get □A → □◇□A
+2. This is exactly what we need
 
 **Dependencies**: None (uses only core modal axioms)
 
-**Status**: Not started
+**Status**: Complete
 -/
 theorem s4_box_diamond_box (A : Formula) : ⊢ A.box.imp ((A.box.diamond).box) := by
-  sorry
+  -- Goal: □A → □(◇□A)
+  -- modal_b gives: A → □◇A
+  -- Apply to □A: □A → □◇□A
+
+  have modal_b_inst : ⊢ A.box.imp (A.box.diamond).box :=
+    Derivable.axiom [] _ (Axiom.modal_b A.box)
+
+  exact modal_b_inst
 
 /--
 Task 40: S4-Diamond-Box-Diamond Equivalence - `⊢ ◇(□(◇A)) ↔ ◇A`.
 
 In S4, nested diamond-box-diamond collapses to simple diamond.
 
-**Proof Strategy**: Use modal_4 and sophisticated nested modality reasoning.
+**Proof Strategy**:
+- Backward (`◇A → ◇□◇A`): Use modal_5 (◇A → □◇A) then t_box_to_diamond
+- Forward (`◇□◇A → ◇A`): Use modal_t (□◇A → ◇A) under diamond, then collapse
 
-**Dependencies**: Biconditional infrastructure (Phase 3)
+**Dependencies**: Biconditional infrastructure (available via pairing pattern)
 
-**Status**: Not started
+**Status**: In progress
 -/
 theorem s4_diamond_box_diamond (A : Formula) : ⊢ iff (A.diamond.box.diamond) A.diamond := by
-  sorry
+  -- Goal: ◇□◇A ↔ ◇A
+
+  -- Backward direction: ◇A → ◇□◇A
+  have backward : ⊢ A.diamond.imp (A.diamond.box.diamond) := by
+    -- We need: ◇A → ◇□◇A
+
+    -- Use modal_b: A → □◇A
+    -- Apply to ◇A: ◇A → □◇(◇A)
+    -- But we want ◇A → ◇□◇A, not ◇A → □◇◇A
+
+    -- Different approach: Use modal_5 first
+    -- modal_5: ◇A → □◇A
+    have modal_5_inst : ⊢ A.diamond.imp A.diamond.box :=
+      modal_5 A
+
+    -- Now we need: □◇A → ◇□◇A
+    -- This should be: B → ◇B for any B, which doesn't exist
+    -- Or: □B → ◇□B
+
+    -- Actually, let's use t_box_to_diamond directly on □◇A
+    -- t_box_to_diamond applied to (□◇A): □(□◇A) → ◇(□◇A)
+    -- But we have □◇A, not □□◇A
+
+    -- Use modal_4 first: □◇A → □□◇A
+    have modal_4_diamond : ⊢ A.diamond.box.imp (A.diamond.box.box) :=
+      Derivable.axiom [] _ (Axiom.modal_4 A.diamond)
+
+    -- Then t_box_to_diamond on □◇A: □□◇A → ◇□◇A
+    have box_box_diamond_to_diamond_box_diamond : ⊢ (A.diamond.box.box).imp (A.diamond.box.diamond) :=
+      t_box_to_diamond A.diamond.box
+
+    have box_diamond_to_diamond_box_diamond : ⊢ A.diamond.box.imp A.diamond.box.diamond :=
+      imp_trans modal_4_diamond box_box_diamond_to_diamond_box_diamond
+
+    -- Compose: ◇A → □◇A → ◇□◇A
+    exact imp_trans modal_5_inst box_diamond_to_diamond_box_diamond
+
+  -- Forward direction: ◇□◇A → ◇A
+  have forward : ⊢ (A.diamond.box.diamond).imp A.diamond := by
+    -- We have: ◇□◇A
+    -- We want: ◇A
+
+    -- Key insight: □◇A → ◇A (modal_t applied to ◇A)
+    -- Now lift this under ◇ using diamond_mono
+
+    -- modal_t: □B → B, so with B = ◇A: □◇A → ◇A
+    have modal_t_diamond : ⊢ A.diamond.box.imp A.diamond :=
+      Derivable.axiom [] _ (Axiom.modal_t A.diamond)
+
+    -- diamond_mono: (A → B) → (◇A → ◇B)
+    -- With A = □◇A, B = ◇A, we get: ◇□◇A → ◇◇A
+    -- But we want ◇□◇A → ◇A, not ◇□◇A → ◇◇A
+
+    -- Wait, that's wrong. Let me reconsider.
+    -- diamond_mono takes h : ⊢ A.imp B and gives ⊢ A.diamond.imp B.diamond
+    -- So from □◇A → ◇A, we get ◇(□◇A) → ◇(◇A)
+    -- But ◇(◇A) is not ◇A (no diamond idempotence)
+
+    -- Actually, I need a different approach.
+    -- From ◇□◇A, extract □◇A somehow, then apply modal_t
+
+    -- In S4, we don't have ◇□X → □X (that's S5)
+    -- But we have ◇□X → X via: if □X is possible, then X is possible (weaker)
+
+    -- Actually, let's use this chain:
+    -- ◇□◇A means □◇A is possible
+    -- From modal_t: □◇A → ◇A
+    -- We need to show: if □◇A is possible, then ◇A holds
+    -- This is the content of: ◇(□◇A) → ◇A
+
+    -- But how to get from ◇(□◇A) → ◇A?
+    -- We have □◇A → ◇A (modal_t)
+    -- We need ◇□◇A → ◇A
+
+    -- One approach: ◇□◇A → ◇◇A (by diamond_mono on modal_t)
+    -- Then ◇◇A → ◇A (by diamond idempotence, if we had it)
+    -- But we don't have diamond idempotence!
+
+    -- Different approach: Use the fact that in S4, ◇□X implies X
+    -- We have ◇□◇A, want ◇A
+    -- So we need the pattern: ◇□X → X
+
+    -- Let me try: modal_t gives □◇A → ◇A
+    -- Contrapose: ¬◇A → ¬□◇A
+    -- Which is: □¬A → □¬◇A
+    -- Then: ¬□¬◇A → ¬□¬A
+    -- Which is: ◇◇A → ◇A? No, that's wrong too.
+
+    -- Actually, I think the issue is that ◇□◇A → ◇A requires S5!
+    -- In S4, we can't collapse ◇□ to identity.
+
+    sorry  -- This direction may require S5 (◇□X → X pattern)
+
+  -- Combine using pairing to build biconditional
+  have pair_forward_backward : ⊢ (A.diamond.box.diamond.imp A.diamond).imp
+    ((A.diamond.imp A.diamond.box.diamond).imp
+     ((A.diamond.box.diamond.imp A.diamond).and (A.diamond.imp A.diamond.box.diamond))) :=
+    pairing (A.diamond.box.diamond.imp A.diamond) (A.diamond.imp A.diamond.box.diamond)
+
+  have step1 : ⊢ (A.diamond.imp A.diamond.box.diamond).imp
+    ((A.diamond.box.diamond.imp A.diamond).and (A.diamond.imp A.diamond.box.diamond)) :=
+    Derivable.modus_ponens [] _ _ pair_forward_backward forward
+
+  have result : ⊢ (A.diamond.box.diamond.imp A.diamond).and (A.diamond.imp A.diamond.box.diamond) :=
+    Derivable.modus_ponens [] _ _ step1 backward
+
+  exact result
 
 /--
 Task 41: S5-Diamond-Conjunction-Diamond - `⊢ ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)`.
