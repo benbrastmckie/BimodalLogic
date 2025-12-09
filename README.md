@@ -58,7 +58,13 @@ By contrast, human reasoning data is limited, inconsistent, and prone to error, 
 
 ## Motivations
 
-AI systems require formal languages for verified reasoning about plans under uncertainty. The Logos approaches this challenge through **conceptual engineering**—not describing existing reasoning patterns in natural language, but stipulating logical operators fit for systematic planning applications. Like refining glass from sand or steel from iron ore, philosophical logic engineers theoretical concepts from natural language materials into precise formal operators with explicit semantic clauses.
+> NOTE: THIS SECTION IS UNDER CONSTRUCTION 
+
+Whereas the material sciences have devised methods for refining the raw materials of the natural world into materials fit for building, philosophical logic employs model theory and proof theory to engineer formal languages that are fit for theoretical application. Rather than attempting to describe the idiosyncrasies of natural language, stipulating an axiomatic proof system and recursive semantic theory for the logical operators of a formal language provides a well developed methodology for engineering the concepts needed for a specific application.The Logos is an extensible formal language consisting of the operators needed for planning and evaluating complex actions in coordination with other agents under the conditions of uncertainty. Given the centrality of planning throughout the economy 
+
+By implementing the proof theory for the Logos in LEAN and its semantics in the [Model-Checker](https://github.com/benbrastmckie/ModelChecker), these formal theories provide an infinite source of clean data for training AI to reason 
+
+AI systems require formal languages for verified reasoning about plans under uncertainty. The Logos approaches this challenge by **conceptually engineering** the logical operators needed for systematic applications planning and evaluating actions in multi-agent agent systems rather than attempting to describe existing reasoning patterns in natural language. 
 
 **Tense and Historical Modalities as Foundation**: Planning requires comparing alternative temporal evolutions (world-histories) to evaluate expected value. This pragmatic requirement motivates the Core Layer's combination of modal logic (S5 necessity/possibility) with temporal logic (past/future operators). Task semantics—where possible worlds are functions from times to world-states—provides the semantic foundation for representing plans as high expected value futures measured against counterfactual alternatives.
 
