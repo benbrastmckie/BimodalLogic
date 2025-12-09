@@ -1,0 +1,16 @@
+Original NOTE comment from README.md (lines 61-73) archived 2025-12-08:
+
+<!-- NOTE: TURN THE FOLLOWING INTO A DETAILED EXPOSITION Documentation/Research/CONCEPTUAL_ENGINEERING.md TO EXPLAIN WHY TENSE AND HISTORICAL MODALITIES ARE IMPORTANT FOR THINKING ABOUT FUTURE CONTINGENCY, THEN PROVIDE A BRIEF SUMMARY BELOW WITH A LINK TO THE MORE DETAILED CONCEPTUAL_ENGINEERING.md DOCUMENT AND TO Documentation/Research/LAYER_EXTENSIONS.md AFTER THE SUMMARY -->
+<!-- - plans are high expected value futures -->
+<!-- - plans typically represent only partial world-histories, though this can be approximated by a set of world-histories -->
+<!-- - the expected value of a world-history is measured against the highest likely counterfactual alternatives -->
+<!-- - integrating counterfactual operators into the language requires that partial states be explicitly encoded instead of sets of world-histories -->
+<!-- - adding mereological structure also creates the foundations for encoding causal operators -->
+<!-- - however, what we typically care about is causation under some assumptions, requiring an epistemic parameter is also included -->
+<!-- - and to evaluate the expected value of a plan, we also need to have a preference ordering defined over all evolutions -->
+<!-- - this provides the resources for providing semantic clauses for a host of epistemic and normative operators -->
+<!-- - adding operators to the language with explicit semantic clauses and pure logics amounts not to a descriptive theory but rather a normative science to stipulate the operators that we ought to have, not just that we do have -->
+<!-- - like refining materials fit for building from the materials of the natural world such as glass from sand or steal from iron ore, philosophical logic engineers theoretical concepts fit for systematic applications from the raw ingredients of natural language -->
+<!-- - instead of attempting to describe a fixed set of operators of interest, the Logos provides an extensible set of logical operators and a methodology for adding additional operators -->
+
+This NOTE has been implemented in Documentation/Research/CONCEPTUAL_ENGINEERING.md with five sections following the conceptual progression outlined above.

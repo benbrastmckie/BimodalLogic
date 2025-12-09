@@ -1,16 +1,15 @@
 # Dual Verification Training Architecture
 
 > **Implementation Status**: This document describes research vision.
-> For current implementation progress, see
-> [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md).
+> For current implementation progress, see [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md).
 
 This document characterizes the dual verification training loop architecture enabling verified AI reasoning through complementary syntactic and semantic verification systems. The proof-checker generates positive reinforcement learning signals through LEAN proof receipts while model-checker generates corrective signals through Z3 counterexamples, creating infinite clean training data without human annotation.
 
 ## Introduction to Verified AI Reasoning
 
-Traditional machine learning systems rely on finite natural language corpora containing errors, biases, and inconsistencies. AI models trained on such data approximate patterns statistically but cannot provide mathematical guarantees about their reasoning. The proof-checker architecture addresses this fundamental limitation by enabling AI systems to master logical reasoning through self-supervised learning from axiomatic systems.
+Traditional machine learning systems rely on finite natural language corpora containing errors, biases, and inconsistencies. AI models trained on such data approximate patterns statistically but cannot provide mathematical guarantees that their reasoning is correct. The proof-checker architecture addresses this fundamental limitation by enabling AI systems to master logical reasoning through self-supervised learning from axiomatic proof systems and recursive semantic theories for extensible formal languages.
 
-**Key Innovation**: Axiomatic proof systems produce unlimited theorems through systematic derivation from axioms and inference rules. Each theorem comes with a proof receipt providing mathematical certainty, and each invalid inference attempt yields a counterexample showing exactly why the reasoning fails. These verification signals enable AI training without human annotation, replacing finite noisy corpora with infinite clean training data.
+**Key Innovation**: Given a formal language, an axiomatic proof systems defines an unlimited range of theorems that could be derived, and a recursive semantics provides an unlimited range of non-theorems that admit of countermodels. Each theorem comes with a proof receipt providing mathematical certainty, and each invalid inference has a counterexample showing exactly why the reasoning fails. Establishing soundness of the proof system over its semantics ensures that every theorem is valid. These verification signals enable AI training without human annotation, replacing finite noisy corpora with infinite clean training data.
 
 **Result**: AI systems can learn verified logical reasoning through computational oversight rather than human labor, enabling scalable trustworthy AI through mathematical foundations rather than statistical approximation.
 
@@ -24,21 +23,21 @@ The proof-checker architecture combines **syntactic verification** (proof constr
 ┌──────────────────────────────────────────────────────────────┐
 │                    DUAL VERIFICATION                         │
 │                                                              │
-│   ┌──────────────────┐              ┌───────────────────┐   │
-│   │  Proof-Checker   │              │  Model-Checker    │   │
-│   │   (Syntactic)    │◄────────────►│   (Semantic)      │   │
-│   │                  │              │                   │   │
-│   │  LEAN 4 Prover   │              │  Z3 SMT Solver    │   │
-│   │  TM Logic        │              │  State Models     │   │
-│   └──────────────────┘              └───────────────────┘   │
+│   ┌──────────────────┐              ┌───────────────────┐    │
+│   │  Proof-Checker   │              │  Model-Checker    │    │
+│   │   (Syntactic)    │◄────────────►│   (Semantic)      │    │
+│   │                  │              │                   │    │
+│   │  LEAN 4 Prover   │              │  Z3 SMT Solver    │    │
+│   │  TM Logic        │              │  State Models     │    │
+│   └──────────────────┘              └───────────────────┘    │
 │          │                                    │              │
 │          │                                    │              │
 │          ▼                                    ▼              │
-│   ┌──────────────────┐              ┌───────────────────┐   │
-│   │ Positive Signal  │              │ Corrective Signal │   │
-│   │ Proof Receipt    │              │ Counterexample    │   │
-│   │ (Valid)          │              │ (Invalid)         │   │
-│   └──────────────────┘              └───────────────────┘   │
+│   ┌──────────────────┐              ┌───────────────────┐    │
+│   │ Positive Signal  │              │ Corrective Signal │    │
+│   │ Proof Receipt    │              │ Counterexample    │    │
+│   │ (Valid)          │              │ (Invalid)         │    │
+│   └──────────────────┘              └───────────────────┘    │
 │          │                                    │              │
 │          └────────────────┬───────────────────┘              │
 │                           │                                  │

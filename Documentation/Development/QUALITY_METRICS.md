@@ -267,4 +267,4 @@ To request an exception:
 - [Testing Standards](TESTING_STANDARDS.md)
 - [LEAN Style Guide](LEAN_STYLE_GUIDE.md)
 - [Module Organization](MODULE_ORGANIZATION.md)
-- [Contributing Guide](../ProjectInfo/CONTRIBUTING.md)
+- [Contributing Guide](CONTRIBUTING.md)

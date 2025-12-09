@@ -1,16 +1,35 @@
 # TODO.md - Logos Task Tracking
 
+## Update Instructions
+
+**When to Update**: After completing tasks, discovering new work, or changing priorities.
+
+**How to Update**:
+1. Mark completed tasks by removing them from active sections (history tracked via git)
+2. Add new tasks with: description, effort estimate, status, priority, blocking/dependencies
+3. Update the "Active Tasks" count in Overview
+4. Update "Last Updated" date at bottom
+5. Run `/todo` command to sync with .claude/TODO.md specs tracking
+
+**What NOT to Track Here**:
+- Completed task details (use git history: `git log --grep="Task"`)
+- Implementation plans (use `.claude/specs/` directories)
+- Module-by-module status (use IMPLEMENTATION_STATUS.md)
+- Technical debt details (use SORRY_REGISTRY.md)
+
+---
+
 ## Overview
 
 This file tracks active development tasks for Logos. Completed tasks are removed from this file - see git history and spec summaries for completion records.
 
 **Layer 0 Completion Progress**:
 - High Priority: COMPLETE (all blocking tasks done)
-- Medium Priority: 3 active tasks (16 partial, 17, and remaining Task 7 work)
-- Low Priority: 4 tasks pending (9, 10, 11, 13)
-- **Active Tasks**: 7
+- Medium Priority: Task 18 PARTIAL (4/6 perpetuity theorems proven)
+- Low Priority: 5 tasks (9-11 pending, 19-20 blocked, 21 skipped)
+- **Active Tasks**: 6
 
-**Next Milestone**: Complete Task 16 remaining work (perpetuity proofs), then Task 17
+**Next Milestone**: Task 9 (Completeness proofs) or Layer 1 planning
 
 ---
 
@@ -26,6 +45,9 @@ This file tracks active development tasks for Logos. Completed tasks are removed
   - Wave 1-2: COMPLETE (High priority foundations, Perpetuity proofs, transport lemmas)
   - Wave 3-4: NOT STARTED (Completeness proofs, future work)
 
+**Recently Completed**:
+- [Minimal Axiom Review Plan](.claude/specs/048_minimal_axiom_review_proofs/plans/001-minimal-axiom-review-proofs-plan.md) - Documentation fixes, necessitation from MK, MK/TK documentation
+
 ---
 
 ## High Priority Tasks
@@ -36,138 +58,134 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 
 ## Medium Priority Tasks
 
-### 7. Implement Core Automation - Remaining Work
-**Effort**: 30-40 hours (remaining)
-**Status**: PARTIAL COMPLETE (4/12 tactics implemented, 33%)
-**Priority**: Medium (developer productivity)
+### 18. Remove Derivable Axioms from Perpetuity.lean
+**Effort**: 12-18 hours (cumulative)
+**Status**: PARTIAL (Phases 1-2 Complete, Phases 3-4 Blocked)
+**Priority**: Medium (reduces axiomatic footprint)
+**Blocking**: None
+**Dependencies**: Phases build on each other sequentially
+
+**Description**: Phases 7-9 of the perpetuity theorem plan were skipped for MVP, leaving P4-P6 as axioms. These can be derived from the now-complete P1-P3 proofs. Additionally, the `pairing` and `contraposition` helpers are either axiomatized or use sorry.
+
+**Goal**: Remove all unnecessary axioms that can be syntactically derived, reducing the axiomatic footprint to only semantically necessary primitives.
+
+**Status Summary**:
+- **Phase 1**: ✓ COMPLETE - `contraposition` proven via B combinator (zero sorry)
+- **Phase 2**: ✓ COMPLETE - P4 derived from P3 via contraposition (zero sorry)
+- **Phase 3**: ✗ BLOCKED - P5 requires S5 axiom `◇φ → □◇φ` not in TM base system
+- **Phase 4**: ✗ BLOCKED - P6 depends on P5
+- **Phase 5**: SKIPPED - Optional `pairing` derivation (low priority)
+
+**Results**:
+- P1, P2, P3, P4: Fully proven (zero sorry) ✓
+- P5, P6: Axiomatized (blocked by S5 axiom gap)
+- Axiom count reduced from 6 to 4 (pairing, dni, perpetuity_5, perpetuity_6)
+- Sorry count: 1 (persistence lemma blocked by S5 axiom gap)
+- Necessitation proven derivable from MK (Derivation.lean)
+- Documentation corrected: 8/8 inference rules proven (was incorrectly stated as 4/8)
+
+**Completed Phases**:
+
+1. ✓ **Complete `contraposition` proof** (DONE)
+   - File: `Logos/Core/Theorems/Perpetuity.lean:336`
+   - Result: Theorem proven using B combinator construction
+   - Helper: `b_combinator` theorem added
+   - Status: Zero sorry ✓
+
+2. ✓ **Derive P4 from P3** (DONE)
+   - File: `Logos/Core/Theorems/Perpetuity.lean:666`
+   - Result: Theorem derived via contraposition of P3
+   - Helper: `dni` axiom added for double negation introduction
+   - Status: Zero sorry ✓
+
+**Blocked Phases**:
+
+3. ✗ **Derive P5 from P4** (BLOCKED)
+   - File: `Logos/Core/Theorems/Perpetuity.lean:854`
+   - Current: `axiom perpetuity_5`
+   - Blocker: Requires S5 axiom `◇φ → □◇φ` not in TM base system
+   - Status: Axiomatized with semantic justification (Corollary 2.11)
+
+4. ✗ **Derive P6 from P5** (BLOCKED)
+   - File: `Logos/Core/Theorems/Perpetuity.lean:921`
+   - Current: `axiom perpetuity_6`
+   - Blocker: Depends on P5
+   - Status: Axiomatized with semantic justification (Corollary 2.11)
+
+**Skipped Phases**:
+
+5. **Derive `pairing` from K and S** (SKIPPED - optional, low priority)
+   - File: `Logos/Core/Theorems/Perpetuity.lean:169`
+   - Current: `axiom pairing (A B : Formula) : ⊢ A.imp (B.imp (A.and B))`
+   - Strategy: Build from S(S(KS)(S(KK)I))(KI) where I=SKK
+   - Note: Complex combinator construction (~40+ lines), semantically justified as-is
+
+**Implementation Plan**: See `.claude/specs/047_remove_derivable_axioms_perpetuity/plans/001-remove-derivable-axioms-perpetuity-plan.md`
+
+**Success Criteria**:
+- Zero axioms in Perpetuity.lean except optional `pairing`
+- Zero sorry markers in Perpetuity.lean
+- All perpetuity principles P1-P6 as theorems
+- `lake build` succeeds
+- Existing tests pass
+
+**Plan Reference**: `.claude/specs/045_perpetuity_theorem_logic_fix/plans/001-perpetuity-theorem-logic-fix-plan.md` (Phases 7-9 sketches)
+
+---
+
+### 19. Derive P5 Perpetuity Theorem (Blocked by S5 Axiom Gap)
+**Effort**: 8-12 hours (if S5 axiom added)
+**Status**: BLOCKED
+**Priority**: Low (requires extending TM axiom system)
+**Blocking**: S5 axiom `◇φ → □◇φ` not in base TM system
+**Dependencies**: Requires decision to extend modal axiom system
+
+**Description**: Derive P5 (`◇▽φ → △◇φ`, persistent possibility) as a theorem instead of axiom. Currently blocked because the persistence lemma `◇φ → △◇φ` requires lifting from MB axiom `φ → □◇φ`, which needs the S5 characteristic `◇φ → □◇φ`.
+
+**Current Status**: P5 remains as `axiom perpetuity_5` with semantic justification (Corollary 2.11).
+
+**Options to Unblock**:
+1. Add S5 axiom `◇φ → □◇φ` to base TM system (extends modal logic)
+2. Find alternative derivation strategy not requiring S5
+3. Accept axiomatization as sufficient (current approach)
+
+**Plan Reference**: [Task 18 Plan - Phase 3](.claude/specs/047_remove_derivable_axioms_perpetuity/plans/001-remove-derivable-axioms-perpetuity-plan.md#phase-3-derive-p5-using-persistence-lemma-blocked)
+
+---
+
+### 20. Derive P6 Perpetuity Theorem (Blocked by P5 Dependency)
+**Effort**: 4-8 hours (if P5 proven)
+**Status**: BLOCKED
+**Priority**: Low (depends on Task 19)
+**Blocking**: P5 must be a proven theorem, not axiom
+**Dependencies**: Task 19 (P5 derivation)
+
+**Description**: Derive P6 (`▽□φ → □△φ`, occurrent necessity is perpetual) as a theorem instead of axiom. Derivation strategy uses P5 on `¬φ` with operator duality and contraposition, but requires P5 to be a proven theorem.
+
+**Current Status**: P6 remains as `axiom perpetuity_6` with semantic justification (Corollary 2.11).
+
+**Plan Reference**: [Task 18 Plan - Phase 4](.claude/specs/047_remove_derivable_axioms_perpetuity/plans/001-remove-derivable-axioms-perpetuity-plan.md#phase-4-derive-p6-from-p5-blocked)
+
+---
+
+### 21. Derive Pairing Combinator
+**Effort**: 8-12 hours
+**Status**: SKIPPED
+**Priority**: Low (optional, adds no mathematical insight)
 **Blocking**: None
 **Dependencies**: None
 
-**Description**: Complete remaining automation work blocked by Aesop integration issue.
+**Description**: Derive the `pairing` axiom (`⊢ A.imp (B.imp (A.and B))`) from K and S propositional axioms using combinator calculus. Strategy: Build S(S(KS)(S(KK)I))(KI) where I=SKK.
 
-**Completed** (2025-12-03):
-- `apply_axiom` macro (generic axiom application)
-- `modal_t` macro (modal T axiom convenience)
-- `tm_auto` macro (native implementation using `first` combinator)
-- `assumption_search` elab (TacticM context search)
-- 4 helper functions (is_box_formula, is_future_formula, extract_from_box, extract_from_future)
-- 31 tests in `LogosTest/Automation/TacticsTest.lean`
+**Current Status**: Left as `axiom pairing` per plan recommendation. Semantic justification is sufficient, and the ~40+ line derivation adds no mathematical insight.
 
-**Blocker**: Aesop integration blocked by Batteries dependency breaking Truth.lean.
+**Recommendation**: Keep axiomatized unless zero-axiom footprint is specifically required.
 
-**Remaining Work**:
-- Fix Truth.lean for Batteries compatibility (4-8 hours)
-- Complete Aesop integration (6-8 hours)
-- Implement remaining 8 tactics (30-40 hours)
-- Expand test suite to 50+ tests (5-10 hours)
-
-**Files**:
-- `Logos/Core/Automation/Tactics.lean` (175 lines, working tactics)
-- `Logos/Core/Automation/ProofSearch.lean` (axiom stubs)
-- `LogosTest/Automation/TacticsTest.lean` (31 tests)
-
-**Reference**: [Implementation Summary](.claude/specs/025_soundness_automation_implementation/summaries/004_iteration_3_final_summary.md)
-
----
-
-### 13. Create Proof Strategy Documentation
-**Effort**: 5-10 hours
-**Status**: Not Started
-**Priority**: Medium (pedagogical value for new users)
-**Blocking**: None
-**Dependencies**: Benefits from completed proofs (more examples available)
-
-**Description**: Create Archive/ examples demonstrating common proof strategies and patterns for TM derivations. Provides pedagogical value for new users, students, and researchers learning TM logic and Logos usage.
-
-**Files to Create**:
-- `Archive/ModalProofStrategies.lean`
-- `Archive/TemporalProofStrategies.lean`
-- `Archive/BimodalProofStrategies.lean`
-
-**Action Items**:
-1. Create `ModalProofStrategies.lean` with S5 modal proof patterns (necessity chains, possibility proofs, modal modus ponens)
-2. Create `TemporalProofStrategies.lean` with temporal reasoning patterns (always/eventually proofs, induction over time, temporal duality)
-3. Create `BimodalProofStrategies.lean` with modal-temporal interaction patterns (perpetuity principles, frame reasoning, task relation proofs)
-4. Document common proof techniques in extensive comments
-5. Update `Archive/Archive.lean` to re-export new modules
-
-**Reference**: Best practices report (.claude/specs/021_lean4_bimodal_logic_best_practices/reports/001-lean-4-modal-logic-implementation-best.md) lines 649-675
-
----
-
-### 16. Fix Perpetuity Theorem Logic Errors
-**Effort**: 4-6 hours (remaining: 2-4 hours)
-**Status**: PARTIAL COMPLETE (documentation fixed, proofs need rewriting)
-**Priority**: Medium (correctness bug discovered during temporal refactor)
-**Blocking**: None (Task 14 Phase 2 complete)
-**Dependencies**: None
-
-**Description**: The Perpetuity.lean theorems had logic errors - they incorrectly assumed `triangle phi = F phi` when the correct definition is `triangle phi = H phi and phi and G phi` (equivalently `all_past phi and phi and all_future phi`). This was exposed during the temporal constructor rename in Task 14.
-
-**Completed** (2025-12-05):
-- Fixed all incorrect comments throughout Perpetuity.lean
-- Fixed all incorrect comments in documentation (OPERATORS.md, GLOSSARY.md, TUTORIAL.md, ARCHITECTURE.md, etc.)
-- Fixed FormulaTest.lean tests that incorrectly claimed `always = all_future`
-- Fixed Archive/TemporalProofs.lean examples that conflated `always` with `all_future`
-- Added `sorry` placeholders for proofs that need rewriting
-
-**Remaining Work**:
-- Rewrite P1 proof to derive full conjunction `□φ → (Hφ ∧ φ ∧ Gφ)` (2-3 hours)
-- Rewrite P3 proof to derive `□φ → □(Hφ ∧ φ ∧ Gφ)` (1-2 hours)
-
-**Correct Definitions** (now documented properly):
-- `triangle phi` (always phi) = `H phi and phi and G phi` = `all_past phi and phi and all_future phi`
-- `nabla phi` (sometimes phi) = `neg(always (neg phi))` = `P phi or phi or F phi` (dual)
-
-**New Sorry Placeholders** (added during fix):
-- `Logos/Core/Theorems/Perpetuity.lean:127` - perpetuity_1 (P1)
-- `Logos/Core/Theorems/Perpetuity.lean:205` - perpetuity_3 (P3)
-
-**Files Modified**:
-- `Logos/Core/Theorems/Perpetuity.lean` - Comments fixed, proofs have sorry
-- `Logos/Core/Syntax/Formula.lean` - Notation docstrings fixed
-- `LogosTest/Core/Syntax/FormulaTest.lean` - Tests fixed
-- `Archive/TemporalProofs.lean` - Examples fixed
-- `Archive/BimodalProofs.lean` - Comments fixed
-- Documentation files (OPERATORS.md, GLOSSARY.md, TUTORIAL.md, ARCHITECTURE.md, LEAN_STYLE_GUIDE.md, CLAUDE.md)
-
----
-
-### 17. Fix Pre-existing Soundness.lean Type Mismatch Errors
-**Effort**: 2-4 hours
-**Status**: Not Started
-**Priority**: Medium (pre-existing bug, not blocking)
-**Blocking**: None
-**Dependencies**: None
-
-**Description**: Pre-existing type mismatch errors in Soundness.lean at lines 501 and 545 in the `temporal_k` and `weakening` soundness cases. These errors existed before the temporal refactor and are unrelated to Task 14.
-
-**Error Details**:
-```
-error: ././././Logos/Core/Metalogic/Soundness.lean:501:15: application type mismatch
-  ih F M
-argument M has type LinearOrderedAddCommGroup F : Type
-but is expected to have type TaskFrame F : Type 1
-```
-
-**Affected Code**:
-- `Soundness.lean:501` - `temporal_k` case
-- `Soundness.lean:545` - `weakening` case
-
-**Root Cause**: The variable `F` is being shadowed or type inference is failing due to the polymorphic temporal domain generalization (Task 15).
-
-**Action Items**:
-1. Investigate type shadowing in soundness theorem cases
-2. Add explicit type annotations where needed
-3. Verify fixes don't break other proofs
-4. Run full `lake build`
-
-**Files**:
-- `Logos/Core/Metalogic/Soundness.lean`
-
----
+**Plan Reference**: [Task 18 Plan - Phase 5](.claude/specs/047_remove_derivable_axioms_perpetuity/plans/001-remove-derivable-axioms-perpetuity-plan.md#phase-5-pairing-derivation-skipped)
 
 ## Low Priority Tasks
+
+---
 
 ### 9. Begin Completeness Proofs
 **Effort**: 70-90 hours
@@ -269,4 +287,4 @@ See [MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md) for complete work
 
 ---
 
-**Last Updated**: 2025-12-05 (Task 16 partial completion - documentation and tests fixed)
+**Last Updated**: 2025-12-08 (Minimal Axiom Review complete - documentation fixed to 8/8 rules, necessitation from MK proven, MK/TK documentation updated)

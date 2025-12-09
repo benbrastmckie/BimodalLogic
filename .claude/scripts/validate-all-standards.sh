@@ -81,6 +81,7 @@ VALIDATORS=(
   "readme-structure|${SCRIPTS_DIR}/validate-readmes.sh|WARNING|README.md"
   "link-validity|${SCRIPTS_DIR}/validate-links-quick.sh|WARNING|*.md"
   "plan-metadata|${LINT_DIR}/validate-plan-metadata.sh|ERROR|specs/*/plans/*.md"
+  "phase-metadata|${LINT_DIR}/validate-phase-metadata.sh|ERROR|specs/*/plans/*.md"
 )
 
 # Counters

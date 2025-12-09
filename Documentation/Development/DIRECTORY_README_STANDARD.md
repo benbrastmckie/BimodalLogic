@@ -256,7 +256,7 @@ New examples should:
 - Follow [LEAN_STYLE_GUIDE.md](../Documentation/Development/LEAN_STYLE_GUIDE.md)
 - Be accessible to learners (avoid overly complex proofs)
 
-See [CONTRIBUTING.md](../Documentation/ProjectInfo/CONTRIBUTING.md) for contribution workflow.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution workflow.
 
 ## Related Documentation
 
@@ -294,20 +294,22 @@ User-facing documentation for working with [project]:
 **Audience**: Users of the library, learners
 
 ### ProjectInfo/
-Project status and contribution information:
+Project status and tactic documentation:
 - **IMPLEMENTATION_STATUS.md**: Module-by-module status tracking (includes Known Limitations section)
-- **CONTRIBUTING.md**: Contribution guidelines
-- **VERSIONING.md**: Semantic versioning policy
+- **SORRY_REGISTRY.md**: Technical debt tracking
+- **TACTIC_DEVELOPMENT.md**: Custom tactic patterns
 
 **Audience**: Contributors, maintainers
 
 ### Development/
-Developer standards and conventions:
+Developer standards, conventions, and contribution workflow:
 - **LEAN_STYLE_GUIDE.md**: Coding conventions
 - **MODULE_ORGANIZATION.md**: Directory structure
 - **TESTING_STANDARDS.md**: Test requirements
-- **TACTIC_DEVELOPMENT.md**: Custom tactic patterns
 - **QUALITY_METRICS.md**: Quality targets
+- **CONTRIBUTING.md**: Contribution guidelines
+- **MAINTENANCE.md**: TODO management workflow
+- **VERSIONING.md**: Semantic versioning policy
 
 **Audience**: Developers, contributors
 

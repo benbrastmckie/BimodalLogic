@@ -120,6 +120,7 @@ Must exist or command fails:
 Discovered if they exist:
 - `SORRY_REGISTRY.md`
 - `IMPLEMENTATION_STATUS.md`
+- `KNOWN_LIMITATIONS.md`
 - `MAINTENANCE.md`
 
 ### Discovery Locations
@@ -251,6 +252,17 @@ Sorry counts are verified against SORRY_REGISTRY.md:
 - **Metalogic**: 60% complete (15 sorries) <!-- MANUAL: Needs completeness theorem -->
 ```
 
+### KNOWN_LIMITATIONS.md (User-Facing Gaps)
+
+**Purpose**: Document known limitations and gaps requiring user awareness
+
+**Updated Sections**:
+- Gaps linked to sorry placeholders
+- Cross-references to SORRY_REGISTRY.md
+
+**Preserved Sections**:
+- Workaround details marked with `<!-- MANUAL -->`
+
 ### MAINTENANCE.md (Workflow Documentation)
 
 **Purpose**: Document maintenance workflow and procedures
@@ -327,6 +339,7 @@ Preservation ensures manual work isn't overwritten.
 | TODO.md | Backlog, Saved | Section headings (`## Backlog`, `## Saved`) |
 | SORRY_REGISTRY.md | Resolved Placeholders | Section heading (`## Resolved Placeholders`) |
 | IMPLEMENTATION_STATUS.md | Manual annotations | Inline comment (`<!-- MANUAL -->`) |
+| KNOWN_LIMITATIONS.md | Workaround details | Inline comment (`<!-- MANUAL -->`) |
 | MAINTENANCE.md | Custom procedures | Inline comment (`<!-- CUSTOM -->`) |
 | CLAUDE.md | Project standards | Inline comment (`<!-- CUSTOM -->`) |
 
@@ -388,7 +401,8 @@ Related tasks in [TODO.md](../../TODO.md).
 
 1. **TODO.md ↔ SORRY_REGISTRY.md**: Active tasks reference technical debt
 2. **SORRY_REGISTRY.md ↔ IMPLEMENTATION_STATUS.md**: Sorry counts align with module status
-3. **MAINTENANCE.md**: References all other maintenance docs
+3. **SORRY_REGISTRY.md ↔ KNOWN_LIMITATIONS.md**: Gaps linked to sorries
+4. **MAINTENANCE.md**: References all other maintenance docs
 
 ### Broken Reference Detection
 
@@ -591,6 +605,7 @@ cd ~/Projects/ProofChecker
    ✓ Documentation directory: /home/user/Projects/ProofChecker/Documentation/ProjectInfo
    ✓ Found: SORRY_REGISTRY.md
    ✓ Found: IMPLEMENTATION_STATUS.md
+   ✓ Found: KNOWN_LIMITATIONS.md
    ✓ Found: MAINTENANCE.md
 
 🔍 Scanning for sorry placeholders...

@@ -8,18 +8,23 @@ logic TM (Tense and Modality) with task semantics. It provides:
 - **Bimodal Logic TM**: Combining S5 modal logic (metaphysical necessity/possibility) with linear temporal logic (past/future operators)
 - **Task Semantics**: Possible worlds as functions from times to world states constrained by task relations
 - **Layered Architecture**: Layer 0 (Core TM) MVP complete with planned extensions for counterfactual, epistemic, and normative operators
-- **Complete Soundness**: All 8 axioms and 7 inference rules proven sound
-- **Perpetuity Principles**: All 6 principles (P1-P6) available
+- **Complete Soundness**: All 12 axioms proven sound, 8/8 inference rules proven
+- **Perpetuity Principles**: All 6 principles (P1-P4 fully proven, P5-P6 axiomatized)
 
 ## Implementation Status
 
 **MVP Completion**: Layer 0 (Core TM) MVP complete with full soundness
 
-**For detailed status**: See [Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)
-**For limitations**: See [Implementation Status - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations)
-**For task tracking**: See [TODO.md](TODO.md) (active work only - git history for completed tasks)
-**For technical debt**: See [Documentation/ProjectInfo/SORRY_REGISTRY.md](Documentation/ProjectInfo/SORRY_REGISTRY.md)
-**For maintenance workflow**: See [Documentation/ProjectInfo/MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md)
+| File | Purpose | Update Trigger |
+|------|---------|----------------|
+| [TODO.md](TODO.md) | Active development tasks | After completing tasks, discovering work |
+| [.claude/TODO.md](.claude/TODO.md) | Implementation plans in `.claude/specs/` | After `/create-plan`, `/research`, `/todo` |
+| [IMPLEMENTATION_STATUS.md](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) | Module-by-module completion | After module work, sorry count changes |
+| [SORRY_REGISTRY.md](Documentation/ProjectInfo/SORRY_REGISTRY.md) | Technical debt (sorry placeholders) | After resolving sorry, adding axioms |
+| [MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md) | TODO management workflow | After workflow changes |
+| [TACTIC_DEVELOPMENT.md](Documentation/ProjectInfo/TACTIC_DEVELOPMENT.md) | Custom tactic patterns | After tactic additions |
+
+**See also**: [Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations)
 
 ## 2. Essential Commands
 
@@ -93,15 +98,15 @@ Logos/Core/
 │   ├── ProjectInfo/            # Project status and contribution info
 │   │   ├── IMPLEMENTATION_STATUS.md  # Module-by-module status tracking (includes Known Limitations)
 │   │   ├── SORRY_REGISTRY.md         # Technical debt (sorry placeholders)
-│   │   ├── MAINTENANCE.md            # TODO management workflow
-│   │   ├── CONTRIBUTING.md           # Contribution guidelines
-│   │   └── VERSIONING.md             # Semantic versioning policy
+│   │   ├── TACTIC_DEVELOPMENT.md     # Custom tactic patterns
+│   │   └── MAINTENANCE.md            # TODO management workflow
 │   ├── Development/            # Developer standards
 │   │   ├── LEAN_STYLE_GUIDE.md     # Coding conventions
 │   │   ├── MODULE_ORGANIZATION.md  # Directory structure
 │   │   ├── TESTING_STANDARDS.md    # Test requirements
-│   │   ├── TACTIC_DEVELOPMENT.md   # Custom tactic patterns
-│   │   └── QUALITY_METRICS.md      # Quality targets
+│   │   ├── QUALITY_METRICS.md      # Quality targets
+│   │   ├── CONTRIBUTING.md         # Contribution guidelines
+│   │   └── VERSIONING.md           # Semantic versioning policy
 │   └── Reference/              # Reference materials
 │       └── OPERATORS.md              # Formal symbols reference
 ├── lakefile.toml               # LEAN 4 build configuration
@@ -116,27 +121,20 @@ Logos/Core/
 - [LEAN Style Guide](Documentation/Development/LEAN_STYLE_GUIDE.md) - Naming, formatting, documentation
 - [Module Organization](Documentation/Development/MODULE_ORGANIZATION.md) - Directory structure, namespaces
 - [Testing Standards](Documentation/Development/TESTING_STANDARDS.md) - Test types, coverage requirements
-- [Tactic Development](Documentation/Development/TACTIC_DEVELOPMENT.md) - Custom tactic patterns
 - [Quality Metrics](Documentation/Development/QUALITY_METRICS.md) - Coverage, lint, performance targets
 - [Directory README Standard](Documentation/Development/DIRECTORY_README_STANDARD.md) - Directory-level documentation standard
-
-### Project Status (Keep Updated)
-- [TODO.md](TODO.md) - **Active task tracking** (uses git-based history model)
-- [Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module status tracking
-- [Implementation Status - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) - Gaps and workarounds
-- [Sorry Registry](Documentation/ProjectInfo/SORRY_REGISTRY.md) - Technical debt (sorry placeholders)
 - [Maintenance Workflow](Documentation/ProjectInfo/MAINTENANCE.md) - TODO management procedures
+- [Contributing](Documentation/Development/CONTRIBUTING.md) - How to contribute
+- [Versioning](Documentation/Development/VERSIONING.md) - Semantic versioning policy
 
-### User Documentation (Documentation/UserGuide/ and Documentation/ProjectInfo/)
+### User Documentation (Documentation/UserGuide/)
 - [Logos Methodology](Documentation/UserGuide/METHODOLOGY.md) - Philosophical foundations and layer architecture
 - [Architecture Guide](Documentation/UserGuide/ARCHITECTURE.md) - System design and TM logic specification
 - [Logical Operators Glossary](Documentation/Reference/OPERATORS.md) - Formal symbols reference
 - [Terminology Glossary](Documentation/Reference/GLOSSARY.md) - Key concepts and definitions
 - [Tutorial](Documentation/UserGuide/TUTORIAL.md) - Getting started with Logos
 - [Examples](Documentation/UserGuide/EXAMPLES.md) - Modal, temporal, bimodal examples
-- [Contributing](Documentation/ProjectInfo/CONTRIBUTING.md) - How to contribute
 - [Integration](Documentation/UserGuide/INTEGRATION.md) - Model-Checker integration
-- [Versioning](Documentation/ProjectInfo/VERSIONING.md) - Semantic versioning policy
 
 ### Research Documentation (Documentation/Research/)
 - [Research Overview](Documentation/Research/README.md) - Research documentation index
@@ -182,9 +180,9 @@ Logos follows rigorous development standards including Test-Driven Development (
 - Temporal duality: `swap_temporal` swaps all_past and all_future
 
 ### ProofSystem Package
-- `Axiom`: TM axiom schemata (MT, M4, MB, T4, TA, TL, MF, TF)
+- `Axiom`: TM axiom schemata (MT, M4, MB, T4, TA, TL, MF, TF, modal_k_dist, double_negation, prop_k, prop_s)
 - `Derivable`: Inductive derivability relation
-- Inference rules: MP, MK (modal K), TK (temporal K), TD (temporal duality)
+- Inference rules: MP, MK (modal K), TK (temporal K), TD (temporal duality), necessitation, assumption, weakening, axiom
 
 ### Semantics Package
 - `TaskFrame`: World states, times, task relation with nullity and compositionality
@@ -193,30 +191,35 @@ Logos follows rigorous development standards including Test-Driven Development (
 - `truth_at`: Truth evaluation at model-history-time triples
 
 ### Metalogic Package
-- `soundness`: `Γ ⊢ φ → Γ ⊨ φ` **(partial: 5/8 axioms, 4/7 rules proven)**
-  - Proven axioms: MT, M4, MB, T4, TA
-  - Incomplete axioms: TL, MF, TF (require frame constraints)
-  - Proven rules: axiom, assumption, modus_ponens, weakening
-  - Incomplete rules: modal_k, temporal_k, temporal_duality
+- `soundness`: `Γ ⊢ φ → Γ ⊨ φ` **(complete: 12/12 axioms, 8/8 rules proven)**
+  - Proven axioms: MT, M4, MB, T4, TA, TL, MF, TF, modal_k_dist, double_negation, prop_k, prop_s (all 12/12 complete)
+  - Proven rules: axiom, assumption, modus_ponens, weakening, modal_k, temporal_k, temporal_duality, necessitation (all 8/8 complete)
 - `weak_completeness`: `⊨ φ → ⊢ φ` **(infrastructure only, no proofs)**
 - `strong_completeness`: `Γ ⊨ φ → Γ ⊢ φ` **(infrastructure only, no proofs)**
 - Canonical model construction defined (types, no proofs)
 
 ### Theorems Package
 - Perpetuity principles P1-P6 connecting modal and temporal operators:
-  - P1: `□φ → △φ` (necessary implies always) - **Proven (uses imp_trans helper with sorry)**
-  - P2: `▽φ → ◇φ` (sometimes implies possible) - **Proven (uses contraposition helper with sorry)**
+  - P1: `□φ → △φ` (necessary implies always) - **Fully proven (zero sorry)**
+  - P2: `▽φ → ◇φ` (sometimes implies possible) - **Fully proven (contraposition via B combinator)**
   - P3: `□φ → □△φ` (necessity of perpetuity) - **Fully proven (zero sorry)**
-  - P4: `◇▽φ → ◇φ` (possibility of occurrence) - **Partial (complex nested formulas)**
-  - P5: `◇▽φ → △◇φ` (persistent possibility) - **Partial (modal-temporal interaction)**
-  - P6: `▽□φ → □△φ` (occurrent necessity is perpetual) - **Partial (modal-temporal interaction)**
+  - P4: `◇▽φ → ◇φ` (possibility of occurrence) - **Fully proven (contraposition of P3 + DNI)**
+  - P5: `◇▽φ → △◇φ` (persistent possibility) - **Axiomatized (blocked by S5 axiom gap)**
+  - P6: `▽□φ → □△φ` (occurrent necessity is perpetual) - **Axiomatized (blocked by P5 dependency)**
 - Note: `△` (always/at all times) and `▽` (sometimes/at some time) are Unicode triangle notation alternatives
 
 ### Automation Package
-- `Tactics`: Custom tactic declarations **(stubs only, no implementations)**
-  - All 12 tactics are function signatures with `sorry` bodies
-  - Includes: modal_k, temporal_k, modal_t, modal_search, tm_auto, etc.
-- `ProofSearch`: Automated proof search **(planned, not started)**
+- `Tactics`: Custom tactics for TM logic automation **(12/12 implemented)**
+  - `apply_axiom`: Apply TM axiom via unification
+  - `modal_t`: Apply axiom MT (□φ → φ)
+  - `tm_auto`: Aesop-powered comprehensive TM automation
+  - `assumption_search`: Search context for matching assumptions
+  - `modal_k_tactic`, `temporal_k_tactic`: Inference rule tactics
+  - `modal_4_tactic`, `modal_b_tactic`: Modal axiom tactics
+  - `temp_4_tactic`, `temp_a_tactic`: Temporal axiom tactics
+  - `modal_search`, `temporal_search`: Bounded proof search (MVP: delegates to tm_auto)
+- `AesopRules`: Forward chaining rules for Aesop integration (260 LOC)
+- `ProofSearch`: Proof search infrastructure (485 LOC)
 
 ## 7. Testing Architecture
 
@@ -251,7 +254,7 @@ Logos test suite is organized in LogosTest/ directory with unit tests (Syntax/, 
 1. Define tactic in `Automation/Tactics.lean`
 2. Write unit tests in `LogosTest/Automation/`
 3. Add example usage to `Archive/`
-4. Document in `Documentation/Development/TACTIC_DEVELOPMENT.md`
+4. Document in `Documentation/ProjectInfo/TACTIC_DEVELOPMENT.md`
 
 ### Add a New Theorem
 1. Write failing test in appropriate `LogosTest/` directory
@@ -278,10 +281,9 @@ Logos test suite is organized in LogosTest/ directory with unit tests (Syntax/, 
 **TDD Enforcement**: Every new feature requires tests first. Run `lake test` before committing. CI rejects PRs with failing tests.
 
 **Working with Partial Implementation**:
-- **Use proven components only**: MT, M4, MB, T4, TA axioms are sound
-- **Avoid incomplete axioms**: TL, MF, TF have incomplete soundness proofs
-- **Perpetuity P3 is safe**: Only P3 is fully proven (zero sorry)
-- **No automation available**: All tactics are stubs, use manual proof construction
+- **Use proven components**: All 12 axioms are sound (MT, M4, MB, T4, TA, TL, MF, TF, modal_k_dist, double_negation, prop_k, prop_s)
+- **Perpetuity proofs**: P1-P4 fully proven (zero sorry), P5-P6 axiomatized (S5 axiom gap)
+- **Automation available**: All 12 tactics implemented (see Automation Package above)
 - See [Implementation Status - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) for workarounds and alternatives
 - See [IMPLEMENTATION_STATUS.md](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)
   for verification commands
@@ -304,15 +306,18 @@ for Logos's TM logic.
 - Mark axioms as safe rules: `@[aesop safe [TMLogic]]`
 - Implement `tm_auto` tactic: `macro "tm_auto" : tactic => `(tactic| aesop
   (rule_sets [TMLogic]))`
-- See [TACTIC_DEVELOPMENT.md](Documentation/Development/TACTIC_DEVELOPMENT.md)
+- See [TACTIC_DEVELOPMENT.md](Documentation/ProjectInfo/TACTIC_DEVELOPMENT.md)
   Section 4 for Aesop integration
 
-**Priority Tactics** (from TODO.md Task 7, 40-60 hours):
-1. `apply_axiom` - Apply specific TM axiom (8-10 hours, macro-based)
-2. `modal_t` - Apply modal axiom MT (`□φ → φ`) (4-6 hours, elab_rules)
-3. `tm_auto` - Comprehensive TM automation with Aesop (15-20 hours, macro + Aesop)
-4. `assumption_search` - Search context for matching assumptions (8-12 hours,
-   TacticM)
+**Implemented Tactics** (Task 7 complete, 12/12 tactics):
+1. `apply_axiom` - Apply TM axiom via unification (macro-based)
+2. `modal_t` - Apply axiom MT `□φ → φ` (macro-based)
+3. `tm_auto` - Aesop-powered TM automation (macro to aesop)
+4. `assumption_search` - Search context for matching assumptions (TacticM)
+5. `modal_k_tactic`, `temporal_k_tactic` - Inference rule tactics (elab)
+6. `modal_4_tactic`, `modal_b_tactic` - Modal axiom tactics (elab)
+7. `temp_4_tactic`, `temp_a_tactic` - Temporal axiom tactics (elab)
+8. `modal_search`, `temporal_search` - Bounded search (MVP: tm_auto delegation)
 
 **Key Metaprogramming Modules**:
 - `Lean.Elab.Tactic` - High-level tactic monad (TacticM)
@@ -346,12 +351,11 @@ macro "tm_auto" : tactic =>
 - Bimodal interactions: `box_future_eq_future_box` (`□Fφ = F□φ`),
   `box_past_eq_past_box` (`□Pφ = P□φ`)
 - **Important**: Must be proven as theorems in TM, not asserted as axioms
-- See [TACTIC_DEVELOPMENT.md](Documentation/Development/TACTIC_DEVELOPMENT.md)
+- See [TACTIC_DEVELOPMENT.md](Documentation/ProjectInfo/TACTIC_DEVELOPMENT.md)
   Section 5 for simp lemma design
 
-**Implementation Roadmap**:
-- See [PHASED_IMPLEMENTATION.md](Documentation/Development/PHASED_IMPLEMENTATION.md)
-  for Wave 1-4 execution strategy
-- Task 7 (Implement Core Automation): 40-60 hours, phased approach
-- Wave 2 execution: Task 7 can run in parallel with Tasks 5, 6, 8
-- Time savings: 25-32% with proper parallelization
+**Implementation Status**:
+- Task 7 (Core Automation): ✓ COMPLETE (12/12 tactics implemented)
+- 110+ tests passing in TacticsTest.lean
+- See [TACTIC_DEVELOPMENT.md](Documentation/ProjectInfo/TACTIC_DEVELOPMENT.md)
+  for implementation patterns and examples

@@ -8,8 +8,8 @@ This document describes the workflow for maintaining TODO.md and related project
 
 **Three-Document Model** (consolidated from four documents on 2025-12-05):
 - [TODO.md](../../TODO.md) - Active task tracking (active work only)
-- [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking (includes Known Limitations section)
-- [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
+- [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking (includes Known Limitations section)
+- [SORRY_REGISTRY.md](../ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
 
 ---
 

@@ -110,7 +110,7 @@ example (φ ψ : Formula) : [φ.imp ψ, φ] ⊨ ψ := by
 -- Test: Soundness preserves weakening
 example (φ ψ : Formula) : [φ, ψ] ⊨ φ := by
   -- Direct proof without using weakening rule
-  intro F M τ t ht h_all
+  intro T _ F M τ t ht h_all
   apply h_all
   constructor
 

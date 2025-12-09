@@ -229,6 +229,69 @@ For software phases, the command invokes implementer-coordinator with:
 - `continuation_context`: Previous iteration summary if continuing
 - `iteration`: Per-software-phase iteration counter
 
+## Hybrid Coordinator Architecture
+
+The `/lean-implement` command uses a **dual coordinator architecture** that routes phases to domain-specific coordinators based on phase type (lean vs software). This enables optimized workflows for each domain while maintaining unified progress tracking.
+
+### Coordinator Output Contract
+
+Both coordinators return enhanced output signals with context-efficient fields:
+
+**lean-coordinator Return Signal**:
+```yaml
+PROOF_COMPLETE:
+  coordinator_type: "lean"
+  summary_path: /path/to/summary.md
+  summary_brief: "Completed Wave 1-2 (Phase 1,2) with 15 theorems. Context: 72%. Next: Continue Wave 3."
+  phases_completed: [1, 2]
+  theorem_count: 15
+  work_remaining: Phase_3 Phase_4
+  context_exhausted: false
+  requires_continuation: true
+```
+
+**implementer-coordinator Return Signal**:
+```yaml
+IMPLEMENTATION_COMPLETE:
+  coordinator_type: "software"
+  summary_path: /path/to/summary.md
+  summary_brief: "Completed Wave 1 (Phase 3,4) with 25 tasks. Context: 65%. Next: Continue Wave 2."
+  phases_completed: [3, 4]
+  phase_count: 2
+  git_commits: [hash1, hash2]
+  work_remaining: Phase_5 Phase_6
+  context_exhausted: false
+  requires_continuation: true
+```
+
+### Brief Summary Return Pattern
+
+The command implements a **96% context reduction strategy** by parsing brief summaries from coordinator return signals instead of reading full summary files:
+
+**Traditional Approach** (Context-Expensive):
+```bash
+# Read entire summary file (~2,000 tokens per iteration)
+SUMMARY=$(cat "$SUMMARY_PATH")
+```
+
+**Brief Summary Approach** (Context-Efficient):
+```bash
+# Parse brief summary from return signal (~80 tokens)
+SUMMARY_BRIEF=$(grep "^summary_brief:" "$RETURN_SIGNAL" | sed 's/^summary_brief:[[:space:]]*//')
+COORDINATOR_TYPE=$(grep "^coordinator_type:" "$RETURN_SIGNAL")
+PHASES_COMPLETED=$(grep "^phases_completed:" "$RETURN_SIGNAL")
+```
+
+**Context Reduction**: 80 tokens (return signal) vs 2,000 tokens (full summary) = **96% reduction**
+
+### Benefits
+
+1. **Domain-Specific Optimization**: Each coordinator uses specialized tools (lean-lsp-mcp for proofs, standard dev tools for software)
+2. **Unified Metrics**: Aggregates theorems proven (lean) and git commits (software) in single completion report
+3. **Context Preservation**: Brief summary pattern preserves orchestrator context window for implementation work
+4. **Backward Compatibility**: Fallback parsing supports legacy summaries without new fields
+5. **Parallel Execution**: Wave-based orchestration executes independent phases concurrently
+
 ## Progress Tracking
 
 Both coordinators use checkbox utilities to track progress:
@@ -266,7 +329,90 @@ IMPLEMENTATION_COMPLETE:
   work_remaining: 0
 ```
 
+## Context Management
+
+The `/lean-implement` command includes advanced context management features to handle long-running workflows gracefully.
+
+### Context Aggregation
+
+The command tracks context usage across iterations and saves checkpoints when thresholds are exceeded:
+
+1. **Context Monitoring**: Coordinators report `context_usage_percent` in each summary
+2. **Threshold Checking**: Compares usage against `CONTEXT_THRESHOLD` (default: 90%)
+3. **Checkpoint Creation**: Automatically saves workflow state when threshold exceeded
+4. **Graceful Halt**: Stops execution with clear message and checkpoint path
+
+### Configuration Options
+
+Set environment variables or command-line flags:
+
+```bash
+# Set custom context threshold (default: 90)
+/lean-implement plan.md --context-threshold=80
+
+# Increase max iterations (default: 5)
+/lean-implement plan.md --max-iterations=10
+```
+
+### Checkpoint Resume
+
+When a checkpoint is saved due to context threshold:
+
+```bash
+# Review checkpoint
+cat ~/.claude/data/checkpoints/lean_implement_<workflow_id>.json
+
+# Resume from last phase
+/lean-implement plan.md <last_phase_number>
+```
+
+The checkpoint contains:
+- Plan path and topic path
+- Current iteration count
+- Work remaining (phase list)
+- Context usage percentage
+- Halt reason: `context_threshold_exceeded`
+
+### Context Reduction Metrics
+
+The brief summary parsing pattern provides significant context savings:
+
+| Approach | Tokens/Iteration | 5 Iterations | Reduction |
+|----------|------------------|--------------|-----------|
+| Full file parsing | 2,000 | 10,000 | - |
+| Brief summary parsing | 80 | 400 | 96% |
+
+**Cumulative Savings**: 9,600 tokens saved per 5-iteration workflow
+
 ## Troubleshooting
+
+### Continuation Plans
+
+**Problem**: Phase number extraction fails with non-contiguous phase numbers.
+
+**Example**: Plan with phases 5, 7, 9 (continuation from previous implementation).
+
+**Root Cause**: Legacy code used `seq 1 $TOTAL_PHASES` which assumes contiguous numbering.
+
+**Solution**: The command now extracts actual phase numbers from plan file:
+```bash
+# Direct grep extraction handles non-contiguous phases
+PHASE_NUMBERS=$(grep -oE "^### Phase ([0-9]+):" "$PLAN_FILE" | grep -oE "[0-9]+" | sort -n)
+```
+
+This enables continuation plans where only incomplete phases remain.
+
+### Context Threshold Exceeded
+
+**Problem**: Command halts with "Context threshold exceeded - checkpoint saved".
+
+**Meaning**: The workflow accumulated high context usage and saved state to prevent exhaustion.
+
+**Resolution**:
+1. Review checkpoint: `cat ~/.claude/data/checkpoints/lean_implement_*.json`
+2. Check work remaining in checkpoint
+3. Resume from last phase: `/lean-implement plan.md <phase_num>`
+4. Or increase threshold: `/lean-implement plan.md --context-threshold=95`
 
 ### Hard Barrier Failures
 

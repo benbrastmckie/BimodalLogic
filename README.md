@@ -11,7 +11,7 @@ Combining an **axiomatic proof system** implemented in LEAN 4 with a **recursive
 
 AI reasoning in the Logos is both **verified** by proof receipts for all inferences and **interpreted** by explicit semantic models, providing **scalable oversight** for sophisticated reasoning. The Logos implements a layered operator architecture for modularity and extensibility with the Core Layer (TM bimodal logic) as the foundation for the explanatory, epistemic, and normative layers which provide important extensions.
 
-See [Theoretical Foundations](#theoretical-foundations) below and the [LogicNotes](https://github.com/benbrastmckie/LogicNotes) for a compressed human readable overview of the Logos subsystems.
+See [Theoretical Foundations](#theoretical-foundations) below and the [LogicNotes](https://github.com/benbrastmckie/LogicNotes) for the compressed formal details for the Logos subsystems.
 
 ## Table of Contents
 
@@ -42,7 +42,7 @@ See [Theoretical Foundations](#theoretical-foundations) below and the [LogicNote
 
 ---
 
-## Motivations
+## RL TRAINING
 
 Training AI systems to reason reliably requires both positive signals (valid inferences) and corrective signals (invalid inferences with counterexamples where the premises are true and the conclusion is false). This dual verification approach offers three key advantages:
 
@@ -56,9 +56,23 @@ By contrast, human reasoning data is limited, inconsistent, and prone to error, 
 
 ---
 
+## Motivations
+
+AI systems require formal languages for verified reasoning about plans under uncertainty. The Logos approaches this challenge through **conceptual engineering**—not describing existing reasoning patterns in natural language, but stipulating logical operators fit for systematic planning applications. Like refining glass from sand or steel from iron ore, philosophical logic engineers theoretical concepts from natural language materials into precise formal operators with explicit semantic clauses.
+
+**Tense and Historical Modalities as Foundation**: Planning requires comparing alternative temporal evolutions (world-histories) to evaluate expected value. This pragmatic requirement motivates the Core Layer's combination of modal logic (S5 necessity/possibility) with temporal logic (past/future operators). Task semantics—where possible worlds are functions from times to world-states—provides the semantic foundation for representing plans as high expected value futures measured against counterfactual alternatives.
+
+**Progressive Extension to Explanatory, Epistemic, Normative Reasoning**: Evaluating plans requires counterfactual operators for comparing alternatives, causal operators for understanding productive relationships, epistemic operators for reasoning under uncertainty, and normative operators for multi-agent coordination. The Logos layer architecture enables applications to select precisely the operator combinations needed for their domain without carrying unused overhead.
+
+**See also**: [Conceptual Engineering](Documentation/Research/CONCEPTUAL_ENGINEERING.md) | [Layer Extensions](Documentation/Research/LAYER_EXTENSIONS.md)
+
+---
+
 ## Layered Architecture
 
 Logos implements a layered operator architecture supporting progressive extensibility. All layers share task semantics where possible worlds are functions from times to world-states constrained by task relations.
+
+**See also**: [Conceptual Engineering](Documentation/Research/CONCEPTUAL_ENGINEERING.md) for philosophical motivation | [Layer Extensions](Documentation/Research/LAYER_EXTENSIONS.md) for technical specifications
 
 | Layer           | Operators                            | Status         |
 | --------------- | ------------------------------------ | -------------- |
@@ -278,7 +292,7 @@ lake test
 
 ### Development
 
-- [Contributing](Documentation/ProjectInfo/CONTRIBUTING.md) - Contribution guidelines
+- [Contributing](Documentation/Development/CONTRIBUTING.md) - Contribution guidelines
 - [LEAN Style Guide](Documentation/Development/LEAN_STYLE_GUIDE.md) - Coding conventions
 - [Testing Standards](Documentation/Development/TESTING_STANDARDS.md) - Test requirements
 
@@ -352,7 +366,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Contributing
 
-Contributions welcome! See [Contributing Guide](Documentation/ProjectInfo/CONTRIBUTING.md) for guidelines.
+Contributions welcome! See [Contributing Guide](Documentation/Development/CONTRIBUTING.md) for guidelines.
 
 ### Development Setup
 

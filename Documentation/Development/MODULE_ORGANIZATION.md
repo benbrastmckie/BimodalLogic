@@ -52,18 +52,26 @@ Logos/
 │   └── Metalogic/                 # Property tests
 │       └── ConsistencyTests.lean  # Consistency tests
 └── Documentation/                 # Documentation
-    ├── ARCHITECTURE.md            # User documentation
-    ├── TUTORIAL.md
-    ├── EXAMPLES.md
-    ├── CONTRIBUTING.md
-    ├── INTEGRATION.md
-    ├── VERSIONING.md
-    └── development/               # Developer standards
-        ├── LEAN_STYLE_GUIDE.md
-        ├── MODULE_ORGANIZATION.md
-        ├── TESTING_STANDARDS.md
-        ├── TACTIC_DEVELOPMENT.md
-        └── QUALITY_METRICS.md
+    ├── UserGuide/                 # User-facing documentation
+    │   ├── ARCHITECTURE.md
+    │   ├── TUTORIAL.md
+    │   ├── EXAMPLES.md
+    │   └── INTEGRATION.md
+    ├── ProjectInfo/               # Project status and tactic docs
+    │   ├── IMPLEMENTATION_STATUS.md
+    │   ├── SORRY_REGISTRY.md
+    │   └── TACTIC_DEVELOPMENT.md
+    ├── Development/               # Developer standards and workflow
+    │   ├── LEAN_STYLE_GUIDE.md
+    │   ├── MODULE_ORGANIZATION.md
+    │   ├── TESTING_STANDARDS.md
+    │   ├── QUALITY_METRICS.md
+    │   ├── CONTRIBUTING.md
+    │   ├── MAINTENANCE.md
+    │   └── VERSIONING.md
+    └── Reference/                 # Reference materials
+        ├── OPERATORS.md
+        └── GLOSSARY.md
 ```
 
 ## 2. Namespace Conventions

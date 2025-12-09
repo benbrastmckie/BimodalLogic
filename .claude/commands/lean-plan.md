@@ -5,7 +5,7 @@ description: Create Lean-specific implementation plan for theorem proving projec
 command-type: primary
 dependent-agents:
   - topic-naming-agent
-  - lean-research-specialist
+  - research-coordinator
   - lean-plan-architect
 library-requirements:
   - workflow-state-machine.sh: ">=2.0.0"
@@ -816,19 +816,14 @@ echo "Topic name: $TOPIC_NAME (strategy: $NAMING_STRATEGY)"
 echo "Lean project: $LEAN_PROJECT_PATH"
 ```
 
-## Block 1d-calc: Research Report Path Pre-Calculation (Hard Barrier Pattern)
+## Block 1d-topics: Research Topics Classification
 
-**EXECUTE NOW**: Pre-calculate REPORT_PATH before subagent invocation:
+**EXECUTE NOW**: Classify research into focused topics based on complexity level.
 
 ```bash
 set +H  # CRITICAL: Disable history expansion
 
-# === PRE-TRAP ERROR BUFFER ===
-# Initialize error buffer BEFORE any library sourcing
-declare -a _EARLY_ERROR_BUFFER=()
-
 # === DETECT PROJECT DIRECTORY ===
-# CRITICAL: Detect project directory FIRST before using CLAUDE_PROJECT_DIR
 if [ -z "${CLAUDE_PROJECT_DIR:-}" ]; then
   if command -v git &>/dev/null && git rev-parse --git-dir >/dev/null 2>&1; then
     CLAUDE_PROJECT_DIR="$(git rev-parse --show-toplevel)"
@@ -843,12 +838,9 @@ if [ -z "${CLAUDE_PROJECT_DIR:-}" ]; then
 fi
 
 # === LOAD STATE ===
-# CRITICAL: Use CLAUDE_PROJECT_DIR for consistent path (now guaranteed to be set)
 STATE_ID_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/lean_plan_state_id.txt"
-
 if [ ! -f "$STATE_ID_FILE" ]; then
   echo "ERROR: State ID file not found: $STATE_ID_FILE" >&2
-  echo "Block 1d must run before Block 1d-calc" >&2
   exit 1
 fi
 
@@ -859,7 +851,6 @@ if [ -z "$WORKFLOW_ID" ]; then
 fi
 
 STATE_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/workflow_${WORKFLOW_ID}.sh"
-
 if [ ! -f "$STATE_FILE" ]; then
   echo "ERROR: Workflow state file not found: $STATE_FILE" >&2
   exit 1
@@ -870,115 +861,180 @@ source "$STATE_FILE" || {
   exit 1
 }
 
-# === SOURCE LIBRARIES IN CORRECT ORDER ===
-# CRITICAL: Source libraries BEFORE any function calls or trap setup
-# Order matters: error-handling -> state-persistence
+# === RESTORE ERROR LOGGING CONTEXT ===
+# Ensure error logging variables are set after state restoration
+COMMAND_NAME="${COMMAND_NAME:-/lean-plan}"
+USER_ARGS="${USER_ARGS:-$FEATURE_DESCRIPTION}"
+export COMMAND_NAME USER_ARGS WORKFLOW_ID
 
-# 1. Source error-handling.sh FIRST (provides setup_bash_error_trap and logging)
+# === SOURCE LIBRARIES ===
 source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/error-handling.sh" 2>/dev/null || {
   echo "ERROR: Failed to source error-handling.sh" >&2
   exit 1
 }
-
-# 2. Source state-persistence.sh SECOND (provides validate_workflow_id, append_workflow_state)
 _source_with_diagnostics "${CLAUDE_PROJECT_DIR}/.claude/lib/core/state-persistence.sh" || exit 1
 
 # === SETUP ERROR TRAP ===
-# CRITICAL: Setup trap AFTER sourcing error-handling.sh
-setup_bash_error_trap
+setup_bash_error_trap "$COMMAND_NAME" "$WORKFLOW_ID" "${USER_ARGS:-}"
 
-# === PRE-CALCULATE RESEARCH REPORT PATH ===
-# Hard Barrier Pattern: Calculate exact output path BEFORE subagent invocation
-REPORT_PATH="${RESEARCH_DIR}/001-lean-mathlib-research.md"
+# === COMPLEXITY-BASED TOPIC COUNT ===
+# Map research complexity to topic count for Lean research
+case "$RESEARCH_COMPLEXITY" in
+  1|2) TOPIC_COUNT=2 ;;
+  3)   TOPIC_COUNT=3 ;;
+  4)   TOPIC_COUNT=4 ;;
+  *)   TOPIC_COUNT=3 ;;  # Default fallback
+esac
 
-# Validate REPORT_PATH is absolute (defensive programming)
-if [[ ! "$REPORT_PATH" =~ ^/ ]]; then
-  log_command_error "validation_error" \
-    "REPORT_PATH is not absolute" \
-    "REPORT_PATH=$REPORT_PATH must start with / for Hard Barrier Pattern compliance"
-  echo "ERROR: REPORT_PATH must be absolute path: $REPORT_PATH" >&2
-  exit 1
-fi
+# === LEAN-SPECIFIC RESEARCH TOPICS ===
+# Define focused research areas for Lean formalization
+LEAN_TOPICS=(
+  "Mathlib Theorems"
+  "Proof Strategies"
+  "Project Structure"
+  "Style Guide"
+)
 
-# Create parent directory if needed
-mkdir -p "$(dirname "$REPORT_PATH")" || {
-  echo "ERROR: Failed to create report directory: $(dirname "$REPORT_PATH")" >&2
+# Select topics based on count (take first N topics)
+TOPICS=()
+for i in $(seq 0 $((TOPIC_COUNT - 1))); do
+  if [ $i -lt ${#LEAN_TOPICS[@]} ]; then
+    TOPICS+=("${LEAN_TOPICS[$i]}")
+  fi
+done
+
+# === CALCULATE REPORT PATHS ===
+# Pre-calculate absolute paths for each research topic
+REPORT_PATHS=()
+REPORT_INDEX=1
+
+for TOPIC in "${TOPICS[@]}"; do
+  # Convert topic to slug (lowercase, spaces to hyphens)
+  SLUG=$(echo "$TOPIC" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+
+  # Zero-pad index to 3 digits
+  PADDED_INDEX=$(printf "%03d" $REPORT_INDEX)
+
+  # Calculate absolute report path
+  REPORT_FILE="${RESEARCH_DIR}/${PADDED_INDEX}-${SLUG}.md"
+
+  # Validate path is absolute
+  if [[ ! "$REPORT_FILE" =~ ^/ ]]; then
+    log_command_error \
+      "$COMMAND_NAME" \
+      "$WORKFLOW_ID" \
+      "$USER_ARGS" \
+      "validation_error" \
+      "Report path is not absolute" \
+      "bash_block_1d_topics" \
+      "$(jq -n --arg path "$REPORT_FILE" '{report_file: $path, expected: "absolute path starting with /"}')"
+    echo "ERROR: Report path must be absolute: $REPORT_FILE" >&2
+    exit 1
+  fi
+
+  REPORT_PATHS+=("$REPORT_FILE")
+  REPORT_INDEX=$((REPORT_INDEX + 1))
+done
+
+# Create parent directory
+mkdir -p "$RESEARCH_DIR" || {
+  echo "ERROR: Failed to create research directory: $RESEARCH_DIR" >&2
   exit 1
 }
 
-# Persist REPORT_PATH to state for Block 1f validation
-append_workflow_state "REPORT_PATH" "$REPORT_PATH" || {
-  echo "ERROR: Failed to persist REPORT_PATH to state" >&2
-  exit 1
-}
+# === PERSIST TOPICS AND PATHS ===
+# Use bulk append for efficiency
+{
+  echo "TOPIC_COUNT=$TOPIC_COUNT"
+  echo "TOPICS=("
+  for TOPIC in "${TOPICS[@]}"; do
+    echo "  \"$TOPIC\""
+  done
+  echo ")"
+  echo "REPORT_PATHS=("
+  for PATH in "${REPORT_PATHS[@]}"; do
+    echo "  \"$PATH\""
+  done
+  echo ")"
+} >> "$STATE_FILE"
 
-# Console output
 echo ""
-echo "=== Research Report Path Pre-Calculation ==="
-echo "Report path: $REPORT_PATH"
-echo "Workflow ID: $WORKFLOW_ID"
-echo "Hard Barrier Pattern: Path pre-calculated for subagent contract"
+echo "=== Research Topics Classification ==="
+echo "Research Complexity: $RESEARCH_COMPLEXITY"
+echo "Topic Count: $TOPIC_COUNT"
+echo ""
+echo "Research Topics:"
+for i in "${!TOPICS[@]}"; do
+  echo "  $((i + 1)). ${TOPICS[$i]} -> ${REPORT_PATHS[$i]}"
+done
+echo ""
+echo "Ready for research-coordinator invocation"
 echo ""
 ```
 
-## Block 1e-exec: Research Execution (Hard Barrier Invocation)
+## Block 1e-exec: Research Coordination (research-coordinator Invocation)
 
-**EXECUTE NOW**: USE the Task tool to invoke the lean-research-specialist agent with mandatory file creation.
+**EXECUTE NOW**: USE the Task tool to invoke the research-coordinator agent for parallel multi-topic research.
 
 Task {
   subagent_type: "general-purpose"
-  description: "Research ${FEATURE_DESCRIPTION} with Mathlib discovery, proof pattern analysis, and mandatory file creation"
+  description: "Coordinate parallel Lean research across ${TOPIC_COUNT} topics: ${TOPICS[@]}"
   prompt: "
     Read and follow ALL behavioral guidelines from:
-    ${CLAUDE_PROJECT_DIR}/.claude/agents/lean-research-specialist.md
+    ${CLAUDE_PROJECT_DIR}/.claude/agents/research-coordinator.md
 
-    You are conducting Lean formalization research for: lean-plan workflow
+    You are coordinating parallel research for: lean-plan workflow
 
-    **Input Contract (Hard Barrier Pattern)**:
-    - REPORT_PATH: ${REPORT_PATH}
-    - LEAN_PROJECT_PATH: ${LEAN_PROJECT_PATH}
-    - FEATURE_DESCRIPTION: ${FEATURE_DESCRIPTION}
-    - RESEARCH_COMPLEXITY: ${RESEARCH_COMPLEXITY}
+    **Input Contract (Hard Barrier Pattern - Mode 2: Pre-Decomposed)**:
+    - research_request: ${FEATURE_DESCRIPTION}
+    - research_complexity: ${RESEARCH_COMPLEXITY}
+    - report_dir: ${RESEARCH_DIR}
+    - topic_path: ${TOPIC_PATH}
+    - topics: [$(printf '\"%s\" ' \"${TOPICS[@]}\")]
+    - report_paths: [$(printf '\"%s\" ' \"${REPORT_PATHS[@]}\")]
+    - context:
+        feature_description: ${FEATURE_DESCRIPTION}
+        lean_project_path: ${LEAN_PROJECT_PATH}
+        workflow_type: research-and-plan (Lean specialization)
+        original_prompt_file: ${ORIGINAL_PROMPT_FILE_PATH:-none}
+        archived_prompt_file: ${ARCHIVED_PROMPT_PATH:-none}
 
-    **CRITICAL**: You MUST write the research report to the EXACT path specified in REPORT_PATH.
-    The orchestrator has pre-calculated this path and will validate the file exists after you return.
-    DO NOT calculate your own output path - use REPORT_PATH exactly as provided.
+    **CRITICAL**:
+    - Topics and report paths have been PRE-CALCULATED by orchestrator (Mode 2: Manual Pre-Decomposition)
+    - You MUST use the provided report_paths EXACTLY as specified
+    - You MUST invoke research-specialist for EACH topic in parallel
+    - Each research-specialist receives Lean-specific context (LEAN_PROJECT_PATH, Mathlib focus)
+    - Validate ALL reports exist at pre-calculated paths after delegation
+    - Return aggregated metadata (title, findings_count, recommendations_count) for each report
 
-    **Workflow-Specific Context**:
-    - Research Topic: ${FEATURE_DESCRIPTION}
-    - Research Complexity: ${RESEARCH_COMPLEXITY}
-    - Workflow Type: research-and-plan (Lean specialization)
-    - Lean Project Path: ${LEAN_PROJECT_PATH}
-    - Original Prompt File: ${ORIGINAL_PROMPT_FILE_PATH:-none}
-    - Archived Prompt File: ${ARCHIVED_PROMPT_PATH:-none}
+    **Expected Topics** (${TOPIC_COUNT} total):
+$(for i in \"\${!TOPICS[@]}\"; do
+  echo \"    \$((i + 1)). \${TOPICS[\$i]} -> \${REPORT_PATHS[\$i]}\"
+done)
 
-    If an archived prompt file is provided (not 'none'), read it for complete context.
+    **Lean-Specific Research Context**:
+    - Lean Project: ${LEAN_PROJECT_PATH}
+    - Research Focus: Mathlib theorems, proof strategies, project structure, style guide
+    - Each research-specialist should perform:
+      1. Mathlib theorem discovery (WebSearch, grep local project)
+      2. Proof pattern analysis (tactic sequences, common approaches)
+      3. Project architecture review (module structure, naming conventions)
+      4. Documentation survey (LEAN_STYLE_GUIDE.md if exists)
 
-    Execute Lean-specific research according to behavioral guidelines:
-    1. Mathlib theorem discovery (WebSearch, grep local project)
-    2. Proof pattern analysis (tactic sequences, common approaches)
-    3. Project architecture review (module structure, naming conventions)
-    4. Documentation survey (LEAN_STYLE_GUIDE.md if exists)
-    5. Create comprehensive research report at REPORT_PATH
-
-    Return completion signal:
-    REPORT_CREATED: ${REPORT_PATH}
+    Execute research coordination according to behavioral guidelines and return completion signal:
+    RESEARCH_COMPLETE: ${TOPIC_COUNT}
+    reports: [{\"path\": \"...\", \"title\": \"...\", \"findings_count\": N, \"recommendations_count\": M}, ...]
   "
 }
 
-## Block 1f: Research Report Hard Barrier Validation
+## Block 1f: Research Reports Hard Barrier Validation and Metadata Extraction
 
-**EXECUTE NOW**: Validate research report artifact exists at pre-calculated path:
+**EXECUTE NOW**: Validate all research reports and extract metadata from coordinator return signal:
 
 ```bash
 set +H  # CRITICAL: Disable history expansion
 
-# === PRE-TRAP ERROR BUFFER ===
-# Initialize error buffer BEFORE any library sourcing
-declare -a _EARLY_ERROR_BUFFER=()
-
 # === DETECT PROJECT DIRECTORY ===
-# CRITICAL: Detect project directory FIRST before using CLAUDE_PROJECT_DIR
 if [ -z "${CLAUDE_PROJECT_DIR:-}" ]; then
   if command -v git &>/dev/null && git rev-parse --git-dir >/dev/null 2>&1; then
     CLAUDE_PROJECT_DIR="$(git rev-parse --show-toplevel)"
@@ -993,12 +1049,9 @@ if [ -z "${CLAUDE_PROJECT_DIR:-}" ]; then
 fi
 
 # === LOAD STATE ===
-# CRITICAL: Use CLAUDE_PROJECT_DIR for consistent path (now guaranteed to be set)
 STATE_ID_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/lean_plan_state_id.txt"
-
 if [ ! -f "$STATE_ID_FILE" ]; then
   echo "ERROR: State ID file not found: $STATE_ID_FILE" >&2
-  echo "Block 1d-calc must run before Block 1f" >&2
   exit 1
 fi
 
@@ -1009,7 +1062,6 @@ if [ -z "$WORKFLOW_ID" ]; then
 fi
 
 STATE_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/workflow_${WORKFLOW_ID}.sh"
-
 if [ ! -f "$STATE_FILE" ]; then
   echo "ERROR: Workflow state file not found: $STATE_FILE" >&2
   exit 1
@@ -1020,50 +1072,223 @@ source "$STATE_FILE" || {
   exit 1
 }
 
-# === SOURCE LIBRARIES IN CORRECT ORDER ===
-# CRITICAL: Source libraries BEFORE any function calls or trap setup
-# Order matters: error-handling -> validation-utils
+# === RESTORE ERROR LOGGING CONTEXT ===
+COMMAND_NAME="${COMMAND_NAME:-/lean-plan}"
+USER_ARGS="${USER_ARGS:-$FEATURE_DESCRIPTION}"
+export COMMAND_NAME USER_ARGS WORKFLOW_ID
 
-# 1. Source error-handling.sh FIRST (provides setup_bash_error_trap and logging)
+# === SOURCE LIBRARIES ===
 source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/error-handling.sh" 2>/dev/null || {
   echo "ERROR: Failed to source error-handling.sh" >&2
   exit 1
 }
-
-# 2. Source validation-utils.sh SECOND (provides validate_agent_artifact)
 _source_with_diagnostics "${CLAUDE_PROJECT_DIR}/.claude/lib/workflow/validation-utils.sh" || exit 1
+_source_with_diagnostics "${CLAUDE_PROJECT_DIR}/.claude/lib/core/state-persistence.sh" || exit 1
 
 # === SETUP ERROR TRAP ===
-# CRITICAL: Setup trap AFTER sourcing error-handling.sh
-setup_bash_error_trap
+setup_bash_error_trap "$COMMAND_NAME" "$WORKFLOW_ID" "${USER_ARGS:-}"
 
 # === HARD BARRIER VALIDATION ===
 echo ""
-echo "=== Research Report Hard Barrier Validation ==="
+echo "=== Research Reports Hard Barrier Validation ==="
 
-# Validate REPORT_PATH was set by Block 1d-calc
-if [ -z "${REPORT_PATH:-}" ]; then
-  log_command_error "state_error" \
-    "REPORT_PATH not found in workflow state" \
-    "Block 1d-calc must persist REPORT_PATH before Block 1f validation"
-  echo "ERROR: REPORT_PATH not found in workflow state" >&2
-  echo "Block 1d-calc must run successfully before Block 1f" >&2
+# Validate REPORT_PATHS array was set by Block 1d-topics
+if [ -z "${REPORT_PATHS:-}" ] || [ ${#REPORT_PATHS[@]} -eq 0 ]; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "state_error" \
+    "REPORT_PATHS not found in workflow state" \
+    "bash_block_1f" \
+    "$(jq -n '{error: "Block 1d-topics must persist REPORT_PATHS before Block 1f validation"}')"
+  echo "ERROR: REPORT_PATHS not found in workflow state" >&2
   exit 1
 fi
 
-echo "Expected report file: $REPORT_PATH"
+echo "Expected ${#REPORT_PATHS[@]} research reports:"
+for i in "${!REPORT_PATHS[@]}"; do
+  echo "  $((i + 1)). ${REPORT_PATHS[$i]}"
+done
+echo ""
 
-# Validate research report artifact (minimum 500 bytes for comprehensive content)
-if ! validate_agent_artifact "$REPORT_PATH" 500 "research report"; then
-  log_command_error "validation_error" \
-    "Lean research specialist validation failed" \
-    "REPORT_PATH=$REPORT_PATH does not exist or is too small (<500 bytes)"
-  echo "ERROR: HARD BARRIER FAILED - Lean research specialist validation failed" >&2
-  echo "Expected report at: $REPORT_PATH" >&2
+# === VALIDATE EACH REPORT ===
+SUCCESSFUL_REPORTS=0
+FAILED_REPORTS=()
+
+for REPORT_PATH in "${REPORT_PATHS[@]}"; do
+  REPORT_NAME=$(basename "$REPORT_PATH")
+
+  # Validate report exists and meets minimum size (500 bytes)
+  if ! validate_agent_artifact "$REPORT_PATH" 500 "research report: $REPORT_NAME"; then
+    FAILED_REPORTS+=("$REPORT_PATH")
+    echo "  ✗ Failed: $REPORT_NAME (missing or < 500 bytes)"
+  else
+    SUCCESSFUL_REPORTS=$((SUCCESSFUL_REPORTS + 1))
+    echo "  ✓ Validated: $REPORT_NAME"
+  fi
+done
+
+# === PARTIAL SUCCESS MODE ===
+# Calculate success percentage
+TOTAL_REPORTS=${#REPORT_PATHS[@]}
+SUCCESS_PERCENTAGE=$((SUCCESSFUL_REPORTS * 100 / TOTAL_REPORTS))
+
+echo ""
+echo "Validation Results: $SUCCESSFUL_REPORTS/$TOTAL_REPORTS reports (${SUCCESS_PERCENTAGE}%)"
+
+# Fail if <50% success
+if [ $SUCCESS_PERCENTAGE -lt 50 ]; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "validation_error" \
+    "Research validation failed: <50% success rate" \
+    "bash_block_1f" \
+    "$(jq -n --argjson success "$SUCCESSFUL_REPORTS" --argjson total "$TOTAL_REPORTS" --argjson pct "$SUCCESS_PERCENTAGE" \
+       '{successful_reports: $success, total_reports: $total, success_percentage: $pct}')"
+  echo "ERROR: HARD BARRIER FAILED - Less than 50% of reports created" >&2
+  echo "Failed reports:" >&2
+  for FAILED_PATH in "${FAILED_REPORTS[@]}"; do
+    echo "  - $FAILED_PATH" >&2
+  done
   exit 1
 fi
 
-echo "✓ Hard barrier passed - research report file validated"
+# Warn if 50-99% success
+if [ $SUCCESS_PERCENTAGE -lt 100 ]; then
+  echo "WARNING: Partial research success (${SUCCESS_PERCENTAGE}%)" >&2
+  echo "Failed reports:" >&2
+  for FAILED_PATH in "${FAILED_REPORTS[@]}"; do
+    echo "  - $FAILED_PATH" >&2
+  done
+  echo "Proceeding with $SUCCESSFUL_REPORTS/$TOTAL_REPORTS reports..." >&2
+fi
+
+echo "✓ Hard barrier passed - research reports validated"
+echo ""
+```
+
+## Block 1f-metadata: Extract Report Metadata
+
+**EXECUTE NOW**: Extract metadata from coordinator return signal for metadata-only context passing:
+
+```bash
+set +H  # CRITICAL: Disable history expansion
+
+# === DETECT PROJECT DIRECTORY ===
+if [ -z "${CLAUDE_PROJECT_DIR:-}" ]; then
+  if command -v git &>/dev/null && git rev-parse --git-dir >/dev/null 2>&1; then
+    CLAUDE_PROJECT_DIR="$(git rev-parse --show-toplevel)"
+  else
+    current_dir="$(pwd)"
+    while [ "$current_dir" != "/" ]; do
+      [ -d "$current_dir/.claude" ] && { CLAUDE_PROJECT_DIR="$current_dir"; break; }
+      current_dir="$(dirname "$current_dir")"
+    done
+  fi
+  export CLAUDE_PROJECT_DIR
+fi
+
+# === LOAD STATE ===
+STATE_ID_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/lean_plan_state_id.txt"
+WORKFLOW_ID=$(cat "$STATE_ID_FILE" 2>/dev/null)
+STATE_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/workflow_${WORKFLOW_ID}.sh"
+source "$STATE_FILE" 2>/dev/null || {
+  echo "ERROR: Failed to restore workflow state" >&2
+  exit 1
+}
+
+# === RESTORE ERROR LOGGING CONTEXT ===
+COMMAND_NAME="${COMMAND_NAME:-/lean-plan}"
+USER_ARGS="${USER_ARGS:-$FEATURE_DESCRIPTION}"
+export COMMAND_NAME USER_ARGS WORKFLOW_ID
+
+# === SOURCE LIBRARIES ===
+source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/error-handling.sh" 2>/dev/null || {
+  echo "ERROR: Failed to source error-handling.sh" >&2
+  exit 1
+}
+_source_with_diagnostics "${CLAUDE_PROJECT_DIR}/.claude/lib/core/state-persistence.sh" || exit 1
+
+# === SETUP ERROR TRAP ===
+setup_bash_error_trap "$COMMAND_NAME" "$WORKFLOW_ID" "${USER_ARGS:-}"
+
+echo ""
+echo "=== Report Metadata Extraction ==="
+
+# === EXTRACT METADATA FROM COORDINATOR RETURN SIGNAL ===
+# NOTE: In actual execution, this would parse the coordinator's return signal
+# For now, we build metadata from report files directly (fallback pattern)
+
+REPORT_METADATA_JSON="["
+
+for i in "${!REPORT_PATHS[@]}"; do
+  REPORT_PATH="${REPORT_PATHS[$i]}"
+
+  # Skip if report doesn't exist (partial success mode)
+  if [ ! -f "$REPORT_PATH" ]; then
+    continue
+  fi
+
+  # Extract title from report (first # heading)
+  TITLE=$(grep -m 1 "^# " "$REPORT_PATH" 2>/dev/null | sed 's/^# //' || echo "Untitled Report")
+
+  # Extract findings count (count ## Findings or ### Finding lines)
+  FINDINGS_COUNT=$(grep -c "^### Finding [0-9]" "$REPORT_PATH" 2>/dev/null || echo "0")
+
+  # Extract recommendations count
+  RECOMMENDATIONS_COUNT=$(grep -c "^### Recommendation [0-9]" "$REPORT_PATH" 2>/dev/null || echo "0")
+
+  # Build JSON entry
+  if [ $i -gt 0 ]; then
+    REPORT_METADATA_JSON+=","
+  fi
+
+  REPORT_METADATA_JSON+="{\"path\":\"$REPORT_PATH\",\"title\":\"$TITLE\",\"findings_count\":$FINDINGS_COUNT,\"recommendations_count\":$RECOMMENDATIONS_COUNT}"
+
+  echo "  Report $((i + 1)): $TITLE ($FINDINGS_COUNT findings, $RECOMMENDATIONS_COUNT recommendations)"
+done
+
+REPORT_METADATA_JSON+="]"
+
+# === FORMAT METADATA FOR PLANNING PHASE ===
+# Convert to human-readable format for plan-architect prompt
+FORMATTED_METADATA="Research Reports: ${#REPORT_PATHS[@]} reports created
+
+"
+for i in "${!REPORT_PATHS[@]}"; do
+  REPORT_PATH="${REPORT_PATHS[$i]}"
+
+  if [ ! -f "$REPORT_PATH" ]; then
+    continue
+  fi
+
+  TITLE=$(grep -m 1 "^# " "$REPORT_PATH" 2>/dev/null | sed 's/^# //' || echo "Untitled Report")
+  FINDINGS_COUNT=$(grep -c "^### Finding [0-9]" "$REPORT_PATH" 2>/dev/null || echo "0")
+  RECOMMENDATIONS_COUNT=$(grep -c "^### Recommendation [0-9]" "$REPORT_PATH" 2>/dev/null || echo "0")
+
+  FORMATTED_METADATA+="Report $((i + 1)): $TITLE
+  - Findings: $FINDINGS_COUNT
+  - Recommendations: $RECOMMENDATIONS_COUNT
+  - Path: $REPORT_PATH (use Read tool to access full content)
+
+"
+done
+
+# === PERSIST METADATA ===
+append_workflow_state "REPORT_METADATA_JSON<<METADATA_EOF
+$REPORT_METADATA_JSON
+METADATA_EOF"
+
+append_workflow_state "FORMATTED_METADATA<<FORMATTED_EOF
+$FORMATTED_METADATA
+FORMATTED_EOF"
+
+echo ""
+echo "Metadata extraction complete"
+echo "Context reduction: ~110 tokens per report (vs ~2,500 tokens full content)"
 echo ""
 ```
 
@@ -1333,9 +1558,14 @@ PLAN_PATH="${PLANS_DIR}/${PLAN_FILENAME}"
 
 # Validate PLAN_PATH is absolute (defensive programming)
 if [[ ! "$PLAN_PATH" =~ ^/ ]]; then
-  log_command_error "validation_error" \
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "validation_error" \
     "PLAN_PATH is not absolute" \
-    "PLAN_PATH=$PLAN_PATH must start with / for Hard Barrier Pattern compliance"
+    "bash_block_2" \
+    "$(jq -n --arg path "$PLAN_PATH" '{plan_path: $path, expected: "absolute path starting with /"}')"
   echo "ERROR: PLAN_PATH must be absolute path: $PLAN_PATH" >&2
   exit 1
 fi
@@ -1355,7 +1585,14 @@ EOF
 save_completed_states_to_state
 SAVE_EXIT=$?
 if [ $SAVE_EXIT -ne 0 ]; then
-  log_command_error "state_error" "Failed to persist state transitions" "$(jq -n --arg file "${STATE_FILE:-unknown}" '{state_file: $file}')"
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "state_error" \
+    "Failed to persist state transitions" \
+    "bash_block_state_save" \
+    "$(jq -n --arg file "${STATE_FILE:-unknown}" '{state_file: $file}')"
   echo "ERROR: State persistence failed" >&2
   exit 1
 fi
@@ -1370,7 +1607,14 @@ echo "Using $REPORT_COUNT research reports"
 # === EXTRACT PROJECT STANDARDS ===
 # Source standards extraction library
 source "${CLAUDE_PROJECT_DIR}/.claude/lib/plan/standards-extraction.sh" 2>/dev/null || {
-  log_command_error "file_error" "Failed to source standards-extraction library" "$(jq -n --arg path "${CLAUDE_PROJECT_DIR}/.claude/lib/plan/standards-extraction.sh" '{library_path: $path}')"
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "file_error" \
+    "Failed to source standards-extraction library" \
+    "bash_block_2_standards" \
+    "$(jq -n --arg path "${CLAUDE_PROJECT_DIR}/.claude/lib/plan/standards-extraction.sh" '{library_path: $path}')"
   echo "WARNING: Standards extraction unavailable, proceeding without standards" >&2
   FORMATTED_STANDARDS=""
 }
@@ -1378,7 +1622,14 @@ source "${CLAUDE_PROJECT_DIR}/.claude/lib/plan/standards-extraction.sh" 2>/dev/n
 # Extract and format standards for prompt injection
 if [ -z "${FORMATTED_STANDARDS:-}" ]; then
   FORMATTED_STANDARDS=$(format_standards_for_prompt 2>/dev/null) || {
-    log_command_error "execution_error" "Standards extraction failed" "{}"
+    log_command_error \
+      "$COMMAND_NAME" \
+      "$WORKFLOW_ID" \
+      "$USER_ARGS" \
+      "execution_error" \
+      "Standards extraction failed" \
+      "bash_block_2_standards" \
+      "{}"
     echo "WARNING: Standards extraction failed, proceeding without standards" >&2
     FORMATTED_STANDARDS=""
   }
@@ -1428,7 +1679,6 @@ Task {
 
     **Input Contract (Hard Barrier Pattern)**:
     - PLAN_PATH: ${PLAN_PATH}
-    - REPORT_PATHS_LIST: ${REPORT_PATHS_LIST}
     - FEATURE_DESCRIPTION: ${FEATURE_DESCRIPTION}
     - LEAN_PROJECT_PATH: ${LEAN_PROJECT_PATH}
 
@@ -1438,12 +1688,20 @@ Task {
 
     **Workflow-Specific Context**:
     - Feature Description: ${FEATURE_DESCRIPTION}
-    - Research Reports: ${REPORT_PATHS_LIST}
     - Workflow Type: research-and-plan (Lean specialization)
     - Operation Mode: new plan creation
     - Lean Project Path: ${LEAN_PROJECT_PATH}
     - Original Prompt File: ${ORIGINAL_PROMPT_FILE_PATH:-none}
     - Archived Prompt File: ${ARCHIVED_PROMPT_PATH:-none}
+
+    **Research Reports Metadata (Metadata-Only Context Passing)**:
+    ${FORMATTED_METADATA}
+
+    **CRITICAL INSTRUCTION**:
+    - The above is METADATA ONLY (not full report content)
+    - You have Read tool access to full reports at specified paths
+    - Use Read tool to access full research content when needed for planning
+    - DO NOT expect full report content in this prompt (95% context reduction)
 
     **Project Standards**:
     ${FORMATTED_STANDARDS}
@@ -1783,7 +2041,14 @@ fi
 save_completed_states_to_state
 SAVE_EXIT=$?
 if [ $SAVE_EXIT -ne 0 ]; then
-  log_command_error "state_error" "Failed to persist state transitions" "$(jq -n --arg file "${STATE_FILE:-unknown}" '{state_file: $file}')"
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "state_error" \
+    "Failed to persist state transitions" \
+    "bash_block_state_save" \
+    "$(jq -n --arg file "${STATE_FILE:-unknown}" '{state_file: $file}')"
   echo "ERROR: State persistence failed" >&2
   exit 1
 fi

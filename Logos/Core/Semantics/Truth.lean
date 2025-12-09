@@ -1176,6 +1176,25 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid T φ.swap_past
   | modal_t ψ => exact swap_axiom_mt_valid ψ
   | modal_4 ψ => exact swap_axiom_m4_valid ψ
   | modal_b ψ => exact swap_axiom_mb_valid ψ
+  | modal_k_dist ψ χ =>
+    -- modal_k_dist is □(ψ → χ) → (□ψ → □χ)
+    -- After swap: □(ψ.swap → χ.swap) → (□ψ.swap → □χ.swap)
+    -- This is still modal_k_dist applied to swapped subformulas (modal operators unchanged)
+    intro F M τ t ht
+    simp only [Formula.swap_past_future, truth_at]
+    -- Goal: (∀ σ hs, truth_at ... ψ.swap → truth_at ... χ.swap) →
+    --       (∀ σ hs, truth_at ... ψ.swap) → (∀ σ hs, truth_at ... χ.swap)
+    intro h_box_imp h_box_psi σ hs
+    exact h_box_imp σ hs (h_box_psi σ hs)
+  | double_negation ψ =>
+    -- double_negation is ¬¬ψ → ψ
+    -- After swap: ¬¬ψ.swap → ψ.swap
+    -- This is still double_negation applied to swapped subformula (negation unchanged)
+    intro F M τ t ht
+    simp only [Formula.swap_past_future, Formula.neg, truth_at]
+    -- Goal: ((truth_at ... ψ.swap → False) → False) → truth_at ... ψ.swap
+    intro h_not_not
+    exact Classical.byContradiction (fun h => h_not_not h)
   | temp_4 ψ => exact swap_axiom_t4_valid ψ
   | temp_a ψ => exact swap_axiom_ta_valid ψ
   | temp_l ψ => exact swap_axiom_tl_valid ψ
@@ -1226,6 +1245,20 @@ theorem derivable_implies_swap_valid :
       intro h_eq
       -- Γ' = [], both premises are from []
       exact mp_preserves_swap_valid ψ' χ' (ih_imp h_eq) (ih_ψ' h_eq)
+
+    | necessitation ψ' h_ψ' ih =>
+      intro h_eq
+      -- necessitation: from Derivable [] ψ', derive Derivable [] □ψ'
+      -- h_eq confirms context is []
+      -- Goal: is_valid (□ψ').swap = is_valid □(ψ'.swap)
+      -- IH gives: is_valid ψ'.swap
+      -- Need to show: is_valid □(ψ'.swap) from is_valid ψ'.swap
+      intro F M τ t ht
+      simp only [Formula.swap_past_future, truth_at]
+      -- Goal: ∀ σ hs, truth_at M σ t hs ψ'.swap
+      intro σ hs
+      -- Apply IH: is_valid ψ'.swap
+      exact ih h_eq F M σ t hs
 
     | modal_k Γ' ψ' h_ψ' ih =>
       intro h_eq

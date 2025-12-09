@@ -24,6 +24,8 @@ task semantic models. The MF and TF axioms use time-shift invariance
 - `modal_t_valid`: Modal T axiom is valid
 - `modal_4_valid`: Modal 4 axiom is valid
 - `modal_b_valid`: Modal B axiom is valid
+- `modal_k_dist_valid`: Modal K distribution axiom is valid
+- `double_negation_valid`: Double negation elimination axiom is valid
 - `temp_4_valid`: Temporal 4 axiom is valid
 - `temp_a_valid`: Temporal A axiom is valid
 - `temp_l_valid`: TL axiom is valid (uses always definition)
@@ -34,8 +36,8 @@ task semantic models. The MF and TF axioms use time-shift invariance
 ## Implementation Notes
 
 **Completed Proofs**:
-- 10/10 axiom validity lemmas: prop_k, prop_s, MT, M4, MB, T4, TA, TL, MF, TF
-- 7/7 soundness cases: axiom, assumption, modus_ponens, modal_k, temporal_k,
+- 12/12 axiom validity lemmas: prop_k, prop_s, MT, M4, MB, MK_dist, DNE, T4, TA, TL, MF, TF
+- 8/8 soundness cases: axiom, assumption, modus_ponens, necessitation, modal_k, temporal_k,
   temporal_duality, weakening
 
 **Key Techniques**:
@@ -81,7 +83,7 @@ show (φ → χ). Given φ, we get ψ from second premise, then χ from first pr
 
 theorem prop_k_valid (φ ψ χ : Formula) :
     ⊨ ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) := by
-  intro F M τ t ht
+  intro T _ F M τ t ht
   unfold truth_at
   intro h1 h2 h_phi
   exact h1 h_phi (h2 h_phi)
@@ -95,7 +97,7 @@ Proof: Assume φ and ψ, show φ. This is immediate from the first assumption.
 -/
 
 theorem prop_s_valid (φ ψ : Formula) : ⊨ (φ.imp (ψ.imp φ)) := by
-  intro F M τ t ht
+  intro T _ F M τ t ht
   unfold truth_at
   intro h_phi _
   exact h_phi
@@ -110,7 +112,7 @@ Since `τ` is a history containing `t`, we have `φ` true at `(M, τ, t)`.
 -/
 
 theorem modal_t_valid (φ : Formula) : ⊨ (φ.box.imp φ) := by
-  intro F M τ t ht
+  intro T _ F M τ t ht
   unfold truth_at
   intro h_box
   -- h_box : ∀ σ, t ∈ σ.domain → truth_at M σ t φ
@@ -129,7 +131,7 @@ Since `□φ` was already true (for ALL histories including `ρ`), this follows 
 -/
 
 theorem modal_4_valid (φ : Formula) : ⊨ ((φ.box).imp (φ.box.box)) := by
-  intro F M τ t ht
+  intro T _ F M τ t ht
   unfold truth_at
   intro h_box
   -- h_box : ∀ σ hs, truth_at M σ t hs φ
@@ -152,7 +154,7 @@ We witness with `τ` and `ht`, where we assumed `φ` is true.
 -/
 
 theorem modal_b_valid (φ : Formula) : ⊨ (φ.imp (φ.diamond.box)) := by
-  intro F M τ t ht
+  intro T _ F M τ t ht
   unfold truth_at
   intro h_phi
   -- h_phi : truth_at M τ t ht φ
@@ -176,6 +178,45 @@ theorem modal_b_valid (φ : Formula) : ⊨ (φ.imp (φ.diamond.box)) := by
   exact h_neg_at_tau h_phi
 
 /--
+Modal K Distribution axiom is valid: `⊨ □(φ → ψ) → (□φ → □ψ)`.
+
+This is the fundamental distribution axiom of normal modal logics.
+
+Proof: Assume □(φ → ψ) at (M, τ, t), i.e., (φ → ψ) holds at all histories at time t.
+Also assume □φ, i.e., φ holds at all histories at time t.
+Goal: □ψ, i.e., ψ holds at all histories at time t.
+For any history σ at time t, φ holds (by □φ), and (φ → ψ) holds (by □(φ → ψ)).
+By modus ponens, ψ holds at σ.
+-/
+theorem modal_k_dist_valid (φ ψ : Formula) :
+    ⊨ ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) := by
+  intro T _ F M τ t ht
+  unfold truth_at
+  intro h_box_imp h_box_phi σ hs
+  -- h_box_imp : ∀ ρ hr, truth_at M ρ t hr (φ.imp ψ)
+  -- h_box_phi : ∀ ρ hr, truth_at M ρ t hr φ
+  have h_imp_at_σ := h_box_imp σ hs
+  have h_phi_at_σ := h_box_phi σ hs
+  unfold truth_at at h_imp_at_σ
+  exact h_imp_at_σ h_phi_at_σ
+
+/--
+Double Negation Elimination axiom is valid: `⊨ ¬¬φ → φ`.
+
+This is the classical logic principle.
+
+Proof: ¬¬φ = (φ → ⊥) → ⊥ = ((truth_at φ → False) → False)
+By classical logic, ((P → False) → False) → P is valid.
+-/
+theorem double_negation_valid (φ : Formula) : ⊨ (φ.neg.neg.imp φ) := by
+  intro T _ F M τ t ht
+  unfold truth_at Formula.neg
+  -- Goal: ((truth_at M τ t ht φ → False) → False) → truth_at M τ t ht φ
+  intro h_not_not
+  -- Classical logic: from ¬¬P, derive P
+  exact Classical.byContradiction (fun h => h_not_not h)
+
+/--
 Temporal 4 axiom is valid: `⊨ Fφ → FFφ`.
 
 For any formula `φ`, the formula `Fφ → FFφ` is valid.
@@ -185,8 +226,8 @@ We need to show `FFφ` is true, i.e., for all s > t, for all r > s, `φ` holds a
 Since r > s > t implies r > t, and Fφ says φ holds at all times > t, φ holds at r.
 -/
 
-theorem temp_4_valid (φ : Formula) : ⊨ ((φ.all_future).imp (φ.all_future.future)) := by
-  intro F M τ t ht
+theorem temp_4_valid (φ : Formula) : ⊨ ((φ.all_future).imp (φ.all_future.all_future)) := by
+  intro T _ F M τ t ht
   unfold truth_at
   intro h_future
   -- h_future : ∀ s hs, t < s → truth_at M τ s hs φ
@@ -194,7 +235,7 @@ theorem temp_4_valid (φ : Formula) : ⊨ ((φ.all_future).imp (φ.all_future.fu
   intro s hs hts r hr hsr
   -- Need to show: truth_at M τ r hr φ
   -- We have: t < s and s < r, so t < r
-  have htr : t < r := Int.lt_trans hts hsr
+  have htr : t < r := lt_trans hts hsr
   exact h_future r hr htr
 
 /--
@@ -211,7 +252,7 @@ Since t < s and t is in domain (we're evaluating there), t is such an r.
 -/
 
 theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.sometime_past)) := by
-  intro F M τ t ht
+  intro T _ F M τ t ht
   unfold truth_at
   intro h_phi
   -- h_phi : truth_at M τ t ht φ
@@ -235,7 +276,7 @@ theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.sometim
   -- Then h t ht hts : truth_at M τ t ht φ → False
   -- And h t ht hts h_phi : False
 
-  unfold Formula.sometime_past Formula.neg truth_at
+  unfold Formula.sometime_past Formula.some_past Formula.neg truth_at
   -- Goal: (∀ r hr, r < s → truth_at M τ r hr (φ.imp bot)) → False
   intro h_all_neg
   -- h_all_neg : ∀ r hr, r < s → truth_at M τ r hr (φ.imp bot)
@@ -268,7 +309,7 @@ gives information about ALL times, not just future times.
 -/
 
 theorem temp_l_valid (φ : Formula) : ⊨ (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
-  intro F M τ t ht
+  intro T _ F M τ t ht
   unfold truth_at
   intro h_always
   -- h_always : truth_at M τ t ht φ.always
@@ -287,17 +328,17 @@ theorem temp_l_valid (φ : Formula) : ⊨ (φ.always.imp (Formula.all_future (Fo
   simp only [Formula.always, Formula.and, Formula.neg, truth_at] at h_always
 
   -- Extract using classical logic (conjunction encoded as ¬(P → ¬Q))
-  have h1 : (∀ (u : Int) (hu : τ.domain u), u < t → truth_at M τ u hu φ) ∧
-            ((truth_at M τ t ht φ → (∀ (v : Int) (hv : τ.domain v), t < v → truth_at M τ v hv φ) → False) → False) :=
+  have h1 : (∀ (u : T) (hu : τ.domain u), u < t → truth_at M τ u hu φ) ∧
+            ((truth_at M τ t ht φ → (∀ (v : T) (hv : τ.domain v), t < v → truth_at M τ v hv φ) → False) → False) :=
     and_of_not_imp_not h_always
   obtain ⟨h_past, h_middle⟩ := h1
 
-  have h2 : truth_at M τ t ht φ ∧ (∀ (v : Int) (hv : τ.domain v), t < v → truth_at M τ v hv φ) :=
+  have h2 : truth_at M τ t ht φ ∧ (∀ (v : T) (hv : τ.domain v), t < v → truth_at M τ v hv φ) :=
     and_of_not_imp_not h_middle
   obtain ⟨h_now, h_future⟩ := h2
 
   -- Case split on whether r is before, at, or after t
-  rcases Int.lt_trichotomy r t with h_lt | h_eq | h_gt
+  rcases lt_trichotomy r t with h_lt | h_eq | h_gt
   · -- r < t: use h_past
     exact h_past r hr h_lt
   · -- r = t: use h_now
@@ -320,7 +361,7 @@ relate truth at (σ, s) to truth at (time_shift σ (s-t), t), then applies the
 -/
 
 theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.all_future).box)) := by
-  intro F M τ t ht
+  intro T _ F M τ t ht
   unfold truth_at
   intro h_box_phi
   -- h_box_phi : ∀ σ hs, truth_at M σ t hs φ
@@ -333,7 +374,7 @@ theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.all_future).b
   -- time_shift σ (s - t) gives a history at time t (where t + (s - t) = s)
   have h_shifted_domain : (WorldHistory.time_shift σ (s - t)).domain t := by
     simp only [WorldHistory.time_shift]
-    have : t + (s - t) = s := by omega
+    have : t + (s - t) = s := add_sub_cancel t s
     rw [this]
     exact hs'
 
@@ -363,7 +404,7 @@ relate truth at (σ, s) to truth at (time_shift σ (s-t), t), then applies the
 -/
 
 theorem temp_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.box).all_future)) := by
-  intro F M τ t ht
+  intro T _ F M τ t ht
   unfold truth_at
   intro h_box_phi
   -- h_box_phi : ∀ σ hs, truth_at M σ t hs φ
@@ -376,7 +417,7 @@ theorem temp_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.box).all_futur
   -- time_shift σ (s - t) gives a history at time t
   have h_shifted_domain : (WorldHistory.time_shift σ (s - t)).domain t := by
     simp only [WorldHistory.time_shift]
-    have : t + (s - t) = s := by omega
+    have : t + (s - t) = s := add_sub_cancel t s
     rw [this]
     exact hs'
 
@@ -400,6 +441,8 @@ theorem axiom_valid {φ : Formula} : Axiom φ → ⊨ φ := by
   | modal_t ψ => exact modal_t_valid ψ
   | modal_4 ψ => exact modal_4_valid ψ
   | modal_b ψ => exact modal_b_valid ψ
+  | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ
+  | double_negation ψ => exact double_negation_valid ψ
   | temp_4 ψ => exact temp_4_valid ψ
   | temp_a ψ => exact temp_a_valid ψ
   | temp_l ψ => exact temp_l_valid ψ
@@ -426,24 +469,37 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
   | «axiom» Γ' φ' h_ax =>
     -- Case: φ' is an axiom
     -- All axioms are valid, hence semantic consequences of any context
-    intro F M τ t ht _
-    exact axiom_valid h_ax F M τ t ht
+    intro T _ F M τ t ht _
+    exact axiom_valid h_ax T F M τ t ht
 
   | @assumption Γ' φ' h_mem =>
     -- Case: φ' ∈ Γ' (assumption)
     -- If all of Γ' true, then φ' (member of Γ') is true
-    intro F M τ t ht h_all
+    intro T _ F M τ t ht h_all
     exact h_all φ' h_mem
 
   | @modus_ponens Γ' φ' ψ' _ _ ih_imp ih_phi =>
     -- Case: From Γ' ⊢ φ' → ψ' and Γ' ⊢ φ', derive Γ' ⊢ ψ'
     -- By IH: Γ' ⊨ φ' → ψ' and Γ' ⊨ φ'
     -- Goal: Γ' ⊨ ψ'
-    intro F M τ t ht h_all
-    have h_imp := ih_imp F M τ t ht h_all
-    have h_phi := ih_phi F M τ t ht h_all
+    intro T _ F M τ t ht h_all
+    have h_imp := ih_imp T F M τ t ht h_all
+    have h_phi := ih_phi T F M τ t ht h_all
     unfold truth_at at h_imp
     exact h_imp h_phi
+
+  | @necessitation φ' _ ih =>
+    -- Case: From [] ⊢ φ', derive [] ⊢ □φ'
+    -- IH: [] ⊨ φ' (φ' is valid)
+    -- Goal: [] ⊨ □φ' (□φ' is valid)
+    intro T _ F M τ t ht _
+    -- Goal: truth_at M τ t ht φ'.box
+    unfold truth_at
+    -- Goal: ∀ σ hs, truth_at M σ t hs φ'
+    intro σ hs
+    -- φ' is valid (from IH with empty context), so true at (σ, t)
+    have h_phi := ih T F M σ t hs (fun _ h_mem => False.elim (List.not_mem_nil _ h_mem))
+    exact h_phi
 
   | @modal_k Γ' φ' _ ih =>
     -- Case: From Γ' ⊢ φ', derive □Γ' ⊢ □φ'
@@ -459,18 +515,18 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
     -- - So ψ true at (M, σ, t) for all ψ ∈ Γ'
     -- - By IH: Γ' ⊨ φ' means if all ψ ∈ Γ' true, then φ' true
     -- - Therefore φ' true at (M, σ, t)
-    intro F M τ t ht h_all_box_gamma
+    intro T _ F M τ t ht h_all_box_gamma
     -- Goal: truth_at M τ t ht φ'.box
     unfold truth_at
     -- Goal: ∀ σ hs, truth_at M σ t hs φ'
     intro σ hs
     -- Need: truth_at M σ t hs φ'
     -- Use IH: Γ' ⊨ φ'
-    apply ih F M σ t hs
+    apply ih T F M σ t hs
     -- Need: ∀ ψ, ψ ∈ Γ' → truth_at M σ t hs ψ
     intro ψ h_psi_in_gamma
     -- ψ.box ∈ Γ'.map box, so ψ.box true at (M, τ, t)
-    have h_box_psi_in := List.mem_map_of_mem Formula.box h_psi_in_gamma
+    have h_box_psi_in := Context.mem_map_of_mem (f := Formula.box) h_psi_in_gamma
     have h_box_psi_true := h_all_box_gamma (ψ.box) h_box_psi_in
     -- h_box_psi_true : truth_at M τ t ht ψ.box
     -- Unfold to get: ∀ ρ hr, truth_at M ρ t hr ψ
@@ -491,18 +547,18 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
     -- - So ψ true at (M, τ, s) for all ψ ∈ Γ' (since s > t)
     -- - By IH: Γ' ⊨ φ' means if all ψ ∈ Γ' true, then φ' true
     -- - Therefore φ' true at (M, τ, s)
-    intro F M τ t ht h_all_future_gamma
+    intro T _ F M τ t ht h_all_future_gamma
     -- Goal: truth_at M τ t ht φ'.future
     unfold truth_at
     -- Goal: ∀ s hs, t < s → truth_at M τ s hs φ'
     intro s hs hts
     -- Need: truth_at M τ s hs φ'
     -- Use IH: Γ' ⊨ φ'
-    apply ih F M τ s hs
+    apply ih T F M τ s hs
     -- Need: ∀ ψ, ψ ∈ Γ' → truth_at M τ s hs ψ
     intro ψ h_psi_in_gamma
     -- ψ.all_future ∈ Γ'.map future, so ψ.all_future true at (M, τ, t)
-    have h_future_psi_in := List.mem_map_of_mem Formula.all_future h_psi_in_gamma
+    have h_future_psi_in := Context.mem_map_of_mem (f := Formula.all_future) h_psi_in_gamma
     have h_future_psi_true := h_all_future_gamma (ψ.all_future) h_future_psi_in
     -- h_future_psi_true : truth_at M τ t ht ψ.all_future
     -- Unfold to get: ∀ r > t, r ∈ τ.domain → truth_at M τ r ψ
@@ -529,11 +585,11 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
     -- **Key Insight**: We don't need to prove "valid φ → valid φ.swap" for ALL
     -- valid formulas. We only need it for DERIVABLE formulas, and derivation
     -- induction avoids the impossible cases.
-    intro F M τ t ht _
+    intro T _ F M τ t ht _
     -- Goal: truth_at M τ t ht (swap_past_future φ')
     -- Use derivable_implies_swap_valid which proves: Derivable [] φ' → is_valid φ'.swap
-    have h_swap_valid := Semantics.TemporalDuality.derivable_implies_swap_valid h_deriv_phi
-    -- h_swap_valid : is_valid φ'.swap_past_future
+    have h_swap_valid := @Semantics.TemporalDuality.derivable_implies_swap_valid T _ _ h_deriv_phi
+    -- h_swap_valid : is_valid T φ'.swap_past_future
     -- Unpack the local is_valid definition
     exact h_swap_valid F M τ t ht
 
@@ -541,8 +597,8 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
     -- Case: From Γ' ⊢ φ' and Γ' ⊆ Δ', derive Δ' ⊢ φ'
     -- By IH: Γ' ⊨ φ'
     -- Goal: Δ' ⊨ φ'
-    intro F M τ t ht h_all
-    apply ih F M τ t ht
+    intro T _ F M τ t ht h_all
+    apply ih T F M τ t ht
     intro ψ h_mem
     exact h_all ψ (h_sub h_mem)
 

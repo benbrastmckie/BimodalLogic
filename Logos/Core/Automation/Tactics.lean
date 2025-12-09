@@ -26,7 +26,7 @@ bimodal logic system.
 ## References
 
 * LEAN 4 Metaprogramming: https://github.com/leanprover-community/lean4-metaprogramming-book
-* Tactic Development Guide: Documentation/Development/TACTIC_DEVELOPMENT.md
+* Tactic Development Guide: Documentation/ProjectInfo/TACTIC_DEVELOPMENT.md
 
 ## Example Usage
 
@@ -189,5 +189,340 @@ def extract_from_box : Formula → Option Formula
 def extract_from_future : Formula → Option Formula
   | .all_future φ => some φ
   | _ => none
+
+/-!
+## Phase 1: Inference Rule Tactics (modal_k_tactic, temporal_k_tactic)
+
+Tactics for applying modal K and temporal K inference rules with context transformation.
+-/
+
+/--
+`modal_k_tactic` applies the modal K inference rule.
+
+Given a goal `Derivable (□Γ) (□φ)`, creates subgoal `Derivable Γ φ`
+and applies `Derivable.modal_k`.
+
+**Example**:
+```lean
+example (p : Formula) : Derivable [p.box] (p.box) := by
+  -- Goal: [□p] ⊢ □p
+  -- After modal_k_tactic: subgoal [p] ⊢ p
+  modal_k_tactic
+  assumption
+```
+
+**Implementation**: Uses `elab` with goal destructuring and `MVarId.apply`.
+-/
+elab "modal_k_tactic" : tactic => do
+  -- STEP 1: Get the main goal and its type
+  let goal ← getMainGoal
+  let goalType ← goal.getType
+
+  -- STEP 2: Pattern match on Derivable context formula
+  match goalType with
+  | .app (.app (.const ``Derivable _) context) formula =>
+
+    -- STEP 3: Check if formula is □φ
+    match formula with
+    | .app (.const ``Formula.box _) innerFormula =>
+
+      -- STEP 4: Apply Derivable.modal_k to create subgoal
+      -- This creates subgoal: Derivable Γ φ (where context should be □Γ)
+      let modalKConst := mkConst ``Derivable.modal_k
+      let newGoals ← goal.apply modalKConst
+
+      -- STEP 5: Replace goal with new subgoals
+      replaceMainGoal newGoals
+
+    | _ =>
+      throwError "modal_k_tactic: expected goal formula to be □φ, got {formula}"
+
+  | _ =>
+    throwError "modal_k_tactic: goal must be derivability relation Γ ⊢ φ, got {goalType}"
+
+/--
+`temporal_k_tactic` applies the temporal K inference rule.
+
+Given a goal `Derivable (FΓ) (Fφ)`, creates subgoal `Derivable Γ φ`
+and applies `Derivable.temporal_k`.
+
+**Example**:
+```lean
+example (p : Formula) : Derivable [p.all_future] (p.all_future) := by
+  -- Goal: [Fp] ⊢ Fp
+  -- After temporal_k_tactic: subgoal [p] ⊢ p
+  temporal_k_tactic
+  assumption
+```
+
+**Implementation**: Uses `elab` with goal destructuring, mirrors modal_k_tactic.
+-/
+elab "temporal_k_tactic" : tactic => do
+  -- STEP 1: Get the main goal and its type
+  let goal ← getMainGoal
+  let goalType ← goal.getType
+
+  -- STEP 2: Pattern match on Derivable context formula
+  match goalType with
+  | .app (.app (.const ``Derivable _) context) formula =>
+
+    -- STEP 3: Check if formula is Fφ (all_future φ)
+    match formula with
+    | .app (.const ``Formula.all_future _) innerFormula =>
+
+      -- STEP 4: Apply Derivable.temporal_k to create subgoal
+      -- This creates subgoal: Derivable Γ φ (where context should be FΓ)
+      let temporalKConst := mkConst ``Derivable.temporal_k
+      let newGoals ← goal.apply temporalKConst
+
+      -- STEP 5: Replace goal with new subgoals
+      replaceMainGoal newGoals
+
+    | _ =>
+      throwError "temporal_k_tactic: expected goal formula to be Fφ, got {formula}"
+
+  | _ =>
+    throwError "temporal_k_tactic: goal must be derivability relation Γ ⊢ φ, got {goalType}"
+
+/-!
+## Phase 2: Modal Axiom Tactics (modal_4_tactic, modal_b_tactic)
+
+Tactics for applying modal 4 and modal B axioms with formula pattern matching.
+-/
+
+/--
+`modal_4_tactic` applies the modal 4 axiom `□φ → □□φ`.
+
+Automatically applies the axiom when the goal matches the pattern.
+
+**Example**:
+```lean
+example (p : Formula) : Derivable [] ((p.box).imp (p.box.box)) := by
+  modal_4_tactic
+```
+
+**Implementation**: Uses `elab` following modal_t template.
+-/
+elab "modal_4_tactic" : tactic => do
+  let goal ← getMainGoal
+  let goalType ← goal.getType
+
+  match goalType with
+  | .app (.app (.const ``Derivable _) context) formula =>
+
+    match formula with
+    | .app (.app (.const ``Formula.imp _) lhs) rhs =>
+
+      match lhs with
+      | .app (.const ``Formula.box _) innerFormula =>
+
+        match rhs with
+        | .app (.const ``Formula.box _) (.app (.const ``Formula.box _) innerFormula2) =>
+
+          if ← isDefEq innerFormula innerFormula2 then
+            let axiomProof ← mkAppM ``Axiom.modal_4 #[innerFormula]
+            let proof ← mkAppM ``Derivable.axiom #[axiomProof]
+            goal.assign proof
+          else
+            throwError "modal_4_tactic: expected □φ → □□φ pattern with same φ, got □{innerFormula} → □□{innerFormula2}"
+
+        | _ =>
+          throwError "modal_4_tactic: expected □□φ on right side, got {rhs}"
+
+      | _ =>
+        throwError "modal_4_tactic: expected □φ on left side, got {lhs}"
+
+    | _ =>
+      throwError "modal_4_tactic: expected implication, got {formula}"
+
+  | _ =>
+    throwError "modal_4_tactic: goal must be derivability relation, got {goalType}"
+
+/--
+`modal_b_tactic` applies the modal B axiom `φ → □◇φ`.
+
+Automatically applies the axiom when the goal matches the pattern.
+
+**Example**:
+```lean
+example (p : Formula) : Derivable [] (p.imp (p.diamond.box)) := by
+  modal_b_tactic
+```
+
+**Implementation**: Uses `elab` with derived operator handling for `diamond`.
+-/
+elab "modal_b_tactic" : tactic => do
+  let goal ← getMainGoal
+  let goalType ← goal.getType
+
+  match goalType with
+  | .app (.app (.const ``Derivable _) context) formula =>
+
+    match formula with
+    | .app (.app (.const ``Formula.imp _) lhs) rhs =>
+
+      match rhs with
+      | .app (.const ``Formula.box _) diamondPart =>
+
+        -- diamond is a derived operator, check if it matches Formula.diamond pattern
+        -- diamond φ = imp (box (imp φ bot)) bot
+        let lhsMatches ← isDefEq lhs diamondPart
+        if !lhsMatches then
+          -- Try alternate: check structure of diamondPart
+          let axiomProof ← mkAppM ``Axiom.modal_b #[lhs]
+          let proof ← mkAppM ``Derivable.axiom #[axiomProof]
+          goal.assign proof
+        else
+          throwError "modal_b_tactic: pattern mismatch in □◇φ structure"
+
+      | _ =>
+        throwError "modal_b_tactic: expected □(...) on right side, got {rhs}"
+
+    | _ =>
+      throwError "modal_b_tactic: expected implication, got {formula}"
+
+  | _ =>
+    throwError "modal_b_tactic: goal must be derivability relation, got {goalType}"
+
+/-!
+## Phase 3: Temporal Axiom Tactics (temp_4_tactic, temp_a_tactic)
+
+Tactics for applying temporal 4 and temporal A axioms with temporal operator pattern matching.
+-/
+
+/--
+`temp_4_tactic` applies the temporal 4 axiom `Fφ → FFφ`.
+
+Automatically applies the axiom when the goal matches the pattern.
+
+**Example**:
+```lean
+example (p : Formula) : Derivable [] ((p.all_future).imp (p.all_future.all_future)) := by
+  temp_4_tactic
+```
+
+**Implementation**: Uses `elab`, mirrors modal_4_tactic for temporal operators.
+-/
+elab "temp_4_tactic" : tactic => do
+  let goal ← getMainGoal
+  let goalType ← goal.getType
+
+  match goalType with
+  | .app (.app (.const ``Derivable _) context) formula =>
+
+    match formula with
+    | .app (.app (.const ``Formula.imp _) lhs) rhs =>
+
+      match lhs with
+      | .app (.const ``Formula.all_future _) innerFormula =>
+
+        match rhs with
+        | .app (.const ``Formula.all_future _) (.app (.const ``Formula.all_future _) innerFormula2) =>
+
+          if ← isDefEq innerFormula innerFormula2 then
+            let axiomProof ← mkAppM ``Axiom.temp_4 #[innerFormula]
+            let proof ← mkAppM ``Derivable.axiom #[axiomProof]
+            goal.assign proof
+          else
+            throwError "temp_4_tactic: expected Fφ → FFφ pattern with same φ, got F{innerFormula} → FF{innerFormula2}"
+
+        | _ =>
+          throwError "temp_4_tactic: expected FFφ on right side, got {rhs}"
+
+      | _ =>
+        throwError "temp_4_tactic: expected Fφ on left side, got {lhs}"
+
+    | _ =>
+      throwError "temp_4_tactic: expected implication, got {formula}"
+
+  | _ =>
+    throwError "temp_4_tactic: goal must be derivability relation, got {goalType}"
+
+/--
+`temp_a_tactic` applies the temporal A axiom `φ → F(sometime_past φ)`.
+
+Automatically applies the axiom when the goal matches the pattern.
+
+**Example**:
+```lean
+example (p : Formula) : Derivable [] (p.imp (p.sometime_past.all_future)) := by
+  temp_a_tactic
+```
+
+**Implementation**: Uses `elab` with nested formula destructuring for `sometime_past`.
+-/
+elab "temp_a_tactic" : tactic => do
+  let goal ← getMainGoal
+  let goalType ← goal.getType
+
+  match goalType with
+  | .app (.app (.const ``Derivable _) context) formula =>
+
+    match formula with
+    | .app (.app (.const ``Formula.imp _) lhs) rhs =>
+
+      match rhs with
+      | .app (.const ``Formula.all_future _) sometimePastPart =>
+
+        -- Apply axiom directly - let Lean unify the patterns
+        let axiomProof ← mkAppM ``Axiom.temp_a #[lhs]
+        let proof ← mkAppM ``Derivable.axiom #[axiomProof]
+        goal.assign proof
+
+      | _ =>
+        throwError "temp_a_tactic: expected F(...) on right side, got {rhs}"
+
+    | _ =>
+      throwError "temp_a_tactic: expected implication, got {formula}"
+
+  | _ =>
+    throwError "temp_a_tactic: goal must be derivability relation, got {goalType}"
+
+/-!
+## Phase 4-5: Proof Search Tactics (modal_search, temporal_search)
+
+Bounded depth-first search for modal and temporal formulas using recursive tactic invocation.
+
+**Note**: These tactics require careful implementation of backtracking and heuristics.
+For the MVP, we provide simplified versions that delegate to tm_auto with bounded depth.
+-/
+
+/--
+`modal_search` - Bounded proof search for modal formulas.
+
+Attempts to solve modal proof goals using bounded depth-first search with heuristic ordering.
+
+**Example**:
+```lean
+example (p : Formula) : Derivable [] ((p.box).imp p) := by
+  modal_search 3  -- Search with depth limit 3
+```
+
+**Implementation**: Delegates to tm_auto (Aesop-powered search) for MVP.
+Full recursive implementation planned for future iterations.
+-/
+elab "modal_search" depth:num : tactic => do
+  -- MVP: Delegate to tm_auto
+  -- Full implementation would use recursive TacticM with depth limit
+  evalTactic (← `(tactic| tm_auto))
+
+/--
+`temporal_search` - Bounded proof search for temporal formulas.
+
+Attempts to solve temporal proof goals using bounded depth-first search with heuristic ordering.
+
+**Example**:
+```lean
+example (p : Formula) : Derivable [] ((p.all_future).imp (p.all_future.all_future)) := by
+  temporal_search 3  -- Search with depth limit 3
+```
+
+**Implementation**: Delegates to tm_auto (Aesop-powered search) for MVP.
+Full recursive implementation planned for future iterations.
+-/
+elab "temporal_search" depth:num : tactic => do
+  -- MVP: Delegate to tm_auto
+  -- Full implementation would use recursive TacticM with depth limit
+  evalTactic (← `(tactic| tm_auto))
 
 end Logos.Core.Automation

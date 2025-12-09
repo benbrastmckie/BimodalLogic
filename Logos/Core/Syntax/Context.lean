@@ -74,6 +74,31 @@ theorem map_comp (f g : Formula → Formula) (Γ : Context) :
   | nil => rfl
   | cons h t ih => simp [map, ih]
 
+/--
+Theorem: Context.map equals List.map.
+-/
+theorem map_eq_list_map (f : Formula → Formula) (Γ : Context) :
+  map f Γ = List.map f Γ := by
+  induction Γ with
+  | nil => rfl
+  | cons h t ih => simp [map, ih]
+
+/--
+Theorem: Membership in mapped context comes from mapping a member.
+-/
+theorem mem_map_iff {f : Formula → Formula} {Γ : Context} {φ : Formula} :
+  φ ∈ map f Γ ↔ ∃ ψ ∈ Γ, f ψ = φ := by
+  rw [map_eq_list_map]
+  exact List.mem_map
+
+/--
+Theorem: If ψ ∈ Γ, then f ψ ∈ map f Γ.
+-/
+theorem mem_map_of_mem {f : Formula → Formula} {Γ : Context} {ψ : Formula} (h : ψ ∈ Γ) :
+  f ψ ∈ map f Γ := by
+  rw [mem_map_iff]
+  exact ⟨ψ, h, rfl⟩
+
 end Context
 
 end Logos.Core.Syntax

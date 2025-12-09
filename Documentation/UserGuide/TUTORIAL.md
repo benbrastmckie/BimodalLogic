@@ -366,7 +366,7 @@ Logos supports future extensions:
 
 - [Architecture Guide](ARCHITECTURE.md) - Full TM logic specification
 - [Examples](EXAMPLES.md) - More example proofs
-- [Contributing](../ProjectInfo/CONTRIBUTING.md) - How to contribute
+- [Contributing](../Development/CONTRIBUTING.md) - How to contribute
 - [Integration](INTEGRATION.md) - Model-Checker integration
 
 ### Developer Resources
@@ -374,7 +374,7 @@ Logos supports future extensions:
 - [LEAN Style Guide](../Development/LEAN_STYLE_GUIDE.md)
 - [Module Organization](../Development/MODULE_ORGANIZATION.md)
 - [Testing Standards](../Development/TESTING_STANDARDS.md)
-- [Tactic Development](../Development/TACTIC_DEVELOPMENT.md)
+- [Tactic Development](../ProjectInfo/TACTIC_DEVELOPMENT.md)
 
 ### External Resources
 

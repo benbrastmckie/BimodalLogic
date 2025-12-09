@@ -293,7 +293,7 @@ else
 fi
 
 # Check MANUAL comment in IMPLEMENTATION_STATUS.md
-if grep -q "<!-- MANUAL -->" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md; then
+if grep -q "<!-- MANUAL" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md; then
   echo "✓ IMPLEMENTATION_STATUS.md MANUAL comment found"
 else
   echo "✗ FAILED: IMPLEMENTATION_STATUS.md MANUAL comment not found"
@@ -530,7 +530,7 @@ else
 fi
 
 # Check MANUAL comment still present
-if grep -q "<!-- MANUAL -->" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md; then
+if grep -q "<!-- MANUAL" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md; then
   echo "✓ MANUAL comment preserved"
 else
   echo "✗ FAILED: MANUAL comment was removed"

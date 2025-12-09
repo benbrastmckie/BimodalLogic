@@ -6,11 +6,15 @@ This document specifies the design for Layers 1-3 operator extensions building o
 
 **Layer 0 (Core TM)**: See [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) for Layer 0 (Core TM) technical specification.
 
+**Philosophical Motivation**: For philosophical motivation explaining why these operators are needed for planning under uncertainty, see [CONCEPTUAL_ENGINEERING.md](CONCEPTUAL_ENGINEERING.md).
+
 **Implementation Status**: See [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) for current progress.
 
 ## Layer 1: Explanatory Extension
 
 Layer 1 extends the Core Layer with operators for explanatory reasoning, enabling AI systems to understand and reason about counterfactual scenarios, constitutive relationships, and causal connections.
+
+**Philosophical Foundation**: See [CONCEPTUAL_ENGINEERING.md](CONCEPTUAL_ENGINEERING.md) Section 3 ("From Tense to Counterfactual: Layer 1 Requirements") for philosophical motivation.
 
 ### Counterfactual Operators
 
@@ -132,6 +136,8 @@ Counterfactual operators distinguish necessary consequences (`□→` would) fro
 
 Layer 2 extends the Core Layer with operators for reasoning under uncertainty, enabling AI systems to represent and reason about beliefs, probabilities, and knowledge states.
 
+**Philosophical Foundation**: See [CONCEPTUAL_ENGINEERING.md](CONCEPTUAL_ENGINEERING.md) Section 4 ("Epistemic and Normative Extensions: Layers 2-3 Requirements") for philosophical motivation.
+
 ### Belief Operator
 
 **Belief** (`B`): "Agent a believes that A" - represents agent beliefs relative to information state.
@@ -238,6 +244,8 @@ Witnesses establish suspect's emotional state and preparation.
 **Research Foundation**: Theoretical foundations established in formal epistemology literature, implementation specifications to be developed.
 
 ## Layer 3: Normative Extension
+
+**Philosophical Foundation**: See [CONCEPTUAL_ENGINEERING.md](CONCEPTUAL_ENGINEERING.md) Section 4 ("Epistemic and Normative Extensions: Layers 2-3 Requirements") for philosophical motivation.
 
 Layer 3 extends the Core Layer with operators for ethical and cooperative reasoning, enabling AI systems to represent and reason about obligations, permissions, and preferences.
 

@@ -3,12 +3,12 @@ import Logos.Core.Syntax.Formula
 /-!
 # Axioms - TM Axiom Schemata
 
-This module defines the 10 axiom schemata for bimodal logic TM (Tense and Modality).
+This module defines the 12 axiom schemata for bimodal logic TM (Tense and Modality).
 
 ## Main Definitions
 
 - `Axiom`: Inductive type characterizing valid axiom instances
-- 10 axiom constructors: `prop_k`, `prop_s`, `modal_t`, `modal_4`, `modal_b`, `temp_4`, `temp_a`, `temp_l`, `modal_future`, `temp_future`
+- 12 axiom constructors: `prop_k`, `prop_s`, `modal_t`, `modal_4`, `modal_b`, `modal_k_dist`, `double_negation`, `temp_4`, `temp_a`, `temp_l`, `modal_future`, `temp_future`
 
 ## Axiom Schemata
 
@@ -17,11 +17,13 @@ The TM logic includes:
 ### Propositional Axioms
 - **K** (Propositional K): `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))` - distribution axiom
 - **S** (Propositional S): `φ → (ψ → φ)` - weakening axiom
+- **DNE** (Double Negation Elimination): `¬¬φ → φ` - classical logic principle
 
 ### S5 Modal Axioms (metaphysical necessity □)
 - **MT** (Modal T): `□φ → φ` - what is necessary is true (reflexivity)
 - **M4** (Modal 4): `□φ → □□φ` - necessary truths are necessarily necessary (transitivity)
 - **MB** (Modal B): `φ → □◇φ` - truths are necessarily possible (symmetry)
+- **MK** (Modal K Distribution): `□(φ → ψ) → (□φ → □ψ)` - necessity distributes over implication
 
 ### Temporal Axioms (future F, past P)
 - **T4** (Temporal 4): `Fφ → FFφ` - future of future is future (transitivity)
@@ -51,7 +53,7 @@ open Logos.Core.Syntax
 /--
 Axiom schemata for bimodal logic TM.
 
-A formula `φ` is an axiom if it matches one of the 10 axiom schema patterns.
+A formula `φ` is an axiom if it matches one of the 12 axiom schema patterns.
 Each constructor takes formula parameters representing the schema instantiation.
 -/
 inductive Axiom : Formula → Prop where
@@ -97,6 +99,54 @@ inductive Axiom : Formula → Prop where
   Semantically: the accessibility relation is symmetric.
   -/
   | modal_b (φ : Formula) : Axiom (φ.imp (Formula.box φ.diamond))
+
+  /--
+  Modal K Distribution axiom: `□(φ → ψ) → (□φ → □ψ)` (distribution).
+
+  Necessity distributes over implication. If it is necessary that φ implies ψ,
+  then if φ is necessary, ψ must also be necessary.
+
+  This is the fundamental axiom of normal modal logics (K, T, S4, S5).
+  It enables combining boxed formulas: from `⊢ □A` and `⊢ □B`, we can derive `⊢ □(A ∧ B)`
+  by first deriving `⊢ □(A → (B → A∧B))` via necessitation, then applying this axiom twice.
+
+  Semantically: in Kripke semantics, if φ → ψ holds at all accessible worlds,
+  and φ holds at all accessible worlds, then ψ must hold at all accessible worlds.
+
+  This axiom is sound in task semantics due to the S5 modal structure (Corollary 2.11).
+
+  ## Derivability from MK Rule
+
+  This axiom is derivable from the modal K inference rule (MK) plus the deduction theorem:
+  1. From `[φ → ψ, φ] ⊢ ψ` (by modus ponens)
+  2. Apply MK: `□[φ → ψ, φ] ⊢ □ψ`, i.e., `[□(φ → ψ), □φ] ⊢ □ψ`
+  3. Apply deduction theorem twice to get `⊢ □(φ → ψ) → (□φ → □ψ)`
+
+  The LEAN implementation includes this as an axiom for convenience, as the full
+  deduction theorem (with modal cases) is not yet complete. Once the deduction
+  theorem is proven for all inference rules, this could be replaced with a theorem.
+  -/
+  | modal_k_dist (φ ψ : Formula) :
+      Axiom ((φ.imp ψ).box.imp (φ.box.imp ψ.box))
+
+  /--
+  Double Negation Elimination: `¬¬φ → φ` (classical logic).
+
+  A formula that is not false is true. This is the classical logic principle that
+  distinguishes classical from intuitionistic logic.
+
+  This axiom enables:
+  1. Deriving contraposition: from `A → B` derive `¬B → ¬A`
+  2. Proving perpetuity principle P4: `◇▽φ → ◇φ` via contraposition of P3
+  3. Classical reasoning patterns throughout the proof system
+
+  Semantically: TM uses two-valued classical semantics (formulas are either true
+  or false at each world-history-time triple), so double negation elimination is
+  valid. The semantics in `Truth.lean` uses boolean evaluation, not constructive logic.
+
+  Note: This axiom makes TM a classical logic. Without it, TM would be intuitionistic.
+  -/
+  | double_negation (φ : Formula) : Axiom (φ.neg.neg.imp φ)
 
   /--
   Temporal 4 axiom: `Fφ → FFφ` (temporal transitivity).

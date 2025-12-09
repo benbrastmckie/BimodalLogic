@@ -141,6 +141,22 @@ macro_rules
 
 ### 1.2 Inference Rules Definition
 
+#### Primitive vs Derived Rules
+
+The TM proof system uses two primitive inference rules that have unusual structure compared to standard modal logic:
+
+**Primitive Inference Rules** (from the JPL paper):
+- **MK (Modal K)**: If `Γ ⊢ φ` then `□Γ ⊢ □φ` - necessity distributes over entire derivations
+- **TK (Temporal K)**: If `Γ ⊢ φ` then `FΓ ⊢ Fφ` - future distributes over entire derivations
+
+These rules apply □ or F to the *entire context*, not just the conclusion. This is more general than the standard necessitation rule.
+
+**Derived Rules and Axioms**:
+- **Necessitation** (`⊢ φ` implies `⊢ □φ`): Derivable from MK with empty context (since `[].map box = []`)
+- **Modal K Distribution** (`□(φ → ψ) → (□φ → □ψ)`): Derivable from MK + deduction theorem
+
+The LEAN implementation includes both necessitation (as a constructor) and modal_k_dist (as an axiom) for convenience, but both are formally derivable from MK. This is documented in `Derivation.lean` with the `necessitation_from_modal_k` theorem.
+
 #### Layer 1 Axiom System TM (Tense and Modality)
 
 The proof system TM extends classical propositional logic with S5 modal axioms, temporal axioms, and bimodal interaction axioms.
@@ -1317,6 +1333,6 @@ This architecture provides a comprehensive foundation for developing a sophistic
 - [LEAN Style Guide](../Development/LEAN_STYLE_GUIDE.md) - Coding conventions
 - [Module Organization](../Development/MODULE_ORGANIZATION.md) - Project structure
 - [Integration Guide](INTEGRATION.md) - Model-Checker integration
-- [Contributing](../ProjectInfo/CONTRIBUTING.md) - How to contribute
+- [Contributing](../Development/CONTRIBUTING.md) - How to contribute
 
 _Last updated: December 2025_

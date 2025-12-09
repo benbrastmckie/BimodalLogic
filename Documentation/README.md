@@ -7,85 +7,99 @@ Comprehensive documentation hub for the Logos project.
 Documentation is organized into five categories:
 
 ### UserGuide/
-User-facing documentation for working with Logos:
-- **METHODOLOGY.md**: Philosophical foundations and Logos layer architecture
-- **ARCHITECTURE.md**: System design and TM logic specification
-- **TUTORIAL.md**: Getting started guide for new users
-- **EXAMPLES.md**: Usage examples and proof patterns
-- **INTEGRATION.md**: Integration with model checkers and other tools
 
-**Audience**: Users of the library, learners, researchers
+User-facing documentation for working with Logos:
+
+- [METHODOLOGY.md](UserGuide/METHODOLOGY.md): Philosophical foundations and Logos layer architecture
+- [ARCHITECTURE.md](UserGuide/ARCHITECTURE.md): System design and TM logic specification
+- [TUTORIAL.md](UserGuide/TUTORIAL.md): Getting started guide for new users
+- [EXAMPLES.md](UserGuide/EXAMPLES.md): Usage examples and proof patterns
+- [INTEGRATION.md](UserGuide/INTEGRATION.md): Integration with model checkers and other tools
 
 ### Research/
-Research vision and planned architecture. For implementation status, see [ProjectInfo/IMPLEMENTATION_STATUS.md](ProjectInfo/IMPLEMENTATION_STATUS.md).
 
-- **README.md**: Research documentation overview
-- **DUAL_VERIFICATION.md**: RL training architecture design
-- **PROOF_LIBRARY_DESIGN.md**: Theorem caching design
-- **LAYER_EXTENSIONS.md**: Layers 1-3 extension specifications
+Research vision and planned architecture. For implementation status, see
+[ProjectInfo/IMPLEMENTATION_STATUS.md](ProjectInfo/IMPLEMENTATION_STATUS.md).
 
-**Audience**: Researchers, future contributors, AI safety researchers
+- [README.md](Research/README.md) - Research documentation overview
+- [DUAL_VERIFICATION.md](Research/DUAL_VERIFICATION.md) - RL training architecture design
+- [PROOF_LIBRARY_DESIGN.md](Research/PROOF_LIBRARY_DESIGN.md) - Theorem caching design
+- [LAYER_EXTENSIONS.md](Research/LAYER_EXTENSIONS.md) - Layers 1-3 extension specifications
 
 ### ProjectInfo/
-Project status and contribution information:
-- **IMPLEMENTATION_STATUS.md**: Module-by-module status tracking with verification commands (includes Known Limitations section)
-- **SORRY_REGISTRY.md**: Technical debt tracking (sorry placeholders with resolution context)
-- **MAINTENANCE.md**: TODO management workflow (git-based history model)
-- **CONTRIBUTING.md**: Contribution guidelines and workflow
-- **VERSIONING.md**: Semantic versioning policy
 
-**Audience**: Contributors, maintainers, potential contributors
+Project status and tactic documentation:
+
+- [IMPLEMENTATION_STATUS.md](ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module status
+  tracking with verification commands (includes Known Limitations section)
+- [SORRY_REGISTRY.md](ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking (sorry
+  placeholders with resolution context)
+- [TACTIC_DEVELOPMENT.md](ProjectInfo/TACTIC_DEVELOPMENT.md) - Custom tactic development patterns
 
 ### Development/
-Developer standards and conventions:
-- **DIRECTORY_README_STANDARD.md**: Directory-level documentation standard
-- **DOC_QUALITY_CHECKLIST.md**: Documentation quality assurance checklist
-- **LEAN_STYLE_GUIDE.md**: Coding conventions and documentation requirements
-- **METAPROGRAMMING_GUIDE.md**: LEAN 4 metaprogramming fundamentals for tactics
-- **MODULE_ORGANIZATION.md**: Directory structure and namespace patterns
-- **PHASED_IMPLEMENTATION.md**: Implementation roadmap with execution waves
-- **QUALITY_METRICS.md**: Quality targets and performance benchmarks
-- **TACTIC_DEVELOPMENT.md**: Custom tactic development patterns
-- **TESTING_STANDARDS.md**: Test requirements and coverage targets
 
-**Audience**: Developers, contributors, code reviewers
+Developer standards, conventions, and contribution workflow:
+
+- [CONTRIBUTING.md](Development/CONTRIBUTING.md) - Contribution guidelines and workflow
+- [DIRECTORY_README_STANDARD.md](Development/DIRECTORY_README_STANDARD.md) -
+  Directory-level documentation standard
+- [DOC_QUALITY_CHECKLIST.md](Development/DOC_QUALITY_CHECKLIST.md) - Documentation
+  quality assurance checklist
+- [LEAN_STYLE_GUIDE.md](Development/LEAN_STYLE_GUIDE.md) - Coding conventions and
+  documentation requirements
+- [MAINTENANCE.md](Development/MAINTENANCE.md) - TODO management workflow (git-based history model)
+- [METAPROGRAMMING_GUIDE.md](Development/METAPROGRAMMING_GUIDE.md) - LEAN 4
+  metaprogramming fundamentals for tactics
+- [MODULE_ORGANIZATION.md](Development/MODULE_ORGANIZATION.md) - Directory structure
+  and namespace patterns
+- [PHASED_IMPLEMENTATION.md](Development/PHASED_IMPLEMENTATION.md) - Implementation
+  roadmap with execution waves
+- [QUALITY_METRICS.md](Development/QUALITY_METRICS.md) - Quality targets and performance benchmarks
+- [TESTING_STANDARDS.md](Development/TESTING_STANDARDS.md) - Test requirements and coverage targets
+- [VERSIONING.md](Development/VERSIONING.md) - Semantic versioning policy
 
 ### Reference/
-Reference materials:
-- **OPERATORS.md**: Formal symbols reference (Unicode notation guide)
-- **GLOSSARY.md**: Terminology mapping and key concepts
 
-**Audience**: All users (quick reference)
+Reference materials:
+
+- [OPERATORS.md](Reference/OPERATORS.md) - Formal symbols reference (Unicode notation guide)
+- [GLOSSARY.md](Reference/GLOSSARY.md) - Terminology mapping and key concepts
 
 ## Quick Links
 
 ### For New Users
+
 - [Getting Started](UserGuide/TUTORIAL.md) - Begin here
 - [Architecture Overview](UserGuide/ARCHITECTURE.md) - Understand TM logic
 - [Usage Examples](UserGuide/EXAMPLES.md) - Learn by example
 
 ### For Contributors
+
 - [Implementation Status](ProjectInfo/IMPLEMENTATION_STATUS.md) - What's implemented
-- [Implementation Status - Known Limitations](ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) - What needs work
+- [Implementation Status - Known Limitations](ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) -
+  What needs work
 - [Sorry Registry](ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking
 - [Maintenance Workflow](ProjectInfo/MAINTENANCE.md) - TODO and documentation procedures
-- [Contributing Guidelines](ProjectInfo/CONTRIBUTING.md) - How to contribute
+- [Contributing Guidelines](Development/CONTRIBUTING.md) - How to contribute
 - [Style Guide](Development/LEAN_STYLE_GUIDE.md) - Coding standards
 
 ### For Developers
+
 - [Testing Standards](Development/TESTING_STANDARDS.md) - Test requirements
 - [Module Organization](Development/MODULE_ORGANIZATION.md) - Project structure
-- [Tactic Development](Development/TACTIC_DEVELOPMENT.md) - Custom tactics
+- [Tactic Development](ProjectInfo/TACTIC_DEVELOPMENT.md) - Custom tactics
 - [Metaprogramming Guide](Development/METAPROGRAMMING_GUIDE.md) - LEAN 4 tactics
 - [Phased Implementation](Development/PHASED_IMPLEMENTATION.md) - Execution roadmap
 - [Quality Metrics](Development/QUALITY_METRICS.md) - Quality targets
 - [Documentation Quality](Development/DOC_QUALITY_CHECKLIST.md) - Quality assurance
 
 ### Quick Reference
+
 - [Operators Reference](Reference/OPERATORS.md) - Symbol notation guide
 - [Terminology Glossary](Reference/GLOSSARY.md) - Key concepts and definitions
 
 ### For Researchers
+
 - [Logos Methodology](UserGuide/METHODOLOGY.md) - Philosophical foundations
 - [Research Overview](Research/README.md) - Research documentation index
 - [Dual Verification](Research/DUAL_VERIFICATION.md) - RL training architecture
@@ -123,19 +137,19 @@ When updating documentation:
 ## Documentation Standards
 
 All documentation files follow:
+
 - **Line limit**: 100 characters per line
 - **Markdown formatting**: Standard Markdown conventions
 - **Formal symbols**: Unicode operators must use backticks (e.g., `□`, `◇`, `△`, `▽`)
 - **Headings**: Use ATX-style headings (`#`, `##`, `###`)
-- **Code blocks**: Always specify language (```lean, ```bash)
+- **Code blocks**: Always specify language (`lean, `bash)
 
 For detailed documentation standards, see:
+
 - [Formal Symbol Backtick Standard](../../.claude/docs/reference/standards/documentation-standards.md#formal-symbol-backtick-standard)
 - [LEAN Style Guide - Code Comments](Development/LEAN_STYLE_GUIDE.md#code-comments-with-formal-symbols)
 
-## Building Documentation
-
-### LEAN API Documentation
+### Building Documentation
 
 Generate LEAN API documentation with doc-gen4:
 
@@ -145,61 +159,3 @@ lake build :docs
 
 # Documentation will be in .lake/build/doc/
 ```
-
-### Reading Documentation
-
-All Markdown documentation can be read:
-- In VS Code with Markdown preview (`Ctrl+Shift+V`)
-- On GitHub (automatic rendering)
-- In any Markdown viewer
-- In plain text (readable even without rendering)
-
-## Finding Information
-
-### "How do I...?"
-- **Learn Logos**: Start with [TUTORIAL.md](UserGuide/TUTORIAL.md)
-- **Understand TM logic**: Read [ARCHITECTURE.md](UserGuide/ARCHITECTURE.md)
-- **See examples**: Check [EXAMPLES.md](UserGuide/EXAMPLES.md)
-- **Contribute**: Read [CONTRIBUTING.md](ProjectInfo/CONTRIBUTING.md)
-- **Write tests**: See [TESTING_STANDARDS.md](Development/TESTING_STANDARDS.md)
-
-### "What is the status of...?"
-- **Module completion**: Check [IMPLEMENTATION_STATUS.md](ProjectInfo/IMPLEMENTATION_STATUS.md)
-- **Known issues**: See [IMPLEMENTATION_STATUS.md - Known Limitations](ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations)
-- **Planned features**: Look in IMPLEMENTATION_STATUS.md Known Limitations section
-
-### "Where is the specification for...?"
-- **TM logic axioms**: [ARCHITECTURE.md](UserGuide/ARCHITECTURE.md) Section 2
-- **Task semantics**: [ARCHITECTURE.md](UserGuide/ARCHITECTURE.md) Section 3
-- **Perpetuity principles**: [ARCHITECTURE.md](UserGuide/ARCHITECTURE.md) Section 5
-- **Operator symbols**: [OPERATORS.md](Reference/OPERATORS.md)
-
-## Documentation Quality
-
-We maintain high documentation quality through:
-- **Accuracy**: Documentation matches implementation
-- **Completeness**: All public APIs are documented
-- **Clarity**: Clear, concise explanations
-- **Examples**: Concrete usage examples
-- **Up-to-date**: Regular synchronization with code
-
-If you find documentation issues:
-1. Check if information is in a different document
-2. Consult source code docstrings (often most up-to-date)
-3. Open an issue with `documentation` label
-4. Submit a pull request to fix it
-
-## Related Files
-
-- [../README.md](../README.md) - Project overview and installation
-- [../CLAUDE.md](../CLAUDE.md) - AI assistant configuration
-- [../Archive/README.md](../Archive/README.md) - Pedagogical examples
-- [../Logos/README.md](../Logos/README.md) - Source directory guide
-- [../LogosTest/README.md](../LogosTest/README.md) - Test suite guide
-
-## Navigation
-
-- **Up**: [Logos Root](../)
-- **Source Code**: [Logos/](../Logos/)
-- **Tests**: [LogosTest/](../LogosTest/)
-- **Examples**: [Archive/](../Archive/)

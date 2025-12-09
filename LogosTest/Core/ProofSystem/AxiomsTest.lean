@@ -141,6 +141,43 @@ example : Axiom (((Formula.atom "p").and (Formula.atom "q")).box.imp ((Formula.a
   Axiom.temp_future ((Formula.atom "p").and (Formula.atom "q"))
 
 -- ============================================================
+-- Modal K Distribution Axiom Tests: □(φ → ψ) → (□φ → □ψ)
+-- ============================================================
+
+-- Test: Modal K distribution on atoms
+example : Axiom (((Formula.atom "p").imp (Formula.atom "q")).box.imp
+                  ((Formula.atom "p").box.imp (Formula.atom "q").box)) :=
+  Axiom.modal_k_dist (Formula.atom "p") (Formula.atom "q")
+
+-- Test: Modal K distribution with complex formulas
+example : Axiom ((((Formula.atom "p").box).imp ((Formula.atom "q").future)).box.imp
+                  (((Formula.atom "p").box).box.imp ((Formula.atom "q").future).box)) :=
+  Axiom.modal_k_dist ((Formula.atom "p").box) ((Formula.atom "q").future)
+
+-- Test: Modal K distribution enables combining boxed conjuncts
+-- This is the pattern used in perpetuity_3 proof
+example (A B : Formula) :
+  Axiom ((A.imp (B.imp (A.and B))).box.imp (A.box.imp (B.imp (A.and B)).box)) :=
+  Axiom.modal_k_dist A (B.imp (A.and B))
+
+-- ============================================================
+-- Double Negation Elimination Axiom Tests: ¬¬φ → φ
+-- ============================================================
+
+-- Test: Double negation elimination on atom
+example : Axiom ((Formula.atom "p").neg.neg.imp (Formula.atom "p")) :=
+  Axiom.double_negation (Formula.atom "p")
+
+-- Test: Double negation elimination on box formula
+example : Axiom (((Formula.atom "p").box).neg.neg.imp ((Formula.atom "p").box)) :=
+  Axiom.double_negation ((Formula.atom "p").box)
+
+-- Test: Double negation elimination on complex formula
+example : Axiom ((((Formula.atom "p").imp (Formula.atom "q"))).neg.neg.imp
+                  ((Formula.atom "p").imp (Formula.atom "q"))) :=
+  Axiom.double_negation ((Formula.atom "p").imp (Formula.atom "q"))
+
+-- ============================================================
 -- Negative Tests: Non-axioms
 -- ============================================================
 

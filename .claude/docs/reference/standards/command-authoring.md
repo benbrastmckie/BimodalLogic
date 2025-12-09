@@ -13,6 +13,8 @@ Mandatory standards for creating and maintaining executable command files in `.c
 7. [Path Validation Patterns](#path-validation-patterns)
 8. [Output Suppression Requirements](#output-suppression-requirements)
 9. [Command Integration Patterns](#command-integration-patterns)
+   - [Summary-Based Handoff Pattern](#summary-based-handoff-pattern)
+   - [Research Coordinator Delegation Pattern](#research-coordinator-delegation-pattern)
 10. [Prohibited Patterns](#prohibited-patterns)
 
 ---
@@ -1340,6 +1342,79 @@ This enables downstream commands to extract paths without relying on state files
 - Use summary files for inter-command state (between different commands)
 
 See [Implement-Test Workflow Guide](./../../guides/workflows/implement-test-workflow.md) for complete summary-based handoff examples.
+
+### Research Coordinator Delegation Pattern
+
+Commands requiring multi-topic research should use the research-coordinator agent to enable parallel research execution with metadata-only context passing (95% context reduction).
+
+**When to Use**:
+- Research complexity ≥ 3 (indicates 2+ distinct topics)
+- Feature description contains multiple domains or concerns
+- Commands: `/create-plan`, `/research`, `/repair`, `/debug`, `/revise`
+
+**Pattern Benefits**:
+- **Context Reduction**: 95% reduction via metadata-only passing (7,500 → 330 tokens for 3 topics)
+- **Parallel Execution**: 40-60% time savings (parallel vs sequential research)
+- **Hard Barrier Enforcement**: Path pre-calculation prevents coordinator bypass
+- **Metadata Aggregation**: Primary agent receives summaries, not full reports
+
+**Pattern Structure** (3-block sequence):
+
+1. **Block 1d-topics**: Topic Decomposition (heuristic or automated)
+2. **Block 1e-exec**: Research Coordinator Task Invocation
+3. **Block 1f**: Multi-Report Validation (hard barrier)
+
+**Integration Points**:
+- **Topic Decomposition** → saves TOPICS_LIST and REPORT_PATHS_LIST to state
+- **Coordinator Invocation** → passes topics and paths as contract
+- **Multi-Report Validation** → validates all reports with fail-fast policy
+- **Metadata Extraction** → aggregates findings count, recommendations for passing to next agent
+
+**Decision Criteria**:
+
+| Scenario | Pattern | Agent | Notes |
+|----------|---------|-------|-------|
+| Complexity 1-2, single topic | Direct invocation | research-specialist | No coordinator overhead |
+| Complexity 3-4, multi-topic | Coordinator pattern | research-coordinator | Enables parallelization |
+| Lean/Mathlib domain | Specialized direct | lean-research-specialist | Domain expertise required |
+
+See [Research Invocation Standards](./research-invocation-standards.md) for complete decision matrix and migration guidance.
+
+**Example Implementation**:
+
+See [Command Patterns Quick Reference](../command-patterns-quick-reference.md) for copy-paste templates including:
+- Template 6: Topic Decomposition Block (heuristic-based)
+- Template 7: Topic Detection Agent Invocation Block (automated)
+- Template 8: Research Coordinator Task Invocation Block
+- Template 9: Multi-Report Validation Loop
+- Template 10: Metadata Extraction and Aggregation
+
+**Troubleshooting**:
+
+**Issue**: Topic decomposition returns empty array
+- **Cause**: Ambiguous feature description, unclear topic boundaries
+- **Solution**: Fall back to single-topic mode (backward compatibility)
+- **Prevention**: Check RESEARCH_COMPLEXITY ≥ 3 before attempting decomposition
+
+**Issue**: topic-detection-agent fails or returns malformed JSON
+- **Cause**: Complex nested descriptions, timeout, JSON parsing error
+- **Solution**: Gracefully degrade to heuristic decomposition (Phase 1 logic)
+- **Prevention**: Validate JSON structure with `jq` before parsing
+
+**Issue**: research-coordinator reports missing (hard barrier failure)
+- **Cause**: Coordinator failed, path mismatch, file system error
+- **Solution**: Check error logs with `/errors --command /create-plan --type agent_error`
+- **Prevention**: Verify REPORT_PATHS_LIST persisted to state before invocation
+
+**Issue**: Metadata extraction parsing errors
+- **Cause**: Malformed report structure, missing "## Findings" section
+- **Solution**: Use filename as title fallback, log parsing error
+- **Prevention**: Validate report structure in multi-report validation loop
+
+**Related Documentation**:
+- [Research Invocation Standards](./research-invocation-standards.md) - Decision matrix for coordinator vs specialist
+- [Hierarchical Agents Examples](../../concepts/hierarchical-agents-examples.md) - Example 7: Research Coordinator Pattern
+- [Command Patterns Quick Reference](../command-patterns-quick-reference.md) - Copy-paste templates
 
 ---
 
