@@ -546,4 +546,290 @@ theorem rce (A B : Formula) : [A.and B] ⊢ B := by
 
   exact Derivable.modus_ponens [A.and B] _ _ dne_b_ctx neg_neg_b
 
+/--
+Left Conjunction Elimination (Implication Form): `⊢ (A ∧ B) → A`.
+
+Extract left conjunct as an implication (no context).
+
+**Status**: Requires full deduction theorem or extremely complex nested combinator proof.
+
+The context-based version `lce` is proven. This implication form would enable:
+- More compositional reasoning without context manipulation
+- box_conj_iff forward direction in ModalS5.lean
+
+**Workaround**: Use `lce` with weakening when contexts are available.
+-/
+theorem lce_imp (A B : Formula) : ⊢ (A.and B).imp A := by
+  sorry -- Requires deduction theorem infrastructure
+
+/--
+Right Conjunction Elimination (Implication Form): `⊢ (A ∧ B) → B`.
+
+Extract right conjunct as an implication (no context).
+
+**Status**: Requires full deduction theorem or extremely complex nested combinator proof.
+
+The context-based version `rce` is proven. This implication form would enable:
+- More compositional reasoning without context manipulation
+- box_conj_iff forward direction in ModalS5.lean
+
+**Workaround**: Use `rce` with weakening when contexts are available.
+-/
+theorem rce_imp (A B : Formula) : ⊢ (A.and B).imp B := by
+  sorry -- Requires deduction theorem infrastructure
+
+/-!
+## Phase 3: Context Manipulation and Classical Reasoning
+
+Infrastructure theorems for context-dependent reasoning and classical logic principles.
+-/
+
+/--
+Classical Merge Lemma: `⊢ (P → Q) → ((¬P → Q) → Q)`.
+
+From both (P → Q) and (¬P → Q), derive Q by case analysis on P ∨ ¬P (LEM).
+
+**Proof Strategy**: Use DNE (Double Negation Elimination).
+
+Key insight: From ¬Q, we can derive both ¬P and ¬¬P, which is a contradiction.
+1. From (P → Q), contrapose to get (¬Q → ¬P)
+2. From (¬P → Q), contrapose to get (¬Q → ¬¬P)
+3. From ¬Q, derive both ¬P and ¬¬P (contradiction)
+4. Therefore ¬¬Q, hence Q by DNE
+
+Proof:
+1. Contrapose (P → Q) to get (¬Q → ¬P)
+2. Contrapose (¬P → Q) to get (¬Q → ¬¬P)
+3. Build (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q) using RAA pattern
+4. Compose with DNE to get Q
+-/
+theorem classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) := by
+  -- Strategy: Build (P → Q) → (¬P → Q) → ¬¬Q, then apply DNE
+
+  -- We need to show: from (P → Q) and (¬P → Q), we can derive ¬¬Q
+  -- Then DNE gives us Q
+
+  -- First, let's build the contrapositions as theorems (not meta-level)
+  -- Contraposition of (P → Q) is (¬Q → ¬P)
+  have contra_p_q : ⊢ (P.imp Q).imp (Q.neg.imp P.neg) := by
+    unfold Formula.neg
+    -- b_combinator: (B → C) → (A → B) → (A → C)
+    -- With A = P, B = Q, C = ⊥
+    have bc : ⊢ (Q.imp Formula.bot).imp ((P.imp Q).imp (P.imp Formula.bot)) :=
+      @b_combinator P Q Formula.bot
+    -- Flip to get (P → Q) → (¬Q → ¬P)
+    have flip : ⊢ ((Q.imp Formula.bot).imp ((P.imp Q).imp (P.imp Formula.bot))).imp
+                   ((P.imp Q).imp ((Q.imp Formula.bot).imp (P.imp Formula.bot))) :=
+      @theorem_flip (Q.imp Formula.bot) (P.imp Q) (P.imp Formula.bot)
+    exact Derivable.modus_ponens [] _ _ flip bc
+
+  -- Contraposition of (¬P → Q) is (¬Q → ¬¬P)
+  have contra_neg_p_q : ⊢ (P.neg.imp Q).imp (Q.neg.imp P.neg.neg) := by
+    unfold Formula.neg
+    -- b_combinator with A = (P → ⊥), B = Q, C = ⊥
+    have bc : ⊢ (Q.imp Formula.bot).imp (((P.imp Formula.bot).imp Q).imp ((P.imp Formula.bot).imp Formula.bot)) :=
+      @b_combinator (P.imp Formula.bot) Q Formula.bot
+    -- Flip
+    have flip : ⊢ ((Q.imp Formula.bot).imp (((P.imp Formula.bot).imp Q).imp ((P.imp Formula.bot).imp Formula.bot))).imp
+                   (((P.imp Formula.bot).imp Q).imp ((Q.imp Formula.bot).imp ((P.imp Formula.bot).imp Formula.bot))) :=
+      @theorem_flip (Q.imp Formula.bot) ((P.imp Formula.bot).imp Q) ((P.imp Formula.bot).imp Formula.bot)
+    exact Derivable.modus_ponens [] _ _ flip bc
+
+  -- Now we need: (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q)
+  -- This says: from ¬Q we get both ¬P and ¬¬P, contradiction, so ¬¬Q
+
+  -- Let's build: (¬Q → ¬P) → ((¬Q → ¬¬P) → (¬Q → ⊥))
+  -- We need to show that from ¬P and ¬¬P, we get ⊥
+
+  -- Use RAA: ¬P → (¬¬P → ⊥) which is just the definition of ¬¬P
+  -- Actually: ¬¬P = (¬P → ⊥), so (¬Q → ¬P) → ((¬Q → (¬P → ⊥)) → (¬Q → ⊥))
+
+  have merge_contras : ⊢ (Q.neg.imp P.neg).imp ((Q.neg.imp P.neg.neg).imp Q.neg.neg) := by
+    unfold Formula.neg
+    -- Goal: (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q)
+    -- = ((Q → ⊥) → (P → ⊥)) → (((Q → ⊥) → ((P → ⊥) → ⊥)) → ((Q → ⊥) → ⊥))
+
+    -- Use prop_k: (A → B → C) → (A → B) → (A → C)
+    -- With A = (Q → ⊥), B = (P → ⊥), C = ⊥
+    -- We get: ((Q → ⊥) → (P → ⊥) → ⊥) → ((Q → ⊥) → (P → ⊥)) → ((Q → ⊥) → ⊥)
+
+    -- But we need to feed (P → ⊥) to ((P → ⊥) → ⊥)
+    -- This is exactly modus ponens pattern: B → (B → C) → C
+    -- Which is theorem_app1: A → (A → B) → B
+
+    -- We have: (¬Q → ¬P) and (¬Q → ¬¬P)
+    -- From these, derive (¬Q → ⊥)
+
+    -- The key is: ¬P → (¬¬P → ⊥) is identity (by definition of ¬¬P)
+    -- So: ¬Q → ¬P, and ¬Q → ¬¬P, then ¬Q → (¬P → ⊥)
+    -- From ¬Q → ¬P and ¬Q → (¬P → ⊥), we get ¬Q → ⊥ by prop_k
+
+    -- Step 1: Show that we can apply modus ponens at the ¬Q level
+    -- prop_k: (A → B → C) → (A → B) → (A → C)
+    -- With A = (Q → ⊥), B = (P → ⊥), C = ⊥
+    have k_inst : ⊢ ((Q.imp Formula.bot).imp ((P.imp Formula.bot).imp Formula.bot)).imp
+                     (((Q.imp Formula.bot).imp (P.imp Formula.bot)).imp ((Q.imp Formula.bot).imp Formula.bot)) :=
+      Derivable.axiom [] _ (Axiom.prop_k (Q.imp Formula.bot) (P.imp Formula.bot) Formula.bot)
+
+    -- Step 2: We need to flip to get the right order
+    -- We have: ((Q → ⊥) → (P → ⊥) → ⊥) → ((Q → ⊥) → (P → ⊥)) → ((Q → ⊥) → ⊥)
+    -- We want: ((Q → ⊥) → (P → ⊥)) → ((Q → ⊥) → (P → ⊥) → ⊥) → ((Q → ⊥) → ⊥)
+    have flip_k : ⊢ (((Q.imp Formula.bot).imp ((P.imp Formula.bot).imp Formula.bot)).imp
+                      (((Q.imp Formula.bot).imp (P.imp Formula.bot)).imp ((Q.imp Formula.bot).imp Formula.bot))).imp
+                     (((Q.imp Formula.bot).imp (P.imp Formula.bot)).imp
+                      (((Q.imp Formula.bot).imp ((P.imp Formula.bot).imp Formula.bot)).imp ((Q.imp Formula.bot).imp Formula.bot))) :=
+      @theorem_flip ((Q.imp Formula.bot).imp ((P.imp Formula.bot).imp Formula.bot))
+                    ((Q.imp Formula.bot).imp (P.imp Formula.bot))
+                    ((Q.imp Formula.bot).imp Formula.bot)
+
+    exact Derivable.modus_ponens [] _ _ flip_k k_inst
+
+  -- Now compose everything:
+  -- (P → Q) → (¬Q → ¬P)  [contra_p_q]
+  -- (¬P → Q) → (¬Q → ¬¬P)  [contra_neg_p_q]
+  -- (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q)  [merge_contras]
+
+  -- We need to build: (P → Q) → (¬P → Q) → ¬¬Q
+
+  -- Step 1: Compose contra_p_q with merge_contras
+  -- (P → Q) → (¬Q → ¬P)  and  (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q)
+  -- gives: (P → Q) → ((¬Q → ¬¬P) → ¬¬Q)
+  have step1 : ⊢ (P.imp Q).imp ((Q.neg.imp P.neg.neg).imp Q.neg.neg) :=
+    imp_trans contra_p_q merge_contras
+
+  -- Step 2: We need to insert contra_neg_p_q
+  -- We have: (P → Q) → ((¬Q → ¬¬P) → ¬¬Q)
+  -- And: (¬P → Q) → (¬Q → ¬¬P)
+  -- We want: (P → Q) → ((¬P → Q) → ¬¬Q)
+
+  -- Use b_combinator to substitute
+  -- (B → C) → (A → B) → (A → C)
+  -- With A = (¬P → Q), B = (¬Q → ¬¬P), C = ¬¬Q, and outer context (P → Q)
+
+  -- Actually, we need a three-way composition
+  -- We have: (P → Q) → ((¬Q → ¬¬P) → ¬¬Q)
+  -- We want to replace (¬Q → ¬¬P) with (¬P → Q) using contra_neg_p_q
+
+  -- Build: ((¬P → Q) → (¬Q → ¬¬P)) → ((P → Q) → ((¬Q → ¬¬P) → ¬¬Q)) → ((P → Q) → ((¬P → Q) → ¬¬Q))
+  have subst_middle : ⊢ ((P.neg.imp Q).imp (Q.neg.imp P.neg.neg)).imp
+                         (((P.imp Q).imp ((Q.neg.imp P.neg.neg).imp Q.neg.neg)).imp
+                          ((P.imp Q).imp ((P.neg.imp Q).imp Q.neg.neg))) := by
+    -- This is a complex b_combinator nesting
+    -- Let X = (P → Q), Y = (¬P → Q), Z = (¬Q → ¬¬P), W = ¬¬Q
+    -- We have: Y → Z (contra_neg_p_q)
+    -- We have: X → (Z → W) (step1)
+    -- We want: X → (Y → W)
+
+    -- Use double b_combinator:
+    -- First: (Z → W) → (Y → Z) → (Y → W)  [b_combinator]
+    have b1 : ⊢ ((Q.neg.imp P.neg.neg).imp Q.neg.neg).imp
+                 (((P.neg.imp Q).imp (Q.neg.imp P.neg.neg)).imp ((P.neg.imp Q).imp Q.neg.neg)) :=
+      @b_combinator (P.neg.imp Q) (Q.neg.imp P.neg.neg) Q.neg.neg
+
+    -- Then: (X → (Z → W)) → ((Y → Z) → (X → (Y → W)))
+    -- This is a bit tricky. We need to distribute X over the composition.
+
+    -- Actually, use: (X → Z → W) → (Y → Z) → (X → Y → W)
+    -- This is: b_combinator at the outer level
+    -- (Z → W) → (Y → Z) → (Y → W) gives us inner
+    -- Then we need: X → (Y → W) from X → (Z → W) and Y → Z
+
+    -- Let's use a different approach: direct K distribution
+    -- X → (Z → W), so if we have X → Z, we get X → W by prop_k
+    -- But we have Y → Z, not X → Z
+
+    -- Use: (Y → Z) → ((X → Z → W) → (X → Y → W))
+    -- This is about substituting Y for Z in the second argument
+
+    -- Actually: b_combinator gives (B → C) → (A → B) → (A → C)
+    -- We need nested: ((Z → W) → (Y → Z) → (Y → W)) → ((X → Z → W) → ((Y → Z) → (X → Y → W)))
+
+    sorry -- Complex three-way composition
+
+  have step2 : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q.neg.neg) := by
+    have s1 := Derivable.modus_ponens [] _ _ subst_middle contra_neg_p_q
+    exact Derivable.modus_ponens [] _ _ s1 step1
+
+  -- Step 3: Compose with DNE
+  have dne_q : ⊢ Q.neg.neg.imp Q :=
+    Derivable.axiom [] _ (Axiom.double_negation Q)
+
+  -- Build: (P → Q) → ((¬P → Q) → ¬¬Q) → ((¬P → Q) → Q)
+  have add_dne : ⊢ ((P.neg.imp Q).imp Q.neg.neg).imp ((P.neg.imp Q).imp Q) := by
+    -- b_combinator: (B → C) → (A → B) → (A → C)
+    -- With A = (¬P → Q), B = ¬¬Q, C = Q
+    exact @b_combinator (P.neg.imp Q) Q.neg.neg Q dne_q
+
+  -- Final composition: (P → Q) → ((¬P → Q) → Q)
+  exact imp_trans step2 add_dne
+
+/--
+Biconditional Introduction: From proofs of both directions, construct biconditional.
+
+Given `⊢ A → B` and `⊢ B → A`, derive `⊢ A ↔ B` where `A ↔ B := (A → B) ∧ (B → A)`.
+
+**Proof Strategy**: Use pairing theorem to construct conjunction of implications.
+-/
+theorem iff_intro (A B : Formula) (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp A) :
+    ⊢ (A.imp B).and (B.imp A) := by
+  -- Use pairing: A → B → (A ∧ B)
+  have pair_inst : ⊢ (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) :=
+    pairing (A.imp B) (B.imp A)
+
+  -- Apply MP twice
+  have step1 : ⊢ (B.imp A).imp ((A.imp B).and (B.imp A)) :=
+    Derivable.modus_ponens [] _ _ pair_inst h1
+
+  exact Derivable.modus_ponens [] _ _ step1 h2
+
+/--
+Left Biconditional Elimination: From `A ↔ B` and `A`, derive `B`.
+
+**Proof Strategy**: Extract `A → B` from biconditional using lce, then apply modus ponens.
+-/
+theorem iff_elim_left (A B : Formula) : [((A.imp B).and (B.imp A)), A] ⊢ B := by
+  -- Get A from context
+  have h_a : [((A.imp B).and (B.imp A)), A] ⊢ A := by
+    apply Derivable.assumption
+    simp
+
+  -- Get biconditional from context and extract (A → B) using lce
+  have h_iff : [((A.imp B).and (B.imp A)), A] ⊢ (A.imp B).and (B.imp A) := by
+    apply Derivable.assumption
+    simp
+
+  -- Extract (A → B) using lce
+  have h_imp : [((A.imp B).and (B.imp A)), A] ⊢ A.imp B := by
+    -- We need lce but with the specific context
+    -- lce gives us [X ∧ Y] ⊢ X
+    -- We have [(A → B) ∧ (B → A), A] and need (A → B)
+    -- Use weakening from lce
+    have lce_inst : [(A.imp B).and (B.imp A)] ⊢ A.imp B :=
+      lce (A.imp B) (B.imp A)
+    exact Derivable.weakening [(A.imp B).and (B.imp A)] _ _ lce_inst (by intro x; simp; intro h; left; exact h)
+
+  -- Apply modus ponens
+  exact Derivable.modus_ponens _ _ _ h_imp h_a
+
+/--
+Right Biconditional Elimination: From `A ↔ B` and `B`, derive `A`.
+
+**Proof Strategy**: Extract `B → A` from biconditional using rce, then apply modus ponens.
+-/
+theorem iff_elim_right (A B : Formula) : [((A.imp B).and (B.imp A)), B] ⊢ A := by
+  -- Get B from context
+  have h_b : [((A.imp B).and (B.imp A)), B] ⊢ B := by
+    apply Derivable.assumption
+    simp
+
+  -- Get biconditional from context and extract (B → A) using rce
+  have h_imp : [((A.imp B).and (B.imp A)), B] ⊢ B.imp A := by
+    -- Use weakening from rce
+    have rce_inst : [(A.imp B).and (B.imp A)] ⊢ B.imp A :=
+      rce (A.imp B) (B.imp A)
+    exact Derivable.weakening [(A.imp B).and (B.imp A)] _ _ rce_inst (by intro x; simp; intro h; left; exact h)
+
+  -- Apply modus ponens
+  exact Derivable.modus_ponens _ _ _ h_imp h_b
+
 end Logos.Core.Theorems.Propositional
