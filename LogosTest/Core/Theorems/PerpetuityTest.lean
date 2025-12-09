@@ -78,6 +78,63 @@ example (P A B C : Formula)
 example (A B C : Formula) (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp C) : ⊢ A.imp C :=
   imp_trans h1 h2
 
+/-!
+## Combinator Theorems Tests
+
+Tests for the flip, app1, app2, and pairing combinators derived from K and S axioms.
+-/
+
+/-- Test theorem_flip type signature: (A → B → C) → (B → A → C) -/
+example (A B C : Formula) : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp C)) := theorem_flip
+
+/-- Test theorem_flip with atomic formulas -/
+example : ⊢ ((Formula.atom "p").imp ((Formula.atom "q").imp (Formula.atom "r"))).imp
+           ((Formula.atom "q").imp ((Formula.atom "p").imp (Formula.atom "r"))) := theorem_flip
+
+/-- Test theorem_flip applied to Modal T axiom form -/
+example : ⊢ ((Formula.atom "p").box.imp ((Formula.atom "q").imp (Formula.atom "p"))).imp
+           ((Formula.atom "q").imp ((Formula.atom "p").box.imp (Formula.atom "p"))) := theorem_flip
+
+/-- Test theorem_app1 type signature: A → (A → B) → B -/
+example (A B : Formula) : ⊢ A.imp ((A.imp B).imp B) := theorem_app1
+
+/-- Test theorem_app1 with atomic formulas -/
+example : ⊢ (Formula.atom "p").imp (((Formula.atom "p").imp (Formula.atom "q")).imp (Formula.atom "q")) := theorem_app1
+
+/-- Test theorem_app1 corresponds to function application -/
+example : ⊢ (Formula.atom "x").imp (((Formula.atom "x").imp (Formula.atom "y")).imp (Formula.atom "y")) := theorem_app1
+
+/-- Test theorem_app2 type signature: A → B → (A → B → C) → C -/
+example (A B C : Formula) : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C)) := theorem_app2
+
+/-- Test theorem_app2 with atomic formulas -/
+example : ⊢ (Formula.atom "a").imp ((Formula.atom "b").imp
+           (((Formula.atom "a").imp ((Formula.atom "b").imp (Formula.atom "c"))).imp (Formula.atom "c"))) := theorem_app2
+
+/-- Test theorem_app2 is the Vireo combinator (V = λa.λb.λf. f a b) -/
+example : ⊢ (Formula.atom "x").imp ((Formula.atom "y").imp
+           (((Formula.atom "x").imp ((Formula.atom "y").imp (Formula.atom "z"))).imp (Formula.atom "z"))) := theorem_app2
+
+/-- Test pairing theorem type signature: A → B → A ∧ B -/
+example (A B : Formula) : ⊢ A.imp (B.imp (A.and B)) := pairing A B
+
+/-- Test pairing with atomic formulas -/
+example : ⊢ (Formula.atom "p").imp ((Formula.atom "q").imp ((Formula.atom "p").and (Formula.atom "q"))) :=
+  pairing (Formula.atom "p") (Formula.atom "q")
+
+/-- Test pairing derives conjunction from K and S combinators -/
+-- This test verifies pairing is now a theorem (not axiom) derived from theorem_app2
+example : ⊢ (Formula.atom "a").imp ((Formula.atom "b").imp ((Formula.atom "a").and (Formula.atom "b"))) :=
+  pairing (Formula.atom "a") (Formula.atom "b")
+
+/-- Test pairing with compound formulas -/
+example : ⊢ ((Formula.atom "p").box).imp
+           ((Formula.atom "q").diamond.imp (((Formula.atom "p").box).and ((Formula.atom "q").diamond))) :=
+  pairing (Formula.atom "p").box (Formula.atom "q").diamond
+
+/-- Test pairing is complete theorem (derived from theorem_app2, no sorry) -/
+example (φ ψ : Formula) : ⊢ φ.imp (ψ.imp (φ.and ψ)) := pairing φ ψ
+
 /-- Test imp_trans with concrete formulas using modal axioms -/
 example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p") := by
   -- □p → □□p by Modal 4

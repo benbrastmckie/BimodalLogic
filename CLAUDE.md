@@ -199,6 +199,11 @@ Logos follows rigorous development standards including Test-Driven Development (
 - Canonical model construction defined (types, no proofs)
 
 ### Theorems Package
+- Combinator theorems derived from K (prop_k) and S (prop_s) axioms:
+  - `theorem_flip`: `(A → B → C) → (B → A → C)` (C combinator)
+  - `theorem_app1`: `A → (A → B) → B` (single application)
+  - `theorem_app2`: `A → B → (A → B → C) → C` (Vireo combinator)
+  - `pairing`: `A → B → A ∧ B` (conjunction introduction, **now theorem not axiom**)
 - Perpetuity principles P1-P6 connecting modal and temporal operators:
   - P1: `□φ → △φ` (necessary implies always) - **Fully proven (zero sorry)**
   - P2: `▽φ → ◇φ` (sometimes implies possible) - **Fully proven (contraposition via B combinator)**
@@ -208,6 +213,7 @@ Logos follows rigorous development standards including Test-Driven Development (
   - P6: `▽□φ → □△φ` (occurrent necessity is perpetual) - **Fully proven (via P5(¬φ) + bridge lemmas + double_contrapose)**
 - Note: `△` (always/at all times) and `▽` (sometimes/at some time) are Unicode triangle notation alternatives
 - **ALL 6 PERPETUITY PRINCIPLES FULLY PROVEN** (100% completion)
+- **PAIRING COMBINATOR DERIVED** (reduced axiom count by 1)
 
 ### Automation Package
 - `Tactics`: Custom tactics for TM logic automation **(12/12 implemented)**

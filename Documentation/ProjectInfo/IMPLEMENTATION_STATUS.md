@@ -395,20 +395,27 @@ grep -n "^axiom" Logos/Metalogic/Completeness.lean
 
 ### Perpetuity.lean
 - **Status**: `[COMPLETE]` - All 6 perpetuity principles fully proven with zero sorry
-- **Lines of Code**: ~1600 (expanded with P6 derivation, monotonicity lemmas, bridge lemmas)
+- **Lines of Code**: ~1900 (expanded with combinator derivations, P6, monotonicity lemmas, bridge lemmas)
 - **Sorry Count**: 0 (all proofs complete)
-- **Axiom Count**: 5 (pairing, dni, future_k_dist, always_dni, always_dne, always_mono)
-- **Test Coverage**: 100% (all P1-P6 tested and verified)
+- **Axiom Count**: 4 (dni, future_k_dist, always_dni, always_dne, always_mono)
+  - `pairing` converted from axiom to theorem (2025-12-09) via combinator derivation
+- **Test Coverage**: 100% (all P1-P6 and combinator theorems tested)
 
 **Implementation Approach**:
 - **6/6 fully proven** (P1, P2, P3, P4, P5, P6): Complete syntactic derivation with zero sorry
 - **100% completion** - ALL PERPETUITY PRINCIPLES NOW THEOREMS
 
+**Combinator Theorems** ✓ (derived from K and S axioms):
+- `theorem_flip`: (A → B → C) → (B → A → C) - C combinator
+- `theorem_app1`: A → (A → B) → B - single application
+- `theorem_app2`: A → B → (A → B → C) → C - Vireo combinator
+- `pairing`: A → B → A ∧ B - conjunction introduction (now theorem, not axiom)
+
 **Fully Proven Theorems** ✓ (zero sorry):
 1. `perpetuity_1` (line 298): `□φ → △φ` (necessary implies always)
    - **Proof**: Uses `box_to_past`, `box_to_present`, `box_to_future` helpers
    - **Key Technique**: Temporal duality on `box_to_future` to derive `box_to_past`
-   - **Helper Lemmas**: `identity`, `pairing` (axiom), `combine_imp_conj`, `combine_imp_conj_3`
+   - **Helper Lemmas**: `identity`, `pairing` (theorem), `combine_imp_conj`, `combine_imp_conj_3`
    - **Status**: Complete syntactic proof ✓
 
 2. `perpetuity_2` (line 458): `▽φ → ◇φ` (sometimes implies possible)

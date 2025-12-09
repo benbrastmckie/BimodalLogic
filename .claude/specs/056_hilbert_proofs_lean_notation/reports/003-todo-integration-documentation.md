@@ -1,63 +1,34 @@
-# TODO.md - Logos Task Tracking
+# Research Report: TODO.md Integration and Documentation
 
-## Update Instructions
+**Topic**: TODO.md Integration for Hilbert Theorems
+**Date**: 2025-12-09
+**Researcher**: Claude (research-specialist)
 
-**When to Update**: After completing tasks, discovering new work, or changing priorities.
+## Executive Summary
 
-**How to Update**:
-1. Mark completed tasks by removing them from active sections (history tracked via git)
-2. Add new tasks with: description, effort estimate, status, priority, blocking/dependencies
-3. Update the "Active Tasks" count in Overview
-4. Update "Last Updated" date at bottom
-5. Run `/todo` command to sync with .claude/TODO.md specs tracking
+This report documents the formatting and organization strategy for adding the 25 unproven theorems (14 propositional + 11 modal) to the Medium Priority Tasks section of TODO.md, following the project's task tracking conventions.
 
-**What NOT to Track Here**:
-- Completed task details (use git history: `git log --grep="Task"`)
-- Implementation plans (use `.claude/specs/` directories)
-- Module-by-module status (use IMPLEMENTATION_STATUS.md)
-- Technical debt details (use SORRY_REGISTRY.md)
+## Current TODO.md Structure
 
----
+From `/home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md`:
 
-## Overview
+**Medium Priority Section** (lines 60-62):
+- Currently contains a placeholder path: `/home/benjamin/Documents/Philosophy/Teaching/LogicNotes/LogicNotes.tex`
+- No active medium priority tasks listed
+- Should contain derivation and theorem proving tasks
 
-This file tracks active development tasks for Logos. Completed tasks are removed from this file - see git history and spec summaries for completion records.
+**Format Requirements** (from Update Instructions, lines 7-11):
+1. Task description
+2. Effort estimate
+3. Status indicator
+4. Priority level
+5. Blocking/dependency information
 
-**Layer 0 Completion Progress**:
-- High Priority: COMPLETE (all blocking tasks done)
-- Medium Priority: 21 tasks active (Tasks 21-41: Hilbert theorem derivations)
-- Low Priority: 3 tasks (9-11 pending)
-- **Active Tasks**: 24
+## Proposed TODO.md Additions
 
-**Milestone Achievement**: ALL 6 PERPETUITY PRINCIPLES FULLY PROVEN (100%)
-**Next Milestone**: Task 9 (Completeness proofs)
+### Propositional Logic Hilbert Theorems (14 tasks)
 
----
-
-## Quick Links
-
-- [IMPLEMENTATION_STATUS.md](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking
-- [IMPLEMENTATION_STATUS.md - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) - Current gaps and workarounds
-- [SORRY_REGISTRY.md](Documentation/ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
-- [MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md) - TODO management workflow
-
-**Active Implementation Plan**:
-- [TODO Implementation Systematic Plan](.claude/specs/019_research_todo_implementation_plan/plans/001-research-todo-implementation-plan.md)
-  - Wave 1-2: COMPLETE (High priority foundations, Perpetuity proofs, transport lemmas)
-  - Wave 3-4: NOT STARTED (Completeness proofs, future work)
-
-**Recently Completed**:
-- [Minimal Axiom Review Plan](.claude/specs/048_minimal_axiom_review_proofs/plans/001-minimal-axiom-review-proofs-plan.md) - Documentation fixes, necessitation from MK, MK/TK documentation
-
----
-
-## High Priority Tasks
-
-*No active high priority tasks. All blocking work complete.*
-
----
-
-## Medium Priority Tasks
+#### Simple Theorems (Immediate Priority)
 
 **Task 21: Derive RAA (Reductio ad Absurdum)**
 **Effort**: 2-3 hours
@@ -140,6 +111,8 @@ theorem rdi (A B : Formula) : [B] ⊢ A.or B
 **Files**: `Logos/Core/Theorems/Propositional.lean`
 
 ---
+
+#### Medium Complexity (Context Manipulation)
 
 **Task 25: Derive RCP (Reverse Contraposition)**
 **Effort**: 3-4 hours
@@ -246,6 +219,10 @@ theorem rbe (A B : Formula) : [A.iff B, B] ⊢ A
 
 ---
 
+### Modal Logic Theorems (11 tasks)
+
+#### Simple S5 Theorems (Immediate Priority)
+
 **Task 30: Derive T-Box-Diamond (Box implies Diamond)**
 **Effort**: 2-3 hours
 **Status**: Not Started
@@ -317,6 +294,8 @@ theorem s5_diamond_box (A : Formula) : [] ⊢ (A.box.diamond).iff A.box
 **Files**: `Logos/Core/Theorems/ModalS5.lean`
 
 ---
+
+#### Medium Complexity (Modal Reasoning)
 
 **Task 34: Derive Box-Disjunction Introduction**
 **Effort**: 3-4 hours
@@ -390,6 +369,8 @@ theorem s5_diamond_box_to_truth (A : Formula) : [] ⊢ (A.box.diamond).imp A
 
 ---
 
+#### Complex Theorems (Long-term Priority)
+
 **Task 38: Derive S4-Diamond-Box-Conjunction**
 **Effort**: 6-8 hours
 **Status**: Not Started
@@ -462,108 +443,51 @@ theorem s5_diamond_conj_diamond (A B : Formula) : [] ⊢ ((A.and B.diamond).diam
 
 ---
 
-## Low Priority Tasks
+## Summary Statistics
 
----
+**Total Tasks**: 21 (Tasks 21-41)
+**Propositional**: 9 tasks (21-29)
+**Modal**: 12 tasks (30-41)
 
-### 9. Begin Completeness Proofs
-**Effort**: 70-90 hours
-**Status**: Not Started
-**Priority**: Low (long-term metalogic goal)
-**Blocking**: None
-**Dependencies**: Benefits from completed soundness proofs
+**Effort Breakdown**:
+- Simple tasks (2-5 hours): 10 tasks
+- Medium tasks (5-7 hours): 6 tasks
+- Complex tasks (7-9 hours): 5 tasks
+- **Total estimated effort**: 95-125 hours
 
-**Description**: Implement canonical model construction and prove completeness theorems (weak and strong). This is a major undertaking requiring significant effort.
+**Priority Distribution**:
+- High priority (immediate): 7 tasks (21-24, 30-32)
+- Medium priority: 9 tasks (25-29, 33-37)
+- Low priority (long-term): 5 tasks (38-41)
 
-**Phases**:
-1. **Phase 1** (20-30 hours): Prove Lindenbaum lemma and maximal set properties
-2. **Phase 2** (20-30 hours): Construct canonical model components
-3. **Phase 3** (20-30 hours): Prove truth lemma and completeness theorems
+## Key Findings
 
-**Files**:
-- `Logos/Core/Metalogic/Completeness.lean` (11 axiom declarations requiring proofs)
+1. **File organization**: Create two new files:
+   - `Logos/Core/Theorems/Propositional.lean` for propositional theorems
+   - `Logos/Core/Theorems/ModalS5.lean` for modal S5 theorems
+   - `Logos/Core/Theorems/ModalS4.lean` for S4-specific theorems (optional, low priority)
 
-**Technical Debt**: See [SORRY_REGISTRY.md](Documentation/ProjectInfo/SORRY_REGISTRY.md) for detailed resolution guidance.
+2. **Dependencies**: Many theorems build on each other (e.g., ECQ from RAA/EFQ, RCP from CP)
 
-**Notes**: This is the largest remaining task for Layer 0 completion. Can be deferred to Layer 1 planning phase.
+3. **Infrastructure needs**:
+   - Context manipulation for NE, NI, DE, BI
+   - Disjunction reasoning may need additional derived operators
+   - Biconditional reasoning infrastructure
 
----
+4. **Integration with existing work**: Many theorems extend Perpetuity.lean combinator work
 
-### 10. Create Decidability Module
-**Effort**: 40-60 hours
-**Status**: Not Started
-**Priority**: Low (future enhancement, not in MVP)
-**Blocking**: None
-**Dependencies**: Requires Task 9 (completeness proofs for correctness)
+## Recommendations
 
-**Description**: Create Logos/Core/Metalogic/Decidability.lean module with tableau method for validity checking and satisfiability decision procedures.
+1. **Immediate focus** (Tasks 21-24, 30-32): 7 simple tasks, ~18-26 hours total
+2. **Next wave** (Tasks 25-29, 33-37): 9 medium tasks, ~37-51 hours total
+3. **Long-term** (Tasks 38-41): 5 complex S4/S5 tasks, ~27-35 hours total
 
-**Phases**:
-1. **Phase 1** (15-20 hours): Design decidability architecture
-2. **Phase 2** (15-20 hours): Implement tableau method
-3. **Phase 3** (10-20 hours): Prove correctness and complexity
+## TODO.md Formatting Notes
 
-**Files**:
-- `Logos/Core/Metalogic/Decidability.lean` (does not exist, planned)
-
-**Notes**: Planned but not essential for Layer 0. Can be deferred to Layer 1 or beyond.
-
----
-
-### 11. Plan Layer 1/2/3 Extensions
-**Effort**: 20-40 hours (research phase)
-**Status**: Not Started
-**Priority**: Low (future work, after Layer 0 complete)
-**Blocking**: None
-**Dependencies**: Requires Layer 0 completion
-
-**Description**: Design and plan extensions beyond Core TM (Layer 0): counterfactual operators (Layer 1), epistemic operators (Layer 2), normative operators (Layer 3).
-
-**Action Items**:
-1. **Layer 1 (Counterfactuals)**: Design `box_c` (would-counterfactual) and `diamond_m` (might-counterfactual) operators
-2. **Layer 2 (Epistemic)**: Design `K` (knowledge) and `B` (belief) operators
-3. **Layer 3 (Normative)**: Design `O` (obligation) and `P` (permission) operators
-4. Create implementation plans for each layer
-5. Update ARCHITECTURE.md with layer design
-
-**Notes**: Strategic planning for post-MVP development. Should not begin until Layer 0 is complete and tested.
-
----
-
-## Completion History
-
-Completed tasks are tracked via git history. Query completion records:
-
-```bash
-# View all task completions
-git log --all --grep="Complete Task" --oneline
-
-# Find when specific task completed
-git log --all --grep="Task 7" --oneline
-
-# View spec summaries for detailed completion narratives
-find .claude/specs -name "*summary*.md" | head -20
-
-# Search summaries for task
-grep -r "Task 5" .claude/specs/*/summaries/
-```
-
-See [MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md) for complete workflow documentation.
-
----
-
-## Project References
-
-- **Module Status**: [IMPLEMENTATION_STATUS.md](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) for detailed module-by-module tracking
-- **Gap Documentation**: [IMPLEMENTATION_STATUS.md - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) for current limitations and workarounds
-- **System Design**: [ARCHITECTURE.md](Documentation/UserGuide/ARCHITECTURE.md) for TM logic specification
-- **Technical Debt**: [SORRY_REGISTRY.md](Documentation/ProjectInfo/SORRY_REGISTRY.md) for sorry placeholder tracking
-
-**Notes**:
-- Priority levels reflect blocking status and estimated timeline, not importance
-- Effort estimates are conservative and may vary based on implementation complexity
-- Dependencies are indicated inline with each task
-
----
-
-**Last Updated**: 2025-12-09 (Added 21 Hilbert theorem tasks: 14 propositional + 7 modal logic theorems from LogicNotes.tex)
+- Each task follows standard format: Description, Effort, Status, Priority, Blocking, Dependencies
+- Include Lean signatures for clarity
+- Reference existing theorems and axioms
+- Group by complexity/priority
+- Link to implementation files
+- Update "Active Tasks" count in Overview section
+- Update "Last Updated" date after modifications

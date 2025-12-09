@@ -101,6 +101,31 @@ For each phase, you MUST specify the primary Lean file where theorems will be pr
 
 **Why This Matters**: The /lean-build command uses Tier 1 discovery to find phase-specific Lean files before falling back to global metadata. Per-phase file specifications enable efficient multi-file theorem proving workflows.
 
+**Phase Metadata Requirements** (CRITICAL for orchestration):
+
+Every phase MUST include these metadata fields immediately after the phase heading:
+
+```markdown
+### Phase N: Phase Name [NOT STARTED]
+implementer: lean
+lean_file: /absolute/path/to/file.lean
+dependencies: []
+
+Tasks:
+- [ ] Task 1
+```
+
+**Field Specifications**:
+- `implementer: lean` - Always "lean" for Lean theorem proving phases (never "software" unless infrastructure setup)
+- `lean_file: /absolute/path` - Absolute path to primary .lean file for this phase's theorems
+- `dependencies: []` - Array of phase numbers that must complete before this phase (empty for Wave 1)
+
+**Wave Structure Integration**:
+- Dependencies array must match wave structure from STEP 1 analysis
+- Wave 1 phases: `dependencies: []`
+- Wave 2 phases: `dependencies: [N]` where N is a Wave 1 phase number
+- Wave 3 phases: `dependencies: [N, M]` where N, M are Wave 1 or Wave 2 phase numbers
+
 **CHECKPOINT**: YOU MUST have theorem list, dependencies, wave structure, AND per-phase file assignments before Step 2.
 
 ---

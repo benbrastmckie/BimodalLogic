@@ -138,184 +138,167 @@ theorem b_combinator {A B C : Formula} : ⊢ (B.imp C).imp ((A.imp B).imp (A.imp
 Flip combinator (C): `⊢ (A → B → C) → (B → A → C)`.
 
 The C (flip) combinator swaps the order of arguments to a binary function.
-This is a key building block for deriving the pairing combinator.
+This is essential for deriving the pairing combinator and dni.
 
-Proof strategy:
-1. Use prop_s to weaken: `(A → B → C) → (B → (A → B → C))`
-2. Use prop_k to distribute: `(B → (A → B → C)) → ((B → A) → (B → C))`
-3. Use prop_k again to lift B: `((B → A) → (B → C)) → (B → (B → A) → C)`
-4. Compose using b_combinator and transitivity
-
-The construction uses the pattern C = S(BBS)(KK) in combinator calculus.
+**Derivation Strategy**: Use S axiom to weaken, then K axiom to redistribute
+arguments at nested levels, composing with b_combinator.
 -/
 theorem theorem_flip {A B C : Formula} : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp C)) := by
   -- Goal: (A → B → C) → (B → A → C)
-  -- Strategy: Use prop_k to get (A → B → C) → A → (B → C)
-  -- Then use prop_s to swap to B → A → C
+  -- Strategy: Build B → ((A → B → C) → (A → C)) using K and S axioms,
+  -- then compose appropriately.
 
-  -- Step 1: prop_s gives us weakening (B → C) → (A → (B → C))
-  have weak1 : ⊢ (B.imp C).imp (A.imp (B.imp C)) :=
-    Derivable.axiom [] _ (Axiom.prop_s (B.imp C) A)
+  -- Step 1: From K axiom at level B: (A → B → C) → (B → (A → B → C))
+  have step1 : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp (B.imp C))) :=
+    Derivable.axiom [] _ (Axiom.prop_s (A.imp (B.imp C)) B)
 
-  -- Step 2: b_combinator gives composition for ((A → B → C) → (B → C))
-  -- We need: (A → B → C) → A → (B → C) [this is b_combinator instantiated]
-  have b_inst : ⊢ (A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)) :=
+  -- Step 2: K axiom gives us (A → (B → C)) → ((A → B) → (A → C))
+  -- Instantiate with first arg as B: (B → A → B → C) → ((B → A → B) → (B → A → C))
+  -- But actually we need: B → ((A → B → C) → ((A → B) → (A → C)))
+  -- Using prop_k at the A level
+
+  -- Actually, let's use a cleaner approach via B-combinator composition.
+  -- We have b_combinator: (B → C) → (A → B) → (A → C)
+  -- Specialized: ((B → C) → C) → (A → (B → C)) → (A → C)
+
+  -- Alternative: use the fact that we need to "distribute" B into the context.
+
+  -- The key insight is:
+  -- From (A → B → C), we can get (A → C) if we have B.
+  -- So: (A → B → C) → B → (A → C)
+  -- This follows from: (A → B → C) → (B → (A → B → C)) and
+  --                   (B → (A → B → C)) → (B → ((A → B) → (A → C)))
+
+  -- Use prop_k: (B → (A → (B → C))) → ((B → A) → (B → (B → C)))
+  -- Then extract (B → A → C) from (B → B → C) using app pattern
+
+  -- Simpler approach: use b_combinator directly
+  -- b_combinator: (Y → Z) → (X → Y) → (X → Z)
+  -- With Y = (A → B → C), Z = ((A → B) → (A → C)), X = B
+  -- We need: (A → B → C) → ((A → B) → (A → C))
+  -- This is exactly prop_k A B C!
+
+  have k_abc : ⊢ (A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)) :=
     Derivable.axiom [] _ (Axiom.prop_k A B C)
 
-  -- Step 3: Now we need to transform (A → B) in the middle
-  -- Use prop_s: B → (A → B)
-  have weak2 : ⊢ B.imp (A.imp B) :=
-    Derivable.axiom [] _ (Axiom.prop_s B A)
-
-  -- Step 4: Lift weak2 with prop_s: (B → A → B) → X → (B → A → B)
-  have weak2_lifted : ⊢ (B.imp (A.imp B)).imp ((A.imp (B.imp C)).imp (B.imp (A.imp B))) :=
-    Derivable.axiom [] _ (Axiom.prop_s (B.imp (A.imp B)) (A.imp (B.imp C)))
-
-  have h1 : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp B)) :=
-    Derivable.modus_ponens [] _ _ weak2_lifted weak2
-
-  -- Step 5: Now use prop_k to combine
-  -- prop_k: (A → B → C) → ((A → B) → (A → C))
-  -- We want: (A → B → C) → (B → A → B) → (B → A → C)
-  -- Instantiate prop_k with A=B, B=(A→B), C=(A→C)
-  have k_final : ⊢ (B.imp ((A.imp B).imp (A.imp C))).imp
-                    ((B.imp (A.imp B)).imp (B.imp (A.imp C))) :=
-    Derivable.axiom [] _ (Axiom.prop_k B (A.imp B) (A.imp C))
-
-  -- Step 6: Need to get (B → (A → B) → (A → C)) from (A → B → C)
-  -- Use b_combinator: (A → B → C) → ((A → B) → (A → C))
-  have bc : ⊢ (A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)) :=
-    Derivable.axiom [] _ (Axiom.prop_k A B C)
-
-  -- Step 7: Lift bc to work with B
-  -- prop_s: P → (B → P) for P = (A→B→C) → ((A→B) → (A→C))
-  have bc_lifted : ⊢ ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C))).imp
-                      (B.imp ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)))) :=
+  -- Weaken k_abc: ((A → B → C) → ...) → (B → ((A → B → C) → ...))
+  have weak_k : ⊢ ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C))).imp
+                   (B.imp ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)))) :=
     Derivable.axiom [] _ (Axiom.prop_s ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C))) B)
 
-  have h2 : ⊢ B.imp ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C))) :=
-    Derivable.modus_ponens [] _ _ bc_lifted bc
+  have step2 : ⊢ B.imp ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C))) :=
+    Derivable.modus_ponens [] _ _ weak_k k_abc
 
-  -- Step 8: Use prop_k to distribute B
-  -- (B → X → Y) → ((B → X) → (B → Y))
-  have k_dist : ⊢ (B.imp ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)))).imp
+  -- Now use prop_k to distribute B through:
+  -- (B → X → Y) → ((B → X) → (B → Y)) where X = (A → B → C), Y = ((A → B) → (A → C))
+  have k_step : ⊢ (B.imp ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)))).imp
                    ((B.imp (A.imp (B.imp C))).imp (B.imp ((A.imp B).imp (A.imp C)))) :=
     Derivable.axiom [] _ (Axiom.prop_k B (A.imp (B.imp C)) ((A.imp B).imp (A.imp C)))
 
-  have h3 : ⊢ (B.imp (A.imp (B.imp C))).imp (B.imp ((A.imp B).imp (A.imp C))) :=
-    Derivable.modus_ponens [] _ _ k_dist h2
+  have step3 : ⊢ (B.imp (A.imp (B.imp C))).imp (B.imp ((A.imp B).imp (A.imp C))) :=
+    Derivable.modus_ponens [] _ _ k_step step2
 
-  -- Step 9: prop_s gives: (A → B → C) → (B → A → B → C)
-  have weak3 : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp (B.imp C))) :=
-    Derivable.axiom [] _ (Axiom.prop_s (A.imp (B.imp C)) B)
+  -- Compose step1 with step3 to get (A → B → C) → (B → ((A → B) → (A → C)))
+  have step4 : ⊢ (A.imp (B.imp C)).imp (B.imp ((A.imp B).imp (A.imp C))) :=
+    imp_trans step1 step3
 
-  -- Step 10: Compose weak3 and h3
-  have h4 : ⊢ (A.imp (B.imp C)).imp (B.imp ((A.imp B).imp (A.imp C))) :=
-    imp_trans weak3 h3
+  -- Now we need to get from (B → ((A → B) → (A → C))) to ((A → B → C) → (B → (A → C)))
+  -- We need to "supply" (A → B) = S axiom!
 
-  -- Step 11: Now distribute the final (A → B)
-  -- We have: (A → B → C) → (B → (A → B) → (A → C))
-  -- We want: (A → B → C) → (B → A → C)
-  -- Use prop_k on the inner part: (B → (A → B) → (A → C)) → ((B → A → B) → (B → A → C))
-  have k_inner : ⊢ (B.imp ((A.imp B).imp (A.imp C))).imp
-                    ((B.imp (A.imp B)).imp (B.imp (A.imp C))) :=
+  -- S axiom gives B → (A → B)
+  have s_ab : ⊢ B.imp (A.imp B) := Derivable.axiom [] _ (Axiom.prop_s B A)
+
+  -- We need: (B → (A → B)) → ((B → ((A → B) → (A → C))) → (B → (A → C)))
+  -- This is exactly the b_combinator pattern!
+  -- b_combinator: (Y → Z) → (X → Y) → (X → Z)
+  -- At level B: ((A → B) → (A → C)) is the function, (A → B) is the intermediate
+  -- Actually we need: ((B → (A → B)) → ((B → ((A → B) → (A → C))) → (B → (A → C))))
+
+  -- Use prop_k at level B: (B → X → Y) → ((B → X) → (B → Y))
+  -- with X = (A → B), Y = (A → C)
+  have k_final : ⊢ (B.imp ((A.imp B).imp (A.imp C))).imp ((B.imp (A.imp B)).imp (B.imp (A.imp C))) :=
     Derivable.axiom [] _ (Axiom.prop_k B (A.imp B) (A.imp C))
 
-  -- Step 12: Apply k_inner to h4
-  have h5 : ⊢ (A.imp (B.imp C)).imp ((B.imp (A.imp B)).imp (B.imp (A.imp C))) :=
-    imp_trans h4 k_inner
+  -- Apply step4 via imp_trans pattern
+  -- We have step4: (A → B → C) → (B → ((A → B) → (A → C)))
+  -- We have k_final: (B → ((A → B) → (A → C))) → ((B → (A → B)) → (B → (A → C)))
+  -- Compose: (A → B → C) → ((B → (A → B)) → (B → (A → C)))
+  have step5 : ⊢ (A.imp (B.imp C)).imp ((B.imp (A.imp B)).imp (B.imp (A.imp C))) :=
+    imp_trans step4 k_final
 
-  -- Step 13: Apply h5 to h1
-  -- h1: (A → B → C) → (B → A → B)
-  -- h5: (A → B → C) → ((B → A → B) → (B → A → C))
-  -- Need to use prop_k one more time
+  -- Now apply s_ab
+  -- We have step5: (A → B → C) → ((B → (A → B)) → (B → (A → C)))
+  -- We have s_ab: B → (A → B)
+  -- We need: (A → B → C) → (B → (A → C))
+
+  -- Use prop_k to combine:
+  -- prop_k: (φ → ψ → χ) → ((φ → ψ) → (φ → χ))
+  -- with φ = (A → B → C), ψ = (B → (A → B)), χ = (B → (A → C))
+  -- Actually that's not quite right structure.
+
+  -- Let's use modus ponens pattern differently.
+  -- We know s_ab: B → (A → B)
+  -- Weaken to: (A → B → C) level:
+  have weak_s_ab : ⊢ (B.imp (A.imp B)).imp ((A.imp (B.imp C)).imp (B.imp (A.imp B))) :=
+    Derivable.axiom [] _ (Axiom.prop_s (B.imp (A.imp B)) (A.imp (B.imp C)))
+
+  have step6 : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp B)) :=
+    Derivable.modus_ponens [] _ _ weak_s_ab s_ab
+
+  -- Now combine step5 and step6 using prop_k
+  -- step5: (A → B → C) → ((B → (A → B)) → (B → (A → C)))
+  -- step6: (A → B → C) → (B → (A → B))
+  -- Goal: (A → B → C) → (B → (A → C))
+  -- Use prop_k at (A → B → C) level
   have k_combine : ⊢ ((A.imp (B.imp C)).imp ((B.imp (A.imp B)).imp (B.imp (A.imp C)))).imp
-                      (((A.imp (B.imp C)).imp (B.imp (A.imp B))).imp
-                       ((A.imp (B.imp C)).imp (B.imp (A.imp C)))) :=
+                      (((A.imp (B.imp C)).imp (B.imp (A.imp B))).imp ((A.imp (B.imp C)).imp (B.imp (A.imp C)))) :=
     Derivable.axiom [] _ (Axiom.prop_k (A.imp (B.imp C)) (B.imp (A.imp B)) (B.imp (A.imp C)))
 
-  have h6 : ⊢ ((A.imp (B.imp C)).imp (B.imp (A.imp B))).imp
-               ((A.imp (B.imp C)).imp (B.imp (A.imp C))) :=
-    Derivable.modus_ponens [] _ _ k_combine h5
+  have step7 : ⊢ ((A.imp (B.imp C)).imp (B.imp (A.imp B))).imp ((A.imp (B.imp C)).imp (B.imp (A.imp C))) :=
+    Derivable.modus_ponens [] _ _ k_combine step5
 
-  exact Derivable.modus_ponens [] _ _ h6 h1
+  exact Derivable.modus_ponens [] _ _ step7 step6
 
 /--
 Single application lemma (app1): `⊢ A → (A → B) → B`.
 
-This lemma allows applying a function to an argument. It corresponds to the
-evaluation or application operation in lambda calculus.
+This lemma expresses that given a value of type A and a function A → B,
+we can produce a value of type B. In combinator calculus, this corresponds
+to the application pattern derived from flip applied to identity.
 
-Proof strategy:
-The flip combinator gives us: `(A → A → B) → (A → (A → B))`.
-We can instantiate this with the identity function `(A → A)` to get the result.
-
-More formally:
-1. Identity: `⊢ A → A`
-2. Flip applied to identity gives us the application pattern
-3. Instantiate flip with C = B
-
-This is derived from flip applied to identity, showing that
-having a value and a function allows us to apply the function.
+**Derivation**: Apply theorem_flip to identity with appropriate substitutions.
 -/
 theorem theorem_app1 {A B : Formula} : ⊢ A.imp ((A.imp B).imp B) := by
   -- Goal: A → (A → B) → B
-  -- Strategy: Use flip with the pattern (A → A → B) → (A → (A → B))
-  -- But we need (A → (A → B) → B)
+  -- Strategy: Use flip to swap arguments of a suitable function
 
-  -- The flip combinator: (A → B → C) → (B → A → C)
-  -- Instantiate with A=A, B=(A→B), C=B
-  -- This gives: (A → (A→B) → B) → ((A→B) → A → B)
-  -- But we want: A → (A→B) → B
-
-  -- Actually, we want flip instantiated as: (A → A → B) → (A → (A → B))
-  -- Wait, that's not right either.
-
-  -- Let me think: flip is (A → B → C) → (B → A → C)
-  -- If we set A := (A → B), B := A, C := B
-  -- We get: ((A → B) → A → B) → (A → (A → B) → B)
-
-  -- So we need to prove: (A → B) → A → B [identity-like]
-  -- That's backwards from identity!
-
-  -- Better approach: Use flip with A := A, B := A, C := B
-  -- flip: (A → A → B) → (A → A → B) [no help]
-
-  -- Actually the key insight: we want A → (A → B) → B
-  -- This is flip applied to identity at the right type
-
-  -- Identity at type (A → B): ⊢ (A → B) → (A → B)
+  -- identity at (A → B): (A → B) → (A → B)
   have id_ab : ⊢ (A.imp B).imp (A.imp B) := identity (A.imp B)
 
-  -- Flip: (A → B → C) → (B → A → C)
-  -- Instantiate with A := (A → B), B := A, C := B
-  -- We get: ((A → B) → A → B) → (A → (A → B) → B)
-  have flip_inst : ⊢ ((A.imp B).imp (A.imp B)).imp (A.imp ((A.imp B).imp B)) :=
-    theorem_flip
+  -- Apply flip to this identity:
+  -- flip: (X → Y → Z) → (Y → X → Z)
+  -- With X = (A → B), Y = A, Z = B
+  -- We need: ((A → B) → A → B) → (A → (A → B) → B)
+  -- So flip applied to ((A → B) → A → B) gives (A → (A → B) → B)
 
-  -- Apply modus ponens
+  -- First, we need flip at these types
+  have flip_inst : ⊢ ((A.imp B).imp (A.imp B)).imp (A.imp ((A.imp B).imp B)) :=
+    @theorem_flip (A.imp B) A B
+
   exact Derivable.modus_ponens [] _ _ flip_inst id_ab
 
 /--
 Double application lemma (app2): `⊢ A → B → (A → B → C) → C`.
 
-This lemma allows applying a binary function to two arguments. It corresponds
-to the Vireo combinator in combinatory logic (V = λa.λb.λf. f a b).
+This lemma expresses that given values of types A and B, and a binary
+function A → B → C, we can produce a value of type C.
 
-Proof strategy:
-We want: A → B → (A → B → C) → C
-This says: given A, B, and a function f : A → B → C, we can produce C.
-
-The key insight: use app1 twice to "peel off" arguments
-1. app1 at A: A → (A → (B → C)) → (B → C)
-2. app1 at B: B → (B → C) → C
-3. Compose these using b_combinator: ((B → C) → C) ∘ ((A → B → C) → (B → C))
-4. Add B argument using prop_s and flip
-
-This constructs the pairing pattern needed for conjunction introduction.
+**Derivation**: Compose theorem_app1 applications using b_combinator and
+distribute appropriately using prop_k and prop_s axioms.
 -/
 theorem theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C)) := by
   -- Goal: A → B → (A → B → C) → C
+  -- Strategy: Use app1 at A-level and B-level, then compose
 
   -- Step 1: Use app1 at A to get: A → (A → (B → C)) → (B → C)
   have step_a : ⊢ A.imp ((A.imp (B.imp C)).imp (B.imp C)) := theorem_app1
@@ -323,85 +306,14 @@ theorem theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp
   -- Step 2: Use app1 at B to get: B → (B → C) → C
   have step_b : ⊢ B.imp ((B.imp C).imp C) := theorem_app1
 
-  -- Step 3: Compose using b_combinator
-  -- b_combinator: (B → C) → (A → B) → (A → C)
-  -- Instantiate with X := (A → B → C), Y := (B → C), Z := C
-  -- We get: ((B → C) → C) → ((A → B → C) → (B → C)) → ((A → B → C) → C)
-  have comp : ⊢ ((B.imp C).imp C).imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)) :=
-    b_combinator
-
-  -- Step 4: Apply step_b to comp to get the intermediate function
-  -- We need to weaken step_b first: B → (B → C) → C
-  -- becomes: (B → (B → C) → C) → ... → ((B → C) → C)
-  -- Actually, let's use prop_k to extract just (B → C) → C from step_b
-
-  -- From step_b: B → (B → C) → C, we can derive (B → C) → B → C (by flipping)
-  -- Then apply B to get: (B → C) → C
-
-  -- Actually, let's think differently. We have:
-  -- step_a: A → (A → B → C) → (B → C)
-  -- step_b: B → (B → C) → C
-  -- comp: ((B → C) → C) → ((A → B → C) → (B → C)) → ((A → B → C) → C)
-
-  -- We need to extract ((B → C) → C) from step_b
-  -- This requires applying B, but B is not available as a proof
-
-  -- Different approach: compose step_a with the function (B → C) → C
-  -- which we get from step_b
-
-  -- Let me use a more direct composition
-  -- We want to show: A → (A → B → C) → C
-  -- From step_a: A → (A → B → C) → (B → C)
-  -- We need: (B → C) → C
-
-  -- But we can't get (B → C) → C directly from step_b
-
-  -- Better approach: use transitivity at the right level
-  -- step_a gives us: given A and (A → B → C), we get (B → C)
-  -- If we had (B → C) → C, we could compose
-
-  -- Actually, the trick is to work at the meta-level
-  -- We need to show that IF we can go from (A → B → C) to (B → C) [step_a]
-  -- AND we can go from (B → C) to C [after applying B from step_b]
-  -- THEN we can go from (A → B → C) to C
-
-  -- This is exactly b_combinator!
-
-  -- Let me reconsider. From step_b: B → (B → C) → C
-  -- We want to use this to build: A → B → (A → B → C) → C
-
-  -- Start differently: build A → B → (B → C) → C first
+  -- Step 3: Weaken step_b with A: (B → (B → C) → C) → (A → (B → (B → C) → C))
   have weak_step_b : ⊢ (B.imp ((B.imp C).imp C)).imp (A.imp (B.imp ((B.imp C).imp C))) :=
     Derivable.axiom [] _ (Axiom.prop_s (B.imp ((B.imp C).imp C)) A)
 
   have a_b_bc_c : ⊢ A.imp (B.imp ((B.imp C).imp C)) :=
     Derivable.modus_ponens [] _ _ weak_step_b step_b
 
-  -- Now we have: A → B → (B → C) → C
-  -- And step_a: A → (A → B → C) → (B → C)
-  -- We want: A → B → (A → B → C) → C
-
-  -- The pattern: we need to "insert" (A → B → C) → (B → C) into the context
-  -- Currently: A → B → (B → C) → C
-  -- Want:      A → B → (A → B → C) → C
-
-  -- We need to precompose (B → C) with (A → B → C) → (B → C)
-  -- That's: ((A → B → C) → (B → C)) → ((B → C) → C) → ((A → B → C) → C)
-  -- Which is b_combinator again!
-
-  -- From step_a: A → (A → B → C) → (B → C)
-  -- We want to work this into: A → B → (A → B → C) → C
-
-  -- Let me try once more: combine step_a and a_b_bc_c
-
-  -- step_a: A → (A → B → C) → (B → C)
-  -- a_b_bc_c: A → B → (B → C) → C
-
-  -- If we can show: A → B → (A → B → C) → (B → C)
-  -- Then we can compose with a_b_bc_c
-
-  -- To get A → B → (A → B → C) → (B → C), we lift step_a with B
-
+  -- Step 4: Weaken step_a with B: (A → X → Y) → (B → (A → X → Y))
   have weak_step_a : ⊢ (A.imp ((A.imp (B.imp C)).imp (B.imp C))).imp
                         (B.imp (A.imp ((A.imp (B.imp C)).imp (B.imp C)))) :=
     Derivable.axiom [] _ (Axiom.prop_s (A.imp ((A.imp (B.imp C)).imp (B.imp C))) B)
@@ -409,208 +321,144 @@ theorem theorem_app2 {A B C : Formula} : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp
   have b_a_abc_bc : ⊢ B.imp (A.imp ((A.imp (B.imp C)).imp (B.imp C))) :=
     Derivable.modus_ponens [] _ _ weak_step_a step_a
 
-  -- Now flip to get A → B → (A → B → C) → (B → C)
+  -- Step 5: Flip to get A → B → (A → B → C) → (B → C)
   have a_b_abc_bc : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp (B.imp C))) :=
     Derivable.modus_ponens [] _ _ theorem_flip b_a_abc_bc
 
-  -- Now we have:
+  -- Step 6: Now we have:
   -- a_b_abc_bc: A → B → (A → B → C) → (B → C)
   -- a_b_bc_c: A → B → (B → C) → C
-
-  -- We need to combine these to get: A → B → (A → B → C) → C
-  -- This requires composing (A → B → C) → (B → C) with (B → C) → C at the innermost level
-
-  -- Use prop_k to distribute:
-  -- (A → B → X → Y) → ((A → B → X) → (A → B → Y))
-  -- Let X = (A → B → C), Y = C, and use (B → C) as intermediate
-
-  -- Actually, I need to use b_combinator at the A → B level
-  -- We want: (A → B → (B → C) → C) → (A → B → (A → B → C) → (B → C)) → (A → B → (A → B → C) → C)
-
-  -- This is getting complex. Let me try to use the combine pattern from combine_imp_conj
-
-  -- From combine_imp_conj, the pattern is:
-  -- have h1 : ⊢ P.imp (B.imp (A.and B)) := imp_trans hA pair_ab
-  -- have s : ⊢ (P.imp (B.imp (A.and B))).imp ((P.imp B).imp (P.imp (A.and B))) := Axiom.prop_k ...
-  -- have h2 : ⊢ (P.imp B).imp (P.imp (A.and B)) := modus_ponens h1 s
-  -- exact modus_ponens hB h2
-
-  -- So the pattern is: use prop_k to "curry in" an argument
-
-  -- Let me apply this: we want to curry (A → B → C) into the (B → C) position
-  -- We have a_b_bc_c: A → B → (B → C) → C
-  -- We have a_b_abc_bc: A → B → (A → B → C) → (B → C)
-
-  -- Use prop_k at the A → B level:
-  -- (A → B → X → Y) → ((A → B → X) → (A → B → Y))
-  have k_inst : ⊢ (A.imp (B.imp ((A.imp (B.imp C)).imp (B.imp C)))).imp
-                   ((A.imp (B.imp (A.imp (B.imp C)))).imp (A.imp (B.imp (B.imp C)))) :=
-    Derivable.axiom [] _ (Axiom.prop_k A B (A.imp (B.imp C)) (B.imp C))
-
-  -- Apply k_inst to a_b_abc_bc
-  have mid : ⊢ (A.imp (B.imp (A.imp (B.imp C)))).imp (A.imp (B.imp (B.imp C))) :=
-    Derivable.modus_ponens [] _ _ k_inst a_b_abc_bc
-
-  -- Now we need A → B → (A → B → C)
-  -- This is just weakening: (A → B → C) → A → B → (A → B → C)
-  have weak_abc : ⊢ (A.imp (B.imp C)).imp (A.imp (B.imp (A.imp (B.imp C)))) :=
-    Derivable.axiom [] _ (Axiom.prop_s (A.imp (B.imp C)) A)
-
-  -- We need one more weakening for B
-  -- Actually, this is getting messy. Let me try a cleaner approach.
-
-  -- Simplest approach: I know the theorem is true, so let me just build it step by step
-  -- using only the basic axioms
-
-  -- Actually, I realize: A → B → (A → B → C) → C is identity at a lifted level!
-  -- We can use the fact that (A → B → C) when applied to A and B gives C
-
-  -- Let me try a very direct approach:
-  -- We want: A → B → (A → B → C) → C
-
-  -- From theorem_app1: X → (X → Y) → Y
-  -- Let X = A → B, Y = C
-  -- We get: (A → B) → ((A → B) → C) → C
-
-  -- But (A → B → C) is the same as ((A → B) → C)? No, it's not.
-  -- (A → B → C) = (A → (B → C))
-  -- ((A → B) → C) is different
-
-  -- OK so I need to properly uncurry things
-
-  -- Final attempt: let me manually verify each step
   -- Goal: A → B → (A → B → C) → C
 
-  -- I'll build: A → (A → B → C) → C first, then add B
+  -- We need to compose these at the (A → B) prefix level using b_combinator pattern
 
-  -- From step_a: A → (A → (B → C)) → (B → C)
-  -- Note: (A → B → C) = (A → (B → C)), so step_a is exactly what we want for the first part
+  -- b_combinator gives: ((B → C) → C) → ((A → B → C) → (B → C)) → ((A → B → C) → C)
+  have b_comp : ⊢ ((B.imp C).imp C).imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)) :=
+    b_combinator
 
-  -- Now I need: (B → C) → C
-  -- I can get this IF I have B
+  -- Weaken with B
+  have weak_b_comp : ⊢ (((B.imp C).imp C).imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))).imp
+                        (B.imp (((B.imp C).imp C).imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))) :=
+    Derivable.axiom [] _ (Axiom.prop_s
+                           (((B.imp C).imp C).imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))
+                           B)
 
-  -- But the goal is A → B → (A → B → C) → C
-  -- So I'll have B in context
+  have b_b_comp : ⊢ B.imp (((B.imp C).imp C).imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))) :=
+    Derivable.modus_ponens [] _ _ weak_b_comp b_comp
 
-  -- The structure should be:
-  -- Assume A, assume B, assume (A → B → C), show C
-  -- Apply (A → B → C) to A to get (B → C)
-  -- Apply (B → C) to B to get C
+  -- Weaken with A
+  have weak_a_b_comp : ⊢ (B.imp (((B.imp C).imp C).imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))).imp
+                          (A.imp (B.imp (((B.imp C).imp C).imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))))) :=
+    Derivable.axiom [] _ (Axiom.prop_s
+                           (B.imp (((B.imp C).imp C).imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))))
+                           A)
 
-  -- In terms of our combinators:
-  -- step_a: A → (A → B → C) → (B → C) [apply f to A]
-  -- step_b: B → (B → C) → C [apply result to B]
+  have a_b_b_comp : ⊢ A.imp (B.imp (((B.imp C).imp C).imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))) :=
+    Derivable.modus_ponens [] _ _ weak_a_b_comp b_b_comp
 
-  -- To combine: use b_combinator to compose
-  -- But I need to work at the right level
+  -- Step 7: Use prop_k at the (A → B) level to distribute
+  -- prop_k: (φ → ψ → χ) → ((φ → ψ) → (φ → χ))
+  -- At (A → B) level with φ = ((B → C) → C), ψ = ((A → B → C) → (B → C)), χ = ((A → B → C) → C)
 
-  -- Let me try using imp_trans correctly:
-  -- From step_a, after applying A and (A → B → C), we get (B → C)
-  -- Then we want to apply step_b (after applying B) to get C
+  -- First k at B level
+  have k_b : ⊢ (B.imp (((B.imp C).imp C).imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))).imp
+                ((B.imp ((B.imp C).imp C)).imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))) :=
+    Derivable.axiom [] _ (Axiom.prop_k B ((B.imp C).imp C) (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))
 
-  -- So the composition is: (A → B → C) → (B → C) [from step_a after A]
-  --                 then: (B → C) → C [from step_b after B]
-  --                 gives: (A → B → C) → C
+  have step7_b : ⊢ (B.imp ((B.imp C).imp C)).imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))) :=
+    Derivable.modus_ponens [] _ _ k_b b_b_comp
 
-  -- This is: λf. (λg. g B) (f A) = λf. (f A) B = λf. f A B
+  -- Now k at A level
+  have k_a : ⊢ (A.imp ((B.imp ((B.imp C).imp C)).imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))))).imp
+                ((A.imp (B.imp ((B.imp C).imp C))).imp (A.imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))))) :=
+    Derivable.axiom [] _ (Axiom.prop_k A (B.imp ((B.imp C).imp C)) (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))))
 
-  -- So we want: given A and B, we can go from (A → B → C) to C
+  -- Weaken step7_b with A
+  have weak_step7 : ⊢ ((B.imp ((B.imp C).imp C)).imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))).imp
+                       (A.imp ((B.imp ((B.imp C).imp C)).imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))))) :=
+    Derivable.axiom [] _ (Axiom.prop_s
+                           ((B.imp ((B.imp C).imp C)).imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))))
+                           A)
 
-  -- Let's build A → (A → B → C) → C first (without B)
+  have a_step7 : ⊢ A.imp ((B.imp ((B.imp C).imp C)).imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))) :=
+    Derivable.modus_ponens [] _ _ weak_step7 step7_b
 
-  -- We need to compose: (A → B → C) → (B → C) with (B → C) → C
-  -- But (B → C) → C requires B, which we don't have yet
+  have step8 : ⊢ (A.imp (B.imp ((B.imp C).imp C))).imp (A.imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))) :=
+    Derivable.modus_ponens [] _ _ k_a a_step7
 
-  -- So instead: get A → B → (B → C) → C
-  -- Then use that with A → B → (A → B → C) → (B → C)
-  -- To get: A → B → (A → B → C) → C
+  -- Apply step8 to a_b_bc_c
+  have step9 : ⊢ A.imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))) :=
+    Derivable.modus_ponens [] _ _ step8 a_b_bc_c
 
-  -- We already have:
-  -- a_b_bc_c: A → B → (B → C) → C
+  -- Step 10: Now compose with a_b_abc_bc using prop_k at nested levels
   -- a_b_abc_bc: A → B → (A → B → C) → (B → C)
-
-  -- Now use prop_k to combine:
-  -- prop_k: (P → Q → R) → ((P → Q) → (P → R))
-  -- At level A → B:
-  -- (A → B → Q → R) → ((A → B → Q) → (A → B → R))
-  -- Let Q = (A → B → C), R = C, with intermediate (B → C)
-
-  have k_combine : ⊢ (A.imp (B.imp ((A.imp (B.imp C)).imp (B.imp C)))).imp
-                      ((A.imp (B.imp (A.imp (B.imp C)))).imp (A.imp (B.imp (B.imp C)))) :=
-    Derivable.axiom [] _ (Axiom.prop_k A B (A.imp (B.imp C)) (B.imp C))
-
-  have temp1 : ⊢ (A.imp (B.imp (A.imp (B.imp C)))).imp (A.imp (B.imp (B.imp C))) :=
-    Derivable.modus_ponens [] _ _ k_combine a_b_abc_bc
-
-  -- Now I need A → B → (A → B → C) which is trivial by weakening
-  have id_abc : ⊢ (A.imp (B.imp C)).imp (A.imp (B.imp C)) := identity (A.imp (B.imp C))
-
-  -- Weaken to A → (A → B → C) → (A → B → C)
-  have weak1 : ⊢ (A.imp (B.imp C)).imp (A.imp ((A.imp (B.imp C)).imp (A.imp (B.imp C)))) :=
-    Derivable.axiom [] _ (Axiom.prop_s (A.imp (B.imp C)) A)
-
-  have a_abc_abc : ⊢ A.imp ((A.imp (B.imp C)).imp (A.imp (B.imp C))) :=
-    Derivable.modus_ponens [] _ _ weak1 id_abc
-
-  -- Weaken again to A → B → (A → B → C) → (A → B → C)
-  have weak2 : ⊢ (A.imp ((A.imp (B.imp C)).imp (A.imp (B.imp C)))).imp
-                  (B.imp (A.imp ((A.imp (B.imp C)).imp (A.imp (B.imp C))))) :=
-    Derivable.axiom [] _ (Axiom.prop_s (A.imp ((A.imp (B.imp C)).imp (A.imp (B.imp C)))) B)
-
-  have b_a_abc_abc : ⊢ B.imp (A.imp ((A.imp (B.imp C)).imp (A.imp (B.imp C)))) :=
-    Derivable.modus_ponens [] _ _ weak2 a_abc_abc
-
-  have a_b_abc_abc : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp (A.imp (B.imp C)))) :=
-    Derivable.modus_ponens [] _ _ theorem_flip b_a_abc_abc
-
-  -- Hmm, I have A → B → (A → B → C) → (A → B → C), which doesn't help
-
-  -- Let me reconsider. I have:
-  -- temp1: (A → B → (A → B → C)) → (A → B → (B → C))
-  -- a_b_bc_c: A → B → (B → C) → C
-
-  -- If I can get A → B → (A → B → C), I can apply temp1 to get A → B → (B → C)
-  -- Then compose with a_b_bc_c
-
-  -- A → B → (A → B → C) is just: given A and B, we have (A → B → C)? That requires (A → B → C) as input!
-
-  -- OH! I see the issue. Let me re-examine the goal.
+  -- step9: A → B → ((A → B → C) → (B → C)) → ((A → B → C) → C)
   -- Goal: A → B → (A → B → C) → C
-  -- This means: given A, given B, given (A → B → C), produce C
 
-  -- So (A → B → C) is an ASSUMPTION, not something I need to construct!
+  -- We need to combine at two levels: first B, then A
+  -- Use prop_k at B level: (B → X → Y) → ((B → X) → (B → Y))
+  -- with X = (A → B → C) → (B → C), Y = (A → B → C) → C
+  have k_b_final : ⊢ (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))).imp
+                      ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp (B.imp ((A.imp (B.imp C)).imp C))) :=
+    Derivable.axiom [] _ (Axiom.prop_k B ((A.imp (B.imp C)).imp (B.imp C)) ((A.imp (B.imp C)).imp C))
 
-  -- So the structure is:
-  -- - a_b_abc_bc: A → B → (A → B → C) → (B → C) [given A, B, and f, apply f to A]
-  -- - a_b_bc_c: A → B → (B → C) → C [given A, B, and g, apply g to B]
-  -- - Goal: A → B → (A → B → C) → C [compose the above]
+  -- Weaken k_b_final with A
+  have weak_k_b : ⊢ ((B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))).imp
+                      ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp (B.imp ((A.imp (B.imp C)).imp C)))).imp
+                    (A.imp ((B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))).imp
+                      ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp (B.imp ((A.imp (B.imp C)).imp C))))) :=
+    Derivable.axiom [] _ (Axiom.prop_s
+                           ((B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))).imp
+                            ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp (B.imp ((A.imp (B.imp C)).imp C))))
+                           A)
 
-  -- Now I need to compose at the inner level (A → B → ...)
-  -- Use prop_k: (A → B → X → Y) → ((A → B → X) → (A → B → Y))
+  have a_k_b : ⊢ A.imp ((B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))).imp
+                        ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp (B.imp ((A.imp (B.imp C)).imp C)))) :=
+    Derivable.modus_ponens [] _ _ weak_k_b k_b_final
 
-  have final_k : ⊢ (A.imp (B.imp ((B.imp C).imp C))).imp
-                    ((A.imp (B.imp (A.imp (B.imp C)).imp (B.imp C))).imp
-                     (A.imp (B.imp ((A.imp (B.imp C)).imp C)))) :=
-    Derivable.axiom [] _ (Axiom.prop_k A B (A.imp (B.imp C)) C)
+  -- Now use prop_k at A level to distribute
+  -- prop_k A X Y gives: (A → X → Y) → ((A → X) → (A → Y))
+  -- with X = (B → ((A → B → C) → (B → C)) → ((A → B → C) → C))
+  --      Y = (B → ((A → B → C) → (B → C))) → (B → ((A → B → C) → C))
+  have k_a_outer : ⊢ (A.imp ((B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))).imp
+                             ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp (B.imp ((A.imp (B.imp C)).imp C))))).imp
+                      ((A.imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))).imp
+                       (A.imp ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp (B.imp ((A.imp (B.imp C)).imp C))))) :=
+    Derivable.axiom [] _ (Axiom.prop_k A (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))
+                                          ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp (B.imp ((A.imp (B.imp C)).imp C))))
 
-  have almost_there : ⊢ (A.imp (B.imp ((A.imp (B.imp C)).imp (B.imp C)))).imp
-                         (A.imp (B.imp ((A.imp (B.imp C)).imp C))) :=
-    Derivable.modus_ponens [] _ _ final_k a_b_bc_c
+  have step10_a : ⊢ (A.imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))).imp
+                     (A.imp ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp (B.imp ((A.imp (B.imp C)).imp C)))) :=
+    Derivable.modus_ponens [] _ _ k_a_outer a_k_b
 
-  exact Derivable.modus_ponens [] _ _ almost_there a_b_abc_bc
+  have step10 : ⊢ A.imp ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp (B.imp ((A.imp (B.imp C)).imp C))) :=
+    Derivable.modus_ponens [] _ _ step10_a step9
+
+  -- Now use prop_k at A level again to combine with a_b_abc_bc
+  -- step10: A → ((B → ((A → B → C) → (B → C))) → (B → ((A → B → C) → C)))
+  -- a_b_abc_bc: A → (B → ((A → B → C) → (B → C)))
+  -- Goal: A → (B → ((A → B → C) → C))
+
+  have k_a_final : ⊢ (A.imp ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp (B.imp ((A.imp (B.imp C)).imp C)))).imp
+                      ((A.imp (B.imp ((A.imp (B.imp C)).imp (B.imp C)))).imp (A.imp (B.imp ((A.imp (B.imp C)).imp C)))) :=
+    Derivable.axiom [] _ (Axiom.prop_k A (B.imp ((A.imp (B.imp C)).imp (B.imp C))) (B.imp ((A.imp (B.imp C)).imp C)))
+
+  have step11 : ⊢ (A.imp (B.imp ((A.imp (B.imp C)).imp (B.imp C)))).imp (A.imp (B.imp ((A.imp (B.imp C)).imp C))) :=
+    Derivable.modus_ponens [] _ _ k_a_final step10
+
+  exact Derivable.modus_ponens [] _ _ step11 a_b_abc_bc
 
 /-!
 ## Helper Lemmas: Conjunction Introduction
 
 Conjunction introduction (⊢ A → ⊢ B → ⊢ A ∧ B) requires the internal pairing
-combinator (⊢ A → B → A ∧ B). This combinator is axiomatized because its
-construction from K and S alone requires complex term manipulation that would
-obscure the mathematical content.
+combinator (⊢ A → B → A ∧ B). This combinator is derived from the double
+application lemma (theorem_app2) by observing that:
+- A ∧ B = ¬(A → ¬B) = (A → B → ⊥) → ⊥
+- theorem_app2 with C := ⊥ gives: A → B → (A → B → ⊥) → ⊥ = A → B → (A ∧ B)
 
-The `pairing` axiom is SEMANTICALLY VALID in task semantics. Its soundness
-follows from: if A is true and B is true and we have (A → B → ⊥), then
-applying to A gives (B → ⊥), applying to B gives ⊥. So (A → B → ⊥) → ⊥
-(which is A ∧ B) is true.
+This derivation completes the connection between combinator calculus and
+conjunction introduction in the TM proof system.
 -/
 
 /--
@@ -623,17 +471,27 @@ A and B, we can construct a value of type A ∧ B.
 at (M,τ,t), then A ∧ B = ¬(A → ¬B) holds because assuming (A → ¬B) with A gives ¬B,
 contradicting B.
 
-**Implementation Note**: This can be constructed from K and S combinators
-(λa.λb.λf. f a b = S (S (K S) (S (K K) I)) (K I) where I = SKK), but the
-construction is complex (~50+ lines of combinator manipulation) and would obscure
-the proof. We axiomatize it with semantic justification for MVP. The derivation
-is straightforward in principle but tedious in practice.
+**Derivation**: This theorem is derived from the double application combinator
+`theorem_app2` by instantiating `C := Formula.bot`. The conjunction `A ∧ B`
+expands to `((A → (B → ⊥)) → ⊥)`, which matches the type of `theorem_app2`
+when `C = ⊥`:
+- `A ∧ B = (A → B → ⊥) → ⊥` (by definition of conjunction and negation)
+- `theorem_app2 A B ⊥ : A → B → (A → B → ⊥) → ⊥`
+- These are definitionally equal after unfolding.
 
-**Future Work**: Derive fully from S and K axioms using combinator calculus.
-The pattern requires building the application combinator step-by-step through
-nested S and K applications.
+**Combinator correspondence**: In SKI combinator calculus, the pairing combinator
+is the Vireo (V) combinator: V = λa.λb.λf. f a b. This derivation shows V can be
+built from S (prop_s), K (prop_k), and I (identity = SKK) combinators via the
+flip (C) and application (app1, app2) intermediate combinators.
 -/
-axiom pairing (A B : Formula) : ⊢ A.imp (B.imp (A.and B))
+theorem pairing (A B : Formula) : ⊢ A.imp (B.imp (A.and B)) := by
+  -- Goal: A → B → A ∧ B
+  -- Recall: A ∧ B = ¬(A → ¬B) = (A → B → ⊥) → ⊥
+  -- From theorem_app2 with C := ⊥: A → B → (A → B → ⊥) → ⊥
+  -- The types match exactly after unfolding the definition of conjunction
+  unfold Formula.and Formula.neg
+  -- Now goal is: A → B → (A → B → ⊥) → ⊥
+  exact @theorem_app2 A B Formula.bot
 
 /-!
 ## Helper Lemmas: Double Negation Introduction
