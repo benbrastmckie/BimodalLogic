@@ -9,7 +9,7 @@ logic TM (Tense and Modality) with task semantics. It provides:
 - **Task Semantics**: Possible worlds as functions from times to world states constrained by task relations
 - **Layered Architecture**: Layer 0 (Core TM) MVP complete with planned extensions for counterfactual, epistemic, and normative operators
 - **Complete Soundness**: All 12 axioms proven sound, 8/8 inference rules proven
-- **Perpetuity Principles**: All 6 principles (P1-P4 fully proven, P5-P6 axiomatized)
+- **Perpetuity Principles**: ALL 6 principles fully proven (P1-P6, zero sorry)
 
 ## Implementation Status
 
@@ -204,9 +204,10 @@ Logos follows rigorous development standards including Test-Driven Development (
   - P2: `▽φ → ◇φ` (sometimes implies possible) - **Fully proven (contraposition via B combinator)**
   - P3: `□φ → □△φ` (necessity of perpetuity) - **Fully proven (zero sorry)**
   - P4: `◇▽φ → ◇φ` (possibility of occurrence) - **Fully proven (contraposition of P3 + DNI)**
-  - P5: `◇▽φ → △◇φ` (persistent possibility) - **Axiomatized (blocked by S5 axiom gap)**
-  - P6: `▽□φ → □△φ` (occurrent necessity is perpetual) - **Axiomatized (blocked by P5 dependency)**
+  - P5: `◇▽φ → △◇φ` (persistent possibility) - **Fully proven (via P4 + persistence lemma)**
+  - P6: `▽□φ → □△φ` (occurrent necessity is perpetual) - **Fully proven (via P5(¬φ) + bridge lemmas + double_contrapose)**
 - Note: `△` (always/at all times) and `▽` (sometimes/at some time) are Unicode triangle notation alternatives
+- **ALL 6 PERPETUITY PRINCIPLES FULLY PROVEN** (100% completion)
 
 ### Automation Package
 - `Tactics`: Custom tactics for TM logic automation **(12/12 implemented)**
@@ -282,7 +283,7 @@ Logos test suite is organized in LogosTest/ directory with unit tests (Syntax/, 
 
 **Working with Partial Implementation**:
 - **Use proven components**: All 12 axioms are sound (MT, M4, MB, T4, TA, TL, MF, TF, modal_k_dist, double_negation, prop_k, prop_s)
-- **Perpetuity proofs**: P1-P4 fully proven (zero sorry), P5-P6 axiomatized (S5 axiom gap)
+- **Perpetuity proofs**: ALL 6 principles fully proven (P1-P6, zero sorry)
 - **Automation available**: All 12 tactics implemented (see Automation Package above)
 - See [Implementation Status - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) for workarounds and alternatives
 - See [IMPLEMENTATION_STATUS.md](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)

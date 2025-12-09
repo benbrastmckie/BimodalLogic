@@ -231,6 +231,31 @@ theorem swap_temporal_involution (φ : Formula) :
 theorem swap_past_future_involution (φ : Formula) :
   φ.swap_past_future.swap_past_future = φ := swap_temporal_involution φ
 
+/--
+Temporal swap distributes over diamond: `swap(◇φ) = ◇(swap φ)`.
+
+Since `diamond φ = φ.neg.box.neg`, and `swap_temporal` recurses through
+`imp` and `box` without changing their structure (only swapping all_past/all_future),
+we have:
+- `swap(φ.neg.box.neg) = swap(φ.neg).box.neg = (swap φ).neg.box.neg = (swap φ).diamond`
+
+Note: `neg φ = φ.imp bot` and `swap_temporal bot = bot`, so
+`swap_temporal (φ.neg) = (swap_temporal φ).neg`.
+-/
+theorem swap_temporal_diamond (φ : Formula) :
+    φ.diamond.swap_temporal = φ.swap_temporal.diamond := by
+  simp only [diamond, neg, swap_temporal]
+
+/--
+Temporal swap distributes over negation: `swap(¬φ) = ¬(swap φ)`.
+
+Since `neg φ = φ.imp bot` and `swap_temporal bot = bot`:
+`swap(φ.imp bot) = (swap φ).imp bot = (swap φ).neg`
+-/
+theorem swap_temporal_neg (φ : Formula) :
+    φ.neg.swap_temporal = φ.swap_temporal.neg := by
+  simp only [neg, swap_temporal]
+
 end Formula
 
 end Logos.Core.Syntax

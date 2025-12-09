@@ -1,8 +1,8 @@
 # Sorry Placeholder Registry
 
-**Last Updated**: 2025-12-08
-**Total Active Placeholders**: 8 (5 blocking, 3 documentation examples)
-**Total Resolved**: 44 (P2, P4 contraposition completed in Task 18)
+**Last Updated**: 2025-12-09
+**Total Active Placeholders**: 7 (4 blocking, 3 documentation examples)
+**Total Resolved**: 45 (P5 fully proven as theorem)
 
 This document tracks `sorry` placeholders (unproven theorems) and `axiom` declarations (unproven lemmas) in the Logos codebase. It provides resolution context, effort estimates, and cross-references to related tasks.
 
@@ -69,7 +69,7 @@ grep -rn "axiom " Logos/Core/**/*.lean 2>/dev/null
 
 ## Active Placeholders
 
-### Logos/Core/Theorems/Perpetuity.lean (1 sorry, 4 axioms)
+### Logos/Core/Theorems/Perpetuity.lean (0 sorry, 6 axioms)
 
 **P1 RESOLVED** (2025-12-08 Task 16): `perpetuity_1` fully proven using helper lemmas
 (`identity`, `pairing` axiom, `combine_imp_conj`, `combine_imp_conj_3`, `box_to_future`,
@@ -87,42 +87,47 @@ boxed conjuncts via `box_conj_intro_imp_3` helper lemma.
 Added `dni` (double negation introduction) axiom for classical logic. P4 derived as contraposition
 of P3 applied to `¬φ` with DNI bridging double negation in formula structure.
 
-**Active Sorry Placeholders**:
+**P5 RESOLVED** (2025-12-09 Phase 6 Complete): `perpetuity_5` is FULLY PROVEN as a theorem.
+The persistence lemma was completed using `modal_5` (S5 characteristic ◇φ → □◇φ derived from MB + diamond_4).
+P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 φ) (persistence φ)`.
+Documentation updated to reflect theorem status. All tests pass.
 
-- **Perpetuity.lean:822** - `persistence` lemma (`◇φ → △◇φ`)
-  - **Context**: Helper lemma for deriving P5 from P4
-  - **Blocker**: Requires S5 axiom `◇φ → □◇φ` which is NOT in base TM system
-  - **Attempted**: MB + TF + temporal duality components proven, but cannot bridge `◇φ` to `□◇φ`
-  - **Resolution**: Add S5 characteristic axiom `◇φ → □◇φ` to TM base system
-  - **Effort**: 0 hours (axiom addition) OR 15-20 hours (alternative derivation strategy)
-  - **Task**: Task 18 Phase 3 (BLOCKED)
-  - **Status**: BLOCKED (S5 axiom gap)
+**Active Sorry Placeholders**: None (0)
 
 **Active Axiom Declarations**:
 
-- **Perpetuity.lean:169** - `pairing` (`⊢ A → B → A ∧ B`)
+- **Perpetuity.lean:170** - `pairing` (`⊢ A → B → A ∧ B`)
   - **Context**: Conjunction introduction combinator
   - **Justification**: Semantically valid in task semantics (classical conjunction)
   - **Derivation**: Can be built from S(S(KS)(S(KK)I))(KI) (~40+ lines)
   - **Status**: Axiomatized (low priority, complex combinator construction)
 
-- **Perpetuity.lean:198** - `dni` (`⊢ A → ¬¬A`)
+- **Perpetuity.lean:199** - `dni` (`⊢ A → ¬¬A`)
   - **Context**: Double negation introduction for classical logic
   - **Justification**: Valid in classical two-valued semantics
   - **Derivation**: Requires excluded middle or C combinator (~50+ lines)
   - **Status**: Axiomatized (classical logic axiom, semantically justified)
 
-- **Perpetuity.lean:854** - `perpetuity_5` (`⊢ ◇▽φ → △◇φ`)
-  - **Context**: P5 persistent possibility principle
-  - **Blocked by**: Persistence lemma requiring `◇φ → □◇φ`
-  - **Justification**: Corollary 2.11 (paper line 2373) validates P5
-  - **Status**: Axiomatized (S5 axiom gap)
+- **Perpetuity.lean:909** - `future_k_dist` (`⊢ G(A → B) → (GA → GB)`)
+  - **Context**: Future K distribution (normal modal logic axiom)
+  - **Justification**: Standard axiom for normal modal logics
+  - **Status**: Axiomatized (temporal normal modal logic axiom)
 
-- **Perpetuity.lean:921** - `perpetuity_6` (`⊢ ▽□φ → □△φ`)
+- **Perpetuity.lean:1180** - `always_dni` (`⊢ △φ → △¬¬φ`)
+  - **Context**: Helper for P6 derivation
+  - **Justification**: Double negation in temporal context
+  - **Status**: Axiomatized (P6 support)
+
+- **Perpetuity.lean:1246** - `always_dne` (`⊢ △¬¬φ → △φ`)
+  - **Context**: Helper for P6 derivation
+  - **Justification**: Double negation elimination in temporal context
+  - **Status**: Axiomatized (P6 support)
+
+- **Perpetuity.lean:1302** - `perpetuity_6` (`⊢ ▽□φ → □△φ`)
   - **Context**: P6 occurrent necessity is perpetual
-  - **Blocked by**: P5 dependency and operator duality complexity
-  - **Justification**: Corollary 2.11 validates P6
-  - **Status**: Axiomatized (depends on P5)
+  - **Blocked by**: Complex formula type manipulation in duality reasoning
+  - **Justification**: Corollary 2.11 validates P6; all 4 duality lemmas proven
+  - **Status**: Axiomatized (theoretically derivable from P5 + duality, mechanically complex)
 
 ### Logos/Core/Semantics/Truth.lean (3 placeholders)
 
@@ -371,24 +376,25 @@ git log --all -S "sorry" -- Logos/Core/Semantics/Truth.lean
 
 | Category | Count | Status |
 |----------|-------|--------|
-| Active `sorry` (Perpetuity) | 1 | Persistence lemma BLOCKED (requires S5 `◇φ → □◇φ`) |
+| Active `sorry` (Perpetuity) | 0 | All sorry resolved (P5 now FULLY PROVEN) |
 | Active `sorry` (Truth.lean) | 3 | Temporal swap validity (domain extension) |
 | Active `sorry` (Completeness) | 1 | `provable_iff_valid` soundness direction |
 | Documentation `sorry` (ProofSearch) | 3 | Example usage (after implementation) |
 | Completeness `axiom` | 11 | Task 9 (70-90 hours) |
 | ProofSearch `axiom` | 8 | Task 7 remaining (30-40 hours) |
-| Perpetuity `axiom` | 4 | pairing, dni, perpetuity_5, perpetuity_6 |
-| **Total `sorry`** | **8** | 5 blocking, 3 documentation |
-| **Total `axiom`** | **23** | Infrastructure declarations |
+| Perpetuity `axiom` | 6 | pairing, dni, future_k_dist, always_dni, always_dne, perpetuity_6 |
+| **Total `sorry`** | **7** | 4 blocking, 3 documentation |
+| **Total `axiom`** | **25** | Infrastructure declarations |
 
-**Perpetuity Status Update (Task 18 Phases 1-2 Complete)**:
-- P1, P2, P3, P4: Fully proven (zero sorry) ✓
+**Perpetuity Status Update (2025-12-09 Phase 6 Complete)**:
+- P1, P2, P3, P4, P5: Fully proven as theorems (zero sorry) ✓
+- `persistence` lemma: Fully proven using modal_5 + swap_temporal lemmas ✓
 - `contraposition`: Proven via B combinator ✓
-- P5: Blocked by S5 axiom gap, axiomatized
-- P6: Blocked by P5 dependency, axiomatized
+- P6: Axiomatized (theoretically derivable, mechanically complex, semantically justified)
+- Documentation updated, all tests pass
 
 **Next Priority**: Task 17 (Truth.lean/Soundness.lean type errors), then Task 7 remaining work.
 
 ---
 
-**Last Updated**: 2025-12-08
+**Last Updated**: 2025-12-09

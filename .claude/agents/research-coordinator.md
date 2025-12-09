@@ -199,37 +199,28 @@ context:
 
 **Objective**: Invoke research-specialist agent for each topic in parallel using Task tool.
 
-**Actions**:
+**MANDATORY EXECUTION**: You MUST invoke research-specialist for each topic in the TOPICS array using the Task tool. Generate one Task invocation per topic - do NOT skip or summarize this step.
 
-1. **Prepare Task Invocations**: For each topic, prepare a Task tool invocation
-2. **Use Parallel Task Pattern**: Invoke all research-specialist agents in a single response using multiple Task tool calls
+<!-- CRITICAL: Do NOT wrap Task invocations in code fences - they will not execute -->
 
-**Example Parallel Invocation** (3 topics):
+**CRITICAL**: For each index `i` from 0 to `${#TOPICS[@]} - 1`, you MUST generate and execute a Task tool invocation. The following shows the required pattern for each topic:
 
-```markdown
-I'm now invoking research-specialist for 3 topics in parallel.
-
-**EXECUTE NOW**: USE the Task tool to invoke the research-specialist.
+**EXECUTE NOW**: USE the Task tool to invoke research-specialist for topic at index 0:
 
 Task {
   subagent_type: "general-purpose"
-  description: "Research Mathlib theorems for group homomorphism"
-  prompt: |
+  description: "Research ${TOPICS[0]}"
+  prompt: "
     Read and follow behavioral guidelines from:
-    /home/benjamin/.config/.claude/agents/research-specialist.md
+    ${CLAUDE_PROJECT_DIR}/.claude/agents/research-specialist.md
 
     You are acting as a Research Specialist Agent with the tools and constraints
     defined in that file.
 
     **CRITICAL - Hard Barrier Pattern**:
-    REPORT_PATH="${REPORT_PATHS[0]}"
+    REPORT_PATH=${REPORT_PATHS[0]}
 
-    **Research Topic**: Mathlib Theorems for Group Homomorphism
-    **Research Focus**:
-    - Investigate Mathlib.Algebra.Group.Hom namespace
-    - Find group homomorphism theorems and lemmas
-    - Identify common proof patterns
-    - Document key theorems for reference
+    **Research Topic**: ${TOPICS[0]}
 
     **Context**:
     ${CONTEXT}
@@ -238,30 +229,26 @@ Task {
     1. STEP 1: Verify absolute report path received
     2. STEP 2: Create report file FIRST (before research)
     3. STEP 3: Conduct research and update report incrementally
-    4. STEP 4: Verify file exists and return: REPORT_CREATED: [path]
+    4. STEP 4: Verify file exists and return: REPORT_CREATED: ${REPORT_PATHS[0]}
+  "
 }
 
-**EXECUTE NOW**: USE the Task tool to invoke the research-specialist.
+**EXECUTE NOW**: USE the Task tool to invoke research-specialist for topic at index 1:
 
 Task {
   subagent_type: "general-purpose"
-  description: "Research proof automation strategies for Lean 4"
-  prompt: |
+  description: "Research ${TOPICS[1]}"
+  prompt: "
     Read and follow behavioral guidelines from:
-    /home/benjamin/.config/.claude/agents/research-specialist.md
+    ${CLAUDE_PROJECT_DIR}/.claude/agents/research-specialist.md
 
     You are acting as a Research Specialist Agent with the tools and constraints
     defined in that file.
 
     **CRITICAL - Hard Barrier Pattern**:
-    REPORT_PATH="${REPORT_PATHS[1]}"
+    REPORT_PATH=${REPORT_PATHS[1]}
 
-    **Research Topic**: Proof Automation Strategies
-    **Research Focus**:
-    - Research Lean 4 tactic automation (simp, ring, omega, etc.)
-    - Investigate auto tactic and decide tactic
-    - Find proof search strategies
-    - Document tactic composition patterns
+    **Research Topic**: ${TOPICS[1]}
 
     **Context**:
     ${CONTEXT}
@@ -270,30 +257,26 @@ Task {
     1. STEP 1: Verify absolute report path received
     2. STEP 2: Create report file FIRST (before research)
     3. STEP 3: Conduct research and update report incrementally
-    4. STEP 4: Verify file exists and return: REPORT_CREATED: [path]
+    4. STEP 4: Verify file exists and return: REPORT_CREATED: ${REPORT_PATHS[1]}
+  "
 }
 
-**EXECUTE NOW**: USE the Task tool to invoke the research-specialist.
+**EXECUTE NOW**: USE the Task tool to invoke research-specialist for topic at index 2 (if ${#TOPICS[@]} > 2):
 
 Task {
   subagent_type: "general-purpose"
-  description: "Research Lean 4 project structure patterns"
-  prompt: |
+  description: "Research ${TOPICS[2]}"
+  prompt: "
     Read and follow behavioral guidelines from:
-    /home/benjamin/.config/.claude/agents/research-specialist.md
+    ${CLAUDE_PROJECT_DIR}/.claude/agents/research-specialist.md
 
     You are acting as a Research Specialist Agent with the tools and constraints
     defined in that file.
 
     **CRITICAL - Hard Barrier Pattern**:
-    REPORT_PATH="${REPORT_PATHS[2]}"
+    REPORT_PATH=${REPORT_PATHS[2]}
 
-    **Research Topic**: Lean 4 Project Structure Patterns
-    **Research Focus**:
-    - Analyze typical Lean 4 project organization
-    - Find file naming conventions
-    - Identify import patterns
-    - Document module hierarchy best practices
+    **Research Topic**: ${TOPICS[2]}
 
     **Context**:
     ${CONTEXT}
@@ -302,11 +285,36 @@ Task {
     1. STEP 1: Verify absolute report path received
     2. STEP 2: Create report file FIRST (before research)
     3. STEP 3: Conduct research and update report incrementally
-    4. STEP 4: Verify file exists and return: REPORT_CREATED: [path]
+    4. STEP 4: Verify file exists and return: REPORT_CREATED: ${REPORT_PATHS[2]}
+  "
 }
-```
 
-**Checkpoint**: All research-specialist agents invoked in parallel.
+Continue this pattern for indices 3, 4, etc. if more topics exist in TOPICS array.
+
+**CHECKPOINT**: Before proceeding to STEP 4, verify you have invoked the Task tool for ALL topics. Count the Task tool invocations in your response - it MUST equal ${#TOPICS[@]}.
+
+---
+
+### STEP 3.5: Verify Task Invocations
+
+**Objective**: Self-validate that Task tool was actually used before proceeding.
+
+**SELF-CHECK**: Before proceeding to STEP 4, answer these questions:
+
+1. Did you generate Task tool invocations for each topic? (YES/NO)
+2. How many Task invocations did you generate? (must equal topic count: ${#TOPICS[@]})
+3. Did each Task invocation include the REPORT_PATH from REPORT_PATHS array?
+4. Did each Task invocation include the **EXECUTE NOW** directive?
+
+**CRITICAL**: If any answer is NO or incorrect, STOP and re-execute STEP 3 before continuing.
+
+**Verification Criteria**:
+- Task invocation count MUST equal `${#TOPICS[@]}`
+- Each Task MUST have `subagent_type: "general-purpose"`
+- Each Task MUST have `REPORT_PATH=${REPORT_PATHS[i]}` in its prompt
+- Each Task MUST NOT be wrapped in markdown code fences
+
+**If Tasks Not Invoked**: You MUST go back to STEP 3 and generate actual Task tool invocations. Reading examples is NOT executing them.
 
 ---
 

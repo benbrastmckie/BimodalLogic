@@ -1246,20 +1246,6 @@ theorem derivable_implies_swap_valid :
       -- Γ' = [], both premises are from []
       exact mp_preserves_swap_valid ψ' χ' (ih_imp h_eq) (ih_ψ' h_eq)
 
-    | necessitation ψ' h_ψ' ih =>
-      intro h_eq
-      -- necessitation: from Derivable [] ψ', derive Derivable [] □ψ'
-      -- h_eq confirms context is []
-      -- Goal: is_valid (□ψ').swap = is_valid □(ψ'.swap)
-      -- IH gives: is_valid ψ'.swap
-      -- Need to show: is_valid □(ψ'.swap) from is_valid ψ'.swap
-      intro F M τ t ht
-      simp only [Formula.swap_past_future, truth_at]
-      -- Goal: ∀ σ hs, truth_at M σ t hs ψ'.swap
-      intro σ hs
-      -- Apply IH: is_valid ψ'.swap
-      exact ih h_eq F M σ t hs
-
     | modal_k Γ' ψ' h_ψ' ih =>
       intro h_eq
       -- h_eq says: Context.map Formula.box Γ' = []

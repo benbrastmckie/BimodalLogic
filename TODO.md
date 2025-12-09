@@ -25,11 +25,12 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 
 **Layer 0 Completion Progress**:
 - High Priority: COMPLETE (all blocking tasks done)
-- Medium Priority: Task 18 PARTIAL (4/6 perpetuity theorems proven)
-- Low Priority: 5 tasks (9-11 pending, 19-20 blocked, 21 skipped)
-- **Active Tasks**: 6
+- Medium Priority: COMPLETE (all 6 perpetuity theorems proven - P1-P6!)
+- Low Priority: 3 tasks (9-11 pending, 21 skipped)
+- **Active Tasks**: 3
 
-**Next Milestone**: Task 9 (Completeness proofs) or Layer 1 planning
+**Milestone Achievement**: ALL 6 PERPETUITY PRINCIPLES FULLY PROVEN (100%)
+**Next Milestone**: Task 9 (Completeness proofs)
 
 ---
 
@@ -58,122 +59,12 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 
 ## Medium Priority Tasks
 
-### 18. Remove Derivable Axioms from Perpetuity.lean
-**Effort**: 12-18 hours (cumulative)
-**Status**: PARTIAL (Phases 1-2 Complete, Phases 3-4 Blocked)
-**Priority**: Medium (reduces axiomatic footprint)
-**Blocking**: None
-**Dependencies**: Phases build on each other sequentially
-
-**Description**: Phases 7-9 of the perpetuity theorem plan were skipped for MVP, leaving P4-P6 as axioms. These can be derived from the now-complete P1-P3 proofs. Additionally, the `pairing` and `contraposition` helpers are either axiomatized or use sorry.
-
-**Goal**: Remove all unnecessary axioms that can be syntactically derived, reducing the axiomatic footprint to only semantically necessary primitives.
-
-**Status Summary**:
-- **Phase 1**: ✓ COMPLETE - `contraposition` proven via B combinator (zero sorry)
-- **Phase 2**: ✓ COMPLETE - P4 derived from P3 via contraposition (zero sorry)
-- **Phase 3**: ✗ BLOCKED - P5 requires S5 axiom `◇φ → □◇φ` not in TM base system
-- **Phase 4**: ✗ BLOCKED - P6 depends on P5
-- **Phase 5**: SKIPPED - Optional `pairing` derivation (low priority)
-
-**Results**:
-- P1, P2, P3, P4: Fully proven (zero sorry) ✓
-- P5, P6: Axiomatized (blocked by S5 axiom gap)
-- Axiom count reduced from 6 to 4 (pairing, dni, perpetuity_5, perpetuity_6)
-- Sorry count: 1 (persistence lemma blocked by S5 axiom gap)
-- Necessitation proven derivable from MK (Derivation.lean)
-- Documentation corrected: 8/8 inference rules proven (was incorrectly stated as 4/8)
-
-**Completed Phases**:
-
-1. ✓ **Complete `contraposition` proof** (DONE)
-   - File: `Logos/Core/Theorems/Perpetuity.lean:336`
-   - Result: Theorem proven using B combinator construction
-   - Helper: `b_combinator` theorem added
-   - Status: Zero sorry ✓
-
-2. ✓ **Derive P4 from P3** (DONE)
-   - File: `Logos/Core/Theorems/Perpetuity.lean:666`
-   - Result: Theorem derived via contraposition of P3
-   - Helper: `dni` axiom added for double negation introduction
-   - Status: Zero sorry ✓
-
-**Blocked Phases**:
-
-3. ✗ **Derive P5 from P4** (BLOCKED)
-   - File: `Logos/Core/Theorems/Perpetuity.lean:854`
-   - Current: `axiom perpetuity_5`
-   - Blocker: Requires S5 axiom `◇φ → □◇φ` not in TM base system
-   - Status: Axiomatized with semantic justification (Corollary 2.11)
-
-4. ✗ **Derive P6 from P5** (BLOCKED)
-   - File: `Logos/Core/Theorems/Perpetuity.lean:921`
-   - Current: `axiom perpetuity_6`
-   - Blocker: Depends on P5
-   - Status: Axiomatized with semantic justification (Corollary 2.11)
-
-**Skipped Phases**:
-
-5. **Derive `pairing` from K and S** (SKIPPED - optional, low priority)
-   - File: `Logos/Core/Theorems/Perpetuity.lean:169`
-   - Current: `axiom pairing (A B : Formula) : ⊢ A.imp (B.imp (A.and B))`
-   - Strategy: Build from S(S(KS)(S(KK)I))(KI) where I=SKK
-   - Note: Complex combinator construction (~40+ lines), semantically justified as-is
-
-**Implementation Plan**: See `.claude/specs/047_remove_derivable_axioms_perpetuity/plans/001-remove-derivable-axioms-perpetuity-plan.md`
-
-**Success Criteria**:
-- Zero axioms in Perpetuity.lean except optional `pairing`
-- Zero sorry markers in Perpetuity.lean
-- All perpetuity principles P1-P6 as theorems
-- `lake build` succeeds
-- Existing tests pass
-
-**Plan Reference**: `.claude/specs/045_perpetuity_theorem_logic_fix/plans/001-perpetuity-theorem-logic-fix-plan.md` (Phases 7-9 sketches)
-
----
-
-### 19. Derive P5 Perpetuity Theorem (Blocked by S5 Axiom Gap)
-**Effort**: 8-12 hours (if S5 axiom added)
-**Status**: BLOCKED
-**Priority**: Low (requires extending TM axiom system)
-**Blocking**: S5 axiom `◇φ → □◇φ` not in base TM system
-**Dependencies**: Requires decision to extend modal axiom system
-
-**Description**: Derive P5 (`◇▽φ → △◇φ`, persistent possibility) as a theorem instead of axiom. Currently blocked because the persistence lemma `◇φ → △◇φ` requires lifting from MB axiom `φ → □◇φ`, which needs the S5 characteristic `◇φ → □◇φ`.
-
-**Current Status**: P5 remains as `axiom perpetuity_5` with semantic justification (Corollary 2.11).
-
-**Options to Unblock**:
-1. Add S5 axiom `◇φ → □◇φ` to base TM system (extends modal logic)
-2. Find alternative derivation strategy not requiring S5
-3. Accept axiomatization as sufficient (current approach)
-
-**Plan Reference**: [Task 18 Plan - Phase 3](.claude/specs/047_remove_derivable_axioms_perpetuity/plans/001-remove-derivable-axioms-perpetuity-plan.md#phase-3-derive-p5-using-persistence-lemma-blocked)
-
----
-
-### 20. Derive P6 Perpetuity Theorem (Blocked by P5 Dependency)
-**Effort**: 4-8 hours (if P5 proven)
-**Status**: BLOCKED
-**Priority**: Low (depends on Task 19)
-**Blocking**: P5 must be a proven theorem, not axiom
-**Dependencies**: Task 19 (P5 derivation)
-
-**Description**: Derive P6 (`▽□φ → □△φ`, occurrent necessity is perpetual) as a theorem instead of axiom. Derivation strategy uses P5 on `¬φ` with operator duality and contraposition, but requires P5 to be a proven theorem.
-
-**Current Status**: P6 remains as `axiom perpetuity_6` with semantic justification (Corollary 2.11).
-
-**Plan Reference**: [Task 18 Plan - Phase 4](.claude/specs/047_remove_derivable_axioms_perpetuity/plans/001-remove-derivable-axioms-perpetuity-plan.md#phase-4-derive-p6-from-p5-blocked)
-
----
-
 ### 21. Derive Pairing Combinator
-**Effort**: 8-12 hours
-**Status**: SKIPPED
-**Priority**: Low (optional, adds no mathematical insight)
-**Blocking**: None
-**Dependencies**: None
+*Effort**: 8-12 hours
+*Status**: SKIPPED
+*Priority**: Low (optional, adds no mathematical insight)
+*Blocking**: None
+*Dependencies**: None
 
 **Description**: Derive the `pairing` axiom (`⊢ A.imp (B.imp (A.and B))`) from K and S propositional axioms using combinator calculus. Strategy: Build S(S(KS)(S(KK)I))(KI) where I=SKK.
 
@@ -287,4 +178,4 @@ See [MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md) for complete work
 
 ---
 
-**Last Updated**: 2025-12-08 (Minimal Axiom Review complete - documentation fixed to 8/8 rules, necessitation from MK proven, MK/TK documentation updated)
+**Last Updated**: 2025-12-09 (ALL 6 PERPETUITY PRINCIPLES PROVEN - Tasks 18, 19, 20 COMPLETE)

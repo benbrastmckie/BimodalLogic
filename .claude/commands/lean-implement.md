@@ -1260,6 +1260,17 @@ if type check_all_phases_complete &>/dev/null; then
   check_all_phases_complete "$PLAN_FILE" && PLAN_COMPLETE=true || PLAN_COMPLETE=false
 fi
 
+# Update plan metadata status if all phases complete
+if [ "$PLAN_COMPLETE" = "true" ]; then
+  if type update_plan_status &>/dev/null; then
+    if update_plan_status "$PLAN_FILE" "COMPLETE" 2>/dev/null; then
+      echo "Plan metadata status updated to [COMPLETE]"
+    else
+      echo "WARNING: Could not update plan metadata status to COMPLETE" >&2
+    fi
+  fi
+fi
+
 # Initialize metric variables
 LEAN_SUMMARIES=()
 SOFTWARE_SUMMARIES=()

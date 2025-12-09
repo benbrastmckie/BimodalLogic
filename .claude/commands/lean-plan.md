@@ -1,6 +1,6 @@
 ---
 allowed-tools: Task, TodoWrite, Bash, Read, Grep, Glob, Write
-argument-hint: <feature-description> [--file <path>] [--complexity 1-4] [--project <path>]
+argument-hint: "<feature-description>" [--complexity 1-4] [--project <path>] OR --file <path> [--complexity 1-4] [--project <path>]
 description: Create Lean-specific implementation plan for theorem proving projects with Mathlib research and proof strategies
 command-type: primary
 dependent-agents:
@@ -49,7 +49,22 @@ FEATURE_DESCRIPTION=$(cat "$TEMP_FILE" 2>/dev/null || echo "")
 if [ -z "$FEATURE_DESCRIPTION" ]; then
   echo "ERROR: Feature description is empty" >&2
   echo "Usage: /lean-plan \"<feature description>\"" >&2
+  echo "   or: /lean-plan --file /path/to/requirements.md" >&2
   exit 1
+fi
+
+# === DETECT META-INSTRUCTION PATTERNS ===
+# Warn if user provided indirect instructions instead of direct formalization goals
+if [[ "$FEATURE_DESCRIPTION" =~ [Uu]se.*to.*(create|make|generate) ]] || \
+   [[ "$FEATURE_DESCRIPTION" =~ [Rr]ead.*and.*(create|make|generate) ]]; then
+  echo "WARNING: Feature description appears to be a meta-instruction" >&2
+  echo "Did you mean to use --file flag instead?" >&2
+  echo "Example: /lean-plan --file /path/to/requirements.md" >&2
+  echo "" >&2
+  echo "Proceeding with provided description, but delegation may be affected." >&2
+  # Note: log_command_error not yet available (error-handling.sh not sourced yet)
+  # Will be logged after libraries are loaded
+  _EARLY_ERROR_BUFFER+=("validation_error|Meta-instruction pattern detected|User provided: $FEATURE_DESCRIPTION")
 fi
 
 # Parse optional --complexity flag (default: 3 for research-and-plan)
@@ -1292,9 +1307,11 @@ echo "Context reduction: ~110 tokens per report (vs ~2,500 tokens full content)"
 echo ""
 ```
 
-## Block 2: Research Verification and Planning Setup
+## Block 2a: Research Verification and Planning Setup
 
 **EXECUTE NOW**: Verify research artifacts and prepare for planning:
+
+**[SETUP]**: This block validates research completion and pre-calculates PLAN_PATH for the hard barrier pattern.
 
 ```bash
 set +H  # CRITICAL: Disable history expansion
@@ -1540,15 +1557,21 @@ if [ $EXIT_CODE -ne 0 ]; then
     "$WORKFLOW_ID" \
     "$USER_ARGS" \
     "state_error" \
-    "State transition to PLAN failed" \
-    "bash_block_2" \
+    "State transition to PLAN failed - research validation incomplete" \
+    "bash_block_2a" \
     "$(jq -n --arg state "$STATE_PLAN" '{target_state: $state}')"
 
-  echo "ERROR: State transition to PLAN failed" >&2
+  echo "ERROR: State transition to PLAN failed - research validation incomplete" >&2
+  echo "Cannot proceed to planning phase until research reports are validated" >&2
   exit 1
 fi
 
-echo "=== Phase 2: Planning ==="
+echo ""
+echo "=== State Transition Gating ==="
+echo "  Research Phase: COMPLETE"
+echo "  Planning Phase: STARTING"
+echo "  State: RESEARCH → PLAN"
+echo ""
 echo ""
 
 # === PREPARE PLAN PATH (Hard Barrier Pattern) ===
@@ -1645,6 +1668,31 @@ if [ -n "${LEAN_PROJECT_PATH:-}" ] && [ -f "${LEAN_PROJECT_PATH}/LEAN_STYLE_GUID
   fi
 fi
 
+# === EXTRACT NON-INTERACTIVE TESTING STANDARDS ===
+# Extract testing standards for Lean proof validation automation
+TESTING_STANDARD_PATH="${CLAUDE_PROJECT_DIR}/.claude/docs/reference/standards/non-interactive-testing-standard.md"
+if [ -f "$TESTING_STANDARD_PATH" ]; then
+  TESTING_STANDARDS=$(extract_testing_standards "$TESTING_STANDARD_PATH" 2>/dev/null) || {
+    log_command_error \
+      "$COMMAND_NAME" \
+      "$WORKFLOW_ID" \
+      "$USER_ARGS" \
+      "execution_error" \
+      "Testing standards extraction failed" \
+      "bash_block_2_testing_standards" \
+      "{}"
+    echo "WARNING: Testing standards extraction failed, proceeding without testing standards" >&2
+    TESTING_STANDARDS=""
+  }
+
+  if [ -n "$TESTING_STANDARDS" ]; then
+    echo "Injecting non-interactive testing standards (Lean-specific patterns)"
+  fi
+else
+  echo "Non-interactive testing standard not found, proceeding without testing standards"
+  TESTING_STANDARDS=""
+fi
+
 # Persist standards for Block 3 divergence detection
 append_workflow_state "FORMATTED_STANDARDS<<STANDARDS_EOF
 $FORMATTED_STANDARDS
@@ -1664,9 +1712,21 @@ if [ -n "$FORMATTED_STANDARDS" ]; then
 else
   echo "No standards extracted (graceful degradation)"
 fi
+
+echo ""
+echo "=== Planning Setup Complete ==="
+echo "  Plan Path: $PLAN_PATH"
+echo "  Standards Sections: ${STANDARDS_COUNT:-0}"
+echo "  Research Reports: $REPORT_COUNT"
+echo ""
+echo "Ready for lean-plan-architect invocation"
 ```
 
+## Block 2b-exec: Plan Creation (Hard Barrier Invocation)
+
 **EXECUTE NOW**: USE the Task tool to invoke the lean-plan-architect agent.
+
+**[HARD BARRIER]**: This is a MANDATORY delegation point. The orchestrator has pre-calculated PLAN_PATH and will validate the artifact exists after you return. Bypassing this Task invocation will cause hard barrier failure in Block 2c.
 
 Task {
   subagent_type: "general-purpose"
@@ -1705,6 +1765,9 @@ Task {
 
     **Project Standards**:
     ${FORMATTED_STANDARDS}
+
+    **Testing Automation Standards (Lean Compiler Validation)**:
+    ${TESTING_STANDARDS}
 
     **Lean Project Standards**:
     ${LEAN_STYLE_GUIDE}
@@ -1749,6 +1812,112 @@ Task {
     PLAN_CREATED: ${PLAN_PATH}
   "
 }
+
+## Block 2c: Plan Hard Barrier Validation
+
+**EXECUTE NOW**: Validate that lean-plan-architect created the plan file at the pre-calculated path.
+
+This is the **hard barrier** - the workflow CANNOT proceed unless the plan file exists and meets minimum size requirements.
+
+```bash
+set +H  # CRITICAL: Disable history expansion
+
+# === DETECT PROJECT DIRECTORY ===
+if command -v git &>/dev/null && git rev-parse --git-dir >/dev/null 2>&1; then
+  CLAUDE_PROJECT_DIR="$(git rev-parse --show-toplevel)"
+else
+  current_dir="$(pwd)"
+  while [ "$current_dir" != "/" ]; do
+    if [ -d "$current_dir/.claude" ]; then
+      CLAUDE_PROJECT_DIR="$current_dir"
+      break
+    fi
+    current_dir="$(dirname "$current_dir")"
+  done
+fi
+
+if [ -z "$CLAUDE_PROJECT_DIR" ] || [ ! -d "$CLAUDE_PROJECT_DIR/.claude" ]; then
+  echo "ERROR: Failed to detect project directory" >&2
+  exit 1
+fi
+
+export CLAUDE_PROJECT_DIR
+
+# === RESTORE STATE ===
+STATE_ID_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/lean_plan_state_id.txt"
+WORKFLOW_ID=$(cat "$STATE_ID_FILE" 2>/dev/null)
+
+if [ -z "$WORKFLOW_ID" ]; then
+  echo "ERROR: Failed to restore WORKFLOW_ID" >&2
+  exit 1
+fi
+
+# Restore workflow state
+STATE_FILE="${CLAUDE_PROJECT_DIR}/.claude/tmp/workflow_${WORKFLOW_ID}.sh"
+if [ -f "$STATE_FILE" ]; then
+  source "$STATE_FILE"
+else
+  echo "ERROR: State file not found: $STATE_FILE" >&2
+  exit 1
+fi
+
+COMMAND_NAME="/lean-plan"
+USER_ARGS="${FEATURE_DESCRIPTION:-}"
+export COMMAND_NAME USER_ARGS WORKFLOW_ID
+
+# Source libraries
+source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/error-handling.sh" 2>/dev/null || {
+  echo "ERROR: Failed to source error-handling.sh" >&2
+  exit 1
+}
+
+# Source validation utilities for agent artifact validation
+source "${CLAUDE_PROJECT_DIR}/.claude/lib/workflow/validation-utils.sh" 2>/dev/null || {
+  echo "ERROR: Cannot load validation-utils.sh - required for workflow validation" >&2
+  exit 1
+}
+
+# Setup bash error trap
+setup_bash_error_trap "$COMMAND_NAME" "$WORKFLOW_ID" "$USER_ARGS"
+
+echo ""
+echo "=== Plan Hard Barrier Validation ==="
+echo ""
+
+# === HARD BARRIER VALIDATION ===
+# Validate PLAN_PATH is set (from Block 2)
+if [ -z "${PLAN_PATH:-}" ]; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "state_error" \
+    "PLAN_PATH not restored from Block 2 state" \
+    "bash_block_2c" \
+    "$(jq -n '{plan_path: "missing"}')"
+  echo "ERROR: PLAN_PATH not set - state restoration failed" >&2
+  exit 1
+fi
+
+echo "Expected plan file: $PLAN_PATH"
+
+# HARD BARRIER: Validate agent artifact using validation-utils.sh
+# validate_agent_artifact checks file existence and minimum size (500 bytes for plans)
+if ! validate_agent_artifact "$PLAN_PATH" 500 "implementation plan"; then
+  # Error already logged by validate_agent_artifact
+  echo "ERROR: HARD BARRIER FAILED - Plan creation validation failed" >&2
+  echo "" >&2
+  echo "This indicates the lean-plan-architect did not create valid output." >&2
+  echo "The plan file is either missing or too small (< 500 bytes)." >&2
+  echo "" >&2
+  echo "To retry: Re-run the /lean-plan command with the same arguments" >&2
+  echo "" >&2
+  exit 1
+fi
+
+echo "✓ Hard barrier passed - plan file validated"
+echo ""
+```
 
 ## Block 3: Plan Verification and Completion
 

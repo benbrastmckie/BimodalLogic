@@ -346,6 +346,23 @@ source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/state-persistence.sh" 2>/dev/null
 # Setup bash error trap
 setup_bash_error_trap "$COMMAND_NAME" "$WORKFLOW_ID" "$USER_ARGS"
 
+# === PRE-FLIGHT FUNCTION VALIDATION (Block 1b) ===
+# Verify required functions are available before using them (prevents exit 127 errors)
+declare -f append_workflow_state >/dev/null 2>&1
+FUNCTION_CHECK=$?
+if [ $FUNCTION_CHECK -ne 0 ]; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "execution_error" \
+    "append_workflow_state function not available - library sourcing failed" \
+    "bash_block_1b" \
+    "$(jq -n '{library: "state-persistence.sh", function: "append_workflow_state"}')"
+  echo "ERROR: append_workflow_state function not available after sourcing state-persistence.sh" >&2
+  exit 1
+fi
+
 # === PRE-CALCULATE TOPIC NAME FILE PATH ===
 # CRITICAL: Calculate exact path BEFORE agent invocation (Hard Barrier Pattern)
 # This path will be passed as literal text to the agent and validated after
@@ -928,6 +945,23 @@ source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/state-persistence.sh" 2>/dev/null
 # Setup bash error trap
 setup_bash_error_trap "$COMMAND_NAME" "$WORKFLOW_ID" "$USER_ARGS"
 
+# === PRE-FLIGHT FUNCTION VALIDATION (Block 1d-topics-auto) ===
+# Verify required functions are available before using them (prevents exit 127 errors)
+declare -f append_workflow_state >/dev/null 2>&1
+FUNCTION_CHECK=$?
+if [ $FUNCTION_CHECK -ne 0 ]; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "execution_error" \
+    "append_workflow_state function not available - library sourcing failed" \
+    "bash_block_1d_topics_auto" \
+    "$(jq -n '{library: "state-persistence.sh", function: "append_workflow_state"}')"
+  echo "ERROR: append_workflow_state function not available after sourcing state-persistence.sh" >&2
+  exit 1
+fi
+
 echo ""
 echo "=== Topic Detection Agent (Optional) ==="
 echo ""
@@ -1069,6 +1103,23 @@ source "${CLAUDE_PROJECT_DIR}/.claude/lib/workflow/validation-utils.sh" 2>/dev/n
 
 # Setup bash error trap
 setup_bash_error_trap "$COMMAND_NAME" "$WORKFLOW_ID" "$USER_ARGS"
+
+# === PRE-FLIGHT FUNCTION VALIDATION (Block 1d-topics-auto-validate) ===
+# Verify required functions are available before using them (prevents exit 127 errors)
+declare -f append_workflow_state >/dev/null 2>&1
+FUNCTION_CHECK=$?
+if [ $FUNCTION_CHECK -ne 0 ]; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "execution_error" \
+    "append_workflow_state function not available - library sourcing failed" \
+    "bash_block_1d_topics_auto_validate" \
+    "$(jq -n '{library: "state-persistence.sh", function: "append_workflow_state"}')"
+  echo "ERROR: append_workflow_state function not available after sourcing state-persistence.sh" >&2
+  exit 1
+fi
 
 echo ""
 echo "=== Topic Detection Output Validation ==="
@@ -1222,6 +1273,23 @@ source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/state-persistence.sh" 2>/dev/null
 
 # Setup bash error trap
 setup_bash_error_trap "$COMMAND_NAME" "$WORKFLOW_ID" "$USER_ARGS"
+
+# === PRE-FLIGHT FUNCTION VALIDATION (Block 1d-topics) ===
+# Verify required functions are available before using them (prevents exit 127 errors)
+declare -f append_workflow_state_bulk >/dev/null 2>&1
+FUNCTION_CHECK=$?
+if [ $FUNCTION_CHECK -ne 0 ]; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "execution_error" \
+    "append_workflow_state_bulk function not available - library sourcing failed" \
+    "bash_block_1d_topics" \
+    "$(jq -n '{library: "state-persistence.sh", function: "append_workflow_state_bulk"}')"
+  echo "ERROR: append_workflow_state_bulk function not available after sourcing state-persistence.sh" >&2
+  exit 1
+fi
 
 echo ""
 echo "=== Topic Decomposition ==="
@@ -1461,9 +1529,15 @@ COMMAND_NAME="/create-plan"
 USER_ARGS="${FEATURE_DESCRIPTION:-}"
 export COMMAND_NAME USER_ARGS WORKFLOW_ID
 
-# Source libraries
+# Source libraries (three-tier pattern)
 source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/error-handling.sh" 2>/dev/null || {
   echo "ERROR: Failed to source error-handling.sh" >&2
+  exit 1
+}
+
+# Tier 2: state-persistence.sh (required for append_workflow_state at line 1573)
+source "${CLAUDE_PROJECT_DIR}/.claude/lib/core/state-persistence.sh" 2>/dev/null || {
+  echo "ERROR: Cannot load state-persistence library" >&2
   exit 1
 }
 
@@ -1475,6 +1549,23 @@ source "${CLAUDE_PROJECT_DIR}/.claude/lib/workflow/validation-utils.sh" 2>/dev/n
 
 # Setup bash error trap
 setup_bash_error_trap "$COMMAND_NAME" "$WORKFLOW_ID" "$USER_ARGS"
+
+# === PRE-FLIGHT FUNCTION VALIDATION (Block 1f) ===
+# Verify required functions are available before using them (prevents exit 127 errors)
+declare -f append_workflow_state >/dev/null 2>&1
+FUNCTION_CHECK=$?
+if [ $FUNCTION_CHECK -ne 0 ]; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "execution_error" \
+    "append_workflow_state function not available - library sourcing failed" \
+    "bash_block_1f" \
+    "$(jq -n '{library: "state-persistence.sh", function: "append_workflow_state"}')"
+  echo "ERROR: append_workflow_state function not available after sourcing state-persistence.sh" >&2
+  exit 1
+fi
 
 echo ""
 echo "=== Research Output Hard Barrier Validation ==="
@@ -1886,6 +1977,24 @@ if [ -z "${FORMATTED_STANDARDS:-}" ]; then
   }
 fi
 
+# === EXTRACT NON-INTERACTIVE TESTING STANDARDS ===
+# Extract testing standards for test phase automation requirements
+TESTING_STANDARD_PATH="${CLAUDE_PROJECT_DIR}/.claude/docs/reference/standards/non-interactive-testing-standard.md"
+if [ -f "$TESTING_STANDARD_PATH" ]; then
+  TESTING_STANDARDS=$(extract_testing_standards "$TESTING_STANDARD_PATH" 2>/dev/null) || {
+    log_command_error "execution_error" "Testing standards extraction failed" "{}"
+    echo "WARNING: Testing standards extraction failed, proceeding without testing standards" >&2
+    TESTING_STANDARDS=""
+  }
+
+  if [ -n "$TESTING_STANDARDS" ]; then
+    echo "Injecting non-interactive testing standards into plan generation workflow"
+  fi
+else
+  echo "Non-interactive testing standard not found, proceeding without testing standards"
+  TESTING_STANDARDS=""
+fi
+
 # Persist standards for Block 3 divergence detection
 append_workflow_state "FORMATTED_STANDARDS<<STANDARDS_EOF
 $FORMATTED_STANDARDS
@@ -1937,6 +2046,9 @@ You MUST use the Task tool with these EXACT parameters:
 
     **Project Standards**:
     ${FORMATTED_STANDARDS}
+
+    **Testing Automation Standards**:
+    ${TESTING_STANDARDS}
 
     **CRITICAL**: You MUST write the plan to the EXACT path specified above.
     The orchestrator has pre-calculated this path and will validate it exists after you return.

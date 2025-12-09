@@ -204,6 +204,34 @@ example (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond.always := perpe
 example : ⊢ (Formula.atom "p").sometimes.diamond.imp (Formula.atom "p").diamond.always := perpetuity_5 _
 
 /-!
+## Modal and Temporal Duality Lemma Tests
+-/
+
+/-- Test modal_duality_neg: ◇¬φ → ¬□φ -/
+example (φ : Formula) : ⊢ φ.neg.diamond.imp φ.box.neg := modal_duality_neg φ
+
+/-- Test modal_duality_neg with atomic formula -/
+example : ⊢ (Formula.atom "p").neg.diamond.imp (Formula.atom "p").box.neg := modal_duality_neg _
+
+/-- Test modal_duality_neg_rev: ¬□φ → ◇¬φ -/
+example (φ : Formula) : ⊢ φ.box.neg.imp φ.neg.diamond := modal_duality_neg_rev φ
+
+/-- Test modal_duality_neg_rev with atomic formula -/
+example : ⊢ (Formula.atom "p").box.neg.imp (Formula.atom "p").neg.diamond := modal_duality_neg_rev _
+
+/-- Test temporal_duality_neg: ▽¬φ → ¬△φ -/
+example (φ : Formula) : ⊢ φ.neg.sometimes.imp φ.always.neg := temporal_duality_neg φ
+
+/-- Test temporal_duality_neg with atomic formula -/
+example : ⊢ (Formula.atom "p").neg.sometimes.imp (Formula.atom "p").always.neg := temporal_duality_neg _
+
+/-- Test temporal_duality_neg_rev: ¬△φ → ▽¬φ -/
+example (φ : Formula) : ⊢ φ.always.neg.imp φ.neg.sometimes := temporal_duality_neg_rev φ
+
+/-- Test temporal_duality_neg_rev with atomic formula -/
+example : ⊢ (Formula.atom "p").always.neg.imp (Formula.atom "p").neg.sometimes := temporal_duality_neg_rev _
+
+/-!
 ## P6 Tests: sometimes □φ → □always φ (occurrent necessity perpetual)
 -/
 

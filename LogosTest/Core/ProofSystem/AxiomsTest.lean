@@ -29,9 +29,9 @@ example : Axiom (((Formula.atom "p").imp ((Formula.atom "q").imp (Formula.atom "
   Axiom.prop_k (Formula.atom "p") (Formula.atom "q") (Formula.atom "r")
 
 -- Test: Propositional K with complex formulas
-example : Axiom ((((Formula.atom "p").box).imp (((Formula.atom "q").future).imp (Formula.atom "r"))).imp
-                  ((((Formula.atom "p").box).imp ((Formula.atom "q").future)).imp (((Formula.atom "p").box).imp (Formula.atom "r")))) :=
-  Axiom.prop_k ((Formula.atom "p").box) ((Formula.atom "q").future) (Formula.atom "r")
+example : Axiom ((((Formula.atom "p").box).imp (((Formula.atom "q").all_future).imp (Formula.atom "r"))).imp
+                  ((((Formula.atom "p").box).imp ((Formula.atom "q").all_future)).imp (((Formula.atom "p").box).imp (Formula.atom "r")))) :=
+  Axiom.prop_k ((Formula.atom "p").box) ((Formula.atom "q").all_future) (Formula.atom "r")
 
 -- Test: Propositional K with nested implications
 example : Axiom (((Formula.atom "p").imp (((Formula.atom "q").imp (Formula.atom "r")).imp (Formula.atom "s"))).imp
@@ -52,8 +52,8 @@ example : Axiom (((Formula.atom "p").box).imp ((Formula.atom "q").imp ((Formula.
 
 -- Test: Propositional S with complex formulas
 example : Axiom ((((Formula.atom "p").imp (Formula.atom "q"))).imp
-                  (((Formula.atom "r").future).imp ((Formula.atom "p").imp (Formula.atom "q")))) :=
-  Axiom.prop_s ((Formula.atom "p").imp (Formula.atom "q")) ((Formula.atom "r").future)
+                  (((Formula.atom "r").all_future).imp ((Formula.atom "p").imp (Formula.atom "q")))) :=
+  Axiom.prop_s ((Formula.atom "p").imp (Formula.atom "q")) ((Formula.atom "r").all_future)
 
 -- ============================================================
 -- Modal T Axiom Tests: □φ → φ
@@ -112,11 +112,11 @@ example : Axiom ((Formula.atom "p").imp ((Formula.atom "p").some_past.all_future
 example : Axiom ((Formula.atom "p").neg.imp ((Formula.atom "p").neg.some_past.all_future)) := Axiom.temp_a (Formula.atom "p").neg
 
 -- ============================================================
--- Temporal L Axiom Tests: Gφ → GHφ (G = all_future in our formalization)
+-- Temporal L Axiom Tests: △φ → FPφ (always implies future-past)
 -- ============================================================
 
 -- Test: Temporal L axiom on atom
-example : Axiom ((Formula.atom "p").all_future.imp ((Formula.atom "p").all_past.all_future)) := Axiom.temp_l (Formula.atom "p")
+example : Axiom ((Formula.atom "p").always.imp ((Formula.atom "p").all_past.all_future)) := Axiom.temp_l (Formula.atom "p")
 
 -- ============================================================
 -- Modal-Future Axiom Tests: □φ → □Gφ
@@ -150,9 +150,9 @@ example : Axiom (((Formula.atom "p").imp (Formula.atom "q")).box.imp
   Axiom.modal_k_dist (Formula.atom "p") (Formula.atom "q")
 
 -- Test: Modal K distribution with complex formulas
-example : Axiom ((((Formula.atom "p").box).imp ((Formula.atom "q").future)).box.imp
-                  (((Formula.atom "p").box).box.imp ((Formula.atom "q").future).box)) :=
-  Axiom.modal_k_dist ((Formula.atom "p").box) ((Formula.atom "q").future)
+example : Axiom ((((Formula.atom "p").box).imp ((Formula.atom "q").all_future)).box.imp
+                  (((Formula.atom "p").box).box.imp ((Formula.atom "q").all_future).box)) :=
+  Axiom.modal_k_dist ((Formula.atom "p").box) ((Formula.atom "q").all_future)
 
 -- Test: Modal K distribution enables combining boxed conjuncts
 -- This is the pattern used in perpetuity_3 proof

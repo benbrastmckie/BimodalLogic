@@ -488,19 +488,6 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
     unfold truth_at at h_imp
     exact h_imp h_phi
 
-  | @necessitation φ' _ ih =>
-    -- Case: From [] ⊢ φ', derive [] ⊢ □φ'
-    -- IH: [] ⊨ φ' (φ' is valid)
-    -- Goal: [] ⊨ □φ' (□φ' is valid)
-    intro T _ F M τ t ht _
-    -- Goal: truth_at M τ t ht φ'.box
-    unfold truth_at
-    -- Goal: ∀ σ hs, truth_at M σ t hs φ'
-    intro σ hs
-    -- φ' is valid (from IH with empty context), so true at (σ, t)
-    have h_phi := ih T F M σ t hs (fun _ h_mem => False.elim (List.not_mem_nil _ h_mem))
-    exact h_phi
-
   | @modal_k Γ' φ' _ ih =>
     -- Case: From Γ' ⊢ φ', derive □Γ' ⊢ □φ'
     -- IH: Γ' ⊨ φ'

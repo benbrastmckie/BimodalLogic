@@ -51,8 +51,8 @@ example : ⊢ (Formula.atom "p").imp (Formula.all_future (Formula.atom "p").some
   apply Derivable.axiom
   apply Axiom.temp_a
 
--- Test: Temporal L is derivable
-example : ⊢ (Formula.all_future (Formula.atom "p")).imp (Formula.all_future (Formula.all_past (Formula.atom "p"))) := by
+-- Test: Temporal L is derivable (△φ → FHφ)
+example : ⊢ (Formula.atom "p").always.imp (Formula.all_future (Formula.all_past (Formula.atom "p"))) := by
   apply Derivable.axiom
   apply Axiom.temp_l
 
@@ -123,16 +123,19 @@ example (p q r : Formula) : [p.imp q, q.imp r, p] ⊢ r := by
 -- Test: Modal K with axiom (from empty context)
 -- Since axioms are derivable from any context, including □[], we can derive □(axiom)
 example : ([] : Context) ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")).box := by
-  apply Derivable.modal_k
-  apply Derivable.axiom
-  apply Axiom.modal_t
+  have h : [] ⊢ (Formula.atom "p").box.imp (Formula.atom "p") :=
+    Derivable.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+  have h' : Context.map Formula.box [] ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")).box :=
+    Derivable.modal_k [] _ h
+  simp only [Context.map] at h'
+  exact h'
 
 -- Test: Modal K preserves theorem status
 -- If ⊢ φ then ⊢ □φ (derived from empty context stays empty)
 example (φ : Formula) (h : ⊢ φ) : ⊢ φ.box := by
-  apply Derivable.modal_k
-  -- Context.map box [] = [], so we need to derive φ from []
-  exact h
+  have h' : Context.map Formula.box [] ⊢ φ.box := Derivable.modal_k [] φ h
+  simp only [Context.map] at h'
+  exact h'
 
 -- ============================================================
 -- Temporal K Rule Tests
@@ -140,15 +143,20 @@ example (φ : Formula) (h : ⊢ φ) : ⊢ φ.box := by
 
 -- Test: Temporal K with axiom (from empty context)
 example : ([] : Context) ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")).all_future := by
-  apply Derivable.temporal_k
-  apply Derivable.axiom
-  apply Axiom.modal_t
+  have h : [] ⊢ (Formula.atom "p").box.imp (Formula.atom "p") :=
+    Derivable.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+  have h' : Context.map Formula.all_future [] ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")).all_future :=
+    Derivable.temporal_k [] _ h
+  simp only [Context.map] at h'
+  exact h'
 
 -- Test: Temporal K preserves theorem status
 -- If ⊢ φ then ⊢ Fφ
+-- Note: temporal_k maps [] → [] since Context.map _ [] = []
 example (φ : Formula) (h : ⊢ φ) : ⊢ φ.all_future := by
-  apply Derivable.temporal_k
-  exact h
+  have h' : Context.map Formula.all_future [] ⊢ φ.all_future := Derivable.temporal_k [] φ h
+  simp only [Context.map] at h'
+  exact h'
 
 -- ============================================================
 -- Temporal Duality Rule Tests

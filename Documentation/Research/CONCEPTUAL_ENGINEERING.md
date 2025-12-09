@@ -1,23 +1,67 @@
 # Conceptual Engineering: Philosophical Foundations for the Logos Layer Architecture
 
-## Metadata
-- **Date**: 2025-12-08
-- **Status**: Research vision
-- **Related**: [Layer Extensions](LAYER_EXTENSIONS.md) | [Methodology](../UserGuide/METHODOLOGY.md) | [Architecture](../UserGuide/ARCHITECTURE.md)
+> NOTE: this document is still full of AI slop, and still needs heavy revisions
 
 ## Introduction: Formal Logic as Conceptual Engineering
 
 ### Formal Logic as Conceptual Engineering
 
-Formal logic serves two fundamentally different purposes. The first, more traditional approach is **descriptive**: analyzing existing patterns of reasoning in natural language to formalize valid argument structures we already employ. The second approach is **normative**: stipulating logical operators fit for systematic applications, particularly in verified AI reasoning systems. This second approach constitutes what we call **conceptual engineering**—the normative science of designing operators we ought to have for rigorous reasoning, not merely describing operators we do have.
+Natural language semantics is **descriptive**: analyzing how reasoning expressions like
+"if...then" work in ordinary language to understand their actual usage patterns. By contrast,
+formal logic is **normative**: engineering logical operators with precise truth conditions for
+systematic reasoning, even when these operators differ from natural language usage. Designing operators we ought to have for rigorous reasoning, not merely describing operators we do
+have.
 
-The Logos adopts conceptual engineering as its guiding methodology. Just as material engineers refine glass from sand or steel from iron ore—transforming raw natural materials into precise substances with engineered properties—philosophical logic engineers theoretical concepts from natural language into formal operators with explicit semantic clauses. Natural language provides the raw ingredients: intuitive notions of necessity, possibility, past, future, causation, knowledge, and obligation. Conceptual engineering refines these intuitions into precise formal operators with clearly defined truth conditions over explicit semantic models.
+Consider the material conditional (`→`) as a paradigmatic case. The material conditional does not
+match English "if...then"—it is counterintuitive that "if it is raining, the sky will fall
+tomorrow" is true whenever it is not raining. However, the material conditional enables useful
+formal regimentation. To express "all humans are mammals" formally, we write `∀x(Human(x) →
+Mammal(x))`, where the conditional can be regimented using material implication. The material
+conditional abstracts a concept not found in English but useful for expressing universal
+quantification, mathematical proofs, and truth-functional reasoning. This is semantic engineering:
+refining natural language notions into formal operators with different but theoretically valuable
+properties.
 
-This engineering perspective has crucial implications for AI reasoning systems. Unlike human reasoning, which can tolerate ambiguity and informal inference, AI systems require operators with precise computational semantics. The descriptive approach—formalizing natural language usage patterns—produces operators whose meaning remains tied to the inconsistencies and context-dependencies of ordinary discourse. The normative approach—stipulating operators fit for verified reasoning—produces operators whose meaning is fixed by explicit semantic clauses independent of natural language usage.
+Just as material science refine glass from sand or steel from iron ore by transforming raw natural
+materials into materials fit for building, philosophical logic engineers theoretical concepts from
+natural language into logical operators with recursive semantic clauses. Natural language provides
+the raw ingredients: intuitive notions of necessity, possibility, past, future, causation,
+knowledge, and obligation. These conceptual targets are then refined into precise logical operators
+with clearly defined truth conditions over explicit semantic models.
 
-Consider the modal operator `□` (necessity). A descriptive approach asks: "How do humans actually use 'necessarily' in ordinary language?" and attempts to formalize this usage. A normative approach asks: "What truth conditions should the necessity operator have to support verified reasoning about metaphysical modality?" For AI systems requiring proof receipts, the normative question is primary. The Logos specifies `□φ` as true at a model-history-time triple exactly when `φ` holds at all accessible worlds at that time, where accessibility is defined by the task relation's properties. This precise semantic clause enables both theorem proving (LEAN 4 derivations) and model checking (Z3 countermodel search) independent of how humans ordinarily use modal language.
+This engineering perspective has crucial implications for AI reasoning systems. Operators with
+precise semantics and axiomatic proof theories generate unlimited clean training data about valid
+and invalid inferences. Theorem proving produces verified derivations guaranteed sound by
+metalogical proofs, while model checking produces countermodels refuting invalid claims. This dual
+verification architecture provides consistent, verifiable training data not achievable by
+formalizing inconsistent natural language reasoning patterns.
 
-### Normative vs Descriptive Logic
+The normative approach preserves context through evaluation parameters—sentences are evaluated at
+specific models, times, and worlds—while enabling systematic inference generation. For instance,
+tensed sentences require temporal parameters for evaluation: `Fφ` (φ will be true) is evaluated at
+model-history-time triple `(M, w, t)` by checking whether `φ` holds at future times in
+world-history `w`. Context is made explicit through these parameters, not eliminated.
+
+Consider the modal operator `□` (necessity). A descriptive approach asks: "How do humans actually
+use 'necessarily' in ordinary language?" and attempts to formalize this usage. A normative approach
+asks: "What truth conditions should the necessity operator have to support verified reasoning about
+modality in planning contexts?" For AI systems requiring proof receipts, the normative question is
+primary.
+
+The Logos specifies `□φ` as true at a model-history-time triple exactly when `φ` holds at all
+accessible world-histories at that time, where accessibility is defined by the task relation's
+properties. This implements **historical modality**: the `□` operator quantifies over
+task-constrained world evolutions (possible ways the world could unfold given current constraints),
+not unrestricted metaphysically possible worlds. World-histories are functions from times to
+world-states, representing how possible worlds evolve temporally under task constraints.
+
+This precise semantic clause enables both theorem proving (LEAN 4 derivations) and model checking
+(Z3 countermodel search) independent of how humans ordinarily use modal language. The focus on
+historical modality—temporal evolutions constrained by tasks—makes the modal operator suitable for
+planning applications where necessity means "holds in all achievable futures" rather than "holds in
+all metaphysically possible worlds."
+
+### Normative Logic vs Descriptive Semantics
 
 The distinction between normative and descriptive logic reflects a deeper question: what is the purpose of formal logic? If the purpose is understanding human reasoning, descriptive analysis is appropriate. If the purpose is building AI reasoning systems with verified inference and explicit semantics, normative specification is essential.
 
@@ -92,26 +136,127 @@ The tense operators provide the temporal structure (representing that success oc
 
 ### World-Histories and Temporal Evolution
 
-The semantic foundation for planning requires a precise model of **temporal evolution**. The Logos task semantics provides this through **world-histories**: functions from times to world-states representing how a possible world evolves temporally.
+The semantic foundation for planning requires distinguishing two levels of analysis:
 
-Formally, a **world-history** `w` is a function `w: T → S` where:
-- `T` is a set of times (convex subset of the real numbers)
+**Semantic Level (World-Histories)**: In the formal semantics (TaskFrame.lean,
+WorldHistory.lean), a world-history is a **complete function** `w: T → S` where:
+- `T` is a convex subset of times (no temporal gaps)
 - `S` is a set of world-states
-- `w(t)` represents the state of world `w` at time `t`
+- `w(t)` determinately specifies the world-state at every time `t ∈ T`
+- `w` respects the task relation: for all `s ≤ t` in `T`,
+  `F.task_rel (w(s)) (t-s) (w(t))`
 
-This semantic structure captures the intuitive idea that possible worlds are not static snapshots but **temporal evolutions**. At each time `t`, world `w` has a determinate state `w(t)`, and the sequence of states `{w(t) | t ∈ T}` represents how that world unfolds over time.
+This completeness is essential for recursive truth evaluation: to evaluate `Gφ` at `(w,t)`,
+we must check `φ` at all `t' > t` in `w`'s domain, which requires `w` to specify states at
+all such times.
 
-**Why this structure matters for planning**: Plans are proposals about how the world should evolve. When an AI system considers Plan A, it is considering a class of world-histories where Plan A is executed and its consequences unfold over time. The world-history `w_A` represents one possible way Plan A could unfold: `w_A(t_0)` is the initial state when Plan A begins, `w_A(t_1)` is the state after the first action, and so forth. Different world-histories in the class represent different possible outcomes of Plan A given environmental uncertainty.
+**Pragmatic Level (Plan Specifications)**: Real-world plans do not specify complete
+world-histories. A plan like "launch product by Q4 2026" provides only **partial
+constraints**:
+- Initial state: current development status
+- Target condition: product launched by end of Q4 2026
+- Unspecified: intermediate milestones, resource allocations, implementation details
 
-The task relation constrains which world-histories are accessible from a given world-state-time triple. If world `w` is at state `s` at time `t`, the task relation specifies which alternative world-histories are possible continuations from that state-time point. This captures the idea that planning is constrained by current circumstances: from state `s` at time `t`, only certain future evolutions are realistically achievable.
+**Core Layer Approximation**: The Core Layer bridges these levels by representing a plan
+specification as a **set of complete world-histories** that satisfy the plan's constraints.
+The plan "launch product by Q4 2026" corresponds to:
 
-**Tense operators evaluated over world-histories**:
-- `Gφ` is true at `(w,t)` iff `φ` is true at `(w,t')` for all `t' > t` in `w`'s temporal domain
-- `Fφ` is true at `(w,t)` iff `φ` is true at `(w,t')` for some `t' > t` in `w`'s temporal domain
-- `Hφ` is true at `(w,t)` iff `φ` is true at `(w,t')` for all `t' < t` in `w`'s temporal domain
-- `Pφ` is true at `(w,t)` iff `φ` is true at `(w,t')` for some `t' < t` in `w`'s temporal domain
+```
+Plan = {w : WorldHistory F |
+  w(t_now) matches current state ∧
+  w(t) satisfies "product launched" for t ∈ Q4_2026}
+```
 
-These truth conditions explain why world-histories are functions from times to states: evaluating `Gφ` at `(w,t)` requires checking `φ` at all future times in `w`, which presupposes that `w` specifies states for those future times. The temporal structure of world-histories enables tense operators to quantify over future and past times within a single possible world's evolution.
+This set contains all physically possible complete temporal evolutions satisfying the
+plan's constraints.
+
+**Task Relation as Causal Constraint**: The task relation
+`F.task_rel : WorldState → T → WorldState → Prop` constrains which world-histories are
+accessible from a given world-state-time triple, modeling **physical and causal
+constraints** on plan execution.
+
+**Formal Constraint**: A world-history `w` is accessible from state `s` at time `t` only
+if `w` respects the task relation: for all times `t₁ ≤ t₂` in `w`'s domain,
+`F.task_rel (w(t₁)) (t₂ - t₁) (w(t₂))`.
+
+**Planning Interpretation**: This constraint ensures that only **physically achievable**
+temporal evolutions are considered. If transitioning from state `s₁` to state `s₂` in
+duration `Δ` is physically impossible (task relation does not hold), then no accessible
+world-history can have `w(t) = s₁` and `w(t + Δ) = s₂`.
+
+**Task Relation Properties**:
+
+1. **Nullity** (`∀ w, task_rel w 0 w`): Every state can transition to itself in zero time
+   - Planning Interpretation: The "identity task" (do nothing) is always achievable
+
+2. **Compositionality** (`task_rel w x u ∧ task_rel u y v → task_rel w (x+y) v`): If
+   state `w` can reach state `u` in time `x`, and `u` can reach `v` in time `y`, then `w`
+   can reach `v` in time `x+y`
+   - Planning Interpretation: Sequential task composition—executing Task₁ then Task₂
+     achieves the combined effect in combined duration
+
+**Why This Matters for Planning**: The task relation ensures modal operators `◇` and `□`
+quantify over **achievable** plans, not arbitrary mathematical world-histories. When
+evaluating `◇Gφ` ("there exists an achievable plan where `φ` always holds"), the
+existential quantification is restricted to world-histories satisfying the task relation
+from the current state.
+
+### Truth Conditions for Tense Operators in Planning Contexts
+
+Tense operators quantify over times **within a single world-history**, enabling
+representation of temporal evolution under a specific plan:
+
+**Intra-World Temporal Quantification**:
+
+- `Gφ` (always in the future): `φ` holds at **all** future times in the current
+  world-history
+  - **Planning Interpretation**: Under this plan, `φ` will hold throughout the future
+  - **Truth Condition**: `truth_at M w t φ.all_future` iff
+    `∀ t' > t, t' ∈ w.domain → truth_at M w t' φ`
+
+- `Fφ` (sometime in the future): `φ` holds at **some** future time in the current
+  world-history
+  - **Planning Interpretation**: Under this plan, `φ` will eventually occur
+  - **Truth Condition**: `truth_at M w t (¬Gφ.not)` iff
+    `∃ t' > t, t' ∈ w.domain ∧ truth_at M w t' φ`
+
+- `Hφ` (always in the past): `φ` held at **all** past times in the current world-history
+  - **Planning Interpretation**: Looking back from now, `φ` has consistently held
+  - **Truth Condition**: `truth_at M w t φ.all_past` iff
+    `∀ t' < t, t' ∈ w.domain → truth_at M w t' φ`
+
+- `Pφ` (sometime in the past): `φ` held at **some** past time in the current
+  world-history
+  - **Planning Interpretation**: Looking back from now, `φ` occurred at least once
+  - **Truth Condition**: `truth_at M w t (¬Hφ.not)` iff
+    `∃ t' < t, t' ∈ w.domain ∧ truth_at M w t' φ`
+
+**Key Semantic Property**: Tense operators do not introduce alternative worlds—they
+quantify over times in the **same** world-history. This represents temporal evolution
+under a **fixed** plan execution.
+
+**Inter-World Plan Comparison via Modal Operators**:
+
+To compare alternative plans, we need modal operators quantifying over **different
+world-histories**:
+
+- `◇Gφ` (possibly, always φ): There exists a plan where `φ` holds throughout the future
+  - **Modal quantification**: There exists world-history `w'` accessible from current
+    state
+  - **Temporal quantification**: In `w'`, `φ` holds at all future times
+  - **Truth Condition**: `∃ w' : WorldHistory F, w'.domain t ∧
+    (∀ t' > t, w'.domain t' → truth_at M w' t' φ)`
+
+- `□Fφ` (necessarily, sometime φ): Under all possible plans, `φ` will eventually occur
+  - **Modal quantification**: For all world-histories `w'` accessible from current state
+  - **Temporal quantification**: In each `w'`, `φ` holds at some future time
+  - **Truth Condition**: `∀ w' : WorldHistory F, w'.domain t →
+    (∃ t' > t, w'.domain t' ∧ truth_at M w' t' φ)`
+
+**Why Both Are Essential**: Planning requires comparing temporal evolutions (tense)
+across alternative scenarios (modal). Pure temporal logic cannot represent alternative
+plans; pure modal logic cannot represent temporal evolution within plans. The TM bimodal
+logic provides both dimensions.
 
 ### Expected Value via Counterfactual Comparison
 
@@ -163,22 +308,90 @@ For the formal axiomatization of TM bimodal logic, including axiom schemata and 
 
 ## From Tense to Counterfactual: Layer 1 Requirements
 
-### Partial vs Complete World-Histories
+### Partial Plan Specifications vs Complete World-Histories
 
-The Core Layer task semantics represents plans as classes of complete world-histories: functions `w: T → S` mapping every time in a convex temporal domain to a determinate world-state. This representation is theoretically precise but pragmatically limited: real plans specify only **partial world-histories**, leaving many details of temporal evolution unspecified.
+**Conceptual Distinction**: We must carefully distinguish two concepts that are easily
+confused:
 
-A **partial world-history** specifies world-states for some times but leaves others indeterminate. For example, a plan to "launch product by Q4 2026" specifies:
-- **Specified**: Initial state (current product development status), target state (product launched by end of Q4 2026)
-- **Unspecified**: Intermediate states (exact development milestones, marketing strategies, resource allocation decisions)
+1. **Complete World-History (Semantic)**: A total function `w: T → S` specifying the
+   world-state at every time in a convex temporal domain. This is the fundamental
+   semantic object used in truth evaluation (see WorldHistory.lean lines 69-97).
 
-The unspecified aspects are intentionally left open: the plan constrains the overall trajectory without prescribing every implementation detail. This partiality is essential for flexible planning—overly specific plans become brittle when environmental conditions change.
+2. **Partial Plan Specification (Pragmatic)**: A set of constraints on world-states at
+   some times, leaving other times and state features unspecified. This is what human
+   planners actually create.
 
-**Approximating partiality via sets of complete world-histories**: The Core Layer approximates partial world-histories by representing a plan as a **set of complete world-histories** agreeing on the specified aspects. The plan "launch product by Q4 2026" corresponds to the set of all world-histories `w` where:
-- `w(t_now)` matches the current development status
-- `w(t)` for `t ∈ Q4_2026` satisfies "product launched"
-- `w(t)` for intermediate times can vary arbitrarily (subject to physical possibility)
+**Example**: Consider a plan to "launch product by Q4 2026":
 
-This set-based approximation works adequately for Core Layer reasoning: tense and modal operators quantify over these sets, and the task relation constrains which sets are accessible from given state-time points. However, the approximation becomes inadequate when integrating counterfactual operators.
+**As Partial Plan Specification** (pragmatic level):
+- Constraint at `t_now`: `product_status = "development"`
+- Constraint for `t ∈ Q4_2026`: `product_status = "launched"`
+- **Unspecified**: Exact development milestones, marketing strategies, resource
+  allocations, team compositions, market conditions at intermediate times
+
+**As Set of Complete World-Histories** (semantic level):
+```
+Plan = {w : WorldHistory F |
+  w(t_now) satisfies "product_status = development" ∧
+  (∀ t ∈ Q4_2026, w(t) satisfies "product_status = launched")}
+```
+
+Each `w ∈ Plan` is a **complete** world-history specifying states at all times in its
+domain. The set contains all complete temporal evolutions compatible with the plan's
+constraints.
+
+**Why Core Layer Uses Complete World-Histories**:
+
+The recursive truth evaluation for tense operators **requires** complete world-histories:
+
+```lean
+-- From Truth.lean lines 110-111
+| Formula.all_future φ =>
+    ∀ (s : T) (hs : τ.domain s), t < s → truth_at M τ s hs φ
+```
+
+To evaluate `Gφ` ("always in the future φ") at world-history `τ` and time `t`, we must:
+1. Identify all times `s > t` in `τ`'s domain
+2. Evaluate `φ` at each such time-state pair `(τ(s), s)`
+3. Check that `φ` holds at **all** such pairs
+
+This quantification is only well-defined if `τ` specifies states for all times in its
+domain. A "partial world-history" with "unspecified" times would make this evaluation
+undefined.
+
+**Core Layer Approximation Strategy**:
+
+The Core Layer approximates partial plan specifications using **sets of complete
+world-histories**:
+
+**Representation**:
+```
+Partial_Plan_Spec ⟿ {w : WorldHistory F | w satisfies all specified constraints}
+```
+
+**Evaluation of Planning Claims**:
+- "Under this plan, φ always holds": `∀ w ∈ Plan, truth_at M w t (Gφ)`
+- "Under this plan, φ eventually occurs": `∀ w ∈ Plan, truth_at M w t (Fφ)`
+- "There exists a way to execute this plan where φ holds":
+  `∃ w ∈ Plan, truth_at M w t φ`
+
+**Adequacy for Core Layer**: This approximation works well for temporal and modal
+reasoning because tense and modal operators naturally quantify over sets:
+- Tense operators: quantify over times within each world-history in the set
+- Modal operators: quantify over alternative world-histories (the set members)
+
+**Inadequacy for Layer 1 Counterfactuals**: The set-based approximation breaks down when
+evaluating counterfactuals like "If we had allocated more resources to marketing, the
+launch would have succeeded." The problem: which aspects of the plan should be held fixed
+(ceteris paribus) and which should vary under the counterfactual supposition?
+
+The set `{w | w satisfies plan constraints}` provides no way to distinguish:
+- Plan-relevant features (should vary under counterfactual)
+- Plan-independent features (should be held fixed under counterfactual)
+
+This motivates Layer 1's **mereological structure** over world-states, enabling explicit
+representation of which state features are specified by the plan versus unspecified (see
+Mereological Structure for Counterfactuals section below for details).
 
 ### Mereological Structure for Counterfactuals
 

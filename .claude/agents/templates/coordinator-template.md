@@ -174,29 +174,25 @@ context:
 
 **Objective**: Invoke {{SPECIALIST_TYPE}} agent for each task in parallel using Task tool.
 
-**Actions**:
+**MANDATORY EXECUTION**: You MUST invoke {{SPECIALIST_TYPE}} for each task in the TASKS array using the Task tool. Generate one Task invocation per task - do NOT skip or summarize this step.
 
-1. **Prepare Task Invocations**: For each task, prepare a Task tool invocation
-2. **Use Parallel Task Pattern**: Invoke all agents in a single response using multiple Task tool calls
+<!-- CRITICAL: Do NOT wrap Task invocations in code fences - they will not execute -->
 
-**Example Parallel Invocation**:
+**CRITICAL**: For each index `i` from 0 to `${#TASKS[@]} - 1`, you MUST generate and execute a Task tool invocation. The following shows the required pattern for each task:
 
-```markdown
-I'm now invoking {{SPECIALIST_TYPE}} for N tasks in parallel.
-
-**EXECUTE NOW**: USE the Task tool to invoke the {{SPECIALIST_TYPE}}.
+**EXECUTE NOW**: USE the Task tool to invoke {{SPECIALIST_TYPE}} for task at index 0:
 
 Task {
   subagent_type: "general-purpose"
   description: "{{TASK_DESCRIPTION_1}}"
-  prompt: |
+  prompt: "
     Read and follow behavioral guidelines from:
-    /home/user/.config/.claude/agents/{{SPECIALIST_FILE}}.md
+    ${CLAUDE_PROJECT_DIR}/.claude/agents/{{SPECIALIST_FILE}}.md
 
     **CRITICAL - Hard Barrier Pattern**:
-    {{ARTIFACT_TYPE_UPPER}}_PATH="${ARTIFACT_PATHS[0]}"
+    {{ARTIFACT_TYPE_UPPER}}_PATH=${ARTIFACT_PATHS[0]}
 
-    **Task**: {{TASK_EXAMPLE_1}}
+    **Task**: ${TASKS[0]}
     **Focus**:
     - {{FOCUS_ITEM_1}}
     - {{FOCUS_ITEM_2}}
@@ -205,31 +201,57 @@ Task {
     **Context**:
     ${CONTEXT}
 
-    Return: {{ARTIFACT_TYPE_UPPER}}_CREATED: [path]
+    Return: {{ARTIFACT_TYPE_UPPER}}_CREATED: ${ARTIFACT_PATHS[0]}
+  "
 }
 
-**EXECUTE NOW**: USE the Task tool to invoke the {{SPECIALIST_TYPE}}.
+**EXECUTE NOW**: USE the Task tool to invoke {{SPECIALIST_TYPE}} for task at index 1:
 
 Task {
   subagent_type: "general-purpose"
   description: "{{TASK_DESCRIPTION_2}}"
-  prompt: |
+  prompt: "
     Read and follow behavioral guidelines from:
-    /home/user/.config/.claude/agents/{{SPECIALIST_FILE}}.md
+    ${CLAUDE_PROJECT_DIR}/.claude/agents/{{SPECIALIST_FILE}}.md
 
     **CRITICAL - Hard Barrier Pattern**:
-    {{ARTIFACT_TYPE_UPPER}}_PATH="${ARTIFACT_PATHS[1]}"
+    {{ARTIFACT_TYPE_UPPER}}_PATH=${ARTIFACT_PATHS[1]}
 
-    **Task**: {{TASK_EXAMPLE_2}}
+    **Task**: ${TASKS[1]}
 
     **Context**:
     ${CONTEXT}
 
-    Return: {{ARTIFACT_TYPE_UPPER}}_CREATED: [path]
+    Return: {{ARTIFACT_TYPE_UPPER}}_CREATED: ${ARTIFACT_PATHS[1]}
+  "
 }
-```
 
-**Checkpoint**: All {{SPECIALIST_TYPE}} agents invoked in parallel.
+Continue this pattern for indices 2, 3, etc. if more tasks exist in TASKS array.
+
+**CHECKPOINT**: Before proceeding to STEP 4, verify you have invoked the Task tool for ALL tasks. Count the Task tool invocations in your response - it MUST equal ${#TASKS[@]}.
+
+---
+
+### STEP 3.5: Verify Task Invocations
+
+**Objective**: Self-validate that Task tool was actually used before proceeding.
+
+**SELF-CHECK**: Before proceeding to STEP 4, answer these questions:
+
+1. Did you generate Task tool invocations for each task? (YES/NO)
+2. How many Task invocations did you generate? (must equal task count: ${#TASKS[@]})
+3. Did each Task invocation include the {{ARTIFACT_TYPE_UPPER}}_PATH from ARTIFACT_PATHS array?
+4. Did each Task invocation include the **EXECUTE NOW** directive?
+
+**CRITICAL**: If any answer is NO or incorrect, STOP and re-execute STEP 3 before continuing.
+
+**Verification Criteria**:
+- Task invocation count MUST equal `${#TASKS[@]}`
+- Each Task MUST have `subagent_type: "general-purpose"`
+- Each Task MUST have `{{ARTIFACT_TYPE_UPPER}}_PATH=${ARTIFACT_PATHS[i]}` in its prompt
+- Each Task MUST NOT be wrapped in markdown code fences
+
+**If Tasks Not Invoked**: You MUST go back to STEP 3 and generate actual Task tool invocations. Reading examples is NOT executing them.
 
 ---
 

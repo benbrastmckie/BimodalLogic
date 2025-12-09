@@ -1,6 +1,7 @@
 import Logos.Core.ProofSystem
 import Logos.Core.Semantics
 import Logos.Core.Metalogic.Soundness
+import Mathlib.Algebra.Order.Group.Int
 
 /-!
 # Completeness for TM Bimodal Logic
@@ -207,7 +208,7 @@ The canonical frame for TM logic.
 - Show `canonical_task_rel` satisfies nullity
 - Show `canonical_task_rel` satisfies compositionality
 -/
-axiom canonical_frame : TaskFrame
+axiom canonical_frame : TaskFrame Int
   -- where
   --   WorldState := CanonicalWorldState
   --   Time := CanonicalTime
