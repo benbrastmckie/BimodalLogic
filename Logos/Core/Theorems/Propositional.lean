@@ -1278,4 +1278,191 @@ theorem demorgan_disj_neg (A B : Formula) :
   exact iff_intro (A.or B).neg (A.neg.and B.neg)
     (demorgan_disj_neg_forward A B) (demorgan_disj_neg_backward A B)
 
+/-!
+## Phase 5: Natural Deduction Style Rules
+
+Negation Introduction (NI), Negation Elimination (NE), Disjunction Elimination (DE),
+and Biconditional Introduction (BI_IMP) in Hilbert-style proof calculus.
+
+These theorems provide natural deduction style inference patterns.
+-/
+
+/--
+Negation Introduction (NI): If `Γ, A ⊢ B` and `Γ, A ⊢ ¬B`, then `Γ ⊢ ¬A`.
+
+This is the standard proof-by-contradiction pattern: if assuming A leads to a
+contradiction (both B and ¬B), then ¬A holds.
+
+**Proof Strategy**:
+1. From `h1 : (A :: Γ) ⊢ ¬B` and `h2 : (A :: Γ) ⊢ B`, derive `(A :: Γ) ⊢ ⊥` using modus ponens
+2. Apply deduction_theorem: `Γ ⊢ A → ⊥` = `Γ ⊢ ¬A`
+
+**Complexity**: Medium
+
+**Dependencies**: `Derivable.modus_ponens`, `deduction_theorem`
+-/
+theorem ni (A B : Formula) (h1 : (A :: Γ) ⊢ B.neg) (h2 : (A :: Γ) ⊢ B) : Γ ⊢ A.neg := by
+  -- From h1 and h2, derive (A :: Γ) ⊢ ⊥
+  -- ¬B = B → ⊥, so modus ponens gives ⊥
+  have h_bot : (A :: Γ) ⊢ Formula.bot :=
+    Derivable.modus_ponens (A :: Γ) B Formula.bot h1 h2
+  -- Apply deduction theorem: Γ ⊢ A → ⊥ = Γ ⊢ ¬A
+  exact Logos.Core.Metalogic.deduction_theorem Γ A Formula.bot h_bot
+
+/--
+Negation Elimination (NE): If `Γ, ¬A ⊢ B` and `Γ, ¬A ⊢ ¬B`, then `Γ ⊢ A`.
+
+This is classical proof by contradiction (indirect proof): if assuming ¬A leads to
+a contradiction, then A holds.
+
+**Proof Strategy**:
+1. From `h1 : (A.neg :: Γ) ⊢ ¬B` and `h2 : (A.neg :: Γ) ⊢ B`, derive `(A.neg :: Γ) ⊢ ⊥`
+2. Apply deduction_theorem: `Γ ⊢ ¬A → ⊥` = `Γ ⊢ ¬¬A`
+3. Apply DNE (double_negation axiom): `Γ ⊢ A`
+
+**Complexity**: Medium
+
+**Dependencies**: `Derivable.modus_ponens`, `Derivable.weakening`, `Axiom.double_negation`, `deduction_theorem`
+-/
+theorem ne (A B : Formula) (h1 : (A.neg :: Γ) ⊢ B.neg) (h2 : (A.neg :: Γ) ⊢ B) : Γ ⊢ A := by
+  -- From h1 and h2, derive (A.neg :: Γ) ⊢ ⊥
+  have h_bot : (A.neg :: Γ) ⊢ Formula.bot :=
+    Derivable.modus_ponens (A.neg :: Γ) B Formula.bot h1 h2
+  -- Apply deduction theorem: Γ ⊢ ¬A → ⊥ = Γ ⊢ ¬¬A
+  have h_neg_neg : Γ ⊢ A.neg.neg :=
+    Logos.Core.Metalogic.deduction_theorem Γ A.neg Formula.bot h_bot
+  -- Apply DNE: ¬¬A → A
+  have dne : ⊢ A.neg.neg.imp A :=
+    Derivable.axiom [] _ (Axiom.double_negation A)
+  have dne_ctx : Γ ⊢ A.neg.neg.imp A :=
+    Derivable.weakening [] Γ _ dne (List.nil_subset Γ)
+  exact Derivable.modus_ponens Γ A.neg.neg A dne_ctx h_neg_neg
+
+/--
+Biconditional Introduction (Implication Form): `⊢ (A → B) → ((B → A) → (A ↔ B))`.
+
+This is the curried form of biconditional introduction for compositional proofs.
+The context-based `iff_intro` already exists; this provides the pure implication form.
+
+**Recall**: `A ↔ B = (A → B) ∧ (B → A)`
+
+**Proof Strategy**:
+1. From context `[(A → B), (B → A)]`, derive both by assumption
+2. Apply `pairing` to get `(A → B) ∧ (B → A)`
+3. Apply deduction_theorem twice to lift to pure implication form
+
+**Complexity**: Medium
+
+**Dependencies**: `deduction_theorem`, `pairing`, `Derivable.assumption`, `Derivable.weakening`
+-/
+theorem bi_imp (A B : Formula) :
+    ⊢ (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) := by
+  -- First, derive [(A → B), (B → A)] ⊢ (A → B) ∧ (B → A)
+  have h_in_ctx : [(B.imp A), (A.imp B)] ⊢ (A.imp B).and (B.imp A) := by
+    -- Get (A → B) from context
+    have h_ab : [(B.imp A), (A.imp B)] ⊢ A.imp B := by
+      apply Derivable.assumption
+      simp
+    -- Get (B → A) from context
+    have h_ba : [(B.imp A), (A.imp B)] ⊢ B.imp A := by
+      apply Derivable.assumption
+      simp
+    -- Use pairing: X → Y → (X ∧ Y)
+    have pair_inst : ⊢ (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) :=
+      pairing (A.imp B) (B.imp A)
+    -- Weaken to context
+    have pair_ctx : [(B.imp A), (A.imp B)] ⊢
+        (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) :=
+      Derivable.weakening [] _ _ pair_inst (List.nil_subset _)
+    -- Apply modus ponens twice
+    have step1 : [(B.imp A), (A.imp B)] ⊢ (B.imp A).imp ((A.imp B).and (B.imp A)) :=
+      Derivable.modus_ponens _ _ _ pair_ctx h_ab
+    exact Derivable.modus_ponens _ _ _ step1 h_ba
+
+  -- Apply deduction theorem: [(A → B)] ⊢ (B → A) → ((A → B) ∧ (B → A))
+  have step1 : [(A.imp B)] ⊢ (B.imp A).imp ((A.imp B).and (B.imp A)) :=
+    Logos.Core.Metalogic.deduction_theorem [(A.imp B)] (B.imp A) _ h_in_ctx
+
+  -- Apply deduction theorem: [] ⊢ (A → B) → ((B → A) → ((A → B) ∧ (B → A)))
+  exact Logos.Core.Metalogic.deduction_theorem [] (A.imp B) _ step1
+
+/--
+Disjunction Elimination (DE): If `Γ, A ⊢ C` and `Γ, B ⊢ C`, then `Γ, A ∨ B ⊢ C`.
+
+This is case analysis: if we can derive C from either A or B (separately),
+then from A ∨ B we can derive C.
+
+**Recall**: `A ∨ B = ¬A → B`
+
+**Proof Strategy**:
+1. Apply deduction_theorem to get `Γ ⊢ A → C` and `Γ ⊢ B → C`
+2. Weaken both to `((A.or B) :: Γ)`
+3. Get `A ∨ B = ¬A → B` from context via assumption
+4. Apply `classical_merge`: `(A → C) → ((¬A → C) → C)`
+5. Compose `A ∨ B` with `B → C` via b_combinator to get `¬A → C`
+6. Apply modus_ponens chain to derive C
+
+**Complexity**: Complex
+
+**Dependencies**: `deduction_theorem`, `Derivable.weakening`, `classical_merge`,
+               `b_combinator`, `Derivable.assumption`
+-/
+theorem de (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: Γ) ⊢ C) :
+    ((A.or B) :: Γ) ⊢ C := by
+  -- Apply deduction theorem to get Γ ⊢ A → C
+  have ac : Γ ⊢ A.imp C :=
+    Logos.Core.Metalogic.deduction_theorem Γ A C h1
+
+  -- Apply deduction theorem to get Γ ⊢ B → C
+  have bc : Γ ⊢ B.imp C :=
+    Logos.Core.Metalogic.deduction_theorem Γ B C h2
+
+  -- Weaken A → C to context ((A.or B) :: Γ)
+  have ac_ctx : ((A.or B) :: Γ) ⊢ A.imp C :=
+    Derivable.weakening Γ _ _ ac (by intro x hx; simp; right; exact hx)
+
+  -- Weaken B → C to context ((A.or B) :: Γ)
+  have bc_ctx : ((A.or B) :: Γ) ⊢ B.imp C :=
+    Derivable.weakening Γ _ _ bc (by intro x hx; simp; right; exact hx)
+
+  -- Get A ∨ B from context
+  have h_disj : ((A.or B) :: Γ) ⊢ A.or B := by
+    apply Derivable.assumption
+    simp
+
+  -- A ∨ B = ¬A → B (by definition)
+  -- We need ¬A → C from (¬A → B) and (B → C) via b_combinator
+
+  -- b_combinator: (B → C) → (¬A → B) → (¬A → C)
+  have b_inst : ⊢ (B.imp C).imp ((A.neg.imp B).imp (A.neg.imp C)) :=
+    b_combinator
+
+  have b_ctx : ((A.or B) :: Γ) ⊢ (B.imp C).imp ((A.neg.imp B).imp (A.neg.imp C)) :=
+    Derivable.weakening [] _ _ b_inst (List.nil_subset _)
+
+  have step1 : ((A.or B) :: Γ) ⊢ (A.neg.imp B).imp (A.neg.imp C) :=
+    Derivable.modus_ponens _ _ _ b_ctx bc_ctx
+
+  -- h_disj : ((A.or B) :: Γ) ⊢ A.or B
+  -- A.or B unfolds to ¬A → B
+  have h_disj_unf : ((A.or B) :: Γ) ⊢ A.neg.imp B := by
+    unfold Formula.or at h_disj
+    exact h_disj
+
+  -- Get ¬A → C
+  have nac : ((A.or B) :: Γ) ⊢ A.neg.imp C :=
+    Derivable.modus_ponens _ _ _ step1 h_disj_unf
+
+  -- Now use classical_merge: (A → C) → ((¬A → C) → C)
+  have cm : ⊢ (A.imp C).imp ((A.neg.imp C).imp C) :=
+    classical_merge A C
+
+  have cm_ctx : ((A.or B) :: Γ) ⊢ (A.imp C).imp ((A.neg.imp C).imp C) :=
+    Derivable.weakening [] _ _ cm (List.nil_subset _)
+
+  have step2 : ((A.or B) :: Γ) ⊢ (A.neg.imp C).imp C :=
+    Derivable.modus_ponens _ _ _ cm_ctx ac_ctx
+
+  exact Derivable.modus_ponens _ _ _ step2 nac
+
 end Logos.Core.Theorems.Propositional

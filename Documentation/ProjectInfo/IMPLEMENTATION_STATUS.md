@@ -2,7 +2,7 @@
 
 **Last Updated**: 2025-12-09
 **Project Version**: 0.1.0-mvp
-**Status**: Layer 0 (Core TM) MVP Complete - ALL 6 PERPETUITY PRINCIPLES PROVEN (P1-P6) - Phase 4 Modal Theorems Partial (5/8 complete)
+**Status**: Layer 0 (Core TM) MVP Complete - ALL 6 PERPETUITY PRINCIPLES PROVEN (P1-P6) - Phase 4 Modal Theorems COMPLETE (8/8 proven)
 
 ## Update Instructions
 
@@ -41,8 +41,8 @@ Logos has completed its MVP phase with a functional implementation of the TM bim
 - [MAINTENANCE.md](MAINTENANCE.md) - TODO management workflow
 
 **Quick Summary**:
-- **Completed Modules**: 5/8 (63%)
-- **Partial Modules**: 3/8 (37%) - Truth.lean (3 sorry), ModalS5.lean (1 sorry), ModalS4.lean (2 sorry)
+- **Completed Modules**: 7/8 (87%)
+- **Partial Modules**: 1/8 (12%) - Truth.lean (3 sorry)
 - **Infrastructure Only**: 1/8 (12%)
 - **Planned Extensions**: Layer 1, 2, 3 (future work)
 
@@ -88,7 +88,7 @@ All syntax modules fully implemented with comprehensive tests.
   - Atom, bot, implication constructors
   - Modal box (`box`) and derived diamond (`diamond`)
   - Temporal future (`future`) and past (`past`)
-  - Derived always (`always = future`) and sometimes (`sometimes`)
+  - Derived always (`always`) and sometimes (`sometimes`)
   - Helper functions: `neg`, `and`, `or`, etc.
 
 ### Context.lean
@@ -550,45 +550,48 @@ lake build LogosTest.Core.Theorems.PerpetuityTest
 1. Derive `always_mono` compositionally (requires conjunction elimination lemmas)
 2. Add `swap_temporal_box` for symmetry with `swap_temporal_diamond`
 
-### ModalS5.lean (Phase 4 - Partial, Plan 059 Progress)
-- **Status**: `[PARTIAL]` - 4/5 theorems proven, 1 partially implemented with formula alignment issues
-- **Lines of Code**: ~600 (4 complete theorems + 1 partial + blocked infrastructure)
-- **Sorry Count**: 4 (diamond_mono_imp blocked by fundamental limitation, diamond_disj_iff partially implemented)
+### ModalS5.lean (Phase 4 - Complete, Plan 060 Completion)
+- **Status**: `[COMPLETE]` - 6/6 theorems proven (excluding documented invalid theorem)
+- **Lines of Code**: ~800 (6 complete theorems + k_dist_diamond infrastructure)
+- **Sorry Count**: 1 (diamond_mono_imp intentionally marked sorry - NOT VALID as object-level theorem, counter-model documented at lines 70-84)
 - **Completed Theorems**:
-  1. `box_disj_intro` (lines 154-199) - `⊢ (□A ∨ □B) → □(A ∨ B)` ✓
-  2. `box_conj_iff` (lines 342-428) - `⊢ □(A ∧ B) ↔ (□A ∧ □B)` ✓
-  3. `s5_diamond_box` (lines 479-522) - `⊢ (◇□A) ↔ □A` ✓
-  4. `s5_diamond_box_to_truth` (lines 534-543) - `⊢ (◇□A) → A` ✓
-- **Blocked Theorems**:
-  1. `diamond_mono_imp` (line 86-89) - **BLOCKED**: NOT VALID as object-level theorem (counter-model documented at lines 70-84)
-  2. `diamond_mono_conditional` (line 96-99) - **BLOCKED**: Depends on diamond_mono_imp which is not derivable
-  3. `diamond_disj_iff` (lines 496-527) - **PARTIAL**: De Morgan infrastructure added (Phase 1), but formula alignment complexity remains (2 sorry at lines 515, 524)
+  1. `k_dist_diamond` - `⊢ □(A → B) → (◇A → ◇B)` ✓ (NEW - Plan 060 Phase 1)
+  2. `box_disj_intro` (lines 154-199) - `⊢ (□A ∨ □B) → □(A ∨ B)` ✓
+  3. `box_conj_iff` (lines 342-428) - `⊢ □(A ∧ B) ↔ (□A ∧ □B)` ✓
+  4. `diamond_disj_iff` - `⊢ ◇(A ∨ B) ↔ (◇A ∨ ◇B)` ✓ (COMPLETE - Plan 060 Phase 3)
+  5. `s5_diamond_box` (lines 479-522) - `⊢ (◇□A) ↔ □A` ✓
+  6. `s5_diamond_box_to_truth` (lines 534-543) - `⊢ (◇□A) → A` ✓
+- **Documented Invalid Theorem**:
+  1. `diamond_mono_imp` (line 86-89) - **NOT VALID**: Documented with counter-model (lines 70-84). Intentional sorry as documentation.
+  2. `diamond_mono_conditional` (line 96-99) - **NOT VALID**: Depends on diamond_mono_imp
 
-### ModalS4.lean (Phase 4 - Partial)
-- **Status**: `[PARTIAL]` - 2/4 theorems proven, 2 blocked on infrastructure
-- **Lines of Code**: ~280 (2 complete theorems + 2 sorry)
-- **Sorry Count**: 2 (s4_diamond_box_conj at line 76, s5_diamond_conj_diamond at line 245)
+### ModalS4.lean (Phase 4 - Complete, Plan 060 Completion)
+- **Status**: `[COMPLETE]` - 4/4 theorems proven
+- **Lines of Code**: ~480 (4 complete theorems using k_dist_diamond infrastructure)
+- **Sorry Count**: 0
 - **Completed Theorems**:
-  1. `s4_box_diamond_box` (lines 77-85) - `⊢ □A → □◇□A` ✓
-  2. `s4_diamond_box_diamond` (lines 100-217) - `⊢ (◇□◇A) ↔ ◇A` ✓
-- **Blocked Theorems**:
-  1. `s4_diamond_box_conj` (lines 61-76) - **BLOCKED**: Requires conditional diamond monotonicity (not derivable, see ModalS5.lean:70-84)
-  2. `s5_diamond_conj_diamond` (lines 230-245) - **BLOCKED**: Requires advanced S5 distribution properties
+  1. `s4_diamond_box_conj` - `⊢ (◇A ∧ □B) → ◇(A ∧ □B)` ✓ (COMPLETE - Plan 060 Phase 4)
+  2. `s4_box_diamond_box` - `⊢ □A → □◇□A` ✓
+  3. `s4_diamond_box_diamond` - `⊢ (◇□◇A) ↔ ◇A` ✓
+  4. `s5_diamond_conj_diamond` - `⊢ ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)` ✓ (COMPLETE - Plan 060 Phase 4)
 
 **Package Status**:
 - Perpetuity: 6/6 FULLY PROVEN (100% completion)
 - Propositional Infrastructure (Plan 059 Phase 1): De Morgan laws COMPLETE (6/6 theorems) ✓
-- Phase 4 Modal Theorems: 5/8 PROVEN (62.5% completion)
+- Phase 4 Modal Theorems: 8/8 PROVEN (100% completion)
+- ModalS5 Theorems: 5/5 COMPLETE (excludes documented invalid theorem)
+- ModalS4 Theorems: 4/4 COMPLETE
 
-**Phase 4 Status Update (Plan 059 - PARTIAL COMPLETION)**:
-- **Phase 1 COMPLETE**: De Morgan laws fully proven in Propositional.lean (demorgan_conj_neg, demorgan_disj_neg + forward/backward) ✓
-- **Phase 2 BLOCKED**: diamond_mono_conditional discovered to be NOT VALID as object-level theorem (counter-model documented in ModalS5.lean:70-84)
-- **Phases 3-4 PARTIAL**: diamond_disj_iff has De Morgan infrastructure but formula alignment complexity remains (2 sorry)
+**Phase 4 Status Update (Plan 060 - COMPLETE)**:
+- **Phase 1 COMPLETE**: k_dist_diamond infrastructure (`□(A → B) → (◇A → ◇B)`) proven in ModalS5.lean ✓
+- **Phase 2 COMPLETE**: Biconditional infrastructure (contrapose_iff, iff_neg_intro, box_iff_intro) in Propositional.lean ✓
+- **Phase 3 COMPLETE**: diamond_disj_iff fully proven using duality chain approach ✓
+- **Phase 4 COMPLETE**: s4_diamond_box_conj and s5_diamond_conj_diamond proven using k_dist_diamond ✓
 
-**Remaining Infrastructure Blockers**:
-1. **Conditional Diamond Monotonicity**: NOT DERIVABLE - requires meta-level reasoning, not object-level theorem (fundamental modal logic limitation)
-2. **Formula Type Alignment**: Complex formula structure manipulation for diamond_disj_iff (technical, not theoretical)
-3. **S5 Diamond Distribution**: Advanced nested modality distribution for s5_diamond_conj_diamond
+**Key Discovery (Plan 060)**:
+- `(φ → ψ) → (◇φ → ◇ψ)` is NOT VALID as object-level theorem (counter-model exists)
+- `□(φ → ψ) → (◇φ → ◇ψ)` IS VALID and derivable from K axiom
+- Solution: "Box the implication" - use `k_dist_diamond` instead of invalid diamond_mono_imp
 
 ---
 
@@ -753,8 +756,8 @@ lake test LogosTest.Integration
 | | Completeness | ⚠️ Infra | 0% | - | Types only, no proofs |
 | | Decidability | ✗ Planned | 0% | - | Not started |
 | **Theorems** | Perpetuity | ✓ Complete | 100% | ✓ | All P1-P6 proven (zero sorry) |
-| | ModalS5 | ⚠️ Partial | 80% | ✓ | 4/5 theorems proven, 1 blocked |
-| | ModalS4 | ⚠️ Partial | 50% | ✓ | 2/4 theorems proven, 2 blocked |
+| | ModalS5 | ✓ Complete | 100% | ✓ | 6/6 theorems (1 documented invalid) |
+| | ModalS4 | ✓ Complete | 100% | ✓ | 4/4 theorems proven |
 | **Automation** | Tactics | ⚠️ Partial | 33% | ✓ | 4/12 tactics implemented |
 | | ProofSearch | ⚠️ Infra | 0% | - | Axiom stubs, 3 doc sorry |
 | **Archive** | Examples | ✓ Complete | 100% | ✓ | Using proven components |
@@ -770,9 +773,9 @@ lake test LogosTest.Integration
 
 ## Overall Project Status
 
-**MVP Completion**: 78% fully complete, 10% partial (Truth.lean 3 sorry, ModalS5.lean 1 sorry, ModalS4.lean 2 sorry), 12% infrastructure only
+**MVP Completion**: 82% fully complete, 6% partial (Truth.lean 3 sorry, DeductionTheorem 3 sorry, Completeness 1 sorry), 12% infrastructure only
 
-**Last Updated**: 2025-12-09 (Phase 4 Modal Theorems: 5/8 complete, 3 blocked on infrastructure)
+**Last Updated**: 2025-12-09 (Phase 4 Modal Theorems: 8/8 COMPLETE, All 6 Perpetuity Principles PROVEN)
 
 **What Works**:
 - ✓ Full syntax, proof system, and semantics
@@ -786,9 +789,10 @@ lake test LogosTest.Integration
 - ✓ Zero sorry in Soundness.lean and Perpetuity.lean
 
 **What's Partial**:
-- ⚠️ Truth.lean: 3 sorry in temporal swap validity lemmas (non-critical)
-- ⚠️ ModalS5.lean: 1 sorry in diamond_disj_iff (blocked on De Morgan laws)
-- ⚠️ ModalS4.lean: 2 sorry in modal theorems (blocked on infrastructure)
+- ⚠️ Truth.lean: 3 sorry in temporal swap validity lemmas (domain extension limitation)
+- ⚠️ DeductionTheorem.lean: 3 sorry in complex derivation cases (modal_k, necessitation, temporal_k)
+- ⚠️ Completeness.lean: 1 sorry in provable_iff_valid
+- ⚠️ ModalS5.lean: 1 sorry (diamond_mono_imp - documented as NOT VALID, not a bug)
 
 **What's Planned**:
 - ✗ Completeness proofs (infrastructure present)

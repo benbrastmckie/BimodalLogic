@@ -704,18 +704,18 @@ theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.o
                             ((A.neg.and B.neg).box.imp (A.or B).neg.box) :=
       box_iff_intro (A.or B).neg (A.neg.and B.neg) demorgan_disj
 
-    -- Step 6: Extract backward direction: □(¬A ∧ ¬B) → □¬(A ∨ B)
-    have box_conj_to_or : ⊢ (A.neg.and B.neg).box.imp (A.or B).neg.box := by
-      have rce : ⊢ (((A.or B).neg.box.imp (A.neg.and B.neg).box).and
+    -- Step 6: Extract forward direction: □¬(A ∨ B) → □(¬A ∧ ¬B)
+    have box_or_to_conj : ⊢ (A.or B).neg.box.imp (A.neg.and B.neg).box := by
+      have lce : ⊢ (((A.or B).neg.box.imp (A.neg.and B.neg).box).and
                      ((A.neg.and B.neg).box.imp (A.or B).neg.box)).imp
-                    ((A.neg.and B.neg).box.imp (A.or B).neg.box) :=
-        Propositional.rce_imp ((A.or B).neg.box.imp (A.neg.and B.neg).box)
+                    ((A.or B).neg.box.imp (A.neg.and B.neg).box) :=
+        Propositional.lce_imp ((A.or B).neg.box.imp (A.neg.and B.neg).box)
                               ((A.neg.and B.neg).box.imp (A.or B).neg.box)
-      exact Derivable.modus_ponens [] _ _ rce box_demorgan
+      exact Derivable.modus_ponens [] _ _ lce box_demorgan
 
-    -- Step 7: Contrapose: ¬□¬(A ∨ B) → ¬□(¬A ∧ ¬B)
-    have neg_box_or_to_neg_box_conj : ⊢ (A.or B).neg.box.neg.imp (A.neg.and B.neg).box.neg :=
-      contraposition box_conj_to_or
+    -- Step 7: Contrapose: ¬□(¬A ∧ ¬B) → ¬□¬(A ∨ B)
+    have neg_box_conj_to_neg_box_or : ⊢ (A.neg.and B.neg).box.neg.imp (A.or B).neg.box.neg :=
+      contraposition box_or_to_conj
 
     -- Step 8: Compose the chain
     -- (¬□¬A ∨ ¬□¬B) → ¬(□¬A ∧ □¬B)
@@ -723,13 +723,6 @@ theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.o
       demorgan_conj_back
 
     -- ¬(□¬A ∧ □¬B) → ¬□(¬A ∧ ¬B)
-    -- We need to use reverse contraposition: from (X → Y) derive (¬Y → ¬X)
-    -- We have: (□¬A ∧ □¬B) → □(¬A ∧ ¬B), so ¬□(¬A ∧ ¬B) → ¬(□¬A ∧ □¬B)
-    -- But we need: ¬(□¬A ∧ □¬B) → ¬□(¬A ∧ ¬B)
-    -- This requires the reverse direction!
-
-    -- Actually, I need both directions. Let me use DNE pattern.
-    -- From ¬(□¬A ∧ □¬B), I can't directly get ¬□(¬A ∧ ¬B).
     -- I need the FORWARD direction of box_conj_iff: □(¬A ∧ ¬B) → (□¬A ∧ □¬B)
     -- Then contrapose: ¬(□¬A ∧ □¬B) → ¬□(¬A ∧ ¬B)
 
@@ -745,12 +738,14 @@ theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.o
       contraposition box_conj_to_conj_box
 
     -- Step 9: Compose step1 and neg_conj_to_neg_box
+    -- (◇A ∨ ◇B) → ¬□(¬A ∧ ¬B)
     have step2 : ⊢ (A.neg.box.neg.or B.neg.box.neg).imp (A.neg.and B.neg).box.neg :=
       imp_trans step1 neg_conj_to_neg_box
 
-    -- Step 10: Compose with neg_box_or_to_neg_box_conj
+    -- Step 10: Compose with neg_box_conj_to_neg_box_or to get (◇A ∨ ◇B) → ◇(A ∨ B)
+    -- neg_box_conj_to_neg_box_or: ¬□(¬A ∧ ¬B) → ¬□¬(A ∨ B) = ¬□(¬A ∧ ¬B) → ◇(A ∨ B)
     have result : ⊢ (A.neg.box.neg.or B.neg.box.neg).imp (A.or B).neg.box.neg :=
-      imp_trans step2 neg_box_or_to_neg_box_conj
+      imp_trans step2 neg_box_conj_to_neg_box_or
 
     exact result
 

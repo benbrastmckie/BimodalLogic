@@ -292,11 +292,12 @@ PLAN_FILE="$(cd "$(dirname "$PLAN_FILE")" && pwd)/$(basename "$PLAN_FILE")"
 echo "Plan File: $PLAN_FILE"
 
 # === EXECUTION MODE INITIALIZATION ===
-# Wave-based full plan delegation: Pass entire plan to coordinator
+# Wave-based plan delegation: Pass entire plan to coordinator
 # Coordinator analyzes dependencies and executes waves in parallel
-EXECUTION_MODE="full-plan"
+# Note: Coordinators expect "plan-based" mode (not "full-plan")
+EXECUTION_MODE="plan-based"
 
-echo "Execution Mode: Full plan delegation with wave-based orchestration"
+echo "Execution Mode: Plan-based delegation with wave-based orchestration"
 
 # Optional: Starting phase override (for manual wave targeting)
 # Default: Coordinator auto-detects lowest incomplete phase
@@ -854,7 +855,7 @@ if [ "$PLAN_TYPE" = "lean" ]; then
     PRIMARY_LEAN_FILE="${TOPIC_PATH}/Theorems.lean"  # Fallback
   fi
 
-  # Build lean-coordinator full-plan prompt
+  # Build lean-coordinator plan-based prompt
   COORDINATOR_PROMPT="Read and follow ALL behavioral guidelines from:
     ${COORDINATOR_AGENT}
 
@@ -862,7 +863,7 @@ if [ "$PLAN_TYPE" = "lean" ]; then
     - plan_path: ${PLAN_FILE}
     - lean_file_path: ${PRIMARY_LEAN_FILE}
     - topic_path: ${TOPIC_PATH}
-    - execution_mode: full-plan
+    - execution_mode: plan-based
     - routing_map_path: ${ROUTING_MAP_FILE}
     - artifact_paths:
       - plans: ${TOPIC_PATH}/plans/
@@ -907,7 +908,7 @@ else
   COORDINATOR_AGENT="${CLAUDE_PROJECT_DIR}/.claude/agents/implementer-coordinator.md"
   COORDINATOR_DESCRIPTION="Wave-based full plan software implementation orchestration"
 
-  # Build implementer-coordinator full-plan prompt
+  # Build implementer-coordinator plan-based prompt
   COORDINATOR_PROMPT="Read and follow ALL behavioral guidelines from:
     ${COORDINATOR_AGENT}
 
@@ -915,7 +916,7 @@ else
     - plan_path: ${PLAN_FILE}
     - topic_path: ${TOPIC_PATH}
     - summaries_dir: ${SUMMARIES_DIR}
-    - execution_mode: full-plan
+    - execution_mode: plan-based
     - routing_map_path: ${ROUTING_MAP_FILE}
     - artifact_paths:
       - reports: ${TOPIC_PATH}/reports/

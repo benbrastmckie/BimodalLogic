@@ -221,11 +221,14 @@ Logos follows rigorous development standards including Test-Driven Development (
   - `demorgan_conj_neg`: `⊢ ¬(A ∧ B) ↔ (¬A ∨ ¬B)` (full biconditional) ✓
   - `demorgan_disj_neg`: `⊢ ¬(A ∨ B) ↔ (¬A ∧ ¬B)` (full biconditional) ✓
   - Plus forward/backward direction helpers for both laws
-- **Phase 4 Modal Theorems** (5/8 complete, 3 blocked - Plan 059 PARTIAL):
-  - `Propositional.lean`: lce_imp, rce_imp, classical_merge, De Morgan laws proven ✓
-  - `ModalS5.lean`: box_disj_intro, box_conj_iff, s5_diamond_box, s5_diamond_box_to_truth proven (4/5) ✓
-  - `ModalS4.lean`: s4_box_diamond_box, s4_diamond_box_diamond proven (2/4) ✓
-  - **Blocked on fundamental limitation**: diamond_disj_iff (formula alignment), s4_diamond_box_conj (conditional mono NOT VALID), s5_diamond_conj_diamond (S5 distribution)
+- **Phase 4 Modal Theorems** (8/8 complete - Plan 060 COMPLETE):
+  - `Propositional.lean`: lce_imp, rce_imp, classical_merge, De Morgan laws, biconditional infrastructure ✓
+  - `ModalS5.lean`: k_dist_diamond, box_disj_intro, box_conj_iff, diamond_disj_iff, s5_diamond_box, s5_diamond_box_to_truth ✓
+  - `ModalS4.lean`: s4_diamond_box_conj, s4_box_diamond_box, s4_diamond_box_diamond, s5_diamond_conj_diamond ✓
+- **K Distribution for Diamond** (Plan 060 - Key Discovery):
+  - `k_dist_diamond`: `⊢ □(A → B) → (◇A → ◇B)` (valid K distribution)
+  - NOTE: `(A → B) → (◇A → ◇B)` is NOT VALID (counter-model documented in ModalS5.lean)
+  - Solution: "Box the implication" to get valid theorem from K axiom
 
 ### Automation Package
 - `Tactics`: Custom tactics for TM logic automation **(4/12 implemented)**

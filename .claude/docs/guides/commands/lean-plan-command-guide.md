@@ -17,6 +17,313 @@ The `/lean-plan` command creates Lean-specific implementation plans for theorem 
 
 ---
 
+## Architecture
+
+### Agent Delegation Pattern
+
+The `/lean-plan` command enforces a **mandatory delegation pattern** where the primary orchestrator MUST invoke the `lean-plan-architect` agent via the Task tool to create plans. Direct plan creation using the Write tool is prohibited.
+
+**Why Delegation is Mandatory**:
+- **Theorem Dependency Analysis**: The agent analyzes theorem dependencies to generate optimal phase dependency structures for wave-based parallel execution
+- **Phase Metadata Generation**: The agent creates Phase Routing Summary tables and proper `implementer:` fields for /lean-implement integration
+- **Standards Validation**: The agent applies Plan Metadata Standard validation and Lean-specific format requirements
+- **Proof Strategy Design**: The agent designs proof approaches based on Mathlib research and complexity analysis
+
+**Delegation Flow**:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ /lean-plan Command (Primary Orchestrator)              │
+│                                                         │
+│ Block 1: Setup                                          │
+│   ├─ Parse arguments and validate Lean project         │
+│   ├─ Create topic directory structure                  │
+│   └─ Invoke research-coordinator for Mathlib research  │
+│                                                         │
+│ Block 2b: Plan Creation (HARD BARRIER)                 │
+│   └─ Task tool → lean-plan-architect                   │
+│       ├─ Input: PLAN_PATH (pre-calculated)             │
+│       ├─ Input: Research reports (metadata-only)       │
+│       ├─ Input: Standards (formatted sections)         │
+│       └─ Output: PLAN_CREATED: /path/to/plan.md        │
+│                                                         │
+│ Block 2c: Validation                                    │
+│   ├─ Verify PLAN_CREATED signal received               │
+│   ├─ Verify signal path matches PLAN_PATH              │
+│   ├─ Verify Phase Routing Summary exists               │
+│   ├─ Validate plan file size (≥500 bytes)              │
+│   └─ Run validate-plan-metadata.sh                     │
+│                                                         │
+│ Block 3: Completion                                     │
+│   └─ Return plan path to user                          │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Delegation Enforcement**:
+
+The command includes multiple verification layers to prevent delegation bypass:
+
+1. **Hard Barrier Warning** (Block 2b-exec):
+   - Explicit instructions to use Task tool
+   - Warning against Write tool usage
+   - Explanation of why delegation is required
+
+2. **Signal Verification** (Block 2c):
+   - Checks for `PLAN_CREATED:` signal in agent output
+   - Validates signal path matches expected PLAN_PATH
+   - Logs `validation_error` if signal missing
+
+3. **Metadata Verification** (Block 2c):
+   - Checks for Phase Routing Summary table
+   - Counts `implementer:` fields in phases
+   - Logs `validation_error` if metadata missing
+
+4. **Size Validation** (Block 2c):
+   - Validates plan file ≥500 bytes
+   - Fails hard barrier if file missing or too small
+
+**Common Bypass Anti-Patterns** (Prohibited):
+
+```markdown
+# WRONG: Direct Write tool usage
+Write {
+  file_path: ${PLAN_PATH}
+  content: "# Plan..."
+}
+
+# WRONG: Creating plan without Task invocation
+I'll create the plan directly using the provided template...
+
+# CORRECT: Mandatory Task invocation
+**EXECUTE NOW**: USE the Task tool to invoke lean-plan-architect
+Task {
+  subagent_type: "general-purpose"
+  prompt: "Read and follow ALL behavioral guidelines from lean-plan-architect.md..."
+}
+```
+
+**Related Documentation**:
+- See [Hierarchical Agents Examples](../../concepts/hierarchical-agents-examples.md) Example 8 for dual coordinator architecture details
+- See [Hard Barrier Pattern](../../concepts/patterns/hard-barrier-pattern.md) for pre-calculation and validation contract
+
+---
+
+## Wave-Based Parallel Execution Optimization
+
+The `/lean-plan` command generates plans optimized for wave-based parallel execution in `/lean-implement`. By analyzing theorem dependencies, the agent creates phase dependency structures that enable independent theorems to be proven concurrently, achieving **40-60% time savings** compared to sequential execution.
+
+### Theorem Dependency Analysis
+
+During plan creation, the `lean-plan-architect` agent:
+
+1. **Analyzes Theorem Dependencies**: For each theorem in the formalization goal, identifies which other theorems (or Mathlib theorems) are prerequisites
+2. **Maps Theorems to Phases**: Assigns each theorem to a phase, typically one theorem per phase for maximum parallelization
+3. **Generates Phase Dependencies**: Converts theorem dependencies into phase dependency arrays
+4. **Validates Dependency Graph**: Ensures no circular dependencies, forward references, or self-dependencies
+
+### Dependency Patterns
+
+The agent generates three main dependency patterns:
+
+**1. Independent Phases (Fan-Out)**:
+```markdown
+### Phase 1: Commutativity [NOT STARTED]
+implementer: lean
+lean_file: /path/to/Ring.lean
+dependencies: []  # No prerequisites
+
+### Phase 2: Associativity [NOT STARTED]
+implementer: lean
+lean_file: /path/to/Ring.lean
+dependencies: []  # No prerequisites
+
+### Phase 3: Distributivity [NOT STARTED]
+implementer: lean
+lean_file: /path/to/Ring.lean
+dependencies: [1, 2]  # Needs both Phase 1 and Phase 2
+```
+
+Result: Phases 1 and 2 execute in parallel (Wave 1), then Phase 3 (Wave 2).
+
+**2. Sequential Phases (Linear Pipeline)**:
+```markdown
+### Phase 1: Foundation [NOT STARTED]
+dependencies: []
+
+### Phase 2: Intermediate [NOT STARTED]
+dependencies: [1]
+
+### Phase 3: Advanced [NOT STARTED]
+dependencies: [2]
+```
+
+Result: Three sequential waves (no parallelization opportunity).
+
+**3. Mixed Dependencies (Diamond)**:
+```markdown
+### Phase 1: Base [NOT STARTED]
+dependencies: []
+
+### Phase 2: Branch A [NOT STARTED]
+dependencies: [1]
+
+### Phase 3: Branch B [NOT STARTED]
+dependencies: [1]
+
+### Phase 4: Merge [NOT STARTED]
+dependencies: [2, 3]
+```
+
+Result: Phase 1 (Wave 1), Phases 2-3 parallel (Wave 2), Phase 4 (Wave 3).
+
+### Wave Structure Preview
+
+After plan creation, the agent displays a wave structure preview showing:
+
+```
+═══════════════════════════════════════════════════════════
+                   WAVE STRUCTURE PREVIEW
+═══════════════════════════════════════════════════════════
+
+Wave 1 (Parallel): Phases 1, 2
+  - 2 phases executing concurrently
+  - Wave duration: 2.0 hours (longest phase)
+
+Wave 2 (Parallel): Phases 3, 4, 5
+  - 3 phases executing concurrently
+  - Wave duration: 3.0 hours (longest phase)
+
+Wave 3 (Sequential): Phase 6
+  - 1 phase (no parallelization)
+  - Wave duration: 1.5 hours
+
+─────────────────────────────────────────────────────────────
+PARALLELIZATION METRICS
+─────────────────────────────────────────────────────────────
+Sequential Execution Time: 12.0 hours (sum of all phases)
+Parallel Execution Time:    6.5 hours (wave-based)
+Time Savings:              45.8% (5.5 hours saved)
+
+Parallelization Efficiency: Good (3 concurrent phases in Wave 2)
+═══════════════════════════════════════════════════════════
+```
+
+### Phase Granularity Strategy
+
+The agent uses **one theorem per phase** as the default strategy to maximize parallelization opportunities:
+
+**Advantages**:
+- Independent theorems can execute in parallel (different waves)
+- Fine-grained progress tracking
+- Easier debugging (failures isolated to specific theorems)
+
+**Exceptions** (multiple theorems per phase):
+- Theorem + helper lemma tightly coupled (helper used nowhere else)
+- Theorems with identical dependencies (same prerequisite set)
+- Theorems representing a single logical unit (bidirectional equivalence proofs)
+
+**Example**:
+```markdown
+# PREFERRED: Separate phases for independent theorems
+Phase 1: theorem_mul_comm (dependencies: [])
+Phase 2: theorem_add_comm (dependencies: [])
+Phase 3: theorem_distributivity (dependencies: [1, 2])
+
+# ACCEPTABLE: Group tightly coupled theorems
+Phase 1: theorem_mul_comm + helper_mul_comm_aux (dependencies: [])
+Phase 2: theorem_add_comm (dependencies: [])
+Phase 3: theorem_distributivity (dependencies: [1, 2])
+```
+
+### Integration with /lean-implement
+
+When executing plans with `/lean-implement`, the wave optimizer:
+
+1. Parses phase `dependencies: [...]` arrays from the plan
+2. Builds wave structure using topological sort (Kahn's algorithm)
+3. Executes phases in waves:
+   - Wave 1: All phases with `dependencies: []` (parallel)
+   - Wave 2: All phases whose dependencies are satisfied by Wave 1 (parallel)
+   - Wave N: Continues until all phases complete
+
+4. Achieves time savings through parallelization
+
+**Example Workflow**:
+```bash
+# Generate wave-optimized plan
+/lean-plan "formalize ring properties with 8 theorems" --complexity 3 --project ~/my-lean-project
+
+# Plan shows: 8 phases, 3 waves, 50% time savings
+
+# Execute with wave-based parallelization
+/lean-implement plan.md
+
+# Results: 8 hours sequential → 4 hours parallel (50% savings)
+```
+
+### Validation and Error Prevention
+
+The agent validates dependency structures to prevent common errors:
+
+**No Forward References**:
+```markdown
+# INVALID
+Phase 1: dependencies: [2]  # ERROR: Cannot depend on later phase
+```
+
+**No Self-Dependencies**:
+```markdown
+# INVALID
+Phase 2: dependencies: [1, 2]  # ERROR: Cannot depend on self
+```
+
+**No Circular Dependencies**:
+```markdown
+# INVALID
+Phase 1: dependencies: [3]
+Phase 2: dependencies: [1]
+Phase 3: dependencies: [2]  # ERROR: Cycle 1→3→2→1
+```
+
+**Valid Dependency Chain**:
+```markdown
+# VALID
+Phase 1: dependencies: []
+Phase 2: dependencies: [1]
+Phase 3: dependencies: [1, 2]
+```
+
+### Troubleshooting Wave Optimization
+
+**Issue**: Plan shows 0% time savings (all sequential)
+
+**Cause**: All theorems have sequential dependencies
+
+**Solution**:
+1. Review theorem prerequisites - can any use Mathlib instead?
+2. Reorder proof strategy - can independent lemmas be proven first?
+3. Split complex theorems into independent components
+
+**Issue**: Plan shows < 20% time savings (poor parallelization)
+
+**Cause**: Long sequential chains with few parallel branches
+
+**Solution**:
+1. Identify bottleneck theorems (many dependents)
+2. Consider proving prerequisites from Mathlib instead
+3. Balance phase complexity (avoid one very long phase blocking a wave)
+
+**Issue**: Dependency validation fails (circular dependencies)
+
+**Cause**: Mutual dependencies between theorems
+
+**Solution**:
+1. Review theorem relationships - is mutual dependency necessary?
+2. Combine mutually dependent theorems into single phase
+3. Restructure proof to break circular dependency
+
+---
+
 ## Syntax
 
 ```bash
