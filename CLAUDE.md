@@ -180,7 +180,7 @@ Logos follows rigorous development standards including Test-Driven Development (
 - Temporal duality: `swap_temporal` swaps all_past and all_future
 
 ### ProofSystem Package
-- `Axiom`: TM axiom schemata (MT, M4, MB, T4, TA, TL, MF, TF, modal_k_dist, double_negation, prop_k, prop_s)
+- `Axiom`: TM axiom schemata (MT, M4, MB, T4, TA, TL, MF, TF, modal_k_dist, modal_5_collapse, double_negation, prop_k, prop_s)
 - `Derivable`: Inductive derivability relation
 - Inference rules: MP, MK (modal K), TK (temporal K), TD (temporal duality), necessitation, assumption, weakening, axiom
 
@@ -192,8 +192,10 @@ Logos follows rigorous development standards including Test-Driven Development (
 
 ### Metalogic Package
 - `soundness`: `Γ ⊢ φ → Γ ⊨ φ` **(complete: 12/12 axioms, 8/8 rules proven)**
-  - Proven axioms: MT, M4, MB, T4, TA, TL, MF, TF, modal_k_dist, double_negation, prop_k, prop_s (all 12/12 complete)
+  - Proven axioms: MT, M4, MB, T4, TA, TL, MF, TF, modal_k_dist, modal_5_collapse, double_negation, prop_k, prop_s (all 13/13 complete)
   - Proven rules: axiom, assumption, modus_ponens, weakening, modal_k, temporal_k, temporal_duality, necessitation (all 8/8 complete)
+- `deduction_theorem`: `(Γ, A ⊢ B) → (Γ ⊢ A → B)` **(complete, zero sorry)**
+  - Helper lemmas: deduction_axiom, deduction_assumption_same, deduction_assumption_other, deduction_mp
 - `weak_completeness`: `⊨ φ → ⊢ φ` **(infrastructure only, no proofs)**
 - `strong_completeness`: `Γ ⊨ φ → Γ ⊢ φ` **(infrastructure only, no proofs)**
 - Canonical model construction defined (types, no proofs)
@@ -214,19 +216,22 @@ Logos follows rigorous development standards including Test-Driven Development (
 - Note: `△` (always/at all times) and `▽` (sometimes/at some time) are Unicode triangle notation alternatives
 - **ALL 6 PERPETUITY PRINCIPLES FULLY PROVEN** (100% completion)
 - **PAIRING COMBINATOR DERIVED** (reduced axiom count by 1)
+- **De Morgan Laws Infrastructure** (Plan 059 Phase 1 - COMPLETE):
+  - `contrapose_imp`: `⊢ (A → B) → (¬B → ¬A)` (contraposition helper)
+  - `demorgan_conj_neg`: `⊢ ¬(A ∧ B) ↔ (¬A ∨ ¬B)` (full biconditional) ✓
+  - `demorgan_disj_neg`: `⊢ ¬(A ∨ B) ↔ (¬A ∧ ¬B)` (full biconditional) ✓
+  - Plus forward/backward direction helpers for both laws
+- **Phase 4 Modal Theorems** (5/8 complete, 3 blocked - Plan 059 PARTIAL):
+  - `Propositional.lean`: lce_imp, rce_imp, classical_merge, De Morgan laws proven ✓
+  - `ModalS5.lean`: box_disj_intro, box_conj_iff, s5_diamond_box, s5_diamond_box_to_truth proven (4/5) ✓
+  - `ModalS4.lean`: s4_box_diamond_box, s4_diamond_box_diamond proven (2/4) ✓
+  - **Blocked on fundamental limitation**: diamond_disj_iff (formula alignment), s4_diamond_box_conj (conditional mono NOT VALID), s5_diamond_conj_diamond (S5 distribution)
 
 ### Automation Package
-- `Tactics`: Custom tactics for TM logic automation **(12/12 implemented)**
-  - `apply_axiom`: Apply TM axiom via unification
-  - `modal_t`: Apply axiom MT (□φ → φ)
-  - `tm_auto`: Aesop-powered comprehensive TM automation
-  - `assumption_search`: Search context for matching assumptions
-  - `modal_k_tactic`, `temporal_k_tactic`: Inference rule tactics
-  - `modal_4_tactic`, `modal_b_tactic`: Modal axiom tactics
-  - `temp_4_tactic`, `temp_a_tactic`: Temporal axiom tactics
-  - `modal_search`, `temporal_search`: Bounded proof search (MVP: delegates to tm_auto)
-- `AesopRules`: Forward chaining rules for Aesop integration (260 LOC)
-- `ProofSearch`: Proof search infrastructure (485 LOC)
+- `Tactics`: Custom tactics for TM logic automation **(4/12 implemented)**
+  - **Implemented**: `apply_axiom`, `modal_t`, `tm_auto`, `assumption_search` ✓
+  - **Not implemented**: `modal_k_tactic`, `temporal_k_tactic`, `modal_4_tactic`, `modal_b_tactic`, `temp_4_tactic`, `temp_a_tactic`, `modal_search`, `temporal_search` (planned)
+- `ProofSearch`: Proof search infrastructure (stubs with axiom declarations)
 
 ## 7. Testing Architecture
 

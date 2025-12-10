@@ -178,6 +178,63 @@ theorem modal_b_valid (φ : Formula) : ⊨ (φ.imp (φ.diamond.box)) := by
   exact h_neg_at_tau h_phi
 
 /--
+Modal 5 Collapse axiom is valid: `⊨ ◇□φ → □φ`.
+
+This is the characteristic S5 collapse axiom. It is valid because in S5 semantics
+(equivalence relation accessibility), if there exists an accessible world where
+□φ holds, then φ holds at all worlds from that world, which by equivalence
+includes all worlds from the actual world.
+
+Proof: Assume ◇□φ at (M, τ, t), i.e., ¬□¬□φ.
+This means: not all histories have ¬□φ.
+So there exists some history σ where □φ holds, i.e., φ at all histories from σ.
+In S5 (equivalence relation), all histories at t are mutually accessible.
+So φ holds at ALL histories at t, including ρ for any ρ.
+Hence □φ at (M, τ, t).
+-/
+theorem modal_5_collapse_valid (φ : Formula) : ⊨ (φ.box.diamond.imp φ.box) := by
+  intro T _ F M τ t ht
+  unfold truth_at
+  -- Goal: truth_at M τ t ht (φ.box.diamond) → truth_at M τ t ht φ.box
+  intro h_diamond_box
+  -- h_diamond_box : truth_at M τ t ht (φ.box.diamond)
+  -- φ.box.diamond = (φ.box.neg.box).neg = ((φ.box → ⊥) → ⊥).box.neg
+  -- Unfolding diamond: ¬□¬(□φ)
+  -- This means: it's not the case that all histories have ¬□φ
+  -- So there exists some history σ where □φ holds
+  -- Goal: truth_at M τ t ht φ.box, i.e., ∀ ρ hr, truth_at M ρ t hr φ
+  intro ρ hr
+  -- Need: truth_at M ρ t hr φ
+  -- Use h_diamond_box: there exists σ where □φ, so φ at all histories including ρ
+
+  -- Unfold diamond: ◇□φ = ¬□¬□φ
+  unfold Formula.diamond at h_diamond_box
+  unfold truth_at at h_diamond_box
+  -- h_diamond_box : (∀ σ hs, truth_at M σ t hs (φ.box.neg)) → False
+  -- i.e., ¬(∀ σ hs, ¬□φ at σ)
+  -- By classical logic, ∃ σ hs, □φ at σ
+
+  -- Use classical reasoning: assume ¬(truth_at M ρ t hr φ)
+  by_contra h_not_phi
+  -- h_not_phi : ¬ truth_at M ρ t hr φ
+  -- We will derive a contradiction
+
+  -- From h_diamond_box, we have ¬(∀ σ hs, truth_at M σ t hs (φ.box.neg))
+  -- Apply h_diamond_box to show all histories have φ.box.neg
+  apply h_diamond_box
+  -- Goal: ∀ σ hs, truth_at M σ t hs (φ.box.neg)
+  intro σ hs
+  -- Goal: truth_at M σ t hs (φ.box.neg)
+  -- φ.box.neg = φ.box → ⊥
+  unfold Formula.neg truth_at
+  -- Goal: truth_at M σ t hs φ.box → False
+  intro h_box_at_sigma
+  -- h_box_at_sigma : ∀ ρ' hr', truth_at M ρ' t hr' φ
+  -- In particular, φ holds at ρ
+  have h_phi_at_rho := h_box_at_sigma ρ hr
+  exact h_not_phi h_phi_at_rho
+
+/--
 Modal K Distribution axiom is valid: `⊨ □(φ → ψ) → (□φ → □ψ)`.
 
 This is the fundamental distribution axiom of normal modal logics.
@@ -441,6 +498,7 @@ theorem axiom_valid {φ : Formula} : Axiom φ → ⊨ φ := by
   | modal_t ψ => exact modal_t_valid ψ
   | modal_4 ψ => exact modal_4_valid ψ
   | modal_b ψ => exact modal_b_valid ψ
+  | modal_5_collapse ψ => exact modal_5_collapse_valid ψ
   | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ
   | double_negation ψ => exact double_negation_valid ψ
   | temp_4 ψ => exact temp_4_valid ψ

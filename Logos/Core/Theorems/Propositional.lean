@@ -1,6 +1,7 @@
 import Logos.Core.ProofSystem.Derivation
 import Logos.Core.Syntax.Formula
 import Logos.Core.Theorems.Perpetuity
+import Logos.Core.Metalogic.DeductionTheorem
 
 /-!
 # Propositional Theorems
@@ -560,7 +561,9 @@ The context-based version `lce` is proven. This implication form would enable:
 **Workaround**: Use `lce` with weakening when contexts are available.
 -/
 theorem lce_imp (A B : Formula) : ⊢ (A.and B).imp A := by
-  sorry -- Requires deduction theorem infrastructure
+  -- Use deduction theorem: from [A ∧ B] ⊢ A, derive ⊢ (A ∧ B) → A
+  have h : [A.and B] ⊢ A := lce A B
+  exact Logos.Core.Metalogic.deduction_theorem [] (A.and B) A h
 
 /--
 Right Conjunction Elimination (Implication Form): `⊢ (A ∧ B) → B`.
@@ -576,7 +579,9 @@ The context-based version `rce` is proven. This implication form would enable:
 **Workaround**: Use `rce` with weakening when contexts are available.
 -/
 theorem rce_imp (A B : Formula) : ⊢ (A.and B).imp B := by
-  sorry -- Requires deduction theorem infrastructure
+  -- Use deduction theorem: from [A ∧ B] ⊢ B, derive ⊢ (A ∧ B) → B
+  have h : [A.and B] ⊢ B := rce A B
+  exact Logos.Core.Metalogic.deduction_theorem [] (A.and B) B h
 
 /-!
 ## Phase 3: Context Manipulation and Classical Reasoning
@@ -607,15 +612,178 @@ theorem classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q
   -- Goal: (P → Q) → ((¬P → Q) → Q)
   -- This is case analysis on P using LEM.
   --
-  -- This requires deduction theorem infrastructure or sequent calculus machinery.
-  -- Marked as sorry pending Phase 3 development.
+  -- Proof using deduction theorem and contraposition:
+  -- 1. From (P → Q), contrapose to get (¬Q → ¬P)
+  -- 2. From (¬P → Q), contrapose to get (¬Q → ¬¬P)
+  -- 3. Build (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q) using RAA pattern
+  -- 4. Compose with DNE to get Q
   --
-  -- Previous attempt (275 lines) had type errors in complex combinator manipulation.
-  -- The proof requires either:
-  -- 1. Deduction theorem for Hilbert systems
-  -- 2. Disjunction elimination with sophisticated context handling
-  -- 3. Meta-level case analysis beyond pure Hilbert calculus
-  sorry
+  -- Using deduction theorem: From [P → Q, ¬P → Q] derive Q
+  -- Then by deduction theorem twice: ⊢ (P → Q) → ((¬P → Q) → Q)
+
+  -- Step 1: Derive [P → Q, ¬P → Q] ⊢ Q
+  -- From context, we have P → Q and ¬P → Q
+  -- Use deduction theorem on nested structure
+
+  -- Actually, let's use contraposition directly with composition
+
+  -- Key insight: (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q)
+  -- This is: (A → B) → ((A → ¬B) → ¬A) where A = ¬Q, B = ¬P
+
+  -- First, prove: (A → B) → ((A → ¬B) → ¬A) for any A, B
+  -- Let's call this `contradiction_intro`
+  have contradiction_intro : ∀ A B : Formula,
+      ⊢ (A.imp B).imp ((A.imp B.neg).imp A.neg) := by
+    intro A B
+    -- Goal: (A → B) → ((A → ¬B) → ¬A)
+    -- Where ¬X = X → ⊥
+    -- Goal: (A → B) → ((A → B → ⊥) → (A → ⊥))
+    --
+    -- Use deduction theorem: assume [A → B, A → B → ⊥, A] then derive ⊥
+    -- From A → B and A, get B
+    -- From A → B → ⊥ and A, get B → ⊥
+    -- From B → ⊥ and B, get ⊥
+    -- Done!
+
+    -- Derive in context [A, A → ¬B, A → B] ⊢ ⊥
+    -- (ordering for deduction theorem: A at head, then A → ¬B, then A → B)
+    have h_in_ctx : [A, (A.imp B.neg), (A.imp B)] ⊢ Formula.bot := by
+      -- Get A from context
+      have h_a : [A, (A.imp B.neg), (A.imp B)] ⊢ A := by
+        apply Derivable.assumption
+        simp
+      -- Get A → B from context
+      have h_ab : [A, (A.imp B.neg), (A.imp B)] ⊢ A.imp B := by
+        apply Derivable.assumption
+        simp
+      -- Get A → ¬B from context
+      have h_a_neg_b : [A, (A.imp B.neg), (A.imp B)] ⊢ A.imp B.neg := by
+        apply Derivable.assumption
+        simp
+      -- Apply modus ponens: get B
+      have h_b : [A, (A.imp B.neg), (A.imp B)] ⊢ B :=
+        Derivable.modus_ponens _ A B h_ab h_a
+      -- Apply modus ponens: get ¬B = B → ⊥
+      have h_neg_b : [A, (A.imp B.neg), (A.imp B)] ⊢ B.neg :=
+        Derivable.modus_ponens _ A B.neg h_a_neg_b h_a
+      -- Apply modus ponens: get ⊥
+      exact Derivable.modus_ponens _ B Formula.bot h_neg_b h_b
+
+    -- Apply deduction theorem: [A → ¬B, A → B] ⊢ A → ⊥ = ¬A
+    have step1 : [(A.imp B.neg), (A.imp B)] ⊢ A.neg :=
+      Logos.Core.Metalogic.deduction_theorem
+        [(A.imp B.neg), (A.imp B)] A Formula.bot h_in_ctx
+
+    -- Apply deduction theorem: [A → B] ⊢ (A → ¬B) → ¬A
+    have step2 : [(A.imp B)] ⊢ (A.imp B.neg).imp A.neg :=
+      Logos.Core.Metalogic.deduction_theorem
+        [(A.imp B)] (A.imp B.neg) A.neg step1
+
+    -- Apply deduction theorem: [] ⊢ (A → B) → ((A → ¬B) → ¬A)
+    exact Logos.Core.Metalogic.deduction_theorem
+      [] (A.imp B) ((A.imp B.neg).imp A.neg) step2
+
+  -- Now use this with A = ¬Q, B = ¬P
+  have ci_inst : ⊢ (Q.neg.imp P.neg).imp ((Q.neg.imp P.neg.neg).imp Q.neg.neg) :=
+    contradiction_intro Q.neg P.neg
+
+  -- We need to compose:
+  -- 1. (P → Q) → (¬Q → ¬P)  [contraposition]
+  -- 2. (¬P → Q) → (¬Q → ¬¬P) [contraposition]
+  -- 3. (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q) [ci_inst]
+  -- 4. ¬¬Q → Q [DNE]
+  -- Goal: (P → Q) → ((¬P → Q) → Q)
+
+  -- Build (P → Q) → (¬Q → ¬P) using contraposition theorem form
+  -- Actually we need the implication form, not the meta theorem
+  -- Let's build it using b_combinator style
+
+  -- Contraposition as theorem: (A → B) → (¬B → ¬A)
+  have contrapose_thm : ∀ A B : Formula, ⊢ (A.imp B).imp (B.neg.imp A.neg) := by
+    intro A B
+    -- This is b_combinator: (B → C) → (A → B) → (A → C)
+    -- With B := B, C := ⊥ (so B.neg = B → ⊥)
+    -- b_combinator gives: (B → ⊥) → (A → B) → (A → ⊥)
+    -- We need: (A → B) → (B → ⊥) → (A → ⊥)
+    -- Use theorem_flip to swap arguments
+    have b : ⊢ (B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot)) :=
+      b_combinator
+    -- theorem_flip : (X → Y → Z) → (Y → X → Z)
+    -- With X = B → ⊥, Y = A → B, Z = A → ⊥
+    -- We get: ((B → ⊥) → (A → B) → (A → ⊥)) → ((A → B) → (B → ⊥) → (A → ⊥))
+    have flip_inst : ⊢ ((B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot))).imp
+                       ((A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
+      @theorem_flip (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
+    exact Derivable.modus_ponens [] _ _ flip_inst b
+
+  -- Now compose everything
+  -- From (P → Q):
+  --   Get (¬Q → ¬P) via contrapose_thm
+  -- From (¬P → Q):
+  --   Get (¬Q → ¬¬P) via contrapose_thm
+
+  have contra1 : ⊢ (P.imp Q).imp (Q.neg.imp P.neg) := contrapose_thm P Q
+  have contra2 : ⊢ (P.neg.imp Q).imp (Q.neg.imp P.neg.neg) := contrapose_thm P.neg Q
+
+  -- DNE for Q
+  have dne_q : ⊢ Q.neg.neg.imp Q := Derivable.axiom [] _ (Axiom.double_negation Q)
+
+  -- Use deduction theorem to combine
+  -- From [P → Q, ¬P → Q]:
+  --   Get (¬Q → ¬P) from contra1 and first assumption
+  --   Get (¬Q → ¬¬P) from contra2 and second assumption
+  --   Get ¬¬Q from ci_inst
+  --   Get Q from dne_q
+
+  -- Context ordering for deduction theorem: newest assumption at HEAD
+  -- First apply: deduction_theorem [P → Q] (¬P → Q) Q needs [(¬P → Q), (P → Q)] ⊢ Q
+  -- Second apply: deduction_theorem [] (P → Q) _ needs [(P → Q)] ⊢ (¬P → Q) → Q
+  have h_combined : [(P.neg.imp Q), (P.imp Q)] ⊢ Q := by
+    -- Get assumptions (note: ¬P → Q at head, P → Q second)
+    have h_pq : [(P.neg.imp Q), (P.imp Q)] ⊢ P.imp Q := by
+      apply Derivable.assumption
+      simp
+    have h_npq : [(P.neg.imp Q), (P.imp Q)] ⊢ P.neg.imp Q := by
+      apply Derivable.assumption
+      simp
+
+    -- Weaken the pure theorems to context
+    have contra1_ctx : [(P.neg.imp Q), (P.imp Q)] ⊢ (P.imp Q).imp (Q.neg.imp P.neg) :=
+      Derivable.weakening [] _ _ contra1 (List.nil_subset _)
+    have contra2_ctx : [(P.neg.imp Q), (P.imp Q)] ⊢ (P.neg.imp Q).imp (Q.neg.imp P.neg.neg) :=
+      Derivable.weakening [] _ _ contra2 (List.nil_subset _)
+    have ci_ctx : [(P.neg.imp Q), (P.imp Q)] ⊢
+        (Q.neg.imp P.neg).imp ((Q.neg.imp P.neg.neg).imp Q.neg.neg) :=
+      Derivable.weakening [] _ _ ci_inst (List.nil_subset _)
+    have dne_ctx : [(P.neg.imp Q), (P.imp Q)] ⊢ Q.neg.neg.imp Q :=
+      Derivable.weakening [] _ _ dne_q (List.nil_subset _)
+
+    -- Apply modus ponens to get (¬Q → ¬P)
+    have h_nq_np : [(P.neg.imp Q), (P.imp Q)] ⊢ Q.neg.imp P.neg :=
+      Derivable.modus_ponens _ _ _ contra1_ctx h_pq
+
+    -- Apply modus ponens to get (¬Q → ¬¬P)
+    have h_nq_nnp : [(P.neg.imp Q), (P.imp Q)] ⊢ Q.neg.imp P.neg.neg :=
+      Derivable.modus_ponens _ _ _ contra2_ctx h_npq
+
+    -- Apply ci_ctx: (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q)
+    have step1 : [(P.neg.imp Q), (P.imp Q)] ⊢ (Q.neg.imp P.neg.neg).imp Q.neg.neg :=
+      Derivable.modus_ponens _ _ _ ci_ctx h_nq_np
+
+    -- Apply step1 with h_nq_nnp
+    have step2 : [(P.neg.imp Q), (P.imp Q)] ⊢ Q.neg.neg :=
+      Derivable.modus_ponens _ _ _ step1 h_nq_nnp
+
+    -- Apply DNE
+    exact Derivable.modus_ponens _ _ _ dne_ctx step2
+
+  -- Apply deduction theorem twice
+  -- deduction_theorem Γ A B h requires h : (A :: Γ) ⊢ B
+  -- For step1: Γ = [P → Q], A = (¬P → Q), so need [(¬P → Q), (P → Q)] ⊢ Q ✓
+  have step1 : [(P.imp Q)] ⊢ (P.neg.imp Q).imp Q :=
+    Logos.Core.Metalogic.deduction_theorem [(P.imp Q)] (P.neg.imp Q) Q h_combined
+
+  exact Logos.Core.Metalogic.deduction_theorem [] (P.imp Q) ((P.neg.imp Q).imp Q) step1
 theorem iff_intro (A B : Formula) (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp A) :
     ⊢ (A.imp B).and (B.imp A) := by
   -- Use pairing: A → B → (A ∧ B)
@@ -677,5 +845,437 @@ theorem iff_elim_right (A B : Formula) : [((A.imp B).and (B.imp A)), B] ⊢ A :=
 
   -- Apply modus ponens
   exact Derivable.modus_ponens _ _ _ h_imp h_b
+
+/-!
+## Phase 4: De Morgan Laws
+
+De Morgan laws for propositional logic, enabling modal duality transformations.
+
+These laws relate negated conjunctions to disjunctions of negations and vice versa:
+- `¬(A ∧ B) ↔ (¬A ∨ ¬B)`
+- `¬(A ∨ B) ↔ (¬A ∧ ¬B)`
+
+**Implementation Status**: Phase 1 of Plan 059 (Modal Theorems S5 Completion)
+-/
+
+/--
+Contraposition theorem (implication form): `⊢ (A → B) → (¬B → ¬A)`.
+
+From implication, derive its contrapositive.
+
+**Proof Strategy**: Use b_combinator and theorem_flip to build contraposition.
+-/
+theorem contrapose_imp (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) := by
+  -- b_combinator: (B → ⊥) → (A → B) → (A → ⊥)
+  have bc : ⊢ (B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot)) :=
+    b_combinator
+  -- theorem_flip: (X → Y → Z) → (Y → X → Z)
+  have flip : ⊢ ((B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot))).imp
+                 ((A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
+    @theorem_flip (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
+  exact Derivable.modus_ponens [] _ _ flip bc
+
+/-!
+## Biconditional Manipulation Helpers (Plan 060 Phase 2)
+
+Infrastructure for working with biconditionals under negation and modalities.
+-/
+
+/--
+Contraposition for Biconditionals: From `⊢ A ↔ B`, derive `⊢ ¬A ↔ ¬B`.
+
+Biconditionals are preserved under negation.
+
+**Proof Strategy**: From `A ↔ B` (which is `(A → B) ∧ (B → A)`), use contrapose_imp
+on both directions to get `(¬B → ¬A) ∧ (¬A → ¬B)`, which is `¬A ↔ ¬B`.
+
+**Complexity**: Medium
+
+**Dependencies**: contrapose_imp, lce_imp, rce_imp, iff_intro
+-/
+theorem contrapose_iff (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
+    ⊢ (A.neg.imp B.neg).and (B.neg.imp A.neg) := by
+  -- h: (A → B) ∧ (B → A)
+  -- Goal: (¬A → ¬B) ∧ (¬B → ¬A)
+
+  -- Extract A → B from biconditional
+  have ab : ⊢ A.imp B := by
+    have lce : ⊢ ((A.imp B).and (B.imp A)).imp (A.imp B) := lce_imp (A.imp B) (B.imp A)
+    exact Derivable.modus_ponens [] _ _ lce h
+
+  -- Extract B → A from biconditional
+  have ba : ⊢ B.imp A := by
+    have rce : ⊢ ((A.imp B).and (B.imp A)).imp (B.imp A) := rce_imp (A.imp B) (B.imp A)
+    exact Derivable.modus_ponens [] _ _ rce h
+
+  -- Contrapose A → B to get ¬B → ¬A
+  have nb_na : ⊢ B.neg.imp A.neg := by
+    have cp : ⊢ (A.imp B).imp (B.neg.imp A.neg) := contrapose_imp A B
+    exact Derivable.modus_ponens [] _ _ cp ab
+
+  -- Contrapose B → A to get ¬A → ¬B
+  have na_nb : ⊢ A.neg.imp B.neg := by
+    have cp : ⊢ (B.imp A).imp (A.neg.imp B.neg) := contrapose_imp B A
+    exact Derivable.modus_ponens [] _ _ cp ba
+
+  -- Combine into biconditional (¬A → ¬B) ∧ (¬B → ¬A)
+  exact iff_intro A.neg B.neg na_nb nb_na
+
+/--
+Biconditional Introduction for Negations: From `⊢ ¬A → ¬B` and `⊢ ¬B → ¬A`, derive `⊢ ¬A ↔ ¬B`.
+
+Direct application of iff_intro for negated formulas.
+
+**Complexity**: Simple
+
+**Dependencies**: iff_intro
+-/
+theorem iff_neg_intro (A B : Formula) (h1 : ⊢ A.neg.imp B.neg) (h2 : ⊢ B.neg.imp A.neg) :
+    ⊢ (A.neg.imp B.neg).and (B.neg.imp A.neg) := by
+  exact iff_intro A.neg B.neg h1 h2
+
+/--
+De Morgan Law 1 (Forward Direction): `⊢ ¬(A ∧ B) → (¬A ∨ ¬B)`.
+
+From negated conjunction, derive disjunction of negations.
+
+**Recall**: `A ∧ B = ¬(A → ¬B)` and `¬A ∨ ¬B = ¬¬A → ¬B`
+
+So goal: `¬¬(A → ¬B) → (¬¬A → ¬B)`
+
+**Proof Strategy**: Use DNE and composition.
+-/
+theorem demorgan_conj_neg_forward (A B : Formula) :
+    ⊢ (A.and B).neg.imp (A.neg.or B.neg) := by
+  -- Unfold definitions
+  -- A.and B = (A.imp B.neg).neg
+  -- (A.and B).neg = (A.imp B.neg).neg.neg
+  -- A.neg.or B.neg = A.neg.neg.imp B.neg
+  unfold Formula.and Formula.or Formula.neg
+
+  -- Goal: ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp Formula.bot).imp
+  --       (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))
+
+  -- This is: ¬¬(A → ¬B) → (¬¬A → ¬B)
+
+  -- Step 1: DNE on (A → ¬B): ¬¬(A → ¬B) → (A → ¬B)
+  have dne_inner : ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp Formula.bot |>.imp
+                      (A.imp (B.imp Formula.bot)) :=
+    Derivable.axiom [] _ (Axiom.double_negation (A.imp (B.imp Formula.bot)))
+
+  -- Step 2: (A → ¬B) → (¬¬A → ¬B)
+  -- This is b_combinator flipped: (A → C) → ((B → A) → (B → C))
+  -- With B = ¬¬A, C = ¬B
+  -- We need DNE on A: ¬¬A → A
+  have dne_a : ⊢ ((A.imp Formula.bot).imp Formula.bot).imp A :=
+    Derivable.axiom [] _ (Axiom.double_negation A)
+
+  -- b_combinator: (A → C) → (B → A) → (B → C)
+  -- With B = ¬¬A, A = A, C = ¬B
+  have b1 : ⊢ (A.imp (B.imp Formula.bot)).imp
+               ((((A.imp Formula.bot).imp Formula.bot).imp A).imp
+                (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))) :=
+    b_combinator
+
+  -- Flip to get: (¬¬A → A) → ((A → ¬B) → (¬¬A → ¬B))
+  have flip : ⊢ ((A.imp (B.imp Formula.bot)).imp
+                  ((((A.imp Formula.bot).imp Formula.bot).imp A).imp
+                   (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)))).imp
+                 ((((A.imp Formula.bot).imp Formula.bot).imp A).imp
+                  ((A.imp (B.imp Formula.bot)).imp
+                   (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)))) :=
+    @theorem_flip (A.imp (B.imp Formula.bot))
+                  (((A.imp Formula.bot).imp Formula.bot).imp A)
+                  (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))
+
+  have step1 : ⊢ (((A.imp Formula.bot).imp Formula.bot).imp A).imp
+                  ((A.imp (B.imp Formula.bot)).imp
+                   (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))) :=
+    Derivable.modus_ponens [] _ _ flip b1
+
+  have step2 : ⊢ (A.imp (B.imp Formula.bot)).imp
+                  (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)) :=
+    Derivable.modus_ponens [] _ _ step1 dne_a
+
+  -- Compose: ¬¬(A → ¬B) → (A → ¬B) → (¬¬A → ¬B)
+  exact imp_trans dne_inner step2
+
+/--
+De Morgan Law 1 (Backward Direction): `⊢ (¬A ∨ ¬B) → ¬(A ∧ B)`.
+
+From disjunction of negations, derive negated conjunction.
+
+**Recall**: `¬A ∨ ¬B = ¬¬A → ¬B` and `A ∧ B = ¬(A → ¬B)`
+
+So goal: `(¬¬A → ¬B) → ¬(A → ¬B)`
+
+**Proof Strategy**: Use contraposition and DNI.
+-/
+theorem demorgan_conj_neg_backward (A B : Formula) :
+    ⊢ (A.neg.or B.neg).imp (A.and B).neg := by
+  unfold Formula.and Formula.or Formula.neg
+
+  -- Goal: (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)).imp
+  --       ((A.imp (B.imp Formula.bot)).imp Formula.bot)
+
+  -- This is: (¬¬A → ¬B) → ¬(A → ¬B)
+
+  -- Contrapose: (¬¬A → ¬B) → (¬¬B → ¬¬¬A)
+  -- Simplify: (¬¬A → ¬B) → (¬¬B → ¬A) by DNE/DNI
+
+  -- Actually, let's think differently:
+  -- We want: (¬¬A → ¬B) → ¬(A → ¬B)
+  -- Equivalently: (¬¬A → ¬B) → ((A → ¬B) → ⊥)
+
+  -- Assume ¬¬A → ¬B and A → ¬B
+  -- From DNI: A → ¬¬A
+  -- Compose: A → ¬¬A → ¬B
+  -- So both A → ¬B (assumption) and A → ¬¬A → ¬B (derived)
+  -- Wait, both give A → ¬B, no contradiction yet
+
+  -- Different approach: assume (¬¬A → ¬B) and (A → ¬B)
+  -- From (¬¬A → ¬B), contrapose to get (¬¬B → ¬¬¬A) = (¬¬B → ¬A)
+  -- From (A → ¬B), contrapose to get (¬¬B → ¬A) - same!
+
+  -- Let me think again about the logic...
+  -- ¬¬A → ¬B means: if A is true (classically), then B is false
+  -- A → ¬B means: if A is true, then B is false
+  -- These seem equivalent classically!
+
+  -- But wait, ¬¬A → ¬B is NOT equivalent to A → ¬B in general
+  -- Because ¬¬A → ¬B is WEAKER (only applies when A is "doubly" true)
+
+  -- Actually in classical logic:
+  -- ¬¬A → ¬B = ¬¬¬B ∨ ¬¬A = ¬B ∨ ¬¬A = ¬A → ¬B ∨ A
+  -- Hmm, this is getting complex
+
+  -- Let me use a direct deduction theorem approach:
+  -- From context [¬¬A → ¬B, A → ¬B, A, B], derive ⊥
+  -- Then use deduction theorem multiple times
+
+  -- Step 1: [¬¬A → ¬B, A → ¬B] ⊢ ¬(A ∧ B)
+  -- Which is: [¬¬A → ¬B, A → ¬B] ⊢ (A → ¬B) → ⊥
+  -- We have A → ¬B in context already!
+  -- So we need [¬¬A → ¬B, A → ¬B] ⊢ ⊥
+  -- ... but that's not derivable unless there's a contradiction
+
+  -- The issue: in intuitionistic logic, (¬¬A → ¬B) ↔ (A → ¬B) DOES NOT HOLD
+  -- The backward direction (¬A ∨ ¬B) → ¬(A ∧ B) requires classical reasoning
+
+  -- Classical reasoning: use LEM or equivalent
+
+  -- Key insight: ¬(A ∧ B) = ¬¬((A → ¬B))
+  -- From (¬¬A → ¬B), we can derive ¬(A ∧ B) via:
+  -- Assume (A ∧ B) = ¬(A → ¬B)
+  -- From A ∧ B, extract A (by lce) and B (by rce)
+  -- From A, derive ¬¬A by DNI
+  -- From ¬¬A and (¬¬A → ¬B), derive ¬B
+  -- But we also have B from conjunction
+  -- From B and ¬B, derive ⊥
+  -- So (A ∧ B) → ⊥, i.e., ¬(A ∧ B)
+
+  -- Implement using deduction theorem:
+  -- Context: [A ∧ B, ¬¬A → ¬B]
+  have h_in_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢ Formula.bot := by
+    -- Get A ∧ B from context
+    have h_conj : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢ A.and B := by
+      apply Derivable.assumption
+      simp
+
+    -- Get ¬¬A → ¬B from context
+    have h_hyp : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
+        ((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot) := by
+      apply Derivable.assumption
+      simp
+
+    -- Extract A from conjunction using lce
+    have lce_inst : ⊢ (A.and B).imp A := lce_imp A B
+    have lce_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
+        (A.and B).imp A :=
+      Derivable.weakening [] _ _ lce_inst (List.nil_subset _)
+    have h_a : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢ A :=
+      Derivable.modus_ponens _ _ _ lce_ctx h_conj
+
+    -- Extract B from conjunction using rce
+    have rce_inst : ⊢ (A.and B).imp B := rce_imp A B
+    have rce_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
+        (A.and B).imp B :=
+      Derivable.weakening [] _ _ rce_inst (List.nil_subset _)
+    have h_b : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢ B :=
+      Derivable.modus_ponens _ _ _ rce_ctx h_conj
+
+    -- From A, derive ¬¬A using DNI (theorem_app1)
+    have dni_inst : ⊢ A.imp ((A.imp Formula.bot).imp Formula.bot) :=
+      @theorem_app1 A Formula.bot
+    have dni_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
+        A.imp ((A.imp Formula.bot).imp Formula.bot) :=
+      Derivable.weakening [] _ _ dni_inst (List.nil_subset _)
+    have h_nna : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
+        (A.imp Formula.bot).imp Formula.bot :=
+      Derivable.modus_ponens _ _ _ dni_ctx h_a
+
+    -- From ¬¬A and (¬¬A → ¬B), derive ¬B
+    have h_nb : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
+        B.imp Formula.bot :=
+      Derivable.modus_ponens _ _ _ h_hyp h_nna
+
+    -- From B and ¬B, derive ⊥
+    exact Derivable.modus_ponens _ _ _ h_nb h_b
+
+  -- Apply deduction theorem: [¬¬A → ¬B] ⊢ (A ∧ B) → ⊥
+  have step1 : [(((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢ (A.and B).imp Formula.bot :=
+    Logos.Core.Metalogic.deduction_theorem
+      [(((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))]
+      (A.and B) Formula.bot h_in_ctx
+
+  -- Apply deduction theorem: [] ⊢ (¬¬A → ¬B) → ((A ∧ B) → ⊥)
+  have step2 : ⊢ (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)).imp ((A.and B).imp Formula.bot) :=
+    Logos.Core.Metalogic.deduction_theorem []
+      (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))
+      ((A.and B).imp Formula.bot) step1
+
+  -- (A ∧ B).neg = (A.and B).imp Formula.bot by definition
+  -- and Formula.and unfolds to the right type
+  unfold Formula.and at step2
+  exact step2
+
+/--
+De Morgan Law 1 (Biconditional): `⊢ ¬(A ∧ B) ↔ (¬A ∨ ¬B)`.
+
+Negated conjunction is equivalent to disjunction of negations.
+
+**Proof Strategy**: Combine forward and backward directions using iff_intro.
+-/
+theorem demorgan_conj_neg (A B : Formula) :
+    ⊢ ((A.and B).neg.imp (A.neg.or B.neg)).and ((A.neg.or B.neg).imp (A.and B).neg) := by
+  -- iff_intro takes Formulas A B and proofs of A→B and B→A
+  -- Here A = (A.and B).neg, B = (A.neg.or B.neg)
+  exact iff_intro (A.and B).neg (A.neg.or B.neg)
+    (demorgan_conj_neg_forward A B) (demorgan_conj_neg_backward A B)
+
+/--
+De Morgan Law 2 (Forward Direction): `⊢ ¬(A ∨ B) → (¬A ∧ ¬B)`.
+
+From negated disjunction, derive conjunction of negations.
+
+**Recall**: `A ∨ B = ¬A → B` and `¬A ∧ ¬B = ¬(¬A → ¬¬B)`
+
+So goal: `¬(¬A → B) → ¬(¬A → ¬¬B)`
+
+**Proof Strategy**: Use the fact that B → ¬¬B (DNI) and contraposition.
+-/
+theorem demorgan_disj_neg_forward (A B : Formula) :
+    ⊢ (A.or B).neg.imp (A.neg.and B.neg) := by
+  unfold Formula.or Formula.and Formula.neg
+
+  -- Goal: (((A.imp Formula.bot).imp B).imp Formula.bot).imp
+  --       (((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)).imp Formula.bot)
+
+  -- This is: ¬(¬A → B) → ¬(¬A → ¬¬B)
+
+  -- We need to show: if ¬A → B leads to contradiction, then ¬A → ¬¬B also leads to contradiction
+  -- This uses the fact that B → ¬¬B, so (¬A → B) → (¬A → ¬¬B)
+  -- Contraposing: ¬(¬A → ¬¬B) → ¬(¬A → B)
+  -- So we need the reverse direction! The forward should be easy via composition
+
+  -- Actually, (¬A → B) → (¬A → ¬¬B) by composing with DNI
+  -- So ¬(¬A → ¬¬B) → ¬(¬A → B) by contraposition
+  -- But we want the other direction: ¬(¬A → B) → ¬(¬A → ¬¬B)
+
+  -- Key: if B → ¬¬B (DNI), then (¬A → B) → (¬A → ¬¬B)
+  -- So (¬A → ¬¬B) is WEAKER than (¬A → B)
+  -- And ¬(¬A → ¬¬B) is STRONGER than ¬(¬A → B)
+
+  -- Wait, I need to think more carefully:
+  -- If (¬A → B) implies (¬A → ¬¬B), then ¬(¬A → B) does NOT imply ¬(¬A → ¬¬B)
+  -- It's the reverse: ¬(¬A → ¬¬B) implies ¬(¬A → B)
+
+  -- So the forward direction I want might not be derivable in standard logic!
+
+  -- Let me reconsider: in classical logic, ¬(A ∨ B) ↔ (¬A ∧ ¬B)
+  -- ¬(A ∨ B) = ¬(¬A → B)
+  -- ¬A ∧ ¬B = ¬(¬A → ¬¬B) (by definition)
+
+  -- Classically: ¬B ↔ ¬¬¬B, so ¬A ∧ ¬B ↔ ¬A ∧ ¬¬¬B
+  -- And ¬(¬A → B) ↔ ¬A ∧ ¬B (by De Morgan)
+  -- So ¬(¬A → B) ↔ ¬(¬A → ¬¬B) should work via triple negation
+
+  -- Use DNE: ¬¬B → B
+  -- So (¬A → ¬¬B) → (¬A → B) by composition with DNE
+  -- Contrapose: ¬(¬A → B) → ¬(¬A → ¬¬B)
+
+  -- Build: (¬A → ¬¬B) → (¬A → B)
+  have dne_b : ⊢ ((B.imp Formula.bot).imp Formula.bot).imp B :=
+    Derivable.axiom [] _ (Axiom.double_negation B)
+
+  -- b_combinator: (C → D) → (A → C) → (A → D)
+  -- With A = ¬A, C = ¬¬B, D = B
+  have bc : ⊢ (((B.imp Formula.bot).imp Formula.bot).imp B).imp
+               (((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)).imp
+                ((A.imp Formula.bot).imp B)) :=
+    b_combinator
+
+  have impl : ⊢ ((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)).imp
+                 ((A.imp Formula.bot).imp B) :=
+    Derivable.modus_ponens [] _ _ bc dne_b
+
+  -- Contrapose: ¬(¬A → B) → ¬(¬A → ¬¬B)
+  exact contraposition impl
+
+/--
+De Morgan Law 2 (Backward Direction): `⊢ (¬A ∧ ¬B) → ¬(A ∨ B)`.
+
+From conjunction of negations, derive negated disjunction.
+
+**Recall**: `¬A ∧ ¬B = ¬(¬A → ¬¬B)` and `A ∨ B = ¬A → B`
+
+So goal: `¬(¬A → ¬¬B) → ¬(¬A → B)`
+
+**Proof Strategy**: Use DNI and contraposition.
+-/
+theorem demorgan_disj_neg_backward (A B : Formula) :
+    ⊢ (A.neg.and B.neg).imp (A.or B).neg := by
+  unfold Formula.or Formula.and Formula.neg
+
+  -- Goal: (((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)).imp Formula.bot).imp
+  --       (((A.imp Formula.bot).imp B).imp Formula.bot)
+
+  -- This is: ¬(¬A → ¬¬B) → ¬(¬A → B)
+
+  -- Use DNI: B → ¬¬B
+  -- So (¬A → B) → (¬A → ¬¬B) by composition with DNI
+  -- Contrapose: ¬(¬A → ¬¬B) → ¬(¬A → B)
+
+  -- Build: (¬A → B) → (¬A → ¬¬B)
+  have dni_b : ⊢ B.imp ((B.imp Formula.bot).imp Formula.bot) :=
+    @theorem_app1 B Formula.bot
+
+  -- b_combinator: (C → D) → (A → C) → (A → D)
+  -- With A = ¬A, C = B, D = ¬¬B
+  have bc : ⊢ (B.imp ((B.imp Formula.bot).imp Formula.bot)).imp
+               (((A.imp Formula.bot).imp B).imp
+                ((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot))) :=
+    b_combinator
+
+  have impl : ⊢ ((A.imp Formula.bot).imp B).imp
+                 ((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)) :=
+    Derivable.modus_ponens [] _ _ bc dni_b
+
+  -- Contrapose: ¬(¬A → ¬¬B) → ¬(¬A → B)
+  exact contraposition impl
+
+/--
+De Morgan Law 2 (Biconditional): `⊢ ¬(A ∨ B) ↔ (¬A ∧ ¬B)`.
+
+Negated disjunction is equivalent to conjunction of negations.
+
+**Proof Strategy**: Combine forward and backward directions using iff_intro.
+-/
+theorem demorgan_disj_neg (A B : Formula) :
+    ⊢ ((A.or B).neg.imp (A.neg.and B.neg)).and ((A.neg.and B.neg).imp (A.or B).neg) := by
+  -- iff_intro takes Formulas A B and proofs of A→B and B→A
+  -- Here A = (A.or B).neg, B = (A.neg.and B.neg)
+  exact iff_intro (A.or B).neg (A.neg.and B.neg)
+    (demorgan_disj_neg_forward A B) (demorgan_disj_neg_backward A B)
 
 end Logos.Core.Theorems.Propositional

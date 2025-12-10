@@ -101,6 +101,27 @@ inductive Axiom : Formula → Prop where
   | modal_b (φ : Formula) : Axiom (φ.imp (Formula.box φ.diamond))
 
   /--
+  Modal 5 Collapse axiom: `◇□φ → □φ` (S5 characteristic collapse).
+
+  If it is possible that φ is necessary, then φ is necessary.
+  This is the characteristic axiom of S5 that collapses nested modalities.
+
+  Semantically: in S5 (where accessibility is an equivalence relation),
+  if from the actual world we can access some world where □φ holds,
+  then from that world we can access all worlds (including the actual world),
+  so φ holds at all worlds, hence □φ at the actual world.
+
+  This axiom enables:
+  1. The S5 characteristic theorem `◇□A ↔ □A`
+  2. Collapsing diamond-box patterns in modal reasoning
+  3. Completing the modal distribution theorems in ModalS5.lean
+
+  Note: Combined with B (`φ → □◇φ`) and 5 (`◇φ → □◇φ`, derived as `modal_5`),
+  this completes the S5 modal logic.
+  -/
+  | modal_5_collapse (φ : Formula) : Axiom (φ.box.diamond.imp φ.box)
+
+  /--
   Modal K Distribution axiom: `□(φ → ψ) → (□φ → □ψ)` (distribution).
 
   Necessity distributes over implication. If it is necessary that φ implies ψ,

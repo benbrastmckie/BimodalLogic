@@ -2,63 +2,24 @@
 
 > NOTE: this document is still full of AI slop, requiring heavy revision
 
-## Introduction: Formal Logic as Conceptual Engineering
+This document expands on the conceptual foundations introduced in [README.md § Motivations](../../README.md#motivations) (lines 61-68).
 
-### Terminology: README to Technical Mapping
+## Formal Logic as Conceptual Engineering
 
-This document expands on the conceptual foundations introduced in [README.md § Motivations](../../README.md#motivations) (lines 61-68). The following terminology mapping connects README's concise formulations to this document's technical exposition:
+Natural language semantics in linguistic is *descriptive* analyzing how expressions like "if...then" behave in a natural language like English. By contrast, logic is *normative* insofar as it aims to engineer the logical operators that we ought to have by stipulating precise semantic clauses and proof systems for the purposes of systematic reasoning. Logical operators are expected to diverge from natural language usage by abstracting conceptual targets from organically occurring semantic meanings. The material conditional (`→`) exemplifies this approach where a material conditional is true whenever its antecedent is false or its consequent is true. However counterintuitive it is to claim that the English sentence "If it is raining, the sky will fall tomorrow" is true whenever it is not raining, the material conditional provides great utility throughout mathematics and programming languages. For instance, consider the universal quantification `∀x(Human(x) → Mammal(x))` which asserts that all humans are mammals in virtue of the fact that whenever `x` takes on a value that is not a human, the formula `Human(x) → Mammal(x)` is true, passing to the next value that `x` may occupy.
 
-| README Term (lines 61-68) | Technical Elaboration in This Document |
-|----------------------------|----------------------------------------|
-| **Historical modal operators** | S5 modal operators (`□`, `◇`) quantifying over alternative world-histories (§ Extensible Operator Methodology) |
-| **Tense operators** | Linear temporal operators (`G`, `F`, `H`, `P`) for past/future quantification within world-histories (§ World-Histories and Temporal Evolution) |
-| **Future contingency** | Bimodal combinations of tense and historical modal operators representing alternative possible futures (§ From Tense to Modality) |
-| **Counterfactual scrutiny** | Comparative evaluation of plan expected values against counterfactual alternatives (§ Expected Value via Counterfactual Scrutiny) |
-| **Conceptual engineering** | Normative methodology for stipulating logical operators fit for systematic reasoning applications (§ Formal Logic as Conceptual Engineering) |
-
-For comprehensive definitions, see [GLOSSARY.md](../Reference/GLOSSARY.md). For operator notation, see [OPERATORS.md](../Reference/OPERATORS.md).
-
-### How to Read This Document
-
-**For readers coming from README.md**: This document expands on [README.md § Motivations](../../README.md#motivations) (lines 61-68) and [§ RL TRAINING](../../README.md#rl-training) (lines 45-56). The README provides concise motivations; this document provides philosophical foundations and technical elaboration. Key section mappings:
-- README "conceptual engineering" → § Formal Logic as Conceptual Engineering
-- README "planning under uncertainty" → § Planning Under Uncertainty: The Pragmatic Motivation
-- README "dual verification" → § Dual Verification: Training Signal Architecture
-- README "extensible operators" → § Extensible Operator Methodology, § Epistemic and Normative Extensions
-
-**For readers seeking technical specifications**: This document focuses on conceptual motivations, not implementation details. For formal specifications:
-- Axiom schemata and soundness proofs → [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md)
-- Layer 1-3 operator semantics → [LAYER_EXTENSIONS.md](LAYER_EXTENSIONS.md)
-- Implementation status → [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md)
-- LEAN 4 source code → [Logos/Core/](../../Logos/Core/)
-
-**Reading paths**:
-- **Overview path**: Read § Introduction and § Conclusion only
-- **Planning motivation path**: §§ Introduction, Planning Under Uncertainty, Dual Verification
-- **Layer architecture path**: §§ Introduction, Planning Under Uncertainty, From Tense to Counterfactual, Epistemic and Normative Extensions, Conclusion
-
-### Formal Logic as Conceptual Engineering
-
-> **README Context**: This section elaborates on [README.md § Motivations](../../README.md#motivations) lines 61-62, which frames formal logic as conceptual engineering analogous to material science refining raw materials into materials fit for building.
-
-Natural language semantics is **descriptive**: analyzing how reasoning expressions like
-"if...then" work in ordinary language to understand their actual usage patterns. By contrast,
-formal logic is **normative**: engineering logical operators with precise truth conditions for
-systematic reasoning, even when these operators differ from natural language usage. Designing operators we ought to have for rigorous reasoning, not merely describing operators we do
-have.
-
-The material conditional (`→`) exemplifies this approach: though counterintuitive as English "if...then" (making "if it is raining, the sky will fall tomorrow" true whenever it is not raining), it enables formal regimentation of universal quantification (`∀x(Human(x) → Mammal(x))`) and truth-functional reasoning—refining natural language into operators with theoretically valuable properties.
+<!-- NOTE: don't break lines as below to match the formatting throughout -->
 
 Just as material science refine glass from sand or steel from iron ore by transforming raw natural
 materials into materials fit for building, philosophical logic engineers theoretical concepts from
 natural language into logical operators with recursive semantic clauses. Natural language provides
 the raw ingredients: intuitive notions of necessity, possibility, past, future, causation,
-knowledge, and obligation. These conceptual targets are then refined into precise logical operators
+belief, obligation, preferences, probabilities, and many more. These conceptual targets are then refined into precise logical operators
 with clearly defined truth conditions over explicit semantic models.
 
 This engineering perspective has crucial implications for AI reasoning systems. Operators with
 precise semantics and axiomatic proof theories generate unlimited clean training signals about valid
-and invalid inferences. Theorem proving produces verified derivations guaranteed sound by
+and invalid inferences. Computationally assisted theorem proving provides verified derivations guaranteed sound by
 metalogical proofs, while model checking produces countermodels refuting invalid claims. This dual
 verification architecture provides consistent, verifiable training signals not achievable by
 formalizing inconsistent natural language reasoning patterns.

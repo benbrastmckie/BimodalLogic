@@ -1,8 +1,8 @@
 # Sorry Placeholder Registry
 
 **Last Updated**: 2025-12-09
-**Total Active Placeholders**: 7 (4 blocking, 3 documentation examples)
-**Total Resolved**: 45 (P5 fully proven as theorem)
+**Total Active Placeholders**: 10 (4 Phase 4 blockers in ModalS5, 2 in ModalS4, 3 in Truth.lean, 1 in Completeness)
+**Total Resolved**: 52 (Plan 059 Phase 1: 6 De Morgan laws fully proven, Phase 4: 5/8 modal theorems proven)
 
 This document tracks `sorry` placeholders (unproven theorems) and `axiom` declarations (unproven lemmas) in the Logos codebase. It provides resolution context, effort estimates, and cross-references to related tasks.
 
@@ -128,6 +128,75 @@ Documentation updated to reflect theorem status. All tests pass.
   - **Blocked by**: Complex formula type manipulation in duality reasoning
   - **Justification**: Corollary 2.11 validates P6; all 4 duality lemmas proven
   - **Status**: Axiomatized (theoretically derivable from P5 + duality, mechanically complex)
+
+### Logos/Core/Theorems/Propositional.lean (0 placeholders - Plan 059 Phase 1)
+
+**Plan 059 Phase 1 COMPLETE** (2025-12-09): All 6 De Morgan law theorems fully proven:
+- `demorgan_conj_neg_forward`: `⊢ ¬(A ∧ B) → (¬A ∨ ¬B)` ✓
+- `demorgan_conj_neg_backward`: `⊢ (¬A ∨ ¬B) → ¬(A ∧ B)` ✓
+- `demorgan_conj_neg`: `⊢ ¬(A ∧ B) ↔ (¬A ∨ ¬B)` ✓
+- `demorgan_disj_neg_forward`: `⊢ ¬(A ∨ B) → (¬A ∧ ¬B)` ✓
+- `demorgan_disj_neg_backward`: `⊢ (¬A ∧ ¬B) → ¬(A ∨ B)` ✓
+- `demorgan_disj_neg`: `⊢ ¬(A ∨ B) ↔ (¬A ∧ ¬B)` ✓
+
+### Logos/Core/Theorems/ModalS5.lean (4 placeholders - Plan 059 Status)
+
+- **ModalS5.lean:89** - `diamond_mono_imp` (fundamental limitation)
+  - **Context**: Diamond monotonicity as object-level theorem
+  - **Goal**: `⊢ (φ → ψ) → (◇φ → ◇ψ)`
+  - **Blocker**: **NOT VALID** as object-level theorem (fundamental modal logic limitation)
+  - **Counter-model**: Documented at lines 70-84 (S5 with w0, w1: A everywhere, B only at w0)
+  - **Explanation**: Local truth of φ → ψ at one world doesn't guarantee modal relationships
+  - **Meta-level vs Object-level**: Diamond_mono works as META-RULE (if ⊢ φ → ψ then ⊢ ◇φ → ◇ψ) but NOT as object theorem
+  - **Resolution**: Cannot be derived - fundamental theoretical limitation
+  - **Task**: Documented as blocked in Plan 059
+  - **Status**: BLOCKED (not derivable)
+
+- **ModalS5.lean:96-99** - `diamond_mono_conditional` (depends on diamond_mono_imp)
+  - **Context**: Conditional form of diamond monotonicity
+  - **Goal**: `∀ θ φ ψ, (⊢ θ → (φ → ψ)) → (⊢ θ → (◇φ → ◇ψ))`
+  - **Blocker**: Depends on `diamond_mono_imp` which is not derivable (see above)
+  - **Estimated Effort**: Cannot be completed (fundamental limitation)
+  - **Task**: Plan 059 Phase 2 blocked
+  - **Status**: BLOCKED (depends on non-derivable theorem)
+
+- **ModalS5.lean:515** - `diamond_disj_iff` forward direction (formula alignment)
+  - **Context**: Diamond distributes over disjunction - forward case `◇(A ∨ B) → (◇A ∨ ◇B)`
+  - **Goal**: Formula type alignment for `¬□(¬A ∧ ¬B) → (¬□¬A ∨ ¬□¬B)`
+  - **Blocker**: Complex formula manipulation where or/and/neg definitions interact
+  - **Infrastructure Available**: De Morgan laws proven (Plan 059 Phase 1) ✓
+  - **Estimated Effort**: 4-6 hours (formula type manipulation, not theoretical blocker)
+  - **Task**: Plan 059 Phase 3 partial completion
+  - **Status**: PARTIAL (De Morgan infrastructure complete, formula alignment remains)
+
+- **ModalS5.lean:524** - `diamond_disj_iff` backward direction (formula alignment)
+  - **Context**: Diamond distributes over disjunction - backward case `(◇A ∨ ◇B) → ◇(A ∨ B)`
+  - **Goal**: Formula type alignment for `(¬□¬A ∨ ¬□¬B) → ¬□¬(¬A → B)`
+  - **Blocker**: Similar to forward direction - formula type complexity
+  - **Infrastructure Available**: De Morgan laws proven (Plan 059 Phase 1) ✓
+  - **Estimated Effort**: 4-6 hours (paired with forward direction)
+  - **Task**: Plan 059 Phase 3 partial completion
+  - **Status**: PARTIAL (De Morgan infrastructure complete, formula alignment remains)
+
+### Logos/Core/Theorems/ModalS4.lean (2 placeholders - Plan 059 Status)
+
+- **ModalS4.lean:76** - `s4_diamond_box_conj` (conditional diamond monotonicity)
+  - **Context**: Diamond distributes with box under conjunction
+  - **Goal**: `⊢ (A.diamond.and B.box).imp ((A.and B.box).diamond)`
+  - **Blocker**: Requires `diamond_mono_conditional` which depends on `diamond_mono_imp` (NOT VALID, see ModalS5.lean:70-84)
+  - **Infrastructure Needed**: Alternative proof strategy needed (conditional monotonicity not derivable)
+  - **Estimated Effort**: 8-12 hours (requires different approach, not just infrastructure addition)
+  - **Task**: Plan 059 Phase 4 blocked on fundamental limitation
+  - **Status**: BLOCKED (diamond_mono_conditional not derivable)
+
+- **ModalS4.lean:245** - `s5_diamond_conj_diamond` (advanced S5 distribution)
+  - **Context**: Diamond distributes through conjunction with nested diamond
+  - **Goal**: `⊢ iff ((A.and B.diamond).diamond) (A.diamond.and B.diamond)`
+  - **Blocker**: Requires advanced S5 distribution properties for nested modalities
+  - **Infrastructure Needed**: Complex modal distribution lemmas (may also depend on conditional monotonicity)
+  - **Estimated Effort**: 10-15 hours (after alternative approaches for blocked infrastructure)
+  - **Task**: Plan 059 Phase 4 blocked on multiple dependencies
+  - **Status**: BLOCKED (advanced S5 properties + conditional monotonicity issues)
 
 ### Logos/Core/Semantics/Truth.lean (3 placeholders)
 
@@ -376,24 +445,32 @@ git log --all -S "sorry" -- Logos/Core/Semantics/Truth.lean
 
 | Category | Count | Status |
 |----------|-------|--------|
-| Active `sorry` (Perpetuity) | 0 | All sorry resolved (P5 now FULLY PROVEN) |
+| Active `sorry` (ModalS5 - Plan 059) | 4 | diamond_mono_imp (NOT VALID), diamond_mono_conditional (blocked), diamond_disj_iff (2 formula alignment) |
+| Active `sorry` (ModalS4 - Plan 059) | 2 | s4_diamond_box_conj, s5_diamond_conj_diamond (blocked on monotonicity) |
 | Active `sorry` (Truth.lean) | 3 | Temporal swap validity (domain extension) |
 | Active `sorry` (Completeness) | 1 | `provable_iff_valid` soundness direction |
 | Documentation `sorry` (ProofSearch) | 3 | Example usage (after implementation) |
 | Completeness `axiom` | 11 | Task 9 (70-90 hours) |
 | ProofSearch `axiom` | 8 | Task 7 remaining (30-40 hours) |
 | Perpetuity `axiom` | 6 | pairing, dni, future_k_dist, always_dni, always_dne, perpetuity_6 |
-| **Total `sorry`** | **7** | 4 blocking, 3 documentation |
+| **Total `sorry`** | **13** | 10 blocking (6 Plan 059 + 3 Truth + 1 Completeness), 3 documentation |
 | **Total `axiom`** | **25** | Infrastructure declarations |
 
-**Perpetuity Status Update (2025-12-09 Phase 6 Complete)**:
+**Plan 059 Status Update (2025-12-09 - PARTIAL COMPLETION)**:
+- **Phase 1 COMPLETE**: De Morgan laws infrastructure fully proven in Propositional.lean (6 theorems: demorgan_conj_neg, demorgan_disj_neg + forward/backward) ✓
+- **Phase 2 BLOCKED**: diamond_mono_conditional discovered to be NOT VALID as object-level theorem (counter-model documented)
+- **Phases 3-4 PARTIAL**: diamond_disj_iff has De Morgan infrastructure but formula alignment complexity remains (2 sorry)
+- ModalS5.lean: 4/5 theorems proven (box_disj_intro, box_conj_iff, s5_diamond_box, s5_diamond_box_to_truth) + 4 sorry ✓
+- ModalS4.lean: 2/4 theorems proven (s4_box_diamond_box, s4_diamond_box_diamond) + 2 sorry ✓
+- **Key Discovery**: Conditional diamond monotonicity is NOT DERIVABLE (fundamental modal logic limitation documented)
+
+**Perpetuity Status (2025-12-09)**:
 - P1, P2, P3, P4, P5: Fully proven as theorems (zero sorry) ✓
 - `persistence` lemma: Fully proven using modal_5 + swap_temporal lemmas ✓
 - `contraposition`: Proven via B combinator ✓
 - P6: Axiomatized (theoretically derivable, mechanically complex, semantically justified)
-- Documentation updated, all tests pass
 
-**Next Priority**: Task 17 (Truth.lean/Soundness.lean type errors), then Task 7 remaining work.
+**Next Priority**: Phase 6 - Infrastructure Extension (De Morgan laws, conditional monotonicity, S5 distribution) to unblock remaining 3 theorems.
 
 ---
 

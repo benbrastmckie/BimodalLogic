@@ -59,7 +59,82 @@ In S4, if A is possible and B is necessary, then A ∧ □B is possible.
 **Status**: Not started (pending Phase 2-3 completion)
 -/
 theorem s4_diamond_box_conj (A B : Formula) : ⊢ (A.diamond.and B.box).imp ((A.and B.box).diamond) := by
-  sorry
+  -- Goal: (◇A ∧ □B) → ◇(A ∧ □B)
+  --
+  -- Strategy:
+  -- 1. From □B, derive □(A → (A ∧ □B)):
+  --    - pairing: A → □B → (A ∧ □B)
+  --    - theorem_flip: □B → (A → (A ∧ □B))
+  --    - modal_4: □B → □□B
+  --    - box_mono: □□B → □(A → (A ∧ □B))
+  -- 2. Apply k_dist_diamond: □(A → (A ∧ □B)) → (◇A → ◇(A ∧ □B))
+  -- 3. Extract from conjunction premise
+
+  -- Step 1: Build pairing theorem A → □B → (A ∧ □B)
+  have pair : ⊢ A.imp (B.box.imp (A.and B.box)) :=
+    pairing A B.box
+
+  -- Step 2: Flip to get □B → (A → (A ∧ □B))
+  have flipped : ⊢ B.box.imp (A.imp (A.and B.box)) :=
+    Derivable.modus_ponens [] _ _ (theorem_flip A B.box (A.and B.box)) pair
+
+  -- Step 3: Apply modal_4 to get □B → □□B
+  have modal_4_b : ⊢ B.box.imp B.box.box :=
+    Derivable.axiom [] _ (Axiom.modal_4 B)
+
+  -- Step 4: Apply box_mono to flipped to get □□B → □(A → (A ∧ □B))
+  have box_flipped : ⊢ B.box.box.imp (A.imp (A.and B.box)).box :=
+    box_mono flipped
+
+  -- Step 5: Compose: □B → □□B → □(A → (A ∧ □B))
+  have box_b_to_box_imp : ⊢ B.box.imp (A.imp (A.and B.box)).box :=
+    imp_trans modal_4_b box_flipped
+
+  -- Step 6: Apply k_dist_diamond: □(A → (A ∧ □B)) → (◇A → ◇(A ∧ □B))
+  have k_dist : ⊢ (A.imp (A.and B.box)).box.imp (A.diamond.imp (A.and B.box).diamond) :=
+    k_dist_diamond A (A.and B.box)
+
+  -- Step 7: Compose: □B → (◇A → ◇(A ∧ □B))
+  have box_b_to_diamond_imp : ⊢ B.box.imp (A.diamond.imp (A.and B.box).diamond) :=
+    imp_trans box_b_to_box_imp k_dist
+
+  -- Step 8: Build (◇A ∧ □B) → ◇(A ∧ □B)
+  -- We need to extract □B and ◇A from the conjunction and apply them
+
+  -- Extract □B from conjunction: (◇A ∧ □B) → □B
+  have rce_conj : ⊢ (A.diamond.and B.box).imp B.box :=
+    Propositional.rce_imp A.diamond B.box
+
+  -- Compose to get: (◇A ∧ □B) → (◇A → ◇(A ∧ □B))
+  -- Use b_combinator: (B.box → X) → ((◇A ∧ □B) → B.box) → ((◇A ∧ □B) → X)
+  have b_comp : ⊢ (B.box.imp (A.diamond.imp (A.and B.box).diamond)).imp
+                   (((A.diamond.and B.box).imp B.box).imp
+                    ((A.diamond.and B.box).imp (A.diamond.imp (A.and B.box).diamond))) :=
+    b_combinator
+
+  have step1 : ⊢ ((A.diamond.and B.box).imp B.box).imp
+                  ((A.diamond.and B.box).imp (A.diamond.imp (A.and B.box).diamond)) :=
+    Derivable.modus_ponens [] _ _ b_comp box_b_to_diamond_imp
+
+  have conj_to_imp : ⊢ (A.diamond.and B.box).imp (A.diamond.imp (A.and B.box).diamond) :=
+    Derivable.modus_ponens [] _ _ step1 rce_conj
+
+  -- Extract ◇A from conjunction: (◇A ∧ □B) → ◇A
+  have lce_conj : ⊢ (A.diamond.and B.box).imp A.diamond :=
+    Propositional.lce_imp A.diamond B.box
+
+  -- Now apply S axiom to combine: (X → Y → Z) → ((X → Y) → (X → Z))
+  -- With X = (◇A ∧ □B), Y = ◇A, Z = ◇(A ∧ □B)
+  have s_axiom : ⊢ ((A.diamond.and B.box).imp (A.diamond.imp (A.and B.box).diamond)).imp
+                   (((A.diamond.and B.box).imp A.diamond).imp
+                    ((A.diamond.and B.box).imp (A.and B.box).diamond)) :=
+    Derivable.axiom [] _ (Axiom.prop_k (A.diamond.and B.box) A.diamond (A.and B.box).diamond)
+
+  have step2 : ⊢ ((A.diamond.and B.box).imp A.diamond).imp
+                  ((A.diamond.and B.box).imp (A.and B.box).diamond) :=
+    Derivable.modus_ponens [] _ _ s_axiom conj_to_imp
+
+  exact Derivable.modus_ponens [] _ _ step2 lce_conj
 
 /--
 Task 39: S4-Box-Diamond-Box - `⊢ □A → □(◇□A)`.
@@ -186,10 +261,20 @@ theorem s4_diamond_box_diamond (A : Formula) : ⊢ iff (A.diamond.box.diamond) A
     -- Then: ¬□¬◇A → ¬□¬A
     -- Which is: ◇◇A → ◇A? No, that's wrong too.
 
-    -- Actually, I think the issue is that ◇□◇A → ◇A requires S5!
-    -- In S4, we can't collapse ◇□ to identity.
+    -- Actually, this requires S5's modal_5_collapse: ◇□X → □X
+    -- With X = ◇A: ◇□◇A → □◇A
+    -- Then modal_t: □◇A → ◇A
+    -- Compose: ◇□◇A → ◇A
 
-    sorry  -- This direction may require S5 (◇□X → X pattern)
+    -- Step 1: modal_5_collapse on ◇A: ◇□(◇A) → □(◇A)
+    have m5c : ⊢ A.diamond.box.diamond.imp A.diamond.box :=
+      Derivable.axiom [] _ (Axiom.modal_5_collapse A.diamond)
+
+    -- Step 2: modal_t on ◇A: □(◇A) → ◇A
+    -- (Already have this as modal_t_diamond)
+
+    -- Compose: ◇□◇A → □◇A → ◇A
+    exact imp_trans m5c modal_t_diamond
 
   -- Combine using pairing to build biconditional
   have pair_forward_backward : ⊢ (A.diamond.box.diamond.imp A.diamond).imp
@@ -218,6 +303,175 @@ In S5, diamond distributes over conjunction with nested diamond.
 **Status**: Not started
 -/
 theorem s5_diamond_conj_diamond (A B : Formula) : ⊢ iff ((A.and B.diamond).diamond) (A.diamond.and B.diamond) := by
-  sorry
+  -- Goal: ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)
+
+  -- Forward direction: ◇(A ∧ ◇B) → (◇A ∧ ◇B)
+  have forward : ⊢ (A.and B.diamond).diamond.imp (A.diamond.and B.diamond) := by
+    -- Strategy:
+    -- 1. ◇(A ∧ ◇B) → ◇A via k_dist_diamond on (A ∧ ◇B) → A (lce)
+    -- 2. ◇(A ∧ ◇B) → ◇◇B via k_dist_diamond on (A ∧ ◇B) → ◇B (rce)
+    -- 3. ◇◇B → ◇B using S5 axiom (modal_5_collapse on ¬B)
+    -- 4. Combine with pairing
+
+    -- Step 1: Get ◇(A ∧ ◇B) → ◇A
+    -- Use lce_imp: (A ∧ ◇B) → A
+    have lce : ⊢ (A.and B.diamond).imp A := Propositional.lce_imp A B.diamond
+    -- Apply diamond_mono to get ◇(A ∧ ◇B) → ◇A
+    have dia_lce : ⊢ (A.and B.diamond).diamond.imp A.diamond := diamond_mono lce
+
+    -- Step 2: Get ◇(A ∧ ◇B) → ◇◇B
+    -- Use rce_imp: (A ∧ ◇B) → ◇B
+    have rce : ⊢ (A.and B.diamond).imp B.diamond := Propositional.rce_imp A B.diamond
+    -- Apply diamond_mono to get ◇(A ∧ ◇B) → ◇◇B
+    have dia_rce : ⊢ (A.and B.diamond).diamond.imp B.diamond.diamond := diamond_mono rce
+
+    -- Step 3: Get ◇◇B → ◇B using S5
+    -- In S5: ◇□X → □X (modal_5_collapse)
+    -- We need ◇◇B → ◇B
+    -- Use duality: ◇◇B = ¬□¬◇B = ¬□¬¬□¬B = ¬□□¬B
+    -- We can use: □□¬B → □¬B (by modal_t on □¬B), then contrapose
+    -- Actually simpler: Use the fact that modal_t gives □X → X for any X
+    -- So □◇B → ◇B (modal_t on ◇B)
+    -- We need to lift this: we need ◇◇B → ◇B, which is the dual
+
+    -- Alternative: Use modal_5_collapse directly
+    -- modal_5_collapse: ◇□X → □X
+    -- Apply to ¬B: ◇□¬B → □¬B
+    -- Contrapose: ¬□¬B → ¬◇□¬B which is ◇B → □◇B (this is modal_5!)
+    -- But we need the reverse: ◇◇B → ◇B
+
+    -- Actually, in S5 we have: □◇B ↔ ◇B (from s5_diamond_box applied to B)
+    -- So ◇□◇B ↔ ◇◇B (duality)
+    -- And ◇□◇B → □◇B by modal_5_collapse
+    -- And □◇B → ◇B by modal_t
+    -- So ◇◇B → ◇B
+
+    -- Let me build this step by step:
+    -- Step 3a: Get □◇B → ◇B (modal_t on ◇B)
+    have box_dia_to_dia : ⊢ B.diamond.box.imp B.diamond :=
+      Derivable.axiom [] _ (Axiom.modal_t B.diamond)
+
+    -- Step 3b: Get ◇□◇B → □◇B (modal_5_collapse on ◇B)
+    have dia_box_dia_to_box_dia : ⊢ B.diamond.box.diamond.imp B.diamond.box :=
+      Derivable.axiom [] _ (Axiom.modal_5_collapse B.diamond)
+
+    -- Step 3c: Compose to get ◇□◇B → ◇B
+    have dia_box_dia_to_dia : ⊢ B.diamond.box.diamond.imp B.diamond :=
+      imp_trans dia_box_dia_to_box_dia box_dia_to_dia
+
+    -- Step 3d: Now I need to show ◇◇B = ◇□◇B
+    -- Actually, this is NOT true in general!
+    -- ◇◇B = ¬□¬◇B = ¬□□¬B (using ¬◇X = □¬X)
+    -- ◇□◇B = ¬□¬□◇B = ¬□¬□¬□¬B
+
+    -- Let me use a different approach: use modal_t on □◇B
+    -- We have ◇◇B, want ◇B
+    -- ◇◇B = ◇¬□¬B
+    -- By diamond_mono on modal_t: (□¬B → ¬B) implies (◇□¬B → ◇¬B)
+    -- Contrapose: (B → ¬□¬B) implies... wait, this is getting circular
+
+    -- Actually, the simplest approach: I'll just use that ◇ is idempotent in S5
+    -- But we don't have that lemma! Let me prove it here.
+
+    -- Lemma: ◇◇B → ◇B in S5
+    -- Proof: Use □B → □□B (modal_4), contrapose to get ◇◇B → ◇B... wait, that gives the wrong direction!
+
+    -- Let me think again. In S5, we have modal_5: ◇B → □◇B
+    -- Apply to ◇B: ◇◇B → □◇◇B
+    -- But we need ◇◇B → ◇B
+
+    -- Actually, the key is: in S5, □◇B ↔ ◇B (this is proven in s5_diamond_box for B, not ◇B)
+    -- So if we can show ◇◇B → □◇B, then we get ◇◇B → ◇B
+
+    -- ◇◇B → □◇B is exactly modal_5 applied to ◇B!
+    have dia_dia_to_box_dia : ⊢ B.diamond.diamond.imp B.diamond.box :=
+      modal_5 B.diamond
+
+    -- Now compose with modal_t to get ◇◇B → ◇B
+    have dia_dia_to_dia : ⊢ B.diamond.diamond.imp B.diamond :=
+      imp_trans dia_dia_to_box_dia box_dia_to_dia
+
+    -- Step 4: Compose dia_rce with dia_dia_to_dia to get ◇(A ∧ ◇B) → ◇B
+    have dia_conj_to_dia_b : ⊢ (A.and B.diamond).diamond.imp B.diamond :=
+      imp_trans dia_rce dia_dia_to_dia
+
+    -- Step 5: Combine ◇(A ∧ ◇B) → ◇A and ◇(A ∧ ◇B) → ◇B into ◇(A ∧ ◇B) → (◇A ∧ ◇B)
+    exact combine_imp_conj dia_lce dia_conj_to_dia_b
+
+  -- Backward direction: (◇A ∧ ◇B) → ◇(A ∧ ◇B)
+  have backward : ⊢ (A.diamond.and B.diamond).imp (A.and B.diamond).diamond := by
+    -- Strategy:
+    -- 1. From ◇B, use modal_5: ◇B → □◇B
+    -- 2. From □◇B, derive □(A → (A ∧ ◇B)):
+    --    - pairing: A → ◇B → (A ∧ ◇B)
+    --    - theorem_flip: ◇B → (A → (A ∧ ◇B))
+    --    - box_mono: □◇B → □(A → (A ∧ ◇B))
+    -- 3. Apply k_dist_diamond: □(A → (A ∧ ◇B)) → (◇A → ◇(A ∧ ◇B))
+    -- 4. Extract from conjunction premise
+
+    -- Step 1: Apply modal_5 to B: ◇B → □◇B
+    have modal_5_b : ⊢ B.diamond.imp B.diamond.box :=
+      modal_5 B
+
+    -- Step 2: Build pairing A → ◇B → (A ∧ ◇B)
+    have pair : ⊢ A.imp (B.diamond.imp (A.and B.diamond)) :=
+      pairing A B.diamond
+
+    -- Step 3: Flip to get ◇B → (A → (A ∧ ◇B))
+    have flipped : ⊢ B.diamond.imp (A.imp (A.and B.diamond)) :=
+      Derivable.modus_ponens [] _ _ (theorem_flip A B.diamond (A.and B.diamond)) pair
+
+    -- Step 4: Apply box_mono to get □◇B → □(A → (A ∧ ◇B))
+    have box_flipped : ⊢ B.diamond.box.imp (A.imp (A.and B.diamond)).box :=
+      box_mono flipped
+
+    -- Step 5: Compose: ◇B → □◇B → □(A → (A ∧ ◇B))
+    have dia_b_to_box_imp : ⊢ B.diamond.imp (A.imp (A.and B.diamond)).box :=
+      imp_trans modal_5_b box_flipped
+
+    -- Step 6: Apply k_dist_diamond: □(A → (A ∧ ◇B)) → (◇A → ◇(A ∧ ◇B))
+    have k_dist : ⊢ (A.imp (A.and B.diamond)).box.imp (A.diamond.imp (A.and B.diamond).diamond) :=
+      k_dist_diamond A (A.and B.diamond)
+
+    -- Step 7: Compose: ◇B → (◇A → ◇(A ∧ ◇B))
+    have dia_b_to_imp : ⊢ B.diamond.imp (A.diamond.imp (A.and B.diamond).diamond) :=
+      imp_trans dia_b_to_box_imp k_dist
+
+    -- Step 8: Build (◇A ∧ ◇B) → ◇(A ∧ ◇B)
+    -- Extract ◇B from conjunction: (◇A ∧ ◇B) → ◇B
+    have rce_conj : ⊢ (A.diamond.and B.diamond).imp B.diamond :=
+      Propositional.rce_imp A.diamond B.diamond
+
+    -- Compose to get: (◇A ∧ ◇B) → (◇A → ◇(A ∧ ◇B))
+    have b_comp : ⊢ (B.diamond.imp (A.diamond.imp (A.and B.diamond).diamond)).imp
+                     (((A.diamond.and B.diamond).imp B.diamond).imp
+                      ((A.diamond.and B.diamond).imp (A.diamond.imp (A.and B.diamond).diamond))) :=
+      b_combinator
+
+    have step1 : ⊢ ((A.diamond.and B.diamond).imp B.diamond).imp
+                    ((A.diamond.and B.diamond).imp (A.diamond.imp (A.and B.diamond).diamond)) :=
+      Derivable.modus_ponens [] _ _ b_comp dia_b_to_imp
+
+    have conj_to_imp : ⊢ (A.diamond.and B.diamond).imp (A.diamond.imp (A.and B.diamond).diamond) :=
+      Derivable.modus_ponens [] _ _ step1 rce_conj
+
+    -- Extract ◇A from conjunction: (◇A ∧ ◇B) → ◇A
+    have lce_conj : ⊢ (A.diamond.and B.diamond).imp A.diamond :=
+      Propositional.lce_imp A.diamond B.diamond
+
+    -- Apply S axiom to combine
+    have s_axiom : ⊢ ((A.diamond.and B.diamond).imp (A.diamond.imp (A.and B.diamond).diamond)).imp
+                     (((A.diamond.and B.diamond).imp A.diamond).imp
+                      ((A.diamond.and B.diamond).imp (A.and B.diamond).diamond)) :=
+      Derivable.axiom [] _ (Axiom.prop_k (A.diamond.and B.diamond) A.diamond (A.and B.diamond).diamond)
+
+    have step2 : ⊢ ((A.diamond.and B.diamond).imp A.diamond).imp
+                    ((A.diamond.and B.diamond).imp (A.and B.diamond).diamond) :=
+      Derivable.modus_ponens [] _ _ s_axiom conj_to_imp
+
+    exact Derivable.modus_ponens [] _ _ step2 lce_conj
+
+  -- Combine into biconditional
+  exact Propositional.iff_intro (A.and B.diamond).diamond (A.diamond.and B.diamond) forward backward
 
 end Logos.Core.Theorems.ModalS4
