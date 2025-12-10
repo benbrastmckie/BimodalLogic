@@ -272,6 +272,7 @@ When writing command files:
 2. **Split proactively** if approaching 300 lines (buffer below threshold)
 3. **Test with indirect references** (`${!var}`) to catch transformation early
 4. **Use logical boundaries** for splits (setup, execution, cleanup)
+5. **Block Size Management**: Keep all bash blocks under 400 lines to avoid preprocessing transformation bugs. See [Bash Block Size Standard](../reference/standards/command-authoring.md#bash-block-size-limits-and-prevention) for thresholds and split patterns.
 
 ### Why This Works
 

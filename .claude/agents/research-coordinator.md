@@ -657,9 +657,9 @@ If you proceed to STEP 4 and it fails with "Reports directory is empty" error, t
 
 ---
 
-### STEP 5 (EXECUTE): Extract Metadata
+### STEP 5 (EXECUTE): Extract Metadata and Estimate Context Usage
 
-**Objective**: Extract metadata from each report (title, key findings count, recommendations count) without loading full content into context.
+**Objective**: Extract metadata from each report (title, key findings count, recommendations count) without loading full content into context, then estimate context usage for iteration tracking.
 
 **Actions**:
 
@@ -703,7 +703,91 @@ If you proceed to STEP 4 and it fails with "Reports directory is empty" error, t
    done
    ```
 
-**Checkpoint**: Metadata extracted for all reports.
+5. **Estimate Context Usage**: Calculate context consumption for this research phase
+   ```bash
+   estimate_research_context() {
+     local completed_reports="$1"
+
+     # Validate input (must be numeric)
+     if ! [[ "$completed_reports" =~ ^[0-9]+$ ]]; then
+       echo "ERROR: Invalid completed_reports count (must be numeric)" >&2
+       echo "50"  # Return safe default (50%)
+       return 1
+     fi
+
+     # Base cost (system prompt + coordinator logic + error handlers)
+     local base_cost=15000
+
+     # Per-report overhead (research execution + validation + metadata extraction)
+     local per_report_overhead=2000
+
+     # Metadata aggregation cost per report
+     local metadata_per_report=110
+
+     # Total estimated tokens
+     local total_tokens=$((base_cost + (completed_reports * (per_report_overhead + metadata_per_report))))
+
+     # Context window size (200k tokens)
+     local context_window=200000
+
+     # Calculate percentage
+     local percentage=$((total_tokens * 100 / context_window))
+
+     # Defensive validation (sanity range: 5-95%)
+     if [ "$percentage" -lt 5 ]; then
+       percentage=5
+     elif [ "$percentage" -gt 95 ]; then
+       percentage=95
+     fi
+
+     echo "$percentage"
+   }
+
+   # Calculate context usage
+   COMPLETED_REPORTS=${#REPORT_PATHS[@]}
+   CONTEXT_USAGE_PERCENT=$(estimate_research_context "$COMPLETED_REPORTS")
+
+   echo ""
+   echo "Context Estimation: ${CONTEXT_USAGE_PERCENT}% (${COMPLETED_REPORTS} reports processed)"
+   echo ""
+
+   # Check if checkpoint needed (≥85% threshold)
+   if [ "$CONTEXT_USAGE_PERCENT" -ge 85 ]; then
+     echo "WARNING: Context usage approaching limit (${CONTEXT_USAGE_PERCENT}% ≥ 85%)"
+     echo "Creating checkpoint for workflow resumption..."
+
+     # Create checkpoint directory
+     CHECKPOINTS_DIR="${TOPIC_PATH}/checkpoints"
+     mkdir -p "$CHECKPOINTS_DIR" 2>/dev/null || true
+
+     # Generate checkpoint file
+     WORKFLOW_ID="${WORKFLOW_ID:-research_$(date +%s)}"
+     CHECKPOINT_PATH="${CHECKPOINTS_DIR}/${WORKFLOW_ID}_partial.json"
+
+     # Build checkpoint content
+     cat > "$CHECKPOINT_PATH" <<EOF_CHECKPOINT
+{
+  "workflow": "research-coordinator",
+  "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "reports_completed": $COMPLETED_REPORTS,
+  "reports_total": ${#TOPICS[@]},
+  "context_percent": $CONTEXT_USAGE_PERCENT,
+  "report_paths": [
+$(for path in "${REPORT_PATHS[@]}"; do echo "    \"$path\","; done | sed '$ s/,$//')
+  ],
+  "metadata": [
+$(for meta in "${METADATA[@]}"; do echo "    $meta,"; done | sed '$ s/,$//')
+  ]
+}
+EOF_CHECKPOINT
+
+     echo "Checkpoint saved: $CHECKPOINT_PATH"
+   else
+     CHECKPOINT_PATH=""
+   fi
+   ```
+
+**Checkpoint**: Metadata extracted for all reports, context usage estimated and logged.
 
 ---
 
@@ -763,6 +847,8 @@ If you proceed to STEP 4 and it fails with "Reports directory is empty" error, t
    topics_processed: 3
    reports_created: 3
    context_reduction_pct: 95
+   context_usage_percent: 12
+   checkpoint_path: /path/to/checkpoint.json
    execution_time_seconds: 45
 
    RESEARCH_COMPLETE: 3
@@ -780,6 +866,8 @@ If you proceed to STEP 4 and it fails with "Reports directory is empty" error, t
    - `topics_processed: N` - Number of topics successfully researched
    - `reports_created: N` - Number of reports created (should equal topics_processed on success)
    - `context_reduction_pct: N` - Estimated context reduction percentage (typically 95%)
+   - `context_usage_percent: N` - Estimated context usage percentage for this research phase (from estimate_research_context)
+   - `checkpoint_path: /path` - Optional checkpoint path (present if context ≥85% threshold exceeded)
    - `execution_time_seconds: N` - Workflow execution time in seconds
 
 4. **Cleanup Invocation Trace** (on successful completion):
@@ -836,18 +924,157 @@ If metadata extraction fails for a report (e.g., malformed report):
 Return ONLY the aggregated metadata in this format:
 
 ```
+RESEARCH_COORDINATOR_COMPLETE: SUCCESS
+topics_processed: {N}
+reports_created: {N}
+context_reduction_pct: {N}
+context_usage_percent: {N}
+checkpoint_path: {/path/to/checkpoint.json OR empty if no checkpoint}
+
 RESEARCH_COMPLETE: {REPORT_COUNT}
 reports: [JSON array of report metadata]
 total_findings: {N}
 total_recommendations: {N}
 ```
 
-**Example**:
+**Example (without checkpoint)**:
 ```
+RESEARCH_COORDINATOR_COMPLETE: SUCCESS
+topics_processed: 3
+reports_created: 3
+context_reduction_pct: 95
+context_usage_percent: 12
+
 RESEARCH_COMPLETE: 3
 reports: [{"path": "/home/user/.config/.claude/specs/028_lean/reports/001-mathlib-theorems.md", "title": "Mathlib Theorems for Group Homomorphism", "findings_count": 12, "recommendations_count": 5}, {"path": "/home/user/.config/.claude/specs/028_lean/reports/002-proof-automation.md", "title": "Proof Automation Strategies for Lean 4", "findings_count": 8, "recommendations_count": 4}, {"path": "/home/user/.config/.claude/specs/028_lean/reports/003-project-structure.md", "title": "Lean 4 Project Structure Patterns", "findings_count": 10, "recommendations_count": 6}]
 total_findings: 30
 total_recommendations: 15
+```
+
+**Example (with checkpoint at 85%+ threshold)**:
+```
+RESEARCH_COORDINATOR_COMPLETE: SUCCESS
+topics_processed: 10
+reports_created: 10
+context_reduction_pct: 95
+context_usage_percent: 86
+checkpoint_path: /home/user/.config/.claude/specs/028_lean/checkpoints/research_1733765432_partial.json
+
+RESEARCH_COMPLETE: 10
+reports: [{"path": "...", "title": "...", "findings_count": 8, "recommendations_count": 3}, ...]
+total_findings: 85
+total_recommendations: 42
+```
+
+## Return Signal Contract (Phase 4 Enhancement)
+
+The research-coordinator return signal has contract invariants that MUST be maintained for correct workflow execution. Primary agents consuming coordinator output should validate these invariants and apply defensive overrides when violations detected.
+
+### Contract Invariants
+
+| Field | Type | Constraint | Invariant |
+|-------|------|------------|-----------|
+| `topics_processed` | integer | ≥ 0 | MUST equal `reports_created` on success |
+| `reports_created` | integer | ≥ 0 | MUST equal length of `reports` array |
+| `topics_remaining` | array | [] or [strings] | **Empty array → requires_continuation MUST be false** |
+| `requires_continuation` | boolean | true/false | **If topics_remaining non-empty → MUST be true** |
+| `context_usage_percent` | integer | 5-95 | MUST be within sanity range |
+| `checkpoint_path` | string | path or empty | If context_usage_percent ≥ 85 → SHOULD be non-empty |
+
+### Invariant Violation Examples
+
+**Valid Signals**:
+```yaml
+# Complete workflow - no topics remaining
+topics_remaining: []
+requires_continuation: false
+✓ VALID (empty topics → continuation false)
+
+# Incomplete workflow - topics remain
+topics_remaining: ["Topic 3", "Topic 4"]
+requires_continuation: true
+✓ VALID (non-empty topics → continuation true)
+```
+
+**Invalid Signals** (contract violations):
+```yaml
+# VIOLATION: Topics remain but continuation false
+topics_remaining: ["Topic 3"]
+requires_continuation: false
+✗ INVALID - Primary agent MUST override requires_continuation to true
+
+# VIOLATION: Empty topics but continuation true
+topics_remaining: []
+requires_continuation: true
+✗ INVALID - Primary agent SHOULD warn but may allow (coordinator may have other reasons for continuation)
+```
+
+### Defensive Validation Requirements
+
+Primary agents consuming coordinator output MUST:
+
+1. **Parse topics_remaining field**: Check if array is empty, literal "0", or whitespace-only
+2. **Validate invariant**: If topics_remaining non-empty → requires_continuation MUST be true
+3. **Override invalid signals**: Force requires_continuation=true if topics remain
+4. **Log contract violations**: Use `log_command_error` with `validation_error` type
+5. **Include diagnostic context**: Show both field values in error details
+
+**Helper Function Example**:
+```bash
+is_topics_remaining_empty() {
+  local topics_remaining="$1"
+
+  # Check for empty string
+  [ -z "$topics_remaining" ] && return 0
+
+  # Check for literal "0"
+  [ "$topics_remaining" = "0" ] && return 0
+
+  # Check for empty array "[]"
+  [ "$topics_remaining" = "[]" ] && return 0
+
+  # Check for whitespace-only
+  [[ "$topics_remaining" =~ ^[[:space:]]*$ ]] && return 0
+
+  # Non-empty
+  return 1
+}
+```
+
+**Defensive Override Pattern**:
+```bash
+# Parse coordinator return signal
+TOPICS_REMAINING=$(echo "$COORDINATOR_OUTPUT" | grep "^topics_remaining:" | cut -d: -f2-)
+REQUIRES_CONTINUATION=$(echo "$COORDINATOR_OUTPUT" | grep "^requires_continuation:" | cut -d: -f2 | tr -d ' ')
+
+# Validate invariant
+if ! is_topics_remaining_empty "$TOPICS_REMAINING" && [ "$REQUIRES_CONTINUATION" = "false" ]; then
+  echo "WARNING: Coordinator contract violation detected" >&2
+  echo "  topics_remaining: $TOPICS_REMAINING" >&2
+  echo "  requires_continuation: $REQUIRES_CONTINUATION" >&2
+  echo "  OVERRIDING: Forcing continuation=true" >&2
+
+  # Log contract violation
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "validation_error" \
+    "Coordinator return signal contract violation" \
+    "bash_block_validation" \
+    "$(jq -n \
+       --arg topics "$TOPICS_REMAINING" \
+       --arg cont "$REQUIRES_CONTINUATION" \
+       '{
+         topics_remaining: $topics,
+         requires_continuation: $cont,
+         violation: "topics_remaining non-empty but requires_continuation=false",
+         action: "Overriding requires_continuation to true"
+       }')"
+
+  # Apply override
+  REQUIRES_CONTINUATION="true"
+fi
 ```
 
 ## Error Return Protocol

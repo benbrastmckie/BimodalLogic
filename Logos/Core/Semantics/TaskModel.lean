@@ -55,13 +55,13 @@ variable {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
 /--
 Simple model where all atoms are false everywhere.
 -/
-def allFalse : TaskModel F where
+def all_false : TaskModel F where
   valuation := fun _ _ => False
 
 /--
 Simple model where all atoms are true everywhere.
 -/
-def allTrue : TaskModel F where
+def all_true : TaskModel F where
   valuation := fun _ _ => True
 
 /--
@@ -69,8 +69,18 @@ Model where specific atoms have specific truth values.
 
 Helper function to construct models for testing.
 -/
-def fromList (trueAtoms : List String) : TaskModel F where
+def from_list (trueAtoms : List String) : TaskModel F where
   valuation := fun _ p => p ∈ trueAtoms
+
+-- Deprecated aliases for backward compatibility
+@[deprecated all_false (since := "2025-12-09")]
+abbrev allFalse := all_false
+
+@[deprecated all_true (since := "2025-12-09")]
+abbrev allTrue := all_true
+
+@[deprecated from_list (since := "2025-12-09")]
+abbrev fromList := from_list
 
 end TaskModel
 

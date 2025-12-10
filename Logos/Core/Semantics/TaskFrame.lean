@@ -107,7 +107,7 @@ Simple unit-based task frame for testing.
 World states are Unit (trivial), task relation is always true.
 This is the simplest possible task frame, polymorphic over temporal type `T`.
 -/
-def trivialFrame {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T where
+def trivial_frame {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T where
   WorldState := Unit
   task_rel := fun _ _ _ => True
   nullity := fun _ => trivial
@@ -119,7 +119,7 @@ Identity task frame: task relation is identity.
 World states can be any type, task relation holds iff source equals target and time is 0.
 Polymorphic over both world state type and temporal type.
 -/
-def identityFrame (W : Type) {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T where
+def identity_frame (W : Type) {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T where
   WorldState := W
   task_rel := fun w x u => w = u ∧ x = 0
   nullity := fun w => ⟨rfl, rfl⟩
@@ -137,11 +137,21 @@ World states are natural numbers. Task relation: task of duration x from w
 can reach any state (permissive for simplicity).
 Polymorphic over temporal type `T`.
 -/
-def natFrame {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T where
+def nat_frame {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T where
   WorldState := Nat
   task_rel := fun _ _ _ => True
   nullity := fun _ => trivial
   compositionality := fun _ _ _ _ _ _ _ => trivial
+
+-- Deprecated aliases for backward compatibility
+@[deprecated trivial_frame (since := "2025-12-09")]
+abbrev trivialFrame := trivial_frame
+
+@[deprecated identity_frame (since := "2025-12-09")]
+abbrev identityFrame := identity_frame
+
+@[deprecated nat_frame (since := "2025-12-09")]
+abbrev natFrame := nat_frame
 
 end TaskFrame
 

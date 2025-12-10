@@ -202,8 +202,12 @@ def universal_natFrame {T : Type*} [LinearOrderedAddCommGroup T] (n : Nat) : Wor
 /--
 Get the state at a time (helper function that bundles membership proof).
 -/
-def stateAt (τ : WorldHistory F) (t : T) (h : τ.domain t) : F.WorldState :=
+def state_at (τ : WorldHistory F) (t : T) (h : τ.domain t) : F.WorldState :=
   τ.states t h
+
+-- Deprecated alias for backward compatibility
+@[deprecated state_at (since := "2025-12-09")]
+abbrev stateAt := state_at
 
 /-! ## Time-Shift Construction
 

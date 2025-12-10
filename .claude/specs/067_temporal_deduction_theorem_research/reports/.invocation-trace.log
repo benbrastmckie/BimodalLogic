@@ -1,0 +1,5 @@
+# Research Coordinator Invocation Trace - 2025-12-10T09:11:45Z
+# Topics: 2
+
+[2025-12-10T09:11:45Z] Topic[0]: Lean 4 well-founded recursion patterns for the Deduction Theorem - termination_by, decreasing_by, and WellFounded.fix patterns for proofs by induction on derivation structure | Path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/067_temporal_deduction_theorem_research/reports/001-phase1-plan-research.md | Status: PENDING
+[2025-12-10T09:11:45Z] Topic[1]: List.Perm exchange lemma implementation in Lean 4/Mathlib for context permutation in Hilbert-style proof systems | Path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/067_temporal_deduction_theorem_research/reports/002-theorems-research.md | Status: PENDING

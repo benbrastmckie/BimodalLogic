@@ -191,9 +191,58 @@ def extract_from_future : Formula → Option Formula
   | _ => none
 
 /-!
+## Tactic Factory Functions
+
+Factory functions for creating operator-specific tactics with reduced code duplication.
+-/
+
+/--
+Factory function for operator K inference rule tactics.
+
+Creates tactics that apply modal K or temporal K rules to goals of form `Γ ⊢ ◯φ`.
+
+**Parameters**:
+- `tacticName`: Name of tactic (for error messages)
+- `operatorConst`: Formula operator constructor (e.g., ``Formula.box``)
+- `ruleConst`: Derivable inference rule (e.g., ``Derivable.modal_k``)
+- `operatorSymbol`: Unicode symbol for error messages (e.g., "□")
+
+**Returns**: TacticM action that applies the K rule for the specified operator.
+
+**Example Usage**:
+```lean
+elab "modal_k_tactic" : tactic =>
+  mkOperatorKTactic "modal_k_tactic" ``Formula.box ``Derivable.modal_k "□"
+```
+-/
+def mkOperatorKTactic (tacticName : String) (operatorConst : Name)
+    (ruleConst : Name) (operatorSymbol : String) : TacticM Unit := do
+  let goal ← getMainGoal
+  let goalType ← goal.getType
+
+  match goalType with
+  | .app (.app (.const ``Derivable _) _context) formula =>
+    match formula with
+    | .app (.const opConst _) _innerFormula =>
+      if opConst == operatorConst then
+        let ruleConstExpr := mkConst ruleConst
+        let newGoals ← goal.apply ruleConstExpr
+        replaceMainGoal newGoals
+      else
+        throwError "{tacticName}: expected goal formula to be {operatorSymbol}φ, got {formula}"
+    | _ =>
+      throwError "{tacticName}: expected goal formula to be {operatorSymbol}φ, got {formula}"
+  | _ =>
+    throwError "{tacticName}: goal must be derivability relation Γ ⊢ φ, got {goalType}"
+
+/-!
 ## Phase 1: Inference Rule Tactics (modal_k_tactic, temporal_k_tactic)
 
 Tactics for applying modal K and temporal K inference rules with context transformation.
+
+**Implementation Note**: These tactics now use the `mkOperatorKTactic` factory function
+to eliminate code duplication. The factory pattern reduces 52 lines to ~30 lines while
+preserving all functionality.
 -/
 
 /--
@@ -211,34 +260,10 @@ example (p : Formula) : Derivable [p.box] (p.box) := by
   assumption
 ```
 
-**Implementation**: Uses `elab` with goal destructuring and `MVarId.apply`.
+**Implementation**: Uses `mkOperatorKTactic` factory for modal operator.
 -/
-elab "modal_k_tactic" : tactic => do
-  -- STEP 1: Get the main goal and its type
-  let goal ← getMainGoal
-  let goalType ← goal.getType
-
-  -- STEP 2: Pattern match on Derivable context formula
-  match goalType with
-  | .app (.app (.const ``Derivable _) context) formula =>
-
-    -- STEP 3: Check if formula is □φ
-    match formula with
-    | .app (.const ``Formula.box _) innerFormula =>
-
-      -- STEP 4: Apply Derivable.modal_k to create subgoal
-      -- This creates subgoal: Derivable Γ φ (where context should be □Γ)
-      let modalKConst := mkConst ``Derivable.modal_k
-      let newGoals ← goal.apply modalKConst
-
-      -- STEP 5: Replace goal with new subgoals
-      replaceMainGoal newGoals
-
-    | _ =>
-      throwError "modal_k_tactic: expected goal formula to be □φ, got {formula}"
-
-  | _ =>
-    throwError "modal_k_tactic: goal must be derivability relation Γ ⊢ φ, got {goalType}"
+elab "modal_k_tactic" : tactic =>
+  mkOperatorKTactic "modal_k_tactic" ``Formula.box ``Derivable.modal_k "□"
 
 /--
 `temporal_k_tactic` applies the temporal K inference rule.
@@ -255,34 +280,10 @@ example (p : Formula) : Derivable [p.all_future] (p.all_future) := by
   assumption
 ```
 
-**Implementation**: Uses `elab` with goal destructuring, mirrors modal_k_tactic.
+**Implementation**: Uses `mkOperatorKTactic` factory for temporal operator.
 -/
-elab "temporal_k_tactic" : tactic => do
-  -- STEP 1: Get the main goal and its type
-  let goal ← getMainGoal
-  let goalType ← goal.getType
-
-  -- STEP 2: Pattern match on Derivable context formula
-  match goalType with
-  | .app (.app (.const ``Derivable _) context) formula =>
-
-    -- STEP 3: Check if formula is Fφ (all_future φ)
-    match formula with
-    | .app (.const ``Formula.all_future _) innerFormula =>
-
-      -- STEP 4: Apply Derivable.temporal_k to create subgoal
-      -- This creates subgoal: Derivable Γ φ (where context should be FΓ)
-      let temporalKConst := mkConst ``Derivable.temporal_k
-      let newGoals ← goal.apply temporalKConst
-
-      -- STEP 5: Replace goal with new subgoals
-      replaceMainGoal newGoals
-
-    | _ =>
-      throwError "temporal_k_tactic: expected goal formula to be Fφ, got {formula}"
-
-  | _ =>
-    throwError "temporal_k_tactic: goal must be derivability relation Γ ⊢ φ, got {goalType}"
+elab "temporal_k_tactic" : tactic =>
+  mkOperatorKTactic "temporal_k_tactic" ``Formula.all_future ``Derivable.temporal_k "F"
 
 /-!
 ## Phase 2: Modal Axiom Tactics (modal_4_tactic, modal_b_tactic)

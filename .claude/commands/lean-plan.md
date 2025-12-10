@@ -1272,17 +1272,61 @@ for i in "${!REPORT_PATHS[@]}"; do
 done
 echo ""
 
-# === VALIDATE EACH REPORT ===
+# === LAYER 1: Empty Directory Detection ===
+if [ ${#REPORT_PATHS[@]} -eq 0 ]; then
+  log_command_error \
+    "$COMMAND_NAME" \
+    "$WORKFLOW_ID" \
+    "$USER_ARGS" \
+    "validation_error" \
+    "CRITICAL ERROR: Reports directory is empty (0 reports expected)" \
+    "bash_block_1f" \
+    "$(jq -n '{error: "No reports in REPORT_PATHS array"}')"
+  echo "CRITICAL ERROR: Reports directory is empty" >&2
+  exit 1
+fi
+
+# === MULTI-LAYER VALIDATION FOR EACH REPORT ===
 SUCCESSFUL_REPORTS=0
 FAILED_REPORTS=()
+VALIDATION_DETAILS=()
 
 for REPORT_PATH in "${REPORT_PATHS[@]}"; do
   REPORT_NAME=$(basename "$REPORT_PATH")
+  VALIDATION_PASS=true
+  FAILURE_REASON=""
 
-  # Validate report exists and meets minimum size (500 bytes)
-  if ! validate_agent_artifact "$REPORT_PATH" 500 "research report: $REPORT_NAME"; then
+  # === LAYER 2: File Existence Check ===
+  if [ ! -f "$REPORT_PATH" ]; then
+    VALIDATION_PASS=false
+    FAILURE_REASON="File does not exist"
+  fi
+
+  # === LAYER 3: Minimum Size Validation (500 bytes) ===
+  if [ "$VALIDATION_PASS" = true ]; then
+    FILE_SIZE=$(wc -c < "$REPORT_PATH" 2>/dev/null || echo "0")
+    if [ "$FILE_SIZE" -lt 500 ]; then
+      VALIDATION_PASS=false
+      FAILURE_REASON="File too small (${FILE_SIZE} bytes < 500 bytes)"
+    fi
+  fi
+
+  # === LAYER 4: Required Sections Check ===
+  if [ "$VALIDATION_PASS" = true ]; then
+    # Check for at least one required section marker (## Findings or ## Executive Summary or ## Analysis)
+    if ! grep -q "^## Findings" "$REPORT_PATH" 2>/dev/null && \
+       ! grep -q "^## Executive Summary" "$REPORT_PATH" 2>/dev/null && \
+       ! grep -q "^## Analysis" "$REPORT_PATH" 2>/dev/null; then
+      VALIDATION_PASS=false
+      FAILURE_REASON="Missing required sections (## Findings, ## Executive Summary, or ## Analysis)"
+    fi
+  fi
+
+  # === RECORD RESULTS ===
+  if [ "$VALIDATION_PASS" = false ]; then
     FAILED_REPORTS+=("$REPORT_PATH")
-    echo "  ✗ Failed: $REPORT_NAME (missing or < 500 bytes)"
+    VALIDATION_DETAILS+=("$REPORT_NAME: $FAILURE_REASON")
+    echo "  ✗ Failed: $REPORT_NAME ($FAILURE_REASON)"
   else
     SUCCESSFUL_REPORTS=$((SUCCESSFUL_REPORTS + 1))
     echo "  ✓ Validated: $REPORT_NAME"
@@ -1299,6 +1343,25 @@ echo "Validation Results: $SUCCESSFUL_REPORTS/$TOTAL_REPORTS reports (${SUCCESS_
 
 # Fail if <50% success
 if [ $SUCCESS_PERCENTAGE -lt 50 ]; then
+  # Build diagnostic context with failure details
+  FAILED_REPORTS_JSON="["
+  for i in "${!FAILED_REPORTS[@]}"; do
+    if [ $i -gt 0 ]; then
+      FAILED_REPORTS_JSON+=","
+    fi
+    FAILED_REPORTS_JSON+="\"${FAILED_REPORTS[$i]}\""
+  done
+  FAILED_REPORTS_JSON+="]"
+
+  VALIDATION_DETAILS_JSON="["
+  for i in "${!VALIDATION_DETAILS[@]}"; do
+    if [ $i -gt 0 ]; then
+      VALIDATION_DETAILS_JSON+=","
+    fi
+    VALIDATION_DETAILS_JSON+="\"${VALIDATION_DETAILS[$i]}\""
+  done
+  VALIDATION_DETAILS_JSON+="]"
+
   log_command_error \
     "$COMMAND_NAME" \
     "$WORKFLOW_ID" \
@@ -1306,13 +1369,29 @@ if [ $SUCCESS_PERCENTAGE -lt 50 ]; then
     "validation_error" \
     "Research validation failed: <50% success rate" \
     "bash_block_1f" \
-    "$(jq -n --argjson success "$SUCCESSFUL_REPORTS" --argjson total "$TOTAL_REPORTS" --argjson pct "$SUCCESS_PERCENTAGE" \
-       '{successful_reports: $success, total_reports: $total, success_percentage: $pct}')"
+    "$(jq -n \
+       --argjson success "$SUCCESSFUL_REPORTS" \
+       --argjson total "$TOTAL_REPORTS" \
+       --argjson pct "$SUCCESS_PERCENTAGE" \
+       --argjson failed "$FAILED_REPORTS_JSON" \
+       --argjson details "$VALIDATION_DETAILS_JSON" \
+       '{
+         successful_reports: $success,
+         total_reports: $total,
+         success_percentage: $pct,
+         failed_reports: $failed,
+         validation_details: $details,
+         recovery_hint: "Check research-coordinator output for errors. Retry with --complexity flag adjustment."
+       }')"
+
   echo "ERROR: HARD BARRIER FAILED - Less than 50% of reports created" >&2
   echo "Failed reports:" >&2
-  for FAILED_PATH in "${FAILED_REPORTS[@]}"; do
-    echo "  - $FAILED_PATH" >&2
+  for DETAIL in "${VALIDATION_DETAILS[@]}"; do
+    echo "  - $DETAIL" >&2
   done
+  echo "" >&2
+  echo "Recovery hint: Check research-coordinator output for errors." >&2
+  echo "Consider retrying with --complexity flag adjustment." >&2
   exit 1
 fi
 
@@ -1320,13 +1399,105 @@ fi
 if [ $SUCCESS_PERCENTAGE -lt 100 ]; then
   echo "WARNING: Partial research success (${SUCCESS_PERCENTAGE}%)" >&2
   echo "Failed reports:" >&2
-  for FAILED_PATH in "${FAILED_REPORTS[@]}"; do
-    echo "  - $FAILED_PATH" >&2
+  for DETAIL in "${VALIDATION_DETAILS[@]}"; do
+    echo "  - $DETAIL" >&2
   done
+  echo "" >&2
   echo "Proceeding with $SUCCESSFUL_REPORTS/$TOTAL_REPORTS reports..." >&2
 fi
 
 echo "✓ Hard barrier passed - research reports validated"
+
+# === CONTEXT USAGE TRACKING (Phase 3 Enhancement) ===
+# Parse context_usage_percent from research-coordinator return signal (if available)
+# This enables iteration tracking and workflow state monitoring
+
+# Check if coordinator returned context metrics
+if [ -n "${COORDINATOR_OUTPUT:-}" ]; then
+  # Parse context_usage_percent field
+  CONTEXT_USAGE_PERCENT=$(echo "$COORDINATOR_OUTPUT" | grep "^context_usage_percent:" | cut -d: -f2 | tr -d ' ' || echo "")
+
+  # Parse checkpoint_path field (optional)
+  CHECKPOINT_PATH=$(echo "$COORDINATOR_OUTPUT" | grep "^checkpoint_path:" | cut -d: -f2- | tr -d ' ' || echo "")
+
+  if [ -n "$CONTEXT_USAGE_PERCENT" ]; then
+    echo ""
+    echo "Context Usage: ${CONTEXT_USAGE_PERCENT}%"
+
+    # Log warning if approaching limit (≥85%)
+    if [ "$CONTEXT_USAGE_PERCENT" -ge 85 ]; then
+      echo "WARNING: Context usage approaching limit (${CONTEXT_USAGE_PERCENT}% ≥ 85%)" >&2
+
+      if [ -n "$CHECKPOINT_PATH" ] && [ -f "$CHECKPOINT_PATH" ]; then
+        echo "Checkpoint saved: $CHECKPOINT_PATH" >&2
+        # Persist checkpoint path in workflow state for iteration tracking
+        append_workflow_state "CONTEXT_CHECKPOINT_PATH" "$CHECKPOINT_PATH"
+      fi
+    fi
+
+    # Persist context metrics in workflow state
+    append_workflow_state "RESEARCH_CONTEXT_USAGE_PERCENT" "$CONTEXT_USAGE_PERCENT"
+  fi
+
+  # === DEFENSIVE VALIDATION (Phase 4 Enhancement) ===
+  # Validate coordinator return signal contract invariants
+  # Invariant: topics_remaining non-empty → requires_continuation MUST be true
+
+  # Helper function: Check if topics_remaining is empty
+  is_topics_remaining_empty() {
+    local topics_remaining="$1"
+
+    # Check for empty string
+    [ -z "$topics_remaining" ] && return 0
+
+    # Check for literal "0"
+    [ "$topics_remaining" = "0" ] && return 0
+
+    # Check for empty array "[]"
+    [ "$topics_remaining" = "[]" ] && return 0
+
+    # Check for whitespace-only
+    [[ "$topics_remaining" =~ ^[[:space:]]*$ ]] && return 0
+
+    # Non-empty
+    return 1
+  }
+
+  # Parse continuation fields (for future iteration loop support)
+  TOPICS_REMAINING=$(echo "$COORDINATOR_OUTPUT" | grep "^topics_remaining:" | cut -d: -f2- || echo "[]")
+  REQUIRES_CONTINUATION=$(echo "$COORDINATOR_OUTPUT" | grep "^requires_continuation:" | cut -d: -f2 | tr -d ' ' || echo "false")
+
+  # Validate invariant and apply defensive override if violated
+  if ! is_topics_remaining_empty "$TOPICS_REMAINING" && [ "$REQUIRES_CONTINUATION" = "false" ]; then
+    echo "WARNING: Coordinator contract violation detected" >&2
+    echo "  topics_remaining: $TOPICS_REMAINING" >&2
+    echo "  requires_continuation: $REQUIRES_CONTINUATION" >&2
+    echo "  OVERRIDING: Forcing continuation=true" >&2
+
+    # Log contract violation
+    log_command_error \
+      "$COMMAND_NAME" \
+      "$WORKFLOW_ID" \
+      "$USER_ARGS" \
+      "validation_error" \
+      "Coordinator return signal contract violation" \
+      "bash_block_1f" \
+      "$(jq -n \
+         --arg topics "$TOPICS_REMAINING" \
+         --arg cont "$REQUIRES_CONTINUATION" \
+         '{
+           topics_remaining: $topics,
+           requires_continuation: $cont,
+           violation: "topics_remaining non-empty but requires_continuation=false",
+           action: "Overriding requires_continuation to true"
+         }')"
+
+    # Apply override
+    REQUIRES_CONTINUATION="true"
+    append_workflow_state "REQUIRES_CONTINUATION" "$REQUIRES_CONTINUATION"
+  fi
+fi
+
 echo ""
 ```
 
@@ -1378,9 +1549,9 @@ setup_bash_error_trap "$COMMAND_NAME" "$WORKFLOW_ID" "${USER_ARGS:-}"
 echo ""
 echo "=== Report Metadata Extraction ==="
 
-# === EXTRACT METADATA FROM COORDINATOR RETURN SIGNAL ===
-# NOTE: In actual execution, this would parse the coordinator's return signal
-# For now, we build metadata from report files directly (fallback pattern)
+# === EXTRACT METADATA FROM YAML FRONTMATTER ===
+# Primary pattern: Extract structured metadata from YAML frontmatter (96% context reduction)
+# Fallback pattern: Extract metadata from section headers (legacy reports without frontmatter)
 
 REPORT_METADATA_JSON="["
 
@@ -1392,21 +1563,44 @@ for i in "${!REPORT_PATHS[@]}"; do
     continue
   fi
 
-  # Extract title from report (first # heading)
-  TITLE=$(grep -m 1 "^# " "$REPORT_PATH" 2>/dev/null | sed 's/^# //' || echo "Untitled Report")
+  # === PRIMARY: Extract from YAML frontmatter (first 10 lines) ===
+  YAML_BLOCK=$(head -10 "$REPORT_PATH" 2>/dev/null || echo "")
 
-  # Extract findings count (count ## Findings or ### Finding lines)
-  FINDINGS_COUNT=$(grep -c "^### Finding [0-9]" "$REPORT_PATH" 2>/dev/null || echo "0")
+  # Check if YAML frontmatter exists (starts with ---)
+  if echo "$YAML_BLOCK" | grep -q "^---$"; then
+    # Extract report_type field
+    REPORT_TYPE=$(echo "$YAML_BLOCK" | grep "^report_type:" | sed 's/^report_type:[[:space:]]*//' || echo "unknown")
 
-  # Extract recommendations count
-  RECOMMENDATIONS_COUNT=$(grep -c "^### Recommendation [0-9]" "$REPORT_PATH" 2>/dev/null || echo "0")
+    # Extract topic field (remove quotes if present)
+    TOPIC=$(echo "$YAML_BLOCK" | grep "^topic:" | sed 's/^topic:[[:space:]]*//' | tr -d '"' || echo "Untitled Report")
+
+    # Extract findings_count field
+    FINDINGS_COUNT=$(echo "$YAML_BLOCK" | grep "^findings_count:" | sed 's/^findings_count:[[:space:]]*//' || echo "0")
+
+    # Extract recommendations_count field
+    RECOMMENDATIONS_COUNT=$(echo "$YAML_BLOCK" | grep "^recommendations_count:" | sed 's/^recommendations_count:[[:space:]]*//' || echo "0")
+
+    TITLE="$TOPIC"
+  else
+    # === FALLBACK: Extract from report content (legacy pattern) ===
+    # Extract title from report (first # heading)
+    TITLE=$(grep -m 1 "^# " "$REPORT_PATH" 2>/dev/null | sed 's/^# //' || echo "Untitled Report")
+
+    REPORT_TYPE="legacy"
+
+    # Extract findings count (count ### Finding lines)
+    FINDINGS_COUNT=$(grep -c "^### Finding [0-9]" "$REPORT_PATH" 2>/dev/null || echo "0")
+
+    # Extract recommendations count (count numbered items in Recommendations section)
+    RECOMMENDATIONS_COUNT=$(awk '/^## Recommendations$/,/^## [^R]/ {if (/^[0-9]+\./) count++} END {print count}' "$REPORT_PATH" 2>/dev/null || echo "0")
+  fi
 
   # Build JSON entry
   if [ $i -gt 0 ]; then
     REPORT_METADATA_JSON+=","
   fi
 
-  REPORT_METADATA_JSON+="{\"path\":\"$REPORT_PATH\",\"title\":\"$TITLE\",\"findings_count\":$FINDINGS_COUNT,\"recommendations_count\":$RECOMMENDATIONS_COUNT}"
+  REPORT_METADATA_JSON+="{\"path\":\"$REPORT_PATH\",\"title\":\"$TITLE\",\"report_type\":\"$REPORT_TYPE\",\"findings_count\":$FINDINGS_COUNT,\"recommendations_count\":$RECOMMENDATIONS_COUNT}"
 
   echo "  Report $((i + 1)): $TITLE ($FINDINGS_COUNT findings, $RECOMMENDATIONS_COUNT recommendations)"
 done
@@ -1414,7 +1608,7 @@ done
 REPORT_METADATA_JSON+="]"
 
 # === FORMAT METADATA FOR PLANNING PHASE ===
-# Convert to human-readable format for plan-architect prompt
+# Convert to brief summary format for plan-architect prompt (metadata-only, 80 tokens per report)
 FORMATTED_METADATA="Research Reports: ${#REPORT_PATHS[@]} reports created
 
 "
@@ -1425,11 +1619,26 @@ for i in "${!REPORT_PATHS[@]}"; do
     continue
   fi
 
-  TITLE=$(grep -m 1 "^# " "$REPORT_PATH" 2>/dev/null | sed 's/^# //' || echo "Untitled Report")
-  FINDINGS_COUNT=$(grep -c "^### Finding [0-9]" "$REPORT_PATH" 2>/dev/null || echo "0")
-  RECOMMENDATIONS_COUNT=$(grep -c "^### Recommendation [0-9]" "$REPORT_PATH" 2>/dev/null || echo "0")
+  # Extract metadata from YAML frontmatter (primary) or fallback to content parsing
+  YAML_BLOCK=$(head -10 "$REPORT_PATH" 2>/dev/null || echo "")
+
+  if echo "$YAML_BLOCK" | grep -q "^---$"; then
+    # Primary: YAML metadata
+    TOPIC=$(echo "$YAML_BLOCK" | grep "^topic:" | sed 's/^topic:[[:space:]]*//' | tr -d '"' || echo "Untitled Report")
+    REPORT_TYPE=$(echo "$YAML_BLOCK" | grep "^report_type:" | sed 's/^report_type:[[:space:]]*//' || echo "unknown")
+    FINDINGS_COUNT=$(echo "$YAML_BLOCK" | grep "^findings_count:" | sed 's/^findings_count:[[:space:]]*//' || echo "0")
+    RECOMMENDATIONS_COUNT=$(echo "$YAML_BLOCK" | grep "^recommendations_count:" | sed 's/^recommendations_count:[[:space:]]*//' || echo "0")
+    TITLE="$TOPIC"
+  else
+    # Fallback: Content parsing
+    TITLE=$(grep -m 1 "^# " "$REPORT_PATH" 2>/dev/null | sed 's/^# //' || echo "Untitled Report")
+    REPORT_TYPE="legacy"
+    FINDINGS_COUNT=$(grep -c "^### Finding [0-9]" "$REPORT_PATH" 2>/dev/null || echo "0")
+    RECOMMENDATIONS_COUNT=$(awk '/^## Recommendations$/,/^## [^R]/ {if (/^[0-9]+\./) count++} END {print count}' "$REPORT_PATH" 2>/dev/null || echo "0")
+  fi
 
   FORMATTED_METADATA+="Report $((i + 1)): $TITLE
+  - Type: $REPORT_TYPE
   - Findings: $FINDINGS_COUNT
   - Recommendations: $RECOMMENDATIONS_COUNT
   - Path: $REPORT_PATH (use Read tool to access full content)

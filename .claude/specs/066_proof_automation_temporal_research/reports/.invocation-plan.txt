@@ -1,0 +1,10 @@
+# Research Coordinator Invocation Plan
+# Generated: 2025-12-10T09:05:17Z
+
+Expected Invocations: 2
+
+Topics:
+[0] phase1-plan-analysis-deduction-theorem-blockers -> /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/066_proof_automation_temporal_research/reports/001-phase1-temporal-deduction-plan.md
+[1] lean4-well-founded-recursion-termination-patterns -> /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/066_proof_automation_temporal_research/reports/002-temporal-theorems-online-research.md
+
+Status: PLAN_CREATED (invocations pending)
