@@ -1,7 +1,5 @@
 # Conceptual Engineering: Philosophical Foundations for the Logos Layer Architecture
 
-> NOTE: this document is still full of AI slop, requiring heavy revision
-
 This document expands on the conceptual foundations introduced in [README.md § Motivations](../../README.md#motivations) (lines 61-68).
 
 ## Formal Logic as Conceptual Engineering
@@ -12,73 +10,19 @@ Natural language provides the raw conceptual ingredients that formal logic aims 
 
 It is worth comparing the physical sciences which seek to describe the laws of nature. Although it is often expedient to construct idealizations, doing so departs from the true complexity of the natural world. By contrast, a proof system and semantics for a formal language stipulates the concepts included in that language. Although formal systems may seek to approximate natural languages, there is no consistent or stable theoretical target as there is in the physical sciences. Rather, natural languages are akin to the biological systems that have steadily evolved over the centuries to meet new environmental pressures, admitting constant mutation and diversity in approach. Instead of seeking to describe natural language in all of its complexity, or else diverge from natural language altogether by employing an artificial language, the Logos takes an ameliorative approach to abstracting conceptual content from natural languages. Equipping the Logos with an axiom system and semantics that approximates natural language concepts provides a bridge between human reasoning which remains intuitive, unverified, and inconsistent on the one hand and verified AI reasoning in an interpreted formal language on the other.
 
-<!-- NOTE: don't break lines as below to match the formatting throughout -->
+This engineering perspective has crucial implications for AI reasoning systems. Operators with precise semantics and axiomatic proof theories generate unlimited clean training signals about valid and invalid inferences. Computationally assisted theorem proving provides verified derivations that are guaranteed to be valid by establishing the soundness of the proof system over its semantics, while model checking produces countermodels refuting invalid claims. This dual verification architecture provides consistent, verifiable training signals not achievable by training AI systems of finite, inconsistent, and error prone reasoning in natural language of limited scope or complexity. Training AI systems to produce provably valid reasoning in a language with operators that remain familiar to natural language speakers creates novel conditions for trust that surpass human abilities. Although responsible humans agents are careful to evaluate the plans they enact counterfactually, human computational resources are limited and prone to errors, leaving other agents to ground their trust inductively based on past performance. By contrast, an AI system trained in verified reasoning in the Logos can return proof receipts to verify every step of reasoning.
 
-This engineering perspective has crucial implications for AI reasoning systems. Operators with
-precise semantics and axiomatic proof theories generate unlimited clean training signals about valid
-and invalid inferences. Computationally assisted theorem proving provides verified derivations guaranteed sound by
-metalogical proofs, while model checking produces countermodels refuting invalid claims. This dual
-verification architecture provides consistent, verifiable training signals not achievable by
-formalizing inconsistent natural language reasoning patterns.
+See also: [DUAL_VERIFICATION.md](DUAL_VERIFICATION.md) | [LAYER_EXTENSIONS.md](LAYER_EXTENSIONS.md) | [METHODOLOGY.md](../UserGuide/METHODOLOGY.md)
 
-The normative approach preserves context through evaluation parameters—sentences are evaluated at
-specific models, times, and worlds—while enabling systematic inference generation. For instance,
-tensed sentences require temporal parameters for evaluation: `Fφ` (φ will be true) is evaluated at
-model-history-time triple `(M, w, t)` by checking whether `φ` holds at future times in
-world-history `w`. Context is made explicit through these parameters, not eliminated.
+## Contextual Parameters
 
-Consider the modal operator `□` (necessity). A descriptive approach asks: "How do humans actually
-use 'necessarily' in ordinary language?" and attempts to formalize this usage. A normative approach
-asks: "What truth conditions should the necessity operator have to support verified reasoning about
-modality in planning contexts?" For AI systems requiring proof receipts, the normative question is
-primary.
+Logic describes inferences that hold in general, independent of the content or context of the claims involved. This generality is achieved by abstracting over two dimensions: the interpretation of non-logical symbols in the language (given by a semantic model) and the contextual parameters required to assign truth-values to sentences. For instance, there is no saying whether "Jon has won over three races" is true without specifying a time at which to evaluate this claim, as well as specifying who Jon is and what suffices for winning a race. The truth-value may vary by time or by who "Jon" picks out. The semantic model interprets the non-logical vocabulary, while the contextual parameters fix the circumstances of evaluation.
 
-The Logos specifies `□φ` as true at a model-history-time triple exactly when `φ` holds at all
-accessible world-histories at that time, where accessibility is defined by the task relation's
-properties. This implements **historical modality**: the `□` operator quantifies over
-task-constrained world evolutions (possible ways the world could unfold given current constraints),
-not unrestricted metaphysically possible worlds. World-histories are functions from times to
-world-states, representing how possible worlds evolve temporally under task constraints.
+Which contextual parameters must be provided is a function of which operators the language includes. For instance, including tense operators requires that times be included among the contextual parameters, since the truth of `Hφ` ("`φ` has been the case") depends on the time of evaluation. Similarly, historical modal operators require world-histories as parameters, and epistemic operators require agent-relative information states. A conclusion follows logically from some premises just in case the conclusion is true at any interpretation and contextual parameters at which all of the premises are true.
 
-This precise semantic clause enables both theorem proving (LEAN 4 derivations) and model checking
-(Z3 countermodel search) independent of how humans ordinarily use modal language. The focus on
-historical modality—temporal evolutions constrained by tasks—makes the modal operator suitable for
-planning applications where necessity means "holds in all achievable futures" rather than "holds in
-all metaphysically possible worlds."
+The Logos language, proof systems, and semantic clauses are designed to be modular and extensible. Applications can import just the necessary operators and their associated contextual parameters, while further additions can be successively incorporated to expand the expressive power of the language. This modularity ensures that the semantic overhead scales with actual reasoning requirements: applications using only propositional logic need no contextual parameters beyond interpretation, while applications requiring temporal reasoning add times, and applications requiring multi-agent epistemic reasoning add agent-indexed accessibility relations.
 
-### Normative Logic vs Descriptive Semantics
-
-Descriptive logic analyzes natural language reasoning patterns to formalize existing argument structures. Normative logic stipulates operators for verified reasoning based on AI application requirements (planning, verification, oversight). For AI systems, the normative approach has decisive advantages: human reasoning data is limited and inconsistent, while operators with explicit semantic clauses provide clean training signals through dual verification (theorem proving generates valid inferences, model checking generates countermodels). See [DUAL_VERIFICATION.md](DUAL_VERIFICATION.md) for architecture details.
-
-The conceptual engineering approach also enables **interpretability** crucial for scalable oversight. Each operator in the Logos has explicit truth conditions defined over task semantic models (possible worlds as functions from times to world-states). When an AI system derives `□△φ` (necessarily, always `φ`), the semantic clause specifies precisely what this means: `φ` holds at all accessible worlds at all times in their temporal domains. This explicit semantics allows human overseers to verify whether derivations accurately represent the intended claims, providing transparency unavailable in purely pattern-matching approaches.
-
-### Extensible Operator Methodology
-
-The Logos layer architecture embodies the conceptual engineering approach through **progressive extensibility**: applications select precisely the operators needed for their domain without carrying unused overhead. This methodology treats logical operators as modular components with clear compositional semantics.
-
-**Layer 0 (Core TM)** provides the foundation: S5 historical modal operators (`□`, `◇` for necessity and possibility) combined with linear tense operators (`G`, `F`, `H`, `P` for future and past quantification). This bimodal logic TM (Tense and Modality) supports reasoning about metaphysical necessity and temporal evolution. The core layer is complete—all axioms proven sound, all inference rules verified—providing a stable foundation for extensions.
-
-**Layer 1 (Explanatory)** adds counterfactual (`□→`, `◇→`) and causal (`○→`) operators building on the core temporal-modal foundation. These operators require enhanced semantic structure (mereological parthood relations over world-states) but preserve the task semantics framework where possible worlds are functions from times to world-states.
-
-**Layer 2 (Epistemic)** introduces operators for reasoning under uncertainty: belief (`B`), misinformation (`Mi`), uncertainty (`Mu`), and probabilistic reasoning (`Pr`). These operators enable AI systems to represent knowledge states and reason about information available at different world-state-time triples.
-
-**Layer 3 (Normative)** provides deontic operators for obligations (`O`), permissions (`P`), and preference orderings (`≺`) supporting multi-agent coordination and plan evaluation. These operators build on the epistemic layer to represent what ought to be the case given agent knowledge and goals.
-
-This architecture enables applications to select operator combinations matching their requirements:
-- **Metaphysical reasoning**: Core Layer only (TM bimodal logic)
-- **Planning under uncertainty**: Layers 0-1 (temporal, modal, counterfactual operators)
-- **Epistemic planning**: Layers 0-2 (add belief and probability operators)
-- **Multi-agent coordination**: Layers 0-3 (full operator suite)
-
-Each layer integrates compositionally: operators from higher layers can embed operators from lower layers in their scope, and semantic clauses compose via explicit recursive definitions. This modularity is the methodological implementation of conceptual engineering—operators are engineered components with precise interfaces, not monolithic descriptions of natural language usage.
-
-The extensibility is **unbounded**: future layers can add operators for additional domains (alethic logic, deontic logic variants, epistemic probability) as application requirements emerge. The conceptual engineering approach treats operator addition as normative specification: What truth conditions should this operator have? What semantic structure must be added to support these truth conditions? How do the new operators compose with existing operators? These questions guide systematic extension independent of natural language usage patterns.
-
-For detailed dual verification architecture supporting this methodology, see [METHODOLOGY.md](../UserGuide/METHODOLOGY.md). For technical layer specifications, see [LAYER_EXTENSIONS.md](LAYER_EXTENSIONS.md). For the Core Layer formal axiomatization, see [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md).
-
-## Planning Under Uncertainty: The Pragmatic Motivation
-
-> **README Context**: This section elaborates on [README.md § Motivations](../../README.md#motivations) lines 63-66, which identifies planning under uncertainty as the core pragmatic motivation for the Logos architecture.
+## Planning Under Uncertainty: Putting Theory into Practice
 
 ### Plans as High Expected Value Futures
 
@@ -207,41 +151,6 @@ This bimodal structure enables representing planning claims like:
 - `F□φ`: Eventually, `φ` becomes necessary (future certainty)
 
 For the formal axiomatization of TM bimodal logic, including axiom schemata and soundness proofs, see [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md). The Core Layer implementation provides all axioms and inference rules with verified soundness, creating a stable foundation for the layer extensions discussed in subsequent sections.
-
-## Dual Verification: Training Signal Architecture
-
-> **README Context**: This section elaborates on [README.md § RL TRAINING](../../README.md#rl-training) (lines 45-56), which frames dual verification as the methodology for generating clean training signals combining theorem proving (valid inferences) with model checking (countermodel refutations).
-
-### Training Signal Requirements for AI Reasoning
-
-The conceptual engineering approach to logical operators creates unique opportunities for training AI reasoning systems. Unlike natural language reasoning data—which is limited, inconsistent, and prone to error—formal operators with explicit semantic clauses enable **systematic generation of verified training signals**.
-
-**The training signal challenge**: Effective AI reasoning requires both positive signals (examples of valid inferences) and corrective signals (examples of invalid inferences with concrete counterexamples). Human reasoning data provides neither reliably: human inferences may be invalid despite appearing sound, and human error identification rarely includes formal countermodels demonstrating why an inference fails.
-
-**Dual verification solution**: The Logos addresses this through **dual verification architecture** combining:
-1. **Theorem proving (LEAN 4)**: Generates positive training signals as verified derivations
-2. **Model checking (Z3)**: Generates corrective training signals as countermodels refuting invalid claims
-
-This architecture produces training signals with three essential properties ([README.md § RL TRAINING](../../README.md#rl-training) lines 49-51):
-- **Unbounded**: Infinite theorems are derivable from the axiom system
-- **Clean**: Soundness guarantees only valid inferences are derivable
-- **Justified**: LEAN 4 proofs provide verifiable receipts; Z3 countermodels refute invalid claims
-
-### Dual Verification Implementation
-
-**Theorem proving generates valid inferences**: The LEAN 4 implementation proves theorems deriving formulas from axioms via sound inference rules. Each derivation `Γ ⊢ φ` (premises `Γ` derive conclusion `φ`) is a verified proof receipt demonstrating that `φ` follows from `Γ` by valid reasoning. The soundness proofs guarantee that derivable formulas are semantically valid: if `Γ ⊢ φ`, then `Γ ⊨ φ` (semantic consequence).
-
-**Model checking refutes invalid claims**: The Z3 implementation searches for countermodels demonstrating that formulas are not valid. A countermodel for `φ` is a task semantic model where `φ` is false, proving that `φ` is not a logical truth. Countermodels provide concrete refutations with explicit world-history-time triples where the formula fails, enabling AI systems to understand **why** an inference is invalid.
-
-**Training signal generation**: The dual verification architecture produces training signal pairs:
-- **Positive examples**: (formula, derivation) pairs where LEAN 4 proves the formula
-- **Negative examples**: (formula, countermodel) pairs where Z3 refutes the formula
-
-These training signals are qualitatively superior to human reasoning data because:
-1. **Consistency**: Soundness guarantees prevent deriving contradictions
-2. **Completeness coverage**: Systematic exploration of formula space via proof search
-3. **Verifiable receipts**: Each example includes verification (proof or countermodel)
-4. **Explicit semantics**: Countermodels demonstrate truth conditions concretely over task semantic models
 
 ### Scalable Oversight Through Explicit Semantics
 
