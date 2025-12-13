@@ -24,14 +24,14 @@
 This file tracks active development tasks for Logos. Completed tasks are removed from this file - see git history and spec summaries for completion records.
 
 **Layer 0 Completion Progress**:
-- High Priority: COMPLETE (all blocking tasks done)
+- High Priority: 2 tasks active (Axiom Refactoring, Inference Rule Refactoring)
 - Medium Priority: 1 task active (Proof Automation Completion - partial)
 - Low Priority: 3 tasks (9-11 pending)
-- **Active Tasks**: 4
+- **Active Tasks**: 6
 
 **Milestone Achievement**: ALL 6 PERPETUITY PRINCIPLES FULLY PROVEN (100%) + PHASE 4 MODAL THEOREMS COMPLETE (8/8) + PROPOSITIONAL THEOREMS COMPLETE (Tasks 21-29)
-**Current Work**: Proof Automation Completion (Plan 065) - 2/5 phases complete, 3 blocked
-**Next Milestone**: Layer 1 planning (counterfactual operators)
+**Current Work**: Foundational refactoring (Tasks 43-44) - axiom and inference rule modernization
+**Next Milestone**: Complete axiom/rule refactoring, then Layer 1 planning
 
 ---
 
@@ -58,7 +58,76 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 
 ## High Priority Tasks
 
-*No active high priority tasks. All blocking work complete.*
+### 43. Axiom Refactoring: Replace DNE with EFQ + Peirce's Law
+**Effort**: 8-12 hours
+**Status**: Not Started
+**Priority**: High (foundational change)
+**Blocking**: None
+**Dependencies**: None
+
+**Description**: Replace the `double_negation` axiom with two more foundational axioms that better reflect the primitive status of `bot`:
+
+1. **Ex Falso Quodlibet (EFQ)**: `⊥ → φ` - directly characterizes what `bot` means as absurdity
+2. **Peirce's Law**: `((φ → ψ) → φ) → φ` - pure implicational classical reasoning
+
+**Rationale**: Since `bot` is primitive and `neg` is derived (`¬φ = φ → ⊥`), EFQ directly states what `bot` means, while Peirce provides classical logic using only implication. This is more modular than DNE which conflates both concerns.
+
+**Implementation Steps**:
+1. Add `ex_falso` and `peirce` axiom constructors to `Axioms.lean`
+2. Remove `double_negation` axiom constructor
+3. Update soundness proofs in `Soundness.lean` (add EFQ/Peirce validity, remove DNE)
+4. Derive DNE as a theorem from EFQ + Peirce (for backwards compatibility)
+5. Update all proofs that use `double_negation` to use the derived theorem
+6. Update documentation and tests
+
+**Files**:
+- `Logos/Core/ProofSystem/Axioms.lean` - Add EFQ, Peirce; remove DNE
+- `Logos/Core/Metalogic/Soundness.lean` - Update validity proofs
+- `Logos/Core/Theorems/Propositional.lean` - Add derived DNE theorem
+- `LogosTest/ProofSystem/AxiomsTest.lean` - Update tests
+
+---
+
+### 44. Inference Rule Refactoring: Standard Necessitation + K Distribution
+**Effort**: 12-16 hours
+**Status**: Not Started
+**Priority**: High (foundational change)
+**Blocking**: None
+**Dependencies**: None (can be done in parallel with Task 43)
+
+**Description**: Replace the generalized necessitation rules (`modal_k` and `temporal_k`) with standard textbook-style rules:
+
+**Modal Logic Changes**:
+1. Replace `modal_k` rule (`Γ ⊢ φ` ⟹ `□Γ ⊢ □φ`) with:
+   - **Necessitation**: `⊢ φ` ⟹ `⊢ □φ` (only from empty context)
+   - **K axiom**: Already exists as `modal_k_dist`: `□(φ → ψ) → (□φ → □ψ)`
+
+**Temporal Logic Changes**:
+2. Replace `temporal_k` rule (`Γ ⊢ φ` ⟹ `GΓ ⊢ Gφ`) with:
+   - **Temporal Necessitation**: `⊢ φ` ⟹ `⊢ Gφ` (only from empty context)
+   - **Temporal K Distribution axiom**: `G(φ → ψ) → (Gφ → Gψ)`
+
+**Rationale**: The current generalized rules are powerful but non-standard. Standard necessitation + K distribution is:
+- More familiar to modal logic practitioners
+- Easier to understand and verify
+- Sufficient for the same theorems (generalized rule is derivable)
+
+**Implementation Steps**:
+1. Add `necessitation` rule to `Derivable` (modal, empty context only)
+2. Add `temporal_necessitation` rule to `Derivable` (temporal, empty context only)
+3. Add `temporal_k_dist` axiom to `Axiom` (temporal K distribution)
+4. Remove `modal_k` and `temporal_k` generalized rules
+5. Update soundness proofs for new rules/axioms
+6. Derive generalized rules as theorems (for backwards compatibility)
+7. Update all proofs using old rules
+8. Update documentation and tests
+
+**Files**:
+- `Logos/Core/ProofSystem/Derivation.lean` - Replace rules
+- `Logos/Core/ProofSystem/Axioms.lean` - Add temporal K distribution
+- `Logos/Core/Metalogic/Soundness.lean` - Update soundness proofs
+- `Logos/Core/Theorems/` - Add derived generalized rules
+- `LogosTest/ProofSystem/DerivationTest.lean` - Update tests
 
 ---
 
@@ -198,4 +267,4 @@ See [MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md) for complete work
 
 ---
 
-**Last Updated**: 2025-12-10 (Plan 065 partial: Proof Automation Completion - 2/5 phases complete, 3 blocked)
+**Last Updated**: 2025-12-11 (Added Tasks 43-44: Axiom refactoring EFQ+Peirce, Inference rule refactoring standard necessitation+K)
