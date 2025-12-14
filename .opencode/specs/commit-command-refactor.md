@@ -3,13 +3,14 @@
 **Spec ID**: `commit-command-refactor`  
 **Created**: 2025-12-14  
 **Status**: Draft for Review  
-**Target**: `.opencode/command/commit-openagents.md` → `.opencode/command/commit.md`
+**Source**: `.opencode/command/commit-openagents.md`  
+**Target**: `.opencode/command/commit.md`
 
 ---
 
 ## Executive Summary
 
-Refactor the overly complex `commit-openagents.md` command into a streamlined, repository-specific commit helper tailored for the **Logos LEAN 4 proof system project**. Remove unnecessary features (npm tests, version bumping, agent-specific logic) and focus on creating excellent, conventional commits for a LEAN 4 formal verification codebase.
+Rename and refactor `commit-openagents.md` to `commit.md`, transforming it from an overly complex, opencode-agents-specific command into a streamlined commit helper tailored for the **Logos LEAN 4 proof system project**. Remove unnecessary features (npm tests, version bumping, agent-specific logic) and focus on creating excellent, conventional commits for a LEAN 4 formal verification codebase.
 
 ---
 
@@ -130,7 +131,7 @@ git log --oneline -10         # See recent commit style
 
 #### Stage 4: Generate Commit Message
 
-**Format**: Conventional Commits (NO EMOJIS)
+**Format**: Conventional Commits (plain text only, no emojis)
 
 ```
 <type>(<scope>): <description>
@@ -211,8 +212,8 @@ git status  # Verify commit succeeded
 
 **Ask user**:
 ```
-✅ Commit created: <commit-hash>
-📝 Message: <commit-message>
+Commit created: <commit-hash>
+Message: <commit-message>
 
 Would you like to:
 1. Push to remote (git push origin main)
@@ -227,7 +228,7 @@ git push origin main
 
 **Then inform**:
 ```
-🚀 Pushed to remote!
+Pushed to remote!
 
 This will trigger:
 - GitHub Actions CI/CD workflow
@@ -359,7 +360,7 @@ What would you like to do?
 **Core principles**:
 - **Never commit without validation** - Always run `lake build` first
 - **Smart staging** - Only stage relevant files based on change scope
-- **Conventional commits** - Strictly follow format (NO EMOJIS)
+- **Conventional commits** - Strictly follow format (plain text only, no emojis)
 - **Scope awareness** - Use LEAN-specific scopes
 - **Build awareness** - Remind user that push triggers CI/CD
 - **Sorry tracking** - Warn when adding new `sorry` placeholders
@@ -425,14 +426,14 @@ git push origin main
 ## 7. Success Criteria
 
 A successful commit should:
-- ✅ Pass `lake build` (no compilation errors)
-- ✅ Follow conventional commit format
-- ✅ Have appropriate LEAN-specific scope
-- ✅ Be atomic (single purpose)
-- ✅ Have clear, concise message
-- ✅ Not include build artifacts (`.lake/`, `*.olean`)
-- ✅ Trigger appropriate CI/CD workflows when pushed
-- ✅ Minimize new `sorry` placeholders (warn if adding)
+- Pass `lake build` (no compilation errors)
+- Follow conventional commit format (plain text, no emojis)
+- Have appropriate LEAN-specific scope
+- Be atomic (single purpose)
+- Have clear, concise message
+- Not include build artifacts (`.lake/`, `*.olean`)
+- Trigger appropriate CI/CD workflows when pushed
+- Minimize new `sorry` placeholders (warn if adding)
 
 **Removed criteria**:
 - ❌ Pass smoke tests for agents
@@ -444,13 +445,14 @@ A successful commit should:
 ## 8. Implementation Plan
 
 ### Phase 1: Core Refactor
-1. Rename `commit-openagents.md` → `commit.md`
+1. **Rename file**: `commit-openagents.md` → `commit.md`
 2. Update command description and metadata
 3. Replace npm validation with `lake build`/`lake test`
 4. Update scopes to LEAN-specific values
 5. Update types to include `proof` type
 6. Remove version bumping logic
 7. Remove agent-specific references
+8. Remove all emojis from output messages
 
 ### Phase 2: LEAN-Specific Features
 1. Add `sorry` detection and warning
@@ -476,10 +478,12 @@ A successful commit should:
 ## 9. Migration Notes
 
 ### Breaking Changes
-- Command name changes from `/commit-openagents` to `/commit`
+- **File renamed**: `commit-openagents.md` → `commit.md`
+- **Command name changes**: `/commit-openagents` → `/commit`
 - Scopes completely changed (LEAN-specific)
 - Validation commands changed (npm → lake)
 - No version bumping notifications
+- All emojis removed from output
 
 ### Backward Compatibility
 - None required (this is a project-specific refactor)
@@ -563,20 +567,20 @@ Clarifies the distinction between □ (metaphysical necessity) and
 ### Bad Examples (to avoid)
 
 ```
-❌ update stuff
-   (too vague, no type/scope, no description)
+update stuff
+(too vague, no type/scope, no description)
 
-❌ fix: bug
-   (no scope, uninformative description)
+fix: bug
+(no scope, uninformative description)
 
-❌ feat: added some theorems
-   (no scope, vague description, past tense)
+feat: added some theorems
+(no scope, vague description, past tense)
 
-❌ 🎉 feat(theorems): add P6! 🚀
-   (emojis not allowed)
+feat(theorems): add P6!
+(emojis not allowed - keep messages plain text)
 
-❌ WIP: working on soundness
-   (WIP commits should not be pushed to main)
+WIP: working on soundness
+(WIP commits should not be pushed to main)
 ```
 
 ---

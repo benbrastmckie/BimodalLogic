@@ -12,7 +12,7 @@ temperature: 0.0
     Parses all `import` statements in a LEAN 4 project to build a directed graph of dependencies between files. It can then analyze this graph to find issues like circular dependencies.
   </task_scope>
   <integration>
-    This subagent is called by the @lean-codebase-manager to provide insights into the project's architecture and to identify problematic import patterns.
+    This subagent is called by the @codebase to provide insights into the project's architecture and to identify problematic import patterns.
   </integration>
 </context>
 

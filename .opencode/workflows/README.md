@@ -10,7 +10,7 @@ This directory contains definitions for complex, multi-stage processes that the 
 
 -   **`codebase-cleanup.md`**: A workflow for improving the quality of an existing codebase. It involves refactoring proofs, improving documentation, and organizing files.
     -   **Trigger**: Can be invoked via `/manage-project --organize` or run on a schedule.
-    -   **Agents Involved**: `lean-refactor-agent`, `lean-codebase-manager`.
+    -   **Agents Involved**: `lean-refactor-agent`, `codebase`.
 
 -   **`document-translation.md`**: A workflow for generating human-readable documentation (LaTeX) from LEAN 4 source files.
     -   **Trigger**: `/translate <file>`

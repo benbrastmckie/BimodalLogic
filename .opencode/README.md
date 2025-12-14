@@ -29,7 +29,7 @@ These components were specifically designed for formal verification in LEAN 4.
 - **`lean-planner`**: Creates structured proof outlines.
 - **`lean-plan-reviser`**: Diagnoses and fixes errors in proof plans.
 - **`lean-implementer`**: Translates proof plans into LEAN 4 code.
-- **`lean-codebase-manager`**: Organizes files and writes documentation.
+- **`codebase`**: Organizes files and writes documentation.
 - **`lean-refactor-agent`**: Improves the readability and structure of existing proofs.
 - **`lean-latex-translator`**: Converts between LEAN 4 and LaTeX.
 - **`lean-project-manager`**: Manages project state and interacts with Git.
@@ -51,18 +51,17 @@ These are general-purpose agents and commands that were part of the existing sys
 
 - **`general`**: General purpose agents for directing tasks.
 - **`coder`**: Coding agent for systematic implementation.
-- **`repository`**: An agent specialized for codebase-related questions and tasks.
 - **`builder`**: The agent responsible for generating new `.opencode` systems (it built the LEAN 4 suite).
 
 #### Commands
 
 - **`/build-context-system`**: Command to invoke the builder.
 - **`/clean`**: Utilities for cleaning up the project.
-- **`/commit-openagents`**: Git commit helper.
+- **`/commit`**: Git commit helper for LEAN 4 projects with build validation.
 - **`/context`**: Commands for managing the context system.
 - **`/optimize`**: Code optimization commands.
 - **`/prompt-engineering`**: A suite of tools for improving prompts.
-- **`/test` / `/test-new-command`**: Commands for running and creating tests.
+- **`/test`**: Commands for running tests.
 - **`/validate-repo`**: Validates the repository's structure and quality.
 - **`/worktrees`**: Git worktree management commands.
 

@@ -99,7 +99,7 @@ tools:
       <context_level>Level 2</context_level>
       <pass_data>Proof plan, relevant definitions, and theorems.</pass_data>
       <expected_return>A complete `.lean` file with the implemented proof.</expected_return>
-      <integration>Pass the code to @lean-refactor-agent for cleanup or @lean-codebase-manager for integration.</integration>
+      <integration>Pass the code to @lean-refactor-agent for cleanup or @codebase for integration.</integration>
     </route>
     <route to="@lean-refactor-agent" when="request is to improve, simplify, or clean existing LEAN 4 code.">
       <context_level>Level 2</context_level>
@@ -107,7 +107,7 @@ tools:
       <expected_return>Refactored LEAN 4 code with explanations.</expected_return>
       <integration>Update the project files with the improved code.</integration>
     </route>
-    <route to="@lean-codebase-manager" when="request involves file organization, documentation, or dependency checks.">
+    <route to="@codebase" when="request involves file organization, documentation, or dependency checks.">
       <context_level>Level 2</context_level>
       <pass_data>The project directory and the specific task (e.g., 'add docstrings').</pass_data>
       <expected_return>An updated codebase with organized files and documentation.</expected_return>

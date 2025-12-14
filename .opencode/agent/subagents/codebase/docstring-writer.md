@@ -12,7 +12,7 @@ temperature: 0.0
     Analyzes a LEAN 4 definition or theorem and generates a clear, concise doc-string that explains its purpose, arguments, and significance, following Mathlib's documentation standards.
   </task_scope>
   <integration>
-    This subagent is called by the @lean-codebase-manager to automatically document parts of the codebase.
+    This subagent is called by the @codebase to automatically document parts of the codebase.
   </integration>
 </context>
 

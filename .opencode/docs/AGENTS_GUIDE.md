@@ -36,7 +36,7 @@ This document provides a reference for each of the primary agents in the system.
     -   `code-generator`: Writes the LEAN 4 syntax.
     -   `lean-linter`: Checks the generated code for style and correctness.
 
-### 6. `lean-codebase-manager`
+### 6. `codebase`
 -   **Role**: Codebase Maintainer.
 -   **Purpose**: Organizes files, adds documentation, and ensures the overall quality of the project.
 -   **Subagents**:

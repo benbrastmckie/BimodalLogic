@@ -23,7 +23,7 @@ This is the primary workflow of the system, triggered by the `/prove` command. I
     -   The orchestrator gives the (revised) plan to the implementer.
     -   The implementer writes the actual LEAN 4 code, following the plan step-by-step.
 
-5.  **Documentation (`lean-codebase-manager`)**:
+5.  **Documentation (`codebase`)**:
     -   Once the proof is successfully implemented, the orchestrator calls the codebase manager.
     -   It generates docstrings, ensures the code is well-formatted, and places the new proof in the correct file in the project.
 
@@ -31,7 +31,7 @@ This is the primary workflow of the system, triggered by the `/prove` command. I
 
 This workflow, triggered by `/manage-project --organize`, is designed to improve the quality of an existing LEAN 4 project.
 
--   **Process**: The orchestrator uses the `lean-codebase-manager` and `lean-refactor-agent` to scan the entire project.
+-   **Process**: The orchestrator uses the `codebase` and `lean-refactor-agent` to scan the entire project.
 -   **Tasks**:
     -   Add missing documentation.
     -   Refactor long proofs into helper lemmas.

@@ -12,7 +12,7 @@ temperature: 0.0
     Analyzes the contents of `.lean` files in a project and suggests a logical directory structure. For example, all files related to `Data.List` should be in a `Data/List` directory.
   </task_scope>
   <integration>
-    This subagent is called by the @lean-codebase-manager to perform project-wide structural refactoring.
+    This subagent is called by the @codebase to perform project-wide structural refactoring.
   </integration>
 </context>
 

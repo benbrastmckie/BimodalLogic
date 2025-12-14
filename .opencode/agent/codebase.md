@@ -4,7 +4,7 @@ mode: primary
 temperature: 0.1
 ---
 
-# LEAN 4 Codebase Manager
+# Codebase Manager
 
 <context>
   <system_context>

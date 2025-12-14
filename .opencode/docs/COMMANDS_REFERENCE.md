@@ -80,4 +80,4 @@ This document provides a reference for the custom slash commands that have been 
     ```bash
     /manage-project --organize
     ```
--   **Agent Triggered**: `lean-project-manager` or `lean-codebase-manager`
+-   **Agent Triggered**: `lean-project-manager` or `codebase`
