@@ -1,13 +1,13 @@
-# Integration Analysis: Valuable Elements from coder.md for lean-implementer.md
+# Integration Analysis: Valuable Elements from coder.md for implementer.md
 
 **Date**: 2025-12-14  
-**Purpose**: Identify valuable patterns from `coder.md` that could enhance `lean-implementer.md` without bloating it
+**Purpose**: Identify valuable patterns from `coder.md` that could enhance `implementer.md` without bloating it
 
 ---
 
 ## Executive Summary
 
-**Recommendation**: Add **3 specific enhancements** from `coder.md` to `lean-implementer.md`:
+**Recommendation**: Add **3 specific enhancements** from `coder.md` to `implementer.md`:
 
 1. **Error handling rules** - Stop on failure, report-first pattern
 2. **Incremental execution** - One step at a time validation
@@ -40,8 +40,8 @@ These additions would improve robustness without compromising the streamlined pr
 </critical_rules>
 ```
 
-**Why valuable for lean-implementer**:
-- **Stop on failure**: Currently, `lean-implementer` returns errors to orchestrator, but doesn't explicitly forbid auto-fixing
+**Why valuable for implementer**:
+- **Stop on failure**: Currently, `implementer` returns errors to orchestrator, but doesn't explicitly forbid auto-fixing
 - **Report-first**: Prevents the agent from silently "fixing" compilation errors that might indicate plan issues
 - **Incremental execution**: Aligns with proof step-by-step nature - validate each tactic before proceeding
 
@@ -50,7 +50,7 @@ These additions would improve robustness without compromising the streamlined pr
 <critical_rules priority="absolute" enforcement="strict">
   <rule id="stop_on_compilation_failure">
     STOP on LEAN compilation errors - NEVER auto-fix without approval.
-    Return error to @lean-dev-orchestrator for plan revision.
+    Return error to @orchestrator for plan revision.
   </rule>
   
   <rule id="report_first" scope="error_handling">
@@ -84,7 +84,7 @@ BEFORE any code implementation (write/edit), ALWAYS load required context files:
 </critical_context_requirement>
 ```
 
-**Why valuable for lean-implementer**:
+**Why valuable for implementer**:
 - **LEAN style consistency**: Ensures generated proofs follow project conventions
 - **Tactic patterns**: Load preferred tactic patterns (e.g., prefer `simp` over manual rewrites)
 - **Naming conventions**: Consistent theorem/lemma naming
@@ -128,7 +128,7 @@ BEFORE any code implementation (write/edit), ALWAYS load required context files:
 </stage>
 ```
 
-**Why valuable for lean-implementer**:
+**Why valuable for implementer**:
 - **Catch errors early**: Validate each tactic before generating the next
 - **Better error messages**: Pinpoint which proof step failed
 - **Faster iteration**: Don't generate entire proof only to find step 1 was wrong
@@ -143,7 +143,7 @@ BEFORE any code implementation (write/edit), ALWAYS load required context files:
        b. Pass the tactic to @code-generator to write the line of code
        c. **[NEW]** Incrementally validate: Compile the partial proof to verify the tactic works
        d. If compilation succeeds, append the line and proceed to next step
-       e. If compilation fails, STOP and report error to @lean-dev-orchestrator
+       e. If compilation fails, STOP and report error to @orchestrator
     2. Repeat for all steps in the plan.
   </process>
   <checkpoint>A complete, incrementally validated proof block has been generated.</checkpoint>
@@ -165,9 +165,9 @@ BEFORE any code implementation (write/edit), ALWAYS load required context files:
 </rule>
 ```
 
-**Why NOT valuable for lean-implementer**:
-- **Already has approval**: The proof plan itself is the "approval" - it comes from `@lean-planner`
-- **Automated workflow**: `lean-implementer` is meant to run automatically as part of `/prove` command
+**Why NOT valuable for implementer**:
+- **Already has approval**: The proof plan itself is the "approval" - it comes from `@planner`
+- **Automated workflow**: `implementer` is meant to run automatically as part of `/prove` command
 - **Wrong abstraction level**: User approves the plan, not each tactic
 
 **Verdict**: ❌ Skip - would break automated workflow
@@ -182,8 +182,8 @@ Adapt to the project's language based on the files you encounter
 (TypeScript, Python, Go, Rust, etc.).
 ```
 
-**Why NOT valuable for lean-implementer**:
-- **Single language**: `lean-implementer` only works with LEAN 4
+**Why NOT valuable for implementer**:
+- **Single language**: `implementer` only works with LEAN 4
 - **Already specialized**: No need for language detection
 
 **Verdict**: ❌ Skip - not applicable
@@ -199,7 +199,7 @@ Adapt to the project's language based on the files you encounter
 - `subagents/code/tester` - Testing after implementation
 ```
 
-**Why NOT valuable for lean-implementer**:
+**Why NOT valuable for implementer**:
 - **Already has specialized subagents**: `@tactic-selector`, `@code-generator`, `@lean-linter`
 - **Different workflow**: Proof implementation is not "feature breakdown"
 
@@ -217,7 +217,7 @@ Adapt to the project's language based on the files you encounter
 - Scalable code structures
 ```
 
-**Why NOT valuable for lean-implementer**:
+**Why NOT valuable for implementer**:
 - **Different domain**: Formal proofs have different quality criteria (correctness, not scalability)
 - **Already covered**: Quality standards section already addresses this (Correctness, Readability, Fidelity)
 
@@ -227,7 +227,7 @@ Adapt to the project's language based on the files you encounter
 
 ## Proposed Integration
 
-### Enhanced lean-implementer.md Structure
+### Enhanced implementer.md Structure
 
 ```xml
 ---
@@ -254,7 +254,7 @@ temperature: 0.1
 <critical_rules priority="absolute" enforcement="strict">
   <rule id="stop_on_compilation_failure">
     STOP on LEAN compilation errors - NEVER auto-fix without approval.
-    Return error to @lean-dev-orchestrator for plan revision.
+    Return error to @orchestrator for plan revision.
   </rule>
   
   <rule id="report_first" scope="error_handling">
@@ -299,7 +299,7 @@ temperature: 0.1
          b. Pass the tactic to @code-generator to write the line of code
          c. **Incrementally validate**: Compile the partial proof to verify the tactic works
          d. If compilation succeeds, append the line and proceed to next step
-         e. If compilation fails, STOP and report error to @lean-dev-orchestrator
+         e. If compilation fails, STOP and report error to @orchestrator
       2. Repeat for all steps in the plan.
     </process>
     <checkpoint>A complete, incrementally validated proof block has been generated.</checkpoint>
@@ -309,7 +309,7 @@ temperature: 0.1
     [... existing stage with enhanced error handling ...]
     <decision>
       <if test="compilation fails">
-        STOP. Report error to @lean-dev-orchestrator with:
+        STOP. Report error to @orchestrator with:
         - Failed tactic/step
         - Compilation error message
         - Suggested plan revision
@@ -333,7 +333,7 @@ temperature: 0.1
 
 ### Before Integration
 
-**Current `lean-implementer.md`**:
+**Current `implementer.md`**:
 - **Lines**: 112
 - **Error handling**: Basic (return error to orchestrator)
 - **Validation**: End-of-workflow only
@@ -342,7 +342,7 @@ temperature: 0.1
 
 ### After Integration
 
-**Enhanced `lean-implementer.md`**:
+**Enhanced `implementer.md`**:
 - **Lines**: ~160 (+48 lines, +43% size)
 - **Error handling**: Explicit stop-on-failure, report-first pattern
 - **Validation**: Incremental (after each tactic)
@@ -423,12 +423,12 @@ Update stage 3 decision block to explicitly forbid auto-fixing.
 
 ## Conclusion
 
-**Yes, there are valuable elements from `coder.md` worth integrating into `lean-implementer.md`:**
+**Yes, there are valuable elements from `coder.md` worth integrating into `implementer.md`:**
 
 1. **Error handling rules** - Prevent silent failures
 2. **Incremental validation** - Catch errors early
 3. **Context loading** - Ensure consistency
 
-These additions would make `lean-implementer.md` more robust without compromising its streamlined focus on proof implementation. The +48 lines (+43% size) is justified by the significant improvement in reliability and consistency.
+These additions would make `implementer.md` more robust without compromising its streamlined focus on proof implementation. The +48 lines (+43% size) is justified by the significant improvement in reliability and consistency.
 
 **After integration, we can safely remove `coder.md`.**

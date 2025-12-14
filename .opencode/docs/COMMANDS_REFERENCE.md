@@ -13,7 +13,7 @@ This document provides a reference for the custom slash commands that have been 
     ```bash
     /prove "For any natural numbers n and m, n + m = m + n"
     ```
--   **Agent Triggered**: `lean-dev-orchestrator`
+-   **Agent Triggered**: `orchestrator`
 
 ---
 
@@ -26,7 +26,7 @@ This document provides a reference for the custom slash commands that have been 
     ```bash
     /research "The definition of a group in Mathlib"
     ```
--   **Agent Triggered**: `lean-researcher`
+-   **Agent Triggered**: `researcher`
 
 ---
 
@@ -39,7 +39,7 @@ This document provides a reference for the custom slash commands that have been 
     ```bash
     /implement "proofs/addition_commutativity_plan.md"
     ```
--   **Agent Triggered**: `lean-implementer`
+-   **Agent Triggered**: `implementer`
 
 ---
 
@@ -53,7 +53,7 @@ This document provides a reference for the custom slash commands that have been 
     ```bash
     /refactor "src/theorems/basic.lean" --line 42
     ```
--   **Agent Triggered**: `lean-refactor-agent`
+-   **Agent Triggered**: `refactor`
 
 ---
 
@@ -66,7 +66,7 @@ This document provides a reference for the custom slash commands that have been 
     ```bash
     /translate "docs/paper.tex"
     ```
--   **Agent Triggered**: `lean-latex-translator`
+-   **Agent Triggered**: `translator`
 
 ---
 
@@ -80,4 +80,4 @@ This document provides a reference for the custom slash commands that have been 
     ```bash
     /manage-project --organize
     ```
--   **Agent Triggered**: `lean-project-manager` or `codebase`
+-   **Agent Triggered**: `project` or `codebase`

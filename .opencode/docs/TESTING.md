@@ -18,12 +18,12 @@ Before you begin testing, please ensure the following are set up in your environ
 
 These tests are designed to validate the functionality of individual agents in isolation.
 
-### ✅ Test Case: `lean-researcher`
+### ✅ Test Case: `researcher`
 1.  **Command**: `/research "definition of a monoid in Mathlib"`
 2.  **Expected Outcome**: The agent should return a summary containing relevant definitions and file paths from the Mathlib library.
 3.  **Verification**: Check if the output is accurate and relevant to the query.
 
-### ✅ Test Case: `lean-refactor-agent`
+### ✅ Test Case: `refactor`
 1.  **Setup**: Create a `.lean` file with a long, poorly formatted proof.
 2.  **Command**: `/refactor <path_to_your_file.lean>`
 3.  **Expected Outcome**: The agent should modify the file, breaking the long proof into smaller helper lemmas and improving the formatting.
@@ -37,8 +37,8 @@ These tests are designed to validate the functionality of individual agents in i
 
 These tests validate that a primary agent can correctly manage and coordinate its subagents.
 
-### ✅ Test Case: `lean-plan-reviser` Integration
-1.  **Setup**: This is a more advanced test. You need to manually trigger the `lean-plan-reviser` with a sample proof plan and a simulated error message.
+### ✅ Test Case: `reviser` Integration
+1.  **Setup**: This is a more advanced test. You need to manually trigger the `reviser` with a sample proof plan and a simulated error message.
 2.  **Action**: Provide the agent with a plan and an error like `"tactic 'rw' failed"`.
 3.  **Expected Outcome**: The `feedback-analyzer` subagent should first diagnose the error, and then the `strategy-adjuster` subagent should propose a concrete change to the plan.
 4.  **Verification**: Check if the final output is a revised plan that addresses the simulated error.

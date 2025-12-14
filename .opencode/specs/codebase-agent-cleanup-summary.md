@@ -39,7 +39,7 @@
 
 **Files updated** (10 files):
 1. `.opencode/README.md` - Updated agent list, removed repository reference
-2. `.opencode/agent/lean-dev-orchestrator.md` - Updated routing to `@codebase`
+2. `.opencode/agent/orchestrator.md` - Updated routing to `@codebase`
 3. `.opencode/agent/subagents/codebase/file-organizer.md` - Updated parent reference
 4. `.opencode/agent/subagents/codebase/docstring-writer.md` - Updated parent reference
 5. `.opencode/agent/subagents/codebase/dependency-analyzer.md` - Updated parent reference
@@ -86,7 +86,7 @@
 - **`codebase`**: Organizes files and writes documentation.
 ```
 
-### Routing (from lean-dev-orchestrator.md)
+### Routing (from orchestrator.md)
 
 **Before**:
 ```xml
@@ -139,7 +139,7 @@ ls .opencode/agent/subagents/codebase/
 ## Impact Analysis
 
 ### Agents Affected
-- ✅ `lean-dev-orchestrator` - Routes to `@codebase` instead of `@lean-codebase-manager`
+- ✅ `orchestrator` - Routes to `@codebase` instead of `@lean-codebase-manager`
 - ✅ `codebase` (formerly `lean-codebase-manager`) - Renamed but functionality unchanged
 - ✅ Subagents: `docstring-writer`, `file-organizer`, `dependency-analyzer` - Updated parent references
 
@@ -184,7 +184,7 @@ ls .opencode/agent/subagents/codebase/
 3. ✅ **Complete** - Documentation updated
 
 ### Future Considerations
-- Consider renaming other `lean-*` agents for consistency (e.g., `lean-dev-orchestrator` → `orchestrator`)
+- Consider renaming other `lean-*` agents for consistency (e.g., `orchestrator` → `orchestrator`)
 - Update any external documentation or guides that reference the old agent names
 
 ---

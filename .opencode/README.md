@@ -24,15 +24,15 @@ These components were specifically designed for formal verification in LEAN 4.
 
 #### Primary Agents
 
-- **`lean-dev-orchestrator`**: The central coordinator for all LEAN 4 tasks.
-- **`lean-researcher`**: Gathers information from Mathlib, arXiv, and the web.
-- **`lean-planner`**: Creates structured proof outlines.
-- **`lean-plan-reviser`**: Diagnoses and fixes errors in proof plans.
-- **`lean-implementer`**: Translates proof plans into LEAN 4 code.
+- **`orchestrator`**: The central coordinator for all LEAN 4 tasks.
+- **`researcher`**: Gathers information from Mathlib, arXiv, and the web.
+- **`planner`**: Creates structured proof outlines.
+- **`reviser`**: Diagnoses and fixes errors in proof plans.
+- **`implementer`**: Translates proof plans into LEAN 4 code.
 - **`codebase`**: Organizes files and writes documentation.
-- **`lean-refactor-agent`**: Improves the readability and structure of existing proofs.
-- **`lean-latex-translator`**: Converts between LEAN 4 and LaTeX.
-- **`lean-project-manager`**: Manages project state and interacts with Git.
+- **`refactor`**: Improves the readability and structure of existing proofs.
+- **`translator`**: Converts between LEAN 4 and LaTeX.
+- **`project`**: Manages project state and interacts with Git.
 
 #### Commands
 
@@ -74,7 +74,7 @@ _(Abridged for clarity)_
 ```
 .opencode/
 ├── agent/
-│   ├── lean-dev-orchestrator.md
+│   ├── orchestrator.md
 │   ├── coder.md
 │   └── subagents/
 ├── command/

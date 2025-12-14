@@ -1,4 +1,4 @@
-# Agent Comparison: coder vs lean-implementer
+# Agent Comparison: coder vs implementer
 
 **Date**: 2025-12-14  
 **Purpose**: Determine if these agents are redundant or serve different purposes
@@ -9,7 +9,7 @@
 
 **Recommendation**: **Remove `coder.md`** - it's a generic multi-language development agent that doesn't belong in this LEAN 4-specific project.
 
-**Reason**: The two agents serve completely different purposes. `lean-implementer` is LEAN 4-specific and essential to the proof workflow, while `coder` is a leftover generic development agent from the opencode-agents system.
+**Reason**: The two agents serve completely different purposes. `implementer` is LEAN 4-specific and essential to the proof workflow, while `coder` is a leftover generic development agent from the opencode-agents system.
 
 ---
 
@@ -39,7 +39,7 @@
 - `.opencode/README.md` - Listed as "Coding agent for systematic implementation"
 - No LEAN-specific workflows or orchestrators reference it
 
-### `lean-implementer.md`
+### `implementer.md`
 
 **Purpose**: LEAN 4-specific proof implementation manager
 
@@ -56,16 +56,16 @@
   - `@code-generator` - Write LEAN 4 code lines
   - `@lean-linter` - Check LEAN 4 style and formatting
 - **Integration**: Core part of LEAN 4 Development Suite
-- **Input**: Structured proof plan from `@lean-planner`
+- **Input**: Structured proof plan from `@planner`
 - **Output**: Complete, compiled `.lean` file
 
-**Subagents** (in `.opencode/agent/subagents/lean-implementer/`):
+**Subagents** (in `.opencode/agent/subagents/implementer/`):
 - `tactic-selector.md` - Selects appropriate LEAN 4 tactics
 - `code-generator.md` - Generates LEAN 4 code
 - `lean-linter.md` - Lints LEAN 4 code
 
 **Referenced by**:
-- `lean-dev-orchestrator.md` - Routes proof implementation tasks
+- `orchestrator.md` - Routes proof implementation tasks
 - `command/implement.md` - `/implement` command uses this agent
 - `command/prove.md` - Part of end-to-end proving workflow
 - `AGENTS_GUIDE.md` - Documented as core LEAN agent
@@ -80,7 +80,7 @@
 
 **No, they serve completely different purposes:**
 
-| Aspect | coder | lean-implementer |
+| Aspect | coder | implementer |
 |--------|-------|------------------|
 | **Domain** | Generic multi-language | LEAN 4 formal verification |
 | **Purpose** | General code implementation | Proof plan → LEAN 4 code |
@@ -121,7 +121,7 @@ Adapt to the project's language based on the files you encounter
 ```
 → **None of these tools are used in this project**
 
-**From `lean-implementer.md`**:
+**From `implementer.md`**:
 ```markdown
 The domain is the practical implementation of formal proofs in the LEAN 4 language.
 This involves translating a logical proof plan into valid LEAN 4 syntax, selecting 
@@ -140,8 +140,8 @@ style guidelines.
 - **Commands**: None
 - **Workflows**: None
 
-### `lean-implementer` Integration
-- **Used by**: `@lean-dev-orchestrator` (main coordinator)
+### `implementer` Integration
+- **Used by**: `@orchestrator` (main coordinator)
 - **Routes to**: LEAN-specific subagents (tactic-selector, code-generator, lean-linter)
 - **Commands**: `/implement`, `/prove`
 - **Workflows**: End-to-end theorem proving, proof implementation
@@ -150,11 +150,11 @@ style guidelines.
 
 **From `command/prove.md`**:
 ```
-1. Research (lean-researcher)
-2. Planning (lean-planner)
-3. Plan Revision (lean-plan-reviser) if needed
-4. Implementation (lean-implementer) ← Uses lean-implementer
-5. Refactoring (lean-refactor-agent)
+1. Research (researcher)
+2. Planning (planner)
+3. Plan Revision (reviser) if needed
+4. Implementation (implementer) ← Uses implementer
+5. Refactoring (refactor)
 6. Documentation (codebase)
 ```
 
@@ -171,9 +171,9 @@ style guidelines.
 2. **Not integrated**: Not used by any LEAN workflows, orchestrators, or commands
 3. **Misleading**: Suggests the project does TypeScript/Python/Go/Rust development
 4. **Leftover from opencode-agents**: Part of the old generic system
-5. **No unique value**: All coding needs are handled by `lean-implementer` for LEAN 4
+5. **No unique value**: All coding needs are handled by `implementer` for LEAN 4
 
-### Keep `lean-implementer.md`
+### Keep `implementer.md`
 
 **Reasons**:
 1. **LEAN-specific**: Designed specifically for LEAN 4 proof implementation
@@ -187,15 +187,15 @@ style guidelines.
 
 ## Comparison Table
 
-| Feature | coder | lean-implementer | Verdict |
+| Feature | coder | implementer | Verdict |
 |---------|-------|------------------|---------|
-| **Relevant to Logos** | ❌ No (multi-language) | ✅ Yes (LEAN 4 specific) | Keep lean-implementer |
-| **Unique functionality** | ❌ No (generic coding) | ✅ Yes (proof implementation) | Keep lean-implementer |
-| **Has subagents** | ⚠️ Generic subagents | ✅ 3 LEAN-specific subagents | Keep lean-implementer |
-| **Integrated with suite** | ❌ No | ✅ Yes (core component) | Keep lean-implementer |
-| **Used in workflows** | ❌ No | ✅ Yes (prove, implement) | Keep lean-implementer |
-| **Referenced in docs** | ⚠️ Minimal (only README) | ✅ Extensive (orchestrator, commands, workflows) | Keep lean-implementer |
-| **Correct domain** | ❌ No (wrong languages) | ✅ Yes (LEAN 4) | Keep lean-implementer |
+| **Relevant to Logos** | ❌ No (multi-language) | ✅ Yes (LEAN 4 specific) | Keep implementer |
+| **Unique functionality** | ❌ No (generic coding) | ✅ Yes (proof implementation) | Keep implementer |
+| **Has subagents** | ⚠️ Generic subagents | ✅ 3 LEAN-specific subagents | Keep implementer |
+| **Integrated with suite** | ❌ No | ✅ Yes (core component) | Keep implementer |
+| **Used in workflows** | ❌ No | ✅ Yes (prove, implement) | Keep implementer |
+| **Referenced in docs** | ⚠️ Minimal (only README) | ✅ Extensive (orchestrator, commands, workflows) | Keep implementer |
+| **Correct domain** | ❌ No (wrong languages) | ✅ Yes (LEAN 4) | Keep implementer |
 
 ---
 
@@ -255,9 +255,9 @@ grep -r "coder.md" .opencode --include="*.md"
 2. It references tools (npm, tsc, mypy, cargo) that are not used in this project
 3. It's not integrated with any LEAN workflows or orchestrators
 4. It was created as part of the opencode-agents system and doesn't belong here
-5. All coding needs are handled by `lean-implementer` for LEAN 4
+5. All coding needs are handled by `implementer` for LEAN 4
 
-**`lean-implementer.md` should be kept** because:
+**`implementer.md` should be kept** because:
 1. It's specifically designed for LEAN 4 proof implementation
 2. It's a core component of the LEAN 4 Development Suite
 3. It has unique functionality (proof plan → LEAN code)

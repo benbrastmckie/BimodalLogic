@@ -1,5 +1,5 @@
 ---
-agent: lean-implementer
+agent: implementer
 description: "Implements Lean 4 code based on a provided outline file"
 ---
 

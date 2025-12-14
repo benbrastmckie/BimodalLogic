@@ -1,5 +1,5 @@
 ---
-agent: lean-dev-orchestrator
+agent: orchestrator
 description: "Starts the main workflow to prove a given theorem"
 ---
 
@@ -9,9 +9,9 @@ Initiates the theorem-proving workflow, coordinating multiple agents to research
 
 **Process:**
 1. Receives a theorem to be proven.
-2. Engages the `lean-researcher` to gather context.
+2. Engages the `researcher` to gather context.
 3. Works with the user to create a proof outline.
-4. Delegates implementation to the `lean-implementer`.
+4. Delegates implementation to the `implementer`.
 5. Manages the overall process until the proof is complete.
 
 **Syntax:**

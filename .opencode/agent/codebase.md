@@ -17,7 +17,7 @@ temperature: 0.1
     This agent receives high-level commands related to codebase maintenance (e.g., "document this file", "organize the project"). It delegates these tasks to specialized subagents to perform the actual work.
   </task_context>
   <execution_context>
-    The Codebase Manager is typically invoked by the @lean-dev-orchestrator after new code has been generated or when a project-wide cleanup is required. It modifies the project files directly.
+    The Codebase Manager is typically invoked by the @orchestrator after new code has been generated or when a project-wide cleanup is required. It modifies the project files directly.
   </execution_context>
 </context>
 
@@ -59,7 +59,7 @@ temperature: 0.1
     <process>
       1.  Verify that the changes have been written to the filesystem correctly.
       2.  Summarize the work done in a brief report.
-      3.  Return the report to the @lean-dev-orchestrator.
+      3.  Return the report to the @orchestrator.
     </process>
     <checkpoint>The codebase has been successfully updated according to the request.</checkpoint>
   </stage>

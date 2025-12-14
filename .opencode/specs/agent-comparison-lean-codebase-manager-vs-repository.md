@@ -28,7 +28,7 @@
   - `@docstring-writer` - Adds/improves LEAN documentation
   - `@file-organizer` - Restructures LEAN project directories
   - `@dependency-analyzer` - Analyzes LEAN import statements
-- **Integration**: Part of LEAN 4 Development Suite, works with `@lean-dev-orchestrator`
+- **Integration**: Part of LEAN 4 Development Suite, works with `@orchestrator`
 - **Tasks**:
   - Add doc-strings to LEAN theorems/definitions
   - Organize LEAN files into logical structure
@@ -41,7 +41,7 @@
 - `file-organizer.md` - LEAN project structure organization
 
 **Referenced by**:
-- `lean-dev-orchestrator.md` - Routes codebase management tasks
+- `orchestrator.md` - Routes codebase management tasks
 - `AGENTS_GUIDE.md` - Documented as part of LEAN suite
 - `WORKFLOWS.md` - Used in documentation and cleanup workflows
 - `README.md` - Listed as LEAN 4 primary agent
@@ -129,7 +129,7 @@
 **Reasons**:
 1. **LEAN-specific**: Designed for LEAN 4 formal verification projects
 2. **Unique functionality**: Handles LEAN documentation, file organization, and dependency analysis
-3. **Integrated with LEAN suite**: Works with `lean-dev-orchestrator` and other LEAN agents
+3. **Integrated with LEAN suite**: Works with `orchestrator` and other LEAN agents
 4. **Has specialized subagents**: `docstring-writer`, `file-organizer`, `dependency-analyzer` are LEAN-specific
 5. **Actively used**: Referenced in workflows, orchestrator, and documentation
 

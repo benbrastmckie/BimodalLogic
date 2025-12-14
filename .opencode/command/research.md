@@ -1,5 +1,5 @@
 ---
-agent: lean-researcher
+agent: researcher
 description: "Researches a specific topic in the Lean 4 ecosystem"
 ---
 

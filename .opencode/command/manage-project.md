@@ -1,5 +1,5 @@
 ---
-agent: lean-project-manager
+agent: project
 description: "Manages the Lean 4 project"
 ---
 

@@ -13,4 +13,4 @@ The context is divided into four categories:
 
 ## How It's Used
 
-When the `lean-dev-orchestrator` assigns a task to a specialist agent, it also determines which context files are relevant to that task. It then provides these files to the agent, ensuring the agent's response is grounded in the established domain knowledge and best practices.
+When the `orchestrator` assigns a task to a specialist agent, it also determines which context files are relevant to that task. It then provides these files to the agent, ensuring the agent's response is grounded in the established domain knowledge and best practices.

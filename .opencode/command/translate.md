@@ -1,5 +1,5 @@
 ---
-agent: lean-latex-translator
+agent: translator
 description: "Translates a Lean 4 file into LaTeX format"
 ---
 

@@ -1,5 +1,5 @@
 ---
-agent: lean-refactor-agent
+agent: refactor
 description: "Refactors a specific Lean 4 file"
 ---
 
