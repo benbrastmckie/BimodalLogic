@@ -1,6 +1,6 @@
 import Logos.Core.ProofSystem.Derivation
 import Logos.Core.Syntax.Formula
-import Logos.Core.Theorems.Perpetuity
+import Logos.Core.Theorems.Combinators
 import Logos.Core.Metalogic.DeductionTheorem
 
 /-!
@@ -31,8 +31,9 @@ for the TM bimodal logic system.
 
 ## References
 
-* [Perpetuity.lean](Perpetuity.lean) - Combinator infrastructure (imp_trans, identity, b_combinator, theorem_flip, pairing, dni)
-* [Axioms.lean](../ProofSystem/Axioms.lean) - Axiom schemata (prop_k, prop_s, double_negation)
+* [Combinators.lean](Combinators.lean) - Combinator infrastructure
+  (imp_trans, identity, b_combinator, theorem_flip, pairing, dni)
+* [Axioms.lean](../ProofSystem/Axioms.lean) - Axiom schemata (prop_k, prop_s, ex_falso, peirce)
 * [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
 -/
 
@@ -40,7 +41,7 @@ namespace Logos.Core.Theorems.Propositional
 
 open Logos.Core.Syntax
 open Logos.Core.ProofSystem
-open Logos.Core.Theorems.Perpetuity
+open Logos.Core.Theorems.Combinators
 
 /-!
 ## Helper Lemmas
@@ -70,24 +71,125 @@ theorem lem (A : Formula) : ⊢ A.or A.neg := by
   -- Now goal is: ⊢ A.neg.imp A.neg
   exact identity A.neg
 
+
+/-!
+## Axiomatic Helpers and Derived Classical Principles
+
+This section defines axiom wrappers (efq_axiom, peirce_axiom) and derives
+the double negation elimination theorem from these axioms.
+-/
+
+theorem efq_axiom (φ : Formula) : ⊢ Formula.bot.imp φ :=
+  Derivable.axiom [] _ (Axiom.ex_falso φ)
+
+/--
+Peirce's Law (axiomatic): `⊢ ((φ → ψ) → φ) → φ`.
+
+Classical reasoning in pure implicational form. This is now an axiom.
+
+This theorem provides a convenient wrapper around Peirce's Law axiom for use in proofs.
+-/
+theorem peirce_axiom (φ ψ : Formula) : ⊢ ((φ.imp ψ).imp φ).imp φ :=
+  Derivable.axiom [] _ (Axiom.peirce φ ψ)
+
+/-!
+## Derivable Classical Principles
+
+Classical logic principles derivable from the EFQ and Peirce axioms.
+
+These theorems demonstrate that the classical reasoning power of Double Negation
+Elimination (DNE), Law of Excluded Middle (LEM), and related principles are all
+derivable from the more foundational EFQ + Peirce axiomatization.
+
+**Historical Note**: The replacement of DNE with EFQ + Peirce separates two concerns:
+1. **EFQ** characterizes what `⊥` (absurdity) means - accepted in both
+   classical and intuitionistic logic
+2. **Peirce** provides classical (vs intuitionistic) reasoning - uses only implication
+
+This modular presentation aligns with modern logic textbooks (Mendelson, van Dalen, Prawitz)
+and makes the logical structure more transparent.
+-/
+
+/--
+Double Negation Elimination (derived): `⊢ ¬¬φ → φ`.
+
+Classical principle: if a formula is not false, it is true.
+
+**Derivation from EFQ + Peirce**:
+This theorem is now derived from the more foundational axioms EFQ (`⊥ → φ`) and
+Peirce's Law (`((φ → ψ) → φ) → φ`), demonstrating that these axioms provide
+the same classical reasoning power as DNE while offering better conceptual modularity.
+
+**Proof Strategy**:
+1. `¬¬φ = (φ → ⊥) → ⊥` (definition of negation)
+2. Peirce with `ψ = ⊥`: `⊢ ((φ → ⊥) → φ) → φ`
+3. EFQ: `⊢ ⊥ → φ`
+4. Compose using b_combinator: from `⊥ → φ` derive `(φ → ⊥) → φ` (given `(φ → ⊥) → ⊥`)
+5. Apply Peirce to get `φ`
+
+**Dependencies**: Only requires prop_k, prop_s, EFQ, Peirce, and b_combinator.
+No circular dependencies - b_combinator is derived from K and S without using DNE.
+
+**Complexity**: Medium (7 proof steps)
+
+**Historical Note**: Previously an axiom, now a derived theorem. This change
+improves the foundational structure without affecting derivational power.
+-/
+theorem double_negation (φ : Formula) : ⊢ φ.neg.neg.imp φ := by
+  -- ¬¬φ = (φ → ⊥) → ⊥ (definition)
+  unfold Formula.neg
+
+  -- Goal: ⊢ ((φ → ⊥) → ⊥) → φ
+
+  -- Step 1: Peirce with ψ = ⊥ gives us: ⊢ ((φ → ⊥) → φ) → φ
+  have peirce_inst : ⊢ ((φ.imp Formula.bot).imp φ).imp φ :=
+    peirce_axiom φ Formula.bot
+
+  -- Step 2: EFQ gives us: ⊢ ⊥ → φ
+  have efq_inst : ⊢ Formula.bot.imp φ :=
+    efq_axiom φ
+
+  -- Step 3: Use b_combinator to compose (⊥ → φ) with ((φ → ⊥) → ⊥)
+  -- b_combinator: (B → C) → (A → B) → (A → C)
+  -- With A = (φ → ⊥), B = ⊥, C = φ
+  -- Gives: (⊥ → φ) → ((φ → ⊥) → ⊥) → ((φ → ⊥) → φ)
+  have b_inst : ⊢ (Formula.bot.imp φ).imp
+                   (((φ.imp Formula.bot).imp Formula.bot).imp
+                    ((φ.imp Formula.bot).imp φ)) :=
+    b_combinator
+
+  -- Step 4: Apply modus ponens with efq_inst
+  have step1 : ⊢ ((φ.imp Formula.bot).imp Formula.bot).imp
+                  ((φ.imp Formula.bot).imp φ) :=
+    Derivable.modus_ponens [] _ _ b_inst efq_inst
+
+  -- Step 5: Now compose with Peirce
+  -- We have: ((φ → ⊥) → ⊥) → ((φ → ⊥) → φ)  [step1]
+  -- We have: ((φ → ⊥) → φ) → φ                [peirce_inst]
+  -- Goal:    ((φ → ⊥) → ⊥) → φ
+  -- Use b_combinator to compose
+
+  have b_final : ⊢ (((φ.imp Formula.bot).imp φ).imp φ).imp
+                    ((((φ.imp Formula.bot).imp Formula.bot).imp
+                      ((φ.imp Formula.bot).imp φ)).imp
+                     (((φ.imp Formula.bot).imp Formula.bot).imp φ)) :=
+    b_combinator
+
+  -- Step 6: Apply modus ponens with peirce_inst
+  have step2 : ⊢ (((φ.imp Formula.bot).imp Formula.bot).imp
+                   ((φ.imp Formula.bot).imp φ)).imp
+                  (((φ.imp Formula.bot).imp Formula.bot).imp φ) :=
+    Derivable.modus_ponens [] _ _ b_final peirce_inst
+
+  -- Step 7: Final modus ponens
+  exact Derivable.modus_ponens [] _ _ step2 step1
+
 /-!
 ## Phase 1: Propositional Foundations
 
 Core propositional theorems for negation, conjunction, disjunction, and contraposition.
 -/
 
-/--
-Ex Contradictione Quodlibet: `[A, ¬A] ⊢ B`.
-
-From a contradiction (both A and ¬A), any formula B can be derived.
-
-**Proof Strategy**: Use EFQ pattern - from ¬A and A, derive B.
-
-Proof:
-1. Assume A and ¬A in context
-2. By weakening, derive ¬A → (A → B) using prop_s
-3. Apply modus ponens twice
--/
 theorem ecq (A B : Formula) : [A, A.neg] ⊢ B := by
   -- Goal: [A, ¬A] ⊢ B where ¬A = A → ⊥
   -- From ¬A in context, we have A → ⊥
@@ -126,7 +228,7 @@ theorem ecq (A B : Formula) : [A, A.neg] ⊢ B := by
 
   -- Now use DNE: ¬¬B → B
   have dne_b : ⊢ B.neg.neg.imp B :=
-    Derivable.axiom [] _ (Axiom.double_negation B)
+    double_negation B
 
   -- Weaken to context [A, ¬A]
   have dne_b_ctx : [A, A.neg] ⊢ B.neg.neg.imp B :=
@@ -147,29 +249,14 @@ Proof:
 1. By ECQ: `[A, ¬A] ⊢ B`
 2. Use deduction theorem pattern to lift to `⊢ A → (¬A → B)`
 -/
+
 theorem raa (A B : Formula) : ⊢ A.imp (A.neg.imp B) := by
   -- We need to show: ⊢ A → (¬A → B)
   -- Strategy: From A and ¬A, we get ⊥, then from ⊥ we derive B
 
-  -- First, derive ⊥ → B
-  -- ⊥ → ¬¬B is prop_s: ⊥ → (B.neg → ⊥)
-  have bot_implies_neg_neg_b : ⊢ Formula.bot.imp B.neg.neg :=
-    Derivable.axiom [] _ (Axiom.prop_s Formula.bot B.neg)
-
-  -- DNE: ¬¬B → B
-  have dne_b : ⊢ B.neg.neg.imp B :=
-    Derivable.axiom [] _ (Axiom.double_negation B)
-
-  -- Compose to get ⊥ → B using b_combinator
-  have b_comp : ⊢ (B.neg.neg.imp B).imp
-                   ((Formula.bot.imp B.neg.neg).imp (Formula.bot.imp B)) :=
-    @b_combinator Formula.bot B.neg.neg B
-
-  have step1 : ⊢ (Formula.bot.imp B.neg.neg).imp (Formula.bot.imp B) :=
-    Derivable.modus_ponens [] _ _ b_comp dne_b
-
+  -- First, use EFQ: ⊥ → B
   have bot_to_b : ⊢ Formula.bot.imp B :=
-    Derivable.modus_ponens [] _ _ step1 bot_implies_neg_neg_b
+    efq_axiom B
 
   -- Now derive A → ¬A → ⊥ using theorem_app1
   -- theorem_app1: ⊢ A → (A → ⊥) → ⊥
@@ -198,21 +285,18 @@ theorem raa (A B : Formula) : ⊢ A.imp (A.neg.imp B) := by
   exact Derivable.modus_ponens [] _ _ step3 a_to_neg_a_to_bot
 
 /--
-Ex Falso Quodlibet: `⊢ ¬A → (A → B)`.
+Ex Falso Quodlibet (axiomatic): `⊢ ⊥ → φ`.
 
-From falsehood (¬A), anything can be derived given A (which creates contradiction).
+From absurdity (`⊥`), anything can be derived. This is now an axiom (EFQ).
 
-This is the dual of RAA.
-
-**Proof Strategy**: Apply theorem_flip to RAA.
+This theorem provides a convenient wrapper around the EFQ axiom for use in proofs.
 -/
-theorem efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
+
+theorem efq_neg (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- Goal: ¬A → (A → B)
   -- We have RAA: A → (¬A → B)
-  -- We need to flip the arguments
+  -- Apply theorem_flip
 
-  -- By theorem_flip: (X → Y → Z) → (Y → X → Z)
-  -- With X=A, Y=¬A, Z=B
   have raa_inst : ⊢ A.imp (A.neg.imp B) :=
     raa A B
 
@@ -222,16 +306,13 @@ theorem efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   exact Derivable.modus_ponens [] _ _ flip_inst raa_inst
 
 /--
-Left Disjunction Introduction: `[A] ⊢ A ∨ B`.
+Ex Falso Quodlibet (backward compatibility alias).
 
-If A holds, then A ∨ B holds.
-
-**Proof Strategy**: Use definition of disjunction (¬A → B) and propositional reasoning.
-
-Recall: A ∨ B = ¬A → B
-Goal: From A, derive ¬A → B
-This is exactly EFQ: ¬A → (A → B), then apply A
+This alias maintains backward compatibility with code using the old `efq` name.
 -/
+@[deprecated efq_neg (since := "2025-12-14")]
+theorem efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := efq_neg A B
+
 theorem ldi (A B : Formula) : [A] ⊢ A.or B := by
   -- A ∨ B = ¬A → B (by definition)
   unfold Formula.or
@@ -351,14 +432,19 @@ theorem rcp (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.imp A := by
     -- We need: (X → Y) → ((Y → Z) → (X → Z))
     -- So we need to flip the order
     unfold Formula.neg
-    have bc : ⊢ ((B.imp Formula.bot).imp Formula.bot).imp
-                 (((A.imp Formula.bot).imp (B.imp Formula.bot)).imp ((A.imp Formula.bot).imp Formula.bot)) :=
+    have bc :
+      ⊢ ((B.imp Formula.bot).imp Formula.bot).imp
+        (((A.imp Formula.bot).imp (B.imp Formula.bot)).imp
+         ((A.imp Formula.bot).imp Formula.bot)) :=
       @b_combinator (A.imp Formula.bot) (B.imp Formula.bot) Formula.bot
     -- Flip to get the right order
-    have flip : ⊢ (((B.imp Formula.bot).imp Formula.bot).imp
-                    (((A.imp Formula.bot).imp (B.imp Formula.bot)).imp ((A.imp Formula.bot).imp Formula.bot))).imp
-                   (((A.imp Formula.bot).imp (B.imp Formula.bot)).imp
-                    (((B.imp Formula.bot).imp Formula.bot).imp ((A.imp Formula.bot).imp Formula.bot))) :=
+    have flip :
+      ⊢ (((B.imp Formula.bot).imp Formula.bot).imp
+         (((A.imp Formula.bot).imp (B.imp Formula.bot)).imp
+          ((A.imp Formula.bot).imp Formula.bot))).imp
+        (((A.imp Formula.bot).imp (B.imp Formula.bot)).imp
+         (((B.imp Formula.bot).imp Formula.bot).imp
+          ((A.imp Formula.bot).imp Formula.bot))) :=
       @theorem_flip ((B.imp Formula.bot).imp Formula.bot)
                     ((A.imp Formula.bot).imp (B.imp Formula.bot))
                     ((A.imp Formula.bot).imp Formula.bot)
@@ -385,7 +471,7 @@ theorem rcp (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.imp A := by
 
   -- Step 4: Apply DNE to A
   have dne_a : ⊢ A.neg.neg.imp A :=
-    Derivable.axiom [] _ (Axiom.double_negation A)
+    double_negation A
 
   have dne_a_ctx : Γ ⊢ A.neg.neg.imp A :=
     Derivable.weakening [] Γ _ dne_a (by intro; simp)
@@ -440,23 +526,30 @@ theorem lce (A B : Formula) : [A.and B] ⊢ A := by
 
   -- Now we need: (A.neg → (A → B.neg)) → ((A → B.neg).neg → A.neg.neg)
   -- This is contraposition
-  have contra_step : ⊢ (A.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp A.neg.neg) := by
+  have contra_step :
+    ⊢ (A.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp A.neg.neg) := by
     -- b_combinator gives: (Y → Z) → (X → Y) → (X → Z)
     -- We need: (X → Y) → ((Y → Z) → (X → Z)), so flip
     unfold Formula.neg
-    have bc : ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
-                 (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp ((A.imp Formula.bot).imp Formula.bot)) :=
+    have bc :
+      ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
+        (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
+         ((A.imp Formula.bot).imp Formula.bot)) :=
       @b_combinator (A.imp Formula.bot) (A.imp (B.imp Formula.bot)) Formula.bot
-    have flip : ⊢ (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
-                    (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp ((A.imp Formula.bot).imp Formula.bot))).imp
-                   (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
-                    (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp ((A.imp Formula.bot).imp Formula.bot))) :=
+    have flip :
+      ⊢ (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
+         (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
+          ((A.imp Formula.bot).imp Formula.bot))).imp
+        (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
+         (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
+          ((A.imp Formula.bot).imp Formula.bot))) :=
       @theorem_flip ((A.imp (B.imp Formula.bot)).imp Formula.bot)
                     ((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot)))
                     ((A.imp Formula.bot).imp Formula.bot)
     exact Derivable.modus_ponens [] _ _ flip bc
 
-  have contra_step_ctx : [A.and B] ⊢ (A.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp A.neg.neg) :=
+  have contra_step_ctx :
+    [A.and B] ⊢ (A.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp A.neg.neg) :=
     Derivable.weakening [] [A.and B] _ contra_step (by intro; simp)
 
   -- Apply MP to get (A → B.neg).neg → A.neg.neg
@@ -469,7 +562,7 @@ theorem lce (A B : Formula) : [A.and B] ⊢ A := by
 
   -- Apply DNE
   have dne_a : ⊢ A.neg.neg.imp A :=
-    Derivable.axiom [] _ (Axiom.double_negation A)
+    double_negation A
 
   have dne_a_ctx : [A.and B] ⊢ A.neg.neg.imp A :=
     Derivable.weakening [] [A.and B] _ dne_a (by intro; simp)
@@ -511,23 +604,30 @@ theorem rce (A B : Formula) : [A.and B] ⊢ B := by
     Derivable.weakening [] [A.and B] _ s_helper (by intro; simp)
 
   -- Contrapose: (B.neg → (A → B.neg)) → ((A → B.neg).neg → B.neg.neg)
-  have contra_step : ⊢ (B.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp B.neg.neg) := by
+  have contra_step :
+    ⊢ (B.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp B.neg.neg) := by
     -- b_combinator gives: (Y → Z) → (X → Y) → (X → Z)
     -- We need: (X → Y) → ((Y → Z) → (X → Z)), so flip
     unfold Formula.neg
-    have bc : ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
-                 (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp ((B.imp Formula.bot).imp Formula.bot)) :=
+    have bc :
+      ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
+        (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
+         ((B.imp Formula.bot).imp Formula.bot)) :=
       @b_combinator (B.imp Formula.bot) (A.imp (B.imp Formula.bot)) Formula.bot
-    have flip : ⊢ (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
-                    (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp ((B.imp Formula.bot).imp Formula.bot))).imp
-                   (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
-                    (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot))) :=
+    have flip :
+      ⊢ (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
+         (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
+          ((B.imp Formula.bot).imp Formula.bot))).imp
+        (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
+         (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
+          ((B.imp Formula.bot).imp Formula.bot))) :=
       @theorem_flip ((A.imp (B.imp Formula.bot)).imp Formula.bot)
                     ((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot)))
                     ((B.imp Formula.bot).imp Formula.bot)
     exact Derivable.modus_ponens [] _ _ flip bc
 
-  have contra_step_ctx : [A.and B] ⊢ (B.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp B.neg.neg) :=
+  have contra_step_ctx :
+    [A.and B] ⊢ (B.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp B.neg.neg) :=
     Derivable.weakening [] [A.and B] _ contra_step (by intro; simp)
 
   -- Apply MP
@@ -540,7 +640,7 @@ theorem rce (A B : Formula) : [A.and B] ⊢ B := by
 
   -- Apply DNE
   have dne_b : ⊢ B.neg.neg.imp B :=
-    Derivable.axiom [] _ (Axiom.double_negation B)
+    double_negation B
 
   have dne_b_ctx : [A.and B] ⊢ B.neg.neg.imp B :=
     Derivable.weakening [] [A.and B] _ dne_b (by intro; simp)
@@ -726,7 +826,7 @@ theorem classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q
   have contra2 : ⊢ (P.neg.imp Q).imp (Q.neg.imp P.neg.neg) := contrapose_thm P.neg Q
 
   -- DNE for Q
-  have dne_q : ⊢ Q.neg.neg.imp Q := Derivable.axiom [] _ (Axiom.double_negation Q)
+  have dne_q : ⊢ Q.neg.neg.imp Q := double_negation Q
 
   -- Use deduction theorem to combine
   -- From [P → Q, ¬P → Q]:
@@ -820,7 +920,8 @@ theorem iff_elim_left (A B : Formula) : [((A.imp B).and (B.imp A)), A] ⊢ B := 
     -- Use weakening from lce
     have lce_inst : [(A.imp B).and (B.imp A)] ⊢ A.imp B :=
       lce (A.imp B) (B.imp A)
-    exact Derivable.weakening [(A.imp B).and (B.imp A)] _ _ lce_inst (by intro x; simp; intro h; left; exact h)
+    exact Derivable.weakening [(A.imp B).and (B.imp A)] _ _ lce_inst
+      (by intro x; simp; intro h; left; exact h)
 
   -- Apply modus ponens
   exact Derivable.modus_ponens _ _ _ h_imp h_a
@@ -841,7 +942,8 @@ theorem iff_elim_right (A B : Formula) : [((A.imp B).and (B.imp A)), B] ⊢ A :=
     -- Use weakening from rce
     have rce_inst : [(A.imp B).and (B.imp A)] ⊢ B.imp A :=
       rce (A.imp B) (B.imp A)
-    exact Derivable.weakening [(A.imp B).and (B.imp A)] _ _ rce_inst (by intro x; simp; intro h; left; exact h)
+    exact Derivable.weakening [(A.imp B).and (B.imp A)] _ _ rce_inst
+      (by intro x; simp; intro h; left; exact h)
 
   -- Apply modus ponens
   exact Derivable.modus_ponens _ _ _ h_imp h_b
@@ -874,6 +976,15 @@ theorem contrapose_imp (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) := 
                  ((A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
     @theorem_flip (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
   exact Derivable.modus_ponens [] _ _ flip bc
+
+/--
+Contraposition (helper): From `⊢ A → B`, derive `⊢ ¬B → ¬A`.
+
+This is a convenience wrapper that applies contrapose_imp via modus ponens.
+-/
+theorem contraposition {A B : Formula} (h : ⊢ A.imp B) : ⊢ B.neg.imp A.neg := by
+  have cp : ⊢ (A.imp B).imp (B.neg.imp A.neg) := contrapose_imp A B
+  exact Derivable.modus_ponens [] _ _ cp h
 
 /-!
 ## Biconditional Manipulation Helpers (Plan 060 Phase 2)
@@ -961,14 +1072,14 @@ theorem demorgan_conj_neg_forward (A B : Formula) :
   -- Step 1: DNE on (A → ¬B): ¬¬(A → ¬B) → (A → ¬B)
   have dne_inner : ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp Formula.bot |>.imp
                       (A.imp (B.imp Formula.bot)) :=
-    Derivable.axiom [] _ (Axiom.double_negation (A.imp (B.imp Formula.bot)))
+    double_negation (A.imp (B.imp Formula.bot))
 
   -- Step 2: (A → ¬B) → (¬¬A → ¬B)
   -- This is b_combinator flipped: (A → C) → ((B → A) → (B → C))
   -- With B = ¬¬A, C = ¬B
   -- We need DNE on A: ¬¬A → A
   have dne_a : ⊢ ((A.imp Formula.bot).imp Formula.bot).imp A :=
-    Derivable.axiom [] _ (Axiom.double_negation A)
+    double_negation A
 
   -- b_combinator: (A → C) → (B → A) → (B → C)
   -- With B = ¬¬A, A = A, C = ¬B
@@ -1076,9 +1187,13 @@ theorem demorgan_conj_neg_backward (A B : Formula) :
 
   -- Implement using deduction theorem:
   -- Context: [A ∧ B, ¬¬A → ¬B]
-  have h_in_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢ Formula.bot := by
+  have h_in_ctx :
+    [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
+    Formula.bot := by
     -- Get A ∧ B from context
-    have h_conj : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢ A.and B := by
+    have h_conj :
+      [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
+      A.and B := by
       apply Derivable.assumption
       simp
 
@@ -1123,13 +1238,17 @@ theorem demorgan_conj_neg_backward (A B : Formula) :
     exact Derivable.modus_ponens _ _ _ h_nb h_b
 
   -- Apply deduction theorem: [¬¬A → ¬B] ⊢ (A ∧ B) → ⊥
-  have step1 : [(((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢ (A.and B).imp Formula.bot :=
+  have step1 :
+    [(((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
+    (A.and B).imp Formula.bot :=
     Logos.Core.Metalogic.deduction_theorem
       [(((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))]
       (A.and B) Formula.bot h_in_ctx
 
   -- Apply deduction theorem: [] ⊢ (¬¬A → ¬B) → ((A ∧ B) → ⊥)
-  have step2 : ⊢ (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)).imp ((A.and B).imp Formula.bot) :=
+  have step2 :
+    ⊢ (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)).imp
+      ((A.and B).imp Formula.bot) :=
     Logos.Core.Metalogic.deduction_theorem []
       (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))
       ((A.and B).imp Formula.bot) step1
@@ -1206,7 +1325,7 @@ theorem demorgan_disj_neg_forward (A B : Formula) :
 
   -- Build: (¬A → ¬¬B) → (¬A → B)
   have dne_b : ⊢ ((B.imp Formula.bot).imp Formula.bot).imp B :=
-    Derivable.axiom [] _ (Axiom.double_negation B)
+    double_negation B
 
   -- b_combinator: (C → D) → (A → C) → (A → D)
   -- With A = ¬A, C = ¬¬B, D = B
@@ -1322,7 +1441,8 @@ a contradiction, then A holds.
 
 **Complexity**: Medium
 
-**Dependencies**: `Derivable.modus_ponens`, `Derivable.weakening`, `Axiom.double_negation`, `deduction_theorem`
+**Dependencies**: `Derivable.modus_ponens`, `Derivable.weakening`,
+`double_negation` (derived theorem), `deduction_theorem`
 -/
 theorem ne (A B : Formula) (h1 : (A.neg :: Γ) ⊢ B.neg) (h2 : (A.neg :: Γ) ⊢ B) : Γ ⊢ A := by
   -- From h1 and h2, derive (A.neg :: Γ) ⊢ ⊥
@@ -1333,7 +1453,7 @@ theorem ne (A B : Formula) (h1 : (A.neg :: Γ) ⊢ B.neg) (h2 : (A.neg :: Γ) �
     Logos.Core.Metalogic.deduction_theorem Γ A.neg Formula.bot h_bot
   -- Apply DNE: ¬¬A → A
   have dne : ⊢ A.neg.neg.imp A :=
-    Derivable.axiom [] _ (Axiom.double_negation A)
+    double_negation A
   have dne_ctx : Γ ⊢ A.neg.neg.imp A :=
     Derivable.weakening [] Γ _ dne (List.nil_subset Γ)
   exact Derivable.modus_ponens Γ A.neg.neg A dne_ctx h_neg_neg
@@ -1464,5 +1584,7 @@ theorem de (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: Γ) ⊢ C) :
     Derivable.modus_ponens _ _ _ cm_ctx ac_ctx
 
   exact Derivable.modus_ponens _ _ _ step2 nac
+
+
 
 end Logos.Core.Theorems.Propositional
