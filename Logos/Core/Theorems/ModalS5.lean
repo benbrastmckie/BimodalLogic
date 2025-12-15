@@ -23,9 +23,12 @@ for the TM bimodal logic system.
 
 ## References
 
-* [Perpetuity.lean](Perpetuity.lean) - Modal infrastructure (modal_t, modal_4, modal_b, box_mono, diamond_mono, box_conj_intro, contraposition, dni, dne)
-* [Propositional.lean](Propositional.lean) - Propositional infrastructure (ecq, raa, efq, ldi, rdi, rcp, lce, rce)
-* [Axioms.lean](../ProofSystem/Axioms.lean) - Axiom schemata (prop_k, prop_s, double_negation, modal_t, modal_4, modal_b)
+* [Perpetuity.lean](Perpetuity.lean) - Modal infrastructure
+  (modal_t, modal_4, modal_b, box_mono, diamond_mono, box_conj_intro, contraposition, dni, dne)
+* [Propositional.lean](Propositional.lean) - Propositional infrastructure
+  (ecq, raa, efq, ldi, rdi, rcp, lce, rce)
+* [Axioms.lean](../ProofSystem/Axioms.lean) - Axiom schemata
+  (prop_k, prop_s, double_negation, modal_t, modal_4, modal_b)
 * [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
 -/
 
@@ -187,7 +190,8 @@ Task 34: Box-Disjunction Introduction - `⊢ (□A ∨ □B) → □(A ∨ B)`.
 
 If either A or B is necessary, then their disjunction is necessary.
 
-**Proof Strategy**: Show both □A → □(A ∨ B) and □B → □(A ∨ B), then combine using disjunction structure.
+**Proof Strategy**: Show both □A → □(A ∨ B) and □B → □(A ∨ B),
+then combine using disjunction structure.
 
 Proof:
 1. From RAA: A → (¬A → B), apply box_mono to get □A → □(¬A → B)
@@ -463,7 +467,8 @@ theorem t_box_consistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).
     -- A ∧ ¬A = (A → ¬¬A).neg (by conjunction definition with B = ¬A)
     unfold Formula.and Formula.neg
 
-    -- Now goal is: (A.imp ((A.imp Formula.bot).imp Formula.bot).imp Formula.bot).imp Formula.bot → ⊥
+    -- Now goal is:
+    -- (A.imp ((A.imp Formula.bot).imp Formula.bot).imp Formula.bot).imp Formula.bot → ⊥
     -- Which simplifies to: ¬(A → ¬¬A) → ⊥
     -- This is ¬¬(A → ¬¬A)
 
@@ -473,8 +478,9 @@ theorem t_box_consistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).
 
     -- Now derive ¬¬(A → ¬¬A) from (A → ¬¬A)
     -- Use DNI on implication: X → ¬¬X
-    have dni_impl : ⊢ (A.imp ((A.imp Formula.bot).imp Formula.bot)).imp
-                       (((A.imp ((A.imp Formula.bot).imp Formula.bot)).imp Formula.bot).imp Formula.bot) :=
+    have dni_impl :
+      ⊢ (A.imp ((A.imp Formula.bot).imp Formula.bot)).imp
+        (((A.imp ((A.imp Formula.bot).imp Formula.bot)).imp Formula.bot).imp Formula.bot) :=
       @theorem_app1 (A.imp ((A.imp Formula.bot).imp Formula.bot)) Formula.bot
 
     exact Derivable.modus_ponens [] _ _ dni_impl dni_A
@@ -635,7 +641,9 @@ theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.o
     -- 7. ¬□¬A = ◇A, ¬□¬B = ◇B
 
     -- Step 1: Get the biconditional ¬(A ∨ B) ↔ (¬A ∧ ¬B)
-    have demorgan_disj : ⊢ ((A.or B).neg.imp (A.neg.and B.neg)).and ((A.neg.and B.neg).imp (A.or B).neg) :=
+    have demorgan_disj :
+      ⊢ ((A.or B).neg.imp (A.neg.and B.neg)).and
+        ((A.neg.and B.neg).imp (A.or B).neg) :=
       Propositional.demorgan_disj_neg A B
 
     -- Step 2: Apply box_iff_intro to get □¬(A ∨ B) ↔ □(¬A ∧ ¬B)
@@ -696,7 +704,8 @@ theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.o
     -- 4. → ¬□¬(A ∨ B) by box_iff_intro on demorgan_disj_neg
 
     -- Step 1: Apply demorgan_conj_neg backward: (¬□¬A ∨ ¬□¬B) → ¬(□¬A ∧ □¬B)
-    have demorgan_conj_back : ⊢ (A.neg.box.neg.or B.neg.box.neg).imp (A.neg.box.and B.neg.box).neg :=
+    have demorgan_conj_back :
+      ⊢ (A.neg.box.neg.or B.neg.box.neg).imp (A.neg.box.and B.neg.box).neg :=
       Propositional.demorgan_conj_neg_backward A.neg.box B.neg.box
 
     -- Step 2: Get box_conj_iff for (¬A ∧ ¬B)
@@ -718,7 +727,9 @@ theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.o
       contraposition conj_box_to_box_conj
 
     -- Step 5: Get demorgan biconditional and apply box_iff_intro
-    have demorgan_disj : ⊢ ((A.or B).neg.imp (A.neg.and B.neg)).and ((A.neg.and B.neg).imp (A.or B).neg) :=
+    have demorgan_disj :
+      ⊢ ((A.or B).neg.imp (A.neg.and B.neg)).and
+        ((A.neg.and B.neg).imp (A.or B).neg) :=
       Propositional.demorgan_disj_neg A B
 
     have box_demorgan : ⊢ ((A.or B).neg.box.imp (A.neg.and B.neg).box).and
@@ -820,10 +831,15 @@ theorem s5_diamond_box (A : Formula) : ⊢ iff (A.box.diamond) A.box := by
   -- iff definition: iff X Y = (X → Y) ∧ (Y → X)
   -- So iff (◇□A) □A = (◇□A → □A) ∧ (□A → ◇□A)
 
-  have pair_forward_backward : ⊢ (A.box.diamond.imp A.box).imp ((A.box.imp A.box.diamond).imp ((A.box.diamond.imp A.box).and (A.box.imp A.box.diamond))) :=
+  have pair_forward_backward :
+    ⊢ (A.box.diamond.imp A.box).imp
+      ((A.box.imp A.box.diamond).imp
+       ((A.box.diamond.imp A.box).and (A.box.imp A.box.diamond))) :=
     pairing (A.box.diamond.imp A.box) (A.box.imp A.box.diamond)
 
-  have step1 : ⊢ (A.box.imp A.box.diamond).imp ((A.box.diamond.imp A.box).and (A.box.imp A.box.diamond)) :=
+  have step1 :
+    ⊢ (A.box.imp A.box.diamond).imp
+      ((A.box.diamond.imp A.box).and (A.box.imp A.box.diamond)) :=
     Derivable.modus_ponens [] _ _ pair_forward_backward forward
 
   have result : ⊢ (A.box.diamond.imp A.box).and (A.box.imp A.box.diamond) :=
