@@ -74,13 +74,15 @@ def from_list (trueAtoms : List String) : TaskModel F where
 
 -- Deprecated aliases for backward compatibility
 @[deprecated all_false (since := "2025-12-09")]
-abbrev allFalse := all_false
+def allFalse {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T} : TaskModel F := all_false
 
 @[deprecated all_true (since := "2025-12-09")]
-abbrev allTrue := all_true
+def allTrue {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T} : TaskModel F := all_true
 
 @[deprecated from_list (since := "2025-12-09")]
-abbrev fromList := from_list
+def fromList {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
+    (trueAtoms : List String) : TaskModel F :=
+  from_list trueAtoms
 
 end TaskModel
 

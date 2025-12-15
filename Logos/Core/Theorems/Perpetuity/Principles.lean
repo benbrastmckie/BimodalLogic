@@ -1,4 +1,5 @@
 import Logos.Core.Theorems.Perpetuity.Helpers
+import Logos.Core.Theorems.Propositional
 
 /-!
 # Perpetuity Principles (P1-P5)
@@ -33,6 +34,17 @@ namespace Logos.Core.Theorems.Perpetuity
 
 open Logos.Core.Syntax
 open Logos.Core.ProofSystem
+open Logos.Core.Theorems.Combinators
+
+/--
+Double Negation Elimination (local helper): `⊢ ¬¬φ → φ`.
+
+Convenience wrapper for the derived DNE theorem from Propositional.lean.
+
+This theorem is now derived from EFQ + Peirce axioms (see Propositional.double_negation).
+-/
+private theorem double_negation (φ : Formula) : ⊢ φ.neg.neg.imp φ :=
+  Propositional.double_negation φ
 
 /-!
 ## P1: Necessary Implies Always
@@ -242,7 +254,7 @@ theorem diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
   -- Step 3: We need to relate φ.neg.box.neg.neg.box.neg to φ.neg.box.box.neg
   -- Use DNE:  ¬¬□¬φ → □¬φ
   have dne_box : ⊢ φ.neg.box.neg.neg.imp φ.neg.box :=
-    Derivable.axiom [] _ (Axiom.double_negation φ.neg.box)
+    double_negation φ.neg.box
 
   -- Step 4: Apply M4 after DNE: ¬¬□¬φ → □¬φ → □□¬φ
   have combined : ⊢ φ.neg.box.neg.neg.imp φ.neg.box.box :=
@@ -250,7 +262,7 @@ theorem diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
 
   -- Step 5: Necessitate and distribute
   have box_combined : ⊢ (φ.neg.box.neg.neg.imp φ.neg.box.box).box :=
-    Derivable.modal_k [] _ combined
+    Derivable.necessitation _ combined
 
   have mk_dist : ⊢ (φ.neg.box.neg.neg.imp φ.neg.box.box).box.imp
                     (φ.neg.box.neg.neg.box.imp φ.neg.box.box.box) :=
@@ -286,7 +298,7 @@ theorem diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
 
   -- Necessitate
   have box_dni : ⊢ (φ.neg.box.imp φ.neg.box.neg.neg).box :=
-    Derivable.modal_k [] _ dni_box
+    Derivable.necessitation _ dni_box
 
   -- Distribute
   have mk_dni : ⊢ (φ.neg.box.imp φ.neg.box.neg.neg).box.imp
@@ -325,7 +337,7 @@ theorem modal_5 (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.box := by
 
   -- Step 3: Necessitate d4 using modal_k with empty context
   have box_d4 : ⊢ (φ.diamond.diamond.imp φ.diamond).box :=
-    Derivable.modal_k [] _ d4
+    Derivable.necessitation _ d4
 
   -- Step 4: MK distribution
   have mk : ⊢ (φ.diamond.diamond.imp φ.diamond).box.imp
@@ -402,7 +414,7 @@ theorem box_conj_intro {A B : Formula}
   have pair : ⊢ A.imp (B.imp (A.and B)) := pairing A B
   -- Step 2: necessitation of pairing using modal_k with empty context
   have box_pair : ⊢ (A.imp (B.imp (A.and B))).box :=
-    Derivable.modal_k [] _ pair
+    Derivable.necessitation _ pair
   -- Step 3: modal K distribution (first application)
   -- □(A → (B → A∧B)) → (□A → □(B → A∧B))
   have mk1 : ⊢ (A.imp (B.imp (A.and B))).box.imp (A.box.imp (B.imp (A.and B)).box) :=
@@ -438,7 +450,7 @@ theorem box_conj_intro_imp {P A B : Formula}
   -- First, build the implication chain: □A → □B → □(A ∧ B)
   have pair : ⊢ A.imp (B.imp (A.and B)) := pairing A B
   have box_pair : ⊢ (A.imp (B.imp (A.and B))).box :=
-    Derivable.modal_k [] _ pair
+    Derivable.necessitation _ pair
   have mk1 : ⊢ (A.imp (B.imp (A.and B))).box.imp (A.box.imp (B.imp (A.and B)).box) :=
     Derivable.axiom [] _ (Axiom.modal_k_dist A (B.imp (A.and B)))
   have h1 : ⊢ A.box.imp (B.imp (A.and B)).box :=
@@ -518,11 +530,11 @@ theorem box_dne {A : Formula}
     (h : ⊢ A.neg.neg.box) : ⊢ A.box := by
   -- Step 1: DNE axiom
   have dne : ⊢ A.neg.neg.imp A :=
-    Derivable.axiom [] _ (Axiom.double_negation A)
+    double_negation A
 
   -- Step 2: Necessitate using modal_k with empty context
   have box_dne : ⊢ (A.neg.neg.imp A).box :=
-    Derivable.modal_k [] _ dne
+    Derivable.necessitation _ dne
 
   -- Step 3: Modal K distribution
   have mk : ⊢ (A.neg.neg.imp A).box.imp (A.neg.neg.box.imp A.box) :=
@@ -580,7 +592,7 @@ theorem perpetuity_4 (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond :=
 
   -- Necessitate: □(△¬φ → ¬¬△¬φ) using modal_k with empty context
   have box_dni_always : ⊢ (φ.neg.always.imp φ.neg.always.neg.neg).box :=
-    Derivable.modal_k [] _ dni_always
+    Derivable.necessitation _ dni_always
 
   -- Modal K: □(△¬φ → ¬¬△¬φ) → (□△¬φ → □¬¬△¬φ)
   have mk_dni : ⊢ (φ.neg.always.imp φ.neg.always.neg.neg).box.imp
@@ -771,8 +783,9 @@ theorem persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.always := by
     have mt_swap : ⊢ φ.diamond.box.swap_temporal.imp φ.diamond.swap_temporal :=
       box_to_present φ.diamond.swap_temporal
     have future_mt_swap : ⊢ (φ.diamond.box.swap_temporal.imp φ.diamond.swap_temporal).all_future :=
-      Derivable.temporal_k [] _ mt_swap
-    have past_mt_raw : ⊢ ((φ.diamond.box.swap_temporal.imp φ.diamond.swap_temporal).all_future).swap_temporal :=
+      Derivable.temporal_necessitation _ mt_swap
+    have past_mt_raw :
+      ⊢ ((φ.diamond.box.swap_temporal.imp φ.diamond.swap_temporal).all_future).swap_temporal :=
       Derivable.temporal_duality _ future_mt_swap
     -- Simplify using swap_temporal_diamond and swap_temporal_involution
     -- The key: swap(G(...)) = H(swap(...)), and swap is involutive
@@ -783,8 +796,9 @@ theorem persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.always := by
       -- Show the equality of formula structures
       show ⊢ (φ.diamond.box.imp φ.diamond).all_past
       -- past_mt_raw has type that simplifies to what we need
-      have eq1 : ((φ.diamond.box.swap_temporal.imp φ.diamond.swap_temporal).all_future).swap_temporal
-                = (φ.diamond.box.imp φ.diamond).all_past := by
+      have eq1 :
+        ((φ.diamond.box.swap_temporal.imp φ.diamond.swap_temporal).all_future).swap_temporal =
+        (φ.diamond.box.imp φ.diamond).all_past := by
         -- Expand definitions and apply involution/commutation lemmas
         simp only [Formula.swap_temporal, Formula.swap_temporal_involution]
         rfl
@@ -810,7 +824,7 @@ theorem persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.always := by
     have mt : ⊢ φ.diamond.box.imp φ.diamond := box_to_present φ.diamond
     -- Lift MT to future using temporal_k
     have future_mt : ⊢ (φ.diamond.box.imp φ.diamond).all_future :=
-      Derivable.temporal_k [] _ mt
+      Derivable.temporal_necessitation _ mt
     -- Use future K distribution: G(□◇φ → ◇φ) → (G□◇φ → G◇φ)
     have fk : ⊢ (φ.diamond.box.imp φ.diamond).all_future.imp
                  (φ.diamond.box.all_future.imp φ.diamond.all_future) :=

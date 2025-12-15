@@ -1,5 +1,5 @@
 import Logos.Core.ProofSystem.Derivation
-import Logos.Core.Theorems.Perpetuity
+import Logos.Core.Theorems.Combinators
 
 /-!
 # Deduction Theorem - Hilbert System Deduction Infrastructure
@@ -27,14 +27,75 @@ We handle each case of the Derivable relation:
 ## References
 
 * [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
-* [Perpetuity.lean](../Theorems/Perpetuity.lean) - Combinator infrastructure
+* [Combinators.lean](../Theorems/Combinators.lean) - Combinator infrastructure
 -/
 
 namespace Logos.Core.Metalogic
 
 open Logos.Core.Syntax
 open Logos.Core.ProofSystem
-open Logos.Core.Theorems.Perpetuity
+open Logos.Core.Theorems.Combinators
+
+/-! ## Derivation Height Measure -/
+
+/--
+Height of a derivation tree.
+
+The height is defined as the maximum depth of the derivation tree:
+- Base cases (axiom, assumption): height 0
+- Unary rules (necessitation, temporal_necessitation, temporal_duality, weakening):
+  height of subderivation + 1
+- Binary rules (modus_ponens): max of both subderivations + 1
+
+This measure is used for well-founded recursion in the deduction theorem proof.
+-/
+def Derivable.height : {Γ : Context} → {φ : Formula} → Derivable Γ φ → ℕ
+  | _, _, axiom _ => 0
+  | _, _, assumption _ => 0
+  | _, _, modus_ponens d1 d2 => max d1.height d2.height + 1
+  | _, _, necessitation d => d.height + 1
+  | _, _, temporal_necessitation d => d.height + 1
+  | _, _, temporal_duality d => d.height + 1
+  | _, _, weakening d _ => d.height + 1
+
+/-! ## Height Properties -/
+
+/--
+Weakening increases height by exactly 1.
+
+This is a definitional equality, but we state it as a theorem for clarity.
+-/
+theorem Derivable.weakening_height_succ {Γ' Δ : Context} {φ : Formula}
+    (d : Derivable Γ' φ) (h : Γ' ⊆ Δ) :
+    (Derivable.weakening Γ' Δ φ d h).height = d.height + 1 := by
+  rfl
+
+/--
+Subderivations in weakening have strictly smaller height.
+
+This is the key lemma for proving termination of well-founded recursion
+in the deduction theorem.
+-/
+theorem Derivable.subderiv_height_lt {Γ' Δ : Context} {φ : Formula}
+    (d : Derivable Γ' φ) (h : Γ' ⊆ Δ) :
+    d.height < (Derivable.weakening Γ' Δ φ d h).height := by
+  rw [weakening_height_succ]
+  omega
+
+/--
+Modus ponens height is strictly greater than both subderivations.
+-/
+theorem Derivable.mp_height_gt_left {Γ : Context} {φ ψ : Formula}
+    (d1 : Derivable Γ (φ.imp ψ)) (d2 : Derivable Γ φ) :
+    d1.height < (Derivable.modus_ponens Γ φ ψ d1 d2).height := by
+  simp [height]
+  omega
+
+theorem Derivable.mp_height_gt_right {Γ : Context} {φ ψ : Formula}
+    (d1 : Derivable Γ (φ.imp ψ)) (d2 : Derivable Γ φ) :
+    d2.height < (Derivable.modus_ponens Γ φ ψ d1 d2).height := by
+  simp [height]
+  omega
 
 /-! ## Helper Lemmas -/
 
@@ -57,6 +118,82 @@ private theorem weaken_under_imp_ctx {Γ : Context} {φ A : Formula}
   have ax_deriv : ⊢ φ := Derivable.axiom [] φ h
   have weakened : ⊢ A.imp φ := weaken_under_imp ax_deriv
   exact Derivable.weakening [] Γ (A.imp φ) weakened (List.nil_subset Γ)
+
+/--
+Exchange lemma: Derivability is preserved under context permutation.
+
+If `Γ ⊢ φ` and `Γ'` is a permutation of `Γ` (same elements, different order),
+then `Γ' ⊢ φ`.
+
+This is proven by showing that both `Γ ⊆ Γ'` and `Γ' ⊆ Γ` when they have
+the same elements, then using weakening.
+-/
+private theorem exchange {Γ Γ' : Context} {φ : Formula}
+    (h : Γ ⊢ φ)
+    (h_perm : ∀ x, x ∈ Γ ↔ x ∈ Γ') :
+    Γ' ⊢ φ := by
+  apply Derivable.weakening Γ Γ' φ h
+  intro x hx
+  exact (h_perm x).mp hx
+
+/--
+Helper: Remove an element from a list.
+
+Returns the list with all occurrences of `a` removed.
+-/
+private def removeAll {α : Type _} [DecidableEq α] (l : List α) (a : α) : List α :=
+  l.filter (· ≠ a)
+
+/--
+Helper: If `A ∈ Γ'` and `Γ' ⊆ A :: Γ`, then `removeAll Γ' A ⊆ Γ`.
+
+This shows that removing A from Γ' gives a subset of Γ.
+-/
+private theorem removeAll_subset {A : Formula} {Γ Γ' : Context}
+    (_h_mem : A ∈ Γ')
+    (h_sub : Γ' ⊆ A :: Γ) :
+    removeAll Γ' A ⊆ Γ := by
+  intro x hx
+  unfold removeAll at hx
+  simp [List.filter] at hx
+  have ⟨h_in, h_ne⟩ := hx
+  have := h_sub h_in
+  simp at this
+  cases this with
+  | inl h_eq =>
+    -- x = A, but x ≠ A from h_ne
+    exact absurd h_eq h_ne
+  | inr h_mem => exact h_mem
+
+/--
+Helper: If `A ∈ Γ'`, then `A :: removeAll Γ' A` has the same elements as `Γ'`.
+
+This shows that we can move A to the front of the list.
+-/
+private theorem cons_removeAll_perm {A : Formula} {Γ' : Context}
+    (h_mem : A ∈ Γ') :
+    ∀ x, x ∈ A :: removeAll Γ' A ↔ x ∈ Γ' := by
+  intro x
+  constructor
+  · intro h
+    simp at h
+    cases h with
+    | inl h_eq =>
+      subst h_eq
+      exact h_mem
+    | inr h_in =>
+      unfold removeAll at h_in
+      simp [List.filter] at h_in
+      exact h_in.1
+  · intro h
+    by_cases hx : x = A
+    · subst hx
+      simp
+    · simp
+      right
+      unfold removeAll
+      simp [List.filter]
+      exact ⟨h, hx⟩
 
 /-! ## Deduction Theorem Cases -/
 
@@ -120,321 +257,144 @@ The Deduction Theorem: If `A :: Γ ⊢ B` then `Γ ⊢ A → B`.
 This fundamental metatheorem allows converting derivations with assumptions
 into implicational theorems.
 
-**Proof Strategy**: Structural induction on the derivation.
+**Proof Strategy**: Well-founded recursion on derivation height.
 - Axiom case: Use S axiom to weaken
 - Assumption case: Identity if same, S axiom if different
-- Modus ponens case: Use K axiom distribution
-- Weakening case: Apply IH to subderivation
-- Modal/temporal K: Cannot occur (context transforms don't preserve A :: Γ structure)
+- Modus ponens case: Use K axiom distribution with recursive calls
+- Weakening case: Handle three subcases:
+  1. `Γ' = A :: Γ`: Apply recursion directly
+  2. `A ∉ Γ'`: Use S axiom (A not needed)
+  3. `A ∈ Γ'` but `Γ' ≠ A :: Γ`: Use recursion on permuted context (KEY CASE)
+- Modal/temporal necessitation: Cannot occur (require empty context)
 - Temporal duality: Cannot occur (requires empty context)
 
-**Implementation Note**: This proof requires careful handling of the generalized
-induction principle for dependent types. The key insight is that we perform
-induction on the derivation proof term itself, maintaining the relationship
-between the context structure and the formula being derived.
+**Well-Founded Recursion**: The recursion terminates because:
+- In modus ponens: both subderivations have strictly smaller height
+- In weakening: the subderivation has strictly smaller height
+- All recursive calls are on derivations with smaller height
 
-**Complexity**: Core metatheorem for Hilbert systems. Requires sophisticated
-proof engineering to handle all cases correctly.
+**Complexity**: Core metatheorem for Hilbert systems. Uses well-founded recursion
+to handle the complex weakening case where A appears in the middle of the context.
 -/
 theorem deduction_theorem (Γ : Context) (A B : Formula)
     (h : (A :: Γ) ⊢ B) :
     Γ ⊢ A.imp B := by
-  -- Generalize the context to enable induction on the derivation
-  generalize hΔ : A :: Γ = Δ at h
-  -- Induction on the derivation structure
-  induction h with
-  | «axiom» Γ' φ h_ax =>
-    -- Case: φ is an axiom
-    -- By deduction_axiom, Γ ⊢ A → φ
-    exact deduction_axiom Γ A φ h_ax
-  | assumption Γ' φ h_mem =>
-    -- Case: φ is in the context Γ' = A :: Γ
-    -- Need to check if φ = A (identity case) or φ ∈ Γ (other assumption)
-    subst hΔ
-    cases h_mem with
-    | head => exact deduction_assumption_same Γ A
-    | tail _ h_tail => exact deduction_assumption_other Γ A φ h_tail
-  | modus_ponens Γ' φ ψ _h1 _h2 ih1 ih2 =>
-    -- Case: ψ derived by modus ponens from φ → ψ and φ
-    -- IH gives us: Γ ⊢ A → (φ → ψ) and Γ ⊢ A → φ
-    -- Use deduction_mp to get: Γ ⊢ A → ψ
-    have h_imp : Γ ⊢ A.imp (φ.imp ψ) := ih1 hΔ
-    have h_ant : Γ ⊢ A.imp φ := ih2 hΔ
-    exact deduction_mp Γ A φ ψ h_imp h_ant
-  | modal_k Γ' φ _h ih =>
-    -- Case: Derivation uses modal_k rule
-    -- This means Δ = Context.map Formula.box Γ'
-    -- But Δ = A :: Γ, so A :: Γ = map box Γ'
-    -- This is only possible if A = box A' and Γ = map box Γ'' for some A', Γ''
-    -- where A' :: Γ'' = Γ' (the pre-boxed context)
-    -- This case is impossible in typical uses, but for completeness:
-    -- If A :: Γ = map box Γ', then every element is boxed
-    -- The goal is Γ ⊢ A → box φ
-    -- We cannot generally derive this without knowing the structure
-    -- However, note that List.cons_eq_map_cons_iff tells us the constraints
-    -- For now, we observe this case typically doesn't arise in standard usage
-    -- The equality A :: Γ = map box Γ' is very restrictive
-    -- hΔ : A :: Γ = Context.map Formula.box Γ' = List.map Formula.box Γ'
-    -- This means A = box (head Γ') and Γ = map box (tail Γ')
-    -- We need Γ ⊢ A.imp (box φ)
-    -- We have ih : A :: Γ = Γ' → Γ ⊢ A.imp φ
-    -- But A :: Γ = map box Γ' ≠ Γ' in general, so ih doesn't apply directly
-    -- This case requires: A :: Γ is the result of boxing each element
-    -- For this to work with our Γ, we need A = box A' for some A'
-    -- and recursively unbox. This is a structural constraint.
-    -- In practice, this case only arises when the original derivation
-    -- explicitly uses modal_k to derive into a boxed context.
-    -- For the deduction theorem in standard usage, this doesn't occur.
-    cases Γ' with
-    | nil =>
-      -- Empty context case: map box [] = [], but A :: Γ ≠ []
-      -- hΔ : A :: Γ = Context.map Formula.box [] = []
-      simp [Context.map] at hΔ
-    | cons A' Γ'' =>
-      -- hΔ : A :: Γ = Context.map Formula.box (A' :: Γ'')
-      --            = Formula.box A' :: List.map Formula.box Γ''
-      simp [Context.map] at hΔ
-      obtain ⟨hA, hΓ⟩ := hΔ
-      -- Now A = box A' and Γ = map box Γ''
-      -- Goal: (map box Γ'') ⊢ (box A').imp (box φ)
-      -- We have: Γ' = A' :: Γ'' and (A' :: Γ'') ⊢ φ
-      -- By IH (not directly applicable), we'd need (A' :: Γ'') ⊢ A'.imp φ
-      -- Then use modal_k: (map box (A' :: Γ'')) ⊢ box (A'.imp φ)
-      -- But box (A'.imp φ) = (box A').imp (box φ) by modal_k_dist axiom
-      -- Actually we need the derivation for (A' :: Γ'') ⊢ φ which is _h
-      -- Let's use a different approach: derive directly
-      -- Since (A' :: Γ'') ⊢ φ, we get (map box (A' :: Γ'')) ⊢ box φ by modal_k
-      -- That is, (box A' :: map box Γ'') ⊢ box φ
-      -- Now we need (map box Γ'') ⊢ (box A') → (box φ)
-      -- We have (box A' :: map box Γ'') ⊢ box φ from modal_k on _h
-      -- But _h is the derivation BEFORE modal_k was applied
-      -- We need to build the full derivation here using the available tools
-      -- The key insight: we don't have a direct IH because the context changed
-      -- We need to use the fact that Γ' ⊢ φ (from _h before modal_k)
-      -- To get: we can derive (A' :: Γ'') ⊢ φ from _h
-      -- Then by this theorem recursively (if we had it): Γ'' ⊢ A' → φ
-      -- Then by modal_k: (map box Γ'') ⊢ box (A' → φ)
-      -- Then by modal_k_dist: (map box Γ'') ⊢ (box A') → (box φ)
-      -- But we're proving this theorem, so we can't call it recursively here
-      -- The ih we have is: A :: Γ = Γ' → Γ ⊢ A.imp φ
-      -- Which becomes: (box A') :: (map box Γ'') = A' :: Γ'' → ...
-      -- This doesn't match because box A' ≠ A' (unless A' = bot or similar)
-      -- The actual solution: this case represents derivations that go through modal_k
-      -- We need a more general lemma or handle it structurally
-      -- For now, observe that _h : (A' :: Γ'') ⊢ φ gives us exactly what we need
-      -- Use deduction_theorem recursively via well-founded induction
-      -- But since we're in the middle of proving it, we need to be careful
-      -- Let's construct directly using the axioms
-      -- We have: _h : (A' :: Γ'') ⊢ φ
-      -- We want: (map box Γ'') ⊢ (box A').imp (box φ)
-      -- Step 1: From _h, we can apply weakening to get (A' :: Γ'') ⊆ ... ⊢ φ
-      -- Actually, let's use a clean approach:
-      -- The modal_k rule gives us: from Γ' ⊢ φ, derive (map box Γ') ⊢ box φ
-      -- So from _h : (A' :: Γ'') ⊢ φ, modal_k gives:
-      --   (map box (A' :: Γ'')) ⊢ box φ
-      -- = (box A' :: map box Γ'') ⊢ box φ
-      -- Now we need deduction theorem on THIS: (map box Γ'') ⊢ (box A').imp (box φ)
-      -- But we can't call ourselves. So we need the raw derivation.
-      -- Use the already proven case machinery:
-      -- We can derive (box A' :: map box Γ'') ⊢ box φ from modal_k
-      have h_boxed : (Formula.box A' :: Context.map Formula.box Γ'') ⊢ Formula.box φ :=
-        Derivable.modal_k (A' :: Γ'') φ _h
-      -- Now we need to show (map box Γ'') ⊢ (box A').imp (box φ)
-      -- This is exactly the deduction theorem statement we're proving!
-      -- We can't directly recurse, but we CAN use the fact that
-      -- h_boxed has a simpler derivation structure than h (no additional modal_k needed)
-      -- Actually, we need to use structural recursion properly here
-      -- The termination argument is: the underlying derivation _h is simpler
-      -- Let's use the assumption approach:
-      -- Actually wait - we have all the pieces:
-      -- Goal: Γ ⊢ A.imp (box φ) where A = box A', Γ = map box Γ''
-      -- We have h_boxed : (box A' :: map box Γ'') ⊢ box φ
-      -- We need: (map box Γ'') ⊢ (box A').imp (box φ)
-      -- This is deduction theorem for h_boxed!
-      -- The key: h_boxed's derivation uses modal_k once, then stops
-      -- So it's structurally smaller than continuing further
-      -- The recursive call IS valid because the derivation tree is finite
-      -- Lean's termination checker should accept this via structural recursion
-      -- ... but we can't make recursive calls in tactic mode easily
-      -- Alternative: prove a more general lemma first
-      -- For now, let's use the S axiom approach similar to other cases
-      -- Have: h_boxed : (box A' :: map box Γ'') ⊢ box φ
-      -- This means box φ is derivable with box A' in context
-      -- Use S axiom: (box φ) → ((box A') → (box φ))
-      have s_ax : ⊢ (Formula.box φ).imp ((Formula.box A').imp (Formula.box φ)) :=
-        Derivable.axiom [] _ (Axiom.prop_s (Formula.box φ) (Formula.box A'))
-      have s_weak : (Formula.box A' :: Context.map Formula.box Γ'') ⊢
-          (Formula.box φ).imp ((Formula.box A').imp (Formula.box φ)) :=
-        Derivable.weakening [] _ _ s_ax (List.nil_subset _)
-      have step1 : (Formula.box A' :: Context.map Formula.box Γ'') ⊢
-          (Formula.box A').imp (Formula.box φ) :=
-        Derivable.modus_ponens _ _ _ s_weak h_boxed
-      -- Now we have (box A' :: map box Γ'') ⊢ (box A').imp (box φ)
-      -- But we need (map box Γ'') ⊢ (box A').imp (box φ)
-      -- We can get this by the assumption case: box A' → box φ is derivable
-      -- with box A' in context, so by "inner deduction" we don't need box A'
-      -- Actually, step1 derives (box A').imp (box φ) WITH box A' in context
-      -- To remove box A' from context, we need to show the formula is derivable
-      -- without that assumption. The derivation doesn't USE box A' if (box A').imp (box φ)
-      -- follows from just the axioms... but it might!
-      -- Let's trace: s_ax and s_weak don't use box A', h_boxed might.
-      -- h_boxed = modal_k applied to _h : (A' :: Γ'') ⊢ φ
-      -- _h might use A' as assumption
-      -- So h_boxed might depend on box A' being in context
-      -- Therefore step1 might depend on box A' being in context
-      -- We cannot remove it trivially
-      -- The correct approach: prove this case cannot actually occur
-      -- OR use a coinductive/recursive proof structure
-      -- For the deduction theorem on Hilbert systems, this case IS possible
-      -- when the derivation uses modal_k. The standard proof handles it by:
-      -- strong induction on derivation depth, or mutual recursion
-      -- For now, let's mark this as a deep case needing more thought
-      -- ACTUALLY: Let me reconsider. The deduction theorem says:
-      -- if (A :: Γ) ⊢ B then Γ ⊢ A → B
-      -- The modal_k case transforms context via map box
-      -- So if our original context was A :: Γ, and modal_k was applied,
-      -- the NEW context is map box (A :: Γ) = box A :: map box Γ
-      -- So the result's context is NOT of form A :: Γ but box A :: ...
-      -- This means: the ORIGINAL context before modal_k was (A :: Γ)
-      -- But after modal_k, it becomes (box A :: map box Γ)
-      -- In the induction, we generalized hΔ : A :: Γ = Δ
-      -- For modal_k, Δ = map box Γ' where the derivation _h was for Γ' ⊢ φ
-      -- So hΔ : A :: Γ = map box Γ'
-      -- This constrains: A = box (head Γ'), Γ = map box (tail Γ')
-      -- The derivation _h : Γ' ⊢ φ is the PRE-modal_k derivation
-      -- The ih says: if A :: Γ = Γ' then Γ ⊢ A.imp φ
-      -- But A :: Γ = map box Γ' ≠ Γ' (unless trivial degenerate case)
-      -- So the IH doesn't help directly
-      -- What we need: a "boxed deduction theorem"
-      -- From _h : Γ' ⊢ φ, derive: Γ' ⊢ (unbox A).imp φ then box it
-      -- But we don't have unbox...
-      -- INSIGHT: The deduction theorem is typically stated for
-      -- derivations that don't use modal_k (or the logic is simple enough)
-      -- For TM logic with modal_k, we may need restrictions
-      -- OR: the deduction theorem needs to be stated differently
-      -- Let me check: for standard Hilbert systems (propositional),
-      -- there's no modal_k rule, so this case doesn't arise
-      -- For modal logic Hilbert systems, modal_k (necessitation rule)
-      -- typically only applies to THEOREMS (empty context)
-      -- In our system, modal_k applies to any context Γ
-      -- This is unusual and may complicate the deduction theorem
-      -- Standard modal deduction theorem: if Γ ⊢ B with no necessitation
-      -- on non-theorems, then Γ' ⊢ A → B
-      -- Our Derivable allows Γ ⊢ φ to give □Γ ⊢ □φ for ANY Γ
-      -- This means derivations can "lift" into boxed contexts
-      -- The deduction theorem as stated may not hold in full generality!
-      -- Counter-example potential:
-      -- [p] ⊢ p (by assumption)
-      -- [□p] ⊢ □p (by modal_k)
-      -- Does [] ⊢ □p → □p? Yes, by identity
-      -- Another:
-      -- [p] ⊢ p
-      -- [□p] ⊢ □p
-      -- Now with A = □p, Γ = []:
-      -- [□p] ⊢ □p means [] ⊢ □p → □p ✓
-      -- More complex:
-      -- [p, q] ⊢ p
-      -- [□p, □q] ⊢ □p
-      -- Need [□q] ⊢ □p → □p ✓ (identity)
-      -- Hmm, seems to work out...
-      -- The pattern: if Γ' ⊢ φ, then map box Γ' ⊢ box φ
-      -- And map box Γ' = A :: Γ means some elem = A
-      -- Goal: Γ ⊢ A.imp (box φ)
-      -- Since A = box A' for some A', and Γ' ⊢ φ came from somewhere
-      -- If A' is used in Γ' ⊢ φ, then box A' contributes to map box Γ' ⊢ box φ
-      -- The deduction step removes the first element (box A')
-      -- We need Γ ⊢ box A' → box φ
-      -- Key: the derivation Γ' ⊢ φ shows φ follows from Γ'
-      -- modal_k preserves this: □φ follows from □Γ'
-      -- If we "deduce" box A' out of □Γ', we get:
-      -- (tail □Γ') ⊢ (head □Γ') → □φ
-      -- = (map box (tail Γ')) ⊢ box (head Γ') → box φ
-      -- = Γ ⊢ A → box φ ✓ (using A = box (head Γ'), Γ = map box (tail Γ'))
-      -- So the theorem SHOULD hold, but we need the recursive structure
-      -- The proof: use strong induction on derivation size
-      -- Since _h is a sub-derivation, deduction_theorem _h gives the result
-      -- But we can't recurse directly in tactic mode
-      -- SOLUTION: Prove deduction_theorem' with explicit well-founded recursion
-      -- For now, let's use sorry for this case and note it needs recursion
-      -- Actually, let's try using the IH cleverly
-      -- ih : A :: Γ = Γ' → Γ ⊢ A.imp φ
-      -- We have A :: Γ = map box Γ', not Γ'
-      -- Let's define A' and Γ'' such that Γ' = A' :: Γ''
-      -- Then ih applied to Γ' doesn't help
-      -- But we can CALL deduction_theorem on _h!
-      -- Wait, we're proving deduction_theorem, so calling it is recursion
-      -- Lean's structural recursion should allow it since _h < h
-      -- Let's try with termination_by
-      -- Actually in tactic mode we can't easily do this
-      -- Let me leave this case with sorry and note for follow-up
-      sorry
-  | temporal_k Γ' φ _h ih =>
-    -- Similar to modal_k case - context transformed by all_future
-    -- hΔ : A :: Γ = Context.map Formula.all_future Γ'
-    cases Γ' with
-    | nil =>
-      -- Empty context: map all_future [] = [], but A :: Γ ≠ []
-      simp [Context.map] at hΔ
-    | cons A' Γ'' =>
-      -- hΔ : A :: Γ = Formula.all_future A' :: List.map Formula.all_future Γ''
-      simp [Context.map] at hΔ
-      -- Similar to modal_k: requires recursive call on _h
-      -- which is structurally smaller. For now, sorry.
-      sorry
-  | temporal_duality φ _h ih =>
-    -- Temporal duality only applies to empty context
-    -- hΔ : A :: Γ = [], which is impossible
-    simp at hΔ
-  | weakening Γ' Δ' φ _h1 h2 ih =>
-    -- Weakening case: Δ' ⊢ φ came from Γ' ⊢ φ with Γ' ⊆ Δ'
-    -- We have hΔ : A :: Γ = Δ'
-    -- ih : A :: Γ = Γ' → Γ ⊢ A.imp φ
-    -- If Γ' = A :: Γ, we can use ih directly
-    -- But Γ' might be smaller than Δ' = A :: Γ
-    -- Two cases:
-    -- 1. A ∈ Γ': Then A is used in Γ' ⊢ φ, so we need IH
-    -- 2. A ∉ Γ': Then φ is derivable without A, so we weaken
-    subst hΔ
-    -- h2 : Γ' ⊆ A :: Γ
-    -- _h1 : Γ' ⊢ φ
-    -- Goal: Γ ⊢ A.imp φ
-    -- Case on whether A ∈ Γ'
-    by_cases hA : A ∈ Γ'
-    · -- A is in Γ', so we need the induction hypothesis
-      -- We need to show Γ' can be written as A :: Γ'' for some Γ'' ⊆ Γ
-      -- Then ih (A :: Γ = Γ') would give Γ ⊢ A.imp φ
-      -- But Γ' might not have A at the head
-      -- We need a permutation argument or different approach
-      -- Actually, we can use a different strategy:
-      -- From Γ' ⊢ φ with A ∈ Γ', we want Γ ⊢ A → φ
-      -- If we could reorder Γ' to put A first: A :: (Γ' \ A) ⊢ φ
-      -- Then deduction theorem gives: (Γ' \ A) ⊢ A → φ
-      -- Then weaken: since (Γ' \ A) ⊆ Γ' ⊆ A :: Γ, and A not in (Γ' \ A),
-      -- we have (Γ' \ A) ⊆ Γ
-      -- So Γ ⊢ A → φ
-      -- But we don't have a reordering/exchange lemma proven
-      -- Alternative: use ih if we can establish A :: Γ = Γ'
-      -- We can't in general (Γ' might be a subset)
-      -- For now, sorry this sub-case
-      sorry
-    · -- A ∉ Γ', so φ is derivable from Γ' without using A
-      -- h2 : Γ' ⊆ A :: Γ and A ∉ Γ' implies Γ' ⊆ Γ
-      have h_sub : Γ' ⊆ Γ := by
-        intro x hx
-        have := h2 hx
-        simp at this
-        cases this with
-        | inl h_eq =>
-          -- x = A, but A ∉ Γ', contradiction
-          subst h_eq
-          exact absurd hx hA
-        | inr h_mem => exact h_mem
-      -- Now Γ' ⊢ φ and Γ' ⊆ Γ, so Γ ⊢ φ
-      have h_weak : Γ ⊢ φ := Derivable.weakening Γ' Γ φ _h1 h_sub
-      -- Use S axiom to get Γ ⊢ A → φ
-      have s_ax : ⊢ φ.imp (A.imp φ) := Derivable.axiom [] _ (Axiom.prop_s φ A)
-      have s_weak : Γ ⊢ φ.imp (A.imp φ) :=
-        Derivable.weakening [] Γ _ s_ax (List.nil_subset Γ)
-      exact Derivable.modus_ponens Γ φ (A.imp φ) s_weak h_weak
+  -- Pattern match on the derivation structure
+  match h with
+  | Derivable.axiom _ φ h_ax =>
+      -- Case: φ is an axiom
+      -- By deduction_axiom, Γ ⊢ A → φ
+      exact deduction_axiom Γ A φ h_ax
+
+  | Derivable.assumption _ φ h_mem =>
+      -- Case: φ is in the context A :: Γ
+      -- Need to check if φ = A (identity case) or φ ∈ Γ (other assumption)
+      cases h_mem with
+      | head =>
+          -- φ = A, so we need Γ ⊢ A → A (identity)
+          exact deduction_assumption_same Γ A
+      | tail _ h_tail =>
+          -- φ ∈ Γ, so we need Γ ⊢ A → φ (weakening)
+          exact deduction_assumption_other Γ A φ h_tail
+
+  | Derivable.modus_ponens _ φ ψ h1 h2 =>
+      -- Case: ψ derived by modus ponens from φ → ψ and φ
+      -- Recursive calls on subderivations (both have smaller height)
+      have ih1 : Γ ⊢ A.imp (φ.imp ψ) := deduction_theorem Γ A (φ.imp ψ) h1
+      have ih2 : Γ ⊢ A.imp φ := deduction_theorem Γ A φ h2
+      -- Use deduction_mp to combine: Γ ⊢ A → ψ
+      exact deduction_mp Γ A φ ψ ih1 ih2
+
+  | Derivable.necessitation φ h_deriv =>
+      -- Case: Derivation uses necessitation rule
+      -- necessitation requires empty context: [] ⊢ φ implies [] ⊢ □φ
+      -- But we have A :: Γ ⊢ B, so this case is impossible
+      -- The match will fail here, which is correct
+      nomatch h_deriv  -- h_deriv : Derivable [] φ, but we need Derivable (A :: Γ) _
+
+  | Derivable.temporal_necessitation φ h_deriv =>
+      -- Case: Derivation uses temporal_necessitation rule
+      -- temporal_necessitation requires empty context: [] ⊢ φ implies [] ⊢ Fφ
+      -- But we have A :: Γ ⊢ B, so this case is impossible
+      nomatch h_deriv
+
+  | Derivable.temporal_duality φ h_deriv =>
+      -- Case: Temporal duality only applies to empty context
+      -- But we have A :: Γ ⊢ B, so this case is impossible
+      nomatch h_deriv
+
+  | Derivable.weakening Γ' _ φ h1 h2 =>
+      -- Weakening case: (A :: Γ) ⊢ φ came from Γ' ⊢ φ with Γ' ⊆ A :: Γ
+      -- h1 : Γ' ⊢ φ (subderivation with smaller height)
+      -- h2 : Γ' ⊆ A :: Γ
+      -- Goal: Γ ⊢ A.imp φ
+
+      -- Subcase 1: Check if Γ' = A :: Γ (then we can recurse directly)
+      by_cases h_eq : Γ' = A :: Γ
+      · -- Γ' = A :: Γ, so h1 : (A :: Γ) ⊢ φ
+        subst h_eq
+        exact deduction_theorem Γ A φ h1
+
+      · -- Γ' ≠ A :: Γ, so Γ' is a proper subset of A :: Γ
+        -- Subcase 2: Check if A ∈ Γ'
+        by_cases hA : A ∈ Γ'
+        · -- A ∈ Γ' but Γ' ≠ A :: Γ
+          -- This is the KEY CASE that requires well-founded recursion
+          --
+          -- Strategy:
+          -- 1. Use exchange to move A to the front: A :: removeAll Γ' A ⊢ φ
+          -- 2. Apply deduction theorem recursively (smaller height!)
+          -- 3. Weaken the result to Γ
+
+          -- Step 1: Permute context to move A to front
+          have h_perm : ∀ x, x ∈ A :: removeAll Γ' A ↔ x ∈ Γ' :=
+            cons_removeAll_perm hA
+          have h_exch : (A :: removeAll Γ' A) ⊢ φ :=
+            exchange h1 h_perm
+
+          -- Step 2: Apply deduction theorem recursively
+          -- This terminates because h1.height < (weakening ...).height
+          have ih : removeAll Γ' A ⊢ A.imp φ :=
+            deduction_theorem (removeAll Γ' A) A φ h_exch
+
+          -- Step 3: Weaken to Γ
+          have h_sub : removeAll Γ' A ⊆ Γ :=
+            removeAll_subset hA h2
+          exact Derivable.weakening (removeAll Γ' A) Γ (A.imp φ) ih h_sub
+
+        · -- A ∉ Γ', so φ is derivable from Γ' without using A
+          -- h2 : Γ' ⊆ A :: Γ and A ∉ Γ' implies Γ' ⊆ Γ
+          have h_sub : Γ' ⊆ Γ := by
+            intro x hx
+            have := h2 hx
+            simp at this
+            cases this with
+            | inl h_eq =>
+              -- x = A, but A ∉ Γ', contradiction
+              subst h_eq
+              exact absurd hx hA
+            | inr h_mem => exact h_mem
+
+          -- Now Γ' ⊢ φ and Γ' ⊆ Γ, so Γ ⊢ φ
+          have h_weak : Γ ⊢ φ := Derivable.weakening Γ' Γ φ h1 h_sub
+
+          -- Use S axiom to get Γ ⊢ A → φ
+          have s_ax : ⊢ φ.imp (A.imp φ) :=
+            Derivable.axiom [] _ (Axiom.prop_s φ A)
+          have s_weak : Γ ⊢ φ.imp (A.imp φ) :=
+            Derivable.weakening [] Γ _ s_ax (List.nil_subset Γ)
+          exact Derivable.modus_ponens Γ φ (A.imp φ) s_weak h_weak
+
+termination_by h.height
+decreasing_by
+  -- Prove that all recursive calls are on derivations with smaller height
+  all_goals simp_wf
+  -- For modus ponens cases
+  · exact Derivable.mp_height_gt_left h1 h2
+  · exact Derivable.mp_height_gt_right h1 h2
+  -- For weakening case with Γ' = A :: Γ
+  · exact Derivable.subderiv_height_lt h1 h2
+  -- For weakening case with A ∈ Γ' but Γ' ≠ A :: Γ
+  · exact Derivable.subderiv_height_lt h1 h2
 
 end Logos.Core.Metalogic
