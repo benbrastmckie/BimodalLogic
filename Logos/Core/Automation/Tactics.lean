@@ -1,5 +1,6 @@
 import Logos.Core.ProofSystem
 import Logos.Core.Automation.AesopRules
+import Logos.Core.Theorems.GeneralizedNecessitation
 import Lean
 
 /-!
@@ -204,7 +205,7 @@ Creates tactics that apply modal K or temporal K rules to goals of form `Γ ⊢ 
 **Parameters**:
 - `tacticName`: Name of tactic (for error messages)
 - `operatorConst`: Formula operator constructor (e.g., ``Formula.box``)
-- `ruleConst`: Derivable inference rule (e.g., ``Derivable.modal_k``)
+- `ruleConst`: Derivable inference rule (e.g., ``Theorems.generalized_modal_k``)
 - `operatorSymbol`: Unicode symbol for error messages (e.g., "□")
 
 **Returns**: TacticM action that applies the K rule for the specified operator.
@@ -212,7 +213,7 @@ Creates tactics that apply modal K or temporal K rules to goals of form `Γ ⊢ 
 **Example Usage**:
 ```lean
 elab "modal_k_tactic" : tactic =>
-  mkOperatorKTactic "modal_k_tactic" ``Formula.box ``Derivable.modal_k "□"
+  mkOperatorKTactic "modal_k_tactic" ``Formula.box ``Theorems.generalized_modal_k "□"
 ```
 -/
 def mkOperatorKTactic (tacticName : String) (operatorConst : Name)
@@ -249,7 +250,7 @@ preserving all functionality.
 `modal_k_tactic` applies the modal K inference rule.
 
 Given a goal `Derivable (□Γ) (□φ)`, creates subgoal `Derivable Γ φ`
-and applies `Derivable.modal_k`.
+and applies `Theorems.generalized_modal_k`.
 
 **Example**:
 ```lean
@@ -263,7 +264,7 @@ example (p : Formula) : Derivable [p.box] (p.box) := by
 **Implementation**: Uses `mkOperatorKTactic` factory for modal operator.
 -/
 elab "modal_k_tactic" : tactic =>
-  mkOperatorKTactic "modal_k_tactic" ``Formula.box ``Derivable.modal_k "□"
+  mkOperatorKTactic "modal_k_tactic" ``Formula.box ``Theorems.generalized_modal_k "□"
 
 /--
 `temporal_k_tactic` applies the temporal K inference rule.
@@ -283,7 +284,7 @@ example (p : Formula) : Derivable [p.all_future] (p.all_future) := by
 **Implementation**: Uses `mkOperatorKTactic` factory for temporal operator.
 -/
 elab "temporal_k_tactic" : tactic =>
-  mkOperatorKTactic "temporal_k_tactic" ``Formula.all_future ``Derivable.temporal_k "F"
+  mkOperatorKTactic "temporal_k_tactic" ``Formula.all_future ``Theorems.generalized_temporal_k "F"
 
 /-!
 ## Phase 2: Modal Axiom Tactics (modal_4_tactic, modal_b_tactic)
@@ -325,7 +326,9 @@ elab "modal_4_tactic" : tactic => do
             let proof ← mkAppM ``Derivable.axiom #[axiomProof]
             goal.assign proof
           else
-            throwError "modal_4_tactic: expected □φ → □□φ pattern with same φ, got □{innerFormula} → □□{innerFormula2}"
+            throwError (
+              "modal_4_tactic: expected □φ → □□φ pattern with same φ, " ++
+              "got □{innerFormula} → □□{innerFormula2}")
 
         | _ =>
           throwError "modal_4_tactic: expected □□φ on right side, got {rhs}"
@@ -418,14 +421,17 @@ elab "temp_4_tactic" : tactic => do
       | .app (.const ``Formula.all_future _) innerFormula =>
 
         match rhs with
-        | .app (.const ``Formula.all_future _) (.app (.const ``Formula.all_future _) innerFormula2) =>
+        | .app (.const ``Formula.all_future _)
+            (.app (.const ``Formula.all_future _) innerFormula2) =>
 
           if ← isDefEq innerFormula innerFormula2 then
             let axiomProof ← mkAppM ``Axiom.temp_4 #[innerFormula]
             let proof ← mkAppM ``Derivable.axiom #[axiomProof]
             goal.assign proof
           else
-            throwError "temp_4_tactic: expected Fφ → FFφ pattern with same φ, got F{innerFormula} → FF{innerFormula2}"
+            throwError (
+              "temp_4_tactic: expected Fφ → FFφ pattern with same φ, " ++
+              "got F{innerFormula} → FF{innerFormula2}")
 
         | _ =>
           throwError "temp_4_tactic: expected FFφ on right side, got {rhs}"

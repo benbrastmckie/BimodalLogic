@@ -3,12 +3,14 @@ import Logos.Core.Syntax.Formula
 /-!
 # Axioms - TM Axiom Schemata
 
-This module defines the 12 axiom schemata for bimodal logic TM (Tense and Modality).
+This module defines the 13 axiom schemata for bimodal logic TM (Tense and Modality).
 
 ## Main Definitions
 
 - `Axiom`: Inductive type characterizing valid axiom instances
-- 12 axiom constructors: `prop_k`, `prop_s`, `modal_t`, `modal_4`, `modal_b`, `modal_k_dist`, `double_negation`, `temp_4`, `temp_a`, `temp_l`, `modal_future`, `temp_future`
+- 14 axiom constructors: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`,
+  `modal_b`, `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_a`, `temp_l`,
+  `modal_future`, `temp_future`
 
 ## Axiom Schemata
 
@@ -17,7 +19,11 @@ The TM logic includes:
 ### Propositional Axioms
 - **K** (Propositional K): `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))` - distribution axiom
 - **S** (Propositional S): `φ → (ψ → φ)` - weakening axiom
-- **DNE** (Double Negation Elimination): `¬¬φ → φ` - classical logic principle
+- **EFQ** (Ex Falso Quodlibet): `⊥ → φ` - from absurdity, anything follows
+- **Peirce** (Peirce's Law): `((φ → ψ) → φ) → φ` - classical implication principle
+
+**Note**: Double Negation Elimination (`¬¬φ → φ`) is derivable from EFQ + Peirce
+(see `Logos.Core.Theorems.Propositional.double_negation`).
 
 ### S5 Modal Axioms (metaphysical necessity □)
 - **MT** (Modal T): `□φ → φ` - what is necessary is true (reflexivity)
@@ -26,6 +32,7 @@ The TM logic includes:
 - **MK** (Modal K Distribution): `□(φ → ψ) → (□φ → □ψ)` - necessity distributes over implication
 
 ### Temporal Axioms (future F, past P)
+- **TK** (Temporal K Distribution): `F(φ → ψ) → (Fφ → Fψ)` - future distributes over implication
 - **T4** (Temporal 4): `Fφ → FFφ` - future of future is future (transitivity)
 - **TA** (Temporal A): `φ → FPφ` - the present was in the past of the future
 - **TL** (Temporal L): `always φ → FPφ` - perpetuity implies recurrence
@@ -53,7 +60,7 @@ open Logos.Core.Syntax
 /--
 Axiom schemata for bimodal logic TM.
 
-A formula `φ` is an axiom if it matches one of the 12 axiom schema patterns.
+A formula `φ` is an axiom if it matches one of the 13 axiom schema patterns.
 Each constructor takes formula parameters representing the schema instantiation.
 -/
 inductive Axiom : Formula → Prop where
@@ -122,6 +129,51 @@ inductive Axiom : Formula → Prop where
   | modal_5_collapse (φ : Formula) : Axiom (φ.box.diamond.imp φ.box)
 
   /--
+  Ex Falso Quodlibet (EFQ): `⊥ → φ` (explosion principle).
+
+  From absurdity (`⊥`), anything can be derived. This axiom directly characterizes
+  what `bot` means: if we have reached a contradiction, we can derive any formula.
+
+  This is the fundamental principle that distinguishes absurdity from other formulas.
+  Since `bot` is primitive in our syntax and `neg` is derived (`¬φ = φ → ⊥`), this
+  axiom directly states what the primitive `bot` means.
+
+  This axiom is accepted in both classical and intuitionistic logic. It provides
+  the semantic content of the absurdity symbol without imposing classical reasoning.
+
+  Semantically: In classical two-valued logic, `⊥` is false at all models, so the
+  implication `⊥ → φ` is vacuously true (false antecedent). In task semantics,
+  `truth_at M τ t ht Formula.bot = False`, so the implication is valid.
+
+  **Historical Note**: Also called the "principle of explosion" (Latin: *ex falso
+  [sequitur] quodlibet*, "from falsehood, anything [follows]").
+  -/
+  | ex_falso (φ : Formula) : Axiom (Formula.bot.imp φ)
+
+  /--
+  Peirce's Law: `((φ → ψ) → φ) → φ` (classical implication principle).
+
+  Pure implicational classical reasoning. If assuming that (φ implies ψ) leads
+  to φ, then φ holds. This is the characteristic axiom that distinguishes
+  classical from intuitionistic logic in purely implicational form.
+
+  This axiom is equivalent to the Law of Excluded Middle (LEM) and Double
+  Negation Elimination (DNE) in the presence of other propositional axioms,
+  but it expresses classical reasoning using only implication, without
+  mentioning negation or disjunction.
+
+  Semantically: Valid in classical logic where every formula is either true
+  or false at each model-history-time triple. The semantic proof uses case
+  analysis: if φ is false, then φ → ψ is vacuously true (false antecedent),
+  so from (φ → ψ) → φ we get φ, contradicting the assumption that φ is false.
+  Therefore φ must be true.
+
+  **Historical Note**: Named after the American philosopher Charles Sanders Peirce
+  (1839-1914), who studied this principle in his work on the logic of relations.
+  -/
+  | peirce (φ ψ : Formula) : Axiom (((φ.imp ψ).imp φ).imp φ)
+
+  /--
   Modal K Distribution axiom: `□(φ → ψ) → (□φ → □ψ)` (distribution).
 
   Necessity distributes over implication. If it is necessary that φ implies ψ,
@@ -135,46 +187,36 @@ inductive Axiom : Formula → Prop where
   and φ holds at all accessible worlds, then ψ must hold at all accessible worlds.
 
   This axiom is sound in task semantics due to the S5 modal structure (Corollary 2.11).
-
-  ## Derivability from MK Rule
-
-  This axiom is derivable from the modal K inference rule (MK) plus the deduction theorem:
-  1. From `[φ → ψ, φ] ⊢ ψ` (by modus ponens)
-  2. Apply MK: `□[φ → ψ, φ] ⊢ □ψ`, i.e., `[□(φ → ψ), □φ] ⊢ □ψ`
-  3. Apply deduction theorem twice to get `⊢ □(φ → ψ) → (□φ → □ψ)`
-
-  The LEAN implementation includes this as an axiom for convenience, as the full
-  deduction theorem (with modal cases) is not yet complete. Once the deduction
-  theorem is proven for all inference rules, this could be replaced with a theorem.
   -/
   | modal_k_dist (φ ψ : Formula) :
       Axiom ((φ.imp ψ).box.imp (φ.box.imp ψ.box))
 
   /--
-  Double Negation Elimination: `¬¬φ → φ` (classical logic).
+  Temporal K Distribution axiom: `F(φ → ψ) → (Fφ → Fψ)` (distribution).
 
-  A formula that is not false is true. This is the classical logic principle that
-  distinguishes classical from intuitionistic logic.
+  Future distributes over implication. If it will always be the case that φ implies ψ,
+  then if φ will always be true, ψ will also always be true.
 
-  This axiom enables:
-  1. Deriving contraposition: from `A → B` derive `¬B → ¬A`
-  2. Proving perpetuity principle P4: `◇▽φ → ◇φ` via contraposition of P3
-  3. Classical reasoning patterns throughout the proof system
+  This is the temporal analog of modal K distribution. It is the fundamental axiom
+  of normal temporal logics. It enables combining future formulas: from `⊢ Fφ` and
+  `⊢ Fψ`, we can derive `⊢ F(φ ∧ ψ)` by first deriving `⊢ F(φ → (ψ → φ∧ψ))` via
+  temporal necessitation, then applying this axiom twice.
 
-  Semantically: TM uses two-valued classical semantics (formulas are either true
-  or false at each world-history-time triple), so double negation elimination is
-  valid. The semantics in `Truth.lean` uses boolean evaluation, not constructive logic.
+  Semantically: if (φ → ψ) holds at all future times, and φ holds at all future
+  times, then ψ must hold at all future times.
 
-  Note: This axiom makes TM a classical logic. Without it, TM would be intuitionistic.
+  This axiom is sound in task semantics due to the linear temporal structure.
   -/
-  | double_negation (φ : Formula) : Axiom (φ.neg.neg.imp φ)
+  | temp_k_dist (φ ψ : Formula) :
+      Axiom ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future))
 
   /--
   Temporal 4 axiom: `Fφ → FFφ` (temporal transitivity).
 
   If something will always be true, it will always be true that it will always be true.
   -/
-  | temp_4 (φ : Formula) : Axiom ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)))
+  | temp_4 (φ : Formula) :
+    Axiom ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)))
 
   /--
   Temporal A axiom: `φ → F(sometime_past φ)` (temporal connectedness).
