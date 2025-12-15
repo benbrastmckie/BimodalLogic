@@ -73,7 +73,8 @@ for arbitrary valid formulas via formula induction.
 
 ## References
 
-* [ARCHITECTURE.md](../../../Documentation/UserGuide/ARCHITECTURE.md) - Truth evaluation specification
+* [ARCHITECTURE.md](../../../Documentation/UserGuide/ARCHITECTURE.md) - Truth evaluation
+  specification
 * [Formula.lean](../Syntax/Formula.lean) - Formula syntax
 * [TaskModel.lean](TaskModel.lean) - Task model structure
 * JPL Paper app:TaskSemantics (def:BL-semantics, lines 1857-1866) - Formal truth definition
@@ -606,7 +607,8 @@ namespace TemporalDuality
 Local definition of validity to avoid circular dependency with Validity.lean.
 A formula is valid if it's true at all model-history-time triples.
 
-This is a monomorphic definition (fixed to explicit type parameter T) to avoid universe level mismatch errors.
+This is a monomorphic definition (fixed to explicit type parameter T) to avoid
+universe level mismatch errors.
 Per research report Option A: Make T explicit to allow type inference at call sites.
 -/
 private def is_valid (T : Type*) [LinearOrderedAddCommGroup T] (φ : Formula) : Prop :=
@@ -1315,13 +1317,15 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid T φ.swap_past
 This is the culminating theorem of the derivation-indexed approach to temporal duality soundness.
 It proves that if a formula is derivable from the empty context, then its swapped version is valid.
 
-This theorem is used in `Soundness.lean` to complete the temporal_duality case of the soundness proof.
+This theorem is used in `Soundness.lean` to complete the temporal_duality case of the
+soundness proof.
 -/
 
 /--
 Main theorem: If a formula is derivable from empty context, then its swap is valid.
 
-This theorem proves temporal duality soundness via derivation induction rather than formula induction.
+This theorem proves temporal duality soundness via derivation induction rather than
+formula induction.
 The key insight is that we only need swap validity for derivable formulas, not all valid formulas.
 
 **Proof Strategy**: Induction on the derivation structure, using axiom_swap_valid and rule

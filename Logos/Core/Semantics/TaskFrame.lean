@@ -30,7 +30,8 @@ This matches the paper's specification exactly and allows for various temporal s
 **Alignment Verification**:
 - Paper's nullity: `w ∈ w · 0` corresponds to `nullity : ∀ w, task_rel w 0 w`
 - Paper's compositionality: If `u ∈ w · d` and `v ∈ u · e` then `v ∈ w · (d + e)`
-  corresponds to `compositionality : ∀ w u v x y, task_rel w x u → task_rel u y v → task_rel w (x + y) v`
+  corresponds to
+  `compositionality : ∀ w u v x y, task_rel w x u → task_rel u y v → task_rel w (x + y) v`
 - `LinearOrderedAddCommGroup T` provides the required abelian group structure with total order
 
 ## Main Definitions
@@ -46,7 +47,8 @@ This matches the paper's specification exactly and allows for various temporal s
 ## Implementation Notes
 
 - Type parameter `T` represents temporal duration with `LinearOrderedAddCommGroup` constraint
-- Task relation `task_rel w x u` means: world state `u` is reachable from `w` by task of duration `x`
+- Task relation `task_rel w x u` means: world state `u` is reachable from `w` by task
+  of duration `x`
 - Nullity: zero-duration task is identity (reflexivity)
 - Compositionality: sequential tasks compose (transitivity with addition)
 - Typeclass parameter convention: `(T : Type*)` explicit, `[LinearOrderedAddCommGroup T]` implicit
@@ -145,13 +147,14 @@ def nat_frame {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T where
 
 -- Deprecated aliases for backward compatibility
 @[deprecated trivial_frame (since := "2025-12-09")]
-abbrev trivialFrame := trivial_frame
+def trivialFrame {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T := trivial_frame
 
 @[deprecated identity_frame (since := "2025-12-09")]
-abbrev identityFrame := identity_frame
+def identityFrame (W : Type) {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T :=
+  identity_frame W
 
 @[deprecated nat_frame (since := "2025-12-09")]
-abbrev natFrame := nat_frame
+def natFrame {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T := nat_frame
 
 end TaskFrame
 

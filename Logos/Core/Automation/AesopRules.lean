@@ -2,6 +2,7 @@ import Aesop
 import Logos.ProofSystem
 import Logos.Core.Syntax.Formula
 import Logos.Core.Syntax.Context
+import Logos.Core.Theorems.GeneralizedNecessitation
 
 /-!
 # Aesop Rules for TM Logic
@@ -42,6 +43,7 @@ namespace Logos.Core.Automation
 
 open Logos.Core.Syntax
 open Logos.Core.ProofSystem
+open Logos.Core.Theorems
 
 /-!
 ## Direct Axiom Rules
@@ -142,15 +144,21 @@ If we have `Fφ` derivable, we can derive `FFφ` using temporal 4 axiom and modu
 -/
 @[aesop safe forward]
 theorem temp_4_forward {Γ : Context} {φ : Formula} :
-    Derivable Γ (Formula.all_future φ) → Derivable Γ (Formula.all_future (Formula.all_future φ)) := by
+    Derivable Γ (Formula.all_future φ) →
+    Derivable Γ (Formula.all_future (Formula.all_future φ)) := by
   intro h
-  have ax := Derivable.axiom Γ ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ))) (Axiom.temp_4 φ)
-  exact Derivable.modus_ponens Γ (Formula.all_future φ) (Formula.all_future (Formula.all_future φ)) ax h
+  have ax :=
+    Derivable.axiom Γ
+      ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)))
+      (Axiom.temp_4 φ)
+  exact Derivable.modus_ponens Γ (Formula.all_future φ)
+    (Formula.all_future (Formula.all_future φ)) ax h
 
 /--
 Forward chaining for Temporal A axiom: `φ → F(sometime_past φ)`.
 
-If we have `φ` derivable, we can derive `F(sometime_past φ)` using temporal A axiom and modus ponens.
+If we have `φ` derivable, we can derive `F(sometime_past φ)` using temporal A axiom
+and modus ponens.
 -/
 @[aesop safe forward]
 theorem temp_a_forward {Γ : Context} {φ : Formula} :
@@ -168,8 +176,12 @@ This is the distribution axiom for implication.
 theorem prop_k_forward {Γ : Context} {φ ψ χ : Formula} :
     Derivable Γ (φ.imp (ψ.imp χ)) → Derivable Γ ((φ.imp ψ).imp (φ.imp χ)) := by
   intro h
-  have ax := Derivable.axiom Γ ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) (Axiom.prop_k φ ψ χ)
-  exact Derivable.modus_ponens Γ (φ.imp (ψ.imp χ)) ((φ.imp ψ).imp (φ.imp χ)) ax h
+  have ax :=
+    Derivable.axiom Γ
+      ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ)))
+      (Axiom.prop_k φ ψ χ)
+  exact Derivable.modus_ponens Γ (φ.imp (ψ.imp χ))
+    ((φ.imp ψ).imp (φ.imp χ)) ax h
 
 /--
 Forward chaining for Propositional S axiom: `φ → (ψ → φ)`.
@@ -200,24 +212,34 @@ theorem apply_modus_ponens {Γ : Context} {φ ψ : Formula} :
   Derivable.modus_ponens Γ φ ψ
 
 /--
-Modal K rule as safe apply rule.
+Generalized Modal K rule as safe apply rule.
 
 To prove `□φ` from `□Γ`, if we can prove `φ` from `Γ`, then we're done.
 -/
 @[aesop safe apply]
 theorem apply_modal_k {Γ : Context} {φ : Formula} :
     Derivable Γ φ → Derivable (Context.map Formula.box Γ) (Formula.box φ) :=
-  Derivable.modal_k Γ φ
+  generalized_modal_k Γ φ
 
 /--
-Temporal K rule as safe apply rule.
+Generalized Modal K rule as safe apply rule.
+
+To prove `□φ` from `□Γ`, if we can prove `φ` from `Γ`, then we're done.
+-/
+@[aesop safe apply]
+theorem apply_modal_k {Γ : Context} {φ : Formula} :
+    Derivable Γ φ → Derivable (Context.map Formula.box Γ) (Formula.box φ) :=
+  generalized_modal_k Γ φ
+
+/--
+Generalized Temporal K rule as safe apply rule.
 
 To prove `Fφ` from `FΓ`, if we can prove `φ` from `Γ`, then we're done.
 -/
 @[aesop safe apply]
 theorem apply_temporal_k {Γ : Context} {φ : Formula} :
     Derivable Γ φ → Derivable (Context.map Formula.all_future Γ) (Formula.all_future φ) :=
-  Derivable.temporal_k Γ φ
+  generalized_temporal_k Γ φ
 
 /-!
 ## Normalization Rules for Derived Operators
