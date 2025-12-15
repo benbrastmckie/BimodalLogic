@@ -28,7 +28,8 @@ than S5, particularly for nested modalities.
 
 ## References
 
-* [Perpetuity.lean](Perpetuity.lean) - Modal infrastructure (modal_t, modal_4, modal_b, box_mono, diamond_mono)
+* [Perpetuity.lean](Perpetuity.lean) - Modal infrastructure
+  (modal_t, modal_4, modal_b, box_mono, diamond_mono)
 * [Propositional.lean](Propositional.lean) - Propositional infrastructure (ecq, raa, efq, ldi, rdi)
 * [ModalS5.lean](ModalS5.lean) - S5 theorems (t_box_to_diamond, box_contrapose, t_box_consistency)
 * [Axioms.lean](../ProofSystem/Axioms.lean) - Axiom schemata (modal_t, modal_4, modal_b, modal_5)
@@ -58,7 +59,8 @@ In S4, if A is possible and B is necessary, then A ∧ □B is possible.
 
 **Status**: Not started (pending Phase 2-3 completion)
 -/
-theorem s4_diamond_box_conj (A B : Formula) : ⊢ (A.diamond.and B.box).imp ((A.and B.box).diamond) := by
+theorem s4_diamond_box_conj (A B : Formula) :
+    ⊢ (A.diamond.and B.box).imp ((A.and B.box).diamond) := by
   -- Goal: (◇A ∧ □B) → ◇(A ∧ □B)
   --
   -- Strategy:
@@ -201,7 +203,8 @@ theorem s4_diamond_box_diamond (A : Formula) : ⊢ iff (A.diamond.box.diamond) A
       Derivable.axiom [] _ (Axiom.modal_4 A.diamond)
 
     -- Then t_box_to_diamond on □◇A: □□◇A → ◇□◇A
-    have box_box_diamond_to_diamond_box_diamond : ⊢ (A.diamond.box.box).imp (A.diamond.box.diamond) :=
+    have box_box_diamond_to_diamond_box_diamond :
+      ⊢ (A.diamond.box.box).imp (A.diamond.box.diamond) :=
       t_box_to_diamond A.diamond.box
 
     have box_diamond_to_diamond_box_diamond : ⊢ A.diamond.box.imp A.diamond.box.diamond :=
@@ -302,7 +305,8 @@ In S5, diamond distributes over conjunction with nested diamond.
 
 **Status**: Not started
 -/
-theorem s5_diamond_conj_diamond (A B : Formula) : ⊢ iff ((A.and B.diamond).diamond) (A.diamond.and B.diamond) := by
+theorem s5_diamond_conj_diamond (A B : Formula) :
+    ⊢ iff ((A.and B.diamond).diamond) (A.diamond.and B.diamond) := by
   -- Goal: ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)
 
   -- Forward direction: ◇(A ∧ ◇B) → (◇A ∧ ◇B)
@@ -374,7 +378,8 @@ theorem s5_diamond_conj_diamond (A B : Formula) : ⊢ iff ((A.and B.diamond).dia
     -- But we don't have that lemma! Let me prove it here.
 
     -- Lemma: ◇◇B → ◇B in S5
-    -- Proof: Use □B → □□B (modal_4), contrapose to get ◇◇B → ◇B... wait, that gives the wrong direction!
+    -- Proof: Use □B → □□B (modal_4), contrapose to get ◇◇B → ◇B...
+    -- wait, that gives the wrong direction!
 
     -- Let me think again. In S5, we have modal_5: ◇B → □◇B
     -- Apply to ◇B: ◇◇B → □◇◇B
@@ -460,10 +465,12 @@ theorem s5_diamond_conj_diamond (A B : Formula) : ⊢ iff ((A.and B.diamond).dia
       Propositional.lce_imp A.diamond B.diamond
 
     -- Apply S axiom to combine
-    have s_axiom : ⊢ ((A.diamond.and B.diamond).imp (A.diamond.imp (A.and B.diamond).diamond)).imp
-                     (((A.diamond.and B.diamond).imp A.diamond).imp
-                      ((A.diamond.and B.diamond).imp (A.and B.diamond).diamond)) :=
-      Derivable.axiom [] _ (Axiom.prop_k (A.diamond.and B.diamond) A.diamond (A.and B.diamond).diamond)
+    have s_axiom :
+      ⊢ ((A.diamond.and B.diamond).imp (A.diamond.imp (A.and B.diamond).diamond)).imp
+        (((A.diamond.and B.diamond).imp A.diamond).imp
+         ((A.diamond.and B.diamond).imp (A.and B.diamond).diamond)) :=
+      Derivable.axiom [] _
+        (Axiom.prop_k (A.diamond.and B.diamond) A.diamond (A.and B.diamond).diamond)
 
     have step2 : ⊢ ((A.diamond.and B.diamond).imp A.diamond).imp
                     ((A.diamond.and B.diamond).imp (A.and B.diamond).diamond) :=
