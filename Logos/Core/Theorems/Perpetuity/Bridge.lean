@@ -1,5 +1,6 @@
 import Logos.Core.Theorems.Perpetuity.Helpers
 import Logos.Core.Theorems.Perpetuity.Principles
+import Logos.Core.Theorems.Propositional
 
 /-!
 # Perpetuity Bridge Lemmas and P6
@@ -45,6 +46,17 @@ namespace Logos.Core.Theorems.Perpetuity
 
 open Logos.Core.Syntax
 open Logos.Core.ProofSystem
+open Logos.Core.Theorems.Combinators
+
+/--
+Double Negation Elimination (helper): `⊢ A.neg.neg.imp A`.
+
+Convenience wrapper for the derived DNE theorem from Propositional.lean.
+
+This theorem is now derived from EFQ + Peirce axioms (see Propositional.double_negation).
+-/
+theorem dne (A : Formula) : ⊢ A.neg.neg.imp A :=
+  Propositional.double_negation A
 
 /-!
 ## Modal and Temporal Duality Lemmas
@@ -74,7 +86,7 @@ theorem modal_duality_neg (φ : Formula) : ⊢ φ.neg.diamond.imp φ.box.neg := 
 
   -- Step 2: Necessitate using modal_k
   have box_dni : ⊢ (φ.imp φ.neg.neg).box :=
-    Derivable.modal_k [] _ dni_phi
+    Derivable.necessitation _ dni_phi
 
   -- Step 3: Modal K distribution: □(φ → ¬¬φ) → (□φ → □¬¬φ)
   have mk : ⊢ (φ.imp φ.neg.neg).box.imp (φ.box.imp φ.neg.neg.box) :=
@@ -103,12 +115,12 @@ theorem modal_duality_neg_rev (φ : Formula) : ⊢ φ.box.neg.imp φ.neg.diamond
   -- Expand diamond: φ.box.neg → φ.neg.neg.box.neg
 
   -- Step 1: DNE gives us ¬¬φ → φ
-  have dne : ⊢ φ.neg.neg.imp φ :=
-    Derivable.axiom [] _ (Axiom.double_negation φ)
+  have dne_phi : ⊢ φ.neg.neg.imp φ :=
+    dne φ
 
   -- Step 2: Necessitate using modal_k
   have box_dne : ⊢ (φ.neg.neg.imp φ).box :=
-    Derivable.modal_k [] _ dne
+    Derivable.necessitation _ dne_phi
 
   -- Step 3: Modal K distribution: □(¬¬φ → φ) → (□¬¬φ → □φ)
   have mk : ⊢ (φ.neg.neg.imp φ).box.imp (φ.neg.neg.box.imp φ.box) :=
@@ -140,8 +152,12 @@ theorem always_dni (φ : Formula) : ⊢ φ.always.imp φ.neg.neg.always := by
   have past_lift : ⊢ φ.all_past.imp φ.neg.neg.all_past := by
     have pk : ⊢ (φ.imp φ.neg.neg).all_past.imp (φ.all_past.imp φ.neg.neg.all_past) :=
       past_k_dist φ φ.neg.neg
-    have past_dni : ⊢ (φ.imp φ.neg.neg).all_past :=
-      Derivable.temporal_k [] _ (Derivable.temporal_duality _ dni_phi)
+      have past_dni : ⊢ (φ.imp φ.neg.neg).all_past := by
+        have h_swap : ⊢ (φ.imp φ.neg.neg).swap_temporal := Derivable.temporal_duality _ dni_phi
+        have g_swap : ⊢ h_swap.all_future := Derivable.temporal_necessitation _ h_swap
+        have past_raw : ⊢ g_swap.swap_temporal := Derivable.temporal_duality _ g_swap
+        simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at past_raw
+        exact past_raw
     exact Derivable.modus_ponens [] _ _ pk past_dni
 
   -- Step 3: Present is just dni_phi
@@ -151,7 +167,7 @@ theorem always_dni (φ : Formula) : ⊢ φ.always.imp φ.neg.neg.always := by
     have fk : ⊢ (φ.imp φ.neg.neg).all_future.imp (φ.all_future.imp φ.neg.neg.all_future) :=
       future_k_dist φ φ.neg.neg
     have future_dni : ⊢ (φ.imp φ.neg.neg).all_future :=
-      Derivable.temporal_k [] _ dni_phi
+      Derivable.temporal_necessitation _ dni_phi
     exact Derivable.modus_ponens [] _ _ fk future_dni
 
   -- Step 5: Decompose always φ and apply lifts
@@ -237,8 +253,12 @@ theorem always_dne (φ : Formula) : ⊢ φ.neg.neg.always.imp φ.always := by
   have past_lift : ⊢ φ.neg.neg.all_past.imp φ.all_past := by
     have pk : ⊢ (φ.neg.neg.imp φ).all_past.imp (φ.neg.neg.all_past.imp φ.all_past) :=
       past_k_dist φ.neg.neg φ
-    have past_dne : ⊢ (φ.neg.neg.imp φ).all_past :=
-      Derivable.temporal_k [] _ (Derivable.temporal_duality _ dne_phi)
+    have past_dne : ⊢ (φ.neg.neg.imp φ).all_past := by
+      have h_swap : ⊢ (φ.neg.neg.imp φ).swap_temporal := Derivable.temporal_duality _ dne_phi
+      have g_swap : ⊢ h_swap.all_future := Derivable.temporal_necessitation _ h_swap
+      have past_raw : ⊢ g_swap.swap_temporal := Derivable.temporal_duality _ g_swap
+      simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at past_raw
+      exact past_raw
     exact Derivable.modus_ponens [] _ _ pk past_dne
 
   -- Step 3: Present is just dne_phi
@@ -248,7 +268,7 @@ theorem always_dne (φ : Formula) : ⊢ φ.neg.neg.always.imp φ.always := by
     have fk : ⊢ (φ.neg.neg.imp φ).all_future.imp (φ.neg.neg.all_future.imp φ.all_future) :=
       future_k_dist φ.neg.neg φ
     have future_dne : ⊢ (φ.neg.neg.imp φ).all_future :=
-      Derivable.temporal_k [] _ dne_phi
+      Derivable.temporal_necessitation _ dne_phi
     exact Derivable.modus_ponens [] _ _ fk future_dne
 
   -- Step 5: Decompose always (¬¬φ) and apply lifts
@@ -309,7 +329,7 @@ Box monotonicity: from `⊢ A → B`, derive `⊢ □A → □B`.
 Uses necessitation (modal_k) and K distribution axiom.
 -/
 theorem box_mono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.box.imp B.box := by
-  have box_h : ⊢ (A.imp B).box := Derivable.modal_k [] _ h
+  have box_h : ⊢ (A.imp B).box := Derivable.necessitation _ h
   have mk : ⊢ (A.imp B).box.imp (A.box.imp B.box) := Derivable.axiom [] _ (Axiom.modal_k_dist A B)
   exact Derivable.modus_ponens [] _ _ mk box_h
 
@@ -329,7 +349,7 @@ Future monotonicity: from `⊢ A → B`, derive `⊢ GA → GB`.
 Uses temporal K rule and future K distribution axiom.
 -/
 theorem future_mono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.all_future.imp B.all_future := by
-  have g_h : ⊢ (A.imp B).all_future := Derivable.temporal_k [] _ h
+  have g_h : ⊢ (A.imp B).all_future := Derivable.temporal_necessitation _ h
   have fk : ⊢ (A.imp B).all_future.imp (A.all_future.imp B.all_future) := future_k_dist A B
   exact Derivable.modus_ponens [] _ _ fk g_h
 
@@ -343,7 +363,7 @@ theorem past_mono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.all_past.imp B.all_p
     have td : ⊢ (A.imp B).swap_temporal := Derivable.temporal_duality (A.imp B) h
     exact td
   have g_swap : ⊢ (A.swap_temporal.imp B.swap_temporal).all_future :=
-    Derivable.temporal_k [] _ h_swap
+    Derivable.temporal_necessitation _ h_swap
   have past_raw : ⊢ ((A.swap_temporal.imp B.swap_temporal).all_future).swap_temporal :=
     Derivable.temporal_duality _ g_swap
   have h_past : ⊢ (A.imp B).all_past := by
@@ -374,7 +394,7 @@ theorem local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
     Derivable.axiom [] _ (Axiom.prop_s Formula.bot B.neg)
 
   have dne_b : ⊢ B.neg.neg.imp B :=
-    Derivable.axiom [] _ (Axiom.double_negation B)
+    Propositional.double_negation B
 
   have b_comp : ⊢ (B.neg.neg.imp B).imp
                    ((Formula.bot.imp B.neg.neg).imp (Formula.bot.imp B)) :=
@@ -540,21 +560,28 @@ theorem local_lce (A B : Formula) : [A.and B] ⊢ A := by
   have efq_ctx : [A.and B] ⊢ A.neg.imp (A.imp B.neg) :=
     Derivable.weakening [] [A.and B] _ efq_helper (by intro; simp)
 
-  have contra_step : ⊢ (A.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp A.neg.neg) := by
+  have contra_step :
+    ⊢ (A.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp A.neg.neg) := by
     unfold Formula.neg
-    have bc : ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
-                 (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp ((A.imp Formula.bot).imp Formula.bot)) :=
+    have bc :
+      ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
+        (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
+         ((A.imp Formula.bot).imp Formula.bot)) :=
       @b_combinator (A.imp Formula.bot) (A.imp (B.imp Formula.bot)) Formula.bot
-    have flip : ⊢ (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
-                    (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp ((A.imp Formula.bot).imp Formula.bot))).imp
-                   (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
-                    (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp ((A.imp Formula.bot).imp Formula.bot))) :=
+    have flip :
+      ⊢ (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
+         (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
+          ((A.imp Formula.bot).imp Formula.bot))).imp
+        (((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
+         (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
+          ((A.imp Formula.bot).imp Formula.bot))) :=
       @theorem_flip ((A.imp (B.imp Formula.bot)).imp Formula.bot)
                     ((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot)))
                     ((A.imp Formula.bot).imp Formula.bot)
     exact Derivable.modus_ponens [] _ _ flip bc
 
-  have contra_step_ctx : [A.and B] ⊢ (A.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp A.neg.neg) :=
+  have contra_step_ctx :
+    [A.and B] ⊢ (A.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp A.neg.neg) :=
     Derivable.weakening [] [A.and B] _ contra_step (by intro; simp)
 
   have step1 : [A.and B] ⊢ (A.imp B.neg).neg.imp A.neg.neg :=
@@ -564,7 +591,7 @@ theorem local_lce (A B : Formula) : [A.and B] ⊢ A := by
     Derivable.modus_ponens [A.and B] _ _ step1 h_conj_unf
 
   have dne_a : ⊢ A.neg.neg.imp A :=
-    Derivable.axiom [] _ (Axiom.double_negation A)
+    Propositional.double_negation A
 
   have dne_a_ctx : [A.and B] ⊢ A.neg.neg.imp A :=
     Derivable.weakening [] [A.and B] _ dne_a (by intro; simp)
@@ -589,21 +616,28 @@ theorem local_rce (A B : Formula) : [A.and B] ⊢ B := by
   have s_ctx : [A.and B] ⊢ B.neg.imp (A.imp B.neg) :=
     Derivable.weakening [] [A.and B] _ s_helper (by intro; simp)
 
-  have contra_step : ⊢ (B.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp B.neg.neg) := by
+  have contra_step :
+    ⊢ (B.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp B.neg.neg) := by
     unfold Formula.neg
-    have bc : ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
-                 (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp ((B.imp Formula.bot).imp Formula.bot)) :=
+    have bc :
+      ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
+        (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
+         ((B.imp Formula.bot).imp Formula.bot)) :=
       @b_combinator (B.imp Formula.bot) (A.imp (B.imp Formula.bot)) Formula.bot
-    have flip : ⊢ (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
-                    (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp ((B.imp Formula.bot).imp Formula.bot))).imp
-                   (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
-                    (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot))) :=
+    have flip :
+      ⊢ (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
+         (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
+          ((B.imp Formula.bot).imp Formula.bot))).imp
+        (((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot))).imp
+         (((A.imp (B.imp Formula.bot)).imp Formula.bot).imp
+          ((B.imp Formula.bot).imp Formula.bot))) :=
       @theorem_flip ((A.imp (B.imp Formula.bot)).imp Formula.bot)
                     ((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot)))
                     ((B.imp Formula.bot).imp Formula.bot)
     exact Derivable.modus_ponens [] _ _ flip bc
 
-  have contra_step_ctx : [A.and B] ⊢ (B.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp B.neg.neg) :=
+  have contra_step_ctx :
+    [A.and B] ⊢ (B.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp B.neg.neg) :=
     Derivable.weakening [] [A.and B] _ contra_step (by intro; simp)
 
   have step1 : [A.and B] ⊢ (A.imp B.neg).neg.imp B.neg.neg :=
@@ -613,7 +647,7 @@ theorem local_rce (A B : Formula) : [A.and B] ⊢ B := by
     Derivable.modus_ponens [A.and B] _ _ step1 h_conj_unf
 
   have dne_b : ⊢ B.neg.neg.imp B :=
-    Derivable.axiom [] _ (Axiom.double_negation B)
+    Propositional.double_negation B
 
   have dne_b_ctx : [A.and B] ⊢ B.neg.neg.imp B :=
     Derivable.weakening [] [A.and B] _ dne_b (by intro; simp)
@@ -710,13 +744,7 @@ for the MVP. The derivation would require ~50+ lines of combinator manipulation.
 -/
 axiom always_mono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.always.imp B.always
 
-/--
-Double negation elimination (wrapper): `⊢ ¬¬A → A`.
-
-Convenience wrapper for the double_negation axiom.
--/
-theorem dne (A : Formula) : ⊢ A.neg.neg.imp A :=
-  Derivable.axiom [] _ (Axiom.double_negation A)
+-- Note: dne theorem is now defined earlier in the file (after double_negation helper)
 
 /--
 Double contraposition: from `⊢ ¬A → ¬B`, derive `⊢ B → A`.
