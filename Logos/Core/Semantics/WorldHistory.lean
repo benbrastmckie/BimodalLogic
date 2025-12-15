@@ -149,7 +149,8 @@ Trivial world history for the trivial frame.
 Since trivial frame's task relation is always true, this always works.
 The full domain is convex.
 -/
-def trivial {T : Type*} [LinearOrderedAddCommGroup T] : WorldHistory (TaskFrame.trivialFrame (T := T)) where
+def trivial {T : Type*} [LinearOrderedAddCommGroup T] :
+    WorldHistory (TaskFrame.trivialFrame (T := T)) where
   domain := fun _ => True
   convex := by
     intros x z hx hz y hxy hyz
@@ -168,7 +169,8 @@ This is a variant of `trivial` that allows specifying the constant state
 Since trivialFrame's task relation is always true, any constant history respects the task relation.
 The full domain is convex.
 -/
-def universal_trivialFrame {T : Type*} [LinearOrderedAddCommGroup T] (w : (TaskFrame.trivialFrame (T := T)).WorldState) :
+def universal_trivialFrame {T : Type*} [LinearOrderedAddCommGroup T]
+    (w : (TaskFrame.trivialFrame (T := T)).WorldState) :
     WorldHistory (TaskFrame.trivialFrame (T := T)) where
   domain := fun _ => True
   convex := by
@@ -188,7 +190,8 @@ any constant history respects the task relation.
 This demonstrates that reflexive frames (where `task_rel w d w` for all `w, d`)
 admit universal constant histories. The full domain is convex.
 -/
-def universal_natFrame {T : Type*} [LinearOrderedAddCommGroup T] (n : Nat) : WorldHistory (TaskFrame.natFrame (T := T)) where
+def universal_natFrame {T : Type*} [LinearOrderedAddCommGroup T] (n : Nat) :
+    WorldHistory (TaskFrame.natFrame (T := T)) where
   domain := fun _ => True
   convex := by
     intros x z hx hz y hxy hyz
@@ -207,7 +210,9 @@ def state_at (τ : WorldHistory F) (t : T) (h : τ.domain t) : F.WorldState :=
 
 -- Deprecated alias for backward compatibility
 @[deprecated state_at (since := "2025-12-09")]
-abbrev stateAt := state_at
+def stateAt {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
+    (τ : WorldHistory F) (t : T) (h : τ.domain t) : F.WorldState :=
+  state_at τ t h
 
 /-! ## Time-Shift Construction
 
@@ -248,7 +253,8 @@ def time_shift (σ : WorldHistory F) (Δ : T) : WorldHistory F where
   respects_task := by
     intros s t hs ht hst
     -- Need: task_rel (σ.states (s + Δ)) (t - s) (σ.states (t + Δ))
-    -- We have: σ respects task, so task_rel (σ.states (s + Δ)) ((t + Δ) - (s + Δ)) (σ.states (t + Δ))
+    -- We have: σ respects task, so
+    -- task_rel (σ.states (s + Δ)) ((t + Δ) - (s + Δ)) (σ.states (t + Δ))
     -- Since (t + Δ) - (s + Δ) = t - s, this is exactly what we need
     have h_shifted : s + Δ ≤ t + Δ := add_le_add_right hst Δ
     have h_duration : (t + Δ) - (s + Δ) = t - s := by
