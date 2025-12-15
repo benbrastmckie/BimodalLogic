@@ -167,13 +167,17 @@ theorem t_box_to_diamond (A : Formula) : ⊢ A.box.imp A.diamond := by
     Derivable.modus_ponens [] _ _ b_flipped mt_neg_a
 
   -- Step 6: Compose to get □A → (□¬A → ⊥)
-  have b_outer : ⊢ (((A.imp Formula.bot).imp Formula.bot).imp ((A.imp Formula.bot).box.imp Formula.bot)).imp
-                    ((A.box.imp ((A.imp Formula.bot).imp Formula.bot)).imp
-                     (A.box.imp ((A.imp Formula.bot).box.imp Formula.bot))) :=
-    @b_combinator A.box ((A.imp Formula.bot).imp Formula.bot) ((A.imp Formula.bot).box.imp Formula.bot)
+  have b_outer :
+    ⊢ (((A.imp Formula.bot).imp Formula.bot).imp
+       ((A.imp Formula.bot).box.imp Formula.bot)).imp
+      ((A.box.imp ((A.imp Formula.bot).imp Formula.bot)).imp
+       (A.box.imp ((A.imp Formula.bot).box.imp Formula.bot))) :=
+    @b_combinator A.box ((A.imp Formula.bot).imp Formula.bot)
+      ((A.imp Formula.bot).box.imp Formula.bot)
 
-  have step2 : ⊢ (A.box.imp ((A.imp Formula.bot).imp Formula.bot)).imp
-                  (A.box.imp ((A.imp Formula.bot).box.imp Formula.bot)) :=
+  have step2 :
+    ⊢ (A.box.imp ((A.imp Formula.bot).imp Formula.bot)).imp
+      (A.box.imp ((A.imp Formula.bot).box.imp Formula.bot)) :=
     Derivable.modus_ponens [] _ _ b_outer step1
 
   exact Derivable.modus_ponens [] _ _ step2 comp1
@@ -221,16 +225,23 @@ theorem box_disj_intro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.or B).box)
                   ((A.box.neg.imp B.box).imp (A.box.neg.imp ((A.imp Formula.bot).imp B).box)) :=
     b_combinator
 
-  have neg_box_case : ⊢ (A.box.neg.imp B.box).imp (A.box.neg.imp ((A.imp Formula.bot).imp B).box) :=
+  have neg_box_case :
+    ⊢ (A.box.neg.imp B.box).imp
+      (A.box.neg.imp ((A.imp Formula.bot).imp B).box) :=
     Derivable.modus_ponens [] _ _ b_inst box_b_case
 
-  -- Now apply classical_merge: (□A → □(¬A → B)) → ((¬□A → □(¬A → B)) → □(¬A → B))
-  have cm : ⊢ (A.box.imp ((A.imp Formula.bot).imp B).box).imp
-              ((A.box.neg.imp ((A.imp Formula.bot).imp B).box).imp ((A.imp Formula.bot).imp B).box) :=
+  -- Now apply classical_merge:
+  -- (□A → □(¬A → B)) → ((¬□A → □(¬A → B)) → □(¬A → B))
+  have cm :
+    ⊢ (A.box.imp ((A.imp Formula.bot).imp B).box).imp
+      ((A.box.neg.imp ((A.imp Formula.bot).imp B).box).imp
+       ((A.imp Formula.bot).imp B).box) :=
     Propositional.classical_merge A.box ((A.imp Formula.bot).imp B).box
 
   -- First apply: get ((¬□A → □(¬A → B)) → □(¬A → B))
-  have step1 : ⊢ (A.box.neg.imp ((A.imp Formula.bot).imp B).box).imp ((A.imp Formula.bot).imp B).box :=
+  have step1 :
+    ⊢ (A.box.neg.imp ((A.imp Formula.bot).imp B).box).imp
+      ((A.imp Formula.bot).imp B).box :=
     Derivable.modus_ponens [] _ _ cm box_a_case
 
   -- Now compose with neg_box_case: (¬□A → □B) → □(¬A → B)
@@ -248,7 +259,9 @@ Proof:
 2. We need theorem form: `⊢ (A → B) → (¬B → ¬A)`
 3. Then apply box_mono
 -/
-theorem box_contrapose (A B : Formula) : ⊢ (A.imp B).box.imp ((B.imp Formula.bot).imp (A.imp Formula.bot)).box := by
+theorem box_contrapose (A B : Formula) :
+    ⊢ (A.imp B).box.imp
+      ((B.imp Formula.bot).imp (A.imp Formula.bot)).box := by
   -- We need the contraposition as a derivable theorem, not a meta-theorem
 
   -- Build contraposition directly: (A → B) → (¬B → ¬A)
@@ -334,8 +347,9 @@ theorem k_dist_diamond (A B : Formula) : ⊢ (A.imp B).box.imp (A.diamond.imp B.
                     ((A.imp B).box.imp (((A.imp Formula.bot).box.imp Formula.bot).imp
                                         ((B.imp Formula.bot).box.imp Formula.bot)))) :=
     @b_combinator (A.imp B).box
-                  ((B.imp Formula.bot).box.imp (A.imp Formula.bot).box)
-                  (((A.imp Formula.bot).box.imp Formula.bot).imp ((B.imp Formula.bot).box.imp Formula.bot))
+      ((B.imp Formula.bot).box.imp (A.imp Formula.bot).box)
+      (((A.imp Formula.bot).box.imp Formula.bot).imp
+       ((B.imp Formula.bot).box.imp Formula.bot))
 
   have step2 : ⊢ ((A.imp B).box.imp ((B.imp Formula.bot).box.imp (A.imp Formula.bot).box)).imp
                   ((A.imp B).box.imp (((A.imp Formula.bot).box.imp Formula.bot).imp
@@ -363,12 +377,14 @@ theorem box_iff_intro (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
 
   -- Extract A → B from biconditional
   have ab : ⊢ A.imp B := by
-    have lce : ⊢ ((A.imp B).and (B.imp A)).imp (A.imp B) := Propositional.lce_imp (A.imp B) (B.imp A)
+    have lce : ⊢ ((A.imp B).and (B.imp A)).imp (A.imp B) :=
+      Propositional.lce_imp (A.imp B) (B.imp A)
     exact Derivable.modus_ponens [] _ _ lce h
 
   -- Extract B → A from biconditional
   have ba : ⊢ B.imp A := by
-    have rce : ⊢ ((A.imp B).and (B.imp A)).imp (B.imp A) := Propositional.rce_imp (A.imp B) (B.imp A)
+    have rce : ⊢ ((A.imp B).and (B.imp A)).imp (B.imp A) :=
+      Propositional.rce_imp (A.imp B) (B.imp A)
     exact Derivable.modus_ponens [] _ _ rce h
 
   -- Apply box_mono to A → B to get □A → □B
@@ -536,12 +552,17 @@ theorem box_conj_iff (A B : Formula) : ⊢ iff (A.and B).box (A.box.and B.box) :
 
     -- Build (□A ∧ □B) → □(A ∧ B)
     -- We have comp1: □A → (□B → □(A ∧ B))
-    -- Use b_combinator to get: ((□A ∧ □B) → □A) → ((□A ∧ □B) → (□B → □(A ∧ B)))
+    -- Use b_combinator to get:
+    -- ((□A ∧ □B) → □A) → ((□A ∧ □B) → (□B → □(A ∧ B)))
 
-    have b1 : ⊢ (A.box.imp (B.box.imp (A.and B).box)).imp
-                (((A.box.and B.box).imp A.box).imp ((A.box.and B.box).imp (B.box.imp (A.and B).box))) :=
+    have b1 :
+      ⊢ (A.box.imp (B.box.imp (A.and B).box)).imp
+        (((A.box.and B.box).imp A.box).imp
+         ((A.box.and B.box).imp (B.box.imp (A.and B).box))) :=
       b_combinator
-    have step2 : ⊢ ((A.box.and B.box).imp A.box).imp ((A.box.and B.box).imp (B.box.imp (A.and B).box)) :=
+    have step2 :
+      ⊢ ((A.box.and B.box).imp A.box).imp
+        ((A.box.and B.box).imp (B.box.imp (A.and B).box)) :=
       Derivable.modus_ponens [] _ _ b1 comp1
     have step3 : ⊢ (A.box.and B.box).imp (B.box.imp (A.and B).box) :=
       Derivable.modus_ponens [] _ _ step2 lce_box
