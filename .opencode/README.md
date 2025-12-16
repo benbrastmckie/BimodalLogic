@@ -77,10 +77,7 @@ Updates documentation to be complete, accurate, concise
 - `/document {scope}` - Update documentation
 
 ### Meta-System
-- `/create-agent {spec}` - Create new agent
-- `/create-command {spec}` - Create new command
-- `/modify-agent {name}` - Modify existing agent
-- `/modify-command {name}` - Modify existing command
+- `/meta {request}` - Create or modify agents and commands
 
 ## Project Structure
 
@@ -104,7 +101,7 @@ Updates documentation to be complete, accurate, concise
 │   ├── specs/              # Project management
 │   └── builder-templates/  # Meta-system templates
 ├── command/
-│   └── [11 custom commands]
+│   └── [7 custom commands]
 ├── specs/
 │   ├── TODO.md             # Master task list
 │   ├── state.json          # Global state
@@ -274,7 +271,7 @@ For questions or issues:
 1. Review relevant documentation files
 2. Check context files for domain knowledge
 3. Examine example artifacts in `.opencode/specs/`
-4. Use `/create-agent` or `/create-command` to extend the system
+4. Use `/meta` to extend the system with new agents or commands
 
 ---
 

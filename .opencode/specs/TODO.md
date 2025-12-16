@@ -23,18 +23,27 @@
 
 This file tracks active development tasks for Logos. Completed tasks are removed from this file - see git history and spec summaries for completion records.
 
+**Last Repository Review**: 2025-12-16 (Project 004_review_20251216)
+- **Compliance Score**: 94.65/100 (Excellent)
+- **Repository Health**: 94/100 (Excellent)
+- **Total Files Verified**: 30 modules
+- **Total Proofs Checked**: 150+ theorems
+- **Sorry Found**: 8 (matches expected - 3 documented limitations, 1 invalid theorem, 3 documentation, 1 low-priority)
+- **Axioms Found**: 16 user-facing + 14 system (matches expected - all justified)
+- **Review Reports**: [Analysis](.opencode/specs/004_review_20251216/reports/analysis-001.md) | [Verification](.opencode/specs/004_review_20251216/reports/verification-001.md)
+
 **Layer 0 Completion Progress**:
-- High Priority: 2 tasks (58 - Update SORRY_REGISTRY.md, 59 - Update IMPLEMENTATION_STATUS.md)
-- Medium Priority: 1 task (52 - AesopRules duplicate declaration)
-- Low Priority: 13 tasks (9-11 long-term, 53-55 cleanup/documentation, 57 dual-type approach, 60-62 repository cleanup)
-- **Active Tasks**: 16
-- **Recently Completed**: Task 46 (Deduction Theorem - FULLY COMPLETE, zero sorry) ✅, Task 42b (Bridge.lean compilation fixes) ✅, Task 42a (Temporal Axiom Derivation) ✅, Task 48 (Derivable.height fix) ✅, Task 47 (Lake Lint Long Lines) ✅, Task 43 (Axiom Refactoring) ✅, Task 45 (Inference Rule Refactoring) ✅
+- High Priority: 4 tasks (System config + Core development)
+- Medium Priority: 24 tasks (Proof development + System enhancements)
+- Low Priority: 16 tasks (General research + long-term metalogic + cleanup/documentation)
+- **Active Tasks**: 43
+- **Recently Completed**: Task 60 (Remove backup artifacts) ✅, Task 59 (IMPLEMENTATION_STATUS.md update) ✅, Task 56 (Bridge.lean helper lemmas - verified complete) ✅, Task 52 (AesopRules duplicate fix) ✅, Task 58 (SORRY_REGISTRY.md update) ✅, Task 46 (Deduction Theorem - FULLY COMPLETE, zero sorry) ✅, Task 42b (Bridge.lean compilation fixes) ✅, Task 42a (Temporal Axiom Derivation) ✅, Task 48 (Derivable.height fix) ✅
 
-**Milestone Achievement**: DEDUCTION THEOREM FULLY PROVEN (Task 46 - zero sorry, complete termination proofs) ✅ + ALL 6 PERPETUITY PRINCIPLES FULLY PROVEN (100%) + PHASE 4 MODAL THEOREMS COMPLETE (8/8) + PROPOSITIONAL THEOREMS COMPLETE (Tasks 21-29) + AXIOM REFACTORING COMPLETE (Task 43) + INFERENCE RULE REFACTORING COMPLETE (Task 45) + DERIVABLE.HEIGHT FIX COMPLETE (Task 48) + TEMPORAL AXIOM DERIVATION COMPLETE (Task 42a) + BRIDGE.LEAN COMPILATION FIXED (Task 42b) ✅
+**Milestone Achievement**: IMPLEMENTATION_STATUS.md UPDATED (Task 59 - DeductionTheorem.lean documented as 100% complete) ✅ + DEDUCTION THEOREM FULLY PROVEN (Task 46 - zero sorry, complete termination proofs) ✅ + ALL 6 PERPETUITY PRINCIPLES FULLY PROVEN (100%) + PHASE 4 MODAL THEOREMS COMPLETE (8/8) + PROPOSITIONAL THEOREMS COMPLETE (Tasks 21-29) + AXIOM REFACTORING COMPLETE (Task 43) + INFERENCE RULE REFACTORING COMPLETE (Task 45) + DERIVABLE.HEIGHT FIX COMPLETE (Task 48) + TEMPORAL AXIOM DERIVATION COMPLETE (Task 42a) + BRIDGE.LEAN COMPILATION FIXED (Task 42b) ✅
 
-**Current Work**: High priority documentation updates (SORRY_REGISTRY.md, IMPLEMENTATION_STATUS.md)
+**Current Work**: All high-priority documentation tasks complete - ready for Layer 1 planning
 
-**Next Milestone**: Complete documentation updates, then fix AesopRules duplicate, then Layer 1 planning
+**Next Milestone**: Layer 1 planning and implementation
 
 ---
 
@@ -44,11 +53,15 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 - [IMPLEMENTATION_STATUS.md - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) - Current gaps and workarounds
 - [SORRY_REGISTRY.md](Documentation/ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
 - [MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md) - TODO management workflow
+- [Repository Review (2025-12-16)](.opencode/specs/004_review_20251216/reports/analysis-001.md) - Latest comprehensive analysis
+- [Proof Verification (2025-12-16)](.opencode/specs/004_review_20251216/reports/verification-001.md) - Latest verification report
 
 **Active Implementation Plan**:
 - None (all active plans complete)
 
 **Recently Completed**:
+- [Remove Backup Artifacts Plan](.opencode/specs/060_remove_backup_artifacts/plans/implementation-001.md) - COMPLETE (2025-12-16)
+  - Task 60: Removed Bridge.lean.backup, enhanced .gitignore with comprehensive backup patterns
 - [Proof Automation Completion Plan](.opencode/specs/065_proof_automation_temporal_deduction/plans/001-proof-automation-completion-plan.md) - COMPLETE (2025-12-15)
   - Task 42a: future_k_dist and always_mono derived as theorems, axiom count reduced by 2
   - Task 42b: Bridge.lean compilation errors fixed, always_dni and always_dne confirmed as theorems (not axioms)
@@ -60,113 +73,115 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 
 ## High Priority Tasks
 
-### 58. Update SORRY_REGISTRY.md
-**Effort**: 30 minutes
-**Status**: Not Started
-**Priority**: High (critical documentation synchronization)
-**Blocking**: None
-**Dependencies**: None
+### System Configuration Issues
+- [x] Fix invalid frontmatter in specialist subagents (mode: specialist → mode: subagent)
 
-**Description**: SORRY_REGISTRY.md is severely outdated. Claims 11 active sorry but actual count is 7 (4 blocking + 3 documentation). DeductionTheorem.lean section claims 3 sorry but actual is 0 (Task 46 complete). The `future_k_dist` axiom is now a derived theorem using deduction theorem.
-
-**Updates Needed**:
-1. Remove DeductionTheorem.lean section (now complete with zero sorry)
-2. Update total counts: "Total Active Placeholders: 11" → "Total Active Placeholders: 7"
-3. Update Perpetuity.lean section: Remove `future_k_dist` from axiom list (now derived theorem in Principles.lean)
-4. Update "Last Updated" date to 2025-12-15
-5. Add note about Task 46 completion in Resolution History
-6. Note: CLAUDE.md has been deprecated and moved to Archive/deprecated/
-
-**Files Affected**:
-- `Documentation/ProjectInfo/SORRY_REGISTRY.md`
-
-**Impact**: High - misleading information about technical debt
-
-**Verification**: `grep -rn "sorry" Logos/Core/**/*.lean 2>/dev/null | wc -l` should show 7
+### Core Development
+- [ ] Review current repository state and identify gaps
+- [ ] Research Kripke semantics for bimodal logic
+- [ ] Implement proof system axioms (K axioms, dual axioms)
+- [ ] Define bimodal Kripke model structure
 
 ---
 
-### 59. Update IMPLEMENTATION_STATUS.md
-**Effort**: 15 minutes
+### 61. Add Missing Directory READMEs
+**Effort**: 1 hour
 **Status**: Not Started
-**Priority**: High (documentation accuracy)
+**Priority**: Medium (documentation completeness)
 **Blocking**: None
-**Dependencies**: Task 46 (Complete) ✅
+**Dependencies**: None
 
-**Description**: IMPLEMENTATION_STATUS.md needs updates to reflect Task 46 (Deduction Theorem) completion and current module status.
+**Description**: Add README.md files to directories lacking them, following DIRECTORY_README_STANDARD.md.
 
-**Updates Needed**:
-1. Update DeductionTheorem.lean: Update status from "Partial (3 sorry)" to "Complete (zero sorry)" ✅
-2. Update Summary Table: DeductionTheorem row should show "✓ Complete" with "100%" completeness
-3. Update "Last Updated" date to 2025-12-15
-4. Update Overall Project Status section to reflect deduction theorem completion
+**Verification Finding** (Project 004 - 2025-12-16):
+- ✅ Verified 2 missing READMEs: `Automation/` and `Perpetuity/`
+- ✅ Confirmed as reducing discoverability and understanding
+- ✅ Repository organization score: 98/100 (2 points deducted for missing READMEs)
+
+**Missing READMEs**:
+- `Logos/Core/Theorems/Perpetuity/README.md` - Should document P1-P6 principles, helper lemmas, bridge lemmas
+- `Logos/Core/Automation/README.md` - Should document tactics, proof search, Aesop integration
 
 **Files Affected**: 
-- `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
+- `Logos/Core/Theorems/Perpetuity/README.md` (create)
+- `Logos/Core/Automation/README.md` (create)
 
-**Note**: CLAUDE.md has been deprecated and moved to Archive/deprecated/. Configuration now handled through .opencode/context/
+**Impact**: Medium - reduces discoverability and understanding of module organization
 
-**Impact**: High - documentation accuracy for project status
+---
+
+### 62. Improve Docstring Coverage to 100%
+**Effort**: 2-3 hours
+**Status**: Not Started
+**Priority**: Medium (quality improvement)
+**Blocking**: None
+**Dependencies**: None
+
+**Description**: Add docstrings to remaining undocumented functions to reach 100% coverage target.
+
+**Verification Finding** (Project 004 - 2025-12-16):
+- ✅ Verified 95% docstring coverage (excellent)
+- ✅ Confirmed 5% gap in helper functions
+- ✅ Documentation quality score: 98/100
+- ✅ All major theorems have comprehensive docstrings
+
+**Gaps Identified**:
+- Some helper functions in `Logos/Core/Theorems/Perpetuity/Helpers.lean`
+- A few transport lemmas in `Logos/Core/Semantics/WorldHistory.lean`
+- Some helper functions in `Logos/Core/Automation/Tactics.lean`
+
+**Files Affected**: 
+- `Logos/Core/Theorems/Perpetuity/Helpers.lean`
+- `Logos/Core/Semantics/WorldHistory.lean`
+- `Logos/Core/Automation/Tactics.lean`
+
+**Impact**: Low - quality improvement (current 95% coverage is excellent)
 
 ---
 
 ## Medium Priority Tasks
 
-### 52. Fix AesopRules.lean Duplicate Declaration
-**Effort**: 30 minutes
-**Status**: Not Started
-**Priority**: Medium (blocks full build)
-**Blocking**: Full project build
-**Dependencies**: None
+### Proof Development
+- [ ] Create implementation plan for soundness proof
+- [ ] Refactor existing modal logic proofs for readability
+- [ ] Document bimodal logic proof system
+- [ ] Set up CI/CD for automated proof verification
 
-**Description**: `Logos/Core/Automation/AesopRules.lean` has a duplicate declaration error for `apply_modal_k`.
+### System Enhancement - Specialist Subagents (14 agents)
+- [ ] Create syntax-checker specialist (validates LEAN 4 syntax correctness)
+- [ ] Create tactic-advisor specialist (recommends tactics for proof goals)
+- [ ] Create library-navigator specialist (finds relevant mathlib functions)
+- [ ] Create performance-optimizer specialist (optimizes proof performance)
+- [ ] Create error-diagnostics specialist (analyzes and explains LEAN errors)
+- [ ] Create dependency-analyzer specialist (maps proof dependencies)
+- [ ] Create test-generator specialist (generates test cases for theorems)
+- [ ] Create example-builder specialist (creates illustrative examples)
+- [ ] Create documentation-formatter specialist (formats documentation)
+- [ ] Create git-workflow-manager specialist (manages git operations)
+- [ ] Create code-reviewer specialist (reviews code quality)
+- [ ] Create refactoring-assistant specialist (suggests refactorings)
+- [ ] Create learning-path-generator specialist (creates learning paths)
+- [ ] Create concept-explainer specialist (explains complex concepts)
 
-**Error**:
-```
-error: 'Logos.Core.Automation.apply_modal_k' has already been declared
-```
-
-**Solution Approach**:
-1. Search for duplicate `apply_modal_k` declarations in AesopRules.lean
-2. Remove or rename one of them
-3. Ensure Aesop rule registration is correct
-
-**Files Affected**:
-- `Logos/Core/Automation/AesopRules.lean` (line 230)
-
-**Impact**: Medium - blocks full build but doesn't affect core functionality
-
----
-
-### 56. Implement Missing Helper Lemmas for Bridge.lean
-**Effort**: 3-4 hours
-**Status**: Not Started
-**Priority**: Medium (needed for Task 50)
-**Blocking**: Task 50
-**Dependencies**: None
-
-**Description**: Implement the missing helper lemmas referenced in `Bridge.lean` errors.
-
-**Missing Lemmas**:
-1. `always_to_past`: `△φ → Hφ` (always implies past)
-2. `always_to_present`: `△φ → φ` (always implies present)
-3. `always_to_future`: `△φ → Fφ` (always implies future)
-4. `neg_a_to_b_from_bot`: Negation helper for contradiction
-
-**Solution Approach**:
-1. Define each lemma in appropriate module (likely `Perpetuity/Helpers.lean`)
-2. Prove using existing axioms and theorems
-3. Update imports in `Bridge.lean`
-
-**Files Affected**:
-- `Logos/Core/Theorems/Perpetuity/Helpers.lean` (add lemmas)
-- `Logos/Core/Theorems/Perpetuity/Bridge.lean` (use lemmas)
-
-**Impact**: Medium - needed to fix Bridge.lean compilation
+### System Enhancement - Context Files
+- [ ] Research and populate context/logic/processes/ directory
+- [ ] Research and populate context/logic/standards/ directory
+- [ ] Research and populate context/logic/templates/ directory
+- [ ] Research and populate context/logic/patterns/ directory
+- [ ] Research and populate context/math/analysis/ directory (real analysis, complex analysis, functional analysis)
+- [ ] Research and populate context/math/category-theory/ directory (categories, functors, natural transformations)
+- [ ] Research and populate context/math/linear-algebra/ directory (vector spaces, linear maps, matrices)
 
 ---
 
 ## Low Priority Tasks
+
+### General Research and Exploration
+- [ ] Explore decidability procedures for bimodal logic
+- [ ] Research alternative proof strategies
+- [ ] Investigate metaprogramming for custom tactics
+
+---
 
 ### 9. Begin Completeness Proofs
 **Effort**: 70-90 hours
@@ -176,6 +191,12 @@ error: 'Logos.Core.Automation.apply_modal_k' has already been declared
 **Dependencies**: Benefits from completed soundness proofs
 
 **Description**: Implement canonical model construction and prove completeness theorems (weak and strong). This is a major undertaking requiring significant effort.
+
+**Verification Finding** (Project 004 - 2025-12-16):
+- ✅ Completeness.lean infrastructure verified as well-structured
+- ✅ 11 axiom declarations confirmed (all with comprehensive docstrings)
+- ✅ 1 sorry in `provable_iff_valid` (soundness direction, 1-2 hours)
+- ✅ All axioms have proof strategies documented
 
 **Phases**:
 1. **Phase 1** (20-30 hours): Prove Lindenbaum lemma and maximal set properties
@@ -232,33 +253,12 @@ error: 'Logos.Core.Automation.apply_modal_k' has already been declared
 
 ---
 
-### 51. Fix Perpetuity Principles.lean Context Ordering
-**Effort**: 1-2 hours
-**Status**: ✅ COMPLETE (resolved by Task 42a)
-**Priority**: Low (has workaround)
-**Blocking**: None
-**Dependencies**: Task 48 (Complete) ✅
-
-**Description**: The `future_k_dist` theorem in `Principles.lean` had a TODO comment about fixing context ordering after Task 48 completion.
-
-**Resolution** (Task 42a):
-- Used weakening to reorder context from `[(A.imp B).all_future, A.all_future]` to `[A.all_future, (A.imp B).all_future]`
-- Applied deduction theorem twice as originally intended
-- Proof now complete with zero sorry
-
-**Files Modified**:
-- `Logos/Core/Theorems/Perpetuity/Principles.lean` (lines 681-710)
-
-**Impact**: Task complete - `future_k_dist` is now fully proven
-
----
-
 ### 53. Prove Height Function Properties (Optional Enhancement)
-**Effort**: 4-6 hours
-**Status**: Not Started
-**Priority**: Very Low (enhancement)
-**Blocking**: None
-**Dependencies**: None
+*Effort**: 4-6 hours
+*Status**: Not Started
+*Priority**: Medium (enhancement)
+*Blocking**: None
+*Dependencies**: None
 
 **Description**: The `Derivable.height` function and its 7 properties are currently axiomatized in `Derivation.lean`. While this is sound and standard practice for `Prop` types in Lean 4, they could theoretically be proven if we change `Derivable` from `Prop` to `Type`.
 
@@ -293,49 +293,13 @@ error: 'Logos.Core.Automation.apply_modal_k' has already been declared
 
 ---
 
-### 54. Update SORRY_REGISTRY.md (SUPERSEDED by Task 58)
-**Effort**: 1 hour
-**Status**: ✅ SUPERSEDED (replaced by Task 58 with updated requirements)
-**Priority**: Low (documentation)
-**Blocking**: None
-**Dependencies**: Task 52 (to get accurate counts)
-
-**Description**: Update `SORRY_REGISTRY.md` to reflect completion of Task 46 (Deduction Theorem) and current sorry status.
-
-**Resolution**: Task 58 provides more comprehensive update requirements based on repository review findings.
-
-**Files Affected**:
-- `Documentation/ProjectInfo/SORRY_REGISTRY.md`
-
-**Impact**: Low - documentation only
-
----
-
-### 55. Update IMPLEMENTATION_STATUS.md (SUPERSEDED by Task 59)
-**Effort**: 30 minutes
-**Status**: ✅ SUPERSEDED (replaced by Task 59 with updated requirements)
-**Priority**: Low (documentation)
-**Blocking**: None
-**Dependencies**: Task 46 (Complete) ✅, Task 48 (Complete) ✅
-
-**Description**: Update `IMPLEMENTATION_STATUS.md` to reflect Task 46 (Deduction Theorem) completion and current module status.
-
-**Resolution**: Task 59 provides more comprehensive update requirements. Note: CLAUDE.md deprecated and moved to Archive/deprecated/.
-
-**Files Affected**:
-- `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
-
-**Impact**: Low - documentation only
-
----
-
 ### 57. Implement Dual-Type Approach for Proof Extraction
-**Effort**: 15-20 hours
-**Status**: Not Started
-**Priority**: Low (future enhancement for external tool integration)
-**Blocking**: None
-**Dependencies**: None
-**GitHub Issue**: https://github.com/benbrastmckie/ProofChecker/issues/2
+*Effort**: 15-20 hours
+*Status**: Not Started
+*Priority**: Low (future enhancement for external tool integration)
+*Blocking**: None
+*Dependencies**: None
+*GitHub Issue**: https://github.com/benbrastmckie/ProofChecker/issues/2
 
 **Description**: Implement a computational `DerivationTree` type alongside the existing `Derivable` Prop to enable proof extraction for external tools and certified proof checking with explicit derivation trees.
 
@@ -370,72 +334,83 @@ error: 'Logos.Core.Automation.apply_modal_k' has already been declared
 
 ---
 
-### 60. Remove Backup Artifacts
-**Effort**: 15 minutes
-**Status**: Not Started
-**Priority**: Low (repository cleanliness)
-**Blocking**: None
-**Dependencies**: None
+## Completed
 
-**Description**: Remove backup files and add backup directories to .gitignore for cleaner repository.
+### System Setup
+- [x] Set up .opencode system for LEAN 4 ProofChecker
+- [x] Create orchestrator and primary agents
+- [x] Configure context files for lean4 and logic domains
+- [x] Fix invalid frontmatter in specialist subagents (mode: specialist → mode: subagent)
 
-**Files to Remove**:
+### 60. Remove Backup Artifacts ✅
+**Completion Date**: 2025-12-16
+**Status**: Complete
+**Priority**: Medium (repository cleanliness)
+
+**Description**: Removed backup files and enhanced .gitignore with comprehensive backup patterns for cleaner repository.
+
+**Changes Made**:
+- Deleted `Logos/Core/Theorems/Perpetuity/Bridge.lean.backup`
+- Enhanced .gitignore with comprehensive backup file patterns: `*.backup`, `*.old`, `.save_*/`, `.backup_*/`, `backup/`, `backups/`
+- Consolidated duplicate patterns (removed `*.bak` and `*~` from multiple sections)
+- Improved pattern coverage for common backup naming conventions
+
+**Files Modified**:
+- `.gitignore` (enhanced backup patterns)
+
+**Files Deleted**:
 - `Logos/Core/Theorems/Perpetuity/Bridge.lean.backup`
 
-**Directories to .gitignore**:
-- `.save_cc0/`
-- `.save_oc0/`
-- `.save_oc1/`
+**Impact**: Low - repository cleanliness improvement, prevents future backup artifacts from being tracked
 
-**Files Affected**: 
-- `Logos/Core/Theorems/Perpetuity/Bridge.lean.backup` (delete)
-- `.gitignore` (add patterns)
-
-**Impact**: Low - repository cleanliness only
+**Artifacts**:
+- Implementation plan: `.opencode/specs/060_remove_backup_artifacts/plans/implementation-001.md`
+- Task summary: `.opencode/specs/060_remove_backup_artifacts/summaries/task-summary.md`
 
 ---
 
-### 61. Add Missing Directory READMEs
-**Effort**: 1 hour
-**Status**: Not Started
-**Priority**: Low (documentation completeness)
-**Blocking**: None
-**Dependencies**: None
+### 59. Update IMPLEMENTATION_STATUS.md ✅
+**Completion Date**: 2025-12-16
+**Status**: Complete
+**Priority**: High (documentation accuracy)
 
-**Description**: Add README.md files to directories lacking them, following DIRECTORY_README_STANDARD.md.
+**Description**: Updated IMPLEMENTATION_STATUS.md to reflect Task 46 (Deduction Theorem) completion and current module status.
 
-**Missing READMEs**:
-- `Logos/Core/Theorems/Perpetuity/README.md`
-- `Logos/Core/Automation/README.md`
+**Changes Made**:
+- Updated DeductionTheorem.lean status from "Partial (3 sorry)" to "Complete (zero sorry)"
+- Added comprehensive DeductionTheorem.lean section with all 5 theorems documented
+- Updated Summary Table with DeductionTheorem row showing "✓ Complete" with "100%" completeness
+- Updated "Last Updated" date to 2025-12-16
+- Updated Overall Project Status: MVP completion 82% → 83% fully complete, 6% → 5% partial
+- Updated "What Works" section to mention deduction theorem
+- Updated "What's Partial" section to remove DeductionTheorem
 
-**Files Affected**: 
-- `Logos/Core/Theorems/Perpetuity/README.md` (create)
-- `Logos/Core/Automation/README.md` (create)
+**Files Modified**:
+- `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
 
-**Impact**: Low - documentation completeness
+**Impact**: High - documentation now accurately reflects Task 46 completion and current module status
 
 ---
 
-### 62. Improve Docstring Coverage to 100%
-**Effort**: 2-3 hours
-**Status**: Not Started
-**Priority**: Low (quality improvement)
-**Blocking**: None
-**Dependencies**: None
+### 56. Implement Missing Helper Lemmas for Bridge.lean ✅
+**Completion Date**: 2025-12-16 (verification)
+**Original Implementation**: Task 42b (2025-12-15)
+**Status**: Complete (all lemmas already implemented)
 
-**Description**: Add docstrings to remaining undocumented functions to reach 100% coverage target.
+**Description**: All four required helper lemmas were already fully implemented in Bridge.lean as part of Task 42b:
 
-**Gaps Identified**:
-- Some helper functions in `Logos/Core/Theorems/Perpetuity/Helpers.lean`
-- A few transport lemmas in `Logos/Core/Semantics/WorldHistory.lean`
-- Some helper functions in `Logos/Core/Automation/Tactics.lean`
+**Implemented Lemmas** (all zero sorry):
+1. `always_to_past` (line 529) - `△φ → Hφ` - fully proven
+2. `always_to_present` (line 539) - `△φ → φ` - fully proven
+3. `always_to_future` (line 555) - `△φ → Fφ` - fully proven
+4. `neg_a_to_b_from_bot` (implemented as `local_efq`, line 204) - fully proven
 
-**Files Affected**: 
-- `Logos/Core/Theorems/Perpetuity/Helpers.lean`
-- `Logos/Core/Semantics/WorldHistory.lean`
-- `Logos/Core/Automation/Tactics.lean`
+**Files Verified**:
+- `Logos/Core/Theorems/Perpetuity/Bridge.lean` (all lemmas present, zero sorry)
+- `Logos/Core/Theorems/Perpetuity/Helpers.lean` (supporting helpers)
+- `Logos/Core/Theorems/Perpetuity.lean` (parent module)
 
-**Impact**: Low - quality improvement (current 95% coverage is excellent)
+**Impact**: Task was already complete - no blocking issues for Task 50
 
 ---
 
@@ -491,4 +466,4 @@ To mark tasks complete, remove them from active sections (git tracks history).
 
 ---
 
-**Last Updated**: 2025-12-16 (Migrated from root TODO.md to .opencode/specs/TODO.md - all 16 active tasks preserved with full context, effort estimates, and dependencies)
+**Last Updated**: 2025-12-16 (Task 60 complete - Backup artifacts removed, .gitignore enhanced - 43 active tasks remaining: 12 Logos development tasks + 31 opencode system enhancement tasks)

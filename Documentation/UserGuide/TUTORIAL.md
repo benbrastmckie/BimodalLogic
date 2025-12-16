@@ -374,7 +374,7 @@ Logos supports future extensions:
 - [LEAN Style Guide](../Development/LEAN_STYLE_GUIDE.md)
 - [Module Organization](../Development/MODULE_ORGANIZATION.md)
 - [Testing Standards](../Development/TESTING_STANDARDS.md)
-- [Tactic Development](../ProjectInfo/TACTIC_DEVELOPMENT.md)
+- [Tactic Development](TACTIC_DEVELOPMENT.md)
 
 ### External Resources
 

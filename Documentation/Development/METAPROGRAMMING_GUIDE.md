@@ -711,7 +711,7 @@ elab "assumption_search" : tactic => do
 
 ### Logos Documentation
 
-- [TACTIC_DEVELOPMENT.md](../ProjectInfo/TACTIC_DEVELOPMENT.md) - Tactic patterns and Aesop
+- [TACTIC_DEVELOPMENT.md](../UserGuide/TACTIC_DEVELOPMENT.md) - Tactic patterns and Aesop
   integration
 - [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) - TM logic specification
 - [TESTING_STANDARDS.md](TESTING_STANDARDS.md) - Tactic testing requirements

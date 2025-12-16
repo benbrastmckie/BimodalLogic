@@ -90,7 +90,7 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 
 **Test 9: Meta Agent**
 ```bash
-/create-agent "Test agent for validation"
+/meta "Create test agent for validation"
 
 # Expected Output:
 # - New agent file created
@@ -378,7 +378,7 @@ git log --oneline -5
 
 **Test 26: Create New Agent**
 ```bash
-/create-agent "Agent that analyzes proof complexity"
+/meta "Create agent that analyzes proof complexity"
 
 # Expected:
 # - New agent file created in .opencode/agent/subagents/
@@ -389,7 +389,7 @@ git log --oneline -5
 
 **Test 27: Create New Command**
 ```bash
-/create-command "Command /analyze that runs complexity analysis"
+/meta "Create command /analyze that runs complexity analysis"
 
 # Expected:
 # - New command file created in .opencode/command/
@@ -400,7 +400,7 @@ git log --oneline -5
 
 **Test 28: Modify Existing Agent**
 ```bash
-/modify-agent "researcher" "Add support for arXiv search"
+/meta "Modify researcher agent to add support for arXiv search"
 
 # Expected:
 # - Agent file updated

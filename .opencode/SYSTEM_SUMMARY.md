@@ -97,7 +97,7 @@
 - ✅ `context/builder-templates/` - Meta-system templates
 - ✅ `context/project/` - Project-specific context
 
-#### Command System (11 files)
+#### Command System (7 files)
 - ✅ `command/review.md` - Repository review
 - ✅ `command/research.md` - Multi-source research
 - ✅ `command/plan.md` - Implementation planning
@@ -105,10 +105,6 @@
 - ✅ `command/lean.md` - Proof implementation
 - ✅ `command/refactor.md` - Code refactoring
 - ✅ `command/document.md` - Documentation updates
-- ✅ `command/create-agent.md` - Agent creation
-- ✅ `command/create-command.md` - Command creation
-- ✅ `command/modify-agent.md` - Agent modification
-- ✅ `command/modify-command.md` - Command modification
 
 #### Documentation (6 files)
 - ✅ `README.md` - System overview and quick start
@@ -302,18 +298,18 @@ context/math/
 
 ### Creating New Agents
 ```bash
-/create-agent "Agent that analyzes proof complexity and suggests optimizations"
+/meta "Create agent that analyzes proof complexity and suggests optimizations"
 ```
 
 ### Creating New Commands
 ```bash
-/create-command "Command /optimize that runs performance analysis"
+/meta "Create command /optimize that runs performance analysis"
 ```
 
 ### Modifying Existing Components
 ```bash
-/modify-agent "researcher" "Add support for arXiv paper search"
-/modify-command "review" "Include performance metrics"
+/meta "Modify researcher agent to add support for arXiv paper search"
+/meta "Modify review command to include performance metrics"
 ```
 
 ---
@@ -330,7 +326,7 @@ context/math/
 1. **Context**: `context/README.md` - Context organization
 2. **Agents**: Review agent files for patterns
 3. **Commands**: Review command files for routing
-4. **Meta**: Use `/create-agent` and `/create-command`
+4. **Meta**: Use `/meta` to create or modify agents and commands
 
 ---
 
@@ -399,7 +395,7 @@ context/math/
   **A**: Create file in `context/math/`, follow existing patterns
 
 - **Q**: How do I create a custom workflow?
-  **A**: Use `/create-agent` to create workflow coordinator
+  **A**: Use `/meta` to create workflow coordinator agent
 
 - **Q**: How do I integrate new tools?
   **A**: Modify relevant agents to call tool APIs

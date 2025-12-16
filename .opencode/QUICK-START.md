@@ -246,25 +246,25 @@ ls .opencode/command/
 ### Create a New Agent
 
 ```bash
-/create-agent "Agent that analyzes proof complexity and suggests optimizations"
+/meta "Create agent that analyzes proof complexity and suggests optimizations"
 ```
 
 ### Create a New Command
 
 ```bash
-/create-command "Command /optimize that analyzes and optimizes proof performance"
+/meta "Create command /optimize that analyzes and optimizes proof performance"
 ```
 
 ### Modify an Existing Agent
 
 ```bash
-/modify-agent "researcher" "Add support for arXiv paper search"
+/meta "Modify researcher agent to add support for arXiv paper search"
 ```
 
 ### Modify an Existing Command
 
 ```bash
-/modify-command "review" "Include performance metrics in review"
+/meta "Modify review command to include performance metrics in review"
 ```
 
 ## Tips for Success

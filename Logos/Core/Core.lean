@@ -37,7 +37,7 @@ import Logos.Core.ProofSystem.Axioms
 
 namespace Logos.Core
 
--- Core layer version
+/-- Core layer version string for tracking releases and compatibility. -/
 def version : String := "0.1.0"
 
 end Logos.Core

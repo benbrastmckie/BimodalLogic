@@ -222,16 +222,6 @@ theorem apply_modal_k {Γ : Context} {φ : Formula} :
   generalized_modal_k Γ φ
 
 /--
-Generalized Modal K rule as safe apply rule.
-
-To prove `□φ` from `□Γ`, if we can prove `φ` from `Γ`, then we're done.
--/
-@[aesop safe apply]
-theorem apply_modal_k {Γ : Context} {φ : Formula} :
-    Derivable Γ φ → Derivable (Context.map Formula.box Γ) (Formula.box φ) :=
-  generalized_modal_k Γ φ
-
-/--
 Generalized Temporal K rule as safe apply rule.
 
 To prove `Fφ` from `FΓ`, if we can prove `φ` from `Γ`, then we're done.

@@ -313,6 +313,16 @@ This alias maintains backward compatibility with code using the old `efq` name.
 @[deprecated efq_neg (since := "2025-12-14")]
 theorem efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := efq_neg A B
 
+/--
+Left Disjunction Introduction: `[A] ⊢ A ∨ B`.
+
+If A holds, then A ∨ B holds.
+
+**Proof Strategy**: Use definition of disjunction and EFQ.
+
+Recall: A ∨ B = ¬A → B
+From A, we need ¬A → B. From ¬A and A, we get ⊥, then B follows by EFQ.
+-/
 theorem ldi (A B : Formula) : [A] ⊢ A.or B := by
   -- A ∨ B = ¬A → B (by definition)
   unfold Formula.or
@@ -884,6 +894,16 @@ theorem classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q
     Logos.Core.Metalogic.deduction_theorem [(P.imp Q)] (P.neg.imp Q) Q h_combined
 
   exact Logos.Core.Metalogic.deduction_theorem [] (P.imp Q) ((P.neg.imp Q).imp Q) step1
+
+/--
+Biconditional Introduction: From `⊢ A → B` and `⊢ B → A`, derive `⊢ A ↔ B`.
+
+Construct a biconditional from two implications.
+
+**Recall**: `A ↔ B = (A → B) ∧ (B → A)`
+
+**Proof Strategy**: Use `pairing` to combine the two implications into a conjunction.
+-/
 theorem iff_intro (A B : Formula) (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp A) :
     ⊢ (A.imp B).and (B.imp A) := by
   -- Use pairing: A → B → (A ∧ B)

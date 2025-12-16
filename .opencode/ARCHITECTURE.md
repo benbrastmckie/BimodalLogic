@@ -413,22 +413,22 @@ User-facing task list with priorities and links to reports/plans.
 
 ### Adding New Agents
 ```bash
-/create-agent "Agent that analyzes proof performance and suggests optimizations"
+/meta "Create agent that analyzes proof performance and suggests optimizations"
 ```
 
 Creates new agent file following templates and patterns.
 
 ### Adding New Commands
 ```bash
-/create-command "Command /optimize that runs performance analysis"
+/meta "Create command /optimize that runs performance analysis"
 ```
 
 Creates new command with proper routing to agents.
 
 ### Modifying Existing Components
 ```bash
-/modify-agent "researcher" "Add support for arXiv paper search"
-/modify-command "review" "Include performance metrics"
+/meta "Modify researcher agent to add support for arXiv paper search"
+/meta "Modify review command to include performance metrics"
 ```
 
 Updates existing agents or commands while preserving functionality.

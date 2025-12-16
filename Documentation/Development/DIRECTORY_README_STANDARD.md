@@ -297,7 +297,7 @@ User-facing documentation for working with [project]:
 Project status and tactic documentation:
 - **IMPLEMENTATION_STATUS.md**: Module-by-module status tracking (includes Known Limitations section)
 - **SORRY_REGISTRY.md**: Technical debt tracking
-- **TACTIC_DEVELOPMENT.md**: Custom tactic patterns
+- **TACTIC_REGISTRY.md**: Custom tactic patterns
 
 **Audience**: Contributors, maintainers
 

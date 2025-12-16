@@ -39,7 +39,7 @@ These checks verify that information is consistent across all documentation file
 TACTICS_IMPL=$(grep -c "^axiom \|^def \|^elab " Logos/Automation/Tactics.lean)
 
 # Count tactic references in TACTIC_DEVELOPMENT.md
-TACTICS_DOC=$(grep -c "^\#\#\# " Documentation/ProjectInfo/TACTIC_DEVELOPMENT.md)
+TACTICS_DOC=$(grep -c "^\#\#\# " Documentation/ProjectInfo/TACTIC_REGISTRY.md)
 
 echo "Implementation: $TACTICS_IMPL tactics"
 echo "Documentation: $TACTICS_DOC tactics"

@@ -1,0 +1,33 @@
+{
+  "project_name": "review_20251216",
+  "project_number": 4,
+  "type": "review",
+  "phase": "completed",
+  "created": "2025-12-16T00:00:00Z",
+  "completed": "2025-12-16T00:00:00Z",
+  "scope": "comprehensive_repository_review",
+  "status": "completed",
+  "reports": [
+    "reports/analysis-001.md",
+    "reports/verification-001.md"
+  ],
+  "summaries": [
+    "summaries/review-summary.md"
+  ],
+  "subagents": {
+    "verification_specialist": "completed",
+    "todo_manager": "completed"
+  },
+  "results": {
+    "compliance_score": 94.65,
+    "repository_health": 94,
+    "files_verified": 30,
+    "proofs_checked": "150+",
+    "sorry_found": 8,
+    "axioms_found": 30,
+    "style_violations": 12,
+    "critical_issues": 1,
+    "tasks_updated": 5,
+    "priority_changes": 1
+  }
+}

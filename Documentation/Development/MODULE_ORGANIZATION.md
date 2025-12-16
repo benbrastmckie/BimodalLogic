@@ -60,7 +60,7 @@ Logos/
     ├── ProjectInfo/               # Project status and tactic docs
     │   ├── IMPLEMENTATION_STATUS.md
     │   ├── SORRY_REGISTRY.md
-    │   └── TACTIC_DEVELOPMENT.md
+    │   └── TACTIC_REGISTRY.md
     ├── Development/               # Developer standards and workflow
     │   ├── LEAN_STYLE_GUIDE.md
     │   ├── MODULE_ORGANIZATION.md

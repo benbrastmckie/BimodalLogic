@@ -1,9 +1,9 @@
 # Sorry Placeholder Registry
 
-**Last Updated**: 2025-12-09
-**Total Active Placeholders**: 11 (1 ModalS5 documented invalid, 3 Truth.lean, 1 Completeness, 3 DeductionTheorem, 3 ProofSearch documentation)
+**Last Updated**: 2025-12-16
+**Total Active Placeholders**: 8 (1 ModalS5 documented invalid, 3 Truth.lean, 1 Completeness, 3 ProofSearch documentation)
 **Total Axiom Declarations**: 16 (5 Perpetuity, 11 Completeness)
-**Total Resolved**: 57 (Plan 059 Phase 1: 6 De Morgan laws, Plan 060: diamond_disj_iff + s4_diamond_box_conj + s5_diamond_conj_diamond + k_dist_diamond + biconditional infrastructure)
+**Total Resolved**: 60 (Plan 059 Phase 1: 6 De Morgan laws, Plan 060: diamond_disj_iff + s4_diamond_box_conj + s5_diamond_conj_diamond + k_dist_diamond + biconditional infrastructure, Task 46: 3 DeductionTheorem cases)
 
 This document tracks `sorry` placeholders (unproven theorems) and `axiom` declarations (unproven lemmas) in the Logos codebase. It provides resolution context, effort estimates, and cross-references to related tasks.
 
@@ -32,15 +32,17 @@ echo "axiom: $(grep -rc '^axiom ' Logos/Core/**/*.lean 2>/dev/null | awk -F: '{s
 ```
 
 **Relationship to Other Files**:
-- **TODO.md** (root): Tasks that resolve items in this registry
+- **.opencode/specs/TODO.md**: Active tasks that resolve items in this registry
 - **IMPLEMENTATION_STATUS.md**: Module status affected by sorry resolution
-- **.claude/TODO.md**: Spec-based plans for systematic resolution
+- **.opencode/specs/**: Spec-based plans for systematic resolution
+
+**Note**: CLAUDE.md has been deprecated and moved to Archive/deprecated/CLAUDE.md.deprecated-20251215. Configuration is now handled through .opencode/context/.
 
 ---
 
 ## Related Documentation
 
-- [TODO.md](../../TODO.md) - Active tasks addressing these items
+- [TODO.md](../../.opencode/specs/TODO.md) - Active tasks addressing these items
 - [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking (canonical sorry counts)
 - [IMPLEMENTATION_STATUS.md - Known Limitations](IMPLEMENTATION_STATUS.md#known-limitations) - Blockers and workarounds affecting resolution
 
@@ -106,10 +108,10 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 φ) (persisten
   - **Derivation**: Requires excluded middle or C combinator (~50+ lines)
   - **Status**: Axiomatized (classical logic axiom, semantically justified)
 
-- **Perpetuity.lean:1233** - `future_k_dist` (`⊢ G(A → B) → (GA → GB)`)
-  - **Context**: Future K distribution (normal modal logic axiom)
-  - **Justification**: Standard axiom for normal modal logics
-  - **Status**: Axiomatized (temporal normal modal logic axiom)
+- **Perpetuity.lean:1233** - `future_k_dist` (DEPRECATED - now derived theorem)
+  - **Context**: Future K distribution (`⊢ G(A → B) → (GA → GB)`)
+  - **Status**: **RESOLVED** (Task 42a) - Now derived as theorem in Principles.lean using deduction theorem
+  - **Note**: This axiom declaration remains in Perpetuity.lean for backward compatibility but is no longer needed
 
 - **Perpetuity.lean:1504** - `always_dni` (`⊢ △φ → △¬¬φ`)
   - **Context**: Helper for P6 derivation
@@ -191,30 +193,20 @@ These are blocking placeholders in the temporal swap validity proof infrastructu
   - **Task**: Task 17 area (Soundness.lean related issues)
   - **Status**: BLOCKED (domain extension limitation)
 
-### Logos/Core/Metalogic/DeductionTheorem.lean (3 placeholders)
+### Logos/Core/Metalogic/DeductionTheorem.lean (0 placeholders - COMPLETE ✅)
 
-These are blocking placeholders in the deduction theorem proof for complex derivation cases.
+**FULLY RESOLVED** (Task 46 - 2025-12-15): All deduction theorem cases proven with zero sorry.
 
-- **DeductionTheorem.lean:370** - `deduction_theorem` (modal_k case)
-  - **Context**: Deduction theorem for modal K rule case
-  - **Blocker**: Requires recursion over smaller derivation structure
-  - **Resolution**: Implement recursive case analysis
-  - **Task**: Deduction theorem completion
-  - **Status**: BLOCKED (requires structural recursion pattern)
+- **DeductionTheorem.lean:370** - `deduction_theorem` (modal_k case) ✅
+  - **Status**: RESOLVED - Implemented using recursive case analysis with termination proofs
+  
+- **DeductionTheorem.lean:383** - `deduction_theorem` (necessitation case) ✅
+  - **Status**: RESOLVED - Handled empty context necessitation with proper formulation
+  
+- **DeductionTheorem.lean:419** - `deduction_theorem` (temporal_k case) ✅
+  - **Status**: RESOLVED - Implemented using structural recursion pattern
 
-- **DeductionTheorem.lean:383** - `deduction_theorem` (necessitation case)
-  - **Context**: Deduction theorem for necessitation rule case
-  - **Blocker**: Requires handling of empty context necessitation
-  - **Resolution**: May require alternative formulation
-  - **Task**: Deduction theorem completion
-  - **Status**: BLOCKED (empty context handling)
-
-- **DeductionTheorem.lean:419** - `deduction_theorem` (temporal_k case)
-  - **Context**: Deduction theorem for temporal K rule case
-  - **Blocker**: Similar to modal_k case, requires recursion
-  - **Resolution**: Implement recursive case analysis
-  - **Task**: Deduction theorem completion
-  - **Status**: BLOCKED (requires structural recursion pattern)
+**Impact**: Deduction theorem now fully functional for all derivation rule cases, enabling advanced proof techniques like `future_k_dist` derivation (Task 42a).
 
 ### Logos/Core/Metalogic/Completeness.lean (1 placeholder)
 
@@ -404,6 +396,19 @@ git log --all -S "sorry" -- Logos/Core/Semantics/Truth.lean
 
 ### Resolution History Summary
 
+**2025-12-15 - Task 46: Deduction Theorem Completion**
+- DeductionTheorem.lean: All 3 sorry placeholders resolved (modal_k, necessitation, temporal_k cases)
+- Implemented recursive case analysis with complete termination proofs
+- Deduction theorem now fully functional for all derivation rule cases
+- Enabled advanced proof techniques (e.g., Task 42a: future_k_dist derivation)
+- Total sorry in DeductionTheorem.lean: 3 → 0 ✅
+
+**2025-12-15 - Task 42a: Temporal Axiom Derivation**
+- Perpetuity/Principles.lean: `future_k_dist` derived as theorem using deduction theorem
+- Perpetuity/Principles.lean: `always_mono` derived as theorem using deduction theorem
+- Axiom count reduced by 2 (future_k_dist and always_mono now theorems)
+- Note: Axiom declarations remain in Perpetuity.lean for backward compatibility
+
 **2025-12-08 - Task 16: Perpetuity Theorem Logic Errors**
 - Perpetuity.lean: P1 (`perpetuity_1`) fully proven (was sorry)
 - New helper lemmas: `identity`, `pairing` (axiom), `combine_imp_conj`, `combine_imp_conj_3`
@@ -437,12 +442,12 @@ git log --all -S "sorry" -- Logos/Core/Semantics/Truth.lean
 |----------|-------|--------|
 | Active `sorry` (ModalS5) | 1 | diamond_mono_imp (NOT VALID - documented with counter-model) |
 | Active `sorry` (Truth.lean) | 3 | Temporal swap validity (domain extension limitation) |
-| Active `sorry` (DeductionTheorem) | 3 | modal_k, necessitation, temporal_k cases |
+| Active `sorry` (DeductionTheorem) | 0 | ✅ COMPLETE (Task 46) |
 | Active `sorry` (Completeness) | 1 | `provable_iff_valid` soundness direction |
 | Documentation `sorry` (ProofSearch) | 3 | Example usage (after implementation) |
 | Completeness `axiom` | 11 | Task 9 (70-90 hours) |
-| Perpetuity `axiom` | 5 | dni, future_k_dist, always_dni, always_dne, always_mono |
-| **Total `sorry`** | **11** | 8 blocking + 3 documentation |
+| Perpetuity `axiom` | 5 | dni, future_k_dist (now derived), always_dni, always_dne, always_mono |
+| **Total `sorry`** | **8** | 5 blocking + 3 documentation |
 | **Total `axiom`** | **16** | 5 Perpetuity + 11 Completeness |
 
 **Plan 060 Status (2025-12-09 - COMPLETE)**:
@@ -459,8 +464,8 @@ git log --all -S "sorry" -- Logos/Core/Semantics/Truth.lean
 - `contraposition`: Proven via B combinator ✓
 - All bridge lemmas for P6: Fully proven ✓
 
-**Next Priority**: Propositional theorem derivations (Tasks 21-29) and DeductionTheorem completion.
+**Next Priority**: Fix AesopRules duplicate (Task 52), then Layer 1 planning.
 
 ---
 
-**Last Updated**: 2025-12-09
+**Last Updated**: 2025-12-16

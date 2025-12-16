@@ -543,6 +543,6 @@ If working alone, prioritize critical path to minimize project duration:
 
 ### Related Guides
 
-- [TACTIC_DEVELOPMENT.md](../ProjectInfo/TACTIC_DEVELOPMENT.md) - Tactic implementation patterns
+- [TACTIC_DEVELOPMENT.md](../UserGuide/TACTIC_DEVELOPMENT.md) - Tactic implementation patterns
 - [METAPROGRAMMING_GUIDE.md](METAPROGRAMMING_GUIDE.md) - LEAN 4 metaprogramming
   fundamentals

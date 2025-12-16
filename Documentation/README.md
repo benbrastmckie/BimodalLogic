@@ -15,6 +15,7 @@ User-facing documentation for working with Logos:
 - [TUTORIAL.md](UserGuide/TUTORIAL.md): Getting started guide for new users
 - [EXAMPLES.md](UserGuide/EXAMPLES.md): Usage examples and proof patterns
 - [INTEGRATION.md](UserGuide/INTEGRATION.md): Integration with model checkers and other tools
+- [TACTIC_DEVELOPMENT.md](UserGuide/TACTIC_DEVELOPMENT.md): Guide for developing custom tactics
 
 ### Research/
 
@@ -28,13 +29,13 @@ Research vision and planned architecture. For implementation status, see
 
 ### ProjectInfo/
 
-Project status and tactic documentation:
+Project status and tactic registry:
 
 - [IMPLEMENTATION_STATUS.md](ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module status
   tracking with verification commands (includes Known Limitations section)
 - [SORRY_REGISTRY.md](ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking (sorry
   placeholders with resolution context)
-- [TACTIC_DEVELOPMENT.md](ProjectInfo/TACTIC_DEVELOPMENT.md) - Custom tactic development patterns
+- [TACTIC_REGISTRY.md](ProjectInfo/TACTIC_REGISTRY.md) - Registry of planned and completed tactics
 
 ### Development/
 
@@ -87,7 +88,8 @@ Reference materials:
 
 - [Testing Standards](Development/TESTING_STANDARDS.md) - Test requirements
 - [Module Organization](Development/MODULE_ORGANIZATION.md) - Project structure
-- [Tactic Development](ProjectInfo/TACTIC_DEVELOPMENT.md) - Custom tactics
+- [Tactic Development](UserGuide/TACTIC_DEVELOPMENT.md) - Custom tactic development guide
+- [Tactic Registry](ProjectInfo/TACTIC_REGISTRY.md) - Tactic implementation status
 - [Metaprogramming Guide](Development/METAPROGRAMMING_GUIDE.md) - LEAN 4 tactics
 - [Phased Implementation](Development/PHASED_IMPLEMENTATION.md) - Execution roadmap
 - [Quality Metrics](Development/QUALITY_METRICS.md) - Quality targets

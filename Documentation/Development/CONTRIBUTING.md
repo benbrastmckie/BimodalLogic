@@ -340,4 +340,4 @@ Contributors are recognized in:
 - [Testing Standards](../Development/TESTING_STANDARDS.md)
 - [Module Organization](../Development/MODULE_ORGANIZATION.md)
 - [Quality Metrics](../Development/QUALITY_METRICS.md)
-- [Tactic Development](../ProjectInfo/TACTIC_DEVELOPMENT.md)
+- [Tactic Development](../UserGuide/TACTIC_DEVELOPMENT.md)

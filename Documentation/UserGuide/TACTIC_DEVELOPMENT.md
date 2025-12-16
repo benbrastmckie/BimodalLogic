@@ -1,44 +1,19 @@
-# Tactic Development Guide for Logos
+# Tactic Development Guide
 
-This document provides guidelines for developing custom tactics for the Logos
-proof automation system.
+This guide provides comprehensive instructions for developing custom tactics for the Logos proof automation system. For a complete registry of all tactics and their implementation status, see [TACTIC_REGISTRY.md](../ProjectInfo/TACTIC_REGISTRY.md).
 
-## 1. Custom Tactics Roadmap
+## Table of Contents
 
-### Priority Tactics (Layer 0 - Core TM)
+1. [LEAN 4 Metaprogramming Overview](#1-lean-4-metaprogramming-overview)
+2. [Tactic Implementation Patterns](#2-tactic-implementation-patterns)
+3. [Aesop Integration](#3-aesop-integration)
+4. [Simp Lemma Design](#4-simp-lemma-design)
+5. [Syntax Macros](#5-syntax-macros)
+6. [Testing Tactics](#6-testing-tactics)
+7. [Documentation Requirements](#7-documentation-requirements)
+8. [Best Practices](#8-best-practices)
 
-| Tactic | Purpose | Status |
-|--------|---------|--------|
-| `modal_k_tactic` | Apply modal K rule (MK) | ✓ Complete |
-| `temporal_k_tactic` | Apply temporal K rule (TK) | ✓ Complete |
-| `modal_t` | Apply axiom MT (□φ → φ) | ✓ Complete |
-| `modal_4_tactic` | Apply axiom M4 (□φ → □□φ) | ✓ Complete |
-| `modal_b_tactic` | Apply axiom MB (φ → □◇φ) | ✓ Complete |
-| `temp_4_tactic` | Apply axiom T4 (Fφ → FFφ) | ✓ Complete |
-| `temp_a_tactic` | Apply axiom TA (φ → F(Pφ)) | ✓ Complete |
-| `apply_axiom` | Apply TM axiom by unification | ✓ Complete |
-| `assumption_search` | Search context for matching assumption | ✓ Complete |
-| `tm_auto` | Comprehensive TM automation (Aesop) | ✓ Complete |
-| `s5_simp` | Simplify S5 modal formulas | Planned |
-| `temporal_simp` | Simplify temporal formulas | Planned |
-| `bimodal_simp` | Simplify using MF/TF axioms | Planned |
-| `perpetuity` | Apply perpetuity principles P1-P6 | Planned |
-
-### Advanced Tactics (Layer 0 - Complete)
-
-| Tactic | Purpose | Status |
-|--------|---------|--------|
-| `modal_search` | Bounded modal proof search (MVP: delegates to tm_auto) | ✓ Complete |
-| `temporal_search` | Bounded temporal proof search (MVP: delegates to tm_auto) | ✓ Complete |
-
-### Future Tactics (Layer 1+)
-
-| Tactic | Purpose | Layer |
-|--------|---------|-------|
-| `counterfactual` | Counterfactual reasoning | Layer 1 |
-| `grounding` | Grounding relation reasoning | Layer 1 |
-
-## 2. LEAN 4 Metaprogramming Overview
+## 1. LEAN 4 Metaprogramming Overview
 
 ### Tactic Architecture
 
@@ -85,7 +60,7 @@ import Lean.Meta.Tactic.Rewrite -- Rewriting
 | `mkAppM` | Create function application |
 | `mkConst` | Create constant reference |
 
-## 3. Tactic Implementation Patterns
+## 2. Tactic Implementation Patterns
 
 ### Pattern 1: Apply Axiom
 
@@ -110,7 +85,7 @@ elab "modal_t" : tactic => do
     throwError "modal_t: goal must be an implication □φ → φ"
 ```
 
-### 2.5 Complete Modal_t Tactic Example
+### Pattern 1a: Complete Modal_t Tactic Example
 
 This section provides a complete working implementation of the `modal_t` tactic using
 `elab_rules`, demonstrating goal pattern matching, proof term construction, and error
@@ -204,7 +179,7 @@ elab_rules : tactic
 5. **Error Handling**: Provide specific error messages showing expected vs actual
    patterns for easier debugging.
 
-**Reference**: See [METAPROGRAMMING_GUIDE.md](METAPROGRAMMING_GUIDE.md) for detailed
+**Reference**: See [METAPROGRAMMING_GUIDE.md](../../Development/METAPROGRAMMING_GUIDE.md) for detailed
 explanation of `Lean.Elab.Tactic` API, expression manipulation, and proof term
 construction.
 
@@ -352,7 +327,7 @@ elab "modal_search" depth:num : tactic => do
   modalSearch goal depth.getNat
 ```
 
-## 4. Aesop Integration for TM Logic
+## 3. Aesop Integration
 
 Aesop is LEAN 4's general-purpose proof search automation tool. This section explains
 how to integrate Logos's TM logic axioms and lemmas with Aesop for automated
@@ -495,7 +470,7 @@ theorem temporal_k_forward (φ ψ : Formula) (h1 : Derivable Γ (Formula.all_fut
   (https://leanprover-community.github.io/lean4-metaprogramming-book/main/
   11_aesop.html)
 
-## 5. Simp Lemma Design for Modal Logic
+## 4. Simp Lemma Design
 
 The `simp` tactic performs formula simplification using rewrite lemmas. This section
 explains convergence requirements and key simplifications for TM logic.
@@ -607,9 +582,8 @@ Standard propositional simplifications (always safe):
   how-does-lean-simp-tactic-work)
 - [Mathlib4 Simp Lemmas]
   (https://leanprover-community.github.io/mathlib4_docs/Mathlib/Tactic/Simp/)
-- Report 021 (LEAN 4 Modal Logic Best Practices), lines 350-377
 
-## 6. Syntax Macros
+## 5. Syntax Macros
 
 ### Defining Custom Syntax
 
@@ -647,7 +621,7 @@ macro "modal_reasoning" : tactic =>
       | apply Derivable.modus_ponens <;> assumption))
 ```
 
-## 7. Testing Tactics
+## 6. Testing Tactics
 
 ### Unit Tests for Tactics
 
@@ -691,7 +665,7 @@ def deeply_nested (n : Nat) : Formula :=
 #guard (deeply_nested 10).complexity = 11
 ```
 
-## 8. Documentation Requirements
+## 7. Documentation Requirements
 
 ### Tactic Documentation Format
 
@@ -763,7 +737,7 @@ Complete for propositional S5 within the depth limit.
 elab "modal_search" depth:num : tactic => ...
 ```
 
-## 9. Best Practices
+## 8. Best Practices
 
 ### Do
 
@@ -806,5 +780,7 @@ throwError "tactic failed"
 - [LEAN 4 Metaprogramming Book](https://leanprover-community.github.io/lean4-metaprogramming-book/)
 - [Aesop Documentation](https://github.com/leanprover-community/aesop)
 - [Mathlib4 Tactics](https://leanprover-community.github.io/mathlib4_docs/)
-- [Logos Architecture](../UserGuide/ARCHITECTURE.md)
-- [Testing Standards](TESTING_STANDARDS.md)
+- [Logos Architecture](ARCHITECTURE.md)
+- [METAPROGRAMMING_GUIDE.md](../Development/METAPROGRAMMING_GUIDE.md)
+- [TESTING_STANDARDS.md](../Development/TESTING_STANDARDS.md)
+- [TACTIC_REGISTRY.md](../ProjectInfo/TACTIC_REGISTRY.md)
