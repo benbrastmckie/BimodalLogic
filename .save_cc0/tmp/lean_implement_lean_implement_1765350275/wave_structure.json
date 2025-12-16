@@ -1,0 +1,37 @@
+{
+  "waves": [
+    {
+      "wave_number": 1,
+      "phases": [1, 3, 5, 8],
+      "description": "Independent phases: dni, DeductionTheorem, Tactics, Naming/Docs"
+    },
+    {
+      "wave_number": 2,
+      "phases": [2],
+      "description": "Depends on Phase 1: always_dni/dne"
+    },
+    {
+      "wave_number": 3,
+      "phases": [4],
+      "description": "Depends on Phase 3: future_k_dist/always_mono"
+    },
+    {
+      "wave_number": 4,
+      "phases": [6],
+      "description": "Depends on Phases 1,2: Perpetuity refactor"
+    },
+    {
+      "wave_number": 5,
+      "phases": [7],
+      "description": "Depends on Phase 6: Helper lemmas"
+    }
+  ],
+  "metrics": {
+    "total_phases": 8,
+    "total_waves": 5,
+    "wave_1_parallel": 4,
+    "sequential_estimated_time": "34-48 hours",
+    "parallel_estimated_time": "12-15 hours",
+    "time_savings_percentage": "65-69%"
+  }
+}

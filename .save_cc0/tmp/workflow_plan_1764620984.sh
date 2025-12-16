@@ -1,0 +1,46 @@
+export CLAUDE_PROJECT_DIR="/home/benjamin/Documents/Philosophy/Projects/ProofChecker"
+export WORKFLOW_ID="plan_1764620984"
+export STATE_FILE="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/tmp/workflow_plan_1764620984.sh"
+export WORKFLOW_SCOPE="research-and-plan"
+export RESEARCH_COMPLEXITY="3"
+export RESEARCH_TOPICS_JSON="[]"
+export TERMINAL_STATE="plan"
+export CURRENT_STATE="initialize"
+export CURRENT_STATE="research"
+export COMPLETED_STATES_JSON="[
+  \"research\"
+]"
+export COMPLETED_STATES_COUNT="1"
+export TOPIC_NAME_FILE="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/tmp/topic_name_plan_1764620984.txt"
+export COMMAND_NAME="/plan"
+export USER_ARGS="Research and create a plan to improve the file structure for the project. I like the idea of having a central Examples/ directory with various types of examples in subdirectories. I also want to move the docs/src/ documents to wherever they belong, using the most natural directory naming conventions for these code specific standards and documentation by contrast with the more general ProofChecker/docs/ which should probably also be renamed to conform to directory naming conventions. Create a plan to do all this work systematically."
+export WORKFLOW_ID="plan_1764620984"
+export CLAUDE_PROJECT_DIR="/home/benjamin/Documents/Philosophy/Projects/ProofChecker"
+export SPECS_DIR="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/006_file_structure_examples_docs_refactor"
+export RESEARCH_DIR="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/006_file_structure_examples_docs_refactor/reports"
+export PLANS_DIR="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/006_file_structure_examples_docs_refactor/plans"
+export TOPIC_PATH="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/006_file_structure_examples_docs_refactor"
+export TOPIC_NAME="file_structure_examples_docs_refactor"
+export TOPIC_NUM="006"
+export FEATURE_DESCRIPTION="Research and create a plan to improve the file structure for the project. I like the idea of having a central Examples/ directory with various types of examples in subdirectories. I also want to move the docs/src/ documents to wherever they belong, using the most natural directory naming conventions for these code specific standards and documentation by contrast with the more general ProofChecker/docs/ which should probably also be renamed to conform to directory naming conventions. Create a plan to do all this work systematically."
+export RESEARCH_COMPLEXITY="3"
+export ORIGINAL_PROMPT_FILE_PATH=""
+export ARCHIVED_PROMPT_PATH=""
+export CURRENT_STATE="plan"
+export COMPLETED_STATES_JSON="[
+  \"research\",
+  \"plan\"
+]"
+export COMPLETED_STATES_COUNT="2"
+export PLAN_PATH="/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/006_file_structure_examples_docs_refactor/plans/001-file-structure-examples-docs-refactor-plan.md"
+export REPORT_PATHS_JSON='[
+  "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/006_file_structure_examples_docs_refactor/reports/001-file-structure-research.md"
+]'
+export REPORT_COUNT="1"
+export CURRENT_STATE="complete"
+export COMPLETED_STATES_JSON="[
+  \"research\",
+  \"plan\",
+  \"complete\"
+]"
+export COMPLETED_STATES_COUNT="3"

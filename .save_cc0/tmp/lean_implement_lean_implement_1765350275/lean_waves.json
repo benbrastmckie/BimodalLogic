@@ -1,0 +1,34 @@
+{
+  "execution_mode": "plan-based",
+  "coordinator_type": "lean",
+  "lean_phases": [1, 2, 3, 4, 5, 7],
+  "software_phases": [6, 8],
+  "waves": [
+    {
+      "wave_number": 1,
+      "phases": [1, 3, 5],
+      "description": "Independent lean phases: dni, DeductionTheorem, Tactics",
+      "parallel": true
+    },
+    {
+      "wave_number": 2,
+      "phases": [2],
+      "description": "Depends on Phase 1: always_dni/dne",
+      "parallel": false
+    },
+    {
+      "wave_number": 3,
+      "phases": [4],
+      "description": "Depends on Phase 3: future_k_dist/always_mono",
+      "parallel": false
+    },
+    {
+      "wave_number": 4,
+      "phases": [7],
+      "description": "Depends on Phase 6 (software, skipped) - execute helpers independently",
+      "parallel": false,
+      "note": "Phase 6 refactor is software work, Phase 7 can proceed with current structure"
+    }
+  ],
+  "notes": "Phase 6 (Perpetuity refactor) and Phase 8 (Naming/Docs) are routed to implementer-coordinator (software), not this lean-coordinator instance"
+}

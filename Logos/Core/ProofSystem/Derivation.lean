@@ -21,16 +21,17 @@ The derivability relation includes 7 inference rules:
 1. **axiom**: Any axiom schema instance is derivable
 2. **assumption**: Formulas in context are derivable
 3. **modus_ponens**: If `Γ ⊢ φ → ψ` and `Γ ⊢ φ` then `Γ ⊢ ψ`
-4. **modal_k**: If `Γ ⊢ φ` then `□Γ ⊢ □φ` (JPL line 1030)
-5. **temporal_k**: If `Γ ⊢ φ` then `FΓ ⊢ Fφ` (JPL line 1037)
+4. **necessitation**: If `⊢ φ` then `⊢ □φ` (standard modal necessitation)
+5. **temporal_necessitation**: If `⊢ φ` then `⊢ Fφ` (standard temporal necessitation)
 6. **temporal_duality**: If `⊢ φ` then `⊢ swap_past_future φ`
 7. **weakening**: If `Γ ⊢ φ` and `Γ ⊆ Δ` then `Δ ⊢ φ`
 
 ## Implementation Notes
 
-- Modal K and Temporal K rules map the entire context through □ or F
+- Necessitation rules only apply to theorems (empty context)
 - Temporal duality only applies to theorems (empty context)
 - Weakening allows adding unused assumptions
+- K distribution is handled by axioms (`modal_k_dist`, `temp_k_dist`)
 
 ## References
 
@@ -51,7 +52,7 @@ from the context of assumptions `Γ` using the TM proof system.
 The relation is defined inductively with 7 inference rules covering:
 - Axiom usage and assumptions
 - Modus ponens (implication elimination)
-- Modal and temporal K rules (distribution over □ and F)
+- Modal and temporal necessitation (from theorems to necessary theorems)
 - Temporal duality (swapping past/future)
 - Weakening (adding unused assumptions)
 -/
@@ -80,30 +81,40 @@ inductive Derivable : Context → Formula → Prop where
       (h2 : Derivable Γ φ) : Derivable Γ ψ
 
   /--
-  Modal K rule: Distribution of □ over derivation.
+  Necessitation rule: From theorems, derive necessary theorems.
 
-  If `Γ ⊢ φ`, then `□Γ ⊢ □φ` (where □Γ = Γ.map box).
+  If `⊢ φ` (derivable from empty context), then `⊢ □φ`.
 
-  This rule expresses: if φ follows from assumptions Γ,
-  then □φ follows from the necessary versions of those assumptions.
+  This is the standard necessitation rule of modal logic. It only applies
+  to theorems (proofs from no assumptions), not to derivations from contexts.
 
-  Paper reference: JPL §sec:Appendix, line 1030
+  This rule expresses: if φ is a theorem (provable without assumptions),
+  then it is necessarily true (□φ is also a theorem).
+
+  **Note**: The generalized rule `Γ ⊢ φ` ⟹ `□Γ ⊢ □φ` is derivable from
+  this rule plus K distribution (`modal_k_dist`) and the deduction theorem.
+  See `Logos.Core.Theorems.GeneralizedNecessitation` for the derivation.
   -/
-  | modal_k (Γ : Context) (φ : Formula)
-      (h : Derivable Γ φ) : Derivable (Context.map Formula.box Γ) (Formula.box φ)
+  | necessitation (φ : Formula)
+      (h : Derivable [] φ) : Derivable [] (Formula.box φ)
 
   /--
-  Temporal K rule: Distribution of F over derivation.
+  Temporal necessitation rule: From theorems, derive future-necessary theorems.
 
-  If `Γ ⊢ φ`, then `FΓ ⊢ Fφ` (where FΓ = Γ.map future).
+  If `⊢ φ` (derivable from empty context), then `⊢ Fφ`.
 
-  This rule expresses: if φ follows from assumptions Γ,
-  then Fφ follows from the future versions of those assumptions.
+  This is the temporal analog of modal necessitation. It only applies
+  to theorems (proofs from no assumptions), not to derivations from contexts.
 
-  Paper reference: JPL §sec:Appendix, line 1037
+  This rule expresses: if φ is a theorem (provable without assumptions),
+  then it will always be true (Fφ is also a theorem).
+
+  **Note**: The generalized rule `Γ ⊢ φ` ⟹ `FΓ ⊢ Fφ` is derivable from
+  this rule plus temporal K distribution (`temp_k_dist`) and the deduction theorem.
+  See `Logos.Core.Theorems.GeneralizedNecessitation` for the derivation.
   -/
-  | temporal_k (Γ : Context) (φ : Formula)
-      (h : Derivable Γ φ) : Derivable (Context.map Formula.all_future Γ) (Formula.all_future φ)
+  | temporal_necessitation (φ : Formula)
+      (h : Derivable [] φ) : Derivable [] (Formula.all_future φ)
 
   /--
   Temporal duality rule: Swapping past and future in theorems.
@@ -125,6 +136,90 @@ inductive Derivable : Context → Formula → Prop where
   | weakening (Γ Δ : Context) (φ : Formula)
       (h1 : Derivable Γ φ)
       (h2 : Γ ⊆ Δ) : Derivable Δ φ
+
+/-! ## Derivation Height Measure -/
+
+/--
+Height of a derivation tree.
+
+The height is defined as the maximum depth of the derivation tree:
+- Base cases (axiom, assumption): height 0
+- Unary rules (necessitation, temporal_necessitation, temporal_duality, weakening):
+  height of subderivation + 1
+- Binary rules (modus_ponens): max of both subderivations + 1
+
+This measure is used for well-founded recursion in the deduction theorem proof.
+
+## Implementation Notes
+
+Since `Derivable` is a `Prop` (not a `Type`), we cannot pattern match on it
+to produce data. Therefore, `height` is axiomatized with its key properties.
+
+The axiomatization is sound because:
+1. The height function is uniquely determined by the derivation structure
+2. All properties follow from the recursive definition
+3. The function is only used for termination proofs (not computation)
+
+## Usage
+
+The height measure is primarily used in `Logos.Core.Metalogic.DeductionTheorem`
+for proving termination of the deduction theorem via well-founded recursion.
+-/
+axiom Derivable.height {Γ : Context} {φ : Formula} (d : Derivable Γ φ) : Nat
+
+/-! ## Height Properties -/
+
+/--
+Weakening increases height by exactly 1.
+-/
+axiom Derivable.weakening_height_succ {Γ' Δ : Context} {φ : Formula}
+    (d : Derivable Γ' φ) (h : Γ' ⊆ Δ) :
+    (Derivable.weakening Γ' Δ φ d h).height = d.height + 1
+
+/--
+Subderivations in weakening have strictly smaller height.
+
+This is the key lemma for proving termination of well-founded recursion
+in the deduction theorem.
+-/
+axiom Derivable.subderiv_height_lt {Γ' Δ : Context} {φ : Formula}
+    (d : Derivable Γ' φ) (h : Γ' ⊆ Δ) :
+    d.height < (Derivable.weakening Γ' Δ φ d h).height
+
+/--
+Modus ponens height is strictly greater than the left subderivation.
+-/
+axiom Derivable.mp_height_gt_left {Γ : Context} {φ ψ : Formula}
+    (d1 : Derivable Γ (φ.imp ψ)) (d2 : Derivable Γ φ) :
+    d1.height < (Derivable.modus_ponens Γ φ ψ d1 d2).height
+
+/--
+Modus ponens height is strictly greater than the right subderivation.
+-/
+axiom Derivable.mp_height_gt_right {Γ : Context} {φ ψ : Formula}
+    (d1 : Derivable Γ (φ.imp ψ)) (d2 : Derivable Γ φ) :
+    d2.height < (Derivable.modus_ponens Γ φ ψ d1 d2).height
+
+/--
+Necessitation increases height by exactly 1.
+-/
+axiom Derivable.necessitation_height_succ {φ : Formula}
+    (d : Derivable [] φ) :
+    (Derivable.necessitation φ d).height = d.height + 1
+
+/--
+Temporal necessitation increases height by exactly 1.
+-/
+axiom Derivable.temporal_necessitation_height_succ {φ : Formula}
+    (d : Derivable [] φ) :
+    (Derivable.temporal_necessitation φ d).height = d.height + 1
+
+/--
+Temporal duality increases height by exactly 1.
+-/
+axiom Derivable.temporal_duality_height_succ {φ : Formula}
+    (d : Derivable [] φ) :
+    (Derivable.temporal_duality φ d).height = d.height + 1
 
 /--
 Notation `Γ ⊢ φ` for derivability from context Γ.

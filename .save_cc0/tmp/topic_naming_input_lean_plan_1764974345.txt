@@ -1,0 +1,1 @@
+Research what remains in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md and /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/ProjectInfo/SORRY_REGISTRY.md in order to establish soundness in full, creating a plan to do so.

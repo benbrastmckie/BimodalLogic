@@ -1,4 +1,5 @@
 import Logos.Core.Theorems.Perpetuity
+import Logos.Core.Theorems.GeneralizedNecessitation
 
 /-!
 # Logos.Core.Theorems - Key Theorems
@@ -8,6 +9,7 @@ Aggregates theorem modules for the Core TM logic layer.
 ## Submodules
 
 - `Perpetuity`: Perpetuity principles P1-P6 connecting modal and temporal operators
+- `GeneralizedNecessitation`: Generalized modal and temporal K rules (derived theorems)
 
 ## Perpetuity Principles Status
 

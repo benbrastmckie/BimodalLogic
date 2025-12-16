@@ -9,5 +9,63 @@
         "LEAN_PROJECT_PATH": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker"
       }
     }
+  },
+  "_future_servers": {
+    "_comment": "Placeholder configurations for MCP servers to be added in Phase 2+",
+    "lean-explore": {
+      "_status": "planned",
+      "_research_needed": [
+        "Find official LeanExplore MCP server repository",
+        "Determine installation method (pip, npm, or standalone)",
+        "Identify required configuration parameters",
+        "Check if it requires Mathlib index or other dependencies"
+      ],
+      "_placeholder_config": {
+        "type": "stdio",
+        "command": "lean-explore-mcp",
+        "args": ["--project", "/home/benjamin/Documents/Philosophy/Projects/ProofChecker"],
+        "env": {
+          "MATHLIB_PATH": "${MATHLIB_PATH}",
+          "CACHE_SIZE": "1000"
+        }
+      }
+    },
+    "loogle": {
+      "_status": "planned",
+      "_research_needed": [
+        "Find official Loogle MCP server (may be part of leanprover-community)",
+        "Determine if it's standalone server or API-based",
+        "Check if it requires pre-built Mathlib index",
+        "Identify configuration requirements"
+      ],
+      "_placeholder_config": {
+        "type": "stdio",
+        "command": "loogle-mcp-server",
+        "args": [
+          "--mathlib-index", "${MATHLIB_INDEX_PATH}",
+          "--cache-dir", "/tmp/loogle-cache"
+        ]
+      }
+    },
+    "lean-search": {
+      "_status": "planned",
+      "_research_needed": [
+        "Find official LeanSearch MCP server or API",
+        "Determine if it requires API key",
+        "Check usage limits and rate limiting",
+        "Identify semantic model version to use"
+      ],
+      "_placeholder_config": {
+        "type": "stdio",
+        "command": "lean-search-mcp",
+        "args": [
+          "--model", "semantic-v1",
+          "--api-key-env", "LEAN_SEARCH_API_KEY"
+        ],
+        "env": {
+          "LEAN_SEARCH_API_KEY": "${LEAN_SEARCH_API_KEY}"
+        }
+      }
+    }
   }
 }

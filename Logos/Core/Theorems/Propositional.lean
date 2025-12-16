@@ -412,7 +412,7 @@ Proof:
 3. DNE for A: `¬¬A → A`
 4. Compose all three using b_combinator
 -/
-theorem rcp (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.imp A := by
+theorem rcp (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.imp A := by
   -- Strategy: B → ¬¬B → ¬¬A → A
 
   -- Step 1: DNI for B
@@ -1420,7 +1420,7 @@ contradiction (both B and ¬B), then ¬A holds.
 
 **Dependencies**: `Derivable.modus_ponens`, `deduction_theorem`
 -/
-theorem ni (A B : Formula) (h1 : (A :: Γ) ⊢ B.neg) (h2 : (A :: Γ) ⊢ B) : Γ ⊢ A.neg := by
+theorem ni (Γ : Context) (A B : Formula) (h1 : (A :: Γ) ⊢ B.neg) (h2 : (A :: Γ) ⊢ B) : Γ ⊢ A.neg := by
   -- From h1 and h2, derive (A :: Γ) ⊢ ⊥
   -- ¬B = B → ⊥, so modus ponens gives ⊥
   have h_bot : (A :: Γ) ⊢ Formula.bot :=
@@ -1444,7 +1444,7 @@ a contradiction, then A holds.
 **Dependencies**: `Derivable.modus_ponens`, `Derivable.weakening`,
 `double_negation` (derived theorem), `deduction_theorem`
 -/
-theorem ne (A B : Formula) (h1 : (A.neg :: Γ) ⊢ B.neg) (h2 : (A.neg :: Γ) ⊢ B) : Γ ⊢ A := by
+theorem ne (Γ : Context) (A B : Formula) (h1 : (A.neg :: Γ) ⊢ B.neg) (h2 : (A.neg :: Γ) ⊢ B) : Γ ⊢ A := by
   -- From h1 and h2, derive (A.neg :: Γ) ⊢ ⊥
   have h_bot : (A.neg :: Γ) ⊢ Formula.bot :=
     Derivable.modus_ponens (A.neg :: Γ) B Formula.bot h1 h2
@@ -1527,7 +1527,7 @@ then from A ∨ B we can derive C.
 **Dependencies**: `deduction_theorem`, `Derivable.weakening`, `classical_merge`,
                `b_combinator`, `Derivable.assumption`
 -/
-theorem de (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: Γ) ⊢ C) :
+theorem de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: Γ) ⊢ C) :
     ((A.or B) :: Γ) ⊢ C := by
   -- Apply deduction theorem to get Γ ⊢ A → C
   have ac : Γ ⊢ A.imp C :=

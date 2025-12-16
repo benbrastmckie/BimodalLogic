@@ -1,0 +1,47 @@
+Read and follow ALL behavioral guidelines from:
+    /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/agents/lean-coordinator.md
+
+    **Input Contract (Hard Barrier Pattern)**:
+    - plan_path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/063_proof_automation_tactics_refactor/plans/001-proof-automation-tactics-refactor-plan.md
+    - lean_file_path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/Perpetuity.lean
+    - topic_path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/063_proof_automation_tactics_refactor
+    - execution_mode: plan-based
+    - routing_map_path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/tmp/lean_implement_lean_implement_1765350275/routing_map.txt
+    - artifact_paths:
+      - plans: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/063_proof_automation_tactics_refactor/plans/
+      - summaries: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/063_proof_automation_tactics_refactor/summaries
+      - outputs: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/063_proof_automation_tactics_refactor/outputs
+      - debug: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/063_proof_automation_tactics_refactor/debug
+      - checkpoints: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/data/checkpoints
+    - iteration: 1
+    - max_iterations: 5
+    - context_threshold: 90
+    - continuation_context: null
+
+    **Progress Tracking Instructions** (plan-based mode only):
+    - Source checkbox utilities: source /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/lib/plan/checkbox-utils.sh
+    - Before proving each theorem phase: add_in_progress_marker '/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/063_proof_automation_tactics_refactor/plans/001-proof-automation-tactics-refactor-plan.md' <phase_num>
+    - After completing each theorem proof: mark_phase_complete '/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/063_proof_automation_tactics_refactor/plans/001-proof-automation-tactics-refactor-plan.md' <phase_num> && add_complete_marker '/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/063_proof_automation_tactics_refactor/plans/001-proof-automation-tactics-refactor-plan.md' <phase_num>
+    - This creates visible progress: [NOT STARTED] -> [IN PROGRESS] -> [COMPLETE]
+    - Note: Progress tracking gracefully degrades if unavailable (non-fatal)
+    - File-based mode: Skip progress tracking (phase_num = 0)
+
+    **Workflow Instructions**:
+    1. Analyze plan dependencies via dependency-analyzer.sh
+    2. Calculate wave structure with parallelization metrics
+    3. Execute waves sequentially with parallel lean-implementer invocations per wave
+    4. Wait for ALL implementers in Wave N before starting Wave N+1 (hard barrier)
+    5. Aggregate results and return ORCHESTRATION_COMPLETE signal
+
+    **Expected Output Signal**:
+    - summary_brief: 80-token summary for context efficiency
+    - waves_completed: Number of waves finished
+    - total_waves: Total waves in plan
+    - phases_completed: List of phase numbers completed
+    - work_remaining: List of phase numbers still incomplete
+    - context_usage_percent: Estimated context usage (0-100)
+    - requires_continuation: Boolean indicating if more work remains
+    - parallelization_metrics: Time savings percentage, parallel phases count
+
+    **CRITICAL**: Create wave execution summary in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/063_proof_automation_tactics_refactor/summaries/
+    The orchestrator will validate the summary exists after you return.

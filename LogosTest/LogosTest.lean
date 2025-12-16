@@ -1,9 +1,9 @@
-import LogosTest.Core.Syntax
-import LogosTest.Core.ProofSystem
-import LogosTest.Core.Semantics
-import LogosTest.Core.Metalogic
-import LogosTest.Core.Integration
-import LogosTest.Core.Theorems
+import LogosTest.Syntax
+import LogosTest.ProofSystem
+import LogosTest.Semantics
+import LogosTest.Metalogic
+import LogosTest.Integration
+import LogosTest.Theorems
 
 /-!
 # ProofChecker Test Suite Root

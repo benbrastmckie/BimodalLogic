@@ -1,0 +1,23 @@
+{
+  "topics": [
+    {
+      "title": "Propositional Logic Hilbert Theorems",
+      "scope": "Research and document the 20 propositional logic theorems from sec:PL-Hilbert-Proofs (HS, HE, RAA, EFQ, RCP, DNE, DNI, CP, NE, NI, ECQ, LDI, RDI, CI, LCE, RCE, DE, BI, LBE, RBE). Convert each to appropriate Lean notation and identify which are already derived in the Logos project.",
+      "slug": "propositional-logic-hilbert-theorems"
+    },
+    {
+      "title": "Modal Logic Axiomatic Theorems",
+      "scope": "Research and document the 20 modal logic theorems from the Modal Axiomatic Systems section (K, T, D, B, S4, S5 systems). Convert each to Lean notation with appropriate modal operators (box, diamond) and identify which theorems have already been proven in the Logos TM logic system.",
+      "slug": "modal-logic-axiomatic-theorems"
+    },
+    {
+      "title": "TODO.md Integration and Documentation",
+      "scope": "Create Medium Priority Tasks entries for all propositional and modal theorems not yet derived in Logos. Format each task with theorem name, Lean notation, effort estimate, priority level, and blocking/dependency information. Update TODO.md with organized task entries and sync with .claude/specs/ tracking.",
+      "slug": "todo-integration-documentation"
+    }
+  ],
+  "topic_count": 3,
+  "complexity": 3,
+  "fallback_used": false,
+  "feature_description": "research the theorems in the sec:PL-Hilbert-Proofs section in /home/benjamin/Documents/Philosophy/Teaching/LogicNotes/LogicNotes.tex in order to add these to the '## Medium Priority Tasks' in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md using appropriate lean notation for each, skipping any theorems that have already been derived in this lean project."
+}

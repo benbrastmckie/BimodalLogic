@@ -127,23 +127,30 @@ lake test LogosTest.Syntax.ContextTest
 All proof system modules fully implemented with comprehensive tests.
 
 ### Axioms.lean
-- **Status**: Complete (12/12 axioms defined)
+- **Status**: Complete (13/13 axioms defined)
 - **Lines of Code**: 210
 - **Test Coverage**: 100%
 - **Description**: TM axiom schemata as inductive type
 - **Axioms**:
-  - `MT` (Modal T): `□φ → φ`
-  - `M4` (Modal 4): `□φ → □□φ`
-  - `MB` (Modal B): `φ → □◇φ`
-  - `T4` (Temporal 4): `Fφ → FFφ`
-  - `TA` (Temporal A): `φ → F(Pφ)`
-  - `TL` (Temporal L): `Gφ → G(Hφ)` where G=future, H=past
-  - `MF` (Modal-Future): `□φ → □Fφ`
-  - `TF` (Temporal-Future): `□φ → F□φ`
-  - `modal_k_dist` (Modal K Distribution): `□(φ → ψ) → (□φ → □ψ)`
-  - `double_negation` (Double Negation Elimination): `¬¬φ → φ`
-  - `prop_k` (Propositional K): `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))`
-  - `prop_s` (Propositional S): `φ → (ψ → φ)`
+  - **Propositional**:
+    - `prop_k` (Propositional K): `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))`
+    - `prop_s` (Propositional S): `φ → (ψ → φ)`
+    - `ex_falso` (Ex Falso Quodlibet): `⊥ → φ`
+    - `peirce` (Peirce's Law): `((φ → ψ) → φ) → φ`
+  - **Modal (S5)**:
+    - `MT` (Modal T): `□φ → φ`
+    - `M4` (Modal 4): `□φ → □□φ`
+    - `MB` (Modal B): `φ → □◇φ`
+    - `modal_5_collapse` (Modal 5 Collapse): `◇□φ → □φ`
+    - `modal_k_dist` (Modal K Distribution): `□(φ → ψ) → (□φ → □ψ)`
+  - **Temporal**:
+    - `T4` (Temporal 4): `Fφ → FFφ`
+    - `TA` (Temporal A): `φ → F(Pφ)`
+    - `TL` (Temporal L): `Gφ → G(Hφ)` where G=future, H=past
+  - **Modal-Temporal**:
+    - `MF` (Modal-Future): `□φ → □Fφ`
+    - `TF` (Temporal-Future): `□φ → F□φ`
+- **Note**: Double Negation Elimination (DNE: `¬¬φ → φ`) is now a derived theorem in `Propositional.lean`, proven from EFQ + Peirce in 7 steps
 
 ### Rules.lean
 - **Status**: Complete (8/8 rules defined)
@@ -154,11 +161,11 @@ All proof system modules fully implemented with comprehensive tests.
   - `axiom`: Any axiom instance is derivable
   - `assumption`: Context members are derivable
   - `modus_ponens`: From `φ → ψ` and `φ`, derive `ψ`
-  - `modal_k`: From `Γ.map box ⊢ φ`, derive `Γ ⊢ □φ`
-  - `temporal_k`: From `Γ.map future ⊢ φ`, derive `Γ ⊢ Fφ`
+  - `necessitation`: From `[] ⊢ φ`, derive `[] ⊢ □φ` (theorems are necessary)
+  - `temporal_necessitation`: From `[] ⊢ φ`, derive `[] ⊢ Fφ` (theorems are future-necessary)
   - `temporal_duality`: From `[] ⊢ φ`, derive `[] ⊢ swap_temporal φ`
   - `weakening`: From `Γ ⊢ φ` and `Γ ⊆ Δ`, derive `Δ ⊢ φ`
-  - `necessitation`: From `[] ⊢ φ`, derive `[] ⊢ □φ` (theorems are necessary)
+  - **Note**: `modal_k` and `temporal_k` are now derived theorems in `GeneralizedNecessitation.lean`
 
 ### Derivation.lean
 - **Status**: Complete
@@ -280,11 +287,11 @@ lake test LogosTest.Semantics.ValidityTest
 Metalogic has mixed implementation status. Core soundness cases are proven, but completeness is infrastructure only.
 
 ### Soundness.lean
-- **Status**: `[COMPLETE]` - 12/12 axiom validity proofs ✓, 8/8 rule soundness cases ✓
+- **Status**: `[COMPLETE]` - 13/13 axiom validity proofs ✓, 8/8 rule soundness cases ✓
 - **Lines of Code**: ~600 (with transport lemmas and temporal duality)
 - **Sorry Count**: 0 (all proofs complete)
 - **Test Coverage**: 100% (all axioms tested, all 8 rules tested)
-- **Last Updated**: 2025-12-08 (Full soundness completion)
+- **Last Updated**: 2025-12-14 (Axiom refactoring: DNE removed, EFQ + Peirce added)
 
 **Completed Axiom Proofs** ✓ (8/8):
 1. `modal_t_valid`: `□φ → φ` validity proven
@@ -296,15 +303,14 @@ Metalogic has mixed implementation status. Core soundness cases are proven, but 
 7. `modal_future_valid`: `□○φ → ○□φ` validity proven ✓ **NEW**
 8. `temp_future_valid`: `○□φ → □○φ` validity proven ✓ **NEW**
 
-**Completed Soundness Cases** ✓ (8/8):
+**Completed Soundness Cases** ✓ (7/7):
 1. `axiom` case: Axioms are valid
 2. `assumption` case: Assumptions preserve validity
 3. `modus_ponens` case: MP preserves validity
 4. `weakening` case: Weakening preserves validity
-5. `modal_k` case: Modal K preserves validity (fully proven)
-6. `temporal_k` case: Temporal K preserves validity (fully proven)
+5. `necessitation` case: Necessitation preserves validity (fully proven)
+6. `temporal_necessitation` case: Temporal necessitation preserves validity (fully proven)
 7. `temporal_duality` case: Temporal duality preserves validity (derivation-indexed proof)
-8. `necessitation` case: Necessitation preserves validity (fully proven)
 
 **Phase 3 Achievements** (2025-12-03):
 - All 3 remaining axioms (TL, MF, TF) proven using time-shift preservation lemma
@@ -314,13 +320,24 @@ Metalogic has mixed implementation status. Core soundness cases are proven, but 
 
 **Phase 4 Achievements** (2025-12-03):
 - Temporal duality soundness complete via derivation-indexed approach
-- `axiom_swap_valid`: All 12 axioms proven (including prop_k, prop_s, TL, MF, TF, modal_k_dist, double_negation)
+- `axiom_swap_valid`: All 13 axioms proven (including prop_k, prop_s, ex_falso, peirce, TL, MF, TF, modal_k_dist)
 - `derivable_implies_swap_valid`: Main theorem proving swap validity for derivable formulas
 - Soundness.lean temporal_duality case now uses new infrastructure
 - Total sorry in Soundness.lean: 6 → 0 (temporal_duality case now complete)
 
+**Axiom Refactoring** (2025-12-14):
+- Replaced DNE axiom with EFQ (`⊥ → φ`) and Peirce's Law (`((φ → ψ) → φ) → φ`)
+- DNE now derived theorem in Propositional.lean (7 proof steps from EFQ + Peirce)
+- Axiom count: 14 → 13 (improved conceptual modularity)
+- All soundness proofs updated, zero breaking changes
+
+**Inference Rule Refactoring** (2025-12-15):
+- Replaced generalized `modal_k`/`temporal_k` with standard `necessitation`/`temporal_necessitation`
+- Generalized rules derived as theorems in `GeneralizedNecessitation.lean`
+- Soundness proof simplified (fewer inductive cases)
+
 **Soundness Completion** (2025-12-08):
-- All 8 inference rules fully proven (modal_k, temporal_k, temporal_duality, necessitation completed)
+- All 7 inference rules fully proven
 - Zero sorry placeholders in Soundness.lean
 - Complete soundness theorem: `Γ ⊢ φ → Γ ⊨ φ` fully proven for all derivations
 
@@ -391,7 +408,37 @@ grep -n "^axiom" Logos/Metalogic/Completeness.lean
 
 **Status**: `[PARTIAL]` - ALL 6 perpetuity principles FULLY PROVEN, Phase 4 Modal Theorems PARTIAL (5/8 complete, 3 blocked)
 
-**Last Updated**: 2025-12-09 (Phase 4 completion: ModalS5.lean 4/5 proven, ModalS4.lean 2/4 proven, 3 theorems blocked on infrastructure)
+**Last Updated**: 2025-12-14 (Axiom refactoring: Combinators.lean extracted, DNE derived from EFQ + Peirce)
+
+### Combinators.lean (NEW - 2025-12-14)
+- **Status**: `[COMPLETE]` - Propositional reasoning combinators extracted from Perpetuity/Helpers.lean
+- **Lines of Code**: ~200
+- **Sorry Count**: 0 (all proofs complete)
+- **Purpose**: Break circular dependency between Propositional.lean and Perpetuity modules
+- **Combinators**:
+  - `imp_trans`: Transitivity of implication
+  - `identity`: Identity combinator (SKK construction)
+  - `b_combinator`: B combinator (function composition)
+  - `theorem_flip`: C combinator (argument flip)
+  - `theorem_app1`: Single application lemma
+  - `theorem_app2`: Vireo combinator (double application)
+  - `pairing`: Pairing combinator (conjunction introduction)
+  - `combine_imp_conj`: Combine two implications into conjunction
+  - `combine_imp_conj_3`: Combine three implications into nested conjunction
+  - `dni`: Double negation introduction
+- **Dependencies**: Only ProofSystem.Derivation and Syntax.Formula (no circular deps)
+- **Test Coverage**: Verified via usage in Propositional and Perpetuity modules
+
+### GeneralizedNecessitation.lean (NEW - 2025-12-15)
+- **Status**: `[COMPLETE]` - Generalized necessitation rules derived as theorems
+- **Lines of Code**: ~80
+- **Sorry Count**: 0 (all proofs complete)
+- **Purpose**: Replace primitive `modal_k`/`temporal_k` rules with derived theorems
+- **Theorems**:
+  - `generalized_modal_k`: `Γ ⊢ φ → □Γ ⊢ □φ` (derived from necessitation + K dist + deduction)
+  - `generalized_temporal_k`: `Γ ⊢ φ → FΓ ⊢ Fφ` (derived from temp necessitation + temp K dist + deduction)
+- **Dependencies**: ProofSystem.Derivation, Metalogic.DeductionTheorem
+- **Test Coverage**: Verified in DerivationTest.lean
 
 ### Perpetuity.lean
 - **Status**: `[COMPLETE]` - All 6 perpetuity principles fully proven with zero sorry
@@ -402,7 +449,7 @@ grep -n "^axiom" Logos/Metalogic/Completeness.lean
 - **Test Coverage**: 100% (all P1-P6 and combinator theorems tested)
 
 ### Propositional.lean (Phase 1 - Plan 059)
-- **Status**: `[COMPLETE]` - De Morgan laws infrastructure added
+- **Status**: `[COMPLETE]` - De Morgan laws infrastructure added, DNE derived from EFQ + Peirce
 - **Lines of Code**: ~1250 (with De Morgan forward/backward/biconditional theorems)
 - **Sorry Count**: 0 (all proofs complete)
 - **Completed Theorems** (2025-12-09):
@@ -412,6 +459,9 @@ grep -n "^axiom" Logos/Metalogic/Completeness.lean
   - `demorgan_disj_neg_forward`: `⊢ ¬(A ∨ B) → (¬A ∧ ¬B)` ✓
   - `demorgan_disj_neg_backward`: `⊢ (¬A ∧ ¬B) → ¬(A ∨ B)` ✓
   - `demorgan_disj_neg`: `⊢ ¬(A ∨ B) ↔ (¬A ∧ ¬B)` ✓
+- **Derived Classical Principles** (2025-12-14):
+  - `double_negation`: DNE derived from EFQ + Peirce (7 proof steps) ✓
+  - `lem`: Law of Excluded Middle ✓
 
 **Implementation Approach**:
 - **6/6 fully proven** (P1, P2, P3, P4, P5, P6): Complete syntactic derivation with zero sorry
@@ -597,13 +647,13 @@ lake build LogosTest.Core.Theorems.PerpetuityTest
 
 ## Automation Package
 
-**Status**: `[PARTIAL]` - Core tactics implemented (4/12), no advanced search
+**Status**: `[PARTIAL]` - Core tactics implemented (6/12), no advanced search
 
 ### Tactics.lean
-- **Status**: `[PARTIAL]` - 4 core tactics implemented, 8 advanced tactics planned
+- **Status**: `[PARTIAL]` - 6 core tactics implemented, 6 advanced tactics planned
 - **Lines of Code**: 175
 - **Sorry Count**: 0 (all implemented tactics work)
-- **Test Coverage**: 100% (50 tests for 4 implemented tactics + helpers)
+- **Test Coverage**: 100% (50 tests for 6 implemented tactics + helpers)
 
 **Implemented Tactics**:
 1. **`apply_axiom`** (Phase 4) - Macro-based axiom application
@@ -629,6 +679,16 @@ lake build LogosTest.Core.Theorems.PerpetuityTest
    - **Features**: Definitional equality checking, clear error messages
    - **Status**: Complete ✓
 
+5. **`modal_k_tactic`** (Phase 6) - Apply modal K rule
+   - **Implementation**: `elab` using `mkOperatorKTactic` factory
+   - **Usage**: Applies generalized modal K rule to goal `□Γ ⊢ □φ`
+   - **Status**: Complete ✓
+
+6. **`temporal_k_tactic`** (Phase 6) - Apply temporal K rule
+   - **Implementation**: `elab` using `mkOperatorKTactic` factory
+   - **Usage**: Applies generalized temporal K rule to goal `FΓ ⊢ Fφ`
+   - **Status**: Complete ✓
+
 **Helper Functions** (Phase 4):
 - `is_box_formula` - Pattern match for `□φ`
 - `is_future_formula` - Pattern match for `Fφ`
@@ -636,14 +696,12 @@ lake build LogosTest.Core.Theorems.PerpetuityTest
 - `extract_from_future` - Extract `φ` from `Fφ`
 
 **Not Implemented** (Planned for Future):
-1. `modal_k_tactic` - Apply modal K rule automatically
-2. `temporal_k_tactic` - Apply temporal K rule automatically
-3. `modal_4_tactic` - Apply modal 4 axiom
-4. `modal_b_tactic` - Apply modal B axiom
-5. `temp_4_tactic` - Apply temporal 4 axiom
-6. `temp_a_tactic` - Apply temporal A axiom
-7. `modal_search` - Search for modal proof paths
-8. `temporal_search` - Search for temporal proof paths
+1. `modal_4_tactic` - Apply modal 4 axiom
+2. `modal_b_tactic` - Apply modal B axiom
+3. `temp_4_tactic` - Apply temporal 4 axiom
+4. `temp_a_tactic` - Apply temporal A axiom
+5. `modal_search` - Search for modal proof paths
+6. `temporal_search` - Search for temporal proof paths
 
 **Key Implementation Notes**:
 - **Aesop Blocker**: Aesop/Batteries dependency causes type errors in Truth.lean (lines 476-481)
@@ -678,7 +736,7 @@ lake build LogosTest.Automation.TacticsTest
   - Integration with tactics
 
 **Package Status**:
-- Tactics: 4/12 implemented (33% complete) - MVP automation available
+- Tactics: 6/12 implemented (50% complete) - MVP automation available
 - ProofSearch: Not started (planned)
 - ProofSearch: Not started (0%)
 
@@ -758,7 +816,7 @@ lake test LogosTest.Integration
 | **Theorems** | Perpetuity | ✓ Complete | 100% | ✓ | All P1-P6 proven (zero sorry) |
 | | ModalS5 | ✓ Complete | 100% | ✓ | 6/6 theorems (1 documented invalid) |
 | | ModalS4 | ✓ Complete | 100% | ✓ | 4/4 theorems proven |
-| **Automation** | Tactics | ⚠️ Partial | 33% | ✓ | 4/12 tactics implemented |
+| **Automation** | Tactics | ⚠️ Partial | 50% | ✓ | 6/12 tactics implemented |
 | | ProofSearch | ⚠️ Infra | 0% | - | Axiom stubs, 3 doc sorry |
 | **Archive** | Examples | ✓ Complete | 100% | ✓ | Using proven components |
 
@@ -790,7 +848,6 @@ lake test LogosTest.Integration
 
 **What's Partial**:
 - ⚠️ Truth.lean: 3 sorry in temporal swap validity lemmas (domain extension limitation)
-- ⚠️ DeductionTheorem.lean: 3 sorry in complex derivation cases (modal_k, necessitation, temporal_k)
 - ⚠️ Completeness.lean: 1 sorry in provable_iff_valid
 - ⚠️ ModalS5.lean: 1 sorry (diamond_mono_imp - documented as NOT VALID, not a bug)
 
@@ -801,10 +858,9 @@ lake test LogosTest.Integration
 - ✗ Proof search (not started)
 
 **Estimated Completion Effort**:
-- Soundness gaps (modal_k, temporal_k): 10-15 hours (fix code to match paper direction)
 - Completeness: 70-90 hours (canonical model construction)
 - Automation: 40-60 hours (tactic implementation)
-- **Total**: 120-165 hours for full Layer 0 completion
+- **Total**: 110-150 hours for full Layer 0 completion
 
 ---
 

@@ -1,0 +1,1 @@
+The bimodal axiom system TM should include S5 which is sufficient for deriving the S5 axiom ◇φ → □◇φ. Research the task '### 19. Derive P5 Perpetuity Theorem (Blocked by S5 Axiom Gap)' in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md in order to plan the complement implementation to finish this task without adding more axioms that I have already.

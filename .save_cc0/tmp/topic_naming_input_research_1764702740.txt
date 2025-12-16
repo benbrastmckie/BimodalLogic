@@ -1,0 +1,1 @@
+LEAN 4 modal logic implementation: Best practices for bimodal logic proofs, soundness and completeness theorems, canonical model construction, tactic metaprogramming for modal K axiom, temporal logic automation, and proof search strategies for S5 modal logic combined with linear temporal logic

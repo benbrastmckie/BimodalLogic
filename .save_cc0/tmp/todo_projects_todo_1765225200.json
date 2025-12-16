@@ -1,0 +1,312 @@
+[
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_optimize_claude_md/plans/001_optimization_plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/000_optimize_claude_md",
+    "topic_name": "000_optimize_claude_md"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/003_proof_checker_dev_standards/plans/001-proof-checker-dev-standards-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/003_proof_checker_dev_standards",
+    "topic_name": "003_proof_checker_dev_standards"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/004_project_structure_naming_plan/plans/001-project-structure-naming-plan-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/004_project_structure_naming_plan",
+    "topic_name": "004_project_structure_naming_plan"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/006_file_structure_examples_docs_refactor/plans/001-file-structure-examples-docs-refactor-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/006_file_structure_examples_docs_refactor",
+    "topic_name": "006_file_structure_examples_docs_refactor"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/009_unicode_symbol_standardization/plans/001-unicode-symbol-standardization-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/009_unicode_symbol_standardization",
+    "topic_name": "009_unicode_symbol_standardization"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/010_unicode_symbols_backticks_standard/plans/001-unicode-symbols-backticks-standard-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/010_unicode_symbols_backticks_standard",
+    "topic_name": "010_unicode_symbols_backticks_standard"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/011_architecture_mvp_strategy/plans/001-architecture-mvp-strategy-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/011_architecture_mvp_strategy",
+    "topic_name": "011_architecture_mvp_strategy"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/012_readme_broken_links_fix/plans/001-readme-broken-links-fix-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/012_readme_broken_links_fix",
+    "topic_name": "012_readme_broken_links_fix"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/013_unicode_triangle_operators/plans/001-unicode-triangle-operators-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/013_unicode_triangle_operators",
+    "topic_name": "013_unicode_triangle_operators"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/014_docs_mvp_comprehensive_coverage/plans/001-docs-mvp-comprehensive-coverage-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/014_docs_mvp_comprehensive_coverage",
+    "topic_name": "014_docs_mvp_comprehensive_coverage"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/015_readme_note_refactor_plan/plans/001-readme-note-refactor-plan-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/015_readme_note_refactor_plan",
+    "topic_name": "015_readme_note_refactor_plan"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/016_repo_state_task_list/plans/001-repo-state-task-list-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/016_repo_state_task_list",
+    "topic_name": "016_repo_state_task_list"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/017_file_structure_reorganization/plans/001-file-structure-reorganization-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/017_file_structure_reorganization",
+    "topic_name": "017_file_structure_reorganization"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/018_missing_files_readme_doc_standard/plans/001-missing-files-readme-doc-standard-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/018_missing_files_readme_doc_standard",
+    "topic_name": "018_missing_files_readme_doc_standard"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/001-research-todo-implementation-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan",
+    "topic_name": "019_research_todo_implementation_plan"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/backups/001-research-todo-implementation-plan_20251202_122206.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/backups/001-research-todo-implementation-plan_20251202_153633.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/backups/phase_3_wave2_parallel_soundness_automation_worldhistory_20251202_112526.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/backups/phase_3_wave2_parallel_soundness_automation_worldhistory_20251202_115238.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_2_wave2_task6_complete_perpetuity_proofs.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan",
+    "topic_name": "019_research_todo_implementation_plan"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_3_wave2_parallel_soundness_automation_worldhistory/phase_3_wave2_parallel_soundness_automation_worldhistory.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_3_wave2_parallel_soundness_automation_worldhistory/stage_1_apply_axiom_modal_t.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_3_wave2_parallel_soundness_automation_worldhistory/stage_2_tm_auto_aesop.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_3_wave2_parallel_soundness_automation_worldhistory/stage_3_assumption_search_helpers.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_5_wave3_phase1_lindenbaum_lemma_maximal_sets.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan",
+    "topic_name": "019_research_todo_implementation_plan"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_6_wave3_phase2_canonical_model_construction.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan",
+    "topic_name": "019_research_todo_implementation_plan"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_7_wave3_phase3_truth_lemma_completeness_theorems.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan",
+    "topic_name": "019_research_todo_implementation_plan"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/phase_8_wave4_future_work_layer_planning.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan",
+    "topic_name": "019_research_todo_implementation_plan"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/summaries/lean_proof_20251203_021008.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans/summaries/lean_proof_phase3_transport.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/019_research_todo_implementation_plan/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/020_tm_perpetuity_paper_research/plans/001-tm-perpetuity-paper-research-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/020_tm_perpetuity_paper_research",
+    "topic_name": "020_tm_perpetuity_paper_research"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/022_lean4_docs_implementation_improve/plans/001-lean4-docs-implementation-improve-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/022_lean4_docs_implementation_improve",
+    "topic_name": "022_lean4_docs_implementation_improve"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/023_research_proofchecker_readme_intro/plans/001-research-proofchecker-readme-intro-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/023_research_proofchecker_readme_intro",
+    "topic_name": "023_research_proofchecker_readme_intro"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/024_readme_narrative_organization_fix/plans/001-readme-narrative-organization-fix-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/024_readme_narrative_organization_fix",
+    "topic_name": "024_readme_narrative_organization_fix"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/025_soundness_automation_implementation/plans/001-soundness-automation-implementation-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/025_soundness_automation_implementation",
+    "topic_name": "025_soundness_automation_implementation"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/025_soundness_automation_implementation/plans/backups/001-soundness-automation-implementation-plan_20251203_100608.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/025_soundness_automation_implementation/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/026_temporal_symmetry_derivation/plans/001-temporal-symmetry-derivation-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/026_temporal_symmetry_derivation",
+    "topic_name": "026_temporal_symmetry_derivation"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/028_temporal_symmetry_phase2_plan/plans/001-temporal-symmetry-phase2-plan-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/028_temporal_symmetry_phase2_plan",
+    "topic_name": "028_temporal_symmetry_phase2_plan"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/029_logos_documentation_integration/plans/001-logos-documentation-integration-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/029_logos_documentation_integration",
+    "topic_name": "029_logos_documentation_integration"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/030_high_priority_tasks_systematic_plan/plans/001-high-priority-tasks-systematic-plan-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/030_high_priority_tasks_systematic_plan",
+    "topic_name": "030_high_priority_tasks_systematic_plan"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/031_readme_logos_proof_checker_reframe/plans/001-readme-logos-proof-checker-reframe-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/031_readme_logos_proof_checker_reframe",
+    "topic_name": "031_readme_logos_proof_checker_reframe"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/031_readme_logos_proof_checker_reframe/plans/backups/001-readme-logos-proof-checker-reframe-plan_20251203_215448.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/031_readme_logos_proof_checker_reframe/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/033_worldhistory_universal_tactic_tests/plans/001-worldhistory-universal-tactic-tests-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/033_worldhistory_universal_tactic_tests",
+    "topic_name": "033_worldhistory_universal_tactic_tests"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/034_always_operator_cleanup_alignment/plans/001-always-operator-cleanup-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/034_always_operator_cleanup_alignment",
+    "topic_name": "034_always_operator_cleanup_alignment"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/035_semantics_temporal_order_generalization/plans/001-semantics-temporal-order-generalization-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/035_semantics_temporal_order_generalization",
+    "topic_name": "035_semantics_temporal_order_generalization"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/035_semantics_temporal_order_generalization/plans/backups/001-semantics-temporal-order-generalization-plan_20251204_115349.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/035_semantics_temporal_order_generalization/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/035_semantics_temporal_order_generalization/plans/backups/001-semantics-temporal-order-generalization-plan_20251204_125911.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/035_semantics_temporal_order_generalization/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/036_readme_documentation_reorganization/plans/001-readme-documentation-reorganization-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/036_readme_documentation_reorganization",
+    "topic_name": "036_readme_documentation_reorganization"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/037_logos_layer_architecture_refactor/plans/001-logos-layer-architecture-refactor-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/037_logos_layer_architecture_refactor",
+    "topic_name": "037_logos_layer_architecture_refactor"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/038_temporal_conventions_refactor/plans/001-temporal-conventions-refactor-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/038_temporal_conventions_refactor",
+    "topic_name": "038_temporal_conventions_refactor"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/038_temporal_conventions_refactor/plans/002-temporal-refactor-completion-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/038_temporal_conventions_refactor",
+    "topic_name": "038_temporal_conventions_refactor"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/038_temporal_conventions_refactor/plans/backups/001-temporal-conventions-refactor-plan_20251204_162823.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/038_temporal_conventions_refactor/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/039_readme_narrative_revision_plan/plans/001-readme-narrative-revision-plan-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/039_readme_narrative_revision_plan",
+    "topic_name": "039_readme_narrative_revision_plan"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/040_todo_cleanup_git_history/plans/001-todo-cleanup-git-history-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/040_todo_cleanup_git_history",
+    "topic_name": "040_todo_cleanup_git_history"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/040_todo_cleanup_git_history/plans/backups/001-todo-cleanup-git-history-plan_20251205_001049.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/040_todo_cleanup_git_history/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/041_core_automation_tactics/plans/001-core-automation-tactics-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/041_core_automation_tactics",
+    "topic_name": "041_core_automation_tactics"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/041_core_automation_tactics/plans/backups/001-core-automation-tactics-plan_20251205_004945.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/041_core_automation_tactics/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/043_readme_merge_accessibility/plans/001-readme-merge-accessibility-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/043_readme_merge_accessibility",
+    "topic_name": "043_readme_merge_accessibility"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/043_readme_merge_accessibility/plans/backups/001-readme-merge-accessibility-plan_20251205_105658.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/043_readme_merge_accessibility/plans",
+    "topic_name": "plans"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/044_integrate_maintenance_consolidation/plans/001-integrate-maintenance-consolidation-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/044_integrate_maintenance_consolidation",
+    "topic_name": "044_integrate_maintenance_consolidation"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/045_complete_soundness_metalogic_plan/plans/001-complete-soundness-metalogic-plan-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/045_complete_soundness_metalogic_plan",
+    "topic_name": "045_complete_soundness_metalogic_plan"
+  },
+  {
+    "plan_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/046_core_automation_tactics_aesop/plans/001-core-automation-tactics-aesop-plan.md",
+    "topic_path": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/046_core_automation_tactics_aesop",
+    "topic_name": "046_core_automation_tactics_aesop"
+  }
+]

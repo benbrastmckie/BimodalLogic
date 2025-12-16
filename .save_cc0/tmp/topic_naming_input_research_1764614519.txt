@@ -1,0 +1,1 @@
+Research the best practices online for developing the proof-checker package summarized in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/001_proof_checker_package_docs/reports/001-research-the-proof-checker-package-descr.md using LEAN 4 following best practices for Nov 2025, including links to LEAN documentation sources and guides.

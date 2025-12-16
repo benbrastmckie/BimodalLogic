@@ -1,4 +1,5 @@
 import Logos.Core.ProofSystem.Derivation
+import Logos.Core.Theorems.GeneralizedNecessitation
 
 /-!
 # Derivation Test Suite
@@ -117,46 +118,36 @@ example (p q r : Formula) : [p.imp q, q.imp r, p] ⊢ r := by
     · apply Derivable.assumption; simp
 
 -- ============================================================
--- Modal K Rule Tests
+-- Necessitation Rule Tests
 -- ============================================================
 
--- Test: Modal K with axiom (from empty context)
--- Since axioms are derivable from any context, including □[], we can derive □(axiom)
+-- Test: Necessitation with axiom (from empty context)
+-- If ⊢ φ then ⊢ □φ (standard necessitation rule)
 example : ([] : Context) ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")).box := by
   have h : [] ⊢ (Formula.atom "p").box.imp (Formula.atom "p") :=
     Derivable.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
-  have h' : Context.map Formula.box [] ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")).box :=
-    Derivable.modal_k [] _ h
-  simp only [Context.map] at h'
-  exact h'
+  exact Derivable.necessitation _ h
 
--- Test: Modal K preserves theorem status
+-- Test: Necessitation preserves theorem status
 -- If ⊢ φ then ⊢ □φ (derived from empty context stays empty)
 example (φ : Formula) (h : ⊢ φ) : ⊢ φ.box := by
-  have h' : Context.map Formula.box [] ⊢ φ.box := Derivable.modal_k [] φ h
-  simp only [Context.map] at h'
-  exact h'
+  exact Derivable.necessitation φ h
 
 -- ============================================================
--- Temporal K Rule Tests
+-- Temporal Necessitation Rule Tests
 -- ============================================================
 
--- Test: Temporal K with axiom (from empty context)
+-- Test: Temporal necessitation with axiom (from empty context)
+-- If ⊢ φ then ⊢ Fφ (standard temporal necessitation rule)
 example : ([] : Context) ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")).all_future := by
   have h : [] ⊢ (Formula.atom "p").box.imp (Formula.atom "p") :=
     Derivable.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
-  have h' : Context.map Formula.all_future [] ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")).all_future :=
-    Derivable.temporal_k [] _ h
-  simp only [Context.map] at h'
-  exact h'
+  exact Derivable.temporal_necessitation _ h
 
--- Test: Temporal K preserves theorem status
--- If ⊢ φ then ⊢ Fφ
--- Note: temporal_k maps [] → [] since Context.map _ [] = []
+-- Test: Temporal necessitation preserves theorem status
+-- If ⊢ φ then ⊢ Fφ (derived from empty context stays empty)
 example (φ : Formula) (h : ⊢ φ) : ⊢ φ.all_future := by
-  have h' : Context.map Formula.all_future [] ⊢ φ.all_future := Derivable.temporal_k [] φ h
-  simp only [Context.map] at h'
-  exact h'
+  exact Derivable.temporal_necessitation φ h
 
 -- ============================================================
 -- Temporal Duality Rule Tests
@@ -228,5 +219,35 @@ theorem modal_t_theorem (φ : Formula) : ⊢ (φ.box.imp φ) := by
 theorem modal_4_theorem (φ : Formula) : ⊢ ((φ.box).imp (φ.box.box)) := by
   apply Derivable.axiom
   apply Axiom.modal_4
+
+-- ============================================================
+-- Generalized Necessitation Rule Tests
+-- ============================================================
+
+-- Test: Generalized Modal K (derived theorem)
+-- If Γ ⊢ φ then □Γ ⊢ □φ
+example (p : Formula) : [(Formula.atom "p").box] ⊢ (Formula.atom "p").box := by
+  -- We start with [p] ⊢ p (assumption)
+  have h : [Formula.atom "p"] ⊢ Formula.atom "p" := by
+    apply Derivable.assumption
+    simp
+  -- Apply generalized modal K
+  have h_gen := Logos.Core.Theorems.generalized_modal_k [Formula.atom "p"] (Formula.atom "p") h
+  -- Result should be [□p] ⊢ □p
+  simp at h_gen
+  exact h_gen
+
+-- Test: Generalized Temporal K (derived theorem)
+-- If Γ ⊢ φ then FΓ ⊢ Fφ
+example (p : Formula) : [(Formula.atom "p").all_future] ⊢ (Formula.atom "p").all_future := by
+  -- We start with [p] ⊢ p (assumption)
+  have h : [Formula.atom "p"] ⊢ Formula.atom "p" := by
+    apply Derivable.assumption
+    simp
+  -- Apply generalized temporal K
+  have h_gen := Logos.Core.Theorems.generalized_temporal_k [Formula.atom "p"] (Formula.atom "p") h
+  -- Result should be [Fp] ⊢ Fp
+  simp at h_gen
+  exact h_gen
 
 end LogosTest.Core.ProofSystem

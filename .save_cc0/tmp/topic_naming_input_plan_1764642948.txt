@@ -1,0 +1,1 @@
+Find all broken links in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md and create a plan to fix them

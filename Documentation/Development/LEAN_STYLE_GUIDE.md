@@ -476,6 +476,130 @@ def very_complex := (fun x => (fun y => x + y + (if x > 0 then 1 else 0)) 3) 2  
 - Keep commits focused on single logical changes
 - Write descriptive commit messages
 
+## 8. Linting and Quality Assurance
+
+The Logos project uses a comprehensive linting system to enforce code quality standards and TM-specific conventions.
+
+### Running Linters
+
+```bash
+# Run all linting (syntax + environment + text-based)
+lake lint
+
+# Run with verbose output
+lake lint -- --verbose
+
+# Auto-fix style issues (trailing whitespace, non-breaking spaces)
+lake lint -- --fix
+
+# Verify lint driver is configured
+lake check-lint
+```
+
+### Linter Types
+
+**1. Syntax Linters** (run during compilation)
+- Enabled via `leanOptions` in `lakefile.lean`
+- Check for unused variables, missing docs, deprecated patterns
+- Cannot be suppressed (compilation-time checks)
+
+**2. Environment Linters** (run post-build)
+- `docBlameTheorems`: Enforces 100% theorem documentation
+- `tmNamingConventions`: Checks TM-specific naming patterns
+- `axiomDocumentation`: Ensures axioms have comprehensive docstrings
+- `noSorryInProofs`: Warns about sorry placeholders (disabled by default)
+
+**3. Text-Based Linters** (run on source files)
+- `trailingWhitespace`: Detects trailing spaces/tabs (auto-fixable)
+- `longLine`: Detects lines >100 characters (manual fix required)
+- `nonBreakingSpace`: Detects U+00A0 characters (auto-fixable)
+
+### Suppressing Linters
+
+**Per-declaration suppression:**
+```lean
+@[nolint docBlame unusedArguments]
+def myFunction := ...
+```
+
+**File/section scope:**
+```lean
+set_option linter.unusedVariables false in
+def myFunction := ...
+```
+
+**Project-wide exceptions** (use sparingly):
+Create `scripts/nolints.json`:
+```json
+[
+  ["docBlame", "Logos.Core.Internal.Helper"],
+  ["unusedArguments", "Logos.Test.Fixture"]
+]
+```
+
+### TM-Specific Naming Conventions
+
+The `tmNamingConventions` linter enforces:
+
+1. **Modal operators** (box/diamond) should include 'modal' in name
+   ```lean
+   -- Good
+   theorem modal_k_dist : ⊢ □(φ → ψ) → (□φ → □ψ)
+   
+   -- Linter warning
+   theorem box_dist : ⊢ □(φ → ψ) → (□φ → □ψ)  -- Missing 'modal'
+   ```
+
+2. **Temporal operators** (past/future) should include 'temporal' in name
+   ```lean
+   -- Good
+   theorem temporal_k_dist : ⊢ G(φ → ψ) → (Gφ → Gψ)
+   
+   -- Linter warning
+   theorem future_dist : ⊢ G(φ → ψ) → (Gφ → Gψ)  -- Missing 'temporal'
+   ```
+
+3. **Exceptions**: Core `Formula` definitions and `Perpetuity` theorems are exempt
+
+### Fixing Style Issues
+
+**Auto-fixable issues:**
+```bash
+# Fix trailing whitespace and non-breaking spaces
+lake lint -- --fix
+```
+
+**Manual fixes required:**
+- Long lines (>100 characters): Break into multiple lines
+- Complex expressions: Use intermediate `have` statements
+- Long type signatures: Use line breaks after parameters
+
+**Example of fixing long lines:**
+```lean
+-- Before (too long)
+theorem very_long_theorem_name (φ ψ χ : Formula) (h1 : Γ ⊢ φ) (h2 : Γ ⊢ ψ) (h3 : Γ ⊢ χ) : Γ ⊢ φ ∧ ψ ∧ χ := by
+
+-- After (properly formatted)
+theorem very_long_theorem_name
+    (φ ψ χ : Formula)
+    (h1 : Γ ⊢ φ) (h2 : Γ ⊢ ψ) (h3 : Γ ⊢ χ) :
+    Γ ⊢ φ ∧ ψ ∧ χ := by
+```
+
+### CI/CD Integration
+
+Linting is enforced in the CI/CD pipeline:
+- Lint failures **block builds and PR merges**
+- Results uploaded as artifacts for debugging
+- GitHub problem matchers provide inline annotations
+
+### Quality Standards
+
+- **Zero lint warnings** required for production code
+- **100% docstring coverage** for public theorems
+- **100-character line limit** strictly enforced
+- **No sorry placeholders** in non-test code (when enabled)
+
 ## References
 
 - [Mathlib4 Style Guide](https://leanprover-community.github.io/contribute/style.html)

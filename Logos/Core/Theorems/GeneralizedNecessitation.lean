@@ -41,7 +41,7 @@ theorem reverse_deduction {Γ : Context} {A B : Formula}
     (h : Γ ⊢ A.imp B) : (A :: Γ) ⊢ B := by
   have h_weak : (A :: Γ) ⊢ A.imp B :=
     Derivable.weakening _ _ _ h
-      (by simp; exact List.subset_cons_of_subset _ (List.Subset.refl Γ))
+      (by intro x hx; simp; right; exact hx)
   have h_assum : (A :: Γ) ⊢ A := Derivable.assumption (A :: Γ) A (by simp)
   exact Derivable.modus_ponens (A :: Γ) A B h_weak h_assum
 
@@ -65,7 +65,7 @@ Induction on the context `Γ`.
 -/
 theorem generalized_modal_k (Γ : Context) (φ : Formula) :
     (h : Γ ⊢ φ) → ((Context.map Formula.box Γ) ⊢ Formula.box φ) := by
-  induction Γ with
+  induction Γ generalizing φ with
   | nil =>
     intro h
     exact Derivable.necessitation φ h
@@ -73,7 +73,7 @@ theorem generalized_modal_k (Γ : Context) (φ : Formula) :
     intro h
     -- from (A :: Γ') ⊢ φ, get Γ' ⊢ A → φ
     have h_deduction : Γ' ⊢ A.imp φ := deduction_theorem Γ' A φ h
-    -- apply inductive hypothesis
+    -- apply inductive hypothesis to the implication
     have ih_res : (Context.map Formula.box Γ') ⊢ Formula.box (A.imp φ) := ih (A.imp φ) h_deduction
     -- use modal_k_dist axiom
     have k_dist : ⊢ (Formula.box (A.imp φ)).imp ((Formula.box A).imp (Formula.box φ)) :=
@@ -104,7 +104,7 @@ It is now derivable from standard temporal necessitation + temporal K distributi
 -/
 theorem generalized_temporal_k (Γ : Context) (φ : Formula) :
     (h : Γ ⊢ φ) → ((Context.map Formula.all_future Γ) ⊢ Formula.all_future φ) := by
-  induction Γ with
+  induction Γ generalizing φ with
   | nil =>
     intro h
     exact Derivable.temporal_necessitation φ h

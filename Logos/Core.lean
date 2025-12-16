@@ -1,3 +1,6 @@
+-- Re-export all Core layer components
+import Logos.Core.Core
+
 /-!
 # Logos Core Layer
 
@@ -32,6 +35,3 @@ import Logos.Core.ProofSystem.Derivation
 * [ARCHITECTURE.md](../../Documentation/UserGuide/ARCHITECTURE.md) - System architecture
 * [METHODOLOGY.md](../../Documentation/UserGuide/METHODOLOGY.md) - Layer structure
 -/
-
--- Re-export all Core layer components
-import Logos.Core.Core

@@ -1,0 +1,5 @@
+1:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/Perpetuity/Helpers.lean:lean-coordinator
+2:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/Perpetuity/Bridge.lean:lean-coordinator
+3:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Metalogic/DeductionTheorem.lean:lean-coordinator
+4:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/Perpetuity/Bridge.lean:lean-coordinator
+5:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Automation/Tactics.lean:lean-coordinator

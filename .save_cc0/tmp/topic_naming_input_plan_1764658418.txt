@@ -1,0 +1,1 @@
+review the NOTE tags in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md in order to plan a refactor of this document that addresses each.

@@ -1,0 +1,28 @@
+{
+  "topics": [
+    {
+      "title": "Formal Logic Descriptive-Normative Distinction",
+      "scope": "Revise the introduction section to clarify the distinction between descriptive logic (analyzing natural language reasoning patterns) and normative logic (engineering operators for verified systems). Address the material conditional example: material conditional is not found in English but is useful for formal regimentation (e.g., 'all humans are mammals' can be expressed as 'forall x(if x is human then x is mammal)' using material conditional). This semantic engineering refines concepts from natural language into operators with precise truth conditions.",
+      "slug": "logic-descriptive-normative-distinction"
+    },
+    {
+      "title": "AI System Semantic Requirements Clarification",
+      "scope": "Revise misleading claims in the 'Formal Logic as Conceptual Engineering' section about AI system requirements. The benefit of precise semantics is not that AI systems require operators with precise semantics, but rather that providing operators with precise semantics and axiomatic proof theories supplies infinite clean training data about valid/invalid inferences. The normative approach does not forsake context: sentences are evaluated at models with explicit context parameters (e.g., tensed sentences require time specification).",
+      "slug": "ai-semantic-requirements"
+    },
+    {
+      "title": "Modal Logic: Historical vs Metaphysical Modality",
+      "scope": "Clarify the modal operator specification by addressing whether the Logos primarily addresses historical modality (how the world has evolved) versus metaphysical modality (how the world could possibly evolve). Revise Line 22-24 to specify which modality concept is primary for the TM logic and how the task relation's properties constrain accessibility relationships in this context.",
+      "slug": "modal-logic-historicity"
+    },
+    {
+      "title": "Planning Semantics and World-History Truth Conditions",
+      "scope": "Refine the semantics explanation for world-histories in planning contexts. Ensure the truth conditions section properly explains how tense operators quantify over times within a world-history, and how plans are represented as classes of world-histories constrained by the task relation. Address the relationship between partial plan specifications and complete world-histories in the Core Layer approximation.",
+      "slug": "planning-world-history-semantics"
+    }
+  ],
+  "topic_count": 4,
+  "complexity": 3,
+  "fallback_used": false,
+  "feature_description": "Research the NOTE tags in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Research/CONCEPTUAL_ENGINEERING.md in order to systematically improve the document."
+}

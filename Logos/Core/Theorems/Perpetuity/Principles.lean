@@ -1,5 +1,6 @@
 import Logos.Core.Theorems.Perpetuity.Helpers
 import Logos.Core.Theorems.Propositional
+import Logos.Core.Theorems.GeneralizedNecessitation
 
 /-!
 # Perpetuity Principles (P1-P5)
@@ -662,22 +663,54 @@ theorem box_diamond_to_past_box_diamond (φ : Formula) :
 /--
 Temporal K distribution for future: `G(A → B) → (GA → GB)`.
 
-This is the temporal analog of modal K distribution. It allows distributing
-the future operator over implications.
+This is the temporal analog of modal K distribution, enabling distribution of
+implications through the future operator.
 
 **Semantic Justification**: In task semantics, if A → B holds at all future times
-and A holds at all future times, then B must hold at all future times by modus ponens
-applied pointwise across the timeline.
+and A holds at all future times, then B must hold at all future times. This follows
+from the pointwise nature of implication in the temporal dimension.
 
-**Implementation Note**: While this should be derivable from the Temporal K inference
-rule combined with modus ponens, the construction requires meta-level reasoning about
-contexts and derivations that is complex to encode. For MVP, we axiomatize it with
-semantic justification. The principle is sound and follows from standard temporal logic.
+**Derivation Strategy**:
+1. Start with `[A → B, A] ⊢ B` (modus ponens from assumptions)
+2. Apply temporal_k to get `[G(A → B), GA] ⊢ GB`
+3. Apply deduction theorem to get `[G(A → B)] ⊢ GA → GB`
+4. Apply deduction theorem again to get `⊢ G(A → B) → (GA → GB)`
 
-**Future Work**: Derive from Temporal K rule using context manipulation and MP lifting.
+**Implementation Status**: FULLY DERIVED (zero sorry) using complete deduction theorem
 -/
-axiom future_k_dist (A B : Formula) :
-    ⊢ (A.imp B).all_future.imp (A.all_future.imp B.all_future)
+theorem future_k_dist (A B : Formula) :
+    ⊢ (A.imp B).all_future.imp (A.all_future.imp B.all_future) := by
+  -- Step 1: [A → B, A] ⊢ B via modus ponens
+  have step1 : [A.imp B, A] ⊢ B := by
+    have h_imp : [A.imp B, A] ⊢ A.imp B := by
+      apply Derivable.assumption
+      simp
+    have h_a : [A.imp B, A] ⊢ A := by
+      apply Derivable.assumption
+      simp
+    exact Derivable.modus_ponens [A.imp B, A] A B h_imp h_a
+  
+  -- Step 2: Apply generalized_temporal_k to get [G(A → B), GA] ⊢ GB
+  have step2 : [(A.imp B).all_future, A.all_future] ⊢ B.all_future := by
+    exact Logos.Core.Theorems.generalized_temporal_k [A.imp B, A] B step1
+  
+  -- Step 3: Reorder context to [GA, G(A → B)] ⊢ GB using weakening
+  -- We need GA at the front to apply deduction theorem
+  have step3_reordered : [A.all_future, (A.imp B).all_future] ⊢ B.all_future := by
+    apply Derivable.weakening [(A.imp B).all_future, A.all_future] [A.all_future, (A.imp B).all_future] B.all_future step2
+    intro x hx
+    simp at hx ⊢
+    exact hx.symm
+  
+  -- Step 4: Apply deduction theorem to get [G(A → B)] ⊢ GA → GB
+  have step4 : [(A.imp B).all_future] ⊢ A.all_future.imp B.all_future := by
+    exact Logos.Core.Metalogic.deduction_theorem [(A.imp B).all_future] A.all_future B.all_future step3_reordered
+  
+  -- Step 5: Apply deduction theorem again to get ⊢ G(A → B) → (GA → GB)
+  have step5 : [] ⊢ (A.imp B).all_future.imp (A.all_future.imp B.all_future) := by
+    exact Logos.Core.Metalogic.deduction_theorem [] (A.imp B).all_future (A.all_future.imp B.all_future) step4
+  
+  exact step5
 
 /--
 Temporal K distribution for past: `H(A → B) → (HA → HB)`.

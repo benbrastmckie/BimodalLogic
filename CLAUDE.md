@@ -8,7 +8,7 @@ logic TM (Tense and Modality) with task semantics. It provides:
 - **Bimodal Logic TM**: Combining S5 modal logic (metaphysical necessity/possibility) with linear temporal logic (past/future operators)
 - **Task Semantics**: Possible worlds as functions from times to world states constrained by task relations
 - **Layered Architecture**: Layer 0 (Core TM) MVP complete with planned extensions for counterfactual, epistemic, and normative operators
-- **Complete Soundness**: All 12 axioms proven sound, 8/8 inference rules proven
+- **Complete Soundness**: All 13 axioms proven sound, 8/8 inference rules proven
 - **Perpetuity Principles**: ALL 6 principles fully proven (P1-P6, zero sorry)
 
 ## Implementation Status
@@ -35,8 +35,17 @@ lake build
 # Run tests
 lake test
 
-# Run linter
+# Run linting (syntax + environment + text-based)
 lake lint
+
+# Verify lint driver is configured
+lake check-lint
+
+# Run linting with verbose output
+lake lint -- --verbose
+
+# Auto-fix style issues (trailing whitespace, etc.)
+lake lint -- --fix
 
 # Clean build artifacts
 lake clean
@@ -180,9 +189,19 @@ Logos follows rigorous development standards including Test-Driven Development (
 - Temporal duality: `swap_temporal` swaps all_past and all_future
 
 ### ProofSystem Package
-- `Axiom`: TM axiom schemata (MT, M4, MB, T4, TA, TL, MF, TF, modal_k_dist, modal_5_collapse, double_negation, prop_k, prop_s)
+- `Axiom`: TM axiom schemata (13 total)
+  - **Propositional**: K, S, EFQ (Ex Falso Quodlibet), Peirce's Law
+  - **Modal (S5)**: MT, M4, MB, modal_5_collapse, modal_k_dist
+  - **Temporal**: T4, TA, TL
+  - **Modal-Temporal**: MF, TF
+  - **Note**: Double Negation Elimination (DNE: `¬¬φ → φ`) is derivable from EFQ + Peirce (see `Propositional.double_negation`)
 - `Derivable`: Inductive derivability relation
-- Inference rules: MP, MK (modal K), TK (temporal K), TD (temporal duality), necessitation, assumption, weakening, axiom
+- Inference rules: MP, necessitation, temporal_necessitation, temporal_duality, assumption, weakening, axiom
+  - **Note**: `modal_k` and `temporal_k` are now derived theorems (see `GeneralizedNecessitation.lean`)
+
+**Axiom Refactoring (2025-12-14)**: The propositional axioms were refactored to replace Double Negation Elimination (DNE) with Ex Falso Quodlibet (EFQ: `⊥ → φ`) and Peirce's Law (`((φ → ψ) → φ) → φ`). This improves conceptual modularity by separating the characterization of absurdity (EFQ) from classical reasoning (Peirce). DNE is now a derived theorem, proven from EFQ + Peirce in 7 steps. Full derivational equivalence is maintained. See `.claude/specs/070_axiom_refactoring_efq_peirce/` for details.
+
+**Inference Rule Refactoring (2025-12-15)**: The generalized necessitation rules (`modal_k` and `temporal_k`) were replaced with standard necessitation rules (`⊢ φ` ⟹ `⊢ □φ`) plus K distribution axioms. The generalized forms `Γ ⊢ φ` ⟹ `□Γ ⊢ □φ` are now derived theorems. This aligns with standard modal logic presentations. See `.claude/specs/071_inference_rule_refactoring_necessitation/` for details.
 
 ### Semantics Package
 - `TaskFrame`: World states, times, task relation with nullity and compositionality
@@ -191,9 +210,10 @@ Logos follows rigorous development standards including Test-Driven Development (
 - `truth_at`: Truth evaluation at model-history-time triples
 
 ### Metalogic Package
-- `soundness`: `Γ ⊢ φ → Γ ⊨ φ` **(complete: 12/12 axioms, 8/8 rules proven)**
-  - Proven axioms: MT, M4, MB, T4, TA, TL, MF, TF, modal_k_dist, modal_5_collapse, double_negation, prop_k, prop_s (all 13/13 complete)
+- `soundness`: `Γ ⊢ φ → Γ ⊨ φ` **(complete: 13/13 axioms, 8/8 rules proven)**
+  - Proven axioms: prop_k, prop_s, ex_falso, peirce, MT, M4, MB, modal_5_collapse, modal_k_dist, T4, TA, TL, MF, TF (all 13/13 complete)
   - Proven rules: axiom, assumption, modus_ponens, weakening, modal_k, temporal_k, temporal_duality, necessitation (all 8/8 complete)
+  - **Note**: DNE derived from EFQ + Peirce, not axiomatic
 - `deduction_theorem`: `(Γ, A ⊢ B) → (Γ ⊢ A → B)` **(complete, zero sorry)**
   - Helper lemmas: deduction_axiom, deduction_assumption_same, deduction_assumption_other, deduction_mp
 - `weak_completeness`: `⊨ φ → ⊢ φ` **(infrastructure only, no proofs)**
@@ -201,11 +221,21 @@ Logos follows rigorous development standards including Test-Driven Development (
 - Canonical model construction defined (types, no proofs)
 
 ### Theorems Package
-- Combinator theorems derived from K (prop_k) and S (prop_s) axioms:
-  - `theorem_flip`: `(A → B → C) → (B → A → C)` (C combinator)
-  - `theorem_app1`: `A → (A → B) → B` (single application)
-  - `theorem_app2`: `A → B → (A → B → C) → C` (Vireo combinator)
-  - `pairing`: `A → B → A ∧ B` (conjunction introduction, **now theorem not axiom**)
+- **Combinators.lean** (NEW - extracted 2025-12-14): Propositional reasoning combinators derived from K and S axioms
+  - `imp_trans`: Transitivity of implication
+  - `identity`: Identity combinator (SKK construction)
+  - `b_combinator`: B combinator (function composition)
+  - `theorem_flip`: C combinator (argument flip)
+  - `theorem_app1`: Single application lemma
+  - `theorem_app2`: Vireo combinator (double application)
+  - `pairing`: Pairing combinator (conjunction introduction)
+  - `combine_imp_conj`: Combine two implications into conjunction
+  - `dni`: Double negation introduction
+- **Propositional.lean**: Classical propositional theorems
+  - `double_negation`: DNE derived from EFQ + Peirce (7 steps, **now theorem not axiom**)
+  - `lem`: Law of Excluded Middle
+  - Conjunction/disjunction elimination and introduction
+  - De Morgan laws (full biconditionals)
 - Perpetuity principles P1-P6 connecting modal and temporal operators:
   - P1: `□φ → △φ` (necessary implies always) - **Fully proven (zero sorry)**
   - P2: `▽φ → ◇φ` (sometimes implies possible) - **Fully proven (contraposition via B combinator)**
@@ -296,7 +326,7 @@ Logos test suite is organized in LogosTest/ directory with unit tests (Syntax/, 
 **TDD Enforcement**: Every new feature requires tests first. Run `lake test` before committing. CI rejects PRs with failing tests.
 
 **Working with Partial Implementation**:
-- **Use proven components**: All 12 axioms are sound (MT, M4, MB, T4, TA, TL, MF, TF, modal_k_dist, double_negation, prop_k, prop_s)
+- **Use proven components**: All 13 axioms are sound (prop_k, prop_s, ex_falso, peirce, MT, M4, MB, modal_5_collapse, modal_k_dist, T4, TA, TL, MF, TF)
 - **Perpetuity proofs**: ALL 6 principles fully proven (P1-P6, zero sorry)
 - **Automation available**: All 12 tactics implemented (see Automation Package above)
 - See [Implementation Status - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) for workarounds and alternatives

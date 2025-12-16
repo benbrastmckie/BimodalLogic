@@ -1,0 +1,1 @@
+Revise README.md by merging content from README_OLD.md to make the project more accessible and accurate, preserving the new structure and links while restoring the old content that correctly describes Logos as a broader system with TM as its core layer

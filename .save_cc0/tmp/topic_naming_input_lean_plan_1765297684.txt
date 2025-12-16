@@ -1,0 +1,1 @@
+research '### 21. Derive Pairing Combinator' in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md in order to create a lean implementation plan.

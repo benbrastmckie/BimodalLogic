@@ -1,0 +1,1 @@
+Research '### 18. Remove Derivable Axioms from Perpetuity.lean' in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md in order to create a plan to complete this task in full.

@@ -133,189 +133,6 @@ theorem modal_duality_neg_rev (φ : Formula) : ⊢ φ.box.neg.imp φ.neg.diamond
   -- Step 5: Contrapose to get ¬□φ → ¬□¬¬φ
   exact contraposition forward
 
-/--
-Derived theorem: DNI distributes over always.
-
-From `always φ → always (¬¬φ)`, we can derive the temporal analog of double negation introduction.
-
-**Derivation Strategy**:
-1. Decompose `△φ` into `Hφ ∧ φ ∧ Gφ`
-2. Apply `dni` to `φ`: `φ → ¬¬φ`
-3. Apply `past_k_dist` and `future_k_dist` to get `Hφ → H(¬¬φ)` and `Gφ → G(¬¬φ)`
-4. Recombine: `H(¬¬φ) ∧ ¬¬φ ∧ G(¬¬φ) = △(¬¬φ)`
--/
-theorem always_dni (φ : Formula) : ⊢ φ.always.imp φ.neg.neg.always := by
-  -- Step 1: Get DNI for φ
-  have dni_phi : ⊢ φ.imp φ.neg.neg := dni φ
-
-  -- Step 2: Lift through past operator
-  have past_lift : ⊢ φ.all_past.imp φ.neg.neg.all_past := by
-    have pk : ⊢ (φ.imp φ.neg.neg).all_past.imp (φ.all_past.imp φ.neg.neg.all_past) :=
-      past_k_dist φ φ.neg.neg
-      have past_dni : ⊢ (φ.imp φ.neg.neg).all_past := by
-        have h_swap : ⊢ (φ.imp φ.neg.neg).swap_temporal := Derivable.temporal_duality _ dni_phi
-        have g_swap : ⊢ h_swap.all_future := Derivable.temporal_necessitation _ h_swap
-        have past_raw : ⊢ g_swap.swap_temporal := Derivable.temporal_duality _ g_swap
-        simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at past_raw
-        exact past_raw
-    exact Derivable.modus_ponens [] _ _ pk past_dni
-
-  -- Step 3: Present is just dni_phi
-
-  -- Step 4: Lift through future operator
-  have future_lift : ⊢ φ.all_future.imp φ.neg.neg.all_future := by
-    have fk : ⊢ (φ.imp φ.neg.neg).all_future.imp (φ.all_future.imp φ.neg.neg.all_future) :=
-      future_k_dist φ φ.neg.neg
-    have future_dni : ⊢ (φ.imp φ.neg.neg).all_future :=
-      Derivable.temporal_necessitation _ dni_phi
-    exact Derivable.modus_ponens [] _ _ fk future_dni
-
-  -- Step 5: Decompose always φ and apply lifts
-  have to_past : ⊢ φ.always.imp φ.all_past := always_to_past φ
-  have to_present : ⊢ φ.always.imp φ := always_to_present φ
-  have to_future : ⊢ φ.always.imp φ.all_future := always_to_future φ
-
-  have past_comp : ⊢ φ.always.imp φ.neg.neg.all_past := imp_trans to_past past_lift
-  have present_comp : ⊢ φ.always.imp φ.neg.neg := imp_trans to_present dni_phi
-  have future_comp : ⊢ φ.always.imp φ.neg.neg.all_future := imp_trans to_future future_lift
-
-  -- Step 6: Combine into nested conjunction
-  have present_future : ⊢ φ.always.imp (φ.neg.neg.and φ.neg.neg.all_future) :=
-    combine_imp_conj present_comp future_comp
-  have all_three : ⊢ φ.always.imp (φ.neg.neg.all_past.and (φ.neg.neg.and φ.neg.neg.all_future)) :=
-    combine_imp_conj past_comp present_future
-
-  -- Step 7: Result is definitionally equal to always (¬¬φ)
-  exact all_three
-
-/--
-Temporal duality (forward): `▽¬φ → ¬△φ`.
-
-By definitions:
-- `▽¬φ = sometimes (¬φ) = (¬φ).neg.always.neg = (φ.neg).neg.always.neg`
-- `△φ = always φ = φ.always`
-
-We need to derive: `(φ.neg).neg.always.neg → φ.always.neg`.
-
-But `(φ.neg).neg = φ` after expansion and double negation.
-
-Strategy:
-1. Use `always_dni`: `always(φ) → always(¬¬φ)`
-   Which is: `φ.always → φ.neg.neg.always`
-2. Contrapose to get: `¬always(¬¬φ) → ¬always(φ)`
-   Which is: `φ.neg.neg.always.neg → φ.always.neg`
-3. But we need to substitute φ.neg for φ to get the right form
-
-Actually the substitution should be on φ.neg:
-  `(φ.neg).always → (φ.neg).neg.neg.always`
-Contrapose: `(φ.neg).neg.neg.always.neg → (φ.neg).always.neg`
-
-This matches our goal if we recognize that `(φ.neg).always = (always (¬φ))` and
-`(φ.neg).neg.neg.always = (always (¬¬¬φ))`.
-
-Let me reconsider: the goal type is asking for:
-  `φ.neg.sometimes → φ.always.neg`
-
-Expand `φ.neg.sometimes`:
-  `sometimes (φ.neg) = (φ.neg).neg.always.neg`
-
-So the actual Lean type is:
-  `((φ.neg).neg.always).neg → (φ.always).neg`
-
-Simplify: `(φ.neg).neg` in the formula language, not in Lean's type system.
-So this is asking: `(always ((φ → ⊥) → ⊥)).neg → (always φ).neg`
-
-Use DNI on φ: `φ.always → φ.neg.neg.always` and contrapose.
--/
-theorem temporal_duality_neg (φ : Formula) : ⊢ φ.neg.sometimes.imp φ.always.neg := by
-  -- Goal: φ.neg.sometimes → φ.always.neg
-  -- Expand: (φ.neg).neg.always.neg → φ.always.neg
-
-  -- Step 1: Get always_dni for φ
-  have adni : ⊢ φ.always.imp φ.neg.neg.always :=
-    always_dni φ
-
-  -- Step 2: Contrapose to get φ.neg.neg.always.neg → φ.always.neg
-  exact contraposition adni
-
-/--
-Derived theorem: DNE distributes over always.
-
-From `always (¬¬φ) → always φ`, we can derive the temporal analog of double negation elimination.
-
-**Derivation Strategy**: Mirror of always_dni but using `dne` instead of `dni`.
--/
-theorem always_dne (φ : Formula) : ⊢ φ.neg.neg.always.imp φ.always := by
-  -- Step 1: Get DNE for φ
-  have dne_phi : ⊢ φ.neg.neg.imp φ := dne φ
-
-  -- Step 2: Lift through past operator
-  have past_lift : ⊢ φ.neg.neg.all_past.imp φ.all_past := by
-    have pk : ⊢ (φ.neg.neg.imp φ).all_past.imp (φ.neg.neg.all_past.imp φ.all_past) :=
-      past_k_dist φ.neg.neg φ
-    have past_dne : ⊢ (φ.neg.neg.imp φ).all_past := by
-      have h_swap : ⊢ (φ.neg.neg.imp φ).swap_temporal := Derivable.temporal_duality _ dne_phi
-      have g_swap : ⊢ h_swap.all_future := Derivable.temporal_necessitation _ h_swap
-      have past_raw : ⊢ g_swap.swap_temporal := Derivable.temporal_duality _ g_swap
-      simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at past_raw
-      exact past_raw
-    exact Derivable.modus_ponens [] _ _ pk past_dne
-
-  -- Step 3: Present is just dne_phi
-
-  -- Step 4: Lift through future operator
-  have future_lift : ⊢ φ.neg.neg.all_future.imp φ.all_future := by
-    have fk : ⊢ (φ.neg.neg.imp φ).all_future.imp (φ.neg.neg.all_future.imp φ.all_future) :=
-      future_k_dist φ.neg.neg φ
-    have future_dne : ⊢ (φ.neg.neg.imp φ).all_future :=
-      Derivable.temporal_necessitation _ dne_phi
-    exact Derivable.modus_ponens [] _ _ fk future_dne
-
-  -- Step 5: Decompose always (¬¬φ) and apply lifts
-  have to_past : ⊢ φ.neg.neg.always.imp φ.neg.neg.all_past := always_to_past φ.neg.neg
-  have to_present : ⊢ φ.neg.neg.always.imp φ.neg.neg := always_to_present φ.neg.neg
-  have to_future : ⊢ φ.neg.neg.always.imp φ.neg.neg.all_future := always_to_future φ.neg.neg
-
-  have past_comp : ⊢ φ.neg.neg.always.imp φ.all_past := imp_trans to_past past_lift
-  have present_comp : ⊢ φ.neg.neg.always.imp φ := imp_trans to_present dne_phi
-  have future_comp : ⊢ φ.neg.neg.always.imp φ.all_future := imp_trans to_future future_lift
-
-  -- Step 6: Combine into nested conjunction
-  have present_future : ⊢ φ.neg.neg.always.imp (φ.and φ.all_future) :=
-    combine_imp_conj present_comp future_comp
-  have all_three : ⊢ φ.neg.neg.always.imp (φ.all_past.and (φ.and φ.all_future)) :=
-    combine_imp_conj past_comp present_future
-
-  -- Step 7: Result is definitionally equal to always φ
-  exact all_three
-
-/--
-Temporal duality (reverse): `¬△φ → ▽¬φ`.
-
-By definitions:
-- `▽¬φ = sometimes (¬φ) = (¬φ).neg.always.neg`
-- `△φ = always φ`
-
-We need to derive: `φ.always.neg → (φ.neg).neg.always.neg`.
-
-Strategy:
-1. Use `always_dne`: `always(¬¬φ) → always(φ)`
-   Which is: `φ.neg.neg.always → φ.always`
-2. Contrapose to get: `¬always(φ) → ¬always(¬¬φ)`
-   Which is: `φ.always.neg → φ.neg.neg.always.neg`
-3. This matches our goal
--/
-theorem temporal_duality_neg_rev (φ : Formula) : ⊢ φ.always.neg.imp φ.neg.sometimes := by
-  -- Goal: φ.always.neg → φ.neg.sometimes
-  -- Expand: φ.always.neg → (φ.neg).neg.always.neg
-
-  -- Step 1: Get always_dne for φ
-  have adne : ⊢ φ.neg.neg.always.imp φ.always :=
-    always_dne φ
-
-  -- Step 2: Contrapose to get φ.always.neg → φ.neg.neg.always.neg
-  exact contraposition adne
-
 /-!
 ## Monotonicity Lemmas for P6 Derivation
 
@@ -411,19 +228,27 @@ theorem local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- To get: A → (¬A → B)
 
   -- (⊥ → B) → ((A.neg → ⊥) → (A.neg → B)) is an instance of K axiom
-  have k_step : ⊢ (Formula.bot.imp B).imp ((A.neg.imp Formula.bot).imp (A.neg.imp B)) :=
+  -- K axiom: (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
+  -- We need: (⊥ → B) → ((¬A → ⊥) → (¬A → B))
+  -- This is NOT a direct instance of K. We need a different approach.
+  -- Actually, we can use: (¬A → (⊥ → B)) → ((¬A → ⊥) → (¬A → B))
+  -- Which is K with φ=¬A, ψ=⊥, χ=B
+  have k_step_raw : ⊢ (A.neg.imp (Formula.bot.imp B)).imp ((A.neg.imp Formula.bot).imp (A.neg.imp B)) :=
     Derivable.axiom [] _ (Axiom.prop_k A.neg Formula.bot B)
+  
+  -- We need to lift (⊥ → B) to (¬A → (⊥ → B))
+  have lift_bot_b : ⊢ (Formula.bot.imp B).imp (A.neg.imp (Formula.bot.imp B)) :=
+    Derivable.axiom [] _ (Axiom.prop_s (Formula.bot.imp B) A.neg)
+  
+  have k_step : ⊢ (Formula.bot.imp B).imp ((A.neg.imp Formula.bot).imp (A.neg.imp B)) :=
+    imp_trans lift_bot_b k_step_raw
 
   have a_neg_implies_b : ⊢ (A.neg.imp Formula.bot).imp (A.neg.imp B) :=
     Derivable.modus_ponens [] _ _ k_step bot_implies_b
 
-  -- Now we need: ((¬¬A) → (¬A → B)) for the flipped version
-  have flip_via_k : ⊢ (A.neg.imp Formula.bot).imp (A.imp (A.neg.imp B)) :=
-    Derivable.axiom [] _ (Axiom.prop_s (A.neg.imp Formula.bot) A)
-
-  -- Chain: (A.neg → ⊥) → (A.neg → B) and (A.neg → ⊥) → (A → (A.neg → B))
-  -- To get: (A.neg → B) → (A → (A.neg → B))
-  -- Actually, use S axiom directly
+  -- Chain: (A.neg → ⊥) → (A.neg → B) and (A.neg → B) → (A → (A.neg → B))
+  -- To get: (A.neg → ⊥) → (A → (A.neg → B))
+  -- Use S axiom to get (A.neg → B) → (A → (A.neg → B))
   have s_form : ⊢ (A.neg.imp B).imp (A.imp (A.neg.imp B)) :=
     Derivable.axiom [] _ (Axiom.prop_s (A.neg.imp B) A)
 
@@ -472,8 +297,19 @@ theorem local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
     Derivable.modus_ponens [] _ _ k_form1 a_neg_def
 
   -- Now (A → ⊥) → (A → B) using ⊥ → B
-  have k_form2 : ⊢ (Formula.bot.imp B).imp ((A.imp Formula.bot).imp (A.imp B)) :=
+  -- K axiom: (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
+  -- We need: (⊥ → B) → ((A → ⊥) → (A → B))
+  -- This requires: (A → (⊥ → B)) → ((A → ⊥) → (A → B))
+  -- Which is K with φ=A, ψ=⊥, χ=B
+  have k_form2_raw : ⊢ (A.imp (Formula.bot.imp B)).imp ((A.imp Formula.bot).imp (A.imp B)) :=
     Derivable.axiom [] _ (Axiom.prop_k A Formula.bot B)
+  
+  -- Lift (⊥ → B) to (A → (⊥ → B))
+  have lift_bot_b2 : ⊢ (Formula.bot.imp B).imp (A.imp (Formula.bot.imp B)) :=
+    Derivable.axiom [] _ (Axiom.prop_s (Formula.bot.imp B) A)
+  
+  have k_form2 : ⊢ (Formula.bot.imp B).imp ((A.imp Formula.bot).imp (A.imp B)) :=
+    imp_trans lift_bot_b2 k_form2_raw
 
   have step_k2 : ⊢ (A.imp Formula.bot).imp (A.imp B) :=
     Derivable.modus_ponens [] _ _ k_form2 bot_implies_b
@@ -529,9 +365,19 @@ theorem local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
 
   -- From ¬A, we have A → ⊥
   -- From ⊥ → B (proven), we get A → B via K distribution
-
-  have k_dist : ⊢ (Formula.bot.imp B).imp ((A.imp Formula.bot).imp (A.imp B)) :=
+  -- K axiom: (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
+  -- We need: (⊥ → B) → ((A → ⊥) → (A → B))
+  -- This requires: (A → (⊥ → B)) → ((A → ⊥) → (A → B))
+  -- Which is K with φ=A, ψ=⊥, χ=B
+  have k_dist_raw : ⊢ (A.imp (Formula.bot.imp B)).imp ((A.imp Formula.bot).imp (A.imp B)) :=
     Derivable.axiom [] _ (Axiom.prop_k A Formula.bot B)
+  
+  -- Lift (⊥ → B) to (A → (⊥ → B))
+  have lift_bot_b3 : ⊢ (Formula.bot.imp B).imp (A.imp (Formula.bot.imp B)) :=
+    Derivable.axiom [] _ (Axiom.prop_s (Formula.bot.imp B) A)
+  
+  have k_dist : ⊢ (Formula.bot.imp B).imp ((A.imp Formula.bot).imp (A.imp B)) :=
+    imp_trans lift_bot_b3 k_dist_raw
 
   have a_to_b_from_bot : ⊢ (A.imp Formula.bot).imp (A.imp B) :=
     Derivable.modus_ponens [] _ _ k_dist bot_implies_b
@@ -540,7 +386,7 @@ theorem local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   have neg_a_to_a_b : ⊢ A.neg.imp (A.imp B) :=
     a_to_b_from_bot
 
-  exact neg_a_to_b_from_bot
+  exact neg_a_to_a_b
 
 /--
 Left Conjunction Elimination (context): `[A ∧ B] ⊢ A`.
@@ -669,10 +515,10 @@ theorem rce_imp (A B : Formula) : ⊢ (A.and B).imp B := by
   exact Logos.Core.Metalogic.deduction_theorem [] (A.and B) B h
 
 /-!
-## Decomposition and Composition Lemmas for Always Operator
+## Decomposition Lemmas for Always Operator
 
-These lemmas enable breaking down `always φ = Hφ ∧ (φ ∧ Gφ)` into components
-and recombining them. Essential for deriving `always_dni` and `always_dne`.
+These lemmas enable breaking down `always φ = Hφ ∧ (φ ∧ Gφ)` into components.
+Essential for deriving `always_dni` and `always_dne`.
 -/
 
 /--
@@ -728,21 +574,224 @@ theorem past_present_future_to_always (φ : Formula) :
   exact identity (φ.all_past.and (φ.and φ.all_future))
 
 /--
+Derived theorem: DNI distributes over always.
+
+From `always φ → always (¬¬φ)`, we can derive the temporal analog of double negation introduction.
+
+**Derivation Strategy**:
+1. Decompose `△φ` into `Hφ ∧ φ ∧ Gφ`
+2. Apply `dni` to `φ`: `φ → ¬¬φ`
+3. Apply `past_k_dist` and `future_k_dist` to get `Hφ → H(¬¬φ)` and `Gφ → G(¬¬φ)`
+4. Recombine: `H(¬¬φ) ∧ ¬¬φ ∧ G(¬¬φ) = △(¬¬φ)`
+-/
+theorem always_dni (φ : Formula) : ⊢ φ.always.imp φ.neg.neg.always := by
+  -- Step 1: Get DNI for φ
+  have dni_phi : ⊢ φ.imp φ.neg.neg := dni φ
+
+  -- Step 2: Lift through past operator
+  have past_lift : ⊢ φ.all_past.imp φ.neg.neg.all_past := by
+    have pk : ⊢ (φ.imp φ.neg.neg).all_past.imp (φ.all_past.imp φ.neg.neg.all_past) :=
+      past_k_dist φ φ.neg.neg
+    have past_dni : ⊢ (φ.imp φ.neg.neg).all_past := by
+      have h_swap : ⊢ (φ.imp φ.neg.neg).swap_temporal := Derivable.temporal_duality _ dni_phi
+      have g_swap : ⊢ (φ.imp φ.neg.neg).swap_temporal.all_future := Derivable.temporal_necessitation _ h_swap
+      have past_raw : ⊢ ((φ.imp φ.neg.neg).swap_temporal.all_future).swap_temporal := Derivable.temporal_duality _ g_swap
+      simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at past_raw
+      exact past_raw
+    exact Derivable.modus_ponens [] _ _ pk past_dni
+
+  -- Step 3: Present is just dni_phi
+
+  -- Step 4: Lift through future operator
+  have future_lift : ⊢ φ.all_future.imp φ.neg.neg.all_future := by
+    have fk : ⊢ (φ.imp φ.neg.neg).all_future.imp (φ.all_future.imp φ.neg.neg.all_future) :=
+      future_k_dist φ φ.neg.neg
+    have future_dni : ⊢ (φ.imp φ.neg.neg).all_future :=
+      Derivable.temporal_necessitation _ dni_phi
+    exact Derivable.modus_ponens [] _ _ fk future_dni
+
+  -- Step 5: Decompose always φ and apply lifts
+  have to_past : ⊢ φ.always.imp φ.all_past := always_to_past φ
+  have to_present : ⊢ φ.always.imp φ := always_to_present φ
+  have to_future : ⊢ φ.always.imp φ.all_future := always_to_future φ
+
+  have past_comp : ⊢ φ.always.imp φ.neg.neg.all_past := imp_trans to_past past_lift
+  have present_comp : ⊢ φ.always.imp φ.neg.neg := imp_trans to_present dni_phi
+  have future_comp : ⊢ φ.always.imp φ.neg.neg.all_future := imp_trans to_future future_lift
+
+  -- Step 6: Combine into nested conjunction
+  have present_future : ⊢ φ.always.imp (φ.neg.neg.and φ.neg.neg.all_future) :=
+    combine_imp_conj present_comp future_comp
+  have all_three : ⊢ φ.always.imp (φ.neg.neg.all_past.and (φ.neg.neg.and φ.neg.neg.all_future)) :=
+    combine_imp_conj past_comp present_future
+
+  -- Step 7: Result is definitionally equal to always (¬¬φ)
+  exact all_three
+
+/--
+Temporal duality (forward): `▽¬φ → ¬△φ`.
+
+By definitions:
+- `▽¬φ = sometimes (¬φ) = (¬φ).neg.always.neg = (φ.neg).neg.always.neg`
+- `△φ = always φ = φ.always`
+
+We need to derive: `(φ.neg).neg.always.neg → φ.always.neg`.
+
+But `(φ.neg).neg = φ` after expansion and double negation.
+
+Strategy:
+1. Use `always_dni`: `always(φ) → always(¬¬φ)`
+   Which is: `φ.always → φ.neg.neg.always`
+2. Contrapose to get: `¬always(¬¬φ) → ¬always(φ)`
+   Which is: `φ.neg.neg.always.neg → φ.always.neg`
+3. But we need to substitute φ.neg for φ to get the right form
+
+Actually the substitution should be on φ.neg:
+  `(φ.neg).always → (φ.neg).neg.neg.always`
+Contrapose: `(φ.neg).neg.neg.always.neg → (φ.neg).always.neg`
+
+This matches our goal if we recognize that `(φ.neg).always = (always (¬φ))` and
+`(φ.neg).neg.neg.always = (always (¬¬¬φ))`.
+
+Let me reconsider: the goal type is asking for:
+  `φ.neg.sometimes → φ.always.neg`
+
+Expand `φ.neg.sometimes`:
+  `sometimes (φ.neg) = (φ.neg).neg.always.neg`
+
+So the actual Lean type is:
+  `((φ.neg).neg.always).neg → (φ.always).neg`
+
+Simplify: `(φ.neg).neg` in the formula language, not in Lean's type system.
+So this is asking: `(always ((φ → ⊥) → ⊥)).neg → (always φ).neg`
+
+Use DNI on φ: `φ.always → φ.neg.neg.always` and contrapose.
+-/
+theorem temporal_duality_neg (φ : Formula) : ⊢ φ.neg.sometimes.imp φ.always.neg := by
+  -- Goal: φ.neg.sometimes → φ.always.neg
+  -- Expand: (φ.neg).neg.always.neg → φ.always.neg
+
+  -- Step 1: Get always_dni for φ
+  have adni : ⊢ φ.always.imp φ.neg.neg.always :=
+    always_dni φ
+
+  -- Step 2: Contrapose to get φ.neg.neg.always.neg → φ.always.neg
+  exact contraposition adni
+
+/--
+Derived theorem: DNE distributes over always.
+
+From `always (¬¬φ) → always φ`, we can derive the temporal analog of double negation elimination.
+
+**Derivation Strategy**: Mirror of always_dni but using `dne` instead of `dni`.
+-/
+theorem always_dne (φ : Formula) : ⊢ φ.neg.neg.always.imp φ.always := by
+  -- Step 1: Get DNE for φ
+  have dne_phi : ⊢ φ.neg.neg.imp φ := dne φ
+
+  -- Step 2: Lift through past operator
+  have past_lift : ⊢ φ.neg.neg.all_past.imp φ.all_past := by
+    have pk : ⊢ (φ.neg.neg.imp φ).all_past.imp (φ.neg.neg.all_past.imp φ.all_past) :=
+      past_k_dist φ.neg.neg φ
+    have past_dne : ⊢ (φ.neg.neg.imp φ).all_past := by
+      have h_swap : ⊢ (φ.neg.neg.imp φ).swap_temporal := Derivable.temporal_duality _ dne_phi
+      have g_swap : ⊢ (φ.neg.neg.imp φ).swap_temporal.all_future := Derivable.temporal_necessitation _ h_swap
+      have past_raw : ⊢ ((φ.neg.neg.imp φ).swap_temporal.all_future).swap_temporal := Derivable.temporal_duality _ g_swap
+      simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at past_raw
+      exact past_raw
+    exact Derivable.modus_ponens [] _ _ pk past_dne
+
+  -- Step 3: Present is just dne_phi
+
+  -- Step 4: Lift through future operator
+  have future_lift : ⊢ φ.neg.neg.all_future.imp φ.all_future := by
+    have fk : ⊢ (φ.neg.neg.imp φ).all_future.imp (φ.neg.neg.all_future.imp φ.all_future) :=
+      future_k_dist φ.neg.neg φ
+    have future_dne : ⊢ (φ.neg.neg.imp φ).all_future :=
+      Derivable.temporal_necessitation _ dne_phi
+    exact Derivable.modus_ponens [] _ _ fk future_dne
+
+  -- Step 5: Decompose always (¬¬φ) and apply lifts
+  have to_past : ⊢ φ.neg.neg.always.imp φ.neg.neg.all_past := always_to_past φ.neg.neg
+  have to_present : ⊢ φ.neg.neg.always.imp φ.neg.neg := always_to_present φ.neg.neg
+  have to_future : ⊢ φ.neg.neg.always.imp φ.neg.neg.all_future := always_to_future φ.neg.neg
+
+  have past_comp : ⊢ φ.neg.neg.always.imp φ.all_past := imp_trans to_past past_lift
+  have present_comp : ⊢ φ.neg.neg.always.imp φ := imp_trans to_present dne_phi
+  have future_comp : ⊢ φ.neg.neg.always.imp φ.all_future := imp_trans to_future future_lift
+
+  -- Step 6: Combine into nested conjunction
+  have present_future : ⊢ φ.neg.neg.always.imp (φ.and φ.all_future) :=
+    combine_imp_conj present_comp future_comp
+  have all_three : ⊢ φ.neg.neg.always.imp (φ.all_past.and (φ.and φ.all_future)) :=
+    combine_imp_conj past_comp present_future
+
+  -- Step 7: Result is definitionally equal to always φ
+  exact all_three
+
+/--
+Temporal duality (reverse): `¬△φ → ▽¬φ`.
+
+By definitions:
+- `▽¬φ = sometimes (¬φ) = (¬φ).neg.always.neg`
+- `△φ = always φ`
+
+We need to derive: `φ.always.neg → (φ.neg).neg.always.neg`.
+
+Strategy:
+1. Use `always_dne`: `always(¬¬φ) → always(φ)`
+   Which is: `φ.neg.neg.always → φ.always`
+2. Contrapose to get: `¬always(φ) → ¬always(¬¬φ)`
+   Which is: `φ.always.neg → φ.neg.neg.always.neg`
+3. This matches our goal
+-/
+theorem temporal_duality_neg_rev (φ : Formula) : ⊢ φ.always.neg.imp φ.neg.sometimes := by
+  -- Goal: φ.always.neg → φ.neg.sometimes
+  -- Expand: φ.always.neg → (φ.neg).neg.always.neg
+
+  -- Step 1: Get always_dne for φ
+  have adne : ⊢ φ.neg.neg.always.imp φ.always :=
+    always_dne φ
+
+  -- Step 2: Contrapose to get φ.always.neg → φ.neg.neg.always.neg
+  exact contraposition adne
+
+
+/--
 Always monotonicity: from `⊢ A → B`, derive `⊢ △A → △B`.
 
-**Semantic Justification**: If A → B holds at all (M,τ,t) triples in task semantics,
-then for any triple where △A holds (A at all times), we have △B (B at all times)
-because A → B holds pointwise across the timeline.
-
-**Implementation Note**: While this should be derivable compositionally using
-past_mono, identity, and future_mono combined with conjunction manipulation,
-the proof requires conjunction elimination lemmas that are complex to derive
-from the K/S combinator basis. The semantic validity is clear, so we axiomatize
-for the MVP. The derivation would require ~50+ lines of combinator manipulation.
+**Derivation Strategy**:
+1. Decompose `△A` into `HA ∧ A ∧ GA` using decomposition lemmas
+2. Apply `past_mono` to get `HA → HB`
+3. Use the given `A → B`
+4. Apply `future_mono` to get `GA → GB`
+5. Combine to get `HB ∧ B ∧ GB = △B`
 
 **Usage**: Essential for P6 derivation to lift modal_duality_neg through always.
 -/
-axiom always_mono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.always.imp B.always
+theorem always_mono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.always.imp B.always := by
+  -- Step 1: Get monotonicity for each component
+  have past_h : ⊢ A.all_past.imp B.all_past := past_mono h
+  have future_h : ⊢ A.all_future.imp B.all_future := future_mono h
+  
+  -- Step 2: Decompose △A into components
+  have to_past : ⊢ A.always.imp A.all_past := always_to_past A
+  have to_present : ⊢ A.always.imp A := always_to_present A
+  have to_future : ⊢ A.always.imp A.all_future := always_to_future A
+  
+  -- Step 3: Compose to get △A → HB, △A → B, △A → GB
+  have comp_past : ⊢ A.always.imp B.all_past := imp_trans to_past past_h
+  have comp_present : ⊢ A.always.imp B := imp_trans to_present h
+  have comp_future : ⊢ A.always.imp B.all_future := imp_trans to_future future_h
+  
+  -- Step 4: Combine into △A → (HB ∧ (B ∧ GB))
+  have present_future : ⊢ A.always.imp (B.and B.all_future) :=
+    combine_imp_conj comp_present comp_future
+  have all_three : ⊢ A.always.imp (B.all_past.and (B.and B.all_future)) :=
+    combine_imp_conj comp_past present_future
+  
+  -- Step 5: Result is definitionally equal to △B
+  exact all_three
 
 -- Note: dne theorem is now defined earlier in the file (after double_negation helper)
 

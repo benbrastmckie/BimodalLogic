@@ -1,0 +1,1 @@
+Research and implement transport lemmas for dependent type proofs in ProofChecker to complete time_shift_preserves_truth without Mathlib. Need lemmas for: (1) states equality when times are equal, (2) truth_at equality when times are equal, (3) double time-shift cancellation. Goal is to remove sorry markers from Truth.lean while keeping project self-contained.

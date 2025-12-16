@@ -1,0 +1,61 @@
+---
+# Lean Implementer Input Contract
+# Phase 3: DeductionTheorem Sorry Resolution
+
+lean_file_path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Metalogic/DeductionTheorem.lean
+topic_path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/065_proof_automation_temporal_deduction
+artifact_paths:
+  summaries: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/065_proof_automation_temporal_deduction/summaries
+  outputs: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/065_proof_automation_temporal_deduction/outputs
+  debug: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/065_proof_automation_temporal_deduction/debug
+  checkpoints: /home/benjamin/.claude/data/checkpoints
+max_attempts: 3
+plan_path: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/065_proof_automation_temporal_deduction/plans/001-proof-automation-completion-plan.md
+execution_mode: plan-based
+theorem_tasks: []  # Process all sorry markers in file
+rate_limit_budget: 3
+wave_number: 1
+phase_number: 3
+continuation_context: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/tmp/lean_implement_lean_implement_1765353370/iteration_1_summary.md
+
+# Phase 3 Specific Instructions
+phase_objectives:
+  - Implement Derivable.size termination metric
+  - Prove derivable_permutation exchange lemma
+  - Implement boxed_deduction_helper with termination
+  - Implement temporal_deduction_helper with termination
+  - Resolve modal_k sorry (line 370)
+  - Resolve temporal_k sorry (line 383)
+  - Resolve weakening sorry (line 419)
+
+sorry_locations:
+  - line: 370
+    case: modal_k
+    complexity: HIGH
+    requires: boxed_deduction_helper, Derivable.size
+  - line: 383
+    case: temporal_k
+    complexity: HIGH
+    requires: temporal_deduction_helper, Derivable.size
+  - line: 419
+    case: weakening_with_A_in_context
+    complexity: MEDIUM
+    requires: derivable_permutation
+
+implementation_strategy:
+  1. Define Derivable.size as termination metric
+  2. Prove derivable_permutation exchange lemma
+  3. Implement boxed_deduction_helper using well-founded recursion
+  4. Implement temporal_deduction_helper (mirror of boxed_deduction_helper)
+  5. Resolve modal_k sorry using boxed_deduction_helper
+  6. Resolve temporal_k sorry using temporal_deduction_helper
+  7. Resolve weakening sorry using derivable_permutation
+
+success_criteria:
+  - Zero sorry markers in DeductionTheorem.lean
+  - lake build succeeds
+  - lake test passes
+  - All theorems have docstrings
+
+estimated_effort: 8-12 hours
+risk_level: HIGH

@@ -1,0 +1,1 @@
+Research '### 17. Fix Pre-existing Soundness.lean Type Mismatch Errors' in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md in order to create an implementation plan to complete this task in full, updating all relevant project status files.

@@ -1,0 +1,5 @@
+1:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Metalogic/Soundness.lean:lean-coordinator
+2:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Metalogic/Soundness.lean:lean-coordinator
+3:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Metalogic/Soundness.lean:lean-coordinator
+4:software:none:implementer-coordinator
+5:software:none:implementer-coordinator

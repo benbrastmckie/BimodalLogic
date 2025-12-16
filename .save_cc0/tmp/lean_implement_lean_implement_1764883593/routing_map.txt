@@ -1,0 +1,9 @@
+0:lean:none
+1:lean:ProofChecker/Semantics/TaskFrame.lean
+2:lean:ProofChecker/Semantics/WorldHistory.lean
+3:lean:ProofChecker/Semantics/Truth.lean
+4:lean:none
+5:lean:none
+6:lean:none
+7:lean:none
+8:lean:TODO.md

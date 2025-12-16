@@ -1,0 +1,10 @@
+1:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Automation/Tactics.lean:lean-coordinator
+2:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Automation/Tactics.lean:lean-coordinator
+3:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Automation/Tactics.lean:lean-coordinator
+4:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Automation/Tactics.lean:lean-coordinator
+5:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Automation/Tactics.lean:lean-coordinator
+6:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/LogosTest/Core/Automation/TacticsTest.lean:lean-coordinator
+7:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/LogosTest/Core/Automation/TacticsTest.lean:lean-coordinator
+8:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/LogosTest/Core/Automation/TacticsTest.lean:lean-coordinator
+9:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/LogosTest/Core/Automation/TacticsTest.lean:lean-coordinator
+10:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Automation/Tactics.lean:lean-coordinator

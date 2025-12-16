@@ -1,0 +1,1 @@
+Research '### 13. Create Proof Strategy Documentation' in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md in order to create an implementation plan to complete this task.

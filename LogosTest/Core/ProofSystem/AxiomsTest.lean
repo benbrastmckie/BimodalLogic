@@ -92,6 +92,50 @@ example : Axiom ((Formula.atom "p").imp (Formula.atom "p").diamond.box) := Axiom
 example : Axiom ((Formula.atom "p").box.imp (Formula.atom "p").box.diamond.box) := Axiom.modal_b (Formula.atom "p").box
 
 -- ============================================================
+-- Modal 5 Collapse Tests: ◇□φ → □φ
+-- ============================================================
+
+-- Test: Modal 5 Collapse on atom
+example : Axiom ((Formula.atom "p").box.diamond.imp (Formula.atom "p").box) :=
+  Axiom.modal_5_collapse (Formula.atom "p")
+
+-- Test: Modal 5 Collapse on complex formula
+example : Axiom (((Formula.atom "p").imp (Formula.atom "q")).box.diamond.imp ((Formula.atom "p").imp (Formula.atom "q")).box) :=
+  Axiom.modal_5_collapse ((Formula.atom "p").imp (Formula.atom "q"))
+
+-- ============================================================
+-- Ex Falso Quodlibet Tests: ⊥ → φ
+-- ============================================================
+
+-- Test: EFQ on atom
+example : Axiom (Formula.bot.imp (Formula.atom "p")) :=
+  Axiom.ex_falso (Formula.atom "p")
+
+-- Test: EFQ on box formula
+example : Axiom (Formula.bot.imp ((Formula.atom "p").box)) :=
+  Axiom.ex_falso ((Formula.atom "p").box)
+
+-- Test: EFQ on complex formula
+example : Axiom (Formula.bot.imp (((Formula.atom "p").imp (Formula.atom "q")).all_future)) :=
+  Axiom.ex_falso (((Formula.atom "p").imp (Formula.atom "q")).all_future)
+
+-- ============================================================
+-- Peirce's Law Tests: ((φ → ψ) → φ) → φ
+-- ============================================================
+
+-- Test: Peirce on atoms
+example : Axiom ((((Formula.atom "p").imp (Formula.atom "q")).imp (Formula.atom "p")).imp (Formula.atom "p")) :=
+  Axiom.peirce (Formula.atom "p") (Formula.atom "q")
+
+-- Test: Peirce on complex formulas
+example : Axiom (((((Formula.atom "p").box).imp (Formula.atom "q")).imp ((Formula.atom "p").box)).imp ((Formula.atom "p").box)) :=
+  Axiom.peirce ((Formula.atom "p").box) (Formula.atom "q")
+
+-- Test: Peirce with bot (used in DNE derivation)
+example : Axiom ((((Formula.atom "p").imp Formula.bot).imp (Formula.atom "p")).imp (Formula.atom "p")) :=
+  Axiom.peirce (Formula.atom "p") Formula.bot
+
+-- ============================================================
 -- Temporal 4 Axiom Tests: Gφ → GGφ
 -- ============================================================
 
@@ -161,21 +205,14 @@ example (A B : Formula) :
   Axiom.modal_k_dist A (B.imp (A.and B))
 
 -- ============================================================
--- Double Negation Elimination Axiom Tests: ¬¬φ → φ
+-- Double Negation Elimination: Now Derived (not an axiom)
 -- ============================================================
 
--- Test: Double negation elimination on atom
-example : Axiom ((Formula.atom "p").neg.neg.imp (Formula.atom "p")) :=
-  Axiom.double_negation (Formula.atom "p")
-
--- Test: Double negation elimination on box formula
-example : Axiom (((Formula.atom "p").box).neg.neg.imp ((Formula.atom "p").box)) :=
-  Axiom.double_negation ((Formula.atom "p").box)
-
--- Test: Double negation elimination on complex formula
-example : Axiom ((((Formula.atom "p").imp (Formula.atom "q"))).neg.neg.imp
-                  ((Formula.atom "p").imp (Formula.atom "q"))) :=
-  Axiom.double_negation ((Formula.atom "p").imp (Formula.atom "q"))
+-- Note: DNE is now derived from EFQ + Peirce (see Logos.Core.Theorems.Propositional.double_negation)
+-- The following tests have been removed as DNE is no longer an axiom:
+-- - Double negation elimination on atom
+-- - Double negation elimination on box formula
+-- - Double negation elimination on complex formula
 
 -- ============================================================
 -- Negative Tests: Non-axioms

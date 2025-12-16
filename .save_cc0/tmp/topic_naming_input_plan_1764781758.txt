@@ -1,0 +1,1 @@
+use /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md to research and plan a detailed implementation of the next tasks, ignoring the low priority tasks for now.

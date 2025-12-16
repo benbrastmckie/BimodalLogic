@@ -1,0 +1,12 @@
+1:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/ProofSystem/Axioms.lean:lean-coordinator
+2:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/ProofSystem/Derivation.lean:lean-coordinator
+3:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/ProofSystem/Axioms.lean:lean-coordinator
+4:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/Perpetuity.lean:lean-coordinator
+5:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/Perpetuity.lean:lean-coordinator
+6:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/Perpetuity.lean:lean-coordinator
+7:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/Perpetuity.lean:lean-coordinator
+8:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/Perpetuity.lean:lean-coordinator
+9:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Theorems/Perpetuity.lean:lean-coordinator
+10:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/Logos/Core/Metalogic/Soundness.lean:lean-coordinator
+11:lean:/home/benjamin/Documents/Philosophy/Projects/ProofChecker/LogosTest/Core/Theorems/PerpetuityTest.lean:lean-coordinator
+12:software:none:implementer-coordinator
