@@ -19,14 +19,14 @@ This document establishes standards for directory-level README files in LEAN 4 p
 - Documentation organization directories (`Documentation/`, `Documentation/UserGuide/`, etc.)
 
 **Out of Scope (Covered Elsewhere)**:
-- `.claude/` system directories (see [documentation-standards.md](../../../.claude/docs/reference/standards/documentation-standards.md))
+- `.opencode/` system directories (see [documentation-standards.md](../../../.opencode/context/core/standards/documentation-standards.md))
 - LEAN code documentation (see [LEAN_STYLE_GUIDE.md](LEAN_STYLE_GUIDE.md))
 - API documentation (handled by doc-gen4 and `.lean` module files)
 
 ### Integration with Existing Standards
 
 This standard **extends** and **complements**:
-- **.claude/docs/reference/standards/documentation-standards.md**: Adapted patterns for LEAN 4 projects
+- **.opencode/context/core/standards/documentation-standards.md**: Adapted patterns for LEAN 4 projects
 - **LEAN_STYLE_GUIDE.md**: Code-level documentation conventions
 - **TESTING_STANDARDS.md**: Test documentation requirements
 - **MODULE_ORGANIZATION.md**: Directory structure patterns
@@ -347,7 +347,6 @@ All documentation files follow:
 ## Related Files
 
 - [README.md](../../README.md) - Project overview
-- [CLAUDE.md](../../CLAUDE.md) - AI assistant configuration
 ```
 
 **Notes**:
@@ -521,7 +520,7 @@ When reviewing directory README:
 ## 11. References
 
 ### Standards Referenced
-- [documentation-standards.md](../../../.claude/docs/reference/standards/documentation-standards.md) - Claude Code documentation standards
+- [documentation-standards.md](../../../.opencode/context/core/standards/documentation-standards.md) - OpenCode documentation standards
 - [LEAN_STYLE_GUIDE.md](LEAN_STYLE_GUIDE.md) - Code-level documentation
 - [TESTING_STANDARDS.md](TESTING_STANDARDS.md) - Test documentation requirements
 - [MODULE_ORGANIZATION.md](MODULE_ORGANIZATION.md) - Directory structure patterns

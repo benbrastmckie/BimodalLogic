@@ -102,7 +102,7 @@
 - ✅ `command/research.md` - Multi-source research
 - ✅ `command/plan.md` - Implementation planning
 - ✅ `command/revise.md` - Plan revision
-- ✅ `command/implement.md` - Proof implementation
+- ✅ `command/lean.md` - Proof implementation
 - ✅ `command/refactor.md` - Code refactoring
 - ✅ `command/document.md` - Documentation updates
 - ✅ `command/create-agent.md` - Agent creation
@@ -229,7 +229,7 @@ context/math/
 /plan "Implement soundness proof for bimodal logic"
 
 # 4. Implement the proof
-/implement 001
+/lean 001
 
 # 5. Refactor for readability
 /refactor Logos/BimodalProofs.lean

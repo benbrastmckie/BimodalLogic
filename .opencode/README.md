@@ -49,7 +49,7 @@ Creates detailed step-by-step implementation plan
 
 ### 4. Implement the Plan
 ```bash
-/implement 001
+/lean 001
 ```
 Implements proof following plan, verifies with lean-lsp-mcp, commits to git
 
@@ -72,7 +72,7 @@ Updates documentation to be complete, accurate, concise
 - `/research {topic}` - Multi-source research
 - `/plan {task}` - Create implementation plan
 - `/revise {project_number}` - Revise existing plan
-- `/implement {project_number}` - Implement proof
+- `/lean {project_number}` - Implement proof
 - `/refactor {file_path}` - Refactor code
 - `/document {scope}` - Update documentation
 
@@ -177,7 +177,7 @@ Standardized structure in `.opencode/specs/`:
 
 4. **Implement the proof**
    ```
-   /implement 003
+   /lean 003
    ```
    → Follows implementation plan
    → Verifies with lean-lsp-mcp

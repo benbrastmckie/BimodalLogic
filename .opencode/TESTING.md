@@ -56,7 +56,7 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 
 **Test 6: Proof Developer Agent**
 ```bash
-/implement 003
+/lean 003
 
 # Expected Output:
 # - LEAN 4 code implemented
@@ -113,7 +113,7 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 # Verify: Implementation plan created with steps
 
 # Step 3: Implement
-/implement [project_number]
+/lean [project_number]
 # Verify: Proof implemented, verified, committed
 
 # Step 4: Document
@@ -147,7 +147,7 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 # Verify: Plan version 002 created with revision notes
 
 # Step 3: Implement
-/implement [project_number]
+/lean [project_number]
 # Verify: Latest plan version used for implementation
 ```
 
@@ -165,7 +165,7 @@ ls .opencode/specs/*/reports/
 ls .opencode/specs/*/plans/
 # Expected: implementation-001.md
 
-# After running /implement
+# After running /lean
 ls .opencode/specs/*/summaries/
 # Expected: implementation-summary.md
 ```
@@ -241,7 +241,7 @@ cat .opencode/specs/TODO.md
 **Test 15: lean-lsp-mcp Integration**
 ```bash
 # Implement a proof
-/implement [project_number]
+/lean [project_number]
 
 # Expected:
 # - Type checking performed after each step
@@ -272,7 +272,7 @@ cat .opencode/specs/TODO.md
 **Test 18: Git Integration**
 ```bash
 # Implement proof
-/implement [project_number]
+/lean [project_number]
 
 # Check git log
 git log --oneline -5
@@ -289,7 +289,7 @@ git log --oneline -5
 
 **Test 19: Invalid Project Number**
 ```bash
-/implement 999
+/lean 999
 
 # Expected:
 # - Error message: "Project 999 not found"
@@ -311,7 +311,7 @@ git log --oneline -5
 **Test 21: Verification Failure**
 ```bash
 # Implement proof with intentional error
-/implement [project_number]
+/lean [project_number]
 
 # Expected:
 # - lean-lsp-mcp catches error

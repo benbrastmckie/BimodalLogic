@@ -79,7 +79,7 @@ Choose a task from TODO.md:
 Execute the implementation plan:
 
 ```bash
-/implement 003
+/lean 003
 ```
 
 **What happens:**
@@ -136,7 +136,7 @@ Keep docs current:
 /plan "Implement completeness proof based on research"
 
 # 3. Implement the plan
-/implement 004
+/lean 004
 
 # 4. Document the implementation
 /document "completeness proof"
@@ -171,7 +171,7 @@ cat .opencode/specs/005_project/plans/implementation-001.md
 /revise 005
 
 # 4. Implement revised plan
-/implement 005
+/lean 005
 ```
 
 ## Understanding the Output
@@ -202,7 +202,7 @@ Each workflow creates a numbered project directory:
 
 Use project numbers to reference plans:
 ```bash
-/implement 003
+/lean 003
 /revise 003
 ```
 

@@ -9,7 +9,7 @@
 2. Add new tasks with: description, effort estimate, status, priority, blocking/dependencies
 3. Update the "Active Tasks" count in Overview
 4. Update "Last Updated" date at bottom
-5. Run `/todo` command to sync with .claude/TODO.md specs tracking
+5. Run `/todo` command to sync with .opencode/specs/TODO.md specs tracking
 
 **What NOT to Track Here**:
 - Completed task details (use git history: `git log --grep="Task"`)
@@ -24,15 +24,15 @@
 This file tracks active development tasks for Logos. Completed tasks are removed from this file - see git history and spec summaries for completion records.
 
 **Layer 0 Completion Progress**:
-- High Priority: 0 tasks
+- High Priority: 2 tasks (58 - Update SORRY_REGISTRY.md, 59 - Update IMPLEMENTATION_STATUS.md)
 - Medium Priority: 1 task (52 - AesopRules duplicate declaration)
-- Low Priority: 10 tasks (9-11 long-term, 53-55 cleanup/documentation, 57 dual-type approach)
-- **Active Tasks**: 11
+- Low Priority: 13 tasks (9-11 long-term, 53-55 cleanup/documentation, 57 dual-type approach, 60-62 repository cleanup)
+- **Active Tasks**: 16
 - **Recently Completed**: Task 46 (Deduction Theorem - FULLY COMPLETE, zero sorry) ✅, Task 42b (Bridge.lean compilation fixes) ✅, Task 42a (Temporal Axiom Derivation) ✅, Task 48 (Derivable.height fix) ✅, Task 47 (Lake Lint Long Lines) ✅, Task 43 (Axiom Refactoring) ✅, Task 45 (Inference Rule Refactoring) ✅
 
 **Milestone Achievement**: DEDUCTION THEOREM FULLY PROVEN (Task 46 - zero sorry, complete termination proofs) ✅ + ALL 6 PERPETUITY PRINCIPLES FULLY PROVEN (100%) + PHASE 4 MODAL THEOREMS COMPLETE (8/8) + PROPOSITIONAL THEOREMS COMPLETE (Tasks 21-29) + AXIOM REFACTORING COMPLETE (Task 43) + INFERENCE RULE REFACTORING COMPLETE (Task 45) + DERIVABLE.HEIGHT FIX COMPLETE (Task 48) + TEMPORAL AXIOM DERIVATION COMPLETE (Task 42a) + BRIDGE.LEAN COMPILATION FIXED (Task 42b) ✅
-**Current Work**: None (all high priority tasks complete)
-**Next Milestone**: Fix AesopRules duplicate declaration (Task 52), then Layer 1 planning
+**Current Work**: High priority documentation updates (SORRY_REGISTRY.md, IMPLEMENTATION_STATUS.md)
+**Next Milestone**: Complete documentation updates, then fix AesopRules duplicate, then Layer 1 planning
 
 ---
 
@@ -47,16 +47,64 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 - None (all active plans complete)
 
 **Recently Completed**:
-- [Proof Automation Completion Plan](.claude/specs/065_proof_automation_temporal_deduction/plans/001-proof-automation-completion-plan.md) - COMPLETE (2025-12-15)
+- [Proof Automation Completion Plan](.opencode/specs/065_proof_automation_temporal_deduction/plans/001-proof-automation-completion-plan.md) - COMPLETE (2025-12-15)
   - Task 42a: future_k_dist and always_mono derived as theorems, axiom count reduced by 2
   - Task 42b: Bridge.lean compilation errors fixed, always_dni and always_dne confirmed as theorems (not axioms)
-- [Modal Theorems Alternative Proofs Plan](.claude/specs/060_modal_theorems_alternative_proofs/plans/001-modal-theorems-alternative-proofs-plan.md) - All Phase 4 modal theorems complete (8/8) using k_dist_diamond
-- [Modal Theorems S5 Completion Plan](.claude/specs/059_modal_theorems_s5_completion/plans/001-modal-theorems-s5-completion-plan.md) - De Morgan laws (superseded by Plan 060)
-- [Minimal Axiom Review Plan](.claude/specs/048_minimal_axiom_review_proofs/plans/001-minimal-axiom-review-proofs-plan.md) - Documentation fixes, necessitation from MK, MK/TK documentation
+- [Modal Theorems Alternative Proofs Plan](.opencode/specs/060_modal_theorems_alternative_proofs/plans/001-modal-theorems-alternative-proofs-plan.md) - All Phase 4 modal theorems complete (8/8) using k_dist_diamond
+- [Modal Theorems S5 Completion Plan](.opencode/specs/059_modal_theorems_s5_completion/plans/001-modal-theorems-s5-completion-plan.md) - De Morgan laws (superseded by Plan 060)
+- [Minimal Axiom Review Plan](.opencode/specs/048_minimal_axiom_review_proofs/plans/001-minimal-axiom-review-proofs-plan.md) - Documentation fixes, necessitation from MK, MK/TK documentation
 
 ---
 
 ## High Priority Tasks
+
+### 58. Update SORRY_REGISTRY.md
+**Effort**: 30 minutes
+**Status**: Not Started
+**Priority**: High (critical documentation synchronization)
+**Blocking**: None
+**Dependencies**: None
+
+**Description**: SORRY_REGISTRY.md is severely outdated. Claims 11 active sorry but actual count is 7 (4 blocking + 3 documentation). DeductionTheorem.lean section claims 3 sorry but actual is 0 (Task 46 complete). The `future_k_dist` axiom is now a derived theorem using deduction theorem.
+
+**Updates Needed**:
+1. Remove DeductionTheorem.lean section (now complete with zero sorry)
+2. Update total counts: "Total Active Placeholders: 11" → "Total Active Placeholders: 7"
+3. Update Perpetuity.lean section: Remove `future_k_dist` from axiom list (now derived theorem in Principles.lean)
+4. Update "Last Updated" date to 2025-12-15
+5. Add note about Task 46 completion in Resolution History
+6. Note: CLAUDE.md has been deprecated and moved to Archive/deprecated/
+
+**Files Affected**:
+- `Documentation/ProjectInfo/SORRY_REGISTRY.md`
+
+**Impact**: High - misleading information about technical debt
+
+**Verification**: `grep -rn "sorry" Logos/Core/**/*.lean 2>/dev/null | wc -l` should show 7
+
+---
+
+### 59. Update IMPLEMENTATION_STATUS.md
+**Effort**: 15 minutes
+**Status**: Not Started
+**Priority**: High (documentation accuracy)
+**Blocking**: None
+**Dependencies**: Task 46 (Complete) ✅
+
+**Description**: IMPLEMENTATION_STATUS.md needs updates to reflect Task 46 (Deduction Theorem) completion and current module status.
+
+**Updates Needed**:
+1. Update DeductionTheorem.lean: Update status from "Partial (3 sorry)" to "Complete (zero sorry)" ✅
+2. Update Summary Table: DeductionTheorem row should show "✓ Complete" with "100%" completeness
+3. Update "Last Updated" date to 2025-12-15
+4. Update Overall Project Status section to reflect deduction theorem completion
+
+**Files Affected**: 
+- `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
+
+**Note**: CLAUDE.md has been deprecated and moved to Archive/deprecated/. Configuration now handled through .opencode/context/
+
+**Impact**: High - documentation accuracy for project status
 
 ---
 
@@ -181,20 +229,16 @@ error: 'Logos.Core.Automation.apply_modal_k' has already been declared
 
 ---
 
-### 54. Update SORRY_REGISTRY.md
+### 54. Update SORRY_REGISTRY.md (SUPERSEDED by Task 58)
 **Effort**: 1 hour
-**Status**: Not Started
+**Status**: ✅ SUPERSEDED (replaced by Task 58 with updated requirements)
 **Priority**: Low (documentation)
 **Blocking**: None
 **Dependencies**: Task 52 (to get accurate counts)
 
 **Description**: Update `SORRY_REGISTRY.md` to reflect completion of Task 46 (Deduction Theorem) and current sorry status.
 
-**Updates Needed**:
-1. Update total counts (verify current sorry count across project)
-2. Remove entry for `DeductionTheorem.lean` (now complete with zero sorry) ✅
-3. Update "Last Updated" date
-4. Cross-reference with Task 52
+**Resolution**: Task 58 provides more comprehensive update requirements based on repository review findings.
 
 **Files Affected**:
 - `Documentation/ProjectInfo/SORRY_REGISTRY.md`
@@ -203,21 +247,16 @@ error: 'Logos.Core.Automation.apply_modal_k' has already been declared
 
 ---
 
-### 55. Update IMPLEMENTATION_STATUS.md
+### 55. Update IMPLEMENTATION_STATUS.md (SUPERSEDED by Task 59)
 **Effort**: 30 minutes
-**Status**: Not Started
+**Status**: ✅ SUPERSEDED (replaced by Task 59 with updated requirements)
 **Priority**: Low (documentation)
 **Blocking**: None
 **Dependencies**: Task 46 (Complete) ✅, Task 48 (Complete) ✅
 
 **Description**: Update `IMPLEMENTATION_STATUS.md` to reflect Task 46 (Deduction Theorem) completion and current module status.
 
-**Updates Needed**:
-1. Mark `DeductionTheorem.lean` as "Complete (zero sorry)" ✅
-2. Update `Derivation.lean` status to note height axioms
-3. Update "Last Updated" date
-4. Update Known Limitations section if needed
-5. Note that deduction theorem is now fully proven with complete termination proofs
+**Resolution**: Task 59 provides more comprehensive update requirements. Note: CLAUDE.md deprecated and moved to Archive/deprecated/.
 
 **Files Affected**:
 - `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
@@ -363,6 +402,75 @@ error: 'Logos.Core.Automation.apply_modal_k' has already been declared
 
 ---
 
+### 60. Remove Backup Artifacts
+**Effort**: 15 minutes
+**Status**: Not Started
+**Priority**: Low (repository cleanliness)
+**Blocking**: None
+**Dependencies**: None
+
+**Description**: Remove backup files and add backup directories to .gitignore for cleaner repository.
+
+**Files to Remove**:
+- `Logos/Core/Theorems/Perpetuity/Bridge.lean.backup`
+
+**Directories to .gitignore**:
+- `.save_cc0/`
+- `.save_oc0/`
+- `.save_oc1/`
+
+**Files Affected**: 
+- `Logos/Core/Theorems/Perpetuity/Bridge.lean.backup` (delete)
+- `.gitignore` (add patterns)
+
+**Impact**: Low - repository cleanliness only
+
+---
+
+### 61. Add Missing Directory READMEs
+**Effort**: 1 hour
+**Status**: Not Started
+**Priority**: Low (documentation completeness)
+**Blocking**: None
+**Dependencies**: None
+
+**Description**: Add README.md files to directories lacking them, following DIRECTORY_README_STANDARD.md.
+
+**Missing READMEs**:
+- `Logos/Core/Theorems/Perpetuity/README.md`
+- `Logos/Core/Automation/README.md`
+
+**Files Affected**: 
+- `Logos/Core/Theorems/Perpetuity/README.md` (create)
+- `Logos/Core/Automation/README.md` (create)
+
+**Impact**: Low - documentation completeness
+
+---
+
+### 62. Improve Docstring Coverage to 100%
+**Effort**: 2-3 hours
+**Status**: Not Started
+**Priority**: Low (quality improvement)
+**Blocking**: None
+**Dependencies**: None
+
+**Description**: Add docstrings to remaining undocumented functions to reach 100% coverage target.
+
+**Gaps Identified**:
+- Some helper functions in `Logos/Core/Theorems/Perpetuity/Helpers.lean`
+- A few transport lemmas in `Logos/Core/Semantics/WorldHistory.lean`
+- Some helper functions in `Logos/Core/Automation/Tactics.lean`
+
+**Files Affected**: 
+- `Logos/Core/Theorems/Perpetuity/Helpers.lean`
+- `Logos/Core/Semantics/WorldHistory.lean`
+- `Logos/Core/Automation/Tactics.lean`
+
+**Impact**: Low - quality improvement (current 95% coverage is excellent)
+
+---
+
 ## Completion History
 
 Completed tasks are tracked via git history. Query completion records:
@@ -375,10 +483,10 @@ git log --all --grep="Complete Task" --oneline
 git log --all --grep="Task 7" --oneline
 
 # View spec summaries for detailed completion narratives
-find .claude/specs -name "*summary*.md" | head -20
+find .opencode/specs -name "*summary*.md" | head -20
 
 # Search summaries for task
-grep -r "Task 5" .claude/specs/*/summaries/
+grep -r "Task 5" .opencode/specs/*/summaries/
 ```
 
 See [MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md) for complete workflow documentation.
@@ -399,4 +507,4 @@ See [MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md) for complete work
 
 ---
 
-**Last Updated**: 2025-12-15 (Task 46 FULLY COMPLETE - Deduction theorem proven with zero sorry, complete termination proofs using deduction_with_mem helper; Task 49 removed as completed by Task 46; Task 42b complete - Bridge.lean compilation errors fixed, always_dni and always_dne confirmed as theorems; Task 42a complete - future_k_dist and always_mono derived as theorems, axiom count reduced by 2; Task 48 complete - Derivable.height fixed; Tasks 50, 51, 56 removed as resolved by Task 42b; Task 52 promoted to Medium priority as it blocks full build)
+**Last Updated**: 2025-12-15 (Repository review complete - added 5 new tasks from comprehensive review findings: Tasks 58-59 high priority documentation updates, Tasks 60-62 low priority cleanup/documentation; Tasks 54-55 superseded by Tasks 58-59 with updated requirements; Active tasks increased from 11 to 16)

@@ -26,7 +26,7 @@ grep -c "axiom " Logos/Core/**/*.lean
 **Relationship to Other Files**:
 - **TODO.md** (root): Active tasks that may affect status
 - **SORRY_REGISTRY.md**: Detailed sorry/axiom tracking with resolution context
-- **.claude/TODO.md**: Spec-based plans that implement status changes
+- **.opencode/specs/TODO.md**: Spec-based plans that implement status changes
 
 ---
 
@@ -978,7 +978,6 @@ Not started:
 ## References
 
 - [README.md](../../README.md) - Project overview and features
-- [CLAUDE.md](../../CLAUDE.md) - Developer configuration and standards
 - [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) - TM logic specification and design
 - [Known Limitations](#known-limitations) - Detailed gap analysis and workarounds
 - [TUTORIAL.md](../UserGuide/TUTORIAL.md) - Getting started guide

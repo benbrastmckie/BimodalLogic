@@ -131,7 +131,7 @@ When updating documentation:
 
 5. **Cross-references**: Ensure all links remain valid
    - Check links in updated files
-   - Update README.md and CLAUDE.md if structure changes
+   - Update README.md if structure changes
    - Run link checker if available
 
 ## Documentation Standards

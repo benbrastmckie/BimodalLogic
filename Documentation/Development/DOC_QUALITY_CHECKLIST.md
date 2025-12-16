@@ -18,8 +18,8 @@ systematic verification
 - Quarterly for ongoing quality assurance (recommended)
 
 **Related Documentation**:
-- [Documentation Standards](.claude/docs/reference/standards/documentation-standards.md)
-- [Formal Symbol Backtick Standard](.claude/docs/reference/standards/
+- [Documentation Standards](.opencode/context/core/standards/documentation-standards.md)
+- [Formal Symbol Backtick Standard](.opencode/context/core/standards/
   documentation-standards.md#formal-symbol-backtick-standard)
 - [Documentation/README.md](../README.md) - Documentation navigation
 
@@ -58,14 +58,14 @@ reflect actual implementation state.
 ### 1.2 Completion Percentage Consistency
 
 **Check**: Completion percentages consistent across IMPLEMENTATION_STATUS.md,
-README.md, and CLAUDE.md.
+README.md.
 
 **Verification**:
 ```bash
 # Check Automation package completion percentage
 grep -n "Automation.*%" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
 grep -n "Automation.*%" README.md
-grep -n "Automation.*%" CLAUDE.md
+grep -n "Automation.*%" README.md
 
 # Manual verification: Ensure all three show same percentage
 ```
@@ -289,7 +289,7 @@ Logos API.
 **Verification**:
 ```bash
 # Extract URLs from markdown files and test accessibility
-grep -Eoh 'https?://[^ ]+' Documentation/**/*.md CLAUDE.md README.md | sort -u > urls.txt
+grep -Eoh 'https?://[^ ]+' Documentation/**/*.md README.md | sort -u > urls.txt
 
 # Manual verification: Test each URL in browser or with curl
 while read url; do
@@ -312,7 +312,7 @@ done < urls.txt
 **Verification**:
 ```bash
 # Extract markdown links and verify local file references
-for file in Documentation/**/*.md CLAUDE.md README.md TODO.md; do
+for file in Documentation/**/*.md README.md TODO.md; do
   echo "Checking $file for broken references..."
   grep -Eo '\[.*\]\(([^)]+)\)' "$file" | grep -Eo '\([^)]+\)' | tr -d '()' | \
   while read ref; do
@@ -348,7 +348,7 @@ These checks verify that documentation follows formatting standards.
 **Verification**:
 ```bash
 # Check all documentation files for line limit violations
-for file in Documentation/**/*.md CLAUDE.md README.md TODO.md; do
+for file in Documentation/**/*.md README.md TODO.md; do
   awk -v f="$file" 'length > 100 {print f" line "NR" exceeds 100 chars: "length" chars";
   exit 1}' "$file"
   if [ $? -eq 0 ]; then
@@ -364,9 +364,6 @@ per LEAN Style Guide.
 
 **Action if Failed**: Reformat long lines to comply with 100-character limit.
 
-**Note**: CLAUDE.md has pre-existing violations (lines 8-19) that are documented
-but not yet fixed.
-
 ---
 
 ### 4.2 Formal Symbol Backticks
@@ -377,7 +374,7 @@ Standard.
 **Verification**:
 ```bash
 # Check for unbacked Unicode symbols
-for file in Documentation/**/*.md CLAUDE.md README.md TODO.md; do
+for file in Documentation/**/*.md README.md TODO.md; do
   UNBACKTICKED=$(grep -E "□|◇|△|▽|⊢|⊨" "$file" | grep -v '`' | wc -l)
   if [ "$UNBACKTICKED" -gt 0 ]; then
     echo "FAIL: $file has $UNBACKTICKED unbackticked formal symbols"
@@ -392,7 +389,7 @@ in backticks.
 
 **Action if Failed**: Add backticks around all formal symbols in documentation.
 
-**Reference**: [Formal Symbol Backtick Standard](.claude/docs/reference/standards/
+**Reference**: [Formal Symbol Backtick Standard](.opencode/context/core/standards/
 documentation-standards.md#formal-symbol-backtick-standard)
 
 ---
@@ -404,7 +401,7 @@ documentation-standards.md#formal-symbol-backtick-standard)
 **Verification**:
 ```bash
 # Check for code blocks without language specification
-for file in Documentation/**/*.md CLAUDE.md README.md; do
+for file in Documentation/**/*.md README.md; do
   # Count triple backticks without language
   UNSPECIFIED=$(grep -E "^\`\`\`$" "$file" | wc -l)
   if [ "$UNSPECIFIED" -gt 0 ]; then
@@ -428,7 +425,7 @@ done
 **Verification**:
 ```bash
 # Check for Setext-style heading underlines (=== or ---)
-for file in Documentation/**/*.md CLAUDE.md README.md TODO.md; do
+for file in Documentation/**/*.md README.md TODO.md; do
   SETEXT=$(grep -E "^(===+|---+)$" "$file" | wc -l)
   if [ "$SETEXT" -gt 0 ]; then
     echo "FAIL: $file has $SETEXT Setext-style headings"
@@ -448,29 +445,24 @@ done
 
 These checks verify that documentation integrates correctly with project structure.
 
-### 5.1 CLAUDE.md References
+### 5.1 README.md References
 
-**Check**: CLAUDE.md references align with actual file locations and best practices.
+**Check**: README.md references align with actual file locations and best practices.
 
 **Verification**:
 ```bash
-# Check CLAUDE.md file references
-grep -E "\[.*\]\(.*\.md\)" CLAUDE.md | grep -Eo '\([^)]+\)' | tr -d '()' | \
+# Check README.md file references
+grep -E "\[.*\]\(.*\.md\)" README.md | grep -Eo '\([^)]+\)' | tr -d '()' | \
 while read ref; do
   if [[ ! -f "$ref" ]]; then
-    echo "BROKEN REFERENCE in CLAUDE.md: $ref"
+    echo "BROKEN REFERENCE in README.md: $ref"
   fi
 done
-
-# Manual verification: Ensure CLAUDE.md Section 10.1 references all new guides
-grep "METAPROGRAMMING_GUIDE.md\|TACTIC_DEVELOPMENT.md\|PHASED_IMPLEMENTATION.md" CLAUDE.md
 ```
 
-**Expected**: All file references in CLAUDE.md should resolve to existing files.
-Section 10.1 should reference METAPROGRAMMING_GUIDE.md, TACTIC_DEVELOPMENT.md,
-and PHASED_IMPLEMENTATION.md.
+**Expected**: All file references in README.md should resolve to existing files.
 
-**Action if Failed**: Update CLAUDE.md references to point to correct file locations.
+**Action if Failed**: Update README.md references to point to correct file locations.
 
 ---
 
@@ -577,8 +569,8 @@ When adding new documentation standards:
 ## References
 
 **Documentation Standards**:
-- [Documentation Standards](.claude/docs/reference/standards/documentation-standards.md)
-- [Code Standards](.claude/docs/reference/standards/code-standards.md)
+- [Documentation Standards](.opencode/context/core/standards/documentation-standards.md)
+- [Code Standards](.opencode/context/core/standards/code-standards.md)
 - [LEAN Style Guide](LEAN_STYLE_GUIDE.md)
 - [Directory README Standard](DIRECTORY_README_STANDARD.md)
 
@@ -587,7 +579,7 @@ When adding new documentation standards:
 - [TODO.md](../../TODO.md)
 
 **Best Practices Report**:
-- Report 022: Documentation Improvement Analysis (.claude/specs/
+- Report 022: Documentation Improvement Analysis (.opencode/specs/
   022_lean4_docs_implementation_improve/reports/
   001-documentation-improvement-implementation-plan.md)
 - Report 022 Findings Section 4: Documentation Consistency Issues

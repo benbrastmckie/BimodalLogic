@@ -49,7 +49,7 @@ Context-aware AI system for LEAN 4 theorem proving using hierarchical agent patt
 ## Component Hierarchy
 
 ### Layer 1: User Interface
-- **Custom Commands** (11): `/review`, `/research`, `/plan`, `/implement`, etc.
+- **Custom Commands** (11): `/review`, `/research`, `/plan`, `/lean`, etc.
 - **Direct Invocation**: Users invoke commands with arguments
 - **Command Routing**: Commands route to orchestrator with context
 
