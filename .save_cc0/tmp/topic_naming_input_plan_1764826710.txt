@@ -1,1 +1,0 @@
-reframe /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md to present the Logos, focusing on the proof-checker (which is the primary topic) and model-checker (where relevant when discussing training signal) but don't mention the model-builder at all. Research and remove other occurances of the model-builder that may occur elsewhere in the repo.

@@ -1,1 +1,0 @@
-research the current state of the repository in order to populate a detailed task list in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md that i can use to continue to develop the project systematically.

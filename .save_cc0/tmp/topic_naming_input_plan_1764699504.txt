@@ -1,1 +1,0 @@
-research the TODOs in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md and create a plan to systematically implement them and update the TODOs after finishing.

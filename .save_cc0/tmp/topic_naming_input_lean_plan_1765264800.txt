@@ -1,1 +1,0 @@
-Research '### 20. Derive P6 Perpetuity Theorem (Blocked by P5 Dependency)' and '### 21. Derive Pairing Combinator' in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md in order to create an implementation plan to complete these tasks.

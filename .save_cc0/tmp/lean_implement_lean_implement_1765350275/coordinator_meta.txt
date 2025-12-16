@@ -1,2 +1,0 @@
-COORDINATOR_DESCRIPTION=Wave-based full plan theorem proving orchestration
-COORDINATOR_NAME=lean-coordinator

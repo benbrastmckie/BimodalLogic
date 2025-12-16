@@ -1,1 +1,0 @@
-I just created this proof-checker repo and want to impose similar standards as used in the model-checker repo. Research /home/benjamin/Documents/Philosophy/Projects/ModelChecker/CLAUDE.md in order to find code and documentation standards as well as best practices online.

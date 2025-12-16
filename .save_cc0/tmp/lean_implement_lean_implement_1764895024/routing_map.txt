@@ -1,8 +1,0 @@
-0:software:none
-1:lean:Soundness.lean
-2:lean:Formula.lean
-3:lean:Formula.lean
-4:lean:FormulaTest.lean
-5:lean:TemporalProofs.lean
-6:software:none
-7:lean:Formula.lean

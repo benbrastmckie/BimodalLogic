@@ -1,1 +1,0 @@
-Study the current state of this lean repository in order to identify shortcomings and areas that need systematic improvement or refactoring in order to provide a high quality and uniform approach throughout that is well structured, efficient, and easy to document, maintain, and extend.

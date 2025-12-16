@@ -1,1 +1,0 @@
-Derive P6 Perpetuity Theorem: Research TODO.md task 20 and existing resources to complete P6 implementation

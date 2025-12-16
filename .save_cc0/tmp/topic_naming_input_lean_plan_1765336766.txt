@@ -1,1 +1,0 @@
-Implement medium priority propositional theorem derivations (Tasks 21-29) including RAA, EFQ, LCE, RCE, LDI, RDI, RCP, ECQ, NE, NI, DE, BI, LBE, RBE in Logos TM logic proof system

@@ -1,1 +1,0 @@
-Research the NOTE tag in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md and existing documentation in Research/ in order to create a plan to address the NOTE systematically.

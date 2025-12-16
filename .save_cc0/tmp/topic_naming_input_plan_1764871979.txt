@@ -1,1 +1,0 @@
-Research all NOTE tags in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md creating a plan to address all issues that they raise systematically.

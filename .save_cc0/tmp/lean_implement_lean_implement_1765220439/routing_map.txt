@@ -1,3 +1,0 @@
-1:lean:Logos/Core/Theorems/Perpetuity.lean:lean-coordinator
-2:software:none:implementer-coordinator
-3:lean:Logos/Core/Metalogic/Completeness.lean:lean-coordinator

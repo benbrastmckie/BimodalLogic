@@ -1,1 +1,0 @@
-Research the high priority tasks in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md in order to describe the advantages/motivations for each, and what the costs are of implementing them if any

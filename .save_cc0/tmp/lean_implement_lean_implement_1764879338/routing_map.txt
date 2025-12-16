@@ -1,6 +1,0 @@
-3:lean:ProofChecker/Semantics/Truth.lean
-4:lean:none
-5:lean:none
-6:lean:none
-7:software:none
-8:software:none

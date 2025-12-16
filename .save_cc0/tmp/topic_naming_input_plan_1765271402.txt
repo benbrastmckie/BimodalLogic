@@ -1,1 +1,0 @@
-Research the NOTE tags in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Research/CONCEPTUAL_ENGINEERING.md in order to systematically improve the document.

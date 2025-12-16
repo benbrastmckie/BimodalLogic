@@ -1,1 +1,0 @@
-Complete remaining modal theorems blocked on infrastructure: diamond_disj_iff (requires De Morgan laws), s4_diamond_box_conj (requires conditional diamond monotonicity), s5_diamond_conj_diamond (requires S5 distribution). Prior plan: /home/benjamin/Documents/Philosophy/Projects/ProofChecker/.claude/specs/058_hilbert_completion_plan/plans/001-hilbert-completion-plan.md

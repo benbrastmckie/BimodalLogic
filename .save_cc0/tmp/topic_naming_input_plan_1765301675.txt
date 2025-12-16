@@ -1,1 +1,0 @@
-research the theorems in the sec:PL-Hilbert-Proofs section in /home/benjamin/Documents/Philosophy/Teaching/LogicNotes/LogicNotes.tex in order to add these to the '## Medium Priority Tasks' in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md using appropriate lean notation for each, skipping any theorems that have already been derived in this lean project.

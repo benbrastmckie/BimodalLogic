@@ -1,1 +1,0 @@
-Research the remaining High Priority Tasks in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/TODO.md, creating a plan to implement these systematically.

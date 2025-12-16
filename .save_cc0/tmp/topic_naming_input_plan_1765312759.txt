@@ -1,1 +1,0 @@
-Use the '## Motivations' section which I just finished revising in /home/benjamin/Documents/Philosophy/Projects/ProofChecker/README.md in order to revise /home/benjamin/Documents/Philosophy/Projects/ProofChecker/Documentation/Research/CONCEPTUAL_ENGINEERING.md in order to bring this document into closer alignment with the overview given in the README.md

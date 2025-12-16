@@ -1,7 +1,0 @@
-1:software:none:implementer-coordinator
-2:lean:none:lean-coordinator
-3:lean:none:lean-coordinator
-4:lean:none:lean-coordinator
-5:lean:none:lean-coordinator
-6:lean:none:lean-coordinator
-7:software:none:implementer-coordinator
