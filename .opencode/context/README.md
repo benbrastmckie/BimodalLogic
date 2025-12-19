@@ -17,7 +17,7 @@ context/
 │   └── lattice-theory/ # Lattice structures
 ├── physics/            # Physics domains
 │   └── dynamical-systems/ # Dynamical systems theory
-├── specs/              # Project management and artifact organization
+├── repo/               # Repository conventions and structure
 ├── core/               # Core system patterns and standards
 ├── builder-templates/  # Meta-system templates
 └── project/            # Project-specific context
@@ -110,12 +110,12 @@ Physics and applied mathematics knowledge.
 **dynamical-systems/** - Dynamical systems theory
 - `dynamical-systems.md` - Discrete/continuous systems, chaos, ergodic theory
 
-### specs/ - Project Management
-Project and artifact organization.
+### repo/ - Repository Conventions
+Repository structure and documentation standards.
 
 - `project-structure.md` - Project directory organization
-- `artifact-organization.md` - Artifact naming and structure (to be added)
-- `state-management.md` - State file formats (to be added)
+- `state-schema.md` - State file schemas and formats
+- `documentation-standards.md` - Documentation conventions for AI system
 
 ### core/ - Core System Patterns
 System-wide patterns and standards.

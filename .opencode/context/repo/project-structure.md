@@ -9,27 +9,28 @@ Organization of .opencode/specs/ directory for project-based artifact management
 .opencode/specs/
 ├── TODO.md                          # User-facing master task list
 ├── state.json                       # Global state file
-├── 001_project_name/
-│   ├── reports/
-│   │   ├── research-001.md
-│   │   ├── research-002.md
-│   │   ├── analysis-001.md
-│   │   └── verification-001.md
-│   ├── plans/
-│   │   ├── implementation-001.md
-│   │   ├── implementation-002.md   # Revised plan
-│   │   └── implementation-003.md   # Further revision
-│   ├── summaries/
-│   │   ├── project-summary.md
-│   │   ├── research-summary.md
-│   │   └── implementation-summary.md
-│   └── state.json                   # Project-specific state
-├── 002_another_project/
-│   ├── reports/
-│   ├── plans/
-│   ├── summaries/
-│   └── state.json
-└── ...
+├── archive/
+│   ├── state.json                   # Archive state tracking
+│   └── NNN_project_name/            # Archived project directories
+│       ├── reports/
+│       ├── plans/
+│       ├── summaries/
+│       └── state.json
+├── maintenance/
+│   ├── state.json                   # Maintenance operations tracking
+│   └── report-YYYYMMDD.md           # Maintenance reports
+└── NNN_project_name/                # Active project directories
+    ├── reports/
+    │   ├── research-001.md
+    │   ├── analysis-001.md
+    │   └── verification-001.md
+    ├── plans/
+    │   ├── implementation-001.md
+    │   └── implementation-002.md    # Revised plan
+    ├── summaries/
+    │   ├── project-summary.md
+    │   └── research-summary.md
+    └── state.json                   # Project-specific state
 ```
 
 ## Project Numbering
@@ -71,55 +72,7 @@ Contains brief summaries for quick reference:
 - **plan-summary.md**: Implementation plan overview
 - **implementation-summary.md**: What was implemented
 
-## State Files
 
-### Project State (.opencode/specs/NNN_project/state.json)
-```json
-{
-  "project_name": "bimodal_proof_system",
-  "project_number": 1,
-  "type": "implementation",
-  "phase": "planning",
-  "reports": [
-    "reports/research-001.md",
-    "reports/research-002.md"
-  ],
-  "plans": [
-    "plans/implementation-001.md",
-    "plans/implementation-002.md"
-  ],
-  "summaries": [
-    "summaries/project-summary.md"
-  ],
-  "status": "active",
-  "created": "2025-01-15T10:00:00Z",
-  "last_updated": "2025-01-16T14:30:00Z"
-}
-```
-
-### Global State (.opencode/specs/state.json)
-```json
-{
-  "active_projects": [1, 2, 5],
-  "completed_projects": [3, 4],
-  "next_project_number": 6,
-  "recent_activities": [
-    {
-      "type": "research",
-      "project_number": 5,
-      "timestamp": "2025-01-16T14:30:00Z",
-      "summary": "Researched Kripke semantics for bimodal logic"
-    }
-  ],
-  "pending_tasks": [
-    {
-      "description": "Implement soundness proof",
-      "project_number": 1,
-      "priority": "high"
-    }
-  ]
-}
-```
 
 ## TODO.md Format
 
@@ -178,3 +131,8 @@ All agents create artifacts in these directories and return only:
 - Key findings (bullet points)
 
 This protects the orchestrator's context window from artifact content bloat.
+
+## Related Documentation
+
+- [State Schema Reference](state-schema.md) - Detailed state file schemas
+- [Documentation Standards](documentation-standards.md) - Documentation conventions

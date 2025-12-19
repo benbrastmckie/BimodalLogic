@@ -10,7 +10,7 @@ You are revising an implementation plan for the LEAN 4 ProofChecker project.
 
 **Context Loaded:**
 @/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/context/lean4/processes/end-to-end-proof-workflow.md
-@/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/context/specs/
+@/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/context/repo/
 
 **Task:**
 
