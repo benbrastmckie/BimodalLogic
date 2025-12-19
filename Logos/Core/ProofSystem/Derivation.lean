@@ -5,18 +5,19 @@ import Logos.Core.ProofSystem.Axioms
 /-!
 # Derivation - Proof System for TM Logic
 
-This module defines the derivability relation for bimodal logic TM,
+This module defines derivation trees for bimodal logic TM,
 representing syntactic provability from a context of assumptions.
 
 ## Main Definitions
 
-- `Derivable`: Inductive relation `Γ ⊢ φ` meaning φ is derivable from context Γ
+- `DerivationTree`: Inductive type `Γ ⊢ φ` representing a derivation tree for φ from context Γ
+- `DerivationTree.height`: Computable height function for derivation trees
 - Notation `⊢ φ` for derivability from empty context (theorem)
 - Notation `Γ ⊢ φ` for derivability from context Γ
 
 ## Inference Rules
 
-The derivability relation includes 7 inference rules:
+The derivation tree includes 7 inference rules:
 
 1. **axiom**: Any axiom schema instance is derivable
 2. **assumption**: Formulas in context are derivable
@@ -28,6 +29,9 @@ The derivability relation includes 7 inference rules:
 
 ## Implementation Notes
 
+- `DerivationTree` is a `Type` (not a `Prop`), enabling pattern matching and computable functions
+- Height function is computable via pattern matching (not axiomatized)
+- Height properties are proven as theorems (not axioms)
 - Necessitation rules only apply to theorems (empty context)
 - Temporal duality only applies to theorems (empty context)
 - Weakening allows adding unused assumptions
@@ -44,32 +48,38 @@ namespace Logos.Core.ProofSystem
 open Logos.Core.Syntax
 
 /--
-Derivability relation for bimodal logic TM.
+Derivation tree for bimodal logic TM.
 
-`Derivable Γ φ` (written `Γ ⊢ φ`) means that formula `φ` is derivable
-from the context of assumptions `Γ` using the TM proof system.
+`DerivationTree Γ φ` (written `Γ ⊢ φ`) represents a derivation tree showing
+that formula `φ` is derivable from the context of assumptions `Γ` using the TM proof system.
 
-The relation is defined inductively with 7 inference rules covering:
+The derivation tree is defined inductively with 7 inference rules covering:
 - Axiom usage and assumptions
 - Modus ponens (implication elimination)
 - Modal and temporal necessitation (from theorems to necessary theorems)
 - Temporal duality (swapping past/future)
 - Weakening (adding unused assumptions)
+
+## Implementation Notes
+
+Since `DerivationTree` is a `Type` (not a `Prop`), we can pattern match on it
+to produce data. This enables computable functions like `height` and supports
+well-founded recursion in metalogical proofs.
 -/
-inductive Derivable : Context → Formula → Prop where
+inductive DerivationTree : Context → Formula → Type where
   /--
   Axiom rule: Any axiom schema instance is derivable from any context.
 
   If `Axiom φ` holds (φ matches an axiom schema), then `Γ ⊢ φ`.
   -/
-  | axiom (Γ : Context) (φ : Formula) (h : Axiom φ) : Derivable Γ φ
+  | axiom (Γ : Context) (φ : Formula) (h : Axiom φ) : DerivationTree Γ φ
 
   /--
   Assumption rule: Formulas in the context are derivable.
 
   If `φ ∈ Γ`, then `Γ ⊢ φ`.
   -/
-  | assumption (Γ : Context) (φ : Formula) (h : φ ∈ Γ) : Derivable Γ φ
+  | assumption (Γ : Context) (φ : Formula) (h : φ ∈ Γ) : DerivationTree Γ φ
 
   /--
   Modus ponens: Implication elimination.
@@ -77,8 +87,8 @@ inductive Derivable : Context → Formula → Prop where
   If `Γ ⊢ φ → ψ` and `Γ ⊢ φ`, then `Γ ⊢ ψ`.
   -/
   | modus_ponens (Γ : Context) (φ ψ : Formula)
-      (h1 : Derivable Γ (φ.imp ψ))
-      (h2 : Derivable Γ φ) : Derivable Γ ψ
+      (d1 : DerivationTree Γ (φ.imp ψ))
+      (d2 : DerivationTree Γ φ) : DerivationTree Γ ψ
 
   /--
   Necessitation rule: From theorems, derive necessary theorems.
@@ -96,7 +106,7 @@ inductive Derivable : Context → Formula → Prop where
   See `Logos.Core.Theorems.GeneralizedNecessitation` for the derivation.
   -/
   | necessitation (φ : Formula)
-      (h : Derivable [] φ) : Derivable [] (Formula.box φ)
+      (d : DerivationTree [] φ) : DerivationTree [] (Formula.box φ)
 
   /--
   Temporal necessitation rule: From theorems, derive future-necessary theorems.
@@ -114,7 +124,7 @@ inductive Derivable : Context → Formula → Prop where
   See `Logos.Core.Theorems.GeneralizedNecessitation` for the derivation.
   -/
   | temporal_necessitation (φ : Formula)
-      (h : Derivable [] φ) : Derivable [] (Formula.all_future φ)
+      (d : DerivationTree [] φ) : DerivationTree [] (Formula.all_future φ)
 
   /--
   Temporal duality rule: Swapping past and future in theorems.
@@ -124,7 +134,7 @@ inductive Derivable : Context → Formula → Prop where
   This rule only applies to theorems (proofs from no assumptions).
   -/
   | temporal_duality (φ : Formula)
-      (h : Derivable [] φ) : Derivable [] φ.swap_past_future
+      (d : DerivationTree [] φ) : DerivationTree [] φ.swap_past_future
 
   /--
   Weakening rule: Adding unused assumptions.
@@ -134,13 +144,16 @@ inductive Derivable : Context → Formula → Prop where
   This allows adding extra assumptions that don't affect the derivation.
   -/
   | weakening (Γ Δ : Context) (φ : Formula)
-      (h1 : Derivable Γ φ)
-      (h2 : Γ ⊆ Δ) : Derivable Δ φ
+      (d : DerivationTree Γ φ)
+      (h : Γ ⊆ Δ) : DerivationTree Δ φ
+  deriving Repr
+
+namespace DerivationTree
 
 /-! ## Derivation Height Measure -/
 
 /--
-Height of a derivation tree.
+Computable height function via pattern matching.
 
 The height is defined as the maximum depth of the derivation tree:
 - Base cases (axiom, assumption): height 0
@@ -152,29 +165,33 @@ This measure is used for well-founded recursion in the deduction theorem proof.
 
 ## Implementation Notes
 
-Since `Derivable` is a `Prop` (not a `Type`), we cannot pattern match on it
-to produce data. Therefore, `height` is axiomatized with its key properties.
-
-The axiomatization is sound because:
-1. The height function is uniquely determined by the derivation structure
-2. All properties follow from the recursive definition
-3. The function is only used for termination proofs (not computation)
+Since `DerivationTree` is a `Type` (not a `Prop`), we can pattern match on it
+to produce data. The height function is computable and can be evaluated.
 
 ## Usage
 
 The height measure is primarily used in `Logos.Core.Metalogic.DeductionTheorem`
 for proving termination of the deduction theorem via well-founded recursion.
 -/
-axiom Derivable.height {Γ : Context} {φ : Formula} (d : Derivable Γ φ) : Nat
+def height {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Nat
+  | .axiom _ _ _ => 0
+  | .assumption _ _ _ => 0
+  | .modus_ponens _ _ _ d1 d2 => 1 + max d1.height d2.height
+  | .necessitation _ d => 1 + d.height
+  | .temporal_necessitation _ d => 1 + d.height
+  | .temporal_duality _ d => 1 + d.height
+  | .weakening _ _ _ d _ => 1 + d.height
 
 /-! ## Height Properties -/
 
 /--
 Weakening increases height by exactly 1.
 -/
-axiom Derivable.weakening_height_succ {Γ' Δ : Context} {φ : Formula}
-    (d : Derivable Γ' φ) (h : Γ' ⊆ Δ) :
-    (Derivable.weakening Γ' Δ φ d h).height = d.height + 1
+theorem weakening_height_succ {Γ' Δ : Context} {φ : Formula}
+    (d : DerivationTree Γ' φ) (h : Γ' ⊆ Δ) :
+    (weakening Γ' Δ φ d h).height = d.height + 1 := by
+  simp [height]
+  omega
 
 /--
 Subderivations in weakening have strictly smaller height.
@@ -182,54 +199,67 @@ Subderivations in weakening have strictly smaller height.
 This is the key lemma for proving termination of well-founded recursion
 in the deduction theorem.
 -/
-axiom Derivable.subderiv_height_lt {Γ' Δ : Context} {φ : Formula}
-    (d : Derivable Γ' φ) (h : Γ' ⊆ Δ) :
-    d.height < (Derivable.weakening Γ' Δ φ d h).height
+theorem subderiv_height_lt {Γ' Δ : Context} {φ : Formula}
+    (d : DerivationTree Γ' φ) (h : Γ' ⊆ Δ) :
+    d.height < (weakening Γ' Δ φ d h).height := by
+  simp [height]
 
 /--
 Modus ponens height is strictly greater than the left subderivation.
 -/
-axiom Derivable.mp_height_gt_left {Γ : Context} {φ ψ : Formula}
-    (d1 : Derivable Γ (φ.imp ψ)) (d2 : Derivable Γ φ) :
-    d1.height < (Derivable.modus_ponens Γ φ ψ d1 d2).height
+theorem mp_height_gt_left {Γ : Context} {φ ψ : Formula}
+    (d1 : DerivationTree Γ (φ.imp ψ)) (d2 : DerivationTree Γ φ) :
+    d1.height < (modus_ponens Γ φ ψ d1 d2).height := by
+  simp [height]
+  omega
 
 /--
 Modus ponens height is strictly greater than the right subderivation.
 -/
-axiom Derivable.mp_height_gt_right {Γ : Context} {φ ψ : Formula}
-    (d1 : Derivable Γ (φ.imp ψ)) (d2 : Derivable Γ φ) :
-    d2.height < (Derivable.modus_ponens Γ φ ψ d1 d2).height
+theorem mp_height_gt_right {Γ : Context} {φ ψ : Formula}
+    (d1 : DerivationTree Γ (φ.imp ψ)) (d2 : DerivationTree Γ φ) :
+    d2.height < (modus_ponens Γ φ ψ d1 d2).height := by
+  simp [height]
+  omega
 
 /--
 Necessitation increases height by exactly 1.
 -/
-axiom Derivable.necessitation_height_succ {φ : Formula}
-    (d : Derivable [] φ) :
-    (Derivable.necessitation φ d).height = d.height + 1
+theorem necessitation_height_succ {φ : Formula}
+    (d : DerivationTree [] φ) :
+    (necessitation φ d).height = d.height + 1 := by
+  simp [height]
+  omega
 
 /--
 Temporal necessitation increases height by exactly 1.
 -/
-axiom Derivable.temporal_necessitation_height_succ {φ : Formula}
-    (d : Derivable [] φ) :
-    (Derivable.temporal_necessitation φ d).height = d.height + 1
+theorem temporal_necessitation_height_succ {φ : Formula}
+    (d : DerivationTree [] φ) :
+    (temporal_necessitation φ d).height = d.height + 1 := by
+  simp [height]
+  omega
 
 /--
 Temporal duality increases height by exactly 1.
 -/
-axiom Derivable.temporal_duality_height_succ {φ : Formula}
-    (d : Derivable [] φ) :
-    (Derivable.temporal_duality φ d).height = d.height + 1
+theorem temporal_duality_height_succ {φ : Formula}
+    (d : DerivationTree [] φ) :
+    (temporal_duality φ d).height = d.height + 1 := by
+  simp [height]
+  omega
+
+end DerivationTree
 
 /--
 Notation `Γ ⊢ φ` for derivability from context Γ.
 -/
-notation:50 Γ " ⊢ " φ => Derivable Γ φ
+notation:50 Γ " ⊢ " φ => DerivationTree Γ φ
 
 /--
 Notation `⊢ φ` for derivability from empty context (theorem).
 -/
-notation:50 "⊢ " φ => Derivable [] φ
+notation:50 "⊢ " φ => DerivationTree [] φ
 
 /-!
 ## Example Derivations
@@ -243,7 +273,7 @@ Example: Modal T axiom is a theorem.
 `⊢ □p → p` for any propositional variable p.
 -/
 example (p : String) : ⊢ (Formula.box (Formula.atom p)).imp (Formula.atom p) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.modal_t
 
 /--
@@ -252,10 +282,10 @@ Example: Modus ponens from assumptions.
 If we assume both `p → q` and `p`, we can derive `q`.
 -/
 example (p q : Formula) : [p.imp q, p] ⊢ q := by
-  apply Derivable.modus_ponens (φ := p)
-  · apply Derivable.assumption
+  apply DerivationTree.modus_ponens (φ := p)
+  · apply DerivationTree.assumption
     simp
-  · apply Derivable.assumption
+  · apply DerivationTree.assumption
     simp
 
 /--
@@ -264,7 +294,7 @@ Example: Modal 4 axiom is a theorem.
 `⊢ □φ → □□φ` for any formula φ.
 -/
 example (φ : Formula) : ⊢ (Formula.box φ).imp (Formula.box (Formula.box φ)) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.modal_4
 
 /--
@@ -274,8 +304,8 @@ If we can derive `□p → p` from empty context,
 we can also derive it with extra assumptions.
 -/
 example (p : String) (ψ : Formula) : [ψ] ⊢ (Formula.box (Formula.atom p)).imp (Formula.atom p) := by
-  apply Derivable.weakening (Γ := [])
-  · apply Derivable.axiom
+  apply DerivationTree.weakening (Γ := [])
+  · apply DerivationTree.axiom
     apply Axiom.modal_t
   · intro _ h
     exact False.elim (List.not_mem_nil _ h)
