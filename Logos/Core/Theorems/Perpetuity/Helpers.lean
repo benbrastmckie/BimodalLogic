@@ -51,9 +51,9 @@ Proof:
 2. MT axiom: `□Gφ → Gφ`
 3. Transitivity: `□φ → Gφ`
 -/
-theorem box_to_future (φ : Formula) : ⊢ φ.box.imp φ.all_future := by
-  have mf : ⊢ φ.box.imp (φ.all_future.box) := Derivable.axiom [] _ (Axiom.modal_future φ)
-  have mt : ⊢ φ.all_future.box.imp φ.all_future := Derivable.axiom [] _ (Axiom.modal_t φ.all_future)
+def box_to_future (φ : Formula) : ⊢ φ.box.imp φ.all_future := by
+  have mf : ⊢ φ.box.imp (φ.all_future.box) := DerivationTree.axiom [] _ (Axiom.modal_future φ)
+  have mt : ⊢ φ.all_future.box.imp φ.all_future := DerivationTree.axiom [] _ (Axiom.modal_t φ.all_future)
   exact imp_trans mf mt
 
 /--
@@ -67,17 +67,17 @@ Proof via temporal duality:
 
 This clever use of temporal duality avoids needing a separate "modal-past" axiom.
 -/
-theorem box_to_past (φ : Formula) : ⊢ φ.box.imp φ.all_past := by
+def box_to_past (φ : Formula) : ⊢ φ.box.imp φ.all_past := by
   have h1 : ⊢ φ.swap_temporal.box.imp φ.swap_temporal.all_future := box_to_future φ.swap_temporal
   have h2 : ⊢ (φ.swap_temporal.box.imp φ.swap_temporal.all_future).swap_temporal :=
-    Derivable.temporal_duality (φ.swap_temporal.box.imp φ.swap_temporal.all_future) h1
+    DerivationTree.temporal_duality (φ.swap_temporal.box.imp φ.swap_temporal.all_future) h1
   simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at h2
   exact h2
 
 /--
 Box implies present: `⊢ □φ → φ` (MT axiom).
 -/
-theorem box_to_present (φ : Formula) : ⊢ φ.box.imp φ := Derivable.axiom [] _ (Axiom.modal_t φ)
+def box_to_present (φ : Formula) : ⊢ φ.box.imp φ := DerivationTree.axiom [] _ (Axiom.modal_t φ)
 
 /-!
 ## Helper Lemmas: Boilerplate Reduction
@@ -106,8 +106,8 @@ axiom_in_context Γ φ h
 
 **Proof Strategy**: Apply weakening from empty context to Γ using `List.nil_subset`.
 -/
-theorem axiom_in_context (Γ : Context) (φ : Formula) (h : Axiom φ) : Γ ⊢ φ := by
-  exact Derivable.weakening [] Γ φ (Derivable.axiom [] φ h) (List.nil_subset Γ)
+def axiom_in_context (Γ : Context) (φ : Formula) (h : Axiom φ) : Γ ⊢ φ := by
+  exact DerivationTree.weakening [] Γ φ (DerivationTree.axiom [] φ h) (List.nil_subset Γ)
 
 /--
 Apply axiom to argument: `⊢ B` from `Axiom (A → B)` and `⊢ A`.
@@ -124,8 +124,8 @@ apply_axiom_to axiom_proof h
 
 **Proof Strategy**: Apply axiom in empty context, then apply modus ponens.
 -/
-theorem apply_axiom_to {A B : Formula} (axiom_proof : Axiom (A.imp B)) (h : ⊢ A) : ⊢ B := by
-  exact Derivable.modus_ponens [] A B (Derivable.axiom [] (A.imp B) axiom_proof) h
+def apply_axiom_to {A B : Formula} (axiom_proof : Axiom (A.imp B)) (h : ⊢ A) : ⊢ B := by
+  exact DerivationTree.modus_ponens [] A B (DerivationTree.axiom [] (A.imp B) axiom_proof) h
 
 /--
 Apply axiom in context: `Γ ⊢ B` from `Axiom (A → B)` and `Γ ⊢ A`.
@@ -146,9 +146,9 @@ apply_axiom_in_context Γ axiom_proof h
 
 **Proof Strategy**: Use `axiom_in_context` to get `Γ ⊢ A → B`, then apply modus ponens with `h`.
 -/
-theorem apply_axiom_in_context (Γ : Context) {A B : Formula}
+def apply_axiom_in_context (Γ : Context) {A B : Formula}
     (axiom_proof : Axiom (A.imp B)) (h : Γ ⊢ A) : Γ ⊢ B := by
   have hAB : Γ ⊢ A.imp B := axiom_in_context Γ (A.imp B) axiom_proof
-  exact Derivable.modus_ponens Γ A B hAB h
+  exact DerivationTree.modus_ponens Γ A B hAB h
 
 end Logos.Core.Theorems.Perpetuity
