@@ -1,0 +1,135 @@
+{
+  "project_number": 71,
+  "project_name": "linear_algebra",
+  "type": "implementation",
+  "status": "planned",
+  "created": "2025-12-19",
+  "description": "Populate context/math/linear-algebra/ directory with 4 comprehensive documentation files",
+  "parent_project": "071_research_linear_algebra",
+  "artifacts": [
+    {
+      "type": "implementation_plan",
+      "path": ".opencode/specs/071_linear_algebra/plans/implementation-001.md",
+      "version": 1,
+      "created": "2025-12-19"
+    },
+    {
+      "type": "summary",
+      "path": ".opencode/specs/071_linear_algebra/summaries/plan-summary.md",
+      "created": "2025-12-19"
+    }
+  ],
+  "plan_details": {
+    "total_phases": 6,
+    "estimated_effort": "4-6 hours",
+    "complexity": "complex",
+    "files_to_create": 4,
+    "target_directory": "context/math/linear-algebra/",
+    "total_estimated_lines": "2000-2500"
+  },
+  "files_to_create": [
+    {
+      "name": "vector-spaces.md",
+      "path": "context/math/linear-algebra/vector-spaces.md",
+      "estimated_length": "500-600 lines",
+      "estimated_effort": "1-1.5 hours",
+      "key_topics": [
+        "Vector spaces and modules",
+        "Subspaces, span, basis, linear independence",
+        "Dimension theory",
+        "LinearOrderedAddCommGroup (TaskFrame)",
+        "Connections to modal algebras",
+        "LEAN 4 examples"
+      ],
+      "status": "planned"
+    },
+    {
+      "name": "linear-maps.md",
+      "path": "context/math/linear-algebra/linear-maps.md",
+      "estimated_length": "500-600 lines",
+      "estimated_effort": "1-1.5 hours",
+      "key_topics": [
+        "Linear maps and composition",
+        "Kernel, image, rank-nullity theorem",
+        "Linear equivalences and isomorphisms",
+        "Endomorphisms",
+        "Frame morphisms",
+        "Coalgebraic perspective"
+      ],
+      "status": "planned"
+    },
+    {
+      "name": "matrices.md",
+      "path": "context/math/linear-algebra/matrices.md",
+      "estimated_length": "550-650 lines",
+      "estimated_effort": "1-1.5 hours",
+      "key_topics": [
+        "Matrix basics and operations",
+        "Adjacency matrices for Kripke frames",
+        "Frame properties as matrix properties",
+        "Matrix powers and reachability",
+        "Transitive closure",
+        "Bimodal logic and composition",
+        "TaskFrame tensor representation"
+      ],
+      "status": "planned"
+    },
+    {
+      "name": "eigenvalues.md",
+      "path": "context/math/linear-algebra/eigenvalues.md",
+      "estimated_length": "500-600 lines",
+      "estimated_effort": "1-1.5 hours",
+      "key_topics": [
+        "Eigenvalues and eigenvectors",
+        "Spectral theorem",
+        "Spectral properties of frame matrices",
+        "Frame property characterization",
+        "Fixed points in modal logic",
+        "Spectral methods for decision procedures"
+      ],
+      "status": "planned"
+    }
+  ],
+  "dependencies": {
+    "research_report": ".opencode/specs/071_research_linear_algebra/reports/research-001.md",
+    "documentation_standards": "context/lean4/standards/documentation-standards.md",
+    "style_reference": "context/lean4/domain/key-mathematical-concepts.md",
+    "code_reference": "Logos/Core/Semantics/TaskFrame.lean"
+  },
+  "mathlib_modules": [
+    "Mathlib.Algebra.Module.Defs",
+    "Mathlib.Algebra.Module.LinearMap.Defs",
+    "Mathlib.Algebra.Order.Group.Defs",
+    "Mathlib.Data.Matrix.Basic",
+    "Mathlib.LinearAlgebra.Eigenspace",
+    "Mathlib.LinearAlgebra.Basic",
+    "Mathlib.Algebra.Module.Equiv.Defs",
+    "Mathlib.Algebra.Module.LinearMap.End",
+    "Mathlib.LinearAlgebra.FiniteDimensional"
+  ],
+  "success_criteria": [
+    "All 4 files created with complete content",
+    "All files follow documentation standards",
+    "All files include working LEAN 4 examples",
+    "All files explain modal logic connections",
+    "Consistent style across all 4 files",
+    "Total length: 2000-2500 lines",
+    "All mathlib4 references accurate",
+    "All TaskFrame references correct"
+  ],
+  "risk_mitigation": [
+    "Use validated examples from research report",
+    "Start with concrete examples before abstract connections",
+    "Use consistent template across all files",
+    "Target 500-600 lines per file",
+    "Prioritize essential content if time runs short"
+  ],
+  "next_steps": [
+    "Create context/math/linear-algebra/ directory",
+    "Implement vector-spaces.md",
+    "Implement linear-maps.md",
+    "Implement matrices.md",
+    "Implement eigenvalues.md",
+    "Verify consistency and quality"
+  ]
+}

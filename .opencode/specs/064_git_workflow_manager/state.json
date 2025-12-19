@@ -1,0 +1,21 @@
+{
+  "task_number": 64,
+  "task_name": "git_workflow_manager",
+  "status": "completed",
+  "created": "2025-12-19",
+  "completed": "2025-12-19",
+  "phase": "complete",
+  "artifacts": {
+    "specialist_spec": ".opencode/agent/subagents/specialists/git-workflow-manager.md",
+    "implementation_plan": ".opencode/specs/064_git_workflow_manager/plans/implementation-001.md",
+    "task_summary": ".opencode/specs/064_git_workflow_manager/summaries/task-summary.md",
+    "plan_summary": ".opencode/specs/064_git_workflow_manager/summaries/plan-summary.md"
+  },
+  "metrics": {
+    "estimated_effort_hours": "3-4",
+    "actual_effort_hours": "~3",
+    "files_created": 1,
+    "lines_of_code": 400,
+    "success_criteria_met": "15/15"
+  }
+}

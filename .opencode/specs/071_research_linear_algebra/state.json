@@ -1,0 +1,106 @@
+{
+  "project_number": 71,
+  "project_name": "research_linear_algebra",
+  "type": "research",
+  "status": "completed",
+  "created": "2025-12-19",
+  "completed": "2025-12-19",
+  "description": "Research linear algebra concepts for modal logic context documentation",
+  "research_type": "comprehensive",
+  "sources": [
+    "LeanSearch (mathlib4 modules)",
+    "Loogle (formal search)",
+    "Web Research (academic papers)"
+  ],
+  "artifacts": [
+    {
+      "type": "research_report",
+      "path": ".opencode/specs/071_research_linear_algebra/reports/research-001.md",
+      "created": "2025-12-19"
+    },
+    {
+      "type": "summary",
+      "path": ".opencode/specs/071_research_linear_algebra/summaries/research-summary.md",
+      "created": "2025-12-19"
+    },
+    {
+      "type": "specialist_report",
+      "path": ".opencode/specs/071_research_linear_algebra/specialist-reports/web-research-findings.md",
+      "created": "2025-12-19"
+    }
+  ],
+  "key_findings": [
+    "Algebraic semantics (modal algebras, lattice expansions) provides the primary bridge between modal logic and linear algebra",
+    "Matrix representations of Kripke frames enable efficient computational methods via adjacency matrices and spectral analysis",
+    "Current TaskFrame usage of LinearOrderedAddCommGroup is appropriate; full vector spaces not needed but could support future extensions",
+    "Coalgebraic methods unify modal logic and algebraic structures through category theory",
+    "Linear logic exponential modalities offer deep connections to resource reasoning and quantum computation"
+  ],
+  "mathlib_modules": [
+    "Mathlib.Algebra.Order.Group.Defs",
+    "Mathlib.Algebra.Module.Defs",
+    "Mathlib.Algebra.Module.LinearMap.Defs",
+    "Mathlib.Algebra.Module.LinearMap.Basic",
+    "Mathlib.Algebra.Module.Equiv.Defs",
+    "Mathlib.LinearAlgebra.Basic",
+    "Mathlib.Data.Matrix.Basic",
+    "Mathlib.LinearAlgebra.Eigenspace",
+    "Mathlib.Algebra.Module.LinearMap.End",
+    "Mathlib.LinearAlgebra.FiniteDimensional"
+  ],
+  "content_recommendations": {
+    "vector-spaces.md": [
+      "Vector spaces and modules (definition, examples)",
+      "Subspaces, span, basis, linear independence",
+      "Dimension theory",
+      "LinearOrderedAddCommGroup (used in TaskFrame)",
+      "Connections to modal algebras",
+      "LEAN 4 examples from mathlib4"
+    ],
+    "linear-maps.md": [
+      "Linear maps (definition, composition)",
+      "Kernel, image, rank-nullity theorem",
+      "Linear equivalences and isomorphisms",
+      "Endomorphisms",
+      "Frame morphisms as structure-preserving maps",
+      "Coalgebraic perspective",
+      "LEAN 4 examples"
+    ],
+    "matrices.md": [
+      "Matrix basics and operations",
+      "Adjacency matrices for Kripke frames",
+      "Frame properties as matrix properties",
+      "Matrix powers and reachability",
+      "Transitive closure",
+      "Bimodal logic and matrix composition",
+      "TaskFrame tensor representation",
+      "LEAN 4 examples"
+    ],
+    "eigenvalues.md": [
+      "Eigenvalues and eigenvectors",
+      "Spectral theorem",
+      "Spectral properties of frame matrices",
+      "Frame property characterization",
+      "Fixed points in modal logic",
+      "Spectral methods for decision procedures",
+      "LEAN 4 examples"
+    ]
+  },
+  "modal_logic_connections": [
+    "Modal algebras as algebraic structures similar to modules",
+    "Adjacency matrix representation of accessibility relations",
+    "Matrix powers for n-step reachability",
+    "Spectral properties characterizing frame properties",
+    "Frame morphisms as structure-preserving maps",
+    "Coalgebraic semantics unifying logic and algebra",
+    "Linear logic exponential modalities",
+    "Graded modalities for quantitative reasoning",
+    "Subordination algebras for task ordering"
+  ],
+  "next_steps": [
+    "Create vector-spaces.md in context/math/linear-algebra/",
+    "Create linear-maps.md in context/math/linear-algebra/",
+    "Create matrices.md in context/math/linear-algebra/",
+    "Create eigenvalues.md in context/math/linear-algebra/"
+  ]
+}

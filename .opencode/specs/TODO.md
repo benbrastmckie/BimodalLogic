@@ -33,11 +33,11 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 - **Review Reports**: [Analysis](.opencode/specs/004_review_20251216/reports/analysis-001.md) | [Verification](.opencode/specs/004_review_20251216/reports/verification-001.md)
 
 **Layer 0 Completion Progress**:
-- High Priority: 3 tasks (Core development)
-- Medium Priority: 34 tasks (Proof development + Documentation + System enhancements + Proof system enhancements)
+- High Priority: 6 tasks (Core development + Migration phases 1, 2, 7)
+- Medium Priority: 31 tasks (Proof development + Documentation + System enhancements + Proof system enhancements + Migration phases 3-6)
 - Low Priority: 3 tasks (Long-term metalogic)
 - **Active Tasks**: 40
-- **Recently Completed (Last 9)**: See [Completion History](#completion-history)
+- **Recently Completed (Last 16)**: See [Completion History](#completion-history)
 
 **Milestone Achievement**: 
 - ✅ IMPLEMENTATION_STATUS.md UPDATED (Task 59)
@@ -96,80 +96,12 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 
 ### Documentation
 
-### 62. Complete Docstring Coverage to 100%
-**Effort**: 2-3 hours
-**Status**: [COMPLETE] ✅
-**Started**: 2025-12-19
-**Completed**: 2025-12-19
-**Priority**: Medium (quality improvement)
-**Blocking**: None
-**Dependencies**: None
 
-**Description**:
-
-Complete docstring coverage across all Logos modules to reach true 100% coverage. Currently at ~95-98% with approximately 20+ files having gaps in module-level or definition-level documentation.
-
-**Current State**:
-- 3 docstrings added in previous work
-- ~20+ files still have 1-3 missing docstrings each
-- Key gaps in ProofSystem and top-level package files
-
-**Files Affected**:
-- `Logos/Core/ProofSystem/Axioms.lean` (0/1 module docstring)
-- `Logos/Core/ProofSystem/Derivation.lean` (0/1 module docstring)
-- `Logos/Syntax.lean` (0/1 module docstring)
-- `Logos/Core/Syntax/Formula.lean` (potential definition gaps)
-- `Logos/Core/Syntax/Context.lean` (potential definition gaps)
-- ~15-20 additional files with minor gaps
-
-**Acceptance Criteria**:
-- [ ] All module files have top-level docstrings explaining purpose
-- [ ] All public definitions have docstrings with parameter descriptions
-- [ ] All public theorems have docstrings explaining what they prove
-- [ ] All axioms have docstrings with semantic justification
-- [ ] Docstring quality verified against context/core/standards/docs.md
-- [ ] No missing docstrings reported by documentation linter
-
-**Subtasks**:
-- [ ] Audit all files in Logos/Core/ProofSystem/ for missing docstrings
-- [ ] Audit all files in Logos/Core/Syntax/ for missing docstrings
-- [ ] Audit all files in Logos/Core/Semantics/ for missing docstrings
-- [ ] Audit all files in Logos/Core/Metalogic/ for missing docstrings
-- [ ] Audit all files in Logos/Core/Theorems/ for missing docstrings
-- [ ] Audit all files in Logos/Core/Automation/ for missing docstrings
-- [ ] Add missing module-level docstrings
-- [ ] Add missing definition-level docstrings
-- [ ] Verify all docstrings follow standards (context/core/standards/docs.md)
-- [ ] Update IMPLEMENTATION_STATUS.md if documentation status changes
-
-**Impact**: Improves code maintainability, developer onboarding, and documentation quality. Enables better IDE support and automated documentation generation.
-
-**Spec**: `.opencode/specs/062_docstring_coverage/`
-
----
-
-### 63. Create Example-Builder Specialist
-**Effort**: 3-4 hours
-**Status**: Not Started
-**Priority**: Medium (developer tooling)
-**Blocking**: None
-**Dependencies**: None
-
-**Description**: Create example-builder specialist that generates illustrative examples for LEAN 4 theorems, definitions, and tactics to improve documentation and understanding.
-
-**Deliverables**:
-- `.opencode/agent/subagents/specialists/example-builder.md`
-- Examples: minimal examples, edge cases, common usage patterns
-- Integration with documentation-generator specialist
-
-**Files to Create**:
-- `.opencode/agent/subagents/specialists/example-builder.md`
-
----
 
 ### 64. Create Git-Workflow-Manager Specialist
 **Effort**: 3-4 hours
-**Status**: Not Started
+**Status**: [IN PROGRESS]
+**Started**: 2025-12-19
 **Priority**: Medium (developer tooling)
 **Blocking**: None
 **Dependencies**: None
@@ -190,7 +122,8 @@ Complete docstring coverage across all Logos modules to reach true 100% coverage
 
 ### 65. Populate context/logic/processes/ Directory
 **Effort**: 4-6 hours
-**Status**: Not Started
+**Status**: [IN PROGRESS]
+**Started**: 2025-12-19
 **Priority**: Medium (knowledge base)
 **Blocking**: None
 **Dependencies**: None
@@ -213,7 +146,8 @@ Complete docstring coverage across all Logos modules to reach true 100% coverage
 
 ### 66. Populate context/logic/standards/ Directory
 **Effort**: 3-5 hours
-**Status**: Not Started
+**Status**: [IN PROGRESS]
+**Started**: 2025-12-19
 **Priority**: Medium (knowledge base)
 **Blocking**: None
 **Dependencies**: None
@@ -234,120 +168,215 @@ Complete docstring coverage across all Logos modules to reach true 100% coverage
 
 ---
 
-### 67. Populate context/logic/templates/ Directory
-**Effort**: 3-5 hours
-**Status**: Not Started
-**Priority**: Medium (knowledge base)
-**Blocking**: None
-**Dependencies**: None
+### Proof System Enhancements
 
-**Description**: Research and populate context/logic/templates/ directory with reusable templates for modal logic proofs, definitions, and structures.
-
-**Content to Include**:
-- Modal operator definition templates
-- Kripke model templates
-- Soundness proof templates
-- Completeness proof templates
-
-**Files to Create**:
-- `context/logic/templates/modal-operator-template.md`
-- `context/logic/templates/kripke-model-template.md`
-- `context/logic/templates/soundness-template.md`
-- `context/logic/templates/completeness-template.md`
-
----
-
-### 68. Populate context/logic/patterns/ Directory
-**Effort**: 4-6 hours
-**Status**: Not Started
-**Priority**: Medium (knowledge base)
-**Blocking**: None
-**Dependencies**: None
-
-**Description**: Research and populate context/logic/patterns/ directory with common modal logic proof patterns and idioms.
-
-**Content to Include**:
-- Modal distribution patterns
-- Necessitation patterns
-- Frame correspondence patterns
-- Canonical model construction patterns
-
-**Files to Create**:
-- `context/logic/patterns/modal-distribution.md`
-- `context/logic/patterns/necessitation.md`
-- `context/logic/patterns/frame-correspondence.md`
-- `context/logic/patterns/canonical-models.md`
-
----
-
-### 69. Populate context/math/analysis/ Directory
-**Effort**: 5-8 hours
-**Status**: Not Started
-**Priority**: Medium (knowledge base)
-**Blocking**: None
-**Dependencies**: None
-
-**Description**: Research and populate context/math/analysis/ directory with real analysis, complex analysis, and functional analysis concepts relevant to modal logic.
-
-**Content to Include**:
-- Topological spaces (for Kripke frames)
-- Continuity and limits
-- Measure theory basics
-- Functional spaces
-
-**Files to Create**:
-- `context/math/analysis/topology.md`
-- `context/math/analysis/continuity.md`
-- `context/math/analysis/measure-theory.md`
-- `context/math/analysis/functional-spaces.md`
-
----
-
-### 70. Populate context/math/category-theory/ Directory
+### 72. Phase 1 - Core Definition Migration (Derivation.lean)
 **Effort**: 6-8 hours
 **Status**: Not Started
-**Priority**: Medium (knowledge base)
-**Blocking**: None
+**Priority**: High (blocks all other migration phases)
+**Blocking**: Tasks 73-78
 **Dependencies**: None
 
-**Description**: Research and populate context/math/category-theory/ directory with categories, functors, and natural transformations relevant to modal logic semantics.
+**Description**: Migrate `Logos/Core/ProofSystem/Derivation.lean` from `Derivable : Prop` to `DerivationTree : Type`. This is the critical first phase that enables all subsequent migration work.
 
-**Content to Include**:
-- Category theory basics
-- Functors between Kripke frames
-- Natural transformations
-- Adjunctions in modal logic
+**Implementation Steps**:
+1. Update inductive type declaration (Prop → Type)
+2. Remove 7 height axioms (lines 168-222)
+3. Add computable height function via pattern matching
+4. Prove 6 height properties as theorems (using simp + omega)
+5. Update notation and examples
+6. Verify compilation and zero sorry statements
 
-**Files to Create**:
-- `context/math/category-theory/basics.md`
-- `context/math/category-theory/functors.md`
-- `context/math/category-theory/natural-transformations.md`
-- `context/math/category-theory/adjunctions.md`
+**Files Affected**:
+- `Logos/Core/ProofSystem/Derivation.lean`
+
+**Success Criteria**:
+- [ ] Inductive type updated to Type
+- [ ] All 7 height axioms removed
+- [ ] Computable height function implemented
+- [ ] All 6 height properties proven as theorems
+- [ ] File compiles without errors
+- [ ] Zero sorry statements
+
+**Spec**: `.opencode/specs/058_migration_to_type/plans/implementation-001.md` (Phase 1)
 
 ---
 
-### 71. Populate context/math/linear-algebra/ Directory
+### 73. Phase 2 - Metalogic Proofs Migration
+**Effort**: 18-23 hours
+**Status**: Not Started
+**Priority**: High (blocks theorem and automation migration)
+**Blocking**: Tasks 74, 75
+**Dependencies**: Task 72
+
+**Description**: Update metalogic proofs (DeductionTheorem, Soundness, Completeness) to work with `DerivationTree : Type` instead of `Derivable : Prop`.
+
+**Implementation Steps**:
+1. Update DeductionTheorem.lean (10-12 hours)
+   - Update type signatures (h → d)
+   - Update constructor names (Derivable.* → DerivationTree.*)
+   - Update termination clauses
+2. Update Soundness.lean (6-8 hours)
+   - Update theorem signature and induction
+   - Update all 7 constructor cases
+3. Update Completeness.lean (2-3 hours)
+   - Update Consistent definition
+   - Update axiom signatures
+
+**Files Affected**:
+- `Logos/Core/Metalogic/DeductionTheorem.lean`
+- `Logos/Core/Metalogic/Soundness.lean`
+- `Logos/Core/Metalogic/Completeness.lean`
+
+**Success Criteria**:
+- [ ] All metalogic files compile
+- [ ] All proofs complete (zero sorry)
+- [ ] Termination proofs working
+
+**Spec**: `.opencode/specs/058_migration_to_type/plans/implementation-001.md` (Phase 2)
+
+---
+
+### 74. Phase 3 - Theorem Libraries Migration
+**Effort**: 29-37 hours
+**Status**: Not Started
+**Priority**: Medium (depends on metalogic)
+**Blocking**: Task 76
+**Dependencies**: Task 73
+
+**Description**: Update all theorem libraries with mechanical find-replace of constructor names from `Derivable.*` to `DerivationTree.*`.
+
+**Files Affected** (8 theorem modules):
+- `Logos/Core/Theorems/Propositional.lean` (8-10 hours)
+- `Logos/Core/Theorems/Combinators.lean` (4-5 hours)
+- `Logos/Core/Theorems/GeneralizedNecessitation.lean` (5-6 hours)
+- `Logos/Core/Theorems/Perpetuity/Helpers.lean` (2 hours)
+- `Logos/Core/Theorems/Perpetuity/Principles.lean` (2 hours)
+- `Logos/Core/Theorems/Perpetuity/Bridge.lean` (2 hours)
+- `Logos/Core/Theorems/Perpetuity.lean` (1 hour)
+- Other theorem modules (5-8 hours)
+
+**Success Criteria**:
+- [ ] All theorem files compile
+- [ ] All existing theorems still proven
+- [ ] Zero sorry statements introduced
+
+**Spec**: `.opencode/specs/058_migration_to_type/plans/implementation-001.md` (Phase 3)
+
+---
+
+### 75. Phase 4 - Automation Migration
+**Effort**: 8-11 hours
+**Status**: Not Started
+**Priority**: Medium (high risk - tactic system)
+**Blocking**: Task 76
+**Dependencies**: Task 73
+
+**Description**: Update automation system (tactics and Aesop rules) to work with `DerivationTree : Type`. This is high-risk due to metaprogramming fragility.
+
+**Implementation Steps**:
+1. Update Tactics.lean (6-8 hours)
+   - Update constant references (``Derivable.* → ``DerivationTree.*)
+   - Update metaprogramming code (mkAppM calls)
+   - Test all tactics
+2. Update AesopRules.lean (2-3 hours)
+   - Update registered rule names
+   - Test Aesop integration
+
+**Files Affected**:
+- `Logos/Core/Automation/Tactics.lean`
+- `Logos/Core/Automation/AesopRules.lean`
+
+**Success Criteria**:
+- [ ] All automation files compile
+- [ ] All tactics functional
+- [ ] Aesop integration working
+
+**Spec**: `.opencode/specs/058_migration_to_type/plans/implementation-001.md` (Phase 4)
+
+---
+
+### 76. Phase 5 - Test Suites Migration
+**Effort**: 19-26 hours
+**Status**: Not Started
+**Priority**: Medium (verification)
+**Blocking**: Task 77
+**Dependencies**: Tasks 72, 73, 74, 75
+
+**Description**: Update all test files with constructor name changes and verify all tests pass.
+
+**Files Affected** (7 test modules):
+- `LogosTest/Core/ProofSystem/DerivationTest.lean` (4-5 hours)
+- `LogosTest/Core/Metalogic/SoundnessTest.lean` (2-3 hours)
+- `LogosTest/Core/Metalogic/CompletenessTest.lean` (1-2 hours)
+- `LogosTest/Core/Integration/EndToEndTest.lean` (2-3 hours)
+- `LogosTest/Core/Theorems/PerpetuityTest.lean` (2 hours)
+- `LogosTest/Core/Theorems/PropositionalTest.lean` (2 hours)
+- `LogosTest/Core/Theorems/ModalS4Test.lean` (2 hours)
+- `LogosTest/Core/Theorems/ModalS5Test.lean` (2 hours)
+- `LogosTest/Core/Automation/TacticsTest.lean` (4-5 hours)
+
+**Success Criteria**:
+- [ ] All test files compile
+- [ ] All tests pass
+- [ ] No regressions detected
+
+**Spec**: `.opencode/specs/058_migration_to_type/plans/implementation-001.md` (Phase 5)
+
+---
+
+### 77. Phase 6 - Documentation Updates
+**Effort**: 2-3 hours
+**Status**: Not Started
+**Priority**: Medium (quality)
+**Blocking**: Task 78
+**Dependencies**: Tasks 72-76
+
+**Description**: Update module files and documentation to reflect the Type-based derivation system.
+
+**Files Affected**:
+- `Logos/ProofSystem.lean`
+- `Logos/Metalogic.lean`
+- `Logos/Theorems.lean`
+- `Logos/Core/Theorems.lean`
+- Documentation comments and examples
+
+**Success Criteria**:
+- [ ] All module files updated
+- [ ] Documentation accurate
+- [ ] Examples compile and work
+
+**Spec**: `.opencode/specs/058_migration_to_type/plans/implementation-001.md` (Phase 6)
+
+---
+
+### 78. Phase 7 - Final Verification and Performance Check
 **Effort**: 4-6 hours
 **Status**: Not Started
-**Priority**: Medium (knowledge base)
+**Priority**: High (validation)
 **Blocking**: None
-**Dependencies**: None
+**Dependencies**: Tasks 72-77
 
-**Description**: Research and populate context/math/linear-algebra/ directory with vector spaces, linear maps, and matrices relevant to modal logic.
+**Description**: Perform final verification of the complete migration including full build, all tests, and performance benchmarking.
 
-**Content to Include**:
-- Vector spaces
-- Linear transformations
-- Matrix representations
-- Eigenvalues and eigenvectors
+**Verification Steps**:
+1. Full clean build (`lake clean && lake build`)
+2. Run all tests (`lake test`)
+3. Performance check (compare with baseline)
+4. Verify new capabilities (computable height, pattern matching, Repr)
+5. Confirm zero sorry statements across codebase
 
-**Files to Create**:
-- `context/math/linear-algebra/vector-spaces.md`
-- `context/math/linear-algebra/linear-maps.md`
-- `context/math/linear-algebra/matrices.md`
-- `context/math/linear-algebra/eigenvalues.md`
+**Success Criteria**:
+- [ ] Full build successful (zero errors)
+- [ ] All tests passing
+- [ ] Performance acceptable (<50% slower than baseline)
+- [ ] New capabilities verified (height, pattern matching, Repr)
+- [ ] Zero sorry statements in entire codebase
+- [ ] All 7 height axioms removed
 
-### Proof System Enhancements
+**Spec**: `.opencode/specs/058_migration_to_type/plans/implementation-001.md` (Phase 7)
+
+---
 
 ### 53. Prove Height Function Properties (Optional Enhancement)
 **Effort**: 4-6 hours
@@ -506,43 +535,71 @@ Complete docstring coverage across all Logos modules to reach true 100% coverage
 
 ## Completion History
 
-### Recently Completed (Last 10)
+### Recently Completed (Last 16)
 
-1. **Task 61**: Add Missing Directory READMEs ✅ (2025-12-18)
+1. **Task 71**: Populate context/math/linear-algebra/ Directory ✅ (2025-12-19)
+   - Research and populated linear algebra directory
+   - [Archive](.opencode/specs/archive/071_linear_algebra/)
+
+2. **Task 70**: Populate context/math/category-theory/ Directory ✅ (2025-12-19)
+   - Research and populated category theory directory
+   - [Archive](.opencode/specs/archive/070_category_theory/)
+
+3. **Task 69**: Populate context/math/analysis/ Directory ✅ (2025-12-19)
+   - Research and populated math analysis directory
+   - [Archive](.opencode/specs/archive/069_math_analysis/)
+
+4. **Task 68**: Populate context/logic/patterns/ Directory ✅ (2025-12-19)
+   - Research and populated logic patterns directory
+   - [Archive](.opencode/specs/archive/068_logic_patterns/)
+
+5. **Task 67**: Populate context/logic/templates/ Directory ✅ (2025-12-19)
+   - Research and populated logic templates directory
+   - [Archive](.opencode/specs/archive/067_logic_templates/)
+
+6. **Task 63**: Create Example-Builder Specialist ✅ (2025-12-19)
+   - Created example-builder specialist for LEAN 4 theorems
+   - [Archive](.opencode/specs/archive/063_example_builder/)
+
+7. **Task 62**: Complete Docstring Coverage to 100% ✅ (2025-12-19)
+   - Verified 100% docstring coverage across all Logos modules
+   - [Archive](.opencode/specs/archive/062_docstring_coverage/)
+
+8. **Task 61**: Add Missing Directory READMEs ✅ (2025-12-18)
    - Created Perpetuity/README.md and Automation/README.md
-   - [Archive](.opencode/specs/ARCHIVE_INDEX.md#061_add_missing_directory_readmes-archived-2025-12-18)
+   - [Archive](.opencode/specs/archive/061_add_missing_directory_readmes/)
 
-2. **Task 60**: Remove Backup Artifacts ✅ (2025-12-16)
+9. **Task 60**: Remove Backup Artifacts ✅ (2025-12-16)
    - Removed Bridge.lean.backup, enhanced .gitignore
-   - [Archive](.opencode/specs/ARCHIVE_INDEX.md#060_remove_backup_artifacts-archived-2025-12-18)
+   - [Archive](.opencode/specs/archive/060_remove_backup_artifacts/)
 
-3. **Task 59**: Update IMPLEMENTATION_STATUS.md ✅ (2025-12-16)
-   - Updated DeductionTheorem.lean status to 100% complete
-   - [Archive](.opencode/specs/ARCHIVE_INDEX.md#059_implementation_status_update-archived-2025-12-18)
+10. **Task 59**: Update IMPLEMENTATION_STATUS.md ✅ (2025-12-16)
+    - Updated DeductionTheorem.lean status to 100% complete
+    - [Archive](.opencode/specs/archive/059_implementation_status_update/)
 
-4. **Task 56**: Implement Missing Helper Lemmas for Bridge.lean ✅ (2025-12-16)
-   - Verified all lemmas already implemented (zero sorry)
-   - [Archive](.opencode/specs/ARCHIVE_INDEX.md#056_bridge_helper_lemmas-archived-2025-12-18)
+11. **Task 56**: Implement Missing Helper Lemmas for Bridge.lean ✅ (2025-12-16)
+    - Verified all lemmas already implemented (zero sorry)
+    - [Archive](.opencode/specs/archive/056_bridge_helper_lemmas/)
 
-5. **Task 52**: Fix AesopRules.lean Duplicate Declaration ✅ (2025-12-15)
-   - Fixed critical compilation issue
-   - [Archive](.opencode/specs/ARCHIVE_INDEX.md#052_fix_aesop_duplicate-archived-2025-12-18)
+12. **Task 52**: Fix AesopRules.lean Duplicate Declaration ✅ (2025-12-15)
+    - Fixed critical compilation issue
+    - [Archive](.opencode/specs/archive/052_fix_aesop_duplicate/)
 
-6. **Task 46**: Deduction Theorem - FULLY COMPLETE ✅ (2025-12-15)
-   - Zero sorry, complete termination proofs
-   - See git history for details
+13. **Task 46**: Deduction Theorem - FULLY COMPLETE ✅ (2025-12-15)
+    - Zero sorry, complete termination proofs
+    - See git history for details
 
-7. **Task 42b**: Bridge.lean Compilation Fixes ✅ (2025-12-15)
-   - Fixed compilation errors, confirmed theorems
-   - See git history for details
+14. **Task 42b**: Bridge.lean Compilation Fixes ✅ (2025-12-15)
+    - Fixed compilation errors, confirmed theorems
+    - See git history for details
 
-8. **Task 42a**: Temporal Axiom Derivation ✅ (2025-12-15)
-   - future_k_dist and always_mono derived as theorems
-   - See git history for details
+15. **Task 42a**: Temporal Axiom Derivation ✅ (2025-12-15)
+    - future_k_dist and always_mono derived as theorems
+    - See git history for details
 
-9. **Task 48**: Derivable.height Fix ✅ (2025-12-15)
-   - Fixed height function implementation
-   - See git history for details
+16. **Task 48**: Derivable.height Fix ✅ (2025-12-15)
+    - Fixed height function implementation
+    - See git history for details
 
 **View All Completions**:
 ```bash
@@ -586,4 +643,4 @@ To mark tasks complete, remove them from active sections (git tracks history).
 
 ---
 
-**Last Updated**: 2025-12-19 (Task 62 reformatted to standard format; 40 active tasks: 3 high priority + 34 medium priority + 3 low priority)
+**Last Updated**: 2025-12-19 (TODO maintenance: 7 tasks archived [62, 63, 67-71]; 40 active tasks: 6 high priority + 31 medium priority + 3 low priority)
