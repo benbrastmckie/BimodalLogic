@@ -83,7 +83,7 @@ for arbitrary valid formulas via formula induction.
 namespace Logos.Core.Semantics
 
 open Logos.Core.Syntax
-open Logos.Core.ProofSystem (Axiom Derivable)
+open Logos.Core.ProofSystem (Axiom DerivationTree)
 
 variable {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
 
@@ -1335,12 +1335,12 @@ of swap and `valid_swap_of_valid` to close the inductive cycle.
 **Proof Status**: COMPLETE - all derivation cases handled.
 -/
 theorem derivable_implies_swap_valid :
-    ∀ {φ : Formula}, Derivable [] φ → is_valid T φ.swap_past_future := by
+    ∀ {φ : Formula}, DerivationTree [] φ → is_valid T φ.swap_past_future := by
   intro φ h_deriv
   -- Proof by induction on the derivation structure
   -- Note: We generalize to arbitrary contexts but only use the [] case
   have h_general : ∀ (Γ : List Formula) (ψ : Formula),
-      Derivable Γ ψ → Γ = [] → is_valid T ψ.swap_past_future := by
+      DerivationTree Γ ψ → Γ = [] → is_valid T ψ.swap_past_future := by
     intro Γ ψ h
     induction h with
     | «axiom» Γ' ψ' h_axiom =>

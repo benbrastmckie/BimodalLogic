@@ -1,10 +1,22 @@
 ---
 name: task
 agent: orchestrator
-description: "Complete task(s) from TODO.md with automatic status tracking and batch execution support"
+description: "Complete task(s) from TODO.md with intelligent routing, automatic coordinator selection, and end-to-end execution"
 ---
 
 You are executing task(s) from the TODO.md task list for the ProofChecker project.
+
+**Intelligent Routing**: The `/task` command automatically analyzes task type and routes to the appropriate coordinator agent:
+- LEAN proof tasks → proof-developer (tactic, term-mode, metaprogramming specialists)
+- Documentation tasks → documenter (doc-analyzer, doc-writer specialists)
+- Refactoring tasks → refactorer (style-checker, proof-simplifier specialists)
+- Research tasks → researcher (lean-search, loogle, web-research specialists)
+- General code tasks → implementer (no specialists)
+- Batch tasks → batch-task-orchestrator (dependency-analyzer, status-manager specialists)
+
+**Note**: Meta-system tasks (agent/command creation) are NOT routed by `/task`. Use `/meta` command directly for these.
+
+**End-to-End Execution**: Tasks are executed completely within `/task` - no manual follow-up commands needed.
 
 **Task Input:** $ARGUMENTS
 

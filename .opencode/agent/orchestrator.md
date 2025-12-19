@@ -62,6 +62,15 @@ tools:
       6. Prepare routing with context allocation
     </process>
     <workflow_classification>
+      <task_execution_workflow>
+        Triggers: "/task {number(s)}"
+        Agent: @subagents/task-executor
+        Features: Intelligent task type detection, automatic coordinator routing
+        Context: lean4/, logic/, project/
+        Complexity: Variable (depends on task type)
+        Note: Automatically routes to proof-developer, documenter, refactorer, researcher, implementer, or batch-task-orchestrator
+      </task_execution_workflow>
+      
       <review_workflow>
         Triggers: "analyze", "review", "verify", "check", "audit", "assess repo"
         Agent: @subagents/reviewer

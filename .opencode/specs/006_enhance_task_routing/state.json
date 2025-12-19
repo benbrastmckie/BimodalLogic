@@ -1,0 +1,58 @@
+{
+  "project_name": "enhance_task_routing",
+  "project_number": 6,
+  "phase": "planning",
+  "status": "plan_created",
+  "created_date": "2025-12-19",
+  "last_updated": "2025-12-19",
+  "plans": [
+    {
+      "version": 1,
+      "path": ".opencode/specs/006_enhance_task_routing/plans/implementation-001.md",
+      "created": "2025-12-19",
+      "status": "active"
+    }
+  ],
+  "summaries": [
+    {
+      "type": "plan_summary",
+      "path": ".opencode/specs/006_enhance_task_routing/summaries/plan-summary.md",
+      "created": "2025-12-19"
+    }
+  ],
+  "reports": [],
+  "complexity": "complex",
+  "estimated_effort": "65-70 hours",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Create CRITICAL Specialist Agents",
+      "status": "not_started",
+      "estimated_hours": "12-16"
+    },
+    {
+      "phase": 2,
+      "name": "Enhance Task Type Detection",
+      "status": "not_started",
+      "estimated_hours": "8-12"
+    },
+    {
+      "phase": 3,
+      "name": "Coordinator Integration",
+      "status": "not_started",
+      "estimated_hours": "10-14"
+    },
+    {
+      "phase": 4,
+      "name": "Create Remaining Specialists",
+      "status": "not_started",
+      "estimated_hours": "18-24"
+    },
+    {
+      "phase": 5,
+      "name": "Comprehensive Testing",
+      "status": "not_started",
+      "estimated_hours": "9-13"
+    }
+  ]
+}

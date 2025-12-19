@@ -1,0 +1,73 @@
+{
+  "project_name": "research_task_vs_lean_implement",
+  "project_number": 5,
+  "type": "research",
+  "phase": "completed",
+  "created": "2025-12-19T00:00:00Z",
+  "last_updated": "2025-12-19T00:00:00Z",
+  "status": "completed",
+  
+  "research_topic": "Comparative analysis of /task command versus /lean implement command for LEAN 4 proof development",
+  
+  "research_questions": [
+    "Does using the /task command provide all the same advantages that using the /lean implement command does?",
+    "Which command provides access to tactic-specialist, term-mode-specialist, metaprogramming-specialist?",
+    "Which command integrates with lean-lsp-mcp server for real-time proof development?",
+    "Can /task fully replace /lean implement for proof development?"
+  ],
+  
+  "artifacts": {
+    "reports": [
+      "reports/research-001.md"
+    ],
+    "summaries": [
+      "summaries/research-summary.md"
+    ],
+    "specialist_reports": []
+  },
+  
+  "key_findings": [
+    "Commands serve fundamentally different purposes and are NOT interchangeable",
+    "14 specialist agents referenced in architecture but NOT FOUND in codebase",
+    "3 CRITICAL missing specialists: tactic-specialist, term-mode-specialist, metaprogramming-specialist",
+    "/task handles task management and planning; /lean handles proof implementation",
+    "Both commands needed for complete LEAN proof workflow"
+  ],
+  
+  "critical_discoveries": [
+    "Architecture-implementation gap: 14 missing specialist agents",
+    "proof-developer agent cannot delegate as designed",
+    "Correct workflow requires both /task (planning) and /lean (implementation)"
+  ],
+  
+  "recommendations": [
+    "Use /task for TODO.md task execution and planning",
+    "Use /lean for LEAN 4 proof implementation",
+    "Do NOT use /task expecting direct proof implementation",
+    "Create 3 CRITICAL specialists (tactic, term-mode, metaprogramming) as high priority"
+  ],
+  
+  "research_methodology": {
+    "sources_consulted": [
+      "Command specifications (/task, /lean, /implement)",
+      "Agent specifications (orchestrator, task-executor, proof-developer, implementer, researcher)",
+      "Specialist agent directory (20 agents catalogued)",
+      "Architecture documentation (ARCHITECTURE.md, orchestrator.md)",
+      "Codebase file structure analysis"
+    ],
+    "verification_method": "Direct codebase analysis and file verification",
+    "confidence_level": "High"
+  },
+  
+  "impact_assessment": {
+    "user_impact": "High - Clarifies command usage and prevents misuse",
+    "development_impact": "High - Identifies critical missing specialists",
+    "documentation_impact": "Medium - Architecture docs need updates"
+  },
+  
+  "next_steps": [
+    "User: Use /task for TODO.md tasks, /lean for proof implementation",
+    "Development: Create 3 CRITICAL specialists (tactic, term-mode, metaprogramming)",
+    "Documentation: Update architecture to match implementation OR implement missing agents"
+  ]
+}

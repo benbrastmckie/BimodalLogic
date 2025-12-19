@@ -33,13 +33,14 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 - **Review Reports**: [Analysis](.opencode/specs/004_review_20251216/reports/analysis-001.md) | [Verification](.opencode/specs/004_review_20251216/reports/verification-001.md)
 
 **Layer 0 Completion Progress**:
-- High Priority: 6 tasks (Core development + Migration phases 1, 2, 7)
-- Medium Priority: 31 tasks (Proof development + Documentation + System enhancements + Proof system enhancements + Migration phases 3-6)
+- High Priority: 5 tasks (Core development + Migration phases 2, 7)
+- Medium Priority: 24 tasks (Proof development + Documentation + System enhancements + Proof system enhancements + Migration phases 3-6)
 - Low Priority: 3 tasks (Long-term metalogic)
-- **Active Tasks**: 40
-- **Recently Completed (Last 16)**: See [Completion History](#completion-history)
+- **Active Tasks**: 32
+- **Recently Completed (Last 22)**: See [Completion History](#completion-history)
 
 **Milestone Achievement**: 
+- ✅ PHASE 1 MIGRATION COMPLETE (Task 72 - Derivation.lean migrated to Type)
 - ✅ IMPLEMENTATION_STATUS.md UPDATED (Task 59)
 - ✅ DEDUCTION THEOREM FULLY PROVEN (Task 46 - zero sorry)
 - ✅ ALL 6 PERPETUITY PRINCIPLES FULLY PROVEN (100%)
@@ -51,9 +52,9 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 - ✅ TEMPORAL AXIOM DERIVATION COMPLETE (Task 42a)
 - ✅ BRIDGE.LEAN COMPILATION FIXED (Task 42b)
 
-**Current Work**: All high-priority documentation tasks complete - ready for Layer 1 planning
+**Current Work**: Phase 1 migration complete - ready for Phase 2 (Theorems/Combinators.lean)
 
-**Next Milestone**: Layer 1 planning and implementation
+**Next Milestone**: Phase 2 Migration - Fix 91 errors in Combinators.lean caused by Derivation.lean changes
 
 ---
 
@@ -98,109 +99,7 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 
 
 
-### 64. Create Git-Workflow-Manager Specialist
-**Effort**: 3-4 hours
-**Status**: [IN PROGRESS]
-**Started**: 2025-12-19
-**Priority**: Medium (developer tooling)
-**Blocking**: None
-**Dependencies**: None
-
-**Description**: Create git-workflow-manager specialist that manages git operations including commits, branches, PR creation, and repository hygiene.
-
-**Deliverables**:
-- `.opencode/agent/subagents/specialists/git-workflow-manager.md`
-- Handles: commit message generation, branch management, PR creation
-- Integration with code-reviewer specialist for pre-commit checks
-
-**Files to Create**:
-- `.opencode/agent/subagents/specialists/git-workflow-manager.md`
-
----
-
-### System Enhancement - Context Files
-
-### 65. Populate context/logic/processes/ Directory
-**Effort**: 4-6 hours
-**Status**: [IN PROGRESS]
-**Started**: 2025-12-19
-**Priority**: Medium (knowledge base)
-**Blocking**: None
-**Dependencies**: None
-
-**Description**: Research and populate context/logic/processes/ directory with modal logic proof processes, strategies, and workflows.
-
-**Content to Include**:
-- Modal logic proof strategies
-- Temporal logic proof patterns
-- Proof construction workflows
-- Proof verification processes
-
-**Files to Create**:
-- `context/logic/processes/modal-proof-strategies.md`
-- `context/logic/processes/temporal-proof-strategies.md`
-- `context/logic/processes/proof-construction.md`
-- `context/logic/processes/verification-workflow.md`
-
----
-
-### 66. Populate context/logic/standards/ Directory
-**Effort**: 3-5 hours
-**Status**: [IN PROGRESS]
-**Started**: 2025-12-19
-**Priority**: Medium (knowledge base)
-**Blocking**: None
-**Dependencies**: None
-
-**Description**: Research and populate context/logic/standards/ directory with modal logic coding standards, proof conventions, and best practices.
-
-**Content to Include**:
-- Modal logic notation standards
-- Proof style conventions
-- Kripke semantics best practices
-- Axiom naming conventions
-
-**Files to Create**:
-- `context/logic/standards/notation-standards.md`
-- `context/logic/standards/proof-conventions.md`
-- `context/logic/standards/kripke-semantics.md`
-- `context/logic/standards/naming-conventions.md`
-
----
-
 ### Proof System Enhancements
-
-### 72. Phase 1 - Core Definition Migration (Derivation.lean)
-**Effort**: 6-8 hours
-**Status**: Not Started
-**Priority**: High (blocks all other migration phases)
-**Blocking**: Tasks 73-78
-**Dependencies**: None
-
-**Description**: Migrate `Logos/Core/ProofSystem/Derivation.lean` from `Derivable : Prop` to `DerivationTree : Type`. This is the critical first phase that enables all subsequent migration work.
-
-**Implementation Steps**:
-1. Update inductive type declaration (Prop → Type)
-2. Remove 7 height axioms (lines 168-222)
-3. Add computable height function via pattern matching
-4. Prove 6 height properties as theorems (using simp + omega)
-5. Update notation and examples
-6. Verify compilation and zero sorry statements
-
-**Files Affected**:
-- `Logos/Core/ProofSystem/Derivation.lean`
-
-**Success Criteria**:
-- [ ] Inductive type updated to Type
-- [ ] All 7 height axioms removed
-- [ ] Computable height function implemented
-- [ ] All 6 height properties proven as theorems
-- [ ] File compiles without errors
-- [ ] Zero sorry statements
-
-**Spec**: `.opencode/specs/058_migration_to_type/plans/implementation-001.md` (Phase 1)
-
----
 
 ### 73. Phase 2 - Metalogic Proofs Migration
 **Effort**: 18-23 hours
@@ -378,86 +277,7 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 
 ---
 
-### 53. Prove Height Function Properties (Optional Enhancement)
-**Effort**: 4-6 hours
-**Status**: Not Started
-**Priority**: Medium (enhancement)
-**Blocking**: None
-**Dependencies**: None
 
-**Description**: The `Derivable.height` function and its 7 properties are currently axiomatized in `Derivation.lean`. While this is sound and standard practice for `Prop` types in Lean 4, they could theoretically be proven if we change `Derivable` from `Prop` to `Type`.
-
-**Current State**:
-- `Derivable.height` is axiomatized (line 177)
-- 7 height properties are axiomatized (lines 183-227)
-- This is sound because the properties follow from the recursive definition
-
-**Alternative Approach** (if desired):
-1. Change `Derivable` from `inductive ... : Prop` to `inductive ... : Type`
-2. Define `height` recursively using pattern matching
-3. Prove the 7 properties as theorems
-4. Update all uses of `Derivable` throughout codebase
-
-**Pros**:
-- Fully proven properties (no axioms)
-- Computable height function
-
-**Cons**:
-- Major refactoring required (100+ files)
-- Breaks proof irrelevance (Derivable becomes data)
-- Not standard practice in Lean 4 for proof systems
-- No practical benefit (axiomatization is sound)
-
-**Recommendation**: Keep axiomatized unless there's a specific need for computation
-
-**Files Affected**:
-- `Logos/Core/ProofSystem/Derivation.lean`
-- All files using `Derivable` (100+ files)
-
-**Impact**: Very Low - current axiomatization is sound and standard
-
----
-
-### 57. Implement Dual-Type Approach for Proof Extraction
-**Effort**: 15-20 hours
-**Status**: Not Started
-**Priority**: Medium (future enhancement for external tool integration)
-**Blocking**: None
-**Dependencies**: None
-**GitHub Issue**: https://github.com/benbrastmckie/ProofChecker/issues/2
-
-**Description**: Implement a computational `DerivationTree` type alongside the existing `Derivable` Prop to enable proof extraction for external tools and certified proof checking with explicit derivation trees.
-
-**Motivation**: While the current axiomatized height function approach is sound and standard for `Prop` types, a dual-type approach provides:
-- Proof extraction to external proof checkers
-- Certified checking with explicit derivation structure
-- Computable height and complexity metrics
-- Proof search algorithms that inspect derivation structure
-- Maintains proof irrelevance for theorems via existing `Derivable` Prop
-
-**Implementation Tasks**:
-1. Create `DerivationTree` inductive type in `Logos/Core/ProofSystem/DerivationTree.lean`
-2. Define computable functions: `tree_height`, `tree_complexity`, etc.
-3. Prove soundness: `tree_to_derivable : DerivationTree Γ φ → Derivable Γ φ`
-4. Add proof extraction/export to standard formats (OpenTheory, Coq, etc.)
-5. Write tests in `LogosTest/ProofSystem/DerivationTreeTest.lean`
-6. Document usage in `Documentation/UserGuide/EXAMPLES.md`
-
-**Files to Create/Modify**:
-- `Logos/Core/ProofSystem/DerivationTree.lean` (NEW)
-- `Logos/Core/ProofSystem.lean` (add export)
-- `LogosTest/ProofSystem/DerivationTreeTest.lean` (NEW)
-- `Documentation/UserGuide/EXAMPLES.md` (add proof extraction examples)
-
-**When to Implement**: Consider when Logos needs integration with external proof checkers, proof search requiring derivation inspection, or export to other proof assistants.
-
-**References**: 
-- Research report: `.claude/research/height-function-axiomatization-report.md` (Section 4.2)
-- Related: Task 53 (optional height function enhancement)
-
-**Impact**: Medium - enhancement for future use cases, enables external tool integration
-
----
 
 ## Low Priority Tasks
 
@@ -535,70 +355,93 @@ This file tracks active development tasks for Logos. Completed tasks are removed
 
 ## Completion History
 
-### Recently Completed (Last 16)
+### Recently Completed (Last 22)
 
-1. **Task 71**: Populate context/math/linear-algebra/ Directory ✅ (2025-12-19)
-   - Research and populated linear algebra directory
-   - [Archive](.opencode/specs/archive/071_linear_algebra/)
+1. **Task 72**: Phase 1 - Core Definition Migration (Derivation.lean) ✅ (2025-12-19)
+   - Migrated Derivation.lean from `Derivable : Prop` to `DerivationTree : Type`
+   - Removed 7 height axioms, proved 6 height properties as theorems
+   - Zero sorry statements, file compiles successfully
+   - Git commit: dfefea6
+   - [Summary](.opencode/specs/072_phase1_migration/summaries/implementation-summary-001.md)
 
-2. **Task 70**: Populate context/math/category-theory/ Directory ✅ (2025-12-19)
-   - Research and populated category theory directory
-   - [Archive](.opencode/specs/archive/070_category_theory/)
-
-3. **Task 69**: Populate context/math/analysis/ Directory ✅ (2025-12-19)
-   - Research and populated math analysis directory
-   - [Archive](.opencode/specs/archive/069_math_analysis/)
-
-4. **Task 68**: Populate context/logic/patterns/ Directory ✅ (2025-12-19)
-   - Research and populated logic patterns directory
-   - [Archive](.opencode/specs/archive/068_logic_patterns/)
-
-5. **Task 67**: Populate context/logic/templates/ Directory ✅ (2025-12-19)
-   - Research and populated logic templates directory
-   - [Archive](.opencode/specs/archive/067_logic_templates/)
-
-6. **Task 63**: Create Example-Builder Specialist ✅ (2025-12-19)
+2. **Task 63**: Create Example-Builder Specialist ✅ (2025-12-19)
    - Created example-builder specialist for LEAN 4 theorems
    - [Archive](.opencode/specs/archive/063_example_builder/)
 
-7. **Task 62**: Complete Docstring Coverage to 100% ✅ (2025-12-19)
-   - Verified 100% docstring coverage across all Logos modules
-   - [Archive](.opencode/specs/archive/062_docstring_coverage/)
+2. **Task 64**: Create Git-Workflow-Manager Specialist ✅ (2025-12-19)
+   - Created git-workflow-manager specialist for repository operations
+   - [Archive](.opencode/specs/archive/064_git_workflow_manager/)
 
-8. **Task 61**: Add Missing Directory READMEs ✅ (2025-12-18)
-   - Created Perpetuity/README.md and Automation/README.md
-   - [Archive](.opencode/specs/archive/061_add_missing_directory_readmes/)
+3. **Task 65**: Populate context/logic/processes/ Directory ✅ (2025-12-19)
+   - Research and populated logic processes directory
+   - [Archive](.opencode/specs/archive/065_logic_processes/)
 
-9. **Task 60**: Remove Backup Artifacts ✅ (2025-12-16)
-   - Removed Bridge.lean.backup, enhanced .gitignore
-   - [Archive](.opencode/specs/archive/060_remove_backup_artifacts/)
+4. **Task 66**: Populate context/logic/standards/ Directory ✅ (2025-12-19)
+   - Created 4 comprehensive standards files for modal logic
+   - Files: notation-standards.md, proof-conventions.md, kripke-semantics.md, naming-conventions.md
 
-10. **Task 59**: Update IMPLEMENTATION_STATUS.md ✅ (2025-12-16)
+5. **Task 71**: Populate context/math/linear-algebra/ Directory ✅ (2025-12-19)
+   - Research and populated linear algebra directory
+   - [Archive](.opencode/specs/archive/071_linear_algebra/)
+
+6. **Task 70**: Populate context/math/category-theory/ Directory ✅ (2025-12-19)
+   - Research and populated category theory directory
+   - [Archive](.opencode/specs/archive/070_category_theory/)
+
+7. **Task 69**: Populate context/math/analysis/ Directory ✅ (2025-12-19)
+   - Research and populated math analysis directory
+   - [Archive](.opencode/specs/archive/069_math_analysis/)
+
+8. **Task 68**: Populate context/logic/patterns/ Directory ✅ (2025-12-19)
+   - Research and populated logic patterns directory
+   - [Archive](.opencode/specs/archive/068_logic_patterns/)
+
+9. **Task 67**: Populate context/logic/templates/ Directory ✅ (2025-12-19)
+   - Research and populated logic templates directory
+   - [Archive](.opencode/specs/archive/067_logic_templates/)
+
+10. **Task 62**: Complete Docstring Coverage to 100% ✅ (2025-12-19)
+    - Verified 100% docstring coverage across all Logos modules
+    - [Archive](.opencode/specs/archive/062_docstring_coverage/)
+
+11. **Task 61**: Add Missing Directory READMEs ✅ (2025-12-18)
+    - Created Perpetuity/README.md and Automation/README.md
+    - [Archive](.opencode/specs/archive/061_add_missing_directory_readmes/)
+
+12. **Task 60**: Remove Backup Artifacts ✅ (2025-12-16)
+    - Removed Bridge.lean.backup, enhanced .gitignore
+    - [Archive](.opencode/specs/archive/060_remove_backup_artifacts/)
+
+13. **Task 59**: Update IMPLEMENTATION_STATUS.md ✅ (2025-12-16)
     - Updated DeductionTheorem.lean status to 100% complete
     - [Archive](.opencode/specs/archive/059_implementation_status_update/)
 
-11. **Task 56**: Implement Missing Helper Lemmas for Bridge.lean ✅ (2025-12-16)
+14. **Task 56**: Implement Missing Helper Lemmas for Bridge.lean ✅ (2025-12-16)
     - Verified all lemmas already implemented (zero sorry)
     - [Archive](.opencode/specs/archive/056_bridge_helper_lemmas/)
 
-12. **Task 52**: Fix AesopRules.lean Duplicate Declaration ✅ (2025-12-15)
+15. **Task 52**: Fix AesopRules.lean Duplicate Declaration ✅ (2025-12-15)
     - Fixed critical compilation issue
     - [Archive](.opencode/specs/archive/052_fix_aesop_duplicate/)
 
-13. **Task 46**: Deduction Theorem - FULLY COMPLETE ✅ (2025-12-15)
+16. **Task 46**: Deduction Theorem - FULLY COMPLETE ✅ (2025-12-15)
     - Zero sorry, complete termination proofs
     - See git history for details
 
-14. **Task 42b**: Bridge.lean Compilation Fixes ✅ (2025-12-15)
+17. **Task 42b**: Bridge.lean Compilation Fixes ✅ (2025-12-15)
     - Fixed compilation errors, confirmed theorems
     - See git history for details
 
-15. **Task 42a**: Temporal Axiom Derivation ✅ (2025-12-15)
+18. **Task 42a**: Temporal Axiom Derivation ✅ (2025-12-15)
     - future_k_dist and always_mono derived as theorems
     - See git history for details
 
-16. **Task 48**: Derivable.height Fix ✅ (2025-12-15)
+19. **Task 48**: Derivable.height Fix ✅ (2025-12-15)
     - Fixed height function implementation
+    - See git history for details
+
+20. **Task 43**: Axiom Refactoring ✅ (2025-12-14)
+    - Refactored axiom system
     - See git history for details
 
 **View All Completions**:
@@ -643,4 +486,4 @@ To mark tasks complete, remove them from active sections (git tracks history).
 
 ---
 
-**Last Updated**: 2025-12-19 (TODO maintenance: 7 tasks archived [62, 63, 67-71]; 40 active tasks: 6 high priority + 31 medium priority + 3 low priority)
+**Last Updated**: 2025-12-19 (TODO maintenance: Tasks 53 and 57 removed as obsolete; 32 active tasks: 5 high priority + 24 medium priority + 3 low priority)

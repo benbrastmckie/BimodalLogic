@@ -76,7 +76,7 @@ Formally: `Consistent Γ ↔ ¬(Γ ⊢ ⊥)`
 - `[p]` is consistent for atomic `p`
 - `[p, ¬p]` is inconsistent (derives ⊥ via propositional reasoning)
 -/
-def Consistent (Γ : Context) : Prop := ¬(Derivable Γ Formula.bot)
+def Consistent (Γ : Context) : Prop := ¬(DerivationTree Γ Formula.bot)
 
 /--
 A context `Γ` is **maximal consistent** if it's consistent and adding any
@@ -139,7 +139,7 @@ Maximal consistent sets are deductively closed.
 **Note**: Requires deduction theorem for TM logic.
 -/
 axiom maximal_consistent_closed (Γ : Context) (φ : Formula) :
-  MaximalConsistent Γ → Derivable Γ φ → φ ∈ Γ
+  MaximalConsistent Γ → DerivationTree Γ φ → φ ∈ Γ
 
 /--
 Maximal consistent sets are negation complete.
@@ -307,7 +307,7 @@ The main results connecting semantic validity with syntactic derivability.
 /--
 **Weak Completeness**: Every valid formula is provable.
 
-**Statement**: `valid φ → Derivable [] φ`
+**Statement**: `valid φ → DerivationTree [] φ`
 
 Equivalently: `(∀ F M τ t, truth_at M τ t φ) → (⊢ φ)`
 
@@ -324,12 +324,12 @@ Equivalently: `(∀ F M τ t, truth_at M τ t φ) → (⊢ φ)`
 
 **Complexity**: ~10-15 hours (builds on truth lemma)
 -/
-axiom weak_completeness (φ : Formula) : valid φ → Derivable [] φ
+axiom weak_completeness (φ : Formula) : valid φ → DerivationTree [] φ
 
 /--
 **Strong Completeness**: Semantic consequence implies syntactic derivability.
 
-**Statement**: `semantic_consequence Γ φ → Derivable Γ φ`
+**Statement**: `semantic_consequence Γ φ → DerivationTree Γ φ`
 
 Equivalently: `(∀ F M τ t, (∀ ψ ∈ Γ, truth_at M τ t ψ) → truth_at M τ t φ) → (Γ ⊢ φ)`
 
@@ -345,7 +345,7 @@ Equivalently: `(∀ F M τ t, (∀ ψ ∈ Γ, truth_at M τ t ψ) → truth_at M
 **Complexity**: ~10-15 hours (similar to weak completeness)
 -/
 axiom strong_completeness (Γ : Context) (φ : Formula) :
-  semantic_consequence Γ φ → Derivable Γ φ
+  semantic_consequence Γ φ → DerivationTree Γ φ
 
 /-!
 ## Decidability (Optional Extension)
@@ -360,7 +360,7 @@ Completeness + Soundness enable decidability results.
 
 **Proof**: Combine `soundness` and `weak_completeness`.
 -/
-theorem provable_iff_valid (φ : Formula) : Derivable [] φ ↔ valid φ := by
+theorem provable_iff_valid (φ : Formula) : DerivationTree [] φ ↔ valid φ := by
   constructor
   · intro h
     -- Soundness direction

@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker project. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-19T00:00:00Z",
+  "_last_updated": "2025-12-19T12:00:00Z",
   
   "state_references": {
     "archive_state_path": ".opencode/specs/archive/state.json",
@@ -11,6 +11,13 @@
   
   "active_projects": [],
   "completed_projects": [
+    {
+      "project_number": 5,
+      "project_name": "research_task_vs_lean_implement",
+      "type": "research",
+      "completed": "2025-12-19T12:00:00Z",
+      "summary": "Comparative analysis of /task vs /lean commands - Identified 14 missing specialist agents, clarified command usage"
+    },
     {
       "project_number": 4,
       "project_name": "review_20251216",
@@ -88,8 +95,14 @@
       "archived": "2025-12-18T00:00:00Z"
     }
   ],
-  "next_project_number": 5,
+  "next_project_number": 6,
   "recent_activities": [
+    {
+      "type": "research",
+      "project_number": 5,
+      "timestamp": "2025-12-19T12:00:00Z",
+      "summary": "Comparative analysis of /task vs /lean commands complete. Key finding: 14 specialist agents referenced in architecture but NOT FOUND in codebase. 3 CRITICAL missing: tactic-specialist, term-mode-specialist, metaprogramming-specialist. Commands are complementary, not interchangeable."
+    },
     {
       "type": "maintenance",
       "timestamp": "2025-12-19T12:00:00Z",
