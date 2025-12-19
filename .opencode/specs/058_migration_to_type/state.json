@@ -1,0 +1,18 @@
+{
+  "project_number": 58,
+  "project_name": "migration_to_type",
+  "status": "in_progress",
+  "created": "2025-12-19",
+  "description": "Migration plan for converting Derivable : Prop to DerivationTree : Type",
+  "artifacts": {
+    "migration_plan": ".opencode/specs/058_migration_to_type/reports/migration-plan-001.md",
+    "risk_analysis": ".opencode/specs/058_migration_to_type/reports/risk-analysis.md",
+    "code_patterns": ".opencode/specs/058_migration_to_type/reports/code-patterns.md"
+  },
+  "metadata": {
+    "research_basis": "057_deep_embedding_research",
+    "decision": "user_override",
+    "previous_recommendation": "keep_dual_type",
+    "user_decision": "migrate_to_type"
+  }
+}

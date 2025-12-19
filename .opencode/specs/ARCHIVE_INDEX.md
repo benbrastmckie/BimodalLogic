@@ -1,152 +1,128 @@
-# Archive Index - Completed Projects
+# ARCHIVE_INDEX.md - DEPRECATED
 
-**Last Updated**: 2025-12-19  
-**Purpose**: Track archived completed projects for historical reference
+**This file has been replaced by `archive/state.json`**
 
----
+**New Location**: `.opencode/specs/archive/state.json`
 
-## Archive Structure
-
-The `.opencode/specs/archive/` directory contains completed projects that have been moved from active development. All artifacts (plans, summaries, state.json) are preserved for historical reference.
-
-### Archive Location
-```
-.opencode/specs/archive/
-```
+**Deprecation Date**: 2025-12-19  
+**Migration**: Phase 3 - Data Migration (Maintenance Artifact Redesign)
 
 ---
 
-## Archived Projects
+## Why the change?
 
-### 061_add_missing_directory_readmes (Archived: 2025-12-19)
-- **Completed**: 2025-12-18
-- **Type**: Documentation
-- **Summary**: Created Perpetuity/README.md and Automation/README.md
-- **Impact**: Repository organization score 100/100
-- **Artifacts**:
-  - Implementation plan: `plans/implementation-001.md`
-  - Task summary: `summaries/task-summary.md`
-  - State: `state.json`
+The archive tracking system has been migrated to a machine-readable JSON format for improved automation and consistency:
 
-### 059_implementation_status_update (Archived: 2025-12-19)
-- **Completed**: 2025-12-16
-- **Type**: Documentation
-- **Summary**: Updated IMPLEMENTATION_STATUS.md for DeductionTheorem completion
-- **Impact**: Documentation accuracy (Task 46 reflected)
-- **Artifacts**:
-  - Implementation plan: `plans/implementation-001.md`
-  - Task summary: `summaries/task-summary.md`
-
-### 056_bridge_helper_lemmas (Archived: 2025-12-19)
-- **Completed**: 2025-12-16
-- **Type**: Verification
-- **Summary**: Verified all Bridge.lean helper lemmas already implemented
-- **Impact**: Confirmed zero blocking issues
-- **Artifacts**:
-  - Completion verification plan: `plans/completion-verification-001.md`
-  - Task summary: `summaries/task-summary.md`
-  - State: `state.json`
-
-### 052_fix_aesop_duplicate (Archived: 2025-12-19)
-- **Completed**: 2025-12-15 (estimated)
-- **Type**: Bugfix
-- **Summary**: Fixed AesopRules.lean duplicate declaration
-- **Impact**: Critical compilation fix
-- **Artifacts**:
-  - Implementation plan: `plans/implementation-001.md`
-  - Task summary: `summaries/task-summary.md`
-  - State: `state.json`
+- **Machine-readable state** enables automation and programmatic queries
+- **Consistent with project state management** approach (state.json pattern)
+- **Eliminates redundancy** with state.json tracking
+- **Enables efficient querying** with jq and other JSON tools
+- **Structured schema** with comprehensive metadata tracking
+- **Better integration** with maintenance workflows
 
 ---
 
-## Manual Archiving Instructions
+## How to query archives
 
-To physically move projects to archive (requires shell access):
+### List all archived projects
 
 ```bash
-# Create archive directory if it doesn't exist
-mkdir -p .opencode/specs/archive
-
-# Move completed projects to archive
-mv .opencode/specs/052_fix_aesop_duplicate .opencode/specs/archive/
-mv .opencode/specs/056_bridge_helper_lemmas .opencode/specs/archive/
-mv .opencode/specs/059_implementation_status_update .opencode/specs/archive/
-mv .opencode/specs/061_add_missing_directory_readmes .opencode/specs/archive/
-
-# Verify archive structure
-ls -la .opencode/specs/archive/
-
-# Commit archiving
-git add .opencode/specs/archive/
-git add .opencode/specs/state.json
-git add .opencode/specs/ARCHIVE_INDEX.md
-git commit -m "Maintenance: Archive completed projects"
+jq -r '.archived_projects[] | "\(.project_number) - \(.project_name)"' \
+  .opencode/specs/archive/state.json
 ```
 
----
-
-## Archive Access
-
-### Viewing Archived Projects
+### Find projects by type
 
 ```bash
-# List all archived projects
-ls -1 .opencode/specs/archive/
+# Documentation projects
+jq '.archived_projects[] | select(.project_type == "documentation")' \
+  .opencode/specs/archive/state.json
 
-# View specific project artifacts
-cat .opencode/specs/archive/052_fix_aesop_duplicate/plans/implementation-001.md
-
-# Search archives for specific information
-grep -r "Task" .opencode/specs/archive/
+# Bugfix projects
+jq '.archived_projects[] | select(.project_type == "bugfix")' \
+  .opencode/specs/archive/state.json
 ```
 
-### Git History
-
-All archived projects are also accessible via git history:
+### Find projects by date
 
 ```bash
-# View project history
-git log --all --grep="Task 52" --oneline
+# Projects completed on specific date
+jq '.archived_projects[] | select(.timeline.completed | startswith("2025-12-18"))' \
+  .opencode/specs/archive/state.json
 
-# View file history before archiving
-git log --follow -- .opencode/specs/archive/052_fix_aesop_duplicate/plans/implementation-001.md
+# Projects archived in December 2025
+jq '.archived_projects[] | select(.timeline.archived | startswith("2025-12"))' \
+  .opencode/specs/archive/state.json
+```
+
+### Get statistics
+
+```bash
+# Overall statistics
+jq '.statistics' .opencode/specs/archive/state.json
+
+# Projects by type
+jq '.statistics.by_type' .opencode/specs/archive/state.json
+
+# Projects by priority
+jq '.statistics.by_priority' .opencode/specs/archive/state.json
+```
+
+### Search by module
+
+```bash
+# Find projects affecting specific module
+jq '.search_index.by_module."Logos.Core.Automation"' \
+  .opencode/specs/archive/state.json
+```
+
+### Get project details
+
+```bash
+# Get full details for project 062
+jq '.archived_projects[] | select(.project_number == 62)' \
+  .opencode/specs/archive/state.json
+
+# Get summary for all projects
+jq '.archived_projects[] | {number: .project_number, name: .project_name, type: .project_type, completed: .timeline.completed}' \
+  .opencode/specs/archive/state.json
 ```
 
 ---
 
-## Retention Policy
+## Documentation
 
-- **Retention**: Indefinite (all archives preserved)
-- **Access**: Read-only (archives are not modified after creation)
-- **Backup**: Included in git repository backups
-- **Cleanup**: No automatic cleanup (manual review after 1 year if needed)
+For complete documentation on the new archive state system, see:
 
----
-
-## Statistics
-
-- **Total Archived Projects**: 4
-- **Archive Date Range**: 2025-12-15 to 2025-12-19
-- **Total Artifacts Preserved**: 12+ files (plans, summaries, state files)
-- **Disk Space**: ~300KB (estimated)
-
-## Active Projects (Not Yet Archived)
-
-### 060_remove_backup_artifacts
-- **Status**: Complete (ready for archiving)
-- **Completed**: 2025-12-16
-- **Type**: Maintenance
-- **Location**: `.opencode/specs/060_remove_backup_artifacts/`
-- **Note**: Fully complete and verified - can be archived
-
-### 062_docstring_coverage
-- **Status**: In Progress (~95-98% complete, target 100%)
-- **Started**: 2025-12-16
-- **Type**: Documentation
-- **Location**: `.opencode/specs/062_docstring_coverage/`
-- **Note**: Partial completion - 3 docstrings added, ~20 files still need coverage
+- **Schema Guide**: `.opencode/specs/STATE_SCHEMA_GUIDE.md`
+- **Migration Guide**: `.opencode/specs/maintenance/MIGRATION.md`
+- **Quick Reference**: `.opencode/specs/maintenance/QUICK_REFERENCE.md`
 
 ---
 
-**Last Updated**: 2025-12-19  
-**Maintained By**: OpenCode Assistant
+## Current Archive Contents
+
+As of 2025-12-19, the archive contains **6 completed projects**:
+
+1. **052_fix_aesop_duplicate** (2025-12-15) - Bugfix
+2. **056_bridge_helper_lemmas** (2025-12-16) - Verification
+3. **059_implementation_status_update** (2025-12-16) - Documentation
+4. **060_remove_backup_artifacts** (2025-12-16) - Maintenance
+5. **061_add_missing_directory_readmes** (2025-12-18) - Documentation
+6. **062_docstring_coverage** (2025-12-18) - Documentation
+
+All project artifacts are preserved in `.opencode/specs/archive/{project_number}_{project_name}/`
+
+---
+
+## Backward Compatibility
+
+This file is kept in place for backward compatibility and to provide a migration notice. It will not be updated with new archive entries. All future archive tracking will be done through `archive/state.json`.
+
+**For the latest archive information, always consult**: `.opencode/specs/archive/state.json`
+
+---
+
+**Deprecated**: 2025-12-19  
+**Replacement**: `.opencode/specs/archive/state.json`  
+**Documentation**: `.opencode/specs/STATE_SCHEMA_GUIDE.md`

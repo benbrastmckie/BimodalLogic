@@ -137,9 +137,12 @@
       
       "artifacts": {
         "reports": [
-          ".opencode/specs/maintenance/maintenance-report-20251219.md",
-          ".opencode/specs/maintenance/codebase-scan-20251219.md",
-          ".opencode/specs/maintenance/todo-cleanup-20251219.md"
+          ".opencode/specs/maintenance/report-20251219.md"
+        ],
+        "legacy_reports": [
+          ".opencode/specs/maintenance/archive/legacy/maintenance-report-20251219.md",
+          ".opencode/specs/maintenance/archive/legacy/codebase-scan-20251219.md",
+          ".opencode/specs/maintenance/archive/legacy/todo-cleanup-20251219.md"
         ],
         "updated_files": [
           ".opencode/specs/TODO.md",
@@ -223,7 +226,10 @@
       
       "artifacts": {
         "reports": [
-          ".opencode/specs/maintenance/reports/maintenance-20251218.md"
+          ".opencode/specs/maintenance/report-20251218.md"
+        ],
+        "legacy_reports": [
+          ".opencode/specs/maintenance/archive/legacy/maintenance-20251218.md"
         ],
         "updated_files": [
           ".opencode/specs/state.json",
