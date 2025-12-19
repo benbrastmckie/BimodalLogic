@@ -65,7 +65,7 @@ So: `A ∨ ¬A = ¬A → ¬A = identity ¬A`
 
 Therefore: `⊢ A ∨ ¬A` is immediate from identity.
 -/
-theorem lem (A : Formula) : ⊢ A.or A.neg := by
+def lem (A : Formula) : ⊢ A.or A.neg := by
   -- A ∨ ¬A = ¬A → ¬A (by definition of disjunction)
   unfold Formula.or
   -- Now goal is: ⊢ A.neg.imp A.neg
@@ -79,8 +79,8 @@ This section defines axiom wrappers (efq_axiom, peirce_axiom) and derives
 the double negation elimination theorem from these axioms.
 -/
 
-theorem efq_axiom (φ : Formula) : ⊢ Formula.bot.imp φ :=
-  Derivable.axiom [] _ (Axiom.ex_falso φ)
+def efq_axiom (φ : Formula) : ⊢ Formula.bot.imp φ :=
+  DerivationTree.axiom [] _ (Axiom.ex_falso φ)
 
 /--
 Peirce's Law (axiomatic): `⊢ ((φ → ψ) → φ) → φ`.
@@ -89,8 +89,8 @@ Classical reasoning in pure implicational form. This is now an axiom.
 
 This theorem provides a convenient wrapper around Peirce's Law axiom for use in proofs.
 -/
-theorem peirce_axiom (φ ψ : Formula) : ⊢ ((φ.imp ψ).imp φ).imp φ :=
-  Derivable.axiom [] _ (Axiom.peirce φ ψ)
+def peirce_axiom (φ ψ : Formula) : ⊢ ((φ.imp ψ).imp φ).imp φ :=
+  DerivationTree.axiom [] _ (Axiom.peirce φ ψ)
 
 /-!
 ## Derivable Classical Principles
@@ -135,7 +135,7 @@ No circular dependencies - b_combinator is derived from K and S without using DN
 **Historical Note**: Previously an axiom, now a derived theorem. This change
 improves the foundational structure without affecting derivational power.
 -/
-theorem double_negation (φ : Formula) : ⊢ φ.neg.neg.imp φ := by
+def double_negation (φ : Formula) : ⊢ φ.neg.neg.imp φ := by
   -- ¬¬φ = (φ → ⊥) → ⊥ (definition)
   unfold Formula.neg
 
@@ -161,7 +161,7 @@ theorem double_negation (φ : Formula) : ⊢ φ.neg.neg.imp φ := by
   -- Step 4: Apply modus ponens with efq_inst
   have step1 : ⊢ ((φ.imp Formula.bot).imp Formula.bot).imp
                   ((φ.imp Formula.bot).imp φ) :=
-    Derivable.modus_ponens [] _ _ b_inst efq_inst
+    DerivationTree.modus_ponens [] _ _ b_inst efq_inst
 
   -- Step 5: Now compose with Peirce
   -- We have: ((φ → ⊥) → ⊥) → ((φ → ⊥) → φ)  [step1]
@@ -179,10 +179,10 @@ theorem double_negation (φ : Formula) : ⊢ φ.neg.neg.imp φ := by
   have step2 : ⊢ (((φ.imp Formula.bot).imp Formula.bot).imp
                    ((φ.imp Formula.bot).imp φ)).imp
                   (((φ.imp Formula.bot).imp Formula.bot).imp φ) :=
-    Derivable.modus_ponens [] _ _ b_final peirce_inst
+    DerivationTree.modus_ponens [] _ _ b_final peirce_inst
 
   -- Step 7: Final modus ponens
-  exact Derivable.modus_ponens [] _ _ step2 step1
+  exact DerivationTree.modus_ponens [] _ _ step2 step1
 
 /-!
 ## Phase 1: Propositional Foundations
@@ -190,7 +190,7 @@ theorem double_negation (φ : Formula) : ⊢ φ.neg.neg.imp φ := by
 Core propositional theorems for negation, conjunction, disjunction, and contraposition.
 -/
 
-theorem ecq (A B : Formula) : [A, A.neg] ⊢ B := by
+def ecq (A B : Formula) : [A, A.neg] ⊢ B := by
   -- Goal: [A, ¬A] ⊢ B where ¬A = A → ⊥
   -- From ¬A in context, we have A → ⊥
   -- From A in context, we get ⊥
@@ -198,33 +198,33 @@ theorem ecq (A B : Formula) : [A, A.neg] ⊢ B := by
 
   -- Step 1: Get ¬A from context (second assumption)
   have h_neg_a : [A, A.neg] ⊢ A.neg := by
-    apply Derivable.assumption
+    apply DerivationTree.assumption
     simp
 
   -- Step 2: Get A from context (first assumption)
   have h_a : [A, A.neg] ⊢ A := by
-    apply Derivable.assumption
+    apply DerivationTree.assumption
     simp
 
   -- Step 3: Apply modus ponens to get ⊥
   -- ¬A = A → ⊥, so from A and (A → ⊥), we get ⊥
   have h_bot : [A, A.neg] ⊢ Formula.bot :=
-    Derivable.modus_ponens [A, A.neg] A Formula.bot h_neg_a h_a
+    DerivationTree.modus_ponens [A, A.neg] A Formula.bot h_neg_a h_a
 
   -- Step 4: From ⊥, derive B using DNE
   -- We derive ¬¬B from ⊥, then apply DNE
 
   -- By prop_s: ⊥ → (B.neg → ⊥) which is ⊥ → ¬¬B
   have bot_to_neg_neg_b : ⊢ Formula.bot.imp B.neg.neg :=
-    Derivable.axiom [] _ (Axiom.prop_s Formula.bot B.neg)
+    DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot B.neg)
 
   -- Weaken to context
   have bot_to_neg_neg_b_ctx : [A, A.neg] ⊢ Formula.bot.imp B.neg.neg :=
-    Derivable.weakening [] [A, A.neg] _ bot_to_neg_neg_b (by intro; simp)
+    DerivationTree.weakening [] [A, A.neg] _ bot_to_neg_neg_b (by intro; simp)
 
   -- Apply modus ponens to get ¬¬B from ⊥
   have neg_neg_b : [A, A.neg] ⊢ B.neg.neg :=
-    Derivable.modus_ponens [A, A.neg] Formula.bot B.neg.neg bot_to_neg_neg_b_ctx h_bot
+    DerivationTree.modus_ponens [A, A.neg] Formula.bot B.neg.neg bot_to_neg_neg_b_ctx h_bot
 
   -- Now use DNE: ¬¬B → B
   have dne_b : ⊢ B.neg.neg.imp B :=
@@ -232,10 +232,10 @@ theorem ecq (A B : Formula) : [A, A.neg] ⊢ B := by
 
   -- Weaken to context [A, ¬A]
   have dne_b_ctx : [A, A.neg] ⊢ B.neg.neg.imp B :=
-    Derivable.weakening [] [A, A.neg] _ dne_b (by intro; simp)
+    DerivationTree.weakening [] [A, A.neg] _ dne_b (by intro; simp)
 
   -- Apply modus ponens to get B
-  exact Derivable.modus_ponens [A, A.neg] B.neg.neg B dne_b_ctx neg_neg_b
+  exact DerivationTree.modus_ponens [A, A.neg] B.neg.neg B dne_b_ctx neg_neg_b
 
 /--
 Reductio ad Absurdum: `⊢ A → (¬A → B)`.
@@ -250,7 +250,7 @@ Proof:
 2. Use deduction theorem pattern to lift to `⊢ A → (¬A → B)`
 -/
 
-theorem raa (A B : Formula) : ⊢ A.imp (A.neg.imp B) := by
+def raa (A B : Formula) : ⊢ A.imp (A.neg.imp B) := by
   -- We need to show: ⊢ A → (¬A → B)
   -- Strategy: From A and ¬A, we get ⊥, then from ⊥ we derive B
 
@@ -272,7 +272,7 @@ theorem raa (A B : Formula) : ⊢ A.imp (A.neg.imp B) := by
     @b_combinator A.neg Formula.bot B
 
   have step2 : ⊢ A.neg.neg.imp (A.neg.imp B) :=
-    Derivable.modus_ponens [] _ _ b_inner bot_to_b
+    DerivationTree.modus_ponens [] _ _ b_inner bot_to_b
 
   -- Finally compose: A → ¬¬A → (¬A → B)
   have b_outer : ⊢ (A.neg.neg.imp (A.neg.imp B)).imp
@@ -280,9 +280,9 @@ theorem raa (A B : Formula) : ⊢ A.imp (A.neg.imp B) := by
     @b_combinator A A.neg.neg (A.neg.imp B)
 
   have step3 : ⊢ (A.imp A.neg.neg).imp (A.imp (A.neg.imp B)) :=
-    Derivable.modus_ponens [] _ _ b_outer step2
+    DerivationTree.modus_ponens [] _ _ b_outer step2
 
-  exact Derivable.modus_ponens [] _ _ step3 a_to_neg_a_to_bot
+  exact DerivationTree.modus_ponens [] _ _ step3 a_to_neg_a_to_bot
 
 /--
 Ex Falso Quodlibet (axiomatic): `⊢ ⊥ → φ`.
@@ -292,7 +292,7 @@ From absurdity (`⊥`), anything can be derived. This is now an axiom (EFQ).
 This theorem provides a convenient wrapper around the EFQ axiom for use in proofs.
 -/
 
-theorem efq_neg (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
+def efq_neg (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- Goal: ¬A → (A → B)
   -- We have RAA: A → (¬A → B)
   -- Apply theorem_flip
@@ -303,7 +303,7 @@ theorem efq_neg (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   have flip_inst : ⊢ (A.imp (A.neg.imp B)).imp (A.neg.imp (A.imp B)) :=
     @theorem_flip A A.neg B
 
-  exact Derivable.modus_ponens [] _ _ flip_inst raa_inst
+  exact DerivationTree.modus_ponens [] _ _ flip_inst raa_inst
 
 /--
 Ex Falso Quodlibet (backward compatibility alias).
@@ -311,7 +311,7 @@ Ex Falso Quodlibet (backward compatibility alias).
 This alias maintains backward compatibility with code using the old `efq` name.
 -/
 @[deprecated efq_neg (since := "2025-12-14")]
-theorem efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := efq_neg A B
+def efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := efq_neg A B
 
 /--
 Left Disjunction Introduction: `[A] ⊢ A ∨ B`.
@@ -323,7 +323,7 @@ If A holds, then A ∨ B holds.
 Recall: A ∨ B = ¬A → B
 From A, we need ¬A → B. From ¬A and A, we get ⊥, then B follows by EFQ.
 -/
-theorem ldi (A B : Formula) : [A] ⊢ A.or B := by
+def ldi (A B : Formula) : [A] ⊢ A.or B := by
   -- A ∨ B = ¬A → B (by definition)
   unfold Formula.or
 
@@ -339,42 +339,42 @@ theorem ldi (A B : Formula) : [A] ⊢ A.or B := by
 
   -- Get A from context
   have h_a : [A] ⊢ A := by
-    apply Derivable.assumption
+    apply DerivationTree.assumption
     simp
 
   -- Weaken EFQ to context [A]
   have efq_ctx : [A] ⊢ A.neg.imp (A.imp B) :=
-    Derivable.weakening [] [A] _ efq_inst (by intro; simp)
+    DerivationTree.weakening [] [A] _ efq_inst (by intro; simp)
 
   -- We need: ¬A → B from ¬A → (A → B) and A
 
   -- Use prop_k: (¬A → (A → B)) → ((¬A → A) → (¬A → B))
   have k_inst : ⊢ (A.neg.imp (A.imp B)).imp ((A.neg.imp A).imp (A.neg.imp B)) :=
-    Derivable.axiom [] _ (Axiom.prop_k A.neg A B)
+    DerivationTree.axiom [] _ (Axiom.prop_k A.neg A B)
 
   -- Weaken to context
   have k_ctx : [A] ⊢ (A.neg.imp (A.imp B)).imp ((A.neg.imp A).imp (A.neg.imp B)) :=
-    Derivable.weakening [] [A] _ k_inst (by intro; simp)
+    DerivationTree.weakening [] [A] _ k_inst (by intro; simp)
 
   -- Apply MP
   have step1 : [A] ⊢ (A.neg.imp A).imp (A.neg.imp B) :=
-    Derivable.modus_ponens [A] _ _ k_ctx efq_ctx
+    DerivationTree.modus_ponens [A] _ _ k_ctx efq_ctx
 
   -- Now we need: ¬A → A
   -- This is derivable from A using prop_s: A → (¬A → A)
   have s_inst : ⊢ A.imp (A.neg.imp A) :=
-    Derivable.axiom [] _ (Axiom.prop_s A A.neg)
+    DerivationTree.axiom [] _ (Axiom.prop_s A A.neg)
 
   -- Weaken to context
   have s_ctx : [A] ⊢ A.imp (A.neg.imp A) :=
-    Derivable.weakening [] [A] _ s_inst (by intro; simp)
+    DerivationTree.weakening [] [A] _ s_inst (by intro; simp)
 
   -- Apply MP to get ¬A → A
   have step2 : [A] ⊢ A.neg.imp A :=
-    Derivable.modus_ponens [A] A _ s_ctx h_a
+    DerivationTree.modus_ponens [A] A _ s_ctx h_a
 
   -- Finally, apply MP to get ¬A → B
-  exact Derivable.modus_ponens [A] _ _ step1 step2
+  exact DerivationTree.modus_ponens [A] _ _ step1 step2
 
 /--
 Right Disjunction Introduction: `[B] ⊢ A ∨ B`.
@@ -386,7 +386,7 @@ If B holds, then A ∨ B holds.
 Recall: A ∨ B = ¬A → B
 From B, we need ¬A → B, which is trivial by weakening (prop_s).
 -/
-theorem rdi (A B : Formula) : [B] ⊢ A.or B := by
+def rdi (A B : Formula) : [B] ⊢ A.or B := by
   -- A ∨ B = ¬A → B (by definition)
   unfold Formula.or
 
@@ -394,19 +394,19 @@ theorem rdi (A B : Formula) : [B] ⊢ A.or B := by
 
   -- By prop_s: B → (¬A → B)
   have s_inst : ⊢ B.imp (A.neg.imp B) :=
-    Derivable.axiom [] _ (Axiom.prop_s B A.neg)
+    DerivationTree.axiom [] _ (Axiom.prop_s B A.neg)
 
   -- Get B from context
   have h_b : [B] ⊢ B := by
-    apply Derivable.assumption
+    apply DerivationTree.assumption
     simp
 
   -- Weaken s_inst to context
   have s_ctx : [B] ⊢ B.imp (A.neg.imp B) :=
-    Derivable.weakening [] [B] _ s_inst (by intro; simp)
+    DerivationTree.weakening [] [B] _ s_inst (by intro; simp)
 
   -- Apply MP
-  exact Derivable.modus_ponens [B] B _ s_ctx h_b
+  exact DerivationTree.modus_ponens [B] B _ s_ctx h_b
 
 
 /--
@@ -422,7 +422,7 @@ Proof:
 3. DNE for A: `¬¬A → A`
 4. Compose all three using b_combinator
 -/
-theorem rcp (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.imp A := by
+def rcp (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.imp A := by
   -- Strategy: B → ¬¬B → ¬¬A → A
 
   -- Step 1: DNI for B
@@ -430,7 +430,7 @@ theorem rcp (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢
     dni B
 
   have dni_b_ctx : Γ ⊢ B.imp B.neg.neg :=
-    Derivable.weakening [] Γ _ dni_b (by intro; simp)
+    DerivationTree.weakening [] Γ _ dni_b (by intro; simp)
 
   -- Step 2: Contrapose h to get ¬¬B → ¬¬A
   -- We have h : Γ ⊢ A.neg → B.neg
@@ -458,45 +458,45 @@ theorem rcp (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢
       @theorem_flip ((B.imp Formula.bot).imp Formula.bot)
                     ((A.imp Formula.bot).imp (B.imp Formula.bot))
                     ((A.imp Formula.bot).imp Formula.bot)
-    exact Derivable.modus_ponens [] _ _ flip bc
+    exact DerivationTree.modus_ponens [] _ _ flip bc
 
   have contra_thm_ctx : Γ ⊢ (A.neg.imp B.neg).imp (B.neg.neg.imp A.neg.neg) :=
-    Derivable.weakening [] Γ _ contra_thm (by intro; simp)
+    DerivationTree.weakening [] Γ _ contra_thm (by intro; simp)
 
   have contraposed : Γ ⊢ B.neg.neg.imp A.neg.neg :=
-    Derivable.modus_ponens Γ _ _ contra_thm_ctx h
+    DerivationTree.modus_ponens Γ _ _ contra_thm_ctx h
 
   -- Step 3: Compose B → ¬¬B → ¬¬A
   have b_comp1 : ⊢ (B.neg.neg.imp A.neg.neg).imp ((B.imp B.neg.neg).imp (B.imp A.neg.neg)) :=
     @b_combinator B B.neg.neg A.neg.neg
 
   have b_comp1_ctx : Γ ⊢ (B.neg.neg.imp A.neg.neg).imp ((B.imp B.neg.neg).imp (B.imp A.neg.neg)) :=
-    Derivable.weakening [] Γ _ b_comp1 (by intro; simp)
+    DerivationTree.weakening [] Γ _ b_comp1 (by intro; simp)
 
   have step1 : Γ ⊢ (B.imp B.neg.neg).imp (B.imp A.neg.neg) :=
-    Derivable.modus_ponens Γ _ _ b_comp1_ctx contraposed
+    DerivationTree.modus_ponens Γ _ _ b_comp1_ctx contraposed
 
   have b_to_neg_neg_a : Γ ⊢ B.imp A.neg.neg :=
-    Derivable.modus_ponens Γ _ _ step1 dni_b_ctx
+    DerivationTree.modus_ponens Γ _ _ step1 dni_b_ctx
 
   -- Step 4: Apply DNE to A
   have dne_a : ⊢ A.neg.neg.imp A :=
     double_negation A
 
   have dne_a_ctx : Γ ⊢ A.neg.neg.imp A :=
-    Derivable.weakening [] Γ _ dne_a (by intro; simp)
+    DerivationTree.weakening [] Γ _ dne_a (by intro; simp)
 
   -- Step 5: Compose B → ¬¬A → A
   have b_final : ⊢ (A.neg.neg.imp A).imp ((B.imp A.neg.neg).imp (B.imp A)) :=
     @b_combinator B A.neg.neg A
 
   have b_final_ctx : Γ ⊢ (A.neg.neg.imp A).imp ((B.imp A.neg.neg).imp (B.imp A)) :=
-    Derivable.weakening [] Γ _ b_final (by intro; simp)
+    DerivationTree.weakening [] Γ _ b_final (by intro; simp)
 
   have step2 : Γ ⊢ (B.imp A.neg.neg).imp (B.imp A) :=
-    Derivable.modus_ponens Γ _ _ b_final_ctx dne_a_ctx
+    DerivationTree.modus_ponens Γ _ _ b_final_ctx dne_a_ctx
 
-  exact Derivable.modus_ponens Γ _ _ step2 b_to_neg_neg_a
+  exact DerivationTree.modus_ponens Γ _ _ step2 b_to_neg_neg_a
 
 /--
 Left Conjunction Elimination: `[A ∧ B] ⊢ A`.
@@ -512,13 +512,13 @@ From `[(A → ¬B).neg]`, we derive `A`:
 2. From conjunction in context and step 1, derive `A.neg.neg`
 3. Apply DNE to get `A`
 -/
-theorem lce (A B : Formula) : [A.and B] ⊢ A := by
+def lce (A B : Formula) : [A.and B] ⊢ A := by
   -- A ∧ B = (A → ¬B).neg
   -- Goal: from [(A → ¬B).neg] derive A
 
   -- Get conjunction from context
   have h_conj : [A.and B] ⊢ A.and B := by
-    apply Derivable.assumption
+    apply DerivationTree.assumption
     simp
 
   -- Unfold conjunction: A ∧ B = (A → B.neg).neg
@@ -532,7 +532,7 @@ theorem lce (A B : Formula) : [A.and B] ⊢ A := by
     efq A B.neg
 
   have efq_ctx : [A.and B] ⊢ A.neg.imp (A.imp B.neg) :=
-    Derivable.weakening [] [A.and B] _ efq_helper (by intro; simp)
+    DerivationTree.weakening [] [A.and B] _ efq_helper (by intro; simp)
 
   -- Now we need: (A.neg → (A → B.neg)) → ((A → B.neg).neg → A.neg.neg)
   -- This is contraposition
@@ -556,28 +556,28 @@ theorem lce (A B : Formula) : [A.and B] ⊢ A := by
       @theorem_flip ((A.imp (B.imp Formula.bot)).imp Formula.bot)
                     ((A.imp Formula.bot).imp (A.imp (B.imp Formula.bot)))
                     ((A.imp Formula.bot).imp Formula.bot)
-    exact Derivable.modus_ponens [] _ _ flip bc
+    exact DerivationTree.modus_ponens [] _ _ flip bc
 
   have contra_step_ctx :
     [A.and B] ⊢ (A.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp A.neg.neg) :=
-    Derivable.weakening [] [A.and B] _ contra_step (by intro; simp)
+    DerivationTree.weakening [] [A.and B] _ contra_step (by intro; simp)
 
   -- Apply MP to get (A → B.neg).neg → A.neg.neg
   have step1 : [A.and B] ⊢ (A.imp B.neg).neg.imp A.neg.neg :=
-    Derivable.modus_ponens [A.and B] _ _ contra_step_ctx efq_ctx
+    DerivationTree.modus_ponens [A.and B] _ _ contra_step_ctx efq_ctx
 
   -- Apply MP with conjunction to get A.neg.neg
   have neg_neg_a : [A.and B] ⊢ A.neg.neg :=
-    Derivable.modus_ponens [A.and B] _ _ step1 h_conj_unf
+    DerivationTree.modus_ponens [A.and B] _ _ step1 h_conj_unf
 
   -- Apply DNE
   have dne_a : ⊢ A.neg.neg.imp A :=
     double_negation A
 
   have dne_a_ctx : [A.and B] ⊢ A.neg.neg.imp A :=
-    Derivable.weakening [] [A.and B] _ dne_a (by intro; simp)
+    DerivationTree.weakening [] [A.and B] _ dne_a (by intro; simp)
 
-  exact Derivable.modus_ponens [A.and B] _ _ dne_a_ctx neg_neg_a
+  exact DerivationTree.modus_ponens [A.and B] _ _ dne_a_ctx neg_neg_a
 
 /--
 Right Conjunction Elimination: `[A ∧ B] ⊢ B`.
@@ -591,13 +591,13 @@ From `[(A → ¬B).neg]`, we derive `B`:
 2. From conjunction and step 1, derive `B.neg.neg`
 3. Apply DNE to get `B`
 -/
-theorem rce (A B : Formula) : [A.and B] ⊢ B := by
+def rce (A B : Formula) : [A.and B] ⊢ B := by
   -- A ∧ B = (A → ¬B).neg
   -- Goal: from [(A → ¬B).neg] derive B
 
   -- Get conjunction from context
   have h_conj : [A.and B] ⊢ A.and B := by
-    apply Derivable.assumption
+    apply DerivationTree.assumption
     simp
 
   -- Unfold conjunction
@@ -608,10 +608,10 @@ theorem rce (A B : Formula) : [A.and B] ⊢ B := by
   -- We need: B.neg → (A → B.neg)
   -- This is prop_s: B.neg → (A → B.neg)
   have s_helper : ⊢ B.neg.imp (A.imp B.neg) :=
-    Derivable.axiom [] _ (Axiom.prop_s B.neg A)
+    DerivationTree.axiom [] _ (Axiom.prop_s B.neg A)
 
   have s_ctx : [A.and B] ⊢ B.neg.imp (A.imp B.neg) :=
-    Derivable.weakening [] [A.and B] _ s_helper (by intro; simp)
+    DerivationTree.weakening [] [A.and B] _ s_helper (by intro; simp)
 
   -- Contrapose: (B.neg → (A → B.neg)) → ((A → B.neg).neg → B.neg.neg)
   have contra_step :
@@ -634,28 +634,28 @@ theorem rce (A B : Formula) : [A.and B] ⊢ B := by
       @theorem_flip ((A.imp (B.imp Formula.bot)).imp Formula.bot)
                     ((B.imp Formula.bot).imp (A.imp (B.imp Formula.bot)))
                     ((B.imp Formula.bot).imp Formula.bot)
-    exact Derivable.modus_ponens [] _ _ flip bc
+    exact DerivationTree.modus_ponens [] _ _ flip bc
 
   have contra_step_ctx :
     [A.and B] ⊢ (B.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp B.neg.neg) :=
-    Derivable.weakening [] [A.and B] _ contra_step (by intro; simp)
+    DerivationTree.weakening [] [A.and B] _ contra_step (by intro; simp)
 
   -- Apply MP
   have step1 : [A.and B] ⊢ (A.imp B.neg).neg.imp B.neg.neg :=
-    Derivable.modus_ponens [A.and B] _ _ contra_step_ctx s_ctx
+    DerivationTree.modus_ponens [A.and B] _ _ contra_step_ctx s_ctx
 
   -- Apply MP with conjunction
   have neg_neg_b : [A.and B] ⊢ B.neg.neg :=
-    Derivable.modus_ponens [A.and B] _ _ step1 h_conj_unf
+    DerivationTree.modus_ponens [A.and B] _ _ step1 h_conj_unf
 
   -- Apply DNE
   have dne_b : ⊢ B.neg.neg.imp B :=
     double_negation B
 
   have dne_b_ctx : [A.and B] ⊢ B.neg.neg.imp B :=
-    Derivable.weakening [] [A.and B] _ dne_b (by intro; simp)
+    DerivationTree.weakening [] [A.and B] _ dne_b (by intro; simp)
 
-  exact Derivable.modus_ponens [A.and B] _ _ dne_b_ctx neg_neg_b
+  exact DerivationTree.modus_ponens [A.and B] _ _ dne_b_ctx neg_neg_b
 
 /--
 Left Conjunction Elimination (Implication Form): `⊢ (A ∧ B) → A`.
@@ -670,7 +670,7 @@ The context-based version `lce` is proven. This implication form would enable:
 
 **Workaround**: Use `lce` with weakening when contexts are available.
 -/
-theorem lce_imp (A B : Formula) : ⊢ (A.and B).imp A := by
+def lce_imp (A B : Formula) : ⊢ (A.and B).imp A := by
   -- Use deduction theorem: from [A ∧ B] ⊢ A, derive ⊢ (A ∧ B) → A
   have h : [A.and B] ⊢ A := lce A B
   exact Logos.Core.Metalogic.deduction_theorem [] (A.and B) A h
@@ -688,7 +688,7 @@ The context-based version `rce` is proven. This implication form would enable:
 
 **Workaround**: Use `rce` with weakening when contexts are available.
 -/
-theorem rce_imp (A B : Formula) : ⊢ (A.and B).imp B := by
+def rce_imp (A B : Formula) : ⊢ (A.and B).imp B := by
   -- Use deduction theorem: from [A ∧ B] ⊢ B, derive ⊢ (A ∧ B) → B
   have h : [A.and B] ⊢ B := rce A B
   exact Logos.Core.Metalogic.deduction_theorem [] (A.and B) B h
@@ -718,7 +718,7 @@ Proof:
 3. Build (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q) using RAA pattern
 4. Compose with DNE to get Q
 -/
-theorem classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) := by
+def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) := by
   -- Goal: (P → Q) → ((¬P → Q) → Q)
   -- This is case analysis on P using LEM.
   --
@@ -760,24 +760,24 @@ theorem classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q
     have h_in_ctx : [A, (A.imp B.neg), (A.imp B)] ⊢ Formula.bot := by
       -- Get A from context
       have h_a : [A, (A.imp B.neg), (A.imp B)] ⊢ A := by
-        apply Derivable.assumption
+        apply DerivationTree.assumption
         simp
       -- Get A → B from context
       have h_ab : [A, (A.imp B.neg), (A.imp B)] ⊢ A.imp B := by
-        apply Derivable.assumption
+        apply DerivationTree.assumption
         simp
       -- Get A → ¬B from context
       have h_a_neg_b : [A, (A.imp B.neg), (A.imp B)] ⊢ A.imp B.neg := by
-        apply Derivable.assumption
+        apply DerivationTree.assumption
         simp
       -- Apply modus ponens: get B
       have h_b : [A, (A.imp B.neg), (A.imp B)] ⊢ B :=
-        Derivable.modus_ponens _ A B h_ab h_a
+        DerivationTree.modus_ponens _ A B h_ab h_a
       -- Apply modus ponens: get ¬B = B → ⊥
       have h_neg_b : [A, (A.imp B.neg), (A.imp B)] ⊢ B.neg :=
-        Derivable.modus_ponens _ A B.neg h_a_neg_b h_a
+        DerivationTree.modus_ponens _ A B.neg h_a_neg_b h_a
       -- Apply modus ponens: get ⊥
-      exact Derivable.modus_ponens _ B Formula.bot h_neg_b h_b
+      exact DerivationTree.modus_ponens _ B Formula.bot h_neg_b h_b
 
     -- Apply deduction theorem: [A → ¬B, A → B] ⊢ A → ⊥ = ¬A
     have step1 : [(A.imp B.neg), (A.imp B)] ⊢ A.neg :=
@@ -824,7 +824,7 @@ theorem classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q
     have flip_inst : ⊢ ((B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot))).imp
                        ((A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
       @theorem_flip (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
-    exact Derivable.modus_ponens [] _ _ flip_inst b
+    exact DerivationTree.modus_ponens [] _ _ flip_inst b
 
   -- Now compose everything
   -- From (P → Q):
@@ -851,41 +851,41 @@ theorem classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q
   have h_combined : [(P.neg.imp Q), (P.imp Q)] ⊢ Q := by
     -- Get assumptions (note: ¬P → Q at head, P → Q second)
     have h_pq : [(P.neg.imp Q), (P.imp Q)] ⊢ P.imp Q := by
-      apply Derivable.assumption
+      apply DerivationTree.assumption
       simp
     have h_npq : [(P.neg.imp Q), (P.imp Q)] ⊢ P.neg.imp Q := by
-      apply Derivable.assumption
+      apply DerivationTree.assumption
       simp
 
     -- Weaken the pure theorems to context
     have contra1_ctx : [(P.neg.imp Q), (P.imp Q)] ⊢ (P.imp Q).imp (Q.neg.imp P.neg) :=
-      Derivable.weakening [] _ _ contra1 (List.nil_subset _)
+      DerivationTree.weakening [] _ _ contra1 (List.nil_subset _)
     have contra2_ctx : [(P.neg.imp Q), (P.imp Q)] ⊢ (P.neg.imp Q).imp (Q.neg.imp P.neg.neg) :=
-      Derivable.weakening [] _ _ contra2 (List.nil_subset _)
+      DerivationTree.weakening [] _ _ contra2 (List.nil_subset _)
     have ci_ctx : [(P.neg.imp Q), (P.imp Q)] ⊢
         (Q.neg.imp P.neg).imp ((Q.neg.imp P.neg.neg).imp Q.neg.neg) :=
-      Derivable.weakening [] _ _ ci_inst (List.nil_subset _)
+      DerivationTree.weakening [] _ _ ci_inst (List.nil_subset _)
     have dne_ctx : [(P.neg.imp Q), (P.imp Q)] ⊢ Q.neg.neg.imp Q :=
-      Derivable.weakening [] _ _ dne_q (List.nil_subset _)
+      DerivationTree.weakening [] _ _ dne_q (List.nil_subset _)
 
     -- Apply modus ponens to get (¬Q → ¬P)
     have h_nq_np : [(P.neg.imp Q), (P.imp Q)] ⊢ Q.neg.imp P.neg :=
-      Derivable.modus_ponens _ _ _ contra1_ctx h_pq
+      DerivationTree.modus_ponens _ _ _ contra1_ctx h_pq
 
     -- Apply modus ponens to get (¬Q → ¬¬P)
     have h_nq_nnp : [(P.neg.imp Q), (P.imp Q)] ⊢ Q.neg.imp P.neg.neg :=
-      Derivable.modus_ponens _ _ _ contra2_ctx h_npq
+      DerivationTree.modus_ponens _ _ _ contra2_ctx h_npq
 
     -- Apply ci_ctx: (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q)
     have step1 : [(P.neg.imp Q), (P.imp Q)] ⊢ (Q.neg.imp P.neg.neg).imp Q.neg.neg :=
-      Derivable.modus_ponens _ _ _ ci_ctx h_nq_np
+      DerivationTree.modus_ponens _ _ _ ci_ctx h_nq_np
 
     -- Apply step1 with h_nq_nnp
     have step2 : [(P.neg.imp Q), (P.imp Q)] ⊢ Q.neg.neg :=
-      Derivable.modus_ponens _ _ _ step1 h_nq_nnp
+      DerivationTree.modus_ponens _ _ _ step1 h_nq_nnp
 
     -- Apply DNE
-    exact Derivable.modus_ponens _ _ _ dne_ctx step2
+    exact DerivationTree.modus_ponens _ _ _ dne_ctx step2
 
   -- Apply deduction theorem twice
   -- deduction_theorem Γ A B h requires h : (A :: Γ) ⊢ B
@@ -904,7 +904,7 @@ Construct a biconditional from two implications.
 
 **Proof Strategy**: Use `pairing` to combine the two implications into a conjunction.
 -/
-theorem iff_intro (A B : Formula) (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp A) :
+def iff_intro (A B : Formula) (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp A) :
     ⊢ (A.imp B).and (B.imp A) := by
   -- Use pairing: A → B → (A ∧ B)
   have pair_inst : ⊢ (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) :=
@@ -912,24 +912,24 @@ theorem iff_intro (A B : Formula) (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp A) :
 
   -- Apply MP twice
   have step1 : ⊢ (B.imp A).imp ((A.imp B).and (B.imp A)) :=
-    Derivable.modus_ponens [] _ _ pair_inst h1
+    DerivationTree.modus_ponens [] _ _ pair_inst h1
 
-  exact Derivable.modus_ponens [] _ _ step1 h2
+  exact DerivationTree.modus_ponens [] _ _ step1 h2
 
 /--
 Left Biconditional Elimination: From `A ↔ B` and `A`, derive `B`.
 
 **Proof Strategy**: Extract `A → B` from biconditional using lce, then apply modus ponens.
 -/
-theorem iff_elim_left (A B : Formula) : [((A.imp B).and (B.imp A)), A] ⊢ B := by
+def iff_elim_left (A B : Formula) : [((A.imp B).and (B.imp A)), A] ⊢ B := by
   -- Get A from context
   have h_a : [((A.imp B).and (B.imp A)), A] ⊢ A := by
-    apply Derivable.assumption
+    apply DerivationTree.assumption
     simp
 
   -- Get biconditional from context and extract (A → B) using lce
   have h_iff : [((A.imp B).and (B.imp A)), A] ⊢ (A.imp B).and (B.imp A) := by
-    apply Derivable.assumption
+    apply DerivationTree.assumption
     simp
 
   -- Extract (A → B) using lce
@@ -940,21 +940,21 @@ theorem iff_elim_left (A B : Formula) : [((A.imp B).and (B.imp A)), A] ⊢ B := 
     -- Use weakening from lce
     have lce_inst : [(A.imp B).and (B.imp A)] ⊢ A.imp B :=
       lce (A.imp B) (B.imp A)
-    exact Derivable.weakening [(A.imp B).and (B.imp A)] _ _ lce_inst
+    exact DerivationTree.weakening [(A.imp B).and (B.imp A)] _ _ lce_inst
       (by intro x; simp; intro h; left; exact h)
 
   -- Apply modus ponens
-  exact Derivable.modus_ponens _ _ _ h_imp h_a
+  exact DerivationTree.modus_ponens _ _ _ h_imp h_a
 
 /--
 Right Biconditional Elimination: From `A ↔ B` and `B`, derive `A`.
 
 **Proof Strategy**: Extract `B → A` from biconditional using rce, then apply modus ponens.
 -/
-theorem iff_elim_right (A B : Formula) : [((A.imp B).and (B.imp A)), B] ⊢ A := by
+def iff_elim_right (A B : Formula) : [((A.imp B).and (B.imp A)), B] ⊢ A := by
   -- Get B from context
   have h_b : [((A.imp B).and (B.imp A)), B] ⊢ B := by
-    apply Derivable.assumption
+    apply DerivationTree.assumption
     simp
 
   -- Get biconditional from context and extract (B → A) using rce
@@ -962,11 +962,11 @@ theorem iff_elim_right (A B : Formula) : [((A.imp B).and (B.imp A)), B] ⊢ A :=
     -- Use weakening from rce
     have rce_inst : [(A.imp B).and (B.imp A)] ⊢ B.imp A :=
       rce (A.imp B) (B.imp A)
-    exact Derivable.weakening [(A.imp B).and (B.imp A)] _ _ rce_inst
+    exact DerivationTree.weakening [(A.imp B).and (B.imp A)] _ _ rce_inst
       (by intro x; simp; intro h; left; exact h)
 
   -- Apply modus ponens
-  exact Derivable.modus_ponens _ _ _ h_imp h_b
+  exact DerivationTree.modus_ponens _ _ _ h_imp h_b
 
 /-!
 ## Phase 4: De Morgan Laws
@@ -987,7 +987,7 @@ From implication, derive its contrapositive.
 
 **Proof Strategy**: Use b_combinator and theorem_flip to build contraposition.
 -/
-theorem contrapose_imp (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) := by
+def contrapose_imp (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) := by
   -- b_combinator: (B → ⊥) → (A → B) → (A → ⊥)
   have bc : ⊢ (B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot)) :=
     b_combinator
@@ -995,16 +995,16 @@ theorem contrapose_imp (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) := 
   have flip : ⊢ ((B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot))).imp
                  ((A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
     @theorem_flip (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
-  exact Derivable.modus_ponens [] _ _ flip bc
+  exact DerivationTree.modus_ponens [] _ _ flip bc
 
 /--
 Contraposition (helper): From `⊢ A → B`, derive `⊢ ¬B → ¬A`.
 
 This is a convenience wrapper that applies contrapose_imp via modus ponens.
 -/
-theorem contraposition {A B : Formula} (h : ⊢ A.imp B) : ⊢ B.neg.imp A.neg := by
+def contraposition {A B : Formula} (h : ⊢ A.imp B) : ⊢ B.neg.imp A.neg := by
   have cp : ⊢ (A.imp B).imp (B.neg.imp A.neg) := contrapose_imp A B
-  exact Derivable.modus_ponens [] _ _ cp h
+  exact DerivationTree.modus_ponens [] _ _ cp h
 
 /-!
 ## Biconditional Manipulation Helpers (Plan 060 Phase 2)
@@ -1024,7 +1024,7 @@ on both directions to get `(¬B → ¬A) ∧ (¬A → ¬B)`, which is `¬A ↔ �
 
 **Dependencies**: contrapose_imp, lce_imp, rce_imp, iff_intro
 -/
-theorem contrapose_iff (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
+def contrapose_iff (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
     ⊢ (A.neg.imp B.neg).and (B.neg.imp A.neg) := by
   -- h: (A → B) ∧ (B → A)
   -- Goal: (¬A → ¬B) ∧ (¬B → ¬A)
@@ -1032,22 +1032,22 @@ theorem contrapose_iff (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
   -- Extract A → B from biconditional
   have ab : ⊢ A.imp B := by
     have lce : ⊢ ((A.imp B).and (B.imp A)).imp (A.imp B) := lce_imp (A.imp B) (B.imp A)
-    exact Derivable.modus_ponens [] _ _ lce h
+    exact DerivationTree.modus_ponens [] _ _ lce h
 
   -- Extract B → A from biconditional
   have ba : ⊢ B.imp A := by
     have rce : ⊢ ((A.imp B).and (B.imp A)).imp (B.imp A) := rce_imp (A.imp B) (B.imp A)
-    exact Derivable.modus_ponens [] _ _ rce h
+    exact DerivationTree.modus_ponens [] _ _ rce h
 
   -- Contrapose A → B to get ¬B → ¬A
   have nb_na : ⊢ B.neg.imp A.neg := by
     have cp : ⊢ (A.imp B).imp (B.neg.imp A.neg) := contrapose_imp A B
-    exact Derivable.modus_ponens [] _ _ cp ab
+    exact DerivationTree.modus_ponens [] _ _ cp ab
 
   -- Contrapose B → A to get ¬A → ¬B
   have na_nb : ⊢ A.neg.imp B.neg := by
     have cp : ⊢ (B.imp A).imp (A.neg.imp B.neg) := contrapose_imp B A
-    exact Derivable.modus_ponens [] _ _ cp ba
+    exact DerivationTree.modus_ponens [] _ _ cp ba
 
   -- Combine into biconditional (¬A → ¬B) ∧ (¬B → ¬A)
   exact iff_intro A.neg B.neg na_nb nb_na
@@ -1061,7 +1061,7 @@ Direct application of iff_intro for negated formulas.
 
 **Dependencies**: iff_intro
 -/
-theorem iff_neg_intro (A B : Formula) (h1 : ⊢ A.neg.imp B.neg) (h2 : ⊢ B.neg.imp A.neg) :
+def iff_neg_intro (A B : Formula) (h1 : ⊢ A.neg.imp B.neg) (h2 : ⊢ B.neg.imp A.neg) :
     ⊢ (A.neg.imp B.neg).and (B.neg.imp A.neg) := by
   exact iff_intro A.neg B.neg h1 h2
 
@@ -1076,7 +1076,7 @@ So goal: `¬¬(A → ¬B) → (¬¬A → ¬B)`
 
 **Proof Strategy**: Use DNE and composition.
 -/
-theorem demorgan_conj_neg_forward (A B : Formula) :
+def demorgan_conj_neg_forward (A B : Formula) :
     ⊢ (A.and B).neg.imp (A.neg.or B.neg) := by
   -- Unfold definitions
   -- A.and B = (A.imp B.neg).neg
@@ -1122,11 +1122,11 @@ theorem demorgan_conj_neg_forward (A B : Formula) :
   have step1 : ⊢ (((A.imp Formula.bot).imp Formula.bot).imp A).imp
                   ((A.imp (B.imp Formula.bot)).imp
                    (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))) :=
-    Derivable.modus_ponens [] _ _ flip b1
+    DerivationTree.modus_ponens [] _ _ flip b1
 
   have step2 : ⊢ (A.imp (B.imp Formula.bot)).imp
                   (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)) :=
-    Derivable.modus_ponens [] _ _ step1 dne_a
+    DerivationTree.modus_ponens [] _ _ step1 dne_a
 
   -- Compose: ¬¬(A → ¬B) → (A → ¬B) → (¬¬A → ¬B)
   exact imp_trans dne_inner step2
@@ -1142,7 +1142,7 @@ So goal: `(¬¬A → ¬B) → ¬(A → ¬B)`
 
 **Proof Strategy**: Use contraposition and DNI.
 -/
-theorem demorgan_conj_neg_backward (A B : Formula) :
+def demorgan_conj_neg_backward (A B : Formula) :
     ⊢ (A.neg.or B.neg).imp (A.and B).neg := by
   unfold Formula.and Formula.or Formula.neg
 
@@ -1214,48 +1214,48 @@ theorem demorgan_conj_neg_backward (A B : Formula) :
     have h_conj :
       [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
       A.and B := by
-      apply Derivable.assumption
+      apply DerivationTree.assumption
       simp
 
     -- Get ¬¬A → ¬B from context
     have h_hyp : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
         ((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot) := by
-      apply Derivable.assumption
+      apply DerivationTree.assumption
       simp
 
     -- Extract A from conjunction using lce
     have lce_inst : ⊢ (A.and B).imp A := lce_imp A B
     have lce_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
         (A.and B).imp A :=
-      Derivable.weakening [] _ _ lce_inst (List.nil_subset _)
+      DerivationTree.weakening [] _ _ lce_inst (List.nil_subset _)
     have h_a : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢ A :=
-      Derivable.modus_ponens _ _ _ lce_ctx h_conj
+      DerivationTree.modus_ponens _ _ _ lce_ctx h_conj
 
     -- Extract B from conjunction using rce
     have rce_inst : ⊢ (A.and B).imp B := rce_imp A B
     have rce_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
         (A.and B).imp B :=
-      Derivable.weakening [] _ _ rce_inst (List.nil_subset _)
+      DerivationTree.weakening [] _ _ rce_inst (List.nil_subset _)
     have h_b : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢ B :=
-      Derivable.modus_ponens _ _ _ rce_ctx h_conj
+      DerivationTree.modus_ponens _ _ _ rce_ctx h_conj
 
     -- From A, derive ¬¬A using DNI (theorem_app1)
     have dni_inst : ⊢ A.imp ((A.imp Formula.bot).imp Formula.bot) :=
       @theorem_app1 A Formula.bot
     have dni_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
         A.imp ((A.imp Formula.bot).imp Formula.bot) :=
-      Derivable.weakening [] _ _ dni_inst (List.nil_subset _)
+      DerivationTree.weakening [] _ _ dni_inst (List.nil_subset _)
     have h_nna : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
         (A.imp Formula.bot).imp Formula.bot :=
-      Derivable.modus_ponens _ _ _ dni_ctx h_a
+      DerivationTree.modus_ponens _ _ _ dni_ctx h_a
 
     -- From ¬¬A and (¬¬A → ¬B), derive ¬B
     have h_nb : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
         B.imp Formula.bot :=
-      Derivable.modus_ponens _ _ _ h_hyp h_nna
+      DerivationTree.modus_ponens _ _ _ h_hyp h_nna
 
     -- From B and ¬B, derive ⊥
-    exact Derivable.modus_ponens _ _ _ h_nb h_b
+    exact DerivationTree.modus_ponens _ _ _ h_nb h_b
 
   -- Apply deduction theorem: [¬¬A → ¬B] ⊢ (A ∧ B) → ⊥
   have step1 :
@@ -1285,7 +1285,7 @@ Negated conjunction is equivalent to disjunction of negations.
 
 **Proof Strategy**: Combine forward and backward directions using iff_intro.
 -/
-theorem demorgan_conj_neg (A B : Formula) :
+def demorgan_conj_neg (A B : Formula) :
     ⊢ ((A.and B).neg.imp (A.neg.or B.neg)).and ((A.neg.or B.neg).imp (A.and B).neg) := by
   -- iff_intro takes Formulas A B and proofs of A→B and B→A
   -- Here A = (A.and B).neg, B = (A.neg.or B.neg)
@@ -1303,7 +1303,7 @@ So goal: `¬(¬A → B) → ¬(¬A → ¬¬B)`
 
 **Proof Strategy**: Use the fact that B → ¬¬B (DNI) and contraposition.
 -/
-theorem demorgan_disj_neg_forward (A B : Formula) :
+def demorgan_disj_neg_forward (A B : Formula) :
     ⊢ (A.or B).neg.imp (A.neg.and B.neg) := by
   unfold Formula.or Formula.and Formula.neg
 
@@ -1356,7 +1356,7 @@ theorem demorgan_disj_neg_forward (A B : Formula) :
 
   have impl : ⊢ ((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)).imp
                  ((A.imp Formula.bot).imp B) :=
-    Derivable.modus_ponens [] _ _ bc dne_b
+    DerivationTree.modus_ponens [] _ _ bc dne_b
 
   -- Contrapose: ¬(¬A → B) → ¬(¬A → ¬¬B)
   exact contraposition impl
@@ -1372,7 +1372,7 @@ So goal: `¬(¬A → ¬¬B) → ¬(¬A → B)`
 
 **Proof Strategy**: Use DNI and contraposition.
 -/
-theorem demorgan_disj_neg_backward (A B : Formula) :
+def demorgan_disj_neg_backward (A B : Formula) :
     ⊢ (A.neg.and B.neg).imp (A.or B).neg := by
   unfold Formula.or Formula.and Formula.neg
 
@@ -1398,7 +1398,7 @@ theorem demorgan_disj_neg_backward (A B : Formula) :
 
   have impl : ⊢ ((A.imp Formula.bot).imp B).imp
                  ((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)) :=
-    Derivable.modus_ponens [] _ _ bc dni_b
+    DerivationTree.modus_ponens [] _ _ bc dni_b
 
   -- Contrapose: ¬(¬A → ¬¬B) → ¬(¬A → B)
   exact contraposition impl
@@ -1410,7 +1410,7 @@ Negated disjunction is equivalent to conjunction of negations.
 
 **Proof Strategy**: Combine forward and backward directions using iff_intro.
 -/
-theorem demorgan_disj_neg (A B : Formula) :
+def demorgan_disj_neg (A B : Formula) :
     ⊢ ((A.or B).neg.imp (A.neg.and B.neg)).and ((A.neg.and B.neg).imp (A.or B).neg) := by
   -- iff_intro takes Formulas A B and proofs of A→B and B→A
   -- Here A = (A.or B).neg, B = (A.neg.and B.neg)
@@ -1438,13 +1438,13 @@ contradiction (both B and ¬B), then ¬A holds.
 
 **Complexity**: Medium
 
-**Dependencies**: `Derivable.modus_ponens`, `deduction_theorem`
+**Dependencies**: `DerivationTree.modus_ponens`, `deduction_theorem`
 -/
-theorem ni (Γ : Context) (A B : Formula) (h1 : (A :: Γ) ⊢ B.neg) (h2 : (A :: Γ) ⊢ B) : Γ ⊢ A.neg := by
+def ni (Γ : Context) (A B : Formula) (h1 : (A :: Γ) ⊢ B.neg) (h2 : (A :: Γ) ⊢ B) : Γ ⊢ A.neg := by
   -- From h1 and h2, derive (A :: Γ) ⊢ ⊥
   -- ¬B = B → ⊥, so modus ponens gives ⊥
   have h_bot : (A :: Γ) ⊢ Formula.bot :=
-    Derivable.modus_ponens (A :: Γ) B Formula.bot h1 h2
+    DerivationTree.modus_ponens (A :: Γ) B Formula.bot h1 h2
   -- Apply deduction theorem: Γ ⊢ A → ⊥ = Γ ⊢ ¬A
   exact Logos.Core.Metalogic.deduction_theorem Γ A Formula.bot h_bot
 
@@ -1461,13 +1461,13 @@ a contradiction, then A holds.
 
 **Complexity**: Medium
 
-**Dependencies**: `Derivable.modus_ponens`, `Derivable.weakening`,
+**Dependencies**: `DerivationTree.modus_ponens`, `DerivationTree.weakening`,
 `double_negation` (derived theorem), `deduction_theorem`
 -/
-theorem ne (Γ : Context) (A B : Formula) (h1 : (A.neg :: Γ) ⊢ B.neg) (h2 : (A.neg :: Γ) ⊢ B) : Γ ⊢ A := by
+def ne (Γ : Context) (A B : Formula) (h1 : (A.neg :: Γ) ⊢ B.neg) (h2 : (A.neg :: Γ) ⊢ B) : Γ ⊢ A := by
   -- From h1 and h2, derive (A.neg :: Γ) ⊢ ⊥
   have h_bot : (A.neg :: Γ) ⊢ Formula.bot :=
-    Derivable.modus_ponens (A.neg :: Γ) B Formula.bot h1 h2
+    DerivationTree.modus_ponens (A.neg :: Γ) B Formula.bot h1 h2
   -- Apply deduction theorem: Γ ⊢ ¬A → ⊥ = Γ ⊢ ¬¬A
   have h_neg_neg : Γ ⊢ A.neg.neg :=
     Logos.Core.Metalogic.deduction_theorem Γ A.neg Formula.bot h_bot
@@ -1475,8 +1475,8 @@ theorem ne (Γ : Context) (A B : Formula) (h1 : (A.neg :: Γ) ⊢ B.neg) (h2 : (
   have dne : ⊢ A.neg.neg.imp A :=
     double_negation A
   have dne_ctx : Γ ⊢ A.neg.neg.imp A :=
-    Derivable.weakening [] Γ _ dne (List.nil_subset Γ)
-  exact Derivable.modus_ponens Γ A.neg.neg A dne_ctx h_neg_neg
+    DerivationTree.weakening [] Γ _ dne (List.nil_subset Γ)
+  exact DerivationTree.modus_ponens Γ A.neg.neg A dne_ctx h_neg_neg
 
 /--
 Biconditional Introduction (Implication Form): `⊢ (A → B) → ((B → A) → (A ↔ B))`.
@@ -1493,19 +1493,19 @@ The context-based `iff_intro` already exists; this provides the pure implication
 
 **Complexity**: Medium
 
-**Dependencies**: `deduction_theorem`, `pairing`, `Derivable.assumption`, `Derivable.weakening`
+**Dependencies**: `deduction_theorem`, `pairing`, `DerivationTree.assumption`, `DerivationTree.weakening`
 -/
-theorem bi_imp (A B : Formula) :
+def bi_imp (A B : Formula) :
     ⊢ (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) := by
   -- First, derive [(A → B), (B → A)] ⊢ (A → B) ∧ (B → A)
   have h_in_ctx : [(B.imp A), (A.imp B)] ⊢ (A.imp B).and (B.imp A) := by
     -- Get (A → B) from context
     have h_ab : [(B.imp A), (A.imp B)] ⊢ A.imp B := by
-      apply Derivable.assumption
+      apply DerivationTree.assumption
       simp
     -- Get (B → A) from context
     have h_ba : [(B.imp A), (A.imp B)] ⊢ B.imp A := by
-      apply Derivable.assumption
+      apply DerivationTree.assumption
       simp
     -- Use pairing: X → Y → (X ∧ Y)
     have pair_inst : ⊢ (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) :=
@@ -1513,11 +1513,11 @@ theorem bi_imp (A B : Formula) :
     -- Weaken to context
     have pair_ctx : [(B.imp A), (A.imp B)] ⊢
         (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) :=
-      Derivable.weakening [] _ _ pair_inst (List.nil_subset _)
+      DerivationTree.weakening [] _ _ pair_inst (List.nil_subset _)
     -- Apply modus ponens twice
     have step1 : [(B.imp A), (A.imp B)] ⊢ (B.imp A).imp ((A.imp B).and (B.imp A)) :=
-      Derivable.modus_ponens _ _ _ pair_ctx h_ab
-    exact Derivable.modus_ponens _ _ _ step1 h_ba
+      DerivationTree.modus_ponens _ _ _ pair_ctx h_ab
+    exact DerivationTree.modus_ponens _ _ _ step1 h_ba
 
   -- Apply deduction theorem: [(A → B)] ⊢ (B → A) → ((A → B) ∧ (B → A))
   have step1 : [(A.imp B)] ⊢ (B.imp A).imp ((A.imp B).and (B.imp A)) :=
@@ -1544,10 +1544,10 @@ then from A ∨ B we can derive C.
 
 **Complexity**: Complex
 
-**Dependencies**: `deduction_theorem`, `Derivable.weakening`, `classical_merge`,
-               `b_combinator`, `Derivable.assumption`
+**Dependencies**: `deduction_theorem`, `DerivationTree.weakening`, `classical_merge`,
+               `b_combinator`, `DerivationTree.assumption`
 -/
-theorem de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: Γ) ⊢ C) :
+def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: Γ) ⊢ C) :
     ((A.or B) :: Γ) ⊢ C := by
   -- Apply deduction theorem to get Γ ⊢ A → C
   have ac : Γ ⊢ A.imp C :=
@@ -1559,15 +1559,15 @@ theorem de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: �
 
   -- Weaken A → C to context ((A.or B) :: Γ)
   have ac_ctx : ((A.or B) :: Γ) ⊢ A.imp C :=
-    Derivable.weakening Γ _ _ ac (by intro x hx; simp; right; exact hx)
+    DerivationTree.weakening Γ _ _ ac (by intro x hx; simp; right; exact hx)
 
   -- Weaken B → C to context ((A.or B) :: Γ)
   have bc_ctx : ((A.or B) :: Γ) ⊢ B.imp C :=
-    Derivable.weakening Γ _ _ bc (by intro x hx; simp; right; exact hx)
+    DerivationTree.weakening Γ _ _ bc (by intro x hx; simp; right; exact hx)
 
   -- Get A ∨ B from context
   have h_disj : ((A.or B) :: Γ) ⊢ A.or B := by
-    apply Derivable.assumption
+    apply DerivationTree.assumption
     simp
 
   -- A ∨ B = ¬A → B (by definition)
@@ -1578,10 +1578,10 @@ theorem de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: �
     b_combinator
 
   have b_ctx : ((A.or B) :: Γ) ⊢ (B.imp C).imp ((A.neg.imp B).imp (A.neg.imp C)) :=
-    Derivable.weakening [] _ _ b_inst (List.nil_subset _)
+    DerivationTree.weakening [] _ _ b_inst (List.nil_subset _)
 
   have step1 : ((A.or B) :: Γ) ⊢ (A.neg.imp B).imp (A.neg.imp C) :=
-    Derivable.modus_ponens _ _ _ b_ctx bc_ctx
+    DerivationTree.modus_ponens _ _ _ b_ctx bc_ctx
 
   -- h_disj : ((A.or B) :: Γ) ⊢ A.or B
   -- A.or B unfolds to ¬A → B
@@ -1591,19 +1591,19 @@ theorem de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: �
 
   -- Get ¬A → C
   have nac : ((A.or B) :: Γ) ⊢ A.neg.imp C :=
-    Derivable.modus_ponens _ _ _ step1 h_disj_unf
+    DerivationTree.modus_ponens _ _ _ step1 h_disj_unf
 
   -- Now use classical_merge: (A → C) → ((¬A → C) → C)
   have cm : ⊢ (A.imp C).imp ((A.neg.imp C).imp C) :=
     classical_merge A C
 
   have cm_ctx : ((A.or B) :: Γ) ⊢ (A.imp C).imp ((A.neg.imp C).imp C) :=
-    Derivable.weakening [] _ _ cm (List.nil_subset _)
+    DerivationTree.weakening [] _ _ cm (List.nil_subset _)
 
   have step2 : ((A.or B) :: Γ) ⊢ (A.neg.imp C).imp C :=
-    Derivable.modus_ponens _ _ _ cm_ctx ac_ctx
+    DerivationTree.modus_ponens _ _ _ cm_ctx ac_ctx
 
-  exact Derivable.modus_ponens _ _ _ step2 nac
+  exact DerivationTree.modus_ponens _ _ _ step2 nac
 
 
 
