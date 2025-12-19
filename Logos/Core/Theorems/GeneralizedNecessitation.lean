@@ -37,13 +37,13 @@ open Logos.Core.Metalogic
 The reverse of the deduction theorem. If `Γ ⊢ A → B`, then `A :: Γ ⊢ B`.
 This is derivable from modus ponens and weakening.
 -/
-theorem reverse_deduction {Γ : Context} {A B : Formula}
+def reverse_deduction {Γ : Context} {A B : Formula}
     (h : Γ ⊢ A.imp B) : (A :: Γ) ⊢ B := by
   have h_weak : (A :: Γ) ⊢ A.imp B :=
-    Derivable.weakening _ _ _ h
+    DerivationTree.weakening _ _ _ h
       (by intro x hx; simp; right; exact hx)
-  have h_assum : (A :: Γ) ⊢ A := Derivable.assumption (A :: Γ) A (by simp)
-  exact Derivable.modus_ponens (A :: Γ) A B h_weak h_assum
+  have h_assum : (A :: Γ) ⊢ A := DerivationTree.assumption (A :: Γ) A (by simp)
+  exact DerivationTree.modus_ponens (A :: Γ) A B h_weak h_assum
 
 /--
 Generalized Modal K rule (derived theorem).
@@ -63,33 +63,29 @@ Induction on the context `Γ`.
   4. By `modal_k_dist` axiom and weakening, `□Γ' ⊢ □A → □φ`.
   5. By `reverse_deduction`, `□A :: □Γ' ⊢ □φ`, which is `□(A :: Γ') ⊢ □φ`.
 -/
-theorem generalized_modal_k (Γ : Context) (φ : Formula) :
-    (h : Γ ⊢ φ) → ((Context.map Formula.box Γ) ⊢ Formula.box φ) := by
-  induction Γ generalizing φ with
-  | nil =>
-    intro h
-    exact Derivable.necessitation φ h
-  | cons A Γ' ih =>
-    intro h
+def generalized_modal_k : (Γ : Context) → (φ : Formula) →
+    (h : Γ ⊢ φ) → ((Context.map Formula.box Γ) ⊢ Formula.box φ)
+  | [], φ, h => DerivationTree.necessitation φ h
+  | A :: Γ', φ, h =>
     -- from (A :: Γ') ⊢ φ, get Γ' ⊢ A → φ
-    have h_deduction : Γ' ⊢ A.imp φ := deduction_theorem Γ' A φ h
+    let h_deduction : Γ' ⊢ A.imp φ := deduction_theorem Γ' A φ h
     -- apply inductive hypothesis to the implication
-    have ih_res : (Context.map Formula.box Γ') ⊢ Formula.box (A.imp φ) := ih (A.imp φ) h_deduction
+    let ih_res : (Context.map Formula.box Γ') ⊢ Formula.box (A.imp φ) :=
+      generalized_modal_k Γ' (A.imp φ) h_deduction
     -- use modal_k_dist axiom
-    have k_dist : ⊢ (Formula.box (A.imp φ)).imp ((Formula.box A).imp (Formula.box φ)) :=
-      Derivable.axiom [] _ (Axiom.modal_k_dist A φ)
-    have k_dist_weak :
+    let k_dist : ⊢ (Formula.box (A.imp φ)).imp ((Formula.box A).imp (Formula.box φ)) :=
+      DerivationTree.axiom [] _ (Axiom.modal_k_dist A φ)
+    let k_dist_weak :
       (Context.map Formula.box Γ') ⊢
       (Formula.box (A.imp φ)).imp ((Formula.box A).imp (Formula.box φ)) :=
-      Derivable.weakening [] _ _ k_dist (List.nil_subset _)
+      DerivationTree.weakening [] _ _ k_dist (List.nil_subset _)
     -- modus ponens to get □Γ' ⊢ □A → □φ
-    have h_mp : (Context.map Formula.box Γ') ⊢ (Formula.box A).imp (Formula.box φ) :=
-      Derivable.modus_ponens _ _ _ k_dist_weak ih_res
+    let h_mp : (Context.map Formula.box Γ') ⊢ (Formula.box A).imp (Formula.box φ) :=
+      DerivationTree.modus_ponens _ _ _ k_dist_weak ih_res
     -- reverse deduction to get □A :: □Γ' ⊢ □φ
-    have h_rev_deduction := reverse_deduction h_mp
     -- Note: Context.map Formula.box (A :: Γ') = Formula.box A :: Context.map Formula.box Γ'
     -- so the context matches exactly.
-    exact h_rev_deduction
+    reverse_deduction h_mp
 
 /--
 Generalized Temporal K rule (derived theorem).
@@ -102,31 +98,27 @@ It is now derivable from standard temporal necessitation + temporal K distributi
 
 **Proof Strategy**: Analogous to generalized modal K.
 -/
-theorem generalized_temporal_k (Γ : Context) (φ : Formula) :
-    (h : Γ ⊢ φ) → ((Context.map Formula.all_future Γ) ⊢ Formula.all_future φ) := by
-  induction Γ generalizing φ with
-  | nil =>
-    intro h
-    exact Derivable.temporal_necessitation φ h
-  | cons A Γ' ih =>
-    intro h
-    have h_deduction : Γ' ⊢ A.imp φ := deduction_theorem Γ' A φ h
-    have ih_res :
+def generalized_temporal_k : (Γ : Context) → (φ : Formula) →
+    (h : Γ ⊢ φ) → ((Context.map Formula.all_future Γ) ⊢ Formula.all_future φ)
+  | [], φ, h => DerivationTree.temporal_necessitation φ h
+  | A :: Γ', φ, h =>
+    let h_deduction : Γ' ⊢ A.imp φ := deduction_theorem Γ' A φ h
+    let ih_res :
       (Context.map Formula.all_future Γ') ⊢ Formula.all_future (A.imp φ) :=
-      ih (A.imp φ) h_deduction
-    have k_dist :
+      generalized_temporal_k Γ' (A.imp φ) h_deduction
+    let k_dist :
       ⊢ (Formula.all_future (A.imp φ)).imp
         ((Formula.all_future A).imp (Formula.all_future φ)) :=
-      Derivable.axiom [] _ (Axiom.temp_k_dist A φ)
-    have k_dist_weak :
+      DerivationTree.axiom [] _ (Axiom.temp_k_dist A φ)
+    let k_dist_weak :
       (Context.map Formula.all_future Γ') ⊢
       (Formula.all_future (A.imp φ)).imp
       ((Formula.all_future A).imp (Formula.all_future φ)) :=
-      Derivable.weakening [] _ _ k_dist (List.nil_subset _)
-    have h_mp :
+      DerivationTree.weakening [] _ _ k_dist (List.nil_subset _)
+    let h_mp :
       (Context.map Formula.all_future Γ') ⊢
       (Formula.all_future A).imp (Formula.all_future φ) :=
-      Derivable.modus_ponens _ _ _ k_dist_weak ih_res
-    exact reverse_deduction h_mp
+      DerivationTree.modus_ponens _ _ _ k_dist_weak ih_res
+    reverse_deduction h_mp
 
 end Logos.Core.Theorems
