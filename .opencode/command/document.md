@@ -1,6 +1,6 @@
 ---
 name: document
-agent: lean4-orchestrator
+agent: orchestrator
 description: "Update documentation to be complete, accurate, and concise"
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: research
-agent: lean4-orchestrator
+agent: orchestrator
 description: "Research a topic using LeanExplore, Loogle, LeanSearch, and web sources"
 ---
 

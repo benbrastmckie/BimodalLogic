@@ -54,7 +54,7 @@ Context-aware AI system for LEAN 4 theorem proving using hierarchical agent patt
 - **Command Routing**: Commands route to orchestrator with context
 
 ### Layer 2: Orchestrator
-- **lean4-orchestrator**: Main coordinator
+- **orchestrator**: Main coordinator
 - **Responsibilities**:
   - Analyze request and determine workflow type
   - Allocate context (3-level system)

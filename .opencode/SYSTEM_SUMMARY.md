@@ -14,7 +14,7 @@
 ### Total Files Created: 45+
 
 #### Agent System (10 files)
-- ✅ `agent/lean4-orchestrator.md` - Main coordinator
+- ✅ `agent/orchestrator.md` - Main coordinator
 - ✅ `agent/subagents/reviewer.md` - Repository analysis & verification
 - ✅ `agent/subagents/researcher.md` - Multi-source research
 - ✅ `agent/subagents/planner.md` - Implementation planning

@@ -1,0 +1,28 @@
+{
+  "task_number": 61,
+  "task_title": "Add Missing Directory READMEs",
+  "status": "complete",
+  "created": "2025-12-18",
+  "completed": "2025-12-18",
+  "complexity": "simple",
+  "workflow": {
+    "research_phase": false,
+    "planning_phase": true,
+    "execution_phase": true
+  },
+  "artifacts": {
+    "plan": ".opencode/specs/061_add_missing_directory_readmes/plans/implementation-001.md",
+    "summary": ".opencode/specs/061_add_missing_directory_readmes/summaries/task-summary.md"
+  },
+  "files_created": [
+    "Logos/Core/Theorems/Perpetuity/README.md",
+    "Logos/Core/Automation/README.md"
+  ],
+  "verification": {
+    "perpetuity_readme_lines": 59,
+    "automation_readme_lines": 80,
+    "template_compliance": "Template D (LEAN Source Directory - Lightweight)",
+    "all_links_valid": true,
+    "repository_org_score_improvement": "98/100 → 100/100"
+  }
+}

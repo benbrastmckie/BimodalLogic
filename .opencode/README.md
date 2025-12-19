@@ -7,7 +7,7 @@ Complete context-aware AI system for LEAN 4 theorem proving focused on bimodal l
 ## System Architecture
 
 ### Main Orchestrator
-- **lean4-orchestrator**: Coordinates all workflows, routes to specialized agents, manages context allocation
+- **orchestrator**: Coordinates all workflows, routes to specialized agents, manages context allocation
 
 ### Primary Agents (7)
 1. **reviewer**: Repository analysis, proof verification, TODO management
@@ -84,7 +84,7 @@ Updates documentation to be complete, accurate, concise
 ```
 .opencode/
 ├── agent/
-│   ├── lean4-orchestrator.md
+│   ├── orchestrator.md
 │   └── subagents/
 │       ├── reviewer.md
 │       ├── researcher.md

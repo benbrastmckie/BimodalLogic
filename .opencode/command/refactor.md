@@ -1,6 +1,6 @@
 ---
 name: refactor
-agent: lean4-orchestrator
+agent: orchestrator
 description: "Refactor LEAN 4 code for improved readability and maintainability"
 ---
 

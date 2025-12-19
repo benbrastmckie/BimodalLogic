@@ -226,7 +226,7 @@ ls .opencode/context/logic/processes/
 
 ```bash
 # Main orchestrator
-cat .opencode/agent/lean4-orchestrator.md
+cat .opencode/agent/orchestrator.md
 
 # Primary agents
 ls .opencode/agent/subagents/

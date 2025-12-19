@@ -1,6 +1,6 @@
 ---
 name: lean
-agent: lean4-orchestrator
+agent: orchestrator
 description: "Implement a LEAN 4 proof following an implementation plan"
 ---
 

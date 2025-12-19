@@ -2,7 +2,7 @@
 
 **Last Updated**: 2025-12-16
 **Total Active Placeholders**: 8 (1 ModalS5 documented invalid, 3 Truth.lean, 1 Completeness, 3 ProofSearch documentation)
-**Total Axiom Declarations**: 16 (5 Perpetuity, 11 Completeness)
+**Total Axiom Declarations**: 24 (5 Perpetuity, 11 Completeness, 8 ProofSearch)
 **Total Resolved**: 60 (Plan 059 Phase 1: 6 De Morgan laws, Plan 060: diamond_disj_iff + s4_diamond_box_conj + s5_diamond_conj_diamond + k_dist_diamond + biconditional infrastructure, Task 46: 3 DeductionTheorem cases)
 
 This document tracks `sorry` placeholders (unproven theorems) and `axiom` declarations (unproven lemmas) in the Logos codebase. It provides resolution context, effort estimates, and cross-references to related tasks.
@@ -446,9 +446,10 @@ git log --all -S "sorry" -- Logos/Core/Semantics/Truth.lean
 | Active `sorry` (Completeness) | 1 | `provable_iff_valid` soundness direction |
 | Documentation `sorry` (ProofSearch) | 3 | Example usage (after implementation) |
 | Completeness `axiom` | 11 | Task 9 (70-90 hours) |
+| ProofSearch `axiom` | 8 | Task 7 (40-60 hours) |
 | Perpetuity `axiom` | 5 | dni, future_k_dist (now derived), always_dni, always_dne, always_mono |
 | **Total `sorry`** | **8** | 5 blocking + 3 documentation |
-| **Total `axiom`** | **16** | 5 Perpetuity + 11 Completeness |
+| **Total `axiom`** | **24** | 5 Perpetuity + 11 Completeness + 8 ProofSearch |
 
 **Plan 060 Status (2025-12-09 - COMPLETE)**:
 - **Phase 1 COMPLETE**: k_dist_diamond (`□(A → B) → (◇A → ◇B)`) proven ✓

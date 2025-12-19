@@ -1,6 +1,6 @@
 ---
 name: review
-agent: lean4-orchestrator
+agent: orchestrator
 description: "Comprehensive repository review: analyze code, verify proofs, update TODO.md"
 ---
 

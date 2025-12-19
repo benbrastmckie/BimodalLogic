@@ -1,0 +1,336 @@
+{
+  "_schema_version": "1.0.0",
+  "_comment_purpose": "Schema for tracking archived completed projects with comprehensive metadata",
+  "_comment_usage": "This file documents the structure and provides examples for archive state tracking",
+  
+  "archive_metadata": {
+    "total_archived_projects": 6,
+    "archive_created": "2025-12-18T00:00:00Z",
+    "last_updated": "2025-12-19T00:00:00Z",
+    "retention_policy": "indefinite",
+    "archive_location": ".opencode/specs/archive/",
+    "_comment": "High-level metadata about the archive system"
+  },
+  
+  "archived_projects": [
+    {
+      "_comment": "Example 1: Documentation task with comprehensive metadata",
+      "project_number": 61,
+      "project_name": "add_missing_directory_readmes",
+      "project_type": "documentation",
+      "status": "archived",
+      "priority": "medium",
+      "complexity": "simple",
+      
+      "timeline": {
+        "created": "2025-12-18T00:00:00Z",
+        "started": "2025-12-18T08:00:00Z",
+        "completed": "2025-12-18T10:30:00Z",
+        "archived": "2025-12-19T00:00:00Z",
+        "duration_hours": 2.5
+      },
+      
+      "summary": {
+        "title": "Add Missing Directory READMEs",
+        "description": "Created Perpetuity/README.md and Automation/README.md to achieve 100% directory coverage",
+        "motivation": "Improve repository organization and developer onboarding experience",
+        "completion_criteria": "All directories with .lean files have README.md files"
+      },
+      
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/061_add_missing_directory_readmes/",
+        "plans": [
+          "plans/implementation-001.md"
+        ],
+        "summaries": [
+          "summaries/task-summary.md",
+          "summaries/completion-summary.md"
+        ],
+        "reports": [],
+        "state_file": "state.json",
+        "_comment": "All artifact paths relative to base_path"
+      },
+      
+      "deliverables": {
+        "files_created": [
+          "Logos/Core/Theorems/Perpetuity/README.md",
+          "Logos/Core/Automation/README.md"
+        ],
+        "files_modified": [],
+        "files_deleted": [],
+        "lines_added": 139,
+        "template_compliance": "Template D (LEAN Source Directory - Lightweight)"
+      },
+      
+      "impact": {
+        "repository_organization_score": {
+          "before": 98,
+          "after": 100,
+          "improvement": "+2"
+        },
+        "documentation_coverage": {
+          "before": "95%",
+          "after": "100%",
+          "improvement": "+5%"
+        },
+        "affected_modules": ["Logos.Core.Theorems.Perpetuity", "Logos.Core.Automation"],
+        "user_facing": true,
+        "breaking_changes": false
+      },
+      
+      "verification": {
+        "build_status": "passing",
+        "tests_passing": true,
+        "linter_status": "clean",
+        "peer_reviewed": false,
+        "compliance_score": 100
+      },
+      
+      "references": {
+        "related_tasks": [59, 62],
+        "parent_project": null,
+        "child_tasks": [],
+        "documentation_links": [
+          "Documentation/Development/DIRECTORY_README_STANDARD.md"
+        ]
+      },
+      
+      "tags": ["documentation", "repository-organization", "developer-experience", "onboarding"],
+      
+      "lessons_learned": [
+        "Lightweight READMEs (50-80 lines) are sufficient for source directories",
+        "Template compliance improves consistency across documentation"
+      ]
+    },
+    
+    {
+      "_comment": "Example 2: Bugfix task with technical debt resolution",
+      "project_number": 52,
+      "project_name": "fix_aesop_duplicate",
+      "project_type": "bugfix",
+      "status": "archived",
+      "priority": "high",
+      "complexity": "simple",
+      
+      "timeline": {
+        "created": "2025-12-15T00:00:00Z",
+        "started": "2025-12-15T14:00:00Z",
+        "completed": "2025-12-15T14:30:00Z",
+        "archived": "2025-12-19T00:00:00Z",
+        "duration_hours": 0.5
+      },
+      
+      "summary": {
+        "title": "Fix AesopRules.lean Duplicate Declaration",
+        "description": "Resolved critical compilation error caused by duplicate rule declaration in AesopRules.lean",
+        "motivation": "Critical blocker preventing project compilation and development progress",
+        "completion_criteria": "lake build completes successfully without errors"
+      },
+      
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/052_fix_aesop_duplicate/",
+        "plans": [
+          "plans/implementation-001.md"
+        ],
+        "summaries": [
+          "summaries/task-summary.md"
+        ],
+        "reports": [],
+        "state_file": "state.json"
+      },
+      
+      "deliverables": {
+        "files_created": [],
+        "files_modified": [
+          "Logos/Core/Automation/AesopRules.lean"
+        ],
+        "files_deleted": [],
+        "lines_added": 0,
+        "lines_removed": 5,
+        "net_lines": -5
+      },
+      
+      "impact": {
+        "build_status": {
+          "before": "failing",
+          "after": "passing",
+          "fix_type": "critical"
+        },
+        "affected_modules": ["Logos.Core.Automation"],
+        "user_facing": false,
+        "breaking_changes": false,
+        "unblocked_tasks": ["All development work - critical blocker"]
+      },
+      
+      "verification": {
+        "build_status": "passing",
+        "tests_passing": true,
+        "linter_status": "clean",
+        "peer_reviewed": true,
+        "regression_tested": true
+      },
+      
+      "references": {
+        "related_tasks": [],
+        "parent_project": 4,
+        "child_tasks": [],
+        "issue_links": [],
+        "_comment_parent": "Discovered during Project 004 comprehensive review"
+      },
+      
+      "tags": ["bugfix", "critical", "compilation-error", "aesop", "automation"],
+      
+      "technical_details": {
+        "error_type": "duplicate_declaration",
+        "root_cause": "Aesop rule declared twice in same file",
+        "resolution": "Removed duplicate declaration at line 87"
+      }
+    },
+    
+    {
+      "_comment": "Example 3: Verification task with no code changes",
+      "project_number": 56,
+      "project_name": "bridge_helper_lemmas",
+      "project_type": "verification",
+      "status": "archived",
+      "priority": "medium",
+      "complexity": "simple",
+      
+      "timeline": {
+        "created": "2025-12-16T00:00:00Z",
+        "started": "2025-12-16T09:00:00Z",
+        "completed": "2025-12-16T10:00:00Z",
+        "archived": "2025-12-19T00:00:00Z",
+        "duration_hours": 1.0
+      },
+      
+      "summary": {
+        "title": "Verify Bridge.lean Helper Lemmas Implementation",
+        "description": "Verified that all required helper lemmas for Bridge.lean are already implemented",
+        "motivation": "Ensure no blocking issues exist for Bridge.lean completion",
+        "completion_criteria": "All helper lemmas confirmed present or documented as unnecessary"
+      },
+      
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/056_bridge_helper_lemmas/",
+        "plans": [
+          "plans/completion-verification-001.md"
+        ],
+        "summaries": [
+          "summaries/task-summary.md"
+        ],
+        "reports": [],
+        "state_file": "state.json"
+      },
+      
+      "deliverables": {
+        "files_created": [],
+        "files_modified": [],
+        "files_deleted": [],
+        "verification_report": "plans/completion-verification-001.md"
+      },
+      
+      "impact": {
+        "blocking_issues": {
+          "identified": 0,
+          "resolved": 0,
+          "remaining": 0
+        },
+        "confidence_level": "high",
+        "affected_modules": ["Logos.Core.Theorems.Bridge"],
+        "user_facing": false,
+        "project_readiness": "confirmed production-ready"
+      },
+      
+      "verification": {
+        "method": "manual_code_inspection",
+        "files_inspected": [
+          "Logos/Core/Theorems/Bridge.lean",
+          "Logos/Core/ProofSystem/Derivation.lean"
+        ],
+        "findings": "All helper lemmas present - zero blocking issues",
+        "confidence": "100%"
+      },
+      
+      "references": {
+        "related_tasks": [42, 46],
+        "parent_project": 4,
+        "child_tasks": []
+      },
+      
+      "tags": ["verification", "quality-assurance", "bridge-lemmas", "production-readiness"]
+    }
+  ],
+  
+  "statistics": {
+    "by_type": {
+      "documentation": 3,
+      "bugfix": 1,
+      "verification": 1,
+      "maintenance": 1,
+      "total": 6
+    },
+    "by_priority": {
+      "high": 1,
+      "medium": 5,
+      "low": 0
+    },
+    "by_complexity": {
+      "simple": 6,
+      "moderate": 0,
+      "complex": 0
+    },
+    "average_duration_hours": 2.0,
+    "total_files_created": 12,
+    "total_files_modified": 8,
+    "total_lines_added": 350,
+    "total_lines_removed": 15
+  },
+  
+  "search_index": {
+    "_comment": "Quick lookup index for common queries",
+    "by_date": {
+      "2025-12-15": [52],
+      "2025-12-16": [56, 59, 60],
+      "2025-12-18": [61, 62]
+    },
+    "by_impact": {
+      "critical": [52],
+      "high": [61, 62],
+      "medium": [56, 59, 60]
+    },
+    "by_module": {
+      "Logos.Core.Automation": [52, 61],
+      "Logos.Core.Theorems": [56, 61],
+      "Logos.Core.Metalogic": [59],
+      "Documentation": [60, 61, 62]
+    }
+  },
+  
+  "schema_definition": {
+    "_comment": "Extensible schema for future archive entries",
+    "required_fields": [
+      "project_number",
+      "project_name",
+      "project_type",
+      "status",
+      "timeline.completed",
+      "timeline.archived",
+      "summary.title",
+      "artifacts.base_path"
+    ],
+    "optional_fields": [
+      "priority",
+      "complexity",
+      "deliverables",
+      "impact",
+      "verification",
+      "references",
+      "tags",
+      "lessons_learned",
+      "technical_details"
+    ],
+    "extensible": true,
+    "version": "1.0.0"
+  }
+}

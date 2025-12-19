@@ -1,6 +1,6 @@
 ---
 name: plan
-agent: lean4-orchestrator
+agent: orchestrator
 description: "Create detailed implementation plan for a TODO task"
 ---
 

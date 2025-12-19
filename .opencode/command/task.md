@@ -1,6 +1,6 @@
 ---
 name: task
-agent: lean4-orchestrator
+agent: orchestrator
 description: "Complete a task from TODO.md by task number with automatic status tracking"
 ---
 

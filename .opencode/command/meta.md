@@ -47,7 +47,7 @@ description: "Interactive system builder that creates complete context-aware AI 
       
       <identify_capabilities>
         Known agents and their capabilities:
-        - lean4-orchestrator: Lean 4 proof development orchestration
+        - orchestrator: Lean 4 proof development orchestration
         - proof-developer: Lean 4 proof construction
         - researcher: Research and information gathering
         - planner: Planning and task breakdown
@@ -308,7 +308,7 @@ description: "Interactive system builder that creates complete context-aware AI 
       
       <for_formal_verification>
         Relevant existing agents:
-        - lean4-orchestrator: Lean 4 proof orchestration
+        - orchestrator: Lean 4 proof orchestration
         - proof-developer: Proof construction
         - verification-specialist: Proof verification
         - researcher: Research

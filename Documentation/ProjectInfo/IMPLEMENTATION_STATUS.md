@@ -388,7 +388,7 @@ lake build Logos.Core.Metalogic.DeductionTheorem
 ### Completeness.lean
 - **Status**: `[INFRASTRUCTURE ONLY]` - Type signatures with axiom declarations, no proofs
 - **Lines of Code**: 320
-- **Axiom Count**: 8 major theorems using `axiom` keyword
+- **Axiom Count**: 11 major theorems using `axiom` keyword
 - **Test Coverage**: 0% (no executable proofs)
 
 **Infrastructure Present**:
@@ -771,9 +771,9 @@ lake build LogosTest.Automation.TacticsTest
   - Integration with tactics
 
 **Package Status**:
-- Tactics: 6/12 implemented (50% complete) - MVP automation available
-- ProofSearch: Not started (planned)
-- ProofSearch: Not started (0%)
+- Tactics: 10/12 core tactics implemented (83% complete) - MVP automation available
+- Advanced Tactics: 2/2 implemented (100% complete)
+- ProofSearch: Infrastructure only (8 axiom stubs, 0% implementation)
 
 ---
 

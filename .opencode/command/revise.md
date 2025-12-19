@@ -1,6 +1,6 @@
 ---
 name: revise
-agent: lean4-orchestrator
+agent: orchestrator
 description: "Create revised implementation plan with incremented version number"
 ---
 
