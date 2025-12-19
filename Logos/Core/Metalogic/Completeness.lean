@@ -76,7 +76,7 @@ Formally: `Consistent Γ ↔ ¬(Γ ⊢ ⊥)`
 - `[p]` is consistent for atomic `p`
 - `[p, ¬p]` is inconsistent (derives ⊥ via propositional reasoning)
 -/
-def Consistent (Γ : Context) : Prop := ¬(DerivationTree Γ Formula.bot)
+def Consistent (Γ : Context) : Prop := ¬Nonempty (DerivationTree Γ Formula.bot)
 
 /--
 A context `Γ` is **maximal consistent** if it's consistent and adding any
@@ -360,15 +360,15 @@ Completeness + Soundness enable decidability results.
 
 **Proof**: Combine `soundness` and `weak_completeness`.
 -/
-theorem provable_iff_valid (φ : Formula) : DerivationTree [] φ ↔ valid φ := by
+theorem provable_iff_valid (φ : Formula) : Nonempty (DerivationTree [] φ) ↔ valid φ := by
   constructor
-  · intro h
+  · intro ⟨h⟩
     -- Soundness direction
     have sem_conseq := soundness [] φ h
     -- semantic_consequence [] φ is equivalent to valid φ
     sorry
   · intro h
-    exact weak_completeness φ h
+    exact ⟨weak_completeness φ h⟩
 
 /-!
 ## Future Work: Decidability
