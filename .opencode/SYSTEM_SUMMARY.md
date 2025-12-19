@@ -86,7 +86,7 @@
   - Bifurcation theory, attractors
 
 **Specs Context (1 file)**
-- ✅ `context/specs/project-structure.md`
+- ✅ `context/repo/project-structure.md`
   - Project directory organization
   - Artifact naming conventions
   - State file formats

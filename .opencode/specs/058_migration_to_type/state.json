@@ -1,18 +1,141 @@
 {
   "project_number": 58,
   "project_name": "migration_to_type",
-  "status": "in_progress",
+  "status": "planning_complete",
   "created": "2025-12-19",
+  "updated": "2025-12-19",
   "description": "Migration plan for converting Derivable : Prop to DerivationTree : Type",
   "artifacts": {
     "migration_plan": ".opencode/specs/058_migration_to_type/reports/migration-plan-001.md",
-    "risk_analysis": ".opencode/specs/058_migration_to_type/reports/risk-analysis.md",
-    "code_patterns": ".opencode/specs/058_migration_to_type/reports/code-patterns.md"
+    "code_patterns": ".opencode/specs/058_migration_to_type/reports/code-patterns.md",
+    "implementation_plan": ".opencode/specs/058_migration_to_type/plans/implementation-001.md",
+    "plan_summary": ".opencode/specs/058_migration_to_type/summaries/plan-summary.md",
+    "migration_summary": ".opencode/specs/058_migration_to_type/summaries/migration-summary.md"
   },
   "metadata": {
     "research_basis": "057_deep_embedding_research",
     "decision": "user_override",
     "previous_recommendation": "keep_dual_type",
-    "user_decision": "migrate_to_type"
-  }
+    "user_decision": "migrate_to_type",
+    "complexity": "COMPLEX",
+    "estimated_effort_hours": "60-80",
+    "risk_level": "HIGH",
+    "plan_version": "001"
+  },
+  "planning": {
+    "complexity_assessment": {
+      "level": "COMPLEX",
+      "drivers": [
+        "Breaking changes across 20 files",
+        "Core type system refactor (Prop → Type)",
+        "Well-founded recursion updates",
+        "Metaprogramming/tactic fragility",
+        "Performance implications (25-50% slower)"
+      ],
+      "estimated_hours": {
+        "optimistic": 60,
+        "realistic": 70,
+        "pessimistic": 80
+      },
+      "confidence": "medium-high"
+    },
+    "dependencies": {
+      "critical_path": [
+        "Phase 1: Core Definition (Derivation.lean)",
+        "Phase 2: Metalogic (DeductionTheorem, Soundness, Completeness)",
+        "Phase 3: Theorems (Propositional, Combinators, etc.)",
+        "Phase 4: Automation (Tactics, AesopRules)",
+        "Phase 5: Tests",
+        "Phase 6: Documentation",
+        "Phase 7: Final Verification"
+      ],
+      "required_imports": [
+        "Init.WF",
+        "Init.Data.Nat.Basic",
+        "Mathlib.Tactic.Basic",
+        "Mathlib.Data.List.Basic"
+      ],
+      "files_affected": 20
+    },
+    "phases": {
+      "phase_1": {
+        "name": "Core Definition",
+        "hours": "6-8",
+        "risk": "CRITICAL",
+        "file": "Logos/Core/ProofSystem/Derivation.lean"
+      },
+      "phase_2": {
+        "name": "Metalogic Proofs",
+        "hours": "18-23",
+        "risk": "HIGH",
+        "files": [
+          "Logos/Core/Metalogic/DeductionTheorem.lean",
+          "Logos/Core/Metalogic/Soundness.lean",
+          "Logos/Core/Metalogic/Completeness.lean"
+        ]
+      },
+      "phase_3": {
+        "name": "Theorem Libraries",
+        "hours": "29-37",
+        "risk": "MEDIUM",
+        "files": 8
+      },
+      "phase_4": {
+        "name": "Automation",
+        "hours": "8-11",
+        "risk": "HIGH",
+        "files": 2
+      },
+      "phase_5": {
+        "name": "Test Suites",
+        "hours": "19-26",
+        "risk": "LOW-MEDIUM",
+        "files": 7
+      },
+      "phase_6": {
+        "name": "Documentation",
+        "hours": "2-3",
+        "risk": "LOW",
+        "files": 4
+      },
+      "phase_7": {
+        "name": "Final Verification",
+        "hours": "4-6",
+        "risk": "MEDIUM"
+      }
+    },
+    "risks": {
+      "breaking_changes": {
+        "likelihood": "100%",
+        "impact": "CRITICAL",
+        "mitigation": "Incremental migration, comprehensive testing"
+      },
+      "performance_degradation": {
+        "likelihood": "80%",
+        "impact": "HIGH",
+        "mitigation": "Benchmark, optimize, rollback if >50% slower"
+      },
+      "tactic_breakage": {
+        "likelihood": "60%",
+        "impact": "HIGH",
+        "mitigation": "Careful metaprogramming, extensive testing"
+      },
+      "height_function_bugs": {
+        "likelihood": "30%",
+        "impact": "MEDIUM",
+        "mitigation": "Prove properties as theorems"
+      },
+      "time_overrun": {
+        "likelihood": "40%",
+        "impact": "MEDIUM",
+        "mitigation": "Track time, reassess if >100 hours"
+      }
+    }
+  },
+  "next_steps": [
+    "User reviews implementation plan",
+    "User decides: GO / NO-GO / Modify approach",
+    "If GO: Create git branch, run baseline tests, begin Phase 1",
+    "If NO-GO: Document decision, consider alternative approaches"
+  ]
 }
