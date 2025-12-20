@@ -44,7 +44,7 @@ Convenience wrapper for the derived DNE theorem from Propositional.lean.
 
 This theorem is now derived from EFQ + Peirce axioms (see Propositional.double_negation).
 -/
-private theorem double_negation (φ : Formula) : ⊢ φ.neg.neg.imp φ :=
+private def double_negation (φ : Formula) : ⊢ φ.neg.neg.imp φ :=
   Propositional.double_negation φ
 
 /-!
@@ -67,7 +67,7 @@ Derivation combines three components:
 
 This proof uses the `pairing` axiom for conjunction introduction.
 -/
-theorem perpetuity_1 (φ : Formula) : ⊢ φ.box.imp φ.always := by
+def perpetuity_1 (φ : Formula) : ⊢ φ.box.imp φ.always := by
   -- always φ = φ.all_past.and (φ.and φ.all_future) = Hφ ∧ (φ ∧ Gφ)
   have h_past : ⊢ φ.box.imp φ.all_past := box_to_past φ
   have h_present : ⊢ φ.box.imp φ := box_to_present φ
@@ -105,7 +105,7 @@ MVP. The semantic justification remains sound.
 **Usage**: Required for P2 (`▽φ → ◇φ`) and P4 (`◇▽φ → ◇φ`), which follow from
 contraposition of P1 and P3 respectively.
 -/
-theorem contraposition {A B : Formula}
+def contraposition {A B : Formula}
     (h : ⊢ A.imp B) : ⊢ B.neg.imp A.neg := by
   -- Contraposition: (A → B) → (¬B → ¬A)
   -- Where ¬X = X → ⊥
@@ -165,12 +165,12 @@ theorem contraposition {A B : Formula}
   -- Instantiate with X = A, Y = B, Z = ⊥:
   -- ⊢ (A → B → ⊥) → (A → B) → (A → ⊥)
   have s_inst : ⊢ (A.imp (B.imp Formula.bot)).imp ((A.imp B).imp (A.imp Formula.bot)) :=
-    Derivable.axiom [] _ (Axiom.prop_k A B Formula.bot)
+    DerivationTree.axiom [] _ (Axiom.prop_k A B Formula.bot)
 
   -- Now we need: A → (B → ⊥) from h : A → B
   -- S axiom again: B → (A → B)
   have s_b : ⊢ (B.imp Formula.bot).imp (A.imp (B.imp Formula.bot)) :=
-    Derivable.axiom [] _ (Axiom.prop_s (B.imp Formula.bot) A)
+    DerivationTree.axiom [] _ (Axiom.prop_s (B.imp Formula.bot) A)
 
   -- Now compose: (B → ⊥) → (A → (B → ⊥)) [s_b]
   --              (A → (B → ⊥)) → (A → B) → (A → ⊥) [s_inst]
@@ -199,24 +199,24 @@ theorem contraposition {A B : Formula}
   have s_final : ⊢ ((B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot))).imp
                    (((B.imp Formula.bot).imp (A.imp B)).imp
                     ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
-    Derivable.axiom [] _ (Axiom.prop_k (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot))
+    DerivationTree.axiom [] _ (Axiom.prop_k (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot))
 
   -- Apply s_final to comm_bc
   have step1 : ⊢ ((B.imp Formula.bot).imp (A.imp B)).imp
                   ((B.imp Formula.bot).imp (A.imp Formula.bot)) :=
-    Derivable.modus_ponens [] _ _ s_final comm_bc
+    DerivationTree.modus_ponens [] _ _ s_final comm_bc
 
   -- Now we need: ⊢ (B → ⊥) → (A → B)
   -- This is: constant function that ignores first arg and returns h
   -- K axiom: ⊢ (A → B) → ((B → ⊥) → (A → B))
   have const_h : ⊢ (A.imp B).imp ((B.imp Formula.bot).imp (A.imp B)) :=
-    Derivable.axiom [] _ (Axiom.prop_s (A.imp B) (B.imp Formula.bot))
+    DerivationTree.axiom [] _ (Axiom.prop_s (A.imp B) (B.imp Formula.bot))
 
   have step2 : ⊢ (B.imp Formula.bot).imp (A.imp B) :=
-    Derivable.modus_ponens [] _ _ const_h h
+    DerivationTree.modus_ponens [] _ _ const_h h
 
   -- Finally apply step1 to step2
-  exact Derivable.modus_ponens [] _ _ step1 step2
+  exact DerivationTree.modus_ponens [] _ _ step1 step2
 
 /--
 Diamond 4: `◇◇φ → ◇φ` (possible-possible implies possible).
@@ -233,7 +233,7 @@ Note: Since `diamond φ = φ.neg.box.neg`, we have:
 The proof requires showing that the complex nested negation structure reduces
 correctly via double negation elimination within the modal operators.
 -/
-theorem diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
+def diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
   -- Goal (by definition): φ.neg.box.neg.neg.box.neg.imp φ.neg.box.neg
   --
   -- Observation: ◇◇φ = (φ.neg.box.neg).diamond = φ.neg.box.neg.neg.box.neg
@@ -245,7 +245,7 @@ theorem diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
 
   -- Step 1: M4 for ¬φ: □¬φ → □□¬φ
   have m4_neg : ⊢ φ.neg.box.imp φ.neg.box.box :=
-    Derivable.axiom [] _ (Axiom.modal_4 φ.neg)
+    DerivationTree.axiom [] _ (Axiom.modal_4 φ.neg)
 
   -- Step 2: Contrapose M4: ¬□□¬φ → ¬□¬φ
   -- This is: φ.neg.box.box.neg → φ.neg.box.neg
@@ -263,14 +263,14 @@ theorem diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
 
   -- Step 5: Necessitate and distribute
   have box_combined : ⊢ (φ.neg.box.neg.neg.imp φ.neg.box.box).box :=
-    Derivable.necessitation _ combined
+    DerivationTree.necessitation _ combined
 
   have mk_dist : ⊢ (φ.neg.box.neg.neg.imp φ.neg.box.box).box.imp
                     (φ.neg.box.neg.neg.box.imp φ.neg.box.box.box) :=
-    Derivable.axiom [] _ (Axiom.modal_k_dist φ.neg.box.neg.neg φ.neg.box.box)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.box.neg.neg φ.neg.box.box)
 
   have distributed : ⊢ φ.neg.box.neg.neg.box.imp φ.neg.box.box.box :=
-    Derivable.modus_ponens [] _ _ mk_dist box_combined
+    DerivationTree.modus_ponens [] _ _ mk_dist box_combined
 
   -- Step 6: Negate both sides: ¬□□□¬φ → ¬□¬¬□¬φ
   have distributed_neg : ⊢ φ.neg.box.box.box.neg.imp φ.neg.box.neg.neg.box.neg :=
@@ -278,7 +278,7 @@ theorem diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
 
   -- Step 7: Use M4 on □¬φ: □□¬φ → □□□¬φ
   have m4_twice : ⊢ φ.neg.box.box.imp φ.neg.box.box.box :=
-    Derivable.axiom [] _ (Axiom.modal_4 φ.neg.box)
+    DerivationTree.axiom [] _ (Axiom.modal_4 φ.neg.box)
 
   -- Step 8: Contrapose: ¬□□□¬φ → ¬□□¬φ
   have m4_twice_neg : ⊢ φ.neg.box.box.box.neg.imp φ.neg.box.box.neg :=
@@ -299,15 +299,15 @@ theorem diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
 
   -- Necessitate
   have box_dni : ⊢ (φ.neg.box.imp φ.neg.box.neg.neg).box :=
-    Derivable.necessitation _ dni_box
+    DerivationTree.necessitation _ dni_box
 
   -- Distribute
   have mk_dni : ⊢ (φ.neg.box.imp φ.neg.box.neg.neg).box.imp
                    (φ.neg.box.box.imp φ.neg.box.neg.neg.box) :=
-    Derivable.axiom [] _ (Axiom.modal_k_dist φ.neg.box φ.neg.box.neg.neg)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.box φ.neg.box.neg.neg)
 
   have bridge : ⊢ φ.neg.box.box.imp φ.neg.box.neg.neg.box :=
-    Derivable.modus_ponens [] _ _ mk_dni box_dni
+    DerivationTree.modus_ponens [] _ _ mk_dni box_dni
 
   -- Contrapose: ¬□¬¬□¬φ → ¬□□¬φ
   have bridge_neg : ⊢ φ.neg.box.neg.neg.box.neg.imp φ.neg.box.box.neg :=
@@ -328,25 +328,25 @@ Derived from MB + diamond_4 + MK distribution:
 4. MK distribution: `⊢ □◇◇φ → □◇φ`
 5. Compose steps 1 and 4: `⊢ ◇φ → □◇φ`
 -/
-theorem modal_5 (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.box := by
+def modal_5 (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.box := by
   -- Step 1: MB on ◇φ
   have mb_dia : ⊢ φ.diamond.imp φ.diamond.diamond.box :=
-    Derivable.axiom [] _ (Axiom.modal_b φ.diamond)
+    DerivationTree.axiom [] _ (Axiom.modal_b φ.diamond)
 
   -- Step 2: diamond_4 for φ
   have d4 : ⊢ φ.diamond.diamond.imp φ.diamond := diamond_4 φ
 
   -- Step 3: Necessitate d4 using modal_k with empty context
   have box_d4 : ⊢ (φ.diamond.diamond.imp φ.diamond).box :=
-    Derivable.necessitation _ d4
+    DerivationTree.necessitation _ d4
 
   -- Step 4: MK distribution
   have mk : ⊢ (φ.diamond.diamond.imp φ.diamond).box.imp
                (φ.diamond.diamond.box.imp φ.diamond.box) :=
-    Derivable.axiom [] _ (Axiom.modal_k_dist φ.diamond.diamond φ.diamond)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.diamond.diamond φ.diamond)
 
   have d4_box : ⊢ φ.diamond.diamond.box.imp φ.diamond.box :=
-    Derivable.modus_ponens [] _ _ mk box_d4
+    DerivationTree.modus_ponens [] _ _ mk box_d4
 
   -- Step 5: Compose
   exact imp_trans mb_dia d4_box
@@ -360,7 +360,7 @@ Derivation via contraposition of P1:
 3. Since `▽φ = ¬△¬φ` and `◇φ = ¬□¬φ`:
 4. We get: `▽φ → ◇φ`
 -/
-theorem perpetuity_2 (φ : Formula) : ⊢ φ.sometimes.imp φ.diamond := by
+def perpetuity_2 (φ : Formula) : ⊢ φ.sometimes.imp φ.diamond := by
   -- Goal: ⊢ ▽φ → ◇φ
   -- Recall: ▽φ = sometimes φ = ¬(always ¬φ) = ¬(H¬φ ∧ ¬φ ∧ G¬φ)
   -- Recall: ◇φ = diamond φ = ¬□¬φ = (φ.neg.box).neg
@@ -387,11 +387,11 @@ Box implies boxed past: `⊢ □φ → □Hφ`.
 
 Derived via temporal duality on MF, analogous to `box_to_past`.
 -/
-theorem box_to_box_past (φ : Formula) : ⊢ φ.box.imp (φ.all_past.box) := by
+def box_to_box_past (φ : Formula) : ⊢ φ.box.imp (φ.all_past.box) := by
   have mf : ⊢ φ.swap_temporal.box.imp (φ.swap_temporal.all_future.box) :=
-    Derivable.axiom [] _ (Axiom.modal_future φ.swap_temporal)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ.swap_temporal)
   have mf_swap : ⊢ (φ.swap_temporal.box.imp (φ.swap_temporal.all_future.box)).swap_temporal :=
-    Derivable.temporal_duality _ mf
+    DerivationTree.temporal_duality _ mf
   simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at mf_swap
   exact mf_swap
 
@@ -409,31 +409,31 @@ Proof strategy:
 5. Compose to get: `⊢ □A → □B → □(A∧B)`
 6. Apply modus ponens with hA and hB
 -/
-theorem box_conj_intro {A B : Formula}
+def box_conj_intro {A B : Formula}
     (hA : ⊢ A.box) (hB : ⊢ B.box) : ⊢ (A.and B).box := by
   -- Step 1: pairing axiom gives us the base implication
   have pair : ⊢ A.imp (B.imp (A.and B)) := pairing A B
   -- Step 2: necessitation of pairing using modal_k with empty context
   have box_pair : ⊢ (A.imp (B.imp (A.and B))).box :=
-    Derivable.necessitation _ pair
+    DerivationTree.necessitation _ pair
   -- Step 3: modal K distribution (first application)
   -- □(A → (B → A∧B)) → (□A → □(B → A∧B))
   have mk1 : ⊢ (A.imp (B.imp (A.and B))).box.imp (A.box.imp (B.imp (A.and B)).box) :=
-    Derivable.axiom [] _ (Axiom.modal_k_dist A (B.imp (A.and B)))
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist A (B.imp (A.and B)))
   have h1 : ⊢ A.box.imp (B.imp (A.and B)).box :=
-    Derivable.modus_ponens [] _ _ mk1 box_pair
+    DerivationTree.modus_ponens [] _ _ mk1 box_pair
   -- Step 4: modal K distribution (second application)
   -- □(B → A∧B) → (□B → □(A∧B))
   have mk2 : ⊢ (B.imp (A.and B)).box.imp (B.box.imp (A.and B).box) :=
-    Derivable.axiom [] _ (Axiom.modal_k_dist B (A.and B))
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B))
   -- Compose: □A → □(B → A∧B) and □(B → A∧B) → (□B → □(A∧B))
   -- to get: □A → (□B → □(A∧B))
   have h2 : ⊢ A.box.imp (B.box.imp (A.and B).box) := imp_trans h1 mk2
   -- Apply with hA to get: □B → □(A∧B)
   have h3 : ⊢ B.box.imp (A.and B).box :=
-    Derivable.modus_ponens [] _ _ h2 hA
+    DerivationTree.modus_ponens [] _ _ h2 hA
   -- Apply with hB to get: □(A∧B)
-  exact Derivable.modus_ponens [] _ _ h3 hB
+  exact DerivationTree.modus_ponens [] _ _ h3 hB
 
 /--
 Boxed conjunction introduction from implications: from `⊢ P → □A` and `⊢ P → □B`,
@@ -443,7 +443,7 @@ This variant of `box_conj_intro` works with implications rather than direct
 derivations. It's useful for combining components like `□φ → □Hφ`, `□φ → □φ`,
 `□φ → □Gφ` into `□φ → □(Hφ ∧ (φ ∧ Gφ))`.
 -/
-theorem box_conj_intro_imp {P A B : Formula}
+def box_conj_intro_imp {P A B : Formula}
     (hA : ⊢ P.imp A.box) (hB : ⊢ P.imp B.box) : ⊢ P.imp (A.and B).box := by
   -- Strategy: Build P → □A → □B → □(A ∧ B), then apply with hA and hB
   -- From box_conj_intro proof, we have the pattern: □A → □B → □(A ∧ B)
@@ -451,13 +451,13 @@ theorem box_conj_intro_imp {P A B : Formula}
   -- First, build the implication chain: □A → □B → □(A ∧ B)
   have pair : ⊢ A.imp (B.imp (A.and B)) := pairing A B
   have box_pair : ⊢ (A.imp (B.imp (A.and B))).box :=
-    Derivable.necessitation _ pair
+    DerivationTree.necessitation _ pair
   have mk1 : ⊢ (A.imp (B.imp (A.and B))).box.imp (A.box.imp (B.imp (A.and B)).box) :=
-    Derivable.axiom [] _ (Axiom.modal_k_dist A (B.imp (A.and B)))
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist A (B.imp (A.and B)))
   have h1 : ⊢ A.box.imp (B.imp (A.and B)).box :=
-    Derivable.modus_ponens [] _ _ mk1 box_pair
+    DerivationTree.modus_ponens [] _ _ mk1 box_pair
   have mk2 : ⊢ (B.imp (A.and B)).box.imp (B.box.imp (A.and B).box) :=
-    Derivable.axiom [] _ (Axiom.modal_k_dist B (A.and B))
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B))
   have box_to_box : ⊢ A.box.imp (B.box.imp (A.and B).box) := imp_trans h1 mk2
 
   -- Now compose: P → □A and □A → □B → □(A ∧ B) gives P → □B → □(A ∧ B)
@@ -466,16 +466,16 @@ theorem box_conj_intro_imp {P A B : Formula}
   -- Compose: P → □B → □(A ∧ B) and P → □B gives P → □(A ∧ B)
   -- Use K axiom: (P → (□B → □(A ∧ B))) → ((P → □B) → (P → □(A ∧ B)))
   have k : ⊢ (P.imp (B.box.imp (A.and B).box)).imp ((P.imp B.box).imp (P.imp (A.and B).box)) :=
-    Derivable.axiom [] _ (Axiom.prop_k P B.box (A.and B).box)
+    DerivationTree.axiom [] _ (Axiom.prop_k P B.box (A.and B).box)
   have h3 : ⊢ (P.imp B.box).imp (P.imp (A.and B).box) :=
-    Derivable.modus_ponens [] _ _ k h2
-  exact Derivable.modus_ponens [] _ _ h3 hB
+    DerivationTree.modus_ponens [] _ _ k h2
+  exact DerivationTree.modus_ponens [] _ _ h3 hB
 
 /--
 Three-way boxed conjunction introduction from implications.
 From `⊢ P → □A`, `⊢ P → □B`, `⊢ P → □C`, derive `⊢ P → □(A ∧ (B ∧ C))`.
 -/
-theorem box_conj_intro_imp_3 {P A B C : Formula}
+def box_conj_intro_imp_3 {P A B C : Formula}
     (hA : ⊢ P.imp A.box) (hB : ⊢ P.imp B.box) (hC : ⊢ P.imp C.box) :
     ⊢ P.imp (A.and (B.and C)).box := by
   have hBC : ⊢ P.imp (B.and C).box := box_conj_intro_imp hB hC
@@ -495,7 +495,7 @@ Derivation combines three boxed temporal components using modal K distribution:
 This proof uses modal K distribution axiom and necessitation rule added in
 the axiomatic extension (Phases 1-2).
 -/
-theorem perpetuity_3 (φ : Formula) : ⊢ φ.box.imp (φ.always.box) := by
+def perpetuity_3 (φ : Formula) : ⊢ φ.box.imp (φ.always.box) := by
   -- always φ = φ.all_past.and (φ.and φ.all_future) = Hφ ∧ (φ ∧ Gφ)
   -- Goal: ⊢ □φ → □(Hφ ∧ (φ ∧ Gφ))
 
@@ -503,7 +503,7 @@ theorem perpetuity_3 (φ : Formula) : ⊢ φ.box.imp (φ.always.box) := by
   have h_past : ⊢ φ.box.imp (φ.all_past.box) := box_to_box_past φ
   have h_present : ⊢ φ.box.imp φ.box := identity φ.box
   have h_future : ⊢ φ.box.imp (φ.all_future.box) :=
-    Derivable.axiom [] _ (Axiom.modal_future φ)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ)
 
   -- Combine using box_conj_intro_imp_3
   exact box_conj_intro_imp_3 h_past h_present h_future
@@ -527,7 +527,7 @@ Proof:
 3. Modal K: `⊢ □(¬¬A → A) → (□¬¬A → □A)`
 4. Modus ponens chain: `⊢ □¬¬A → □A`
 -/
-theorem box_dne {A : Formula}
+def box_dne {A : Formula}
     (h : ⊢ A.neg.neg.box) : ⊢ A.box := by
   -- Step 1: DNE axiom
   have dne : ⊢ A.neg.neg.imp A :=
@@ -535,16 +535,16 @@ theorem box_dne {A : Formula}
 
   -- Step 2: Necessitate using modal_k with empty context
   have box_dne : ⊢ (A.neg.neg.imp A).box :=
-    Derivable.necessitation _ dne
+    DerivationTree.necessitation _ dne
 
   -- Step 3: Modal K distribution
   have mk : ⊢ (A.neg.neg.imp A).box.imp (A.neg.neg.box.imp A.box) :=
-    Derivable.axiom [] _ (Axiom.modal_k_dist A.neg.neg A)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist A.neg.neg A)
 
   -- Step 4: Apply modus ponens twice
   have step : ⊢ A.neg.neg.box.imp A.box :=
-    Derivable.modus_ponens [] _ _ mk box_dne
-  exact Derivable.modus_ponens [] _ _ step h
+    DerivationTree.modus_ponens [] _ _ mk box_dne
+  exact DerivationTree.modus_ponens [] _ _ step h
 
 /--
 P4: `◇▽φ → ◇φ` (possibility of occurrence)
@@ -568,7 +568,7 @@ Proof outline:
 in TM's classical semantics. The paper states P4 "follows from definitions and classical
 logic" (§3.2 lines 1070-1081).
 -/
-theorem perpetuity_4 (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond := by
+def perpetuity_4 (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond := by
   -- Goal: ⊢ (φ.neg.always.neg).neg.box.neg → φ.neg.box.neg
   --
   -- Strategy:
@@ -593,16 +593,16 @@ theorem perpetuity_4 (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond :=
 
   -- Necessitate: □(△¬φ → ¬¬△¬φ) using modal_k with empty context
   have box_dni_always : ⊢ (φ.neg.always.imp φ.neg.always.neg.neg).box :=
-    Derivable.necessitation _ dni_always
+    DerivationTree.necessitation _ dni_always
 
   -- Modal K: □(△¬φ → ¬¬△¬φ) → (□△¬φ → □¬¬△¬φ)
   have mk_dni : ⊢ (φ.neg.always.imp φ.neg.always.neg.neg).box.imp
                    (φ.neg.always.box.imp φ.neg.always.neg.neg.box) :=
-    Derivable.axiom [] _ (Axiom.modal_k_dist φ.neg.always φ.neg.always.neg.neg)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.always φ.neg.always.neg.neg)
 
   -- Apply: □△¬φ → □¬¬△¬φ
   have box_dni_imp : ⊢ φ.neg.always.box.imp φ.neg.always.neg.neg.box :=
-    Derivable.modus_ponens [] _ _ mk_dni box_dni_always
+    DerivationTree.modus_ponens [] _ _ mk_dni box_dni_always
 
   -- Contrapose: ¬□¬¬△¬φ → ¬□△¬φ
   -- i.e., φ.neg.always.neg.neg.box.neg → φ.neg.always.box.neg
@@ -629,24 +629,24 @@ Helper lemma: Modal B for diamond forms.
 From MB axiom `φ → □◇φ`, we can derive that truths are necessarily possible.
 This is used as a foundation for the persistence lemma.
 -/
-theorem mb_diamond (φ : Formula) : ⊢ φ.imp (φ.diamond.box) :=
-  Derivable.axiom [] _ (Axiom.modal_b φ)
+def mb_diamond (φ : Formula) : ⊢ φ.imp (φ.diamond.box) :=
+  DerivationTree.axiom [] _ (Axiom.modal_b φ)
 
 /--
 Helper lemma: Apply TF axiom to boxed diamond.
 
 From `□◇φ`, derive `F□◇φ` (necessarily possible persists to future).
 -/
-theorem box_diamond_to_future_box_diamond (φ : Formula) :
+def box_diamond_to_future_box_diamond (φ : Formula) :
     ⊢ φ.diamond.box.imp (φ.diamond.box.all_future) :=
-  Derivable.axiom [] _ (Axiom.temp_future φ.diamond)
+  DerivationTree.axiom [] _ (Axiom.temp_future φ.diamond)
 
 /--
 Helper lemma: Apply temporal duality to get past component.
 
 From TF on `□◇φ`, derive `H□◇φ` via temporal duality.
 -/
-theorem box_diamond_to_past_box_diamond (φ : Formula) :
+def box_diamond_to_past_box_diamond (φ : Formula) :
     ⊢ φ.diamond.box.imp (φ.diamond.box.all_past) := by
   -- Apply TF to swapped temporal version
   have tf_swap : ⊢ φ.diamond.box.swap_temporal.imp
@@ -655,7 +655,7 @@ theorem box_diamond_to_past_box_diamond (φ : Formula) :
   -- Apply temporal duality
   have td : ⊢ (φ.diamond.box.swap_temporal.imp
                 φ.diamond.box.swap_temporal.all_future).swap_temporal :=
-    Derivable.temporal_duality _ tf_swap
+    DerivationTree.temporal_duality _ tf_swap
   -- Simplify: swap(swap x) = x
   simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at td
   exact td
@@ -678,17 +678,17 @@ from the pointwise nature of implication in the temporal dimension.
 
 **Implementation Status**: FULLY DERIVED (zero sorry) using complete deduction theorem
 -/
-theorem future_k_dist (A B : Formula) :
+def future_k_dist (A B : Formula) :
     ⊢ (A.imp B).all_future.imp (A.all_future.imp B.all_future) := by
   -- Step 1: [A → B, A] ⊢ B via modus ponens
   have step1 : [A.imp B, A] ⊢ B := by
     have h_imp : [A.imp B, A] ⊢ A.imp B := by
-      apply Derivable.assumption
+      apply DerivationTree.assumption
       simp
     have h_a : [A.imp B, A] ⊢ A := by
-      apply Derivable.assumption
+      apply DerivationTree.assumption
       simp
-    exact Derivable.modus_ponens [A.imp B, A] A B h_imp h_a
+    exact DerivationTree.modus_ponens [A.imp B, A] A B h_imp h_a
   
   -- Step 2: Apply generalized_temporal_k to get [G(A → B), GA] ⊢ GB
   have step2 : [(A.imp B).all_future, A.all_future] ⊢ B.all_future := by
@@ -697,7 +697,7 @@ theorem future_k_dist (A B : Formula) :
   -- Step 3: Reorder context to [GA, G(A → B)] ⊢ GB using weakening
   -- We need GA at the front to apply deduction theorem
   have step3_reordered : [A.all_future, (A.imp B).all_future] ⊢ B.all_future := by
-    apply Derivable.weakening [(A.imp B).all_future, A.all_future] [A.all_future, (A.imp B).all_future] B.all_future step2
+    apply DerivationTree.weakening [(A.imp B).all_future, A.all_future] [A.all_future, (A.imp B).all_future] B.all_future step2
     intro x hx
     simp at hx ⊢
     exact hx.symm
@@ -722,7 +722,7 @@ at all past times and A holds at all past times, then B must hold at all past ti
 
 **Derivation**: This follows from `future_k_dist` applied with temporal duality.
 -/
-theorem past_k_dist (A B : Formula) :
+def past_k_dist (A B : Formula) :
     ⊢ (A.imp B).all_past.imp (A.all_past.imp B.all_past) := by
   -- Apply future_k_dist to swapped formulas
   have fk : ⊢ (A.swap_temporal.imp B.swap_temporal).all_future.imp
@@ -731,7 +731,7 @@ theorem past_k_dist (A B : Formula) :
   -- Apply temporal duality
   have td : ⊢ ((A.swap_temporal.imp B.swap_temporal).all_future.imp
                 (A.swap_temporal.all_future.imp B.swap_temporal.all_future)).swap_temporal :=
-    Derivable.temporal_duality _ fk
+    DerivationTree.temporal_duality _ fk
   -- Simplify: swap(swap x) = x
   simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at td
   exact td
@@ -772,7 +772,7 @@ either extending the proof system with:
 Future work: Investigate whether P5 can be derived using Temporal K (TK) inference rule
 combined with modal distribution, as suggested by paper's reference to "TK rules".
 -/
-theorem persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.always := by
+def persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.always := by
   -- Goal: ◇φ → △◇φ
   -- Expanded: ◇φ → H◇φ ∧ ◇φ ∧ G◇φ
   --
@@ -785,18 +785,18 @@ theorem persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.always := by
 
   -- We can derive: □◇φ → F□◇φ from TF
   have tf : ⊢ φ.diamond.box.imp φ.diamond.box.all_future :=
-    Derivable.axiom [] _ (Axiom.temp_future φ.diamond)
+    DerivationTree.axiom [] _ (Axiom.temp_future φ.diamond)
 
   -- We can derive: □◇φ → H□◇φ from TD (temporal duality on TF)
   have td : ⊢ φ.diamond.box.imp φ.diamond.box.all_past := by
     -- Apply TF to swapped temporal version
     have tf_swap : ⊢ φ.diamond.box.swap_temporal.imp
                       (φ.diamond.box.swap_temporal.all_future) :=
-      Derivable.axiom [] _ (Axiom.temp_future φ.diamond.swap_temporal)
+      DerivationTree.axiom [] _ (Axiom.temp_future φ.diamond.swap_temporal)
     -- Apply temporal duality
     have td_result : ⊢ (φ.diamond.box.swap_temporal.imp
                           φ.diamond.box.swap_temporal.all_future).swap_temporal :=
-      Derivable.temporal_duality _ tf_swap
+      DerivationTree.temporal_duality _ tf_swap
     -- Simplify: swap(swap x) = x
     simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at td_result
     exact td_result
@@ -816,10 +816,10 @@ theorem persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.always := by
     have mt_swap : ⊢ φ.diamond.box.swap_temporal.imp φ.diamond.swap_temporal :=
       box_to_present φ.diamond.swap_temporal
     have future_mt_swap : ⊢ (φ.diamond.box.swap_temporal.imp φ.diamond.swap_temporal).all_future :=
-      Derivable.temporal_necessitation _ mt_swap
+      DerivationTree.temporal_necessitation _ mt_swap
     have past_mt_raw :
       ⊢ ((φ.diamond.box.swap_temporal.imp φ.diamond.swap_temporal).all_future).swap_temporal :=
-      Derivable.temporal_duality _ future_mt_swap
+      DerivationTree.temporal_duality _ future_mt_swap
     -- Simplify using swap_temporal_diamond and swap_temporal_involution
     -- The key: swap(G(...)) = H(swap(...)), and swap is involutive
     -- swap(◇ψ) = ◇(swap ψ) by swap_temporal_diamond
@@ -842,7 +842,7 @@ theorem persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.always := by
                  (φ.diamond.box.all_past.imp φ.diamond.all_past) :=
       past_k_dist φ.diamond.box φ.diamond
     have past_bridge : ⊢ φ.diamond.box.all_past.imp φ.diamond.all_past :=
-      Derivable.modus_ponens [] _ _ pk past_mt
+      DerivationTree.modus_ponens [] _ _ pk past_mt
     exact imp_trans chain1 past_bridge
 
   -- Step 2: ◇φ → ◇φ (identity)
@@ -857,13 +857,13 @@ theorem persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.always := by
     have mt : ⊢ φ.diamond.box.imp φ.diamond := box_to_present φ.diamond
     -- Lift MT to future using temporal_k
     have future_mt : ⊢ (φ.diamond.box.imp φ.diamond).all_future :=
-      Derivable.temporal_necessitation _ mt
+      DerivationTree.temporal_necessitation _ mt
     -- Use future K distribution: G(□◇φ → ◇φ) → (G□◇φ → G◇φ)
     have fk : ⊢ (φ.diamond.box.imp φ.diamond).all_future.imp
                  (φ.diamond.box.all_future.imp φ.diamond.all_future) :=
       future_k_dist φ.diamond.box φ.diamond
     have future_bridge : ⊢ φ.diamond.box.all_future.imp φ.diamond.all_future :=
-      Derivable.modus_ponens [] _ _ fk future_mt
+      DerivationTree.modus_ponens [] _ _ fk future_mt
     exact imp_trans chain2 future_bridge
 
   -- Combine all three components using combine_imp_conj_3
@@ -890,7 +890,7 @@ P5 is semantically valid in task semantics:
 2. Temporal homogeneity ensures time-invariance of modal facts
 3. Therefore: ◇▽φ at t implies ◇φ at all times in any world history
 -/
-theorem perpetuity_5 (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond.always :=
+def perpetuity_5 (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond.always :=
   imp_trans (perpetuity_4 φ) (persistence φ)
 
 end Logos.Core.Theorems.Perpetuity

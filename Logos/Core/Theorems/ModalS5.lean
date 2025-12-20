@@ -1,5 +1,6 @@
 import Logos.Core.ProofSystem.Derivation
 import Logos.Core.Syntax.Formula
+import Logos.Core.Theorems.Combinators
 import Logos.Core.Theorems.Perpetuity
 import Logos.Core.Theorems.Propositional
 
@@ -36,6 +37,7 @@ namespace Logos.Core.Theorems.ModalS5
 
 open Logos.Core.Syntax
 open Logos.Core.ProofSystem
+open Logos.Core.Theorems.Combinators
 open Logos.Core.Theorems.Perpetuity
 open Logos.Core.Theorems.Propositional
 
@@ -58,7 +60,7 @@ This requires either:
 **Workaround**: box_disj_intro can be reformulated without this lemma using
 direct modal reasoning patterns from existing infrastructure.
 -/
-theorem classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp (((P.imp Formula.bot).imp Q).imp Q) := by
+def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp (((P.imp Formula.bot).imp Q).imp Q) := by
   -- This is the same as Propositional.classical_merge since P.neg = P.imp Formula.bot
   exact Propositional.classical_merge P Q
 
@@ -86,7 +88,7 @@ The same countermodel applies to diamond via duality.
 cannot be derived as originally planned. Alternative approaches for s4_diamond_box_conj
 must be found.
 -/
-theorem diamond_mono_imp (φ ψ : Formula) : ⊢ (φ.imp ψ).imp (φ.diamond.imp ψ.diamond) := by
+def diamond_mono_imp (φ ψ : Formula) : ⊢ (φ.imp ψ).imp (φ.diamond.imp ψ.diamond) := by
   -- NOT DERIVABLE as object-level theorem - see docstring
   -- This theorem is included with sorry to document the blocking dependency
   sorry
@@ -96,7 +98,7 @@ theorem diamond_mono_imp (φ ψ : Formula) : ⊢ (φ.imp ψ).imp (φ.diamond.imp
 
 See diamond_mono_imp documentation for why this is blocked.
 -/
-theorem diamond_mono_conditional {θ φ ψ : Formula}
+def diamond_mono_conditional {θ φ ψ : Formula}
     (h : ⊢ θ.imp (φ.imp ψ)) : ⊢ θ.imp (φ.diamond.imp ψ.diamond) := by
   have dmi : ⊢ (φ.imp ψ).imp (φ.diamond.imp ψ.diamond) := diamond_mono_imp φ ψ
   exact imp_trans h dmi
@@ -117,7 +119,7 @@ Proof:
 2. From A, construct ¬□¬A using RAA pattern
 3. □A → (□¬A → ⊥) via modal_t composition
 -/
-theorem t_box_to_diamond (A : Formula) : ⊢ A.box.imp A.diamond := by
+def t_box_to_diamond (A : Formula) : ⊢ A.box.imp A.diamond := by
   -- Goal: ⊢ □A → ◇A where ◇A = ¬□¬A
   unfold Formula.diamond Formula.neg
 
@@ -125,11 +127,11 @@ theorem t_box_to_diamond (A : Formula) : ⊢ A.box.imp A.diamond := by
 
   -- Step 1: modal_t for A gives us □A → A
   have mt_a : ⊢ A.box.imp A :=
-    Derivable.axiom [] _ (Axiom.modal_t A)
+    DerivationTree.axiom [] _ (Axiom.modal_t A)
 
   -- Step 2: modal_t for ¬A gives us □¬A → ¬A
   have mt_neg_a : ⊢ (A.imp Formula.bot).box.imp (A.imp Formula.bot) :=
-    Derivable.axiom [] _ (Axiom.modal_t (A.imp Formula.bot))
+    DerivationTree.axiom [] _ (Axiom.modal_t (A.imp Formula.bot))
 
   -- Step 3: RAA gives us A → (¬A → ⊥)
   have raa_inst : ⊢ A.imp ((A.imp Formula.bot).imp Formula.bot) :=
@@ -162,12 +164,12 @@ theorem t_box_to_diamond (A : Formula) : ⊢ A.box.imp A.diamond := by
   have b_flipped : ⊢ ((A.imp Formula.bot).box.imp (A.imp Formula.bot)).imp
                       (((A.imp Formula.bot).imp Formula.bot).imp
                        ((A.imp Formula.bot).box.imp Formula.bot)) :=
-    Derivable.modus_ponens [] _ _ flip_b b_inst
+    DerivationTree.modus_ponens [] _ _ flip_b b_inst
 
   -- Apply MP with mt_neg_a to get ((¬A → ⊥) → (□¬A → ⊥))
   have step1 : ⊢ ((A.imp Formula.bot).imp Formula.bot).imp
                   ((A.imp Formula.bot).box.imp Formula.bot) :=
-    Derivable.modus_ponens [] _ _ b_flipped mt_neg_a
+    DerivationTree.modus_ponens [] _ _ b_flipped mt_neg_a
 
   -- Step 6: Compose to get □A → (□¬A → ⊥)
   have b_outer :
@@ -181,9 +183,9 @@ theorem t_box_to_diamond (A : Formula) : ⊢ A.box.imp A.diamond := by
   have step2 :
     ⊢ (A.box.imp ((A.imp Formula.bot).imp Formula.bot)).imp
       (A.box.imp ((A.imp Formula.bot).box.imp Formula.bot)) :=
-    Derivable.modus_ponens [] _ _ b_outer step1
+    DerivationTree.modus_ponens [] _ _ b_outer step1
 
-  exact Derivable.modus_ponens [] _ _ step2 comp1
+  exact DerivationTree.modus_ponens [] _ _ step2 comp1
 
 /--
 Task 34: Box-Disjunction Introduction - `⊢ (□A ∨ □B) → □(A ∨ B)`.
@@ -198,7 +200,7 @@ Proof:
 2. From prop_s: B → (¬A → B), apply box_mono to get □B → □(¬A → B)
 3. Combine using disjunction structure (¬□A → □B) → □(¬A → B)
 -/
-theorem box_disj_intro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.or B).box) := by
+def box_disj_intro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.or B).box) := by
   unfold Formula.or
 
   -- Goal: ⊢ (¬□A → □B) → □(¬A → B)
@@ -212,7 +214,7 @@ theorem box_disj_intro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.or B).box)
 
   -- Step 2: □B → □(¬A → B) using weakening (prop_s)
   have weak_b : ⊢ B.imp ((A.imp Formula.bot).imp B) :=
-    Derivable.axiom [] _ (Axiom.prop_s B (A.imp Formula.bot))
+    DerivationTree.axiom [] _ (Axiom.prop_s B (A.imp Formula.bot))
 
   have box_b_case : ⊢ B.box.imp ((A.imp Formula.bot).imp B).box :=
     box_mono weak_b
@@ -232,7 +234,7 @@ theorem box_disj_intro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.or B).box)
   have neg_box_case :
     ⊢ (A.box.neg.imp B.box).imp
       (A.box.neg.imp ((A.imp Formula.bot).imp B).box) :=
-    Derivable.modus_ponens [] _ _ b_inst box_b_case
+    DerivationTree.modus_ponens [] _ _ b_inst box_b_case
 
   -- Now apply classical_merge:
   -- (□A → □(¬A → B)) → ((¬□A → □(¬A → B)) → □(¬A → B))
@@ -246,7 +248,7 @@ theorem box_disj_intro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.or B).box)
   have step1 :
     ⊢ (A.box.neg.imp ((A.imp Formula.bot).imp B).box).imp
       ((A.imp Formula.bot).imp B).box :=
-    Derivable.modus_ponens [] _ _ cm box_a_case
+    DerivationTree.modus_ponens [] _ _ cm box_a_case
 
   -- Now compose with neg_box_case: (¬□A → □B) → □(¬A → B)
   exact imp_trans neg_box_case step1
@@ -263,7 +265,7 @@ Proof:
 2. We need theorem form: `⊢ (A → B) → (¬B → ¬A)`
 3. Then apply box_mono
 -/
-theorem box_contrapose (A B : Formula) :
+def box_contrapose (A B : Formula) :
     ⊢ (A.imp B).box.imp
       ((B.imp Formula.bot).imp (A.imp Formula.bot)).box := by
   -- We need the contraposition as a derivable theorem, not a meta-theorem
@@ -283,7 +285,7 @@ theorem box_contrapose (A B : Formula) :
                    ((A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
       @theorem_flip (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
 
-    exact Derivable.modus_ponens [] _ _ flip bc
+    exact DerivationTree.modus_ponens [] _ _ flip bc
 
   -- Now apply box_mono to contraposition theorem
   exact box_mono contra_thm
@@ -311,7 +313,7 @@ This is the valid form of diamond monotonicity, derived from K axiom via duality
 
 **Dependencies**: K axiom (modal_k_dist), box_contrapose, contrapose_imp
 -/
-theorem k_dist_diamond (A B : Formula) : ⊢ (A.imp B).box.imp (A.diamond.imp B.diamond) := by
+def k_dist_diamond (A B : Formula) : ⊢ (A.imp B).box.imp (A.diamond.imp B.diamond) := by
   -- Goal: □(A → B) → (◇A → ◇B)
   -- where ◇X = ¬□¬X
   unfold Formula.diamond Formula.neg
@@ -326,7 +328,7 @@ theorem k_dist_diamond (A B : Formula) : ⊢ (A.imp B).box.imp (A.diamond.imp B.
   -- Step 2: Use K axiom to distribute: □(¬B → ¬A) → (□¬B → □¬A)
   have k_inst : ⊢ ((B.imp Formula.bot).imp (A.imp Formula.bot)).box.imp
                    ((B.imp Formula.bot).box.imp (A.imp Formula.bot).box) :=
-    Derivable.axiom [] _ (Axiom.modal_k_dist (B.imp Formula.bot) (A.imp Formula.bot))
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist (B.imp Formula.bot) (A.imp Formula.bot))
 
   -- Step 3: Compose to get □(A → B) → (□¬B → □¬A)
   have step1 : ⊢ (A.imp B).box.imp ((B.imp Formula.bot).box.imp (A.imp Formula.bot).box) :=
@@ -358,9 +360,9 @@ theorem k_dist_diamond (A B : Formula) : ⊢ (A.imp B).box.imp (A.diamond.imp B.
   have step2 : ⊢ ((A.imp B).box.imp ((B.imp Formula.bot).box.imp (A.imp Formula.bot).box)).imp
                   ((A.imp B).box.imp (((A.imp Formula.bot).box.imp Formula.bot).imp
                                       ((B.imp Formula.bot).box.imp Formula.bot))) :=
-    Derivable.modus_ponens [] _ _ b_comp contra_cons
+    DerivationTree.modus_ponens [] _ _ b_comp contra_cons
 
-  exact Derivable.modus_ponens [] _ _ step2 step1
+  exact DerivationTree.modus_ponens [] _ _ step2 step1
 
 /--
 Box Preserves Biconditionals: From `⊢ A ↔ B`, derive `⊢ □A ↔ □B`.
@@ -374,7 +376,7 @@ on both directions to get `(□A → □B) ∧ (□B → □A)`, which is `□A 
 
 **Dependencies**: box_mono, lce_imp, rce_imp, iff_intro from Propositional
 -/
-theorem box_iff_intro (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
+def box_iff_intro (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
     ⊢ (A.box.imp B.box).and (B.box.imp A.box) := by
   -- h: (A → B) ∧ (B → A)
   -- Goal: (□A → □B) ∧ (□B → □A)
@@ -383,13 +385,13 @@ theorem box_iff_intro (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
   have ab : ⊢ A.imp B := by
     have lce : ⊢ ((A.imp B).and (B.imp A)).imp (A.imp B) :=
       Propositional.lce_imp (A.imp B) (B.imp A)
-    exact Derivable.modus_ponens [] _ _ lce h
+    exact DerivationTree.modus_ponens [] _ _ lce h
 
   -- Extract B → A from biconditional
   have ba : ⊢ B.imp A := by
     have rce : ⊢ ((A.imp B).and (B.imp A)).imp (B.imp A) :=
       Propositional.rce_imp (A.imp B) (B.imp A)
-    exact Derivable.modus_ponens [] _ _ rce h
+    exact DerivationTree.modus_ponens [] _ _ rce h
 
   -- Apply box_mono to A → B to get □A → □B
   have box_ab : ⊢ A.box.imp B.box := box_mono ab
@@ -409,14 +411,14 @@ Contradiction cannot be necessary.
 Modal_t: □(A ∧ ¬A) → (A ∧ ¬A)
 Then from contradiction derive ⊥
 -/
-theorem t_box_consistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).imp Formula.bot := by
+def t_box_consistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).imp Formula.bot := by
   -- Goal: □(A ∧ ¬A) → ⊥
   -- modal_t gives: □(A ∧ ¬A) → (A ∧ ¬A)
   -- From (A ∧ ¬A) derive ⊥
 
   -- modal_t: □(A ∧ ¬A) → (A ∧ ¬A)
   have mt_conj : ⊢ (A.and (A.imp Formula.bot)).box.imp (A.and (A.imp Formula.bot)) :=
-    Derivable.axiom [] _ (Axiom.modal_t (A.and (A.imp Formula.bot)))
+    DerivationTree.axiom [] _ (Axiom.modal_t (A.and (A.imp Formula.bot)))
 
   -- From conjunction, extract A and ¬A, then apply RAA
   -- A ∧ ¬A = (A → ¬A → ⊥) → ⊥ = ((A → (A → ⊥) → ⊥) → ⊥)
@@ -483,7 +485,7 @@ theorem t_box_consistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).
         (((A.imp ((A.imp Formula.bot).imp Formula.bot)).imp Formula.bot).imp Formula.bot) :=
       @theorem_app1 (A.imp ((A.imp Formula.bot).imp Formula.bot)) Formula.bot
 
-    exact Derivable.modus_ponens [] _ _ dni_impl dni_A
+    exact DerivationTree.modus_ponens [] _ _ dni_impl dni_A
 
   -- Compose: □(A ∧ ¬A) → (A ∧ ¬A) → ⊥
   exact imp_trans mt_conj conj_to_bot
@@ -509,7 +511,7 @@ Box distributes over conjunction in both directions.
 - Forward direction □(A ∧ B) → (□A ∧ □B): Use box_mono on lce/rce from context, then pairing
 - Backward direction (□A ∧ □B) → □(A ∧ B): Use box_conj_intro from Perpetuity.lean
 -/
-theorem box_conj_iff (A B : Formula) : ⊢ iff (A.and B).box (A.box.and B.box) := by
+def box_conj_iff (A B : Formula) : ⊢ iff (A.and B).box (A.box.and B.box) := by
   unfold iff
 
   -- We need to prove both directions:
@@ -537,7 +539,7 @@ theorem box_conj_iff (A B : Formula) : ⊢ iff (A.and B).box (A.box.and B.box) :
     -- We need □A → □B → □(A ∧ B)
     -- Use modal K distribution: □(B → (A ∧ B)) → (□B → □(A ∧ B))
     have modal_k : ⊢ (B.imp (A.and B)).box.imp (B.box.imp (A.and B).box) :=
-      Derivable.axiom [] _ (Axiom.modal_k_dist B (A.and B))
+      DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B))
 
     -- Compose: □A → □(B → (A ∧ B)) → (□B → □(A ∧ B))
     have comp1 : ⊢ A.box.imp (B.box.imp (A.and B).box) :=
@@ -569,19 +571,19 @@ theorem box_conj_iff (A B : Formula) : ⊢ iff (A.and B).box (A.box.and B.box) :
     have step2 :
       ⊢ ((A.box.and B.box).imp A.box).imp
         ((A.box.and B.box).imp (B.box.imp (A.and B).box)) :=
-      Derivable.modus_ponens [] _ _ b1 comp1
+      DerivationTree.modus_ponens [] _ _ b1 comp1
     have step3 : ⊢ (A.box.and B.box).imp (B.box.imp (A.and B).box) :=
-      Derivable.modus_ponens [] _ _ step2 lce_box
+      DerivationTree.modus_ponens [] _ _ step2 lce_box
 
     -- Now combine: (□A ∧ □B) → □B and (□A ∧ □B) → (□B → □(A ∧ B)) give (□A ∧ □B) → □(A ∧ B)
     -- Use S axiom: (P → Q → R) → ((P → Q) → (P → R))
     -- With P = (□A ∧ □B), Q = □B, R = □(A ∧ B)
     have s_ax : ⊢ ((A.box.and B.box).imp (B.box.imp (A.and B).box)).imp
                   (((A.box.and B.box).imp B.box).imp ((A.box.and B.box).imp (A.and B).box)) :=
-      Derivable.axiom [] _ (Axiom.prop_k (A.box.and B.box) B.box (A.and B).box)
+      DerivationTree.axiom [] _ (Axiom.prop_k (A.box.and B.box) B.box (A.and B).box)
     have step4 : ⊢ ((A.box.and B.box).imp B.box).imp ((A.box.and B.box).imp (A.and B).box) :=
-      Derivable.modus_ponens [] _ _ s_ax step3
-    exact Derivable.modus_ponens [] _ _ step4 rce_box
+      DerivationTree.modus_ponens [] _ _ s_ax step3
+    exact DerivationTree.modus_ponens [] _ _ step4 rce_box
 
   -- Direction 1 (forward): □(A ∧ B) → (□A ∧ □B)
   have forward : ⊢ (A.and B).box.imp (A.box.and B.box) := by
@@ -616,7 +618,7 @@ Diamond distributes over disjunction in both directions (dual of box_conj_iff).
 
 **Dependencies**: Phase 1 De Morgan laws (now proven), box_conj_iff
 -/
-theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.or B.diamond) := by
+def diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.or B.diamond) := by
   -- The proof requires extensive formula manipulation with De Morgan laws.
   -- The key steps are:
   -- 1. ◇(A ∨ B) = ¬□¬(A ∨ B)
@@ -658,7 +660,7 @@ theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.o
                     ((A.neg.and B.neg).box.imp (A.or B).neg.box) :=
         Propositional.rce_imp ((A.or B).neg.box.imp (A.neg.and B.neg).box)
                               ((A.neg.and B.neg).box.imp (A.or B).neg.box)
-      exact Derivable.modus_ponens [] _ _ rce box_demorgan
+      exact DerivationTree.modus_ponens [] _ _ rce box_demorgan
 
     -- Step 4: Get box_conj_iff for (¬A ∧ ¬B)
     have box_conj_neg : ⊢ ((A.neg.and B.neg).box.imp (A.neg.box.and B.neg.box)).and
@@ -672,7 +674,7 @@ theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.o
                     ((A.neg.box.and B.neg.box).imp (A.neg.and B.neg).box) :=
         Propositional.rce_imp ((A.neg.and B.neg).box.imp (A.neg.box.and B.neg.box))
                               ((A.neg.box.and B.neg.box).imp (A.neg.and B.neg).box)
-      exact Derivable.modus_ponens [] _ _ rce box_conj_neg
+      exact DerivationTree.modus_ponens [] _ _ rce box_conj_neg
 
     -- Step 6: Compose: (□¬A ∧ □¬B) → □(¬A ∧ ¬B) → □¬(A ∨ B)
     have conj_box_to_or_box : ⊢ (A.neg.box.and B.neg.box).imp (A.or B).neg.box :=
@@ -680,7 +682,7 @@ theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.o
 
     -- Step 7: Contrapose: ¬□¬(A ∨ B) → ¬(□¬A ∧ □¬B)
     have neg_box_or_to_neg_conj : ⊢ (A.or B).neg.box.neg.imp (A.neg.box.and B.neg.box).neg :=
-      contraposition conj_box_to_or_box
+      Propositional.contraposition conj_box_to_or_box
 
     -- Step 8: Apply demorgan_conj_neg forward: ¬(□¬A ∧ □¬B) → (¬□¬A ∨ ¬□¬B)
     have demorgan_conj : ⊢ (A.neg.box.and B.neg.box).neg.imp (A.neg.box.neg.or B.neg.box.neg) :=
@@ -720,11 +722,11 @@ theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.o
                     ((A.neg.box.and B.neg.box).imp (A.neg.and B.neg).box) :=
         Propositional.rce_imp ((A.neg.and B.neg).box.imp (A.neg.box.and B.neg.box))
                               ((A.neg.box.and B.neg.box).imp (A.neg.and B.neg).box)
-      exact Derivable.modus_ponens [] _ _ rce box_conj_neg
+      exact DerivationTree.modus_ponens [] _ _ rce box_conj_neg
 
     -- Step 4: Contrapose: ¬□(¬A ∧ ¬B) → ¬(□¬A ∧ □¬B)
     have neg_box_conj_to_neg_conj : ⊢ (A.neg.and B.neg).box.neg.imp (A.neg.box.and B.neg.box).neg :=
-      contraposition conj_box_to_box_conj
+      Propositional.contraposition conj_box_to_box_conj
 
     -- Step 5: Get demorgan biconditional and apply box_iff_intro
     have demorgan_disj :
@@ -743,11 +745,11 @@ theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.o
                     ((A.or B).neg.box.imp (A.neg.and B.neg).box) :=
         Propositional.lce_imp ((A.or B).neg.box.imp (A.neg.and B.neg).box)
                               ((A.neg.and B.neg).box.imp (A.or B).neg.box)
-      exact Derivable.modus_ponens [] _ _ lce box_demorgan
+      exact DerivationTree.modus_ponens [] _ _ lce box_demorgan
 
     -- Step 7: Contrapose: ¬□(¬A ∧ ¬B) → ¬□¬(A ∨ B)
     have neg_box_conj_to_neg_box_or : ⊢ (A.neg.and B.neg).box.neg.imp (A.or B).neg.box.neg :=
-      contraposition box_or_to_conj
+      Propositional.contraposition box_or_to_conj
 
     -- Step 8: Compose the chain
     -- (¬□¬A ∨ ¬□¬B) → ¬(□¬A ∧ □¬B)
@@ -764,10 +766,10 @@ theorem diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.o
                     ((A.neg.and B.neg).box.imp (A.neg.box.and B.neg.box)) :=
         Propositional.lce_imp ((A.neg.and B.neg).box.imp (A.neg.box.and B.neg.box))
                               ((A.neg.box.and B.neg.box).imp (A.neg.and B.neg).box)
-      exact Derivable.modus_ponens [] _ _ lce box_conj_neg
+      exact DerivationTree.modus_ponens [] _ _ lce box_conj_neg
 
     have neg_conj_to_neg_box : ⊢ (A.neg.box.and B.neg.box).neg.imp (A.neg.and B.neg).box.neg :=
-      contraposition box_conj_to_conj_box
+      Propositional.contraposition box_conj_to_conj_box
 
     -- Step 9: Compose step1 and neg_conj_to_neg_box
     -- (◇A ∨ ◇B) → ¬□(¬A ∧ ¬B)
@@ -800,7 +802,7 @@ This is the characteristic S5 property showing the collapse of nested modalities
 
 **Status**: Partial (backward proven, forward blocked)
 -/
-theorem s5_diamond_box (A : Formula) : ⊢ iff (A.box.diamond) A.box := by
+def s5_diamond_box (A : Formula) : ⊢ iff (A.box.diamond) A.box := by
   -- Goal: iff (◇□A) □A which is (◇□A → □A) ∧ (□A → ◇□A)
 
   -- Backward direction: □A → ◇□A
@@ -810,7 +812,7 @@ theorem s5_diamond_box (A : Formula) : ⊢ iff (A.box.diamond) A.box := by
 
     -- modal_4: □φ → □□φ, so with φ = A: □A → □□A
     have modal_4_a : ⊢ A.box.imp A.box.box :=
-      Derivable.axiom [] _ (Axiom.modal_4 A)
+      DerivationTree.axiom [] _ (Axiom.modal_4 A)
 
     -- t_box_to_diamond: □B → ◇B, so with B = □A: □□A → ◇□A
     have box_box_to_diamond : ⊢ A.box.box.imp A.box.diamond :=
@@ -823,7 +825,7 @@ theorem s5_diamond_box (A : Formula) : ⊢ iff (A.box.diamond) A.box := by
   have forward : ⊢ (A.box.diamond).imp A.box := by
     -- Use the S5 characteristic axiom: modal_5_collapse
     -- modal_5_collapse (φ) : ◇□φ → □φ
-    exact Derivable.axiom [] _ (Axiom.modal_5_collapse A)
+    exact DerivationTree.axiom [] _ (Axiom.modal_5_collapse A)
 
   -- Combine using pairing to build biconditional
   -- pairing: A → B → (A ∧ B)
@@ -840,10 +842,10 @@ theorem s5_diamond_box (A : Formula) : ⊢ iff (A.box.diamond) A.box := by
   have step1 :
     ⊢ (A.box.imp A.box.diamond).imp
       ((A.box.diamond.imp A.box).and (A.box.imp A.box.diamond)) :=
-    Derivable.modus_ponens [] _ _ pair_forward_backward forward
+    DerivationTree.modus_ponens [] _ _ pair_forward_backward forward
 
   have result : ⊢ (A.box.diamond.imp A.box).and (A.box.imp A.box.diamond) :=
-    Derivable.modus_ponens [] _ _ step1 backward
+    DerivationTree.modus_ponens [] _ _ step1 backward
 
   -- result has type (◇□A → □A) ∧ (□A → ◇□A)
   -- iff (◇□A) (□A) expands to the same type
@@ -860,13 +862,13 @@ In S5, if necessarily-A is possible, then A is true.
 
 **Status**: Blocked on Task 33 forward direction
 -/
-theorem s5_diamond_box_to_truth (A : Formula) : ⊢ (A.box.diamond).imp A := by
+def s5_diamond_box_to_truth (A : Formula) : ⊢ (A.box.diamond).imp A := by
   -- ◇□A → □A (from modal_5_collapse)
   have h1 : ⊢ A.box.diamond.imp A.box :=
-    Derivable.axiom [] _ (Axiom.modal_5_collapse A)
+    DerivationTree.axiom [] _ (Axiom.modal_5_collapse A)
   -- □A → A (from modal_t)
   have h2 : ⊢ A.box.imp A :=
-    Derivable.axiom [] _ (Axiom.modal_t A)
+    DerivationTree.axiom [] _ (Axiom.modal_t A)
   -- Compose: ◇□A → A
   exact imp_trans h1 h2
 
