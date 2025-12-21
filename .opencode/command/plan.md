@@ -23,7 +23,8 @@ Execute the planning workflow:
    - Map dependencies (via dependency-mapper)
    - Create detailed step-by-step implementation plan
    - Store plan in .opencode/specs/NNN_project/plans/implementation-001.md
-3. Present results with plan reference and summary
+3. After the plan is created, route to @subagents/task-adder to create a new task in TODO.md.
+4. Present results with plan reference and summary.
 
 **Expected Output:**
 
