@@ -10,19 +10,19 @@
 
 ## Executive Summary
 
-This implementation plan details the creation of four interconnected markdown files in `context/math/analysis/` covering analysis concepts relevant to modal logic and Kripke semantics. The plan leverages comprehensive research findings from `research-001.md` and follows established documentation standards.
+This implementation plan details the creation of four interconnected markdown files in `.opencode/context/math/analysis/` covering analysis concepts relevant to modal logic and Kripke semantics. The plan leverages comprehensive research findings from `research-001.md` and follows established documentation standards.
 
 ### Objectives
 
-1. Create `context/math/analysis/topology.md` - Topological spaces and S4 modal logic
-2. Create `context/math/analysis/continuity.md` - Continuity, limits, and frame morphisms
-3. Create `context/math/analysis/measure-theory.md` - Measure theory and probabilistic modal logic
-4. Create `context/math/analysis/functional-spaces.md` - Modal algebras and Stone duality
+1. Create `.opencode/context/math/analysis/topology.md` - Topological spaces and S4 modal logic
+2. Create `.opencode/context/math/analysis/continuity.md` - Continuity, limits, and frame morphisms
+3. Create `.opencode/context/math/analysis/measure-theory.md` - Measure theory and probabilistic modal logic
+4. Create `.opencode/context/math/analysis/functional-spaces.md` - Modal algebras and Stone duality
 
 ### Success Criteria
 
 - All 4 files created in correct location with proper structure
-- Content follows documentation standards from `context/lean4/standards/documentation-standards.md`
+- Content follows documentation standards from `.opencode/context/lean4/standards/documentation-standards.md`
 - Mathlib4 import paths are accurate and verified
 - Modal logic connections are clear and theoretically sound
 - LEAN 4 code examples are syntactically correct or clearly marked as pseudocode
@@ -87,10 +87,10 @@ This implementation plan details the creation of four interconnected markdown fi
 ### Codebase Dependencies
 
 **Existing Context Files** (for cross-referencing):
-- `context/lean4/domain/mathlib-overview.md` - Mathlib structure overview
-- `context/lean4/domain/key-mathematical-concepts.md` - Type theory foundations
-- `context/lean4/standards/documentation-standards.md` - Documentation requirements
-- `context/logic/processes/modal-proof-strategies.md` - Modal logic proof strategies
+- `.opencode/context/lean4/domain/mathlib-overview.md` - Mathlib structure overview
+- `.opencode/context/lean4/domain/key-mathematical-concepts.md` - Type theory foundations
+- `.opencode/context/lean4/standards/documentation-standards.md` - Documentation requirements
+- `.opencode/context/logic/processes/modal-proof-strategies.md` - Modal logic proof strategies
 
 **Logos Codebase** (for examples):
 - `Logos/Core/Semantics/TaskFrame.lean` - Uses `LinearOrderedAddCommGroup` for temporal structure
@@ -120,7 +120,7 @@ mkdir -p context/math/analysis
 ```
 
 **Verification**:
-- [ ] Directory `context/math/analysis/` exists
+- [ ] Directory `.opencode/context/math/analysis/` exists
 - [ ] Directory is in git repository
 
 **Artifacts**: Directory structure
@@ -131,7 +131,7 @@ mkdir -p context/math/analysis
 
 **Step 2.1: Create File Structure**
 
-Create `context/math/analysis/topology.md` with the following sections:
+Create `.opencode/context/math/analysis/topology.md` with the following sections:
 
 1. **Overview** (15 minutes)
    - Purpose: Explain topological spaces as semantic structures for modal logic
@@ -198,8 +198,8 @@ Topological spaces provide a powerful semantic framework for modal logic, partic
 
 **Prerequisites**:
 - Basic set theory and lattice operations
-- Modal logic syntax and Kripke semantics (see `context/logic/processes/modal-proof-strategies.md`)
-- LEAN 4 type classes (see `context/lean4/domain/key-mathematical-concepts.md`)
+- Modal logic syntax and Kripke semantics (see `.opencode/context/logic/processes/modal-proof-strategies.md`)
+- LEAN 4 type classes (see `.opencode/context/lean4/domain/key-mathematical-concepts.md`)
 
 ## Core Concepts
 
@@ -483,7 +483,7 @@ theorem modal_duality {W : Type*} [TopologicalSpace W] (s : Set W) :
 
 **Step 3.1: Create File Structure**
 
-Create `context/math/analysis/continuity.md` with the following sections:
+Create `.opencode/context/math/analysis/continuity.md` with the following sections:
 
 1. **Overview** (10 minutes)
    - Purpose: Continuous functions and frame morphisms
@@ -788,7 +788,7 @@ def identity_bisimulation (M : KripkeModel W) : Bisimulation M M where
 
 **Step 4.1: Create File Structure**
 
-Create `context/math/analysis/measure-theory.md` with the following sections:
+Create `.opencode/context/math/analysis/measure-theory.md` with the following sections:
 
 1. **Overview** (10 minutes)
 2. **Core Concepts** (30 minutes)
@@ -820,7 +820,7 @@ Create `context/math/analysis/measure-theory.md` with the following sections:
 
 **Step 5.1: Create File Structure**
 
-Create `context/math/analysis/functional-spaces.md` with the following sections:
+Create `.opencode/context/math/analysis/functional-spaces.md` with the following sections:
 
 1. **Overview** (10 minutes)
 2. **Core Concepts** (30 minutes)
@@ -863,9 +863,9 @@ For each file, ensure:
 **Step 6.2: Update Related Context Files**
 
 Update the following files to reference new analysis files:
-- `context/lean4/domain/mathlib-overview.md` - Add analysis section
-- `context/logic/processes/modal-proof-strategies.md` - Reference topological semantics
-- `context/README.md` - Add analysis directory to index
+- `.opencode/context/lean4/domain/mathlib-overview.md` - Add analysis section
+- `.opencode/context/logic/processes/modal-proof-strategies.md` - Reference topological semantics
+- `.opencode/context/README.md` - Add analysis directory to index
 
 **Verification**:
 - [ ] All cross-references bidirectional
@@ -878,7 +878,7 @@ Update the following files to reference new analysis files:
 
 **Step 7.1: Documentation Standards Check**
 
-Review each file against `context/lean4/standards/documentation-standards.md`:
+Review each file against `.opencode/context/lean4/standards/documentation-standards.md`:
 - [ ] All code examples have docstrings or comments
 - [ ] Definitions are clear and precise
 - [ ] Theorems have explanations
@@ -1010,7 +1010,7 @@ import Mathlib.Module.Path
 
 For each file (`topology.md`, `continuity.md`, `measure-theory.md`, `functional-spaces.md`):
 
-- [ ] File created in correct location (`context/math/analysis/`)
+- [ ] File created in correct location (`.opencode/context/math/analysis/`)
 - [ ] All sections present and complete
 - [ ] Overview section explains purpose and scope
 - [ ] Core concepts section has definitions and properties
@@ -1055,7 +1055,7 @@ For each file (`topology.md`, `continuity.md`, `measure-theory.md`, `functional-
 
 ### Completion Criteria
 
-1. **All Files Created**: Four markdown files in `context/math/analysis/`
+1. **All Files Created**: Four markdown files in `.opencode/context/math/analysis/`
 2. **Content Complete**: All sections present with appropriate depth
 3. **Standards Compliance**: Follows documentation standards
 4. **Technical Accuracy**: Mathlib4 modules and LEAN 4 syntax correct
@@ -1104,8 +1104,8 @@ For each file (`topology.md`, `continuity.md`, `measure-theory.md`, `functional-
 ### Required Inputs
 
 1. **Research Report**: `.opencode/specs/069_math_analysis/reports/research-001.md` ✓
-2. **Documentation Standards**: `context/lean4/standards/documentation-standards.md` ✓
-3. **Existing Context**: `context/lean4/domain/mathlib-overview.md`, `key-mathematical-concepts.md` ✓
+2. **Documentation Standards**: `.opencode/context/lean4/standards/documentation-standards.md` ✓
+3. **Existing Context**: `.opencode/context/lean4/domain/mathlib-overview.md`, `key-mathematical-concepts.md` ✓
 4. **Logos Codebase**: `Logos/Core/Semantics/TaskFrame.lean`, `Truth.lean`, `Formula.lean` ✓
 
 ### External Dependencies
@@ -1115,12 +1115,12 @@ For each file (`topology.md`, `continuity.md`, `measure-theory.md`, `functional-
 
 ### Output Artifacts
 
-1. `context/math/analysis/topology.md`
-2. `context/math/analysis/continuity.md`
-3. `context/math/analysis/measure-theory.md`
-4. `context/math/analysis/functional-spaces.md`
-5. Updated `context/README.md` (with analysis directory)
-6. Updated `context/lean4/domain/mathlib-overview.md` (with analysis references)
+1. `.opencode/context/math/analysis/topology.md`
+2. `.opencode/context/math/analysis/continuity.md`
+3. `.opencode/context/math/analysis/measure-theory.md`
+4. `.opencode/context/math/analysis/functional-spaces.md`
+5. Updated `.opencode/context/README.md` (with analysis directory)
+6. Updated `.opencode/context/lean4/domain/mathlib-overview.md` (with analysis references)
 
 ---
 
@@ -1219,7 +1219,7 @@ Execute implementation using `/implement` command or manual file creation follow
 This implementation plan provides a comprehensive roadmap for creating four interconnected context files covering analysis concepts relevant to modal logic. The plan:
 
 - **Leverages** extensive research from `research-001.md`
-- **Follows** documentation standards from `context/lean4/standards/`
+- **Follows** documentation standards from `.opencode/context/lean4/standards/`
 - **Integrates** with existing Logos codebase (TaskFrame, Truth, Formula)
 - **Provides** detailed section-by-section guidance
 - **Estimates** 6.5-8.5 hours total effort

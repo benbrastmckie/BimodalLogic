@@ -468,17 +468,17 @@ These examples illustrate how proof search would work once implemented.
 -/
 
 /-- Example: Trivial search finds axiom immediately -/
-example : ∃ (proof : Derivable [] ((Formula.atom "p").box.imp (Formula.atom "p"))), True :=
+example : ∃ (proof : DerivationTree [] ((Formula.atom "p").box.imp (Formula.atom "p"))), True :=
   sorry  -- Would use: let proof := bounded_search [] _ 1
 
 /-- Example: Search with depth 2 for modus ponens application -/
-example (p q : Formula) (h1 : Derivable [] p) (h2 : Derivable [] (p.imp q)) :
-    ∃ (proof : Derivable [] q), True :=
+example (p q : Formula) (h1 : DerivationTree [] p) (h2 : DerivationTree [] (p.imp q)) :
+    ∃ (proof : DerivationTree [] q), True :=
   sorry  -- Would use: let proof := bounded_search [] q 2
 
 /-- Example: Modal K search requires context transformation -/
-example (p : Formula) (h : Derivable [p.box] p) :
-    ∃ (proof : Derivable [p.box] p.box), True :=
+example (p : Formula) (h : DerivationTree [p.box] p) :
+    ∃ (proof : DerivationTree [p.box] p.box), True :=
   sorry  -- Would use: let proof := bounded_search [p.box] p.box 3
 
 end Logos.Core.Automation

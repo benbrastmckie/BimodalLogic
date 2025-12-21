@@ -37,8 +37,8 @@
 - `Logos/Core/Metalogic/Completeness.lean` - Canonical model infrastructure
 
 **Documentation**:
-- `context/logic/processes/modal-proof-strategies.md` - Existing modal strategy documentation
-- `context/lean4/standards/documentation-standards.md` - Documentation format standards
+- `.opencode/context/logic/processes/modal-proof-strategies.md` - Existing modal strategy documentation
+- `.opencode/context/lean4/standards/documentation-standards.md` - Documentation format standards
 
 ### 3. Recommendations
 

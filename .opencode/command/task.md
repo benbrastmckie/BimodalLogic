@@ -21,10 +21,10 @@ You are executing task(s) from the TODO.md task list for the ProofChecker projec
 **Task Input:** $ARGUMENTS
 
 **Context Loaded:**
-@/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/specs/TODO.md
-@/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/context/lean4/
-@/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/context/logic/
-@/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/context/project/project-context.md
+@/home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md
+@/home/benjamin/Projects/ProofChecker/.opencode/context/lean4/
+@/home/benjamin/Projects/ProofChecker/.opencode/context/logic/
+@/home/benjamin/Projects/ProofChecker/.opencode/context/core/system/project-overview.md
 
 ## Input Format Support
 
@@ -177,18 +177,18 @@ Behavior: New batch execution workflow
 
 ## TODO.md Status Tracking
 
-The command automatically manages task status in TODO.md:
+The command automatically manages task status in TODO.md using standardized status markers (see `.opencode/context/repo/status-markers.md`):
 
 **Single Task:**
 - **Task Start**: Status → `[IN PROGRESS]`, adds `**Started**: YYYY-MM-DD`
-- **Task Complete** (simple tasks): Status → `[COMPLETE]`, adds `**Completed**: YYYY-MM-DD`
+- **Task Complete** (simple tasks): Status → `[COMPLETED]`, adds `**Completed**: YYYY-MM-DD`
 - **Task Requires Implementation**: Status remains `[IN PROGRESS]` until user completes /lean or /implement
 
 **Batch Tasks:**
 - **Wave Start**: All tasks in wave → `[IN PROGRESS]`, adds `**Started**: YYYY-MM-DD`
 - **Wave End**: 
-  - Completed tasks → `[COMPLETE]`, adds `**Completed**: YYYY-MM-DD`
-  - Failed tasks → `[FAILED]`, adds `**Failed**: YYYY-MM-DD` + failure reason
+  - Completed tasks → `[COMPLETED]`, adds `**Completed**: YYYY-MM-DD`
+  - Failed tasks → `[ABANDONED]`, adds `**Abandoned**: YYYY-MM-DD` + abandonment reason
   - Blocked tasks → `[BLOCKED]`, adds `**Blocked**: YYYY-MM-DD` + blocking reason
 - **Atomic Updates**: All status updates in wave performed atomically (single file write)
 
@@ -197,7 +197,7 @@ The command automatically manages task status in TODO.md:
 Tasks are identified by:
 1. **Task number** (e.g., "61" matches "### 61. Add Missing Directory READMEs")
 2. **Section headers** with format: `### {number}. {title}`
-3. **Status field** in task body: `**Status**: Not Started|In Progress|Complete`
+3. **Status field** in task body: `**Status**: [NOT STARTED]|[IN PROGRESS]|[BLOCKED]|[ABANDONED]|[COMPLETED]`
 
 ## Dependency Handling
 
@@ -322,14 +322,14 @@ Execution Plan:
 
 ```
 Single Task:
-  TODO.md: **Status**: Not Started
+  TODO.md: **Status**: [NOT STARTED]
          ↓ (automatic)
   TODO.md: **Status**: [IN PROGRESS]
            **Started**: 2025-12-19
 
   Task Execution:
     - If simple & executed directly:
-        TODO.md: **Status**: [COMPLETE] ✅
+        TODO.md: **Status**: [COMPLETED] ✅
                  **Completed**: 2025-12-19
     
     - If requires /lean or /implement:
@@ -343,12 +343,12 @@ Batch Tasks:
              **Started**: 2025-12-19
   
   Wave End:
-    TODO.md: **Status**: [COMPLETE] ✅ (completed tasks)
+    TODO.md: **Status**: [COMPLETED] ✅ (completed tasks)
              **Completed**: 2025-12-19
     
-    TODO.md: **Status**: [FAILED] (failed tasks)
-             **Failed**: 2025-12-19
-             **Failure Reason**: {error}
+    TODO.md: **Status**: [ABANDONED] (failed tasks)
+             **Abandoned**: 2025-12-19
+             **Abandonment Reason**: {error}
     
     TODO.md: **Status**: [BLOCKED] (blocked tasks)
              **Blocked**: 2025-12-19

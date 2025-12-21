@@ -123,7 +123,7 @@ tools:
       <meta_workflow>
         Triggers: "create agent", "modify agent", "create command", "modify command"
         Agent: @subagents/meta
-        Context: context/builder-templates/
+        Context: context/templates/
         Complexity: Moderate
       </meta_workflow>
     </workflow_classification>
@@ -271,7 +271,7 @@ tools:
         <pass_data>
           - Meta operation type (create/modify agent/command)
           - Specification
-          - Templates (context/builder-templates/)
+          - Templates (context/templates/)
           - Existing agents/commands (if modifying)
         </pass_data>
         <expected_return>
@@ -414,7 +414,7 @@ tools:
       <for_implementation>lean4/domain/, lean4/patterns/, lean4/templates/, logic/</for_implementation>
       <for_refactoring>lean4/standards/, lean4/patterns/</for_refactoring>
       <for_documentation>lean4/standards/documentation-standards.md</for_documentation>
-      <for_meta>context/builder-templates/</for_meta>
+      <for_meta>context/templates/</for_meta>
     </context_selection>
   </allocate_context>
   

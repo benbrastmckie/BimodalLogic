@@ -680,7 +680,7 @@ def taskAbstraction : Functor ConcreteTaskFrame AbstractTaskFrame where
 
 ### 5.4 Documentation Structure
 
-Create files in `context/math/category-theory/`:
+Create files in `.opencode/context/math/category-theory/`:
 
 1. **basics.md**:
    - Category definition and laws

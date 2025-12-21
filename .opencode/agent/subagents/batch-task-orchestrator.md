@@ -143,11 +143,11 @@ tools:
         2. Execute all tasks in wave in parallel (concurrent task-executor invocations)
         3. Wait for all tasks in wave to complete
         4. Collect results for each task
-        5. Identify failed tasks
-        6. Mark completed tasks COMPLETE (via batch-status-manager)
-        7. Mark failed tasks FAILED (via batch-status-manager)
-        8. Identify blocked tasks (depend on failed tasks)
-        9. Mark blocked tasks BLOCKED (via batch-status-manager)
+         5. Identify failed tasks
+         6. Mark completed tasks COMPLETED (via batch-status-manager)
+         7. Mark failed tasks ABANDONED (via batch-status-manager)
+         8. Identify blocked tasks (depend on failed tasks)
+         9. Mark blocked tasks BLOCKED (via batch-status-manager)
         10. Report wave completion
         11. If all tasks in wave failed and next wave depends on them, skip remaining waves
     </process>
@@ -201,7 +201,7 @@ tools:
       <route to="@subagents/specialists/batch-status-manager" when="wave_end">
         <context_level>Level 1</context_level>
         <pass_data>
-          - operation: "mark_complete" | "mark_failed" | "mark_blocked"
+          - operation: "mark_complete" | "mark_abandoned" | "mark_blocked"
           - tasks: [{task_num, timestamp, reason}, ...]
         </pass_data>
         <expected_return>
@@ -305,7 +305,7 @@ tools:
       #### Wave 2 ({count} tasks)
       ...
       
-      ### Failed Tasks
+      ### Abandoned Tasks
       ❌ Task {num}: {title}
          - Error: {error_message}
          - Recommendation: {fix_suggestion}
@@ -603,8 +603,8 @@ tools:
   
   <task_execution_failure>
     Scenario: Task execution fails
-    Action: Mark task as failed, block dependents, continue with independent tasks
-    Message: "Task {num} failed: {error}. Blocking dependent tasks: {blocked_list}"
+    Action: Mark task as abandoned, block dependents, continue with independent tasks
+    Message: "Task {num} abandoned: {error}. Blocking dependent tasks: {blocked_list}"
   </task_execution_failure>
   
   <status_update_failure>

@@ -1,5 +1,7 @@
 # LEAN 4 ProofChecker - Context-Aware AI System
 
+> **For Project Overview**: See [README.md](../README.md) for the Logos project overview, theoretical foundations, and dual verification methodology.
+
 ## Overview
 
 Complete context-aware AI system for LEAN 4 theorem proving focused on bimodal logic development. Manages the full workflow from research through implementation to verification and documentation.
@@ -9,23 +11,12 @@ Complete context-aware AI system for LEAN 4 theorem proving focused on bimodal l
 ### Main Orchestrator
 - **orchestrator**: Coordinates all workflows, routes to specialized agents, manages context allocation
 
-### Primary Agents (7)
-1. **reviewer**: Repository analysis, proof verification, TODO management
-2. **researcher**: Multi-source research (LeanExplore, Loogle, LeanSearch, web)
-3. **planner**: Implementation planning with complexity analysis and dependency mapping
-4. **proof-developer**: LEAN 4 proof implementation using lean-lsp-mcp
-5. **refactorer**: Code quality improvement and style enforcement
-6. **documenter**: Documentation maintenance (complete, accurate, concise)
-7. **meta**: Agent and command creation/modification
+### Agent System Summary
 
-### Specialist Subagents (16)
-- **verification-specialist**, **todo-manager**
-- **lean-search-specialist**, **loogle-specialist**, **web-research-specialist**
-- **complexity-analyzer**, **dependency-mapper**
-- **tactic-specialist**, **term-mode-specialist**, **metaprogramming-specialist**
-- **style-checker**, **proof-simplifier**
-- **doc-analyzer**, **doc-writer**
-- **agent-generator**, **command-generator**
+**12 Primary Agents** coordinate workflows and delegate to specialists  
+**32 Specialist Subagents** perform focused technical tasks
+
+> **Complete Agent Catalog**: See [agent/README.md](agent/README.md) for primary agents and [agent/subagents/specialists/README.md](agent/subagents/specialists/README.md) for all 32 specialists organized by category.
 
 ## Quick Start
 
@@ -79,11 +70,17 @@ Updates documentation to be complete, accurate, concise
 ### Meta-System
 - `/meta {request}` - Create or modify agents and commands
 
+### Task Management
+- `/add {task}` - Add tasks to TODO.md
+- `/todo` - Display TODO list
+- `/task {task_number}` - Execute TODO task
+- `/implement {plan_path} [phase]` - Execute implementation plan
+
 ## Project Structure
 
 ```
 .opencode/
-├── agent/
+├── agent/                  # See agent/README.md
 │   ├── orchestrator.md
 │   └── subagents/
 │       ├── reviewer.md
@@ -93,16 +90,19 @@ Updates documentation to be complete, accurate, concise
 │       ├── refactorer.md
 │       ├── documenter.md
 │       ├── meta.md
-│       └── specialists/
-│           └── [16 specialist subagents]
-├── context/
-│   ├── lean4/              # LEAN 4 knowledge
-│   ├── logic/              # Logic knowledge (proof theory, semantics, metalogic)
-│   ├── specs/              # Project management
-│   └── builder-templates/  # Meta-system templates
-├── command/
-│   └── [7 custom commands]
-├── specs/
+│       └── specialists/    # See agent/subagents/specialists/README.md
+│           └── [32 specialist subagents]
+├── context/                # See context/README.md
+│   ├── lean4/              # See context/lean4/README.md
+│   ├── logic/              # See context/logic/README.md
+│   ├── math/               # See context/math/README.md
+│   ├── repo/               # Repository conventions
+│   ├── core/               # Core system patterns
+│   ├── templates/          # Meta-system templates
+│   └── project/            # Project-specific context
+├── command/                # See command/README.md
+│   └── [12 commands: review, research, plan, revise, lean, refactor, document, meta, add, todo, task, implement]
+├── specs/                  # See specs/README.md
 │   ├── TODO.md             # Master task list
 │   ├── state.json          # Global state
 │   └── NNN_project_name/   # Project directories
@@ -227,7 +227,6 @@ Standardized structure in `.opencode/specs/`:
 - **tools/**: Logic-specific tools
 
 ### specs/
-- **project-structure.md**: Project organization guide
 - **artifact-organization.md**: Artifact naming and structure
 - **state-management.md**: State file formats and synchronization
 
@@ -260,10 +259,99 @@ Standardized structure in `.opencode/specs/`:
 
 ## Documentation
 
+### System Documentation
 - **ARCHITECTURE.md**: Detailed system architecture
 - **QUICK-START.md**: Step-by-step usage guide
 - **TESTING.md**: Testing checklist and procedures
-- **context/README.md**: Context organization guide
+
+### Directory READMEs
+- **agent/README.md**: Agent system overview and routing
+- **agent/subagents/specialists/README.md**: Specialist catalog (32 specialists)
+- **command/README.md**: Command reference and usage
+- **specs/README.md**: Task workflow and artifact organization
+- **.opencode/context/README.md**: Context organization guide
+- **.opencode/context/lean4/README.md**: LEAN 4 context navigation
+- **.opencode/context/logic/README.md**: Logic context navigation
+- **.opencode/context/math/README.md**: Math context navigation
+
+## Verification
+
+Verify system integrity and setup:
+
+### Agent System Verification
+```bash
+# Count primary agents (should be 12)
+find .opencode/agent/subagents -maxdepth 1 -name "*.md" -type f | wc -l
+
+# Count specialist subagents (should be 32)
+find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l
+
+# List all primary agents
+ls .opencode/agent/subagents/*.md
+```
+
+### Command System Verification
+```bash
+# Count commands (should be 12)
+find .opencode/command -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l
+
+# List all commands
+ls .opencode/command/*.md
+```
+
+### Context Structure Verification
+```bash
+# Verify context directories exist
+ls -d .opencode/context/*/
+
+# Expected output: core, lean4, logic, math, physics, project, repo, templates
+
+# Check LEAN 4 context structure
+ls .opencode/context/lean4/
+
+# Expected output: domain, processes, standards, templates, patterns, tools
+
+# Check logic context structure
+ls .opencode/context/logic/
+
+# Expected output: domain, processes, standards, templates, patterns, tools
+```
+
+### Specs Directory Verification
+```bash
+# Check specs structure
+ls .opencode/specs/
+
+# Verify TODO.md exists
+test -f .opencode/specs/TODO.md && echo "TODO.md exists" || echo "TODO.md missing"
+
+# Verify state.json exists
+test -f .opencode/specs/state.json && echo "state.json exists" || echo "state.json missing"
+
+# Count project directories
+find .opencode/specs -maxdepth 1 -type d -name "[0-9]*" | wc -l
+```
+
+### Complete System Verification
+```bash
+# Run all verification checks
+echo "=== Agent System ==="
+echo "Primary agents: $(find .opencode/agent/subagents -maxdepth 1 -name "*.md" -type f | wc -l) (expected: 12)"
+echo "Specialist subagents: $(find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l) (expected: 32)"
+
+echo -e "\n=== Command System ==="
+echo "Commands: $(find .opencode/command -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l) (expected: 12)"
+
+echo -e "\n=== Context Structure ==="
+echo "Context directories: $(ls -d .opencode/context/*/ 2>/dev/null | wc -l) (expected: 8)"
+echo "LEAN 4 subdirectories: $(ls -d .opencode/context/lean4/*/ 2>/dev/null | wc -l) (expected: 6)"
+echo "Logic subdirectories: $(ls -d .opencode/context/logic/*/ 2>/dev/null | wc -l) (expected: 7)"
+
+echo -e "\n=== Specs Directory ==="
+echo "TODO.md: $(test -f .opencode/specs/TODO.md && echo "✓" || echo "✗")"
+echo "state.json: $(test -f .opencode/specs/state.json && echo "✓" || echo "✗")"
+echo "Project directories: $(find .opencode/specs -maxdepth 1 -type d -name "[0-9]*" | wc -l)"
+```
 
 ## Support
 
@@ -272,7 +360,8 @@ For questions or issues:
 2. Check context files for domain knowledge
 3. Examine example artifacts in `.opencode/specs/`
 4. Use `/meta` to extend the system with new agents or commands
+5. Run verification commands to check system integrity
 
 ---
 
-**Your LEAN 4 theorem proving system is ready!** 🎉
+**Your LEAN 4 theorem proving system is ready!**

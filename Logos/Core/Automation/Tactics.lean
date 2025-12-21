@@ -59,7 +59,7 @@ Attempts to unify the goal with each axiom schema and applies the matching axiom
 
 **Example**:
 ```lean
-example : Derivable [] (Formula.box p |>.imp p) := by
+example : DerivationTree [] (Formula.box p |>.imp p) := by
   apply_axiom  -- Finds and applies Axiom.modal_t
 ```
 
@@ -72,7 +72,7 @@ example : Derivable [] (Formula.box p |>.imp p) := by
 **Implementation**: Uses `refine` to let Lean infer formula parameters from the goal.
 -/
 macro "apply_axiom" : tactic =>
-  `(tactic| (apply Derivable.axiom; refine ?_))
+  `(tactic| (apply DerivationTree.axiom; refine ?_))
 
 /--
 `modal_t` tactic automatically applies modal T axiom (`□φ → φ`).
@@ -89,7 +89,7 @@ example (p : Formula) : [p.box] ⊢ p := by
 **Implementation**: Applies Axiom.modal_t directly.
 -/
 macro "modal_t" : tactic =>
-  `(tactic| (apply Derivable.axiom; refine ?_))
+  `(tactic| (apply DerivationTree.axiom; refine ?_))
 
 /-!
 ## Phase 4: tm_auto (Aesop Integration)
@@ -222,7 +222,7 @@ def mkOperatorKTactic (tacticName : String) (operatorConst : Name)
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``Derivable _) _context) formula =>
+  | .app (.app (.const ``DerivationTree _) _context) formula =>
     match formula with
     | .app (.const opConst _) _innerFormula =>
       if opConst == operatorConst then
@@ -254,7 +254,7 @@ and applies `Theorems.generalized_modal_k`.
 
 **Example**:
 ```lean
-example (p : Formula) : Derivable [p.box] (p.box) := by
+example (p : Formula) : DerivationTree [p.box] (p.box) := by
   -- Goal: [□p] ⊢ □p
   -- After modal_k_tactic: subgoal [p] ⊢ p
   modal_k_tactic
@@ -274,7 +274,7 @@ and applies `Derivable.temporal_k`.
 
 **Example**:
 ```lean
-example (p : Formula) : Derivable [p.all_future] (p.all_future) := by
+example (p : Formula) : DerivationTree [p.all_future] (p.all_future) := by
   -- Goal: [Fp] ⊢ Fp
   -- After temporal_k_tactic: subgoal [p] ⊢ p
   temporal_k_tactic
@@ -299,7 +299,7 @@ Automatically applies the axiom when the goal matches the pattern.
 
 **Example**:
 ```lean
-example (p : Formula) : Derivable [] ((p.box).imp (p.box.box)) := by
+example (p : Formula) : DerivationTree [] ((p.box).imp (p.box.box)) := by
   modal_4_tactic
 ```
 
@@ -310,7 +310,7 @@ elab "modal_4_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``Derivable _) context) formula =>
+  | .app (.app (.const ``DerivationTree _) context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
@@ -323,7 +323,7 @@ elab "modal_4_tactic" : tactic => do
 
           if ← isDefEq innerFormula innerFormula2 then
             let axiomProof ← mkAppM ``Axiom.modal_4 #[innerFormula]
-            let proof ← mkAppM ``Derivable.axiom #[axiomProof]
+            let proof ← mkAppM ``DerivationTree.axiom #[axiomProof]
             goal.assign proof
           else
             throwError (
@@ -349,7 +349,7 @@ Automatically applies the axiom when the goal matches the pattern.
 
 **Example**:
 ```lean
-example (p : Formula) : Derivable [] (p.imp (p.diamond.box)) := by
+example (p : Formula) : DerivationTree [] (p.imp (p.diamond.box)) := by
   modal_b_tactic
 ```
 
@@ -360,7 +360,7 @@ elab "modal_b_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``Derivable _) context) formula =>
+  | .app (.app (.const ``DerivationTree _) context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
@@ -374,7 +374,7 @@ elab "modal_b_tactic" : tactic => do
         if !lhsMatches then
           -- Try alternate: check structure of diamondPart
           let axiomProof ← mkAppM ``Axiom.modal_b #[lhs]
-          let proof ← mkAppM ``Derivable.axiom #[axiomProof]
+          let proof ← mkAppM ``DerivationTree.axiom #[axiomProof]
           goal.assign proof
         else
           throwError "modal_b_tactic: pattern mismatch in □◇φ structure"
@@ -401,7 +401,7 @@ Automatically applies the axiom when the goal matches the pattern.
 
 **Example**:
 ```lean
-example (p : Formula) : Derivable [] ((p.all_future).imp (p.all_future.all_future)) := by
+example (p : Formula) : DerivationTree [] ((p.all_future).imp (p.all_future.all_future)) := by
   temp_4_tactic
 ```
 
@@ -412,7 +412,7 @@ elab "temp_4_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``Derivable _) context) formula =>
+  | .app (.app (.const ``DerivationTree _) context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
@@ -426,7 +426,7 @@ elab "temp_4_tactic" : tactic => do
 
           if ← isDefEq innerFormula innerFormula2 then
             let axiomProof ← mkAppM ``Axiom.temp_4 #[innerFormula]
-            let proof ← mkAppM ``Derivable.axiom #[axiomProof]
+            let proof ← mkAppM ``DerivationTree.axiom #[axiomProof]
             goal.assign proof
           else
             throwError (
@@ -452,7 +452,7 @@ Automatically applies the axiom when the goal matches the pattern.
 
 **Example**:
 ```lean
-example (p : Formula) : Derivable [] (p.imp (p.sometime_past.all_future)) := by
+example (p : Formula) : DerivationTree [] (p.imp (p.sometime_past.all_future)) := by
   temp_a_tactic
 ```
 
@@ -463,7 +463,7 @@ elab "temp_a_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``Derivable _) context) formula =>
+  | .app (.app (.const ``DerivationTree _) context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
@@ -473,7 +473,7 @@ elab "temp_a_tactic" : tactic => do
 
         -- Apply axiom directly - let Lean unify the patterns
         let axiomProof ← mkAppM ``Axiom.temp_a #[lhs]
-        let proof ← mkAppM ``Derivable.axiom #[axiomProof]
+        let proof ← mkAppM ``DerivationTree.axiom #[axiomProof]
         goal.assign proof
 
       | _ =>
@@ -501,7 +501,7 @@ Attempts to solve modal proof goals using bounded depth-first search with heuris
 
 **Example**:
 ```lean
-example (p : Formula) : Derivable [] ((p.box).imp p) := by
+example (p : Formula) : DerivationTree [] ((p.box).imp p) := by
   modal_search 3  -- Search with depth limit 3
 ```
 
@@ -520,7 +520,7 @@ Attempts to solve temporal proof goals using bounded depth-first search with heu
 
 **Example**:
 ```lean
-example (p : Formula) : Derivable [] ((p.all_future).imp (p.all_future.all_future)) := by
+example (p : Formula) : DerivationTree [] ((p.all_future).imp (p.all_future.all_future)) := by
   temporal_search 3  -- Search with depth limit 3
 ```
 

@@ -2,9 +2,11 @@
 
 Comprehensive documentation hub for the Logos project.
 
+> **For AI-Assisted Development**: See [../.opencode/README.md](../.opencode/README.md) for the AI agent system that automates research, planning, implementation, and documentation workflows.
+
 ## Documentation Organization
 
-Documentation is organized into five categories:
+Documentation is organized into six categories:
 
 ### UserGuide/
 
@@ -66,6 +68,18 @@ Reference materials:
 - [OPERATORS.md](Reference/OPERATORS.md) - Formal symbols reference (Unicode notation guide)
 - [GLOSSARY.md](Reference/GLOSSARY.md) - Terminology mapping and key concepts
 
+### AI System/ (.opencode/)
+
+Context-aware development system for automated workflows:
+
+- [AI System Overview](../.opencode/README.md) - Complete system documentation
+- [Architecture](../.opencode/ARCHITECTURE.md) - Detailed system architecture
+- [Quick Start](../.opencode/QUICK-START.md) - Step-by-step usage guide
+- [Agent Catalog](../.opencode/agent/README.md) - Primary agents and routing
+- [Specialist Catalog](../.opencode/agent/subagents/specialists/README.md) - All 32 specialists
+- [Command Reference](../.opencode/command/README.md) - Command usage and examples
+- [Context Organization](../.opencode/context/README.md) - Context file structure
+
 ## Quick Links
 
 ### For New Users
@@ -106,6 +120,14 @@ Reference materials:
 - [Research Overview](Research/README.md) - Research documentation index
 - [Dual Verification](Research/DUAL_VERIFICATION.md) - RL training architecture
 - [Layer Extensions](Research/LAYER_EXTENSIONS.md) - Layers 1-3 specifications
+
+### For AI-Assisted Development
+
+- [AI System Overview](../.opencode/README.md) - Complete AI system documentation
+- [Research Command](../.opencode/command/research.md) - Automated research workflow
+- [Plan Command](../.opencode/command/plan.md) - Implementation planning workflow
+- [LEAN Command](../.opencode/command/lean.md) - Proof development workflow
+- [Document Command](../.opencode/command/document.md) - Documentation workflow
 
 ## Documentation Update Workflow
 

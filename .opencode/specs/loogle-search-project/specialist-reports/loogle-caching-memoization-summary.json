@@ -1,0 +1,207 @@
+{
+  "report_path": ".opencode/specs/loogle-search-project/specialist-reports/loogle-caching-memoization.md",
+  "total_matches": 7258,
+  "categories": {
+    "cache_functions": 569,
+    "memoize_functions": 6,
+    "memo_related": 119,
+    "state_monad": 2628,
+    "state_transformer": 159,
+    "io_ref": 186,
+    "type_pattern_wrapper": 3650,
+    "type_pattern_statet": 66
+  },
+  "top_matches": [
+    {
+      "name": "Lean.MonadCache",
+      "type": "(α β : Type) (m : Type → Type) : Type",
+      "library": "Lean Core",
+      "module": "Lean.Util.MonadCache",
+      "category": "cache",
+      "description": "Generic monad type class for caching operations"
+    },
+    {
+      "name": "Lean.MonadCacheT",
+      "type": "{ω : Type} (α β : Type) (m : Type → Type) [STWorld ω m] [BEq α] [Hashable α] : Type → Type",
+      "library": "Lean Core",
+      "module": "Lean.Util.MonadCache",
+      "category": "cache",
+      "description": "Monad transformer adding caching capability"
+    },
+    {
+      "name": "memoFix",
+      "type": "{α β : Type} [Nonempty β] (f : (α → β) → α → β) : α → β",
+      "library": "Mathlib",
+      "module": "Mathlib.Util.MemoFix",
+      "category": "memoize",
+      "description": "Memoized fixed-point computation with pointer-based hashing"
+    },
+    {
+      "name": "Std.Sat.AIG.Cache",
+      "type": "(α : Type) [DecidableEq α] [Hashable α] (decls : Array (Std.Sat.AIG.Decl α)) : Type",
+      "library": "Std",
+      "module": "Std.Sat.AIG.Basic",
+      "category": "cache",
+      "description": "Cache for And-Inverter Graph construction with structural sharing"
+    },
+    {
+      "name": "Std.Tactic.BVDecide.BVExpr.Cache",
+      "type": "(aig : Std.Sat.AIG Std.Tactic.BVDecide.BVBit) : Type",
+      "library": "Std",
+      "module": "Std.Tactic.BVDecide.Bitblast.BVExpr.Circuit.Impl.Expr",
+      "category": "cache",
+      "description": "Cache for bit-vector expression bitblasting"
+    },
+    {
+      "name": "IO.Ref",
+      "type": "(α : Type) : Type",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "category": "io_ref",
+      "description": "Mutable reference in IO monad for global caches"
+    },
+    {
+      "name": "StateT",
+      "type": "(σ : Type u) (m : Type u → Type v) (α : Type u) : Type (max u v)",
+      "library": "Init",
+      "module": "Init.Control.State",
+      "category": "state",
+      "description": "State monad transformer for threading cache state"
+    },
+    {
+      "name": "Lean.Meta.Simp.Config.memoize",
+      "type": "(self : Lean.Meta.Simp.Config) : Bool",
+      "library": "Init",
+      "module": "Init.MetaTypes",
+      "category": "memoize",
+      "description": "Configuration flag for simplifier memoization (default: true)"
+    },
+    {
+      "name": "Lean.checkCache",
+      "type": "{α β : Type} {m : Type → Type} [Lean.MonadCache α β m] [Monad m] (a : α) (f : Unit → m β) : m β",
+      "library": "Lean Core",
+      "module": "Lean.Util.MonadCache",
+      "category": "cache",
+      "description": "Check cache and compute if missing - standard caching pattern"
+    },
+    {
+      "name": "Array.modifyM",
+      "type": "{α : Type u} {m : Type u → Type u_1} [Monad m] (xs : Array α) (i : ℕ) (f : α → m α) : m (Array α)",
+      "library": "Init",
+      "module": "Init.Data.Array.Basic",
+      "category": "type_pattern",
+      "description": "Monadic array modification for cached updates"
+    }
+  ],
+  "summary": "LEAN 4 provides extensive caching and memoization infrastructure across multiple paradigms: (1) Pure functional caching via State monads with HashMap/DHashMap, (2) Mutable reference caching via IO.Ref for global registries, (3) Specialized domain caches for AIG, BVExpr, Parser, and Simp, (4) Generic MonadCache type class and transformers, and (5) Automatic memoization via memoFix for recursive functions. The ecosystem shows heavy use in performance-critical areas: SAT/SMT solving, expression manipulation, tactic execution, and parser state management. Recommended approaches: StateT with Std.HashMap for pure code, IO.Ref with Std.HashMap for IO code, memoFix for recursive functions, and MonadCache interface for generic libraries.",
+  "implementation_patterns": {
+    "pure_functional": {
+      "pattern": "State monad with HashMap/DHashMap",
+      "advantages": ["Pure functional", "Thread-safe (immutable)", "Compositional", "Easy to reason about"],
+      "disadvantages": ["Requires threading state", "May have copying overhead"],
+      "examples": ["Lean.MonadStateCacheT", "Std.Sat.AIG.Cache", "Std.Tactic.BVDecide.BVExpr.Cache"]
+    },
+    "monadic_state": {
+      "pattern": "MonadCache type class",
+      "advantages": ["Generic interface", "Composable with other monads", "Implementation-agnostic"],
+      "disadvantages": ["Requires monad transformer stack", "Performance overhead"],
+      "examples": ["Lean.MonadCache", "Lean.MonadCacheT", "Lean.MonadHashMapCacheAdapter"]
+    },
+    "mutable_reference": {
+      "pattern": "IO.Ref with HashMap",
+      "advantages": ["Efficient (in-place mutation)", "No state threading", "Good for global caches"],
+      "disadvantages": ["Requires IO monad", "Not thread-safe", "Harder to reason about"],
+      "examples": ["Lean.searchPathRef", "Lean.attributeMapRef", "LeanSearchClient.loogleCache"]
+    },
+    "transformer_based": {
+      "pattern": "StateT over base monad",
+      "advantages": ["Composable with other transformers", "Clean separation", "Type-safe"],
+      "disadvantages": ["Transformer stack complexity", "Performance overhead"],
+      "examples": ["Lean.Server.FileWorker", "Mathlib.Tactic utilities", "Lean.Doc parsing"]
+    },
+    "memoized_fixpoint": {
+      "pattern": "memoFix for recursive functions",
+      "advantages": ["Automatic memoization", "Works for recursive functions", "Pointer-based hashing"],
+      "disadvantages": ["Requires [Nonempty β]", "Implementation-specific", "Limited to pure functions"],
+      "examples": ["Mathlib.Util.MemoFix.memoFix"]
+    }
+  },
+  "recommended_utilities": [
+    {
+      "rank": 1,
+      "name": "Lean.MonadCache",
+      "use_case": "Generic caching interface for any monad",
+      "recommendation": "Use as base interface for custom caching"
+    },
+    {
+      "rank": 2,
+      "name": "Lean.MonadCacheT",
+      "use_case": "Add caching to existing monad stack",
+      "recommendation": "Use for composable caching in monadic code"
+    },
+    {
+      "rank": 3,
+      "name": "memoFix",
+      "use_case": "Automatic memoization for recursive functions",
+      "recommendation": "Best for tree traversals and recursive computations"
+    },
+    {
+      "rank": 4,
+      "name": "IO.Ref + IO.mkRef",
+      "use_case": "Global mutable caches in IO",
+      "recommendation": "Use for global registries and persistent caches"
+    },
+    {
+      "rank": 5,
+      "name": "StateT",
+      "use_case": "Thread cache state through computation",
+      "recommendation": "Use for local caching in monadic pipelines"
+    },
+    {
+      "rank": 6,
+      "name": "Std.HashMap",
+      "use_case": "Underlying storage for caches",
+      "recommendation": "Primary data structure for key-value caching"
+    },
+    {
+      "rank": 7,
+      "name": "Lean.Meta.Simp.Config.memoize",
+      "use_case": "Control simplifier caching behavior",
+      "recommendation": "Use when customizing simplification"
+    },
+    {
+      "rank": 8,
+      "name": "Std.Sat.AIG.Cache",
+      "use_case": "Structural sharing in graph construction",
+      "recommendation": "Pattern for DAG/graph caching"
+    },
+    {
+      "rank": 9,
+      "name": "Array.modifyM",
+      "use_case": "Cached updates to array elements",
+      "recommendation": "Use for array-based caches with monadic updates"
+    },
+    {
+      "rank": 10,
+      "name": "Lean.checkCache",
+      "use_case": "Check cache and compute if missing",
+      "recommendation": "Standard pattern for cache lookup with fallback"
+    }
+  ],
+  "search_metadata": {
+    "date": "2025-12-20",
+    "specialist": "Loogle Specialist",
+    "search_tool": "Loogle web service (https://loogle.lean-lang.org/)",
+    "queries_executed": [
+      "cache (name search)",
+      "memoize (name search)",
+      "memo (name search)",
+      "State (name search)",
+      "StateT (name search)",
+      "IO.Ref (name search)",
+      "α → m α (type pattern)",
+      "_ → StateT _ _ _ (type pattern)"
+    ],
+    "note": "Loogle displays first 200 results for large result sets. Actual totals may be higher."
+  }
+}

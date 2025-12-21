@@ -59,7 +59,7 @@
 
 ### Documentation File Creation
 
-Create four comprehensive files in `context/math/linear-algebra/`:
+Create four comprehensive files in `.opencode/context/math/linear-algebra/`:
 
 1. **`vector-spaces.md`**: Foundational algebraic structures, modules, dimension theory, connections to modal algebras and ordered structures (LinearOrderedAddCommGroup)
 

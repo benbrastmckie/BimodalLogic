@@ -286,10 +286,10 @@ theorem taskModalAdjunction (F : TaskFrame T) (t : T) :
 ### Immediate (High Priority)
 
 1. **Create context documentation**:
-   - `context/math/category-theory/basics.md`
-   - `context/math/category-theory/functors.md`
-   - `context/math/category-theory/natural-transformations.md`
-   - `context/math/category-theory/adjunctions.md`
+   - `.opencode/context/math/category-theory/basics.md`
+   - `.opencode/context/math/category-theory/functors.md`
+   - `.opencode/context/math/category-theory/natural-transformations.md`
+   - `.opencode/context/math/category-theory/adjunctions.md`
 
 2. **Implement S4 category instance**:
    - Define S4Frame structure

@@ -21,8 +21,8 @@ Execute the research workflow:
 2. Researcher will:
    - Coordinate specialist subagents (lean-search, loogle, web-research)
    - Gather information from multiple sources
-   - Synthesize findings into comprehensive report
-   - Create report in .opencode/specs/NNN_research_{topic}/reports/
+    - Synthesize findings into comprehensive report
+    - Create report in {project_directory}/reports/ (e.g. Logos/reports/)
 3. Present results with artifact references and key findings
 
 **Expected Output:**

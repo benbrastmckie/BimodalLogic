@@ -30,7 +30,7 @@ tools:
 
 <inputs_required>
   <parameter name="operation" type="string">
-    Operation to perform: "mark_in_progress" | "mark_complete" | "mark_failed" | "mark_blocked"
+    Operation to perform: "mark_in_progress" | "mark_complete" | "mark_abandoned" | "mark_blocked"
   </parameter>
   <parameter name="tasks" type="List[TaskUpdate]">
     List of task updates, each containing:
@@ -101,8 +101,8 @@ tools:
          a. Locate status line in working copy
          b. Generate new status text based on operation:
             - mark_in_progress: `**Status**: [IN PROGRESS]` + `**Started**: {timestamp}`
-            - mark_complete: `**Status**: [COMPLETE]` + `**Completed**: {timestamp}` + ✅ to title
-            - mark_failed: `**Status**: [FAILED]` + `**Failed**: {timestamp}` + failure reason
+            - mark_complete: `**Status**: [COMPLETED]` + `**Completed**: {timestamp}` + ✅ to title
+            - mark_abandoned: `**Status**: [ABANDONED]` + `**Abandoned**: {timestamp}` + abandonment reason
             - mark_blocked: `**Status**: [BLOCKED]` + `**Blocked**: {timestamp}` + blocking reason
          c. Update status line in working copy
          d. Add timestamp line if needed
@@ -112,24 +112,24 @@ tools:
     </process>
     <conditions>
       <if test="operation == 'mark_in_progress'">
-        Replace: `**Status**: Not Started`
+        Replace: `**Status**: [NOT STARTED]`
         With: `**Status**: [IN PROGRESS]`
         Add: `**Started**: {timestamp}` on next line
       </if>
       <if test="operation == 'mark_complete'">
         Replace: `**Status**: [IN PROGRESS]`
-        With: `**Status**: [COMPLETE]`
+        With: `**Status**: [COMPLETED]`
         Add: `**Completed**: {timestamp}` after Started line
         Add: ✅ emoji to section header
       </if>
-      <if test="operation == 'mark_failed'">
+      <if test="operation == 'mark_abandoned'">
         Replace: `**Status**: [IN PROGRESS]`
-        With: `**Status**: [FAILED]`
-        Add: `**Failed**: {timestamp}` after Started line
-        Add: `**Failure Reason**: {reason}` if provided
+        With: `**Status**: [ABANDONED]`
+        Add: `**Abandoned**: {timestamp}` after Started line
+        Add: `**Abandonment Reason**: {reason}` if provided
       </if>
       <if test="operation == 'mark_blocked'">
-        Replace: `**Status**: [IN PROGRESS]` or `**Status**: Not Started`
+        Replace: `**Status**: [IN PROGRESS]` or `**Status**: [NOT STARTED]`
         With: `**Status**: [BLOCKED]`
         Add: `**Blocked**: {timestamp}`
         Add: `**Blocking Reason**: {reason}` if provided
@@ -205,25 +205,28 @@ tools:
 
 <status_transitions>
   <valid_transitions>
-    Not Started → [IN PROGRESS]
-    Not Started → [BLOCKED]
-    [IN PROGRESS] → [COMPLETE]
-    [IN PROGRESS] → [FAILED]
+    [NOT STARTED] → [IN PROGRESS]
+    [NOT STARTED] → [BLOCKED]
+    [IN PROGRESS] → [COMPLETED]
+    [IN PROGRESS] → [ABANDONED]
     [IN PROGRESS] → [BLOCKED]
+    [BLOCKED] → [IN PROGRESS]
+    [BLOCKED] → [ABANDONED]
   </valid_transitions>
 
   <invalid_transitions>
-    [COMPLETE] → * (completed tasks cannot be changed)
-    [FAILED] → [COMPLETE] (failed tasks must be restarted)
-    Not Started → [COMPLETE] (must go through IN PROGRESS)
+    [COMPLETED] → * (completed tasks cannot be changed)
+    [ABANDONED] → [COMPLETED] (abandoned tasks must be restarted)
+    [NOT STARTED] → [COMPLETED] (must go through IN PROGRESS)
+    [NOT STARTED] → [ABANDONED] (cannot abandon work that never started)
   </invalid_transitions>
 
   <transition_validation>
     Before updating, check current status allows requested operation:
-    - mark_in_progress: Requires "Not Started"
+    - mark_in_progress: Requires "[NOT STARTED]" or "[BLOCKED]"
     - mark_complete: Requires "[IN PROGRESS]"
-    - mark_failed: Requires "[IN PROGRESS]"
-    - mark_blocked: Allows "Not Started" or "[IN PROGRESS]"
+    - mark_abandoned: Requires "[IN PROGRESS]" or "[BLOCKED]"
+    - mark_blocked: Allows "[NOT STARTED]" or "[IN PROGRESS]"
   </transition_validation>
 </status_transitions>
 
@@ -233,7 +236,7 @@ tools:
     ```markdown
     ### 63. Add Missing Directory READMEs
     **Effort**: 1 hour
-    **Status**: Not Started
+    **Status**: [NOT STARTED]
     **Priority**: Medium
     ```
     
@@ -261,14 +264,14 @@ tools:
     ```markdown
     ### 63. Add Missing Directory READMEs ✅
     **Effort**: 1 hour
-    **Status**: [COMPLETE]
+    **Status**: [COMPLETED]
     **Started**: 2025-12-19
     **Completed**: 2025-12-19
     **Priority**: Medium
     ```
   </mark_complete>
 
-  <mark_failed>
+  <mark_abandoned>
     Before:
     ```markdown
     ### 64. Create Example-Builder Specialist
@@ -281,19 +284,19 @@ tools:
     ```markdown
     ### 64. Create Example-Builder Specialist
     **Effort**: 2 hours
-    **Status**: [FAILED]
+    **Status**: [ABANDONED]
     **Started**: 2025-12-19
-    **Failed**: 2025-12-19
-    **Failure Reason**: File not found: .opencode/templates/specialist.md
+    **Abandoned**: 2025-12-19
+    **Abandonment Reason**: File not found: .opencode/templates/specialist.md
     ```
-  </mark_failed>
+  </mark_abandoned>
 
   <mark_blocked>
     Before:
     ```markdown
     ### 65. Populate context/logic/processes/
     **Effort**: 1 hour
-    **Status**: Not Started
+    **Status**: [NOT STARTED]
     **Dependencies**: 64
     ```
     

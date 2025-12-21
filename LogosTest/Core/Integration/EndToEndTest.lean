@@ -19,7 +19,7 @@ Integration Test 1: Derive Modal T theorem.
 We derive `□p → p` using the Modal T axiom.
 -/
 example : ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
-  Derivable.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+  DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
 
 /--
 Integration Test 2: Apply soundness to get validity.
@@ -27,7 +27,7 @@ Integration Test 2: Apply soundness to get validity.
 From the derivation of Modal T, we obtain its semantic validity.
 -/
 example : [] ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) := by
-  let deriv := Derivable.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+  let deriv := DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
   exact soundness [] _ deriv
 
 /--
@@ -49,7 +49,7 @@ This test demonstrates the complete metalogical pathway:
 example : True := by
   -- Step 1: Syntactic derivation
   let proof : ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
-    Derivable.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
 
   -- Step 2: Apply soundness
   let valid_from_soundness : [] ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
@@ -69,9 +69,9 @@ Verify that modus ponens derivations are sound.
 -/
 example (p q : Formula) : [p.imp q, p] ⊨ q := by
   let deriv : [p.imp q, p] ⊢ q :=
-    Derivable.modus_ponens [p.imp q, p] p q
-      (Derivable.assumption [p.imp q, p] (p.imp q) (List.Mem.head _))
-      (Derivable.assumption [p.imp q, p] p (List.Mem.tail _ (List.Mem.head _)))
+    DerivationTree.modus_ponens [p.imp q, p] p q
+      (DerivationTree.assumption [p.imp q, p] (p.imp q) (List.Mem.head _))
+      (DerivationTree.assumption [p.imp q, p] p (List.Mem.tail _ (List.Mem.head _)))
   exact soundness [p.imp q, p] q deriv
 
 /--
@@ -80,13 +80,13 @@ Integration Test 6: Weakening with soundness.
 Verify that weakening preserves soundness.
 -/
 example (p q : Formula) : [p, q] ⊨ p := by
-  let deriv : [p] ⊢ p := Derivable.assumption [p] p (List.Mem.head _)
+  let deriv : [p] ⊢ p := DerivationTree.assumption [p] p (List.Mem.head _)
   have h_sub : [p] ⊆ [p, q] := by
     intro x hx
     cases hx with
     | head => exact List.Mem.head _
     | tail _ _ => contradiction
-  let deriv' : [p, q] ⊢ p := Derivable.weakening [p] [p, q] p deriv h_sub
+  let deriv' : [p, q] ⊢ p := DerivationTree.weakening [p] [p, q] p deriv h_sub
   exact soundness [p, q] p deriv'
 
 end LogosTest.Core.Integration

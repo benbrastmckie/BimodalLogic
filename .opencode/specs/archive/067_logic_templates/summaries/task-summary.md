@@ -20,10 +20,10 @@ Research and populate context/logic/templates/ directory with reusable templates
 - Completeness proof templates
 
 **Files to Create**:
-- `context/logic/templates/modal-operator-template.md`
-- `context/logic/templates/kripke-model-template.md`
-- `context/logic/templates/soundness-template.md`
-- `context/logic/templates/completeness-template.md`
+- `.opencode/context/logic/templates/modal-operator-template.md`
+- `.opencode/context/logic/templates/kripke-model-template.md`
+- `.opencode/context/logic/templates/soundness-template.md`
+- `.opencode/context/logic/templates/completeness-template.md`
 
 ## Complexity Assessment
 
@@ -394,10 +394,10 @@ Research-based template creation with five sequential implementation phases:
 - Plan Summary: `.opencode/specs/067_logic_templates/summaries/plan-summary.md`
 
 ### Context Files
-- `context/lean4/templates/definition-template.md`
-- `context/lean4/templates/proof-structure-templates.md`
-- `context/lean4/standards/documentation-standards.md`
-- `context/logic/processes/modal-proof-strategies.md`
+- `.opencode/context/lean4/templates/definition-template.md`
+- `.opencode/context/lean4/templates/proof-structure-templates.md`
+- `.opencode/context/lean4/standards/documentation-standards.md`
+- `.opencode/context/logic/processes/modal-proof-strategies.md`
 
 ### Logos Codebase
 - `Logos/Core/Syntax/Formula.lean`

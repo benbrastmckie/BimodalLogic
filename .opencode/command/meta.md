@@ -649,7 +649,7 @@ description: "Interactive system builder that creates complete context-aware AI 
       │       ├── {subagent-1}.md
       │       ├── {subagent-2}.md
       │       └── {subagent-3}.md
-      ├── context/
+      ├── .opencode/context/
       │   ├── domain/
       │   │   ├── {domain-file-1}.md
       │   │   └── {domain-file-2}.md

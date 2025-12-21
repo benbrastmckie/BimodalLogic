@@ -635,13 +635,13 @@ Is this a TODO.md task?
 ### Architecture Documentation
 - `.opencode/ARCHITECTURE.md` - System architecture overview
 - `.opencode/README.md` - System documentation
-- `context/builder-templates/` - Agent and command templates
+- `.opencode/context/builder-templates/` - Agent and command templates
 
 ### LEAN 4 Context
-- `context/lean4/domain/` - LEAN 4 concepts and syntax
-- `context/lean4/patterns/` - Tactic patterns and proof strategies
-- `context/lean4/processes/` - Proof development workflows
-- `context/lean4/tools/` - MCP tools and lean-lsp-mcp integration
+- `.opencode/context/lean4/domain/` - LEAN 4 concepts and syntax
+- `.opencode/context/lean4/patterns/` - Tactic patterns and proof strategies
+- `.opencode/context/lean4/processes/` - Proof development workflows
+- `.opencode/context/lean4/tools/` - MCP tools and lean-lsp-mcp integration
 
 ---
 

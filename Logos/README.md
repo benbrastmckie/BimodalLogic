@@ -13,10 +13,11 @@ This directory contains the core implementation of the bimodal logic TM (Tense a
   - Context type for proof premises
   - DSL for readable formula construction (planned)
 
-- **ProofSystem/**: Axioms and inference rules
+- **ProofSystem/**: Axioms and derivation trees
   - 8 TM axiom schemata (MT, M4, MB, T4, TA, TL, MF, TF)
-  - 7 inference rules (MP, MK, TK, TD, plus structural rules)
-  - Derivability relation
+  - 7 inference rules as `DerivationTree` constructors (axiom, assumption, modusPonens, necessitation, temporalNecessitation, temporalDuality, weakening)
+  - Derivation trees as inductive `Type` (not `Prop`)
+  - Computable `height` function for well-founded recursion
 
 - **Semantics/**: Task frame semantics
   - Task frame structure (world states, times, task relation)
@@ -44,7 +45,7 @@ This directory contains the core implementation of the bimodal logic TM (Tense a
 - **Formulas**: `Syntax/Formula.lean` - Inductive formula type
 - **Contexts**: `Syntax/Context.lean` - Proof context lists
 - **Axioms**: `ProofSystem/Axioms.lean` - TM axiom schemata
-- **Inference Rules**: `ProofSystem/Derivation.lean` - Derivability and rules
+- **Derivation Trees**: `ProofSystem/Derivation.lean` - DerivationTree type and constructors
 - **Task Frames**: `Semantics/TaskFrame.lean` - Task frame structure
 - **Models**: `Semantics/TaskModel.lean` - Models with valuation
 - **Truth**: `Semantics/Truth.lean` - Truth evaluation
@@ -159,10 +160,11 @@ When working on Logos source code:
 ### Adding a New Axiom
 
 1. Add axiom schema to `ProofSystem/Axioms.lean`
-2. Add case to `Derivable` in `ProofSystem/Derivation.lean`
-3. Prove validity in `Metalogic/Soundness.lean`
-4. Write tests in `LogosTest/ProofSystem/`
-5. Update ARCHITECTURE.md if significant
+2. Add case to `DerivationTree` in `ProofSystem/Derivation.lean` (as constructor)
+3. Update `height` function to handle new constructor
+4. Prove validity in `Metalogic/Soundness.lean`
+5. Write tests in `LogosTest/ProofSystem/`
+6. Update ARCHITECTURE.md if significant
 
 ## Related Documentation
 

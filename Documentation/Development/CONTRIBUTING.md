@@ -88,6 +88,10 @@ def my_function (x : Nat) : Nat :=
 def MyFunction(x:Nat):Nat := x+1
 ```
 
+#### Prohibited Elements
+
+Do not use emojis in code, comments, or documentation. Use text-based alternatives like `[COMPLETE]`, `**DO**`, `**DON'T**`. Mathematical symbols (→, ∧, ∨, ¬, □, ◇) are NOT emojis and must be preserved. See [LEAN Style Guide](../Development/LEAN_STYLE_GUIDE.md#8-prohibited-elements) for details.
+
 ### Documentation Requirements
 
 Every public definition needs:
@@ -334,6 +338,56 @@ Contributors are recognized in:
 - Follow project guidelines
 - Report issues appropriately
 
+## 9. AI-Assisted Development
+
+Logos includes an AI agent system that automates development workflows:
+
+### Using AI Commands
+
+```bash
+# Research a topic
+/research "LEAN 4 metaprogramming for tactics"
+
+# Create implementation plan
+/plan "Implement modal_search tactic"
+
+# Implement the plan
+/lean 045
+
+# Refactor code
+/refactor Logos/Automation/Tactics.lean
+
+# Update documentation
+/document "automation tactics"
+```
+
+### AI System Features
+
+- **Automated Research**: Multi-source research with LEAN library exploration
+- **Implementation Planning**: Detailed step-by-step plans with complexity analysis
+- **Proof Development**: LEAN 4 proof implementation with verification
+- **Code Refactoring**: Style guide adherence and readability improvements
+- **Documentation Management**: Automated documentation updates
+
+### Extending the AI System
+
+Use `/meta` to create or modify agents and commands:
+
+```bash
+/meta "Create a new agent for proof optimization"
+```
+
+The meta system provides templates and patterns for extending the AI agent system.
+
+### AI System Documentation
+
+- [AI System Overview](../../.opencode/README.md) - Complete system documentation
+- [Architecture](../../.opencode/ARCHITECTURE.md) - Detailed system architecture
+- [Quick Start](../../.opencode/QUICK-START.md) - Step-by-step usage guide
+- [Agent Catalog](../../.opencode/agent/README.md) - Primary agents and routing
+- [Command Reference](../../.opencode/command/README.md) - Command usage and examples
+- [Meta System](../../.opencode/agent/subagents/meta.md) - Extending the AI system
+
 ## References
 
 - [LEAN Style Guide](../Development/LEAN_STYLE_GUIDE.md)
@@ -341,3 +395,4 @@ Contributors are recognized in:
 - [Module Organization](../Development/MODULE_ORGANIZATION.md)
 - [Quality Metrics](../Development/QUALITY_METRICS.md)
 - [Tactic Development](../UserGuide/TACTIC_DEVELOPMENT.md)
+- [AI System Overview](../../.opencode/README.md) - Automated development workflows

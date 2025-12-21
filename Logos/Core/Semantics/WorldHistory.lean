@@ -150,7 +150,7 @@ Since trivial frame's task relation is always true, this always works.
 The full domain is convex.
 -/
 def trivial {T : Type*} [LinearOrderedAddCommGroup T] :
-    WorldHistory (TaskFrame.trivialFrame (T := T)) where
+    WorldHistory (TaskFrame.trivial_frame (T := T)) where
   domain := fun _ => True
   convex := by
     intros x z hx hz y hxy hyz
@@ -170,8 +170,8 @@ Since trivialFrame's task relation is always true, any constant history respects
 The full domain is convex.
 -/
 def universal_trivialFrame {T : Type*} [LinearOrderedAddCommGroup T]
-    (w : (TaskFrame.trivialFrame (T := T)).WorldState) :
-    WorldHistory (TaskFrame.trivialFrame (T := T)) where
+    (w : (TaskFrame.trivial_frame (T := T)).WorldState) :
+    WorldHistory (TaskFrame.trivial_frame (T := T)) where
   domain := fun _ => True
   convex := by
     intros x z hx hz y hxy hyz
@@ -191,7 +191,7 @@ This demonstrates that reflexive frames (where `task_rel w d w` for all `w, d`)
 admit universal constant histories. The full domain is convex.
 -/
 def universal_natFrame {T : Type*} [LinearOrderedAddCommGroup T] (n : Nat) :
-    WorldHistory (TaskFrame.natFrame (T := T)) where
+    WorldHistory (TaskFrame.nat_frame (T := T)) where
   domain := fun _ => True
   convex := by
     intros x z hx hz y hxy hyz
@@ -207,12 +207,6 @@ Get the state at a time (helper function that bundles membership proof).
 -/
 def state_at (τ : WorldHistory F) (t : T) (h : τ.domain t) : F.WorldState :=
   τ.states t h
-
--- Deprecated alias for backward compatibility
-@[deprecated state_at (since := "2025-12-09")]
-def stateAt {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
-    (τ : WorldHistory F) (t : T) (h : τ.domain t) : F.WorldState :=
-  state_at τ t h
 
 /-! ## Time-Shift Construction
 

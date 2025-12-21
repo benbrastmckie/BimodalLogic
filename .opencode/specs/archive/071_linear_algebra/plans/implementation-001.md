@@ -11,7 +11,7 @@
 
 ## Executive Summary
 
-This implementation plan provides a detailed roadmap for creating four comprehensive documentation files in the `context/math/linear-algebra/` directory based on completed research (Research Report 001). The files will document linear algebra concepts with specific focus on their connections to modal logic, bimodal logic, and the ProofChecker's task semantics.
+This implementation plan provides a detailed roadmap for creating four comprehensive documentation files in the `.opencode/context/math/linear-algebra/` directory based on completed research (Research Report 001). The files will document linear algebra concepts with specific focus on their connections to modal logic, bimodal logic, and the ProofChecker's task semantics.
 
 **Key Objectives**:
 1. Create well-structured documentation following LEAN 4 documentation standards
@@ -86,12 +86,12 @@ This implementation plan provides a detailed roadmap for creating four comprehen
    - Modal logic connections
    - LEAN 4 code examples
 
-2. **Documentation Standards**: `context/lean4/standards/documentation-standards.md`
+2. **Documentation Standards**: `.opencode/context/lean4/standards/documentation-standards.md`
    - Required sections: Overview, Core Concepts, Business Rules, Relationships, Examples
    - Docstring requirements
    - Quality criteria
 
-3. **Style Reference**: `context/lean4/domain/key-mathematical-concepts.md`
+3. **Style Reference**: `.opencode/context/lean4/domain/key-mathematical-concepts.md`
    - Section structure template
    - Tone and formatting style
    - Example presentation
@@ -102,7 +102,7 @@ This implementation plan provides a detailed roadmap for creating four comprehen
    - Reference for modal logic connections
 
 ### Prerequisites
-- Directory `context/math/linear-algebra/` must be created
+- Directory `.opencode/context/math/linear-algebra/` must be created
 - No other tasks block this implementation
 - Research is complete and comprehensive
 
@@ -127,26 +127,26 @@ This implementation plan provides a detailed roadmap for creating four comprehen
 **Duration**: 15 minutes
 
 **Steps**:
-1. Create directory `context/math/linear-algebra/` if it doesn't exist
+1. Create directory `.opencode/context/math/linear-algebra/` if it doesn't exist
 2. Verify directory structure matches context organization
 3. Review research report content recommendations
 4. Prepare file templates based on documentation standards
 
 **Verification**:
-- [ ] Directory exists: `context/math/linear-algebra/`
+- [ ] Directory exists: `.opencode/context/math/linear-algebra/`
 - [ ] Research report accessible
 - [ ] Documentation standards reviewed
 - [ ] Style reference reviewed
 
 **Artifacts**:
-- Directory: `context/math/linear-algebra/`
+- Directory: `.opencode/context/math/linear-algebra/`
 
 ---
 
 ### Phase 2: Create vector-spaces.md
 
 **Duration**: 1-1.5 hours  
-**File**: `context/math/linear-algebra/vector-spaces.md`  
+**File**: `.opencode/context/math/linear-algebra/vector-spaces.md`  
 **Estimated Length**: 500-600 lines
 
 #### Content Outline
@@ -288,7 +288,7 @@ example : FiniteDimensional.finrank ℝ (Fin 3 → ℝ) = 3 := by
 ### Phase 3: Create linear-maps.md
 
 **Duration**: 1-1.5 hours  
-**File**: `context/math/linear-algebra/linear-maps.md`  
+**File**: `.opencode/context/math/linear-algebra/linear-maps.md`  
 **Estimated Length**: 500-600 lines
 
 #### Content Outline
@@ -453,7 +453,7 @@ structure FrameMorphism (F₁ F₂ : KripkeFrame) where
 ### Phase 4: Create matrices.md
 
 **Duration**: 1-1.5 hours  
-**File**: `context/math/linear-algebra/matrices.md`  
+**File**: `.opencode/context/math/linear-algebra/matrices.md`  
 **Estimated Length**: 550-650 lines
 
 #### Content Outline
@@ -652,7 +652,7 @@ Commutativity: M₁M₂ = M₂M₁ means relations commute
 ### Phase 5: Create eigenvalues.md
 
 **Duration**: 1-1.5 hours  
-**File**: `context/math/linear-algebra/eigenvalues.md`  
+**File**: `.opencode/context/math/linear-algebra/eigenvalues.md`  
 **Estimated Length**: 500-600 lines
 
 #### Content Outline
@@ -947,7 +947,7 @@ context/
 ## Success Criteria
 
 ### Completion Criteria
-- [ ] Directory `context/math/linear-algebra/` created
+- [ ] Directory `.opencode/context/math/linear-algebra/` created
 - [ ] File `vector-spaces.md` created with all required sections
 - [ ] File `linear-maps.md` created with all required sections
 - [ ] File `matrices.md` created with all required sections
@@ -1105,7 +1105,7 @@ Based on research recommendations:
 
 ## Conclusion
 
-This implementation plan provides a comprehensive roadmap for creating four high-quality documentation files in `context/math/linear-algebra/`. The plan is based on thorough research, follows established documentation standards, and emphasizes practical connections to modal logic and the ProofChecker project.
+This implementation plan provides a comprehensive roadmap for creating four high-quality documentation files in `.opencode/context/math/linear-algebra/`. The plan is based on thorough research, follows established documentation standards, and emphasizes practical connections to modal logic and the ProofChecker project.
 
 **Key Strengths**:
 - Detailed content outlines for each file

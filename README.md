@@ -1,5 +1,7 @@
 # Logos: A Formal Language of Thought
 
+> **For AI System Usage**: See [.opencode/README.md](.opencode/README.md) for the AI agent system documentation, commands, and workflows.
+
 The **Logos** is designed to train AI systems to conduct verified reasoning in a formal language of thought that is interpreted by explicit semantic models. Including extensional, tense, modal, causal, counterfactual, epistemic, and normative operators in the Logos equips AI systems to perform complex reasoning tasks for planning and evaluating actions in coordination with other agents under conditions of uncertainty.
 
 Combining an **axiomatic proof system** implemented in LEAN 4 with a **recursive semantic theory** implemented in the [Model-Checker](https://github.com/benbrastmckie/ModelChecker) creates a dual verification architecture that generates comprehensive training signals without human annotation.
@@ -33,12 +35,63 @@ See [Theoretical Foundations](#theoretical-foundations) below and the [LogicNote
 - [Installation](#installation)
 - [Documentation](#documentation)
 
+**AI System**
+
+- [AI-Assisted Development](#ai-assisted-development)
+
 **Reference**
 
 - [Theoretical Foundations](#theoretical-foundations)
 - [Citation](#citation)
 - [License](#license)
 - [Contributing](#contributing)
+
+---
+
+## AI-Assisted Development
+
+Logos includes a comprehensive AI agent system for context-aware LEAN 4 development, automating research, planning, implementation, and documentation workflows.
+
+### Quick Start
+
+See [.opencode/README.md](.opencode/README.md) for complete setup and usage instructions.
+
+### Key Capabilities
+
+- **Automated Research**: Multi-source research with LEAN library exploration and web search
+- **Implementation Planning**: Detailed step-by-step plans with complexity analysis
+- **Proof Development**: LEAN 4 proof implementation with verification and git integration
+- **Code Refactoring**: Style guide adherence and readability improvements
+- **Documentation Management**: Automated documentation updates and accuracy verification
+- **Repository Review**: Comprehensive analysis, verification, and task identification
+
+### System Architecture
+
+- **12 Primary Agents**: Coordinate workflows and delegate to specialists
+- **32 Specialist Subagents**: Perform focused technical tasks
+- **Context Protection**: Artifact-based workflow prevents context bloat
+- **Tool Integration**: lean-lsp-mcp, LeanExplore, Loogle, LeanSearch, Git/GitHub
+
+### Documentation
+
+- [AI System Overview](.opencode/README.md) - Complete system documentation
+- [Architecture](.opencode/ARCHITECTURE.md) - Detailed system architecture
+- [Quick Start](.opencode/QUICK-START.md) - Step-by-step usage guide
+- [Agent Catalog](.opencode/agent/README.md) - Primary agents and routing
+- [Specialist Catalog](.opencode/agent/subagents/specialists/README.md) - All 32 specialists
+- [Command Reference](.opencode/command/README.md) - Command usage and examples
+
+### Integration with Development
+
+The AI system integrates with the standard development workflow:
+
+- **Research Phase**: `/research` command explores LEAN libraries and literature
+- **Planning Phase**: `/plan` command creates detailed implementation plans
+- **Implementation Phase**: `/lean` command implements proofs with verification
+- **Documentation Phase**: `/document` command updates documentation
+- **Review Phase**: `/review` command analyzes repository and identifies tasks
+
+See [Integration Guide](Documentation/UserGuide/INTEGRATION.md) for workflow details.
 
 ---
 
@@ -274,50 +327,87 @@ lake build
 lake test
 ```
 
+### AI System Setup (Optional)
+
+For AI-assisted development capabilities:
+
+1. See [.opencode/README.md](.opencode/README.md) for complete setup instructions
+2. Requires Claude Code CLI or compatible AI system
+3. Provides automated research, planning, implementation, and documentation workflows
+
 **For complete setup**: [Tutorial](Documentation/UserGuide/TUTORIAL.md)
 
 ---
 
 ## Documentation
 
-### Getting Started
+### User Guides
+
+Getting started and working with Logos:
 
 - [Tutorial](Documentation/UserGuide/TUTORIAL.md) - Getting started guide
 - [Examples](Documentation/UserGuide/EXAMPLES.md) - Modal, temporal, bimodal examples
-- [Operators Glossary](Documentation/Reference/OPERATORS.md) - Formal symbols reference
-
-### Core Documentation
-
 - [Architecture Guide](Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
 - [Methodology](Documentation/UserGuide/METHODOLOGY.md) - Philosophical foundations
 - [Integration Guide](Documentation/UserGuide/INTEGRATION.md) - Model-Checker integration
+- [Tactic Development](Documentation/UserGuide/TACTIC_DEVELOPMENT.md) - Custom tactic development
 
-### Development
+### Development Guides
+
+Contributing and extending Logos:
 
 - [Contributing](Documentation/Development/CONTRIBUTING.md) - Contribution guidelines
 - [LEAN Style Guide](Documentation/Development/LEAN_STYLE_GUIDE.md) - Coding conventions
 - [Testing Standards](Documentation/Development/TESTING_STANDARDS.md) - Test requirements
+- [Metaprogramming Guide](Documentation/Development/METAPROGRAMMING_GUIDE.md) - LEAN 4 metaprogramming
+- [Module Organization](Documentation/Development/MODULE_ORGANIZATION.md) - Project structure
+- [Quality Metrics](Documentation/Development/QUALITY_METRICS.md) - Quality targets
+- [Phased Implementation](Documentation/Development/PHASED_IMPLEMENTATION.md) - Implementation roadmap
+- [Directory README Standard](Documentation/Development/DIRECTORY_README_STANDARD.md) - Documentation requirements
+- [Documentation Quality Checklist](Documentation/Development/DOC_QUALITY_CHECKLIST.md) - Quality assurance
+
+### Project Information
+
+Current status and tracking:
+
+- [Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module status
+- [Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) - Gaps and workarounds
+- [Sorry Registry](Documentation/ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking
+- [Tactic Registry](Documentation/ProjectInfo/TACTIC_REGISTRY.md) - Tactic implementation status
+- [Maintenance](Documentation/ProjectInfo/MAINTENANCE.md) - TODO management workflow
+- [TODO](TODO.md) - Active task tracking
 
 ### Research
 
+Vision and planned architecture:
+
+- [Research Overview](Documentation/Research/README.md) - Research documentation index
 - [Dual Verification](Documentation/Research/DUAL_VERIFICATION.md) - RL training architecture
 - [Layer Extensions](Documentation/Research/LAYER_EXTENSIONS.md) - Layers 1-3 specifications
 - [Proof Library Design](Documentation/Research/PROOF_LIBRARY_DESIGN.md) - Theorem caching
+- [Conceptual Engineering](Documentation/Research/CONCEPTUAL_ENGINEERING.md) - Philosophical methodology
 
-### Project Status
+### Reference
 
-- [Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module status
-- [Implementation Status - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) - Gaps and workarounds
-- [TODO](TODO.md) - Active task tracking
+Quick reference materials:
 
-### Advanced Topics
+- [Operators Glossary](Documentation/Reference/OPERATORS.md) - Formal symbols reference
+- [Terminology Glossary](Documentation/Reference/GLOSSARY.md) - Key concepts and definitions
 
-- [Metaprogramming Guide](Documentation/Development/METAPROGRAMMING_GUIDE.md) - LEAN 4 metaprogramming and tactic development
-- [Quality Metrics](Documentation/Development/QUALITY_METRICS.md) - Quality targets and standards
-- [Module Organization](Documentation/Development/MODULE_ORGANIZATION.md) - Project structure
-- [Phased Implementation](Documentation/Development/PHASED_IMPLEMENTATION.md) - Wave-based implementation roadmap
-- [Directory README Standard](Documentation/Development/DIRECTORY_README_STANDARD.md) - Directory-level documentation requirements
-- [Documentation Quality Checklist](Documentation/Development/DOC_QUALITY_CHECKLIST.md) - Quality assurance checklist
+### AI System Documentation
+
+Context-aware development system:
+
+- [AI System Overview](.opencode/README.md) - Complete system documentation
+- [Architecture](.opencode/ARCHITECTURE.md) - Detailed system architecture
+- [Quick Start](.opencode/QUICK-START.md) - Step-by-step usage guide
+- [Agent Catalog](.opencode/agent/README.md) - Primary agents and routing
+- [Command Reference](.opencode/command/README.md) - Command usage and examples
+
+### Documentation Navigation
+
+- [Documentation Hub](Documentation/README.md) - Complete documentation index
+- [Navigation Guide](Documentation/NAVIGATION.md) - Find documentation by use case
 
 ---
 

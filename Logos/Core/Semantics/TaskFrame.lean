@@ -145,17 +145,6 @@ def nat_frame {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T where
   nullity := fun _ => trivial
   compositionality := fun _ _ _ _ _ _ _ => trivial
 
--- Deprecated aliases for backward compatibility
-@[deprecated trivial_frame (since := "2025-12-09")]
-def trivialFrame {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T := trivial_frame
-
-@[deprecated identity_frame (since := "2025-12-09")]
-def identityFrame (W : Type) {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T :=
-  identity_frame W
-
-@[deprecated nat_frame (since := "2025-12-09")]
-def natFrame {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T := nat_frame
-
 end TaskFrame
 
 end Logos.Core.Semantics

@@ -476,7 +476,25 @@ def very_complex := (fun x => (fun y => x + y + (if x > 0 then 1 else 0)) 3) 2  
 - Keep commits focused on single logical changes
 - Write descriptive commit messages
 
-## 8. Linting and Quality Assurance
+## 8. Prohibited Elements
+
+### No Emojis
+
+Do not use emojis in code, comments, or documentation. Use text-based alternatives instead:
+
+- **Status indicators**: Use `[COMPLETE]`, `[PARTIAL]`, `[NOT STARTED]`, `[FAILED]`
+- **Checkmarks/crosses**: Use `**DO**` and `**DON'T**` or `YES`/`NO`
+- **Emphasis**: Use bold, italics, or section headers
+
+**Mathematical symbols are NOT emojis** and must be preserved:
+- Logical operators: `↔`, `→`, `∧`, `∨`, `¬`
+- Modal operators: `□`, `◇`
+- Temporal operators: `△`, `▽`
+- Turnstile symbols: `⊢`, `⊨`
+
+These Unicode mathematical symbols are essential to the formal notation and should always be used.
+
+## 9. Linting and Quality Assurance
 
 The Logos project uses a comprehensive linting system to enforce code quality standards and TM-specific conventions.
 

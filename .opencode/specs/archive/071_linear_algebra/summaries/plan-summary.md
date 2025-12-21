@@ -10,7 +10,7 @@
 ## Key Steps
 
 1. **Setup and Directory Creation** (15 minutes)
-   - Create `context/math/linear-algebra/` directory
+   - Create `.opencode/context/math/linear-algebra/` directory
    - Review research report and documentation standards
    - Prepare file templates
 
@@ -49,8 +49,8 @@
 
 **Required Inputs**:
 - Research Report: `.opencode/specs/071_research_linear_algebra/reports/research-001.md`
-- Documentation Standards: `context/lean4/standards/documentation-standards.md`
-- Style Reference: `context/lean4/domain/key-mathematical-concepts.md`
+- Documentation Standards: `.opencode/context/lean4/standards/documentation-standards.md`
+- Style Reference: `.opencode/context/lean4/domain/key-mathematical-concepts.md`
 - TaskFrame Code: `Logos/Core/Semantics/TaskFrame.lean`
 
 **Mathlib4 Modules**:

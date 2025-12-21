@@ -91,7 +91,7 @@ tools:
       2. Include type signatures
       3. Add library sources
       4. Note usage examples
-      5. Write to reports/ directory
+      5. Write to reports/ directory in the relevant project (e.g., Logos/reports/)
     </process>
     <report_format>
       # Loogle Search Results: {type_pattern}
@@ -133,7 +133,7 @@ tools:
       {
         "type_pattern": "{pattern}",
         "matches_count": {count},
-        "report_path": ".opencode/specs/NNN_project/specialist-reports/loogle-{pattern}.md",
+        "report_path": "{project_directory}/reports/research-NNN.md",
         "exact_matches": [
           {
             "name": "{function_name}",

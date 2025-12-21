@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-This research identifies **23 distinct modal logic proof patterns** from the ProofChecker codebase to populate the `context/logic/patterns/` directory with 4 pattern documentation files. The patterns cover modal distribution (K axiom), necessitation (standard and generalized), frame correspondence (axiom-frame property mappings), and canonical model construction (for completeness proofs).
+This research identifies **23 distinct modal logic proof patterns** from the ProofChecker codebase to populate the `.opencode/context/logic/patterns/` directory with 4 pattern documentation files. The patterns cover modal distribution (K axiom), necessitation (standard and generalized), frame correspondence (axiom-frame property mappings), and canonical model construction (for completeness proofs).
 
 **Key Findings**:
 - **8 modal distribution patterns** identified from K axiom, temporal K, and helper lemmas
@@ -1270,7 +1270,7 @@ task_rel Γ t Δ ↔
 **Total**: ~1600-2000 lines of pattern documentation
 
 ### Documentation Standards
-- Follow `context/lean4/standards/documentation-standards.md`
+- Follow `.opencode/context/lean4/standards/documentation-standards.md`
 - Include docstrings for all patterns
 - Provide LEAN 4 code examples
 - Explain semantic intuitions
@@ -1320,10 +1320,10 @@ task_rel Γ t Δ ↔
 
 ## Next Steps
 
-1. **Create Pattern Files**: Use this research to populate the 4 pattern files in `context/logic/patterns/`
+1. **Create Pattern Files**: Use this research to populate the 4 pattern files in `.opencode/context/logic/patterns/`
 2. **Validate Examples**: Ensure all LEAN 4 code examples compile
 3. **Cross-Reference**: Link patterns to existing documentation
 4. **Review**: Have domain expert review pattern documentation
-5. **Integrate**: Update `context/index.md` with new pattern files
+5. **Integrate**: Update `.opencode/context/index.md` with new pattern files
 
 **Status**: Research complete, ready for implementation phase

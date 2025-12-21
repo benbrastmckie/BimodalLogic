@@ -11,12 +11,12 @@ This document provides comprehensive examples of modal, temporal, and bimodal re
 ```lean
 /-- Prove the reflexivity axiom MT: what is necessary is actual -/
 example (P : Formula) : ⊢ (P.box.imp P) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.modal_t
 
 /-- Using DSL syntax -/
 example : ⊢ (□"p" → "p") := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.modal_t
 ```
 
@@ -25,16 +25,16 @@ example : ⊢ (□"p" → "p") := by
 ```lean
 /-- Prove the transitivity axiom M4: necessity iterates -/
 example (P : Formula) : ⊢ (P.box.imp P.box.box) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.modal_4
 
 /-- Chain of necessities -/
 example (P : Formula) : [P.box] ⊢ P.box.box.box := by
-  apply Derivable.modus_ponens
-  · apply Derivable.axiom; apply Axiom.modal_4
-  · apply Derivable.modus_ponens
-    · apply Derivable.axiom; apply Axiom.modal_4
-    · apply Derivable.assumption; simp
+  apply DerivationTree.modusPonens
+  · apply DerivationTree.axiom; apply Axiom.modal_4
+  · apply DerivationTree.modusPonens
+    · apply DerivationTree.axiom; apply Axiom.modal_4
+    · apply DerivationTree.assumption; simp
 ```
 
 #### Axiom MB: `φ → □◇φ` (Symmetry)
@@ -42,14 +42,14 @@ example (P : Formula) : [P.box] ⊢ P.box.box.box := by
 ```lean
 /-- Prove the symmetry axiom MB: actuality implies necessary possibility -/
 example (P : Formula) : ⊢ (P.imp (diamond P).box) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.modal_b
 
 /-- Using the axiom to derive a fact -/
 example (P : Formula) : [P] ⊢ (diamond P).box := by
-  apply Derivable.modus_ponens
-  · apply Derivable.axiom; apply Axiom.modal_b
-  · apply Derivable.assumption; simp
+  apply DerivationTree.modusPonens
+  · apply DerivationTree.axiom; apply Axiom.modal_b
+  · apply DerivationTree.assumption; simp
 ```
 
 ### Diamond as Derived Operator
@@ -72,7 +72,7 @@ example (P : Formula) : [P] ⊢ diamond P := by
 theorem box_idempotent (P : Formula) :
   (⊢ P.box.imp P.box.box) ∧ (⊢ P.box.box.imp P.box) := by
   constructor
-  · apply Derivable.axiom; apply Axiom.modal_4
+  · apply DerivationTree.axiom; apply Axiom.modal_4
   · -- `□□φ → □φ` is derivable using MT on `□φ`
     sorry
 
@@ -85,7 +85,7 @@ theorem diamond_idempotent (P : Formula) :
 /-- In S5, `□◇φ ↔ ◇φ` -/
 theorem box_diamond_collapse (P : Formula) :
   ⊢ ((diamond P).box.imp (diamond P)) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.modal_t
 
 /-- In S5, `◇□φ ↔ □φ` -/
@@ -103,7 +103,7 @@ theorem diamond_box_collapse (P : Formula) :
 ```lean
 /-- All-future iterates: what will always be will always always be -/
 example (P : Formula) : ⊢ ((Formula.all_future P).imp (Formula.all_future (Formula.all_future P))) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.temp_4
 ```
 
@@ -112,7 +112,7 @@ example (P : Formula) : ⊢ ((Formula.all_future P).imp (Formula.all_future (For
 ```lean
 /-- Present implies future past: now will have been -/
 example (P : Formula) : ⊢ (P.imp (Formula.all_future (some_past P))) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.temp_a
 ```
 
@@ -121,7 +121,7 @@ example (P : Formula) : ⊢ (P.imp (Formula.all_future (some_past P))) := by
 ```lean
 /-- Linearity: if always, then future has past -/
 example (P : Formula) : ⊢ ((always P).imp (Formula.all_future (Formula.all_past P))) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.temp_l
 ```
 
@@ -172,14 +172,14 @@ example (P : Formula) : [always P] ⊢ Formula.all_future P := by
 ```lean
 /-- What is necessary will always be necessary -/
 example (P : Formula) : ⊢ (P.box.imp (Formula.box (Formula.all_future P))) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.modal_future
 
 /-- Derive □Gp from □p -/
 example (P : Formula) : [P.box] ⊢ Formula.box (Formula.all_future P) := by
-  apply Derivable.modus_ponens
-  · apply Derivable.axiom; apply Axiom.modal_future
-  · apply Derivable.assumption; simp
+  apply DerivationTree.modusPonens
+  · apply DerivationTree.axiom; apply Axiom.modal_future
+  · apply DerivationTree.assumption; simp
 ```
 
 ### TF Axiom: □φ → G□φ
@@ -187,14 +187,14 @@ example (P : Formula) : [P.box] ⊢ Formula.box (Formula.all_future P) := by
 ```lean
 /-- What is necessary will remain necessary -/
 example (P : Formula) : ⊢ (P.box.imp (Formula.all_future P.box)) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.temp_future
 
 /-- Derive G□p from □p -/
 example (P : Formula) : [P.box] ⊢ Formula.all_future P.box := by
-  apply Derivable.modus_ponens
-  · apply Derivable.axiom; apply Axiom.temp_future
-  · apply Derivable.assumption; simp
+  apply DerivationTree.modusPonens
+  · apply DerivationTree.axiom; apply Axiom.temp_future
+  · apply DerivationTree.assumption; simp
 ```
 
 ### Combined Modal-Temporal Reasoning
@@ -230,9 +230,9 @@ theorem perpetuity_1_example (P : Formula) : ⊢ (P.box.imp (△P)) := by
 
 /-- Using P1 -/
 example (P : Formula) : [P.box] ⊢ always P := by
-  apply Derivable.modus_ponens
+  apply DerivationTree.modusPonens
   · exact perpetuity_1 P
-  · apply Derivable.assumption; simp
+  · apply DerivationTree.assumption; simp
 ```
 
 ### P2: `▽φ → ◇φ`
@@ -316,14 +316,14 @@ example (P : Formula) : ¬consistent [P.box, diamond (neg P)] := by
 ```lean
 /-- Temporal duality: swapping all_past and all_future preserves provability -/
 example (P : Formula) (h : ⊢ P) : ⊢ (swap_temporal P) := by
-  apply Derivable.temporal_duality
+  apply DerivationTree.temporalDuality
   exact h
 
 /-- Example: if ⊢ Gp → GGp, then ⊢ Hp → HHp -/
 example (P : Formula) : ⊢ (Formula.all_past P).imp (Formula.all_past (Formula.all_past P)) := by
   -- By TD applied to T4
-  apply Derivable.temporal_duality
-  apply Derivable.axiom
+  apply DerivationTree.temporalDuality
+  apply DerivationTree.axiom
   apply Axiom.temp_4
 ```
 
@@ -340,7 +340,78 @@ example (P : Formula) : [P.box.box.box] ⊢ P := by
   modal_search 5
 ```
 
-## 6. Exercise Problems
+## 6. Working with Derivation Trees
+
+Since `DerivationTree` is a `Type` (not a `Prop`), we can perform computations and pattern matching 
+on derivation trees. This section demonstrates these capabilities.
+
+### Computing Derivation Height
+
+```lean
+/-- Compute the height (depth) of a derivation tree -/
+def height {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Nat
+  | .axiom _ _ _ => 0
+  | .assumption _ _ _ => 0
+  | .modusPonens _ _ _ d1 d2 => 1 + max d1.height d2.height
+  | .necessitation _ d => 1 + d.height
+  | .temporalNecessitation _ d => 1 + d.height
+  | .temporalDuality _ d => 1 + d.height
+  | .weakening _ _ _ d _ => 1 + d.height
+
+/-- Example: axiom derivations have height 0 -/
+example (p : Formula) : 
+  let d : [] ⊢ (p.box.imp p) := DerivationTree.axiom [] _ (Axiom.modal_t p)
+  height d = 0 := rfl
+
+/-- Example: modus ponens increases height -/
+example (p q : Formula) :
+  let d1 : [p.imp q] ⊢ (p.imp q) := DerivationTree.assumption _ _ (by simp)
+  let d2 : [p.imp q, p] ⊢ p := DerivationTree.assumption _ _ (by simp)
+  let d : [p.imp q, p] ⊢ q := DerivationTree.modusPonens _ _ _ 
+    (DerivationTree.weakening _ _ _ d1 (by simp)) d2
+  height d = 1 := by rfl
+```
+
+### Pattern Matching on Derivation Structure
+
+```lean
+/-- Check if a derivation uses any axioms -/
+def usesAxiom {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Bool
+  | .axiom _ _ _ => true
+  | .assumption _ _ _ => false
+  | .modusPonens _ _ _ d1 d2 => d1.usesAxiom || d2.usesAxiom
+  | .necessitation _ d => d.usesAxiom
+  | .temporalNecessitation _ d => d.usesAxiom
+  | .temporalDuality _ d => d.usesAxiom
+  | .weakening _ _ _ d _ => d.usesAxiom
+
+/-- Count the number of modus ponens applications -/
+def countModusPonens {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Nat
+  | .axiom _ _ _ => 0
+  | .assumption _ _ _ => 0
+  | .modusPonens _ _ _ d1 d2 => 1 + d1.countModusPonens + d2.countModusPonens
+  | .necessitation _ d => d.countModusPonens
+  | .temporalNecessitation _ d => d.countModusPonens
+  | .temporalDuality _ d => d.countModusPonens
+  | .weakening _ _ _ d _ => d.countModusPonens
+```
+
+### Well-Founded Recursion Using Height
+
+The `height` function enables well-founded recursion on derivation trees, which is used in 
+metalogical proofs like the deduction theorem:
+
+```lean
+/-- Deduction theorem uses well-founded recursion on derivation height -/
+theorem deduction_theorem (Γ : Context) (φ ψ : Formula) :
+  (φ :: Γ) ⊢ ψ → Γ ⊢ (φ.imp ψ) := by
+  intro d
+  -- Proof proceeds by induction on height of d
+  -- Pattern matching on DerivationTree enables this
+  sorry
+```
+
+## 7. Exercise Problems
 
 ### Basic Exercises
 

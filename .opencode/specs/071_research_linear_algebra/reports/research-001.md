@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-This research investigates the connections between linear algebra and modal logic to inform the creation of four comprehensive documentation files for the `context/math/linear-algebra/` directory. The research reveals that while direct applications of linear algebra to modal logic are limited, there are rich conceptual connections through:
+This research investigates the connections between linear algebra and modal logic to inform the creation of four comprehensive documentation files for the `.opencode/context/math/linear-algebra/` directory. The research reveals that while direct applications of linear algebra to modal logic are limited, there are rich conceptual connections through:
 
 1. **Algebraic Semantics**: Modal algebras and lattice-based structures provide the bridge between logic and algebra
 2. **Matrix Representations**: Kripke frames naturally translate to adjacency matrices, enabling computational methods

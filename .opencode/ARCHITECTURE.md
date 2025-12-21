@@ -26,12 +26,12 @@ Context-aware AI system for LEAN 4 theorem proving using hierarchical agent patt
          │             │             │
          ▼             ▼             ▼
 ┌────────────┐  ┌────────────┐  ┌────────────┐
-│  Reviewer  │  │ Researcher │  │  Planner   │  ... (7 Primary Agents)
+│  Reviewer  │  │ Researcher │  │  Planner   │  ... (12 Primary Agents)
 └──────┬─────┘  └──────┬─────┘  └──────┬─────┘
        │               │               │
        ▼               ▼               ▼
 ┌────────────┐  ┌────────────┐  ┌────────────┐
-│Verification│  │Lean-Search │  │ Complexity │  ... (16 Specialist Subagents)
+│Verification│  │Lean-Search │  │ Complexity │  ... (32 Specialist Subagents)
 │ Specialist │  │ Specialist │  │  Analyzer  │
 └──────┬─────┘  └──────┬─────┘  └──────┬─────┘
        │               │               │
@@ -63,80 +63,35 @@ Context-aware AI system for LEAN 4 theorem proving using hierarchical agent patt
   - Integrate results and update state
   - Respond to user with references and summaries
 
-### Layer 3: Primary Agents (7)
+### Layer 3: Primary Agents (12)
+
 All primary agents follow the same pattern:
 1. Receive request from orchestrator
 2. Delegate to specialist subagents
 3. Coordinate artifact creation
 4. Return references and summaries (not full artifacts)
 
-#### 1. Reviewer Agent
-- **Purpose**: Repository analysis, proof verification, TODO management
-- **Specialists**: verification-specialist, todo-manager
-- **Artifacts**: analysis-001.md, verification-001.md, updated TODO.md
+**Agent Coordination Patterns:**
+- **Workflow Agents** (reviewer, researcher, planner): Coordinate multi-specialist workflows for analysis and planning
+- **Implementation Agents** (proof-developer, refactorer, documenter): Coordinate code and documentation changes
+- **Orchestration Agents** (implementation-orchestrator, batch-task-orchestrator): Coordinate multi-phase and batch executions
+- **Utility Agents** (task-executor, task-adder, implementer, meta): Handle generic tasks and system modifications
 
-#### 2. Researcher Agent
-- **Purpose**: Multi-source research
-- **Specialists**: lean-search-specialist, loogle-specialist, web-research-specialist
-- **Artifacts**: research-001.md, research-summary.md
+> **Complete Agent Catalog**: See [agent/README.md](agent/README.md) for detailed agent descriptions, specialist delegation patterns, and artifact creation workflows.
 
-#### 3. Planner Agent
-- **Purpose**: Implementation planning with version control
-- **Specialists**: complexity-analyzer, dependency-mapper
-- **Artifacts**: implementation-NNN.md (versioned), plan-summary.md
+### Layer 4: Specialist Subagents (32)
 
-#### 4. Proof Developer Agent
-- **Purpose**: LEAN 4 proof implementation
-- **Specialists**: tactic-specialist, term-mode-specialist, metaprogramming-specialist
-- **Artifacts**: implementation-summary.md, modified LEAN files
+Specialists perform focused technical work delegated by primary agents. Each specialist:
+- Handles a specific domain (proof development, code quality, documentation, research, etc.)
+- Creates detailed artifacts in `.opencode/specs/NNN_project/`
+- Returns only file references and brief summaries to protect context
 
-#### 5. Refactorer Agent
-- **Purpose**: Code quality improvement
-- **Specialists**: style-checker, proof-simplifier
-- **Artifacts**: refactoring-001.md, modified LEAN files
+**Specialist Organization:**
+- **10 functional categories** for easy discovery and logical delegation
+- **32 total specialists** covering all aspects of LEAN 4 development workflow
+- **Context protection pattern** ensures scalability
 
-#### 6. Documenter Agent
-- **Purpose**: Documentation maintenance
-- **Specialists**: doc-analyzer, doc-writer
-- **Artifacts**: doc-summary.md, updated documentation files
-
-#### 7. Meta Agent
-- **Purpose**: Agent and command creation/modification
-- **Specialists**: agent-generator, command-generator
-- **Artifacts**: New/modified agent or command files
-
-### Layer 4: Specialist Subagents (16)
-Specialists perform focused tasks and create detailed artifacts:
-
-**Verification & Management:**
-- verification-specialist: Verify proofs against standards
-- todo-manager: Update TODO.md with tasks
-
-**Research:**
-- lean-search-specialist: Semantic LEAN library search
-- loogle-specialist: Formal LEAN library search
-- web-research-specialist: Web research for concepts
-
-**Planning:**
-- complexity-analyzer: Analyze task complexity
-- dependency-mapper: Map dependencies and imports
-
-**Implementation:**
-- tactic-specialist: Implement tactic-based proofs
-- term-mode-specialist: Implement term-mode proofs
-- metaprogramming-specialist: Implement custom tactics
-
-**Refactoring:**
-- style-checker: Check style guide adherence
-- proof-simplifier: Identify simplification opportunities
-
-**Documentation:**
-- doc-analyzer: Analyze documentation gaps
-- doc-writer: Write and update documentation
-
-**Meta-System:**
-- agent-generator: Generate agent files
-- command-generator: Generate command files
+> **Complete Specialist Catalog**: See [agent/subagents/specialists/README.md](agent/subagents/specialists/README.md) for all 32 specialists organized by category with detailed descriptions, invocation patterns, and artifact creation workflows.
 
 ### Layer 5: Artifact Storage
 - **Location**: `.opencode/specs/NNN_project_name/`
@@ -167,6 +122,8 @@ Specialists perform focused tasks and create detailed artifacts:
 
 ### Context Files Organization
 
+All context files are located in `.opencode/context/` with the following structure:
+
 ```
 .opencode/context/
 ├── lean4/                    # LEAN 4 Knowledge
@@ -183,14 +140,27 @@ Specialists perform focused tasks and create detailed artifacts:
 │   ├── templates/           # Logic templates
 │   ├── patterns/            # Proof patterns
 │   └── tools/               # Logic tools
-├── specs/                   # Project Management
-│   ├── project-structure.md
-│   ├── artifact-organization.md
-│   └── state-management.md
-└── builder-templates/       # Meta-System
-    ├── BUILDER-GUIDE.md
-    ├── orchestrator-template.md
-    └── subagent-template.md
+├── math/                    # Math Knowledge
+│   ├── domain/              # Mathematical concepts
+│   ├── processes/           # Math workflows
+│   ├── standards/           # Math standards
+│   ├── templates/           # Math templates
+│   ├── patterns/            # Math patterns
+│   └── tools/               # Math tools
+├── repo/                    # Repository Conventions
+│   ├── documentation-standards.md
+│   ├── state-schema.md
+│   └── status-markers.md
+├── core/                    # Core System Patterns
+│   ├── system/              # System architecture and patterns
+│   ├── workflows/           # Workflow definitions
+│   └── standards/           # System standards
+├── templates/              # Meta-System
+│   ├── BUILDER-GUIDE.md
+│   ├── orchestrator-template.md
+│   └── subagent-template.md
+└── project/                 # Project-Specific Context
+    └── [project-specific files]
 ```
 
 ## Routing Intelligence
@@ -206,14 +176,18 @@ Specialists perform focused tasks and create detailed artifacts:
 
 | Workflow | Triggers | Agent | Context | Complexity |
 |----------|----------|-------|---------|------------|
-| Review | "analyze", "review", "verify" | reviewer | lean4/standards/, specs/ | Moderate-Complex |
-| Research | "research", "investigate", "explore" | researcher | lean4/domain/, lean4/tools/ | Moderate-Complex |
-| Planning | "plan", "design", "outline" | planner | lean4/processes/, templates/ | Moderate |
-| Revision | "revise", "update plan" | planner | lean4/processes/, specs/ | Moderate |
-| Implementation | "implement", "prove", "develop" | proof-developer | lean4/domain/, patterns/, logic/ | Complex |
-| Refactoring | "refactor", "improve", "clean up" | refactorer | lean4/standards/, patterns/ | Moderate |
-| Documentation | "document", "update docs" | documenter | lean4/standards/docs | Moderate |
-| Meta | "create agent", "modify command" | meta | builder-templates/ | Moderate |
+| Review | "analyze", "review", "verify" | reviewer | .opencode/context/lean4/standards/, repo/ | Moderate-Complex |
+| Research | "research", "investigate", "explore" | researcher | .opencode/context/lean4/domain/, lean4/tools/ | Moderate-Complex |
+| Planning | "plan", "design", "outline" | planner | .opencode/context/lean4/processes/, lean4/templates/ | Moderate |
+| Revision | "revise", "update plan" | planner | .opencode/context/lean4/processes/, repo/ | Moderate |
+| Implementation | "implement", "prove", "develop" | proof-developer | .opencode/context/lean4/domain/, lean4/patterns/, logic/ | Complex |
+| Refactoring | "refactor", "improve", "clean up" | refactorer | .opencode/context/lean4/standards/, lean4/patterns/ | Moderate |
+| Documentation | "document", "update docs" | documenter | .opencode/context/lean4/standards/, repo/ | Moderate |
+| Meta | "create agent", "modify command" | meta | .opencode/context/templates/ | Moderate |
+| Task Execution | "execute task", "run task" | task-executor | .opencode/context/ (varies by task) | Varies |
+| Task Addition | "add task", "create task" | task-adder | .opencode/context/repo/ | Simple |
+| Batch Processing | "batch", "process multiple" | batch-task-orchestrator | .opencode/context/repo/ | Complex |
+| General Implementation | "implement" (non-LEAN) | implementer | .opencode/context/core/ | Moderate |
 
 ### Context Allocation Strategy
 
@@ -435,9 +409,11 @@ Updates existing agents or commands while preserving functionality.
 
 ### Adding Context Files
 Simply create new files in appropriate context directories:
-- `context/lean4/domain/` for LEAN 4 concepts
-- `context/logic/domain/` for logic concepts
-- `context/lean4/patterns/` for reusable patterns
+- `.opencode/context/lean4/domain/` for LEAN 4 concepts
+- `.opencode/context/logic/domain/` for logic concepts
+- `.opencode/context/lean4/patterns/` for reusable patterns
+- `.opencode/context/math/domain/` for mathematical concepts
+- `.opencode/context/repo/` for repository conventions
 
 ## Security and Safety
 

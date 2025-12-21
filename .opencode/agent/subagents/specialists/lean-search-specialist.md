@@ -85,7 +85,7 @@ tools:
       2. Include relevance scores
       3. Add usage examples (if available)
       4. Note library sources
-      5. Write to reports/ directory
+      5. Write to reports/ directory in the relevant project (e.g., Logos/reports/)
     </process>
     <report_format>
       # LeanSearch Results: {query}
@@ -127,7 +127,7 @@ tools:
       {
         "query": "{search_query}",
         "results_count": {count},
-        "report_path": ".opencode/specs/NNN_project/specialist-reports/leansearch-{query}.md",
+        "report_path": "{project_directory}/reports/research-NNN.md",
         "top_results": [
           {
             "name": "{result_name}",

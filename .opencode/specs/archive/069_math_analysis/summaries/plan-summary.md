@@ -9,12 +9,12 @@
 
 ## Overview
 
-Implementation plan for creating four interconnected markdown files in `context/math/analysis/` covering analysis concepts relevant to modal logic and Kripke semantics.
+Implementation plan for creating four interconnected markdown files in `.opencode/context/math/analysis/` covering analysis concepts relevant to modal logic and Kripke semantics.
 
 ## Key Phases
 
 ### Phase 1: Directory Setup (15 minutes)
-- Create `context/math/analysis/` directory
+- Create `.opencode/context/math/analysis/` directory
 
 ### Phase 2: topology.md (1.5-2 hours)
 **Content**: Topological spaces and S4 modal logic
@@ -60,9 +60,9 @@ Implementation plan for creating four interconnected markdown files in `context/
 - `.opencode/specs/069_math_analysis/reports/research-001.md` ✓ COMPLETE
 
 ### Existing Context
-- `context/lean4/standards/documentation-standards.md`
-- `context/lean4/domain/mathlib-overview.md`
-- `context/logic/processes/modal-proof-strategies.md`
+- `.opencode/context/lean4/standards/documentation-standards.md`
+- `.opencode/context/lean4/domain/mathlib-overview.md`
+- `.opencode/context/logic/processes/modal-proof-strategies.md`
 
 ### Codebase
 - `Logos/Core/Semantics/TaskFrame.lean` (LinearOrderedAddCommGroup example)
@@ -70,7 +70,7 @@ Implementation plan for creating four interconnected markdown files in `context/
 
 ## Success Criteria
 
-- [ ] All 4 files created in `context/math/analysis/`
+- [ ] All 4 files created in `.opencode/context/math/analysis/`
 - [ ] Content follows documentation standards
 - [ ] Mathlib4 import paths verified
 - [ ] Modal logic connections accurate
@@ -80,10 +80,10 @@ Implementation plan for creating four interconnected markdown files in `context/
 
 ## Key Deliverables
 
-1. `context/math/analysis/topology.md` - S4 and topological semantics
-2. `context/math/analysis/continuity.md` - Frame morphisms and bisimulation
-3. `context/math/analysis/measure-theory.md` - Probabilistic modal logic
-4. `context/math/analysis/measure-theory.md` - Modal algebras and Stone duality
+1. `.opencode/context/math/analysis/topology.md` - S4 and topological semantics
+2. `.opencode/context/math/analysis/continuity.md` - Frame morphisms and bisimulation
+3. `.opencode/context/math/analysis/measure-theory.md` - Probabilistic modal logic
+4. `.opencode/context/math/analysis/measure-theory.md` - Modal algebras and Stone duality
 
 ## Effort Breakdown
 

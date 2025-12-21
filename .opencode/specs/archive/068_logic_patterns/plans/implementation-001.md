@@ -7,7 +7,7 @@
 
 ## Task Description
 
-Create 4 pattern documentation files in `context/logic/patterns/` directory to document 23 modal logic proof patterns identified from the ProofChecker codebase. This task transforms research findings into structured, accessible documentation for developers working with modal, temporal, and bimodal logic proofs.
+Create 4 pattern documentation files in `.opencode/context/logic/patterns/` directory to document 23 modal logic proof patterns identified from the ProofChecker codebase. This task transforms research findings into structured, accessible documentation for developers working with modal, temporal, and bimodal logic proofs.
 
 **Source**: Task 68 from TODO.md  
 **Research Report**: `.opencode/specs/068_logic_patterns/reports/research-001.md`  
@@ -79,14 +79,14 @@ Create 4 pattern documentation files in `context/logic/patterns/` directory to d
 ### Required Context Files
 
 **Must Reference**:
-- `context/lean4/standards/documentation-standards.md` - Documentation format requirements
-- `context/logic/processes/modal-proof-strategies.md` - Existing modal strategy documentation
-- `context/logic/processes/temporal-proof-strategies.md` - Existing temporal strategy documentation
-- `context/logic/processes/proof-construction.md` - General proof workflow
+- `.opencode/context/lean4/standards/documentation-standards.md` - Documentation format requirements
+- `.opencode/context/logic/processes/modal-proof-strategies.md` - Existing modal strategy documentation
+- `.opencode/context/logic/processes/temporal-proof-strategies.md` - Existing temporal strategy documentation
+- `.opencode/context/logic/processes/proof-construction.md` - General proof workflow
 
 **Should Reference**:
-- `context/lean4/domain/lean4-syntax.md` - LEAN 4 syntax reference
-- `context/lean4/patterns/tactic-patterns.md` - Tactic usage patterns
+- `.opencode/context/lean4/domain/lean4-syntax.md` - LEAN 4 syntax reference
+- `.opencode/context/lean4/patterns/tactic-patterns.md` - Tactic usage patterns
 
 ### Required Source Files
 
@@ -108,7 +108,7 @@ Create 4 pattern documentation files in `context/logic/patterns/` directory to d
 ### Prerequisites
 
 **Must Exist Before Implementation**:
-1. Directory `context/logic/patterns/` must be created
+1. Directory `.opencode/context/logic/patterns/` must be created
 2. Research report must be complete (✓ already complete)
 3. All source files must be accessible (✓ verified)
 
@@ -144,7 +144,7 @@ context/logic/
 
 #### File Structure
 
-**Path**: `context/logic/patterns/modal-distribution.md`  
+**Path**: `.opencode/context/logic/patterns/modal-distribution.md`  
 **Estimated Length**: 400-500 lines
 
 **Sections**:
@@ -313,7 +313,7 @@ Source: `Logos/Core/Theorems/ModalS5.lean:314`
 
 #### File Structure
 
-**Path**: `context/logic/patterns/necessitation.md`  
+**Path**: `.opencode/context/logic/patterns/necessitation.md`  
 **Estimated Length**: 350-450 lines
 
 **Sections**:
@@ -462,7 +462,7 @@ Source: `Archive/ModalProofStrategies.lean:369-376`
 
 #### File Structure
 
-**Path**: `context/logic/patterns/frame-correspondence.md`  
+**Path**: `.opencode/context/logic/patterns/frame-correspondence.md`  
 **Estimated Length**: 450-550 lines
 
 **Sections**:
@@ -629,7 +629,7 @@ Source: `Logos/Core/ProofSystem/Axioms.lean:247`
 
 #### File Structure
 
-**Path**: `context/logic/patterns/canonical-models.md`  
+**Path**: `.opencode/context/logic/patterns/canonical-models.md`  
 **Estimated Length**: 400-500 lines
 
 **Sections**:
@@ -811,7 +811,7 @@ Source: `Logos/Core/Metalogic/Completeness.lean`
 #### Validation Steps
 
 **Step 1: File Creation Verification** (5 minutes)
-- [ ] Directory `context/logic/patterns/` exists
+- [ ] Directory `.opencode/context/logic/patterns/` exists
 - [ ] File `modal-distribution.md` created
 - [ ] File `necessitation.md` created
 - [ ] File `frame-correspondence.md` created
@@ -943,7 +943,7 @@ Each pattern follows this structure:
 
 ### Documentation Standards Compliance
 
-Following `context/lean4/standards/documentation-standards.md`:
+Following `.opencode/context/lean4/standards/documentation-standards.md`:
 
 1. **All patterns have clear descriptions** explaining what they do
 2. **All LEAN 4 code examples are documented** with comments
@@ -996,14 +996,14 @@ Following `context/lean4/standards/documentation-standards.md`:
 ### Required Context Files
 
 **Must Read Before Implementation**:
-1. `context/lean4/standards/documentation-standards.md` - Documentation format
+1. `.opencode/context/lean4/standards/documentation-standards.md` - Documentation format
 2. `.opencode/specs/068_logic_patterns/reports/research-001.md` - All pattern details
 3. `.opencode/specs/068_logic_patterns/summaries/research-summary.md` - Quick reference
 
 **Should Reference During Implementation**:
-1. `context/logic/processes/modal-proof-strategies.md` - Existing modal documentation
-2. `context/logic/processes/temporal-proof-strategies.md` - Existing temporal documentation
-3. `context/logic/processes/proof-construction.md` - General proof workflow
+1. `.opencode/context/logic/processes/modal-proof-strategies.md` - Existing modal documentation
+2. `.opencode/context/logic/processes/temporal-proof-strategies.md` - Existing temporal documentation
+3. `.opencode/context/logic/processes/proof-construction.md` - General proof workflow
 
 ### Required Source Files
 
@@ -1056,7 +1056,7 @@ context/logic/
 
 ### Completion Criteria
 
-- [x] All 4 files created in `context/logic/patterns/`
+- [x] All 4 files created in `.opencode/context/logic/patterns/`
 - [x] All 23 patterns documented
 - [x] All patterns have consistent structure
 - [x] All LEAN 4 code examples extracted from source
@@ -1178,7 +1178,7 @@ All validation steps in Phase 5 pass:
 - `.opencode/specs/068_logic_patterns/summaries/research-summary.md` (71 lines)
 
 **Documentation Standards**:
-- `context/lean4/standards/documentation-standards.md` (49 lines)
+- `.opencode/context/lean4/standards/documentation-standards.md` (49 lines)
 
 ### Potential Issues and Mitigations
 
@@ -1196,8 +1196,8 @@ All validation steps in Phase 5 pass:
 
 ### Future Enhancements (Not Part of This Task)
 
-1. Create `context/logic/patterns/README.md` with pattern index
-2. Update `context/index.md` to include patterns/ directory
+1. Create `.opencode/context/logic/patterns/README.md` with pattern index
+2. Update `.opencode/context/index.md` to include patterns/ directory
 3. Update processes/ files to reference patterns/ files
 4. Create interactive pattern search tool
 5. Add pattern relationship diagram
@@ -1213,10 +1213,10 @@ All validation steps in Phase 5 pass:
 **Research Summary**: `.opencode/specs/068_logic_patterns/summaries/research-summary.md`
 
 **Target Files** (to be created):
-- `context/logic/patterns/modal-distribution.md`
-- `context/logic/patterns/necessitation.md`
-- `context/logic/patterns/frame-correspondence.md`
-- `context/logic/patterns/canonical-models.md`
+- `.opencode/context/logic/patterns/modal-distribution.md`
+- `.opencode/context/logic/patterns/necessitation.md`
+- `.opencode/context/logic/patterns/frame-correspondence.md`
+- `.opencode/context/logic/patterns/canonical-models.md`
 
 ---
 

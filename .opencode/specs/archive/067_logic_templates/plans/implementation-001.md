@@ -108,10 +108,10 @@ Create 4 template files that extract and generalize patterns from the Logos code
 - `Logos/Core/Metalogic/Completeness.lean` (386 lines)
 
 **Existing Context**:
-- `context/lean4/templates/definition-template.md`
-- `context/lean4/templates/proof-structure-templates.md`
-- `context/lean4/standards/documentation-standards.md`
-- `context/logic/processes/modal-proof-strategies.md`
+- `.opencode/context/lean4/templates/definition-template.md`
+- `.opencode/context/lean4/templates/proof-structure-templates.md`
+- `.opencode/context/lean4/standards/documentation-standards.md`
+- `.opencode/context/logic/processes/modal-proof-strategies.md`
 
 ### Dependencies Between Templates
 
@@ -133,7 +133,7 @@ completeness-template.md
 
 ### Phase 1: Modal Operator Template (60-90 minutes)
 
-**File**: `context/logic/templates/modal-operator-template.md`
+**File**: `.opencode/context/logic/templates/modal-operator-template.md`
 
 **Objective**: Create comprehensive template for defining modal/temporal operators in LEAN 4
 
@@ -182,9 +182,9 @@ def complexity : Formula → Nat
 ```
 
 **Cross-References**:
-- `context/lean4/templates/definition-template.md` - Basic definition structure
-- `context/lean4/standards/documentation-standards.md` - Docstring format
-- `context/logic/processes/modal-proof-strategies.md` - Operator usage in proofs
+- `.opencode/context/lean4/templates/definition-template.md` - Basic definition structure
+- `.opencode/context/lean4/standards/documentation-standards.md` - Docstring format
+- `.opencode/context/logic/processes/modal-proof-strategies.md` - Operator usage in proofs
 - `Logos/Core/Syntax/Formula.lean` - Full implementation
 
 **Quality Criteria**:
@@ -204,7 +204,7 @@ def complexity : Formula → Nat
 
 ### Phase 2: Kripke Model Template (60-90 minutes)
 
-**File**: `context/logic/templates/kripke-model-template.md`
+**File**: `.opencode/context/logic/templates/kripke-model-template.md`
 
 **Objective**: Create comprehensive template for defining Kripke frames and models
 
@@ -264,9 +264,9 @@ def trivial_frame {T : Type*} [LinearOrderedAddCommGroup T] :
 ```
 
 **Cross-References**:
-- `context/logic/templates/modal-operator-template.md` - Operators evaluated in models
-- `context/lean4/templates/definition-template.md` - Structure definition pattern
-- `context/lean4/standards/documentation-standards.md` - Docstring format
+- `.opencode/context/logic/templates/modal-operator-template.md` - Operators evaluated in models
+- `.opencode/context/lean4/templates/definition-template.md` - Structure definition pattern
+- `.opencode/context/lean4/standards/documentation-standards.md` - Docstring format
 - `Logos/Core/Semantics/TaskFrame.lean` - Full frame implementation
 - `Logos/Core/Semantics/TaskModel.lean` - Full model implementation
 - `Logos/Core/Semantics/WorldHistory.lean` - Full history implementation
@@ -289,7 +289,7 @@ def trivial_frame {T : Type*} [LinearOrderedAddCommGroup T] :
 
 ### Phase 3: Soundness Template (45-60 minutes)
 
-**File**: `context/logic/templates/soundness-template.md`
+**File**: `.opencode/context/logic/templates/soundness-template.md`
 
 **Objective**: Create template for proving soundness theorems
 
@@ -343,9 +343,9 @@ theorem soundness (Γ : Context) (φ : Formula) :
 ```
 
 **Cross-References**:
-- `context/logic/templates/kripke-model-template.md` - Model structures used
-- `context/logic/processes/modal-proof-strategies.md` - Proof strategies
-- `context/lean4/templates/proof-structure-templates.md` - Induction pattern
+- `.opencode/context/logic/templates/kripke-model-template.md` - Model structures used
+- `.opencode/context/logic/processes/modal-proof-strategies.md` - Proof strategies
+- `.opencode/context/lean4/templates/proof-structure-templates.md` - Induction pattern
 - `Logos/Core/Metalogic/Soundness.lean` - Full soundness proof
 
 **Quality Criteria**:
@@ -366,7 +366,7 @@ theorem soundness (Γ : Context) (φ : Formula) :
 
 ### Phase 4: Completeness Template (60-75 minutes)
 
-**File**: `context/logic/templates/completeness-template.md`
+**File**: `.opencode/context/logic/templates/completeness-template.md`
 
 **Objective**: Create template for proving completeness via canonical model construction
 
@@ -428,9 +428,9 @@ axiom strong_completeness (Γ : Context) (φ : Formula) :
 ```
 
 **Cross-References**:
-- `context/logic/templates/kripke-model-template.md` - Canonical frame structure
-- `context/logic/templates/soundness-template.md` - Soundness used in completeness
-- `context/lean4/templates/proof-structure-templates.md` - Induction pattern
+- `.opencode/context/logic/templates/kripke-model-template.md` - Canonical frame structure
+- `.opencode/context/logic/templates/soundness-template.md` - Soundness used in completeness
+- `.opencode/context/lean4/templates/proof-structure-templates.md` - Induction pattern
 - `Logos/Core/Metalogic/Completeness.lean` - Full completeness infrastructure
 
 **Quality Criteria**:
@@ -482,7 +482,7 @@ axiom strong_completeness (Γ : Context) (φ : Formula) :
    - Ensure no missing steps or unclear references
 
 **Deliverables**:
-- `context/logic/templates/README.md`
+- `.opencode/context/logic/templates/README.md`
 - Cross-reference validation checklist (completed)
 - Standards compliance checklist (completed)
 - Usability test notes

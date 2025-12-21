@@ -6,8 +6,10 @@ This directory contains the modular knowledge base for the LEAN 4 ProofChecker s
 
 ## Directory Structure
 
+**Location**: `.opencode/context/` (single unified context directory)
+
 ```
-context/
+.opencode/context/
 ├── lean4/              # LEAN 4 language and theorem proving
 ├── logic/              # Logic theory (proof theory, semantics, metalogic)
 ├── math/               # Mathematical domains
@@ -17,9 +19,13 @@ context/
 │   └── lattice-theory/ # Lattice structures
 ├── physics/            # Physics domains
 │   └── dynamical-systems/ # Dynamical systems theory
-├── repo/               # Repository conventions and structure
-├── core/               # Core system patterns and standards
-├── builder-templates/  # Meta-system templates
+├── core/               # Core system patterns, standards, repo, templates
+│   ├── patterns/       # Core patterns
+│   ├── repo/           # Repository conventions
+│   ├── standards/      # System standards
+│   ├── system/         # System architecture
+│   ├── templates/      # Meta-system templates
+│   └── workflows/      # Development workflows
 └── project/            # Project-specific context
 ```
 
@@ -28,81 +34,42 @@ context/
 ### lean4/ - LEAN 4 Knowledge
 Core knowledge about the LEAN 4 language, mathlib, and theorem proving.
 
-**domain/** - Core concepts
-- `lean4-syntax.md` - LEAN 4 syntax and metaprogramming
-- `mathlib-overview.md` - Mathlib structure and organization
-- `key-mathematical-concepts.md` - Type theory and foundations
+See [lean4/README.md](lean4/README.md) for complete organization and file
+listings.
 
-**processes/** - Workflows
-- `end-to-end-proof-workflow.md` - Complete proof development process
-- `project-structure-best-practices.md` - Project organization
-
-**standards/** - Quality guidelines
-- `lean4-style-guide.md` - LEAN 4 coding style
-- `proof-conventions.md` - Proof writing conventions
-- `documentation-standards.md` - Documentation requirements
-- `proof-readability-criteria.md` - Readability standards
-
-**templates/** - Boilerplate
-- `definition-template.md` - Definition structure
-- `proof-structure-templates.md` - Proof templates
-- `new-file-template.md` - File templates
-
-**patterns/** - Reusable patterns
-- `tactic-patterns.md` - Common tactic patterns
-
-**tools/** - Tool guides
-- `mcp-tools-guide.md` - MCP server usage
+**Current structure**:
+- `domain/` - Core concepts (key-mathematical-concepts.md, lean4-syntax.md, mathlib-overview.md)
+- `patterns/` - Common patterns (tactic-patterns.md)
+- `processes/` - Workflows (end-to-end-proof-workflow.md, maintenance-workflow.md, project-structure-best-practices.md)
+- `standards/` - Quality guidelines (documentation-standards.md, lean4-style-guide.md, lean-style.md, proof-conventions.md, proof-readability-criteria.md)
+- `templates/` - Boilerplate (definition-template.md, maintenance-report-template.md, new-file-template.md, proof-structure-templates.md)
+- `tools/` - Tool integration (aesop-integration.md, leansearch-api.md, loogle-api.md, lsp-integration.md, mcp-tools-guide.md)
+- `style-guide.md` - LEAN 4 style guide
+- `theorem-proving-guidelines.md` - Theorem proving best practices
+- `translation-conventions.md` - Translation conventions
 
 ### logic/ - Logic Theory
 Formal logic knowledge for bimodal logic development.
 
-**proof-theory/** - Syntactic proof systems
-- `proof-theory-concepts.md` - Axioms, inference rules, proof systems, sequent calculus
+See [logic/README.md](logic/README.md) for complete organization and file
+listings.
 
-**semantics/** - Model-theoretic semantics
-- `kripke-semantics.md` - Kripke models, satisfaction, bisimulation, filtration
-
-**metalogic/** - Metatheoretic properties
-- `soundness-completeness.md` - Soundness, completeness, decidability, consistency
-
-**type-theory/** - Type-theoretic foundations
-- `dependent-types.md` - Dependent types, universes, Curry-Howard, inductive types
-
-**processes/** - Logic workflows (to be added)
-- Logic-specific proof workflows
-- Semantic construction processes
-
-**standards/** - Logic standards (to be added)
-- Proof theory standards
-- Semantic standards
-
-**templates/** - Logic templates (to be added)
-- Proof theory templates
-- Semantic templates
-
-**patterns/** - Logic patterns (to be added)
-- Common proof patterns
-- Semantic patterns
-
-**tools/** - Logic tools (to be added)
-- Logic-specific tools
+**Current structure**:
+- `domain/` - Core concepts (metalogic-concepts.md, proof-theory-concepts.md, task-semantics.md, kripke-semantics-overview.md)
+- `processes/` - Logic workflows (modal-proof-strategies.md, proof-construction.md, temporal-proof-strategies.md, verification-workflow.md)
+- `standards/` - Logic quality standards (naming-conventions.md, notation-standards.md, proof-conventions.md)
 
 ### math/ - Mathematical Domains
 Comprehensive mathematical knowledge from mathlib4.
 
-**algebra/** - Algebraic structures
-- `groups-and-monoids.md` - Group theory, monoids, homomorphisms
-- `rings-and-fields.md` - Ring theory, fields, ideals, polynomials
+See [math/README.md](math/README.md) for complete organization and file
+listings.
 
-**topology/** - Topological spaces
-- `topological-spaces.md` - Point-set topology, metric spaces, continuity
-
-**order-theory/** - Order structures
-- `partial-orders.md` - Preorders, partial orders, linear orders, well-founded orders
-
-**lattice-theory/** - Lattice structures
-- `lattices.md` - Lattices, Boolean algebras, complete lattices
+**Current structure**:
+- `algebra/` - Algebraic structures (groups, monoids, rings, fields)
+- `lattice-theory/` - Lattice structures (lattices.md)
+- `order-theory/` - Order structures (partial-orders.md)
+- `topology/` - Topological spaces (topological-spaces.md)
 
 ### physics/ - Physics Domains
 Physics and applied mathematics knowledge.
@@ -110,15 +77,16 @@ Physics and applied mathematics knowledge.
 **dynamical-systems/** - Dynamical systems theory
 - `dynamical-systems.md` - Discrete/continuous systems, chaos, ergodic theory
 
-### repo/ - Repository Conventions
-Repository structure and documentation standards.
-
-- `project-structure.md` - Project directory organization
-- `state-schema.md` - State file schemas and formats
-- `documentation-standards.md` - Documentation conventions for AI system
-
 ### core/ - Core System Patterns
-System-wide patterns and standards.
+System-wide patterns, standards, repository conventions, and templates.
+
+**patterns/** - Core patterns
+- `essential-patterns.md` - Core patterns
+
+**repo/** - Repository Conventions
+- `state-schema.md` - State file schemas and formats
+- `status-markers.md` - Status marker specification for tasks and plans
+- `documentation-standards.md` - Documentation conventions for AI system
 
 **standards/** - Quality standards
 - `analysis.md` - Analysis standards
@@ -127,29 +95,24 @@ System-wide patterns and standards.
 - `patterns.md` - Pattern standards
 - `tests.md` - Testing standards
 
+**system/** - System guides
+- `context-guide.md` - Context management
+- `project-overview.md` - Technology stack, patterns, workflows
+- `artifact-management.md` - Project directory organization
+
+**templates/** - Meta-System Templates
+- `BUILDER-GUIDE.md` - Guide to building agents
+- `orchestrator-template.md` - Orchestrator template
+- `subagent-template.md` - Subagent template
+- `README.md` - Template overview
+
 **workflows/** - System workflows
 - `delegation.md` - Delegation patterns
 - `review.md` - Review workflows
 - `sessions.md` - Session management
 - `task-breakdown.md` - Task decomposition
 
-**system/** - System guides
-- `context-guide.md` - Context management
 
-- `essential-patterns.md` - Core patterns
-
-### builder-templates/ - Meta-System
-Templates for creating agents and commands.
-
-- `BUILDER-GUIDE.md` - Guide to building agents
-- `orchestrator-template.md` - Orchestrator template
-- `subagent-template.md` - Subagent template
-- `README.md` - Template overview
-
-### project/ - Project Context
-Project-specific information.
-
-- `project-context.md` - Technology stack, patterns, workflows
 
 ## Usage Guidelines
 

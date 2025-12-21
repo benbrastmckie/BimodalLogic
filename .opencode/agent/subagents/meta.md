@@ -45,7 +45,7 @@ tools:
     <action>Determine meta operation type</action>
     <process>
       1. Parse request (create/modify agent/command)
-      2. Load relevant templates from context/builder-templates/
+      2. Load relevant templates from context/templates/
       3. If modifying, load existing agent/command
       4. Prepare specifications
     </process>

@@ -1,0 +1,96 @@
+{
+  "search_metadata": {
+    "date": "2025-12-21 19:08:32",
+    "pattern": "\"compare\"",
+    "query_type": "name-based",
+    "api_endpoint": "https://loogle.lean-lang.org/json"
+  },
+  "total_matches": 546,
+  "matches_shown": 200,
+  "report_file_path": ".opencode/specs/ProofChecker/specialist-reports/loogle-compare.md",
+  "top_10_relevant": [
+    {
+      "name": "Ord.compare",
+      "type": " {\u03b1 : Type u} [self : Ord \u03b1] : \u03b1 \u2192 \u03b1 \u2192 Ordering",
+      "library": "Init",
+      "module": "Init.Data.Ord.Basic",
+      "documentation": "Compare two elements in `\u03b1` using the comparator contained in an `[Ord \u03b1]` instance. "
+    },
+    {
+      "name": "compareOn",
+      "type": " {\u03b2 : Type u_1} {\u03b1 : Sort u_2} [ord : Ord \u03b2] (f : \u03b1 \u2192 \u03b2) (x y : \u03b1) : Ordering",
+      "library": "Init",
+      "module": "Init.Data.Ord.Basic",
+      "documentation": "Compares two values by comparing the results of applying a function.\n\nIn particular, `x` is compared to `y` by comparing `f x` and `f y`.\n\nExamples:\n* `compareOn (\u00b7.length) \"apple\" \"banana\" = .lt`\n* `compareOn (\u00b7 % 3) 5 6 = .gt`\n* `compareOn (\u00b7.foldl max 0) [1, 2, 3] [3, 2, 1] = .eq`\n"
+    },
+    {
+      "name": "List.compareLex",
+      "type": " {\u03b1 : Type u_1} (cmp : \u03b1 \u2192 \u03b1 \u2192 Ordering) : List \u03b1 \u2192 List \u03b1 \u2192 Ordering",
+      "library": "Init",
+      "module": "Init.Data.Ord.Basic",
+      "documentation": null
+    },
+    {
+      "name": "compareLex",
+      "type": " {\u03b1 : Sort u_1} {\u03b2 : Sort u_2} (cmp\u2081 cmp\u2082 : \u03b1 \u2192 \u03b2 \u2192 Ordering) (a : \u03b1) (b : \u03b2) : Ordering",
+      "library": "Init",
+      "module": "Init.Data.Ord.Basic",
+      "documentation": "Compares `a` and `b` lexicographically by `cmp\u2081` and `cmp\u2082`.\n\n`a` and `b` are first compared by `cmp\u2081`. If this returns `Ordering.eq`, `a` and `b` are compared\nby `cmp\u2082` to break the tie.\n\nTo lexicographically combine two `Ordering`s, use `Ordering.then`.\n"
+    },
+    {
+      "name": "compareOfLessAndBEq",
+      "type": " {\u03b1 : Type u_1} (x y : \u03b1) [LT \u03b1] [Decidable (x < y)] [BEq \u03b1] : Ordering",
+      "library": "Init",
+      "module": "Init.Data.Ord.Basic",
+      "documentation": "Uses a decidable less-than relation and Boolean equality to find an `Ordering`.\n\nIn particular, if `x < y` then the result is `Ordering.lt`. If `x == y` then the result is\n`Ordering.eq`. Otherwise, it is `Ordering.gt`.\n\n`compareOfLessAndEq` uses `DecidableEq` instead of `BEq`.\n"
+    },
+    {
+      "name": "compareOfLessAndEq",
+      "type": " {\u03b1 : Type u_1} (x y : \u03b1) [LT \u03b1] [Decidable (x < y)] [DecidableEq \u03b1] : Ordering",
+      "library": "Init",
+      "module": "Init.Data.Ord.Basic",
+      "documentation": "Uses decidable less-than and equality relations to find an `Ordering`.\n\nIn particular, if `x < y` then the result is `Ordering.lt`. If `x = y` then the result is\n`Ordering.eq`. Otherwise, it is `Ordering.gt`.\n\n`compareOfLessAndBEq` uses `BEq` instead of `DecidableEq`.\n"
+    }
+  ],
+  "categories": {
+    "core_comparison": 4,
+    "list_operations": 14,
+    "numeric_comparison": 80,
+    "data_structures": 11,
+    "lexicographic": 45,
+    "type_specific": 10,
+    "theorems": 36,
+    "internal": 0
+  },
+  "summary": {
+    "description": "Found 546 declarations with \"compare\" in their names across Lean's standard library, Std, and internal modules",
+    "primary_types": [
+      "Core comparison functions (Ord.compare, compareOn, compareLex)",
+      "List comparison operations (List.compareLex and theorems)",
+      "Numeric comparisons (Nat, Int specific functions)",
+      "Data structure comparisons (DTreeMap, RBTree internal operations)",
+      "Comparison theorems and properties",
+      "Type-specific comparison instances"
+    ],
+    "notable_patterns": [
+      "Most functions are theorems about comparison properties",
+      "Heavy focus on lexicographic ordering (compareLex)",
+      "Extensive list comparison infrastructure",
+      "Many internal data structure comparison functions",
+      "Clear separation between comparison construction and properties"
+    ],
+    "recommendations": [
+      "Use Ord.compare for general type comparison",
+      "Use compareOn for projection-based comparison",
+      "Use compareLex for multi-field lexicographic ordering",
+      "Use List.compareLex for list comparison",
+      "Use compareOfLessAndEq when defining custom Ord instances"
+    ]
+  },
+  "library_distribution": {
+    "Core/Init": 128,
+    "Std": 72,
+    "Lean": 0,
+    "Other": 0
+  }
+}

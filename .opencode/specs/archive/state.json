@@ -4,9 +4,9 @@
   "_comment_usage": "This file documents the structure and provides examples for archive state tracking",
   
   "archive_metadata": {
-    "total_archived_projects": 13,
+    "total_archived_projects": 21,
     "archive_created": "2025-12-18T00:00:00Z",
-    "last_updated": "2025-12-19T12:00:00Z",
+    "last_updated": "2025-12-20T00:00:00Z",
     "retention_policy": "indefinite",
     "archive_location": ".opencode/specs/archive/",
     "_comment": "High-level metadata about the archive system"
@@ -719,30 +719,199 @@
       },
       
       "tags": ["research", "knowledge-base", "mathematics", "linear-algebra"]
+    },
+    
+    {
+      "_comment": "Project 064: Git workflow manager specialist",
+      "project_number": 64,
+      "project_name": "git_workflow_manager",
+      "project_type": "tooling",
+      "status": "archived",
+      "priority": "medium",
+      "complexity": "simple",
+      "timeline": {
+        "created": "2025-12-19T00:00:00Z",
+        "completed": "2025-12-19T10:00:00Z",
+        "archived": "2025-12-20T00:00:00Z",
+        "duration_hours": 2.0
+      },
+      "summary": {
+        "title": "Create Git-Workflow-Manager Specialist",
+        "description": "Created git-workflow-manager specialist for repository operations"
+      },
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/064_git_workflow_manager/"
+      },
+      "tags": ["tooling", "specialist-agent", "git", "workflow"]
+    },
+    
+    {
+      "_comment": "Project 065: Logic processes research",
+      "project_number": 65,
+      "project_name": "logic_processes",
+      "project_type": "research",
+      "status": "archived",
+      "priority": "medium",
+      "complexity": "simple",
+      "timeline": {
+        "created": "2025-12-19T00:00:00Z",
+        "completed": "2025-12-19T11:00:00Z",
+        "archived": "2025-12-20T00:00:00Z",
+        "duration_hours": 3.0
+      },
+      "summary": {
+        "title": "Populate context/logic/processes/ Directory",
+        "description": "Research and populated logic processes directory"
+      },
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/065_logic_processes/"
+      },
+      "tags": ["research", "knowledge-base", "modal-logic", "processes"]
+    },
+    
+    {
+      "_comment": "Project 072: Phase 1 migration",
+      "project_number": 72,
+      "project_name": "phase1_migration",
+      "project_type": "implementation",
+      "status": "archived",
+      "priority": "high",
+      "complexity": "complex",
+      "timeline": {
+        "created": "2025-12-19T00:00:00Z",
+        "completed": "2025-12-19T18:00:00Z",
+        "archived": "2025-12-20T00:00:00Z",
+        "duration_hours": 10.0
+      },
+      "summary": {
+        "title": "Phase 1 - Core Definition Migration (Derivation.lean)",
+        "description": "Migrated Derivation.lean from Derivable:Prop to DerivationTree:Type"
+      },
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/072_phase1_migration/"
+      },
+      "tags": ["implementation", "migration", "type-system", "critical"]
+    },
+    
+    {
+      "_comment": "Project 075: Automation migration",
+      "project_number": 75,
+      "project_name": "automation_migration",
+      "project_type": "implementation",
+      "status": "archived",
+      "priority": "high",
+      "complexity": "moderate",
+      "timeline": {
+        "created": "2025-12-20T00:00:00Z",
+        "completed": "2025-12-20T02:00:00Z",
+        "archived": "2025-12-20T00:00:00Z",
+        "duration_hours": 2.0
+      },
+      "summary": {
+        "title": "Phase 7 - Automation Migration",
+        "description": "Updated automation system (tactics and Aesop rules)"
+      },
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/075_automation_migration/"
+      },
+      "tags": ["implementation", "migration", "automation", "tactics"]
+    },
+    
+    {
+      "_comment": "Project 076: Test migration",
+      "project_number": 76,
+      "project_name": "test_migration",
+      "project_type": "implementation",
+      "status": "archived",
+      "priority": "high",
+      "complexity": "moderate",
+      "timeline": {
+        "created": "2025-12-20T00:00:00Z",
+        "completed": "2025-12-20T03:00:00Z",
+        "archived": "2025-12-20T00:00:00Z",
+        "duration_hours": 3.0
+      },
+      "summary": {
+        "title": "Phase 7 - Test Suites Migration",
+        "description": "Updated all test files with constructor name changes"
+      },
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/076_test_migration/"
+      },
+      "tags": ["implementation", "migration", "testing", "quality-assurance"]
+    },
+    
+    {
+      "_comment": "Project 077: Documentation updates",
+      "project_number": 77,
+      "project_name": "documentation_updates",
+      "project_type": "documentation",
+      "status": "archived",
+      "priority": "medium",
+      "complexity": "simple",
+      "timeline": {
+        "created": "2025-12-20T00:00:00Z",
+        "completed": "2025-12-20T04:00:00Z",
+        "archived": "2025-12-20T00:00:00Z",
+        "duration_hours": 1.0
+      },
+      "summary": {
+        "title": "Phase 7 - Documentation Updates",
+        "description": "Updated module files and documentation"
+      },
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/077_documentation_updates/"
+      },
+      "tags": ["documentation", "migration", "module-updates"]
+    },
+    
+    {
+      "_comment": "Project 078: Final verification",
+      "project_number": 78,
+      "project_name": "final_verification",
+      "project_type": "verification",
+      "status": "archived",
+      "priority": "high",
+      "complexity": "moderate",
+      "timeline": {
+        "created": "2025-12-20T00:00:00Z",
+        "completed": "2025-12-20T06:00:00Z",
+        "archived": "2025-12-20T00:00:00Z",
+        "duration_hours": 2.0
+      },
+      "summary": {
+        "title": "Phase 7 - Final Verification and Performance Check",
+        "description": "Comprehensive verification of complete migration - production-ready"
+      },
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/078_final_verification/"
+      },
+      "tags": ["verification", "migration", "production-ready", "quality-assurance"]
     }
   ],
   
   "statistics": {
     "by_type": {
-      "documentation": 3,
+      "documentation": 4,
       "bugfix": 1,
-      "verification": 1,
+      "verification": 2,
       "maintenance": 1,
-      "research": 5,
-      "tooling": 1,
-      "total": 13
+      "research": 6,
+      "tooling": 2,
+      "implementation": 5,
+      "total": 21
     },
     "by_priority": {
-      "high": 1,
-      "medium": 12,
+      "high": 5,
+      "medium": 16,
       "low": 0
     },
     "by_complexity": {
-      "simple": 10,
-      "moderate": 3,
-      "complex": 0
+      "simple": 14,
+      "moderate": 6,
+      "complex": 1
     },
-    "average_duration_hours": 2.42,
+    "average_duration_hours": 3.14,
     "total_files_created": 2,
     "total_files_modified": 5,
     "total_files_deleted": 1,
@@ -757,20 +926,23 @@
       "2025-12-15": [52],
       "2025-12-16": [56, 59, 60],
       "2025-12-18": [61, 62],
-      "2025-12-19": [63, 67, 68, 69, 70, 71]
+      "2025-12-19": [63, 64, 65, 67, 68, 69, 70, 71],
+      "2025-12-20": [72, 75, 76, 77, 78]
     },
     "by_impact": {
-      "critical": [52],
-      "high": [61, 62],
-      "medium": [56, 59, 60, 63, 67, 68, 69, 70, 71]
+      "critical": [52, 72, 75, 76, 78],
+      "high": [61, 62, 77],
+      "medium": [56, 59, 60, 63, 64, 65, 67, 68, 69, 70, 71]
     },
     "by_module": {
-      "Logos.Core.Automation": [52, 61],
+      "Logos.Core.Automation": [52, 61, 75],
       "Logos.Core.Theorems": [56, 61, 62],
-      "Logos.Core": [62],
-      "Documentation": [59, 61, 62],
-      "Repository": [60],
-      "Context": [63, 67, 68, 69, 70, 71]
+      "Logos.Core": [62, 72],
+      "Logos.Core.ProofSystem": [72],
+      "Documentation": [59, 61, 62, 77],
+      "Repository": [60, 64],
+      "Context": [63, 65, 67, 68, 69, 70, 71],
+      "Tests": [76, 78]
     }
   },
   

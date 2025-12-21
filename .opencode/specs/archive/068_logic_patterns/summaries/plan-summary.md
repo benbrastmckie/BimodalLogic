@@ -8,7 +8,7 @@
 
 ## Overview
 
-Create 4 pattern documentation files in `context/logic/patterns/` to document 23 modal logic proof patterns identified from the ProofChecker codebase. Transform research findings into structured, accessible documentation for developers.
+Create 4 pattern documentation files in `.opencode/context/logic/patterns/` to document 23 modal logic proof patterns identified from the ProofChecker codebase. Transform research findings into structured, accessible documentation for developers.
 
 ## Key Implementation Steps
 
@@ -45,10 +45,10 @@ Create 4 pattern documentation files in `context/logic/patterns/` to document 23
 ## Deliverables
 
 **Files to Create**:
-1. `context/logic/patterns/modal-distribution.md` (8 patterns)
-2. `context/logic/patterns/necessitation.md` (6 patterns)
-3. `context/logic/patterns/frame-correspondence.md` (7 patterns)
-4. `context/logic/patterns/canonical-models.md` (2 patterns)
+1. `.opencode/context/logic/patterns/modal-distribution.md` (8 patterns)
+2. `.opencode/context/logic/patterns/necessitation.md` (6 patterns)
+3. `.opencode/context/logic/patterns/frame-correspondence.md` (7 patterns)
+4. `.opencode/context/logic/patterns/canonical-models.md` (2 patterns)
 
 **Total**: 4 files, ~1600-2000 lines, 23 patterns
 
@@ -66,7 +66,7 @@ Create 4 pattern documentation files in `context/logic/patterns/` to document 23
 - `Archive/ModalProofStrategies.lean` - Pedagogical examples
 
 **Documentation Standards**:
-- `context/lean4/standards/documentation-standards.md`
+- `.opencode/context/lean4/standards/documentation-standards.md`
 
 ## Success Criteria
 

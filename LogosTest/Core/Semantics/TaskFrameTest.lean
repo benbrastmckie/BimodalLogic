@@ -17,32 +17,32 @@ namespace LogosTest.Core.Semantics
 
 open Logos.Core.Semantics
 
-/-! ## trivialFrame Tests (using Int time) -/
+/-! ## trivial_frame Tests (using Int time) -/
 
--- Test: trivialFrame satisfies nullity
-example : (TaskFrame.trivialFrame (T := Int)).task_rel () 0 () :=
-  (TaskFrame.trivialFrame (T := Int)).nullity ()
+-- Test: trivial_frame satisfies nullity
+example : (TaskFrame.trivial_frame (T := Int)).task_rel () 0 () :=
+  (TaskFrame.trivial_frame (T := Int)).nullity ()
 
--- Test: trivialFrame satisfies compositionality (task relation is always true)
-example : (TaskFrame.trivialFrame (T := Int)).task_rel () 5 () := trivial
+-- Test: trivial_frame satisfies compositionality (task relation is always true)
+example : (TaskFrame.trivial_frame (T := Int)).task_rel () 5 () := trivial
 
--- Test: trivialFrame with negative duration
-example : (TaskFrame.trivialFrame (T := Int)).task_rel () (-3) () := trivial
+-- Test: trivial_frame with negative duration
+example : (TaskFrame.trivial_frame (T := Int)).task_rel () (-3) () := trivial
 
-/-! ## identityFrame Tests -/
+/-! ## identity_frame Tests -/
 
--- Test: identityFrame satisfies nullity (with explicit type annotation)
-example : (TaskFrame.identityFrame Nat (T := Int)).task_rel (3 : Nat) 0 (3 : Nat) :=
-  (TaskFrame.identityFrame Nat (T := Int)).nullity (3 : Nat)
+-- Test: identity_frame satisfies nullity (with explicit type annotation)
+example : (TaskFrame.identity_frame Nat (T := Int)).task_rel (3 : Nat) 0 (3 : Nat) :=
+  (TaskFrame.identity_frame Nat (T := Int)).nullity (3 : Nat)
 
-/-! ## natFrame Tests (using Int time) -/
+/-! ## nat_frame Tests (using Int time) -/
 
--- Test: natFrame satisfies nullity
-example : (TaskFrame.natFrame (T := Int)).task_rel (5 : Nat) 0 (5 : Nat) :=
-  (TaskFrame.natFrame (T := Int)).nullity (5 : Nat)
+-- Test: nat_frame satisfies nullity
+example : (TaskFrame.nat_frame (T := Int)).task_rel (5 : Nat) 0 (5 : Nat) :=
+  (TaskFrame.nat_frame (T := Int)).nullity (5 : Nat)
 
--- Test: natFrame with non-zero duration (task relation always true)
-example : (TaskFrame.natFrame (T := Int)).task_rel (0 : Nat) 10 (42 : Nat) := trivial
+-- Test: nat_frame with non-zero duration (task relation always true)
+example : (TaskFrame.nat_frame (T := Int)).task_rel (0 : Nat) 10 (42 : Nat) := trivial
 
 /-! ## Custom Frame Tests -/
 
@@ -60,18 +60,18 @@ example : customFrame.task_rel false 5 true := trivial
 /-! ## Polymorphism Tests -/
 
 -- Test: TaskFrame can be instantiated with Int explicitly
-example : TaskFrame Int := TaskFrame.trivialFrame
+example : TaskFrame Int := TaskFrame.trivial_frame
 
 -- Test: Nullity constraint works with explicit type
-theorem nullity_test_int : (TaskFrame.trivialFrame (T := Int)).task_rel () 0 () :=
-  TaskFrame.trivialFrame.nullity ()
+theorem nullity_test_int : (TaskFrame.trivial_frame (T := Int)).task_rel () 0 () :=
+  TaskFrame.trivial_frame.nullity ()
 
 -- Test: Compositionality with Int time (1 + 2 = 3)
 theorem compositionality_test_int :
-    (TaskFrame.trivialFrame (T := Int)).task_rel () 3 () := by
-  show (TaskFrame.trivialFrame (T := Int)).task_rel () ((1 : Int) + (2 : Int)) ()
-  exact (TaskFrame.trivialFrame (T := Int)).compositionality () () () 1 2
-    ((TaskFrame.trivialFrame (T := Int)).nullity ())
-    ((TaskFrame.trivialFrame (T := Int)).nullity ())
+    (TaskFrame.trivial_frame (T := Int)).task_rel () 3 () := by
+  show (TaskFrame.trivial_frame (T := Int)).task_rel () ((1 : Int) + (2 : Int)) ()
+  exact (TaskFrame.trivial_frame (T := Int)).compositionality () () () 1 2
+    ((TaskFrame.trivial_frame (T := Int)).nullity ())
+    ((TaskFrame.trivial_frame (T := Int)).nullity ())
 
 end LogosTest.Core.Semantics

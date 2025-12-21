@@ -24,7 +24,7 @@ Logos provides:
 The library is organized into the following submodules:
 
 - `Logos.Core.Syntax`: Formula types, parsing, DSL
-- `Logos.Core.ProofSystem`: Axioms and inference rules
+- `Logos.Core.ProofSystem`: Axioms, derivation trees (`DerivationTree : Type`), and inference rules
 - `Logos.Core.Semantics`: Task frame semantics
 - `Logos.Core.Metalogic`: Soundness and completeness proofs
 - `Logos.Core.Theorems`: Key theorems (perpetuity principles, etc.)

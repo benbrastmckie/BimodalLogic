@@ -1,0 +1,68 @@
+{
+  "project_id": "003_lean_test_complex",
+  "name": "Completeness Theorem Test",
+  "description": "Test project for /lean command with complex multi-file implementation",
+  "complexity": "complex",
+  "status": "pending",
+  "created": "2025-12-20T00:15:00Z",
+  "updated": "2025-12-20T00:15:00Z",
+  "metadata": {
+    "test_purpose": "Verify /lean command with complex proofs and multi-file implementation",
+    "theorem_count": 5,
+    "estimated_effort_minutes": 210,
+    "target_files": [
+      "Logos/Core/Semantics/CanonicalModel.lean",
+      "Logos/Core/Metalogic/Completeness.lean"
+    ],
+    "test_file": "LogosTest/Core/Metalogic/CompletenessTest.lean",
+    "has_dependencies": true,
+    "multi_file": true,
+    "requires_metaprogramming": true
+  },
+  "plans": [
+    {
+      "plan_id": "implementation-001",
+      "path": "plans/implementation-001.md",
+      "status": "pending",
+      "created": "2025-12-20T00:15:00Z"
+    }
+  ],
+  "phases": {
+    "research": {
+      "status": "pending",
+      "started": null,
+      "completed": null,
+      "artifacts": []
+    },
+    "planning": {
+      "status": "completed",
+      "started": "2025-12-20T00:15:00Z",
+      "completed": "2025-12-20T00:15:00Z",
+      "artifacts": ["plans/implementation-001.md"]
+    },
+    "implementation": {
+      "status": "pending",
+      "started": null,
+      "completed": null,
+      "artifacts": []
+    },
+    "verification": {
+      "status": "pending",
+      "started": null,
+      "completed": null,
+      "artifacts": []
+    },
+    "documentation": {
+      "status": "pending",
+      "started": null,
+      "completed": null,
+      "artifacts": []
+    }
+  },
+  "test_flags": {
+    "skip_research": false,
+    "skip_planning": false,
+    "parallel": true,
+    "quick": false
+  }
+}

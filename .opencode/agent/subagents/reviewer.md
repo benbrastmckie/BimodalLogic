@@ -28,7 +28,7 @@ tools:
   <task_context>
     Coordinate verification-specialist and todo-manager subagents to analyze repository,
     verify proofs, and update task tracking. Create organized artifacts in
-    .opencode/specs/NNN_project/reports/ with only references returned to orchestrator.
+    .opencode/specs/NNN_{project_name}/reports/ with only references returned to orchestrator.
   </task_context>
 </context>
 
@@ -49,12 +49,12 @@ tools:
     <process>
       1. Parse review request for scope (full repo, specific files, specific layer)
       2. Identify next available project number
-      3. Create project directory: .opencode/specs/NNN_review_YYYYMMDD/
+      3. Create project directory: .opencode/specs/NNN_{project_name}/
       4. Create subdirectories: reports/, summaries/
       5. Initialize project state file
     </process>
     <project_structure>
-      .opencode/specs/NNN_review_YYYYMMDD/
+      .opencode/specs/NNN_{project_name}/
       ├── reports/
       │   ├── analysis-001.md
       │   └── verification-001.md
@@ -78,7 +78,7 @@ tools:
           - Project directory path
         </pass_data>
         <expected_return>
-          - Verification report path (.opencode/specs/NNN_review/reports/verification-001.md)
+          - Verification report path (.opencode/specs/NNN_{project_name}/reports/verification-001.md)
           - Issues found (count and severity)
           - Compliance score
           - Brief summary (3-5 sentences)
@@ -119,7 +119,7 @@ tools:
       </gaps_and_improvements>
     </analysis_areas>
     <artifact_creation>
-      Create: .opencode/specs/NNN_review/reports/analysis-001.md
+      Create: .opencode/specs/NNN_{project_name}/reports/analysis-001.md
       Contents:
         - Repository structure overview
         - Layer completeness assessment
@@ -161,7 +161,7 @@ tools:
       2. Synthesize analysis findings
       3. Summarize TODO updates
       4. Create prioritized action items
-      5. Write summary to .opencode/specs/NNN_review/summaries/review-summary.md
+      5. Write summary to .opencode/specs/NNN_{project_name}/summaries/review-summary.md
     </process>
     <summary_format>
       # Repository Review Summary
@@ -211,7 +211,7 @@ tools:
   <stage id="6" name="UpdateState">
     <action>Update project and global state files</action>
     <process>
-      1. Update project state: .opencode/specs/NNN_review/state.json
+      1. Update project state: .opencode/specs/NNN_{project_name}/state.json
       2. Update global state: .opencode/specs/state.json
       3. Record completion timestamp
       4. Link artifacts
@@ -261,15 +261,15 @@ tools:
         "artifacts": [
           {
             "type": "analysis_report",
-            "path": ".opencode/specs/NNN_review_YYYYMMDD/reports/analysis-001.md"
+            "path": ".opencode/specs/NNN_{project_name}/reports/analysis-001.md"
           },
           {
             "type": "verification_report",
-            "path": ".opencode/specs/NNN_review_YYYYMMDD/reports/verification-001.md"
+            "path": ".opencode/specs/NNN_{project_name}/reports/verification-001.md"
           },
           {
             "type": "summary",
-            "path": ".opencode/specs/NNN_review_YYYYMMDD/summaries/review-summary.md"
+            "path": ".opencode/specs/NNN_{project_name}/summaries/review-summary.md"
           }
         ],
         "summary": "Brief 3-5 sentence summary of review findings",
@@ -313,7 +313,7 @@ tools:
   </principle>
   
   <artifact_pattern>
-    1. Subagent creates detailed report in .opencode/specs/NNN_review/reports/
+    1. Subagent creates detailed report in .opencode/specs/NNN_{project_name}/reports/
     2. Subagent returns: file path + brief summary + key findings
     3. Reviewer agent never loads full report
     4. Orchestrator receives only references and summaries

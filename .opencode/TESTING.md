@@ -27,7 +27,7 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 /review
 
 # Expected Output:
-# - Analysis report created in .opencode/specs/001_review_YYYYMMDD/reports/
+# - Analysis report created in .opencode/specs/NNN_review_YYYYMMDD/reports/
 # - Verification report created
 # - TODO.md updated with findings
 # - Summary returned (not full artifacts)
@@ -38,7 +38,7 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 /research "Kripke semantics for bimodal logic"
 
 # Expected Output:
-# - Research report created in .opencode/specs/002_research_*/reports/
+# - Research report created in .opencode/specs/NNN_research_*/reports/
 # - Multiple specialist reports (lean-search, loogle, web-research)
 # - Summary with key findings returned
 ```
@@ -48,7 +48,7 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 /plan "Implement proof system axioms for bimodal logic"
 
 # Expected Output:
-# - Implementation plan created in .opencode/specs/003_*/plans/implementation-001.md
+# - Implementation plan created in .opencode/specs/NNN_*/plans/implementation-001.md
 # - Complexity assessment included
 # - Dependencies mapped
 # - Summary returned
@@ -158,15 +158,15 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 **Test 10: Verify Artifacts Created**
 ```bash
 # After running /research
-ls .opencode/specs/*/reports/
+ls .opencode/specs/NNN_*/reports/
 # Expected: research-001.md, lean-search-001.md, loogle-001.md, web-research-001.md
 
 # After running /plan
-ls .opencode/specs/*/plans/
+ls .opencode/specs/NNN_*/plans/
 # Expected: implementation-001.md
 
 # After running /lean
-ls .opencode/specs/*/summaries/
+ls .opencode/specs/NNN_*/summaries/
 # Expected: implementation-summary.md
 ```
 
@@ -186,6 +186,22 @@ ls .opencode/specs/*/summaries/
 # NOT Expected: Full artifact content in response
 ```
 
+**Test 11a: Verify Agent and Command Counts**
+```bash
+# Count primary agents (should be 12)
+find .opencode/agent/subagents -maxdepth 1 -name "*.md" -type f | wc -l
+
+# Count specialists (should be 32)
+find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l
+
+# Count commands (should be 12)
+find .opencode/command -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l
+
+# Verify context directory structure
+ls .opencode/context/
+# Expected: lean4, logic, math, repo, core, templates, project
+```
+
 ## Phase 4: State Management Testing
 
 ### Test State Files
@@ -193,7 +209,7 @@ ls .opencode/specs/*/summaries/
 **Test 12: Project State**
 ```bash
 # After creating a project
-cat .opencode/specs/001_*/state.json
+cat .opencode/specs/NNN_*/state.json
 
 # Expected Fields:
 # - project_name
@@ -493,6 +509,10 @@ git log --oneline -5
 **Issue: Artifacts not created**
 - Check: `.opencode/specs/` directory structure
 - Fix: Verify project directory created before artifact generation
+
+**Issue: Incorrect agent/command counts**
+- Check: Run verification commands from Test 11a
+- Fix: Verify all agent and command files exist and are properly named
 
 **Issue: State not synchronized**
 - Check: state.json files for updates

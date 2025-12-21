@@ -49,8 +49,8 @@ tools:
       1. Parse research topic and scope
       2. Identify research type (library search, concept exploration, implementation strategy)
       3. Determine which specialist subagents to use
-      4. Create project directory structure
-      5. Initialize project state
+      4. Identify relevant project directory (e.g., Logos/)
+      5. Ensure reports/ directory exists
     </process>
     <research_types>
       <library_search>
@@ -183,7 +183,7 @@ tools:
       - Web Research: {artifact_path}
     </synthesis_structure>
     <artifact_creation>
-      Create: .opencode/specs/NNN_research_{topic}/reports/research-001.md
+      Create: {project_directory}/reports/research-001.md
     </artifact_creation>
     <checkpoint>Research findings synthesized and report created</checkpoint>
   </stage>
@@ -194,7 +194,7 @@ tools:
       1. Extract top 3-5 key findings
       2. Identify most relevant resources
       3. Summarize recommendations
-      4. Write to summaries/ directory
+      4. Write to summaries/ directory in the relevant project
     </process>
     <summary_format>
       # Research Summary: {topic}
@@ -241,11 +241,11 @@ tools:
         "artifacts": [
           {
             "type": "research_report",
-            "path": ".opencode/specs/NNN_research_{topic}/reports/research-001.md"
+            "path": "{project_directory}/reports/research-001.md"
           },
           {
             "type": "summary",
-            "path": ".opencode/specs/NNN_research_{topic}/summaries/research-summary.md"
+            "path": "{project_directory}/summaries/research-summary.md"
           }
         ],
         "summary": "Brief 3-5 sentence summary of research findings",

@@ -67,7 +67,7 @@ tools:
       2. Include source URLs
       3. Extract key concepts
       4. Note relevant examples
-      5. Write to reports/ directory
+      5. Write to reports/ directory in the relevant project (e.g., Logos/reports/)
     </process>
     <checkpoint>Report created</checkpoint>
   </stage>
@@ -77,7 +77,7 @@ tools:
     <return_format>
       {
         "topic": "{research_topic}",
-        "report_path": ".opencode/specs/NNN_project/specialist-reports/web-research-{topic}.md",
+        "report_path": "{project_directory}/reports/research-NNN.md",
         "sources": ["{url1}", "{url2}"],
         "summary": "Brief summary of findings"
       }

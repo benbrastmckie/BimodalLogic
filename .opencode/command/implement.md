@@ -1,46 +1,48 @@
 ---
 name: implement
-agent: implementer
-description: "Implement general coding tasks and .opencode/ utilities (use /lean for LEAN 4 proofs)"
+agent: orchestrator
+description: "Implement following an implementation plan (use /lean for LEAN 4 proofs)"
 ---
 
-You are implementing a general coding task or .opencode/ utility for the ProofChecker project.
+You are implementing a general coding task following an implementation plan.
 
-**Task Description:** $ARGUMENTS
+**Arguments:** $ARGUMENTS
 
 **Context Loaded:**
 @/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/context/core/standards/
 @/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/context/core/essential-patterns.md
-@/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/specs/project-structure.md
 
 **Task:**
 
 Execute the implementation workflow:
 
-1. Route to @subagents/implementer with task description
-2. Implementer will:
-   - Analyze requirements and scope
-   - Create implementation plan
-   - Implement code following standards
-   - Validate code quality and patterns
-   - Document changes
-3. Present results with summary
+1. Parse arguments:
+   - Extract plan file path (required, first argument)
+   - Extract starting phase number (optional, second argument)
+   
+2. Route to @subagents/implementation-orchestrator with:
+   - Plan file path
+   - Starting phase number (or null to auto-detect first incomplete)
 
-**Implementation Types:**
-- Create/modify .opencode/ agents or commands
-- Build utility scripts or tools
-- Refactor existing code
-- Implement new features
-- Fix bugs or issues
+ 3. Implementation orchestrator will:
+    - Load implementation plan from provided path
+    - Parse phases and dependencies
+    - Skip already completed phases
+    - Execute remaining phases in waves (parallel where possible)
+    - Update plan file with status markers ([NOT STARTED], [IN PROGRESS], [COMPLETED], [BLOCKED], [ABANDONED])
+    - Sync with TODO.md if plan references task numbers
+    - Use @subagents/implementer for actual phase work
+    - Create implementation summary
+
+4. Present results with summary and completion status
 
 **Expected Output:**
 
-- Implementation summary
+- Implementation summary reference
+- Phases completed
 - Files created/modified
-- Validation results
-- Documentation status
+- Plan file updated with status markers
+- TODO.md sync status
 - Next steps (if any)
-
-**Note:** For LEAN 4 proof implementations, use the `/lean` command instead.
 
 Execute the implementation now.

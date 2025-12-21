@@ -1,0 +1,163 @@
+{
+  "type_pattern": "Nat → α → Option α",
+  "alternative_pattern": "Nat → _ → Option _",
+  "search_date": "2025-12-21",
+  "matches_count": 114,
+  "total_related_matches": 871,
+  "exact_matches_count": 4,
+  "report_path": ".opencode/specs/NNN_project/specialist-reports/loogle-nat-alpha-option-alpha.md",
+  
+  "exact_matches": [
+    {
+      "name": "Std.PRange.UpwardEnumerable.succMany?",
+      "type": "{α : Type u} [self : Std.PRange.UpwardEnumerable α] (n : ℕ) (a : α) : Option α",
+      "library": "Std",
+      "module": "Init.Data.Range.Polymorphic.UpwardEnumerable",
+      "description": "Apply successor operation n times to value a",
+      "use_case": "Bounded enumeration - advance n steps in an enumerable type"
+    },
+    {
+      "name": "Std.Iterators.Iter.Partial.atIdxSlow?",
+      "type": "{α β : Type u_1} [Std.Iterators.Iterator α Id β] [Monad Id] (n : ℕ) (it : Std.Iterators.Iter.Partial β) : Option β",
+      "library": "Std",
+      "module": "Init.Data.Iterators.Consumers.Access",
+      "description": "Access element at index n in partial iterator",
+      "use_case": "Index-based access with bounds checking for partial iterators"
+    },
+    {
+      "name": "Std.Iterators.Iter.atIdxSlow?",
+      "type": "{α β : Type u_1} [Std.Iterators.Iterator α Id β] [Std.Iterators.Productive α Id] (n : ℕ) (it : Std.Iter β) : Option β",
+      "library": "Std",
+      "module": "Init.Data.Iterators.Consumers.Access",
+      "description": "Access element at index n in iterator (slow version)",
+      "use_case": "Sequential access to nth element in productive iterators"
+    },
+    {
+      "name": "Std.Iterators.Iter.atIdx?",
+      "type": "{α β : Type u_1} [Std.Iterators.Iterator α Id β] [Std.Iterators.Productive α Id] [Std.Iterators.IteratorAccess α Id] (n : ℕ) (it : Std.Iter β) : Option β",
+      "library": "Std",
+      "module": "Init.Data.Iterators.Consumers.Access",
+      "description": "Access element at index n in iterator (optimized version)",
+      "use_case": "Fast random access to iterator elements with IteratorAccess typeclass"
+    }
+  ],
+  
+  "partial_matches": [
+    {
+      "name": "List.get?Internal",
+      "type": "{α : Type u_1} (as : List α) (i : ℕ) : Option α",
+      "library": "Init",
+      "module": "Init.GetElem",
+      "description": "Internal implementation of list indexing",
+      "note": "Reversed parameter order: collection first, index second"
+    },
+    {
+      "name": "Computation.runFor",
+      "type": "Computation α → ℕ → Option α",
+      "library": "Mathlib",
+      "module": "Mathlib.Data.Seq.Computation",
+      "description": "Run computation for n steps",
+      "note": "Reversed parameter order but semantically similar"
+    },
+    {
+      "name": "Stream'.Seq.get?",
+      "type": "Stream'.Seq α → ℕ → Option α",
+      "library": "Mathlib",
+      "module": "Mathlib.Data.Seq.Defs",
+      "description": "Access nth element of lazy sequence",
+      "note": "Reversed parameter order"
+    },
+    {
+      "name": "Encodable.decode",
+      "type": "{α : Type u_1} [self : Encodable α] : ℕ → Option α",
+      "library": "Mathlib",
+      "module": "Mathlib.Logic.Encodable.Basic",
+      "description": "Decode natural number to value",
+      "note": "Single Nat parameter, no input value"
+    },
+    {
+      "name": "Nat.psub",
+      "type": "(m : ℕ) : ℕ → Option ℕ",
+      "library": "Mathlib",
+      "module": "Mathlib.Data.Nat.PSub",
+      "description": "Partial subtraction (predecessor subtraction)",
+      "note": "Nat → Nat → Option Nat variant"
+    },
+    {
+      "name": "Ordnode.nth",
+      "type": "Ordnode α → ℕ → Option α",
+      "library": "Mathlib",
+      "module": "Mathlib.Data.Ordmap.Ordnode",
+      "description": "Access nth element of ordered node",
+      "note": "Reversed parameter order"
+    }
+  ],
+  
+  "categories": {
+    "bounded_enumeration": {
+      "description": "Functions that advance n steps in an enumerable structure",
+      "count": 4,
+      "primary_example": "Std.PRange.UpwardEnumerable.succMany?"
+    },
+    "index_access": {
+      "description": "Index-based access to collections with bounds checking",
+      "count": 30,
+      "note": "Most use reversed parameter order (collection first)"
+    },
+    "bounded_computation": {
+      "description": "Run computation for n steps with fuel/gas parameter",
+      "count": 3,
+      "primary_example": "Computation.runFor"
+    },
+    "encoding_decoding": {
+      "description": "Decode natural numbers to values",
+      "count": 8,
+      "note": "Single Nat parameter variant"
+    },
+    "filtermap_operations": {
+      "description": "Transform collections with optional results",
+      "count": 100,
+      "note": "Different pattern: (α → Option β) → Collection α → Collection β"
+    }
+  },
+  
+  "library_distribution": {
+    "Init": {
+      "count": 85,
+      "percentage": 74
+    },
+    "Std": {
+      "count": 20,
+      "percentage": 17
+    },
+    "Mathlib": {
+      "count": 9,
+      "percentage": 8
+    }
+  },
+  
+  "key_observations": [
+    "Only 4 functions exactly match Nat → α → Option α pattern",
+    "Reversed parameter order (α → Nat → Option α) is more common for collection access",
+    "Pattern is used for bounded iteration, enumeration, and index access",
+    "Most exact matches are in Std library for iterators and ranges",
+    "Related patterns include Nat → Option α (decoding) and Computation α → Nat → Option α"
+  ],
+  
+  "recommendations": {
+    "bounded_enumeration": "Use Std.PRange.UpwardEnumerable.succMany? for stepping n times",
+    "iterator_access": "Use Std.Iterators.Iter.atIdx? for fast iterator access",
+    "bounded_computation": "Use Computation.runFor for running computations with step limit",
+    "custom_implementation": "Follow the pattern for domain-specific bounded search operations"
+  },
+  
+  "related_patterns": [
+    "Nat → Option α (decoding without input)",
+    "α → Nat → Option α (reversed parameter order)",
+    "Nat → α → Option β (bounded transformation)",
+    "Nat → α → α (total bounded operation)",
+    "Computation α → Nat → Option α (lazy computation with bound)"
+  ],
+  
+  "summary": "The type signature Nat → α → Option α represents a bounded computation pattern where a natural number provides a bound/limit/index, an input value is processed, and an optional result is returned. Only 4 functions exactly match this signature, all in the Std library for iterators and enumeration. The pattern is relatively rare in exact form but common in variations with reversed parameter order or different use cases. Primary use cases are bounded enumeration, iterator access, and fuel-based computation."
+}

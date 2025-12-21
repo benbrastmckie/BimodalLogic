@@ -20,7 +20,7 @@ open Logos.Core.Syntax
 open Logos.Core.Semantics
 
 -- Helper: use trivial frame for testing (with explicit Int time)
-def testFrame : TaskFrame Int := TaskFrame.trivialFrame
+def testFrame : TaskFrame Int := TaskFrame.trivial_frame
 
 -- Helper: simple model where "p" is true, "q" is false
 def testModel : TaskModel testFrame where

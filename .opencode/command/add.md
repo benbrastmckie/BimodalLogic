@@ -11,8 +11,8 @@ You are adding tasks to the LEAN 4 ProofChecker project TODO.md.
 **Context Loaded:**
 @/home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md
 @/home/benjamin/Projects/ProofChecker/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
-@/home/benjamin/Projects/ProofChecker/context/core/standards/docs.md
-@/home/benjamin/Projects/ProofChecker/context/project/project-context.md
+@/home/benjamin/Projects/ProofChecker/.opencode/context/core/standards/docs.md
+@/home/benjamin/Projects/ProofChecker/.opencode/context/core/system/project-overview.md
 
 **Task:**
 

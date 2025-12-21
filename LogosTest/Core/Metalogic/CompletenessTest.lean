@@ -87,7 +87,7 @@ Test: Maximal consistent sets are closed under derivation.
 **Verification**: Type signature of `maximal_consistent_closed` is correct
 -/
 example (Γ : Context) (φ : Formula) :
-    MaximalConsistent Γ → Derivable Γ φ → φ ∈ Γ :=
+    MaximalConsistent Γ → DerivationTree Γ φ → φ ∈ Γ :=
   maximal_consistent_closed Γ φ
 
 /--
@@ -207,11 +207,11 @@ Test weak completeness theorem.
 /--
 Test: Weak completeness type signature.
 
-**Statement**: `valid φ → Derivable [] φ`
+**Statement**: `valid φ → DerivationTree [] φ`
 
 **Verification**: Correct implication from validity to provability
 -/
-example (φ : Formula) : valid φ → Derivable [] φ :=
+example (φ : Formula) : valid φ → DerivationTree [] φ :=
   weak_completeness φ
 
 /--
@@ -219,7 +219,7 @@ Test: Apply weak completeness to derive from validity.
 
 **Example**: If φ is valid, it's provable
 -/
-example (φ : Formula) (h : valid φ) : Derivable [] φ :=
+example (φ : Formula) (h : valid φ) : DerivationTree [] φ :=
   weak_completeness φ h
 
 /-!
@@ -231,12 +231,12 @@ Test strong completeness theorem.
 /--
 Test: Strong completeness type signature.
 
-**Statement**: `semantic_consequence Γ φ → Derivable Γ φ`
+**Statement**: `semantic_consequence Γ φ → DerivationTree Γ φ`
 
 **Verification**: Correct implication from semantic to syntactic consequence
 -/
 example (Γ : Context) (φ : Formula) :
-    semantic_consequence Γ φ → Derivable Γ φ :=
+    semantic_consequence Γ φ → DerivationTree Γ φ :=
   strong_completeness Γ φ
 
 /--
@@ -245,7 +245,7 @@ Test: Apply strong completeness with context.
 **Example**: If Γ semantically entails φ, then Γ proves φ
 -/
 example (Γ : Context) (φ : Formula) (h : semantic_consequence Γ φ) :
-    Derivable Γ φ :=
+    DerivationTree Γ φ :=
   strong_completeness Γ φ h
 
 /-!
@@ -261,7 +261,7 @@ Test: Provability iff validity (empty context).
 
 **Verification**: `provable_iff_valid` establishes bidirectional equivalence
 -/
-example (φ : Formula) : Derivable [] φ ↔ valid φ :=
+example (φ : Formula) : DerivationTree [] φ ↔ valid φ :=
   provable_iff_valid φ
 
 /--
@@ -269,7 +269,7 @@ Test: Soundness direction of equivalence.
 
 **Direction**: Provable implies valid
 -/
-example (φ : Formula) (h : Derivable [] φ) : valid φ :=
+example (φ : Formula) (h : DerivationTree [] φ) : valid φ :=
   (provable_iff_valid φ).mp h
 
 /--
@@ -277,7 +277,7 @@ Test: Completeness direction of equivalence.
 
 **Direction**: Valid implies provable
 -/
-example (φ : Formula) (h : valid φ) : Derivable [] φ :=
+example (φ : Formula) (h : valid φ) : DerivationTree [] φ :=
   (provable_iff_valid φ).mpr h
 
 /-!
@@ -295,7 +295,7 @@ Test: Soundness + Completeness gives equivalence for all formulas.
 
 **Property**: For any formula, provability and validity are equivalent
 -/
-example : Derivable [] p ↔ valid p :=
+example : DerivationTree [] p ↔ valid p :=
   provable_iff_valid p
 
 /--
@@ -303,9 +303,9 @@ Test: Derive theorem, verify validity via soundness, verify provability via comp
 
 **Round-trip**: ⊢ φ → ⊨ φ → ⊢ φ
 -/
-example (h : Derivable [] p) : Derivable [] p := by
+example (h : DerivationTree [] p) : DerivationTree [] p := by
   have valid_p : valid p := (provable_iff_valid p).mp h
-  have provable_p : Derivable [] p := (provable_iff_valid p).mpr valid_p
+  have provable_p : DerivationTree [] p := (provable_iff_valid p).mpr valid_p
   exact provable_p
 
 /--
@@ -314,7 +314,7 @@ Test: Completeness enables validity checking via proof search.
 **Application**: If we can determine validity semantically, completeness
 guarantees a proof exists.
 -/
-example (h : valid (p.box.imp p)) : Derivable [] (p.box.imp p) :=
+example (h : valid (p.box.imp p)) : DerivationTree [] (p.box.imp p) :=
   weak_completeness (p.box.imp p) h
 
 end IntegrationTests
@@ -335,7 +335,7 @@ Example: Use completeness to find proof of valid formula.
 -/
 example (p q : Formula) :
     valid ((Formula.imp (p.box) (q.box)).box.imp (Formula.imp p q).box) →
-    Derivable [] ((Formula.imp (p.box) (q.box)).box.imp (Formula.imp p q).box) :=
+    DerivationTree [] ((Formula.imp (p.box) (q.box)).box.imp (Formula.imp p q).box) :=
   fun h => weak_completeness _ h
 
 /--
@@ -348,7 +348,7 @@ Example: Use strong completeness with assumptions.
 -/
 example (p q : Formula)
     (h : semantic_consequence [p.box, (p.imp q).box] q.box) :
-    Derivable [p.box, (p.imp q).box] q.box :=
+    DerivationTree [p.box, (p.imp q).box] q.box :=
   strong_completeness [p.box, (p.imp q).box] q.box h
 
 end LogosTest.Core.Metalogic

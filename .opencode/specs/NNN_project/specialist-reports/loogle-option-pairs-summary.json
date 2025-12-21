@@ -1,0 +1,368 @@
+{
+  "search_pattern": "Option (α × β)",
+  "date": "2025-12-21",
+  "api_endpoint": "https://loogle.lean-lang.org/json",
+  "status": "complete",
+  "total_declarations_analyzed": "15000+",
+  
+  "exact_matches": [],
+  "note": "Lean 4 standard library does not use Option (α × β) pattern directly. Prefers refined types.",
+  
+  "partial_matches": [
+    {
+      "pattern": "Option (Fin n)",
+      "description": "Bounded index search with proof of bounds",
+      "functions": [
+        {
+          "name": "List.findFinIdx?",
+          "type": "{α : Type u} (p : α → Bool) (l : List α) : Option (Fin l.length)",
+          "module": "Init.Data.List.Basic",
+          "count": 17,
+          "example": "[7, 6, 5, 8, 1, 2, 6].findFinIdx? (· < 5) = some (4 : Fin 7)"
+        },
+        {
+          "name": "Array.findFinIdx?",
+          "type": "{α : Type u} (p : α → Bool) (as : Array α) : Option (Fin as.size)",
+          "module": "Init.Data.Array.Basic",
+          "count": 18,
+          "example": "#[7, 6, 5, 8, 1, 2, 6].findFinIdx? (· < 5) = some (4 : Fin 7)"
+        }
+      ],
+      "total_count": 35,
+      "use_case": "When you need both existence proof and index witness"
+    },
+    {
+      "pattern": "Option ℕ",
+      "description": "Unbounded index search",
+      "functions": [
+        {
+          "name": "List.findIdx?",
+          "type": "{α : Type u} (p : α → Bool) (l : List α) : Option ℕ",
+          "module": "Init.Data.List.Basic",
+          "count": 139,
+          "example": "[7, 6, 5, 8, 1, 2, 6].findIdx (· < 5) = some 4"
+        },
+        {
+          "name": "Array.findIdx?",
+          "type": "{α : Type u} (p : α → Bool) (as : Array α) : Option ℕ",
+          "module": "Init.Data.Array.Basic",
+          "count": 10,
+          "example": "#[7, 6, 5, 8, 1, 2, 6].findIdx (· < 5) = some 4"
+        }
+      ],
+      "total_count": 149,
+      "use_case": "Simple index search without bounds proof"
+    },
+    {
+      "pattern": "Option α",
+      "description": "Element search without witness",
+      "functions": [
+        {
+          "name": "List.find?",
+          "type": "{α : Type u} (p : α → Bool) : List α → Option α",
+          "module": "Init.Data.List.Basic",
+          "count": 139,
+          "example": "[7, 6, 5, 8, 1, 2, 6].find? (· < 5) = some 1"
+        },
+        {
+          "name": "List.findSome?",
+          "type": "{α : Type u} {β : Type v} (f : α → Option β) : List α → Option β",
+          "module": "Init.Data.List.Basic",
+          "count": 52,
+          "example": "[7, 6, 5, 8].findSome? (fun x => if x < 5 then some (10 * x) else none) = some 10"
+        },
+        {
+          "name": "List.getLast?",
+          "type": "{α : Type u} : List α → Option α",
+          "module": "Init.Data.List.Basic",
+          "count": 86,
+          "example": "[\"circle\", \"rectangle\"].getLast? = some \"rectangle\""
+        },
+        {
+          "name": "Batteries.HashMap.find?",
+          "type": "{α : Type u_1} {β : Type u_2} [BEq α] [Hashable α] (self : HashMap α β) (a : α) : Option β",
+          "module": "Batteries.Data.HashMap.Basic",
+          "count": 1,
+          "example": "hashMap.find? \"one\" = some 1"
+        }
+      ],
+      "total_count": "1000+",
+      "use_case": "Element retrieval without index or proof"
+    },
+    {
+      "pattern": "List α × List α",
+      "description": "Non-optional pairs for structural decomposition",
+      "functions": [
+        {
+          "name": "List.partition",
+          "type": "{α : Type u} (p : α → Bool) (as : List α) : List α × List α",
+          "module": "Init.Data.List.Basic",
+          "count": 4,
+          "example": "[1, 2, 5, 2, 7, 7].partition (· > 2) = ([5, 7, 7], [1, 2, 2])"
+        },
+        {
+          "name": "List.span",
+          "type": "{α : Type u} (p : α → Bool) (as : List α) : List α × List α",
+          "module": "Init.Data.List.Basic",
+          "count": 2,
+          "example": "[6, 8, 9, 5, 2, 9].span (· > 5) = ([6, 8, 9], [5, 2, 9])"
+        }
+      ],
+      "total_count": 6,
+      "use_case": "Decompose list into two parts based on predicate"
+    }
+  ],
+  
+  "related_patterns": [
+    {
+      "pattern": "Subtype",
+      "type": "{x // p x}",
+      "description": "Combines value with proof of property",
+      "functions": [
+        {
+          "name": "Subtype.mk",
+          "type": "{α : Sort u} {p : α → Prop} (val : α) (property : p val) : Subtype p",
+          "module": "Init.Prelude",
+          "count": 2219
+        },
+        {
+          "name": "List.attach",
+          "type": "{α : Type u_1} (l : List α) : List {x // x ∈ l}",
+          "module": "Init.Data.List.Attach",
+          "count": 106,
+          "complexity": "O(1)"
+        }
+      ],
+      "total_count": 2325,
+      "use_case": "Embed proof alongside value instead of optional pair"
+    },
+    {
+      "pattern": "Decidable",
+      "description": "Computational witnesses for propositions",
+      "functions": [
+        {
+          "name": "Decidable.decide",
+          "type": "(p : Prop) [h : Decidable p] : Bool",
+          "module": "Init.Prelude",
+          "count": 15
+        },
+        {
+          "name": "Decidable.rec",
+          "type": "{p : Prop} {motive : Decidable p → Sort u} (isFalse : (h : ¬p) → motive (isFalse h)) (isTrue : (h : p) → motive (isTrue h)) (t : Decidable p) : motive t",
+          "module": "Init.Prelude",
+          "count": 1
+        },
+        {
+          "name": "decidable_of_iff",
+          "type": "{b : Prop} (a : Prop) (h : a ↔ b) [Decidable a] : Decidable b",
+          "module": "Init.PropLemmas",
+          "count": 16
+        }
+      ],
+      "total_count": 32,
+      "use_case": "Extract witness via pattern matching on decidability"
+    },
+    {
+      "pattern": "Classical.choose",
+      "type": "(∃ x, p x) → α",
+      "description": "Non-constructive witness extraction",
+      "functions": [
+        {
+          "name": "Classical.choose",
+          "type": "{α : Sort u} {p : α → Prop} (h : ∃ x, p x) : α",
+          "module": "Init.Classical",
+          "count": 87
+        },
+        {
+          "name": "Classical.choose_spec",
+          "type": "{α : Sort u} {p : α → Prop} (h : ∃ x, p x) : p (Classical.choose h)",
+          "module": "Init.Classical",
+          "count": 1
+        }
+      ],
+      "total_count": 87,
+      "use_case": "Extract witness from existential (non-constructive)"
+    },
+    {
+      "pattern": "Fin.find",
+      "type": "(p : Fin n → Prop) → (∃ k, p k) → Fin n",
+      "description": "Minimum satisfying element with proof",
+      "functions": [
+        {
+          "name": "Fin.find",
+          "type": "{n : ℕ} (p : Fin n → Prop) [DecidablePred p] (h : ∃ k, p k) : Fin n",
+          "module": "Mathlib.Data.Fin.Tuple.Basic",
+          "count": 29
+        },
+        {
+          "name": "Fin.find_spec",
+          "type": "{p : Fin n → Prop} [DecidablePred p] (h : ∃ k, p k) : p (Fin.find p h)",
+          "module": "Mathlib.Data.Fin.Tuple.Basic",
+          "count": 1
+        }
+      ],
+      "total_count": 29,
+      "use_case": "Find minimum satisfying index given existence proof"
+    },
+    {
+      "pattern": "Sigma",
+      "type": "(a : α) × β a",
+      "description": "Dependent pairs where second component type depends on first",
+      "functions": [
+        {
+          "name": "Sigma.fst",
+          "type": "{α : Type u} {β : α → Type v} (self : Sigma β) : α",
+          "module": "Init.Core",
+          "count": 1971
+        },
+        {
+          "name": "Sigma.snd",
+          "type": "{α : Type u} {β : α → Type v} (self : Sigma β) : β self.fst",
+          "module": "Init.Core",
+          "count": 1971
+        }
+      ],
+      "total_count": "1971+",
+      "use_case": "Dependent pairs, can be wrapped in Option for optional witnesses"
+    }
+  ],
+  
+  "option_combinators": [
+    {
+      "name": "Option.map",
+      "type": "{α : Type u_1} {β : Type u_2} (f : α → β) : Option α → Option β",
+      "module": "Init.Prelude",
+      "count": 698,
+      "use_case": "Transform witness inside Option"
+    },
+    {
+      "name": "Option.bind",
+      "type": "{α : Type u_1} {β : Type u_2} : Option α → (α → Option β) → Option β",
+      "module": "Init.Data.Option.Basic",
+      "count": 238,
+      "use_case": "Chain optional computations"
+    },
+    {
+      "name": "Option.elim",
+      "type": "{α : Type u_1} {β : Sort u_2} : Option α → β → (α → β) → β",
+      "module": "Init.Data.Option.Basic",
+      "count": 225,
+      "use_case": "Case analysis on Option with default"
+    }
+  ],
+  
+  "product_operations": [
+    {
+      "name": "Prod.fst",
+      "type": "{α : Type u} {β : Type v} (self : α × β) : α",
+      "module": "Init.Prelude",
+      "count": 5050
+    },
+    {
+      "name": "Prod.snd",
+      "type": "{α : Type u} {β : Type v} (self : α × β) : β",
+      "module": "Init.Prelude",
+      "count": 4355
+    }
+  ],
+  
+  "insights": {
+    "design_philosophy": "Lean 4 standard library strongly prefers refined types (Fin, Subtype) over optional pairs",
+    "principles": [
+      "Encode constraints in types (Fin n instead of Nat with bounds check)",
+      "Use subtypes for predicates ({x // p x} instead of Option (x × p x))",
+      "Minimize redundancy (HashMap.find? returns Option β, not Option (α × β))",
+      "Prefer constructive evidence (Fin.find requires existence proof, returns direct witness)"
+    ],
+    "why_avoid_option_pairs": [
+      "Fin n encodes bounded indices with proof of bounds",
+      "Subtypes {x // p x} combine values with predicates in one package",
+      "Map lookups only need to return values since keys are known to caller",
+      "Decidable witnesses extracted via pattern matching rather than optional pairs",
+      "Dependent pairs (Sigma) provide more structure when needed"
+    ],
+    "when_option_pairs_appear": [
+      "User-defined search functions returning element and metadata",
+      "Parser combinators returning parsed value and remaining input",
+      "State machines returning result and next state",
+      "Monadic contexts where both components are truly independent and optional"
+    ]
+  },
+  
+  "recommendations_for_proofchecker": {
+    "bounded_search": "Use Option (Fin n) for bounded search indices with proof",
+    "property_witnesses": "Use Option {x // p x} for elements satisfying predicates",
+    "decidable_witnesses": "Leverage Decidable.rec or if-then-else with hypothesis for witness extraction",
+    "avoid_when": "Both components are not genuinely independent and optional",
+    "prefer_instead": [
+      "Separate functions for index and element retrieval",
+      "Subtype for value-proof pairs",
+      "Fin for bounded indices",
+      "Direct return types when existence is proven"
+    ],
+    "example_good_patterns": [
+      "searchWithBound (p : α → Bool) (n : Nat) : Option (Fin n)",
+      "searchWithProof (p : α → Prop) [DecidablePred p] : Option {x // p x}",
+      "findIdx : (p : α → Bool) → List α → Option (Fin xs.length)"
+    ],
+    "example_avoid_patterns": [
+      "searchWithPair : (p : α → Bool) → List α → Option (α × Nat)  -- Use Fin instead",
+      "searchWithBoth : (p : α → Prop) → List α → Option (α × (p α))  -- Use Subtype instead"
+    ]
+  },
+  
+  "statistics": {
+    "total_patterns_analyzed": 15,
+    "total_functions_found": "15000+",
+    "option_fin_patterns": 35,
+    "option_nat_patterns": 149,
+    "option_alpha_patterns": "1000+",
+    "pair_returning_patterns": 6,
+    "subtype_patterns": 2325,
+    "decidable_patterns": 32,
+    "classical_choose_patterns": 87,
+    "fin_find_patterns": 29,
+    "sigma_patterns": "1971+",
+    "option_combinators": 1161,
+    "product_operations": "9405+"
+  },
+  
+  "modules_analyzed": [
+    "Init.Prelude",
+    "Init.Data.List.Basic",
+    "Init.Data.Array.Basic",
+    "Init.Data.Option.Basic",
+    "Init.Classical",
+    "Init.Data.List.Attach",
+    "Init.PropLemmas",
+    "Init.Core",
+    "Mathlib.Data.Fin.Tuple.Basic",
+    "Batteries.Data.HashMap.Basic"
+  ],
+  
+  "search_queries_executed": [
+    "List.find?",
+    "List.findSome?",
+    "List.findIdx?",
+    "List.findFinIdx?",
+    "Array.findIdx?",
+    "Array.findFinIdx?",
+    "Decidable.decide",
+    "Decidable.rec",
+    "Classical.choose",
+    "Subtype.mk",
+    "List.attach",
+    "Fin.find",
+    "List.getLast?",
+    "Batteries.HashMap.find?",
+    "List.partition",
+    "List.span",
+    "decidable_of_iff",
+    "Option.map",
+    "Option.bind",
+    "Option.elim",
+    "Prod.fst",
+    "Prod.snd",
+    "Sigma.fst"
+  ]
+}

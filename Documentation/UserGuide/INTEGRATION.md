@@ -2,6 +2,8 @@
 
 This document describes how to integrate Logos with the Model-Checker to create a comprehensive dual verification architecture for Logos.
 
+> **For AI-Assisted Development**: See [../../.opencode/README.md](../../.opencode/README.md) for automated research, planning, and implementation workflows that integrate with the development process described in this guide.
+
 ## 1. Overview
 
 Logos and Model-Checker form a **dual verification architecture** providing complementary syntactic and semantic verification:
@@ -359,9 +361,57 @@ def mock_model_checker (query : String) : IO ModelCheckResult := do
     return ModelCheckResult.unknown "mock"
 ```
 
+## 8. AI-Assisted Integration Workflow
+
+The AI system provides automated workflows for integration tasks:
+
+### Research Integration Patterns
+
+```bash
+/research "Model-Checker integration patterns for LEAN 4"
+```
+
+Searches LEAN libraries and literature for integration approaches, creating comprehensive research reports.
+
+### Plan Integration Implementation
+
+```bash
+/plan "Implement Model-Checker export/import functions"
+```
+
+Creates detailed step-by-step implementation plans with complexity analysis and dependency tracking.
+
+### Implement Integration Code
+
+```bash
+/lean 042
+```
+
+Implements integration code following the plan, verifies with lean-lsp-mcp, and commits to git.
+
+### Document Integration
+
+```bash
+/document "Model-Checker integration"
+```
+
+Updates integration documentation to reflect current implementation status and usage patterns.
+
+### AI System Integration Commands
+
+- **`/research`**: Multi-source research for integration patterns
+- **`/plan`**: Create detailed integration implementation plans
+- **`/lean`**: Implement integration code with verification
+- **`/document`**: Update integration documentation
+- **`/review`**: Analyze integration completeness and identify gaps
+
+See [AI System Overview](../../.opencode/README.md) for complete command reference and workflow details.
+
 ## References
 
 - [Architecture Guide](ARCHITECTURE.md) - Full system design
 - [Tutorial](TUTORIAL.md) - Getting started
 - [Examples](EXAMPLES.md) - Usage examples
 - [Versioning](../Development/VERSIONING.md) - Version policy
+- [AI System Overview](../../.opencode/README.md) - Automated development workflows
+- [AI Command Reference](../../.opencode/command/README.md) - Command usage and examples

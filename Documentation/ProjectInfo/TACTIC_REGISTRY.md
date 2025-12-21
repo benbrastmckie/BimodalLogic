@@ -31,8 +31,8 @@ This registry provides a high-level view of tactic implementation status across 
 
 | Tactic | Purpose | Status | Location |
 |--------|---------|--------|----------|
-| `modal_search` | Bounded modal proof search (MVP: delegates to tm_auto) | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
-| `temporal_search` | Bounded temporal proof search (MVP: delegates to tm_auto) | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
+| `modal_search` | Bounded modal proof search (Infrastructure Ready) | 🚧 In Progress | `Logos/Core/Automation/Tactics.lean` |
+| `temporal_search` | Bounded temporal proof search (Infrastructure Ready) | 🚧 In Progress | `Logos/Core/Automation/Tactics.lean` |
 
 ## Layer 1 - Extended Modalities
 

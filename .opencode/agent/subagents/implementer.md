@@ -56,7 +56,7 @@ tools:
         - context/core/essential-patterns.md
       </standards>
       <templates>
-        - context/builder-templates/ (if creating agents/commands)
+        - context/templates/ (if creating agents/commands)
       </templates>
       <existing_code>
         - Related .opencode/ components for pattern reference
@@ -236,7 +236,7 @@ tools:
   <agent_creation>
     <when>Creating new agents</when>
     <process>
-      1. Use context/builder-templates/subagent-template.md
+      1. Use context/templates/subagent-template.md
       2. Follow XML optimization patterns
       3. Order: context→role→task→workflow
       4. Include proper frontmatter

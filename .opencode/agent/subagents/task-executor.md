@@ -56,16 +56,16 @@ tools:
     <process>
       1. Read .opencode/specs/TODO.md
       2. Parse task by number (e.g., "59" from "/task 59")
-      3. Locate task section using patterns:
-         - Section header: `### {number}. {title}`
-         - Status field: `**Status**: {current_status}`
-      4. Check current status:
-         - If "Complete" or contains ✅: Notify user, suggest other tasks
-         - If "Not Started" or "In Progress": Proceed with update
-      5. Update task status:
-         - Change `**Status**: Not Started` to `**Status**: [IN PROGRESS]`
-         - Add `**Started**: YYYY-MM-DD` if not present
-         - Preserve all other content and formatting
+       3. Locate task section using patterns:
+          - Section header: `### {number}. {title}`
+          - Status field: `**Status**: {current_status}`
+       4. Check current status:
+          - If "[COMPLETED]" or contains ✅: Notify user, suggest other tasks
+          - If "[NOT STARTED]" or "[IN PROGRESS]": Proceed with update
+       5. Update task status:
+          - Change `**Status**: [NOT STARTED]` to `**Status**: [IN PROGRESS]`
+          - Add `**Started**: YYYY-MM-DD` if not present
+          - Preserve all other content and formatting
       6. Write updated TODO.md back to file
       7. Extract task details for execution:
          - Title
@@ -85,7 +85,7 @@ tools:
       </section_header>
       <status_field>
         Pattern: `**Status**: {status}`
-        Example: `**Status**: Not Started`
+        Example: `**Status**: [NOT STARTED]`
         Update: `**Status**: [IN PROGRESS]`
       </status_field>
       <timestamp_field>
@@ -106,7 +106,7 @@ tools:
       ```
       ### 61. Add Missing Directory READMEs
       **Effort**: 1 hour
-      **Status**: Not Started
+      **Status**: [NOT STARTED]
       **Priority**: Medium (documentation completeness)
       ```
       
@@ -887,17 +887,25 @@ tools:
     
     <status_patterns>
       <not_started>
-        Pattern: `**Status**: Not Started`
+        Pattern: `**Status**: [NOT STARTED]`
         Action: Update to `**Status**: [IN PROGRESS]`
       </not_started>
       <in_progress>
-        Pattern: `**Status**: In Progress` or `**Status**: [IN PROGRESS]`
+        Pattern: `**Status**: [IN PROGRESS]`
         Action: Leave as is (already in progress)
       </in_progress>
       <complete>
-        Pattern: `**Status**: Complete` or `**Status**: [COMPLETE]` or contains ✅
+        Pattern: `**Status**: [COMPLETED]` or contains ✅
         Action: Skip task (already complete), notify user
       </complete>
+      <blocked>
+        Pattern: `**Status**: [BLOCKED]`
+        Action: Warn user, suggest resolving blocker first
+      </blocked>
+      <abandoned>
+        Pattern: `**Status**: [ABANDONED]`
+        Action: Warn user, suggest restarting or creating new task
+      </abandoned>
     </status_patterns>
     
     <timestamp_handling>
@@ -917,7 +925,7 @@ tools:
   <update_strategy>
     <mark_in_progress>
       1. Locate task section by number
-      2. Find `**Status**: Not Started` line
+      2. Find `**Status**: [NOT STARTED]` line
       3. Replace with `**Status**: [IN PROGRESS]`
       4. Add `**Started**: YYYY-MM-DD` on next line if not present
       5. Preserve all other content exactly
@@ -927,7 +935,7 @@ tools:
     <mark_complete>
       1. Locate task section by number
       2. Find `**Status**: [IN PROGRESS]` line
-      3. Replace with `**Status**: [COMPLETE]`
+      3. Replace with `**Status**: [COMPLETED]`
       4. Add `**Completed**: YYYY-MM-DD` after Started line
       5. Optionally add ✅ to section header
       6. Preserve all other content exactly
@@ -941,7 +949,7 @@ tools:
       ```markdown
       ### 61. Add Missing Directory READMEs
       **Effort**: 1 hour
-      **Status**: Not Started
+      **Status**: [NOT STARTED]
       **Priority**: Medium (documentation completeness)
       **Blocking**: None
       ```
@@ -971,7 +979,7 @@ tools:
       ```markdown
       ### 61. Add Missing Directory READMEs ✅
       **Effort**: 1 hour
-      **Status**: [COMPLETE]
+      **Status**: [COMPLETED]
       **Started**: 2025-12-16
       **Completed**: 2025-12-16
       **Priority**: Medium (documentation completeness)

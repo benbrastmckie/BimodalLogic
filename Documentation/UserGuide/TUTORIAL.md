@@ -58,7 +58,7 @@ def my_formula : Formula := (Formula.atom "p").box.imp (Formula.atom "p")
 
 -- Prove it using axiom MT
 example : ⊢ my_formula := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.modal_t
 ```
 
@@ -146,26 +146,28 @@ def empty_ctx : Context := []
 def with_premises : Context := [p, p.imp q]
 ```
 
-### Derivability
+### Derivation Trees
 
-The notation `Γ ⊢ φ` means "`φ` is derivable from premises `Γ`":
+The notation `Γ ⊢ φ` represents a derivation tree proving that `φ` is derivable from premises `Γ`. 
+Since `DerivationTree` is a `Type` (not a `Prop`), derivation trees are data structures that can be 
+pattern matched and analyzed computationally.
 
 ```lean
 -- Derive from axioms (empty context)
 example : [] ⊢ (p.box.imp p) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.modal_t
 
 -- Derive from assumptions
 example : [p] ⊢ p := by
-  apply Derivable.assumption
+  apply DerivationTree.assumption
   simp
 
 -- Derive using modus ponens
 example : [p.imp q, p] ⊢ q := by
-  apply Derivable.modus_ponens
-  · apply Derivable.assumption; simp
-  · apply Derivable.assumption; simp
+  apply DerivationTree.modusPonens
+  · apply DerivationTree.assumption; simp
+  · apply DerivationTree.assumption; simp
 ```
 
 ### Axiom Application
@@ -176,17 +178,17 @@ TM logic axioms can be applied directly:
 -- S5 Modal Axioms
 -- MT: `□φ → φ` (reflexivity)
 example (φ : Formula) : ⊢ (φ.box.imp φ) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.modal_t
 
 -- M4: `□φ → □□φ` (transitivity)
 example (φ : Formula) : ⊢ (φ.box.imp φ.box.box) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.modal_4
 
 -- MB: `φ → □◇φ` (symmetry)
 example (φ : Formula) : ⊢ (φ.imp (diamond φ).box) := by
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   apply Axiom.modal_b
 ```
 
@@ -196,22 +198,67 @@ example (φ : Formula) : ⊢ (φ.imp (diamond φ).box) := by
 -- Modus Ponens: If `Γ ⊢ φ → ψ` and `Γ ⊢ φ`, then `Γ ⊢ ψ`
 example (Γ : Context) (φ ψ : Formula)
   (h1 : Γ ⊢ φ.imp ψ) (h2 : Γ ⊢ φ) : Γ ⊢ ψ := by
-  apply Derivable.modus_ponens
+  apply DerivationTree.modusPonens
   · exact h1
   · exact h2
 
 -- Modal K (MK): If `□Γ ⊢ φ` then `Γ ⊢ □φ`
 example (φ : Formula) (h : [Formula.box (Formula.atom "p")] ⊢ φ) :
   [Formula.atom "p"] ⊢ Formula.box φ := by
-  sorry -- Requires MK rule application
+  sorry -- Requires necessitation rule application
 
 -- Temporal K (TK): If `GΓ ⊢ φ` then `Γ ⊢ Gφ`
 example (φ : Formula) (h : [Formula.all_future (Formula.atom "p")] ⊢ φ) :
   [Formula.atom "p"] ⊢ Formula.all_future φ := by
-  sorry -- Requires TK rule application
+  sorry -- Requires temporal necessitation rule application
 ```
 
-## 4. Automation
+## 4. Understanding Derivation Trees
+
+### Type vs Prop Distinction
+
+The TM proof system uses `DerivationTree : Context → Formula → Type` rather than a propositional 
+`Derivable : Context → Formula → Prop`. This design choice provides several advantages:
+
+1. **Pattern Matching**: We can perform structural induction on derivation trees
+2. **Computable Functions**: We can define functions like `height : DerivationTree Γ φ → Nat`
+3. **Well-Founded Recursion**: Proofs can use derivation height as a termination measure
+4. **Computational Content**: Derivation trees are data, not just propositions
+
+### Computing Derivation Height
+
+```lean
+-- The height function computes the depth of a derivation tree
+def height {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Nat
+  | .axiom _ _ _ => 0
+  | .assumption _ _ _ => 0
+  | .modusPonens _ _ _ d1 d2 => 1 + max d1.height d2.height
+  | .necessitation _ d => 1 + d.height
+  | .temporalNecessitation _ d => 1 + d.height
+  | .temporalDuality _ d => 1 + d.height
+  | .weakening _ _ _ d _ => 1 + d.height
+
+-- Example: compute height of a simple derivation
+example (p : Formula) : 
+  let d : [] ⊢ (p.box.imp p) := DerivationTree.axiom [] _ (Axiom.modal_t p)
+  height d = 0 := rfl
+```
+
+### Pattern Matching on Derivations
+
+```lean
+-- We can pattern match on derivation structure
+def usesAxiom {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Bool
+  | .axiom _ _ _ => true
+  | .assumption _ _ _ => false
+  | .modusPonens _ _ _ d1 d2 => d1.usesAxiom || d2.usesAxiom
+  | .necessitation _ d => d.usesAxiom
+  | .temporalNecessitation _ d => d.usesAxiom
+  | .temporalDuality _ d => d.usesAxiom
+  | .weakening _ _ _ d _ => d.usesAxiom
+```
+
+## 5. Automation
 
 ### Custom Tactics
 
@@ -241,7 +288,7 @@ example (P : Formula) : ⊢ (P.box.imp P) := by
   aesop (rule_sets [TMLogic])
 ```
 
-## 5. Semantics
+## 6. Semantics
 
 ### Task Frames
 
@@ -308,17 +355,19 @@ def semantic_consequence (Γ : Context) (φ : Formula) : Prop :=
     (∀ ψ ∈ Γ, M, τ, t ⊨ ψ) → M, τ, t ⊨ φ
 ```
 
-## 6. Advanced Topics
+## 7. Advanced Topics
 
 ### Soundness and Completeness
 
-The soundness theorem states derivability implies validity:
+The soundness theorem states that derivation tree existence implies validity. The proof proceeds 
+by structural induction on the derivation tree (enabled by `DerivationTree` being a `Type`):
 
 ```lean
 -- Soundness: Γ ⊢ φ → Γ ⊨ φ
 theorem soundness (Γ : Context) (φ : Formula) :
   Γ ⊢ φ → Γ ⊨ φ := by
   sorry -- See Metalogic/Soundness.lean
+  -- Proven by pattern matching on DerivationTree structure
 ```
 
 The completeness theorem states validity implies derivability:
@@ -360,7 +409,7 @@ Logos supports future extensions:
 - **Layer 2 (Epistemic)**: Belief, probability operators
 - **Layer 3 (Normative)**: Obligation, permission operators
 
-## 7. Next Steps
+## 8. Next Steps
 
 ### Further Reading
 

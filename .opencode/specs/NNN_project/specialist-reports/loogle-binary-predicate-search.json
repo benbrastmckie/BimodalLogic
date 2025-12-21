@@ -1,0 +1,225 @@
+{
+  "type_pattern": "_ \u2192 _ \u2192 Bool",
+  "matches_count": 2362,
+  "returned_count": 200,
+  "report_path": ".opencode/specs/NNN_project/specialist-reports/loogle-binary-predicate-search.md",
+  "exact_matches": [
+    {
+      "name": "Nat.beq",
+      "type": " : \u2115 \u2192 \u2115 \u2192 Bool",
+      "module": "Init.Prelude",
+      "library": "Core"
+    },
+    {
+      "name": "Nat.ble",
+      "type": " : \u2115 \u2192 \u2115 \u2192 Bool",
+      "module": "Init.Prelude",
+      "library": "Core"
+    },
+    {
+      "name": "Lean.Name.beq",
+      "type": " : Lean.Name \u2192 Lean.Name \u2192 Bool",
+      "module": "Init.Prelude",
+      "library": "Core"
+    },
+    {
+      "name": "Lean.Meta.instBEqEtaStructMode.beq",
+      "type": " : Lean.Meta.EtaStructMode \u2192 Lean.Meta.EtaStructMode \u2192 Bool",
+      "module": "Init.MetaTypes",
+      "library": "Core"
+    },
+    {
+      "name": "Lean.Meta.instBEqOccurrences.beq",
+      "type": " : Lean.Meta.Occurrences \u2192 Lean.Meta.Occurrences \u2192 Bool",
+      "module": "Init.MetaTypes",
+      "library": "Core"
+    },
+    {
+      "name": "Lean.Meta.instBEqTransparencyMode.beq",
+      "type": " : Lean.Meta.TransparencyMode \u2192 Lean.Meta.TransparencyMode \u2192 Bool",
+      "module": "Init.MetaTypes",
+      "library": "Core"
+    },
+    {
+      "name": "Lean.Meta.DSimp.instBEqConfig.beq",
+      "type": " : Lean.Meta.DSimp.Config \u2192 Lean.Meta.DSimp.Config \u2192 Bool",
+      "module": "Init.MetaTypes",
+      "library": "Core"
+    },
+    {
+      "name": "Lean.Meta.Simp.instBEqConfig.beq",
+      "type": " : Lean.Meta.Simp.Config \u2192 Lean.Meta.Simp.Config \u2192 Bool",
+      "module": "Init.MetaTypes",
+      "library": "Core"
+    },
+    {
+      "name": "Lean.Grind.instBEqConfig.beq",
+      "type": " : Lean.Grind.Config \u2192 Lean.Grind.Config \u2192 Bool",
+      "module": "Init.Grind.Config",
+      "library": "Core"
+    },
+    {
+      "name": "Nat.bitwise",
+      "type": " (f : Bool \u2192 Bool \u2192 Bool) (n m : \u2115) : \u2115",
+      "module": "Init.Data.Nat.Bitwise.Basic",
+      "library": "Core"
+    },
+    {
+      "name": "String.Internal.any",
+      "type": " (s : String) (p : Char \u2192 Bool) : Bool",
+      "module": "Init.Data.String.Bootstrap",
+      "library": "Core"
+    },
+    {
+      "name": "String.Internal.atEnd",
+      "type": " : String \u2192 String.Pos.Raw \u2192 Bool",
+      "module": "Init.Data.String.Bootstrap",
+      "library": "Core"
+    },
+    {
+      "name": "Substring.Raw.Internal.all",
+      "type": " (s : Substring.Raw) (p : Char \u2192 Bool) : Bool",
+      "module": "Init.Data.String.Bootstrap",
+      "library": "Core"
+    },
+    {
+      "name": "Std.Format.instBEqFlattenAllowability.beq",
+      "type": " : Std.Format.FlattenAllowability \u2192 Std.Format.FlattenAllowability \u2192 Bool",
+      "module": "Init.Data.Format.Basic",
+      "library": "Core"
+    },
+    {
+      "name": "Std.Format.instBEqFlattenBehavior.beq",
+      "type": " : Std.Format.FlattenBehavior \u2192 Std.Format.FlattenBehavior \u2192 Bool",
+      "module": "Init.Data.Format.Basic",
+      "library": "Core"
+    }
+  ],
+  "top_matches_summary": "Found 2,362 binary predicate functions, with common categories including equality testing (BEq.beq, Nat.beq), ordering (Nat.blt, Nat.ble), collection operations (List.contains, Array.all), and logical operations (Bool.and, Bool.or). All returned results are from Core library (Init.* modules).",
+  "categories": {
+    "by_library": {
+      "Core": 200
+    },
+    "by_purpose": {
+      "Logical Operations": [
+        "Bool.and",
+        "Bool.and'",
+        "Bool.or",
+        "Bool.or'",
+        "Bool.xor"
+      ],
+      "Ordering": [
+        "Array.elem",
+        "BitVec.sle",
+        "BitVec.slt",
+        "BitVec.ule",
+        "BitVec.ult"
+      ],
+      "Syntax/Parsing": [
+        "Lean.Syntax.instBEqPreresolved.beq",
+        "Lean.Syntax.isNodeOf",
+        "Lean.Syntax.isOfKind",
+        "Lean.Syntax.isToken",
+        "Lean.Syntax.matchesIdent"
+      ],
+      "Equality/Comparison": [
+        "BEq.beq",
+        "BEq.mk",
+        "ByteArray.instBEq.beq",
+        "Int.beq'",
+        "Lean.Grind.instBEqConfig.beq"
+      ],
+      "Other/Utility": [
+        "BitVec.aandRec",
+        "BitVec.carry",
+        "BitVec.getLsb",
+        "BitVec.getLsbD",
+        "BitVec.getMsb"
+      ],
+      "State/Property Checks": [
+        "Array.isEmpty",
+        "Except.isOk",
+        "List.isEmpty",
+        "Nat.bitwise",
+        "Nat.bitwise_div_two_pow"
+      ],
+      "Collection Operations": [
+        "Array.all",
+        "Array.allDiff",
+        "Array.any",
+        "Array.contains",
+        "Array.elem"
+      ],
+      "Predicates/Testing": [
+        "Array.all",
+        "Array.allDiff",
+        "Array.any",
+        "Array.isEqv",
+        "Array.isEqvAux"
+      ],
+      "Membership/Containment": [
+        "Array.contains",
+        "Array.elem",
+        "Array.isPrefixOf",
+        "Array.isPrefixOfAux",
+        "Lean.Meta.Occurrences.contains"
+      ]
+    }
+  },
+  "statistics": {
+    "exact_match_count": 30,
+    "partial_match_count": 170,
+    "documented_count": 94,
+    "module_count": 30,
+    "purpose_categories": 9
+  },
+  "notable_functions": {
+    "equality": [
+      "BEq.beq",
+      "Nat.beq",
+      "List.beq",
+      "Array.beq",
+      "Lean.Name.beq"
+    ],
+    "ordering": [
+      "Nat.blt",
+      "Nat.ble",
+      "Int.blt'",
+      "Int.ble'",
+      "List.lex"
+    ],
+    "membership": [
+      "List.contains",
+      "List.elem",
+      "Array.contains",
+      "List.isPrefixOf",
+      "List.isSuffixOf"
+    ],
+    "logical": [
+      "Bool.and",
+      "Bool.or",
+      "Bool.xor",
+      "strictAnd",
+      "strictOr"
+    ],
+    "collection_predicates": [
+      "List.all",
+      "List.any",
+      "Array.all",
+      "Array.any"
+    ],
+    "state_checks": [
+      "Option.isNone",
+      "Option.isSome",
+      "Array.isEmpty",
+      "List.isEmpty"
+    ]
+  },
+  "related_searches": [
+    "_ \u2192 _ \u2192 _ \u2192 Bool (ternary predicates)",
+    "Nat \u2192 Nat \u2192 Bool (natural number predicates)",
+    "_ \u2192 _ \u2192 Prop (propositional binary relations)",
+    "_ \u2192 _ \u2192 Ordering (comparison functions)",
+    "List _ \u2192 _ \u2192 Bool (list-based predicates)"
+  ]
+}

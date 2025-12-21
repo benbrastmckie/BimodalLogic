@@ -95,10 +95,10 @@ Probabilistic Kripke frames extend modal logic to uncertain knowledge:
 ### Immediate Actions
 
 1. **Create Four Context Files**:
-   - `context/math/analysis/topological-spaces.md` - S4 correspondence, Alexandrov topology
-   - `context/math/analysis/continuity-limits.md` - Frame morphisms, bisimulation
-   - `context/math/analysis/measure-theory-basics.md` - Probabilistic Kripke frames
-   - `context/math/analysis/functional-spaces.md` - Modal algebras, Stone duality
+   - `.opencode/context/math/analysis/topological-spaces.md` - S4 correspondence, Alexandrov topology
+   - `.opencode/context/math/analysis/continuity-limits.md` - Frame morphisms, bisimulation
+   - `.opencode/context/math/analysis/measure-theory-basics.md` - Probabilistic Kripke frames
+   - `.opencode/context/math/analysis/functional-spaces.md` - Modal algebras, Stone duality
 
 2. **Content Structure** (for each file):
    - Overview connecting to modal logic
@@ -162,4 +162,4 @@ The full report contains:
 
 **Summary Compiled**: December 19, 2025  
 **Research Status**: Complete  
-**Next Step**: Create four context files in `context/math/analysis/`
+**Next Step**: Create four context files in `.opencode/context/math/analysis/`

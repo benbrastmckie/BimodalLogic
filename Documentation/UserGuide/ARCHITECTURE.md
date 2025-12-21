@@ -185,25 +185,36 @@ inductive Axiom : Formula → Prop
   | temp_future (φ : Formula) :
       Axiom (φ.box.imp (Formula.all_future φ.box))                        -- TF: `□φ → G□φ`
 
--- Layer 1 Inference rules for system TM
-inductive Derivable : Context → Formula → Prop
-  | axiom (Γ : Context) (φ : Formula) (h : Axiom φ) : Derivable Γ φ
-  | assumption (Γ : Context) (φ : Formula) (h : φ ∈ Γ) : Derivable Γ φ
-  | modus_ponens (Γ : Context) (φ ψ : Formula)
-      (h1 : Derivable Γ (φ.imp ψ)) (h2 : Derivable Γ φ) : Derivable Γ ψ   -- MP
-  | modal_k (Γ : Context) (φ : Formula)
-      (h : Derivable (Γ.map Formula.box) φ) : Derivable Γ (φ.box)         -- MK: If `□Γ ⊢ φ` then `Γ ⊢ □φ`
-  | temporal_k (Γ : Context) (φ : Formula)
-      (h : Derivable (Γ.map Formula.all_future) φ) :
-      Derivable Γ (Formula.all_future φ)                                   -- TK: If `GΓ ⊢ φ` then `Γ ⊢ Gφ`
-  | temporal_duality (φ : Formula)
-      (h : Derivable [] φ) : Derivable [] (swap_temporal φ)               -- TD: If `⊢ φ` then `⊢ φ_{⟨H|G⟩}`
+-- Layer 1 Derivation trees for system TM
+-- Note: DerivationTree is a Type (not Prop), enabling pattern matching and computable functions
+inductive DerivationTree : Context → Formula → Type
+  | axiom (Γ : Context) (φ : Formula) (h : Axiom φ) : DerivationTree Γ φ
+  | assumption (Γ : Context) (φ : Formula) (h : φ ∈ Γ) : DerivationTree Γ φ
+  | modusPonens (Γ : Context) (φ ψ : Formula)
+      (h1 : DerivationTree Γ (φ.imp ψ)) (h2 : DerivationTree Γ φ) : DerivationTree Γ ψ   -- MP
+  | necessitation (Γ : Context) (φ : Formula)
+      (h : DerivationTree (Γ.map Formula.box) φ) : DerivationTree Γ (φ.box)         -- MK: If `□Γ ⊢ φ` then `Γ ⊢ □φ`
+  | temporalNecessitation (Γ : Context) (φ : Formula)
+      (h : DerivationTree (Γ.map Formula.all_future) φ) :
+      DerivationTree Γ (Formula.all_future φ)                                   -- TK: If `GΓ ⊢ φ` then `Γ ⊢ Gφ`
+  | temporalDuality (φ : Formula)
+      (h : DerivationTree [] φ) : DerivationTree [] (swap_temporal φ)               -- TD: If `⊢ φ` then `⊢ φ_{⟨H|G⟩}`
   | weakening (Γ Δ : Context) (φ : Formula)
-      (h1 : Derivable Γ φ) (h2 : Γ ⊆ Δ) : Derivable Δ φ
+      (h1 : DerivationTree Γ φ) (h2 : Γ ⊆ Δ) : DerivationTree Δ φ
 
--- Notation for derivability
-notation Γ " ⊢ " φ => Derivable Γ φ
-notation " ⊢ " φ => Derivable [] φ
+-- Notation for derivation trees
+notation Γ " ⊢ " φ => DerivationTree Γ φ
+notation " ⊢ " φ => DerivationTree [] φ
+
+-- Computable height function (enabled by Type vs Prop)
+def height {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Nat
+  | .axiom _ _ _ => 0
+  | .assumption _ _ _ => 0
+  | .modusPonens _ _ _ d1 d2 => 1 + max d1.height d2.height
+  | .necessitation _ d => 1 + d.height
+  | .temporalNecessitation _ d => 1 + d.height
+  | .temporalDuality _ d => 1 + d.height
+  | .weakening _ _ _ d _ => 1 + d.height
 
 -- Perpetuity Principles (derived theorems in TM)
 -- P1: `□φ → always φ` (what is necessary is always the case)
@@ -224,6 +235,57 @@ theorem perpetuity_5 (φ : Formula) : ⊢ ((diamond (sometimes φ)).imp (always 
 -- P6: `sometimes □φ → □always φ` (occurrent necessity is perpetual)
 theorem perpetuity_6 (φ : Formula) : ⊢ ((sometimes φ.box).imp ((always φ).box)) := by sorry
 ```
+
+#### Derivation Trees: Type vs Prop
+
+The TM proof system uses `DerivationTree : Context → Formula → Type` rather than a propositional 
+`Derivable : Context → Formula → Prop`. This fundamental design choice provides several key advantages:
+
+**Benefits of Type-Based Derivations:**
+
+1. **Pattern Matching**: Structural induction on derivation trees is directly supported
+2. **Computable Functions**: Functions like `height : DerivationTree Γ φ → Nat` can be defined
+3. **Well-Founded Recursion**: Metalogical proofs can use derivation height as a termination measure
+4. **Computational Content**: Derivation trees are data structures, not just existence proofs
+5. **Proof Extraction**: Derivations can be analyzed, transformed, and optimized
+
+**Example - Computing Derivation Height:**
+
+The `height` function computes the depth of a derivation tree, which is impossible with `Prop`:
+
+```lean
+def height {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Nat
+  | .axiom _ _ _ => 0
+  | .assumption _ _ _ => 0
+  | .modusPonens _ _ _ d1 d2 => 1 + max d1.height d2.height
+  | .necessitation _ d => 1 + d.height
+  | .temporalNecessitation _ d => 1 + d.height
+  | .temporalDuality _ d => 1 + d.height
+  | .weakening _ _ _ d _ => 1 + d.height
+```
+
+**Example - Well-Founded Recursion:**
+
+The deduction theorem uses well-founded recursion on derivation height:
+
+```lean
+theorem deduction_theorem (Γ : Context) (φ ψ : Formula) :
+  (φ :: Γ) ⊢ ψ → Γ ⊢ (φ.imp ψ) := by
+  intro d
+  -- Induction on height of d (enabled by Type-based derivations)
+  induction d using height.induct with
+  | axiom => sorry
+  | assumption => sorry
+  | modusPonens => sorry
+  -- ... other cases
+```
+
+**Trade-offs:**
+
+- **Proof Irrelevance Lost**: Two derivations of the same formula are not automatically equal
+- **Complexity**: Type-based derivations require more careful handling than Props
+- **Benefits Outweigh Costs**: The ability to perform structural induction and compute properties 
+  is essential for metalogical proofs
 
 #### Layer 2 Axiom System (Future Work)
 
@@ -258,10 +320,10 @@ theorem cut_rule (Γ : Context) (φ ψ : Formula) :
 
 -- Custom tactics for proof automation (DSL integration)
 macro "apply_axiom" ax:ident : tactic =>
-  `(tactic| apply Derivable.axiom; apply $ax)
+  `(tactic| apply DerivationTree.axiom; apply $ax)
 
 macro "mp" h1:ident h2:ident : tactic =>
-  `(tactic| apply Derivable.modus_ponens <;> [exact $h1; exact $h2])
+  `(tactic| apply DerivationTree.modusPonens <;> [exact $h1; exact $h2])
 
 -- DSL commands for common proof patterns
 macro "assume" h:ident ":" p:term : tactic =>
@@ -584,9 +646,11 @@ The soundness theorem proves that every TM-derivable formula is valid over all t
 
 ```lean
 -- Main soundness theorem for TM
+-- Proven by structural induction on derivation trees (enabled by DerivationTree being a Type)
 theorem soundness (Γ : Context) (φ : Formula) :
   Γ ⊢ φ → Γ ⊨ φ := by
   intro h
+  -- Pattern match on the derivation tree structure
   induction h with
   | axiom Γ φ hax =>
     intro F M τ t hΓ
@@ -602,23 +666,23 @@ theorem soundness (Γ : Context) (φ : Formula) :
   | assumption Γ φ h_in =>
     intro F M τ t hΓ
     exact hΓ φ h_in
-  | modus_ponens Γ φ ψ h1 h2 ih1 ih2 =>
+  | modusPonens Γ φ ψ h1 h2 ih1 ih2 =>
     intro F M τ t hΓ
     have h_imp := ih1 F M τ t hΓ
     have h_ant := ih2 F M τ t hΓ
     exact h_imp h_ant
-  | modal_k Γ φ h ih =>
+  | necessitation Γ φ h ih =>
     intro F M τ t hΓ
     intro σ
     apply ih F M σ t
     intro ψ h_in
     sorry -- Show □ψ ∈ Γ implies ψ true at σ
-  | temporal_k Γ φ h ih =>
+  | temporalNecessitation Γ φ h ih =>
     intro F M τ t hΓ
     intro s h_gt
     apply ih F M τ s
     sorry -- Show Gψ ∈ Γ implies ψ true at future times
-  | temporal_duality φ h ih =>
+  | temporalDuality φ h ih =>
     intro F M τ t hΓ
     sorry -- Use time-shift invariance and temporal symmetry
   | weakening Γ Δ φ h1 h2 ih =>

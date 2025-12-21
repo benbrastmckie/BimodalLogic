@@ -1,0 +1,266 @@
+{
+  "search_metadata": {
+    "search_pattern": "α → Nat",
+    "date": "2025-12-21",
+    "goal": "Find scoring/ranking functions that map values to natural numbers",
+    "status": "partial",
+    "service_issues": "Loogle API experiencing intermittent 502 errors",
+    "queries_attempted": [
+      "α → Nat",
+      "_ → Nat (timeout)",
+      "List.length",
+      "Finset.card"
+    ],
+    "results_count": 22,
+    "exact_matches_count": 10,
+    "partial_matches_count": 12
+  },
+  "exact_matches": [
+    {
+      "name": "List.length",
+      "type": "{α : Type u_1} : List α → ℕ",
+      "library": "Lean Core",
+      "module": "Init.Prelude",
+      "category": "collection_size",
+      "description": "Returns the number of elements in a list",
+      "usage_example": "#eval [1, 2, 3, 4].length  -- 4",
+      "related_theorems": [
+        "List.length_append : (l₁ ++ l₂).length = l₁.length + l₂.length",
+        "List.length_cons : (x :: l).length = l.length + 1",
+        "List.length_nil : [].length = 0"
+      ]
+    },
+    {
+      "name": "String.length",
+      "type": "(s : String) : ℕ",
+      "library": "Lean Core",
+      "module": "Init.Data.String.Basic",
+      "category": "collection_size",
+      "description": "Returns the length of a string in Unicode code points",
+      "usage_example": "#eval \"hello\".length  -- 5"
+    },
+    {
+      "name": "Finset.card",
+      "type": "{α : Type u_1} (s : Finset α) : ℕ",
+      "library": "Mathlib",
+      "module": "Mathlib.Data.Finset.Card",
+      "category": "cardinality",
+      "description": "The cardinality (number of elements) of a finite set",
+      "notation": "#s in Finset locale",
+      "usage_example": "open Finset\n#eval card {1, 2, 3, 4}  -- 4",
+      "related_theorems": [
+        "Finset.card_range : (n : ℕ) : (Finset.range n).card = n",
+        "Finset.card_union : disjoint s₁ s₂ → (s₁ ∪ s₂).card = s₁.card + s₂.card",
+        "Finset.card_empty : (∅ : Finset α).card = 0"
+      ]
+    },
+    {
+      "name": "Array.size",
+      "type": "{α : Type u} (a : Array α) : Nat",
+      "library": "Lean Core",
+      "module": "Init.Data.Array.Basic",
+      "category": "collection_size",
+      "description": "Returns the number of elements in an array",
+      "related_theorems": [
+        "Array.size_eq_length_toList : {α : Type u} {xs : Array α} : xs.size = xs.toList.length"
+      ]
+    },
+    {
+      "name": "Multiset.card",
+      "type": "{α : Type u_1} (s : Multiset α) : ℕ",
+      "library": "Mathlib",
+      "module": "Mathlib.Data.Multiset.Basic",
+      "category": "cardinality",
+      "description": "The cardinality of a multiset (bag), counts elements with multiplicity"
+    },
+    {
+      "name": "Fin.val",
+      "type": "{n : ℕ} (i : Fin n) : ℕ",
+      "library": "Lean Core",
+      "module": "Init.Data.Fin.Basic",
+      "category": "index_extraction",
+      "description": "Extracts the natural number value from a bounded natural number",
+      "note": "Implicitly matches Fin n → Nat pattern",
+      "usage_example": "let i : Fin 10 := ⟨3, by omega⟩\n#eval i.val  -- 3"
+    },
+    {
+      "name": "List.indexOf",
+      "type": "{α : Type u} [BEq α] (a : α) (l : List α) : ℕ",
+      "library": "Lean Core",
+      "category": "index_search",
+      "description": "Returns the index of an element in a list (0 if not found)"
+    },
+    {
+      "name": "List.count",
+      "type": "{α : Type u} [BEq α] (a : α) (l : List α) : ℕ",
+      "library": "Lean Core",
+      "category": "counting",
+      "description": "Counts occurrences of an element in a list"
+    },
+    {
+      "name": "Multiset.count",
+      "type": "{α : Type u} [DecidableEq α] (a : α) (s : Multiset α) : ℕ",
+      "library": "Mathlib",
+      "category": "counting",
+      "description": "Counts occurrences of an element in a multiset"
+    },
+    {
+      "name": "sizeOf",
+      "type": "{α : Type u} [SizeOf α] (a : α) : ℕ",
+      "library": "Lean Core",
+      "module": "Init.Prelude",
+      "category": "structural_measure",
+      "description": "Generic size function for types with SizeOf instance, used for termination checking",
+      "related_theorems": [
+        "List.sizeOf_get : {α : Type u_1} [SizeOf α] (as : List α) (i : Fin as.length) : sizeOf (as.get i) < sizeOf as"
+      ]
+    }
+  ],
+  "partial_matches": [
+    {
+      "name": "List.findIdx?",
+      "type": "{α : Type u} (p : α → Bool) (l : List α) : Option ℕ",
+      "library": "Lean Core",
+      "category": "index_search",
+      "note": "Returns Option Nat rather than Nat directly",
+      "description": "Returns the index of the first element matching a predicate"
+    },
+    {
+      "name": "Nat.repr.length",
+      "type": "Related to (n : ℕ) : ℕ",
+      "library": "Mathlib",
+      "module": "Mathlib.Data.Nat.Digits.Defs",
+      "category": "representation_complexity",
+      "description": "Length of the decimal string representation of a natural number"
+    }
+  ],
+  "structure_projections": [
+    "Std.Iterators.BundledIterM.α → Nat",
+    "Lean.Meta.Grind.InjectiveInfo.α → Nat",
+    "Lean.Meta.Grind.Arith.Cutsat.ToIntTermInfo.α → Nat",
+    "Mathlib.Tactic.Abel.Context.α → Nat",
+    "WellOrder.α → Nat",
+    "CategoryTheory.Bundled.α → Nat",
+    "TopCommRingCat.α → Nat",
+    "LucasLehmer.X.α → Nat",
+    "RootedTree.α → Nat",
+    "CpltSepUniformSpace.α → Nat"
+  ],
+  "categories": {
+    "collection_size": {
+      "description": "Measure the size of collections",
+      "functions": ["List.length", "String.length", "Array.size"],
+      "pattern": "Direct structural recursion on collection",
+      "usage": "Ubiquitous in algorithms and data structure operations"
+    },
+    "cardinality": {
+      "description": "Count distinct elements in mathematical structures",
+      "functions": ["Finset.card", "Multiset.card"],
+      "pattern": "Based on underlying representation (often via List.length)",
+      "usage": "Set theory, combinatorics, finite mathematics"
+    },
+    "index_extraction": {
+      "description": "Locate elements within ordered structures",
+      "functions": ["Fin.val", "List.indexOf", "List.findIdx?"],
+      "pattern": "Search or extraction from indexed structure",
+      "usage": "Array indexing, search algorithms"
+    },
+    "structural_measure": {
+      "description": "Measure complexity for termination or analysis",
+      "functions": ["sizeOf", "Nat.repr.length"],
+      "pattern": "Recursive definition on inductive structure",
+      "usage": "Termination proofs, complexity analysis"
+    },
+    "counting": {
+      "description": "Count occurrences or matches",
+      "functions": ["List.count", "Multiset.count"],
+      "pattern": "Filter and count",
+      "usage": "Frequency analysis, statistics"
+    }
+  },
+  "common_patterns": {
+    "recursive_traversal": {
+      "description": "Structural recursion over inductive types",
+      "example": "List.length",
+      "pattern": "Base case returns 0, recursive case adds 1"
+    },
+    "canonical_conversion": {
+      "description": "Convert to canonical form before measuring",
+      "example": "Array.size",
+      "pattern": "Convert to List then use List.length"
+    },
+    "predicate_counting": {
+      "description": "Count elements matching a predicate",
+      "example": "List.count",
+      "pattern": "Conditional increment based on predicate"
+    },
+    "quotient_cardinality": {
+      "description": "Cardinality via quotient construction",
+      "example": "Multiset.card, Finset.card",
+      "pattern": "Define via quotient of simpler structure"
+    }
+  },
+  "insights": {
+    "fundamental_pattern": "The α → Nat pattern is fundamental for measurement and scoring in LEAN",
+    "most_common": "Collection size functions (List.length, Finset.card) are most prevalent",
+    "library_distribution": "Core functions in Init, specialized mathematical functions in Mathlib",
+    "proof_search_applicability": "Patterns applicable to formula complexity, proof depth, branching factor, goal similarity",
+    "performance_considerations": [
+      "Memoization for frequently evaluated terms",
+      "Incremental computation rather than recomputation",
+      "Lazy evaluation until needed",
+      "Approximate scoring for initial filtering"
+    ]
+  },
+  "recommendations": {
+    "implementing_scoring": [
+      "Follow List.length pattern for structural recursion",
+      "Provide basic theorems (zero case, recursive case, additivity)",
+      "Implement SizeOf instance for automatic sizeOf support",
+      "Document time/space complexity in docstrings"
+    ],
+    "using_existing": [
+      "Prefer standard functions over custom implementations",
+      "Understand whether function counts elements, measures size, or computes complexity",
+      "Check performance characteristics (e.g., Finset.card may be non-trivial)",
+      "Choose appropriate type (List vs Array vs Finset) based on performance needs"
+    ],
+    "proof_search_heuristics": [
+      "Combine multiple measures (formula size + depth + goal similarity)",
+      "Normalize scores to comparable ranges",
+      "Weight by empirical effectiveness",
+      "Cache scoring function results aggressively"
+    ]
+  },
+  "follow_up_searches": [
+    {
+      "pattern": "List α → Nat",
+      "goal": "More specific list-related scoring functions"
+    },
+    {
+      "pattern": "Formula → Nat",
+      "goal": "Formula complexity measures"
+    },
+    {
+      "pattern": "Derivation → Nat",
+      "goal": "Proof depth/complexity measures"
+    },
+    {
+      "name_pattern": "depth",
+      "goal": "Depth-related functions"
+    },
+    {
+      "name_pattern": "complexity",
+      "goal": "Complexity measures"
+    },
+    {
+      "name_pattern": "rank",
+      "goal": "Ranking functions"
+    },
+    {
+      "name_pattern": "height",
+      "goal": "Height/depth functions in trees"
+    }
+  ],
+  "report_path": ".opencode/specs/NNN_project/specialist-reports/loogle-scoring-functions.md"
+}

@@ -72,18 +72,6 @@ Helper function to construct models for testing.
 def from_list (trueAtoms : List String) : TaskModel F where
   valuation := fun _ p => p ∈ trueAtoms
 
--- Deprecated aliases for backward compatibility
-@[deprecated all_false (since := "2025-12-09")]
-def allFalse {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T} : TaskModel F := all_false
-
-@[deprecated all_true (since := "2025-12-09")]
-def allTrue {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T} : TaskModel F := all_true
-
-@[deprecated from_list (since := "2025-12-09")]
-def fromList {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
-    (trueAtoms : List String) : TaskModel F :=
-  from_list trueAtoms
-
 end TaskModel
 
 end Logos.Core.Semantics

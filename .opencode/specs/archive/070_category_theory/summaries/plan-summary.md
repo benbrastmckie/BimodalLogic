@@ -45,8 +45,8 @@
 **Required Inputs** (All Available):
 - ✅ Research report: `.opencode/specs/070_category_theory/reports/research-001.md`
 - ✅ TaskFrame source: `Logos/Core/Semantics/TaskFrame.lean`
-- ✅ Documentation standards: `context/lean4/standards/documentation-standards.md`
-- ✅ Existing context: `context/lean4/`, `context/logic/`
+- ✅ Documentation standards: `.opencode/context/lean4/standards/documentation-standards.md`
+- ✅ Existing context: `.opencode/context/lean4/`, `.opencode/context/logic/`
 
 **No Blocking Dependencies** - Ready to implement immediately.
 
@@ -55,10 +55,10 @@
 ## Success Criteria
 
 ### Deliverables
-- `context/math/category-theory/basics.md`
-- `context/math/category-theory/functors.md`
-- `context/math/category-theory/natural-transformations.md`
-- `context/math/category-theory/adjunctions.md`
+- `.opencode/context/math/category-theory/basics.md`
+- `.opencode/context/math/category-theory/functors.md`
+- `.opencode/context/math/category-theory/natural-transformations.md`
+- `.opencode/context/math/category-theory/adjunctions.md`
 
 ### Quality Gates
 - All files follow documentation standards

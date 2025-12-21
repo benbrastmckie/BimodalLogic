@@ -10,7 +10,7 @@
 
 ## Task Description
 
-Create comprehensive category theory context documentation in `context/math/category-theory/` to support LEAN 4 proof development for the Logos bimodal logic TM system. This documentation will provide essential background on categorical semantics for modal logic, with emphasis on Kripke frames as categories, modal operators as adjoint functors, and TaskFrame categorical structure.
+Create comprehensive category theory context documentation in `.opencode/context/math/category-theory/` to support LEAN 4 proof development for the Logos bimodal logic TM system. This documentation will provide essential background on categorical semantics for modal logic, with emphasis on Kripke frames as categories, modal operators as adjoint functors, and TaskFrame categorical structure.
 
 **Source**: TODO.md Task 70  
 **Research Report**: `.opencode/specs/070_category_theory/reports/research-001.md`
@@ -60,8 +60,8 @@ Create comprehensive category theory context documentation in `context/math/cate
 
 1. **Research Report**: `.opencode/specs/070_category_theory/reports/research-001.md` (Complete)
 2. **TaskFrame Source**: `Logos/Core/Semantics/TaskFrame.lean` (Exists)
-3. **Documentation Standards**: `context/lean4/standards/documentation-standards.md` (Exists)
-4. **Existing Context**: `context/lean4/`, `context/logic/` (Exists)
+3. **Documentation Standards**: `.opencode/context/lean4/standards/documentation-standards.md` (Exists)
+4. **Existing Context**: `.opencode/context/lean4/`, `.opencode/context/logic/` (Exists)
 
 ### Prerequisites
 
@@ -938,10 +938,10 @@ All required inputs are available. Implementation can proceed immediately.
 
 ### Deliverables
 
-1. ✅ `context/math/category-theory/basics.md` - Complete and reviewed
-2. ✅ `context/math/category-theory/functors.md` - Complete and reviewed
-3. ✅ `context/math/category-theory/natural-transformations.md` - Complete and reviewed
-4. ✅ `context/math/category-theory/adjunctions.md` - Complete and reviewed
+1. ✅ `.opencode/context/math/category-theory/basics.md` - Complete and reviewed
+2. ✅ `.opencode/context/math/category-theory/functors.md` - Complete and reviewed
+3. ✅ `.opencode/context/math/category-theory/natural-transformations.md` - Complete and reviewed
+4. ✅ `.opencode/context/math/category-theory/adjunctions.md` - Complete and reviewed
 
 ### Quality Gates
 

@@ -22,9 +22,9 @@
 - `Logos/Core/Metalogic/Completeness.lean` - Completeness infrastructure (386 lines)
 
 **Existing Context**:
-- `context/logic/processes/modal-proof-strategies.md` - 6 modal proof strategies
-- `context/lean4/templates/proof-structure-templates.md` - General proof patterns
-- `context/lean4/standards/documentation-standards.md` - Documentation quality
+- `.opencode/context/logic/processes/modal-proof-strategies.md` - 6 modal proof strategies
+- `.opencode/context/lean4/templates/proof-structure-templates.md` - General proof patterns
+- `.opencode/context/lean4/standards/documentation-standards.md` - Documentation quality
 
 ## Recommendations
 

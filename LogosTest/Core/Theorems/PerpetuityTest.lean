@@ -1,4 +1,5 @@
 import Logos.Core.Theorems.Perpetuity
+import Logos.Core.Theorems.Combinators
 
 /-!
 # Perpetuity Principles Tests
@@ -21,6 +22,7 @@ namespace LogosTest.Core.Theorems.PerpetuityTest
 open Logos.Core.Syntax
 open Logos.Core.ProofSystem
 open Logos.Core.Theorems.Perpetuity
+open Logos.Core.Theorems.Combinators
 
 /-!
 ## Helper Lemma Tests: Propositional Reasoning
@@ -32,24 +34,24 @@ example (φ : Formula) : ⊢ (φ.imp φ).box := by
   have h : ⊢ φ.imp φ := by
     -- Use S axiom: φ → (φ → φ)
     have s : ⊢ φ.imp ((φ.imp φ).imp φ) :=
-      Derivable.axiom [] _ (Axiom.prop_s φ (φ.imp φ))
+      DerivationTree.axiom [] _ (Axiom.prop_s φ (φ.imp φ))
     -- Use K axiom to complete
     have k : ⊢ (φ.imp ((φ.imp φ).imp φ)).imp ((φ.imp (φ.imp φ)).imp (φ.imp φ)) :=
-      Derivable.axiom [] _ (Axiom.prop_k φ (φ.imp φ) φ)
+      DerivationTree.axiom [] _ (Axiom.prop_k φ (φ.imp φ) φ)
     have h1 : ⊢ (φ.imp (φ.imp φ)).imp (φ.imp φ) :=
-      Derivable.modus_ponens [] _ _ k s
+      DerivationTree.modus_ponens [] _ _ k s
     -- φ → φ → φ is from S axiom
     have s2 : ⊢ φ.imp (φ.imp φ) :=
-      Derivable.axiom [] _ (Axiom.prop_s φ φ)
-    exact Derivable.modus_ponens [] _ _ h1 s2
-  -- Apply modal_k (necessitation for empty context)
-  exact Derivable.modal_k [] _ h
+      DerivationTree.axiom [] _ (Axiom.prop_s φ φ)
+    exact DerivationTree.modus_ponens [] _ _ h1 s2
+  -- Apply necessitation (necessitation for empty context)
+  exact DerivationTree.necessitation _ h
 
-/-- Test modal_k rule with axiom -/
+/-- Test necessitation rule with axiom -/
 example (φ : Formula) : ⊢ (φ.box.imp φ).box := by
   -- Modal T is a theorem
-  have h : ⊢ φ.box.imp φ := Derivable.axiom [] _ (Axiom.modal_t φ)
-  exact Derivable.modal_k [] _ h
+  have d : ⊢ φ.box.imp φ := DerivationTree.axiom [] _ (Axiom.modal_t φ)
+  exact DerivationTree.necessitation _ d
 
 /-- Test box_conj_intro: combining boxed formulas -/
 example (A B : Formula) (hA : ⊢ A.box) (hB : ⊢ B.box) : ⊢ (A.and B).box :=
@@ -139,22 +141,22 @@ example (φ ψ : Formula) : ⊢ φ.imp (ψ.imp (φ.and ψ)) := pairing φ ψ
 example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p") := by
   -- □p → □□p by Modal 4
   have h1 : ⊢ (Formula.atom "p").box.imp (Formula.atom "p").box.box :=
-    Derivable.axiom [] _ (Axiom.modal_4 (Formula.atom "p"))
+    DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom "p"))
   -- □□p → □p trivially (by Modal T applied to □p)
   have h2 : ⊢ (Formula.atom "p").box.box.imp (Formula.atom "p").box :=
-    Derivable.axiom [] _ (Axiom.modal_t (Formula.atom "p").box)
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p").box)
   -- □p → □p by transitivity (degenerate case, but tests the mechanism)
   -- Actually, let's use a proper chain: □p → □□p → □p
   -- Then compose with MT: □p → p
   have h3 : ⊢ (Formula.atom "p").box.imp (Formula.atom "p") :=
-    Derivable.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
   exact h3
 
 /-- Test mp (modus ponens restatement) with axioms -/
 example (φ : Formula) : ⊢ φ.box.imp φ.all_future := by
   -- Testing imp_trans in a proof similar to perpetuity components
-  have h1 : ⊢ φ.box.imp (φ.all_future.box) := Derivable.axiom [] _ (Axiom.modal_future φ)
-  have h2 : ⊢ (φ.all_future.box).imp φ.all_future := Derivable.axiom [] _ (Axiom.modal_t φ.all_future)
+  have h1 : ⊢ φ.box.imp (φ.all_future.box) := DerivationTree.axiom [] _ (Axiom.modal_future φ)
+  have h2 : ⊢ (φ.all_future.box).imp φ.all_future := DerivationTree.axiom [] _ (Axiom.modal_t φ.all_future)
   exact imp_trans h1 h2
 
 /-- Test that imp_trans composes three implications -/
@@ -227,7 +229,7 @@ example (A B : Formula) (h : ⊢ A.imp B) : ⊢ B.neg.imp A.neg := contrapositio
 example : ⊢ (Formula.atom "p").neg.imp (Formula.atom "p").box.neg := by
   -- From □p → p (Modal T), derive ¬p → ¬□p
   have h : ⊢ (Formula.atom "p").box.imp (Formula.atom "p") :=
-    Derivable.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
   exact contraposition h
 
 /-- Test contraposition is complete (no sorry) -/
@@ -327,7 +329,7 @@ example (p : Formula) : ⊢ (▽p).diamond.imp (△(p.diamond)) := perpetuity_5 
 /-- Test: P1 combined with modal T gives reflexivity path -/
 example (φ : Formula) : ⊢ φ.box.imp φ := by
   -- □φ → φ is Modal T axiom, but we can also derive via P1 + other axioms
-  apply Derivable.axiom
+  apply DerivationTree.axiom
   exact Axiom.modal_t φ
 
 /-- Test: P3 is derivable from MF axiom (□φ → □Fφ, and always = future) -/

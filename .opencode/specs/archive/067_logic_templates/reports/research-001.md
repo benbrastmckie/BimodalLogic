@@ -111,7 +111,7 @@ def swap_temporal : Formula → Formula
 
 ### 1.3 Template Structure Recommendation
 
-**File**: `context/logic/templates/modal-operator-definition.md`
+**File**: `.opencode/context/logic/templates/modal-operator-definition.md`
 
 **Sections**:
 1. **Overview** - Purpose and scope
@@ -193,7 +193,7 @@ def trivial_frame {T : Type*} [LinearOrderedAddCommGroup T] :
 
 ### 2.3 Template Structure Recommendation
 
-**File**: `context/logic/templates/kripke-model-structure.md`
+**File**: `.opencode/context/logic/templates/kripke-model-structure.md`
 
 **Sections**:
 1. **Overview** - Kripke semantics for modal/temporal logic
@@ -309,7 +309,7 @@ theorem modal_future_valid (φ : Formula) :
 
 ### 3.3 Template Structure Recommendation
 
-**File**: `context/logic/templates/soundness-proof-pattern.md`
+**File**: `.opencode/context/logic/templates/soundness-proof-pattern.md`
 
 **Sections**:
 1. **Overview** - Soundness theorem statement and significance
@@ -433,7 +433,7 @@ canonical_val Γ p ↔ (Formula.atom p) ∈ Γ.val
 
 ### 4.4 Template Structure Recommendation
 
-**File**: `context/logic/templates/completeness-proof-pattern.md`
+**File**: `.opencode/context/logic/templates/completeness-proof-pattern.md`
 
 **Sections**:
 1. **Overview** - Completeness theorem and canonical model approach
@@ -595,7 +595,7 @@ This implementation generalizes the time group `G` to any type `T` with a
 
 ### 6.1 Template 1: Modal Operator Definition
 
-**File**: `context/logic/templates/modal-operator-definition.md`
+**File**: `.opencode/context/logic/templates/modal-operator-definition.md`
 
 **Structure**:
 ```markdown
@@ -643,7 +643,7 @@ Guide for defining modal/temporal operators in LEAN 4
 
 ### 6.2 Template 2: Kripke Model Structure
 
-**File**: `context/logic/templates/kripke-model-structure.md`
+**File**: `.opencode/context/logic/templates/kripke-model-structure.md`
 
 **Structure**:
 ```markdown
@@ -697,7 +697,7 @@ Guide for defining Kripke frames and models in LEAN 4
 
 ### 6.3 Template 3: Soundness Proof Pattern
 
-**File**: `context/logic/templates/soundness-proof-pattern.md`
+**File**: `.opencode/context/logic/templates/soundness-proof-pattern.md`
 
 **Structure**:
 ```markdown
@@ -753,7 +753,7 @@ Guide for proving soundness of modal/temporal logics
 
 ### 6.4 Template 4: Completeness Proof Pattern
 
-**File**: `context/logic/templates/completeness-proof-pattern.md`
+**File**: `.opencode/context/logic/templates/completeness-proof-pattern.md`
 
 **Structure**:
 ```markdown
@@ -859,31 +859,31 @@ context/logic/templates/
    - Canonical model construction uses frame patterns from Template 2
 
 4. **All Templates → Existing Context**:
-   - Reference `context/lean4/templates/definition-template.md`
-   - Reference `context/lean4/templates/proof-structure-templates.md`
-   - Reference `context/lean4/standards/documentation-standards.md`
-   - Reference `context/logic/processes/modal-proof-strategies.md`
+   - Reference `.opencode/context/lean4/templates/definition-template.md`
+   - Reference `.opencode/context/lean4/templates/proof-structure-templates.md`
+   - Reference `.opencode/context/lean4/standards/documentation-standards.md`
+   - Reference `.opencode/context/logic/processes/modal-proof-strategies.md`
 
 ### 7.3 Integration with Existing Context Files
 
 **Existing files to reference**:
 
-1. **`context/lean4/templates/definition-template.md`**:
+1. **`.opencode/context/lean4/templates/definition-template.md`**:
    - Basic LEAN 4 definition structure
    - Docstring format
    - Type annotations
 
-2. **`context/lean4/templates/proof-structure-templates.md`**:
+2. **`.opencode/context/lean4/templates/proof-structure-templates.md`**:
    - Induction pattern
    - Case analysis pattern
    - Rewrite pattern
 
-3. **`context/lean4/standards/documentation-standards.md`**:
+3. **`.opencode/context/lean4/standards/documentation-standards.md`**:
    - Quality criteria
    - Validation rules
    - Examples
 
-4. **`context/logic/processes/modal-proof-strategies.md`**:
+4. **`.opencode/context/logic/processes/modal-proof-strategies.md`**:
    - Modal proof strategies (6 strategies)
    - Necessity chains
    - Possibility proofs
@@ -1092,15 +1092,15 @@ This research has identified highly consistent patterns across the Logos TM Proo
 ### Existing Context Files Referenced
 
 1. **Templates**:
-   - `context/lean4/templates/definition-template.md` (26 lines)
-   - `context/lean4/templates/proof-structure-templates.md` (41 lines)
-   - `context/lean4/templates/new-file-template.md` (38 lines)
+   - `.opencode/context/lean4/templates/definition-template.md` (26 lines)
+   - `.opencode/context/lean4/templates/proof-structure-templates.md` (41 lines)
+   - `.opencode/context/lean4/templates/new-file-template.md` (38 lines)
 
 2. **Standards**:
-   - `context/lean4/standards/documentation-standards.md` (49 lines)
+   - `.opencode/context/lean4/standards/documentation-standards.md` (49 lines)
 
 3. **Processes**:
-   - `context/logic/processes/modal-proof-strategies.md` (414 lines)
+   - `.opencode/context/logic/processes/modal-proof-strategies.md` (414 lines)
 
 ### External References
 

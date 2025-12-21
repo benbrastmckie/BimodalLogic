@@ -1,0 +1,158 @@
+{
+  "project_number": 81,
+  "project_name": "context_reorganization",
+  "type": "maintenance",
+  "status": "planned",
+  "created": "2025-12-20T00:00:00Z",
+  "last_updated": "2025-12-20T00:00:00Z",
+  
+  "artifacts": {
+    "plans": [
+      {
+        "version": 1,
+        "file": "plans/implementation-001.md",
+        "created": "2025-12-20T00:00:00Z",
+        "status": "active"
+      }
+    ],
+    "summaries": [
+      {
+        "type": "plan",
+        "file": "summaries/plan-summary.md",
+        "created": "2025-12-20T00:00:00Z"
+      }
+    ],
+    "reports": [],
+    "analysis": []
+  },
+  
+  "complexity": {
+    "level": "MODERATE",
+    "estimated_effort_hours": 3.5,
+    "breakdown": {
+      "file_moves": 0.5,
+      "integration": 1.5,
+      "reference_updates": 1.0,
+      "validation": 0.5
+    }
+  },
+  
+  "scope": {
+    "files_to_move": 6,
+    "files_to_update": 14,
+    "total_references": 40,
+    "directories_to_remove": 5,
+    "cross_domain_moves": 1
+  },
+  
+  "dependencies": {
+    "critical": [
+      "logic/README.md duplicate entries",
+      "Command file path inconsistencies",
+      "Cross-domain dependent-types.md move"
+    ],
+    "files_to_update": [
+      ".opencode/context/logic/README.md",
+      ".opencode/context/README.md",
+      ".opencode/README.md",
+      ".opencode/ARCHITECTURE.md",
+      ".opencode/command/lean.md",
+      ".opencode/command/todo.md",
+      ".opencode/command/add.md",
+      ".opencode/command/task.md",
+      ".opencode/context/repo/documentation-standards.md",
+      ".opencode/specs/066_opencode_readme_documentation/plans/implementation-001.md",
+      ".opencode/specs/066_opencode_readme_documentation/reports/research-001.md",
+      ".opencode/specs/080_documentation_review/analysis/inventory.md",
+      ".opencode/specs/README.md"
+    ]
+  },
+  
+  "risk_assessment": {
+    "level": "MEDIUM",
+    "factors": [
+      "Agent context loading may break if paths not updated",
+      "Semantic confusion between Kripke and task semantics",
+      "Path inconsistencies in command files",
+      "Cross-domain file moves"
+    ],
+    "mitigation": [
+      "Systematic reference updates with verification",
+      "Clear naming (kripke-semantics-overview.md)",
+      "Path standardization in command files",
+      "Comprehensive testing after each phase"
+    ]
+  },
+  
+  "integration_strategy": {
+    "logic_metalogic": "REPLACE",
+    "logic_proof_theory": "REPLACE",
+    "logic_semantics": "KEEP_BOTH",
+    "type_theory": "MOVE",
+    "project_context": "MOVE",
+    "rationale": "Replace brief overviews with comprehensive versions. Keep both Kripke and task semantics (different frameworks). Move type theory to lean4/domain (LEAN 4 content). Move project files to core/system (core concerns)."
+  },
+  
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Preparation and Backup",
+      "duration_minutes": 15,
+      "status": "pending"
+    },
+    {
+      "phase": 2,
+      "name": "Logic Domain Integration",
+      "duration_minutes": 45,
+      "status": "pending"
+    },
+    {
+      "phase": 3,
+      "name": "Type Theory Migration",
+      "duration_minutes": 15,
+      "status": "pending"
+    },
+    {
+      "phase": 4,
+      "name": "Project Context Integration",
+      "duration_minutes": 20,
+      "status": "pending"
+    },
+    {
+      "phase": 5,
+      "name": "Reference Updates",
+      "duration_minutes": 60,
+      "status": "pending"
+    },
+    {
+      "phase": 6,
+      "name": "Cleanup Empty Directories",
+      "duration_minutes": 10,
+      "status": "pending"
+    },
+    {
+      "phase": 7,
+      "name": "Validation and Testing",
+      "duration_minutes": 30,
+      "status": "pending"
+    }
+  ],
+  
+  "success_criteria": [
+    "All logic domain files consolidated in logic/domain/",
+    "Type theory file in lean4/domain/",
+    "Project context files in core/system/",
+    "All 40 references updated correctly",
+    "No broken links or path errors",
+    "Agent context loading works correctly",
+    "No information lost, clear organization"
+  ],
+  
+  "notes": [
+    "Complexity analysis by complexity-analyzer specialist",
+    "Dependency mapping by dependency-mapper specialist",
+    "Integration strategy: REPLACE brief with detailed for metalogic/proof-theory",
+    "Integration strategy: KEEP_BOTH for semantics (Kripke vs task)",
+    "Path standardization: Fix /home/benjamin/Documents/Philosophy/Projects/ → /home/benjamin/Projects/"
+  ]
+}

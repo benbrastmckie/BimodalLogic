@@ -1,0 +1,1410 @@
+{
+  "type_pattern": "Except _ _",
+  "matches_count": 583,
+  "matches_retrieved": 200,
+  "note": "API returns max 200 results. Total matches: 583",
+  "report_path": ".opencode/specs/loogle-search-project/specialist-reports/loogle-except-type.md",
+  "all_matches": [
+    {
+      "name": "Except.error",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type v} : \u03b5 \u2192 Except \u03b5 \u03b1",
+      "library": "Init",
+      "module": "Init.Prelude",
+      "description": "A failure value of type `\u03b5` "
+    },
+    {
+      "name": "Except.ok",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type v} : \u03b1 \u2192 Except \u03b5 \u03b1",
+      "library": "Init",
+      "module": "Init.Prelude",
+      "description": "A success value of type `\u03b1` "
+    },
+    {
+      "name": "instInhabitedExcept",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type v} [Inhabited \u03b5] : Inhabited (Except \u03b5 \u03b1)",
+      "library": "Init",
+      "module": "Init.Prelude",
+      "description": null
+    },
+    {
+      "name": "Except.ctorElimType",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type v} {motive : Except \u03b5 \u03b1 \u2192 Sort u_1} (ctorIdx : \u2115) : Sort (max 1 (imax (u + 1) u_1) (imax (v + 1) u_1))",
+      "library": "Init",
+      "module": "Init.Prelude",
+      "description": null
+    },
+    {
+      "name": "MonadExcept.ofExcept",
+      "type_signature": " {m : Type u_1 \u2192 Type u_2} {\u03b5 : Type u_3} {\u03b1 : Type u_1} [Monad m] [MonadExcept \u03b5 m] : Except \u03b5 \u03b1 \u2192 m \u03b1",
+      "library": "Init",
+      "module": "Init.Prelude",
+      "description": "Re-interprets an `Except \u03b5` action in an exception monad `m`, succeeding if it succeeds and throwing\nan exception if it throws an exception.\n"
+    },
+    {
+      "name": "Except.error.sizeOf_spec",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type v} [SizeOf \u03b5] [SizeOf \u03b1] (a\u271d : \u03b5) : sizeOf (Except.error a\u271d) = 1 + sizeOf a\u271d",
+      "library": "Init",
+      "module": "Init.SizeOf",
+      "description": null
+    },
+    {
+      "name": "Except.ok.sizeOf_spec",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type v} [SizeOf \u03b5] [SizeOf \u03b1] (a\u271d : \u03b1) : sizeOf (Except.ok a\u271d) = 1 + sizeOf a\u271d",
+      "library": "Init",
+      "module": "Init.SizeOf",
+      "description": null
+    },
+    {
+      "name": "Except.error.injEq",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type v} (a\u271d a\u271d\u00b9 : \u03b5) : (Except.error a\u271d = Except.error a\u271d\u00b9) = (a\u271d = a\u271d\u00b9)",
+      "library": "Init",
+      "module": "Init.Core",
+      "description": null
+    },
+    {
+      "name": "Except.ok.injEq",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type v} (a\u271d a\u271d\u00b9 : \u03b1) : (Except.ok a\u271d = Except.ok a\u271d\u00b9) = (a\u271d = a\u271d\u00b9)",
+      "library": "Init",
+      "module": "Init.Core",
+      "description": null
+    },
+    {
+      "name": "Except.isOk",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} : Except \u03b5 \u03b1 \u2192 Bool",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": "Returns `true` if the value is `Except.ok`, `false` otherwise. "
+    },
+    {
+      "name": "Except.pure",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} (a : \u03b1) : Except \u03b5 \u03b1",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": "A successful computation in the `Except \u03b5` monad: `a` is returned, and no exception is thrown.\n"
+    },
+    {
+      "name": "Except.toBool",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} : Except \u03b5 \u03b1 \u2192 Bool",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": "Returns `true` if the value is `Except.ok`, `false` otherwise. "
+    },
+    {
+      "name": "Except.toOption",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} : Except \u03b5 \u03b1 \u2192 Option \u03b1",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": "Returns `none` if an exception was thrown, or `some` around the value on success.\n\nExamples:\n* `(pure 10 : Except String Nat).toOption = some 10`\n* `(throw \"Failure\" : Except String Nat).toOption = none`\n"
+    },
+    {
+      "name": "Except.map",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} {\u03b2 : Type u_2} (f : \u03b1 \u2192 \u03b2) : Except \u03b5 \u03b1 \u2192 Except \u03b5 \u03b2",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": "Transforms a successful result with a function, doing nothing when an exception is thrown.\n\nExamples:\n* `(pure 2 : Except String Nat).map toString = pure 2`\n* `(throw \"Error\" : Except String Nat).map toString = throw \"Error\"`\n"
+    },
+    {
+      "name": "Except.mapError",
+      "type_signature": " {\u03b5 : Type u} {\u03b5' : Type u_1} {\u03b1 : Type u_2} (f : \u03b5 \u2192 \u03b5') : Except \u03b5 \u03b1 \u2192 Except \u03b5' \u03b1",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": "Transforms exceptions with a function, doing nothing on successful results.\n\nExamples:\n* `(pure 2 : Except String Nat).mapError (\u00b7.length) = pure 2`\n* `(throw \"Error\" : Except String Nat).mapError (\u00b7.length) = throw 5`\n"
+    },
+    {
+      "name": "Except.orElseLazy",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} (x : Except \u03b5 \u03b1) (y : Unit \u2192 Except \u03b5 \u03b1) : Except \u03b5 \u03b1",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": "Recovers from exceptions thrown in the `Except \u03b5` monad. Typically used via the `<|>` operator.\n\n`Except.tryCatch` is a related operator that allows the recovery procedure to depend on _which_\nexception was thrown.\n"
+    },
+    {
+      "name": "Except.tryCatch",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} (ma : Except \u03b5 \u03b1) (handle : \u03b5 \u2192 Except \u03b5 \u03b1) : Except \u03b5 \u03b1",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": "Handles exceptions thrown in the `Except \u03b5` monad.\n\nIf `ma` is successful, its result is returned. If it throws an exception, then `handle` is invoked\non the exception's value.\n\nExamples:\n * `(pure 2 : Except String Nat).tryCatch (pure \u00b7.length) = pure 2`\n * `(throw \"Error\" : Except String Nat).tryCatch (pure \u00b7.length) = pure 5`\n * `(throw \"Error\" : Except String Nat).tryCatch (fun x => throw (\"E: \" ++ x)) = throw \"E: Error\"`\n"
+    },
+    {
+      "name": "ExceptT.mk",
+      "type_signature": " {\u03b5 : Type u} {m : Type u \u2192 Type v} {\u03b1 : Type u} (x : m (Except \u03b5 \u03b1)) : ExceptT \u03b5 m \u03b1",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": "Use a monadic action that may return an exception's value as an action in the transformed monad that\nmay throw the corresponding exception.\n\nThis is the inverse of `ExceptT.run`.\n"
+    },
+    {
+      "name": "ExceptT.run",
+      "type_signature": " {\u03b5 : Type u} {m : Type u \u2192 Type v} {\u03b1 : Type u} (x : ExceptT \u03b5 m \u03b1) : m (Except \u03b5 \u03b1)",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": "Use a monadic action that may throw an exception as an action that may return an exception's value.\n\nThis is the inverse of `ExceptT.mk`.\n"
+    },
+    {
+      "name": "Except.bind",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} {\u03b2 : Type u_2} (ma : Except \u03b5 \u03b1) (f : \u03b1 \u2192 Except \u03b5 \u03b2) : Except \u03b5 \u03b2",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": "Sequences two operations that may throw exceptions, allowing the second to depend on the value\nreturned by the first.\n\nIf the first operation throws an exception, then it is the result of the computation. If the first\nsucceeds but the second throws an exception, then that exception is the result. If both succeed,\nthen the result is the result of the second computation.\n\nThis is the implementation of the `>>=` operator for `Except \u03b5`.\n"
+    },
+    {
+      "name": "liftExcept",
+      "type_signature": " {\u03b5 : Type u_1} {m : Type u_2 \u2192 Type u_3} {\u03b1 : Type u_2} [MonadExceptOf \u03b5 m] [Pure m] : Except \u03b5 \u03b1 \u2192 m \u03b1",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": null
+    },
+    {
+      "name": "observing",
+      "type_signature": " {\u03b5 \u03b1 : Type u} {m : Type u \u2192 Type v} [Monad m] [MonadExcept \u03b5 m] (x : m \u03b1) : m (Except \u03b5 \u03b1)",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": null
+    },
+    {
+      "name": "Except.map_id",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} : Except.map id = id",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": null
+    },
+    {
+      "name": "ExceptT.bindCont",
+      "type_signature": " {\u03b5 : Type u} {m : Type u \u2192 Type v} [Monad m] {\u03b1 \u03b2 : Type u} (f : \u03b1 \u2192 ExceptT \u03b5 m \u03b2) : Except \u03b5 \u03b1 \u2192 m (Except \u03b5 \u03b2)",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": "Handles exceptions thrown by an action that can have no effects _other_ than throwing exceptions.\n"
+    },
+    {
+      "name": "Except.map.eq_1",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} {\u03b2 : Type u_2} (f : \u03b1 \u2192 \u03b2) (err : \u03b5) : Except.map f (Except.error err) = Except.error err",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": null
+    },
+    {
+      "name": "Except.map.eq_2",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} {\u03b2 : Type u_2} (f : \u03b1 \u2192 \u03b2) (v : \u03b1) : Except.map f (Except.ok v) = Except.ok (f v)",
+      "library": "Init",
+      "module": "Init.Control.Except",
+      "description": null
+    },
+    {
+      "name": "instReprExcept",
+      "type_signature": " {\u03b5 : Type u_1} {\u03b1 : Type u_2} [Repr \u03b5] [Repr \u03b1] : Repr (Except \u03b5 \u03b1)",
+      "library": "Init",
+      "module": "Init.Data.ToString.Basic",
+      "description": null
+    },
+    {
+      "name": "instToStringExcept",
+      "type_signature": " {\u03b5 : Type u_1} {\u03b1 : Type u_2} [ToString \u03b5] [ToString \u03b1] : ToString (Except \u03b5 \u03b1)",
+      "library": "Init",
+      "module": "Init.Data.ToString.Basic",
+      "description": null
+    },
+    {
+      "name": "runEST",
+      "type_signature": " {\u03b5 \u03b1 : Type} (x : (\u03c3 : Type) \u2192 EST \u03b5 \u03c3 \u03b1) : Except \u03b5 \u03b1",
+      "library": "Init",
+      "module": "Init.System.ST",
+      "description": "Runs an `EST` computation, in which mutable state and exceptions are the only side effects.\n"
+    },
+    {
+      "name": "ExceptT.mk.eq_1",
+      "type_signature": " {\u03b5 : Type u} {m : Type u \u2192 Type v} {\u03b1 : Type u} (x : m (Except \u03b5 \u03b1)) : ExceptT.mk x = x",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.run.eq_1",
+      "type_signature": " {\u03b5 : Type u} {m : Type u \u2192 Type v} {\u03b1 : Type u} (x : ExceptT \u03b5 m \u03b1) : x.run = x",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.run_mk",
+      "type_signature": " {m : Type (max u_1 u_2) \u2192 Type u_3} {\u03b5 \u03b1 : Type (max u_1 u_2)} (x : m (Except \u03b5 \u03b1)) : (ExceptT.mk x).run = x",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.bindCont.eq_1",
+      "type_signature": " {\u03b5 : Type u} {m : Type u \u2192 Type v} [Monad m] {\u03b1 \u03b2 : Type u} (f : \u03b1 \u2192 ExceptT \u03b5 m \u03b2) (a : \u03b1) : ExceptT.bindCont f (Except.ok a) = f a",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.ext",
+      "type_signature": " {\u03b5 : Type u_1} {m : Type u_1 \u2192 Type u_2} {\u03b1 : Type u_1} {x y : ExceptT \u03b5 m \u03b1} (h : x.run = y.run) : x = y",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.ext_iff",
+      "type_signature": " {\u03b5 : Type u_1} {m : Type u_1 \u2192 Type u_2} {\u03b1 : Type u_1} {x y : ExceptT \u03b5 m \u03b1} : x = y \u2194 x.run = y.run",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.pure.eq_1",
+      "type_signature": " {\u03b5 : Type u} {m : Type u \u2192 Type v} [Monad m] {\u03b1 : Type u} (a : \u03b1) : ExceptT.pure a = ExceptT.mk (pure (Except.ok a))",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.run_lift",
+      "type_signature": " {m : Type u \u2192 Type v} {\u03b1 \u03b5 : Type u} [Monad m] (x : m \u03b1) : (ExceptT.lift x).run = Except.ok <$> x",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.lift.eq_1",
+      "type_signature": " {\u03b5 : Type u} {m : Type u \u2192 Type v} [Monad m] {\u03b1 : Type u} (t : m \u03b1) : ExceptT.lift t = ExceptT.mk (Except.ok <$> t)",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.bindCont.eq_2",
+      "type_signature": " {\u03b5 : Type u} {m : Type u \u2192 Type v} [Monad m] {\u03b1 \u03b2 : Type u} (f : \u03b1 \u2192 ExceptT \u03b5 m \u03b2) (e : \u03b5) : ExceptT.bindCont f (Except.error e) = pure (Except.error e)",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.run_throw",
+      "type_signature": " {m : Type u_1 \u2192 Type u_2} {\u03b5 \u03b2 : Type u_1} {e : \u03b5} [Monad m] : (throw e).run = pure (Except.error e)",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.run_pure",
+      "type_signature": " {m : Type u_1 \u2192 Type u_2} {\u03b1 \u03b5 : Type u_1} [Monad m] (x : \u03b1) : (pure x).run = pure (Except.ok x)",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.bind.eq_1",
+      "type_signature": " {\u03b5 : Type u} {m : Type u \u2192 Type v} [Monad m] {\u03b1 \u03b2 : Type u} (ma : ExceptT \u03b5 m \u03b1) (f : \u03b1 \u2192 ExceptT \u03b5 m \u03b2) : ma.bind f = ExceptT.mk (ma >>= ExceptT.bindCont f)",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.run_monadMap",
+      "type_signature": " {n : Type u \u2192 Type u_1} {m : Type u \u2192 Type u_2} {\u03b5 \u03b1 : Type u} [MonadFunctorT n m] (f : {\u03b2 : Type u} \u2192 n \u03b2 \u2192 n \u03b2) (x : ExceptT \u03b5 m \u03b1) : (monadMap f x).run = monadMap f x.run",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.run_bind_lift",
+      "type_signature": " {m : Type u_1 \u2192 Type u_2} {\u03b1 \u03b5 \u03b2 : Type u_1} [Monad m] [LawfulMonad m] (x : m \u03b1) (f : \u03b1 \u2192 ExceptT \u03b5 m \u03b2) :\n  (ExceptT.lift x >>= f).run = do\n    let a \u2190 x\n    (f a).run",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.run_map",
+      "type_signature": " {m : Type u_1 \u2192 Type u_2} {\u03b1 \u03b2 \u03b5 : Type u_1} [Monad m] [LawfulMonad m] (f : \u03b1 \u2192 \u03b2) (x : ExceptT \u03b5 m \u03b1) : (f <$> x).run = Except.map f <$> x.run",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.map.eq_1",
+      "type_signature": " {\u03b5 : Type u} {m : Type u \u2192 Type v} [Monad m] {\u03b1 \u03b2 : Type u} (f : \u03b1 \u2192 \u03b2) (x : ExceptT \u03b5 m \u03b1) :\n  ExceptT.map f x =\n    ExceptT.mk do\n      let a \u2190 x\n      match a with\n        | Except.ok a => pure (Except.ok (f a))\n        | Except.error e => pure (Except.error e)",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.run_bind",
+      "type_signature": " {m : Type u_1 \u2192 Type u_2} {\u03b5 \u03b1 \u03b2 : Type u_1} [Monad m] (x : ExceptT \u03b5 m \u03b1) (f : \u03b1 \u2192 ExceptT \u03b5 m \u03b2) :\n  (x >>= f).run = do\n    let x \u2190 x.run\n    match x with\n      | Except.ok x => (f x).run\n      | Except.error e => pure (Except.error e)",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.run_restoreM",
+      "type_signature": " {m : Type u_1 \u2192 Type u_2} {\u03b5 \u03b1 : Type u_1} [Monad m] (x : stM m (ExceptT \u03b5 m) \u03b1) : (restoreM x).run = pure x",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.run_liftWith",
+      "type_signature": " {m : Type u \u2192 Type u_1} {\u03b5 \u03b1 : Type u} [Monad m] (f : ({\u03b2 : Type u} \u2192 ExceptT \u03b5 m \u03b2 \u2192 m (stM m (ExceptT \u03b5 m) \u03b2)) \u2192 m \u03b1) : (liftWith f).run = Except.ok <$> f fun {\u03b2} x => x.run",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.run_control",
+      "type_signature": " {m : Type u \u2192 Type u_1} {\u03b5 \u03b1 : Type u} [Monad m] [LawfulMonad m] (f : ({\u03b2 : Type u} \u2192 ExceptT \u03b5 m \u03b2 \u2192 m (stM m (ExceptT \u03b5 m) \u03b2)) \u2192 m (stM m (ExceptT \u03b5 m) \u03b1)) : (control f).run = f fun {\u03b2} x => x.run",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptT.run_controlAt",
+      "type_signature": " {m : Type u \u2192 Type u_1} {\u03b5 \u03b1 : Type u} [Monad m] [LawfulMonad m] (f : ({\u03b2 : Type u} \u2192 ExceptT \u03b5 m \u03b2 \u2192 m (stM m (ExceptT \u03b5 m) \u03b2)) \u2192 m (stM m (ExceptT \u03b5 m) \u03b1)) : (controlAt m f).run = f fun {\u03b2} x => x.run",
+      "library": "Init",
+      "module": "Init.Control.Lawful.Instances",
+      "description": null
+    },
+    {
+      "name": "ExceptCpsT.run",
+      "type_signature": " {m : Type u \u2192 Type u_1} {\u03b5 \u03b1 : Type u} [Monad m] (x : ExceptCpsT \u03b5 m \u03b1) : m (Except \u03b5 \u03b1)",
+      "library": "Init",
+      "module": "Init.Control.ExceptCps",
+      "description": "Use a monadic action that may throw an exception as an action that may return an exception's value.\n"
+    },
+    {
+      "name": "ExceptCpsT.run_throw",
+      "type_signature": " {m : Type u_1 \u2192 Type u_2} {\u03b5 \u03b2 : Type u_1} {e : \u03b5} [Monad m] : (throw e).run = pure (Except.error e)",
+      "library": "Init",
+      "module": "Init.Control.ExceptCps",
+      "description": null
+    },
+    {
+      "name": "ExceptCpsT.run_pure",
+      "type_signature": " {m : Type u_1 \u2192 Type u_2} {\u03b5 \u03b1 : Type u_1} {x : \u03b1} [Monad m] : (pure x).run = pure (Except.ok x)",
+      "library": "Init",
+      "module": "Init.Control.ExceptCps",
+      "description": null
+    },
+    {
+      "name": "ExceptCpsT.run_lift",
+      "type_signature": " {m : Type u \u2192 Type u_1} {\u03b1 \u03b5 : Type u} [Monad m] (x : m \u03b1) :\n  (ExceptCpsT.lift x).run = do\n    let a \u2190 x\n    pure (Except.ok a)",
+      "library": "Init",
+      "module": "Init.Control.ExceptCps",
+      "description": null
+    },
+    {
+      "name": "ExceptCpsT.run_bind_lift",
+      "type_signature": " {m : Type u_1 \u2192 Type u_2} {\u03b1 \u03b5 \u03b2 : Type u_1} [Monad m] (x : m \u03b1) (f : \u03b1 \u2192 ExceptCpsT \u03b5 m \u03b2) :\n  (ExceptCpsT.lift x >>= f).run = do\n    let a \u2190 x\n    (f a).run",
+      "library": "Init",
+      "module": "Init.Control.ExceptCps",
+      "description": null
+    },
+    {
+      "name": "ExceptCpsT.run_bind_throw",
+      "type_signature": " {m : Type u_1 \u2192 Type u_2} {\u03b5 \u03b1 \u03b2 : Type u_1} [Monad m] (e : \u03b5) (f : \u03b1 \u2192 ExceptCpsT \u03b5 m \u03b2) : (throw e >>= f).run = (throw e).run",
+      "library": "Init",
+      "module": "Init.Control.ExceptCps",
+      "description": null
+    },
+    {
+      "name": "Except.pure.eq_1",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} (a : \u03b1) : Except.pure a = Except.ok a",
+      "library": "Init",
+      "module": "Init.Control.Lawful.MonadLift.Instances",
+      "description": null
+    },
+    {
+      "name": "Except.bind.eq_2",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} {\u03b2 : Type u_2} (f : \u03b1 \u2192 Except \u03b5 \u03b2) (v : \u03b1) : (Except.ok v).bind f = f v",
+      "library": "Init",
+      "module": "Init.Control.Lawful.MonadLift.Instances",
+      "description": null
+    },
+    {
+      "name": "Except.bind.eq_1",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} {\u03b2 : Type u_2} (f : \u03b1 \u2192 Except \u03b5 \u03b2) (err : \u03b5) : (Except.error err).bind f = Except.error err",
+      "library": "Init",
+      "module": "Init.Control.Lawful.MonadLift.Instances",
+      "description": null
+    },
+    {
+      "name": "Except.instMonad.eq_1",
+      "type_signature": " {\u03b5 : Type u} : Except.instMonad = { map := fun {\u03b1 \u03b2} => Except.map, pure := fun {\u03b1} => Except.pure, seq := fun {\u03b1 \u03b2} f x => (fun {\u03b1 \u03b2} => Except.bind) f fun y => (fun {\u03b1 \u03b2} => Except.map) y (x ()), seqLeft := fun {\u03b1 \u03b2} x y => (fun {\u03b1 \u03b2} => Except.bind) x fun a => (fun {\u03b1 \u03b2} => Except.bind) (y ()) fun x => (fun {\u03b1} => Except.pure) a, seqRight := fun {\u03b1 \u03b2} x y => (fun {\u03b1 \u03b2} => Except.bind) x fun x => y (), bind := fun {\u03b1 \u03b2} => Except.bind }",
+      "library": "Init",
+      "module": "Init.Control.Lawful.MonadLift.Instances",
+      "description": null
+    },
+    {
+      "name": "unsafeIO",
+      "type_signature": " {\u03b1 : Type} (fn : IO \u03b1) : Except IO.Error \u03b1",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "A monad that can have side effects on the external world or throw exceptions of type `\u03b5`.\n\n`BaseIO` is a version of this monad that cannot throw exceptions. `IO` sets the exception type to\n`IO.Error`.\n"
+    },
+    {
+      "name": "unsafeEIO",
+      "type_signature": " {\u03b5 \u03b1 : Type} (fn : EIO \u03b5 \u03b1) : Except \u03b5 \u03b1",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "Executes arbitrary side effects in a pure context, with exceptions indicated via `Except`. This a\n**dangerous** operation that can easily undermine important assumptions about the meaning of Lean\nprograms, and it should only be used with great care and a thorough understanding of compiler\ninternals, and even then only to implement observationally pure operations.\n\nThis function is not a good way to convert an `EIO \u03b1` or `IO \u03b1` into an `\u03b1`. Instead, use\n[`do`-notation](https://lean-lang.org/doc/reference/4.27.0-rc1/find/?domain=Verso.Genre.Manual.section&name=do-notation).\n\nBecause the resulting value is treated as a side-effect-free term, the compiler may re-order,\nduplicate, or delete calls to this function. The side effect may even be hoisted into a constant,\ncausing the side effect to occur at initialization time, even if it would otherwise never be called.\n"
+    },
+    {
+      "name": "EIO.ofExcept",
+      "type_signature": " {\u03b5 \u03b1 : Type} (e : Except \u03b5 \u03b1) : EIO \u03b5 \u03b1",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "Converts an `Except \u03b5` action into an `EIO \u03b5` action.\n\nIf the `Except \u03b5` action throws an exception, then the resulting `EIO \u03b5` action throws the same\nexception. Otherwise, the value is returned.\n"
+    },
+    {
+      "name": "EIO.toBaseIO",
+      "type_signature": " {\u03b5 \u03b1 : Type} (act : EIO \u03b5 \u03b1) : BaseIO (Except \u03b5 \u03b1)",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "Converts an `EIO \u03b5` action that might throw an exception of type `\u03b5` into an exception-free `BaseIO`\naction that returns an `Except` value.\n"
+    },
+    {
+      "name": "EIO.toIO'",
+      "type_signature": " {\u03b5 \u03b1 : Type} (act : EIO \u03b5 \u03b1) : IO (Except \u03b5 \u03b1)",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "Converts an `EIO \u03b5` action that might throw an exception of type `\u03b5` into an exception-free `IO`\naction that returns an `Except` value.\n"
+    },
+    {
+      "name": "IO.ofExcept",
+      "type_signature": " {\u03b5 : Type u_1} {\u03b1 : Type} [ToString \u03b5] (e : Except \u03b5 \u03b1) : IO \u03b1",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "Converts an `Except \u03b5` action into an `IO` action.\n\nIf the `Except \u03b5` action throws an exception, then the exception type's `ToString` instance is used\nto convert it into an `IO.Error`, which is thrown. Otherwise, the value is returned.\n"
+    },
+    {
+      "name": "IO.asTask",
+      "type_signature": " {\u03b1 : Type} (act : IO \u03b1) (prio : Task.Priority := Task.Priority.default) : BaseIO (Task (Except IO.Error \u03b1))",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "Runs `act` in a separate `Task`, with priority `prio`. Because `IO` actions may throw an exception\nof type `IO.Error`, the result of the task is an `Except IO.Error \u03b1`.\n\nRunning the resulting `BaseIO` action causes the task to be started eagerly. Pure accesses to the\n`Task` do not influence the impure `act`. Because `IO` actions may throw an exception of type\n`IO.Error`, the result of the task is an `Except IO.Error \u03b1`.\n\nUnlike pure tasks created by `Task.spawn`, tasks created by this function will run even if the last\nreference to the task is dropped. The `act` should explicitly check for cancellation via\n`IO.checkCanceled` if it should be terminated or otherwise react to the last reference being\ndropped.\n"
+    },
+    {
+      "name": "EIO.asTask",
+      "type_signature": " {\u03b5 \u03b1 : Type} (act : EIO \u03b5 \u03b1) (prio : Task.Priority := Task.Priority.default) : BaseIO (Task (Except \u03b5 \u03b1))",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "Runs `act` in a separate `Task`, with priority `prio`. Because `EIO \u03b5` actions may throw an exception\nof type `\u03b5`, the result of the task is an `Except \u03b5 \u03b1`.\n\nRunning the resulting `IO` action causes the task to be started eagerly. Pure accesses to the `Task`\ndo not influence the impure `act`.\n\nUnlike pure tasks created by `Task.spawn`, tasks created by this function will run even if the last\nreference to the task is dropped. The `act` should explicitly check for cancellation via\n`IO.checkCanceled` if it should be terminated or otherwise react to the last reference being\ndropped.\n"
+    },
+    {
+      "name": "IO.mapTask",
+      "type_signature": " {\u03b1 : Type u_1} {\u03b2 : Type} (f : \u03b1 \u2192 IO \u03b2) (t : Task \u03b1) (prio : Task.Priority := Task.Priority.default) (sync : Bool := false) : BaseIO (Task (Except IO.Error \u03b2))",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "Creates a new task that waits for `t` to complete and then runs the `IO` action `f` on its result.\nThis new task has priority `prio`.\n\nRunning the resulting `BaseIO` action causes the task to be started eagerly. Unlike pure tasks\ncreated by `Task.spawn`, tasks created by this function will run even if the last reference to the\ntask is dropped. The `act` should explicitly check for cancellation via `IO.checkCanceled` if it\nshould be terminated or otherwise react to the last reference being dropped. Because `IO` actions\nmay throw an exception of type `IO.Error`, the result of the task is an `Except IO.Error \u03b1`.\n"
+    },
+    {
+      "name": "EIO.mapTask",
+      "type_signature": " {\u03b1 : Type u_1} {\u03b5 \u03b2 : Type} (f : \u03b1 \u2192 EIO \u03b5 \u03b2) (t : Task \u03b1) (prio : Task.Priority := Task.Priority.default) (sync : Bool := false) : BaseIO (Task (Except \u03b5 \u03b2))",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "Creates a new task that waits for `t` to complete and then runs the `IO` action `f` on its result.\nThis new task has priority `prio`.\n\nRunning the resulting `BaseIO` action causes the task to be started eagerly. Unlike pure tasks\ncreated by `Task.spawn`, tasks created by this function will run even if the last reference to the\ntask is dropped. The `act` should explicitly check for cancellation via `IO.checkCanceled` if it\nshould be terminated or otherwise react to the last reference being dropped. Because `EIO \u03b5` actions\nmay throw an exception of type `\u03b5`, the result of the task is an `Except \u03b5 \u03b1`.\n"
+    },
+    {
+      "name": "IO.mapTasks",
+      "type_signature": " {\u03b1 : Type u_1} {\u03b2 : Type} (f : List \u03b1 \u2192 IO \u03b2) (tasks : List (Task \u03b1)) (prio : Task.Priority := Task.Priority.default) (sync : Bool := false) : BaseIO (Task (Except IO.Error \u03b2))",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "`IO` specialization of `EIO.mapTasks`. "
+    },
+    {
+      "name": "IO.bindTask",
+      "type_signature": " {\u03b1 : Type u_1} {\u03b2 : Type} (t : Task \u03b1) (f : \u03b1 \u2192 IO (Task (Except IO.Error \u03b2))) (prio : Task.Priority := Task.Priority.default) (sync : Bool := false) : BaseIO (Task (Except IO.Error \u03b2))",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "Creates a new task that waits for `t` to complete, runs the `IO` action `f` on its result, and then\ncontinues as the resulting task. This new task has priority `prio`.\n\nRunning the resulting `BaseIO` action causes this new task to be started eagerly. Unlike pure tasks\ncreated by `Task.spawn`, tasks created by this function will run even if the last reference to the\ntask is dropped. The `act` should explicitly check for cancellation via `IO.checkCanceled` if it\nshould be terminated or otherwise react to the last reference being dropped. Because `IO` actions\nmay throw an exception of type `IO.Error`, the result of the task is an `Except IO.Error \u03b1`.\n"
+    },
+    {
+      "name": "EIO.mapTasks",
+      "type_signature": " {\u03b1 : Type u_1} {\u03b5 \u03b2 : Type} (f : List \u03b1 \u2192 EIO \u03b5 \u03b2) (tasks : List (Task \u03b1)) (prio : Task.Priority := Task.Priority.default) (sync : Bool := false) : BaseIO (Task (Except \u03b5 \u03b2))",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "Creates a new task that waits for all the tasks in the list `tasks` to complete, and then runs the\n`EIO \u03b5` action `f` on their results. This new task has priority `prio`.\n\nRunning the resulting `BaseIO` action causes the task to be started eagerly. Unlike pure tasks\ncreated by `Task.spawn`, tasks created by this function will run even if the last reference to the\ntask is dropped. The `act` should explicitly check for cancellation via `IO.checkCanceled` if it\nshould be terminated or otherwise react to the last reference being dropped.\n"
+    },
+    {
+      "name": "EIO.bindTask",
+      "type_signature": " {\u03b1 : Type u_1} {\u03b5 \u03b2 : Type} (t : Task \u03b1) (f : \u03b1 \u2192 EIO \u03b5 (Task (Except \u03b5 \u03b2))) (prio : Task.Priority := Task.Priority.default) (sync : Bool := false) : BaseIO (Task (Except \u03b5 \u03b2))",
+      "library": "Init",
+      "module": "Init.System.IO",
+      "description": "Creates a new task that waits for `t` to complete, runs the `EIO \u03b5` action `f` on its result, and\nthen continues as the resulting task. This new task has priority `prio`.\n\nRunning the resulting `BaseIO` action causes this new task to be started eagerly. Unlike pure tasks\ncreated by `Task.spawn`, tasks created by this function will run even if the last reference to the\ntask is dropped. The `act` should explicitly check for cancellation via `IO.checkCanceled` if it\nshould be terminated or otherwise react to the last reference being dropped. Because `EIO \u03b5` actions\nmay throw an exception of type `\u03b5`, the result of the task is an `Except \u03b5 \u03b1`.\n"
+    },
+    {
+      "name": "Lean.Order.monotone_exceptTRun",
+      "type_signature": " {\u03b3 : Sort u_1} {m : Type u_2 \u2192 Type u_3} {\u03b5 \u03b1 : Type u_2} [Lean.Order.PartialOrder \u03b3] [Monad m] [(\u03b1 : Type u_2) \u2192 Lean.Order.PartialOrder (m \u03b1)] (f : \u03b3 \u2192 ExceptT \u03b5 m \u03b1) (hmono : Lean.Order.monotone f) : Lean.Order.monotone fun x => (f x).run",
+      "library": "Init",
+      "module": "Init.Internal.Order.Basic",
+      "description": null
+    },
+    {
+      "name": "Std.Do.PredTrans.pushExcept_apply",
+      "type_signature": " {ps : Std.Do.PostShape} {\u03b1 \u03b5 : Type u} {Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5 ps)} (x : Std.Do.PredTrans ps (Except \u03b5 \u03b1)) :\n  (Std.Do.PredTrans.pushExcept x).apply Q =\n    x.apply\n      (fun x =>\n        match x with\n        | Except.ok a => Q.1 a\n        | Except.error e => Q.2.1 e,\n        Q.2.2)",
+      "library": "Std",
+      "module": "Std.Do.PredTrans",
+      "description": null
+    },
+    {
+      "name": "Std.Do.Except.of_wp",
+      "type_signature": " {\u03b5 \u03b1 : Type} {prog : Except \u03b5 \u03b1} (P : Except \u03b5 \u03b1 \u2192 Prop) : (\u22a2\u209b (Std.Do.wp prog).apply (fun a => \u231cP (Except.ok a)\u231d, fun e => \u231cP (Except.error e)\u231d, ())) \u2192 P prog",
+      "library": "Std",
+      "module": "Std.Do.WP.Basic",
+      "description": "Adequacy lemma for `Except`.\nUseful if you want to prove a property about an expression `prog : Except \u03b5 \u03b1` and you want to use\n`mvcgen` to reason about `prog`.\n"
+    },
+    {
+      "name": "Except.tryCatch.eq_2",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} (handle : \u03b5 \u2192 Except \u03b5 \u03b1) (a : \u03b5) : (Except.error a).tryCatch handle = handle a",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "Except.mapError.eq_2",
+      "type_signature": " {\u03b5 : Type u} {\u03b5' : Type u_1} {\u03b1 : Type u_2} (f : \u03b5 \u2192 \u03b5') (v : \u03b1) : Except.mapError f (Except.ok v) = Except.ok v",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "Except.tryCatch.eq_1",
+      "type_signature": " {\u03b5 : Type u} {\u03b1 : Type u_1} (handle : \u03b5 \u2192 Except \u03b5 \u03b1) (a : \u03b1) : (Except.ok a).tryCatch handle = Except.ok a",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "Except.mapError.eq_1",
+      "type_signature": " {\u03b5 : Type u} {\u03b5' : Type u_1} {\u03b1 : Type u_2} (f : \u03b5 \u2192 \u03b5') (err : \u03b5) : Except.mapError f (Except.error err) = Except.error (f err)",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "ExceptT.adapt.eq_1",
+      "type_signature": " {\u03b5 : Type u} {m : Type u \u2192 Type v} [Monad m] {\u03b5' \u03b1 : Type u} (f : \u03b5 \u2192 \u03b5') (x : ExceptT \u03b5 m \u03b1) : ExceptT.adapt f x = ExceptT.mk (Except.mapError f <$> x)",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "ExceptT.tryCatch.eq_1",
+      "type_signature": " {\u03b5 : Type u} {m : Type u \u2192 Type v} [Monad m] {\u03b1 : Type u} (ma : ExceptT \u03b5 m \u03b1) (handle : \u03b5 \u2192 ExceptT \u03b5 m \u03b1) :\n  ma.tryCatch handle =\n    ExceptT.mk do\n      let res \u2190 ma\n      match res with\n        | Except.ok a => pure (Except.ok a)\n        | Except.error e => handle e",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.WP.ExceptT_run",
+      "type_signature": " {m : Type u \u2192 Type v} {ps : Std.Do.PostShape} {\u03b5 \u03b1 : Type u} {Q : Std.Do.PostCond (Except \u03b5 \u03b1) ps} [Std.Do.WP m ps] (x : ExceptT \u03b5 m \u03b1) : (Std.Do.wp x.run).apply Q = (Std.Do.wp x).apply (fun a => Q.1 (Except.ok a), fun e => Q.1 (Except.error e), Q.2)",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.WP.tryCatch_Except",
+      "type_signature": " {\u03b5 \u03b1 : Type u_1} {x : Except \u03b5 \u03b1} {h : \u03b5 \u2192 Except \u03b5 \u03b1} {Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5 Std.Do.PostShape.pure)} : (Std.Do.wp (MonadExceptOf.tryCatch x h)).apply Q = (Std.Do.wp x).apply (Q.1, fun e => (Std.Do.wp (h e)).apply Q, Q.2.2)",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.WP.liftWith_ExceptT",
+      "type_signature": " {m : Type u \u2192 Type v} {ps : Std.Do.PostShape} {\u03b5 \u03b1 : Type u} {Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5 ps)} [Monad m] [Std.Do.WPMonad m ps] (f : ({\u03b2 : Type u} \u2192 ExceptT \u03b5 m \u03b2 \u2192 m (Except \u03b5 \u03b2)) \u2192 m \u03b1) : (Std.Do.wp (MonadControl.liftWith f)).apply Q = (Std.Do.wp (f fun {\u03b2} x => x.run)).apply (Q.1, Q.2.2)",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.WP.orElse_Except",
+      "type_signature": " {\u03b5 \u03b1 : Type u_1} {x : Except \u03b5 \u03b1} {h : Unit \u2192 Except \u03b5 \u03b1} {Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5 Std.Do.PostShape.pure)} : (Std.Do.wp (OrElse.orElse x h)).apply Q = (Std.Do.wp x).apply (Q.1, fun x => (Std.Do.wp (h ())).apply Q, Q.2.2)",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.WP.restoreM_ExceptT",
+      "type_signature": " {m : Type u \u2192 Type v} {ps : Std.Do.PostShape} {\u03b5 \u03b1 : Type u} {Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5 ps)} [Monad m] [Std.Do.WPMonad m ps] (x : m (Except \u03b5 \u03b1)) : (Std.Do.wp (MonadControl.restoreM x)).apply Q = (Std.Do.wp x).apply (fun e => Except.casesOn e Q.2.1 Q.1, Q.2.2)",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.WP.throw_lift_ExceptT",
+      "type_signature": " {m : Type u \u2192 Type v} {sh : Std.Do.PostShape} {\u03b5 \u03b5' \u03b1 : Type u} {e : \u03b5} {Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5' sh)} [Std.Do.WP m sh] [Monad m] [MonadExceptOf \u03b5 m] : (Std.Do.wp (MonadExceptOf.throw e)).apply Q = (Std.Do.wp (MonadExceptOf.throw e)).apply (fun e => Except.casesOn e Q.2.1 Q.1, Q.2.2)",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.WP.monadMap_ExceptT",
+      "type_signature": " {m : Type u \u2192 Type v} {ps : Std.Do.PostShape} {\u03b5 : Type u} [Monad m] [Std.Do.WP m ps] (f : {\u03b2 : Type u} \u2192 m \u03b2 \u2192 m \u03b2) {\u03b1 : Type u} (x : ExceptT \u03b5 m \u03b1) (Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5 ps)) : (Std.Do.wp (MonadFunctor.monadMap (fun {\u03b2} => f) x)).apply Q = (Std.Do.wp (f x.run)).apply (fun e => Except.casesOn e Q.2.1 Q.1, Q.2.2)",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.WP.tryCatch_lift_ExceptT",
+      "type_signature": " {m : Type u \u2192 Type v} {sh : Std.Do.PostShape} {\u03b5 \u03b5' \u03b1 : Type u} {x : ExceptT \u03b5' m \u03b1} {h : \u03b5 \u2192 ExceptT \u03b5' m \u03b1} {Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5' sh)} [Std.Do.WP m sh] [Monad m] [MonadExceptOf \u03b5 m] : (Std.Do.wp (MonadExceptOf.tryCatch x h)).apply Q = (Std.Do.wp (MonadExceptOf.tryCatch x h)).apply (fun e => Except.casesOn e Q.2.1 Q.1, Q.2.2)",
+      "library": "Std",
+      "module": "Std.Do.WP.SimpLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.Spec.run_ExceptT",
+      "type_signature": " {m : Type u \u2192 Type v} {ps : Std.Do.PostShape} {\u03b5 \u03b1 : Type u} {Q : Std.Do.PostCond (Except \u03b5 \u03b1) ps} [Std.Do.WP m ps] (x : ExceptT \u03b5 m \u03b1) : \u2983(Std.Do.wp x).apply (fun a => Q.1 (Except.ok a), fun e => Q.1 (Except.error e), Q.2)\u2984 x.run \u2983Q\u2984",
+      "library": "Std",
+      "module": "Std.Do.Triple.SpecLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.Spec.tryCatch_Except",
+      "type_signature": " {\u03b1 \u03b5 : Type u_1} {x : Except \u03b5 \u03b1} {h : \u03b5 \u2192 Except \u03b5 \u03b1} (Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5 Std.Do.PostShape.pure)) : \u2983(Std.Do.wp x).apply (Q.1, fun e => (Std.Do.wp (h e)).apply Q, Q.2.2)\u2984 MonadExceptOf.tryCatch x h \u2983Q\u2984",
+      "library": "Std",
+      "module": "Std.Do.Triple.SpecLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.Spec.liftWith_ExceptT",
+      "type_signature": " {m : Type u \u2192 Type v} {ps : Std.Do.PostShape} {\u03b5 \u03b1 : Type u} {Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5 ps)} [Monad m] [Std.Do.WPMonad m ps] (f : ({\u03b2 : Type u} \u2192 ExceptT \u03b5 m \u03b2 \u2192 m (Except \u03b5 \u03b2)) \u2192 m \u03b1) : \u2983(Std.Do.wp (f fun {\u03b2} x => x.run)).apply (Q.1, Q.2.2)\u2984 MonadControl.liftWith f \u2983Q\u2984",
+      "library": "Std",
+      "module": "Std.Do.Triple.SpecLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.Spec.orElse_Except",
+      "type_signature": " {\u03b1 \u03b5 : Type u_1} {x : Except \u03b5 \u03b1} {h : Unit \u2192 Except \u03b5 \u03b1} (Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5 Std.Do.PostShape.pure)) : \u2983(Std.Do.wp x).apply (Q.1, fun x => (Std.Do.wp (h ())).apply Q, Q.2.2)\u2984 OrElse.orElse x h \u2983Q\u2984",
+      "library": "Std",
+      "module": "Std.Do.Triple.SpecLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.Spec.throw_ExceptT_lift",
+      "type_signature": " {m : Type u \u2192 Type v} {ps : Std.Do.PostShape} {\u03b5 \u03b1 \u03b5' : Type u} {e : \u03b5} [Std.Do.WP m ps] [MonadExceptOf \u03b5 m] (Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5' ps)) : \u2983(Std.Do.wp (MonadExceptOf.throw e)).apply (fun e => Except.casesOn e Q.2.1 Q.1, Q.2.2)\u2984 MonadExceptOf.throw e \u2983Q\u2984",
+      "library": "Std",
+      "module": "Std.Do.Triple.SpecLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.Spec.monadMap_ExceptT",
+      "type_signature": " {m : Type u \u2192 Type v} {ps : Std.Do.PostShape} {\u03b5 : Type u} [Monad m] [Std.Do.WP m ps] (f : {\u03b2 : Type u} \u2192 m \u03b2 \u2192 m \u03b2) {\u03b1 : Type u} (x : ExceptT \u03b5 m \u03b1) (Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5 ps)) : \u2983(Std.Do.wp (f x.run)).apply (fun e => Except.casesOn e Q.2.1 Q.1, Q.2.2)\u2984 MonadFunctor.monadMap (fun {\u03b2} => f) x \u2983Q\u2984",
+      "library": "Std",
+      "module": "Std.Do.Triple.SpecLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.Spec.tryCatch_ExceptT_lift",
+      "type_signature": " {m : Type u \u2192 Type v} {ps : Std.Do.PostShape} {\u03b5 \u03b1 \u03b5' : Type u} {x : ExceptT \u03b5' m \u03b1} {h : \u03b5 \u2192 ExceptT \u03b5' m \u03b1} [Std.Do.WP m ps] [MonadExceptOf \u03b5 m] (Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5' ps)) : \u2983(Std.Do.wp (MonadExceptOf.tryCatch x h)).apply (fun e => Except.casesOn e Q.2.1 Q.1, Q.2.2)\u2984 MonadExceptOf.tryCatch x h \u2983Q\u2984",
+      "library": "Std",
+      "module": "Std.Do.Triple.SpecLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Do.Spec.restoreM_ExceptT",
+      "type_signature": " {m : Type u \u2192 Type v} {ps : Std.Do.PostShape} {\u03b5 \u03b1 : Type u} {Q : Std.Do.PostCond \u03b1 (Std.Do.PostShape.except \u03b5 ps)} [Monad m] [Std.Do.WPMonad m ps] (x : m (Except \u03b5 \u03b1)) :\n  \u2983(Std.Do.wp x).apply (fun e => Except.casesOn e Q.2.1 Q.1, Q.2.2)\u2984\n    MonadControl.restoreM do\n      let a \u2190 x\n      pure a \u2983Q\u2984",
+      "library": "Std",
+      "module": "Std.Do.Triple.SpecLemmas",
+      "description": null
+    },
+    {
+      "name": "Std.Internal.IO.Async.Async.ofExcept",
+      "type_signature": " {\u03b1 : Type} (except : Except IO.Error \u03b1) : Std.Internal.IO.Async.Async \u03b1",
+      "library": "Std",
+      "module": "Std.Internal.Async.Basic",
+      "description": "Converts `Except` to `Async`.\n"
+    },
+    {
+      "name": "Std.Internal.IO.Async.BaseAsync.ofExcept",
+      "type_signature": " {\u03b1 : Type} (except : Except Empty \u03b1) : Std.Internal.IO.Async.BaseAsync \u03b1",
+      "library": "Std",
+      "module": "Std.Internal.Async.Basic",
+      "description": "Converts `Except` to `BaseAsync`.\n"
+    },
+    {
+      "name": "Std.Internal.IO.Async.EAsync.ofExcept",
+      "type_signature": " {\u03b5 \u03b1 : Type} (except : Except \u03b5 \u03b1) : Std.Internal.IO.Async.EAsync \u03b5 \u03b1",
+      "library": "Std",
+      "module": "Std.Internal.Async.Basic",
+      "description": "Converts `Except` to `EAsync`.\n"
+    },
+    {
+      "name": "Std.Internal.IO.Async.ETask.ofPromise!",
+      "type_signature": " {\u03b5 \u03b1 : Type} (x : IO.Promise (Except \u03b5 \u03b1)) : Std.Internal.IO.Async.ETask \u03b5 \u03b1",
+      "library": "Std",
+      "module": "Std.Internal.Async.Basic",
+      "description": "Create an `ETask` that resolves to the value of the promise `x`. If the promise gets dropped then it\npanics.\n"
+    },
+    {
+      "name": "Std.Internal.IO.Async.AsyncTask.ofPromise",
+      "type_signature": " {\u03b1 : Type} (x : IO.Promise (Except IO.Error \u03b1)) (error : String := \"the promise linked to the Async Task was dropped\") : Std.Internal.IO.Async.AsyncTask \u03b1",
+      "library": "Std",
+      "module": "Std.Internal.Async.Basic",
+      "description": "Create an `AsyncTask` that resolves to the value of `x`.\n"
+    },
+    {
+      "name": "Std.Internal.IO.Async.Async.ofPromise",
+      "type_signature": " {\u03b1 : Type} (task : IO (IO.Promise (Except IO.Error \u03b1))) (error : String := \"the promise linked to the Async was dropped\") : Std.Internal.IO.Async.Async \u03b1",
+      "library": "Std",
+      "module": "Std.Internal.Async.Basic",
+      "description": "Converts `Promise` into `Async`.\n"
+    },
+    {
+      "name": "Std.Internal.IO.Async.Waiter.promise",
+      "type_signature": " {\u03b1 : Type} (self : Std.Internal.IO.Async.Waiter \u03b1) : IO.Promise (Except IO.Error \u03b1)",
+      "library": "Std",
+      "module": "Std.Internal.Async.Select",
+      "description": null
+    },
+    {
+      "name": "Std.Internal.IO.Async.Waiter.withPromise",
+      "type_signature": " {\u03b1 \u03b2 : Type} (w : Std.Internal.IO.Async.Waiter \u03b1) (p : IO.Promise (Except IO.Error \u03b2)) : Std.Internal.IO.Async.Waiter \u03b2",
+      "library": "Std",
+      "module": "Std.Internal.Async.Select",
+      "description": "Swap out the `IO.Promise` within the `Waiter`. Note that the part which determines whether the\n`Waiter` is finished is not swapped out.\n"
+    },
+    {
+      "name": "Std.Internal.IO.Async.Waiter.race",
+      "type_signature": " {m : Type \u2192 Type} {\u03b1 \u03b2 : Type} [Monad m] [MonadLiftT (ST IO.RealWorld) m] (w : Std.Internal.IO.Async.Waiter \u03b1) (lose : m \u03b2) (win : IO.Promise (Except IO.Error \u03b1) \u2192 m \u03b2) : m \u03b2",
+      "library": "Std",
+      "module": "Std.Internal.Async.Select",
+      "description": "Try to atomically finish the `Waiter`. If the race for finishing it is won, `win` is executed\nwith the internal `IO.Promise` of the `Waiter`. This promise must under all circumstances be\nresolved by `win`. If the race is lost some cleanup work can be done in `lose`.\n"
+    },
+    {
+      "name": "Std.CloseableChannel.send",
+      "type_signature": " {\u03b1 : Type} (ch : Std.CloseableChannel \u03b1) (v : \u03b1) : BaseIO (Task (Except Std.CloseableChannel.Error Unit))",
+      "library": "Std",
+      "module": "Std.Sync.Channel",
+      "description": "Send a value through the channel, returning a task that will resolve once the transmission could be\ncompleted. Note that the task may resolve to `Except.error` if the channel was closed before it\ncould be completed.\n"
+    },
+    {
+      "name": "Std.Broadcast.send",
+      "type_signature": " {\u03b1 : Type} (ch : Std.Broadcast \u03b1) (v : \u03b1) : BaseIO (Task (Except IO.Error \u2115))",
+      "library": "Std",
+      "module": "Std.Sync.Broadcast",
+      "description": "Send a value through the broadcast channel, returning a task that will resolve once the transmission\ncould be completed.\n"
+    },
+    {
+      "name": "Std.Time.TimeZone.Transition.timezoneAt",
+      "type_signature": " (transitions : Array Std.Time.TimeZone.Transition) (tm : Std.Time.Timestamp) : Except String Std.Time.TimeZone",
+      "library": "Std",
+      "module": "Std.Time.Zoned.ZoneRules",
+      "description": "Find the current `TimeZone` out of a `Transition` in a `Array Transition`\n"
+    },
+    {
+      "name": "Std.Internal.Parsec.String.Parser.run",
+      "type_signature": " {\u03b1 : Type} (p : Std.Internal.Parsec.String.Parser \u03b1) (s : String) : Except String \u03b1",
+      "library": "Std",
+      "module": "Std.Internal.Parsec.String",
+      "description": "Run a `Parser` on a `String`, returns either the result or an error string with offset.\n"
+    },
+    {
+      "name": "Std.Internal.Parsec.ByteArray.Parser.run",
+      "type_signature": " {\u03b1 : Type} (p : Std.Internal.Parsec.ByteArray.Parser \u03b1) (arr : ByteArray) : Except String \u03b1",
+      "library": "Std",
+      "module": "Std.Internal.Parsec.ByteArray",
+      "description": "Run a `Parser` on a `ByteArray`, returns either the result or an error string with offset.\n"
+    },
+    {
+      "name": "Std.Time.TimeZone.convertTZif",
+      "type_signature": " (tz : Std.Time.TimeZone.TZif.TZif) (id : String) : Except String Std.Time.TimeZone.ZoneRules",
+      "library": "Std",
+      "module": "Std.Time.Zoned.Database.Basic",
+      "description": "Converts a `TZif.TZif` structure to a `ZoneRules` structure.\n"
+    },
+    {
+      "name": "Std.Time.TimeZone.convertTZifV1",
+      "type_signature": " (tz : Std.Time.TimeZone.TZif.TZifV1) (id : String) : Except String Std.Time.TimeZone.ZoneRules",
+      "library": "Std",
+      "module": "Std.Time.Zoned.Database.Basic",
+      "description": "Converts a `TZif.TZifV1` structure to a `ZoneRules` structure.\n"
+    },
+    {
+      "name": "Std.Time.TimeZone.convertTZifV2",
+      "type_signature": " (tz : Std.Time.TimeZone.TZif.TZifV2) (id : String) : Except String Std.Time.TimeZone.ZoneRules",
+      "library": "Std",
+      "module": "Std.Time.Zoned.Database.Basic",
+      "description": "Converts a `TZif.TZifV2` structure to a `ZoneRules` structure.\n"
+    },
+    {
+      "name": "Std.Time.Database.TZdb.parseTZif",
+      "type_signature": " (bin : ByteArray) (id : String) : Except String Std.Time.TimeZone.ZoneRules",
+      "library": "Std",
+      "module": "Std.Time.Zoned.Database.TZdb",
+      "description": "Parses binary timezone data into zone rules based on a given timezone ID.\n"
+    },
+    {
+      "name": "Std.Time.GenericFormat.parse",
+      "type_signature": " {aw : Std.Time.Awareness} (format : Std.Time.GenericFormat aw) (input : String) : Except String aw.type",
+      "library": "Std",
+      "module": "Std.Time.Format.Basic",
+      "description": "Parses the input string into a `ZoneDateTime`.\n"
+    },
+    {
+      "name": "Std.Time.GenericFormat.spec",
+      "type_signature": " {tz : Std.Time.Awareness} (input : String) (config : Std.Time.FormatConfig := { }) : Except String (Std.Time.GenericFormat tz)",
+      "library": "Std",
+      "module": "Std.Time.Format.Basic",
+      "description": "Constructs a new `GenericFormat` specification for a date-time string. Modifiers can be combined to create\ncustom formats, such as \"YYYY, MMMM, D\".\n"
+    },
+    {
+      "name": "Std.Time.GenericFormat.parseBuilder",
+      "type_signature": " {aw : Std.Time.Awareness} {\u03b1 : Type} (format : Std.Time.GenericFormat aw) (builder : Std.Time.FormatType (Option \u03b1) format.string) (input : String) : Except String \u03b1",
+      "library": "Std",
+      "module": "Std.Time.Format.Basic",
+      "description": "Parses an input string using a builder function to produce a value.\n"
+    },
+    {
+      "name": "Std.Time.Format.parse",
+      "type_signature": " {f : Type} {typ : Type \u2192 f \u2192 Type} [self : Std.Time.Format f typ] {\u03b1 : Type} (fmt : f) : typ (Option \u03b1) fmt \u2192 String \u2192 Except String \u03b1",
+      "library": "Std",
+      "module": "Std.Time.Format.Basic",
+      "description": "Parses a string into a format using the provided format type `f`.\n"
+    },
+    {
+      "name": "Std.Time.Format.mk",
+      "type_signature": " {f : Type} {typ : Type \u2192 f \u2192 Type} (format : (fmt : f) \u2192 typ String fmt) (parse : {\u03b1 : Type} \u2192 (fmt : f) \u2192 typ (Option \u03b1) fmt \u2192 String \u2192 Except String \u03b1) : Std.Time.Format f typ",
+      "library": "Std",
+      "module": "Std.Time.Format.Basic",
+      "description": null
+    },
+    {
+      "name": "Std.Time.PlainDate.fromAmericanDateString",
+      "type_signature": " (input : String) : Except String Std.Time.PlainDate",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a date string in the American format (`MM-dd-uuuu`) and returns a `PlainDate`.\n"
+    },
+    {
+      "name": "Std.Time.PlainDate.fromLeanDateString",
+      "type_signature": " (input : String) : Except String Std.Time.PlainDate",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a date string in the Lean format (`uuuu-MM-dd`) and returns a `PlainDate`.\n"
+    },
+    {
+      "name": "Std.Time.PlainDate.fromSQLDateString",
+      "type_signature": " (input : String) : Except String Std.Time.PlainDate",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a date string in the SQL format (`uuuu-MM-dd`) and returns a `PlainDate`.\n"
+    },
+    {
+      "name": "Std.Time.PlainDate.parse",
+      "type_signature": " (input : String) : Except String Std.Time.PlainDate",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the `AmericanDate` or `SQLDate` format and returns a `PlainDate`.\n"
+    },
+    {
+      "name": "Std.Time.PlainDateTime.fromAscTimeString",
+      "type_signature": " (input : String) : Except String Std.Time.PlainDateTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the `AscTime` format and returns a `PlainDateTime` object in the GMT time zone.\n"
+    },
+    {
+      "name": "Std.Time.PlainDateTime.fromDateTimeString",
+      "type_signature": " (input : String) : Except String Std.Time.PlainDateTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the `DateTime` format and returns a `PlainDateTime`.\n"
+    },
+    {
+      "name": "Std.Time.PlainDateTime.fromLeanDateTimeString",
+      "type_signature": " (input : String) : Except String Std.Time.PlainDateTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the `DateTime` format and returns a `PlainDateTime`.\n"
+    },
+    {
+      "name": "Std.Time.PlainDateTime.fromLongDateFormatString",
+      "type_signature": " (input : String) : Except String Std.Time.PlainDateTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the `LongDateFormat` and returns a `PlainDateTime` object in the GMT time zone.\n"
+    },
+    {
+      "name": "Std.Time.PlainDateTime.parse",
+      "type_signature": " (date : String) : Except String Std.Time.PlainDateTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the `AscTime` or `LongDate` format and returns a `PlainDateTime`.\n"
+    },
+    {
+      "name": "Std.Time.PlainTime.fromLeanTime24Hour",
+      "type_signature": " (input : String) : Except String Std.Time.PlainTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a time string in the lean 24-hour format (`HH:mm:ss.SSSSSSSSS` or `HH:mm:ss`) and returns a `PlainTime`.\n"
+    },
+    {
+      "name": "Std.Time.PlainTime.fromTime12Hour",
+      "type_signature": " (input : String) : Except String Std.Time.PlainTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a time string in the 12-hour format (`hh:mm:ss aa`) and returns a `PlainTime`.\n"
+    },
+    {
+      "name": "Std.Time.PlainTime.fromTime24Hour",
+      "type_signature": " (input : String) : Except String Std.Time.PlainTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a time string in the 24-hour format (`HH:mm:ss`) and returns a `PlainTime`.\n"
+    },
+    {
+      "name": "Std.Time.PlainTime.parse",
+      "type_signature": " (input : String) : Except String Std.Time.PlainTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the `Time12Hour` or `Time24Hour` format and returns a `PlainTime`.\n"
+    },
+    {
+      "name": "Std.Time.TimeZone.fromTimeZone",
+      "type_signature": " (input : String) : Except String Std.Time.TimeZone",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a string into a `TimeZone` object. The input string must be in the format `\"VV ZZZZZ\"`.\n"
+    },
+    {
+      "name": "Std.Time.ZonedDateTime.fromDateTimeWithZoneString",
+      "type_signature": " (input : String) : Except String Std.Time.ZonedDateTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the dateTimeWithZone format and returns a `ZonedDateTime` object in the GMT time zone.\n"
+    },
+    {
+      "name": "Std.Time.ZonedDateTime.fromISO8601String",
+      "type_signature": " (input : String) : Except String Std.Time.ZonedDateTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the `ISO8601` format and returns a `ZonedDateTime`.\n"
+    },
+    {
+      "name": "Std.Time.ZonedDateTime.fromLeanDateTimeWithIdentifierString",
+      "type_signature": " (input : String) : Except String Std.Time.ZonedDateTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the lean date time format with identifier and returns a `ZonedDateTime` object.\n"
+    },
+    {
+      "name": "Std.Time.ZonedDateTime.fromLeanDateTimeWithZoneString",
+      "type_signature": " (input : String) : Except String Std.Time.ZonedDateTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the lean date time format with timezone format and returns a `ZonedDateTime` object.\n"
+    },
+    {
+      "name": "Std.Time.ZonedDateTime.fromRFC822String",
+      "type_signature": " (input : String) : Except String Std.Time.ZonedDateTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the rfc822 format and returns a `ZonedDateTime`.\n"
+    },
+    {
+      "name": "Std.Time.ZonedDateTime.fromRFC850String",
+      "type_signature": " (input : String) : Except String Std.Time.ZonedDateTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the rfc850 format and returns a `ZonedDateTime`.\n"
+    },
+    {
+      "name": "Std.Time.ZonedDateTime.parse",
+      "type_signature": " (input : String) : Except String Std.Time.ZonedDateTime",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the `ISO8601`, `RFC822` or `RFC850` format and returns a `ZonedDateTime`.\n"
+    },
+    {
+      "name": "Std.Time.TimeZone.Offset.fromOffset",
+      "type_signature": " (input : String) : Except String Std.Time.TimeZone.Offset",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a string representing an offset into an `Offset` object. The input string must follow the `\"xxx\"` format.\n"
+    },
+    {
+      "name": "Std.Time.DateTime.fromAscTimeString",
+      "type_signature": " (input : String) : Except String (Std.Time.DateTime Std.Time.TimeZone.GMT)",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the `AscTime` format and returns a `DateTime` object in the GMT time zone.\n"
+    },
+    {
+      "name": "Std.Time.DateTime.fromLongDateFormatString",
+      "type_signature": " (input : String) : Except String (Std.Time.DateTime Std.Time.TimeZone.GMT)",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the `LongDateFormat` and returns a `DateTime` object in the GMT time zone.\n"
+    },
+    {
+      "name": "Std.Time.DateTime.parse",
+      "type_signature": " (date : String) : Except String (Std.Time.DateTime Std.Time.TimeZone.GMT)",
+      "library": "Std",
+      "module": "Std.Time.Format",
+      "description": "Parses a `String` in the `AscTime` or `LongDate` format and returns a `DateTime`.\n"
+    },
+    {
+      "name": "Std.Tactic.BVDecide.LRAT.parseLRATProof",
+      "type_signature": " (proof : ByteArray) : Except String (Array Std.Tactic.BVDecide.LRAT.IntAction)",
+      "library": "Std",
+      "module": "Std.Tactic.BVDecide.LRAT.Parser",
+      "description": "Parse `proof` as an LRAT proof. `proof` may contain either the binary or the non-binary LRAT format.\n"
+    },
+    {
+      "name": "Std.Internal.UV.TCP.Socket.accept",
+      "type_signature": " (socket : Std.Internal.UV.TCP.Socket) : IO (IO.Promise (Except IO.Error Std.Internal.UV.TCP.Socket))",
+      "library": "Std",
+      "module": "Std.Internal.UV.TCP",
+      "description": "Accepts an incoming connection on a listening TCP socket.\n"
+    },
+    {
+      "name": "Std.Internal.UV.TCP.Socket.shutdown",
+      "type_signature": " (socket : Std.Internal.UV.TCP.Socket) : IO (IO.Promise (Except IO.Error Unit))",
+      "library": "Std",
+      "module": "Std.Internal.UV.TCP",
+      "description": "Shuts down an incoming connection on a listening TCP socket.\n"
+    },
+    {
+      "name": "Std.Internal.UV.TCP.Socket.tryAccept",
+      "type_signature": " (socket : Std.Internal.UV.TCP.Socket) : IO (Except IO.Error (Option Std.Internal.UV.TCP.Socket))",
+      "library": "Std",
+      "module": "Std.Internal.UV.TCP",
+      "description": "Tries to accept an incoming connection on a listening TCP socket.\n"
+    },
+    {
+      "name": "Std.Internal.UV.TCP.Socket.waitReadable",
+      "type_signature": " (socket : Std.Internal.UV.TCP.Socket) : IO (IO.Promise (Except IO.Error Bool))",
+      "library": "Std",
+      "module": "Std.Internal.UV.TCP",
+      "description": "Returns an `IO.Promise` that resolves to `true` once `socket` has data available for reading,\nor to `false` if `socket` is closed before that. Calling this function twice on the same `Socket`\nor in parallel with `recv?` is not supported.\n"
+    },
+    {
+      "name": "Std.Internal.UV.TCP.Socket.connect",
+      "type_signature": " (socket : Std.Internal.UV.TCP.Socket) (addr : Std.Net.SocketAddress) : IO (IO.Promise (Except IO.Error Unit))",
+      "library": "Std",
+      "module": "Std.Internal.UV.TCP",
+      "description": "Connects a TCP socket to the specified address.\n"
+    },
+    {
+      "name": "Std.Internal.UV.TCP.Socket.recv?",
+      "type_signature": " (socket : Std.Internal.UV.TCP.Socket) (size : UInt64) : IO (IO.Promise (Except IO.Error (Option ByteArray)))",
+      "library": "Std",
+      "module": "Std.Internal.UV.TCP",
+      "description": "Receives data from a TCP socket with a maximum size of size bytes. The promise resolves when data is\navailable or an error occurs. If data is received, it\u2019s wrapped in .some. If EOF is reached, the\nresult is .none, indicating no more data is available. Receiving data in parallel on the same\nsocket is not supported. Instead, we recommend binding multiple sockets to the same address.\nFurthermore calling this function in parallel with `waitReadable` is not supported.\n"
+    },
+    {
+      "name": "Std.Internal.UV.TCP.Socket.send",
+      "type_signature": " (socket : Std.Internal.UV.TCP.Socket) (data : Array ByteArray) : IO (IO.Promise (Except IO.Error Unit))",
+      "library": "Std",
+      "module": "Std.Internal.UV.TCP",
+      "description": "Sends data through a TCP socket.\n"
+    },
+    {
+      "name": "Std.Internal.UV.UDP.Socket.waitReadable",
+      "type_signature": " (socket : Std.Internal.UV.UDP.Socket) : IO (IO.Promise (Except IO.Error Unit))",
+      "library": "Std",
+      "module": "Std.Internal.UV.UDP",
+      "description": "Returns an `IO.Promise` that resolves once `socket` has data available for reading. Calling this\nfunction twice on the same `Socket` or in parallel with `recv` is not supported.\n"
+    },
+    {
+      "name": "Std.Internal.UV.UDP.Socket.recv",
+      "type_signature": " (socket : Std.Internal.UV.UDP.Socket) (size : UInt64) : IO (IO.Promise (Except IO.Error (ByteArray \u00d7 Option Std.Net.SocketAddress)))",
+      "library": "Std",
+      "module": "Std.Internal.UV.UDP",
+      "description": "Receives data from an UDP socket. `size` is for the maximum bytes to receive. The promise\nresolves when some data is available or an error occurs.\nFurthermore calling this function in parallel with `waitReadable` is not supported.\n"
+    },
+    {
+      "name": "Std.Internal.UV.UDP.Socket.send",
+      "type_signature": " (socket : Std.Internal.UV.UDP.Socket) (data : Array ByteArray) (addr : Option Std.Net.SocketAddress) : IO (IO.Promise (Except IO.Error Unit))",
+      "library": "Std",
+      "module": "Std.Internal.UV.UDP",
+      "description": "Sends data through an UDP socket. The `addr` parameter specifies the destination address. If `addr`\nis `none`, the data is sent to the default peer address set by `connect`.\n"
+    },
+    {
+      "name": "Std.Internal.UV.System.random",
+      "type_signature": " : UInt64 \u2192 IO (IO.Promise (Except IO.Error ByteArray))",
+      "library": "Std",
+      "module": "Std.Internal.UV.System",
+      "description": "Generates cryptographically secure random bytes.\n"
+    },
+    {
+      "name": "Std.Internal.UV.DNS.getNameInfo",
+      "type_signature": " (host : Std.Net.SocketAddress) : IO (IO.Promise (Except IO.Error (String \u00d7 String)))",
+      "library": "Std",
+      "module": "Std.Internal.UV.DNS",
+      "description": "Performs a reverse DNS lookup on a `SocketAddress`.\n"
+    },
+    {
+      "name": "Std.Internal.UV.DNS.getAddrInfo",
+      "type_signature": " (host service : String) (family : UInt8) : IO (IO.Promise (Except IO.Error (Array Std.Net.IPAddr)))",
+      "library": "Std",
+      "module": "Std.Internal.UV.DNS",
+      "description": "Asynchronously resolves a hostname and service to an array of socket addresses.\n"
+    },
+    {
+      "name": "Lean.Json.getBool?",
+      "type_signature": " : Lean.Json \u2192 Except String Bool",
+      "library": "Lean",
+      "module": "Lean.Data.Json.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Json.getInt?",
+      "type_signature": " : Lean.Json \u2192 Except String \u2124",
+      "library": "Lean",
+      "module": "Lean.Data.Json.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Json.getNat?",
+      "type_signature": " : Lean.Json \u2192 Except String \u2115",
+      "library": "Lean",
+      "module": "Lean.Data.Json.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Json.getNum?",
+      "type_signature": " : Lean.Json \u2192 Except String Lean.JsonNumber",
+      "library": "Lean",
+      "module": "Lean.Data.Json.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Json.getStr?",
+      "type_signature": " : Lean.Json \u2192 Except String String",
+      "library": "Lean",
+      "module": "Lean.Data.Json.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Json.getArr?",
+      "type_signature": " : Lean.Json \u2192 Except String (Array Lean.Json)",
+      "library": "Lean",
+      "module": "Lean.Data.Json.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Json.getArrVal?",
+      "type_signature": " : Lean.Json \u2192 \u2115 \u2192 Except String Lean.Json",
+      "library": "Lean",
+      "module": "Lean.Data.Json.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Json.getObjVal?",
+      "type_signature": " : Lean.Json \u2192 String \u2192 Except String Lean.Json",
+      "library": "Lean",
+      "module": "Lean.Data.Json.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Json.getObj?",
+      "type_signature": " : Lean.Json \u2192 Except String (Std.TreeMap.Raw String Lean.Json compare)",
+      "library": "Lean",
+      "module": "Lean.Data.Json.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Json.parse",
+      "type_signature": " (s : String) : Except String Lean.Json",
+      "library": "Lean",
+      "module": "Lean.Data.Json.Parser",
+      "description": null
+    },
+    {
+      "name": "Float.fromJson?",
+      "type_signature": " : Lean.Json \u2192 Except String Float",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.bignumFromJson?",
+      "type_signature": " (j : Lean.Json) : Except String \u2115",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": "Note that `USize`s and `UInt64`s are stored as strings because JavaScript\ncannot represent 64-bit numbers. "
+    },
+    {
+      "name": "UInt64.fromJson?",
+      "type_signature": " (j : Lean.Json) : Except String UInt64",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "USize.fromJson?",
+      "type_signature": " (j : Lean.Json) : Except String USize",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Name.fromJson?",
+      "type_signature": " (j : Lean.Json) : Except String Lean.Name",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Json.Structured.fromJson?",
+      "type_signature": " : Lean.Json \u2192 Except String Lean.Json.Structured",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.FromJson.fromJson?",
+      "type_signature": " {\u03b1 : Type u} [self : Lean.FromJson \u03b1] : Lean.Json \u2192 Except String \u03b1",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.FromJson.mk",
+      "type_signature": " {\u03b1 : Type u} (fromJson? : Lean.Json \u2192 Except String \u03b1) : Lean.FromJson \u03b1",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Json.toStructured?",
+      "type_signature": " {\u03b1 : Type u_1} [Lean.ToJson \u03b1] (v : \u03b1) : Except String Lean.Json.Structured",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "Array.fromJson?",
+      "type_signature": " {\u03b1 : Type u_1} [Lean.FromJson \u03b1] : Lean.Json \u2192 Except String (Array \u03b1)",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "List.fromJson?",
+      "type_signature": " {\u03b1 : Type u_1} [Lean.FromJson \u03b1] (j : Lean.Json) : Except String (List \u03b1)",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "Option.fromJson?",
+      "type_signature": " {\u03b1 : Type u_1} [Lean.FromJson \u03b1] : Lean.Json \u2192 Except String (Option \u03b1)",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Json.getObjValAs?",
+      "type_signature": " (j : Lean.Json) (\u03b1 : Type u) [Lean.FromJson \u03b1] (k : String) : Except String \u03b1",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.NameMap.fromJson?",
+      "type_signature": " {\u03b1 : Type} [Lean.FromJson \u03b1] : Lean.Json \u2192 Except String (Lean.NameMap \u03b1)",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.Json.parseTagged",
+      "type_signature": " (json : Lean.Json) (tag : String) (nFields : \u2115) (fieldNames? : Option (Array Lean.Name)) : Except String (Array Lean.Json)",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": "Parses a JSON-encoded `structure` or `inductive` constructor. Used mostly by `deriving FromJson`. "
+    },
+    {
+      "name": "Prod.fromJson?",
+      "type_signature": " {\u03b1 : Type u} {\u03b2 : Type v} [Lean.FromJson \u03b1] [Lean.FromJson \u03b2] : Lean.Json \u2192 Except String (\u03b1 \u00d7 \u03b2)",
+      "library": "Lean",
+      "module": "Lean.Data.Json.FromToJson.Basic",
+      "description": null
+    },
+    {
+      "name": "Lean.instFromJsonImport.fromJson",
+      "type_signature": " : Lean.Json \u2192 Except String Lean.Import",
+      "library": "Lean",
+      "module": "Lean.Setup",
+      "description": null
+    },
+    {
+      "name": "Lean.instFromJsonModuleArtifacts.fromJson",
+      "type_signature": " : Lean.Json \u2192 Except String Lean.ModuleArtifacts",
+      "library": "Lean",
+      "module": "Lean.Setup",
+      "description": null
+    },
+    {
+      "name": "Lean.instFromJsonModuleHeader.fromJson",
+      "type_signature": " : Lean.Json \u2192 Except String Lean.ModuleHeader",
+      "library": "Lean",
+      "module": "Lean.Setup",
+      "description": null
+    },
+    {
+      "name": "Lean.instFromJsonModuleSetup.fromJson",
+      "type_signature": " : Lean.Json \u2192 Except String Lean.ModuleSetup",
+      "library": "Lean",
+      "module": "Lean.Setup",
+      "description": null
+    },
+    {
+      "name": "Lean.Kernel.Environment.addDeclWithoutChecking",
+      "type_signature": " (env : Lean.Kernel.Environment) (decl : Lean.Declaration) : Except Lean.Kernel.Exception Lean.Kernel.Environment",
+      "library": "Lean",
+      "module": "Lean.Environment",
+      "description": "Add declaration to kernel without type checking it.\n\n**WARNING** This function is meant for temporarily working around kernel performance issues.\nIt compromises soundness because, for example, a buggy tactic may produce an invalid proof,\nand the kernel will not catch it if the new option is set to true.\n"
+    },
+    {
+      "name": "Lean.Kernel.check",
+      "type_signature": " (env : Lean.Environment) (lctx : Lean.LocalContext) (a : Lean.Expr) : Except Lean.Kernel.Exception Lean.Expr",
+      "library": "Lean",
+      "module": "Lean.Environment",
+      "description": "Kernel typecheck function. We use it mainly for debugging purposes.\nRecall that the Kernel type checker does not support metavariables.\nWhen implementing automation, consider using the `MetaM` methods. "
+    },
+    {
+      "name": "Lean.Kernel.whnf",
+      "type_signature": " (env : Lean.Environment) (lctx : Lean.LocalContext) (a : Lean.Expr) : Except Lean.Kernel.Exception Lean.Expr",
+      "library": "Lean",
+      "module": "Lean.Environment",
+      "description": "Kernel WHNF function. We use it mainly for debugging purposes.\nRecall that the kernel type checker does not support metavariables.\nWhen implementing automation, consider using the `MetaM` methods. "
+    },
+    {
+      "name": "Lean.Kernel.isDefEq",
+      "type_signature": " (env : Lean.Environment) (lctx : Lean.LocalContext) (a b : Lean.Expr) : Except Lean.Kernel.Exception Bool",
+      "library": "Lean",
+      "module": "Lean.Environment",
+      "description": "Kernel isDefEq predicate. We use it mainly for debugging purposes.\nRecall that the kernel type checker does not support metavariables.\nWhen implementing automation, consider using the `MetaM` methods. "
+    },
+    {
+      "name": "Lean.Kernel.Environment.addDeclCore",
+      "type_signature": " (env : Lean.Kernel.Environment) (maxHeartbeats : USize) (decl : Lean.Declaration) (cancelTk? : Option IO.CancelToken) : Except Lean.Kernel.Exception Lean.Kernel.Environment",
+      "library": "Lean",
+      "module": "Lean.Environment",
+      "description": "Type check given declaration and add it to the environment "
+    },
+    {
+      "name": "Lean.Environment.evalConst",
+      "type_signature": " (\u03b1 : Type) (env : Lean.Environment) (opts : Lean.Options) (constName : Lean.Name) (checkMeta : Bool := true) : Except String \u03b1",
+      "library": "Lean",
+      "module": "Lean.Environment",
+      "description": "Evaluates the given declaration under the given environment to a value of the given type.\nThis function is only safe to use if the type matches the declaration's type in the environment\nand if `enableInitializersExecution` has been used before importing any modules.\n\nIf `checkMeta` is true (the default), the function checks that all referenced imported constants are\nmarked or imported as `meta` or otherwise fails with an error. It should only be set to `false` in\ncases where it is acceptable for code to work only in the language server, where more IR is loaded,\nsuch as in `#eval`.\n"
+    },
+    {
+      "name": "Lean.Environment.addDeclCore",
+      "type_signature": " (env : Lean.Environment) (maxHeartbeats : USize) (decl : Lean.Declaration) (cancelTk? : Option IO.CancelToken) (doCheck : Bool := true) : Except Lean.Kernel.Exception Lean.Environment",
+      "library": "Lean",
+      "module": "Lean.Environment",
+      "description": "Adds given declaration to the environment, type checking it unless `doCheck` is false.\n\nThis is a plumbing function for the implementation of `Lean.addDecl`, most users should use it\ninstead.\n"
+    },
+    {
+      "name": "Lean.instFromJsonPosition.fromJson",
+      "type_signature": " : Lean.Json \u2192 Except String Lean.Position",
+      "library": "Lean",
+      "module": "Lean.Data.Position",
+      "description": null
+    }
+  ],
+  "summary": "Found 583 total matches for 'Except _ _' pattern. Retrieved first 200 results. Organized by 3 libraries: Init, Lean, Std"
+}

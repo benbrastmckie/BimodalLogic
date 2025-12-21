@@ -9,9 +9,9 @@ You are maintaining project documentation for the LEAN 4 ProofChecker project.
 **Request:** $ARGUMENTS
 
 **Context Loaded:**
-@/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/specs/TODO.md
-@/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/context/lean4/standards/
-@/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/context/project/project-context.md
+@/home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md
+@/home/benjamin/Projects/ProofChecker/.opencode/context/lean4/standards/
+@/home/benjamin/Projects/ProofChecker/.opencode/context/core/system/project-overview.md
 
 **Task:**
 

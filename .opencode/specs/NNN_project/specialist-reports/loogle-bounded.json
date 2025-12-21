@@ -1,0 +1,1629 @@
+{
+  "search_pattern": "bounded",
+  "total_matches": 2240,
+  "matches_shown": 200,
+  "report_path": ".opencode/specs/NNN_project/specialist-reports/loogle-bounded.md",
+  "search_date": "2025-12-20T17:49:31.100701",
+  "matches": [
+    {
+      "name": "Std.Time.Internal.Bounded",
+      "type": " (rel : \u2124 \u2192 \u2124 \u2192 Prop) (lo hi : \u2124) : Type",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "exact",
+      "description": "A `Bounded` is represented by an `Int` that is constrained by a lower and higher bounded using some\nrelation `rel`. It includes all the integers that `rel lo val \u2227 rel val hi`.\n"
+    },
+    {
+      "name": "Set.Bounded",
+      "type": " {\u03b1 : Type u} (r : \u03b1 \u2192 \u03b1 \u2192 Prop) (s : Set \u03b1) : Prop",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.RelClasses",
+      "category": "exact",
+      "description": "A bounded or final set. Not to be confused with `Bornology.IsBounded`. "
+    },
+    {
+      "name": "BoundedOrder",
+      "type": " (\u03b1 : Type u) [LE \u03b1] : Type u",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.BoundedOrder.Basic",
+      "category": "prefix",
+      "description": "A bounded order describes an order `(\u2264)` with a top and bottom element,\ndenoted `\u22a4` and `\u22a5` respectively. "
+    },
+    {
+      "name": "Subtype.boundedOrder",
+      "type": " {\u03b1 : Type u} {p : \u03b1 \u2192 Prop} [LE \u03b1] [BoundedOrder \u03b1] (hbot : p \u22a5) (htop : p \u22a4) : BoundedOrder (Subtype p)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.BoundedOrder.Basic",
+      "category": "prefix",
+      "description": "A subtype remains a bounded order if the property holds at `\u22a5` and `\u22a4`. "
+    },
+    {
+      "name": "Plausible.BoundedRandom",
+      "type": " (m : Type u \u2192 Type u_1) (\u03b1 : Type u) [LE \u03b1] : Type (max (max 1 u) u_1)",
+      "library": "Plausible",
+      "module": "Plausible.Random",
+      "category": "prefix",
+      "description": "`BoundedRandom m \u03b1` gives us machinery to generate values of type `\u03b1` between certain bounds in\nthe monad `m`. "
+    },
+    {
+      "name": "Additive.boundedOrder",
+      "type": " {\u03b1 : Type u_1} [LE \u03b1] [BoundedOrder \u03b1] : BoundedOrder (Additive \u03b1)",
+      "library": "Mathlib",
+      "module": "Mathlib.Algebra.Order.Monoid.Unbundled.TypeTags",
+      "category": "prefix",
+      "description": null
+    },
+    {
+      "name": "Multiplicative.boundedOrder",
+      "type": " {\u03b1 : Type u_1} [LE \u03b1] [BoundedOrder \u03b1] : BoundedOrder (Multiplicative \u03b1)",
+      "library": "Mathlib",
+      "module": "Mathlib.Algebra.Order.Monoid.Unbundled.TypeTags",
+      "category": "prefix",
+      "description": null
+    },
+    {
+      "name": "Set.Ici.boundedOrder",
+      "type": " {\u03b1 : Type u_1} [Preorder \u03b1] [OrderTop \u03b1] {a : \u03b1} : BoundedOrder \u2191(Set.Ici a)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.LatticeIntervals",
+      "category": "prefix",
+      "description": null
+    },
+    {
+      "name": "Finset.boundedOrder",
+      "type": " {\u03b1 : Type u_1} [Fintype \u03b1] : BoundedOrder (Finset \u03b1)",
+      "library": "Mathlib",
+      "module": "Mathlib.Data.Finset.BooleanAlgebra",
+      "category": "prefix",
+      "description": null
+    },
+    {
+      "name": "Prod.Lex.boundedOrder",
+      "type": " {\u03b1 : Type u_1} {\u03b2 : Type u_2} [PartialOrder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] : BoundedOrder (Lex (\u03b1 \u00d7 \u03b2))",
+      "library": "Mathlib",
+      "module": "Mathlib.Data.Prod.Lex",
+      "category": "prefix",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom",
+      "type": " (\u03b1 : Type u_6) (\u03b2 : Type u_7) [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] : Type (max u_6 u_7)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "prefix",
+      "description": "The type of bounded order homomorphisms from `\u03b1` to `\u03b2`. "
+    },
+    {
+      "name": "BoundedOrderHomClass",
+      "type": " (F : Type u_6) (\u03b1 : Type u_7) (\u03b2 : Type u_8) [LE \u03b1] [LE \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [FunLike F \u03b1 \u03b2] : Prop",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "prefix",
+      "description": "`BoundedOrderHomClass F \u03b1 \u03b2` states that `F` is a type of bounded order morphisms.\n\nYou should extend this class when you extend `BoundedOrderHom`. "
+    },
+    {
+      "name": "BoundedLatticeHom",
+      "type": " (\u03b1 : Type u_6) (\u03b2 : Type u_7) [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] : Type (max u_6 u_7)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "prefix",
+      "description": "The type of bounded lattice homomorphisms from `\u03b1` to `\u03b2`. "
+    },
+    {
+      "name": "BoundedLatticeHomClass",
+      "type": " (F : Type u_6) (\u03b1 : Type u_7) (\u03b2 : Type u_8) [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [FunLike F \u03b1 \u03b2] : Prop",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "prefix",
+      "description": "`BoundedLatticeHomClass F \u03b1 \u03b2` states that `F` is a type of bounded lattice morphisms.\n\nYou should extend this class when you extend `BoundedLatticeHom`. "
+    },
+    {
+      "name": "Nat.set_induction_bounded",
+      "type": " {n k : \u2115} {S : Set \u2115} (hk : k \u2208 S) (h_ind : \u2200 k \u2208 S, k + 1 \u2208 S) (hnk : k \u2264 n) : n \u2208 S",
+      "library": "Mathlib",
+      "module": "Mathlib.Data.Nat.Basic",
+      "category": "suffix",
+      "description": "A subset of `\u2115` containing `k : \u2115` and closed under `Nat.succ` contains every `n \u2265 k`. "
+    },
+    {
+      "name": "Set.Unbounded",
+      "type": " {\u03b1 : Type u} (r : \u03b1 \u2192 \u03b1 \u2192 Prop) (s : Set \u03b1) : Prop",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.RelClasses",
+      "category": "suffix",
+      "description": "An unbounded or cofinal set. "
+    },
+    {
+      "name": "converges_of_monotone_of_bounded",
+      "type": " {f : \u2115 \u2192 \u2115} (mono_f : Monotone f) {c : \u2115} (hc : \u2200 (n : \u2115), f n \u2264 c) : \u2203 b N, \u2200 n \u2265 N, f n = b",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Monotone.Basic",
+      "category": "suffix",
+      "description": "A bounded monotone function `\u2115 \u2192 \u2115` converges. "
+    },
+    {
+      "name": "uniform_continuous_npow_on_bounded",
+      "type": " {\u03b1 : Type u_2} [Field \u03b1] [LinearOrder \u03b1] [IsStrictOrderedRing \u03b1] (B : \u03b1) {\u03b5 : \u03b1} (h\u03b5 : 0 < \u03b5) (n : \u2115) : \u2203 \u03b4 > 0, \u2200 (q r : \u03b1), |r| \u2264 B \u2192 |q - r| \u2264 \u03b4 \u2192 |q ^ n - r ^ n| < \u03b5",
+      "library": "Mathlib",
+      "module": "Mathlib.Algebra.Order.Field.Basic",
+      "category": "suffix",
+      "description": null
+    },
+    {
+      "name": "List.toUnboundedSlice",
+      "type": " {\u03b1 : Type u} (as : List \u03b1) (start : \u2115) : ListSlice \u03b1",
+      "library": "Init",
+      "module": "Init.Data.Slice.List.Basic",
+      "category": "contains",
+      "description": "Returns a slice of a list with the given lower bound.\n\nIf `start` is not a valid bound for a sublist, then they are clamped to the list's length.\n\nThis function is linear in `start` because it stores `as.drop start` in the slice.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE",
+      "type": " (lo hi : \u2124) : Type",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "A `Bounded` integer where the relation used is the less-equal relation, so it includes all\nintegers that `lo \u2264 val \u2264 hi`.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LT",
+      "type": " (lo hi : \u2124) : Type",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "A `Bounded` integer where the relation used is the less-than relation, so it includes all\nintegers that `lo < val < hi`.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.eq",
+      "type": " {n : \u2124} : Std.Time.Internal.Bounded.LE n n",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.toInt",
+      "type": " {lo hi : \u2124} (n : Std.Time.Internal.Bounded.LE lo hi) : \u2124",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Convert a `Bounded.LE` to an Int.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.toNat",
+      "type": " {lo hi : \u2124} (n : Std.Time.Internal.Bounded.LE lo hi) : \u2115",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Convert a `Bounded.LE` to a Nat.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.ofInt",
+      "type": " {lo hi : \u2124} (val : \u2124) : Option (Std.Time.Internal.Bounded.LE lo hi)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Creates a new `Bounded` integer.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.instDecidableEq",
+      "type": " {rel : \u2124 \u2192 \u2124 \u2192 Prop} {n m : \u2124} : DecidableEq (Std.Time.Internal.Bounded rel n m)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.instLE",
+      "type": " {rel : \u2124 \u2192 \u2124 \u2192 Prop} {n m : \u2124} : LE (Std.Time.Internal.Bounded rel n m)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.instLT",
+      "type": " {rel : \u2124 \u2192 \u2124 \u2192 Prop} {n m : \u2124} : LT (Std.Time.Internal.Bounded rel n m)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.instOrd",
+      "type": " {rel : \u2124 \u2192 \u2124 \u2192 Prop} {n m : \u2124} : Ord (Std.Time.Internal.Bounded rel n m)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.instRepr",
+      "type": " {rel : \u2124 \u2192 \u2124 \u2192 Prop} {m n : \u2124} : Repr (Std.Time.Internal.Bounded rel m n)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.exact",
+      "type": " (val : \u2115) : Std.Time.Internal.Bounded.LE \u2191val \u2191val",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Creates a new `Bounded` integer that the relation is less-equal.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.clip",
+      "type": " {lo hi : \u2124} (val : \u2124) (h : lo \u2264 hi) : Std.Time.Internal.Bounded.LE lo hi",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Convert a `Nat` to a `Bounded.LE` using the lower boundary too.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.ofNatWrapping",
+      "type": " {lo hi : \u2124} (val : \u2124) (h : lo \u2264 hi) : Std.Time.Internal.Bounded.LE lo hi",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Convert a `Nat` to a `Bounded.LE` by wrapping it.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.ofNat?",
+      "type": " {hi : \u2115} (val : \u2115) : Option (Std.Time.Internal.Bounded.LE 0 \u2191hi)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Convert a `Nat` to a `Bounded.LE` if it checks.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.instLawfulEqOrd",
+      "type": " {rel : \u2124 \u2192 \u2124 \u2192 Prop} {n m : \u2124} : Std.LawfulEqOrd (Std.Time.Internal.Bounded rel n m)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.instOrientedOrd",
+      "type": " {rel : \u2124 \u2192 \u2124 \u2192 Prop} {n m : \u2124} : Std.OrientedOrd (Std.Time.Internal.Bounded rel n m)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.instTransOrd",
+      "type": " {rel : \u2124 \u2192 \u2124 \u2192 Prop} {n m : \u2124} : Std.TransOrd (Std.Time.Internal.Bounded rel n m)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.abs",
+      "type": " {i : \u2124} (bo : Std.Time.Internal.Bounded.LE (-i) i) : Std.Time.Internal.Bounded.LE 0 i",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Returns the absolute value of the bounded number `bo` with bounds `-(i - 1)` to `i - 1`. The result\nwill be a new bounded number with bounds `0` to `i - 1`.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.expandBottom",
+      "type": " {lo hi nlo : \u2124} (bounded : Std.Time.Internal.Bounded.LE lo hi) (h : nlo \u2264 lo) : Std.Time.Internal.Bounded.LE nlo hi",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Expand the bottom of the bounded to a number `nlo` if `lo` is greater or equal to the previous lower bound.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.expandTop",
+      "type": " {lo hi nhi : \u2124} (bounded : Std.Time.Internal.Bounded.LE lo hi) (h : hi \u2264 nhi) : Std.Time.Internal.Bounded.LE lo nhi",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Expand the bottom of the bounded to a number `nhi` is `hi` is less or equal to the previous higher bound.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.neg",
+      "type": " {n m : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) : Std.Time.Internal.Bounded.LE (-m) (-n)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by adding a constant value to both the lower and upper bounds.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.ofFin",
+      "type": " {hi : \u2115} (fin : Fin hi.succ) : Std.Time.Internal.Bounded.LE 0 \u2191hi",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Convert a `Fin` to a `Bounded.LE`.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.ofInt?",
+      "type": " {rel : \u2124 \u2192 \u2124 \u2192 Prop} {lo hi : \u2124} [DecidableRel rel] (val : \u2124) : Option (Std.Time.Internal.Bounded rel lo hi)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Convert a `Int` to a `Bounded` if it checks.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.toNat'",
+      "type": " {lo hi : \u2124} (n : Std.Time.Internal.Bounded.LE lo hi) (h : lo \u2265 0) : \u2115",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Convert a `Bounded.LE` to a Nat.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.mk",
+      "type": " {lo hi : \u2124} {rel : \u2124 \u2192 \u2124 \u2192 Prop} (val : \u2124) (proof : rel lo val \u2227 rel val hi) : Std.Time.Internal.Bounded rel lo hi",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Creates a new `Bounded` Integer.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.instInhabitedHAddIntCast",
+      "type": " {lo : \u2124} {k : \u2115} : Inhabited (Std.Time.Internal.Bounded.LE lo (lo + \u2191k))",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.max",
+      "type": " {n m : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (val : \u2124) : Std.Time.Internal.Bounded.LE (max n val) (max m val)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Returns the maximum between a number and the bounded.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.mk",
+      "type": " {lo hi : \u2124} (val : \u2124) (proof : lo \u2264 val \u2227 val \u2264 hi) : Std.Time.Internal.Bounded.LE lo hi",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Creates a new `Bounded` integer that the relation is less-equal.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.ofNat",
+      "type": " {hi : \u2115} (val : \u2115) (h : val \u2264 hi) : Std.Time.Internal.Bounded.LE 0 \u2191hi",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Convert a `Nat` to a `Bounded.LE`.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.instOfNatHAddIntCast",
+      "type": " {lo : \u2124} {n k : \u2115} : OfNat (Std.Time.Internal.Bounded.LE lo (lo + \u2191k)) n",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.ofFin'",
+      "type": " {hi lo : \u2115} (fin : Fin hi.succ) (h : lo \u2264 hi) : Std.Time.Internal.Bounded.LE \u2191lo \u2191hi",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Convert a `Fin` to a `Bounded.LE`.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.expand",
+      "type": " {lo hi nhi nlo : \u2124} (bounded : Std.Time.Internal.Bounded.LE lo hi) (h : hi \u2264 nhi) (h\u2081 : nlo \u2264 lo) : Std.Time.Internal.Bounded.LE nlo nhi",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Expand the range of a bounded value.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.truncate",
+      "type": " {n m : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) : Std.Time.Internal.Bounded.LE 0 (m - n)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by setting the lower bound to zero and the maximum value to (m - n).\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.cast",
+      "type": " {rel : \u2124 \u2192 \u2124 \u2192 Prop} {lo\u2081 lo\u2082 hi\u2081 hi\u2082 : \u2124} (h\u2081 : lo\u2081 = lo\u2082) (h\u2082 : hi\u2081 = hi\u2082) (b : Std.Time.Internal.Bounded rel lo\u2081 hi\u2081) : Std.Time.Internal.Bounded rel lo\u2082 hi\u2082",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Casts the boundaries of the `Bounded` using equivalences.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.ofNat'",
+      "type": " {lo hi : \u2115} (val : \u2115) (h : lo \u2264 val \u2227 val \u2264 hi) : Std.Time.Internal.Bounded.LE \u2191lo \u2191hi",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Convert a `Nat` to a `Bounded.LE` using the lower boundary too.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.instDecidableLe",
+      "type": " {rel : \u2124 \u2192 \u2124 \u2192 Prop} {a b : \u2124} {x y : Std.Time.Internal.Bounded rel a b} : Decidable (x \u2264 y)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.add",
+      "type": " {n m : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (num : \u2124) : Std.Time.Internal.Bounded.LE (n + num) (m + num)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by adding a constant value to both the lower and upper bounds.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.sub",
+      "type": " {n m : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (num : \u2124) : Std.Time.Internal.Bounded.LE (n - num) (m - num)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by subtracting a constant value to both the lower and upper bounds.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.addTop",
+      "type": " {n m : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (num : \u2124) (h : num \u2265 0) : Std.Time.Internal.Bounded.LE n (m + num)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by adding a constant value to the upper bounds.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.subBottom",
+      "type": " {n m : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (num : \u2124) (h : num \u2265 0) : Std.Time.Internal.Bounded.LE (n - num) m",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by adding a constant value to the lower bounds.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.succ",
+      "type": " {lo hi : \u2124} (bounded : Std.Time.Internal.Bounded.LE lo hi) (h : \u2191bounded < hi) : Std.Time.Internal.Bounded.LE lo hi",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adds one to the value of the bounded if the value is less than the higher bound of the bounded number.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.truncateBottom",
+      "type": " {n m j : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (h : \u2191bounded \u2265 j) : Std.Time.Internal.Bounded.LE j m",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by changing the lower bound if another value `j` satisfies the same\nconstraint.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.truncateTop",
+      "type": " {n m j : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (h : \u2191bounded \u2264 j) : Std.Time.Internal.Bounded.LE n j",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by changing the higher bound if another value `j` satisfies the same\nconstraint.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.addBounds",
+      "type": " {n m i j : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (bounded\u2082 : Std.Time.Internal.Bounded.LE i j) : Std.Time.Internal.Bounded.LE (n + i) (m + j)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adds two `Bounded` and adjust the boundaries.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.subBounds",
+      "type": " {n m i j : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (bounded\u2082 : Std.Time.Internal.Bounded.LE i j) : Std.Time.Internal.Bounded.LE (n - j) (m - i)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adds two `Bounded` and adjust the boundaries.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.toFin",
+      "type": " {lo hi : \u2124} (n : Std.Time.Internal.Bounded.LE lo hi) (h\u2080 : 0 \u2264 lo) : Fin (hi + 1).toNat",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Convert a `Bounded.LE` to a `Fin`.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.byEmod",
+      "type": " (b i : \u2124) (hi : i > 0) : Std.Time.Internal.Bounded.LE 0 (i - 1)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Creates a new `Bounded.LE` using a the modulus of a number.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.ediv",
+      "type": " {n m : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (num : \u2124) (h : num > 0) : Std.Time.Internal.Bounded.LE (n / num) (m / num)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by applying the div operation.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.emod",
+      "type": " {n num : \u2124} (bounded : Std.Time.Internal.Bounded.LE n num) (num\u271d : \u2124) (hi : 0 < num\u271d) : Std.Time.Internal.Bounded.LE 0 (num\u271d - 1)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by applying the emod operation constraining the lower bound to 0 and\nthe upper bound to the value.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.mul_neg",
+      "type": " {n m : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (num : \u2124) (h : num \u2264 0) : Std.Time.Internal.Bounded.LE (m * num) (n * num)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by applying the multiplication operation with a positive number.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.mul_pos",
+      "type": " {n m : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (num : \u2124) (h : num \u2265 0) : Std.Time.Internal.Bounded.LE (n * num) (m * num)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by applying the multiplication operation with a positive number.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.sub.eq_1",
+      "type": " {n m : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (num : \u2124) : bounded.sub num = bounded.add (-num)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.byMod",
+      "type": " (b i : \u2124) (hi : 0 < i) : Std.Time.Internal.Bounded.LE (-(i - 1)) (i - 1)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Creates a new `Bounded.LE` using a the Truncating modulus of a number.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.addProven",
+      "type": " {n m num : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (h\u2080 : \u2191bounded + num \u2264 m) (h\u2081 : num \u2265 0) : Std.Time.Internal.Bounded.LE n m",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by adding a constant value to both the lower and upper bounds.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.mod",
+      "type": " {n num : \u2124} (bounded : Std.Time.Internal.Bounded.LE n num) (num\u271d : \u2124) (hi : 0 < num\u271d) : Std.Time.Internal.Bounded.LE (-(num\u271d - 1)) (num\u271d - 1)",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": "Adjust the bounds of a `Bounded` by applying the mod operation.\n"
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.truncateTop.eq_1",
+      "type": " {n m j : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (h : \u2191bounded \u2264 j) : bounded.truncateTop h = \u27e8\u2191bounded, \u22ef\u27e9",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.toFin.eq_1",
+      "type": " {lo hi : \u2124} (n : Std.Time.Internal.Bounded.LE lo hi) (h\u2080 : 0 \u2264 lo) : n.toFin h\u2080 = \u27e8(\u2191n).toNat, \u22ef\u27e9",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.add.eq_1",
+      "type": " {n m : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (num : \u2124) : bounded.add num = \u27e8\u2191bounded + num, \u22ef\u27e9",
+      "library": "Std",
+      "module": "Std.Time.Internal.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.addTop.eq_1",
+      "type": " {n m : \u2124} (bounded : Std.Time.Internal.Bounded.LE n m) (num : \u2124) (h : num \u2265 0) : bounded.addTop num h = \u27e8\u2191bounded + num, \u22ef\u27e9",
+      "library": "Std",
+      "module": "Std.Time.Date.Unit.Month",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.LE.mk.congr_simp",
+      "type": " {lo hi : \u2124} (val val\u271d : \u2124) (e_val : val = val\u271d) (proof : lo \u2264 val \u2227 val \u2264 hi) : Std.Time.Internal.Bounded.LE.mk val proof = Std.Time.Internal.Bounded.LE.mk val\u271d \u22ef",
+      "library": "Std",
+      "module": "Std.Time.Date.ValidDate",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Std.Time.Internal.Bounded.cast.congr_simp",
+      "type": " {rel : \u2124 \u2192 \u2124 \u2192 Prop} {lo\u2081 lo\u2082 hi\u2081 hi\u2082 : \u2124} (h\u2081 : lo\u2081 = lo\u2082) (h\u2082 : hi\u2081 = hi\u2082) (b b\u271d : Std.Time.Internal.Bounded rel lo\u2081 hi\u2081) (e_b : b = b\u271d) : Std.Time.Internal.Bounded.cast h\u2081 h\u2082 b = Std.Time.Internal.Bounded.cast h\u2081 h\u2082 b\u271d",
+      "library": "Std",
+      "module": "Std.Time.Date.ValidDate",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Lean.Expr.getBoundedAppFn",
+      "type": " (maxArgs : \u2115) : Lean.Expr \u2192 Lean.Expr",
+      "library": "Lean",
+      "module": "Lean.Expr",
+      "category": "contains",
+      "description": "Like `Lean.Expr.getAppFn` but assumes the application has up to `maxArgs` arguments.\nIf there are any more arguments than this, then they are returned by `getAppFn` as part of the function.\n\nIn particular, if the given expression is a sequence of function applications `f a\u2081 .. a\u2099`,\nreturns `f a\u2081 .. a\u2096` where `k` is minimal such that `n - k \u2264 maxArgs`.\n"
+    },
+    {
+      "name": "Lean.Expr.getBoundedAppArgs",
+      "type": " (maxArgs : \u2115) (e : Lean.Expr) : Array Lean.Expr",
+      "library": "Lean",
+      "module": "Lean.Expr",
+      "category": "contains",
+      "description": "Like `Lean.Expr.getAppArgs` but returns up to `maxArgs` arguments.\n\nIn particular, given `f a\u2081 a\u2082 ... a\u2099`, returns `#[a\u2096\u208a\u2081, ..., a\u2099]`\nwhere `k` is minimal such that the size of this array is at most `maxArgs`.\n"
+    },
+    {
+      "name": "Lean.Meta.forallMetaBoundedTelescope",
+      "type": " (e : Lean.Expr) (maxMVars : \u2115) (kind : Lean.MetavarKind := Lean.MetavarKind.natural) : Lean.MetaM (Array Lean.Expr \u00d7 Array Lean.BinderInfo \u00d7 Lean.Expr)",
+      "library": "Lean",
+      "module": "Lean.Meta.Basic",
+      "category": "contains",
+      "description": "Similar to `forallMetaTelescopeReducing`, stops\nconstructing the telescope when it reaches size `maxMVars`. "
+    },
+    {
+      "name": "Lean.Meta.lambdaBoundedTelescope",
+      "type": " {n : Type \u2192 Type u_1} [MonadControlT Lean.MetaM n] [Monad n] {\u03b1 : Type} (e : Lean.Expr) (maxFVars : \u2115) (k : Array Lean.Expr \u2192 Lean.Expr \u2192 n \u03b1) (cleanupAnnotations : Bool := false) : n \u03b1",
+      "library": "Lean",
+      "module": "Lean.Meta.Basic",
+      "category": "contains",
+      "description": "Given `e` of the form `fun ..xs ..ys => A`, execute `k xs (fun ..ys => A)` where\n`xs.size \u2264 maxFVars`.\nThis combinator will declare local declarations, create free variables for them,\nexecute `k` with updated local context, and make sure the cache is restored after executing `k`.\n\nIf `cleanupAnnotations` is `true`, we apply `Expr.cleanupAnnotations` to each type in the telescope.\n"
+    },
+    {
+      "name": "Lean.Meta.forallBoundedTelescope",
+      "type": " {n : Type \u2192 Type u_1} [MonadControlT Lean.MetaM n] [Monad n] {\u03b1 : Type} (type : Lean.Expr) (maxFVars? : Option \u2115) (k : Array Lean.Expr \u2192 Lean.Expr \u2192 n \u03b1) (cleanupAnnotations whnfType : Bool := false) : n \u03b1",
+      "library": "Lean",
+      "module": "Lean.Meta.Basic",
+      "category": "contains",
+      "description": "Similar to `forallTelescopeReducing`, stops constructing the telescope when\nit reaches size `maxFVars`.\n\nIf `cleanupAnnotations` is `true`, we apply `Expr.cleanupAnnotations` to each type in the telescope.\n\nIf `whnfType` is `true`, we give `k` the `whnf` of the resulting type.\nThis is a free operation unless `maxFVars? == some 0`, in which case it computes the `whnf`.\n"
+    },
+    {
+      "name": "Lean.Meta.letBoundedTelescope",
+      "type": " {n : Type \u2192 Type u_1} [MonadControlT Lean.MetaM n] [Monad n] {\u03b1 : Type} (e : Lean.Expr) (maxFVars? : Option \u2115) (k : Array Lean.Expr \u2192 Lean.Expr \u2192 n \u03b1) (cleanupAnnotations : Bool := false) (preserveNondepLet : Bool := true) (nondepLetOnly : Bool := false) : n \u03b1",
+      "library": "Lean",
+      "module": "Lean.Meta.Basic",
+      "category": "contains",
+      "description": "Like `letTelescope`, but limits the number of `let`/`have`s consumed to `maxFVars?`.\nIf `maxFVars?` is none, then this is the same as `letTelescope`.\n"
+    },
+    {
+      "name": "Lean.PrettyPrinter.Delaborator.SubExpr.withBoundedAppFn",
+      "type": " {\u03b1 : Type} {m : Type \u2192 Type} [Monad m] [MonadReaderOf Lean.SubExpr m] [MonadWithReaderOf Lean.SubExpr m] (maxArgs : \u2115) (xf : m \u03b1) : m \u03b1",
+      "library": "Lean",
+      "module": "Lean.PrettyPrinter.Delaborator.SubExpr",
+      "category": "contains",
+      "description": "Runs `xf` in the context of `Lean.Expr.getBoundedAppFn maxArgs`.\nThis is equivalent to `withBoundedAppFnArgs maxArgs xf pure`.\n"
+    },
+    {
+      "name": "Lean.PrettyPrinter.Delaborator.SubExpr.withBoundedAppFnArgs",
+      "type": " {\u03b1 : Type} {m : Type \u2192 Type} [Monad m] [MonadReaderOf Lean.SubExpr m] [MonadWithReaderOf Lean.SubExpr m] (maxArgs : \u2115) (xf : m \u03b1) (xa : \u03b1 \u2192 m \u03b1) : m \u03b1",
+      "library": "Lean",
+      "module": "Lean.PrettyPrinter.Delaborator.SubExpr",
+      "category": "contains",
+      "description": "Uses `xa` to compute the fold across up to `maxArgs` outermost arguments of an application,\nwhere `xf` provides the initial value and is evaluated in the context of the application minus\nthe arguments being folded across.\n"
+    },
+    {
+      "name": "Lean.Compiler.LCNF.ToLCNF.visitBoundedLambda",
+      "type": " (e : Lean.Expr) (n : \u2115) : Lean.Compiler.LCNF.ToLCNF.M (Array Lean.Compiler.LCNF.Param \u00d7 Lean.Expr)",
+      "library": "Lean",
+      "module": "Lean.Compiler.LCNF.ToLCNF",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Bool.instBoundedOrder",
+      "type": " : BoundedOrder Bool",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.BoundedOrder.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrder.toOrderBot",
+      "type": " {\u03b1 : Type u} {inst\u271d : LE \u03b1} [self : BoundedOrder \u03b1] : OrderBot \u03b1",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.BoundedOrder.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrder.toOrderTop",
+      "type": " {\u03b1 : Type u} {inst\u271d : LE \u03b1} [self : BoundedOrder \u03b1] : OrderTop \u03b1",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.BoundedOrder.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrder.instSubsingleton",
+      "type": " {\u03b1 : Type u} [PartialOrder \u03b1] : Subsingleton (BoundedOrder \u03b1)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.BoundedOrder.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrder.mk",
+      "type": " {\u03b1 : Type u} [LE \u03b1] [toOrderTop : OrderTop \u03b1] [toOrderBot : OrderBot \u03b1] : BoundedOrder \u03b1",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.BoundedOrder.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "OrderDual.instBoundedOrder",
+      "type": " (\u03b1 : Type u) [LE \u03b1] [BoundedOrder \u03b1] : BoundedOrder \u03b1\u1d52\u1d48",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.BoundedOrder.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "ULift.instBoundedOrder",
+      "type": " {\u03b1 : Type u} [LE \u03b1] [BoundedOrder \u03b1] : BoundedOrder (ULift.{v, u} \u03b1)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.BoundedOrder.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Pi.instBoundedOrder",
+      "type": " {\u03b9 : Type u_1} {\u03b1' : \u03b9 \u2192 Type u_2} [(i : \u03b9) \u2192 LE (\u03b1' i)] [(i : \u03b9) \u2192 BoundedOrder (\u03b1' i)] : BoundedOrder ((i : \u03b9) \u2192 \u03b1' i)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.BoundedOrder.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Prod.instBoundedOrder",
+      "type": " (\u03b1 : Type u) (\u03b2 : Type v) [LE \u03b1] [LE \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] : BoundedOrder (\u03b1 \u00d7 \u03b2)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.BoundedOrder.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrder.lift",
+      "type": " {\u03b1 : Type u} {\u03b2 : Type v} [LE \u03b1] [Top \u03b1] [Bot \u03b1] [LE \u03b2] [BoundedOrder \u03b2] (f : \u03b1 \u2192 \u03b2) (map_le : \u2200 (a b : \u03b1), f a \u2264 f b \u2192 a \u2264 b) (map_top : f \u22a4 = \u22a4) (map_bot : f \u22a5 = \u22a5) : BoundedOrder \u03b1",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.BoundedOrder.Basic",
+      "category": "contains",
+      "description": "Pullback a `BoundedOrder`. "
+    },
+    {
+      "name": "Set.unbounded_of_isEmpty",
+      "type": " {\u03b1 : Type u} [IsEmpty \u03b1] {r : \u03b1 \u2192 \u03b1 \u2192 Prop} (s : Set \u03b1) : Set.Unbounded r s",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.RelClasses",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Set.not_bounded_iff",
+      "type": " {\u03b1 : Type u} {r : \u03b1 \u2192 \u03b1 \u2192 Prop} (s : Set \u03b1) : \u00acSet.Bounded r s \u2194 Set.Unbounded r s",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.RelClasses",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Set.not_unbounded_iff",
+      "type": " {\u03b1 : Type u} {r : \u03b1 \u2192 \u03b1 \u2192 Prop} (s : Set \u03b1) : \u00acSet.Unbounded r s \u2194 Set.Bounded r s",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.RelClasses",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Set.Bounded.eq_1",
+      "type": " {\u03b1 : Type u} (r : \u03b1 \u2192 \u03b1 \u2192 Prop) (s : Set \u03b1) : Set.Bounded r s = \u2203 a, \u2200 b \u2208 s, r b a",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.RelClasses",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Set.Unbounded.eq_1",
+      "type": " {\u03b1 : Type u} (r : \u03b1 \u2192 \u03b1 \u2192 Prop) (s : Set \u03b1) : Set.Unbounded r s = \u2200 (a : \u03b1), \u2203 b \u2208 s, \u00acr b a",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.RelClasses",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Complementeds.instBoundedOrder",
+      "type": " {\u03b1 : Type u_1} [Lattice \u03b1] [BoundedOrder \u03b1] : BoundedOrder (Complementeds \u03b1)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Disjoint",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Prop.instBoundedOrder",
+      "type": " : BoundedOrder Prop",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.PropInstances",
+      "category": "contains",
+      "description": "Propositions form a bounded order. "
+    },
+    {
+      "name": "Set.instBoundedOrder",
+      "type": " {\u03b1 : Type u} : BoundedOrder (Set \u03b1)",
+      "library": "Mathlib",
+      "module": "Mathlib.Data.Set.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "CoheytingAlgebra.toBoundedOrder",
+      "type": " {\u03b1 : Type u_2} [CoheytingAlgebra \u03b1] : BoundedOrder \u03b1",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Heyting.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "HeytingAlgebra.toBoundedOrder",
+      "type": " {\u03b1 : Type u_2} [HeytingAlgebra \u03b1] : BoundedOrder \u03b1",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Heyting.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BooleanAlgebra.toBoundedOrder",
+      "type": " {\u03b1 : Type u} [h : BooleanAlgebra \u03b1] : BoundedOrder \u03b1",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.BooleanAlgebra.Defs",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Plausible.Random.instBoundedRandomInt",
+      "type": " {m : Type \u2192 Type u_1} [Monad m] : Plausible.BoundedRandom m \u2124",
+      "library": "Plausible",
+      "module": "Plausible.Random",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Plausible.Random.instBoundedRandomNat",
+      "type": " {m : Type \u2192 Type u_1} [Monad m] : Plausible.BoundedRandom m \u2115",
+      "library": "Plausible",
+      "module": "Plausible.Random",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Plausible.Random.instBoundedRandomBitVec",
+      "type": " {m : Type \u2192 Type u_1} [Monad m] {n : \u2115} : Plausible.BoundedRandom m (BitVec n)",
+      "library": "Plausible",
+      "module": "Plausible.Random",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Plausible.Random.instBoundedRandomFin",
+      "type": " {m : Type \u2192 Type u_1} [Monad m] {n : \u2115} : Plausible.BoundedRandom m (Fin n)",
+      "library": "Plausible",
+      "module": "Plausible.Random",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Plausible.BoundedRandom.mk",
+      "type": " {m : Type u \u2192 Type u_1} {\u03b1 : Type u} [LE \u03b1] (randomR : {g : Type} \u2192 (lo hi : \u03b1) \u2192 lo \u2264 hi \u2192 [RandomGen g] \u2192 Plausible.RandGT g m { a // lo \u2264 a \u2227 a \u2264 hi }) : Plausible.BoundedRandom m \u03b1",
+      "library": "Plausible",
+      "module": "Plausible.Random",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Plausible.BoundedRandom.randomR",
+      "type": " {m : Type u \u2192 Type u_1} {\u03b1 : Type u} {inst\u271d : LE \u03b1} [self : Plausible.BoundedRandom m \u03b1] {g : Type} (lo hi : \u03b1) (h : lo \u2264 hi) [RandomGen g] : Plausible.RandGT g m { a // lo \u2264 a \u2227 a \u2264 hi }",
+      "library": "Plausible",
+      "module": "Plausible.Random",
+      "category": "contains",
+      "description": "Generate a value of type `\u03b1` between `lo` and `hi` randomly using generator `g`.\n"
+    },
+    {
+      "name": "WithBot.instBoundedOrder",
+      "type": " {\u03b1 : Type u_1} [LE \u03b1] [OrderTop \u03b1] : BoundedOrder (WithBot \u03b1)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.WithBot",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "WithTop.instBoundedOrder",
+      "type": " {\u03b1 : Type u_1} [LE \u03b1] [OrderBot \u03b1] : BoundedOrder (WithTop \u03b1)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.WithBot",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "WithBot.instBoundedOrder.eq_1",
+      "type": " {\u03b1 : Type u_1} [LE \u03b1] [OrderTop \u03b1] : WithBot.instBoundedOrder = { toOrderTop := WithBot.instOrderTop, toOrderBot := WithBot.instOrderBot }",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.WithBot",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "WithTop.instBoundedOrder.eq_1",
+      "type": " {\u03b1 : Type u_1} [LE \u03b1] [OrderBot \u03b1] : WithTop.instBoundedOrder = { toOrderTop := WithTop.instOrderTop, toOrderBot := WithTop.instOrderBot }",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.WithBot",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "WithZero.instBoundedOrder",
+      "type": " {\u03b1 : Type u_1} [LE \u03b1] [OrderTop \u03b1] : BoundedOrder (WithBot \u03b1)",
+      "library": "Mathlib",
+      "module": "Mathlib.Algebra.Order.GroupWithZero.Canonical",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "CompleteLattice.toBoundedOrder",
+      "type": " {\u03b1 : Type u_8} [self : CompleteLattice \u03b1] : BoundedOrder \u03b1",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.CompleteLattice.Defs",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "GaloisCoinsertion.liftBoundedOrder",
+      "type": " {\u03b1 : Type u} {\u03b2 : Type v} {l : \u03b1 \u2192 \u03b2} {u : \u03b2 \u2192 \u03b1} [PartialOrder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b2] (gi : GaloisCoinsertion l u) : BoundedOrder \u03b1",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.GaloisConnection.Basic",
+      "category": "contains",
+      "description": "Lift the top, bottom, suprema, and infima along a Galois coinsertion "
+    },
+    {
+      "name": "GaloisInsertion.liftBoundedOrder",
+      "type": " {\u03b1 : Type u} {\u03b2 : Type v} {l : \u03b1 \u2192 \u03b2} {u : \u03b2 \u2192 \u03b1} [PartialOrder \u03b2] [Preorder \u03b1] [BoundedOrder \u03b1] (gi : GaloisInsertion l u) : BoundedOrder \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.GaloisConnection.Basic",
+      "category": "contains",
+      "description": "Lift the top, bottom, suprema, and infima along a Galois insertion "
+    },
+    {
+      "name": "Set.Iic.instBoundedOrderElemOfOrderBot",
+      "type": " {\u03b1 : Type u_1} {a : \u03b1} [Preorder \u03b1] [OrderBot \u03b1] : BoundedOrder \u2191(Set.Iic a)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.LatticeIntervals",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Set.Icc.instBoundedOrderElemOfFactLe",
+      "type": " {\u03b1 : Type u_1} {a b : \u03b1} [Preorder \u03b1] [Fact (a \u2264 b)] : BoundedOrder \u2191(Set.Icc a b)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.LatticeIntervals",
+      "category": "contains",
+      "description": "`Icc a b` is a `BoundedOrder` whenever `a \u2264 b`. "
+    },
+    {
+      "name": "Flag.instBoundedOrderSubtypeMem",
+      "type": " {\u03b1 : Type u_1} [Preorder \u03b1] [BoundedOrder \u03b1] (s : Flag \u03b1) : BoundedOrder \u21a5s",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Preorder.Chain",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "pow_unbounded_of_one_lt",
+      "type": " {R : Type u_3} [Semiring R] [PartialOrder R] [IsStrictOrderedRing R] [Archimedean R] {y : R} [ExistsAddOfLE R] (x : R) (hy1 : 1 < y) : \u2203 n, x < y ^ n",
+      "library": "Mathlib",
+      "module": "Mathlib.Algebra.Order.Archimedean.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "add_one_pow_unbounded_of_pos",
+      "type": " {R : Type u_3} [Semiring R] [PartialOrder R] [IsStrictOrderedRing R] [Archimedean R] {y : R} (x : R) (hy : 0 < y) : \u2203 n, x < (y + 1) ^ n",
+      "library": "Mathlib",
+      "module": "Mathlib.Algebra.Order.Archimedean.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Fin.instBoundedOrder",
+      "type": " {n : \u2115} [NeZero n] : BoundedOrder (Fin n)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Fin.Basic",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.id",
+      "type": " (\u03b1 : Type u_2) [Preorder \u03b1] [BoundedOrder \u03b1] : BoundedOrderHom \u03b1 \u03b1",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": "`id` as a `BoundedOrderHom`. "
+    },
+    {
+      "name": "BoundedOrderHom.instInhabited",
+      "type": " (\u03b1 : Type u_2) [Preorder \u03b1] [BoundedOrder \u03b1] : Inhabited (BoundedOrderHom \u03b1 \u03b1)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.instFunLike",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] : FunLike (BoundedOrderHom \u03b1 \u03b2) \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.toOrderHom",
+      "type": " {\u03b1 : Type u_6} {\u03b2 : Type u_7} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (self : BoundedOrderHom \u03b1 \u03b2) : \u03b1 \u2192o \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.coe_id",
+      "type": " (\u03b1 : Type u_2) [Preorder \u03b1] [BoundedOrder \u03b1] : \u21d1(BoundedOrderHom.id \u03b1) = id",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.id_apply",
+      "type": " {\u03b1 : Type u_2} [Preorder \u03b1] [BoundedOrder \u03b1] (a : \u03b1) : (BoundedOrderHom.id \u03b1) a = a",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.instBoundedOrderHomClass",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] : BoundedOrderHomClass (BoundedOrderHom \u03b1 \u03b2) \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHomClass.toBoundedOrderHom",
+      "type": " {F : Type u_1} {\u03b1 : Type u_2} {\u03b2 : Type u_3} [FunLike F \u03b1 \u03b2] [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrderHomClass F \u03b1 \u03b2] (f : F) : BoundedOrderHom \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": "Turn an element of a type `F` satisfying `BoundedOrderHomClass F \u03b1 \u03b2` into an actual\n`BoundedOrderHom`. This is declared as the default coercion from `F` to `BoundedOrderHom \u03b1 \u03b2`. "
+    },
+    {
+      "name": "instCoeTCBoundedOrderHomOfBoundedOrderHomClass",
+      "type": " {F : Type u_1} {\u03b1 : Type u_2} {\u03b2 : Type u_3} [FunLike F \u03b1 \u03b2] [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrderHomClass F \u03b1 \u03b2] : CoeTC F (BoundedOrderHom \u03b1 \u03b2)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.comp",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} {\u03b3 : Type u_4} [Preorder \u03b1] [Preorder \u03b2] [Preorder \u03b3] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrder \u03b3] (f : BoundedOrderHom \u03b2 \u03b3) (g : BoundedOrderHom \u03b1 \u03b2) : BoundedOrderHom \u03b1 \u03b3",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": "Composition of `BoundedOrderHom`s as a `BoundedOrderHom`. "
+    },
+    {
+      "name": "BoundedOrderHomClass.toBotHomClass",
+      "type": " {F : Type u_1} {\u03b1 : Type u_2} {\u03b2 : Type u_3} [FunLike F \u03b1 \u03b2] [LE \u03b1] [LE \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrderHomClass F \u03b1 \u03b2] : BotHomClass F \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHomClass.toRelHomClass",
+      "type": " {F : Type u_6} {\u03b1 : Type u_7} {\u03b2 : Type u_8} {inst\u271d : LE \u03b1} {inst\u271d\u00b9 : LE \u03b2} {inst\u271d\u00b2 : BoundedOrder \u03b1} {inst\u271d\u00b3 : BoundedOrder \u03b2} {inst\u271d\u2074 : FunLike F \u03b1 \u03b2} [self : BoundedOrderHomClass F \u03b1 \u03b2] : RelHomClass F (fun x1 x2 => x1 \u2264 x2) fun x1 x2 => x1 \u2264 x2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHomClass.toTopHomClass",
+      "type": " {F : Type u_1} {\u03b1 : Type u_2} {\u03b2 : Type u_3} [FunLike F \u03b1 \u03b2] [LE \u03b1] [LE \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrderHomClass F \u03b1 \u03b2] : TopHomClass F \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.comp_id",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedOrderHom \u03b1 \u03b2) : f.comp (BoundedOrderHom.id \u03b1) = f",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.dual",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [BoundedOrder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b2] : BoundedOrderHom \u03b1 \u03b2 \u2243 BoundedOrderHom \u03b1\u1d52\u1d48 \u03b2\u1d52\u1d48",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": "Reinterpret a bounded order homomorphism as a bounded order homomorphism between the dual\norders. "
+    },
+    {
+      "name": "BoundedOrderHom.id_comp",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedOrderHom \u03b1 \u03b2) : (BoundedOrderHom.id \u03b2).comp f = f",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.toBotHom",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedOrderHom \u03b1 \u03b2) : BotHom \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": "Reinterpret a `BoundedOrderHom` as a `BotHom`. "
+    },
+    {
+      "name": "BoundedOrderHom.toTopHom",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedOrderHom \u03b1 \u03b2) : TopHom \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": "Reinterpret a `BoundedOrderHom` as a `TopHom`. "
+    },
+    {
+      "name": "OrderIsoClass.toBoundedOrderHomClass",
+      "type": " {F : Type u_1} {\u03b1 : Type u_2} {\u03b2 : Type u_3} [EquivLike F \u03b1 \u03b2] [LE \u03b1] [BoundedOrder \u03b1] [PartialOrder \u03b2] [BoundedOrder \u03b2] [OrderIsoClass F \u03b1 \u03b2] : BoundedOrderHomClass F \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHomClass.map_bot",
+      "type": " {F : Type u_6} {\u03b1 : Type u_7} {\u03b2 : Type u_8} {inst\u271d : LE \u03b1} {inst\u271d\u00b9 : LE \u03b2} {inst\u271d\u00b2 : BoundedOrder \u03b1} {inst\u271d\u00b3 : BoundedOrder \u03b2} {inst\u271d\u2074 : FunLike F \u03b1 \u03b2} [self : BoundedOrderHomClass F \u03b1 \u03b2] (f : F) : f \u22a5 = \u22a5",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": "Morphisms preserve the bottom element. The preferred spelling is `_root_.map_bot`. "
+    },
+    {
+      "name": "BoundedOrderHomClass.map_top",
+      "type": " {F : Type u_6} {\u03b1 : Type u_7} {\u03b2 : Type u_8} {inst\u271d : LE \u03b1} {inst\u271d\u00b9 : LE \u03b2} {inst\u271d\u00b2 : BoundedOrder \u03b1} {inst\u271d\u00b3 : BoundedOrder \u03b2} {inst\u271d\u2074 : FunLike F \u03b1 \u03b2} [self : BoundedOrderHomClass F \u03b1 \u03b2] (f : F) : f \u22a4 = \u22a4",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": "Morphisms preserve the top element. The preferred spelling is `_root_.map_top`. "
+    },
+    {
+      "name": "BoundedOrderHom.copy",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedOrderHom \u03b1 \u03b2) (f' : \u03b1 \u2192 \u03b2) (h : f' = \u21d1f) : BoundedOrderHom \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": "Copy of a `BoundedOrderHom` with a new `toFun` equal to the old one. Useful to fix\ndefinitional equalities. "
+    },
+    {
+      "name": "BoundedOrderHom.map_bot'",
+      "type": " {\u03b1 : Type u_6} {\u03b2 : Type u_7} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (self : BoundedOrderHom \u03b1 \u03b2) : self.toFun \u22a5 = \u22a5",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": "The function preserves the bottom element. The preferred spelling is `map_bot`. "
+    },
+    {
+      "name": "BoundedOrderHom.map_top'",
+      "type": " {\u03b1 : Type u_6} {\u03b2 : Type u_7} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (self : BoundedOrderHom \u03b1 \u03b2) : self.toFun \u22a4 = \u22a4",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": "The function preserves the top element. The preferred spelling is `map_top`. "
+    },
+    {
+      "name": "BoundedOrderHom.copy_eq",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedOrderHom \u03b1 \u03b2) (f' : \u03b1 \u2192 \u03b2) (h : f' = \u21d1f) : f.copy f' h = f",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.coe_copy",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedOrderHom \u03b1 \u03b2) (f' : \u03b1 \u2192 \u03b2) (h : f' = \u21d1f) : \u21d1(f.copy f' h) = f'",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.ext",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] {f g : BoundedOrderHom \u03b1 \u03b2} (h : \u2200 (a : \u03b1), f a = g a) : f = g",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.ext_iff",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] {f g : BoundedOrderHom \u03b1 \u03b2} : f = g \u2194 \u2200 (a : \u03b1), f a = g a",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.mk",
+      "type": " {\u03b1 : Type u_6} {\u03b2 : Type u_7} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (toOrderHom : \u03b1 \u2192o \u03b2) (map_top' : toOrderHom.toFun \u22a4 = \u22a4) (map_bot' : toOrderHom.toFun \u22a5 = \u22a5) : BoundedOrderHom \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHomClass.mk",
+      "type": " {F : Type u_6} {\u03b1 : Type u_7} {\u03b2 : Type u_8} [LE \u03b1] [LE \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [FunLike F \u03b1 \u03b2] [toRelHomClass : RelHomClass F (fun x1 x2 => x1 \u2264 x2) fun x1 x2 => x1 \u2264 x2] (map_top : \u2200 (f : F), f \u22a4 = \u22a4) (map_bot : \u2200 (f : F), f \u22a5 = \u22a5) : BoundedOrderHomClass F \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.comp_assoc",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} {\u03b3 : Type u_4} {\u03b4 : Type u_5} [Preorder \u03b1] [Preorder \u03b2] [Preorder \u03b3] [Preorder \u03b4] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrder \u03b3] [BoundedOrder \u03b4] (f : BoundedOrderHom \u03b3 \u03b4) (g : BoundedOrderHom \u03b2 \u03b3) (h : BoundedOrderHom \u03b1 \u03b2) : (f.comp g).comp h = f.comp (g.comp h)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.cancel_left",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} {\u03b3 : Type u_4} [Preorder \u03b1] [Preorder \u03b2] [Preorder \u03b3] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrder \u03b3] {g : BoundedOrderHom \u03b2 \u03b3} {f\u2081 f\u2082 : BoundedOrderHom \u03b1 \u03b2} (hg : Function.Injective \u21d1g) : g.comp f\u2081 = g.comp f\u2082 \u2194 f\u2081 = f\u2082",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.cancel_right",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} {\u03b3 : Type u_4} [Preorder \u03b1] [Preorder \u03b2] [Preorder \u03b3] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrder \u03b3] {g\u2081 g\u2082 : BoundedOrderHom \u03b2 \u03b3} {f : BoundedOrderHom \u03b1 \u03b2} (hf : Function.Surjective \u21d1f) : g\u2081.comp f = g\u2082.comp f \u2194 g\u2081 = g\u2082",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.comp_apply",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} {\u03b3 : Type u_4} [Preorder \u03b1] [Preorder \u03b2] [Preorder \u03b3] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrder \u03b3] (f : BoundedOrderHom \u03b2 \u03b3) (g : BoundedOrderHom \u03b1 \u03b2) (a : \u03b1) : (f.comp g) a = f (g a)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.coe_comp",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} {\u03b3 : Type u_4} [Preorder \u03b1] [Preorder \u03b2] [Preorder \u03b3] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrder \u03b3] (f : BoundedOrderHom \u03b2 \u03b3) (g : BoundedOrderHom \u03b1 \u03b2) : \u21d1(f.comp g) = \u21d1f \u2218 \u21d1g",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.mk.injEq",
+      "type": " {\u03b1 : Type u_6} {\u03b2 : Type u_7} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (toOrderHom : \u03b1 \u2192o \u03b2) (map_top' : toOrderHom.toFun \u22a4 = \u22a4) (map_bot' : toOrderHom.toFun \u22a5 = \u22a5) (toOrderHom\u271d : \u03b1 \u2192o \u03b2) (map_top'\u271d : toOrderHom\u271d.toFun \u22a4 = \u22a4) (map_bot'\u271d : toOrderHom\u271d.toFun \u22a5 = \u22a5) : ({ toOrderHom := toOrderHom, map_top' := map_top', map_bot' := map_bot' } = { toOrderHom := toOrderHom\u271d, map_top' := map_top'\u271d, map_bot' := map_bot'\u271d }) = (toOrderHom = toOrderHom\u271d)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.dual_id",
+      "type": " {\u03b1 : Type u_2} [Preorder \u03b1] [BoundedOrder \u03b1] : BoundedOrderHom.dual (BoundedOrderHom.id \u03b1) = BoundedOrderHom.id \u03b1\u1d52\u1d48",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.coe_comp_orderHom",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} {\u03b3 : Type u_4} [Preorder \u03b1] [Preorder \u03b2] [Preorder \u03b3] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrder \u03b3] (f : BoundedOrderHom \u03b2 \u03b3) (g : BoundedOrderHom \u03b1 \u03b2) : \u2191(f.comp g) = (\u2191f).comp \u2191g",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.symm_dual_id",
+      "type": " {\u03b1 : Type u_2} [Preorder \u03b1] [BoundedOrder \u03b1] : BoundedOrderHom.dual.symm (BoundedOrderHom.id \u03b1\u1d52\u1d48) = BoundedOrderHom.id \u03b1",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.mk.sizeOf_spec",
+      "type": " {\u03b1 : Type u_6} {\u03b2 : Type u_7} [Preorder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [SizeOf \u03b1] [SizeOf \u03b2] (toOrderHom : \u03b1 \u2192o \u03b2) (map_top' : toOrderHom.toFun \u22a4 = \u22a4) (map_bot' : toOrderHom.toFun \u22a5 = \u22a5) : sizeOf { toOrderHom := toOrderHom, map_top' := map_top', map_bot' := map_bot' } = 1 + sizeOf toOrderHom + sizeOf map_top' + sizeOf map_bot'",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.coe_comp_botHom",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} {\u03b3 : Type u_4} [Preorder \u03b1] [Preorder \u03b2] [Preorder \u03b3] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrder \u03b3] (f : BoundedOrderHom \u03b2 \u03b3) (g : BoundedOrderHom \u03b1 \u03b2) : \u2191(f.comp g) = (\u2191f).comp \u2191g",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.coe_comp_topHom",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} {\u03b3 : Type u_4} [Preorder \u03b1] [Preorder \u03b2] [Preorder \u03b3] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrder \u03b3] (f : BoundedOrderHom \u03b2 \u03b3) (g : BoundedOrderHom \u03b1 \u03b2) : \u2191(f.comp g) = (\u2191f).comp \u2191g",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.dual_apply_toOrderHom",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [BoundedOrder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b2] (f : BoundedOrderHom \u03b1 \u03b2) : (BoundedOrderHom.dual f).toOrderHom = OrderHom.dual f.toOrderHom",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.dual_symm_apply_toOrderHom",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Preorder \u03b1] [BoundedOrder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b2] (f : BoundedOrderHom \u03b1\u1d52\u1d48 \u03b2\u1d52\u1d48) : (BoundedOrderHom.dual.symm f).toOrderHom = OrderHom.dual.symm f.toOrderHom",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.dual_comp",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} {\u03b3 : Type u_4} [Preorder \u03b1] [BoundedOrder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b2] [Preorder \u03b3] [BoundedOrder \u03b3] (g : BoundedOrderHom \u03b2 \u03b3) (f : BoundedOrderHom \u03b1 \u03b2) : BoundedOrderHom.dual (g.comp f) = (BoundedOrderHom.dual g).comp (BoundedOrderHom.dual f)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedOrderHom.symm_dual_comp",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} {\u03b3 : Type u_4} [Preorder \u03b1] [BoundedOrder \u03b1] [Preorder \u03b2] [BoundedOrder \u03b2] [Preorder \u03b3] [BoundedOrder \u03b3] (g : BoundedOrderHom \u03b2\u1d52\u1d48 \u03b3\u1d52\u1d48) (f : BoundedOrderHom \u03b1\u1d52\u1d48 \u03b2\u1d52\u1d48) : BoundedOrderHom.dual.symm (g.comp f) = (BoundedOrderHom.dual.symm g).comp (BoundedOrderHom.dual.symm f)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Bounded",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "InfHom.instBoundedOrder",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Min \u03b1] [SemilatticeInf \u03b2] [BoundedOrder \u03b2] : BoundedOrder (InfHom \u03b1 \u03b2)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Lattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "SupHom.instBoundedOrder",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Max \u03b1] [SemilatticeSup \u03b2] [BoundedOrder \u03b2] : BoundedOrder (SupHom \u03b1 \u03b2)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.Lattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedLatticeHom.id",
+      "type": " (\u03b1 : Type u_2) [Lattice \u03b1] [BoundedOrder \u03b1] : BoundedLatticeHom \u03b1 \u03b1",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": "`id` as a `BoundedLatticeHom`. "
+    },
+    {
+      "name": "BoundedLatticeHom.instInhabited",
+      "type": " (\u03b1 : Type u_2) [Lattice \u03b1] [BoundedOrder \u03b1] : Inhabited (BoundedLatticeHom \u03b1 \u03b1)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedLatticeHom.instFunLike",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] : FunLike (BoundedLatticeHom \u03b1 \u03b2) \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedLatticeHom.toLatticeHom",
+      "type": " {\u03b1 : Type u_6} {\u03b2 : Type u_7} [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (self : BoundedLatticeHom \u03b1 \u03b2) : LatticeHom \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedLatticeHom.coe_id",
+      "type": " (\u03b1 : Type u_2) [Lattice \u03b1] [BoundedOrder \u03b1] : \u21d1(BoundedLatticeHom.id \u03b1) = id",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedLatticeHom.id_apply",
+      "type": " {\u03b1 : Type u_2} [Lattice \u03b1] [BoundedOrder \u03b1] (a : \u03b1) : (BoundedLatticeHom.id \u03b1) a = a",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedLatticeHom.instBoundedLatticeHomClass",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] : BoundedLatticeHomClass (BoundedLatticeHom \u03b1 \u03b2) \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedLatticeHomClass.toLatticeHomClass",
+      "type": " {F : Type u_6} {\u03b1 : Type u_7} {\u03b2 : Type u_8} {inst\u271d : Lattice \u03b1} {inst\u271d\u00b9 : Lattice \u03b2} {inst\u271d\u00b2 : BoundedOrder \u03b1} {inst\u271d\u00b3 : BoundedOrder \u03b2} {inst\u271d\u2074 : FunLike F \u03b1 \u03b2} [self : BoundedLatticeHomClass F \u03b1 \u03b2] : LatticeHomClass F \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "instCoeTCBoundedLatticeHomOfBoundedLatticeHomClass",
+      "type": " {F : Type u_1} {\u03b1 : Type u_2} {\u03b2 : Type u_3} [FunLike F \u03b1 \u03b2] [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedLatticeHomClass F \u03b1 \u03b2] : CoeTC F (BoundedLatticeHom \u03b1 \u03b2)",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "Subtype.boundedOrder.congr_simp",
+      "type": " {\u03b1 : Type u} {p : \u03b1 \u2192 Prop} [LE \u03b1] [BoundedOrder \u03b1] (hbot : p \u22a5) (htop : p \u22a4) : Subtype.boundedOrder hbot htop = Subtype.boundedOrder hbot htop",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedLatticeHom.toBoundedOrderHom",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedLatticeHom \u03b1 \u03b2) : BoundedOrderHom \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": "Reinterpret a `BoundedLatticeHom` as a `BoundedOrderHom`. "
+    },
+    {
+      "name": "BoundedLatticeHom.comp_id",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedLatticeHom \u03b1 \u03b2) : f.comp (BoundedLatticeHom.id \u03b1) = f",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedLatticeHom.id_comp",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedLatticeHom \u03b1 \u03b2) : (BoundedLatticeHom.id \u03b2).comp f = f",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedLatticeHom.comp",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} {\u03b3 : Type u_4} [Lattice \u03b1] [Lattice \u03b2] [Lattice \u03b3] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedOrder \u03b3] (f : BoundedLatticeHom \u03b2 \u03b3) (g : BoundedLatticeHom \u03b1 \u03b2) : BoundedLatticeHom \u03b1 \u03b3",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": "Composition of `BoundedLatticeHom`s as a `BoundedLatticeHom`. "
+    },
+    {
+      "name": "BoundedLatticeHom.copy",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedLatticeHom \u03b1 \u03b2) (f' : \u03b1 \u2192 \u03b2) (h : f' = \u21d1f) : BoundedLatticeHom \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": "Copy of a `BoundedLatticeHom` with a new `toFun` equal to the old one. Useful to fix\ndefinitional equalities. "
+    },
+    {
+      "name": "BoundedLatticeHomClass.toBoundedOrderHomClass",
+      "type": " {F : Type u_1} {\u03b1 : Type u_2} {\u03b2 : Type u_3} [FunLike F \u03b1 \u03b2] [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [BoundedLatticeHomClass F \u03b1 \u03b2] : BoundedOrderHomClass F \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "OrderIsoClass.toBoundedLatticeHomClass",
+      "type": " {F : Type u_1} {\u03b1 : Type u_2} {\u03b2 : Type u_3} [EquivLike F \u03b1 \u03b2] [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] [OrderIsoClass F \u03b1 \u03b2] : BoundedLatticeHomClass F \u03b1 \u03b2",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedLatticeHom.dual",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Lattice \u03b1] [BoundedOrder \u03b1] [Lattice \u03b2] [BoundedOrder \u03b2] : BoundedLatticeHom \u03b1 \u03b2 \u2243 BoundedLatticeHom \u03b1\u1d52\u1d48 \u03b2\u1d52\u1d48",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": "Reinterpret a bounded lattice homomorphism as a bounded lattice homomorphism between the dual\nbounded lattices. "
+    },
+    {
+      "name": "BoundedLatticeHom.coe_toLatticeHom",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedLatticeHom \u03b1 \u03b2) : \u21d1f.toLatticeHom = \u21d1f",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedLatticeHom.copy_eq",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedLatticeHom \u03b1 \u03b2) (f' : \u03b1 \u2192 \u03b2) (h : f' = \u21d1f) : f.copy f' h = f",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    },
+    {
+      "name": "BoundedLatticeHom.toFun_eq_coe",
+      "type": " {\u03b1 : Type u_2} {\u03b2 : Type u_3} [Lattice \u03b1] [Lattice \u03b2] [BoundedOrder \u03b1] [BoundedOrder \u03b2] (f : BoundedLatticeHom \u03b1 \u03b2) : f.toFun = \u21d1f",
+      "library": "Mathlib",
+      "module": "Mathlib.Order.Hom.BoundedLattice",
+      "category": "contains",
+      "description": null
+    }
+  ],
+  "patterns_identified": [
+    "Bounded integer types",
+    "Bounded sets",
+    "BoundedOrder typeclass",
+    "Random generation with bounds"
+  ],
+  "summary": "Found 2240 declarations containing 'bounded' across Lean's ecosystem. Major categories include: bounded integer types (Std.Time, 63 decls), BoundedOrder typeclass (Mathlib, 120 decls), bounded sets and functions (Mathlib topology/analysis), bounded telescopes for metaprogramming (Lean, 9 decls), and bounded random generation (Plausible, 7 decls). The concept appears in order theory, time calculations, topology, analysis, and proof automation.",
+  "categorization": {
+    "exact": 2,
+    "prefix": 12,
+    "suffix": 4,
+    "contains": 182
+  },
+  "library_breakdown": {
+    "Init": 1,
+    "Std": 63,
+    "Lean": 9,
+    "Mathlib": 120,
+    "Plausible": 7
+  }
+}

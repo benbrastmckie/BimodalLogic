@@ -228,6 +228,62 @@ See [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) for curr
 
 **ModelChecker**: https://github.com/benbrastmckie/ModelChecker - Z3-based semantic verification for Logos (v0.9.26).
 
+## AI-Assisted Development Process
+
+The Logos methodology integrates with an AI agent system that automates research, planning, implementation, and documentation workflows:
+
+### Research Phase
+
+Use `/research` to explore theoretical foundations, implementation patterns, and LEAN library resources:
+
+```bash
+/research "bimodal logic soundness proofs in LEAN 4"
+```
+
+Creates comprehensive research reports with LEAN library exploration and literature review.
+
+### Planning Phase
+
+Use `/plan` to create detailed implementation plans aligned with the Logos methodology:
+
+```bash
+/plan "Implement perpetuity principles P1-P6"
+```
+
+Generates step-by-step plans with complexity analysis, dependency tracking, and verification strategies.
+
+### Implementation Phase
+
+Use `/lean` to implement proofs following the methodology with automated verification:
+
+```bash
+/lean 023
+```
+
+Implements LEAN 4 proofs, verifies with lean-lsp-mcp, and commits to git.
+
+### Documentation Phase
+
+Use `/document` to maintain accurate, complete, and concise documentation:
+
+```bash
+/document "perpetuity principles"
+```
+
+Updates documentation to reflect current implementation status and theoretical foundations.
+
+### AI System Integration
+
+The AI system supports the complete Logos development methodology:
+
+- **Research**: Multi-source research with LEAN library exploration
+- **Planning**: Detailed implementation plans with complexity analysis
+- **Implementation**: LEAN 4 proof development with verification
+- **Documentation**: Automated documentation updates and accuracy verification
+- **Review**: Comprehensive repository analysis and task identification
+
+See [AI System Overview](../../.opencode/README.md) for complete workflow documentation.
+
 ## Related Documentation
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) - Layer 0 (Core TM) technical specification
@@ -235,6 +291,8 @@ See [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) for curr
 - [Research/DUAL_VERIFICATION.md](../Research/DUAL_VERIFICATION.md) - RL training architecture
 - [Research/PROOF_LIBRARY_DESIGN.md](../Research/PROOF_LIBRARY_DESIGN.md) - Theorem caching design
 - [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) - Current implementation progress
+- [AI System Overview](../../.opencode/README.md) - Automated development workflows
+- [AI Command Reference](../../.opencode/command/README.md) - Command usage and examples
 
 ---
 

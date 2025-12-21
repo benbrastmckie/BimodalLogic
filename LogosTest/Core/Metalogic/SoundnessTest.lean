@@ -39,23 +39,23 @@ example (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.some_past)) := temp_
 
 -- Test: Modal T axiom is derivable
 example (φ : Formula) : ⊢ (φ.box.imp φ) :=
-  Derivable.axiom [] _ (Axiom.modal_t φ)
+  DerivationTree.axiom [] _ (Axiom.modal_t φ)
 
 -- Test: Modal 4 axiom is derivable
 example (φ : Formula) : ⊢ ((φ.box).imp (φ.box.box)) :=
-  Derivable.axiom [] _ (Axiom.modal_4 φ)
+  DerivationTree.axiom [] _ (Axiom.modal_4 φ)
 
 -- Test: Modal B axiom is derivable
 example (φ : Formula) : ⊢ (φ.imp (φ.diamond.box)) :=
-  Derivable.axiom [] _ (Axiom.modal_b φ)
+  DerivationTree.axiom [] _ (Axiom.modal_b φ)
 
 -- Test: Temporal 4 axiom is derivable
 example (φ : Formula) : ⊢ ((φ.all_future).imp (φ.all_future.all_future)) :=
-  Derivable.axiom [] _ (Axiom.temp_4 φ)
+  DerivationTree.axiom [] _ (Axiom.temp_4 φ)
 
 -- Test: Temporal A axiom is derivable
 example (φ : Formula) : ⊢ (φ.imp (Formula.all_future φ.some_past)) :=
-  Derivable.axiom [] _ (Axiom.temp_a φ)
+  DerivationTree.axiom [] _ (Axiom.temp_a φ)
 
 -- ========================================
 -- Soundness Application Tests
@@ -63,27 +63,27 @@ example (φ : Formula) : ⊢ (φ.imp (Formula.all_future φ.some_past)) :=
 
 -- Test: Soundness applies to Modal T derivation
 example (φ : Formula) : [] ⊨ (φ.box.imp φ) := by
-  let deriv : ⊢ (φ.box.imp φ) := Derivable.axiom [] _ (Axiom.modal_t φ)
+  let deriv : ⊢ (φ.box.imp φ) := DerivationTree.axiom [] _ (Axiom.modal_t φ)
   exact soundness [] (φ.box.imp φ) deriv
 
 -- Test: Soundness applies to Modal 4 derivation
 example (φ : Formula) : [] ⊨ ((φ.box).imp (φ.box.box)) := by
-  let deriv : ⊢ ((φ.box).imp (φ.box.box)) := Derivable.axiom [] _ (Axiom.modal_4 φ)
+  let deriv : ⊢ ((φ.box).imp (φ.box.box)) := DerivationTree.axiom [] _ (Axiom.modal_4 φ)
   exact soundness [] ((φ.box).imp (φ.box.box)) deriv
 
 -- Test: Soundness applies to Modal B derivation
 example (φ : Formula) : [] ⊨ (φ.imp (φ.diamond.box)) := by
-  let deriv : ⊢ (φ.imp (φ.diamond.box)) := Derivable.axiom [] _ (Axiom.modal_b φ)
+  let deriv : ⊢ (φ.imp (φ.diamond.box)) := DerivationTree.axiom [] _ (Axiom.modal_b φ)
   exact soundness [] (φ.imp (φ.diamond.box)) deriv
 
 -- Test: Soundness applies to Temporal 4 derivation
 example (φ : Formula) : [] ⊨ ((φ.all_future).imp (φ.all_future.all_future)) := by
-  let deriv : ⊢ ((φ.all_future).imp (φ.all_future.all_future)) := Derivable.axiom [] _ (Axiom.temp_4 φ)
+  let deriv : ⊢ ((φ.all_future).imp (φ.all_future.all_future)) := DerivationTree.axiom [] _ (Axiom.temp_4 φ)
   exact soundness [] ((φ.all_future).imp (φ.all_future.all_future)) deriv
 
 -- Test: Soundness applies to Temporal A derivation
 example (φ : Formula) : [] ⊨ (φ.imp (Formula.all_future φ.some_past)) := by
-  let deriv : ⊢ (φ.imp (Formula.all_future φ.some_past)) := Derivable.axiom [] _ (Axiom.temp_a φ)
+  let deriv : ⊢ (φ.imp (Formula.all_future φ.some_past)) := DerivationTree.axiom [] _ (Axiom.temp_a φ)
   exact soundness [] (φ.imp (Formula.all_future φ.some_past)) deriv
 
 -- ========================================
@@ -96,15 +96,15 @@ example (φ : Formula) (h : ⊨ (φ.box.imp φ)) : [] ⊨ (φ.box.imp φ) :=
 
 -- Test: Soundness for assumptions
 example (φ : Formula) : [φ] ⊨ φ := by
-  let deriv : [φ] ⊢ φ := Derivable.assumption [φ] φ (List.Mem.head _)
+  let deriv : [φ] ⊢ φ := DerivationTree.assumption [φ] φ (List.Mem.head _)
   exact soundness [φ] φ deriv
 
 -- Test: Soundness preserves modus ponens
 example (φ ψ : Formula) : [φ.imp ψ, φ] ⊨ ψ := by
   let deriv : [φ.imp ψ, φ] ⊢ ψ :=
-    Derivable.modus_ponens [φ.imp ψ, φ] φ ψ
-      (Derivable.assumption [φ.imp ψ, φ] (φ.imp ψ) (List.Mem.head _))
-      (Derivable.assumption [φ.imp ψ, φ] φ (List.Mem.tail _ (List.Mem.head _)))
+    DerivationTree.modus_ponens [φ.imp ψ, φ] φ ψ
+      (DerivationTree.assumption [φ.imp ψ, φ] (φ.imp ψ) (List.Mem.head _))
+      (DerivationTree.assumption [φ.imp ψ, φ] φ (List.Mem.tail _ (List.Mem.head _)))
   exact soundness [φ.imp ψ, φ] ψ deriv
 
 -- Test: Soundness preserves weakening

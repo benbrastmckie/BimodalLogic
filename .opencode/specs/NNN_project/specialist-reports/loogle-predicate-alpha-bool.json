@@ -1,0 +1,252 @@
+{
+  "search_metadata": {
+    "date": "2025-12-21",
+    "type_pattern": "α → Bool",
+    "query_patterns": [
+      "α → Bool",
+      "_ → Bool",
+      "Nat → Bool",
+      "List α → Bool",
+      "String → Bool",
+      "Option α → Bool"
+    ],
+    "limitations": [
+      "Type pattern searches with Greek letters not directly supported by Loogle",
+      "Some searches timed out (too general patterns like '_ → Bool')",
+      "Loogle API intermittent 502 errors",
+      "Had to use specific function names instead of pure type patterns"
+    ],
+    "search_strategy": "Function name-based search with concrete type instances"
+  },
+  "exact_matches": [
+    {
+      "name": "List.isEmpty",
+      "type": "{α : Type u} : List α → Bool",
+      "library": "Init (Lean Core)",
+      "module": "Init.Data.List.Basic",
+      "description": "Checks whether a list is empty",
+      "complexity": "O(1)",
+      "related_count": 343,
+      "examples": [
+        "[].isEmpty = true",
+        "[\"grape\"].isEmpty = false"
+      ]
+    },
+    {
+      "name": "Option.isSome",
+      "type": "{α : Type u_1} : Option α → Bool",
+      "library": "Init (Lean Core)",
+      "module": "Init.Data.Option.Basic",
+      "description": "Returns true on some x and false on none",
+      "related_count": 1627,
+      "related_functions": [
+        "Option.isSome_none",
+        "Option.isSome_some",
+        "Option.get"
+      ]
+    },
+    {
+      "name": "Option.isNone",
+      "type": "{α : Type u_1} : Option α → Bool",
+      "library": "Init (Lean Core)",
+      "module": "Init.Data.Option.Basic",
+      "description": "Returns true on none and false on some x",
+      "related_functions": [
+        "Option.not_isSome"
+      ]
+    },
+    {
+      "name": "Array.isEmpty",
+      "type": "{α : Type u} (xs : Array α) : Bool",
+      "library": "Init (Lean Core)",
+      "module": "Init.Data.Array.Basic",
+      "description": "Checks whether an array is empty (size = 0)",
+      "related_count": 34,
+      "examples": [
+        "(#[] : Array String).isEmpty = true",
+        "#[1, 2].isEmpty = false"
+      ],
+      "related_lemmas": [
+        "Array.isEmpty_empty",
+        "Array.isEmpty_push",
+        "Array.isEmpty_iff"
+      ]
+    }
+  ],
+  "partial_matches": [
+    {
+      "name": "List.all",
+      "type": "{α : Type u} : List α → (α → Bool) → Bool",
+      "library": "Init (Lean Core)",
+      "module": "Init.Data.List.Basic",
+      "description": "Returns true if p returns true for every element of l",
+      "complexity": "O(|l|)",
+      "short_circuits": true,
+      "related_count": 66,
+      "examples": [
+        "[2, 4, 6].all (· % 2 = 0) = true",
+        "[2, 4, 5, 6].all (· % 2 = 0) = false"
+      ],
+      "note": "Higher-order predicate - takes predicate as argument"
+    },
+    {
+      "name": "List.any",
+      "type": "{α : Type u} (l : List α) (p : α → Bool) : Bool",
+      "library": "Init (Lean Core)",
+      "module": "Init.Data.List.Basic",
+      "description": "Returns true if p returns true for any element of l",
+      "complexity": "O(|l|)",
+      "short_circuits": true,
+      "related_count": 79,
+      "examples": [
+        "[2, 4, 6].any (· % 2 = 0) = true",
+        "[2, 4, 6].any (· % 2 = 1) = false"
+      ],
+      "note": "Higher-order predicate - takes predicate as argument"
+    },
+    {
+      "name": "List.elem",
+      "type": "{α : Type u} [BEq α] (a : α) (l : List α) : Bool",
+      "library": "Init (Lean Core)",
+      "module": "Init.Data.List.Basic",
+      "description": "Checks whether a is an element of l using ==",
+      "complexity": "O(|l|)",
+      "typeclass_requirements": ["BEq α"],
+      "related_count": 22,
+      "note": "List.contains is preferred simp normal form",
+      "examples": [
+        "List.elem 3 [1, 4, 2, 3, 3, 7] = true",
+        "List.elem 5 [1, 4, 2, 3, 3, 7] = false"
+      ]
+    },
+    {
+      "name": "String.contains",
+      "type": "{ρ : Type} {σ : String.Slice → Type} [...] (s : String) (pat : ρ) [...] : Bool",
+      "library": "Init (Lean Core)",
+      "module": "Init.Data.String.Search",
+      "description": "Checks whether a string has a match of the pattern pat anywhere",
+      "related_count": 1,
+      "note": "Generic over all currently supported patterns",
+      "examples": [
+        "\"coffee tea water\".contains Char.isWhitespace = true",
+        "\"tea\".contains (fun (c : Char) => c == 'X') = false",
+        "\"coffee tea water\".contains \"tea\" = true"
+      ]
+    }
+  ],
+  "related_functions": [
+    {
+      "name": "Decidable",
+      "type": "(p : Prop) : Type",
+      "library": "Init (Lean Core)",
+      "module": "Init.Prelude",
+      "description": "Either a proof that p is true or a proof that p is false",
+      "related_count": 1753,
+      "note": "Equivalent to Bool paired with proof that Bool is true iff p is true",
+      "role": "Bridge between Prop and Bool"
+    },
+    {
+      "name": "Decidable.decide",
+      "type": "(p : Prop) [h : Decidable p] : Bool",
+      "library": "Init (Lean Core)",
+      "module": "Init.Prelude",
+      "description": "Converts a decidable proposition into a Bool",
+      "role": "Prop-to-Bool conversion"
+    }
+  ],
+  "naming_patterns": {
+    "state_predicates": {
+      "pattern": "is{State}",
+      "examples": ["isEmpty", "isSome", "isNone"],
+      "description": "Checks if value is in a particular state"
+    },
+    "membership": {
+      "pattern": "contains | elem",
+      "examples": ["contains", "elem"],
+      "description": "Checks if element/pattern exists in collection"
+    },
+    "quantified": {
+      "pattern": "all | any",
+      "examples": ["all", "any"],
+      "description": "Universal (∀) or existential (∃) quantification"
+    }
+  },
+  "typeclass_patterns": {
+    "equality_based": {
+      "typeclass": "BEq α",
+      "functions": ["List.elem", "List.contains"],
+      "purpose": "Boolean equality testing"
+    },
+    "lawful_equality": {
+      "typeclass": "LawfulBEq α",
+      "purpose": "Ensures BEq respects equality laws"
+    },
+    "ordering": {
+      "typeclass": "Ord α",
+      "purpose": "Comparison operations",
+      "note": "Not found in this search but common pattern"
+    }
+  },
+  "performance_characteristics": {
+    "constant_time": [
+      "List.isEmpty",
+      "Array.isEmpty",
+      "Option.isSome",
+      "Option.isNone"
+    ],
+    "linear_time": [
+      "List.all (with short-circuiting)",
+      "List.any (with short-circuiting)",
+      "List.elem",
+      "String.contains"
+    ],
+    "short_circuiting": {
+      "List.all": "stops at first false",
+      "List.any": "stops at first true"
+    }
+  },
+  "insights": {
+    "design_philosophy": "LEAN 4 maintains consistent naming, documented performance, and dual Bool/Prop versions",
+    "type_driven": "Predicates organized by types they operate on (List α, Option α, Array α)",
+    "typeclass_polymorphism": "Leverages BEq, Ord, Decidable for generic behavior",
+    "proof_automation": "Extensive theorem libraries (3,945+ related declarations) support proof tactics",
+    "performance_conscious": "Explicit complexity documentation and short-circuiting behavior",
+    "pattern_matching": "Predicates integrate seamlessly with if-conditions and decide tactic"
+  },
+  "statistics": {
+    "primary_predicates_found": 8,
+    "total_related_declarations": 3945,
+    "libraries_covered": ["Init (Lean Core)"],
+    "modules_explored": 5,
+    "type_patterns_searched": 6,
+    "distribution_by_type": {
+      "List": 4,
+      "Option": 2,
+      "Array": 1,
+      "String": 1,
+      "Decidable": 1753
+    }
+  },
+  "recommendations": {
+    "finding_predicates": [
+      "Search by concrete types (Nat → Bool, String → Bool)",
+      "Search by common names (is*, has*, contains)",
+      "Browse Init.Data.* and Std.Data.* modules",
+      "Use LeanSearch for semantic search"
+    ],
+    "using_predicates": [
+      "Prefer standard library predicates when available",
+      "Document complexity following standard library pattern",
+      "Provide simp lemmas connecting Bool and Prop versions",
+      "Use typeclasses (BEq, Ord, Decidable) for genericity"
+    ],
+    "proof_development": [
+      "Use decide tactic for decidable predicates",
+      "Leverage simp lemmas for automatic simplification",
+      "Understand Bool vs Prop duality",
+      "Explore extensive theorem libraries"
+    ]
+  },
+  "report_path": ".opencode/specs/NNN_project/specialist-reports/loogle-predicate-alpha-bool.md",
+  "summary": "Found 8 primary predicate functions with 3,945+ related declarations. LEAN 4 exhibits consistent design with dual Bool/Prop nature, rich theorem libraries, and performance-conscious implementations. The Decidable typeclass bridges computation and logic, enabling proof automation while maintaining efficiency."
+}
