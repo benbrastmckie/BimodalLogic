@@ -1,0 +1,15 @@
+{
+  "_schema_version": "1.0.0",
+  "project_name": "allow_task_to_run_without_linked_plan_when_none_exists",
+  "project_number": 116,
+  "type": "implementation",
+  "phase": "completed",
+  "reports": [],
+  "plans": [
+    "plans/implementation-001.md"
+  ],
+  "summaries": [],
+  "status": "completed",
+  "created": "2025-12-23T00:05:00Z",
+  "last_updated": "2025-12-23T00:55:00Z"
+}

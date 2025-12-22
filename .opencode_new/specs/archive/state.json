@@ -1,0 +1,469 @@
+{
+  "_schema_version": "1.0.0",
+  "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
+  "_last_updated": "2025-12-22T23:59:59Z",
+  "archived_projects": [
+    {
+      "project_number": 107,
+      "project_name": "align_revise_command_with_add_and_plan_for_task_linked_plan_revisions",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T00:00:00Z",
+        "completed": "2025-12-22T00:00:00Z",
+        "archived": "2025-12-22T16:00:00Z"
+      },
+      "summary": "Harmonized /revise with /add and /plan: task-number + prompt resolution, plan versioning in-place, TODO/state/doc sync guardrails, no new directories or renumbering.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/107_align_revise_command_with_add_and_plan_for_task_linked_plan_revisions/"
+      }
+    },
+    {
+      "project_number": 108,
+      "project_name": "harmonize_todo_and_review_command_lifecycle_for_cleanup_and_gap_analysis",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T00:00:00Z",
+        "completed": "2025-12-22T12:45:00Z",
+        "archived": "2025-12-22T16:00:00Z"
+      },
+      "summary": "Split lifecycle: /todo handles cleanup/archival/orphan-stale reconciliation and doc sync; /review handles gap-analysis and task creation via /add with numbering + lazy-creation guardrails.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/108_harmonize_todo_and_review_command_lifecycle_for_cleanup_and_gap_analysis/"
+      }
+    },
+    {
+      "project_number": 110,
+      "project_name": "improve_plan_command_to_reuse_linked_research_when_generating_plans",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T12:30:00Z",
+        "completed": "2025-12-22T13:15:00Z",
+        "archived": "2025-12-22T16:00:00Z"
+      },
+      "summary": "Updated /plan contract to harvest linked research, cite inputs in plans, and preserve lazy directory creation; added plan #110 implementation plan and synchronized TODO/state.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/110_improve_plan_command_to_reuse_linked_research_when_generating_plans/"
+      }
+    },
+    {
+      "project_number": 90,
+      "project_name": "review_20251222",
+      "type": "review",
+      "timeline": {
+        "created": null,
+        "completed": "2025-12-22T00:00:00Z",
+        "archived": "2025-12-22T16:00:00Z"
+      },
+      "summary": "ModelBuilder repository review - Compliance 100/100, Repository Health 100/100 (Perfect). Architecture integrity verified across 5 layers, documentation completeness confirmed. TODO system updated with 12 prioritized tasks. Production-ready for advanced development.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/090_review_20251222/"
+      }
+    },
+    {
+      "project_number": 6,
+      "project_name": "review_20251220",
+      "type": "review",
+      "timeline": {
+        "created": null,
+        "completed": "2025-12-20T00:00:00Z",
+        "archived": "2025-12-22T16:00:00Z"
+      },
+      "summary": "Comprehensive repository review - Compliance 95/100, Repository Health 94/100 (Excellent). Perfect sorry/axiom alignment (8/8, 24/24). Zero critical or major issues. Production-ready for Layer 0.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/006_review_20251220/"
+      }
+    },
+    {
+      "project_number": 5,
+      "project_name": "research_task_vs_lean_implement",
+      "type": "research",
+      "timeline": {
+        "created": null,
+        "completed": "2025-12-19T12:00:00Z",
+        "archived": "2025-12-22T16:00:00Z"
+      },
+      "summary": "Comparative analysis of /task vs /lean commands - Identified 14 missing specialist agents, clarified command usage",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/005_research_task_vs_lean_implement/"
+      }
+    },
+    {
+      "project_number": 4,
+      "project_name": "review_20251216",
+      "type": "review",
+      "timeline": {
+        "created": null,
+        "completed": "2025-12-16T00:00:00Z",
+        "archived": "2025-12-22T16:00:00Z"
+      },
+      "summary": "Comprehensive repository review - Compliance 94.65/100, Repository Health 94/100 (Excellent)",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/004_review_20251216/"
+      }
+    },
+    {
+      "project_number": 3,
+      "project_name": "specialist_agents_implementation",
+      "type": "implementation",
+      "timeline": {
+        "created": null,
+        "completed": "2025-12-15T00:00:00Z",
+        "archived": "2025-12-22T16:00:00Z"
+      },
+      "summary": "Specialist agents implementation - 14 agents created",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/003_specialist_agents_implementation/"
+      }
+    },
+    {
+      "project_number": 2,
+      "project_name": "system_enhancements_research",
+      "type": "research",
+      "timeline": {
+        "created": null,
+        "completed": "2025-12-15T00:00:00Z",
+        "archived": "2025-12-22T16:00:00Z"
+      },
+      "summary": "System enhancements research - Context organization and specialist agents",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/002_system_enhancements_research/"
+      }
+    },
+    {
+      "project_number": 1,
+      "project_name": "review_20251215",
+      "type": "review",
+      "timeline": {
+        "created": null,
+        "completed": "2025-12-15T00:00:00Z",
+        "archived": "2025-12-22T16:00:00Z"
+      },
+      "summary": "Comprehensive repository review - Layer 0 MVP production-ready",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/001_review_20251215/"
+      }
+    },
+    {
+      "project_number": 62,
+      "project_name": "docstring_coverage",
+      "type": "documentation",
+      "timeline": {
+        "created": null,
+        "completed": "2025-12-18T00:00:00Z",
+        "archived": "2025-12-18T00:00:00Z"
+      },
+      "summary": "Verified 100% docstring coverage across all Logos modules",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/062_docstring_coverage/"
+      }
+    },
+    {
+      "project_number": 61,
+      "project_name": "add_missing_directory_readmes",
+      "type": "documentation",
+      "timeline": {
+        "created": null,
+        "completed": "2025-12-18T00:00:00Z",
+        "archived": "2025-12-18T00:00:00Z"
+      },
+      "summary": "Created Perpetuity/README.md and Automation/README.md",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/061_add_missing_directory_readmes/"
+      }
+    },
+    {
+      "project_number": 60,
+      "project_name": "remove_backup_artifacts",
+      "type": "maintenance",
+      "timeline": {
+        "created": null,
+        "completed": "2025-12-16T00:00:00Z",
+        "archived": "2025-12-18T00:00:00Z"
+      },
+      "summary": "Removed Bridge.lean.backup, enhanced .gitignore",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/060_remove_backup_artifacts/"
+      }
+    },
+    {
+      "project_number": 59,
+      "project_name": "implementation_status_update",
+      "type": "documentation",
+      "timeline": {
+        "created": null,
+        "completed": "2025-12-16T00:00:00Z",
+        "archived": "2025-12-18T00:00:00Z"
+      },
+      "summary": "Updated IMPLEMENTATION_STATUS.md for DeductionTheorem completion",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/059_implementation_status_update/"
+      }
+    },
+    {
+      "project_number": 56,
+      "project_name": "bridge_helper_lemmas",
+      "type": "verification",
+      "timeline": {
+        "created": null,
+        "completed": "2025-12-16T00:00:00Z",
+        "archived": "2025-12-18T00:00:00Z"
+      },
+      "summary": "Verified all Bridge.lean helper lemmas already implemented",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/056_bridge_helper_lemmas/"
+      }
+    },
+    {
+      "project_number": 52,
+      "project_name": "fix_aesop_duplicate",
+      "type": "bugfix",
+      "timeline": {
+        "created": null,
+        "completed": "2025-12-15T00:00:00Z",
+        "archived": "2025-12-18T00:00:00Z"
+      },
+      "summary": "Fixed AesopRules.lean duplicate declaration",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/052_fix_aesop_duplicate/"
+      }
+    },
+    {
+      "project_number": 7,
+      "project_name": "emoji_removal",
+      "type": "maintenance",
+      "timeline": {
+        "created": "2025-12-20T00:00:00Z",
+        "completed": null,
+        "archived": "2025-12-22T16:00:00Z"
+      },
+      "summary": "Stale active_projects entry with no corresponding TODO or project directory; archived during maintenance sweep pending decision to restart or abandon.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/007_emoji_removal/"
+      }
+    },
+    {
+      "project_number": 106,
+      "project_name": "propose_modelbuilder_architecture_deltas_based_on_frame_learnings",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T00:00:00Z",
+        "completed": "2025-12-22T17:00:00Z",
+        "archived": "2025-12-22T23:55:00Z"
+      },
+      "summary": "Architecture delta proposals based on Frame insights; produced architecture-delta-from-frame.md and integration mapping.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/106_propose_modelbuilder_architecture_deltas_based_on_frame_learnings/"
+      }
+    },
+    {
+      "project_number": 109,
+      "project_name": "enforce_lazy_directory_creation_for_command_artifacts",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T00:00:00Z",
+        "completed": "2025-12-22T17:00:00Z",
+        "archived": "2025-12-22T23:55:00Z"
+      },
+      "summary": "Enforced lazy directory creation across standards, commands, and agents; removed placeholder reliance and tied updates to artifact writes.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/109_enforce_lazy_directory_creation_for_command_artifacts/"
+      }
+    },
+    {
+      "project_number": 111,
+      "project_name": "no_emojis_standard",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T14:30:00Z",
+        "completed": "2025-12-22T21:05:00Z",
+        "archived": "2025-12-22T23:55:00Z"
+      },
+      "summary": "Documented and enforced no-emojis standard across commands, agents, and standards.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/111_no_emojis_standard/"
+      }
+    },
+    {
+      "project_number": 112,
+      "project_name": "standardize_artifact_templates",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T15:00:00Z",
+        "completed": "2025-12-22T21:25:00Z",
+        "archived": "2025-12-22T23:55:00Z"
+      },
+      "summary": "Published plan/report/summary templates with status markers and integrated references into artifact management.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/112_standardize_artifact_templates/"
+      }
+    },
+    {
+      "project_number": 113,
+      "project_name": "todo_reorg_by_kind",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T16:30:00Z",
+        "completed": "2025-12-22T21:45:00Z",
+        "archived": "2025-12-22T23:55:00Z"
+      },
+      "summary": "Enhanced /todo to regroup pending tasks by kind while preserving numbering and lazy directory guardrails.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/113_todo_reorg_by_kind/"
+      }
+    },
+    {
+      "project_number": 114,
+      "project_name": "ensure_task_updates_the_active_plan_while_executing_align_with_implement",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T22:20:00Z",
+        "completed": "2025-12-22T23:20:00Z",
+        "archived": "2025-12-22T23:55:00Z"
+      },
+      "summary": "Updated /task to reuse linked plans, apply lazy directory creation, and mirror /implement status synchronization.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/114_ensure_task_updates_the_active_plan_while_executing_align_with_implement/"
+      }
+    },
+    {
+      "project_number": 115,
+      "project_name": "harmonize_implement_and_task_command_flows_for_plan_driven_execution",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T22:55:00Z",
+        "completed": "2025-12-22T23:20:00Z",
+        "archived": "2025-12-22T23:55:00Z"
+      },
+      "summary": "Aligned /implement and /task for plan-driven execution with shared numbering, status sync, and lazy creation guardrails.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/115_harmonize_implement_and_task_command_flows_for_plan_driven_execution/"
+      }
+    },
+    {
+      "project_number": 105,
+      "project_name": "research_command_to_context_mapping_for_opencode_agents",
+      "type": "research",
+      "timeline": {
+        "created": "2025-12-23T00:00:00Z",
+        "completed": "2025-12-23T00:00:00Z",
+        "archived": "2025-12-22T12:30:00Z"
+      },
+      "summary": "Mapped command/agent context loads, minimized required standards, and sequenced loader fixes with analysis/research artifacts.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/105_research_command_to_context_mapping_for_opencode_agents/"
+      }
+    },
+    {
+      "project_number": 118,
+      "project_name": "review_frame_architecture_for_reusable_patterns",
+      "type": "research",
+      "timeline": {
+        "created": "2025-12-22T00:00:00Z",
+        "completed": "2025-12-22T00:00:00Z",
+        "archived": "2025-12-22T12:30:00Z"
+      },
+      "summary": "Documented Frame architecture patterns with cited improvements and compatibility notes for ModelBuilder.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/118_review_frame_architecture_for_reusable_patterns/"
+      }
+    },
+    {
+      "project_number": 119,
+      "project_name": "ensure_task_updates_todo_and_plan_statuses_with_status_markers",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T22:10:00Z",
+        "completed": "2025-12-23T00:00:00Z",
+        "archived": "2025-12-23T12:30:00Z"
+      },
+      "summary": "Enforced /task status-marker updates across TODO/plan/state with lazy directory creation preserved.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/119_ensure_task_updates_todo_and_plan_statuses_with_status_markers/"
+      }
+    },
+    {
+      "project_number": 121,
+      "project_name": "improve_task_command_contract_and_artifacts",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T00:00:00Z",
+        "completed": "2025-12-22T00:00:00Z",
+        "archived": "2025-12-22T12:30:00Z"
+      },
+      "summary": "Hardened /task parsing, batch routing, lazy directory guardrails, summary emission, and TODO/state synchronization with graceful missing-entry handling.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/121_improve_task_command_contract_and_artifacts/"
+      }
+    },
+    {
+      "project_number": 116,
+      "project_name": "allow_task_to_run_without_linked_plan_when_none_exists",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-23T00:00:00Z",
+        "completed": "2025-12-23T00:00:00Z",
+        "archived": "2025-12-22T12:30:00Z"
+      },
+      "summary": "Updated /task contract to allow execution without plan links while preserving lazy directory creation, state/TODO sync, and plan reuse when present.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/116_allow_task_to_run_without_linked_plan_when_none_exists/"
+      }
+    },
+    {
+      "project_number": 104,
+      "project_name": "clean_up_state_json_and_remove_stale_project_references",
+      "type": "maintenance",
+      "timeline": {
+        "created": "2025-12-22T00:00:00Z",
+        "completed": "2025-12-22T00:00:00Z",
+        "archived": "2025-12-22T12:30:00Z"
+      },
+      "summary": "Clean up state.json by removing completed/archived or missing projects and reconcile with TODO/directory presence.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/104_clean_up_state_json_and_remove_stale_project_references/"
+      }
+    },
+    {
+      "project_number": 122,
+      "project_name": "refine_modelbuilder_architecture_using_frame_deltas_and_frame_insights",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T00:00:00Z",
+        "completed": null,
+        "archived": "2025-12-22T12:30:00Z"
+      },
+      "summary": "Abandoned during planning; removed from active/pending and archived with no execution artifacts.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/122_refine_modelbuilder_architecture_using_frame_deltas_and_frame_insights/"
+      }
+    },
+    {
+      "project_number": 120,
+      "project_name": "add_summary_artifact_for_task_118_per_artifact_management",
+      "type": "maintenance",
+      "timeline": {
+        "created": "2025-12-22T23:59:59Z",
+        "completed": null,
+        "archived": "2025-12-22T23:59:59Z"
+      },
+      "summary": "Abandoned during planning; removed from TODO/state and archived with no artifacts created.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/120_add_summary_artifact_for_task_118_per_artifact_management/"
+      }
+    },
+    {
+      "project_number": 123,
+      "project_name": "update_todo_to_remove_abandoned_tasks_and_document_marker",
+      "type": "implementation",
+      "timeline": {
+        "created": "2025-12-22T00:00:00Z",
+        "completed": "2025-12-22T00:00:00Z",
+        "archived": "2025-12-22T23:59:59Z"
+      },
+      "summary": "Updated /todo to remove [ABANDONED] tasks alongside completed tasks, documented marker usage, and synced TODO/state without new directories.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/123_update_todo_to_remove_abandoned_tasks_and_document_marker/"
+      }
+    }
+  ]
+}

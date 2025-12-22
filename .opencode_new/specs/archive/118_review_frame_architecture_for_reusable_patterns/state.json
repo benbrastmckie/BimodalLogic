@@ -1,0 +1,15 @@
+{
+  "_schema_version": "1.0.0",
+  "project_name": "review_frame_architecture_for_reusable_patterns",
+  "project_number": 118,
+  "type": "research",
+  "phase": "planning",
+  "reports": [],
+  "plans": [
+    "plans/implementation-001.md"
+  ],
+  "summaries": [],
+  "status": "active",
+  "created": "2025-12-22T00:00:00Z",
+  "last_updated": "2025-12-22T23:59:59Z"
+}

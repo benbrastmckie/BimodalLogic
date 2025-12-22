@@ -1,0 +1,13 @@
+{
+  "_schema_version": "1.0.0",
+  "project_number": 115,
+  "project_name": "harmonize_implement_and_task_command_flows_for_plan_driven_execution",
+  "type": "implementation",
+  "phase": "implementation",
+  "reports": [],
+  "plans": [],
+  "summaries": ["summaries/implementation-summary-20251222.md"],
+  "status": "completed",
+  "created": "2025-12-22T23:15:00Z",
+  "last_updated": "2025-12-22T23:15:00Z"
+}

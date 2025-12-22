@@ -1,0 +1,234 @@
+{
+  "_schema_version": "1.0.0",
+  "_comment": "Main state tracking file for ProofChecker project. Links to specialized state files for archives and maintenance.",
+  "_last_updated": "2025-12-22T23:59:59Z",
+  "next_project_number": 125,
+  "project_numbering": {
+    "min": 0,
+    "max": 999,
+    "policy": "increment_modulo_1000",
+    "_comment": "Project numbers wrap around to 000 after 999. Ensure old projects are archived before reuse."
+  },
+  "active_projects": [
+    {
+      "project_number": 124,
+      "project_name": "document_opencode_agent_system_overview_across_system_summary_architecture_readme",
+      "type": "documentation",
+      "status": "active",
+      "phase": "planning",
+      "plans": [
+        "plans/implementation-001.md"
+      ],
+      "reports": [
+        "reports/research-001.md"
+      ],
+      "summaries": [],
+      "created": "2025-12-24T00:00:00Z",
+      "last_updated": "2025-12-24T12:00:00Z"
+    }
+  ],
+  "completed_projects": [
+    {
+      "project_number": 123,
+      "project_name": "update_todo_to_remove_abandoned_tasks_and_document_marker",
+      "type": "implementation",
+      "status": "completed",
+      "phase": "completed",
+      "created": "2025-12-22T00:00:00Z",
+      "completed": "2025-12-22T00:00:00Z",
+      "summary": "Updated /todo to remove [ABANDONED] tasks alongside completed tasks, documented marker usage, and synced TODO/state without new directories."
+    }
+  ],
+  "recent_activities": [
+    {
+      "type": "maintenance",
+      "timestamp": "2025-12-22T23:59:59Z",
+      "summary": "TODO maintenance: removed completed/abandoned tasks 120/123, reconciled 122 abandonment, updated state/archive, and moved archived project directories into .opencode/specs/archive/."
+    },
+    {
+      "type": "implementation",
+      "project_number": 124,
+      "timestamp": "2025-12-22T17:05:00Z",
+      "summary": "Updated SYSTEM_SUMMARY, ARCHITECTURE, and README with guardrails, status-marker sync, and standards links per plan 124."
+    },
+    {
+      "type": "planning",
+      "project_number": 124,
+      "timestamp": "2025-12-24T12:00:00Z",
+      "summary": "Implementation plan for documenting .opencode agent system overview across SYSTEM_SUMMARY, ARCHITECTURE, README with guardrails, status markers, and standards links."
+    },
+    {
+      "type": "research",
+      "project_number": 124,
+      "timestamp": "2025-12-24T00:00:00Z",
+      "summary": "Research findings for documenting .opencode agent system across SYSTEM_SUMMARY, ARCHITECTURE, README with guardrails and standards links."
+    },
+    {
+      "type": "planning",
+      "project_number": 122,
+      "timestamp": "2025-12-23T23:59:59Z",
+      "summary": "Implementation plan for Frame-aligned architecture deltas with task mappings, backlog mapping, and quality gates (doc-only)."
+    },
+    {
+      "type": "implementation",
+      "project_number": 121,
+      "timestamp": "2025-12-22T22:15:00Z",
+      "summary": "Hardened /task contract for batch routing, lazy creation, summary emission, and TODO/state sync with graceful missing-entry handling."
+    },
+    {
+      "type": "implementation",
+      "project_number": 123,
+      "timestamp": "2025-12-22T22:10:00Z",
+      "summary": "Updated /todo to remove [ABANDONED] tasks, documented marker usage, and synced TODO/state without creating new directories."
+    },
+    {
+      "type": "research",
+      "project_number": 118,
+      "timestamp": "2025-12-22T21:35:00Z",
+      "summary": "Documented Frame architecture patterns and ≥5 improvements for ModelBuilder with citations (frame-architecture-insights.md)."
+    },
+    {
+      "type": "implementation",
+      "project_number": 105,
+      "timestamp": "2025-12-23T01:40:00Z",
+      "summary": "Produced minimal-load command/agent mappings with sequencing, gap fixes, and analysis report (analysis-001)."
+    },
+    {
+      "type": "research",
+      "project_number": 105,
+      "timestamp": "2025-12-22T23:45:00Z",
+      "summary": "Mapped command/agent context loads, flagged missing standards and oversized includes, and prioritized loader fixes."
+    },
+    {
+      "type": "implementation",
+      "project_number": 114,
+      "timestamp": "2025-12-22T23:20:00Z",
+      "summary": "Updated /task command to reuse plan links, fail gracefully without plan, and align plan updates with lazy directory creation."
+    },
+    {
+      "type": "implementation",
+      "project_number": 115,
+      "timestamp": "2025-12-22T23:20:00Z",
+      "summary": "Aligned /implement and /task contracts for plan-driven execution with lazy directory guardrails and status sync documentation."
+    },
+    {
+      "type": "implementation",
+      "project_number": 106,
+      "timestamp": "2025-12-22T17:00:00Z",
+      "summary": "Authored architecture delta doc with Frame-aligned phased changes and cross-cutting gates; updated pipeline overview reference."
+    },
+    {
+      "type": "implementation",
+      "project_number": 109,
+      "timestamp": "2025-12-22T17:00:00Z",
+      "summary": "Enforced lazy directory creation across standards, commands, and agents; flagged legacy placeholders and aligned state updates to artifacts."
+    },
+    {
+      "type": "maintenance",
+      "timestamp": "2025-12-22T16:00:00Z",
+      "summary": "TODO maintenance: removed completed tasks 107/108/110, normalized status markers, migrated state entries to archive/state.json, directories move pending (see warnings)."
+    },
+    {
+      "type": "planning",
+      "project_number": 108,
+      "timestamp": "2025-12-22T12:00:00Z",
+      "summary": "Implementation plan created for harmonizing /todo cleanup/archival and /review gap-analysis; numbering protected and lazy directory creation enforced."
+    },
+    {
+      "type": "implementation",
+      "project_number": 110,
+      "timestamp": "2025-12-23T00:55:00Z",
+      "summary": "Updated /task contract to allow execution without plan links while preserving lazy directory creation, state/TODO sync, and plan reuse when present."
+    },
+    {
+      "type": "review",
+      "project_number": 90,
+      "timestamp": "2025-12-22T00:00:00Z",
+      "summary": "ModelBuilder repository review completed - Perfect scores: Compliance 100/100, Repository Health 100/100. Architecture integrity verified across 5 layers, comprehensive documentation confirmed. TODO system updated with 12 prioritized tasks for next development phase."
+    },
+    {
+      "type": "planning",
+      "project_number": 7,
+      "timestamp": "2025-12-20T00:00:00Z",
+      "summary": "Implementation plan created for systematic emoji removal. Complexity: Moderate. Effort: 2.5-4.5 hours. Scope: 7 files (4 removal, 3 documentation updates). No agent/command updates required."
+    },
+    {
+      "type": "maintenance",
+      "timestamp": "2025-12-22T00:00:00Z",
+      "summary": "TODO maintenance workflow complete: Removed 6 completed tasks (15-20) from TODO.md, updated all status documents, archived system enhancement tasks. Active tasks: 0. Repository health: 96/100 (Excellent)."
+    },
+    {
+      "type": "implementation",
+      "project_number": 111,
+      "timestamp": "2025-12-22T21:05:00Z",
+      "summary": "Documented repository-wide no-emojis standard and updated patterns/tasks/artifact-management guidance."
+    },
+    {
+      "type": "implementation",
+      "project_number": 112,
+      "timestamp": "2025-12-22T21:25:00Z",
+      "summary": "Published plan/report/summary standards with status markers and integrated references into artifact management."
+    },
+    {
+      "type": "implementation",
+      "project_number": 113,
+      "timestamp": "2025-12-22T21:45:00Z",
+      "summary": "Clarified /todo regrouping by kind with numbering preservation and no-directory-creation guardrails."
+    },
+    {
+      "type": "implementation",
+      "project_number": 116,
+      "timestamp": "2025-12-23T00:55:00Z",
+      "summary": "Updated /task contract to allow execution without plan links while preserving lazy directory creation, state/TODO sync, and plan reuse when present."
+    }
+  ],
+  "pending_tasks": [
+    {
+      "project_number": 124,
+      "title": "Document .opencode agent system overview across SYSTEM_SUMMARY, ARCHITECTURE, README",
+      "status": "in_progress",
+      "created": "2025-12-22T00:00:00Z"
+    }
+  ],
+  "repository_health": {
+    "_comment": "Current repository health snapshot - detailed metrics in maintenance/state.json",
+    "last_assessed": "2025-12-22T00:00:00Z",
+    "overall_score": 96,
+    "health_grade": "excellent",
+    "compliance_score": 96,
+    "layer_0_completion": "99%",
+    "production_readiness": "excellent",
+    "active_tasks": 13,
+    "completion_percentage": 0,
+    "technical_debt": {
+      "sorry_count": 8,
+      "axiom_count": 24,
+      "status": "well-documented"
+    }
+  },
+  "maintenance_summary": {
+    "_comment": "Quick reference to maintenance status - full history in maintenance/state.json",
+    "last_maintenance": "2025-12-22T23:59:59Z",
+    "next_scheduled": "2026-01-22T00:00:00Z",
+    "maintenance_type": "comprehensive_todo_cleanup",
+    "operations_count": 9,
+    "tasks_removed_total": 61,
+    "projects_archived_total": 33,
+    "health_trend": "stable_excellent"
+  },
+  "archive_summary": {
+    "_comment": "Quick reference to archived projects - full details in archive/state.json",
+    "total_archived": 33,
+    "last_archived": "2025-12-22T23:59:59Z",
+    "archive_location": ".opencode/specs/archive/",
+    "archive_state_file": ".opencode/specs/archive/state.json",
+    "archive_index_deprecated": ".opencode/specs/ARCHIVE_INDEX.md"
+  },
+
+  "schema_info": {
+    "version": "1.0.0",
+    "backward_compatible": true,
+    "extensible": true,
+    "_comment": "This schema supports backward compatibility. New fields are additive and optional."
+  }
+}
