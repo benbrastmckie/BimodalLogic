@@ -25,48 +25,44 @@ General-purpose AI agent system for software development. Manages the complete w
 
 ## Quick Start
 
-### 1. Review Repository
-```bash
-/review
-```
-Analyzes repository, verifies code quality, updates TODO.md
+### Basic workflow: `/add` → `/research` → `/plan` → `/task`
+1. **Add the task to TODO**
+   ```bash
+   /add "Implement user authentication"
+   ```
+   Creates a TODO entry with an ID (view it with `/todo`).
 
-### 2. Research a Topic
-```bash
-/research "best practices for REST API design"
-```
-Searches web and documentation, creates comprehensive research report
+2. **Research for that TODO**
+   ```bash
+   /research 001
+   ```
+   Uses the project number from `/add` and produces a research report you can reference when planning.
 
-### 3. Create Implementation Plan
-```bash
-/plan "Implement user authentication system"
-```
-Creates detailed step-by-step implementation plan
+3. **Plan the implementation**
+   ```bash
+   /plan 001
+   ```
+   Builds a step-by-step plan for that project, reusing any linked research.
 
-### 4. Implement the Plan
-```bash
-/implement 001
-```
-Implements features following plan, runs tests, commits to git
+4. **Execute the TODO via `/task`**
+   ```bash
+   /task 001
+   ```
+   Follows the plan phases, updates status markers, and runs the work.
 
-### 5. Refactor Code
-```bash
-/refactor src/api/users.py
-```
-Improves code readability and style adherence
+### Additional quick commands
+- `/review` — Analyze repository state and update TODO.md
+- `/implement {project_number}` — Execute a plan directly by project ID
+- `/refactor {file_path}` — Improve readability and style adherence
+- `/document {scope}` — Update documentation for a feature or area
 
-### 6. Update Documentation
-```bash
-/document "authentication system"
-```
-Updates documentation to be complete, accurate, concise
 
 ## Custom Commands
 
 ### Core Workflows
 - `/review` - Comprehensive repository review
-- `/research {topic}` - Multi-source research
-- `/plan {task}` - Create implementation plan
+- `/research {project_number}` - Research linked to a TODO created via `/add`
+- `/plan {project_number}` - Create implementation plan for a TODO entry
 - `/revise {project_number}` - Revise existing plan
 - `/implement {project_number}` - Execute implementation plan
 - `/refactor {file_path}` - Refactor code
@@ -147,23 +143,23 @@ Standardized structure in `.opencode/specs/`:
 
 ### Complete Development Cycle
 
-1. **Review current state**
+1. **Add TODO and note project number**
    ```
-   /review
+   /add "Implement OAuth 2.0 authentication"
+   /todo   # confirms assigned number (e.g., 003)
    ```
-   → Creates analysis and code quality reports
-   → Updates TODO.md with findings
+   → Creates TODO entry (project 003) for the feature
 
-2. **Research next task**
+2. **Research that TODO**
    ```
-   /research "OAuth 2.0 implementation best practices"
+   /research 003
    ```
    → Searches web and documentation
    → Creates research report with findings
 
 3. **Create implementation plan**
    ```
-   /plan "Implement OAuth 2.0 authentication"
+   /plan 003
    ```
    → Analyzes complexity and dependencies
    → Creates detailed step-by-step plan
@@ -185,11 +181,11 @@ Standardized structure in `.opencode/specs/`:
 
 ### Plan Revision Cycle
 
-1. **Create initial plan**
+1. **Create initial plan for TODO**
    ```
-   /plan "Implement payment processing system"
+   /plan 004
    ```
-   → Creates plans/implementation-001.md
+   → Creates plans/implementation-001.md for project 004
 
 2. **Discover issues during implementation**
    ```
@@ -245,8 +241,8 @@ Standardized structure in `.opencode/specs/`:
 
 1. **Test the system** with `/review` to analyze current repository state
 2. **Review TODO.md** to see identified tasks
-3. **Research a topic** to test research workflow
-4. **Create a plan** for a TODO task
+3. **Research a TODO** using `/research {project_number}` from `/add`
+4. **Create a plan** with `/plan {project_number}` for that TODO
 5. **Implement a feature** following the plan
 6. **Customize context** files with your specific domain knowledge
 
