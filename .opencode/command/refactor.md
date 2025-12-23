@@ -1,24 +1,23 @@
 ---
 name: refactor
-agent: refactorer
- description: "Refactor code for readability, maintainability, and style compliance"
- context_level: 1
- language: markdown
- subagents:
-   - refactorer
-   - style-checker
- mcp_requirements:
-   - "lean-lsp (when refactoring Lean files)"
- registry_impacts:
-   - TODO.md (task-bound)
-   - .opencode/specs/state.json (task-bound)
-   - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (if implementation status changes)
- creates_root_on: "Only when writing refactoring reports/summaries"
- creates_subdir:
-   - reports
-   - summaries
- dry_run: "Validate scope only; no dirs/artifacts/status/registry writes."
-
+agent: orchestrator
+description: "Refactor code for readability, maintainability, and style compliance"
+context_level: 1
+language: markdown
+subagents:
+  - refactorer
+  - style-checker
+mcp_requirements:
+  - "lean-lsp (when refactoring Lean files)"
+registry_impacts:
+  - TODO.md (task-bound)
+  - .opencode/specs/state.json (task-bound)
+  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (if implementation status changes)
+creates_root_on: "Only when writing refactoring reports/summaries"
+creates_subdir:
+  - reports
+  - summaries
+dry_run: "Validate scope only; no dirs/artifacts/status/registry writes."
 ---
 
 Context Loaded:
@@ -78,6 +77,7 @@ Context Loaded:
   <artifact_naming>Use reports/refactoring-NNN.md for reports; summaries/implementation-summary-YYYYMMDD.md when produced.</artifact_naming>
   <state_sync>Update project/global state if artifacts produced or task-bound status changes.</state_sync>
   <registry_sync>Update registries when refactors change implementation status; skip on dry-run.</registry_sync>
+  <git_commits>After artifacts/status updates, use git-commits.md + git-workflow-manager to stage only refactor-related files and commit; avoid blanket adds.</git_commits>
 </artifact_management>
 
 <quality_standards>

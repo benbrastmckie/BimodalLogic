@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2025-12-23T05:00:00Z",
+  "_last_updated": "2025-12-23T19:30:00Z",
   "archived_projects": [
     {
       "project_number": 126,
@@ -67,6 +67,85 @@
       "artifacts": {
         "base_path": ".opencode/specs/archive/145_convert_plan_standard_metadata_to_yaml_front_matter/"
       }
+    },
+    {
+      "project_number": 151,
+      "project_name": "ensure_task_pre_updates_todo_and_plans_to_in_progress_before_work",
+      "type": "standards",
+      "status": "completed",
+      "created": "2025-12-23T07:10:00Z",
+      "completed": "2025-12-23T07:10:00Z",
+      "archived": "2025-12-23T19:00:00Z",
+      "summary": "Task status pre-update guardrail implemented for /task.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/151_ensure_task_pre_updates_todo_and_plans_to_in_progress_before_work/"
+      }
+    },
+    {
+      "project_number": 152,
+      "project_name": "standardize_command_templates_and_migrate_command_docs",
+      "type": "research",
+      "status": "completed",
+      "created": "2025-12-23T12:55:00Z",
+      "completed": "2025-12-23T15:50:00Z",
+      "archived": "2025-12-23T19:00:00Z",
+      "summary": "Command templates and standards unified; docs migrated to YAML/@subagent format.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/152_standardize_command_templates_and_migrate_command_docs/"
+      }
+    },
+    {
+      "project_number": 153,
+      "project_name": "revise_research_and_plan_commands_to_enforce_status_updates",
+      "type": "standards",
+      "status": "completed",
+      "created": "2025-12-23T13:20:00Z",
+      "completed": "2025-12-23T16:15:00Z",
+      "archived": "2025-12-23T19:00:00Z",
+      "summary": "Research/plan commands now enforce status markers and sync flows.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/153_revise_research_and_plan_commands_to_enforce_status_updates/"
+      }
+    },
+    {
+      "project_number": 144,
+      "project_name": "update_context_references_after_refactor",
+      "type": "research",
+      "status": "completed",
+      "created": "2025-12-23T03:15:00Z",
+      "completed": "2025-12-23T06:15:00Z",
+      "archived": "2025-12-23T19:00:00Z",
+      "summary": "Context references remapped post-refactor; plans and summaries updated.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/144_update_context_references_after_refactor/"
+      }
+    },
+    {
+      "project_number": 128,
+      "project_name": "implement_caching_and_context_helpers_in_proofsearch",
+      "type": "implementation",
+      "status": "completed",
+      "created": "2025-12-22T12:00:00Z",
+      "completed": "2025-12-23T06:50:00Z",
+      "archived": "2025-12-23T19:00:00Z",
+      "summary": "Caching and context helpers added to ProofSearch with stats and tests.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/128_implement_caching_and_context_helpers_in_proofsearch/"
+      }
+    },
+    {
+      "project_number": 131,
+      "project_name": "clean_up_archive_examples",
+      "type": "maintenance",
+      "status": "completed",
+      "created": "2025-12-23T11:13:00Z",
+      "completed": "2025-12-23T12:10:00Z",
+      "archived": "2025-12-23T19:00:00Z",
+      "summary": "Archive examples reviewed; obsolete content removed or relocated.",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/131_clean_up_archive_examples/"
+      }
     }
-  ]
-}
+   ]
+ }
+

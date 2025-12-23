@@ -188,18 +188,18 @@ ls specs/NNN_*/summaries/
 
 **Test 11a: Verify Agent and Command Counts**
 ```bash
-# Count primary agents (should be 10)
-find .opencode/agent/subagents -maxdepth 1 -name "*.md" -type f | wc -l
+# List workflow/utility agents
+ls .opencode/agent/subagents/*.md
 
-# Count specialists (should be 19)
-find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l
+# List specialists (target: 20)
+find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | sort
 
-# Count commands (should be 11)
-find .opencode/command -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l
+# List commands (expect add, context, document, implement, lean, meta, optimize, plan, refactor, research, review, revise, task, todo)
+ls .opencode/command/*.md
 
 # Verify context directory structure
 ls .opencode/context/
-# Expected: core, templates, project, repo
+# Expected: common, project
 ```
 
 ## Phase 4: State Management Testing

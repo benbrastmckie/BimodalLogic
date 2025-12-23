@@ -26,12 +26,12 @@ Context-aware AI system for software development using hierarchical agent patter
          │             │             │
          ▼             ▼             ▼
 ┌────────────┐  ┌────────────┐  ┌────────────┐
-│  Reviewer  │  │ Researcher │  │  Planner   │  ... (10 Primary Agents)
+│  Reviewer  │  │ Researcher │  │  Planner   │  ... (workflow/utility agents)
 └──────┬─────┘  └──────┬─────┘  └──────┬─────┘
        │               │               │
        ▼               ▼               ▼
 ┌────────────┐  ┌────────────┐  ┌────────────┐
-│   Code     │  │    Web     │  │ Complexity │  ... (19 Specialist Subagents)
+│   Code     │  │    Web     │  │ Complexity │  ... (20 specialist subagents)
 │  Quality   │  │  Research  │  │  Analyzer  │
 └──────┬─────┘  └──────┬─────┘  └──────┬─────┘
        │               │               │
@@ -76,7 +76,7 @@ All primary agents follow the same pattern:
 - **Implementation Agents** (developer, refactorer, documenter): Coordinate code and documentation changes
 - **Utility Agents** (task-executor, task-adder, implementer, meta): Handle generic tasks and system modifications
 
-> **Complete Agent Catalog**: See [agent/README.md](agent/README.md) for detailed agent descriptions, specialist delegation patterns, and artifact creation workflows.
+> **Agent Catalog**: See `agent/subagents/*.md` for workflow/utility agents and `agent/subagents/specialists/*.md` for specialist helpers.
 
 ### Layer 4: Specialist Subagents (19)
 
@@ -145,20 +145,12 @@ All context files are located in `context/` with the following structure:
 
 ```
 context/
-├── core/                    # Core System Patterns
-│   ├── system/              # System architecture and patterns
-│   ├── workflows/           # Workflow definitions
-│   └── standards/           # System standards
-├── templates/               # Meta-System
-│   ├── meta-guide.md
-│   ├── orchestrator-template.md
-│   └── subagent-template.md
-├── project/                 # Project-Specific Context
-│   └── [project-specific files]
-└── repo/                    # Repository Conventions
-    ├── project-structure.md
-    ├── documentation-standards.md
-    └── state-schema.md
+├── common/                  # Shared standards, system guides, templates, workflows
+│   ├── standards/           # code, docs, tests, patterns, plan/report/summary/tasks
+│   ├── system/              # artifact-management, status-markers, state-schema, context-guide
+│   ├── templates/           # command/agent templates
+│   └── workflows/           # delegation, review, task-breakdown, sessions
+└── project/                 # Domain overlays (logic, lean4, math, physics, repo)
 ```
 
 ## Routing Intelligence

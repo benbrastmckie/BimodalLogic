@@ -1,24 +1,23 @@
 ---
 name: implement
-agent: implementation-orchestrator
- description: "Execute implementation plans with phase tracking"
- context_level: 2
- language: markdown
- subagents:
-   - implementation-orchestrator
-   - implementer specialists (per phase)
- mcp_requirements: []
- registry_impacts:
-   - TODO.md
-   - .opencode/specs/state.json
-   - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
-   - SORRY_REGISTRY.md (when sorry counts change)
-   - TACTIC_REGISTRY.md (when tactic counts change)
- creates_root_on: "Only when writing implementation artifacts via phases"
- creates_subdir:
-   - summaries
- dry_run: "Validate plan path and routing; no dirs, no status/registry/state writes, no artifacts."
-
+agent: orchestrator
+description: "Execute implementation plans with phase tracking"
+context_level: 2
+language: markdown
+subagents:
+  - implementation-orchestrator
+  - implementer specialists (per phase)
+mcp_requirements: []
+registry_impacts:
+  - TODO.md
+  - .opencode/specs/state.json
+  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
+  - SORRY_REGISTRY.md (when sorry counts change)
+  - TACTIC_REGISTRY.md (when tactic counts change)
+creates_root_on: "Only when writing implementation artifacts via phases"
+creates_subdir:
+  - summaries
+dry_run: "Validate plan path and routing; no dirs, no status/registry/state writes, no artifacts."
 ---
 
 Context Loaded:
@@ -81,6 +80,7 @@ Context Loaded:
   <artifact_naming>Implementation summaries: `summaries/implementation-summary-YYYYMMDD.md`; plan versions remain unchanged unless revised.</artifact_naming>
   <state_sync>Update project state.json alongside artifacts; update global state/TODO links.</state_sync>
   <registry_sync>When implementation status changes, update IMPLEMENTATION_STATUS.md and related registries; skip on dry-run.</registry_sync>
+  <git_commits>After artifacts and status updates, use git-commits.md + git-workflow-manager to stage only implementation-related files and commit with scoped messages; avoid repo-wide adds.</git_commits>
 </artifact_management>
 
 <quality_standards>

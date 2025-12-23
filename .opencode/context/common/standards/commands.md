@@ -42,6 +42,10 @@
 
 7. **Dry-Run / Routing-Check Semantics**
    - Dry-runs perform parsing, Lean detection, MCP ping (if applicable), and subagent path preview only; they MUST NOT create directories, write artifacts, or mutate TODO/state/registries/status markers.
+8. **Git Commits (Targeted)**
+   - Commands must reference `git-commits.md` and use `git-workflow-manager` for scoped commits after artifacts/state updates are written.
+   - Stage only task-relevant files (no `git add -A` / repo-wide adds); prefer multiple small commits over blanket commits.
+   - Run appropriate checks (build/test/lint) when code changes; skip for dry-runs.
 
 ## Context Allocation (Levels)
 - **Level 1**: Simple/single-file/single-operation commands (e.g., /add, /todo, /refactor small scope).

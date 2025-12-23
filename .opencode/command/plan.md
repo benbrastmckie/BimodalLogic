@@ -1,22 +1,21 @@
 ---
 name: plan
-agent: planner
- description: "Create implementation plan for an existing TODO task number and sync artifacts"
- context_level: 2
- language: markdown
- subagents:
-   - planner
- mcp_requirements:
-   - "lean-lsp (Lean tasks only)"
- registry_impacts:
-   - TODO.md
-   - .opencode/specs/state.json
-   - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (conditional)
- creates_root_on: "When writing the first plan artifact"
- creates_subdir:
-   - plans
- dry_run: "Parse task + Lean intent, MCP ping if Lean, no dirs/status/registry writes, no artifacts."
-
+agent: orchestrator
+description: "Create implementation plan for an existing TODO task number and sync artifacts"
+context_level: 2
+language: markdown
+subagents:
+  - planner
+mcp_requirements:
+  - "lean-lsp (Lean tasks only)"
+registry_impacts:
+  - TODO.md
+  - .opencode/specs/state.json
+  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (conditional)
+creates_root_on: "When writing the first plan artifact"
+creates_subdir:
+  - plans
+dry_run: "Parse task + Lean intent, MCP ping if Lean, no dirs/status/registry writes, no artifacts."
 ---
 
 Context Loaded:
@@ -88,6 +87,7 @@ Context Loaded:
   <artifact_naming>Plans use `implementation-XXX.md` incremental numbering.</artifact_naming>
   <state_sync>Update project state.json when plan is written; update global state/TODO links.</state_sync>
   <registry_sync>Update IMPLEMENTATION_STATUS.md if plan changes implementation status expectations; registries untouched otherwise.</registry_sync>
+  <git_commits>After the plan artifact and status updates are written, use git-commits.md + git-workflow-manager to stage only plan-related files and commit with a scoped message; no repo-wide adds.</git_commits>
 </artifact_management>
 
 <quality_standards>

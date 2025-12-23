@@ -20,26 +20,24 @@ Complete context-aware AI system for software development, managing the full wor
 | Component | Count | Documentation |
 |-----------|-------|---------------|
 | **Orchestrator** | 1 | [agent/orchestrator.md](agent/orchestrator.md) |
-| **Primary Agents** | 10 | [agent/README.md](agent/README.md) |
-| **Specialists** | 19 | [agent/subagents/specialists/README.md](agent/subagents/specialists/README.md) |
-| **Commands** | 11 | [command/README.md](command/README.md) |
+| **Workflow/Utility Agents** | see `agent/subagents/*.md` | directory listing |
+| **Specialists** | 20 | `agent/subagents/specialists/*.md` |
+| **Commands** | 14 | [command/README.md](command/README.md) |
 | **Context Files** | 10+ | [context/README.md](context/README.md) |
 
 ### File Organization
 
 ```
 .opencode/
-├── agent/                  # 10 primary agents + 19 specialists
-├── command/                # 11 custom slash commands
+├── agent/                  # orchestrator + workflow/utility agents + specialists
+├── command/                # 14 custom commands
 ├── context/                # Modular knowledge base
-│   ├── core/              # Core system patterns and standards
-│   ├── templates/         # Meta-system templates
-│   ├── project/           # Project-specific context
-│   └── repo/              # Repository conventions
+│   ├── common/             # standards/, system/, templates/, workflows/
+│   └── project/            # domain overlays (logic, lean4, math, physics, repo)
 ├── specs/                  # Project artifacts and state
-│   ├── TODO.md            # Master task list
-│   ├── state.json         # Global state
-│   └── NNN_project/       # Individual projects
+│   ├── TODO.md             # Master task list
+│   ├── state.json          # Global state
+│   └── NNN_project/        # Individual projects (reports/, plans/, summaries/, state.json)
 └── [documentation files]
 ```
 
@@ -58,10 +56,15 @@ Complete context-aware AI system for software development, managing the full wor
 |---------|----------------|-----------------|------------|
 | `/research` | researcher | `reports/` | Create project root and `reports/` only when writing the first report. |
 | `/plan`, `/revise` | planner | `plans/` | Create project root + `plans/` only when emitting the plan; reuse linked research inputs. |
-| `/implement` | implementer | plan phases + emitted artifacts | Requires plan path; updates plan status markers; create subdir only for emitted artifact; state sync with artifact write. |
+| `/implement`, `/lean` | implementer / lean-implementation-orchestrator | plan phases + emitted artifacts | Require plan path; update plan status markers; create only the subdir needed for emitted artifact; state sync with artifact write. |
 | `/task` | task-executor | plan phases + emitted artifacts | Reuse plan link when present; may run without plan; adhere to lazy creation; state/TODO sync when artifacts written. |
 | `/review` | reviewer | `reports/` or `summaries/` | Create only the needed subdir when writing the report/summary; no placeholders. |
 | `/document` | documenter | documentation + `summaries/` | Create summaries/ only when writing summary; follow documentation standards. |
+| `/refactor` | refactorer | code + optional reports | Create artifacts only when produced; keep lazy creation. |
+| `/optimize` | performance-profiler (via optimize command) | performance reports | Create reports only when writing diagnostics. |
+| `/add`, `/todo` | task-adder | TODO/state | No artifact roots created. |
+| `/context` | orchestrator | none | Navigation only. |
+| `/meta` | meta | agent/command files | No specs artifacts created by default. |
 
 ### Status Markers & Sync
 

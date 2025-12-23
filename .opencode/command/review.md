@@ -1,9 +1,23 @@
 ---
 name: review
-agent: reviewer
+agent: orchestrator
 description: "Ambition/gap-analysis review; propose tasks via /add without cleanup/archival"
 context_level: 3
 language: markdown
+subagents:
+  - reviewer (gap-analysis)
+mcp_requirements:
+  - "lean-lsp (when analyzing Lean files)"
+registry_impacts:
+  - TODO.md
+  - .opencode/specs/state.json
+  - Documentation/ProjectInfo/FEATURE_REGISTRY.md
+  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
+creates_root_on: "Only when writing review reports/summaries"
+creates_subdir:
+  - reports
+  - summaries
+dry_run: "Routing-check only: parse scope, preview findings/task additions; no dirs/artifacts/status/registry/state writes and no archive moves."
 ---
 
 Context Loaded:
@@ -36,6 +50,7 @@ Context Loaded:
     <process>
       1. Parse `$ARGUMENTS` for scope; confirm no cleanup/archival actions will occur.
       2. Load standards and status docs; ensure numbering changes only occur through /add.
+      3. If `--dry-run`, stop after routing preview; return subagent path without status changes or filesystem/registry/state edits.
     </process>
   </stage>
   <stage id="2" name="GapAnalysis">
@@ -73,6 +88,7 @@ Context Loaded:
   <artifact_naming>Use reports/analysis-NNN.md or verification-NNN.md as appropriate.</artifact_naming>
   <state_sync>Update state/TODO via /add; do not alter archive/maintenance files.</state_sync>
   <registry_sync>Update FEATURE_REGISTRY.md and IMPLEMENTATION_STATUS.md; registries unchanged otherwise.</registry_sync>
+  <git_commits>When reports or status doc changes are written, use git-commits.md + git-workflow-manager to stage only relevant files and commit; no blanket commits.</git_commits>
 </artifact_management>
 
 <quality_standards>

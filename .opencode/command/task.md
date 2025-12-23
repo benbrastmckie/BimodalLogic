@@ -1,27 +1,26 @@
 ---
 name: task
 agent: orchestrator
- description: "Execute TODO task(s) by number using plans/reports and keep specs in sync"
- context_level: 2
- language: markdown
- subagents:
-   - batch-task-orchestrator
-   - batch-status-manager
-   - implementation-orchestrator (non-Lean tasks)
-   - lean-implementation-orchestrator (Lean tasks)
-   - planner/researcher/reviewer/refactorer/documenter (routed per task type)
- mcp_requirements:
-   - "lean-lsp (required for Lean task execution)"
- registry_impacts:
-   - TODO.md
-   - .opencode/specs/state.json
-   - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (when implementation status changes)
-   - SORRY_REGISTRY.md (when sorry counts change)
-   - TACTIC_REGISTRY.md (when tactic counts change)
- creates_root_on: "Only when delegated agent writes first artifact"
- creates_subdir: "Delegated agent creates the needed subdir (reports|plans|summaries) when writing"
- dry_run: "Routing-check only: validate numbers, Lean intent, MCP ping if Lean; no dirs, no status/registry/state writes, no artifacts."
-
+description: "Execute TODO task(s) by number using plans/reports and keep specs in sync"
+context_level: 2
+language: markdown
+subagents:
+  - batch-task-orchestrator
+  - batch-status-manager
+  - implementation-orchestrator (non-Lean tasks)
+  - lean-implementation-orchestrator (Lean tasks)
+  - planner/researcher/reviewer/refactorer/documenter (routed per task type)
+mcp_requirements:
+  - "lean-lsp (required for Lean task execution)"
+registry_impacts:
+  - TODO.md
+  - .opencode/specs/state.json
+  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (when implementation status changes)
+  - SORRY_REGISTRY.md (when sorry counts change)
+  - TACTIC_REGISTRY.md (when tactic counts change)
+creates_root_on: "Only when delegated agent writes first artifact"
+creates_subdir: "Delegated agent creates the needed subdir (reports|plans|summaries) when writing"
+dry_run: "Routing-check only: validate numbers, Lean intent, MCP ping if Lean; no dirs, no status/registry/state writes, no artifacts."
 ---
 
 You are executing task(s) from `.opencode/specs/TODO.md` by number. Use existing research and plans, respect lazy directory creation, and keep TODO/state/artifacts synchronized.
@@ -98,6 +97,7 @@ Context Loaded:
   <artifact_naming>Summaries under `summaries/implementation-summary-YYYYMMDD.md`; plan/research links reused.</artifact_naming>
   <state_sync>Update project state alongside artifact writes; no project state writes when no artifacts.</state_sync>
   <registry_sync>Update IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, TACTIC_REGISTRY.md when task execution changes status or sorry/tactic counts; skip on dry-run.</registry_sync>
+  <git_commits>After artifacts/state updates, use git-commits.md and git-workflow-manager to stage only task-relevant files (no `git add -A`/blanket commits) and commit with scoped messages.</git_commits>
 </artifact_management>
 
 <quality_standards>

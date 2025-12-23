@@ -1,36 +1,35 @@
 ---
 name: lean
-agent: lean-implementation-orchestrator
- description: "Implement Lean 4 proofs using multi-phase Lean-specialist stack"
- context_level: 2
- language: markdown
- subagents:
-   - complexity-analyzer
-   - dependency-mapper
-   - library-navigator
-   - proof-strategy-advisor
-   - tactic-recommender
-   - proof-developer
-   - proof-optimizer
-   - performance-profiler
-   - example-builder
-   - documentation-generator
-   - code-reviewer
-   - style-checker
- mcp_requirements:
-   - "lean-lsp (required)"
- registry_impacts:
-   - TODO.md
-   - .opencode/specs/state.json
-   - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
-   - SORRY_REGISTRY.md
-   - TACTIC_REGISTRY.md
- creates_root_on: "When writing first Lean artifact (reports/summaries)"
- creates_subdir:
-   - reports
-   - summaries
- dry_run: "Routing + MCP ping only; no dirs/artifacts/status/registry updates. Abort with remediation if lean-lsp missing."
-
+agent: orchestrator
+description: "Implement Lean 4 proofs using multi-phase Lean-specialist stack"
+context_level: 2
+language: markdown
+subagents:
+  - complexity-analyzer
+  - dependency-mapper
+  - library-navigator
+  - proof-strategy-advisor
+  - tactic-recommender
+  - proof-developer
+  - proof-optimizer
+  - performance-profiler
+  - example-builder
+  - documentation-generator
+  - code-reviewer
+  - style-checker
+mcp_requirements:
+  - "lean-lsp (required)"
+registry_impacts:
+  - TODO.md
+  - .opencode/specs/state.json
+  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
+  - SORRY_REGISTRY.md
+  - TACTIC_REGISTRY.md
+creates_root_on: "When writing first Lean artifact (reports/summaries)"
+creates_subdir:
+  - reports
+  - summaries
+dry_run: "Routing + MCP ping only; no dirs/artifacts/status/registry updates. Abort with remediation if lean-lsp missing."
 ---
 
 Context Loaded:
@@ -96,6 +95,7 @@ Context Loaded:
   <artifact_naming>Use standard naming: reports/{analysis|research|verification}-NNN.md, summaries/implementation-summary-YYYYMMDD.md.</artifact_naming>
   <state_sync>Update project/global state with phase/status and artifacts.</state_sync>
   <registry_sync>Update IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, TACTIC_REGISTRY.md when Lean work changes status/sorry/tactic counts; skip on dry-run.</registry_sync>
+  <git_commits>After artifacts/status updates, use git-commits.md + git-workflow-manager to stage only Lean-related files; avoid blanket adds and commit with scoped messages.</git_commits>
 </artifact_management>
 
 <quality_standards>

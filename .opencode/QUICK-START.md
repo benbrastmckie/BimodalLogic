@@ -294,18 +294,20 @@ Verify system integrity and setup:
 ```bash
 # Run complete system check
 echo "=== Agent System ==="
-echo "Primary agents: $(find .opencode/agent/subagents -maxdepth 1 -name "*.md" -type f | wc -l) (expected: 10)"
-echo "Specialist subagents: $(find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l) (expected: 19)"
+ls .opencode/agent/subagents/*.md
+
+echo -e "\n=== Specialist Helpers (target: 20) ==="
+find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | sort
 
 echo -e "\n=== Command System ==="
-echo "Commands: $(find .opencode/command -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l) (expected: 11)"
+ls .opencode/command/*.md
 
 echo -e "\n=== Context Structure ==="
-echo "Context directories: $(ls -d .opencode/context/*/ 2>/dev/null | wc -l) (expected: 4)"
+ls -d .opencode/context/*/
 
 echo -e "\n=== Specs Directory ==="
-echo "TODO.md: $(test -f .opencode/specs/TODO.md && echo "✓" || echo "✗")"
-echo "state.json: $(test -f .opencode/specs/state.json && echo "✓" || echo "✗")"
+echo "TODO.md: $(test -f .opencode/specs/TODO.md && echo "present" || echo "missing")"
+echo "state.json: $(test -f .opencode/specs/state.json && echo "present" || echo "missing")"
 ```
 
 ### Detailed Verification

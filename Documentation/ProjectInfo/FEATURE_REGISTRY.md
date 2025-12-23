@@ -3,8 +3,8 @@
 ## Routing & Task Execution
 
 ### /revise plan versioning guardrails (Tasks 144, 152, 154)
-- **Status**: In Progress (active guardrail)
-- **Description**: `/revise` mirrors `/add` and `/plan` guardrails: reuse the existing project directory, increment plan version in-place (`implementation-NNN.md`), and update TODO/state without altering task numbering or creating new project entries. Task 152 reversal uses these guardrails to move command/meta docs back to YAML front matter and @subagent/XML markup per `.opencode/command/meta.md` and `.opencode/command/context.md`. Task 154 plan v2 applies the same guardrails to execute Branch B in Lean while retiring tasks 129/130.
+- **Status**: Active guardrail (tasks 144, 152 completed; task 154 abandoned after Branch B execution)
+- **Description**: `/revise` mirrors `/add` and `/plan` guardrails: reuse the existing project directory, increment plan version in-place (`implementation-NNN.md`), and update TODO/state without altering task numbering or creating new project entries. Task 152 reversal used these guardrails to move command/meta docs back to YAML front matter and @subagent/XML markup per `.opencode/command/meta.md` and `.opencode/command/context.md`. Task 154 plan v2 applies the same guardrails to execute Branch B in Lean while retiring tasks 129/130.
 - **Guardrails**:
   - No new project roots or numbering changes; plans stay in the task’s project folder.
   - Status markers and timestamps must align across TODO/state; phases reset to `[NOT STARTED]` in the new plan version.

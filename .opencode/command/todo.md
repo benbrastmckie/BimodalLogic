@@ -1,23 +1,22 @@
 ---
 name: todo
 agent: orchestrator
- description: "Cleanup and archival lifecycle owner: remove completed/abandoned tasks, migrate state to archive, clear orphan/stale entries, sync status docs without creating new project directories"
- context_level: 2
- language: markdown
- subagents:
-   - reviewer (todo-maintenance)
-   - batch-status-manager
- mcp_requirements: []
- registry_impacts:
-   - TODO.md
-   - .opencode/specs/state.json
-   - .opencode/specs/archive/state.json
-   - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
-   - Documentation/ProjectInfo/FEATURE_REGISTRY.md
- creates_root_on: never
- creates_subdir: []
- dry_run: "Report-only: analyze and preview moves; no dirs/status/registry writes and no archive moves."
-
+description: "Cleanup and archival lifecycle owner: remove completed/abandoned tasks, migrate state to archive, auto-archive completed project directories, clear orphan/stale entries, sync status docs without creating new project directories"
+context_level: 2
+language: markdown
+subagents:
+  - reviewer (todo-maintenance)
+  - batch-status-manager
+mcp_requirements: []
+registry_impacts:
+  - TODO.md
+  - .opencode/specs/state.json
+  - .opencode/specs/archive/state.json
+  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
+  - Documentation/ProjectInfo/FEATURE_REGISTRY.md
+creates_root_on: never
+creates_subdir: []
+dry_run: "Report-only: analyze and preview moves; no dirs/status/registry writes and no archive moves."
 ---
 
 Context Loaded:
@@ -64,7 +63,7 @@ Context Loaded:
   <stage id="3" name="Migrate">
     <action>Perform cleanup/archival</action>
     <process>
-      1. Remove completed/abandoned tasks from TODO; migrate active/pending → completed in state.json; move to archive/state with required metadata; move existing project dirs to archive/ (no new dirs).
+      1. Remove completed/abandoned tasks from TODO; migrate active/pending → completed in state.json; move to archive/state with required metadata; automatically move existing project directories for completed/abandoned tasks into `.opencode/specs/archive/NNN_project_name/` (reuse existing dirs, no new dirs created).
       2. Handle orphan/stale entries (warn, migrate, do not delete contents).
     </process>
   </stage>
@@ -85,10 +84,11 @@ Context Loaded:
 </routing_intelligence>
 
 <artifact_management>
-  <lazy_creation>No new project roots/subdirs may be created; only move existing directories to archive when archiving.</lazy_creation>
+  <lazy_creation>No new project roots/subdirs may be created; /todo automatically moves existing project directories to archive when archiving.</lazy_creation>
   <artifact_naming>Archive paths `.opencode/specs/archive/NNN_project_name/` reused; no new artifacts unless reviewer emits report.</artifact_naming>
   <state_sync>State/TODO/archive kept consistent; `next_project_number` unchanged.</state_sync>
   <registry_sync>Update status docs; registries (SORRY/Tactic) unchanged unless reviewer specifies.</registry_sync>
+  <git_commits>Maintenance commits, when needed, must follow git-commits.md + git-workflow-manager with staged scope limited to maintenance touches; no blanket commits.</git_commits>
 </artifact_management>
 
 <quality_standards>

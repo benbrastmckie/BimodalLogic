@@ -1,22 +1,21 @@
 ---
 name: research
-agent: researcher
- description: "Create research reports for a TODO task and sync artifacts"
- context_level: 2
- language: markdown
- subagents:
-   - researcher
- mcp_requirements:
-   - "lean-lsp (Lean research only)"
- registry_impacts:
-   - TODO.md
-   - .opencode/specs/state.json
-   - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (conditional)
- creates_root_on: "When writing the first research report"
- creates_subdir:
-   - reports
- dry_run: "Validate task + Lean intent, MCP ping if Lean; no dirs/status/registry writes, no artifacts."
-
+agent: orchestrator
+description: "Create research reports for a TODO task and sync artifacts"
+context_level: 2
+language: markdown
+subagents:
+  - researcher
+mcp_requirements:
+  - "lean-lsp (Lean research only)"
+registry_impacts:
+  - TODO.md
+  - .opencode/specs/state.json
+  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (conditional)
+creates_root_on: "When writing the first research report"
+creates_subdir:
+  - reports
+dry_run: "Validate task + Lean intent, MCP ping if Lean; no dirs/status/registry writes, no artifacts."
 ---
 
 Context Loaded:
@@ -79,6 +78,7 @@ Context Loaded:
   <artifact_naming>reports/research-XXX.md (incremental).</artifact_naming>
   <state_sync>Update project/global state with report paths and timestamps; link in TODO.</state_sync>
   <registry_sync>Registries unchanged unless research updates implementation status.</registry_sync>
+  <git_commits>After research artifacts and state/TODO links are written, use git-commits.md + git-workflow-manager to stage only related files; avoid blanket commits.</git_commits>
 </artifact_management>
 
 <quality_standards>

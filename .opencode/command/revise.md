@@ -1,9 +1,21 @@
 ---
 name: revise
-agent: planner
+agent: orchestrator
 description: "Create revised implementation plan with incremented version number"
 context_level: 2
 language: markdown
+subagents:
+  - planner
+mcp_requirements:
+  - "lean-lsp (when revising Lean tasks)"
+registry_impacts:
+  - TODO.md
+  - .opencode/specs/state.json
+  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (conditional)
+creates_root_on: never (reuses existing plans/)
+creates_subdir:
+  - plans
+dry_run: "Routing-check only: validate task/plan link and Lean intent; no dirs/artifacts/status/registry/state writes."
 ---
 
 Context Loaded:
@@ -34,24 +46,27 @@ Context Loaded:
       1. Require task_number + prompt; reject if missing.
       2. Locate task in TODO.md; extract existing plan link. If absent, instruct to run /plan first (no dirs created).
       3. Verify referenced plan file exists.
-      4. Set TODO status to [IN PROGRESS] with **Started** date; state to `in_progress` if task-bound.
+      4. If `--dry-run`, stop after validation; do not set statuses or write files.
+      5. Otherwise set TODO status to [IN PROGRESS] with **Started** date; state to `in_progress` if task-bound.
     </process>
   </stage>
   <stage id="2" name="CreateRevision">
     <action>Write new plan version</action>
     <process>
-      1. In the same `plans/` folder, increment implementation-NNN.md to implementation-{N+1}.md.
-      2. Include revision prompt, delta header, `[NOT STARTED]` phase markers, and inherit Lean intent metadata.
-      3. Preserve numbering; do not modify next_project_number or create new project roots.
+      1. If `--dry-run`, preview the new filename and exit without writing.
+      2. In the same `plans/` folder, increment implementation-NNN.md to implementation-{N+1}.md.
+      3. Include revision prompt, delta header, `[NOT STARTED]` phase markers, and inherit Lean intent metadata.
+      4. Preserve numbering; do not modify next_project_number or create new project roots.
     </process>
   </stage>
   <stage id="3" name="Postflight">
     <action>Sync links and state</action>
     <process>
-      1. Update TODO task to point to the new plan version; keep metadata intact.
-      2. Update project state.json (if present) with new plan path, phase planning, timestamps; update global state pending task.
-      3. Update IMPLEMENTATION_STATUS.md/FEATURE_REGISTRY.md with revised plan reference when applicable.
-      4. Return plan path and applied updates.
+      1. If `--dry-run`, skip writes and return the intended new plan path only.
+      2. Update TODO task to point to the new plan version; keep metadata intact.
+      3. Update project state.json (if present) with new plan path, phase planning, timestamps; update global state pending task.
+      4. Update IMPLEMENTATION_STATUS.md/FEATURE_REGISTRY.md with revised plan reference when applicable.
+      5. Return plan path and applied updates.
     </process>
   </stage>
 </workflow_execution>
@@ -67,6 +82,7 @@ Context Loaded:
   <artifact_naming>implementation-{N+1}.md in same folder.</artifact_naming>
   <state_sync>Update state/TODO with new plan link and timestamps.</state_sync>
   <registry_sync>Update IMPLEMENTATION_STATUS.md (and other registries if status changes) as needed.</registry_sync>
+  <git_commits>After writing the revised plan and syncing state/TODO, use git-commits.md + git-workflow-manager to stage only revision files; avoid repo-wide adds.</git_commits>
 </artifact_management>
 
 <quality_standards>

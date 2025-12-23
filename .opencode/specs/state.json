@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker project. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-23T18:45:00Z",
-  "next_project_number": 156,
+  "_last_updated": "2025-12-23T23:59:00Z",
+  "next_project_number": 161,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -11,126 +11,23 @@
   },
   "active_projects": [
     {
-      "project_number": 144,
-      "project_name": "update_context_references_after_refactor",
-      "type": "research",
-      "phase": "completed",
-      "status": "completed",
-      "reports": [
-        "reports/research-001.md"
-      ],
-      "plans": [
-        "plans/implementation-002.md"
-      ],
-      "summaries": [
-        "summaries/implementation-summary-20251223.md"
-      ],
-      "created": "2025-12-23T03:15:00Z",
-      "last_updated": "2025-12-23T06:15:00Z"
-    },
-    {
-      "project_number": 128,
-      "project_name": "implement_caching_and_context_helpers_in_proofsearch",
-      "type": "implementation",
-      "phase": "completed",
-      "status": "completed",
-      "reports": [
-        "reports/research-001.md"
-      ],
-      "plans": [
-        "plans/implementation-001.md"
-      ],
-      "summaries": [
-        "summaries/plan-summary.md",
-        "summaries/implementation-summary-20251223.md"
-      ],
-      "created": "2025-12-22T12:00:00Z",
-      "last_updated": "2025-12-23T06:50:00Z"
-    },
-    {
-      "project_number": 131,
-      "project_name": "clean_up_archive_examples",
-      "type": "maintenance",
-      "phase": "completed",
-      "status": "completed",
-      "reports": [],
-      "plans": [],
-      "summaries": [
-        "summaries/implementation-summary-20251223.md"
-      ],
-      "created": "2025-12-23T11:13:00Z",
-      "last_updated": "2025-12-23T12:10:00Z",
-      "completed": "2025-12-23T12:10:00Z"
-    },
-    {
-      "project_number": 152,
-      "project_name": "standardize_command_templates_and_migrate_command_docs",
-      "type": "research",
-      "phase": "completed",
-      "status": "completed",
-      "reports": [
-        "reports/research-001.md"
-      ],
-      "plans": [
-        "plans/implementation-001.md",
-        "plans/implementation-002.md"
-      ],
-      "summaries": [
-        "summaries/implementation-summary-20251223.md"
-      ],
-      "created": "2025-12-23T12:55:00Z",
-      "last_updated": "2025-12-23T15:50:00Z",
-      "completed": "2025-12-23T15:50:00Z"
-    },
-    {
-      "project_number": 154,
-      "project_name": "research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130",
-      "type": "research",
-      "phase": "implementation",
-      "status": "in_progress",
-      "reports": [
-        "reports/research-001.md",
-        "reports/research-002.md"
-      ],
-      "plans": [
-        "plans/implementation-001.md",
-        "plans/implementation-002.md"
-      ],
-      "summaries": [],
-      "created": "2025-12-23T14:30:00Z",
-      "started": "2025-12-23",
-      "last_updated": "2025-12-23T18:45:00Z"
-    },
-    {
-      "project_number": 153,
-      "project_name": "revise_research_and_plan_commands_to_enforce_status_updates",
-      "type": "standards",
-      "phase": "completed",
-      "status": "completed",
-      "reports": [],
-      "plans": [],
-      "summaries": [
-        "summaries/implementation-summary-20251223.md"
-      ],
-      "created": "2025-12-23T13:20:00Z",
-      "last_updated": "2025-12-23T16:15:00Z",
-      "completed": "2025-12-23T16:15:00Z"
-    },
-    {
       "project_number": 155,
       "project_name": "optimize_opencode_command_subagent_routing_and_metadata",
       "type": "standards",
       "phase": "implementation",
-      "status": "active",
-      "reports": [
-        "reports/research-001.md"
-      ],
-      "plans": [
-        "plans/implementation-001.md"
-      ],
-      "summaries": [],
+      "status": "in_progress",
+       "reports": [
+         "reports/research-001.md"
+       ],
+       "plans": [
+         "plans/implementation-001.md",
+         "plans/implementation-002.md"
+       ],
+       "summaries": [],
+
       "created": "2025-12-23T17:40:00Z",
-      "last_updated": "2025-12-23T18:15:00Z"
+       "last_updated": "2025-12-23T21:45:00Z"
+
     }
   ],
   "completed_projects": [
@@ -237,6 +134,168 @@
         "base_path": ".opencode/specs/archive/145_convert_plan_standard_metadata_to_yaml_front_matter/"
       },
       "summary": "YAML front-matter plan standard change abandoned in favor of marker-aligned format."
+    },
+    {
+      "project_number": 151,
+      "project_name": "ensure_task_pre_updates_todo_and_plans_to_in_progress_before_work",
+      "type": "standards",
+      "phase": "archived",
+      "status": "completed",
+      "reports": [],
+      "plans": [],
+      "summaries": [],
+      "created": "2025-12-23T07:10:00Z",
+      "completed": "2025-12-23T07:10:00Z",
+      "archived": "2025-12-23T19:00:00Z",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/151_ensure_task_pre_updates_todo_and_plans_to_in_progress_before_work/"
+      },
+      "summary": "Task status pre-update guardrail implemented for /task."
+    },
+    {
+      "project_number": 152,
+      "project_name": "standardize_command_templates_and_migrate_command_docs",
+      "type": "research",
+      "phase": "archived",
+      "status": "completed",
+      "reports": [
+        "reports/research-001.md"
+      ],
+      "plans": [
+        "plans/implementation-001.md",
+        "plans/implementation-002.md"
+      ],
+      "summaries": [
+        "summaries/implementation-summary-20251223.md"
+      ],
+      "created": "2025-12-23T12:55:00Z",
+      "completed": "2025-12-23T15:50:00Z",
+      "archived": "2025-12-23T19:00:00Z",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/152_standardize_command_templates_and_migrate_command_docs/"
+      },
+      "summary": "Command templates and standards unified; docs migrated to YAML/@subagent format."
+    },
+    {
+      "project_number": 153,
+      "project_name": "revise_research_and_plan_commands_to_enforce_status_updates",
+      "type": "standards",
+      "phase": "archived",
+      "status": "completed",
+      "reports": [],
+      "plans": [],
+      "summaries": [
+        "summaries/implementation-summary-20251223.md"
+      ],
+      "created": "2025-12-23T13:20:00Z",
+      "completed": "2025-12-23T16:15:00Z",
+      "archived": "2025-12-23T19:00:00Z",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/153_revise_research_and_plan_commands_to_enforce_status_updates/"
+      },
+      "summary": "Research/plan commands now enforce status markers and sync flows."
+    },
+    {
+      "project_number": 144,
+      "project_name": "update_context_references_after_refactor",
+      "type": "research",
+      "phase": "archived",
+      "status": "completed",
+      "reports": [
+        "reports/research-001.md"
+      ],
+      "plans": [
+        "plans/implementation-002.md"
+      ],
+      "summaries": [
+        "summaries/implementation-summary-20251223.md"
+      ],
+      "created": "2025-12-23T03:15:00Z",
+      "completed": "2025-12-23T06:15:00Z",
+      "archived": "2025-12-23T19:00:00Z",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/144_update_context_references_after_refactor/"
+      },
+      "summary": "Context references remapped post-refactor; plans and summaries updated."
+    },
+    {
+      "project_number": 128,
+      "project_name": "implement_caching_and_context_helpers_in_proofsearch",
+      "type": "implementation",
+      "phase": "archived",
+      "status": "completed",
+      "reports": [
+        "reports/research-001.md"
+      ],
+      "plans": [
+        "plans/implementation-001.md"
+      ],
+      "summaries": [
+        "summaries/plan-summary.md",
+        "summaries/implementation-summary-20251223.md"
+      ],
+      "created": "2025-12-22T12:00:00Z",
+      "completed": "2025-12-23T06:50:00Z",
+      "archived": "2025-12-23T19:00:00Z",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/128_implement_caching_and_context_helpers_in_proofsearch/"
+      },
+      "summary": "Caching and context helpers added to ProofSearch with stats and tests."
+    },
+    {
+      "project_number": 154,
+      "project_name": "research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130",
+      "type": "research",
+      "phase": "completed",
+      "status": "abandoned",
+      "reports": [
+        "reports/research-001.md",
+        "reports/research-002.md"
+      ],
+      "plans": [
+        "plans/implementation-001.md",
+        "plans/implementation-002.md"
+      ],
+      "summaries": [
+        "summaries/implementation-summary-20251223.md"
+      ],
+      "created": "2025-12-23T14:30:00Z",
+      "started": "2025-12-23",
+      "abandoned": "2025-12-23",
+      "summary": "Branch B executed elsewhere; research line closed as abandoned; artifacts remain in project folder pending archive relocation."
+    },
+    {
+      "project_number": 129,
+      "project_name": "prove_temporal_swap_lemmas_in_truth_lean",
+      "type": "implementation",
+      "phase": "completed",
+      "status": "completed",
+      "reports": [],
+      "plans": [],
+      "summaries": [],
+      "created": "2025-12-22T12:00:00Z",
+      "started": "2025-12-23",
+      "completed": "2025-12-23",
+      "summary": "Temporal swap lemmas proven via Branch B using project 154 artifacts; pending archive relocation."
+    },
+    {
+      "project_number": 131,
+      "project_name": "clean_up_archive_examples",
+      "type": "maintenance",
+      "phase": "archived",
+      "status": "completed",
+      "reports": [],
+      "plans": [],
+      "summaries": [
+        "summaries/implementation-summary-20251223.md"
+      ],
+      "created": "2025-12-23T11:13:00Z",
+      "completed": "2025-12-23T12:10:00Z",
+      "archived": "2025-12-23T19:00:00Z",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/131_clean_up_archive_examples/"
+      },
+      "summary": "Archive examples reviewed; obsolete content removed or relocated."
     }
   ],
   "recent_activities": [
@@ -379,38 +438,24 @@
     {
       "timestamp": "2025-12-23T18:20:00Z",
       "activity": "Created implementation plan plans/implementation-002.md for project 154 (Branch B execution to retire tasks 129/130)"
+    },
+    {
+      "timestamp": "2025-12-23T20:05:00Z",
+      "activity": "Completed tasks 129 and 130 (Truth.lean temporal swap/domain extension) and added summary for project 154"
     }
   ],
   "pending_tasks": [
     {
-      "project_number": 128,
-      "title": "Implement caching and context helpers in ProofSearch",
+      "project_number": 129,
+      "title": "Prove temporal swap lemmas in Truth.lean",
       "status": "completed",
       "created_at": "2025-12-22T12:00:00Z",
       "started_at": "2025-12-23",
       "completed_at": "2025-12-23"
     },
     {
-      "project_number": 129,
-      "title": "Prove temporal swap lemmas in Truth.lean",
-      "status": "abandoned",
-      "created_at": "2025-12-22T12:00:00Z",
-      "started_at": "2025-12-23",
-      "abandoned_at": "2025-12-23",
-      "abandon_reason": "Proof obligations in TemporalDuality.truth_swap_of_valid_at_triple (imp case) require stronger domain/validity assumptions; cannot derive from current axioms"
-    },
-    {
       "project_number": 130,
       "title": "Prove domain extension lemmas in Truth.lean",
-      "status": "blocked",
-      "created_at": "2025-12-22T12:00:00Z",
-      "started_at": "2025-12-23",
-      "blocked_at": "2025-12-23",
-      "blocking_reason": "Blocked by task 129 failure (dependent proofs rely on previous lemma)."
-    },
-    {
-      "project_number": 131,
-      "title": "Clean up Archive examples",
       "status": "completed",
       "created_at": "2025-12-22T12:00:00Z",
       "started_at": "2025-12-23",
@@ -477,34 +522,10 @@
       "created_at": "2025-12-22T12:00:00Z"
     },
     {
-      "project_number": 144,
-      "title": "Update context references after refactor",
+      "project_number": 156,
+      "title": "Enforce targeted git commits via git-workflow-manager across commands",
       "status": "completed",
-      "created_at": "2025-12-22T12:00:00Z",
-      "started_at": "2025-12-23",
-      "completed_at": "2025-12-23"
-    },
-    {
-      "project_number": 151,
-      "title": "Ensure /task pre-updates TODO and plans to IN PROGRESS before work",
-      "status": "completed",
-      "created_at": "2025-12-23T07:10:00Z",
-      "started_at": "2025-12-23",
-      "completed_at": "2025-12-23"
-    },
-    {
-      "project_number": 152,
-      "title": "Standardize command templates and migrate command docs",
-      "status": "completed",
-      "created_at": "2025-12-23T12:30:00Z",
-      "started_at": "2025-12-23",
-      "completed_at": "2025-12-23"
-    },
-    {
-      "project_number": 153,
-      "title": "Revise /research and /plan commands to enforce status updates",
-      "status": "completed",
-      "created_at": "2025-12-23T13:20:00Z",
+      "created_at": "2025-12-23T20:30:00Z",
       "started_at": "2025-12-23",
       "completed_at": "2025-12-23"
     },
@@ -516,6 +537,27 @@
       "started_at": "2025-12-23",
       "research_completed_at": "2025-12-23T17:45:00Z",
       "planned_at": "2025-12-23T18:05:00Z"
+    },
+    {
+      "project_number": 158,
+      "title": "Fix /plan command routing to keep orchestrator primary and planner as subagent",
+      "status": "abandoned",
+      "created_at": "2025-12-23T20:10:00Z",
+      "abandoned_at": "2025-12-23"
+    },
+    {
+      "project_number": 159,
+      "title": "Revise /optimize command plan output to match plan format standard",
+      "status": "completed",
+      "created_at": "2025-12-23",
+      "started_at": "2025-12-23",
+      "completed_at": "2025-12-23"
+    },
+    {
+      "project_number": 160,
+      "title": "Fix /task status syncing to TODO and linked plan",
+      "status": "not_started",
+      "created_at": "2025-12-23"
     }
   ],
   "maintenance_summary": {
@@ -530,8 +572,8 @@
   },
   "archive_summary": {
     "_comment": "Quick reference to archived projects - full details in archive/state.json",
-    "total_archived": 5,
-    "last_archived": "2025-12-23T05:00:00Z",
+    "total_archived": 11,
+    "last_archived": "2025-12-23T19:00:00Z",
     "archive_location": ".opencode/specs/archive/",
     "archive_state_file": ".opencode/specs/archive/state.json"
   },

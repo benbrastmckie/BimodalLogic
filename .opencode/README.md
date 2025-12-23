@@ -13,10 +13,8 @@ General-purpose AI agent system for software development. Manages the complete w
 
 ### Agent System Summary
 
-**10 Primary Agents** coordinate workflows and delegate to specialists  
-**19 Specialist Subagents** perform focused technical tasks
-
-> **Complete Agent Catalog**: See [agent/README.md](agent/README.md) for primary agents and [agent/subagents/specialists/README.md](agent/subagents/specialists/README.md) for all 19 specialists organized by category.
+**Workflow and utility agents** live in `agent/subagents/*.md` (orchestrator plus reviewer, researcher, planner, implementer, lean-implementation-orchestrator, refactorer, documenter, meta, task-adder, task-executor, context-refactor, implementation-orchestrator, proof/lean specialists, etc.).
+**Specialist helpers (20)** live in `agent/subagents/specialists/*.md` and are referenced directly from the workflow agents (no separate README).
 
 ### Guardrails & Standards Quicklinks
 - Lazy directory creation and command contracts: [context/common/system/artifact-management.md](context/common/system/artifact-management.md)
@@ -86,33 +84,20 @@ Updates documentation to be complete, accurate, concise
 
 ```
 .opencode/
-├── agent/                  # See agent/README.md
+├── agent/
 │   ├── orchestrator.md
-│   └── subagents/
-│       ├── reviewer.md
-│       ├── researcher.md
-│       ├── planner.md
-│       ├── developer.md
-│       ├── refactorer.md
-│       ├── documenter.md
-│       ├── meta.md
-│       └── specialists/    # See agent/subagents/specialists/README.md
-│           └── [19 specialist subagents]
+│   └── subagents/          # Workflow + utility agents
+│       ├── *.md            # reviewer, researcher, planner, implementer, lean-implementation-orchestrator, refactorer, documenter, meta, task-* , context-refactor, implementation-orchestrator, proof helpers, etc.
+│       └── specialists/    # 20 focused helpers (style-checker, doc-writer, git-workflow-manager, etc.)
 ├── context/                # See context/README.md
-│   ├── project/            # Project-specific context
-│   ├── repo/               # Repository conventions
-│   ├── core/               # Core system patterns
-│   └── templates/          # Meta-system templates
-├── command/                # See command/README.md
-│   └── [11 commands: review, research, plan, revise, implement, refactor, document, meta, add, todo, task]
+│   ├── common/             # standards/, system/, templates/, workflows/
+│   ├── project/            # domain overlays (logic, lean4, math, physics, repo)
+│   └── index.md, README.md
+├── command/                # User-facing commands (add, context, document, implement, lean, meta, optimize, plan, refactor, research, review, revise, task, todo)
 ├── specs/                  # See specs/README.md
 │   ├── TODO.md             # Master task list
 │   ├── state.json          # Global state
-│   └── NNN_project_name/   # Project directories
-│       ├── reports/
-│       ├── plans/
-│       ├── summaries/
-│       └── state.json
+│   └── NNN_project_name/   # Project directories with reports/, plans/, summaries/, state.json
 └── [documentation files]
 ```
 
@@ -285,22 +270,16 @@ Verify system integrity and setup. Use canonical status markers (see `context/co
 
 ### Agent System Verification
 ```bash
-# Count primary agents (should be 10)
-find .opencode/agent/subagents -maxdepth 1 -name "*.md" -type f | wc -l
-
-# Count specialist subagents (should be 19)
-find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l
-
-# List all primary agents
+# List workflow/utility agents
 ls .opencode/agent/subagents/*.md
+
+# List specialist helpers (should return 20 files)
+find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | sort
 ```
 
 ### Command System Verification
 ```bash
-# Count commands (should be 11)
-find .opencode/command -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l
-
-# List all commands
+# List all commands (expect add, context, document, implement, lean, meta, optimize, plan, refactor, research, review, revise, task, todo)
 ls .opencode/command/*.md
 ```
 
@@ -331,18 +310,20 @@ find .opencode/specs -maxdepth 1 -type d -name "[0-9]*" | wc -l
 ```bash
 # Run all verification checks
 echo "=== Agent System ==="
-echo "Primary agents: $(find .opencode/agent/subagents -maxdepth 1 -name "*.md" -type f | wc -l) (expected: 10)"
-echo "Specialist subagents: $(find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l) (expected: 19)"
+echo "Workflow/utility agents:" && ls .opencode/agent/subagents/*.md
+
+echo -e "\nSpecialist helpers (target: 20)"
+find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | sort
 
 echo -e "\n=== Command System ==="
-echo "Commands: $(find .opencode/command -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l) (expected: 11)"
+ls .opencode/command/*.md
 
 echo -e "\n=== Context Structure ==="
-echo "Context directories: $(ls -d .opencode/context/*/ 2>/dev/null | wc -l) (expected: 4)"
+ls -d .opencode/context/*/
 
 echo -e "\n=== Specs Directory ==="
-echo "TODO.md: $(test -f .opencode/specs/TODO.md && echo "✓" || echo "✗")"
-echo "state.json: $(test -f .opencode/specs/state.json && echo "✓" || echo "✗")"
+echo "TODO.md: $(test -f .opencode/specs/TODO.md && echo "present" || echo "missing")"
+echo "state.json: $(test -f .opencode/specs/state.json && echo "present" || echo "missing")"
 echo "Project directories: $(find .opencode/specs -maxdepth 1 -type d -name "[0-9]*" | wc -l)"
 ```
 

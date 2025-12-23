@@ -1,23 +1,22 @@
 ---
 name: document
-agent: documenter
- description: "Update documentation to be complete, accurate, and concise"
- context_level: 2
- language: markdown
- subagents:
-   - doc-analyzer
-   - doc-writer
-   - documentation-generator (optional)
- mcp_requirements: []
- registry_impacts:
-   - TODO.md (task-bound)
-   - .opencode/specs/state.json (task-bound)
-   - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (when doc status changes are recorded)
- creates_root_on: "Only when writing documentation summaries"
- creates_subdir:
-   - summaries
- dry_run: "Scope/analysis preview only; no dirs/artifacts/status/registry writes."
-
+agent: orchestrator
+description: "Update documentation to be complete, accurate, and concise"
+context_level: 2
+language: markdown
+subagents:
+  - doc-analyzer
+  - doc-writer
+  - documentation-generator (optional)
+mcp_requirements: []
+registry_impacts:
+  - TODO.md (task-bound)
+  - .opencode/specs/state.json (task-bound)
+  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (when doc status changes are recorded)
+creates_root_on: "Only when writing documentation summaries"
+creates_subdir:
+  - summaries
+dry_run: "Scope/analysis preview only; no dirs/artifacts/status/registry writes."
 ---
 
 Context Loaded:
@@ -74,6 +73,7 @@ Context Loaded:
   <artifact_naming>Documentation summaries go under summaries/{type}-summary-YYYYMMDD.md when produced.</artifact_naming>
   <state_sync>Update project/global state when artifacts are created; link summaries in TODO/state.</state_sync>
   <registry_sync>Update IMPLEMENTATION_STATUS.md if documentation impacts task status; registries unchanged otherwise.</registry_sync>
+  <git_commits>After documentation updates and status syncs, use git-commits.md + git-workflow-manager to stage only doc-related files; avoid blanket commits.</git_commits>
 </artifact_management>
 
 <quality_standards>

@@ -1,7 +1,7 @@
 # Sorry Placeholder Registry
 
-**Last Updated**: 2025-12-22
-**Total Active Placeholders**: 8 (1 ModalS5 documented invalid, 3 Truth.lean, 1 Completeness, 3 ProofSearch documentation)
+**Last Updated**: 2025-12-23
+**Total Active Placeholders**: 5 (1 ModalS5 documented invalid, 1 Completeness, 3 ProofSearch documentation)
 **Total Axiom Declarations**: 24 (5 Perpetuity, 11 Completeness, 8 ProofSearch)
 **Total Resolved**: 60 (Plan 059 Phase 1: 6 De Morgan laws, Plan 060: diamond_disj_iff + s4_diamond_box_conj + s5_diamond_conj_diamond + k_dist_diamond + biconditional infrastructure, Task 46: 3 DeductionTheorem cases)
 
@@ -55,20 +55,20 @@ Run these commands to verify placeholder counts against this registry:
 
 ```bash
 # Count sorry placeholders in Logos
-grep -rn "sorry" Logos/Core/**/*.lean 2>/dev/null | grep -v "^Binary" | wc -l
+ grep -rn "sorry" Logos/Core/**/*.lean 2>/dev/null | grep -v "^Binary" | wc -l
 
 # List sorry locations
-grep -rn "sorry" Logos/Core/**/*.lean 2>/dev/null
+ grep -rn "sorry" Logos/Core/**/*.lean 2>/dev/null
 
 # Count axiom declarations (unproven theorems)
-grep -rn "axiom " Logos/Core/**/*.lean 2>/dev/null | wc -l
+ grep -rn "axiom " Logos/Core/**/*.lean 2>/dev/null | wc -l
 
 # Full verification script
-echo "=== Sorry Placeholder Verification ===" && \
-grep -rn "sorry" Logos/Core/**/*.lean 2>/dev/null && \
-echo "" && \
-echo "=== Axiom Declarations ===" && \
-grep -rn "axiom " Logos/Core/**/*.lean 2>/dev/null
+ echo "=== Sorry Placeholder Verification ===" && \
+ grep -rn "sorry" Logos/Core/**/*.lean 2>/dev/null && \
+ echo "" && \
+ echo "=== Axiom Declarations ===" && \
+ grep -rn "axiom " Logos/Core/**/*.lean 2>/dev/null
 ```
 
 ---
@@ -131,16 +131,6 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 φ) (persisten
   - **Justification**: Standard modal monotonicity principle
   - **Status**: Axiomatized (derivable but complex, semantically justified)
 
-### Logos/Core/Theorems/Propositional.lean (0 placeholders - Plan 059 Phase 1)
-
-**Plan 059 Phase 1 COMPLETE** (2025-12-09): All 6 De Morgan law theorems fully proven:
-- `demorgan_conj_neg_forward`: `⊢ ¬(A ∧ B) → (¬A ∨ ¬B)` [COMPLETE]
-- `demorgan_conj_neg_backward`: `⊢ (¬A ∨ ¬B) → ¬(A ∧ B)` [COMPLETE]
-- `demorgan_conj_neg`: `⊢ ¬(A ∧ B) ↔ (¬A ∨ ¬B)` [COMPLETE]
-- `demorgan_disj_neg_forward`: `⊢ ¬(A ∨ B) → (¬A ∧ ¬B)` [COMPLETE]
-- `demorgan_disj_neg_backward`: `⊢ (¬A ∧ ¬B) → ¬(A ∨ B)` [COMPLETE]
-- `demorgan_disj_neg`: `⊢ ¬(A ∨ B) ↔ (¬A ∧ ¬B)` [COMPLETE]
-
 ### Logos/Core/Theorems/ModalS5.lean (1 placeholder - documented invalid theorem)
 
 - **ModalS5.lean:89** - `diamond_mono_imp` (fundamental limitation - NOT VALID)
@@ -168,308 +158,11 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 φ) (persisten
 - **s4_diamond_box_conj**: `⊢ (◇A ∧ □B) → ◇(A ∧ □B)` [COMPLETE] (resolved 2025-12-09 using k_dist_diamond + modal_4)
 - **s5_diamond_conj_diamond**: `⊢ ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)` [COMPLETE] (resolved 2025-12-09 using k_dist_diamond + modal_5)
 
-### Logos/Core/Semantics/Truth.lean (3 placeholders)
-
-These are blocking placeholders in the temporal swap validity proof infrastructure.
-
-- **Truth.lean:635** - `is_valid_swap_imp` (implication case)
-  - **Context**: Swap validity for implication formulas
-  - **Blocker**: Requires showing `is_valid (ψ → χ)` implies `is_valid (swap ψ → swap χ)`
-  - **Issue**: Not obviously equivalent without structural assumptions on ψ and χ
-  - **Resolution**: Accept limitation for MVP; only applies to derivable formulas in practice
-  - **Task**: Task 17 area (Soundness.lean related issues)
-  - **Status**: BLOCKED (documented as MVP limitation)
-
-- **Truth.lean:714** - `is_valid_swap_all_past` (past case)
-  - **Context**: If `Past ψ` is valid, then ψ is valid
-  - **Blocker**: Requires domain extension assumption - need some t > r in domain
-  - **Issue**: Can't guarantee τ.domain extends beyond any given point
-  - **Resolution**: Requires assuming histories have unbounded future domains
-  - **Task**: Task 17 area (Soundness.lean related issues)
-  - **Status**: BLOCKED (domain extension limitation)
-
-- **Truth.lean:736** - `is_valid_swap_all_future` (future case)
-  - **Context**: If `Future ψ` is valid, then ψ is valid
-  - **Blocker**: Requires domain extension assumption - need some t < r in domain
-  - **Issue**: Symmetric to past case; can't guarantee domain extends into past
-  - **Resolution**: Requires assuming histories have unbounded past domains
-  - **Task**: Task 17 area (Soundness.lean related issues)
-  - **Status**: BLOCKED (domain extension limitation)
-
-### Logos/Core/Metalogic/DeductionTheorem.lean (0 placeholders - COMPLETE)
-
-**FULLY RESOLVED** (Task 46 - 2025-12-15): All deduction theorem cases proven with zero sorry.
-
-- **DeductionTheorem.lean:370** - `deduction_theorem` (modal_k case) [COMPLETE]
-  - **Status**: RESOLVED - Implemented using recursive case analysis with termination proofs
-  
-- **DeductionTheorem.lean:383** - `deduction_theorem` (necessitation case) [COMPLETE]
-  - **Status**: RESOLVED - Handled empty context necessitation with proper formulation
-  
-- **DeductionTheorem.lean:419** - `deduction_theorem` (temporal_k case) [COMPLETE]
-  - **Status**: RESOLVED - Implemented using structural recursion pattern
-
-**Impact**: Deduction theorem now fully functional for all derivation rule cases, enabling advanced proof techniques like `future_k_dist` derivation (Task 42a).
-
 ### Logos/Core/Metalogic/Completeness.lean (1 placeholder)
 
-- **Completeness.lean:369** - `provable_iff_valid` (soundness direction)
-  - **Context**: Proving `semantic_consequence [] φ` implies `valid φ`
-  - **Blocker**: Need to show equivalence of semantic consequence with empty context and validity
-  - **Resolution**: Straightforward proof once `valid` and `semantic_consequence` definitions aligned
-  - **Effort**: 1-2 hours
-  - **Task**: Task 9 (Begin Completeness Proofs)
-  - **Status**: NOT STARTED (low priority)
+- `provable_iff_valid` (pending tasks 132–135)
 
----
+### ProofSearch documentation placeholders (3)
 
-## Axiom Declarations (Completeness.lean)
+- Documentation stubs pending consolidation (no Lean code impact); tracked under ProofSearch doc tasks.
 
-These are `axiom` declarations representing unproven theorems in the completeness infrastructure. They require the same resolution attention as `sorry` placeholders.
-
-### Logos/Core/Metalogic/Completeness.lean (11 axioms)
-
-**Phase 1 - Maximal Consistent Sets** (20-30 hours total):
-
-- **Completeness.lean:116** - `lindenbaum`
-  - **Context**: Every consistent set extends to maximal consistent set
-  - **Resolution**: Prove using Zorn's lemma or transfinite induction
-  - **Effort**: 10-15 hours
-  - **Task**: Task 9 (Begin Completeness Proofs), Phase 1
-  - **Status**: NOT STARTED
-
-- **Completeness.lean:140** - `maximal_consistent_closed`
-  - **Context**: Maximal consistent sets closed under modus ponens
-  - **Resolution**: Prove from maximality and consistency
-  - **Effort**: 5-7 hours
-  - **Task**: Task 9 (Begin Completeness Proofs), Phase 1
-  - **Status**: NOT STARTED
-
-- **Completeness.lean:154** - `maximal_negation_complete`
-  - **Context**: For every formula, either it or its negation is in the maximal set
-  - **Resolution**: Prove from maximality
-  - **Effort**: 5-7 hours
-  - **Task**: Task 9 (Begin Completeness Proofs), Phase 1
-  - **Status**: NOT STARTED
-
-**Phase 2 - Canonical Model Components** (20-30 hours total):
-
-- **Completeness.lean:199** - `canonical_task_rel`
-  - **Context**: Task relation defined from derivability
-  - **Resolution**: Define relation, prove respects derivability
-  - **Effort**: 8-10 hours
-  - **Task**: Task 9 (Begin Completeness Proofs), Phase 2
-  - **Status**: NOT STARTED
-
-- **Completeness.lean:210** - `canonical_frame`
-  - **Context**: Frame constructed from maximal consistent sets
-  - **Resolution**: Prove frame satisfies nullity and compositionality axioms
-  - **Effort**: 10-12 hours
-  - **Task**: Task 9 (Begin Completeness Proofs), Phase 2
-  - **Status**: NOT STARTED
-
-- **Completeness.lean:235** - `canonical_valuation`
-  - **Context**: Valuation from maximal sets (atom membership)
-  - **Resolution**: Define valuation function from set membership
-  - **Effort**: 3-5 hours
-  - **Task**: Task 9 (Begin Completeness Proofs), Phase 2
-  - **Status**: NOT STARTED
-
-- **Completeness.lean:242** - `canonical_model`
-  - **Context**: Combine canonical frame and valuation into model
-  - **Resolution**: Construct model from proven components
-  - **Effort**: 2-3 hours
-  - **Task**: Task 9 (Begin Completeness Proofs), Phase 2
-  - **Status**: NOT STARTED
-
-**Phase 3 - Truth Lemma and Completeness** (20-30 hours total):
-
-- **Completeness.lean:263** - `canonical_history`
-  - **Context**: History from maximal sets for temporal operators
-  - **Resolution**: Define history function, prove respects task relation
-  - **Effort**: 8-10 hours
-  - **Task**: Task 9 (Begin Completeness Proofs), Phase 3
-  - **Status**: NOT STARTED
-
-- **Completeness.lean:297** - `truth_lemma`
-  - **Context**: Truth preservation in canonical model
-  - **Resolution**: Prove by induction on formula structure (most complex proof)
-  - **Effort**: 15-20 hours
-  - **Task**: Task 9 (Begin Completeness Proofs), Phase 3
-  - **Status**: NOT STARTED
-
-- **Completeness.lean:326** - `weak_completeness`
-  - **Context**: Valid implies derivable (`|= phi -> |- phi`)
-  - **Resolution**: Prove from truth lemma using canonical model
-  - **Effort**: 5-7 hours
-  - **Task**: Task 9 (Begin Completeness Proofs), Phase 3
-  - **Status**: NOT STARTED
-
-- **Completeness.lean:346** - `strong_completeness`
-  - **Context**: Semantic consequence implies derivability (`Gamma |= phi -> Gamma |- phi`)
-  - **Resolution**: Prove from weak completeness
-  - **Effort**: 5-7 hours
-  - **Task**: Task 9 (Begin Completeness Proofs), Phase 3
-  - **Status**: NOT STARTED
-
----
-
-## Axiom Declarations (ProofSearch.lean)
-
-### Logos/Core/Automation/ProofSearch.lean (8 axioms)
-
-- **ProofSearch.lean:133** - `bounded_search`
-  - **Resolution**: Implement depth-bounded proof search
-  - **Effort**: 8-10 hours
-  - **Task**: Task 7 (Implement Core Automation)
-  - **Status**: NOT STARTED
-
-- **ProofSearch.lean:146** - `search_with_heuristics`
-  - **Resolution**: Implement heuristic-guided search
-  - **Effort**: 10-12 hours
-  - **Task**: Task 7 (Implement Core Automation)
-  - **Status**: NOT STARTED
-
-- **ProofSearch.lean:156** - `search_with_cache`
-  - **Resolution**: Implement cached search with memoization
-  - **Effort**: 10-12 hours
-  - **Task**: Task 7 (Implement Core Automation)
-  - **Status**: NOT STARTED
-
-- **ProofSearch.lean:164** - `matches_axiom`
-  - **Resolution**: Implement axiom pattern matching
-  - **Effort**: 3-5 hours
-  - **Task**: Task 7 (Implement Core Automation)
-  - **Status**: NOT STARTED
-
-- **ProofSearch.lean:167** - `find_implications_to`
-  - **Resolution**: Implement implication chain search
-  - **Effort**: 5-7 hours
-  - **Task**: Task 7 (Implement Core Automation)
-  - **Status**: NOT STARTED
-
-- **ProofSearch.lean:170** - `heuristic_score`
-  - **Resolution**: Implement formula heuristic scoring
-  - **Effort**: 3-5 hours
-  - **Task**: Task 7 (Implement Core Automation)
-  - **Status**: NOT STARTED
-
-- **ProofSearch.lean:173** - `box_context`
-  - **Resolution**: Implement modal context extraction
-  - **Effort**: 2-3 hours
-  - **Task**: Task 7 (Implement Core Automation)
-  - **Status**: NOT STARTED
-
-- **ProofSearch.lean:176** - `future_context`
-  - **Resolution**: Implement temporal context extraction
-  - **Effort**: 2-3 hours
-  - **Task**: Task 7 (Implement Core Automation)
-  - **Status**: NOT STARTED
-
----
-
-## Documentation Placeholders (ProofSearch.lean)
-
-These are example usage `sorry` placeholders in documentation code blocks (3 total):
-
-- **ProofSearch.lean:472** - Example usage for bounded_search
-- **ProofSearch.lean:477** - Example usage for bounded_search with query
-- **ProofSearch.lean:482** - Example usage for bounded_search with context
-
-**Resolution**: Replace with real examples after search functions implemented
-**Effort**: 1 hour (after search implemented)
-**Task**: Task 7 (Implement Core Automation)
-
----
-
-## Resolved Placeholders
-
-Resolved placeholders are tracked via git history. Query completed resolutions:
-
-```bash
-# View sorry resolution commits
-git log --all --grep="sorry" --oneline
-
-# View commits that modified Soundness.lean (where most resolutions occurred)
-git log --oneline -- Logos/Core/Metalogic/Soundness.lean
-
-# Search for specific resolution
-git log --all -S "sorry" -- Logos/Core/Semantics/Truth.lean
-```
-
-### Resolution History Summary
-
-**2025-12-15 - Task 46: Deduction Theorem Completion**
-- DeductionTheorem.lean: All 3 sorry placeholders resolved (modal_k, necessitation, temporal_k cases)
-- Implemented recursive case analysis with complete termination proofs
-- Deduction theorem now fully functional for all derivation rule cases
-- Enabled advanced proof techniques (e.g., Task 42a: future_k_dist derivation)
-- Total sorry in DeductionTheorem.lean: 3 → 0 [COMPLETE]
-
-**2025-12-15 - Task 42a: Temporal Axiom Derivation**
-- Perpetuity/Principles.lean: `future_k_dist` derived as theorem using deduction theorem
-- Perpetuity/Principles.lean: `always_mono` derived as theorem using deduction theorem
-- Axiom count reduced by 2 (future_k_dist and always_mono now theorems)
-- Note: Axiom declarations remain in Perpetuity.lean for backward compatibility
-
-**2025-12-08 - Task 16: Perpetuity Theorem Logic Errors**
-- Perpetuity.lean: P1 (`perpetuity_1`) fully proven (was sorry)
-- New helper lemmas: `identity`, `pairing` (axiom), `combine_imp_conj`, `combine_imp_conj_3`
-- New temporal lemmas: `box_to_future`, `box_to_past` (via duality), `box_to_present`
-- P3 (`perpetuity_3`) documented as blocked (requires modal K axiom not in TM)
-- Total sorry in Perpetuity.lean: 2 → 1
-
-**2025-12-03 - Task 5: Modal K and Temporal K Rules**
-- Soundness.lean: modal_k case resolved (zero sorry)
-- Soundness.lean: temporal_k case resolved (zero sorry)
-
-**2025-12-03 - Task 7: Core Automation**
-- Tactics.lean: 4 tactics implemented (apply_axiom, modal_t, tm_auto, assumption_search)
-- 8 helper functions replaced sorry stubs
-
-**2025-12-03 - Task 8: WorldHistory Universal Helper**
-- WorldHistory.lean: universal constructor resolved (zero sorry)
-
-**2025-12-02 - Task 6: Perpetuity Proofs**
-- Perpetuity.lean: P1-P6 principles proven (using axiom applications)
-
-**2025-12-02 - Task 5: Soundness Axioms**
-- Soundness.lean: All 8 TM axioms proven sound (MT, M4, MB, T4, TA, TL, MF, TF)
-- Truth.lean: Transport lemmas completed
-
----
-
-## Summary
-
-| Category | Count | Status |
-|----------|-------|--------|
-| Active `sorry` (ModalS5) | 1 | diamond_mono_imp (NOT VALID - documented with counter-model) |
-| Active `sorry` (Truth.lean) | 3 | Temporal swap validity (domain extension limitation) |
-| Active `sorry` (DeductionTheorem) | 0 | [COMPLETE] (Task 46) |
-| Active `sorry` (Completeness) | 1 | `provable_iff_valid` soundness direction |
-| Documentation `sorry` (ProofSearch) | 3 | Example usage (after implementation) |
-| Completeness `axiom` | 11 | Task 9 (70-90 hours) |
-| ProofSearch `axiom` | 8 | Task 7 (40-60 hours) |
-| Perpetuity `axiom` | 5 | dni, future_k_dist (now derived), always_dni, always_dne, always_mono |
-| **Total `sorry`** | **8** | 5 blocking + 3 documentation |
-| **Total `axiom`** | **24** | 5 Perpetuity + 11 Completeness + 8 ProofSearch |
-
-**Plan 060 Status (2025-12-09 - COMPLETE)**:
-- **Phase 1 COMPLETE**: k_dist_diamond (`□(A → B) → (◇A → ◇B)`) proven [COMPLETE]
-- **Phase 2 COMPLETE**: Biconditional infrastructure (contrapose_iff, iff_neg_intro, box_iff_intro) [COMPLETE]
-- **Phase 3 COMPLETE**: diamond_disj_iff fully proven via duality chain [COMPLETE]
-- **Phase 4 COMPLETE**: s4_diamond_box_conj and s5_diamond_conj_diamond proven using k_dist_diamond [COMPLETE]
-- **All 8 Phase 4 Modal Theorems**: COMPLETE (ModalS5: 5/5, ModalS4: 4/4)
-- **Key Discovery**: `(φ → ψ) → (◇φ → ◇ψ)` is NOT VALID, but `□(φ → ψ) → (◇φ → ◇ψ)` IS VALID
-
-**Perpetuity Status (2025-12-09 - ALL COMPLETE)**:
-- P1, P2, P3, P4, P5, P6: ALL FULLY PROVEN as theorems (zero sorry) [COMPLETE]
-- `persistence` lemma: Fully proven using modal_5 + swap_temporal lemmas [COMPLETE]
-- `contraposition`: Proven via B combinator [COMPLETE]
-- All bridge lemmas for P6: Fully proven [COMPLETE]
-
-**Next Priority**: Fix AesopRules duplicate (Task 52), then Layer 1 planning.
-
----
-
-**Last Updated**: 2025-12-16

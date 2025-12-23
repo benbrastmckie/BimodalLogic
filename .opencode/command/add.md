@@ -1,19 +1,18 @@
 ---
 name: add
-agent: task-adder
- description: "Add tasks to TODO.md while updating state.json numbering"
- context_level: 1
- language: markdown
- subagents:
-   - task-adder
- mcp_requirements: []
- registry_impacts:
-   - TODO.md
-   - .opencode/specs/state.json
- creates_root_on: never
- creates_subdir: []
- dry_run: "Parse and number only; no status/registry/state writes and no directory creation."
-
+agent: orchestrator
+description: "Add tasks to TODO.md while updating state.json numbering"
+context_level: 1
+language: markdown
+subagents:
+  - task-adder
+mcp_requirements: []
+registry_impacts:
+  - TODO.md
+  - .opencode/specs/state.json
+creates_root_on: never
+creates_subdir: []
+dry_run: "Parse and number only; no status/registry/state writes and no directory creation."
 ---
 
 Context Loaded:
@@ -74,6 +73,7 @@ Context Loaded:
   <lazy_creation>No project roots/subdirs are created by /add.</lazy_creation>
   <state_sync>Always increment `next_project_number` and add pending_tasks entries.</state_sync>
   <registry_sync>Registry files (IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, TACTIC_REGISTRY.md) are unchanged by /add.</registry_sync>
+  <git_commits>No commits are made by /add; if follow-up edits occur, use git-commits.md + git-workflow-manager to stage only relevant files and commit after artifacts exist.</git_commits>
 </artifact_management>
 
 <quality_standards>
