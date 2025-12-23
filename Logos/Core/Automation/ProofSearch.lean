@@ -1,3 +1,5 @@
+import Std.Data.HashMap
+import Std.Data.HashSet
 import Logos.ProofSystem
 import Logos.Semantics
 
@@ -94,105 +96,147 @@ Full implementation would require extracting proof terms.
 -/
 abbrev SearchResult (_ : Context) (_ : Formula) := Bool
 
-/--
-Proof cache for memoization.
+/-- Cache key combines the current context and goal formula. */
+abbrev CacheKey := Context × Formula
 
-**Implementation**: Would use hash map from `(Context × Formula)` to `Derivable` proofs.
-Requires decidable equality and hashing for formulas.
--/
-structure ProofCache where
-  /-- Map from goals to cached proofs -/
-  cache : List ((Context × Formula) × Nat)  -- Placeholder: would be HashMap
-  deriving Inhabited
+/-- Hash-based proof cache for memoization (stores success/failure). -/
+abbrev ProofCache := Std.HashMap CacheKey Bool
 
-/-- Empty proof cache -/
-def ProofCache.empty : ProofCache := ⟨[]⟩
+/-- Visited set to prevent cycles during search. -/
+abbrev Visited := Std.HashSet CacheKey
+
+/-- Search statistics surfaced to callers and tests. -/
+structure SearchStats where
+  /-- Cache hits (entries found). -/
+  hits : Nat := 0
+  /-- Cache misses (entries inserted). -/
+  misses : Nat := 0
+  /-- Nodes visited (after passing depth/limit guard). -/
+  visited : Nat := 0
+  /-- Nodes pruned because visit limit was reached. -/
+  prunedByLimit : Nat := 0
+  deriving Inhabited, DecidableEq
 
 namespace ProofCache
 
-/--
-Check if a goal has been cached.
-
-**Parameters**:
-- `cache`: The proof cache to search
-- `Γ`: Context to match
-- `φ`: Formula to match
-
-**Returns**: `some true` if cached as provable, `some false` if cached as unprovable,
-  `none` if not in cache
-
-**Complexity**: O(n) where n is the cache size
--/
-def lookup (cache : ProofCache) (Γ : Context) (φ : Formula) : Option Bool :=
-  cache.cache.findSome? (fun ((Γ', φ'), result) =>
-    if Γ' = Γ && φ' = φ then some (result > 0) else none)
-
-/--
-Add a result to the cache.
-
-**Parameters**:
-- `cache`: The existing cache
-- `Γ`: Context of the goal
-- `φ`: Formula of the goal
-- `found`: Whether the goal was provable
-
-**Returns**: Updated cache with new entry
-
-**Complexity**: O(1) (prepend to list)
-
-**Note**: Does not check for duplicates. Cache may contain multiple entries
-for the same goal, but lookup returns the first match.
--/
-def insert (cache : ProofCache) (Γ : Context) (φ : Formula) (found : Bool) : ProofCache :=
-  { cache := ((Γ, φ), if found then 1 else 0) :: cache.cache }
+/-- Empty proof cache. -/
+@[simp] def empty : ProofCache := {}
 
 end ProofCache
+
+namespace Visited
+
+/-- Empty visited set. -/
+@[simp] def empty : Visited := {}
+
+end Visited
+
+/-!
+## Heuristic Weights
+-/
+
+/--
+Tunable weights for heuristic scoring. Lower scores are preferred.
+-/
+structure HeuristicWeights where
+  /-- Score assigned when a goal matches an axiom schema. -/
+  axiomWeight : Nat := 0
+  /-- Score assigned when a goal is already present in the context. -/
+  assumptionWeight : Nat := 1
+  /-- Base cost for a modus ponens step before considering antecedent complexity. -/
+  mpBase : Nat := 2
+  /-- Multiplier applied to antecedent complexity when ranking modus ponens candidates. -/
+  mpComplexityWeight : Nat := 1
+  /-- Base cost for modal K-style expansion (□). -/
+  modalBase : Nat := 5
+  /-- Base cost for temporal K-style expansion (G/all_future). -/
+  temporalBase : Nat := 5
+  /-- Penalty per context entry when performing context-transforming steps. -/
+  contextPenaltyWeight : Nat := 1
+  /-- Fallback cost when no strategy applies. -/
+  deadEnd : Nat := 100
+  deriving Inhabited
 
 /-!
 ## Helper Functions
 -/
 
 /--
-Check if formula matches any of the 10 TM axiom schemas.
+Check if a formula matches any of the 14 TM axiom schemata (prop, modal, temporal, interaction).
 
-This function pattern-matches the input formula against all axiom schemas:
-- Propositional: `prop_k`, `prop_s`
-- Modal: `modal_t`, `modal_4`, `modal_b`
-- Temporal: `temp_4`, `temp_a`, `temp_l`
-- Modal-Temporal: `modal_future`, `temp_future`
-
-**Returns**: `true` if the formula matches any axiom schema, `false` otherwise
-
-**Complexity**: O(n) where n is the complexity of the formula (structural pattern matching)
-
-**Examples**:
-- `matches_axiom (Formula.box p |>.imp p)` returns `true` (matches `modal_t`)
-- `matches_axiom (Formula.atom "p")` returns `false` (not an axiom)
+Returns `true` on an exact structural match, otherwise `false`.
 -/
 def matches_axiom (φ : Formula) : Bool :=
-  match φ with
-  -- Modal-Future: □φ → □Fφ (check before Modal 4 to avoid overlap)
-  | Formula.imp (Formula.box _) (Formula.box (Formula.all_future _)) => true
-  -- Temporal-Future: □φ → F□φ (check before general box patterns)
-  | Formula.imp (Formula.box _) (Formula.all_future (Formula.box _)) => true
-  -- Modal 4: □φ → □□φ
-  | Formula.imp (Formula.box _) (Formula.box (Formula.box _)) => true
-  -- Modal T: □φ → φ (check after more specific box patterns)
-  | Formula.imp (Formula.box _) _ => true
-  -- Temporal L: △φ → F(Hφ) where △φ = Hφ ∧ φ ∧ Fφ (check before general future patterns)
-  | Formula.imp _ (Formula.all_future (Formula.all_past _)) => true
-  -- Temporal 4: Fφ → FFφ
-  | Formula.imp (Formula.all_future _) (Formula.all_future (Formula.all_future _)) => true
-  -- Temporal A: φ → F(Pφ) where Pφ = ¬H¬φ (check after Temporal 4)
-  | Formula.imp _ (Formula.all_future _) => true
-  -- Propositional K: (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
-  | Formula.imp (Formula.imp _ (Formula.imp _ _))
-                (Formula.imp (Formula.imp _ _) (Formula.imp _ _)) => true
-  -- Propositional S: φ → (ψ → φ) (check after Prop K)
-  | Formula.imp _ (Formula.imp _ _) => true
-  -- Modal B: φ → □◇φ (where ◇φ = ¬□¬φ) (check after other imps)
-  | Formula.imp _ (Formula.box _) => true
-  | _ => false
+  let imp? : Formula → Option (Formula × Formula)
+    | .imp α β => some (α, β)
+    | _ => none
+  let eqf (a b : Formula) : Bool := decide (a = b)
+  match imp? φ with
+  | none => false
+  | some (lhs, rhs) =>
+    let prop_k : Bool :=
+      match lhs, rhs with
+      | .imp φ (.imp ψ χ), .imp (.imp φ' ψ') (.imp φ'' χ') =>
+          eqf φ φ' && eqf φ' φ'' && eqf ψ ψ' && eqf χ χ'
+      | _, _ => false
+    let prop_s : Bool :=
+      match lhs, rhs with
+      | φ, .imp _ φ' => eqf φ φ'
+      | _, _ => false
+    let ex_falso : Bool :=
+      match lhs with
+      | .bot => true
+      | _ => false
+    let peirce : Bool :=
+      match lhs, rhs with
+      | .imp (.imp φ ψ) φ', φ'' => eqf φ φ' && eqf φ' φ''
+      | _, _ => false
+    let modal_k_dist : Bool :=
+      match lhs, rhs with
+      | .box (.imp φ ψ), .imp (.box φ') (.box ψ') => eqf φ φ' && eqf ψ ψ'
+      | _, _ => false
+    let temp_k_dist : Bool :=
+      match lhs, rhs with
+      | .all_future (.imp φ ψ), .imp (.all_future φ') (.all_future ψ') => eqf φ φ' && eqf ψ ψ'
+      | _, _ => false
+    let modal_5_collapse : Bool :=
+      match lhs, rhs with
+      | .diamond (.box φ), .box φ' => eqf φ φ'
+      | _, _ => false
+    let modal_b : Bool :=
+      match lhs, rhs with
+      | φ, .box φ' => eqf φ' φ.diamond
+      | _, _ => false
+    let temp_4 : Bool :=
+      match lhs, rhs with
+      | .all_future φ, .all_future (.all_future φ') => eqf φ φ'
+      | _, _ => false
+    let temp_a : Bool :=
+      match lhs, rhs with
+      | φ, .all_future (.some_past φ') => eqf φ φ'
+      | _, _ => false
+    let temp_l : Bool :=
+      match lhs, rhs with
+      | .always φ, .all_future (.all_past φ') => eqf φ φ'
+      | _, _ => false
+    let modal_future : Bool :=
+      match lhs, rhs with
+      | .box φ, .box (.all_future φ') => eqf φ φ'
+      | _, _ => false
+    let temp_future : Bool :=
+      match lhs, rhs with
+      | .box φ, .all_future (.box φ') => eqf φ φ'
+      | _, _ => false
+    let modal_4 : Bool :=
+      match lhs, rhs with
+      | .box φ, .box (.box φ') => eqf φ φ'
+      | _, _ => false
+    let modal_t : Bool :=
+      match lhs, rhs with
+      | .box φ, φ' => eqf φ φ'
+      | _, _ => false
+    prop_k || prop_s || ex_falso || peirce || modal_t || modal_4 || modal_b || modal_5_collapse ||
+    modal_k_dist || temp_k_dist || temp_4 || temp_a || temp_l || modal_future || temp_future
 
 /--
 Find all implications `ψ → φ` in context where the consequent matches the goal.
@@ -259,59 +303,39 @@ def future_context (Γ : Context) : Context :=
   Γ.map Formula.all_future
 
 /--
-Compute heuristic score for proof search branch (lower score = higher priority).
+Compute heuristic score for a proof search branch (lower score = higher priority).
 
-This function assigns priority scores to guide proof search toward likely-successful
-branches. The scoring strategy is:
-
-**Scoring Rules**:
-- **Score 0**: Formula matches an axiom (immediate proof)
-- **Score 1**: Formula is in the context (proof by assumption)
-- **Score 2 + min(complexity)**: Modus ponens applicable (2 + smallest antecedent complexity)
-- **Score 5 + |Γ|**: Modal or temporal K applicable (more expensive due to context transformation)
-- **Score 100**: No strategy applicable (dead end)
-
-**Parameters**:
-- `Γ`: Proof context (list of assumptions)
-- `φ`: Goal formula to derive
-
-**Returns**: Natural number score (lower = better)
-
-**Complexity**: O(n·m) where n = |Γ| and m = max formula complexity
-
-**Rationale**:
-- Axioms and assumptions are cheapest (no subgoals)
-- Modus ponens creates one subgoal, weighted by antecedent complexity
-- Modal/temporal K are expensive (context transformation + subgoal)
-- Impossible goals get high penalty to prune search tree
-
-**Examples**:
-- `heuristic_score [] (Formula.box p |>.imp p)` returns `0` (axiom)
-- `heuristic_score [p] p` returns `1` (assumption)
-- `heuristic_score [p.imp q] q` returns `2 + p.complexity` (modus ponens)
-- `heuristic_score [] (Formula.box p)` returns `5 + 0` (modal K, empty context)
-- `heuristic_score [] (Formula.atom "p")` returns `100` (no strategy)
+Scores are configurable via `HeuristicWeights` while keeping the default
+ordering used by bounded search.
 -/
-def heuristic_score (Γ : Context) (φ : Formula) : Nat :=
-  -- Check if φ is an axiom (score 0)
-  if matches_axiom φ then 0
-  -- Check if φ is in context (score 1)
-  else if Γ.contains φ then 1
-  -- Check if modus ponens is applicable (score 2 + min antecedent complexity)
+def heuristic_score (weights : HeuristicWeights := {}) (Γ : Context) (φ : Formula) : Nat :=
+  if matches_axiom φ then
+    weights.axiomWeight
+  else if Γ.contains φ then
+    weights.assumptionWeight
   else
     let implications := find_implications_to Γ φ
     if implications.isEmpty then
-      -- Check if modal K or temporal K is applicable
       match φ with
-      | Formula.box _ => 5 + Γ.length
-      | Formula.all_future _ => 5 + Γ.length
-      | _ => 100  -- No strategy applicable
+      | Formula.box _ =>
+          weights.modalBase + weights.contextPenaltyWeight * Γ.length
+      | Formula.all_future _ =>
+          weights.temporalBase + weights.contextPenaltyWeight * Γ.length
+      | _ => weights.deadEnd
     else
-      -- Modus ponens applicable: score 2 + complexity of simplest antecedent
       let min_complexity := implications.foldl
-        (fun acc ψ => min acc ψ.complexity)
-        1000  -- Start with high value as initial accumulator
-      2 + min_complexity
+        (fun acc ψ => min acc (weights.mpComplexityWeight * ψ.complexity))
+        weights.deadEnd
+      weights.mpBase + min_complexity
+
+/--
+Order candidate subgoals by heuristic score so cheaper branches are explored first.
+-/
+def orderSubgoalsByScore (weights : HeuristicWeights) (Γ : Context) (targets : List Formula) :
+    List Formula :=
+  let scored := targets.map (fun ψ => (heuristic_score weights Γ ψ, ψ))
+  let sorted := List.qsort (fun a b => a.fst < b.fst) scored
+  sorted.map Prod.snd
 
 /-!
 ## Search Functions
@@ -324,142 +348,94 @@ Bounded depth-first search for a derivation of `φ` from context `Γ`.
 - `Γ`: Proof context (list of assumptions)
 - `φ`: Goal formula to derive
 - `depth`: Maximum search depth (prevents infinite loops)
+- `weights`: Heuristic weights to rank branch ordering
 
 **Returns**: `true` if derivation found within depth bound, `false` otherwise
 
 **Algorithm**:
 1. Base case: depth = 0 → return false
-2. Check axioms: if φ matches any axiom schema → return true
-3. Check assumptions: if φ ∈ Γ → return true
-4. Try modus ponens: search for (ψ → φ) ∈ Γ, recursively search for ψ
-5. Try modal K: if φ = □ψ, recursively search for ψ in Γ.map box
-6. Try temporal K: if φ = Fψ, recursively search for ψ in Γ.map future
-7. Return false if all strategies fail
+2. Check axioms and assumptions eagerly
+3. Rank modus ponens antecedents by heuristic score (cheapest first)
+4. Explore modal/temporal branches with cached results
+5. Return false if all strategies fail or visit limits are exceeded
 
 **Complexity**: O(b^d) where b = branching factor, d = depth
 -/
-def bounded_search (Γ : Context) (φ : Formula) (depth : Nat) : SearchResult Γ φ :=
+def bounded_search (Γ : Context) (φ : Formula) (depth : Nat)
+    (cache : ProofCache := ProofCache.empty)
+    (visited : Visited := Visited.empty)
+    (visits : Nat := 0)
+    (visitLimit : Nat := 500)
+    (weights : HeuristicWeights := {})
+    (stats : SearchStats := {}) : Bool × ProofCache × Visited × SearchStats × Nat :=
   if depth = 0 then
-    -- Base case: depth exhausted
-    false
-  else if matches_axiom φ then
-    -- Strategy 1: φ is an axiom instance
-    true
-  else if Γ.contains φ then
-    -- Strategy 2: φ is in the context (assumption)
-    true
+    (false, cache, visited, stats, visits)
+  else if visits ≥ visitLimit then
+    (false, cache, visited, {stats with prunedByLimit := stats.prunedByLimit + 1}, visits)
   else
-    -- Strategy 3: Try modus ponens
-    let implications := find_implications_to Γ φ
-    let mp_succeeds := implications.any (fun ψ => bounded_search Γ ψ (depth - 1))
-    if mp_succeeds then
-      true
+    let visits := visits + 1
+    let stats := {stats with visited := stats.visited + 1}
+    let key : CacheKey := (Γ, φ)
+    if visited.contains key then
+      (false, cache, visited, stats, visits)
     else
-      -- Strategy 4: Try modal K if φ = □ψ
-      match φ with
-      | Formula.box ψ =>
-          bounded_search (box_context Γ) ψ (depth - 1)
-      | Formula.all_future ψ =>
-          -- Strategy 5: Try temporal K if φ = Fψ
-          bounded_search (future_context Γ) ψ (depth - 1)
-      | _ =>
-          -- No strategy applicable
-          false
+      match cache.find? key with
+      | some result => (result, cache, visited, {stats with hits := stats.hits + 1}, visits)
+      | none =>
+          let visited := visited.insert key
+          let stats := {stats with misses := stats.misses + 1}
+          if matches_axiom φ then
+            (true, cache.insert key true, visited, stats, visits)
+          else if Γ.contains φ then
+            (true, cache.insert key true, visited, stats, visits)
+          else
+            let rec searchAntecedents (targets : List Formula) (cache : ProofCache)
+                (visited : Visited) (stats : SearchStats) (visits : Nat) : Bool × ProofCache × Visited × SearchStats × Nat :=
+              match targets with
+              | [] => (false, cache, visited, stats, visits)
+              | ψ :: rest =>
+                  let (found, cache', visited', stats', visits') :=
+                    bounded_search Γ ψ (depth - 1) cache visited visits visitLimit weights stats
+                  if found then (true, cache', visited', stats', visits')
+                  else searchAntecedents rest cache' visited' stats' visits'
+            let orderedTargets := orderSubgoalsByScore weights Γ (find_implications_to Γ φ)
+            let (mpFound, cacheAfterMp, visitedAfterMp, statsAfterMp, visitsAfterMp) :=
+              searchAntecedents orderedTargets cache visited stats visits
+            if mpFound then
+              (true, cacheAfterMp.insert key true, visitedAfterMp, statsAfterMp, visitsAfterMp)
+            else
+              match φ with
+              | Formula.box ψ =>
+                  let (found, cache', visited', stats', visits') :=
+                    bounded_search (box_context Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp visitsAfterMp visitLimit weights statsAfterMp
+                  (found, cache'.insert key found, visited', stats', visits')
+              | Formula.all_future ψ =>
+                  let (found, cache', visited', stats', visits') :=
+                    bounded_search (future_context Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp visitsAfterMp visitLimit weights statsAfterMp
+                  (found, cache'.insert key found, visited', stats', visits')
+              | _ => (false, cacheAfterMp.insert key false, visitedAfterMp, statsAfterMp, visitsAfterMp)
+termination_by _ => depth
+
+decreasing_by
+  simp
 
 /--
 Heuristic-guided proof search prioritizing likely-successful branches.
-
-**Parameters**:
-- `Γ`: Proof context (list of assumptions)
-- `φ`: Goal formula to derive
-- `depth`: Maximum search depth
-
-**Returns**: `true` if derivation found, `false` otherwise
-
-**Heuristics**:
-- Prefer axioms (cheapest, no recursive calls)
-- Prefer assumptions (second cheapest)
-- Prefer modus ponens with simple antecedents
-- Deprioritize modal/temporal K (expensive context transformation)
-
-**Implementation Strategy**:
-This implementation uses the `heuristic_score` function to guide search order.
-For modus ponens, antecedents are tried in order of increasing complexity.
-
-**Complexity**: O(b^d) where b = branching factor, d = depth
-  Best-case improvements through heuristic pruning of unlikely branches.
-
-**Note**: For MVP, leverages `bounded_search` which already implements implicit
-heuristic ordering (tries axioms, assumptions, MP, modal K, temporal K in that order).
-Future versions could implement explicit priority queue for finer-grained control.
+Returns the result, updated cache/visited sets, and stats.
 -/
-def search_with_heuristics (Γ : Context) (φ : Formula) (depth : Nat) : SearchResult Γ φ :=
-  if depth = 0 then
-    false
-  else if matches_axiom φ then
-    -- Heuristic score 0: axiom match (immediate)
-    true
-  else if Γ.contains φ then
-    -- Heuristic score 1: assumption match (immediate)
-    true
-  else
-    -- Try modus ponens with heuristic ordering
-    let implications := find_implications_to Γ φ
-    if !implications.isEmpty then
-      -- For MVP: try implications in order (no explicit sorting)
-      -- Future enhancement: implement merge sort for complexity-based ordering
-      -- Note: Current order is order of appearance in context
-      implications.any (fun ψ => search_with_heuristics Γ ψ (depth - 1))
-    else
-      -- Try modal/temporal K (higher cost)
-      match φ with
-      | Formula.box ψ =>
-          search_with_heuristics (box_context Γ) ψ (depth - 1)
-      | Formula.all_future ψ =>
-          search_with_heuristics (future_context Γ) ψ (depth - 1)
-      | _ =>
-          false
+def search_with_heuristics (Γ : Context) (φ : Formula) (depth : Nat)
+    (visitLimit : Nat := 500) (weights : HeuristicWeights := {}) : Bool × ProofCache × Visited × SearchStats × Nat :=
+  bounded_search Γ φ depth ProofCache.empty Visited.empty 0 visitLimit weights {}
 
 /--
-Cached proof search using memoization.
+Cached proof search using memoization, visit limits, and stats.
 
-**Parameters**:
-- `cache`: Existing proof cache
-- `Γ`: Proof context (list of assumptions)
-- `φ`: Goal formula to derive
-- `depth`: Maximum search depth
-
-**Returns**: Tuple of `(result, updated_cache)` where:
-  - `result`: `true` if derivation found, `false` otherwise
-  - `updated_cache`: Cache with new entry if not previously cached
-
-**Optimization**: Store derivation results to avoid redundant search.
-Critical for complex proofs with repeated subgoals.
-
-**Implementation Strategy**:
-1. Check cache for existing result (cache hit → return immediately)
-2. If cache miss, perform bounded search
-3. Store result in cache and return
-
-**Complexity**:
-- Cache hit: O(n) where n = cache size
-- Cache miss: O(b^d + n) where b = branching factor, d = depth, n = cache size
-
-**Note**: Cache does not expire or evict entries. For production use,
-would implement LRU cache with size limits.
+Returns `(result, updated_cache, visited, stats, visits)` where `stats` exposes cache hits/misses,
+visited node count, and visit-limit prunes.
 -/
-def search_with_cache (cache : ProofCache) (Γ : Context) (φ : Formula) (depth : Nat) :
-    SearchResult Γ φ × ProofCache :=
-  -- Check cache first
-  match cache.lookup Γ φ with
-  | some result =>
-      -- Cache hit: return cached result without updating cache
-      (result, cache)
-  | none =>
-      -- Cache miss: perform search and update cache
-      let result := bounded_search Γ φ depth
-      let newCache := cache.insert Γ φ result
-      (result, newCache)
+def search_with_cache (cache : ProofCache := ProofCache.empty) (Γ : Context) (φ : Formula) (depth : Nat)
+    (visitLimit : Nat := 500) (weights : HeuristicWeights := {}) : Bool × ProofCache × Visited × SearchStats × Nat :=
+  bounded_search Γ φ depth cache Visited.empty 0 visitLimit weights {}
 
 /-!
 ## Proof Search Examples (Documentation)

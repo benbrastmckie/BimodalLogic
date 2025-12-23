@@ -15,7 +15,7 @@ tools:
 # Git Workflow Manager Specialist
 
 <context>
-  <system_context>Git workflow automation for LEAN 4 ProofChecker project</system_context>
+  <system_context>Git workflow automation for software development projects</system_context>
   <domain_context>Commit management, branch workflows, PR creation, repository hygiene</domain_context>
   <task_scope>Automate git operations, generate commit messages, manage branches, create PRs</task_scope>
   <integration>Integrates with code-reviewer for pre-commit checks and todo-manager for task linking</integration>
@@ -329,24 +329,24 @@ tools:
     - refactor: Code refactoring (no functional changes)
     - test: Test additions or modifications
     - chore: Build system, tooling, dependencies
-    - proof: LEAN proof additions or improvements
+    - perf: Performance improvements
   </types>
   
   <scopes>
-    - core: Core logic modules (Syntax, Semantics, ProofSystem)
-    - metalogic: Metalogic proofs (Soundness, Completeness, DeductionTheorem)
-    - automation: Tactics and automation (Tactics, AesopRules, ProofSearch)
-    - theorems: Theorem libraries (Propositional, Modal, Temporal, Perpetuity)
+    - core: Core application modules (models, controllers, services)
+    - api: API endpoints and routes
+    - auth: Authentication and authorization
+    - database: Database schemas and migrations
     - docs: Documentation files
     - tests: Test suites
-    - build: Build system (lakefile, lean-toolchain)
+    - build: Build system and configuration
     - tools: Development tools and scripts
   </scopes>
   
   <examples>
     <example_1>
       ```
-      feat(automation): add git-workflow-manager specialist
+      feat(tools): add git-workflow-manager specialist
       
       - Create git-workflow-manager.md specialist specification
       - Support commit, branch, PR, and cleanup operations
@@ -359,10 +359,10 @@ tools:
     
     <example_2>
       ```
-      fix(core): resolve AesopRules duplicate declaration
+      fix(api): resolve duplicate route definition
       
-      Fixed duplicate declaration error in AesopRules.lean that was
-      preventing compilation.
+      Fixed duplicate route definition error in routes.py that was
+      preventing server startup.
       
       Task: #52
       ```
@@ -370,11 +370,11 @@ tools:
     
     <example_3>
       ```
-      proof(metalogic): complete deduction theorem proof
+      feat(auth): implement JWT authentication
       
-      - Prove all cases of deduction theorem
-      - Add termination proofs
-      - Remove all sorry statements
+      - Add JWT token generation and validation
+      - Implement login and refresh endpoints
+      - Add authentication middleware
       
       Task: #46
       Closes: #46
@@ -383,11 +383,11 @@ tools:
     
     <example_4>
       ```
-      docs(core): add missing docstrings to ProofSystem
+      docs(api): add missing docstrings to endpoints
       
-      Added module-level and definition-level docstrings to:
-      - Axioms.lean
-      - Derivation.lean
+      Added module-level and function-level docstrings to:
+      - user_routes.py
+      - auth_routes.py
       
       Task: #62
       ```
@@ -404,7 +404,7 @@ tools:
     - feature: New features
     - bugfix: Bug fixes
     - docs: Documentation changes
-    - proof: Proof development
+    - enhancement: Feature enhancements
     - refactor: Code refactoring
     - test: Test additions
     - chore: Maintenance tasks
@@ -412,11 +412,11 @@ tools:
   
   <examples>
     - feature/64-git-workflow-manager
-    - bugfix/52-aesop-duplicate
+    - bugfix/52-duplicate-route
     - docs/62-docstring-coverage
-    - proof/46-deduction-theorem
-    - refactor/43-axiom-refactoring
-    - test/56-bridge-helper-lemmas
+    - enhancement/46-jwt-authentication
+    - refactor/43-api-restructure
+    - test/56-integration-tests
   </examples>
   
   <validation_rules>
@@ -498,7 +498,7 @@ tools:
       review_depth: quick
       block_on:
         - compilation_error
-        - sorry_addition
+        - test_failure
         - critical_style_violation
       warn_on:
         - style_warning
@@ -513,7 +513,7 @@ tools:
   
   <error_handling>
     - Compilation errors: Block commit, show error details
-    - Sorry additions: Block commit, require justification
+    - Test failures: Block commit, require fixes
     - Style violations: Warn, allow override
     - Missing docstrings: Warn, allow override
     - Review failure: Block commit, show error

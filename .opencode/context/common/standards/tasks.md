@@ -1,0 +1,87 @@
+# Task Standards
+
+## Purpose
+
+Standards for creating, formatting, and managing tasks within the .opencode system. These standards ensure consistency across TODO.md, IMPLEMENTATION_STATUS.md, and state tracking.
+
+## Core Principles
+
+1.  **Unique IDs**: Every task MUST have a unique ID derived from `state.json`.
+2.  **Atomic**: Tasks should be actionable units of work.
+3.  **Tracked**: Status and priority must be explicitly tracked using the standard markers.
+4.  **Linked**: Tasks must link to relevant artifacts (reports, plans, summaries).
+5.  **No emojis**: Task titles, descriptions, and artifacts must not include emojis.
+
+## General Standards
+
+### ID Generation
+
+**Do**:
+-   Retrieve Task IDs from `.opencode/specs/state.json`.
+-   Use the `next_project_number` field.
+-   Increment `next_project_number` in `state.json` immediately after use.
+
+**Don't**:
+-   Guess the next number by reading `TODO.md`.
+-   Reuse IDs from archived or deleted tasks.
+
+### Formatting Standards
+
+#### Header
+-   Format: `### {Task ID}. {Task Title}`
+-   Example: `### 90. Implement User Login`
+
+#### Metadata
+-   **Effort**: Estimated time (e.g., "2 hours")
+-   **Status**: `pending`, `in-progress`, `blocked`, `completed` (displayed in TODO.md using status markers per status-markers.md)
+-   **Priority**: `High`, `Medium`, `Low`
+-   **Language**: Primary language for the work (e.g., `lean`, `python`, `markdown`, `shell`, `json`). Required for every task created by `/add`, `/review`, and related commands.
+-   **Blocking**: List of Task IDs blocked by this task, or `None`
+-   **Dependencies**: List of Task IDs this task depends on, or `None`
+
+#### Content
+-   **Files Affected**: List of file paths.
+-   **Description**: Clear description of the task.
+-   **Acceptance Criteria**: Checkbox list of requirements.
+-   **Impact**: Statement of impact.
+
+### Placement
+
+#### TODO.md
+-   Insert under the appropriate Priority section (High, Medium, Low).
+-   Reorganization: /todo may regroup pending tasks by kind (feature, documentation, maintenance, research) while preserving numbering and metadata. Completed tasks move to the "Completed" section. Reorganization must not create or modify project directories or artifacts.
+-   Maintain lazy directory creation: no directories are created during TODO reordering.
+
+#### IMPLEMENTATION_STATUS.md
+-   Add reference: `**Planned Work**: Task {Task ID}: {Task Title}`
+
+## Command Integration
+
+- `/task` **must** reuse the plan link attached in TODO.md when present and update that plan in place with status markers. When no plan is linked, `/task` executes directly (no failure) while preserving lazy directory creation (no project roots/subdirs unless an artifact is written) and numbering/state sync; guidance to use `/plan {task}` remains recommended for complex work.
+- `/implement` **requires** a plan path argument, updates the referenced plan phases with status markers (and timestamps), syncs status to TODO/state for referenced tasks, and respects lazy directory creation (no project roots/subdirs unless writing artifacts).
+- `/task`, `/add`, `/review`, and `/todo` **must** keep IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md in sync when they change task/plan/implementation status or sorry/tactic counts; dry-run/test invocations must avoid directory creation and skip registry writes.
+- `/add`, `/review`, `/todo`, and `/task` must capture/populate the `Language` metadata for every task they create or modify; backfill missing Language when encountered.
+- `/task` uses the TODO task `Language` field as the authoritative Lean intent signal. Plan `lean:` metadata is secondary. If `Language` is missing, warn and default to non-Lean unless the user explicitly supplies `--lang lean` (explicit flag wins over metadata when they disagree).
+- Both commands mirror status markers (`[NOT STARTED]`, `[IN PROGRESS]`, `[BLOCKED]`, `[ABANDONED]`, `[COMPLETED]`) and timestamps between plan files and TODO/state, without altering numbering rules.
+- **Lean routing and MCP validation**:
+  - Lean research requests **must** use the Lean research subagent; Lean implementation requests **must** use the Lean implementation subagent, selected from the TODO `Language` field (or explicit flag override) rather than heuristics.
+  - Validate Lean MCP server availability against `.mcp.json` before dispatch; fail with a clear error if required servers are missing/unreachable or if the command is absent/returns non-zero during a health ping.
+  - Default required Lean server: `lean-lsp` (stdio via `uvx lean-lsp-mcp`); planned servers (`lean-explore`, `loogle`, `lean-search`) should raise a "planned/not configured" warning instead of proceeding silently.
+  - When validation fails, surface remediation steps (install command, set env like `LEAN_PROJECT_PATH`, supply API keys) and do **not** create project directories or artifacts.
+  - Support a `--dry-run`/routing check that exercises subagent selection and MCP handshake without creating project directories; keep numbering/state unchanged unless an artifact is emitted.
+
+## Quality Checklist
+
+-   [ ] Task ID is unique and retrieved from `state.json`.
+-   [ ] Title is clear and descriptive.
+-   [ ] Metadata (Effort, Status, Priority, **Language**) is complete.
+-   [ ] Language field reflects the primary language for the work (e.g., `lean`, `markdown`, `python`, `shell`, `json`).
+-   [ ] Dependencies are correctly listed.
+-   [ ] Acceptance criteria are testable.
+-   [ ] No emojis are present.
+
+## Maintenance
+
+### Archival
+-   Completed tasks should be archived when the project is finished.
+-   Update `state.json` to move project from `active_projects` to `completed_projects` (and eventually `archive/state.json`).

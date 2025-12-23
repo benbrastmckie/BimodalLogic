@@ -1,70 +1,96 @@
 ---
 name: add
-agent: subagents/task-adder
-description: "Add numbered tasks to TODO.md and update IMPLEMENTATION_STATUS.md with intelligent task breakdown and grouping"
+agent: task-adder
+ description: "Add tasks to TODO.md while updating state.json numbering"
+ context_level: 1
+ language: markdown
+ subagents:
+   - task-adder
+ mcp_requirements: []
+ registry_impacts:
+   - TODO.md
+   - .opencode/specs/state.json
+ creates_root_on: never
+ creates_subdir: []
+ dry_run: "Parse and number only; no status/registry/state writes and no directory creation."
+
 ---
 
-You are adding tasks to the LEAN 4 ProofChecker project TODO.md.
+Context Loaded:
+@.opencode/specs/TODO.md
+@.opencode/specs/state.json
+@.opencode/context/common/system/state-schema.md
+@.opencode/context/common/system/status-markers.md
+@.opencode/context/common/system/artifact-management.md
+@.opencode/context/common/standards/tasks.md
+@.opencode/context/common/standards/commands.md
+@.opencode/context/common/standards/patterns.md
 
-**Request:** $ARGUMENTS
+<context>
+  <system_context>Task creation command that must preserve numbering, status markers, and lazy directory rules.</system_context>
+  <domain_context>ProofChecker .opencode task registry (TODO.md + state.json).</domain_context>
+  <task_context>Assign new task IDs, append tasks to TODO.md with full metadata, and sync state.json without creating project directories.</task_context>
+  <execution_context>Single-step write; only state.json and TODO.md are touched. No project roots/subdirs may be created.</execution_context>
+</context>
 
-**Context Loaded:**
-@/home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md
-@/home/benjamin/Projects/ProofChecker/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
-@/home/benjamin/Projects/ProofChecker/.opencode/context/core/standards/docs.md
-@/home/benjamin/Projects/ProofChecker/.opencode/context/core/system/project-overview.md
+<role>Task Adder responsible for atomic task creation and numbering integrity.</role>
 
-**Task:**
+<task>Create one or more tasks using the next available project number, append them to TODO.md with `[NOT STARTED]` markers, and sync state.json pending_tasks while incrementing `next_project_number`.</task>
 
-Route to @subagents/task-adder with the following context:
+<workflow_execution>
+  <stage id="1" name="Preflight">
+    <action>Validate inputs and reserve numbers</action>
+    <process>
+      1. Parse `$ARGUMENTS` (strings or `--file` extraction); reject empty input.
+      2. Read `.opencode/specs/state.json` and capture `next_project_number` (zero-padded).
+      3. Validate uniqueness; do not create any project directories.
+    </process>
+  </stage>
+  <stage id="2" name="CreateTasks">
+    <action>Write TODO entries and update state</action>
+    <process>
+      1. Append tasks under the correct priority section using the template from tasks.md with **Status** `[NOT STARTED]` and required metadata (Effort, Priority, Language, Blocking, Dependencies, Files Affected, Description, Acceptance Criteria, Impact).
+      2. Increment `next_project_number` in state.json and add pending_tasks entries (`status: not_started`, `created_at`: UTC date).
+      3. Do not add project links; `/research` or `/plan` will create artifacts later.
+    </process>
+  </stage>
+  <stage id="3" name="Postflight">
+    <action>Summarize results</action>
+    <process>
+      1. Report assigned task numbers and titles.
+      2. Confirm state.json increment and TODO additions.
+      3. Remind that project roots/subdirs are created only when artifacts are written by /research or /plan.
+    </process>
+  </stage>
+</workflow_execution>
 
-1. **Input Parsing**: Determine input type from $ARGUMENTS
-   - Single task: `/add "task description"`
-   - Multiple tasks: `/add "task 1" "task 2" "task 3"`
-   - File extraction: `/add --file path/to/file.md`
-   - File with context: `/add --file path/to/file.md --context "additional context"`
+<routing_intelligence>
+  <context_allocation>Level 1 (single-operation write to TODO/state).</context_allocation>
+  <lean_routing>Language metadata is recorded but no Lean routing occurs during creation.</lean_routing>
+  <batch_handling>Support multiple tasks in one invocation; process sequentially to preserve numbering.</batch_handling>
+</routing_intelligence>
 
-2. **Task Processing**: task-adder will:
-   - Analyze input and break down into appropriately-sized tasks
-   - Group related tasks logically
-   - Extract tasks from files if --file flag provided
-   - Determine next available task numbers
-   - Format tasks according to TODO.md conventions
-   - Update TODO.md with new tasks
-   - Update IMPLEMENTATION_STATUS.md with task references
+<artifact_management>
+  <lazy_creation>No project roots/subdirs are created by /add.</lazy_creation>
+  <state_sync>Always increment `next_project_number` and add pending_tasks entries.</state_sync>
+  <registry_sync>Registry files (IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, TACTIC_REGISTRY.md) are unchanged by /add.</registry_sync>
+</artifact_management>
 
-3. **Return Summary**: Present results with:
-   - Total tasks added
-   - Task numbers assigned
-   - Task titles and priorities
-   - IMPLEMENTATION_STATUS.md updates
-   - Next steps
+<quality_standards>
+  <status_markers>New tasks start as `[NOT STARTED]` with no timestamps.</status_markers>
+  <language_routing>Capture `Language` for each task; default to user-provided or infer from input when provided.</language_routing>
+  <no_emojis>Outputs and artifacts must be emoji-free.</no_emojis>
+  <validation>Reject invalid/empty input; ensure JSON remains valid.</validation>
+</quality_standards>
 
-**Usage Examples:**
+<usage_examples>
+  - `/add "Implement user authentication"`
+  - `/add "Fix API bug" "Update README with examples"`
+  - `/add --file docs/FEATURES.md`
+</usage_examples>
 
-```bash
-# Add a single task
-/add "Implement proof for theorem X using tactics A, B, C"
-
-# Add multiple tasks
-/add "Fix typo in Formula.lean" "Update README with examples" "Add tests for Axioms.lean"
-
-# Extract tasks from a file
-/add --file Documentation/Research/PROOF_LIBRARY_DESIGN.md
-
-# Extract tasks with additional context
-/add --file .opencode/specs/005_layer1_planning/plans/implementation-001.md --context "Layer 1 counterfactual operators"
-```
-
-**Expected Output:**
-
-The task-adder will return a summary showing:
-- Number of tasks added
-- Task numbers and titles
-- Priority assignments
-- Effort estimates
-- Dependencies identified
-- IMPLEMENTATION_STATUS.md sections updated
-- Suggested next steps
-
-Execute the task addition now.
+<validation>
+  <pre_flight>Inputs parsed; next_project_number reserved; no directories touched.</pre_flight>
+  <mid_flight>TODO and state updated atomically; numbering increments correctly.</mid_flight>
+  <post_flight>Summary returned with assigned numbers; remind lazy-creation boundaries.</post_flight>
+</validation>

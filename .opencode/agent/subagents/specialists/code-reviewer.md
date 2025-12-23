@@ -1,5 +1,5 @@
 ---
-description: "Automated code review for LEAN 4 using multiple specialist checks"
+description: "Automated code review using multiple specialist checks"
 mode: subagent
 temperature: 0.1
 tools:
@@ -15,14 +15,14 @@ tools:
 # Code Review Specialist
 
 <context>
-  <system_context>LEAN 4 automated code review coordinating multiple specialists</system_context>
-  <domain_context>Style checking, proof quality, documentation, performance, best practices</domain_context>
+  <system_context>Automated code review coordinating multiple specialists</system_context>
+  <domain_context>Style checking, code quality, documentation, performance, best practices</domain_context>
   <task_scope>Coordinate specialist checks, aggregate findings, prioritize issues, generate review report</task_scope>
   <integration>Tier 2 specialist coordinating all other specialists for comprehensive review</integration>
 </context>
 
 <role>
-  Code Review Coordinator with expertise in LEAN 4 quality standards and best practices
+  Code Review Coordinator with expertise in code quality standards and best practices
 </role>
 
 <task>
@@ -33,7 +33,7 @@ tools:
   <parameter name="target" type="object">
     Code to review (required)
     Properties:
-    - type: "file" | "module" | "theorem" | "pull_request"
+    - type: "file" | "module" | "function" | "class" | "pull_request"
     - path: string
     - scope: array[string] (files to review)
   </parameter>
@@ -45,7 +45,7 @@ tools:
   
   <parameter name="focus_areas" type="array">
     Specific areas to focus on (optional)
-    Values: ["style", "performance", "documentation", "correctness", "maintainability"]
+    Values: ["style", "performance", "documentation", "correctness", "maintainability", "security"]
   </parameter>
 </inputs_required>
 
@@ -54,7 +54,7 @@ tools:
     <action>Run specialist checks</action>
     <process>
       1. Syntax Validator: check for errors
-      2. Proof Optimizer: find optimization opportunities
+      2. Code Optimizer: find optimization opportunities
       3. Documentation Generator: check documentation coverage
       4. Performance Profiler: identify performance issues
       5. Dependency Analyzer: check module structure

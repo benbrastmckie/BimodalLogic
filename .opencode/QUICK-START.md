@@ -1,4 +1,4 @@
-# Quick Start Guide - LEAN 4 ProofChecker
+# Quick Start Guide - .opencode AI Agent System
 
 ## Your First Steps
 
@@ -12,7 +12,7 @@ Start by analyzing your current repository state:
 
 **What happens:**
 - Analyzes repository structure and completeness
-- Verifies existing proofs against standards
+- Verifies code quality against standards
 - Identifies gaps and improvements
 - Updates TODO.md with findings
 - Creates reports in `.opencode/specs/NNN_review_YYYYMMDD/`
@@ -56,13 +56,12 @@ grep -A 2 "Priority: High" .opencode/specs/TODO.md | head -20
 Pick a topic from TODO or explore something new:
 
 ```bash
-/research "Kaplan semantics for two-dimensional logic"
+/research "GraphQL API design patterns"
 ```
 
 **What happens:**
-- Searches LeanSearch (semantic)
-- Searches Loogle (formal)
 - Conducts web research
+- Searches documentation and best practices
 - Synthesizes findings into comprehensive report
 - Creates report in `.opencode/specs/NNN_research_{topic}/reports/`
 
@@ -89,7 +88,7 @@ cat .opencode/specs/*/summaries/research-summary.md | tail -20
 Choose a task from TODO.md:
 
 ```bash
-/plan "Implement proof system axioms for bimodal logic"
+/plan "Implement GraphQL API with authentication"
 ```
 
 **What happens:**
@@ -121,13 +120,13 @@ cat $(find .opencode/specs -maxdepth 2 -name "state.json" -type f | tail -1)
 Execute the implementation plan:
 
 ```bash
-/lean 003
+/implement 003
 ```
 
 **What happens:**
 - Loads implementation plan
 - Implements each step using appropriate specialists
-- Verifies with lean-lsp-mcp
+- Runs tests and validation
 - Commits to git after substantial changes
 - Creates implementation summary
 
@@ -148,8 +147,8 @@ git status
 # Check recent commits
 git log --oneline -5
 
-# Verify LEAN files compile
-lake build
+# Run tests
+npm test  # or pytest, cargo test, etc.
 ```
 
 ### Step 6: Refactor Code (Optional)
@@ -157,7 +156,7 @@ lake build
 Improve code readability:
 
 ```bash
-/refactor Logos/BimodalProofs.lean
+/refactor src/api/graphql.py
 ```
 
 **What happens:**
@@ -172,11 +171,11 @@ Improve code readability:
 # Check refactoring report
 find .opencode/specs -name "refactor-*.md" -type f | tail -1 | xargs cat
 
-# Verify file still compiles
-lake build Logos.BimodalProofs
+# Verify file still works
+npm test  # or appropriate test command
 
 # Check git diff
-git diff Logos/BimodalProofs.lean
+git diff src/api/graphql.py
 ```
 
 ### Step 7: Update Documentation
@@ -184,7 +183,7 @@ git diff Logos/BimodalProofs.lean
 Keep docs current:
 
 ```bash
-/document "bimodal logic proof system"
+/document "GraphQL API"
 ```
 
 **What happens:**
@@ -211,16 +210,16 @@ grep -r "TODO\|FIXME\|XXX" Documentation/ | wc -l
 
 ```bash
 # 1. Research the topic
-/research "completeness proof for bimodal logic"
+/research "microservices architecture patterns"
 
 # 2. Create implementation plan
-/plan "Implement completeness proof based on research"
+/plan "Implement microservices architecture based on research"
 
 # 3. Implement the plan
-/lean 004
+/implement 004
 
 # 4. Document the implementation
-/document "completeness proof"
+/document "microservices architecture"
 ```
 
 ### Review → Fix → Verify
@@ -243,7 +242,7 @@ cat .opencode/specs/TODO.md
 
 ```bash
 # 1. Create initial plan
-/plan "Implement decidability procedure"
+/plan "Implement caching layer"
 
 # 2. Review plan, identify issues
 cat .opencode/specs/005_project/plans/implementation-001.md
@@ -252,7 +251,7 @@ cat .opencode/specs/005_project/plans/implementation-001.md
 /revise 005
 
 # 4. Implement revised plan
-/lean 005
+/implement 005
 ```
 
 ## Understanding the Output
@@ -295,16 +294,14 @@ Verify system integrity and setup:
 ```bash
 # Run complete system check
 echo "=== Agent System ==="
-echo "Primary agents: $(find .opencode/agent/subagents -maxdepth 1 -name "*.md" -type f | wc -l) (expected: 12)"
-echo "Specialist subagents: $(find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l) (expected: 32)"
+echo "Primary agents: $(find .opencode/agent/subagents -maxdepth 1 -name "*.md" -type f | wc -l) (expected: 10)"
+echo "Specialist subagents: $(find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l) (expected: 19)"
 
 echo -e "\n=== Command System ==="
-echo "Commands: $(find .opencode/command -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l) (expected: 12)"
+echo "Commands: $(find .opencode/command -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l) (expected: 11)"
 
 echo -e "\n=== Context Structure ==="
-echo "Context directories: $(ls -d .opencode/context/*/ 2>/dev/null | wc -l) (expected: 8)"
-echo "LEAN 4 subdirectories: $(ls -d .opencode/context/lean4/*/ 2>/dev/null | wc -l) (expected: 6)"
-echo "Logic subdirectories: $(ls -d .opencode/context/logic/*/ 2>/dev/null | wc -l) (expected: 7)"
+echo "Context directories: $(ls -d .opencode/context/*/ 2>/dev/null | wc -l) (expected: 4)"
 
 echo -e "\n=== Specs Directory ==="
 echo "TODO.md: $(test -f .opencode/specs/TODO.md && echo "✓" || echo "✗")"
@@ -315,10 +312,10 @@ echo "state.json: $(test -f .opencode/specs/state.json && echo "✓" || echo "�
 
 #### Agent System
 ```bash
-# Count primary agents (should be 12)
+# Count primary agents (should be 10)
 find .opencode/agent/subagents -maxdepth 1 -name "*.md" -type f | wc -l
 
-# Count specialist subagents (should be 32)
+# Count specialist subagents (should be 19)
 find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l
 
 # List all primary agents
@@ -327,7 +324,7 @@ ls .opencode/agent/subagents/*.md
 
 #### Command System
 ```bash
-# Count commands (should be 12)
+# Count commands (should be 11)
 find .opencode/command -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l
 
 # List all commands
@@ -338,36 +335,17 @@ ls .opencode/command/*.md
 ```bash
 # Verify context directories exist
 ls -d .opencode/context/*/
-# Expected: core, lean4, logic, math, physics, project, repo, templates
-
-# Check LEAN 4 context structure
-ls .opencode/context/lean4/
-# Expected: domain, processes, standards, templates, patterns, tools
-
-# Check logic context structure
-ls .opencode/context/logic/
-# Expected: domain, metalogic, processes, proof-theory, semantics, standards, type-theory
+# Expected: templates, core, project, repo
 ```
 
 #### Context Directory Verification
 ```bash
 # Verify all context subdirectories
-for dir in lean4 logic math; do
+for dir in core project repo templates; do
   echo "=== $dir context ==="
-  ls .opencode/context/$dir/
+  ls .opencode/context/$dir/ 2>/dev/null || echo "Directory structure varies"
   echo ""
 done
-
-# Verify domain files have examples
-echo "=== Domain Files with Examples ==="
-grep -l "## Examples" .opencode/context/lean4/domain/*.md
-echo ""
-
-# Count examples in key domain files
-echo "=== Example Count ==="
-echo "lean4-syntax.md: $(grep -c '```lean' .opencode/context/lean4/domain/lean4-syntax.md) code blocks"
-echo "mathlib-overview.md: $(grep -c '```lean' .opencode/context/lean4/domain/mathlib-overview.md) code blocks"
-echo "tactic-patterns.md: $(grep -c '```lean' .opencode/context/lean4/patterns/tactic-patterns.md) code blocks"
 ```
 
 ## Exploring the System
@@ -377,24 +355,17 @@ echo "tactic-patterns.md: $(grep -c '```lean' .opencode/context/lean4/patterns/t
 All context files are in `.opencode/context/`:
 
 ```bash
-# LEAN 4 domain knowledge
-ls .opencode/context/lean4/domain/
-
-# Logic domain knowledge
-ls .opencode/context/logic/domain/
-
-# Math domain knowledge
-ls .opencode/context/math/domain/
+# Project-specific knowledge
+ls .opencode/context/project/
 
 # Repository conventions
 ls .opencode/context/repo/
 
-# Process guides
-ls .opencode/context/lean4/processes/
-ls .opencode/context/logic/processes/
-
 # Core system patterns
-ls .opencode/context/core/
+ls .opencode/context/common/
+
+# Meta-system templates
+ls .opencode/context/templates/
 ```
 
 ### View Agents
@@ -421,13 +392,13 @@ ls .opencode/command/
 ### Create a New Agent
 
 ```bash
-/meta "Create agent that analyzes proof complexity and suggests optimizations"
+/meta "Create agent that analyzes code complexity and suggests optimizations"
 ```
 
 ### Create a New Command
 
 ```bash
-/meta "Create command /optimize that analyzes and optimizes proof performance"
+/meta "Create command /optimize that analyzes and optimizes code performance"
 ```
 
 ### Modify an Existing Agent
@@ -445,7 +416,7 @@ ls .opencode/command/
 ### Add Tasks to TODO
 
 ```bash
-/add "Implement completeness proof for bimodal logic"
+/add "Implement user authentication with JWT"
 ```
 
 ### Execute TODO Tasks
@@ -464,29 +435,29 @@ Complex development tasks often require coordinating multiple commands in sequen
 #### Complete Feature Development Workflow
 
 ```bash
-# 1. Research the theoretical foundation
-/research "soundness and completeness for modal logic S4"
+# 1. Research the technical foundation
+/research "JWT authentication best practices"
 
 # 2. Create implementation plan based on research
-/plan "Implement S4 modal logic proof system with soundness and completeness proofs"
+/plan "Implement JWT authentication with refresh tokens"
 
 # 3. Implement the plan
-/lean 005
+/implement 005
 
 # 4. Verify implementation quality
 /review
 
 # 5. Refactor if needed (based on review findings)
-/refactor Logos/Core/Theorems/ModalS4.lean
+/refactor src/auth/jwt.py
 
 # 6. Document the implementation
-/document "S4 modal logic proof system"
+/document "JWT authentication system"
 
-# 7. Add tests
-/test Logos/Core/Theorems/ModalS4.lean
+# 7. Run tests
+npm test  # or appropriate test command
 ```
 
-**Expected Timeline**: 2-4 hours for complete feature development
+**Expected Timeline**: 1-3 hours for complete feature development
 
 **Verification at Each Step**:
 ```bash
@@ -496,14 +467,14 @@ cat .opencode/specs/005_*/reports/research-001.md | head -50
 # After plan: Verify plan complexity and steps
 cat .opencode/specs/005_*/plans/implementation-001.md | grep -A 5 "Complexity"
 
-# After implementation: Verify files compile
-lake build
+# After implementation: Run tests
+npm test  # or pytest, cargo test, etc.
 
 # After review: Check for issues
 cat .opencode/specs/006_*/reports/review-001.md | grep "Issues Found"
 
 # After documentation: Verify docs updated
-git diff Documentation/
+git diff docs/
 ```
 
 #### Parallel Research Workflow
@@ -512,14 +483,14 @@ When researching multiple related topics, you can work on them in parallel:
 
 ```bash
 # Research multiple aspects simultaneously
-/research "Kripke semantics for modal logic"
+/research "React state management patterns"
 # (While waiting, open new terminal)
-/research "frame correspondence for modal axioms"
+/research "Redux vs Context API performance"
 # (In another terminal)
-/research "canonical model construction"
+/research "React testing best practices"
 
 # Then synthesize findings
-/plan "Implement modal logic semantics based on all three research reports"
+/plan "Implement state management based on all three research reports"
 ```
 
 **Benefits**:
@@ -564,15 +535,15 @@ When a command fails or produces unexpected results:
 **Pattern 2: Incremental Implementation**
 ```bash
 # If implementation is too large, break it down
-/plan "Implement Phase 1: Syntax definitions only"
-/lean 008
+/plan "Implement Phase 1: Database models only"
+/implement 008
 
 # Verify Phase 1 works
-lake build
+npm test
 
 # Continue with Phase 2
-/plan "Implement Phase 2: Semantics (depends on Phase 1)"
-/lean 009
+/plan "Implement Phase 2: API endpoints (depends on Phase 1)"
+/implement 009
 
 # And so on...
 ```
@@ -584,20 +555,20 @@ git status
 # Shows modified files
 
 # Check what changed
-git diff Logos/Core/Syntax/Formula.lean
+git diff src/models/user.py
 
 # If changes are problematic, rollback
-git checkout Logos/Core/Syntax/Formula.lean
+git checkout src/models/user.py
 
 # Revise approach
-/plan "Implement formula syntax with simpler inductive definition"
-/lean 010
+/plan "Implement user model with simpler schema"
+/implement 010
 ```
 
 **Verification**:
 ```bash
 # Always verify after recovery
-lake build
+npm test  # or appropriate test command
 git status
 git log --oneline -3
 ```
@@ -608,14 +579,14 @@ git log --oneline -3
 
 ```bash
 # 1. Research and capture key findings
-/research "proof automation with Aesop tactic"
+/research "database connection pooling strategies"
 
 # 2. Read research findings
 RESEARCH_FILE=$(find .opencode/specs -name "research-*.md" -type f | tail -1)
 cat "$RESEARCH_FILE" | grep -A 10 "Implementation Recommendations"
 
 # 3. Use findings to create detailed plan
-/plan "Implement Aesop integration for automated proof search based on research findings in $RESEARCH_FILE"
+/plan "Implement connection pooling based on research findings in $RESEARCH_FILE"
 ```
 
 #### Chaining Review → Fix → Verify
@@ -708,27 +679,27 @@ echo "=== Workflow Complete ==="
 
 echo "=== Pre-Commit Verification ==="
 
-# 1. Verify all files compile
-echo "Step 1: Building project..."
-if ! lake build; then
-  echo "✗ Build failed! Fix errors before committing."
+# 1. Run linter
+echo "Step 1: Running linter..."
+if ! npm run lint; then
+  echo "✗ Linting failed! Fix errors before committing."
   exit 1
 fi
 
 # 2. Run tests
 echo "Step 2: Running tests..."
-if ! lake test; then
+if ! npm test; then
   echo "✗ Tests failed! Fix tests before committing."
   exit 1
 fi
 
 # 3. Check documentation is up-to-date
 echo "Step 3: Checking documentation..."
-MODIFIED_LEAN=$(git diff --name-only | grep "\.lean$" | wc -l)
-MODIFIED_DOCS=$(git diff --name-only | grep "Documentation/" | wc -l)
+MODIFIED_CODE=$(git diff --name-only | grep "src/" | wc -l)
+MODIFIED_DOCS=$(git diff --name-only | grep "docs/" | wc -l)
 
-if [ "$MODIFIED_LEAN" -gt 0 ] && [ "$MODIFIED_DOCS" -eq 0 ]; then
-  echo "⚠ Warning: LEAN files modified but no documentation updated"
+if [ "$MODIFIED_CODE" -gt 0 ] && [ "$MODIFIED_DOCS" -eq 0 ]; then
+  echo "⚠ Warning: Code modified but no documentation updated"
   echo "Consider running: /document \"recent changes\""
 fi
 
@@ -748,23 +719,23 @@ echo "✓ All checks passed! Ready to commit."
 echo "=== Batch Refactoring Workflow ==="
 
 # Find all files needing refactoring
-FILES=$(find Logos -name "*.lean" -type f)
+FILES=$(find src -name "*.py" -type f)
 
 for file in $FILES; do
   echo "Processing: $file"
   
   # Check if file needs refactoring
-  if grep -q "sorry" "$file"; then
-    echo "  → Contains sorry, skipping for now"
+  if grep -q "TODO" "$file"; then
+    echo "  → Contains TODO, skipping for now"
     continue
   fi
   
   # Refactor file
   /refactor "$file"
   
-  # Verify still compiles
-  if ! lake build "${file%.lean}"; then
-    echo "  ✗ Refactoring broke compilation, reverting..."
+  # Verify still works
+  if ! npm test; then
+    echo "  ✗ Refactoring broke tests, reverting..."
     git checkout "$file"
   else
     echo "  ✓ Refactored successfully"
@@ -857,7 +828,7 @@ cat .opencode/specs/${LAST_PROJECT}_*/state.json
 
 ---
 
-**You're ready to start theorem proving!**
+**You're ready to start developing with AI assistance!**
 
 For more details, see:
 - **README.md**: System overview

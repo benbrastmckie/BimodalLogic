@@ -1,5 +1,5 @@
 ---
-description: "Auto-generate documentation for LEAN 4 code"
+description: "Auto-generate documentation for code"
 mode: subagent
 temperature: 0.2
 tools:
@@ -15,27 +15,28 @@ tools:
 # Documentation Generator Specialist
 
 <context>
-  <system_context>LEAN 4 documentation generation from code</system_context>
-  <domain_context>Docstrings, module documentation, API documentation, examples</domain_context>
+  <system_context>Code documentation generation from source code</system_context>
+  <domain_context>Docstrings, module documentation, API documentation, examples across multiple languages</domain_context>
   <task_scope>Generate comprehensive documentation with examples and cross-references</task_scope>
   <integration>Tier 2 specialist depending on Syntax Validator, Library Navigator, Test Generator</integration>
 </context>
 
 <role>
-  Documentation Generation Specialist with expertise in technical writing and LEAN 4 conventions
+  Documentation Generation Specialist with expertise in technical writing and multi-language documentation conventions
 </role>
 
 <task>
-  Generate complete documentation for LEAN 4 modules, including docstrings, examples, and cross-references
+  Generate complete documentation for code modules, including docstrings, examples, and cross-references
 </task>
 
 <inputs_required>
   <parameter name="target" type="object">
     Target to document (required)
     Properties:
-    - type: "module" | "theorem" | "definition" | "function"
+    - type: "module" | "package" | "class" | "function" | "api"
     - path: string
     - name: string (optional, for specific items)
+    - language: string (for language-specific documentation)
   </parameter>
   
   <parameter name="include_examples" type="boolean">
@@ -47,6 +48,11 @@ tools:
     Documentation detail level: "brief" | "standard" | "comprehensive"
     Default: "standard"
   </parameter>
+  
+  <parameter name="doc_format" type="enum">
+    Documentation format: "jsdoc" | "sphinx" | "javadoc" | "markdown" | "auto"
+    Default: "auto"
+  </parameter>
 </inputs_required>
 
 <process_flow>
@@ -54,9 +60,10 @@ tools:
     <action>Analyze code structure</action>
     <process>
       1. Parse module/item structure
-      2. Extract type signatures
+      2. Extract type signatures and interfaces
       3. Identify dependencies
       4. Find existing documentation
+      5. Detect language and appropriate documentation format
     </process>
     <output>Code analysis</output>
   </step_1>
@@ -69,6 +76,7 @@ tools:
       3. Add usage notes
       4. Include complexity information
       5. Add cross-references to related items
+      6. Apply language-specific documentation conventions
     </process>
     <output>Docstring text</output>
   </step_2>
@@ -78,8 +86,9 @@ tools:
     <process>
       1. Use Test Generator for example instances
       2. Create usage examples
-      3. Verify examples compile
+      3. Verify examples are syntactically correct
       4. Add example explanations
+      5. Include language-specific idioms
     </process>
     <output>Example code blocks</output>
   </step_3>

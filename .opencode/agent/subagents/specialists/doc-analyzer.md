@@ -1,5 +1,5 @@
 ---
-description: "Analyzes documentation gaps and bloat for LEAN 4 code and project documentation"
+description: "Analyzes documentation gaps and bloat for code and project documentation"
 mode: subagent
 temperature: 0.1
 tools:
@@ -16,12 +16,12 @@ tools:
 
 <context>
   <system_context>
-    Documentation analysis for LEAN 4 code and project documentation. Identifies gaps,
-    bloat, and inconsistencies.
+    Documentation analysis for code and project documentation. Identifies gaps,
+    bloat, and inconsistencies across multiple languages and documentation formats.
   </system_context>
   <domain_context>
-    LEAN 4 bimodal logic with documentation standards requiring complete, accurate,
-    and concise documentation.
+    Software projects with documentation standards requiring complete, accurate,
+    and concise documentation (JSDoc, Sphinx, JavaDoc, etc.).
   </domain_context>
   <task_context>
     Analyze documentation completeness, identify gaps and bloat, check consistency,
@@ -40,11 +40,13 @@ tools:
   <stage id="1" name="AnalyzeCompleteness">
     <action>Analyze documentation completeness</action>
     <process>
-      1. Scan code files for docstrings
-      2. Check public definitions have documentation
-      3. Verify module-level documentation
-      4. Identify undocumented items
-      5. Calculate completeness score
+      1. Scan code files for documentation (docstrings, JSDoc, JavaDoc, etc.)
+      2. Check public APIs have documentation
+      3. Verify module/package-level documentation
+      4. Check README and project documentation
+      5. Identify undocumented items
+      6. Calculate completeness score
+      7. Detect language-specific documentation patterns
     </process>
     <checkpoint>Completeness analyzed</checkpoint>
   </stage>
@@ -56,7 +58,8 @@ tools:
       2. Identify outdated information
       3. Detect redundant documentation
       4. Find documentation of non-existent items
-      5. List bloat instances
+      5. Identify auto-generated but unhelpful docs
+      6. List bloat instances
     </process>
     <checkpoint>Bloat identified</checkpoint>
   </stage>

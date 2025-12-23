@@ -1,0 +1,17 @@
+{
+  "_schema_version": "1.0.0",
+  "project_number": 151,
+  "project_name": "research_caching_and_context_helpers_in_proofsearch",
+  "type": "research",
+  "phase": "research",
+  "reports": [
+    "reports/research-001.md"
+  ],
+  "plans": [],
+  "summaries": [
+    "summaries/research-summary.md"
+  ],
+  "status": "active",
+  "created": "2025-12-23T06:00:00Z",
+  "last_updated": "2025-12-23T06:00:00Z"
+}

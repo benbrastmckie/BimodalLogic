@@ -1,92 +1,99 @@
 ---
 name: context
 agent: orchestrator
-description: "Initiates a sequential workflow to plan the refactoring of context files and update all references."
+ description: "Plan and route context refactor/reference updates via subagents"
+ context_level: 2
+ language: markdown
+ subagents:
+   - context-refactor
+   - context-references
+   - task-adder
+ mcp_requirements: []
+ registry_impacts:
+   - TODO.md
+   - .opencode/specs/state.json
+ creates_root_on: "Subagents only when writing their artifacts"
+ creates_subdir:
+   - reports
+   - plans
+ dry_run: "Preview routing only; no artifact writes, no directories, no TODO/state mutations."
+
 ---
 
-# Context Management Planning Workflow
-
-**Context Loaded:**
-@context/core/system/context-guide.md
+Context Loaded:
+@context/common/system/context-guide.md
+@context/common/standards/commands.md
+@context/common/system/artifact-management.md
+@context/common/system/status-markers.md
+@context/context/index.md
 
 <context>
-  <system_context>
-    You are the system orchestrator, managing the `.opencode` context for a software project. You must execute a sequential workflow to ensure dependencies are handled correctly.
-  </system_context>
-  <task_context>
-    Execute a three-stage planning workflow. The output from each stage (artifact references and summaries) must be passed to the subsequent stage. Do not read the artifact content; only pass the references.
-  </task_context>
+  <system_context>Orchestrator for context refactor/reference planning using chained subagents.</system_context>
+  <domain_context>.opencode/context directory organization and references.</domain_context>
+  <task_context>Create refactor and reference-update plans, then add TODO entries using subagents.</task_context>
+  <execution_context>Sequence subagents, pass artifact references (not contents), and preserve lazy creation.</execution_context>
 </context>
 
-<role>
-  Workflow Orchestrator
-</role>
+<role>Workflow orchestrator for context planning and TODO insertion.</role>
 
-<task>
-  Execute the context management planning workflow by calling subagents in sequence and chaining their inputs and outputs.
-</task>
+<task>Generate a context refactor plan, generate a references update plan, and register resulting tasks in TODO.md without reading artifact contents.</task>
 
 <workflow_execution>
   <stage id="1" name="PlanContextRefactor">
-    <action>Route to @subagents/context-refactor to create a detailed plan for refactoring the `.opencode/context/` directory.</action>
+    <action>Route to @subagents/context-refactor</action>
     <process>
-      1. Call `@subagents/context-refactor` with the user's initial request: `$ARGUMENTS`.
-      2. The subagent will create a refactoring plan.
-      3. Capture the JSON result containing `artifact_path` and `summary`.
+      1. Pass user request `$ARGUMENTS`.
+      2. Capture returned `artifact_path` and `summary` (no content load).
     </process>
-    <output>
-      `refactor_plan_result` (JSON object with path and summary)
-    </output>
-    <checkpoint>Context refactor plan created.</checkpoint>
   </stage>
-
   <stage id="2" name="PlanReferenceUpdates">
-    <action>Route to @subagents/context-references, passing the refactor plan's path and its parent directory.</action>
+    <action>Route to @subagents/context-references</action>
     <process>
-      1. Get the `artifact_path` from `refactor_plan_result`.
-      2. Extract the parent directory from `artifact_path`.
-      3. Call `@subagents/context-references`, passing the full path to the refactor plan and the parent directory as arguments. The subagent will create its plan in the provided directory.
-      4. Capture the JSON result containing `artifact_path` and `summary`.
+      1. Pass refactor plan path and parent directory for placement.
+      2. Capture returned `artifact_path` and `summary`.
     </process>
-    <input>
-      {
-        "refactor_plan_path": `refactor_plan_result.artifact_path`,
-        "output_directory": `dirname(refactor_plan_result.artifact_path)`
-      }
-    </input>
-    <output>
-      `references_plan_result` (JSON object with path and summary)
-    </output>
-    <checkpoint>Context references update plan created.</checkpoint>
   </stage>
-
-  <stage id="3" name="AddTasksToDo">
-    <action>Route to @subagents/task-adder, passing both created plans as arguments.</action>
+  <stage id="3" name="RegisterTasks">
+    <action>Route to @subagents/task-adder</action>
     <process>
-      1. Construct a JSON object containing the results from the previous two stages.
-      2. Call `@subagents/task-adder` with this JSON object as the argument.
-      3. The subagent will add the tasks to `TODO.md`.
-      4. Capture the final confirmation summary.
+      1. Provide JSON bundle of both plan results.
+      2. Add tasks to TODO.md/state with appropriate status markers.
     </process>
-    <input>
-      {
-        "refactor_plan": `refactor_plan_result`,
-        "references_plan": `references_plan_result`
-      }
-    </input>
-    <output>
-      `final_summary`
-    </output>
-    <checkpoint>Tasks added to TODO.md.</checkpoint>
   </stage>
-
   <stage id="4" name="PresentResults">
-    <action>Present the final summary and artifact paths to the user.</action>
+    <action>Return references</action>
     <process>
-      1. Display the summary from the `task-adder`.
-      2. Display the `artifact_path` for the refactor plan.
-      3. Display the `artifact_path` for the references plan.
+      1. Present summaries and artifact paths for both plans.
+      2. Confirm TODO/state updates.
     </process>
-    <checkpoint>Workflow complete.</checkpoint>
   </stage>
 </workflow_execution>
+
+<routing_intelligence>
+  <context_allocation>Level 2 (multi-step, standards + context guide required).</context_allocation>
+  <lean_routing>No Lean-specific routing; language remains markdown.</lean_routing>
+  <batch_handling>Sequential chaining; each stage waits for prior artifact reference.</batch_handling>
+</routing_intelligence>
+
+<artifact_management>
+  <lazy_creation>Subagents create project roots/subdirs only when writing their artifacts; orchestrator never pre-creates.</lazy_creation>
+  <state_sync>Task-adder updates TODO/state; orchestrator records references only.</state_sync>
+  <registry_sync>No registry updates unless subagents specify.</registry_sync>
+</artifact_management>
+
+<quality_standards>
+  <status_markers>Use status-markers.md; propagate timestamps where subagents update tasks/plans.</status_markers>
+  <language_routing>Non-Lean path; Language metadata remains markdown.</language_routing>
+  <no_emojis>All outputs are emoji-free.</no_emojis>
+  <validation>Reject missing/invalid references; avoid reading artifact contents.</validation>
+</quality_standards>
+
+<usage_examples>
+  - `/context "Refresh context mapping after refactor"`
+</usage_examples>
+
+<validation>
+  <pre_flight>Request parsed; context guide loaded.</pre_flight>
+  <mid_flight>Subagent calls sequenced; references captured only.</mid_flight>
+  <post_flight>TODO/state updates confirmed; references returned.</post_flight>
+</validation>

@@ -78,7 +78,7 @@ Global state file tracking all projects and system state.
       "updated": "2025-12-20T14:30:00Z"
     }
   },
-  "last_project_number": 66
+  "next_project_number": 67
 }
 ```
 
@@ -148,7 +148,7 @@ Projects use a sequential numbering scheme for organization and tracking.
 - `063_soundness_proof`
 - `072_phase1_migration`
 
-**Next Number**: Check `state.json` for `last_project_number` and increment.
+**Next Number**: Check `state.json` for `next_project_number`.
 
 ## Artifact Naming Conventions
 
@@ -205,7 +205,7 @@ Tasks are archived after completion to maintain focus on active work.
 
 All context files are located in `.opencode/context/`:
 
-- [Artifact Management](../context/core/system/artifact-management.md) - Detailed organization guide
+- [Project Structure](../context/repo/project-structure.md) - Detailed organization guide
 - [State Schema](../context/repo/state-schema.md) - State file format reference
 - [Documentation Standards](../context/repo/documentation-standards.md) - Artifact quality standards
 - [Task Command](../command/task.md) - Task execution workflow

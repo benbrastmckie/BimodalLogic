@@ -1,0 +1,16 @@
+{
+  "_schema_version": "1.0.0",
+  "project_number": 131,
+  "project_name": "clean_up_archive_examples",
+  "type": "maintenance",
+  "phase": "completed",
+  "status": "completed",
+  "reports": [],
+  "plans": [],
+  "summaries": [
+    "summaries/implementation-summary-20251223.md"
+  ],
+  "created": "2025-12-23T11:13:00Z",
+  "last_updated": "2025-12-23T12:10:00Z",
+  "completed": "2025-12-23T12:10:00Z"
+}

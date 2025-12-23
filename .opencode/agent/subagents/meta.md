@@ -43,12 +43,12 @@ tools:
 <workflow_execution>
   <stage id="1" name="ParseMetaRequest">
     <action>Determine meta operation type</action>
-    <process>
-      1. Parse request (create/modify agent/command)
-      2. Load relevant templates from context/templates/
-      3. If modifying, load existing agent/command
-      4. Prepare specifications
-    </process>
+<process>
+       1. Parse request (create/modify agent/command)
+       2. Load relevant templates from @context/common/templates/meta-guide.md, @context/common/templates/orchestrator-template.md, @context/common/templates/subagent-template.md and @context/common/system/context-guide.md
+       3. If modifying, load existing agent/command
+       4. Prepare specifications
+     </process>
     <checkpoint>Request parsed and templates loaded</checkpoint>
   </stage>
 

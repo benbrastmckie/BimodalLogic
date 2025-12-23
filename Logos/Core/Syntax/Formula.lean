@@ -72,7 +72,7 @@ inductive Formula : Type where
   | all_past : Formula → Formula
   /-- Universal future (Gφ, "φ will always be true") -/
   | all_future : Formula → Formula
-  deriving Repr, DecidableEq
+  deriving Repr, DecidableEq, BEq, Hashable
 
 namespace Formula
 

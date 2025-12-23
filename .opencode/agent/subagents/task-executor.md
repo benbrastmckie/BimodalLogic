@@ -16,14 +16,13 @@ tools:
 
 <context>
   <system_context>
-    Task execution system for TODO.md tasks in LEAN 4 ProofChecker project. Analyzes
+    Task execution system for TODO.md tasks in software development projects. Analyzes
     task type and complexity, then routes to appropriate coordinator agent for end-to-end
-    execution: proof-developer, documenter, refactorer, researcher, implementer, or
-    batch-task-orchestrator.
+    execution: implementer, documenter, refactorer, researcher, or batch-task-orchestrator.
   </system_context>
   <domain_context>
-    LEAN 4 bimodal logic development with mixed task types: proof development,
-    documentation updates, refactoring, research, general code, and batch tasks.
+    General software development with mixed task types: feature implementation,
+    documentation updates, refactoring, research, and batch tasks.
   </domain_context>
   <task_context>
     Extract task from TODO.md, detect task type using multi-factor analysis, assess
@@ -31,10 +30,9 @@ tools:
     and return execution results.
   </task_context>
   <execution_context>
-    Intelligent task type detection routes to specialized coordinators: lean_proof →
-    proof-developer, documentation → documenter, refactoring → refactorer, research →
-    researcher, general_code → implementer, batch_tasks → batch-task-orchestrator.
-    Meta-system tasks (agent/command creation) are NOT handled by /task - use /meta directly.
+    Intelligent task type detection routes to specialized coordinators: implementation →
+    implementer, documentation → documenter, refactoring → refactorer, research →
+    researcher, batch_tasks → batch-task-orchestrator.
   </execution_context>
 </context>
 
@@ -137,26 +135,26 @@ tools:
     <process>
       1. Extract indicators from task details (files, keywords, effort, description)
       2. Apply task type detection algorithm with priority ordering
-      3. Determine task type (lean_proof, documentation, refactoring, research, general_code, batch_tasks)
+      3. Determine task type (documentation, refactoring, research, implementation, batch_tasks)
       4. Select appropriate coordinator agent
       5. Prepare coordinator-specific context
     </process>
     <task_type_classification>
-      <lean_proof>
+      <implementation>
         <indicators>
-          - files_in: ["Logos/", "LogosTest/"]
-          - keywords: ["prove", "theorem", "lemma", "axiom", "proof", "derivation", "tactic"]
-          - effort: "> 2 hours" (typically)
-          - description_patterns: ["implement.*proof", "prove.*theorem", "show.*holds"]
+          - files_in: ["src/", "lib/", "app/", "*.py", "*.js", "*.ts", "*.java"]
+          - keywords: ["implement", "create", "build", "develop", "add feature"]
+          - effort: "> 1 hour" (typically)
+          - description_patterns: ["implement.*", "create.*", "build.*", "add.*feature"]
         </indicators>
-        <coordinator>@subagents/proof-developer</coordinator>
-        <specialists>tactic-specialist, term-mode-specialist, metaprogramming-specialist</specialists>
+        <coordinator>@subagents/implementer</coordinator>
+        <specialists>none</specialists>
         <priority>2</priority>
-      </lean_proof>
+      </implementation>
       
       <documentation>
         <indicators>
-          - files_in: ["Documentation/", "README.md", "*.md"]
+          - files_in: ["docs/", "README.md", "*.md"]
           - keywords: ["document", "update docs", "write documentation", "add README"]
           - effort: "< 2 hours" (typically)
           - description_patterns: ["update.*documentation", "add.*docstring", "improve.*docs"]
@@ -168,13 +166,13 @@ tools:
       
       <refactoring>
         <indicators>
-          - files_in: ["Logos/", ".opencode/", "scripts/"]
+          - files_in: ["src/", ".opencode/", "scripts/"]
           - keywords: ["refactor", "clean up", "simplify", "improve code", "reorganize"]
           - effort: "1-4 hours" (typically)
-          - description_patterns: ["refactor.*", "clean.*code", "simplify.*proof"]
+          - description_patterns: ["refactor.*", "clean.*code", "simplify.*"]
         </indicators>
         <coordinator>@subagents/refactorer</coordinator>
-        <specialists>style-checker, proof-simplifier</specialists>
+        <specialists>style-checker, refactoring-assistant</specialists>
         <priority>4</priority>
       </refactoring>
       
@@ -185,22 +183,9 @@ tools:
           - description_patterns: ["research.*", "investigate.*", "explore.*options"]
         </indicators>
         <coordinator>@subagents/researcher</coordinator>
-        <specialists>lean-search-specialist, loogle-specialist, web-research-specialist</specialists>
+        <specialists>web-research-specialist</specialists>
         <priority>3</priority>
       </research>
-      
-      <general_code>
-        <indicators>
-          - files_in: [".opencode/", "scripts/", "context/"]
-          - keywords: ["implement", "create", "build", "fix", "add"]
-          - not_lean: true
-          - not_meta: true
-          - description_patterns: ["implement.*utility", "fix.*bug", "add.*feature"]
-        </indicators>
-        <coordinator>@subagents/implementer</coordinator>
-        <specialists>none</specialists>
-        <priority>6</priority>
-      </general_code>
       
       <batch_tasks>
         <indicators>
@@ -215,11 +200,10 @@ tools:
     <detection_algorithm>
       Priority ordering (highest to lowest):
       1. Batch tasks (multiple task numbers) - HIGHEST
-      2. LEAN proof tasks (highest complexity)
+      2. Implementation tasks (feature development)
       3. Research tasks (explicit research keywords)
       4. Refactoring tasks (code improvement)
-      5. Documentation tasks (doc updates)
-      6. General code tasks (fallback) - LOWEST
+      5. Documentation tasks (doc updates) - LOWEST
       
       Multi-factor scoring:
       - File path indicators: +3 points (strong signal)
@@ -231,42 +215,37 @@ tools:
       Ambiguity resolution:
       - If multiple types match, use priority order
       - If score is tied, prefer higher priority type
-      - If still ambiguous, default to general_code
+      - If still ambiguous, default to implementation
       - Log ambiguity warning for manual review
-      
-      Meta-system task exclusion:
-      - Files in .opencode/agent/ or .opencode/command/ are NOT detected
-      - Meta-system tasks should use /meta command directly
-      - If detected, log warning and suggest /meta
     </detection_algorithm>
     <checkpoint>Task type detected and coordinator selected</checkpoint>
   </stage>
 
-  <stage id="4" name="CreateProjectDirectory">
-    <action>Create project directory structure for task artifacts</action>
-    <process>
-      1. Determine next project number (NNN)
-      2. Create sanitized task name from title
-      3. Create directory: .opencode/specs/NNN_task_name/
-      4. Create subdirectories:
-         - reports/ (for research reports if complex)
-         - plans/ (for implementation plans)
-         - summaries/ (for summaries)
-      5. Initialize state.json
-    </process>
-    <directory_structure>
-      .opencode/specs/NNN_task_name/
-      ├── reports/           # Research reports (complex tasks only)
-      ├── plans/             # Implementation plans (all tasks)
-      ├── summaries/         # Task and plan summaries
-      └── state.json         # Project state tracking
-    </directory_structure>
-    <skip_condition>
-      For very simple tasks (≤15 minutes, single file, trivial change),
-      may skip project directory and execute directly
-    </skip_condition>
-    <checkpoint>Project directory created (if needed)</checkpoint>
-  </stage>
+   <stage id="4" name="CreateProjectDirectory">
+     <action>Create project directory structure for task artifacts</action>
+     <process>
+       1. Determine next project number (NNN) only when an artifact will be written
+       2. Create sanitized task name from title
+       3. Lazily create directory: .opencode/specs/NNN_task_name/ **only immediately before writing the first artifact**
+       4. Lazily create subdirectories only when writing into them:
+          - reports/ (for research reports if complex)
+          - plans/ (for implementation plans)
+          - summaries/ (for summaries)
+       5. Initialize state.json alongside the first artifact write
+     </process>
+     <directory_structure>
+       .opencode/specs/NNN_task_name/
+       ├── reports/           # Research reports (complex tasks only)
+       ├── plans/             # Implementation plans (artifact write triggers creation)
+       ├── summaries/         # Task and plan summaries
+       └── state.json         # Project state tracking (created when first artifact is written)
+     </directory_structure>
+     <skip_condition>
+       If execution only updates TODO/status markers with no artifacts, **skip directory creation entirely** to preserve lazy creation guardrails.
+     </skip_condition>
+     <checkpoint>Project directory created (only when artifact write occurs)</checkpoint>
+   </stage>
+
 
   <stage id="5" name="ExecuteResearchPhase">
     <action>Conduct research for complex tasks (conditional)</action>
@@ -283,12 +262,12 @@ tools:
           - Task description and requirements
           - Research questions derived from task
           - Project directory path
-          - Domain context (lean4/domain/, logic/domain/)
+          - Domain context (project-specific paths)
         </pass_data>
         <research_questions>
           Generate research questions based on task:
           - What domain knowledge is needed?
-          - What existing LEAN libraries are relevant?
+          - What existing libraries and tools are relevant?
           - What implementation approaches exist?
           - What are the dependencies and prerequisites?
           - What are potential challenges?
@@ -318,11 +297,11 @@ tools:
       <route to="@subagents/planner" when="complex_or_moderate">
         <context_level>Level 2</context_level>
         <pass_data>
-          - Task description and details
+          - Task description and requirements
           - Complexity assessment
           - Research reports (if available)
           - Project directory path
-          - Domain context (lean4/, logic/)
+          - Domain context (project-specific paths)
         </pass_data>
         <expected_return>
           - Implementation plan path
@@ -387,18 +366,16 @@ tools:
       6. Validate coordinator output
     </process>
     <routing>
-      <route to="@subagents/proof-developer" when="lean_proof">
-        <context_level>Level 3</context_level>
+      <route to="@subagents/implementer" when="implementation">
+        <context_level>Level 2</context_level>
         <pass_data>
           - Task details
           - Implementation plan (from stage 6)
-          - Domain context (lean4/, logic/)
-          - Patterns and templates
-          - lean-lsp-mcp configuration
+          - Code context
+          - Standards and patterns
         </pass_data>
         <expected_return>
-          - Implemented proof files
-          - Verification status
+          - Implemented code
           - Implementation summary
           - Files modified
         </expected_return>
@@ -439,28 +416,12 @@ tools:
         <pass_data>
           - Research topic
           - Research scope
-          - Domain context
-          - Tool guides
+          - Standards and patterns
         </pass_data>
         <expected_return>
           - Research report
           - Key findings
           - Relevant resources
-        </expected_return>
-      </route>
-      
-      <route to="@subagents/implementer" when="general_code">
-        <context_level>Level 2</context_level>
-        <pass_data>
-          - Task details
-          - Implementation plan (from stage 6)
-          - Code context
-          - Standards and patterns
-        </pass_data>
-        <expected_return>
-          - Implemented code
-          - Implementation summary
-          - Files modified
         </expected_return>
       </route>
       
@@ -535,47 +496,48 @@ tools:
       - Coordinator status is "in_progress" or "failed"
       - Task execution failed
     </condition>
-    <process>
-      1. Read current TODO.md
-      2. Locate task section by number
-      3. Update task status:
-         - Change `**Status**: [IN PROGRESS]` to `**Status**: [COMPLETE]`
-         - Add `**Completed**: YYYY-MM-DD`
-         - Add ✅ emoji to task title or status line
-      4. Optionally move task to "Completed" section
-      5. Write updated TODO.md back to file
-      6. Log completion confirmation
-    </process>
-    <status_update_example>
-      Before:
-      ```
-      ### 61. Add Missing Directory READMEs
-      **Effort**: 1 hour
-      **Status**: [IN PROGRESS]
-      **Started**: 2025-12-16
-      **Priority**: Medium (documentation completeness)
-      ```
-      
-      After:
-      ```
-      ### 61. Add Missing Directory READMEs ✅
-      **Effort**: 1 hour
-      **Status**: [COMPLETE]
-      **Started**: 2025-12-16
-      **Completed**: 2025-12-16
-      **Priority**: Medium (documentation completeness)
-      ```
-      
-      Or move to Completed section:
-      ```
-      ## Completed
-      
-      ### 61. Add Missing Directory READMEs ✅
-      **Completion Date**: 2025-12-16
-      **Status**: Complete
-      ...
-      ```
-    </status_update_example>
+     <process>
+       1. Read current TODO.md
+       2. Locate task section by number
+       3. Update task status using status-markers.md:
+          - Change `**Status**: [IN PROGRESS]` to `**Status**: [COMPLETED]`
+          - Add `**Completed**: YYYY-MM-DD`
+          - Do not add emojis; rely on status markers
+          - If a plan link exists, update plan phases with matching markers/timestamps via implementation-orchestrator
+       4. Optionally move task to "Completed" section
+       5. Write updated TODO.md back to file
+       6. Log completion confirmation
+     </process>
+     <status_update_example>
+       Before:
+       ```
+       ### 61. Add Missing Directory READMEs
+       **Effort**: 1 hour
+       **Status**: [IN PROGRESS]
+       **Started**: 2025-12-16
+       **Priority**: Medium (documentation completeness)
+       ```
+       
+       After:
+       ```
+       ### 61. Add Missing Directory READMEs
+       **Effort**: 1 hour
+       **Status**: [COMPLETED]
+       **Started**: 2025-12-16
+       **Completed**: 2025-12-16
+       **Priority**: Medium (documentation completeness)
+       ```
+       
+       Or move to Completed section:
+       ```
+       ## Completed
+       
+       ### 61. Add Missing Directory READMEs
+       **Completion Date**: 2025-12-16
+       **Status**: [COMPLETED]
+       ...
+       ```
+     </status_update_example>
     <error_handling>
       If TODO.md read error: Log error, continue (task was executed successfully)
       If task not found: Log warning, continue (task was executed successfully)
@@ -590,7 +552,7 @@ tools:
       {
         "task_number": NNN,
         "task_title": "{title}",
-        "task_type": "lean_proof|documentation|refactoring|research|general_code|batch_tasks",
+        "task_type": "implementation|documentation|refactoring|research|batch_tasks",
         "complexity": "simple|moderate|complex",
         "effort_estimate": "{effort}",
         "coordinator_used": "@subagents/{coordinator_name}",
@@ -629,7 +591,7 @@ tools:
       ## Task {number}: {title}
       
       **Complexity**: {Simple|Moderate|Complex}
-      **Task Type**: {LEAN Proof|General Code|Documentation|Research}
+      **Task Type**: {Implementation|Documentation|Refactoring|Research}
       **Effort**: {estimate}
       **Priority**: {High|Medium|Low}
       **Files Affected**: {list}
@@ -689,23 +651,13 @@ tools:
       
       ### Recommended Next Step
       
-      {if lean_proof_task:
-        **Use `/lean` for LEAN 4 proof implementation**:
-        ```
-        /lean .opencode/specs/{NNN}_{task_name}/plans/implementation-001.md
-        ```
-        
-        This will engage the proof-developer subagent with tactic, term-mode, and 
-        metaprogramming specialists to implement the proof following the plan.
-      }
-      
-      {if general_code_task:
-        **Use `/implement` for general code implementation**:
+      {if implementation_task:
+        **Use `/implement` for code implementation**:
         ```
         /implement .opencode/specs/{NNN}_{task_name}/plans/implementation-001.md
         ```
         
-        This will engage the implementer subagent for general code development
+        This will engage the implementer subagent for code development
         following the implementation plan.
       }
       
@@ -765,8 +717,8 @@ tools:
     <keywords>fix, refactor, improve, add, enhance</keywords>
     <dependencies>Some dependencies but manageable</dependencies>
     <examples>
-      - Task 52: Fix AesopRules duplicate declaration
-      - Task 56: Implement missing helper lemmas
+      - Task 52: Fix duplicate route definition
+      - Task 56: Implement missing utility functions
     </examples>
   </moderate_indicators>
   
@@ -774,50 +726,36 @@ tools:
     <effort>> 2 hours (often 4+ hours)</effort>
     <files>4+ files affected or new modules</files>
     <clarity>Unclear requirements or significant unknowns</clarity>
-    <keywords>implement, create, design, research, prove, develop</keywords>
+    <keywords>implement, create, design, research, develop</keywords>
     <dependencies>Complex dependencies or new features</dependencies>
     <research_needed>Requires domain research or exploration</research_needed>
     <examples>
-      - Task 9: Begin completeness proofs (70-90 hours)
-      - Task 10: Create decidability module (40-60 hours)
-      - Task 11: Plan Layer 1/2/3 extensions (20-40 hours)
+      - Task 9: Implement authentication system (70-90 hours)
+      - Task 10: Create API v2 module (40-60 hours)
+      - Task 11: Plan microservices migration (20-40 hours)
     </examples>
   </complex_indicators>
 </complexity_assessment>
 
 <task_type_classification>
-  <lean_proof>
+  <implementation>
     <indicators>
-      - Files in Logos/ directory
-      - Keywords: prove, theorem, lemma, axiom, proof, derivation
-      - Involves LEAN 4 proof development
-      - Requires tactic or term-mode proof construction
-    </indicators>
-    <recommendation>/lean command with implementation plan</recommendation>
-    <examples>
-      - Task 9: Begin completeness proofs
-      - Task 56: Implement missing helper lemmas
-    </examples>
-  </lean_proof>
-  
-  <general_code>
-    <indicators>
-      - Files in .opencode/, scripts/, or non-Logos directories
-      - Keywords: implement, create, build, refactor, develop
-      - General programming or system development
-      - May involve utilities, agents, commands
+      - Files in src/, lib/, app/, or code directories
+      - Keywords: implement, create, build, develop, add feature
+      - General programming or feature development
+      - May involve new features, bug fixes, enhancements
     </indicators>
     <recommendation>/implement command with implementation plan</recommendation>
     <examples>
-      - System enhancement tasks (specialist subagents)
-      - Context file population tasks
-      - Utility script development
+      - Feature implementation tasks
+      - Bug fix tasks
+      - System enhancement tasks
     </examples>
-  </general_code>
+  </implementation>
   
   <documentation>
     <indicators>
-      - Files in Documentation/ or README files
+      - Files in docs/ or README files
       - Keywords: update, document, write, improve documentation
       - Documentation updates or creation
     </indicators>
@@ -826,11 +764,25 @@ tools:
       - Complex: /implement or /document command
     </recommendation>
     <examples>
-      - Task 59: Update IMPLEMENTATION_STATUS.md (simple)
-      - Task 61: Add missing directory READMEs (simple)
-      - Task 62: Improve docstring coverage (moderate)
+      - Update README files
+      - Add missing documentation
+      - Improve API documentation
     </examples>
   </documentation>
+  
+  <refactoring>
+    <indicators>
+      - Keywords: refactor, clean up, simplify, improve code
+      - Code quality improvement
+      - Restructuring existing code
+    </indicators>
+    <recommendation>/refactor command or execute directly</recommendation>
+    <examples>
+      - Code cleanup tasks
+      - Simplification tasks
+      - Reorganization tasks
+    </examples>
+  </refactoring>
   
   <research>
     <indicators>
@@ -840,8 +792,9 @@ tools:
     </indicators>
     <recommendation>Research phase always executed, then planning</recommendation>
     <examples>
-      - Task 11: Plan Layer 1/2/3 extensions
-      - Research tasks for context file population
+      - Technology research tasks
+      - Design exploration tasks
+      - Planning tasks
     </examples>
   </research>
 </task_type_classification>
@@ -932,15 +885,14 @@ tools:
       6. Write entire file back atomically
     </mark_in_progress>
     
-    <mark_complete>
-      1. Locate task section by number
-      2. Find `**Status**: [IN PROGRESS]` line
-      3. Replace with `**Status**: [COMPLETED]`
-      4. Add `**Completed**: YYYY-MM-DD` after Started line
-      5. Optionally add ✅ to section header
-      6. Preserve all other content exactly
-      7. Write entire file back atomically
-    </mark_complete>
+     <mark_complete>
+       1. Locate task section by number
+       2. Find `**Status**: [IN PROGRESS]` line
+       3. Replace with `**Status**: [COMPLETED]`
+       4. Add `**Completed**: YYYY-MM-DD` after Started line
+       5. Preserve all other content exactly (no emojis)
+       6. Write entire file back atomically
+     </mark_complete>
   </update_strategy>
   
   <example_transformations>
@@ -965,26 +917,26 @@ tools:
       ```
     </start_task>
     
-    <complete_task>
-      Before:
-      ```markdown
-      ### 61. Add Missing Directory READMEs
-      **Effort**: 1 hour
-      **Status**: [IN PROGRESS]
-      **Started**: 2025-12-16
-      **Priority**: Medium (documentation completeness)
-      ```
-      
-      After:
-      ```markdown
-      ### 61. Add Missing Directory READMEs ✅
-      **Effort**: 1 hour
-      **Status**: [COMPLETED]
-      **Started**: 2025-12-16
-      **Completed**: 2025-12-16
-      **Priority**: Medium (documentation completeness)
-      ```
-    </complete_task>
+     <complete_task>
+       Before:
+       ```markdown
+       ### 61. Add Missing Directory READMEs
+       **Effort**: 1 hour
+       **Status**: [IN PROGRESS]
+       **Started**: 2025-12-16
+       **Priority**: Medium (documentation completeness)
+       ```
+       
+       After:
+       ```markdown
+       ### 61. Add Missing Directory READMEs
+       **Effort**: 1 hour
+       **Status**: [COMPLETED]
+       **Started**: 2025-12-16
+       **Completed**: 2025-12-16
+       **Priority**: Medium (documentation completeness)
+       ```
+     </complete_task>
   </example_transformations>
   
   <error_handling_details>

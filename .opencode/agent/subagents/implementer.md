@@ -18,7 +18,7 @@ tools:
   <system_context>
     General-purpose implementation system for .opencode/ utilities and system components.
     Handles coding tasks, file operations, and system maintenance. Invokable via /implement
-    command for non-LEAN 4 implementation work.
+    command for general implementation work.
   </system_context>
   <domain_context>
     .opencode system architecture with agents, commands, context files, and workflows.
@@ -51,12 +51,12 @@ tools:
     </process>
     <context_loading>
       <standards>
-        - context/core/standards/code.md
-        - context/core/standards/patterns.md
-        - context/core/essential-patterns.md
+        - @context/common/standards/code.md
+        - @context/common/standards/patterns.md
+        - @context/common/standards/patterns.md
       </standards>
       <templates>
-        - context/templates/ (if creating agents/commands)
+        - @context/common/templates/ (if creating agents/commands)
       </templates>
       <existing_code>
         - Related .opencode/ components for pattern reference

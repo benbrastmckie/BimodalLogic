@@ -1,6 +1,6 @@
 # Logos Project TODO
 
-**Last Updated**: 2025-12-21
+**Last Updated**: 2025-12-22
 **Status**: Layer 0 (Core TM) MVP Complete - Review in Progress
 
 ## Overview
@@ -8,7 +8,7 @@
 Logos has completed its MVP phase with a functional implementation of the TM bimodal logic proof system. The current focus is on completing the metalogical proofs for completeness and enhancing automation.
 
 - **Layer 0 Completion**: 83% (Soundness & Deduction complete, Completeness infrastructure only)
-- **Active Tasks**: 7
+- **Active Tasks**: 8
 - **Next Milestone**: Completeness Proofs
 
 ## Quick Links
@@ -57,6 +57,33 @@ Logos has completed its MVP phase with a functional implementation of the TM bim
 
 **Files**:
 - `Logos/Core/Semantics/Truth.lean` (lines 697, 776, 798)
+
+---
+
+### 148. Ensure command updates also sync SORRY and TACTIC registries
+**Effort**: 2-3 hours
+**Status**: [NOT STARTED]
+**Priority**: Medium
+**Blocking**: None
+**Dependencies**: None
+
+**Files Affected**:
+- `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
+- `Documentation/ProjectInfo/SORRY_REGISTRY.md`
+- `Documentation/ProjectInfo/TACTIC_REGISTRY.md`
+- `Documentation/Development/MAINTENANCE.md`
+
+**Description**:
+Update `/task`, `/add`, `/review`, `/todo`, and related command flows and standards so that they always update `IMPLEMENTATION_STATUS.md`, `SORRY_REGISTRY.md`, and `TACTIC_REGISTRY.md` together. Ensure dry-run coverage and avoid creating project directories when no artifacts are written.
+
+**Acceptance Criteria**:
+- [ ] Command/agent standards updated to require registry updates for `/task`, `/add`, `/review`, `/todo`, and related commands.
+- [ ] IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md are updated in the same change when these commands modify tasks.
+- [ ] Dry-run behavior and safety notes are documented for these updates.
+- [ ] No project directories are created as part of these command updates.
+
+**Impact**:
+Keeps implementation status and registries synchronized, reducing drift and missing updates across automation flows.
 
 ---
 
@@ -110,6 +137,31 @@ Ensures that the entire codebase is compatible with the refactored `Context` mod
 
 ---
 
+### 126. Implement bounded_search and matches_axiom in ProofSearch
+**Effort**: 3 hours
+**Status**: COMPLETED (Started: 2025-12-22, Completed: 2025-12-22)
+**Priority**: Medium
+**Blocking**: None
+**Dependencies**: None
+**Artifacts**: [.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md](.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md), [.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/reports/research-001.md](.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/reports/research-001.md), [.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/summaries/implementation-summary-20251222.md](.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/summaries/implementation-summary-20251222.md)
+
+**Files Affected**:
+- `Logos/Core/Automation/ProofSearch.lean`
+- `LogosTest/Core/Automation/ProofSearchTest.lean`
+
+**Description**:
+Implement bounded search driver with depth/visit limits, cache/visited threading, and structural axiom matching for all 14 schemas to replace stubs and enable basic proof search execution. Lean intent true; plan ready at [.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md](.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md).
+
+**Acceptance Criteria**:
+- [x] `bounded_search` implemented with depth and visit limits.
+- [x] `matches_axiom` implemented with correct structural matching logic (all 14 schemas) and axiom stubs removed.
+- [x] `search_with_cache`/basic search runs on sample goals without timeouts.
+- [x] Tests cover axiom matching and bounded search termination (unit + integration under Automation).
+
+**Impact**:
+Enables the first working path for automated proof search with termination guards.
+
+---
 
 ## Low Priority (Complete within 6-12 months)
 

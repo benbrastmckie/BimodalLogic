@@ -1,230 +1,540 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker project. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-20T00:00:00Z",
-  
-  "state_references": {
-    "archive_state_path": ".opencode/specs/archive/state.json",
-    "maintenance_state_path": ".opencode/specs/maintenance/state.json",
-    "_comment": "Specialized state files for detailed tracking of archives and maintenance operations"
+  "_last_updated": "2025-12-23T18:45:00Z",
+  "next_project_number": 156,
+  "project_numbering": {
+    "min": 0,
+    "max": 999,
+    "policy": "increment_modulo_1000",
+    "_comment": "Project numbers wrap around to 000 after 999. Ensure old projects are archived before reuse."
   },
-  
   "active_projects": [
     {
-      "project_number": 7,
-      "project_name": "emoji_removal",
+      "project_number": 144,
+      "project_name": "update_context_references_after_refactor",
+      "type": "research",
+      "phase": "completed",
+      "status": "completed",
+      "reports": [
+        "reports/research-001.md"
+      ],
+      "plans": [
+        "plans/implementation-002.md"
+      ],
+      "summaries": [
+        "summaries/implementation-summary-20251223.md"
+      ],
+      "created": "2025-12-23T03:15:00Z",
+      "last_updated": "2025-12-23T06:15:00Z"
+    },
+    {
+      "project_number": 128,
+      "project_name": "implement_caching_and_context_helpers_in_proofsearch",
+      "type": "implementation",
+      "phase": "completed",
+      "status": "completed",
+      "reports": [
+        "reports/research-001.md"
+      ],
+      "plans": [
+        "plans/implementation-001.md"
+      ],
+      "summaries": [
+        "summaries/plan-summary.md",
+        "summaries/implementation-summary-20251223.md"
+      ],
+      "created": "2025-12-22T12:00:00Z",
+      "last_updated": "2025-12-23T06:50:00Z"
+    },
+    {
+      "project_number": 131,
+      "project_name": "clean_up_archive_examples",
       "type": "maintenance",
-      "status": "planned",
-      "created": "2025-12-20T00:00:00Z",
-      "summary": "Systematic emoji removal and prevention - 7 files to update (4 removal, 3 documentation)"
+      "phase": "completed",
+      "status": "completed",
+      "reports": [],
+      "plans": [],
+      "summaries": [
+        "summaries/implementation-summary-20251223.md"
+      ],
+      "created": "2025-12-23T11:13:00Z",
+      "last_updated": "2025-12-23T12:10:00Z",
+      "completed": "2025-12-23T12:10:00Z"
+    },
+    {
+      "project_number": 152,
+      "project_name": "standardize_command_templates_and_migrate_command_docs",
+      "type": "research",
+      "phase": "completed",
+      "status": "completed",
+      "reports": [
+        "reports/research-001.md"
+      ],
+      "plans": [
+        "plans/implementation-001.md",
+        "plans/implementation-002.md"
+      ],
+      "summaries": [
+        "summaries/implementation-summary-20251223.md"
+      ],
+      "created": "2025-12-23T12:55:00Z",
+      "last_updated": "2025-12-23T15:50:00Z",
+      "completed": "2025-12-23T15:50:00Z"
+    },
+    {
+      "project_number": 154,
+      "project_name": "research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130",
+      "type": "research",
+      "phase": "implementation",
+      "status": "in_progress",
+      "reports": [
+        "reports/research-001.md",
+        "reports/research-002.md"
+      ],
+      "plans": [
+        "plans/implementation-001.md",
+        "plans/implementation-002.md"
+      ],
+      "summaries": [],
+      "created": "2025-12-23T14:30:00Z",
+      "started": "2025-12-23",
+      "last_updated": "2025-12-23T18:45:00Z"
+    },
+    {
+      "project_number": 153,
+      "project_name": "revise_research_and_plan_commands_to_enforce_status_updates",
+      "type": "standards",
+      "phase": "completed",
+      "status": "completed",
+      "reports": [],
+      "plans": [],
+      "summaries": [
+        "summaries/implementation-summary-20251223.md"
+      ],
+      "created": "2025-12-23T13:20:00Z",
+      "last_updated": "2025-12-23T16:15:00Z",
+      "completed": "2025-12-23T16:15:00Z"
+    },
+    {
+      "project_number": 155,
+      "project_name": "optimize_opencode_command_subagent_routing_and_metadata",
+      "type": "standards",
+      "phase": "implementation",
+      "status": "active",
+      "reports": [
+        "reports/research-001.md"
+      ],
+      "plans": [
+        "plans/implementation-001.md"
+      ],
+      "summaries": [],
+      "created": "2025-12-23T17:40:00Z",
+      "last_updated": "2025-12-23T18:15:00Z"
     }
   ],
   "completed_projects": [
     {
-      "project_number": 6,
-      "project_name": "review_20251220",
-      "type": "review",
-      "completed": "2025-12-20T00:00:00Z",
-      "summary": "Comprehensive repository review - Compliance 95/100, Repository Health 94/100 (Excellent). Perfect sorry/axiom alignment (8/8, 24/24). Zero critical or major issues. Production-ready for Layer 0."
-    },
-    {
-      "project_number": 5,
-      "project_name": "research_task_vs_lean_implement",
-      "type": "research",
-      "completed": "2025-12-19T12:00:00Z",
-      "summary": "Comparative analysis of /task vs /lean commands - Identified 14 missing specialist agents, clarified command usage"
-    },
-    {
-      "project_number": 4,
-      "project_name": "review_20251216",
-      "type": "review",
-      "completed": "2025-12-16T00:00:00Z",
-      "summary": "Comprehensive repository review - Compliance 94.65/100, Repository Health 94/100 (Excellent)"
-    },
-    {
-      "project_number": 3,
-      "project_name": "specialist_agents_implementation",
+      "project_number": 126,
+      "project_name": "implement_bounded_search_and_matches_axiom_in_proofsearch",
       "type": "implementation",
-      "completed": "2025-12-15T00:00:00Z",
-      "summary": "Specialist agents implementation - 14 agents created"
+      "phase": "archived",
+      "status": "completed",
+      "reports": [
+        "reports/research-001.md"
+      ],
+      "plans": [
+        "plans/implementation-001.md"
+      ],
+      "summaries": [
+        "summaries/implementation-summary-20251222.md"
+      ],
+      "created": "2025-12-22T17:00:00Z",
+      "completed": "2025-12-22T20:00:00Z",
+      "archived": "2025-12-23T05:00:00Z",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/126_implement_bounded_search_and_matches_axiom_in_proofsearch/"
+      },
+      "summary": "Bounded search and axiom matching implemented with depth/visit limits and summary recorded."
     },
     {
-      "project_number": 2,
-      "project_name": "system_enhancements_research",
-      "type": "research",
-      "completed": "2025-12-15T00:00:00Z",
-      "summary": "System enhancements research - Context organization and specialist agents"
+      "project_number": 127,
+      "project_name": "implement_heuristic_scoring_functions_in_proofsearch",
+      "type": "implementation",
+      "phase": "archived",
+      "status": "completed",
+      "reports": [],
+      "plans": [],
+      "summaries": [
+        "summaries/implementation-summary-20251223.md"
+      ],
+      "created": "2025-12-23T02:50:00Z",
+      "completed": "2025-12-23T03:00:00Z",
+      "archived": "2025-12-23T05:00:00Z",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/127_implement_heuristic_scoring_functions_in_proofsearch/"
+      },
+      "summary": "Heuristic scoring and branch ordering implemented and summarized."
     },
     {
-      "project_number": 1,
-      "project_name": "review_20251215",
-      "type": "review",
-      "completed": "2025-12-15T00:00:00Z",
-      "summary": "Comprehensive repository review - Layer 0 MVP production-ready"
+      "project_number": 143,
+      "project_name": "execute_context_refactor_per_plan_127_context_refactor",
+      "type": "refactor",
+      "phase": "archived",
+      "status": "completed",
+      "reports": [
+        "reports/research-001.md"
+      ],
+      "plans": [
+        "plans/implementation-001.md"
+      ],
+      "summaries": [
+        "summaries/implementation-summary-20251223.md"
+      ],
+      "created": "2025-12-22T23:15:00Z",
+      "completed": "2025-12-23T01:30:00Z",
+      "archived": "2025-12-23T05:00:00Z",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/143_execute_context_refactor_per_plan_127_context_refactor/"
+      },
+      "summary": "Context refactor executed per plan with index/README refresh and mapping updates."
     },
     {
-      "project_number": 62,
-      "project_name": "docstring_coverage",
-      "type": "documentation",
-      "completed": "2025-12-18T00:00:00Z",
-      "summary": "Verified 100% docstring coverage across all Logos modules",
-      "archived": "2025-12-18T00:00:00Z"
+      "project_number": 147,
+      "project_name": "ensure_task_uses_lean_subagents_and_mcp_servers_correctly",
+      "type": "implementation",
+      "phase": "archived",
+      "status": "completed",
+      "reports": [
+        "reports/research-001.md"
+      ],
+      "plans": [
+        "plans/implementation-001.md",
+        "plans/implementation-002.md"
+      ],
+      "summaries": [],
+      "created": "2025-12-22T23:10:00Z",
+      "completed": "2025-12-23T00:45:00Z",
+      "archived": "2025-12-23T05:00:00Z",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/147_ensure_task_uses_lean_subagents_and_mcp_servers_correctly/"
+      },
+      "summary": "Lean routing guardrails implemented with MCP validation and plan updates."
     },
     {
-      "project_number": 61,
-      "project_name": "add_missing_directory_readmes",
-      "type": "documentation",
-      "completed": "2025-12-18T00:00:00Z",
-      "summary": "Created Perpetuity/README.md and Automation/README.md",
-      "archived": "2025-12-18T00:00:00Z"
-    },
-    {
-      "project_number": 60,
-      "project_name": "remove_backup_artifacts",
-      "type": "maintenance",
-      "completed": "2025-12-16T00:00:00Z",
-      "summary": "Removed Bridge.lean.backup, enhanced .gitignore",
-      "archived": "2025-12-18T00:00:00Z"
-    },
-    {
-      "project_number": 59,
-      "project_name": "implementation_status_update",
-      "type": "documentation",
-      "completed": "2025-12-16T00:00:00Z",
-      "summary": "Updated IMPLEMENTATION_STATUS.md for DeductionTheorem completion",
-      "archived": "2025-12-18T00:00:00Z"
-    },
-    {
-      "project_number": 56,
-      "project_name": "bridge_helper_lemmas",
-      "type": "verification",
-      "completed": "2025-12-16T00:00:00Z",
-      "summary": "Verified all Bridge.lean helper lemmas already implemented",
-      "archived": "2025-12-18T00:00:00Z"
-    },
-    {
-      "project_number": 52,
-      "project_name": "fix_aesop_duplicate",
-      "type": "bugfix",
-      "completed": "2025-12-15T00:00:00Z",
-      "summary": "Fixed AesopRules.lean duplicate declaration",
-      "archived": "2025-12-18T00:00:00Z"
+      "project_number": 145,
+      "project_name": "convert_plan_standard_metadata_to_yaml_front_matter",
+      "type": "standards",
+      "phase": "archived",
+      "status": "abandoned",
+      "reports": [],
+      "plans": [],
+      "summaries": [],
+      "created": "2025-12-22T21:00:00Z",
+      "abandoned": "2025-12-23T05:00:00Z",
+      "archived": "2025-12-23T05:00:00Z",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/145_convert_plan_standard_metadata_to_yaml_front_matter/"
+      },
+      "summary": "YAML front-matter plan standard change abandoned in favor of marker-aligned format."
     }
   ],
-  "next_project_number": 8,
   "recent_activities": [
     {
-      "type": "planning",
-      "project_number": 7,
-      "timestamp": "2025-12-20T00:00:00Z",
-      "summary": "Implementation plan created for systematic emoji removal. Complexity: Moderate. Effort: 2.5-4.5 hours. Scope: 7 files (4 removal, 3 documentation updates). No agent/command updates required."
+      "timestamp": "2025-12-22T17:00:00Z",
+      "activity": "Created research report reports/research-001.md for project 126"
     },
     {
-      "type": "maintenance",
-      "timestamp": "2025-12-20T00:00:00Z",
-      "summary": "TODO maintenance workflow complete: Removed 23 completed tasks from TODO.md, archived 8 project directories (060, 064, 065, 072, 075, 076, 077, 078), updated all status documents. Total archived: 21 projects. Active tasks: 6 (0 high + 2 medium + 4 low priority). Repository health: 94/100 (Excellent)."
+      "timestamp": "2025-12-22T18:30:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 126"
     },
     {
-      "type": "review",
-      "project_number": 6,
-      "timestamp": "2025-12-20T00:00:00Z",
-      "summary": "Comprehensive repository review completed. Compliance: 95/100, Repository Health: 94/100 (Excellent). Files verified: 22 LEAN modules, Proofs checked: 100+ theorems. Sorry: 8/8 expected (perfect match). Axioms: 24/24 expected (perfect match). Zero critical or major issues. Production-ready for Layer 0 completion."
+      "timestamp": "2025-12-22T20:00:00Z",
+      "activity": "Completed implementation work for project 126 (bounded search, axiom matching, tests)"
     },
     {
-      "type": "research",
-      "project_number": 5,
-      "timestamp": "2025-12-19T12:00:00Z",
-      "summary": "Comparative analysis of /task vs /lean commands complete. Key finding: 14 specialist agents referenced in architecture but NOT FOUND in codebase. 3 CRITICAL missing: tactic-specialist, term-mode-specialist, metaprogramming-specialist. Commands are complementary, not interchangeable."
+      "timestamp": "2025-12-22T20:00:00Z",
+      "activity": "Added implementation summary summaries/implementation-summary-20251222.md for project 126"
     },
     {
-      "type": "maintenance",
-      "timestamp": "2025-12-19T12:00:00Z",
-      "summary": "TODO maintenance workflow complete: Removed 7 completed tasks (62, 63, 67-71) from TODO.md, archived 7 project directories, updated all status documents. Active tasks reduced from 47 to 40 (-15%). All 7 projects successfully archived with zero data loss."
+      "timestamp": "2025-12-22T23:10:00Z",
+      "activity": "Created research report reports/research-001.md for project 147"
     },
     {
-      "type": "system_migration",
-      "timestamp": "2025-12-19T12:00:00Z",
-      "summary": "Phase 3 Data Migration complete: Migrated 6 projects to archive/state.json, consolidated 3 maintenance reports into report-20251219.md, deprecated ARCHIVE_INDEX.md, updated all state files. New state-based tracking system operational."
+      "timestamp": "2025-12-22T23:15:00Z",
+      "activity": "Created research report reports/research-001.md for project 143"
     },
     {
-      "type": "maintenance",
-      "timestamp": "2025-12-19T00:00:00Z",
-      "summary": "Comprehensive TODO maintenance: Removed 12 completed tasks, updated 3 status documents, resolved 4 discrepancies. Active tasks: 30 (↓27%). Documentation accuracy: 90% (↑3%). Repository health: 94/100 (Excellent)."
+      "timestamp": "2025-12-22T23:40:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 147"
     },
     {
-      "type": "maintenance",
-      "timestamp": "2025-12-18T00:00:00Z",
-      "summary": "Archived 6 completed projects (052, 056, 059, 060, 061, 062). All status documents verified current. Active tasks: 41. Project health: Excellent (Layer 0 MVP production-ready)."
+      "timestamp": "2025-12-22T23:59:59Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 143"
     },
     {
-      "type": "review",
-      "project_number": 4,
-      "timestamp": "2025-12-16T00:00:00Z",
-      "summary": "Comprehensive repository review completed. Compliance: 94.65/100, Repository Health: 94/100 (Excellent). Files verified: 30, Proofs checked: 150+. Critical issue: AesopRules.lean duplicate (Task 52). Production-ready after fix."
+      "timestamp": "2025-12-23T00:00:00Z",
+      "activity": "Updated standards to ensure command flows sync IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md (task 148)"
     },
     {
-      "type": "implementation",
-      "project_number": 3,
-      "timestamp": "2025-12-15T00:00:00Z",
-      "summary": "Specialist agents implementation completed. 14 agents created with comprehensive documentation."
+      "timestamp": "2025-12-23T00:10:00Z",
+      "activity": "Created revised implementation plan plans/implementation-002.md for project 147 using Language metadata routing"
     },
     {
-      "type": "research",
-      "project_number": 2,
-      "timestamp": "2025-12-15T00:00:00Z",
-      "summary": "System enhancements research completed. Context organization and specialist agents researched."
+      "timestamp": "2025-12-23T00:20:00Z",
+      "activity": "Completed task 149 by mandating Language metadata in task standards and backfilling TODO/state"
     },
     {
-      "type": "review",
-      "project_number": 1,
-      "timestamp": "2025-12-15T00:00:00Z",
-      "summary": "Comprehensive repository review completed. Overall health: EXCELLENT (92/100). Critical finding: SORRY_REGISTRY.md outdated. Recommendation: APPROVE for MVP release after 2 documentation updates (45 min)."
+      "timestamp": "2025-12-23T00:45:00Z",
+      "activity": "Completed task 147 implementing Language-driven Lean routing updates (standards/command)"
     },
     {
-      "type": "system_initialization",
-      "timestamp": "2025-01-16T00:00:00Z",
-      "summary": "Initialized .opencode system for LEAN 4 ProofChecker"
+      "timestamp": "2025-12-23T01:30:00Z",
+      "activity": "Completed context refactor for task 143 (index/README refresh, Lean overlay redirect, domain READMEs)"
+    },
+    {
+      "timestamp": "2025-12-23T02:55:00Z",
+      "activity": "Implemented heuristic scoring and branch ordering for ProofSearch (task 127)"
+    },
+    {
+      "timestamp": "2025-12-23T02:55:00Z",
+      "activity": "Added implementation summary summaries/implementation-summary-20251223.md for project 127"
+    },
+    {
+      "timestamp": "2025-12-23T03:15:00Z",
+      "activity": "Created research report reports/research-001.md for project 144 (context references after refactor)"
+    },
+    {
+      "timestamp": "2025-12-23T03:30:00Z",
+      "activity": "Created plan v2 (implementation-001.md) for task 144 to update context references"
+    },
+    {
+      "timestamp": "2025-12-23T03:40:00Z",
+      "activity": "Created plan v3 (implementation-002.md) for task 144 using research inputs"
+    },
+    {
+      "timestamp": "2025-12-23T04:00:00Z",
+      "activity": "Added implementation summary for task 144 execution pass"
+    },
+    {
+      "timestamp": "2025-12-23T06:15:00Z",
+      "activity": "Completed task 144 context reference updates and plan closure"
+    },
+    {
+      "timestamp": "2025-12-23T05:00:00Z",
+      "activity": "Archived completed projects 126, 127, 143, 147 and marked task 145 abandoned"
+    },
+    {
+      "timestamp": "2025-12-23T04:10:00Z",
+      "activity": "Updated agent/command context references per task 144 and refreshed summary"
+    },
+    {
+      "timestamp": "2025-12-23T05:00:00Z",
+      "activity": "Archived completed projects 126, 127, 143, 147 and marked task 145 abandoned"
+    },
+    {
+      "timestamp": "2025-12-23T06:10:00Z",
+      "activity": "Created research report reports/research-001.md for project 128 (caching/context helpers)"
+    },
+    {
+      "timestamp": "2025-12-23T06:30:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md and summary summaries/plan-summary.md for project 128"
+    },
+    {
+      "timestamp": "2025-12-23T06:50:00Z",
+      "activity": "Implemented hash-based cache/visited with stats and updated ProofSearch tests for project 128"
+    },
+    {
+      "timestamp": "2025-12-23T12:10:00Z",
+      "activity": "Created Logos/Examples re-exports and documentation updates for project 131 (Archive cleanup)"
+    },
+    {
+      "timestamp": "2025-12-23T14:30:00Z",
+      "activity": "Created research report reports/research-001.md for project 154"
+    },
+    {
+      "timestamp": "2025-12-23T15:50:00Z",
+      "activity": "Completed command documentation standardization (task 152) with YAML/XML migrations and summary"
+    },
+    {
+      "timestamp": "2025-12-23T16:15:00Z",
+      "activity": "Completed task 153 updating /research and /plan status flows and status-marker standards"
+    },
+    {
+      "timestamp": "2025-12-23T16:45:00Z",
+      "activity": "Created research report reports/research-002.md for project 154 (second pass)"
+    },
+    {
+      "timestamp": "2025-12-23T16:45:00Z",
+      "activity": "Created research report reports/research-002.md for project 154 (second pass)"
+    },
+    {
+      "timestamp": "2025-12-23T17:45:00Z",
+      "activity": "Created research report reports/research-001.md for project 155 (command subagent routing)"
+    },
+    {
+      "timestamp": "2025-12-23T18:05:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 155 (command routing metadata)"
+    },
+    {
+      "timestamp": "2025-12-23T18:20:00Z",
+      "activity": "Created implementation plan plans/implementation-002.md for project 154 (Branch B execution to retire tasks 129/130)"
     }
   ],
-  "pending_tasks": [],
-  
-  "repository_health": {
-    "_comment": "Current repository health snapshot - detailed metrics in maintenance/state.json",
-    "last_assessed": "2025-12-20T00:00:00Z",
-    "overall_score": 94,
-    "health_grade": "excellent",
-    "compliance_score": 95,
-    "layer_0_completion": "98%",
-    "production_readiness": "excellent",
-    "active_tasks": 34,
-    "completion_percentage": 98,
-    "technical_debt": {
-      "sorry_count": 8,
-      "axiom_count": 24,
-      "status": "well-documented"
+  "pending_tasks": [
+    {
+      "project_number": 128,
+      "title": "Implement caching and context helpers in ProofSearch",
+      "status": "completed",
+      "created_at": "2025-12-22T12:00:00Z",
+      "started_at": "2025-12-23",
+      "completed_at": "2025-12-23"
+    },
+    {
+      "project_number": 129,
+      "title": "Prove temporal swap lemmas in Truth.lean",
+      "status": "abandoned",
+      "created_at": "2025-12-22T12:00:00Z",
+      "started_at": "2025-12-23",
+      "abandoned_at": "2025-12-23",
+      "abandon_reason": "Proof obligations in TemporalDuality.truth_swap_of_valid_at_triple (imp case) require stronger domain/validity assumptions; cannot derive from current axioms"
+    },
+    {
+      "project_number": 130,
+      "title": "Prove domain extension lemmas in Truth.lean",
+      "status": "blocked",
+      "created_at": "2025-12-22T12:00:00Z",
+      "started_at": "2025-12-23",
+      "blocked_at": "2025-12-23",
+      "blocking_reason": "Blocked by task 129 failure (dependent proofs rely on previous lemma)."
+    },
+    {
+      "project_number": 131,
+      "title": "Clean up Archive examples",
+      "status": "completed",
+      "created_at": "2025-12-22T12:00:00Z",
+      "started_at": "2025-12-23",
+      "completed_at": "2025-12-23"
+    },
+    {
+      "project_number": 132,
+      "title": "Prove Lindenbaum maximal consistency lemma in Completeness.lean",
+      "status": "not_started",
+      "created_at": "2025-12-22T12:00:00Z"
+    },
+    {
+      "project_number": 133,
+      "title": "Build canonical model constructors in Completeness.lean",
+      "status": "not_started",
+      "created_at": "2025-12-22T12:00:00Z"
+    },
+    {
+      "project_number": 134,
+      "title": "Prove truth lemma structure in Completeness.lean",
+      "status": "not_started",
+      "created_at": "2025-12-22T12:00:00Z"
+    },
+    {
+      "project_number": 135,
+      "title": "Remove provable_iff_valid sorry in Completeness.lean",
+      "status": "not_started",
+      "created_at": "2025-12-22T12:00:00Z"
+    },
+    {
+      "project_number": 136,
+      "title": "Design Decidability.lean architecture and signatures",
+      "status": "not_started",
+      "created_at": "2025-12-22T12:00:00Z"
+    },
+    {
+      "project_number": 137,
+      "title": "Implement tableau core rules in Decidability.lean",
+      "status": "not_started",
+      "created_at": "2025-12-22T12:00:00Z"
+    },
+    {
+      "project_number": 138,
+      "title": "Implement satisfiability and validity decision procedure tests",
+      "status": "not_started",
+      "created_at": "2025-12-22T12:00:00Z"
+    },
+    {
+      "project_number": 139,
+      "title": "Draft Layer 1 counterfactual operator plan",
+      "status": "not_started",
+      "created_at": "2025-12-22T12:00:00Z"
+    },
+    {
+      "project_number": 140,
+      "title": "Draft Layer 2 epistemic operator plan",
+      "status": "not_started",
+      "created_at": "2025-12-22T12:00:00Z"
+    },
+    {
+      "project_number": 141,
+      "title": "Draft Layer 3 normative operator plan",
+      "status": "not_started",
+      "created_at": "2025-12-22T12:00:00Z"
+    },
+    {
+      "project_number": 144,
+      "title": "Update context references after refactor",
+      "status": "completed",
+      "created_at": "2025-12-22T12:00:00Z",
+      "started_at": "2025-12-23",
+      "completed_at": "2025-12-23"
+    },
+    {
+      "project_number": 151,
+      "title": "Ensure /task pre-updates TODO and plans to IN PROGRESS before work",
+      "status": "completed",
+      "created_at": "2025-12-23T07:10:00Z",
+      "started_at": "2025-12-23",
+      "completed_at": "2025-12-23"
+    },
+    {
+      "project_number": 152,
+      "title": "Standardize command templates and migrate command docs",
+      "status": "completed",
+      "created_at": "2025-12-23T12:30:00Z",
+      "started_at": "2025-12-23",
+      "completed_at": "2025-12-23"
+    },
+    {
+      "project_number": 153,
+      "title": "Revise /research and /plan commands to enforce status updates",
+      "status": "completed",
+      "created_at": "2025-12-23T13:20:00Z",
+      "started_at": "2025-12-23",
+      "completed_at": "2025-12-23"
+    },
+    {
+      "project_number": 155,
+      "title": "Optimize .opencode command subagent routing and metadata",
+      "status": "in_progress",
+      "created_at": "2025-12-23T17:10:00Z",
+      "started_at": "2025-12-23",
+      "research_completed_at": "2025-12-23T17:45:00Z",
+      "planned_at": "2025-12-23T18:05:00Z"
     }
-  },
-  
+  ],
   "maintenance_summary": {
     "_comment": "Quick reference to maintenance status - full history in maintenance/state.json",
-    "last_maintenance": "2025-12-20T00:00:00Z",
-    "next_scheduled": "2026-01-20T00:00:00Z",
+    "last_maintenance": "2025-12-23T05:00:00Z",
+    "next_scheduled": "2026-01-22T00:00:00Z",
     "maintenance_type": "comprehensive_todo_cleanup",
-    "operations_count": 4,
-    "tasks_removed_total": 42,
-    "projects_archived_total": 21,
+    "operations_count": 5,
+    "tasks_removed_total": 10,
+    "projects_archived_total": 5,
     "health_trend": "stable_excellent"
   },
-  
   "archive_summary": {
     "_comment": "Quick reference to archived projects - full details in archive/state.json",
-    "total_archived": 21,
-    "last_archived": "2025-12-20T00:00:00Z",
+    "total_archived": 5,
+    "last_archived": "2025-12-23T05:00:00Z",
     "archive_location": ".opencode/specs/archive/",
-    "archive_state_file": ".opencode/specs/archive/state.json",
-    "archive_index_deprecated": ".opencode/specs/ARCHIVE_INDEX.md"
+    "archive_state_file": ".opencode/specs/archive/state.json"
   },
-  
   "schema_info": {
     "version": "1.0.0",
     "backward_compatible": true,

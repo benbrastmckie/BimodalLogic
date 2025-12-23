@@ -31,6 +31,9 @@ tools:
     Receives plan file path and optional starting phase number from /implement command.
     Automatically skips completed phases and starts from first incomplete phase if not specified.
   </input_context>
+  <loaded_context>
+    @context/common/workflows/delegation.md
+  </loaded_context>
 </context>
 
 <role>
@@ -153,7 +156,7 @@ tools:
       Timeout: 3600 seconds (1 hour) per phase
     </parallel_execution>
     <status_markers>
-      Update plan file with standardized status markers (see .opencode/context/repo/status-markers.md):
+      Update plan file with standardized status markers (see @context/common/system/status-markers.md):
       - [NOT STARTED] - Phase not yet begun
       - [IN PROGRESS] - Phase currently executing
       - [COMPLETED] - Phase finished successfully

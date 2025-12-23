@@ -6,72 +6,50 @@ This document specifies the directory structure, namespace conventions, and modu
 
 ```
 Logos/
-├── Logos.lean              # Library root (re-exports all public modules)
-├── Logos/                  # Main source directory
-│   ├── Syntax/                    # Formula types, parsing, DSL
-│   │   ├── Formula.lean           # Core formula inductive type
-│   │   ├── Context.lean           # Proof context (premise lists)
-│   │   ├── Operators.lean         # Derived operators
-│   │   └── DSL.lean               # Domain-specific syntax macros
-│   ├── ProofSystem/               # Axioms and inference rules
-│   │   ├── Axioms.lean            # TM axiom schemata
-│   │   ├── Rules.lean             # Inference rules (MP, MK, TK, TD)
-│   │   └── Derivation.lean        # Derivability relation
-│   ├── Semantics/                 # Task frame semantics
-│   │   ├── TaskFrame.lean         # Task frame structure
-│   │   ├── WorldHistory.lean      # World history definition
-│   │   ├── TaskModel.lean         # Model with valuation
-│   │   ├── Truth.lean             # Truth evaluation
-│   │   ├── Validity.lean          # Validity and consequence
-│   │   └── Canonical.lean         # Canonical model construction
-│   ├── Metalogic/                 # Soundness and completeness
-│   │   ├── Soundness.lean         # Soundness theorem
-│   │   ├── Completeness.lean      # Completeness theorem
-│   │   ├── Decidability.lean      # Decision procedures
-│   │   └── Interpolation.lean     # Craig interpolation
-│   ├── Theorems/                  # Key theorems
-│   │   ├── Perpetuity.lean        # P1-P6 perpetuity principles
-│   │   └── Basic.lean             # Basic derived theorems
-│   └── Automation/                # Proof automation
-│       ├── Tactics.lean           # Custom tactics
-│       ├── ProofSearch.lean       # Automated proof search
-│       └── Templates.lean         # Proof templates
-├── Examples/                      # Usage examples
-│   ├── ModalProofs.lean           # S5 modal logic examples
-│   ├── TemporalProofs.lean        # Temporal reasoning examples
-│   └── BimodalProofs.lean         # Combined modal-temporal examples
-├── Tests/                         # Test suite
-│   ├── Unit/                      # Unit tests
-│   │   ├── Syntax/                # Formula tests
-│   │   ├── ProofSystem/           # Proof system tests
-│   │   ├── Semantics/             # Semantics tests
-│   │   └── Automation/            # Automation tests
-│   ├── Integration/               # Integration tests
-│   │   ├── SoundnessTests.lean    # End-to-end soundness
-│   │   └── CompletenessTests.lean # Completeness tests
-│   └── Metalogic/                 # Property tests
-│       └── ConsistencyTests.lean  # Consistency tests
-└── Documentation/                 # Documentation
-    ├── UserGuide/                 # User-facing documentation
-    │   ├── ARCHITECTURE.md
-    │   ├── TUTORIAL.md
-    │   ├── EXAMPLES.md
-    │   └── INTEGRATION.md
-    ├── ProjectInfo/               # Project status and tactic docs
-    │   ├── IMPLEMENTATION_STATUS.md
-    │   ├── SORRY_REGISTRY.md
-    │   └── TACTIC_REGISTRY.md
-    ├── Development/               # Developer standards and workflow
-    │   ├── LEAN_STYLE_GUIDE.md
-    │   ├── MODULE_ORGANIZATION.md
-    │   ├── TESTING_STANDARDS.md
-    │   ├── QUALITY_METRICS.md
-    │   ├── CONTRIBUTING.md
-    │   ├── MAINTENANCE.md
-    │   └── VERSIONING.md
-    └── Reference/                 # Reference materials
-        ├── OPERATORS.md
-        └── GLOSSARY.md
+├── Logos.lean                  # Library root (re-exports Core)
+├── Logos/                      # Main source directory
+│   ├── Core/                   # Layer 0 (TM bimodal logic)
+│   │   ├── Syntax/             # Context.lean, Formula.lean
+│   │   ├── ProofSystem/        # Axioms.lean, Derivation.lean
+│   │   ├── Semantics/          # TaskFrame.lean, WorldHistory.lean, TaskModel.lean, Truth.lean, Validity.lean
+│   │   ├── Metalogic/          # Soundness.lean, Completeness.lean, DeductionTheorem.lean
+│   │   ├── Theorems/           # Combinators.lean, GeneralizedNecessitation.lean, ModalS4.lean, ModalS5.lean, Perpetuity.lean, Propositional.lean, Perpetuity/*
+│   │   ├── Automation/         # Tactics.lean, ProofSearch.lean, AesopRules.lean, README.md
+│   │   ├── Automation.lean
+│   │   ├── Core.lean
+│   │   ├── Metalogic.lean
+│   │   ├── ProofSystem.lean
+│   │   ├── Semantics.lean
+│   │   ├── Syntax.lean
+│   │   └── Theorems.lean
+│   ├── Epistemic/              # Epistemic.lean, README.md (planned extensions)
+│   ├── Explanatory/            # Explanatory.lean, README.md (planned extensions)
+│   ├── Normative/              # Normative.lean, README.md (planned extensions)
+│   ├── Lint/                   # EnvLinters.lean
+│   ├── Automation.lean         # Aggregates Core.Automation
+│   ├── Core.lean               # Aggregates Core layer
+│   ├── Epistemic.lean
+│   ├── Explanatory.lean
+│   ├── Metalogic.lean          # (alias aggregation)
+│   ├── Normative.lean
+│   ├── ProofSystem.lean
+│   ├── README.md
+│   ├── Semantics.lean
+│   ├── Syntax.lean
+│   └── Theorems.lean
+├── Archive/                    # Pedagogical examples (ModalProofs.lean, TemporalProofs.lean, BimodalProofs.lean, etc.)
+├── LogosTest/                  # Test suite mirroring Logos/Core structure
+│   ├── Core/Automation/        # Tactics tests, ProofSearch tests
+│   ├── Core/Metalogic/         # SoundnessTest, CompletenessTest, DeductionTheoremTest
+│   ├── Core/ProofSystem/       # AxiomsTest, DerivationTest
+│   ├── Core/Semantics/         # TaskFrameTest, TruthTest, etc.
+│   ├── Core/Syntax/            # ContextTest, FormulaTest
+│   ├── Core/Theorems/          # ModalS4Test, ModalS5Test, PerpetuityTest, PropositionalTest
+│   ├── Integration/            # End-to-end integration tests
+│   ├── Integration.lean
+│   └── LogosTest.lean
+├── scripts/                    # Lint and utility scripts (LintAll.lean, LintStyle.lean, RunEnvLinters.lean)
+└── Documentation/              # Documentation (UserGuide/, Development/, ProjectInfo/, Reference/, Research/, NAVIGATION.md)
 ```
 
 ## 2. Namespace Conventions
@@ -88,16 +66,20 @@ end Logos
 ```
 
 ### Hierarchical Namespaces
-Namespaces mirror directory structure:
+Namespaces mirror directory structure (Core layer under `Logos.Core`):
 
 | Directory | Namespace |
 |-----------|-----------|
-| `Logos/Syntax/` | `Logos.Syntax` |
-| `Logos/ProofSystem/` | `Logos.ProofSystem` |
-| `Logos/Semantics/` | `Logos.Semantics` |
-| `Logos/Metalogic/` | `Logos.Metalogic` |
-| `Logos/Theorems/` | `Logos.Theorems` |
-| `Logos/Automation/` | `Logos.Automation` |
+| `Logos/Core/Syntax/` | `Logos.Core.Syntax` |
+| `Logos/Core/ProofSystem/` | `Logos.Core.ProofSystem` |
+| `Logos/Core/Semantics/` | `Logos.Core.Semantics` |
+| `Logos/Core/Metalogic/` | `Logos.Core.Metalogic` |
+| `Logos/Core/Theorems/` | `Logos.Core.Theorems` |
+| `Logos/Core/Automation/` | `Logos.Core.Automation` |
+| `Logos/Epistemic/` | `Logos.Epistemic` |
+| `Logos/Explanatory/` | `Logos.Explanatory` |
+| `Logos/Normative/` | `Logos.Normative` |
+| `Logos/Lint/` | `Logos.Lint` |
 
 ### Nested Namespaces
 Use nested namespaces for logical grouping within a file:
@@ -149,12 +131,13 @@ Layer 0: Syntax (no internal dependencies)
 
 ### Dependency Rules
 
-1. **Syntax** has no internal dependencies
-2. **ProofSystem** depends only on Syntax
-3. **Semantics** depends on Syntax and ProofSystem
-4. **Theorems** depends on Syntax and ProofSystem
-5. **Metalogic** depends on Syntax, ProofSystem, and Semantics
-6. **Automation** may depend on any module
+1. **Syntax** has no internal dependencies.
+2. **ProofSystem** depends only on Syntax.
+3. **Semantics** depends on Syntax and ProofSystem.
+4. **Theorems** depends on Syntax and ProofSystem (and may use Semantics for transport lemmas where needed).
+5. **Metalogic** depends on Syntax, ProofSystem, Semantics, and Theorems infrastructure used in proofs.
+6. **Automation** (tactics, proof search) may depend on any Core module.
+7. **Extension layers** (Epistemic, Explanatory, Normative) depend on Core and should not be imported by Core.
 
 ### Import Guidelines
 
@@ -240,7 +223,7 @@ end Logos.ModuleName
 
 ## 5. Library Root File
 
-The `Logos.lean` file re-exports all public modules:
+The `Logos.lean` file re-exports the Core layer via `Logos.Core`, which aggregates the public API:
 
 ```lean
 /-!
@@ -249,59 +232,43 @@ The `Logos.lean` file re-exports all public modules:
 LEAN 4 implementation of an axiomatic proof system for the bimodal logic TM
 with task semantics.
 
-## Modules
+## Core Modules (via Logos.Core)
 
 ### Syntax
-* `Logos.Syntax.Formula` - Formula type for TM logic
-* `Logos.Syntax.Context` - Proof contexts
-* `Logos.Syntax.Operators` - Derived operators
-* `Logos.Syntax.DSL` - Domain-specific syntax
+* `Logos.Core.Syntax.Formula`
+* `Logos.Core.Syntax.Context`
 
 ### Proof System
-* `Logos.ProofSystem.Axioms` - TM axiom schemata
-* `Logos.ProofSystem.Rules` - Inference rules
-* `Logos.ProofSystem.Derivation` - Derivability relation
+* `Logos.Core.ProofSystem.Axioms`
+* `Logos.Core.ProofSystem.Derivation`
 
 ### Semantics
-* `Logos.Semantics.TaskFrame` - Task frame structure
-* `Logos.Semantics.WorldHistory` - World histories
-* `Logos.Semantics.TaskModel` - Task models
-* `Logos.Semantics.Truth` - Truth evaluation
-* `Logos.Semantics.Validity` - Validity and consequence
+* `Logos.Core.Semantics.TaskFrame`
+* `Logos.Core.Semantics.WorldHistory`
+* `Logos.Core.Semantics.TaskModel`
+* `Logos.Core.Semantics.Truth`
+* `Logos.Core.Semantics.Validity`
 
 ### Metalogic
-* `Logos.Metalogic.Soundness` - Soundness theorem
-* `Logos.Metalogic.Completeness` - Completeness theorem
+* `Logos.Core.Metalogic.Soundness`
+* `Logos.Core.Metalogic.Completeness`
+* `Logos.Core.Metalogic.DeductionTheorem`
 
 ### Theorems
-* `Logos.Theorems.Perpetuity` - Perpetuity principles P1-P6
+* `Logos.Core.Theorems.Perpetuity`
+* `Logos.Core.Theorems.ModalS4`
+* `Logos.Core.Theorems.ModalS5`
+* `Logos.Core.Theorems.GeneralizedNecessitation`
+* `Logos.Core.Theorems.Combinators`
+* `Logos.Core.Theorems.Propositional`
 
 ### Automation
-* `Logos.Automation.Tactics` - Custom tactics
+* `Logos.Core.Automation.Tactics`
+* `Logos.Core.Automation.ProofSearch`
 -/
 
--- Re-export all public modules
-import Logos.Syntax.Formula
-import Logos.Syntax.Context
-import Logos.Syntax.Operators
-import Logos.Syntax.DSL
-
-import Logos.ProofSystem.Axioms
-import Logos.ProofSystem.Rules
-import Logos.ProofSystem.Derivation
-
-import Logos.Semantics.TaskFrame
-import Logos.Semantics.WorldHistory
-import Logos.Semantics.TaskModel
-import Logos.Semantics.Truth
-import Logos.Semantics.Validity
-
-import Logos.Metalogic.Soundness
-import Logos.Metalogic.Completeness
-
-import Logos.Theorems.Perpetuity
-
-import Logos.Automation.Tactics
+-- Library root (aggregated via Core)
+import Logos.Core
 ```
 
 ## 6. Public API vs Internal Implementation
@@ -385,42 +352,23 @@ Split a module when:
 
 ## 8. Examples Module Organization
 
-The `Examples/` directory contains usage examples:
+Pedagogical examples live in `Archive/` (not under `Examples/`). These files use only proven components and mirror Core namespaces:
 
-```lean
--- Examples/ModalProofs.lean
-/-!
-# S5 Modal Logic Examples
+- `Archive/ModalProofs.lean` – S5 modal logic examples
+- `Archive/TemporalProofs.lean` – Temporal reasoning examples
+- `Archive/BimodalProofs.lean` – Combined modal-temporal examples
+- Additional archived samples as maintained in `Archive/`
 
-Examples of modal reasoning using the Logos library.
--/
-
-import Logos
-
-open Logos.Syntax
-open Logos.ProofSystem
-
-/-- Example: Prove □p → p using axiom MT -/
-example (P : Formula) : ⊢ (P.box.imp P) := by
-  apply Derivable.axiom
-  apply Axiom.modal_t
-
-/-- Example: Modus ponens application -/
-example (P Q : Formula) : [P.imp Q, P] ⊢ Q := by
-  apply Derivable.modus_ponens
-  · apply Derivable.assumption; simp
-  · apply Derivable.assumption; simp
-```
+All examples import `Logos` (or targeted Core modules) and avoid unproven axioms.
 
 ## 9. Test Module Organization
 
 See [TESTING_STANDARDS.md](TESTING_STANDARDS.md) for detailed test organization.
 
 Summary:
-- `Tests/Unit/` mirrors `Logos/` structure
-- `Tests/Integration/` for cross-module tests
-- `Tests/Metalogic/` for property-based tests
-- Test files named `<Module>Tests.lean`
+- `LogosTest/Core/` mirrors `Logos/Core/` (Automation, Metalogic, ProofSystem, Semantics, Syntax, Theorems)
+- `LogosTest/Integration/` contains cross-module and end-to-end tests
+- Test files are named `<Module>Test.lean` and collected via `LogosTest.lean`/`Integration.lean`
 
 ## References
 

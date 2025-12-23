@@ -1,8 +1,8 @@
-# System Architecture - LEAN 4 ProofChecker
+# System Architecture - .opencode AI Agent System
 
 ## Overview
 
-Context-aware AI system for LEAN 4 theorem proving using hierarchical agent patterns, XML optimization, and research-backed architecture. Implements complete workflow from research through implementation to verification and documentation.
+Context-aware AI system for software development using hierarchical agent patterns, XML optimization, and research-backed architecture. Implements complete workflow from research through implementation to verification and documentation.
 
 ## Architecture Diagram
 
@@ -14,7 +14,7 @@ Context-aware AI system for LEAN 4 theorem proving using hierarchical agent patt
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              LEAN 4 Orchestrator                             │
+│              Orchestrator                                    │
 │  - Request Analysis                                          │
 │  - Workflow Classification                                   │
 │  - Context Allocation (3-level)                              │
@@ -26,19 +26,19 @@ Context-aware AI system for LEAN 4 theorem proving using hierarchical agent patt
          │             │             │
          ▼             ▼             ▼
 ┌────────────┐  ┌────────────┐  ┌────────────┐
-│  Reviewer  │  │ Researcher │  │  Planner   │  ... (12 Primary Agents)
+│  Reviewer  │  │ Researcher │  │  Planner   │  ... (10 Primary Agents)
 └──────┬─────┘  └──────┬─────┘  └──────┬─────┘
        │               │               │
        ▼               ▼               ▼
 ┌────────────┐  ┌────────────┐  ┌────────────┐
-│Verification│  │Lean-Search │  │ Complexity │  ... (32 Specialist Subagents)
-│ Specialist │  │ Specialist │  │  Analyzer  │
+│   Code     │  │    Web     │  │ Complexity │  ... (19 Specialist Subagents)
+│  Quality   │  │  Research  │  │  Analyzer  │
 └──────┬─────┘  └──────┬─────┘  └──────┬─────┘
        │               │               │
        ▼               ▼               ▼
 ┌─────────────────────────────────────────────────────────────┐
 │              Artifact Storage                                │
-│  .opencode/specs/NNN_project_name/                          │
+│  specs/NNN_project_name/                                     │
 │    ├── reports/                                              │
 │    ├── plans/                                                │
 │    ├── summaries/                                            │
@@ -49,7 +49,7 @@ Context-aware AI system for LEAN 4 theorem proving using hierarchical agent patt
 ## Component Hierarchy
 
 ### Layer 1: User Interface
-- **Custom Commands** (11): `/review`, `/research`, `/plan`, `/lean`, etc.
+- **Custom Commands** (11): `/review`, `/research`, `/plan`, `/implement`, etc.
 - **Direct Invocation**: Users invoke commands with arguments
 - **Command Routing**: Commands route to orchestrator with context
 
@@ -63,7 +63,7 @@ Context-aware AI system for LEAN 4 theorem proving using hierarchical agent patt
   - Integrate results and update state
   - Respond to user with references and summaries
 
-### Layer 3: Primary Agents (12)
+### Layer 3: Primary Agents (10)
 
 All primary agents follow the same pattern:
 1. Receive request from orchestrator
@@ -73,30 +73,49 @@ All primary agents follow the same pattern:
 
 **Agent Coordination Patterns:**
 - **Workflow Agents** (reviewer, researcher, planner): Coordinate multi-specialist workflows for analysis and planning
-- **Implementation Agents** (proof-developer, refactorer, documenter): Coordinate code and documentation changes
-- **Orchestration Agents** (implementation-orchestrator, batch-task-orchestrator): Coordinate multi-phase and batch executions
+- **Implementation Agents** (developer, refactorer, documenter): Coordinate code and documentation changes
 - **Utility Agents** (task-executor, task-adder, implementer, meta): Handle generic tasks and system modifications
 
 > **Complete Agent Catalog**: See [agent/README.md](agent/README.md) for detailed agent descriptions, specialist delegation patterns, and artifact creation workflows.
 
-### Layer 4: Specialist Subagents (32)
+### Layer 4: Specialist Subagents (19)
 
 Specialists perform focused technical work delegated by primary agents. Each specialist:
-- Handles a specific domain (proof development, code quality, documentation, research, etc.)
-- Creates detailed artifacts in `.opencode/specs/NNN_project/`
+- Handles a specific domain (code development, code quality, documentation, research, etc.)
+- Creates detailed artifacts in `specs/NNN_project/`
 - Returns only file references and brief summaries to protect context
 
 **Specialist Organization:**
-- **10 functional categories** for easy discovery and logical delegation
-- **32 total specialists** covering all aspects of LEAN 4 development workflow
+- **Functional categories** for easy discovery and logical delegation
+- **19 total specialists** covering all aspects of software development workflow
 - **Context protection pattern** ensures scalability
 
-> **Complete Specialist Catalog**: See [agent/subagents/specialists/README.md](agent/subagents/specialists/README.md) for all 32 specialists organized by category with detailed descriptions, invocation patterns, and artifact creation workflows.
+> **Complete Specialist Catalog**: See [agent/subagents/specialists/README.md](agent/subagents/specialists/README.md) for all 19 specialists organized by category with detailed descriptions, invocation patterns, and artifact creation workflows.
 
 ### Layer 5: Artifact Storage
-- **Location**: `.opencode/specs/NNN_project_name/`
+- **Location**: `specs/NNN_project_name/`
 - **Structure**: reports/, plans/, summaries/, state.json
 - **Access**: Direct file system access for detailed review
+
+#### Artifact Creation Guardrails (see context/common/system/artifact-management.md)
+- Create project root **only** when writing the first artifact; create only the needed subdirectory at write time (reports/ for research/review, plans/ for plan/revise, summaries/ only when emitting summaries).
+- Do not pre-create unused subdirectories or placeholder files; no `.gitkeep`.
+- Write project `state.json` alongside artifact creation; defer state writes until an artifact exists. Global state updates follow artifact writes.
+- `/task` and `/implement` must reuse the plan path attached in TODO.md (when present) and update that plan in place with status markers; `/plan` and `/revise` reuse linked research inputs.
+
+#### Status Propagation (see context/common/system/status-markers.md)
+- Canonical markers: `[NOT STARTED]`, `[IN PROGRESS]`, `[BLOCKED]`, `[ABANDONED]`, `[COMPLETED]` with ISO 8601 timestamps.
+- Plan phases mirror the same markers; `/task` and `/implement` update plan phases during execution.
+- TODO.md uses markers with date-only timestamps; state files mirror status in lowercase (`in_progress`, `completed`, etc.) per `state-schema.md`.
+- Status transitions must stay consistent across TODO, plan, and state.
+
+#### Command/Agent Contracts (see context/common/standards/tasks.md)
+- **/research**: create root + `reports/` only when emitting the first report.
+- **/plan**, **/revise**: create root + `plans/` only when emitting the plan; reuse linked research inputs; `revise` increments plan version.
+- **/implement**: requires plan path; updates plan phases and writes artifacts lazily; state sync when artifact written.
+- **/task**: reuses plan link when present; can run without a plan; adheres to lazy creation and status sync.
+- **/review**: create only the subdir needed for the report/summary being written.
+- **/document**: updates docs; create summaries/ only when writing summary artifacts.
 
 ## Context Management
 
@@ -122,45 +141,24 @@ Specialists perform focused technical work delegated by primary agents. Each spe
 
 ### Context Files Organization
 
-All context files are located in `.opencode/context/` with the following structure:
+All context files are located in `context/` with the following structure:
 
 ```
-.opencode/context/
-├── lean4/                    # LEAN 4 Knowledge
-│   ├── domain/              # Core concepts (syntax, mathlib, math concepts)
-│   ├── processes/           # Workflows (proof workflow, project structure)
-│   ├── standards/           # Quality rules (style, conventions, docs)
-│   ├── templates/           # Boilerplate (definitions, proofs)
-│   ├── patterns/            # Reusable patterns (tactics)
-│   └── tools/               # Tool guides (MCP, lean-lsp-mcp)
-├── logic/                   # Logic Knowledge
-│   ├── domain/              # Concepts (proof theory, semantics, metalogic)
-│   ├── processes/           # Logic workflows
-│   ├── standards/           # Logic standards
-│   ├── templates/           # Logic templates
-│   ├── patterns/            # Proof patterns
-│   └── tools/               # Logic tools
-├── math/                    # Math Knowledge
-│   ├── domain/              # Mathematical concepts
-│   ├── processes/           # Math workflows
-│   ├── standards/           # Math standards
-│   ├── templates/           # Math templates
-│   ├── patterns/            # Math patterns
-│   └── tools/               # Math tools
-├── repo/                    # Repository Conventions
-│   ├── documentation-standards.md
-│   ├── state-schema.md
-│   └── status-markers.md
+context/
 ├── core/                    # Core System Patterns
 │   ├── system/              # System architecture and patterns
 │   ├── workflows/           # Workflow definitions
 │   └── standards/           # System standards
-├── templates/              # Meta-System
-│   ├── BUILDER-GUIDE.md
+├── templates/               # Meta-System
+│   ├── meta-guide.md
 │   ├── orchestrator-template.md
 │   └── subagent-template.md
-└── project/                 # Project-Specific Context
-    └── [project-specific files]
+├── project/                 # Project-Specific Context
+│   └── [project-specific files]
+└── repo/                    # Repository Conventions
+    ├── project-structure.md
+    ├── documentation-standards.md
+    └── state-schema.md
 ```
 
 ## Routing Intelligence
@@ -176,18 +174,17 @@ All context files are located in `.opencode/context/` with the following structu
 
 | Workflow | Triggers | Agent | Context | Complexity |
 |----------|----------|-------|---------|------------|
-| Review | "analyze", "review", "verify" | reviewer | .opencode/context/lean4/standards/, repo/ | Moderate-Complex |
-| Research | "research", "investigate", "explore" | researcher | .opencode/context/lean4/domain/, lean4/tools/ | Moderate-Complex |
-| Planning | "plan", "design", "outline" | planner | .opencode/context/lean4/processes/, lean4/templates/ | Moderate |
-| Revision | "revise", "update plan" | planner | .opencode/context/lean4/processes/, repo/ | Moderate |
-| Implementation | "implement", "prove", "develop" | proof-developer | .opencode/context/lean4/domain/, lean4/patterns/, logic/ | Complex |
-| Refactoring | "refactor", "improve", "clean up" | refactorer | .opencode/context/lean4/standards/, lean4/patterns/ | Moderate |
-| Documentation | "document", "update docs" | documenter | .opencode/context/lean4/standards/, repo/ | Moderate |
-| Meta | "create agent", "modify command" | meta | .opencode/context/templates/ | Moderate |
-| Task Execution | "execute task", "run task" | task-executor | .opencode/context/ (varies by task) | Varies |
-| Task Addition | "add task", "create task" | task-adder | .opencode/context/repo/ | Simple |
-| Batch Processing | "batch", "process multiple" | batch-task-orchestrator | .opencode/context/repo/ | Complex |
-| General Implementation | "implement" (non-LEAN) | implementer | .opencode/context/core/ | Moderate |
+| Review | "analyze", "review", "verify" | reviewer | context/common/standards/, repo/ | Moderate-Complex |
+| Research | "research", "investigate", "explore" | researcher | context/common/, project/ | Moderate-Complex |
+| Planning | "plan", "design", "outline" | planner | context/common/workflows/, repo/ | Moderate |
+| Revision | "revise", "update plan" | planner | context/common/workflows/, repo/ | Moderate |
+| Implementation | "implement", "develop", "build" | developer | context/common/, project/ | Complex |
+| Refactoring | "refactor", "improve", "clean up" | refactorer | context/common/standards/, project/ | Moderate |
+| Documentation | "document", "update docs" | documenter | context/common/standards/, repo/ | Moderate |
+| Meta | "create agent", "modify command" | meta | context/templates/ | Moderate |
+| Task Execution | "execute task", "run task" | task-executor | context/ (varies by task) | Varies |
+| Task Addition | "add task", "create task" | task-adder | context/repo/ | Simple |
+| General Implementation | "implement" (general) | implementer | context/common/ | Moderate |
 
 ### Context Allocation Strategy
 
@@ -222,26 +219,21 @@ All primary agents use specialist subagents that:
 ### Example Flow
 
 ```
-User: /research "Kripke semantics"
+User: /research "REST API design patterns"
   ↓
 Orchestrator: Route to researcher agent
   ↓
 Researcher: Delegate to specialists
   ↓
-Lean-Search Specialist:
-  - Searches LeanSearch
-  - Creates detailed results in reports/lean-search-001.md
-  - Returns: {path: "...", summary: "Found 15 relevant definitions..."}
-  ↓
-Loogle Specialist:
-  - Searches Loogle
-  - Creates detailed results in reports/loogle-001.md
-  - Returns: {path: "...", summary: "Found 8 matching theorems..."}
-  ↓
 Web-Research Specialist:
   - Conducts web research
   - Creates detailed findings in reports/web-research-001.md
-  - Returns: {path: "...", summary: "Key concepts: ..."}
+  - Returns: {path: "...", summary: "Found best practices for REST API design..."}
+  ↓
+Doc-Research Specialist:
+  - Searches documentation
+  - Creates detailed results in reports/doc-research-001.md
+  - Returns: {path: "...", summary: "Key patterns identified..."}
   ↓
 Researcher:
   - Synthesizes summaries (not full artifacts)
@@ -263,7 +255,7 @@ Orchestrator:
 ## State Management
 
 ### Project State
-**Location**: `.opencode/specs/NNN_project/state.json`
+**Location**: `specs/NNN_project/state.json`
 
 ```json
 {
@@ -281,7 +273,7 @@ Orchestrator:
 ```
 
 ### Global State
-**Location**: `.opencode/specs/state.json`
+**Location**: `specs/state.json`
 
 ```json
 {
@@ -294,7 +286,7 @@ Orchestrator:
 ```
 
 ### TODO.md
-**Location**: `.opencode/specs/TODO.md`
+**Location**: `specs/TODO.md`
 
 User-facing task list with priorities and links to reports/plans.
 
@@ -306,26 +298,6 @@ User-facing task list with priorities and links to reports/plans.
 
 ## Tool Integration
 
-### lean-lsp-mcp Server
-- **Purpose**: Type checking and verification
-- **Usage**: After each proof implementation step
-- **Integration**: proof-developer agent
-
-### LeanExplore MCP
-- **Purpose**: LEAN library exploration
-- **Usage**: During research workflow
-- **Integration**: researcher agent → lean-search-specialist
-
-### Loogle (Formal Search)
-- **Purpose**: Type signature-based search
-- **Usage**: Finding functions/theorems by type
-- **Integration**: researcher agent → loogle-specialist
-
-### LeanSearch (Semantic Search)
-- **Purpose**: Natural language search of LEAN libraries
-- **Usage**: Finding relevant definitions/theorems
-- **Integration**: researcher agent → lean-search-specialist
-
 ### Git/GitHub
 - **Purpose**: Version control and issue tracking
 - **Usage**: Automatic commits after substantial changes
@@ -335,6 +307,16 @@ User-facing task list with priorities and links to reports/plans.
 - **Purpose**: Push TODO tasks to GitHub issues
 - **Usage**: Task management and collaboration
 - **Integration**: todo-manager specialist
+
+### Web Search
+- **Purpose**: Research and documentation lookup
+- **Usage**: During research workflow
+- **Integration**: researcher agent → web-research-specialist
+
+### Language-Specific Tools
+- **Purpose**: Linters, formatters, test runners
+- **Usage**: Code quality and validation
+- **Integration**: developer, refactorer agents
 
 ## Performance Characteristics
 
@@ -378,8 +360,8 @@ User-facing task list with priorities and links to reports/plans.
 - Concise: No bloat, only necessary information
 
 ### Code Quality
-- Style guide adherence (LEAN 4)
-- Proof conventions followed
+- Style guide adherence
+- Coding conventions followed
 - Readability prioritized
 - Git commits for substantial changes
 
@@ -409,11 +391,10 @@ Updates existing agents or commands while preserving functionality.
 
 ### Adding Context Files
 Simply create new files in appropriate context directories:
-- `.opencode/context/lean4/domain/` for LEAN 4 concepts
-- `.opencode/context/logic/domain/` for logic concepts
-- `.opencode/context/lean4/patterns/` for reusable patterns
-- `.opencode/context/math/domain/` for mathematical concepts
-- `.opencode/context/repo/` for repository conventions
+- `context/project/` for project-specific knowledge
+- `context/common/` for core system patterns
+- `context/repo/` for repository conventions
+- `context/templates/` for meta-system templates
 
 ## Security and Safety
 
@@ -435,17 +416,28 @@ Simply create new files in appropriate context directories:
 ## Future Enhancements
 
 ### Potential Additions
-1. **CI/CD Integration**: Automated proof verification on push
-2. **Performance Profiling**: Analyze proof compilation times
-3. **Proof Search**: Automated proof search strategies
-4. **Interactive Proof**: Step-by-step interactive proof development
-5. **Proof Visualization**: Graphical proof tree visualization
+1. **CI/CD Integration**: Automated testing and deployment
+2. **Performance Profiling**: Analyze code performance metrics
+3. **Code Generation**: AI-assisted code generation
+4. **Interactive Development**: Step-by-step interactive development
+5. **Dependency Analysis**: Graphical dependency visualization
 
 ### Scalability
 - System designed to handle 100+ projects
 - Context protection enables large artifact sets
 - State management supports complex project dependencies
 
+## References
+- [context/common/system/artifact-management.md](context/common/system/artifact-management.md)
+- [context/common/system/status-markers.md](context/common/system/status-markers.md)
+- [context/common/system/state-schema.md](context/common/system/state-schema.md)
+- [context/common/standards/tasks.md](context/common/standards/tasks.md)
+- [context/common/standards/plan.md](context/common/standards/plan.md)
+- [context/common/standards/report.md](context/common/standards/report.md)
+- [context/common/standards/summary.md](context/common/standards/summary.md)
+- [context/common/standards/documentation.md](context/common/standards/documentation.md)
+- [specs/README.md](specs/README.md)
+
 ---
 
-**This architecture provides a robust, scalable foundation for LEAN 4 theorem proving with intelligent context management and hierarchical agent coordination.**
+**This architecture provides a robust, scalable foundation for software development with intelligent context management and hierarchical agent coordination.**

@@ -2,6 +2,8 @@
 
 This document provides comprehensive examples of modal, temporal, and bimodal reasoning using Logos.
 
+**Canonical import path:** `import Logos.Examples` (or a specific module such as `Logos.Examples.ModalProofs`). Legacy `Archive.*` paths remain available for backward compatibility.
+
 ## 1. Modal Logic Examples
 
 ### S5 Axiom Proofs
@@ -433,10 +435,10 @@ theorem deduction_theorem (Γ : Context) (φ ψ : Formula) :
 
 ### Solutions
 
-Solutions are available in the `Archive/` directory:
-- `Archive/ModalProofs.lean`
-- `Archive/TemporalProofs.lean`
-- `Archive/BimodalProofs.lean`
+Solutions are available via the active `Logos/Examples/` modules (legacy `Archive/` paths still work):
+- `Logos/Examples/ModalProofs.lean`
+- `Logos/Examples/TemporalProofs.lean`
+- `Logos/Examples/BimodalProofs.lean`
 
 ## References
 

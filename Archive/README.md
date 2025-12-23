@@ -2,6 +2,8 @@
 
 Pedagogical examples demonstrating the Logos library and bimodal logic TM (Tense and Modality), designed for learning and reference.
 
+**Active path notice:** The canonical import path for these examples is now `Logos/Examples/` (e.g., `import Logos.Examples`). The legacy `Archive/` modules remain as thin shims for backward compatibility; add new examples under `Logos/Examples/` going forward.
+
 ## Purpose
 
 These examples illustrate:

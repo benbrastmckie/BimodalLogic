@@ -1,34 +1,87 @@
 ---
 name: revise
-agent: orchestrator
+agent: planner
 description: "Create revised implementation plan with incremented version number"
+context_level: 2
+language: markdown
 ---
 
-You are revising an implementation plan for the LEAN 4 ProofChecker project.
+Context Loaded:
+@.opencode/specs/TODO.md
+@.opencode/specs/state.json
+@context/common/standards/tasks.md
+@context/common/standards/commands.md
+@context/common/system/artifact-management.md
+@context/common/system/state-schema.md
+@context/common/system/status-markers.md
+@context/project/repo/project-overview.md
 
-**Project Number:** $ARGUMENTS
+<context>
+  <system_context>Plan revision command with strict reuse of existing plan links and lazy creation.</system_context>
+  <domain_context>Existing project plans referenced from TODO.</domain_context>
+  <task_context>Create the next plan version in-place, update links/state, and preserve numbering.</task_context>
+  <execution_context>No new project directories; work only within existing plan folder.</execution_context>
+</context>
 
-**Context Loaded:**
-@/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/context/lean4/processes/end-to-end-proof-workflow.md
-@/home/benjamin/Documents/Philosophy/Projects/ProofChecker/.opencode/context/repo/
+<role>Planner handling plan versioning and synchronization.</role>
 
-**Task:**
+<task>Given a task number and revision prompt, create implementation-{N+1}.md alongside existing plans, update TODO/state, and record status markers.</task>
 
-Execute the revision workflow:
+<workflow_execution>
+  <stage id="1" name="Preflight">
+    <action>Validate task and plan link</action>
+    <process>
+      1. Require task_number + prompt; reject if missing.
+      2. Locate task in TODO.md; extract existing plan link. If absent, instruct to run /plan first (no dirs created).
+      3. Verify referenced plan file exists.
+      4. Set TODO status to [IN PROGRESS] with **Started** date; state to `in_progress` if task-bound.
+    </process>
+  </stage>
+  <stage id="2" name="CreateRevision">
+    <action>Write new plan version</action>
+    <process>
+      1. In the same `plans/` folder, increment implementation-NNN.md to implementation-{N+1}.md.
+      2. Include revision prompt, delta header, `[NOT STARTED]` phase markers, and inherit Lean intent metadata.
+      3. Preserve numbering; do not modify next_project_number or create new project roots.
+    </process>
+  </stage>
+  <stage id="3" name="Postflight">
+    <action>Sync links and state</action>
+    <process>
+      1. Update TODO task to point to the new plan version; keep metadata intact.
+      2. Update project state.json (if present) with new plan path, phase planning, timestamps; update global state pending task.
+      3. Update IMPLEMENTATION_STATUS.md/FEATURE_REGISTRY.md with revised plan reference when applicable.
+      4. Return plan path and applied updates.
+    </process>
+  </stage>
+</workflow_execution>
 
-1. Route to @subagents/planner with project number and revision request
-2. Planner will:
-   - Load existing plan(s) from .opencode/specs/NNN_project/plans/
-   - Identify highest version number
-   - Create new plan with incremented version (implementation-{N+1}.md)
-   - Include revision notes and changes from previous version
-3. Present results with new plan reference
+<routing_intelligence>
+  <context_allocation>Level 2 (planning with standards + project context).</context_allocation>
+  <lean_routing>Carry over Lean intent from original plan metadata or TODO Language; load Lean contexts only when Lean.</lean_routing>
+  <batch_handling>Single task per invocation.</batch_handling>
+</routing_intelligence>
 
-**Expected Output:**
+<artifact_management>
+  <lazy_creation>No new project roots; only create the new plan file in existing plans/ subdir.</lazy_creation>
+  <artifact_naming>implementation-{N+1}.md in same folder.</artifact_naming>
+  <state_sync>Update state/TODO with new plan link and timestamps.</state_sync>
+  <registry_sync>Update IMPLEMENTATION_STATUS.md (and other registries if status changes) as needed.</registry_sync>
+</artifact_management>
 
-- Revised plan reference (with incremented version)
-- Changes from previous version
-- Reason for revision
-- Updated complexity/effort estimates
+<quality_standards>
+  <status_markers>Use status-markers.md with timestamps; preserve history.</status_markers>
+  <language_routing>Respect Language metadata/flags; plan lean metadata inherited.</language_routing>
+  <no_emojis>Outputs/artifacts are emoji-free.</no_emojis>
+  <validation>Fail fast if plan link missing; avoid directory creation outside existing plan folder.</validation>
+</quality_standards>
 
-Execute the revision now.
+<usage_examples>
+  - `/revise 105 "Add rollback plan and metrics"`
+</usage_examples>
+
+<validation>
+  <pre_flight>Task and plan validated; statuses set.</pre_flight>
+  <mid_flight>New plan version created in-place.</mid_flight>
+  <post_flight>TODO/state/docs synced; references returned.</post_flight>
+</validation>

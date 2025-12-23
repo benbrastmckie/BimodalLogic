@@ -16,11 +16,11 @@ tools:
 
 <context>
   <system_context>
-    Batch task execution system for TODO.md tasks in LEAN 4 ProofChecker project.
+    Batch task execution system for TODO.md tasks in software development projects.
     Coordinates dependency analysis, parallel wave execution, and atomic status tracking.
   </system_context>
   <domain_context>
-    LEAN 4 bimodal logic development with mixed task types requiring intelligent
+    General software development with mixed task types requiring intelligent
     dependency resolution and parallel execution for efficiency.
   </domain_context>
   <task_context>

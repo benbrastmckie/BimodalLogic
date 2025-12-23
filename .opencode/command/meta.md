@@ -1,6 +1,16 @@
 ---
+name: meta
+agent: meta
 description: "Interactive system builder that creates complete context-aware AI architectures tailored to user domains"
+context_level: 2
+language: markdown
 ---
+
+Context Loaded:
+@context/common/templates/
+@context/common/system/context-guide.md
+@context/common/standards/patterns.md
+@context/context/index.md
 
 <target_domain> $ARGUMENTS </target_domain>
 
@@ -22,7 +32,7 @@ description: "Interactive system builder that creates complete context-aware AI 
       1. Check if .opencode/ directory exists
       2. Scan for existing agents (agent/*.md, agent/subagents/*.md)
       3. Scan for existing commands (command/*.md)
-      4. Scan for existing context files (context/*/*.md)
+      4. Scan for existing context files (context/common/**/*.md, context/project/{logic,lean4,math,physics,repo}/**/*.md)
       5. Scan for existing workflows (workflows/*.md)
       6. Identify existing system capabilities
       7. Present merge options to user
@@ -37,26 +47,34 @@ description: "Interactive system builder that creates complete context-aware AI 
           Proceed to fresh build
       </check_directory>
       
-      <scan_agents>
-        agents_found = []
-        FOR each file in agent/*.md:
-          agents_found.append(file)
-        FOR each file in agent/subagents/*.md:
-          agents_found.append(file)
-      </scan_agents>
-      
-      <identify_capabilities>
+       <scan_agents>
+         agents_found = []
+         FOR each file in agent/*.md:
+           agents_found.append(file)
+         FOR each file in agent/subagents/*.md:
+           agents_found.append(file)
+       </scan_agents>
+       
+       <scan_context>
+         contexts_found = []
+         FOR each file in context/common/**/*.md:
+           contexts_found.append(file)
+         FOR each file in context/project/{logic,lean4,math,physics,repo}/**/*.md:
+           contexts_found.append(file)
+       </scan_context>
+       
+       <identify_capabilities>
+
         Known agents and their capabilities:
-        - orchestrator: Lean 4 proof development orchestration
-        - proof-developer: Lean 4 proof construction
+        - orchestrator: Task routing and workflow orchestration
         - researcher: Research and information gathering
         - planner: Planning and task breakdown
         - implementer: Implementation execution
-        - reviewer: Code and proof review
+        - reviewer: Code review and quality assurance
         - documenter: Documentation authoring
         - refactorer: Code refactoring
         - meta: Agent and command creation/modification
-        - verification-specialist: Proof verification
+        - task-executor: TODO task execution
         - todo-manager: Task management
       </identify_capabilities>
     </detection_logic>
@@ -306,14 +324,14 @@ description: "Interactive system builder that creates complete context-aware AI 
         - documenter: Documentation authoring
       </for_business>
       
-      <for_formal_verification>
+      <for_code_development>
         Relevant existing agents:
-        - orchestrator: Lean 4 proof orchestration
-        - proof-developer: Proof construction
-        - verification-specialist: Proof verification
+        - orchestrator: Task routing and workflow orchestration
+        - implementer: Code implementation
+        - reviewer: Code review
         - researcher: Research
-        - reviewer: Proof review
-      </for_formal_verification>
+        - refactorer: Code refactoring
+      </for_code_development>
       
       <for_hybrid>
         Relevant existing agents:
@@ -397,8 +415,8 @@ description: "Interactive system builder that creates complete context-aware AI 
           - "Analyze sales data and create reports"
           - "Triage and route support tickets"
           - "Review code for security vulnerabilities"
-          - "Develop formal proofs in Lean 4"
-          - "Verify soundness and completeness theorems"
+          - "Implement REST API endpoints"
+          - "Refactor legacy codebase for maintainability"
         </guidance>
         <capture>use_cases[], task_descriptions[]</capture>
       </question_4>
@@ -478,7 +496,7 @@ description: "Interactive system builder that creates complete context-aware AI 
           - Cloud services (AWS, GCP, Azure, etc.)
           - Development tools (GitHub, Jira, Slack, etc.)
           - Analytics platforms (Google Analytics, Mixpanel, etc.)
-          - Proof assistants (Lean 4, Coq, Isabelle, etc.)
+          - CI/CD platforms (Jenkins, GitLab CI, GitHub Actions, etc.)
           - None - standalone system
         </examples>
         <capture>integrations[], api_requirements[], tool_dependencies[]</capture>

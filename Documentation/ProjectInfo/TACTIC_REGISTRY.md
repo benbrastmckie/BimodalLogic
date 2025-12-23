@@ -136,6 +136,9 @@ This registry provides a high-level view of tactic implementation status across 
 
 *This section is automatically updated by the `/todo` command*
 
+### 2025-12-22
+- Standards updated: `/task`, `/add`, `/review`, and `/todo` now must update TACTIC_REGISTRY.md alongside IMPLEMENTATION_STATUS.md and SORRY_REGISTRY.md when sorry/tactic/task status changes occur; dry-run/test modes must avoid registry writes and must not create project directories for doc-only updates.
+
 ### 2025-12-16
 - Split TACTIC_DEVELOPMENT.md into TACTIC_REGISTRY.md (this file) and UserGuide/TACTIC_DEVELOPMENT.md
 - Established registry as single source of truth for tactic implementation status

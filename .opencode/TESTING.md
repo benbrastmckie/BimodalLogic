@@ -1,4 +1,4 @@
-# Testing Guide - LEAN 4 ProofChecker
+# Testing Guide - .opencode AI Agent System
 
 ## Overview
 
@@ -35,51 +35,51 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 
 **Test 4: Researcher Agent**
 ```bash
-/research "Kripke semantics for bimodal logic"
+/research "REST API design patterns"
 
 # Expected Output:
-# - Research report created in .opencode/specs/NNN_research_*/reports/
-# - Multiple specialist reports (lean-search, loogle, web-research)
+# - Research report created in specs/NNN_research_*/reports/
+# - Multiple specialist reports (web-research, doc-research)
 # - Summary with key findings returned
 ```
 
 **Test 5: Planner Agent**
 ```bash
-/plan "Implement proof system axioms for bimodal logic"
+/plan "Implement user authentication system"
 
 # Expected Output:
-# - Implementation plan created in .opencode/specs/NNN_*/plans/implementation-001.md
+# - Implementation plan created in specs/NNN_*/plans/implementation-001.md
 # - Complexity assessment included
 # - Dependencies mapped
 # - Summary returned
 ```
 
-**Test 6: Proof Developer Agent**
+**Test 6: Developer Agent**
 ```bash
-/lean 003
+/implement 003
 
 # Expected Output:
-# - LEAN 4 code implemented
-# - Type checking passed (lean-lsp-mcp)
+# - Code implemented
+# - Tests passed
 # - Git commits made
 # - Implementation summary created
 ```
 
 **Test 7: Refactorer Agent**
 ```bash
-/refactor Logos/BimodalProofs.lean
+/refactor src/api/users.py
 
 # Expected Output:
 # - Code refactored for readability
 # - Style guide applied
-# - Verification passed
+# - Tests passed
 # - Git commit made
 # - Refactoring report created
 ```
 
 **Test 8: Documenter Agent**
 ```bash
-/document "bimodal logic proof system"
+/document "authentication system"
 
 # Expected Output:
 # - Documentation updated
@@ -105,19 +105,19 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 **Workflow 1: Research → Plan → Implement**
 ```bash
 # Step 1: Research
-/research "completeness proof for bimodal logic"
+/research "microservices architecture patterns"
 # Verify: Research report created with findings
 
 # Step 2: Plan
-/plan "Implement completeness proof based on research"
+/plan "Implement microservices architecture based on research"
 # Verify: Implementation plan created with steps
 
 # Step 3: Implement
-/lean [project_number]
-# Verify: Proof implemented, verified, committed
+/implement [project_number]
+# Verify: Code implemented, tested, committed
 
 # Step 4: Document
-/document "completeness proof"
+/document "microservices architecture"
 # Verify: Documentation updated
 ```
 
@@ -139,7 +139,7 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 **Workflow 3: Plan → Revise → Implement**
 ```bash
 # Step 1: Initial Plan
-/plan "Implement decidability procedure"
+/plan "Implement caching layer"
 # Verify: Plan version 001 created
 
 # Step 2: Revise
@@ -147,7 +147,7 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 # Verify: Plan version 002 created with revision notes
 
 # Step 3: Implement
-/lean [project_number]
+/implement [project_number]
 # Verify: Latest plan version used for implementation
 ```
 
@@ -158,15 +158,15 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 **Test 10: Verify Artifacts Created**
 ```bash
 # After running /research
-ls .opencode/specs/NNN_*/reports/
-# Expected: research-001.md, lean-search-001.md, loogle-001.md, web-research-001.md
+ls specs/NNN_*/reports/
+# Expected: research-001.md, web-research-001.md, doc-research-001.md
 
 # After running /plan
-ls .opencode/specs/NNN_*/plans/
+ls specs/NNN_*/plans/
 # Expected: implementation-001.md
 
-# After running /lean
-ls .opencode/specs/NNN_*/summaries/
+# After running /implement
+ls specs/NNN_*/summaries/
 # Expected: implementation-summary.md
 ```
 
@@ -188,18 +188,18 @@ ls .opencode/specs/NNN_*/summaries/
 
 **Test 11a: Verify Agent and Command Counts**
 ```bash
-# Count primary agents (should be 12)
+# Count primary agents (should be 10)
 find .opencode/agent/subagents -maxdepth 1 -name "*.md" -type f | wc -l
 
-# Count specialists (should be 32)
+# Count specialists (should be 19)
 find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l
 
-# Count commands (should be 12)
+# Count commands (should be 11)
 find .opencode/command -maxdepth 1 -name "*.md" -type f | grep -v README | wc -l
 
 # Verify context directory structure
 ls .opencode/context/
-# Expected: lean4, logic, math, repo, core, templates, project
+# Expected: core, templates, project, repo
 ```
 
 ## Phase 4: State Management Testing
@@ -254,41 +254,41 @@ cat .opencode/specs/TODO.md
 
 ### Test Tool Integrations
 
-**Test 15: lean-lsp-mcp Integration**
+**Test 15: Code Quality Integration**
 ```bash
-# Implement a proof
-/lean [project_number]
+# Implement a feature
+/implement [project_number]
 
 # Expected:
-# - Type checking performed after each step
-# - Errors caught and reported
-# - Only valid proofs accepted
+# - Code quality checks performed
+# - Tests run and passed
+# - Only valid code accepted
 ```
 
-**Test 16: LeanSearch Integration**
+**Test 16: Web Research Integration**
 ```bash
-/research "modal logic operators"
+/research "GraphQL best practices"
 
 # Expected:
-# - LeanSearch queried
-# - Semantic results returned
-# - Results in lean-search-001.md
+# - Web search conducted
+# - Relevant results returned
+# - Results in web-research-001.md
 ```
 
-**Test 17: Loogle Integration**
+**Test 17: Documentation Research Integration**
 ```bash
-/research "functions with type (Prop → Prop) → Prop"
+/research "Python async/await patterns"
 
 # Expected:
-# - Loogle queried with type signature
-# - Matching functions found
-# - Results in loogle-001.md
+# - Documentation searched
+# - Best practices found
+# - Results in doc-research-001.md
 ```
 
 **Test 18: Git Integration**
 ```bash
-# Implement proof
-/lean [project_number]
+# Implement feature
+/implement [project_number]
 
 # Check git log
 git log --oneline -5
@@ -324,13 +324,13 @@ git log --oneline -5
 # - Graceful degradation
 ```
 
-**Test 21: Verification Failure**
+**Test 21: Validation Failure**
 ```bash
-# Implement proof with intentional error
-/lean [project_number]
+# Implement feature with intentional error
+/implement [project_number]
 
 # Expected:
-# - lean-lsp-mcp catches error
+# - Tests catch error
 # - Implementation halted
 # - Error reported to user
 # - No git commit made
@@ -394,7 +394,7 @@ git log --oneline -5
 
 **Test 26: Create New Agent**
 ```bash
-/meta "Create agent that analyzes proof complexity"
+/meta "Create agent that analyzes code complexity"
 
 # Expected:
 # - New agent file created in .opencode/agent/subagents/
@@ -405,7 +405,7 @@ git log --oneline -5
 
 **Test 27: Create New Command**
 ```bash
-/meta "Create command /analyze that runs complexity analysis"
+/meta "Create command /analyze that runs code complexity analysis"
 
 # Expected:
 # - New command file created in .opencode/command/
@@ -432,7 +432,7 @@ git log --oneline -5
 - [ ] Reviewer agent creates reports and updates TODO
 - [ ] Researcher agent queries all sources
 - [ ] Planner agent creates detailed plans
-- [ ] Proof developer implements and verifies
+- [ ] Developer implements and validates
 - [ ] Refactorer improves code quality
 - [ ] Documenter maintains docs
 - [ ] Meta agent creates/modifies components
@@ -453,9 +453,9 @@ git log --oneline -5
 - [ ] TODO.md synced with findings
 
 ### Integration Tests
-- [ ] lean-lsp-mcp type checking works
-- [ ] LeanSearch queries successful
-- [ ] Loogle queries successful
+- [ ] Code quality checks work
+- [ ] Web research queries successful
+- [ ] Documentation research successful
 - [ ] Git commits made properly
 
 ### Edge Case Tests
@@ -533,4 +533,4 @@ After completing testing:
 
 ---
 
-**Thorough testing ensures a robust, reliable theorem proving system!**
+**Thorough testing ensures a robust, reliable development system!**

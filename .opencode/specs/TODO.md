@@ -1,321 +1,429 @@
-# TODO - Logos LEAN 4 ProofChecker
+# TODO
 
-## Update Instructions
-
-**When to Update**: After completing tasks, discovering new work, or changing priorities.
-
-**How to Update**:
-1. Mark completed tasks by removing them from active sections (history tracked via git)
-2. Add new tasks with: description, effort estimate, status, priority, blocking/dependencies
-3. Update the "Active Tasks" count in Overview
-4. Update "Last Updated" date at bottom
-5. Use `/review` command to sync with repository analysis and verification
-
-**What NOT to Track Here**:
-- Completed task details (use git history: `git log --grep="Task"`)
-- Implementation plans (use `.opencode/specs/` directories)
-- Module-by-module status (use IMPLEMENTATION_STATUS.md)
-- Technical debt details (use SORRY_REGISTRY.md)
-
----
+**Last Updated:** 2025-12-23
 
 ## Overview
 
-This file tracks active development tasks for Logos. Completed tasks are removed from this file - see git history and spec summaries for completion records.
-
-**Last Repository Review**: 2025-12-21 (Project 001_review_20251221)
-- **Compliance Score**: 83% (Core Theorems/Metalogic)
-- **Repository Health**: 94/100 (Excellent)
-- **Total Files Verified**: 22 LEAN modules
-- **Total Proofs Checked**: 100+ theorems
-- **Sorry Found**: 8/8 (matches expected - 3 MVP limitations, 1 invalid theorem, 3 documentation, 1 low-priority)
-- **Axioms Found**: 24/24 (matches expected - 5 Perpetuity + 11 Completeness + 8 ProofSearch)
-- **Review Reports**: [Summary](.opencode/specs/001_review_20251221/summaries/review-summary.md)
-
-**Layer 0 Completion Progress**:
-- High Priority: 0 tasks
-- Medium Priority: 3 tasks (Automation + Semantics + Documentation)
-- Low Priority: 4 tasks (Completeness + Cleanup + Future Metalogic)
-- **Active Tasks**: 7
-- **Recently Completed**: Task 13 (Context Reorganization - 2025-12-20) | Task 12 (Task Semantics Documentation - 2025-12-20) | Project 007 (Emoji Removal - 2025-12-20) | Task 8 (Remove Deprecated Aliases - 2025-12-20) | See [Completion History](#completion-history) and `.opencode/specs/archive/state.json`
-
-**Milestone Achievement**: 
-- ✅ TASK SEMANTICS DOCUMENTATION COMPLETE (2025-12-20) - Accurate context for Logos semantics
-- ✅ EMOJI REMOVAL COMPLETE (2025-12-20) - Zero emojis, emoji ban in style guides (Project 007)
-- ✅ COMPLETE MIGRATION TO TYPE VERIFIED (2025-12-20) - All 7 phases complete, production-ready
-- ✅ REPOSITORY REVIEW COMPLETE (2025-12-20) - Compliance 95/100, Health 94/100
-- ✅ ALL MIGRATION PHASES COMPLETE (Tasks 72-78 - Derivable:Prop → DerivationTree:Type)
-
-**Current Work**: Migration complete - ready for Layer 0 completion tasks
-
-**Next Milestone**: Layer 0 Completion - Implement ProofSearch automation (Task 7)
+- **Total Tasks:** 20
+- **Completed:** 5
+- **High Priority:** 1
+- **Medium Priority:** 8
+- **Low Priority:** 11
 
 ---
 
-## Quick Links
+## High Priority
+ 
+### Automation
+ 
+### 151. Ensure /task pre-updates TODO and plans to IN PROGRESS before work
+- **Effort**: 2 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-23
+- **Completed**: 2025-12-23
+- **Priority**: High
+- **Language**: shell
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/specs/TODO.md
+  - .opencode/specs/state.json
+  - .opencode/context/common/system/status-markers.md
+  - .opencode/context/common/standards/tasks.md
+- **Description**: Ensure `/task` immediately sets the targeted task's status marker in TODO.md to [IN PROGRESS], mirrors that status to the linked plan if present, and then continues execution while keeping plan phase headers synced as phases start, block, or complete.
+- **Acceptance Criteria**:
+  - [ ] `/task` sets the TODO status marker to [IN PROGRESS] immediately on invocation for the chosen task.
+  - [ ] When a plan link exists, `/task` also sets the plan status marker to [IN PROGRESS] before performing other actions.
+  - [ ] Plan phase headers are updated with appropriate status markers and timestamps as phases are started, blocked, or completed.
+  - [ ] Behavior works when no plan is linked (updates TODO only) and avoids pre-creating project directories.
+  - [ ] State/registry synchronization remains accurate with no regression to existing command flows.
+- **Impact**: Aligns `/task` execution with status-marker standards so progress is visible in TODO and plans before work proceeds.
+ 
+---
+ 
+## Medium Priority
 
-- [IMPLEMENTATION_STATUS.md](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking
-- [IMPLEMENTATION_STATUS.md - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) - Current gaps and workarounds
-- [SORRY_REGISTRY.md](Documentation/ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
-- [MAINTENANCE.md](Documentation/ProjectInfo/MAINTENANCE.md) - TODO management workflow
-- [Repository Review (2025-12-20)](.opencode/specs/006_review_20251220/reports/analysis-001.md) - Latest comprehensive analysis
-- [Proof Verification (2025-12-20)](.opencode/specs/006_review_20251220/reports/verification-001.md) - Latest verification report
-- [Archive Index](.opencode/specs/ARCHIVE_INDEX.md) - Completed projects archive
 
-**Active Implementation Plan**:
-- None (all active plans complete)
+### Maintenance
 
-**Recently Completed**:
-- See [Archive Index](.opencode/specs/ARCHIVE_INDEX.md) for detailed completion records
-- See [Completion History](#completion-history) for recent completions
+### 144. Update context references after refactor
+- **Effort**: 2 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-23
+- **Completed**: 2025-12-23
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/specs/127_context_refactor/plans/context-references-plan-001.md
+  - .opencode/context/index.md
+  - .opencode/context/common/
+  - .opencode/context/project/
+- **Description**: Remap agent and command context references using the references update plan after the refactor lands, ensuring all recorded targets point to the new structure and clearing placeholders.
+- **Acceptance Criteria**:
+  - [x] Reference mappings updated per the plan with placeholders resolved using the finalized structure
+  - [x] Cross-links in index and per-domain READMEs point to the new locations with no 404s (context docs already refreshed in task 143)
+  - [x] Link/reference verification pass completed and issues fixed (ripgrep sweep for legacy prefixes/filenames)
+  - [x] References plan annotated or updated to reflect completed remapping
+- **Impact**: Keeps agents and commands aligned to the new context layout, preventing stale references after the refactor.
+- **Plan**: [Plan v3](.opencode/specs/127_context_refactor/plans/implementation-002.md)
+- **Research**: [Research Report](.opencode/specs/144_update_context_references_after_refactor/reports/research-001.md) — Identifies old→new mapping (common/ vs project/{logic,lean4}, Lean overlay rename) and per-file reference updates for agents/commands; recommends link-check after edits.
+
+### Automation
+
+### 128. Implement caching and context helpers in ProofSearch
+- **Effort**: 3 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-23
+- **Completed**: 2025-12-23
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 126, 127
+- **Files Affected**:
+  - Logos/Core/Automation/ProofSearch.lean
+- **Description**: Implement caching and context management functions (including `search_with_cache`, `box_context`, and `future_context`) to avoid redundant exploration and handle modal/temporal context changes.
+- **Acceptance Criteria**:
+  - [x] `search_with_cache` implemented with cache hits tracked
+  - [x] `box_context` and `future_context` implemented and integrated
+  - [x] Repeated subgoals avoided via cache in tests
+- **Impact**: Reduces redundant search work and stabilizes modal/temporal context handling.
+- **Research**: [Research Report](.opencode/specs/128_implement_caching_and_context_helpers_in_proofsearch/reports/research-001.md) — Replace list cache/visited with hash-based keyed on transformed contexts, add stats, and test cache hits/visit-limit/ modal vs temporal separation.
+- **Plan**: [Plan v1](.opencode/specs/128_implement_caching_and_context_helpers_in_proofsearch/plans/implementation-001.md) — Lean plan to add hash-based cache/visited with stats, transformed-context keys for modal/temporal recursion, and regression tests for cache hits and visit limits.
+- **Summary**: [Implementation Summary](.opencode/specs/128_implement_caching_and_context_helpers_in_proofsearch/summaries/implementation-summary-20251223.md) — Hash-based cache/visited with stats, transformed-context keys for modal/temporal recursion, and regression tests for cache hits and visit limits.
+
+### 129. Prove temporal swap lemmas in Truth.lean
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Logos/Core/Semantics/Truth.lean
+- **Description**: Replace the temporal swap validity `sorry` placeholders with full proofs for the remaining lemmas.
+- **Acceptance Criteria**:
+  - [ ] All temporal swap validity sorries removed
+  - [ ] Proofs compile and tests pass for Truth.lean
+  - [ ] No regressions in semantics tests
+- **Impact**: Completes semantics correctness by removing remaining technical debt.
+
+### 130. Prove domain extension lemmas in Truth.lean
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 129
+- **Files Affected**:
+  - Logos/Core/Semantics/Truth.lean
+- **Description**: Prove the remaining domain extension lemmas that ensure temporal swap validity under domain changes.
+- **Acceptance Criteria**:
+  - [ ] Domain extension lemmas proven and sorries removed
+  - [ ] Related proofs reuse existing transport lemmas where possible
+  - [ ] Semantics test suite passes
+- **Impact**: Finalizes semantics completeness and eliminates remaining technical debt.
+
+### 154. Fix temporal swap strategy for Truth.lean (supports Tasks 129 & 130)
+- **Effort**: 2 hours
+- **Status**: [IN PROGRESS]
+- **Started**: 2025-12-23
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: 129, 130
+- **Dependencies**: None
+- **Files Affected**:
+  - Logos/Core/Semantics/Truth.lean
+  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
+  - .opencode/specs/TODO.md
+  - .opencode/specs/state.json
+- **Description**: Evaluate whether to introduce a semantic time-reversal lemma (`is_valid φ ↔ is_valid φ.swap_past_future`) to close the remaining Truth.lean sorries, or to refactor the temporal-duality soundness proof to avoid the strong lemma by restructuring `derivable_implies_swap_valid` with weaker helpers.
+- **Acceptance Criteria**:
+  - [ ] Compare both strategies with implications for existing lemmas and test stability (Truth.lean, Soundness.lean)
+  - [ ] Recommend a path (time-reversal lemma vs. refactor) with rationale, risks, and proof obligations
+  - [ ] Outline the concrete next steps for Tasks 129 and 130 based on the recommended path (including any weaker helper lemmas or axioms needed)
+- **Impact**: Selects the most viable approach to unblock completion of temporal swap and domain extension lemmas, reducing semantics technical debt.
+- **Research**: [.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-001.md](.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-001.md)
+- **Research (update)**: [.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-002.md](.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-002.md)
+- **Plan**: [.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-002.md](.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-002.md)
+- **Summary**: Plan v2 executes Branch B directly in Lean: refactor `derivable_implies_swap_valid` via IH/mutual IH with local transport lemmas, align `Soundness.lean`, run tests, and then retire tasks 129/130 as abandoned after this implementation.
+
+### 155. Optimize .opencode command subagent routing and metadata
+- **Effort**: 3 hours
+- **Status**: [IN PROGRESS]
+- **Started**: 2025-12-23
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/
+  - .opencode/context/common/standards/
+  - .opencode/context/common/system/
+  - .opencode/specs/TODO.md
+  - .opencode/specs/state.json
+- **Description**: Systematically optimize .opencode command routing to delegate to the correct subagents at the right time, and add explicit subagent metadata to each command file to clarify execution and delegation flows.
+- **Acceptance Criteria**:
+  - [ ] Inventory all available subagents with their capabilities, required contexts, and MCP/server prerequisites.
+  - [ ] For each .opencode command, map required subagents and update command metadata to list invoked subagents and invocation order.
+  - [ ] Update command execution flows to delegate to the correct subagents with proper timing while respecting lazy directory creation and status-marker standards.
+  - [ ] Add dry-run or routing-check paths that validate subagent selection without creating directories or artifacts.
+  - [ ] TODO/state updates remain consistent with numbering rules and status markers, and no project directories are created during routing checks.
+- **Impact**: Improves reliability and clarity of command execution by ensuring correct subagent delegation and transparent metadata.
+- **Research**: [.opencode/specs/155_optimize_opencode_command_subagent_routing_and_metadata/reports/research-001.md](.opencode/specs/155_optimize_opencode_command_subagent_routing_and_metadata/reports/research-001.md) — Inventory of subagents, MCP validation requirements, and per-command routing/metadata recommendations.
+- **Plan**: [.opencode/specs/155_optimize_opencode_command_subagent_routing_and_metadata/plans/implementation-001.md](.opencode/specs/155_optimize_opencode_command_subagent_routing_and_metadata/plans/implementation-001.md) — Phased updates to command docs/standards adding subagent/MCP/registry metadata, dry-run routing-checks, and lazy-creation/status-sync flow documentation.
+
+### 152. Standardize command templates and migrate command docs ✅
+ 
+- **Effort**: 3 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-23
+- **Completed**: 2025-12-23
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/context/common/templates/
+  - .opencode/context/common/standards/commands.md
+  - .opencode/command/
+  - .opencode/meta/
+- **Description**: Add a unified command template and commands standard, migrate all command docs to the new format (removing legacy XML tags and explicit subagent invocations), and extend /meta context/templates to support the updated agent system conventions.
+- **Acceptance Criteria**:
+  - [x] Command template added under `.opencode/context/common/templates/` aligned with status markers and lazy directory rules.
+  - [x] `commands.md` standard added under `.opencode/context/common/standards/` detailing formatting, status markers, metadata, and agent invocation conventions.
+  - [x] All command docs in `.opencode/command/` migrated to the new standard (legacy XML/subagent tags removed) with consistent examples.
+  - [x] /meta context/templates updated to reflect the new command standards and extension/refactor guidance for the agent system.
+- **Impact**: Unifies command documentation and templates, reduces drift between agents, and enables consistent future command extensions without legacy XML patterns.
+- **Research**: [.opencode/specs/152_standardize_command_templates_and_migrate_command_docs/reports/research-001.md](.opencode/specs/152_standardize_command_templates_and_migrate_command_docs/reports/research-001.md) — Defines commands.md outline, command template, migration steps, and registry/lazy-creation coordination notes.
+- **Plan**: [.opencode/specs/152_standardize_command_templates_and_migrate_command_docs/plans/implementation-002.md](.opencode/specs/152_standardize_command_templates_and_migrate_command_docs/plans/implementation-002.md) — Reversed plan (v2) to restore YAML front matter and @subagent/XML markup across command docs/templates and meta outputs aligned to meta/context exemplars.
+- **Summary**: [.opencode/specs/152_standardize_command_templates_and_migrate_command_docs/summaries/implementation-summary-20251223.md](.opencode/specs/152_standardize_command_templates_and_migrate_command_docs/summaries/implementation-summary-20251223.md)
+ 
+ 
+### 153. Revise /research and /plan commands to enforce status updates
+ 
+ 
+- **Effort**: 2 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-23
+- **Completed**: 2025-12-23
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/specs/TODO.md
+  - .opencode/specs/state.json
+  - .opencode/context/common/system/status-markers.md
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+- **Description**: Update `/research` and `/plan` command flows to set the targeted task to [IN PROGRESS] at invocation, then to [RESEARCHED] or [PLANNED] on completion with timestamps, while syncing TODO/state and linked artifacts without premature project directory creation.
+- **Acceptance Criteria**:
+  - [x] `/research` sets the task status to [IN PROGRESS] before work begins and updates to [RESEARCHED] with timestamps in TODO/state and the generated research report.
+  - [x] `/plan` sets the task status to [IN PROGRESS] before planning and updates to [PLANNED] with timestamps in TODO/state and the generated plan artifact.
+  - [x] Status propagation honors lazy directory creation: project roots/subdirs are created only when writing the first artifact; no pre-creation.
+  - [x] Status-markers standard documents the new `/research` and `/plan` transitions and end markers.
+  - [x] Regression checks confirm existing `/task` and `/todo` flows remain unaffected.
+- **Impact**: Aligns research and planning commands with the standardized status lifecycle, improving visibility and consistency across TODO, plans, and state.
+- **Research**: None linked
+- **Summary**: [.opencode/specs/153_revise_research_and_plan_commands_to_enforce_status_updates/summaries/implementation-summary-20251223.md](.opencode/specs/153_revise_research_and_plan_commands_to_enforce_status_updates/summaries/implementation-summary-20251223.md)
+ 
+ ---
+ 
+ ## Low Priority
+
+
+### Repository Cleanup
+
+### 131. Clean up Archive examples
+- **Effort**: 2 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-23
+- **Completed**: 2025-12-23
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Archive/
+  - Logos/Examples/
+- **Summary**: [.opencode/specs/131_clean_up_archive_examples/summaries/implementation-summary-20251223.md](.opencode/specs/131_clean_up_archive_examples/summaries/implementation-summary-20251223.md)
+- **Description**: Review Archive examples, migrate any useful samples into active example locations, and remove obsolete files to reduce clutter.
+- **Acceptance Criteria**:
+  - [x] Archive reviewed and obsolete files removed or relocated
+  - [x] Useful examples moved to active examples directory
+  - [x] No broken references to removed files
+- **Impact**: Keeps repository lean and focused on current code.
+
+### Metalogic Completeness
+
+### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Logos/Core/Metalogic/Completeness.lean
+- **Description**: Formalize and prove the Lindenbaum maximal consistency lemma to eliminate the first axiom placeholder.
+- **Acceptance Criteria**:
+  - [ ] Lindenbaum lemma proven and axiom removed
+  - [ ] Proof integrates with existing canonical model scaffolding
+  - [ ] Related tests added or updated
+- **Impact**: Unlocks subsequent completeness proofs by establishing maximal consistency.
+
+### 133. Build canonical model constructors in Completeness.lean
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 132
+- **Files Affected**:
+  - Logos/Core/Metalogic/Completeness.lean
+- **Description**: Implement canonical model construction helpers and remove associated axiom stubs.
+- **Acceptance Criteria**:
+  - [ ] Canonical model constructors implemented
+  - [ ] Corresponding axiom placeholders removed
+  - [ ] Construction type-checks with existing definitions
+- **Impact**: Provides the core model for subsequent truth lemma proofs.
+
+### 134. Prove truth lemma structure in Completeness.lean
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 133
+- **Files Affected**:
+  - Logos/Core/Metalogic/Completeness.lean
+- **Description**: Prove the truth lemma for the canonical model, removing the corresponding axiom placeholder.
+- **Acceptance Criteria**:
+  - [ ] Truth lemma proven and axiom removed
+  - [ ] Proof integrates with canonical model components
+  - [ ] Tests (or placeholders) updated to exercise lemma
+- **Impact**: Establishes the key bridge between syntax and semantics for completeness.
+
+### 135. Remove provable_iff_valid sorry in Completeness.lean
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 132, 133, 134
+- **Files Affected**:
+  - Logos/Core/Metalogic/Completeness.lean
+- **Description**: Complete the `provable_iff_valid` theorem using the proven canonical model and truth lemma to eliminate the remaining sorry.
+- **Acceptance Criteria**:
+  - [ ] `provable_iff_valid` fully proven
+  - [ ] No remaining axiom or sorry placeholders in Completeness.lean
+  - [ ] Completeness tests added or updated
+- **Impact**: Delivers full completeness, enabling derivability from validity.
+
+### Decidability
+
+### 136. Design Decidability.lean architecture and signatures
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Logos/Core/Metalogic/Decidability.lean
+- **Description**: Define the module structure, main theorems, and function signatures for decidability (tableau and satisfiability checks).
+- **Acceptance Criteria**:
+  - [ ] Module skeleton with signatures for tableau and decision procedures
+  - [ ] Documentation comments outline intended algorithms
+  - [ ] No build warnings from new declarations
+- **Impact**: Establishes a foundation for future decidability proofs and implementations.
+
+### 137. Implement tableau core rules in Decidability.lean
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 136
+- **Files Affected**:
+  - Logos/Core/Metalogic/Decidability.lean
+- **Description**: Implement the core tableau expansion rules and supporting helpers for validity checking.
+- **Acceptance Criteria**:
+  - [ ] Tableau expansion rules implemented and type-checking
+  - [ ] Basic examples compile demonstrating rule application
+  - [ ] No placeholder axioms for these rules remain
+- **Impact**: Provides executable building blocks for the decision procedure.
+
+### 138. Implement satisfiability and validity decision procedure tests
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 136, 137
+- **Files Affected**:
+  - Logos/Core/Metalogic/Decidability.lean
+  - LogosTest/Metalogic/DecidabilityTest.lean (new or updated)
+- **Description**: Wire the tableau components into a decision procedure and add tests covering satisfiable and unsatisfiable cases.
+- **Acceptance Criteria**:
+  - [ ] Decision procedure implemented and compiles
+  - [ ] Tests cover satisfiable and unsatisfiable scenarios
+  - [ ] No remaining placeholder axioms in the decision procedure path
+- **Impact**: Delivers an initial, test-backed decision procedure for TM logic.
+
+### Layer Extensions (Future Planning)
+
+### 139. Draft Layer 1 counterfactual operator plan
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Documentation/UserGuide/ARCHITECTURE.md
+  - Documentation/UserGuide/METHODOLOGY.md
+- **Description**: Draft a plan for Layer 1 counterfactual operators, defining `box_c` and `diamond_m` semantics and integration points.
+- **Acceptance Criteria**:
+  - [ ] Draft plan describing operators, semantics, and required modules
+  - [ ] Architecture updated with Layer 1 scope and assumptions
+  - [ ] Clear follow-on tasks identified
+- **Impact**: Provides roadmap for counterfactual extensions post Layer 0.
+
+### 140. Draft Layer 2 epistemic operator plan
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Documentation/UserGuide/ARCHITECTURE.md
+  - Documentation/UserGuide/METHODOLOGY.md
+- **Description**: Draft a plan for Layer 2 epistemic operators (`K`, `B`) including semantics and proof obligations.
+- **Acceptance Criteria**:
+  - [ ] Draft plan outlines semantics, target theorems, and module impacts
+  - [ ] Architecture updated with Layer 2 scope and assumptions
+  - [ ] Follow-on tasks identified
+- **Impact**: Establishes roadmap for epistemic extensions.
+
+### 141. Draft Layer 3 normative operator plan
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Documentation/UserGuide/ARCHITECTURE.md
+  - Documentation/UserGuide/METHODOLOGY.md
+- **Description**: Draft a plan for Layer 3 normative operators (`O`, `P`) including semantics and proof obligations.
+- **Acceptance Criteria**:
+  - [ ] Draft plan outlines semantics, target theorems, and module impacts
+  - [ ] Architecture updated with Layer 3 scope and assumptions
+  - [ ] Follow-on tasks identified
+- **Impact**: Provides a roadmap for normative logic extensions.
 
 ---
-
-## High Priority Tasks
-
-*(None)*
-
-## Medium Priority Tasks
-
-### Documentation Enhancements
-
-### 15. Update MODULE_ORGANIZATION.md
-**Effort**: 1-2 hours
-**Status**: Not Started
-**Priority**: Medium (documentation accuracy)
-**Blocking**: None
-**Dependencies**: None
-
-**Description**: Update `Documentation/Development/MODULE_ORGANIZATION.md` to accurately reflect the current structure of the `Logos/Core/` directory and other project components. The documentation currently lags behind the actual implementation structure.
-
-**Files Affected**:
-- `Documentation/Development/MODULE_ORGANIZATION.md`
-
-**Acceptance Criteria**:
-- [ ] `MODULE_ORGANIZATION.md` updated to match file tree
-- [ ] Module descriptions accurate
-
----
-
-### Automation Enhancements
-
-### 7. Implement Core Automation (ProofSearch)
-**Effort**: 40-60 hours
-**Status**: Not Started
-**Priority**: Medium (automation capabilities)
-**Blocking**: None
-**Dependencies**: None
-
-**Description**: Implement proof search automation functions in ProofSearch.lean. Currently infrastructure-only with 8 axiom declarations and 3 documentation sorry placeholders.
-
-**Verification Finding** (Project 006 - 2025-12-20):
-- ✅ ProofSearch.lean infrastructure verified as well-structured
-- ✅ 8 axiom declarations confirmed (all with comprehensive docstrings)
-- ✅ 3 documentation sorry (example placeholders)
-- ✅ Complete type signatures for all search functions
-
-**Phases**:
-1. **Phase 1** (15-20 hours): Implement basic search functions (bounded_search, matches_axiom, find_implications_to)
-2. **Phase 2** (15-20 hours): Implement heuristic search (search_with_heuristics, heuristic_score)
-3. **Phase 3** (10-20 hours): Implement caching and context helpers (search_with_cache, box_context, future_context)
-
-**Files**:
-- `Logos/Core/Automation/ProofSearch.lean` (8 axiom declarations requiring implementation)
-
-**Axiom Breakdown** (8 total):
-1. bounded_search (8-10 hours)
-2. search_with_heuristics (10-12 hours)
-3. search_with_cache (10-12 hours)
-4. matches_axiom (3-5 hours)
-5. find_implications_to (5-7 hours)
-6. heuristic_score (3-5 hours)
-7. box_context (2-3 hours)
-8. future_context (2-3 hours)
-
-**Success Criteria**:
-- [ ] All 8 axiom declarations replaced with implementations
-- [ ] All 3 documentation sorry replaced with real examples
-- [ ] Proof search functional for simple cases
-- [ ] Performance acceptable (bounded depth search)
-
-**Notes**: This will significantly enhance automation capabilities for TM logic proofs.
-
----
-
-### Semantics Enhancements
-
-### 14. Resolve Truth.lean Sorries
-**Effort**: 4-6 hours
-**Status**: Not Started
-**Priority**: Medium (completeness of semantics)
-**Blocking**: None
-**Dependencies**: None
-
-**Description**: Resolve the 3 remaining `sorry` placeholders in `Logos/Core/Semantics/Truth.lean`. These are related to temporal swap validity lemmas and domain extension limitations.
-
-**Files Affected**:
-- `Logos/Core/Semantics/Truth.lean`
-
-**Acceptance Criteria**:
-- [ ] All 3 `sorry` placeholders in `Truth.lean` removed
-- [ ] Temporal swap validity lemmas fully proven
-- [ ] Tests pass
-
----
-
-
-### Proof System Enhancements
-
-
-
-
-## Low Priority Tasks
-
-### Code Cleanup
-
-### 16. Clean up Archive
-**Effort**: 2-3 hours
-**Status**: Not Started
-**Priority**: Low (cleanup)
-**Blocking**: None
-**Dependencies**: None
-
-**Description**: Review the `Archive/` directory and migrate any useful examples or code to `Logos/Examples` (or appropriate active directories). Remove obsolete files to keep the repository clean.
-
-**Files Affected**:
-- `Archive/`
-- `Logos/Examples/` (to be created if needed)
-
-**Acceptance Criteria**:
-- [ ] `Archive/` reviewed
-- [ ] Useful examples migrated
-- [ ] Obsolete files removed or organized
-
----
-
-### Long-Term Metalogic Goals
-
-### 9. Begin Completeness Proofs
-**Effort**: 70-90 hours
-**Status**: Not Started
-**Priority**: Low (Long-term goal)
-**Blocking**: None
-**Dependencies**: Benefits from completed soundness proofs
-
-**Description**: Implement canonical model construction and prove completeness theorems (weak and strong). This is a major undertaking requiring significant effort.
-
-**Verification Finding** (Project 006 - 2025-12-20):
-- ✅ Completeness.lean infrastructure verified as well-structured
-- ✅ 11 axiom declarations confirmed (all with comprehensive docstrings)
-- ✅ 1 sorry in `provable_iff_valid` (soundness direction, 1-2 hours)
-- ✅ All axioms have proof strategies documented
-- ✅ Complete type signatures and canonical model construction outlined
-
-**Phases**:
-1. **Phase 1** (20-30 hours): Prove Lindenbaum lemma and maximal set properties
-2. **Phase 2** (20-30 hours): Construct canonical model components
-3. **Phase 3** (20-30 hours): Prove truth lemma and completeness theorems
-
-**Files**:
-- `Logos/Core/Metalogic/Completeness.lean` (11 axiom declarations requiring proofs)
-
-**Technical Debt**: See [SORRY_REGISTRY.md](Documentation/ProjectInfo/SORRY_REGISTRY.md) for detailed resolution guidance.
-
-**Notes**: This is the largest remaining task for Layer 0 completion.
-
----
-
-
-### 10. Create Decidability Module
-**Effort**: 40-60 hours
-**Status**: Not Started
-**Priority**: Low (future enhancement, not in MVP)
-**Blocking**: None
-**Dependencies**: Requires Task 9 (completeness proofs for correctness)
-
-**Description**: Create Logos/Core/Metalogic/Decidability.lean module with tableau method for validity checking and satisfiability decision procedures.
-
-**Phases**:
-1. **Phase 1** (15-20 hours): Design decidability architecture
-2. **Phase 2** (15-20 hours): Implement tableau method
-3. **Phase 3** (10-20 hours): Prove correctness and complexity
-
-**Files**:
-- `Logos/Core/Metalogic/Decidability.lean` (does not exist, planned)
-
-**Notes**: Planned but not essential for Layer 0. Can be deferred to Layer 1 or beyond.
-
----
-
-### 11. Plan Layer 1/2/3 Extensions
-**Effort**: 20-40 hours (research phase)
-**Status**: Not Started
-**Priority**: Low (future work, after Layer 0 complete)
-**Blocking**: None
-**Dependencies**: Requires Layer 0 completion
-
-**Description**: Design and plan extensions beyond Core TM (Layer 0): counterfactual operators (Layer 1), epistemic operators (Layer 2), normative operators (Layer 3).
-
-**Action Items**:
-1. **Layer 1 (Counterfactuals)**: Design `box_c` (would-counterfactual) and `diamond_m` (might-counterfactual) operators
-2. **Layer 2 (Epistemic)**: Design `K` (knowledge) and `B` (belief) operators
-3. **Layer 3 (Normative)**: Design `O` (obligation) and `P` (permission) operators
-4. Create implementation plans for each layer
-5. Update ARCHITECTURE.md with layer design
-
-**Notes**: Strategic planning for post-MVP development. Should not begin until Layer 0 is complete and tested.
-
----
-
-## Completion History
-
-**All completed tasks are tracked via git history and archived project directories.**
-
-**View Completions**:
-```bash
-# View all task completions
-git log --all --grep="Task" --oneline
-
-# View archived projects
-ls -la .opencode/specs/archive/
-
-# View specific project details
-cat .opencode/specs/archive/{project_number}_*/summaries/*.md
-```
-
-**Recent Completions**: See `.opencode/specs/archive/state.json` for comprehensive completion records with metadata.
-
----
-
-## Project References
-
-- **Module Status**: [IMPLEMENTATION_STATUS.md](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) for detailed module-by-module tracking
-- **Gap Documentation**: [IMPLEMENTATION_STATUS.md - Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) for current limitations and workarounds
-- **System Design**: [ARCHITECTURE.md](Documentation/UserGuide/ARCHITECTURE.md) for TM logic specification
-- **Technical Debt**: [SORRY_REGISTRY.md](Documentation/ProjectInfo/SORRY_REGISTRY.md) for sorry placeholder tracking
-- **Completed Projects**: [ARCHIVE_INDEX.md](.opencode/specs/ARCHIVE_INDEX.md) for archived project details
-
-**Notes**:
-- Priority levels reflect blocking status and estimated timeline, not importance
-- Effort estimates are conservative and may vary based on implementation complexity
-- Dependencies are indicated inline with each task
-
----
-
-## Usage
-
-To add tasks from this list to projects:
-```bash
-/plan "Task description from above"
-```
-
-To update this file after review:
-```bash
-/review
-```
-
-To mark tasks complete, remove them from active sections (git tracks history).
-
----
-
-**Last Updated**: 2025-12-21 (Moved Task 9 to Long-Term Metalogic Goals)

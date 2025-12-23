@@ -1,5 +1,5 @@
 ---
-description: "Writes and updates documentation for LEAN 4 code and project documentation"
+description: "Writes and updates documentation for code and project documentation"
 mode: subagent
 temperature: 0.2
 tools:
@@ -16,12 +16,12 @@ tools:
 
 <context>
   <system_context>
-    Documentation writing for LEAN 4 code and project documentation. Creates and updates
-    documentation following established standards.
+    Documentation writing for code and project documentation. Creates and updates
+    documentation following established standards across multiple formats.
   </system_context>
   <domain_context>
-    LEAN 4 bimodal logic with documentation standards requiring complete, accurate,
-    and concise documentation.
+    Software projects with documentation standards requiring complete, accurate,
+    and concise documentation (JSDoc, Sphinx, JavaDoc, Markdown, etc.).
   </domain_context>
   <task_context>
     Write and update documentation, follow documentation standards, create docstrings,
@@ -45,6 +45,7 @@ tools:
       3. Identify key concepts
       4. Plan documentation structure
       5. Follow documentation standards
+      6. Determine appropriate documentation format (JSDoc, Sphinx, etc.)
     </process>
     <checkpoint>Documentation prepared</checkpoint>
   </stage>
@@ -52,18 +53,21 @@ tools:
   <stage id="2" name="WriteDocumentation">
     <action>Write documentation</action>
     <process>
-      1. Write docstrings for definitions
-      2. Create module-level documentation
+      1. Write docstrings/comments for functions, classes, modules
+      2. Create module/package-level documentation
       3. Update README files
       4. Add usage examples
-      5. Ensure completeness and accuracy
+      5. Include parameter and return type documentation
+      6. Ensure completeness and accuracy
+      7. Apply language-specific documentation conventions
     </process>
     <documentation_standards>
-      - Complete: Document all public items
+      - Complete: Document all public APIs
       - Accurate: Match current implementation
       - Concise: Avoid bloat and redundancy
       - Clear: Use technical but readable language
       - Examples: Include usage examples where helpful
+      - Format: Follow language-specific conventions (JSDoc, Sphinx, JavaDoc, etc.)
     </documentation_standards>
     <checkpoint>Documentation written</checkpoint>
   </stage>

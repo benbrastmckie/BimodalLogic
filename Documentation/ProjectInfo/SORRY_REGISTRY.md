@@ -1,6 +1,6 @@
 # Sorry Placeholder Registry
 
-**Last Updated**: 2025-12-20
+**Last Updated**: 2025-12-22
 **Total Active Placeholders**: 8 (1 ModalS5 documented invalid, 3 Truth.lean, 1 Completeness, 3 ProofSearch documentation)
 **Total Axiom Declarations**: 24 (5 Perpetuity, 11 Completeness, 8 ProofSearch)
 **Total Resolved**: 60 (Plan 059 Phase 1: 6 De Morgan laws, Plan 060: diamond_disj_iff + s4_diamond_box_conj + s5_diamond_conj_diamond + k_dist_diamond + biconditional infrastructure, Task 46: 3 DeductionTheorem cases)
@@ -35,6 +35,9 @@ echo "axiom: $(grep -rc '^axiom ' Logos/Core/**/*.lean 2>/dev/null | awk -F: '{s
 - **.opencode/specs/TODO.md**: Active tasks that resolve items in this registry
 - **IMPLEMENTATION_STATUS.md**: Module status affected by sorry resolution
 - **.opencode/specs/**: Spec-based plans for systematic resolution
+
+**Command Integration**:
+- `/task`, `/add`, `/review`, and `/todo` now require updating this registry alongside IMPLEMENTATION_STATUS.md and TACTIC_REGISTRY.md whenever command/task updates affect sorry or tactic status; dry-run/test modes must avoid registry writes and must not create project directories for doc-only changes.
 
 **Note**: CLAUDE.md has been deprecated and moved to Archive/deprecated/CLAUDE.md.deprecated-20251215. Configuration is now handled through .opencode/context/.
 

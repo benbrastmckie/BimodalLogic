@@ -1,170 +1,58 @@
+---
+description: "Command directory overview and standards"
+context_level: 1
+language: markdown
+---
+
 # Custom Commands
 
-**Purpose**: User-facing command interface for AI agent workflows  
-**Last Updated**: December 20, 2025
+**Purpose**: User-facing command interface for AI agent workflows (research → plan → implement → review → maintain). All command docs follow the YAML front matter + XML/@subagent structure defined in `.opencode/context/common/standards/commands.md` and the template in `.opencode/context/common/templates/command-template.md`.
 
-## Overview
+## Directory
 
-Custom commands provide a streamlined interface for invoking AI agent
-workflows. Each command routes to a specific primary agent with appropriate
-context allocation and task-specific instructions. Commands follow a
-consistent syntax pattern and handle common development workflows from
-research through implementation to verification.
+- add.md — add tasks to TODO/state
+- context.md — context navigation/help
+- document.md — documentation maintenance
+- implement.md — execute implementation plans
+- lean.md — Lean-specific implementation orchestrator
+- meta.md — create/modify agents and commands
+- plan.md — create implementation plans
+- refactor.md — code refactoring
+- research.md — multi-source research
+- review.md — repository review/verification
+- revise.md — revise existing plans
+- task.md — execute TODO tasks by number
+- todo.md — display/manage TODO list
 
-The command system abstracts the complexity of agent routing and context
-management, providing users with simple, memorable commands for complex
-multi-agent workflows.
+## Standards (must comply)
+- YAML front matter: name, agent, description, context_level, language.
+- Context Loaded list with `@` paths (minimal, precise).
+- XML sections (ordered): `<context>`, `<role>`, `<task>`, `<workflow_execution>`, `<routing_intelligence>`, `<artifact_management>`, `<quality_standards>`, `<usage_examples>`, `<validation>`.
+- Status markers and timestamps per `status-markers.md`.
+- Lazy directory creation per `artifact-management.md` (only create roots/subdirs when writing artifacts; create the minimum subdir required).
+- Language/Lean routing: TODO `Language` is authoritative; `--lang` overrides; plan `lean:` is secondary. Validate `lean-lsp` MCP before Lean execution.
+- Registry/state sync: when commands change implementation status or sorry/tactic counts, also update TODO, `.opencode/specs/state.json`, IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md (skip on dry-run).
+- No emojis anywhere in commands or artifacts.
 
-## Directory Structure
+## Usage Snapshot
 
-All 12 commands are located in this directory:
+| Command | Primary Agent | Context Level | Typical Scope |
+|---------|---------------|---------------|---------------|
+| /review | reviewer | 3 | Repo-wide analysis/verification |
+| /research | researcher | 3 (broad) | Multi-source research |
+| /plan | planner | 2 | Implementation plans |
+| /revise | planner | 2 | Plan revisions |
+| /implement | implementer | 2 | Execute plans |
+| /task | orchestrator | 2 | Execute TODO tasks (batch-aware) |
+| /add | task-adder | 1 | Add tasks to TODO/state |
+| /todo | task-adder | 1 | Display/manage TODO list |
+| /refactor | refactorer | 1-2 | Code refactoring |
+| /document | documenter | 2 | Documentation updates |
+| /lean | lean-implementation-orchestrator | 2 | Lean implementation |
+| /meta | meta | 2 | Agent/command creation |
+| /context | orchestrator | 1 | Context navigation/help |
 
-- `add.md` - Add tasks to TODO.md with intelligent breakdown
-- `document.md` - Documentation maintenance and updates
-- `implement.md` - Execute implementation plans
-- `lean.md` - LEAN 4 proof implementation
-- `meta.md` - Create or modify agents and commands
-- `plan.md` - Create implementation plans
-- `refactor.md` - Code refactoring and quality improvement
-- `research.md` - Multi-source research
-- `review.md` - Repository analysis and verification
-- `revise.md` - Revise existing implementation plans
-- `task.md` - Execute TODO tasks
-- `todo.md` - TODO management and display
-
-## Quick Reference
-
-| Command | Purpose | Agent | Syntax |
-|---------|---------|-------|--------|
-| /review | Repository analysis and verification | reviewer | `/review` |
-| /research | Multi-source research | researcher | `/research "{topic}"` |
-| /plan | Create implementation plan | planner | `/plan "{task}"` |
-| /revise | Revise implementation plan | planner | `/revise {project_number}` |
-| /lean | Implement LEAN 4 proof | proof-developer | `/lean {project_number}` |
-| /refactor | Refactor code | refactorer | `/refactor {file_path}` |
-| /document | Update documentation | documenter | `/document "{scope}"` |
-| /meta | Create/modify agents/commands | meta | `/meta "{request}"` |
-| /add | Add TODO tasks | task-adder | `/add "{task}"` |
-| /todo | Display TODO list | task-adder | `/todo` |
-| /task | Execute TODO task | task-executor | `/task {task_number}` |
-| /implement | Execute implementation plan | implementation-orchestrator | `/implement {plan_path} [phase]` |
-
-## Usage
-
-### Basic Workflow
-
-**1. Review repository state**
-```bash
-/review
-```
-Analyzes repository, verifies proofs, updates TODO.md with findings.
-
-**2. Research a topic**
-```bash
-/research "Kripke semantics for bimodal logic"
-```
-Searches LEAN libraries (LeanSearch, Loogle) and web, creates comprehensive
-research report.
-
-**3. Create implementation plan**
-```bash
-/plan "Implement soundness proof for bimodal logic"
-```
-Analyzes complexity and dependencies, creates detailed step-by-step
-implementation plan.
-
-**4. Implement the plan**
-```bash
-/lean 001
-```
-Implements proof following plan, verifies with lean-lsp-mcp, commits to git.
-
-**5. Refactor code**
-```bash
-/refactor Logos/Core/Semantics/Truth.lean
-```
-Improves code readability, enforces style guide, simplifies proofs.
-
-**6. Update documentation**
-```bash
-/document "bimodal logic proof system"
-```
-Updates documentation to be complete, accurate, and concise.
-
-### Advanced Workflows
-
-**Plan revision cycle**
-```bash
-/plan "Implement decidability procedure"  # Creates implementation-001.md
-/revise 004                               # Creates implementation-002.md
-/revise 004                               # Creates implementation-003.md
-```
-
-**Task management**
-```bash
-/add "Prove soundness theorem for bimodal logic"  # Adds to TODO.md
-/todo                                              # Displays TODO list
-/task 63                                           # Executes task #63
-```
-
-**Meta-system operations**
-```bash
-/meta "Create specialist for proof search strategies"
-/meta "Add command for batch proof verification"
-```
-
-## Command Structure
-
-### Invocation Pattern
-
-Commands follow consistent patterns:
-- **No arguments**: `/review`, `/todo`
-- **String argument**: `/research "{topic}"`, `/document "{scope}"`
-- **Number argument**: `/lean {project_number}`, `/task {task_number}`
-- **Path argument**: `/refactor {file_path}`
-- **Mixed arguments**: `/implement {plan_path} [phase_number]`
-
-### Routing Logic
-
-1. **Command invoked** by user
-2. **Orchestrator** parses command and arguments
-3. **Routes** to appropriate primary agent
-4. **Allocates** context based on command type
-5. **Agent** executes workflow, delegates to specialists
-6. **Returns** summary and artifact references to user
-
-### Context Allocation
-
-Commands automatically allocate appropriate context levels from `.opencode/context/`:
-- **Level 1**: `/refactor`, `/document`, `/add`, `/todo` (focused, single-domain)
-- **Level 2**: `/plan`, `/lean`, `/task`, `/implement` (multi-domain, moderate complexity)
-- **Level 3**: `/review`, `/research` (comprehensive, complex analysis)
-
-## Related Documentation
-
-- [Main README](../README.md) - System overview
-- [Agent System](../agent/README.md) - Agent architecture
-- [QUICK-START.md](../QUICK-START.md) - Step-by-step usage guide
-- [Context Guide](../context/README.md) - Context organization and usage
-
-## Contributing
-
-To add a new command:
-
-1. Identify common workflow that needs streamlined interface
-2. Determine which primary agent should handle the command
-3. Use command template pattern from existing commands
-4. Define command syntax and argument parsing
-5. Document routing logic and context allocation
-6. Add command entry to this README
-7. Test command invocation and agent routing
-
-Command files should include:
-- Command description and purpose
-- Syntax and argument specification
-- Routing target (which agent)
-- Context allocation level
-- Example usage
-- Expected artifacts and return values
-
-See existing command files for examples and patterns.
+## Migration Notes
+- All command docs now use the YAML + XML structure and reference the new standard/template.
+- Dry-runs/health-checks must not create project directories or write registries.
+- Summaries must be emitted/updated when artifacts are produced and linked from TODO/state.

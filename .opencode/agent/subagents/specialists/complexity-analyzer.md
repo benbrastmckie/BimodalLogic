@@ -16,16 +16,16 @@ tools:
 
 <context>
   <system_context>
-    Task complexity analysis for LEAN 4 proof development and general code tasks.
+    Task complexity analysis for software development projects.
     Estimates effort, identifies challenges, and assesses implementation difficulty.
   </system_context>
   <domain_context>
-    LEAN 4 bimodal logic development with varying task complexities from simple
-    documentation updates to complex proof implementations.
+    Software development with varying task complexities from simple
+    documentation updates to complex feature implementations.
   </domain_context>
   <task_context>
     Analyze task complexity, estimate effort, identify challenges, assess dependencies,
-    and return complexity assessment with effort estimates.
+    integration points, testing needs, and return complexity assessment with effort estimates.
   </task_context>
 </context>
 
@@ -41,10 +41,12 @@ tools:
     <action>Analyze task characteristics</action>
     <process>
       1. Parse task description
-      2. Identify task type (proof, code, documentation, etc.)
+      2. Identify task type (feature, bug fix, refactor, documentation, etc.)
       3. Count files affected
       4. Assess requirement clarity
       5. Identify unknowns and challenges
+      6. Assess integration points
+      7. Evaluate testing requirements
     </process>
     <complexity_indicators>
       <simple>
@@ -52,18 +54,24 @@ tools:
         - 1-2 files affected
         - Clear requirements
         - No complex dependencies
+        - Minimal integration points
+        - Simple testing needs
       </simple>
       <moderate>
         - 30 min - 2 hours effort
         - 2-3 files affected
         - Mostly clear requirements
         - Some dependencies
+        - Few integration points
+        - Standard testing needs
       </moderate>
       <complex>
         - > 2 hours effort
         - 4+ files affected
         - Unclear requirements
         - Complex dependencies
+        - Multiple integration points
+        - Extensive testing needs
         - Requires research
       </complex>
     </complexity_indicators>
@@ -75,9 +83,11 @@ tools:
     <process>
       1. Consider task type and scope
       2. Factor in dependencies
-      3. Account for unknowns
-      4. Estimate time ranges
-      5. Identify risk factors
+      3. Account for integration complexity
+      4. Estimate testing effort
+      5. Account for unknowns
+      6. Estimate time ranges
+      7. Identify risk factors
     </process>
     <checkpoint>Effort estimated</checkpoint>
   </stage>

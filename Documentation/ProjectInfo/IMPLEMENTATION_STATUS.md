@@ -1,6 +1,6 @@
 # Implementation Status - Logos MVP
 
-**Last Updated**: 2025-12-21
+**Last Updated**: 2025-12-23
 **Project Version**: 0.1.0-mvp
 **Status**: Layer 0 (Core TM) MVP Complete - ALL 6 PERPETUITY PRINCIPLES PROVEN (P1-P6) - Phase 4 Modal Theorems COMPLETE (8/8 proven) - DEDUCTION THEOREM COMPLETE (Task 46) [COMPLETE]
 
@@ -8,6 +8,12 @@
 - Compliance Score: 95/100 (5/5 stars)
 - Repository Health: 94/100 (5/5 stars)
 - Status: PRODUCTION-READY for Layer 0
+
+## Latest Changes (2025-12-23)
+- Task 127 completed: heuristic scoring weights and branch ordering added to `ProofSearch` with additional unit tests.
+- Task 144: /revise aligned with /add and /plan for context references—plan v3 at `.opencode/specs/127_context_refactor/plans/implementation-002.md` drives agent/command reference updates post-refactor; no numbering/state changes.
+- Task 152: plan reversed to restore YAML front matter and @subagent/XML markup for command docs/meta templates—plan v2 at `.opencode/specs/152_standardize_command_templates_and_migrate_command_docs/plans/implementation-002.md`.
+- Task 154: plan v2 at `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-002.md` will execute Branch B in Lean (refactor `derivable_implies_swap_valid`, add local transport lemmas) and retire tasks 129/130 after implementation; /revise guardrails reused (no new project directories, status markers synced).
 
 ## Update Instructions
 
@@ -18,7 +24,7 @@
 2. Verify sorry counts with: `grep -rn "sorry" Logos/Core/**/*.lean`
 3. Update Summary Table at bottom to reflect current state
 4. Update "Last Updated" date and "Project Version" if significant
-5. Cross-reference changes in SORRY_REGISTRY.md if sorry counts change
+5. Cross-reference changes in SORRY_REGISTRY.md and TACTIC_REGISTRY.md when command/task updates affect sorry or tactic status (keep all three files in sync)
 
 **Verification Commands**:
 ```bash
@@ -51,7 +57,25 @@ Logos has completed its MVP phase with a functional implementation of the TM bim
 - **Infrastructure Only**: 1/9 (11%)
 - **Planned Extensions**: Layer 1, 2, 3 (future work)
 
-## How to Verify
+## Documentation
+
+**Planned Work**:
+- Task 144: Update context references after refactor (remap agent/command references using references plan; depends on Task 143) [IN PROGRESS]
+- Task 145: Abandoned; YAML front-matter approach archived in favor of status markers
+- Task 146: Completed; YAML front-matter retired in favor of marker-aligned single-status format
+- Task 152: Standardize command templates, add commands standard, migrate command docs, and update /meta context/templates to the YAML/@subagent/XML format (per meta/context exemplars). [IN PROGRESS] (Plan v2: `.opencode/specs/152_standardize_command_templates_and_migrate_command_docs/plans/implementation-002.md`)
+
+## System Package
+
+**Planned Work**:
+- Task 151: Ensure `/task` pre-updates TODO status to [IN PROGRESS], mirrors plan status when linked, and syncs plan phase headers as phases start/block/complete. [COMPLETED]
+- Task 153: Revise `/research` and `/plan` to start tasks at [IN PROGRESS] and conclude at [RESEARCHED]/[PLANNED] with TODO/state/plan sync and lazy directory creation preserved. [NOT STARTED]
+- Task 155: Optimize .opencode command subagent routing and metadata to ensure correct delegation, metadata listing of invoked subagents per command file, and routing checks without premature directory creation. [PLANNED]
+- No open System package tasks. Tasks 147–150 are completed and archived; current focus is on semantic completeness and context-reference follow-through.
+
+ 
+ ## How to Verify
+
 
 All status claims in this document can be verified by inspecting the source code:
 
@@ -208,7 +232,11 @@ All semantics modules fully implemented with comprehensive tests.
 
 **Completed Work**: Task 12 (COMPLETE - 2025-12-20): Task semantics context documentation created, replacing Kripke semantics documentation with accurate description of implemented task-based semantics.
 
-**Planned Work**: Task 13 (Not Started): Reorganize `.opencode/context/` directory to consolidate logic domain knowledge, move type theory to LEAN 4 domain, and integrate project context into core. See [Context Reorganization Plan](../../.opencode/specs/081_context_reorganization/plans/implementation-001.md).
+**Planned Work**:
+- Task 13 (Not Started): Reorganize `.opencode/context/` directory to consolidate logic domain knowledge, move type theory to LEAN 4 domain, and integrate project context into core. See [Context Reorganization Plan](../../.opencode/specs/081_context_reorganization/plans/implementation-001.md).
+- Task 129 (Planned): Prove temporal swap validity lemmas in `Truth.lean`.
+- Task 130 (Planned): Prove domain extension lemmas in `Truth.lean`.
+- Task 154 (Planned): Research strategy for resolving temporal swap/domain extension (assess time-reversal lemma vs. refactoring `derivable_implies_swap_valid` with weaker helpers) to unblock Tasks 129 and 130.
 
 ### TaskFrame.lean
 - **Status**: Complete
@@ -407,7 +435,7 @@ lake build Logos.Core.Metalogic.DeductionTheorem
 - **Lines of Code**: 320
 - **Axiom Count**: 11 major theorems using `axiom` keyword
 - **Test Coverage**: 0% (no executable proofs)
-- **Planned Work**: Task 9: Begin Completeness Proofs (High Priority)
+- **Planned Work**: Tasks 132-135 (Planned): Completeness proofs (Lindenbaum lemma, canonical model construction, truth lemma, and `provable_iff_valid`).
 
 **Infrastructure Present**:
 1. Canonical model construction (types defined)
@@ -448,6 +476,7 @@ grep -n "^axiom" Logos/Metalogic/Completeness.lean
   - Tableau method for validity checking
   - Satisfiability decision procedure
   - Complexity analysis (EXPTIME for S5, PSPACE for linear temporal)
+- **Planned Work**: Tasks 136-138 (Planned): Design module architecture, implement tableau rules, and wire decision procedure with tests.
 
 **Package Status**:
 - Soundness: 20/20 components complete (100%) - All 13 axioms [COMPLETE], All 8 rules [COMPLETE]
@@ -701,6 +730,12 @@ lake build LogosTest.Core.Theorems.PerpetuityTest
 ## Automation Package
 
 **Status**: `[PARTIAL]` - Core tactics implemented (6/12), no advanced search
+
+**Planned Work**:
+- Task 126 (Planned): Implement `bounded_search` and `matches_axiom` in ProofSearch.
+- Task 127 (Planned): Implement heuristic scoring functions in ProofSearch.
+- Task 128 (Planned): Implement caching/context helpers in ProofSearch.
+- Task 147 (Planned): Ensure `/task` uses Lean subagents and MCP servers correctly (route Lean work to the right subagents and MCP servers with validation and fallbacks).
 
 ### Tactics.lean
 - **Status**: `[PARTIAL]` - 6 core tactics implemented, 6 advanced tactics planned
@@ -1008,28 +1043,30 @@ Not started:
 
 ## Next Steps
 
-1. **Completeness Proofs** (Task 9 - Priority: High)
+**Planned Work**: Task 142: Fix status marker display formatting in TODO.md
+
+1. **Completeness Proofs** (Tasks 132-135 - Priority: Low)
    - Implement canonical model construction
    - Prove truth lemma
-   - Complete weak and strong completeness
+   - Complete `provable_iff_valid`
 
-2. **Resolve Truth.lean Sorries** (Task 14 - Priority: Medium)
+2. **Resolve Truth.lean Sorries** (Tasks 129-130 - Priority: Medium)
    - Fix temporal swap validity lemmas
-   - Remove remaining 3 sorry placeholders
+   - Prove domain extension lemmas
 
-3. **Update Documentation** (Task 15 - Priority: Medium)
+3. **Update Documentation** (Task 125 - Priority: Medium)
    - Update MODULE_ORGANIZATION.md
    - Ensure documentation matches implementation
 
-4. **Implement Automation** (Task 7 - Priority: Medium)
-   - Replace tactic stubs with implementations
-   - Implement proof search algorithms
+4. **Implement ProofSearch Automation** (Tasks 126-128 - Priority: Medium)
+   - Replace search-related axiom stubs with implementations
+   - Add heuristics and caching
 
-5. **Clean up Archive** (Task 16 - Priority: Low)
+5. **Clean up Archive** (Task 131 - Priority: Low)
    - Migrate useful examples
    - Remove obsolete files
 
-6. **Plan Layer 1/2/3 Extensions** (Task 11 - Priority: Low)
+6. **Plan Layer 1/2/3 Extensions** (Tasks 139-141 - Priority: Low)
    - Counterfactual operators
    - Epistemic operators
    - Normative operators

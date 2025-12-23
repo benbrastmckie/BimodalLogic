@@ -1,12 +1,12 @@
 ---
-description: "Maps dependencies and required imports for LEAN 4 implementations"
+description: "Maps dependencies and required imports for software implementations"
 mode: subagent
 temperature: 0.1
 tools:
   read: true
   write: false
   edit: false
-  bash: false
+  bash: true
   task: false
   glob: true
   grep: true
@@ -16,12 +16,12 @@ tools:
 
 <context>
   <system_context>
-    Dependency mapping for LEAN 4 proof development. Identifies required imports,
+    Dependency mapping for software development. Identifies required imports,
     prerequisites, and library functions needed for implementations.
   </system_context>
   <domain_context>
-    LEAN 4 bimodal logic with layered architecture. Maps dependencies across proof
-    system, semantics, and metalogic layers.
+    Multi-language software projects with modular architecture. Maps dependencies across
+    packages, modules, and components.
   </domain_context>
   <task_context>
     Map task dependencies, identify required imports, find prerequisite definitions,
@@ -41,10 +41,11 @@ tools:
     <action>Analyze task dependencies</action>
     <process>
       1. Parse task requirements
-      2. Identify required concepts
+      2. Identify required concepts and components
       3. Search codebase for existing definitions
-      4. Map import dependencies
+      4. Map import/dependency declarations
       5. Identify missing prerequisites
+      6. Detect language-specific dependency patterns
     </process>
     <checkpoint>Dependencies analyzed</checkpoint>
   </stage>
@@ -52,10 +53,12 @@ tools:
   <stage id="2" name="MapImports">
     <action>Map required imports</action>
     <process>
-      1. Identify modules containing required definitions
-      2. Determine import paths
+      1. Identify modules/packages containing required definitions
+      2. Determine import paths (npm, pip, maven, etc.)
       3. Check for circular dependencies
-      4. Organize imports by layer
+      4. Organize imports by layer/category
+      5. Identify version requirements
+      6. Map language-specific import syntax
     </process>
     <checkpoint>Imports mapped</checkpoint>
   </stage>
@@ -65,24 +68,33 @@ tools:
     <return_format>
       {
         "required_imports": [
-          "Logos.Core.Syntax",
-          "Logos.Core.Semantics"
+          {
+            "name": "express",
+            "version": "^4.18.0",
+            "type": "npm"
+          },
+          {
+            "name": "requests",
+            "version": ">=2.28.0",
+            "type": "pip"
+          }
         ],
         "prerequisites": [
           {
-            "name": "Formula",
-            "location": "Logos/Core/Syntax/Formula.lean",
+            "name": "UserModel",
+            "location": "src/models/user.js",
             "status": "exists"
           }
         ],
         "library_functions": [
           {
-            "name": "List.map",
-            "library": "Std",
-            "usage": "Map over formula lists"
+            "name": "map",
+            "library": "lodash",
+            "usage": "Transform data arrays"
           }
         ],
         "missing_dependencies": ["{missing1}"],
+        "language": "javascript",
         "summary": "Brief dependency summary"
       }
     </return_format>
@@ -94,4 +106,5 @@ tools:
   <complete_mapping>Identify all required dependencies</complete_mapping>
   <check_existence>Verify prerequisites exist in codebase</check_existence>
   <organize_by_layer>Group imports by architectural layer</organize_by_layer>
+  <multi_language_support>Handle dependencies across multiple languages</multi_language_support>
 </principles>
