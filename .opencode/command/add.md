@@ -12,7 +12,6 @@ registry_impacts:
   - .opencode/specs/state.json
 creates_root_on: never
 creates_subdir: []
-dry_run: "Parse and number only; no status/registry/state writes and no directory creation."
 ---
 
 Context Loaded:
@@ -35,6 +34,78 @@ Context Loaded:
 <role>Task Adder responsible for atomic task creation and numbering integrity.</role>
 
 <task>Create one or more tasks using the next available project number, append them to TODO.md with `[NOT STARTED]` markers, and sync state.json pending_tasks while incrementing `next_project_number`.</task>
+
+## Quick Reference
+
+**Most Common Usage** (90% of cases):
+```bash
+/add "Task description"
+```
+
+**With Priority Override**:
+```bash
+/add "Urgent task" --priority High
+```
+
+**Lean Task**:
+```bash
+/add "Prove theorem X" --language lean
+```
+
+**Batch Tasks**:
+```bash
+/add "Task 1" "Task 2" "Task 3"
+```
+
+**From File**:
+```bash
+/add --file path/to/tasks.md
+```
+
+For full documentation, see sections below.
+
+## Description
+
+Add tasks to TODO.md with atomic number allocation and intelligent metadata inference.
+
+**Minimal Usage**: Provide just a description - all other metadata will be auto-populated with sensible defaults.
+
+**Advanced Usage**: Override defaults with flags for priority, language, effort, files, etc.
+
+**Batch Usage**: Provide multiple descriptions or use --file for bulk task creation.
+
+## Required Input
+
+- **Description**: Task description (required)
+
+## Optional Input (Auto-Populated if Not Provided)
+
+- **Priority**: Default = Medium
+- **Language**: Default = markdown (inferred from description/files if possible)
+- **Effort**: Default = 2 hours (inferred from description complexity)
+- **Files Affected**: Default = TBD
+- **Dependencies**: Default = None
+- **Blocking**: Default = None
+- **Acceptance Criteria**: Default = Generic checklist based on description
+- **Impact**: Default = Generic statement based on description
+
+## Input Validation
+
+<validation>
+  <pre_flight>
+    1. Validate at least one description provided
+    2. Validate descriptions are non-empty strings
+    3. Validate --file path exists if provided
+    4. Reject invalid flag combinations
+  </pre_flight>
+  
+  <error_messages>
+    - Empty description: "Error: Description cannot be empty. Usage: /add \"task description\""
+    - No input: "Error: No task description provided. Usage: /add \"task description\""
+    - Invalid file: "Error: File not found: {path}. Check the path and try again."
+    - Invalid flags: "Error: Unknown flag: {flag}. See /add --help for valid flags."
+  </error_messages>
+</validation>
 
 <workflow_execution>
   <stage id="1" name="Preflight">
@@ -84,9 +155,29 @@ Context Loaded:
 </quality_standards>
 
 <usage_examples>
-  - `/add "Implement user authentication"`
-  - `/add "Fix API bug" "Update README with examples"`
-  - `/add --file docs/FEATURES.md`
+  ### Simple (Recommended for Quick Tasks)
+  ```bash
+  /add "Fix typo in README"
+  # → Task created with all metadata auto-populated
+  ```
+  
+  ### With Optional Overrides
+  ```bash
+  /add "Implement feature X" --priority High --language lean --effort "4 hours"
+  # → Task created with specified metadata
+  ```
+  
+  ### Batch Creation
+  ```bash
+  /add "Task 1" "Task 2" "Task 3"
+  # → Multiple tasks created with sequential numbers
+  ```
+  
+  ### File Extraction
+  ```bash
+  /add --file docs/FEATURES.md
+  # → Extracts tasks from file and creates them
+  ```
 </usage_examples>
 
 <validation>

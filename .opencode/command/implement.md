@@ -17,7 +17,6 @@ registry_impacts:
 creates_root_on: "Only when writing implementation artifacts via phases"
 creates_subdir:
   - summaries
-dry_run: "Validate plan path and routing; no dirs, no status/registry/state writes, no artifacts."
 ---
 
 Context Loaded:

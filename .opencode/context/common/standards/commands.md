@@ -15,7 +15,6 @@
    - `registry_impacts`: registries/state touched (e.g., TODO/state, IMPLEMENTATION_STATUS, SORRY_REGISTRY, TACTIC_REGISTRY)
    - `creates_root_on`: condition that triggers project root creation (if ever)
    - `creates_subdir`: subdir(s) created when artifacts are written (reports|plans|summaries)
-   - `dry_run`: summary of routing-check behavior (no dirs/status/registry writes; MCP ping expectations)
 
 2. **Context Loaded block** (plain list with `@` paths). Include common/system + standards and the minimal project contexts needed. For Lean flows, add project/lean4 and project/logic only when the TODO `Language: lean` or `--lang lean` flag applies.
 
@@ -39,14 +38,12 @@
    - Never create project roots/subdirs until writing an artifact. When writing, create only the needed subdir (reports|plans|summaries). Do not emit placeholders.
 
 6. **Registry/State Sync**
-   - When commands mutate task/plan/implementation status or sorry/tactic counts, sync TODO.md, `.opencode/specs/state.json`, IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md in the same operation. Dry-runs skip registry writes and avoid filesystem creation.
+   - When commands mutate task/plan/implementation status or sorry/tactic counts, sync TODO.md, `.opencode/specs/state.json`, IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md in the same operation.
 
-7. **Dry-Run / Routing-Check Semantics**
-   - Dry-runs perform parsing, Lean detection, MCP ping (if applicable), and subagent path preview only; they MUST NOT create directories, write artifacts, or mutate TODO/state/registries/status markers.
-8. **Git Commits (Targeted)**
+7. **Git Commits (Targeted)**
    - Commands must reference `git-commits.md` and use `git-workflow-manager` for scoped commits after artifacts/state updates are written.
    - Stage only task-relevant files (no `git add -A` / repo-wide adds); prefer multiple small commits over blanket commits.
-   - Run appropriate checks (build/test/lint) when code changes; skip for dry-runs.
+   - Run appropriate checks (build/test/lint) when code changes.
 
 ## Context Allocation (Levels)
 - **Level 1**: Simple/single-file/single-operation commands (e.g., /add, /todo, /refactor small scope).
@@ -67,7 +64,6 @@
 - Validate inputs/flags; fail clearly on invalid formats.
 - Reject directory creation without artifacts.
 - No emojis in commands, outputs, or artifacts.
-- Include dry-run/health-check guidance where applicable.
 
 ## Migration Guidance
 - All command docs under `.opencode/command/` must follow this standard with YAML + XML ordering above.

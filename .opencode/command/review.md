@@ -17,7 +17,6 @@ creates_root_on: "Only when writing review reports/summaries"
 creates_subdir:
   - reports
   - summaries
-dry_run: "Routing-check only: parse scope, preview findings/task additions; no dirs/artifacts/status/registry/state writes and no archive moves."
 ---
 
 Context Loaded:
@@ -50,7 +49,6 @@ Context Loaded:
     <process>
       1. Parse `$ARGUMENTS` for scope; confirm no cleanup/archival actions will occur.
       2. Load standards and status docs; ensure numbering changes only occur through /add.
-      3. If `--dry-run`, stop after routing preview; return subagent path without status changes or filesystem/registry/state edits.
     </process>
   </stage>
   <stage id="2" name="GapAnalysis">

@@ -131,6 +131,45 @@ tools:
       8. Identify dependencies (explicit and implicit)
       9. Assign to appropriate category
     </process>
+    <metadata_defaults>
+      When metadata is not provided by user, task-adder applies these defaults:
+      
+      Always Auto-Populated:
+      - Status: [NOT STARTED]
+      - Task Number: From atomic-task-number.sh
+      
+      Sensible Defaults (Used if Not Provided):
+      - Priority: Medium
+      - Language: markdown (or inferred from file paths/keywords)
+      - Effort: 2 hours (or inferred from description complexity)
+      - Files Affected: TBD
+      - Dependencies: None
+      - Blocking: None
+      
+      Auto-Generated (Simple Templates):
+      - Acceptance Criteria:
+        [ ] {Description} completed
+        [ ] Changes tested
+        [ ] Documentation updated (if applicable)
+      
+      - Impact:
+        Addresses: {Description}
+      
+      Inference Logic:
+      
+      Language Inference:
+      - If description mentions "Lean", "proof", "theorem" → language: lean
+      - If description mentions "markdown", "README", "docs" → language: markdown
+      - If file paths provided → infer from extensions
+      - Otherwise → default: markdown
+      
+      Effort Inference:
+      - Description < 10 words → 1 hour
+      - Description 10-20 words → 2 hours
+      - Description 20-40 words → 3-4 hours
+      - Description > 40 words or mentions "research", "implement" → 4+ hours
+      - User can always override with --effort flag
+    </metadata_defaults>
     <numbering_logic>
       - Use atomic-task-number.sh service for safe number allocation
       - Call with task count: `./atomic-task-number.sh {count} "task-adder"`

@@ -6,6 +6,7 @@ context_level: 2
 language: markdown
 subagents:
   - researcher
+  - status-sync-manager
 mcp_requirements:
   - "lean-lsp (Lean research only)"
 registry_impacts:
@@ -15,7 +16,6 @@ registry_impacts:
 creates_root_on: "When writing the first research report"
 creates_subdir:
   - reports
-dry_run: "Routing-check supported: validate numeric task, detect Lean, MCP ping if Lean; no dirs/status/registry/state writes and no artifacts."
 input_format: "Required: a single numeric task ID (e.g., /research 160). Reject ranges/lists/missing/non-numeric inputs. Error message (no emojis): 'Error: Task number is required and must be numeric (e.g., /research 160).'"
 ---
 
@@ -48,27 +48,26 @@ Context Loaded:
     <action>Validate task and set status</action>
      <process>
        1. Parse numeric task number (single only) and optional prompt; reject missing/non-numeric/range/list inputs with a clear, emoji-free error: "Error: Task number is required and must be numeric (e.g., /research 160)." Fail if task not in TODO.md.
-       2. Detect Lean intent via TODO `Language`/`--lang` to decide whether to load Lean contexts for research; if Lean, MCP ping `lean-lsp` during dry-run/execute.
-       3. If `--dry-run`, stop after validation + MCP ping preview; do not set statuses or create directories.
-       4. Otherwise set TODO to [IN PROGRESS] with **Started** date and state to `in_progress` before routing.
+       2. Detect Lean intent via TODO `Language`/`--lang` to decide whether to load Lean contexts for research; if Lean, MCP ping `lean-lsp` before proceeding.
+       3. Use @subagents/specialists/status-sync-manager to atomically set TODO to [IN PROGRESS] with **Started** date and state to `in_progress` before routing.
      </process>
 
   </stage>
   <stage id="2" name="Research">
     <action>Route to @subagents/researcher</action>
      <process>
-       1. Derive slug and plan project root; if `--dry-run`, preview slug only; otherwise create root + reports/ only when writing artifacts (lazy creation).
+       1. Derive slug and plan project root; create root + reports/ only when writing artifacts (lazy creation).
        2. Produce `reports/research-XXX.md` (incremental) following report standard.
-       3. Capture artifact paths and brief findings summary; skip artifact creation entirely when `--dry-run`.
+       3. Capture artifact paths and brief findings summary.
      </process>
 
   </stage>
   <stage id="3" name="Postflight">
     <action>Sync and summarize</action>
      <process>
-       1. When not `--dry-run`, mark TODO and state to `[RESEARCHED]` with **Completed** date; add research link and brief summary; preserve metadata.
+       1. Use @subagents/specialists/status-sync-manager to atomically mark TODO, state.json, and project state.json to [RESEARCHED] status with **Completed** date; add research link to TODO and brief summary; preserve metadata.
        2. Update project state (reports array, phase/status `researched`, timestamps) without creating extra subdirs when artifacts were written.
-       3. Return artifact references and next steps; in `--dry-run`, return routing/MCP/results preview only.
+       3. Return artifact references and next steps.
      </process>
 
   </stage>

@@ -29,7 +29,6 @@ creates_root_on: "When writing first Lean artifact (reports/summaries)"
 creates_subdir:
   - reports
   - summaries
-dry_run: "Routing + MCP ping only; no dirs/artifacts/status/registry updates. Abort with remediation if lean-lsp missing."
 ---
 
 Context Loaded:

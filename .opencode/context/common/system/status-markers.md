@@ -249,8 +249,12 @@ This document defines the standardized status markers used across the ProofCheck
 
 **Status Update Tools**:
 - `/task` command: Marks `[IN PROGRESS]` at start, `[COMPLETED]` at end (simple tasks)
+- `/plan` command: Marks `[IN PROGRESS]` at start, `[PLANNED]` at completion
+- `/research` command: Marks `[IN PROGRESS]` at start, `[RESEARCHED]` at completion
+- `/revise` command: Preserves current status, creates new plan version
 - `/todo` command: Removes `[COMPLETED]` **and** `[ABANDONED]` tasks from TODO/state (with confirmation thresholds) while preserving numbering and lazy creation guardrails
-- `batch-status-manager`: Atomic batch updates for multiple tasks
+- `status-sync-manager`: Atomic multi-file updates (TODO.md + state.json + plan files)
+- `batch-status-manager`: Atomic batch updates for TODO.md only
 - `todo-manager`: Manual status updates
 
 ---
@@ -632,6 +636,79 @@ grep -r "Status: Complete" .opencode/specs/TODO.md
 **Abandoned**: 2025-12-20
 **Abandonment Reason**: {specific reason}
 ```
+
+---
+
+## Multi-File Status Synchronization
+
+### Overview
+
+Commands that create or update plans (`/plan`, `/research`, `/revise`, `/task`) must keep status markers synchronized across multiple files:
+- TODO.md (user-facing task list)
+- state.json (global project state)
+- Project state.json (project-specific state)
+- Plan files (implementation plans)
+
+### Atomic Update Requirement
+
+All status updates across these files must be **atomic** - either all files are updated successfully, or none are updated. This prevents inconsistent states where TODO.md shows one status but state.json shows another.
+
+### status-sync-manager Specialist
+
+The `status-sync-manager` specialist provides atomic multi-file updates using a two-phase commit protocol:
+
+**Phase 1 (Prepare)**:
+1. Read all target files into memory
+2. Validate current status allows requested transition
+3. Prepare all updates in memory
+4. Validate all updates are well-formed
+5. If any validation fails, abort (no files written)
+
+**Phase 2 (Commit)**:
+1. Write files in dependency order: TODO.md → state.json → project state → plan
+2. Verify each write before proceeding
+3. On any write failure, rollback all previous writes
+4. All files updated or none updated (atomic guarantee)
+
+### Usage in Commands
+
+**`/plan` command**:
+- Preflight: `status-sync-manager.mark_in_progress(task_number, timestamp)`
+- Postflight: `status-sync-manager.mark_planned(task_number, timestamp, plan_path)`
+
+**`/research` command**:
+- Preflight: `status-sync-manager.mark_in_progress(task_number, timestamp)`
+- Postflight: `status-sync-manager.mark_researched(task_number, timestamp)`
+
+**`/revise` command**:
+- Preflight: Preserve current status (no status change)
+- Postflight: Update plan links, preserve status
+
+**`/task` command**:
+- Preflight: `status-sync-manager.mark_in_progress(task_number, timestamp, plan_path)`
+- Postflight: `status-sync-manager.mark_completed(task_number, timestamp, plan_path)`
+
+### Rollback Mechanism
+
+If any file write fails during the commit phase:
+1. Immediately stop further writes
+2. Restore all previously written files from backup
+3. Return error with details of which file failed
+4. System remains in consistent state (all files match original)
+
+### Error Handling
+
+**File Not Found**: Abort before writing, return error
+**Invalid Transition**: Abort before writing, return error
+**Write Failure**: Rollback all writes, return error with file details
+**Rollback Failure**: Log critical error, manual intervention required
+
+### Backward Compatibility
+
+- `batch-status-manager` remains for TODO.md-only updates
+- `status-sync-manager` used for multi-file updates
+- Commands choose appropriate specialist based on needs
+- No breaking changes to existing workflows
 
 ---
 

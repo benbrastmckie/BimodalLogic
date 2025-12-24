@@ -282,13 +282,28 @@ The fields are organized in logical order:
 
 ## Timestamp Format
 
-All timestamps use ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`
+All timestamps use ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ` for creation timestamps, and `YYYY-MM-DD` for status change timestamps.
 
 Examples:
-- `"2025-12-19T00:00:00Z"` - Midnight UTC
-- `"2025-12-19T14:30:00Z"` - 2:30 PM UTC
+- `"created": "2025-12-19T00:00:00Z"` - Full ISO8601 with time
+- `"started": "2025-12-19"` - Date only for status changes
+- `"completed": "2025-12-19"` - Date only for status changes
 
-Always use UTC timezone (Z suffix) for consistency.
+Always use UTC timezone (Z suffix) for full timestamps.
+
+### Field Naming Convention
+
+**Status change timestamp fields use simple names WITHOUT `_at` suffix:**
+- `started` (NOT `started_at`)
+- `completed` (NOT `completed_at`)
+- `researched` (NOT `researched_at`)
+- `planned` (NOT `planned_at`)
+- `blocked` (NOT `blocked_at`)
+- `abandoned` (NOT `abandoned_at`)
+
+**Creation/update timestamps use full ISO8601:**
+- `created` - Full ISO8601 timestamp
+- `last_updated` - Date only (YYYY-MM-DD)
 
 ## Schema Versioning
 

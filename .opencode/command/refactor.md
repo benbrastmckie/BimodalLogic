@@ -17,7 +17,6 @@ creates_root_on: "Only when writing refactoring reports/summaries"
 creates_subdir:
   - reports
   - summaries
-dry_run: "Validate scope only; no dirs/artifacts/status/registry writes."
 ---
 
 Context Loaded:

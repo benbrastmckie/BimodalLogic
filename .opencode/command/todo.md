@@ -16,7 +16,6 @@ registry_impacts:
   - Documentation/ProjectInfo/FEATURE_REGISTRY.md
 creates_root_on: never
 creates_subdir: []
-dry_run: "Report-only: analyze and preview moves; no dirs/status/registry writes and no archive moves."
 ---
 
 Context Loaded:
@@ -36,7 +35,7 @@ Context Loaded:
   <system_context>TODO maintenance and archival with numbering guardrails.</system_context>
   <domain_context>Active specs, archive, and status docs.</domain_context>
   <task_context>Remove completed/abandoned tasks, migrate state/archive entries, and clean orphan/stale items without creating new project dirs.</task_context>
-  <execution_context>Dry-run/report mode available; never create new project roots; only move existing.</execution_context>
+  <execution_context>Never create new project roots; only move existing.</execution_context>
 </context>
 
 <role>Maintenance orchestrator for TODO/state/archive synchronization.</role>
@@ -47,7 +46,7 @@ Context Loaded:
   <stage id="1" name="Preflight">
     <action>Set scope and confirm guardrails</action>
     <process>
-      1. Parse `$ARGUMENTS` for dry-run/report-only flags.
+      1. Parse `$ARGUMENTS` for scope.
       2. Load TODO/state/archive; ensure `next_project_number` remains untouched.
       3. Confirm no new project directories will be created.
     </process>
@@ -100,11 +99,10 @@ Context Loaded:
 
 <usage_examples>
   - `/todo`
-  - `/todo --dry-run`
 </usage_examples>
 
 <validation>
-  <pre_flight>Guardrails confirmed; dry-run respected.</pre_flight>
+  <pre_flight>Guardrails confirmed.</pre_flight>
   <mid_flight>Reviewer executed maintenance; no new dirs created.</mid_flight>
   <post_flight>TODO/state/archive/status docs synced; summary returned.</post_flight>
 </validation>

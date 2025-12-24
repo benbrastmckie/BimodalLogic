@@ -32,12 +32,46 @@ Standards for creating, formatting, and managing tasks within the .opencode syst
 -   Example: `### 90. Implement User Login`
 
 #### Metadata
--   **Effort**: Estimated time (e.g., "2 hours")
--   **Status**: `pending`, `in-progress`, `blocked`, `completed` (displayed in TODO.md using status markers per status-markers.md)
--   **Priority**: `High`, `Medium`, `Low`
--   **Language**: Primary language for the work (e.g., `lean`, `python`, `markdown`, `shell`, `json`). Required for every task created by `/add`, `/review`, and related commands.
--   **Blocking**: List of Task IDs blocked by this task, or `None`
--   **Dependencies**: List of Task IDs this task depends on, or `None`
+
+**Required Fields**:
+- **Description**: Clear description of the task (user must provide)
+
+**Auto-Populated Fields (Defaults Used if Not Provided)**:
+- **Priority**: Medium (override if task is urgent or low priority)
+- **Language**: markdown (override if task involves code)
+- **Effort**: 2 hours (override if you have better estimate)
+- **Files Affected**: TBD (override if you know which files)
+- **Dependencies**: None (override if task depends on others)
+- **Blocking**: None (override if task blocks others)
+- **Acceptance Criteria**: Generic checklist (override for specific criteria)
+- **Impact**: Generic statement (override for specific impact)
+- **Status**: `pending`, `in-progress`, `blocked`, `completed` (displayed in TODO.md using status markers per status-markers.md)
+
+**When to Override Defaults**:
+
+Override Priority when:
+- Task is urgent or blocking critical work → High
+- Task is nice-to-have or low impact → Low
+
+Override Language when:
+- Task involves Lean code → lean
+- Task involves specific language → specify language
+
+Override Effort when:
+- You have a better estimate based on task complexity
+- Task is known to be quick (<1 hour) or long (>4 hours)
+
+Override Files Affected when:
+- You know which files will be modified
+- Task is file-specific (e.g., "Fix bug in Foo.lean")
+
+Override Acceptance Criteria when:
+- Task has specific, measurable success criteria
+- Generic checklist is not sufficient
+
+Override Impact when:
+- Task has significant impact on project
+- Generic statement doesn't capture importance
 
 #### Content
 -   **Files Affected**: List of file paths.
@@ -69,7 +103,6 @@ Standards for creating, formatting, and managing tasks within the .opencode syst
   - Validate Lean MCP server availability against `.mcp.json` before dispatch; fail with a clear error if required servers are missing/unreachable or if the command is absent/returns non-zero during a health ping.
   - Default required Lean server: `lean-lsp` (stdio via `uvx lean-lsp-mcp`); planned servers (`lean-explore`, `loogle`, `lean-search`) should raise a "planned/not configured" warning instead of proceeding silently.
   - When validation fails, surface remediation steps (install command, set env like `LEAN_PROJECT_PATH`, supply API keys) and do **not** create project directories or artifacts.
-  - Support a `--dry-run`/routing check that exercises subagent selection and MCP handshake without creating project directories; keep numbering/state unchanged unless an artifact is emitted.
 
 ## Quality Checklist
 

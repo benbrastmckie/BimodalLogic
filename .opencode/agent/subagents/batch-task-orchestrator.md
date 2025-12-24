@@ -140,15 +140,15 @@ tools:
     <prerequisites>Execution waves determined</prerequisites>
     <process>
       For each wave in execution_waves:
-        1. Mark wave tasks IN PROGRESS (via batch-status-manager)
+        1. Mark wave tasks IN PROGRESS (via status-sync-manager for tasks with plans, batch-status-manager for tasks without plans)
         2. Execute all tasks in wave in parallel (concurrent task-executor invocations)
         3. Wait for all tasks in wave to complete
         4. Collect results for each task
          5. Identify failed tasks
-         6. Mark completed tasks COMPLETED (via batch-status-manager)
-         7. Mark failed tasks ABANDONED (via batch-status-manager)
+         6. Mark completed tasks COMPLETED (via status-sync-manager for tasks with plans, batch-status-manager for tasks without plans)
+         7. Mark failed tasks ABANDONED (via status-sync-manager for tasks with plans, batch-status-manager for tasks without plans)
          8. Identify blocked tasks (depend on failed tasks)
-         9. Mark blocked tasks BLOCKED (via batch-status-manager)
+         9. Mark blocked tasks BLOCKED (via status-sync-manager for tasks with plans, batch-status-manager for tasks without plans)
         10. Report wave completion
         11. If all tasks in wave failed and next wave depends on them, skip remaining waves
     </process>
@@ -171,7 +171,21 @@ tools:
       </implementation>
     </parallel_execution>
     <routing>
-      <route to="@subagents/specialists/batch-status-manager" when="wave_start">
+      <route to="@subagents/specialists/status-sync-manager" when="wave_start_with_plans">
+        <context_level>Level 1</context_level>
+        <pass_data>
+          - operation: "mark_in_progress"
+          - task_number: int
+          - timestamp: string (YYYY-MM-DD)
+          - plan_path: string (if plan exists)
+        </pass_data>
+        <expected_return>
+          - status: "success" | "error"
+          - files_updated: List[string]
+        </expected_return>
+      </route>
+      
+      <route to="@subagents/specialists/batch-status-manager" when="wave_start_without_plans">
         <context_level>Level 1</context_level>
         <pass_data>
           - operation: "mark_in_progress"
@@ -541,7 +555,6 @@ tools:
   <must>Always block dependent tasks when task fails</must>
   <must>Always update TODO.md atomically via batch-status-manager and keep plan/state parity per task</must>
   <must>Preserve lazy directory creation: never create project roots/subdirs unless a delegated execution writes an artifact</must>
-  <must>Support routing-check/test paths without writing artifacts or touching TODO/state</must>
   <must>Always generate comprehensive summary report</must>
   <must_not>Never execute task before its dependencies complete</must_not>
   <must_not>Never exceed concurrency limit</must_not>

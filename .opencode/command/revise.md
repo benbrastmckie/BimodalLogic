@@ -6,6 +6,7 @@ context_level: 2
 language: markdown
 subagents:
   - planner
+  - status-sync-manager
 mcp_requirements:
   - "lean-lsp (when revising Lean tasks)"
 registry_impacts:
@@ -15,7 +16,6 @@ registry_impacts:
 creates_root_on: never (reuses existing plans/)
 creates_subdir:
   - plans
-dry_run: "Routing-check only: validate task/plan link and Lean intent; no dirs/artifacts/status/registry/state writes."
 input_format: 'Required: single numeric task ID plus optional revision prompt (e.g., /revise 162 "Remove dry-run references"); reject ranges/lists/non-numeric inputs with error: Error: Task number is required and must be numeric (e.g., /revise 162 "Update plan scaffold"). If prompt is missing, error: Error: Revision prompt is required (e.g., /revise 162 "Add summary artifact parity checklist").'
 ---
 
@@ -49,27 +49,29 @@ Context Loaded:
       1. Parse single numeric task_number and capture the remaining arguments as the revision prompt; reject ranges/lists/non-numeric inputs with the numeric error above and reject missing prompts with the prompt error (no re-prompting when both are supplied).
       2. Locate task in TODO.md; extract existing plan link. If absent, instruct to run /plan first (no dirs created).
       3. Verify referenced plan file exists.
-      4. If `--dry-run`, stop after validation; do not set statuses or write files.
-      5. Otherwise set TODO status to [IN PROGRESS] with **Started** date; state to `in_progress` if task-bound.
+      4. Preserve current task status (do not change status during revision - revision is a refinement, not a status change). If task is [NOT STARTED], set to [IN PROGRESS] with **Started** date; otherwise preserve existing status.
+      5. Use @subagents/specialists/status-sync-manager for atomic status updates across TODO.md and state.json.
     </process>
   </stage>
   <stage id="2" name="CreateRevision">
     <action>Write new plan version</action>
     <process>
-      1. If `--dry-run`, preview the new filename and exit without writing.
-      2. In the same `plans/` folder, increment implementation-NNN.md to implementation-{N+1}.md.
-      3. Include revision prompt, delta header, `[NOT STARTED]` phase markers, and inherit Lean intent metadata.
-      4. Preserve numbering; do not modify next_project_number or create new project roots.
+      1. In the same `plans/` folder, increment implementation-NNN.md to implementation-{N+1}.md.
+      2. Include revision prompt, delta header, `[NOT STARTED]` phase markers, and inherit Lean intent metadata.
+      3. Preserve numbering; do not modify next_project_number or create new project roots.
     </process>
   </stage>
   <stage id="3" name="Postflight">
     <action>Sync links and state</action>
     <process>
-      1. If `--dry-run`, skip writes and return the intended new plan path only.
-      2. Update TODO task to point to the new plan version; keep metadata intact.
-      3. Update project state.json (if present) with new plan path, phase planning, timestamps; update global state pending task.
-      4. Update IMPLEMENTATION_STATUS.md/FEATURE_REGISTRY.md with revised plan reference when applicable.
-      5. Return plan path and applied updates.
+      1. Update TODO task to point to the new plan version; preserve current status marker; add revision timestamp to **Completed** field (for the revision activity, not task completion); keep all other metadata intact.
+      2. Update project state.json (if present) with new plan path in plans array, increment plan_version, update last_updated timestamp; preserve current status and phase.
+      3. Update global state.json pending_tasks entry with new plan reference and last_updated timestamp; preserve current status.
+      4. Mark new plan file header with [NOT STARTED] status and all phases with [NOT STARTED].
+      5. Add note to old plan file header indicating it has been superseded by the new version.
+      6. Use @subagents/specialists/status-sync-manager for atomic updates across TODO.md, state.json, and project state.json.
+      7. Update IMPLEMENTATION_STATUS.md/FEATURE_REGISTRY.md with revised plan reference when applicable.
+      8. Return plan path and applied updates.
     </process>
   </stage>
 </workflow_execution>

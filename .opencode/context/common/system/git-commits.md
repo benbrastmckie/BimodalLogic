@@ -5,7 +5,6 @@
 ## When to Commit
 - After artifacts are written (code, docs, reports, plans, summaries) and status/state/TODO updates are applied.
 - Once validation steps for the scope are done (e.g., `lake build`, `lake exe test`, lint or file-level checks when code changed).
-- Do not commit during dry-run or routing-check flows.
 
 ## Scoping Rules
 - Stage only files relevant to the current task/feature. Avoid repo-wide adds.

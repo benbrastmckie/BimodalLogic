@@ -21,7 +21,6 @@ creates_subdir:
   - plans
   - reports
   - summaries
-dry_run: "Routing check: parse scope/task, preview plan+task sync, ping MCP if needed, no directories/status markers/TODO/state/registry writes, no artifacts."
 ---
 
 Context Loaded:
@@ -42,22 +41,21 @@ Context Loaded:
   <system_context>Meta command orchestrating optimization of agents, subagents, commands, and context references with mandatory task+plan creation and status-marker compliance.</system_context>
   <domain_context>.opencode meta-system architecture, command standards, registry/state synchronization, and artifact management.</domain_context>
   <task_context>Bind or create a TODO task, generate a plan artifact, and execute a routed optimization review that aligns command→agent→subagent flows and context usage.</task_context>
-  <execution_context>Markdown/meta only (reject lean); orchestrator is primary; planner invoked as subagent for plan creation; lazy directory creation with dry-runs performing routing-only checks.</execution_context>
+  <execution_context>Markdown/meta only (reject lean); orchestrator is primary; planner invoked as subagent for plan creation; lazy directory creation enforced.</execution_context>
 </context>
 
 <role>Orchestrator-led meta optimizer coordinating planner and analysis subagents for compliant task, plan, and optimization artifact delivery.</role>
 
-<task>Create or update the optimization task entry, generate a plan artifact through planner, route optimization analyses to supporting subagents, and sync TODO/state with status markers while keeping dry-runs non-mutating.</task>
+<task>Create or update the optimization task entry, generate a plan artifact through planner, route optimization analyses to supporting subagents, and sync TODO/state with status markers.</task>
 
 <workflow_execution>
   <stage id="1" name="Preflight">
     <action>Validate flags and task binding</action>
     <process>
-      1. Parse flags: --scope {all|commands|agents|contexts|docs|routing} (default: all); --task {id|new}; --priority {High|Medium|Low}; --title (when creating); --dry-run; --lang {markdown} (reject lean). 
+      1. Parse flags: --scope {all|commands|agents|contexts|docs|routing} (default: all); --task {id|new}; --priority {High|Medium|Low}; --title (when creating); --lang {markdown} (reject lean). 
       2. Enforce markdown/meta scope; reject Lean intent and fail fast on unsupported flags or malformed inputs.
-      3. If --dry-run, perform routing-only validation (no directories, status changes, or registry writes) and return the planned subagent path.
-      4. Resolve task binding: if --task points to an existing TODO entry, load it and set **Status** to [IN PROGRESS] with **Started** timestamp; otherwise allocate a new task ID from state.json, insert a Medium-priority markdown TODO entry with Files Affected covering .opencode command/context/specs, and set it to [IN PROGRESS].
-      5. Sync .opencode/specs/state.json to `in_progress` with started_at when not a dry-run; do not create project directories during preflight.
+      3. Resolve task binding: if --task points to an existing TODO entry, load it and set **Status** to [IN PROGRESS] with **Started** timestamp; otherwise allocate a new task ID from state.json, insert a Medium-priority markdown TODO entry with Files Affected covering .opencode command/context/specs, and set it to [IN PROGRESS].
+      4. Sync .opencode/specs/state.json to `in_progress` with started_at; do not create project directories during preflight.
     </process>
   </stage>
   <stage id="2" name="PlanCreation">
@@ -66,7 +64,7 @@ Context Loaded:
       1. Derive project slug from the TODO title; lazy-create the project root and `plans/` only when writing the plan artifact.
       2. Orchestrator delegates plan drafting to @subagents/planner **using `.opencode/context/common/standards/plan.md` section ordering** (context → role → task → workflow_execution → routing_intelligence → artifact_management → quality_standards → usage_examples → validation); include required front matter/metadata and Research Inputs (or "none linked"), and ensure phase status markers/timestamps are present.
       3. Warn (do not fail) on missing/dangling research links; do not create directories while resolving links.
-      4. Link the plan path back into TODO.md and state.json; update plan status markers to mirror TODO/state transitions; skip all writes when --dry-run.
+      4. Link the plan path back into TODO.md and state.json; update plan status markers to mirror TODO/state transitions.
     </process>
   </stage>
   <stage id="3" name="Execution">
@@ -86,7 +84,7 @@ Context Loaded:
     <process>
       1. Update plan phases/status markers with timestamps; set TODO/status to [COMPLETED], [BLOCKED], or [PAUSED] as appropriate and record **Completed** or blocking reason.
       2. Emit optional `summaries/implementation-summary-YYYYMMDD.md` when artifacts exist and link in TODO/state; keep lazy creation (no summaries without artifacts).
-      3. Sync .opencode/specs/state.json with final status, timestamps, plan/report links, and registry impacts; update IMPLEMENTATION_STATUS.md when command/agent routing changes affect implementation readiness; skip on dry-run.
+      3. Sync .opencode/specs/state.json with final status, timestamps, plan/report links, and registry impacts; update IMPLEMENTATION_STATUS.md when command/agent routing changes affect implementation readiness.
       4. Return concise summary with artifact links; no emojis.
     </process>
   </stage>
@@ -99,10 +97,10 @@ Context Loaded:
 </routing_intelligence>
 
 <artifact_management>
-  <lazy_creation>Create project root only when writing the first plan/report; create only the needed subdir (plans|reports|summaries) at artifact write time; no directories in dry-run or routing phases.</lazy_creation>
+  <lazy_creation>Create project root only when writing the first plan/report; create only the needed subdir (plans|reports|summaries) at artifact write time; no directories during validation or routing phases.</lazy_creation>
   <artifact_naming>Plan: plans/implementation-XXX.md; Report: reports/optimize-report-YYYYMMDD.md; Summary: summaries/implementation-summary-YYYYMMDD.md.</artifact_naming>
   <state_sync>Update .opencode/specs/state.json when artifacts are created or statuses change; mirror plan/TODO status markers and timestamps.</state_sync>
-  <registry_sync>Update TODO.md and state.json on every non-dry-run; adjust IMPLEMENTATION_STATUS.md when optimization changes affect implementation/tactic readiness; dry-runs skip registry writes.</registry_sync>
+  <registry_sync>Update TODO.md and state.json on every execution; adjust IMPLEMENTATION_STATUS.md when optimization changes affect implementation/tactic readiness.</registry_sync>
 </artifact_management>
 
   <quality_standards>
@@ -118,11 +116,11 @@ Context Loaded:
   - `/optimize --task 155 --scope commands`
   - `/optimize --scope agents,contexts`
   - `/optimize --task new --title "Optimize meta command routing" --priority Medium`
-  - `/optimize --scope docs --dry-run`
+  - `/optimize --scope docs`
 </usage_examples>
 
 <validation>
-  <pre_flight>Arguments validated; markdown-only enforced; task resolved/created and set to [IN PROGRESS] (timestamps) unless dry-run.</pre_flight>
+  <pre_flight>Arguments validated; markdown-only enforced; task resolved/created and set to [IN PROGRESS] with timestamps.</pre_flight>
   <mid_flight>Planner subagent creates plan with lazy directories; orchestrator routes optimization subagents; artifacts only when writing outputs.</mid_flight>
-  <post_flight>TODO/state/plan synced with status markers and links; registries updated when applicable; dry-runs remain non-mutating.</post_flight>
+  <post_flight>TODO/state/plan synced with status markers and links; registries updated when applicable.</post_flight>
 </validation>

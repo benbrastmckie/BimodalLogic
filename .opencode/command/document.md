@@ -16,7 +16,6 @@ registry_impacts:
 creates_root_on: "Only when writing documentation summaries"
 creates_subdir:
   - summaries
-dry_run: "Scope/analysis preview only; no dirs/artifacts/status/registry writes."
 ---
 
 Context Loaded:

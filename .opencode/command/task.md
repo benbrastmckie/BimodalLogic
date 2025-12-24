@@ -7,6 +7,7 @@ language: markdown
 subagents:
   - batch-task-orchestrator
   - batch-status-manager
+  - status-sync-manager
   - implementation-orchestrator (non-Lean tasks)
   - lean-implementation-orchestrator (Lean tasks)
   - planner/researcher/reviewer/refactorer/documenter (routed per task type)
@@ -64,7 +65,7 @@ Context Loaded:
     <process>
       1. Locate each task in TODO.md; if missing, report and continue.
       2. Detect Lean via TODO `Language` (authoritative) or `--lang`; plan `lean:` secondary.
-      3. Pre-flight: atomically set TODO status to [IN PROGRESS] with **Started** date and, when a plan link exists, set the plan header + first active phase to [IN PROGRESS] with (Started: ISO8601); set state to `in_progress` with started_at in the same batch. No dirs created.
+       3. Pre-flight: use @subagents/specialists/status-sync-manager to atomically set TODO status to [IN PROGRESS] with **Started** date and, when a plan link exists, set the plan header + first active phase to [IN PROGRESS] with (Started: ISO8601); set state to `in_progress` with started in the same batch. No dirs created.
     </process>
   </stage>
   <stage id="3" name="Execute">
@@ -79,7 +80,7 @@ Context Loaded:
     <action>Sync and report</action>
     <process>
       1. Update plan phases/status markers when used, keeping TODO/plan/state status fields in lockstep; produce/update summaries under `summaries/implementation-summary-YYYYMMDD.md` when artifacts are written.
-      2. Update TODO with status markers (`[IN PROGRESS]` → `[COMPLETED]`), timestamps, and artifact links in the same atomic write batch as plan/state; keep metadata intact.
+      2. Use @subagents/specialists/status-sync-manager to atomically update TODO with status markers (`[IN PROGRESS]` → `[COMPLETED]`), timestamps, and artifact links in the same atomic write batch as plan/state; keep metadata intact.
       3. Sync state.json with status/timestamps/artifact links/phase markers; reuse plan links already attached.
       4. Return concise summary of routing, artifacts, TODO/state updates, and any task failures.
     </process>

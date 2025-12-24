@@ -16,7 +16,6 @@ creates_root_on: "Subagents only when writing their artifacts"
 creates_subdir:
   - reports
   - plans
-dry_run: "Preview routing only; no artifact writes, no directories, no TODO/state mutations."
 ---
 
 Context Loaded:
