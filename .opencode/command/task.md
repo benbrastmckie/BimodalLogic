@@ -1,123 +1,187 @@
 ---
 name: task
 agent: orchestrator
-description: "Execute TODO task(s) by number using plans/reports and keep specs in sync"
-context_level: 2
+description: "Add tasks to TODO.md while updating state.json numbering"
+context_level: 1
 language: markdown
 subagents:
-  - batch-task-orchestrator
-  - batch-status-manager
-  - status-sync-manager
-  - implementation-orchestrator (non-Lean tasks)
-  - lean-implementation-orchestrator (Lean tasks)
-  - planner/researcher/reviewer/refactorer/documenter (routed per task type)
-mcp_requirements:
-  - "lean-lsp (required for Lean task execution)"
+  - task-adder
+mcp_requirements: []
 registry_impacts:
   - TODO.md
   - .opencode/specs/state.json
-  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (when implementation status changes)
-  - SORRY_REGISTRY.md (when sorry counts change)
-  - TACTIC_REGISTRY.md (when tactic counts change)
-creates_root_on: "Only when delegated agent writes first artifact"
-creates_subdir: "Delegated agent creates the needed subdir (reports|plans|summaries) when writing"
+creates_root_on: never
+creates_subdir: []
 ---
-
-You are executing task(s) from `.opencode/specs/TODO.md` by number. Use existing research and plans, respect lazy directory creation, and keep TODO/state/artifacts synchronized.
-
-**Task Input:** $ARGUMENTS (task number(s); ranges/lists allowed)
 
 Context Loaded:
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
 @.opencode/context/common/system/state-schema.md
-@.opencode/context/common/system/artifact-management.md
 @.opencode/context/common/system/status-markers.md
+@.opencode/context/common/system/artifact-management.md
 @.opencode/context/common/standards/tasks.md
 @.opencode/context/common/standards/commands.md
 @.opencode/context/common/standards/patterns.md
-@.opencode/context/common/workflows/task-breakdown.md
-@.opencode/context/project/repo/project-overview.md
-(@.opencode/context/project/lean4/* and @.opencode/context/project/logic/* only when executing Lean-tagged plans)
 
 <context>
-  <system_context>Task executor for TODO items with batch support and strict status/lazy-creation rules.</system_context>
-  <domain_context>Tasks defined in TODO.md with linked plans/research in specs/.</domain_context>
-  <task_context>Resolve task numbers, pre-flight status updates, route to appropriate agents, and sync artifacts/state.</task_context>
-  <execution_context>Supports single or batch execution with wave routing; no directories created without artifacts.</execution_context>
+  <system_context>Task creation command that must preserve numbering, status markers, and lazy directory rules.</system_context>
+  <domain_context>ProofChecker .opencode task registry (TODO.md + state.json).</domain_context>
+  <task_context>Assign new task IDs, append tasks to TODO.md with full metadata, and sync state.json without creating project directories.</task_context>
+  <execution_context>Single-step write; only state.json and TODO.md are touched. No project roots/subdirs may be created.</execution_context>
 </context>
 
-<role>Task orchestrator managing routing, status propagation, and synchronization.</role>
+<role>Task Adder responsible for atomic task creation and numbering integrity.</role>
 
-<task>Execute one or more TODO tasks, updating status markers, leveraging linked plans/reports, producing summaries when artifacts are written, and synchronizing TODO/state.</task>
+<task>Create one or more tasks using the next available project number, append them to TODO.md with `[NOT STARTED]` markers, and sync state.json pending_tasks while incrementing `next_project_number`.</task>
+
+## Quick Reference
+
+**Most Common Usage** (90% of cases):
+```bash
+/task "Task description"
+```
+
+**With Priority Override**:
+```bash
+/task "Urgent task" --priority High
+```
+
+**Lean Task**:
+```bash
+/task "Prove theorem X" --language lean
+```
+
+**Batch Tasks**:
+```bash
+/task "Task 1" "Task 2" "Task 3"
+```
+
+**From File**:
+```bash
+/task --file path/to/tasks.md
+```
+
+For full documentation, see sections below.
+
+## Description
+
+Add tasks to TODO.md with atomic number allocation and intelligent metadata inference.
+
+**Minimal Usage**: Provide just a description - all other metadata will be auto-populated with sensible defaults.
+
+**Advanced Usage**: Override defaults with flags for priority, language, effort, files, etc.
+
+**Batch Usage**: Provide multiple descriptions or use --file for bulk task creation.
+
+## Required Input
+
+- **Description**: Task description (required)
+
+## Optional Input (Auto-Populated if Not Provided)
+
+- **Priority**: Default = Medium
+- **Language**: Default = markdown (inferred from description/files if possible)
+- **Effort**: Default = 2 hours (inferred from description complexity)
+- **Files Affected**: Default = TBD
+- **Dependencies**: Default = None
+- **Blocking**: Default = None
+- **Acceptance Criteria**: Default = Generic checklist based on description
+- **Impact**: Default = Generic statement based on description
+
+## Input Validation
+
+<validation>
+  <pre_flight>
+    1. Validate at least one description provided
+    2. Validate descriptions are non-empty strings
+    3. Validate --file path exists if provided
+    4. Reject invalid flag combinations
+  </pre_flight>
+  
+  <error_messages>
+    - Empty description: "Error: Description cannot be empty. Usage: /task \"task description\""
+    - No input: "Error: No task description provided. Usage: /task \"task description\""
+    - Invalid file: "Error: File not found: {path}. Check the path and try again."
+    - Invalid flags: "Error: Unknown flag: {flag}. See /task --help for valid flags."
+  </error_messages>
+</validation>
 
 <workflow_execution>
-  <stage id="1" name="ParseInput">
-    <action>Validate task numbers</action>
+  <stage id="1" name="Preflight">
+    <action>Validate inputs and reserve numbers</action>
     <process>
-      1. Support single numbers, comma-separated lists, and ranges (e.g., `105`, `105,106`, `105-107`). Detect range/list invocations first, normalize to an ordered, de-duplicated task list, and preserve numeric-only validation.
-      2. Validate positive integers; deduplicate expanded lists; fail clearly on invalid formats and return bad inputs.
-      3. If more than one normalized task remains, classify as batch and route to batch-task-orchestrator; otherwise continue with single-task flow.
+      1. Parse `$ARGUMENTS` (strings or `--file` extraction); reject empty input.
+      2. Read `.opencode/specs/state.json` and capture `next_project_number` (zero-padded).
+      3. Validate uniqueness; do not create any project directories.
     </process>
   </stage>
-  <stage id="2" name="ResolveTasks">
-    <action>Load TODO entries and detect Lean intent</action>
+  <stage id="2" name="CreateTasks">
+    <action>Write TODO entries and update state</action>
     <process>
-      1. Locate each task in TODO.md; if missing, report and continue.
-      2. Detect Lean via TODO `Language` (authoritative) or `--lang`; plan `lean:` secondary.
-       3. Pre-flight: use @subagents/specialists/status-sync-manager to atomically set TODO status to [IN PROGRESS] with **Started** date and, when a plan link exists, set the plan header + first active phase to [IN PROGRESS] with (Started: ISO8601); set state to `in_progress` with started in the same batch. No dirs created.
+      1. Append tasks under the correct priority section using the template from tasks.md with **Status** `[NOT STARTED]` and required metadata (Effort, Priority, Language, Blocking, Dependencies, Files Affected, Description, Acceptance Criteria, Impact).
+      2. Increment `next_project_number` in state.json and add pending_tasks entries (`status: not_started`, `created_at`: UTC date).
+      3. Do not add project links; `/research` or `/plan` will create artifacts later.
     </process>
   </stage>
-  <stage id="3" name="Execute">
-    <action>Route by work type</action>
+  <stage id="3" name="Postflight">
+    <action>Summarize results</action>
     <process>
-      1. Single task: route to appropriate agent (documentation → documenter; refactor → refactorer; research-only → researcher; code → implementer; Lean → lean-implementation-orchestrator/proof-developer).
-      2. Multiple tasks: route via batch-task-orchestrator + batch-status-manager with wave-based execution; Lean tasks use Lean path within waves. Batch handoff includes normalized task list, language metadata per task, and dependency hints; dependency analysis precedes execution.
-      3. Reuse plan/research links exactly; maintain lazy creation (project roots/subdirs only when writing artifacts). Batch execution must keep TODO/plan/state status markers in lockstep for each task and block dependents on failure.
-    </process>
-  </stage>
-  <stage id="4" name="Postflight">
-    <action>Sync and report</action>
-    <process>
-      1. Update plan phases/status markers when used, keeping TODO/plan/state status fields in lockstep; produce/update summaries under `summaries/implementation-summary-YYYYMMDD.md` when artifacts are written.
-      2. Use @subagents/specialists/status-sync-manager to atomically update TODO with status markers (`[IN PROGRESS]` → `[COMPLETED]`), timestamps, and artifact links in the same atomic write batch as plan/state; keep metadata intact.
-      3. Sync state.json with status/timestamps/artifact links/phase markers; reuse plan links already attached.
-      4. Return concise summary of routing, artifacts, TODO/state updates, and any task failures.
+      1. Report assigned task numbers and titles.
+      2. Confirm state.json increment and TODO additions.
+      3. Remind that project roots/subdirs are created only when artifacts are written by /research or /plan.
     </process>
   </stage>
 </workflow_execution>
 
 <routing_intelligence>
-  <context_allocation>Level 2 baseline; escalate per task complexity.</context_allocation>
-  <lean_routing>Lean intent from TODO `Language` or `--lang`; validate lean-lsp MCP before Lean work.</lean_routing>
-  <batch_handling>Use batch-task-orchestrator + batch-status-manager for multi-task inputs; ensure atomic status updates per task.</batch_handling>
+  <context_allocation>Level 1 (single-operation write to TODO/state).</context_allocation>
+  <lean_routing>Language metadata is recorded but no Lean routing occurs during creation.</lean_routing>
+  <batch_handling>Support multiple tasks in one invocation; process sequentially to preserve numbering.</batch_handling>
 </routing_intelligence>
 
-  <artifact_management>
-  <lazy_creation>Derive slug `.opencode/specs/NNN_slug/`; create project root/subdir only when writing an artifact.</lazy_creation>
-  <artifact_naming>Summaries under `summaries/implementation-summary-YYYYMMDD.md`; plan/research links reused.</artifact_naming>
-  <state_sync>Update project state alongside artifact writes; no project state writes when no artifacts; status sync writes to TODO/plan/state must be atomic.</state_sync>
-  <registry_sync>Update IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, TACTIC_REGISTRY.md when task execution changes status or sorry/tactic counts.</registry_sync>
-  <git_commits>After artifacts/state updates, use git-commits.md and git-workflow-manager to stage only task-relevant files (no `git add -A`/blanket commits) and commit with scoped messages.</git_commits>
- </artifact_management>
-
+<artifact_management>
+  <lazy_creation>No project roots/subdirs are created by /task.</lazy_creation>
+  <state_sync>Always increment `next_project_number` and add pending_tasks entries.</state_sync>
+  <registry_sync>Registry files (IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, TACTIC_REGISTRY.md) are unchanged by /task.</registry_sync>
+  <git_commits>No commits are made by /task; if follow-up edits occur, use git-commits.md + git-workflow-manager to stage only relevant files and commit after artifacts exist.</git_commits>
+</artifact_management>
 
 <quality_standards>
-  <status_markers>Apply status-markers.md for tasks and plan phases with timestamps.</status_markers>
-  <language_routing>Respect Language metadata/flags; plan `lean:` secondary.</language_routing>
-  <no_emojis>No emojis in commands or artifacts.</no_emojis>
-  <validation>Reject directory creation without artifact writes; fail clearly on invalid inputs.</validation>
+  <status_markers>New tasks start as `[NOT STARTED]` with no timestamps.</status_markers>
+  <language_routing>Capture `Language` for each task; default to user-provided or infer from input when provided.</language_routing>
+  <no_emojis>Outputs and artifacts must be emoji-free.</no_emojis>
+  <validation>Reject invalid/empty input; ensure JSON remains valid.</validation>
 </quality_standards>
 
 <usage_examples>
-  - `/task 105`
-  - `/task 105,106`
-  - `/task 105-107`
-  - `/task 105, 107-109, 111`
+  ### Simple (Recommended for Quick Tasks)
+  ```bash
+  /task "Fix typo in README"
+  # → Task created with all metadata auto-populated
+  ```
+  
+  ### With Optional Overrides
+  ```bash
+  /task "Implement feature X" --priority High --language lean --effort "4 hours"
+  # → Task created with specified metadata
+  ```
+  
+  ### Batch Creation
+  ```bash
+  /task "Task 1" "Task 2" "Task 3"
+  # → Multiple tasks created with sequential numbers
+  ```
+  
+  ### File Extraction
+  ```bash
+  /task --file docs/FEATURES.md
+  # → Extracts tasks from file and creates them
+  ```
 </usage_examples>
 
 <validation>
-  <pre_flight>Inputs validated; TODO/plan/state set to [IN PROGRESS] with timestamps.</pre_flight>
-  <mid_flight>Routing executed with lazy creation; artifacts produced as needed.</mid_flight>
-  <post_flight>TODO/state synced; summaries linked; errors reported per task.</post_flight>
+  <pre_flight>Inputs parsed; next_project_number reserved; no directories touched.</pre_flight>
+  <mid_flight>TODO and state updated atomically; numbering increments correctly.</mid_flight>
+  <post_flight>Summary returned with assigned numbers; remind lazy-creation boundaries.</post_flight>
 </validation>

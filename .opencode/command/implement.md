@@ -1,101 +1,123 @@
 ---
 name: implement
 agent: orchestrator
-description: "Execute implementation plans with phase tracking"
+description: "Execute TODO task(s) by number using plans/reports and keep specs in sync"
 context_level: 2
 language: markdown
 subagents:
-  - implementation-orchestrator
-  - implementer specialists (per phase)
-mcp_requirements: []
+  - batch-task-orchestrator
+  - batch-status-manager
+  - status-sync-manager
+  - implementation-orchestrator (non-Lean tasks)
+  - lean-implementation-orchestrator (Lean tasks)
+  - planner/researcher/reviewer/refactorer/documenter (routed per task type)
+mcp_requirements:
+  - "lean-lsp (required for Lean task execution)"
 registry_impacts:
   - TODO.md
   - .opencode/specs/state.json
-  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
+  - Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (when implementation status changes)
   - SORRY_REGISTRY.md (when sorry counts change)
   - TACTIC_REGISTRY.md (when tactic counts change)
-creates_root_on: "Only when writing implementation artifacts via phases"
-creates_subdir:
-  - summaries
+creates_root_on: "Only when delegated agent writes first artifact"
+creates_subdir: "Delegated agent creates the needed subdir (reports|plans|summaries) when writing"
 ---
+
+You are executing task(s) from `.opencode/specs/TODO.md` by number. Use existing research and plans, respect lazy directory creation, and keep TODO/state/artifacts synchronized.
+
+**Task Input:** $ARGUMENTS (task number(s); ranges/lists allowed)
 
 Context Loaded:
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@context/common/standards/commands.md
-@context/common/standards/code.md
-@context/common/standards/patterns.md
-@context/common/workflows/task-breakdown.md
-@context/common/system/artifact-management.md
-@context/common/system/status-markers.md
+@.opencode/context/common/system/state-schema.md
+@.opencode/context/common/system/artifact-management.md
+@.opencode/context/common/system/status-markers.md
+@.opencode/context/common/standards/tasks.md
+@.opencode/context/common/standards/commands.md
+@.opencode/context/common/standards/patterns.md
+@.opencode/context/common/workflows/task-breakdown.md
+@.opencode/context/project/repo/project-overview.md
+(@.opencode/context/project/lean4/* and @.opencode/context/project/logic/* only when executing Lean-tagged plans)
 
 <context>
-  <system_context>Implementation execution driven by existing plan artifacts.</system_context>
-  <domain_context>Project codebase and associated implementation plans.</domain_context>
-  <task_context>Consume a provided implementation plan path, execute remaining phases, and sync plan/TODO/state with status markers.</task_context>
-  <execution_context>Lazy directory creation; plan path required; Lean routing via plan metadata/TODO Language when applicable.</execution_context>
+  <system_context>Task executor for TODO items with batch support and strict status/lazy-creation rules.</system_context>
+  <domain_context>Tasks defined in TODO.md with linked plans/research in specs/.</domain_context>
+  <task_context>Resolve task numbers, pre-flight status updates, route to appropriate agents, and sync artifacts/state.</task_context>
+  <execution_context>Supports single or batch execution with wave routing; no directories created without artifacts.</execution_context>
 </context>
 
-<role>Implementation orchestrator coordinating phase execution via implementer subagents.</role>
+<role>Task orchestrator managing routing, status propagation, and synchronization.</role>
 
-<task>Given a plan path (and optional starting phase), execute phases in order, update plan markers with timestamps, produce implementation summaries, and sync TODO/state.</task>
+<task>Execute one or more TODO tasks, updating status markers, leveraging linked plans/reports, producing summaries when artifacts are written, and synchronizing TODO/state.</task>
 
 <workflow_execution>
-  <stage id="1" name="Preflight">
-    <action>Validate inputs and set statuses</action>
+  <stage id="1" name="ParseInput">
+    <action>Validate task numbers</action>
     <process>
-      1. Parse `$ARGUMENTS` to extract plan path (required) and optional starting phase.
-      2. Fail fast if plan path missing/invalid (no dirs created).
-      3. If invoked via /task, set TODO task to [IN PROGRESS] with **Started** date and set plan header to [IN PROGRESS] (Started: ISO8601).
-      4. Set state.json entry to `in_progress` with started_at.
+      1. Support single numbers, comma-separated lists, and ranges (e.g., `105`, `105,106`, `105-107`). Detect range/list invocations first, normalize to an ordered, de-duplicated task list, and preserve numeric-only validation.
+      2. Validate positive integers; deduplicate expanded lists; fail clearly on invalid formats and return bad inputs.
+      3. If more than one normalized task remains, classify as batch and route to batch-task-orchestrator; otherwise continue with single-task flow.
     </process>
   </stage>
-  <stage id="2" name="ExecutePhases">
-    <action>Route to @subagents/implementation-orchestrator core</action>
+  <stage id="2" name="ResolveTasks">
+    <action>Load TODO entries and detect Lean intent</action>
     <process>
-      1. Load plan, parse phases/dependencies; skip completed.
-      2. Execute phases (parallel when safe) via implementer subagents; obey lazy creation (create only needed subdir when writing artifacts).
-      3. Update plan with status markers/timestamps per phase; record artifacts.
+      1. Locate each task in TODO.md; if missing, report and continue.
+      2. Detect Lean via TODO `Language` (authoritative) or `--lang`; plan `lean:` secondary.
+       3. Pre-flight: use @subagents/specialists/status-sync-manager to atomically set TODO status to [IN PROGRESS] with **Started** date and, when a plan link exists, set the plan header + first active phase to [IN PROGRESS] with (Started: ISO8601); set state to `in_progress` with started in the same batch. No dirs created.
     </process>
   </stage>
-  <stage id="3" name="Postflight">
-    <action>Sync and summarize</action>
+  <stage id="3" name="Execute">
+    <action>Route by work type</action>
     <process>
-      1. Write or update implementation summary under `summaries/implementation-summary-YYYYMMDD.md` when artifacts produced.
-      2. Sync TODO/state with status, timestamps, artifact links; update registries if implementation status changes.
-      3. Return concise summary of phases completed, files modified, and next steps.
+      1. Single task: route to appropriate agent (documentation → documenter; refactor → refactorer; research-only → researcher; code → implementer; Lean → lean-implementation-orchestrator/proof-developer).
+      2. Multiple tasks: route via batch-task-orchestrator + batch-status-manager with wave-based execution; Lean tasks use Lean path within waves. Batch handoff includes normalized task list, language metadata per task, and dependency hints; dependency analysis precedes execution.
+      3. Reuse plan/research links exactly; maintain lazy creation (project roots/subdirs only when writing artifacts). Batch execution must keep TODO/plan/state status markers in lockstep for each task and block dependents on failure.
+    </process>
+  </stage>
+  <stage id="4" name="Postflight">
+    <action>Sync and report</action>
+    <process>
+      1. Update plan phases/status markers when used, keeping TODO/plan/state status fields in lockstep; produce/update summaries under `summaries/implementation-summary-YYYYMMDD.md` when artifacts are written.
+      2. Use @subagents/specialists/status-sync-manager to atomically update TODO with status markers (`[IN PROGRESS]` → `[COMPLETED]`), timestamps, and artifact links in the same atomic write batch as plan/state; keep metadata intact.
+      3. Sync state.json with status/timestamps/artifact links/phase markers; reuse plan links already attached.
+      4. Return concise summary of routing, artifacts, TODO/state updates, and any task failures.
     </process>
   </stage>
 </workflow_execution>
 
 <routing_intelligence>
-  <context_allocation>Level 2 (plan-driven, multi-file updates).</context_allocation>
-  <lean_routing>Lean intent inferred from TODO `Language` or explicit `--lang`; plan `lean:` is secondary. Validate `lean-lsp` MCP before Lean execution.</lean_routing>
-  <batch_handling>Phase execution may run in waves; ensure atomic status updates per phase.</batch_handling>
+  <context_allocation>Level 2 baseline; escalate per task complexity.</context_allocation>
+  <lean_routing>Lean intent from TODO `Language` or `--lang`; validate lean-lsp MCP before Lean work.</lean_routing>
+  <batch_handling>Use batch-task-orchestrator + batch-status-manager for multi-task inputs; ensure atomic status updates per task.</batch_handling>
 </routing_intelligence>
 
-<artifact_management>
-  <lazy_creation>Create project roots/subdirs only when writing artifacts (plans/reports/summaries); no pre-creation.</lazy_creation>
-  <artifact_naming>Implementation summaries: `summaries/implementation-summary-YYYYMMDD.md`; plan versions remain unchanged unless revised.</artifact_naming>
-  <state_sync>Update project state.json alongside artifacts; update global state/TODO links.</state_sync>
-  <registry_sync>When implementation status changes, update IMPLEMENTATION_STATUS.md and related registries; skip on dry-run.</registry_sync>
-  <git_commits>After artifacts and status updates, use git-commits.md + git-workflow-manager to stage only implementation-related files and commit with scoped messages; avoid repo-wide adds.</git_commits>
-</artifact_management>
+  <artifact_management>
+  <lazy_creation>Derive slug `.opencode/specs/NNN_slug/`; create project root/subdir only when writing an artifact.</lazy_creation>
+  <artifact_naming>Summaries under `summaries/implementation-summary-YYYYMMDD.md`; plan/research links reused.</artifact_naming>
+  <state_sync>Update project state alongside artifact writes; no project state writes when no artifacts; status sync writes to TODO/plan/state must be atomic.</state_sync>
+  <registry_sync>Update IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, TACTIC_REGISTRY.md when task execution changes status or sorry/tactic counts.</registry_sync>
+  <git_commits>After artifacts/state updates, use git-commits.md and git-workflow-manager to stage only task-relevant files (no `git add -A`/blanket commits) and commit with scoped messages.</git_commits>
+ </artifact_management>
+
 
 <quality_standards>
-  <status_markers>Apply status-markers.md to plan phases and TODO entries with timestamps.</status_markers>
-  <language_routing>Respect Language metadata/flags for Lean vs non-Lean paths.</language_routing>
-  <no_emojis>No emojis in outputs or artifacts.</no_emojis>
-  <validation>Reject missing plan path; avoid directory creation without artifacts.</validation>
+  <status_markers>Apply status-markers.md for tasks and plan phases with timestamps.</status_markers>
+  <language_routing>Respect Language metadata/flags; plan `lean:` secondary.</language_routing>
+  <no_emojis>No emojis in commands or artifacts.</no_emojis>
+  <validation>Reject directory creation without artifact writes; fail clearly on invalid inputs.</validation>
 </quality_standards>
 
 <usage_examples>
-  - `/implement .opencode/specs/128_foo/plans/implementation-001.md`
-  - `/implement .opencode/specs/128_foo/plans/implementation-001.md 3`
+  - `/implement 105`
+  - `/implement 105,106`
+  - `/implement 105-107`
+  - `/implement 105, 107-109, 111`
 </usage_examples>
 
 <validation>
-  <pre_flight>Plan path validated; statuses set to [IN PROGRESS] when applicable.</pre_flight>
-  <mid_flight>Phases executed with lazy creation; plan markers updated.</mid_flight>
-  <post_flight>Summaries/artifacts linked; TODO/state/registries synced.</post_flight>
+  <pre_flight>Inputs validated; TODO/plan/state set to [IN PROGRESS] with timestamps.</pre_flight>
+  <mid_flight>Routing executed with lazy creation; artifacts produced as needed.</mid_flight>
+  <post_flight>TODO/state synced; summaries linked; errors reported per task.</post_flight>
 </validation>

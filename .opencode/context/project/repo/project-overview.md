@@ -173,7 +173,7 @@ lake update                  # Update dependencies
 /research <topic>            # Research Lean libraries and literature
 /plan <task>                 # Create implementation plan (records lean: true|false)
 /lean <proof>                # Implement Lean 4 proof via Lean specialists
-/task <nums>                 # Execute tasks; Lean-tagged plans route to Lean implementation
+/implement <nums>                 # Execute tasks; Lean-tagged plans route to Lean implementation
 /review                      # Analyze repository
 ```
 

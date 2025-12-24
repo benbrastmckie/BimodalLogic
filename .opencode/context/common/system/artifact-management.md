@@ -74,9 +74,8 @@ Version increments when:
 - `/plan` may create the project directory and initial `plans/implementation-001.md` if missing. Creation is lazy: create the project root and `plans/` only when emitting the plan; do **not** pre-create `reports/` or `summaries/`.
 - `/revise` reuses the existing project directory and plan link from TODO.md; it increments the plan version in the same `plans/` folder and must **not** create new project directories or change numbering.
 - If no plan link exists in TODO.md, `/revise` must fail gracefully and instruct the user to run `/plan` first.
-- `/task` reuses the plan path attached in TODO.md when present and updates that plan in place while executing. When no plan link exists on the TODO entry, `/task` executes the task directly (no failure) while adhering to lazy directory creation (no project roots/subdirs unless an artifact is written) and keeping numbering/state sync intact. When /task execution writes implementation artifacts, it must also emit an implementation summary in `summaries/implementation-summary-YYYYMMDD.md`; status-only paths do not emit summaries.
-- `/implement` requires a plan path input, updates the referenced plan phases with status markers (and timestamps), syncs status to TODO/state for referenced tasks, and respects lazy directory creation (no project roots/subdirs unless writing artifacts).
-- `/task`, `/add`, `/review`, and `/todo` must update IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md together when their operations change task/plan/implementation status or sorry/tactic counts.
+- `/implement` reuses the plan path attached in TODO.md when present and updates that plan in place while executing. When no plan link exists on the TODO entry, `/implement` executes the task directly (no failure) while adhering to lazy directory creation (no project roots/subdirs unless an artifact is written) and keeping numbering/state sync intact. When /implement execution writes implementation artifacts, it must also emit an implementation summary in `summaries/implementation-summary-YYYYMMDD.md`; status-only paths do not emit summaries.
+- `/implement`, `/task`, `/review`, and `/todo` must update IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md together when their operations change task/plan/implementation status or sorry/tactic counts.
 - `/research` and researcher agents: create the project root immediately before writing the first research artifact, and create only `reports/` (no `plans/` or `summaries/`) when emitting that artifact; do **not** pre-create other subdirs or placeholders.
 
 - `/review` and reviewer agents: create the review project root only when writing the first report/summary, and only create the subdir needed for the artifact being written; never pre-create both `reports/` and `summaries/` up front.
@@ -136,7 +135,7 @@ Contains brief summaries for quick reference:
 
 ## Best Practices
 1. **Lazy directory creation (roots + subdirs)**: Create the project root **only when writing the first artifact**. Create subdirectories (`reports/`, `plans/`, `summaries/`) **only at the moment you write an artifact into them**. Never pre-create unused subdirs and never add placeholder files (e.g., `.gitkeep`).
-2. **Project directory timing and state writes**: `/add` MUST NOT create project directories. `/plan`, `/research`, `/review`, `/implement`, and subagents may create the project root immediately before writing their first artifact, then lazily create only the needed subdir for that artifact. Do not write project `state.json` until an artifact is produced; state updates should accompany artifact creation.
+2. **Project directory timing and state writes**: `/task` MUST NOT create project directories. `/plan`, `/research`, `/review`, `/implement`, and subagents may create the project root immediately before writing their first artifact, then lazily create only the needed subdir for that artifact. Do not write project `state.json` until an artifact is produced; state updates should accompany artifact creation.
 3. **No emojis**: Commands, agents, and artifacts must not include emojis. Use textual markers and status markers for progress instead.
 4. **Use descriptive project names** that reflect the task.
 5. **Increment versions properly** when revising plans.
@@ -144,7 +143,7 @@ Contains brief summaries for quick reference:
 7. **Link TODO items** to relevant reports/plans.
 8. **Update state files** after every operation.
 9. **Sync TODO.md** with project progress.
-10. **Lean routing**: Use the TODO task `Language` field as the primary Lean intent signal (explicit `--lang` flag overrides; plan `lean:` is secondary). For Lean tasks, route `/task` to the Lean research subagent when research is requested and the Lean implementation subagent when implementation is requested; validate required MCP servers from `.mcp.json` (at minimum `lean-lsp` via `uvx lean-lsp-mcp`) before creating project roots. If validation fails, return remediation steps and avoid filesystem changes.
+10. **Lean routing**: Use the TODO task `Language` field as the primary Lean intent signal (explicit `--lang` flag overrides; plan `lean:` is secondary). For Lean tasks, route `/implement` to the Lean research subagent when research is requested and the Lean implementation subagent when implementation is requested; validate required MCP servers from `.mcp.json` (at minimum `lean-lsp` via `uvx lean-lsp-mcp`) before creating project roots. If validation fails, return remediation steps and avoid filesystem changes.
 
 ## Context Protection
 

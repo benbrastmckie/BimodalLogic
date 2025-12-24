@@ -31,7 +31,7 @@
 
  4. **Status Markers**
     - Tasks/phases must move through `[NOT STARTED] → [IN PROGRESS] → [COMPLETED]/[BLOCKED]/[ABANDONED]` with timestamps per status-markers.md.
-    - Commands that generate artifacts must ensure summaries are produced/updated and linked in TODO/state; /task implementation paths must emit implementation summaries when artifacts are written, while status-only paths do not produce summaries.
+     - Commands that generate artifacts must ensure summaries are produced/updated and linked in TODO/state; /implement implementation paths must emit implementation summaries when artifacts are written, while status-only paths do not produce summaries.
 
  5. **Lazy Directory Creation**
 
@@ -46,8 +46,8 @@
    - Run appropriate checks (build/test/lint) when code changes.
 
 ## Context Allocation (Levels)
-- **Level 1**: Simple/single-file/single-operation commands (e.g., /add, /todo, /refactor small scope).
-- **Level 2**: Multi-step or project-scoped commands requiring standards and project overview (e.g., /task, /plan, /implement, /document, /revise).
+- **Level 1**: Simple/single-file/single-operation commands (e.g., /task, /todo, /refactor small scope).
+- **Level 2**: Multi-step or project-scoped commands requiring standards and project overview (e.g., /implement, /plan, /document, /revise).
 - **Level 3**: Comprehensive analysis or repository-wide commands (e.g., /review, /research when broad).
 
 ## Language & Lean Routing

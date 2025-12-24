@@ -248,7 +248,7 @@ This document defines the standardized status markers used across the ProofCheck
 5. Or abandoned: `[ABANDONED]` + `**Abandoned**: YYYY-MM-DD` + `**Abandonment Reason**: {reason}`
 
 **Status Update Tools**:
-- `/task` command: Marks `[IN PROGRESS]` at start, `[COMPLETED]` at end (simple tasks)
+- `/implement` command: Marks `[IN PROGRESS]` at start, `[COMPLETED]` at end (simple tasks)
 - `/plan` command: Marks `[IN PROGRESS]` at start, `[PLANNED]` at completion
 - `/research` command: Marks `[IN PROGRESS]` at start, `[RESEARCHED]` at completion
 - `/revise` command: Preserves current status, creates new plan version
@@ -383,8 +383,7 @@ For backward compatibility, tools should recognize and convert legacy status val
 
 | Command | Status Updates |
 |---------|----------------|
-| `/task` | `[NOT STARTED]` → `[IN PROGRESS]` → `[COMPLETED]` (simple tasks) |
-| `/implement` | Plan phases: `[NOT STARTED]` → `[IN PROGRESS]` → `[COMPLETED]`/`[BLOCKED]` |
+| `/implement` | `[NOT STARTED]` → `[IN PROGRESS]` → `[COMPLETED]` (simple tasks) |
 | `/plan` | Marks target task `[IN PROGRESS]` at invocation, creates/updates plan with phases `[NOT STARTED]`, and sets task `[PLANNED]` on completion with timestamps |
 | `/research` | Marks target task `[IN PROGRESS]` at invocation and sets task `[RESEARCHED]` on completion with timestamps while updating the generated research artifact |
 | `/revise` | Creates new plan version with phases `[NOT STARTED]` |
@@ -498,7 +497,7 @@ update_task(64, "COMPLETED")  # May fail, leaving inconsistent state
 **Priority**: Medium
 ```
 
-**After `/task 63` starts**:
+**After `/implement 63` starts**:
 ```markdown
 ### 63. Add Missing Directory READMEs
 **Effort**: 1 hour
@@ -643,7 +642,7 @@ grep -r "Status: Complete" .opencode/specs/TODO.md
 
 ### Overview
 
-Commands that create or update plans (`/plan`, `/research`, `/revise`, `/task`) must keep status markers synchronized across multiple files:
+Commands that create or update plans (`/plan`, `/research`, `/revise`, `/implement`) must keep status markers synchronized across multiple files:
 - TODO.md (user-facing task list)
 - state.json (global project state)
 - Project state.json (project-specific state)
@@ -684,7 +683,7 @@ The `status-sync-manager` specialist provides atomic multi-file updates using a 
 - Preflight: Preserve current status (no status change)
 - Postflight: Update plan links, preserve status
 
-**`/task` command**:
+**`/implement` command**:
 - Preflight: `status-sync-manager.mark_in_progress(task_number, timestamp, plan_path)`
 - Postflight: `status-sync-manager.mark_completed(task_number, timestamp, plan_path)`
 
@@ -719,7 +718,7 @@ See these files for reference implementations:
 - **TODO.md status tracking**: `.opencode/agent/subagents/task-executor.md`
 - **Batch status updates**: `.opencode/agent/subagents/specialists/batch-status-manager.md`
 - **Plan phase tracking**: `.opencode/agent/subagents/implementation-orchestrator.md`
-- **Status transitions**: `.opencode/command/task.md`
+- **Status transitions**: `.opencode/command/implement.md`
 
 ---
 
@@ -769,13 +768,9 @@ End-to-end testing scenarios:
 User-facing validation:
 
 1. **TODO.md Updates**
-   - Run `/task {number}` and verify status changes
-   - Run `/task {list}` and verify batch status changes
+   - Run `/implement {number}` and verify status changes
+   - Run `/implement {list}` and verify batch status changes
    - Check timestamp formatting
-
-2. **Plan Execution**
-   - Run `/implement {plan_path}` and verify phase status updates
-   - Check ISO 8601 timestamp formatting in plan files
 
 3. **Error Scenarios**
    - Test task failure → `[ABANDONED]`

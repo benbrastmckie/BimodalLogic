@@ -8,7 +8,7 @@
 
 **Checklist**: Functionality, Code Quality, Security, Testing, Performance, Maintainability
 
-**Report Format**: Summary, Assessment, Issues (🔴🟡🔵), Positive Observations, Recommendations
+**Report Format**: Summary, Assessment, Issues (Critical/Warning/Suggestion), Positive Observations, Recommendations
 
 **Principles**: Constructive, Thorough, Timely
 
@@ -74,17 +74,17 @@
 
 ### Issues Found
 
-#### 🔴 Critical (Must Fix)
+#### Critical (Must Fix)
 - **File:** `src/auth.js:42`
   **Issue:** Password stored in plain text
   **Fix:** Hash password before storing
 
-#### 🟡 Warnings (Should Fix)
+#### Warnings (Should Fix)
 - **File:** `src/user.js:15`
   **Issue:** No input validation
   **Fix:** Validate email format
 
-#### 🔵 Suggestions (Nice to Have)
+#### Suggestions (Nice to Have)
 - **File:** `src/utils.js:28`
   **Issue:** Could be more concise
   **Fix:** Use array methods instead of loop
@@ -92,9 +92,9 @@
 ---
 
 ### Positive Observations
-- ✅ Good test coverage (95%)
-- ✅ Clear function names
-- ✅ Proper error handling
+- Good test coverage (95%)
+- Clear function names
+- Proper error handling
 
 ---
 
@@ -105,32 +105,32 @@
 ## Common Issues
 
 ### Security
-🔴 Hardcoded credentials
-🔴 SQL injection vulnerabilities
-🔴 Missing input validation
-🔴 Exposed sensitive data
+- Hardcoded credentials (Critical)
+- SQL injection vulnerabilities (Critical)
+- Missing input validation (Critical)
+- Exposed sensitive data (Critical)
 
 ### Code Quality
-🟡 Large functions (>50 lines)
-🟡 Deep nesting (>3 levels)
-🟡 Code duplication
-🟡 Unclear naming
+- Large functions (>50 lines) (Warning)
+- Deep nesting (>3 levels) (Warning)
+- Code duplication (Warning)
+- Unclear naming (Warning)
 
 ### Testing
-🟡 Missing tests
-🟡 Low coverage (<80%)
-🟡 Flaky tests
-🟡 Tests testing implementation
+- Missing tests (Warning)
+- Low coverage (<80%) (Warning)
+- Flaky tests (Warning)
+- Tests testing implementation (Warning)
 
 ## Best Practices
 
-✅ Review within 24 hours
-✅ Provide specific, actionable feedback
-✅ Explain WHY, not just WHAT
-✅ Suggest alternatives
-✅ Acknowledge good work
-✅ Use severity levels (Critical/Warning/Suggestion)
-✅ Test the code if possible
-✅ Check for security issues first
+- Review within 24 hours
+- Provide specific, actionable feedback
+- Explain WHY, not just WHAT
+- Suggest alternatives
+- Acknowledge good work
+- Use severity levels (Critical/Warning/Suggestion)
+- Test the code if possible
+- Check for security issues first
 
 **Golden Rule**: Review code as you'd want yours reviewed - thoroughly but kindly.
