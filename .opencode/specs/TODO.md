@@ -18,12 +18,15 @@
 
 ### 169. Improve /task command to protect primary agent context window
 - **Effort**: 4 hours
-- **Status**: [IN PROGRESS]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-24
+- **Completed**: 2025-12-24
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [Research Report](169_task_command_improvements/reports/research-001.md)
+- **Plan**: [Implementation Plan](169_task_command_improvements/plans/implementation-001.md)
 - **Files Affected**:
   - .opencode/command/task.md
   - .opencode/agent/subagents/task-executor.md

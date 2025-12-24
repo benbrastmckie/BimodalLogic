@@ -1,0 +1,59 @@
+{
+  "project_number": 169,
+  "project_name": "task_command_improvements",
+  "type": "implementation",
+  "phase": "planned",
+  "status": "planned",
+  "created": "2025-12-24T23:00:00Z",
+  "started": "2025-12-24",
+  "completed": "2025-12-24",
+  "last_updated": "2025-12-24",
+  "artifacts": {
+    "reports": [
+      {
+        "path": "reports/research-001.md",
+        "type": "research_report",
+        "created": "2025-12-24",
+        "status": "completed"
+      }
+    ],
+    "plans": [
+      {
+        "version": 1,
+        "path": "plans/implementation-001.md",
+        "created": "2025-12-24",
+        "status": "active",
+        "summary": "8-phase implementation plan addressing context window protection gaps"
+      }
+    ],
+    "summaries": [
+      {
+        "path": "summaries/research-summary.md",
+        "type": "research_summary",
+        "created": "2025-12-24",
+        "status": "completed"
+      },
+      {
+        "path": "summaries/plan-summary.md",
+        "type": "plan_summary",
+        "created": "2025-12-24",
+        "status": "in_progress"
+      }
+    ]
+  },
+  "task_metadata": {
+    "task_number": 169,
+    "title": "Improve /task command to protect primary agent context window",
+    "effort": "6 hours",
+    "priority": "High",
+    "language": "markdown"
+  },
+  "plan_metadata": {
+    "total_phases": 8,
+    "estimated_effort": "6 hours",
+    "complexity": "complex",
+    "phases_completed": 0,
+    "phases_in_progress": 0,
+    "phases_not_started": 8
+  }
+}
