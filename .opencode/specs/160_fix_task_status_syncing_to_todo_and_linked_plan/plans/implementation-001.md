@@ -1,8 +1,8 @@
 # Plan: Fix /task status syncing to TODO and linked plan (Task 160)
 
-- **Status**: [IN PROGRESS]
-- **Started**: 2025-12-24
-- **Completed**: —
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-23T00:00:00Z
+- **Completed**: 2025-12-24T00:30:00Z
 - **lean**: false
 - **Language**: markdown
 - **Effort**: 2 hours
@@ -28,17 +28,23 @@ Deliver a fix plan that:
 - Updates command/agent docs to reflect corrected sync behavior.
 
 ## workflow_execution
-1) Reproduce & trace failure [NOT STARTED]
+1) Reproduce & trace failure [COMPLETED]
+(Started: 2025-12-23T00:00:00Z)
+(Completed: 2025-12-24T00:10:00Z)
 - Identify failing invocation patterns and confirm when TODO/plan diverge.
 - Trace current /task flow (command + task-executor) for status writes, lock/atomic behavior, and marker formatting.
 - Output: documented failure path and root-cause notes.
 
-2) Implement atomic status sync fixes [NOT STARTED]
+2) Implement atomic status sync fixes [COMPLETED]
+(Started: 2025-12-24T00:10:00Z)
+(Completed: 2025-12-24T00:20:00Z)
 - Adjust /task command and task-executor to ensure ordered, atomic writes to TODO, state, and linked plan (phases) with consistent status markers.
 - Harden lazy directory checks so no new roots/subdirs are created when only syncing status.
 - Output: code changes plus updated status-marker handling for plan phases; ensure numbering/state remain consistent.
 
-3) Tests and documentation updates [NOT STARTED]
+3) Tests and documentation updates [COMPLETED]
+(Started: 2025-12-24T00:20:00Z)
+(Completed: 2025-12-24T00:30:00Z)
 - Add/adjust tests (or routing checks if tests unavailable) covering TODO/plan parity, atomic writes, and lazy-creation guardrails.
 - Update `.opencode/command/task.md` and related agent docs to describe corrected behavior and guardrails.
 - Output: test updates, doc updates, and brief changelog entry.

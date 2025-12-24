@@ -60,12 +60,14 @@ tools:
        4. Check current status:
           - If "[COMPLETED]" or contains ✅: Notify user, suggest other tasks
           - If "[NOT STARTED]" or "[IN PROGRESS]": Proceed with update
-       5. Update task status:
-          - Change `**Status**: [NOT STARTED]` to `**Status**: [IN PROGRESS]`
-          - Add `**Started**: YYYY-MM-DD` if not present
-          - Preserve all other content and formatting
-      6. Write updated TODO.md back to file
-      7. Extract task details for execution:
+        5. Update task status atomically with linked plan/state when present:
+           - Change `**Status**: [NOT STARTED]` to `**Status**: [IN PROGRESS]`
+           - Add `**Started**: YYYY-MM-DD` if not present
+           - If a plan link exists, set plan header and first active phase to `[IN PROGRESS]` with `(Started: ISO8601)` in the same batch
+           - Set state entry to `in_progress` with `started_at` in the same batch
+       6. Write updated TODO/plan/state changes back atomically (single write per file, single batch per transition)
+       7. Extract task details for execution:
+
          - Title
          - Description
          - Effort estimate
@@ -187,15 +189,18 @@ tools:
         <priority>3</priority>
       </research>
       
-      <batch_tasks>
-        <indicators>
-          - multiple_tasks: true
-          - task_count: "> 1"
-        </indicators>
-        <coordinator>@subagents/batch-task-orchestrator</coordinator>
-        <specialists>task-dependency-analyzer, batch-status-manager</specialists>
-        <priority>1</priority>
-      </batch_tasks>
+       <batch_tasks>
+         <indicators>
+           - multiple_tasks: true
+           - task_count: "> 1"
+           - input from /task already normalized from ranges/lists
+         </indicators>
+         <coordinator>@subagents/batch-task-orchestrator</coordinator>
+         <specialists>task-dependency-analyzer, batch-status-manager</specialists>
+         <priority>1</priority>
+         <payload>Normalized task list with Language metadata per task; dependency hints if present</payload>
+       </batch_tasks>
+
     </task_type_classification>
     <detection_algorithm>
       Priority ordering (highest to lowest):
@@ -425,19 +430,22 @@ tools:
         </expected_return>
       </route>
       
-      <route to="@subagents/batch-task-orchestrator" when="batch_tasks">
-        <context_level>Level 2</context_level>
-        <pass_data>
-          - Task numbers list
-          - Dependency analysis
-          - Execution plan
-        </pass_data>
-        <expected_return>
-          - Batch execution summary
-          - Completed/failed/blocked counts
-          - Artifacts created
-        </expected_return>
-      </route>
+       <route to="@subagents/batch-task-orchestrator" when="batch_tasks">
+         <context_level>Level 2</context_level>
+         <pass_data>
+           - Task numbers list (normalized from ranges/lists)
+           - Language metadata per task
+           - Dependency analysis hints (from TODO/state)
+           - Execution plan
+         </pass_data>
+         <expected_return>
+           - Batch execution summary
+           - Completed/failed/blocked counts
+           - Artifacts created
+         </expected_return>
+         <guardrails>Preserve lazy creation (no project roots/subdirs unless artifacts) and use batch-status-manager for atomic TODO/plan/state status sync per task</guardrails>
+       </route>
+
     </routing>
     <coordinator_results>
       <expected_format>
@@ -499,13 +507,15 @@ tools:
      <process>
        1. Read current TODO.md
        2. Locate task section by number
-       3. Update task status using status-markers.md:
-          - Change `**Status**: [IN PROGRESS]` to `**Status**: [COMPLETED]`
-          - Add `**Completed**: YYYY-MM-DD`
-          - Do not add emojis; rely on status markers
-          - If a plan link exists, update plan phases with matching markers/timestamps via implementation-orchestrator
-       4. Optionally move task to "Completed" section
-       5. Write updated TODO.md back to file
+        3. Update task status using status-markers.md, atomically with plan/state:
+           - Change `**Status**: [IN PROGRESS]` to `**Status**: [COMPLETED]`
+           - Add `**Completed**: YYYY-MM-DD`
+           - Do not add emojis; rely on status markers
+           - If a plan link exists, update plan header + active phases with matching markers/timestamps (via implementation-orchestrator) in the same batch
+           - Update state entry to `completed` with `completed_at` in the same batch
+        4. Optionally move task to "Completed" section
+        5. Write updated TODO/plan/state back to file atomically (one batch per transition)
+
        6. Log completion confirmation
      </process>
      <status_update_example>
@@ -972,12 +982,13 @@ tools:
   </error_handling_details>
   
   <file_safety>
-    <atomic_writes>
-      1. Read entire TODO.md into memory
-      2. Make all modifications in memory
-      3. Write entire file back in single operation
-      4. No partial writes or line-by-line updates
-    </atomic_writes>
+     <atomic_writes>
+       1. Read entire TODO.md (and linked plan/state when present) into memory
+       2. Make all modifications in memory as a single batch per transition (start/complete)
+       3. Write each touched file back in a single operation, keeping TODO/plan/state timestamps aligned
+       4. No partial writes or line-by-line updates; preserve ordering to avoid divergence
+     </atomic_writes>
+
     
     <preserve_formatting>
       1. Maintain exact indentation (spaces/tabs)

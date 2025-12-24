@@ -15,7 +15,7 @@ registry_impacts:
 creates_root_on: "When writing the first plan artifact"
 creates_subdir:
   - plans
-dry_run: "Not supported; requires numeric task input and performs real status updates (no dirs created unless writing artifacts)."
+dry_run: "Routing-check supported: validate numeric task, detect Lean, MCP ping if Lean; no dirs/status/registry/state writes and no artifacts."
 input_format: "Required: a single numeric task ID (e.g., /plan 160). Reject ranges/lists/missing/non-numeric inputs. Error message (no emojis): 'Error: Task number is required and must be numeric (e.g., /plan 160).'"
 ---
 
@@ -50,33 +50,37 @@ Context Loaded:
     <action>Validate task and detect Lean intent</action>
      <process>
        1. Parse numeric task number (single only) and optional prompt; reject missing/non-numeric/range/list inputs with a clear, emoji-free error: "Error: Task number is required and must be numeric (e.g., /plan 160)." Fail clearly if task missing from TODO.md.
-       2. Detect Lean via TODO `Language` or `--lang`; plan `lean:` is secondary.
-       3. Set TODO status to [IN PROGRESS] with **Started** date; set state status to `in_progress` before routing.
+       2. Detect Lean via TODO `Language` or `--lang`; plan `lean:` is secondary. If Lean, MCP ping `lean-lsp` during dry-run/execute.
+       3. If `--dry-run`, stop after validation + MCP preview; do not set statuses or create directories.
+       4. Otherwise set TODO status to [IN PROGRESS] with **Started** date; set state status to `in_progress` before routing.
      </process>
 
   </stage>
   <stage id="2" name="PrepareArtifacts">
     <action>Resolve project paths and research inputs</action>
-    <process>
-      1. Derive slug from TODO title; create project root and `plans/` only when writing the plan.
-      2. Collect research links from TODO; warn on missing files but continue.
-    </process>
+     <process>
+       1. Derive slug from TODO title; if `--dry-run`, preview slug only; otherwise create project root and `plans/` only when writing the plan.
+       2. Collect research links from TODO; warn on missing files but continue; do not create directories while resolving links.
+     </process>
+
   </stage>
   <stage id="3" name="CreatePlan">
     <action>Route to @subagents/planner</action>
-    <process>
-      1. Generate `plans/implementation-XXX.md` (incremental) using plan standard.
-      2. Include Research Inputs section with citations or "none linked".
-      3. Include `lean: true|false` in metadata and plan-level status marker `[IN PROGRESS]` with timestamps while phases start at `[NOT STARTED]`.
-    </process>
+     <process>
+       1. If `--dry-run`, preview the target plan path/version and exit without writing; otherwise generate `plans/implementation-XXX.md` (incremental) using plan standard.
+       2. Include Research Inputs section with citations or "none linked".
+       3. Include `lean: true|false` in metadata and plan-level status marker `[IN PROGRESS]` with timestamps while phases start at `[NOT STARTED]`.
+     </process>
+
   </stage>
   <stage id="4" name="Postflight">
     <action>Link and sync</action>
-    <process>
-      1. Mark TODO and state to `[PLANNED]` with **Completed** date; add plan link and brief summary; keep metadata intact.
-      2. Update project state (phase: planning, status `planned`) with plan path and timestamps; avoid creating extra subdirs.
-      3. Return plan path and next steps.
-    </process>
+     <process>
+       1. When not `--dry-run`, mark TODO and state to `[PLANNED]` with **Completed** date; add plan link and brief summary; keep metadata intact.
+       2. Update project state (phase: planning, status `planned`) with plan path and timestamps; avoid creating extra subdirs; skip when `--dry-run`.
+       3. Return plan path and next steps; for `--dry-run`, return routing/MCP preview only.
+     </process>
+
   </stage>
 </workflow_execution>
 

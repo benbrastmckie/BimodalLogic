@@ -30,11 +30,12 @@
    - `<usage_examples>`: minimal examples reflecting real syntax (include flags where relevant).
    - `<validation>`: pre/mid/post-flight checks.
 
-4. **Status Markers**
-   - Tasks/phases must move through `[NOT STARTED] → [IN PROGRESS] → [COMPLETED]/[BLOCKED]/[ABANDONED]` with timestamps per status-markers.md.
-   - Commands that generate artifacts must ensure summaries are produced/updated and linked in TODO/state.
+ 4. **Status Markers**
+    - Tasks/phases must move through `[NOT STARTED] → [IN PROGRESS] → [COMPLETED]/[BLOCKED]/[ABANDONED]` with timestamps per status-markers.md.
+    - Commands that generate artifacts must ensure summaries are produced/updated and linked in TODO/state; /task implementation paths must emit implementation summaries when artifacts are written, while status-only paths do not produce summaries.
 
-5. **Lazy Directory Creation**
+ 5. **Lazy Directory Creation**
+
    - Never create project roots/subdirs until writing an artifact. When writing, create only the needed subdir (reports|plans|summaries). Do not emit placeholders.
 
 6. **Registry/State Sync**

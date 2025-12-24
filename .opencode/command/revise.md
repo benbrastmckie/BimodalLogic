@@ -16,7 +16,10 @@ creates_root_on: never (reuses existing plans/)
 creates_subdir:
   - plans
 dry_run: "Routing-check only: validate task/plan link and Lean intent; no dirs/artifacts/status/registry/state writes."
+input_format: 'Required: single numeric task ID plus optional revision prompt (e.g., /revise 162 "Remove dry-run references"); reject ranges/lists/non-numeric inputs with error: Error: Task number is required and must be numeric (e.g., /revise 162 "Update plan scaffold"). If prompt is missing, error: Error: Revision prompt is required (e.g., /revise 162 "Add summary artifact parity checklist").'
 ---
+
+**Task Input (required):** $ARGUMENTS (single numeric task ID; optional revision prompt; e.g., `/revise 162 "Remove dry-run references"`; no ranges or lists.)
 
 Context Loaded:
 @.opencode/specs/TODO.md
@@ -43,7 +46,7 @@ Context Loaded:
   <stage id="1" name="Preflight">
     <action>Validate task and plan link</action>
     <process>
-      1. Require task_number + prompt; reject if missing.
+      1. Parse single numeric task_number and capture the remaining arguments as the revision prompt; reject ranges/lists/non-numeric inputs with the numeric error above and reject missing prompts with the prompt error (no re-prompting when both are supplied).
       2. Locate task in TODO.md; extract existing plan link. If absent, instruct to run /plan first (no dirs created).
       3. Verify referenced plan file exists.
       4. If `--dry-run`, stop after validation; do not set statuses or write files.

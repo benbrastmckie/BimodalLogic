@@ -1,11 +1,12 @@
-# Implementation Plan: Optimize .opencode command subagent routing and metadata [IN PROGRESS]
+# Implementation Plan: Optimize .opencode command subagent routing and metadata [COMPLETED]
 
 - **Task**: 155 (Optimize .opencode command subagent routing and metadata)
 - **Project**: #155_optimize_opencode_command_subagent_routing_and_metadata
 - **Version**: implementation-002
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Created**: 2025-12-23T00:00:00Z
 - **Started**: 2025-12-23T00:00:00Z
+- **Completed**: 2025-12-24T00:50:00Z
 - **Priority**: Medium
 - **Language**: markdown (no Lean intent)
 - **Scope**: commands, agents, contexts, docs, routing (all)
@@ -49,7 +50,8 @@
 
 ## Phases and Steps
 
-### Phase A: Analyze current command/agent/subagent mapping vs standards [NOT STARTED]
+### Phase A: Analyze current command/agent/subagent mapping vs standards [COMPLETED] ✅
+(Completed: 2025-12-24T00:45:00Z)
 **Owner**: context-references + dependency-mapper
 
 1. **Collect sources**: Pull research-001, implementation-001, commands.md, tasks.md, status-markers.md, artifact-management.md, context-guide.md.
@@ -77,7 +79,8 @@
    - **Verification**: Dry-run text present; no side-effect actions listed.
    - **Progress**: review.md, revise.md, and meta.md updated with ordered subagents, MCP/registry metadata, lazy-creation notes, and dry-run/routing-check semantics.
 
-### Phase C: Validate docs/standards alignment [NOT STARTED]
+### Phase C: Validate docs/standards alignment [COMPLETED] ✅
+(Completed: 2025-12-24T00:50:00Z)
 **Owner**: doc-analyzer + style-checker
 
 1. **Standards compliance pass**: Check command docs against commands.md structure (YAML + XML order) and status-markers requirements.
@@ -90,7 +93,8 @@
    - **Output**: Updated examples per command.
    - **Verification**: Examples match syntax and avoid Lean routing unless explicit.
 
-### Phase D: State/TODO sync and closure criteria [NOT STARTED]
+### Phase D: State/TODO sync and closure criteria [COMPLETED] ✅
+(Completed: 2025-12-24T00:50:00Z)
 **Owner**: batch-status-manager + task-adder (advice), implementer for doc edits
 
 1. **Sync rules documentation**: Reaffirm TODO/state update expectations for command flows (when statuses transition, how timestamps are recorded), referencing status-markers and tasks/plan standards.

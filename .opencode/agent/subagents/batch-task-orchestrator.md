@@ -49,13 +49,14 @@ tools:
   <stage id="1" name="ValidateAndExtractTasks">
     <action>Validate task numbers and extract task details from TODO.md</action>
     <prerequisites>Task numbers list received from /task command</prerequisites>
-    <process>
-      1. Read .opencode/specs/TODO.md
-      2. For each task number:
-         - Verify task exists in TODO.md
-         - Extract task details (title, description, effort, priority, dependencies, status)
-         - Check if task is already complete
-      3. Filter out invalid tasks:
+     <process>
+       1. Read .opencode/specs/TODO.md
+       2. For each task number (pre-normalized from /task range/list parsing):
+          - Verify task exists in TODO.md
+          - Extract task details (title, description, effort, priority, dependencies, status, Language)
+          - Check if task is already complete
+       3. Filter out invalid tasks:
+
          - Tasks not found in TODO.md
          - Tasks already marked complete (✅)
       4. Build task details map: task_num → TaskDetails
@@ -183,12 +184,14 @@ tools:
         </expected_return>
       </route>
       
-      <route to="@subagents/task-executor" when="task_execution">
-        <context_level>Level 2</context_level>
-        <pass_data>
-          - task_number: int
-          - session_id: string
-        </pass_data>
+       <route to="@subagents/task-executor" when="task_execution">
+         <context_level>Level 2</context_level>
+         <pass_data>
+           - task_number: int
+           - session_id: string
+           - language: string (from TODO Language metadata)
+         </pass_data>
+
         <expected_return>
           - task_number: int
           - status: "completed" | "in_progress" | "failed"
@@ -536,7 +539,9 @@ tools:
   <must>Always execute waves sequentially</must>
   <must>Always execute tasks within wave in parallel (up to limit)</must>
   <must>Always block dependent tasks when task fails</must>
-  <must>Always update TODO.md atomically via batch-status-manager</must>
+  <must>Always update TODO.md atomically via batch-status-manager and keep plan/state parity per task</must>
+  <must>Preserve lazy directory creation: never create project roots/subdirs unless a delegated execution writes an artifact</must>
+  <must>Support routing-check/test paths without writing artifacts or touching TODO/state</must>
   <must>Always generate comprehensive summary report</must>
   <must_not>Never execute task before its dependencies complete</must_not>
   <must_not>Never exceed concurrency limit</must_not>

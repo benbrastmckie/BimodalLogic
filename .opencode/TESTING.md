@@ -143,8 +143,8 @@ Comprehensive testing checklist for validating the .opencode system functionalit
 # Verify: Plan version 001 created
 
 # Step 2: Revise
-/revise [project_number]
-# Verify: Plan version 002 created with revision notes
+/revise [project_number] "Describe the revision objective"
+# Verify: Command accepts numeric ID + prompt without re-prompting and creates plan version 002 with revision notes
 
 # Step 3: Implement
 /implement [project_number]
