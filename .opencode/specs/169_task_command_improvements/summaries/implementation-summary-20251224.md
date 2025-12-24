@@ -216,6 +216,35 @@ Phase 8: Documentation Updates (1.5 hours)
 
 **Validation**: Complexity router implemented, thresholds defined, ready for Phase 4
 
+## Phase 4: ✅ COMPLETED (2025-12-24)
+
+**Objective**: Update batch-task-orchestrator return format with progressive summarization
+
+**Status**: COMPLETED
+
+**Accomplishments**:
+- ✅ Updated batch-task-orchestrator.md stage 6 (ReturnResults) with compact format
+- ✅ Removed verbose fields: dependency_analysis details, wave_results, task_results full details
+- ✅ Added compact fields: summary (2-3 sentences), completed_tasks (one line each), artifacts, status
+- ✅ Implemented progressive summarization:
+  - Task level: One-line summaries in return
+  - Wave level: Wave summaries in artifacts (not in return)
+  - Batch level: Batch summary in artifact, brief in return
+- ✅ Added max 50 lines per 10 tasks validation requirement
+- ✅ Added artifact references for detailed information
+- ✅ Documented removed fields and validation requirements
+
+**Key Changes**:
+- Batch return format reduced from 1000+ lines to <50 lines per 10 tasks
+- Each task gets one-line summary with artifact reference
+- Detailed wave/dependency analysis in artifacts, not return
+- Progressive summarization: each level summarizes for level above
+- Total files modified count instead of full file list
+
+**Schema Compliance**: Matches batch-return-schema.json from Phase 1a
+
+**Validation**: Batch return format updated, progressive summarization implemented, ready for Phase 5
+
 ## Implementation Approach Recommendation
 
 ### Option 1: Phased Execution (RECOMMENDED)

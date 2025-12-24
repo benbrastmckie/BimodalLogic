@@ -352,61 +352,78 @@ tools:
     <action>Return batch execution results to orchestrator</action>
     <prerequisites>Summary generated and batch summary artifact created</prerequisites>
     <return_format>
+      COMPACT FORMAT (max 50 lines per 10 tasks):
       {
-        "batch_execution": {
-          "task_numbers": [63, 64, 65, 66, 67, 88],
-          "total_tasks": 6,
-          "completed": 5,
-          "failed": 1,
-          "blocked": 0,
-          "skipped": 0
-        },
-        "dependency_analysis": {
-          "total_waves": 3,
-          "dependency_graph": {...},
-          "circular_dependencies": []
-        },
-        "wave_results": [
+        "summary": "Brief 2-3 sentence summary of batch execution results. Maximum 75 tokens.",
+        "completed_tasks": [
           {
-            "wave_num": 1,
-            "tasks": [63, 88],
-            "completed": [63, 88],
-            "failed": [],
-            "execution_time": "12m 30s"
+            "task_number": 63,
+            "status": "COMPLETED",
+            "one_line_summary": "Single sentence summary of task result",
+            "artifact_path": ".opencode/specs/063_task_name/summaries/implementation-summary.md"
           },
-          ...
-        ],
-        "task_results": {
-          "63": {
-            "status": "completed",
-            "artifacts": [".opencode/specs/063_task_name/"],
-            "plan_summary": {...},
-            "recommendation": "/implement ..."
-          },
-          ...
-        },
-        "failed_tasks": {
-          "64": {
-            "error": "File not found: ...",
-            "recommendation": "Create missing file and re-run /implement 64"
+          {
+            "task_number": 64,
+            "status": "FAILED",
+            "one_line_summary": "Failed due to missing dependency",
+            "artifact_path": ".opencode/specs/064_task_name/summaries/error-report.md"
           }
+        ],
+        "artifacts": {
+          "summary_artifact_path": ".opencode/specs/batch-63-88/summaries/batch-summary-20251224.md",
+          "task_summaries": [
+            ".opencode/specs/063_task_name/summaries/implementation-summary.md",
+            ".opencode/specs/064_task_name/summaries/error-report.md"
+          ],
+          "wave_summaries": [
+            ".opencode/specs/batch-63-88/summaries/wave-1-summary.md"
+          ]
         },
-        "blocked_tasks": {},
-        "execution_time": {
-          "total": "25m 15s",
-          "per_wave": ["12m 30s", "8m 45s", "4m 00s"]
+        "total_files_modified": 42,
+        "status": {
+          "total": 10,
+          "completed": 8,
+          "failed": 1,
+          "blocked": 1,
+          "partial": 0
         },
-        "todo_status": {
-          "updated": true,
-          "errors": []
+        "failed_tasks": [
+          {
+            "task_number": 64,
+            "error": "Brief error description",
+            "recommendation": "Recommended action to resolve"
+          }
+        ],
+        "next_steps": "Brief next steps for batch (1-2 sentences)",
+        "session_id": "batch-63-88-20251224-001"
         },
         "recommendations": [
           "Fix error in Task 64 and re-run: /implement 64",
           "Continue with implementation: /implement .opencode/specs/063_task_name/plans/implementation-001.md"
         ]
       }
+      
+      REMOVED FIELDS (context window bloat):
+      - dependency_analysis details (in batch summary artifact)
+      - wave_results details (in wave summary artifacts)
+      - task_results full details (in individual task artifacts)
+      - execution_time per wave (in wave summaries)
+      - todo_status tracking (internal only)
+      
+      PROGRESSIVE SUMMARIZATION:
+      - Task level: Individual task summaries (one line each in return)
+      - Wave level: Wave summaries in artifacts (not in return)
+      - Batch level: Batch summary in artifact (brief in return)
+      - Each level summarizes for level above
+      
+      VALIDATION:
+      - Total return must be <50 lines per 10 tasks
+      - Summary must be 2-3 sentences, <75 tokens
+      - One-line summaries for each task, <150 chars
+      - All detailed information in artifact files
+      - Artifact paths must be valid and files must exist
     </return_format>
-    <checkpoint>Results returned to orchestrator</checkpoint>
+    <checkpoint>Results returned to orchestrator with compact format</checkpoint>
   </stage>
 </workflow_execution>
 
