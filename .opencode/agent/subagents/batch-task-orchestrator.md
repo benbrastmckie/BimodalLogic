@@ -348,6 +348,54 @@ tools:
     <checkpoint>Summary generated and batch summary artifact created</checkpoint>
   </stage>
 
+  <stage id="5.5" name="GitCommit">
+    <action>Create batch git commit(s)</action>
+    <process>
+      1. Determine commit strategy based on batch size and wave structure
+      2. Route to @subagents/specialists/git-workflow-manager
+      3. Stage only batch-relevant files
+      4. Create commit(s) with batch-scoped messages
+    </process>
+    <commit_patterns>
+      <single_batch_commit>
+        Pattern: Single commit for entire batch (default for small batches <5 tasks)
+        Message: "Complete batch {start}-{end}: {completed_count} tasks"
+        Timing: After all tasks complete
+        Staging: All files modified across all tasks
+        Example: "Complete batch 160-165: 5 tasks completed, 1 failed"
+      </single_batch_commit>
+      <wave_based_commits>
+        Pattern: Commit per wave (optional for large batches >10 tasks)
+        Message: "Complete wave {N} of batch {start}-{end}: {task_count} tasks"
+        Timing: After each wave completes
+        Staging: Files modified in that wave only
+        Example: "Complete wave 1 of batch 160-180: 7 tasks completed"
+      </wave_based_commits>
+    </commit_patterns>
+    <routing>
+      <route to="@subagents/specialists/git-workflow-manager">
+        <pass_data>
+          - Batch range (start-end task numbers)
+          - Completed task count
+          - Failed task count
+          - Wave information (if wave-based commits)
+          - Files modified per wave/batch
+        </pass_data>
+        <expected_return>
+          - Commit SHA(s)
+          - Files committed
+          - Commit message(s)
+        </expected_return>
+      </route>
+    </routing>
+    <validation>
+      - Verify files staged match batch scope
+      - Ensure commit messages follow pattern
+      - Git workflow manager handles actual git operations
+    </validation>
+    <checkpoint>Batch git commit(s) created</checkpoint>
+  </stage>
+
   <stage id="6" name="ReturnResults">
     <action>Return batch execution results to orchestrator</action>
     <prerequisites>Summary generated and batch summary artifact created</prerequisites>

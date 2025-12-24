@@ -245,6 +245,40 @@ Phase 8: Documentation Updates (1.5 hours)
 
 **Validation**: Batch return format updated, progressive summarization implemented, ready for Phase 5
 
+## Phase 5: ✅ COMPLETED (2025-12-24)
+
+**Objective**: Differentiate git commit patterns for simple vs complex tasks and batch operations
+
+**Status**: COMPLETED
+
+**Accomplishments**:
+- ✅ Added stage 9.5 (GitCommit) to task-executor.md
+- ✅ Defined simple task commit pattern:
+  - Single commit after all changes
+  - Message: "Implement task {number}: {title}"
+  - Staging: Only task-relevant files
+- ✅ Defined complex task commit pattern:
+  - Commit per phase (when phase produces artifacts)
+  - Messages: "Complete phase {N} of task {number}: {phase_name}"
+  - No empty commits (skip phases without artifacts)
+- ✅ Added stage 5.5 (GitCommit) to batch-task-orchestrator.md
+- ✅ Defined batch commit patterns:
+  - Single batch commit (default for <5 tasks)
+  - Wave-based commits (optional for >10 tasks)
+  - Message: "Complete batch {start}-{end}: {completed_count} tasks"
+- ✅ Integrated with git-workflow-manager for actual git operations
+- ✅ Added validation: scoped file staging, no blanket git add -A
+
+**Key Changes**:
+- Simple tasks: 1 commit total
+- Complex tasks: N commits (one per phase with artifacts)
+- Small batches: 1 commit total
+- Large batches: N commits (one per wave, optional)
+- All commits scoped to task/batch files only
+- Commit messages follow consistent patterns
+
+**Validation**: Git commit patterns differentiated, integrated with git-workflow-manager, ready for Phase 6
+
 ## Implementation Approach Recommendation
 
 ### Option 1: Phased Execution (RECOMMENDED)

@@ -579,6 +579,63 @@ tools:
     <checkpoint>Task marked as COMPLETE in TODO.md (if executed)</checkpoint>
   </stage>
 
+  <stage id="9.5" name="GitCommit">
+    <action>Create git commit(s) based on task complexity</action>
+    <process>
+      1. Check complexity flag from /implement command (stage 2.5)
+      2. Route to @subagents/specialists/git-workflow-manager with appropriate pattern
+      3. Stage only task-relevant files (no blanket git add -A)
+      4. Create commit(s) with scoped messages
+    </process>
+    <commit_patterns>
+      <simple_tasks>
+        Pattern: Single commit after all changes
+        Message: "Implement task {number}: {title}"
+        Timing: After task completion (stage 9)
+        Staging: Only files modified for this task
+        Example: "Implement task 169: Improve /implement command context window protection"
+      </simple_tasks>
+      <complex_tasks>
+        Pattern: Commit per phase (when phase produces artifacts)
+        Messages:
+          - Research: "Complete research for task {number}: {title}"
+          - Planning: "Complete planning for task {number}: {title}"
+          - Phase N: "Complete phase {N} of task {number}: {phase_name}"
+        Timing: After each phase that produces artifacts
+        Staging: Only files created/modified in that phase
+        No empty commits: Skip phases that don't produce artifacts
+        Example:
+          - "Complete research for task 169: Context window protection analysis"
+          - "Complete planning for task 169: Implementation plan v3"
+          - "Complete phase 1a of task 169: Define return format schemas"
+          - "Complete phase 1b of task 169: Update /task references to /implement"
+      </complex_tasks>
+    </commit_patterns>
+    <routing>
+      <route to="@subagents/specialists/git-workflow-manager">
+        <pass_data>
+          - Complexity flag (simple|moderate|complex)
+          - Task number and title
+          - Files modified (for staging)
+          - Phase information (for complex tasks)
+          - Commit message pattern
+        </pass_data>
+        <expected_return>
+          - Commit SHA(s)
+          - Files committed
+          - Commit message(s)
+        </expected_return>
+      </route>
+    </routing>
+    <validation>
+      - Verify files staged match task scope
+      - Ensure commit messages follow pattern
+      - No empty commits created
+      - Git workflow manager handles actual git operations
+    </validation>
+    <checkpoint>Git commit(s) created based on complexity</checkpoint>
+  </stage>
+
   <stage id="10" name="ReturnToOrchestrator">
     <action>Return compact task execution summary with artifact references (context window protection)</action>
     <return_format>
