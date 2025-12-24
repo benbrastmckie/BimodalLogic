@@ -1,1 +1,3 @@
 import LogosTest.Core.Integration.EndToEndTest
+import LogosTest.Core.Integration.ProofSystemSemanticsTest
+import LogosTest.Core.Integration.AutomationProofSystemTest

@@ -16,33 +16,35 @@
  
 ### Automation
 
-### 169. Improve /task command to protect primary agent context window
+### 169. Improve /implement command to protect primary agent context window
 - **Effort**: 4 hours
 - **Status**: [PLANNED]
 - **Started**: 2025-12-24
 - **Completed**: 2025-12-24
+- **Revised**: 2025-12-24
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](169_task_command_improvements/reports/research-001.md)
-- **Plan**: [Implementation Plan](169_task_command_improvements/plans/implementation-002.md)
+- **Plan**: [Implementation Plan](169_task_command_improvements/plans/implementation-003.md)
 - **Files Affected**:
-  - .opencode/command/task.md
+  - .opencode/command/implement.md (renamed from task.md)
   - .opencode/agent/subagents/task-executor.md
   - .opencode/agent/subagents/batch-task-orchestrator.md
   - .opencode/context/common/system/artifact-management.md
   - .opencode/specs/TODO.md
-- **Description**: Research and implement improvements to /task command to ensure proper context window protection when executing single tasks or task ranges. The command must handle both simple tasks (no plans, direct TODO.md updates with git commits) and complex tasks (multi-phase plans with phased execution, plan updates, and commits per phase). Subagents must create summary artifacts per artifact-management.md and return only artifact references + brief summaries to the primary agent. Investigate current implementation gaps in single/batch execution, plan vs no-plan paths, and artifact management patterns.
+- **Description**: Research and implement improvements to /implement command (formerly /task) to ensure proper context window protection when executing single tasks or task ranges. The command must handle both simple tasks (no plans, direct TODO.md updates with git commits) and complex tasks (multi-phase plans with phased execution, plan updates, and commits per phase). Subagents must create summary artifacts per artifact-management.md and return only artifact references + brief summaries to the primary agent. Investigate current implementation gaps in single/batch execution, plan vs no-plan paths, and artifact management patterns.
 - **Acceptance Criteria**:
-  - [ ] /task works correctly with single task numbers (e.g., /task 169)
-  - [ ] /task works correctly with task ranges (e.g., /task 132-135)
+  - [ ] /implement works correctly with single task numbers (e.g., /implement 169)
+  - [ ] /implement works correctly with task ranges (e.g., /implement 132-135)
   - [ ] Simple tasks (no plan) execute with direct TODO.md updates and single git commit
   - [ ] Complex tasks (with multi-phase plans) execute phases, update plans, and commit per phase
   - [ ] Subagents create implementation summaries when writing artifacts
   - [ ] Subagents return only artifact reference + brief summary to primary agent
   - [ ] Context window protection verified for single and batch execution
   - [ ] Git commit patterns appropriate for simple vs complex execution paths
+  - [ ] All /task references replaced with /implement across codebase
 - **Impact**: Improves scalability and reliability of task execution by protecting primary agent context windows and ensuring consistent artifact management across single/batch tasks and simple/complex workflows.
  
 ### 170. Improve maintenance report system and documentation

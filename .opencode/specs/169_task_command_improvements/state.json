@@ -8,6 +8,7 @@
   "started": "2025-12-24",
   "completed": "2025-12-24",
   "last_updated": "2025-12-24",
+  "revision_timestamp": "2025-12-24",
   "artifacts": {
     "reports": [
       {
@@ -29,8 +30,15 @@
         "version": 2,
         "path": "plans/implementation-002.md",
         "created": "2025-12-24",
+        "status": "superseded",
+        "summary": "Clean-break approach without backward compatibility layers (superseded by v3)"
+      },
+      {
+        "version": 3,
+        "path": "plans/implementation-003.md",
+        "created": "2025-12-24",
         "status": "active",
-        "summary": "Clean-break approach without backward compatibility layers"
+        "summary": "Refined clean-break approach with /task → /implement rename and enhanced validation"
       }
     ],
     "summaries": [
@@ -51,7 +59,7 @@
   },
   "task_metadata": {
     "task_number": 169,
-    "title": "Improve /task command to protect primary agent context window",
+    "title": "Improve /implement command to protect primary agent context window",
     "effort": "8-9 hours",
     "priority": "High",
     "language": "markdown"
@@ -63,7 +71,7 @@
     "phases_completed": 0,
     "phases_in_progress": 0,
     "phases_not_started": 8,
-    "current_version": 2,
-    "revision_reason": "Clean-break approach: remove backward compatibility, add upfront audit, coordinate atomic changes"
+    "current_version": 3,
+    "revision_reason": "Incorporate /task → /implement rename and enhance validation, coordination, and rollback procedures"
   }
 }

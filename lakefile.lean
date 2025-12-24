@@ -6,6 +6,9 @@ package Logos
 require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git" @ "v4.14.0"
 
+require plausible from git
+  "https://github.com/leanprover-community/plausible" @ "main"
+
 -- Logos library with linters enabled
 @[default_target]
 lean_lib Logos where

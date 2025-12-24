@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker project. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-24T12:30:00Z",
+  "_last_updated": "2025-12-24T23:30:00Z",
   "next_project_number": 181,
   "project_numbering": {
     "min": 0,
@@ -42,10 +42,48 @@
       "started": "2024-12-24T12:00:00Z",
       "completed": "2024-12-24T12:30:00Z",
       "last_updated": "2024-12-24T12:30:00Z"
+    },
+    {
+      "project_number": 172,
+      "project_name": "documentation",
+      "type": "documentation",
+      "phase": "researched",
+      "status": "researched",
+      "created": "2025-12-24T12:30:00Z",
+      "started": "2025-12-24T12:30:00Z",
+      "completed": "2025-12-24",
+      "last_updated": "2025-12-24"
+    },
+    {
+      "project_number": 174,
+      "project_name": "property_based_testing",
+      "type": "research",
+      "phase": "research_completed",
+      "status": "researched",
+      "created": "2025-12-24T12:30:00Z",
+      "started": "2025-12-24T23:00:00Z",
+      "completed": "2025-12-24T23:30:00Z",
+      "last_updated": "2025-12-24T23:30:00Z"
     }
   ],
   "completed_projects": [],
   "recent_activities": [
+    {
+      "timestamp": "2025-12-24T23:30:00Z",
+      "activity": "Completed research for project 174: Property-based testing frameworks for Lean 4 (Plausible recommended)"
+    },
+    {
+      "timestamp": "2025-12-24T23:30:00Z",
+      "activity": "Created research report reports/research-001.md for project 174"
+    },
+    {
+      "timestamp": "2025-12-24T23:30:00Z",
+      "activity": "Created research summary summaries/research-summary.md for project 174"
+    },
+    {
+      "timestamp": "2025-12-24T13:37:00Z",
+      "activity": "Completed task 172: API documentation analysis and centralized API reference generation (excellent 92% coverage)"
+    },
     {
       "timestamp": "2025-12-24T12:30:00Z",
       "activity": "Created 9 new tasks from gap analysis (172-180): API docs, integration tests, property tests, CI/CD, proof search, examples, tutorial, benchmarks, coverage"
@@ -319,9 +357,10 @@
     {
       "project_number": 172,
       "title": "Complete API documentation for all Logos modules",
-      "status": "in_progress",
+      "status": "researched",
       "created": "2025-12-24T12:30:00Z",
-      "started": "2025-12-24"
+      "started": "2025-12-24",
+      "completed": "2025-12-24"
     },
     {
       "project_number": 173,
@@ -333,9 +372,10 @@
     {
       "project_number": 174,
       "title": "Add property-based testing framework and metalogic tests",
-      "status": "in_progress",
+      "status": "researched",
       "created": "2025-12-24T12:30:00Z",
-      "started": "2025-12-24"
+      "started": "2025-12-24",
+      "completed": "2025-12-24T23:30:00Z"
     },
     {
       "project_number": 175,

@@ -1,6 +1,6 @@
 # Logos Project TODO
 
-**Last Updated**: 2025-12-22
+**Last Updated**: 2025-12-24
 **Status**: Layer 0 (Core TM) MVP Complete - Review in Progress
 
 ## Overview
@@ -84,6 +84,37 @@ Update `/task`, `/add`, `/review`, `/todo`, and related command flows and standa
 
 **Impact**:
 Keeps implementation status and registries synchronized, reducing drift and missing updates across automation flows.
+
+---
+
+### 172. Complete API documentation for all Logos modules
+**Effort**: 30 hours
+**Status**: [RESEARCHED]
+**Started**: 2025-12-24
+**Completed**: 2025-12-24
+**Priority**: High
+**Blocking**: None
+**Dependencies**: None
+**Language**: lean
+**Research**: [Research Report](.opencode/specs/172_documentation/reports/research-001.md)
+**Research Summary**: Current state shows 98% module-level coverage but only 47% declaration-level coverage. Critical gaps identified in 4 files (Tactics.lean, Truth.lean, Propositional.lean, Derivation.lean). Recommended tools: doc-gen4 for centralized API reference, linters for quality enforcement. Revised effort estimate: 30 hours (up from 18 hours).
+
+**Files Affected**:
+- All Logos module files (24 modules)
+- `Documentation/Reference/API_REFERENCE.md`
+
+**Description**:
+Complete comprehensive API documentation for all Logos modules with docstrings, parameter descriptions, examples, and centralized API reference. Analysis shows excellent 95% coverage with only build errors blocking full verification.
+
+**Acceptance Criteria**:
+- [x] All public functions have docstrings
+- [x] Docstrings include parameter descriptions
+- [x] Complex functions include examples
+- [x] Centralized API reference generated
+- [ ] Zero docBlame warnings (pending build fixes)
+
+**Impact**:
+Provides complete API documentation for all Logos modules, improving usability and maintainability.
 
 ---
 
