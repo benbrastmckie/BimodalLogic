@@ -46,11 +46,12 @@ tools:
   <stage id="1" name="AnalyzeResearchRequest">
     <action>Parse research request and determine research strategy</action>
     <process>
-      1. Parse research topic and scope
-      2. Identify research type (library search, concept exploration, implementation strategy)
-      3. Determine which specialist subagents to use
-      4. Resolve project path from orchestrator (or derive slug), but **do not create directories yet**; record target root `.opencode/specs/NNN_{slug}/` and report path.
-      5. Enforce lazy creation: create the project root and `reports/` only when writing the first research artifact; never pre-create `plans/` or `summaries/`, and do not write state until an artifact exists.
+       1. Parse research topic and scope (project number must be provided by orchestrator as a numeric ID; do not prompt for it here; reject non-numeric inputs).
+       2. Identify research type (library search, concept exploration, implementation strategy)
+       3. Determine which specialist subagents to use
+       4. Resolve project path from orchestrator (or derive slug), but **do not create directories yet**; record target root `.opencode/specs/NNN_{slug}/` and report path.
+       5. Enforce lazy creation: create the project root and `reports/` only when writing the first research artifact; never pre-create `plans/` or `summaries/`, and do not write state until an artifact exists.
+
     </process>
     <research_types>
       <technology_search>

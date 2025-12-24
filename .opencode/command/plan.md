@@ -1,7 +1,7 @@
 ---
 name: plan
 agent: orchestrator
-description: "Create implementation plan for an existing TODO task number and sync artifacts"
+description: "Create implementation plan for an existing TODO task number and sync artifacts (single numeric task ID required)"
 context_level: 2
 language: markdown
 subagents:
@@ -15,8 +15,11 @@ registry_impacts:
 creates_root_on: "When writing the first plan artifact"
 creates_subdir:
   - plans
-dry_run: "Parse task + Lean intent, MCP ping if Lean, no dirs/status/registry writes, no artifacts."
+dry_run: "Not supported; requires numeric task input and performs real status updates (no dirs created unless writing artifacts)."
+input_format: "Required: a single numeric task ID (e.g., /plan 160). Reject ranges/lists/missing/non-numeric inputs. Error message (no emojis): 'Error: Task number is required and must be numeric (e.g., /plan 160).'"
 ---
+
+**Task Input (required):** $ARGUMENTS (single numeric task ID only, e.g., `/plan 160`; no ranges or lists.)
 
 Context Loaded:
 @.opencode/specs/TODO.md
@@ -45,11 +48,12 @@ Context Loaded:
 <workflow_execution>
   <stage id="1" name="Preflight">
     <action>Validate task and detect Lean intent</action>
-    <process>
-      1. Parse task number and optional prompt; fail clearly if task missing from TODO.md.
-      2. Detect Lean via TODO `Language` or `--lang`; plan `lean:` is secondary.
-      3. Set TODO status to [IN PROGRESS] with **Started** date; set state status to `in_progress` before routing.
-    </process>
+     <process>
+       1. Parse numeric task number (single only) and optional prompt; reject missing/non-numeric/range/list inputs with a clear, emoji-free error: "Error: Task number is required and must be numeric (e.g., /plan 160)." Fail clearly if task missing from TODO.md.
+       2. Detect Lean via TODO `Language` or `--lang`; plan `lean:` is secondary.
+       3. Set TODO status to [IN PROGRESS] with **Started** date; set state status to `in_progress` before routing.
+     </process>
+
   </stage>
   <stage id="2" name="PrepareArtifacts">
     <action>Resolve project paths and research inputs</action>
@@ -98,7 +102,7 @@ Context Loaded:
 </quality_standards>
 
 <usage_examples>
-  - `/plan 105 "Focus on auth flows and RBAC"`
+  - `/plan 161 "Fix parser regression"`
   - `/plan 129 --lang lean`
 </usage_examples>
 

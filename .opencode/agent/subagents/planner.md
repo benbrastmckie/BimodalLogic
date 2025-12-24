@@ -46,15 +46,16 @@ tools:
   <stage id="1" name="AnalyzeTask">
     <action>Analyze task from TODO.md and gather context</action>
     <process>
-      1. Parse task description from TODO.md
-      2. Identify related research reports (if any)
-      3. Determine if this is new plan or revision
-       4. If new project:
-          a. Use orchestrator-provided project number/path (no allocation here)
-          b. Record target root: .opencode/specs/NNN_{project_name}/ (do **not** create yet)
-       5. If existing project:
-         a. Locate project directory based on name or reference (do not create new dirs)
-      6. Determine next plan version number; create project root and `plans/` **only when writing the plan artifact**; never pre-create `reports/` or `summaries/`, and write state alongside the artifact.
+       1. Parse task description from TODO.md (project number is provided by orchestrator as a numeric ID; do not prompt; reject non-numeric/range/list inputs).
+       2. Identify related research reports (if any)
+       3. Determine if this is new plan or revision
+        4. If new project:
+           a. Use orchestrator-provided project number/path (no allocation here)
+           b. Record target root: .opencode/specs/NNN_{project_name}/ (do **not** create yet)
+        5. If existing project:
+          a. Locate project directory based on name or reference (do not create new dirs)
+       6. Determine next plan version number; create project root and `plans/` **only when writing the plan artifact**; never pre-create `reports/` or `summaries/`, and write state alongside the artifact.
+
 
     </process>
     <version_control>

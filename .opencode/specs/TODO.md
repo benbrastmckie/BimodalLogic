@@ -79,11 +79,15 @@
 
 ### 160. Fix /task status syncing to TODO and linked plan
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
+- **Started**: 2025-12-23
+- **Completed**: 2025-12-24
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Plan**: [.opencode/specs/160_fix_task_status_syncing_to_todo_and_linked_plan/plans/implementation-001.md](.opencode/specs/160_fix_task_status_syncing_to_todo_and_linked_plan/plans/implementation-001.md)
+- **Plan Summary**: Phased fix for atomic /task status sync, tests, and doc updates.
 - **Files Affected**:
   - .opencode/command/task.md
   - .opencode/agent/subagents/task-executor.md
@@ -99,9 +103,113 @@
   - [ ] Document the fix and update command/agent docs to reflect the corrected status sync behavior.
 - **Impact**: Restores reliable status synchronization for /task, preventing TODO/plan divergence and ensuring downstream automation accuracy.
 
+### 161. Ensure /task delegates batch coordinator for ranged execution
+- **Effort**: 2 hours
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-24
+- **Completed**: 2025-12-24
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research**: [.opencode/specs/161_ensure_task_delegates_batch_coordinator_for_ranged_execution/reports/research-001.md](.opencode/specs/161_ensure_task_delegates_batch_coordinator_for_ranged_execution/reports/research-001.md)
+- **Research Summary**: Range parsing + batch delegation contract, wave-based dependency scheduling, atomic status-sync hooks, lazy-creation guardrails, and doc updates identified.
+- **Files Affected**:
+  - .opencode/command/task.md
+  - .opencode/agent/subagents/task-executor.md
+  - .opencode/agent/subagents/specialists/batch-task-orchestrator.md
+  - .opencode/context/common/standards/tasks.md
+  - .opencode/specs/TODO.md
+  - .opencode/specs/state.json
+- **Description**: Ensure the /task command delegates to the correct batch coordinator agent when a range of tasks is provided, analyzes dependencies, and executes tasks in waves in parallel.
+- **Acceptance Criteria**:
+  - [ ] /task detects ranges and routes to batch-task-orchestrator with dependency analysis before execution.
+  - [ ] Wave-based parallel execution honors dependencies and preserves status sync with TODO/state/plan links.
+  - [ ] Dry-run/routing-check path exercises coordinator selection without creating project directories or artifacts.
+  - [ ] Documentation updated in command and agent files to reflect routing, dependency handling, and lazy creation guardrails.
+- **Impact**: Provides safe, parallel execution for ranged /task invocations with correct dependency handling and status synchronization.
+
+### 162. Align /task with /implement summary artifact requirements
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/task.md
+  - .opencode/agent/subagents/task-executor.md
+  - .opencode/agent/subagents/implementation-orchestrator.md
+  - .opencode/context/common/system/artifact-management.md
+  - .opencode/context/common/standards/tasks.md
+  - .opencode/context/common/standards/commands.md
+  - .opencode/specs/TODO.md
+  - .opencode/specs/state.json
+- **Description**: Identify /implement command behaviors not present in /task and update /task to incorporate them, ensuring each subagent that implements a task produces a summary artifact per artifact-management, while preserving lazy directory creation and numbering/state sync.
+- **Acceptance Criteria**:
+  - [ ] Gap analysis completed documenting /implement behaviors missing in /task and mapping required updates.
+  - [ ] /task command and task-executor/implementation subagents enforce creation of summary artifacts that follow artifact-management.md, without violating lazy directory creation.
+  - [ ] Standards/docs updated to reflect the summary requirement and any new routing/metadata fields; Language metadata remains mandatory.
+  - [ ] TODO/state update flow remains consistent and regression tests or dry-run/routing checks cover the new summary requirement.
+- **Impact**: Brings /task parity with /implement for artifact expectations, improving auditability and consistency of implementation outputs.
+
+### 163. Fix /research and /plan task-number parser regression (range/number handling)
+- **Effort**: 2 hours
+- **Status**: [IN PROGRESS]
+- **Started**: 2025-12-24
+- **Priority**: Medium
+
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+  - .opencode/agent/subagents/researcher.md
+  - .opencode/agent/subagents/planner.md
+  - .opencode/agent/subagents/task-executor.md
+  - .opencode/context/common/standards/commands.md
+  - .opencode/context/common/standards/tasks.md
+  - .opencode/context/common/system/status-markers.md
+  - .opencode/specs/TODO.md
+  - .opencode/specs/state.json
+- **Description**: Identify and fix the regression where running `/research 161` (and similarly `/plan 161`) prompts for a task number instead of accepting the provided numeric input; ensure proper parsing and preflight status updates for numeric task IDs and ranges.
+- **Acceptance Criteria**:
+  - [x] Reproduce the `/research 161` (and `/plan 161`) failure and document the root cause in the command/agent docs.
+  - [x] Update parsing/routing so numeric task IDs (and ranges if supported) are accepted and status is set to `[IN PROGRESS]` with timestamps before dispatching research or planning.
+  - [x] Guidance updated for numeric IDs and range inputs; no project directories created unless writing artifacts.
+  - [x] TODO/state sync remains intact, and lazy directory creation is preserved (only create project root/reports or plans when emitting artifacts).
+- **Impact**: Restores correct `/research` and `/plan` handling of task-number inputs, enabling users to run research or planning directly from TODO entries without confusion.
+
+### 164. Remove dry-run functionality across .opencode
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/
+  - .opencode/agent/
+  - .opencode/context/common/standards/commands.md
+  - .opencode/context/common/standards/tasks.md
+  - .opencode/context/common/system/status-markers.md
+  - .opencode/context/common/system/artifact-management.md
+  - .opencode/specs/TODO.md
+  - .opencode/specs/state.json
+- **Description**: Remove all dry-run functionality across the .opencode system, ensuring commands and agents no longer offer dry-run or routing-check modes while preserving numbering, status markers, and lazy directory creation guarantees.
+- **Acceptance Criteria**:
+  - [ ] Inventory and remove dry-run/routing-check flags, code paths, and documentation across commands and subagents, updating command docs and standards accordingly.
+  - [ ] Ensure status-marker flows and lazy directory creation remain correct after removal; no project roots/subdirs are created without artifact writes.
+  - [ ] Update tests to reflect removal of dry-run behavior and add regression coverage to prevent reintroduction.
+  - [ ] TODO/state sync remains consistent with numbering rules and language metadata requirements.
+- **Impact**: Simplifies command behaviors by eliminating dry-run modes, reducing complexity while maintaining correct state and artifact guardrails.
+
 ---
  
- ## Low Priority
+   ## Low Priority
+
+
 
 
 ### Repository Cleanup

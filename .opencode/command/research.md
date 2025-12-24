@@ -1,7 +1,7 @@
 ---
 name: research
 agent: orchestrator
-description: "Create research reports for a TODO task and sync artifacts"
+description: "Create research reports for a TODO task and sync artifacts (single numeric task ID required)"
 context_level: 2
 language: markdown
 subagents:
@@ -15,8 +15,11 @@ registry_impacts:
 creates_root_on: "When writing the first research report"
 creates_subdir:
   - reports
-dry_run: "Validate task + Lean intent, MCP ping if Lean; no dirs/status/registry writes, no artifacts."
+dry_run: "Not supported; requires numeric task input and performs real status updates (no dirs created unless writing artifacts)."
+input_format: "Required: a single numeric task ID (e.g., /research 160). Reject ranges/lists/missing/non-numeric inputs. Error message (no emojis): 'Error: Task number is required and must be numeric (e.g., /research 160).'"
 ---
+
+**Task Input (required):** $ARGUMENTS (single numeric task ID only, e.g., `/research 160`; no ranges or lists.)
 
 Context Loaded:
 @.opencode/specs/TODO.md
@@ -44,7 +47,7 @@ Context Loaded:
   <stage id="1" name="Preflight">
     <action>Validate task and set status</action>
     <process>
-      1. Parse task number and optional prompt; fail if missing from TODO.md.
+      1. Parse numeric task number (single only) and optional prompt; reject missing/non-numeric/range/list inputs with a clear, emoji-free error: "Error: Task number is required and must be numeric (e.g., /research 160)." Fail if task not in TODO.md.
       2. Set TODO to [IN PROGRESS] with **Started** date; state to `in_progress` before routing.
       3. Detect Lean intent via TODO `Language`/`--lang` to decide whether to load Lean contexts for research.
     </process>
@@ -89,7 +92,7 @@ Context Loaded:
 </quality_standards>
 
 <usage_examples>
-  - `/research 105 "Survey FastAPI auth best practices"`
+  - `/research 161 "Investigate parser regression"`
   - `/research 129 --lang lean "Temporal swap strategy"`
 </usage_examples>
 
