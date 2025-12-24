@@ -18,10 +18,8 @@
 
 ### 169. Improve /implement command to protect primary agent context window
 - **Effort**: 4 hours
-- **Status**: [PLANNED]
+- **Status**: [IN PROGRESS]
 - **Started**: 2025-12-24
-- **Completed**: 2025-12-24
-- **Revised**: 2025-12-24
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None

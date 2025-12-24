@@ -92,9 +92,9 @@ Override Impact when:
 ## Command Integration
 
 - `/implement` **must** reuse the plan link attached in TODO.md when present and update that plan in place with status markers. When no plan is linked, `/implement` executes directly (no failure) while preserving lazy directory creation (no project roots/subdirs unless an artifact is written) and numbering/state sync; guidance to use `/plan {task}` remains recommended for complex work.
-- `/implement`, `/task`, `/review`, and `/todo` **must** keep IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md in sync when they change task/plan/implementation status or sorry/tactic counts.
+- `/implement`, `/review`, and `/todo` **must** keep IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md in sync when they change task/plan/implementation status or sorry/tactic counts.
 - `/implement` must emit an implementation summary artifact (standard naming) whenever task execution writes implementation artifacts; status-only paths do not emit summaries. Maintain lazy directory creation.
-- `/task`, `/review`, `/todo`, and `/implement` must capture/populate the `Language` metadata for every task they create or modify; backfill missing Language when encountered.
+- `/review`, `/todo`, and `/implement` must capture/populate the `Language` metadata for every task they create or modify; backfill missing Language when encountered.
 - `/implement` uses the TODO task `Language` field as the authoritative Lean intent signal. Plan `lean:` metadata is secondary. If `Language` is missing, warn and default to non-Lean unless the user explicitly supplies `--lang lean` (explicit flag wins over metadata when they disagree).
 - Commands mirror status markers (`[NOT STARTED]`, `[IN PROGRESS]`, `[BLOCKED]`, `[ABANDONED]`, `[COMPLETED]`) and timestamps between plan files and TODO/state, without altering numbering rules.
 - **Lean routing and MCP validation**:

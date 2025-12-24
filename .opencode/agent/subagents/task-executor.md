@@ -53,7 +53,7 @@ tools:
     <action>Update TODO.md to mark task as IN PROGRESS</action>
     <process>
       1. Read .opencode/specs/TODO.md
-      2. Parse task by number (e.g., "59" from "/task 59")
+      2. Parse task by number (e.g., "59" from "/implement 59")
        3. Locate task section using patterns:
           - Section header: `### {number}. {title}`
           - Status field: `**Status**: {current_status}`
@@ -193,7 +193,7 @@ tools:
          <indicators>
            - multiple_tasks: true
            - task_count: "> 1"
-           - input from /task already normalized from ranges/lists
+            - input from /implement already normalized from ranges/lists
          </indicators>
          <coordinator>@subagents/batch-task-orchestrator</coordinator>
          <specialists>task-dependency-analyzer, batch-status-manager</specialists>

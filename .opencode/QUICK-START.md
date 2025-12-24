@@ -425,7 +425,7 @@ ls .opencode/command/
 
 ```bash
 /todo              # Display TODO list
-/task 63           # Execute task #63
+/implement 63      # Execute task #63
 ```
 
 ## Advanced Usage

@@ -48,10 +48,10 @@ tools:
 <workflow_execution>
   <stage id="1" name="ValidateAndExtractTasks">
     <action>Validate task numbers and extract task details from TODO.md</action>
-    <prerequisites>Task numbers list received from /task command</prerequisites>
+    <prerequisites>Task numbers list received from /implement command</prerequisites>
      <process>
        1. Read .opencode/specs/TODO.md
-       2. For each task number (pre-normalized from /task range/list parsing):
+       2. For each task number (pre-normalized from /implement range/list parsing):
           - Verify task exists in TODO.md
           - Extract task details (title, description, effort, priority, dependencies, status, Language)
           - Check if task is already complete
@@ -330,7 +330,7 @@ tools:
       ### Blocked Tasks
       ⊘ Task {num}: {title}
          - Blocked by: Task {blocking_task}
-         - Recommendation: Fix task {blocking_task} first, then run /task {num}
+         - Recommendation: Fix task {blocking_task} first, then run /implement {num}
       
       ### Next Steps
       {recommendations}
@@ -378,7 +378,7 @@ tools:
         "failed_tasks": {
           "64": {
             "error": "File not found: ...",
-            "recommendation": "Create missing file and re-run /task 64"
+            "recommendation": "Create missing file and re-run /implement 64"
           }
         },
         "blocked_tasks": {},
@@ -391,7 +391,7 @@ tools:
           "errors": []
         },
         "recommendations": [
-          "Fix error in Task 64 and re-run: /task 64",
+          "Fix error in Task 64 and re-run: /implement 64",
           "Continue with implementation: /implement .opencode/specs/063_task_name/plans/implementation-001.md"
         ]
       }
@@ -421,7 +421,7 @@ tools:
       
       Check Task 64 status:
         - If Task 64 is COMPLETE: Proceed with Task 65 in Wave 1
-        - If Task 64 is NOT STARTED: Warn user, recommend /task 64 first
+        - If Task 64 is NOT STARTED: Warn user, recommend /implement 64 first
     </example>
   </external_dependencies>
 

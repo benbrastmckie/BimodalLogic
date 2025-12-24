@@ -47,7 +47,7 @@ Complete context-aware AI system for software development, managing the full wor
 
 - **Lazy creation**: Create project root only when writing the first artifact; create only the needed subdirectory (reports/, plans/, summaries/) at write time; never add placeholder files. See [context/common/system/artifact-management.md](context/common/system/artifact-management.md).
 - **State timing**: Write project `state.json` only alongside an emitted artifact; global state updates follow artifact writes. See [context/common/system/state-schema.md](context/common/system/state-schema.md).
-- **Plan/research reuse**: `/plan` and `/revise` reuse linked research inputs; `/task` and `/implement` reuse the plan path attached in TODO.md and update that plan in place with status markers.
+- **Plan/research reuse**: `/plan` and `/revise` reuse linked research inputs; `/implement` reuses the plan path attached in TODO.md and updates that plan in place with status markers.
 - **Summaries**: Emit summaries only when an artifact is produced that requires one; do not pre-create summaries/.
 
 ### Agent & Command Map (responsibilities + creation guardrails)
@@ -57,7 +57,7 @@ Complete context-aware AI system for software development, managing the full wor
 | `/research` | researcher | `reports/` | Create project root and `reports/` only when writing the first report. |
 | `/plan`, `/revise` | planner | `plans/` | Create project root + `plans/` only when emitting the plan; reuse linked research inputs. |
 | `/implement`, `/lean` | implementer / lean-implementation-orchestrator | plan phases + emitted artifacts | Require plan path; update plan status markers; create only the subdir needed for emitted artifact; state sync with artifact write. |
-| `/task` | task-executor | plan phases + emitted artifacts | Reuse plan link when present; may run without plan; adhere to lazy creation; state/TODO sync when artifacts written. |
+| `/implement` | task-executor | plan phases + emitted artifacts | Reuse plan link when present; may run without plan; adhere to lazy creation; state/TODO sync when artifacts written. |
 | `/review` | reviewer | `reports/` or `summaries/` | Create only the needed subdir when writing the report/summary; no placeholders. |
 | `/document` | documenter | documentation + `summaries/` | Create summaries/ only when writing summary; follow documentation standards. |
 | `/refactor` | refactorer | code + optional reports | Create artifacts only when produced; keep lazy creation. |
@@ -70,7 +70,7 @@ Complete context-aware AI system for software development, managing the full wor
 
 - Use canonical markers: `[NOT STARTED]`, `[IN PROGRESS]`, `[BLOCKED]`, `[ABANDONED]`, `[COMPLETED]` with timestamps. See [context/common/system/status-markers.md](context/common/system/status-markers.md).
 - Mirror markers and timestamps across TODO entries, plan phases, and state files. State values use lowercase (`in_progress`, `completed`, etc.).
-- `/task` and `/implement` update the linked plan phases in place; TODO/state must reflect the same status transitions.
+- `/implement` updates the linked plan phases in place; TODO/state must reflect the same status transitions.
 - Follow [context/common/standards/tasks.md](context/common/standards/tasks.md) and [context/common/system/state-schema.md](context/common/system/state-schema.md) for synchronization rules.
 
 ---
@@ -103,7 +103,7 @@ See [command/README.md](command/README.md) for complete command reference.
 | `/implement {project}` | Execute implementation plan | developer |
 | `/refactor {file}` | Refactor code | refactorer |
 | `/document {scope}` | Update documentation | documenter |
-| `/task {description}` | Execute generic task | task-executor |
+| `/implement {task_number}` | Execute TODO task | task-executor |
 | `/add {tasks}` | Add tasks to TODO | task-adder |
 | `/todo {operation}` | Manage TODO.md | task-executor |
 | `/meta {request}` | Create/modify agents or commands | meta |

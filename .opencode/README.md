@@ -25,7 +25,7 @@ General-purpose AI agent system for software development. Manages the complete w
 
 ## Quick Start
 
-### Basic workflow: `/add` → `/research` → `/plan` → `/task`
+### Basic workflow: `/add` → `/research` → `/plan` → `/implement`
 1. **Add the task to TODO**
    ```bash
    /add "Implement user authentication"
@@ -44,9 +44,9 @@ General-purpose AI agent system for software development. Manages the complete w
    ```
    Builds a step-by-step plan for that project, reusing any linked research.
 
-4. **Execute the TODO via `/task`**
+4. **Execute the TODO via `/implement`**
    ```bash
-   /task 001
+   /implement 001
    ```
    Follows the plan phases, updates status markers, and runs the work.
 
@@ -74,7 +74,7 @@ General-purpose AI agent system for software development. Manages the complete w
 ### Task Management
 - `/add {task}` - Add tasks to TODO.md
 - `/todo` - Display TODO list
-- `/task {task_number}` - Execute TODO task
+- `/implement {task_number}` - Execute TODO task
 
 ## Project Structure
 
@@ -100,7 +100,7 @@ General-purpose AI agent system for software development. Manages the complete w
 **Lazy creation & responsibilities**
 - Create the project root only when writing the first artifact. Create only the subdirectory needed at write time (reports/ for research/review, plans/ for plan/revise, summaries/ only when emitting summaries). No placeholder files.
 - Project `state.json` is written alongside artifact creation; global state follows artifact writes. See `context/common/system/artifact-management.md` and `context/common/system/state-schema.md`.
-- `/task` and `/implement` reuse the plan link in TODO.md when present and update plan phases in place with status markers; `/plan` and `/revise` reuse linked research inputs.
+- `/implement` reuses the plan link in TODO.md when present and updates plan phases in place with status markers; `/plan` and `/revise` reuse linked research inputs.
 
 ## Key Features
 
@@ -120,7 +120,7 @@ Standardized structure in `.opencode/specs/`:
 ### Status markers & sync
 - Use canonical markers `[NOT STARTED]`, `[IN PROGRESS]`, `[BLOCKED]`, `[ABANDONED]`, `[COMPLETED]` with timestamps per `context/common/system/status-markers.md`.
 - Mirror markers across TODO.md (date-only), plan phases (ISO 8601), and state files (lowercase values) per `context/common/standards/tasks.md` and `context/common/system/state-schema.md`.
-- `/task` and `/implement` update linked plan phases; status changes must be reflected in TODO and state alongside artifact writes.
+- `/implement` updates linked plan phases; status changes must be reflected in TODO and state alongside artifact writes.
 
 ### Version Control
 - Implementation plans versioned (implementation-001.md, implementation-002.md, ...)

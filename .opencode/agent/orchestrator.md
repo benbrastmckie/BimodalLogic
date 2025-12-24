@@ -63,7 +63,7 @@ tools:
     </process>
     <workflow_classification>
       <task_execution_workflow>
-        Triggers: "/task {number(s)}"
+        Triggers: "/implement {number(s)}"
         Agent: @subagents/task-executor
         Features: Intelligent task type detection, automatic coordinator routing
         Context: project/{logic,lean4,math,physics,repo}, common/standards/
