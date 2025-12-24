@@ -7,8 +7,7 @@
   "status": "in_progress",
   "created": "2025-12-24T12:30:00Z",
   "started": "2025-12-24T12:30:00Z",
-  "completed": "2025-12-24",
-  "last_updated": "2025-12-24",
+  "last_updated": "2025-12-24T13:00:00Z",
   "effort_estimated": "18 hours",
   "effort_revised": "30 hours",
   "effort_actual": "2 hours (research phase)",
@@ -16,7 +15,19 @@
   "priority": "high",
   "language": "lean",
   "reports": [
-    "reports/research-001.md"
+    "reports/research-001.md",
+    "reports/web-research-lean4-docstrings.md"
+  ],
+  "plans": [
+    {
+      "version": 1,
+      "path": "plans/implementation-001.md",
+      "created": "2025-12-24T13:00:00Z",
+      "status": "active",
+      "phases": 5,
+      "estimated_hours": 30,
+      "complexity": "complex"
+    }
   ],
   "artifacts": [
     {
@@ -24,6 +35,25 @@
       "path": ".opencode/specs/172_documentation/reports/research-001.md",
       "created": "2025-12-24T23:59:59Z",
       "description": "Comprehensive research on Lean 4 documentation standards, current state analysis, gap identification, and implementation recommendations"
+    },
+    {
+      "type": "web_research",
+      "path": ".opencode/specs/172_documentation/reports/web-research-lean4-docstrings.md",
+      "created": "2025-12-24T12:30:00Z",
+      "description": "Lean 4 docstring syntax and conventions"
+    },
+    {
+      "type": "implementation_plan",
+      "path": ".opencode/specs/172_documentation/plans/implementation-001.md",
+      "version": 1,
+      "created": "2025-12-24T13:00:00Z",
+      "description": "5-phase implementation plan for complete API documentation (30 hours)"
+    },
+    {
+      "type": "plan_summary",
+      "path": ".opencode/specs/172_documentation/summaries/plan-summary.md",
+      "created": "2025-12-24T13:00:00Z",
+      "description": "Brief summary of implementation plan phases and deliverables"
     },
     {
       "type": "doc_summary",
@@ -42,6 +72,74 @@
       "path": "Documentation/Reference/API_REFERENCE.md",
       "created": "2025-12-24T14:36:00Z",
       "description": "Centralized API reference (manual generation, to be replaced by doc-gen4)"
+    }
+  ],
+  "plan_metadata": {
+    "current_version": 1,
+    "total_phases": 5,
+    "estimated_effort_hours": 30,
+    "complexity": "complex",
+    "language": "lean"
+  },
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Infrastructure Setup and Validation",
+      "status": "not_started",
+      "estimated_hours": 3,
+      "deliverables": [
+        "doc-gen4 installed and working",
+        "Documentation linters configured",
+        "Docstring templates established",
+        "CI/CD workflows operational",
+        "Build blockers resolved"
+      ]
+    },
+    {
+      "phase_number": 2,
+      "name": "Critical Gaps - High-Impact Documentation",
+      "status": "not_started",
+      "estimated_hours": 12,
+      "deliverables": [
+        "Tactics.lean: 100% coverage (15+ tactics)",
+        "Truth.lean: 100% coverage (30+ theorems)",
+        "Propositional.lean: 100% coverage (40+ theorems)",
+        "Derivation.lean: 100% coverage (10+ declarations)"
+      ]
+    },
+    {
+      "phase_number": 3,
+      "name": "Moderate Gaps - Semantic and Theorem Modules",
+      "status": "not_started",
+      "estimated_hours": 4.5,
+      "deliverables": [
+        "TaskModel.lean: 100% coverage",
+        "ModalS4.lean: 100% coverage",
+        "ModalS5.lean: 100% coverage"
+      ]
+    },
+    {
+      "phase_number": 4,
+      "name": "Minor Gaps - Systematic Coverage",
+      "status": "not_started",
+      "estimated_hours": 9,
+      "deliverables": [
+        "18 remaining files: 100% coverage",
+        "Cross-references validated",
+        "Documentation consistency verified"
+      ]
+    },
+    {
+      "phase_number": 5,
+      "name": "Quality Assurance and API Reference Generation",
+      "status": "not_started",
+      "estimated_hours": 1.5,
+      "deliverables": [
+        "Zero linter warnings (100% coverage verified)",
+        "Centralized API reference generated",
+        "DOC_QUALITY_CHECKLIST.md compliance verified",
+        "Documentation metadata updated"
+      ]
     }
   ],
   "research_summary": {
@@ -131,6 +229,22 @@
       "effort": "2 hours"
     }
   ],
+  "dependencies": {
+    "infrastructure": [
+      "doc-gen4 (to be installed)",
+      "Linters (already installed)",
+      "CI/CD workflows (to be created)"
+    ],
+    "build_blockers": [
+      "Truth.lean (line 632): Type mismatch in swap_past_future",
+      "DeductionTheorem.lean (lines 255, 297, 371): Type class issues"
+    ],
+    "standards": [
+      "DOC_QUALITY_CHECKLIST.md",
+      "LEAN_STYLE_GUIDE.md",
+      "mathlib4 conventions"
+    ]
+  },
   "acceptance_criteria": {
     "all_public_functions_have_docstrings": "PENDING (47% current coverage)",
     "docstrings_include_parameter_descriptions": "PARTIAL (well-documented files have good parameter docs)",
@@ -140,22 +254,19 @@
     "no_modules_with_missing_docstrings": "FAIL (28 files have <80% declaration coverage)",
     "zero_docBlame_warnings": "PENDING (linters not yet run)"
   },
+  "success_criteria": [
+    "100% docstring coverage (all public declarations)",
+    "Centralized HTML API reference generated via doc-gen4",
+    "All DOC_QUALITY_CHECKLIST.md checks pass",
+    "CI/CD integration for automated documentation builds"
+  ],
   "next_steps": [
-    "Create implementation plan for documentation completion (30 hours)",
-    "Phase 1: Set up doc-gen4 infrastructure (3 hours)",
-    "Phase 2: Document critical gaps (12 hours)",
-    "Phase 3: Document moderate gaps (4.5 hours)",
-    "Phase 4: Document minor gaps (9 hours)",
-    "Phase 5: Quality assurance and linter verification (1.5 hours)"
+    "Execute Phase 1: Infrastructure Setup and Validation (3 hours)",
+    "Execute Phase 2: Critical Gaps Documentation (12 hours)",
+    "Execute Phase 3: Moderate Gaps Documentation (4.5 hours)",
+    "Execute Phase 4: Minor Gaps Documentation (9 hours)",
+    "Execute Phase 5: Quality Assurance and API Reference Generation (1.5 hours)"
   ],
-  "recommendations": [
-    "Follow mathlib4 docstring patterns for consistency",
-    "Use doc-gen4 for automated API reference generation",
-    "Configure linters (#lint docBlame, #lint docBlameThm) in CI/CD",
-    "Prioritize critical modules (Tactics, Truth, Propositional, Derivation)",
-    "Deploy documentation to GitHub Pages for public access"
-  ],
-  "dependencies": [],
   "related_tasks": [
     173,
     174,
@@ -168,6 +279,7 @@
     "doc-gen4",
     "lean4",
     "quality",
-    "research-completed"
+    "research-completed",
+    "planning-completed"
   ]
 }

@@ -17,7 +17,7 @@ tools:
 <context>
   <specialist_domain>Atomic multi-file operations and distributed state synchronization</specialist_domain>
   <task_scope>Perform atomic status updates across TODO.md, state.json, and plan files simultaneously with transaction semantics</task_scope>
-  <integration>Provides atomic multi-file status updates for /plan, /research, /revise, and /task commands</integration>
+  <integration>Provides atomic multi-file status updates for /plan, /research, /revise, and /implement commands</integration>
 </context>
 
 <role>
@@ -280,7 +280,7 @@ tools:
     [IN PROGRESS] → [BLOCKED]
     [IN PROGRESS] → [ABANDONED]
     [RESEARCHED] → [IN PROGRESS] (for /plan after /research)
-    [PLANNED] → [IN PROGRESS] (for /task or /revise)
+    [PLANNED] → [IN PROGRESS] (for /implement or /revise)
     [BLOCKED] → [IN PROGRESS]
     [BLOCKED] → [ABANDONED]
   </valid_transitions>
@@ -863,7 +863,7 @@ tools:
   </example_3>
 
   <example_4>
-    <scenario>Mark task as COMPLETED at end of /task command</scenario>
+    <scenario>Mark task as COMPLETED at end of /implement command</scenario>
     <invocation>
       ```yaml
       operation: "mark_completed"
@@ -974,7 +974,7 @@ tools:
     1. Test /plan command integration
     2. Test /research command integration
     3. Test /revise command integration
-    4. Test /task command integration
+    4. Test /implement command integration
     5. Test concurrent update handling
     6. Test partial failure scenarios
   </integration_tests>

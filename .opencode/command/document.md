@@ -41,7 +41,7 @@ Context Loaded:
     <action>Validate scope and load standards</action>
     <process>
       1. Parse scope string/paths.
-      2. Confirm documentation standards are loaded; set task status to [IN PROGRESS] if invoked via /task.
+      2. Confirm documentation standards are loaded; set task status to [IN PROGRESS] if invoked via /implement.
     </process>
   </stage>
   <stage id="2" name="ExecuteDocumentation">
