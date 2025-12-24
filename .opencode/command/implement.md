@@ -68,11 +68,61 @@ Context Loaded:
        3. Pre-flight: use @subagents/specialists/status-sync-manager to atomically set TODO status to [IN PROGRESS] with **Started** date and, when a plan link exists, set the plan header + first active phase to [IN PROGRESS] with (Started: ISO8601); set state to `in_progress` with started in the same batch. No dirs created.
     </process>
   </stage>
-  <stage id="3" name="Execute">
-    <action>Route by work type</action>
+  <stage id="2.5" name="AssessComplexity">
+    <action>Assess task complexity for routing differentiation</action>
     <process>
-      1. Single task: route to appropriate agent (documentation → documenter; refactor → refactorer; research-only → researcher; code → implementer; Lean → lean-implementation-orchestrator/proof-developer).
-      2. Multiple tasks: route via batch-task-orchestrator + batch-status-manager with wave-based execution; Lean tasks use Lean path within waves. Batch handoff includes normalized task list, language metadata per task, and dependency hints; dependency analysis precedes execution.
+      1. Calculate complexity score using 7-factor algorithm (0-14 scale):
+         - Effort estimate (0-2): <2h=0, 2-4h=1, >4h=2
+         - Files affected (0-2): 1-2=0, 3-5=1, >5=2
+         - Lines of code (0-2): <100=0, 100-500=1, >500=2
+         - Dependencies (0-2): none=0, 1-2=1, >2=2
+         - Research needed (0-2): no=0, some=1, extensive=2
+         - Unknowns (0-2): clear=0, some=1, many=2
+         - Risk level (0-2): low=0, medium=1, high=2
+      2. Classify based on total score:
+         - 0-4: Simple (direct execution, single commit)
+         - 5-9: Moderate (plan-based, phase commits)
+         - 10-14: Complex (full research→plan→implement, phase commits)
+      3. Allow manual override with flags:
+         - --simple: Force simple path (skip complexity assessment)
+         - --complex: Force complex path (full workflow)
+      4. Pass complexity flag to task-executor for execution path differentiation
+    </process>
+    <complexity_indicators>
+      <simple>
+        - Single file changes
+        - Clear requirements
+        - No dependencies
+        - Low risk
+        - <2 hour effort
+      </simple>
+      <moderate>
+        - 2-5 file changes
+        - Some unknowns
+        - 1-2 dependencies
+        - Medium risk
+        - 2-4 hour effort
+      </moderate>
+      <complex>
+        - >5 file changes
+        - Significant unknowns
+        - Multiple dependencies
+        - High risk
+        - >4 hour effort
+        - Research required
+      </complex>
+    </complexity_indicators>
+    <checkpoint>Complexity assessed and routing flag set</checkpoint>
+  </stage>
+  <stage id="3" name="Execute">
+    <action>Route by work type and complexity</action>
+    <process>
+      1. Single task: route to appropriate agent with complexity flag:
+         - Simple: Direct execution by implementer (no research/plan phases)
+         - Moderate/Complex: Route to task-executor for full workflow
+         - Documentation → documenter; refactor → refactorer; research-only → researcher
+         - Lean → lean-implementation-orchestrator/proof-developer
+      2. Multiple tasks: route via batch-task-orchestrator + batch-status-manager with wave-based execution; Lean tasks use Lean path within waves. Batch handoff includes normalized task list, language metadata per task, complexity flags, and dependency hints; dependency analysis precedes execution.
       3. Reuse plan/research links exactly; maintain lazy creation (project roots/subdirs only when writing artifacts). Batch execution must keep TODO/plan/state status markers in lockstep for each task and block dependents on failure.
     </process>
   </stage>
