@@ -335,12 +335,22 @@ tools:
       ### Next Steps
       {recommendations}
     </output_format>
-    <checkpoint>Summary generated</checkpoint>
+    <summary_artifact_requirement>
+      After batch execution completes, MUST create batch summary artifact:
+      - Path: .opencode/specs/batch-{start}-{end}/summaries/batch-summary-YYYYMMDD.md
+      - Content: Aggregate summary of all tasks, completion status, failures, recommendations
+      - Include: Task summaries (one line each), total files modified, wave execution details
+      - Reference: Individual task summary artifacts for details
+      - Lazy creation: Create batch spec directory and summaries/ only when writing
+      - Template: Use batch summary template
+      - Validation: Ensure artifact exists before returning to orchestrator
+    </summary_artifact_requirement>
+    <checkpoint>Summary generated and batch summary artifact created</checkpoint>
   </stage>
 
   <stage id="6" name="ReturnResults">
     <action>Return batch execution results to orchestrator</action>
-    <prerequisites>Summary generated</prerequisites>
+    <prerequisites>Summary generated and batch summary artifact created</prerequisites>
     <return_format>
       {
         "batch_execution": {

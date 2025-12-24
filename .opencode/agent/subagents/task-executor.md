@@ -288,7 +288,14 @@ tools:
     <skip_for_simple>
       Simple and moderate tasks skip this stage entirely
     </skip_for_simple>
-    <checkpoint>Research complete (if executed)</checkpoint>
+    <summary_artifact_requirement>
+      After research report created, MUST create summary artifact:
+      - Path: .opencode/specs/{NNN}_{slug}/summaries/research-summary.md
+      - Content: 3-5 sentence summary of key findings and recommendations
+      - Lazy creation: Create summaries/ directory only when writing first summary
+      - Template: Use research summary template from artifact-management.md
+    </summary_artifact_requirement>
+    <checkpoint>Research complete (if executed) and summary artifact created</checkpoint>
   </stage>
 
   <stage id="6" name="ExecutePlanningPhase">
@@ -357,7 +364,14 @@ tools:
       - {criterion_1}
       - {criterion_2}
     </plan_structure_simple>
-    <checkpoint>Implementation plan created</checkpoint>
+    <summary_artifact_requirement>
+      After implementation plan created, MUST create summary artifact:
+      - Path: .opencode/specs/{NNN}_{slug}/summaries/plan-summary.md
+      - Content: 3-5 sentence summary of plan phases, complexity, and key steps
+      - Lazy creation: Create summaries/ directory only when writing first summary
+      - Template: Use plan summary template from artifact-management.md
+    </summary_artifact_requirement>
+    <checkpoint>Implementation plan created and summary artifact created</checkpoint>
   </stage>
 
   <stage id="7" name="RouteToCoordinator">
@@ -490,7 +504,16 @@ tools:
       - Validate summary is present
       - Check files_modified list
     </result_validation>
-    <checkpoint>Coordinator results processed</checkpoint>
+    <summary_artifact_requirement>
+      After coordinator execution completes, MUST create implementation summary artifact:
+      - Path: .opencode/specs/{NNN}_{slug}/summaries/implementation-summary-YYYYMMDD.md
+      - Content: 3-5 sentence summary of implementation results, files modified, status
+      - Include: Artifacts created, key changes, completion status, next steps
+      - Lazy creation: Create summaries/ directory only when writing first summary
+      - Template: Use implementation summary template from artifact-management.md
+      - Validation: Ensure artifact exists before returning to orchestrator
+    </summary_artifact_requirement>
+    <checkpoint>Coordinator results processed and implementation summary artifact created</checkpoint>
   </stage>
 
   <stage id="9" name="MarkTaskComplete">

@@ -46,11 +46,12 @@
       "project_number": 172,
       "project_name": "documentation",
       "type": "documentation",
-      "phase": "planning",
-      "status": "in_progress",
+      "phase": "planned",
+      "status": "planned",
       "created": "2025-12-24T12:30:00Z",
       "started": "2025-12-24T12:30:00Z",
-      "last_updated": "2025-12-24T13:00:00Z"
+      "completed": "2025-12-24",
+      "last_updated": "2025-12-24"
     },
     {
       "project_number": 174,
@@ -366,10 +367,11 @@
     {
       "project_number": 172,
       "title": "Complete API documentation for all Logos modules",
-      "status": "in_progress",
+      "status": "planned",
       "created": "2025-12-24T12:30:00Z",
       "started": "2025-12-24",
-      "last_updated": "2025-12-24T13:00:00Z"
+      "completed": "2025-12-24",
+      "last_updated": "2025-12-24"
     },
     {
       "project_number": 173,
