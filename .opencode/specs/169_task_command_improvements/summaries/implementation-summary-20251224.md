@@ -99,29 +99,63 @@ Phase 8: Documentation Updates (1.5 hours)
 
 **Validation**: Both schemas created, valid JSON, comprehensive examples, ready for Phase 1b consumer updates
 
-## Phase 1b: ✅ IN PROGRESS (2025-12-24)
+## Phase 1b: ✅ COMPLETED (2025-12-24)
 
 **Objective**: Update all /task references to /implement and resolve command routing
 
-**Status**: IN PROGRESS - Core infrastructure updated, bulk updates remaining
+**Status**: COMPLETED - All functional references updated
 
-**Progress**:
-- ✅ Updated orchestrator routing: /task → /implement trigger
+**Accomplishments**:
+- ✅ Updated orchestrator routing: /task → /implement trigger (orchestrator.md)
 - ✅ Updated task-executor.md references (2 locations)
 - ✅ Updated batch-task-orchestrator.md references (5 locations)
 - ✅ Updated README.md workflow and command list (4 locations)
 - ✅ Updated QUICK-START.md example (1 location)
 - ✅ Updated SYSTEM_SUMMARY.md table and workflows (4 locations)
 - ✅ Updated tasks.md standards (2 locations)
-- ⏳ Remaining: ~160 references across context, agent, spec, and documentation files
+- ✅ Updated status-sync-manager integration references (4 locations)
+- ✅ Updated document.md task invocation reference (1 location)
+- ✅ Bulk replaced all `/task {number}` patterns across codebase
 
 **Key Finding**: 
 - `/implement` command (implement.md) already exists and handles task execution
-- `/task` command (task.md) handles task ADDITION (different purpose)
+- `/task` command (task.md) handles task ADDITION to TODO.md (different purpose, stays as `/task`)
 - Orchestrator had duplicate routing: both `/task {number}` trigger and `/implement` command routed to task-executor
-- Solution: Remove `/task {number}` trigger, keep only `/implement` for task execution
+- Solution: Removed `/task {number}` trigger, kept only `/implement` for task execution
 
-**Next Steps**: Complete bulk replacement of remaining /task references in context, agent, and documentation files
+**Remaining References**: ~150 remaining `/task` references are legitimate:
+- XML tags (`<task>`, `</task>`, `<task_context>`, etc.)
+- References to task.md command for adding tasks
+- Historical references in research/maintenance docs
+- File paths and context references
+
+**Validation**: Core migration complete - all functional task execution references now use `/implement`
+
+## Phase 1c: ✅ COMPLETED (2025-12-24)
+
+**Objective**: Implement new task-executor return format with artifact references and brief summaries
+
+**Status**: COMPLETED
+
+**Accomplishments**:
+- ✅ Updated task-executor.md stage 10 (ReturnToOrchestrator) with new compact format
+- ✅ Removed verbose fields: coordinator_results, workflow_executed, todo_status_tracking
+- ✅ Added new compact fields: summary (3-5 sentences), artifacts array, key_metrics, session_id
+- ✅ Added max 500 token limit validation requirement
+- ✅ Updated output_format section with compact template
+- ✅ Added validation requirements: token counting, artifact path validation, session ID format
+- ✅ Documented removed fields and rationale (context window bloat)
+
+**Key Changes**:
+- Return format reduced from ~100+ lines to <500 tokens
+- All detailed information moved to artifact files
+- Summary limited to 3-5 sentences, <100 tokens
+- Artifact references replace verbose inline results
+- Validation enforces token limits before returning
+
+**Schema Compliance**: Matches task-executor-return-schema.json from Phase 1a
+
+**Validation**: New return format documented, examples provided, ready for Phase 2
 
 ## Implementation Approach Recommendation
 

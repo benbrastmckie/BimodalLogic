@@ -557,92 +557,85 @@ tools:
   </stage>
 
   <stage id="10" name="ReturnToOrchestrator">
-    <action>Return task execution summary and coordinator results</action>
+    <action>Return compact task execution summary with artifact references (context window protection)</action>
     <return_format>
+      COMPACT FORMAT (max 500 tokens per task):
       {
         "task_number": NNN,
-        "task_title": "{title}",
-        "task_type": "implementation|documentation|refactoring|research|batch_tasks",
-        "complexity": "simple|moderate|complex",
-        "effort_estimate": "{effort}",
-        "coordinator_used": "@subagents/{coordinator_name}",
-        "todo_status_tracking": {
-          "initial_status": "Not Started|In Progress",
-          "marked_in_progress": true|false,
-          "marked_complete": true|false,
-          "started_date": "YYYY-MM-DD",
-          "completed_date": "YYYY-MM-DD|null",
-          "tracking_errors": ["error1", "error2"]
-        },
-        "workflow_executed": {
-          "task_type_detection": true,
-          "coordinator_routing": true,
-          "coordinator_execution": true|false,
-          "status_tracking_complete": true|false
-        },
-        "coordinator_results": {
-          "status": "completed|in_progress|failed",
-          "artifacts": ["path1", "path2"],
-          "summary": "Brief summary from coordinator",
-          "files_modified": ["file1", "file2"],
-          "verification_status": "passed|failed|n/a"
-        },
+        "status": "COMPLETED|FAILED|BLOCKED|PARTIAL",
+        "summary": "Brief 3-5 sentence summary of what was accomplished. Maximum 100 tokens.",
         "artifacts": [
           {
-            "type": "coordinator_artifact",
-            "path": "{artifact_path}"
+            "type": "research|plan|implementation|summary|test_results",
+            "path": "relative/path/from/project/root",
+            "summary": "Optional one-sentence summary of artifact contents"
           }
         ],
-        "status": "completed|in_progress|failed",
-        "next_steps": "Human-readable next steps or completion message"
+        "key_metrics": {
+          "complexity": "simple|moderate|complex",
+          "effort_hours": 2.5,
+          "files_modified": 5,
+          "phases_completed": 3
+        },
+        "session_id": "task-{number}-{YYYYMMDD}-{nnn}",
+        "next_steps": "Optional brief next steps (1-2 sentences, max 200 chars)",
+        "errors": [
+          {
+            "message": "Error description",
+            "phase": "Phase where error occurred",
+            "recommendation": "Recommended action to resolve"
+          }
+        ]
       }
+      
+      REMOVED FIELDS (context window bloat):
+      - coordinator_results (details in artifacts)
+      - workflow_executed (internal tracking only)
+      - todo_status_tracking (internal tracking only)
+      - task_title, task_type, effort_estimate (redundant with TODO.md)
+      - coordinator_used (internal routing detail)
+      
+      VALIDATION:
+      - Total return must be <500 tokens
+      - Summary must be 3-5 sentences, <100 tokens
+      - All detailed information in artifact files, not return value
+      - Artifact paths must be valid and files must exist
     </return_format>
     <output_format>
-      ## Task {number}: {title}
+      COMPACT OUTPUT (max 500 tokens):
       
-      **Complexity**: {Simple|Moderate|Complex}
-      **Task Type**: {Implementation|Documentation|Refactoring|Research}
-      **Effort**: {estimate}
-      **Priority**: {High|Medium|Low}
-      **Files Affected**: {list}
+      ## Task {number} - {status}
       
-      ### TODO.md Status Tracking
+      {summary - 3-5 sentences describing what was accomplished}
       
-      {if marked_in_progress:
-        ✅ **Task marked as IN PROGRESS in TODO.md**
-        - Started: {started_date}
-        - Status: `[IN PROGRESS]`
-      }
-      {else:
-        ⚠️ **Status tracking skipped** (task not found or already complete)
+      **Artifacts Created**:
+      {for each artifact:
+        - {type}: {path}
+          {optional one-sentence summary}
       }
       
-      ### Workflow Executed
+      **Metrics**:
+      - Complexity: {simple|moderate|complex}
+      - Effort: {hours}h
+      - Files Modified: {count}
+      - Phases Completed: {count}
       
-      {if research_phase:
-        #### Research Phase ✓
-        - Research report: `.opencode/specs/{NNN}_{task_name}/reports/research-001.md`
-        - Key findings: {summary}
-        - Relevant resources: {list}
+      {if next_steps:
+        **Next Steps**: {next_steps}
       }
       
-      #### Planning Phase ✓
-      - Implementation plan: `.opencode/specs/{NNN}_{task_name}/plans/implementation-001.md`
-      - Complexity: {assessment}
-      - Estimated effort: {effort}
-      - Dependencies: {list}
-      
-      {if execution_phase:
-        #### Execution Phase ✓
-        - Changes made: {summary}
-        - Files modified: {list}
-        
-        {if marked_complete:
-          ✅ **Task marked as COMPLETE in TODO.md**
-          - Completed: {completed_date}
-          - Status: `[COMPLETE]` ✅
+      {if errors:
+        **Errors**:
+        {for each error:
+          - {message} ({phase})
+            Recommendation: {recommendation}
         }
       }
+      
+      ---
+      Session: {session_id}
+      
+      For detailed execution logs, see artifacts above.
       
       ### Plan Summary
       
@@ -655,35 +648,12 @@ tools:
       - {dependency_1}
       - {dependency_2}
       
-      **Files Affected**:
-      - {file_1}: {description}
-      - {file_2}: {description}
-      
-      ### Recommended Next Step
-      
-      {if implementation_task:
-        **Use `/implement` for code implementation**:
-        ```
-        /implement .opencode/specs/{NNN}_{task_name}/plans/implementation-001.md
-        ```
-        
-        This will engage the implementer subagent for code development
-        following the implementation plan.
-      }
-      
-      {if task_completed:
-        **Task Completed** ✓
-        
-        {summary_of_changes}
-        
-        Task has been marked complete in TODO.md.
-        
-        {if verification_needed:
-          **Verification Steps**:
-          - [ ] {verification_1}
-          - [ ] {verification_2}
-        }
-      }
+      VALIDATION REQUIREMENTS:
+      - Measure token count before returning (use approximate: chars/4)
+      - If >500 tokens, condense summary and remove optional fields
+      - Ensure all artifact paths are valid and files exist
+      - Create implementation summary artifact if not exists
+      - Session ID format: task-{number}-{YYYYMMDD}-{nnn}
       
       {if documentation_task:
         **Documentation Update**:

@@ -89,7 +89,7 @@ Keeps implementation status and registries synchronized, reducing drift and miss
 
 ### 172. Complete API documentation for all Logos modules
 **Effort**: 30 hours
-**Status**: [IN PROGRESS]
+**Status**: [PLANNED]
 **Started**: 2025-12-24
 **Completed**: 2025-12-24
 **Priority**: High
@@ -98,6 +98,8 @@ Keeps implementation status and registries synchronized, reducing drift and miss
 **Language**: lean
 **Research**: [Research Report](.opencode/specs/172_documentation/reports/research-001.md)
 **Research Summary**: Current state shows 98% module-level coverage but only 47% declaration-level coverage. Critical gaps identified in 4 files (Tactics.lean, Truth.lean, Propositional.lean, Derivation.lean). Recommended tools: doc-gen4 for centralized API reference, linters for quality enforcement. Revised effort estimate: 30 hours (up from 18 hours).
+**Plan**: [Implementation Plan](.opencode/specs/172_documentation/plans/implementation-001.md)
+**Plan Summary**: 5-phase implementation plan (30 hours total). Phase 1: Infrastructure setup with doc-gen4 and linters (3h). Phase 2: Critical gaps - Tactics, Truth, Propositional, Derivation (12h). Phase 3: Moderate gaps - TaskModel, ModalS4, ModalS5 (4.5h). Phase 4: Minor gaps - 18 remaining files (9h). Phase 5: Quality assurance and API reference generation (1.5h). Includes build blocker fixes for Truth.lean and DeductionTheorem.lean.
 
 **Files Affected**:
 - All Logos module files (24 modules)
