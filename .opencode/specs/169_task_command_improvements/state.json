@@ -22,8 +22,15 @@
         "version": 1,
         "path": "plans/implementation-001.md",
         "created": "2025-12-24",
+        "status": "superseded",
+        "summary": "8-phase implementation plan (superseded by v2)"
+      },
+      {
+        "version": 2,
+        "path": "plans/implementation-002.md",
+        "created": "2025-12-24",
         "status": "active",
-        "summary": "8-phase implementation plan addressing context window protection gaps"
+        "summary": "Clean-break approach without backward compatibility layers"
       }
     ],
     "summaries": [
@@ -37,23 +44,26 @@
         "path": "summaries/plan-summary.md",
         "type": "plan_summary",
         "created": "2025-12-24",
-        "status": "in_progress"
+        "status": "superseded",
+        "note": "Summary for v1 plan"
       }
     ]
   },
   "task_metadata": {
     "task_number": 169,
     "title": "Improve /task command to protect primary agent context window",
-    "effort": "6 hours",
+    "effort": "8-9 hours",
     "priority": "High",
     "language": "markdown"
   },
   "plan_metadata": {
     "total_phases": 8,
-    "estimated_effort": "6 hours",
+    "estimated_effort": "8-9 hours",
     "complexity": "complex",
     "phases_completed": 0,
     "phases_in_progress": 0,
-    "phases_not_started": 8
+    "phases_not_started": 8,
+    "current_version": 2,
+    "revision_reason": "Clean-break approach: remove backward compatibility, add upfront audit, coordinate atomic changes"
   }
 }
