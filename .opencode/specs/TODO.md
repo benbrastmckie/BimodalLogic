@@ -4,11 +4,11 @@
 
 ## Overview
 
-- **Total Tasks:** 13
+- **Total Tasks:** 14
 - **Completed:** 0
 - **High Priority:** 1
 - **Medium Priority:** 0
-- **Low Priority:** 12
+- **Low Priority:** 13
 
 ---
 
@@ -18,7 +18,8 @@
 
 ### 169. Improve /task command to protect primary agent context window
 - **Effort**: 4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
+- **Started**: 2025-12-24
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -219,5 +220,35 @@
   - [ ] Architecture updated with Layer 3 scope and assumptions
   - [ ] Follow-on tasks identified
 - **Impact**: Provides a roadmap for normative logic extensions.
+
+### 170. Improve maintenance report system and documentation
+- **Effort**: 3 hours
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-24
+- **Completed**: 2025-12-24
+- **Priority**: Low
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/specs/maintenance/maintenance-report-20251224.md
+  - .opencode/command/todo.md
+  - .opencode/agent/subagents/reviewer.md
+  - .opencode/context/common/standards/report.md
+  - .opencode/context/common/system/artifact-management.md
+- **Research Artifacts**:
+  - Main Report: .opencode/specs/170_maintenance_report_improvements/reports/research-001.md
+  - Summary: .opencode/specs/170_maintenance_report_improvements/summaries/research-summary.md
+- **Description**: Improve the system that produces maintenance reports (like .opencode/specs/maintenance/maintenance-report-20251224.md) and its documentation. The maintenance report generation should follow standardized templates, include comprehensive metrics, and integrate properly with the /todo command workflow. Documentation should clearly explain the maintenance report structure, generation process, and how it fits into the overall maintenance workflow.
+- **Acceptance Criteria**:
+  - [ ] Maintenance report template created or updated in common/standards/
+  - [ ] Report generation follows artifact-management.md standards
+  - [ ] /todo command documentation updated to explain maintenance report generation
+  - [ ] Reviewer agent documentation updated to include maintenance report workflow
+  - [ ] Maintenance reports include all required sections (summary, operations, metrics, recommendations)
+  - [ ] Reports are properly linked in maintenance/state.json
+  - [ ] Documentation explains when and how maintenance reports are generated
+  - [ ] Examples provided showing typical maintenance report structure
+- **Impact**: Improves maintainability and transparency of the maintenance workflow by standardizing report generation and ensuring comprehensive documentation of maintenance operations.
 
 ---

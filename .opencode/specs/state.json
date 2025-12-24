@@ -1,20 +1,66 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker project. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-24T23:00:00Z",
-  "next_project_number": 170,
+  "_last_updated": "2025-12-24T23:59:59Z",
+  "next_project_number": 171,
   "project_numbering": {
     "min": 0,
     "max": 999,
     "policy": "increment_modulo_1000",
     "_comment": "Project numbers wrap around to 000 after 999. Ensure old projects are archived before reuse."
   },
-  "active_projects": [],
+  "active_projects": [
+    {
+      "project_number": 169,
+      "project_name": "improve_task_command_to_protect_primary_agent_context_window",
+      "type": "implementation",
+      "phase": "research_completed",
+      "status": "in_progress",
+      "created": "2025-12-24T23:00:00Z",
+      "started": "2025-12-24",
+      "last_updated": "2025-12-24"
+    },
+    {
+      "project_number": 170,
+      "project_name": "improve_maintenance_report_system_and_documentation",
+      "type": "implementation",
+      "phase": "research_completed",
+      "status": "researched",
+      "created": "2025-12-24T23:30:00Z",
+      "started": "2025-12-24",
+      "completed": "2025-12-24",
+      "last_updated": "2025-12-24"
+    }
+  ],
   "completed_projects": [],
   "recent_activities": [
     {
+      "timestamp": "2025-12-24T23:59:59Z",
+      "activity": "Completed research for task 169: Context window protection and artifact management improvements"
+    },
+    {
+      "timestamp": "2025-12-24T23:59:00Z",
+      "activity": "Completed research for task 170: Maintenance report system improvements"
+    },
+    {
+      "timestamp": "2025-12-24T23:55:00Z",
+      "activity": "Started task 169: Improve /task command to protect primary agent context window"
+    },
+    {
+      "timestamp": "2025-12-24T23:50:00Z",
+      "activity": "Started task 170: Improve maintenance report system and documentation"
+    },
+    {
+      "timestamp": "2025-12-24T23:45:00Z",
+      "activity": "Revised task 169: Updated scope to include single/range task execution and simple/complex plan handling"
+    },
+    {
+      "timestamp": "2025-12-24T23:30:00Z",
+      "activity": "Created task 170: Improve maintenance report system and documentation"
+    },
+    {
       "timestamp": "2025-12-24T23:00:00Z",
-      "activity": "Created task 169: Research /task command context window protection improvements"
+      "activity": "Created task 169: Improve /task command to protect primary agent context window"
     },
     {
       "timestamp": "2025-12-24T22:00:00Z",
@@ -139,10 +185,19 @@
   ],
   "pending_tasks": [
     {
+      "project_number": 170,
+      "title": "Improve maintenance report system and documentation",
+      "status": "researched",
+      "created": "2025-12-24T23:30:00Z",
+      "started": "2025-12-24",
+      "completed": "2025-12-24"
+    },
+    {
       "project_number": 169,
-      "title": "Research /task command context window protection improvements",
-      "status": "not_started",
-      "created": "2025-12-24T23:00:00Z"
+      "title": "Improve /task command to protect primary agent context window",
+      "status": "in_progress",
+      "created": "2025-12-24T23:00:00Z",
+      "started": "2025-12-24"
     },
     {
       "project_number": 129,
