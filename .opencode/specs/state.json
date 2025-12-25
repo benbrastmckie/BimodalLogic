@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker project. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-24T23:59:59Z",
-  "next_project_number": 181,
+  "_last_updated": "2025-12-25T23:09:04Z",
+  "next_project_number": 189,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -47,27 +47,103 @@
       "project_number": 172,
       "project_name": "documentation",
       "type": "documentation",
-      "phase": "planned",
-      "status": "planned",
+      "phase": "completed",
+      "status": "completed",
       "created": "2025-12-24T12:30:00Z",
       "started": "2025-12-24T12:30:00Z",
       "completed": "2025-12-24",
       "last_updated": "2025-12-24"
     },
     {
+      "project_number": 173,
+      "project_name": "integration_tests",
+      "type": "implementation",
+      "phase": "implementation",
+      "status": "blocked",
+      "created": "2025-12-24T12:30:00Z",
+      "started": "2025-12-24",
+      "blocked": "2025-12-25",
+      "last_updated": "2025-12-25"
+    },
+    {
       "project_number": 174,
       "project_name": "property_based_testing",
-      "type": "research",
-      "phase": "research_completed",
-      "status": "researched",
+      "type": "implementation",
+      "phase": "implementation",
+      "status": "in_progress",
       "created": "2025-12-24T12:30:00Z",
-      "started": "2025-12-24T23:00:00Z",
-      "completed": "2025-12-24T23:30:00Z",
-      "last_updated": "2025-12-24T23:30:00Z"
+      "started": "2025-12-25",
+      "research_completed": "2025-12-24T23:30:00Z",
+      "planning_completed": "2025-12-24T23:59:59Z",
+      "last_updated": "2025-12-25"
     }
   ],
   "completed_projects": [],
   "recent_activities": [
+    {
+      "timestamp": "2025-12-25T00:35:00Z",
+      "activity": "Completed task 182: Fixed /research status update bug - identified root cause and documented fix (orchestrator must call status-sync-manager in postflight)"
+    },
+    {
+      "timestamp": "2025-12-25T00:35:00Z",
+      "activity": "Marked task 177 as RESEARCHED: Research completed successfully (zero breaking changes found, enhancement opportunities documented)"
+    },
+    {
+      "timestamp": "2025-12-25T00:30:00Z",
+      "activity": "Marked task 173 as BLOCKED: Pre-existing build errors in DeductionTheorem.lean (3 errors) and Truth.lean (1 error) block test compilation. Implementation created 106 new tests (82% coverage) but cannot verify passing until core builds."
+    },
+    {
+      "timestamp": "2025-12-25T23:09:04Z",
+      "activity": "Created task 187: Refactor review.md workflow context to specify registry update workflow"
+    },
+    {
+      "timestamp": "2025-12-25T23:09:04Z",
+      "activity": "Created task 188: Refactor /review command to load review.md workflow context"
+    },
+    {
+      "timestamp": "2025-12-25T00:45:00Z",
+      "activity": "Created task 183: Fix DeductionTheorem.lean build errors (3 errors) - blocks task 173"
+    },
+    {
+      "timestamp": "2025-12-25T00:45:00Z",
+      "activity": "Created task 184: Fix Truth.lean build error (swap_past_future proof) - blocks task 173"
+    },
+    {
+      "timestamp": "2025-12-25T00:45:00Z",
+      "activity": "Created task 185: Fix integration test helper API mismatches - depends on 183, 184"
+    },
+    {
+      "timestamp": "2025-12-25T00:30:00Z",
+      "activity": "Marked task 173 as BLOCKED: Pre-existing build errors in DeductionTheorem.lean (3 errors) and Truth.lean (1 error) block test compilation. Implementation created 106 new tests (82% coverage) but cannot verify passing until core builds."
+    },
+    {
+      "timestamp": "2025-12-25T00:30:00Z",
+      "activity": "Added implementation summary summaries/implementation-summary-20251225.md for project 173 (106 new tests, 82% coverage achieved)"
+    },
+    {
+      "timestamp": "2025-12-25T00:15:00Z",
+      "activity": "Created task 182: Fix /research status update bug - tasks not marked RESEARCHED"
+    },
+    {
+      "timestamp": "2025-12-25T00:00:00Z",
+      "activity": "Marked task 174 as IN PROGRESS for implementation phase (planning completed 2025-12-24)"
+    },
+    {
+      "timestamp": "2025-12-25T00:00:00Z",
+      "activity": "Marked task 173 as IN PROGRESS for implementation phase (research completed 2025-12-24)"
+    },
+    {
+      "timestamp": "2025-12-24T23:59:59Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 174 (7 phases, 18-23 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-24T23:59:59Z",
+      "activity": "Created plan summary summaries/plan-summary.md for project 174"
+    },
+    {
+      "timestamp": "2025-12-24T23:59:59Z",
+      "activity": "Completed research for task 173: Integration testing for proof system and semantics"
+    },
     {
       "timestamp": "2025-12-24T23:59:59Z",
       "activity": "Completed task 169: /implement command context window protection (95%+ reduction, 80+ files updated, 259 /task refs renamed)"
@@ -83,10 +159,6 @@
     {
       "timestamp": "2025-12-24T00:00:00Z",
       "activity": "Started implementation for project 169: /implement command context window protection improvements"
-    },
-    {
-      "timestamp": "2025-12-24T23:30:00Z",
-      "activity": "Completed research for project 174: Property-based testing frameworks for Lean 4 (Plausible recommended)"
     },
     {
       "timestamp": "2025-12-24T23:30:00Z",
@@ -249,10 +321,6 @@
       "activity": "Updated agent/command context references per task 144 and refreshed summary"
     },
     {
-      "timestamp": "2025-12-23T05:00:00Z",
-      "activity": "Archived completed projects 126, 127, 143, 147 and marked task 145 abandoned"
-    },
-    {
       "timestamp": "2025-12-23T06:10:00Z",
       "activity": "Created research report reports/research-001.md for project 128 (caching/context helpers)"
     },
@@ -382,17 +450,21 @@
     {
       "project_number": 173,
       "title": "Implement integration tests for proof system and semantics",
-      "status": "in_progress",
+      "status": "blocked",
       "created": "2025-12-24T12:30:00Z",
-      "started": "2025-12-24"
+      "started": "2025-12-24",
+      "blocked": "2025-12-25",
+      "last_updated": "2025-12-25"
     },
     {
       "project_number": 174,
       "title": "Add property-based testing framework and metalogic tests",
-      "status": "researched",
+      "status": "in_progress",
       "created": "2025-12-24T12:30:00Z",
-      "started": "2025-12-24",
-      "completed": "2025-12-24T23:30:00Z"
+      "started": "2025-12-25",
+      "research_completed": "2025-12-24T23:30:00Z",
+      "planning_completed": "2025-12-24T23:59:59Z",
+      "last_updated": "2025-12-25"
     },
     {
       "project_number": 175,
@@ -409,8 +481,10 @@
     {
       "project_number": 177,
       "title": "Update examples to use latest APIs and add new feature demonstrations",
-      "status": "not_started",
-      "created": "2025-12-24T12:30:00Z"
+      "status": "researched",
+      "created": "2025-12-24T12:30:00Z",
+      "started": "2025-12-25",
+      "completed": "2025-12-25"
     },
     {
       "project_number": 178,
@@ -429,6 +503,60 @@
       "title": "Add test coverage metrics and reporting",
       "status": "not_started",
       "created": "2025-12-24T12:30:00Z"
+    },
+    {
+      "project_number": 181,
+      "title": "Fix /implement status update bug - tasks not marked COMPLETED",
+      "status": "completed",
+      "created": "2025-12-25T00:00:00Z",
+      "started": "2025-12-25",
+      "completed": "2025-12-25"
+    },
+    {
+      "project_number": 182,
+      "title": "Fix /research status update bug - tasks not marked RESEARCHED",
+      "status": "completed",
+      "created": "2025-12-25T00:15:00Z",
+      "started": "2025-12-25",
+      "completed": "2025-12-25"
+    },
+    {
+      "project_number": 183,
+      "title": "Fix DeductionTheorem.lean build errors (3 errors)",
+      "status": "in_progress",
+      "created": "2025-12-25T00:45:00Z",
+      "started": "2025-12-25"
+    },
+    {
+      "project_number": 184,
+      "title": "Fix Truth.lean build error (swap_past_future proof)",
+      "status": "in_progress",
+      "created": "2025-12-25T00:45:00Z",
+      "started": "2025-12-25"
+    },
+    {
+      "project_number": 185,
+      "title": "Fix integration test helper API mismatches",
+      "status": "not_started",
+      "created": "2025-12-25T00:45:00Z"
+    },
+    {
+      "project_number": 186,
+      "title": "Refactor MAINTENANCE.md to include /review update instructions",
+      "status": "not_started",
+      "created": "2025-12-25T23:09:04Z"
+    },
+    {
+      "project_number": 187,
+      "title": "Refactor review.md workflow context to specify registry update workflow",
+      "status": "not_started",
+      "created": "2025-12-25T23:09:04Z"
+    },
+    {
+      "project_number": 188,
+      "title": "Refactor /review command to load review.md workflow context",
+      "status": "not_started",
+      "created": "2025-12-25T23:09:04Z"
     }
   ],
   "maintenance_summary": {
