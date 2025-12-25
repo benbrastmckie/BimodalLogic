@@ -1,3 +1,7 @@
 import LogosTest.Core.Integration.EndToEndTest
 import LogosTest.Core.Integration.ProofSystemSemanticsTest
 import LogosTest.Core.Integration.AutomationProofSystemTest
+import LogosTest.Core.Integration.Helpers
+import LogosTest.Core.Integration.ComplexDerivationTest
+import LogosTest.Core.Integration.TemporalIntegrationTest
+import LogosTest.Core.Integration.BimodalIntegrationTest

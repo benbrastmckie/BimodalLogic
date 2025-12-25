@@ -1,38 +1,122 @@
 {
   "project_number": 174,
   "project_name": "property_based_testing",
-  "type": "research",
-  "phase": "research_completed",
-  "status": "researched",
+  "type": "implementation",
+  "phase": "implementation",
+  "status": "in_progress",
   "created": "2025-12-24T12:30:00Z",
-  "started": "2025-12-24T23:00:00Z",
-  "completed": "2025-12-24T23:30:00Z",
-  "last_updated": "2025-12-24T23:30:00Z",
-  "artifacts": [
+  "started": "2025-12-25",
+  "research_completed": "2025-12-24T23:30:00Z",
+  "planning_completed": "2025-12-24T23:59:59Z",
+  "last_updated": "2025-12-25",
+  "artifacts": {
+    "research": [
+      {
+        "type": "research_report",
+        "path": ".opencode/specs/174_property_based_testing/reports/research-001.md",
+        "created": "2025-12-24T23:30:00Z",
+        "description": "Comprehensive research on property-based testing frameworks for Lean 4"
+      },
+      {
+        "type": "summary",
+        "path": ".opencode/specs/174_property_based_testing/summaries/research-summary.md",
+        "created": "2025-12-24T23:30:00Z",
+        "description": "Brief summary of research findings and recommendations"
+      },
+      {
+        "type": "detailed_findings",
+        "path": "Documentation/Research/property-based-testing-lean4.md",
+        "created": "2025-12-24T23:00:00Z",
+        "description": "Detailed web research findings from specialist subagent"
+      }
+    ],
+    "planning": [
+      {
+        "type": "implementation_plan",
+        "path": ".opencode/specs/174_property_based_testing/plans/implementation-001.md",
+        "created": "2025-12-24T23:59:59Z",
+        "description": "7-phase implementation plan (18-23 hours)"
+      },
+      {
+        "type": "plan_summary",
+        "path": ".opencode/specs/174_property_based_testing/summaries/plan-summary.md",
+        "created": "2025-12-24T23:59:59Z",
+        "description": "Brief summary of implementation plan"
+      }
+    ]
+  },
+  "metadata": {
+    "language": "lean",
+    "complexity": "moderate",
+    "estimated_effort_hours": "18-23",
+    "phases": 7,
+    "priority": "high"
+  },
+  "dependencies": {
+    "external": [
+      "Plausible framework (already in lakefile.lean)",
+      "Mathlib4 v4.14.0 (already in lakefile.lean)"
+    ],
+    "internal": [
+      "Logos.Core.Syntax",
+      "Logos.Core.ProofSystem",
+      "Logos.Core.Semantics",
+      "Logos.Core.Metalogic",
+      "LogosTest.Core.Property.Generators"
+    ],
+    "blocking": []
+  },
+  "key_challenges": [
     {
-      "type": "research_report",
-      "path": ".opencode/specs/174_property_based_testing/reports/research-001.md",
-      "created": "2025-12-24T23:30:00Z",
-      "description": "Comprehensive research on property-based testing frameworks for Lean 4"
+      "name": "TaskModel Generator",
+      "risk": "high",
+      "description": "Dependent types (valuation depends on WorldState)",
+      "mitigation": "Use SampleableExt with proxy pattern",
+      "estimated_effort_hours": "4-6"
     },
     {
-      "type": "summary",
-      "path": ".opencode/specs/174_property_based_testing/summaries/research-summary.md",
-      "created": "2025-12-24T23:30:00Z",
-      "description": "Brief summary of research findings and recommendations"
+      "name": "Decidability Requirements",
+      "risk": "medium",
+      "description": "Cannot test general derivability (not decidable)",
+      "mitigation": "Test specific axiom instances",
+      "estimated_effort_hours": "2-3"
     },
     {
-      "type": "detailed_findings",
-      "path": "Documentation/Research/property-based-testing-lean4.md",
-      "created": "2025-12-24T23:00:00Z",
-      "description": "Detailed web research findings from specialist subagent"
+      "name": "Generator Performance",
+      "risk": "medium",
+      "description": "Recursive generation can be slow",
+      "mitigation": "Size control and parameter tuning",
+      "estimated_effort_hours": "1-2"
     }
+  ],
+  "success_criteria": [
+    "TaskModel generator implemented and tested",
+    "Property tests for soundness (axiom validity)",
+    "Property tests for derivation (reflexivity, weakening)",
+    "Property tests for semantics (frame constraints, truth)",
+    "Property tests for formulas (transformations, derived ops)",
+    "All tests passing with 100+ cases per property",
+    "Test coverage ≥ 100 cases per property",
+    "Tests run in <5 seconds each",
+    "PROPERTY_TESTING_GUIDE.md created",
+    "CI workflow integrated"
+  ],
+  "files_affected": [
+    "LogosTest/Core/Property/Generators.lean",
+    "LogosTest/Core/Property/README.md",
+    "LogosTest/Core/Syntax/FormulaPropertyTest.lean",
+    "LogosTest/Core/ProofSystem/DerivationPropertyTest.lean",
+    "LogosTest/Core/Semantics/SemanticPropertyTest.lean",
+    "LogosTest/Core/Metalogic/SoundnessPropertyTest.lean",
+    "Documentation/Development/PROPERTY_TESTING_GUIDE.md",
+    "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md",
+    ".github/workflows/property-tests.yml"
   ],
   "research_summary": {
     "topic": "Property-based testing frameworks for Lean 4",
     "framework_found": "Plausible",
     "recommendation": "Use Plausible as the only mature property-based testing framework for Lean 4",
-    "integration_effort": "6-10 hours",
+    "integration_effort": "6-10 hours (research estimate), 18-23 hours (validated by complexity analysis)",
     "key_benefits": [
       "Tactic and command integration",
       "Automatic derivation for custom types",
@@ -41,10 +125,11 @@
       "Active community maintenance"
     ]
   },
-  "next_steps": [
-    "Add Plausible dependency to lakefile.lean",
-    "Create generators for Formula, Context, TaskFrame",
-    "Write property tests for metalogic properties",
-    "Integrate into CI/CD pipeline"
+  "notes": [
+    "Infrastructure already in place: Plausible integrated, basic generators exist",
+    "Main work: TaskModel generator (4-6 hours) + enhanced property tests (8-10 hours)",
+    "Research foundation: 374-line report + 986-line detailed findings",
+    "Decidability workaround: Test specific axiom instances instead of general derivability",
+    "Performance: Use size control and tune parameters for <5 second tests"
   ]
 }

@@ -1,13 +1,13 @@
 # TODO
 
-**Last Updated:** 2025-12-25T23:09:04Z
+**Last Updated:** 2025-12-25T23:15:00Z
 
 ## Overview
 
-- **Total Tasks:** 30
+- **Total Tasks:** 31
 - **Completed:** 1
 - **High Priority:** 9
-- **Medium Priority:** 8
+- **Medium Priority:** 9
 - **Low Priority:** 12
 
 ---
@@ -118,6 +118,23 @@
 - **Files Affected**:
   - Logos/Core/Metalogic/DeductionTheorem.lean
 - **Description**: Fix 3 pre-existing build errors in DeductionTheorem.lean that are blocking compilation of all test files including the new integration tests from task 173. These errors prevent verification that the 106 new integration tests (82% coverage) actually compile and pass. Errors: Line 255 (Decidable typeclass instance stuck), Line 297 (no goals to be solved), Line 371 (Decidable typeclass instance stuck).
+- **Root Cause Analysis** (2025-12-25):
+  - Lines 255, 371: `by_cases hA : A ∈ Γ'` requires `Decidable (A ∈ Γ')` instance
+  - Formula has `DecidableEq` instance (Logos/Core/Syntax/Formula.lean:75) but `List.mem` decidability not available in proof context
+  - Functions `deduction_with_mem` (line 203) and `deduction_theorem` (line 328) need classical logic for case splits on membership
+  - Line 297: Termination proof uses `simp_wf` with 3 bullet points but actual recursive call structure may differ
+- **Solution Approach Attempted**:
+  - Added `open Classical` at namespace level (line 39)
+  - Marked functions as `noncomputable` (lines 203, 328)
+  - Converted `by_cases` to `(em ...).elim` pattern for classical reasoning
+  - Issue: `.elim` syntax inside `match` expressions causes "unknown tactic" error
+  - Need to restructure using `have` bindings or extract case analysis outside match
+- **Recommended Next Steps**:
+  1. Replace `(em ...).elim` pattern with explicit `have` bindings before match expressions
+  2. Alternative: Use `dite` (decidable if-then-else) with `Classical.propDecidable` instance
+  3. Alternative: Restructure proof to avoid nested case analysis in match arms
+  4. For line 297: Review termination proof structure - may need adjustment after case analysis changes
+  5. Test: `lake build Logos.Core.Metalogic.DeductionTheorem` after each change
 - **Acceptance Criteria**:
   - [ ] Line 255 Decidable typeclass instance error fixed
   - [ ] Line 297 no goals error fixed
@@ -658,5 +675,29 @@
   - [x] Test with task 172 to verify fix works
   - [x] Documentation updated if workflow was incorrect
 - **Impact**: Critical bug fix. Without proper status updates, task tracking is broken and TODO.md becomes out of sync with actual work completion. This undermines the entire task management system and violates the status-markers.md specification.
+
+### 189. Add --divide flag to /research command for topic subdivision
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/research.md
+  - .opencode/agent/subagents/researcher.md
+  - .opencode/agent/subagents/specialists/web-research-specialist.md
+- **Description**: Add a --divide flag to the /research command that changes its behavior. Without --divide, /research should create individual research reports only (no research summary). With --divide, /research should invoke a subagent to divide the research topic into natural subtopics, pass each subtopic to further research subagents to research and create individual reports, then compile the references and brief summaries into a research summary report. The research summary should contain only references to the individual reports and their brief summaries, not duplicate the full content.
+- **Acceptance Criteria**:
+  - [ ] --divide flag added to /research command documentation and input parsing
+  - [ ] Without --divide: /research creates only individual research reports (reports/research-NNN.md), no summary
+  - [ ] With --divide: /research divides topic into subtopics using a subagent
+  - [ ] With --divide: Each subtopic is researched by a separate subagent, creating individual reports
+  - [ ] With --divide: Research summary report (summaries/research-summary.md) is created compiling references and brief summaries
+  - [ ] Research summary contains only references and brief summaries, not full content
+  - [ ] All behavior follows lazy directory creation (create summaries/ only when writing summary)
+  - [ ] Status markers and state sync work correctly for both modes
+  - [ ] Documentation updated to explain --divide flag behavior
+- **Impact**: Provides more flexible research workflow - simple research creates focused reports without overhead of summary compilation, while complex research can be divided into manageable subtopics with a summary overview.
 
 ---

@@ -1,15 +1,23 @@
 # Implementation Status - Logos MVP
 
-**Last Updated**: 2025-12-23
+**Last Updated**: 2025-12-25
 **Project Version**: 0.1.0-mvp
-**Status**: Layer 0 (Core TM) MVP Complete - ALL 6 PERPETUITY PRINCIPLES PROVEN (P1-P6) - Phase 4 Modal Theorems COMPLETE (8/8 proven) - DEDUCTION THEOREM COMPLETE (Task 46) [COMPLETE]
+**Status**: Layer 0 (Core TM) MVP Complete - ALL 6 PERPETUITY PRINCIPLES PROVEN (P1-P6) - Phase 4 Modal Theorems COMPLETE (8/8 proven) - DEDUCTION THEOREM COMPLETE (Task 46) - PROPERTY-BASED TESTING FRAMEWORK COMPLETE (Task 174) [COMPLETE]
 
 **Recent Verification** (Project 006 - 2025-12-20):
 - Compliance Score: 95/100 (5/5 stars)
 - Repository Health: 94/100 (5/5 stars)
 - Status: PRODUCTION-READY for Layer 0
 
-## Latest Changes (2025-12-23)
+## Latest Changes (2025-12-25)
+- **Task 174 completed**: Property-based testing framework fully integrated with Plausible. All 7 phases complete:
+  - TaskModel generator implemented with proxy pattern for dependent types
+  - All 14 axiom schemas tested for validity (500 test cases for critical properties)
+  - Comprehensive derivation, semantic, and formula transformation property tests
+  - Property Testing Guide created at `Documentation/Development/PROPERTY_TESTING_GUIDE.md`
+  - Summary: `.opencode/specs/174_property_based_testing/summaries/implementation-summary-20251225.md`
+
+## Previous Changes (2025-12-23)
 - Tasks 129 & 130 completed (Branch B): Temporal swap/domain extension sorries removed from `Truth.lean`; derivation-inductive temporal duality proof now closes via swap involution (no new axioms). Summary: `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/summaries/implementation-summary-20251223.md`.
 - Task 127 completed: heuristic scoring weights and branch ordering added to `ProofSearch` with additional unit tests.
 - Task 144: /revise aligned with /add and /plan for context references—plan v3 at `.opencode/specs/127_context_refactor/plans/implementation-002.md` drives agent/command reference updates post-refactor; no numbering/state changes.
@@ -154,6 +162,99 @@ All syntax modules fully implemented with comprehensive tests.
 # All Syntax tests pass
 lake test LogosTest.Syntax.FormulaTest
 lake test LogosTest.Syntax.ContextTest
+```
+
+---
+
+## Testing Infrastructure
+
+**Status**: [COMPLETE]
+
+**Completed Work**: Task 174 (COMPLETE - 2025-12-25): Property-based testing framework integration with comprehensive test coverage.
+
+All testing infrastructure fully implemented with property-based testing framework.
+
+### Property-Based Testing (Plausible Framework)
+
+- **Status**: Complete (Task 174)
+- **Framework**: Plausible (https://github.com/leanprover-community/plausible)
+- **Test Coverage**: 100+ test cases per property
+- **Description**: Comprehensive property-based testing for all core modules
+
+**Key Components**:
+
+1. **Generators** (`LogosTest/Core/Property/Generators.lean`):
+   - Formula generator with size control (prevents infinite recursion)
+   - Context generator (automatic via List)
+   - TaskFrame generator (finite frames with 1-5 worlds)
+   - **TaskModel generator** (proxy pattern for dependent types) ✅ NEW
+   - Helper generators (genFormulaOfSize, genNonEmptyContext, etc.)
+
+2. **Property Test Files**:
+   - **SoundnessPropertyTest.lean**: All 14 axiom schemas tested for validity
+     - Propositional: prop_k, prop_s, ex_falso, peirce
+     - Modal S5: modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist
+     - Temporal: temp_4, temp_a, temp_l, temp_k_dist
+     - Modal-Temporal: modal_future, temp_future
+     - Test count: 100-500 cases per axiom (500 for critical S5 properties)
+   
+   - **DerivationPropertyTest.lean**: Structural derivation properties
+     - Reflexivity, weakening, height properties
+     - Axiom derivability for all 14 axioms
+     - Context operations (subset, concatenation)
+     - Test count: 100 cases per property
+   
+   - **SemanticPropertyTest.lean**: Frame and model properties
+     - Frame nullity and compositionality
+     - TaskModel valuation properties
+     - Time ordering properties (transitivity, irreflexivity, totality)
+     - Test count: 200 cases for critical properties
+   
+   - **FormulaPropertyTest.lean**: Formula transformation properties
+     - Complexity properties (always ≥ 1, correct computation)
+     - Temporal swap involution and distribution
+     - Derived operator definitions (diamond, neg, and, or, iff)
+     - Operator injectivity (box, implication)
+     - Temporal operator duality (sometime_past, sometime_future, always)
+     - Test count: 100 cases per property
+
+**TaskModel Generator** (Dependent Type Pattern):
+```lean
+-- Proxy pattern for dependent types
+structure TaskModelProxy where
+  frameProxy : Unit
+  valuationSeed : Nat
+
+instance : SampleableExt (TaskModel (TaskFrame.nat_frame (T := Int))) where
+  proxy := TaskModelProxy
+  interp p := { valuation := fun w s =>
+    (Nat.mix (Nat.mix p.valuationSeed w.toNat) s.length) % 2 = 0 }
+  sample := do
+    let seed ← Gen.choose 0 1000
+    return ⟨(), seed⟩
+```
+
+**Test Configuration**:
+- Default: 100 test cases, maxSize 30-50
+- Critical properties: 500 test cases (e.g., modal_5_collapse)
+- Expensive properties: 50-100 test cases
+- Shrinking enabled for minimal counterexamples
+
+**Documentation**:
+- Property Testing Guide: `Documentation/Development/PROPERTY_TESTING_GUIDE.md`
+- Generator patterns and examples: `LogosTest/Core/Property/README.md`
+- Research report: `.opencode/specs/174_property_based_testing/reports/research-001.md`
+
+**Package Verification**:
+```bash
+# Run all property tests
+lake env lean LogosTest/Core/Syntax/FormulaPropertyTest.lean
+lake env lean LogosTest/Core/ProofSystem/DerivationPropertyTest.lean
+lake env lean LogosTest/Core/Semantics/SemanticPropertyTest.lean
+lake env lean LogosTest/Core/Metalogic/SoundnessPropertyTest.lean
+
+# Build test library
+lake build LogosTest
 ```
 
 ---

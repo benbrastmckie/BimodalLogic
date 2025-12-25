@@ -1,8 +1,9 @@
 # Implementation Plan: /implement Command Context Window Protection (v3 - Refined Clean Break)
 
 - **Task**: 169 - Improve /implement command to protect primary agent context window
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-24
+- **Completed**: 2025-12-24
 - **Version**: 3 (Revision)
 - **Previous Version**: implementation-002.md
 - **Revision Date**: 2025-12-24
@@ -87,7 +88,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 
 ## Implementation Phases
 
-### Phase 0: Audit All Consuming Commands and /task References [NOT STARTED]
+### Phase 0: Audit All Consuming Commands and /task References [COMPLETED]
 
 - **Goal**: Identify all commands, agents, and documentation that reference /task or consume task-executor/batch-task-orchestrator return formats
 - **Tasks**:
@@ -105,7 +106,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 - **Dependencies**: None
 - **Validation**: All consumers identified; consumption patterns documented; no hidden dependencies; audit report complete; all /task references catalogued
 
-### Phase 1a: Define New Return Format Schemas [NOT STARTED]
+### Phase 1a: Define New Return Format Schemas [COMPLETED]
 
 - **Goal**: Create clear contract specifications for new return formats before implementation
 - **Tasks**:
@@ -121,7 +122,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 - **Dependencies**: Phase 0 (audit informs schema design)
 - **Validation**: Schemas documented; templates created; validation rules defined; examples provided; measurement methodologies clear
 
-### Phase 1b: Update All Consuming Commands and /task References [NOT STARTED]
+### Phase 1b: Update All Consuming Commands and /task References [COMPLETED]
 
 - **Goal**: Update all identified consumers to expect new return formats and rename /task to /implement before breaking changes are deployed
 - **Tasks**:
@@ -143,7 +144,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 - **Dependencies**: Phase 1a (consumers need schema to update against)
 - **Validation**: All consumers updated; no references to removed fields; all /task references renamed to /implement; dry-run tests pass; migration notes complete; no broken links
 
-### Phase 1c: Implement New task-executor Return Format [NOT STARTED]
+### Phase 1c: Implement New task-executor Return Format [COMPLETED]
 
 - **Goal**: Replace verbose return format with artifact-first returns (references + brief summaries + metrics)
 - **Tasks**:
@@ -159,7 +160,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 - **Dependencies**: Phase 1b (consumers must be ready before producers change)
 - **Validation**: Return format matches schema; token count <500 verified by measurement; all required fields present; removed fields absent; /implement terminology used
 
-### Phase 2: Enforce Summary Artifact Creation [NOT STARTED]
+### Phase 2: Enforce Summary Artifact Creation [COMPLETED]
 
 - **Goal**: Ensure all detailed artifacts (research, plans, implementations) have corresponding summary artifacts
 - **Tasks**:
@@ -176,7 +177,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 - **Dependencies**: Phase 1c (return format must reference summary artifacts)
 - **Validation**: Summary artifacts created for all detailed artifacts; summaries/ created lazily; summaries follow templates; /implement terminology used
 
-### Phase 3: Implement Complexity Router in /implement Command [NOT STARTED]
+### Phase 3: Implement Complexity Router in /implement Command [COMPLETED]
 
 - **Goal**: Add complexity assessment stage to /implement command for routing differentiation
 - **Tasks**:
@@ -193,7 +194,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 - **Dependencies**: None (independent of return format changes)
 - **Validation**: Complexity scores calculated correctly; thresholds applied; flags passed to executor; /implement terminology used
 
-### Phase 4: Update batch-task-orchestrator Return Format [NOT STARTED]
+### Phase 4: Update batch-task-orchestrator Return Format [COMPLETED]
 
 - **Goal**: Implement progressive summarization for batch execution (aggregate brief summaries)
 - **Tasks**:
@@ -211,7 +212,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 - **Dependencies**: Phase 1c (must aggregate new task-executor format)
 - **Validation**: Batch returns <50 lines per 10 tasks verified by measurement; progressive summarization applied; all tasks accounted for; /implement terminology used
 
-### Phase 5: Differentiate Git Commit Patterns [NOT STARTED]
+### Phase 5: Differentiate Git Commit Patterns [COMPLETED]
 
 - **Goal**: Implement different commit patterns for simple (single commit) vs complex (commit per phase) tasks
 - **Tasks**:
@@ -228,7 +229,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 - **Dependencies**: Phase 3 (requires complexity flag from router)
 - **Validation**: Simple tasks produce 1 commit; complex tasks produce N commits (one per phase with artifacts); commit messages follow patterns; /implement terminology used
 
-### Phase 6: Add Validation for Artifact-First Returns [NOT STARTED]
+### Phase 6: Add Validation for Artifact-First Returns [COMPLETED]
 
 - **Goal**: Enforce return format compliance and summary requirements via validation layer
 - **Tasks**:
@@ -248,7 +249,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 - **Dependencies**: Phase 1c (return format), Phase 2 (summary requirements)
 - **Validation**: All returns pass validation; validation errors logged with clear messages; no false positives; token/line counts measured accurately; /implement terminology used
 
-### Phase 7: Integration Testing [NOT STARTED]
+### Phase 7: Integration Testing [COMPLETED]
 
 - **Goal**: Validate all changes work together across single/batch and simple/complex execution paths with /implement command
 - **Tasks**:
@@ -268,7 +269,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 - **Dependencies**: Phases 1-6 (all changes must be complete)
 - **Validation**: All test scenarios pass; context window targets met; no regressions; all consumers work correctly; all /implement references correct; no /task references remain
 
-### Phase 8: Documentation Updates [NOT STARTED]
+### Phase 8: Documentation Updates [COMPLETED]
 
 - **Goal**: Update all affected documentation with new workflows, formats, examples, and /implement terminology
 - **Tasks**:

@@ -190,6 +190,36 @@ def double_negation (φ : Formula) : ⊢ φ.neg.neg.imp φ := by
 Core propositional theorems for negation, conjunction, disjunction, and contraposition.
 -/
 
+/--
+Ex Contradictione Quodlibet: `[A, ¬A] ⊢ B`.
+
+From a contradiction (both A and ¬A), anything follows. This is the principle of explosion
+in classical logic.
+
+## Parameters
+- `A`: The formula that is both asserted and negated
+- `B`: Any arbitrary formula to be derived
+
+## Returns
+A derivation of B from the contradictory context [A, ¬A]
+
+## Proof Strategy
+1. From ¬A in context, we have A → ⊥
+2. From A in context and A → ⊥, derive ⊥ via modus ponens
+3. From ⊥, derive ¬¬B using prop_s
+4. Apply double negation elimination to get B
+
+## Related Theorems
+- `raa`: Reductio ad Absurdum - the implication form `A → (¬A → B)`
+- `efq_neg`: Ex Falso Quodlibet - from ¬A and A, derive B
+- `double_negation`: DNE used in the proof
+
+## Example
+```lean
+-- From both P and ¬P, we can derive any formula Q
+example (P Q : Formula) : [P, P.neg] ⊢ Q := ecq P Q
+```
+-/
 def ecq (A B : Formula) : [A, A.neg] ⊢ B := by
   -- Goal: [A, ¬A] ⊢ B where ¬A = A → ⊥
   -- From ¬A in context, we have A → ⊥
@@ -292,6 +322,38 @@ From absurdity (`⊥`), anything can be derived. This is now an axiom (EFQ).
 This theorem provides a convenient wrapper around the EFQ axiom for use in proofs.
 -/
 
+/--
+Ex Falso Quodlibet (negation form): `⊢ ¬A → (A → B)`.
+
+From a negated formula and its affirmation, anything follows. This is the flipped
+form of RAA (Reductio ad Absurdum).
+
+## Parameters
+- `A`: The formula that appears both negated and affirmed
+- `B`: Any arbitrary formula to be derived
+
+## Returns
+A proof that ¬A → (A → B) holds unconditionally
+
+## Proof Strategy
+1. Use RAA to get A → (¬A → B)
+2. Apply theorem_flip to swap the arguments: ¬A → (A → B)
+
+## Related Theorems
+- `raa`: Reductio ad Absurdum - `A → (¬A → B)`
+- `ecq`: Ex Contradictione Quodlibet - context-based form `[A, ¬A] ⊢ B`
+- `theorem_flip`: Used to swap implication arguments
+
+## Example
+```lean
+-- If we have ¬P, then from P we can derive any Q
+example (P Q : Formula) : ⊢ P.neg.imp (P.imp Q) := efq_neg P Q
+```
+
+## Note
+This is the primary `efq` definition. The old `efq` name is deprecated and aliased
+to this function for backward compatibility.
+-/
 def efq_neg (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- Goal: ¬A → (A → B)
   -- We have RAA: A → (¬A → B)

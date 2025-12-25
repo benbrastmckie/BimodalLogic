@@ -206,4 +206,76 @@ Test: Transitivity of subset (100 test cases).
   maxSize := 15
 }
 
+/-! ## Additional Axiom Derivability Tests -/
+
+/--
+Test: Modal 5 Collapse axiom is derivable.
+-/
+example (φ : Formula) : ⊢ (φ.box.diamond.imp φ.box) :=
+  DerivationTree.axiom [] (φ.box.diamond.imp φ.box) (Axiom.modal_5_collapse φ)
+
+/--
+Test: Temporal A axiom is derivable.
+-/
+example (φ : Formula) : ⊢ (φ.imp (Formula.all_future φ.sometime_past)) :=
+  DerivationTree.axiom [] (φ.imp (Formula.all_future φ.sometime_past)) (Axiom.temp_a φ)
+
+/--
+Test: Temporal L axiom is derivable.
+-/
+example (φ : Formula) : ⊢ (φ.always.imp (Formula.all_future (Formula.all_past φ))) :=
+  DerivationTree.axiom [] (φ.always.imp (Formula.all_future (Formula.all_past φ))) (Axiom.temp_l φ)
+
+/--
+Test: Modal-Future axiom is derivable.
+-/
+example (φ : Formula) : ⊢ ((Formula.box φ).imp (Formula.box (Formula.all_future φ))) :=
+  DerivationTree.axiom [] ((Formula.box φ).imp (Formula.box (Formula.all_future φ))) (Axiom.modal_future φ)
+
+/--
+Test: Temporal-Future axiom is derivable.
+-/
+example (φ : Formula) : ⊢ ((Formula.box φ).imp (Formula.all_future (Formula.box φ))) :=
+  DerivationTree.axiom [] ((Formula.box φ).imp (Formula.all_future (Formula.box φ))) (Axiom.temp_future φ)
+
+/-! ## Context Operations Properties -/
+
+/--
+Property: Adding duplicate formulas preserves derivability (contraction).
+-/
+example : ∀ (Γ : Context) (φ ψ : Formula),
+    φ ∈ Γ → ψ ∈ Γ → φ ∈ (φ :: Γ) ∧ ψ ∈ (φ :: Γ) := by
+  intro Γ φ ψ hφ hψ
+  constructor
+  · exact List.mem_cons_self φ Γ
+  · exact List.mem_cons_of_mem φ hψ
+
+/--
+Property: Context concatenation preserves membership.
+-/
+example : Testable (∀ (Γ Δ : Context) (φ : Formula), φ ∈ Γ → φ ∈ (Γ ++ Δ)) := by
+  infer_instance
+
+/--
+Test: Context concatenation membership (100 test cases).
+-/
+#eval Testable.check (∀ (Γ Δ : Context) (φ : Formula), φ ∈ Γ → φ ∈ (Γ ++ Δ)) {
+  numInst := 100,
+  maxSize := 20
+}
+
+/--
+Property: Cons preserves subset.
+-/
+example : Testable (∀ (Γ Δ : Context) (φ : Formula), Γ ⊆ Δ → (φ :: Γ) ⊆ (φ :: Δ)) := by
+  infer_instance
+
+/--
+Test: Cons preserves subset (100 test cases).
+-/
+#eval Testable.check (∀ (Γ Δ : Context) (φ : Formula), Γ ⊆ Δ → (φ :: Γ) ⊆ (φ :: Δ)) {
+  numInst := 100,
+  maxSize := 20
+}
+
 end LogosTest.ProofSystem.DerivationPropertyTest

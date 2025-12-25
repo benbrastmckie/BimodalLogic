@@ -130,10 +130,24 @@ Context Loaded:
     <action>Sync and report</action>
     <process>
       1. Update plan phases/status markers when used, keeping TODO/plan/state status fields in lockstep; produce/update summaries under `summaries/implementation-summary-YYYYMMDD.md` when artifacts are written.
-      2. Use @subagents/specialists/status-sync-manager to atomically update TODO with status markers (`[IN PROGRESS]` → `[COMPLETED]`), timestamps, and artifact links in the same atomic write batch as plan/state; keep metadata intact.
-      3. Sync state.json with status/timestamps/artifact links/phase markers; reuse plan links already attached.
-      4. Return concise summary of routing, artifacts, TODO/state updates, and any task failures.
+      2. Extract plan_path from TODO.md task entry if a plan link exists (look for `- **Plan**: [...](...)`).
+      3. Call @subagents/specialists/status-sync-manager.mark_completed with:
+         - operation: "mark_completed"
+         - task_number: {task_number}
+         - timestamp: {YYYY-MM-DD current date}
+         - plan_path: {plan_path} (if plan link exists in TODO.md)
+      4. Verify status-sync-manager returned success status.
+      5. If status-sync-manager fails, log error with details and report to user (do NOT swallow errors or continue silently).
+      6. Sync state.json with status/timestamps/artifact links/phase markers; reuse plan links already attached.
+      7. Return concise summary of routing, artifacts, TODO/state updates, and any task failures.
     </process>
+    <error_handling>
+      If status-sync-manager.mark_completed fails:
+      1. Log detailed error including which file failed to update
+      2. Return error to user with actionable message
+      3. Do NOT mark task as completed if atomic update failed
+      4. Suggest manual status update if needed: "Status update failed. Please manually update TODO.md, state.json, and plan file to [COMPLETED]"
+    </error_handling>
   </stage>
 </workflow_execution>
 

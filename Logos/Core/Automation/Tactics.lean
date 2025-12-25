@@ -171,22 +171,112 @@ elab "assumption_search" : tactic => do
 These helpers support tactic implementation and formula pattern matching.
 -/
 
-/-- Check if formula has form `□φ` for some `φ`. -/
+/--
+Check if a formula is a box (necessity) formula.
+
+Returns `true` if the formula has the form `□φ` for some inner formula `φ`,
+`false` otherwise.
+
+## Parameters
+- Formula to check (implicit pattern match parameter)
+
+## Returns
+`true` if formula is `□φ`, `false` otherwise
+
+## Usage
+Used by modal tactics to identify necessity formulas before applying modal-specific
+inference rules or axioms.
+
+## Example
+```lean
+#eval is_box_formula (Formula.box (Formula.atom "p"))  -- true
+#eval is_box_formula (Formula.atom "p")                -- false
+#eval is_box_formula (Formula.diamond (Formula.atom "p"))  -- false
+```
+-/
 def is_box_formula : Formula → Bool
   | .box _ => true
   | _ => false
 
-/-- Check if formula has form `Fφ` for some `φ`. -/
+/--
+Check if a formula is a future (temporal) formula.
+
+Returns `true` if the formula has the form `Fφ` (all_future φ) for some inner
+formula `φ`, `false` otherwise.
+
+## Parameters
+- Formula to check (implicit pattern match parameter)
+
+## Returns
+`true` if formula is `Fφ`, `false` otherwise
+
+## Usage
+Used by temporal tactics to identify future formulas before applying temporal-specific
+inference rules or axioms.
+
+## Example
+```lean
+#eval is_future_formula (Formula.all_future (Formula.atom "p"))  -- true
+#eval is_future_formula (Formula.atom "p")                       -- false
+#eval is_future_formula (Formula.box (Formula.atom "p"))         -- false
+```
+-/
 def is_future_formula : Formula → Bool
   | .all_future _ => true
   | _ => false
 
-/-- Extract `φ` from `□φ`, returns none if not a box formula. -/
+/--
+Extract the inner formula from a box (necessity) formula.
+
+Given a formula of the form `□φ`, returns `some φ`. For any other formula,
+returns `none`.
+
+## Parameters
+- Formula to extract from (implicit pattern match parameter)
+
+## Returns
+- `some φ` if input is `□φ`
+- `none` if input is not a box formula
+
+## Usage
+Used by modal elimination tactics to access the inner formula when applying
+rules like modal T (`□φ → φ`) or modal 4 (`□φ → □□φ`).
+
+## Example
+```lean
+#eval extract_from_box (Formula.box (Formula.atom "p"))  -- some (Formula.atom "p")
+#eval extract_from_box (Formula.atom "p")                -- none
+#eval extract_from_box (Formula.diamond (Formula.atom "p"))  -- none
+```
+-/
 def extract_from_box : Formula → Option Formula
   | .box φ => some φ
   | _ => none
 
-/-- Extract `φ` from `Fφ`, returns none if not a future formula. -/
+/--
+Extract the inner formula from a future (temporal) formula.
+
+Given a formula of the form `Fφ` (all_future φ), returns `some φ`. For any other
+formula, returns `none`.
+
+## Parameters
+- Formula to extract from (implicit pattern match parameter)
+
+## Returns
+- `some φ` if input is `Fφ`
+- `none` if input is not a future formula
+
+## Usage
+Used by temporal elimination tactics to access the inner formula when applying
+rules like temporal 4 (`Fφ → FFφ`) or temporal A (`φ → F(sometime_past φ)`).
+
+## Example
+```lean
+#eval extract_from_future (Formula.all_future (Formula.atom "p"))  -- some (Formula.atom "p")
+#eval extract_from_future (Formula.atom "p")                       -- none
+#eval extract_from_future (Formula.box (Formula.atom "p"))         -- none
+```
+-/
 def extract_from_future : Formula → Option Formula
   | .all_future φ => some φ
   | _ => none

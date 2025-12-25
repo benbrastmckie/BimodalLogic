@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker project. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-25T23:09:04Z",
-  "next_project_number": 189,
+  "_last_updated": "2025-12-25T23:15:00Z",
+  "next_project_number": 190,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -80,6 +80,10 @@
   ],
   "completed_projects": [],
   "recent_activities": [
+    {
+      "timestamp": "2025-12-25T23:15:00Z",
+      "activity": "Created task 189: Add --divide flag to /research command for topic subdivision"
+    },
     {
       "timestamp": "2025-12-25T00:35:00Z",
       "activity": "Completed task 182: Fixed /research status update bug - identified root cause and documented fix (orchestrator must call status-sync-manager in postflight)"
@@ -525,7 +529,8 @@
       "title": "Fix DeductionTheorem.lean build errors (3 errors)",
       "status": "in_progress",
       "created": "2025-12-25T00:45:00Z",
-      "started": "2025-12-25"
+      "started": "2025-12-25",
+      "notes": "Root cause: Decidable instance for list membership. Solution: Classical logic with open Classical, noncomputable defs, Or.elim pattern. Remaining: Syntax issue with .elim in match expressions - needs have bindings or restructure."
     },
     {
       "project_number": 184,
@@ -557,6 +562,12 @@
       "title": "Refactor /review command to load review.md workflow context",
       "status": "not_started",
       "created": "2025-12-25T23:09:04Z"
+    },
+    {
+      "project_number": 189,
+      "title": "Add --divide flag to /research command for topic subdivision",
+      "status": "not_started",
+      "created": "2025-12-25T23:15:00Z"
     }
   ],
   "maintenance_summary": {

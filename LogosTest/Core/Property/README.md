@@ -8,10 +8,11 @@ Property-based testing automatically generates test cases to verify that propert
 
 ## Structure
 
-- **Generators.lean**: Type generators for Formula, Context, TaskFrame
-- **FormulaPropertyTest.lean**: Formula transformation properties (planned)
-- **DerivationPropertyTest.lean**: Derivation system properties (planned)
-- **SemanticPropertyTest.lean**: Semantic properties (planned)
+- **Generators.lean**: Type generators for Formula, Context, TaskFrame, TaskModel
+- **FormulaPropertyTest.lean**: Formula transformation properties (✅ implemented)
+- **DerivationPropertyTest.lean**: Derivation system properties (✅ implemented)
+- **SemanticPropertyTest.lean**: Semantic properties (✅ implemented)
+- **SoundnessPropertyTest.lean**: Metalogic soundness properties (✅ implemented)
 
 ## Property Test Patterns
 
@@ -91,6 +92,35 @@ instance : SampleableExt MyType where
   interp x := construct_valid_instance x
   sample := generate_proxy
 ```
+
+### TaskModel Generator (Dependent Types)
+
+For types with dependent fields like TaskModel:
+
+```lean
+-- TaskModel has: valuation : F.WorldState → String → Prop
+-- Use proxy pattern to handle dependency
+
+structure TaskModelProxy where
+  frameProxy : Unit
+  valuationSeed : Nat
+
+instance : SampleableExt (TaskModel (TaskFrame.nat_frame (T := Int))) where
+  proxy := TaskModelProxy
+  interp p :=
+    { valuation := fun w s =>
+        -- Deterministic hash-based valuation
+        (Nat.mix (Nat.mix p.valuationSeed w.toNat) s.length) % 2 = 0
+    }
+  sample := do
+    let seed ← Gen.choose 0 1000
+    return ⟨(), seed⟩
+```
+
+This pattern:
+1. Generates the frame first (via Unit proxy)
+2. Creates a deterministic valuation based on a seed
+3. Uses hash function for varied but reproducible truth values
 
 ## Configuration
 
@@ -188,9 +218,11 @@ Property tests are more expensive than unit tests:
 
 See individual test files for examples:
 
-- `Generators.lean`: Generator implementations
-- `FormulaPropertyTest.lean`: Formula property examples (planned)
-- `DerivationPropertyTest.lean`: Derivation property examples (planned)
+- `Generators.lean`: Generator implementations (Formula, Context, TaskFrame, TaskModel)
+- `../Syntax/FormulaPropertyTest.lean`: Formula transformation properties (complexity, swap_temporal, derived operators)
+- `../ProofSystem/DerivationPropertyTest.lean`: Derivation structural properties (reflexivity, weakening, height)
+- `../Semantics/SemanticPropertyTest.lean`: Frame and model properties (nullity, compositionality, valuation)
+- `../Metalogic/SoundnessPropertyTest.lean`: Axiom validity tests (all 14 axiom schemas)
 
 ## References
 

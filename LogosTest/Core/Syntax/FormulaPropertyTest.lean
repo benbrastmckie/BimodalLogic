@@ -202,4 +202,192 @@ Test: all_future injectivity (100 test cases).
   maxSize := 50
 }
 
+/-! ## Operator Injectivity Properties -/
+
+/--
+Property: Box operator is injective.
+
+If □φ = □ψ, then φ = ψ.
+-/
+example : Testable (∀ φ ψ : Formula, φ.box = ψ.box → φ = ψ) := by
+  infer_instance
+
+/--
+Test: Box injectivity (100 test cases).
+-/
+#eval Testable.check (∀ φ ψ : Formula, φ.box = ψ.box → φ = ψ) {
+  numInst := 100,
+  maxSize := 50
+}
+
+/--
+Property: Implication is injective in both arguments.
+
+If φ₁ → ψ₁ = φ₂ → ψ₂, then φ₁ = φ₂ and ψ₁ = ψ₂.
+-/
+example : Testable (∀ φ₁ φ₂ ψ₁ ψ₂ : Formula,
+    φ₁.imp ψ₁ = φ₂.imp ψ₂ → φ₁ = φ₂ ∧ ψ₁ = ψ₂) := by
+  infer_instance
+
+/--
+Test: Implication injectivity (100 test cases).
+-/
+#eval Testable.check (∀ φ₁ φ₂ ψ₁ ψ₂ : Formula,
+    φ₁.imp ψ₁ = φ₂.imp ψ₂ → φ₁ = φ₂ ∧ ψ₁ = ψ₂) {
+  numInst := 100,
+  maxSize := 30
+}
+
+/-! ## Derived Operator Expansion Properties -/
+
+/--
+Property: Conjunction expansion via implication.
+
+φ ∧ ψ = ¬(φ → ¬ψ)
+-/
+example : Testable (∀ φ ψ : Formula, φ.and ψ = (φ.imp ψ.neg).neg) := by
+  infer_instance
+
+/--
+Test: Conjunction expansion (100 test cases).
+-/
+#eval Testable.check (∀ φ ψ : Formula, φ.and ψ = (φ.imp ψ.neg).neg) {
+  numInst := 100,
+  maxSize := 40
+}
+
+/--
+Property: Disjunction expansion via implication.
+
+φ ∨ ψ = ¬φ → ψ
+-/
+example : Testable (∀ φ ψ : Formula, φ.or ψ = φ.neg.imp ψ) := by
+  infer_instance
+
+/--
+Test: Disjunction expansion (100 test cases).
+-/
+#eval Testable.check (∀ φ ψ : Formula, φ.or ψ = φ.neg.imp ψ) {
+  numInst := 100,
+  maxSize := 40
+}
+
+/--
+Property: Biconditional expansion via conjunction of implications.
+
+φ ↔ ψ = (φ → ψ) ∧ (ψ → φ)
+-/
+example : Testable (∀ φ ψ : Formula, φ.iff ψ = (φ.imp ψ).and (ψ.imp φ)) := by
+  infer_instance
+
+/--
+Test: Biconditional expansion (100 test cases).
+-/
+#eval Testable.check (∀ φ ψ : Formula, φ.iff ψ = (φ.imp ψ).and (ψ.imp φ)) {
+  numInst := 100,
+  maxSize := 40
+}
+
+/-! ## Temporal Operator Properties -/
+
+/--
+Property: Sometime-past is dual to all-past.
+
+sometime_past φ = ¬(all_past ¬φ)
+-/
+example : Testable (∀ φ : Formula, φ.sometime_past = φ.neg.all_past.neg) := by
+  infer_instance
+
+/--
+Test: Sometime-past duality (100 test cases).
+-/
+#eval Testable.check (∀ φ : Formula, φ.sometime_past = φ.neg.all_past.neg) {
+  numInst := 100,
+  maxSize := 50
+}
+
+/--
+Property: Sometime-future is dual to all-future.
+
+sometime_future φ = ¬(all_future ¬φ)
+-/
+example : Testable (∀ φ : Formula, φ.sometime_future = φ.neg.all_future.neg) := by
+  infer_instance
+
+/--
+Test: Sometime-future duality (100 test cases).
+-/
+#eval Testable.check (∀ φ : Formula, φ.sometime_future = φ.neg.all_future.neg) {
+  numInst := 100,
+  maxSize := 50
+}
+
+/--
+Property: Always operator expansion.
+
+always φ = (all_past φ) ∧ φ ∧ (all_future φ)
+-/
+example : Testable (∀ φ : Formula,
+    φ.always = (Formula.all_past φ).and φ |>.and (Formula.all_future φ)) := by
+  infer_instance
+
+/--
+Test: Always expansion (100 test cases).
+-/
+#eval Testable.check (∀ φ : Formula,
+    φ.always = (Formula.all_past φ).and φ |>.and (Formula.all_future φ)) {
+  numInst := 100,
+  maxSize := 50
+}
+
+/-! ## Complexity Computation Properties -/
+
+/--
+Property: Implication complexity is sum plus one.
+
+complexity(φ → ψ) = 1 + complexity(φ) + complexity(ψ)
+-/
+example : Testable (∀ φ ψ : Formula,
+    (φ.imp ψ).complexity = 1 + φ.complexity + ψ.complexity) := by
+  infer_instance
+
+/--
+Test: Implication complexity formula (100 test cases).
+-/
+#eval Testable.check (∀ φ ψ : Formula,
+    (φ.imp ψ).complexity = 1 + φ.complexity + ψ.complexity) {
+  numInst := 100,
+  maxSize := 30
+}
+
+/--
+Property: Box complexity is subformula plus one.
+
+complexity(□φ) = 1 + complexity(φ)
+-/
+example : Testable (∀ φ : Formula, φ.box.complexity = 1 + φ.complexity) := by
+  infer_instance
+
+/--
+Test: Box complexity formula (100 test cases).
+-/
+#eval Testable.check (∀ φ : Formula, φ.box.complexity = 1 + φ.complexity) {
+  numInst := 100,
+  maxSize := 50
+}
+
+/--
+Property: Temporal operators add one to complexity.
+-/
+example : Testable (∀ φ : Formula, φ.all_past.complexity = 1 + φ.complexity) := by
+  infer_instance
+
+/--
+Test: All-past complexity formula (100 test cases).
+-/
+#eval Testable.check (∀ φ : Formula, φ.all_past.complexity = 1 + φ.complexity) {
+  numInst := 100,
+  maxSize := 50
+}
+
 end LogosTest.Syntax.FormulaPropertyTest

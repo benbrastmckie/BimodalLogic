@@ -517,7 +517,7 @@ tools:
   </stage>
 
   <stage id="9" name="MarkTaskComplete">
-    <action>Update TODO.md to mark task as COMPLETE</action>
+    <action>Update TODO.md to mark task as COMPLETE using status-sync-manager</action>
     <condition>
       Execute this stage ONLY if:
       - Coordinator execution status is "completed", AND
@@ -528,19 +528,28 @@ tools:
       - Task execution failed
     </condition>
      <process>
-       1. Read current TODO.md
-       2. Locate task section by number
-        3. Update task status using status-markers.md, atomically with plan/state:
-           - Change `**Status**: [IN PROGRESS]` to `**Status**: [COMPLETED]`
-           - Add `**Completed**: YYYY-MM-DD`
-           - Do not add emojis; rely on status markers
-           - If a plan link exists, update plan header + active phases with matching markers/timestamps (via implementation-orchestrator) in the same batch
-           - Update state entry to `completed` with `completed_at` in the same batch
-        4. Optionally move task to "Completed" section
-        5. Write updated TODO/plan/state back to file atomically (one batch per transition)
-
-       6. Log completion confirmation
+       1. Read current TODO.md to locate task section by number
+       2. Check if task has a linked plan (look for `- **Plan**: [...](...) ` in task metadata)
+       3. Extract plan_path from plan link if it exists
+       4. Get current date in YYYY-MM-DD format for timestamp
+       5. Call @subagents/specialists/status-sync-manager with:
+          - operation: "mark_completed"
+          - task_number: {task_number}
+          - timestamp: {YYYY-MM-DD}
+          - plan_path: {plan_path} (if plan link exists)
+       6. Verify status-sync-manager returned success status
+       7. If success: Log completion confirmation with files updated
+       8. If failure: Log error and return error to orchestrator (do NOT continue)
      </process>
+     <atomic_update_guarantee>
+       status-sync-manager ensures atomic updates across:
+       - TODO.md: Status → [COMPLETED], add Completed timestamp, add ✅ to title
+       - state.json: status → "completed", add completed timestamp
+       - project state.json: status → "completed" (if exists)
+       - plan file: Status → [COMPLETED], add Completed timestamp (if plan_path provided)
+       
+       All files updated or none updated (rollback on any failure).
+     </atomic_update_guarantee>
      <status_update_example>
        Before:
        ```
@@ -571,12 +580,18 @@ tools:
        ...
        ```
      </status_update_example>
-    <error_handling>
-      If TODO.md read error: Log error, continue (task was executed successfully)
-      If task not found: Log warning, continue (task was executed successfully)
-      If file write error: Log error, continue (task was executed successfully)
+     <error_handling>
+      If TODO.md read error: Log error, return error to orchestrator (cannot verify task completion)
+      If task not found: Log warning, return error to orchestrator (cannot update non-existent task)
+      If status-sync-manager fails: Log detailed error with file that failed, return error to orchestrator with actionable message
+      If status-sync-manager returns error: Do NOT continue, return error immediately
+      
+      Error message format:
+      "Failed to mark task {number} as COMPLETED. Status update failed for {file}. 
+       Reason: {error_details}. 
+       Action required: Manually update TODO.md, state.json, and plan file to [COMPLETED] status."
     </error_handling>
-    <checkpoint>Task marked as COMPLETE in TODO.md (if executed)</checkpoint>
+    <checkpoint>Task marked as COMPLETE atomically across TODO.md, state.json, and plan file (if executed)</checkpoint>
   </stage>
 
   <stage id="9.5" name="GitCommit">
@@ -734,6 +749,183 @@ tools:
       - Ensure all artifact paths are valid and files exist
       - Create implementation summary artifact if not exists
       - Session ID format: task-{number}-{YYYYMMDD}-{nnn}
+    </return_format>
+    <validation>
+      <required_fields>
+        Validate all required fields are present:
+        - task_number: Must be positive integer
+        - status: Must be one of [COMPLETED, FAILED, BLOCKED, PARTIAL]
+        - summary: Must exist and be 3-5 sentences
+        - artifacts: Must be array (can be empty)
+        - key_metrics: Must include complexity, effort_hours, files_modified, phases_completed
+      </required_fields>
+      
+      <token_count_validation>
+        Estimate token count (chars ÷ 3 ≈ tokens):
+        - Calculate total character count of return JSON
+        - Divide by 3 to estimate tokens
+        - If >500 tokens: FAIL validation
+        - Log error: "Return format exceeds 500 token limit: {estimated_tokens} tokens"
+        - Action: Condense summary, remove optional fields, retry validation
+      </token_count_validation>
+      
+      <summary_validation>
+        Validate summary field:
+        - Must exist (not null/empty)
+        - Must be 3-5 sentences
+        - Must be <100 tokens (estimate: chars ÷ 3)
+        - If validation fails: Log error "Summary missing or exceeds 100 tokens"
+        - Action: Create or condense summary, retry validation
+      </summary_validation>
+      
+      <artifact_validation>
+        For each artifact in artifacts array:
+        - Validate path is not empty
+        - Validate file exists at path (use file system check)
+        - Validate path is relative from project root
+        - If artifact file missing: Log error "Artifact file not found: {path}"
+        - Action: Create missing artifact or remove from list
+        
+        Special requirement for detailed artifacts:
+        - If artifacts include research/plan/implementation (not just summary)
+        - MUST have corresponding summary artifact
+        - Summary path: .opencode/specs/{NNN}_{slug}/summaries/{type}-summary.md
+        - If summary missing: Log error "Summary artifact required but missing for {type}"
+        - Action: Create summary artifact before returning
+      </artifact_validation>
+      
+      <validation_failure_handling>
+        If any validation fails:
+        1. Log detailed error with field name and reason
+        2. Attempt automatic correction (condense, create missing artifacts)
+        3. Retry validation once
+        4. If still fails: Return error status with validation details
+        
+        Error format:
+        {
+          "task_number": NNN,
+          "status": "FAILED",
+          "summary": "Task execution completed but return validation failed",
+          "errors": [
+            {
+              "message": "Validation error: {specific_error}",
+              "phase": "ReturnToOrchestrator",
+              "recommendation": "Manual review required: {actionable_advice}"
+            }
+          ]
+        }
+      </validation_failure_handling>
+      
+      <validation_examples>
+        <valid_return>
+          {
+            "task_number": 169,
+            "status": "COMPLETED",
+            "summary": "Implemented context window protection for /implement command. Added return format schemas and validation. Updated all references from /task to /implement.",
+            "artifacts": [
+              {
+                "type": "plan",
+                "path": ".opencode/specs/169_task_command_improvements/plans/implementation-003.md",
+                "summary": "6-phase implementation plan for context window protection"
+              },
+              {
+                "type": "summary",
+                "path": ".opencode/specs/169_task_command_improvements/summaries/implementation-summary-20251224.md"
+              }
+            ],
+            "key_metrics": {
+              "complexity": "complex",
+              "effort_hours": 4.5,
+              "files_modified": 8,
+              "phases_completed": 6
+            },
+            "session_id": "task-169-20251224-001"
+          }
+          
+          Validation checks:
+          ✅ task_number present and valid
+          ✅ status is valid enum value
+          ✅ summary is 3 sentences, ~50 tokens
+          ✅ artifacts array present with valid paths
+          ✅ summary artifact exists for detailed plan
+          ✅ key_metrics complete
+          ✅ Total ~380 tokens (<500 limit)
+        </valid_return>
+        
+        <invalid_return_token_limit>
+          Problem: Return exceeds 500 token limit (estimated 650 tokens)
+          
+          Error logged:
+          "Return format exceeds 500 token limit: 650 tokens (estimated)"
+          
+          Action taken:
+          1. Condense summary from 5 sentences to 3 sentences
+          2. Remove optional artifact summaries
+          3. Remove next_steps field
+          4. Retry validation
+          5. New estimate: 420 tokens ✅
+        </invalid_return_token_limit>
+        
+        <invalid_return_missing_summary>
+          Problem: Plan artifact exists but no summary artifact
+          
+          Error logged:
+          "Summary artifact required but missing for plan"
+          
+          Action taken:
+          1. Create summary artifact at .opencode/specs/169_.../summaries/plan-summary.md
+          2. Extract 3-5 sentence summary from plan
+          3. Add summary artifact to return
+          4. Retry validation ✅
+        </invalid_return_missing_summary>
+      </validation_examples>
+    </validation>
+    <output_format>
+      COMPACT OUTPUT (max 500 tokens):
+      
+      ## Task {number} - {status}
+      
+      {summary - 3-5 sentences describing what was accomplished}
+      
+      **Artifacts Created**:
+      {for each artifact:
+        - {type}: {path}
+          {optional one-sentence summary}
+      }
+      
+      **Metrics**:
+      - Complexity: {simple|moderate|complex}
+      - Effort: {hours}h
+      - Files Modified: {count}
+      - Phases Completed: {count}
+      
+      {if next_steps:
+        **Next Steps**: {next_steps}
+      }
+      
+      {if errors:
+        **Errors**:
+        {for each error:
+          - {message} ({phase})
+            Recommendation: {recommendation}
+        }
+      }
+      
+      ---
+      Session: {session_id}
+      
+      For detailed execution logs, see artifacts above.
+      
+      ### Plan Summary
+      
+      **Key Steps**:
+      1. {step_1}
+      2. {step_2}
+      3. {step_3}
+      
+      **Dependencies**:
+      - {dependency_1}
+      - {dependency_2}
       
       {if documentation_task:
         **Documentation Update**:

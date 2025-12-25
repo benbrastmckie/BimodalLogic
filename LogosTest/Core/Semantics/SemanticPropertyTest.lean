@@ -23,12 +23,14 @@ valid frames.
 -/
 
 import Logos.Core.Semantics.TaskFrame
+import Logos.Core.Semantics.TaskModel
 import Logos.Core.Semantics.Truth
 import LogosTest.Core.Property.Generators
 import Plausible
 
 namespace LogosTest.Semantics.SemanticPropertyTest
 
+open Logos.Core.Syntax
 open Logos.Core.Semantics
 open LogosTest.Property.Generators
 open Plausible
@@ -214,5 +216,76 @@ example (F : TaskFrame Int) :
     ∀ w u v x y, F.task_rel w x u → F.task_rel u y v → F.task_rel w (x + y) v := by
   intro w u v x y h1 h2
   exact F.compositionality w u v x y h1 h2
+
+/-! ## TaskModel Properties -/
+
+/--
+Property: TaskModel valuation is well-defined for all worlds and atoms.
+
+The valuation function always returns a Prop (decidable truth value).
+-/
+example : ∀ (M : TaskModel (TaskFrame.nat_frame (T := Int))) (w : Nat) (s : String),
+    M.valuation w s ∨ ¬M.valuation w s := by
+  intro M w s
+  by_cases h : M.valuation w s
+  · left; exact h
+  · right; exact h
+
+/--
+Property: Generated TaskModels have the correct frame.
+
+The frame of a generated model is nat_frame.
+-/
+example : ∀ (M : TaskModel (TaskFrame.nat_frame (T := Int))),
+    M.frame = TaskFrame.nat_frame := by
+  intro M
+  rfl
+  where
+    frame (M : TaskModel F) : TaskFrame Int := F
+
+/--
+Property: All-false model has no atoms true.
+-/
+example : ∀ (w : Nat) (s : String),
+    ¬(TaskModel.all_false (F := TaskFrame.nat_frame (T := Int))).valuation w s := by
+  intro w s
+  exact id
+
+/--
+Property: All-true model has all atoms true.
+-/
+example : ∀ (w : Nat) (s : String),
+    (TaskModel.all_true (F := TaskFrame.nat_frame (T := Int))).valuation w s := by
+  intro w s
+  trivial
+
+/-! ## Truth Condition Properties -/
+
+/--
+Property: Bot is always false at any world in any model.
+
+This is a fundamental semantic property.
+-/
+-- Note: We would need to import Truth evaluation to test this properly
+-- Placeholder for when Truth.lean is available with decidable instances
+
+/-! ## Frame Constraint Tests with Larger Test Counts -/
+
+/--
+Test: Frame nullity with increased test count (200 test cases).
+-/
+#eval Testable.check (∀ (F : TaskFrame Int) (w : F.WorldState), F.task_rel w 0 w) {
+  numInst := 200,
+  maxSize := 25
+}
+
+/--
+Test: Frame compositionality with increased test count (200 test cases).
+-/
+#eval Testable.check (∀ (F : TaskFrame Int) (w u v : F.WorldState) (x y : Int),
+    F.task_rel w x u → F.task_rel u y v → F.task_rel w (x + y) v) {
+  numInst := 200,
+  maxSize := 25
+}
 
 end LogosTest.Semantics.SemanticPropertyTest

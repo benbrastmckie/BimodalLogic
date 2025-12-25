@@ -26,6 +26,7 @@ This module provides generators for property-based testing of Logos types.
 import Logos.Core.Syntax.Formula
 import Logos.Core.Syntax.Context
 import Logos.Core.Semantics.TaskFrame
+import Logos.Core.Semantics.TaskModel
 import Plausible
 
 namespace LogosTest.Property.Generators
@@ -136,6 +137,72 @@ instance : SampleableExt (TaskFrame Int) where
       compositionality := fun _ _ _ _ _ _ _ => trivial
     }
   sample := pure ()
+
+/-! ## TaskModel Generators -/
+
+/--
+Proxy type for TaskModel generation.
+
+Since TaskModel has dependent types (valuation depends on F.WorldState),
+we use the SampleableExt pattern with a proxy type that generates
+the frame first, then constructs a deterministic valuation.
+-/
+structure TaskModelProxy where
+  /-- Proxy for the underlying frame (Unit since we use the default generator) -/
+  frameProxy : Unit
+  /-- Seed for deterministic valuation generation -/
+  valuationSeed : Nat
+
+/--
+SampleableExt instance for TaskModel with integer time.
+
+Generates task models with:
+- Finite task frames (1-5 world states)
+- Deterministic hash-based valuation function
+- Valuation: (hash (seed, w, s)) % 2 = 0 determines if atom s is true at world w
+
+This approach handles the dependent type challenge by:
+1. First generating a frame (via the Unit proxy)
+2. Then constructing a valuation that depends on that frame's WorldState
+3. Using a hash-based deterministic function for reproducibility
+-/
+instance : SampleableExt (TaskModel (TaskFrame.nat_frame (T := Int))) where
+  proxy := TaskModelProxy
+  interp p :=
+    { valuation := fun w s =>
+        -- Deterministic valuation based on hash of seed, world, and atom
+        -- This ensures reproducibility while providing varied truth values
+        (Nat.mix (Nat.mix p.valuationSeed w.toNat) s.length) % 2 = 0
+    }
+  sample := do
+    let seed ← Gen.choose 0 1000
+    return ⟨(), seed⟩
+
+/--
+Generate a TaskModel where all atoms are false.
+
+Useful for testing properties that require specific valuation patterns.
+-/
+def genAllFalseModel : Gen (TaskModel (TaskFrame.nat_frame (T := Int))) :=
+  pure { valuation := fun _ _ => False }
+
+/--
+Generate a TaskModel where all atoms are true.
+
+Useful for testing properties that require specific valuation patterns.
+-/
+def genAllTrueModel : Gen (TaskModel (TaskFrame.nat_frame (T := Int))) :=
+  pure { valuation := fun _ _ => True }
+
+/--
+Generate a TaskModel with a specific valuation pattern.
+
+Takes a predicate on (world, atom) pairs and creates a model
+where the valuation matches that predicate.
+-/
+def genModelWithPattern (pattern : Nat → String → Bool) :
+    Gen (TaskModel (TaskFrame.nat_frame (T := Int))) :=
+  pure { valuation := fun w s => pattern w s }
 
 /-! ## Helper Functions -/
 

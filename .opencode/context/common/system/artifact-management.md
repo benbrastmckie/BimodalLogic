@@ -81,11 +81,29 @@ Version increments when:
 - `/review` and reviewer agents: create the review project root only when writing the first report/summary, and only create the subdir needed for the artifact being written; never pre-create both `reports/` and `summaries/` up front.
 
 ### summaries/
-Contains brief summaries for quick reference:
-- **project-summary.md**: Overall project summary
-- **research-summary.md**: Key research findings
-- **plan-summary.md**: Implementation plan overview
-- **implementation-summary.md**: What was implemented
+Contains brief summaries for quick reference. **All detailed artifacts MUST have corresponding summary artifacts** to protect the orchestrator's context window.
+
+**Summary Requirements** (enforced by validation):
+- **Format**: 3-5 sentences for research/plan/implementation summaries, 2-3 sentences for batch summaries
+- **Token Limit**: <100 tokens for individual summaries, <75 tokens for batch summaries
+- **Creation**: Lazy directory creation - create `summaries/` only when writing first summary
+- **Validation**: Summary artifact must exist before task completion when detailed artifact created
+
+**Summary Types**:
+- **research-summary.md**: Key research findings (3-5 sentences, <100 tokens)
+  - Example: "Research identified 7 complexity indicators for task routing. Token counting methodology uses chars ÷ 3 estimation. Progressive summarization reduces batch returns by 95%. Validation layer enforces format compliance. Recommended clean-break approach for deployment."
+  
+- **plan-summary.md**: Implementation plan overview (3-5 sentences, <100 tokens)
+  - Example: "8-phase implementation plan with clean-break approach. Phase 0 audits all consumers. Phases 1-6 implement return formats, summaries, complexity routing, and validation. Phase 7 tests integration. Phase 8 updates documentation."
+  
+- **implementation-summary-YYYYMMDD.md**: What was implemented (3-5 sentences, <100 tokens)
+  - Example: "Implemented artifact-first return format for task-executor with <500 token limit. Added summary artifact enforcement for all detailed artifacts. Created complexity router with 7-factor scoring. Differentiated git commit patterns for simple vs complex tasks."
+  
+- **batch-summary-YYYYMMDD.md**: Batch execution summary (2-3 sentences, <75 tokens)
+  - Example: "Successfully completed 10 tasks across 3 execution waves. 5 simple tasks executed directly, 5 complex tasks followed full workflow. All validation checks passed."
+  
+- **project-summary.md**: Overall project summary (3-5 sentences, <100 tokens)
+  - Example: "Task 169 implements context window protection for /implement command. Reduces return formats by 95% through artifact-first approach. Enforces summary artifacts for all detailed work. Adds complexity-based routing and validation layer."
 
 ## Template Standards
 - Plans must follow `.opencode/context/common/standards/plan.md`.

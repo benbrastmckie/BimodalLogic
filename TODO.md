@@ -1,6 +1,6 @@
 # Logos Project TODO
 
-**Last Updated**: 2025-12-24
+**Last Updated**: 2025-12-25
 **Status**: Layer 0 (Core TM) MVP Complete - Review in Progress
 
 ## Overview
@@ -8,7 +8,7 @@
 Logos has completed its MVP phase with a functional implementation of the TM bimodal logic proof system. The current focus is on completing the metalogical proofs for completeness and enhancing automation.
 
 - **Layer 0 Completion**: 83% (Soundness & Deduction complete, Completeness infrastructure only)
-- **Active Tasks**: 8
+- **Active Tasks**: 11
 - **Next Milestone**: Completeness Proofs
 
 ## Quick Links
@@ -87,6 +87,42 @@ Keeps implementation status and registries synchronized, reducing drift and miss
 
 ---
 
+### 169. Improve /implement command context window protection
+**Effort**: 8-9 hours
+**Status**: [COMPLETED]
+**Started**: 2025-12-24
+**Completed**: 2025-12-24
+**Priority**: High
+**Blocking**: None
+**Dependencies**: None
+**Plan**: [Implementation Plan](.opencode/specs/169_task_command_improvements/plans/implementation-003.md)
+**Migration Guide**: [Migration Guide v3](.opencode/specs/169_task_command_improvements/summaries/migration-guide-v3.md)
+
+**Files Affected**:
+- `.opencode/agent/subagents/task-executor.md`
+- `.opencode/agent/subagents/batch-task-orchestrator.md`
+- `.opencode/command/implement.md`
+- `.opencode/context/common/system/artifact-management.md`
+- 80+ files for /task → /implement rename
+
+**Description**:
+Implement context window protection for /implement command through artifact-first return formats, summary artifact enforcement, complexity-based routing, and differentiated git commit patterns. Uses clean-break approach with no backward compatibility.
+
+**Acceptance Criteria**:
+- [x] task-executor return format <500 tokens per task
+- [x] batch-task-orchestrator return format <50 lines per 10 tasks
+- [x] Summary artifacts enforced for all detailed artifacts
+- [x] Complexity router implemented with 7-factor scoring
+- [x] Git commit patterns differentiated (simple vs complex)
+- [x] Validation layer enforces format compliance
+- [x] All /task references updated to /implement
+- [x] Migration guide created
+
+**Impact**:
+Reduces context window usage by 95%+ through artifact-first returns and progressive summarization. Protects orchestrator from context bloat while maintaining full information access through artifact files.
+
+---
+
 ### 172. Complete API documentation for all Logos modules
 **Effort**: 30 hours
 **Status**: [PLANNED]
@@ -117,6 +153,97 @@ Complete comprehensive API documentation for all Logos modules with docstrings, 
 
 **Impact**:
 Provides complete API documentation for all Logos modules, improving usability and maintainability.
+
+---
+
+### 183. Fix DeductionTheorem.lean build errors (3 errors)
+**Effort**: 2-3 hours
+**Status**: [IN PROGRESS]
+**Started**: 2025-12-25
+**Priority**: High
+**Blocking**: Task 173 (integration tests), Task 185
+**Dependencies**: None
+**Language**: lean
+
+**Files Affected**:
+- `Logos/Core/Metalogic/DeductionTheorem.lean` (lines 255, 297, 371)
+
+**Description**:
+Fix 3 build errors in DeductionTheorem.lean that are blocking integration test compilation and task 173. These errors prevent the project from building and must be resolved before integration tests can be verified.
+
+**Error Details**:
+- Line 255: Type mismatch or proof error
+- Line 297: Type mismatch or proof error
+- Line 371: Type mismatch or proof error
+
+**Acceptance Criteria**:
+- [ ] All 3 build errors in DeductionTheorem.lean are resolved
+- [ ] File compiles successfully with `lake build`
+- [ ] No new errors introduced
+- [ ] Existing tests continue to pass
+
+**Impact**:
+Unblocks task 173 (integration tests) and task 185 (test helper API fixes). Critical for project build health.
+
+---
+
+### 184. Fix Truth.lean build error (swap_past_future proof)
+**Effort**: 1-2 hours
+**Status**: [IN PROGRESS]
+**Started**: 2025-12-25
+**Priority**: High
+**Blocking**: Task 173 (integration tests), Task 185
+**Dependencies**: None
+**Language**: lean
+
+**Files Affected**:
+- `Logos/Core/Semantics/Truth.lean` (line 632)
+
+**Description**:
+Fix build error in Truth.lean at line 632 related to swap_past_future proof. This error is blocking integration test compilation and task 173.
+
+**Error Details**:
+- Line 632: swap_past_future proof error
+
+**Acceptance Criteria**:
+- [ ] Build error at line 632 is resolved
+- [ ] File compiles successfully with `lake build`
+- [ ] No new errors introduced
+- [ ] Existing tests continue to pass
+
+**Impact**:
+Unblocks task 173 (integration tests) and task 185 (test helper API fixes). Critical for project build health.
+
+---
+
+### 185. Fix integration test helper API mismatches
+**Effort**: 1-2 hours
+**Status**: [IN PROGRESS]
+**Started**: 2025-12-25
+**Priority**: High
+**Blocking**: Task 173 (integration tests)
+**Dependencies**: Task 183, Task 184
+**Language**: lean
+
+**Files Affected**:
+- `LogosTest/Core/Integration/Helpers.lean` (lines 126, 131, 129)
+
+**Description**:
+Fix API mismatches in integration test helper functions. These mismatches are preventing integration tests from compiling after tasks 183 and 184 are resolved.
+
+**Error Details**:
+- Line 126: API mismatch
+- Line 129: API mismatch
+- Line 131: API mismatch
+
+**Acceptance Criteria**:
+- [ ] All API mismatches in Helpers.lean are resolved
+- [ ] File compiles successfully with `lake build`
+- [ ] Integration tests compile and run
+- [ ] No new errors introduced
+
+**Impact**:
+Completes the unblocking of task 173 (integration tests). Enables verification of 106 new integration tests with 82% coverage.
 
 ---
 

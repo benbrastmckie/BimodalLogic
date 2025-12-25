@@ -471,7 +471,176 @@ tools:
       - All detailed information in artifact files
       - Artifact paths must be valid and files must exist
     </return_format>
-    <checkpoint>Results returned to orchestrator with compact format</checkpoint>
+    <validation>
+      <line_count_validation>
+        Calculate line count of return output:
+        - Count newlines in formatted output
+        - Calculate ratio: line_count ÷ (total_tasks ÷ 10)
+        - If ratio >50: FAIL validation
+        - Log error: "Return format exceeds 50 lines per 10 tasks: {line_count} lines for {total_tasks} tasks"
+        - Action: Condense task summaries, remove optional fields, retry validation
+        
+        Example:
+        - 10 tasks: max 50 lines
+        - 20 tasks: max 100 lines
+        - 5 tasks: max 25 lines
+      </line_count_validation>
+      
+      <task_accounting_validation>
+        Validate all tasks are accounted for:
+        - Sum: completed + failed + blocked + partial
+        - Must equal total tasks in batch
+        - If mismatch: Log error "Task accounting mismatch: {sum} != {total}"
+        - Action: Review task processing, identify missing tasks
+        
+        Validate completed_tasks array:
+        - Each task in batch must appear in completed_tasks array
+        - Status must be one of [COMPLETED, FAILED, BLOCKED, PARTIAL]
+        - If task missing: Log error "Task {num} not in results"
+        - Action: Add missing task with status FAILED
+      </task_accounting_validation>
+      
+      <summary_validation>
+        Validate batch summary:
+        - Must exist (not null/empty)
+        - Must be 2-3 sentences
+        - Must be <75 tokens (estimate: chars ÷ 3)
+        - If validation fails: Log error "Batch summary missing or exceeds 75 tokens"
+        - Action: Create or condense summary, retry validation
+        
+        Validate task one-line summaries:
+        - Each task must have one_line_summary
+        - Must be single sentence
+        - Must be <150 characters
+        - If exceeds: Log warning "Task {num} summary too long: {length} chars"
+        - Action: Truncate to 150 chars with ellipsis
+      </summary_validation>
+      
+      <artifact_validation>
+        Validate batch summary artifact:
+        - summary_artifact_path must exist
+        - File must exist at path
+        - Path format: .opencode/specs/batch-{start}-{end}/summaries/batch-summary-YYYYMMDD.md
+        - If missing: Log error "Batch summary artifact not found: {path}"
+        - Action: Create batch summary artifact before returning
+        
+        Validate task summary artifacts:
+        - Each completed task should have summary artifact
+        - Path in task_summaries array
+        - File must exist at path
+        - If missing: Log warning "Task {num} summary artifact missing"
+        - Action: Create placeholder summary or note in batch summary
+        
+        Validate artifact references:
+        - All paths in artifacts object must be valid
+        - Files must exist
+        - Paths must be relative from project root
+        - If invalid: Log error "Invalid artifact path: {path}"
+        - Action: Remove invalid paths from return
+      </artifact_validation>
+      
+      <validation_failure_handling>
+        If any validation fails:
+        1. Log detailed error with specific validation rule violated
+        2. Attempt automatic correction:
+           - Condense summaries if too long
+           - Create missing artifacts
+           - Fix task accounting
+        3. Retry validation once
+        4. If still fails: Return error status with validation details
+        
+        Error format:
+        {
+          "summary": "Batch execution completed but return validation failed",
+          "status": {
+            "total": N,
+            "completed": X,
+            "failed": Y,
+            "blocked": Z,
+            "partial": 0
+          },
+          "errors": [
+            {
+              "message": "Validation error: {specific_error}",
+              "recommendation": "Manual review required: {actionable_advice}"
+            }
+          ],
+          "session_id": "batch-{start}-{end}-{timestamp}"
+        }
+      </validation_failure_handling>
+      
+      <validation_examples>
+        <valid_return>
+          {
+            "summary": "Completed 8 of 10 tasks successfully. 1 task failed, 1 blocked.",
+            "completed_tasks": [
+              {"task_number": 63, "status": "COMPLETED", "one_line_summary": "Added validation layer to task-executor.md", "artifact_path": "..."},
+              {"task_number": 64, "status": "COMPLETED", "one_line_summary": "Updated batch-task-orchestrator.md validation", "artifact_path": "..."},
+              {"task_number": 65, "status": "FAILED", "one_line_summary": "Failed due to missing dependency", "artifact_path": "..."},
+              {"task_number": 66, "status": "BLOCKED", "one_line_summary": "Blocked by task 65 failure", "artifact_path": "..."}
+            ],
+            "artifacts": {
+              "summary_artifact_path": ".opencode/specs/batch-63-72/summaries/batch-summary-20251224.md",
+              "task_summaries": ["...", "...", "..."]
+            },
+            "total_files_modified": 42,
+            "status": {"total": 10, "completed": 8, "failed": 1, "blocked": 1, "partial": 0},
+            "session_id": "batch-63-72-20251224-001"
+          }
+          
+          Validation checks:
+          ✅ Line count: 35 lines for 10 tasks (ratio: 3.5 < 50)
+          ✅ Task accounting: 8+1+1 = 10 ✅
+          ✅ Summary: 2 sentences, ~15 tokens
+          ✅ One-line summaries: all <150 chars
+          ✅ Batch summary artifact exists
+          ✅ All artifact paths valid
+        </valid_return>
+        
+        <invalid_return_line_count>
+          Problem: 120 lines for 10 tasks (ratio: 12 > 50... wait, that's actually fine)
+          Actually: 600 lines for 10 tasks (ratio: 60 > 50)
+          
+          Error logged:
+          "Return format exceeds 50 lines per 10 tasks: 600 lines for 10 tasks (ratio: 60)"
+          
+          Action taken:
+          1. Remove optional wave_summaries from output
+          2. Condense task summaries to single line each
+          3. Remove detailed error messages (keep in artifacts)
+          4. Retry validation
+          5. New count: 45 lines ✅
+        </invalid_return_line_count>
+        
+        <invalid_return_task_accounting>
+          Problem: Total tasks = 10, but completed(7) + failed(1) + blocked(1) = 9
+          
+          Error logged:
+          "Task accounting mismatch: 9 != 10. Missing task: 68"
+          
+          Action taken:
+          1. Review task processing logs
+          2. Found task 68 timed out but not recorded
+          3. Add task 68 to failed_tasks with timeout error
+          4. Update status counts
+          5. Retry validation ✅
+        </invalid_return_task_accounting>
+        
+        <invalid_return_missing_artifact>
+          Problem: Batch summary artifact path specified but file doesn't exist
+          
+          Error logged:
+          "Batch summary artifact not found: .opencode/specs/batch-63-72/summaries/batch-summary-20251224.md"
+          
+          Action taken:
+          1. Create batch summary artifact from aggregated results
+          2. Write to specified path
+          3. Verify file exists
+          4. Retry validation ✅
+        </invalid_return_missing_artifact>
+      </validation_examples>
+    </validation>
+    <checkpoint>Results returned to orchestrator with compact format and validation passed</checkpoint>
   </stage>
 </workflow_execution>
 

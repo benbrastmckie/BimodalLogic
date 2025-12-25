@@ -200,6 +200,86 @@ Test: Peirce's law validity (100 test cases).
   maxSize := 30
 }
 
+/--
+Property: Modal 5 Collapse axiom is valid for all formulas.
+
+⊨ ◇□φ → □φ
+-/
+example : Testable (∀ φ : Formula, ⊨ (φ.box.diamond.imp φ.box)) := by
+  infer_instance
+
+/--
+Test: Modal 5 Collapse validity (500 test cases - critical S5 property).
+-/
+#eval Testable.check (∀ φ : Formula, ⊨ (φ.box.diamond.imp φ.box)) {
+  numInst := 500,
+  maxSize := 40
+}
+
+/--
+Property: Temporal A axiom is valid for all formulas.
+
+⊨ φ → F(sometime_past φ)
+-/
+example : Testable (∀ φ : Formula, ⊨ (φ.imp (Formula.all_future φ.sometime_past))) := by
+  infer_instance
+
+/--
+Test: Temporal A validity (100 test cases).
+-/
+#eval Testable.check (∀ φ : Formula, ⊨ (φ.imp (Formula.all_future φ.sometime_past))) {
+  numInst := 100,
+  maxSize := 40
+}
+
+/--
+Property: Temporal L axiom is valid for all formulas.
+
+⊨ △φ → F(Pφ)
+-/
+example : Testable (∀ φ : Formula, ⊨ (φ.always.imp (Formula.all_future (Formula.all_past φ)))) := by
+  infer_instance
+
+/--
+Test: Temporal L validity (100 test cases).
+-/
+#eval Testable.check (∀ φ : Formula, ⊨ (φ.always.imp (Formula.all_future (Formula.all_past φ)))) {
+  numInst := 100,
+  maxSize := 40
+}
+
+/--
+Property: Modal-Future axiom is valid for all formulas.
+
+⊨ □φ → □Fφ
+-/
+example : Testable (∀ φ : Formula, ⊨ ((Formula.box φ).imp (Formula.box (Formula.all_future φ)))) := by
+  infer_instance
+
+/--
+Test: Modal-Future validity (100 test cases).
+-/
+#eval Testable.check (∀ φ : Formula, ⊨ ((Formula.box φ).imp (Formula.box (Formula.all_future φ)))) {
+  numInst := 100,
+  maxSize := 40
+}
+
+/--
+Property: Temporal-Future axiom is valid for all formulas.
+
+⊨ □φ → F□φ
+-/
+example : Testable (∀ φ : Formula, ⊨ ((Formula.box φ).imp (Formula.all_future (Formula.box φ)))) := by
+  infer_instance
+
+/--
+Test: Temporal-Future validity (100 test cases).
+-/
+#eval Testable.check (∀ φ : Formula, ⊨ ((Formula.box φ).imp (Formula.all_future (Formula.box φ)))) {
+  numInst := 100,
+  maxSize := 40
+}
+
 /-! ## Axiom Instance Validity -/
 
 /--
