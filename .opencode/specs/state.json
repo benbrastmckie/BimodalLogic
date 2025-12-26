@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker project. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-25T23:45:00Z",
-  "next_project_number": 190,
+  "_last_updated": "2025-12-26T00:30:00Z",
+  "next_project_number": 192,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -89,10 +89,85 @@
       "started": "2025-12-25",
       "completed": "2025-12-25",
       "last_updated": "2025-12-25"
+    },
+    {
+      "project_number": 190,
+      "project_name": "improve_maintenance_md_documentation_structure_and_content",
+      "type": "documentation",
+      "phase": "implementation",
+      "status": "in_progress",
+      "created": "2025-12-25T16:21:00Z",
+      "started": "2025-12-25",
+      "completed": "2025-12-25",
+      "last_updated": "2025-12-26"
+    },
+    {
+      "project_number": 191,
+      "project_name": "fix_subagent_delegation_hang",
+      "type": "bugfix",
+      "phase": "not_started",
+      "status": "not_started",
+      "created": "2025-12-26T00:00:00Z",
+      "last_updated": "2025-12-26T00:00:00Z"
+    },
+    {
+      "project_number": 184,
+      "project_name": "truth_lean_build_error",
+      "type": "bugfix",
+      "phase": "planning",
+      "status": "planned",
+      "created": "2025-12-25T00:45:00Z",
+      "started": "2025-12-25",
+      "planning_completed": "2025-12-26",
+      "last_updated": "2025-12-26"
     }
   ],
   "completed_projects": [],
   "recent_activities": [
+    {
+      "timestamp": "2025-12-26T00:45:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 183 (4 phases, 30-45 minutes estimated)"
+    },
+    {
+      "timestamp": "2025-12-26T00:45:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 184 (5 phases, 55 minutes estimated)"
+    },
+    {
+      "timestamp": "2025-12-26T00:30:00Z",
+      "activity": "Marked task 189 as RESEARCHED: Research completed successfully for --divide flag implementation (5-phase plan, 8-10 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-25T12:00:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 184 (5 phases, 55 minutes estimated)"
+    },
+    {
+      "timestamp": "2025-12-26T00:00:00Z",
+      "activity": "Created task 191: Fix subagent delegation hang issue in command workflows"
+    },
+    {
+      "timestamp": "2025-12-26T00:35:00Z",
+      "activity": "Completed research for task 183: DeductionTheorem.lean build errors - identified classical reasoning pattern issue and documented solution"
+    },
+    {
+      "timestamp": "2025-12-26T00:30:00Z",
+      "activity": "Marked task 189 as RESEARCHED: Research completed successfully for --divide flag implementation (5-phase plan, 8-10 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-26T00:31:10Z",
+      "activity": "Created implementation plan plans/implementation-002.md for project 190 (6 phases, 2 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-26T00:26:00Z",
+      "activity": "Created task 190: Improve MAINTENANCE.md documentation structure and content"
+    },
+    {
+      "timestamp": "2025-12-25T16:21:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 190 (8 phases, 8 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-25T16:15:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 177 (4 phases, 8-12 hours estimated)"
+    },
     {
       "timestamp": "2025-12-25T23:45:00Z",
       "activity": "Completed tasks 186-188: Refactored /review command to be configuration-driven, reading update instructions from MAINTENANCE.md"
@@ -372,6 +447,12 @@
   ],
   "pending_tasks": [
     {
+      "project_number": 191,
+      "title": "Fix subagent delegation hang issue in command workflows",
+      "status": "not_started",
+      "created": "2025-12-26T00:00:00Z"
+    },
+    {
       "project_number": 170,
       "title": "Improve maintenance report system and documentation",
       "status": "researched",
@@ -518,7 +599,8 @@
       "status": "in_progress",
       "created": "2025-12-24T12:30:00Z",
       "started": "2025-12-25",
-      "last_updated": "2025-12-25"
+      "last_updated": "2025-12-25T16:15:00Z",
+      "planning_completed": "2025-12-25T16:15:00Z"
     },
     {
       "project_number": 178,
@@ -557,18 +639,23 @@
     {
       "project_number": 183,
       "title": "Fix DeductionTheorem.lean build errors (3 errors)",
-      "status": "researched",
+      "status": "planned",
       "created": "2025-12-25T00:45:00Z",
       "started": "2025-12-25",
+      "completed": "2025-12-26",
       "notes": "Research complete. Root cause: .elim pattern not recognized as tactic in match expressions. Solution: Replace (em P).elim with by_cases h : P tactic. All 3 errors have same root cause.",
-      "research_completed": "2025-12-25T15:30:00Z"
+      "research_completed": "2025-12-26T00:35:00Z",
+      "planning_completed": "2025-12-26T00:45:00Z"
     },
     {
       "project_number": 184,
       "title": "Fix Truth.lean build error (swap_past_future proof)",
-      "status": "in_progress",
+      "status": "planned",
       "created": "2025-12-25T00:45:00Z",
-      "started": "2025-12-25"
+      "started": "2025-12-25",
+      "planning_completed": "2025-12-26",
+      "last_updated": "2025-12-26",
+      "plan_path": ".opencode/specs/184_truth_lean_build_error/plans/implementation-001.md"
     },
     {
       "project_number": 185,
@@ -610,6 +697,19 @@
       "created": "2025-12-25T23:15:00Z",
       "started": "2025-12-25",
       "completed": "2025-12-25"
+    },
+    {
+      "project_number": 190,
+      "title": "Improve MAINTENANCE.md documentation structure and content",
+      "status": "in_progress",
+      "created": "2025-12-26T00:26:00Z",
+      "started": "2025-12-26"
+    },
+    {
+      "project_number": 191,
+      "title": "Fix subagent delegation hang issue in command workflows",
+      "status": "not_started",
+      "created": "2025-12-26T00:00:00Z"
     }
   ],
   "maintenance_summary": {
