@@ -1,0 +1,19 @@
+{
+  "_schema_version": "1.0.0",
+  "_comment": "State for task 147 ensure /task uses Lean subagents and MCP servers correctly.",
+  "project_number": 147,
+  "project_name": "ensure_task_uses_lean_subagents_and_mcp_servers_correctly",
+  "type": "implementation",
+  "phase": "completed",
+  "status": "completed",
+  "reports": [
+    "reports/research-001.md"
+  ],
+  "plans": [
+    "plans/implementation-001.md",
+    "plans/implementation-002.md"
+  ],
+  "summaries": [],
+  "created": "2025-12-22T23:10:00Z",
+  "last_updated": "2025-12-23T00:45:00Z"
+}

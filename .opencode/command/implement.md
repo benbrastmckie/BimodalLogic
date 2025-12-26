@@ -36,6 +36,7 @@ Context Loaded:
 @.opencode/context/common/standards/tasks.md
 @.opencode/context/common/standards/commands.md
 @.opencode/context/common/standards/patterns.md
+@.opencode/context/common/standards/subagent-return-format.md
 @.opencode/context/common/workflows/task-breakdown.md
 @.opencode/context/project/repo/project-overview.md
 (@.opencode/context/project/lean4/* and @.opencode/context/project/logic/* only when executing Lean-tagged plans)
@@ -117,36 +118,200 @@ Context Loaded:
   <stage id="3" name="Execute">
     <action>Route by work type and complexity</action>
     <process>
-      1. Single task: route to appropriate agent with complexity flag:
+      1. Generate unique session_id for tracking: `cmd_implement_{task_number}_{timestamp}_{random}`
+         - Format: task_number = single task or first in range
+         - timestamp = ISO8601 format (e.g., 20251226T143022)
+         - random = 6 character alphanumeric
+         - Example: `cmd_implement_191_20251226T143022_abc123`
+      2. Single task: route to appropriate agent with complexity flag and session_id:
          - Simple: Direct execution by implementer (no research/plan phases)
          - Moderate/Complex: Route to task-executor for full workflow
          - Documentation → documenter; refactor → refactorer; research-only → researcher
          - Lean → lean-implementation-orchestrator/proof-developer
-      2. Multiple tasks: route via batch-task-orchestrator + batch-status-manager with wave-based execution; Lean tasks use Lean path within waves. Batch handoff includes normalized task list, language metadata per task, complexity flags, and dependency hints; dependency analysis precedes execution.
-      3. Reuse plan/research links exactly; maintain lazy creation (project roots/subdirs only when writing artifacts). Batch execution must keep TODO/plan/state status markers in lockstep for each task and block dependents on failure.
+         - Pass session_id to subagent for correlation and tracking
+      3. Multiple tasks: route via batch-task-orchestrator + batch-status-manager with wave-based execution; Lean tasks use Lean path within waves. Batch handoff includes normalized task list, language metadata per task, complexity flags, dependency hints, and session_id; dependency analysis precedes execution.
+      4. Reuse plan/research links exactly; maintain lazy creation (project roots/subdirs only when writing artifacts). Batch execution must keep TODO/plan/state status markers in lockstep for each task and block dependents on failure.
+      5. Store session_id for use in ReceiveResults stage
     </process>
+    <session_tracking>
+      Store the following for ReceiveResults:
+      - session_id: Unique identifier for this execution
+      - start_time: Timestamp when delegation began
+      - target_agent: Which subagent was invoked
+      - task_numbers: Task number(s) being executed
+    </session_tracking>
+  </stage>
+  <stage id="3.5" name="ReceiveResults">
+    <action>Wait for subagent completion and receive results</action>
+    <process>
+      1. Poll for completion using session_id from Execute stage
+      2. Set timeout: 3600 seconds (1 hour)
+      3. Receive return_value from subagent
+      4. Validate return format against @.opencode/context/common/standards/subagent-return-format.md:
+         - Check required fields present (status, summary, artifacts, metadata)
+         - Validate status enum (completed|failed|partial|blocked)
+         - Validate metadata fields (session_id, duration_seconds, agent_type)
+         - Validate artifacts array structure (can be empty)
+      5. Handle timeout/error cases with appropriate recovery
+    </process>
+    <error_handling>
+      <on_timeout>
+        1. Log: "Subagent timeout after 3600s for session {session_id}"
+        2. Attempt to retrieve partial results from artifacts
+        3. Mark task(s) as [IN PROGRESS] (not failed) to allow resume
+        4. Return to user: "Execution timed out after 1 hour. Check .opencode/specs/{project}/summaries/ for partial progress. Task marked IN PROGRESS for resume."
+        5. Proceed to Postflight with partial data
+      </on_timeout>
+      <on_validation_error>
+        1. Log validation error with details: "Return format validation failed for session {session_id}: {error_details}"
+        2. Retry once with same parameters (may be transient parsing issue)
+        3. If retry validation fails:
+           a. Log: "Return format validation failed after retry"
+           b. Return error to user: "Subagent returned invalid format. Check logs for details."
+           c. Suggest manual intervention: "Review .opencode/specs/{project}/ for any artifacts created"
+        4. Do NOT proceed to ProcessResults if validation fails after retry
+      </on_validation_error>
+      <on_execution_error>
+        1. Log error details with session_id and error message
+        2. Check if error is recoverable (from errors[].recoverable field)
+        3. If recoverable, retry once with same parameters
+        4. If not recoverable or retry fails:
+           a. Extract error details from errors array
+           b. Return actionable error message to user with suggested fixes
+           c. Mark task(s) as [IN PROGRESS] to allow manual fix and retry
+        5. Do NOT proceed to ProcessResults if error not recovered
+      </on_execution_error>
+      <on_exception>
+        1. Catch any unexpected exceptions during receive/validation
+        2. Log full stack trace with session_id
+        3. Return graceful error: "Unexpected error receiving subagent results. Session: {session_id}"
+        4. Provide debug info: "Check orchestrator logs for stack trace"
+        5. Mark task(s) as [IN PROGRESS] to preserve work and allow investigation
+      </on_exception>
+    </error_handling>
+    <timeout_monitoring>
+      - Start timeout timer when entering ReceiveResults stage
+      - Check elapsed time every 10 seconds
+      - If elapsed > 3600s, trigger on_timeout handler
+      - Allow graceful cancellation if user interrupts
+    </timeout_monitoring>
+    <validation_rules>
+      Follow @.opencode/context/common/standards/subagent-return-format.md exactly:
+      1. return_value must be JSON object
+      2. status must be one of: completed, failed, partial, blocked
+      3. summary must be non-empty string (2-5 sentences, max 100 tokens)
+      4. artifacts must be array (can be empty)
+      5. Each artifact must have type and path fields
+      6. metadata must have session_id, duration_seconds, agent_type
+      7. errors must be array if present (can be empty)
+    </validation_rules>
+    <checkpoint>Results received, validated, and error-checked</checkpoint>
+  </stage>
+  <stage id="3.75" name="ProcessResults">
+    <action>Process validated return value and extract results</action>
+    <process>
+      1. Extract status from return_value.status
+      2. Extract summary from return_value.summary (for user reporting)
+      3. Extract artifacts array from return_value.artifacts
+      4. Extract metadata from return_value.metadata
+      5. Check errors array from return_value.errors:
+         - If non-empty, log all errors with details
+         - Include error information in user summary
+         - Determine if errors are blocking vs. non-blocking
+      6. Update command state with results:
+         - Store artifact paths for state sync
+         - Store summary for user reporting
+         - Store metadata for debugging
+         - Store final status (completed/failed/partial/blocked)
+      7. Prepare data for Postflight stage:
+         - Artifact list for state.json sync
+         - Summary for implementation-summary file
+         - Status for TODO/plan/state updates
+         - Error information for user report
+    </process>
+    <status_interpretation>
+      - completed: All tasks succeeded, proceed to mark_completed
+      - partial: Some work done, mark IN PROGRESS, report partial results
+      - failed: Task failed, mark IN PROGRESS with error details, suggest fixes
+      - blocked: Cannot proceed, mark IN PROGRESS, report blockers to user
+    </status_interpretation>
+    <artifact_processing>
+      For each artifact in artifacts array:
+      1. Validate path exists (log warning if missing, but don't fail)
+      2. Categorize by type (research|plan|implementation|summary|test|documentation)
+      3. Store for state.json artifact links
+      4. Prepare for git staging (will be handled by git-workflow-manager)
+    </artifact_processing>
+    <checkpoint>Results processed and ready for Postflight sync</checkpoint>
   </stage>
   <stage id="4" name="Postflight">
     <action>Sync and report</action>
     <process>
-      1. Update plan phases/status markers when used, keeping TODO/plan/state status fields in lockstep; produce/update summaries under `summaries/implementation-summary-YYYYMMDD.md` when artifacts are written.
-      2. Extract plan_path from TODO.md task entry if a plan link exists (look for `- **Plan**: [...](...)`).
-      3. Call @subagents/specialists/status-sync-manager.mark_completed with:
+      1. Check final status from ProcessResults stage (completed|partial|failed|blocked)
+      2. Update plan phases/status markers when used, keeping TODO/plan/state status fields in lockstep; produce/update summaries under `summaries/implementation-summary-YYYYMMDD.md` when artifacts are written.
+      3. Extract plan_path from TODO.md task entry if a plan link exists (look for `- **Plan**: [...](...)`).
+      4. Route to appropriate status sync operation based on final status:
+         - If status = completed: Call status-sync-manager.mark_completed
+         - If status = partial|failed|blocked: Keep status as [IN PROGRESS] with note
+      5. For completed status, call @subagents/specialists/status-sync-manager.mark_completed with:
          - operation: "mark_completed"
          - task_number: {task_number}
          - timestamp: {YYYY-MM-DD current date}
          - plan_path: {plan_path} (if plan link exists in TODO.md)
-      4. Verify status-sync-manager returned success status.
-      5. If status-sync-manager fails, log error with details and report to user (do NOT swallow errors or continue silently).
-      6. Sync state.json with status/timestamps/artifact links/phase markers; reuse plan links already attached.
-      7. Return concise summary of routing, artifacts, TODO/state updates, and any task failures.
+      6. For partial/failed/blocked status:
+         - Ensure TODO remains [IN PROGRESS]
+         - Add note to task with status reason
+         - Include error details or next steps from subagent return
+      7. Verify status-sync-manager returned success status (for completed case).
+      8. If status-sync-manager fails, log error with details and report to user (do NOT swallow errors or continue silently).
+      9. Sync state.json with status/timestamps/artifact links/phase markers; reuse plan links already attached.
+      10. Return concise summary including:
+          - Final status (completed|partial|failed|blocked)
+          - Routing details (which agent executed)
+          - Artifacts created (from artifacts array)
+          - TODO/state/plan sync status
+          - Error information if any
+          - Next steps from subagent return if provided
+          - Task failure details per task for batch execution
     </process>
+    <status_handling>
+      <on_completed>
+        1. Mark all tasks as [COMPLETED] with timestamp
+        2. Update plan to [COMPLETED] if all phases complete
+        3. Create/update implementation summary
+        4. Report success to user with artifact list
+      </on_completed>
+      <on_partial>
+        1. Keep tasks as [IN PROGRESS]
+        2. Add note: "Partial completion - see summary for details"
+        3. Include partial artifact list in state sync
+        4. Report to user: "Partial completion: {summary}. Artifacts: {list}. Next: {next_steps}"
+      </on_partial>
+      <on_failed>
+        1. Keep tasks as [IN PROGRESS]
+        2. Add note: "Execution failed - see error details"
+        3. Report errors to user with suggested fixes
+        4. Include error recovery steps from subagent
+      </on_failed>
+      <on_blocked>
+        1. Keep tasks as [IN PROGRESS]
+        2. Add note: "Blocked - {blocker_reason}"
+        3. Report blocker to user with clear explanation
+        4. Suggest actions to unblock
+      </on_blocked>
+    </status_handling>
     <error_handling>
       If status-sync-manager.mark_completed fails:
       1. Log detailed error including which file failed to update
       2. Return error to user with actionable message
       3. Do NOT mark task as completed if atomic update failed
       4. Suggest manual status update if needed: "Status update failed. Please manually update TODO.md, state.json, and plan file to [COMPLETED]"
+      
+      If ProcessResults indicated errors:
+      1. Include error details in user summary
+      2. Categorize errors by type (timeout|validation|execution|resource|cycle)
+      3. Provide actionable recovery steps based on error type
+      4. Log errors for debugging with session_id correlation
     </error_handling>
   </stage>
 </workflow_execution>

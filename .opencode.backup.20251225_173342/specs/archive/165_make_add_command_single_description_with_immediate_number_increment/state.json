@@ -1,0 +1,19 @@
+{
+  "project_name": "make_add_command_single_description_with_immediate_number_increment",
+  "project_number": 165,
+  "type": "standards",
+  "phase": "research",
+  "reports": [
+    "reports/research-001.md",
+    "reports/research-002.md"
+  ],
+  "plans": [],
+  "summaries": [
+    "summaries/research-summary.md"
+  ],
+  "status": "researched",
+  "created": "2025-12-24T00:00:00Z",
+  "started": "2025-12-24T12:45:00Z",
+  "research_completed": "2025-12-24T13:15:00Z",
+  "last_updated": "2025-12-24T13:15:00Z"
+}

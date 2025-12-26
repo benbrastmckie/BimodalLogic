@@ -29,6 +29,7 @@ Context Loaded:
 @context/common/standards/commands.md
 @context/common/standards/plan.md
 @context/common/standards/tasks.md
+@context/common/standards/subagent-return-format.md
 @context/common/workflows/task-breakdown.md
 @context/common/system/state-schema.md
 @context/common/system/status-markers.md
@@ -74,21 +75,193 @@ Context Loaded:
   <stage id="4" name="CreatePlan">
     <action>Route to planner(s)</action>
     <process>
-      1. Single task: route to @subagents/planner directly.
-      2. Multiple tasks: route via @subagents/batch-task-orchestrator with planner subagent for each task; batch handoff includes normalized task list, language metadata per task, research links per task, and dependency hints.
-      3. For each task: generate `plans/implementation-XXX.md` (incremental) using plan standard.
-      4. Include Research Inputs section with citations or "none linked" for each plan.
-      5. Include `lean: true|false` in metadata and plan-level status marker `[IN PROGRESS]` with timestamps while phases start at `[NOT STARTED]`.
+      1. Generate unique session_id for tracking: `cmd_plan_{task_number}_{timestamp}_{random}`
+         - Format: task_number = single task or first in range
+         - timestamp = ISO8601 format (e.g., 20251226T143022)
+         - random = 6 character alphanumeric
+         - Example: `cmd_plan_202_20251226T143022_pqr456`
+      2. Single task: route to @subagents/planner directly with session_id.
+      3. Multiple tasks: route via @subagents/batch-task-orchestrator with planner subagent for each task; batch handoff includes normalized task list, language metadata per task, research links per task, dependency hints, and session_id.
+      4. For each task: generate `plans/implementation-XXX.md` (incremental) using plan standard.
+      5. Include Research Inputs section with citations or "none linked" for each plan.
+      6. Include `lean: true|false` in metadata and plan-level status marker `[IN PROGRESS]` with timestamps while phases start at `[NOT STARTED]`.
+      7. Store session_id for use in ReceiveResults stage
     </process>
+    <session_tracking>
+      Store the following for ReceiveResults:
+      - session_id: Unique identifier for this planning execution
+      - start_time: Timestamp when delegation began
+      - target_agent: planner or batch-task-orchestrator
+      - task_numbers: Task number(s) being planned
+    </session_tracking>
+  </stage>
+  <stage id="4.5" name="ReceiveResults">
+    <action>Wait for planner completion and receive results</action>
+    <process>
+      1. Poll for completion using session_id from CreatePlan stage
+      2. Set timeout: 3600 seconds (1 hour)
+      3. Receive return_value from planner subagent
+      4. Validate return format against @context/common/standards/subagent-return-format.md:
+         - Check required fields present (status, summary, artifacts, metadata)
+         - Validate status enum (completed|failed|partial|blocked)
+         - Validate metadata fields (session_id, duration_seconds, agent_type)
+         - Validate artifacts array structure (can be empty)
+      5. Handle timeout/error cases with appropriate recovery
+    </process>
+    <error_handling>
+      <on_timeout>
+        1. Log: "Planning timeout after 3600s for session {session_id}"
+        2. Attempt to retrieve partial plan results from artifacts
+        3. Mark task(s) as [IN PROGRESS] (not failed) to allow resume
+        4. Return to user: "Planning timed out after 1 hour. Check .opencode/specs/{project}/plans/ for partial plan. Task marked IN PROGRESS for resume."
+        5. Proceed to Postflight with partial data if available
+      </on_timeout>
+      <on_validation_error>
+        1. Log validation error with details: "Return format validation failed for session {session_id}: {error_details}"
+        2. Retry once with same parameters (may be transient parsing issue)
+        3. If retry validation fails:
+           a. Log: "Return format validation failed after retry"
+           b. Return error to user: "Planner returned invalid format. Check logs for details."
+           c. Suggest manual intervention: "Review .opencode/specs/{project}/plans/ for any plan artifacts created"
+        4. Do NOT proceed to ProcessResults if validation fails after retry
+      </on_validation_error>
+      <on_execution_error>
+        1. Log error details with session_id and error message
+        2. Check if error is recoverable (from errors[].recoverable field)
+        3. If recoverable, retry once with same parameters
+        4. If not recoverable or retry fails:
+           a. Extract error details from errors array
+           b. Return actionable error message to user with suggested fixes
+           c. Mark task(s) as [IN PROGRESS] to allow manual fix and retry
+        5. Do NOT proceed to ProcessResults if error not recovered
+      </on_execution_error>
+      <on_exception>
+        1. Catch any unexpected exceptions during receive/validation
+        2. Log full stack trace with session_id
+        3. Return graceful error: "Unexpected error receiving planner results. Session: {session_id}"
+        4. Provide debug info: "Check orchestrator logs for stack trace"
+        5. Mark task(s) as [IN PROGRESS] to preserve work and allow investigation
+      </on_exception>
+    </error_handling>
+    <timeout_monitoring>
+      - Start timeout timer when entering ReceiveResults stage
+      - Check elapsed time every 10 seconds
+      - If elapsed > 3600s, trigger on_timeout handler
+      - Allow graceful cancellation if user interrupts
+    </timeout_monitoring>
+    <validation_rules>
+      Follow @context/common/standards/subagent-return-format.md exactly:
+      1. return_value must be JSON object
+      2. status must be one of: completed, failed, partial, blocked
+      3. summary must be non-empty string (2-5 sentences, max 100 tokens)
+      4. artifacts must be array (can be empty)
+      5. Each artifact must have type and path fields (expect type="plan")
+      6. metadata must have session_id, duration_seconds, agent_type
+      7. errors must be array if present (can be empty)
+    </validation_rules>
+    <checkpoint>Planning results received, validated, and error-checked</checkpoint>
+  </stage>
+  <stage id="4.75" name="ProcessResults">
+    <action>Process validated return value and extract planning results</action>
+    <process>
+      1. Extract status from return_value.status
+      2. Extract summary from return_value.summary (plan overview)
+      3. Extract artifacts array from return_value.artifacts (implementation plans)
+      4. Extract metadata from return_value.metadata
+      5. Check errors array from return_value.errors:
+         - If non-empty, log all errors with details
+         - Include error information in user summary
+         - Determine if errors are blocking vs. non-blocking
+      6. Update command state with results:
+         - Store plan paths for state sync and TODO links
+         - Store plan summary for user reporting
+         - Store metadata for debugging
+         - Store final status (completed/failed/partial/blocked)
+      7. Prepare data for Postflight stage:
+         - Plan artifact paths for state.json and TODO links
+         - Summary for user report
+         - Status for TODO/plan/state updates
+         - Error information for user report
+    </process>
+    <status_interpretation>
+      - completed: Plan finished, all phases defined, mark [PLANNED]
+      - partial: Some planning done, mark [IN PROGRESS], report partial plan
+      - failed: Planning failed, mark [IN PROGRESS] with error details, suggest fixes
+      - blocked: Cannot proceed with planning, mark [IN PROGRESS], report blockers
+    </status_interpretation>
+    <artifact_processing>
+      For each artifact in artifacts array:
+      1. Validate path exists (log warning if missing, but don't fail)
+      2. Expect type="plan" for implementation plans
+      3. Store plan path for TODO link and state.json sync
+      4. Prepare for git staging (will be handled by git-workflow-manager)
+    </artifact_processing>
+    <checkpoint>Planning results processed and ready for Postflight sync</checkpoint>
   </stage>
   <stage id="5" name="Postflight">
     <action>Link and sync</action>
     <process>
-      1. Use @subagents/specialists/status-sync-manager to atomically mark TODO, state.json, project state.json, and plan file to [PLANNED] status with **Completed** date for each task; add plan link to TODO and brief summary; keep metadata intact.
-      2. Update project state (phase: planning, status `planned`) with plan path and timestamps for each task; avoid creating extra subdirs.
-      3. Mark plan file header with [PLANNED] status and **Completed** timestamp for each plan.
-      4. Return plan paths and next steps for all tasks.
+      1. Check final status from ProcessResults stage (completed|partial|failed|blocked)
+      2. Route to appropriate status sync operation based on final status:
+         - If status = completed: Mark as [PLANNED]
+         - If status = partial|failed|blocked: Keep status as [IN PROGRESS] with note
+      3. For completed status, use @subagents/specialists/status-sync-manager to atomically mark TODO, state.json, project state.json, and plan file to [PLANNED] status with **Completed** date for each task; add plan link to TODO and brief summary; keep metadata intact.
+      4. For partial/failed/blocked status:
+         - Ensure TODO remains [IN PROGRESS]
+         - Add note to task with status reason
+         - Include error details or next steps from planner return
+         - Link any partial plan artifacts created
+      5. Update project state (phase: planning, status) with plan path and timestamps for each task; avoid creating extra subdirs.
+      6. Mark plan file header with appropriate status and timestamp for each plan.
+      7. Return concise summary including:
+         - Final status (completed|partial|failed|blocked)
+         - Plan artifact paths (from artifacts array)
+         - Plan overview (from summary field)
+         - TODO/state sync status
+         - Error information if any
+         - Next steps from planner return if provided
     </process>
+    <status_handling>
+      <on_completed>
+        1. Mark all tasks as [PLANNED] with timestamp
+        2. Link plans in TODO
+        3. Mark plan file header with [PLANNED] and **Completed** timestamp
+        4. Update state.json with plan paths
+        5. Report success to user with plan summary
+      </on_completed>
+      <on_partial>
+        1. Keep tasks as [IN PROGRESS]
+        2. Add note: "Partial plan - see plans/ for details"
+        3. Link partial plans if created
+        4. Mark plan file header with [IN PROGRESS]
+        5. Report to user: "Partial planning: {summary}. Plans: {list}. Next: {next_steps}"
+      </on_partial>
+      <on_failed>
+        1. Keep tasks as [IN PROGRESS]
+        2. Add note: "Planning failed - see error details"
+        3. Report errors to user with suggested fixes
+        4. Include error recovery steps from planner
+      </on_failed>
+      <on_blocked>
+        1. Keep tasks as [IN PROGRESS]
+        2. Add note: "Planning blocked - {blocker_reason}"
+        3. Report blocker to user with clear explanation
+        4. Suggest actions to unblock planning (e.g., run /research first)
+      </on_blocked>
+    </status_handling>
+    <error_handling>
+      If status-sync-manager fails:
+      1. Log detailed error including which file failed to update
+      2. Return error to user with actionable message
+      3. Do NOT mark task as planned if atomic update failed
+      4. Suggest manual status update if needed
+      
+      If ProcessResults indicated errors:
+      1. Include error details in user summary
+      2. Categorize errors by type (timeout|validation|execution|resource)
+      3. Provide actionable recovery steps based on error type
+      4. Log errors for debugging with session_id correlation
+    </error_handling>
   </stage>
 </workflow_execution>
 

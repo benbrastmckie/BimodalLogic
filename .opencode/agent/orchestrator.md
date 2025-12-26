@@ -168,11 +168,72 @@ tools:
     <action>Route request to appropriate specialized agent</action>
     <process>
       1. Select primary agent based on workflow type
-      2. Prepare routing message with context references
-      3. Include artifact organization instructions
-      4. Specify expected output format (reference + summary)
-      5. Execute routing with appropriate context level
+      2. Check for delegation cycles and depth limits before routing
+      3. Generate unique session_id if not provided
+      4. Register delegation in delegation registry
+      5. Prepare routing message with context references
+      6. Include artifact organization instructions
+      7. Specify expected output format (reference + summary)
+      8. Add delegation context to routing message (including session_id)
+      9. Execute routing with appropriate context level
+      10. Store session_id for result correlation
     </process>
+    <cycle_prevention>
+      <max_delegation_depth>3</max_delegation_depth>
+      <delegation_tracking>
+        Before routing to agent:
+        1. Check if delegation_depth parameter provided (default: 0)
+        2. Check if delegation_path parameter provided (default: [])
+        3. If target agent already in delegation_path:
+           → ERROR: "Cycle detected: {delegation_path} → {target_agent}"
+           → Return error to caller with full delegation path
+           → Do NOT route to agent
+        4. If delegation_depth >= max_delegation_depth (3):
+           → ERROR: "Max delegation depth ({max_delegation_depth}) exceeded"
+           → Return error to caller with current path
+           → Do NOT route to agent
+        5. If checks pass:
+           a. Append orchestrator to delegation_path if not already present
+           b. Append target agent to delegation_path
+           c. Increment delegation_depth
+           d. Pass updated delegation context to target agent
+      </delegation_tracking>
+      <delegation_context>
+        Pass to all routed agents:
+        - delegation_depth: Current depth in delegation chain (incremented)
+        - delegation_path: Array of agent names in chain (appended)
+        - session_id: Unique identifier for tracking this delegation
+        
+        Example:
+        {
+          "delegation_depth": 1,
+          "delegation_path": ["orchestrator", "task-executor"],
+          "session_id": "cmd_implement_191_20251226T143022_abc123"
+        }
+      </delegation_context>
+      <error_handling>
+        <on_cycle_detected>
+          1. Log full delegation path: "Delegation cycle detected: {path}"
+          2. Return error to caller:
+             - error_type: "cycle"
+             - error_message: "Cannot delegate to {agent} - would create cycle: {path}"
+             - error_code: "DELEGATION_CYCLE"
+             - recoverable: false
+          3. Suggest refactoring: "Consider refactoring workflow to eliminate circular delegation"
+          4. Do NOT execute routing
+        </on_cycle_detected>
+        <on_max_depth_exceeded>
+          1. Log depth info: "Max delegation depth exceeded: {depth} >= {max_depth}"
+          2. Return error to caller:
+             - error_type: "delegation_depth"
+             - error_message: "Delegation depth limit ({max_depth}) reached: {path}"
+             - error_code: "MAX_DEPTH_EXCEEDED"
+             - recoverable: false
+          3. Suggest simplification: "Simplify workflow or increase max_delegation_depth"
+          4. Do NOT execute routing
+        </on_max_depth_exceeded>
+      </error_handling>
+    </cycle_prevention>
     <routing_patterns>
       <route to="@subagents/reviewer" when="review_workflow">
         <context_level>Level 2</context_level>
@@ -181,12 +242,15 @@ tools:
           - Repository scope
           - Code standards (core/standards/)
           - Project state (specs/state.json)
+          - Delegation context (depth, path, session_id)
         </pass_data>
         <expected_return>
+          - Return format following @context/common/standards/subagent-return-format.md
           - Analysis report reference (.opencode/specs/NNN_project/reports/)
           - Review report reference
           - TODO.md updates
           - Brief summary of findings
+          - Delegation metadata (depth, path)
         </expected_return>
       </route>
       
@@ -197,11 +261,14 @@ tools:
           - Research scope
           - Domain context (domain/, project/)
           - Available tools and resources
+          - Delegation context (depth, path, session_id)
         </pass_data>
         <expected_return>
+          - Return format following @context/common/standards/subagent-return-format.md
           - Research report reference (.opencode/specs/NNN_project/reports/)
           - Key findings summary
           - Relevant resources list
+          - Delegation metadata (depth, path)
         </expected_return>
       </route>
       
@@ -212,12 +279,15 @@ tools:
           - Research reports (if available)
           - Process guides (core/processes/)
           - Templates (core/templates/)
+          - Delegation context (depth, path, session_id)
         </pass_data>
         <expected_return>
+          - Return format following @context/common/standards/subagent-return-format.md
           - Implementation plan reference (.opencode/specs/NNN_project/plans/)
           - Complexity assessment
           - Dependency list
           - Brief plan summary
+          - Delegation metadata (depth, path)
         </expected_return>
       </route>
       
@@ -228,12 +298,15 @@ tools:
           - Domain knowledge (domain/, project/)
           - Patterns (core/patterns/)
           - Standards (core/standards/)
+          - Delegation context (depth, path, session_id)
         </pass_data>
         <expected_return>
+          - Return format following @context/common/standards/subagent-return-format.md
           - Implemented source files
           - Implementation summary
           - Test status
           - Documentation updates needed
+          - Delegation metadata (depth, path)
         </expected_return>
       </route>
       
@@ -243,11 +316,14 @@ tools:
           - File(s) to refactor
           - Style guides (core/standards/)
           - Patterns (core/patterns/)
+          - Delegation context (depth, path, session_id)
         </pass_data>
         <expected_return>
+          - Return format following @context/common/standards/subagent-return-format.md
           - Refactored code
           - Refactoring report reference
           - Summary of improvements
+          - Delegation metadata (depth, path)
         </expected_return>
       </route>
       
@@ -257,11 +333,14 @@ tools:
           - Documentation scope
           - Documentation standards (core/standards/documentation-standards.md)
           - Recent changes/implementations
+          - Delegation context (depth, path, session_id)
         </pass_data>
         <expected_return>
+          - Return format following @context/common/standards/subagent-return-format.md
           - Updated documentation files
           - Documentation summary
           - Completeness check
+          - Delegation metadata (depth, path)
         </expected_return>
       </route>
       
@@ -272,11 +351,14 @@ tools:
           - Specification
           - Templates (context/builder-templates/)
           - Existing agents/commands (if modifying)
+          - Delegation context (depth, path, session_id)
         </pass_data>
         <expected_return>
+          - Return format following @context/common/standards/subagent-return-format.md
           - Created/modified agent or command file
           - Summary of changes
           - Testing recommendations
+          - Delegation metadata (depth, path)
         </expected_return>
       </route>
     </routing_patterns>
@@ -286,12 +368,84 @@ tools:
   <stage id="4" name="MonitorExecution">
     <action>Monitor agent execution and artifact creation</action>
     <process>
-      1. Track agent progress
-      2. Ensure artifacts are created in correct locations
-      3. Verify artifact organization (reports/, plans/, summaries/)
-      4. Confirm state files are updated
-      5. Validate output format (reference + summary)
+      1. Register delegation in delegation registry
+      2. Track agent progress with timeout monitoring
+      3. Ensure artifacts are created in correct locations
+      4. Verify artifact organization (reports/, plans/, summaries/)
+      5. Confirm state files are updated
+      6. Validate output format (reference + summary)
+      7. Clean up delegation registry on completion or timeout
     </process>
+    <delegation_registry>
+      <structure>
+        In-memory map: session_id → delegation_info
+        {
+          "cmd_implement_191_20251226T143022_abc123": {
+            "command": "implement",
+            "subagent": "task-executor",
+            "task_numbers": [191],
+            "start_time": "2025-12-26T14:30:22Z",
+            "timeout": 3600,
+            "status": "running",
+            "delegation_depth": 1,
+            "delegation_path": ["orchestrator", "task-executor"]
+          }
+        }
+      </structure>
+      
+      <registration>
+        On route to subagent (stage 3):
+        1. Generate or use provided session_id
+        2. Create delegation_info record with:
+           - command: Command that initiated delegation (implement/research/plan)
+           - subagent: Target agent name
+           - task_numbers: Task number(s) being executed
+           - start_time: ISO8601 timestamp
+           - timeout: Maximum execution time (default: 3600 seconds)
+           - status: "running"
+           - delegation_depth: Current depth in chain
+           - delegation_path: Full delegation chain
+        3. Add to in-memory registry
+        4. Log registration: "Registered delegation {session_id} → {subagent}"
+      </registration>
+      
+      <monitoring>
+        During execution (stage 4):
+        1. Periodically check registry for timed-out delegations
+        2. For each entry, calculate elapsed = now - start_time
+        3. If elapsed > timeout:
+           a. Mark status as "timed_out"
+           b. Log timeout: "Delegation {session_id} timed out after {timeout}s"
+           c. Attempt to retrieve partial results if available
+           d. Return timeout error to waiting command
+        4. Check interval: every 10 seconds
+      </monitoring>
+      
+      <cleanup>
+        On subagent completion or timeout:
+        1. Validate return format against subagent-return-format.md
+        2. Route result to waiting command
+        3. Remove entry from registry
+        4. Log completion: "Delegation {session_id} completed in {duration}s"
+        
+        On timeout:
+        1. Mark as timed_out in registry
+        2. Return timeout error to command with session_id
+        3. Remove from registry after error returned
+        4. Log timeout details for debugging
+      </cleanup>
+      
+      <state_tracking>
+        Registry tracks:
+        - Active delegations (status: "running")
+        - Session correlation (session_id → delegation_info)
+        - Timeout enforcement (elapsed vs. timeout)
+        - Delegation chain for debugging
+        
+        Not persisted: Registry is in-memory only
+        Recovery: On orchestrator restart, active delegations are lost
+      </state_tracking>
+    </delegation_registry>
     <artifact_validation>
       <check_location>
         Artifacts must be in: .opencode/specs/NNN_project_name/

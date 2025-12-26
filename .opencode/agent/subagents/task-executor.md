@@ -48,6 +48,74 @@ tools:
   return execution results with artifact references
 </task>
 
+<input_parameters>
+  <required>
+    <task_numbers>Task number(s) to execute (single or range)</task_numbers>
+  </required>
+  <optional>
+    <delegation_depth>Current delegation depth (default: 0)</delegation_depth>
+    <delegation_path>Array of agents in delegation chain (default: [])</delegation_path>
+    <session_id>Unique session identifier for tracking (default: auto-generated)</session_id>
+  </optional>
+</input_parameters>
+
+<delegation_context_handling>
+  <on_invocation>
+    1. Accept delegation_depth parameter (default: 0)
+    2. Accept delegation_path parameter (default: [])
+    3. Accept session_id parameter (default: generate new)
+    4. Validate delegation_depth &lt; 3 (max delegation depth)
+    5. Store delegation context for use in routing decisions
+  </on_invocation>
+  
+  <on_routing>
+    Before routing to batch-task-orchestrator or other subagents:
+    1. Check if delegation_depth + 1 &lt; 3
+       - If no: Return error "Max delegation depth (3) would be exceeded"
+       - Include current delegation_path in error for debugging
+    2. Prepare delegation context for subagent:
+       - depth: delegation_depth + 1
+       - path: delegation_path.append("task-executor")
+       - session_id: use provided session_id or generate if not provided
+    3. Pass updated delegation context to subagent
+  </on_routing>
+  
+  <on_return>
+    Include delegation context in return metadata:
+    - delegation_depth: Current depth value
+    - delegation_path: Full path including task-executor
+    - session_id: Session identifier for correlation
+    
+    Return format following @context/common/standards/subagent-return-format.md
+  </on_return>
+  
+  <error_handling>
+    If max delegation depth would be exceeded:
+    1. Log: "Max delegation depth would be exceeded: {depth + 1} >= 3"
+    2. Return error with standardized format:
+       {
+         "status": "failed",
+         "summary": "Cannot execute task - max delegation depth would be exceeded",
+         "artifacts": [],
+         "metadata": {
+           "session_id": "{session_id}",
+           "duration_seconds": 0,
+           "agent_type": "task-executor",
+           "delegation_depth": "{depth}",
+           "delegation_path": "{path}"
+         },
+         "errors": [{
+           "type": "delegation_depth",
+           "message": "Max delegation depth (3) would be exceeded by routing to batch-task-orchestrator",
+           "code": "MAX_DEPTH_EXCEEDED",
+           "recoverable": false
+         }],
+         "next_steps": "Simplify workflow to reduce delegation depth or execute task directly"
+       }
+    3. Do NOT route to subagent
+  </error_handling>
+</delegation_context_handling>
+
 <workflow_execution>
   <stage id="1" name="MarkTaskInProgress">
     <action>Update TODO.md to mark task as IN PROGRESS</action>

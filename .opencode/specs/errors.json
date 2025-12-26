@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Build Errors Registry",
+  "description": "Centralized registry of all build errors across the ProofChecker project",
+  "type": "object",
+  "properties": {
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last update"
+    },
+    "error_count": {
+      "type": "integer",
+      "description": "Total number of active errors",
+      "minimum": 0
+    },
+    "errors": {
+      "type": "array",
+      "description": "Array of build errors",
+      "items": {
+        "type": "object",
+        "required": ["id", "file", "line", "message", "severity", "status"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique error identifier (file:line)"
+          },
+          "file": {
+            "type": "string",
+            "description": "File path relative to project root"
+          },
+          "line": {
+            "type": "integer",
+            "description": "Line number where error occurs",
+            "minimum": 1
+          },
+          "column": {
+            "type": "integer",
+            "description": "Column number (optional)",
+            "minimum": 1
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message from compiler"
+          },
+          "error_code": {
+            "type": "string",
+            "description": "Compiler error code (if available)"
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["error", "warning", "info"],
+            "description": "Error severity level"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "type_error",
+              "name_error",
+              "syntax_error",
+              "import_error",
+              "tactic_error",
+              "proof_incomplete",
+              "other"
+            ],
+            "description": "Error category for grouping"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "resolved", "blocked", "deferred"],
+            "description": "Current error status"
+          },
+          "first_seen": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When error was first detected"
+          },
+          "last_seen": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When error was last detected"
+          },
+          "blocked_by": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Error IDs that block this error"
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Error IDs blocked by this error"
+          },
+          "root_cause": {
+            "type": "string",
+            "description": "Root cause analysis"
+          },
+          "fix_approach": {
+            "type": "string",
+            "description": "Recommended fix approach"
+          },
+          "related_task": {
+            "type": "integer",
+            "description": "TODO.md task number for fix"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional notes"
+          }
+        }
+      }
+    },
+    "error_groups": {
+      "type": "array",
+      "description": "Grouped errors by root cause",
+      "items": {
+        "type": "object",
+        "required": ["group_id", "root_cause", "error_ids"],
+        "properties": {
+          "group_id": {
+            "type": "string",
+            "description": "Unique group identifier"
+          },
+          "root_cause": {
+            "type": "string",
+            "description": "Common root cause"
+          },
+          "error_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Error IDs in this group"
+          },
+          "fix_priority": {
+            "type": "string",
+            "enum": ["critical", "high", "medium", "low"],
+            "description": "Priority for fixing this group"
+          },
+          "estimated_effort": {
+            "type": "string",
+            "description": "Estimated effort to fix (e.g., '2 hours')"
+          }
+        }
+      }
+    }
+  },
+  "required": ["last_updated", "error_count", "errors"]
+}

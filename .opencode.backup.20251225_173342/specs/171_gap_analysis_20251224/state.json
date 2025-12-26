@@ -1,0 +1,37 @@
+{
+  "project_name": "gap_analysis_20251224",
+  "project_number": 171,
+  "type": "review",
+  "phase": "completed",
+  "status": "completed",
+  "created": "2024-12-24T12:00:00Z",
+  "started": "2024-12-24T12:00:00Z",
+  "completed": "2024-12-24T12:30:00Z",
+  "scope": "full_repository",
+  "reports": [
+    "reports/analysis-001.md"
+  ],
+  "summaries": [],
+  "artifacts": {
+    "analysis_report": "reports/analysis-001.md"
+  },
+  "findings": {
+    "total_gaps": 42,
+    "high_priority": 12,
+    "medium_priority": 18,
+    "low_priority": 12,
+    "total_effort_hours": {
+      "min": 423,
+      "max": 633
+    }
+  },
+  "categories": [
+    "Architecture & Design",
+    "Documentation",
+    "Testing & Quality",
+    "Commands & Automation",
+    "Lean Implementation",
+    "System & Tooling",
+    "Cross-Cutting Concerns"
+  ]
+}

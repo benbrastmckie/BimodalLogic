@@ -1,0 +1,436 @@
+{
+  "_schema_version": "1.0.0",
+  "_comment": "Main state tracking file for ProofChecker project. Links to specialized state files for archives and maintenance.",
+  "_last_updated": "2025-12-26T01:05:00Z",
+  "next_project_number": 195,
+  "project_numbering": {
+    "min": 0,
+    "max": 999,
+    "policy": "increment_modulo_1000",
+    "_comment": "Project numbers wrap around to 000 after 999. Ensure old projects are archived before reuse."
+  },
+  "active_projects": [
+    {
+      "project_number": 169,
+      "project_name": "improve_task_command_to_protect_primary_agent_context_window",
+      "type": "implementation",
+      "phase": "completed",
+      "status": "completed",
+      "created": "2025-12-24T23:00:00Z",
+      "started": "2025-12-24",
+      "completed": "2025-12-24T23:59:59Z",
+      "last_updated": "2025-12-24T23:59:59Z"
+    },
+    {
+      "project_number": 170,
+      "project_name": "improve_maintenance_report_system_and_documentation",
+      "type": "implementation",
+      "phase": "research_completed",
+      "status": "researched",
+      "created": "2025-12-24T23:30:00Z",
+      "started": "2025-12-24",
+      "completed": "2025-12-24",
+      "last_updated": "2025-12-24"
+    },
+    {
+      "project_number": 171,
+      "project_name": "gap_analysis_20251224",
+      "type": "review",
+      "phase": "completed",
+      "status": "completed",
+      "created": "2024-12-24T12:00:00Z",
+      "started": "2024-12-24T12:00:00Z",
+      "completed": "2024-12-24T12:30:00Z",
+      "last_updated": "2024-12-24T12:30:00Z"
+    },
+    {
+      "project_number": 172,
+      "project_name": "documentation",
+      "type": "documentation",
+      "phase": "completed",
+      "status": "completed",
+      "created": "2025-12-24T12:30:00Z",
+      "started": "2025-12-24T12:30:00Z",
+      "completed": "2025-12-24",
+      "last_updated": "2025-12-24"
+    },
+    {
+      "project_number": 173,
+      "project_name": "integration_tests",
+      "type": "implementation",
+      "phase": "implementation",
+      "status": "blocked",
+      "created": "2025-12-24T12:30:00Z",
+      "started": "2025-12-24",
+      "blocked": "2025-12-25",
+      "last_updated": "2025-12-25"
+    },
+    {
+      "project_number": 174,
+      "project_name": "property_based_testing",
+      "type": "implementation",
+      "phase": "completed",
+      "status": "completed",
+      "created": "2025-12-24T12:30:00Z",
+      "started": "2025-12-25",
+      "completed": "2025-12-25",
+      "research_completed": "2025-12-24T23:30:00Z",
+      "planning_completed": "2025-12-24T23:59:59Z",
+      "last_updated": "2025-12-25"
+    },
+    {
+      "project_number": 183,
+      "project_name": "deduction_theorem_build_errors",
+      "type": "bugfix",
+      "phase": "implementation",
+      "status": "in_progress",
+      "created": "2025-12-25T16:05:00Z",
+      "started": "2025-12-25",
+      "research_completed": "2025-12-26T00:35:00Z",
+      "planning_completed": "2025-12-25T16:30:00Z",
+      "last_updated": "2025-12-26T00:55:00Z"
+    },
+    {
+      "project_number": 184,
+      "project_name": "truth_lean_build_error",
+      "type": "bugfix",
+      "phase": "blocked",
+      "status": "blocked",
+      "created": "2025-12-25T00:45:00Z",
+      "started": "2025-12-25",
+      "blocked": "2025-12-26",
+      "blocking_reason": "Proof requires structural induction on formulas (3-4 hours), not simple tactic fix. truth_at recursively defined by pattern matching prevents formula substitution. Multiple rewrite/cast/transport approaches failed.",
+      "planning_completed": "2025-12-26",
+      "last_updated": "2025-12-26",
+      "plan_path": ".opencode/specs/184_truth_lean_build_error/plans/implementation-001.md"
+    },
+    {
+      "project_number": 189,
+      "project_name": "research_divide_flag",
+      "type": "research",
+      "phase": "planning",
+      "status": "in_progress",
+      "research_mode": "standard",
+      "created": "2025-12-25T23:15:00Z",
+      "started": "2025-12-26",
+      "research_completed": "2025-12-25",
+      "last_updated": "2025-12-26"
+    },
+    {
+      "project_number": 190,
+      "project_name": "improve_maintenance_md_documentation_structure_and_content",
+      "type": "documentation",
+      "phase": "completed",
+      "status": "completed",
+      "created": "2025-12-25T16:21:00Z",
+      "started": "2025-12-26",
+      "completed": "2025-12-26",
+      "last_updated": "2025-12-26"
+    },
+    {
+      "project_number": 191,
+      "project_name": "fix_subagent_delegation_hang",
+      "type": "bugfix",
+      "phase": "planning",
+      "status": "planned",
+      "created": "2025-12-26T00:00:00Z",
+      "last_updated": "2025-12-26",
+      "started": "2025-12-26",
+      "planning_completed": "2025-12-26",
+      "plan_path": ".opencode/specs/191_fix_subagent_delegation_hang/plans/implementation-001.md"
+    }
+  ],
+  "completed_projects": [],
+  "recent_activities": [
+    {
+      "timestamp": "2025-12-26T01:25:00Z",
+      "activity": "Marked task 184 as BLOCKED: Investigation found proof requires structural induction (3-4 hours), not simple tactic fix. Updated TODO.md with detailed implementation strategy for future completion."
+    },
+    {
+      "timestamp": "2025-12-26T01:05:00Z",
+      "activity": "Created task 192: Fix GeneralizedNecessitation.lean termination proofs (2 errors)"
+    },
+    {
+      "timestamp": "2025-12-26T01:05:00Z",
+      "activity": "Created task 193: Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)"
+    },
+    {
+      "timestamp": "2025-12-26T01:05:00Z",
+      "activity": "Created task 194: Verify original task completion (tasks 183-184)"
+    },
+    {
+      "timestamp": "2025-12-26T00:55:00Z",
+      "activity": "Marked task 183 as IN PROGRESS: Starting implementation of DeductionTheorem.lean build error fixes"
+    },
+    {
+      "timestamp": "2025-12-25T01:00:00Z",
+      "activity": "Completed research for task 191: Subagent delegation hang issue - identified 6 root causes and documented comprehensive fix strategy"
+    },
+    {
+      "timestamp": "2025-12-26T00:45:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 183 (4 phases, 30-45 minutes estimated)"
+    },
+    {
+      "timestamp": "2025-12-26T00:45:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 184 (5 phases, 55 minutes estimated)"
+    },
+    {
+      "timestamp": "2025-12-26T00:30:00Z",
+      "activity": "Marked task 189 as RESEARCHED: Research completed successfully for --divide flag implementation (5-phase plan, 8-10 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-25T12:00:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 184 (5 phases, 55 minutes estimated)"
+    },
+    {
+      "timestamp": "2025-12-26T00:00:00Z",
+      "activity": "Created task 191: Fix subagent delegation hang issue in command workflows"
+    },
+    {
+      "timestamp": "2025-12-26T00:35:00Z",
+      "activity": "Completed research for task 183: DeductionTheorem.lean build errors - identified classical reasoning pattern issue and documented solution"
+    },
+    {
+      "timestamp": "2025-12-26T00:30:00Z",
+      "activity": "Marked task 189 as RESEARCHED: Research completed successfully for --divide flag implementation (5-phase plan, 8-10 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-26T00:31:10Z",
+      "activity": "Created implementation plan plans/implementation-002.md for project 190 (6 phases, 2 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-26T00:26:00Z",
+      "activity": "Created task 190: Improve MAINTENANCE.md documentation structure and content"
+    },
+    {
+      "timestamp": "2025-12-25T16:21:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 190 (8 phases, 8 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-25T16:15:00Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 177 (4 phases, 8-12 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-25T23:45:00Z",
+      "activity": "Completed tasks 186-188: Refactored /review command to be configuration-driven, reading update instructions from MAINTENANCE.md"
+    },
+    {
+      "timestamp": "2025-12-25T00:35:00Z",
+      "activity": "Completed task 182: Fixed /research status update bug - identified root cause and documented fix (orchestrator must call status-sync-manager in postflight)"
+    },
+    {
+      "timestamp": "2025-12-25T23:30:00Z",
+      "activity": "Completed research for task 189: --divide flag implementation for /research command (5 key findings, 3 recommendations, 8-10 hour implementation estimate)"
+    },
+    {
+      "timestamp": "2025-12-25T15:30:00Z",
+      "activity": "Completed research for task 183: DeductionTheorem.lean build errors - identified classical reasoning pattern issue and documented solution"
+    },
+    {
+      "timestamp": "2025-12-25T23:15:00Z",
+      "activity": "Created task 189: Add --divide flag to /research command for topic subdivision"
+    },
+    {
+      "timestamp": "2025-12-25T00:35:00Z",
+      "activity": "Completed task 182: Fixed /research status update bug - identified root cause and documented fix (orchestrator must call status-sync-manager in postflight)"
+    },
+    {
+      "timestamp": "2025-12-25T00:35:00Z",
+      "activity": "Marked task 177 as RESEARCHED: Research completed successfully (zero breaking changes found, enhancement opportunities documented)"
+    },
+    {
+      "timestamp": "2025-12-25T00:30:00Z",
+      "activity": "Marked task 173 as BLOCKED: Pre-existing build errors in DeductionTheorem.lean (3 errors) and Truth.lean (1 error) block test compilation. Implementation created 106 new tests (82% coverage) but cannot verify passing until core builds."
+    },
+    {
+      "timestamp": "2025-12-25T23:09:04Z",
+      "activity": "Created task 187: Refactor review.md workflow context to specify registry update workflow"
+    },
+    {
+      "timestamp": "2025-12-25T23:09:04Z",
+      "activity": "Created task 188: Refactor /review command to load review.md workflow context"
+    },
+    {
+      "timestamp": "2025-12-25T00:45:00Z",
+      "activity": "Created task 183: Fix DeductionTheorem.lean build errors (3 errors) - blocks task 173"
+    },
+    {
+      "timestamp": "2025-12-25T00:45:00Z",
+      "activity": "Created task 184: Fix Truth.lean build error (swap_past_future proof) - blocks task 173"
+    },
+    {
+      "timestamp": "2025-12-25T00:45:00Z",
+      "activity": "Created task 185: Fix integration test helper API mismatches - depends on 183, 184"
+    },
+    {
+      "timestamp": "2025-12-25T00:30:00Z",
+      "activity": "Marked task 173 as BLOCKED: Pre-existing build errors in DeductionTheorem.lean (3 errors) and Truth.lean (1 error) block test compilation. Implementation created 106 new tests (82% coverage) but cannot verify passing until core builds."
+    },
+    {
+      "timestamp": "2025-12-25T00:30:00Z",
+      "activity": "Added implementation summary summaries/implementation-summary-20251225.md for project 173 (106 new tests, 82% coverage achieved)"
+    },
+    {
+      "timestamp": "2025-12-25T00:15:00Z",
+      "activity": "Created task 182: Fix /research status update bug - tasks not marked RESEARCHED"
+    },
+    {
+      "timestamp": "2025-12-25T00:00:00Z",
+      "activity": "Marked task 174 as IN PROGRESS for implementation phase (planning completed 2025-12-24)"
+    },
+    {
+      "timestamp": "2025-12-25T00:00:00Z",
+      "activity": "Marked task 173 as IN PROGRESS for implementation phase (research completed 2025-12-24)"
+    },
+    {
+      "timestamp": "2025-12-24T23:59:59Z",
+      "activity": "Created implementation plan plans/implementation-001.md for project 174 (7 phases, 18-23 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-24T23:59:59Z",
+      "activity": "Created plan summary summaries/plan-summary.md for project 174"
+    },
+    {
+      "timestamp": "2025-12-24T23:59:59Z",
+      "activity": "Completed research for task 173: Integration testing for proof system and semantics"
+    },
+    {
+      "timestamp": "2025-12-24T23:59:59Z",
+      "activity": "Completed task 169: /implement command context window protection (95%+ reduction, 80+ files updated, 259 /task refs renamed)"
+    },
+    {
+      "timestamp": "2025-12-24T23:30:00Z",
+      "activity": "Completed research for project 174: Property-based testing frameworks for Lean 4 (Plausible recommended)"
+    },
+    {
+      "timestamp": "2025-12-24T13:00:00Z",
+      "activity": "Created plan summary summaries/plan-summary.md for project 172"
+    },
+    {
+      "timestamp": "2025-12-24T00:00:00Z",
+      "activity": "Started implementation for project 169: /implement command context window protection improvements"
+    },
+    {
+      "timestamp": "2025-12-24T23:30:00Z",
+      "activity": "Created research report reports/research-001.md for project 174"
+    },
+    {
+      "timestamp": "2025-12-24T23:30:00Z",
+      "activity": "Created research summary summaries/research-summary.md for project 174"
+    },
+    {
+      "timestamp": "2025-12-24T13:37:00Z",
+      "activity": "Completed task 172: API documentation analysis and centralized API reference generation (excellent 92% coverage)"
+    },
+    {
+      "timestamp": "2025-12-24T12:30:00Z",
+      "activity": "Created 9 new tasks from gap analysis (172-180): API docs, integration tests, property tests, CI/CD, proof search, examples, tutorial, benchmarks, coverage"
+    },
+    {
+      "timestamp": "2024-12-24T12:30:00Z",
+      "activity": "Completed comprehensive gap analysis (project 171): 42 gaps identified across 6 categories"
+    },
+    {
+      "timestamp": "2025-12-24T23:59:59Z",
+      "activity": "Revised implementation plan for task 169: Removed backward compatibility layers, implemented clean-break approach (v2)"
+    },
+    {
+      "timestamp": "2025-12-24T23:59:59Z",
+      "activity": "Created implementation plan for task 169: /task command context window protection improvements"
+    },
+    {
+      "timestamp": "2025-12-24T23:59:59Z",
+      "activity": "Created implementation plan plans/implementation-001.md for task 169 (8 phases, 6 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-24T23:59:59Z",
+      "activity": "Completed research for task 169: Context window protection and artifact management improvements"
+    },
+    {
+      "timestamp": "2025-12-24T23:59:00Z",
+      "activity": "Completed research for task 170: Maintenance report system improvements"
+    },
+    {
+      "timestamp": "2025-12-24T23:55:00Z",
+      "activity": "Started task 169: Improve /task command to protect primary agent context window"
+    },
+    {
+      "timestamp": "2025-12-24T23:50:00Z",
+      "activity": "Started task 170: Improve maintenance report system and documentation"
+    },
+    {
+      "timestamp": "2025-12-24T23:45:00Z",
+      "activity": "Revised task 169: Updated scope to include single/range task execution and simple/complex plan handling"
+    },
+    {
+      "timestamp": "2025-12-24T23:30:00Z",
+      "activity": "Created task 170: Improve maintenance report system and documentation"
+    },
+    {
+      "timestamp": "2025-12-24T23:00:00Z",
+      "activity": "Created task 169: Improve /task command to protect primary agent context window"
+    },
+    {
+      "timestamp": "2025-12-24T22:00:00Z",
+      "activity": "Maintenance operation: Archived 20 completed projects (155, 160, 161, 162, 163, 165, 166, 168 + 12 previously completed)"
+    },
+    {
+      "timestamp": "2025-12-24T22:00:00Z",
+      "activity": "Maintenance operation: Removed 11 completed/abandoned tasks from TODO.md (159, 155, 160-168)"
+    },
+    {
+      "timestamp": "2025-12-24T22:00:00Z",
+      "activity": "Maintenance operation: Moved 8 project directories to archive"
+    }
+  ],
+  "pending_tasks": [
+    {
+      "project_number": 191,
+      "title": "Fix subagent delegation hang issue in command workflows",
+      "status": "in_progress",
+      "created": "2025-12-26T00:00:00Z",
+      "started": "2025-12-26"
+    },
+    {
+      "project_number": 192,
+      "title": "Fix GeneralizedNecessitation.lean termination proofs (2 errors)",
+      "status": "not_started",
+      "created": "2025-12-26T01:05:00Z"
+    },
+    {
+      "project_number": 193,
+      "title": "Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)",
+      "status": "not_started",
+      "created": "2025-12-26T01:05:00Z"
+    },
+    {
+      "project_number": 194,
+      "title": "Verify original task completion (tasks 183-184)",
+      "status": "not_started",
+      "created": "2025-12-26T01:05:00Z"
+    }
+  ],
+  "maintenance_summary": {
+    "_comment": "Quick reference to maintenance status - full history in maintenance/state.json",
+    "last_maintenance": "2025-12-24T22:00:00Z",
+    "next_scheduled": "2026-01-22T00:00:00Z",
+    "maintenance_type": "comprehensive_todo_cleanup_and_archival",
+    "operations_count": 6,
+    "tasks_removed_total": 21,
+    "projects_archived_total": 20,
+    "health_trend": "stable_excellent"
+  },
+  "archive_summary": {
+    "_comment": "Quick reference to archived projects - full details in archive/state.json",
+    "total_archived": 20,
+    "last_archived": "2025-12-24T22:00:00Z",
+    "archive_location": ".opencode/specs/archive/",
+    "archive_state_file": ".opencode/specs/archive/state.json"
+  },
+  "schema_info": {
+    "version": "1.0.0",
+    "backward_compatible": true,
+    "extensible": true,
+    "_comment": "This schema supports backward compatibility. New fields are additive and optional."
+  }
+}
