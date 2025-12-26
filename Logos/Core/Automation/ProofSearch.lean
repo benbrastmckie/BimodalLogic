@@ -96,7 +96,7 @@ Full implementation would require extracting proof terms.
 -/
 abbrev SearchResult (_ : Context) (_ : Formula) := Bool
 
-/-- Cache key combines the current context and goal formula. */
+/-- Cache key combines the current context and goal formula. -/
 abbrev CacheKey := Context × Formula
 
 /-- Hash-based proof cache for memoization (stores success/failure). -/

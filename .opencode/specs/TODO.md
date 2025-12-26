@@ -4,9 +4,9 @@
 
 ## Overview
 
-- **Total Tasks:** 33
+- **Total Tasks:** 36
 - **Completed:** 2
-- **High Priority:** 10
+- **High Priority:** 13
 - **Medium Priority:** 9
 - **Low Priority:** 12
 
@@ -52,6 +52,62 @@
   - [ ] Documentation updated with subagent delegation patterns and error handling
   - [ ] Test cases added for delegation scenarios
 - **Impact**: Critical bug fix. Without working subagent delegation, most commands are unusable and the entire workflow system is broken. This blocks all development work that relies on /implement, /research, /plan, and other commands.
+
+### 192. Fix GeneralizedNecessitation.lean termination proofs (2 errors)
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Logos/Core/Theorems/GeneralizedNecessitation.lean
+- **Description**: Fix 2 termination proof errors in GeneralizedNecessitation.lean that are preventing compilation. These errors are blocking the build and need to be resolved to ensure the codebase compiles successfully.
+- **Acceptance Criteria**:
+  - [ ] Both termination proof errors in GeneralizedNecessitation.lean are fixed
+  - [ ] GeneralizedNecessitation.lean compiles successfully with lake build
+  - [ ] No new errors introduced
+  - [ ] Existing tests still pass
+  - [ ] Termination proofs are mathematically sound
+- **Impact**: Critical blocker for build. Fixing these errors will unblock compilation and allow the codebase to build successfully.
+
+### 193. Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Logos/Core/Semantics/Truth.lean
+- **Description**: Replace the sorry placeholder in the is_valid_swap_involution theorem with a complete proof. This theorem is currently admitted with sorry and needs a proper proof to ensure correctness and completeness of the Truth.lean module.
+- **Acceptance Criteria**:
+  - [ ] is_valid_swap_involution theorem has a complete proof (no sorry)
+  - [ ] Proof is mathematically sound and type-checks
+  - [ ] Truth.lean compiles successfully with lake build
+  - [ ] No new errors introduced
+  - [ ] Existing tests still pass
+- **Impact**: Improves completeness and correctness of the Truth.lean module by replacing a sorry placeholder with a proper proof, ensuring the swap involution property is formally verified.
+
+### 194. Verify original task completion (tasks 183-184)
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 183, 184
+- **Files Affected**:
+  - Logos/Core/Metalogic/DeductionTheorem.lean
+  - Logos/Core/Semantics/Truth.lean
+- **Description**: Verify that tasks 183 (Fix DeductionTheorem.lean build errors) and 184 (Fix Truth.lean build error) have been completed successfully. Confirm that all build errors are resolved, the codebase compiles, and all tests pass. This verification task ensures the original blockers are fully resolved before proceeding with dependent work.
+- **Acceptance Criteria**:
+  - [ ] Task 183 completion verified: DeductionTheorem.lean compiles with no errors
+  - [ ] Task 184 completion verified: Truth.lean compiles with no errors
+  - [ ] Full codebase builds successfully with lake build
+  - [ ] All existing tests pass with lake exe test
+  - [ ] No regressions introduced by the fixes
+  - [ ] Documentation updated if needed
+- **Impact**: Ensures that critical build blockers (tasks 183-184) are fully resolved and the codebase is in a stable, buildable state before proceeding with dependent work.
 
 ### 169. Improve /implement command to protect primary agent context window
 - **Effort**: 8-9 hours
@@ -183,28 +239,81 @@
 - **Impact**: Critical blocker for task 173. Fixing these errors will unblock compilation of 106 new integration tests and allow verification of 82% integration test coverage achievement.
 
 ### 184. Fix Truth.lean build error (swap_past_future proof)
-- **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Effort**: 4 hours (revised from 1 hour after investigation)
+- **Status**: [BLOCKED]
 - **Started**: 2025-12-25
-- **Completed**: 2025-12-26
+- **Blocked**: 2025-12-26
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: 173
 - **Dependencies**: None
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/184_truth_lean_build_error/reports/research-001.md]
+  - Investigation Summary: [.opencode/specs/184_truth_lean_build_error/summaries/implementation-summary-20251226.md]
 - **Plan**: [Implementation Plan](.opencode/specs/184_truth_lean_build_error/plans/implementation-001.md)
-- **Plan Summary**: 5-phase verification and fix plan (55 minutes). Current code has partial fix with buggy helper lemma. Phase 1: Verify error (5 min). Phase 2: Remove helper and apply research-recommended direct fix (10 min). Phase 3: Build downstream modules (15 min). Phase 4: Verify integration tests unblocked (10 min). Phase 5: Run tests and complete (15 min). Very low risk - simple proof fix following proven pattern.
+- **Blocking Reason**: Proof requires structural induction on formulas (3-4 hours), not simple tactic fix (55 min). Investigation found that truth_at is recursively defined by pattern matching, preventing simple formula substitution. Multiple rewrite/cast/transport approaches failed due to dependent type constraints. Full structural induction proof needed.
 - **Files Affected**:
-  - Logos/Core/Semantics/Truth.lean
-- **Description**: Fix pre-existing build error in Truth.lean line 632 (type mismatch in swap_past_future proof) that is blocking compilation of all test files including the new integration tests from task 173. This error prevents verification that the 106 new integration tests (82% coverage) actually compile and pass.
+  - Logos/Core/Semantics/Truth.lean (lines 625-635)
+- **Description**: Fix pre-existing build error in Truth.lean line 632 (`is_valid_swap_involution` theorem has type mismatch). The theorem attempts to prove `is_valid T φ` given `is_valid T φ.swap_past_future` using the involution `φ.swap_past_future.swap_past_future = φ`. Current code uses `simpa` which fails because `truth_at` is recursively defined by pattern matching on formulas, preventing direct formula substitution via equality.
+- **Implementation Strategy** (for future completion):
+  1. **Create helper lemma** `truth_at_swap_swap` proving equivalence by structural induction:
+     ```lean
+     theorem truth_at_swap_swap {F : TaskFrame T} (M : TaskModel F)
+         (τ : WorldHistory F) (t : T) (ht : τ.domain t) (φ : Formula) :
+         truth_at M τ t ht φ.swap_past_future.swap_past_future ↔ truth_at M τ t ht φ := by
+       induction φ with
+       | atom p => rfl  -- atom case: swap doesn't change atoms
+       | bot => rfl     -- bot case: swap doesn't change bot
+       | imp φ ψ ih_φ ih_ψ => 
+         -- Show: truth_at for (φ.swap.swap → ψ.swap.swap) ↔ truth_at for (φ → ψ)
+         -- Use IHs for φ and ψ
+         simp only [truth_at]
+         constructor <;> intro h <;> intro h_φ
+         · exact ih_ψ.mp (h (ih_φ.mpr h_φ))
+         · exact ih_ψ.mpr (h (ih_φ.mp h_φ))
+       | box φ ih => 
+         -- Show: (∀ σ hs, truth_at for φ.swap.swap) ↔ (∀ σ hs, truth_at for φ)
+         simp only [truth_at]
+         constructor <;> intro h σ hs
+         · exact ih.mp (h σ hs)
+         · exact ih.mpr (h σ hs)
+       | all_past φ ih => 
+         -- CRITICAL: swap changes all_past to all_future
+         -- Show: truth_at for (all_future φ.swap).swap ↔ truth_at for (all_past φ)
+         -- Note: (all_past φ).swap = all_future φ.swap
+         --       (all_future ψ).swap = all_past ψ.swap
+         -- So: (all_past φ).swap.swap = (all_future φ.swap).swap = all_past φ.swap.swap
+         simp only [truth_at, Formula.swap_temporal]
+         constructor <;> intro h s hs h_ord
+         · exact ih.mp (h s hs h_ord)
+         · exact ih.mpr (h s hs h_ord)
+       | all_future φ ih => 
+         -- Symmetric to all_past case
+         simp only [truth_at, Formula.swap_temporal]
+         constructor <;> intro h s hs h_ord
+         · exact ih.mp (h s hs h_ord)
+         · exact ih.mpr (h s hs h_ord)
+     ```
+  2. **Use helper in main theorem**:
+     ```lean
+     theorem is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_future) :
+         is_valid T φ := by
+       intro F M τ t ht
+       rw [← truth_at_swap_swap M τ t ht φ]
+       exact h F M τ t ht
+     ```
+  3. **Verify swap_temporal definition** aligns with proof (lines 205-213 in Formula.lean)
+  4. **Test with downstream uses** (line 1172 in Truth.lean uses this theorem)
+- **Temporary Workaround**: Accept `sorry` at line 632 and document in SORRY_REGISTRY.md until full proof is implemented
 - **Acceptance Criteria**:
-  - [ ] Line 632 type mismatch error fixed
-  - [ ] swap_past_future proof compiles successfully
+  - [ ] Helper lemma `truth_at_swap_swap` proven by structural induction
+  - [ ] Line 632 type mismatch error fixed using helper lemma
+  - [ ] is_valid_swap_involution theorem proven without sorry
   - [ ] Truth.lean compiles successfully with lake build
   - [ ] No new errors introduced
   - [ ] Existing tests still pass
-- **Impact**: Critical blocker for task 173. Fixing this error will unblock compilation of 106 new integration tests and allow verification of 82% integration test coverage achievement.
+  - [ ] SORRY_REGISTRY.md updated if sorry is used temporarily
+- **Impact**: Critical blocker for task 173. This is one of three blockers (along with DeductionTheorem.lean errors in task 183 and integration test API mismatches in task 185) preventing compilation of 106 new integration tests.
 
 ### 185. Fix integration test helper API mismatches
 - **Effort**: 1 hour

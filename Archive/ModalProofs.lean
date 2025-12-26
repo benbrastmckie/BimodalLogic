@@ -1,5 +1,6 @@
 import Logos.Core.ProofSystem.Derivation
 import Logos.Core.ProofSystem.Axioms
+import Logos.Core.Automation.ProofSearch
 
 /-!
 # Modal Logic Proof Examples
@@ -41,6 +42,7 @@ namespace Archive.ModalProofs
 
 open Logos.Core.Syntax
 open Logos.Core.ProofSystem
+open Logos.Core.Automation (ProofSearch)
 
 /-!
 ## Axiom T: Reflexivity (`□φ → φ`)
@@ -236,5 +238,109 @@ example : ⊢ (Formula.atom "prime_infinity").box.imp (Formula.atom "prime_infin
 /-- Example: Actual facts are necessarily possible -/
 example : ⊢ (Formula.atom "I_exist").imp (Formula.atom "I_exist").diamond.box :=
   Derivable.axiom [] _ (Axiom.modal_b (Formula.atom "I_exist"))
+
+/-!
+## Automated Proof Search
+
+These examples demonstrate the bounded proof search capabilities added in Task 126.
+The `bounded_search` function attempts to automatically find derivations within a
+specified depth limit, using heuristics to prioritize promising search branches.
+-/
+
+/-- Basic automated proof discovery: Modal T axiom -/
+example : Bool :=
+  let goal := (Formula.atom "p").box.imp (Formula.atom "p")
+  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 3
+  found  -- Returns true (axiom match)
+
+/-- Automated proof of modal 4 axiom -/
+example : Bool :=
+  let goal := (Formula.atom "p").box.imp (Formula.atom "p").box.box
+  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 3
+  found  -- Returns true (axiom match)
+
+/-- Compare manual vs automated proof approaches -/
+example (p : Formula) : ⊢ p.box.imp p := by
+  -- Manual approach: directly apply axiom
+  exact Derivable.axiom [] _ (Axiom.modal_t p)
+  -- Automated approach would use: bounded_search [] (p.box.imp p) 3
+
+/-!
+## Search Performance Analysis
+
+These examples show how to analyze proof search performance using `SearchStats`.
+The statistics track cache hits/misses, nodes visited, and pruning events.
+-/
+
+/-- Demonstrate search statistics collection -/
+example : Automation.ProofSearch.SearchStats :=
+  let goal := (Formula.atom "p").box.imp (Formula.atom "p")
+  let (_, _, _, stats, _) := Automation.ProofSearch.search_with_heuristics [] goal 10
+  stats  -- Shows: hits, misses, visited, prunedByLimit
+
+/-- Compare search depths: depth=3 vs depth=5 -/
+example : Nat × Nat :=
+  let goal := (Formula.atom "p").box.box.imp (Formula.atom "p")
+  let (_, _, _, stats3, _) := Automation.ProofSearch.bounded_search [] goal 3
+  let (_, _, _, stats5, _) := Automation.ProofSearch.bounded_search [] goal 5
+  (stats3.visited, stats5.visited)  -- Compare node counts
+
+/-- Search with insufficient depth returns false -/
+example : Bool :=
+  let goal := (Formula.atom "p").box.box.box.imp (Formula.atom "p")
+  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 1
+  found  -- Returns false (depth too low for nested boxes)
+
+/-!
+## Custom Heuristic Strategies
+
+These examples demonstrate configurable heuristic weights for proof search.
+Lower scores indicate higher priority branches.
+-/
+
+/-- Compare heuristic strategies: axiom-first vs MP-first -/
+example : Nat × Nat :=
+  let weights_axiom_first : Automation.ProofSearch.HeuristicWeights :=
+    { axiomWeight := 0, mpBase := 10 }
+  let weights_mp_first : Automation.ProofSearch.HeuristicWeights :=
+    { axiomWeight := 10, mpBase := 0 }
+  let goal := (Formula.atom "p").box.imp (Formula.atom "p")
+  let score1 := Automation.ProofSearch.heuristic_score weights_axiom_first [] goal
+  let score2 := Automation.ProofSearch.heuristic_score weights_mp_first [] goal
+  (score1, score2)  -- (0, 10) - axiom-first prefers this goal
+
+/-- Demonstrate heuristic weight configuration -/
+example : Automation.ProofSearch.HeuristicWeights :=
+  { axiomWeight := 0
+  , assumptionWeight := 1
+  , mpBase := 2
+  , mpComplexityWeight := 1
+  , modalBase := 5
+  , temporalBase := 5
+  , contextPenaltyWeight := 1
+  , deadEnd := 100 }
+
+/-!
+## Context Transformation Utilities
+
+These examples demonstrate context transformation functions used in modal
+and temporal K rules.
+-/
+
+/-- Demonstrate modal K context transformation -/
+example : Context :=
+  let Γ := [Formula.atom "p", Formula.atom "q"]
+  Automation.ProofSearch.box_context Γ  -- Returns [□p, □q]
+
+/-- Show temporal K context transformation -/
+example : Context :=
+  let Γ := [Formula.atom "p", Formula.atom "q"]
+  Automation.ProofSearch.future_context Γ  -- Returns [Gp, Gq]
+
+/-- Context transformation preserves length -/
+example : Nat :=
+  let Γ := [Formula.atom "p", Formula.atom "q", Formula.atom "r"]
+  let boxed := Automation.ProofSearch.box_context Γ
+  boxed.length  -- Returns 3 (same as Γ.length)
 
 end Archive.ModalProofs

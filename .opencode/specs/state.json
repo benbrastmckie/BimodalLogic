@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker project. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-26T00:55:00Z",
-  "next_project_number": 192,
+  "_last_updated": "2025-12-26T01:05:00Z",
+  "next_project_number": 195,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -94,12 +94,15 @@
       "project_number": 184,
       "project_name": "truth_lean_build_error",
       "type": "bugfix",
-      "phase": "planning",
-      "status": "planned",
+      "phase": "blocked",
+      "status": "blocked",
       "created": "2025-12-25T00:45:00Z",
       "started": "2025-12-25",
+      "blocked": "2025-12-26",
+      "blocking_reason": "Proof requires structural induction on formulas (3-4 hours), not simple tactic fix. truth_at recursively defined by pattern matching prevents formula substitution. Multiple rewrite/cast/transport approaches failed.",
       "planning_completed": "2025-12-26",
-      "last_updated": "2025-12-26"
+      "last_updated": "2025-12-26",
+      "plan_path": ".opencode/specs/184_truth_lean_build_error/plans/implementation-001.md"
     },
     {
       "project_number": 189,
@@ -139,6 +142,22 @@
   ],
   "completed_projects": [],
   "recent_activities": [
+    {
+      "timestamp": "2025-12-26T01:25:00Z",
+      "activity": "Marked task 184 as BLOCKED: Investigation found proof requires structural induction (3-4 hours), not simple tactic fix. Updated TODO.md with detailed implementation strategy for future completion."
+    },
+    {
+      "timestamp": "2025-12-26T01:05:00Z",
+      "activity": "Created task 192: Fix GeneralizedNecessitation.lean termination proofs (2 errors)"
+    },
+    {
+      "timestamp": "2025-12-26T01:05:00Z",
+      "activity": "Created task 193: Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)"
+    },
+    {
+      "timestamp": "2025-12-26T01:05:00Z",
+      "activity": "Created task 194: Verify original task completion (tasks 183-184)"
+    },
     {
       "timestamp": "2025-12-26T00:55:00Z",
       "activity": "Marked task 183 as IN PROGRESS: Starting implementation of DeductionTheorem.lean build error fixes"
@@ -371,6 +390,24 @@
       "status": "in_progress",
       "created": "2025-12-26T00:00:00Z",
       "started": "2025-12-26"
+    },
+    {
+      "project_number": 192,
+      "title": "Fix GeneralizedNecessitation.lean termination proofs (2 errors)",
+      "status": "not_started",
+      "created": "2025-12-26T01:05:00Z"
+    },
+    {
+      "project_number": 193,
+      "title": "Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)",
+      "status": "not_started",
+      "created": "2025-12-26T01:05:00Z"
+    },
+    {
+      "project_number": 194,
+      "title": "Verify original task completion (tasks 183-184)",
+      "status": "not_started",
+      "created": "2025-12-26T01:05:00Z"
     }
   ],
   "maintenance_summary": {

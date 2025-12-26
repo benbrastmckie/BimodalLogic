@@ -43,6 +43,8 @@ open Logos.Core.Syntax
 open Logos.Core.ProofSystem
 open Logos.Core.Theorems.Combinators
 
+noncomputable section
+
 /-!
 ## Helper Lemmas
 -/
@@ -314,7 +316,7 @@ def raa (A B : Formula) : ⊢ A.imp (A.neg.imp B) := by
 
   exact DerivationTree.modus_ponens [] _ _ step3 a_to_neg_a_to_bot
 
-/--
+/-
 Ex Falso Quodlibet (axiomatic): `⊢ ⊥ → φ`.
 
 From absurdity (`⊥`), anything can be derived. This is now an axiom (EFQ).
@@ -1609,7 +1611,7 @@ then from A ∨ B we can derive C.
 **Dependencies**: `deduction_theorem`, `DerivationTree.weakening`, `classical_merge`,
                `b_combinator`, `DerivationTree.assumption`
 -/
-def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: Γ) ⊢ C) :
+noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: Γ) ⊢ C) :
     ((A.or B) :: Γ) ⊢ C := by
   -- Apply deduction theorem to get Γ ⊢ A → C
   have ac : Γ ⊢ A.imp C :=
@@ -1667,6 +1669,6 @@ def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: Γ) �
 
   exact DerivationTree.modus_ponens _ _ _ step2 nac
 
-
+end -- noncomputable section
 
 end Logos.Core.Theorems.Propositional

@@ -1,9 +1,8 @@
 # Implementation Plan: Fix Truth.lean Build Error (swap_past_future proof)
 
 - **Task**: 184 - Fix Truth.lean build error (swap_past_future proof)
-- **Status**: [PLANNED]
-- **Started**: 2025-12-25
-- **Completed**: 2025-12-26
+- **Status**: [IN PROGRESS]
+- **Started**: 2025-12-26
 - **Effort**: 1 hour
 - **Priority**: High
 - **Dependencies**: None
@@ -51,7 +50,7 @@ Fix the build error in `Logos/Core/Semantics/Truth.lean` at line 636. The curren
 
 ## Implementation Phases
 
-### Phase 1: Verification [NOT STARTED]
+### Phase 1: Verification [IN PROGRESS]
 
 - **Goal:** Verify current build error and understand the exact failure mode
 - **Tasks:**

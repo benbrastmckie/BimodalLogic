@@ -6,6 +6,41 @@ This document provides comprehensive examples of modal, temporal, and bimodal re
 
 ## 1. Modal Logic Examples
 
+### Automated Proof Search
+
+The ProofSearch module provides automated proof discovery capabilities for modal logic formulas.
+See `Logos/Core/Automation/ProofSearch.lean` for the full API.
+
+```lean
+import Logos.Core.Automation.ProofSearch
+
+/-- Automated proof of modal T axiom: □φ → φ -/
+example : Bool :=
+  let goal := (Formula.atom "p").box.imp (Formula.atom "p")
+  let (found, _, _, _, _) := ProofSearch.bounded_search [] goal 3
+  found  -- Returns true (axiom match)
+
+/-- Search with performance statistics -/
+example : ProofSearch.SearchStats :=
+  let goal := (Formula.atom "p").box.imp (Formula.atom "p")
+  let (_, _, _, stats, _) := ProofSearch.search_with_heuristics [] goal 10
+  stats  -- Shows: hits, misses, visited, prunedByLimit
+
+/-- Custom heuristic strategies -/
+example : Nat × Nat :=
+  let weights_axiom_first : ProofSearch.HeuristicWeights :=
+    { axiomWeight := 0, mpBase := 10 }
+  let weights_mp_first : ProofSearch.HeuristicWeights :=
+    { axiomWeight := 10, mpBase := 0 }
+  let goal := (Formula.atom "p").box.imp (Formula.atom "p")
+  let score1 := ProofSearch.heuristic_score weights_axiom_first [] goal
+  let score2 := ProofSearch.heuristic_score weights_mp_first [] goal
+  (score1, score2)  -- (0, 10) - axiom-first prefers this goal
+```
+
+For complete examples, see `Archive/ModalProofs.lean` (sections: Automated Proof Search, 
+Search Performance Analysis, Custom Heuristic Strategies, Context Transformation Utilities).
+
 ### S5 Axiom Proofs
 
 #### Axiom MT: `□φ → φ` (Reflexivity)
@@ -97,6 +132,37 @@ theorem diamond_box_collapse (P : Formula) :
 ```
 
 ## 2. Temporal Logic Examples
+
+### Automated Temporal Search
+
+Temporal formulas can be discovered automatically using proof search. Temporal formulas
+typically require higher search depths than modal formulas due to operator complexity.
+
+```lean
+import Logos.Core.Automation.ProofSearch
+
+/-- Automated proof of temporal 4 axiom: Gφ → GGφ -/
+example : Bool :=
+  let goal := (Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future
+  let (found, _, _, _, _) := ProofSearch.bounded_search [] goal 5
+  found  -- Returns true (axiom match)
+
+/-- Temporal context transformations -/
+example : Context :=
+  let Γ := [Formula.atom "p", Formula.atom "q"]
+  ProofSearch.future_context Γ  -- Returns [Gp, Gq]
+
+/-- Temporal formulas require higher depth than modal -/
+example : Bool × Bool :=
+  let temporal_goal := (Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future
+  let modal_goal := (Formula.atom "p").box.imp (Formula.atom "p").box.box
+  let (temp_found, _, _, _, _) := ProofSearch.bounded_search [] temporal_goal 3
+  let (modal_found, _, _, _, _) := ProofSearch.bounded_search [] modal_goal 3
+  (temp_found, modal_found)  -- Both should succeed with depth 3
+```
+
+For complete examples, see `Archive/TemporalProofs.lean` (sections: Automated Temporal Search,
+Temporal Context Transformations).
 
 ### Temporal Axiom Proofs
 
@@ -215,6 +281,47 @@ example (P : Formula) : [P.box] ⊢ always P := by
 ```
 
 ## 4. Perpetuity Principles
+
+### Automated Perpetuity Discovery
+
+The perpetuity principles P1-P6 can be discovered automatically using proof search.
+Bimodal formulas require higher search depths due to modal-temporal interaction.
+
+```lean
+import Logos.Core.Automation.ProofSearch
+
+/-- Automated discovery of P1: □φ → △φ -/
+example : Bool :=
+  let goal := (Formula.atom "p").box.imp (△(Formula.atom "p"))
+  let (found, _, _, _, _) := ProofSearch.bounded_search [] goal 10
+  found  -- Returns true, discovering P1 automatically
+
+/-- Automated discovery of P2: ▽φ → ◇φ -/
+example : Bool :=
+  let goal := (▽(Formula.atom "p")).imp (Formula.atom "p").diamond
+  let (found, _, _, _, _) := ProofSearch.bounded_search [] goal 10
+  found  -- Returns true, discovering P2 automatically
+
+/-- Combined modal-temporal search -/
+example : Bool :=
+  let goal := (Formula.atom "p").box.imp (Formula.atom "p").all_future.box
+  let (found, _, _, _, _) := ProofSearch.bounded_search [] goal 10
+  found  -- Searches through modal-temporal interaction axioms
+
+/-- Bimodal search depth requirements comparison -/
+example : Nat × Nat × Nat :=
+  let modal_goal := (Formula.atom "p").box.imp (Formula.atom "p")
+  let temporal_goal := (Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future
+  let bimodal_goal := (Formula.atom "p").box.imp (△(Formula.atom "p"))
+  let (_, _, _, modal_stats, _) := ProofSearch.bounded_search [] modal_goal 5
+  let (_, _, _, temporal_stats, _) := ProofSearch.bounded_search [] temporal_goal 5
+  let (_, _, _, bimodal_stats, _) := ProofSearch.bounded_search [] bimodal_goal 10
+  (modal_stats.visited, temporal_stats.visited, bimodal_stats.visited)
+  -- Bimodal formulas typically visit more nodes due to operator interaction
+```
+
+For complete examples, see `Archive/BimodalProofs.lean` (sections: Perpetuity Automation Examples,
+Combined Modal-Temporal Search).
 
 ### P1: `□φ → △φ`
 
@@ -341,6 +448,38 @@ example (P Q : Formula) :
 example (P : Formula) : [P.box.box.box] ⊢ P := by
   modal_search 5
 ```
+
+### ProofSearch API Reference
+
+The `Logos.Core.Automation.ProofSearch` module provides:
+
+- **`bounded_search`**: Depth-bounded search with caching and statistics
+  - Returns: `(Bool, ProofCache, Visited, SearchStats, Nat)`
+  - Parameters: context, goal, depth, cache, visited, visits, visitLimit, weights, stats
+  
+- **`search_with_heuristics`**: Heuristic-guided search with default parameters
+  - Returns: `(Bool, ProofCache, Visited, SearchStats, Nat)`
+  - Parameters: context, goal, depth, visitLimit, weights
+  
+- **`search_with_cache`**: Cached search with memoization
+  - Returns: `(Bool, ProofCache, Visited, SearchStats, Nat)`
+  - Parameters: cache, context, goal, depth, visitLimit, weights
+
+- **`HeuristicWeights`**: Configurable weights for branch ordering
+  - Fields: axiomWeight, assumptionWeight, mpBase, mpComplexityWeight, modalBase, temporalBase, contextPenaltyWeight, deadEnd
+
+- **`SearchStats`**: Performance statistics
+  - Fields: hits (cache hits), misses (cache misses), visited (nodes explored), prunedByLimit (pruned by visit limit)
+
+- **Context Transformations**:
+  - `box_context`: Applies `□` to all formulas in context (for modal K rule)
+  - `future_context`: Applies `G` to all formulas in context (for temporal K rule)
+
+For detailed usage examples and performance analysis, see:
+- `Archive/ModalProofs.lean` - Modal automation examples
+- `Archive/TemporalProofs.lean` - Temporal automation examples
+- `Archive/BimodalProofs.lean` - Perpetuity automation examples
+- `Documentation/Research/PROOF_SEARCH_AUTOMATION.md` - Research documentation
 
 ## 6. Working with Derivation Trees
 

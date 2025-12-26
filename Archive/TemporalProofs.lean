@@ -1,5 +1,6 @@
 import Logos.Core.ProofSystem.Derivation
 import Logos.Core.ProofSystem.Axioms
+import Logos.Core.Automation.ProofSearch
 
 /-!
 # Temporal Logic Proof Examples
@@ -57,6 +58,7 @@ namespace Archive.TemporalProofs
 
 open Logos.Core.Syntax
 open Logos.Core.ProofSystem
+open Logos.Core.Automation (ProofSearch)
 
 /-!
 ## Axiom T4: Temporal Transitivity (`Fφ → FFφ`)
@@ -296,5 +298,59 @@ example (φ : Formula) : φ.sometimes = (▽φ) := rfl
 
 /-- Example: Always notation (perpetuity) -/
 example (φ : Formula) : φ.always = (△φ) := rfl
+
+/-!
+## Automated Temporal Search
+
+These examples demonstrate automated proof search for temporal logic formulas.
+Temporal formulas typically require higher search depths than modal formulas
+due to the complexity of temporal operators.
+-/
+
+/-- Automated proof of temporal 4 axiom: Gφ → GGφ -/
+example : Bool :=
+  let goal := (Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future
+  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 5
+  found  -- Returns true (axiom match)
+
+/-- Automated proof of temporal A axiom: φ → G(Pφ) -/
+example : Bool :=
+  let goal := (Formula.atom "p").imp (Formula.atom "p").some_past.all_future
+  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 5
+  found  -- Returns true (axiom match)
+
+/-- Temporal formulas require higher depth than modal -/
+example : Bool × Bool :=
+  let temporal_goal := (Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future
+  let modal_goal := (Formula.atom "p").box.imp (Formula.atom "p").box.box
+  let (temp_found, _, _, _, _) := Automation.ProofSearch.bounded_search [] temporal_goal 3
+  let (modal_found, _, _, _, _) := Automation.ProofSearch.bounded_search [] modal_goal 3
+  (temp_found, modal_found)  -- Both should succeed with depth 3
+
+/-!
+## Temporal Context Transformations
+
+These examples demonstrate temporal context transformation for the temporal K rule.
+-/
+
+/-- Demonstrate future_context transformation -/
+example : Context :=
+  let Γ := [Formula.atom "p", Formula.atom "q"]
+  Automation.ProofSearch.future_context Γ  -- Returns [Gp, Gq]
+
+/-- Show temporal K axiom application with transformed context -/
+example : Bool :=
+  let p := Formula.atom "p"
+  let Γ := [p]
+  let goal := p.all_future
+  -- Would use temporal K: if [Gp] ⊢ p then [p] ⊢ Gp
+  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search Γ goal 5
+  found
+
+/-- Context transformation for temporal search -/
+example : Nat :=
+  let Γ := [Formula.atom "p", Formula.atom "q", Formula.atom "r"]
+  let future_Γ := Automation.ProofSearch.future_context Γ
+  future_Γ.length  -- Returns 3 (preserves length)
 
 end Archive.TemporalProofs

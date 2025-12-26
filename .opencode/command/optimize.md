@@ -52,7 +52,7 @@ Context Loaded:
   <stage id="1" name="Preflight">
     <action>Validate flags and task binding</action>
     <process>
-      1. Parse flags: --scope {all|commands|agents|contexts|docs|routing} (default: all); --task {id|new}; --priority {High|Medium|Low}; --title (when creating); --lang {markdown} (reject lean). 
+      1. Parse flags: --scope {all|commands|agents|contexts|docs|routing} (default: all); --task {id|new}; --priority {High|Medium|Low}; --title (when creating); --lang {markdown} (reject lean).
       2. Enforce markdown/meta scope; reject Lean intent and fail fast on unsupported flags or malformed inputs.
       3. Resolve task binding: if --task points to an existing TODO entry, load it and set **Status** to [IN PROGRESS] with **Started** timestamp; otherwise allocate a new task ID from state.json, insert a Medium-priority markdown TODO entry with Files Affected covering .opencode command/context/specs, and set it to [IN PROGRESS].
       4. Sync .opencode/specs/state.json to `in_progress` with started_at; do not create project directories during preflight.

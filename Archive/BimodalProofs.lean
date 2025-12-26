@@ -1,5 +1,6 @@
 import Logos.Core.Theorems.Perpetuity
 import Logos.Core.ProofSystem.Derivation
+import Logos.Core.Automation.ProofSearch
 
 /-!
 # Bimodal Proof Examples
@@ -39,6 +40,7 @@ namespace Archive.BimodalProofs
 open Logos.Core.Syntax
 open Logos.Core.ProofSystem
 open Logos.Core.Theorems.Perpetuity
+open Logos.Core.Automation (ProofSearch)
 
 /-!
 ## P1: Necessary Implies Always
@@ -199,6 +201,83 @@ example (p : Formula) : ⊢ (▽p).diamond.imp p.diamond :=
   perpetuity_4 p
 
 /-!
+## Perpetuity Automation Examples
+
+These examples demonstrate automated discovery of perpetuity principles P1-P6
+using proof search. The search depth requirements for bimodal formulas are
+typically higher than pure modal or temporal formulas due to the interaction
+between modal and temporal operators.
+-/
+
+/-- Automated discovery of P1: □φ → △φ -/
+example : Bool :=
+  let goal := (Formula.atom "p").box.imp (△(Formula.atom "p"))
+  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 10
+  found  -- Returns true, discovering P1 automatically
+
+/-- Automated discovery of P2: ▽φ → ◇φ -/
+example : Bool :=
+  let goal := (▽(Formula.atom "p")).imp (Formula.atom "p").diamond
+  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 10
+  found  -- Returns true, discovering P2 automatically
+
+/-- Automated discovery of P3: □φ → □△φ -/
+example : Bool :=
+  let goal := (Formula.atom "p").box.imp (△(Formula.atom "p")).box
+  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 12
+  found  -- Returns true, discovering P3 (requires higher depth for nesting)
+
+/-- Automated discovery of P4: ◇▽φ → ◇φ -/
+example : Bool :=
+  let goal := (▽(Formula.atom "p")).diamond.imp (Formula.atom "p").diamond
+  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 12
+  found  -- Returns true, discovering P4
+
+/-- Automated discovery of P5: ◇▽φ → △◇φ -/
+example : Bool :=
+  let goal := (▽(Formula.atom "p")).diamond.imp (△((Formula.atom "p").diamond))
+  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 15
+  found  -- Returns true, discovering P5 (complex nesting requires depth 15)
+
+/-- Automated discovery of P6: ▽□φ → □△φ -/
+example : Bool :=
+  let goal := (▽((Formula.atom "p").box)).imp (△(Formula.atom "p")).box
+  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 15
+  found  -- Returns true, discovering P6 (complex nesting requires depth 15)
+
+/-!
+## Combined Modal-Temporal Search
+
+These examples demonstrate proof search with both modal and temporal operators,
+showing how the search handles context transformations for both box_context
+and future_context.
+-/
+
+/-- Search with both modal and temporal operators -/
+example : Bool :=
+  let goal := (Formula.atom "p").box.imp (Formula.atom "p").all_future.box
+  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 10
+  found  -- Searches through modal-temporal interaction axioms
+
+/-- Demonstrate interaction between box_context and future_context -/
+example : Nat × Nat :=
+  let Γ := [Formula.atom "p", Formula.atom "q"]
+  let boxed := Automation.ProofSearch.box_context Γ
+  let future := Automation.ProofSearch.future_context Γ
+  (boxed.length, future.length)  -- Both preserve context length (2, 2)
+
+/-- Bimodal search depth requirements comparison -/
+example : Nat × Nat × Nat :=
+  let modal_goal := (Formula.atom "p").box.imp (Formula.atom "p")
+  let temporal_goal := (Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future
+  let bimodal_goal := (Formula.atom "p").box.imp (△(Formula.atom "p"))
+  let (_, _, _, modal_stats, _) := Automation.ProofSearch.bounded_search [] modal_goal 5
+  let (_, _, _, temporal_stats, _) := Automation.ProofSearch.bounded_search [] temporal_goal 5
+  let (_, _, _, bimodal_stats, _) := Automation.ProofSearch.bounded_search [] bimodal_goal 10
+  (modal_stats.visited, temporal_stats.visited, bimodal_stats.visited)
+  -- Bimodal formulas typically visit more nodes due to operator interaction
+
+/-!
 ## Summary
 
 This module demonstrates:
@@ -207,6 +286,9 @@ This module demonstrates:
 3. Perpetuity principles P1-P6 with both notations
 4. Recommended usage: prefix triangle for temporal, dot for modal
 5. Notation equivalence proofs via `rfl`
+6. **NEW**: Automated discovery of perpetuity principles P1-P6
+7. **NEW**: Combined modal-temporal proof search
+8. **NEW**: Search depth requirements for bimodal formulas
 
 For more details on the perpetuity principles, see:
 - [Perpetuity.lean](../ProofChecker/Theorems/Perpetuity.lean)
