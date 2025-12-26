@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker project. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-26T00:30:00Z",
+  "_last_updated": "2025-12-26T00:55:00Z",
   "next_project_number": 192,
   "project_numbering": {
     "min": 0,
@@ -79,16 +79,39 @@
       "last_updated": "2025-12-25"
     },
     {
+      "project_number": 183,
+      "project_name": "deduction_theorem_build_errors",
+      "type": "bugfix",
+      "phase": "implementation",
+      "status": "in_progress",
+      "created": "2025-12-25T16:05:00Z",
+      "started": "2025-12-25",
+      "research_completed": "2025-12-26T00:35:00Z",
+      "planning_completed": "2025-12-25T16:30:00Z",
+      "last_updated": "2025-12-26T00:55:00Z"
+    },
+    {
+      "project_number": 184,
+      "project_name": "truth_lean_build_error",
+      "type": "bugfix",
+      "phase": "planning",
+      "status": "planned",
+      "created": "2025-12-25T00:45:00Z",
+      "started": "2025-12-25",
+      "planning_completed": "2025-12-26",
+      "last_updated": "2025-12-26"
+    },
+    {
       "project_number": 189,
       "project_name": "research_divide_flag",
       "type": "research",
-      "phase": "completed",
-      "status": "researched",
+      "phase": "planning",
+      "status": "in_progress",
       "research_mode": "standard",
       "created": "2025-12-25T23:15:00Z",
-      "started": "2025-12-25",
-      "completed": "2025-12-25",
-      "last_updated": "2025-12-25"
+      "started": "2025-12-26",
+      "research_completed": "2025-12-25",
+      "last_updated": "2025-12-26"
     },
     {
       "project_number": 190,
@@ -105,25 +128,25 @@
       "project_number": 191,
       "project_name": "fix_subagent_delegation_hang",
       "type": "bugfix",
-      "phase": "not_started",
-      "status": "not_started",
-      "created": "2025-12-26T00:00:00Z",
-      "last_updated": "2025-12-26T00:00:00Z"
-    },
-    {
-      "project_number": 184,
-      "project_name": "truth_lean_build_error",
-      "type": "bugfix",
       "phase": "planning",
       "status": "planned",
-      "created": "2025-12-25T00:45:00Z",
-      "started": "2025-12-25",
+      "created": "2025-12-26T00:00:00Z",
+      "last_updated": "2025-12-26",
+      "started": "2025-12-26",
       "planning_completed": "2025-12-26",
-      "last_updated": "2025-12-26"
+      "plan_path": ".opencode/specs/191_fix_subagent_delegation_hang/plans/implementation-001.md"
     }
   ],
   "completed_projects": [],
   "recent_activities": [
+    {
+      "timestamp": "2025-12-26T00:55:00Z",
+      "activity": "Marked task 183 as IN PROGRESS: Starting implementation of DeductionTheorem.lean build error fixes"
+    },
+    {
+      "timestamp": "2025-12-25T01:00:00Z",
+      "activity": "Completed research for task 191: Subagent delegation hang issue - identified 6 root causes and documented comprehensive fix strategy"
+    },
     {
       "timestamp": "2025-12-26T00:45:00Z",
       "activity": "Created implementation plan plans/implementation-001.md for project 183 (4 phases, 30-45 minutes estimated)"
@@ -339,377 +362,15 @@
     {
       "timestamp": "2025-12-24T22:00:00Z",
       "activity": "Maintenance operation: Moved 8 project directories to archive"
-    },
-    {
-      "timestamp": "2025-12-22T17:00:00Z",
-      "activity": "Created research report reports/research-001.md for project 126"
-    },
-    {
-      "timestamp": "2025-12-22T18:30:00Z",
-      "activity": "Created implementation plan plans/implementation-001.md for project 126"
-    },
-    {
-      "timestamp": "2025-12-22T20:00:00Z",
-      "activity": "Completed implementation work for project 126 (bounded search, axiom matching, tests)"
-    },
-    {
-      "timestamp": "2025-12-22T20:00:00Z",
-      "activity": "Added implementation summary summaries/implementation-summary-20251222.md for project 126"
-    },
-    {
-      "timestamp": "2025-12-22T23:10:00Z",
-      "activity": "Created research report reports/research-001.md for project 147"
-    },
-    {
-      "timestamp": "2025-12-22T23:15:00Z",
-      "activity": "Created research report reports/research-001.md for project 143"
-    },
-    {
-      "timestamp": "2025-12-22T23:40:00Z",
-      "activity": "Created implementation plan plans/implementation-001.md for project 147"
-    },
-    {
-      "timestamp": "2025-12-22T23:59:59Z",
-      "activity": "Created implementation plan plans/implementation-001.md for project 143"
-    },
-    {
-      "timestamp": "2025-12-23T00:00:00Z",
-      "activity": "Updated standards to ensure command flows sync IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md (task 148)"
-    },
-    {
-      "timestamp": "2025-12-23T00:10:00Z",
-      "activity": "Created revised implementation plan plans/implementation-002.md for project 147 using Language metadata routing"
-    },
-    {
-      "timestamp": "2025-12-23T00:20:00Z",
-      "activity": "Completed task 149 by mandating Language metadata in task standards and backfilling TODO/state"
-    },
-    {
-      "timestamp": "2025-12-23T00:45:00Z",
-      "activity": "Completed task 147 implementing Language-driven Lean routing updates (standards/command)"
-    },
-    {
-      "timestamp": "2025-12-23T01:30:00Z",
-      "activity": "Completed context refactor for task 143 (index/README refresh, Lean overlay redirect, domain READMEs)"
-    },
-    {
-      "timestamp": "2025-12-23T02:55:00Z",
-      "activity": "Implemented heuristic scoring and branch ordering for ProofSearch (task 127)"
-    },
-    {
-      "timestamp": "2025-12-23T02:55:00Z",
-      "activity": "Added implementation summary summaries/implementation-summary-20251223.md for project 127"
-    },
-    {
-      "timestamp": "2025-12-23T03:15:00Z",
-      "activity": "Created research report reports/research-001.md for project 144 (context references after refactor)"
-    },
-    {
-      "timestamp": "2025-12-23T03:30:00Z",
-      "activity": "Created plan v2 (implementation-001.md) for task 144 to update context references"
-    },
-    {
-      "timestamp": "2025-12-23T03:40:00Z",
-      "activity": "Created plan v3 (implementation-002.md) for task 144 using research inputs"
-    },
-    {
-      "timestamp": "2025-12-23T04:00:00Z",
-      "activity": "Added implementation summary for task 144 execution pass"
-    },
-    {
-      "timestamp": "2025-12-23T06:15:00Z",
-      "activity": "Completed task 144 context reference updates and plan closure"
-    },
-    {
-      "timestamp": "2025-12-23T05:00:00Z",
-      "activity": "Archived completed projects 126, 127, 143, 147 and marked task 145 abandoned"
-    },
-    {
-      "timestamp": "2025-12-23T04:10:00Z",
-      "activity": "Updated agent/command context references per task 144 and refreshed summary"
-    },
-    {
-      "timestamp": "2025-12-23T06:10:00Z",
-      "activity": "Created research report reports/research-001.md for project 128 (caching/context helpers)"
-    },
-    {
-      "timestamp": "2025-12-24T18:30:00Z",
-      "activity": "Created implementation plan plans/implementation-001.md and summary summaries/plan-summary.md for project 165"
-    },
-    {
-      "timestamp": "2025-12-24T19:00:00Z",
-      "activity": "Created revised implementation plan plans/implementation-002.md for project 165 (pragmatic approach)"
-    },
-    {
-      "timestamp": "2025-12-24T19:30:00Z",
-      "activity": "Completed task 165 with documentation improvements to /add command, task-adder, and standards"
     }
   ],
   "pending_tasks": [
     {
       "project_number": 191,
       "title": "Fix subagent delegation hang issue in command workflows",
-      "status": "not_started",
-      "created": "2025-12-26T00:00:00Z"
-    },
-    {
-      "project_number": 170,
-      "title": "Improve maintenance report system and documentation",
-      "status": "researched",
-      "created": "2025-12-24T23:30:00Z",
-      "started": "2025-12-24",
-      "completed": "2025-12-24"
-    },
-    {
-      "project_number": 169,
-      "title": "Improve /implement command to protect primary agent context window",
-      "status": "completed",
-      "created": "2025-12-24T23:00:00Z",
-      "started": "2025-12-24",
-      "completed": "2025-12-24T23:59:59Z"
-    },
-    {
-      "project_number": 129,
-      "title": "Prove temporal swap lemmas in Truth.lean",
-      "status": "completed",
-      "created": "2025-12-22T12:00:00Z",
-      "started": "2025-12-23",
-      "completed": "2025-12-23"
-    },
-    {
-      "project_number": 130,
-      "title": "Prove domain extension lemmas in Truth.lean",
-      "status": "completed",
-      "created": "2025-12-22T12:00:00Z",
-      "started": "2025-12-23",
-      "completed": "2025-12-23"
-    },
-    {
-      "project_number": 132,
-      "title": "Prove Lindenbaum maximal consistency lemma in Completeness.lean",
-      "status": "not_started",
-      "created": "2025-12-22T12:00:00Z"
-    },
-    {
-      "project_number": 133,
-      "title": "Build canonical model constructors in Completeness.lean",
-      "status": "not_started",
-      "created": "2025-12-22T12:00:00Z"
-    },
-    {
-      "project_number": 134,
-      "title": "Prove truth lemma structure in Completeness.lean",
-      "status": "not_started",
-      "created": "2025-12-22T12:00:00Z"
-    },
-    {
-      "project_number": 135,
-      "title": "Remove provable_iff_valid sorry in Completeness.lean",
-      "status": "not_started",
-      "created": "2025-12-22T12:00:00Z"
-    },
-    {
-      "project_number": 136,
-      "title": "Design Decidability.lean architecture and signatures",
-      "status": "not_started",
-      "created": "2025-12-22T12:00:00Z"
-    },
-    {
-      "project_number": 137,
-      "title": "Implement tableau core rules in Decidability.lean",
-      "status": "not_started",
-      "created": "2025-12-22T12:00:00Z"
-    },
-    {
-      "project_number": 138,
-      "title": "Implement satisfiability and validity decision procedure tests",
-      "status": "not_started",
-      "created": "2025-12-22T12:00:00Z"
-    },
-    {
-      "project_number": 139,
-      "title": "Draft Layer 1 counterfactual operator plan",
-      "status": "not_started",
-      "created": "2025-12-22T12:00:00Z"
-    },
-    {
-      "project_number": 140,
-      "title": "Draft Layer 2 epistemic operator plan",
-      "status": "not_started",
-      "created": "2025-12-22T12:00:00Z"
-    },
-    {
-      "project_number": 141,
-      "title": "Draft Layer 3 normative operator plan",
-      "status": "not_started",
-      "created": "2025-12-22T12:00:00Z"
-    },
-    {
-      "project_number": 156,
-      "title": "Enforce targeted git commits via git-workflow-manager across commands",
-      "status": "completed",
-      "created": "2025-12-23T20:30:00Z",
-      "started": "2025-12-23",
-      "completed": "2025-12-23"
-    },
-    {
-      "project_number": 172,
-      "title": "Complete API documentation for all Logos modules",
-      "status": "planned",
-      "created": "2025-12-24T12:30:00Z",
-      "started": "2025-12-24",
-      "completed": "2025-12-24",
-      "last_updated": "2025-12-24"
-    },
-    {
-      "project_number": 173,
-      "title": "Implement integration tests for proof system and semantics",
-      "status": "blocked",
-      "created": "2025-12-24T12:30:00Z",
-      "started": "2025-12-24",
-      "blocked": "2025-12-25",
-      "last_updated": "2025-12-25"
-    },
-    {
-      "project_number": 174,
-      "title": "Add property-based testing framework and metalogic tests",
-      "status": "completed",
-      "created": "2025-12-24T12:30:00Z",
-      "started": "2025-12-25",
-      "completed": "2025-12-25",
-      "research_completed": "2025-12-24T23:30:00Z",
-      "planning_completed": "2025-12-24T23:59:59Z",
-      "last_updated": "2025-12-25"
-    },
-    {
-      "project_number": 175,
-      "title": "Establish CI/CD pipeline with automated testing and linting",
-      "status": "not_started",
-      "created": "2025-12-24T12:30:00Z"
-    },
-    {
-      "project_number": 176,
-      "title": "Enhance proof search with domain-specific heuristics and caching",
-      "status": "not_started",
-      "created": "2025-12-24T12:30:00Z"
-    },
-    {
-      "project_number": 177,
-      "title": "Update examples to use latest APIs and add new feature demonstrations",
       "status": "in_progress",
-      "created": "2025-12-24T12:30:00Z",
-      "started": "2025-12-25",
-      "last_updated": "2025-12-25T16:15:00Z",
-      "planning_completed": "2025-12-25T16:15:00Z"
-    },
-    {
-      "project_number": 178,
-      "title": "Complete advanced tutorial sections with hands-on exercises",
-      "status": "not_started",
-      "created": "2025-12-24T12:30:00Z"
-    },
-    {
-      "project_number": 179,
-      "title": "Implement performance benchmarks for proof search and derivation",
-      "status": "not_started",
-      "created": "2025-12-24T12:30:00Z"
-    },
-    {
-      "project_number": 180,
-      "title": "Add test coverage metrics and reporting",
-      "status": "not_started",
-      "created": "2025-12-24T12:30:00Z"
-    },
-    {
-      "project_number": 181,
-      "title": "Fix /implement status update bug - tasks not marked COMPLETED",
-      "status": "completed",
-      "created": "2025-12-25T00:00:00Z",
-      "started": "2025-12-25",
-      "completed": "2025-12-25"
-    },
-    {
-      "project_number": 182,
-      "title": "Fix /research status update bug - tasks not marked RESEARCHED",
-      "status": "completed",
-      "created": "2025-12-25T00:15:00Z",
-      "started": "2025-12-25",
-      "completed": "2025-12-25"
-    },
-    {
-      "project_number": 183,
-      "title": "Fix DeductionTheorem.lean build errors (3 errors)",
-      "status": "planned",
-      "created": "2025-12-25T00:45:00Z",
-      "started": "2025-12-25",
-      "completed": "2025-12-26",
-      "notes": "Research complete. Root cause: .elim pattern not recognized as tactic in match expressions. Solution: Replace (em P).elim with by_cases h : P tactic. All 3 errors have same root cause.",
-      "research_completed": "2025-12-26T00:35:00Z",
-      "planning_completed": "2025-12-26T00:45:00Z"
-    },
-    {
-      "project_number": 184,
-      "title": "Fix Truth.lean build error (swap_past_future proof)",
-      "status": "planned",
-      "created": "2025-12-25T00:45:00Z",
-      "started": "2025-12-25",
-      "planning_completed": "2025-12-26",
-      "last_updated": "2025-12-26",
-      "plan_path": ".opencode/specs/184_truth_lean_build_error/plans/implementation-001.md"
-    },
-    {
-      "project_number": 185,
-      "title": "Fix integration test helper API mismatches",
-      "status": "not_started",
-      "created": "2025-12-25T00:45:00Z"
-    },
-    {
-      "project_number": 186,
-      "title": "Refactor MAINTENANCE.md to include /review update instructions",
-      "status": "completed",
-      "created": "2025-12-25T23:09:04Z",
-      "started": "2025-12-25",
-      "completed": "2025-12-25",
-      "last_updated": "2025-12-25"
-    },
-    {
-      "project_number": 187,
-      "title": "Refactor review.md workflow context to specify registry update workflow",
-      "status": "completed",
-      "created": "2025-12-25T23:09:04Z",
-      "started": "2025-12-25",
-      "completed": "2025-12-25",
-      "last_updated": "2025-12-25"
-    },
-    {
-      "project_number": 188,
-      "title": "Refactor /review command to load review.md workflow context",
-      "status": "completed",
-      "created": "2025-12-25T23:09:04Z",
-      "started": "2025-12-25",
-      "completed": "2025-12-25",
-      "last_updated": "2025-12-25"
-    },
-    {
-      "project_number": 189,
-      "title": "Add --divide flag to /research command for topic subdivision",
-      "status": "researched",
-      "created": "2025-12-25T23:15:00Z",
-      "started": "2025-12-25",
-      "completed": "2025-12-25"
-    },
-    {
-      "project_number": 190,
-      "title": "Improve MAINTENANCE.md documentation structure and content",
-      "status": "in_progress",
-      "created": "2025-12-26T00:26:00Z",
+      "created": "2025-12-26T00:00:00Z",
       "started": "2025-12-26"
-    },
-    {
-      "project_number": 191,
-      "title": "Fix subagent delegation hang issue in command workflows",
-      "status": "not_started",
-      "created": "2025-12-26T00:00:00Z"
     }
   ],
   "maintenance_summary": {
