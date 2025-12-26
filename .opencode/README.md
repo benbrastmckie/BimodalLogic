@@ -1,337 +1,454 @@
-# .opencode - Context-Aware AI Agent System
+# .opencode System
 
-> **For Project Overview**: See [README.md](../README.md) for project-specific information and development methodology.
+**Version**: 2.0  
+**Status**: Active  
+**Created**: 2025-12-26
 
-## Overview
+---
 
-General-purpose AI agent system for software development. Manages the complete workflow from research through implementation to verification and documentation across any programming language or framework.
+## What is this?
 
-## System Architecture
+The .opencode system is a task management and automation framework for software development projects, with specialized support for Lean 4 theorem proving. It provides structured workflows for research, planning, and implementation with built-in safety mechanisms and error tracking.
 
-### Main Orchestrator
-- **orchestrator**: Coordinates all workflows, routes to specialized agents, manages context allocation
+---
 
-### Agent System Summary
+## Key Features
 
-**Workflow and utility agents** live in `agent/subagents/*.md` (orchestrator plus reviewer, researcher, planner, implementer, lean-implementation-orchestrator, refactorer, documenter, meta, task-adder, task-executor, context-refactor, implementation-orchestrator, proof/lean specialists, etc.).
-**Specialist helpers (20)** live in `agent/subagents/specialists/*.md` and are referenced directly from the workflow agents (no separate README).
+### Structured Task Management
 
-### Guardrails & Standards Quicklinks
-- Lazy directory creation and command contracts: [context/common/system/artifact-management.md](context/common/system/artifact-management.md)
-- Status markers (canonical set + timestamps): [context/common/system/status-markers.md](context/common/system/status-markers.md)
-- Task/plan/state sync rules: [context/common/standards/tasks.md](context/common/standards/tasks.md), [context/common/system/state-schema.md](context/common/system/state-schema.md)
-- Artifact standards: [context/common/standards/plan.md](context/common/standards/plan.md), [context/common/standards/report.md](context/common/standards/report.md), [context/common/standards/summary.md](context/common/standards/summary.md)
-- Documentation conventions: [context/common/standards/documentation.md](context/common/standards/documentation.md)
+- Create tasks with `/task`
+- Conduct research with `/research`
+- Create implementation plans with `/plan`
+- Execute implementations with `/implement`
+- Resume interrupted work automatically
+
+### Delegation Safety
+
+Version 2.0 includes comprehensive safety mechanisms to prevent delegation hangs and infinite loops:
+
+- **Session ID Tracking**: Every delegation has a unique identifier
+- **Cycle Detection**: Prevents infinite delegation loops
+- **Depth Limits**: Maximum delegation depth of 3 levels
+- **Timeout Enforcement**: All operations have timeouts with graceful degradation
+- **Return Validation**: All subagent returns validated against standard format
+
+### Atomic State Synchronization
+
+Status changes are synchronized atomically across multiple files:
+
+- TODO.md (user-facing task list)
+- state.json (machine-readable state)
+- Plan files (phase tracking)
+
+Two-phase commit ensures consistency with rollback on failure.
+
+### Language-Specific Routing
+
+Tasks are automatically routed to appropriate agents based on language:
+
+- **Lean tasks**: Use lean-lsp-mcp for compilation and diagnostics
+- **General tasks**: Use standard development tools
+- **Future**: Python, JavaScript, Rust-specific agents
+
+### Error Tracking and Analysis
+
+All errors logged to errors.json with:
+
+- Error type and severity
+- Context (command, task, agent)
+- Fix status tracking
+- Recurrence detection
+- Automatic fix plan generation with `/errors`
+
+### Automatic Git Commits
+
+Git commits created automatically after:
+
+- Task completion
+- Phase completion
+- Research completion
+- Plan creation
+
+Commits are scoped (only relevant files) with clear, formatted messages.
+
+---
+
+## Key Improvements Over Old System
+
+Version 2.0 is a complete clean-break refactor addressing critical issues:
+
+### 1. No More Delegation Hangs
+
+**Old System**: Commands would invoke subagents but never receive results, causing indefinite hangs.
+
+**New System**: Explicit return handling stages (ReceiveResults, ProcessResults) with timeout enforcement.
+
+### 2. Cycle Detection
+
+**Old System**: No cycle detection, could create infinite delegation loops.
+
+**New System**: Delegation path tracking with cycle detection before routing.
+
+### 3. Timeout Enforcement
+
+**Old System**: No timeouts, indefinite waits possible.
+
+**New System**: All delegations have timeouts (3600s default) with graceful degradation.
+
+### 4. Standardized Returns
+
+**Old System**: Inconsistent return formats, difficult to parse.
+
+**New System**: All subagents follow standardized return format with validation.
+
+### 5. Atomic Status Updates
+
+**Old System**: Race conditions when updating TODO.md and state.json.
+
+**New System**: Two-phase commit with rollback on failure.
+
+### 6. Automatic Git Commits
+
+**Old System**: No automatic commits, manual commit required.
+
+**New System**: Automatic scoped commits with clear messages.
+
+### 7. Error Tracking
+
+**Old System**: No error tracking, issues lost.
+
+**New System**: All errors logged to errors.json with analysis and fix planning.
+
+### 8. Resume Support
+
+**Old System**: Restart from scratch if interrupted.
+
+**New System**: Automatic resume from last completed phase.
+
+---
 
 ## Quick Start
 
-### Basic workflow: `/add` → `/research` → `/plan` → `/implement`
-1. **Add the task to TODO**
-   ```bash
-   /add "Implement user authentication"
-   ```
-   Creates a TODO entry with an ID (view it with `/todo`).
+### Create Your First Task
 
-2. **Research for that TODO**
-   ```bash
-   /research 001
-   ```
-   Uses the project number from `/add` and produces a research report you can reference when planning.
+```
+/task Implement feature X with Y functionality
+```
 
-3. **Plan the implementation**
-   ```bash
-   /plan 001
-   ```
-   Builds a step-by-step plan for that project, reusing any linked research.
+Returns: `Created task 192`
 
-4. **Execute the TODO via `/implement`**
-   ```bash
-   /implement 001
-   ```
-   Follows the plan phases, updates status markers, and runs the work.
+### Simple Task (No Plan)
 
-### Additional quick commands
-- `/review` — Analyze repository state and update TODO.md
-- `/implement {project_number}` — Execute a plan directly by project ID
-- `/refactor {file_path}` — Improve readability and style adherence
-- `/document {scope}` — Update documentation for a feature or area
+```
+/implement 192
+```
 
+Executes implementation directly, creates git commit, marks complete.
 
-## Custom Commands
+### Complex Task (With Research and Plan)
 
-### Core Workflows
-- `/review` - Comprehensive repository review
-- `/research {project_number}` - Research linked to a TODO created via `/add`
-- `/plan {project_number}` - Create implementation plan for a TODO entry
-- `/revise {project_number}` - Revise existing plan
-- `/implement {project_number}` - Execute implementation plan
-- `/refactor {file_path}` - Refactor code
-- `/document {scope}` - Update documentation
+```
+/research 192
+/plan 192
+/implement 192
+```
 
-### Meta-System
-- `/meta {request}` - Create or modify agents and commands
+Research → Plan → Implement workflow with automatic status tracking.
+
+### Resume Interrupted Work
+
+```
+/implement 192
+```
+
+If interrupted, run the same command again. The system automatically resumes from the last completed phase.
+
+### Analyze Errors
+
+```
+/errors
+```
+
+Analyzes errors.json, creates fix plan, creates TODO task for fixes.
+
+---
+
+## Documentation
+
+### Getting Started
+
+- **Quick Start Guide**: [QUICK-START.md](QUICK-START.md)
+  - Prerequisites
+  - Common workflows
+  - Command reference
+  - Troubleshooting
+
+### System Architecture
+
+- **Architecture Guide**: [ARCHITECTURE.md](ARCHITECTURE.md)
+  - System overview
+  - Architecture principles
+  - Component hierarchy
+  - Delegation flow
+  - State management
+  - Git workflow
+
+### Testing
+
+- **Testing Guide**: [TESTING.md](TESTING.md)
+  - Component testing
+  - Integration testing
+  - Delegation safety testing
+  - Language routing testing
+  - Error recovery testing
+
+### Standards and Patterns
+
+- **Delegation Guide**: [context/common/workflows/subagent-delegation-guide.md](context/common/workflows/subagent-delegation-guide.md)
+  - Session ID tracking
+  - Cycle detection
+  - Timeout enforcement
+  - Return validation
+
+- **Return Format Standard**: [context/common/standards/subagent-return-format.md](context/common/standards/subagent-return-format.md)
+  - Standardized return format
+  - Field specifications
+  - Validation requirements
+  - Examples
+
+---
+
+## Commands
 
 ### Task Management
-- `/add {task}` - Add tasks to TODO.md
-- `/todo` - Display TODO list
-- `/implement {task_number}` - Execute TODO task
+
+- `/task <description>` - Create new task
+- `/todo` - Clean completed tasks from TODO.md
+
+### Research and Planning
+
+- `/research <number> [--divide]` - Conduct research
+- `/plan <number>` - Create implementation plan
+- `/revise <number>` - Revise existing plan
+
+### Implementation
+
+- `/implement <number>` - Execute implementation
+- `/implement <start>-<end>` - Execute range of tasks
+
+### Analysis
+
+- `/review` - Analyze codebase and update registries
+- `/errors [--all] [--type <type>]` - Analyze errors and create fix plans
+
+---
 
 ## Project Structure
 
 ```
 .opencode/
 ├── agent/
-│   ├── orchestrator.md
-│   └── subagents/          # Workflow + utility agents
-│       ├── *.md            # reviewer, researcher, planner, implementer, lean-implementation-orchestrator, refactorer, documenter, meta, task-* , context-refactor, implementation-orchestrator, proof helpers, etc.
-│       └── specialists/    # 20 focused helpers (style-checker, doc-writer, git-workflow-manager, etc.)
-├── context/                # See context/README.md
-│   ├── common/             # standards/, system/, templates/, workflows/
-│   ├── project/            # domain overlays (logic, lean4, math, physics, repo)
-│   └── index.md, README.md
-├── command/                # User-facing commands (add, context, document, implement, lean, meta, optimize, plan, refactor, research, review, revise, task, todo)
-├── specs/                  # See specs/README.md
-│   ├── TODO.md             # Master task list
-│   ├── state.json          # Global state
-│   └── NNN_project_name/   # Project directories with reports/, plans/, summaries/, state.json
-└── [documentation files]
+│   ├── orchestrator.md              # Central coordination
+│   └── subagents/                   # Worker agents
+│       ├── atomic-task-numberer.md
+│       ├── status-sync-manager.md
+│       ├── researcher.md
+│       ├── planner.md
+│       ├── implementer.md
+│       ├── task-executor.md
+│       ├── lean-implementation-agent.md
+│       ├── lean-research-agent.md
+│       ├── error-diagnostics-agent.md
+│       └── git-workflow-manager.md
+├── command/                         # User commands
+│   ├── task.md
+│   ├── research.md
+│   ├── plan.md
+│   ├── implement.md
+│   ├── revise.md
+│   ├── review.md
+│   ├── todo.md
+│   └── errors.md
+├── context/                         # Context files
+│   ├── common/                      # Common context
+│   │   ├── standards/
+│   │   ├── system/
+│   │   ├── templates/
+│   │   └── workflows/
+│   └── project/                     # Project-specific context
+│       ├── lean4/
+│       ├── logic/
+│       ├── math/
+│       └── repo/
+├── specs/                           # Task artifacts
+│   ├── TODO.md                      # Task list
+│   ├── state.json                   # Project state
+│   ├── errors.json                  # Error tracking
+│   └── {task_number}_{topic}/       # Per-task directories
+│       ├── plans/
+│       ├── reports/
+│       └── summaries/
+├── ARCHITECTURE.md                  # System architecture
+├── QUICK-START.md                   # Quick start guide
+├── TESTING.md                       # Testing guide
+└── README.md                        # This file
 ```
-
-**Lazy creation & responsibilities**
-- Create the project root only when writing the first artifact. Create only the subdirectory needed at write time (reports/ for research/review, plans/ for plan/revise, summaries/ only when emitting summaries). No placeholder files.
-- Project `state.json` is written alongside artifact creation; global state follows artifact writes. See `context/common/system/artifact-management.md` and `context/common/system/state-schema.md`.
-- `/implement` reuses the plan link in TODO.md when present and updates plan phases in place with status markers; `/plan` and `/revise` reuse linked research inputs.
-
-## Key Features
-
-### Context Protection
-All primary agents use specialist subagents that:
-- Create detailed artifacts in `.opencode/specs/NNN_project/`
-- Return only file references and brief summaries
-- Protect orchestrator context window from bloat
-
-### Artifact Organization
-Standardized structure in `.opencode/specs/`:
-- **reports/**: Research, analysis, verification reports
-- **plans/**: Implementation plans (versioned)
-- **summaries/**: Brief summaries for quick reference
-- **state.json**: Project and global state tracking
-
-### Status markers & sync
-- Use canonical markers `[NOT STARTED]`, `[IN PROGRESS]`, `[BLOCKED]`, `[ABANDONED]`, `[COMPLETED]` with timestamps per `context/common/system/status-markers.md`.
-- Mirror markers across TODO.md (date-only), plan phases (ISO 8601), and state files (lowercase values) per `context/common/standards/tasks.md` and `context/common/system/state-schema.md`.
-- `/implement` updates linked plan phases; status changes must be reflected in TODO and state alongside artifact writes.
-
-### Version Control
-- Implementation plans versioned (implementation-001.md, implementation-002.md, ...)
-- `/revise` command creates new version with incremented number
-- Git commits after substantial changes
-
-### State Management
-- Project state: `.opencode/specs/NNN_project/state.json`
-- Global state: `.opencode/specs/state.json`
-- User-facing: `.opencode/specs/TODO.md`
-- Automatic synchronization
-
-### Tool Integration
-- **Git/GitHub**: Version control and issue tracking
-- **gh CLI**: Push TODO tasks to GitHub issues
-- **Language-specific tools**: Linters, formatters, test runners
-- **Web search**: Research and documentation lookup
-
-## Workflow Examples
-
-### Complete Development Cycle
-
-1. **Add TODO and note project number**
-   ```
-   /add "Implement OAuth 2.0 authentication"
-   /todo   # confirms assigned number (e.g., 003)
-   ```
-   → Creates TODO entry (project 003) for the feature
-
-2. **Research that TODO**
-   ```
-   /research 003
-   ```
-   → Searches web and documentation
-   → Creates research report with findings
-
-3. **Create implementation plan**
-   ```
-   /plan 003
-   ```
-   → Analyzes complexity and dependencies
-   → Creates detailed step-by-step plan
-
-4. **Implement the feature**
-   ```
-   /implement 003
-   ```
-   → Follows implementation plan
-   → Runs tests and validation
-   → Commits to git
-
-5. **Update documentation**
-   ```
-   /document "authentication system"
-   ```
-   → Updates docs for new feature
-   → Ensures completeness and accuracy
-
-### Plan Revision Cycle
-
-1. **Create initial plan for TODO**
-   ```
-   /plan 004
-   ```
-   → Creates plans/implementation-001.md for project 004
-
-2. **Discover issues during implementation**
-   ```
-   /revise 004
-   ```
-   → Creates plans/implementation-002.md
-   → Includes revision notes
-
-3. **Further refinement needed**
-   ```
-   /revise 004
-   ```
-   → Creates plans/implementation-003.md
-
-## Context Files
-
-### project/
-- **domain/**: Project-specific domain knowledge
-- **processes/**: Project-specific workflows
-- **standards/**: Code style guides and conventions
-- **templates/**: Code templates and boilerplate
-- **patterns/**: Common design patterns
-
-### core/
-- **system/**: System architecture and patterns
-- **workflows/**: Standard development workflows
-- **standards/**: General coding standards
-
-### repo/
-- **project-structure.md**: Project organization guide
-- **artifact-organization.md**: Artifact naming and structure
-- **state-management.md**: State file formats and synchronization
-
-## Performance Characteristics
-
-### Context Efficiency
-- **80%** of tasks use Level 1 context (1-2 files, isolated)
-- **20%** of tasks use Level 2 context (3-4 files, filtered)
-- **<5%** of tasks use Level 3 context (4-6 files, comprehensive)
-
-### Routing Accuracy
-- Correct agent selection: >95%
-- Appropriate context allocation: >90%
-- Successful artifact creation: >98%
-
-### Quality Standards
-- All code tested and validated
-- Style guide adherence enforced
-- Documentation kept current and concise
-- Git commits for all substantial changes
-
-## Next Steps
-
-1. **Test the system** with `/review` to analyze current repository state
-2. **Review TODO.md** to see identified tasks
-3. **Research a TODO** using `/research {project_number}` from `/add`
-4. **Create a plan** with `/plan {project_number}` for that TODO
-5. **Implement a feature** following the plan
-6. **Customize context** files with your specific domain knowledge
-
-## Documentation
-
-### System Documentation
-- **ARCHITECTURE.md**: Detailed system architecture
-- **QUICK-START.md**: Step-by-step usage guide
-- **TESTING.md**: Testing checklist and procedures
-
-### Directory READMEs
-- **agent/README.md**: Agent system overview and routing
-- **agent/subagents/specialists/README.md**: Specialist catalog (19 specialists)
-- **command/README.md**: Command reference and usage
-- **specs/README.md**: Task workflow and artifact organization
-- **context/README.md**: Context organization guide
-
-## Verification
-
-Verify system integrity and setup. Use canonical status markers (see `context/common/system/status-markers.md`) and respect lazy directory creation (see `context/common/system/artifact-management.md`) when running commands.
-
-### Agent System Verification
-```bash
-# List workflow/utility agents
-ls .opencode/agent/subagents/*.md
-
-# List specialist helpers (should return 20 files)
-find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | sort
-```
-
-### Command System Verification
-```bash
-# List all commands (expect add, context, document, implement, lean, meta, optimize, plan, refactor, research, review, revise, task, todo)
-ls .opencode/command/*.md
-```
-
-### Context Structure Verification
-```bash
-# Verify context directories exist
-ls -d .opencode/context/*/
-
-# Expected output: builder-templates, core, project, repo
-```
-
-### Specs Directory Verification
-```bash
-# Check specs structure
-ls .opencode/specs/
-
-# Verify TODO.md exists
-test -f .opencode/specs/TODO.md && echo "TODO.md exists" || echo "TODO.md missing"
-
-# Verify state.json exists
-test -f .opencode/specs/state.json && echo "state.json exists" || echo "state.json missing"
-
-# Count project directories
-find .opencode/specs -maxdepth 1 -type d -name "[0-9]*" | wc -l
-```
-
-### Complete System Verification
-```bash
-# Run all verification checks
-echo "=== Agent System ==="
-echo "Workflow/utility agents:" && ls .opencode/agent/subagents/*.md
-
-echo -e "\nSpecialist helpers (target: 20)"
-find .opencode/agent/subagents/specialists -maxdepth 1 -name "*.md" -type f | sort
-
-echo -e "\n=== Command System ==="
-ls .opencode/command/*.md
-
-echo -e "\n=== Context Structure ==="
-ls -d .opencode/context/*/
-
-echo -e "\n=== Specs Directory ==="
-echo "TODO.md: $(test -f .opencode/specs/TODO.md && echo "present" || echo "missing")"
-echo "state.json: $(test -f .opencode/specs/state.json && echo "present" || echo "missing")"
-echo "Project directories: $(find .opencode/specs -maxdepth 1 -type d -name "[0-9]*" | wc -l)"
-```
-
-## Support
-
-For questions or issues:
-1. Review relevant documentation files
-2. Check context files for domain knowledge
-3. Examine example artifacts in `.opencode/specs/`
-4. Use `/meta` to extend the system with new agents or commands
-5. Run verification commands to check system integrity
 
 ---
 
-**Your AI-powered development system is ready!**
+## Status Markers
+
+Tasks progress through these states:
+
+1. `[NOT STARTED]` - Task created
+2. `[IN PROGRESS]` - Task actively being worked on
+3. `[RESEARCHED]` - Research completed (optional)
+4. `[PLANNED]` - Plan created (optional)
+5. `[COMPLETED]` - Task fully completed
+6. `[ABANDONED]` - Task abandoned
+
+---
+
+## Language Support
+
+### Lean 4
+
+- Specialized agents: lean-implementation-agent, lean-research-agent
+- Tool integration: lean-lsp-mcp for compilation and diagnostics
+- Context loading: .opencode/context/project/lean4/
+- Graceful degradation if tools unavailable
+
+### General Development
+
+- Languages: Markdown, Python, JavaScript, etc.
+- Standard agents: researcher, implementer
+- Future: Language-specific agents for Python, JavaScript, Rust
+
+---
+
+## Error Handling
+
+All errors are logged to errors.json with:
+
+- Error type (delegation_hang, timeout, status_sync_failure, etc.)
+- Severity (critical, high, medium, low)
+- Context (command, task, agent, session)
+- Fix status tracking
+- Recurrence detection
+
+Use `/errors` to analyze patterns and create fix plans automatically.
+
+---
+
+## Git Workflow
+
+### Automatic Commits
+
+Commits created automatically after:
+- Task completion
+- Phase completion
+- Research completion
+- Plan creation
+
+### Commit Message Format
+
+- Per-phase: `task {number} phase {N}: {description}`
+- Full task: `task {number}: {description}`
+- Other: `{type}: {description}`
+
+### Scoped Commits
+
+Only relevant files committed:
+- Implementation files
+- Tracking files (TODO.md, state.json, plan file)
+- Excludes unrelated changes
+
+### Non-Blocking Failures
+
+Git commit failures are logged but do NOT fail the task.
+
+---
+
+## Troubleshooting
+
+### Delegation Hangs
+
+Should not happen in v2.0. If it does, report as critical bug.
+
+### Tool Unavailable
+
+Lean agents fall back to direct file modification if lean-lsp-mcp unavailable.
+
+### Git Commit Failures
+
+Logged to errors.json but non-blocking. Manual commit if needed.
+
+### Status Sync Failures
+
+Retry logic with exponential backoff. Rollback on failure.
+
+### Timeout During Implementation
+
+Resume with `/implement {number}` to continue from last completed phase.
+
+---
+
+## Contributing
+
+To extend the system:
+
+1. **New Commands**: Add to `.opencode/command/`
+2. **New Subagents**: Add to `.opencode/agent/subagents/`
+3. **New Specialists**: Add to `.opencode/agent/subagents/specialists/`
+4. **New Language Support**: Update orchestrator routing logic
+5. **New Error Types**: Add to errors.json schema
+
+Follow existing patterns and standards:
+- Delegation guide for safety
+- Return format standard for consistency
+- Template files for structure
+
+---
+
+## Version History
+
+### Version 2.0 (2025-12-26)
+
+Complete clean-break refactor addressing Task 191 issues:
+
+- Added delegation safety (session tracking, cycle detection, depth limits, timeouts)
+- Standardized return format for all subagents
+- Atomic status synchronization with two-phase commit
+- Language-based routing (Lean vs general)
+- Error tracking and analysis with /errors command
+- Automatic git commits with scoped changes
+- Resume support for interrupted implementations
+- Comprehensive documentation (ARCHITECTURE, QUICK-START, TESTING)
+
+### Version 1.0 (Previous)
+
+Initial implementation (deprecated due to critical issues).
+
+---
+
+## License
+
+See project LICENSE file.
+
+---
+
+## Support
+
+For issues or questions:
+
+1. Check [QUICK-START.md](QUICK-START.md) for common workflows
+2. Review [ARCHITECTURE.md](ARCHITECTURE.md) for system details
+3. Check errors.json for logged errors
+4. Run `/errors` to analyze error patterns
+5. Create a task to fix the issue
+
+---
+
+## Acknowledgments
+
+Built on lessons learned from Task 191 analysis. Special thanks to the research and planning phases that identified root causes and guided the clean-break refactor.

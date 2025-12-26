@@ -1,435 +1,631 @@
-# System Architecture - .opencode AI Agent System
-
-## Overview
-
-Context-aware AI system for software development using hierarchical agent patterns, XML optimization, and research-backed architecture. Implements complete workflow from research through implementation to verification and documentation.
-
-## Architecture Diagram
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    User Interface                            │
-│              (Custom Slash Commands)                         │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────────────────────┐
-│              Orchestrator                                    │
-│  - Request Analysis                                          │
-│  - Workflow Classification                                   │
-│  - Context Allocation (3-level)                              │
-│  - Agent Routing                                             │
-│  - State Management                                          │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-         ┌─────────────┼─────────────┐
-         │             │             │
-         ▼             ▼             ▼
-┌────────────┐  ┌────────────┐  ┌────────────┐
-│  Reviewer  │  │ Researcher │  │  Planner   │  ... (workflow/utility agents)
-└──────┬─────┘  └──────┬─────┘  └──────┬─────┘
-       │               │               │
-       ▼               ▼               ▼
-┌────────────┐  ┌────────────┐  ┌────────────┐
-│   Code     │  │    Web     │  │ Complexity │  ... (20 specialist subagents)
-│  Quality   │  │  Research  │  │  Analyzer  │
-└──────┬─────┘  └──────┬─────┘  └──────┬─────┘
-       │               │               │
-       ▼               ▼               ▼
-┌─────────────────────────────────────────────────────────────┐
-│              Artifact Storage                                │
-│  specs/NNN_project_name/                                     │
-│    ├── reports/                                              │
-│    ├── plans/                                                │
-│    ├── summaries/                                            │
-│    └── state.json                                            │
-└─────────────────────────────────────────────────────────────┘
-```
-
-## Component Hierarchy
-
-### Layer 1: User Interface
-- **Custom Commands** (11): `/review`, `/research`, `/plan`, `/implement`, etc.
-- **Direct Invocation**: Users invoke commands with arguments
-- **Command Routing**: Commands route to orchestrator with context
-
-### Layer 2: Orchestrator
-- **orchestrator**: Main coordinator
-- **Responsibilities**:
-  - Analyze request and determine workflow type
-  - Allocate context (3-level system)
-  - Route to appropriate primary agent
-  - Monitor execution and artifact creation
-  - Integrate results and update state
-  - Respond to user with references and summaries
-
-### Layer 3: Primary Agents (10)
-
-All primary agents follow the same pattern:
-1. Receive request from orchestrator
-2. Delegate to specialist subagents
-3. Coordinate artifact creation
-4. Return references and summaries (not full artifacts)
-
-**Agent Coordination Patterns:**
-- **Workflow Agents** (reviewer, researcher, planner): Coordinate multi-specialist workflows for analysis and planning
-- **Implementation Agents** (developer, refactorer, documenter): Coordinate code and documentation changes
-- **Utility Agents** (task-executor, task-adder, implementer, meta): Handle generic tasks and system modifications
-
-> **Agent Catalog**: See `agent/subagents/*.md` for workflow/utility agents and `agent/subagents/specialists/*.md` for specialist helpers.
-
-### Layer 4: Specialist Subagents (19)
-
-Specialists perform focused technical work delegated by primary agents. Each specialist:
-- Handles a specific domain (code development, code quality, documentation, research, etc.)
-- Creates detailed artifacts in `specs/NNN_project/`
-- Returns only file references and brief summaries to protect context
-
-**Specialist Organization:**
-- **Functional categories** for easy discovery and logical delegation
-- **19 total specialists** covering all aspects of software development workflow
-- **Context protection pattern** ensures scalability
-
-> **Complete Specialist Catalog**: See [agent/subagents/specialists/README.md](agent/subagents/specialists/README.md) for all 19 specialists organized by category with detailed descriptions, invocation patterns, and artifact creation workflows.
-
-### Layer 5: Artifact Storage
-- **Location**: `specs/NNN_project_name/`
-- **Structure**: reports/, plans/, summaries/, state.json
-- **Access**: Direct file system access for detailed review
-
-#### Artifact Creation Guardrails (see context/common/system/artifact-management.md)
-- Create project root **only** when writing the first artifact; create only the needed subdirectory at write time (reports/ for research/review, plans/ for plan/revise, summaries/ only when emitting summaries).
-- Do not pre-create unused subdirectories or placeholder files; no `.gitkeep`.
-- Write project `state.json` alongside artifact creation; defer state writes until an artifact exists. Global state updates follow artifact writes.
-- `/task` and `/implement` must reuse the plan path attached in TODO.md (when present) and update that plan in place with status markers; `/plan` and `/revise` reuse linked research inputs.
-
-#### Status Propagation (see context/common/system/status-markers.md)
-- Canonical markers: `[NOT STARTED]`, `[IN PROGRESS]`, `[BLOCKED]`, `[ABANDONED]`, `[COMPLETED]` with ISO 8601 timestamps.
-- Plan phases mirror the same markers; `/task` and `/implement` update plan phases during execution.
-- TODO.md uses markers with date-only timestamps; state files mirror status in lowercase (`in_progress`, `completed`, etc.) per `state-schema.md`.
-- Status transitions must stay consistent across TODO, plan, and state.
-
-#### Command/Agent Contracts (see context/common/standards/tasks.md)
-- **/research**: create root + `reports/` only when emitting the first report.
-- **/plan**, **/revise**: create root + `plans/` only when emitting the plan; reuse linked research inputs; `revise` increments plan version.
-- **/implement**: requires plan path; updates plan phases and writes artifacts lazily; state sync when artifact written.
-- **/task**: reuses plan link when present; can run without a plan; adheres to lazy creation and status sync.
-- **/review**: create only the subdir needed for the report/summary being written.
-- **/document**: updates docs; create summaries/ only when writing summary artifacts.
-
-## Context Management
-
-### 3-Level Context Allocation
-
-#### Level 1: Complete Isolation (80% of tasks)
-- **Context**: Task specification + 1-2 specific context files
-- **Use Cases**: Simple, focused tasks
-- **Examples**: Refactor single file, document specific function
-- **Benefits**: Minimal context overhead, fast execution
-
-#### Level 2: Filtered Context (20% of tasks)
-- **Context**: Task specification + 3-4 relevant context files
-- **Use Cases**: Moderate complexity tasks
-- **Examples**: Create implementation plan, research new topic
-- **Benefits**: Balanced context vs. performance
-
-#### Level 3: Comprehensive Context (<5% of tasks)
-- **Context**: Task specification + 4-6 context files + project state
-- **Use Cases**: Complex tasks requiring broad knowledge
-- **Examples**: Implement novel proof, major refactoring
-- **Benefits**: Maximum context for complex decisions
-
-### Context Files Organization
-
-All context files are located in `context/` with the following structure:
-
-```
-context/
-├── common/                  # Shared standards, system guides, templates, workflows
-│   ├── standards/           # code, docs, tests, patterns, plan/report/summary/tasks
-│   ├── system/              # artifact-management, status-markers, state-schema, context-guide
-│   ├── templates/           # command/agent templates
-│   └── workflows/           # delegation, review, task-breakdown, sessions
-└── project/                 # Domain overlays (logic, lean4, math, physics, repo)
-```
-
-## Routing Intelligence
-
-### Request Analysis
-1. Parse user request for intent and scope
-2. Identify workflow type using trigger keywords
-3. Assess complexity level (simple/moderate/complex)
-4. Determine required context files
-5. Select appropriate primary agent
-
-### Workflow Classification
-
-| Workflow | Triggers | Agent | Context | Complexity |
-|----------|----------|-------|---------|------------|
-| Review | "analyze", "review", "verify" | reviewer | context/common/standards/, repo/ | Moderate-Complex |
-| Research | "research", "investigate", "explore" | researcher | context/common/, project/ | Moderate-Complex |
-| Planning | "plan", "design", "outline" | planner | context/common/workflows/, repo/ | Moderate |
-| Revision | "revise", "update plan" | planner | context/common/workflows/, repo/ | Moderate |
-| Implementation | "implement", "develop", "build" | developer | context/common/, project/ | Complex |
-| Refactoring | "refactor", "improve", "clean up" | refactorer | context/common/standards/, project/ | Moderate |
-| Documentation | "document", "update docs" | documenter | context/common/standards/, repo/ | Moderate |
-| Meta | "create agent", "modify command" | meta | context/templates/ | Moderate |
-| Task Execution | "execute task", "run task" | task-executor | context/ (varies by task) | Varies |
-| Task Addition | "add task", "create task" | task-adder | context/repo/ | Simple |
-| General Implementation | "implement" (general) | implementer | context/common/ | Moderate |
-
-### Context Allocation Strategy
-
-```python
-def allocate_context(workflow_type, complexity):
-    if complexity == "simple":
-        return Level1  # 1-2 files
-    elif complexity == "moderate":
-        if workflow_type in ["research", "planning", "refactoring", "documentation"]:
-            return Level2  # 3-4 files
-        else:
-            return Level1
-    elif complexity == "complex":
-        if workflow_type == "implementation":
-            return Level3  # 4-6 files
-        else:
-            return Level2
-    return Level1  # Default
-```
-
-## Context Protection Pattern
-
-### Problem
-Loading full artifacts into orchestrator context causes bloat and reduces efficiency.
-
-### Solution
-All primary agents use specialist subagents that:
-1. Create detailed artifacts in `.opencode/specs/NNN_project/`
-2. Return only file references and brief summaries
-3. Never load full artifact content into primary agent context
-
-### Example Flow
-
-```
-User: /research "REST API design patterns"
-  ↓
-Orchestrator: Route to researcher agent
-  ↓
-Researcher: Delegate to specialists
-  ↓
-Web-Research Specialist:
-  - Conducts web research
-  - Creates detailed findings in reports/web-research-001.md
-  - Returns: {path: "...", summary: "Found best practices for REST API design..."}
-  ↓
-Doc-Research Specialist:
-  - Searches documentation
-  - Creates detailed results in reports/doc-research-001.md
-  - Returns: {path: "...", summary: "Key patterns identified..."}
-  ↓
-Researcher:
-  - Synthesizes summaries (not full artifacts)
-  - Creates comprehensive report in reports/research-001.md
-  - Returns to orchestrator: {path: "...", summary: "...", key_findings: [...]}
-  ↓
-Orchestrator:
-  - Receives only references and summaries
-  - Updates state
-  - Responds to user with references and key findings
-```
-
-### Benefits
-- **Context Efficiency**: Orchestrator context stays clean
-- **Scalability**: Can handle large artifacts without context overflow
-- **Traceability**: All detailed work preserved in organized artifacts
-- **Performance**: Faster routing and coordination decisions
-
-## State Management
-
-### Project State
-**Location**: `specs/NNN_project/state.json`
-
-```json
-{
-  "project_name": "bimodal_proof_system",
-  "project_number": 1,
-  "type": "implementation",
-  "phase": "planning",
-  "reports": ["reports/research-001.md"],
-  "plans": ["plans/implementation-001.md"],
-  "summaries": ["summaries/project-summary.md"],
-  "status": "active",
-  "created": "2025-01-15T10:00:00Z",
-  "last_updated": "2025-01-16T14:30:00Z"
-}
-```
-
-### Global State
-**Location**: `specs/state.json`
-
-```json
-{
-  "active_projects": [1, 2, 5],
-  "completed_projects": [3, 4],
-  "next_project_number": 6,
-  "recent_activities": [...],
-  "pending_tasks": [...]
-}
-```
-
-### TODO.md
-**Location**: `specs/TODO.md`
-
-User-facing task list with priorities and links to reports/plans.
-
-### Synchronization
-- Project state updated after each workflow stage
-- Global state updated after project completion
-- TODO.md synced by todo-manager specialist
-- All updates atomic and consistent
-
-## Tool Integration
-
-### Git/GitHub
-- **Purpose**: Version control and issue tracking
-- **Usage**: Automatic commits after substantial changes
-- **Integration**: All implementation agents
-
-### gh CLI
-- **Purpose**: Push TODO tasks to GitHub issues
-- **Usage**: Task management and collaboration
-- **Integration**: todo-manager specialist
-
-### Web Search
-- **Purpose**: Research and documentation lookup
-- **Usage**: During research workflow
-- **Integration**: researcher agent → web-research-specialist
-
-### Language-Specific Tools
-- **Purpose**: Linters, formatters, test runners
-- **Usage**: Code quality and validation
-- **Integration**: developer, refactorer agents
-
-## Performance Characteristics
-
-### Context Efficiency
-- **Target Distribution**: 80% Level 1, 20% Level 2, <5% Level 3
-- **Actual Overhead**: 80% reduction vs. loading all context
-- **Benefit**: Faster routing, cleaner context windows
-
-### Routing Accuracy
-- **Agent Selection**: >95% correct on first try
-- **Context Allocation**: >90% appropriate level
-- **Artifact Creation**: >98% successful
-
-### Workflow Completion
-- **Task Success Rate**: >95%
-- **State Synchronization**: 100%
-- **User Satisfaction**: High
-
-### XML Optimization Benefits
-- **Consistency**: +25% (structured format)
-- **Routing Accuracy**: +20% (clear workflow stages)
-- **Overall Performance**: +17% improvement
-
-## Quality Standards
-
-### Agent Design
-- XML-optimized structure (context→role→task→workflow)
-- Clear workflow stages with checkpoints
-- @ symbol routing for subagents
-- Context level specification for all routes
-
-### Artifact Organization
-- Standardized directory structure
-- Versioned files (plans)
-- Consistent naming conventions
-- State tracking
-
-### Documentation
-- Complete: All public APIs documented
-- Accurate: Docs match implementation
-- Concise: No bloat, only necessary information
-
-### Code Quality
-- Style guide adherence
-- Coding conventions followed
-- Readability prioritized
-- Git commits for substantial changes
-
-## Extensibility
-
-### Adding New Agents
-```bash
-/meta "Create agent that analyzes proof performance and suggests optimizations"
-```
-
-Creates new agent file following templates and patterns.
-
-### Adding New Commands
-```bash
-/meta "Create command /optimize that runs performance analysis"
-```
-
-Creates new command with proper routing to agents.
-
-### Modifying Existing Components
-```bash
-/meta "Modify researcher agent to add support for arXiv paper search"
-/meta "Modify review command to include performance metrics"
-```
-
-Updates existing agents or commands while preserving functionality.
-
-### Adding Context Files
-Simply create new files in appropriate context directories:
-- `context/project/` for project-specific knowledge
-- `context/common/` for core system patterns
-- `context/repo/` for repository conventions
-- `context/templates/` for meta-system templates
-
-## Security and Safety
-
-### Restricted Operations
-- No direct bash execution by default
-- File operations limited to project directories
-- Git commits require verification
-
-### Validation Gates
-- Type checking before accepting proofs
-- Style checking before committing
-- State validation before updates
-
-### Backup Strategy
-- Git commits after substantial changes
-- State files versioned
-- Artifacts preserved in organized structure
-
-## Future Enhancements
-
-### Potential Additions
-1. **CI/CD Integration**: Automated testing and deployment
-2. **Performance Profiling**: Analyze code performance metrics
-3. **Code Generation**: AI-assisted code generation
-4. **Interactive Development**: Step-by-step interactive development
-5. **Dependency Analysis**: Graphical dependency visualization
-
-### Scalability
-- System designed to handle 100+ projects
-- Context protection enables large artifact sets
-- State management supports complex project dependencies
-
-## References
-- [context/common/system/artifact-management.md](context/common/system/artifact-management.md)
-- [context/common/system/status-markers.md](context/common/system/status-markers.md)
-- [context/common/system/state-schema.md](context/common/system/state-schema.md)
-- [context/common/standards/tasks.md](context/common/standards/tasks.md)
-- [context/common/standards/plan.md](context/common/standards/plan.md)
-- [context/common/standards/report.md](context/common/standards/report.md)
-- [context/common/standards/summary.md](context/common/standards/summary.md)
-- [context/common/standards/documentation.md](context/common/standards/documentation.md)
-- [specs/README.md](specs/README.md)
+# .opencode System Architecture
+
+**Version**: 2.0  
+**Status**: Active  
+**Created**: 2025-12-26  
+**Purpose**: Document the architecture of the refactored .opencode system
 
 ---
 
-**This architecture provides a robust, scalable foundation for software development with intelligent context management and hierarchical agent coordination.**
+## System Overview
+
+The .opencode system is a task management and automation framework designed for software development projects, with specialized support for Lean 4 theorem proving. This document describes the architecture of the version 2.0 system, which represents a complete clean-break refactor from the previous version.
+
+### Purpose and Goals
+
+- Provide structured task management with research, planning, and implementation workflows
+- Prevent delegation hangs and infinite loops through explicit return handling
+- Enable atomic state synchronization across multiple tracking files
+- Support language-specific routing (Lean vs general development)
+- Track and analyze errors for continuous improvement
+- Automate git commits with clear, scoped changes
+
+### Clean Break Rationale
+
+Version 2.0 was built from scratch to address critical issues identified in Task 191:
+
+1. **Delegation Hangs**: Commands would invoke subagents but never receive results, causing indefinite hangs
+2. **Missing Return Handling**: No explicit stages for receiving and validating subagent returns
+3. **Infinite Loops**: No cycle detection or delegation depth limits
+4. **Timeout Failures**: No timeout enforcement, leading to indefinite waits
+5. **Status Sync Failures**: Race conditions when updating TODO.md and state.json
+6. **Missing Git Commits**: No automatic commit creation after task completion
+
+The clean break approach ensures all components follow consistent patterns and standards from the start.
+
+---
+
+## Architecture Principles
+
+### 1. Delegation Safety
+
+All delegation follows strict safety patterns to prevent hangs and loops:
+
+- **Session ID Tracking**: Every delegation has a unique session ID for tracking
+- **Depth Limits**: Maximum delegation depth of 3 levels
+- **Cycle Detection**: Check delegation path before routing to prevent loops
+- **Timeout Enforcement**: All delegations have timeouts (default 3600s)
+- **Return Validation**: All subagent returns validated against standard format
+
+See `.opencode/context/common/workflows/subagent-delegation-guide.md` for detailed patterns.
+
+### 2. Standardized Returns
+
+All subagents return a consistent JSON format:
+
+```json
+{
+  "status": "completed|failed|partial|blocked",
+  "summary": "Brief 2-5 sentence summary",
+  "artifacts": [...],
+  "metadata": {
+    "session_id": "...",
+    "duration_seconds": 123,
+    "agent_type": "...",
+    "delegation_depth": 1,
+    "delegation_path": [...]
+  },
+  "errors": [...],
+  "next_steps": "..."
+}
+```
+
+This enables:
+- Predictable parsing by calling commands
+- Clear status indication
+- Artifact tracking
+- Error propagation
+- Session tracking
+
+See `.opencode/context/common/standards/subagent-return-format.md` for full specification.
+
+### 3. Atomic State Updates
+
+Status changes are synchronized atomically across multiple files using the status-sync-manager:
+
+- **Two-Phase Commit**: Prepare all updates in memory, then commit all or rollback
+- **Files Synced**: TODO.md, state.json, project state.json, plan files
+- **Rollback on Failure**: If any file update fails, all changes are rolled back
+- **Consistency Guarantee**: Status is always consistent across all tracking files
+
+### 4. Language-Based Routing
+
+Tasks are routed to appropriate agents based on the Language field:
+
+- `Language: lean` → lean-implementation-agent, lean-research-agent
+- `Language: markdown` → general agents (researcher, implementer)
+- `Language: python` → general agents (future: python-specific agents)
+
+This enables specialized tooling integration (e.g., lean-lsp-mcp for Lean tasks).
+
+### 5. Error Tracking and Recovery
+
+All errors are logged to errors.json with:
+
+- Error type and severity
+- Context (command, task, agent, session)
+- Fix status tracking
+- Recurrence detection
+- Fix effectiveness analysis
+
+The /errors command analyzes patterns and creates fix plans automatically.
+
+---
+
+## Component Hierarchy
+
+The system has four levels of components:
+
+### Level 0: Orchestrator
+
+**File**: `.opencode/agent/orchestrator.md`
+
+**Responsibilities**:
+- Central coordination and routing
+- Delegation registry management
+- Cycle detection and depth enforcement
+- Timeout monitoring
+- Return validation
+
+**Delegation Registry**:
+```javascript
+{
+  "sess_20251226_abc123": {
+    "command": "implement",
+    "subagent": "task-executor",
+    "task_number": 191,
+    "start_time": "2025-12-26T10:00:00Z",
+    "timeout": 3600,
+    "status": "running",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "task-executor"]
+  }
+}
+```
+
+### Level 1: Commands
+
+**Directory**: `.opencode/command/`
+
+**Commands**:
+- `/task`: Create tasks in TODO.md
+- `/research`: Conduct research and create reports
+- `/plan`: Create implementation plans
+- `/implement`: Execute implementation with resume support
+- `/revise`: Revise existing plans
+- `/review`: Analyze codebase and update registries
+- `/todo`: Maintain TODO.md (clean completed tasks)
+- `/errors`: Analyze errors and create fix plans
+
+**Common Pattern**:
+All commands that invoke subagents follow this workflow:
+1. Preflight: Validate inputs and update status
+2. CheckLanguage: Determine routing based on task language
+3. InvokeSubagent: Delegate to appropriate subagent with session tracking
+4. ReceiveResults: Wait for and receive subagent return (with timeout)
+5. ProcessResults: Extract artifacts and determine next steps
+6. Postflight: Update status atomically and create git commit
+7. ReturnSuccess: Return summary to user
+
+### Level 2: Subagents
+
+**Directory**: `.opencode/agent/subagents/`
+
+**Core Subagents**:
+- `atomic-task-numberer`: Thread-safe task number allocation
+- `status-sync-manager`: Atomic multi-file status updates
+- `researcher`: General research for non-Lean tasks
+- `planner`: Implementation plan creation
+- `implementer`: Direct implementation for simple tasks
+- `task-executor`: Multi-phase plan execution with resume support
+
+**Lean-Specific Subagents**:
+- `lean-implementation-agent`: Lean proof implementation using lean-lsp-mcp
+- `lean-research-agent`: Lean library research (LeanExplore, Loogle, LeanSearch)
+
+**Support Subagents**:
+- `error-diagnostics-agent`: Error pattern analysis and fix recommendations
+- `git-workflow-manager`: Scoped git commits with auto-generated messages
+
+**Common Pattern**:
+All subagents follow this structure:
+1. Receive inputs with delegation context
+2. Validate inputs
+3. Execute task (may delegate to specialists)
+4. Create artifacts
+5. Return standardized format with session tracking
+
+### Level 3: Specialists
+
+**Directory**: `.opencode/agent/subagents/specialists/` (future)
+
+**Purpose**: Highly focused helpers for specific tasks (e.g., web-research-specialist)
+
+**Constraint**: Maximum delegation depth of 3 means specialists cannot delegate further
+
+---
+
+## Delegation Flow
+
+### Session ID Generation
+
+Format: `sess_{timestamp}_{random_6char}`
+
+Example: `sess_1703606400_a1b2c3`
+
+Generated by caller before invoking subagent.
+
+### Cycle Detection
+
+Before delegating, check if target agent is already in delegation path:
+
+```python
+def check_cycle(delegation_path, target_agent):
+    if target_agent in delegation_path:
+        raise CycleError(f"Cycle detected: {delegation_path} → {target_agent}")
+    return False
+```
+
+### Depth Enforcement
+
+Maximum depth: 3 levels
+
+```python
+def check_depth(delegation_depth):
+    if delegation_depth >= 3:
+        raise DepthError(f"Max delegation depth (3) exceeded: {delegation_depth}")
+    return True
+```
+
+### Timeout Enforcement
+
+Default timeouts by operation:
+- Research: 3600s (1 hour)
+- Planning: 1800s (30 minutes)
+- Implementation: 7200s (2 hours)
+- Simple operations: 300s (5 minutes)
+
+Timeout handling:
+- Return partial results if available
+- Mark task as IN PROGRESS (not failed)
+- Provide actionable recovery message
+- Log timeout to errors.json
+
+### Return Validation
+
+All returns validated against subagent-return-format.md:
+1. Check JSON structure
+2. Validate required fields present
+3. Check status is valid enum
+4. Verify session_id matches expected
+5. Validate summary within length limits
+6. Validate artifacts have valid paths
+
+---
+
+## State Management
+
+### TODO.md
+
+**Location**: `.opencode/specs/TODO.md`
+
+**Purpose**: User-facing task list with status markers
+
+**Format**:
+```markdown
+### 191. Fix subagent delegation hang
+- **Effort**: 14 hours
+- **Status**: [COMPLETED]
+- **Priority**: critical
+- **Language**: markdown
+- **Started**: 2025-12-20T10:00:00Z
+- **Completed**: 2025-12-26T18:00:00Z
+- **Plan**: [implementation-001.md](191_fix_subagent_delegation_hang/plans/implementation-001.md)
+- **Research**: [research-001.md](191_fix_subagent_delegation_hang/reports/research-001.md)
+```
+
+**Status Markers**:
+- `[NOT STARTED]`: Task created but not started
+- `[IN PROGRESS]`: Task actively being worked on
+- `[RESEARCHED]`: Research completed (intermediate state)
+- `[PLANNED]`: Plan created (intermediate state)
+- `[COMPLETED]`: Task fully completed
+- `[ABANDONED]`: Task abandoned (won't complete)
+
+### state.json
+
+**Location**: `.opencode/specs/state.json`
+
+**Purpose**: Machine-readable project state
+
+**Format**:
+```json
+{
+  "tasks": {
+    "191": {
+      "status": "completed",
+      "started": "2025-12-20T10:00:00Z",
+      "completed": "2025-12-26T18:00:00Z",
+      "effort_hours": 14,
+      "language": "markdown"
+    }
+  }
+}
+```
+
+### errors.json
+
+**Location**: `.opencode/specs/errors.json`
+
+**Purpose**: Error tracking and fix effectiveness analysis
+
+**Format**:
+```json
+{
+  "_schema_version": "1.0.0",
+  "_last_updated": "2025-12-26T00:00:00Z",
+  "errors": [
+    {
+      "id": "error_20251220_abc123",
+      "timestamp": "2025-12-20T10:00:00Z",
+      "type": "delegation_hang",
+      "severity": "critical",
+      "context": {
+        "command": "implement",
+        "task_number": 191,
+        "agent": "task-executor"
+      },
+      "message": "Command hung waiting for subagent return",
+      "fix_status": "resolved",
+      "fix_plan_ref": "191_fix_subagent_delegation_hang/plans/implementation-001.md",
+      "fix_task_ref": 191,
+      "recurrence_count": 1,
+      "first_seen": "2025-12-20T10:00:00Z",
+      "last_seen": "2025-12-20T10:00:00Z"
+    }
+  ]
+}
+```
+
+### Plan Files
+
+**Location**: `.opencode/specs/{task_number}_{topic_slug}/plans/implementation-{version:03d}.md`
+
+**Purpose**: Phased implementation plans with status tracking
+
+**Phase Status Markers**:
+- `[NOT STARTED]`: Phase not yet started
+- `[IN PROGRESS]`: Phase actively being worked on
+- `[COMPLETED]`: Phase fully completed
+
+**Resume Logic**: /implement command checks plan file for first incomplete phase and resumes from there.
+
+---
+
+## Git Workflow
+
+### Automatic Commits
+
+Git commits are created automatically after:
+- Task completion (full task)
+- Phase completion (if using plan)
+- Research completion
+- Plan creation
+- Error fix plan creation
+- Review completion
+
+### Scoped Commits
+
+Only specified files are committed:
+- Implementation files (code, documentation)
+- Tracking files (TODO.md, state.json, plan file)
+- Exclude unrelated changes
+
+### Commit Message Format
+
+**Per-phase commits**:
+```
+task {number} phase {N}: {phase_description}
+```
+
+Example: `task 191 phase 1: add return handling to commands`
+
+**Full task commits**:
+```
+task {number}: {task_description}
+```
+
+Example: `task 191: fix subagent delegation hang`
+
+**Other commits**:
+```
+{type}: {description}
+```
+
+Examples:
+- `errors: create fix plan for 5 delegation_hang errors (task 192)`
+- `review: update registries and create tasks`
+- `todo: clean 10 completed tasks`
+
+### Non-Blocking Failures
+
+Git commit failures are logged to errors.json but do NOT fail the task. This ensures task progress is not lost due to git issues.
+
+---
+
+## Language Routing
+
+### Routing Logic
+
+Commands check the `Language` field in TODO.md to determine routing:
+
+```python
+def route_to_agent(task_language, operation):
+    if task_language == "lean":
+        if operation == "research":
+            return "lean-research-agent"
+        elif operation == "implement":
+            return "lean-implementation-agent"
+    else:
+        if operation == "research":
+            return "researcher"
+        elif operation == "implement":
+            return "implementer"
+```
+
+### Lean-Specific Integration
+
+Lean tasks use specialized agents that integrate with lean-lsp-mcp:
+
+**lean-implementation-agent**:
+- Checks for lean-lsp-mcp availability in .mcp.json
+- Uses lean-lsp-mcp for compilation and diagnostics
+- Falls back to direct file modification if tool unavailable
+- Logs tool unavailability to errors.json
+
+**lean-research-agent**:
+- Integrates with LeanExplore, Loogle, LeanSearch (planned)
+- Falls back to web search for Lean documentation
+- Loads context from .opencode/context/project/lean4/
+
+### Future Language Support
+
+The architecture supports adding language-specific agents for:
+- Python (python-implementation-agent, python-research-agent)
+- JavaScript/TypeScript
+- Rust
+- etc.
+
+---
+
+## Error Handling and Recovery
+
+### Error Types
+
+- `delegation_hang`: Command hung waiting for subagent
+- `tool_failure`: External tool (lean-lsp-mcp) unavailable or failed
+- `status_sync_failure`: Failed to update TODO.md/state.json atomically
+- `build_error`: Compilation or build failed
+- `git_commit_failure`: Git commit failed
+- `timeout`: Operation exceeded timeout
+- `validation_failed`: Input validation failed
+- `file_not_found`: Required file missing
+- `cycle_detected`: Delegation would create cycle
+- `max_depth_exceeded`: Delegation depth limit exceeded
+
+### Error Logging
+
+All errors logged to errors.json with:
+- Unique ID
+- Timestamp
+- Type and severity
+- Context (command, task, agent, session)
+- Error message
+- Fix status
+- Recurrence tracking
+
+### Error Analysis
+
+The /errors command:
+1. Groups errors by type and root cause
+2. Checks historical fix effectiveness
+3. Identifies recurring errors (fixes that failed)
+4. Recommends specific fixes
+5. Creates implementation plan for fixes
+6. Creates TODO task linking fix plan
+7. Updates errors.json with fix references
+
+### Recovery Patterns
+
+**Delegation Hang**:
+- Root cause: Missing ReceiveResults stage
+- Fix: Add explicit return handling stages
+- Prevention: All commands follow standard delegation pattern
+
+**Timeout**:
+- Root cause: Operation too complex for timeout
+- Fix: Adjust timeout or break into smaller phases
+- Recovery: Resume from partial results
+
+**Status Sync Failure**:
+- Root cause: Concurrent file updates or I/O error
+- Fix: Add retry logic with exponential backoff
+- Recovery: Retry status update
+
+**Git Commit Failure**:
+- Root cause: Nothing to commit or merge conflict
+- Fix: Check git status before committing
+- Recovery: Manual commit if needed (non-blocking)
+
+---
+
+## Testing and Validation
+
+### Component Testing
+
+Test each component individually:
+- Commands: Test with mock subagents
+- Subagents: Test with mock inputs and validate returns
+- Return format: Validate all returns against schema
+
+### Integration Testing
+
+Test full workflows:
+- task → research → plan → implement
+- Resume interrupted implementation
+- Error analysis and fix plan creation
+- Git commit creation and scoping
+
+### Delegation Safety Testing
+
+Test safety mechanisms:
+- Cycle detection: Force delegation cycle
+- Depth limit: Force depth > 3
+- Timeout handling: Simulate long-running subagent
+- Return validation: Send malformed return
+
+### Language Routing Testing
+
+Test language-specific routing:
+- Lean tasks → lean agents
+- Markdown tasks → general agents
+- Mixed-language projects
+
+### Error Recovery Testing
+
+Test error handling:
+- Tool unavailable: Remove lean-lsp-mcp
+- Status sync failures: Concurrent updates
+- Git commit failures: Nothing to commit
+- Partial completion: Timeout during phase
+
+---
+
+## Performance Considerations
+
+### Lazy Directory Creation
+
+Directories are created only when writing files, not during planning:
+- Reduces filesystem operations
+- Avoids empty directories
+- Cleaner project structure
+
+### Delegation Depth Limit
+
+Maximum depth of 3 prevents:
+- Excessive delegation overhead
+- Deep call stacks
+- Difficult debugging
+- Performance degradation
+
+### Timeout Tuning
+
+Timeouts are tuned per operation type:
+- Short timeouts for simple operations (5 minutes)
+- Medium timeouts for research/planning (30-60 minutes)
+- Long timeouts for implementation (2 hours)
+
+Prevents indefinite waits while allowing complex operations to complete.
+
+### Atomic Status Updates
+
+Two-phase commit ensures:
+- Consistency across files
+- No partial updates
+- Rollback on failure
+- Minimal file I/O
+
+---
+
+## Future Enhancements
+
+### Planned Features
+
+1. **Parallel Phase Execution**: Execute independent phases in parallel
+2. **Dependency Analysis**: Automatic dependency detection between tasks
+3. **Progress Tracking**: Real-time progress updates during long operations
+4. **Batch Task Execution**: Execute multiple tasks in sequence or parallel
+5. **Advanced Error Analysis**: Machine learning for error pattern detection
+6. **Tool Integration**: Additional tool integrations (Loogle, LeanExplore, etc.)
+7. **Language Support**: Python, JavaScript, Rust-specific agents
+8. **Performance Profiling**: Track and optimize slow operations
+
+### Extensibility
+
+The architecture supports extension through:
+- New commands (add to .opencode/command/)
+- New subagents (add to .opencode/agent/subagents/)
+- New specialists (add to .opencode/agent/subagents/specialists/)
+- New language routing (update orchestrator routing logic)
+- New error types (add to errors.json schema)
+
+---
+
+## Related Documentation
+
+- Quick Start Guide: `.opencode/QUICK-START.md`
+- Testing Guide: `.opencode/TESTING.md`
+- Delegation Guide: `.opencode/context/common/workflows/subagent-delegation-guide.md`
+- Return Format Standard: `.opencode/context/common/standards/subagent-return-format.md`
+- Task 191 Research: `.opencode/specs/191_fix_subagent_delegation_hang/reports/research-001.md`
+- Task 191 Plan: `.opencode/specs/191_fix_subagent_delegation_hang/plans/implementation-001.md`
