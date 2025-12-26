@@ -186,7 +186,9 @@
 
 ### 186. Refactor MAINTENANCE.md to include /review update instructions
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-25
+- **Completed**: 2025-12-25
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -206,7 +208,9 @@
 
 ### 187. Refactor review.md workflow context to specify registry update workflow
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-25
+- **Completed**: 2025-12-25
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -226,7 +230,9 @@
 
 ### 188. Refactor /review command to load review.md workflow context
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-25
+- **Completed**: 2025-12-25
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -479,10 +485,11 @@
   - [x] Test coverage for integration scenarios at least 85 percent
 - **Impact**: Ensures system components integrate correctly and prevents regression when modules are modified independently.
 
-### 174. Add property-based testing framework and metalogic tests
+### 174. Add property-based testing framework and metalogic tests ✅
 - **Effort**: 23 hours
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-25
+- **Completed**: 2025-12-25
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -493,6 +500,7 @@
   - Detailed Findings: [Documentation/Research/property-based-testing-lean4.md]
 - **Plan**: [Implementation Plan](.opencode/specs/174_property_based_testing/plans/implementation-001.md)
 - **Plan Summary**: 7-phase implementation plan (18-23 hours). Phase 1: Infrastructure validation (1-2h). Phase 2: TaskModel generator (4-6h, main challenge). Phase 3: Metalogic tests (2-3h). Phase 4: Derivation tests (2-3h). Phase 5: Semantic tests (2-3h). Phase 6: Formula tests (2-3h). Phase 7: Documentation & CI (2-3h).
+- **Implementation Summary**: [.opencode/specs/174_property_based_testing/summaries/implementation-summary-20251225.md]
 - **Files Affected**:
   - LogosTest/Core/Property/ (new directory)
   - LogosTest/Core/Metalogic/SoundnessPropertyTest.lean (new)
@@ -502,13 +510,13 @@
   - lakefile.lean (Plausible dependency)
 - **Description**: Integrate a property-based testing framework (QuickCheck-style) and add property tests for metalogic properties. Property-based testing is essential for verifying soundness, derivation properties, and semantic properties systematically across large input spaces. Research identified Plausible as the only mature framework for Lean 4.
 - **Acceptance Criteria**:
-  - [ ] Property-based testing framework integrated (Plausible recommended)
-  - [ ] Property tests for soundness implemented
-  - [ ] Property tests for derivation properties implemented
-  - [ ] Property tests for semantic properties implemented
-  - [ ] Property tests for formula transformations implemented
-  - [ ] All property tests passing with sufficient coverage
-  - [ ] Documentation for writing property tests added
+  - [x] Property-based testing framework integrated (Plausible recommended)
+  - [x] Property tests for soundness implemented
+  - [x] Property tests for derivation properties implemented
+  - [x] Property tests for semantic properties implemented
+  - [x] Property tests for formula transformations implemented
+  - [x] All property tests passing with sufficient coverage
+  - [x] Documentation for writing property tests added
 - **Impact**: Critical for metalogic verification. Property-based tests provide higher confidence in correctness by testing properties across large input spaces rather than individual cases.
 
 ### 175. Establish CI/CD pipeline with automated testing and linting
@@ -558,9 +566,8 @@
 
 ### 177. Update examples to use latest APIs and add new feature demonstrations
 - **Effort**: 10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [IN PROGRESS]
 - **Started**: 2025-12-25
-- **Completed**: 2025-12-25
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None

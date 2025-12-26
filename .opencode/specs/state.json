@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker project. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-25T23:15:00Z",
+  "_last_updated": "2025-12-25T23:45:00Z",
   "next_project_number": 190,
   "project_numbering": {
     "min": 0,
@@ -69,17 +69,46 @@
       "project_number": 174,
       "project_name": "property_based_testing",
       "type": "implementation",
-      "phase": "implementation",
-      "status": "in_progress",
+      "phase": "completed",
+      "status": "completed",
       "created": "2025-12-24T12:30:00Z",
       "started": "2025-12-25",
+      "completed": "2025-12-25",
       "research_completed": "2025-12-24T23:30:00Z",
       "planning_completed": "2025-12-24T23:59:59Z",
+      "last_updated": "2025-12-25"
+    },
+    {
+      "project_number": 189,
+      "project_name": "research_divide_flag",
+      "type": "research",
+      "phase": "completed",
+      "status": "researched",
+      "research_mode": "standard",
+      "created": "2025-12-25T23:15:00Z",
+      "started": "2025-12-25",
+      "completed": "2025-12-25",
       "last_updated": "2025-12-25"
     }
   ],
   "completed_projects": [],
   "recent_activities": [
+    {
+      "timestamp": "2025-12-25T23:45:00Z",
+      "activity": "Completed tasks 186-188: Refactored /review command to be configuration-driven, reading update instructions from MAINTENANCE.md"
+    },
+    {
+      "timestamp": "2025-12-25T00:35:00Z",
+      "activity": "Completed task 182: Fixed /research status update bug - identified root cause and documented fix (orchestrator must call status-sync-manager in postflight)"
+    },
+    {
+      "timestamp": "2025-12-25T23:30:00Z",
+      "activity": "Completed research for task 189: --divide flag implementation for /research command (5 key findings, 3 recommendations, 8-10 hour implementation estimate)"
+    },
+    {
+      "timestamp": "2025-12-25T15:30:00Z",
+      "activity": "Completed research for task 183: DeductionTheorem.lean build errors - identified classical reasoning pattern issue and documented solution"
+    },
     {
       "timestamp": "2025-12-25T23:15:00Z",
       "activity": "Created task 189: Add --divide flag to /research command for topic subdivision"
@@ -463,9 +492,10 @@
     {
       "project_number": 174,
       "title": "Add property-based testing framework and metalogic tests",
-      "status": "in_progress",
+      "status": "completed",
       "created": "2025-12-24T12:30:00Z",
       "started": "2025-12-25",
+      "completed": "2025-12-25",
       "research_completed": "2025-12-24T23:30:00Z",
       "planning_completed": "2025-12-24T23:59:59Z",
       "last_updated": "2025-12-25"
@@ -485,10 +515,10 @@
     {
       "project_number": 177,
       "title": "Update examples to use latest APIs and add new feature demonstrations",
-      "status": "researched",
+      "status": "in_progress",
       "created": "2025-12-24T12:30:00Z",
       "started": "2025-12-25",
-      "completed": "2025-12-25"
+      "last_updated": "2025-12-25"
     },
     {
       "project_number": 178,
@@ -527,10 +557,11 @@
     {
       "project_number": 183,
       "title": "Fix DeductionTheorem.lean build errors (3 errors)",
-      "status": "in_progress",
+      "status": "researched",
       "created": "2025-12-25T00:45:00Z",
       "started": "2025-12-25",
-      "notes": "Root cause: Decidable instance for list membership. Solution: Classical logic with open Classical, noncomputable defs, Or.elim pattern. Remaining: Syntax issue with .elim in match expressions - needs have bindings or restructure."
+      "notes": "Research complete. Root cause: .elim pattern not recognized as tactic in match expressions. Solution: Replace (em P).elim with by_cases h : P tactic. All 3 errors have same root cause.",
+      "research_completed": "2025-12-25T15:30:00Z"
     },
     {
       "project_number": 184,
@@ -548,26 +579,37 @@
     {
       "project_number": 186,
       "title": "Refactor MAINTENANCE.md to include /review update instructions",
-      "status": "not_started",
-      "created": "2025-12-25T23:09:04Z"
+      "status": "completed",
+      "created": "2025-12-25T23:09:04Z",
+      "started": "2025-12-25",
+      "completed": "2025-12-25",
+      "last_updated": "2025-12-25"
     },
     {
       "project_number": 187,
       "title": "Refactor review.md workflow context to specify registry update workflow",
-      "status": "not_started",
-      "created": "2025-12-25T23:09:04Z"
+      "status": "completed",
+      "created": "2025-12-25T23:09:04Z",
+      "started": "2025-12-25",
+      "completed": "2025-12-25",
+      "last_updated": "2025-12-25"
     },
     {
       "project_number": 188,
       "title": "Refactor /review command to load review.md workflow context",
-      "status": "not_started",
-      "created": "2025-12-25T23:09:04Z"
+      "status": "completed",
+      "created": "2025-12-25T23:09:04Z",
+      "started": "2025-12-25",
+      "completed": "2025-12-25",
+      "last_updated": "2025-12-25"
     },
     {
       "project_number": 189,
       "title": "Add --divide flag to /research command for topic subdivision",
-      "status": "not_started",
-      "created": "2025-12-25T23:15:00Z"
+      "status": "researched",
+      "created": "2025-12-25T23:15:00Z",
+      "started": "2025-12-25",
+      "completed": "2025-12-25"
     }
   ],
   "maintenance_summary": {

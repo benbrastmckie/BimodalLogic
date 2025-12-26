@@ -454,6 +454,64 @@ done
 
 ---
 
+## Update Instructions for /review Command
+
+When the `/review` command completes a repository analysis, it should update the following files to reflect findings and register remaining work:
+
+### Files to Update
+
+1. **IMPLEMENTATION_STATUS.md** - Update module completion percentages, sorry counts, and Known Limitations section
+   - Add new gaps/limitations discovered during review
+   - Remove limitations that have been resolved
+   - Update completion percentages based on current state
+
+2. **FEATURE_REGISTRY.md** - Register new features or capabilities discovered
+   - Add entries for undocumented features found in code
+   - Update feature status based on implementation state
+   - Cross-reference with IMPLEMENTATION_STATUS.md
+
+3. **SORRY_REGISTRY.md** - Update sorry placeholder tracking
+   - Add newly discovered sorry placeholders
+   - Remove resolved placeholders
+   - Update resolution guidance based on findings
+
+4. **TACTIC_REGISTRY.md** - Update custom tactic documentation
+   - Add newly discovered tactics
+   - Update tactic descriptions and usage examples
+   - Cross-reference with implementation files
+
+### Task Registration Workflow
+
+After updating the registry/status files, `/review` should create tasks in TODO.md for all remaining work identified during the review:
+
+1. **Use /add command** to register each identified task
+   - Ensures proper task numbering via state.json
+   - Maintains lazy directory creation (no project roots created)
+   - Preserves all task metadata and status markers
+
+2. **Task metadata requirements**:
+   - Clear description of work to be done
+   - Effort estimate based on complexity
+   - Priority based on impact and urgency
+   - Language metadata (lean, markdown, etc.)
+   - Dependencies and blocking relationships
+
+3. **Do NOT implement tasks** - `/review` only identifies and registers work
+   - Implementation happens via `/implement` command
+   - Planning happens via `/plan` command
+   - Research happens via `/research` command
+
+### Repository-Agnostic Design
+
+These instructions are general and apply to any repository using this workflow system. The specific file paths may vary by repository, but the workflow remains consistent:
+
+- Locate the repository's MAINTENANCE.md file
+- Read this "Update Instructions for /review Command" section
+- Update the files listed in this section
+- Register tasks for remaining work via /add
+
+---
+
 ## Maintenance History
 
 ### 2025-12-20: Emoji Removal (Project #007)
