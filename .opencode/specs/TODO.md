@@ -1,13 +1,13 @@
 # TODO
 
-**Last Updated:** 2025-12-25T23:15:00Z
+**Last Updated:** 2025-12-26T00:30:00Z
 
 ## Overview
 
-- **Total Tasks:** 31
+- **Total Tasks:** 33
 - **Completed:** 1
-- **High Priority:** 9
-- **Medium Priority:** 9
+- **High Priority:** 10
+- **Medium Priority:** 10
 - **Low Priority:** 12
 
 ---
@@ -15,6 +15,35 @@
 ## High Priority
  
 ### Automation
+
+### 191. Fix subagent delegation hang issue in command workflows
+- **Effort**: 4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/implement.md
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+  - .opencode/agent/orchestrator.md
+  - .opencode/agent/subagents/task-executor.md
+  - .opencode/agent/subagents/batch-task-orchestrator.md
+  - .opencode/agent/subagents/researcher.md
+  - .opencode/agent/subagents/planner.md
+- **Description**: Commands that call subagents (like /implement, /research, /plan) often get stuck on "Good! Now I'll route to the lean-implementation-orchestrator to execute the implementation plan:" followed by "Delegating..." with no further progress. The root causes are: (1) Commands are routing to subagents using the task tool but not properly handling the response or waiting for completion, (2) Subagent routing logic may be creating infinite delegation loops or missing return paths, (3) Commands may be expecting synchronous responses from async subagent calls, (4) Missing error handling when subagents fail or timeout, (5) Orchestrator may not be properly coordinating between command and subagent layers. Find all root causes and implement comprehensive fixes to ensure commands complete successfully when delegating to subagents.
+- **Acceptance Criteria**:
+  - [ ] Root cause analysis completed identifying all delegation hang scenarios
+  - [ ] Commands properly wait for subagent completion before proceeding
+  - [ ] Subagents have clear return paths and completion signals
+  - [ ] No infinite delegation loops in routing logic
+  - [ ] Proper error handling for subagent failures and timeouts
+  - [ ] Orchestrator correctly coordinates command→subagent→response flow
+  - [ ] All commands (/implement, /research, /plan, /revise, /review) tested and working
+  - [ ] Documentation updated with subagent delegation patterns and error handling
+  - [ ] Test cases added for delegation scenarios
+- **Impact**: Critical bug fix. Without working subagent delegation, most commands are unusable and the entire workflow system is broken. This blocks all development work that relies on /implement, /research, /plan, and other commands.
 
 ### 169. Improve /implement command to protect primary agent context window
 - **Effort**: 8-9 hours
@@ -146,12 +175,15 @@
 
 ### 184. Fix Truth.lean build error (swap_past_future proof)
 - **Effort**: 1 hour
-- **Status**: [IN PROGRESS]
+- **Status**: [RESEARCHED]
 - **Started**: 2025-12-25
+- **Completed**: 2025-12-25
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: 173
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/184_truth_lean_build_error/reports/research-001.md]
 - **Files Affected**:
   - Logos/Core/Semantics/Truth.lean
 - **Description**: Fix pre-existing build error in Truth.lean line 632 (type mismatch in swap_past_future proof) that is blocking compilation of all test files including the new integration tests from task 173. This error prevents verification that the 106 new integration tests (82% coverage) actually compile and pass.
@@ -575,6 +607,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/177_examples_update/reports/research-001.md]
   - Summary: [.opencode/specs/177_examples_update/summaries/research-summary.md]
+- **Plan**: [Implementation Plan](.opencode/specs/177_examples_update/plans/implementation-001.md)
+- **Plan Summary**: 4-phase implementation plan (8-12 hours). Phase 1: Modal automation examples (4-6h). Phase 2: Temporal automation (2-3h). Phase 3: Perpetuity automation (1-2h). Phase 4: Documentation updates (1-2h).
 - **Files Affected**:
   - Logos/Examples/BimodalProofs.lean
   - Logos/Examples/ModalProofs.lean
@@ -685,11 +719,16 @@
 
 ### 189. Add --divide flag to /research command for topic subdivision
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-25
+- **Completed**: 2025-12-25
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/189_research_divide_flag/reports/research-001.md]
+  - Summary: [.opencode/specs/189_research_divide_flag/summaries/research-summary.md]
 - **Files Affected**:
   - .opencode/command/research.md
   - .opencode/agent/subagents/researcher.md
@@ -706,5 +745,30 @@
   - [ ] Status markers and state sync work correctly for both modes
   - [ ] Documentation updated to explain --divide flag behavior
 - **Impact**: Provides more flexible research workflow - simple research creates focused reports without overhead of summary compilation, while complex research can be divided into manageable subtopics with a summary overview.
+
+### 190. Improve MAINTENANCE.md documentation structure and content
+- **Effort**: 2 hours
+- **Status**: [PLANNED]
+- **Started**: 2025-12-26
+- **Completed**: 2025-12-26
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Plan**: [Implementation Plan](.opencode/specs/190_improve_maintenance_md_documentation_structure_and_content/plans/implementation-002.md)
+- **Files Affected**:
+  - Documentation/ProjectInfo/MAINTENANCE.md
+- **Description**: Improve MAINTENANCE.md to include FEATURE_REGISTRY.md and TACTIC_REGISTRY.md in the Related Documentation section, and explicitly ban backwards compatibility layers in preference of a clean-break approach to improve code quality and avoid technical debt. Make systematic changes to improve consistency and organization without removing content.
+- **Acceptance Criteria**:
+  - [ ] FEATURE_REGISTRY.md added to Related Documentation section
+  - [ ] TACTIC_REGISTRY.md added to Related Documentation section
+  - [ ] New section added explicitly banning backwards compatibility layers
+  - [ ] Clean-break approach documented as preferred methodology
+  - [ ] Rationale provided for avoiding technical debt from compatibility layers
+  - [ ] Document structure improved for consistency
+  - [ ] Section organization enhanced for better navigation
+  - [ ] No content removed, only reorganized and enhanced
+  - [ ] Cross-references updated where relevant
+- **Impact**: Improves MAINTENANCE.md completeness by documenting all registry files and establishes clear policy against backwards compatibility layers, reducing future technical debt and improving code quality.
 
 ---
