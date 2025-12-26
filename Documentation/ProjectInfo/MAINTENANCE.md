@@ -6,10 +6,12 @@ This document describes the workflow for maintaining TODO.md and related project
 
 ## Related Documentation
 
-**Three-Document Model** (consolidated from four documents on 2025-12-05):
+**Five-Document Model** (consolidated from four documents on 2025-12-05; expanded to five on 2025-12-26):
 - [TODO.md](../../TODO.md) - Active task tracking (active work only)
-- [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking (includes Known Limitations section)
-- [SORRY_REGISTRY.md](../ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
+- [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking (includes Known Limitations section)
+- [FEATURE_REGISTRY.md](FEATURE_REGISTRY.md) - Feature tracking and capability documentation
+- [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
+- [TACTIC_REGISTRY.md](TACTIC_REGISTRY.md) - Custom tactic documentation and usage
 
 ---
 
@@ -126,9 +128,11 @@ Update these files in order:
 |-------|------|---------|
 | 1 | Spec summaries | Create completion summary |
 | 2 | IMPLEMENTATION_STATUS.md | Module %, sorry counts, Known Limitations section |
-| 3 | SORRY_REGISTRY.md | Remove resolved items |
-| 4 | TODO.md | Remove task, update counts |
-| 5 | Git commit | Comprehensive message |
+| 3 | FEATURE_REGISTRY.md | Add new features, update feature status |
+| 4 | SORRY_REGISTRY.md | Remove resolved items |
+| 5 | TACTIC_REGISTRY.md | Add/update custom tactics |
+| 6 | TODO.md | Remove task, update counts |
+| 7 | Git commit | Comprehensive message |
 
 ### Decision Tree: Which Document to Update
 
@@ -139,8 +143,14 @@ Is this about module completion %?
 Is this about a gap/limitation being fixed?
   -> IMPLEMENTATION_STATUS.md Known Limitations section (remove entry)
 
+Is this about a new feature or capability?
+  -> FEATURE_REGISTRY.md (add entry with status and description)
+
 Is this about a sorry placeholder?
   -> SORRY_REGISTRY.md (remove/move to resolved)
+
+Is this about a custom tactic?
+  -> TACTIC_REGISTRY.md (add/update tactic documentation)
 
 Is this about task status?
   -> TODO.md (remove if complete, update if partial)
@@ -154,14 +164,18 @@ Is this about workflow or process?
 After major updates, verify bidirectional links work:
 
 ```bash
-# Check SORRY_REGISTRY.md references
+# Check registry references
 grep -l "SORRY_REGISTRY.md" TODO.md Documentation/ProjectInfo/*.md
+grep -l "FEATURE_REGISTRY.md" TODO.md Documentation/ProjectInfo/*.md
+grep -l "TACTIC_REGISTRY.md" TODO.md Documentation/ProjectInfo/*.md
 
-# Check all three core docs reference each other appropriately
+# Check all core docs reference each other appropriately
 for doc in TODO.md Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md \
-           Documentation/ProjectInfo/SORRY_REGISTRY.md; do
+           Documentation/ProjectInfo/FEATURE_REGISTRY.md \
+           Documentation/ProjectInfo/SORRY_REGISTRY.md \
+           Documentation/ProjectInfo/TACTIC_REGISTRY.md; do
   echo "=== $doc ==="
-  grep -E "(TODO\.md|IMPLEMENTATION_STATUS|SORRY_REGISTRY|MAINTENANCE)" "$doc"
+  grep -E "(TODO\.md|IMPLEMENTATION_STATUS|FEATURE_REGISTRY|SORRY_REGISTRY|TACTIC_REGISTRY|MAINTENANCE)" "$doc"
 done
 ```
 
@@ -451,6 +465,109 @@ for link in $(grep -oh '\[.*\]([^)]*\.md)' TODO.md | grep -oh '([^)]*)' | tr -d 
   [ -f "$link" ] || echo "Missing: $link"
 done
 ```
+
+---
+
+## Backwards Compatibility Policy
+
+### Philosophy: Clean-Break Over Compatibility Layers
+
+This project follows a **clean-break approach** to code evolution, explicitly avoiding backwards compatibility layers in favor of direct, breaking changes when necessary.
+
+### Policy
+
+**NEVER** create backwards compatibility layers:
+- No deprecated function wrappers
+- No legacy API shims
+- No compatibility mode flags
+- No dual code paths for old/new behavior
+
+**ALWAYS** use clean-break approach:
+- Make breaking changes directly
+- Update all call sites in same commit
+- Document migration in commit message
+- Remove old code completely
+
+### Rationale
+
+**Technical Debt**: Compatibility layers accumulate technical debt that compounds over time:
+- Increased code complexity (maintaining two implementations)
+- Higher maintenance burden (bugs must be fixed in both paths)
+- Slower development velocity (changes require updating both paths)
+- Reduced code quality (unclear which path is "correct")
+- Harder onboarding (new contributors must learn both old and new)
+
+**Clean-Break Benefits**:
+- Single source of truth (one implementation)
+- Clear migration path (all code uses new approach)
+- Easier refactoring (no legacy constraints)
+- Better code quality (no cruft or workarounds)
+- Faster development (change once, done)
+
+### Examples
+
+**Bad (Compatibility Layer)**:
+```lean
+-- Old API (deprecated but kept for compatibility)
+def oldFunction (x : Nat) : Nat := x + 1
+
+-- New API
+def newFunction (x : Nat) : Nat := x + 2
+
+-- Compatibility wrapper
+@[deprecated newFunction]
+def oldFunction := newFunction
+```
+
+**Good (Clean-Break)**:
+```lean
+-- Simply replace old implementation with new one
+def function (x : Nat) : Nat := x + 2  -- Changed from x + 1
+
+-- Update all call sites in same commit
+-- Document change in commit message
+```
+
+### When Breaking Changes Are Acceptable
+
+Breaking changes are acceptable when:
+1. **Internal APIs**: Code is not exposed to external users
+2. **Early Development**: Project is pre-1.0 or in active development
+3. **Clear Improvement**: New approach is objectively better
+4. **Manageable Scope**: All call sites can be updated in single commit
+5. **Documented Migration**: Commit message explains what changed and why
+
+### Migration Process
+
+When making breaking changes:
+
+1. **Plan**: Identify all call sites that need updating
+2. **Implement**: Make the breaking change
+3. **Update**: Update all call sites in same commit
+4. **Test**: Verify all tests pass with new implementation
+5. **Document**: Write clear commit message explaining:
+   - What changed
+   - Why it changed
+   - How to migrate (if not obvious)
+6. **Commit**: Single atomic commit with all changes
+
+### Exceptions
+
+The only acceptable "compatibility" is:
+- **Data migration scripts**: For persistent data (databases, config files)
+- **Version detection**: To handle different external library versions
+- **Feature flags**: For gradual rollout of new features (temporary, removed after rollout)
+
+These are not compatibility layers because they:
+- Don't maintain dual code paths indefinitely
+- Have clear removal timeline
+- Serve operational needs, not code convenience
+
+### Related Standards
+
+- Task 169: Implemented clean-break approach for /implement command (removed backward compatibility, updated 80+ files in single commit)
+- LEAN_STYLE_GUIDE.md: Prefer direct changes over deprecated wrappers
+- VERSIONING.md: Breaking changes are acceptable pre-1.0
 
 ---
 
