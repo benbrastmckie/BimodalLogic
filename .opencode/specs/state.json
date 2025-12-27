@@ -1,0 +1,228 @@
+{
+  "_schema_version": "1.0.0",
+  "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
+  "_last_updated": "2025-12-27T22:30:00Z",
+  "next_project_number": 200,
+  "project_numbering": {
+    "min": 0,
+    "max": 999,
+    "policy": "increment_modulo_1000",
+    "_comment": "Project numbers wrap around to 000 after 999. Ensure old projects are archived before reuse."
+  },
+  "state_references": {
+    "archive_state_path": ".opencode/specs/archive/state.json",
+    "maintenance_state_path": ".opencode/specs/maintenance/state.json",
+    "_comment": "References to specialized state files. These files are auto-created if missing."
+  },
+  "active_projects": [
+    {
+      "project_number": 191,
+      "project_name": "fix_subagent_delegation_hang",
+      "type": "bugfix",
+      "phase": "planning",
+      "status": "planned",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2025-12-26T00:00:00Z",
+      "started": "2025-12-26",
+      "completed": "2025-12-26",
+      "last_updated": "2025-12-26",
+      "plan_path": ".opencode/specs/191_fix_subagent_delegation_hang/plans/implementation-001.md"
+    },
+    {
+      "project_number": 183,
+      "project_name": "deduction_theorem_build_errors",
+      "type": "bugfix",
+      "phase": "implementation",
+      "status": "in_progress",
+      "priority": "high",
+      "language": "lean",
+      "created": "2025-12-25T00:00:00Z",
+      "started": "2025-12-25",
+      "last_updated": "2025-12-26",
+      "plan_path": ".opencode/specs/183_deduction_theorem_build_errors/plans/implementation-001.md"
+    },
+    {
+      "project_number": 184,
+      "project_name": "truth_lean_build_error",
+      "type": "bugfix",
+      "phase": "blocked",
+      "status": "blocked",
+      "priority": "high",
+      "language": "lean",
+      "created": "2025-12-25T00:00:00Z",
+      "started": "2025-12-25",
+      "blocked": "2025-12-26",
+      "last_updated": "2025-12-26"
+    },
+    {
+      "project_number": 189,
+      "project_name": "research_divide_flag",
+      "type": "feature",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2025-12-25T00:00:00Z",
+      "started": "2025-12-25",
+      "research_completed": "2025-12-25",
+      "last_updated": "2025-12-26"
+    },
+    {
+      "project_number": 197,
+      "project_name": "loogle_cli_integration",
+      "type": "feature",
+      "phase": "planning",
+      "status": "planned",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2025-12-27T00:00:00Z",
+      "started": "2025-12-27",
+      "completed": "2025-12-27",
+      "last_updated": "2025-12-27",
+      "plan_path": ".opencode/specs/197_loogle_cli_integration/plans/implementation-001.md"
+    }
+  ],
+  "completed_projects": [
+    {
+      "project_number": 177,
+      "project_name": "examples_update",
+      "type": "enhancement",
+      "completed": "2025-12-25",
+      "summary": "Update examples to use latest proof strategies and patterns"
+    },
+    {
+      "project_number": 190,
+      "project_name": "improve_maintenance_md_documentation",
+      "type": "documentation",
+      "completed": "2025-12-26",
+      "summary": "Improve MAINTENANCE.md documentation structure and content"
+    }
+  ],
+  "repository_health": {
+    "last_assessed": "2025-12-27T11:15:00Z",
+    "overall_score": 90,
+    "active_tasks": 38,
+    "completed_tasks": 10,
+    "blocked_tasks": 2,
+    "in_progress_tasks": 3,
+    "not_started_tasks": 21,
+    "high_priority_tasks": 14,
+    "medium_priority_tasks": 11,
+    "low_priority_tasks": 11,
+    "production_readiness": "excellent",
+    "technical_debt": {
+      "sorry_count": 5,
+      "build_errors": 4,
+      "status": "well-documented",
+      "_comment": "Technical debt tracked in task system. Build errors being addressed in tasks 192-193."
+    }
+  },
+  "recent_activities": [
+    {
+      "timestamp": "2025-12-27T22:30:00Z",
+      "activity": "Marked task 197 as PLANNED: Loogle CLI integration plan created (3 hours, 5 phases)"
+    },
+    {
+      "timestamp": "2025-12-27T11:15:00Z",
+      "activity": "Created task 199: Optimize self-healing feature to prevent context bloat in commands (4 hours, medium priority)"
+    },
+    {
+      "timestamp": "2025-12-27T00:00:00Z",
+      "activity": "Auto-created state.json with self-healing - initialized from TODO.md (37 tasks, 199 next number)"
+    },
+    {
+      "timestamp": "2025-12-26T00:00:00Z",
+      "activity": "Marked task 191 as PLANNED: Subagent delegation hang fix plan created (14 hours, 3 phases)"
+    },
+    {
+      "timestamp": "2025-12-26T00:00:00Z",
+      "activity": "Completed task 190: Improved MAINTENANCE.md documentation structure"
+    },
+    {
+      "timestamp": "2025-12-26T00:00:00Z",
+      "activity": "Marked task 184 as BLOCKED: Truth.lean build error requires structural induction (3-4 hours)"
+    },
+    {
+      "timestamp": "2025-12-25T00:00:00Z",
+      "activity": "Marked task 189 as RESEARCHED: --divide flag research completed"
+    },
+    {
+      "timestamp": "2025-12-25T00:00:00Z",
+      "activity": "Marked task 183 as IN PROGRESS: DeductionTheorem.lean build error fixes"
+    },
+    {
+      "timestamp": "2025-12-25T00:00:00Z",
+      "activity": "Completed task 177: Examples update with latest proof strategies"
+    }
+  ],
+  "pending_tasks": [
+    {
+      "project_number": 192,
+      "title": "Fix GeneralizedNecessitation.lean termination proofs (2 errors)",
+      "status": "not_started",
+      "priority": "high",
+      "language": "lean"
+    },
+    {
+      "project_number": 193,
+      "title": "Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)",
+      "status": "not_started",
+      "priority": "high",
+      "language": "lean"
+    },
+    {
+      "project_number": 194,
+      "title": "Verify original task completion (tasks 183-184)",
+      "status": "not_started",
+      "priority": "high",
+      "language": "lean"
+    },
+    {
+      "project_number": 195,
+      "title": "Review and improve proof search automation",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "lean"
+    },
+    {
+      "project_number": 196,
+      "title": "Complete opencode refactor per plan",
+      "status": "not_started",
+      "priority": "high",
+      "language": "markdown"
+    },
+    {
+      "project_number": 198,
+      "title": "Revert command argument handling fixes and implement $ARGUMENTS pattern",
+      "status": "not_started",
+      "priority": "high",
+      "language": "markdown"
+    },
+    {
+      "project_number": 199,
+      "title": "Optimize self-healing feature to prevent context bloat in commands",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "markdown"
+    }
+  ],
+  "maintenance_summary": {
+    "_comment": "Quick reference to maintenance status - full history in maintenance/state.json",
+    "last_maintenance": "2025-12-24T22:00:00Z",
+    "next_scheduled": "2026-01-27T00:00:00Z",
+    "health_trend": "stable_excellent"
+  },
+  "archive_summary": {
+    "_comment": "Quick reference to archived projects - full details in archive/state.json",
+    "archive_location": ".opencode/specs/archive/",
+    "archive_state_file": ".opencode/specs/archive/state.json"
+  },
+  "schema_info": {
+    "version": "1.0.0",
+    "backward_compatible": true,
+    "extensible": true,
+    "self_healing_enabled": true,
+    "_comment": "This schema supports backward compatibility and self-healing. New fields are additive and optional. Missing infrastructure files are auto-created."
+  }
+}

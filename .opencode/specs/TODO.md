@@ -1,14 +1,14 @@
 # TODO
 
-**Last Updated:** 2025-12-27T00:00:00Z
+**Last Updated:** 2025-12-27T11:15:00Z
 
 ## Overview
 
 - **Total Tasks:** 38
 - **Completed:** 2
 - **High Priority:** 14
-- **Medium Priority:** 10
-- **Low Priority:** 12
+- **Medium Priority:** 11
+- **Low Priority:** 11
 
 ---
 
@@ -404,11 +404,20 @@
 
 ### 197. Integrate Loogle CLI tool into lean-research-agent
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
+- **Started**: 2025-12-27
+- **Completed**: 2025-12-27
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/197_loogle_cli_integration/reports/research-001.md]
+  - Summary: [.opencode/specs/197_loogle_cli_integration/summaries/research-summary.md]
+  - API Documentation: [.opencode/context/project/lean4/tools/loogle-api.md]
+- **Plan**: [Implementation Plan](.opencode/specs/197_loogle_cli_integration/plans/implementation-001.md)
+- **Plan Summary**: 5-phase implementation plan (3 hours). Phase 1: Binary check & index management (0.5h). Phase 2: Interactive mode integration (1.0h). Phase 3: Query generation & response parsing (0.75h). Phase 4: lean-research-agent integration (0.5h). Phase 5: Testing & documentation (0.25h). Uses persistent interactive mode with pre-built index for optimal performance (0.1-2s queries). Implements graceful fallback to web search.
+- **Research Findings** (2025-12-27): Comprehensive research completed on Loogle CLI integration. Binary located at /home/benjamin/.cache/loogle/.lake/build/bin/loogle. Recommended integration approach is persistent interactive mode with pre-built index for optimal performance (0.1-2s queries vs 60-120s cold start). JSON output format is well-structured. Five query modes supported: constant search, name fragment, type pattern, conclusion pattern, and combined. Implementation complexity assessed as medium (3 hours effort). Key recommendation: use interactive mode with --read-index for fast startup (5-10s) and low query latency.
 - **Files Affected**:
   - .opencode/agent/subagents/lean-research-agent.md
   - .opencode/context/project/lean4/tools/loogle-api.md
@@ -978,5 +987,32 @@
   - [ ] Documentation updated to explain $ARGUMENTS pattern
   - [ ] No regression in command functionality
 - **Impact**: Fixes critical command argument passing bug using proven, simple $ARGUMENTS pattern from old system. Removes verbose, fragile workarounds. Restores full functionality to /research, /plan, /implement, and /task commands.
+
+### 199. Optimize self-healing feature to prevent context bloat in commands
+- **Effort**: 4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/context/common/system/self-healing-guide.md
+  - .opencode/context/common/system/state-schema.md
+  - .opencode/context/common/system/context-guide.md
+  - .opencode/command/*.md (all commands)
+  - .opencode/agent/orchestrator.md
+- **Description**: The self-healing feature for auto-creating missing state.json was implemented with extensive documentation (438 lines in self-healing-guide.md). This creates context bloat since self-healing is only needed on first run or after corruption - not during normal operations. The current approach loads self-healing logic into every command's context. Investigate and implement a more efficient approach: (1) Move self-healing logic to orchestrator preflight only, not individual commands, (2) Reduce self-healing-guide.md to essential reference (100-150 lines max), (3) Extract implementation details to a separate optional reference document, (4) Update commands to simply reference @.opencode/specs/state.json without embedding self-healing logic, (5) Implement lazy-loading pattern where self-healing guide is only loaded when file is actually missing, (6) Add simple validation check in orchestrator that triggers self-healing once per session if needed, (7) Document the optimization approach and rationale. Goal: Minimize context overhead while maintaining robust infrastructure recovery.
+- **Acceptance Criteria**:
+  - [ ] Self-healing logic consolidated in orchestrator preflight (not in every command)
+  - [ ] self-healing-guide.md reduced to 100-150 lines (essential reference only)
+  - [ ] Implementation details moved to separate optional reference document
+  - [ ] Commands updated to load state.json without self-healing context
+  - [ ] Lazy-loading pattern implemented (guide loaded only when needed)
+  - [ ] Orchestrator validates infrastructure once per session
+  - [ ] Context bloat reduced by 80%+ in typical command execution
+  - [ ] Self-healing still works correctly when state.json missing
+  - [ ] Documentation explains optimization approach
+  - [ ] No regression in self-healing functionality
+- **Impact**: Reduces context overhead by 400+ lines per command execution while maintaining robust self-healing. Commands load faster and use less context budget. Self-healing remains available when needed but doesn't bloat normal operations.
 
 ---
