@@ -171,6 +171,22 @@ If interrupted, run the same command again. The system automatically resumes fro
 
 Analyzes errors.json, creates fix plan, creates TODO task for fixes.
 
+### Build Custom System Architecture
+
+```
+/meta "Create a system for managing e-commerce orders"
+```
+
+Launches an interactive interview process to:
+- Gather domain and purpose information
+- Identify use cases and workflows
+- Design agent architecture (orchestrator + specialized subagents)
+- Generate context files (domain knowledge, processes, standards, templates)
+- Create custom commands and workflows
+- Generate complete .opencode structure tailored to your domain
+
+The system builder creates production-ready AI agent systems following research-backed patterns for optimal performance.
+
 ---
 
 ## Documentation
@@ -220,26 +236,57 @@ Analyzes errors.json, creates fix plan, creates TODO task for fixes.
 
 ## Commands
 
+All commands include explicit argument parsing specifications that tell the orchestrator exactly how to extract parameters from user input. This ensures reliable command invocation with clear error messages.
+
 ### Task Management
 
 - `/task <description>` - Create new task
+  - Example: `/task Implement feature X`
 - `/todo` - Clean completed tasks from TODO.md
 
 ### Research and Planning
 
-- `/research <number> [--divide]` - Conduct research
-- `/plan <number>` - Create implementation plan
-- `/revise <number>` - Revise existing plan
+- `/research <number> [prompt]` - Conduct research
+  - Required: Task number (integer)
+  - Optional: Additional context/focus
+  - Example: `/research 197`
+  - Example: `/research 197 "Focus on CLI integration"`
+  
+- `/plan <number> [prompt]` - Create implementation plan
+  - Required: Task number (integer)
+  - Optional: Planning context
+  - Example: `/plan 196`
+  - Example: `/plan 196 "Emphasize testing"`
+  
+- `/revise <number> [prompt]` - Revise existing plan
+  - Required: Task number (integer)
+  - Optional: Revision reason
+  - Example: `/revise 196`
+  - Example: `/revise 196 "Simplify approach"`
 
 ### Implementation
 
-- `/implement <number>` - Execute implementation
-- `/implement <start>-<end>` - Execute range of tasks
+- `/implement <number> [prompt]` - Execute implementation
+  - Required: Task number (integer)
+  - Optional: Implementation context
+  - Example: `/implement 196`
+  - Example: `/implement 196 "Focus on error handling"`
+  
+- `/implement <start>-<end> [prompt]` - Execute range of tasks
+  - Required: Task range (format: N-M)
+  - Optional: Batch context
+  - Example: `/implement 105-107`
+  - Example: `/implement 105-107 "Batch implementation"`
 
 ### Analysis
 
 - `/review` - Analyze codebase and update registries
 - `/errors [--all] [--type <type>]` - Analyze errors and create fix plans
+
+### System Building
+
+- `/meta <domain_description>` - Interactive system builder to create custom .opencode architectures for new domains
+  - Example: `/meta "Create a system for managing e-commerce orders"`
 
 ---
 
@@ -259,7 +306,13 @@ Analyzes errors.json, creates fix plan, creates TODO task for fixes.
 │       ├── lean-implementation-agent.md
 │       ├── lean-research-agent.md
 │       ├── error-diagnostics-agent.md
-│       └── git-workflow-manager.md
+│       ├── git-workflow-manager.md
+│       └── system-builder/          # System architecture generation
+│           ├── agent-generator.md
+│           ├── command-creator.md
+│           ├── context-organizer.md
+│           ├── domain-analyzer.md
+│           └── workflow-designer.md
 ├── command/                         # User commands
 │   ├── task.md
 │   ├── research.md
@@ -268,7 +321,8 @@ Analyzes errors.json, creates fix plan, creates TODO task for fixes.
 │   ├── revise.md
 │   ├── review.md
 │   ├── todo.md
-│   └── errors.md
+│   ├── errors.md
+│   └── meta.md                      # System builder
 ├── context/                         # Context files
 │   ├── common/                      # Common context
 │   │   ├── standards/

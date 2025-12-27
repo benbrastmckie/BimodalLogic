@@ -1,187 +1,243 @@
 ---
 name: task
 agent: orchestrator
-description: "Add tasks to TODO.md while updating state.json numbering"
+description: "Add tasks to TODO.md with standardized format"
 context_level: 1
 language: markdown
-subagents:
-  - task-adder
-mcp_requirements: []
-registry_impacts:
-  - TODO.md
-  - .opencode/specs/state.json
-creates_root_on: never
-creates_subdir: []
 ---
+
+**Task Input (required):** $ARGUMENTS (task description; e.g., `/task "Implement feature X"`)
 
 Context Loaded:
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/common/system/state-schema.md
 @.opencode/context/common/system/status-markers.md
-@.opencode/context/common/system/artifact-management.md
-@.opencode/context/common/standards/tasks.md
-@.opencode/context/common/standards/commands.md
-@.opencode/context/common/standards/patterns.md
+@.opencode/context/common/standards/subagent-return-format.md
+@.opencode/context/common/workflows/subagent-delegation-guide.md
 
 <context>
-  <system_context>Task creation command that must preserve numbering, status markers, and lazy directory rules.</system_context>
-  <domain_context>ProofChecker .opencode task registry (TODO.md + state.json).</domain_context>
-  <task_context>Assign new task IDs, append tasks to TODO.md with full metadata, and sync state.json without creating project directories.</task_context>
-  <execution_context>Single-step write; only state.json and TODO.md are touched. No project roots/subdirs may be created.</execution_context>
+  <system_context>
+    Task creation system with atomic numbering and standardized TODO.md format.
+    Ensures unique task numbers and consistent task structure.
+  </system_context>
+  <domain_context>
+    TODO.md task management with status markers, effort estimates, and language tracking.
+  </domain_context>
+  <task_context>
+    Create new task entry in TODO.md with next available number, standardized format,
+    and initial [NOT STARTED] status.
+  </task_context>
+  <execution_context>
+    Atomic task numbering via atomic-task-numberer subagent. Status synchronization
+    via status-sync-manager. No directory creation (lazy creation principle).
+  </execution_context>
 </context>
 
-<role>Task Adder responsible for atomic task creation and numbering integrity.</role>
+<role>Task Creation Command - Add new tasks to TODO.md with unique numbering</role>
 
-<task>Create one or more tasks using the next available project number, append them to TODO.md with `[NOT STARTED]` markers, and sync state.json pending_tasks while incrementing `next_project_number`.</task>
-
-## Quick Reference
-
-**Most Common Usage** (90% of cases):
-```bash
-/task "Task description"
-```
-
-**With Priority Override**:
-```bash
-/task "Urgent task" --priority High
-```
-
-**Lean Task**:
-```bash
-/task "Prove theorem X" --language lean
-```
-
-**Batch Tasks**:
-```bash
-/task "Task 1" "Task 2" "Task 3"
-```
-
-**From File**:
-```bash
-/task --file path/to/tasks.md
-```
-
-For full documentation, see sections below.
-
-## Description
-
-Add tasks to TODO.md with atomic number allocation and intelligent metadata inference.
-
-**Minimal Usage**: Provide just a description - all other metadata will be auto-populated with sensible defaults.
-
-**Advanced Usage**: Override defaults with flags for priority, language, effort, files, etc.
-
-**Batch Usage**: Provide multiple descriptions or use --file for bulk task creation.
-
-## Required Input
-
-- **Description**: Task description (required)
-
-## Optional Input (Auto-Populated if Not Provided)
-
-- **Priority**: Default = Medium
-- **Language**: Default = markdown (inferred from description/files if possible)
-- **Effort**: Default = 2 hours (inferred from description complexity)
-- **Files Affected**: Default = TBD
-- **Dependencies**: Default = None
-- **Blocking**: Default = None
-- **Acceptance Criteria**: Default = Generic checklist based on description
-- **Impact**: Default = Generic statement based on description
-
-## Input Validation
-
-<validation>
-  <pre_flight>
-    1. Validate at least one description provided
-    2. Validate descriptions are non-empty strings
-    3. Validate --file path exists if provided
-    4. Reject invalid flag combinations
-  </pre_flight>
-  
-  <error_messages>
-    - Empty description: "Error: Description cannot be empty. Usage: /task \"task description\""
-    - No input: "Error: No task description provided. Usage: /task \"task description\""
-    - Invalid file: "Error: File not found: {path}. Check the path and try again."
-    - Invalid flags: "Error: Unknown flag: {flag}. See /task --help for valid flags."
-  </error_messages>
-</validation>
+<task>
+  Add new task to TODO.md with atomic number allocation, standardized format,
+  language detection, and synchronized state.json update.
+</task>
 
 <workflow_execution>
-  <stage id="1" name="Preflight">
-    <action>Validate inputs and reserve numbers</action>
+  <stage id="1" name="ParseInput">
+    <action>Parse task description and extract metadata</action>
     <process>
-      1. Parse `$ARGUMENTS` (strings or `--file` extraction); reject empty input.
-      2. Read `.opencode/specs/state.json` and capture `next_project_number` (zero-padded).
-      3. Validate uniqueness; do not create any project directories.
+      1. Parse task description from user input
+      2. Extract priority (default: Medium)
+      3. Extract effort estimate (default: TBD)
+      4. Detect language from description keywords:
+         - "lean", "proof", "theorem" → Language: lean
+         - "markdown", "doc", "README" → Language: markdown
+         - Default → Language: general
+      5. Validate description is non-empty
     </process>
+    <validation>
+      - Description must be non-empty string
+      - Priority must be: Low|Medium|High|Critical
+      - Effort must be: TBD or valid time estimate
+    </validation>
   </stage>
-  <stage id="2" name="CreateTasks">
-    <action>Write TODO entries and update state</action>
+
+  <stage id="2" name="PrepareDelegation">
+    <action>Prepare delegation context for atomic-task-numberer</action>
     <process>
-      1. Append tasks under the correct priority section using the template from tasks.md with **Status** `[NOT STARTED]` and required metadata (Effort, Priority, Language, Blocking, Dependencies, Files Affected, Description, Acceptance Criteria, Impact).
-      2. Increment `next_project_number` in state.json and add pending_tasks entries (`status: not_started`, `created_at`: UTC date).
-      3. Do not add project links; `/research` or `/plan` will create artifacts later.
+      1. Generate session_id: sess_{timestamp}_{random_6char}
+      2. Set delegation_depth = 1 (orchestrator → task → atomic-task-numberer)
+      3. Set delegation_path = ["orchestrator", "task", "atomic-task-numberer"]
+      4. Set timeout = 60s (simple operation)
+      5. Store session_id for validation
     </process>
+    <delegation_context>
+      {
+        "session_id": "sess_{timestamp}_{random}",
+        "delegation_depth": 1,
+        "delegation_path": ["orchestrator", "task", "atomic-task-numberer"],
+        "timeout": 60
+      }
+    </delegation_context>
   </stage>
-  <stage id="3" name="Postflight">
-    <action>Summarize results</action>
+
+  <stage id="3" name="InvokeTaskNumberer">
+    <action>Invoke atomic-task-numberer to get next task number</action>
     <process>
-      1. Report assigned task numbers and titles.
-      2. Confirm state.json increment and TODO additions.
-      3. Remind that project roots/subdirs are created only when artifacts are written by /research or /plan.
+      1. Route to atomic-task-numberer subagent
+      2. Pass delegation context
+      3. Request next available task number
+      4. Set timeout to 60s
     </process>
+    <invocation>
+      task_tool(
+        subagent_type="atomic-task-numberer",
+        prompt="Allocate next task number",
+        session_id=delegation_context["session_id"],
+        delegation_depth=1,
+        delegation_path=delegation_context["delegation_path"],
+        timeout=60
+      )
+    </invocation>
+  </stage>
+
+  <stage id="4" name="ReceiveTaskNumber">
+    <action>Wait for and receive task number from subagent</action>
+    <process>
+      1. Poll for completion (max 60s)
+      2. Receive return object from atomic-task-numberer
+      3. Handle timeout if no response
+      4. Handle exceptions if invocation failed
+    </process>
+    <timeout_handling>
+      If timeout (no response after 60s):
+        1. Log timeout error with session_id
+        2. Return error to user
+        3. Recommend retry
+    </timeout_handling>
+    <validation>
+      1. Validate return against subagent-return-format.md
+      2. Check session_id matches expected
+      3. Validate status is "completed"
+      4. Extract task_number from return
+    </validation>
+  </stage>
+
+  <stage id="5" name="CreateTODOEntry">
+    <action>Create formatted TODO.md entry</action>
+    <process>
+      1. Format task entry:
+         ### {number}. {description}
+         - **Effort**: {effort}
+         - **Status**: [NOT STARTED]
+         - **Priority**: {priority}
+         - **Language**: {language}
+      2. Append to TODO.md
+      3. Preserve existing task numbering
+    </process>
+    <format_example>
+      ### 197. Implement LeanSearch REST API integration
+      - **Effort**: 4 hours
+      - **Status**: [NOT STARTED]
+      - **Priority**: High
+      - **Language**: lean
+    </format_example>
+  </stage>
+
+  <stage id="6" name="UpdateState">
+    <action>Update state.json with new task</action>
+    <process>
+      1. Load state.json
+      2. Add task entry:
+         {
+           "task_number": {number},
+           "status": "not_started",
+           "priority": {priority},
+           "language": {language},
+           "created": "{YYYY-MM-DD}"
+         }
+      3. Write state.json atomically
+    </process>
+    <atomic>
+      Use file locking or atomic write to prevent race conditions
+    </atomic>
+  </stage>
+
+  <stage id="7" name="ReturnSuccess">
+    <action>Return task number and summary to user</action>
+    <return_format>
+      Task {number} created: {description}
+      - Priority: {priority}
+      - Language: {language}
+      - Status: [NOT STARTED]
+    </return_format>
   </stage>
 </workflow_execution>
 
 <routing_intelligence>
-  <context_allocation>Level 1 (single-operation write to TODO/state).</context_allocation>
-  <lean_routing>Language metadata is recorded but no Lean routing occurs during creation.</lean_routing>
-  <batch_handling>Support multiple tasks in one invocation; process sequentially to preserve numbering.</batch_handling>
+  <context_allocation>
+    Level 1 (Isolated) - Simple task creation, minimal context needed
+  </context_allocation>
+  <delegation>
+    Single delegation to atomic-task-numberer (depth 1)
+    No further delegation from atomic-task-numberer
+  </delegation>
 </routing_intelligence>
 
-<artifact_management>
-  <lazy_creation>No project roots/subdirs are created by /task.</lazy_creation>
-  <state_sync>Always increment `next_project_number` and add pending_tasks entries.</state_sync>
-  <registry_sync>Registry files (IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, TACTIC_REGISTRY.md) are unchanged by /task.</registry_sync>
-  <git_commits>No commits are made by /task; if follow-up edits occur, use git-commits.md + git-workflow-manager to stage only relevant files and commit after artifacts exist.</git_commits>
-</artifact_management>
+<validation>
+  <pre_flight>
+    - Description validated (non-empty)
+    - Priority validated (valid enum)
+    - Language detected or defaulted
+  </pre_flight>
+  <mid_flight>
+    - Task number received and validated
+    - Return format validated against standard
+    - Session ID matches expected
+  </mid_flight>
+  <post_flight>
+    - TODO.md updated with new task
+    - state.json updated atomically
+    - Task number returned to user
+  </post_flight>
+</validation>
 
 <quality_standards>
-  <status_markers>New tasks start as `[NOT STARTED]` with no timestamps.</status_markers>
-  <language_routing>Capture `Language` for each task; default to user-provided or infer from input when provided.</language_routing>
-  <no_emojis>Outputs and artifacts must be emoji-free.</no_emojis>
-  <validation>Reject invalid/empty input; ensure JSON remains valid.</validation>
+  <status_markers>
+    Use [NOT STARTED] for new tasks per status-markers.md
+  </status_markers>
+  <language_detection>
+    Detect language from description keywords, default to "general"
+  </language_detection>
+  <no_emojis>
+    No emojis in task entries or output
+  </no_emojis>
+  <atomic_updates>
+    state.json updates must be atomic to prevent race conditions
+  </atomic_updates>
 </quality_standards>
 
 <usage_examples>
-  ### Simple (Recommended for Quick Tasks)
-  ```bash
-  /task "Fix typo in README"
-  # → Task created with all metadata auto-populated
-  ```
-  
-  ### With Optional Overrides
-  ```bash
-  /task "Implement feature X" --priority High --language lean --effort "4 hours"
-  # → Task created with specified metadata
-  ```
-  
-  ### Batch Creation
-  ```bash
-  /task "Task 1" "Task 2" "Task 3"
-  # → Multiple tasks created with sequential numbers
-  ```
-  
-  ### File Extraction
-  ```bash
-  /task --file docs/FEATURES.md
-  # → Extracts tasks from file and creates them
-  ```
+  - `/task Implement LeanSearch REST API integration`
+  - `/task Add missing directory READMEs --priority High`
+  - `/task Fix delegation hang in task-executor --effort 2h`
 </usage_examples>
 
-<validation>
-  <pre_flight>Inputs parsed; next_project_number reserved; no directories touched.</pre_flight>
-  <mid_flight>TODO and state updated atomically; numbering increments correctly.</mid_flight>
-  <post_flight>Summary returned with assigned numbers; remind lazy-creation boundaries.</post_flight>
-</validation>
+<error_handling>
+  <timeout>
+    If atomic-task-numberer times out:
+      - Log error with session_id
+      - Return error to user
+      - Recommend retry
+  </timeout>
+  <validation_failure>
+    If return validation fails:
+      - Log validation error
+      - Return error to user
+      - Include details of validation failure
+  </validation_failure>
+  <state_update_failure>
+    If state.json update fails:
+      - Rollback TODO.md changes
+      - Return error to user
+      - Log error for debugging
+  </state_update_failure>
+</error_handling>

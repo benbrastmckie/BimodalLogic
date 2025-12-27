@@ -156,16 +156,46 @@ The system has four levels of components:
 - `/review`: Analyze codebase and update registries
 - `/todo`: Maintain TODO.md (clean completed tasks)
 - `/errors`: Analyze errors and create fix plans
+- `/meta`: Build custom .opencode architectures through interactive interview
+
+**Argument Parsing**:
+All commands include an explicit `<argument_parsing>` section that specifies:
+- **Invocation format**: How users should call the command
+- **Parameters**: Position, type, required/optional status, extraction logic
+- **Flags**: Boolean flags and their defaults
+- **Parsing logic**: Step-by-step extraction process
+- **Error handling**: User-friendly error messages for invalid inputs
+
+Example from `/research` command:
+```markdown
+<argument_parsing>
+  <invocation_format>
+    /research TASK_NUMBER [PROMPT]
+  </invocation_format>
+  
+  <parameters>
+    <task_number>
+      <position>1</position>
+      <type>integer</type>
+      <required>true</required>
+      <extraction>Extract first argument after command name</extraction>
+    </task_number>
+  </parameters>
+</argument_parsing>
+```
+
+The orchestrator reads this section and applies the parsing logic to extract arguments from user input.
 
 **Common Pattern**:
 All commands that invoke subagents follow this workflow:
-1. Preflight: Validate inputs and update status
-2. CheckLanguage: Determine routing based on task language
-3. InvokeSubagent: Delegate to appropriate subagent with session tracking
-4. ReceiveResults: Wait for and receive subagent return (with timeout)
-5. ProcessResults: Extract artifacts and determine next steps
-6. Postflight: Update status atomically and create git commit
-7. ReturnSuccess: Return summary to user
+1. ArgumentParsing: Extract and validate arguments using <argument_parsing> specification
+2. Preflight: Validate inputs and update status
+3. CheckLanguage: Determine routing based on task language
+4. InvokeSubagent: Delegate to appropriate subagent with session tracking
+5. ReceiveResults: Wait for and receive subagent return (with timeout)
+6. ProcessResults: Extract artifacts and determine next steps
+7. Postflight: Update status atomically and create git commit
+8. ReturnSuccess: Return summary to user
 
 ### Level 2: Subagents
 
@@ -186,6 +216,13 @@ All commands that invoke subagents follow this workflow:
 **Support Subagents**:
 - `error-diagnostics-agent`: Error pattern analysis and fix recommendations
 - `git-workflow-manager`: Scoped git commits with auto-generated messages
+
+**System Builder Subagents**:
+- `domain-analyzer`: Analyzes domains to identify core concepts and recommend agent architectures
+- `agent-generator`: Generates XML-optimized agent files (orchestrators and subagents)
+- `context-organizer`: Creates modular context files (domain/processes/standards/templates)
+- `workflow-designer`: Designs complete workflow definitions with context dependencies
+- `command-creator`: Creates custom slash commands with clear syntax and routing
 
 **Common Pattern**:
 All subagents follow this structure:
@@ -618,6 +655,153 @@ The architecture supports extension through:
 - New specialists (add to .opencode/agent/subagents/specialists/)
 - New language routing (update orchestrator routing logic)
 - New error types (add to errors.json schema)
+
+---
+
+## Meta System Builder
+
+### Overview
+
+The `/meta` command provides an interactive system builder that creates complete .opencode architectures tailored to specific domains. It guides users through an interview process to gather requirements and automatically generates production-ready agent systems.
+
+### Architecture Generation Process
+
+The meta system builder follows an 8-stage workflow:
+
+**Stage 0: DetectExistingProject**
+- Scans for existing .opencode structure
+- Identifies existing agents, commands, context files, and workflows
+- Offers merge options (extend, separate, replace, or cancel)
+- Ensures new systems integrate smoothly with existing work
+
+**Stage 1: InitiateInterview**
+- Greets user and explains the process
+- Sets expectations for output
+- Prepares for requirements gathering
+
+**Stage 2: GatherDomainInfo**
+- Collects domain name and industry
+- Identifies primary purpose
+- Determines user personas and expertise levels
+
+**Stage 2.5: DetectDomainType**
+- Classifies domain as development, business, hybrid, or other
+- Identifies existing agents that match the domain type
+- Adapts subsequent questions based on classification
+
+**Stage 3: IdentifyUseCases**
+- Gathers 3-5 specific use cases
+- Assesses complexity for each (simple, moderate, complex)
+- Maps dependencies and sequences between use cases
+
+**Stage 4: AssessComplexity**
+- Determines number of specialized agents needed
+- Identifies knowledge types (domain, process, standards, templates)
+- Defines state management requirements
+
+**Stage 5: IdentifyIntegrations**
+- Lists external tools and platforms to integrate
+- Determines file operation requirements
+- Designs custom slash commands
+
+**Stage 6: ReviewAndConfirm**
+- Presents comprehensive architecture summary
+- Lists all components to be created
+- Gets user confirmation before generation
+
+**Stage 7: GenerateSystem**
+- Routes to system-builder subagents to create complete structure
+- Generates agents, context files, workflows, and commands
+- Validates generated structure
+
+**Stage 8: DeliverSystem**
+- Presents completed system with documentation
+- Provides quick start guide and testing checklist
+- Offers tips for success
+
+### System Builder Subagents
+
+**domain-analyzer**
+- Analyzes user domain descriptions to extract core concepts
+- Recommends specialized agents based on use cases
+- Designs context file structure (domain/processes/standards/templates)
+- Creates knowledge graphs showing concept relationships
+- Provides recommendations and identifies challenges
+
+**agent-generator**
+- Generates XML-optimized agent files following research-backed patterns
+- Creates orchestrator with routing intelligence and context management
+- Generates specialized subagents with clear inputs/outputs
+- Scores agents against quality criteria (8+/10 required)
+- Ensures consistent patterns across all agents
+
+**context-organizer**
+- Creates modular context files (50-200 lines each)
+- Organizes into domain, processes, standards, and templates
+- Documents dependencies between files
+- Includes concrete examples in every file
+- Generates context README for navigation
+
+**workflow-designer**
+- Designs complete workflow definitions with stages
+- Maps context dependencies for each stage
+- Defines success criteria and metrics
+- Creates workflow selection logic
+- Documents when to use each workflow
+
+**command-creator**
+- Creates custom slash commands with intuitive syntax
+- Defines parameter handling and validation
+- Generates 3-5 concrete examples per command
+- Documents routing to appropriate agents
+- Creates command usage guide
+
+### Research-Backed Patterns
+
+The system builder applies Stanford/Anthropic research patterns:
+
+**Optimal Component Ordering** (12-17% performance improvement):
+1. Context (hierarchical: system→domain→task→execution)
+2. Role (clear identity and expertise)
+3. Task (specific objective)
+4. Instructions/Workflow (detailed procedures)
+5. Examples (when needed)
+6. Constraints (boundaries)
+7. Validation (quality checks)
+
+**Component Ratios**:
+- Role: 5-10% of total prompt
+- Context: 15-25% hierarchical information
+- Instructions: 40-50% detailed procedures
+- Examples: 20-30% when needed
+- Constraints: 5-10% boundaries
+
+**Routing Patterns**:
+- Use @ symbol for all subagent references
+- Always specify context level (Level 1/2/3)
+- Define expected returns for every delegation
+- Include validation gates with numeric thresholds
+
+### Use Cases
+
+**Extend Existing System**:
+Add new capabilities to the ProofChecker system for a different domain while preserving existing work.
+
+**Create Separate System**:
+Build a completely separate .opencode system for a different project or domain.
+
+**Build New System**:
+Create a fresh .opencode architecture from scratch for a new project.
+
+### Integration with ProofChecker
+
+The meta system builder is fully integrated into ProofChecker's .opencode system:
+- Respects existing delegation safety patterns
+- Follows standardized return format
+- Uses atomic state synchronization
+- Supports language-based routing
+- Integrates with error tracking
+- Creates automatic git commits
 
 ---
 

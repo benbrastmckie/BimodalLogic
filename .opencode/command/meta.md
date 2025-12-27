@@ -1,24 +1,6 @@
 ---
-name: meta
-agent: orchestrator
 description: "Interactive system builder that creates complete context-aware AI architectures tailored to user domains"
-context_level: 2
-language: markdown
-subagents:
-  - meta
-  - agent-generator
-  - command-generator
-mcp_requirements: []
-registry_impacts: []
-creates_root_on: "When generating a new .opencode system after user confirmation"
-creates_subdir: []
 ---
-
-Context Loaded:
-@context/common/templates/
-@context/common/system/context-guide.md
-@context/common/standards/patterns.md
-@context/context/index.md
 
 <target_domain> $ARGUMENTS </target_domain>
 
@@ -26,7 +8,7 @@ Context Loaded:
   <system_context>AI-powered context-aware system builder using hierarchical agent patterns, XML optimization, and research-backed architecture</system_context>
   <domain_context>System architecture design with modular context management, intelligent routing, and workflow orchestration</domain_context>
   <task_context>Transform user requirements into complete .opencode folder systems with orchestrators, subagents, context files, workflows, and commands</task_context>
-  <execution_context>Interactive interview process followed by automated generation of tailored architecture; no files are created until generation is confirmed.</execution_context>
+  <execution_context>Interactive interview process followed by automated generation of tailored architecture</execution_context>
 </context>
 
 <role>Expert System Architect specializing in context-aware AI systems, hierarchical agent design, and modular knowledge organization</role>
@@ -40,7 +22,7 @@ Context Loaded:
       1. Check if .opencode/ directory exists
       2. Scan for existing agents (agent/*.md, agent/subagents/*.md)
       3. Scan for existing commands (command/*.md)
-      4. Scan for existing context files (context/common/**/*.md, context/project/{logic,lean4,math,physics,repo}/**/*.md)
+      4. Scan for existing context files (context/*/*.md)
       5. Scan for existing workflows (workflows/*.md)
       6. Identify existing system capabilities
       7. Present merge options to user
@@ -55,35 +37,25 @@ Context Loaded:
           Proceed to fresh build
       </check_directory>
       
-       <scan_agents>
-         agents_found = []
-         FOR each file in agent/*.md:
-           agents_found.append(file)
-         FOR each file in agent/subagents/*.md:
-           agents_found.append(file)
-       </scan_agents>
-       
-       <scan_context>
-         contexts_found = []
-         FOR each file in context/common/**/*.md:
-           contexts_found.append(file)
-         FOR each file in context/project/{logic,lean4,math,physics,repo}/**/*.md:
-           contexts_found.append(file)
-       </scan_context>
-       
-       <identify_capabilities>
-
+      <scan_agents>
+        agents_found = []
+        FOR each file in agent/*.md:
+          agents_found.append(file)
+        FOR each file in agent/subagents/*.md:
+          agents_found.append(file)
+      </scan_agents>
+      
+      <identify_capabilities>
         Known agents and their capabilities:
-        - orchestrator: Task routing and workflow orchestration
-        - researcher: Research and information gathering
-        - planner: Planning and task breakdown
-        - implementer: Implementation execution
-        - reviewer: Code review and quality assurance
-        - documenter: Documentation authoring
-        - refactorer: Code refactoring
-        - meta: Agent and command creation/modification
-        - task-executor: TODO task execution
-        - todo-manager: Task management
+        - opencoder: Code analysis, file operations
+        - task-manager: Task tracking, project management
+        - workflow-orchestrator: Workflow coordination
+        - image-specialist: Image generation/editing
+        - build-agent: Build validation, type checking
+        - tester: Test authoring, TDD
+        - reviewer: Code review, quality assurance
+        - documentation: Documentation authoring
+        - coder-agent: Code generation
       </identify_capabilities>
     </detection_logic>
     <decision>
@@ -235,7 +207,6 @@ Context Loaded:
           - Healthcare and medical services
           - Financial services and fintech
           - Education and training
-          - Formal verification and proof systems
           - Other (please specify)
         </examples>
         <capture>domain_name, industry_type</capture>
@@ -252,7 +223,6 @@ Context Loaded:
           - Manage projects and tasks
           - Quality assurance and validation
           - Research and information gathering
-          - Develop and verify formal proofs
           - Other (please describe)
         </examples>
         <capture>primary_purpose, automation_goals</capture>
@@ -268,8 +238,6 @@ Context Loaded:
           - Product managers
           - Business executives
           - End customers
-          - Researchers and academics
-          - Mathematicians and logicians
           - Other (please specify)
         </examples>
         <capture>user_personas, expertise_level</capture>
@@ -302,13 +270,6 @@ Context Loaded:
         → domain_type = "business"
       </business_indicators>
       
-      <formal_verification_indicators>
-        Keywords: proof, verification, theorem, logic, lean, coq, isabelle, formal, mathematics
-        Purpose: develop proofs, verify theorems, formalize mathematics
-        Users: researchers, mathematicians, logicians
-        → domain_type = "formal_verification"
-      </formal_verification_indicators>
-      
       <hybrid_indicators>
         Keywords: data engineering, product management, analytics, platform
         Purpose: both technical and business outcomes
@@ -319,27 +280,21 @@ Context Loaded:
     <existing_agent_matching>
       <for_development>
         Relevant existing agents:
-        - implementer: Implementation execution
-        - reviewer: Code review
-        - refactorer: Code refactoring
-        - documenter: Documentation authoring
+        - opencoder: Code analysis and file operations
+        - build-agent: Build validation and type checking
+        - tester: Test authoring and TDD
+        - reviewer: Code review and quality assurance
+        - coder-agent: Code generation
+        - documentation: Documentation authoring
       </for_development>
       
       <for_business>
         Relevant existing agents:
-        - planner: Planning and task breakdown
-        - researcher: Research and information gathering
-        - documenter: Documentation authoring
+        - task-manager: Project and task management
+        - workflow-orchestrator: Business process coordination
+        - image-specialist: Visual content creation
+        - documentation: Documentation and content authoring
       </for_business>
-      
-      <for_code_development>
-        Relevant existing agents:
-        - orchestrator: Task routing and workflow orchestration
-        - implementer: Code implementation
-        - reviewer: Code review
-        - researcher: Research
-        - refactorer: Code refactoring
-      </for_code_development>
       
       <for_hybrid>
         Relevant existing agents:
@@ -381,22 +336,6 @@ Context Loaded:
         I'll focus on business process automation and content generation.
       </for_business>
       
-      <for_formal_verification>
-        Your domain is **formal verification-focused**.
-        
-        I'll adapt questions to cover:
-        - Proof assistants and theorem provers
-        - Mathematical domains and theories
-        - Proof development workflows
-        - Verification requirements
-        - Integration with proof tools
-        
-        **Existing Agents That Can Help**:
-        {list_relevant_existing_agents}
-        
-        I'll focus on formal methods and proof development.
-      </for_formal_verification>
-      
       <for_hybrid>
         Your domain combines **technical and business** aspects.
         
@@ -423,8 +362,6 @@ Context Loaded:
           - "Analyze sales data and create reports"
           - "Triage and route support tickets"
           - "Review code for security vulnerabilities"
-          - "Implement REST API endpoints"
-          - "Refactor legacy codebase for maintainability"
         </guidance>
         <capture>use_cases[], task_descriptions[]</capture>
       </question_4>
@@ -445,8 +382,6 @@ Context Loaded:
           - "Research must happen before content creation"
           - "Validation happens after processing"
           - "All tasks are independent"
-          - "Planning must precede implementation"
-          - "Proof development requires verification"
         </examples>
         <capture>workflow_dependencies[], task_sequences[]</capture>
       </question_6>
@@ -504,7 +439,6 @@ Context Loaded:
           - Cloud services (AWS, GCP, Azure, etc.)
           - Development tools (GitHub, Jira, Slack, etc.)
           - Analytics platforms (Google Analytics, Mixpanel, etc.)
-          - CI/CD platforms (Jenkins, GitLab CI, GitHub Actions, etc.)
           - None - standalone system
         </examples>
         <capture>integrations[], api_requirements[], tool_dependencies[]</capture>
@@ -527,8 +461,6 @@ Context Loaded:
           - /process-order {order_id}
           - /generate-report {type} {date_range}
           - /analyze-data {source} {destination}
-          - /prove {theorem_name}
-          - /verify {proof_file}
         </guidance>
         <capture>custom_commands[], command_patterns[]</capture>
       </question_12>
@@ -621,10 +553,10 @@ Context Loaded:
   </stage>
 
   <stage id="7" name="GenerateSystem">
-    <action>Route to meta agent to generate complete .opencode structure</action>
+    <action>Route to builder agent to generate complete .opencode structure</action>
     <prerequisites>User confirmation received</prerequisites>
     <routing>
-      <route to="@subagents/meta">
+      <route to="@builder">
         <context_level>Level 2 - Filtered Context</context_level>
         <pass_data>
           - Complete interview responses
@@ -648,7 +580,7 @@ Context Loaded:
     </routing>
     <process>
       1. Prepare comprehensive requirements document
-      2. Route to @subagents/meta with Level 2 context
+      2. Route to @builder with Level 2 context
       3. Monitor generation progress
       4. Validate generated structure
       5. Present completed system to user
@@ -675,7 +607,7 @@ Context Loaded:
       │       ├── {subagent-1}.md
       │       ├── {subagent-2}.md
       │       └── {subagent-3}.md
-      ├── .opencode/context/
+      ├── context/
       │   ├── domain/
       │   │   ├── {domain-file-1}.md
       │   │   └── {domain-file-2}.md
@@ -800,7 +732,7 @@ Context Loaded:
   </allocate_context>
   
   <execute_routing>
-    <route to="@subagents/meta" when="user_confirms_architecture">
+    <route to="@builder" when="user_confirms_architecture">
       <context_level>Level 2 - Filtered Context</context_level>
       <pass_data>
         - interview_responses (all captured data)
@@ -812,6 +744,19 @@ Context Loaded:
         - complete_file_structure (all generated files)
         - validation_report (quality checks)
         - documentation (usage guides)
+      </expected_return>
+    </route>
+    
+    <route to="@subagents/builder/domain-analyzer" when="domain_unclear_or_complex">
+      <context_level>Level 1 - Complete Isolation</context_level>
+      <pass_data>
+        - user_description (domain description)
+        - use_cases (initial use cases)
+      </pass_data>
+      <expected_return>
+        - domain_analysis (structured domain info)
+        - suggested_agents (recommended specializations)
+        - context_categories (knowledge organization)
       </expected_return>
     </route>
   </execute_routing>
@@ -895,10 +840,6 @@ Context Loaded:
   <user_friendly>
     Provide clear documentation, examples, and next steps
   </user_friendly>
-  
-  <git_commits>
-    When meta writes or modifies files, use git-commits.md + git-workflow-manager to stage only generated/updated files and commit with scoped messages after validation; avoid blanket adds.
-  </git_commits>
 </quality_standards>
 
 <output_specifications>

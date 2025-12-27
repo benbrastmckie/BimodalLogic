@@ -26,11 +26,60 @@ Context Loaded:
 
 <task>{Single-sentence objective including status marker expectations and lazy-creation guardrails}</task>
 
+<argument_parsing>
+  <invocation_format>
+    /{command} PARAM1 [PARAM2] [--flag]
+    
+    Examples:
+    - /{command} {example_arg1}
+    - /{command} {example_arg1} {example_arg2}
+  </invocation_format>
+  
+  <parameters>
+    <param_name>
+      <position>{1|2|3...}</position>
+      <type>{integer|string|boolean|range}</type>
+      <required>{true|false}</required>
+      <description>{What this parameter represents}</description>
+      <extraction>{How to extract from user input}</extraction>
+      <validation>{Validation rules}</validation>
+      <default>{Default value if not provided}</default>
+    </param_name>
+    
+    <!-- Add more parameters as needed -->
+    
+    <flags>
+      <flag_name>
+        <flag>{--flag-name}</flag>
+        <type>boolean</type>
+        <required>false</required>
+        <description>{What this flag does}</description>
+        <default>false</default>
+      </flag_name>
+    </flags>
+  </parameters>
+  
+  <parsing_logic>
+    When user invokes "/{command} {example_invocation}", parse as:
+    1. Command: "{command}"
+    2. Arguments: ["{arg1}", "{arg2}", ...]
+    3. Extracted:
+       - param1 = {value1}
+       - param2 = {value2}
+       - flags = {flag_map}
+  </parsing_logic>
+  
+  <error_handling>
+    If {condition}:
+      Return: "Error: {message}. Usage: /{command} {usage_pattern}"
+  </error_handling>
+</argument_parsing>
+
 <workflow_execution>
   <stage id="1" name="Preflight">
     <action>Validate inputs and set status markers</action>
     <process>
-      1. Parse arguments/flags; validate formats and language override.
+      1. Parse arguments from input (see <argument_parsing> above)
       2. Load TODO entry (if applicable); set task to [IN PROGRESS] and add **Started** date.
       3. If a plan link exists, set plan status to [IN PROGRESS] with (Started: ISO8601_timestamp).
       4. Sync state.json status to `in_progress` with started_at; no directories created.

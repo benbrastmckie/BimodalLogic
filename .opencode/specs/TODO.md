@@ -1,13 +1,13 @@
 # TODO
 
-**Last Updated:** 2025-12-26T01:00:00Z
+**Last Updated:** 2025-12-27T00:00:00Z
 
 ## Overview
 
-- **Total Tasks:** 36
+- **Total Tasks:** 38
 - **Completed:** 2
-- **High Priority:** 13
-- **Medium Priority:** 9
+- **High Priority:** 14
+- **Medium Priority:** 10
 - **Low Priority:** 12
 
 ---
@@ -402,8 +402,43 @@
   - [ ] No emojis in the updated content
 - **Impact**: Completes the refactoring to make /review command configuration-driven and repository-agnostic, allowing consistent behavior across different repositories while respecting each repository's specific registry/status file locations.
 
+### 197. Integrate Loogle CLI tool into lean-research-agent
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/context/project/lean4/tools/loogle-api.md
+- **Tool Information**:
+  - **Installation**: loogle installed via nix at /home/benjamin/.nix-profile/bin/loogle
+  - **Cache Location**: /home/benjamin/.cache/loogle (cloned mathlib and dependencies)
+  - **Default Module**: Mathlib (can be changed with --module flag)
+  - **Output Format**: Supports --json flag for structured output
+  - **Usage**: `loogle [OPTIONS] [QUERY]` where QUERY can be type signatures like "Nat → Nat → Nat" or names like "List.length"
+  - **Interactive Mode**: Available with --interactive/-i flag for stdin queries
+  - **Index Persistence**: Can write/read search index to file for faster subsequent searches
+- **Description**: Integrate the Loogle CLI tool into lean-research-agent to enable type-based searching of Lean definitions and theorems. Loogle is now installed and working at /home/benjamin/.nix-profile/bin/loogle with mathlib support. The lean-research-agent currently has placeholders for Loogle integration (lines 276-282) and uses web search fallback. Update the agent to: (1) Check for Loogle availability by testing if the binary exists, (2) Use Loogle with --json flag for type-based searches, (3) Parse JSON results and extract relevant definitions/theorems, (4) Include Loogle findings in research reports with proper attribution, (5) Update tool status in return format to show loogle: true when available, (6) Handle graceful fallback to web search if Loogle fails or times out, (7) Document Loogle CLI integration patterns in .opencode/context/project/lean4/tools/loogle-api.md. Note: Loogle queries can take time to build the index on first run, so implement reasonable timeouts (30-60s) and consider using --write-index to persist the index for faster subsequent searches.
+- **Acceptance Criteria**:
+  - [ ] lean-research-agent checks for Loogle binary at /home/benjamin/.nix-profile/bin/loogle
+  - [ ] Loogle invoked with --json flag for structured output
+  - [ ] Type-based searches (e.g., "?a → ?b → ?a ∧ ?b") work correctly
+  - [ ] Name-based searches (e.g., "List.length") work correctly  
+  - [ ] JSON results parsed and relevant definitions/theorems extracted
+  - [ ] Research reports include Loogle findings with attribution
+  - [ ] Return format shows tool_availability.loogle: true when available
+  - [ ] Graceful fallback to web search if Loogle unavailable or fails
+  - [ ] Timeout handling (30-60s) prevents hanging on slow queries
+  - [ ] loogle-api.md documentation created with CLI patterns and examples
+  - [ ] Index persistence strategy documented (optional: implement --write-index)
+  - [ ] Error logging to errors.json if Loogle fails
+  - [ ] No more "tool_unavailable" warnings for Loogle in lean research
+- **Impact**: Significantly improves Lean research quality by enabling precise type-based theorem discovery. Loogle can find theorems by their type signatures, making it much easier to discover relevant mathlib lemmas and definitions for proof development. This addresses the "tool_unavailable" limitation in the current lean-research-agent fallback mode.
+
 ---
- 
+
 ## Medium Priority
 
 ---
@@ -892,5 +927,56 @@
   - [x] No content removed, only reorganized and enhanced
   - [x] Cross-references updated where relevant
 - **Impact**: Improves MAINTENANCE.md completeness by documenting all registry files and establishes clear policy against backwards compatibility layers, reducing future technical debt and improving code quality.
+
+### 198. Revert command argument handling fixes and implement $ARGUMENTS pattern
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: All slash commands with arguments (/research, /plan, /implement, /task)
+- **Dependencies**: None
+- **Problem**: When invoking commands like `/research 197`, the orchestrator loads the command file but doesn't receive the user's arguments (197), resulting in errors like "I don't see an actual user request" or "Could you please specify which task."
+- **First Attempted Fix** (2025-12-27): Added explicit CRITICAL notices to command headers and Stage 0 workflows instructing orchestrator to extract arguments from user's original message. Also updated orchestrator Stage 1 to emphasize finding user's original invocation. This approach is verbose, fragile, and adds unnecessary complexity.
+- **Better Solution** (from .opencode.backup.20251225_173342): Use `$ARGUMENTS` variable pattern. The old system used `**Task Input (required):** $ARGUMENTS` in command files, which OpenCode automatically substitutes with actual command arguments. This is:
+  - **Simpler**: No complex parsing logic needed
+  - **Cleaner**: Single line instead of verbose CRITICAL sections
+  - **More reliable**: OpenCode handles argument extraction automatically
+  - **Proven**: Worked reliably in previous system
+- **Files Modified in First Fix** (need reverting):
+  - .opencode/command/research.md (added CRITICAL header + Stage 0)
+  - .opencode/command/implement.md (added CRITICAL header)
+  - .opencode/command/plan.md (added CRITICAL header)
+  - .opencode/command/task.md (added CRITICAL header)
+  - .opencode/agent/orchestrator.md (enhanced Stage 1 argument parsing)
+  - .opencode/context/common/standards/command-argument-handling.md (created, should be deleted or rewritten)
+- **Implementation Plan**:
+  1. Revert all changes from first fix (remove CRITICAL headers, remove Stage 0, revert orchestrator changes)
+  2. Add `**Task Input:** $ARGUMENTS` pattern to all command files that need arguments
+  3. Update workflow Stage 1 to parse from $ARGUMENTS instead of searching for user message
+  4. Test with `/research 172`, `/plan 172`, `/implement 172`, `/task "description"`
+  5. Update or delete command-argument-handling.md to document $ARGUMENTS pattern
+  6. Document $ARGUMENTS pattern in ARCHITECTURE.md or QUICK-START.md
+- **Files to Update**:
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+  - .opencode/command/implement.md
+  - .opencode/command/task.md
+  - .opencode/command/revise.md
+  - .opencode/command/errors.md (if it takes arguments)
+  - .opencode/agent/orchestrator.md (simplify Stage 1)
+  - .opencode/context/common/standards/command-argument-handling.md (rewrite or delete)
+- **Reference**: Compare with .opencode.backup.20251225_173342/command/ for correct $ARGUMENTS usage patterns
+- **Acceptance Criteria**:
+  - [ ] All CRITICAL header notices removed from command files
+  - [ ] All Stage 0 "ExtractUserInput" stages removed from workflows
+  - [ ] All command files use `**Task Input:** $ARGUMENTS` pattern
+  - [ ] Orchestrator Stage 1 simplified to parse from $ARGUMENTS
+  - [ ] `/research TASK_NUMBER` works correctly
+  - [ ] `/plan TASK_NUMBER` works correctly
+  - [ ] `/implement TASK_NUMBER` works correctly
+  - [ ] `/task "DESCRIPTION"` works correctly
+  - [ ] Documentation updated to explain $ARGUMENTS pattern
+  - [ ] No regression in command functionality
+- **Impact**: Fixes critical command argument passing bug using proven, simple $ARGUMENTS pattern from old system. Removes verbose, fragile workarounds. Restores full functionality to /research, /plan, /implement, and /task commands.
 
 ---
