@@ -1,11 +1,11 @@
 # TODO
 
-**Last Updated:** 2025-12-27T11:15:00Z
+**Last Updated:** 2025-12-27T22:24:17Z
 
 ## Overview
 
 - **Total Tasks:** 38
-- **Completed:** 2
+- **Completed:** 14
 - **High Priority:** 14
 - **Medium Priority:** 11
 - **Low Priority:** 11
@@ -16,11 +16,11 @@
  
 ### Automation
 
-### 191. Fix subagent delegation hang issue in command workflows
+### 191. Fix subagent delegation hang issue in command workflows ✅
 - **Effort**: 14 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-26
-- **Completed**: 2025-12-26
+- **Completed**: 2025-12-27
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -30,6 +30,7 @@
   - Summary: [.opencode/specs/191_fix_subagent_delegation_hang/summaries/research-summary.md]
 - **Plan**: [Implementation Plan](.opencode/specs/191_fix_subagent_delegation_hang/plans/implementation-001.md)
 - **Plan Summary**: 3-phase implementation plan (14 hours). Phase 1: Immediate critical fixes - add explicit return handling, cycle detection, standardized return format (9h). Phase 2: Medium-term improvements - orchestrator registry, retry logic, format standardization (5h). Phase 3: Testing and verification - comprehensive testing of all commands and documentation updates (3h). Fixes 6 root causes: missing return paths, infinite loops, async/sync mismatch, missing error handling, coordination gaps, return format ambiguity.
+- **Implementation Summary**: [.opencode/specs/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251227.md]
 - **Files Affected**:
   - .opencode/command/implement.md
   - .opencode/command/research.md
@@ -939,7 +940,9 @@
 
 ### 198. Revert command argument handling fixes and implement $ARGUMENTS pattern
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-27
+- **Completed**: 2025-12-27
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: All slash commands with arguments (/research, /plan, /implement, /task)
@@ -976,16 +979,16 @@
   - .opencode/context/common/standards/command-argument-handling.md (rewrite or delete)
 - **Reference**: Compare with .opencode.backup.20251225_173342/command/ for correct $ARGUMENTS usage patterns
 - **Acceptance Criteria**:
-  - [ ] All CRITICAL header notices removed from command files
-  - [ ] All Stage 0 "ExtractUserInput" stages removed from workflows
-  - [ ] All command files use `**Task Input:** $ARGUMENTS` pattern
-  - [ ] Orchestrator Stage 1 simplified to parse from $ARGUMENTS
-  - [ ] `/research TASK_NUMBER` works correctly
-  - [ ] `/plan TASK_NUMBER` works correctly
-  - [ ] `/implement TASK_NUMBER` works correctly
-  - [ ] `/task "DESCRIPTION"` works correctly
-  - [ ] Documentation updated to explain $ARGUMENTS pattern
-  - [ ] No regression in command functionality
+  - [x] All CRITICAL header notices removed from command files
+  - [x] All Stage 0 "ExtractUserInput" stages removed from workflows
+  - [x] All command files use `**Task Input:** $ARGUMENTS` pattern
+  - [x] Orchestrator Stage 1 simplified to parse from $ARGUMENTS
+  - [x] `/research TASK_NUMBER` works correctly
+  - [x] `/plan TASK_NUMBER` works correctly
+  - [x] `/implement TASK_NUMBER` works correctly
+  - [x] `/task "DESCRIPTION"` works correctly
+  - [x] Documentation updated to explain $ARGUMENTS pattern
+  - [x] No regression in command functionality
 - **Impact**: Fixes critical command argument passing bug using proven, simple $ARGUMENTS pattern from old system. Removes verbose, fragile workarounds. Restores full functionality to /research, /plan, /implement, and /task commands.
 
 ### 199. Optimize self-healing feature to prevent context bloat in commands
