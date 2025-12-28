@@ -391,13 +391,53 @@
   - [ ] No regression in other /todo functionality (archival, state updates, directory moves)
 - **Impact**: CRITICAL - Fixes broken /todo archival that currently leaves orphaned task metadata scattered throughout TODO.md, making the file unreadable and breaking the task structure. Ensures complete and clean task removal during archival operations.
 
-### 216. Systematically improve task tracking file update procedures across all commands
+### 217. Research artifact creation by all commands and their subagents in the .opencode/ agent system
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+  - .opencode/command/revise.md
+  - .opencode/command/implement.md
+  - .opencode/agent/subagents/researcher.md
+  - .opencode/agent/subagents/planner.md
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/agent/subagents/task-executor.md
+  - .opencode/agent/subagents/implementer.md
+  - .opencode/context/common/system/artifact-management.md (reference)
+  - .opencode/context/common/system/status-markers.md (reference)
+  - .opencode/context/common/workflows/command-lifecycle.md (reference)
+  - .opencode/context/common/system/state-schema.md (reference)
+- **Description**: Research artifact creation by all commands and their subagents in the .opencode/ agent system to ensure that /research produces just a research report, /plan produces just a plan, /revise produces just a new plan, and /implement produces just a summary. Ensure that these artifacts conform to the artifact management system documented in artifact-management.md, that the status markers are updated appropriately as described in status-markers.md and command-lifecycle.md, and that the state.json file in the project directory and the global specs/state.json file are updated as in state-schema.md. Investigation should: (1) Trace actual artifact creation flows for each command (/research, /plan, /revise, /implement) and their delegated subagents (researcher, planner, lean-research-agent, lean-implementation-agent, task-executor, implementer), (2) Document current artifact creation patterns and identify deviations from artifact-management.md (lazy directory creation, summary requirements, naming conventions), (3) Verify status marker updates follow status-markers.md and command-lifecycle.md patterns (in-progress markers at start, completion markers at end, timestamp tracking), (4) Verify state.json updates follow state-schema.md patterns (active_projects, artifacts arrays, timestamps, status fields), (5) Document gaps and inconsistencies across commands and subagents, (6) Provide recommendations for standardization and fixes.
+- **Acceptance Criteria**:
+  - [ ] Research completed tracing artifact creation for all 4 commands and 6 subagents
+  - [ ] Current artifact creation patterns documented for each command/subagent combination
+  - [ ] Compliance checked against artifact-management.md (lazy directory creation, summaries, naming)
+  - [ ] Compliance checked against status-markers.md and command-lifecycle.md (status updates, timestamps)
+  - [ ] Compliance checked against state-schema.md (state.json fields and updates)
+  - [ ] Gaps and inconsistencies documented with examples
+  - [ ] Recommendations provided for standardization
+  - [ ] Research report created with findings and recommendations
+  - [ ] No implementation performed (research only)
+- **Impact**: Ensures consistent artifact creation, status tracking, and state management across all workflow commands and subagents, enabling reliable project tracking, proper artifact management, and adherence to established standards.
+
+### 216. Systematically improve task tracking file update procedures across all commands
+- **Effort**: 10-12 hours
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/216_improve_task_tracking_updates/reports/research-001.md]
+  - Summary: [.opencode/specs/216_improve_task_tracking_updates/summaries/research-summary.md]
 - **Files Affected**:
   - .opencode/context/common/workflows/command-lifecycle.md
   - .opencode/context/common/workflows/task-tracking-updates.md (new)
