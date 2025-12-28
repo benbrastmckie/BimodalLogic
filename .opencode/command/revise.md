@@ -103,13 +103,18 @@ Context Loaded:
       5. If no plan exists: Error (use /plan instead)
       6. Load existing plan file
       7. Determine next plan version number
-      8. Preserve current task status (do not change)
+      8. Mark task [REVISING] with Started timestamp (or preserve if already has Started)
+      9. Update state.json: status = "revising"
     </process>
+    <status_update>
+      Atomic update via status-sync-manager:
+        - TODO.md: [REVISING], **Started**: {date} (preserve existing Started if present)
+        - state.json: status = "revising"
+    </status_update>
     <validation>
       - Task number must exist in TODO.md
       - Task must have existing plan link
       - Plan file must exist on disk
-      - Current status preserved (no change)
     </validation>
   </stage>
 
@@ -252,31 +257,45 @@ Context Loaded:
   <stage id="8" name="Postflight">
     <action>Update plan link and commit (preserve status)</action>
     <process>
-      1. If status == "completed":
-         a. Update TODO.md:
-            - Update plan link to new version
-            - PRESERVE current status (do not change)
-            - PRESERVE timestamps (do not change)
-            - Add note about plan revision
-         b. Update state.json:
-            - Update plan_path to new version
-            - PRESERVE status (do not change)
-            - PRESERVE timestamps (do not change)
-         c. Git commit:
-            - Scope: New plan file + TODO.md + state.json
-            - Message: "task {number}: plan revised to v{version}"
-      2. If status == "partial" or "failed":
-         a. No TODO.md changes
-         b. No state.json changes
-         c. No git commit
+       1. If status == "completed":
+          a. Update TODO.md:
+             - Update plan link to new version
+             - Change status to [REVISED]
+             - Add Completed timestamp (preserve Started timestamp)
+             - Add note about plan revision
+          b. Update state.json:
+             - Update plan_path to new version
+             - status = "revised"
+             - completed = "{YYYY-MM-DD}"
+             - Preserve started timestamp
+          c. Git commit:
+             - Scope: New plan file + TODO.md + state.json
+             - Message: "task {number}: plan revised to v{version}"
+       2. If status == "partial":
+          a. Keep TODO.md status [REVISING]
+          b. Add partial plan link
+          c. Git commit partial plan:
+             - Scope: Partial plan file only
+             - Message: "task {number}: partial plan revision"
+       3. If status == "failed":
+          a. Keep TODO.md status [REVISING]
+          b. Add error notes to TODO.md
+          c. No git commit
+       4. If status == "blocked":
+          a. Update TODO.md status to [BLOCKED]
+          b. Add blocking reason to TODO.md
+          c. Update state.json: status = "blocked", blocked = "{date}"
+          d. No git commit
     </process>
-    <status_preservation>
-      CRITICAL: Do not change task status during revision
-      - If task was [IN PROGRESS], keep [IN PROGRESS]
-      - If task was [PLANNED], keep [PLANNED]
-      - If task was [RESEARCHED], keep [RESEARCHED]
-      - Only update plan link, not status
-    </status_preservation>
+    <atomic_update>
+      Use status-sync-manager to atomically:
+        - Update TODO.md: Update plan link to new version
+        - Update TODO.md: Change status to [REVISED]
+        - Update TODO.md: Add Completed timestamp
+        - Update state.json: status = "revised"
+        - Update state.json: completed timestamp
+        - Update state.json: plan_path to new version
+    </atomic_update>
     <git_commit>
       Scope: New plan file + TODO.md + state.json
       Message: "task {number}: plan revised to v{version}"
@@ -290,9 +309,9 @@ Context Loaded:
     <action>Return summary to user</action>
     <return_format>
       Plan revised for task {number}
+      - Status: [REVISED]
       - New version: {version}
       - Plan: {new_plan_path}
-      - Status: {preserved_status} (unchanged)
       - Summary: {brief summary of changes}
     </return_format>
   </stage>
@@ -302,10 +321,12 @@ Context Loaded:
   <context_allocation>
     Level 2 (Filtered) - Plan revision requires project context
   </context_allocation>
-  <status_preservation>
-    CRITICAL: Never change task status during revision
-    Only update plan link and version number
-  </status_preservation>
+  <status_workflow>
+    Status flow for revision:
+    - Start: [REVISING] with Started timestamp
+    - Completion: [REVISED] with Completed timestamp
+    - Updates both plan link and status markers
+  </status_workflow>
 </routing_intelligence>
 
 <artifact_management>
@@ -324,10 +345,10 @@ Context Loaded:
 </artifact_management>
 
 <quality_standards>
-  <status_preservation>
-    NEVER change task status during revision
-    Only update plan link
-  </status_preservation>
+  <status_tracking>
+    Track revision status with [REVISING] → [REVISED] flow
+    Update plan link and status markers
+  </status_tracking>
   <version_incrementing>
     Increment version number correctly
     Use zero-padded format (001, 002, etc.)

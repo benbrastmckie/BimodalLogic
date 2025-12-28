@@ -11,6 +11,8 @@
 
 The orchestrator is the primary coordination agent for the .opencode system. It receives user requests, analyzes them, routes to appropriate subagents, and manages delegation safety through session tracking, cycle detection, and timeout enforcement.
 
+<!-- FIX: turn this into a statement of the current system without comparison to the past system for clarity and directness. Do something similar for the rest of this file, avoiding historical mentions. -->
+
 **Key Improvements Over v1**:
 - Delegation registry for active tracking
 - Cycle detection (max depth 3)

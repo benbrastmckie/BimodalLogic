@@ -113,13 +113,13 @@ Context Loaded:
       6. Validate task exists and is not [COMPLETED]
       7. Extract task description and language
       8. Check for --divide flag (topic subdivision)
-      9. Mark task [IN PROGRESS] with Started timestamp
-      10. Update state.json: status = "in_progress", started = "{YYYY-MM-DD}"
+      9. Mark task [RESEARCHING] with Started timestamp
+      10. Update state.json: status = "researching", started = "{YYYY-MM-DD}"
     </process>
     <status_update>
       Atomic update via status-sync-manager:
-        - TODO.md: [IN PROGRESS], **Started**: {date}
-        - state.json: status = "in_progress", started = "{date}"
+        - TODO.md: [RESEARCHING], **Started**: {date}
+        - state.json: status = "researching", started = "{date}"
     </status_update>
     <validation>
       - Task number must exist in TODO.md
@@ -205,7 +205,7 @@ Context Loaded:
         1. Log timeout error with session_id
         2. Check for partial artifacts on disk
         3. Return partial status with artifacts found
-        4. Keep task [IN PROGRESS] (not failed)
+        4. Keep task [RESEARCHING] (not failed)
         5. Message: "Research timed out after 1 hour. Partial results available. Resume with /research {number}"
     </timeout_handling>
     <validation>
@@ -233,7 +233,7 @@ Context Loaded:
         - Proceed to postflight with artifacts
       If status == "partial":
         - Some research completed
-        - Keep task [IN PROGRESS]
+        - Keep task [RESEARCHING]
         - Save partial results
         - Provide resume instructions
       If status == "failed":
@@ -241,6 +241,7 @@ Context Loaded:
         - Handle errors
         - Provide recovery steps
       If status == "blocked":
+        - Mark task [BLOCKED]
         - Cannot proceed
         - Identify blocker
         - Request user intervention
@@ -262,16 +263,21 @@ Context Loaded:
          c. Git commit:
             - Scope: Research artifacts + TODO.md + state.json
             - Message: "task {number}: research completed"
-      2. If status == "partial":
-         a. Keep TODO.md status [IN PROGRESS]
-         b. Add partial artifact links
-         c. Git commit partial results:
-            - Scope: Partial artifacts only
-            - Message: "task {number}: partial research results"
-      3. If status == "failed" or "blocked":
-         a. Keep TODO.md status [IN PROGRESS]
-         b. Add error notes to TODO.md
-         c. No git commit
+       2. If status == "partial":
+          a. Keep TODO.md status [RESEARCHING]
+          b. Add partial artifact links
+          c. Git commit partial results:
+             - Scope: Partial artifacts only
+             - Message: "task {number}: partial research results"
+       3. If status == "failed":
+          a. Keep TODO.md status [RESEARCHING]
+          b. Add error notes to TODO.md
+          c. No git commit
+       4. If status == "blocked":
+          a. Update TODO.md status to [BLOCKED]
+          b. Add blocking reason to TODO.md
+          c. Update state.json: status = "blocked", blocked = "{date}"
+          d. No git commit
     </process>
     <atomic_update>
       Use status-sync-manager to atomically:

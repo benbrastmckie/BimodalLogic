@@ -135,8 +135,8 @@ Context Loaded:
             - Prepare resume context
          d. If no plan:
             - Prepare for direct implementation
-      5. Mark task(s) [IN PROGRESS] with Started timestamp
-      6. Update state.json: status = "in_progress", started = "{YYYY-MM-DD}"
+       5. Mark task(s) [IMPLEMENTING] with Started timestamp
+       6. Update state.json: status = "implementing", started = "{YYYY-MM-DD}"
     </process>
     <resume_logic>
       If plan exists:
@@ -150,8 +150,8 @@ Context Loaded:
     </resume_logic>
     <status_update>
       Atomic update via status-sync-manager:
-        - TODO.md: [IN PROGRESS], **Started**: {date}
-        - state.json: status = "in_progress", started = "{date}"
+        - TODO.md: [IMPLEMENTING], **Started**: {date}
+        - state.json: status = "implementing", started = "{date}"
         - Plan file (if exists): Mark resuming phase [IN PROGRESS]
     </status_update>
     <validation>
@@ -248,7 +248,7 @@ Context Loaded:
         2. Check plan file for partial progress
         3. Count completed phases
         4. Return partial status with phases completed
-        5. Keep task [IN PROGRESS] (not failed)
+        5. Keep task [IMPLEMENTING] (not failed)
         6. Message: "Implementation timed out after 2 hours. {N} phases completed. Resume with /implement {number}"
     </timeout_handling>
     <validation>
@@ -278,18 +278,18 @@ Context Loaded:
         - Proceed to postflight
       If status == "partial":
         - Some phases done
-        - Keep [IN PROGRESS] status
+        - Mark task [PARTIAL] status
         - User can resume later
         - Commit partial progress
       If status == "failed":
         - No usable results
         - Handle errors
-        - Keep [IN PROGRESS] status
+        - Keep [IMPLEMENTING] status
         - Provide recovery steps
       If status == "blocked":
         - Cannot proceed
+        - Mark task [BLOCKED]
         - Identify blocker
-        - Keep [IN PROGRESS] status
         - Request user intervention
     </completion_check>
   </stage>
@@ -314,22 +314,31 @@ Context Loaded:
             - Scope: Implementation files + TODO.md + state.json + plan
             - Message: "task {number}: implementation completed"
       
-      2. If status == "partial":
-         a. Keep TODO.md status [IN PROGRESS]
-         b. Add partial artifact links
-         c. Update plan file (if exists):
-            - Mark completed phases [COMPLETED]
-            - Keep incomplete phases [NOT STARTED] or [IN PROGRESS]
-         d. Git commit (if phases completed):
-            - Scope: Phase files + plan file
-            - Message: "task {number} phase {N}: {phase_name}"
-      
-      3. If status == "failed" or "blocked":
-         a. Keep TODO.md status [IN PROGRESS]
-         b. Add error notes to TODO.md
-         c. Update plan file (if exists):
-            - Mark failed phase [ABANDONED] or [BLOCKED]
-         d. No git commit
+       2. If status == "partial":
+          a. Update TODO.md status to [PARTIAL]
+          b. Add partial artifact links
+          c. Update state.json: status = "partial"
+          d. Update plan file (if exists):
+             - Mark completed phases [COMPLETED]
+             - Keep incomplete phases [NOT STARTED] or [IN PROGRESS]
+          e. Git commit (if phases completed):
+             - Scope: Phase files + plan file + TODO.md + state.json
+             - Message: "task {number} phase {N}: {phase_name}"
+       
+       3. If status == "failed":
+          a. Keep TODO.md status [IMPLEMENTING]
+          b. Add error notes to TODO.md
+          c. Update plan file (if exists):
+             - Mark failed phase [ABANDONED]
+          d. No git commit
+       
+       4. If status == "blocked":
+          a. Update TODO.md status to [BLOCKED]
+          b. Add blocking reason to TODO.md
+          c. Update state.json: status = "blocked", blocked = "{date}"
+          d. Update plan file (if exists):
+             - Mark blocked phase [BLOCKED]
+          e. No git commit
     </process>
     <atomic_update>
       Use status-sync-manager to atomically:
@@ -364,10 +373,16 @@ Context Loaded:
       
       Or if partial:
       Implementation partially completed for task {number}
-      - Status: [IN PROGRESS]
+      - Status: [PARTIAL]
       - Phases completed: {N} of {total}
       - Partial artifacts: {list}
       - Resume with: /implement {number}
+      
+      Or if blocked:
+      Implementation blocked for task {number}
+      - Status: [BLOCKED]
+      - Blocking reason: {reason}
+      - Resolve blocker and retry with: /implement {number}
     </return_format>
   </stage>
 </workflow_execution>
@@ -420,7 +435,7 @@ Context Loaded:
 
 <quality_standards>
   <status_markers>
-    Use [IN PROGRESS] at start, [COMPLETED] at finish per status-markers.md
+    Use [IMPLEMENTING] at start, [COMPLETED]/[PARTIAL]/[BLOCKED] at finish per status-markers.md
     Include Started and Completed timestamps
     Add checkmark to title when completed
   </status_markers>

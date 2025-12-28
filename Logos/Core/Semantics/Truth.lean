@@ -623,13 +623,60 @@ theorem valid_at_triple {φ : Formula} (F : TaskFrame T) (M : TaskModel F)
     truth_at M τ t ht φ := h_valid F M τ t ht
 
 /--
+Helper lemma: truth_at is invariant under double swap.
+
+This lemma proves that applying swap twice to a formula preserves truth evaluation.
+Required because truth_at is defined by structural recursion, preventing direct use
+of the involution property φ.swap.swap = φ via substitution.
+-/
+theorem truth_at_swap_swap {F : TaskFrame T} (M : TaskModel F)
+    (τ : WorldHistory F) (t : T) (ht : τ.domain t) (φ : Formula) :
+    truth_at M τ t ht φ.swap_past_future.swap_past_future ↔ truth_at M τ t ht φ := by
+  induction φ generalizing τ t ht with
+  | atom p => 
+    -- Atom case: swap doesn't change atoms
+    simp only [Formula.swap_past_future, truth_at]
+    
+  | bot => 
+    -- Bot case: swap doesn't change bot
+    simp only [Formula.swap_past_future, truth_at]
+    
+  | imp φ ψ ih_φ ih_ψ => 
+    -- Implication case: (φ.swap.swap → ψ.swap.swap) ↔ (φ → ψ)
+    simp only [Formula.swap_past_future, truth_at]
+    constructor <;> intro h <;> intro h_φ
+    · exact (ih_ψ τ t ht).mp (h ((ih_φ τ t ht).mpr h_φ))
+    · exact (ih_ψ τ t ht).mpr (h ((ih_φ τ t ht).mp h_φ))
+    
+  | box φ ih => 
+    -- Box case: □(φ.swap.swap) ↔ □φ
+    simp only [Formula.swap_past_future, truth_at]
+    constructor <;> intro h σ hs
+    · exact (ih σ t hs).mp (h σ hs)
+    · exact (ih σ t hs).mpr (h σ hs)
+    
+  | all_past φ ih => 
+    -- All_past case: all_past φ → all_future φ.swap → all_past φ.swap.swap
+    simp only [Formula.swap_past_future, truth_at]
+    constructor <;> intro h s hs h_ord
+    · exact (ih τ s hs).mp (h s hs h_ord)
+    · exact (ih τ s hs).mpr (h s hs h_ord)
+    
+  | all_future φ ih => 
+    -- All_future case: all_future φ → all_past φ.swap → all_future φ.swap.swap
+    simp only [Formula.swap_past_future, truth_at]
+    constructor <;> intro h s hs h_ord
+    · exact (ih τ s hs).mp (h s hs h_ord)
+    · exact (ih τ s hs).mpr (h s hs h_ord)
+
+/--
 Validity is invariant under the temporal swap involution.
 If `φ.swap` is valid, then so is `φ` (since swap is involutive).
 -/
 theorem is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_future) :
     is_valid T φ := by
   intro F M τ t ht
-  simpa [Formula.swap_past_future_involution φ] using h F M τ t ht
+  exact (truth_at_swap_swap M τ t ht φ).mp (by simpa using h F M τ t ht)
 
 /-! ## Axiom Swap Validity (Approach D: Derivation-Indexed Proof)
 

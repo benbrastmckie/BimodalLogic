@@ -1,94 +1,398 @@
-# Loogle API Integration Guide
+# Loogle CLI API Documentation
 
-**Purpose**: Guide for integrating with Loogle formal search API
-
-**Last Updated**: December 16, 2025
+**Version**: Lean 4 (v4.27.0-rc1)  
+**Last Updated**: 2025-12-27  
+**Binary Location**: `/home/benjamin/.cache/loogle/.lake/build/bin/loogle`
 
 ---
 
 ## Overview
 
-Loogle is a type-based search engine for LEAN libraries (primarily Mathlib). It allows searching by type signatures, patterns, and names to find relevant theorems and definitions.
+Loogle is a search tool for Lean 4 and Mathlib that enables searching for definitions, theorems, and lemmas by:
+- Constant names (e.g., `Real.sin`)
+- Lemma name substrings (e.g., `"differ"`)
+- Type patterns (e.g., `?a → ?b → ?a ∧ ?b`)
+- Conclusion patterns (e.g., `|- _ < _ → _`)
 
-**API Endpoint**: `https://loogle.lean-lang.org/api/search`
-
----
-
-## Query Types
-
-### 1. By Constant
-
-Search for theorems mentioning a specific constant:
-
-```
-Query: Real.sin
-Example Results:
-  - Real.sin_zero : Real.sin 0 = 0
-  - Real.sin_pi : Real.sin π = 0
-  - Real.continuous_sin : Continuous Real.sin
-```
-
-### 2. By Name Substring
-
-Search for definitions/theorems with name containing substring:
-
-```
-Query: "differ"
-Example Results:
-  - Differentiable
-  - DifferentiableAt
-  - DifferentiableOn
-  - HasDerivAt
-```
-
-**Note**: Use quotes for substring search
-
-### 3. By Type Pattern
-
-Search for theorems with specific type structure:
-
-```
-Query: _ * (_ ^ _)
-Example Results:
-  - mul_pow : ∀ (a b : R) (n : ℕ), (a * b) ^ n = a ^ n * b ^ n
-  - pow_mul : ∀ (a : R) (m n : ℕ), a ^ (m * n) = (a ^ m) ^ n
-```
-
-**Wildcards**:
-- `_` : Match any term
-- `?n` : Match any term and bind to variable n
-
-### 4. By Conclusion
-
-Search for theorems with specific conclusion:
-
-```
-Query: |- tsum _ = _ * tsum _
-Example Results:
-  - tsum_mul_left : tsum (fun i => c * f i) = c * tsum f
-  - tsum_mul_right : tsum (fun i => f i * c) = tsum f * c
-```
-
-**Note**: Use `|-` to specify conclusion pattern
-
-### 5. Combined Queries
-
-Combine multiple filters with AND logic:
-
-```
-Query: Real.sin, _ + _
-Example Results:
-  - Real.sin_add : Real.sin (x + y) = Real.sin x * Real.cos y + Real.cos x * Real.sin y
-```
+This document covers both the **CLI interface** (recommended for lean-research-agent) and the **Web API**.
 
 ---
 
-## API Specification
+## CLI Interface (Recommended)
+
+### Quick Start
+
+```bash
+# Search by constant name
+loogle --json "List.map"
+
+# Search by name fragment
+loogle --json '"replicate"'
+
+# Search by type pattern
+loogle --json "?a → ?b → ?a ∧ ?b"
+
+# Search by conclusion
+loogle --json "|- tsum _ = _ * tsum _"
+
+# Combined search
+loogle --json "Real.sin, tsum, _ * _"
+```
+
+### Interactive Mode (Best for Agents)
+
+```bash
+# Start interactive mode
+loogle --json --interactive
+
+# Wait for: "Loogle is ready.\n"
+# Then send queries (one per line) and read JSON responses
+```
+
+### Command Syntax
+
+```
+loogle [OPTIONS] [QUERY]
+```
+
+### CLI Options
+
+| Option | Short | Description |
+|--------|-------|-------------|
+| `--help` | - | Display help message |
+| `--interactive` | `-i` | Read queries from stdin |
+| `--json` | `-j` | Output JSON format |
+| `--module mod` | - | Import module (default: Mathlib) |
+| `--path path` | - | Custom .olean search path |
+| `--write-index file` | - | Save index to file |
+| `--read-index file` | - | Load index from file |
+
+### JSON Output Format
+
+#### Success Response
+
+```json
+{
+  "header": "Found 5 declarations mentioning List.map. Of these, 3 match your pattern(s).",
+  "heartbeats": 1234,
+  "count": 3,
+  "hits": [
+    {
+      "name": "List.map",
+      "type": "∀ {α β : Type u_1}, (α → β) → List α → List β",
+      "module": "Init.Data.List.Basic",
+      "doc": "Map a function over a list. O(length as)"
+    }
+  ],
+  "suggestions": []
+}
+```
+
+**Fields**:
+- `header` (string): Human-readable summary
+- `heartbeats` (number): Performance metric (heartbeats / 1000)
+- `count` (number): Total matching declarations
+- `hits` (array): Matching declarations
+  - `name` (string): Fully qualified name
+  - `type` (string): Type signature
+  - `module` (string | null): Module path
+  - `doc` (string | null): Documentation
+- `suggestions` (array, optional): Alternative queries
+
+#### Error Response
+
+```json
+{
+  "error": "Unknown identifier 'Foo'",
+  "heartbeats": 123,
+  "suggestions": ["\"Foo\"", "Bar.Foo"]
+}
+```
+
+### Performance Characteristics
+
+| Operation | Duration | Notes |
+|-----------|----------|-------|
+| Index build (first run) | 60-120s | Mathlib only |
+| Index load (--read-index) | 5-10s | Pre-built index |
+| Interactive startup | 5-180s | Depends on index |
+| Simple query | 0.1-0.5s | After index ready |
+| Complex query | 1-5s | Pattern matching |
+
+### Integration Pattern (Python)
+
+```python
+import subprocess
+import json
+
+class LoogleClient:
+    def __init__(self, binary_path, index_path=None, timeout=180):
+        self.binary_path = binary_path
+        self.process = None
+        self.ready = False
+        self.start(index_path, timeout)
+    
+    def start(self, index_path, timeout):
+        """Start Loogle in interactive mode"""
+        cmd = [self.binary_path, "--json", "--interactive"]
+        if index_path:
+            cmd.extend(["--read-index", index_path])
+        
+        self.process = subprocess.Popen(
+            cmd,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1
+        )
+        
+        # Wait for "Loogle is ready.\n"
+        import time
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            line = self.process.stdout.readline()
+            if line == "Loogle is ready.\n":
+                self.ready = True
+                return
+            if self.process.poll() is not None:
+                raise RuntimeError("Loogle process died during startup")
+        
+        raise TimeoutError("Loogle startup timed out")
+    
+    def query(self, query_string, timeout=10):
+        """Execute a query and return parsed JSON"""
+        if not self.ready:
+            raise RuntimeError("Loogle not ready")
+        
+        # Send query
+        self.process.stdin.write(query_string + "\n")
+        self.process.stdin.flush()
+        
+        # Read response with timeout
+        import select
+        ready, _, _ = select.select([self.process.stdout], [], [], timeout)
+        if not ready:
+            raise TimeoutError(f"Query timed out: {query_string}")
+        
+        response_line = self.process.stdout.readline()
+        return json.loads(response_line)
+    
+    def close(self):
+        """Shutdown Loogle process"""
+        if self.process:
+            self.process.stdin.close()
+            self.process.terminate()
+            self.process.wait(timeout=5)
+
+# Usage
+loogle = LoogleClient(
+    binary_path="/home/benjamin/.cache/loogle/.lake/build/bin/loogle",
+    index_path="/tmp/loogle-mathlib.index",
+    timeout=180
+)
+
+result = loogle.query("List.map", timeout=10)
+loogle.close()
+```
+
+### Index Management
+
+```bash
+# Build index (one-time setup)
+loogle --write-index ~/.cache/loogle-mathlib.index --module Mathlib
+
+# Use index for fast startup
+loogle --read-index ~/.cache/loogle-mathlib.index --json "List.map"
+```
+
+---
+
+## Query Syntax
+
+### 1. Search by Constant Name
+
+**Syntax**: Unquoted identifier
+
+**Example**: `Real.sin`
+
+**Matches**: All declarations mentioning `Real.sin` in their type
+
+```bash
+loogle --json "Real.sin"
+```
+
+### 2. Search by Name Fragment
+
+**Syntax**: Quoted string
+
+**Example**: `"differ"`
+
+**Matches**: Declarations with "differ" in name (case-insensitive, suffix matching)
+
+```bash
+loogle --json '"differ"'
+loogle --json '"y_tru"'  # Matches "my_true"
+```
+
+### 3. Search by Type Pattern
+
+**Syntax**: Term with metavariables (`_` or `?name`)
+
+**Metavariables**:
+- `_` - Anonymous (each independent)
+- `?name` - Named (same name = same value)
+
+**Examples**:
+
+```bash
+# Find multiplication with power
+loogle --json "_ * (_ ^ _)"
+
+# Find conjunction introduction
+loogle --json "?a → ?b → ?a ∧ ?b"
+
+# Non-linear pattern (same metavar twice)
+loogle --json "Real.sqrt ?a * Real.sqrt ?a"
+
+# Parameter order doesn't matter
+loogle --json "(?a -> ?b) -> List ?a -> List ?b"  # Finds List.map
+loogle --json "List ?a -> (?a -> ?b) -> List ?b"  # Also finds List.map
+```
+
+### 4. Search by Conclusion
+
+**Syntax**: `⊢ pattern` or `|- pattern`
+
+**Matches**: Only the conclusion (right of all `→` and `∀`)
+
+**Constraint**: Pattern must be of type `Sort` (Prop, Type, etc.)
+
+**Examples**:
+
+```bash
+# Conclusion with specific shape
+loogle --json "|- tsum _ = _ * tsum _"
+
+# Conclusion with hypothesis
+loogle --json "|- _ < _ → tsum _ < tsum _"
+
+# Hypothesis order doesn't matter
+loogle --json "|- 0 < ?n → _ ≤ ?n"
+```
+
+### 5. Combined Filters
+
+**Syntax**: Comma-separated filters
+
+**Logic**: All filters must match (AND)
+
+**Examples**:
+
+```bash
+# Multiple constants
+loogle --json "Real.sin, tsum"
+
+# Constant + name fragment
+loogle --json 'List.map, "assoc"'
+
+# Pattern + conclusion + name
+loogle --json "Real.sin, \"two\", tsum, _ * _, |- _ < _ → _"
+```
+
+---
+
+## Query Examples by Domain
+
+### Modal Logic
+
+```bash
+# Necessitation
+loogle --json "□ _ → □ _"
+
+# K axiom
+loogle --json "□ (_ → _) → □ _ → □ _"
+
+# T axiom (reflexivity)
+loogle --json "□ _ → _"
+
+# 4 axiom (transitivity)
+loogle --json "□ _ → □ □ _"
+
+# S5 axiom
+loogle --json "◇ _ → □ ◇ _"
+```
+
+### Temporal Logic
+
+```bash
+# Until operator
+loogle --json "Until _ _"
+
+# Eventually
+loogle --json "Eventually _"
+
+# Always
+loogle --json "Always _"
+
+# Temporal properties
+loogle --json "Always _ → Eventually _"
+```
+
+### List Operations
+
+```bash
+# List map
+loogle --json "List.map"
+loogle --json "(?a -> ?b) -> List ?a -> List ?b"
+
+# List append
+loogle --json "List.append"
+loogle --json "List ?a → List ?a → List ?a"
+
+# List replicate
+loogle --json "List.replicate"
+loogle --json '"replicate"'
+```
+
+---
+
+## Error Handling
+
+### Common Errors
+
+| Error Message | Cause | Solution |
+|---------------|-------|----------|
+| `Cannot search: No constants...` | Empty query | Add search terms |
+| `Unknown identifier 'X'` | Unresolved name | Use quoted string or qualified name |
+| `Name pattern is too general` | Pattern too short | Use longer pattern (>1 char) |
+| `Conclusion pattern is of type Bool...` | Wrong type | Use Sort-typed pattern |
+
+### Error Recovery
+
+```python
+def query_with_retry(loogle, query):
+    result = loogle.query(query)
+    
+    if "error" in result:
+        # Try suggestions
+        if "suggestions" in result and result["suggestions"]:
+            return loogle.query(result["suggestions"][0])
+        
+        # Fallback to web search
+        return web_search(query)
+    
+    return result
+```
+
+---
+
+## Web API (Alternative)
 
 ### HTTP Request
 
 ```http
-GET https://loogle.lean-lang.org/api/search?q={query}
+GET https://loogle.lean-lang.org/json?q={query}
 ```
 
 **Parameters**:
@@ -102,343 +406,166 @@ User-Agent: LEAN4-ProofChecker/1.0
 
 ### HTTP Response
 
-**Success (200 OK)**:
-```json
-{
-  "results": [
-    {
-      "name": "Real.sin_zero",
-      "type": "Real.sin 0 = 0",
-      "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
-      "docstring": "The sine of zero is zero"
-    },
-    {
-      "name": "Real.sin_pi",
-      "type": "Real.sin π = 0",
-      "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
-      "docstring": "The sine of pi is zero"
-    }
-  ],
-  "count": 2,
-  "query": "Real.sin"
-}
-```
-
-**Error (4xx/5xx)**:
-```json
-{
-  "error": "Invalid query syntax",
-  "code": "INVALID_QUERY",
-  "details": "Expected type pattern, got invalid syntax"
-}
-```
-
----
-
-## Integration Pattern
-
-### Request Function
-
-```yaml
-loogle_search:
-  inputs:
-    query: string
-    timeout: duration (default: 3s)
-    retry: boolean (default: true)
-    
-  process:
-    1. URL-encode query
-    2. Construct request URL
-    3. Send GET request with timeout
-    4. Parse JSON response
-    5. Normalize results
-    6. Return structured data
-    
-  error_handling:
-    timeout: "Retry once, then return cached or empty"
-    4xx_error: "Log and return empty results"
-    5xx_error: "Retry once, then return cached or empty"
-    network_error: "Return cached results or empty"
-    
-  output:
-    status: enum ["success", "partial", "cached", "error"]
-    results: array[LoogleResult]
-    metadata:
-      query: string
-      search_time_ms: integer
-      source: enum ["loogle", "cache"]
-```
-
-### Result Normalization
-
-```yaml
-normalize_result:
-  input: raw_loogle_result
-  
-  process:
-    1. Extract name, type, module, docstring
-    2. Parse type signature
-    3. Extract type components
-    4. Generate usage example
-    5. Compute relevance score
-    
-  output:
-    name: string
-    type: string
-    type_components:
-      parameters: array[string]
-      conclusion: string
-    module: string
-    docstring: string
-    usage_example: string
-    relevance_score: float [0.0, 1.0]
-```
-
----
-
-## Caching Strategy
-
-### Cache Key
-
-```yaml
-cache_key:
-  format: "loogle:{query_hash}"
-  example: "loogle:abc123def456"
-```
-
-### Cache Entry
-
-```yaml
-cache_entry:
-  key: string
-  query: string
-  results: array[LoogleResult]
-  timestamp: datetime
-  ttl: 24h
-  access_count: integer
-```
-
-### Cache Policy
-
-```yaml
-caching:
-  ttl: 24h
-  max_entries: 500
-  eviction: "LRU"
-  invalidation:
-    - Manual invalidation
-    - Mathlib version update
-    - TTL expiration
-```
-
----
-
-## Error Handling
-
-### Error Types
-
-```yaml
-errors:
-  timeout:
-    http_code: null
-    action: "Retry once with same timeout"
-    fallback: "Use cached results or return empty"
-    
-  invalid_query:
-    http_code: 400
-    action: "Log error and return empty"
-    fallback: "Suggest query correction"
-    
-  service_unavailable:
-    http_code: 503
-    action: "Return cached results"
-    fallback: "Use local search or LeanSearch"
-    
-  rate_limited:
-    http_code: 429
-    action: "Wait and retry with backoff"
-    fallback: "Use cached results"
-    
-  network_error:
-    http_code: null
-    action: "Retry once"
-    fallback: "Use cached results or return empty"
-```
-
-### Fallback Chain
-
-```yaml
-fallback_chain:
-  1. Try Loogle API
-  2. If fails, check cache
-  3. If no cache, try LeanSearch
-  4. If fails, use local search
-  5. If fails, return empty with error
-```
-
----
-
-## Query Optimization
-
-### Query Simplification
-
-```yaml
-simplification:
-  remove_redundant_wildcards:
-    before: "_ + _ + _"
-    after: "_ + _"
-    
-  normalize_spacing:
-    before: "_  +  _"
-    after: "_ + _"
-    
-  remove_duplicate_filters:
-    before: "Real.sin, Real.sin"
-    after: "Real.sin"
-```
-
-### Query Expansion
-
-```yaml
-expansion:
-  synonyms:
-    "addition": ["_ + _", "Add", "HAdd"]
-    "multiplication": ["_ * _", "Mul", "HMul"]
-    "equality": ["_ = _", "Eq"]
-    
-  related_constants:
-    "Real.sin": ["Real.cos", "Real.tan", "Complex.sin"]
-    "List.map": ["List.filter", "List.foldl", "Array.map"]
-```
-
----
-
-## Performance Optimization
-
-### Request Batching
-
-```yaml
-batching:
-  strategy: "Batch multiple queries"
-  batch_size: 5
-  batch_timeout: 100ms
-  implementation:
-    - Collect queries for 100ms
-    - Send all queries in parallel
-    - Combine results
-```
-
-### Result Ranking
-
-```yaml
-ranking:
-  factors:
-    name_similarity:
-      weight: 0.3
-      method: "Levenshtein distance"
-      
-    type_similarity:
-      weight: 0.4
-      method: "Type structure matching"
-      
-    module_relevance:
-      weight: 0.2
-      method: "Module popularity"
-      
-    usage_frequency:
-      weight: 0.1
-      method: "Historical usage data"
-      
-  formula: "weighted_sum(factors)"
-```
+Same JSON format as CLI `--json` output.
 
 ---
 
 ## Best Practices
 
-### Query Construction
+### 1. Use Index Persistence
 
-1. **Be Specific**: Use specific constants when possible
-2. **Use Patterns**: Use type patterns for structural search
-3. **Combine Filters**: Combine multiple filters for precision
-4. **Avoid Over-Wildcarding**: Too many wildcards reduce precision
+```bash
+# Build once
+loogle --write-index ~/.cache/loogle.index --module Mathlib
 
-### Caching
+# Use many times
+loogle --read-index ~/.cache/loogle.index --json "query"
+```
 
-1. **Cache Aggressively**: Cache all successful queries
-2. **Long TTL**: Use 24h TTL for stable results
-3. **Invalidate on Update**: Invalidate when Mathlib updates
-4. **Monitor Hit Rate**: Track and optimize cache hit rate
+### 2. Use Interactive Mode for Agents
 
-### Error Handling
+```python
+# Start once at agent initialization
+loogle = LoogleClient(binary_path, index_path, timeout=180)
 
-1. **Always Timeout**: Set reasonable timeout (3s)
-2. **Retry Once**: Retry failed requests once
-3. **Use Fallbacks**: Have fallback chain ready
-4. **Log Errors**: Log all errors for monitoring
+# Query many times
+result1 = loogle.query("List.map")
+result2 = loogle.query("?a → ?b")
+result3 = loogle.query('"replicate"')
 
-### Performance
+# Cleanup at shutdown
+loogle.close()
+```
 
-1. **Batch Queries**: Batch multiple queries when possible
-2. **Parallel Requests**: Send multiple queries in parallel
-3. **Limit Results**: Request only needed number of results
-4. **Rank Results**: Rank by relevance to reduce noise
+### 3. Implement Timeouts
+
+```python
+# Always use timeouts
+result = loogle.query(query, timeout=10)
+
+# Monitor query duration
+import time
+start = time.time()
+result = loogle.query(query)
+duration = time.time() - start
+if duration > 10:
+    logger.warning(f"Slow query: {query} ({duration:.2f}s)")
+```
+
+### 4. Cache Results
+
+```python
+import functools
+
+@functools.lru_cache(maxsize=1000)
+def cached_loogle_query(query):
+    return loogle.query(query, timeout=10)
+```
+
+### 5. Graceful Degradation
+
+```python
+def search_with_fallback(query):
+    try:
+        # Try Loogle CLI first
+        return loogle.query(query, timeout=10)
+    except (TimeoutError, subprocess.SubprocessError):
+        # Fallback to web API
+        logger.warning("Loogle CLI failed, trying web API")
+        return loogle_web_api(query)
+    except Exception:
+        # Fallback to web search
+        logger.warning("Loogle unavailable, using web search")
+        return web_search(query)
+```
 
 ---
 
-## Example Queries
+## Security Notes
 
-### Find Theorems About Ring Homomorphisms
+### Index File Trust
 
-```
-Query: RingHom, _ * _
-Results:
-  - RingHom.map_mul : f (x * y) = f x * f y
-  - RingHom.map_one : f 1 = 1
-  - RingHom.map_pow : f (x ^ n) = f x ^ n
-```
+**Warning**: Index files are blindly trusted by Loogle.
 
-### Find Theorems About List Length
+**Best Practices**:
+- Only use self-built index files
+- Store in secure location (e.g., `~/.cache/`)
+- Set restrictive permissions (chmod 600)
+- Validate integrity with checksums
 
-```
-Query: List.length, _ + _
-Results:
-  - List.length_append : (l₁ ++ l₂).length = l₁.length + l₂.length
-  - List.length_cons : (x :: l).length = l.length + 1
-```
+### Query Sanitization
 
-### Find Continuous Functions
-
-```
-Query: Continuous, Real
-Results:
-  - continuous_sin : Continuous Real.sin
-  - continuous_cos : Continuous Real.cos
-  - continuous_exp : Continuous Real.exp
+```python
+def sanitize_query(query):
+    # Remove control characters
+    query = ''.join(c for c in query if c.isprintable())
+    
+    # Limit length
+    if len(query) > 500:
+        query = query[:500]
+    
+    return query
 ```
 
 ---
 
-## Integration Checklist
+## Troubleshooting
 
-- [ ] Implement HTTP GET request with timeout
-- [ ] Parse JSON response correctly
-- [ ] Normalize results to standard format
-- [ ] Implement caching with 24h TTL
-- [ ] Handle all error types gracefully
-- [ ] Implement fallback chain
-- [ ] Add query optimization (simplification, expansion)
-- [ ] Add result ranking
-- [ ] Test with various query types
-- [ ] Test with service unavailable
-- [ ] Test with timeout
-- [ ] Measure and optimize cache hit rate
-- [ ] Monitor API usage and rate limits
+### Issue: Loogle Times Out
+
+**Cause**: Index not built or corrupted
+
+**Solution**:
+```bash
+# Rebuild index
+loogle --write-index /tmp/loogle.index --module Mathlib
+```
+
+### Issue: Process Dies During Startup
+
+**Cause**: Out of memory
+
+**Solution**:
+- Increase system memory
+- Use pre-built index
+- Reduce concurrent processes
+
+### Issue: Invalid JSON Output
+
+**Cause**: Process crash or output corruption
+
+**Solution**:
+```python
+try:
+    result = json.loads(output)
+except json.JSONDecodeError:
+    # Restart process
+    loogle.restart()
+```
 
 ---
 
 ## References
 
-- [Loogle Website](https://loogle.lean-lang.org/)
-- [Loogle Documentation](https://loogle.lean-lang.org/about)
-- [Mathlib Documentation](https://leanprover-community.github.io/mathlib4_docs/)
+- **Loogle GitHub**: https://github.com/nomeata/loogle
+- **Loogle Web**: https://loogle.lean-lang.org/
+- **Lean 4 Docs**: https://leanprover.github.io/
+- **Mathlib Docs**: https://leanprover-community.github.io/mathlib4_docs/
+- **CLI Source**: `/home/benjamin/.cache/loogle/Loogle.lean`
+- **Find Module**: `/home/benjamin/.cache/loogle/Loogle/Find.lean`
+
+---
+
+## Changelog
+
+### 2025-12-27
+- Added comprehensive CLI interface documentation
+- Added interactive mode integration pattern
+- Added JSON format specification
+- Added performance characteristics
+- Added error handling guide
+- Added security notes
+- Reorganized for CLI-first approach
+
+### 2025-12-16
+- Initial web API documentation

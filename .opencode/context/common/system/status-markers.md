@@ -155,31 +155,93 @@ This document defines the standardized status markers used across the ProofCheck
 
 ---
 
-### Command-Specific Completion Markers
+### Command-Specific Status Markers
 
-`[RESEARCHED]` and `[PLANNED]` are command-level completion markers for `/research` and `/plan` flows. They indicate research or planning deliverables are finished while downstream implementation may still be pending.
+Command-specific status markers track the progress of specific command workflows. These markers provide fine-grained visibility into which stage a task is in.
 
-**Usage**:
-- `/research`: `[IN PROGRESS]` at start → `[RESEARCHED]` on completion; include `**Started**` and `**Completed**` dates.
-- `/plan`: `[IN PROGRESS]` at start → `[PLANNED]` on completion; include `**Started**` and `**Completed**` dates.
-- State file values mirror these markers using lowercase (`researched`, `planned`).
+**In-Progress Markers**:
+- `[RESEARCHING]`: Task research is actively underway (used by `/research`)
+- `[PLANNING]`: Implementation plan is being created (used by `/plan`)
+- `[REVISING]`: Plan revision is in progress (used by `/revise`)
+- `[IMPLEMENTING]`: Implementation work is actively underway (used by `/implement`)
+
+**Completion Markers**:
+- `[RESEARCHED]`: Research completed, deliverables created
+- `[PLANNED]`: Implementation plan completed, ready for implementation
+- `[REVISED]`: Plan revision completed, new plan version created
+- `[COMPLETED]`: Implementation finished successfully (terminal state)
+- `[PARTIAL]`: Implementation partially completed (can resume)
+- `[BLOCKED]`: Work blocked by dependencies or issues
+
+**Workflow Examples**:
+
+`/research` flow:
+```markdown
+[NOT STARTED] → [RESEARCHING] → [RESEARCHED]
+                       ↓
+                  [BLOCKED] (if issues occur)
+```
+
+`/plan` flow:
+```markdown
+[NOT STARTED] → [PLANNING] → [PLANNED]
+      ↓               ↓
+[RESEARCHED] →   [BLOCKED] (if issues occur)
+```
+
+`/revise` flow:
+```markdown
+[PLANNED] → [REVISING] → [REVISED]
+                ↓
+           [BLOCKED] (if issues occur)
+```
+
+`/implement` flow:
+```markdown
+[PLANNED] → [IMPLEMENTING] → [COMPLETED]
+    ↓             ↓              ↓
+[NOT STARTED] → [PARTIAL] ← timeout/incomplete
+                  ↓
+              [BLOCKED] (if issues occur)
+```
+
+**Usage Guidelines**:
+- `/research`: `[RESEARCHING]` at start → `[RESEARCHED]` on completion
+- `/plan`: `[PLANNING]` at start → `[PLANNED]` on completion
+- `/revise`: `[REVISING]` at start → `[REVISED]` on completion
+- `/implement`: `[IMPLEMENTING]` at start → `[COMPLETED]`/`[PARTIAL]`/`[BLOCKED]` on completion
+- State file values mirror these markers using lowercase (`researching`, `planned`, `implementing`, etc.)
 
 **Required Information**:
-- Preserve `**Started**` when moving to `[RESEARCHED]` or `[PLANNED]`.
-- Add `**Completed**: YYYY-MM-DD` at completion.
-- Keep lazy creation: project roots/subdirs are created only when writing research/plan artifacts.
+- Always include `**Started**: YYYY-MM-DD` when transitioning to in-progress state
+- Always include `**Completed**: YYYY-MM-DD` when transitioning to completion state
+- Preserve `**Started**` timestamp through all transitions
+- Keep lazy creation: project roots/subdirs are created only when writing artifacts
 
 **Examples**:
 ```markdown
+**Status**: [RESEARCHING]
+**Started**: 2025-12-27
+
 **Status**: [RESEARCHED]
-**Started**: 2025-12-23
-**Completed**: 2025-12-23
+**Started**: 2025-12-27
+**Completed**: 2025-12-27
 - Research: .opencode/specs/154.../reports/research-001.md
 
+**Status**: [PLANNING]
+**Started**: 2025-12-27
+
 **Status**: [PLANNED]
-**Started**: 2025-12-23
-**Completed**: 2025-12-23
+**Started**: 2025-12-27
+**Completed**: 2025-12-27
 - Plan: .opencode/specs/128.../plans/implementation-001.md
+
+**Status**: [IMPLEMENTING]
+**Started**: 2025-12-27
+
+**Status**: [COMPLETED]
+**Started**: 2025-12-27
+**Completed**: 2025-12-27
 ```
 
 ---
@@ -187,18 +249,30 @@ This document defines the standardized status markers used across the ProofCheck
 ## Status Transition Diagram
 
 ```
-[NOT STARTED] ───────────────────────────────────────┐
-    │                                                │
-    │ (work begins)                                  │ (blocked before start)
-    ▼                                                ▼
-[IN PROGRESS] ──────────────────────────────────> [BLOCKED]
-    │                                                │
-    │ (work completes)                               │ (blocker resolved)
-    │                                                │
-    ▼                                                │
-[COMPLETED]                                          │
-                                                     │
-    ┌────────────────────────────────────────────────┘
+[NOT STARTED] ─────────────────────────────────────────────────┐
+    │                                                           │
+    │ (/research)         (/plan)          (/implement)        │ (blocked before start)
+    ▼                     ▼                 ▼                  ▼
+[RESEARCHING]    [PLANNING]        [IMPLEMENTING]         [BLOCKED]
+    │                │                     │                   │
+    │                │                     │                   │ (blocker resolved)
+    ▼                ▼                     ▼                   │
+[RESEARCHED] ──→ [PLANNED] ──(/revise)──→ [REVISING]          │
+                    │            │             │               │
+                    │            │             ▼               │
+                    │            │        [REVISED]            │
+                    │            │             │               │
+                    │            └─────────────┘               │
+                    │ (/implement)                             │
+                    ▼                                          │
+             [IMPLEMENTING] ─────────────────────────────────> │
+                    │                                          │
+                    │                                          │
+                    ├────> [COMPLETED] (all phases done)       │
+                    ├────> [PARTIAL] (some phases done)        │
+                    └────> [BLOCKED] (cannot proceed) ─────────┘
+                                     
+    ┌──────────────────────────────────────────────────────────┘
     │ (work abandoned)
     ▼
 [ABANDONED]
@@ -208,12 +282,31 @@ This document defines the standardized status markers used across the ProofCheck
 
 | From | To | Condition |
 |------|-----|-----------|
-| `[NOT STARTED]` | `[IN PROGRESS]` | Work begins |
+| `[NOT STARTED]` | `[RESEARCHING]` | `/research` command starts |
+| `[NOT STARTED]` | `[PLANNING]` | `/plan` command starts |
+| `[NOT STARTED]` | `[IMPLEMENTING]` | `/implement` command starts (no plan) |
 | `[NOT STARTED]` | `[BLOCKED]` | Blocked before starting |
-| `[IN PROGRESS]` | `[COMPLETED]` | Work finishes successfully |
-| `[IN PROGRESS]` | `[BLOCKED]` | Work encounters blocker |
-| `[IN PROGRESS]` | `[ABANDONED]` | Work is discontinued |
-| `[BLOCKED]` | `[IN PROGRESS]` | Blocker resolved |
+| `[RESEARCHING]` | `[RESEARCHED]` | Research completes successfully |
+| `[RESEARCHING]` | `[BLOCKED]` | Research encounters blocker |
+| `[RESEARCHING]` | `[ABANDONED]` | Research discontinued |
+| `[RESEARCHED]` | `[PLANNING]` | `/plan` command starts |
+| `[PLANNING]` | `[PLANNED]` | Planning completes successfully |
+| `[PLANNING]` | `[BLOCKED]` | Planning encounters blocker |
+| `[PLANNING]` | `[ABANDONED]` | Planning discontinued |
+| `[PLANNED]` | `[REVISING]` | `/revise` command starts |
+| `[PLANNED]` | `[IMPLEMENTING]` | `/implement` command starts |
+| `[REVISING]` | `[REVISED]` | Revision completes successfully |
+| `[REVISING]` | `[BLOCKED]` | Revision encounters blocker |
+| `[REVISED]` | `[IMPLEMENTING]` | `/implement` command starts |
+| `[IMPLEMENTING]` | `[COMPLETED]` | Implementation finishes successfully |
+| `[IMPLEMENTING]` | `[PARTIAL]` | Implementation partially complete (timeout) |
+| `[IMPLEMENTING]` | `[BLOCKED]` | Implementation encounters blocker |
+| `[IMPLEMENTING]` | `[ABANDONED]` | Implementation discontinued |
+| `[PARTIAL]` | `[IMPLEMENTING]` | Resume implementation |
+| `[PARTIAL]` | `[ABANDONED]` | Abandon incomplete work |
+| `[BLOCKED]` | `[RESEARCHING]` | Blocker resolved, resume research |
+| `[BLOCKED]` | `[PLANNING]` | Blocker resolved, resume planning |
+| `[BLOCKED]` | `[IMPLEMENTING]` | Blocker resolved, resume implementation |
 | `[BLOCKED]` | `[ABANDONED]` | Blocker cannot be resolved |
 | `[ABANDONED]` | `[NOT STARTED]` | Restart from scratch (rare) |
 
@@ -222,8 +315,14 @@ This document defines the standardized status markers used across the ProofCheck
 | From | To | Why Invalid |
 |------|-----|-------------|
 | `[COMPLETED]` | Any | Completed work should not change |
-| `[NOT STARTED]` | `[COMPLETED]` | Must go through `[IN PROGRESS]` |
+| `[NOT STARTED]` | `[COMPLETED]` | Must go through command-specific workflow |
+| `[NOT STARTED]` | `[RESEARCHED]` | Must go through `[RESEARCHING]` |
+| `[NOT STARTED]` | `[PLANNED]` | Must go through `[PLANNING]` |
 | `[NOT STARTED]` | `[ABANDONED]` | Cannot abandon work that never started |
+| `[RESEARCHING]` | `[PLANNED]` | Must complete research first |
+| `[PLANNING]` | `[COMPLETED]` | Planning creates plan, not completion |
+| `[IMPLEMENTING]` | `[RESEARCHED]` | Cannot go backwards in workflow |
+| `[IMPLEMENTING]` | `[PLANNED]` | Cannot go backwards in workflow |
 | `[ABANDONED]` | `[COMPLETED]` | Abandoned work is not complete |
 
 ---
@@ -312,12 +411,17 @@ This document defines the standardized status markers used across the ProofCheck
 
 **Status Values** (lowercase, underscore-separated):
 - `not_started`
-- `in_progress`
-- `researched`
-- `planned`
-- `blocked`
-- `abandoned`
-- `completed`
+- `researching` (task research underway)
+- `researched` (research completed)
+- `planning` (plan creation underway)
+- `planned` (plan completed)
+- `revising` (plan revision underway)
+- `revised` (plan revision completed)
+- `implementing` (implementation underway)
+- `partial` (implementation partially completed)
+- `completed` (implementation fully completed)
+- `blocked` (work blocked)
+- `abandoned` (work discontinued)
 
 ---
 
@@ -383,10 +487,10 @@ For backward compatibility, tools should recognize and convert legacy status val
 
 | Command | Status Updates |
 |---------|----------------|
-| `/implement` | `[NOT STARTED]` → `[IN PROGRESS]` → `[COMPLETED]` (simple tasks) |
-| `/plan` | Marks target task `[IN PROGRESS]` at invocation, creates/updates plan with phases `[NOT STARTED]`, and sets task `[PLANNED]` on completion with timestamps |
-| `/research` | Marks target task `[IN PROGRESS]` at invocation and sets task `[RESEARCHED]` on completion with timestamps while updating the generated research artifact |
-| `/revise` | Creates new plan version with phases `[NOT STARTED]` |
+| `/research` | `[NOT STARTED]` → `[RESEARCHING]` (start) → `[RESEARCHED]` (completion) with timestamps |
+| `/plan` | `[NOT STARTED]`/`[RESEARCHED]` → `[PLANNING]` (start) → `[PLANNED]` (completion) with timestamps |
+| `/revise` | `[PLANNED]` → `[REVISING]` (start) → `[REVISED]` (completion), creates new plan version |
+| `/implement` | `[NOT STARTED]`/`[PLANNED]` → `[IMPLEMENTING]` (start) → `[COMPLETED]`/`[PARTIAL]`/`[BLOCKED]` (completion) |
 | `/todo` | Reviews and cleans up `[COMPLETED]` **and** `[ABANDONED]` tasks |
 
 ### Subagents

@@ -1,7 +1,7 @@
 ---
 name: task
 agent: orchestrator
-description: "Add tasks to TODO.md with standardized format"
+description: "Create new task in TODO.md (NO implementation)"
 context_level: 1
 language: markdown
 ---
@@ -12,41 +12,47 @@ Context Loaded:
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
 @.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
 
 <context>
   <system_context>
-    Task creation system with atomic numbering and standardized TODO.md format.
-    Ensures unique task numbers and consistent task structure.
+    Simple task creation system - ONLY creates task entries, NEVER implements them.
+    Reads next_project_number from state.json, creates TODO.md entry, increments number.
   </system_context>
   <domain_context>
     TODO.md task management with status markers, effort estimates, and language tracking.
   </domain_context>
   <task_context>
-    Create new task entry in TODO.md with next available number, standardized format,
-    and initial [NOT STARTED] status.
+    Create new task entry in TODO.md with next available number from state.json,
+    standardized format, and initial [NOT STARTED] status. DO NOT IMPLEMENT THE TASK.
   </task_context>
   <execution_context>
-    Atomic task numbering via atomic-task-numberer subagent. Status synchronization
-    via status-sync-manager. No directory creation (lazy creation principle).
+    Direct file operations only. No subagent delegation. No directory creation.
+    This command ONLY creates the task entry and updates state.json.
   </execution_context>
 </context>
 
-<role>Task Creation Command - Add new tasks to TODO.md with unique numbering</role>
+<role>Task Creation Command - Add new tasks to TODO.md WITHOUT implementing them</role>
 
 <task>
-  Add new task to TODO.md with atomic number allocation, standardized format,
-  language detection, and synchronized state.json update.
+  CRITICAL: This command ONLY creates task entries. It NEVER implements tasks.
+  
+  Process:
+  1. Parse task description from $ARGUMENTS
+  2. Read next_project_number from .opencode/specs/state.json
+  3. Create task entry in TODO.md
+  4. Increment next_project_number in state.json
+  5. Return task number to user
+  
+  DO NOT implement the task. DO NOT create any files except updating TODO.md and state.json.
 </task>
 
 <workflow_execution>
   <stage id="1" name="ParseInput">
-    <action>Parse task description and extract metadata</action>
+    <action>Parse task description and extract optional metadata</action>
     <process>
-      1. Parse task description from user input
-      2. Extract priority (default: Medium)
-      3. Extract effort estimate (default: TBD)
+      1. Parse task description from $ARGUMENTS
+      2. Extract --priority flag if present (default: Medium)
+      3. Extract --effort flag if present (default: TBD)
       4. Detect language from description keywords:
          - "lean", "proof", "theorem" → Language: lean
          - "markdown", "doc", "README" → Language: markdown
@@ -55,148 +61,156 @@ Context Loaded:
     </process>
     <validation>
       - Description must be non-empty string
-      - Priority must be: Low|Medium|High|Critical
-      - Effort must be: TBD or valid time estimate
+      - Priority must be: Low|Medium|High (default: Medium)
+      - Effort must be: TBD or time estimate like "2 hours"
     </validation>
+    <examples>
+      - `/task "Implement LeanSearch integration"` → priority=Medium, effort=TBD, language=lean
+      - `/task "Fix build error" --priority High --effort "2 hours"` → priority=High, effort=2 hours
+      - `/task "Update README.md documentation"` → language=markdown
+    </examples>
   </stage>
 
-  <stage id="2" name="PrepareDelegation">
-    <action>Prepare delegation context for atomic-task-numberer</action>
+  <stage id="2" name="ReadNextNumber">
+    <action>Read next_project_number from state.json</action>
     <process>
-      1. Generate session_id: sess_{timestamp}_{random_6char}
-      2. Set delegation_depth = 1 (orchestrator → task → atomic-task-numberer)
-      3. Set delegation_path = ["orchestrator", "task", "atomic-task-numberer"]
-      4. Set timeout = 60s (simple operation)
-      5. Store session_id for validation
+      1. Read .opencode/specs/state.json
+      2. Extract next_project_number field
+      3. Validate it's a number >= 0
+      4. Store for use in task creation
     </process>
-    <delegation_context>
-      {
-        "session_id": "sess_{timestamp}_{random}",
-        "delegation_depth": 1,
-        "delegation_path": ["orchestrator", "task", "atomic-task-numberer"],
-        "timeout": 60
-      }
-    </delegation_context>
+    <error_handling>
+      If state.json missing or invalid:
+        - Return error to user
+        - Suggest running /todo to regenerate state.json
+        - DO NOT proceed with task creation
+    </error_handling>
   </stage>
 
-  <stage id="3" name="InvokeTaskNumberer">
-    <action>Invoke atomic-task-numberer to get next task number</action>
-    <process>
-      1. Route to atomic-task-numberer subagent
-      2. Pass delegation context
-      3. Request next available task number
-      4. Set timeout to 60s
-    </process>
-    <invocation>
-      task_tool(
-        subagent_type="atomic-task-numberer",
-        prompt="Allocate next task number",
-        session_id=delegation_context["session_id"],
-        delegation_depth=1,
-        delegation_path=delegation_context["delegation_path"],
-        timeout=60
-      )
-    </invocation>
-  </stage>
-
-  <stage id="4" name="ReceiveTaskNumber">
-    <action>Wait for and receive task number from subagent</action>
-    <process>
-      1. Poll for completion (max 60s)
-      2. Receive return object from atomic-task-numberer
-      3. Handle timeout if no response
-      4. Handle exceptions if invocation failed
-    </process>
-    <timeout_handling>
-      If timeout (no response after 60s):
-        1. Log timeout error with session_id
-        2. Return error to user
-        3. Recommend retry
-    </timeout_handling>
-    <validation>
-      1. Validate return against subagent-return-format.md
-      2. Check session_id matches expected
-      3. Validate status is "completed"
-      4. Extract task_number from return
-    </validation>
-  </stage>
-
-  <stage id="5" name="CreateTODOEntry">
+  <stage id="3" name="CreateTODOEntry">
     <action>Create formatted TODO.md entry</action>
     <process>
-      1. Format task entry:
+      1. Format task entry following TODO.md conventions:
+         ```
          ### {number}. {description}
          - **Effort**: {effort}
          - **Status**: [NOT STARTED]
          - **Priority**: {priority}
          - **Language**: {language}
-      2. Append to TODO.md
-      3. Preserve existing task numbering
+         - **Blocking**: None
+         - **Dependencies**: None
+         ```
+      2. Determine correct section in TODO.md based on priority:
+         - High → ## High Priority section
+         - Medium → ## Medium Priority section
+         - Low → ## Low Priority section
+      3. Append entry to appropriate section
+      4. Use Edit tool to add entry (preserves file structure)
     </process>
     <format_example>
-      ### 197. Implement LeanSearch REST API integration
-      - **Effort**: 4 hours
+      ### 200. Implement LeanSearch REST API integration
+      - **Effort**: TBD
       - **Status**: [NOT STARTED]
-      - **Priority**: High
+      - **Priority**: Medium
       - **Language**: lean
+      - **Blocking**: None
+      - **Dependencies**: None
     </format_example>
   </stage>
 
-  <stage id="6" name="UpdateState">
-    <action>Update state.json with new task</action>
+  <stage id="4" name="UpdateStateJson">
+    <action>Increment next_project_number in state.json</action>
     <process>
-      1. Load state.json
-      2. Add task entry:
+      1. Read current state.json
+      2. Increment next_project_number by 1
+      3. Add entry to recent_activities:
+         ```
          {
-           "task_number": {number},
-           "status": "not_started",
-           "priority": {priority},
-           "language": {language},
-           "created": "{YYYY-MM-DD}"
+           "timestamp": "{ISO-8601}",
+           "activity": "Created task {number}: {description} ({effort}, {priority} priority)"
          }
-      3. Write state.json atomically
+         ```
+      4. Update _last_updated timestamp
+      5. Write state.json atomically
     </process>
-    <atomic>
-      Use file locking or atomic write to prevent race conditions
-    </atomic>
+    <atomic_write>
+      Use Edit tool with complete JSON replacement to ensure atomic update
+    </atomic_write>
   </stage>
 
-  <stage id="7" name="ReturnSuccess">
-    <action>Return task number and summary to user</action>
+  <stage id="5" name="ReturnSuccess">
+    <action>Return task number and confirmation to user</action>
     <return_format>
       Task {number} created: {description}
       - Priority: {priority}
+      - Effort: {effort}
       - Language: {language}
       - Status: [NOT STARTED]
+      
+      Task added to TODO.md in {priority} Priority section.
+      Next available task number is now {next_number}.
+      
+      Use `/research {number}` to research this task.
+      Use `/plan {number}` to create implementation plan.
+      Use `/implement {number}` to implement the task.
     </return_format>
   </stage>
 </workflow_execution>
 
-<routing_intelligence>
-  <context_allocation>
-    Level 1 (Isolated) - Simple task creation, minimal context needed
-  </context_allocation>
-  <delegation>
-    Single delegation to atomic-task-numberer (depth 1)
-    No further delegation from atomic-task-numberer
-  </delegation>
-</routing_intelligence>
+<critical_constraints>
+  <no_implementation>
+    This command ONLY creates task entries. It MUST NOT:
+    - Implement the task
+    - Create any spec directories
+    - Create any research files
+    - Create any plan files
+    - Create any code files
+    - Delegate to any subagents
+    
+    The ONLY files modified are:
+    - .opencode/specs/TODO.md (add task entry)
+    - .opencode/specs/state.json (increment next_project_number)
+  </no_implementation>
+  
+  <no_delegation>
+    This command operates entirely within the orchestrator.
+    It MUST NOT delegate to ANY subagents including:
+    - atomic-task-numberer (not needed - we read state.json directly)
+    - status-sync-manager (not needed - simple file update)
+    - Any other subagents
+  </no_delegation>
+  
+  <file_operations_only>
+    This command performs only these file operations:
+    1. Read .opencode/specs/state.json
+    2. Read .opencode/specs/TODO.md
+    3. Edit .opencode/specs/TODO.md (add task entry)
+    4. Edit .opencode/specs/state.json (increment next_project_number)
+    
+    No other file operations are allowed.
+  </file_operations_only>
+</critical_constraints>
 
 <validation>
   <pre_flight>
-    - Description validated (non-empty)
-    - Priority validated (valid enum)
-    - Language detected or defaulted
+    - Task description validated (non-empty)
+    - Priority validated (Low|Medium|High)
+    - Effort validated (TBD or time estimate)
+    - Language detected or defaulted to general
   </pre_flight>
+  
   <mid_flight>
-    - Task number received and validated
-    - Return format validated against standard
-    - Session ID matches expected
+    - state.json exists and is readable
+    - next_project_number is valid number
+    - TODO.md exists and is writable
   </mid_flight>
+  
   <post_flight>
-    - TODO.md updated with new task
-    - state.json updated atomically
-    - Task number returned to user
+    - TODO.md contains new task entry in correct section
+    - state.json next_project_number incremented
+    - state.json recent_activities updated
+    - No other files created or modified
+    - No implementation performed
   </post_flight>
 </validation>
 
@@ -204,40 +218,81 @@ Context Loaded:
   <status_markers>
     Use [NOT STARTED] for new tasks per status-markers.md
   </status_markers>
+  
   <language_detection>
-    Detect language from description keywords, default to "general"
+    Detect language from description keywords:
+    - lean: "lean", "proof", "theorem", "lemma", "tactic"
+    - markdown: "markdown", "doc", "README", "documentation"
+    - general: anything else
   </language_detection>
+  
+  <priority_sections>
+    Add task to correct TODO.md section based on priority:
+    - High → ## High Priority
+    - Medium → ## Medium Priority  
+    - Low → ## Low Priority
+  </priority_sections>
+  
   <no_emojis>
-    No emojis in task entries or output
+    No emojis in task entries or command output
   </no_emojis>
+  
   <atomic_updates>
-    state.json updates must be atomic to prevent race conditions
+    state.json updates must be atomic to prevent corruption
   </atomic_updates>
 </quality_standards>
 
 <usage_examples>
-  - `/task Implement LeanSearch REST API integration`
-  - `/task Add missing directory READMEs --priority High`
-  - `/task Fix delegation hang in task-executor --effort 2h`
+  <example_1>
+    Input: /task "Implement LeanSearch REST API integration"
+    Output: Task 200 created with Medium priority, TBD effort, lean language
+  </example_1>
+  
+  <example_2>
+    Input: /task "Add missing directory READMEs" --priority High
+    Output: Task 201 created with High priority, TBD effort, markdown language
+  </example_2>
+  
+  <example_3>
+    Input: /task "Fix delegation hang in task-executor" --effort "2 hours" --priority High
+    Output: Task 202 created with High priority, 2 hours effort, general language
+  </example_3>
 </usage_examples>
 
 <error_handling>
-  <timeout>
-    If atomic-task-numberer times out:
-      - Log error with session_id
-      - Return error to user
-      - Recommend retry
-  </timeout>
-  <validation_failure>
-    If return validation fails:
-      - Log validation error
-      - Return error to user
-      - Include details of validation failure
-  </validation_failure>
-  <state_update_failure>
-    If state.json update fails:
-      - Rollback TODO.md changes
-      - Return error to user
-      - Log error for debugging
-  </state_update_failure>
+  <missing_state_json>
+    If state.json doesn't exist:
+      - Return error: "state.json not found at .opencode/specs/state.json"
+      - Suggest: "Run /todo to regenerate state files"
+      - DO NOT create task
+  </missing_state_json>
+  
+  <invalid_state_json>
+    If state.json is corrupt or missing next_project_number:
+      - Return error: "state.json is invalid or missing next_project_number"
+      - Suggest: "Run /todo to regenerate state files"
+      - DO NOT create task
+  </invalid_state_json>
+  
+  <missing_todo>
+    If TODO.md doesn't exist:
+      - Return error: "TODO.md not found at .opencode/specs/TODO.md"
+      - Suggest: "Run /todo to regenerate TODO.md"
+      - DO NOT create task
+  </missing_todo>
+  
+  <empty_description>
+    If task description is empty:
+      - Return error: "Task description cannot be empty"
+      - Show usage: "/task \"Your task description here\""
+      - DO NOT create task
+  </empty_description>
 </error_handling>
+
+<important_notes>
+  1. This command ONLY creates task entries - it does NOT implement tasks
+  2. No subagent delegation - all operations in orchestrator
+  3. Only two files modified: TODO.md and state.json
+  4. Task number comes from state.json next_project_number field
+  5. After creating task, user must use /research, /plan, /implement separately
+</important_notes>

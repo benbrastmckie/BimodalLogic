@@ -99,13 +99,13 @@ Context Loaded:
       3. Validate task exists and is not [COMPLETED]
       4. Extract task description and language
       5. Check for existing plan (warn if exists)
-      6. Mark task [IN PROGRESS] with Started timestamp
-      7. Update state.json: status = "in_progress", started = "{YYYY-MM-DD}"
+      6. Mark task [PLANNING] with Started timestamp
+      7. Update state.json: status = "planning", started = "{YYYY-MM-DD}"
     </process>
     <status_update>
       Atomic update via status-sync-manager:
-        - TODO.md: [IN PROGRESS], **Started**: {date}
-        - state.json: status = "in_progress", started = "{date}"
+        - TODO.md: [PLANNING], **Started**: {date}
+        - state.json: status = "planning", started = "{date}"
     </status_update>
     <validation>
       - Task number must exist in TODO.md
@@ -196,7 +196,7 @@ Context Loaded:
         1. Log timeout error with session_id
         2. Check for partial plan on disk
         3. Return partial status with plan found
-        4. Keep task [IN PROGRESS] (not failed)
+        4. Keep task [PLANNING] (not failed)
         5. Message: "Planning timed out after 30 minutes. Partial plan available. Resume with /plan {number}"
     </timeout_handling>
     <validation>
@@ -225,7 +225,7 @@ Context Loaded:
         - Proceed to postflight with plan path
       If status == "partial":
         - Partial plan created
-        - Keep task [IN PROGRESS]
+        - Keep task [PLANNING]
         - Save partial plan
         - Provide resume instructions
       If status == "failed":
@@ -233,6 +233,7 @@ Context Loaded:
         - Handle errors
         - Provide recovery steps
       If status == "blocked":
+        - Mark task [BLOCKED]
         - Cannot proceed
         - Identify blocker
         - Request user intervention
@@ -257,16 +258,21 @@ Context Loaded:
          c. Git commit:
             - Scope: Plan file + TODO.md + state.json
             - Message: "task {number}: plan created"
-      2. If status == "partial":
-         a. Keep TODO.md status [IN PROGRESS]
-         b. Add partial plan link
-         c. Git commit partial plan:
-            - Scope: Partial plan file only
-            - Message: "task {number}: partial plan created"
-      3. If status == "failed" or "blocked":
-         a. Keep TODO.md status [IN PROGRESS]
-         b. Add error notes to TODO.md
-         c. No git commit
+       2. If status == "partial":
+          a. Keep TODO.md status [PLANNING]
+          b. Add partial plan link
+          c. Git commit partial plan:
+             - Scope: Partial plan file only
+             - Message: "task {number}: partial plan created"
+       3. If status == "failed":
+          a. Keep TODO.md status [PLANNING]
+          b. Add error notes to TODO.md
+          c. No git commit
+       4. If status == "blocked":
+          a. Update TODO.md status to [BLOCKED]
+          b. Add blocking reason to TODO.md
+          c. Update state.json: status = "blocked", blocked = "{date}"
+          d. No git commit
     </process>
     <atomic_update>
       Use status-sync-manager to atomically:
