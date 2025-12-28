@@ -1,12 +1,12 @@
 # TODO
 
-**Last Updated:** 2025-12-28T19:45:52Z
+**Last Updated:** 2025-12-28T22:30:00Z
 
 ## Overview
 
-- **Total Tasks:** 34
+- **Total Tasks:** 36
 - **Completed:** 0
-- **High Priority:** 12
+- **High Priority:** 14
 - **Medium Priority:** 11
 - **Low Priority:** 11
 
@@ -62,6 +62,7 @@
 - **Implementation Artifacts**:
   - Implementation Report: [.opencode/specs/193_prove_is_valid_swap_involution/reports/implementation-001.md]
   - Implementation Summary: [.opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md]
+  - Implementation Failure Report: [.opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-failure-20251228.md]
   - Modified File: Logos/Core/Semantics/Truth.lean (lines 625-688, 64 lines added)
 - **Files Affected**:
   - Logos/Core/Semantics/Truth.lean
@@ -127,63 +128,24 @@
   - [ ] Examples provided showing typical maintenance report structure
 - **Impact**: Improves maintainability and transparency of the maintenance workflow by standardizing report generation and ensuring comprehensive documentation of maintenance operations.
 
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-25
-- **Completed**: 2025-12-28
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: 173
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/183_deduction_theorem_build_errors/reports/research-001.md]
-  - Summary: [.opencode/specs/183_deduction_theorem_build_errors/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/183_deduction_theorem_build_errors/plans/implementation-002.md]
-- **Plan Summary**: Single-phase implementation (30 minutes). Replace 3 `.elim` patterns with idiomatic `by_cases` tactic at lines 256, 369, 376. Purely syntactic fix following proven patterns from Soundness.lean and Truth.lean. Very low risk - no logic changes, only tactic mode syntax.
-- **Implementation Summary**: [.opencode/specs/183_deduction_theorem_build_errors/summaries/implementation-summary-20251228.md]
-- **Files Affected**:
-  - Logos/Core/Metalogic/DeductionTheorem.lean
-- **Description**: Fix 3 pre-existing build errors in DeductionTheorem.lean that are blocking compilation of all test files including the new integration tests from task 173. These errors prevent verification that the 106 new integration tests (82% coverage) actually compile and pass. Errors: Line 255 (Decidable typeclass instance stuck), Line 297 (no goals to be solved), Line 371 (Decidable typeclass instance stuck).
-- **Root Cause Analysis** (2025-12-25):
-  - All 3 build errors stem from using `(em P).elim` pattern inside `match` expressions
-  - The `.elim` method is a term-mode construct, not a tactic, causing "unknown tactic" errors at lines 256, 369, and 376
-  - With `open Classical` already at the top of the file, `by_cases` automatically uses `Classical.propDecidable` for any proposition via excluded middle
-- **Solution** (Research Complete):
-  - Replace `(em P).elim (fun h => ...) (fun h => ...)` with `by_cases h : P` tactic
-  - This is the idiomatic Lean 4 pattern proven in the codebase (Soundness.lean line 282, Truth.lean lines 789-825)
-  - 3 simple replacements needed:
-    - Line 256: `(em (A ∈ Γ'')).elim` → `by_cases hA' : A ∈ Γ''`
-    - Line 369: `(em (Γ' = A :: Γ)).elim` → `by_cases h_eq : Γ' = A :: Γ`
-    - Line 376: `(em (A ∈ Γ')).elim` → `by_cases hA : A ∈ Γ'`
-  - Use `·` bullet points for case branches and remove closing parentheses
-  - Termination proofs are correct and will work once tactic errors are fixed
-- **Implementation Estimate**: 15-30 minutes (low complexity, proven pattern, very low risk)
-- **Acceptance Criteria**:
-  - [x] Line 255 Decidable typeclass instance error fixed
-  - [x] Line 297 no goals error fixed
-  - [x] Line 371 Decidable typeclass instance error fixed
-  - [x] DeductionTheorem.lean compiles successfully with lake build
-  - [x] No new errors introduced
-  - [x] Existing tests still pass
-- **Impact**: Critical blocker for task 173. Fixing these errors will unblock compilation of 106 new integration tests and allow verification of 82% integration test coverage achievement.
-
 ### 184. Fix Truth.lean build error (swap_past_future proof)
-- **Effort**: 4 hours (revised from 1 hour after investigation)
-- **Status**: [BLOCKED]
-- **Started**: 2025-12-25
-- **Blocked**: 2025-12-26
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: 173
-- **Dependencies**: None
-- **Research Artifacts**:
+ **Effort**: 4 hours (revised from 1 hour after investigation)
+ **Status**: [BLOCKED]
+ **Started**: 2025-12-25
+ **Blocked**: 2025-12-26
+ **Priority**: High
+ **Language**: lean
+ **Blocking**: 173
+ **Dependencies**: None
+ **Research Artifacts**:
   - Main Report: [.opencode/specs/184_truth_lean_build_error/reports/research-001.md]
   - Investigation Summary: [.opencode/specs/184_truth_lean_build_error/summaries/implementation-summary-20251226.md]
-- **Plan**: [.opencode/specs/184_truth_lean_build_error/plans/implementation-001.md]
-- **Blocking Reason**: Proof requires structural induction on formulas (3-4 hours), not simple tactic fix (55 min). Investigation found that truth_at is recursively defined by pattern matching, preventing simple formula substitution. Multiple rewrite/cast/transport approaches failed due to dependent type constraints. Full structural induction proof needed.
-- **Files Affected**:
+ **Plan**: [.opencode/specs/184_truth_lean_build_error/plans/implementation-001.md]
+ **Blocking Reason**: Proof requires structural induction on formulas (3-4 hours), not simple tactic fix (55 min). Investigation found that truth_at is recursively defined by pattern matching, preventing simple formula substitution. Multiple rewrite/cast/transport approaches failed due to dependent type constraints. Full structural induction proof needed.
+ **Files Affected**:
   - Logos/Core/Semantics/Truth.lean (lines 625-635)
-- **Description**: Fix pre-existing build error in Truth.lean line 632 (`is_valid_swap_involution` theorem has type mismatch). The theorem attempts to prove `is_valid T φ` given `is_valid T φ.swap_past_future` using the involution `φ.swap_past_future.swap_past_future = φ`. Current code uses `simpa` which fails because `truth_at` is recursively defined by pattern matching on formulas, preventing direct formula substitution via equality.
-- **Implementation Strategy** (for future completion):
+ **Description**: Fix pre-existing build error in Truth.lean line 632 (`is_valid_swap_involution` theorem has type mismatch). The theorem attempts to prove `is_valid T φ` given `is_valid T φ.swap_past_future` using the involution `φ.swap_past_future.swap_past_future = φ`. Current code uses `simpa` which fails because `truth_at` is recursively defined by pattern matching on formulas, preventing direct formula substitution via equality.
+ **Implementation Strategy** (for future completion):
   1. **Create helper lemma** `truth_at_swap_swap` proving equivalence by structural induction:
      ```lean
      theorem truth_at_swap_swap {F : TaskFrame T} (M : TaskModel F)
@@ -298,20 +260,26 @@
 
 ### 212. Research and improve lean-lsp-mcp usage in Lean implementation agent
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: High
-- **Language**: lean
+- **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/212_research_lean_lsp_mcp_usage/reports/research-001.md]
+  - Summary: [.opencode/specs/212_research_lean_lsp_mcp_usage/summaries/research-summary.md]
 - **Files Affected**:
   - .opencode/agent/subagents/lean-implementation-agent.md
   - .opencode/agent/subagents/lean-research-agent.md
   - .opencode/context/project/lean4/ (potential new context files)
 - **Description**: Research how lean-lsp-mcp is intended to be used and refine the lean-implementation-agent to use the tool effectively when implementing Lean plans. Currently when running /implement on Lean tasks, lean-lsp-mcp is not being used at all. Need to: (1) Research lean-lsp-mcp tool usage best practices by consulting existing context files and online resources, (2) Understand how to invoke lean-lsp-mcp correctly within agent workflows, (3) Refine lean-implementation-agent to use lean-lsp-mcp effectively during implementation, (4) Improve context files as appropriate while integrating with existing context to avoid bloat, redundancy, and inconsistency, (5) Improve organization and easy access to lean-lsp-mcp guidance. The goal is to ensure Lean-specific tooling is actually being leveraged during Lean task implementation.
 - **Acceptance Criteria**:
-  - [ ] Research completed on lean-lsp-mcp tool usage best practices
-  - [ ] Existing context files reviewed for lean-lsp-mcp documentation
-  - [ ] Online resources consulted for lean-lsp-mcp usage patterns
+  - [x] Research completed on lean-lsp-mcp tool usage best practices
+  - [x] Existing context files reviewed for lean-lsp-mcp documentation
+  - [x] Online resources consulted for lean-lsp-mcp usage patterns
+  - [x] Research report created documenting findings
   - [ ] lean-implementation-agent refined to invoke lean-lsp-mcp during implementation
   - [ ] Verification that lean-lsp-mcp is actually used when implementing Lean tasks
   - [ ] Context files improved with lean-lsp-mcp usage guidance
@@ -320,6 +288,63 @@
   - [ ] lean-research-agent reviewed and improved if needed
   - [ ] Test implementation confirms lean-lsp-mcp usage
 - **Impact**: CRITICAL - Ensures lean-lsp-mcp is actually being used during Lean task implementation instead of being bypassed. Without this fix, Lean-specific tooling investment is wasted and Lean implementations miss out on language server capabilities for proof verification, theorem search, and code intelligence.
+
+### 213. Comprehensive expert consultation for blocked involution proof in Truth.lean
+- **Effort**: 6-10 hours
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Researched**: 2025-12-28
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 184, 193, 209
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md]
+  - Summary: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md]
+- **Files Affected**:
+  - Logos/Core/Semantics/Truth.lean (line 691 - is_valid_swap_involution)
+  - Logos/Core/Syntax/Formula.lean (involution lemmas)
+  - Documentation/Research/ (consultation findings)
+- **Description**: After exhaustive attempts across tasks 184, 193, and 209 (combined 7.2 hours actual work, 15 proof strategies attempted), the is_valid_swap_involution theorem remains blocked due to a fundamental type theory limitation. The theorem requires proving: Given is_valid T φ.swap_past_future, prove is_valid T φ. The blocker: truth_at is defined by pattern matching on formulas, preventing transport of truth values along the propositional equality φ.swap.swap = φ. All standard approaches exhausted: (1) simp only pattern from Perpetuity/Helpers.lean - works for derivations but NOT for truth predicates, (2) Helper lemma composition - type mismatch on formula equality transport, (3) Eq.subst/cast/convert tactics - cannot substitute in pattern-matched definitions, (4) Rewriting strategies - no effect on pattern-matched propositions, (5) Congruence arguments - failed to synthesize CongrArg instance, (6) Alternative helper formulations - all require same blocked transport. Current state: 85% complete (helper lemma truth_at_swap_swap fully proven with structural induction across 6 cases, @[simp] attribute added, Truth.lean compiles with documented sorry), 15% blocked (main theorem at line 691 admits sorry). This task consolidates findings from tasks 184, 193, 209 to pursue expert consultation via: (1) Lean Zulip community post with minimal reproducible example explaining pattern matching + propositional equality transport challenge, (2) Mathlib review for similar involution proofs on pattern-matched semantic predicates, (3) Lean 4 documentation deep dive on advanced equality handling and custom eliminators, (4) Attempt direct inductive proof truth_at ... φ.swap ↔ truth_at ... φ (Option 1 from task 193 failure report), (5) Consider model-theoretic symmetry approach or theorem reformulation if direct proof infeasible (Options 2-3). Goal: Either complete the proof with expert guidance or document as known limitation with axiom fallback if critical for downstream wor...
+- **Research Findings** (2025-12-28): **CRITICAL DISCOVERY - THEOREM IS UNPROVABLE AS STATED**. Comprehensive semantic analysis proves the theorem is **false** for arbitrary formulas containing temporal operators. Root cause: swap_past_future exchanges all_past ↔ all_future, which quantify over different time ranges (past s<t vs future s>t). Counterexample constructed: φ = all_past(atom "p") in model where p is true in future but false in past - is_valid φ.swap holds but is_valid φ does not. All 15 previous strategies failed because they attempted to prove a false statement, not due to proof technique limitations. Direct inductive approach impossible: temporal cases require proving (∀ s>t: φ.swap at s) ↔ (∀ s<t: φ at s), which is semantically false. The theorem IS true for **derivable formulas** (those provable in proof system) where temporal_duality rule guarantees swap preservation. Recommended solution: Reformulate theorem as `derivable_valid_swap_involution` restricting to DerivationTree [] φ.swap → is_valid φ, which is provable using temporal_duality rule. Implementation: 1.5-2 hours. This resolves tasks 184, 193, 209, and 213. See research report for detailed semantic analysis, counterexample, and 4 proposed solutions with implementation plans.
+- **Acceptance Criteria**:
+  - [x] Comprehensive research completed analyzing all previous attempts
+  - [x] Semantic analysis performed on temporal operator swap behavior
+  - [x] Counterexample constructed proving theorem is false as stated
+  - [x] Direct inductive proof approach analyzed (all_past/all_future cases proven impossible)
+  - [x] Theorem usage context identified (temporal_duality case - only for derivable formulas)
+  - [x] Root cause identified: semantic inequality of past/future quantification
+  - [x] All findings documented in comprehensive research report (586 lines)
+  - [x] Executive summary created with implementation guidance (312 lines)
+  - [ ] Solution implemented: Reformulate theorem for derivable formulas only
+  - [ ] Tasks 184, 193, 209, 213 closed with resolution documentation
+- **Impact**: CRITICAL - Resolves the longest-standing blocked proof in the codebase (10.7 hours total invested across 4 tasks). Research definitively proves theorem is unprovable as stated (semantically false for arbitrary formulas), ending 7.2 hours of failed proof attempts. Provides clear path forward: reformulate for derivable formulas (1.5-2 hours implementation). Completion enables: (1) Removing unprovable theorem from Truth.lean line 691, (2) Closure of tasks 184, 193, 209, 213, (3) Correct scoping of temporal duality soundness, (4) Prevention of future attempts to prove false theorem. Key lesson: Syntactic properties (derivations) vs semantic properties (validity) require different approaches - temporal operators are not symmetric in arbitrary models.
+
+### 214. Address FIX in orchestrator.md, apply XML styling, and research default agent configuration
+- **Effort**: 4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/agent/orchestrator.md
+  - .opencode/agent/subagents/error-diagnostics-agent.md (reference for XML styling)
+- **Description**: Complete three related improvements to orchestrator.md: (1) Address the FIX comment on line 14 by removing historical comparisons and rewriting the "Key Improvements Over v1" and "Problems Solved" sections to describe current system capabilities without referencing past versions, (2) Revise the entire orchestrator.md file to use similar XML styling as error-diagnostics-agent.md for consistency across agent specifications (using <context>, <role>, <task>, <process_flow>, <step_N> tags), (3) Research whether renaming orchestrator.md to AGENTS.md (per https://opencode.ai/docs/rules/) would make OpenCode start in orchestrator mode by default instead of the default build agent, enabling the orchestrator to be active on startup without manual switching.
+- **Acceptance Criteria**:
+  - [ ] FIX comment on line 14 addressed - removed historical comparisons to v1
+  - [ ] "Key Improvements Over v1" section rewritten as "Core Capabilities" describing current features
+  - [ ] "Problems Solved (Task 191)" section rewritten as "Delegation Safety Features" describing current safeguards
+  - [ ] No mentions of "v1", "improvements over", or historical comparisons throughout file
+  - [ ] Entire orchestrator.md restructured with XML styling matching error-diagnostics-agent.md pattern
+  - [ ] XML tags used: <context>, <role>, <task>, <process_flow>, <step_N>, <validation>, <output>
+  - [ ] Research completed on OpenCode rules from https://opencode.ai/docs/rules/
+  - [ ] Documentation created explaining whether AGENTS.md naming enables default orchestrator mode
+  - [ ] If AGENTS.md approach works: Recommendation provided on whether to rename
+  - [ ] If AGENTS.md approach doesn't work: Alternative methods documented for setting default agent
+  - [ ] All changes maintain backward compatibility with existing command workflows
+  - [ ] orchestrator.md remains fully functional after XML styling conversion
+- **Impact**: Improves orchestrator.md clarity by removing confusing historical references, establishes consistent XML styling across all agent specifications for better maintainability, and enables orchestrator to be the default agent on OpenCode startup so the system routes tasks correctly without manual agent switching.
 
 ### 203. Add --complex flag to /research for subtopic subdivision with summary
 - **Effort**: TBD
@@ -381,55 +406,22 @@
 - **Impact**: Attempted to unblock task 193 completion but proof remains incomplete. Essential investigation conducted but further expert consultation or alternative proof strategy needed for removing the sorry from is_valid_swap_involution theorem.
 - **Key Findings**: Solution attempted using `simp only [Formula.swap_past_future, Formula.swap_past_future_involution] at h_swap` pattern from Perpetuity/Helpers.lean line 74, but pattern did not work for this specific theorem. Further investigation needed.
 
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-28
-- **Completed**: 2025-12-28
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/208_fix_lean_routing/reports/research-001.md]
-  - Summary: [.opencode/specs/208_fix_lean_routing/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/208_fix_lean_routing/plans/implementation-001.md]
-- **Plan Summary**: 3-phase implementation (2-3 hours total). Phase 1: Enhance command files (research.md, implement.md) with explicit validation, logging, and language extraction (1.5h). Phase 2: Enhance orchestrator stages 3-4 with bash extraction commands and routing validation (1h). Phase 3: Test Lean and general task routing, verify lean-lsp-mcp and Loogle usage (0.5h). Root cause: Claude skips routing stages. Fix: Strengthen prompts with CRITICAL/MUST keywords, validation checkpoints, and pre-invocation checks.
-- **Implementation Summary**: [.opencode/specs/208_fix_lean_routing/summaries/implementation-summary-20251228.md]
-- **Files Affected**:
-  - .opencode/command/implement.md (Stage 2 enhanced with IF/ELSE routing logic)
-  - .opencode/command/research.md (Stage 2 enhanced with CRITICAL validation)
-  - .opencode/agent/orchestrator.md (Stages 3-4 enhanced with bash extraction and routing validation)
-- **Description**: CRITICAL ROUTING BUG: When running /implement on Lean-specific tasks (e.g., task 193 with Language: lean), the implementation is NOT being executed by the lean-implementation-agent subagent, and lean-lsp-mcp tools are NOT being used. Similarly, /research on Lean tasks is not properly routing to lean-research-agent with Loogle integration. This is a fundamental routing failure in the orchestrator that bypasses all Lean-specific tooling. Investigation needed to: (1) Identify where routing decisions are made in /implement and /research commands, (2) Determine why Language: lean field is not triggering Lean-specific agent routing, (3) Fix routing logic to ensure Lean tasks always route to lean-implementation-agent and lean-research-agent, (4) Verify Loogle and lean-lsp-mcp are actually invoked when routed correctly, (5) Add logging/verification to confirm correct routing is happening, (6) Test with real Lean tasks (e.g., 193) to confirm fix works.
-- **Research Findings** (2025-12-28): Root cause identified: OpenCode is a Claude-based AI agent system where .md files are prompts, not executable code. Routing logic exists as documentation in research.md (Stage 2), implement.md (Stage 2), and orchestrator.md (Stages 3-4) but is not consistently executed. Claude skips or fails to execute CheckLanguage/DetermineRouting stages, causing Lean tasks to route to general agents instead of lean-specific agents. Lean agents are production-ready (.opencode/agent/subagents/lean-*-agent.md), .mcp.json is correctly configured, tools are available (lean-lsp-mcp via MCP, Loogle CLI integrated). Fix requires strengthening prompt instructions with explicit validation, mandatory logging, early-exit enforcement, and validation checkpoints. Implementation estimated 2-3 hours with low-medium risk.
-- **Implementation Status** (2025-12-28): COMPLETED. All 3 phases implemented successfully in 1.5 hours. Enhanced routing logic across /research command (Stage 2), /implement command (Stage 2), and orchestrator (Stages 3-4) with CRITICAL importance blocks, explicit bash commands for language extraction, comprehensive logging requirements, and pre-invocation validation blocks. Added multiple validation checkpoints, IF/ELSE routing logic, and MUST keywords to ensure Lean tasks consistently route to lean-implementation-agent and lean-research-agent. Git commit 99f4cc6 applied.
-- **Acceptance Criteria**:
-  - [x] Root cause identified for why Lean tasks don't route to Lean-specific agents
-  - [x] /implement command routing logic fixed to route Language: lean tasks to lean-implementation-agent
-  - [x] /research command routing logic fixed to route Language: lean tasks to lean-research-agent
-  - [x] lean-implementation-agent confirmed to use lean-lsp-mcp when invoked (verified in agent spec)
-  - [x] lean-research-agent confirmed to use Loogle when invoked (verified in agent spec)
-  - [x] Orchestrator Stage 3 (CheckLanguage) and Stage 4 (PrepareRouting) enhanced with validation
-  - [x] Logging added to confirm agent routing decisions at all stages
-  - [x] Test with task 193 confirms lean-implementation-agent is invoked (bash extraction verified)
-  - [x] Test with Lean research task confirms lean-research-agent is invoked (routing logic verified)
-  - [x] Documentation updated with routing verification procedures (implementation summary)
-- **Impact**: CRITICAL FIX - Enables Lean-specific tools (lean-lsp-mcp, Loogle) to actually be used when implementing and researching Lean tasks. Without this fix, all Lean work bypasses specialized tooling and uses generic agents, defeating the purpose of the Lean tool integration.
-
 ### 205. Implement Lean tool usage verification and monitoring system
-- **Effort**: 6-8 hours
-- **Status**: [ABANDONED]
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: 208
-- **Files Affected**:
+ **Effort**: 6-8 hours
+ **Status**: [ABANDONED]
+ **Priority**: Medium
+ **Language**: markdown
+ **Blocking**: None
+ **Dependencies**: 208
+ **Files Affected**:
   - .opencode/command/research.md
   - .opencode/command/implement.md
   - .opencode/agent/subagents/lean-research-agent.md
   - .opencode/agent/subagents/lean-implementation-agent.md
   - .opencode/context/common/standards/lean-tool-verification.md (new)
   - .opencode/specs/monitoring/ (new directory structure)
-- **Description**: Design and implement a comprehensive monitoring and verification system to detect and validate that Lean-specific tools (lean-lsp-mcp, Loogle, LeanExplore, LeanSearch) are being correctly used by the appropriate commands and agents when processing Lean tasks. The system should provide visibility into tool usage patterns, detect routing errors, track tool availability issues, and identify opportunities for improvement. This includes creating verification methods, logging standards, monitoring dashboards, and automated health checks to ensure the system is working optimally.
-- **Acceptance Criteria**:
+ **Description**: Design and implement a comprehensive monitoring and verification system to detect and validate that Lean-specific tools (lean-lsp-mcp, Loogle, LeanExplore, LeanSearch) are being correctly used by the appropriate commands and agents when processing Lean tasks. The system should provide visibility into tool usage patterns, detect routing errors, track tool availability issues, and identify opportunities for improvement. This includes creating verification methods, logging standards, monitoring dashboards, and automated health checks to ensure the system is working optimally.
+ **Acceptance Criteria**:
   - [ ] Verification method identified for detecting lean-lsp-mcp usage in /implement command for Lean tasks
   - [ ] Verification method identified for detecting Loogle usage in /research command for Lean tasks
   - [ ] Automated tool availability checks implemented (binary existence, process health, API connectivity)
@@ -440,7 +432,7 @@
   - [ ] Error detection implemented for cases where tools should be used but aren't (routing failures)
   - [ ] Recommendations provided for system improvements based on monitoring data
   - [ ] All verification methods tested with real command executions on Lean tasks
-- **Impact**: Provides visibility and confidence that the Lean tool integration is working correctly, enables early detection of routing or configuration issues, and identifies opportunities to improve the system's effectiveness with Lean-specific research and implementation workflows.
+ **Impact**: Provides visibility and confidence that the Lean tool integration is working correctly, enables early detection of routing or configuration issues, and identifies opportunities to improve the system's effectiveness with Lean-specific research and implementation workflows.
 
 - **Status**: [COMPLETED]
 - **Started**: 2025-12-28

@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T19:56:06Z",
-  "next_project_number": 213,
+  "_last_updated": "2025-12-28T22:30:00Z",
+  "next_project_number": 215,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -157,18 +157,56 @@
       "project_number": 212,
       "project_name": "research_lean_lsp_mcp_usage",
       "type": "research",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-28T19:45:52Z",
       "started": "2025-12-28",
       "research_completed": "2025-12-28",
+      "planning_completed": "2025-12-28",
+      "plan_path": ".opencode/specs/212_research_lean_lsp_mcp_usage/plans/implementation-001.md",
+      "estimated_hours": 14,
+      "phases": 5,
       "last_updated": "2025-12-28",
       "artifacts": [
         ".opencode/specs/212_research_lean_lsp_mcp_usage/reports/research-001.md",
-        ".opencode/specs/212_research_lean_lsp_mcp_usage/summaries/research-summary.md"
+        ".opencode/specs/212_research_lean_lsp_mcp_usage/summaries/research-summary.md",
+        ".opencode/specs/212_research_lean_lsp_mcp_usage/plans/implementation-001.md"
       ]
+    },
+    {
+      "project_number": 213,
+      "project_name": "resolve_is_valid_swap_involution_blocker",
+      "type": "research",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "high",
+      "language": "lean",
+      "created": "2025-12-28T20:15:36Z",
+      "started": "2025-12-28",
+      "research_completed": "2025-12-28",
+      "last_updated": "2025-12-28",
+      "artifacts": [
+        ".opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md",
+        ".opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md"
+      ],
+      "estimated_hours": 3.5,
+      "actual_hours": 3.5,
+      "remaining_hours": 0,
+      "research_findings": "CRITICAL: Theorem is_valid_swap_involution is UNPROVABLE as stated - semantically false for arbitrary formulas. Swap exchanges all_past ↔ all_future (different time ranges). Counterexample constructed. All 15 previous strategies failed because they attempted to prove a false statement. Theorem IS true for derivable formulas only. Recommended solution: reformulate as derivable_valid_swap_involution restricting to DerivationTree [] φ.swap → is_valid φ (1.5-2 hours implementation).",
+      "key_findings": {
+        "theorem_status": "unprovable_as_stated",
+        "root_cause": "semantic_inequality_temporal_operators",
+        "counterexample_exists": true,
+        "correct_scope": "derivable_formulas_only",
+        "previous_attempts_analyzed": 15,
+        "tasks_investigated": [184, 193, 209, 213],
+        "total_time_invested_hours": 10.7,
+        "solutions_proposed": 4,
+        "recommended_solution": "solution_2_reformulate_for_derivable",
+        "estimated_implementation_hours": 1.5
+      }
     }
   ],
   "completed_projects": [
@@ -223,9 +261,9 @@
     }
   ],
   "repository_health": {
-    "last_assessed": "2025-12-28T21:00:00Z",
+    "last_assessed": "2025-12-28T22:30:00Z",
     "overall_score": 92,
-    "active_tasks": 24,
+    "active_tasks": 25,
     "completed_tasks": 29,
     "blocked_tasks": 2,
     "in_progress_tasks": 2,
@@ -239,11 +277,23 @@
       "axiom_count": 11,
       "build_errors": 3,
       "status": "well-documented",
-      "_comment": "Technical debt tracked in task system. 10 sorry (1 invalid theorem, 1 completeness, 3 proof search docs, 5 doc comments), 11 axioms (all completeness). Build errors: 2 in GeneralizedNecessitation.lean (task 192), 1 in Truth.lean (tasks 193-194)."
+      "_comment": "Technical debt tracked in task system. 10 sorry (1 invalid/unprovable theorem at Truth.lean:691, 1 completeness, 3 proof search docs, 5 doc comments), 11 axioms (all completeness). Build errors: 2 in GeneralizedNecessitation.lean (task 192 - completed), 1 in Truth.lean (tasks 193-194-213 - unprovable theorem identified)."
     },
     "review_artifacts": []
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T22:30:00Z",
+      "activity": "Marked task 213 as RESEARCHED: Comprehensive research completed (3.5 hours) - CRITICAL DISCOVERY: is_valid_swap_involution theorem is UNPROVABLE as stated (semantically false for arbitrary formulas). Counterexample constructed. Theorem true only for derivable formulas. Recommended solution: reformulate for derivable formulas (1.5-2 hours implementation). Resolves tasks 184, 193, 209, 213."
+    },
+    {
+      "timestamp": "2025-12-28T20:45:00Z",
+      "activity": "Created task 214: Address FIX in orchestrator.md, apply XML styling, and research default agent configuration (4 hours, High priority, markdown)"
+    },
+    {
+      "timestamp": "2025-12-28T20:15:36Z",
+      "activity": "Created task 213: Comprehensive expert consultation for blocked involution proof - consolidates findings from tasks 184, 193, 209 (7.2 hours invested, 15 strategies exhausted, 85% complete) to pursue Lean Zulip consultation and alternative proof approaches (6-10 hours, High priority)"
+    },
     {
       "timestamp": "2025-12-28T19:56:06Z",
       "activity": "Marked task 193 as BLOCKED: Implementation failed after exhaustive attempts - is_valid_swap_involution theorem unprovable with current approach due to truth_at pattern matching preventing equality transport (3.7 hours actual, 0.5 hours estimated). Requires expert consultation."
@@ -559,6 +609,7 @@
         ".opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-003.md",
         ".opencode/specs/193_prove_is_valid_swap_involution/reports/implementation-001.md",
         ".opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md",
+        ".opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-failure-20251228.md",
         ".opencode/specs/193_prove_is_valid_swap_involution/reports/task209-review-and-revised-plan.md",
         ".opencode/specs/193_prove_is_valid_swap_involution/summaries/task209-review-summary.md",
         "Logos/Core/Semantics/Truth.lean"
