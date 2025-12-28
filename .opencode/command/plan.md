@@ -293,21 +293,57 @@ Context Loaded:
   </stage>
 
   <stage id="8" name="ReturnSuccess">
-    <action>Return summary to user</action>
+    <action>Return brief summary with plan reference</action>
+    <process>
+      1. Extract brief summary from planner return (already <100 tokens)
+      2. Extract plan path from artifacts array
+      3. Return brief format to orchestrator (3-5 sentences, <100 tokens)
+      4. No summary artifact needed - plan artifact is self-documenting
+    </process>
     <return_format>
-      Plan created for task {number}
-      - Status: [PLANNED]
-      - Plan: {plan_path}
-      - Phases: {phase_count}
-      - Estimated effort: {effort}
-      - Summary: {brief summary from planner}
+      If completed:
+      ```
+      Plan created for task {number}.
+      {brief_1_sentence_overview}
+      {phase_count} phases, {effort} hours estimated.
+      Plan: {plan_path}
+      ```
       
-      Or if partial:
-      Plan partially created for task {number}
-      - Status: [IN PROGRESS]
-      - Partial plan: {plan_path}
-      - Resume with: /plan {number}
+      Example (completed):
+      ```
+      Plan created for task 195.
+      Integrated LeanSearch API research findings into 4-phase implementation.
+      4 phases, 6 hours estimated.
+      Plan: .opencode/specs/195_lean_tools/plans/implementation-001.md
+      ```
+      
+      If partial:
+      ```
+      Plan partially created for task {number}.
+      {brief_reason}
+      Resume with: /plan {number}
+      Plan: {plan_path}
+      ```
+      
+      Example (partial):
+      ```
+      Plan partially created for task 198.
+      Research findings incomplete, created initial 2 phases.
+      Resume with: /plan 198
+      Plan: .opencode/specs/198_task_name/plans/implementation-001.md
+      ```
     </return_format>
+    <token_limit>
+      Return must be under 100 tokens (approximately 400 characters).
+      Brief overview must be 3-5 sentences maximum.
+      Full details are in the plan artifact file (no separate summary).
+    </token_limit>
+    <rationale>
+      Plan artifact is self-documenting and contains all details.
+      Unlike /implement (which creates multiple code files), /plan creates
+      ONE artifact (the plan) which serves as its own documentation.
+      No summary artifact needed.
+    </rationale>
   </stage>
 </workflow_execution>
 

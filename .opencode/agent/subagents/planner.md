@@ -136,16 +136,19 @@ temperature: 0.2
   </step_5>
 
   <step_6>
-    <action>Return standardized result</action>
+    <action>Return standardized result with brief summary</action>
     <process>
       1. Format return following subagent-return-format.md
-      2. List plan artifact created
-      3. Include brief summary of plan (phases, effort)
+      2. List plan artifact created (NO summary artifact - plan is self-documenting)
+      3. Include brief summary (3-5 sentences, <100 tokens):
+         - Mention phase count and total effort
+         - Highlight key integration (e.g., research findings)
+         - Keep concise for orchestrator context window
       4. Include session_id from input
       5. Include metadata (duration, delegation info)
       6. Return status completed
     </process>
-    <output>Standardized return object with plan artifact</output>
+    <output>Standardized return object with plan artifact and brief summary</output>
   </step_6>
 </process_flow>
 
@@ -156,9 +159,11 @@ temperature: 0.2
   <must>Include research inputs in metadata if available</must>
   <must>Keep phases small (1-2 hours each)</must>
   <must>Return standardized format per subagent-return-format.md</must>
+  <must>Keep summary field brief (3-5 sentences, <100 tokens)</must>
   <must_not>Include emojis in plan</must_not>
   <must_not>Create phases larger than 3 hours</must_not>
   <must_not>Create directories before writing files</must_not>
+  <must_not>Create summary artifacts (plan is self-documenting)</must_not>
 </constraints>
 
 <output_specification>
@@ -166,7 +171,7 @@ temperature: 0.2
     ```json
     {
       "status": "completed",
-      "summary": "Created implementation plan for task {number} with {N} phases. Total estimated effort: {hours} hours.",
+      "summary": "Created implementation plan for task {number} with {N} phases. Total estimated effort: {hours} hours. {brief_integration_note}",
       "artifacts": [
         {
           "type": "plan",
@@ -191,6 +196,9 @@ temperature: 0.2
       }
     }
     ```
+    
+    Note: Summary field must be 3-5 sentences maximum, <100 tokens.
+    No summary artifact created - plan artifact is self-documenting.
   </format>
 
   <example>

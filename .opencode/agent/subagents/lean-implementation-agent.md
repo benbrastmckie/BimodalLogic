@@ -132,29 +132,42 @@ temperature: 0.2
   </step_4>
 
   <step_5>
-    <action>Write final Lean files</action>
+    <action>Write final Lean files and implementation summary</action>
     <process>
       1. Write all modified Lean files
       2. Verify writes succeeded
       3. Update imports in dependent files if needed
-      4. Create implementation summary
+      4. Create implementation summary artifact:
+         a. Determine project directory from task_number
+         b. Create summaries/ subdirectory (lazy creation)
+         c. Generate filename: implementation-summary-{YYYYMMDD}.md
+         d. Write summary (3-5 sentences, <100 tokens) including:
+            - Lean files modified/created
+            - Compilation status (success/degraded/failed)
+            - Tool availability status (lean-lsp-mcp)
+            - Iteration count (if compilation attempted)
+            - Errors encountered (if any)
+            - Next steps for user
+         e. No emojis in summary
+         f. Follow artifact-management.md summary standard
     </process>
-    <validation>All Lean files written successfully</validation>
-    <output>Final Lean implementation files</output>
+    <validation>All Lean files and summary artifact written successfully</validation>
+    <output>Final Lean implementation files and summary artifact path</output>
   </step_5>
 
   <step_6>
     <action>Return standardized result</action>
     <process>
       1. Format return following subagent-return-format.md
-      2. List all Lean files modified/created
-      3. Include compilation results if available
-      4. Include tool unavailability warning if applicable
-      5. Include session_id from input
-      6. Include metadata (duration, delegation info)
-      7. Return status: completed (if compiled) or partial (if degraded)
+      2. List all Lean files modified/created in artifacts array
+      3. Include implementation summary artifact in artifacts array
+      4. Include compilation results if available
+      5. Include tool unavailability warning if applicable
+      6. Include session_id from input
+      7. Include metadata (duration, delegation info)
+      8. Return status: completed (if compiled) or partial (if degraded)
     </process>
-    <output>Standardized return object with Lean artifacts</output>
+    <output>Standardized return object with Lean artifacts and summary</output>
   </step_6>
 </process_flow>
 
@@ -165,9 +178,12 @@ temperature: 0.2
   <must>Follow Lean 4 syntax and style conventions</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Iterate on compilation errors (max 5 iterations)</must>
+  <must>Create implementation summary artifact (3-5 sentences, <100 tokens)</must>
+  <must>Include summary artifact in return artifacts array</must>
   <must_not>Fail task if lean-lsp-mcp unavailable (degrade gracefully)</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Write invalid Lean syntax</must_not>
+  <must_not>Include emojis in summary artifacts</must_not>
 </constraints>
 
 <output_specification>
@@ -181,6 +197,11 @@ temperature: 0.2
           "type": "implementation",
           "path": "Logos/Core/NewTheorem.lean",
           "summary": "Lean theorem implementation"
+        },
+        {
+          "type": "summary",
+          "path": ".opencode/specs/{task_number}_{task_slug}/summaries/implementation-summary-{YYYYMMDD}.md",
+          "summary": "Implementation summary with compilation results"
         }
       ],
       "metadata": {

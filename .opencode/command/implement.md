@@ -408,26 +408,74 @@ Context Loaded:
   </stage>
 
   <stage id="8" name="ReturnSuccess">
-    <action>Return summary to user</action>
+    <action>Return brief summary with artifact reference</action>
+    <process>
+      1. Check for summary artifact in subagent return artifacts array
+      2. If summary artifact present:
+         - Extract path from artifacts
+         - Create brief 3-5 sentence overview (<100 tokens)
+         - Reference summary artifact path
+      3. If summary artifact missing:
+         - Create summary artifact from subagent return data
+         - Write to summaries/implementation-summary-{YYYYMMDD}.md
+         - Create brief 3-5 sentence overview (<100 tokens)
+         - Reference newly created summary path
+      4. Return brief format to orchestrator
+    </process>
     <return_format>
-      Implementation completed for task {number}
-      - Status: [COMPLETED]
-      - Artifacts: {list of implementation files}
-      - Summary: {brief summary from implementation agent}
+      If completed:
+      ```
+      Implementation completed for task {number}.
+      {brief_1_sentence_outcome}
+      {artifact_count} artifacts created.
+      Summary: {summary_path}
+      ```
       
-      Or if partial:
-      Implementation partially completed for task {number}
-      - Status: [PARTIAL]
-      - Phases completed: {N} of {total}
-      - Partial artifacts: {list}
-      - Resume with: /implement {number}
+      Example (completed):
+      ```
+      Implementation completed for task 191.
+      Fixed subagent delegation hangs across 3 phases with standardized return formats and timeout handling.
+      14 artifacts created.
+      Summary: .opencode/specs/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251226.md
+      ```
       
-      Or if blocked:
-      Implementation blocked for task {number}
-      - Status: [BLOCKED]
-      - Blocking reason: {reason}
-      - Resolve blocker and retry with: /implement {number}
+      If partial:
+      ```
+      Implementation partially completed for task {number}.
+      Completed phases {completed_phases} of {total_phases}, {reason}.
+      Resume with: /implement {number}
+      Summary: {summary_path}
+      ```
+      
+      Example (partial):
+      ```
+      Implementation partially completed for task 191.
+      Completed phases 1-2 of 3, phase 3 timed out after 2 hours.
+      Resume with: /implement 191
+      Summary: .opencode/specs/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251226.md
+      ```
+      
+      If blocked:
+      ```
+      Implementation blocked for task {number}.
+      {blocking_reason}
+      Resolve blocker and retry with: /implement {number}
+      Summary: {summary_path}
+      ```
+      
+      Example (blocked):
+      ```
+      Implementation blocked for task 193.
+      Lean proof requires lean-lsp-mcp which is not installed.
+      Resolve blocker and retry with: /implement 193
+      Summary: .opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-summary-20251228.md
+      ```
     </return_format>
+    <token_limit>
+      Return must be under 100 tokens (approximately 400 characters).
+      Brief overview must be 3-5 sentences maximum.
+      Full details are in the summary artifact file.
+    </token_limit>
   </stage>
 </workflow_execution>
 
