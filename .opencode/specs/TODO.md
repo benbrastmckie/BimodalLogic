@@ -675,11 +675,15 @@
 
 ### 222. Investigate and fix artifact creation in /specs instead of /.opencode/specs
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/222_investigate_artifact_path_errors/reports/research-001.md]
 - **Description**: Artifacts have started to be created in /home/benjamin/Projects/ProofChecker/specs/ instead of /home/benjamin/Projects/ProofChecker/.opencode/specs/. Investigate the root cause and which commands and subagents are responsible in order to implement a systematic fix to these issues. Confirmed affected project directories: 213_resolve_is_valid_swap_involution_blocker, 215_fix_todo_command_task_block_removal, 218_fix_lean_lsp_mcp_integration_and_opencode_module_import_errors. All artifacts should be created under .opencode/specs/ per artifact management standards.
 - **Acceptance Criteria**:
   - [ ] Root cause identified - which commands/subagents use wrong path
