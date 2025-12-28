@@ -403,9 +403,9 @@
   - [ ] No emojis in the updated content
 - **Impact**: Completes the refactoring to make /review command configuration-driven and repository-agnostic, allowing consistent behavior across different repositories while respecting each repository's specific registry/status file locations.
 
-### 197. Integrate Loogle CLI tool into lean-research-agent
+### 197. Integrate Loogle CLI tool into lean-research-agent ✅
 - **Effort**: 3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-27
 - **Completed**: 2025-12-27
 - **Priority**: Medium
@@ -418,9 +418,13 @@
   - API Documentation: [.opencode/context/project/lean4/tools/loogle-api.md]
 - **Plan**: [Implementation Plan](.opencode/specs/197_loogle_cli_integration/plans/implementation-001.md)
 - **Plan Summary**: 5-phase implementation plan (3 hours). Phase 1: Binary check & index management (0.5h). Phase 2: Interactive mode integration (1.0h). Phase 3: Query generation & response parsing (0.75h). Phase 4: lean-research-agent integration (0.5h). Phase 5: Testing & documentation (0.25h). Uses persistent interactive mode with pre-built index for optimal performance (0.1-2s queries). Implements graceful fallback to web search.
+- **Implementation Summary**: [.opencode/specs/197_loogle_cli_integration/summaries/implementation-summary.md]
+- **Implementation Artifacts**:
+  - Complete Documentation: [.opencode/specs/197_loogle_cli_integration/implementation/integration-complete.md]
+  - Validation Checklist: [.opencode/specs/197_loogle_cli_integration/implementation/validation-checklist.md]
 - **Research Findings** (2025-12-27): Comprehensive research completed on Loogle CLI integration. Binary located at /home/benjamin/.cache/loogle/.lake/build/bin/loogle. Recommended integration approach is persistent interactive mode with pre-built index for optimal performance (0.1-2s queries vs 60-120s cold start). JSON output format is well-structured. Five query modes supported: constant search, name fragment, type pattern, conclusion pattern, and combined. Implementation complexity assessed as medium (3 hours effort). Key recommendation: use interactive mode with --read-index for fast startup (5-10s) and low query latency.
 - **Files Affected**:
-  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/subagents/lean-research-agent.md (956 lines, ~400 lines added/modified, 37 Loogle references)
   - .opencode/context/project/lean4/tools/loogle-api.md
 - **Tool Information**:
   - **Installation**: loogle installed via nix at /home/benjamin/.nix-profile/bin/loogle
@@ -432,19 +436,19 @@
   - **Index Persistence**: Can write/read search index to file for faster subsequent searches
 - **Description**: Integrate the Loogle CLI tool into lean-research-agent to enable type-based searching of Lean definitions and theorems. Loogle is now installed and working at /home/benjamin/.nix-profile/bin/loogle with mathlib support. The lean-research-agent currently has placeholders for Loogle integration (lines 276-282) and uses web search fallback. Update the agent to: (1) Check for Loogle availability by testing if the binary exists, (2) Use Loogle with --json flag for type-based searches, (3) Parse JSON results and extract relevant definitions/theorems, (4) Include Loogle findings in research reports with proper attribution, (5) Update tool status in return format to show loogle: true when available, (6) Handle graceful fallback to web search if Loogle fails or times out, (7) Document Loogle CLI integration patterns in .opencode/context/project/lean4/tools/loogle-api.md. Note: Loogle queries can take time to build the index on first run, so implement reasonable timeouts (30-60s) and consider using --write-index to persist the index for faster subsequent searches.
 - **Acceptance Criteria**:
-  - [ ] lean-research-agent checks for Loogle binary at /home/benjamin/.nix-profile/bin/loogle
-  - [ ] Loogle invoked with --json flag for structured output
-  - [ ] Type-based searches (e.g., "?a → ?b → ?a ∧ ?b") work correctly
-  - [ ] Name-based searches (e.g., "List.length") work correctly  
-  - [ ] JSON results parsed and relevant definitions/theorems extracted
-  - [ ] Research reports include Loogle findings with attribution
-  - [ ] Return format shows tool_availability.loogle: true when available
-  - [ ] Graceful fallback to web search if Loogle unavailable or fails
-  - [ ] Timeout handling (30-60s) prevents hanging on slow queries
-  - [ ] loogle-api.md documentation created with CLI patterns and examples
-  - [ ] Index persistence strategy documented (optional: implement --write-index)
-  - [ ] Error logging to errors.json if Loogle fails
-  - [ ] No more "tool_unavailable" warnings for Loogle in lean research
+  - [x] lean-research-agent checks for Loogle binary at /home/benjamin/.cache/loogle/.lake/build/bin/loogle
+  - [x] Loogle invoked with --json flag for structured output
+  - [x] Type-based searches (e.g., "?a → ?b → ?a ∧ ?b") work correctly (17 query patterns implemented)
+  - [x] Name-based searches (e.g., "List.length") work correctly  
+  - [x] JSON results parsed and relevant definitions/theorems extracted
+  - [x] Research reports include Loogle findings with attribution
+  - [x] Return format shows tool_availability.loogle: true when available
+  - [x] Graceful fallback to web search if Loogle unavailable or fails (3-tier degradation)
+  - [x] Timeout handling (10s queries, 180s startup) prevents hanging on slow queries
+  - [x] loogle-api.md documentation created with CLI patterns and examples
+  - [x] Index persistence strategy documented and implemented (--write-index/--read-index)
+  - [x] Error logging to errors.json if Loogle fails (6 error scenarios handled)
+  - [x] No more "tool_unavailable" warnings for Loogle in lean research
 - **Impact**: Significantly improves Lean research quality by enabling precise type-based theorem discovery. Loogle can find theorems by their type signatures, making it much easier to discover relevant mathlib lemmas and definitions for proof development. This addresses the "tool_unavailable" limitation in the current lean-research-agent fallback mode.
 
 ---

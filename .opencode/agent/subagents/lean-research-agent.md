@@ -57,21 +57,44 @@ temperature: 0.3
     <process>
       1. Load context from .opencode/context/project/lean4/
       2. Load domain context (modal logic, temporal logic, epistemic, etc.)
-      3. Check for LeanExplore/Loogle/LeanSearch availability
-      4. Determine research strategy based on available tools
+      3. Check for Loogle CLI availability
+      4. Initialize Loogle client if available
+      5. Determine research strategy based on available tools
     </process>
     <tool_status>
-      CURRENT STATUS: LeanExplore/Loogle/LeanSearch NOT YET INTEGRATED
-      - LeanExplore: API research needed
-      - Loogle: CLI integration needed
-      - LeanSearch: REST API integration needed
+      LOOGLE CLI: INTEGRATED (Task 197)
+      - Binary path: /home/benjamin/.cache/loogle/.lake/build/bin/loogle
+      - Index path: ~/.cache/lean-research-agent/loogle-mathlib.index
+      - Mode: Persistent interactive mode with JSON output
+      - Startup timeout: 180s (index build on first run)
+      - Query timeout: 10s per query
       
-      TODO Task created: "Research and integrate LeanExplore, Loogle, LeanSearch tools"
+      LeanExplore: NOT YET INTEGRATED
+      - Status: API research needed
+      
+      LeanSearch: NOT YET INTEGRATED
+      - Status: REST API integration needed
       
       FALLBACK: Web search for Lean 4 documentation and mathlib
     </tool_status>
+    <loogle_initialization>
+      1. Check binary exists at /home/benjamin/.cache/loogle/.lake/build/bin/loogle
+      2. Check index freshness at ~/.cache/lean-research-agent/loogle-mathlib.index
+      3. If index missing or stale (> 7 days):
+         - Build index with --write-index flag
+         - Timeout: 180s for index build
+      4. Start Loogle in interactive mode:
+         - Command: loogle --json --interactive --read-index {index_path}
+         - Wait for "Loogle is ready.\n" on stdout
+         - Timeout: 180s for startup
+      5. Set loogle_available = true if successful
+      6. If any step fails:
+         - Log error to errors.json
+         - Set loogle_available = false
+         - Continue with web search fallback
+    </loogle_initialization>
     <validation>Context loaded successfully</validation>
-    <output>Lean context and research strategy</output>
+    <output>Lean context, Loogle client (if available), and research strategy</output>
   </step_1>
 
   <step_2>
@@ -94,31 +117,149 @@ temperature: 0.3
   <step_3>
     <action>Conduct Lean library research</action>
     <process>
-      CURRENT IMPLEMENTATION (Fallback mode):
+      PRIMARY IMPLEMENTATION (Loogle available):
+      1. Generate Loogle queries from research topic and context
+      2. Execute queries via Loogle interactive mode
+      3. Parse JSON responses and extract hits
+      4. Categorize results (definitions, theorems, tactics)
+      5. Supplement with web search for documentation/examples
+      
+      FALLBACK IMPLEMENTATION (Loogle unavailable):
       1. Web search for Lean 4 documentation
       2. Search mathlib documentation online
       3. Search Lean Zulip for discussions
       4. Check Lean 4 API documentation
       5. Look for relevant examples in Lean repos
       
-      FUTURE IMPLEMENTATION (when tools integrated):
+      FUTURE ENHANCEMENT (when LeanExplore/LeanSearch integrated):
       1. Use LeanExplore to browse Lean libraries
-      2. Use Loogle to search for definitions/theorems by type
-      3. Use LeanSearch for semantic search
-      4. Cross-reference results across tools
-      5. Extract relevant code snippets and signatures
+      2. Use LeanSearch for semantic search
+      3. Cross-reference Loogle, LeanExplore, LeanSearch results
     </process>
+    <loogle_query_generation>
+      Generate queries based on research topic and context:
+      
+      1. Extract keywords from topic
+      2. For each keyword:
+         - Constant search: {keyword}
+         - Name fragment search: "{keyword}"
+      
+      3. Context-specific patterns:
+         
+         Modal Logic context:
+         - "□ _ → □ _"  (Necessitation)
+         - "□ (_ → _) → □ _ → □ _"  (K axiom)
+         - "□ _ → _"  (T axiom)
+         - "□ _ → □ □ _"  (4 axiom)
+         - "◇ _ → □ ◇ _"  (S5 axiom)
+         
+         Temporal Logic context:
+         - "Until _ _"
+         - "Eventually _"
+         - "Always _"
+         - "Always _ → Eventually _"
+         
+         Propositional Logic context:
+         - "?a → ?b → ?a ∧ ?b"  (And introduction)
+         - "?a ∧ ?b → ?a"  (And elimination left)
+         - "?a → ?a ∨ ?b"  (Or introduction left)
+         - "(?a → ?c) → (?b → ?c) → (?a ∨ ?b → ?c)"  (Or elimination)
+      
+      4. Sanitize queries:
+         - Remove control characters
+         - Limit length to 500 characters
+         - Escape special characters if needed
+    </loogle_query_generation>
+    <loogle_query_execution>
+      For each generated query:
+      1. Send query to Loogle stdin: "{query}\n"
+      2. Flush stdin buffer
+      3. Wait for JSON response on stdout (timeout: 10s)
+      4. Parse JSON response
+      5. If "error" in response:
+         - Log error
+         - Try first suggestion if available
+         - Continue to next query
+      6. If "hits" in response:
+         - Extract hits array
+         - Store results for categorization
+      7. If timeout:
+         - Log timeout warning
+         - Continue to next query
+      8. Track metrics:
+         - Query count
+         - Hit count
+         - Error count
+         - Average query duration
+    </loogle_query_execution>
+    <loogle_response_parsing>
+      Parse JSON response structure:
+      
+      Success response:
+      {
+        "header": "Found N declarations...",
+        "heartbeats": 1234,
+        "count": 5,
+        "hits": [
+          {
+            "name": "List.map",
+            "type": "∀ {α β : Type u_1}, (α → β) → List α → List β",
+            "module": "Init.Data.List.Basic",
+            "doc": "Map a function over a list..."
+          }
+        ],
+        "suggestions": []
+      }
+      
+      Error response:
+      {
+        "error": "Unknown identifier 'Foo'",
+        "heartbeats": 123,
+        "suggestions": ["\"Foo\"", "Bar.Foo"]
+      }
+      
+      Extract from hits:
+      - name: Fully qualified name
+      - type: Type signature (for categorization)
+      - module: Module path (for imports)
+      - doc: Documentation string (for context)
+    </loogle_response_parsing>
+    <result_categorization>
+      Categorize Loogle hits:
+      
+      1. Definitions:
+         - Type signature contains "def" or is a constant
+         - Examples: List.map, Real.sin, Nat.add
+      
+      2. Theorems:
+         - Type signature is a Prop
+         - Name contains "theorem", "lemma", or ends with proof suffix
+         - Examples: List.map_append, Nat.add_comm
+      
+      3. Tactics:
+         - Module contains "Tactic" or "Automation"
+         - Name contains "tactic" or common tactic names
+         - Examples: simp, rw, apply
+      
+      4. Other:
+         - Structures, classes, instances
+         - Notation definitions
+      
+      Deduplicate results by name
+      Sort by relevance (exact matches first, then partial)
+    </result_categorization>
     <delegation>
       May delegate to web-research-specialist for:
       - General Lean 4 documentation searches
       - Mathlib documentation searches
       - Lean Zulip discussion searches
+      - Supplementary examples and tutorials
       
       Delegation depth check: Must be < 3
       Validate specialist returns against subagent-return-format.md
     </delegation>
     <validation>Research findings are Lean-specific and relevant</validation>
-    <output>Lean library research results</output>
+    <output>Lean library research results (Loogle + web search)</output>
   </step_3>
 
   <step_4>
@@ -133,6 +274,7 @@ temperature: 0.3
          Path: specs/{task_number}_{slugified_topic}/reports/research-001.md
          Content:
          - Research topic and scope
+         - Tool usage summary (Loogle queries, web searches)
          - Lean libraries explored
          - Relevant definitions found (with signatures)
          - Relevant theorems found (with statements)
@@ -140,6 +282,7 @@ temperature: 0.3
          - Code snippets and examples
          - Integration recommendations
          - References (documentation links, Zulip threads)
+         - Loogle query log (if used)
       
       3. Create research summary:
          Path: specs/{task_number}_{slugified_topic}/summaries/research-summary.md
@@ -148,24 +291,54 @@ temperature: 0.3
          - Recommended Lean libraries to use
          - Recommended theorems/tactics
          - Next steps for implementation
+         - Tool status (Loogle available/unavailable)
       
-      4. FUTURE: Log tool usage (when integrated):
-         - LeanExplore queries and results
-         - Loogle searches and matches
-         - LeanSearch semantic queries and findings
+      4. Log Loogle usage (when available):
+         - Queries executed
+         - Hits found per query
+         - Errors encountered
+         - Average query duration
+         - Total heartbeats consumed
     </process>
+    <loogle_attribution>
+      When including Loogle findings in research report:
+      
+      1. Attribute source clearly:
+         "Found via Loogle type search: {query}"
+      
+      2. Include full metadata:
+         - Name: {hit.name}
+         - Type: {hit.type}
+         - Module: {hit.module}
+         - Documentation: {hit.doc}
+      
+      3. Group by category:
+         - Definitions (from Loogle)
+         - Theorems (from Loogle)
+         - Tactics (from Loogle)
+         - Other findings (from web search)
+      
+      4. Include Loogle query log section:
+         ## Loogle Query Log
+         
+         | Query | Hits | Duration | Heartbeats |
+         |-------|------|----------|------------|
+         | List.map | 15 | 0.3s | 1234 |
+         | "replicate" | 8 | 0.2s | 890 |
+         | ?a → ?b → ?a ∧ ?b | 3 | 1.5s | 5678 |
+    </loogle_attribution>
     <lazy_creation>
       Only create directories when writing files
       Don't create empty directory structures
     </lazy_creation>
     <validation>Artifacts created and valid Markdown</validation>
-    <output>Research report and summary files</output>
+    <output>Research report and summary files with Loogle attribution</output>
   </step_4>
 
   <step_5>
     <action>Log tool unavailability if applicable</action>
     <process>
-      IF LeanExplore/Loogle/LeanSearch not available:
+      IF Loogle not available:
         1. Create error entry in errors.json:
            {
              "id": "error_{timestamp}_{random}",
@@ -175,23 +348,62 @@ temperature: 0.3
              "context": {
                "command": "research",
                "task_number": {task_number},
-               "agent": "lean-research-agent"
+               "agent": "lean-research-agent",
+               "tool": "loogle"
              },
-             "message": "LeanExplore/Loogle/LeanSearch not integrated, using web search fallback",
+             "message": "Loogle CLI not available, using web search fallback",
              "fix_status": "not_addressed",
              "fix_plan_ref": null,
-             "fix_task_ref": "TODO: Research and integrate Lean research tools",
+             "fix_task_ref": "Task 197: Integrate Loogle CLI tool",
              "recurrence_count": 1,
              "first_seen": "{current_time}",
              "last_seen": "{current_time}"
            }
         2. Continue with fallback (don't fail research)
         3. Include warning in return object
+      
+      IF LeanExplore/LeanSearch not available:
+        1. Log to errors.json (separate entries)
+        2. Note: These tools are not yet integrated (future work)
+        3. Do NOT log as errors if Loogle is working
     </process>
+    <loogle_error_handling>
+      Specific Loogle error scenarios:
+      
+      1. Binary not found:
+         - Check /home/benjamin/.cache/loogle/.lake/build/bin/loogle
+         - Log: "Loogle binary not found at expected path"
+         - Fallback: Web search
+      
+      2. Index build timeout:
+         - Timeout after 180s
+         - Log: "Loogle index build timed out"
+         - Fallback: Try without index (slower) or web search
+      
+      3. Process crash during startup:
+         - Detect via poll() != None
+         - Log: "Loogle process crashed during startup"
+         - Fallback: Web search
+      
+      4. Query timeout:
+         - Timeout after 10s per query
+         - Log: "Loogle query timed out: {query}"
+         - Continue with next query (don't fail entire research)
+      
+      5. Invalid JSON response:
+         - JSONDecodeError
+         - Log: "Loogle returned invalid JSON"
+         - Restart process or fallback to web search
+    </loogle_error_handling>
     <graceful_degradation>
       Lean research agent works without specialized tools
       Uses web search as fallback
       Quality may be lower but research still useful
+      
+      Degradation tiers:
+      1. Loogle + Web search (best)
+      2. Web search only (fallback)
+      3. Manual research recommended (if all fail)
     </graceful_degradation>
     <output>Error logged if tools unavailable</output>
   </step_5>
@@ -211,7 +423,7 @@ temperature: 0.3
       ```json
       {
         "status": "completed|partial",
-        "summary": "Researched Lean libraries for {topic}. Found {N} relevant definitions, {M} theorems, {K} tactics.",
+        "summary": "Researched Lean libraries for {topic}. Found {N} relevant definitions, {M} theorems, {K} tactics. Used Loogle for type-based search.",
         "artifacts": [
           {
             "type": "research_report",
@@ -232,11 +444,11 @@ temperature: 0.3
           "delegation_path": ["orchestrator", "research", "lean-research-agent"]
         },
         "errors": [],
-        "warnings": ["LeanExplore/Loogle/LeanSearch not integrated, using web search fallback"],
+        "warnings": [],
         "next_steps": "Review research findings and proceed to planning phase",
         "tool_availability": {
+          "loogle": true,
           "lean_explore": false,
-          "loogle": false,
           "lean_search": false,
           "web_search": true
         },
@@ -244,10 +456,17 @@ temperature: 0.3
           "definitions_found": 5,
           "theorems_found": 12,
           "tactics_found": 3,
-          "libraries_explored": ["mathlib", "Logos"]
+          "libraries_explored": ["mathlib", "Logos"],
+          "loogle_queries": 8,
+          "loogle_hits": 25,
+          "loogle_errors": 0
         }
       }
       ```
+      
+      Note: warnings array is empty when Loogle is available and working.
+      Only log warnings for LeanExplore/LeanSearch (future tools).
+      If Loogle unavailable, add warning and set tool_availability.loogle: false.
     </return_format>
     <output>Standardized return object with research artifacts</output>
   </step_6>
@@ -265,21 +484,42 @@ temperature: 0.3
   <must_not>Include general programming advice (focus on Lean)</must_not>
 </constraints>
 
-<future_tool_integration>
+<tool_integration_status>
+  <loogle>
+    Purpose: Search Lean definitions and theorems by type signature
+    Status: INTEGRATED (Task 197)
+    Priority: High
+    Binary: /home/benjamin/.cache/loogle/.lake/build/bin/loogle
+    Index: ~/.cache/lean-research-agent/loogle-mathlib.index
+    Mode: Persistent interactive mode with JSON output
+    Usage: loogle --json --interactive --read-index {index_path}
+    
+    Query examples:
+    - Constant search: List.map
+    - Name fragment: "replicate"
+    - Type pattern: ?a → ?b → ?a ∧ ?b
+    - Conclusion: |- tsum _ = _ * tsum _
+    - Combined: Real.sin, "two", tsum, _ * _
+    
+    Performance:
+    - Startup: 5-10s with index, 60-120s without
+    - Query: 0.1-2s per query
+    - Index build: 60-120s (one-time)
+    
+    Error handling:
+    - Binary not found: Fallback to web search
+    - Index build timeout: Try without index or fallback
+    - Process crash: Restart or fallback
+    - Query timeout: Skip query, continue research
+    - Invalid JSON: Restart process or fallback
+  </loogle>
+
   <lean_explore>
     Purpose: Browse and explore Lean libraries interactively
     Status: NOT INTEGRATED - API research needed
-    Priority: High
+    Priority: Medium
     Research Task: "Research LeanExplore API and integration patterns"
   </lean_explore>
-
-  <loogle>
-    Purpose: Search Lean definitions and theorems by type signature
-    Status: NOT INTEGRATED - CLI integration needed
-    Priority: High
-    Usage: loogle "?a → ?b → ?a ∧ ?b"
-    Research Task: "Integrate Loogle CLI for type-based search"
-  </loogle>
 
   <lean_search>
     Purpose: Semantic search over Lean libraries
@@ -290,15 +530,21 @@ temperature: 0.3
   </lean_search>
 
   <integration_plan>
-    When tools are integrated:
-    1. Update step_3 process to use tools instead of web search
-    2. Remove tool unavailability logging from step_5
-    3. Update return format to include tool-specific findings
-    4. Add tool-specific error handling
-    5. Update documentation to reflect new capabilities
-    6. Create examples of tool usage in research reports
+    Completed for Loogle (Task 197):
+    ✓ Updated step_1 to initialize Loogle client
+    ✓ Updated step_3 to use Loogle for type-based search
+    ✓ Updated step_4 to attribute Loogle findings
+    ✓ Updated step_5 to handle Loogle-specific errors
+    ✓ Updated return format to include Loogle metrics
+    ✓ Added Loogle query generation and parsing logic
+    ✓ Added graceful fallback to web search
+    
+    Future for LeanExplore/LeanSearch:
+    - Add similar integration patterns
+    - Cross-reference results across tools
+    - Implement result ranking/deduplication
   </integration_plan>
-</future_tool_integration>
+</tool_integration_status>
 
 <output_specification>
   <artifacts>
@@ -314,23 +560,61 @@ temperature: 0.3
     - Topic: {topic}
     - Lean context: {context}
     - Libraries explored: {libraries}
+    - Tools used: {tools_used}
+    
+    ## Tool Usage Summary
+    
+    ### Loogle (Type-Based Search)
+    - Status: {available/unavailable}
+    - Queries executed: {query_count}
+    - Total hits found: {hit_count}
+    - Errors encountered: {error_count}
+    - Average query duration: {avg_duration}s
+    
+    ### Web Search (Documentation)
+    - Searches performed: {search_count}
+    - Sources consulted: {sources}
     
     ## Definitions Found
-    {for each definition:
-      ### {definition_name}
+    
+    ### From Loogle
+    {for each definition from Loogle:
+      #### {definition_name}
+      - Type: `{type_signature}`
+      - Module: `{module}`
+      - Documentation: {doc_string}
+      - Found via: Loogle query `{query}`
+      - Usage example: {example}
+    }
+    
+    ### From Web Search
+    {for each definition from web:
+      #### {definition_name}
       - Signature: {signature}
       - Location: {library.file}
       - Purpose: {description}
-      - Usage: {example}
+      - Source: {url}
     }
     
     ## Theorems Found
-    {for each theorem:
-      ### {theorem_name}
+    
+    ### From Loogle
+    {for each theorem from Loogle:
+      #### {theorem_name}
+      - Statement: `{type_signature}`
+      - Module: `{module}`
+      - Documentation: {doc_string}
+      - Found via: Loogle query `{query}`
+      - Relevance: {why_relevant}
+    }
+    
+    ### From Web Search
+    {for each theorem from web:
+      #### {theorem_name}
       - Statement: {statement}
       - Location: {library.file}
       - Proof: {proof_sketch}
-      - Relevance: {why_relevant}
+      - Source: {url}
     }
     
     ## Tactics Found
@@ -339,7 +623,15 @@ temperature: 0.3
       - Purpose: {purpose}
       - Usage: {usage_example}
       - Location: {library.file}
+      - Source: {loogle/web}
     }
+    
+    ## Loogle Query Log
+    
+    | Query | Hits | Duration | Heartbeats | Status |
+    |-------|------|----------|------------|--------|
+    | {query_1} | {hits_1} | {duration_1}s | {heartbeats_1} | {status_1} |
+    | {query_2} | {hits_2} | {duration_2}s | {heartbeats_2} | {status_2} |
     
     ## Integration Recommendations
     - Recommended imports: {imports}
@@ -348,6 +640,7 @@ temperature: 0.3
     - Implementation strategy: {strategy}
     
     ## References
+    - Loogle findings: {loogle_hit_count} declarations
     - Documentation: {doc_links}
     - Examples: {example_links}
     - Discussions: {zulip_links}
@@ -361,14 +654,22 @@ temperature: 0.3
     - {finding_2}
     - {finding_3}
     
+    ## Tool Performance
+    - Loogle: {available/unavailable}
+      - Queries: {query_count}
+      - Hits: {hit_count}
+      - Avg latency: {avg_duration}s
+    - Web search: {search_count} searches
+    - Fallback used: {yes/no}
+    
     ## Recommended Libraries
     - {library_1}: {reason}
     - {library_2}: {reason}
     
     ## Recommended Theorems/Tactics
-    - {theorem_1}: {usage}
-    - {theorem_2}: {usage}
-    - {tactic_1}: {usage}
+    - {theorem_1}: {usage} (from {source})
+    - {theorem_2}: {usage} (from {source})
+    - {tactic_1}: {usage} (from {source})
     
     ## Next Steps
     1. {step_1}
@@ -376,10 +677,9 @@ temperature: 0.3
     3. {step_3}
     
     ## Tool Status
-    - LeanExplore: {status}
-    - Loogle: {status}
-    - LeanSearch: {status}
-    - Fallback used: {yes/no}
+    - Loogle: {available/unavailable} - Type-based search
+    - LeanExplore: {unavailable} - Not yet integrated
+    - LeanSearch: {unavailable} - Not yet integrated
   </research_summary_structure>
 </output_specification>
 
@@ -453,6 +753,180 @@ temperature: 0.3
   </return_format_quality>
 </quality_standards>
 
+<loogle_client_implementation>
+  <overview>
+    Persistent interactive mode client for Loogle CLI integration.
+    Manages process lifecycle, query execution, and error handling.
+  </overview>
+  
+  <class_structure>
+    class LoogleClient:
+      Properties:
+      - binary_path: str = "/home/benjamin/.cache/loogle/.lake/build/bin/loogle"
+      - index_path: str = "~/.cache/lean-research-agent/loogle-mathlib.index"
+      - process: subprocess.Popen | None
+      - ready: bool = False
+      - startup_timeout: int = 180
+      - query_timeout: int = 10
+      
+      Methods:
+      - __init__(binary_path, index_path, timeout)
+      - check_binary() -> bool
+      - check_index_freshness(max_age_days=7) -> bool
+      - build_index(timeout=180) -> bool
+      - start(timeout=180) -> bool
+      - query(query_string, timeout=10) -> dict
+      - check_health() -> bool
+      - restart() -> bool
+      - close() -> None
+  </class_structure>
+  
+  <binary_check>
+    def check_binary(self) -> bool:
+      """Check if Loogle binary exists and is executable"""
+      if not os.path.exists(self.binary_path):
+        return False
+      if not os.access(self.binary_path, os.X_OK):
+        return False
+      return True
+  </binary_check>
+  
+  <index_management>
+    def check_index_freshness(self, max_age_days=7) -> bool:
+      """Check if index exists and is fresh"""
+      index_path = os.path.expanduser(self.index_path)
+      if not os.path.exists(index_path):
+        return False
+      age_seconds = time.time() - os.path.getmtime(index_path)
+      return age_seconds < (max_age_days * 86400)
+    
+    def build_index(self, timeout=180) -> bool:
+      """Build Loogle index with --write-index"""
+      index_path = os.path.expanduser(self.index_path)
+      os.makedirs(os.path.dirname(index_path), exist_ok=True)
+      
+      cmd = [
+        self.binary_path,
+        "--write-index", index_path,
+        "--module", "Mathlib"
+      ]
+      
+      try:
+        result = subprocess.run(
+          cmd,
+          capture_output=True,
+          text=True,
+          timeout=timeout
+        )
+        return result.returncode == 0
+      except subprocess.TimeoutExpired:
+        return False
+      except Exception:
+        return False
+  </index_management>
+  
+  <process_startup>
+    def start(self, timeout=180) -> bool:
+      """Start Loogle in interactive mode"""
+      # Ensure index exists
+      if not self.check_index_freshness():
+        if not self.build_index(timeout):
+          # Try without index (slower)
+          pass
+      
+      # Build command
+      cmd = [self.binary_path, "--json", "--interactive"]
+      index_path = os.path.expanduser(self.index_path)
+      if os.path.exists(index_path):
+        cmd.extend(["--read-index", index_path])
+      
+      # Start process
+      self.process = subprocess.Popen(
+        cmd,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        bufsize=1
+      )
+      
+      # Wait for "Loogle is ready.\n"
+      start_time = time.time()
+      while time.time() - start_time < timeout:
+        line = self.process.stdout.readline()
+        if line == "Loogle is ready.\n":
+          self.ready = True
+          return True
+        if self.process.poll() is not None:
+          # Process died
+          return False
+      
+      # Timeout
+      self.process.terminate()
+      return False
+  </process_startup>
+  
+  <query_execution>
+    def query(self, query_string, timeout=10) -> dict:
+      """Execute a query and return parsed JSON"""
+      if not self.ready:
+        raise RuntimeError("Loogle not ready")
+      
+      # Sanitize query
+      query_string = self._sanitize_query(query_string)
+      
+      # Send query
+      self.process.stdin.write(query_string + "\n")
+      self.process.stdin.flush()
+      
+      # Read response with timeout
+      import select
+      ready, _, _ = select.select([self.process.stdout], [], [], timeout)
+      if not ready:
+        raise TimeoutError(f"Query timed out: {query_string}")
+      
+      response_line = self.process.stdout.readline()
+      return json.loads(response_line)
+    
+    def _sanitize_query(self, query: str) -> str:
+      """Sanitize query string"""
+      # Remove control characters
+      query = ''.join(c for c in query if c.isprintable())
+      # Limit length
+      if len(query) > 500:
+        query = query[:500]
+      return query
+  </query_execution>
+  
+  <health_monitoring>
+    def check_health(self) -> bool:
+      """Check if Loogle process is still alive"""
+      if self.process is None:
+        return False
+      return self.process.poll() is None
+    
+    def restart(self) -> bool:
+      """Restart Loogle process"""
+      self.close()
+      return self.start(self.startup_timeout)
+  </health_monitoring>
+  
+  <cleanup>
+    def close(self) -> None:
+      """Shutdown Loogle process"""
+      if self.process:
+        try:
+          self.process.stdin.close()
+          self.process.terminate()
+          self.process.wait(timeout=5)
+        except:
+          self.process.kill()
+        finally:
+          self.process = None
+          self.ready = False
+  </cleanup>
+</loogle_client_implementation>
+
 <validation>
   <pre_flight>
     - task_number is valid integer
@@ -467,6 +941,7 @@ temperature: 0.3
     - Research scope is clear
     - At least one research source available (tools or web)
     - Directory creation succeeds
+    - Loogle client initialized (if binary available)
   </mid_flight>
 
   <post_flight>
@@ -475,6 +950,7 @@ temperature: 0.3
     - Return object follows subagent-return-format.md
     - All required fields present in return object
     - Artifacts list matches created files
+    - Loogle client closed gracefully (if started)
   </post_flight>
 </validation>
 
