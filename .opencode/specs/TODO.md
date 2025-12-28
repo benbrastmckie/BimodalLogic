@@ -1,13 +1,13 @@
 # TODO
 
-**Last Updated:** 2025-12-28T19:15:00Z
+**Last Updated:** 2025-12-28T22:50:00Z
 
 ## Overview
 
-- **Total Tasks:** 28
+- **Total Tasks:** 29
 - **Completed:** 0
 - **High Priority:** 16
-- **Medium Priority:** 14
+- **Medium Priority:** 15
 - **Low Priority:** 11
 
 ---
@@ -323,25 +323,33 @@
 - **Impact**: Enables comprehensive research on complex topics by dividing them into manageable subtopics while protecting the primary agent's context window through summarization. Provides flexibility - simple topics get focused single reports, complex topics get thorough multi-report coverage with summary overview.
 
 ### 209. Research Lean 4 techniques for completing task 193 involution proof
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 0.5 hours (actual)
+- **Status**: [PLANNED]
+- **Started**: 2025-12-28
+**Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/209_research_lean4_involution_techniques/reports/research-001.md]
+  - Summary: [.opencode/specs/209_research_lean4_involution_techniques/summaries/research-summary.md]
 - **Files Affected**:
   - Logos/Core/Semantics/Truth.lean (theorem is_valid_swap_involution)
 - **Description**: Conduct focused research into Lean 4 type theory techniques and proof patterns for completing the is_valid_swap_involution theorem proof in task 193. The theorem is 85% complete with a fully proven helper lemma (truth_at_swap_swap with structural induction across all 6 cases), but the final step of bridging from hypothesis `truth_at ... φ.swap` to goal `truth_at ... φ` using the helper and involution property `φ.swap.swap = φ` has proven more challenging than anticipated. The core issue: truth_at is pattern-matched (structurally recursive), preventing direct formula substitution via propositional equality. Multiple standard approaches failed (direct rewrite, convert/cast, calc-style, intermediate helpers). Research should investigate: (1) Advanced Lean 4 tactics for equality transport with recursive definitions, (2) Alternative proof strategies that avoid involution composition, (3) Consultation resources (Zulip, Lean community, examples from mathlib), (4) Possible reformulation of theorem statement, (5) Similar proofs in mathlib or other Lean 4 projects that handle involutions with pattern-matched definitions.
 - **Acceptance Criteria**:
-  - [ ] Research identifies viable proof strategy for completing is_valid_swap_involution
-  - [ ] Strategy addresses the pattern-matching + propositional equality transport challenge
-  - [ ] Research includes concrete Lean 4 code examples or tactic sequences
-  - [ ] Alternative approaches explored if primary strategy infeasible
-  - [ ] Consultation with Lean community conducted if needed (Zulip, forums)
-  - [ ] Estimated implementation time provided for identified solution
-  - [ ] Research documented in standard research report format
-  - [ ] Findings enable task 193 to proceed to completion
+  - [x] Research identifies viable proof strategy for completing is_valid_swap_involution
+  - [x] Strategy addresses the pattern-matching + propositional equality transport challenge
+  - [x] Research includes concrete Lean 4 code examples or tactic sequences
+  - [x] Alternative approaches explored if primary strategy infeasible
+  - [x] Consultation with Lean community conducted if needed (Zulip, forums)
+  - [x] Estimated implementation time provided for identified solution
+  - [x] Research documented in standard research report format
+  - [x] Findings enable task 193 to proceed to completion
 - **Impact**: Unblocks task 193 completion by identifying the correct Lean 4 proof technique for this challenging type theory problem. Essential for removing the sorry from is_valid_swap_involution theorem and completing the Truth.lean module.
+- **Plan**: [.opencode/specs/209_research_lean4_involution_techniques/plans/implementation-001.md]
+- **Plan Summary**: Single-phase implementation (30 minutes). Apply proven `simp only` involution pattern from Perpetuity/Helpers.lean to complete `is_valid_swap_involution` theorem. Simple 4-line proof with 95%+ success probability. Research integrated from Loogle CLI findings.
+- **Key Findings**: Solution found using `simp only [Formula.swap_past_future, Formula.swap_past_future_involution] at h_swap` pattern already proven in codebase (Perpetuity/Helpers.lean line 74). Simple 4-line proof, 95%+ success probability, 30-minute implementation time. Loogle CLI integration tested and functional.
 
 ### 208. ✅ Fix /implement and /research routing to use Lean-specific agents and tools
 - **Effort**: 1.5 hours (actual, estimated 2-3 hours)
@@ -817,3 +825,26 @@
   - [ ] Status markers and state sync work correctly for both modes
   - [ ] Documentation updated to explain --divide flag behavior
 - **Impact**: Provides more flexible research workflow - simple research creates focused reports without overhead of summary compilation, while complex research can be divided into manageable subtopics with a summary overview.
+
+### 210. Fix lean-research-agent TODO.md update to follow status-markers.md format
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/agent/subagents/lean-research-agent.md
+- **Description**: The lean-research-agent correctly completes research and creates artifacts, but when updating TODO.md, it uses an incorrect artifact link format that doesn't match status-markers.md specification. Current format used: `**Research**: [Research Report](relative/path)` and `**Summary**: [Research Summary](relative/path)`. Correct format per status-markers.md and other tasks: `**Research Artifacts**:` section with indented `Main Report: [.opencode/specs/full/path]` and `Summary: [.opencode/specs/full/path]` subsections. This causes inconsistency in TODO.md artifact references. Investigation needed: (1) Locate where lean-research-agent updates TODO.md with artifact links, (2) Update to use correct format: Research Artifacts section with Main Report and Summary subsections, (3) Use absolute paths starting with .opencode/specs/ not relative paths, (4) Use bare paths [path] not named links [Name](path), (5) Ensure format matches all other research tasks in TODO.md, (6) Test with a Lean research task to verify correct format, (7) Document the correct format in lean-research-agent.md if not already present.
+- **Acceptance Criteria**:
+  - [ ] lean-research-agent TODO.md update logic identified and reviewed
+  - [ ] Format changed to use **Research Artifacts**: section (not **Research**:)
+  - [ ] Format uses indented Main Report: and Summary: subsections
+  - [ ] Paths are absolute starting with .opencode/specs/ (not relative)
+  - [ ] Links are bare [path] format (not [Name](path) format)
+  - [ ] Format matches status-markers.md specification exactly
+  - [ ] Format matches other research tasks in TODO.md (192, 193, 183, etc.)
+  - [ ] Test with Lean research task confirms correct format applied
+  - [ ] No regression in other lean-research-agent functionality
+  - [ ] Documentation updated if format requirements not clearly documented
+- **Impact**: Ensures consistent artifact link formatting across all tasks in TODO.md regardless of which agent performs the research, improving maintainability and clarity of the TODO.md file per status-markers.md standard.
