@@ -1,13 +1,13 @@
 # TODO
 
-**Last Updated:** 2025-12-28T00:35:00Z
+**Last Updated:** 2025-12-28T02:00:00Z
 
 ## Overview
 
-- **Total Tasks:** 34
-- **Completed:** 14
+- **Total Tasks:** 35
+- **Completed:** 15
 - **High Priority:** 16
-- **Medium Priority:** 12
+- **Medium Priority:** 13
 - **Low Priority:** 11
 
 ---
@@ -28,7 +28,7 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/192_fix_generalized_necessitation_termination/reports/research-001.md]
   - Summary: [.opencode/specs/192_fix_generalized_necessitation_termination/summaries/research-summary.md]
-- **Plan**: [Implementation Plan](.opencode/specs/192_fix_generalized_necessitation_termination/plans/implementation-001.md)
+- **Plan**: [.opencode/specs/192_fix_generalized_necessitation_termination/plans/implementation-001.md]
 - **Plan Summary**: Single-phase implementation (10 minutes). Add `noncomputable` keyword to two function declarations: `generalized_modal_k` (line 66) and `generalized_temporal_k` (line 101). Both functions depend on `noncomputable def deduction_theorem` and must be marked noncomputable. Trivial fix with zero risk - no logic changes, only computability annotation. Standard Lean 4 pattern for Classical proofs.
 - **Files Affected**:
   - Logos/Core/Theorems/GeneralizedNecessitation.lean
@@ -90,7 +90,7 @@
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](169_task_command_improvements/reports/research-001.md)
-- **Plan**: [Implementation Plan](169_task_command_improvements/plans/implementation-003.md)
+- **Plan**: [169_task_command_improvements/plans/implementation-003.md]
 - **Implementation Summary**: [Implementation Summary](169_task_command_improvements/summaries/implementation-summary-20251224.md)
 - **Migration Guide**: [Migration Guide](169_task_command_improvements/summaries/migration-guide-v3.md)
 - **Files Affected**:
@@ -154,7 +154,7 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/183_deduction_theorem_build_errors/reports/research-001.md]
   - Summary: [.opencode/specs/183_deduction_theorem_build_errors/summaries/research-summary.md]
-- **Plan**: [Implementation Plan](.opencode/specs/183_deduction_theorem_build_errors/plans/implementation-001.md)
+- **Plan**: [.opencode/specs/183_deduction_theorem_build_errors/plans/implementation-001.md]
 - **Files Affected**:
   - Logos/Core/Metalogic/DeductionTheorem.lean
 - **Description**: Fix 3 pre-existing build errors in DeductionTheorem.lean that are blocking compilation of all test files including the new integration tests from task 173. These errors prevent verification that the 106 new integration tests (82% coverage) actually compile and pass. Errors: Line 255 (Decidable typeclass instance stuck), Line 297 (no goals to be solved), Line 371 (Decidable typeclass instance stuck).
@@ -193,7 +193,7 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/184_truth_lean_build_error/reports/research-001.md]
   - Investigation Summary: [.opencode/specs/184_truth_lean_build_error/summaries/implementation-summary-20251226.md]
-- **Plan**: [Implementation Plan](.opencode/specs/184_truth_lean_build_error/plans/implementation-001.md)
+- **Plan**: [.opencode/specs/184_truth_lean_build_error/plans/implementation-001.md]
 - **Blocking Reason**: Proof requires structural induction on formulas (3-4 hours), not simple tactic fix (55 min). Investigation found that truth_at is recursively defined by pattern matching, preventing simple formula substitution. Multiple rewrite/cast/transport approaches failed due to dependent type constraints. Full structural induction proof needed.
 - **Files Affected**:
   - Logos/Core/Semantics/Truth.lean (lines 625-635)
@@ -357,7 +357,7 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/202_fix_verbose_artifact_output/reports/research-001.md]
   - Summary: [.opencode/specs/202_fix_verbose_artifact_output/summaries/research-summary.md]
-- **Plan**: [Implementation Plan](.opencode/specs/202_fix_verbose_artifact_output/plans/implementation-001.md)
+- **Plan**: [.opencode/specs/202_fix_verbose_artifact_output/plans/implementation-001.md]
 - **Plan Summary**: 4-phase implementation plan (4-5 hours). Phase 1: Fix task-executor return format (1.25h). Phase 2: Fix batch-task-orchestrator return format + batch summary artifact (2.25h). Phase 3: Testing and validation (0.75h). Phase 4: Documentation updates (0.5h). Achieves 90-95% context window reduction by standardizing to subagent-return-format.md.
 - **Files Affected**:
   - .opencode/agent/subagents/task-executor.md
@@ -403,6 +403,29 @@
   - [ ] state.json updated correctly for both modes
   - [ ] Documentation explains --complex flag behavior and use cases
 - **Impact**: Enables comprehensive research on complex topics by dividing them into manageable subtopics while protecting the primary agent's context window through summarization. Provides flexibility - simple topics get focused single reports, complex topics get thorough multi-report coverage with summary overview.
+
+### 204. Fix inconsistent artifact link formatting in TODO.md (plan links have names, others don't)
+- **Effort**: 0.25 hours (15 minutes)
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/plan.md
+  - .opencode/agent/subagents/planner.md
+- **Description**: In TODO.md, implementation plan links use the format `[Implementation Plan](path)` with a display name, whereas research artifact links use just `[path]` without a display name. This inconsistency makes the plan links harder to read compared to the cleaner research links. Make these consistent by revising the /plan command or planner agent to output plan links in the same format as research links - just the path without the "Implementation Plan" display name. Example: Change `- **Plan**: [Implementation Plan](.opencode/specs/202.../plans/implementation-001.md)` to `- **Plan**: [.opencode/specs/202.../plans/implementation-001.md]` to match research format like `- Main Report: [.opencode/specs/202.../reports/research-001.md]`.
+- **Acceptance Criteria**:
+  - [ ] Identify where plan link format is generated (likely in planner.md or plan.md postflight)
+  - [ ] Change plan link format from `[Implementation Plan](path)` to `[path]`
+  - [ ] Verify consistency with research artifact link format
+  - [ ] Test with /plan command to ensure new format is used
+  - [ ] Update existing TODO.md entries to use consistent format (optional, can be done gradually)
+  - [ ] No regression in plan creation or linking functionality
+  - [ ] Documentation updated if link format guidelines exist
+- **Impact**: Improves TODO.md readability and consistency by using the same clean link format for all artifact types, making it easier for users to scan and read artifact references.
 
 ---
 
@@ -755,7 +778,7 @@
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
-- **Plan**: [Implementation Plan](.opencode/specs/190_improve_maintenance_md_documentation_structure_and_content/plans/implementation-002.md)
+- **Plan**: [.opencode/specs/190_improve_maintenance_md_documentation_structure_and_content/plans/implementation-002.md]
 - **Implementation Summary**: [Implementation Summary](.opencode/specs/190_improve_maintenance_md_documentation_structure_and_content/summaries/implementation-summary-20251226.md)
 - **Files Affected**:
   - Documentation/ProjectInfo/MAINTENANCE.md
@@ -837,7 +860,7 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/199_optimize_self_healing/reports/research-001.md]
   - Summary: [.opencode/specs/199_optimize_self_healing/summaries/research-summary.md]
-- **Plan**: [Implementation Plan](.opencode/specs/199_optimize_self_healing/plans/implementation-001.md)
+- **Plan**: [.opencode/specs/199_optimize_self_healing/plans/implementation-001.md]
 - **Plan Summary**: 4-phase implementation plan (4 hours). Phase 1: Reduce self-healing-guide.md to 120-line essential reference (1.5h). Phase 2: Consolidate context-guide.md self-healing content (0.5h). Phase 3: Move schema evolution to state-schema.md (0.5h). Phase 4: Testing and validation (1.5h). Achieved 76% reduction in loaded context (115 → 28 lines) in 2 hours.
 - **Implementation Summary**: [.opencode/specs/199_optimize_self_healing/summaries/implementation-summary-20251227.md]
 - **Files Affected**:
@@ -872,7 +895,7 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/201_todo_archival_feature/reports/research-001.md]
   - Summary: [.opencode/specs/201_todo_archival_feature/summaries/research-summary.md]
-- **Plan**: [Implementation Plan](.opencode/specs/201_todo_archival_feature/plans/implementation-001.md)
+- **Plan**: [.opencode/specs/201_todo_archival_feature/plans/implementation-001.md]
 - **Plan Summary**: 4-phase implementation plan (6 hours). Phase 1: Archival preparation logic - self-healing, archive entry construction, directory move preparation (2h). Phase 2: Atomic four-file commit - two-phase commit, rollback mechanism, directory moves (2.5h). Phase 3: Git commit and user feedback - expanded scope, enhanced summary (1h). Phase 4: Testing and documentation - edge cases, atomicity validation (0.5h). Implements In-Place Enhancement approach with comprehensive error handling and rollback.
 - **Implementation Summary**: [.opencode/specs/201_todo_archival_feature/summaries/implementation-summary-20251227.md]
 - **Files Affected**:
