@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T14:06:45.670391Z",
-  "next_project_number": 221,
+  "_last_updated": "2025-12-28T14:16:53.371233Z",
+  "next_project_number": 222,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -264,6 +264,14 @@
     "review_artifacts": []
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T14:16:53.371238Z",
+      "activity": "Archived remaining 3 tasks: 1 completed, 2 abandoned"
+    },
+    {
+      "timestamp": "2025-12-28T22:11:32.711979Z",
+      "activity": "Created task 221: Fix comprehensive status update failures - ensure atomic updates via status-sync-manager (8-10 hours effort, High priority, markdown)"
+    },
     {
       "timestamp": "2025-12-28T14:06:45.670398Z",
       "activity": "Archived 9 tasks: 7 completed, 2 abandoned"

@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2025-12-28T14:06:45.670396Z",
+  "_last_updated": "2025-12-28T14:16:53.371237Z",
   "archived_projects": [
     {
       "project_number": 126,
@@ -528,6 +528,32 @@
       "status": "completed",
       "archived": "2025-12-28",
       "summary": "Systematically improve task tracking file update procedures across all commands",
+      "started": "2025-12-28",
+      "completed": "2025-12-28"
+    },
+    {
+      "project_number": 205,
+      "project_name": "implement_lean_tool_usage_verification_and_monitor",
+      "type": "markdown",
+      "status": "abandoned",
+      "archived": "2025-12-28",
+      "summary": "Implement Lean tool usage verification and monitoring system"
+    },
+    {
+      "project_number": 210,
+      "project_name": "fix_lean_subagents_to_follow_artifact_managementmd",
+      "type": "markdown",
+      "status": "abandoned",
+      "archived": "2025-12-28",
+      "summary": "Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md"
+    },
+    {
+      "project_number": 211,
+      "project_name": "standardize_pre_flight_and_post_flight_procedures_",
+      "type": "markdown",
+      "status": "completed",
+      "archived": "2025-12-28",
+      "summary": "Standardize pre-flight and post-flight procedures across research, planning, revision, and implementation workflows",
       "started": "2025-12-28",
       "completed": "2025-12-28"
     },
