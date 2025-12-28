@@ -406,11 +406,12 @@
 - **Impact**: CRITICAL - Fixes broken /todo archival that currently leaves orphaned task metadata scattered throughout TODO.md, making the file unreadable and breaking the task structure. Ensures complete and clean task removal during archival operations.
 
 ### 217. Research artifact creation by all commands and their subagents in the .opencode/ agent system
-- **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Effort**: 12 hours
+- **Status**: [REVISED]
 - **Started**: 2025-12-28
 - **Researched**: 2025-12-28
 - **Planned**: 2025-12-28
+- **Revised**: 2025-12-28
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -418,8 +419,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/217_research_artifact_creation/reports/research-001.md]
   - Summary: [.opencode/specs/217_research_artifact_creation/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/217_research_artifact_creation/plans/implementation-001.md]
-- **Plan Summary**: 3-phase implementation (2 hours total). Phase 1: Add summary validation to implementer.md (45 min). Phase 2: Update researcher.md summary limit from 500 words to 100 tokens (30 min). Phase 3: Verification and testing (45 min). Achieves 100% compliance with artifact-management.md standards.
+- **Plan**: [.opencode/specs/217_research_artifact_creation/plans/implementation-002.md]
+- **Plan Summary**: 7-phase implementation (12 hours total) systematically documenting context window protection pattern. Phase 1: Update core context files (artifact-management.md, command-lifecycle.md). Phase 2: Update /research and researcher.md (1 artifact: report only, summary as metadata). Phase 3: Update /plan and /revise. Phase 4: Update /implement. Phase 5: Update all 6 subagent files. Phase 6: Fix compliance gaps. Phase 7: Validation. Key change: /research creates 1 artifact (report only), returns brief summary as metadata in return object.
 - **Files Affected**:
   - .opencode/command/research.md
   - .opencode/command/plan.md
