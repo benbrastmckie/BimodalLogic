@@ -345,17 +345,23 @@
 - **Impact**: Provides visibility and confidence that the Lean tool integration is working correctly, enables early detection of routing or configuration issues, and identifies opportunities to improve the system's effectiveness with Lean-specific research and implementation workflows.
 
 ### 206. Update /review command to create summaries in new project directories
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Effort**: 4-5 hours
+- **Status**: [RESEARCHED]
 - **Started**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/206_update_review_command_summaries/reports/research-001.md]
+  - Summary: [.opencode/specs/206_update_review_command_summaries/summaries/research-summary.md]
 - **Files Affected**:
   - .opencode/command/review.md
-  - .opencode/agent/subagents/reviewer.md
+  - .opencode/agent/subagents/reviewer.md (new - needs creation)
+  - .opencode/specs/state.json (schema update for review tracking)
 - **Description**: When /review is run, it should create a summary artifact in a new project directory following the artifact-management.md structure. The command should create a project root (NNN_project_name) lazily only when writing the first artifact, create only the summaries/ subdirectory (not reports/ or plans/), and write a review summary (summaries/review-summary.md) containing the review findings. The return to the user should be just a brief summary (3-5 sentences) and a link to the summary artifact, protecting the primary agent's context window from verbose output.
+- **Research Findings** (2025-12-28): Current /review command lacks artifact management and documented reviewer agent. Implementation requires: (1) Create reviewer.md subagent specification from scratch, (2) Add lazy project directory creation (NNN_codebase_review format), (3) Generate review summaries in summaries/ only, (4) Standardize return format per subagent-return-format.md. Estimated 4-5 hours: 1.5h reviewer spec, 1.5h command updates, 0.5h state schema, 1h testing/docs.
 - **Acceptance Criteria**:
   - [ ] /review command creates project directory (NNN_project_name) lazily when writing summary
   - [ ] Only summaries/ subdirectory is created (not reports/ or plans/)
