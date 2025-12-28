@@ -63,7 +63,7 @@ Induction on the context `Γ`.
   4. By `modal_k_dist` axiom and weakening, `□Γ' ⊢ □A → □φ`.
   5. By `reverse_deduction`, `□A :: □Γ' ⊢ □φ`, which is `□(A :: Γ') ⊢ □φ`.
 -/
-def generalized_modal_k : (Γ : Context) → (φ : Formula) →
+noncomputable def generalized_modal_k : (Γ : Context) → (φ : Formula) →
     (h : Γ ⊢ φ) → ((Context.map Formula.box Γ) ⊢ Formula.box φ)
   | [], φ, h => DerivationTree.necessitation φ h
   | A :: Γ', φ, h =>
@@ -98,7 +98,7 @@ It is now derivable from standard temporal necessitation + temporal K distributi
 
 **Proof Strategy**: Analogous to generalized modal K.
 -/
-def generalized_temporal_k : (Γ : Context) → (φ : Formula) →
+noncomputable def generalized_temporal_k : (Γ : Context) → (φ : Formula) →
     (h : Γ ⊢ φ) → ((Context.map Formula.all_future Γ) ⊢ Formula.all_future φ)
   | [], φ, h => DerivationTree.temporal_necessitation φ h
   | A :: Γ', φ, h =>

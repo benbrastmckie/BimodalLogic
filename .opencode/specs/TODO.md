@@ -1,10 +1,10 @@
 # TODO
 
-**Last Updated:** 2025-12-28T16:45:00Z
+**Last Updated:** 2025-12-28T18:30:00Z
 
 ## Overview
 
-- **Total Tasks:** 27
+- **Total Tasks:** 28
 - **Completed:** 0
 - **High Priority:** 16
 - **Medium Priority:** 14
@@ -16,11 +16,11 @@
  
 ### Automation
 
-### 192. Fix GeneralizedNecessitation.lean termination proofs (2 errors)
+### 192. ✅ Fix GeneralizedNecessitation.lean termination proofs (2 errors)
 - **Effort**: 0.17 hours (10 minutes)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-27
-- **Completed**: 2025-12-27
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -35,11 +35,11 @@
 - **Description**: Fix 2 termination proof errors in GeneralizedNecessitation.lean that are preventing compilation. These errors are blocking the build and need to be resolved to ensure the codebase compiles successfully.
 - **Research Findings** (2025-12-27): Both `generalized_modal_k` (line 66) and `generalized_temporal_k` (line 101) are declared as `def` but depend on `noncomputable def deduction_theorem`. Fix is trivial: add `noncomputable` keyword to both function declarations (2 one-word changes). Estimated 5-10 minutes implementation time. Zero risk, no logic changes, standard Lean 4 pattern.
 - **Acceptance Criteria**:
-  - [ ] Both termination proof errors in GeneralizedNecessitation.lean are fixed
-  - [ ] GeneralizedNecessitation.lean compiles successfully with lake build
-  - [ ] No new errors introduced
-  - [ ] Existing tests still pass
-  - [ ] Termination proofs are mathematically sound
+  - [x] Both termination proof errors in GeneralizedNecessitation.lean are fixed
+  - [x] GeneralizedNecessitation.lean compiles successfully with lake build
+  - [x] No new errors introduced
+  - [x] Existing tests still pass
+  - [x] Termination proofs are mathematically sound
 - **Impact**: Critical blocker for build. Fixing these errors will unblock compilation and allow the codebase to build successfully.
 
 ### 193. Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)
@@ -346,9 +346,8 @@
 
 ### 206. Update /review command to create summaries in new project directories
 - **Effort**: 4-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Started**: 2025-12-28
-- **Completed**: 2025-12-28
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -374,6 +373,32 @@
   - [ ] No emojis in output or artifacts
   - [ ] Documentation updated to explain /review artifact creation
 - **Impact**: Provides persistent review summaries in standardized project directories, enabling historical tracking of repository reviews and protecting the orchestrator context window from verbose review output.
+
+### 207. Reduce /implement command output verbosity with artifact-based summaries
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/implement.md
+  - .opencode/agent/subagents/task-executor.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/context/common/system/artifact-management.md (reference)
+- **Description**: The /implement command currently outputs excessively verbose content to the console when implementations are complete, bloating the orchestrator's context window. Instead, the command should conclude by creating a summary artifact following the artifact-management.md system (summaries/implementation-summary-YYYYMMDD.md) and returning only a brief summary (3-5 sentences, <100 tokens) with a reference to the summary artifact. This aligns with the context protection principle described in artifact-management.md where agents should return only file paths, brief summaries, and key findings rather than full artifact content.
+- **Acceptance Criteria**:
+  - [ ] /implement command creates implementation summary artifact (summaries/implementation-summary-YYYYMMDD.md)
+  - [ ] Summary follows artifact-management.md format (3-5 sentences, <100 tokens)
+  - [ ] Console output reduced to brief summary + artifact path reference
+  - [ ] Full implementation details saved in summary artifact only
+  - [ ] Lazy directory creation followed (summaries/ created only when writing summary)
+  - [ ] Both task-executor and lean-implementation-agent updated consistently
+  - [ ] No emojis in output or artifacts
+  - [ ] Return format follows subagent-return-format.md standard
+  - [ ] Orchestrator context window protected from verbose implementation output
+  - [ ] Documentation updated to explain new summary-based return format
+- **Impact**: Protects orchestrator context window from verbose implementation output, improves scalability for complex implementations, and ensures consistent artifact management across all commands per artifact-management.md standard.
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours

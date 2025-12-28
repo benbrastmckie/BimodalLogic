@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T09:18:00Z",
-  "next_project_number": 207,
+  "_last_updated": "2025-12-28T18:30:00Z",
+  "next_project_number": 208,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -41,23 +41,7 @@
       "research_completed": "2025-12-25",
       "last_updated": "2025-12-26"
     },
-    {
-      "project_number": 192,
-      "project_name": "fix_generalized_necessitation_termination",
-      "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
-      "priority": "high",
-      "language": "lean",
-      "created": "2025-12-27T16:36:34Z",
-      "started": "2025-12-27",
-      "research_completed": "2025-12-27",
-      "planning_completed": "2025-12-27",
-      "last_updated": "2025-12-27",
-      "plan_path": ".opencode/specs/192_fix_generalized_necessitation_termination/plans/implementation-001.md",
-      "estimated_hours": 0.17,
-      "phases": 1
-    },
+
     {
       "project_number": 202,
       "project_name": "fix_verbose_artifact_output",
@@ -95,6 +79,13 @@
       "type": "documentation",
       "completed": "2025-12-26",
       "summary": "Improve MAINTENANCE.md documentation structure and content"
+    },
+    {
+      "project_number": 192,
+      "project_name": "fix_generalized_necessitation_termination",
+      "type": "bugfix",
+      "completed": "2025-12-28",
+      "summary": "Fixed 2 termination proof errors by adding noncomputable keyword to generalized_modal_k and generalized_temporal_k"
     }
   ],
   "repository_health": {
@@ -118,6 +109,10 @@
     }
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T18:30:00Z",
+      "activity": "Created task 207: Reduce /implement command output verbosity with artifact-based summaries (TBD effort, Medium priority)"
+    },
     {
       "timestamp": "2025-12-28T09:18:00Z",
       "activity": "Marked task 206 as RESEARCHED: /review command enhancement research completed - 4-5 hours estimated, requires new reviewer.md agent spec"
