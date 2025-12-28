@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T14:16:53.371233Z",
+  "_last_updated": "2025-12-28T22:29:12Z",
   "next_project_number": 222,
   "project_numbering": {
     "min": 0,
@@ -100,39 +100,22 @@
     },
     {
       "project_number": 218,
-      "project_name": "fix_lean_lsp_mcp_integration",
+      "project_name": "fix_lean_lsp_mcp_integration_and_opencode_module_import_errors",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "research_completed",
+      "status": "researched",
       "priority": "high",
       "language": "python",
       "created": "2025-12-28T23:45:00Z",
       "started": "2025-12-28",
       "research_completed": "2025-12-28",
-      "planning_completed": "2025-12-28",
       "last_updated": "2025-12-28",
       "artifacts": [
         ".opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md",
-        ".opencode/specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary.md",
-        ".opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-001.md"
+        ".opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md"
       ],
-      "plan_path": ".opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 3,
-        "estimated_hours": 0.75,
-        "complexity": "low"
-      },
-      "plan_versions": [
-        {
-          "version": 1,
-          "path": "plans/implementation-001.md",
-          "created": "2025-12-28T00:00:00Z",
-          "reason": "Initial implementation plan"
-        }
-      ],
-      "estimated_hours": 0.75,
-      "phases": 3,
-      "research_findings": "Root cause: .opencode directory missing __init__.py files preventing Python package recognition. MCP client from task 212 is correctly implemented. Solution: Add 2 __init__.py files and configure PYTHONPATH (15-30 min)."
+      "estimated_hours": 2.0,
+      "research_findings": "CRITICAL DISCOVERY: OpenCode has native MCP support via opencode.json configuration. Task 212's custom Python MCP client is architecturally incompatible - OpenCode agents use natural language tool instructions, not Python imports. ModuleNotFoundError is symptom of wrong architectural approach. Solution: Configuration-based integration using opencode.json with lean-lsp-mcp server registration. Enables 15+ MCP tools for Lean development. Previous __init__.py plan obsolete. New approach: 1-2 hours implementation."
     }
   ],
   "completed_projects": [
@@ -285,8 +268,8 @@
       "activity": "Created task 219: Implement the long-term solution to restructure module hierarchy separating semantic from proof system properties (TBD effort, Medium priority, lean)"
     },
     {
-      "timestamp": "2025-12-28T23:50:00Z",
-      "activity": "Marked task 218 as RESEARCHED: lean-lsp-mcp integration error research completed - Root cause: missing __init__.py files, MCP client from task 212 works correctly (0.5-1 hour estimated fix)"
+      "timestamp": "2025-12-28T22:29:12Z",
+      "activity": "Marked task 218 as RESEARCHED (updated): CRITICAL DISCOVERY - OpenCode has native MCP support via opencode.json configuration. Task 212's custom Python MCP client architecturally incompatible. Solution is configuration-based integration, not Python imports. Previous __init__.py plan obsolete. New approach: 1-2 hours."
     },
     {
       "timestamp": "2025-12-28T23:45:00Z",
