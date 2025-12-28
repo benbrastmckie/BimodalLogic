@@ -305,7 +305,7 @@
 
 ### 219. Implement the long-term solution to restructure module hierarchy separating semantic from proof system properties
 - **Effort**: 12-14 hours (Phase 1), 34-40 hours (complete restructuring)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
 - **Priority**: High
@@ -315,6 +315,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/219_restructure_module_hierarchy/reports/research-001.md]
   - Summary: [.opencode/specs/219_restructure_module_hierarchy/summaries/research-summary.md]
+- **Plan**: [.opencode/specs/219_restructure_module_hierarchy/plans/implementation-001.md]
+- **Plan Summary**: 9-phase implementation (12-14 hours total). Phase 1-2: Create SoundnessLemmas.lean and extract TemporalDuality namespace (~680 lines of bridge theorems). Phase 3-4: Update Truth.lean (remove TemporalDuality, reduce to ~600 lines) and Soundness.lean (import SoundnessLemmas, complete temporal_duality case). Phase 5: Update module aggregation. Phase 6-7: Comprehensive testing and documentation. Phase 8-9: Final validation and SORRY registry update. Resolves circular dependency via clean layered architecture: Soundness.lean → SoundnessLemmas.lean → Truth.lean (pure semantics). Follows mathlib4 best practices with bridge modules for cross-layer connections.
 - **Files Affected**:
   - Logos/Core/Semantics/Truth.lean (remove TemporalDuality namespace, reduce from 1278 to ~600 lines)
   - Logos/Core/Metalogic/SoundnessLemmas.lean (new file, ~680 lines of bridge theorems)
