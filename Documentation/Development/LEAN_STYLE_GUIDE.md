@@ -453,7 +453,243 @@ def some_function (n : Nat) : Nat := n + 42  -- What is 42?
 def very_complex := (fun x => (fun y => x + y + (if x > 0 then 1 else 0)) 3) 2  -- Hard to read
 ```
 
-## 7. Additional Guidelines
+## 7. Noncomputable Definitions
+
+### When to Use `noncomputable`
+
+ProofChecker uses **classical logic** for metalogic theorems (like the deduction theorem). This makes certain definitions **noncomputable** (not executable). For comprehensive background, see [NONCOMPUTABLE_GUIDE.md](NONCOMPUTABLE_GUIDE.md) and [ADR-001-Classical-Logic-Noncomputable.md](../Architecture/ADR-001-Classical-Logic-Noncomputable.md).
+
+**Mark a definition as `noncomputable` when**:
+1. It calls `deduction_theorem` or any other noncomputable function
+2. It uses classical axioms like `Classical.propDecidable`, `Classical.em`, or `Classical.choice`
+3. Lean compiler reports: `depends on declaration 'X', which has no executable code`
+
+**DO NOT mark as noncomputable**:
+- Theorems (`theorem`, not `def`) using noncomputable functions in proofs
+- Definitions inside a `noncomputable section` (already covered by section marker)
+
+### Patterns and Examples
+
+#### Pattern 1: Individual Noncomputable Definition
+
+```lean
+-- Good: Single noncomputable definition
+noncomputable def generalized_modal_k (Γ : Context) (Γ' : Context) (A φ : Formula)
+    (h : (A :: Γ') ⊢ φ) : (A :: Γ' ++ Γ) ⊢ φ := by
+  let h_deduction : Γ' ⊢ A.imp φ := deduction_theorem Γ' A φ h
+  sorry
+
+-- Avoid: Missing noncomputable marker
+def generalized_modal_k (Γ : Context) (Γ' : Context) (A φ : Formula)
+    (h : (A :: Γ') ⊢ φ) : (A :: Γ' ++ Γ) ⊢ φ := by
+  let h_deduction : Γ' ⊢ A.imp φ := deduction_theorem Γ' A φ h  -- ERROR!
+  sorry
+```
+
+#### Pattern 2: Noncomputable Section
+
+```lean
+-- Good: Multiple noncomputable definitions in same file
+noncomputable section
+
+def lce_imp (A B : Formula) : ⊢ (A.and B).imp A := by
+  have h : [A.and B] ⊢ A := lce A B
+  exact deduction_theorem [] (A.and B) A h
+
+def rce_imp (A B : Formula) : ⊢ (A.and B).imp B := by
+  have h : [A.and B] ⊢ B := rce A B
+  exact deduction_theorem [] (A.and B) B h
+
+def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) := by
+  -- Uses deduction_theorem multiple times
+  sorry
+
+end -- noncomputable section
+
+-- Avoid: Marking each individually when many are noncomputable
+noncomputable def lce_imp ... := ...
+noncomputable def rce_imp ... := ...
+noncomputable def classical_merge ... := ...
+-- (Too verbose; use section instead)
+```
+
+#### Pattern 3: Classical Logic with Decidability
+
+```lean
+-- Good: Using classical logic with proper marker
+attribute [local instance] Classical.propDecidable
+
+noncomputable def deduction_theorem (Γ : Context) (A B : Formula)
+    (h : (A :: Γ) ⊢ B) : Γ ⊢ (A.imp B) := by
+  haveI : Decidable (A ∈ Γ) := Classical.propDecidable _
+  by_cases h_mem : A ∈ Γ
+  · -- Case: A is in Γ
+    sorry
+  · -- Case: A is not in Γ
+    sorry
+
+-- Avoid: Classical logic without noncomputable marker
+def deduction_theorem (Γ : Context) (A B : Formula)
+    (h : (A :: Γ) ⊢ B) : Γ ⊢ (A.imp B) := by
+  by_cases h_mem : A ∈ Γ  -- ERROR: No decidable instance!
+  sorry
+```
+
+#### Pattern 4: Theorem vs Definition
+
+```lean
+-- Good: Theorem using noncomputable function (no marker needed)
+theorem future_k_dist (A B : Formula) :
+    ⊢ (A.imp B).all_future.imp (A.all_future.imp B.all_future) := by
+  have step1 : ... := by sorry
+  have step2 : ... := deduction_theorem [(A.imp B).all_future] A.all_future B.all_future step1
+  exact step2
+
+-- Good: Definition calling noncomputable function (marker required)
+noncomputable def my_helper (A B : Formula) : ⊢ (A.imp B) := by
+  exact deduction_theorem [] A B proof
+```
+
+### Documentation Requirements
+
+**Every noncomputable definition must document WHY it's noncomputable** in its docstring:
+
+```lean
+/-- The deduction theorem: if `(A :: Γ) ⊢ B` then `Γ ⊢ (A → B)`.
+
+This theorem allows moving assumptions from context to implication.
+
+**Noncomputable**: Uses `Classical.propDecidable` for case analysis on:
+- `A ∈ Γ` (context membership, undecidable without classical logic)
+- `Γ' = A :: Γ` (context equality, undecidable)
+- `φ = A` (formula equality, undecidable)
+
+See [NONCOMPUTABLE_GUIDE.md](../../Documentation/Development/NONCOMPUTABLE_GUIDE.md)
+for details on why classical logic is necessary for metalogic.
+-/
+noncomputable def deduction_theorem (Γ : Context) (A B : Formula) : ... := ...
+```
+
+### Fixing Noncomputable Errors
+
+**Error Message**:
+```
+failed to compile definition, compiler IR check failed at 'Logos.Core.Theorems.my_function'. 
+Error: depends on declaration 'Logos.Core.Metalogic.deduction_theorem', which has no executable code; 
+consider marking definition as 'noncomputable'
+```
+
+**Step-by-Step Fix**:
+
+1. **Identify the noncomputable dependency**:
+   - In this case: `deduction_theorem`
+   - Check [NONCOMPUTABLE_GUIDE.md](NONCOMPUTABLE_GUIDE.md) for catalog
+
+2. **Add `noncomputable` keyword**:
+   ```lean
+   -- Before:
+   def my_function (Γ : Context) (A B : Formula) : Γ ⊢ A.imp B := by
+     let h := deduction_theorem Γ A B proof
+     exact h
+   
+   -- After:
+   noncomputable def my_function (Γ : Context) (A B : Formula) : Γ ⊢ A.imp B := by
+     let h := deduction_theorem Γ A B proof
+     exact h
+   ```
+
+3. **Document why it's noncomputable**:
+   ```lean
+   /-- My function does X.
+   
+   **Noncomputable**: Depends on `deduction_theorem`, which uses classical logic.
+   -/
+   noncomputable def my_function ...
+   ```
+
+4. **Verify build passes**:
+   ```bash
+   lake build Logos.Core.Theorems.MyModule
+   ```
+
+### Common Scenarios
+
+#### Scenario 1: Adding New Metalogic Theorem
+
+```lean
+-- If your theorem uses classical axioms or calls deduction_theorem:
+
+/-- My metalogic theorem.
+
+**Noncomputable**: Uses classical case analysis on formula equality.
+-/
+noncomputable def my_metalogic_theorem (Γ : Context) (A : Formula) : ... := by
+  haveI : Decidable (A ∈ Γ) := Classical.propDecidable _
+  by_cases h : A ∈ Γ
+  · sorry
+  · sorry
+```
+
+#### Scenario 2: Adding Propositional Theorem
+
+```lean
+-- If in Propositional.lean, add to existing noncomputable section:
+
+noncomputable section
+-- ... existing theorems ...
+
+/-- My new propositional theorem.
+
+**Noncomputable**: Part of noncomputable section; may use `deduction_theorem`.
+-/
+def my_prop_theorem (A B : Formula) : ⊢ (A.imp B) := by
+  sorry
+
+end -- noncomputable section
+```
+
+#### Scenario 3: Adding Modal/Temporal Theorem (Proof Mode)
+
+```lean
+-- Theorems in proof mode DON'T need noncomputable marker:
+
+theorem my_modal_theorem (φ : Formula) : ⊢ φ.box.imp φ.always := by
+  -- Can use deduction_theorem freely in proof
+  have h1 := deduction_theorem [] φ.box φ.always proof
+  exact h1
+  -- No noncomputable marker needed!
+```
+
+### Code Review Checklist
+
+When reviewing code that adds or modifies definitions:
+
+- [ ] If `def` calls `deduction_theorem`, is it marked `noncomputable`?
+- [ ] If uses `Classical.propDecidable`, `Classical.em`, or `Classical.choice`, is it marked `noncomputable`?
+- [ ] Does docstring explain WHY it's noncomputable?
+- [ ] If multiple noncomputable definitions in same file, is `noncomputable section` used?
+- [ ] Does build pass without "no executable code" errors?
+
+### FAQ
+
+**Q: Is it bad that we have noncomputable definitions?**  
+A: No. For proof assistants in classical logic, this is standard practice. See [ADR-001](../Architecture/ADR-001-Classical-Logic-Noncomputable.md).
+
+**Q: Can I make `deduction_theorem` computable?**  
+A: No, not practically. It requires decidable equality on arbitrary formulas, which is complex and not worth implementing. See [NONCOMPUTABLE_GUIDE.md](NONCOMPUTABLE_GUIDE.md) § FAQ.
+
+**Q: Why doesn't my theorem need `noncomputable` even though it uses `deduction_theorem`?**  
+A: Theorems (`theorem`) and proof terms (`by` blocks) can use noncomputable functions freely. Only definitions (`def`) that call noncomputable functions in their body require the marker.
+
+### Related Documentation
+
+- **Comprehensive Guide**: [NONCOMPUTABLE_GUIDE.md](NONCOMPUTABLE_GUIDE.md)
+- **Architecture Decision**: [ADR-001-Classical-Logic-Noncomputable.md](../Architecture/ADR-001-Classical-Logic-Noncomputable.md)
+- **Research Reports**: [Task 192 Research](../../.opencode/specs/192_fix_generalized_necessitation_termination/reports/)
+
+---
+
+## 8. Additional Guidelines
 
 ### Error Handling
 - Use `Option` for operations that may fail
@@ -476,7 +712,7 @@ def very_complex := (fun x => (fun y => x + y + (if x > 0 then 1 else 0)) 3) 2  
 - Keep commits focused on single logical changes
 - Write descriptive commit messages
 
-## 8. Prohibited Elements
+## 9. Prohibited Elements
 
 ### No Emojis
 
@@ -494,7 +730,7 @@ Do not use emojis in code, comments, or documentation. Use text-based alternativ
 
 These Unicode mathematical symbols are essential to the formal notation and should always be used.
 
-## 9. Linting and Quality Assurance
+## 10. Linting and Quality Assurance
 
 The Logos project uses a comprehensive linting system to enforce code quality standards and TM-specific conventions.
 
