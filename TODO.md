@@ -43,6 +43,34 @@ Logos has completed its MVP phase with a functional implementation of the TM bim
 
 ## Medium Priority (Complete within 3 months)
 
+### 205. Implement Lean tool usage verification and monitoring system
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/research.md
+  - .opencode/command/implement.md
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/context/common/standards/lean-tool-verification.md (new)
+  - .opencode/specs/monitoring/ (new directory structure)
+- **Description**: Design and implement a comprehensive monitoring and verification system to detect and validate that Lean-specific tools (lean-lsp-mcp, Loogle, LeanExplore, LeanSearch) are being correctly used by the appropriate commands and agents when processing Lean tasks. The system should provide visibility into tool usage patterns, detect routing errors, track tool availability issues, and identify opportunities for improvement. This includes creating verification methods, logging standards, monitoring dashboards, and automated health checks to ensure the system is working optimally.
+- **Acceptance Criteria**:
+  - [ ] Verification method identified for detecting lean-lsp-mcp usage in /implement command for Lean tasks
+  - [ ] Verification method identified for detecting Loogle usage in /research command for Lean tasks
+  - [ ] Automated tool availability checks implemented (binary existence, process health, API connectivity)
+  - [ ] Tool usage logging standardized in lean-research-agent and lean-implementation-agent return formats
+  - [ ] Monitoring dashboard or report created showing tool usage metrics per command execution
+  - [ ] Health check command or script created to verify routing is working correctly
+  - [ ] Documentation created explaining verification methods and monitoring approach
+  - [ ] Error detection implemented for cases where tools should be used but aren't (routing failures)
+  - [ ] Recommendations provided for system improvements based on monitoring data
+  - [ ] All verification methods tested with real command executions on Lean tasks
+- **Impact**: Provides visibility and confidence that the Lean tool integration is working correctly, enables early detection of routing or configuration issues, and identifies opportunities to improve the system's effectiveness with Lean-specific research and implementation workflows.
+
 ### 2. Resolve Truth.lean Sorries
 **Effort**: 10-20 hours
 **Status**: PARTIAL
@@ -121,44 +149,41 @@ Provides complete API documentation for all Logos modules, improving usability a
 ---
 
 ### 183. Fix DeductionTheorem.lean build errors (3 errors)
-**Effort**: 2-3 hours
-**Status**: [RESEARCHED]
-**Started**: 2025-12-25
-**Completed**: 2025-12-25
-**Priority**: High
-**Blocking**: Task 173 (integration tests), Task 185
-**Dependencies**: None
-**Language**: lean
-
-**Research Artifacts**:
-- [Research Report](.opencode/specs/183_deduction_theorem_fixes/reports/research-001.md)
-- [Research Summary](.opencode/specs/183_deduction_theorem_fixes/summaries/research-summary.md)
-
-**Files Affected**:
-- `Logos/Core/Metalogic/DeductionTheorem.lean` (lines 255, 297, 371)
-
-**Description**:
-Fix 3 build errors in DeductionTheorem.lean that are blocking integration test compilation and task 173. These errors prevent the project from building and must be resolved before integration tests can be verified.
-
-**Root Cause Analysis**:
-All three errors have the same root cause: `.elim` method on `Classical.em` is a term-mode construct, not a tactic. The pattern `(em P).elim` is not recognized in tactic mode match expressions.
-
-**Solution Approach**:
-Replace all `(em P).elim` patterns with `by_cases h : P` tactic (idiomatic Lean 4 pattern used in Soundness.lean and Truth.lean). This is a simple, mechanical fix that requires no proof restructuring.
-
-**Error Details**:
-- Line 255: Type mismatch in match expression using `.elim`
-- Line 297: Type mismatch in match expression using `.elim`
-- Line 371: Type mismatch in match expression using `.elim`
-
-**Acceptance Criteria**:
-- [ ] All 3 build errors in DeductionTheorem.lean are resolved
-- [ ] File compiles successfully with `lake build`
-- [ ] No new errors introduced
-- [ ] Existing tests continue to pass
-
-**Impact**:
-Unblocks task 173 (integration tests) and task 185 (test helper API fixes). Critical for project build health.
+- **Effort**: 0.5 hours (30 minutes)
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-25
+- **Completed**: 2025-12-28
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: 173
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/183_deduction_theorem_build_errors/reports/research-001.md]
+  - Summary: [.opencode/specs/183_deduction_theorem_build_errors/summaries/research-summary.md]
+- **Plan**: [.opencode/specs/183_deduction_theorem_build_errors/plans/implementation-002.md]
+- **Plan Summary**: Single-phase implementation (30 minutes). Replace 3 `.elim` patterns with idiomatic `by_cases` tactic at lines 256, 369, 376. Purely syntactic fix following proven patterns from Soundness.lean and Truth.lean. Very low risk - no logic changes, only tactic mode syntax.
+- **Files Affected**:
+  - Logos/Core/Metalogic/DeductionTheorem.lean
+- **Description**: Fix 3 pre-existing build errors in DeductionTheorem.lean that are blocking compilation of all test files including the new integration tests from task 173. These errors prevent verification that the 106 new integration tests (82% coverage) actually compile and pass. Errors: Line 255 (Decidable typeclass instance stuck), Line 297 (no goals to be solved), Line 371 (Decidable typeclass instance stuck).
+- **Root Cause Analysis** (2025-12-25):
+  - All 3 build errors stem from using `(em P).elim` pattern inside `match` expressions
+  - The `.elim` method is a term-mode construct, not a tactic, causing "unknown tactic" errors at lines 256, 369, and 376
+  - With `open Classical` already at the top of the file, `by_cases` automatically uses `Classical.propDecidable` for any proposition via excluded middle
+- **Solution** (Research Complete):
+  - Replace `(em P).elim (fun h => ...) (fun h => ...)` with `by_cases h : P` tactic
+  - This is the idiomatic Lean 4 pattern proven in the codebase (Soundness.lean line 282, Truth.lean lines 789-825)
+  - 3 simple replacements needed:
+    - Line 256: `(em (A ∈ Γ'')).elim` → `by_cases hA' : A ∈ Γ''`
+    - Line 369: `(em (Γ' = A :: Γ)).elim` → `by_cases h_eq : Γ' = A :: Γ`
+    - Line 376: `(em (A ∈ Γ')).elim` → `by_cases hA : A ∈ Γ'`
+  - Use `·` bullet points for case branches and remove closing parentheses
+  - Termination proofs are correct and will work once tactic errors are fixed
+- **Acceptance Criteria**:
+  - [x] All 3 build errors in DeductionTheorem.lean resolved
+  - [x] DeductionTheorem.lean compiles successfully with lake build
+  - [x] No new errors introduced
+  - [x] Existing tests continue to pass
+- **Impact**: Critical blocker for task 173. Fixing these errors will unblock compilation of 106 new integration tests and allow verification of 82% integration test coverage achievement.
 
 ---
 
