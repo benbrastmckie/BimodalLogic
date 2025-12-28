@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T12:36:52.095412Z",
-  "next_project_number": 216,
+  "_last_updated": "2025-12-28T12:48:00.420692Z",
+  "next_project_number": 217,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -283,6 +283,10 @@
     "review_artifacts": []
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T12:48:00.420682Z",
+      "activity": "Created task 216: Systematically improve task tracking file update procedures across all commands (TBD effort, High priority, markdown)"
+    },
     {
       "timestamp": "2025-12-28T12:36:52.095399Z",
       "activity": "Created task 215: Fix /todo command to remove both heading and body for completed/abandoned tasks (TBD effort, High priority, markdown)"

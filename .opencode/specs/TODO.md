@@ -382,6 +382,46 @@
   - [ ] No regression in other /todo functionality (archival, state updates, directory moves)
 - **Impact**: CRITICAL - Fixes broken /todo archival that currently leaves orphaned task metadata scattered throughout TODO.md, making the file unreadable and breaking the task structure. Ensures complete and clean task removal during archival operations.
 
+### 216. Systematically improve task tracking file update procedures across all commands
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/context/common/workflows/command-lifecycle.md
+  - .opencode/context/common/workflows/task-tracking-updates.md (new)
+  - .opencode/agent/subagents/status-sync-manager.md
+  - .opencode/agent/subagents/researcher.md
+  - .opencode/agent/subagents/planner.md
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/agent/subagents/task-executor.md
+  - .opencode/agent/subagents/implementer.md
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+  - .opencode/command/revise.md
+  - .opencode/command/implement.md
+- **Description**: After implementing task 211, status and artifact updates remain inconsistent. When commands complete, research/planning/revision/implementation subagents do not effectively update: (1) TODO.md task entries (status markers, artifact links, timestamps), (2) .opencode/specs/state.json (active_projects, artifacts arrays, status, timestamps), (3) Project-level state.json files in specs/{task_number}_{name}/ (if exists), (4) Plan metadata when plans are being implemented (phase status, completion tracking). Need to systematically investigate and fix all update procedures to ensure: (A) Commands update all tracking files atomically when subagents start, (B) Subagents update all tracking files atomically when work completes, (C) Updates are documented in command-lifecycle.md or new task-tracking-updates.md context file, (D) Updates follow status-markers.md, state-schema.md, artifact-management.md standards, (E) Git commits are created after all updates, (F) Consider creating dedicated update subagent if atomicity/consistency requires centralized coordination. Investigation should: (1) Trace actual update flows in /research, /plan, /revise, /implement for representative task, (2) Identify where updates are missing or inconsistent, (3) Determine best architecture (enhance status-sync-manager vs create dedicated update agent vs distribute updates to subagents with validation), (4) Document complete update procedures in appropriate context file, (5) Implement and test fixes to ensure 100% update coverage.
+- **Acceptance Criteria**:
+  - [ ] Investigation completed: Traced update flows for all 4 commands
+  - [ ] Gap analysis completed: Identified all missing/inconsistent updates
+  - [ ] Architecture decision: Documented best approach (enhance existing vs new agent vs distributed)
+  - [ ] Context file created or updated: task-tracking-updates.md or command-lifecycle.md enhancements
+  - [ ] TODO.md updates work correctly: Status markers, artifact links, timestamps on command start and finish
+  - [ ] state.json updates work correctly: active_projects, artifacts, status, timestamps on command start and finish
+  - [ ] Project state.json updates work correctly: If project-level state exists, updated consistently
+  - [ ] Plan metadata updates work correctly: Phase status and completion tracking during implementation
+  - [ ] All updates are atomic: Either all files updated or none (via status-sync-manager or equivalent)
+  - [ ] All updates follow standards: status-markers.md, state-schema.md, artifact-management.md
+  - [ ] Git commits created after updates: All tracking file changes committed
+  - [ ] Update procedures documented: Clear documentation loaded where relevant
+  - [ ] Context bloat avoided: Documentation loaded only where needed
+  - [ ] Test coverage: Verified with real tasks for all 4 commands
+  - [ ] No regressions: Existing functionality preserved
+- **Impact**: CRITICAL - Ensures complete and consistent tracking across all task lifecycle stages. Without systematic updates, TODO.md and state.json diverge, making task status unreliable and blocking effective project management. Provides single source of truth for update procedures, following task 211's standardization approach.
+
 ### 203. Add --complex flag to /research for subtopic subdivision with summary
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
