@@ -1,0 +1,100 @@
+{
+  "project_number": 207,
+  "project_name": "fix_implement_status_updates",
+  "type": "bugfix",
+  "priority": "critical",
+  "language": "markdown",
+  "created": "2025-12-28",
+  "status": "analyzed",
+  "phase": "analysis",
+  "artifacts": {
+    "reports": [
+      ".opencode/specs/207_fix_implement_status_updates/reports/analysis-001.md"
+    ],
+    "summaries": [
+      ".opencode/specs/207_fix_implement_status_updates/summaries/analysis-summary.md"
+    ],
+    "plans": [],
+    "implementations": []
+  },
+  "analysis": {
+    "root_cause": "Orchestrator treats command specifications as documentation, not executable workflows. Never invokes status-sync-manager specialist.",
+    "affected_commands": [
+      "/implement",
+      "/research",
+      "/plan",
+      "/revise"
+    ],
+    "affected_files": [
+      "TODO.md",
+      "state.json",
+      "plan files"
+    ],
+    "severity": "critical"
+  },
+  "recommendations": {
+    "solution": "Solution A: Orchestrator Executes Command Workflows",
+    "effort_hours": 6.5,
+    "priority": "immediate",
+    "phases": [
+      {
+        "phase": 1,
+        "name": "Orchestrator Updates",
+        "effort_hours": 3,
+        "tasks": [
+          "Add ExecuteCommandPreflight stage",
+          "Add ExecuteCommandPostflight stage"
+        ]
+      },
+      {
+        "phase": 2,
+        "name": "Testing",
+        "effort_hours": 2,
+        "tasks": [
+          "Test /implement command",
+          "Test /research, /plan, /revise commands"
+        ]
+      },
+      {
+        "phase": 3,
+        "name": "Manual Fix Task 193",
+        "effort_hours": 0.5,
+        "tasks": [
+          "Update TODO.md status to [PARTIAL]",
+          "Update state.json status to partial",
+          "Update plan file phase status"
+        ]
+      },
+      {
+        "phase": 4,
+        "name": "Documentation",
+        "effort_hours": 0.5,
+        "tasks": [
+          "Update orchestrator.md",
+          "Update implement.md",
+          "Update status-markers.md"
+        ]
+      }
+    ]
+  },
+  "timeline": {
+    "estimated_effort_hours": 6.5,
+    "critical_path_hours": 5.5,
+    "calendar_days": 1
+  },
+  "risks": [
+    {
+      "risk": "Orchestrator complexity increase",
+      "likelihood": "medium",
+      "impact": "medium",
+      "mitigation": "Keep stage logic simple, delegate to status-sync-manager"
+    },
+    {
+      "risk": "Status update failures block implementation",
+      "likelihood": "low",
+      "impact": "high",
+      "mitigation": "Make status updates non-critical, graceful degradation"
+    }
+  ],
+  "_comment": "Analysis complete. Ready for planning and implementation. This is a critical bug affecting all command workflows."
+}
