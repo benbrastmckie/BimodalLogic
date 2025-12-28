@@ -1,13 +1,13 @@
 # TODO
 
-**Last Updated:** 2025-12-28T00:48:31Z
+**Last Updated:** 2025-12-28T16:45:00Z
 
 ## Overview
 
-- **Total Tasks:** 26
+- **Total Tasks:** 27
 - **Completed:** 0
 - **High Priority:** 16
-- **Medium Priority:** 13
+- **Medium Priority:** 14
 - **Low Priority:** 11
 
 ---
@@ -118,9 +118,9 @@
   - [ ] Examples provided showing typical maintenance report structure
 - **Impact**: Improves maintainability and transparency of the maintenance workflow by standardizing report generation and ensuring comprehensive documentation of maintenance operations.
 
-### 183. Fix DeductionTheorem.lean build errors (3 errors)
+### 183. ✅ Fix DeductionTheorem.lean build errors (3 errors)
 - **Effort**: 0.5 hours (30 minutes)
-- **Status**: [REVISED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-25
 - **Completed**: 2025-12-28
 - **Priority**: High
@@ -132,6 +132,7 @@
   - Summary: [.opencode/specs/183_deduction_theorem_build_errors/summaries/research-summary.md]
 - **Plan**: [.opencode/specs/183_deduction_theorem_build_errors/plans/implementation-002.md]
 - **Plan Summary**: Single-phase implementation (30 minutes). Replace 3 `.elim` patterns with idiomatic `by_cases` tactic at lines 256, 369, 376. Purely syntactic fix following proven patterns from Soundness.lean and Truth.lean. Very low risk - no logic changes, only tactic mode syntax.
+- **Implementation Summary**: [.opencode/specs/183_deduction_theorem_build_errors/summaries/implementation-summary-20251228.md]
 - **Files Affected**:
   - Logos/Core/Metalogic/DeductionTheorem.lean
 - **Description**: Fix 3 pre-existing build errors in DeductionTheorem.lean that are blocking compilation of all test files including the new integration tests from task 173. These errors prevent verification that the 106 new integration tests (82% coverage) actually compile and pass. Errors: Line 255 (Decidable typeclass instance stuck), Line 297 (no goals to be solved), Line 371 (Decidable typeclass instance stuck).
@@ -150,12 +151,12 @@
   - Termination proofs are correct and will work once tactic errors are fixed
 - **Implementation Estimate**: 15-30 minutes (low complexity, proven pattern, very low risk)
 - **Acceptance Criteria**:
-  - [ ] Line 255 Decidable typeclass instance error fixed
-  - [ ] Line 297 no goals error fixed
-  - [ ] Line 371 Decidable typeclass instance error fixed
-  - [ ] DeductionTheorem.lean compiles successfully with lake build
-  - [ ] No new errors introduced
-  - [ ] Existing tests still pass
+  - [x] Line 255 Decidable typeclass instance error fixed
+  - [x] Line 297 no goals error fixed
+  - [x] Line 371 Decidable typeclass instance error fixed
+  - [x] DeductionTheorem.lean compiles successfully with lake build
+  - [x] No new errors introduced
+  - [x] Existing tests still pass
 - **Impact**: Critical blocker for task 173. Fixing these errors will unblock compilation of 106 new integration tests and allow verification of 82% integration test coverage achievement.
 
 ### 184. Fix Truth.lean build error (swap_past_future proof)
@@ -314,6 +315,59 @@
   - [ ] state.json updated correctly for both modes
   - [ ] Documentation explains --complex flag behavior and use cases
 - **Impact**: Enables comprehensive research on complex topics by dividing them into manageable subtopics while protecting the primary agent's context window through summarization. Provides flexibility - simple topics get focused single reports, complex topics get thorough multi-report coverage with summary overview.
+
+### 205. Implement Lean tool usage verification and monitoring system
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/research.md
+  - .opencode/command/implement.md
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/context/common/standards/lean-tool-verification.md (new)
+  - .opencode/specs/monitoring/ (new directory structure)
+- **Description**: Design and implement a comprehensive monitoring and verification system to detect and validate that Lean-specific tools (lean-lsp-mcp, Loogle, LeanExplore, LeanSearch) are being correctly used by the appropriate commands and agents when processing Lean tasks. The system should provide visibility into tool usage patterns, detect routing errors, track tool availability issues, and identify opportunities for improvement. This includes creating verification methods, logging standards, monitoring dashboards, and automated health checks to ensure the system is working optimally.
+- **Acceptance Criteria**:
+  - [ ] Verification method identified for detecting lean-lsp-mcp usage in /implement command for Lean tasks
+  - [ ] Verification method identified for detecting Loogle usage in /research command for Lean tasks
+  - [ ] Automated tool availability checks implemented (binary existence, process health, API connectivity)
+  - [ ] Tool usage logging standardized in lean-research-agent and lean-implementation-agent return formats
+  - [ ] Monitoring dashboard or report created showing tool usage metrics per command execution
+  - [ ] Health check command or script created to verify routing is working correctly
+  - [ ] Documentation created explaining verification methods and monitoring approach
+  - [ ] Error detection implemented for cases where tools should be used but aren't (routing failures)
+  - [ ] Recommendations provided for system improvements based on monitoring data
+  - [ ] All verification methods tested with real command executions on Lean tasks
+- **Impact**: Provides visibility and confidence that the Lean tool integration is working correctly, enables early detection of routing or configuration issues, and identifies opportunities to improve the system's effectiveness with Lean-specific research and implementation workflows.
+
+### 206. Update /review command to create summaries in new project directories
+- **Effort**: TBD
+- **Status**: [RESEARCHING]
+- **Started**: 2025-12-28
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/review.md
+  - .opencode/agent/subagents/reviewer.md
+- **Description**: When /review is run, it should create a summary artifact in a new project directory following the artifact-management.md structure. The command should create a project root (NNN_project_name) lazily only when writing the first artifact, create only the summaries/ subdirectory (not reports/ or plans/), and write a review summary (summaries/review-summary.md) containing the review findings. The return to the user should be just a brief summary (3-5 sentences) and a link to the summary artifact, protecting the primary agent's context window from verbose output.
+- **Acceptance Criteria**:
+  - [ ] /review command creates project directory (NNN_project_name) lazily when writing summary
+  - [ ] Only summaries/ subdirectory is created (not reports/ or plans/)
+  - [ ] Review summary artifact written to summaries/review-summary.md
+  - [ ] Review summary follows summary.md standard (3-5 sentences, <100 tokens)
+  - [ ] Command returns only brief summary and artifact path (not full content)
+  - [ ] TODO.md updated with review artifact reference
+  - [ ] state.json updated with review activity
+  - [ ] Lazy directory creation followed (no pre-creation of unused subdirs)
+  - [ ] No emojis in output or artifacts
+  - [ ] Documentation updated to explain /review artifact creation
+- **Impact**: Provides persistent review summaries in standardized project directories, enabling historical tracking of repository reviews and protecting the orchestrator context window from verbose review output.
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
