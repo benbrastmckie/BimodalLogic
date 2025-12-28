@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T13:13:51Z",
+  "_last_updated": "2025-12-28T21:13:42Z",
   "next_project_number": 218,
   "project_numbering": {
     "min": 0,
@@ -222,6 +222,24 @@
         ".opencode/specs/214_orchestrator_improvements/plans/implementation-001.md",
         ".opencode/specs/214_orchestrator_improvements/plans/implementation-002.md"
       ]
+    },
+    {
+      "project_number": 215,
+      "project_name": "fix_todo_task_removal",
+      "type": "bugfix",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2025-12-28T12:36:52Z",
+      "started": "2025-12-28",
+      "research_completed": "2025-12-28",
+      "last_updated": "2025-12-28",
+      "artifacts": [
+        ".opencode/specs/215_fix_todo_task_removal/reports/research-001.md",
+        ".opencode/specs/215_fix_todo_task_removal/summaries/research-summary.md"
+      ],
+      "estimated_hours": 2.5
     }
   ],
   "completed_projects": [
@@ -311,6 +329,10 @@
     "review_artifacts": []
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T21:13:42Z",
+      "activity": "Marked task 215 as RESEARCHED: /todo command task removal bug research completed (2-3 hours estimated). Root cause confirmed: Stage 4 PrepareUpdates lacks block structure definition. Specification enhancement approach recommended (minimal disruption, comprehensive testing)."
+    },
     {
       "timestamp": "2025-12-28T21:01:50Z",
       "activity": "Marked task 216 as RESEARCHED: Task tracking file update procedures research completed (10-12 hours estimated). Identified 7 critical gaps, status-sync-manager underutilized (~40% coverage), recommended hybrid architecture with +205 lines enhancement."
