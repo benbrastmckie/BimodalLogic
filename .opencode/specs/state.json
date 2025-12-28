@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T09:55:00Z",
+  "_last_updated": "2025-12-28T23:00:00Z",
   "next_project_number": 211,
   "project_numbering": {
     "min": 0,
@@ -76,6 +76,23 @@
       "plan_path": ".opencode/specs/209_research_lean4_involution_techniques/plans/implementation-001.md",
       "estimated_hours": 0.5,
       "phases": 1
+    },
+    {
+      "project_number": 210,
+      "project_name": "fix_lean_subagents",
+      "type": "bugfix",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2025-12-28T22:50:00Z",
+      "started": "2025-12-28",
+      "research_completed": "2025-12-28",
+      "last_updated": "2025-12-28",
+      "artifacts": [
+        ".opencode/specs/210_fix_lean_subagents/reports/research-001.md",
+        ".opencode/specs/210_fix_lean_subagents/summaries/research-summary.md"
+      ]
     }
   ],
   "completed_projects": [
@@ -151,6 +168,10 @@
     "review_artifacts": []
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T23:00:00Z",
+      "activity": "Expanded task 210 scope: Fix both Lean subagents (lean-research-agent and lean-implementation-agent) to follow artifact-management.md, status-markers.md, and state-schema.md (TBD effort, Medium priority)"
+    },
     {
       "timestamp": "2025-12-28T22:50:00Z",
       "activity": "Created task 210: Fix lean-research-agent TODO.md update to follow status-markers.md format (TBD effort, Medium priority)"

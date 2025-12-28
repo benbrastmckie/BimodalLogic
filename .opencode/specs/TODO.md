@@ -388,7 +388,7 @@
 
 ### 205. Implement Lean tool usage verification and monitoring system
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -825,7 +825,8 @@
   - [ ] Documentation updated to explain --divide flag behavior
 - **Impact**: Provides more flexible research workflow - simple research creates focused reports without overhead of summary compilation, while complex research can be divided into manageable subtopics with a summary overview.
 
-### 210. Fix lean-research-agent TODO.md update to follow status-markers.md format
+
+### 210. Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
@@ -834,16 +835,26 @@
 - **Dependencies**: None
 - **Files Affected**:
   - .opencode/agent/subagents/lean-research-agent.md
-- **Description**: The lean-research-agent correctly completes research and creates artifacts, but when updating TODO.md, it uses an incorrect artifact link format that doesn't match status-markers.md specification. Current format used: `**Research**: [Research Report](relative/path)` and `**Summary**: [Research Summary](relative/path)`. Correct format per status-markers.md and other tasks: `**Research Artifacts**:` section with indented `Main Report: [.opencode/specs/full/path]` and `Summary: [.opencode/specs/full/path]` subsections. This causes inconsistency in TODO.md artifact references. Investigation needed: (1) Locate where lean-research-agent updates TODO.md with artifact links, (2) Update to use correct format: Research Artifacts section with Main Report and Summary subsections, (3) Use absolute paths starting with .opencode/specs/ not relative paths, (4) Use bare paths [path] not named links [Name](path), (5) Ensure format matches all other research tasks in TODO.md, (6) Test with a Lean research task to verify correct format, (7) Document the correct format in lean-research-agent.md if not already present.
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/context/common/system/artifact-management.md (reference)
+  - .opencode/context/common/system/status-markers.md (reference)
+  - .opencode/context/common/system/state-schema.md (reference)
+- **Description**: Both lean-research-agent and lean-implementation-agent need comprehensive fixes to ensure they follow all three key specifications: artifact-management.md (artifact storage and lazy directory creation), status-markers.md (status updates and artifact link formatting), and state-schema.md (state.json updates). Current issues: (1) lean-research-agent uses incorrect artifact link format in TODO.md (`**Research**: [Research Report](relative/path)` instead of `**Research Artifacts**:` section with `Main Report: [.opencode/specs/full/path]` format), (2) Both agents may not follow lazy directory creation (create project root and subdirs only when writing artifacts, not pre-create), (3) Both agents may not create required summary artifacts (<100 tokens, 3-5 sentences) per artifact-management.md, (4) Both agents may not update status correctly per status-markers.md workflows ([RESEARCHING] → [RESEARCHED] for research, [IMPLEMENTING] → [COMPLETED]/[PARTIAL]/[BLOCKED] for implementation), (5) Both agents may not update state.json correctly per state-schema.md (active_projects, artifacts arrays, timestamps). Investigation needed: Review both agent specs, identify all deviations from the three specifications, create comprehensive fixes ensuring full compliance with artifact storage, status updates, and state tracking.
 - **Acceptance Criteria**:
-  - [ ] lean-research-agent TODO.md update logic identified and reviewed
-  - [ ] Format changed to use **Research Artifacts**: section (not **Research**:)
-  - [ ] Format uses indented Main Report: and Summary: subsections
-  - [ ] Paths are absolute starting with .opencode/specs/ (not relative)
-  - [ ] Links are bare [path] format (not [Name](path) format)
-  - [ ] Format matches status-markers.md specification exactly
-  - [ ] Format matches other research tasks in TODO.md (192, 193, 183, etc.)
-  - [ ] Test with Lean research task confirms correct format applied
-  - [ ] No regression in other lean-research-agent functionality
-  - [ ] Documentation updated if format requirements not clearly documented
-- **Impact**: Ensures consistent artifact link formatting across all tasks in TODO.md regardless of which agent performs the research, improving maintainability and clarity of the TODO.md file per status-markers.md standard.
+  - [ ] lean-research-agent artifact link format fixed to use **Research Artifacts**: section with Main Report/Summary subsections
+  - [ ] lean-research-agent uses absolute paths starting with .opencode/specs/ (not relative)
+  - [ ] lean-research-agent uses bare [path] format (not [Name](path) format)
+  - [ ] lean-research-agent follows lazy directory creation (create project root and reports/ only when writing first artifact)
+  - [ ] lean-research-agent creates research-summary.md (3-5 sentences, <100 tokens) per artifact-management.md
+  - [ ] lean-research-agent updates status correctly ([NOT STARTED] → [RESEARCHING] → [RESEARCHED] with timestamps)
+  - [ ] lean-research-agent updates state.json correctly (active_projects with artifacts array, timestamps per state-schema.md)
+  - [ ] lean-implementation-agent follows lazy directory creation (create project root and subdirs only when writing artifacts)
+  - [ ] lean-implementation-agent creates implementation-summary-YYYYMMDD.md (3-5 sentences, <100 tokens) when writing artifacts
+  - [ ] lean-implementation-agent updates status correctly ([NOT STARTED]/[PLANNED] → [IMPLEMENTING] → [COMPLETED]/[PARTIAL]/[BLOCKED] with timestamps)
+  - [ ] lean-implementation-agent updates TODO.md with implementation artifacts using correct format (if it creates artifacts)
+  - [ ] lean-implementation-agent updates state.json correctly (active_projects with artifacts array, modified_files, timestamps)
+  - [ ] Both agents tested with real Lean tasks to verify compliance
+  - [ ] All three specifications (artifact-management.md, status-markers.md, state-schema.md) fully followed
+  - [ ] No regression in other functionality
+  - [ ] Documentation updated if requirements not clearly documented in agent specs
+- **Impact**: Ensures both Lean-specific agents follow all project standards for artifact storage, status tracking, and state management, providing consistency with general-purpose agents and enabling reliable project tracking, lazy directory creation, context window protection (via summaries), and proper state synchronization across TODO.md and state.json.
