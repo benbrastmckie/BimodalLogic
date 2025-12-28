@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T09:36:14Z",
-  "next_project_number": 208,
+  "_last_updated": "2025-12-28T20:30:00Z",
+  "next_project_number": 210,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -69,6 +69,19 @@
       "started": "2025-12-28",
       "research_completed": "2025-12-28",
       "last_updated": "2025-12-28"
+    },
+    {
+      "project_number": 208,
+      "project_name": "fix_lean_routing",
+      "type": "bugfix",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2025-12-28T09:41:02Z",
+      "started": "2025-12-28",
+      "research_completed": "2025-12-28",
+      "last_updated": "2025-12-28"
     }
   ],
   "completed_projects": [
@@ -122,6 +135,18 @@
     }
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T20:30:00Z",
+      "activity": "Marked task 208 as RESEARCHED: Lean routing bug research completed - Root cause: Claude skips routing stages, fix requires prompt strengthening (2-3 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-28T20:15:00Z",
+      "activity": "Created task 209: Research Lean 4 techniques for completing task 193 involution proof (TBD effort, High priority)"
+    },
+    {
+      "timestamp": "2025-12-28T09:41:02Z",
+      "activity": "Created task 208: Fix /implement and /research routing to use Lean-specific agents and tools (4-6 hours, High priority)"
+    },
     {
       "timestamp": "2025-12-28T09:36:14Z",
       "activity": "Marked task 173 as PLANNED: Integration test suite plan created (3 hours, 2 phases) - 83% complete, 146 tests created with 82% coverage"

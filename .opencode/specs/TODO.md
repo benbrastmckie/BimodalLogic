@@ -322,13 +322,67 @@
   - [ ] Documentation explains --complex flag behavior and use cases
 - **Impact**: Enables comprehensive research on complex topics by dividing them into manageable subtopics while protecting the primary agent's context window through summarization. Provides flexibility - simple topics get focused single reports, complex topics get thorough multi-report coverage with summary overview.
 
+### 209. Research Lean 4 techniques for completing task 193 involution proof
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Logos/Core/Semantics/Truth.lean (theorem is_valid_swap_involution)
+- **Description**: Conduct focused research into Lean 4 type theory techniques and proof patterns for completing the is_valid_swap_involution theorem proof in task 193. The theorem is 85% complete with a fully proven helper lemma (truth_at_swap_swap with structural induction across all 6 cases), but the final step of bridging from hypothesis `truth_at ... φ.swap` to goal `truth_at ... φ` using the helper and involution property `φ.swap.swap = φ` has proven more challenging than anticipated. The core issue: truth_at is pattern-matched (structurally recursive), preventing direct formula substitution via propositional equality. Multiple standard approaches failed (direct rewrite, convert/cast, calc-style, intermediate helpers). Research should investigate: (1) Advanced Lean 4 tactics for equality transport with recursive definitions, (2) Alternative proof strategies that avoid involution composition, (3) Consultation resources (Zulip, Lean community, examples from mathlib), (4) Possible reformulation of theorem statement, (5) Similar proofs in mathlib or other Lean 4 projects that handle involutions with pattern-matched definitions.
+- **Acceptance Criteria**:
+  - [ ] Research identifies viable proof strategy for completing is_valid_swap_involution
+  - [ ] Strategy addresses the pattern-matching + propositional equality transport challenge
+  - [ ] Research includes concrete Lean 4 code examples or tactic sequences
+  - [ ] Alternative approaches explored if primary strategy infeasible
+  - [ ] Consultation with Lean community conducted if needed (Zulip, forums)
+  - [ ] Estimated implementation time provided for identified solution
+  - [ ] Research documented in standard research report format
+  - [ ] Findings enable task 193 to proceed to completion
+- **Impact**: Unblocks task 193 completion by identifying the correct Lean 4 proof technique for this challenging type theory problem. Essential for removing the sorry from is_valid_swap_involution theorem and completing the Truth.lean module.
+
+### 208. Fix /implement and /research routing to use Lean-specific agents and tools
+- **Effort**: 2-3 hours (revised from 4-6 hours after research)
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/208_fix_lean_routing/reports/research-001.md]
+  - Summary: [.opencode/specs/208_fix_lean_routing/summaries/research-summary.md]
+- **Files Affected**:
+  - .opencode/command/implement.md
+  - .opencode/command/research.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/orchestrator.md
+- **Description**: CRITICAL ROUTING BUG: When running /implement on Lean-specific tasks (e.g., task 193 with Language: lean), the implementation is NOT being executed by the lean-implementation-agent subagent, and lean-lsp-mcp tools are NOT being used. Similarly, /research on Lean tasks is not properly routing to lean-research-agent with Loogle integration. This is a fundamental routing failure in the orchestrator that bypasses all Lean-specific tooling. Investigation needed to: (1) Identify where routing decisions are made in /implement and /research commands, (2) Determine why Language: lean field is not triggering Lean-specific agent routing, (3) Fix routing logic to ensure Lean tasks always route to lean-implementation-agent and lean-research-agent, (4) Verify Loogle and lean-lsp-mcp are actually invoked when routed correctly, (5) Add logging/verification to confirm correct routing is happening, (6) Test with real Lean tasks (e.g., 193) to confirm fix works.
+- **Research Findings** (2025-12-28): Root cause identified: OpenCode is a Claude-based AI agent system where .md files are prompts, not executable code. Routing logic exists as documentation in research.md (Stage 2), implement.md (Stage 2), and orchestrator.md (Stages 3-4) but is not consistently executed. Claude skips or fails to execute CheckLanguage/DetermineRouting stages, causing Lean tasks to route to general agents instead of lean-specific agents. Lean agents are production-ready (.opencode/agent/subagents/lean-*-agent.md), .mcp.json is correctly configured, tools are available (lean-lsp-mcp via MCP, Loogle CLI integrated). Fix requires strengthening prompt instructions with explicit validation, mandatory logging, early-exit enforcement, and validation checkpoints. Implementation estimated 2-3 hours with low-medium risk.
+- **Acceptance Criteria**:
+  - [x] Root cause identified for why Lean tasks don't route to Lean-specific agents
+  - [ ] /implement command routing logic fixed to route Language: lean tasks to lean-implementation-agent
+  - [ ] /research command routing logic fixed to route Language: lean tasks to lean-research-agent
+  - [x] lean-implementation-agent confirmed to use lean-lsp-mcp when invoked (verified in agent spec)
+  - [x] lean-research-agent confirmed to use Loogle when invoked (verified in agent spec)
+  - [ ] Orchestrator Stage 2 (CheckLanguage) and Stage 4 (PrepareRouting) verified working correctly
+  - [ ] Logging added to confirm agent routing decisions
+  - [ ] Test with task 193 confirms lean-implementation-agent is invoked
+  - [ ] Test with Lean research task confirms lean-research-agent is invoked
+  - [ ] Documentation updated with routing verification procedures
+- **Impact**: CRITICAL FIX - Enables Lean-specific tools (lean-lsp-mcp, Loogle) to actually be used when implementing and researching Lean tasks. Without this fix, all Lean work bypasses specialized tooling and uses generic agents, defeating the purpose of the Lean tool integration.
+
 ### 205. Implement Lean tool usage verification and monitoring system
 - **Effort**: 6-8 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
-- **Dependencies**: None
+- **Dependencies**: 208
 - **Files Affected**:
   - .opencode/command/research.md
   - .opencode/command/implement.md
