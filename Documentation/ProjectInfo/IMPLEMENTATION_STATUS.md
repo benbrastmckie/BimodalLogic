@@ -1,6 +1,6 @@
 # Implementation Status - Logos MVP
 
-**Last Updated**: 2025-12-25
+**Last Updated**: 2025-12-28
 **Project Version**: 0.1.0-mvp
 **Status**: Layer 0 (Core TM) MVP Complete - ALL 6 PERPETUITY PRINCIPLES PROVEN (P1-P6) - Phase 4 Modal Theorems COMPLETE (8/8 proven) - DEDUCTION THEOREM COMPLETE (Task 46) - PROPERTY-BASED TESTING FRAMEWORK COMPLETE (Task 174) [COMPLETE]
 
@@ -9,7 +9,12 @@
 - Repository Health: 94/100 (5/5 stars)
 - Status: PRODUCTION-READY for Layer 0
 
-## Latest Changes (2025-12-25)
+## Latest Changes (2025-12-28)
+- **Codebase review completed**: Updated SORRY_REGISTRY.md with accurate counts (10 sorry, 11 axioms)
+- **Build status**: 3 active build errors in GeneralizedNecessitation.lean (2 errors, task 192) and Truth.lean (1 error, task 193/194)
+- **Technical debt**: All tracked in TODO.md with clear resolution paths
+
+## Previous Changes (2025-12-25)
 - **Task 174 completed**: Property-based testing framework fully integrated with Plausible. All 7 phases complete:
   - TaskModel generator implemented with proxy pattern for dependent types
   - All 14 axiom schemas tested for validity (500 test cases for critical properties)

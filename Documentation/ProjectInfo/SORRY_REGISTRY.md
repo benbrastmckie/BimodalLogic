@@ -1,8 +1,8 @@
 # Sorry Placeholder Registry
 
-**Last Updated**: 2025-12-23
-**Total Active Placeholders**: 5 (1 ModalS5 documented invalid, 1 Completeness, 3 ProofSearch documentation)
-**Total Axiom Declarations**: 24 (5 Perpetuity, 11 Completeness, 8 ProofSearch)
+**Last Updated**: 2025-12-28
+**Total Active Placeholders**: 10 (1 ModalS5 documented invalid, 1 Completeness, 3 ProofSearch automation, 5 documentation comments)
+**Total Axiom Declarations**: 11 (all in Completeness.lean for canonical model construction)
 **Total Resolved**: 60 (Plan 059 Phase 1: 6 De Morgan laws, Plan 060: diamond_disj_iff + s4_diamond_box_conj + s5_diamond_conj_diamond + k_dist_diamond + biconditional infrastructure, Task 46: 3 DeductionTheorem cases)
 
 This document tracks `sorry` placeholders (unproven theorems) and `axiom` declarations (unproven lemmas) in the Logos codebase. It provides resolution context, effort estimates, and cross-references to related tasks.
@@ -75,7 +75,7 @@ Run these commands to verify placeholder counts against this registry:
 
 ## Active Placeholders
 
-### Logos/Core/Theorems/Perpetuity.lean (0 sorry, 5 axioms)
+### Logos/Core/Theorems/Perpetuity.lean (0 sorry, 0 axioms)
 
 **ALL 6 PERPETUITY PRINCIPLES FULLY PROVEN** (P1-P6) - Zero sorry in proof code.
 
@@ -103,33 +103,7 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 φ) (persisten
 
 **Active Sorry Placeholders**: None (0)
 
-**Active Axiom Declarations** (5 total at lines 523, 1233, 1504, 1570, 1670):
-
-- **Perpetuity.lean:523** - `dni` (`⊢ A → ¬¬A`)
-  - **Context**: Double negation introduction for classical logic
-  - **Justification**: Valid in classical two-valued semantics
-  - **Derivation**: Requires excluded middle or C combinator (~50+ lines)
-  - **Status**: Axiomatized (classical logic axiom, semantically justified)
-
-- **Perpetuity.lean:1233** - `future_k_dist` (DEPRECATED - now derived theorem)
-  - **Context**: Future K distribution (`⊢ G(A → B) → (GA → GB)`)
-  - **Status**: **RESOLVED** (Task 42a) - Now derived as theorem in Principles.lean using deduction theorem
-  - **Note**: This axiom declaration remains in Perpetuity.lean for backward compatibility but is no longer needed
-
-- **Perpetuity.lean:1504** - `always_dni` (`⊢ △φ → △¬¬φ`)
-  - **Context**: Helper for P6 derivation
-  - **Justification**: Double negation in temporal context
-  - **Status**: Axiomatized (P6 support)
-
-- **Perpetuity.lean:1570** - `always_dne` (`⊢ △¬¬φ → △φ`)
-  - **Context**: Helper for P6 derivation
-  - **Justification**: Double negation elimination in temporal context
-  - **Status**: Axiomatized (P6 support)
-
-- **Perpetuity.lean:1670** - `always_mono` (`⊢ (A → B) → (△A → △B)`)
-  - **Context**: Always monotonicity for P6 bridge lemmas
-  - **Justification**: Standard modal monotonicity principle
-  - **Status**: Axiomatized (derivable but complex, semantically justified)
+**Active Axiom Declarations**: None (0) - All axioms have been removed or converted to theorems
 
 ### Logos/Core/Theorems/ModalS5.lean (1 placeholder - documented invalid theorem)
 
@@ -158,11 +132,54 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 φ) (persisten
 - **s4_diamond_box_conj**: `⊢ (◇A ∧ □B) → ◇(A ∧ □B)` [COMPLETE] (resolved 2025-12-09 using k_dist_diamond + modal_4)
 - **s5_diamond_conj_diamond**: `⊢ ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)` [COMPLETE] (resolved 2025-12-09 using k_dist_diamond + modal_5)
 
-### Logos/Core/Metalogic/Completeness.lean (1 placeholder)
+### Logos/Core/Metalogic/Completeness.lean (1 sorry, 11 axioms)
 
-- `provable_iff_valid` (pending tasks 132–135)
+**Active Sorry Placeholders** (1 total):
+- **Completeness.lean:369** - `provable_iff_valid` theorem
+  - **Context**: Main completeness theorem proving equivalence between provability and validity
+  - **Dependencies**: Requires Lindenbaum lemma, canonical model construction, and truth lemma (tasks 132-135)
+  - **Status**: Pending systematic resolution via tasks 132-135
+  - **Estimate**: 11 hours total (tasks 132-135)
 
-### ProofSearch documentation placeholders (3)
+**Active Axiom Declarations** (11 total):
+1. **Line 117**: `lindenbaum` - Maximal consistent extension lemma (task 132)
+2. **Line 141**: `maximal_consistent_closed` - Maximal consistency closure property
+3. **Line 155**: `maximal_negation_complete` - Negation completeness for maximal sets
+4. **Line 200**: `canonical_task_rel` - Canonical task relation
+5. **Line 211**: `canonical_frame` - Canonical frame construction
+6. **Line 236**: `canonical_valuation` - Canonical valuation function
+7. **Line 243**: `canonical_model` - Canonical model construction (task 133)
+8. **Line 264**: `canonical_history` - Canonical world history
+9. **Line 298**: `truth_lemma` - Truth lemma for canonical model (task 134)
+10. **Line 327**: `weak_completeness` - Weak completeness theorem
+11. **Line 347**: `strong_completeness` - Strong completeness theorem
 
-- Documentation stubs pending consolidation (no Lean code impact); tracked under ProofSearch doc tasks.
+### Logos/Core/Automation/ProofSearch.lean (3 sorry placeholders)
+
+**Active Sorry Placeholders** (3 total):
+- **ProofSearch.lean:448** - Test case 1: `bounded_search [] _ 1` example
+  - **Context**: Documentation placeholder showing bounded search usage
+  - **Status**: Documentation only, not blocking functionality
+  
+- **ProofSearch.lean:453** - Test case 2: `bounded_search [] q 2` example
+  - **Context**: Documentation placeholder showing bounded search usage
+  - **Status**: Documentation only, not blocking functionality
+  
+- **ProofSearch.lean:458** - Test case 3: `bounded_search [p.box] p.box 3` example
+  - **Context**: Documentation placeholder showing bounded search usage with modal formulas
+  - **Status**: Documentation only, not blocking functionality
+
+### Documentation comment placeholders (5)
+
+**Logos/Core/Metalogic/Completeness.lean**:
+- **Lines 217-218**: Documentation comments with sorry markers explaining required proofs for nullity and compositionality properties
+  - **Status**: Comments only, not actual code placeholders
+
+**Logos/Core/Theorems/ModalS5.lean**:
+- **Line 93**: Documentation comment explaining diamond_mono_imp sorry
+  - **Status**: Comment documenting intentional sorry for invalid theorem
+
+**Logos/Core/Theorems/Propositional.lean**:
+- **Lines 30, 497**: Documentation comments mentioning "sorry" in context descriptions
+  - **Status**: Comments only, not code placeholders
 

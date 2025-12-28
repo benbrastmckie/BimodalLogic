@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T00:48:31Z",
-  "next_project_number": 205,
+  "_last_updated": "2025-12-28T08:52:51Z",
+  "next_project_number": 206,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -107,7 +107,7 @@
     }
   ],
   "repository_health": {
-    "last_assessed": "2025-12-28T00:48:31Z",
+    "last_assessed": "2025-12-28T16:30:00Z",
     "overall_score": 90,
     "active_tasks": 26,
     "completed_tasks": 27,
@@ -119,13 +119,22 @@
     "low_priority_tasks": 11,
     "production_readiness": "excellent",
     "technical_debt": {
-      "sorry_count": 5,
-      "build_errors": 4,
+      "sorry_count": 10,
+      "axiom_count": 11,
+      "build_errors": 3,
       "status": "well-documented",
-      "_comment": "Technical debt tracked in task system. Build errors being addressed in tasks 192-193."
+      "_comment": "Technical debt tracked in task system. 10 sorry (1 invalid theorem, 1 completeness, 3 proof search docs, 5 doc comments), 11 axioms (all completeness). Build errors: 2 in GeneralizedNecessitation.lean (task 192), 1 in Truth.lean (tasks 193-194)."
     }
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T16:30:00Z",
+      "activity": "Completed codebase review: Updated SORRY_REGISTRY.md and IMPLEMENTATION_STATUS.md with accurate counts (10 sorry, 11 axioms, 3 build errors)"
+    },
+    {
+      "timestamp": "2025-12-28T08:52:51Z",
+      "activity": "Created task 205: Implement Lean tool usage verification and monitoring system (6-8 hours, Medium priority)"
+    },
     {
       "timestamp": "2025-12-28T00:48:31Z",
       "activity": "Archived task 201: todo_archival_feature (status: completed)"
