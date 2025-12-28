@@ -259,8 +259,8 @@
 - **Impact**: Protects primary agent context window from bloat, improves scalability for commands that create large artifacts, and ensures consistent artifact management across all commands per subagent-return-format.md standard.
 
 ### 212. Research and improve lean-lsp-mcp usage in Lean implementation agent
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 14 hours
+- **Status**: [PLANNED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
 - **Priority**: High
@@ -270,6 +270,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/212_research_lean_lsp_mcp_usage/reports/research-001.md]
   - Summary: [.opencode/specs/212_research_lean_lsp_mcp_usage/summaries/research-summary.md]
+- **Plan**: [.opencode/specs/212_research_lean_lsp_mcp_usage/plans/implementation-001.md]
+- **Plan Summary**: 5-phase implementation (14 hours total). Phase 1: Create MCP Client Wrapper (4h) - reusable tool invocation layer with error handling and timeout management. Phase 2: Update Lean Agents (3h) - integrate MCP client into lean-implementation-agent and lean-research-agent workflows. Phase 3: Enhance Documentation (2.5h) - create context files for lean-lsp-mcp usage patterns and best practices. Phase 4: Integration Tests (3h) - verify tool usage on real Lean tasks. Phase 5: Validation and Refinement (1.5h) - ensure no bloat/redundancy, improve organization. Integrates research findings on lean-lsp-mcp usage gaps and MCP client infrastructure requirements.
 - **Files Affected**:
   - .opencode/agent/subagents/lean-implementation-agent.md
   - .opencode/agent/subagents/lean-research-agent.md
@@ -291,13 +293,16 @@
 
 ### 213. Comprehensive expert consultation for blocked involution proof in Truth.lean
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-28
 - **Researched**: 2025-12-28
+- **Planned**: 2025-12-28
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: 184, 193, 209
+- **Plan**: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-001.md]
+- **Plan Summary**: 5-phase implementation (6 hours total). Phase 1: Remove unprovable is_valid_swap_involution theorem (0.5h). Phase 2: Add derivable_valid_swap_involution theorem restricted to derivable formulas (2h). Phase 3: Update temporal_duality usage site (1.5h). Phase 4: Build verification (1h). Phase 5: Documentation updates (1h). Integrates research finding that original theorem is semantically false for arbitrary formulas - reformulation adds derivability precondition making theorem provable via temporal_duality rule.
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md]
   - Summary: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md]
@@ -322,29 +327,60 @@
 
 ### 214. Address FIX in orchestrator.md, apply XML styling, and research default agent configuration
 - **Effort**: 4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/214_orchestrator_improvements/reports/research-001.md]
+  - Summary: [.opencode/specs/214_orchestrator_improvements/summaries/research-summary.md]
 - **Files Affected**:
   - .opencode/agent/orchestrator.md
   - .opencode/agent/subagents/error-diagnostics-agent.md (reference for XML styling)
 - **Description**: Complete three related improvements to orchestrator.md: (1) Address the FIX comment on line 14 by removing historical comparisons and rewriting the "Key Improvements Over v1" and "Problems Solved" sections to describe current system capabilities without referencing past versions, (2) Revise the entire orchestrator.md file to use similar XML styling as error-diagnostics-agent.md for consistency across agent specifications (using <context>, <role>, <task>, <process_flow>, <step_N> tags), (3) Research whether renaming orchestrator.md to AGENTS.md (per https://opencode.ai/docs/rules/) would make OpenCode start in orchestrator mode by default instead of the default build agent, enabling the orchestrator to be active on startup without manual switching.
+- **Research Findings** (2025-12-28): FIX comment on line 14 requests rewriting historical sections ("Key Improvements Over v1", "Problems Solved") to describe current capabilities directly. All subagents use consistent XML tags (<context>, <role>, <task>, <process_flow>, <constraints>, <output_specification>, <validation_checks>, <principles>) that map cleanly to orchestrator structure. CRITICAL: AGENTS.md is for custom instructions/rules, NOT agent definitions - renaming orchestrator.md to AGENTS.md would break the orchestrator. XML styling is backward compatible. Total implementation estimate: 2 hours 15 minutes (30 min rewrite + 1.5 hours XML styling + 15 min documentation).
 - **Acceptance Criteria**:
+  - [x] Research completed on OpenCode rules from https://opencode.ai/docs/rules/
+  - [x] Documentation created explaining whether AGENTS.md naming enables default orchestrator mode
+  - [x] AGENTS.md approach researched - does NOT work (AGENTS.md is for custom instructions, not agent definitions)
+  - [x] Alternative methods documented for setting default agent
   - [ ] FIX comment on line 14 addressed - removed historical comparisons to v1
   - [ ] "Key Improvements Over v1" section rewritten as "Core Capabilities" describing current features
   - [ ] "Problems Solved (Task 191)" section rewritten as "Delegation Safety Features" describing current safeguards
   - [ ] No mentions of "v1", "improvements over", or historical comparisons throughout file
   - [ ] Entire orchestrator.md restructured with XML styling matching error-diagnostics-agent.md pattern
   - [ ] XML tags used: <context>, <role>, <task>, <process_flow>, <step_N>, <validation>, <output>
-  - [ ] Research completed on OpenCode rules from https://opencode.ai/docs/rules/
-  - [ ] Documentation created explaining whether AGENTS.md naming enables default orchestrator mode
-  - [ ] If AGENTS.md approach works: Recommendation provided on whether to rename
-  - [ ] If AGENTS.md approach doesn't work: Alternative methods documented for setting default agent
   - [ ] All changes maintain backward compatibility with existing command workflows
   - [ ] orchestrator.md remains fully functional after XML styling conversion
 - **Impact**: Improves orchestrator.md clarity by removing confusing historical references, establishes consistent XML styling across all agent specifications for better maintainability, and enables orchestrator to be the default agent on OpenCode startup so the system routes tasks correctly without manual agent switching.
+
+
+### 215. Fix /todo command to remove both heading and body for completed/abandoned tasks
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/todo.md
+- **Description**: When /todo was run, it removed only the headings for completed tasks (e.g., "### 192. Fix..." lines) without removing the body of the task (all the metadata lines like Status, Priority, Description, Acceptance Criteria, etc. that follow the heading). This leaves orphaned task bodies in TODO.md (see lines 437-505 as example). Root cause analysis needed: The /todo command's task removal logic in Stage 4 ("PrepareUpdates") currently identifies and removes only the task heading line but does not identify the complete task block structure. A TODO.md task consists of: (1) Heading line: ### NNN. Task title, (2) Body lines (indented with -): Status, dates, priority, dependencies, artifacts, description, acceptance criteria, impact, etc., continuing until the next task heading or section marker. The command must be fixed to: (1) Identify the complete task block (heading + all body lines until next heading/section), (2) Remove the entire block atomically for each completed/abandoned task, (3) Preserve all other content and task numbering. Investigation should confirm this root cause by examining the Stage 4 implementation and then implement a fix that correctly identifies task block boundaries (from heading to next heading or section marker) and removes the complete block.
+- **Acceptance Criteria**:
+  - [ ] Root cause confirmed: Stage 4 removes only heading line, not complete task block
+  - [ ] Fix implemented: Task removal logic identifies complete task blocks (heading + body lines)
+  - [ ] Task block boundaries correctly identified (from ### heading to next ### or ## marker)
+  - [ ] Complete task blocks removed for [COMPLETED] and [ABANDONED] tasks
+  - [ ] All other tasks preserved with full structure (heading + body)
+  - [ ] Task numbering preserved (no renumbering)
+  - [ ] No orphaned task body lines remain after archival
+  - [ ] Atomic updates maintained (two-phase commit)
+  - [ ] Git commit creation works correctly
+  - [ ] Manual testing: Run /todo on TODO.md with completed tasks, verify complete removal
+  - [ ] No regression in other /todo functionality (archival, state updates, directory moves)
+- **Impact**: CRITICAL - Fixes broken /todo archival that currently leaves orphaned task metadata scattered throughout TODO.md, making the file unreadable and breaking the task structure. Ensures complete and clean task removal during archival operations.
 
 ### 203. Add --complex flag to /research for subtopic subdivision with summary
 - **Effort**: TBD
@@ -433,76 +469,6 @@
   - [ ] Recommendations provided for system improvements based on monitoring data
   - [ ] All verification methods tested with real command executions on Lean tasks
  **Impact**: Provides visibility and confidence that the Lean tool integration is working correctly, enables early detection of routing or configuration issues, and identifies opportunities to improve the system's effectiveness with Lean-specific research and implementation workflows.
-
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-28
-- **Completed**: 2025-12-28
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/206_update_review_command_summaries/reports/research-001.md]
-  - Summary: [.opencode/specs/206_update_review_command_summaries/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/206_update_review_command_summaries/plans/implementation-001.md]
-- **Plan Summary**: 4-phase implementation plan (4.5 hours total). Phase 1: Create reviewer.md subagent specification (1.5h). Phase 2: Update review.md command workflow with lazy directory creation and standardized returns (1.5h). Phase 3: Add review_artifacts tracking to state.json (0.5h). Phase 4: Testing and documentation (1h). Integrates research findings on missing reviewer agent and context window protection.
-- **Implementation Summary**: [.opencode/specs/206_update_review_command_summaries/summaries/implementation-summary-20251228.md]
-- **Files Affected**:
-  - .opencode/command/review.md (updated, 8 stages modified)
-  - .opencode/agent/subagents/reviewer.md (created, 354 lines)
-  - .opencode/specs/state.json (updated, added review_artifacts array, schema v1.1.0)
-  - .opencode/context/common/system/state-schema.md (updated, documented review_artifacts)
-- **Description**: When /review is run, it should create a summary artifact in a new project directory following the artifact-management.md structure. The command should create a project root (NNN_project_name) lazily only when writing the first artifact, create only the summaries/ subdirectory (not reports/ or plans/), and write a review summary (summaries/review-summary.md) containing the review findings. The return to the user should be just a brief summary (3-5 sentences) and a link to the summary artifact, protecting the primary agent's context window from verbose output.
-- **Research Findings** (2025-12-28): Current /review command lacks artifact management and documented reviewer agent. Implementation requires: (1) Create reviewer.md subagent specification from scratch, (2) Add lazy project directory creation (NNN_codebase_review format), (3) Generate review summaries in summaries/ only, (4) Standardize return format per subagent-return-format.md. Estimated 4-5 hours: 1.5h reviewer spec, 1.5h command updates, 0.5h state schema, 1h testing/docs.
-- **Implementation Status** (2025-12-28): COMPLETED. All 4 phases implemented successfully. Created reviewer.md subagent (354 lines) with comprehensive codebase analysis process, lazy directory creation, and standardized return format. Updated /review command (8 stages modified) to generate project directories, pass project_path to reviewer, extract review summary artifacts, and protect context window with brief returns. Updated state.json schema to v1.1.0 with review_artifacts tracking. All acceptance criteria met.
-- **Acceptance Criteria**:
-  - [x] /review command creates project directory (NNN_project_name) lazily when writing summary
-  - [x] Only summaries/ subdirectory is created (not reports/ or plans/)
-  - [x] Review summary artifact written to summaries/review-summary.md
-  - [x] Review summary follows summary.md standard (3-5 sentences, <100 tokens)
-  - [x] Command returns only brief summary and artifact path (not full content)
-  - [x] state.json updated with review activity (review_artifacts array)
-  - [x] Lazy directory creation followed (no pre-creation of unused subdirs)
-  - [x] No emojis in output or artifacts
-  - [x] Documentation updated to explain /review artifact creation (state-schema.md updated)
-- **Impact**: Provides persistent review summaries in standardized project directories, enabling historical tracking of repository reviews and protecting the orchestrator context window from verbose review output.
-
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-28
-- **Completed**: 2025-12-28
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/207_reduce_implement_output_verbosity/reports/research-001.md]
-  - Summary: [.opencode/specs/207_reduce_implement_output_verbosity/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/207_reduce_implement_output_verbosity/plans/implementation-002.md] (revised 2025-12-28)
-- **Plan Summary**: 4-phase implementation (4.5 hours estimated, 3 hours actual). Phase 1: Update /implement Stage 8 to create/reference summary artifacts and return brief <100 token overviews (1.5h). Phase 2: Add summary artifact creation to lean-implementation-agent (1h, parallel). Phase 3: Fix /plan command verbose output - planner returns brief summary without creating summary artifacts since plan is self-documenting (1.5h, parallel). Phase 4: Testing and validation across all scenarios (0.5h). Achieves 90-95% context window reduction.
-- **Previous Plan**: [.opencode/specs/207_reduce_implement_output_verbosity/plans/implementation-001.md] (original)
-- **Implementation Summary**: [.opencode/specs/207_reduce_implement_output_verbosity/summaries/implementation-summary-20251228.md]
-- **Files Affected**:
-  - .opencode/command/implement.md (Stage 8 enhanced with summary artifact logic and brief return format)
-  - .opencode/agent/subagents/lean-implementation-agent.md (Step 5 enhanced to create summaries, Step 6 updated, constraints added)
-  - .opencode/command/plan.md (Stage 8 enhanced with brief return format and rationale)
-  - .opencode/agent/subagents/planner.md (Step 6 updated for brief summaries, constraints added)
-- **Description**: Reduced command output verbosity for /implement and /plan commands by implementing artifact-based summaries and brief return formats. Updated /implement command Stage 8 to create/reference implementation summary artifacts and return brief <100 token overviews. Enhanced lean-implementation-agent to create summary artifacts following the task-executor pattern. Fixed /plan command to return brief summaries without creating unnecessary summary artifacts, as plan files are self-documenting. Achieves 90-95% context window reduction while maintaining full details in persistent artifact files.
-- **Acceptance Criteria**:
-  - [x] /implement command Stage 8 updated with summary artifact logic
-  - [x] /implement returns brief summary + artifact path reference
-  - [x] /implement: 95% context window reduction (700 to 35 tokens)
-  - [x] lean-implementation-agent Step 5 creates summary artifacts
-  - [x] lean-implementation-agent follows artifact-management.md format (3-5 sentences, <100 tokens)
-  - [x] /plan command Stage 8 returns brief summary + plan path reference
-  - [x] Planner does NOT create summary artifacts (plan is self-documenting)
-  - [x] /plan: 90% context window reduction (600 to 60 tokens)
-  - [x] Lazy directory creation followed (summaries/ created only when writing)
-  - [x] Both task-executor and lean-implementation-agent patterns aligned
-  - [x] No emojis in output or artifacts
-  - [x] Return format follows subagent-return-format.md standard
-  - [x] Orchestrator context window protected from verbose output
-  - [x] Implementation summary artifact created
-- **Impact**: Protects orchestrator context window from verbose command output for both /implement and /plan commands, improves scalability for complex operations, establishes "one artifact maximum" pattern for commands, and ensures consistent artifact management across the system per artifact-management.md standard.
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours

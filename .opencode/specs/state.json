@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T22:30:00Z",
-  "next_project_number": 215,
+  "_last_updated": "2025-12-28T12:36:52.095412Z",
+  "next_project_number": 216,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -40,21 +40,6 @@
       "started": "2025-12-25",
       "research_completed": "2025-12-25",
       "last_updated": "2025-12-26"
-    },
-    {
-      "project_number": 202,
-      "project_name": "fix_verbose_artifact_output",
-      "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
-      "priority": "medium",
-      "language": "markdown",
-      "created": "2025-12-27T00:50:00Z",
-      "started": "2025-12-27",
-      "research_completed": "2025-12-27",
-      "planning_completed": "2025-12-27",
-      "plan_path": ".opencode/specs/202_fix_verbose_artifact_output/plans/implementation-001.md",
-      "last_updated": "2025-12-27"
     },
     {
       "project_number": 209,
@@ -151,7 +136,7 @@
         ".opencode/agent/subagents/lean-research-agent.md",
         ".opencode/agent/subagents/implementer.md"
       ],
-      "implementation_notes": "Phases 1-3 completed (3 hours actual vs 18 hours estimated). Phase 4 deferred - testing will occur during normal command usage. Created command-lifecycle.md with 8-stage pattern, updated 4 commands and 6 agents, achieved 39% duplication reduction (1,961 → 1,200 lines)."
+      "implementation_notes": "Phases 1-3 completed (3 hours actual vs 18 hours estimated). Phase 4 deferred - testing will occur during normal command usage. Created command-lifecycle.md with 8-stage pattern, updated 4 commands and 6 agents, achieved 39% duplication reduction (1,961 \u2192 1,200 lines)."
     },
     {
       "project_number": 212,
@@ -179,8 +164,8 @@
       "project_number": 213,
       "project_name": "resolve_is_valid_swap_involution_blocker",
       "type": "research",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "lean",
       "created": "2025-12-28T20:15:36Z",
@@ -189,24 +174,33 @@
       "last_updated": "2025-12-28",
       "artifacts": [
         ".opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md",
-        ".opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md"
+        ".opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md",
+        ".opencode/specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-001.md"
       ],
-      "estimated_hours": 3.5,
+      "estimated_hours": 6.0,
       "actual_hours": 3.5,
       "remaining_hours": 0,
-      "research_findings": "CRITICAL: Theorem is_valid_swap_involution is UNPROVABLE as stated - semantically false for arbitrary formulas. Swap exchanges all_past ↔ all_future (different time ranges). Counterexample constructed. All 15 previous strategies failed because they attempted to prove a false statement. Theorem IS true for derivable formulas only. Recommended solution: reformulate as derivable_valid_swap_involution restricting to DerivationTree [] φ.swap → is_valid φ (1.5-2 hours implementation).",
+      "research_findings": "CRITICAL: Theorem is_valid_swap_involution is UNPROVABLE as stated - semantically false for arbitrary formulas. Swap exchanges all_past \u2194 all_future (different time ranges). Counterexample constructed. All 15 previous strategies failed because they attempted to prove a false statement. Theorem IS true for derivable formulas only. Recommended solution: reformulate as derivable_valid_swap_involution restricting to DerivationTree [] \u03c6.swap \u2192 is_valid \u03c6 (1.5-2 hours implementation).",
       "key_findings": {
         "theorem_status": "unprovable_as_stated",
         "root_cause": "semantic_inequality_temporal_operators",
         "counterexample_exists": true,
         "correct_scope": "derivable_formulas_only",
         "previous_attempts_analyzed": 15,
-        "tasks_investigated": [184, 193, 209, 213],
+        "tasks_investigated": [
+          184,
+          193,
+          209,
+          213
+        ],
         "total_time_invested_hours": 10.7,
         "solutions_proposed": 4,
         "recommended_solution": "solution_2_reformulate_for_derivable",
         "estimated_implementation_hours": 1.5
-      }
+      },
+      "planning_completed": "2025-12-28",
+      "plan_path": ".opencode/specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-001.md",
+      "phases": 5
     }
   ],
   "completed_projects": [
@@ -258,6 +252,13 @@
       "type": "enhancement",
       "completed": "2025-12-28",
       "summary": "Reduced command output verbosity for /implement and /plan commands with artifact-based summaries and brief return formats, achieving 90-95% context window reduction"
+    },
+    {
+      "project_number": 202,
+      "project_name": "fix_verbose_artifact_output",
+      "type": "bugfix",
+      "completed": "2025-12-28",
+      "summary": "Fixed verbose artifact output in legacy subagents (implementer.md, task-executor.md) by replacing full artifact echoing with brief summaries, achieving 90-95% context window reduction"
     }
   ],
   "repository_health": {
@@ -282,6 +283,14 @@
     "review_artifacts": []
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T12:36:52.095399Z",
+      "activity": "Created task 215: Fix /todo command to remove both heading and body for completed/abandoned tasks (TBD effort, High priority, markdown)"
+    },
+    {
+      "timestamp": "2025-12-28T12:36:14.067166Z",
+      "activity": "Marked task 213 as PLANNED: 5-phase implementation plan created (6 hours total) - Remove unprovable theorem, add derivable_valid_swap_involution restricted to derivable formulas, update temporal_duality case, build verification, documentation updates"
+    },
     {
       "timestamp": "2025-12-28T22:30:00Z",
       "activity": "Marked task 213 as RESEARCHED: Comprehensive research completed (3.5 hours) - CRITICAL DISCOVERY: is_valid_swap_involution theorem is UNPROVABLE as stated (semantically false for arbitrary formulas). Counterexample constructed. Theorem true only for derivable formulas. Recommended solution: reformulate for derivable formulas (1.5-2 hours implementation). Resolves tasks 184, 193, 209, 213."
@@ -500,7 +509,7 @@
     },
     {
       "timestamp": "2025-12-28T00:30:00Z",
-      "activity": "Marked task 199 as COMPLETED: Self-healing context optimization completed - 76% reduction in loaded context (115 → 28 lines)"
+      "activity": "Marked task 199 as COMPLETED: Self-healing context optimization completed - 76% reduction in loaded context (115 \u2192 28 lines)"
     },
     {
       "timestamp": "2025-12-27T23:30:00Z",
@@ -618,7 +627,7 @@
         "Logos/Core/Semantics/Truth.lean"
       ],
       "implementation_notes": "BLOCKED after exhaustive attempts. Helper lemma truth_at_swap_swap complete (all 6 cases). Main theorem unprovable with current approach - truth_at pattern matching prevents equality transport. All strategies from plans v2/v3 failed. Requires expert consultation.",
-      "blocking_reason": "Fundamental type theory limitation - truth_at pattern matching prevents transport along φ.swap.swap = φ equality. Exhausted all recommended approaches."
+      "blocking_reason": "Fundamental type theory limitation - truth_at pattern matching prevents transport along \u03c6.swap.swap = \u03c6 equality. Exhausted all recommended approaches."
     },
     {
       "project_number": 194,
