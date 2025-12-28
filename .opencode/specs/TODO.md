@@ -326,7 +326,7 @@
 - **Effort**: 0.5 hours (actual)
 - **Status**: [PLANNED]
 - **Started**: 2025-12-28
-**Completed**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
