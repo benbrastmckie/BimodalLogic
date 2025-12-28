@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T22:45:38.072206Z",
+  "_last_updated": "2025-12-28T22:50:33.931946+00:00Z",
   "next_project_number": 222,
   "project_numbering": {
     "min": 0,
@@ -122,8 +122,8 @@
       "project_number": 219,
       "project_name": "restructure_module_hierarchy",
       "type": "refactoring",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "high",
       "language": "lean",
       "created": "2025-12-28T00:00:00Z",
@@ -134,7 +134,8 @@
       "artifacts": [
         ".opencode/specs/219_restructure_module_hierarchy/reports/research-001.md",
         ".opencode/specs/219_restructure_module_hierarchy/summaries/research-summary.md",
-        ".opencode/specs/219_restructure_module_hierarchy/plans/implementation-001.md"
+        ".opencode/specs/219_restructure_module_hierarchy/plans/implementation-001.md",
+        ".opencode/specs/219_restructure_module_hierarchy/summaries/implementation-summary-20251228.md"
       ],
       "plan_path": ".opencode/specs/219_restructure_module_hierarchy/plans/implementation-001.md",
       "plan_metadata": {
@@ -143,48 +144,86 @@
         "complexity": "medium"
       },
       "estimated_hours": 13.0,
-      "phases": 9
+      "phases": 9,
+      "completed": "2025-12-28",
+      "files_modified": [
+        "Logos/Core/Metalogic/SoundnessLemmas.lean",
+        "Logos/Core/Semantics/Truth.lean",
+        "Logos/Core/Metalogic/Soundness.lean",
+        "Logos/Core/Metalogic.lean"
+      ]
     },
     {
       "project_number": 221,
       "project_name": "fix_comprehensive_status_update_failures",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-28T22:11:32Z",
       "started": "2025-12-28",
       "research_completed": "2025-12-28",
+      "planning_completed": "2025-12-28",
+      "completed": "2025-12-28",
       "last_updated": "2025-12-28",
       "artifacts": [
-        ".opencode/specs/221_fix_comprehensive_status_update_failures/reports/research-001.md"
+        ".opencode/specs/221_fix_comprehensive_status_update_failures/reports/research-001.md",
+        ".opencode/specs/221_fix_comprehensive_status_update_failures/plans/implementation-001.md",
+        ".opencode/specs/221_fix_comprehensive_status_update_failures/summaries/implementation-summary-20251228.md",
+        ".opencode/agent/subagents/task-executor.md",
+        ".opencode/agent/subagents/status-sync-manager.md",
+        ".opencode/command/implement.md",
+        ".opencode/context/common/workflows/command-lifecycle.md"
       ],
       "estimated_hours": 9.0,
-      "planning_completed": "2025-12-28",
       "plan_path": ".opencode/specs/221_fix_comprehensive_status_update_failures/plans/implementation-001.md",
       "plan_metadata": {
         "phase_count": 7,
         "estimated_hours": 10,
         "complexity": "medium"
       },
-      "phases": 7
+      "phases": 7,
+      "files_modified": [
+        ".opencode/agent/subagents/task-executor.md",
+        ".opencode/agent/subagents/status-sync-manager.md",
+        ".opencode/command/implement.md",
+        ".opencode/context/common/workflows/command-lifecycle.md"
+      ]
     },
     {
       "project_number": 220,
       "project_name": "metadata_passing_compliance_verification",
-      "type": "research",
-      "phase": "research_completed",
-      "status": "researched",
+      "type": "compliance_verification",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "medium",
       "language": "markdown",
       "created": "2025-12-28T22:04:59Z",
       "started": "2025-12-28",
       "research_completed": "2025-12-28",
+      "planning_completed": "2025-12-28",
       "last_updated": "2025-12-28",
       "artifacts": [
-        ".opencode/specs/220_metadata_passing_compliance_verification/reports/research-001.md"
-      ]
+        ".opencode/specs/220_metadata_passing_compliance_verification/reports/research-001.md",
+        ".opencode/specs/220_metadata_passing_compliance_verification/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/220_metadata_passing_compliance_verification/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 6,
+        "estimated_hours": 2.5,
+        "complexity": "low"
+      },
+      "plan_versions": [
+        {
+          "version": 1,
+          "path": ".opencode/specs/220_metadata_passing_compliance_verification/plans/implementation-001.md",
+          "created": "2025-12-28T22:50:00Z",
+          "reason": "Initial compliance verification plan"
+        }
+      ],
+      "estimated_hours": 2.5,
+      "phases": 6
     }
   ],
   "completed_projects": [

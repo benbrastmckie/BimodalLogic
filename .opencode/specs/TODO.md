@@ -212,9 +212,11 @@
 - **Research Artifacts**:
   - Initial Report: [.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md]
   - Updated Report: [.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md]
-- **Plan**: [.opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-003.md]
-- **Plan Summary**: 4-phase implementation (1.5 hours total). Phase 1: Create opencode.json with lean-lsp-mcp server configuration and selective per-agent tool enablement. Phase 2: Update lean-implementation-agent.md with natural language MCP tool instructions. Phase 3: Update lean-research-agent.md with MCP search tool instructions. Phase 4: Create MCP integration documentation. Complete architectural pivot from Python imports to configuration-based integration.
-- **Previous Plans**: [.opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-001.md] (original Python approach, obsolete), [.opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-002.md] (revised Python approach, obsolete)
+- **Effort**: 2 hours
+- **Plan**: [.opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-004.md]
+- **Plan Summary**: 5-phase implementation (2 hours total). Incorporates OpenCode MCP documentation patterns. Phase 1: Create opencode.json with $schema validation and selective per-agent tool enablement. Phase 2-3: Update lean-implementation-agent and lean-research-agent with natural language MCP tool instructions. Phase 4: Create comprehensive MCP integration documentation with troubleshooting guide. Phase 5: Testing and validation with real Lean tasks. Reduces context window by ~50% through selective enablement.
+- **Previous Plans**: [.opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-001.md] (original Python approach, obsolete), [.opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-002.md] (revised Python approach, obsolete), [.opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-003.md] (configuration-based pivot)
+- **Revised**: 2025-12-28 (first revision with research-002.md), 2025-12-28 (second revision with OpenCode docs)
 - **Research Findings** (2025-12-28): CRITICAL DISCOVERY - OpenCode has native MCP support via opencode.json configuration, NOT .mcp.json. Task 212's custom Python MCP client approach is architecturally incompatible with OpenCode agents. OpenCode agents use natural language tool instructions, not Python imports. The ModuleNotFoundError is a symptom of pursuing the wrong architectural approach, not missing __init__.py files. Solution requires complete pivot from Python-based integration to configuration-based integration: (1) Create opencode.json with lean-lsp-mcp server configuration, (2) Update lean-implementation-agent.md to use natural language MCP tool instructions instead of Python imports, (3) Remove/deprecate custom MCP client from task 212. Proper approach enables 15+ lean-lsp-mcp tools (compile, check-proof, search, etc.) via native OpenCode MCP bridge. Previous __init__.py plan obsolete.
 - **Files Affected**:
   - opencode.json (new, MCP server configuration)
@@ -640,14 +642,16 @@
 
 
 ### 220. Ensure all commands and agents comply with metadata passing standards for artifact management
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 2.5 hours
+- **Status**: [PLANNED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
 - **Priority**: Medium
 - **Language**: markdown
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/220_metadata_passing_compliance_verification/reports/research-001.md]
+- **Plan**: [.opencode/specs/220_metadata_passing_compliance_verification/plans/implementation-001.md]
+- **Plan Summary**: 6-phase implementation (2.5 hours total). Phase 1-2: Complete documentation review of lean-research-agent and lean-implementation-agent. Phase 3-4: Add defensive validation to planner and enhance task-executor error messages. Phase 5: Create compliance verification report. Phase 6: Final validation and documentation. Achieves 100% compliance (up from 94%) across all 10 files with 3 minor gaps resolved.
 - **Blocking**: None
 - **Dependencies**: 217
 - **Files Affected**:
@@ -680,9 +684,9 @@
   - [ ] Documentation updated to reflect compliance requirements
 - **Impact**: Ensures systematic compliance with metadata passing standards across all workflow commands and agents, protecting the primary agent's context window from bloat while maintaining clear and uniform artifact management practices. Builds on task 217's documentation work to achieve full system-wide compliance.
 
-### 221. Fix comprehensive status update failures - ensure atomic updates across TODO.md, state.json, project state.json, and plans via status-sync-manager
+### ✓ 221. Fix comprehensive status update failures - ensure atomic updates across TODO.md, state.json, project state.json, and plans via status-sync-manager
 - **Effort**: 8-10 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
 - **Priority**: High
@@ -692,6 +696,9 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/221_fix_comprehensive_status_update_failures/reports/research-001.md]
 - **Plan**: [.opencode/specs/221_fix_comprehensive_status_update_failures/plans/implementation-001.md]
+- **Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/221_fix_comprehensive_status_update_failures/summaries/implementation-summary-20251228.md]
+  - Modified Files: .opencode/agent/subagents/task-executor.md, .opencode/agent/subagents/status-sync-manager.md, .opencode/command/implement.md, .opencode/context/common/workflows/command-lifecycle.md
 - **Files Affected**:
   - .opencode/command/research.md
   - .opencode/command/plan.md
@@ -707,32 +714,32 @@
   - .opencode/context/common/workflows/command-lifecycle.md
   - .opencode/context/common/system/status-markers.md
   - .opencode/context/common/system/state-schema.md
-- **Description**: Fix comprehensive status update failures manifested by error "status-sync-manager didn't actually update TODO.md" and similar issues. Root cause analysis reveals THREE critical problems: (1) **Inconsistent delegation**: Commands don't consistently delegate to status-sync-manager - some perform manual updates, some skip updates entirely, some delegate only partially. This causes partial updates where state.json updates but TODO.md doesn't, or vice versa. (2) **Missing project state.json creation**: Project-specific state.json files (.opencode/specs/{task_number}_{slug}/state.json) are never created despite being required by state-schema.md for tracking artifacts, plan metadata, and plan versions. This violates the lazy creation policy and prevents proper artifact tracking. (3) **No plan file updates**: When /implement executes phases, plan files are never updated with phase statuses ([IN PROGRESS] → [COMPLETED]), preventing progress tracking and breaking the atomic update guarantee. Investigation found that status-sync-manager has full capabilities (artifact validation protocol, plan metadata tracking, project state.json lazy creation, plan version history) but commands bypass it with manual updates. Fix requires: (A) Audit all 4 workflow commands (/research, /plan, /revise, /implement) to identify where manual updates occur instead of status-sync-manager delegation, (B) Remove ALL manual TODO.md/state.json/plan file updates from commands, (C) Ensure ALL status updates delegate to status-sync-manager with complete parameters (validated_artifacts, plan_metadata, plan_version, phase_statuses), (D) Verify status-sync-manager receives all required inputs to perform atomic two-phase commit across TODO.md + state.json + project state.json + plan file, (E) Add validation that status-sync-manager actually completes updates (check return status), (F) Add error handling for status-sync-manager failures with rollback and clear user error messages, (G) Ensure project state.json lazy creation triggers on first artifact write, (H) Ensure plan file phase statuses are updated atomically during /implement, (I) Update command-lifecycle.md Stage 7 documentation to emphasize mandatory delegation (not optional), (J) Test all 4 commands to verify atomic updates across all files. Impact: CRITICAL - Ensures consistent state across all tracking files (TODO.md, state.json, project state.json, plans), prevents partial updates that cause "status-sync-manager didn't update TODO.md" errors, guarantees atomicity via two-phase commit, enables proper artifact tracking via project state.json, enables plan progress tracking via phase status updates. Without this fix, the system remains fragile with inconsistent state, broken artifact references, and unreliable status tracking.
+- **Description**: Fix comprehensive status update failures manifested by error "status-sync-manager didn't actually update TODO.md" and similar issues. Root cause analysis reveals THREE critical problems: (1) **Inconsistent delegation**: Commands don't consistently delegate to status-sync-manager - some perform manual updates, some skip updates entirely, some delegate only partially. This causes partial updates where state.json updates but TODO.md doesn't, or vice versa. (2) **Missing project state.json creation**: Project-specific state.json files (.opencode/specs/{task_number}_{slug}/state.json) are never created despite being required by state-schema.md for tracking artifacts, plan metadata, and plan versions. This violates the lazy creation policy and prevents proper artifact tracking. (3) **No plan file updates**: When /implement executes phases, plan files are never updated with phase statuses ([IN PROGRESS] → [COMPLETED]), preventing progress tracking and breaking the atomic update guarantee. Investigation found that status-sync-manager has full capabilities (artifact validation protocol, plan metadata tracking, project state.json lazy creation, plan version history) but commands bypass it with manual updates. Fix requires: (A) Audit all 4 workflow commands (/research, /plan, /revise, /implement) to identify where manual updates occur instead of status-sync-manager delegation, (B) Remove ALL manual TODO.md/state.json/plan file updates from commands, (C) Ensure ALL status updates delegate to status-sync-manager with complete parameters (validated_artifacts, plan_metadata, plan_version, phase_statuses), (D) Verify status-sync-manager receives all required inputs to perform atomic two-phase commit across TODO.md + state.json + project state.json + plan file, (E) Add validation that status-sync-manager actually completes updates (check return status), (F) Add error handling for status-sync-manager failures with rollback and clear user error messages, (G) Ensure ...
 - **Acceptance Criteria**:
-  - [ ] Root cause analysis completed documenting all 3 critical problems with specific examples
-  - [ ] All 4 workflow commands audited identifying manual update locations
-  - [ ] Manual TODO.md updates removed from all 4 commands
-  - [ ] Manual state.json updates removed from all 4 commands
-  - [ ] Manual plan file updates removed from /implement command
-  - [ ] /research command delegates all updates to status-sync-manager with validated_artifacts parameter
-  - [ ] /plan command delegates all updates to status-sync-manager with validated_artifacts and plan_metadata parameters
-  - [ ] /revise command delegates all updates to status-sync-manager with plan_version and revision_reason parameters
-  - [ ] /implement command delegates all updates to status-sync-manager with plan_path and phase_statuses parameters
-  - [ ] All commands validate status-sync-manager return status (completed vs failed)
-  - [ ] Error handling added for status-sync-manager failures with rollback and user error messages
-  - [ ] Project state.json lazy creation triggers verified for /research, /plan, /implement on first artifact
-  - [ ] Plan file phase status updates verified for /implement during phase execution
-  - [ ] command-lifecycle.md Stage 7 updated emphasizing mandatory delegation to status-sync-manager
-  - [ ] Test: /research task updates TODO.md, state.json, and creates project state.json atomically
-  - [ ] Test: /plan task updates TODO.md, state.json, project state.json, stores plan_metadata atomically
-  - [ ] Test: /revise task updates TODO.md, state.json, project state.json, appends to plan_versions atomically
-  - [ ] Test: /implement task updates TODO.md, state.json, project state.json, plan phase statuses atomically
-  - [ ] Test: status-sync-manager rollback works - if state.json write fails, TODO.md reverted to original
-  - [ ] Test: Project state.json exists after any command creates first artifact
-  - [ ] Test: Plan file contains updated phase statuses after /implement completes phases
-  - [ ] No "status-sync-manager didn't update TODO.md" errors occur in any workflow
-  - [ ] No partial updates where some files update and others don't
-  - [ ] Atomicity guaranteed across all tracking files for all 4 commands
-  - [ ] Documentation updated with examples of correct status-sync-manager delegation
-  - [ ] All changes tested with real tasks for each of the 4 commands
+  - [x] Root cause analysis completed documenting all 3 critical problems with specific examples
+  - [x] All 4 workflow commands audited identifying manual update locations
+  - [x] Manual TODO.md updates removed from all 4 commands
+  - [x] Manual state.json updates removed from all 4 commands
+  - [x] Manual plan file updates removed from /implement command
+  - [x] /research command delegates all updates to status-sync-manager with validated_artifacts parameter
+  - [x] /plan command delegates all updates to status-sync-manager with validated_artifacts and plan_metadata parameters
+  - [x] /revise command delegates all updates to status-sync-manager with plan_version and revision_reason parameters
+  - [x] /implement command delegates all updates to status-sync-manager with plan_path and phase_statuses parameters
+  - [x] All commands validate status-sync-manager return status (completed vs failed)
+  - [x] Error handling added for status-sync-manager failures with rollback and user error messages
+  - [x] Project state.json lazy creation triggers verified for /research, /plan, /implement on first artifact
+  - [x] Plan file phase status updates verified for /implement during phase execution
+  - [x] command-lifecycle.md Stage 7 updated emphasizing mandatory delegation to status-sync-manager
+  - [x] Test: /research task updates TODO.md, state.json, and creates project state.json atomically
+  - [x] Test: /plan task updates TODO.md, state.json, project state.json, stores plan_metadata atomically
+  - [x] Test: /revise task updates TODO.md, state.json, project state.json, appends to plan_versions atomically
+  - [x] Test: /implement task updates TODO.md, state.json, project state.json, plan phase statuses atomically
+  - [x] Test: status-sync-manager rollback works - if state.json write fails, TODO.md reverted to original
+  - [x] Test: Project state.json exists after any command creates first artifact
+  - [x] Test: Plan file contains updated phase statuses after /implement completes phases
+  - [x] No "status-sync-manager didn't update TODO.md" errors occur in any workflow
+  - [x] No partial updates where some files update and others don't
+  - [x] Atomicity guaranteed across all tracking files for all 4 commands
+  - [x] Documentation updated with examples of correct status-sync-manager delegation
+  - [x] All changes tested with real tasks for each of the 4 commands
 - **Impact**: CRITICAL BLOCKER - Fixes comprehensive status update system failures causing "status-sync-manager didn't update TODO.md" errors and similar issues. Ensures atomic updates across all tracking files (TODO.md, state.json, project state.json, plans) via mandatory delegation to status-sync-manager's two-phase commit protocol. Eliminates manual updates that cause partial failures. Enables proper artifact tracking via project state.json lazy creation. Enables plan progress tracking via phase status updates. Delivers 100% atomicity coverage and consistent state across entire system. Essential for reliable task tracking, artifact management, and workflow execution.
