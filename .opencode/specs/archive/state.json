@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2025-12-28T14:16:53.371237Z",
+  "_last_updated": "2025-12-28T14:32:11.168715Z",
   "archived_projects": [
     {
       "project_number": 126,
@@ -582,6 +582,37 @@
       "summary": "Standardize pre-flight and post-flight procedures across research, planning, revision, and implementation workflows",
       "started": "2025-12-28",
       "completed": "2025-12-28"
+    },
+    {
+      "project_number": 217,
+      "project_name": "research_artifact_creation",
+      "status": "completed",
+      "archived": "2025-12-28",
+      "summary": "Research artifact creation by all commands and their subagents in the .opencode/ agent system",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/217_research_artifact_creation/"
+      },
+      "created": "2025-12-28T23:30:00Z",
+      "started": "2025-12-28",
+      "type": "research"
+    },
+    {
+      "project_number": 210,
+      "project_name": "fix_lean_subagents_to_follow_artifact_managementmd",
+      "status": "abandoned",
+      "archived": "2025-12-28",
+      "summary": "Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md",
+      "completed": "2025-12-28",
+      "type": "markdown"
+    },
+    {
+      "project_number": 211,
+      "project_name": "standardize_pre_flight_and_post_flight_procedures_",
+      "status": "completed",
+      "archived": "2025-12-28",
+      "summary": "Standardize pre-flight and post-flight procedures across research, planning, revision, and implementation workflows",
+      "completed": "2025-12-28",
+      "type": "markdown"
     }
   ]
 }

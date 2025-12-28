@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T22:30:43.664242Z",
+  "_last_updated": "2025-12-28T14:32:11.168711Z",
   "next_project_number": 222,
   "project_numbering": {
     "min": 0,
@@ -70,33 +70,6 @@
         "Logos/Core/Syntax/Formula.lean"
       ],
       "implementation_notes": "Added @[simp] attribute to swap_past_future_involution. Main theorem is_valid_swap_involution remains incomplete with sorry - simp only pattern unsuccessful. Task 193 remains blocked."
-    },
-    {
-      "project_number": 217,
-      "project_name": "research_artifact_creation",
-      "type": "research",
-      "phase": "planning_revised",
-      "status": "revised",
-      "priority": "medium",
-      "language": "markdown",
-      "created": "2025-12-28T23:30:00Z",
-      "started": "2025-12-28",
-      "research_completed": "2025-12-28",
-      "last_updated": "2025-12-28",
-      "artifacts": [
-        ".opencode/specs/217_research_artifact_creation/reports/research-001.md",
-        ".opencode/specs/217_research_artifact_creation/summaries/research-summary.md",
-        ".opencode/specs/217_research_artifact_creation/plans/implementation-001.md",
-        ".opencode/specs/217_research_artifact_creation/plans/implementation-002.md"
-      ],
-      "planning_completed": "2025-12-28",
-      "plan_path": ".opencode/specs/217_research_artifact_creation/plans/implementation-002.md",
-      "estimated_hours": 12.0,
-      "phases": 7,
-      "plan_versions": [
-        "implementation-001.md"
-      ],
-      "planning_revised": "2025-12-28"
     },
     {
       "project_number": 218,
@@ -250,6 +223,13 @@
       "type": "markdown",
       "completed": "2025-12-28",
       "summary": "Standardize pre-flight and post-flight procedures across research, planning, revision, and implementation workflows"
+    },
+    {
+      "project_number": 217,
+      "project_name": "research_artifact_creation",
+      "type": "research",
+      "completed": "2025-12-28",
+      "summary": "Research artifact creation by all commands and their subagents in the .opencode/ agent system"
     }
   ],
   "repository_health": {
