@@ -92,19 +92,42 @@ temperature: 0.1
   <step_2_validate>
     <action>Validate status transition and artifacts</action>
     <process>
-      1. Extract current status from TODO.md
-      2. Check transition is valid per status-markers.md
-      3. Verify required fields present (blocking_reason, etc.)
-      4. Validate timestamp format (YYYY-MM-DD)
-      5. Validate artifacts if validated_artifacts provided:
+      1. Pre-commit validation for all target files:
+         a. Verify TODO.md exists and is readable
+         b. Verify state.json exists and is readable
+         c. Verify plan file exists and is readable (if plan_path provided)
+         d. If any file missing or unreadable: abort before writing
+      2. Extract current status from TODO.md
+      3. Check transition is valid per status-markers.md
+      4. Verify required fields present (blocking_reason, etc.)
+      5. Validate timestamp format (YYYY-MM-DD or ISO 8601)
+      6. Validate artifacts if validated_artifacts provided:
          a. Verify each artifact file exists on disk
          b. Verify each artifact file is non-empty (size > 0)
          c. Verify artifact paths are well-formed
          d. If validation fails: abort before writing
-      6. If invalid transition: abort before writing
+      7. Validate plan file format if plan_path provided:
+         a. Verify plan file follows plan.md standard
+         b. Verify phase headings are well-formed
+         c. Verify phase numbers are sequential
+         d. If malformed: abort with clear error message
+      8. Validate phase_statuses if provided:
+         a. Verify phase_statuses is array
+         b. Verify each entry has phase_number, status, timestamp
+         c. Verify phase numbers exist in plan file
+         d. Verify status transitions are valid
+         e. If validation fails: abort with specific error
+      9. If invalid transition: abort before writing
     </process>
-    <validation>Status transition follows valid state machine, artifacts exist and valid</validation>
-    <output>Validation result (pass/fail)</output>
+    <validation>
+      All validation checks pass before proceeding to prepare updates:
+      - Target files exist and readable
+      - Status transition valid
+      - Artifacts exist and non-empty
+      - Plan file well-formed (if applicable)
+      - Phase statuses valid (if applicable)
+    </validation>
+    <output>Validation result (pass/fail with specific errors)</output>
   </step_2_validate>
 
   <step_3_prepare_updates>
@@ -124,19 +147,48 @@ temperature: 0.1
          - Append to plan_versions array if plan_version provided
          - Update plan_path to latest version if plan_version provided
       3. Create or update project state.json:
-         - If project state.json does not exist: create lazily
+         - If project state.json does not exist: create lazily (CRITICAL: fail if creation fails)
          - Use state-schema.md template for initial structure
          - Populate with project_name, project_number, type, phase, status
          - Add creation timestamp and last_updated timestamp
          - Add artifact references (reports, plans, summaries)
-      4. Update plan file if plan_path provided:
-         - Update phase statuses if phase_statuses provided
+      4. Update plan file if plan_path and phase_statuses provided:
+         - Parse plan file to extract current phase markers
+         - For each phase_status in phase_statuses array:
+           a. Locate phase heading (### Phase {N}:)
+           b. Update phase status marker ([IN PROGRESS], [COMPLETED], [ABANDONED], [BLOCKED])
+           c. Add/update timestamp (Started, Completed, Abandoned, Blocked)
+         - Validate phase numbers are valid (exist in plan)
+         - Validate status transitions are valid
          - Update overall plan status if all phases complete
-         - Add metadata section if plan_metadata provided
       5. Validate all updates well-formed
     </process>
-    <validation>All updates syntactically valid</validation>
-    <output>Prepared updates for all files</output>
+    <plan_file_parsing>
+      Parse plan file to extract phase information:
+      1. Read plan file content
+      2. Find all phase headings matching pattern: ### Phase {N}:
+      3. Extract current status marker for each phase ([NOT STARTED], [IN PROGRESS], etc.)
+      4. Extract existing timestamps (Started, Completed, etc.)
+      5. Build phase map: {phase_number: {heading, current_status, timestamps}}
+      6. Return phase map for updating
+    </plan_file_parsing>
+    <plan_file_updating>
+      Update plan file with new phase statuses:
+      1. For each phase_status in phase_statuses array:
+         a. Validate phase_number exists in phase map
+         b. Validate status transition is valid
+         c. Update phase heading with new status marker
+         d. Add/update timestamp based on status:
+            - in_progress: Add "- **Started**: {timestamp}"
+            - completed: Add "- **Completed**: {timestamp}"
+            - abandoned: Add "- **Abandoned**: {timestamp}, Reason: {reason}"
+            - blocked: Add "- **Blocked**: {timestamp}, Reason: {reason}"
+         e. Preserve existing content (tasks, timing, acceptance criteria)
+      2. Write updated plan file content
+      3. Validate updated content is well-formed
+    </plan_file_updating>
+    <validation>All updates syntactically valid, phase numbers valid, transitions valid</validation>
+    <output>Prepared updates for all files including plan file</output>
   </step_3_prepare_updates>
 
   <step_4_commit>
@@ -146,9 +198,9 @@ temperature: 0.1
       2. Verify write succeeded
       3. Write state.json
       4. Verify write succeeded
-      5. Write project state.json if exists
-      6. Verify write succeeded
-      7. Write plan file if plan_path provided
+      5. Write project state.json (CRITICAL: fail if write fails, no silent failures)
+      6. Verify write succeeded (abort and rollback if fails)
+      7. Write plan file if plan_path and phase_statuses provided
       8. Verify write succeeded
       9. If any write fails: rollback all previous writes
     </process>
@@ -156,22 +208,34 @@ temperature: 0.1
       If any write fails:
       1. Immediately stop further writes
       2. Restore all previously written files from backups
-      3. Log error with details
-      4. Return failed status with rollback info
+      3. Restore plan file from backup if it was written
+      4. Log error with details
+      5. Return failed status with rollback info
+      6. Include specific file that failed in error message
     </rollback_on_failure>
     <output>All files updated or all restored to original state</output>
   </step_4_commit>
 
   <step_5_return>
-    <action>Return standardized result</action>
+    <action>Post-commit validation and return</action>
     <process>
-      1. Format return following subagent-return-format.md
-      2. Include files updated
-      3. Include rollback info if applicable
-      4. Include session_id from input
-      5. Return status completed or failed
+      1. Post-commit validation for all files written:
+         a. Verify TODO.md exists and size > 0
+         b. Verify state.json exists and size > 0
+         c. Verify project state.json exists and size > 0
+         d. Verify plan file exists and size > 0 (if plan_path provided)
+         e. If any validation fails: Log error (files already written, cannot rollback)
+      2. Rollback validation (if rollback occurred):
+         a. Verify all files restored to original state
+         b. Verify no partial state remains
+         c. If restoration failed: Log critical error
+      3. Format return following subagent-return-format.md
+      4. Include files updated
+      5. Include rollback info if applicable
+      6. Include session_id from input
+      7. Return status completed or failed
     </process>
-    <output>Standardized return object</output>
+    <output>Standardized return object with validation results</output>
   </step_5_return>
 </process_flow>
 
@@ -348,11 +412,127 @@ temperature: 0.1
   <error_handling>
     If project state.json creation fails:
     1. Log error with details
-    2. Continue with TODO.md and state.json updates
-    3. Include warning in return (non-critical failure)
-    4. Project state.json will be created on next update
+    2. Abort update (do not write any files)
+    3. Rollback all previously written files
+    4. Return failed status with specific error
+    5. Include remediation steps in error message
+    
+    CRITICAL: Project state.json creation is now CRITICAL, not gracefully degraded.
+    Failures must surface to user with clear error messages.
   </error_handling>
 </project_state_creation>
+
+<plan_file_phase_updates>
+  <purpose>
+    Update plan file phase statuses atomically with other tracking files
+  </purpose>
+
+  <phase_status_format>
+    Receive phase_statuses array from task-executor:
+    ```json
+    {
+      "phase_statuses": [
+        {
+          "phase_number": 1,
+          "status": "completed",
+          "timestamp": "2025-12-28T10:00:00Z"
+        },
+        {
+          "phase_number": 2,
+          "status": "in_progress",
+          "timestamp": "2025-12-28T11:00:00Z"
+        }
+      ]
+    }
+    ```
+  </phase_status_format>
+
+  <parsing_algorithm>
+    Parse plan file to extract phase information:
+    1. Read plan file content
+    2. Use regex to find phase headings: `### Phase (\d+):.* \[(.*?)\]`
+    3. Extract phase number and current status marker
+    4. Find timestamp lines after heading (Started, Completed, etc.)
+    5. Build phase map: {phase_number: {line_number, heading, status, timestamps}}
+    6. Return phase map for validation and updating
+  </parsing_algorithm>
+
+  <updating_algorithm>
+    Update plan file with new phase statuses:
+    1. For each phase_status in phase_statuses array:
+       a. Look up phase in phase map
+       b. If phase not found: Return validation error
+       c. Validate status transition (e.g., not_started → in_progress → completed)
+       d. Update phase heading status marker:
+          - Replace [NOT STARTED] with [IN PROGRESS], [COMPLETED], etc.
+       e. Add/update timestamp after heading:
+          - If status == "in_progress": Add "- **Started**: {timestamp}"
+          - If status == "completed": Add "- **Completed**: {timestamp}"
+          - If status == "abandoned": Add "- **Abandoned**: {timestamp}"
+          - If status == "blocked": Add "- **Blocked**: {timestamp}"
+       f. Preserve all other phase content (tasks, timing, acceptance criteria)
+    2. Write updated plan file content
+    3. Validate updated content is well-formed
+  </updating_algorithm>
+
+  <validation_rules>
+    Validate phase updates before committing:
+    - Phase numbers must exist in plan file
+    - Phase numbers must be positive integers
+    - Status values must be: in_progress, completed, abandoned, blocked
+    - Timestamps must be ISO 8601 format
+    - Status transitions must be valid:
+      * not_started → in_progress (valid)
+      * in_progress → completed (valid)
+      * in_progress → abandoned (valid)
+      * in_progress → blocked (valid)
+      * completed → * (invalid - completed is terminal)
+      * abandoned → * (invalid - abandoned is terminal)
+  </validation_rules>
+
+  <rollback_support>
+    Include plan file in two-phase commit rollback:
+    1. Backup plan file content before updating
+    2. If any write fails: Restore plan file from backup
+    3. Verify restoration succeeded
+    4. Log rollback details
+  </rollback_support>
+
+  <error_messages>
+    Provide clear error messages for validation failures:
+    - "Phase {N} not found in plan file {path}"
+    - "Invalid status transition for phase {N}: {old_status} → {new_status}"
+    - "Invalid phase number: {N} (must be positive integer)"
+    - "Malformed plan file: {path} (missing phase headings)"
+    - "Plan file write failed: {error} (rolled back all changes)"
+  </error_messages>
+
+  <example_update>
+    Before:
+    ```markdown
+    ### Phase 1: Setup Infrastructure [NOT STARTED]
+    
+    - **Goal**: Create project structure
+    ```
+    
+    After (status: in_progress):
+    ```markdown
+    ### Phase 1: Setup Infrastructure [IN PROGRESS]
+    
+    - **Started**: 2025-12-28T10:00:00Z
+    - **Goal**: Create project structure
+    ```
+    
+    After (status: completed):
+    ```markdown
+    ### Phase 1: Setup Infrastructure [COMPLETED]
+    
+    - **Started**: 2025-12-28T10:00:00Z
+    - **Completed**: 2025-12-28T11:00:00Z
+    - **Goal**: Create project structure
+    ```
+  </example_update>
+</plan_file_phase_updates>
 
 <plan_version_history>
   <purpose>
@@ -438,15 +618,23 @@ temperature: 0.1
   <must>Rollback all writes if any single write fails</must>
   <must>Validate status transitions per status-markers.md</must>
   <must>Validate artifacts exist before linking (artifact validation protocol)</must>
-  <must>Create project state.json lazily on first artifact write</must>
+  <must>Create project state.json lazily on first artifact write (CRITICAL: fail if creation fails)</must>
   <must>Track plan metadata in state.json (phase_count, estimated_hours, complexity)</must>
   <must>Track plan version history in plan_versions array</must>
   <must>Preserve Started timestamp when updating status</must>
   <must>Return standardized format per subagent-return-format.md</must>
+  <must>Parse plan file to extract phase statuses if plan_path provided</must>
+  <must>Update plan file phase markers atomically if phase_statuses provided</must>
+  <must>Validate plan file format before updating</must>
+  <must>Validate phase numbers and transitions before updating</must>
+  <must>Include plan file in rollback mechanism</must>
+  <must>Perform pre-commit, post-commit, and rollback validation</must>
   <must_not>Leave files in inconsistent state</must_not>
   <must_not>Proceed with invalid status transitions</must_not>
   <must_not>Link artifacts without validation</must_not>
   <must_not>Lose data during rollback</must_not>
+  <must_not>Silently fail project state.json creation</must_not>
+  <must_not>Update plan file without validation</must_not>
 </constraints>
 
 <output_specification>

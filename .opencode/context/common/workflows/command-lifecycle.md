@@ -262,7 +262,9 @@ grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Langua
 
 **Update Procedures**:
 
-All status and artifact updates in Stage 7 MUST be delegated to status-sync-manager to ensure atomicity across all tracking files.
+CRITICAL: All status and artifact updates in Stage 7 MUST be delegated to status-sync-manager to ensure atomicity across all tracking files.
+
+**WARNING**: DO NOT manually update TODO.md, state.json, project state.json, or plan files directly. Manual updates create race conditions and inconsistent state. ALL updates MUST flow through status-sync-manager's two-phase commit protocol.
 
 **Validation Protocol**:
 1. Verify subagent returned validation success:
@@ -271,7 +273,13 @@ All status and artifact updates in Stage 7 MUST be delegated to status-sync-mana
    - Extract metadata if applicable (plan_metadata, phase_statuses)
    - If validation failed: Abort update, return error to user
 
-2. Delegate to status-sync-manager:
+2. Validate metadata before delegation:
+   - If phased implementation: Verify phase_statuses present and well-formed
+   - If plan operation: Verify plan_metadata present and well-formed
+   - If revision: Verify plan_version present
+   - If validation fails: Abort with clear error message
+
+3. Delegate to status-sync-manager (MANDATORY):
    - task_number: {number}
    - new_status: {status from subagent return}
    - timestamp: {ISO8601 date}
@@ -280,20 +288,45 @@ All status and artifact updates in Stage 7 MUST be delegated to status-sync-mana
    - plan_metadata: {metadata from planner if applicable}
    - plan_version: {version from revise if applicable}
    - phase_statuses: {statuses from implement if applicable}
+   - plan_path: {path to plan file if applicable}
 
-3. status-sync-manager performs two-phase commit:
-   - Phase 1: Prepare, validate artifacts, backup
+4. status-sync-manager performs two-phase commit:
+   - Phase 1: Prepare, validate artifacts, backup, parse plan file (if applicable)
    - Phase 2: Write all files or rollback all
+
+**Anti-Pattern Examples** (DO NOT DO THIS):
+```
+# WRONG: Manual TODO.md update
+sed -i 's/\[IMPLEMENTING\]/\[COMPLETED\]/' TODO.md
+
+# WRONG: Manual state.json update
+jq '.status = "completed"' state.json > state.json.tmp && mv state.json.tmp state.json
+
+# WRONG: Manual plan file update
+sed -i 's/\[NOT STARTED\]/\[COMPLETED\]/' plan.md
+
+# CORRECT: Delegate to status-sync-manager
+Invoke status-sync-manager with all parameters
+```
 
 **Atomicity Guarantees**:
 
 status-sync-manager ensures atomic updates across:
 - TODO.md (status markers, timestamps, artifact links)
 - state.json (status, timestamps, artifacts array, plan_metadata, plan_versions)
-- project state.json (lazy created on first artifact write)
-- plan file (phase statuses if applicable)
+- project state.json (lazy created on first artifact write, CRITICAL: fails if creation fails)
+- plan file (phase statuses if phase_statuses provided, parsed and updated atomically)
 
 Either all files update successfully or all are rolled back to original state.
+
+**Delegation Checklist** (verify before proceeding):
+- [ ] All status updates delegated to status-sync-manager (no manual updates)
+- [ ] phase_statuses extracted from task-executor return (if phased implementation)
+- [ ] plan_metadata extracted from planner return (if plan operation)
+- [ ] plan_path provided to status-sync-manager (if plan exists)
+- [ ] validated_artifacts passed to status-sync-manager
+- [ ] session_id matches across delegation chain
+- [ ] No manual TODO.md, state.json, or plan file updates in command code
 
 **Artifact Validation**:
 
@@ -348,6 +381,26 @@ status-sync-manager stores metadata in state.json:
       "created": "2025-12-28T14:00:00Z",
       "reason": "Revised to reduce complexity"
     }
+  ]
+}
+```
+
+**Plan File Phase Status Updates**:
+
+/implement command updates plan file phase statuses:
+- task-executor collects phase_statuses array during execution
+- phase_statuses passed to status-sync-manager via /implement command
+- status-sync-manager parses plan file to extract current phase markers
+- status-sync-manager updates phase markers atomically ([NOT STARTED] → [IN PROGRESS] → [COMPLETED])
+- status-sync-manager adds timestamps (Started, Completed, Abandoned, Blocked)
+- Plan file included in two-phase commit rollback mechanism
+
+Example phase_statuses:
+```json
+{
+  "phase_statuses": [
+    {"phase_number": 1, "status": "completed", "timestamp": "2025-12-28T10:00:00Z"},
+    {"phase_number": 2, "status": "in_progress", "timestamp": "2025-12-28T11:00:00Z"}
   ]
 }
 ```

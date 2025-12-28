@@ -248,8 +248,26 @@ Context Loaded:
         - Check agent return metadata for validation_result
         - Verify all artifacts validated (exist, non-empty, token limit)
         - Extract phase_statuses if phased implementation
+        - Validate phase_statuses format if present:
+          * Must be array
+          * Each entry must have: phase_number, status, timestamp
+          * Phase numbers must be positive integers
+          * Status must be: in_progress, completed, abandoned, blocked
         - If validation failed: Abort update, return error to user
+        - If phase_statuses missing for phased implementation: Return error
     </validation_delegation>
+    <phase_statuses_validation>
+      For phased implementations (task-executor):
+        - Verify phase_statuses present in return object
+        - Verify phase_statuses is non-empty array
+        - Verify each entry has required fields
+        - If missing or malformed: Return error with details
+        - Error message: "phase_statuses missing or malformed in task-executor return"
+      
+      For direct implementations (implementer):
+        - phase_statuses not required (no phases)
+        - Skip phase_statuses validation
+    </phase_statuses_validation>
     <git_commit>
       Scope: Implementation files + TODO.md + state.json + project state.json + plan (if exists)
       Message: "task {number}: implementation completed"
@@ -270,15 +288,20 @@ Context Loaded:
         - plan_path: {plan_path if exists}
         - phase_statuses: {phase_statuses from agent return if phased}
       
+      CRITICAL: Validate phase_statuses before passing to status-sync-manager:
+        - If phased implementation AND phase_statuses missing: Abort with error
+        - If phased implementation AND phase_statuses malformed: Abort with error
+        - Log phase_statuses parameter passing for debugging
+      
       status-sync-manager performs two-phase commit:
-        - Phase 1: Prepare, validate artifacts, backup
-        - Phase 2: Write all files or rollback all
+        - Phase 1: Prepare, validate artifacts, backup, parse plan file
+        - Phase 2: Write all files (TODO.md, state.json, project state.json, plan file) or rollback all
       
       Atomicity guaranteed across:
         - TODO.md (status, timestamps, artifact links, checkmark if completed)
         - state.json (status, timestamps, artifacts array)
-        - project state.json (lazy created if needed)
-        - plan file (phase statuses if phased)
+        - project state.json (lazy created if needed, CRITICAL: fail if creation fails)
+        - plan file (phase statuses updated atomically if phase_statuses provided)
     </atomic_update>
   </stage>
 

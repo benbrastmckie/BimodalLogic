@@ -92,39 +92,64 @@ temperature: 0.2
     <process>
       For each phase to execute:
       
-      1. Mark phase [IN PROGRESS] in plan file
-      2. Add Started timestamp to phase
-      3. Determine implementation agent based on language:
+      1. Collect phase status transition for delegation to status-sync-manager
+      2. Record phase number and new status (in_progress, completed, abandoned, blocked)
+      3. Add timestamp for status transition
+      4. Determine implementation agent based on language:
          - Language: lean → lean-implementation-agent
          - Language: * → implementer
-      4. Generate session_id for phase delegation
-      5. Check delegation depth (must be less than 3)
-      6. Invoke implementation agent with phase details
-      7. Wait for agent return (timeout: 3600s per phase)
-      8. Validate return against subagent-return-format.md
-      9. If status == "completed":
-         a. Mark phase [COMPLETED] in plan file
-         b. Add Completed timestamp to phase
-         c. Extract phase artifacts
-         d. Create git commit for phase
-      10. If status == "failed":
-         a. Mark phase [ABANDONED] in plan file
-         b. Add Abandoned timestamp and reason
-         c. Log error
-         d. Stop execution (don't proceed to next phase)
-      11. If status == "partial" or timeout:
-         a. Keep phase [IN PROGRESS]
+      5. Generate session_id for phase delegation
+      6. Check delegation depth (must be less than 3)
+      7. Invoke implementation agent with phase details
+      8. Wait for agent return (timeout: 3600s per phase)
+      9. Validate return against subagent-return-format.md
+      10. If status == "completed":
+         a. Collect phase status: {phase_number, status: "completed", timestamp}
+         b. Extract phase artifacts
+         c. Create git commit for phase
+      11. If status == "failed":
+         a. Collect phase status: {phase_number, status: "abandoned", timestamp, reason}
+         b. Log error
+         c. Stop execution (don't proceed to next phase)
+      12. If status == "partial" or timeout:
+         a. Collect phase status: {phase_number, status: "in_progress", timestamp}
          b. Save partial artifacts
          c. Return partial status to caller
          d. Stop execution (allow resume later)
+      
+      CRITICAL: Do NOT update plan file directly. Collect phase_statuses array
+      and delegate to status-sync-manager for atomic updates.
     </process>
+    <phase_status_collection>
+      Collect phase_statuses array with format:
+      [
+        {
+          "phase_number": 1,
+          "status": "completed",
+          "timestamp": "2025-12-28T10:00:00Z"
+        },
+        {
+          "phase_number": 2,
+          "status": "in_progress",
+          "timestamp": "2025-12-28T11:00:00Z"
+        }
+      ]
+      
+      Status values:
+      - "in_progress": Phase started but not complete
+      - "completed": Phase finished successfully
+      - "abandoned": Phase failed and cannot continue
+      - "blocked": Phase blocked by external dependency
+      
+      Include all phase transitions that occurred during execution.
+    </phase_status_collection>
     <delegation_safety>
       - Max delegation depth: 3
       - Timeout per phase: 3600s (1 hour)
       - Validate all returns against subagent-return-format.md
       - Track session_id for each phase
     </delegation_safety>
-    <output>Completed phases with artifacts</output>
+    <output>Completed phases with artifacts and phase_statuses array</output>
   </step_3>
 
   <step_4>
@@ -192,7 +217,9 @@ temperature: 0.2
       5. Include summary of work done
       6. Include session_id from input
       7. Include metadata (duration, delegation info)
-      8. If partial: Include resume instructions
+      8. Include phase_statuses array collected during execution
+      9. Validate phase_statuses is populated before returning
+      10. If partial: Include resume instructions
     </process>
     <validation>
       Before returning (Step 6):
@@ -201,6 +228,8 @@ temperature: 0.2
       - Verify summary artifact path exists on disk
       - Verify summary file contains content
       - Verify summary within token limit (<100 tokens, ~400 chars)
+      - Verify phase_statuses array is populated
+      - Verify phase_statuses contains all phase transitions
       - Verify return format matches subagent-return-format.md
       
       If validation fails:
@@ -209,21 +238,23 @@ temperature: 0.2
       - Include error in errors array with type "validation_failed"
       - Recommendation: "Fix summary artifact creation and retry"
     </validation>
-    <output>Standardized return object with all artifacts</output>
+    <output>Standardized return object with all artifacts and phase_statuses</output>
   </step_6>
 </process_flow>
 
 <constraints>
   <must>Skip [COMPLETED] phases when resuming</must>
-  <must>Update plan file with phase status after each phase</must>
+  <must>Collect phase_statuses array for delegation to status-sync-manager</must>
   <must>Create git commit per completed phase</must>
   <must>Route to language-specific agents based on language parameter</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Support resume from incomplete phases</must>
+  <must>Include phase_statuses in return object</must>
   <must_not>Re-execute completed phases</must_not>
   <must_not>Proceed to next phase if current phase fails</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Include emojis in summaries</must_not>
+  <must_not>Update plan file directly (delegate to status-sync-manager)</must_not>
 </constraints>
 
 <output_specification>
@@ -255,7 +286,24 @@ temperature: 0.2
       "next_steps": "All phases completed successfully",
       "phases_completed": [1, 2, 3],
       "phases_total": 3,
-      "git_commits": ["abc123", "def456", "ghi789"]
+      "git_commits": ["abc123", "def456", "ghi789"],
+      "phase_statuses": [
+        {
+          "phase_number": 1,
+          "status": "completed",
+          "timestamp": "2025-12-28T10:00:00Z"
+        },
+        {
+          "phase_number": 2,
+          "status": "completed",
+          "timestamp": "2025-12-28T11:00:00Z"
+        },
+        {
+          "phase_number": 3,
+          "status": "completed",
+          "timestamp": "2025-12-28T12:00:00Z"
+        }
+      ]
     }
     ```
   </format>
@@ -293,7 +341,13 @@ temperature: 0.2
       "next_steps": "Run tests to verify LeanSearch integration",
       "phases_completed": [1, 2, 3, 4],
       "phases_total": 4,
-      "git_commits": ["a1b2c3d", "e4f5g6h", "i7j8k9l", "m0n1o2p"]
+      "git_commits": ["a1b2c3d", "e4f5g6h", "i7j8k9l", "m0n1o2p"],
+      "phase_statuses": [
+        {"phase_number": 1, "status": "completed", "timestamp": "2025-12-28T10:00:00Z"},
+        {"phase_number": 2, "status": "completed", "timestamp": "2025-12-28T11:00:00Z"},
+        {"phase_number": 3, "status": "completed", "timestamp": "2025-12-28T12:00:00Z"},
+        {"phase_number": 4, "status": "completed", "timestamp": "2025-12-28T13:00:00Z"}
+      ]
     }
     ```
   </example_completed>
@@ -333,7 +387,12 @@ temperature: 0.2
       "phases_completed": [1, 2],
       "phases_total": 4,
       "git_commits": ["a1b2c3d", "e4f5g6h"],
-      "resume_from_phase": 3
+      "resume_from_phase": 3,
+      "phase_statuses": [
+        {"phase_number": 1, "status": "completed", "timestamp": "2025-12-28T10:00:00Z"},
+        {"phase_number": 2, "status": "completed", "timestamp": "2025-12-28T11:00:00Z"},
+        {"phase_number": 3, "status": "in_progress", "timestamp": "2025-12-28T12:00:00Z"}
+      ]
     }
     ```
   </example_partial>
@@ -385,11 +444,12 @@ temperature: 0.2
   </pre_execution>
 
   <post_execution>
-    - Verify plan file updated with phase statuses
+    - Verify phase_statuses array populated with all phase transitions
     - Verify git commits created for completed phases
     - Verify implementation summary created
     - Verify return format matches subagent-return-format.md
     - Verify no emojis in artifacts
+    - Verify phase_statuses included in return object
   </post_execution>
 </validation_checks>
 
@@ -415,7 +475,7 @@ temperature: 0.2
   </principle_5>
 
   <principle_6>
-    Status tracking: Update plan file with phase status after each phase
+    Status tracking: Collect phase_statuses array and delegate to status-sync-manager
   </principle_6>
 
   <principle_7>
