@@ -375,10 +375,10 @@
 
 
 ### 215. Fix /todo command to remove both heading and body for completed/abandoned tasks
-- **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 2.5 hours
+- **Status**: [PLANNED]
 - **Started**: 2025-12-28
-- **Completed**: 2025-12-28
+- **Planned**: 2025-12-28
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -386,6 +386,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/215_fix_todo_task_removal/reports/research-001.md]
   - Summary: [.opencode/specs/215_fix_todo_task_removal/summaries/research-summary.md]
+- **Plan**: [.opencode/specs/215_fix_todo_task_removal/plans/implementation-001.md]
+- **Plan Summary**: 6-phase specification update (2.5 hours total). Phase 1: Task block structure definition (heading + body boundaries). Phase 2: Block boundary detection (4 patterns with regex). Phase 3: Process steps update (atomic block removal). Phase 4: Post-removal validation (detect orphaned content). Phase 5: Test cases documentation (7 comprehensive tests). Phase 6: Integration testing. Fixes root cause: Stage 4 lacks explicit block structure definition causing heading-only removal and 129+ orphaned lines
 - **Files Affected**:
   - .opencode/command/todo.md
 - **Description**: When /todo was run, it removed only the headings for completed tasks (e.g., "### 192. Fix..." lines) without removing the body of the task (all the metadata lines like Status, Priority, Description, Acceptance Criteria, etc. that follow the heading). This leaves orphaned task bodies in TODO.md (see lines 437-505 as example). Root cause analysis needed: The /todo command's task removal logic in Stage 4 ("PrepareUpdates") currently identifies and removes only the task heading line but does not identify the complete task block structure. A TODO.md task consists of: (1) Heading line: ### NNN. Task title, (2) Body lines (indented with -): Status, dates, priority, dependencies, artifacts, description, acceptance criteria, impact, etc., continuing until the next task heading or section marker. The command must be fixed to: (1) Identify the complete task block (heading + all body lines until next heading/section), (2) Remove the entire block atomically for each completed/abandoned task, (3) Preserve all other content and task numbering. Investigation should confirm this root cause by examining the Stage 4 implementation and then implement a fix that correctly identifies task block boundaries (from heading to next heading or section marker) and removes the complete block.
