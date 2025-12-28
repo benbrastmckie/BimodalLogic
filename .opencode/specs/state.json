@@ -116,6 +116,13 @@
       "type": "bugfix",
       "completed": "2025-12-28",
       "summary": "Fixed 2 termination proof errors by adding noncomputable keyword to generalized_modal_k and generalized_temporal_k"
+    },
+    {
+      "project_number": 206,
+      "project_name": "update_review_command_summaries",
+      "type": "enhancement",
+      "completed": "2025-12-28",
+      "summary": "Added review summary artifacts to /review command with reviewer.md subagent, lazy directory creation, and state.json schema v1.1.0"
     }
   ],
   "repository_health": {
