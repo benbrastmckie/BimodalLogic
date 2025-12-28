@@ -107,31 +107,134 @@ temperature: 0.2
   <step_4>
     <action>Check compilation using lean-lsp-mcp</action>
     <process>
-      1. If lean-lsp-mcp available:
-         a. Send Lean files for compilation
-         b. Receive diagnostics (errors, warnings)
-         c. If errors: Analyze and fix
-         d. Iterate until compilation succeeds
-         e. Max iterations: 5
-      2. If lean-lsp-mcp unavailable:
-         a. Log tool unavailability to errors.json
+      1. Import MCP client:
+         from opencode.tool.mcp.client import check_mcp_server_configured, invoke_mcp_tool
+      
+      2. Check tool availability:
+         mcp_available = check_mcp_server_configured("lean-lsp")
+      
+      3. If mcp_available:
+         for iteration in range(5):  # Max 5 iterations
+           a. Write current Lean code to file
+           
+           b. Invoke diagnostic check:
+              result = invoke_mcp_tool(
+                server="lean-lsp",
+                tool="lean_diagnostic_messages",
+                arguments={"file_path": lean_file_path},
+                timeout=30
+              )
+           
+           c. Handle MCP response:
+              if not result["success"]:
+                # MCP tool failed - fall back to degraded mode
+                Log error: result["error"]
+                Break iteration loop
+                Continue to step 2 (degraded mode)
+           
+           d. Parse diagnostics:
+              diagnostics = result["result"]
+              errors = [d for d in diagnostics if d.get("severity") == 1]
+              warnings = [d for d in diagnostics if d.get("severity") == 2]
+           
+           e. If no errors:
+              Log success: "Compilation succeeded in {iteration+1} iterations"
+              Break iteration loop (success)
+           
+           f. If errors exist:
+              - Analyze error messages:
+                * Extract error locations (line, column)
+                * Extract error types (type mismatch, unknown identifier, etc.)
+                * Extract error messages
+              
+              - Generate fixes based on error types:
+                * Type mismatch: Check expected vs actual types
+                * Unknown identifier: Check imports and namespaces
+                * Syntax error: Review Lean 4 syntax
+                * Tactic failure: Try alternative tactics
+              
+              - Apply fixes to code:
+                * Update problematic lines
+                * Add missing imports
+                * Fix syntax issues
+                * Adjust tactics
+              
+              - Continue to next iteration
+           
+           g. If iteration == 4 and errors still exist:
+              Log failure: "Compilation failed after 5 iterations"
+              Include error details in return
+              Return failed status
+      
+      4. If not mcp_available:
+         a. Log tool unavailability to errors.json:
+            {
+              "type": "tool_unavailable",
+              "code": "MCP_TOOL_UNAVAILABLE",
+              "message": "lean-lsp-mcp not configured or unavailable",
+              "recommendation": "Install lean-lsp-mcp: uvx lean-lsp-mcp"
+            }
+         
          b. Write files without compilation check
-         c. Include warning in return
-         d. Recommend manual compilation check
+         
+         c. Include warning in return:
+            "lean-lsp-mcp unavailable - files written without compilation check"
+         
+         d. Recommend manual compilation:
+            "Run 'lake build' to verify compilation"
     </process>
     <tool_integration>
       lean-lsp-mcp provides:
-      - Compilation checking
-      - Type error diagnostics
-      - Tactic suggestions
-      - Proof state inspection
+      - Compilation checking via lean_diagnostic_messages
+      - Type error diagnostics with line/column info
+      - Proof state inspection via lean_goal
+      - Code execution via lean_run_code
+      
+      Example tool calls:
+      
+      1. Check diagnostics:
+         invoke_mcp_tool(
+           server="lean-lsp",
+           tool="lean_diagnostic_messages",
+           arguments={"file_path": "Logos/Core/Theorem.lean"}
+         )
+      
+      2. Get proof goal:
+         invoke_mcp_tool(
+           server="lean-lsp",
+           tool="lean_goal",
+           arguments={
+             "file_path": "Logos/Core/Theorem.lean",
+             "line": 45,
+             "column": 10
+           }
+         )
+      
+      3. Run code snippet:
+         invoke_mcp_tool(
+           server="lean-lsp",
+           tool="lean_run_code",
+           arguments={"code": "theorem test : True := trivial"}
+         )
     </tool_integration>
     <graceful_degradation>
-      If lean-lsp-mcp unavailable:
-      - Continue with direct file modification
-      - Log error to errors.json with code TOOL_UNAVAILABLE
-      - Return partial status with warning
-      - Recommend installing lean-lsp-mcp
+      If lean-lsp-mcp unavailable or MCP tool invocation fails:
+      
+      1. Continue with direct file modification
+      2. Log error to errors.json with code TOOL_UNAVAILABLE
+      3. Return partial status with warning
+      4. Recommend installing lean-lsp-mcp:
+         "Install with: uvx lean-lsp-mcp"
+      5. Recommend manual compilation:
+         "Run 'lake build' to verify compilation"
+      
+      Error handling for MCP tool failures:
+      - Timeout: Log timeout, fall back to file write
+      - Connection error: Log error, fall back to file write
+      - Tool not found: Log error, fall back to file write
+      - Invalid arguments: Fix arguments and retry once
+      
+      All MCP tool usage is optional - agent never fails due to MCP unavailability
     </graceful_degradation>
     <output>Compilation results or degraded mode warning</output>
   </step_4>

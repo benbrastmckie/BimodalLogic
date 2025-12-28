@@ -243,6 +243,392 @@ For comprehensive searches, use multiple tools in sequence:
 - Uses LeanSearch to find similar successful proofs
 - Generates specific revision recommendations
 
+## Agent Integration Guide
+
+### How to Invoke MCP Tools from Agents
+
+Agents invoke MCP tools using the Python client wrapper located at `.opencode/tool/mcp/client.py`.
+
+#### Import MCP Client
+
+```python
+from opencode.tool.mcp.client import check_mcp_server_configured, invoke_mcp_tool
+```
+
+#### Check Tool Availability
+
+Before invoking MCP tools, check if the server is configured:
+
+```python
+# Check if lean-lsp server is available
+mcp_available = check_mcp_server_configured("lean-lsp")
+
+if mcp_available:
+    # Use MCP tools
+    pass
+else:
+    # Fall back to alternative approach
+    pass
+```
+
+#### Invoke MCP Tools
+
+Use `invoke_mcp_tool()` to call any MCP tool:
+
+```python
+result = invoke_mcp_tool(
+    server="lean-lsp",           # MCP server name from .mcp.json
+    tool="lean_diagnostic_messages",  # Tool name
+    arguments={"file_path": "Logos/Core/Theorem.lean"},  # Tool arguments
+    timeout=30                   # Timeout in seconds (default: 30)
+)
+
+# Check result
+if result["success"]:
+    # Tool invocation succeeded
+    data = result["result"]
+    # Process data
+else:
+    # Tool invocation failed
+    error = result["error"]
+    # Handle error
+```
+
+### Available Tools by Agent
+
+#### lean-implementation-agent
+
+**Primary Tools**:
+- `lean_diagnostic_messages` - Check for compilation errors
+- `lean_goal` - Get proof state at position
+- `lean_run_code` - Test code snippet
+- `lean_build` - Rebuild project
+
+**Usage Pattern**:
+1. Write Lean code
+2. Call `lean_diagnostic_messages` to check for errors
+3. If errors: Analyze and fix
+4. Iterate until compilation succeeds
+
+#### lean-research-agent
+
+**Primary Tools**:
+- `lean_loogle` - Type-based search (if not using local CLI)
+- `lean_leansearch` - Natural language search
+- `lean_local_search` - Local project search
+- `lean_hover_info` - Get documentation
+
+**Usage Pattern**:
+1. Formulate search query
+2. Call appropriate search tool
+3. Parse and rank results
+4. Return relevant theorems
+
+### Tool Invocation Examples
+
+#### Example 1: Check Compilation Errors
+
+```python
+from opencode.tool.mcp.client import invoke_mcp_tool
+
+# Check diagnostics for a Lean file
+result = invoke_mcp_tool(
+    server="lean-lsp",
+    tool="lean_diagnostic_messages",
+    arguments={"file_path": "Logos/Core/Theorem.lean"}
+)
+
+if result["success"]:
+    diagnostics = result["result"]
+    
+    # Filter by severity (1=error, 2=warning, 3=info)
+    errors = [d for d in diagnostics if d.get("severity") == 1]
+    warnings = [d for d in diagnostics if d.get("severity") == 2]
+    
+    if errors:
+        print(f"Found {len(errors)} errors:")
+        for error in errors:
+            line = error["range"]["start"]["line"]
+            message = error["message"]
+            print(f"  Line {line}: {message}")
+    else:
+        print("No compilation errors")
+else:
+    print(f"Error: {result['error']}")
+```
+
+#### Example 2: Get Proof Goal
+
+```python
+# Get proof state at specific position
+result = invoke_mcp_tool(
+    server="lean-lsp",
+    tool="lean_goal",
+    arguments={
+        "file_path": "Logos/Core/Theorem.lean",
+        "line": 45,
+        "column": 10
+    }
+)
+
+if result["success"]:
+    goal_state = result["result"]
+    print(f"Goals: {goal_state.get('goals', [])}")
+    print(f"Hypotheses: {goal_state.get('hypotheses', [])}")
+else:
+    print(f"Error: {result['error']}")
+```
+
+#### Example 3: Run Code Snippet
+
+```python
+# Test a code snippet without writing to file
+result = invoke_mcp_tool(
+    server="lean-lsp",
+    tool="lean_run_code",
+    arguments={
+        "code": "theorem test : True := trivial"
+    }
+)
+
+if result["success"]:
+    output = result["result"]
+    print(f"Code execution result: {output}")
+else:
+    print(f"Error: {result['error']}")
+```
+
+#### Example 4: Search with Loogle
+
+```python
+# Type-based search using lean_loogle
+result = invoke_mcp_tool(
+    server="lean-lsp",
+    tool="lean_loogle",
+    arguments={
+        "query": "?a + ?b = ?b + ?a"
+    }
+)
+
+if result["success"]:
+    results = result["result"]
+    print(f"Found {len(results)} theorems:")
+    for theorem in results[:5]:  # Top 5 results
+        print(f"  - {theorem['name']}: {theorem['type']}")
+else:
+    print(f"Error: {result['error']}")
+```
+
+#### Example 5: Natural Language Search
+
+```python
+# Semantic search using lean_leansearch
+result = invoke_mcp_tool(
+    server="lean-lsp",
+    tool="lean_leansearch",
+    arguments={
+        "query": "theorems about continuity of functions"
+    }
+)
+
+if result["success"]:
+    results = result["result"]
+    for theorem in results[:10]:  # Top 10 results
+        print(f"  - {theorem['name']}")
+        print(f"    {theorem['docstring']}")
+else:
+    print(f"Error: {result['error']}")
+```
+
+### Error Handling Patterns
+
+#### Pattern 1: Graceful Degradation
+
+```python
+from opencode.tool.mcp.client import check_mcp_server_configured, invoke_mcp_tool
+
+# Check availability first
+if check_mcp_server_configured("lean-lsp"):
+    # Use MCP tool
+    result = invoke_mcp_tool(
+        server="lean-lsp",
+        tool="lean_diagnostic_messages",
+        arguments={"file_path": "file.lean"}
+    )
+    
+    if result["success"]:
+        # Process result
+        pass
+    else:
+        # MCP tool failed - fall back
+        print(f"MCP tool failed: {result['error']}")
+        # Use alternative approach (e.g., lake build)
+else:
+    # MCP not available - fall back
+    print("lean-lsp-mcp not available, using lake build")
+    # Use alternative approach
+```
+
+#### Pattern 2: Retry on Timeout
+
+```python
+def invoke_with_retry(server, tool, arguments, max_retries=2):
+    """Invoke MCP tool with retry on timeout."""
+    for attempt in range(max_retries):
+        result = invoke_mcp_tool(
+            server=server,
+            tool=tool,
+            arguments=arguments,
+            timeout=30
+        )
+        
+        if result["success"]:
+            return result
+        
+        # Check if timeout error
+        if "timeout" in result["error"].lower():
+            if attempt < max_retries - 1:
+                print(f"Timeout, retrying ({attempt + 1}/{max_retries})...")
+                continue
+        
+        # Non-timeout error or max retries reached
+        return result
+    
+    return result
+```
+
+#### Pattern 3: Error Logging
+
+```python
+import json
+from pathlib import Path
+
+def log_mcp_error(error_message, error_code="MCP_ERROR"):
+    """Log MCP tool error to errors.json."""
+    errors_file = Path(".opencode/errors.json")
+    
+    error_entry = {
+        "type": "mcp_tool_error",
+        "code": error_code,
+        "message": error_message,
+        "timestamp": datetime.now().isoformat()
+    }
+    
+    # Append to errors.json
+    if errors_file.exists():
+        with open(errors_file, 'r') as f:
+            errors = json.load(f)
+    else:
+        errors = []
+    
+    errors.append(error_entry)
+    
+    with open(errors_file, 'w') as f:
+        json.dump(errors, f, indent=2)
+
+# Usage
+result = invoke_mcp_tool(...)
+if not result["success"]:
+    log_mcp_error(result["error"], "MCP_TOOL_UNAVAILABLE")
+```
+
+### Troubleshooting MCP Tool Invocation
+
+#### Issue 1: Server Not Configured
+
+**Error**: `MCP server 'lean-lsp' not configured or unavailable`
+
+**Solutions**:
+1. Check `.mcp.json` exists in project root
+2. Verify `lean-lsp` server is configured in `.mcp.json`
+3. Check `uvx` command is available: `which uvx`
+4. Install lean-lsp-mcp: `uvx lean-lsp-mcp`
+
+#### Issue 2: Tool Not Found
+
+**Error**: `Tool 'lean_diagnostic_messages' not found`
+
+**Solutions**:
+1. Verify tool name is correct (check lean-lsp-mcp documentation)
+2. Check lean-lsp-mcp version: `uvx lean-lsp-mcp --version`
+3. Update lean-lsp-mcp: `uvx --reinstall lean-lsp-mcp`
+
+#### Issue 3: Timeout
+
+**Error**: `MCP tool invocation timed out`
+
+**Solutions**:
+1. Increase timeout: `invoke_mcp_tool(..., timeout=60)`
+2. Check if Lean LSP server is responsive
+3. Restart Lean LSP server
+4. Check system resources (CPU, memory)
+
+#### Issue 4: Invalid Arguments
+
+**Error**: `Invalid arguments for tool`
+
+**Solutions**:
+1. Check tool documentation for required arguments
+2. Verify argument types (string, int, dict, etc.)
+3. Ensure file paths are absolute or relative to project root
+4. Check argument names match tool specification
+
+### Difference Between CLI Tools and MCP Tools
+
+#### CLI Tools (e.g., Loogle CLI)
+
+**Approach**: Direct subprocess management
+
+```python
+import subprocess
+
+# Start Loogle CLI process
+process = subprocess.Popen(
+    ["/path/to/loogle", "--json", "--interactive"],
+    stdin=subprocess.PIPE,
+    stdout=subprocess.PIPE
+)
+
+# Send query
+process.stdin.write("?a + ?b = ?b + ?a\n")
+process.stdin.flush()
+
+# Read response
+response = process.stdout.readline()
+result = json.loads(response)
+```
+
+**Characteristics**:
+- Direct process control
+- Custom communication protocol
+- Manual lifecycle management
+- Hardcoded binary paths
+
+#### MCP Tools (e.g., lean-lsp-mcp)
+
+**Approach**: MCP protocol via client wrapper
+
+```python
+from opencode.tool.mcp.client import invoke_mcp_tool
+
+# Invoke MCP tool
+result = invoke_mcp_tool(
+    server="lean-lsp",
+    tool="lean_loogle",
+    arguments={"query": "?a + ?b = ?b + ?a"}
+)
+```
+
+**Characteristics**:
+- Standardized MCP protocol
+- Configuration via .mcp.json
+- Automatic lifecycle management
+- Multiple transport options (stdio, HTTP, SSE)
+
+**When to Use Each**:
+- **CLI Tools**: When tool has no MCP server, need direct control, or custom protocol
+- **MCP Tools**: When tool has MCP server, want standardized interface, or need multiple transports
+
 ## Best Practices
 
 1. **Always validate with LSP** before writing files
