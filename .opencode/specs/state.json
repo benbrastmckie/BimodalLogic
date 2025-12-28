@@ -173,8 +173,12 @@
   },
   "recent_activities": [
     {
-      "timestamp": "2025-12-27T16:36:34Z",
-      "activity": "Marked task 192 as RESEARCHED: GeneralizedNecessitation.lean termination proof fix identified (trivial: add noncomputable keyword)"
+      "timestamp": "2025-12-27T00:40:00Z",
+      "activity": "Marked task 200 as RESEARCHED: Command-specific status marker review completed - all 10 acceptance criteria validated (PASS)"
+    },
+    {
+      "timestamp": "2025-12-28T00:30:00Z",
+      "activity": "Created task 201: Implement /todo command archival feature for completed and abandoned tasks (6 hours, high priority)"
     },
     {
       "timestamp": "2025-12-27T23:45:00Z",
@@ -245,7 +249,9 @@
     {
       "project_number": 200,
       "title": "Review command-specific status marker implementation for consistency",
-      "status": "not_started",
+      "status": "researched",
+      "started": "2025-12-27",
+      "completed": "2025-12-27",
       "priority": "high",
       "language": "markdown"
     },
