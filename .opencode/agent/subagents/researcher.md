@@ -129,36 +129,17 @@ temperature: 0.3
   </step_4>
 
   <step_5>
-    <action>Create research summary</action>
+    <action>Validate artifact and return standardized result</action>
     <process>
-      1. Create summaries subdirectory (lazy creation)
-      2. Write concise summary: summaries/research-summary.md
-      3. Include:
-         - 2-3 sentence overview
-         - Key findings (bullet points)
-         - Top recommendations (bullet points)
-         - Link to full report
-      4. Keep summary under 500 words
-      5. No emojis in summary
-    </process>
-    <validation>Summary captures essential findings</validation>
-    <output>Research summary artifact</output>
-  </step_5>
-
-  <step_6>
-    <action>Validate artifacts and return standardized result</action>
-    <process>
-      1. Validate all artifacts created successfully:
+      1. Validate research artifact created successfully:
          a. Verify research-001.md exists on disk
          b. Verify research-001.md is non-empty (size > 0)
-         c. Verify research-summary.md exists on disk
-         d. Verify research-summary.md is non-empty (size > 0)
-         e. Verify summary within token limit (<100 tokens, ~400 chars)
-         f. If validation fails: Return failed status with error
+         c. If validation fails: Return failed status with error
       2. Format return following subagent-return-format.md
-      3. List all artifacts created (report, summary) with validated flag
-      4. Include brief summary of findings (3-5 sentences, <100 tokens):
-         - Keep concise for orchestrator context window
+      3. List research report artifact (NO summary artifact - report is single file)
+      4. Include brief summary of findings in summary field (3-5 sentences, <100 tokens):
+         - This is METADATA in return object, NOT a separate artifact file
+         - Keep concise for orchestrator context window protection
          - Focus on key findings count and recommendations
          - Avoid verbose content duplication
       5. Include session_id from input
@@ -166,12 +147,11 @@ temperature: 0.3
       7. Return status completed
     </process>
     <validation>
-      Before returning (Step 6):
-      - Verify all artifacts created successfully
+      Before returning (Step 5):
       - Verify research-001.md exists and is non-empty
-      - Verify research-summary.md exists and is non-empty
-      - Verify summary within token limit (<100 tokens, ~400 chars)
+      - Verify summary field in return object is brief (<100 tokens, ~400 chars)
       - Return validation result in metadata field
+      - NO summary artifact validation (not created)
       
       If validation fails:
       - Log validation error with details
@@ -179,21 +159,32 @@ temperature: 0.3
       - Include error in errors array with type "validation_failed"
       - Recommendation: "Fix artifact creation and retry"
     </validation>
-    <output>Standardized return object with validated artifacts and brief summary</output>
-  </step_6>
+    <context_window_protection>
+      Research creates 1 artifact (report only). Summary is returned as metadata
+      in the return object summary field, NOT as a separate artifact file.
+      
+      This protects the orchestrator's context window from bloat while providing
+      necessary metadata for task tracking.
+      
+      Reference: artifact-management.md "Context Window Protection via Metadata Passing"
+    </context_window_protection>
+    <output>Standardized return object with validated research report and brief summary metadata</output>
+  </step_5>
 </process_flow>
 
 <constraints>
   <must>Create project directory and subdirectories lazily (only when writing)</must>
   <must>Follow markdown formatting standards</must>
   <must>Include citations for all sources</must>
-  <must>Validate artifacts before returning (existence, non-empty, token limit)</must>
+  <must>Validate artifact before returning (existence, non-empty)</must>
   <must>Return standardized format per subagent-return-format.md</must>
+  <must>Return brief summary as metadata in summary field (<100 tokens)</must>
   <must>Complete within 3600s (1 hour timeout)</must>
-  <must_not>Include emojis in reports or summaries</must_not>
+  <must_not>Create summary artifact (report is single file, self-contained)</must_not>
+  <must_not>Include emojis in reports</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Create directories before writing files</must_not>
-  <must_not>Return without validating artifacts</must_not>
+  <must_not>Return without validating artifact</must_not>
 </constraints>
 
 <output_specification>
@@ -201,17 +192,12 @@ temperature: 0.3
     ```json
     {
       "status": "completed",
-      "summary": "Research completed on {topic}. Found {N} key insights. Created detailed report and summary.",
+      "summary": "Research completed on {topic}. Found {N} key insights across {M} sources. Identified {K} recommendations for implementation.",
       "artifacts": [
         {
           "type": "research",
           "path": ".opencode/specs/{task_number}_{topic_slug}/reports/research-001.md",
           "summary": "Detailed research report with findings and citations"
-        },
-        {
-          "type": "summary",
-          "path": ".opencode/specs/{task_number}_{topic_slug}/summaries/research-summary.md",
-          "summary": "Concise summary of key findings and recommendations"
         }
       ],
       "metadata": {
@@ -219,7 +205,8 @@ temperature: 0.3
         "duration_seconds": 1250,
         "agent_type": "researcher",
         "delegation_depth": 1,
-        "delegation_path": ["orchestrator", "research", "researcher"]
+        "delegation_path": ["orchestrator", "research", "researcher"],
+        "validation_result": "passed"
       },
       "errors": [],
       "next_steps": "Review research findings and create implementation plan",
@@ -227,25 +214,21 @@ temperature: 0.3
     }
     ```
     
-    Note: Summary field must be brief (3-5 sentences, <100 tokens) to protect
-    orchestrator context window. Full research content is in artifact files.
+    Note: Creates 1 artifact (report only). Summary field is metadata (<100 tokens)
+    returned in return object, NOT a separate artifact file. This protects the
+    orchestrator context window from bloat. Full research content is in report artifact.
   </format>
 
   <example>
     ```json
     {
       "status": "completed",
-      "summary": "Research completed on LeanSearch API integration. Found official REST API with comprehensive documentation. Identified 3 integration approaches with pros/cons. Created detailed report and summary.",
+      "summary": "Research completed on LeanSearch API integration. Found official REST API with comprehensive documentation. Identified 3 integration approaches with pros/cons.",
       "artifacts": [
         {
           "type": "research",
           "path": ".opencode/specs/195_leansearch_api_integration/reports/research-001.md",
-          "summary": "Detailed analysis of LeanSearch REST API with code examples"
-        },
-        {
-          "type": "summary",
-          "path": ".opencode/specs/195_leansearch_api_integration/summaries/research-summary.md",
-          "summary": "Key findings and recommended integration approach"
+          "summary": "Detailed analysis of LeanSearch REST API with code examples and integration approaches"
         }
       ],
       "metadata": {
@@ -253,7 +236,8 @@ temperature: 0.3
         "duration_seconds": 1850,
         "agent_type": "researcher",
         "delegation_depth": 1,
-        "delegation_path": ["orchestrator", "research", "researcher"]
+        "delegation_path": ["orchestrator", "research", "researcher"],
+        "validation_result": "passed"
       },
       "errors": [],
       "next_steps": "Create implementation plan for REST API integration approach",
@@ -300,7 +284,7 @@ temperature: 0.3
         {
           "type": "research",
           "path": ".opencode/specs/195_topic/reports/research-001.md",
-          "summary": "Partial research report covering 2 subtopics"
+          "summary": "Partial research report covering 2 of 4 subtopics"
         }
       ],
       "metadata": {
@@ -332,11 +316,12 @@ temperature: 0.3
   </pre_execution>
 
   <post_execution>
-    - Verify all artifacts created successfully
+    - Verify research report created successfully
     - Verify report includes citations
-    - Verify summary is concise (under 500 words)
+    - Verify summary field in return object is concise (<100 tokens, ~400 chars)
     - Verify return format matches subagent-return-format.md
-    - Verify no emojis in artifacts
+    - Verify no emojis in report
+    - Verify NO summary artifact created (report is single file)
   </post_execution>
 </validation_checks>
 

@@ -161,6 +161,16 @@ temperature: 0.2
       4. No emojis in summary
     </process>
     <validation>Summary is comprehensive and actionable</validation>
+    <context_window_protection>
+      Task executor creates N+1 artifacts:
+      - N implementation files (from all phases)
+      - 1 summary artifact (implementation-summary-YYYYMMDD.md)
+      
+      Summary artifact required for multi-file, multi-phase outputs to provide
+      unified overview. This protects orchestrator context window from reading N files.
+      
+      Reference: artifact-management.md "Context Window Protection via Metadata Passing"
+    </context_window_protection>
     <output>Implementation summary artifact</output>
   </step_5>
 

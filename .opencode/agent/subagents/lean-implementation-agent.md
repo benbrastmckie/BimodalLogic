@@ -260,6 +260,16 @@ temperature: 0.2
          f. Follow artifact-management.md summary standard
     </process>
     <validation>All Lean files and summary artifact written successfully</validation>
+    <context_window_protection>
+      Lean implementation creates N+1 artifacts:
+      - N Lean files (implementation code)
+      - 1 summary artifact (implementation-summary-YYYYMMDD.md)
+      
+      Summary artifact required for multi-file outputs to provide unified overview.
+      This protects orchestrator context window from reading N Lean files.
+      
+      Reference: artifact-management.md "Context Window Protection via Metadata Passing"
+    </context_window_protection>
     <output>Final Lean implementation files and summary artifact path</output>
   </step_5>
 

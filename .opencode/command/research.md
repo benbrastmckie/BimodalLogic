@@ -193,11 +193,21 @@ Context Loaded:
     <validation_delegation>
       Verify researcher returned validation success:
         - Check researcher return metadata for validation_result
-        - Verify all artifacts validated (exist, non-empty, token limit)
+        - Verify research artifact validated (exists, non-empty)
+        - Expect 1 artifact: research report only (NO summary artifact)
+        - Summary returned as metadata in return object, not as artifact
         - If validation failed: Abort update, return error to user
     </validation_delegation>
+    <artifact_linking>
+      Link 1 artifact in TODO.md:
+        - Research Report: {report_path}
+      
+      NO summary artifact link (summary is metadata in return object)
+      
+      Reference: artifact-management.md "Context Window Protection via Metadata Passing"
+    </artifact_linking>
     <git_commit>
-      Scope: Research artifacts + TODO.md + state.json + project state.json
+      Scope: Research report + TODO.md + state.json + project state.json
       Message: "task {number}: research completed"
       
       Commit only if status == "completed"
@@ -226,11 +236,10 @@ Context Loaded:
     <return_format>
       Research completed for task {number}
       
-      {brief_summary from research agent (3-5 sentences)}
+      {brief_summary from research agent (3-5 sentences, <100 tokens)}
       
-      Artifacts created:
+      Artifact created:
       - Research Report: {report_path}
-      - Research Summary: {summary_path}
       
       Task marked [RESEARCHED].
       
@@ -246,10 +255,13 @@ Context Loaded:
       Resume with: /research {number}
     </return_format>
     <context_window_protection>
-      CRITICAL: Return only brief summary (3-5 sentences) and artifact paths.
+      CRITICAL: Return only brief summary (3-5 sentences, <100 tokens) and artifact path.
       DO NOT include full research report content.
-      Full content is in artifact files for user to review separately.
+      Summary is metadata from return object, NOT a separate artifact file.
+      Full research content is in report artifact for user to review separately.
       This protects orchestrator context window from bloat.
+      
+      Reference: artifact-management.md "Context Window Protection via Metadata Passing"
     </context_window_protection>
   </stage>
 </workflow_execution>

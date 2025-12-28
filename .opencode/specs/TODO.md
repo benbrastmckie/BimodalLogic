@@ -304,13 +304,36 @@
 - **Impact**: CRITICAL - Ensures the lean-lsp-mcp integration created in task 212 actually works during Lean implementations. Without this fix, all Lean-specific tooling (real-time compilation checking, proof verification, LSP diagnostics) remains unusable despite the infrastructure being built. Blocks effective Lean proof implementation and verification workflow.
 
 ### 219. Implement the long-term solution to restructure module hierarchy separating semantic from proof system properties
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
+- **Effort**: 12-14 hours (Phase 1), 34-40 hours (complete restructuring)
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
+- **Priority**: High
 - **Language**: lean
 - **Blocking**: None
-- **Dependencies**: None
-- **Description**: Implement the long-term solution discussed in /home/benjamin/Projects/ProofChecker/.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/circular-dependency-analysis.md to restructure the module hierarchy to separate semantic properties from proof system properties, following established patterns from Lean's mathlib.
+- **Dependencies**: 213
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/219_restructure_module_hierarchy/reports/research-001.md]
+  - Summary: [.opencode/specs/219_restructure_module_hierarchy/summaries/research-summary.md]
+- **Files Affected**:
+  - Logos/Core/Semantics/Truth.lean (remove TemporalDuality namespace, reduce from 1278 to ~600 lines)
+  - Logos/Core/Metalogic/SoundnessLemmas.lean (new file, ~680 lines of bridge theorems)
+  - Logos/Core/Metalogic/Soundness.lean (update imports, complete temporal_duality case)
+  - Documentation/Architecture/MODULE_HIERARCHY.md (new or updated)
+- **Description**: Restructure the Logos module hierarchy to resolve the circular dependency between Truth.lean and Soundness.lean identified in task 213, and establish clean separation between pure semantic properties and proof system properties following Lean 4/mathlib best practices. **Problem**: Truth.lean (1278 lines) currently mixes pure semantic definitions (truth_at, is_valid) with metatheoretic bridge theorems (TemporalDuality namespace) that connect the proof system to semantics. This creates a circular dependency: Truth.lean imports Derivation.lean/Axioms.lean (for bridge theorems) → Derivation/Axioms import Soundness.lean (for soundness theorem) → Soundness.lean imports Truth.lean (for semantic definitions). **Solution**: Extract the ~680-line TemporalDuality namespace containing bridge theorems (axiom_swap_valid, derivable_implies_swap_valid, swap_axiom_*_valid lemmas, *_preserves_swap_valid lemmas) to a new Metalogic/SoundnessLemmas.lean module. This creates a clean layered dependency: Soundness.lean → SoundnessLemmas.lean → Truth.lean (pure semantics), eliminating the circular dependency. **Approach**: Apply mathlib4 architectural patterns for module organization: (1) Separation of concerns - pure semantic vs metatheoretic properties in separate modules, (2) Bridge modules - dedicated modules for cross-layer connections positioned between layers, (3) Layered dependency hierarchy - clear one-directional dependencies from metatheory → bridges → semantics, (4) Module size guidelines - target 500-1000 lines per module for maintainability.
+- **Research Findings** (2025-12-28): Comprehensive research completed analyzing the circular dependency root cause, mathlib4 organizational patterns, and detailed refactoring strategy. **Root Cause**: Truth.lean violates separation of concerns by mixing two distinct responsibilities: (a) Pure semantic definitions (truth_at predicate, is_valid, TimeShift lemmas) that depend only on Formula and TaskModel, and (b) Metatheoretic bridge theorems (TemporalDuality namespace) that connect DerivationTree (proof system) to is_valid (semantics), requiring imports of Derivation.lean and Axioms.lean. This dual responsibility creates the circular dependency. **Mathlib4 Patterns**: Researched mathlib4 architecture finding consistent patterns: (1) Pure definition modules contain only core definitions and properties intrinsic to those definitions, (2) Bridge modules handle cross-layer connections (e.g., topology/metric_space/algebra bridges), (3) Clear layering with dependencies flowing in one direction (higher layers → bridge layers → core layers), (4) Module size targets of 500-1000 lines for readability and compile time. **Detailed Solution**: Create Metalogic/SoundnessLemmas.lean (~680 lines) containing: axiom_swap_valid (all axioms remain valid after swap), derivable_implies_swap_valid (main bridge theorem connecting derivability to semantic validity), 8 swap_axiom_*_valid lemmas (MT, M4, MB, T4, TA, TL, MF, TF axioms preserve validity under swap), 5 *_preserves_swap_valid lemmas (mp, modal_k, temporal_k, weakening, necessitation preserve swap validity). Imports: Truth.lean (for truth_at, is_valid), Derivation.lean (for DerivationTree), Axioms.lean (for Axiom). Modify Truth.lean: Remove TemporalDuality namespace (680 lines), remove imports of Derivation.lean and Axioms.lean, reduce to ~600 lines of pure semantics. Modify Soundness.lean: Add import of SoundnessLemmas.lean, update temporal_duality case to use SoundnessLemmas.derivable_implies_swap_valid, complete proof (remove sorry). **Implementation Plan**: 3-phase approach with 34-40 hours total effort. Phase 1 (12-14 hours): Extract bridge theorems to resolve circular dependency - immediate fix enabling soundness proof completion. Phase 2 (12-14 hours): Further separate Truth.lean by extracting derived semantic properties to Metalogic/SemanticTheorems.lean. Phase 3 (10-12 hours): Enforce layering policy with import restrictions and create MODULE_HIERARCHY.md documentation. **Risk Assessment**: Medium overall risk with proper testing - main risks are unintended dependency breakage (mitigated by comprehensive build verification) and test failures (mitigated by preserving all theorem names and signatures during refactoring).
+- **Acceptance Criteria**:
+  - [ ] Phase 1 completed: SoundnessLemmas.lean created with ~680 lines of bridge theorems extracted from Truth.lean
+  - [ ] TemporalDuality namespace fully moved from Truth.lean to SoundnessLemmas.lean with all 14 lemmas
+  - [ ] Truth.lean updated: TemporalDuality namespace removed, Derivation.lean and Axioms.lean imports removed, reduced to ~600 lines
+  - [ ] Soundness.lean updated: SoundnessLemmas.lean imported, temporal_duality case uses SoundnessLemmas.derivable_implies_swap_valid
+  - [ ] Circular dependency eliminated: Truth.lean no longer imports proof system modules, verified with lake build dependency analysis
+  - [ ] All modules compile successfully: lake build completes without errors
+  - [ ] All existing tests pass: lake exe test shows 100% pass rate without test modifications
+  - [ ] New tests created: SoundnessLemmas.lean has comprehensive test coverage in LogosTest/Core/Metalogic/SoundnessLemmasTest.lean
+  - [ ] Documentation created: Documentation/Architecture/MODULE_HIERARCHY.md documents the new layered architecture with dependency diagrams
+  - [ ] SORRY_REGISTRY.md updated: Remove temporal_duality sorry entry if proof is completed using bridge theorems
+- **Impact**: CRITICAL - Resolves the fundamental architectural issue blocking soundness proof completion and proper module organization. **Immediate Benefits**: (1) Eliminates circular dependency enabling clean builds and proper module imports, (2) Enables completion of Soundness.lean temporal_duality proof using the extracted bridge theorems, (3) Resolves task 213 blocker by providing the architectural solution identified in circular-dependency-analysis.md. **Long-term Benefits**: (1) Establishes clean module hierarchy following Lean 4/mathlib best practices for scalability, (2) Improves maintainability by separating pure semantic concerns from metatheoretic bridge code (each module has single clear responsibility), (3) Reduces cognitive load by organizing code into focused modules of appropriate size (500-1000 lines), (4) Enables future layer extensions (epistemic, normative, explanatory) by providing clear layering pattern to follow, (5) Facilitates team collaboration by establishing clear module boundaries and dependency rules. **Effort**: Phase 1 (12-14 hours) provides immediate value by resolving circular dependency and enabling soundness proof. Complete 3-phase implementation (34-40 hours) establishes production-ready architecture for long-term project success.
 
 ### 203. Add --complex flag to /research for subtopic subdivision with summary
 - **Effort**: TBD
@@ -371,6 +394,34 @@
   - [ ] Findings enable task 193 to proceed to completion (blocked - proof strategy unsuccessful)
 - **Impact**: Attempted to unblock task 193 completion but proof remains incomplete. Essential investigation conducted but further expert consultation or alternative proof strategy needed for removing the sorry from is_valid_swap_involution theorem.
 - **Key Findings**: Solution attempted using `simp only [Formula.swap_past_future, Formula.swap_past_future_involution] at h_swap` pattern from Perpetuity/Helpers.lean line 74, but pattern did not work for this specific theorem. Further investigation needed.
+
+### 205. Implement Lean tool usage verification and monitoring system
+ **Effort**: 6-8 hours
+ **Status**: [ABANDONED]
+ **Priority**: Medium
+ **Language**: markdown
+ **Blocking**: None
+ **Dependencies**: 208
+ **Files Affected**:
+  - .opencode/command/research.md
+  - .opencode/command/implement.md
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/context/common/standards/lean-tool-verification.md (new)
+  - .opencode/specs/monitoring/ (new directory structure)
+ **Description**: Design and implement a comprehensive monitoring and verification system to detect and validate that Lean-specific tools (lean-lsp-mcp, Loogle, LeanExplore, LeanSearch) are being correctly used by the appropriate commands and agents when processing Lean tasks. The system should provide visibility into tool usage patterns, detect routing errors, track tool availability issues, and identify opportunities for improvement. This includes creating verification methods, logging standards, monitoring dashboards, and automated health checks to ensure the system is working optimally.
+ **Acceptance Criteria**:
+  - [ ] Verification method identified for detecting lean-lsp-mcp usage in /implement command for Lean tasks
+  - [ ] Verification method identified for detecting Loogle usage in /research command for Lean tasks
+  - [ ] Automated tool availability checks implemented (binary existence, process health, API connectivity)
+  - [ ] Tool usage logging standardized in lean-research-agent and lean-implementation-agent return formats
+  - [ ] Monitoring dashboard or report created showing tool usage metrics per command execution
+  - [ ] Health check command or script created to verify routing is working correctly
+  - [ ] Documentation created explaining verification methods and monitoring approach
+  - [ ] Error detection implemented for cases where tools should be used but aren't (routing failures)
+  - [ ] Recommendations provided for system improvements based on monitoring data
+  - [ ] All verification methods tested with real command executions on Lean tasks
+ **Impact**: Provides visibility and confidence that the Lean tool integration is working correctly, enables early detection of routing or configuration issues, and identifies opportunities to improve the system's effectiveness with Lean-specific research and implementation workflows.
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
@@ -681,6 +732,107 @@
   - [ ] Documentation updated to explain --divide flag behavior
 - **Impact**: Provides more flexible research workflow - simple research creates focused reports without overhead of summary compilation, while complex research can be divided into manageable subtopics with a summary overview.
 
+
+### 210. Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md
+- **Effort**: TBD
+- **Status**: [ABANDONED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/context/common/system/artifact-management.md (reference)
+  - .opencode/context/common/system/status-markers.md (reference)
+  - .opencode/context/common/system/state-schema.md (reference)
+- **Description**: Both lean-research-agent and lean-implementation-agent need comprehensive fixes to ensure they follow all three key specifications: artifact-management.md (artifact storage and lazy directory creation), status-markers.md (status updates and artifact link formatting), and state-schema.md (state.json updates). Current issues: (1) lean-research-agent uses incorrect artifact link format in TODO.md (`**Research**: [Research Report](relative/path)` instead of `**Research Artifacts**:` section with `Main Report: [.opencode/specs/full/path]` format), (2) Both agents may not follow lazy directory creation (create project root and subdirs only when writing artifacts, not pre-create), (3) Both agents may not create required summary artifacts (<100 tokens, 3-5 sentences) per artifact-management.md, (4) Both agents may not update status correctly per status-markers.md workflows ([RESEARCHING] → [RESEARCHED] for research, [IMPLEMENTING] → [COMPLETED]/[PARTIAL]/[BLOCKED] for implementation), (5) Both agents may not update state.json correctly per state-schema.md (active_projects, artifacts arrays, timestamps). Investigation needed: Review both agent specs, identify all deviations from the three specifications, create comprehensive fixes ensuring full compliance with artifact storage, status updates, and state tracking.
+- **Acceptance Criteria**:
+  - [ ] lean-research-agent artifact link format fixed to use **Research Artifacts**: section with Main Report/Summary subsections
+  - [ ] lean-research-agent uses absolute paths starting with .opencode/specs/ (not relative)
+  - [ ] lean-research-agent uses bare [path] format (not [Name](path) format)
+  - [ ] lean-research-agent follows lazy directory creation (create project root and reports/ only when writing first artifact)
+  - [ ] lean-research-agent creates research-summary.md (3-5 sentences, <100 tokens) per artifact-management.md
+  - [ ] lean-research-agent updates status correctly ([NOT STARTED] → [RESEARCHING] → [RESEARCHED] with timestamps)
+  - [ ] lean-research-agent updates state.json correctly (active_projects with artifacts array, timestamps per state-schema.md)
+  - [ ] lean-implementation-agent follows lazy directory creation (create project root and subdirs only when writing artifacts)
+  - [ ] lean-implementation-agent creates implementation-summary-YYYYMMDD.md (3-5 sentences, <100 tokens) when writing artifacts
+  - [ ] lean-implementation-agent updates status correctly ([NOT STARTED]/[PLANNED] → [IMPLEMENTING] → [COMPLETED]/[PARTIAL]/[BLOCKED] with timestamps)
+  - [ ] lean-implementation-agent updates TODO.md with implementation artifacts using correct format (if it creates artifacts)
+  - [ ] lean-implementation-agent updates state.json correctly (active_projects with artifacts array, modified_files, timestamps)
+  - [ ] Both agents tested with real Lean tasks to verify compliance
+  - [ ] All three specifications (artifact-management.md, status-markers.md, state-schema.md) fully followed
+  - [ ] No regression in other functionality
+  - [ ] Documentation updated if requirements not clearly documented in agent specs
+- **Impact**: Ensures both Lean-specific agents follow all project standards for artifact storage, status tracking, and state management, providing consistency with general-purpose agents and enabling reliable project tracking, lazy directory creation, context window protection (via summaries), and proper state synchronization across TODO.md and state.json.
+
+### 211. Standardize pre-flight and post-flight procedures across research, planning, revision, and implementation workflows ✅
+- **Effort**: 18 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/211_standardize_command_lifecycle_procedures/reports/research-001.md]
+  - Summary: [.opencode/specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md]
+- **Plan**: [.opencode/specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md]
+- **Plan Summary**: 4-phase implementation (18 hours total). Phase 1: Create command-lifecycle.md with 8-stage pattern and variation tables (4h). Phase 2: Update 4 commands to reference lifecycle, reduce from 1,961 to 1,200 lines (6h). Phase 3: Add summary validation to 2 agents, update all 6 agents with lifecycle references (4h). Phase 4: Test all commands with multiple scenarios (4h). Achieves 39% duplication reduction, single source of truth, 100% compliance.
+- **Implementation Summary**: [.opencode/specs/211_standardize_command_lifecycle_procedures/summaries/implementation-summary-20251228.md]
+- **Implementation Artifacts**:
+  - [.opencode/context/common/workflows/command-lifecycle.md]
+  - [.opencode/command/research.md]
+  - [.opencode/command/plan.md]
+  - [.opencode/command/revise.md]
+  - [.opencode/command/implement.md]
+  - [.opencode/agent/subagents/lean-implementation-agent.md]
+  - [.opencode/agent/subagents/task-executor.md]
+  - [.opencode/agent/subagents/researcher.md]
+  - [.opencode/agent/subagents/planner.md]
+  - [.opencode/agent/subagents/lean-research-agent.md]
+  - [.opencode/agent/subagents/implementer.md]
+- **Files Affected**:
+  - .opencode/context/common/workflows/command-lifecycle.md (new - standardized pre/post-flight procedures)
+  - .opencode/command/research.md (update with standardized procedures)
+  - .opencode/command/plan.md (update with standardized procedures)
+  - .opencode/command/revise.md (update with standardized procedures)
+  - .opencode/command/implement.md (update with standardized procedures)
+  - .opencode/agent/subagents/researcher.md (update with standardized procedures)
+  - .opencode/agent/subagents/planner.md (update with standardized procedures)
+  - .opencode/agent/subagents/lean-research-agent.md (update with standardized procedures)
+  - .opencode/agent/subagents/lean-implementation-agent.md (update with standardized procedures)
+  - .opencode/agent/subagents/task-executor.md (update with standardized procedures)
+  - .opencode/agent/subagents/implementer.md (update with standardized procedures)
+- **Description**: Create a unified, standardized approach for pre-flight and post-flight procedures across all commands and agents that conduct research, create or revise plans, or implement plans. Currently these procedures are inconsistently documented across different commands and agents, leading to duplication and potential inconsistencies. The goal is to: (1) Create a new context file (command-lifecycle.md) that defines standard pre-flight procedures (status update to in-progress state per status-markers.md, state.json update per state-schema.md, validation steps) and post-flight procedures (status update to completion state, state.json update, artifact link updates in TODO.md, summary creation, brief return format, git commit creation) that apply to all commands. (2) Specify command-specific differences where they occur (e.g., /research returns research report path only without separate summary, /plan returns plan path, /revise returns new plan version path and updates plan links in TODO.md, /implement returns implementation summary path). (3) Update all affected commands and agents to reference the standardized procedures from command-lifecycle.md, eliminating duplicate documentation. (4) Ensure uniform artifact creation patterns (lazy directory creation, correct artifact link formatting per status-markers.md, state.json updates per state-schema.md). (5) Establish consistent return formats (brief summary + artifact reference, no verbose content in returns per subagent-return-format.md). (6) Ensure all commands that create or modify artifacts create git commits in post-flight before returning to user. (7) Ensure /revise command follows same pre-flight and post-flight pattern as other commands (update TODO.md status to [REVISING] in pre-flight, update to [REVISED] with new plan link in post-flight, update state.json in both pre-flight and post-flight, create git commit before returning). This standardization will ensure consistent behavior across all workflow commands while maintaining clear documentation of command-specific variations.
+- **Acceptance Criteria**:
+  - [ ] New context file created: .opencode/context/common/workflows/command-lifecycle.md
+  - [ ] command-lifecycle.md defines standard pre-flight procedure applicable to all commands (status update, state.json update, validation)
+  - [ ] command-lifecycle.md defines standard post-flight procedure applicable to all commands (status update, state.json update, artifact links, summary creation, git commit, brief return)
+  - [ ] command-lifecycle.md specifies command-specific differences (/research, /plan, /revise, /implement artifact types and return formats)
+  - [ ] command-lifecycle.md includes /revise workflow with [REVISING] → [REVISED] status transitions
+  - [ ] All pre-flight procedures reference status-markers.md for status transitions
+  - [ ] All post-flight procedures reference state-schema.md for state.json updates
+  - [ ] All post-flight procedures create git commit before returning (after artifact creation and status updates)
+  - [ ] All artifact creation follows artifact-management.md (lazy directory creation, summary requirements)
+  - [ ] /research command updated to reference command-lifecycle.md for pre/post-flight, specifies returns research report only, creates git commit in post-flight
+  - [ ] /plan command updated to reference command-lifecycle.md for pre/post-flight, specifies returns plan path, creates git commit in post-flight
+  - [ ] /revise command updated to reference command-lifecycle.md for pre/post-flight, updates TODO.md status to [REVISING] in pre-flight, updates to [REVISED] with new plan link in post-flight, updates state.json in pre-flight and post-flight, creates git commit in post-flight, returns new plan version path
+  - [ ] /implement command updated to reference command-lifecycle.md for pre/post-flight, specifies returns implementation summary path, creates git commit in post-flight
+  - [ ] researcher agent updated to reference command-lifecycle.md procedures
+  - [ ] planner agent updated to reference command-lifecycle.md procedures (handles both /plan and /revise workflows)
+  - [ ] lean-research-agent updated to reference command-lifecycle.md procedures
+  - [ ] lean-implementation-agent updated to reference command-lifecycle.md procedures
+  - [ ] task-executor agent updated to reference command-lifecycle.md procedures
+  - [ ] implementer agent updated to reference command-lifecycle.md procedures
+  - [ ] No duplicate or conflicting procedure documentation across commands/agents
+  - [ ] Clear and consistent approach documented in command-lifecycle.md
+  - [ ] Commands and agents maintain uniform behavior (status updates, state.json updates, artifact creation, git commits, return formats)
+  - [ ] /revise command follows same pre-flight and post-flight pattern as other commands
+  - [ ] Git commits created for /research, /plan, /revise, and /implement commands in post-flight before returning
+  - [ ] All acceptance criteria from original task description met
+- **Impact**: CRITICAL - Establishes unified, consistent workflow procedures across all research, planning, revision, and implementation commands and agents. Eliminates documentation duplication and inconsistencies, ensures uniform status tracking per status-markers.md (including /revise workflow with [REVISING] → [REVISED] transitions), state management per state-schema.md, artifact management per artifact-management.md, and git commit creation in post-flight before returning. Provides single source of truth for pre-flight and post-flight procedures while clearly documenting command-specific variations. Essential for maintaining system consistency as commands and agents evolve. Ensures /revise command follows same pre-flight and post-flight patterns as other commands for consistency.
 
 ### 220. Ensure all commands and agents comply with metadata passing standards for artifact management
 - **Effort**: TBD

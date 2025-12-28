@@ -267,12 +267,11 @@ temperature: 0.3
   </step_3>
 
   <step_4>
-    <action>Create research artifacts</action>
+    <action>Create research artifact</action>
     <process>
-      1. Create project directory structure:
+      1. Create project directory structure (lazy creation):
          specs/{task_number}_{slugified_topic}/
          specs/{task_number}_{slugified_topic}/reports/
-         specs/{task_number}_{slugified_topic}/summaries/
       
       2. Create detailed research report:
          Path: specs/{task_number}_{slugified_topic}/reports/research-001.md
@@ -288,16 +287,7 @@ temperature: 0.3
          - References (documentation links, Zulip threads)
          - Loogle query log (if used)
       
-      3. Create research summary:
-         Path: specs/{task_number}_{slugified_topic}/summaries/research-summary.md
-         Content:
-         - Key findings (bullet points)
-         - Recommended Lean libraries to use
-         - Recommended theorems/tactics
-         - Next steps for implementation
-         - Tool status (Loogle available/unavailable)
-      
-      4. Log Loogle usage (when available):
+      3. Log Loogle usage (when available):
          - Queries executed
          - Hits found per query
          - Errors encountered
@@ -334,9 +324,16 @@ temperature: 0.3
     <lazy_creation>
       Only create directories when writing files
       Don't create empty directory structures
+      Do NOT create summaries/ subdirectory (no summary artifact)
     </lazy_creation>
-    <validation>Artifacts created and valid Markdown</validation>
-    <output>Research report and summary files with Loogle attribution</output>
+    <validation>Research report created and valid Markdown</validation>
+    <context_window_protection>
+      Lean research creates 1 artifact (report only). NO summary artifact created.
+      Summary is returned as metadata in the return object summary field.
+      
+      Reference: artifact-management.md "Context Window Protection via Metadata Passing"
+    </context_window_protection>
+    <output>Research report with Loogle attribution</output>
   </step_4>
 
   <step_5>
@@ -413,19 +410,24 @@ temperature: 0.3
   </step_5>
 
   <step_6>
-    <action>Return standardized result with brief summary</action>
+    <action>Validate artifact and return standardized result with brief summary</action>
     <process>
-      1. Format return following subagent-return-format.md
-      2. List all research artifacts created
-      3. Include brief summary of key findings (3-5 sentences, <100 tokens):
-         - Keep concise for orchestrator context window
+      1. Validate research artifact created successfully:
+         a. Verify research-001.md exists on disk
+         b. Verify research-001.md is non-empty (size > 0)
+         c. If validation fails: Return failed status with error
+      2. Format return following subagent-return-format.md
+      3. List research report artifact (NO summary artifact - report is single file)
+      4. Include brief summary of key findings in summary field (3-5 sentences, <100 tokens):
+         - This is METADATA in return object, NOT a separate artifact file
+         - Keep concise for orchestrator context window protection
          - Focus on counts (definitions, theorems, tactics found)
          - Mention tool usage (Loogle, web search)
          - Avoid verbose content duplication
-      4. Include tool unavailability warning if applicable
-      5. Include session_id from input
-      6. Include metadata (duration, delegation info)
-      7. Return status: completed (normal) or partial (if no findings)
+      5. Include tool unavailability warning if applicable
+      6. Include session_id from input
+      7. Include metadata (duration, delegation info, validation result)
+      8. Return status: completed (normal) or partial (if no findings)
     </process>
     <return_format>
       ```json
@@ -434,14 +436,9 @@ temperature: 0.3
         "summary": "Researched Lean libraries for {topic}. Found {N} relevant definitions, {M} theorems, {K} tactics. Used Loogle for type-based search.",
         "artifacts": [
           {
-            "type": "research_report",
+            "type": "research",
             "path": "specs/{task_number}_{topic}/reports/research-001.md",
-            "summary": "Detailed Lean library research report"
-          },
-          {
-            "type": "research_summary",
-            "path": "specs/{task_number}_{topic}/summaries/research-summary.md",
-            "summary": "Key findings and recommendations"
+            "summary": "Detailed Lean library research report with Loogle findings"
           }
         ],
         "metadata": {
@@ -472,13 +469,23 @@ temperature: 0.3
       }
       ```
       
-      Note: Summary field must be brief (3-5 sentences, <100 tokens) to protect
-      orchestrator context window. warnings array is empty when Loogle is available
-      and working. Only log warnings for LeanExplore/LeanSearch (future tools).
+      Note: Creates 1 artifact (report only). Summary field is metadata (<100 tokens)
+      returned in return object, NOT a separate artifact file. This protects the
+      orchestrator context window from bloat. warnings array is empty when Loogle is
+      available and working. Only log warnings for LeanExplore/LeanSearch (future tools).
       If Loogle unavailable, add warning and set tool_availability.loogle: false.
-      Full research content is in artifact files.
+      Full research content is in report artifact.
     </return_format>
-    <output>Standardized return object with research artifacts</output>
+    <context_window_protection>
+      Lean research creates 1 artifact (report only). Summary is returned as metadata
+      in the return object summary field, NOT as a separate artifact file.
+      
+      This protects the orchestrator's context window from bloat while providing
+      necessary metadata for task tracking.
+      
+      Reference: artifact-management.md "Context Window Protection via Metadata Passing"
+    </context_window_protection>
+    <output>Standardized return object with validated research report and brief summary metadata</output>
   </step_6>
 </process_flow>
 

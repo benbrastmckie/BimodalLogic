@@ -201,6 +201,16 @@ temperature: 0.2
   <must_not>Return without extracting plan metadata</must_not>
 </constraints>
 
+<context_window_protection>
+  Plan creates 1 artifact (plan only). Plan is self-documenting with metadata section,
+  phase breakdown, and estimates. NO summary artifact created.
+  
+  Summary is returned as metadata in the return object summary field, NOT as a
+  separate artifact file. This protects the orchestrator's context window from bloat.
+  
+  Reference: artifact-management.md "Context Window Protection via Metadata Passing"
+</context_window_protection>
+
 <output_specification>
   <format>
     ```json

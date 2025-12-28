@@ -163,7 +163,100 @@ Contains brief summaries for quick reference. **All detailed artifacts MUST have
 9. **Sync TODO.md** with project progress.
 10. **Lean routing**: Use the TODO task `Language` field as the primary Lean intent signal (explicit `--lang` flag overrides; plan `lean:` is secondary). For Lean tasks, route `/implement` to the Lean research subagent when research is requested and the Lean implementation subagent when implementation is requested; validate required MCP servers from `.mcp.json` (at minimum `lean-lsp` via `uvx lean-lsp-mcp`) before creating project roots. If validation fails, return remediation steps and avoid filesystem changes.
 
-## Context Protection
+## Context Window Protection via Metadata Passing
+
+### Core Pattern
+
+**Subagents return artifact links + brief summaries (metadata) to calling agents, NOT full artifact content.** This protects the orchestrator's context window from bloat while maintaining traceability.
+
+### How It Works
+
+1. **Subagent creates artifact** (research report, implementation plan, code files, etc.)
+2. **Subagent validates artifact** (exists, non-empty, within token limits)
+3. **Subagent returns to caller**:
+   - `artifacts` array: List of artifact objects with `type`, `path`, `summary` fields
+   - `summary` field: Brief metadata summary (<100 tokens, ~400 characters)
+   - Full artifact content stays in files, NOT in return object
+
+### Artifact Patterns by Command
+
+Different commands create different artifact patterns based on output complexity:
+
+#### /research: 1 Artifact (Report Only)
+- **Artifacts Created**: 1 file (research report)
+- **Summary Artifact**: NO - Report is single file, self-contained
+- **Return Pattern**: Artifact link + brief summary as metadata in return object
+- **Rationale**: Single-file output doesn't need separate summary artifact
+
+#### /plan: 1 Artifact (Plan Only, Self-Documenting)
+- **Artifacts Created**: 1 file (implementation plan)
+- **Summary Artifact**: NO - Plan is self-documenting with metadata section
+- **Return Pattern**: Artifact link + brief summary as metadata in return object
+- **Rationale**: Plan contains phase breakdown, estimates, and overview - no separate summary needed
+
+#### /revise: 1 Artifact (Revised Plan, Self-Documenting)
+- **Artifacts Created**: 1 file (revised implementation plan)
+- **Summary Artifact**: NO - Revised plan is self-documenting
+- **Return Pattern**: Artifact link + brief summary as metadata in return object
+- **Rationale**: Same as /plan - revised plan is self-documenting
+
+#### /implement: N+1 Artifacts (Files + Summary)
+- **Artifacts Created**: N implementation files + 1 summary artifact
+- **Summary Artifact**: YES - Required for multi-file outputs
+- **Return Pattern**: Artifact links (files + summary) + brief summary as metadata in return object
+- **Rationale**: Multiple implementation files need summary artifact for overview; protects context window from reading N files
+
+### Summary Artifacts vs Summary Metadata
+
+**Summary Artifact** (file on disk):
+- Created for multi-file outputs (e.g., /implement creates N files)
+- Provides detailed overview of all changes across multiple files
+- Path: `summaries/implementation-summary-YYYYMMDD.md`
+- Token limit: <100 tokens (~400 characters)
+- Purpose: Single-file overview of multi-file changes
+
+**Summary Metadata** (field in return object):
+- Returned by ALL subagents in `summary` field of return object
+- Brief description of work done (3-5 sentences, <100 tokens)
+- Purpose: Protect orchestrator context window from full artifact content
+- NOT a separate file - just metadata in return object
+
+### When to Create Summary Artifacts
+
+**Create summary artifact when**:
+- Command creates multiple implementation files (e.g., /implement)
+- Output spans multiple files that need unified overview
+- Reading all files would bloat orchestrator context window
+
+**Do NOT create summary artifact when**:
+- Command creates single file (e.g., /research report, /plan)
+- Single file is self-documenting (e.g., plan with metadata section)
+- File already contains overview/summary section
+
+### Validation Requirements
+
+All subagents MUST validate artifacts before returning:
+1. Verify artifact files exist on disk
+2. Verify artifact files are non-empty (size > 0)
+3. Verify summary artifacts within token limit (<100 tokens, ~400 chars)
+4. Return `validated_artifacts` in return object metadata
+5. If validation fails: Return status "failed" with error details
+
+### Integration with subagent-return-format.md
+
+This pattern is enforced by `subagent-return-format.md`:
+- `summary` field: Brief metadata (<100 tokens)
+- `artifacts` array: List of artifact objects (NOT full content)
+- Orchestrator reads `summary` field, NOT artifact files
+- Artifact files available for user review, not loaded into context
+
+### References
+
+- **Authoritative Standard**: `.opencode/context/common/standards/subagent-return-format.md`
+- **Command Lifecycle**: `.opencode/context/common/workflows/command-lifecycle.md` (Stages 5-6)
+- **Summary Standard**: `.opencode/context/common/standards/summary.md`
+
+## Context Protection (Legacy)
 
 All agents create artifacts in these directories and return only:
 - File path (reference)

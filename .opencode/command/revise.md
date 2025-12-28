@@ -210,7 +210,7 @@ Context Loaded:
     <return_format>
       Plan revised for task {number}
       
-      {brief_summary from planner (3-5 sentences)}
+      {brief_summary from planner (3-5 sentences, <100 tokens)}
       
       Plan artifact:
       - Version {version}: {new_plan_path}
@@ -218,10 +218,16 @@ Context Loaded:
       Task marked [REVISED].
     </return_format>
     <context_window_protection>
-      CRITICAL: Return only brief summary (3-5 sentences) and plan path.
+      CRITICAL: Return only brief summary (3-5 sentences, <100 tokens) and plan path.
       DO NOT include full plan content.
+      Summary is metadata from return object, NOT a separate artifact file.
       Full plan content is in artifact file for user to review separately.
+      
+      Revised plan is self-documenting (like original plan). NO summary artifact created.
+      
       This protects orchestrator context window from bloat.
+      
+      Reference: artifact-management.md "Context Window Protection via Metadata Passing"
     </context_window_protection>
   </stage>
 </workflow_execution>

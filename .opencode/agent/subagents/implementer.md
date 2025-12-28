@@ -126,8 +126,19 @@ temperature: 0.2
          - Key decisions made
          - Testing recommendations
       5. No emojis in summary
+      6. Keep summary within token limit (<100 tokens, ~400 chars)
     </process>
-    <validation>Summary is clear and complete</validation>
+    <validation>Summary is clear, complete, and within token limit</validation>
+    <context_window_protection>
+      Implementation creates N+1 artifacts:
+      - N implementation files (code, documentation, etc.)
+      - 1 summary artifact (implementation-summary-YYYYMMDD.md)
+      
+      Summary artifact required for multi-file outputs to provide unified overview.
+      This protects orchestrator context window from reading N files.
+      
+      Reference: artifact-management.md "Context Window Protection via Metadata Passing"
+    </context_window_protection>
     <output>Implementation summary artifact</output>
   </step_5>
 
@@ -143,7 +154,9 @@ temperature: 0.2
          f. If validation fails: Return failed status with error
       2. Format return following subagent-return-format.md
       3. List all artifacts (modified files + summary) with validated flag
-      4. Include brief summary of changes
+      4. Include brief summary of changes in summary field (metadata, <100 tokens):
+         - This is METADATA in return object, separate from summary artifact
+         - Provides brief overview for orchestrator context window protection
       5. Include session_id from input
       6. Include metadata (duration, delegation info, validation result)
       7. Return status completed
@@ -152,7 +165,8 @@ temperature: 0.2
       Before returning (Step 6):
       - Verify all implementation files exist and are non-empty
       - Verify implementation-summary-{date}.md exists and is non-empty
-      - Verify summary within token limit (<100 tokens, ~400 chars)
+      - Verify summary artifact within token limit (<100 tokens, ~400 chars)
+      - Verify summary field in return object is brief (<100 tokens)
       - Return validation result in metadata field
       
       If validation fails:
@@ -161,7 +175,7 @@ temperature: 0.2
       - Include error in errors array with type "validation_failed"
       - Recommendation: "Fix artifact creation and retry"
     </validation>
-    <output>Standardized return object with validated artifacts</output>
+    <output>Standardized return object with validated artifacts and brief summary metadata</output>
   </step_6>
 </process_flow>
 

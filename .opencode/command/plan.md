@@ -230,12 +230,19 @@ Context Loaded:
       Brief overview must be 3-5 sentences maximum.
       Full details are in the plan artifact file (no separate summary).
     </token_limit>
-    <rationale>
+    <context_window_protection>
       Plan artifact is self-documenting and contains all details.
       Unlike /implement (which creates multiple code files), /plan creates
       ONE artifact (the plan) which serves as its own documentation.
-      No summary artifact needed.
-    </rationale>
+      
+      NO summary artifact created. Summary is returned as metadata in the
+      return object summary field, NOT as a separate file.
+      
+      This protects the orchestrator's context window from bloat while
+      providing necessary metadata for task tracking.
+      
+      Reference: artifact-management.md "Context Window Protection via Metadata Passing"
+    </context_window_protection>
   </stage>
 </workflow_execution>
 

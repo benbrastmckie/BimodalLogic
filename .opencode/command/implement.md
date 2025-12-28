@@ -286,7 +286,7 @@ Context Loaded:
     <return_format>
       Implementation completed for task {number}
       
-      {brief_summary from implementation agent (3-5 sentences)}
+      {brief_summary from implementation agent (3-5 sentences, <100 tokens)}
       
       Artifacts created:
       - Implementation: {file_paths}
@@ -307,10 +307,19 @@ Context Loaded:
       Resume with: /implement {number}
     </return_format>
     <context_window_protection>
-      CRITICAL: Return only brief summary (3-5 sentences) and artifact paths.
+      CRITICAL: Return only brief summary (3-5 sentences, <100 tokens) and artifact paths.
       DO NOT include full implementation code or details.
+      Summary is metadata from return object, NOT just the summary artifact.
       Full content is in artifact files for user to review separately.
-      This protects orchestrator context window from bloat.
+      
+      Implementation creates N+1 artifacts:
+      - N implementation files (code, documentation, etc.)
+      - 1 summary artifact (implementation-summary-YYYYMMDD.md)
+      
+      Summary artifact required for multi-file outputs to provide unified overview.
+      This protects orchestrator context window from reading N files.
+      
+      Reference: artifact-management.md "Context Window Protection via Metadata Passing"
     </context_window_protection>
   </stage>
 </workflow_execution>

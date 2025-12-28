@@ -407,6 +407,43 @@ Research completed and identified that the theorem is fundamentally unprovable. 
 
 ---
 
+### 218. Fix lean-lsp-mcp integration and opencode module import errors
+**Effort**: 0.75 hours
+**Status**: [RESEARCHED]
+**Started**: 2025-12-28
+**Researched**: 2025-12-28
+**Priority**: High
+**Blocking**: None
+**Dependencies**: 212 (completed)
+**Language**: python
+**Research Artifacts**:
+  - Main Report: [.opencode/specs/218_fix_lean_lsp_mcp_integration_and_opencode_module_import_errors/reports/research-001.md]
+**Research Findings** (2025-12-28): CRITICAL DISCOVERY: OpenCode has native MCP support via opencode.json configuration, NOT .mcp.json. Task 212's custom Python MCP client approach is architecturally incompatible - OpenCode agents use natural language tool instructions, not Python imports. The ModuleNotFoundError is a symptom of wrong architectural approach, not missing __init__.py files. Solution requires complete pivot from Python-based integration to configuration-based integration: (1) Create opencode.json with lean-lsp-mcp server configuration, (2) Update lean-implementation-agent.md to use natural language MCP tool instructions instead of Python imports, (3) Remove custom MCP client from task 212 (architecturally incompatible). Proper approach enables 15+ lean-lsp-mcp tools (compile, check-proof, search, etc.) via native OpenCode MCP bridge. Previous plan obsolete - new configuration-based approach estimated 1-2 hours.
+
+**Files Affected**:
+- opencode.json (new, MCP server configuration)
+- .opencode/agent/subagents/lean-implementation-agent.md (update to use MCP tool instructions)
+- .opencode/agent/subagents/lean-research-agent.md (update to use MCP tool instructions)
+- Documentation/UserGuide/MCP_INTEGRATION.md (new, user guide)
+- .opencode/tool/mcp/client.py (mark deprecated, incompatible with OpenCode architecture)
+
+**Description**:
+Research revealed that OpenCode has native MCP (Model Context Protocol) support that makes task 212's custom Python MCP client unnecessary and architecturally incompatible. OpenCode agents interact with MCP servers through natural language tool instructions, not Python imports. The proper integration approach uses opencode.json configuration to register MCP servers, making their tools automatically available to agents. This enables lean-implementation-agent to use lean-lsp-mcp's 15+ tools for real-time compilation checking, proof state inspection, and theorem search during Lean proof implementation.
+
+**Acceptance Criteria**:
+- [ ] opencode.json created with lean-lsp-mcp server configuration
+- [ ] lean-implementation-agent.md updated with MCP tool usage instructions
+- [ ] lean-research-agent.md updated with MCP tool usage instructions  
+- [ ] MCP integration guide created in user documentation
+- [ ] Test Lean task implementation successfully uses lean-lsp-mcp tools
+- [ ] No Python import errors (using configuration-based approach)
+- [ ] Selective tool enablement reduces context window usage
+
+**Impact**:
+CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client to proper OpenCode-native MCP integration. Enables lean-lsp-mcp tools for real-time Lean compilation checking, proof verification, and theorem search. Reduces context window usage by 2000-5000 tokens through selective per-agent tool enablement. Establishes foundation for additional MCP servers (Context7, Grep) to enhance Lean development workflow.
+
+---
+
 ### 210. Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md
 **Effort**: 6-8 hours
 **Status**: [RESEARCHED]
