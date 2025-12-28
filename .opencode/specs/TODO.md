@@ -1,13 +1,13 @@
 # TODO
 
-**Last Updated:** 2025-12-28T22:50:00Z
+**Last Updated:** 2025-12-28T18:18:56Z
 
 ## Overview
 
-- **Total Tasks:** 29
+- **Total Tasks:** 33
 - **Completed:** 0
-- **High Priority:** 16
-- **Medium Priority:** 15
+- **High Priority:** 11
+- **Medium Priority:** 11
 - **Low Priority:** 11
 
 ---
@@ -16,8 +16,6 @@
  
 ### Automation
 
-### 192. ✅ Fix GeneralizedNecessitation.lean termination proofs (2 errors)
-- **Effort**: 0.17 hours (10 minutes)
 - **Status**: [COMPLETED]
 - **Started**: 2025-12-27
 - **Completed**: 2025-12-28
@@ -124,8 +122,6 @@
   - [ ] Examples provided showing typical maintenance report structure
 - **Impact**: Improves maintainability and transparency of the maintenance workflow by standardizing report generation and ensuring comprehensive documentation of maintenance operations.
 
-### 183. ✅ Fix DeductionTheorem.lean build errors (3 errors)
-- **Effort**: 0.5 hours (30 minutes)
 - **Status**: [COMPLETED]
 - **Started**: 2025-12-25
 - **Completed**: 2025-12-28
@@ -323,10 +319,9 @@
 - **Impact**: Enables comprehensive research on complex topics by dividing them into manageable subtopics while protecting the primary agent's context window through summarization. Provides flexibility - simple topics get focused single reports, complex topics get thorough multi-report coverage with summary overview.
 
 ### 209. Research Lean 4 techniques for completing task 193 involution proof
-- **Effort**: 0.5 hours (actual)
-- **Status**: [PLANNED]
+- **Effort**: 3 hours (actual)
+- **Status**: [PARTIAL]
 - **Started**: 2025-12-28
-- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -334,9 +329,16 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/209_research_lean4_involution_techniques/reports/research-001.md]
   - Summary: [.opencode/specs/209_research_lean4_involution_techniques/summaries/research-summary.md]
+- **Plan**: [.opencode/specs/209_research_lean4_involution_techniques/plans/implementation-001.md]
+- **Plan Summary**: Single-phase implementation (30 minutes). Apply proven `simp only` involution pattern from Perpetuity/Helpers.lean to complete `is_valid_swap_involution` theorem. Simple 4-line proof with 95%+ success probability. Research integrated from Loogle CLI findings.
+- **Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/209_research_lean4_involution_techniques/summaries/implementation-summary-20251228.md]
+  - Modified File: Logos/Core/Syntax/Formula.lean (added @[simp] attribute to swap_past_future_involution)
 - **Files Affected**:
-  - Logos/Core/Semantics/Truth.lean (theorem is_valid_swap_involution)
+  - Logos/Core/Syntax/Formula.lean (added @[simp] attribute)
+  - Logos/Core/Semantics/Truth.lean (theorem is_valid_swap_involution remains incomplete)
 - **Description**: Conduct focused research into Lean 4 type theory techniques and proof patterns for completing the is_valid_swap_involution theorem proof in task 193. The theorem is 85% complete with a fully proven helper lemma (truth_at_swap_swap with structural induction across all 6 cases), but the final step of bridging from hypothesis `truth_at ... φ.swap` to goal `truth_at ... φ` using the helper and involution property `φ.swap.swap = φ` has proven more challenging than anticipated. The core issue: truth_at is pattern-matched (structurally recursive), preventing direct formula substitution via propositional equality. Multiple standard approaches failed (direct rewrite, convert/cast, calc-style, intermediate helpers). Research should investigate: (1) Advanced Lean 4 tactics for equality transport with recursive definitions, (2) Alternative proof strategies that avoid involution composition, (3) Consultation resources (Zulip, Lean community, examples from mathlib), (4) Possible reformulation of theorem statement, (5) Similar proofs in mathlib or other Lean 4 projects that handle involutions with pattern-matched definitions.
+- **Implementation Status** (2025-12-28): PARTIAL. Added @[simp] attribute to swap_past_future_involution theorem in Formula.lean. However, the is_valid_swap_involution proof remains incomplete with sorry. The identified simp only pattern from research did not work as expected. Multiple proof strategies attempted (simp only, helper with symmetry, congruence lemmas, calc-style) all failed. The existing truth_at_swap_swap helper lemma is insufficient because it relates φ.swap.swap to φ, not φ.swap to φ. Task 193 remains blocked.
 - **Acceptance Criteria**:
   - [x] Research identifies viable proof strategy for completing is_valid_swap_involution
   - [x] Strategy addresses the pattern-matching + propositional equality transport challenge
@@ -345,14 +347,10 @@
   - [x] Consultation with Lean community conducted if needed (Zulip, forums)
   - [x] Estimated implementation time provided for identified solution
   - [x] Research documented in standard research report format
-  - [x] Findings enable task 193 to proceed to completion
-- **Impact**: Unblocks task 193 completion by identifying the correct Lean 4 proof technique for this challenging type theory problem. Essential for removing the sorry from is_valid_swap_involution theorem and completing the Truth.lean module.
-- **Plan**: [.opencode/specs/209_research_lean4_involution_techniques/plans/implementation-001.md]
-- **Plan Summary**: Single-phase implementation (30 minutes). Apply proven `simp only` involution pattern from Perpetuity/Helpers.lean to complete `is_valid_swap_involution` theorem. Simple 4-line proof with 95%+ success probability. Research integrated from Loogle CLI findings.
-- **Key Findings**: Solution found using `simp only [Formula.swap_past_future, Formula.swap_past_future_involution] at h_swap` pattern already proven in codebase (Perpetuity/Helpers.lean line 74). Simple 4-line proof, 95%+ success probability, 30-minute implementation time. Loogle CLI integration tested and functional.
+  - [ ] Findings enable task 193 to proceed to completion (blocked - proof strategy unsuccessful)
+- **Impact**: Attempted to unblock task 193 completion but proof remains incomplete. Essential investigation conducted but further expert consultation or alternative proof strategy needed for removing the sorry from is_valid_swap_involution theorem.
+- **Key Findings**: Solution attempted using `simp only [Formula.swap_past_future, Formula.swap_past_future_involution] at h_swap` pattern from Perpetuity/Helpers.lean line 74, but pattern did not work for this specific theorem. Further investigation needed.
 
-### 208. ✅ Fix /implement and /research routing to use Lean-specific agents and tools
-- **Effort**: 1.5 hours (actual, estimated 2-3 hours)
 - **Status**: [COMPLETED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
@@ -414,8 +412,6 @@
   - [ ] All verification methods tested with real command executions on Lean tasks
 - **Impact**: Provides visibility and confidence that the Lean tool integration is working correctly, enables early detection of routing or configuration issues, and identifies opportunities to improve the system's effectiveness with Lean-specific research and implementation workflows.
 
-### 206. ✅ Update /review command to create summaries in new project directories
-- **Effort**: 3 hours (estimated 4.5 hours)
 - **Status**: [COMPLETED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
@@ -449,8 +445,6 @@
   - [x] Documentation updated to explain /review artifact creation (state-schema.md updated)
 - **Impact**: Provides persistent review summaries in standardized project directories, enabling historical tracking of repository reviews and protecting the orchestrator context window from verbose review output.
 
-### 207. ✅ Reduce /implement command output verbosity with artifact-based summaries
-- **Effort**: 3 hours (actual, estimated 4.5 hours)
 - **Status**: [COMPLETED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
@@ -828,7 +822,7 @@
 
 ### 210. Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -858,3 +852,56 @@
   - [ ] No regression in other functionality
   - [ ] Documentation updated if requirements not clearly documented in agent specs
 - **Impact**: Ensures both Lean-specific agents follow all project standards for artifact storage, status tracking, and state management, providing consistency with general-purpose agents and enabling reliable project tracking, lazy directory creation, context window protection (via summaries), and proper state synchronization across TODO.md and state.json.
+
+### 211. Standardize pre-flight and post-flight procedures across research, planning, revision, and implementation workflows
+- **Effort**: 18 hours
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/211_standardize_command_lifecycle_procedures/reports/research-001.md]
+  - Summary: [.opencode/specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md]
+- **Files Affected**:
+  - .opencode/context/common/workflows/command-lifecycle.md (new - standardized pre/post-flight procedures)
+  - .opencode/command/research.md (update with standardized procedures)
+  - .opencode/command/plan.md (update with standardized procedures)
+  - .opencode/command/revise.md (update with standardized procedures)
+  - .opencode/command/implement.md (update with standardized procedures)
+  - .opencode/agent/subagents/researcher.md (update with standardized procedures)
+  - .opencode/agent/subagents/planner.md (update with standardized procedures)
+  - .opencode/agent/subagents/lean-research-agent.md (update with standardized procedures)
+  - .opencode/agent/subagents/lean-implementation-agent.md (update with standardized procedures)
+  - .opencode/agent/subagents/task-executor.md (update with standardized procedures)
+  - .opencode/agent/subagents/implementer.md (update with standardized procedures)
+- **Description**: Create a unified, standardized approach for pre-flight and post-flight procedures across all commands and agents that conduct research, create or revise plans, or implement plans. Currently these procedures are inconsistently documented across different commands and agents, leading to duplication and potential inconsistencies. The goal is to: (1) Create a new context file (command-lifecycle.md) that defines standard pre-flight procedures (status update to in-progress state per status-markers.md, state.json update per state-schema.md, validation steps) and post-flight procedures (status update to completion state, state.json update, artifact link updates in TODO.md, summary creation, brief return format, git commit creation) that apply to all commands. (2) Specify command-specific differences where they occur (e.g., /research returns research report path only without separate summary, /plan returns plan path, /revise returns new plan version path and updates plan links in TODO.md, /implement returns implementation summary path). (3) Update all affected commands and agents to reference the standardized procedures from command-lifecycle.md, eliminating duplicate documentation. (4) Ensure uniform artifact creation patterns (lazy directory creation, correct artifact link formatting per status-markers.md, state.json updates per state-schema.md). (5) Establish consistent return formats (brief summary + artifact reference, no verbose content in returns per subagent-return-format.md). (6) Ensure all commands that create or modify artifacts create git commits in post-flight before returning to user. (7) Ensure /revise command follows same pre-flight and post-flight pattern as other commands (update TODO.md status to [REVISING] in pre-flight, update to [REVISED] with new plan link in post-flight, update state.json in both pre-flight and post-flight, create git commit before returning). This standardization will ensure consistent behavior across all workflow commands while maintaining clear documentation of command-specific variations.
+- **Acceptance Criteria**:
+  - [ ] New context file created: .opencode/context/common/workflows/command-lifecycle.md
+  - [ ] command-lifecycle.md defines standard pre-flight procedure applicable to all commands (status update, state.json update, validation)
+  - [ ] command-lifecycle.md defines standard post-flight procedure applicable to all commands (status update, state.json update, artifact links, summary creation, git commit, brief return)
+  - [ ] command-lifecycle.md specifies command-specific differences (/research, /plan, /revise, /implement artifact types and return formats)
+  - [ ] command-lifecycle.md includes /revise workflow with [REVISING] → [REVISED] status transitions
+  - [ ] All pre-flight procedures reference status-markers.md for status transitions
+  - [ ] All post-flight procedures reference state-schema.md for state.json updates
+  - [ ] All post-flight procedures create git commit before returning (after artifact creation and status updates)
+  - [ ] All artifact creation follows artifact-management.md (lazy directory creation, summary requirements)
+  - [ ] /research command updated to reference command-lifecycle.md for pre/post-flight, specifies returns research report only, creates git commit in post-flight
+  - [ ] /plan command updated to reference command-lifecycle.md for pre/post-flight, specifies returns plan path, creates git commit in post-flight
+  - [ ] /revise command updated to reference command-lifecycle.md for pre/post-flight, updates TODO.md status to [REVISING] in pre-flight, updates to [REVISED] with new plan link in post-flight, updates state.json in pre-flight and post-flight, creates git commit in post-flight, returns new plan version path
+  - [ ] /implement command updated to reference command-lifecycle.md for pre/post-flight, specifies returns implementation summary path, creates git commit in post-flight
+  - [ ] researcher agent updated to reference command-lifecycle.md procedures
+  - [ ] planner agent updated to reference command-lifecycle.md procedures (handles both /plan and /revise workflows)
+  - [ ] lean-research-agent updated to reference command-lifecycle.md procedures
+  - [ ] lean-implementation-agent updated to reference command-lifecycle.md procedures
+  - [ ] task-executor agent updated to reference command-lifecycle.md procedures
+  - [ ] implementer agent updated to reference command-lifecycle.md procedures
+  - [ ] No duplicate or conflicting procedure documentation across commands/agents
+  - [ ] Clear and consistent approach documented in command-lifecycle.md
+  - [ ] Commands and agents maintain uniform behavior (status updates, state.json updates, artifact creation, git commits, return formats)
+  - [ ] /revise command follows same pre-flight and post-flight pattern as other commands
+  - [ ] Git commits created for /research, /plan, /revise, and /implement commands in post-flight before returning
+  - [ ] All acceptance criteria from original task description met
+- **Impact**: CRITICAL - Establishes unified, consistent workflow procedures across all research, planning, revision, and implementation commands and agents. Eliminates documentation duplication and inconsistencies, ensures uniform status tracking per status-markers.md (including /revise workflow with [REVISING] → [REVISED] transitions), state management per state-schema.md, artifact management per artifact-management.md, and git commit creation in post-flight before returning. Provides single source of truth for pre-flight and post-flight procedures while clearly documenting command-specific variations. Essential for maintaining system consistency as commands and agents evolve. Ensures /revise command follows same pre-flight and post-flight patterns as other commands for consistency.

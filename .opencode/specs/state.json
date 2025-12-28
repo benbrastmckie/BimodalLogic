@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T23:00:00Z",
-  "next_project_number": 211,
+  "_last_updated": "2025-12-28T18:22:54Z",
+  "next_project_number": 212,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -60,22 +60,31 @@
       "project_number": 209,
       "project_name": "research_lean4_involution_techniques",
       "type": "research",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_partial",
+      "status": "partial",
       "priority": "high",
       "language": "lean",
       "created": "2025-12-28T20:15:00Z",
       "started": "2025-12-28",
       "research_completed": "2025-12-28",
+      "planning_completed": "2025-12-28",
+      "implementation_status": "partial",
+      "completion_percentage": 50,
       "last_updated": "2025-12-28",
       "artifacts": [
         ".opencode/specs/209_research_lean4_involution_techniques/reports/research-001.md",
-        ".opencode/specs/209_research_lean4_involution_techniques/summaries/research-summary.md"
+        ".opencode/specs/209_research_lean4_involution_techniques/summaries/research-summary.md",
+        ".opencode/specs/209_research_lean4_involution_techniques/summaries/implementation-summary-20251228.md"
       ],
-      "planning_completed": "2025-12-28",
       "plan_path": ".opencode/specs/209_research_lean4_involution_techniques/plans/implementation-001.md",
       "estimated_hours": 0.5,
-      "phases": 1
+      "actual_hours": 3,
+      "remaining_hours": 0,
+      "phases": 1,
+      "modified_files": [
+        "Logos/Core/Syntax/Formula.lean"
+      ],
+      "implementation_notes": "Added @[simp] attribute to swap_past_future_involution. Main theorem is_valid_swap_involution remains incomplete with sorry - simp only pattern unsuccessful. Task 193 remains blocked."
     },
     {
       "project_number": 210,
@@ -93,6 +102,18 @@
         ".opencode/specs/210_fix_lean_subagents/reports/research-001.md",
         ".opencode/specs/210_fix_lean_subagents/summaries/research-summary.md"
       ]
+    },
+    {
+      "project_number": 211,
+      "project_name": "standardize_command_lifecycle_procedures",
+      "type": "documentation",
+      "phase": "research",
+      "status": "researching",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2025-12-28T18:14:41Z",
+      "started": "2025-12-28",
+      "last_updated": "2025-12-28T18:20:00Z"
     }
   ],
   "completed_projects": [
@@ -168,6 +189,22 @@
     "review_artifacts": []
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T10:27:41.881727Z",
+      "activity": "Archived 5 completed tasks: 192, 183, 208, 206, 207"
+    },
+    {
+      "timestamp": "2025-12-28T18:22:54Z",
+      "activity": "Marked task 209 as PARTIAL: Added @[simp] attribute to Formula.lean but is_valid_swap_involution proof remains incomplete - simp only pattern unsuccessful (3 hours actual, 0.5 hours estimated)"
+    },
+    {
+      "timestamp": "2025-12-28T23:00:00Z",
+      "activity": "Expanded task 210 scope: Fix both Lean subagents (lean-research-agent and lean-implementation-agent) to follow artifact-management.md, status-markers.md, and state-schema.md (TBD effort, Medium priority)"
+    },
+    {
+      "timestamp": "2025-12-28T18:14:41Z",
+      "activity": "Created task 211: Standardize pre-flight and post-flight procedures across research, planning, and implementation workflows (TBD effort, High priority)"
+    },
     {
       "timestamp": "2025-12-28T23:00:00Z",
       "activity": "Expanded task 210 scope: Fix both Lean subagents (lean-research-agent and lean-implementation-agent) to follow artifact-management.md, status-markers.md, and state-schema.md (TBD effort, Medium priority)"

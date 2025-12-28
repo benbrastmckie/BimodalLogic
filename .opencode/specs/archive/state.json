@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2025-12-28T00:48:31Z",
+  "_last_updated": "2025-12-28T10:27:41.882093Z",
   "archived_projects": [
     {
       "project_number": 126,
@@ -409,6 +409,66 @@
       "summary": "todo_archival_feature",
       "artifacts": {
         "base_path": ".opencode/specs/archive/201_todo_archival_feature/"
+      }
+    },
+    {
+      "project_number": 192,
+      "project_name": "fix_generalized_necessitation_termination",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "archived": "2025-12-28",
+      "summary": "Fix GeneralizedNecessitation.lean termination proofs (2 errors)",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/192_fix_generalized_necessitation_termination/"
+      }
+    },
+    {
+      "project_number": 183,
+      "project_name": "deduction_theorem_fixes",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "archived": "2025-12-28",
+      "summary": "Fix DeductionTheorem.lean build errors (3 errors)",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/183_deduction_theorem_fixes/"
+      }
+    },
+    {
+      "project_number": 208,
+      "project_name": "fix_lean_routing",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "archived": "2025-12-28",
+      "summary": "Fix /implement and /research routing to use Lean-specific agents and tools",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/208_fix_lean_routing/"
+      }
+    },
+    {
+      "project_number": 206,
+      "project_name": "update_review_command_summaries",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "archived": "2025-12-28",
+      "summary": "Update /review command to create summaries in new project directories",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/206_update_review_command_summaries/"
+      }
+    },
+    {
+      "project_number": 207,
+      "project_name": "fix_implement_status_updates",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "archived": "2025-12-28",
+      "summary": "Reduce /implement command output verbosity with artifact-based summaries",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/207_fix_implement_status_updates/"
       }
     }
   ]
