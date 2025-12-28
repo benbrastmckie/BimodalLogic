@@ -1,6 +1,6 @@
 # TODO
 
-**Last Updated:** 2025-12-28T18:18:56Z
+**Last Updated:** 2025-12-28T18:32:12Z
 
 ## Overview
 
@@ -855,7 +855,7 @@
 
 ### 211. Standardize pre-flight and post-flight procedures across research, planning, revision, and implementation workflows
 - **Effort**: 18 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
 - **Priority**: High
@@ -865,6 +865,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/211_standardize_command_lifecycle_procedures/reports/research-001.md]
   - Summary: [.opencode/specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md]
+- **Plan**: [.opencode/specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md]
+- **Plan Summary**: 4-phase implementation (18 hours total). Phase 1: Create command-lifecycle.md with 8-stage pattern and variation tables (4h). Phase 2: Update 4 commands to reference lifecycle, reduce from 1,961 to 1,200 lines (6h). Phase 3: Add summary validation to 2 agents, update all 6 agents with lifecycle references (4h). Phase 4: Test all commands with multiple scenarios (4h). Achieves 39% duplication reduction, single source of truth, 100% compliance.
 - **Files Affected**:
   - .opencode/context/common/workflows/command-lifecycle.md (new - standardized pre/post-flight procedures)
   - .opencode/command/research.md (update with standardized procedures)
