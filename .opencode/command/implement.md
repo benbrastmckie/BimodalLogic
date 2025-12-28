@@ -164,15 +164,38 @@ Context Loaded:
 
   <stage id="2" name="DetermineRouting">
     <action>Route based on language and complexity</action>
+    <critical_importance>
+      CRITICAL: This stage MUST extract the Language field and determine routing.
+      DO NOT skip this stage. DO NOT assume language without extraction.
+      Incorrect routing bypasses Lean-specific tooling (lean-lsp-mcp).
+    </critical_importance>
     <process>
-      1. Check task Language field from TODO.md
-      2. Check for plan existence
-      3. Determine target agent:
-         - Language: lean + has_plan → lean-implementation-agent (phased)
-         - Language: lean + no_plan → lean-implementation-agent (simple)
-         - Language: * + has_plan → task-executor (phased)
-         - Language: * + no_plan → implementer (direct)
-      4. Prepare agent-specific context
+      1. Extract Language field from TODO.md task using explicit bash command:
+         ```bash
+         grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
+         ```
+      2. Validate extraction succeeded (non-empty result)
+      3. If extraction fails: default to "general" and log warning
+      4. Log extracted language: "Task ${task_number} language: ${language}"
+      5. Check for plan existence in TODO.md (look for "Plan:" link)
+      6. Log plan status: "Task ${task_number} has_plan: ${has_plan}"
+      7. Determine target agent using explicit IF/ELSE logic:
+         ```
+         IF language == "lean" AND has_plan == true:
+           agent = "lean-implementation-agent"
+           mode = "phased"
+         ELSE IF language == "lean" AND has_plan == false:
+           agent = "lean-implementation-agent"
+           mode = "simple"
+         ELSE IF language != "lean" AND has_plan == true:
+           agent = "task-executor"
+           mode = "phased"
+         ELSE IF language != "lean" AND has_plan == false:
+           agent = "implementer"
+           mode = "direct"
+         ```
+      8. Log routing decision: "Routing /implement (task ${task_number}, Language: ${language}, has_plan: ${has_plan}) to ${agent} (${mode})"
+      9. Prepare agent-specific context
     </process>
     <routing>
       Language: lean + has_plan → lean-implementation-agent (phased mode)
@@ -180,6 +203,27 @@ Context Loaded:
       Language: * + has_plan → task-executor (multi-phase execution)
       Language: * + no_plan → implementer (direct implementation)
     </routing>
+    <validation>
+      MUST complete before Stage 3:
+      - Language field extracted and logged
+      - Plan existence checked and logged
+      - Routing decision made and logged
+      - Target agent determined
+      - Agent matches language and plan status
+      MUST NOT skip this stage under any circumstances
+    </validation>
+    <pre_invocation_check>
+      Before invoking agent in Stage 4, verify:
+      - Language was extracted in Stage 2
+      - Plan status was checked in Stage 2
+      - Routing decision was logged in Stage 2
+      - Selected agent matches language and plan:
+        * If language == "lean" AND agent NOT IN ["lean-implementation-agent"] → ABORT with error
+        * If language != "lean" AND agent == "lean-implementation-agent" → ABORT with error
+        * If has_plan == true AND agent NOT IN ["lean-implementation-agent", "task-executor"] → ABORT with error
+        * If has_plan == false AND agent NOT IN ["lean-implementation-agent", "implementer"] → ABORT with error
+      If validation fails: Return error "Routing validation failed: language=${language}, has_plan=${has_plan}, agent=${agent}"
+    </pre_invocation_check>
   </stage>
 
   <stage id="3" name="PrepareDelegation">

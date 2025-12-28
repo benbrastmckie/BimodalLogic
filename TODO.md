@@ -43,6 +43,27 @@ Logos has completed its MVP phase with a functional implementation of the TM bim
 
 ## Medium Priority (Complete within 3 months)
 
+### 208. Fix /implement and /research routing to use Lean-specific agents and tools
+- **Effort**: 2-3 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
+- **Priority**: High
+- **Language**: markdown
+- **Plan**: [Implementation Plan](.opencode/specs/208_fix_lean_routing/plans/implementation-001.md)
+- **Implementation Summary**: [Summary](.opencode/specs/208_fix_lean_routing/summaries/implementation-summary-20251228.md)
+- **Files Affected**:
+  - .opencode/command/research.md
+  - .opencode/command/implement.md
+  - .opencode/agent/orchestrator.md
+- **Description**: Fix routing logic in /research and /implement commands to ensure Lean tasks consistently route to lean-implementation-agent and lean-research-agent. Strengthen routing instructions with explicit validation, logging, and pre-invocation checks.
+- **Acceptance Criteria**:
+  - [x] research.md Stage 2 includes explicit validation and logging requirements
+  - [x] implement.md Stage 2 includes IF/ELSE routing logic and validation
+  - [x] orchestrator.md Stages 3-4 include bash extraction and routing validation
+  - [x] Routing decisions logged at all stages
+  - [x] Pre-invocation validation added to prevent incorrect routing
+
 ### 205. Implement Lean tool usage verification and monitoring system
 - **Effort**: 6-8 hours
 - **Status**: [NOT STARTED]

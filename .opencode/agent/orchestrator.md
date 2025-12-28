@@ -139,10 +139,20 @@ User: /research 197
 
 **Action**: Determine language for routing decisions
 
+**Critical Importance**:
+CRITICAL: This stage MUST extract the Language field using explicit bash commands.
+DO NOT skip this stage. DO NOT assume language without extraction.
+Incorrect routing bypasses Lean-specific tooling (lean-lsp-mcp, Loogle).
+
 **Process**:
-1. If task number present: Read task from TODO.md
-2. Extract Language field from task or plan metadata
-3. If no language specified: default to "general"
+1. If task number present: Read task from TODO.md using explicit bash command:
+   ```bash
+   grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
+   ```
+2. Validate extraction succeeded (non-empty result)
+3. If extraction fails or no language specified: default to "general" and log warning
+4. Log extracted language: "Task ${task_number} language: ${language}"
+5. Store language for use in Stage 4
 
 **Language Routing Map**:
 - `lean` → Lean-specific agents (lean-implementation-agent, lean-research-agent)
@@ -150,7 +160,14 @@ User: /research 197
 - `python` → General agents (future: python-specific)
 - `general` → General agents (default)
 
-**Output**: Language identifier
+**Validation**:
+MUST complete before Stage 4:
+- Language field extracted using bash command
+- Extraction result logged
+- Language stored for routing decision
+- If extraction fails: default to "general" logged
+
+**Output**: Language identifier (extracted and logged)
 
 ---
 
@@ -158,38 +175,87 @@ User: /research 197
 
 **Action**: Determine target agent and prepare delegation context
 
+**Critical Importance**:
+CRITICAL: This stage MUST use the language extracted in Stage 3.
+DO NOT skip routing validation. DO NOT default to general agents for Lean tasks.
+Incorrect routing bypasses Lean-specific tooling (lean-lsp-mcp, Loogle).
+
+**Pre-Routing Check**:
+MUST verify Stage 3 completed successfully:
+- Language variable is available from Stage 3
+- Language was logged in Stage 3
+- If language not available: ABORT with error "Stage 3 CheckLanguage did not complete"
+
 **Routing Logic**:
 
 **For /task command**:
 → atomic-task-numberer (get next task number)
+Log: "Routing /task to atomic-task-numberer"
 
 **For /research command**:
-- If Language == "lean" → lean-research-agent
-- Else → researcher (general)
+Use explicit IF/ELSE logic:
+```
+IF language == "lean":
+  agent = "lean-research-agent"
+  Log: "Routing /research (task ${task_number}, Language: lean) to lean-research-agent"
+ELSE:
+  agent = "researcher"
+  Log: "Routing /research (task ${task_number}, Language: ${language}) to researcher"
+```
 
 **For /plan command**:
 → planner (language-agnostic)
+Log: "Routing /plan (task ${task_number}) to planner"
 
 **For /implement command**:
-- If has plan file:
-  - If Language == "lean" → lean-implementation-agent
-  - Else → task-executor (multi-phase)
-- Else (no plan):
-  - If Language == "lean" → lean-implementation-agent (simple mode)
-  - Else → implementer (direct)
+Use explicit IF/ELSE logic for all 4 cases:
+```
+Check for plan existence in TODO.md (look for "Plan:" link)
+Log: "Task ${task_number} has_plan: ${has_plan}"
+
+IF language == "lean" AND has_plan == true:
+  agent = "lean-implementation-agent"
+  mode = "phased"
+  Log: "Routing /implement (task ${task_number}, Language: lean, has_plan: true) to lean-implementation-agent (phased)"
+ELSE IF language == "lean" AND has_plan == false:
+  agent = "lean-implementation-agent"
+  mode = "simple"
+  Log: "Routing /implement (task ${task_number}, Language: lean, has_plan: false) to lean-implementation-agent (simple)"
+ELSE IF language != "lean" AND has_plan == true:
+  agent = "task-executor"
+  mode = "phased"
+  Log: "Routing /implement (task ${task_number}, Language: ${language}, has_plan: true) to task-executor (phased)"
+ELSE IF language != "lean" AND has_plan == false:
+  agent = "implementer"
+  mode = "direct"
+  Log: "Routing /implement (task ${task_number}, Language: ${language}, has_plan: false) to implementer (direct)"
+```
 
 **For /revise command**:
 → planner (with revision context)
+Log: "Routing /revise (task ${task_number}) to planner"
 
 **For /review command**:
 → reviewer
+Log: "Routing /review to reviewer"
 
 **For /todo command**:
 → No delegation (direct execution in command)
+Log: "Executing /todo directly (no delegation)"
 
 **For /errors command**:
 → error-diagnostics-agent (analysis phase)
 → planner (fix plan creation phase)
+Log: "Routing /errors to error-diagnostics-agent → planner"
+
+**Routing Validation**:
+After determining agent, MUST validate:
+- For /research with language=="lean": agent MUST be "lean-research-agent"
+- For /research with language!="lean": agent MUST be "researcher"
+- For /implement with language=="lean": agent MUST be "lean-implementation-agent"
+- For /implement with language!="lean" and has_plan: agent MUST be "task-executor"
+- For /implement with language!="lean" and no plan: agent MUST be "implementer"
+- If validation fails: ABORT with error "Routing validation failed: language=${language}, has_plan=${has_plan}, agent=${agent}"
 
 **Delegation Context Preparation**:
 ```javascript
@@ -207,7 +273,7 @@ User: /research 197
 }
 ```
 
-**Output**: Target agent and delegation context
+**Output**: Target agent and delegation context (with routing decision logged)
 
 ---
 

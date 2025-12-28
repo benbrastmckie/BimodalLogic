@@ -130,17 +130,45 @@ Context Loaded:
 
   <stage id="2" name="CheckLanguage">
     <action>Determine routing based on task language</action>
+    <critical_importance>
+      CRITICAL: This stage MUST extract the Language field and determine routing.
+      DO NOT skip this stage. DO NOT assume language without extraction.
+      Incorrect routing bypasses Lean-specific tooling (lean-lsp-mcp, Loogle).
+    </critical_importance>
     <process>
-      1. Read Language field from TODO.md task
-      2. Determine target agent:
+      1. Extract Language field from TODO.md task using explicit bash command:
+         ```bash
+         grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
+         ```
+      2. Validate extraction succeeded (non-empty result)
+      3. If extraction fails: default to "general" and log warning
+      4. Log extracted language: "Task ${task_number} language: ${language}"
+      5. Determine target agent based on language:
          - Language: lean → lean-research-agent
          - Language: * → researcher (general)
-      3. Prepare agent-specific context
+      6. Log routing decision: "Routing /research (task ${task_number}, Language: ${language}) to ${agent}"
+      7. Prepare agent-specific context
     </process>
     <routing>
       Language: lean → lean-research-agent (LeanExplore, Loogle, LeanSearch)
       Language: * → researcher (web search, documentation)
     </routing>
+    <validation>
+      MUST complete before Stage 3:
+      - Language field extracted and logged
+      - Routing decision made and logged
+      - Target agent determined (lean-research-agent or researcher)
+      - Agent matches language (lean → lean-research-agent, else → researcher)
+    </validation>
+    <pre_invocation_check>
+      Before invoking agent in Stage 4, verify:
+      - Language was extracted in Stage 2
+      - Routing decision was logged in Stage 2
+      - Selected agent matches language:
+        * If language == "lean" AND agent != "lean-research-agent" → ABORT with error
+        * If language != "lean" AND agent == "lean-research-agent" → ABORT with error
+      If validation fails: Return error "Routing validation failed: language=${language}, agent=${agent}"
+    </pre_invocation_check>
   </stage>
 
   <stage id="3" name="PrepareDelegation">
