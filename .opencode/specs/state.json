@@ -87,13 +87,13 @@
         ".opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md",
         ".opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md"
       ],
-      "estimated_hours": 1.5,
+      "estimated_hours": 2.0,
       "research_findings": "CRITICAL DISCOVERY: OpenCode has native MCP support via opencode.json configuration. Task 212's custom Python MCP client is architecturally incompatible - OpenCode agents use natural language tool instructions, not Python imports. ModuleNotFoundError is symptom of wrong architectural approach. Solution: Configuration-based integration using opencode.json with lean-lsp-mcp server registration. Enables 15+ MCP tools for Lean development. Previous __init__.py plan obsolete. New approach: 1-2 hours implementation.",
       "planning_completed": "2025-12-28",
-      "plan_path": ".opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-003.md",
+      "plan_path": ".opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-004.md",
       "plan_metadata": {
-        "phase_count": 4,
-        "estimated_hours": 1.5,
+        "phase_count": 5,
+        "estimated_hours": 2.0,
         "complexity": "low"
       },
       "plan_versions": [
@@ -114,9 +114,15 @@
           "path": ".opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-003.md",
           "created": "2025-12-28T22:32:00Z",
           "reason": "Complete architectural pivot to OpenCode-native MCP configuration based on research-002.md findings"
+        },
+        {
+          "version": 4,
+          "path": ".opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-004.md",
+          "created": "2025-12-28T22:50:00Z",
+          "reason": "Incorporated OpenCode MCP documentation patterns with selective per-agent tool enablement"
         }
       ],
-      "phases": 4
+      "phases": 5
     },
     {
       "project_number": 219,
