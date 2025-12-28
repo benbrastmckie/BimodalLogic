@@ -133,14 +133,18 @@
       "project_number": 192,
       "project_name": "fix_generalized_necessitation_termination",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "lean",
       "created": "2025-12-27T16:36:34Z",
       "started": "2025-12-27",
       "research_completed": "2025-12-27",
-      "last_updated": "2025-12-27"
+      "planning_completed": "2025-12-27",
+      "last_updated": "2025-12-27",
+      "plan_path": ".opencode/specs/192_fix_generalized_necessitation_termination/plans/implementation-001.md",
+      "estimated_hours": 0.17,
+      "phases": 1
     },
     {
       "project_number": 202,

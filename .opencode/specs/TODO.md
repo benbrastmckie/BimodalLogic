@@ -55,8 +55,8 @@
 - **Impact**: Critical bug fix. Without working subagent delegation, most commands are unusable and the entire workflow system is broken. This blocks all development work that relies on /implement, /research, /plan, and other commands.
 
 ### 192. Fix GeneralizedNecessitation.lean termination proofs (2 errors)
-- **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 0.17 hours (10 minutes)
+- **Status**: [PLANNED]
 - **Started**: 2025-12-27
 - **Completed**: 2025-12-27
 - **Priority**: High
@@ -66,6 +66,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/192_fix_generalized_necessitation_termination/reports/research-001.md]
   - Summary: [.opencode/specs/192_fix_generalized_necessitation_termination/summaries/research-summary.md]
+- **Plan**: [Implementation Plan](.opencode/specs/192_fix_generalized_necessitation_termination/plans/implementation-001.md)
+- **Plan Summary**: Single-phase implementation (10 minutes). Add `noncomputable` keyword to two function declarations: `generalized_modal_k` (line 66) and `generalized_temporal_k` (line 101). Both functions depend on `noncomputable def deduction_theorem` and must be marked noncomputable. Trivial fix with zero risk - no logic changes, only computability annotation. Standard Lean 4 pattern for Classical proofs.
 - **Files Affected**:
   - Logos/Core/Theorems/GeneralizedNecessitation.lean
 - **Description**: Fix 2 termination proof errors in GeneralizedNecessitation.lean that are preventing compilation. These errors are blocking the build and need to be resolved to ensure the codebase compiles successfully.
