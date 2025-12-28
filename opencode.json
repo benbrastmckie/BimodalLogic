@@ -16,6 +16,7 @@
   },
   "agent": {
     "lean-implementation-agent": {
+      "mode": "subagent",
       "tools": {
         "lean-lsp-mcp_diagnostic_messages": true,
         "lean-lsp-mcp_goal": true,
@@ -27,6 +28,7 @@
       }
     },
     "lean-research-agent": {
+      "mode": "subagent",
       "tools": {
         "lean-lsp-mcp_loogle": true,
         "lean-lsp-mcp_leansearch": true,
