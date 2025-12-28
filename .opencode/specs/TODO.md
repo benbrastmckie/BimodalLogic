@@ -51,6 +51,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/193_prove_is_valid_swap_involution/reports/research-001.md]
   - Summary: [.opencode/specs/193_prove_is_valid_swap_involution/summaries/research-summary.md]
+  - Task 209 Review: [.opencode/specs/193_prove_is_valid_swap_involution/reports/task209-review-and-revised-plan.md]
+  - Task 209 Summary: [.opencode/specs/193_prove_is_valid_swap_involution/summaries/task209-review-summary.md]
 - **Plan**: [.opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-002.md] (revised 2025-12-28)
 - **Plan Summary**: Single-phase completion (30 minutes, revised from 2 hours). Helper lemma `truth_at_swap_swap` already complete (85% done). Remaining: Add `truth_at_involution` helper (5 lines) and update main theorem to compose helpers (3 lines). Simple solution applying existing helper to `φ.swap`. Very low risk.
 - **Previous Plan**: [.opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md] (original, 85% complete)

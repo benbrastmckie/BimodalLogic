@@ -499,7 +499,9 @@
         ".opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md",
         ".opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-002.md",
         ".opencode/specs/193_prove_is_valid_swap_involution/reports/implementation-001.md",
-        ".opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md"
+        ".opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md",
+        ".opencode/specs/193_prove_is_valid_swap_involution/reports/task209-review-and-revised-plan.md",
+        ".opencode/specs/193_prove_is_valid_swap_involution/summaries/task209-review-summary.md"
       ],
       "modified_files": [
         "Logos/Core/Semantics/Truth.lean"
