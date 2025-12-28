@@ -1,12 +1,12 @@
 # TODO
 
-**Last Updated:** 2025-12-27T22:24:17Z
+**Last Updated:** 2025-12-28T00:15:00Z
 
 ## Overview
 
-- **Total Tasks:** 38
+- **Total Tasks:** 39
 - **Completed:** 14
-- **High Priority:** 14
+- **High Priority:** 15
 - **Medium Priority:** 11
 - **Low Priority:** 11
 
@@ -997,7 +997,7 @@
 
 ### 199. Optimize self-healing feature to prevent context bloat in commands
 - **Effort**: 4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-27
 - **Completed**: 2025-12-27
 - **Priority**: Medium
@@ -1008,7 +1008,8 @@
   - Main Report: [.opencode/specs/199_optimize_self_healing/reports/research-001.md]
   - Summary: [.opencode/specs/199_optimize_self_healing/summaries/research-summary.md]
 - **Plan**: [Implementation Plan](.opencode/specs/199_optimize_self_healing/plans/implementation-001.md)
-- **Plan Summary**: 4-phase implementation plan (4 hours). Phase 1: Reduce self-healing-guide.md to 120-line essential reference (1.5h). Phase 2: Consolidate context-guide.md self-healing content (0.5h). Phase 3: Move schema evolution to state-schema.md (0.5h). Phase 4: Testing and validation (1.5h). Achieves 78% reduction in loaded context (93 → 20 lines) while maintaining full self-healing functionality.
+- **Plan Summary**: 4-phase implementation plan (4 hours). Phase 1: Reduce self-healing-guide.md to 120-line essential reference (1.5h). Phase 2: Consolidate context-guide.md self-healing content (0.5h). Phase 3: Move schema evolution to state-schema.md (0.5h). Phase 4: Testing and validation (1.5h). Achieved 76% reduction in loaded context (115 → 28 lines) in 2 hours.
+- **Implementation Summary**: [.opencode/specs/199_optimize_self_healing/summaries/implementation-summary-20251227.md]
 - **Files Affected**:
   - .opencode/context/common/system/self-healing-guide.md
   - .opencode/context/common/system/state-schema.md
@@ -1028,5 +1029,34 @@
   - [ ] Documentation explains optimization approach
   - [ ] No regression in self-healing functionality
 - **Impact**: Reduces context overhead by 400+ lines per command execution while maintaining robust self-healing. Commands load faster and use less context budget. Self-healing remains available when needed but doesn't bloat normal operations.
+
+### 200. Review command-specific status marker implementation for consistency
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/context/common/system/status-markers.md
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+  - .opencode/command/revise.md
+  - .opencode/command/implement.md
+- **Description**: Review the recent changes to command-specific status markers to ensure everything is consistent and correct. The implementation added new in-progress markers ([RESEARCHING], [PLANNING], [REVISING], [IMPLEMENTING]) and completion markers ([RESEARCHED], [PLANNED], [REVISED], [COMPLETED], [PARTIAL], [BLOCKED]) to provide fine-grained visibility into command workflow stages. Verify that: (1) All new status markers are properly defined in status-markers.md with clear semantics, (2) Each command file correctly uses its respective status markers in Preflight (start) and Postflight (completion) stages, (3) State.json status values (lowercase like "researching", "planned") match the TODO.md markers (uppercase in brackets like [RESEARCHING], [PLANNED]), (4) Status transitions are valid and consistent across all commands per the transition diagram, (5) Atomic updates via status-sync-manager are correctly specified for multi-file synchronization, (6) Timestamp handling (Started, Completed) is consistent and preserved across transitions, (7) Error handling for [BLOCKED] status is properly implemented with blocking reasons, (8) The transition diagrams and valid/invalid transition tables in status-markers.md are accurate and complete, (9) No conflicts or inconsistencies exist between the different command files, (10) Documentation is clear, complete, and follows standards.
+- **Acceptance Criteria**:
+  - [ ] All status marker definitions verified in status-markers.md (syntax, semantics, examples)
+  - [ ] Command Preflight stages use correct in-progress markers ([RESEARCHING], [PLANNING], [REVISING], [IMPLEMENTING])
+  - [ ] Command Postflight stages use correct completion markers ([RESEARCHED], [PLANNED], [REVISED], [COMPLETED]/[PARTIAL]/[BLOCKED])
+  - [ ] State.json values match TODO.md markers (lowercase vs uppercase in brackets)
+  - [ ] Status transitions follow valid paths per transition diagram (no invalid transitions)
+  - [ ] Atomic updates via status-sync-manager properly specified in all commands
+  - [ ] Timestamp handling is consistent (Started preserved, Completed added at end)
+  - [ ] [BLOCKED] error handling verified with blocking reasons and proper state updates
+  - [ ] Transition diagrams and tables in status-markers.md are accurate
+  - [ ] No inconsistencies found between command files (research, plan, revise, implement)
+  - [ ] Documentation review complete with detailed findings report
+  - [ ] Any issues found are documented with recommendations for fixes
+- **Impact**: Ensures the command-specific status marker system is robust, consistent, and correctly implemented across all workflow commands. Prevents status tracking bugs and maintains data integrity between TODO.md, state.json, and plan files.
 
 ---
