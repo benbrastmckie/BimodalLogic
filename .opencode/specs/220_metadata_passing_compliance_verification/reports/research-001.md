@@ -64,7 +64,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 
 ### Artifact Patterns by Command
 
-**/ research**: 1 Artifact (Report Only)
+**/research**: 1 Artifact (Report Only)
 - Artifacts Created: 1 file (research report)
 - Summary Artifact: NO - Report is single file, self-contained
 - Return Pattern: Artifact link + brief summary as metadata in return object

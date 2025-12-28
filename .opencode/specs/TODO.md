@@ -74,9 +74,10 @@
 
 ### 170. Improve maintenance report system and documentation
 - **Effort**: 3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-24
 - **Completed**: 2025-12-28
+- **Planned**: 2025-12-28
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -88,6 +89,8 @@
   - .opencode/context/common/standards/report.md
   - .opencode/context/common/system/artifact-management.md
 - **Research Artifacts**:
+- **Plan**: [.opencode/specs/170_improve_maintenance_report_system_and_documentation/plans/implementation-001.md] (created 2025-12-28)
+- **Plan Summary**: 6-phase implementation (3 hours total). Phase 1: Integrate status-sync-manager in /review. Phase 2: Project state.json lazy creation. Phase 3: repository_health metric updates. Phase 4: Task creation pattern clarity. Phase 5: Reviewer.md documentation. Phase 6: Testing and validation. Addresses research findings on /review command gaps.
   - Main Report: [.opencode/specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md]
 - **Description**: Improve the system that produces maintenance reports (like .opencode/specs/maintenance/maintenance-report-20251224.md) and its documentation. The maintenance report generation should follow standardized templates, include comprehensive metrics, and integrate properly with the /todo command workflow. Documentation should clearly explain the maintenance report structure, generation process, and how it fits into the overall maintenance workflow.
 - **Acceptance Criteria**:

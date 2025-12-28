@@ -1,3 +1,4 @@
+import Logos.Core.Metalogic.SoundnessLemmas
 import Logos.Core.Metalogic.Soundness
 import Logos.Core.Metalogic.Completeness
 
@@ -8,6 +9,7 @@ Aggregates metalogic components for the Core TM logic layer.
 
 ## Submodules
 
+- `SoundnessLemmas`: Bridge theorems for temporal duality soundness
 - `Soundness`: Soundness theorem (Γ ⊢ φ → Γ ⊨ φ)
 - `Completeness`: Completeness theorem (Γ ⊨ φ → Γ ⊢ φ) - infrastructure only
 

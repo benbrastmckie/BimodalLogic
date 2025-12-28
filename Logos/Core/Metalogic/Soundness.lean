@@ -1,5 +1,6 @@
 import Logos.Core.ProofSystem.Derivation
 import Logos.Core.Semantics.Validity
+import Logos.Core.Metalogic.SoundnessLemmas
 
 /-!
 # Soundness - Soundness Theorem for TM Logic
@@ -662,7 +663,7 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
     intro T _ F M τ t ht _
     -- Goal: truth_at M τ t ht (swap_past_future φ')
     -- Use derivable_implies_swap_valid which proves: Derivable [] φ' → is_valid φ'.swap
-    have h_swap_valid := @Semantics.TemporalDuality.derivable_implies_swap_valid T _ _ h_deriv_phi
+    have h_swap_valid := @SoundnessLemmas.derivable_implies_swap_valid T _ _ h_deriv_phi
     -- h_swap_valid : is_valid T φ'.swap_past_future
     -- Unpack the local is_valid definition
     exact h_swap_valid F M τ t ht
