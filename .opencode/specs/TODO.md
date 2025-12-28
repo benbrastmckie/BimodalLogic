@@ -44,14 +44,20 @@
 
 ### 193. Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/193_prove_is_valid_swap_involution/reports/research-001.md]
+  - Summary: [.opencode/specs/193_prove_is_valid_swap_involution/summaries/research-summary.md]
 - **Files Affected**:
   - Logos/Core/Semantics/Truth.lean
 - **Description**: Replace the sorry placeholder in the is_valid_swap_involution theorem with a complete proof. This theorem is currently admitted with sorry and needs a proper proof to ensure correctness and completeness of the Truth.lean module.
+- **Research Findings** (2025-12-28): Current `simpa` proof fails because `truth_at` is structurally recursive, preventing direct formula substitution. Solution: Add helper lemma `truth_at_swap_swap` using structural induction to prove equivalence case-by-case, then use it via rewrite in main theorem. Standard Lean 4 pattern, low risk, 2-hour implementation (1h helper + 45min testing).
 - **Acceptance Criteria**:
   - [ ] is_valid_swap_involution theorem has a complete proof (no sorry)
   - [ ] Proof is mathematically sound and type-checks
