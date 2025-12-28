@@ -1,12 +1,12 @@
 # TODO
 
-**Last Updated:** 2025-12-28T00:15:00Z
+**Last Updated:** 2025-12-28T00:30:00Z
 
 ## Overview
 
-- **Total Tasks:** 39
+- **Total Tasks:** 40
 - **Completed:** 14
-- **High Priority:** 15
+- **High Priority:** 16
 - **Medium Priority:** 11
 - **Low Priority:** 11
 
@@ -56,14 +56,20 @@
 
 ### 192. Fix GeneralizedNecessitation.lean termination proofs (2 errors)
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-27
+- **Completed**: 2025-12-27
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/192_fix_generalized_necessitation_termination/reports/research-001.md]
+  - Summary: [.opencode/specs/192_fix_generalized_necessitation_termination/summaries/research-summary.md]
 - **Files Affected**:
   - Logos/Core/Theorems/GeneralizedNecessitation.lean
 - **Description**: Fix 2 termination proof errors in GeneralizedNecessitation.lean that are preventing compilation. These errors are blocking the build and need to be resolved to ensure the codebase compiles successfully.
+- **Research Findings** (2025-12-27): Both `generalized_modal_k` (line 66) and `generalized_temporal_k` (line 101) are declared as `def` but depend on `noncomputable def deduction_theorem`. Fix is trivial: add `noncomputable` keyword to both function declarations (2 one-word changes). Estimated 5-10 minutes implementation time. Zero risk, no logic changes, standard Lean 4 pattern.
 - **Acceptance Criteria**:
   - [ ] Both termination proof errors in GeneralizedNecessitation.lean are fixed
   - [ ] GeneralizedNecessitation.lean compiles successfully with lake build
@@ -1032,7 +1038,8 @@
 
 ### 200. Review command-specific status marker implementation for consistency
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
+- **Started**: 2025-12-27
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -1058,5 +1065,39 @@
   - [ ] Documentation review complete with detailed findings report
   - [ ] Any issues found are documented with recommendations for fixes
 - **Impact**: Ensures the command-specific status marker system is robust, consistent, and correctly implemented across all workflow commands. Prevents status tracking bugs and maintains data integrity between TODO.md, state.json, and plan files.
+
+### 201. Implement /todo command archival feature for completed and abandoned tasks
+- **Effort**: 6 hours
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-27
+- **Completed**: 2025-12-27
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/201_todo_archival_feature/reports/research-001.md]
+  - Summary: [.opencode/specs/201_todo_archival_feature/summaries/research-summary.md]
+- **Files Affected**:
+  - .opencode/command/todo.md
+  - .opencode/specs/TODO.md
+  - .opencode/specs/state.json
+  - .opencode/specs/archive/state.json
+  - .opencode/specs/archive/ (project directories)
+- **Description**: Enhance the /todo command to automatically archive completed and abandoned tasks. When invoked, the command should: (1) Identify all tasks in TODO.md with status [COMPLETED] or [ABANDONED], (2) Remove these tasks from TODO.md while preserving task numbering sequence, (3) Move corresponding project directories from .opencode/specs/NNN_project_name/ to .opencode/specs/archive/NNN_project_name/ if they exist, (4) Move task entries from state.json active_projects array to archive/state.json archived_projects array, (5) Update repository health metrics to reflect reduced active task count, (6) Add activity log entries for each archived task, (7) Create archive/state.json if it doesn't exist (with self-healing), (8) Preserve all task artifacts and history in archive, (9) Provide summary report showing tasks archived and current TODO.md statistics. The archival should be atomic - either all operations succeed or none do, to prevent inconsistent state.
+- **Acceptance Criteria**:
+  - [ ] /todo command identifies all [COMPLETED] and [ABANDONED] tasks in TODO.md
+  - [ ] Completed/abandoned tasks removed from TODO.md with numbering preserved
+  - [ ] Project directories moved from specs/ to specs/archive/ (if they exist)
+  - [ ] Task entries moved from state.json to archive/state.json
+  - [ ] archive/state.json created if missing (self-healing with proper schema)
+  - [ ] Repository health metrics updated (active_tasks count reduced)
+  - [ ] Recent activities log updated for each archived task
+  - [ ] Archival is atomic (all operations succeed or all rolled back)
+  - [ ] Summary report provided showing archived tasks and updated statistics
+  - [ ] No data loss - all artifacts preserved in archive
+  - [ ] Lazy creation principle followed (archive/ created only when needed)
+  - [ ] Error handling for edge cases (no tasks to archive, missing directories, etc.)
+- **Impact**: Keeps TODO.md focused on active work by automatically archiving completed and abandoned tasks while preserving full history and artifacts. Reduces cognitive load and improves task list maintainability. Ensures state.json and file system remain synchronized with TODO.md.
 
 ---
