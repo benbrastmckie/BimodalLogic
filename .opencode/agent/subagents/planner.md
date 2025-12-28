@@ -164,7 +164,9 @@ temperature: 0.2
     <validation>
       Before returning (Step 6):
       - Verify plan artifact exists and is non-empty
+      - Verify NO summary artifact created (defensive check - plan is self-documenting)
       - Extract plan metadata (phase_count, estimated_hours, complexity)
+      - Verify summary field in return object is <100 tokens
       - Return validation result in metadata field
       - Return plan_metadata in metadata field
       
@@ -178,6 +180,11 @@ temperature: 0.2
       - Log warning for missing metadata
       - Use default values (graceful degradation)
       - Continue with defaults
+      
+      If summary artifact accidentally created:
+      - Log error: "Summary artifact should not exist for single-file output"
+      - Return status: "failed"
+      - Recommendation: "Remove summary artifact, plan is self-documenting"
     </validation>
     <output>Standardized return object with validated plan artifact, plan metadata, and brief summary</output>
   </step_6>

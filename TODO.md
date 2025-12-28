@@ -227,6 +227,51 @@ Provides single source of truth for command lifecycle pattern, reduces documenta
 
 ---
 
+### 220. ✅ Metadata Passing Compliance Verification
+- **Effort**: 2.5 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Task 217 (completed)
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/220_metadata_passing_compliance_verification/reports/research-001.md]
+- **Plan**: [Implementation Plan](.opencode/specs/220_metadata_passing_compliance_verification/plans/implementation-001.md)
+- **Plan Summary**: 6-phase implementation (2.5 hours). Phase 1: Complete lean-research-agent documentation review (0.5h). Phase 2: Complete lean-implementation-agent documentation review (0.5h). Phase 3: Enhance planner validation (0.25h). Phase 4: Enhance task-executor error messages (0.25h). Phase 5: Create compliance verification report (0.5h). Phase 6: Final validation and documentation (0.5h). Achieves 100% compliance across all 10 files (up from 94%).
+- **Implementation Summary**: [.opencode/specs/220_metadata_passing_compliance_verification/summaries/implementation-summary-20251228.md]
+- **Compliance Report**: [.opencode/specs/220_metadata_passing_compliance_verification/summaries/compliance-verification-report.md]
+- **Implementation Artifacts**:
+  - .opencode/agent/subagents/lean-research-agent.md (fixed documentation)
+  - .opencode/agent/subagents/lean-implementation-agent.md (fixed examples)
+  - .opencode/agent/subagents/planner.md (enhanced validation)
+  - .opencode/agent/subagents/task-executor.md (enhanced error messages)
+
+**Files Affected**:
+- .opencode/agent/subagents/lean-research-agent.md
+- .opencode/agent/subagents/lean-implementation-agent.md
+- .opencode/agent/subagents/planner.md
+- .opencode/agent/subagents/task-executor.md
+
+**Description**:
+Completed comprehensive compliance verification of all workflow commands and subagents against metadata passing standards. Fixed 3 identified gaps: lean-research-agent documentation (removed incorrect summary artifact references), lean-implementation-agent examples (added missing summary artifacts), planner validation (added defensive checks), and task-executor error messages (added explicit token limits). Achieved 100% compliance across all 10 files.
+
+**Acceptance Criteria**:
+- [x] All 10 files verified for compliance with metadata passing standards
+- [x] Lean-research-agent.md documentation review completed (lines 400-973)
+- [x] Lean-implementation-agent.md documentation review completed (lines 200-514)
+- [x] Planner.md enhanced with defensive validation check
+- [x] Task-executor.md enhanced with explicit error message
+- [x] Compliance verification report created documenting final state
+- [x] All files maintain 100% compliance with metadata passing standards
+- [x] No regressions in existing functionality
+
+**Impact**:
+Ensures all commands and agents fully comply with metadata passing standards for artifact management. Improves documentation clarity, adds defensive validation checks, and enhances error messages for better debugging. Provides foundation for ongoing compliance monitoring.
+
+---
+
 ### 172. Complete API documentation for all Logos modules
 **Effort**: 30 hours
 **Status**: [PLANNED]

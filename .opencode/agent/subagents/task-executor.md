@@ -236,7 +236,7 @@ temperature: 0.2
       - Log validation error with details
       - Return status: "failed"
       - Include error in errors array with type "validation_failed"
-      - Recommendation: "Fix summary artifact creation and retry"
+      - Recommendation: "Fix summary artifact creation and retry. Summary must be <100 tokens (~400 chars)."
     </validation>
     <output>Standardized return object with all artifacts and phase_statuses</output>
   </step_6>
