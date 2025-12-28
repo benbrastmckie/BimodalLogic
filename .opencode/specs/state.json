@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T19:00:00Z",
+  "_last_updated": "2025-12-28T09:36:14Z",
   "next_project_number": 208,
   "project_numbering": {
     "min": 0,
@@ -122,6 +122,10 @@
     }
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T09:36:14Z",
+      "activity": "Marked task 173 as PLANNED: Integration test suite plan created (3 hours, 2 phases) - 83% complete, 146 tests created with 82% coverage"
+    },
     {
       "timestamp": "2025-12-28T19:00:00Z",
       "activity": "Marked task 207 as RESEARCHED: /implement output verbosity research completed - 2-3 hours estimated (1.5h /implement, 1h lean-agent, 0.5h testing), 95% context reduction"
@@ -313,6 +317,21 @@
   ],
   "pending_tasks": [
     {
+      "project_number": 173,
+      "title": "Implement integration tests for proof system and semantics",
+      "status": "planned",
+      "started": "2025-12-24",
+      "research_completed": "2025-12-24",
+      "planning_completed": "2025-12-28",
+      "priority": "high",
+      "language": "lean",
+      "plan_path": ".opencode/specs/173_integration_tests/plans/implementation-001.md",
+      "estimated_hours": 3,
+      "phases": 2,
+      "dependencies": [183, 184, 185],
+      "implementation_notes": "Implementation 83% complete - 146 tests created with 82% coverage, blocked only by core build errors in tasks 183, 184, 185."
+    },
+    {
       "project_number": 200,
       "title": "Review command-specific status marker implementation for consistency",
       "status": "researched",
@@ -324,20 +343,31 @@
     {
       "project_number": 193,
       "title": "Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)",
-      "status": "planned",
+      "status": "partial",
       "started": "2025-12-28",
       "research_completed": "2025-12-28",
       "planning_completed": "2025-12-28",
+      "implementation_status": "partial",
+      "completion_percentage": 85,
       "priority": "high",
       "language": "lean",
-      "plan_path": ".opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md",
-      "estimated_hours": 2.0,
+      "plan_path": ".opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-002.md",
+      "estimated_hours": 0.5,
+      "actual_hours": 1.7,
+      "remaining_hours": 0.5,
       "phases": 1,
       "artifacts": [
         ".opencode/specs/193_prove_is_valid_swap_involution/reports/research-001.md",
         ".opencode/specs/193_prove_is_valid_swap_involution/summaries/research-summary.md",
-        ".opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md"
-      ]
+        ".opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md",
+        ".opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-002.md",
+        ".opencode/specs/193_prove_is_valid_swap_involution/reports/implementation-001.md",
+        ".opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md"
+      ],
+      "modified_files": [
+        "Logos/Core/Semantics/Truth.lean"
+      ],
+      "implementation_notes": "Helper lemma truth_at_swap_swap complete (all 6 cases proven). Main theorem blocked by type theory issue. Solution: add involution helper (30 min)."
     },
     {
       "project_number": 194,

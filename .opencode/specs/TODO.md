@@ -53,8 +53,9 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/193_prove_is_valid_swap_involution/reports/research-001.md]
   - Summary: [.opencode/specs/193_prove_is_valid_swap_involution/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md]
-- **Plan Summary**: Single-phase implementation (2 hours). Add helper lemma `truth_at_swap_swap` using structural induction (6 cases: atom, bot, imp, box, all_past, all_future), then update `is_valid_swap_involution` to use it via rewrite. Standard Lean 4 pattern, low risk, no logic changes.
+- **Plan**: [.opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-002.md] (revised 2025-12-28)
+- **Plan Summary**: Single-phase completion (30 minutes, revised from 2 hours). Helper lemma `truth_at_swap_swap` already complete (85% done). Remaining: Add `truth_at_involution` helper (5 lines) and update main theorem to compose helpers (3 lines). Simple solution applying existing helper to `φ.swap`. Very low risk.
+- **Previous Plan**: [.opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md] (original, 85% complete)
 - **Implementation Artifacts**:
   - Implementation Report: [.opencode/specs/193_prove_is_valid_swap_involution/reports/implementation-001.md]
   - Implementation Summary: [.opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md]
@@ -583,18 +584,19 @@
 ---
 
 ### 173. Implement integration tests for proof system and semantics
-- **Effort**: 18 hours
-- **Status**: [BLOCKED]
+- **Effort**: 3 hours (revised from 18 hours after implementation)
+- **Status**: [PLANNED]
 - **Started**: 2025-12-24
-- **Blocked**: 2025-12-25
-- **Blocking Reason**: Pre-existing build errors in DeductionTheorem.lean (3 errors) and Truth.lean (1 error) block test compilation. Test files created but cannot verify passing until core builds.
+- **Planned**: 2025-12-28
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
-- **Dependencies**: None
+- **Dependencies**: 183, 184, 185
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/173_integration_tests/reports/research-001.md]
   - Summary: [.opencode/specs/173_integration_tests/summaries/research-summary.md]
+- **Plan**: [.opencode/specs/173_integration_tests/plans/implementation-001.md]
+- **Plan Summary**: 2-phase completion plan (3 hours). Phase 1: Verify core build fixes and update Helpers.lean API (1.25h). Phase 2: Verify all 146 integration tests compile and pass (1.75h). Implementation 83% complete - 146 tests created with 82% coverage, blocked only by core build errors in tasks 183, 184, 185.
 - **Implementation Summary**: [.opencode/specs/173_integration_tests/summaries/implementation-summary-20251225.md]
 - **Files Affected**:
   - LogosTest/Core/Integration/EndToEndTest.lean
