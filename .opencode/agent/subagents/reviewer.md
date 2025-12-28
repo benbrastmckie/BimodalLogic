@@ -125,6 +125,7 @@ temperature: 0.3
       1. Create summaries subdirectory in project_path (lazy creation):
          - Do NOT create project root yet (will be created when writing file)
          - Create only summaries/ subdirectory when writing summary file
+         - Trigger: Writing review summary triggers project state.json creation by /review command
       2. Write summaries/review-summary.md following summary.md standard:
          - Metadata: Status [COMPLETED], timestamps, priority, dependencies
          - Overview: 2-3 sentences on review scope and context
@@ -138,6 +139,14 @@ temperature: 0.3
       5. No emojis in summary
       6. Follow markdown formatting standards
     </process>
+    <project_state_json_trigger>
+      Writing review summary artifact triggers project state.json creation:
+      - /review command detects review summary artifact in return
+      - /review delegates to status-sync-manager to create project state.json
+      - Project state.json includes review metadata, metrics, and registries_updated
+      - Reviewer does NOT create project state.json directly
+      - /review command is responsible for project state.json creation
+    </project_state_json_trigger>
     <validation>
       - Summary follows summary.md standard
       - Overview is 3-5 sentences
@@ -145,7 +154,7 @@ temperature: 0.3
       - No emojis
       - File written successfully
     </validation>
-    <output>Review summary artifact created</output>
+    <output>Review summary artifact created (triggers project state.json creation)</output>
   </step_4>
 
   <step_5>
@@ -355,9 +364,171 @@ temperature: 0.3
   </returns>
   <command_responsibilities>
     /review command will:
-    - Create tasks from identified_tasks list
-    - Commit registry updates and artifacts
-    - Update state.json with review_artifacts entry
-    - Return brief summary to user
+    - Create tasks from identified_tasks list (Stage 6)
+    - Delegate to status-sync-manager for atomic state updates (Stage 7):
+      * Update TODO.md with created tasks
+      * Update state.json with new task entries
+      * Update state.json repository_health (technical_debt, last_assessed, review_artifacts)
+      * Create project state.json with review metadata
+    - Commit registry updates and artifacts (Stage 7)
+    - Return brief summary to user (Stage 8)
   </command_responsibilities>
+  <state_file_updates>
+    Reviewer does NOT update state files directly. /review command is responsible for:
+    
+    1. TODO.md updates (via status-sync-manager):
+       - Add created tasks from identified_tasks list
+       - Sequential task numbering
+    
+    2. state.json updates (via status-sync-manager):
+       - Increment next_project_number
+       - Add new task entries
+       - Update repository_health.technical_debt:
+         * sorry_count (from metrics.sorry_count)
+         * axiom_count (from metrics.axiom_count)
+         * build_errors (from metrics.build_errors)
+       - Update repository_health.last_assessed (review timestamp)
+       - Add repository_health.review_artifacts entry:
+         * timestamp
+         * path (review summary artifact)
+         * scope (review_scope)
+    
+    3. Project state.json creation (via status-sync-manager):
+       - type: "review"
+       - status: "completed|in_progress"
+       - scope: review_scope
+       - created: timestamp
+       - completed: timestamp
+       - artifacts: [review summary artifact]
+       - metrics: review_metrics from reviewer return
+       - registries_updated: [IMPLEMENTATION_STATUS, SORRY_REGISTRY, TACTIC_REGISTRY, FEATURE_REGISTRY]
+    
+    All updates atomic (all succeed or all rollback via two-phase commit)
+  </state_file_updates>
+  <metrics_return_format>
+    Reviewer must return metrics in this format for state.json integration:
+    
+    "metrics": {
+      "sorry_count": 10,           // Required: For repository_health.technical_debt
+      "axiom_count": 11,            // Required: For repository_health.technical_debt
+      "build_errors": 3,            // Required: For repository_health.technical_debt
+      "undocumented_tactics": 8,    // Optional: For review summary only
+      "missing_features": 3,        // Optional: For review summary only
+      "tasks_created": 5            // Optional: For review summary only
+    }
+    
+    Required fields used for state.json repository_health updates
+    Optional fields used for review summary and project state.json
+  </metrics_return_format>
+  <identified_tasks_return_format>
+    Reviewer must return identified_tasks in this format for task creation:
+    
+    "identified_tasks": [
+      {
+        "description": "Fix 12 sorry statements in Logos/Core/Theorems/",
+        "priority": "high",          // Required: high|medium|low
+        "language": "lean",          // Required: lean|markdown|general
+        "estimated_hours": 6         // Optional: Defaults to 2 if not provided
+      },
+      {
+        "description": "Document 8 undocumented tactics in ProofSearch.lean",
+        "priority": "medium",
+        "language": "lean",
+        "estimated_hours": 4
+      }
+    ]
+    
+    /review command creates one task per entry using /task command
+    Task creation failures logged but don't abort review
+  </identified_tasks_return_format>
+  <example_return_object>
+    Complete example return object with all required fields:
+    
+    {
+      "status": "completed",
+      "summary": "Codebase review completed. Found 10 sorry statements, 11 axioms, 3 build errors. Identified 8 undocumented tactics and 3 missing features. Created 5 tasks.",
+      "artifacts": [
+        {
+          "type": "summary",
+          "path": ".opencode/specs/207_codebase_review/summaries/review-summary.md",
+          "summary": "Review findings and recommendations"
+        },
+        {
+          "type": "documentation",
+          "path": "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md",
+          "summary": "Updated implementation status registry"
+        },
+        {
+          "type": "documentation",
+          "path": "Documentation/ProjectInfo/SORRY_REGISTRY.md",
+          "summary": "Updated sorry statement registry"
+        },
+        {
+          "type": "documentation",
+          "path": "Documentation/ProjectInfo/TACTIC_REGISTRY.md",
+          "summary": "Updated tactic documentation registry"
+        },
+        {
+          "type": "documentation",
+          "path": "Documentation/ProjectInfo/FEATURE_REGISTRY.md",
+          "summary": "Updated feature registry"
+        }
+      ],
+      "metadata": {
+        "session_id": "sess_1703606400_a1b2c3",
+        "duration_seconds": 1800,
+        "agent_type": "reviewer",
+        "delegation_depth": 1,
+        "delegation_path": ["orchestrator", "review", "reviewer"]
+      },
+      "errors": [],
+      "next_steps": "Review findings and address high-priority tasks",
+      "identified_tasks": [
+        {
+          "description": "Fix 10 sorry statements in Logos/Core/Theorems/",
+          "priority": "high",
+          "language": "lean",
+          "estimated_hours": 5
+        },
+        {
+          "description": "Document 8 undocumented tactics in ProofSearch.lean",
+          "priority": "medium",
+          "language": "lean",
+          "estimated_hours": 4
+        },
+        {
+          "description": "Implement 3 missing features from FEATURE_REGISTRY",
+          "priority": "medium",
+          "language": "lean",
+          "estimated_hours": 8
+        },
+        {
+          "description": "Fix 3 build errors in Logos/Core/",
+          "priority": "high",
+          "language": "lean",
+          "estimated_hours": 3
+        },
+        {
+          "description": "Update IMPLEMENTATION_STATUS.md with recent completions",
+          "priority": "low",
+          "language": "markdown",
+          "estimated_hours": 1
+        }
+      ],
+      "metrics": {
+        "sorry_count": 10,
+        "axiom_count": 11,
+        "build_errors": 3,
+        "undocumented_tactics": 8,
+        "missing_features": 3,
+        "tasks_created": 5
+      }
+    }
+    
+    This return object provides all data needed for:
+    - Task creation (identified_tasks)
+    - State file updates (metrics)
+    - Project state.json creation (artifacts, metrics)
+    - User feedback (summary, next_steps)
+  </example_return_object>
 </integration_notes>
