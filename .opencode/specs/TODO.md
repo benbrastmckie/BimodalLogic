@@ -1,6 +1,6 @@
 # TODO
 
-**Last Updated:** 2025-12-28T18:30:00Z
+**Last Updated:** 2025-12-28T19:00:00Z
 
 ## Overview
 
@@ -44,9 +44,8 @@
 
 ### 193. Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Started**: 2025-12-28
-- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -56,16 +55,22 @@
   - Summary: [.opencode/specs/193_prove_is_valid_swap_involution/summaries/research-summary.md]
 - **Plan**: [.opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md]
 - **Plan Summary**: Single-phase implementation (2 hours). Add helper lemma `truth_at_swap_swap` using structural induction (6 cases: atom, bot, imp, box, all_past, all_future), then update `is_valid_swap_involution` to use it via rewrite. Standard Lean 4 pattern, low risk, no logic changes.
+- **Implementation Artifacts**:
+  - Implementation Report: [.opencode/specs/193_prove_is_valid_swap_involution/reports/implementation-001.md]
+  - Implementation Summary: [.opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md]
+  - Modified File: Logos/Core/Semantics/Truth.lean (lines 625-688, 64 lines added)
 - **Files Affected**:
   - Logos/Core/Semantics/Truth.lean
 - **Description**: Replace the sorry placeholder in the is_valid_swap_involution theorem with a complete proof. This theorem is currently admitted with sorry and needs a proper proof to ensure correctness and completeness of the Truth.lean module.
 - **Research Findings** (2025-12-28): Current `simpa` proof fails because `truth_at` is structurally recursive, preventing direct formula substitution. Solution: Add helper lemma `truth_at_swap_swap` using structural induction to prove equivalence case-by-case, then use it via rewrite in main theorem. Standard Lean 4 pattern, low risk, 2-hour implementation (1h helper + 45min testing).
+- **Implementation Status** (2025-12-28): PARTIAL (85% complete). Helper lemma `truth_at_swap_swap` fully proven with structural induction across all 6 cases (atom, bot, imp, box, all_past, all_future). Main theorem `is_valid_swap_involution` remains blocked by type theory issue: cannot automatically transport truth values across propositional equality `φ.swap.swap = φ.swap` through pattern-matched `truth_at` definition. Solution: Add involution helper lemma to complete proof (estimated 30 minutes).
 - **Acceptance Criteria**:
-  - [ ] is_valid_swap_involution theorem has a complete proof (no sorry)
-  - [ ] Proof is mathematically sound and type-checks
-  - [ ] Truth.lean compiles successfully with lake build
-  - [ ] No new errors introduced
-  - [ ] Existing tests still pass
+  - [x] Helper lemma `truth_at_swap_swap` has complete proof (no sorry)
+  - [x] All 6 cases proven correctly
+  - [x] Truth.lean compiles successfully with lake build
+  - [x] No new errors introduced
+  - [x] Existing tests still pass
+  - [ ] Main theorem `is_valid_swap_involution` has complete proof (still admits sorry at line 691)
 - **Impact**: Improves completeness and correctness of the Truth.lean module by replacing a sorry placeholder with a proper proof, ensuring the swap involution property is formally verified.
 
 ### 194. Verify original task completion (tasks 183-184)
@@ -378,18 +383,22 @@
 - **Impact**: Provides persistent review summaries in standardized project directories, enabling historical tracking of repository reviews and protecting the orchestrator context window from verbose review output.
 
 ### 207. Reduce /implement command output verbosity with artifact-based summaries
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/207_reduce_implement_output_verbosity/reports/research-001.md]
+  - Summary: [.opencode/specs/207_reduce_implement_output_verbosity/summaries/research-summary.md]
 - **Files Affected**:
   - .opencode/command/implement.md
-  - .opencode/agent/subagents/task-executor.md
   - .opencode/agent/subagents/lean-implementation-agent.md
-  - .opencode/context/common/system/artifact-management.md (reference)
 - **Description**: The /implement command currently outputs excessively verbose content to the console when implementations are complete, bloating the orchestrator's context window. Instead, the command should conclude by creating a summary artifact following the artifact-management.md system (summaries/implementation-summary-YYYYMMDD.md) and returning only a brief summary (3-5 sentences, <100 tokens) with a reference to the summary artifact. This aligns with the context protection principle described in artifact-management.md where agents should return only file paths, brief summaries, and key findings rather than full artifact content.
+- **Research Findings** (2025-12-28): Root cause identified - /implement Stage 8 returns subagent summaries verbatim (up to 500 chars), and lean-implementation-agent doesn't create summary artifacts. Task-executor already creates summaries but /implement doesn't reference them. Solution: Update /implement Stage 8 to create/reference summary artifacts and return brief <100 token overviews, plus add summary artifact creation to lean-implementation-agent. Achieves 95% context window reduction (700 to 35 tokens) with 2-3 hours effort (1.5h /implement, 1h lean-agent, 0.5h testing).
 - **Acceptance Criteria**:
   - [ ] /implement command creates implementation summary artifact (summaries/implementation-summary-YYYYMMDD.md)
   - [ ] Summary follows artifact-management.md format (3-5 sentences, <100 tokens)
