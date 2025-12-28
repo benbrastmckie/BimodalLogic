@@ -19,14 +19,17 @@
       "project_number": 183,
       "project_name": "deduction_theorem_build_errors",
       "type": "bugfix",
-      "phase": "implementation",
-      "status": "in_progress",
+      "phase": "planning_completed",
+      "status": "revised",
       "priority": "high",
       "language": "lean",
       "created": "2025-12-25T00:00:00Z",
       "started": "2025-12-25",
-      "last_updated": "2025-12-26",
-      "plan_path": ".opencode/specs/183_deduction_theorem_build_errors/plans/implementation-001.md"
+      "planning_completed": "2025-12-28",
+      "last_updated": "2025-12-28",
+      "plan_path": ".opencode/specs/183_deduction_theorem_build_errors/plans/implementation-002.md",
+      "estimated_hours": 0.5,
+      "phases": 1
     },
     {
       "project_number": 184,

@@ -152,9 +152,10 @@
 - **Impact**: Improves maintainability and transparency of the maintenance workflow by standardizing report generation and ensuring comprehensive documentation of maintenance operations.
 
 ### 183. Fix DeductionTheorem.lean build errors (3 errors)
-- **Effort**: 2 hours
-- **Status**: [IN PROGRESS]
+- **Effort**: 0.5 hours (30 minutes)
+- **Status**: [REVISED]
 - **Started**: 2025-12-25
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: 173
@@ -162,7 +163,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/183_deduction_theorem_build_errors/reports/research-001.md]
   - Summary: [.opencode/specs/183_deduction_theorem_build_errors/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/183_deduction_theorem_build_errors/plans/implementation-001.md]
+- **Plan**: [.opencode/specs/183_deduction_theorem_build_errors/plans/implementation-002.md]
+- **Plan Summary**: Single-phase implementation (30 minutes). Replace 3 `.elim` patterns with idiomatic `by_cases` tactic at lines 256, 369, 376. Purely syntactic fix following proven patterns from Soundness.lean and Truth.lean. Very low risk - no logic changes, only tactic mode syntax.
 - **Files Affected**:
   - Logos/Core/Metalogic/DeductionTheorem.lean
 - **Description**: Fix 3 pre-existing build errors in DeductionTheorem.lean that are blocking compilation of all test files including the new integration tests from task 173. These errors prevent verification that the 106 new integration tests (82% coverage) actually compile and pass. Errors: Line 255 (Decidable typeclass instance stuck), Line 297 (no goals to be solved), Line 371 (Decidable typeclass instance stuck).
