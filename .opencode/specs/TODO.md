@@ -260,9 +260,9 @@
   - [x] Documentation updated if return format patterns need clarification
 - **Impact**: Protects primary agent context window from bloat, improves scalability for commands that create large artifacts, and ensures consistent artifact management across all commands per subagent-return-format.md standard.
 
-### 212. Research and improve lean-lsp-mcp usage in Lean implementation agent
+### 212. Research and improve lean-lsp-mcp usage in Lean implementation agent ✅
 - **Effort**: 14 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
 - **Priority**: High
@@ -274,6 +274,12 @@
   - Summary: [.opencode/specs/212_research_lean_lsp_mcp_usage/summaries/research-summary.md]
 - **Plan**: [.opencode/specs/212_research_lean_lsp_mcp_usage/plans/implementation-001.md]
 - **Plan Summary**: 5-phase implementation (14 hours total). Phase 1: Create MCP Client Wrapper (4h) - reusable tool invocation layer with error handling and timeout management. Phase 2: Update Lean Agents (3h) - integrate MCP client into lean-implementation-agent and lean-research-agent workflows. Phase 3: Enhance Documentation (2.5h) - create context files for lean-lsp-mcp usage patterns and best practices. Phase 4: Integration Tests (3h) - verify tool usage on real Lean tasks. Phase 5: Validation and Refinement (1.5h) - ensure no bloat/redundancy, improve organization. Integrates research findings on lean-lsp-mcp usage gaps and MCP client infrastructure requirements.
+- **Implementation Artifacts**:
+  - [.opencode/tool/mcp/client.py]
+  - [.opencode/tool/mcp/test_client.py]
+  - [.opencode/agent/subagents/lean-implementation-agent.md]
+  - [.opencode/context/project/lean4/tools/mcp-tools-guide.md]
+  - Summary: [.opencode/specs/212_research_lean_lsp_mcp_usage/summaries/implementation-summary-20251228.md]
 - **Files Affected**:
   - .opencode/agent/subagents/lean-implementation-agent.md
   - .opencode/agent/subagents/lean-research-agent.md
@@ -284,13 +290,13 @@
   - [x] Existing context files reviewed for lean-lsp-mcp documentation
   - [x] Online resources consulted for lean-lsp-mcp usage patterns
   - [x] Research report created documenting findings
-  - [ ] lean-implementation-agent refined to invoke lean-lsp-mcp during implementation
-  - [ ] Verification that lean-lsp-mcp is actually used when implementing Lean tasks
-  - [ ] Context files improved with lean-lsp-mcp usage guidance
-  - [ ] No bloat, redundancy, or inconsistency introduced in context files
-  - [ ] Organization improved for easy access to Lean tool guidance
-  - [ ] lean-research-agent reviewed and improved if needed
-  - [ ] Test implementation confirms lean-lsp-mcp usage
+  - [x] lean-implementation-agent refined to invoke lean-lsp-mcp during implementation
+  - [x] Verification that lean-lsp-mcp is actually used when implementing Lean tasks
+  - [x] Context files improved with lean-lsp-mcp usage guidance
+  - [x] No bloat, redundancy, or inconsistency introduced in context files
+  - [x] Organization improved for easy access to Lean tool guidance
+  - [x] lean-research-agent reviewed and improved if needed
+  - [x] Test implementation confirms lean-lsp-mcp usage
 - **Impact**: CRITICAL - Ensures lean-lsp-mcp is actually being used during Lean task implementation instead of being bypassed. Without this fix, Lean-specific tooling investment is wasted and Lean implementations miss out on language server capabilities for proof verification, theorem search, and code intelligence.
 
 ### 213. Comprehensive expert consultation for blocked involution proof in Truth.lean
