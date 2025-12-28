@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2025-12-27T17:11:46Z",
+  "_last_updated": "2025-12-28T00:48:31Z",
   "archived_projects": [
     {
       "project_number": 126,
@@ -382,6 +382,34 @@
         "base_path": ".opencode/specs/archive/200_review_command_specific_status_marker_implementati/"
       },
       "completed": "2025-12-27"
+    },
+    {
+      "project_number": 199,
+      "project_name": "optimize_self_healing_context_bloat",
+      "type": "optimization",
+      "status": "completed",
+      "created": "2025-12-27T00:00:00Z",
+      "started": "2025-12-27",
+      "completed": "2025-12-27",
+      "archived": "2025-12-28",
+      "summary": "optimize_self_healing_context_bloat",
+      "artifacts": {
+        "base_path": null
+      }
+    },
+    {
+      "project_number": 201,
+      "project_name": "todo_archival_feature",
+      "type": "feature",
+      "status": "completed",
+      "created": "2025-12-28T00:30:00Z",
+      "started": "2025-12-27",
+      "completed": "2025-12-27",
+      "archived": "2025-12-28",
+      "summary": "todo_archival_feature",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/201_todo_archival_feature/"
+      }
     }
   ]
 }

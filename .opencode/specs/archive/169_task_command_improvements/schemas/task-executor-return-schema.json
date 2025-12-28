@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opencode.dev/schemas/task-executor-return.json",
+  "title": "Task Executor Return Format",
+  "description": "Compact return format for task-executor with artifact references and brief summaries. Maximum 500 tokens per task execution.",
+  "type": "object",
+  "required": ["task_number", "status", "summary", "artifacts", "key_metrics", "session_id"],
+  "properties": {
+    "task_number": {
+      "type": "integer",
+      "description": "The TODO task number that was executed",
+      "minimum": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": ["COMPLETED", "FAILED", "BLOCKED", "PARTIAL"],
+      "description": "Final execution status"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Brief 3-5 sentence summary of what was accomplished. Maximum 100 tokens.",
+      "maxLength": 500
+    },
+    "artifacts": {
+      "type": "array",
+      "description": "Array of artifacts created during execution with paths for detailed information",
+      "items": {
+        "type": "object",
+        "required": ["type", "path"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["research", "plan", "implementation", "summary", "test_results"],
+            "description": "Type of artifact created"
+          },
+          "path": {
+            "type": "string",
+            "description": "Relative path to artifact file from project root"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Optional one-sentence summary of artifact contents",
+            "maxLength": 150
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "key_metrics": {
+      "type": "object",
+      "description": "Key execution metrics for quick assessment",
+      "required": ["complexity", "effort_hours", "files_modified"],
+      "properties": {
+        "complexity": {
+          "type": "string",
+          "enum": ["simple", "moderate", "complex"],
+          "description": "Task complexity assessment"
+        },
+        "effort_hours": {
+          "type": "number",
+          "description": "Estimated effort in hours",
+          "minimum": 0
+        },
+        "files_modified": {
+          "type": "integer",
+          "description": "Number of files created or modified",
+          "minimum": 0
+        },
+        "phases_completed": {
+          "type": "integer",
+          "description": "Number of implementation phases completed (for complex tasks)",
+          "minimum": 0
+        }
+      }
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Unique session identifier for tracking and debugging",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "next_steps": {
+      "type": "string",
+      "description": "Optional brief next steps or recommendations (1-2 sentences)",
+      "maxLength": 200
+    },
+    "errors": {
+      "type": "array",
+      "description": "Array of errors encountered (only for FAILED or PARTIAL status)",
+      "items": {
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "phase": {
+            "type": "string",
+            "description": "Phase where error occurred"
+          },
+          "recommendation": {
+            "type": "string",
+            "description": "Recommended action to resolve error"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "task_number": 169,
+      "status": "COMPLETED",
+      "summary": "Implemented context window protection for /implement command. Created new return format schemas enforcing <500 token limit per task. Updated task-executor and batch-task-orchestrator to return artifact references instead of verbose logs. All 8 phases completed successfully.",
+      "artifacts": [
+        {
+          "type": "implementation",
+          "path": ".opencode/specs/169_task_command_improvements/summaries/implementation-summary-20251224.md",
+          "summary": "Complete implementation summary with phase-by-phase details"
+        },
+        {
+          "type": "summary",
+          "path": ".opencode/specs/169_task_command_improvements/summaries/test-results-v3.md",
+          "summary": "Integration test results showing all 8 scenarios passed"
+        }
+      ],
+      "key_metrics": {
+        "complexity": "complex",
+        "effort_hours": 8.5,
+        "files_modified": 85,
+        "phases_completed": 8
+      },
+      "session_id": "task-169-20251224-001"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T04:00:00Z",
+  "_last_updated": "2025-12-28T00:48:31Z",
   "next_project_number": 205,
   "project_numbering": {
     "min": 0,
@@ -58,47 +58,6 @@
       "last_updated": "2025-12-26"
     },
     {
-      "project_number": 199,
-      "project_name": "optimize_self_healing_context_bloat",
-      "type": "optimization",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "markdown",
-      "created": "2025-12-27T00:00:00Z",
-      "started": "2025-12-27",
-      "completed": "2025-12-27",
-      "last_updated": "2025-12-27",
-      "plan_path": ".opencode/specs/199_optimize_self_healing/plans/implementation-001.md",
-      "artifacts": [
-        ".opencode/context/common/system/self-healing-guide.md",
-        ".opencode/context/common/system/context-guide.md",
-        ".opencode/context/project/repo/self-healing-implementation-details.md",
-        ".opencode/context/common/system/state-schema.md",
-        ".opencode/specs/199_optimize_self_healing/summaries/implementation-summary-20251227.md"
-      ]
-    },
-    {
-      "project_number": 201,
-      "project_name": "todo_archival_feature",
-      "type": "feature",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2025-12-28T00:30:00Z",
-      "started": "2025-12-27",
-      "research_completed": "2025-12-27",
-      "planning_completed": "2025-12-27",
-      "completed": "2025-12-27",
-      "last_updated": "2025-12-27",
-      "plan_path": ".opencode/specs/201_todo_archival_feature/plans/implementation-001.md",
-      "artifacts": [
-        ".opencode/command/todo.md",
-        ".opencode/specs/201_todo_archival_feature/summaries/implementation-summary-20251227.md"
-      ]
-    },
-    {
       "project_number": 192,
       "project_name": "fix_generalized_necessitation_termination",
       "type": "bugfix",
@@ -148,10 +107,10 @@
     }
   ],
   "repository_health": {
-    "last_assessed": "2025-12-28T02:00:00Z",
+    "last_assessed": "2025-12-28T00:48:31Z",
     "overall_score": 90,
-    "active_tasks": 34,
-    "completed_tasks": 18,
+    "active_tasks": 26,
+    "completed_tasks": 27,
     "blocked_tasks": 2,
     "in_progress_tasks": 3,
     "not_started_tasks": 23,
@@ -167,6 +126,14 @@
     }
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T00:48:31Z",
+      "activity": "Archived task 201: todo_archival_feature (status: completed)"
+    },
+    {
+      "timestamp": "2025-12-28T00:48:31Z",
+      "activity": "Archived task 199: optimize_self_healing_context_bloat (status: completed)"
+    },
     {
       "timestamp": "2025-12-28T04:00:00Z",
       "activity": "Marked task 193 as PLANNED: is_valid_swap_involution proof plan created (2 hours, 1 phase)"
