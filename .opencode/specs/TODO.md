@@ -201,36 +201,36 @@
 - **Impact**: Final step to unblock task 173. Once fixed, all 146 integration tests will compile and pass, delivering verified 82% integration test coverage and completing task 173.
 
 ### 218. Fix lean-lsp-mcp integration and opencode module import errors in Lean implementation workflow
-- **Effort**: 0.75 hours
-- **Status**: [PLANNED]
+- **Effort**: 1-2 hours (revised from 0.75 hours)
+- **Status**: [RESEARCHED]
 - **Started**: 2025-12-28
-- **Completed**: 2025-12-28
+- **Researched**: 2025-12-28
 - **Priority**: High
-- **Language**: lean
+- **Language**: python
 - **Blocking**: None
 - **Dependencies**: 212
 - **Research Artifacts**:
-  - Main Report: [.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md]
-  - Summary: [.opencode/specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-001.md]
-- **Plan Summary**: 3-phase implementation (45 minutes total). Phase 1: Create Python Package Structure - add __init__.py files to .opencode/ and .opencode/tool/ (15 min). Phase 2: Configure PYTHONPATH and verify integration (15 min). Phase 3: Testing and documentation (15 min). Root cause: Missing __init__.py files prevent Python package recognition causing ModuleNotFoundError.
+  - Initial Report: [.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md]
+  - Updated Report: [.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md]
+- **Research Findings** (2025-12-28): CRITICAL DISCOVERY - OpenCode has native MCP support via opencode.json configuration, NOT .mcp.json. Task 212's custom Python MCP client approach is architecturally incompatible with OpenCode agents. OpenCode agents use natural language tool instructions, not Python imports. The ModuleNotFoundError is a symptom of pursuing the wrong architectural approach, not missing __init__.py files. Solution requires complete pivot from Python-based integration to configuration-based integration: (1) Create opencode.json with lean-lsp-mcp server configuration, (2) Update lean-implementation-agent.md to use natural language MCP tool instructions instead of Python imports, (3) Remove/deprecate custom MCP client from task 212. Proper approach enables 15+ lean-lsp-mcp tools (compile, check-proof, search, etc.) via native OpenCode MCP bridge. Previous __init__.py plan obsolete.
 - **Files Affected**:
-  - .opencode/agent/subagents/lean-implementation-agent.md
-  - .opencode/tool/mcp/client.py
-  - .opencode/context/project/lean4/tools/mcp-tools-guide.md
-- **Description**: Despite completing task 212 which created MCP client wrapper and enhanced lean-lsp-mcp integration, the Lean implementation workflow still encounters critical errors when attempting to use lean-lsp-mcp. Error output shows: (1) ModuleNotFoundError: No module named 'opencode' when trying to import from opencode.tool.mcp.client, (2) MCP client module unavailable in current environment, causing fallback to direct lake build without lean-lsp-mcp verification. Root cause investigation needed to determine why: (A) The opencode module is not accessible in the environment where lean-implementation-agent runs, (B) The MCP client infrastructure created in task 212 is not being properly invoked or is inaccessible, (C) The integration between lean-implementation-agent and the MCP client wrapper may have incorrect paths or import statements. Need to: (1) Identify root cause of ModuleNotFoundError and MCP client unavailability, (2) Research best practices for fixing Python module import issues in the .opencode agent system environment, (3) Determine correct approach for making opencode.tool.mcp.client accessible to lean-implementation-agent, (4) Implement solution ensuring lean-lsp-mcp is properly invoked during Lean plan implementation, (5) Verify fix with test implementation of a Lean task.
+  - opencode.json (new, MCP server configuration)
+  - .opencode/agent/subagents/lean-implementation-agent.md (update to use MCP tool instructions)
+  - .opencode/agent/subagents/lean-research-agent.md (update to use MCP tool instructions)
+  - Documentation/UserGuide/MCP_INTEGRATION.md (new, user guide)
+  - .opencode/tool/mcp/client.py (mark deprecated, incompatible with OpenCode architecture)
+- **Description**: Research revealed that OpenCode has native MCP (Model Context Protocol) support that makes task 212's custom Python MCP client unnecessary and architecturally incompatible. OpenCode agents interact with MCP servers through natural language tool instructions, not Python imports. The proper integration approach uses opencode.json configuration to register MCP servers, making their tools automatically available to agents. This enables lean-implementation-agent to use lean-lsp-mcp's 15+ tools for real-time compilation checking, proof state inspection, and theorem search during Lean proof implementation.
 - **Acceptance Criteria**:
-  - [ ] Root cause identified: Why opencode module import fails in lean-implementation-agent environment
-  - [ ] Research completed on Python module accessibility in .opencode agent system
-  - [ ] Solution implemented: opencode.tool.mcp.client module accessible to lean-implementation-agent
-  - [ ] ModuleNotFoundError resolved: No import errors when checking MCP server availability
-  - [ ] MCP client module available: check_mcp_server_configured('lean-lsp') executes successfully
-  - [ ] lean-lsp-mcp integration working: Tool is invoked during Lean plan implementation
-  - [ ] No fallback to direct lake build: MCP verification succeeds before implementation
-  - [ ] Test verification: Real Lean task implementation confirms lean-lsp-mcp usage
-  - [ ] Documentation updated: Correct import patterns and environment setup documented
-  - [ ] No regression: Task 212 MCP client wrapper functionality preserved
-- **Impact**: CRITICAL - Ensures the lean-lsp-mcp integration created in task 212 actually works during Lean implementations. Without this fix, all Lean-specific tooling (real-time compilation checking, proof verification, LSP diagnostics) remains unusable despite the infrastructure being built. Blocks effective Lean proof implementation and verification workflow.
+  - [x] Root cause identified: OpenCode uses configuration-based MCP integration, not Python imports
+  - [x] Research completed on OpenCode MCP integration best practices
+  - [ ] opencode.json created with lean-lsp-mcp server configuration
+  - [ ] lean-implementation-agent.md updated with MCP tool usage instructions
+  - [ ] lean-research-agent.md updated with MCP tool usage instructions
+  - [ ] MCP integration guide created in user documentation
+  - [ ] Test Lean task implementation successfully uses lean-lsp-mcp tools
+  - [ ] No Python import errors (using configuration-based approach)
+  - [ ] Selective tool enablement reduces context window usage
+- **Impact**: CRITICAL ARCHITECTURAL CORRECTION - Pivots from incompatible custom Python client to proper OpenCode-native MCP integration. Enables lean-lsp-mcp tools for real-time Lean compilation checking, proof verification, and theorem search. Reduces context window usage by 2000-5000 tokens through selective per-agent tool enablement. Establishes foundation for additional MCP servers (Context7, Grep) to enhance Lean development workflow.
 
 ### 219. Implement the long-term solution to restructure module hierarchy separating semantic from proof system properties
 - **Effort**: 12-14 hours (Phase 1), 34-40 hours (complete restructuring)
@@ -675,11 +675,15 @@
 
 ### 221. Fix comprehensive status update failures - ensure atomic updates across TODO.md, state.json, project state.json, and plans via status-sync-manager
 - **Effort**: 8-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/221_fix_comprehensive_status_update_failures/reports/research-001.md]
 - **Files Affected**:
   - .opencode/command/research.md
   - .opencode/command/plan.md
