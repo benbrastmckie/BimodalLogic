@@ -41,9 +41,10 @@
 - **Impact**: Critical blocker for build. Fixing these errors will unblock compilation and allow the codebase to build successfully.
 
 ### 193. Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)
-- **Effort**: 2 hours
-- **Status**: [PARTIAL]
+- **Effort**: 0.5 hours
+- **Status**: [PLANNED]
 - **Started**: 2025-12-28
+- **Planned**: 2025-12-28
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -53,9 +54,9 @@
   - Summary: [.opencode/specs/193_prove_is_valid_swap_involution/summaries/research-summary.md]
   - Task 209 Review: [.opencode/specs/193_prove_is_valid_swap_involution/reports/task209-review-and-revised-plan.md]
   - Task 209 Summary: [.opencode/specs/193_prove_is_valid_swap_involution/summaries/task209-review-summary.md]
-- **Plan**: [.opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-002.md] (revised 2025-12-28)
-- **Plan Summary**: Single-phase completion (30 minutes, revised from 2 hours). Helper lemma `truth_at_swap_swap` already complete (85% done). Remaining: Add `truth_at_involution` helper (5 lines) and update main theorem to compose helpers (3 lines). Simple solution applying existing helper to `φ.swap`. Very low risk.
-- **Previous Plan**: [.opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md] (original, 85% complete)
+- **Plan**: [.opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-003.md] (created 2025-12-28)
+- **Plan Summary**: Two-pronged approach (15-30 minutes). Primary: Direct `simp only` solution from task 209 research (4 lines, 5-10 min, 95% confidence). Fallback: Involution helper composition from plan v2 (7 lines, 20 min, 90% confidence). 85% complete - helper lemma and simp attribute done, only main theorem fix needed. Combined success >99%.
+- **Previous Plans**: [.opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md] (original, 85% complete), [.opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-002.md] (revised)
 - **Implementation Artifacts**:
   - Implementation Report: [.opencode/specs/193_prove_is_valid_swap_involution/reports/implementation-001.md]
   - Implementation Summary: [.opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md]
