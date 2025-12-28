@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T14:57:23.553136Z",
-  "next_project_number": 222,
+  "_last_updated": "2025-12-28T23:06:28.860110Z",
+  "next_project_number": 224,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -75,8 +75,8 @@
       "project_number": 218,
       "project_name": "fix_lean_lsp_mcp_integration_and_opencode_module_import_errors",
       "type": "bugfix",
-      "phase": "plan_revised",
-      "status": "revised",
+      "phase": "implementation_partial",
+      "status": "partial",
       "priority": "high",
       "language": "python",
       "created": "2025-12-28T23:45:00Z",
@@ -85,7 +85,13 @@
       "last_updated": "2025-12-28",
       "artifacts": [
         ".opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md",
-        ".opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md"
+        ".opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md",
+        ".opencode/specs/218_fix_lean_lsp_mcp_integration/summaries/implementation-summary-20251228.md",
+        "opencode.json",
+        "Documentation/UserGuide/MCP_INTEGRATION.md",
+        ".opencode/tool/mcp/README.md",
+        ".opencode/agent/subagents/lean-implementation-agent.md",
+        ".opencode/agent/subagents/lean-research-agent.md"
       ],
       "estimated_hours": 2.0,
       "research_findings": "CRITICAL DISCOVERY: OpenCode has native MCP support via opencode.json configuration. Task 212's custom Python MCP client is architecturally incompatible - OpenCode agents use natural language tool instructions, not Python imports. ModuleNotFoundError is symptom of wrong architectural approach. Solution: Configuration-based integration using opencode.json with lean-lsp-mcp server registration. Enables 15+ MCP tools for Lean development. Previous __init__.py plan obsolete. New approach: 1-2 hours implementation.",
@@ -122,7 +128,19 @@
           "reason": "Incorporated OpenCode MCP documentation patterns with selective per-agent tool enablement"
         }
       ],
-      "phases": 5
+      "phases": 5,
+      "implementation_status": "partial",
+      "completion_percentage": 80,
+      "phases_completed": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "phases_remaining": [
+        5
+      ],
+      "implementation_notes": "Phases 1-4 completed: created opencode.json, updated agents with MCP tool instructions, created documentation. Phase 5 (testing) requires manual validation in OpenCode environment."
     },
     {
       "project_number": 219,
@@ -230,34 +248,16 @@
       ],
       "estimated_hours": 2.5,
       "phases": 6
-    },
+    }
+  ],
+  "completed_projects": [
     {
       "project_number": 170,
       "project_name": "improve_maintenance_report_system_and_documentation",
       "type": "enhancement",
-      "phase": "planning_completed",
-      "status": "planned",
-      "priority": "low",
-      "language": "markdown",
-      "created": "2025-12-24T00:00:00Z",
-      "started": "2025-12-24",
-      "research_completed": "2025-12-28",
-      "planning_completed": "2025-12-28",
-      "last_updated": "2025-12-28",
-      "artifacts": [
-        ".opencode/specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md"
-      ],
-      "plan_path": ".opencode/specs/170_improve_maintenance_report_system_and_documentation/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 6,
-        "estimated_hours": 3,
-        "complexity": "medium"
-      },
-      "estimated_hours": 3,
-      "phases": 6
-    }
-  ],
-  "completed_projects": [
+      "completed": "2025-12-28",
+      "summary": "Integrated /review command with status-sync-manager for atomic state updates, added project state.json lazy creation, and updated repository_health metrics"
+    },
     {
       "project_number": 215,
       "project_name": "fix_todo_task_removal",
@@ -393,6 +393,14 @@
     "review_artifacts": []
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T23:05:30Z",
+      "activity": "Created task 223: Fix opencode.json agent configuration causing Lean agents to appear as primary agents instead of subagents (TBD effort, High priority, markdown)"
+    },
+    {
+      "timestamp": "2025-12-28T23:01:58.231259Z",
+      "activity": "Created task 222: Investigate and fix artifact creation in /specs instead of /.opencode/specs (TBD effort, High priority, markdown)"
+    },
     {
       "timestamp": "2025-12-28T22:45:38.072236Z",
       "activity": "Marked task 218 as REVISED: Plan v003 created with complete architectural pivot from Python MCP client to OpenCode-native configuration-based integration (4 phases, 1.5 hours)"

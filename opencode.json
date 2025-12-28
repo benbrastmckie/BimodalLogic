@@ -1,0 +1,39 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "lean-lsp-mcp": {
+      "type": "local",
+      "command": ["npx", "-y", "lean-lsp-mcp"],
+      "enabled": true,
+      "environment": {
+        "LEAN_PROJECT_ROOT": "{env:PWD}"
+      },
+      "timeout": 10000
+    }
+  },
+  "tools": {
+    "lean-lsp-mcp*": false
+  },
+  "agent": {
+    "lean-implementation-agent": {
+      "tools": {
+        "lean-lsp-mcp_diagnostic_messages": true,
+        "lean-lsp-mcp_goal": true,
+        "lean-lsp-mcp_build": true,
+        "lean-lsp-mcp_run_code": true,
+        "lean-lsp-mcp_hover_info": true,
+        "lean-lsp-mcp_file_outline": true,
+        "lean-lsp-mcp_term_goal": true
+      }
+    },
+    "lean-research-agent": {
+      "tools": {
+        "lean-lsp-mcp_loogle": true,
+        "lean-lsp-mcp_leansearch": true,
+        "lean-lsp-mcp_local_search": true,
+        "lean-lsp-mcp_leanfinder": true,
+        "lean-lsp-mcp_state_search": true
+      }
+    }
+  }
+}

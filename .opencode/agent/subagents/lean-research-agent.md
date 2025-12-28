@@ -57,12 +57,12 @@ temperature: 0.3
 
 <process_flow>
   <step_1>
-    <action>Load Lean context and check tool availability</action>
+    <action>Load Lean context and determine research strategy</action>
     <process>
       1. Load context from .opencode/context/project/lean4/
       2. Load domain context (modal logic, temporal logic, epistemic, etc.)
-      3. Check for Loogle CLI availability
-      4. Initialize Loogle client if available
+      3. MCP tools configured via opencode.json (no manual check needed)
+      4. Tools available automatically if lean-lsp-mcp server running
       5. Determine research strategy based on available tools
     </process>
     <tool_status>
@@ -73,11 +73,12 @@ temperature: 0.3
       - Startup timeout: 180s (index build on first run)
       - Query timeout: 10s per query
       
-      LeanExplore: NOT YET INTEGRATED
-      - Status: API research needed
-      
-      LeanSearch: NOT YET INTEGRATED
-      - Status: REST API integration needed
+      MCP SEARCH TOOLS: CONFIGURED (Task 218)
+      - lean-lsp-mcp_loogle: Type-based search (rate limited 3 req/30s)
+      - lean-lsp-mcp_leansearch: Natural language search (rate limited 3 req/30s)
+      - lean-lsp-mcp_local_search: Local project search (no rate limit)
+      - lean-lsp-mcp_leanfinder: Semantic search (rate limited 3 req/30s)
+      - lean-lsp-mcp_state_search: Premise search (rate limited 3 req/30s)
       
       FALLBACK: Web search for Lean 4 documentation and mathlib
     </tool_status>
@@ -121,25 +122,74 @@ temperature: 0.3
   <step_3>
     <action>Conduct Lean library research</action>
     <process>
-      PRIMARY IMPLEMENTATION (Loogle available):
-      1. Generate Loogle queries from research topic and context
-      2. Execute queries via Loogle interactive mode
-      3. Parse JSON responses and extract hits
-      4. Categorize results (definitions, theorems, tactics)
-      5. Supplement with web search for documentation/examples
+      PRIMARY IMPLEMENTATION (MCP search tools + Loogle CLI):
+      1. Generate search queries from research topic and context
+      2. Use lean-lsp-mcp search tools for online searches:
+         - lean-lsp-mcp_loogle for type-based queries
+         - lean-lsp-mcp_leansearch for natural language queries
+         - lean-lsp-mcp_leanfinder for semantic queries
+         - lean-lsp-mcp_local_search for local project queries
+      3. Use Loogle CLI for additional type-based searches
+      4. Parse responses and extract hits
+      5. Categorize results (definitions, theorems, tactics)
+      6. Supplement with web search for documentation/examples
       
-      FALLBACK IMPLEMENTATION (Loogle unavailable):
-      1. Web search for Lean 4 documentation
-      2. Search mathlib documentation online
-      3. Search Lean Zulip for discussions
-      4. Check Lean 4 API documentation
-      5. Look for relevant examples in Lean repos
-      
-      FUTURE ENHANCEMENT (when LeanExplore/LeanSearch integrated):
-      1. Use LeanExplore to browse Lean libraries
-      2. Use LeanSearch for semantic search
-      3. Cross-reference Loogle, LeanExplore, LeanSearch results
+      FALLBACK IMPLEMENTATION (MCP tools unavailable):
+      1. Use Loogle CLI if available
+      2. Web search for Lean 4 documentation
+      3. Search mathlib documentation online
+      4. Search Lean Zulip for discussions
+      5. Check Lean 4 API documentation
+      6. Look for relevant examples in Lean repos
     </process>
+    <mcp_search_tools>
+      Available lean-lsp-mcp search tools (configured via opencode.json):
+      
+      1. lean-lsp-mcp_loogle
+         - Purpose: Type-based search in Lean libraries
+         - Input: {"query": "?a → ?b → ?a ∧ ?b"}
+         - Output: Array of {name, type, module, doc}
+         - Rate limit: 3 requests per 30 seconds
+         - Use: Search for theorems by type signature
+      
+      2. lean-lsp-mcp_leansearch
+         - Purpose: Natural language search in Lean libraries
+         - Input: {"query": "list concatenation associativity"}
+         - Output: Array of {name, type, module, doc, relevance}
+         - Rate limit: 3 requests per 30 seconds
+         - Use: Search for theorems using natural language
+      
+      3. lean-lsp-mcp_local_search
+         - Purpose: Search local project files
+         - Input: {"query": "modal logic", "file_pattern": "*.lean"}
+         - Output: Array of {file, line, column, match}
+         - Rate limit: None (local search)
+         - Use: Find definitions/theorems in current project
+      
+      4. lean-lsp-mcp_leanfinder
+         - Purpose: Semantic search in Lean libraries
+         - Input: {"query": "commutativity of addition"}
+         - Output: Array of {name, type, module, similarity}
+         - Rate limit: 3 requests per 30 seconds
+         - Use: Find semantically similar theorems
+      
+      5. lean-lsp-mcp_state_search
+         - Purpose: Premise search for proof states
+         - Input: {"goal": "n + m = m + n", "hypotheses": ["n : Nat", "m : Nat"]}
+         - Output: Array of {name, type, module, applicability}
+         - Rate limit: 3 requests per 30 seconds
+         - Use: Find theorems applicable to current proof state
+      
+      Search strategy:
+      - For type-based queries: Use lean-lsp-mcp_loogle
+      - For natural language queries: Use lean-lsp-mcp_leansearch
+      - For local project queries: Use lean-lsp-mcp_local_search
+      - For semantic queries: Use lean-lsp-mcp_leanfinder
+      - For proof state queries: Use lean-lsp-mcp_state_search
+      - Respect rate limits (3 req/30s for online tools)
+      - Implement retry with exponential backoff on rate limit errors
+      - All tools are optional - gracefully degrade if unavailable
+    </mcp_search_tools>
     <loogle_query_generation>
       Generate queries based on research topic and context:
       
@@ -402,9 +452,16 @@ temperature: 0.3
       Quality may be lower but research still useful
       
       Degradation tiers:
-      1. Loogle + Web search (best)
-      2. Web search only (fallback)
-      3. Manual research recommended (if all fail)
+      1. MCP search tools + Loogle CLI + Web search (best)
+      2. Loogle CLI + Web search (good)
+      3. Web search only (fallback)
+      4. Manual research recommended (if all fail)
+      
+      MCP tool error handling:
+      - Tool unavailable: Log warning, fall back to Loogle CLI or web search
+      - Rate limit exceeded: Wait and retry with exponential backoff
+      - Timeout: Log timeout, continue with next tool
+      - Connection error: Log error, fall back to Loogle CLI or web search
     </graceful_degradation>
     <output>Error logged if tools unavailable</output>
   </step_5>
@@ -566,9 +623,16 @@ temperature: 0.3
 <output_specification>
   <artifacts>
     - Research report in specs/{task_number}_{topic}/reports/research-001.md
-    - Research summary in specs/{task_number}_{topic}/summaries/research-summary.md
     - Standardized return object following subagent-return-format.md
   </artifacts>
+  
+  <artifact_pattern>
+    Single-file output: NO summary artifact created.
+    Research report is self-contained and comprehensive.
+    Summary is returned as metadata in return object summary field (<100 tokens).
+    
+    Reference: artifact-management.md "When to Create Summary Artifacts"
+  </artifact_pattern>
 
   <research_report_structure>
     # Lean Library Research: {topic}
@@ -662,42 +726,23 @@ temperature: 0.3
     - Examples: {example_links}
     - Discussions: {zulip_links}
   </research_report_structure>
-
-  <research_summary_structure>
-    # Research Summary: {topic}
+  
+  <no_summary_artifact>
+    IMPORTANT: Lean research agent creates 1 artifact (report only).
     
-    ## Key Findings
-    - {finding_1}
-    - {finding_2}
-    - {finding_3}
+    NO summary artifact file is created because:
+    - Single-file output (research report is comprehensive and self-contained)
+    - Summary is returned as metadata in return object summary field
+    - Follows same pattern as researcher.md (single-file outputs)
     
-    ## Tool Performance
-    - Loogle: {available/unavailable}
-      - Queries: {query_count}
-      - Hits: {hit_count}
-      - Avg latency: {avg_duration}s
-    - Web search: {search_count} searches
-    - Fallback used: {yes/no}
+    Summary metadata in return object:
+    - Brief description (3-5 sentences, <100 tokens)
+    - Counts of findings (definitions, theorems, tactics)
+    - Tool usage summary (Loogle, web search)
+    - NOT a duplicate of report content
     
-    ## Recommended Libraries
-    - {library_1}: {reason}
-    - {library_2}: {reason}
-    
-    ## Recommended Theorems/Tactics
-    - {theorem_1}: {usage} (from {source})
-    - {theorem_2}: {usage} (from {source})
-    - {tactic_1}: {usage} (from {source})
-    
-    ## Next Steps
-    1. {step_1}
-    2. {step_2}
-    3. {step_3}
-    
-    ## Tool Status
-    - Loogle: {available/unavailable} - Type-based search
-    - LeanExplore: {unavailable} - Not yet integrated
-    - LeanSearch: {unavailable} - Not yet integrated
-  </research_summary_structure>
+    Reference: artifact-management.md "When to Create Summary Artifacts"
+  </no_summary_artifact>
 </output_specification>
 
 <error_handling>
@@ -963,10 +1008,11 @@ temperature: 0.3
 
   <post_flight>
     - Research report created and valid Markdown
-    - Research summary created and valid Markdown
+    - NO summary artifact created (single-file output)
     - Return object follows subagent-return-format.md
     - All required fields present in return object
-    - Artifacts list matches created files
+    - Summary field in return object is <100 tokens
+    - Artifacts list matches created files (1 artifact only)
     - Loogle client closed gracefully (if started)
   </post_flight>
 </validation>

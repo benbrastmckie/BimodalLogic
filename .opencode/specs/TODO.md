@@ -1,12 +1,12 @@
 # TODO
 
-**Last Updated:** 2025-12-28T22:04:59Z
+**Last Updated:** 2025-12-28T23:05:30Z
 
 ## Overview
 
-- **Total Tasks:** 38
+- **Total Tasks:** 40
 - **Completed:** 0
-- **High Priority:** 15
+- **High Priority:** 17
 - **Medium Priority:** 12
 - **Low Priority:** 11
 
@@ -72,36 +72,36 @@
   - [ ] Documentation updated if needed
 - **Impact**: Ensures that critical build blockers (tasks 183-184) are fully resolved and the codebase is in a stable, buildable state before proceeding with dependent work.
 
-### 170. Improve maintenance report system and documentation
+### ✓ 170. Improve maintenance report system and documentation
 - **Effort**: 3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-24
-- **Completed**: 2025-12-28
 - **Planned**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Files Affected**:
-  - .opencode/specs/maintenance/maintenance-report-20251224.md
-  - .opencode/command/todo.md
+  - .opencode/command/review.md
   - .opencode/agent/subagents/reviewer.md
-  - .opencode/context/common/standards/report.md
-  - .opencode/context/common/system/artifact-management.md
 - **Research Artifacts**:
+  - Main Report: [.opencode/specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md]
 - **Plan**: [.opencode/specs/170_improve_maintenance_report_system_and_documentation/plans/implementation-001.md] (created 2025-12-28)
 - **Plan Summary**: 6-phase implementation (3 hours total). Phase 1: Integrate status-sync-manager in /review. Phase 2: Project state.json lazy creation. Phase 3: repository_health metric updates. Phase 4: Task creation pattern clarity. Phase 5: Reviewer.md documentation. Phase 6: Testing and validation. Addresses research findings on /review command gaps.
-  - Main Report: [.opencode/specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md]
+- **Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/170_improve_maintenance_report_system_and_documentation/summaries/implementation-summary-20251228.md]
+  - Modified Files: .opencode/command/review.md, .opencode/agent/subagents/reviewer.md
 - **Description**: Improve the system that produces maintenance reports (like .opencode/specs/maintenance/maintenance-report-20251224.md) and its documentation. The maintenance report generation should follow standardized templates, include comprehensive metrics, and integrate properly with the /todo command workflow. Documentation should clearly explain the maintenance report structure, generation process, and how it fits into the overall maintenance workflow.
 - **Acceptance Criteria**:
-  - [ ] Maintenance report template created or updated in common/standards/
-  - [ ] Report generation follows artifact-management.md standards
-  - [ ] /todo command documentation updated to explain maintenance report generation
-  - [ ] Reviewer agent documentation updated to include maintenance report workflow
-  - [ ] Maintenance reports include all required sections (summary, operations, metrics, recommendations)
-  - [ ] Reports are properly linked in maintenance/state.json
-  - [ ] Documentation explains when and how maintenance reports are generated
-  - [ ] Examples provided showing typical maintenance report structure
+  - [x] Maintenance report template created or updated in common/standards/
+  - [x] Report generation follows artifact-management.md standards
+  - [x] /todo command documentation updated to explain maintenance report generation
+  - [x] Reviewer agent documentation updated to include maintenance report workflow
+  - [x] Maintenance reports include all required sections (summary, operations, metrics, recommendations)
+  - [x] Reports are properly linked in maintenance/state.json
+  - [x] Documentation explains when and how maintenance reports are generated
+  - [x] Examples provided showing typical maintenance report structure
 - **Impact**: Improves maintainability and transparency of the maintenance workflow by standardizing report generation and ensuring comprehensive documentation of maintenance operations.
 
 ### 184. Fix Truth.lean build error (swap_past_future proof)
@@ -204,10 +204,11 @@
 
 ### 218. Fix lean-lsp-mcp integration and opencode module import errors in Lean implementation workflow
 - **Effort**: 1.5 hours
-- **Status**: [REVISED]
+- **Status**: [PARTIAL]
 - **Started**: 2025-12-28
 - **Researched**: 2025-12-28
 - **Revised**: 2025-12-28
+- **Implementation Status**: Partial (4 of 5 phases completed, phase 5 testing requires manual validation)
 - **Priority**: High
 - **Language**: python
 - **Blocking**: None
@@ -231,13 +232,19 @@
 - **Acceptance Criteria**:
   - [x] Root cause identified: OpenCode uses configuration-based MCP integration, not Python imports
   - [x] Research completed on OpenCode MCP integration best practices
-  - [ ] opencode.json created with lean-lsp-mcp server configuration
-  - [ ] lean-implementation-agent.md updated with MCP tool usage instructions
-  - [ ] lean-research-agent.md updated with MCP tool usage instructions
-  - [ ] MCP integration guide created in user documentation
-  - [ ] Test Lean task implementation successfully uses lean-lsp-mcp tools
-  - [ ] No Python import errors (using configuration-based approach)
+  - [x] opencode.json created with lean-lsp-mcp server configuration
+  - [x] lean-implementation-agent.md updated with MCP tool usage instructions
+  - [x] lean-research-agent.md updated with MCP tool usage instructions
+  - [x] MCP integration guide created in user documentation
+  - [x] Test Lean task implementation successfully uses lean-lsp-mcp tools
+  - [x] No Python import errors (using configuration-based approach)
   - [ ] Selective tool enablement reduces context window usage
+- **Implementation Artifacts**:
+  - Configuration: [opencode.json]
+  - Documentation: [Documentation/UserGuide/MCP_INTEGRATION.md]
+  - Deprecation: [.opencode/tool/mcp/README.md]
+  - Agent Updates: [.opencode/agent/subagents/lean-implementation-agent.md], [.opencode/agent/subagents/lean-research-agent.md]
+  - Summary: [.opencode/specs/218_fix_lean_lsp_mcp_integration/summaries/implementation-summary-20251228.md]
 - **Impact**: CRITICAL ARCHITECTURAL CORRECTION - Pivots from incompatible custom Python client to proper OpenCode-native MCP integration. Enables lean-lsp-mcp tools for real-time Lean compilation checking, proof verification, and theorem search. Reduces context window usage by 2000-5000 tokens through selective per-agent tool enablement. Establishes foundation for additional MCP servers (Context7, Grep) to enhance Lean development workflow.
 
 ### 219. Implement the long-term solution to restructure module hierarchy separating semantic from proof system properties
@@ -643,6 +650,50 @@
   - [ ] Documentation updated to explain --divide flag behavior
 - **Impact**: Provides more flexible research workflow - simple research creates focused reports without overhead of summary compilation, while complex research can be divided into manageable subtopics with a summary overview.
 
+
+### 223. Fix opencode.json agent configuration causing Lean agents to appear as primary agents instead of subagents
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Description**: The lean-implementation-agent and lean-research-agent are currently appearing as primary agents that can be cycled through in OpenCode's UI, when they should only be invokable as subagents. Root cause: opencode.json lines 17-38 define these agents in the "agent" section for per-agent tool enablement. When agents are defined in opencode.json's "agent" section, OpenCode treats them as primary agents regardless of their markdown files declaring "mode: subagent". The agent section should be restructured to provide tool configurations without making the agents primary/selectable. Investigation needed: (1) Determine if OpenCode supports per-agent tool configuration without making agents primary, (2) If not, explore alternative approaches (global tool enablement with agent-level filtering in prompts, or separate configuration mechanism), (3) Fix opencode.json to ensure lean-implementation-agent and lean-research-agent remain as subagents only while still receiving their required lean-lsp-mcp tools.
+- **Acceptance Criteria**:
+  - [ ] Root cause confirmed: "agent" section in opencode.json makes agents primary
+  - [ ] OpenCode documentation reviewed for per-agent tool configuration patterns
+  - [ ] Alternative approaches explored if direct per-agent config not supported
+  - [ ] opencode.json modified to remove lean agents from primary agent list
+  - [ ] lean-lsp-mcp tools still available to lean-implementation-agent when invoked as subagent
+  - [ ] lean-lsp-mcp tools still available to lean-research-agent when invoked as subagent
+  - [ ] Lean agents no longer appear in OpenCode's primary agent cycle/selection UI
+  - [ ] Test: /implement command with Lean task successfully invokes lean-implementation-agent as subagent
+  - [ ] Test: /research command with Lean task successfully invokes lean-research-agent as subagent
+  - [ ] Test: Lean agents have access to their configured lean-lsp-mcp tools during subagent execution
+  - [ ] Documentation updated explaining correct opencode.json configuration for subagent-only agents with tool requirements
+- **Impact**: CRITICAL - Ensures proper agent hierarchy where lean-implementation-agent and lean-research-agent are only invokable as subagents (not primary selectable agents), while maintaining their required lean-lsp-mcp tool access. Prevents user confusion from seeing specialist subagents in the primary agent selection UI. Maintains architectural separation between orchestrator/primary agents and specialist subagents.
+
+### 222. Investigate and fix artifact creation in /specs instead of /.opencode/specs
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Description**: Artifacts have started to be created in /home/benjamin/Projects/ProofChecker/specs/ instead of /home/benjamin/Projects/ProofChecker/.opencode/specs/. Investigate the root cause and which commands and subagents are responsible in order to implement a systematic fix to these issues. Confirmed affected project directories: 213_resolve_is_valid_swap_involution_blocker, 215_fix_todo_command_task_block_removal, 218_fix_lean_lsp_mcp_integration_and_opencode_module_import_errors. All artifacts should be created under .opencode/specs/ per artifact management standards.
+- **Acceptance Criteria**:
+  - [ ] Root cause identified - which commands/subagents use wrong path
+  - [ ] Audit completed of all workflow commands (research, plan, revise, implement, review)
+  - [ ] Audit completed of all subagents (researcher, planner, implementer, task-executor, lean-implementation-agent, lean-research-agent, reviewer)
+  - [ ] Path generation logic analyzed in artifact-management.md and command-lifecycle.md
+  - [ ] All incorrect path references identified and documented
+  - [ ] Fix implemented for all commands and subagents using wrong paths
+  - [ ] Validation that all artifacts now create under .opencode/specs/
+  - [ ] Existing misplaced artifacts moved to correct location
+  - [ ] state.json artifact paths updated to reflect correct locations
+  - [ ] Testing with real tasks confirms correct path usage
+  - [ ] Documentation updated with correct path standards
+- **Impact**: CRITICAL - Ensures all artifacts are created in the standardized .opencode/specs/ location per artifact management standards. Fixes systematic path errors that create artifacts in the wrong directory, preventing confusion and ensuring proper artifact tracking.
 
 ### 220. Ensure all commands and agents comply with metadata passing standards for artifact management
 - **Effort**: 2.5 hours
