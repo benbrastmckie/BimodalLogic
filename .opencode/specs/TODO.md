@@ -638,9 +638,13 @@
 
 ### 220. Ensure all commands and agents comply with metadata passing standards for artifact management
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: Medium
 - **Language**: markdown
+- **Research Artifacts**:
+  - Main Report: .opencode/specs/220_metadata_passing_compliance_verification/reports/research-001.md
 - **Blocking**: None
 - **Dependencies**: 217
 - **Files Affected**:
@@ -675,7 +679,7 @@
 
 ### 221. Fix comprehensive status update failures - ensure atomic updates across TODO.md, state.json, project state.json, and plans via status-sync-manager
 - **Effort**: 8-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
 - **Priority**: High
@@ -684,6 +688,7 @@
 - **Dependencies**: None
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/221_fix_comprehensive_status_update_failures/reports/research-001.md]
+- **Plan**: [.opencode/specs/221_fix_comprehensive_status_update_failures/plans/implementation-001.md]
 - **Files Affected**:
   - .opencode/command/research.md
   - .opencode/command/plan.md
