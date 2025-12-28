@@ -1038,12 +1038,16 @@
 
 ### 200. Review command-specific status marker implementation for consistency
 - **Effort**: 2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2025-12-27
+- **Completed**: 2025-12-27
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/200_command_status_markers_review/reports/research-001.md]
+  - Summary: [.opencode/specs/200_command_status_markers_review/summaries/research-summary.md]
 - **Files Affected**:
   - .opencode/context/common/system/status-markers.md
   - .opencode/command/research.md
