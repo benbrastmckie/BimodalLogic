@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T14:42:01.194387Z",
+  "_last_updated": "2025-12-28T22:45:38.072206Z",
   "next_project_number": 222,
   "project_numbering": {
     "min": 0,
@@ -75,8 +75,8 @@
       "project_number": 218,
       "project_name": "fix_lean_lsp_mcp_integration_and_opencode_module_import_errors",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "plan_revised",
+      "status": "revised",
       "priority": "high",
       "language": "python",
       "created": "2025-12-28T23:45:00Z",
@@ -87,8 +87,36 @@
         ".opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md",
         ".opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md"
       ],
-      "estimated_hours": 2.0,
-      "research_findings": "CRITICAL DISCOVERY: OpenCode has native MCP support via opencode.json configuration. Task 212's custom Python MCP client is architecturally incompatible - OpenCode agents use natural language tool instructions, not Python imports. ModuleNotFoundError is symptom of wrong architectural approach. Solution: Configuration-based integration using opencode.json with lean-lsp-mcp server registration. Enables 15+ MCP tools for Lean development. Previous __init__.py plan obsolete. New approach: 1-2 hours implementation."
+      "estimated_hours": 1.5,
+      "research_findings": "CRITICAL DISCOVERY: OpenCode has native MCP support via opencode.json configuration. Task 212's custom Python MCP client is architecturally incompatible - OpenCode agents use natural language tool instructions, not Python imports. ModuleNotFoundError is symptom of wrong architectural approach. Solution: Configuration-based integration using opencode.json with lean-lsp-mcp server registration. Enables 15+ MCP tools for Lean development. Previous __init__.py plan obsolete. New approach: 1-2 hours implementation.",
+      "planning_completed": "2025-12-28",
+      "plan_path": ".opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-003.md",
+      "plan_metadata": {
+        "phase_count": 4,
+        "estimated_hours": 1.5,
+        "complexity": "low"
+      },
+      "plan_versions": [
+        {
+          "version": 1,
+          "path": ".opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-001.md",
+          "created": "2025-12-28T13:52:00Z",
+          "reason": "Initial implementation plan (Python MCP client approach)"
+        },
+        {
+          "version": 2,
+          "path": ".opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-002.md",
+          "created": "2025-12-28T14:18:00Z",
+          "reason": "Revised Python implementation approach"
+        },
+        {
+          "version": 3,
+          "path": ".opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-003.md",
+          "created": "2025-12-28T22:32:00Z",
+          "reason": "Complete architectural pivot to OpenCode-native MCP configuration based on research-002.md findings"
+        }
+      ],
+      "phases": 4
     },
     {
       "project_number": 219,
@@ -295,6 +323,10 @@
     "review_artifacts": []
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T22:45:38.072236Z",
+      "activity": "Marked task 218 as REVISED: Plan v003 created with complete architectural pivot from Python MCP client to OpenCode-native configuration-based integration (4 phases, 1.5 hours)"
+    },
     {
       "timestamp": "2025-12-28T22:30:43.664275Z",
       "activity": "Marked task 219 as PLANNED: 9-phase module hierarchy restructuring plan created (12-14 hours total) - Extract TemporalDuality to SoundnessLemmas.lean, resolve circular dependency"
