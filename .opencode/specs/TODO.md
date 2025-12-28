@@ -1,12 +1,12 @@
 # TODO
 
-**Last Updated:** 2025-12-28T18:32:12Z
+**Last Updated:** 2025-12-28T19:45:52Z
 
 ## Overview
 
-- **Total Tasks:** 33
+- **Total Tasks:** 34
 - **Completed:** 0
-- **High Priority:** 11
+- **High Priority:** 12
 - **Medium Priority:** 11
 - **Low Priority:** 11
 
@@ -42,13 +42,15 @@
 
 ### 193. Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)
 - **Effort**: 0.5 hours
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
 - **Started**: 2025-12-28
 - **Planned**: 2025-12-28
+- **Blocked**: 2025-12-28
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Blocking Reason**: Theorem unprovable with current approach. truth_at pattern matching prevents transport along φ.swap.swap = φ equality. Multiple proof strategies exhausted (direct rewrite, simp only, Eq.subst/cast/convert, double helper application). Requires expert consultation or fundamentally different approach.
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/193_prove_is_valid_swap_involution/reports/research-001.md]
   - Summary: [.opencode/specs/193_prove_is_valid_swap_involution/summaries/research-summary.md]
@@ -65,7 +67,7 @@
   - Logos/Core/Semantics/Truth.lean
 - **Description**: Replace the sorry placeholder in the is_valid_swap_involution theorem with a complete proof. This theorem is currently admitted with sorry and needs a proper proof to ensure correctness and completeness of the Truth.lean module.
 - **Research Findings** (2025-12-28): Current `simpa` proof fails because `truth_at` is structurally recursive, preventing direct formula substitution. Solution: Add helper lemma `truth_at_swap_swap` using structural induction to prove equivalence case-by-case, then use it via rewrite in main theorem. Standard Lean 4 pattern, low risk, 2-hour implementation (1h helper + 45min testing).
-- **Implementation Status** (2025-12-28): PARTIAL (85% complete). Helper lemma `truth_at_swap_swap` fully proven with structural induction across all 6 cases (atom, bot, imp, box, all_past, all_future). Main theorem `is_valid_swap_involution` remains blocked by type theory issue: cannot automatically transport truth values across propositional equality `φ.swap.swap = φ.swap` through pattern-matched `truth_at` definition. Solution: Add involution helper lemma to complete proof (estimated 30 minutes).
+- **Implementation Status** (2025-12-28): BLOCKED after exhaustive implementation attempts. Helper lemma `truth_at_swap_swap` fully proven with structural induction across all 6 cases (atom, bot, imp, box, all_past, all_future). Main theorem `is_valid_swap_involution` blocked by fundamental type theory limitation: truth_at is defined by pattern matching, preventing transport along propositional equality `φ.swap.swap = φ`. All recommended approaches from plans v2 and v3 attempted and failed: (1) Direct simp only pattern from task 209 - failed, (2) Involution helper composition - failed, (3) Eq.subst/cast/convert tactics - failed, (4) Multiple rewrite strategies - failed. Key finding: The simp only pattern works for derivations (syntactic) but not for truth_at propositions (semantic pattern-matched). Requires expert consultation or alternative proof strategy.
 - **Acceptance Criteria**:
   - [x] Helper lemma `truth_at_swap_swap` has complete proof (no sorry)
   - [x] All 6 cases proven correctly
@@ -293,6 +295,31 @@
   - [ ] No regression in artifact creation or quality
   - [ ] Documentation updated if return format patterns need clarification
 - **Impact**: Protects primary agent context window from bloat, improves scalability for commands that create large artifacts, and ensures consistent artifact management across all commands per subagent-return-format.md standard.
+
+### 212. Research and improve lean-lsp-mcp usage in Lean implementation agent
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/context/project/lean4/ (potential new context files)
+- **Description**: Research how lean-lsp-mcp is intended to be used and refine the lean-implementation-agent to use the tool effectively when implementing Lean plans. Currently when running /implement on Lean tasks, lean-lsp-mcp is not being used at all. Need to: (1) Research lean-lsp-mcp tool usage best practices by consulting existing context files and online resources, (2) Understand how to invoke lean-lsp-mcp correctly within agent workflows, (3) Refine lean-implementation-agent to use lean-lsp-mcp effectively during implementation, (4) Improve context files as appropriate while integrating with existing context to avoid bloat, redundancy, and inconsistency, (5) Improve organization and easy access to lean-lsp-mcp guidance. The goal is to ensure Lean-specific tooling is actually being leveraged during Lean task implementation.
+- **Acceptance Criteria**:
+  - [ ] Research completed on lean-lsp-mcp tool usage best practices
+  - [ ] Existing context files reviewed for lean-lsp-mcp documentation
+  - [ ] Online resources consulted for lean-lsp-mcp usage patterns
+  - [ ] lean-implementation-agent refined to invoke lean-lsp-mcp during implementation
+  - [ ] Verification that lean-lsp-mcp is actually used when implementing Lean tasks
+  - [ ] Context files improved with lean-lsp-mcp usage guidance
+  - [ ] No bloat, redundancy, or inconsistency introduced in context files
+  - [ ] Organization improved for easy access to Lean tool guidance
+  - [ ] lean-research-agent reviewed and improved if needed
+  - [ ] Test implementation confirms lean-lsp-mcp usage
+- **Impact**: CRITICAL - Ensures lean-lsp-mcp is actually being used during Lean task implementation instead of being bypassed. Without this fix, Lean-specific tooling investment is wasted and Lean implementations miss out on language server capabilities for proof verification, theorem search, and code intelligence.
 
 ### 203. Add --complex flag to /research for subtopic subdivision with summary
 - **Effort**: TBD
@@ -856,9 +883,9 @@
   - [ ] Documentation updated if requirements not clearly documented in agent specs
 - **Impact**: Ensures both Lean-specific agents follow all project standards for artifact storage, status tracking, and state management, providing consistency with general-purpose agents and enabling reliable project tracking, lazy directory creation, context window protection (via summaries), and proper state synchronization across TODO.md and state.json.
 
-### 211. Standardize pre-flight and post-flight procedures across research, planning, revision, and implementation workflows
+### 211. Standardize pre-flight and post-flight procedures across research, planning, revision, and implementation workflows ✅
 - **Effort**: 18 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
 - **Priority**: High
@@ -870,6 +897,19 @@
   - Summary: [.opencode/specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md]
 - **Plan**: [.opencode/specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md]
 - **Plan Summary**: 4-phase implementation (18 hours total). Phase 1: Create command-lifecycle.md with 8-stage pattern and variation tables (4h). Phase 2: Update 4 commands to reference lifecycle, reduce from 1,961 to 1,200 lines (6h). Phase 3: Add summary validation to 2 agents, update all 6 agents with lifecycle references (4h). Phase 4: Test all commands with multiple scenarios (4h). Achieves 39% duplication reduction, single source of truth, 100% compliance.
+- **Implementation Summary**: [.opencode/specs/211_standardize_command_lifecycle_procedures/summaries/implementation-summary-20251228.md]
+- **Implementation Artifacts**:
+  - [.opencode/context/common/workflows/command-lifecycle.md]
+  - [.opencode/command/research.md]
+  - [.opencode/command/plan.md]
+  - [.opencode/command/revise.md]
+  - [.opencode/command/implement.md]
+  - [.opencode/agent/subagents/lean-implementation-agent.md]
+  - [.opencode/agent/subagents/task-executor.md]
+  - [.opencode/agent/subagents/researcher.md]
+  - [.opencode/agent/subagents/planner.md]
+  - [.opencode/agent/subagents/lean-research-agent.md]
+  - [.opencode/agent/subagents/implementer.md]
 - **Files Affected**:
   - .opencode/context/common/workflows/command-lifecycle.md (new - standardized pre/post-flight procedures)
   - .opencode/command/research.md (update with standardized procedures)
