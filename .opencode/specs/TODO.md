@@ -449,12 +449,17 @@
 - **Impact**: Ensures consistent artifact creation, status tracking, and state management across all workflow commands and subagents, enabling reliable project tracking, proper artifact management, and adherence to established standards.
 
 ### 218. Fix lean-lsp-mcp integration and opencode module import errors in Lean implementation workflow
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 0.5-1 hour
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: 212
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md]
+  - Summary: [.opencode/specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary.md]
 - **Files Affected**:
   - .opencode/agent/subagents/lean-implementation-agent.md
   - .opencode/tool/mcp/client.py
