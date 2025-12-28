@@ -1129,7 +1129,7 @@
 
 ### 201. Implement /todo command archival feature for completed and abandoned tasks
 - **Effort**: 6 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-27
 - **Completed**: 2025-12-27
 - **Priority**: High
@@ -1141,6 +1141,7 @@
   - Summary: [.opencode/specs/201_todo_archival_feature/summaries/research-summary.md]
 - **Plan**: [Implementation Plan](.opencode/specs/201_todo_archival_feature/plans/implementation-001.md)
 - **Plan Summary**: 4-phase implementation plan (6 hours). Phase 1: Archival preparation logic - self-healing, archive entry construction, directory move preparation (2h). Phase 2: Atomic four-file commit - two-phase commit, rollback mechanism, directory moves (2.5h). Phase 3: Git commit and user feedback - expanded scope, enhanced summary (1h). Phase 4: Testing and documentation - edge cases, atomicity validation (0.5h). Implements In-Place Enhancement approach with comprehensive error handling and rollback.
+- **Implementation Summary**: [.opencode/specs/201_todo_archival_feature/summaries/implementation-summary-20251227.md]
 - **Files Affected**:
   - .opencode/command/todo.md
   - .opencode/specs/TODO.md

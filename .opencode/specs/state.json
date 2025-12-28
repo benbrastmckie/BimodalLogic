@@ -113,16 +113,21 @@
       "project_number": 201,
       "project_name": "todo_archival_feature",
       "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "completed",
+      "status": "completed",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-28T00:30:00Z",
       "started": "2025-12-27",
       "research_completed": "2025-12-27",
       "planning_completed": "2025-12-27",
+      "completed": "2025-12-27",
       "last_updated": "2025-12-27",
-      "plan_path": ".opencode/specs/201_todo_archival_feature/plans/implementation-001.md"
+      "plan_path": ".opencode/specs/201_todo_archival_feature/plans/implementation-001.md",
+      "artifacts": [
+        ".opencode/command/todo.md",
+        ".opencode/specs/201_todo_archival_feature/summaries/implementation-summary-20251227.md"
+      ]
     },
     {
       "project_number": 192,
@@ -187,6 +192,10 @@
     }
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T01:30:00Z",
+      "activity": "Marked task 201 as COMPLETED: /todo archival feature implementation completed - 4 phases, 173 lines added, comprehensive error handling"
+    },
     {
       "timestamp": "2025-12-28T01:00:00Z",
       "activity": "Marked task 202 as RESEARCHED: Verbose artifact output research completed - problem localized to 2 legacy subagents (4-5 hours full fix)"
