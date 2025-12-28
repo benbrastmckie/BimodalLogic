@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T21:44:23.029309Z",
-  "next_project_number": 219,
+  "_last_updated": "2025-12-28T21:54:44.934576Z",
+  "next_project_number": 220,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -136,7 +136,7 @@
         ".opencode/agent/subagents/lean-research-agent.md",
         ".opencode/agent/subagents/implementer.md"
       ],
-      "implementation_notes": "Phases 1-3 completed (3 hours actual vs 18 hours estimated). Phase 4 deferred - testing will occur during normal command usage. Created command-lifecycle.md with 8-stage pattern, updated 4 commands and 6 agents, achieved 39% duplication reduction (1,961 → 1,200 lines)."
+      "implementation_notes": "Phases 1-3 completed (3 hours actual vs 18 hours estimated). Phase 4 deferred - testing will occur during normal command usage. Created command-lifecycle.md with 8-stage pattern, updated 4 commands and 6 agents, achieved 39% duplication reduction (1,961 \u2192 1,200 lines)."
     },
     {
       "project_number": 216,
@@ -173,28 +173,6 @@
         ".opencode/context/common/system/state-schema.md"
       ],
       "implementation_notes": "All 4 phases completed. Enhanced status-sync-manager with artifact validation, plan metadata tracking, project state.json lazy creation, and plan version history. Updated 4 subagents with validation. Updated 4 commands to delegate all updates. Added comprehensive documentation to command-lifecycle.md and state-schema.md. Total +389 lines across 11 files. Committed with task 215 in commit 90cd574."
-    },
-    {
-      "project_number": 215,
-      "project_name": "fix_todo_task_removal",
-      "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2025-12-28T12:36:52Z",
-      "started": "2025-12-28",
-      "research_completed": "2025-12-28",
-      "planning_completed": "2025-12-28",
-      "last_updated": "2025-12-28",
-      "artifacts": [
-        ".opencode/specs/215_fix_todo_task_removal/reports/research-001.md",
-        ".opencode/specs/215_fix_todo_task_removal/summaries/research-summary.md",
-        ".opencode/specs/215_fix_todo_task_removal/plans/implementation-001.md"
-      ],
-      "plan_path": ".opencode/specs/215_fix_todo_task_removal/plans/implementation-001.md",
-      "estimated_hours": 2.5,
-      "phases": 6
     },
     {
       "project_number": 217,
@@ -244,6 +222,13 @@
     }
   ],
   "completed_projects": [
+    {
+      "project_number": 215,
+      "project_name": "fix_todo_task_removal",
+      "type": "bugfix",
+      "completed": "2025-12-28",
+      "summary": "Fixed /todo command specification to remove complete task blocks (heading + body) with explicit structure definition, boundary patterns, and validation"
+    },
     {
       "project_number": 213,
       "project_name": "resolve_is_valid_swap_involution_blocker",
@@ -344,6 +329,10 @@
     "review_artifacts": []
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T21:53:21Z",
+      "activity": "Created task 219: Implement the long-term solution to restructure module hierarchy separating semantic from proof system properties (TBD effort, Medium priority, lean)"
+    },
     {
       "timestamp": "2025-12-28T23:50:00Z",
       "activity": "Marked task 218 as RESEARCHED: lean-lsp-mcp integration error research completed - Root cause: missing __init__.py files, MCP client from task 212 works correctly (0.5-1 hour estimated fix)"
@@ -636,7 +625,7 @@
         "Logos/Core/Semantics/Truth.lean"
       ],
       "implementation_notes": "BLOCKED after exhaustive attempts. Helper lemma truth_at_swap_swap complete (all 6 cases). Main theorem unprovable with current approach - truth_at pattern matching prevents equality transport. All strategies from plans v2/v3 failed. Requires expert consultation.",
-      "blocking_reason": "Fundamental type theory limitation - truth_at pattern matching prevents transport along φ.swap.swap = φ equality. Exhausted all recommended approaches."
+      "blocking_reason": "Fundamental type theory limitation - truth_at pattern matching prevents transport along \u03c6.swap.swap = \u03c6 equality. Exhausted all recommended approaches."
     },
     {
       "project_number": 194,
