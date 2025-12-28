@@ -320,11 +320,11 @@ temperature: 0.3
     <action>Create research artifact</action>
     <process>
       1. Create project directory structure (lazy creation):
-         specs/{task_number}_{slugified_topic}/
-         specs/{task_number}_{slugified_topic}/reports/
+         .opencode/specs/{task_number}_{slugified_topic}/
+         .opencode/specs/{task_number}_{slugified_topic}/reports/
       
       2. Create detailed research report:
-         Path: specs/{task_number}_{slugified_topic}/reports/research-001.md
+         Path: .opencode/specs/{task_number}_{slugified_topic}/reports/research-001.md
          Content:
          - Research topic and scope
          - Tool usage summary (Loogle queries, web searches)
@@ -494,7 +494,7 @@ temperature: 0.3
         "artifacts": [
           {
             "type": "research",
-            "path": "specs/{task_number}_{topic}/reports/research-001.md",
+            "path": ".opencode/specs/{task_number}_{topic}/reports/research-001.md",
             "summary": "Detailed Lean library research report with Loogle findings"
           }
         ],
@@ -622,7 +622,7 @@ temperature: 0.3
 
 <output_specification>
   <artifacts>
-    - Research report in specs/{task_number}_{topic}/reports/research-001.md
+    - Research report in .opencode/specs/{task_number}_{topic}/reports/research-001.md
     - Standardized return object following subagent-return-format.md
   </artifacts>
   
