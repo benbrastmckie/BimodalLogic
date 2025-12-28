@@ -1,7 +1,7 @@
 ---
 name: revise
 agent: orchestrator
-description: "Create new plan versions without changing task status"
+description: "Create new plan versions with [REVISED] status"
 context_level: 2
 language: markdown
 ---
@@ -9,6 +9,7 @@ language: markdown
 **Task Input (required):** $ARGUMENTS (task number and optional prompt; e.g., `/revise 196`, `/revise 196 "Adjust approach"`)
 
 Context Loaded:
+@.opencode/context/common/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
 @.opencode/context/common/system/status-markers.md
@@ -18,28 +19,28 @@ Context Loaded:
 
 <context>
   <system_context>
-    Plan revision workflow that creates new plan versions while preserving task status.
+    Plan revision workflow that creates new plan versions while updating task status.
     Increments plan version number (implementation-002.md, etc.).
   </system_context>
   <domain_context>
-    Plan revision for tasks with existing plans. Does not change task status markers.
-    Useful for adjusting approach without restarting task.
+    Plan revision for tasks with existing plans. Updates status to [REVISED].
+    Useful for adjusting approach based on new information.
   </domain_context>
   <task_context>
-    Create new plan version for specified task, preserve current status, update plan
+    Create new plan version for specified task, update status to [REVISED], update plan
     link in TODO.md, and commit new plan.
   </task_context>
   <execution_context>
     Lazy directory creation (specs/NNN_*/plans/ already exists from original plan).
-    Status preservation (no status change). Git commit after revision.
+    Status update to [REVISED]. Git commit after revision.
   </execution_context>
 </context>
 
-<role>Plan Revision Command - Create new plan versions while preserving status</role>
+<role>Plan Revision Command - Create new plan versions with status tracking</role>
 
 <task>
-  Create new plan version for task, preserve current status, update plan link,
-  and commit new plan without changing task status markers.
+  Create new plan version for task, update status to [REVISED], update plan link,
+  and commit new plan with status updates.
 </task>
 
 <argument_parsing>
@@ -93,29 +94,24 @@ Context Loaded:
 </argument_parsing>
 
 <workflow_execution>
+  Follow command-lifecycle.md 8-stage pattern with these variations:
+  
   <stage id="1" name="Preflight">
-    <action>Validate task has existing plan</action>
-    <process>
-      1. Parse task number from input (see <argument_parsing> above)
-      2. Load task from TODO.md
-      3. Validate task exists
-      4. Check for existing plan link in TODO.md
-      5. If no plan exists: Error (use /plan instead)
-      6. Load existing plan file
-      7. Determine next plan version number
-      8. Mark task [REVISING] with Started timestamp (or preserve if already has Started)
-      9. Update state.json: status = "revising"
-    </process>
+    <status_transition>
+      Initial: [PLANNED], [REVISED]
+      In-Progress: [REVISING]
+    </status_transition>
+    <validation>
+      - Task number must exist in TODO.md
+      - Task must have existing plan link
+      - Plan file must exist on disk
+      - Calculate next plan version number
+    </validation>
     <status_update>
       Atomic update via status-sync-manager:
         - TODO.md: [REVISING], **Started**: {date} (preserve existing Started if present)
         - state.json: status = "revising"
     </status_update>
-    <validation>
-      - Task number must exist in TODO.md
-      - Task must have existing plan link
-      - Plan file must exist on disk
-    </validation>
   </stage>
 
   <stage id="2" name="DeterminePlanVersion">
@@ -134,33 +130,8 @@ Context Loaded:
     </version_format>
   </stage>
 
-  <stage id="3" name="LoadRevisionContext">
-    <action>Load context for plan revision</action>
-    <process>
-      1. Load existing plan file
-      2. Extract phase statuses and completion info
-      3. Load research links from TODO.md (if any)
-      4. Load task description and language
-      5. Prepare revision context for planner
-    </process>
-    <revision_context>
-      - Current plan content
-      - Phase completion status
-      - Reasons for revision (from user input)
-      - Research inputs (if available)
-    </revision_context>
-  </stage>
-
-  <stage id="4" name="PrepareDelegation">
-    <action>Prepare delegation context for planner</action>
-    <process>
-      1. Generate session_id: sess_{timestamp}_{random_6char}
-      2. Set delegation_depth = 1 (orchestrator → revise → planner)
-      3. Set delegation_path = ["orchestrator", "revise", "planner"]
-      4. Set timeout = 1800s (30 minutes for planning)
-      5. Store session_id for validation
-      6. Prepare revision context (existing plan, version, reasons)
-    </process>
+  <stage id="3" name="PrepareDelegation">
+    <timeout>1800s (30 minutes)</timeout>
     <delegation_context>
       {
         "session_id": "sess_{timestamp}_{random}",
@@ -178,124 +149,29 @@ Context Loaded:
         }
       }
     </delegation_context>
+    <special_context>
+      existing_plan_path: string (current plan file path)
+      new_version: integer (incremented version number)
+      revision_reason: string (from user prompt)
+    </special_context>
+    <routing>
+      No language-based routing - always routes to planner subagent
+    </routing>
   </stage>
 
-  <stage id="5" name="InvokePlanner">
-    <action>Invoke planner with revision context</action>
-    <process>
-      1. Route to planner subagent
-      2. Pass delegation context
-      3. Pass existing plan content
-      4. Pass revision reason
-      5. Pass new version number
-      6. Set timeout to 1800s
-    </process>
-    <invocation>
-      task_tool(
-        subagent_type="planner",
-        prompt="Revise plan for task {number} to version {next_version}: {revision_reason}",
-        session_id=delegation_context["session_id"],
-        delegation_depth=1,
-        delegation_path=delegation_context["delegation_path"],
-        timeout=1800,
-        existing_plan=current_plan_content,
-        new_version=next_version,
-        revision_reason=revision_reason
-      )
-    </invocation>
-  </stage>
+  <!-- Stages 4-6: Follow command-lifecycle.md (no variations) -->
 
-  <stage id="6" name="ReceiveResults">
-    <action>Wait for and receive revised plan</action>
-    <process>
-      1. Poll for completion (max 1800s)
-      2. Receive return object from planner
-      3. Validate against subagent-return-format.md
-      4. Check session_id matches expected
-      5. Handle timeout gracefully
-    </process>
-    <timeout_handling>
-      If timeout (no response after 1800s):
-        1. Log timeout error with session_id
-        2. Check for partial plan on disk
-        3. Return partial status
-        4. Provide retry instructions
-    </timeout_handling>
-    <validation>
-      1. Validate return is valid JSON
-      2. Validate against subagent-return-format.md schema
-      3. Check session_id matches
-      4. Validate status is valid enum
-      5. Validate new plan file exists
-    </validation>
-  </stage>
-
-  <stage id="7" name="ProcessResults">
-    <action>Extract new plan and summary</action>
-    <process>
-      1. Extract status from return (completed|partial|failed|blocked)
-      2. Extract new plan path from artifacts
-      3. Extract summary of changes
-      4. Extract errors if status != completed
-      5. Determine next action based on status
-    </process>
-    <status_handling>
-      If status == "completed":
-        - New plan created successfully
-        - Proceed to postflight
-      If status == "partial":
-        - Partial plan created
-        - Save partial plan
-        - Provide retry instructions
-      If status == "failed" or "blocked":
-        - No usable plan
-        - Handle errors
-        - Provide recovery steps
-    </status_handling>
-  </stage>
-
-  <stage id="8" name="Postflight">
-    <action>Update plan link and commit (preserve status)</action>
-    <process>
-       1. If status == "completed":
-          a. Update TODO.md:
-             - Update plan link to new version
-             - Change status to [REVISED]
-             - Add Completed timestamp (preserve Started timestamp)
-             - Add note about plan revision
-          b. Update state.json:
-             - Update plan_path to new version
-             - status = "revised"
-             - completed = "{YYYY-MM-DD}"
-             - Preserve started timestamp
-          c. Git commit:
-             - Scope: New plan file + TODO.md + state.json
-             - Message: "task {number}: plan revised to v{version}"
-       2. If status == "partial":
-          a. Keep TODO.md status [REVISING]
-          b. Add partial plan link
-          c. Git commit partial plan:
-             - Scope: Partial plan file only
-             - Message: "task {number}: partial plan revision"
-       3. If status == "failed":
-          a. Keep TODO.md status [REVISING]
-          b. Add error notes to TODO.md
-          c. No git commit
-       4. If status == "blocked":
-          a. Update TODO.md status to [BLOCKED]
-          b. Add blocking reason to TODO.md
-          c. Update state.json: status = "blocked", blocked = "{date}"
-          d. No git commit
-    </process>
-    <atomic_update>
-      Use status-sync-manager to atomically:
-        - Update TODO.md: Update plan link to new version
-        - Update TODO.md: Change status to [REVISED]
-        - Update TODO.md: Add Completed timestamp
-        - Update state.json: status = "revised"
-        - Update state.json: completed timestamp
-        - Update state.json: plan_path to new version
-    </atomic_update>
+  <stage id="7" name="Postflight">
+    <status_transition>
+      Completion: [REVISED] + **Completed**: {date}
+      Partial: Keep [REVISING]
+      Failed: Keep [REVISING]
+      Blocked: [BLOCKED]
+    </status_transition>
+    <artifact_linking>
+      - Plan: [.opencode/specs/{task_number}_{slug}/plans/implementation-{version:03d}.md] (updates existing link)
+      - Plan Summary: {brief_summary} ({phase_count} phases, {effort} hours)
+    </artifact_linking>
     <git_commit>
       Scope: New plan file + TODO.md + state.json
       Message: "task {number}: plan revised to v{version}"
@@ -303,10 +179,18 @@ Context Loaded:
       Commit only if status == "completed"
       Use git-workflow-manager for scoped commit
     </git_commit>
+    <atomic_update>
+      Use status-sync-manager to atomically:
+        - Update TODO.md: Update plan link to new version
+        - Update TODO.md: Change status to [REVISED]
+        - Update TODO.md: Add Completed timestamp (preserve Started)
+        - Update state.json: status = "revised"
+        - Update state.json: completed timestamp
+        - Update state.json: plan_path to new version
+    </atomic_update>
   </stage>
 
-  <stage id="9" name="ReturnSuccess">
-    <action>Return brief summary to user with plan path</action>
+  <stage id="8" name="ReturnSuccess">
     <return_format>
       Plan revised for task {number}
       
@@ -372,28 +256,9 @@ Context Loaded:
   - `/revise 196 "Adjust phase breakdown based on new findings"`
 </usage_examples>
 
-<validation>
-  <pre_flight>
-    - Task exists in TODO.md
-    - Task has existing plan link
-    - Plan file exists on disk
-    - New version number calculated
-  </pre_flight>
-  <mid_flight>
-    - Planner invoked with revision context
-    - Return validated against subagent-return-format.md
-    - Session ID matches expected
-    - New plan file exists
-  </mid_flight>
-  <post_flight>
-    - Plan link updated to new version
-    - Status PRESERVED (not changed)
-    - state.json plan_path updated
-    - Git commit created
-  </post_flight>
-</validation>
-
 <error_handling>
+  Follow command-lifecycle.md error handling patterns:
+  
   <no_existing_plan>
     If task has no existing plan:
       - Return error

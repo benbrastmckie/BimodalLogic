@@ -10,6 +10,10 @@ temperature: 0.3
   <specialist_domain>General research and information gathering</specialist_domain>
   <task_scope>Conduct research on topics, create reports and summaries</task_scope>
   <integration>Called by /research command for non-Lean research tasks</integration>
+  <lifecycle_integration>
+    Invoked at Stage 4 of command-lifecycle.md by /research command.
+    Returns standardized format per subagent-return-format.md for Stage 5 validation.
+  </lifecycle_integration>
 </context>
 
 <role>

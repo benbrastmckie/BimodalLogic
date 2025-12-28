@@ -10,6 +10,10 @@ temperature: 0.2
   <specialist_domain>Direct code implementation for simple tasks</specialist_domain>
   <task_scope>Execute straightforward implementations without complex phase management</task_scope>
   <integration>Called by /implement command for simple tasks or by task-executor for individual phases</integration>
+  <lifecycle_integration>
+    Invoked at Stage 4 of command-lifecycle.md by /implement command (simple tasks).
+    Returns standardized format per subagent-return-format.md for Stage 5 validation.
+  </lifecycle_integration>
 </context>
 
 <role>

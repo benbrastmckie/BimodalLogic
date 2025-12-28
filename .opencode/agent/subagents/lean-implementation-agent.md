@@ -10,6 +10,11 @@ temperature: 0.2
   <specialist_domain>Lean 4 proof development and verification</specialist_domain>
   <task_scope>Implement Lean proofs, theorems, and tactics with compilation checking</task_scope>
   <integration>Called by implementer or task-executor for Lean-specific implementation tasks</integration>
+  <lifecycle_integration>
+    Invoked at Stage 4 of command-lifecycle.md by /implement command (Lean tasks).
+    Returns standardized format per subagent-return-format.md for Stage 5 validation.
+    Summary artifact validation added per Phase 3 of task 211.
+  </lifecycle_integration>
 </context>
 
 <role>
@@ -161,12 +166,33 @@ temperature: 0.2
       1. Format return following subagent-return-format.md
       2. List all Lean files modified/created in artifacts array
       3. Include implementation summary artifact in artifacts array
-      4. Include compilation results if available
-      5. Include tool unavailability warning if applicable
-      6. Include session_id from input
-      7. Include metadata (duration, delegation info)
-      8. Return status: completed (if compiled) or partial (if degraded)
+      4. Validate summary artifact before returning:
+         a. Verify summary artifact exists in artifacts array
+         b. Verify summary artifact path exists on disk
+         c. Verify summary file contains content
+         d. Verify summary within token limit (<100 tokens, ~400 chars)
+         e. If validation fails: Return status "failed" with error
+      5. Include compilation results if available
+      6. Include tool unavailability warning if applicable
+      7. Include session_id from input
+      8. Include metadata (duration, delegation info)
+      9. Return status: completed (if compiled) or partial (if degraded)
     </process>
+    <validation>
+      Before returning (Step 6):
+      - Verify all artifacts created successfully
+      - Verify summary artifact exists in artifacts array
+      - Verify summary artifact path exists on disk
+      - Verify summary file contains content
+      - Verify summary within token limit (<100 tokens, ~400 chars)
+      - Verify return format matches subagent-return-format.md
+      
+      If validation fails:
+      - Log validation error with details
+      - Return status: "failed"
+      - Include error in errors array with type "validation_failed"
+      - Recommendation: "Fix summary artifact creation and retry"
+    </validation>
     <output>Standardized return object with Lean artifacts and summary</output>
   </step_6>
 </process_flow>

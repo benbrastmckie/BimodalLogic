@@ -11,6 +11,10 @@ temperature: 0.3
   <task_scope>Research Lean libraries, find theorems, explore mathlib and other libraries</task_scope>
   <integration>Called by /research command for Lean-specific research tasks</integration>
   <future_tools>LeanExplore, Loogle, LeanSearch integration pending (see TODO)</future_tools>
+  <lifecycle_integration>
+    Invoked at Stage 4 of command-lifecycle.md by /research command (Lean tasks).
+    Returns standardized format per subagent-return-format.md for Stage 5 validation.
+  </lifecycle_integration>
 </context>
 
 <role>

@@ -9,6 +9,7 @@ language: varies
 **Task Input (required):** $ARGUMENTS (task number or range; e.g., `/implement 197`, `/implement 105-107`)
 
 Context Loaded:
+@.opencode/context/common/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
 @.opencode/context/common/system/status-markers.md
@@ -119,25 +120,20 @@ Context Loaded:
 </argument_parsing>
 
 <workflow_execution>
+  Follow command-lifecycle.md 8-stage pattern with these variations:
+  
   <stage id="1" name="Preflight">
-    <action>Validate task(s) and determine execution mode</action>
-    <process>
-      1. Parse task number(s) from input (see <argument_parsing> above)
-      2. Load task(s) from TODO.md
-      3. Validate all tasks exist and are not [COMPLETED]
-      4. For each task:
-         a. Extract task description and language
-         b. Check for existing plan link in TODO.md
-         c. If plan exists:
-            - Load plan file
-            - Check phase statuses
-            - Find first [NOT STARTED] or [IN PROGRESS] phase
-            - Prepare resume context
-         d. If no plan:
-            - Prepare for direct implementation
-       5. Mark task(s) [IMPLEMENTING] with Started timestamp
-       6. Update state.json: status = "implementing", started = "{YYYY-MM-DD}"
-    </process>
+    <status_transition>
+      Initial: [NOT STARTED], [PLANNED], [REVISED]
+      In-Progress: [IMPLEMENTING]
+    </status_transition>
+    <validation>
+      - Task number(s) must exist in TODO.md
+      - Tasks must not be [COMPLETED] or [ABANDONED]
+      - If range: all tasks in range must be valid
+      - Language field must be present
+      - Check for plan existence and phase statuses
+    </validation>
     <resume_logic>
       If plan exists:
         - Check phase statuses in plan file
@@ -154,54 +150,44 @@ Context Loaded:
         - state.json: status = "implementing", started = "{date}"
         - Plan file (if exists): Mark resuming phase [IN PROGRESS]
     </status_update>
-    <validation>
-      - Task number(s) must exist in TODO.md
-      - Tasks must not be [COMPLETED] or [ABANDONED]
-      - If range: all tasks in range must be valid
-      - Language field must be present
-    </validation>
   </stage>
 
   <stage id="2" name="DetermineRouting">
-    <action>Route based on language and complexity</action>
     <critical_importance>
       CRITICAL: This stage MUST extract the Language field and determine routing.
       DO NOT skip this stage. DO NOT assume language without extraction.
       Incorrect routing bypasses Lean-specific tooling (lean-lsp-mcp).
     </critical_importance>
-    <process>
-      1. Extract Language field from TODO.md task using explicit bash command:
-         ```bash
-         grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
-         ```
-      2. Validate extraction succeeded (non-empty result)
-      3. If extraction fails: default to "general" and log warning
-      4. Log extracted language: "Task ${task_number} language: ${language}"
-      5. Check for plan existence in TODO.md (look for "Plan:" link)
-      6. Log plan status: "Task ${task_number} has_plan: ${has_plan}"
-      7. Determine target agent using explicit IF/ELSE logic:
-         ```
-         IF language == "lean" AND has_plan == true:
-           agent = "lean-implementation-agent"
-           mode = "phased"
-         ELSE IF language == "lean" AND has_plan == false:
-           agent = "lean-implementation-agent"
-           mode = "simple"
-         ELSE IF language != "lean" AND has_plan == true:
-           agent = "task-executor"
-           mode = "phased"
-         ELSE IF language != "lean" AND has_plan == false:
-           agent = "implementer"
-           mode = "direct"
-         ```
-      8. Log routing decision: "Routing /implement (task ${task_number}, Language: ${language}, has_plan: ${has_plan}) to ${agent} (${mode})"
-      9. Prepare agent-specific context
-    </process>
+    <language_extraction>
+      Extract Language field from TODO.md task using explicit bash command:
+      ```bash
+      grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
+      ```
+      Validate extraction succeeded (non-empty result)
+      If extraction fails: default to "general" and log warning
+      Log extracted language: "Task ${task_number} language: ${language}"
+    </language_extraction>
+    <plan_detection>
+      Check for plan existence in TODO.md (look for "Plan:" link)
+      Log plan status: "Task ${task_number} has_plan: ${has_plan}"
+    </plan_detection>
     <routing>
-      Language: lean + has_plan → lean-implementation-agent (phased mode)
-      Language: lean + no_plan → lean-implementation-agent (simple mode)
-      Language: * + has_plan → task-executor (multi-phase execution)
-      Language: * + no_plan → implementer (direct implementation)
+      Determine target agent using explicit IF/ELSE logic:
+      ```
+      IF language == "lean" AND has_plan == true:
+        agent = "lean-implementation-agent"
+        mode = "phased"
+      ELSE IF language == "lean" AND has_plan == false:
+        agent = "lean-implementation-agent"
+        mode = "simple"
+      ELSE IF language != "lean" AND has_plan == true:
+        agent = "task-executor"
+        mode = "phased"
+      ELSE IF language != "lean" AND has_plan == false:
+        agent = "implementer"
+        mode = "direct"
+      ```
+      Log routing decision: "Routing /implement (task ${task_number}, Language: ${language}, has_plan: ${has_plan}) to ${agent} (${mode})"
     </routing>
     <validation>
       MUST complete before Stage 3:
@@ -210,7 +196,6 @@ Context Loaded:
       - Routing decision made and logged
       - Target agent determined
       - Agent matches language and plan status
-      MUST NOT skip this stage under any circumstances
     </validation>
     <pre_invocation_check>
       Before invoking agent in Stage 4, verify:
@@ -227,15 +212,7 @@ Context Loaded:
   </stage>
 
   <stage id="3" name="PrepareDelegation">
-    <action>Prepare delegation context for implementation agent</action>
-    <process>
-      1. Generate session_id: sess_{timestamp}_{random_6char}
-      2. Set delegation_depth = 1 (orchestrator → implement → {agent})
-      3. Set delegation_path = ["orchestrator", "implement", "{agent}"]
-      4. Set timeout = 7200s (2 hours for implementation)
-      5. Store session_id for validation
-      6. Prepare implementation context (task, language, plan, resume_from_phase)
-    </process>
+    <timeout>7200s (2 hours)</timeout>
     <delegation_context>
       {
         "session_id": "sess_{timestamp}_{random}",
@@ -246,236 +223,82 @@ Context Loaded:
           "task_number": {number},
           "description": "{description}",
           "language": "{language}",
-          "plan_path": "{plan_path|null}",
-          "resume_from_phase": {phase_number|null}
+          "plan_path": "{plan_path}" (if has_plan),
+          "resume_from_phase": {phase_number} (if resuming)
         }
       }
     </delegation_context>
+    <special_context>
+      plan_path: string (if plan exists)
+      resume_from_phase: integer (if resuming from incomplete phase)
+    </special_context>
   </stage>
 
-  <stage id="4" name="InvokeImplementer">
-    <action>Invoke appropriate implementation agent</action>
-    <process>
-      1. Route to selected agent (task-executor, implementer, or lean-implementation-agent)
-      2. Pass delegation context
-      3. Pass task description and language
-      4. Pass plan reference if exists
-      5. Pass resume_from_phase if resuming
-      6. Set timeout to 7200s (2 hours)
-    </process>
-    <invocation>
-      task_tool(
-        subagent_type="{task-executor|implementer|lean-implementation-agent}",
-        prompt="Implement task {number}: {description}",
-        session_id=delegation_context["session_id"],
-        delegation_depth=1,
-        delegation_path=delegation_context["delegation_path"],
-        timeout=7200,
-        plan_path=plan_path,
-        resume_from_phase=resume_from_phase
-      )
-    </invocation>
-  </stage>
-
-  <stage id="5" name="ReceiveResults">
-    <action>Wait for and receive implementation results</action>
-    <process>
-      1. Poll for completion (max 7200s)
-      2. Receive return object from implementation agent
-      3. Validate against subagent-return-format.md
-      4. Check session_id matches expected
-      5. Handle timeout gracefully
-    </process>
-    <timeout_handling>
-      If timeout (no response after 7200s):
-        1. Log timeout error with session_id
-        2. Check plan file for partial progress
-        3. Count completed phases
-        4. Return partial status with phases completed
-        5. Keep task [IMPLEMENTING] (not failed)
-        6. Message: "Implementation timed out after 2 hours. {N} phases completed. Resume with /implement {number}"
-    </timeout_handling>
-    <validation>
-      1. Validate return is valid JSON
-      2. Validate against subagent-return-format.md schema
-      3. Check session_id matches
-      4. Validate status is valid enum (completed|partial|failed|blocked)
-      5. Validate artifacts array structure
-      6. Check implementation files exist
-    </validation>
-  </stage>
-
-  <stage id="6" name="ProcessResults">
-    <action>Extract artifacts and determine completion status</action>
-    <process>
-      1. Extract status from return (completed|partial|failed|blocked)
-      2. Extract implementation artifact paths
-      3. Extract summary for TODO.md
-      4. Extract phase completion info (if plan exists)
-      5. Extract errors if status != completed
-      6. Determine final task status
-    </process>
-    <completion_check>
-      If status == "completed":
-        - All phases done (or no plan)
-        - Ready for [COMPLETED] status
-        - Proceed to postflight
-      If status == "partial":
-        - Some phases done
-        - Mark task [PARTIAL] status
-        - User can resume later
-        - Commit partial progress
-      If status == "failed":
-        - No usable results
-        - Handle errors
-        - Keep [IMPLEMENTING] status
-        - Provide recovery steps
-      If status == "blocked":
-        - Cannot proceed
-        - Mark task [BLOCKED]
-        - Identify blocker
-        - Request user intervention
-    </completion_check>
-  </stage>
+  <!-- Stages 4-6: Follow command-lifecycle.md (no variations) -->
 
   <stage id="7" name="Postflight">
-    <action>Update status, link artifacts, and commit</action>
-    <process>
-      1. If status == "completed":
-         a. Update TODO.md:
-            - Add implementation artifact links
-            - Change status to [COMPLETED]
-            - Add Completed timestamp
-            - Add checkmark to title
-         b. Update state.json:
-            - status = "completed"
-            - completed = "{YYYY-MM-DD}"
-            - artifacts = [implementation file paths]
-         c. Update plan file (if exists):
-            - Mark all phases [COMPLETED]
-            - Add completion timestamps
-         d. Git commit:
-            - Scope: Implementation files + TODO.md + state.json + plan
-            - Message: "task {number}: implementation completed"
+    <status_transition>
+      Completion: [COMPLETED] + **Completed**: {date} + ✅
+      Partial: [PARTIAL] + note about resume
+      Failed: Keep [IMPLEMENTING]
+      Blocked: [BLOCKED]
+    </status_transition>
+    <artifact_linking>
+      - Implementation: [implementation file paths]
+      - Summary: [.opencode/specs/{task_number}_{slug}/summaries/implementation-summary-{date}.md]
+    </artifact_linking>
+    <git_commit>
+      Scope: Implementation files + TODO.md + state.json + plan (if exists)
+      Message: "task {number}: implementation completed"
       
-       2. If status == "partial":
-          a. Update TODO.md status to [PARTIAL]
-          b. Add partial artifact links
-          c. Update state.json: status = "partial"
-          d. Update plan file (if exists):
-             - Mark completed phases [COMPLETED]
-             - Keep incomplete phases [NOT STARTED] or [IN PROGRESS]
-          e. Git commit (if phases completed):
-             - Scope: Phase files + plan file + TODO.md + state.json
-             - Message: "task {number} phase {N}: {phase_name}"
-       
-       3. If status == "failed":
-          a. Keep TODO.md status [IMPLEMENTING]
-          b. Add error notes to TODO.md
-          c. Update plan file (if exists):
-             - Mark failed phase [ABANDONED]
-          d. No git commit
-       
-       4. If status == "blocked":
-          a. Update TODO.md status to [BLOCKED]
-          b. Add blocking reason to TODO.md
-          c. Update state.json: status = "blocked", blocked = "{date}"
-          d. Update plan file (if exists):
-             - Mark blocked phase [BLOCKED]
-          e. No git commit
-    </process>
+      For phased implementation: Create commit per phase
+      For direct implementation: Create single commit
+      
+      Commit only if status == "completed"
+      Use git-workflow-manager for scoped commit
+    </git_commit>
     <atomic_update>
       Use status-sync-manager to atomically:
-        - Update TODO.md: Add artifact links
-        - Update TODO.md: Change status to [COMPLETED]
-        - Update TODO.md: Add Completed timestamp
-        - Update state.json: status = "completed"
-        - Update state.json: completed timestamp
+        - Update TODO.md: Add implementation artifact links
+        - Update TODO.md: Change status to [COMPLETED] or [PARTIAL]
+        - Update TODO.md: Add Completed timestamp (if completed)
+        - Update state.json: status = "completed" or "partial"
+        - Update state.json: completed timestamp (if completed)
         - Update state.json: artifacts array
-        - Update plan file: phase statuses
+        - Update plan file: Mark phases [COMPLETED] (if phased)
     </atomic_update>
-    <git_commit>
-      If completed:
-        Scope: Implementation files + TODO.md + state.json + plan
-        Message: "task {number}: implementation completed"
-      
-      If partial (and phases done):
-        Scope: Phase files + plan file
-        Message: "task {number} phase {N}: {phase_name}"
-      
-      Use git-workflow-manager for scoped commits
-    </git_commit>
   </stage>
 
   <stage id="8" name="ReturnSuccess">
-    <action>Return brief summary with artifact reference</action>
-    <process>
-      1. Check for summary artifact in subagent return artifacts array
-      2. If summary artifact present:
-         - Extract path from artifacts
-         - Create brief 3-5 sentence overview (<100 tokens)
-         - Reference summary artifact path
-      3. If summary artifact missing:
-         - Create summary artifact from subagent return data
-         - Write to summaries/implementation-summary-{YYYYMMDD}.md
-         - Create brief 3-5 sentence overview (<100 tokens)
-         - Reference newly created summary path
-      4. Return brief format to orchestrator
-    </process>
     <return_format>
-      If completed:
-      ```
-      Implementation completed for task {number}.
-      {brief_1_sentence_outcome}
-      {artifact_count} artifacts created.
-      Summary: {summary_path}
-      ```
+      Implementation completed for task {number}
       
-      Example (completed):
-      ```
-      Implementation completed for task 191.
-      Fixed subagent delegation hangs across 3 phases with standardized return formats and timeout handling.
-      14 artifacts created.
-      Summary: .opencode/specs/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251226.md
-      ```
+      {brief_summary from implementation agent (3-5 sentences)}
       
-      If partial:
-      ```
-      Implementation partially completed for task {number}.
-      Completed phases {completed_phases} of {total_phases}, {reason}.
+      Artifacts created:
+      - Implementation: {file_paths}
+      - Summary: {summary_path}
+      
+      Task marked [COMPLETED].
+      
+      ---
+      
+      Or if partial:
+      Implementation partially completed for task {number}
+      
+      {brief_summary from implementation agent}
+      
+      Partial artifacts: {list}
+      Phases completed: {completed_phases} of {total_phases}
+      
       Resume with: /implement {number}
-      Summary: {summary_path}
-      ```
-      
-      Example (partial):
-      ```
-      Implementation partially completed for task 191.
-      Completed phases 1-2 of 3, phase 3 timed out after 2 hours.
-      Resume with: /implement 191
-      Summary: .opencode/specs/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251226.md
-      ```
-      
-      If blocked:
-      ```
-      Implementation blocked for task {number}.
-      {blocking_reason}
-      Resolve blocker and retry with: /implement {number}
-      Summary: {summary_path}
-      ```
-      
-      Example (blocked):
-      ```
-      Implementation blocked for task 193.
-      Lean proof requires lean-lsp-mcp which is not installed.
-      Resolve blocker and retry with: /implement 193
-      Summary: .opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-summary-20251228.md
-      ```
     </return_format>
-    <token_limit>
-      Return must be under 100 tokens (approximately 400 characters).
-      Brief overview must be 3-5 sentences maximum.
-      Full details are in the summary artifact file.
-    </token_limit>
+    <context_window_protection>
+      CRITICAL: Return only brief summary (3-5 sentences) and artifact paths.
+      DO NOT include full implementation code or details.
+      Full content is in artifact files for user to review separately.
+      This protects orchestrator context window from bloat.
+    </context_window_protection>
   </stage>
 </workflow_execution>
 
@@ -486,137 +309,85 @@ Context Loaded:
   <lean_routing>
     If Language: lean → lean-implementation-agent
     - Load .opencode/context/project/lean4/
-    - Use lean-lsp-mcp for compilation checking
-    - Validate lean-lsp-mcp availability
-    - Fallback to direct file modification if unavailable
+    - Use lean-lsp-mcp for compilation and verification
+    - Support both phased and simple modes
   </lean_routing>
   <general_routing>
-    If Language: * + has_plan → task-executor (multi-phase)
-    If Language: * + no_plan → implementer (direct)
+    If Language: * AND has_plan → task-executor (phased)
+    If Language: * AND no_plan → implementer (direct)
+    - Load .opencode/context/project/repo/
+    - Use language-appropriate tooling
   </general_routing>
-  <batch_handling>
-    If range (e.g., 105-107):
-      - Execute tasks sequentially
-      - Track individual task status
-      - Continue on failure (don't abort batch)
-      - Return batch summary
-  </batch_handling>
 </routing_intelligence>
 
 <artifact_management>
   <lazy_creation>
     Do not create specs/NNN_*/ until writing implementation artifacts
-    Create only needed subdirectories when writing files
+    Create summaries/ subdirectory when writing implementation-summary-{date}.md
   </lazy_creation>
   <artifact_naming>
-    Implementation files: Varies by task (Lean files, markdown, etc.)
-    Summaries: specs/NNN_{task_slug}/summaries/implementation-summary-{YYYYMMDD}.md
+    Implementation files: Language-specific paths (e.g., Logos/Core/*.lean)
+    Implementation summaries: specs/NNN_{task_slug}/summaries/implementation-summary-{YYYYMMDD}.md
   </artifact_naming>
   <state_sync>
     Update state.json with artifact paths when implementation completes
     Sync TODO.md with implementation artifact links
-    Update plan file with phase statuses
+    Update plan file with phase statuses (if phased)
   </state_sync>
-  <registry_sync>
-    When implementation mutates code:
-      - Update IMPLEMENTATION_STATUS.md
-      - Update SORRY_REGISTRY.md (if Lean)
-      - Update TACTIC_REGISTRY.md (if Lean)
-  </registry_sync>
 </artifact_management>
 
 <quality_standards>
   <status_markers>
-    Use [IMPLEMENTING] at start, [COMPLETED]/[PARTIAL]/[BLOCKED] at finish per status-markers.md
+    Use [IMPLEMENTING] at start, [COMPLETED] at completion per status-markers.md
+    Use [PARTIAL] for incomplete phased implementations
     Include Started and Completed timestamps
-    Add checkmark to title when completed
   </status_markers>
   <language_routing>
     Route based on TODO.md Language field
     Validate lean-lsp-mcp availability for Lean tasks
   </language_routing>
   <no_emojis>
-    No emojis in implementation artifacts or status updates
+    No emojis in implementation artifacts, summaries, or status updates
   </no_emojis>
   <atomic_updates>
     Use status-sync-manager for atomic multi-file updates
   </atomic_updates>
-  <resume_support>
-    Check plan phases before execution
-    Skip [COMPLETED] phases
-    Resume from first incomplete phase
-  </resume_support>
 </quality_standards>
 
 <usage_examples>
   - `/implement 196` (implement task 196)
-  - `/implement 105-107` (implement tasks 105 through 107)
+  - `/implement 196 "Focus on error handling"` (implement with specific focus)
+  - `/implement 105-107` (batch implement tasks 105-107)
 </usage_examples>
 
-<validation>
-  <pre_flight>
-    - Task(s) exist in TODO.md
-    - Tasks not [COMPLETED] or [ABANDONED]
-    - If range: all tasks valid
-    - Status set to [IN PROGRESS] with Started timestamp
-    - Resume phase identified (if plan exists)
-  </pre_flight>
-  <mid_flight>
-    - Implementation agent invoked with correct routing
-    - Return validated against subagent-return-format.md
-    - Session ID matches expected
-    - Artifacts exist on disk
-  </mid_flight>
-  <post_flight>
-    - Status updated to [COMPLETED] (if finished)
-    - Artifacts linked in TODO.md
-    - state.json synchronized
-    - Plan phases updated (if plan exists)
-    - Git commit created
-    - Registries updated (if code changed)
-  </post_flight>
-</validation>
-
 <error_handling>
+  Follow command-lifecycle.md error handling patterns:
+  
   <timeout>
     If implementation times out after 7200s:
-      - Check plan file for partial progress
-      - Count completed phases
+      - Check for partial artifacts
       - Return partial status
-      - Keep task [IN PROGRESS]
+      - Keep task [IMPLEMENTING] or [PARTIAL]
       - Provide resume instructions
   </timeout>
   <validation_failure>
     If return validation fails:
       - Log validation error with details
       - Return failed status
-      - Keep task [IN PROGRESS]
+      - Keep task [IMPLEMENTING]
       - Recommend subagent fix
   </validation_failure>
   <tool_unavailable>
-    If lean-lsp-mcp unavailable for Lean task:
+    If lean-lsp-mcp or language tools unavailable:
       - Log tool unavailability
-      - Fallback to direct file modification
-      - Continue with degraded mode
+      - Attempt degraded mode if possible
+      - Return error if tools critical
       - Note tool unavailability in summary
   </tool_unavailable>
-  <build_error>
-    If Lean build fails:
-      - Log build errors
-      - Return failed status
-      - Keep task [IN PROGRESS]
-      - Provide error details and fix suggestions
-  </build_error>
   <git_commit_failure>
     If git commit fails:
       - Log error to errors.json
       - Continue (commit failure non-critical)
       - Return success with warning
   </git_commit_failure>
-  <batch_failure>
-    If task in range fails:
-      - Log failure for that task
-      - Continue with next task
-      - Return batch summary with failures noted
-  </batch_failure>
 </error_handling>

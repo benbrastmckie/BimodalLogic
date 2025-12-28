@@ -9,6 +9,7 @@ language: markdown
 **Task Input (required):** $ARGUMENTS (task number; e.g., `/plan 197`, `/plan 196`)
 
 Context Loaded:
+@.opencode/context/common/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
 @.opencode/context/common/system/status-markers.md
@@ -91,27 +92,23 @@ Context Loaded:
 </argument_parsing>
 
 <workflow_execution>
+  Follow command-lifecycle.md 8-stage pattern with these variations:
+  
   <stage id="1" name="Preflight">
-    <action>Validate task and prepare for planning</action>
-    <process>
-      1. Parse task number from input (see <argument_parsing> above)
-      2. Load task from TODO.md
-      3. Validate task exists and is not [COMPLETED]
-      4. Extract task description and language
-      5. Check for existing plan (warn if exists)
-      6. Mark task [PLANNING] with Started timestamp
-      7. Update state.json: status = "planning", started = "{YYYY-MM-DD}"
-    </process>
-    <status_update>
-      Atomic update via status-sync-manager:
-        - TODO.md: [PLANNING], **Started**: {date}
-        - state.json: status = "planning", started = "{date}"
-    </status_update>
+    <status_transition>
+      Initial: [NOT STARTED], [RESEARCHED]
+      In-Progress: [PLANNING]
+    </status_transition>
     <validation>
       - Task number must exist in TODO.md
       - Task must not be [COMPLETED] or [ABANDONED]
       - Warn if plan already exists (suggest /revise instead)
     </validation>
+    <status_update>
+      Atomic update via status-sync-manager:
+        - TODO.md: [PLANNING], **Started**: {date}
+        - state.json: status = "planning", started = "{date}"
+    </status_update>
   </stage>
 
   <stage id="2" name="HarvestResearch">
@@ -135,15 +132,7 @@ Context Loaded:
   </stage>
 
   <stage id="3" name="PrepareDelegation">
-    <action>Prepare delegation context for planner</action>
-    <process>
-      1. Generate session_id: sess_{timestamp}_{random_6char}
-      2. Set delegation_depth = 1 (orchestrator → plan → planner)
-      3. Set delegation_path = ["orchestrator", "plan", "planner"]
-      4. Set timeout = 1800s (30 minutes for planning)
-      5. Store session_id for validation
-      6. Prepare planning context (task, language, research)
-    </process>
+    <timeout>1800s (30 minutes)</timeout>
     <delegation_context>
       {
         "session_id": "sess_{timestamp}_{random}",
@@ -158,122 +147,34 @@ Context Loaded:
         }
       }
     </delegation_context>
+    <special_context>
+      research_inputs: array (paths to research artifacts from TODO.md)
+    </special_context>
+    <routing>
+      No language-based routing - always routes to planner subagent
+    </routing>
   </stage>
 
-  <stage id="4" name="InvokePlanner">
-    <action>Invoke planner subagent</action>
-    <process>
-      1. Route to planner subagent
-      2. Pass delegation context
-      3. Pass task description and language
-      4. Pass research inputs if available
-      5. Set timeout to 1800s
-    </process>
-    <invocation>
-      task_tool(
-        subagent_type="planner",
-        prompt="Create implementation plan for task {number}: {description}",
-        session_id=delegation_context["session_id"],
-        delegation_depth=1,
-        delegation_path=delegation_context["delegation_path"],
-        timeout=1800,
-        research_inputs=research_findings
-      )
-    </invocation>
-  </stage>
-
-  <stage id="5" name="ReceiveResults">
-    <action>Wait for and receive planning results</action>
-    <process>
-      1. Poll for completion (max 1800s)
-      2. Receive return object from planner
-      3. Validate against subagent-return-format.md
-      4. Check session_id matches expected
-      5. Handle timeout gracefully
-    </process>
-    <timeout_handling>
-      If timeout (no response after 1800s):
-        1. Log timeout error with session_id
-        2. Check for partial plan on disk
-        3. Return partial status with plan found
-        4. Keep task [PLANNING] (not failed)
-        5. Message: "Planning timed out after 30 minutes. Partial plan available. Resume with /plan {number}"
-    </timeout_handling>
-    <validation>
-      1. Validate return is valid JSON
-      2. Validate against subagent-return-format.md schema
-      3. Check session_id matches
-      4. Validate status is valid enum (completed|partial|failed|blocked)
-      5. Validate artifacts array structure
-      6. Check plan file exists
-    </validation>
-  </stage>
-
-  <stage id="6" name="ProcessResults">
-    <action>Extract plan artifacts and summary from validated return</action>
-    <process>
-      1. Extract status from return (completed|partial|failed|blocked)
-      2. Extract plan path from artifacts array
-      3. Extract summary for TODO.md
-      4. Extract phase count and effort estimate
-      5. Extract errors if status != completed
-      6. Determine next action based on status
-    </process>
-    <status_handling>
-      If status == "completed":
-        - Plan created successfully
-        - Proceed to postflight with plan path
-      If status == "partial":
-        - Partial plan created
-        - Keep task [PLANNING]
-        - Save partial plan
-        - Provide resume instructions
-      If status == "failed":
-        - No usable plan
-        - Handle errors
-        - Provide recovery steps
-      If status == "blocked":
-        - Mark task [BLOCKED]
-        - Cannot proceed
-        - Identify blocker
-        - Request user intervention
-    </status_handling>
-  </stage>
+  <!-- Stages 4-6: Follow command-lifecycle.md (no variations) -->
 
   <stage id="7" name="Postflight">
-    <action>Update status, link plan, and commit</action>
-    <process>
-      1. If status == "completed":
-         a. Update TODO.md:
-            - Add plan link
-            - Change status to [PLANNED]
-            - Add Completed timestamp
-            - Add phase count and effort estimate
-         b. Update state.json:
-            - status = "planned"
-            - completed = "{YYYY-MM-DD}"
-            - plan_path = "{plan_path}"
-            - phases = {phase_count}
-            - estimated_effort = {effort}
-         c. Git commit:
-            - Scope: Plan file + TODO.md + state.json
-            - Message: "task {number}: plan created"
-       2. If status == "partial":
-          a. Keep TODO.md status [PLANNING]
-          b. Add partial plan link
-          c. Git commit partial plan:
-             - Scope: Partial plan file only
-             - Message: "task {number}: partial plan created"
-       3. If status == "failed":
-          a. Keep TODO.md status [PLANNING]
-          b. Add error notes to TODO.md
-          c. No git commit
-       4. If status == "blocked":
-          a. Update TODO.md status to [BLOCKED]
-          b. Add blocking reason to TODO.md
-          c. Update state.json: status = "blocked", blocked = "{date}"
-          d. No git commit
-    </process>
+    <status_transition>
+      Completion: [PLANNED] + **Completed**: {date}
+      Partial: Keep [PLANNING]
+      Failed: Keep [PLANNING]
+      Blocked: [BLOCKED]
+    </status_transition>
+    <artifact_linking>
+      - Plan: [.opencode/specs/{task_number}_{slug}/plans/implementation-001.md]
+      - Plan Summary: {brief_summary} ({phase_count} phases, {effort} hours)
+    </artifact_linking>
+    <git_commit>
+      Scope: Plan file + TODO.md + state.json
+      Message: "task {number}: plan created"
+      
+      Commit only if status == "completed"
+      Use git-workflow-manager for scoped commit
+    </git_commit>
     <atomic_update>
       Use status-sync-manager to atomically:
         - Update TODO.md: Add plan link
@@ -283,23 +184,9 @@ Context Loaded:
         - Update state.json: completed timestamp
         - Update state.json: plan_path
     </atomic_update>
-    <git_commit>
-      Scope: Plan file + TODO.md + state.json
-      Message: "task {number}: plan created"
-      
-      Commit only if status == "completed"
-      Use git-workflow-manager for scoped commit
-    </git_commit>
   </stage>
 
   <stage id="8" name="ReturnSuccess">
-    <action>Return brief summary with plan reference</action>
-    <process>
-      1. Extract brief summary from planner return (already <100 tokens)
-      2. Extract plan path from artifacts array
-      3. Return brief format to orchestrator (3-5 sentences, <100 tokens)
-      4. No summary artifact needed - plan artifact is self-documenting
-    </process>
     <return_format>
       If completed:
       ```
@@ -323,14 +210,6 @@ Context Loaded:
       {brief_reason}
       Resume with: /plan {number}
       Plan: {plan_path}
-      ```
-      
-      Example (partial):
-      ```
-      Plan partially created for task 198.
-      Research findings incomplete, created initial 2 phases.
-      Resume with: /plan 198
-      Plan: .opencode/specs/198_task_name/plans/implementation-001.md
       ```
     </return_format>
     <token_limit>
@@ -375,7 +254,7 @@ Context Loaded:
 
 <quality_standards>
   <status_markers>
-    Use [IN PROGRESS] at start, [PLANNED] at completion per status-markers.md
+    Use [PLANNING] at start, [PLANNED] at completion per status-markers.md
     Include Started and Completed timestamps
   </status_markers>
   <plan_template>
@@ -398,40 +277,21 @@ Context Loaded:
   - `/plan 196` (create plan for task 196)
 </usage_examples>
 
-<validation>
-  <pre_flight>
-    - Task exists in TODO.md
-    - Task not [COMPLETED] or [ABANDONED]
-    - Warn if plan already exists
-    - Status set to [IN PROGRESS] with Started timestamp
-  </pre_flight>
-  <mid_flight>
-    - Planner invoked successfully
-    - Return validated against subagent-return-format.md
-    - Session ID matches expected
-    - Plan file exists on disk
-  </mid_flight>
-  <post_flight>
-    - Status updated to [PLANNED] (if completed)
-    - Plan linked in TODO.md
-    - state.json synchronized
-    - Git commit created (if completed)
-  </post_flight>
-</validation>
-
 <error_handling>
+  Follow command-lifecycle.md error handling patterns:
+  
   <timeout>
     If planning times out after 1800s:
       - Check for partial plan
       - Return partial status
-      - Keep task [IN PROGRESS]
+      - Keep task [PLANNING]
       - Provide resume instructions
   </timeout>
   <validation_failure>
     If return validation fails:
       - Log validation error with details
       - Return failed status
-      - Keep task [IN PROGRESS]
+      - Keep task [PLANNING]
       - Recommend subagent fix
   </validation_failure>
   <existing_plan>

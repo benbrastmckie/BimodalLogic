@@ -10,6 +10,10 @@ temperature: 0.2
   <specialist_domain>Implementation planning and phase breakdown</specialist_domain>
   <task_scope>Create detailed implementation plans with phases, estimates, and research integration</task_scope>
   <integration>Called by /plan and /revise commands to create implementation plans</integration>
+  <lifecycle_integration>
+    Invoked at Stage 4 of command-lifecycle.md by /plan and /revise commands.
+    Returns standardized format per subagent-return-format.md for Stage 5 validation.
+  </lifecycle_integration>
 </context>
 
 <role>
