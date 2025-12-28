@@ -1,6 +1,6 @@
 # TODO
 
-**Last Updated:** 2025-12-28T19:00:00Z
+**Last Updated:** 2025-12-28T19:15:00Z
 
 ## Overview
 
@@ -442,8 +442,8 @@
 - **Impact**: Provides persistent review summaries in standardized project directories, enabling historical tracking of repository reviews and protecting the orchestrator context window from verbose review output.
 
 ### 207. Reduce /implement command output verbosity with artifact-based summaries
-- **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 3 hours
+- **Status**: [PLANNED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
 - **Priority**: Medium
@@ -453,11 +453,13 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/207_reduce_implement_output_verbosity/reports/research-001.md]
   - Summary: [.opencode/specs/207_reduce_implement_output_verbosity/summaries/research-summary.md]
+- **Plan**: [.opencode/specs/207_reduce_implement_output_verbosity/plans/implementation-001.md]
+- **Plan Summary**: 3-phase implementation (3 hours total). Phase 1: Update /implement Stage 8 to create/reference summary artifacts and return brief <100 token overviews (1.5h). Phase 2: Add summary artifact creation to lean-implementation-agent (1h, parallel). Phase 3: Testing and validation across all scenarios (0.5h). Achieves 95% context window reduction (700 to 35 tokens).
 - **Files Affected**:
   - .opencode/command/implement.md
   - .opencode/agent/subagents/lean-implementation-agent.md
 - **Description**: The /implement command currently outputs excessively verbose content to the console when implementations are complete, bloating the orchestrator's context window. Instead, the command should conclude by creating a summary artifact following the artifact-management.md system (summaries/implementation-summary-YYYYMMDD.md) and returning only a brief summary (3-5 sentences, <100 tokens) with a reference to the summary artifact. This aligns with the context protection principle described in artifact-management.md where agents should return only file paths, brief summaries, and key findings rather than full artifact content.
-- **Research Findings** (2025-12-28): Root cause identified - /implement Stage 8 returns subagent summaries verbatim (up to 500 chars), and lean-implementation-agent doesn't create summary artifacts. Task-executor already creates summaries but /implement doesn't reference them. Solution: Update /implement Stage 8 to create/reference summary artifacts and return brief <100 token overviews, plus add summary artifact creation to lean-implementation-agent. Achieves 95% context window reduction (700 to 35 tokens) with 2-3 hours effort (1.5h /implement, 1h lean-agent, 0.5h testing).
+- **Research Findings** (2025-12-28): Root cause identified - /implement Stage 8 returns subagent summaries verbatim (up to 500 chars), and lean-implementation-agent doesn't create summary artifacts. Task-executor already creates summaries but /implement doesn't reference them. Solution: Update /implement Stage 8 to create/reference summary artifacts and return brief <100 token overviews, plus add summary artifact creation to lean-implementation-agent. Achieves 95% context window reduction (700 to 35 tokens) with 3 hours effort (1.5h /implement, 1h lean-agent, 0.5h testing).
 - **Acceptance Criteria**:
   - [ ] /implement command creates implementation summary artifact (summaries/implementation-summary-YYYYMMDD.md)
   - [ ] Summary follows artifact-management.md format (3-5 sentences, <100 tokens)
