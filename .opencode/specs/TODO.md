@@ -4,7 +4,7 @@
 
 ## Overview
 
-- **Total Tasks:** 41
+- **Total Tasks:** 34
 - **Completed:** 14
 - **High Priority:** 16
 - **Medium Priority:** 12
@@ -15,44 +15,6 @@
 ## High Priority
  
 ### Automation
-
-### 191. Fix subagent delegation hang issue in command workflows ✅
-- **Effort**: 14 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-26
-- **Completed**: 2025-12-27
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/191_fix_subagent_delegation_hang/reports/research-001.md]
-  - Summary: [.opencode/specs/191_fix_subagent_delegation_hang/summaries/research-summary.md]
-- **Plan**: [Implementation Plan](.opencode/specs/191_fix_subagent_delegation_hang/plans/implementation-001.md)
-- **Plan Summary**: 3-phase implementation plan (14 hours). Phase 1: Immediate critical fixes - add explicit return handling, cycle detection, standardized return format (9h). Phase 2: Medium-term improvements - orchestrator registry, retry logic, format standardization (5h). Phase 3: Testing and verification - comprehensive testing of all commands and documentation updates (3h). Fixes 6 root causes: missing return paths, infinite loops, async/sync mismatch, missing error handling, coordination gaps, return format ambiguity.
-- **Implementation Summary**: [.opencode/specs/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251227.md]
-- **Files Affected**:
-  - .opencode/command/implement.md
-  - .opencode/command/research.md
-  - .opencode/command/plan.md
-  - .opencode/agent/orchestrator.md
-  - .opencode/agent/subagents/task-executor.md
-  - .opencode/agent/subagents/batch-task-orchestrator.md
-  - .opencode/agent/subagents/researcher.md
-  - .opencode/agent/subagents/planner.md
-- **Description**: Commands that call subagents (like /implement, /research, /plan) often get stuck on "Good! Now I'll route to the lean-implementation-orchestrator to execute the implementation plan:" followed by "Delegating..." with no further progress. The root causes are: (1) Commands are routing to subagents using the task tool but not properly handling the response or waiting for completion, (2) Subagent routing logic may be creating infinite delegation loops or missing return paths, (3) Commands may be expecting synchronous responses from async subagent calls, (4) Missing error handling when subagents fail or timeout, (5) Orchestrator may not be properly coordinating between command and subagent layers. Find all root causes and implement comprehensive fixes to ensure commands complete successfully when delegating to subagents.
-- **Research Findings** (2025-12-25): Identified 6 primary root causes - missing return paths in commands, infinite delegation loops, async/sync mismatch, missing error handling, orchestrator coordination gaps, and return format ambiguity. Recommended 3-phase fix approach (14 hours total) with immediate fixes to add explicit result processing stages and delegation depth tracking.
-- **Acceptance Criteria**:
-  - [ ] Root cause analysis completed identifying all delegation hang scenarios
-  - [ ] Commands properly wait for subagent completion before proceeding
-  - [ ] Subagents have clear return paths and completion signals
-  - [ ] No infinite delegation loops in routing logic
-  - [ ] Proper error handling for subagent failures and timeouts
-  - [ ] Orchestrator correctly coordinates command→subagent→response flow
-  - [ ] All commands (/implement, /research, /plan, /revise, /review) tested and working
-  - [ ] Documentation updated with subagent delegation patterns and error handling
-  - [ ] Test cases added for delegation scenarios
-- **Impact**: Critical bug fix. Without working subagent delegation, most commands are unusable and the entire workflow system is broken. This blocks all development work that relies on /implement, /research, /plan, and other commands.
 
 ### 192. Fix GeneralizedNecessitation.lean termination proofs (2 errors)
 - **Effort**: 0.17 hours (10 minutes)
@@ -180,34 +142,6 @@
   - [ ] Documentation explains when and how maintenance reports are generated
   - [ ] Examples provided showing typical maintenance report structure
 - **Impact**: Improves maintainability and transparency of the maintenance workflow by standardizing report generation and ensuring comprehensive documentation of maintenance operations.
-
-### 182. Fix /research status update bug - tasks not marked RESEARCHED ✅
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-25
-- **Completed**: 2025-12-25
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Implementation Summary**: [.opencode/specs/182_research_status_bug/summaries/implementation-summary-20251225.md]
-- **Files Affected**:
-  - .opencode/command/research.md
-  - .opencode/agent/subagents/researcher.md
-  - .opencode/agent/subagents/specialists/status-sync-manager.md
-  - .opencode/specs/TODO.md (verification)
-  - .opencode/context/common/system/status-markers.md (reference)
-- **Description**: When /research completes, it doesn't update the task in TODO.md to show [RESEARCHED] status in accordance with status-markers.md, and it doesn't link the research report. Task 177 demonstrates this issue - research was completed successfully (artifacts created in .opencode/specs/177_examples_update/) but TODO.md still shows [NOT STARTED] and has no research link. The research.md command specifies that status-sync-manager should be used in postflight to atomically mark TODO, state.json, and project state.json to [RESEARCHED] status with Completed date and add research link to TODO. Find the root cause and fix this bug.
-- **Acceptance Criteria**:
-  - [x] Root cause identified for why /research doesn't update TODO.md status to [RESEARCHED]
-  - [x] Root cause identified for why /research doesn't link research reports in TODO.md
-  - [x] Fix implemented to ensure TODO.md status updates to [RESEARCHED] with timestamp
-  - [x] Fix implemented to ensure research report links are added to TODO.md
-  - [x] status-sync-manager is called correctly in postflight
-  - [x] All status transitions follow status-markers.md specification
-  - [x] Test with task 177 to verify fix works
-  - [x] Documentation updated if workflow was incorrect
-- **Impact**: Critical bug fix. Without proper status updates, task tracking is broken and TODO.md becomes out of sync with actual research completion. This undermines the entire task management system and violates the status-markers.md specification. Same root cause as task 181 but for /research command.
 
 ### 183. Fix DeductionTheorem.lean build errors (3 errors)
 - **Effort**: 2 hours
@@ -411,61 +345,9 @@
   - [ ] No emojis in the updated content
 - **Impact**: Completes the refactoring to make /review command configuration-driven and repository-agnostic, allowing consistent behavior across different repositories while respecting each repository's specific registry/status file locations.
 
-### 197. Integrate Loogle CLI tool into lean-research-agent ✅
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-27
-- **Completed**: 2025-12-27
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/197_loogle_cli_integration/reports/research-001.md]
-  - Summary: [.opencode/specs/197_loogle_cli_integration/summaries/research-summary.md]
-  - API Documentation: [.opencode/context/project/lean4/tools/loogle-api.md]
-- **Plan**: [Implementation Plan](.opencode/specs/197_loogle_cli_integration/plans/implementation-001.md)
-- **Plan Summary**: 5-phase implementation plan (3 hours). Phase 1: Binary check & index management (0.5h). Phase 2: Interactive mode integration (1.0h). Phase 3: Query generation & response parsing (0.75h). Phase 4: lean-research-agent integration (0.5h). Phase 5: Testing & documentation (0.25h). Uses persistent interactive mode with pre-built index for optimal performance (0.1-2s queries). Implements graceful fallback to web search.
-- **Implementation Summary**: [.opencode/specs/197_loogle_cli_integration/summaries/implementation-summary.md]
-- **Implementation Artifacts**:
-  - Complete Documentation: [.opencode/specs/197_loogle_cli_integration/implementation/integration-complete.md]
-  - Validation Checklist: [.opencode/specs/197_loogle_cli_integration/implementation/validation-checklist.md]
-- **Research Findings** (2025-12-27): Comprehensive research completed on Loogle CLI integration. Binary located at /home/benjamin/.cache/loogle/.lake/build/bin/loogle. Recommended integration approach is persistent interactive mode with pre-built index for optimal performance (0.1-2s queries vs 60-120s cold start). JSON output format is well-structured. Five query modes supported: constant search, name fragment, type pattern, conclusion pattern, and combined. Implementation complexity assessed as medium (3 hours effort). Key recommendation: use interactive mode with --read-index for fast startup (5-10s) and low query latency.
-- **Files Affected**:
-  - .opencode/agent/subagents/lean-research-agent.md (956 lines, ~400 lines added/modified, 37 Loogle references)
-  - .opencode/context/project/lean4/tools/loogle-api.md
-- **Tool Information**:
-  - **Installation**: loogle installed via nix at /home/benjamin/.nix-profile/bin/loogle
-  - **Cache Location**: /home/benjamin/.cache/loogle (cloned mathlib and dependencies)
-  - **Default Module**: Mathlib (can be changed with --module flag)
-  - **Output Format**: Supports --json flag for structured output
-  - **Usage**: `loogle [OPTIONS] [QUERY]` where QUERY can be type signatures like "Nat → Nat → Nat" or names like "List.length"
-  - **Interactive Mode**: Available with --interactive/-i flag for stdin queries
-  - **Index Persistence**: Can write/read search index to file for faster subsequent searches
-- **Description**: Integrate the Loogle CLI tool into lean-research-agent to enable type-based searching of Lean definitions and theorems. Loogle is now installed and working at /home/benjamin/.nix-profile/bin/loogle with mathlib support. The lean-research-agent currently has placeholders for Loogle integration (lines 276-282) and uses web search fallback. Update the agent to: (1) Check for Loogle availability by testing if the binary exists, (2) Use Loogle with --json flag for type-based searches, (3) Parse JSON results and extract relevant definitions/theorems, (4) Include Loogle findings in research reports with proper attribution, (5) Update tool status in return format to show loogle: true when available, (6) Handle graceful fallback to web search if Loogle fails or times out, (7) Document Loogle CLI integration patterns in .opencode/context/project/lean4/tools/loogle-api.md. Note: Loogle queries can take time to build the index on first run, so implement reasonable timeouts (30-60s) and consider using --write-index to persist the index for faster subsequent searches.
-- **Acceptance Criteria**:
-  - [x] lean-research-agent checks for Loogle binary at /home/benjamin/.cache/loogle/.lake/build/bin/loogle
-  - [x] Loogle invoked with --json flag for structured output
-  - [x] Type-based searches (e.g., "?a → ?b → ?a ∧ ?b") work correctly (17 query patterns implemented)
-  - [x] Name-based searches (e.g., "List.length") work correctly  
-  - [x] JSON results parsed and relevant definitions/theorems extracted
-  - [x] Research reports include Loogle findings with attribution
-  - [x] Return format shows tool_availability.loogle: true when available
-  - [x] Graceful fallback to web search if Loogle unavailable or fails (3-tier degradation)
-  - [x] Timeout handling (10s queries, 180s startup) prevents hanging on slow queries
-  - [x] loogle-api.md documentation created with CLI patterns and examples
-  - [x] Index persistence strategy documented and implemented (--write-index/--read-index)
-  - [x] Error logging to errors.json if Loogle fails (6 error scenarios handled)
-  - [x] No more "tool_unavailable" warnings for Loogle in lean research
-- **Impact**: Significantly improves Lean research quality by enabling precise type-based theorem discovery. Loogle can find theorems by their type signatures, making it much easier to discover relevant mathlib lemmas and definitions for proof development. This addresses the "tool_unavailable" limitation in the current lean-research-agent fallback mode.
-
----
-
-## Medium Priority
-
 ### 202. Fix verbose artifact output in commands to protect primary agent context window
 - **Effort**: 4-5 hours (full fix) or 1.25 hours (quick fix)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-27
 - **Completed**: 2025-12-27
 - **Priority**: Medium
@@ -475,6 +357,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/202_fix_verbose_artifact_output/reports/research-001.md]
   - Summary: [.opencode/specs/202_fix_verbose_artifact_output/summaries/research-summary.md]
+- **Plan**: [Implementation Plan](.opencode/specs/202_fix_verbose_artifact_output/plans/implementation-001.md)
+- **Plan Summary**: 4-phase implementation plan (4-5 hours). Phase 1: Fix task-executor return format (1.25h). Phase 2: Fix batch-task-orchestrator return format + batch summary artifact (2.25h). Phase 3: Testing and validation (0.75h). Phase 4: Documentation updates (0.5h). Achieves 90-95% context window reduction by standardizing to subagent-return-format.md.
 - **Files Affected**:
   - .opencode/agent/subagents/task-executor.md
   - .opencode/agent/subagents/batch-task-orchestrator.md
@@ -696,33 +580,6 @@
 
 ---
 
-### 172. Complete API documentation for all Logos modules ✅
-- **Effort**: 30 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-24
-- **Completed**: 2025-12-24
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/172_documentation/reports/research-001.md)
-- **Plan**: [Implementation Plan](.opencode/specs/172_documentation/plans/implementation-001.md)
-- **Plan Summary**: 5-phase implementation plan (30 hours). Phase 1: Infrastructure setup (3h). Phase 2: Critical gaps (12h). Phase 3: Moderate gaps (4.5h). Phase 4: Minor gaps (9h). Phase 5: QA and API reference (1.5h).
-- **Files Affected**:
-  - Logos/Core/Automation/ProofSearch.lean
-  - Logos/Core/Syntax/Context.lean
-  - Logos/Core/Theorems/Perpetuity.lean
-  - All Logos/Core modules
-- **Description**: Add comprehensive API documentation (docstrings) to all Logos modules. Many modules lack complete docstrings, and there is no centralized API reference. This task ensures all public functions have clear documentation with usage examples.
-- **Acceptance Criteria**:
-  - [ ] All public functions in Logos/Core have docstrings
-  - [ ] Docstrings include parameter descriptions and return values
-  - [ ] Complex functions include usage examples
-  - [ ] Centralized API reference generated from docstrings
-  - ** Documentation quality meets DOC_QUALITY_CHECKLIST.md standards
-  - [ ] No modules with missing or incomplete docstrings remain
-- **Impact**: Critical for maintainability and developer onboarding. Enables new contributors to understand and use the codebase effectively.
-
 ### 173. Implement integration tests for proof system and semantics
 - **Effort**: 18 hours
 - **Status**: [BLOCKED]
@@ -750,40 +607,6 @@
   - [ ] All integration tests passing
   - [x] Test coverage for integration scenarios at least 85 percent
 - **Impact**: Ensures system components integrate correctly and prevents regression when modules are modified independently.
-
-### 174. Add property-based testing framework and metalogic tests ✅
-- **Effort**: 23 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-25
-- **Completed**: 2025-12-25
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/174_property_based_testing/reports/research-001.md]
-  - Summary: [.opencode/specs/174_property_based_testing/summaries/research-summary.md]
-  - Detailed Findings: [Documentation/Research/property-based-testing-lean4.md]
-- **Plan**: [Implementation Plan](.opencode/specs/174_property_based_testing/plans/implementation-001.md)
-- **Plan Summary**: 7-phase implementation plan (18-23 hours). Phase 1: Infrastructure validation (1-2h). Phase 2: TaskModel generator (4-6h, main challenge). Phase 3: Metalogic tests (2-3h). Phase 4: Derivation tests (2-3h). Phase 5: Semantic tests (2-3h). Phase 6: Formula tests (2-3h). Phase 7: Documentation & CI (2-3h).
-- **Implementation Summary**: [.opencode/specs/174_property_based_testing/summaries/implementation-summary-20251225.md]
-- **Files Affected**:
-  - LogosTest/Core/Property/ (new directory)
-  - LogosTest/Core/Metalogic/SoundnessPropertyTest.lean (new)
-  - LogosTest/Core/ProofSystem/DerivationPropertyTest.lean (new)
-  - LogosTest/Core/Semantics/SemanticPropertyTest.lean (new)
-  - LogosTest/Core/Syntax/FormulaPropertyTest.lean (new)
-  - lakefile.lean (Plausible dependency)
-- **Description**: Integrate a property-based testing framework (QuickCheck-style) and add property tests for metalogic properties. Property-based testing is essential for verifying soundness, derivation properties, and semantic properties systematically across large input spaces. Research identified Plausible as the only mature framework for Lean 4.
-- **Acceptance Criteria**:
-  - [x] Property-based testing framework integrated (Plausible recommended)
-  - [x] Property tests for soundness implemented
-  - [x] Property tests for derivation properties implemented
-  - [x] Property tests for semantic properties implemented
-  - [x] Property tests for formula transformations implemented
-  - [x] All property tests passing with sufficient coverage
-  - [x] Documentation for writing property tests added
-- **Impact**: Critical for metalogic verification. Property-based tests provide higher confidence in correctness by testing properties across large input spaces rather than individual cases.
 
 ### 175. Establish CI/CD pipeline with automated testing and linting
 - **Effort**: 13 hours
@@ -829,37 +652,6 @@
   - [ ] Heuristics tested and benchmarked
   - [ ] Documentation for heuristic tuning added
 - **Impact**: Improves automation effectiveness by tailoring proof search to the structure of modal and temporal problems, reducing search time and increasing success rate.
-
-### 177. Update examples to use latest APIs and add new feature demonstrations ✅
-- **Effort**: 8 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-25
-- **Completed**: 2025-12-25
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: Tasks 126, 127 (completed)
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/177_examples_update/reports/research-001.md]
-  - Summary: [.opencode/specs/177_examples_update/summaries/research-summary.md]
-- **Plan**: [Implementation Plan](.opencode/specs/177_examples_update/plans/implementation-001.md)
-- **Plan Summary**: 4-phase implementation plan (8-12 hours). Phase 1: Modal automation examples (4-6h). Phase 2: Temporal automation (2-3h). Phase 3: Perpetuity automation (1-2h). Phase 4: Documentation updates (1-2h). All phases completed.
-- **Implementation Summary**: [.opencode/specs/177_examples_update/summaries/implementation-summary-20251225.md]
-- **Files Affected**:
-  - Archive/ModalProofs.lean (241 → 346 lines, +105)
-  - Archive/TemporalProofs.lean (301 → 356 lines, +55)
-  - Archive/BimodalProofs.lean (216 → 297 lines, +81)
-  - Documentation/UserGuide/EXAMPLES.md (448 → 586 lines, +138)
-- **Description**: Successfully updated example files to demonstrate new automation capabilities (ProofSearch, heuristics) added in Tasks 126-127. Added 379 lines total (exceeded planned 160 lines by 137%). All changes are additive with zero breaking changes. Implemented automated proof search examples, SearchStats demonstrations, heuristic strategies, context transformations, temporal automation, and perpetuity principle discovery (P1-P6).
-- **Acceptance Criteria**:
-  - [x] All existing examples audited for correctness (research phase complete)
-  - [x] Examples updated to use latest APIs (ProofSearch imports added, all APIs used correctly)
-  - [x] New examples for ProofSearch and heuristics added (105 lines in ModalProofs, 55 in TemporalProofs)
-  - [x] New examples for perpetuity principles P1-P6 added (81 lines in BimodalProofs showing automated discovery)
-  - [~] All examples compile and run successfully (blocked by Tasks 183-184, but example code is correct)
-  - [x] Examples documented with clear explanations (138 lines added to EXAMPLES.md with comprehensive API docs)
-- **Impact**: Provides comprehensive examples demonstrating automation features, improving usability and showcasing ProofSearch capabilities. Exceeds planned scope with high-quality documentation.
-- **Note**: Build currently blocked by pre-existing errors in Truth.lean (Task 184) and DeductionTheorem.lean (Task 183). Example code is correct and will compile once blockers are resolved.
 
 ### 178. Complete advanced tutorial sections with hands-on exercises
 - **Effort**: 13 hours
@@ -925,33 +717,6 @@
   - [ ] Coverage measurement process documented
   - [ ] Current coverage baseline established
 - **Impact**: Enables data-driven test improvement by identifying untested code paths and tracking coverage over time.
-
-### 181. Fix /implement status update bug - tasks not marked COMPLETED ✅
-- **Effort**: 4 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-25
-- **Completed**: 2025-12-25
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Files Affected**:
-  - .opencode/command/implement.md
-  - .opencode/agent/subagents/task-executor.md
-  - .opencode/agent/subagents/specialists/status-sync-manager.md
-  - .opencode/specs/TODO.md (verification)
-  - .opencode/context/common/system/status-markers.md (reference)
-- **Description**: When /implement completes, it doesn't update the task in TODO.md to show [COMPLETED] status in accordance with status-markers.md, and it doesn't update the status in the plan file if there is one. This is a critical bug affecting task tracking. Task 172 demonstrates this issue - it was reported as completed but TODO.md still shows [IN PROGRESS] and state.json shows "planned" instead of "completed". Find the root cause and fix this bug.
-- **Acceptance Criteria**:
-  - [x] Root cause identified for why /implement doesn't update TODO.md status to [COMPLETED]
-  - [x] Root cause identified for why /implement doesn't update plan file status markers
-  - [x] Fix implemented to ensure TODO.md status updates to [COMPLETED] with timestamp
-  - [x] Fix implemented to ensure plan file status markers update correctly
-  - [x] status-sync-manager is called correctly in postflight
-  - [x] All status transitions follow status-markers.md specification
-  - [x] Test with task 172 to verify fix works
-  - [x] Documentation updated if workflow was incorrect
-- **Impact**: Critical bug fix. Without proper status updates, task tracking is broken and TODO.md becomes out of sync with actual work completion. This undermines the entire task management system and violates the status-markers.md specification.
 
 ### 189. Add --divide flag to /research command for topic subdivision
 - **Effort**: 3 hours
@@ -1094,40 +859,6 @@
   - [ ] Documentation explains optimization approach
   - [ ] No regression in self-healing functionality
 - **Impact**: Reduces context overhead by 400+ lines per command execution while maintaining robust self-healing. Commands load faster and use less context budget. Self-healing remains available when needed but doesn't bloat normal operations.
-
-### 200. Review command-specific status marker implementation for consistency
-- **Effort**: 2 hours
-- **Status**: [ABANDONED]
-- **Started**: 2025-12-27
-- **Completed**: 2025-12-27
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/200_command_status_markers_review/reports/research-001.md]
-  - Summary: [.opencode/specs/200_command_status_markers_review/summaries/research-summary.md]
-- **Files Affected**:
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/command/research.md
-  - .opencode/command/plan.md
-  - .opencode/command/revise.md
-  - .opencode/command/implement.md
-- **Description**: Review the recent changes to command-specific status markers to ensure everything is consistent and correct. The implementation added new in-progress markers ([RESEARCHING], [PLANNING], [REVISING], [IMPLEMENTING]) and completion markers ([RESEARCHED], [PLANNED], [REVISED], [COMPLETED], [PARTIAL], [BLOCKED]) to provide fine-grained visibility into command workflow stages. Verify that: (1) All new status markers are properly defined in status-markers.md with clear semantics, (2) Each command file correctly uses its respective status markers in Preflight (start) and Postflight (completion) stages, (3) State.json status values (lowercase like "researching", "planned") match the TODO.md markers (uppercase in brackets like [RESEARCHING], [PLANNED]), (4) Status transitions are valid and consistent across all commands per the transition diagram, (5) Atomic updates via status-sync-manager are correctly specified for multi-file synchronization, (6) Timestamp handling (Started, Completed) is consistent and preserved across transitions, (7) Error handling for [BLOCKED] status is properly implemented with blocking reasons, (8) The transition diagrams and valid/invalid transition tables in status-markers.md are accurate and complete, (9) No conflicts or inconsistencies exist between the different command files, (10) Documentation is clear, complete, and follows standards.
-- **Acceptance Criteria**:
-  - [ ] All status marker definitions verified in status-markers.md (syntax, semantics, examples)
-  - [ ] Command Preflight stages use correct in-progress markers ([RESEARCHING], [PLANNING], [REVISING], [IMPLEMENTING])
-  - [ ] Command Postflight stages use correct completion markers ([RESEARCHED], [PLANNED], [REVISED], [COMPLETED]/[PARTIAL]/[BLOCKED])
-  - [ ] State.json values match TODO.md markers (lowercase vs uppercase in brackets)
-  - [ ] Status transitions follow valid paths per transition diagram (no invalid transitions)
-  - [ ] Atomic updates via status-sync-manager properly specified in all commands
-  - [ ] Timestamp handling is consistent (Started preserved, Completed added at end)
-  - [ ] [BLOCKED] error handling verified with blocking reasons and proper state updates
-  - [ ] Transition diagrams and tables in status-markers.md are accurate
-  - [ ] No inconsistencies found between command files (research, plan, revise, implement)
-  - [ ] Documentation review complete with detailed findings report
-  - [ ] Any issues found are documented with recommendations for fixes
-- **Impact**: Ensures the command-specific status marker system is robust, consistent, and correctly implemented across all workflow commands. Prevents status tracking bugs and maintains data integrity between TODO.md, state.json, and plan files.
 
 ### 201. Implement /todo command archival feature for completed and abandoned tasks
 - **Effort**: 6 hours

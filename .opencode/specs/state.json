@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-27T23:55:00Z",
+  "_last_updated": "2025-12-27T17:11:46Z",
   "next_project_number": 204,
   "project_numbering": {
     "min": 0,
@@ -15,20 +15,6 @@
     "_comment": "References to specialized state files. These files are auto-created if missing."
   },
   "active_projects": [
-    {
-      "project_number": 191,
-      "project_name": "fix_subagent_delegation_hang",
-      "type": "bugfix",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2025-12-26T00:00:00Z",
-      "started": "2025-12-26",
-      "completed": "2025-12-27",
-      "last_updated": "2025-12-27",
-      "plan_path": ".opencode/specs/191_fix_subagent_delegation_hang/plans/implementation-001.md"
-    },
     {
       "project_number": 183,
       "project_name": "deduction_theorem_build_errors",
@@ -67,26 +53,6 @@
       "started": "2025-12-25",
       "research_completed": "2025-12-25",
       "last_updated": "2025-12-26"
-    },
-    {
-      "project_number": 197,
-      "project_name": "loogle_cli_integration",
-      "type": "feature",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "lean",
-      "created": "2025-12-27T00:00:00Z",
-      "started": "2025-12-27",
-      "completed": "2025-12-27",
-      "last_updated": "2025-12-27",
-      "plan_path": ".opencode/specs/197_loogle_cli_integration/plans/implementation-001.md",
-      "artifacts": [
-        ".opencode/agent/subagents/lean-research-agent.md",
-        ".opencode/specs/197_loogle_cli_integration/implementation/integration-complete.md",
-        ".opencode/specs/197_loogle_cli_integration/summaries/implementation-summary.md",
-        ".opencode/specs/197_loogle_cli_integration/implementation/validation-checklist.md"
-      ]
     },
     {
       "project_number": 199,
@@ -177,10 +143,10 @@
     }
   ],
   "repository_health": {
-    "last_assessed": "2025-12-28T00:30:00Z",
+    "last_assessed": "2025-12-27T17:11:46Z",
     "overall_score": 90,
-    "active_tasks": 40,
-    "completed_tasks": 10,
+    "active_tasks": 34,
+    "completed_tasks": 17,
     "blocked_tasks": 2,
     "in_progress_tasks": 3,
     "not_started_tasks": 23,
@@ -196,6 +162,38 @@
     }
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-27T17:11:46Z",
+      "activity": "Archived task 200: Review command-specific status marker implementation for consistency (status: abandoned)"
+    },
+    {
+      "timestamp": "2025-12-27T17:11:46Z",
+      "activity": "Archived task 181: Fix /implement status update bug - tasks not marked COMPLETED (status: completed)"
+    },
+    {
+      "timestamp": "2025-12-27T17:11:46Z",
+      "activity": "Archived task 177: Update examples to use latest APIs and add new feature demonstrations (status: completed)"
+    },
+    {
+      "timestamp": "2025-12-27T17:11:46Z",
+      "activity": "Archived task 174: Add property-based testing framework and metalogic tests (status: completed)"
+    },
+    {
+      "timestamp": "2025-12-27T17:11:46Z",
+      "activity": "Archived task 172: Complete API documentation for all Logos modules (status: completed)"
+    },
+    {
+      "timestamp": "2025-12-27T17:11:46Z",
+      "activity": "Archived task 197: Integrate Loogle CLI tool into lean-research-agent (status: completed)"
+    },
+    {
+      "timestamp": "2025-12-27T17:11:46Z",
+      "activity": "Archived task 182: Fix /research status update bug - tasks not marked RESEARCHED (status: completed)"
+    },
+    {
+      "timestamp": "2025-12-27T17:11:46Z",
+      "activity": "Archived task 191: Fix subagent delegation hang issue in command workflows (status: completed)"
+    },
     {
       "timestamp": "2025-12-28T01:30:00Z",
       "activity": "Marked task 201 as COMPLETED: /todo archival feature implementation completed - 4 phases, 173 lines added, comprehensive error handling"
