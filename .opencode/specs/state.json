@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T21:54:44.934576Z",
-  "next_project_number": 220,
+  "_last_updated": "2025-12-28T14:06:45.670391Z",
+  "next_project_number": 221,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -72,109 +72,6 @@
       "implementation_notes": "Added @[simp] attribute to swap_past_future_involution. Main theorem is_valid_swap_involution remains incomplete with sorry - simp only pattern unsuccessful. Task 193 remains blocked."
     },
     {
-      "project_number": 210,
-      "project_name": "fix_lean_subagents",
-      "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
-      "priority": "medium",
-      "language": "markdown",
-      "created": "2025-12-28T22:50:00Z",
-      "started": "2025-12-28",
-      "research_completed": "2025-12-28",
-      "last_updated": "2025-12-28",
-      "artifacts": [
-        ".opencode/specs/210_fix_lean_subagents/reports/research-001.md",
-        ".opencode/specs/210_fix_lean_subagents/summaries/research-summary.md"
-      ]
-    },
-    {
-      "project_number": 211,
-      "project_name": "standardize_command_lifecycle_procedures",
-      "type": "documentation",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2025-12-28T18:14:41Z",
-      "started": "2025-12-28",
-      "completed": "2025-12-28",
-      "last_updated": "2025-12-28",
-      "research_completed": "2025-12-28",
-      "planning_completed": "2025-12-28",
-      "plan_path": ".opencode/specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md",
-      "estimated_hours": 18,
-      "actual_hours": 3,
-      "phases": 4,
-      "artifacts": [
-        ".opencode/specs/211_standardize_command_lifecycle_procedures/reports/research-001.md",
-        ".opencode/specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md",
-        ".opencode/specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md",
-        ".opencode/specs/211_standardize_command_lifecycle_procedures/summaries/implementation-summary-20251228.md",
-        ".opencode/context/common/workflows/command-lifecycle.md",
-        ".opencode/command/research.md",
-        ".opencode/command/plan.md",
-        ".opencode/command/revise.md",
-        ".opencode/command/implement.md",
-        ".opencode/agent/subagents/lean-implementation-agent.md",
-        ".opencode/agent/subagents/task-executor.md",
-        ".opencode/agent/subagents/researcher.md",
-        ".opencode/agent/subagents/planner.md",
-        ".opencode/agent/subagents/lean-research-agent.md",
-        ".opencode/agent/subagents/implementer.md"
-      ],
-      "modified_files": [
-        ".opencode/context/common/workflows/command-lifecycle.md",
-        ".opencode/command/research.md",
-        ".opencode/command/plan.md",
-        ".opencode/command/revise.md",
-        ".opencode/command/implement.md",
-        ".opencode/agent/subagents/lean-implementation-agent.md",
-        ".opencode/agent/subagents/task-executor.md",
-        ".opencode/agent/subagents/researcher.md",
-        ".opencode/agent/subagents/planner.md",
-        ".opencode/agent/subagents/lean-research-agent.md",
-        ".opencode/agent/subagents/implementer.md"
-      ],
-      "implementation_notes": "Phases 1-3 completed (3 hours actual vs 18 hours estimated). Phase 4 deferred - testing will occur during normal command usage. Created command-lifecycle.md with 8-stage pattern, updated 4 commands and 6 agents, achieved 39% duplication reduction (1,961 \u2192 1,200 lines)."
-    },
-    {
-      "project_number": 216,
-      "project_name": "improve_task_tracking_updates",
-      "type": "enhancement",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2025-12-28T12:48:00Z",
-      "started": "2025-12-28",
-      "research_completed": "2025-12-28",
-      "last_updated": "2025-12-28",
-      "artifacts": [
-        ".opencode/specs/216_improve_task_tracking_updates/reports/research-001.md",
-        ".opencode/specs/216_improve_task_tracking_updates/summaries/research-summary.md",
-        ".opencode/specs/216_improve_task_tracking_updates/summaries/implementation-summary-20251228.md"
-      ],
-      "estimated_hours": 10,
-      "research_findings": "Identified 7 critical gaps in task tracking file updates: project state.json never created, artifact links unvalidated, plan updates non-atomic, metadata/version history not tracked. status-sync-manager exists with robust two-phase commit but underutilized (~40% coverage). Hybrid architecture recommended: enhance status-sync-manager + distributed validation for full atomicity, lowest complexity (+205 lines vs +310 centralized, +530 distributed), best extensibility.",
-      "completed": "2025-12-28",
-      "actual_hours": 4,
-      "modified_files": [
-        ".opencode/agent/subagents/status-sync-manager.md",
-        ".opencode/agent/subagents/researcher.md",
-        ".opencode/agent/subagents/planner.md",
-        ".opencode/agent/subagents/implementer.md",
-        ".opencode/agent/subagents/lean-implementation-agent.md",
-        ".opencode/command/research.md",
-        ".opencode/command/plan.md",
-        ".opencode/command/revise.md",
-        ".opencode/command/implement.md",
-        ".opencode/context/common/workflows/command-lifecycle.md",
-        ".opencode/context/common/system/state-schema.md"
-      ],
-      "implementation_notes": "All 4 phases completed. Enhanced status-sync-manager with artifact validation, plan metadata tracking, project state.json lazy creation, and plan version history. Updated 4 subagents with validation. Updated 4 commands to delegate all updates. Added comprehensive documentation to command-lifecycle.md and state-schema.md. Total +389 lines across 11 files. Committed with task 215 in commit 90cd574."
-    },
-    {
       "project_number": 217,
       "project_name": "research_artifact_creation",
       "type": "research",
@@ -205,19 +102,36 @@
       "project_number": 218,
       "project_name": "fix_lean_lsp_mcp_integration",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
-      "language": "lean",
+      "language": "python",
       "created": "2025-12-28T23:45:00Z",
       "started": "2025-12-28",
       "research_completed": "2025-12-28",
+      "planning_completed": "2025-12-28",
       "last_updated": "2025-12-28",
       "artifacts": [
         ".opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md",
-        ".opencode/specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary.md"
+        ".opencode/specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary.md",
+        ".opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 3,
+        "estimated_hours": 0.75,
+        "complexity": "low"
+      },
+      "plan_versions": [
+        {
+          "version": 1,
+          "path": "plans/implementation-001.md",
+          "created": "2025-12-28T00:00:00Z",
+          "reason": "Initial implementation plan"
+        }
       ],
       "estimated_hours": 0.75,
+      "phases": 3,
       "research_findings": "Root cause: .opencode directory missing __init__.py files preventing Python package recognition. MCP client from task 212 is correctly implemented. Solution: Add 2 __init__.py files and configure PYTHONPATH (15-30 min)."
     }
   ],
@@ -305,6 +219,27 @@
       "type": "research",
       "completed": "2025-12-28",
       "summary": "Implemented MCP client wrapper and enhanced lean-lsp-mcp integration enabling real-time Lean compilation checking during implementation tasks"
+    },
+    {
+      "project_number": 216,
+      "project_name": "systematically_improve_task_tracking_file_update_p",
+      "type": "markdown",
+      "completed": "2025-12-28",
+      "summary": "Systematically improve task tracking file update procedures across all commands"
+    },
+    {
+      "project_number": 210,
+      "project_name": "fix_lean_subagents_to_follow_artifact_managementmd",
+      "type": "markdown",
+      "completed": "2025-12-28",
+      "summary": "Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md"
+    },
+    {
+      "project_number": 211,
+      "project_name": "standardize_pre_flight_and_post_flight_procedures_",
+      "type": "markdown",
+      "completed": "2025-12-28",
+      "summary": "Standardize pre-flight and post-flight procedures across research, planning, revision, and implementation workflows"
     }
   ],
   "repository_health": {
@@ -329,6 +264,14 @@
     "review_artifacts": []
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T14:06:45.670398Z",
+      "activity": "Archived 9 tasks: 7 completed, 2 abandoned"
+    },
+    {
+      "timestamp": "2025-12-28T22:04:59Z",
+      "activity": "Created task 220: Ensure all commands and agents comply with metadata passing standards for artifact management (TBD effort, Medium priority, markdown)"
+    },
     {
       "timestamp": "2025-12-28T21:53:21Z",
       "activity": "Created task 219: Implement the long-term solution to restructure module hierarchy separating semantic from proof system properties (TBD effort, Medium priority, lean)"

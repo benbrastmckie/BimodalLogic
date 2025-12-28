@@ -1,13 +1,13 @@
 # TODO
 
-**Last Updated:** 2025-12-28T23:45:00Z
+**Last Updated:** 2025-12-28T22:04:59Z
 
 ## Overview
 
-- **Total Tasks:** 37
+- **Total Tasks:** 38
 - **Completed:** 0
 - **High Priority:** 15
-- **Medium Priority:** 11
+- **Medium Priority:** 12
 - **Low Priority:** 11
 
 ---
@@ -226,189 +226,6 @@
   - [ ] Test execution time is under 2 minutes
 - **Impact**: Final step to unblock task 173. Once fixed, all 146 integration tests will compile and pass, delivering verified 82% integration test coverage and completing task 173.
 
-### 202. Fix verbose artifact output in commands to protect primary agent context window ✅
-- **Effort**: 4-5 hours (full fix) or 1.25 hours (quick fix)
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-27
-- **Completed**: 2025-12-28
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/202_fix_verbose_artifact_output/reports/research-001.md]
-  - Summary: [.opencode/specs/202_fix_verbose_artifact_output/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/202_fix_verbose_artifact_output/plans/implementation-001.md]
-- **Plan Summary**: 4-phase implementation plan (4-5 hours). Phase 1: Fix task-executor return format (1.25h). Phase 2: Fix batch-task-orchestrator return format + batch summary artifact (2.25h). Phase 3: Testing and validation (0.75h). Phase 4: Documentation updates (0.5h). Achieves 90-95% context window reduction by standardizing to subagent-return-format.md.
-- **Implementation Summary**: [.opencode/specs/202_fix_verbose_artifact_output/summaries/implementation-summary-20251228.md]
-- **Files Affected**:
-  - .opencode/agent/subagents/task-executor.md
-  - .opencode/agent/subagents/batch-task-orchestrator.md
-  - .opencode/context/common/standards/subagent-return-format.md (reference)
-- **Description**: When running commands like /research and other commands that create artifacts, the full research report is printed to the opencode console instead of just a path reference and brief summary. This bloats the primary agent's context window with verbose output that's already been saved to files. The appropriate research subagent correctly creates the report in the correct directory, but then returns the full content to the primary agent instead of just returning a path to the report and a brief summary. Investigate all commands that create artifacts systematically (/research, /plan, /implement, /revise, /review, etc.) and fix them to return only artifact paths and brief summaries per the subagent-return-format.md standard, protecting the primary agent's context window from verbose artifact content.
-- **Implementation Outcome**: Investigation revealed the issue no longer exists. task-executor.md already follows subagent-return-format.md correctly. batch-task-orchestrator.md does not exist in current codebase. No implementation work needed.
-- **Acceptance Criteria**:
-  - [x] All commands that create artifacts identified (/research, /plan, /implement, /revise, /review, etc.)
-  - [x] Each command's subagent returns only artifact paths + brief summaries (not full content)
-  - [x] Return format follows subagent-return-format.md standard
-  - [x] Console output shows only paths and summaries, not full artifact content
-  - [x] Primary agent context window protected from verbose artifact bloat
-  - [x] Artifact files still created correctly in proper directories
-  - [x] All artifact paths are accessible and correct
-  - [x] Brief summaries provide adequate information without full content
-  - [x] No regression in artifact creation or quality
-  - [x] Documentation updated if return format patterns need clarification
-- **Impact**: Protects primary agent context window from bloat, improves scalability for commands that create large artifacts, and ensures consistent artifact management across all commands per subagent-return-format.md standard.
-
-### 212. Research and improve lean-lsp-mcp usage in Lean implementation agent ✅
-- **Effort**: 14 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-28
-- **Completed**: 2025-12-28
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/212_research_lean_lsp_mcp_usage/reports/research-001.md]
-  - Summary: [.opencode/specs/212_research_lean_lsp_mcp_usage/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/212_research_lean_lsp_mcp_usage/plans/implementation-001.md]
-- **Plan Summary**: 5-phase implementation (14 hours total). Phase 1: Create MCP Client Wrapper (4h) - reusable tool invocation layer with error handling and timeout management. Phase 2: Update Lean Agents (3h) - integrate MCP client into lean-implementation-agent and lean-research-agent workflows. Phase 3: Enhance Documentation (2.5h) - create context files for lean-lsp-mcp usage patterns and best practices. Phase 4: Integration Tests (3h) - verify tool usage on real Lean tasks. Phase 5: Validation and Refinement (1.5h) - ensure no bloat/redundancy, improve organization. Integrates research findings on lean-lsp-mcp usage gaps and MCP client infrastructure requirements.
-- **Implementation Artifacts**:
-  - [.opencode/tool/mcp/client.py]
-  - [.opencode/tool/mcp/test_client.py]
-  - [.opencode/agent/subagents/lean-implementation-agent.md]
-  - [.opencode/context/project/lean4/tools/mcp-tools-guide.md]
-  - Summary: [.opencode/specs/212_research_lean_lsp_mcp_usage/summaries/implementation-summary-20251228.md]
-- **Files Affected**:
-  - .opencode/agent/subagents/lean-implementation-agent.md
-  - .opencode/agent/subagents/lean-research-agent.md
-  - .opencode/context/project/lean4/ (potential new context files)
-- **Description**: Research how lean-lsp-mcp is intended to be used and refine the lean-implementation-agent to use the tool effectively when implementing Lean plans. Currently when running /implement on Lean tasks, lean-lsp-mcp is not being used at all. Need to: (1) Research lean-lsp-mcp tool usage best practices by consulting existing context files and online resources, (2) Understand how to invoke lean-lsp-mcp correctly within agent workflows, (3) Refine lean-implementation-agent to use lean-lsp-mcp effectively during implementation, (4) Improve context files as appropriate while integrating with existing context to avoid bloat, redundancy, and inconsistency, (5) Improve organization and easy access to lean-lsp-mcp guidance. The goal is to ensure Lean-specific tooling is actually being leveraged during Lean task implementation.
-- **Acceptance Criteria**:
-  - [x] Research completed on lean-lsp-mcp tool usage best practices
-  - [x] Existing context files reviewed for lean-lsp-mcp documentation
-  - [x] Online resources consulted for lean-lsp-mcp usage patterns
-  - [x] Research report created documenting findings
-  - [x] lean-implementation-agent refined to invoke lean-lsp-mcp during implementation
-  - [x] Verification that lean-lsp-mcp is actually used when implementing Lean tasks
-  - [x] Context files improved with lean-lsp-mcp usage guidance
-  - [x] No bloat, redundancy, or inconsistency introduced in context files
-  - [x] Organization improved for easy access to Lean tool guidance
-  - [x] lean-research-agent reviewed and improved if needed
-  - [x] Test implementation confirms lean-lsp-mcp usage
-- **Impact**: CRITICAL - Ensures lean-lsp-mcp is actually being used during Lean task implementation instead of being bypassed. Without this fix, Lean-specific tooling investment is wasted and Lean implementations miss out on language server capabilities for proof verification, theorem search, and code intelligence.
-
-### 213. Comprehensive expert consultation for blocked involution proof in Truth.lean
-- **Effort**: 6-10 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-28
-- **Researched**: 2025-12-28
-- **Planned**: 2025-12-28
-- **Completed**: 2025-12-28
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: 184, 193, 209
-- **Plan**: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-001.md]
-- **Plan Summary**: 5-phase implementation (6 hours total). Phase 1: Remove unprovable is_valid_swap_involution theorem (0.5h). Phase 2: Add derivable_valid_swap_involution theorem restricted to derivable formulas (2h). Phase 3: Update temporal_duality usage site (1.5h). Phase 4: Build verification (1h). Phase 5: Documentation updates (1h). Integrates research finding that original theorem is semantically false for arbitrary formulas - reformulation adds derivability precondition making theorem provable via temporal_duality rule.
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md]
-  - Summary: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md]
-- **Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/implementation-summary-20251228.md]
-  - Modified File: Logos/Core/Semantics/Truth.lean
-- **Files Affected**:
-  - Logos/Core/Semantics/Truth.lean (line 691 - is_valid_swap_involution)
-  - Logos/Core/Syntax/Formula.lean (involution lemmas)
-  - Documentation/Research/ (consultation findings)
-- **Description**: After exhaustive attempts across tasks 184, 193, and 209 (combined 7.2 hours actual work, 15 proof strategies attempted), the is_valid_swap_involution theorem remains blocked due to a fundamental type theory limitation. The theorem requires proving: Given is_valid T φ.swap_past_future, prove is_valid T φ. The blocker: truth_at is defined by pattern matching on formulas, preventing transport of truth values along the propositional equality φ.swap.swap = φ. All standard approaches exhausted: (1) simp only pattern from Perpetuity/Helpers.lean - works for derivations but NOT for truth predicates, (2) Helper lemma composition - type mismatch on formula equality transport, (3) Eq.subst/cast/convert tactics - cannot substitute in pattern-matched definitions, (4) Rewriting strategies - no effect on pattern-matched propositions, (5) Congruence arguments - failed to synthesize CongrArg instance, (6) Alternative helper formulations - all require same blocked transport. Current state: 85% complete (helper lemma truth_at_swap_swap fully proven with structural induction across 6 cases, @[simp] attribute added, Truth.lean compiles with documented sorry), 15% blocked (main theorem at line 691 admits sorry). This task consolidates findings from tasks 184, 193, 209 to pursue expert consultation via: (1) Lean Zulip community post with minimal reproducible example explaining pattern matching + propositional equality transport challenge, (2) Mathlib review for similar involution proofs on pattern-matched semantic predicates, (3) Lean 4 documentation deep dive on advanced equality handling and custom eliminators, (4) Attempt direct inductive proof truth_at ... φ.swap ↔ truth_at ... φ (Option 1 from task 193 failure report), (5) Consider model-theoretic symmetry approach or theorem reformulation if direct proof infeasible (Options 2-3). Goal: Either complete the proof with expert guidance or document as known limitation with axiom fallback if critical for downstream wor...
-- **Research Findings** (2025-12-28): **CRITICAL DISCOVERY - THEOREM IS UNPROVABLE AS STATED**. Comprehensive semantic analysis proves the theorem is **false** for arbitrary formulas containing temporal operators. Root cause: swap_past_future exchanges all_past ↔ all_future, which quantify over different time ranges (past s<t vs future s>t). Counterexample constructed: φ = all_past(atom "p") in model where p is true in future but false in past - is_valid φ.swap holds but is_valid φ does not. All 15 previous strategies failed because they attempted to prove a false statement, not due to proof technique limitations. Direct inductive approach impossible: temporal cases require proving (∀ s>t: φ.swap at s) ↔ (∀ s<t: φ at s), which is semantically false. The theorem IS true for **derivable formulas** (those provable in proof system) where temporal_duality rule guarantees swap preservation. Recommended solution: Reformulate theorem as `derivable_valid_swap_involution` restricting to DerivationTree [] φ.swap → is_valid φ, which is provable using temporal_duality rule. Implementation: 1.5-2 hours. This resolves tasks 184, 193, 209, and 213. See research report for detailed semantic analysis, counterexample, and 4 proposed solutions with implementation plans.
-- **Acceptance Criteria**:
-  - [x] Comprehensive research completed analyzing all previous attempts
-  - [x] Semantic analysis performed on temporal operator swap behavior
-  - [x] Counterexample constructed proving theorem is false as stated
-  - [x] Direct inductive proof approach analyzed (all_past/all_future cases proven impossible)
-  - [x] Theorem usage context identified (temporal_duality case - only for derivable formulas)
-  - [x] Root cause identified: semantic inequality of past/future quantification
-  - [x] All findings documented in comprehensive research report (586 lines)
-  - [x] Executive summary created with implementation guidance (312 lines)
-  - [x] Solution implemented: Removed unprovable theorem, documented circular dependency with Soundness.lean
-  - [x] Task 213 completed with implementation summary and build verification
-- **Impact**: CRITICAL - Resolves the longest-standing blocked proof in the codebase (10.7 hours total invested across 4 tasks). Research definitively proves theorem is unprovable as stated (semantically false for arbitrary formulas), ending 7.2 hours of failed proof attempts. Provides clear path forward: reformulate for derivable formulas (1.5-2 hours implementation). Completion enables: (1) Removing unprovable theorem from Truth.lean line 691, (2) Closure of tasks 184, 193, 209, 213, (3) Correct scoping of temporal duality soundness, (4) Prevention of future attempts to prove false theorem. Key lesson: Syntactic properties (derivations) vs semantic properties (validity) require different approaches - temporal operators are not symmetric in arbitrary models.
-
-### 214. Address FIX in orchestrator.md, apply XML styling, and research default agent configuration
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-28
-- **Completed**: 2025-12-28
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/214_orchestrator_improvements/reports/research-001.md]
-  - Summary: [.opencode/specs/214_orchestrator_improvements/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/214_orchestrator_improvements/plans/implementation-002.md]
-- **Plan Summary**: 2-phase implementation (1.5 hours total, reduced from 2.25 hours). Phase 1: Remove historical comparisons by rewriting "Key Improvements Over v1" → "Core Capabilities" and "Problems Solved" → "Delegation Safety Features" (30 min). Phase 2: Apply XML styling with 11 tags matching error-diagnostics-agent.md pattern (1 hour). Removed AGENTS.md documentation work (research already concluded it doesn't work). Low risk, backward compatible.
-- **Implementation Summary**: [.opencode/specs/214_orchestrator_improvements/summaries/implementation-summary-20251228.md]
-- **Files Affected**:
-  - .opencode/agent/orchestrator.md
-  - .opencode/agent/subagents/error-diagnostics-agent.md (reference for XML styling)
-- **Description**: Complete three related improvements to orchestrator.md: (1) Address the FIX comment on line 14 by removing historical comparisons and rewriting the "Key Improvements Over v1" and "Problems Solved" sections to describe current system capabilities without referencing past versions, (2) Revise the entire orchestrator.md file to use similar XML styling as error-diagnostics-agent.md for consistency across agent specifications (using <context>, <role>, <task>, <process_flow>, <step_N> tags), (3) Research whether renaming orchestrator.md to AGENTS.md (per https://opencode.ai/docs/rules/) would make OpenCode start in orchestrator mode by default instead of the default build agent, enabling the orchestrator to be active on startup without manual switching.
-- **Research Findings** (2025-12-28): FIX comment on line 14 requests rewriting historical sections ("Key Improvements Over v1", "Problems Solved") to describe current capabilities directly. All subagents use consistent XML tags (<context>, <role>, <task>, <process_flow>, <constraints>, <output_specification>, <validation_checks>, <principles>) that map cleanly to orchestrator structure. CRITICAL: AGENTS.md is for custom instructions/rules, NOT agent definitions - renaming orchestrator.md to AGENTS.md would break the orchestrator. XML styling is backward compatible. Total implementation estimate: 2 hours 15 minutes (30 min rewrite + 1.5 hours XML styling + 15 min documentation).
-- **Implementation Status** (2025-12-28): Both phases completed fully (1.5 hours actual). Phase 1: Removed historical comparisons, rewrote "Core Capabilities" and "Delegation Safety Features" sections (30 min). Phase 2: Applied XML styling to 100% of file (1 hour). All 13 workflow stages converted to <step_N> tags. Helper functions, error handling, registry maintenance, testing, and related documentation sections all converted to XML. File increased from 914 to 1,015 lines with ~50 major XML tags added. Fully consistent with error-diagnostics-agent.md pattern.
-- **Acceptance Criteria**:
-  - [x] Research completed on OpenCode rules from https://opencode.ai/docs/rules/
-  - [x] Documentation created explaining whether AGENTS.md naming enables default orchestrator mode
-  - [x] AGENTS.md approach researched - does NOT work (AGENTS.md is for custom instructions, not agent definitions)
-  - [x] Alternative methods documented for setting default agent
-  - [x] FIX comment on line 14 addressed - removed historical comparisons to v1
-  - [x] "Key Improvements Over v1" section rewritten as "Core Capabilities" describing current features
-  - [x] "Problems Solved (Task 191)" section rewritten as "Delegation Safety Features" describing current safeguards
-  - [x] No mentions of "v1", "improvements over", or historical comparisons in styled sections
-  - [x] Entire orchestrator.md restructured with XML styling matching error-diagnostics-agent.md pattern
-  - [x] XML tags used: <context>, <role>, <task>, <process_flow>, <step_N>, <validation>, <output>, <helper_functions>, <error_handling>, <registry_maintenance>, <testing>, <related_documentation>
-  - [x] All changes maintain backward compatibility with existing command workflows
-  - [x] orchestrator.md remains fully functional after XML styling conversion
-- **Impact**: Improves orchestrator.md clarity by removing confusing historical references. Establishes 100% consistent XML styling across all agent specifications for better maintainability. All sections follow error-diagnostics-agent.md pattern. Enhanced structure without breaking changes.
-
-
-### 215. Fix /todo command to remove both heading and body for completed/abandoned tasks
-- **Effort**: 2.5 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-28
-- **Planned**: 2025-12-28
-- **Completed**: 2025-12-28
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/215_fix_todo_task_removal/reports/research-001.md]
-  - Summary: [.opencode/specs/215_fix_todo_task_removal/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/215_fix_todo_task_removal/plans/implementation-001.md]
-- **Plan Summary**: 6-phase specification update (2.5 hours total). Phase 1: Task block structure definition (heading + body boundaries). Phase 2: Block boundary detection (4 patterns with regex). Phase 3: Process steps update (atomic block removal). Phase 4: Post-removal validation (detect orphaned content). Phase 5: Test cases documentation (7 comprehensive tests). Phase 6: Integration testing. Fixes root cause: Stage 4 lacks explicit block structure definition causing heading-only removal and 129+ orphaned lines
-- **Implementation Artifacts**:
-  - Implementation: [.opencode/command/todo.md]
-  - Summary: [.opencode/specs/215_fix_todo_task_removal/summaries/implementation-summary-20251228.md]
-- **Files Affected**:
-  - .opencode/command/todo.md
-- **Description**: When /todo was run, it removed only the headings for completed tasks (e.g., "### 192. Fix..." lines) without removing the body of the task (all the metadata lines like Status, Priority, Description, Acceptance Criteria, etc. that follow the heading). This leaves orphaned task bodies in TODO.md (see lines 437-505 as example). Root cause analysis needed: The /todo command's task removal logic in Stage 4 ("PrepareUpdates") currently identifies and removes only the task heading line but does not identify the complete task block structure. A TODO.md task consists of: (1) Heading line: ### NNN. Task title, (2) Body lines (indented with -): Status, dates, priority, dependencies, artifacts, description, acceptance criteria, impact, etc., continuing until the next task heading or section marker. The command must be fixed to: (1) Identify the complete task block (heading + all body lines until next heading/section), (2) Remove the entire block atomically for each completed/abandoned task, (3) Preserve all other content and task numbering. Investigation should confirm this root cause by examining the Stage 4 implementation and then implement a fix that correctly identifies task block boundaries (from heading to next heading or section marker) and removes the complete block.
-- **Acceptance Criteria**:
-  - [ ] Root cause confirmed: Stage 4 removes only heading line, not complete task block
-  - [ ] Fix implemented: Task removal logic identifies complete task blocks (heading + body lines)
-  - [ ] Task block boundaries correctly identified (from ### heading to next ### or ## marker)
-  - [ ] Complete task blocks removed for [COMPLETED] and [ABANDONED] tasks
-  - [ ] All other tasks preserved with full structure (heading + body)
-  - [ ] Task numbering preserved (no renumbering)
-  - [ ] No orphaned task body lines remain after archival
-  - [ ] Atomic updates maintained (two-phase commit)
-  - [ ] Git commit creation works correctly
-  - [ ] Manual testing: Run /todo on TODO.md with completed tasks, verify complete removal
-  - [ ] No regression in other /todo functionality (archival, state updates, directory moves)
-- **Impact**: CRITICAL - Fixes broken /todo archival that currently leaves orphaned task metadata scattered throughout TODO.md, making the file unreadable and breaking the task structure. Ensures complete and clean task removal during archival operations.
-
 ### 217. Research artifact creation by all commands and their subagents in the .opencode/ agent system
 - **Effort**: 12 hours
 - **Status**: [REVISED]
@@ -454,8 +271,8 @@
 - **Impact**: Ensures consistent artifact creation, status tracking, and state management across all workflow commands and subagents, enabling reliable project tracking, proper artifact management, and adherence to established standards.
 
 ### 218. Fix lean-lsp-mcp integration and opencode module import errors in Lean implementation workflow
-- **Effort**: 0.5-1 hour
-- **Status**: [RESEARCHED]
+- **Effort**: 0.75 hours
+- **Status**: [PLANNED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
 - **Priority**: High
@@ -465,6 +282,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md]
   - Summary: [.opencode/specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary.md]
+- **Plan**: [.opencode/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-001.md]
+- **Plan Summary**: 3-phase implementation (45 minutes total). Phase 1: Create Python Package Structure - add __init__.py files to .opencode/ and .opencode/tool/ (15 min). Phase 2: Configure PYTHONPATH and verify integration (15 min). Phase 3: Testing and documentation (15 min). Root cause: Missing __init__.py files prevent Python package recognition causing ModuleNotFoundError.
 - **Files Affected**:
   - .opencode/agent/subagents/lean-implementation-agent.md
   - .opencode/tool/mcp/client.py
@@ -491,55 +310,6 @@
 - **Blocking**: None
 - **Dependencies**: None
 - **Description**: Implement the long-term solution discussed in /home/benjamin/Projects/ProofChecker/.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/circular-dependency-analysis.md to restructure the module hierarchy to separate semantic properties from proof system properties, following established patterns from Lean's mathlib.
-
-### 216. Systematically improve task tracking file update procedures across all commands ✅
-- **Effort**: 10-12 hours (actual: 4 hours via commit 90cd574)
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-28
-- **Planned**: 2025-12-28
-- **Completed**: 2025-12-28
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/216_improve_task_tracking_updates/reports/research-001.md]
-  - Summary: [.opencode/specs/216_improve_task_tracking_updates/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/216_improve_task_tracking_updates/plans/implementation-001.md]
-- **Plan Summary**: 4-phase implementation (10-12 hours). Phase 1: Enhance status-sync-manager with artifact validation, plan metadata, project state.json lazy creation, version history (4h). Phase 2: Update 4 subagents with artifact validation (2h). Phase 3: Update 4 commands to delegate all updates (2h). Phase 4: Testing and documentation (2h). Hybrid architecture provides lowest complexity (+205 lines) with full atomicity via two-phase commit across TODO.md, state.json, project state.json, plan files.
-- **Implementation Summary**: [.opencode/specs/216_improve_task_tracking_updates/summaries/implementation-summary-20251228.md]
-- **Files Affected**:
-  - .opencode/context/common/workflows/command-lifecycle.md
-  - .opencode/context/common/workflows/task-tracking-updates.md (new)
-  - .opencode/agent/subagents/status-sync-manager.md
-  - .opencode/agent/subagents/researcher.md
-  - .opencode/agent/subagents/planner.md
-  - .opencode/agent/subagents/lean-research-agent.md
-  - .opencode/agent/subagents/lean-implementation-agent.md
-  - .opencode/agent/subagents/task-executor.md
-  - .opencode/agent/subagents/implementer.md
-  - .opencode/command/research.md
-  - .opencode/command/plan.md
-  - .opencode/command/revise.md
-  - .opencode/command/implement.md
-- **Description**: After implementing task 211, status and artifact updates remain inconsistent. When commands complete, research/planning/revision/implementation subagents do not effectively update: (1) TODO.md task entries (status markers, artifact links, timestamps), (2) .opencode/specs/state.json (active_projects, artifacts arrays, status, timestamps), (3) Project-level state.json files in specs/{task_number}_{name}/ (if exists), (4) Plan metadata when plans are being implemented (phase status, completion tracking). Need to systematically investigate and fix all update procedures to ensure: (A) Commands update all tracking files atomically when subagents start, (B) Subagents update all tracking files atomically when work completes, (C) Updates are documented in command-lifecycle.md or new task-tracking-updates.md context file, (D) Updates follow status-markers.md, state-schema.md, artifact-management.md standards, (E) Git commits are created after all updates, (F) Consider creating dedicated update subagent if atomicity/consistency requires centralized coordination. Investigation should: (1) Trace actual update flows in /research, /plan, /revise, /implement for representative task, (2) Identify where updates are missing or inconsistent, (3) Determine best architecture (enhance status-sync-manager vs create dedicated update agent vs distribute updates to subagents with validation), (4) Document complete update procedures in appropriate context file, (5) Implement and test fixes to ensure 100% update coverage.
-- **Acceptance Criteria**:
-  - [x] Investigation completed: Traced update flows for all 4 commands
-  - [x] Gap analysis completed: Identified all missing/inconsistent updates
-  - [x] Architecture decision: Documented best approach (enhance existing vs new agent vs distributed)
-  - [x] Implementation plan created: 4-phase plan with detailed acceptance criteria
-  - [ ] TODO.md updates work correctly: Status markers, artifact links, timestamps on command start and finish
-  - [ ] state.json updates work correctly: active_projects, artifacts, status, timestamps on command start and finish
-  - [ ] Project state.json updates work correctly: If project-level state exists, updated consistently
-  - [ ] Plan metadata updates work correctly: Phase status and completion tracking during implementation
-  - [ ] All updates are atomic: Either all files updated or none (via status-sync-manager or equivalent)
-  - [ ] All updates follow standards: status-markers.md, state-schema.md, artifact-management.md
-  - [ ] Git commits created after updates: All tracking file changes committed
-  - [ ] Update procedures documented: Clear documentation loaded where relevant
-  - [ ] Context bloat avoided: Documentation loaded only where needed
-  - [ ] Test coverage: Verified with real tasks for all 4 commands
-  - [ ] No regressions: Existing functionality preserved
-- **Impact**: CRITICAL - Ensures complete and consistent tracking across all task lifecycle stages. Without systematic updates, TODO.md and state.json diverge, making task status unreliable and blocking effective project management. Provides single source of truth for update procedures, following task 211's standardization approach.
 
 ### 203. Add --complex flag to /research for subtopic subdivision with summary
 - **Effort**: TBD
@@ -799,34 +569,6 @@
 
 ---
 
-### 173. Implement integration tests for proof system and semantics
-- **Effort**: 3 hours (revised from 18 hours after implementation)
-- **Status**: [PLANNED]
-- **Started**: 2025-12-24
-- **Planned**: 2025-12-28
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: 183, 184, 185
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/173_integration_tests/reports/research-001.md]
-  - Summary: [.opencode/specs/173_integration_tests/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/173_integration_tests/plans/implementation-001.md]
-- **Plan Summary**: 2-phase completion plan (3 hours). Phase 1: Verify core build fixes and update Helpers.lean API (1.25h). Phase 2: Verify all 146 integration tests compile and pass (1.75h). Implementation 83% complete - 146 tests created with 82% coverage, blocked only by core build errors in tasks 183, 184, 185.
-- **Implementation Summary**: [.opencode/specs/173_integration_tests/summaries/implementation-summary-20251225.md]
-- **Files Affected**:
-  - LogosTest/Core/Integration/EndToEndTest.lean
-  - LogosTest/Core/Integration/ProofSystemSemanticsTest.lean (new)
-  - LogosTest/Core/Integration/AutomationProofSystemTest.lean (new)
-- **Description**: Add comprehensive integration tests to ensure system components work together correctly. Current integration tests in EndToEndTest.lean are basic. Missing tests for proof system + semantics integration, automation + proof system integration, and full workflows.
-- **Acceptance Criteria**:
-  - [x] Proof system + semantics integration tests implemented
-  - [x] Automation + proof system integration tests implemented
-  - [x] Full workflow tests (research to verification) implemented
-  - [x] Cross-module dependency tests implemented
-  - [ ] All integration tests passing
-  - [x] Test coverage for integration scenarios at least 85 percent
-- **Impact**: Ensures system components integrate correctly and prevents regression when modules are modified independently.
 
 ### 175. Establish CI/CD pipeline with automated testing and linting
 - **Effort**: 13 hours
@@ -1067,3 +809,40 @@
   - [ ] Git commits created for /research, /plan, /revise, and /implement commands in post-flight before returning
   - [ ] All acceptance criteria from original task description met
 - **Impact**: CRITICAL - Establishes unified, consistent workflow procedures across all research, planning, revision, and implementation commands and agents. Eliminates documentation duplication and inconsistencies, ensures uniform status tracking per status-markers.md (including /revise workflow with [REVISING] → [REVISED] transitions), state management per state-schema.md, artifact management per artifact-management.md, and git commit creation in post-flight before returning. Provides single source of truth for pre-flight and post-flight procedures while clearly documenting command-specific variations. Essential for maintaining system consistency as commands and agents evolve. Ensures /revise command follows same pre-flight and post-flight patterns as other commands for consistency.
+
+### 220. Ensure all commands and agents comply with metadata passing standards for artifact management
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: 217
+- **Files Affected**:
+  - .opencode/context/common/system/artifact-management.md
+  - .opencode/context/common/workflows/command-lifecycle.md
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+  - .opencode/command/revise.md
+  - .opencode/command/implement.md
+  - .opencode/agent/subagents/researcher.md
+  - .opencode/agent/subagents/planner.md
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/agent/subagents/task-executor.md
+  - .opencode/agent/subagents/implementer.md
+- **Description**: Task 217 is responsible for revising the context files and documentation surrounding the metadata passing strategies, ensuring consistent and systematic treatment of artifacts where their references and brief summaries are returned to the primary agent to avoid bloating the primary agent's context window. This task ensures that all commands and agents are fully compliant with these standards, maintaining a clear and uniform approach. After task 217 completes its documentation revisions, this task will verify and enforce compliance across all workflow commands (research, plan, revise, implement) and their delegated subagents (researcher, planner, lean-research-agent, lean-implementation-agent, task-executor, implementer). The goal is to ensure: (1) All agents return only artifact references and brief summaries (not full content) per the updated metadata passing standards, (2) All commands properly receive and handle these brief returns without requesting full artifact content, (3) Context window protection is consistently enforced across all workflows, (4) Artifact references use standardized formats (absolute paths, correct naming conventions), (5) Brief summaries meet the defined constraints (token limits, content requirements), (6) No regression or inconsistency in artifact management practices. This task depends on task 217 completing its context file revisions first.
+- **Acceptance Criteria**:
+  - [ ] Task 217 context file revisions completed (prerequisite)
+  - [ ] All 4 commands reviewed for compliance with updated metadata passing standards
+  - [ ] All 6 subagents reviewed for compliance with updated metadata passing standards
+  - [ ] Each agent verified to return only artifact references + brief summaries (not full content)
+  - [ ] Each command verified to accept brief returns without requesting full content
+  - [ ] Artifact reference formats standardized (absolute paths, correct naming)
+  - [ ] Brief summary constraints verified (token limits, content requirements)
+  - [ ] Context window protection consistently enforced across all workflows
+  - [ ] Compliance gaps identified and documented
+  - [ ] Fixes implemented for all non-compliant commands and agents
+  - [ ] Test verification with real tasks for all 4 commands
+  - [ ] No regression in artifact creation or quality
+  - [ ] Documentation updated to reflect compliance requirements
+- **Impact**: Ensures systematic compliance with metadata passing standards across all workflow commands and agents, protecting the primary agent's context window from bloat while maintaining clear and uniform artifact management practices. Builds on task 217's documentation work to achieve full system-wide compliance.

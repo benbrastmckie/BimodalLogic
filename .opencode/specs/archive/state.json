@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2025-12-28T10:27:41.882093Z",
+  "_last_updated": "2025-12-28T14:06:45.670396Z",
   "archived_projects": [
     {
       "project_number": 126,
@@ -470,6 +470,92 @@
       "artifacts": {
         "base_path": ".opencode/specs/archive/207_fix_implement_status_updates/"
       }
+    },
+    {
+      "project_number": 202,
+      "project_name": "fix_verbose_artifact_output_in_commands_to_protect",
+      "type": "markdown",
+      "status": "completed",
+      "archived": "2025-12-28",
+      "summary": "Fix verbose artifact output in commands to protect primary agent context window",
+      "started": "2025-12-27",
+      "completed": "2025-12-28"
+    },
+    {
+      "project_number": 212,
+      "project_name": "research_and_improve_lean_lsp_mcp_usage_in_lean_im",
+      "type": "markdown",
+      "status": "completed",
+      "archived": "2025-12-28",
+      "summary": "Research and improve lean-lsp-mcp usage in Lean implementation agent",
+      "started": "2025-12-28",
+      "completed": "2025-12-28"
+    },
+    {
+      "project_number": 213,
+      "project_name": "comprehensive_expert_consultation_for_blocked_invo",
+      "type": "lean",
+      "status": "completed",
+      "archived": "2025-12-28",
+      "summary": "Comprehensive expert consultation for blocked involution proof in Truth.lean",
+      "started": "2025-12-28",
+      "completed": "2025-12-28"
+    },
+    {
+      "project_number": 214,
+      "project_name": "address_fix_in_orchestratormd_apply_xml_styling_an",
+      "type": "markdown",
+      "status": "completed",
+      "archived": "2025-12-28",
+      "summary": "Address FIX in orchestrator.md, apply XML styling, and research default agent configuration",
+      "started": "2025-12-28",
+      "completed": "2025-12-28"
+    },
+    {
+      "project_number": 215,
+      "project_name": "fix_todo_command_to_remove_both_heading_and_body_f",
+      "type": "markdown",
+      "status": "completed",
+      "archived": "2025-12-28",
+      "summary": "Fix /todo command to remove both heading and body for completed/abandoned tasks",
+      "started": "2025-12-28",
+      "completed": "2025-12-28"
+    },
+    {
+      "project_number": 216,
+      "project_name": "systematically_improve_task_tracking_file_update_p",
+      "type": "markdown",
+      "status": "completed",
+      "archived": "2025-12-28",
+      "summary": "Systematically improve task tracking file update procedures across all commands",
+      "started": "2025-12-28",
+      "completed": "2025-12-28"
+    },
+    {
+      "project_number": 205,
+      "project_name": "implement_lean_tool_usage_verification_and_monitor",
+      "type": "markdown",
+      "status": "abandoned",
+      "archived": "2025-12-28",
+      "summary": "Implement Lean tool usage verification and monitoring system"
+    },
+    {
+      "project_number": 210,
+      "project_name": "fix_lean_subagents_to_follow_artifact_managementmd",
+      "type": "markdown",
+      "status": "abandoned",
+      "archived": "2025-12-28",
+      "summary": "Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md"
+    },
+    {
+      "project_number": 211,
+      "project_name": "standardize_pre_flight_and_post_flight_procedures_",
+      "type": "markdown",
+      "status": "completed",
+      "archived": "2025-12-28",
+      "summary": "Standardize pre-flight and post-flight procedures across research, planning, revision, and implementation workflows",
+      "started": "2025-12-28",
+      "completed": "2025-12-28"
     }
   ]
 }
