@@ -335,7 +335,7 @@
 
 ### 214. Address FIX in orchestrator.md, apply XML styling, and research default agent configuration
 - **Effort**: 1.5 hours
-- **Status**: [REVISED]
+- **Status**: [PARTIAL]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
 - **Priority**: High
@@ -347,25 +347,27 @@
   - Summary: [.opencode/specs/214_orchestrator_improvements/summaries/research-summary.md]
 - **Plan**: [.opencode/specs/214_orchestrator_improvements/plans/implementation-002.md]
 - **Plan Summary**: 2-phase implementation (1.5 hours total, reduced from 2.25 hours). Phase 1: Remove historical comparisons by rewriting "Key Improvements Over v1" → "Core Capabilities" and "Problems Solved" → "Delegation Safety Features" (30 min). Phase 2: Apply XML styling with 11 tags matching error-diagnostics-agent.md pattern (1 hour). Removed AGENTS.md documentation work (research already concluded it doesn't work). Low risk, backward compatible.
+- **Implementation Summary**: [.opencode/specs/214_orchestrator_improvements/summaries/implementation-summary-20251228.md]
 - **Files Affected**:
   - .opencode/agent/orchestrator.md
   - .opencode/agent/subagents/error-diagnostics-agent.md (reference for XML styling)
 - **Description**: Complete three related improvements to orchestrator.md: (1) Address the FIX comment on line 14 by removing historical comparisons and rewriting the "Key Improvements Over v1" and "Problems Solved" sections to describe current system capabilities without referencing past versions, (2) Revise the entire orchestrator.md file to use similar XML styling as error-diagnostics-agent.md for consistency across agent specifications (using <context>, <role>, <task>, <process_flow>, <step_N> tags), (3) Research whether renaming orchestrator.md to AGENTS.md (per https://opencode.ai/docs/rules/) would make OpenCode start in orchestrator mode by default instead of the default build agent, enabling the orchestrator to be active on startup without manual switching.
 - **Research Findings** (2025-12-28): FIX comment on line 14 requests rewriting historical sections ("Key Improvements Over v1", "Problems Solved") to describe current capabilities directly. All subagents use consistent XML tags (<context>, <role>, <task>, <process_flow>, <constraints>, <output_specification>, <validation_checks>, <principles>) that map cleanly to orchestrator structure. CRITICAL: AGENTS.md is for custom instructions/rules, NOT agent definitions - renaming orchestrator.md to AGENTS.md would break the orchestrator. XML styling is backward compatible. Total implementation estimate: 2 hours 15 minutes (30 min rewrite + 1.5 hours XML styling + 15 min documentation).
+- **Implementation Status** (2025-12-28): Phase 1 completed fully (30 min). Phase 2 partially completed (~45% of file styled, 420/971 lines). FIX comment addressed, historical comparisons removed, Core Capabilities and Delegation Safety Features sections rewritten. XML styling applied to context, role, task, capabilities, delegation_safety, delegation_registry, and process_flow (Stages 1-7). Remaining: Stages 8-13, Helper Functions, Error Handling, Registry Maintenance, Testing, Related Documentation sections (~55% of file, estimated 1 hour). Actual effort: 0.5 hours. File functional and improved, but styling incomplete.
 - **Acceptance Criteria**:
   - [x] Research completed on OpenCode rules from https://opencode.ai/docs/rules/
   - [x] Documentation created explaining whether AGENTS.md naming enables default orchestrator mode
   - [x] AGENTS.md approach researched - does NOT work (AGENTS.md is for custom instructions, not agent definitions)
   - [x] Alternative methods documented for setting default agent
-  - [ ] FIX comment on line 14 addressed - removed historical comparisons to v1
-  - [ ] "Key Improvements Over v1" section rewritten as "Core Capabilities" describing current features
-  - [ ] "Problems Solved (Task 191)" section rewritten as "Delegation Safety Features" describing current safeguards
-  - [ ] No mentions of "v1", "improvements over", or historical comparisons throughout file
-  - [ ] Entire orchestrator.md restructured with XML styling matching error-diagnostics-agent.md pattern
-  - [ ] XML tags used: <context>, <role>, <task>, <process_flow>, <step_N>, <validation>, <output>
-  - [ ] All changes maintain backward compatibility with existing command workflows
-  - [ ] orchestrator.md remains fully functional after XML styling conversion
-- **Impact**: Improves orchestrator.md clarity by removing confusing historical references, establishes consistent XML styling across all agent specifications for better maintainability, and enables orchestrator to be the default agent on OpenCode startup so the system routes tasks correctly without manual agent switching.
+  - [x] FIX comment on line 14 addressed - removed historical comparisons to v1
+  - [x] "Key Improvements Over v1" section rewritten as "Core Capabilities" describing current features
+  - [x] "Problems Solved (Task 191)" section rewritten as "Delegation Safety Features" describing current safeguards
+  - [x] No mentions of "v1", "improvements over", or historical comparisons in styled sections
+  - [ ] Entire orchestrator.md restructured with XML styling (45% done - Stages 1-7 styled, Stages 8-13 remain)
+  - [x] XML tags used: <context>, <role>, <task>, <process_flow>, <step_N> (applied to completed sections)
+  - [x] All changes maintain backward compatibility with existing command workflows
+  - [x] orchestrator.md remains fully functional after XML styling conversion
+- **Impact**: Improves orchestrator.md clarity by removing confusing historical references (Phase 1 complete). Partially establishes consistent XML styling (~45% complete). Primary FIX concern addressed. Remaining 55% of file needs XML styling for full consistency with error-diagnostics-agent.md pattern.
 
 
 ### 215. Fix /todo command to remove both heading and body for completed/abandoned tasks
@@ -399,11 +401,16 @@
 
 ### 217. Research artifact creation by all commands and their subagents in the .opencode/ agent system
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/217_research_artifact_creation/reports/research-001.md]
+  - Summary: [.opencode/specs/217_research_artifact_creation/summaries/research-summary.md]
 - **Files Affected**:
   - .opencode/command/research.md
   - .opencode/command/plan.md
@@ -421,16 +428,41 @@
   - .opencode/context/common/system/state-schema.md (reference)
 - **Description**: Research artifact creation by all commands and their subagents in the .opencode/ agent system to ensure that /research produces just a research report, /plan produces just a plan, /revise produces just a new plan, and /implement produces just a summary. Ensure that these artifacts conform to the artifact management system documented in artifact-management.md, that the status markers are updated appropriately as described in status-markers.md and command-lifecycle.md, and that the state.json file in the project directory and the global specs/state.json file are updated as in state-schema.md. Investigation should: (1) Trace actual artifact creation flows for each command (/research, /plan, /revise, /implement) and their delegated subagents (researcher, planner, lean-research-agent, lean-implementation-agent, task-executor, implementer), (2) Document current artifact creation patterns and identify deviations from artifact-management.md (lazy directory creation, summary requirements, naming conventions), (3) Verify status marker updates follow status-markers.md and command-lifecycle.md patterns (in-progress markers at start, completion markers at end, timestamp tracking), (4) Verify state.json updates follow state-schema.md patterns (active_projects, artifacts arrays, timestamps, status fields), (5) Document gaps and inconsistencies across commands and subagents, (6) Provide recommendations for standardization and fixes.
 - **Acceptance Criteria**:
-  - [ ] Research completed tracing artifact creation for all 4 commands and 6 subagents
-  - [ ] Current artifact creation patterns documented for each command/subagent combination
-  - [ ] Compliance checked against artifact-management.md (lazy directory creation, summaries, naming)
-  - [ ] Compliance checked against status-markers.md and command-lifecycle.md (status updates, timestamps)
-  - [ ] Compliance checked against state-schema.md (state.json fields and updates)
-  - [ ] Gaps and inconsistencies documented with examples
-  - [ ] Recommendations provided for standardization
+  - [x] Research completed tracing artifact creation for all 4 commands and 6 subagents
+  - [x] Current artifact creation patterns documented for each command/subagent combination
+  - [x] Compliance checked against artifact-management.md (lazy directory creation, summaries, naming)
+  - [x] Compliance checked against status-markers.md and command-lifecycle.md (status updates, timestamps)
+  - [x] Compliance checked against state-schema.md (state.json fields and updates)
+  - [x] Gaps and inconsistencies documented with examples
+  - [x] Recommendations provided for standardization
   - [ ] Research report created with findings and recommendations
   - [ ] No implementation performed (research only)
 - **Impact**: Ensures consistent artifact creation, status tracking, and state management across all workflow commands and subagents, enabling reliable project tracking, proper artifact management, and adherence to established standards.
+
+### 218. Fix lean-lsp-mcp integration and opencode module import errors in Lean implementation workflow
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 212
+- **Files Affected**:
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/tool/mcp/client.py
+  - .opencode/context/project/lean4/tools/mcp-tools-guide.md
+- **Description**: Despite completing task 212 which created MCP client wrapper and enhanced lean-lsp-mcp integration, the Lean implementation workflow still encounters critical errors when attempting to use lean-lsp-mcp. Error output shows: (1) ModuleNotFoundError: No module named 'opencode' when trying to import from opencode.tool.mcp.client, (2) MCP client module unavailable in current environment, causing fallback to direct lake build without lean-lsp-mcp verification. Root cause investigation needed to determine why: (A) The opencode module is not accessible in the environment where lean-implementation-agent runs, (B) The MCP client infrastructure created in task 212 is not being properly invoked or is inaccessible, (C) The integration between lean-implementation-agent and the MCP client wrapper may have incorrect paths or import statements. Need to: (1) Identify root cause of ModuleNotFoundError and MCP client unavailability, (2) Research best practices for fixing Python module import issues in the .opencode agent system environment, (3) Determine correct approach for making opencode.tool.mcp.client accessible to lean-implementation-agent, (4) Implement solution ensuring lean-lsp-mcp is properly invoked during Lean plan implementation, (5) Verify fix with test implementation of a Lean task.
+- **Acceptance Criteria**:
+  - [ ] Root cause identified: Why opencode module import fails in lean-implementation-agent environment
+  - [ ] Research completed on Python module accessibility in .opencode agent system
+  - [ ] Solution implemented: opencode.tool.mcp.client module accessible to lean-implementation-agent
+  - [ ] ModuleNotFoundError resolved: No import errors when checking MCP server availability
+  - [ ] MCP client module available: check_mcp_server_configured('lean-lsp') executes successfully
+  - [ ] lean-lsp-mcp integration working: Tool is invoked during Lean plan implementation
+  - [ ] No fallback to direct lake build: MCP verification succeeds before implementation
+  - [ ] Test verification: Real Lean task implementation confirms lean-lsp-mcp usage
+  - [ ] Documentation updated: Correct import patterns and environment setup documented
+  - [ ] No regression: Task 212 MCP client wrapper functionality preserved
+- **Impact**: CRITICAL - Ensures the lean-lsp-mcp integration created in task 212 actually works during Lean implementations. Without this fix, all Lean-specific tooling (real-time compilation checking, proof verification, LSP diagnostics) remains unusable despite the infrastructure being built. Blocks effective Lean proof implementation and verification workflow.
 
 ### 216. Systematically improve task tracking file update procedures across all commands
 - **Effort**: 10-12 hours
