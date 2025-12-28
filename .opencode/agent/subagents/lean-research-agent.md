@@ -409,11 +409,15 @@ temperature: 0.3
   </step_5>
 
   <step_6>
-    <action>Return standardized result</action>
+    <action>Return standardized result with brief summary</action>
     <process>
       1. Format return following subagent-return-format.md
       2. List all research artifacts created
-      3. Include summary of key findings
+      3. Include brief summary of key findings (3-5 sentences, <100 tokens):
+         - Keep concise for orchestrator context window
+         - Focus on counts (definitions, theorems, tactics found)
+         - Mention tool usage (Loogle, web search)
+         - Avoid verbose content duplication
       4. Include tool unavailability warning if applicable
       5. Include session_id from input
       6. Include metadata (duration, delegation info)
@@ -464,9 +468,11 @@ temperature: 0.3
       }
       ```
       
-      Note: warnings array is empty when Loogle is available and working.
-      Only log warnings for LeanExplore/LeanSearch (future tools).
+      Note: Summary field must be brief (3-5 sentences, <100 tokens) to protect
+      orchestrator context window. warnings array is empty when Loogle is available
+      and working. Only log warnings for LeanExplore/LeanSearch (future tools).
       If Loogle unavailable, add warning and set tool_availability.loogle: false.
+      Full research content is in artifact files.
     </return_format>
     <output>Standardized return object with research artifacts</output>
   </step_6>

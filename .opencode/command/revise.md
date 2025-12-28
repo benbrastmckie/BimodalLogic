@@ -306,14 +306,23 @@ Context Loaded:
   </stage>
 
   <stage id="9" name="ReturnSuccess">
-    <action>Return summary to user</action>
+    <action>Return brief summary to user with plan path</action>
     <return_format>
       Plan revised for task {number}
-      - Status: [REVISED]
-      - New version: {version}
-      - Plan: {new_plan_path}
-      - Summary: {brief summary of changes}
+      
+      {brief_summary from planner (3-5 sentences)}
+      
+      Plan artifact:
+      - Version {version}: {new_plan_path}
+      
+      Task marked [REVISED].
     </return_format>
+    <context_window_protection>
+      CRITICAL: Return only brief summary (3-5 sentences) and plan path.
+      DO NOT include full plan content.
+      Full plan content is in artifact file for user to review separately.
+      This protects orchestrator context window from bloat.
+    </context_window_protection>
   </stage>
 </workflow_execution>
 

@@ -326,19 +326,35 @@ Context Loaded:
   </stage>
 
   <stage id="8" name="ReturnSuccess">
-    <action>Return summary to user</action>
+    <action>Return brief summary to user with artifact paths</action>
     <return_format>
       Research completed for task {number}
-      - Status: [RESEARCHED]
-      - Artifacts: {list of research report paths}
-      - Summary: {brief summary from research agent}
+      
+      {brief_summary from research agent (3-5 sentences)}
+      
+      Artifacts created:
+      - Research Report: {report_path}
+      - Research Summary: {summary_path}
+      
+      Task marked [RESEARCHED].
+      
+      ---
       
       Or if partial:
       Research partially completed for task {number}
-      - Status: [IN PROGRESS]
-      - Partial artifacts: {list}
-      - Resume with: /research {number}
+      
+      {brief_summary from research agent}
+      
+      Partial artifacts: {list}
+      
+      Resume with: /research {number}
     </return_format>
+    <context_window_protection>
+      CRITICAL: Return only brief summary (3-5 sentences) and artifact paths.
+      DO NOT include full research report content.
+      Full content is in artifact files for user to review separately.
+      This protects orchestrator context window from bloat.
+    </context_window_protection>
   </stage>
 </workflow_execution>
 

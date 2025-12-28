@@ -142,16 +142,19 @@ temperature: 0.3
   </step_5>
 
   <step_6>
-    <action>Return standardized result</action>
+    <action>Return standardized result with brief summary</action>
     <process>
       1. Format return following subagent-return-format.md
       2. List all artifacts created (report, summary)
-      3. Include brief summary of findings
+      3. Include brief summary of findings (3-5 sentences, <100 tokens):
+         - Keep concise for orchestrator context window
+         - Focus on key findings count and recommendations
+         - Avoid verbose content duplication
       4. Include session_id from input
       5. Include metadata (duration, delegation info)
       6. Return status completed
     </process>
-    <output>Standardized return object with artifacts</output>
+    <output>Standardized return object with brief summary and artifact paths</output>
   </step_6>
 </process_flow>
 
@@ -196,6 +199,9 @@ temperature: 0.3
       "key_findings": ["finding1", "finding2", "finding3"]
     }
     ```
+    
+    Note: Summary field must be brief (3-5 sentences, <100 tokens) to protect
+    orchestrator context window. Full research content is in artifact files.
   </format>
 
   <example>
