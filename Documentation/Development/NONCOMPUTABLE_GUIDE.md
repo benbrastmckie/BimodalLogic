@@ -84,8 +84,8 @@ For architectural rationale, see [ADR-001-Classical-Logic-Noncomputable.md](../A
 - Line 377: `Classical.propDecidable` in main theorem body
 
 **Research References**:
-- [noncomputable-research.md](../../.opencode/specs/192_fix_generalized_necessitation_termination/reports/noncomputable-research.md)
-- [deduction-theorem-necessity-research.md](../../.opencode/specs/192_fix_generalized_necessitation_termination/reports/deduction-theorem-necessity-research.md)
+- [noncomputable-research.md](../Research/noncomputable-research.md)
+- [deduction-theorem-necessity-research.md](../Research/deduction-theorem-necessity-research.md)
 
 ---
 
@@ -395,8 +395,8 @@ Fix by adding `noncomputable` keyword before `def`.
 
 - **Architecture Decision**: [ADR-001-Classical-Logic-Noncomputable.md](../Architecture/ADR-001-Classical-Logic-Noncomputable.md)
 - **Research Reports**:
-  - [Noncomputable Keyword Explanation](../../.opencode/specs/192_fix_generalized_necessitation_termination/reports/noncomputable-research.md)
-  - [Deduction Theorem Necessity Analysis](../../.opencode/specs/192_fix_generalized_necessitation_termination/reports/deduction-theorem-necessity-research.md)
+  - [Noncomputable Keyword Explanation](../Research/noncomputable-research.md)
+  - [Deduction Theorem Necessity Analysis](../Research/deduction-theorem-necessity-research.md)
 - **Style Guide**: [LEAN_STYLE_GUIDE.md](LEAN_STYLE_GUIDE.md) (see "Noncomputable Patterns" section)
 - **Task Tracker**: [Task 192 - Fix GeneralizedNecessitation Termination](../../TODO.md)
 

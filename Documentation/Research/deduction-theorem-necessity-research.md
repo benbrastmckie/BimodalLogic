@@ -523,7 +523,7 @@ For theorem proving purposes, this is acceptable and idiomatic.
 ### ProofChecker Files
 - `Logos/Core/Metalogic/DeductionTheorem.lean` (lines 41, 206, 332)
 - `Logos/Core/Theorems/GeneralizedNecessitation.lean` (lines 66, 101)
-- `.opencode/specs/192_.../reports/noncomputable-research.md` (comprehensive guide)
+- [noncomputable-research.md](noncomputable-research.md) (comprehensive guide)
 
 ---
 
