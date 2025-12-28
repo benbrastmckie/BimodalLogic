@@ -57,3 +57,33 @@ The `project/` directory contains subdirectories that are specific to the needs 
 -   **`project/repo/`**: This directory is a standard project-specific directory that contains context related to the repository itself, such as the project overview.
 
 This structure provides a clear separation between common and project-specific context, making it easier to manage and scale the context files.
+
+## Context Loading and Self-Healing
+
+### Context File References
+
+Commands and agents reference context files using the `@` prefix in their context loading sections:
+
+```markdown
+Context Loaded:
+@.opencode/specs/TODO.md
+@.opencode/specs/state.json
+@.opencode/context/common/system/status-markers.md
+```
+
+### Self-Healing Infrastructure
+
+The OpenCode system implements **automatic self-healing** for missing infrastructure files. When a command needs state.json or errors.json and they don't exist, they are automatically created from templates using data from TODO.md.
+
+**File Types**:
+- **Auto-Created**: state.json, errors.json (created from templates)
+- **Required**: TODO.md, context files (fail with clear error if missing)
+- **Optional**: Project-specific configs (skip if missing)
+
+**User Experience**: On first run or after file deletion, you'll see:
+```
+Note: Created .opencode/specs/state.json from template
+Initialized with 37 tasks from TODO.md
+```
+
+**For Details**: See `.opencode/context/common/system/self-healing-guide.md`

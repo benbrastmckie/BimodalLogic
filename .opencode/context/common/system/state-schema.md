@@ -383,6 +383,86 @@ All state files should include:
 - Valid ISO 8601 timestamps
 - Consistent field naming (snake_case)
 
+## Self-Healing Infrastructure
+
+### Auto-Creation of Missing State Files
+
+Commands and agents should implement self-healing logic to auto-create missing infrastructure files:
+
+**Template Location**: `.opencode/context/common/templates/state-template.json`
+
+**Auto-Creation Logic**:
+```python
+def ensure_state_json_exists():
+    state_path = ".opencode/specs/state.json"
+    
+    if not file_exists(state_path):
+        # Load template
+        template = read_json(".opencode/context/common/templates/state-template.json")
+        
+        # Populate from TODO.md
+        todo_data = parse_todo_md()
+        
+        # Replace placeholders
+        state = {
+            "_schema_version": "1.0.0",
+            "_comment": "Auto-created from template with self-healing",
+            "_last_updated": current_timestamp(),
+            "next_project_number": todo_data["highest_task_number"] + 1,
+            "project_numbering": template["project_numbering"],
+            "state_references": template["state_references"],
+            "active_projects": extract_active_projects(todo_data),
+            "completed_projects": extract_completed_projects(todo_data),
+            "repository_health": calculate_health_metrics(todo_data),
+            "recent_activities": [
+                {
+                    "timestamp": current_timestamp(),
+                    "activity": f"Auto-created state.json - initialized from TODO.md ({len(todo_data['tasks'])} tasks)"
+                }
+            ],
+            "pending_tasks": extract_pending_tasks(todo_data),
+            "maintenance_summary": template["maintenance_summary"],
+            "archive_summary": template["archive_summary"],
+            "schema_info": template["schema_info"]
+        }
+        
+        # Write atomically
+        write_json_atomic(state_path, state)
+        log_info(f"Self-healing: Created {state_path} from template")
+        
+    return state_path
+```
+
+**When to Trigger Self-Healing**:
+- On first command execution if state.json missing
+- Before any state.json read operation
+- During TODO.md sync operations
+- On explicit validation requests
+
+**Graceful Degradation**:
+- If template missing: Use minimal hardcoded defaults
+- If TODO.md unreadable: Create empty state with warnings
+- Log all self-healing actions to recent_activities
+
+### Missing File Detection
+
+**Context Loading Semantics**:
+- `@.opencode/specs/state.json` - **Auto-create from template if missing**
+- `@.opencode/specs/TODO.md` - **Required, fail with clear error if missing**
+- `@.opencode/specs/archive/state.json` - **Auto-create from template if missing**
+- `@.opencode/specs/maintenance/state.json` - **Auto-create from template if missing**
+
+**Error Messages**:
+```
+Missing required file: .opencode/specs/TODO.md
+This file is required for task tracking.
+
+To fix:
+1. Restore from backup if available
+2. Create new TODO.md with standard format
+3. Run task system initialization
+```
+
 ## Best Practices
 
 1. **Keep Files Focused**
@@ -411,3 +491,128 @@ All state files should include:
    - Use ISO 8601 timestamps everywhere
    - Follow snake_case naming convention
    - Include both before/after metrics for impact analysis
+
+7. **Enable Self-Healing**
+   - Check for missing infrastructure files before operations
+   - Auto-create from templates when safe
+   - Log all self-healing actions
+   - Provide clear recovery instructions for critical failures
+
+---
+
+## Schema Evolution and Versioning
+
+### Version Management
+
+The `_schema_version` field in state.json tracks schema changes:
+
+**Format**: `"MAJOR.MINOR.PATCH"` (Semantic Versioning)
+- **MAJOR**: Breaking changes requiring migration
+- **MINOR**: New optional fields (backward compatible)
+- **PATCH**: Documentation or clarification only
+
+**Current Version**: `"1.0.0"`
+
+### When to Update Schema
+
+**MAJOR version bump** (1.0.0 → 2.0.0):
+- Change required field structure
+- Remove or rename existing fields
+- Change field value formats (e.g., ISO 8601 → Unix timestamp)
+- Requires migration script for existing state files
+
+**MINOR version bump** (1.0.0 → 1.1.0):
+- Add new optional fields
+- Expand enum values
+- Add new sections
+- Old files still valid, new files have more data
+
+**PATCH version bump** (1.0.0 → 1.0.1):
+- Clarify documentation
+- Fix typos in comments
+- No functional changes
+
+### Schema Update Process
+
+When evolving the schema:
+
+1. **Update Template** (`.opencode/context/common/templates/state-template.json`)
+   - Add new fields with default values
+   - Update `_schema_version`
+   - Add `_comment` explaining changes
+
+2. **Update Schema Documentation** (this file)
+   - Document new fields in appropriate sections
+   - Update examples
+   - Add migration notes if breaking
+
+3. **Update Self-Healing Logic** (`self-healing-implementation-details.md`)
+   - Adjust extraction functions for new fields
+   - Ensure template population handles new fields
+   - Test auto-creation with new schema
+
+4. **Test Backward Compatibility**
+   - Verify old state.json files still load
+   - Ensure new fields have sensible defaults
+   - Test self-healing creates valid new-schema files
+
+5. **Version Bump**
+   - Increment `_schema_version` appropriately
+   - Document in CHANGELOG or version notes
+   - Update this section with version history
+
+### Backward Compatibility Strategy
+
+**Reading Old Files**:
+- Commands should tolerate missing optional fields
+- Use defaults for missing fields
+- Log warnings if unexpected schema version found
+
+**Writing New Files**:
+- Always write latest schema version
+- Include all new fields with defaults
+- Preserve unknown fields from old schema (don't delete)
+
+**Migration Path**:
+```python
+def migrate_state_schema(old_state):
+    """Migrate old schema to current version"""
+    
+    version = old_state.get("_schema_version", "0.0.0")
+    
+    # No migration needed
+    if version == "1.0.0":
+        return old_state
+    
+    # Migrate from 0.9.x to 1.0.0
+    if version.startswith("0.9"):
+        new_state = {
+            **old_state,
+            "_schema_version": "1.0.0",
+            "state_references": {
+                "archive_state_path": ".opencode/specs/archive/state.json",
+                "maintenance_state_path": ".opencode/specs/maintenance/state.json"
+            }
+        }
+        return new_state
+    
+    # Unknown version
+    log_warning(f"Unknown schema version: {version}")
+    return old_state  # Best effort
+```
+
+### Schema Version History
+
+**1.0.0** (2025-12-27):
+- Initial standardized schema
+- Includes: project numbering, active/completed projects, health metrics
+- Self-healing enabled
+- Backward compatible with legacy formats
+
+---
+
+## Related Documentation
+
+- **Self-Healing Guide**: `.opencode/context/common/system/self-healing-guide.md`
+- **Implementation Details**: `.opencode/context/project/repo/self-healing-implementation-details.md`
+- **State Template**: `.opencode/context/common/templates/state-template.json`
