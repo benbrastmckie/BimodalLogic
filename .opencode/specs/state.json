@@ -116,13 +116,15 @@
       "project_number": 202,
       "project_name": "fix_verbose_artifact_output",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "medium",
       "language": "markdown",
       "created": "2025-12-27T00:50:00Z",
       "started": "2025-12-27",
       "research_completed": "2025-12-27",
+      "planning_completed": "2025-12-27",
+      "plan_path": ".opencode/specs/202_fix_verbose_artifact_output/plans/implementation-001.md",
       "last_updated": "2025-12-27"
     }
   ],
@@ -162,6 +164,10 @@
     }
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T01:12:00Z",
+      "activity": "Marked task 202 as PLANNED: Fix verbose artifact output plan created (4-5 hours, 4 phases)"
+    },
     {
       "timestamp": "2025-12-27T17:11:46Z",
       "activity": "Archived task 200: Review command-specific status marker implementation for consistency (status: abandoned)"
