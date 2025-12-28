@@ -442,8 +442,8 @@
 - **Impact**: Provides persistent review summaries in standardized project directories, enabling historical tracking of repository reviews and protecting the orchestrator context window from verbose review output.
 
 ### 207. Reduce /implement command output verbosity with artifact-based summaries
-- **Effort**: 3 hours
-- **Status**: [PLANNED]
+- **Effort**: 4.5 hours (revised from 3 hours)
+- **Status**: [REVISED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
 - **Priority**: Medium
@@ -453,25 +453,33 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/207_reduce_implement_output_verbosity/reports/research-001.md]
   - Summary: [.opencode/specs/207_reduce_implement_output_verbosity/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/207_reduce_implement_output_verbosity/plans/implementation-001.md]
-- **Plan Summary**: 3-phase implementation (3 hours total). Phase 1: Update /implement Stage 8 to create/reference summary artifacts and return brief <100 token overviews (1.5h). Phase 2: Add summary artifact creation to lean-implementation-agent (1h, parallel). Phase 3: Testing and validation across all scenarios (0.5h). Achieves 95% context window reduction (700 to 35 tokens).
+- **Plan**: [.opencode/specs/207_reduce_implement_output_verbosity/plans/implementation-002.md] (revised 2025-12-28)
+- **Plan Summary**: 4-phase implementation (4.5 hours total, revised from 3 hours). Phase 1: Update /implement Stage 8 to create/reference summary artifacts and return brief <100 token overviews (1.5h). Phase 2: Add summary artifact creation to lean-implementation-agent (1h, parallel). Phase 3: Fix /plan command verbose output - planner should NOT create summary artifacts, just return brief summary + plan reference (1.5h, parallel). Phase 4: Testing and validation across all scenarios (0.5h). Achieves 90-95% context window reduction.
+- **Previous Plan**: [.opencode/specs/207_reduce_implement_output_verbosity/plans/implementation-001.md] (original)
 - **Files Affected**:
   - .opencode/command/implement.md
   - .opencode/agent/subagents/lean-implementation-agent.md
-- **Description**: The /implement command currently outputs excessively verbose content to the console when implementations are complete, bloating the orchestrator's context window. Instead, the command should conclude by creating a summary artifact following the artifact-management.md system (summaries/implementation-summary-YYYYMMDD.md) and returning only a brief summary (3-5 sentences, <100 tokens) with a reference to the summary artifact. This aligns with the context protection principle described in artifact-management.md where agents should return only file paths, brief summaries, and key findings rather than full artifact content.
+  - .opencode/command/plan.md (NEW)
+  - .opencode/agent/subagents/planner.md (NEW)
+- **Description**: Reduce command output verbosity across /implement and /plan commands to prevent bloating the primary agent's context window. The /implement command currently outputs excessively verbose content (up to 500 chars), and the /plan command also has verbose outputs. Solution: /implement creates summary artifacts and returns brief overview with path (artifact-based). /plan skips summary artifact creation (plan is self-documenting) and planner returns brief summary + plan reference directly (reference-based). Broader goal: establish "one artifact maximum" pattern for all commands.
 - **Research Findings** (2025-12-28): Root cause identified - /implement Stage 8 returns subagent summaries verbatim (up to 500 chars), and lean-implementation-agent doesn't create summary artifacts. Task-executor already creates summaries but /implement doesn't reference them. Solution: Update /implement Stage 8 to create/reference summary artifacts and return brief <100 token overviews, plus add summary artifact creation to lean-implementation-agent. Achieves 95% context window reduction (700 to 35 tokens) with 3 hours effort (1.5h /implement, 1h lean-agent, 0.5h testing).
+- **Revision Reason** (2025-12-28): Expanded scope to include /plan command based on user feedback. /plan command also has verbose outputs but requires different solution - planner should NOT create summary artifacts (plan is self-documenting), just return brief summary + plan reference. Added Phase 3 for /plan fix (1.5h), increasing total effort from 3h to 4.5h.
 - **Acceptance Criteria**:
   - [ ] /implement command creates implementation summary artifact (summaries/implementation-summary-YYYYMMDD.md)
-  - [ ] Summary follows artifact-management.md format (3-5 sentences, <100 tokens)
-  - [ ] Console output reduced to brief summary + artifact path reference
-  - [ ] Full implementation details saved in summary artifact only
-  - [ ] Lazy directory creation followed (summaries/ created only when writing summary)
+  - [ ] /implement summary follows artifact-management.md format (3-5 sentences, <100 tokens)
+  - [ ] /implement console output reduced to brief summary + artifact path reference
+  - [ ] /implement: 95% context window reduction (700 to 35 tokens)
+  - [ ] /plan command does NOT create summary artifacts (only plan artifacts)
+  - [ ] Planner subagent returns brief summary + plan reference (no summary artifact)
+  - [ ] /plan console output reduced to brief summary + plan path reference
+  - [ ] /plan: 90% context window reduction (600 to 60 tokens)
+  - [ ] Lazy directory creation followed (summaries/ created only when writing summary for /implement)
   - [ ] Both task-executor and lean-implementation-agent updated consistently
   - [ ] No emojis in output or artifacts
   - [ ] Return format follows subagent-return-format.md standard
-  - [ ] Orchestrator context window protected from verbose implementation output
-  - [ ] Documentation updated to explain new summary-based return format
-- **Impact**: Protects orchestrator context window from verbose implementation output, improves scalability for complex implementations, and ensures consistent artifact management across all commands per artifact-management.md standard.
+  - [ ] Orchestrator context window protected from verbose output for both commands
+  - [ ] Documentation updated to explain "one artifact maximum" pattern
+- **Impact**: Protects orchestrator context window from verbose command output for both /implement and /plan commands, improves scalability for complex operations, establishes "one artifact maximum" pattern for all commands, and ensures consistent artifact management across the system per artifact-management.md standard.
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
