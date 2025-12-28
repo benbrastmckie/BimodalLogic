@@ -354,9 +354,9 @@ Provides complete API documentation for all Logos modules, improving usability a
 **Dependencies**: None
 **Language**: lean
 **Research Artifacts**:
-  - Main Report: [specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md]
-  - Summary: [specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md]
-**Plan**: [specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-002.md]
+  - Main Report: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md]
+  - Summary: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md]
+**Plan**: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-002.md]
 **Plan Summary**: Revised implementation plan (6 hours total) with usage context verification. Phase 1: Remove unprovable theorem (0.5h). Phase 2: Add provable theorem with usage verification (2.5h). Phase 3: Update temporal_duality case with type verification (1.5h). Phase 4: Build verification (1h). Phase 5: Documentation updates (1h). Verified that proposed solution matches usage site requirements at Truth.lean line 1226-1235.
 
 **Files Affected**:
