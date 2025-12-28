@@ -195,72 +195,278 @@ Context Loaded:
   <stage id="6" name="CreateTasks">
     <action>Create TODO.md tasks for identified work</action>
     <process>
-      1. For each identified task from review:
-         a. Invoke /task command to create task
-         b. Set appropriate priority based on severity
-         c. Set language based on task type
-         d. Link to review findings
-      2. Collect created task numbers
-      3. Prepare task summary
+      1. Extract identified_tasks array from reviewer return
+      2. For each identified task, invoke /task command:
+         a. One /task invocation per identified task (no batching)
+         b. Set description from task.description
+         c. Set priority from task.priority (high|medium|low)
+         d. Set language from task.language (lean|markdown|general)
+         e. Link to review findings in description
+         f. Set estimated_hours based on task complexity
+      3. Error handling:
+         a. If /task invocation fails: Log error, continue to next task
+         b. Track failed task descriptions for manual creation
+         c. Include failed task count in summary
+      4. Collect created task numbers (successful creations only)
+      5. Prepare task summary (created count, failed count)
     </process>
-    <task_creation>
-      Example identified tasks:
-        - "Fix 12 sorry statements in Logos/Core/Theorems/"
-        - "Document 8 undocumented tactics in ProofSearch.lean"
-        - "Implement 3 missing features from FEATURE_REGISTRY"
-    </task_creation>
-  </stage>
-
-  <stage id="7" name="Postflight">
-    <action>Update state.json, registries, and commit</action>
-    <process>
-      1. If status == "completed":
-         a. Increment next_project_number in state.json
-         b. Add review_artifacts entry to state.json repository_health:
-            {
-              "timestamp": "{ISO8601}",
-              "path": "{review_summary_artifact_path}",
-              "scope": "{full|lean|docs}"
-            }
-         c. Write updated registries:
-            - IMPLEMENTATION_STATUS.md
-            - SORRY_REGISTRY.md
-            - TACTIC_REGISTRY.md
-            - FEATURE_REGISTRY.md
-         d. Update TODO.md with created tasks
-         e. Update state.json with new tasks
-         f. Git commit:
-            - Scope: Review summary artifact + updated registries + TODO.md + state.json
-            - Message: "review: update registries and create {N} tasks"
-      2. If status == "partial":
-         a. Add partial review_artifacts entry if summary created
-         b. Increment next_project_number if directory created
-         c. Write partial registry updates
-         d. Git commit partial updates (if any artifacts created)
-         e. Provide retry instructions
-      3. If status == "failed" or "blocked":
-         a. No state.json updates
-         b. No registry updates
-         c. No git commit
-    </process>
-    <state_json_update>
-      Add to repository_health section:
-      "review_artifacts": [
+    <task_creation_loop>
+      Example loop:
+      
+      created_tasks = []
+      failed_tasks = []
+      
+      for task in identified_tasks:
+        try:
+          task_number = invoke_task_command(
+            description=task.description,
+            priority=task.priority,
+            language=task.language,
+            estimated_hours=task.estimated_hours
+          )
+          created_tasks.append(task_number)
+        except TaskCreationError as e:
+          log_error(e)
+          failed_tasks.append({
+            "description": task.description,
+            "error": str(e)
+          })
+          continue  # Don't abort, continue to next task
+      
+      return {
+        "created_tasks": created_tasks,
+        "failed_tasks": failed_tasks
+      }
+    </task_creation_loop>
+    <task_numbering>
+      Tasks created sequentially using next_task_number from state.json
+      No gaps in task numbering (sequential: 201, 202, 203, ...)
+      /task command increments next_task_number after each creation
+    </task_numbering>
+    <task_linking>
+      Link tasks to review findings in description:
+      - "Fix 12 sorry statements in Logos/Core/Theorems/ (identified in review #207)"
+      - "Document 8 undocumented tactics in ProofSearch.lean (see review #207)"
+      - "Implement 3 missing features from FEATURE_REGISTRY (review #207 findings)"
+      
+      Include review project number for traceability
+    </task_linking>
+    <error_handling>
+      If task creation fails:
+      1. Log error with task description and reason
+      2. Continue to next task (don't abort review)
+      3. Track failed tasks in failed_tasks array
+      4. Include failed task count in review summary
+      5. Provide manual creation instructions in summary
+      
+      Example error log:
+      {
+        "type": "task_creation_failed",
+        "task_description": "Fix 12 sorry statements in Logos/Core/Theorems/",
+        "error": "TODO.md write failed: Permission denied",
+        "recoverable": true,
+        "recommendation": "Manually create task with description above"
+      }
+    </error_handling>
+    <batching_decision>
+      Create ALL identified tasks (no batching):
+      - Rationale: Review identifies actionable work, all should be tracked
+      - Priority filtering: User can filter by priority in TODO.md
+      - Task count limit: None (create all identified tasks)
+      - If too many tasks: Consider breaking into sub-tasks in future reviews
+    </batching_decision>
+    <task_creation_examples>
+      Example identified tasks from reviewer:
+      [
         {
-          "timestamp": "2025-12-28T20:00:00Z",
-          "path": ".opencode/specs/207_codebase_review/summaries/review-summary.md",
-          "scope": "full"
+          "description": "Fix 12 sorry statements in Logos/Core/Theorems/",
+          "priority": "high",
+          "language": "lean",
+          "estimated_hours": 6
+        },
+        {
+          "description": "Document 8 undocumented tactics in ProofSearch.lean",
+          "priority": "medium",
+          "language": "lean",
+          "estimated_hours": 4
+        },
+        {
+          "description": "Implement 3 missing features from FEATURE_REGISTRY",
+          "priority": "medium",
+          "language": "lean",
+          "estimated_hours": 8
         }
       ]
       
-      Maintain backward compatibility (create array if doesn't exist)
-    </state_json_update>
+      Created tasks: 201, 202, 203
+      Failed tasks: None
+    </task_creation_examples>
+  </stage>
+
+  <stage id="7" name="Postflight">
+    <action>Delegate atomic state updates to status-sync-manager</action>
+    <process>
+      1. If status == "completed":
+         a. Prepare state update payload for status-sync-manager:
+            - validated_artifacts: All artifacts from reviewer return (review summary + registries)
+            - review_metrics: Metrics from reviewer return (sorry_count, axiom_count, build_errors, etc.)
+            - created_tasks: Task numbers from Stage 6 CreateTasks
+            - project_path: Review project directory path
+            - review_scope: Scope from input (full|lean|docs)
+         b. Delegate to status-sync-manager for atomic update:
+            - Update TODO.md with created tasks
+            - Update state.json:
+              * Increment next_project_number
+              * Add new task entries
+              * Update repository_health.technical_debt (sorry_count, axiom_count, build_errors)
+              * Update repository_health.last_assessed (review timestamp)
+              * Add repository_health.review_artifacts entry
+            - Create project state.json:
+              * type: "review"
+              * status: "completed"
+              * scope: review_scope
+              * created: timestamp
+              * completed: timestamp
+              * artifacts: [review summary artifact]
+              * metrics: review_metrics from reviewer
+              * registries_updated: [IMPLEMENTATION_STATUS, SORRY_REGISTRY, TACTIC_REGISTRY, FEATURE_REGISTRY]
+         c. Wait for status-sync-manager return (two-phase commit)
+         d. If status-sync-manager succeeds:
+            - Git commit all changes (registries + TODO.md + state.json + project state.json)
+            - Message: "review: update registries and create {N} tasks"
+         e. If status-sync-manager fails:
+            - Rollback any partial updates (status-sync-manager handles this)
+            - Log error to errors.json
+            - Return failed status with rollback details
+      2. If status == "partial":
+         a. Prepare partial state update payload:
+            - validated_artifacts: Partial artifacts from reviewer return
+            - review_metrics: Partial metrics (if available)
+            - created_tasks: Task numbers created before partial completion
+         b. Delegate to status-sync-manager for partial atomic update:
+            - Update TODO.md with created tasks (if any)
+            - Update state.json:
+              * Increment next_project_number if directory created
+              * Add new task entries (if any)
+              * Add partial repository_health.review_artifacts entry (if summary created)
+            - Create project state.json with status: "in_progress"
+         c. Git commit partial updates (if any artifacts created)
+         d. Provide retry instructions
+      3. If status == "failed" or "blocked":
+         a. No status-sync-manager delegation
+         b. No state.json updates
+         c. No registry updates
+         d. No git commit
+    </process>
+    <status_sync_manager_delegation>
+      Delegate to status-sync-manager with payload:
+      {
+        "operation": "review_complete",
+        "validated_artifacts": [
+          {
+            "type": "summary",
+            "path": "{review_summary_path}",
+            "summary": "Review findings"
+          },
+          {
+            "type": "documentation",
+            "path": "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md",
+            "summary": "Updated implementation status"
+          },
+          {
+            "type": "documentation",
+            "path": "Documentation/ProjectInfo/SORRY_REGISTRY.md",
+            "summary": "Updated sorry registry"
+          },
+          {
+            "type": "documentation",
+            "path": "Documentation/ProjectInfo/TACTIC_REGISTRY.md",
+            "summary": "Updated tactic registry"
+          },
+          {
+            "type": "documentation",
+            "path": "Documentation/ProjectInfo/FEATURE_REGISTRY.md",
+            "summary": "Updated feature registry"
+          }
+        ],
+        "review_metrics": {
+          "sorry_count": 10,
+          "axiom_count": 11,
+          "build_errors": 3,
+          "undocumented_tactics": 8,
+          "missing_features": 3,
+          "tasks_created": 5
+        },
+        "created_tasks": [201, 202, 203, 204, 205],
+        "project_path": ".opencode/specs/207_codebase_review",
+        "review_scope": "full",
+        "timestamp": "2025-12-28T20:00:00Z"
+      }
+      
+      status-sync-manager performs two-phase commit:
+      1. Prepare: Validate all updates, create backups
+      2. Commit: Write all files atomically or rollback on failure
+      
+      Atomicity guarantee: TODO.md + state.json + project state.json all updated or none
+    </status_sync_manager_delegation>
+    <repository_health_updates>
+      status-sync-manager updates state.json repository_health section:
+      
+      1. technical_debt (from review_metrics):
+         {
+           "sorry_count": 10,
+           "axiom_count": 11,
+           "build_errors": 3
+         }
+      
+      2. last_assessed (from timestamp):
+         "last_assessed": "2025-12-28T20:00:00Z"
+      
+      3. review_artifacts (append new entry):
+         "review_artifacts": [
+           {
+             "timestamp": "2025-12-28T20:00:00Z",
+             "path": ".opencode/specs/207_codebase_review/summaries/review-summary.md",
+             "scope": "full"
+           }
+         ]
+      
+      All updates atomic with TODO.md and project state.json
+    </repository_health_updates>
+    <two_phase_commit>
+      Phase 1 (Prepare):
+        - Validate all file paths exist
+        - Validate JSON schemas
+        - Create backups of TODO.md, state.json
+        - Prepare all updates in memory
+        - Verify no conflicts
+      
+      Phase 2 (Commit or Rollback):
+        - If validation passes: Write all files atomically
+        - If validation fails: Restore from backups, return error
+        - If write fails: Restore from backups, return error
+        - Delete backups on success
+    </two_phase_commit>
+    <error_handling>
+      If status-sync-manager fails:
+        1. Automatic rollback (status-sync-manager responsibility)
+        2. Log error to errors.json with details
+        3. Return failed status to user
+        4. Recommendation: "Retry /review after resolving state file issues"
+        5. Preserve reviewer artifacts (don't delete review summary)
+      
+      If git commit fails (after successful status-sync-manager):
+        1. Log error to errors.json
+        2. Continue (git failure non-critical)
+        3. Return success with warning: "State updated but git commit failed"
+    </error_handling>
     <git_commit>
-      Scope: Review summary + updated registries + TODO.md + state.json
+      Scope: Review summary + updated registries + TODO.md + state.json + project state.json
       Message: "review: update registries and create {N} tasks"
       
-      Commit only if status == "completed" (or "partial" with artifacts)
+      Commit only after successful status-sync-manager update
       Use git-workflow-manager for scoped commit
+      Git failure is non-critical (state already updated)
     </git_commit>
   </stage>
 
@@ -315,10 +521,12 @@ Context Loaded:
     Do not create project directory until reviewer writes first artifact
     Reviewer creates project root ({number}_codebase_review) when writing summary
     Create only summaries/ subdirectory (not reports/ or plans/)
+    Project state.json created lazily by status-sync-manager in Stage 7
   </lazy_creation>
   <artifact_naming>
     Project directory: {next_project_number}_codebase_review
     Review summary: summaries/review-summary.md
+    Project state: state.json (in project root)
     Follows summary.md standard (3-5 sentences overview, <100 tokens)
   </artifact_naming>
   <registry_updates>
@@ -329,11 +537,51 @@ Context Loaded:
       - FEATURE_REGISTRY.md (feature completeness)
   </registry_updates>
   <state_sync>
-    Update TODO.md with created tasks
-    Update state.json with new task entries
-    Update state.json repository_health with review_artifacts entry
-    Increment next_project_number after project creation
+    Delegated to status-sync-manager for atomic updates:
+    - Update TODO.md with created tasks
+    - Update state.json with new task entries
+    - Update state.json repository_health with review_artifacts entry
+    - Create project state.json with review metadata
+    - Increment next_project_number after project creation
+    
+    All updates atomic (all succeed or all rollback)
   </state_sync>
+  <project_state_json>
+    Created lazily by status-sync-manager when review completes
+    Location: {project_path}/state.json
+    
+    Schema:
+    {
+      "type": "review",
+      "status": "completed|in_progress",
+      "scope": "full|lean|docs",
+      "created": "2025-12-28T20:00:00Z",
+      "completed": "2025-12-28T21:30:00Z",
+      "artifacts": [
+        {
+          "type": "summary",
+          "path": "summaries/review-summary.md",
+          "summary": "Review findings and recommendations"
+        }
+      ],
+      "metrics": {
+        "sorry_count": 10,
+        "axiom_count": 11,
+        "build_errors": 3,
+        "undocumented_tactics": 8,
+        "missing_features": 3,
+        "tasks_created": 5
+      },
+      "registries_updated": [
+        "IMPLEMENTATION_STATUS",
+        "SORRY_REGISTRY",
+        "TACTIC_REGISTRY",
+        "FEATURE_REGISTRY"
+      ]
+    }
+    
+    Example: .opencode/specs/207_codebase_review/state.json
+  </project_state_json>
 </artifact_management>
 
 <quality_standards>
