@@ -76,7 +76,7 @@
 - **Effort**: 3 hours
 - **Status**: [RESEARCHED]
 - **Started**: 2025-12-24
-- **Completed**: 2025-12-24
+- **Completed**: 2025-12-28
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -88,8 +88,7 @@
   - .opencode/context/common/standards/report.md
   - .opencode/context/common/system/artifact-management.md
 - **Research Artifacts**:
-  - Main Report: [.opencode/specs/170_maintenance_report_improvements/reports/research-001.md]
-  - Summary: [.opencode/specs/170_maintenance_report_improvements/summaries/research-summary.md]
+  - Main Report: [.opencode/specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md]
 - **Description**: Improve the system that produces maintenance reports (like .opencode/specs/maintenance/maintenance-report-20251224.md) and its documentation. The maintenance report generation should follow standardized templates, include comprehensive metrics, and integrate properly with the /todo command workflow. Documentation should clearly explain the maintenance report structure, generation process, and how it fits into the overall maintenance workflow.
 - **Acceptance Criteria**:
   - [ ] Maintenance report template created or updated in common/standards/
@@ -648,7 +647,7 @@
 - **Priority**: Medium
 - **Language**: markdown
 - **Research Artifacts**:
-  - Main Report: .opencode/specs/220_metadata_passing_compliance_verification/reports/research-001.md
+  - Main Report: [.opencode/specs/220_metadata_passing_compliance_verification/reports/research-001.md]
 - **Blocking**: None
 - **Dependencies**: 217
 - **Files Affected**:
