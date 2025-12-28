@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T03:00:00Z",
+  "_last_updated": "2025-12-28T04:00:00Z",
   "next_project_number": 205,
   "project_numbering": {
     "min": 0,
@@ -165,6 +165,10 @@
   },
   "recent_activities": [
     {
+      "timestamp": "2025-12-28T04:00:00Z",
+      "activity": "Marked task 193 as PLANNED: is_valid_swap_involution proof plan created (2 hours, 1 phase)"
+    },
+    {
       "timestamp": "2025-12-28T03:00:00Z",
       "activity": "Marked task 193 as RESEARCHED: is_valid_swap_involution proof research completed - helper lemma strategy with structural induction (2 hours)"
     },
@@ -318,14 +322,19 @@
     {
       "project_number": 193,
       "title": "Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)",
-      "status": "researched",
+      "status": "planned",
       "started": "2025-12-28",
-      "completed": "2025-12-28",
+      "research_completed": "2025-12-28",
+      "planning_completed": "2025-12-28",
       "priority": "high",
       "language": "lean",
+      "plan_path": ".opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md",
+      "estimated_hours": 2.0,
+      "phases": 1,
       "artifacts": [
         ".opencode/specs/193_prove_is_valid_swap_involution/reports/research-001.md",
-        ".opencode/specs/193_prove_is_valid_swap_involution/summaries/research-summary.md"
+        ".opencode/specs/193_prove_is_valid_swap_involution/summaries/research-summary.md",
+        ".opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md"
       ]
     },
     {
