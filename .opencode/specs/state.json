@@ -62,13 +62,18 @@
       "project_number": 209,
       "project_name": "research_lean4_involution_techniques",
       "type": "research",
-      "phase": "research_in_progress",
-      "status": "researching",
+      "phase": "research_completed",
+      "status": "researched",
       "priority": "high",
       "language": "lean",
       "created": "2025-12-28T20:15:00Z",
       "started": "2025-12-28",
-      "last_updated": "2025-12-28"
+      "research_completed": "2025-12-28",
+      "last_updated": "2025-12-28",
+      "artifacts": [
+        ".opencode/specs/209_lean4_involution_proof_techniques/reports/research-001.md",
+        ".opencode/specs/209_lean4_involution_proof_techniques/summaries/research-summary.md"
+      ]
     }
   ],
   "completed_projects": [
