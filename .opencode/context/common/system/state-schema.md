@@ -75,7 +75,14 @@ The fields are organized in logical order:
       "sorry_count": 5,
       "axiom_count": 24,
       "status": "well-documented"
-    }
+    },
+    "review_artifacts": [
+      {
+        "timestamp": "2025-12-28T20:00:00Z",
+        "path": ".opencode/specs/207_codebase_review/summaries/review-summary.md",
+        "scope": "full"
+      }
+    ]
   }
 }
 ```
@@ -608,6 +615,22 @@ def migrate_state_schema(old_state):
 - Includes: project numbering, active/completed projects, health metrics
 - Self-healing enabled
 - Backward compatible with legacy formats
+
+**1.1.0** (2025-12-28):
+- Added `review_artifacts` array to `repository_health` section
+- Tracks review summary artifacts created by /review command
+- Optional field (backward compatible)
+- Schema: Array of objects with `timestamp`, `path`, `scope` fields
+- Example:
+  ```json
+  "review_artifacts": [
+    {
+      "timestamp": "2025-12-28T20:00:00Z",
+      "path": ".opencode/specs/207_codebase_review/summaries/review-summary.md",
+      "scope": "full"
+    }
+  ]
+  ```
 
 ---
 

@@ -57,11 +57,20 @@ Context Loaded:
          - TACTIC_REGISTRY.md
          - FEATURE_REGISTRY.md
       3. Determine review focus (Lean, docs, all)
-      4. Prepare review context
+      4. Read next_project_number from state.json
+      5. Generate project path: .opencode/specs/{number}_codebase_review
+      6. Prepare review context
     </process>
+    <project_directory>
+      Format: {next_project_number}_codebase_review
+      Example: 207_codebase_review
+      Created: Lazily by reviewer subagent when writing first artifact
+      Note: Do NOT create directory here, let reviewer create it
+    </project_directory>
     <validation>
       - Registries exist (create if missing)
       - Review scope is valid
+      - next_project_number is valid integer
     </validation>
   </stage>
 
@@ -73,7 +82,7 @@ Context Loaded:
       3. Set delegation_path = ["orchestrator", "review", "reviewer"]
       4. Set timeout = 3600s (1 hour for comprehensive review)
       5. Store session_id for validation
-      6. Prepare review context (scope, current registries)
+      6. Prepare review context (scope, current registries, project_path)
     </process>
     <delegation_context>
       {
@@ -83,6 +92,7 @@ Context Loaded:
         "timeout": 3600,
         "review_context": {
           "scope": "{full|lean|docs}",
+          "project_path": ".opencode/specs/{number}_codebase_review",
           "current_registries": {
             "implementation_status": "{path}",
             "sorry_registry": "{path}",
@@ -99,7 +109,7 @@ Context Loaded:
     <process>
       1. Route to reviewer subagent
       2. Pass delegation context
-      3. Pass review scope
+      3. Pass review scope and project_path
       4. Pass current registry contents
       5. Set timeout to 3600s
     </process>
@@ -112,6 +122,7 @@ Context Loaded:
         delegation_path=delegation_context["delegation_path"],
         timeout=3600,
         scope=review_scope,
+        project_path=project_path,
         current_registries=registry_contents
       )
     </invocation>
@@ -124,41 +135,54 @@ Context Loaded:
       2. Receive return object from reviewer
       3. Validate against subagent-return-format.md
       4. Check session_id matches expected
-      5. Handle timeout gracefully
+      5. Extract review summary artifact path
+      6. Handle timeout gracefully
     </process>
     <timeout_handling>
       If timeout (no response after 3600s):
         1. Log timeout error with session_id
         2. Check for partial registry updates
-        3. Return partial status
-        4. Provide retry instructions
+        3. Check for partial review summary artifact
+        4. Return partial status
+        5. Provide retry instructions
     </timeout_handling>
     <validation>
       1. Validate return is valid JSON
       2. Validate against subagent-return-format.md schema
       3. Check session_id matches
-      4. Validate status is valid enum
-      5. Validate registry update artifacts exist
+      4. Validate status is valid enum (completed|partial|failed|blocked)
+      5. Validate artifacts array contains review summary
+      6. Validate review summary artifact exists on disk
+      7. Validate registry update artifacts exist
     </validation>
   </stage>
 
   <stage id="5" name="ProcessResults">
-    <action>Extract registry updates and identified tasks</action>
+    <action>Extract registry updates, artifacts, and identified tasks</action>
     <process>
       1. Extract status from return (completed|partial|failed|blocked)
-      2. Extract updated registry paths from artifacts
-      3. Extract list of identified tasks
-      4. Extract summary of findings
-      5. Extract errors if status != completed
-      6. Determine next action based on status
+      2. Extract review summary artifact path from artifacts array
+      3. Extract updated registry paths from artifacts
+      4. Extract list of identified tasks from identified_tasks field
+      5. Extract brief summary from summary field (for user return)
+      6. Extract metrics from metrics field (for state.json)
+      7. Extract errors if status != completed
+      8. Determine next action based on status
     </process>
+    <artifact_extraction>
+      - Review summary artifact: artifacts[0] (type: "summary")
+      - Registry artifacts: artifacts[1-4] (type: "documentation")
+      - Verify review summary path: {project_path}/summaries/review-summary.md
+    </artifact_extraction>
     <status_handling>
       If status == "completed":
         - All registries updated
+        - Review summary created
         - Tasks identified
         - Proceed to postflight
       If status == "partial":
         - Some registries updated
+        - Partial review summary may exist
         - Save partial results
         - Provide retry instructions
       If status == "failed" or "blocked":
@@ -188,49 +212,90 @@ Context Loaded:
   </stage>
 
   <stage id="7" name="Postflight">
-    <action>Update registries and commit</action>
+    <action>Update state.json, registries, and commit</action>
     <process>
       1. If status == "completed":
-         a. Write updated registries:
+         a. Increment next_project_number in state.json
+         b. Add review_artifacts entry to state.json repository_health:
+            {
+              "timestamp": "{ISO8601}",
+              "path": "{review_summary_artifact_path}",
+              "scope": "{full|lean|docs}"
+            }
+         c. Write updated registries:
             - IMPLEMENTATION_STATUS.md
             - SORRY_REGISTRY.md
             - TACTIC_REGISTRY.md
             - FEATURE_REGISTRY.md
-         b. Update TODO.md with created tasks
-         c. Update state.json with new tasks
-         d. Git commit:
-            - Scope: Updated registries + TODO.md + state.json
+         d. Update TODO.md with created tasks
+         e. Update state.json with new tasks
+         f. Git commit:
+            - Scope: Review summary artifact + updated registries + TODO.md + state.json
             - Message: "review: update registries and create {N} tasks"
       2. If status == "partial":
-         a. Write partial registry updates
-         b. Git commit partial updates
-         c. Provide retry instructions
+         a. Add partial review_artifacts entry if summary created
+         b. Increment next_project_number if directory created
+         c. Write partial registry updates
+         d. Git commit partial updates (if any artifacts created)
+         e. Provide retry instructions
       3. If status == "failed" or "blocked":
-         a. No registry updates
-         b. No git commit
+         a. No state.json updates
+         b. No registry updates
+         c. No git commit
     </process>
+    <state_json_update>
+      Add to repository_health section:
+      "review_artifacts": [
+        {
+          "timestamp": "2025-12-28T20:00:00Z",
+          "path": ".opencode/specs/207_codebase_review/summaries/review-summary.md",
+          "scope": "full"
+        }
+      ]
+      
+      Maintain backward compatibility (create array if doesn't exist)
+    </state_json_update>
     <git_commit>
-      Scope: Updated registries + TODO.md + state.json
+      Scope: Review summary + updated registries + TODO.md + state.json
       Message: "review: update registries and create {N} tasks"
       
-      Commit only if status == "completed"
+      Commit only if status == "completed" (or "partial" with artifacts)
       Use git-workflow-manager for scoped commit
     </git_commit>
   </stage>
 
   <stage id="8" name="ReturnSuccess">
-    <action>Return summary to user</action>
+    <action>Return summary and artifact path to user</action>
     <return_format>
       Review completed
-      - Registries updated: {list}
+      - Status: Completed
+      - Review summary: {review_summary_artifact_path}
+      - Registries updated: {count}
       - Tasks created: {count}
-      - Summary: {brief summary of findings}
-      - Key findings:
-        - Sorry count: {count}
-        - Undocumented tactics: {count}
-        - Missing features: {count}
-        - Implementation gaps: {count}
+      - Summary: {brief summary from reviewer (2-5 sentences)}
+      
+      Or if partial:
+      Review partially completed
+      - Status: Partial
+      - Review summary: {review_summary_artifact_path} (if created)
+      - Partial registries updated: {count}
+      - Resume with: /review to continue
+      
+      Or if blocked:
+      Review blocked
+      - Status: Blocked
+      - Blocking reason: {reason}
+      - Resolve blocker and retry with: /review
     </return_format>
+    <context_protection>
+      Return only:
+      - Brief summary from reviewer (already <100 tokens)
+      - Review summary artifact path
+      - Registry and task counts
+      
+      Do NOT return verbose key findings (they're in review summary artifact)
+      This protects orchestrator context window from verbose output
+    </context_protection>
   </stage>
 </workflow_execution>
 
@@ -246,6 +311,16 @@ Context Loaded:
 </routing_intelligence>
 
 <artifact_management>
+  <lazy_creation>
+    Do not create project directory until reviewer writes first artifact
+    Reviewer creates project root ({number}_codebase_review) when writing summary
+    Create only summaries/ subdirectory (not reports/ or plans/)
+  </lazy_creation>
+  <artifact_naming>
+    Project directory: {next_project_number}_codebase_review
+    Review summary: summaries/review-summary.md
+    Follows summary.md standard (3-5 sentences overview, <100 tokens)
+  </artifact_naming>
   <registry_updates>
     Update all project registries:
       - IMPLEMENTATION_STATUS.md (module completion status)
@@ -256,6 +331,8 @@ Context Loaded:
   <state_sync>
     Update TODO.md with created tasks
     Update state.json with new task entries
+    Update state.json repository_health with review_artifacts entry
+    Increment next_project_number after project creation
   </state_sync>
 </artifact_management>
 

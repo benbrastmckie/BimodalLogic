@@ -345,7 +345,7 @@
 
 ### 208. Fix /implement and /research routing to use Lean-specific agents and tools
 - **Effort**: 2-3 hours (revised from 4-6 hours after research)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
 - **Priority**: High
@@ -355,6 +355,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/208_fix_lean_routing/reports/research-001.md]
   - Summary: [.opencode/specs/208_fix_lean_routing/summaries/research-summary.md]
+- **Plan**: [.opencode/specs/208_fix_lean_routing/plans/implementation-001.md]
+- **Plan Summary**: 3-phase implementation (2-3 hours total). Phase 1: Enhance command files (research.md, implement.md) with explicit validation, logging, and language extraction (1.5h). Phase 2: Enhance orchestrator stages 3-4 with bash extraction commands and routing validation (1h). Phase 3: Test Lean and general task routing, verify lean-lsp-mcp and Loogle usage (0.5h). Root cause: Claude skips routing stages. Fix: Strengthen prompts with CRITICAL/MUST keywords, validation checkpoints, and pre-invocation checks.
 - **Files Affected**:
   - .opencode/command/implement.md
   - .opencode/command/research.md

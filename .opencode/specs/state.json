@@ -1,5 +1,5 @@
 {
-  "_schema_version": "1.0.0",
+  "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
   "_last_updated": "2025-12-28T20:30:00Z",
   "next_project_number": 210,
@@ -74,13 +74,17 @@
       "project_number": 208,
       "project_name": "fix_lean_routing",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-28T09:41:02Z",
       "started": "2025-12-28",
       "research_completed": "2025-12-28",
+      "planning_completed": "2025-12-28",
+      "plan_path": ".opencode/specs/208_fix_lean_routing/plans/implementation-001.md",
+      "estimated_hours": 2.5,
+      "phases": 3,
       "last_updated": "2025-12-28"
     }
   ],
@@ -132,7 +136,8 @@
       "build_errors": 3,
       "status": "well-documented",
       "_comment": "Technical debt tracked in task system. 10 sorry (1 invalid theorem, 1 completeness, 3 proof search docs, 5 doc comments), 11 axioms (all completeness). Build errors: 2 in GeneralizedNecessitation.lean (task 192), 1 in Truth.lean (tasks 193-194)."
-    }
+    },
+    "review_artifacts": []
   },
   "recent_activities": [
     {
