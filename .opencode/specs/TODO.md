@@ -997,7 +997,7 @@
 
 ### 199. Optimize self-healing feature to prevent context bloat in commands
 - **Effort**: 4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-27
 - **Completed**: 2025-12-27
 - **Priority**: Medium
@@ -1007,6 +1007,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/199_optimize_self_healing/reports/research-001.md]
   - Summary: [.opencode/specs/199_optimize_self_healing/summaries/research-summary.md]
+- **Plan**: [Implementation Plan](.opencode/specs/199_optimize_self_healing/plans/implementation-001.md)
+- **Plan Summary**: 4-phase implementation plan (4 hours). Phase 1: Reduce self-healing-guide.md to 120-line essential reference (1.5h). Phase 2: Consolidate context-guide.md self-healing content (0.5h). Phase 3: Move schema evolution to state-schema.md (0.5h). Phase 4: Testing and validation (1.5h). Achieves 78% reduction in loaded context (93 → 20 lines) while maintaining full self-healing functionality.
 - **Files Affected**:
   - .opencode/context/common/system/self-healing-guide.md
   - .opencode/context/common/system/state-schema.md
