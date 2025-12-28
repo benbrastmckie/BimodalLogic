@@ -140,19 +140,46 @@ temperature: 0.2
   </step_5>
 
   <step_6>
-    <action>Return standardized result with brief summary</action>
+    <action>Validate artifacts, extract metadata, and return standardized result</action>
     <process>
-      1. Format return following subagent-return-format.md
-      2. List plan artifact created (NO summary artifact - plan is self-documenting)
-      3. Include brief summary (3-5 sentences, <100 tokens):
+      1. Validate plan artifact created successfully:
+         a. Verify implementation-NNN.md exists on disk
+         b. Verify implementation-NNN.md is non-empty (size > 0)
+         c. If validation fails: Return failed status with error
+      2. Extract plan metadata from plan file:
+         a. Count ### Phase headings to get phase_count
+         b. Extract estimated_hours from metadata section
+         c. Extract complexity from metadata section (if present)
+         d. If extraction fails: Use defaults (phase_count=1, estimated_hours=null, complexity="unknown")
+      3. Format return following subagent-return-format.md
+      4. List plan artifact created with validated flag (NO summary artifact - plan is self-documenting)
+      5. Include brief summary (3-5 sentences, <100 tokens):
          - Mention phase count and total effort
          - Highlight key integration (e.g., research findings)
          - Keep concise for orchestrator context window
-      4. Include session_id from input
-      5. Include metadata (duration, delegation info)
-      6. Return status completed
+      6. Include session_id from input
+      7. Include metadata (duration, delegation info, validation result, plan_metadata)
+      8. Return status completed
     </process>
-    <output>Standardized return object with plan artifact and brief summary</output>
+    <validation>
+      Before returning (Step 6):
+      - Verify plan artifact exists and is non-empty
+      - Extract plan metadata (phase_count, estimated_hours, complexity)
+      - Return validation result in metadata field
+      - Return plan_metadata in metadata field
+      
+      If validation fails:
+      - Log validation error with details
+      - Return status: "failed"
+      - Include error in errors array with type "validation_failed"
+      - Recommendation: "Fix plan creation and retry"
+      
+      If metadata extraction fails:
+      - Log warning for missing metadata
+      - Use default values (graceful degradation)
+      - Continue with defaults
+    </validation>
+    <output>Standardized return object with validated plan artifact, plan metadata, and brief summary</output>
   </step_6>
 </process_flow>
 
@@ -162,12 +189,16 @@ temperature: 0.2
   <must>Mark all phases as [NOT STARTED] initially</must>
   <must>Include research inputs in metadata if available</must>
   <must>Keep phases small (1-2 hours each)</must>
+  <must>Validate plan artifact before returning (existence, non-empty)</must>
+  <must>Extract plan metadata (phase_count, estimated_hours, complexity)</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Keep summary field brief (3-5 sentences, <100 tokens)</must>
   <must_not>Include emojis in plan</must_not>
   <must_not>Create phases larger than 3 hours</must_not>
   <must_not>Create directories before writing files</must_not>
   <must_not>Create summary artifacts (plan is self-documenting)</must_not>
+  <must_not>Return without validating plan artifact</must_not>
+  <must_not>Return without extracting plan metadata</must_not>
 </constraints>
 
 <output_specification>

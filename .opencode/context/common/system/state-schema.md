@@ -279,13 +279,58 @@ The fields are organized in logical order:
     "plans/implementation-002.md"
   ],
   "summaries": [
-    "summaries/project-summary.md"
+    "summaries/project-summary.md",
+    "summaries/implementation-summary-20251228.md"
+  ],
+  "plan_metadata": {
+    "phase_count": 4,
+    "estimated_hours": 12,
+    "complexity": "medium",
+    "extracted_from": "plans/implementation-001.md",
+    "extracted_at": "2025-12-28T10:00:00Z"
+  },
+  "plan_versions": [
+    {
+      "version": 1,
+      "path": "plans/implementation-001.md",
+      "created": "2025-12-28T10:00:00Z",
+      "reason": "Initial implementation plan"
+    }
   ],
   "status": "active",
   "created": "2025-01-15T10:00:00Z",
   "last_updated": "2025-01-16T14:30:00Z"
 }
 ```
+
+### Field Descriptions
+
+**plan_metadata** (object, optional):
+- Metadata extracted from implementation plan
+- Enables querying without parsing plan files
+- Fields:
+  - `phase_count` (integer): Number of implementation phases
+  - `estimated_hours` (number): Total estimated effort in hours
+  - `complexity` (string): Complexity level (simple, medium, complex)
+  - `extracted_from` (string): Plan file path metadata was extracted from
+  - `extracted_at` (string): ISO8601 timestamp of extraction
+
+**plan_versions** (array, optional):
+- Version history of implementation plans
+- Preserves plan evolution across revisions
+- Each entry contains:
+  - `version` (integer): Plan version number (1, 2, 3, ...)
+  - `path` (string): Relative path to plan file
+  - `created` (string): ISO8601 timestamp of plan creation
+  - `reason` (string): Reason for plan creation or revision
+
+### Lazy Creation
+
+Project state.json is created lazily on first artifact write:
+- Created when first research report, plan, or implementation is added
+- Uses template above with initial values
+- Populated with project metadata from task description
+- Added to status-sync-manager two-phase commit transaction
 
 ## Timestamp Format
 

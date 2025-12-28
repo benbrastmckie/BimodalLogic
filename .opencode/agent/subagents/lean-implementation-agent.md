@@ -305,6 +305,7 @@ temperature: 0.2
   <must>Check lean-lsp-mcp availability before use</must>
   <must>Log tool unavailability to errors.json</must>
   <must>Follow Lean 4 syntax and style conventions</must>
+  <must>Validate artifacts before returning (existence, non-empty, token limit)</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Iterate on compilation errors (max 5 iterations)</must>
   <must>Create implementation summary artifact (3-5 sentences, <100 tokens)</must>
@@ -313,6 +314,7 @@ temperature: 0.2
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Write invalid Lean syntax</must_not>
   <must_not>Include emojis in summary artifacts</must_not>
+  <must_not>Return without validating artifacts</must_not>
 </constraints>
 
 <output_specification>

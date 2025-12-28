@@ -164,25 +164,38 @@ Context Loaded:
       Failed: Keep [PLANNING]
       Blocked: [BLOCKED]
     </status_transition>
-    <artifact_linking>
-      - Plan: [.opencode/specs/{task_number}_{slug}/plans/implementation-001.md]
-      - Plan Summary: {brief_summary} ({phase_count} phases, {effort} hours)
-    </artifact_linking>
+    <validation_delegation>
+      Verify planner returned validation success and metadata:
+        - Check planner return metadata for validation_result
+        - Verify plan artifact validated (exists, non-empty)
+        - Extract plan_metadata (phase_count, estimated_hours, complexity)
+        - If validation failed: Abort update, return error to user
+    </validation_delegation>
     <git_commit>
-      Scope: Plan file + TODO.md + state.json
+      Scope: Plan file + TODO.md + state.json + project state.json
       Message: "task {number}: plan created"
       
       Commit only if status == "completed"
       Use git-workflow-manager for scoped commit
     </git_commit>
     <atomic_update>
-      Use status-sync-manager to atomically:
-        - Update TODO.md: Add plan link
-        - Update TODO.md: Change status to [PLANNED]
-        - Update TODO.md: Add Completed timestamp
-        - Update state.json: status = "planned"
-        - Update state.json: completed timestamp
-        - Update state.json: plan_path
+      Delegate to status-sync-manager:
+        - task_number: {number}
+        - new_status: "planned"
+        - timestamp: {ISO8601 date}
+        - session_id: {session_id}
+        - validated_artifacts: {artifacts from planner return}
+        - plan_path: {plan_path from planner return}
+        - plan_metadata: {plan_metadata from planner return}
+      
+      status-sync-manager performs two-phase commit:
+        - Phase 1: Prepare, validate artifacts, backup
+        - Phase 2: Write all files or rollback all
+      
+      Atomicity guaranteed across:
+        - TODO.md (status, timestamps, plan link)
+        - state.json (status, timestamps, plan_path, plan_metadata)
+        - project state.json (lazy created if needed)
     </atomic_update>
   </stage>
 

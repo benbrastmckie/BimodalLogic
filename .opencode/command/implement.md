@@ -243,29 +243,42 @@ Context Loaded:
       Failed: Keep [IMPLEMENTING]
       Blocked: [BLOCKED]
     </status_transition>
-    <artifact_linking>
-      - Implementation: [implementation file paths]
-      - Summary: [.opencode/specs/{task_number}_{slug}/summaries/implementation-summary-{date}.md]
-    </artifact_linking>
+    <validation_delegation>
+      Verify implementation agent returned validation success:
+        - Check agent return metadata for validation_result
+        - Verify all artifacts validated (exist, non-empty, token limit)
+        - Extract phase_statuses if phased implementation
+        - If validation failed: Abort update, return error to user
+    </validation_delegation>
     <git_commit>
-      Scope: Implementation files + TODO.md + state.json + plan (if exists)
+      Scope: Implementation files + TODO.md + state.json + project state.json + plan (if exists)
       Message: "task {number}: implementation completed"
       
-      For phased implementation: Create commit per phase
+      For phased implementation: Create commit per phase (delegated to task-executor)
       For direct implementation: Create single commit
       
       Commit only if status == "completed"
       Use git-workflow-manager for scoped commit
     </git_commit>
     <atomic_update>
-      Use status-sync-manager to atomically:
-        - Update TODO.md: Add implementation artifact links
-        - Update TODO.md: Change status to [COMPLETED] or [PARTIAL]
-        - Update TODO.md: Add Completed timestamp (if completed)
-        - Update state.json: status = "completed" or "partial"
-        - Update state.json: completed timestamp (if completed)
-        - Update state.json: artifacts array
-        - Update plan file: Mark phases [COMPLETED] (if phased)
+      Delegate to status-sync-manager:
+        - task_number: {number}
+        - new_status: "completed" or "partial"
+        - timestamp: {ISO8601 date}
+        - session_id: {session_id}
+        - validated_artifacts: {artifacts from implementation agent return}
+        - plan_path: {plan_path if exists}
+        - phase_statuses: {phase_statuses from agent return if phased}
+      
+      status-sync-manager performs two-phase commit:
+        - Phase 1: Prepare, validate artifacts, backup
+        - Phase 2: Write all files or rollback all
+      
+      Atomicity guaranteed across:
+        - TODO.md (status, timestamps, artifact links, checkmark if completed)
+        - state.json (status, timestamps, artifacts array)
+        - project state.json (lazy created if needed)
+        - plan file (phase statuses if phased)
     </atomic_update>
   </stage>
 

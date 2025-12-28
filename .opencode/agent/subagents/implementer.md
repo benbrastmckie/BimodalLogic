@@ -132,16 +132,36 @@ temperature: 0.2
   </step_5>
 
   <step_6>
-    <action>Return standardized result</action>
+    <action>Validate artifacts and return standardized result</action>
     <process>
-      1. Format return following subagent-return-format.md
-      2. List all artifacts (modified files + summary)
-      3. Include brief summary of changes
-      4. Include session_id from input
-      5. Include metadata (duration, delegation info)
-      6. Return status completed
+      1. Validate all artifacts created successfully:
+         a. Verify implementation files exist on disk (from artifacts array)
+         b. Verify implementation files are non-empty (size > 0)
+         c. Verify implementation-summary-{date}.md exists on disk
+         d. Verify implementation-summary-{date}.md is non-empty (size > 0)
+         e. Verify summary within token limit (<100 tokens, ~400 chars)
+         f. If validation fails: Return failed status with error
+      2. Format return following subagent-return-format.md
+      3. List all artifacts (modified files + summary) with validated flag
+      4. Include brief summary of changes
+      5. Include session_id from input
+      6. Include metadata (duration, delegation info, validation result)
+      7. Return status completed
     </process>
-    <output>Standardized return object with artifacts</output>
+    <validation>
+      Before returning (Step 6):
+      - Verify all implementation files exist and are non-empty
+      - Verify implementation-summary-{date}.md exists and is non-empty
+      - Verify summary within token limit (<100 tokens, ~400 chars)
+      - Return validation result in metadata field
+      
+      If validation fails:
+      - Log validation error with details
+      - Return status: "failed"
+      - Include error in errors array with type "validation_failed"
+      - Recommendation: "Fix artifact creation and retry"
+    </validation>
+    <output>Standardized return object with validated artifacts</output>
   </step_6>
 </process_flow>
 
@@ -149,12 +169,14 @@ temperature: 0.2
   <must>Delegate Lean tasks to lean-implementation-agent</must>
   <must>Create summaries subdirectory lazily (only when writing)</must>
   <must>Validate file syntax before writing</must>
+  <must>Validate artifacts before returning (existence, non-empty, token limit)</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Complete within 7200s (2 hours timeout)</must>
   <must_not>Handle Lean implementation directly</must_not>
   <must_not>Include emojis in summaries</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Create directories before writing files</must_not>
+  <must_not>Return without validating artifacts</must_not>
 </constraints>
 
 <output_specification>

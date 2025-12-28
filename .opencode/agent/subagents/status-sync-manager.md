@@ -51,6 +51,21 @@ temperature: 0.1
   <parameter name="abandonment_reason" type="string" optional="true">
     Reason for abandoned status (required if new_status is abandoned)
   </parameter>
+  <parameter name="plan_metadata" type="object" optional="true">
+    Plan metadata extracted by planner (phase_count, estimated_hours, complexity)
+  </parameter>
+  <parameter name="plan_version" type="integer" optional="true">
+    Plan version number for /revise operations (enables version history tracking)
+  </parameter>
+  <parameter name="revision_reason" type="string" optional="true">
+    Reason for plan revision (required if plan_version provided)
+  </parameter>
+  <parameter name="phase_statuses" type="array" optional="true">
+    Phase status updates for /implement operations (array of {phase_number, status})
+  </parameter>
+  <parameter name="validated_artifacts" type="array" optional="true">
+    Artifacts validated by subagents before linking (replaces artifact_links)
+  </parameter>
 </inputs_required>
 
 <inputs_forbidden>
@@ -75,15 +90,20 @@ temperature: 0.1
   </step_1_prepare>
 
   <step_2_validate>
-    <action>Validate status transition is allowed</action>
+    <action>Validate status transition and artifacts</action>
     <process>
       1. Extract current status from TODO.md
       2. Check transition is valid per status-markers.md
       3. Verify required fields present (blocking_reason, etc.)
       4. Validate timestamp format (YYYY-MM-DD)
-      5. If invalid transition: abort before writing
+      5. Validate artifacts if validated_artifacts provided:
+         a. Verify each artifact file exists on disk
+         b. Verify each artifact file is non-empty (size > 0)
+         c. Verify artifact paths are well-formed
+         d. If validation fails: abort before writing
+      6. If invalid transition: abort before writing
     </process>
-    <validation>Status transition follows valid state machine</validation>
+    <validation>Status transition follows valid state machine, artifacts exist and valid</validation>
     <output>Validation result (pass/fail)</output>
   </step_2_validate>
 
@@ -93,16 +113,26 @@ temperature: 0.1
       1. Update TODO.md in memory:
          - Change status marker
          - Add/update timestamp fields
-         - Add artifact links if provided
+         - Add artifact links from validated_artifacts
          - Add blocking/abandonment reason if applicable
          - Add checkmark to title if completed
       2. Update state.json in memory:
          - Change status field (lowercase, underscore)
          - Add/update timestamp fields
-         - Add artifact references
-      3. Update project state.json if exists
+         - Add artifact references from validated_artifacts
+         - Add plan_metadata if provided (phase_count, estimated_hours, complexity)
+         - Append to plan_versions array if plan_version provided
+         - Update plan_path to latest version if plan_version provided
+      3. Create or update project state.json:
+         - If project state.json does not exist: create lazily
+         - Use state-schema.md template for initial structure
+         - Populate with project_name, project_number, type, phase, status
+         - Add creation timestamp and last_updated timestamp
+         - Add artifact references (reports, plans, summaries)
       4. Update plan file if plan_path provided:
+         - Update phase statuses if phase_statuses provided
          - Update overall plan status if all phases complete
+         - Add metadata section if plan_metadata provided
       5. Validate all updates well-formed
     </process>
     <validation>All updates syntactically valid</validation>
@@ -145,14 +175,277 @@ temperature: 0.1
   </step_5_return>
 </process_flow>
 
+<artifact_validation_protocol>
+  <purpose>
+    Validate artifacts before linking to prevent broken references
+  </purpose>
+
+  <validation_interface>
+    Subagents must validate artifacts before returning:
+    1. Verify all artifact files created successfully
+    2. Verify artifact files exist on disk
+    3. Verify artifact files are non-empty (size > 0)
+    4. Return validated artifacts in return object
+  </validation_interface>
+
+  <pre_commit_validation>
+    status-sync-manager validates artifacts before commit:
+    1. Receive validated_artifacts from subagent return
+    2. For each artifact:
+       a. Check file exists on disk
+       b. Check file size > 0 bytes
+       c. Verify path is well-formed
+    3. If any validation fails:
+       a. Abort update (do not write any files)
+       b. Return failed status with validation error
+       c. Include failed artifact path in error
+  </pre_commit_validation>
+
+  <validation_failure_handling>
+    If artifact validation fails:
+    1. Do not proceed to commit phase
+    2. Return status: "failed"
+    3. Include error with type "artifact_validation_failed"
+    4. Recommendation: "Fix artifact creation and retry"
+    5. No files are modified (validation happens before commit)
+  </validation_failure_handling>
+
+  <example_validation>
+    ```json
+    {
+      "validated_artifacts": [
+        {
+          "type": "research_report",
+          "path": ".opencode/specs/195_topic/reports/research-001.md",
+          "summary": "Research findings",
+          "validated": true,
+          "size_bytes": 15420
+        },
+        {
+          "type": "research_summary",
+          "path": ".opencode/specs/195_topic/summaries/research-summary.md",
+          "summary": "Brief research summary",
+          "validated": true,
+          "size_bytes": 380
+        }
+      ]
+    }
+    ```
+  </example_validation>
+</artifact_validation_protocol>
+
+<plan_metadata_tracking>
+  <purpose>
+    Track plan metadata in state.json for querying without parsing plan files
+  </purpose>
+
+  <metadata_extraction>
+    Planner extracts metadata from plan file:
+    1. phase_count: Count ### Phase headings in plan
+    2. estimated_hours: Extract from plan metadata section
+    3. complexity: Extract from plan metadata (if present)
+    4. Return metadata in planner return object
+  </metadata_extraction>
+
+  <metadata_storage>
+    status-sync-manager stores metadata in state.json:
+    1. Receive plan_metadata from planner return
+    2. Add plan_metadata field to state.json:
+       ```json
+       {
+         "plan_metadata": {
+           "phase_count": 4,
+           "estimated_hours": 10,
+           "complexity": "medium"
+         }
+       }
+       ```
+    3. Store during plan/revise operations
+    4. Update if plan is revised
+  </metadata_storage>
+
+  <metadata_fallback>
+    If metadata extraction fails:
+    1. Use default values:
+       - phase_count: 1
+       - estimated_hours: null
+       - complexity: "unknown"
+    2. Log warning for missing metadata
+    3. Continue with defaults (graceful degradation)
+  </metadata_fallback>
+
+  <example_metadata>
+    ```json
+    {
+      "plan_metadata": {
+        "phase_count": 4,
+        "estimated_hours": 12,
+        "complexity": "medium",
+        "extracted_from": "plans/implementation-001.md",
+        "extracted_at": "2025-12-28T10:00:00Z"
+      }
+    }
+    ```
+  </example_metadata>
+</plan_metadata_tracking>
+
+<project_state_creation>
+  <purpose>
+    Create project state.json lazily on first artifact write
+  </purpose>
+
+  <lazy_creation_policy>
+    Project state.json is created when:
+    1. First artifact is added to project (research report, plan, etc.)
+    2. Project directory exists but state.json does not
+    3. status-sync-manager is updating project status
+  </lazy_creation_policy>
+
+  <creation_process>
+    When creating project state.json:
+    1. Check if .opencode/specs/{task_number}_{slug}/state.json exists
+    2. If not exists:
+       a. Create directory if needed (lazy directory creation)
+       b. Use state-schema.md template for initial structure
+       c. Populate with project metadata:
+          - project_name: Extract from task description
+          - project_number: task_number
+          - type: Extract from task metadata (implementation, research, etc.)
+          - phase: Determine from current status (planning, implementation, etc.)
+          - status: Current task status
+       d. Add creation timestamp (ISO 8601)
+       e. Add last_updated timestamp (YYYY-MM-DD)
+       f. Initialize empty arrays for reports, plans, summaries
+    3. Add to two-phase commit transaction
+  </creation_process>
+
+  <state_template>
+    ```json
+    {
+      "project_name": "leansearch_api_integration",
+      "project_number": 195,
+      "type": "implementation",
+      "phase": "planning",
+      "reports": [],
+      "plans": [],
+      "summaries": [],
+      "status": "active",
+      "created": "2025-12-28T10:00:00Z",
+      "last_updated": "2025-12-28"
+    }
+    ```
+  </state_template>
+
+  <update_process>
+    When updating existing project state.json:
+    1. Read current state.json
+    2. Update last_updated timestamp
+    3. Append to reports/plans/summaries arrays as needed
+    4. Update phase if status changed
+    5. Add to two-phase commit transaction
+  </update_process>
+
+  <error_handling>
+    If project state.json creation fails:
+    1. Log error with details
+    2. Continue with TODO.md and state.json updates
+    3. Include warning in return (non-critical failure)
+    4. Project state.json will be created on next update
+  </error_handling>
+</project_state_creation>
+
+<plan_version_history>
+  <purpose>
+    Track plan version history in state.json to preserve evolution
+  </purpose>
+
+  <version_tracking>
+    When plan is created or revised:
+    1. Receive plan_version from /revise command
+    2. Append to plan_versions array in state.json:
+       ```json
+       {
+         "plan_versions": [
+           {
+             "version": 1,
+             "path": "plans/implementation-001.md",
+             "created": "2025-12-28T10:00:00Z",
+             "reason": "Initial implementation plan"
+           },
+           {
+             "version": 2,
+             "path": "plans/implementation-002.md",
+             "created": "2025-12-28T14:00:00Z",
+             "reason": "Revised to address complexity concerns"
+           }
+         ]
+       }
+       ```
+    3. Update plan_path to latest version
+    4. Preserve all previous versions in array
+  </version_tracking>
+
+  <initial_plan>
+    When first plan is created:
+    1. Initialize plan_versions array with single entry
+    2. Set version: 1
+    3. Set reason: "Initial implementation plan"
+    4. Set created timestamp
+  </initial_plan>
+
+  <plan_revision>
+    When plan is revised:
+    1. Append new entry to plan_versions array
+    2. Increment version number
+    3. Include revision_reason from /revise command
+    4. Update plan_path to new version
+    5. Preserve all previous versions
+  </plan_revision>
+
+  <version_history_query>
+    Plan version history enables:
+    1. Reconstruction of plan evolution
+    2. Comparison between plan versions
+    3. Understanding of why plans were revised
+    4. Audit trail for planning decisions
+  </version_history_query>
+
+  <example_version_history>
+    ```json
+    {
+      "plan_path": "plans/implementation-002.md",
+      "plan_versions": [
+        {
+          "version": 1,
+          "path": "plans/implementation-001.md",
+          "created": "2025-12-28T10:00:00Z",
+          "reason": "Initial implementation plan"
+        },
+        {
+          "version": 2,
+          "path": "plans/implementation-002.md",
+          "created": "2025-12-28T14:00:00Z",
+          "reason": "Revised to reduce complexity from 5 phases to 3 phases"
+        }
+      ]
+    }
+    ```
+  </example_version_history>
+</plan_version_history>
+
 <constraints>
   <must>Use two-phase commit (prepare, then commit)</must>
   <must>Rollback all writes if any single write fails</must>
   <must>Validate status transitions per status-markers.md</must>
+  <must>Validate artifacts exist before linking (artifact validation protocol)</must>
+  <must>Create project state.json lazily on first artifact write</must>
+  <must>Track plan metadata in state.json (phase_count, estimated_hours, complexity)</must>
+  <must>Track plan version history in plan_versions array</must>
   <must>Preserve Started timestamp when updating status</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must_not>Leave files in inconsistent state</must_not>
   <must_not>Proceed with invalid status transitions</must_not>
+  <must_not>Link artifacts without validation</must_not>
   <must_not>Lose data during rollback</must_not>
 </constraints>
 
@@ -337,4 +630,20 @@ temperature: 0.1
   <principle_5>
     Write order matters: TODO.md first (most critical), then state files
   </principle_5>
+
+  <principle_6>
+    Validate before link: Artifacts must exist before adding to tracking files
+  </principle_6>
+
+  <principle_7>
+    Lazy creation: Create project state.json on first artifact write
+  </principle_7>
+
+  <principle_8>
+    Track metadata: Store plan metadata for querying without parsing
+  </principle_8>
+
+  <principle_9>
+    Preserve versions: Append to plan_versions array, never overwrite
+  </principle_9>
 </synchronization_principles>

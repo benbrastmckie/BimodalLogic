@@ -151,29 +151,150 @@ Context Loaded:
 
   <stage id="4" name="PrepareUpdates">
     <action>Prepare TODO.md and state.json updates</action>
+    <task_block_structure>
+      A complete task block consists of:
+      1. Heading line: Matches pattern `^### \d+\. ` (e.g., "### 192. Fix bug...")
+      2. Body lines: All lines following the heading until the next boundary marker
+      
+      Example task block:
+      ```
+      ### 192. Fix /todo command task removal
+      - **Status**: [COMPLETED]
+      - **Priority**: High
+      - **Type**: bugfix
+      - **Description**: Fix task removal to delete complete blocks
+      - **Acceptance Criteria**:
+        - Complete task blocks removed
+        - No orphaned metadata lines
+      ```
+      
+      The block ends at the first boundary marker encountered:
+      - Next task heading (^### \d+\. )
+      - Section heading (^## )
+      - Horizontal rule (^---$)
+      - End of file (EOF)
+      
+      CRITICAL: Task removal must remove the complete block (heading + all body lines),
+      not just the heading line. Removing only the heading leaves orphaned metadata
+      lines scattered in TODO.md.
+    </task_block_structure>
+    <block_boundaries>
+      Task block boundaries are detected using these patterns (in precedence order):
+      
+      1. Next task heading: `^### \d+\. `
+         - Regex: `^### \d+\. `
+         - Example: "### 193. Next task title"
+         - Precedence: Highest (first match wins)
+      
+      2. Section heading: `^## `
+         - Regex: `^## `
+         - Example: "## Completed Tasks"
+         - Precedence: Second (if no task heading found first)
+      
+      3. Horizontal rule: `^---$`
+         - Regex: `^---$`
+         - Example: "---"
+         - Precedence: Third (if no heading found first)
+      
+      4. End of file: EOF
+         - No pattern (implicit)
+         - Precedence: Lowest (fallback if no other boundary found)
+      
+      Boundary detection algorithm:
+      1. Start at task heading line (line N)
+      2. Scan forward from line N+1
+      3. For each line, check patterns in precedence order
+      4. First match found = end boundary (exclusive)
+      5. If no match found before EOF, EOF is boundary
+      6. Task block = lines [N, boundary-1] (inclusive range)
+    </block_boundaries>
     <process>
       1. Create updated TODO.md content:
-         a. Remove [COMPLETED] tasks
-         b. Remove [ABANDONED] tasks
-         c. Preserve all other tasks
+         a. Remove [COMPLETED] tasks (complete blocks):
+            - Locate task heading line matching `^### \d+\. ` with [COMPLETED] status
+            - Scan forward to find end boundary (next heading, section, separator, or EOF)
+            - Mark lines [heading, boundary-1] for removal
+            - Remove all marked line ranges atomically
+         b. Remove [ABANDONED] tasks (complete blocks):
+            - Locate task heading line matching `^### \d+\. ` with [ABANDONED] status
+            - Scan forward to find end boundary (next heading, section, separator, or EOF)
+            - Mark lines [heading, boundary-1] for removal
+            - Remove all marked line ranges atomically
+         c. Preserve all other tasks (complete blocks with heading + body)
          d. Preserve task numbering (do not renumber)
       2. Create updated state.json content:
          a. Move archived tasks from active_projects to completed_projects (with archival metadata)
          b. Preserve entries for remaining active tasks
          c. Update repository_health metrics (reduce active_tasks count)
          d. Add recent_activities entries for each archived task
-      3. Validate updates in memory
+      3. Validate updates in memory:
+         a. Scan updated TODO.md for orphaned metadata lines
+         b. Detect orphaned content: lines matching `^- \*\*` without `^### ` heading in previous 5 lines
+         c. If orphaned content detected:
+            - Log error with line numbers and content preview
+            - Rollback removal (discard updated TODO.md)
+            - Return error: "Task removal incomplete - orphaned metadata detected at lines {line_numbers}"
+            - Recommendation: "Fix block boundary detection and retry"
+         d. If validation passes: Proceed to AtomicUpdate stage
     </process>
     <numbering_preservation>
       CRITICAL: Do not renumber tasks
       
       If tasks 63, 64, 65 exist and 64 is removed:
         - Keep task 63 as 63
-        - Remove task 64
+        - Remove task 64 (complete block: heading + body)
         - Keep task 65 as 65
       
       Gaps in numbering are acceptable and expected
     </numbering_preservation>
+    <test_cases>
+      Test Case 1: Single completed task
+      - Setup: TODO.md with 3 tasks, middle task [COMPLETED]
+      - Expected: Middle task block removed completely (heading + body)
+      - Validation: No orphaned metadata lines, tasks 1 and 3 preserved with full structure
+      
+      Test Case 2: Multiple completed tasks interspersed
+      - Setup: TODO.md with 5 tasks, tasks 2 and 4 [COMPLETED]
+      - Expected: Tasks 2 and 4 blocks removed completely
+      - Validation: Tasks 1, 3, 5 preserved with full structure, no orphaned lines
+      
+      Test Case 3: Completed task at EOF
+      - Setup: TODO.md with 3 tasks, last task [COMPLETED]
+      - Expected: Last task block removed completely (boundary = EOF)
+      - Validation: Tasks 1 and 2 preserved, no orphaned lines at end of file
+      
+      Test Case 4: Completed task before section heading
+      - Setup: TODO.md with task [COMPLETED] followed by "## Completed Tasks" section
+      - Expected: Task block removed, section heading preserved
+      - Validation: Section heading remains, no orphaned lines before section
+      
+      Test Case 5: Mixed COMPLETED and ABANDONED
+      - Setup: TODO.md with 4 tasks, 2 [COMPLETED], 1 [ABANDONED], 1 [IN PROGRESS]
+      - Expected: 3 task blocks removed (2 COMPLETED + 1 ABANDONED)
+      - Validation: Only [IN PROGRESS] task remains with full structure
+      
+      Test Case 6: Task with nested lists in acceptance criteria
+      - Setup: Task with multi-level nested lists in body
+      - Expected: Complete block removed including all nested list items
+      - Validation: No orphaned list items, next task preserved
+      
+      Test Case 7: Empty TODO (no completed tasks)
+      - Setup: TODO.md with only [NOT STARTED] and [IN PROGRESS] tasks
+      - Expected: No changes to TODO.md
+      - Validation: All tasks preserved exactly as before
+      
+      Validation checklist (apply to all test cases):
+      1. No orphaned metadata lines (^- \*\*) without heading
+      2. Complete task blocks removed (heading + all body lines)
+      3. Other tasks preserved with complete structure (heading + body)
+      4. Task numbering preserved (no renumbering)
+      5. Section headings preserved
+      6. Horizontal rules preserved
+      7. No extra blank lines inserted
+      8. No blank lines removed from preserved tasks
+      9. File ends with single newline
+      10. No partial task blocks (heading without body or body without heading)
+    </test_cases>
   </stage>
 
   <stage id="5" name="AtomicUpdate">

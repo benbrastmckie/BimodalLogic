@@ -168,25 +168,41 @@ Context Loaded:
       Failed: Keep [REVISING]
       Blocked: [BLOCKED]
     </status_transition>
-    <artifact_linking>
-      - Plan: [.opencode/specs/{task_number}_{slug}/plans/implementation-{version:03d}.md] (updates existing link)
-      - Plan Summary: {brief_summary} ({phase_count} phases, {effort} hours)
-    </artifact_linking>
+    <validation_delegation>
+      Verify planner returned validation success and metadata:
+        - Check planner return metadata for validation_result
+        - Verify plan artifact validated (exists, non-empty)
+        - Extract plan_metadata (phase_count, estimated_hours, complexity)
+        - Extract plan_version from planner return
+        - If validation failed: Abort update, return error to user
+    </validation_delegation>
     <git_commit>
-      Scope: New plan file + TODO.md + state.json
+      Scope: New plan file + TODO.md + state.json + project state.json
       Message: "task {number}: plan revised to v{version}"
       
       Commit only if status == "completed"
       Use git-workflow-manager for scoped commit
     </git_commit>
     <atomic_update>
-      Use status-sync-manager to atomically:
-        - Update TODO.md: Update plan link to new version
-        - Update TODO.md: Change status to [REVISED]
-        - Update TODO.md: Add Completed timestamp (preserve Started)
-        - Update state.json: status = "revised"
-        - Update state.json: completed timestamp
-        - Update state.json: plan_path to new version
+      Delegate to status-sync-manager:
+        - task_number: {number}
+        - new_status: "revised"
+        - timestamp: {ISO8601 date}
+        - session_id: {session_id}
+        - validated_artifacts: {artifacts from planner return}
+        - plan_path: {new_plan_path from planner return}
+        - plan_metadata: {plan_metadata from planner return}
+        - plan_version: {version from planner return}
+        - revision_reason: {reason from user prompt}
+      
+      status-sync-manager performs two-phase commit:
+        - Phase 1: Prepare, validate artifacts, backup
+        - Phase 2: Write all files or rollback all
+      
+      Atomicity guaranteed across:
+        - TODO.md (status, timestamps, updated plan link)
+        - state.json (status, timestamps, plan_path, plan_metadata, plan_versions array)
+        - project state.json (lazy created if needed)
     </atomic_update>
   </stage>
 

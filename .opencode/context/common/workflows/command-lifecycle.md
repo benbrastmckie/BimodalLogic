@@ -239,6 +239,106 @@ grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Langua
 - Do not fail the command (git failure is non-critical)
 - User can manually commit if needed
 
+**Update Procedures**:
+
+All status and artifact updates in Stage 7 MUST be delegated to status-sync-manager to ensure atomicity across all tracking files.
+
+**Validation Protocol**:
+1. Verify subagent returned validation success:
+   - Check subagent return metadata for validation_result
+   - Verify all artifacts validated (exist, non-empty, token limit)
+   - Extract metadata if applicable (plan_metadata, phase_statuses)
+   - If validation failed: Abort update, return error to user
+
+2. Delegate to status-sync-manager:
+   - task_number: {number}
+   - new_status: {status from subagent return}
+   - timestamp: {ISO8601 date}
+   - session_id: {session_id}
+   - validated_artifacts: {artifacts from subagent return}
+   - plan_metadata: {metadata from planner if applicable}
+   - plan_version: {version from revise if applicable}
+   - phase_statuses: {statuses from implement if applicable}
+
+3. status-sync-manager performs two-phase commit:
+   - Phase 1: Prepare, validate artifacts, backup
+   - Phase 2: Write all files or rollback all
+
+**Atomicity Guarantees**:
+
+status-sync-manager ensures atomic updates across:
+- TODO.md (status markers, timestamps, artifact links)
+- state.json (status, timestamps, artifacts array, plan_metadata, plan_versions)
+- project state.json (lazy created on first artifact write)
+- plan file (phase statuses if applicable)
+
+Either all files update successfully or all are rolled back to original state.
+
+**Artifact Validation**:
+
+Subagents validate artifacts before returning:
+- Verify artifact files exist on disk
+- Verify artifact files are non-empty (size > 0)
+- Verify summary artifacts within token limit (<100 tokens, ~400 chars)
+- Return validated_artifacts in return object
+
+status-sync-manager validates artifacts before commit:
+- Re-verify artifact files exist
+- Re-verify artifact files are non-empty
+- If validation fails: Abort update, rollback, return error
+
+**Plan Metadata Tracking**:
+
+Planner extracts metadata from plan file:
+- phase_count: Count ### Phase headings
+- estimated_hours: Extract from metadata section
+- complexity: Extract from metadata section
+
+status-sync-manager stores metadata in state.json:
+```json
+{
+  "plan_metadata": {
+    "phase_count": 4,
+    "estimated_hours": 12,
+    "complexity": "medium"
+  }
+}
+```
+
+**Plan Version History**:
+
+/revise command tracks plan versions:
+- Append to plan_versions array in state.json
+- Preserve all previous versions
+- Update plan_path to latest version
+
+```json
+{
+  "plan_versions": [
+    {
+      "version": 1,
+      "path": "plans/implementation-001.md",
+      "created": "2025-12-28T10:00:00Z",
+      "reason": "Initial implementation plan"
+    },
+    {
+      "version": 2,
+      "path": "plans/implementation-002.md",
+      "created": "2025-12-28T14:00:00Z",
+      "reason": "Revised to reduce complexity"
+    }
+  ]
+}
+```
+
+**Project State Creation**:
+
+status-sync-manager creates project state.json lazily:
+- Created on first artifact write
+- Uses state-schema.md template
+- Populates with project metadata
+- Adds to two-phase commit transaction
+
 ### Stage 8: ReturnSuccess
 
 **Purpose**: Return brief summary to user

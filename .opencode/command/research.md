@@ -190,25 +190,35 @@ Context Loaded:
       Failed: Keep [RESEARCHING]
       Blocked: [BLOCKED]
     </status_transition>
-    <artifact_linking>
-      - Main Report: [.opencode/specs/{task_number}_{slug}/reports/research-001.md]
-      - Summary: [.opencode/specs/{task_number}_{slug}/summaries/research-summary.md]
-    </artifact_linking>
+    <validation_delegation>
+      Verify researcher returned validation success:
+        - Check researcher return metadata for validation_result
+        - Verify all artifacts validated (exist, non-empty, token limit)
+        - If validation failed: Abort update, return error to user
+    </validation_delegation>
     <git_commit>
-      Scope: Research artifacts + TODO.md + state.json
+      Scope: Research artifacts + TODO.md + state.json + project state.json
       Message: "task {number}: research completed"
       
       Commit only if status == "completed"
       Use git-workflow-manager for scoped commit
     </git_commit>
     <atomic_update>
-      Use status-sync-manager to atomically:
-        - Update TODO.md: Add research report links
-        - Update TODO.md: Change status to [RESEARCHED]
-        - Update TODO.md: Add Completed timestamp
-        - Update state.json: status = "researched"
-        - Update state.json: completed timestamp
-        - Update state.json: artifacts array
+      Delegate to status-sync-manager:
+        - task_number: {number}
+        - new_status: "researched"
+        - timestamp: {ISO8601 date}
+        - session_id: {session_id}
+        - validated_artifacts: {artifacts from researcher return}
+      
+      status-sync-manager performs two-phase commit:
+        - Phase 1: Prepare, validate artifacts, backup
+        - Phase 2: Write all files or rollback all
+      
+      Atomicity guaranteed across:
+        - TODO.md (status, timestamps, artifact links)
+        - state.json (status, timestamps, artifacts array)
+        - project state.json (lazy created if needed)
     </atomic_update>
   </stage>
 
