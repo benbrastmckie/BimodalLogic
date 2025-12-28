@@ -228,6 +228,7 @@ theorem swap_temporal_involution (φ : Formula) :
   | all_future _ ih => simp [swap_temporal, ih]
 
 /-- Alias for backward compatibility. -/
+@[simp]
 theorem swap_past_future_involution (φ : Formula) :
   φ.swap_past_future.swap_past_future = φ := swap_temporal_involution φ
 

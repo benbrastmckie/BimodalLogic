@@ -31,9 +31,24 @@ Replace the `sorry` placeholder in the `is_valid_swap_involution` theorem (Truth
 
 ---
 
-## Phase 1: Implement Helper Lemma and Update Main Theorem [NOT STARTED]
+## Phase 1: Implement Helper Lemma and Update Main Theorem [PARTIAL]
+(Started: 2025-12-28T16:00:00Z)
 
-**Estimated Effort**: 2.0 hours
+**Estimated Effort**: 2.0 hours  
+**Actual Effort**: 1.7 hours  
+**Completion**: 85%
+
+**Partial Completion Notes**:
+- Task 1.1 (Helper Lemma): COMPLETED (lines 632-671, all 6 cases proven)
+- Task 1.2 (Main Theorem): BLOCKED (line 691 still admits sorry)
+- Task 1.3 (Build and Test): COMPLETED (builds successfully, all tests pass)
+- Task 1.4 (Documentation): COMPLETED (comprehensive inline docs added)
+
+**Blocker**: Type theory issue with equality transport. Main theorem blocked by inability to convert `truth_at M τ t ht φ.swap` to `truth_at M τ t ht φ.swap.swap` using propositional equality `φ.swap.swap = φ.swap`. Pattern-matched `truth_at` definition prevents automatic transport.
+
+**Solution**: Add involution helper lemma `truth_at_involution` to explicitly perform conversion, then compose with existing `truth_at_swap_swap` helper.
+
+**Remaining Effort**: 0.5 hours (30 minutes to add helper and complete proof)
 
 **Objective**: Add `truth_at_swap_swap` helper lemma with structural induction and update `is_valid_swap_involution` to use it.
 

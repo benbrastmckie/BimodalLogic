@@ -238,6 +238,74 @@ Unblocks task 173 (integration tests) and task 185 (test helper API fixes). Crit
 
 ---
 
+### 209. Research Lean 4 techniques for completing task 193 involution proof
+**Effort**: 3 hours
+**Status**: [PARTIAL]
+**Started**: 2025-12-28
+**Completed**: 2025-12-28
+**Priority**: High
+**Blocking**: None
+**Dependencies**: Task 193
+**Language**: lean
+**Research Artifacts**:
+  - Main Report: [.opencode/specs/209_research_lean4_involution_techniques/reports/research-001.md]
+  - Summary: [.opencode/specs/209_research_lean4_involution_techniques/summaries/research-summary.md]
+**Implementation Summary**: [.opencode/specs/209_research_lean4_involution_techniques/summaries/implementation-summary-20251228.md]
+
+**Files Affected**:
+- Logos/Core/Syntax/Formula.lean (added @[simp] attribute to swap_past_future_involution)
+
+**Description**:
+Research Lean 4 techniques, tactics, and proof patterns for completing the is_valid_swap_involution theorem proof in task 193. The proof is currently blocked by a type theory issue where the helper lemma truth_at_swap_swap is complete but the main involution theorem needs additional techniques.
+
+**Acceptance Criteria**:
+- [x] Research report created with Lean 4 proof techniques
+- [x] Specific tactics and patterns identified for involution proofs
+- [x] Recommendations provided for completing task 193
+- [x] Examples from Lean 4 ecosystem analyzed
+- [~] is_valid_swap_involution theorem completed (PARTIAL - @[simp] added but proof still contains sorry)
+
+**Impact**:
+Research completed and @[simp] attribute added to involution theorem. However, the main proof remains incomplete. Task 193 still blocked pending further investigation or expert consultation.
+
+**Note**: The identified `simp only` pattern from research did not work as expected. The proof requires a different approach, possibly a stronger helper lemma or reasoning about model space symmetry.
+
+---
+
+### 210. Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md
+**Effort**: 6-8 hours
+**Status**: [RESEARCHED]
+**Started**: 2025-12-28
+**Completed**: 2025-12-28
+**Priority**: Medium
+**Blocking**: None
+**Dependencies**: None
+**Language**: markdown
+**Research Artifacts**:
+  - Main Report: [.opencode/specs/210_fix_lean_subagents/reports/research-001.md]
+  - Summary: [.opencode/specs/210_fix_lean_subagents/summaries/research-summary.md]
+
+**Files Affected**:
+- .opencode/agent/subagents/lean-research-agent.md
+- .opencode/agent/subagents/lean-implementation-agent.md
+
+**Description**:
+Fix both Lean subagents (lean-research-agent and lean-implementation-agent) to follow artifact-management.md, status-markers.md, and state-schema.md specifications. Research identified 21 compliance issues across both agents including missing status marker workflows, missing state.json updates, and missing summary artifact enforcement.
+
+**Acceptance Criteria**:
+- [ ] lean-research-agent follows artifact-management.md (summary enforcement, correct paths, validation)
+- [ ] lean-research-agent follows status-markers.md (workflow implementation, timestamp updates)
+- [ ] lean-research-agent follows state-schema.md (state.json updates, project state files)
+- [ ] lean-implementation-agent follows artifact-management.md (summary enforcement, correct paths, validation)
+- [ ] lean-implementation-agent follows status-markers.md (workflow implementation, timestamp updates)
+- [ ] lean-implementation-agent follows state-schema.md (state.json updates, project state files)
+- [ ] All cross-cutting issues resolved (lazy creation, emoji validation, return format consistency)
+
+**Impact**:
+Ensures Lean subagents properly maintain TODO.md, state.json, and artifact files according to project standards, improving consistency and reliability of automated workflows.
+
+---
+
 ### 185. Fix integration test helper API mismatches
 **Effort**: 1-2 hours
 **Status**: [IN PROGRESS]
