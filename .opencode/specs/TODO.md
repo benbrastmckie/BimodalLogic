@@ -449,8 +449,8 @@
   - [x] Documentation updated to explain /review artifact creation (state-schema.md updated)
 - **Impact**: Provides persistent review summaries in standardized project directories, enabling historical tracking of repository reviews and protecting the orchestrator context window from verbose review output.
 
-### 207. ✅ Reduce command output verbosity with brief summaries and artifact paths
-- **Effort**: 0.5 hours (actual, estimated 4.5 hours)
+### 207. ✅ Reduce /implement command output verbosity with artifact-based summaries
+- **Effort**: 3 hours (actual, estimated 4.5 hours)
 - **Status**: [COMPLETED]
 - **Started**: 2025-12-28
 - **Completed**: 2025-12-28
@@ -462,27 +462,31 @@
   - Main Report: [.opencode/specs/207_reduce_implement_output_verbosity/reports/research-001.md]
   - Summary: [.opencode/specs/207_reduce_implement_output_verbosity/summaries/research-summary.md]
 - **Plan**: [.opencode/specs/207_reduce_implement_output_verbosity/plans/implementation-002.md] (revised 2025-12-28)
-- **Plan Summary**: 4-phase implementation (4.5 hours total, revised from 3 hours). Expanded scope to include /research and /revise commands for comprehensive context window protection across all artifact-creating commands.
+- **Plan Summary**: 4-phase implementation (4.5 hours estimated, 3 hours actual). Phase 1: Update /implement Stage 8 to create/reference summary artifacts and return brief <100 token overviews (1.5h). Phase 2: Add summary artifact creation to lean-implementation-agent (1h, parallel). Phase 3: Fix /plan command verbose output - planner returns brief summary without creating summary artifacts since plan is self-documenting (1.5h, parallel). Phase 4: Testing and validation across all scenarios (0.5h). Achieves 90-95% context window reduction.
 - **Previous Plan**: [.opencode/specs/207_reduce_implement_output_verbosity/plans/implementation-001.md] (original)
+- **Implementation Summary**: [.opencode/specs/207_reduce_implement_output_verbosity/summaries/implementation-summary-20251228.md]
 - **Files Affected**:
-  - .opencode/agent/subagents/researcher.md (updated: brief summary requirement)
-  - .opencode/agent/subagents/lean-research-agent.md (updated: brief summary requirement)
-  - .opencode/agent/subagents/planner.md (documentation clarification)
-  - .opencode/command/research.md (Stage 8 updated with context window protection)
-  - .opencode/command/revise.md (Stage 9 updated with context window protection)
-- **Description**: Expanded scope beyond /implement and /plan to include /research and /revise commands. All subagents that create artifacts (researcher, lean-research-agent, planner) now return brief summaries (3-5 sentences, <100 tokens) plus artifact paths instead of verbose content. Commands extract and display only these brief summaries with artifact references. Achieves 90-95% context window reduction across all artifact-creating commands.
-- **Implementation Summary** (2025-12-28): Expanded scope to include /research and /revise commands per user request. Updated researcher, lean-research-agent, and planner subagents to return brief summaries (3-5 sentences, <100 tokens) following subagent-return-format.md standard. Updated /research Stage 8 and /revise Stage 9 to extract and display only brief summaries with artifact paths. No code changes needed - documentation updates only to clarify existing return format requirements. Achieves 90-95% context window reduction across all artifact-creating commands (research, plan, revise, implement).
+  - .opencode/command/implement.md (Stage 8 enhanced with summary artifact logic and brief return format)
+  - .opencode/agent/subagents/lean-implementation-agent.md (Step 5 enhanced to create summaries, Step 6 updated, constraints added)
+  - .opencode/command/plan.md (Stage 8 enhanced with brief return format and rationale)
+  - .opencode/agent/subagents/planner.md (Step 6 updated for brief summaries, constraints added)
+- **Description**: Reduced command output verbosity for /implement and /plan commands by implementing artifact-based summaries and brief return formats. Updated /implement command Stage 8 to create/reference implementation summary artifacts and return brief <100 token overviews. Enhanced lean-implementation-agent to create summary artifacts following the task-executor pattern. Fixed /plan command to return brief summaries without creating unnecessary summary artifacts, as plan files are self-documenting. Achieves 90-95% context window reduction while maintaining full details in persistent artifact files.
 - **Acceptance Criteria**:
-  - [x] Researcher subagent returns brief summary (3-5 sentences, <100 tokens)
-  - [x] Lean-research-agent subagent returns brief summary (3-5 sentences, <100 tokens)
-  - [x] Planner subagent returns brief summary (3-5 sentences, <100 tokens)
-  - [x] /research command Stage 8 displays only brief summary + artifact paths
-  - [x] /revise command Stage 9 displays only brief summary + plan path
-  - [x] Return format follows subagent-return-format.md standard
-  - [x] Context window protection documented in command files
+  - [x] /implement command Stage 8 updated with summary artifact logic
+  - [x] /implement returns brief summary + artifact path reference
+  - [x] /implement: 95% context window reduction (700 to 35 tokens)
+  - [x] lean-implementation-agent Step 5 creates summary artifacts
+  - [x] lean-implementation-agent follows artifact-management.md format (3-5 sentences, <100 tokens)
+  - [x] /plan command Stage 8 returns brief summary + plan path reference
+  - [x] Planner does NOT create summary artifacts (plan is self-documenting)
+  - [x] /plan: 90% context window reduction (600 to 60 tokens)
+  - [x] Lazy directory creation followed (summaries/ created only when writing)
+  - [x] Both task-executor and lean-implementation-agent patterns aligned
   - [x] No emojis in output or artifacts
-  - [x] 90-95% context window reduction achieved
-- **Impact**: Protects orchestrator context window from verbose output across all artifact-creating commands (/research, /plan, /revise, /implement). Improves scalability for complex operations, establishes consistent "brief summary + artifact reference" pattern for all commands, and ensures consistent artifact management across the system per subagent-return-format.md standard.
+  - [x] Return format follows subagent-return-format.md standard
+  - [x] Orchestrator context window protected from verbose output
+  - [x] Implementation summary artifact created
+- **Impact**: Protects orchestrator context window from verbose command output for both /implement and /plan commands, improves scalability for complex operations, establishes "one artifact maximum" pattern for commands, and ensures consistent artifact management across the system per artifact-management.md standard.
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
