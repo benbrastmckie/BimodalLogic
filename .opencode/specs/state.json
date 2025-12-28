@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-27T16:36:34Z",
-  "next_project_number": 202,
+  "_last_updated": "2025-12-27T23:55:00Z",
+  "next_project_number": 204,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -113,14 +113,16 @@
       "project_number": 201,
       "project_name": "todo_archival_feature",
       "type": "feature",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-28T00:30:00Z",
       "started": "2025-12-27",
       "research_completed": "2025-12-27",
-      "last_updated": "2025-12-27"
+      "planning_completed": "2025-12-27",
+      "last_updated": "2025-12-27",
+      "plan_path": ".opencode/specs/201_todo_archival_feature/plans/implementation-001.md"
     },
     {
       "project_number": 192,
@@ -131,6 +133,19 @@
       "priority": "high",
       "language": "lean",
       "created": "2025-12-27T16:36:34Z",
+      "started": "2025-12-27",
+      "research_completed": "2025-12-27",
+      "last_updated": "2025-12-27"
+    },
+    {
+      "project_number": 202,
+      "project_name": "fix_verbose_artifact_output",
+      "type": "bugfix",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2025-12-27T00:50:00Z",
       "started": "2025-12-27",
       "research_completed": "2025-12-27",
       "last_updated": "2025-12-27"
@@ -172,6 +187,22 @@
     }
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T01:00:00Z",
+      "activity": "Marked task 202 as RESEARCHED: Verbose artifact output research completed - problem localized to 2 legacy subagents (4-5 hours full fix)"
+    },
+    {
+      "timestamp": "2025-12-27T23:55:00Z",
+      "activity": "Marked task 201 as PLANNED: /todo archival feature plan created (6 hours, 4 phases)"
+    },
+    {
+      "timestamp": "2025-12-27T23:45:00Z",
+      "activity": "Marked task 201 as RESEARCHED: /todo archival feature research completed - 6 hour implementation recommended"
+    },
+    {
+      "timestamp": "2025-12-28T00:35:00Z",
+      "activity": "Created task 202: Fix verbose artifact output in commands to protect primary agent context window (TBD effort, medium priority)"
+    },
     {
       "timestamp": "2025-12-27T00:40:00Z",
       "activity": "Marked task 200 as RESEARCHED: Command-specific status marker review completed - all 10 acceptance criteria validated (PASS)"

@@ -1,13 +1,13 @@
 # TODO
 
-**Last Updated:** 2025-12-28T00:30:00Z
+**Last Updated:** 2025-12-28T00:35:00Z
 
 ## Overview
 
-- **Total Tasks:** 40
+- **Total Tasks:** 41
 - **Completed:** 14
 - **High Priority:** 16
-- **Medium Priority:** 11
+- **Medium Priority:** 12
 - **Low Priority:** 11
 
 ---
@@ -460,6 +460,63 @@
 ---
 
 ## Medium Priority
+
+### 202. Fix verbose artifact output in commands to protect primary agent context window
+- **Effort**: 4-5 hours (full fix) or 1.25 hours (quick fix)
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-27
+- **Completed**: 2025-12-27
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/202_fix_verbose_artifact_output/reports/research-001.md]
+  - Summary: [.opencode/specs/202_fix_verbose_artifact_output/summaries/research-summary.md]
+- **Files Affected**:
+  - .opencode/agent/subagents/task-executor.md
+  - .opencode/agent/subagents/batch-task-orchestrator.md
+  - .opencode/context/common/standards/subagent-return-format.md (reference)
+- **Description**: When running commands like /research and other commands that create artifacts, the full research report is printed to the opencode console instead of just a path reference and brief summary. This bloats the primary agent's context window with verbose output that's already been saved to files. The appropriate research subagent correctly creates the report in the correct directory, but then returns the full content to the primary agent instead of just returning a path to the report and a brief summary. Investigate all commands that create artifacts systematically (/research, /plan, /implement, /revise, /review, etc.) and fix them to return only artifact paths and brief summaries per the subagent-return-format.md standard, protecting the primary agent's context window from verbose artifact content.
+- **Acceptance Criteria**:
+  - [ ] All commands that create artifacts identified (/research, /plan, /implement, /revise, /review, etc.)
+  - [ ] Each command's subagent returns only artifact paths + brief summaries (not full content)
+  - [ ] Return format follows subagent-return-format.md standard
+  - [ ] Console output shows only paths and summaries, not full artifact content
+  - [ ] Primary agent context window protected from verbose artifact bloat
+  - [ ] Artifact files still created correctly in proper directories
+  - [ ] All artifact paths are accessible and correct
+  - [ ] Brief summaries provide adequate information without full content
+  - [ ] No regression in artifact creation or quality
+  - [ ] Documentation updated if return format patterns need clarification
+- **Impact**: Protects primary agent context window from bloat, improves scalability for commands that create large artifacts, and ensures consistent artifact management across all commands per subagent-return-format.md standard.
+
+### 203. Add --complex flag to /research for subtopic subdivision with summary
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/research.md
+  - .opencode/agent/subagents/researcher.md
+  - .opencode/agent/subagents/lean-research-agent.md
+- **Description**: Enhance the /research command to support a --complex flag that changes its behavior for handling complex research topics. Without --complex flag: /research creates a single research report (reports/research-001.md) with no summary - this is the current default behavior. With --complex flag: /research should (1) Divide the topic into 1-5 appropriate subtopics using intelligent analysis, (2) Spawn research subagents to complete each subtopic in parallel, creating individual research reports (reports/research-001.md, reports/research-002.md, etc.), (3) Each subagent returns only its report path and brief summary (not full content) to the primary agent, (4) Primary agent compiles all report paths and brief summaries into a research summary report (summaries/research-summary.md), (5) Update TODO.md and state.json with all report references and mark task as [RESEARCHED]. The --complex flag enables comprehensive research on large topics while protecting context windows through summarization.
+- **Acceptance Criteria**:
+  - [ ] --complex flag added to /research command argument parsing
+  - [ ] Without --complex: /research creates single report, no summary (current behavior preserved)
+  - [ ] With --complex: Topic intelligently divided into 1-5 subtopics
+  - [ ] With --complex: Separate research subagents spawned for each subtopic
+  - [ ] With --complex: Each subtopic generates individual report (reports/research-NNN.md)
+  - [ ] With --complex: Subagents return only report path + brief summary (not full content)
+  - [ ] With --complex: Primary agent creates research summary (summaries/research-summary.md) compiling all references
+  - [ ] Research summary contains only paths and brief summaries, not duplicated full content
+  - [ ] Lazy directory creation followed (summaries/ created only when writing summary)
+  - [ ] TODO.md updated with all report references and [RESEARCHED] status for both modes
+  - [ ] state.json updated correctly for both modes
+  - [ ] Documentation explains --complex flag behavior and use cases
+- **Impact**: Enables comprehensive research on complex topics by dividing them into manageable subtopics while protecting the primary agent's context window through summarization. Provides flexibility - simple topics get focused single reports, complex topics get thorough multi-report coverage with summary overview.
 
 ---
 
@@ -1038,7 +1095,7 @@
 
 ### 200. Review command-specific status marker implementation for consistency
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Started**: 2025-12-27
 - **Completed**: 2025-12-27
 - **Priority**: High
@@ -1072,7 +1129,7 @@
 
 ### 201. Implement /todo command archival feature for completed and abandoned tasks
 - **Effort**: 6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-27
 - **Completed**: 2025-12-27
 - **Priority**: High
@@ -1082,6 +1139,8 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/201_todo_archival_feature/reports/research-001.md]
   - Summary: [.opencode/specs/201_todo_archival_feature/summaries/research-summary.md]
+- **Plan**: [Implementation Plan](.opencode/specs/201_todo_archival_feature/plans/implementation-001.md)
+- **Plan Summary**: 4-phase implementation plan (6 hours). Phase 1: Archival preparation logic - self-healing, archive entry construction, directory move preparation (2h). Phase 2: Atomic four-file commit - two-phase commit, rollback mechanism, directory moves (2.5h). Phase 3: Git commit and user feedback - expanded scope, enhanced summary (1h). Phase 4: Testing and documentation - edge cases, atomicity validation (0.5h). Implements In-Place Enhancement approach with comprehensive error handling and rollback.
 - **Files Affected**:
   - .opencode/command/todo.md
   - .opencode/specs/TODO.md
