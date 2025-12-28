@@ -478,11 +478,12 @@
   - [ ] No regression: Task 212 MCP client wrapper functionality preserved
 - **Impact**: CRITICAL - Ensures the lean-lsp-mcp integration created in task 212 actually works during Lean implementations. Without this fix, all Lean-specific tooling (real-time compilation checking, proof verification, LSP diagnostics) remains unusable despite the infrastructure being built. Blocks effective Lean proof implementation and verification workflow.
 
-### 216. Systematically improve task tracking file update procedures across all commands
-- **Effort**: 10-12 hours
-- **Status**: [PLANNED]
+### 216. Systematically improve task tracking file update procedures across all commands ✅
+- **Effort**: 10-12 hours (actual: 4 hours via commit 90cd574)
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-28
 - **Planned**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -492,6 +493,7 @@
   - Summary: [.opencode/specs/216_improve_task_tracking_updates/summaries/research-summary.md]
 - **Plan**: [.opencode/specs/216_improve_task_tracking_updates/plans/implementation-001.md]
 - **Plan Summary**: 4-phase implementation (10-12 hours). Phase 1: Enhance status-sync-manager with artifact validation, plan metadata, project state.json lazy creation, version history (4h). Phase 2: Update 4 subagents with artifact validation (2h). Phase 3: Update 4 commands to delegate all updates (2h). Phase 4: Testing and documentation (2h). Hybrid architecture provides lowest complexity (+205 lines) with full atomicity via two-phase commit across TODO.md, state.json, project state.json, plan files.
+- **Implementation Summary**: [.opencode/specs/216_improve_task_tracking_updates/summaries/implementation-summary-20251228.md]
 - **Files Affected**:
   - .opencode/context/common/workflows/command-lifecycle.md
   - .opencode/context/common/workflows/task-tracking-updates.md (new)
