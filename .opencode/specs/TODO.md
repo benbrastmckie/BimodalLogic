@@ -654,13 +654,18 @@
 
 
 ### 223. Fix opencode.json agent configuration causing Lean agents to appear as primary agents instead of subagents
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 1 hour
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/223_fix_opencode_agent_configuration/reports/research-001.md]
 - **Description**: The lean-implementation-agent and lean-research-agent are currently appearing as primary agents that can be cycled through in OpenCode's UI, when they should only be invokable as subagents. Root cause: opencode.json lines 17-38 define these agents in the "agent" section for per-agent tool enablement. When agents are defined in opencode.json's "agent" section, OpenCode treats them as primary agents regardless of their markdown files declaring "mode: subagent". The agent section should be restructured to provide tool configurations without making the agents primary/selectable. Investigation needed: (1) Determine if OpenCode supports per-agent tool configuration without making agents primary, (2) If not, explore alternative approaches (global tool enablement with agent-level filtering in prompts, or separate configuration mechanism), (3) Fix opencode.json to ensure lean-implementation-agent and lean-research-agent remain as subagents only while still receiving their required lean-lsp-mcp tools.
+- **Research Findings** (2025-12-28): CRITICAL DISCOVERY - Original hypothesis INCORRECT. Defining agents in opencode.json "agent" section does NOT make them primary agents. Agent mode is determined by the "mode" field in configuration (JSON or Markdown). Both lean-implementation-agent and lean-research-agent correctly declare "mode: subagent" in their markdown frontmatter. Root cause is likely elsewhere (UI bug or different configuration issue). Recommended solution: Add explicit "mode: subagent" to JSON config for defensive programming, use wildcard pattern "lean-lsp-mcp*: false" for global tool disabling with per-agent overrides. Implementation: 1 hour.
 - **Acceptance Criteria**:
   - [ ] Root cause confirmed: "agent" section in opencode.json makes agents primary
   - [ ] OpenCode documentation reviewed for per-agent tool configuration patterns
