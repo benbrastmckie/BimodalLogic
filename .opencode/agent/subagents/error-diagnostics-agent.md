@@ -170,7 +170,6 @@ temperature: 0.2
   <must>Provide specific, actionable recommendations</must>
   <must>Prioritize fixes by impact and effort</must>
   <must>Return standardized format per subagent-return-format.md</must>
-  <must_not>Include emojis in analysis output</must_not>
   <must_not>Make vague recommendations</must_not>
   <must_not>Ignore historical fix failures</must_not>
 </constraints>
@@ -463,7 +462,6 @@ temperature: 0.2
     - Verify root causes identified
     - Verify recommendations are specific and actionable
     - Verify return format matches subagent-return-format.md
-    - Verify no emojis in analysis
   </post_execution>
 </validation_checks>
 

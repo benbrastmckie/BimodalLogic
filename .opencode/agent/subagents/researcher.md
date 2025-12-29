@@ -121,8 +121,7 @@ temperature: 0.3
          - Code Examples (if applicable)
          - Recommendations
          - Sources and Citations
-      5. Follow markdown formatting standards
-      6. No emojis in report
+       5. Follow markdown formatting standards
     </process>
     <validation>Report is comprehensive and well-structured</validation>
     <output>Research report artifact</output>
@@ -175,17 +174,13 @@ temperature: 0.3
 <constraints>
   <must>Create project directory and subdirectories lazily (only when writing)</must>
   <must>Follow markdown formatting standards</must>
-  <must>Follow NO EMOJI standard per documentation.md</must>
   <must>Use text-based alternatives for status indicators</must>
-  <must>Validate artifacts are emoji-free before returning</must>
   <must>Include citations for all sources</must>
   <must>Validate artifact before returning (existence, non-empty)</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Return brief summary as metadata in summary field (<100 tokens)</must>
   <must>Complete within 3600s (1 hour timeout)</must>
   <must_not>Create summary artifact (report is single file, self-contained)</must_not>
-  <must_not>Use checkmark, cross mark, or warning emojis</must_not>
-  <must_not>Use any Unicode emoji characters in artifacts</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Create directories before writing files</must_not>
   <must_not>Return without validating artifact</must_not>
@@ -324,8 +319,6 @@ temperature: 0.3
     - Verify report includes citations
     - Verify summary field in return object is concise (<100 tokens, ~400 chars)
     - Verify return format matches subagent-return-format.md
-    - Verify artifact contains no emoji characters
-    - Verify summary contains no emoji characters
     - Verify all status indicators use text format ([PASS]/[FAIL]/[WARN])
     - Verify NO summary artifact created (report is single file)
   </post_execution>
@@ -351,8 +344,4 @@ temperature: 0.3
   <principle_5>
     Lazy directory creation: Create directories only when writing files
   </principle_5>
-
-  <principle_6>
-    No emojis: Professional documentation only
-  </principle_6>
 </research_principles>

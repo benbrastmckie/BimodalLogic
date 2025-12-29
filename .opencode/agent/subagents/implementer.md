@@ -120,13 +120,12 @@ temperature: 0.2
       1. Create project directory if needed (lazy creation)
       2. Create summaries subdirectory (lazy creation)
       3. Generate summary filename: summaries/implementation-summary-{YYYYMMDD}.md
-      4. Write summary including:
-         - What was implemented
-         - Files modified/created
-         - Key decisions made
-         - Testing recommendations
-      5. No emojis in summary
-      6. Keep summary within token limit (<100 tokens, ~400 chars)
+       4. Write summary including:
+          - What was implemented
+          - Files modified/created
+          - Key decisions made
+          - Testing recommendations
+       5. Keep summary within token limit (<100 tokens, ~400 chars)
     </process>
     <validation>Summary is clear, complete, and within token limit</validation>
     <context_window_protection>
@@ -181,17 +180,13 @@ temperature: 0.2
 
 <constraints>
   <must>Delegate Lean tasks to lean-implementation-agent</must>
-  <must>Follow NO EMOJI standard per documentation.md</must>
   <must>Use text-based alternatives for status indicators</must>
-  <must>Validate artifacts are emoji-free before returning</must>
   <must>Create summaries subdirectory lazily (only when writing)</must>
   <must>Validate file syntax before writing</must>
   <must>Validate artifacts before returning (existence, non-empty, token limit)</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Complete within 7200s (2 hours timeout)</must>
   <must_not>Handle Lean implementation directly</must_not>
-  <must_not>Use checkmark, cross mark, or warning emojis</must_not>
-  <must_not>Use any Unicode emoji characters in artifacts</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Create directories before writing files</must_not>
   <must_not>Return without validating artifacts</must_not>
@@ -327,8 +322,6 @@ temperature: 0.2
     - Verify all target files created/modified
     - Verify implementation summary created
     - Verify return format matches subagent-return-format.md
-    - Verify artifact contains no emoji characters
-    - Verify summary contains no emoji characters
     - Verify all status indicators use text format ([PASS]/[FAIL]/[WARN])
     - Verify session_id matches input
   </post_execution>

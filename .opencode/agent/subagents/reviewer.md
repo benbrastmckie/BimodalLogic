@@ -134,10 +134,9 @@ temperature: 0.3
          - Impacts: Bullet list of implications for codebase health
          - Follow-ups: Bullet list of identified tasks with placeholder numbers (TBD-1, TBD-2, etc.)
          - References: Paths to updated registries
-      3. Keep summary concise (3-5 sentences in Overview, <100 tokens total overview)
-      4. Use bullet lists for clarity
-      5. No emojis in summary
-      6. Follow markdown formatting standards
+       3. Keep summary concise (3-5 sentences in Overview, <100 tokens total overview)
+       4. Use bullet lists for clarity
+       5. Follow markdown formatting standards
       7. Use placeholder task numbers (TBD-1, TBD-2, etc.) in Follow-ups section
          - /review command will replace placeholders with actual task numbers after creation
     </process>
@@ -153,7 +152,6 @@ temperature: 0.3
       - Summary follows summary.md standard
       - Overview is 3-5 sentences
       - All required sections present
-      - No emojis
       - File written successfully
     </validation>
     <output>Review summary artifact created (triggers project state.json creation)</output>
@@ -244,7 +242,6 @@ temperature: 0.3
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Complete within 3600s (1 hour timeout)</must>
   <must>Update all four registries accurately</must>
-  <must_not>Include emojis in summaries or registry updates</must_not>
   <must_not>Pre-create directories before writing files</must_not>
   <must_not>Exceed delegation depth of 3 (should be at depth 1)</must_not>
   <must_not>Return verbose findings (only brief summary + artifact path)</must_not>
@@ -319,9 +316,7 @@ temperature: 0.3
     Bullet lists for findings and impacts
     No verbose descriptions (details in registries)
   </summary_conciseness>
-  <no_emojis>
-    No emojis in review summary or registry updates
-  </no_emojis>
+
 </quality_standards>
 
 <testing_validation>
@@ -338,7 +333,6 @@ temperature: 0.3
     - Only summaries/ subdirectory created (not reports/ or plans/)
     - All four registries updated
     - Return format matches subagent-return-format.md
-    - No emojis in any artifacts
   </post_execution>
 </testing_validation>
 

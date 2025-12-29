@@ -258,14 +258,12 @@ temperature: 0.2
             - Iteration count (if compilation attempted)
             - Errors encountered (if any)
             - Next steps for user
-         e. Validate summary BEFORE writing:
-            - Count tokens: Use chars ÷ 3 estimation
-            - Verify token count <100 tokens (~400 chars max)
-            - Count sentences: Split on '. ' and verify 3-5 sentences
-            - Verify no emojis in content (scan for emoji unicode ranges U+1F300-U+1F9FF, U+2600-U+26FF, U+2700-U+27BF)
-            - If validation fails: Revise summary to meet requirements
-            - If emojis detected: Remove emojis and re-validate
-         f. Write summary only after validation passes
+          e. Validate summary BEFORE writing:
+             - Count tokens: Use chars ÷ 3 estimation
+             - Verify token count <100 tokens (~400 chars max)
+             - Count sentences: Split on '. ' and verify 3-5 sentences
+             - If validation fails: Revise summary to meet requirements
+          f. Write summary only after validation passes
          g. Follow artifact-management.md summary standard
     </process>
     <summary_artifact_enforcement>
@@ -274,16 +272,14 @@ temperature: 0.2
       Summary requirements:
       - Format: 3-5 sentences
       - Token limit: <100 tokens (~400 chars)
-      - No emojis
       - Focus on files changed, compilation status, next steps
       
       Validation process:
       1. Draft summary content
       2. Count tokens: len(summary) ÷ 3
       3. Count sentences: summary.split('. ')
-      4. Check for emojis: Scan for emoji unicode ranges
-      5. If any check fails: Revise and re-validate
-      6. Only write summary after all checks pass
+      4. If any check fails: Revise and re-validate
+      5. Only write summary after all checks pass
       
       Example valid summary:
       "Implemented Modal S4 theorem in Logos/Core/Theorems/ModalS4.lean. Compilation successful after 3 iterations using lean-lsp-mcp. Created test cases in LogosTest/Core/Theorems/ModalS4Test.lean. All type checks passed. Next step: Run lake build to verify full project compilation."
@@ -498,15 +494,13 @@ temperature: 0.2
   <must>Add timestamps to TODO.md (**Started**, **Completed** in YYYY-MM-DD format)</must>
   <must>Update state.json with project status and artifacts</must>
   <must>Update project state.json with implementation artifacts</must>
-  <must>Create summary artifact (3-5 sentences, <100 tokens, no emojis)</must>
-  <must>Validate summary artifact before writing (token count, sentence count, no emojis)</must>
+  <must>Create summary artifact (3-5 sentences, <100 tokens)</must>
+  <must>Validate summary artifact before writing (token count, sentence count)</must>
   <must>Validate summary artifact before returning (exists, non-empty, within limits)</must>
   <must>Use lazy directory creation (create only when writing artifacts)</must>
   <must>Load Lean context from .opencode/context/project/lean4/</must>
   <must>Check lean-lsp-mcp availability before use</must>
-  <must>Follow NO EMOJI standard per documentation.md</must>
   <must>Use text-based alternatives for status indicators</must>
-  <must>Validate artifacts are emoji-free before returning</must>
   <must>Log tool unavailability to errors.json</must>
   <must>Follow Lean 4 syntax and style conventions</must>
   <must>Validate artifacts before returning (existence, non-empty, token limit)</must>
@@ -516,8 +510,6 @@ temperature: 0.2
   <must_not>Fail task if lean-lsp-mcp unavailable (degrade gracefully)</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Write invalid Lean syntax</must_not>
-  <must_not>Use checkmark, cross mark, or warning emojis</must_not>
-  <must_not>Use any Unicode emoji characters in artifacts</must_not>
   <must_not>Return without validating artifacts</must_not>
   <must_not>Pre-create empty directories or placeholder files</must_not>
 </constraints>
@@ -691,8 +683,6 @@ temperature: 0.2
   <post_execution>
     - Verify all Lean files written
     - Verify summary artifact created and validated (3-5 sentences, <100 tokens)
-    - Verify artifact contains no emoji characters
-    - Verify summary contains no emoji characters
     - Verify all status indicators use text format ([PASS]/[FAIL]/[WARN])
     - Verify TODO.md status updated to [COMPLETED]/[PARTIAL]/[BLOCKED] with timestamps
     - Verify state.json updated with project status and artifacts

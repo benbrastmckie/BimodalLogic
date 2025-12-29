@@ -368,14 +368,12 @@ temperature: 0.3
          - Next steps for implementation
          - Tool status (Loogle available/unavailable)
          
-         Validation BEFORE writing:
-         a. Count tokens: Use chars ÷ 3 estimation
-         b. Verify token count <100 tokens (~400 chars max)
-         c. Count sentences: Split on '. ' and verify 3-5 sentences
-         d. Verify no emojis in content (scan for emoji unicode ranges U+1F300-U+1F9FF, U+2600-U+26FF, U+2700-U+27BF)
-         e. If validation fails: Revise summary to meet requirements
-         f. Only write summary after validation passes
-         g. If emojis detected: Remove emojis and re-validate
+          Validation BEFORE writing:
+          a. Count tokens: Use chars ÷ 3 estimation
+          b. Verify token count <100 tokens (~400 chars max)
+          c. Count sentences: Split on '. ' and verify 3-5 sentences
+          d. If validation fails: Revise summary to meet requirements
+          e. Only write summary after validation passes
       
       4. Log Loogle usage (when available):
          - Queries executed
@@ -390,16 +388,14 @@ temperature: 0.3
       Summary requirements:
       - Format: 3-5 sentences
       - Token limit: <100 tokens (~400 chars)
-      - No emojis
       - Focus on key findings, recommendations, next steps
       
       Validation process:
       1. Draft summary content
       2. Count tokens: len(summary) ÷ 3
       3. Count sentences: summary.split('. ')
-      4. Check for emojis: Scan for emoji unicode ranges
-      5. If any check fails: Revise and re-validate
-      6. Only write summary after all checks pass
+      4. If any check fails: Revise and re-validate
+      5. Only write summary after all checks pass
       
       Example valid summary:
       "Research identified 7 Lean libraries for modal logic. Found 12 relevant theorems in mathlib for S4 axioms. Loogle CLI successfully queried 8 type patterns with 25 total hits. Recommended using Kripke.Frame and Modal.Axioms modules. Next step: Create implementation plan using found theorems."
@@ -726,7 +722,6 @@ temperature: 0.3
       Summary artifact requirements:
       - 3-5 sentences
       - <100 tokens (~400 chars)
-      - No emojis
       - Validated before writing
       
       Return object summary field is separate metadata (<100 tokens) for immediate context.
@@ -742,14 +737,12 @@ temperature: 0.3
   <must>Add timestamps to TODO.md (**Started**, **Completed** in YYYY-MM-DD format)</must>
   <must>Update state.json with project status and artifacts</must>
   <must>Create project state.json with research artifacts</must>
-  <must>Create summary artifact (3-5 sentences, <100 tokens, no emojis)</must>
-  <must>Validate summary artifact before writing (token count, sentence count, no emojis)</must>
+  <must>Create summary artifact (3-5 sentences, <100 tokens)</must>
+  <must>Validate summary artifact before writing (token count, sentence count)</must>
   <must>Validate summary artifact before returning (exists, non-empty, within limits)</must>
   <must>Use lazy directory creation (create only when writing artifacts)</must>
   <must>Load Lean context from .opencode/context/project/lean4/</must>
-  <must>Follow NO EMOJI standard per documentation.md</must>
   <must>Use text-based alternatives for status indicators</must>
-  <must>Validate artifacts are emoji-free before returning</must>
   <must>Check tool availability before attempting integration</must>
   <must>Log tool unavailability to errors.json</must>
   <must>Use web search fallback when tools unavailable</must>
@@ -758,8 +751,6 @@ temperature: 0.3
   <must_not>Fail research if specialized tools unavailable</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Include general programming advice (focus on Lean)</must_not>
-  <must_not>Use checkmark, cross mark, or warning emojis</must_not>
-  <must_not>Use any Unicode emoji characters in artifacts</must_not>
   <must_not>Pre-create empty directories or placeholder files</must_not>
   <must_not>Return without validating summary artifact</must_not>
 </constraints>
@@ -836,7 +827,7 @@ temperature: 0.3
   <artifact_pattern>
     Two-file output: Research report + summary artifact.
     Summary artifact is REQUIRED to protect orchestrator context window.
-    Summary must be validated (3-5 sentences, <100 tokens, no emojis) before writing.
+    Summary must be validated (3-5 sentences, <100 tokens) before writing.
     Return object summary field is separate metadata (<100 tokens).
     
     Reference: artifact-management.md "Summary Artifact Requirements"
@@ -948,7 +939,6 @@ temperature: 0.3
     - Path: summaries/research-summary.md
     - Format: 3-5 sentences
     - Token limit: <100 tokens (~400 chars)
-    - No emojis
     - Validated before writing
     
     Summary metadata in return object:
@@ -1019,7 +1009,6 @@ temperature: 0.3
     - Actionable recommendations
     - Complete references (links, citations)
     - No generic programming advice
-    - No emojis
   </report_quality>
 
   <return_format_quality>
@@ -1224,7 +1213,7 @@ temperature: 0.3
 
   <post_flight>
     - Research report created and valid Markdown
-    - Summary artifact created and validated (3-5 sentences, <100 tokens, no emojis)
+    - Summary artifact created and validated (3-5 sentences, <100 tokens)
     - TODO.md status updated to [RESEARCHED] with timestamps
     - state.json updated with project status and artifacts
     - Project state.json created with research artifacts
