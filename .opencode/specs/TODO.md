@@ -16,11 +16,15 @@
 
 ### 229. Review and optimize orchestrator-command integration for context efficiency
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md]
 - **Files Affected**:
   - .opencode/agent/orchestrator.md
   - .opencode/command/research.md
@@ -108,7 +112,7 @@
 
 ### 227. Fix systematic status-sync-manager TODO.md update failures across all workflow commands
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Priority**: High
@@ -116,6 +120,7 @@
 - **Blocking**: None
 - **Dependencies**: None
 - **Research Artifacts**:
+- **Plan**: [.opencode/specs/227_fix_systematic_status_sync_manager_failures/plans/implementation-001.md]
   - Main Report: [.opencode/specs/227_fix_systematic_status_sync_manager_failures/reports/research-001.md]
 - **Files Affected**:
   - .opencode/agent/subagents/status-sync-manager.md
@@ -129,7 +134,7 @@
   - .opencode/agent/subagents/lean-implementation-agent.md
   - .opencode/context/common/workflows/command-lifecycle.md
   - .opencode/context/common/system/status-markers.md
-- **Description**: CRITICAL BUG - Systematic investigation reveals that ALL workflow commands (/research, /plan, /revise, /implement) fail to properly update TODO.md task statuses despite successfully updating state.json. Example manifestation: /research 224 completed successfully, created research-001.md artifact, updated state.json to "status": "researched", created project state.json - BUT TODO.md still shows "- **Status**: [NOT STARTED]" instead of "- **Status**: [RESEARCHED]". This indicates status-sync-manager is either (1) not being invoked by commands despite specification in command files, (2) failing silently when invoked, or (3) completing state.json updates but failing TODO.md updates in the two-phase commit. Root cause analysis required to identify which commands delegate properly vs perform manual updates, which fail to invoke status-sync-manager, and whether status-sync-manager itself has bugs in TODO.md update logic. The fix must ensure 100% atomic updates across TODO.md + state.json + project state.json for all 4 workflow commands, with proper error handling, rollback on failures, and validation that updates actually complete. This is distinct from task 221 which addressed missing delegation - this task focuses on fixing the update mechanism itself when delegation occurs. Investigation steps: (1) Audit actual command execution vs specification to identify delegation gaps, (2) Review status-sync-manager TODO.md update logic for bugs, (3) Add validation that status-sync-manager actually completes TODO.md updates, (4) Implement comprehensive error handling and rollback, (5) Add logging to trace update failures, (6) Test with real tasks to verify 100% update success rate.
+- **Description**: CRITICAL BUG - Systematic investigation reveals that ALL workflow commands (/research, /plan, /revise, /implement) fail to properly update TODO.md task statuses despite successfully updating state.json. Example manifestation: /research 224 completed successfully, created research-001.md artifact, updated state.json to "status": "researched", created project state.json - BUT TODO.md still shows "- **Status**: [NOT STARTED]" instead of "- **Status**: [PLANNED]". This indicates status-sync-manager is either (1) not being invoked by commands despite specification in command files, (2) failing silently when invoked, or (3) completing state.json updates but failing TODO.md updates in the two-phase commit. Root cause analysis required to identify which commands delegate properly vs perform manual updates, which fail to invoke status-sync-manager, and whether status-sync-manager itself has bugs in TODO.md update logic. The fix must ensure 100% atomic updates across TODO.md + state.json + project state.json for all 4 workflow commands, with proper error handling, rollback on failures, and validation that updates actually complete. This is distinct from task 221 which addressed missing delegation - this task focuses on fixing the update mechanism itself when delegation occurs. Investigation steps: (1) Audit actual command execution vs specification to identify delegation gaps, (2) Review status-sync-manager TODO.md update logic for bugs, (3) Add validation that status-sync-manager actually completes TODO.md updates, (4) Implement comprehensive error handling and rollback, (5) Add logging to trace update failures, (6) Test with real tasks to verify 100% update success rate.
 - **Acceptance Criteria**:
   - [ ] Root cause analysis completed identifying exact failure point (delegation gap vs status-sync-manager bug)
   - [ ] All 4 workflow commands audited for actual vs specified delegation to status-sync-manager

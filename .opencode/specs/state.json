@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-29T00:50:44Z",
+  "_last_updated": "2025-12-29T00:58:00Z",
   "next_project_number": 230,
   "project_numbering": {
     "min": 0,
@@ -229,8 +229,8 @@
       "project_number": 227,
       "project_name": "fix_systematic_status_sync_manager_failures",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-29T00:00:00Z",
@@ -239,7 +239,16 @@
       "last_updated": "2025-12-29",
       "artifacts": [
         ".opencode/specs/227_fix_systematic_status_sync_manager_failures/reports/research-001.md"
-      ]
+      ],
+      "planning_completed": "2025-12-29",
+      "plan_path": ".opencode/specs/227_fix_systematic_status_sync_manager_failures/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 6,
+        "estimated_hours": 11,
+        "complexity": "medium"
+      },
+      "estimated_hours": 11.0,
+      "phases": 6
     }
   ],
   "completed_projects": [
@@ -426,6 +435,10 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-29T01:15:00Z",
+      "activity": "Marked task 229 as RESEARCHED: Orchestrator-command integration research completed - Identified critical routing flaw (orchestrator bypasses commands), 60-70% context bloat, 100% workflow failure. Fix: route to commands not subagents. Resolves tasks 227/228."
+    },
     {
       "timestamp": "2025-12-29T00:50:44Z",
       "activity": "Created task 229: Review and optimize orchestrator-command integration for context efficiency (6-8 hours, High priority, markdown)"
@@ -786,7 +799,7 @@
         "Logos/Core/Semantics/Truth.lean"
       ],
       "implementation_notes": "BLOCKED after exhaustive attempts. Helper lemma truth_at_swap_swap complete (all 6 cases). Main theorem unprovable with current approach - truth_at pattern matching prevents equality transport. All strategies from plans v2/v3 failed. Requires expert consultation.",
-      "blocking_reason": "Fundamental type theory limitation - truth_at pattern matching prevents transport along \u03c6.swap.swap = \u03c6 equality. Exhausted all recommended approaches."
+      "blocking_reason": "Fundamental type theory limitation - truth_at pattern matching prevents transport along φ.swap.swap = φ equality. Exhausted all recommended approaches."
     },
     {
       "project_number": 194,
