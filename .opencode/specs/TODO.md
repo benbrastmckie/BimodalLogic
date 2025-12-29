@@ -60,18 +60,31 @@ Implement Phase 1 of OpenAgents architectural migration: Create lazy-loading con
 - **Status**: [PARTIAL]
 - **Started**: 2025-12-29
 - **Phase 1 Completed**: 2025-12-29
+- **Phase 2 Completed**: 2025-12-29
+- **Phase 3 Completed**: 2025-12-29
+- **Phase 4 Completed**: 2025-12-29
+- **Phase 5 Completed**: 2025-12-29
+- **Phase 8 Completed**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: Task 244 (Phase 1 completed and validated)
 - **Research**: [Research Report](.opencode/specs/245_phase2_core_architecture/reports/research-001.md)
 - **Plan**: [Implementation Plan](.opencode/specs/245_phase2_core_architecture/plans/implementation-001.md)
+- **Validation**: [Validation Report](.opencode/specs/245_phase2_core_architecture/reports/validation-001.md)
 - **Artifacts**:
   - [Backup Script](.opencode/backups/phase2/backup-phase2-files.sh)
   - [Context Measurement Script](.opencode/backups/phase2/measure-context-usage.sh)
   - [Stage 7 Validation Script](.opencode/backups/phase2/validate-stage7.sh)
   - [Command Rollback Script](.opencode/backups/phase2/rollback-command.sh)
   - [Orchestrator Rollback Script](.opencode/backups/phase2/rollback-orchestrator.sh)
+  - [Plan Command](.opencode/command/plan.md)
+  - [Planner Agent](.opencode/agent/subagents/planner.md)
+  - [Revise Command](.opencode/command/revise.md)
+  - [Implement Command](.opencode/command/implement.md)
+  - [Implementer Agent](.opencode/agent/subagents/implementer.md)
+  - [Orchestrator](.opencode/agent/orchestrator.md) (66 lines, 94% reduction)
+  - [Orchestrator Guide](.opencode/context/system/orchestrator-guide.md) (502 lines)
   - [Implementation Summary](.opencode/specs/245_phase2_core_architecture/summaries/implementation-summary-20251229.md)
 
 **Description**:
