@@ -110,6 +110,43 @@ All errors are logged to errors.json with:
 
 The /errors command analyzes patterns and creates fix plans automatically.
 
+### 6. Smart Coordinator Pattern
+
+The orchestrator acts as a smart coordinator with minimal context:
+
+- **Preflight Validation**: Validates task exists, checks delegation safety
+- **Language Extraction**: Extracts language from project state.json or TODO.md
+- **Routing**: Determines target agent based on language and command configuration
+- **Delegation**: Invokes agent with prepared context
+- **Return Validation**: Validates agent return format
+- **Postflight Cleanup**: Cleans up session registry
+
+The orchestrator stays lightweight (<5% context window) by delegating all workflow logic to specialized agents.
+
+### 7. Clean Context Organization
+
+Context files are organized into `core/` (reusable) and `project/` (domain-specific):
+
+**core/**:
+- `standards/` - Return formats, templates, quality standards
+- `workflows/` - Delegation patterns, status transitions, error handling
+- `system/` - Routing rules, orchestrator guide, validation strategy
+- `templates/` - Command and agent templates
+
+**project/**:
+- `lean4/` - Lean 4 theorem proving (syntax, tools, patterns)
+- `logic/` - Modal and temporal logic domain knowledge
+- `math/` - Mathematical domains (algebra, topology, etc.)
+- `physics/` - Physics domains (dynamical systems)
+- `repo/` - Repository-specific knowledge
+
+This enables:
+- **Three-Tier Loading**: Orchestrator (minimal), Commands (targeted), Agents (domain-specific)
+- **Context Budget Enforcement**: Each tier has defined size limits
+- **Clear Separation**: Core context is reusable, project context is ProofChecker-specific
+
+See `.opencode/context/core/system/context-loading-strategy.md` for details.
+
 ---
 
 ## Component Hierarchy

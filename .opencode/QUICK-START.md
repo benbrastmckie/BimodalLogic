@@ -121,6 +121,50 @@ When errors occur, analyze and create fix plans:
 
 ---
 
+## How Commands Work
+
+### Command Flow
+
+1. **User invokes command**: `/plan 244`
+2. **Orchestrator parses**: Extracts task number, reads command file
+3. **Preflight validation**: Checks task exists, delegation safety
+4. **Routing**: Extracts language, determines target agent
+5. **Delegation**: Invokes agent with context
+6. **Validation**: Validates agent return format
+7. **Return**: Formats and returns result to user
+
+### Language-Based Routing
+
+Some commands route to different agents based on task language:
+
+**`/research`**:
+- Lean tasks → lean-research-agent (with LeanSearch, Loogle, LSP)
+- Other tasks → researcher (with web search, docs)
+
+**`/implement`**:
+- Lean tasks → lean-implementation-agent (with LSP, lake build)
+- Other tasks → implementer (with general file operations)
+
+**Language extracted from**:
+1. Project state.json (if exists)
+2. TODO.md task entry (**Language** field)
+3. Default "general" (if not found)
+
+### Command Types
+
+**Workflow Commands** (delegate to agents):
+- `/research` - Conduct research
+- `/plan` - Create implementation plan
+- `/implement` - Execute implementation
+- `/revise` - Revise existing artifacts
+- `/review` - Analyze codebase
+
+**Direct Commands** (orchestrator handles):
+- `/task` - Create new task
+- `/todo` - Archive completed tasks
+
+---
+
 ## Command Reference
 
 ### /task - Create Tasks

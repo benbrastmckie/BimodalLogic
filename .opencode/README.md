@@ -125,6 +125,33 @@ Version 2.0 is a complete clean-break refactor addressing critical issues:
 
 **New System**: Automatic resume from last completed phase.
 
+### 9. Smart Coordinator Pattern
+
+**Old System**: Orchestrator was either too simple (just routing) or too complex (workflow execution).
+
+**New System**: Smart coordinator handles preflight/postflight while staying simple:
+- Preflight: Validate task exists, check delegation safety
+- Routing: Extract language, determine target agent
+- Postflight: Cleanup session, format return
+
+### 10. Language-Based Routing
+
+**Old System**: Manual routing, no language awareness.
+
+**New System**: Automatic routing based on task language:
+- Lean tasks → lean-specific agents with LSP integration
+- Other tasks → general agents
+- Language extracted from project state.json or TODO.md
+
+### 11. Clean Context Organization
+
+**Old System**: Scattered context files, unclear organization.
+
+**New System**: Clean `core/` and `project/` hierarchy:
+- core/ - General, reusable context
+- project/ - ProofChecker-specific domain knowledge
+- Three-tier loading strategy with budget enforcement
+
 ---
 
 ## Quick Start
