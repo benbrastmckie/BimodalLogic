@@ -64,16 +64,21 @@ CRITICAL BLOCKER - Without reliable Stage 7 execution, the entire workflow syste
 ---
 
 ### 237. Investigate and systematically fix context window bloat in workflow commands
-- **Effort**: 10-15 hours
-- **Status**: [PLANNED]
+- **Effort**: 28-42 hours (revised from research)
+- **Status**: [PARTIAL]
 - **Started**: 2025-12-29
 - **Researched**: 2025-12-29
 - **Planned**: 2025-12-29
+- **Implementing**: 2025-12-28
 - **Priority**: Critical
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/reports/research-001.md)
+- **Implementation Summary**: [Summary](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/summaries/implementation-summary-20251228.md)
+- **Phases Completed**: 1 of 4
+- **Phase 1 Status**: [COMPLETED] - Eliminated 56KB orchestrator context duplication (28% reduction)
+- **Phase 2 Status**: [IN PROGRESS] - Proof-of-concept created, requires orchestrator architectural changes
 - **Plan**: [Implementation Plan](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md)
 
 **Description**:
@@ -96,7 +101,11 @@ Root cause identified: Commands load 78-86KB during routing (39-43% of budget) d
 - [x] Baseline context usage measured for each workflow command at execution stage
 - [x] Context loading profiled - identify what consumes the 58% before work begins
 - [x] Solution designed to defer context loading to appropriate stage
-- [ ] Orchestrator routing optimized to use <10% context (minimal routing info only)
+- [x] **Phase 1 Complete**: Orchestrator context duplication eliminated (56KB / 28% reduction)
+- [ ] **Phase 2**: Command files split into routing and execution (72-104KB additional reduction) - IN PROGRESS
+- [ ] **Phase 3**: Selective TODO.md loading implemented (107KB additional reduction)
+- [ ] **Phase 4**: Aggressive command deduplication (56-72KB additional reduction)
+- [ ] Orchestrator routing optimized to use <10% context (Phase 1: 28% reduction achieved, need Phases 2-4 for <10% target)
 - [ ] Command execution stage loads full context only when needed
 - [ ] Language detection remains lightweight (bash grep only, no heavy context)
 - [ ] All 4 commands tested: context <15% at routing, appropriate usage at execution
@@ -146,14 +155,16 @@ Maintains repository consistency and professional standards. Emojis can cause pa
 
 ### 236. Investigate and fix task standard violations in TODO.md tasks 1-9
 - **Effort**: 4 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-29
-- **Completed**: 2025-12-29
+- **Researched**: 2025-12-29
+- **Planned**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/plans/implementation-001.md)
 
 **Description**:
 Tasks 1-9 in .opencode/specs/TODO.md do not follow the task standards defined in .opencode/context/common/standards/tasks.md. These tasks are missing required metadata fields including **Language**, and have non-standard formatting (using * instead of - for metadata bullets). Investigation needed to determine: (1) How these tasks were created (which command or agent), (2) Why task standards were not enforced at creation time, (3) Implement a fix to enforce task standards for all task creation mechanisms. The task standards require: Task ID from state.json, Title format "### {ID}. {Title}", Required metadata (Language is mandatory per line 110 quality checklist), Auto-populated defaults for Priority/Language/Effort/etc., Proper formatting with - bullets not *. Tasks 1-9 use format like "*Effort**: ..." and "*Status**: ..." instead of "- **Effort**: ..." and "- **Status**: ..." and are completely missing the **Language** field which is required.
