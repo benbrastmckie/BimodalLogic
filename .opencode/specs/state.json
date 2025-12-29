@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-29T05:14:32.850966Z",
-  "next_project_number": 236,
+  "_last_updated": "2025-12-29T05:28:00Z",
+  "next_project_number": 237,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -356,8 +356,8 @@
       "project_number": 234,
       "project_name": "systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts",
       "type": "enhancement",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-29T02:30:00Z",
@@ -367,7 +367,8 @@
       "last_updated": "2025-12-29",
       "artifacts": [
         ".opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/reports/research-001.md",
-        ".opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/plans/implementation-001.md"
+        ".opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/plans/implementation-001.md",
+        ".opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/summaries/implementation-summary-20251228.md"
       ],
       "estimated_hours": 8.0,
       "plan_path": ".opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/plans/implementation-001.md",
@@ -375,7 +376,32 @@
         "phase_count": 7,
         "estimated_hours": 8,
         "complexity": "medium"
-      }
+      },
+      "completed": "2025-12-29",
+      "phases": 7,
+      "files_modified": [
+        ".opencode/command/research.md",
+        ".opencode/command/plan.md",
+        ".opencode/command/implement.md",
+        ".opencode/command/revise.md",
+        ".opencode/context/common/workflows/command-lifecycle.md"
+      ]
+    },
+    {
+      "project_number": 235,
+      "project_name": "find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks",
+      "type": "bugfix",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2025-12-29T05:20:00Z",
+      "started": "2025-12-29",
+      "research_completed": "2025-12-29",
+      "last_updated": "2025-12-29",
+      "artifacts": [
+        ".opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/reports/research-001.md"
+      ]
     }
   ],
   "completed_projects": [
@@ -450,7 +476,7 @@
       "project_name": "resolve_is_valid_swap_involution_blocker",
       "type": "research",
       "completed": "2025-12-29",
-      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas \u2192 Soundness). Full soundness proof succeeds."
+      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas → Soundness). Full soundness proof succeeds."
     },
     {
       "project_number": 214,
@@ -485,7 +511,7 @@
       "started": "2025-12-26",
       "completed": "2025-12-29",
       "last_updated": "2025-12-29",
-      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 \u2192 571 lines, +113 lines)",
+      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 → 571 lines, +113 lines)",
       "artifacts": [
         ".opencode/specs/190_improve_maintenance_md_documentation/plans/implementation-002.md",
         ".opencode/specs/190_improve_maintenance_md_documentation/summaries/implementation-summary-20251229.md",
@@ -609,6 +635,10 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-29T05:28:00.000000Z",
+      "activity": "Created task 236: Investigate and fix task standard violations in TODO.md tasks 1-9 (4 hours effort, High priority, markdown)"
+    },
     {
       "timestamp": "2025-12-29T05:20:00.000000Z",
       "activity": "Created task 235: Find and fix root cause of /todo command not archiving completed tasks (TBD effort, High priority, markdown)"
@@ -796,7 +826,7 @@
       "modified_files": [
         "Logos/Core/Semantics/Truth.lean"
       ],
-      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T \u03c6.swap \u2192 is_valid T \u03c6 is semantically FALSE for arbitrary formulas. Counterexample: \u03c6 = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
+      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T φ.swap → is_valid T φ is semantically FALSE for arbitrary formulas. Counterexample: φ = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
       "blocking_reason": "Theorem is semantically false for arbitrary formulas (proven by task 213). Not a type theory limitation but a fundamental logical impossibility. Task correctly marked impossible."
     },
     {

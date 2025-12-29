@@ -14,8 +14,8 @@
 
 ## High Priority
 
-### 235. Find and fix root cause of /todo command not archiving completed tasks
-- **Effort**: TBD
+### 236. Investigate and fix task standard violations in TODO.md tasks 1-9
+- **Effort**: 4 hours
 - **Status**: [NOT STARTED]
 - **Priority**: High
 - **Language**: markdown
@@ -23,10 +23,42 @@
 - **Dependencies**: None
 
 **Description**:
-The /todo command is supposed to archive completed and abandoned tasks from .opencode/specs/TODO.md, but investigation reveals 24 [COMPLETED] tasks that were not archived despite running /todo. Root cause needs to be identified and fixed. Current state: TODO.md contains 57 total tasks with 24 having [COMPLETED] status. These should have been moved to archive/state.json and their project directories should have been moved to .opencode/specs/archive/. The command specification at .opencode/command/todo.md appears correct with proper 7-stage workflow including ScanTODO, ConfirmArchival, PrepareArchival, PrepareUpdates, AtomicUpdate, GitCommit, and ReturnSuccess. Possible causes: (1) Stage 1 ScanTODO may not be correctly identifying [COMPLETED] tasks, (2) Stage 2 ConfirmArchival may be blocking execution if threshold exceeded without user confirmation, (3) Stage 4 PrepareUpdates task block removal logic may have bugs, (4) Stage 5 AtomicUpdate two-phase commit may be failing silently, (5) Command may not have been invoked at all (user confusion), (6) Command may have returned early with "No tasks to archive" despite completed tasks existing.
+Tasks 1-9 in .opencode/specs/TODO.md do not follow the task standards defined in .opencode/context/common/standards/tasks.md. These tasks are missing required metadata fields including **Language**, and have non-standard formatting (using * instead of - for metadata bullets). Investigation needed to determine: (1) How these tasks were created (which command or agent), (2) Why task standards were not enforced at creation time, (3) Implement a fix to enforce task standards for all task creation mechanisms. The task standards require: Task ID from state.json, Title format "### {ID}. {Title}", Required metadata (Language is mandatory per line 110 quality checklist), Auto-populated defaults for Priority/Language/Effort/etc., Proper formatting with - bullets not *. Tasks 1-9 use format like "*Effort**: ..." and "*Status**: ..." instead of "- **Effort**: ..." and "- **Status**: ..." and are completely missing the **Language** field which is required.
 
 **Acceptance Criteria**:
-- [ ] Root cause identified through investigation
+- [ ] Identify which command/agent created tasks 1-9 (likely /task, /review, or manual entry)
+- [ ] Review task creation code in identified command/agent for standards enforcement
+- [ ] Implement validation to enforce task standards (required fields, formatting, Language field)
+- [ ] Update tasks 1-9 to comply with task standards (add Language field, fix bullet formatting)
+- [ ] Add pre-flight validation to /task command to reject non-compliant task creation
+- [ ] Add post-flight validation to /review command to ensure created tasks are compliant
+- [ ] Test task creation with validation enabled
+- [ ] Document task standard enforcement in relevant command files
+
+**Impact**:
+Ensures all tasks in TODO.md follow consistent standards, making them easier to parse, track, and process by automation tools. Missing Language field prevents proper routing to Lean-specific agents.
+
+---
+
+### 235. Find and fix root cause of /todo command not archiving completed tasks
+- **Effort**: TBD
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research**: [Research Report](.opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/reports/research-001.md)
+
+**Description**:
+The /todo command is supposed to archive completed and abandoned tasks from .opencode/specs/TODO.md, but investigation reveals 24 [COMPLETED] tasks that were not archived despite running /todo. Root cause needs to be identified and fixed. Current state: TODO.md contains 57 total tasks with 24 having [COMPLETED] status. These should have been moved to archive/state.json and their project directories should have been moved to .opencode/specs/archive/. The command specification at .opencode/command/todo.md appears correct with proper 7-stage workflow including ScanTODO, ConfirmArchival, PrepareArchival, PrepareUpdates, AtomicUpdate, GitCommit, and ReturnSuccess. Possible causes: (1) Stage 1 ScanTODO may not be correctly identifying [COMPLETED] tasks, (2) Stage 2 ConfirmArchival may be blocking execution if threshold exceeded without user confirmation, (3) Stage 4 PrepareUpdates task block removal logic may have bugs, (4) Stage 5 AtomicUpdate two-phase commit may be failing silently, (5) Command may not have been invoked at all (user confusion), (6) Command may have returned early with "No tasks to archive" despite completed tasks existing.
+
+**Research Findings**:
+Root cause identified: **Incomplete TODO.md updates during archival**. The /todo command successfully moves tasks to archive/state.json and archive/ directories, but fails to remove their entries from TODO.md. Secondary issue: Status marker format inconsistency (88% of completed tasks use non-standard formats like ✅ emoji or no brackets). Solution: Manual cleanup of duplicate entries + standardize status markers + systematic fix to Stage 4/5 TODO.md update logic.
+
+**Acceptance Criteria**:
+- [x] Root cause identified through investigation
 - [ ] Bug fix implemented if command has defect
 - [ ] All 24 [COMPLETED] tasks successfully archived
 - [ ] Project directories moved to .opencode/specs/archive/
@@ -44,7 +76,7 @@ Critical for maintaining clean TODO.md and ensuring completed tasks are properly
 
 ### 234. Systematically improve all commands to protect context window and eliminate confirmation prompts ✅
 - **Effort**: 8 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Priority**: High
@@ -514,7 +546,7 @@ Keeps implementation status and registries synchronized, reducing drift and miss
 
 ### 172. Complete API documentation for all Logos modules
 **Effort**: 30 hours
-**Status**: [PLANNED]
+**Status**: [COMPLETED]
 **Started**: 2025-12-24
 **Completed**: 2025-12-24
 **Priority**: High
@@ -1129,7 +1161,7 @@ Research successfully completed and definitively identified that the theorem is 
 
 ### 210. Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md
 **Effort**: 6-8 hours
-**Status**: [PLANNED]
+**Status**: [COMPLETED]
 **Started**: 2025-12-28
 **Completed**: 2025-12-29
 **Priority**: Medium
@@ -1160,9 +1192,7 @@ Fix both Lean subagents (lean-research-agent and lean-implementation-agent) to f
 **Impact**:
 Ensures Lean subagents properly maintain TODO.md, state.json, and artifact files according to project standards, improving consistency and reliability of automated workflows.
 
----
-
----
+--
 
 ### 211. ✅ Standardize command lifecycle procedures across research, planning, and implementation workflows
 - **Effort**: 18 hours

@@ -1,0 +1,19 @@
+{
+  "project_name": "find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks",
+  "project_number": 235,
+  "type": "bugfix",
+  "phase": "research_completed",
+  "reports": [
+    {
+      "type": "research_report",
+      "path": ".opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/reports/research-001.md",
+      "summary": "Root cause identified: Incomplete TODO.md updates during archival. The /todo command successfully moves tasks to archive/state.json and archive/ directories, but fails to remove their entries from TODO.md. Secondary issue: Status marker format inconsistency (88% of completed tasks use non-standard formats).",
+      "created": "2025-12-29"
+    }
+  ],
+  "plans": [],
+  "summaries": [],
+  "status": "researched",
+  "created": "2025-12-29T05:20:00Z",
+  "last_updated": "2025-12-29"
+}
