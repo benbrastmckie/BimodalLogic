@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2025-12-28T23:28:52.938257",
+  "_last_updated": "2025-12-29T18:18:49.944874",
   "archived_projects": [
     {
       "project_number": 126,
@@ -1005,6 +1005,48 @@
       "summary": "Implement Phase 2 from task 237 implementation plan (split command files into routing and execution)",
       "artifacts": {
         "base_path": ".opencode/specs/archive/242_implement_phase_2_from_task_237_implementation_pla/"
+      },
+      "completed": "2025-12-29"
+    },
+    {
+      "project_number": 244,
+      "project_name": "phase_1_context_index_and_research_frontmatter_prototype",
+      "type": "implementation",
+      "status": "completed",
+      "created": "2025-12-28T23:24:32Z",
+      "started": "2025-12-29",
+      "archived": "2025-12-29",
+      "summary": "Task 244",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/244_phase_1_context_index_and_research_frontmatter_prototype/"
+      },
+      "completed": "2025-12-29"
+    },
+    {
+      "project_number": 245,
+      "project_name": "phase_2_core_architecture_migrate_all_commands_and_simplify_orchestrator",
+      "type": "implementation",
+      "status": "completed",
+      "created": "2025-12-29T00:00:00Z",
+      "started": "2025-12-29",
+      "archived": "2025-12-29",
+      "summary": "Task 245",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/245_phase_2_core_architecture_migrate_all_commands_and_simplify_orchestrator/"
+      },
+      "completed": "2025-12-29"
+    },
+    {
+      "project_number": 247,
+      "project_name": "phase_4_testing_and_documentation",
+      "type": "implementation",
+      "status": "completed",
+      "created": "2025-12-29T17:30:55Z",
+      "started": "2025-12-29",
+      "archived": "2025-12-29",
+      "summary": "Task 247",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/247_phase_4_testing_and_documentation/"
       },
       "completed": "2025-12-29"
     }

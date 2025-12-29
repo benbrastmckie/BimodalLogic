@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-12-29T09:56:08-08:00",
+  "total_tests": 80,
+  "total_passed": 0,
+  "total_failed": 80,
+  "success_rate": 0,
+  "per_command": {
+    "research": "0/20 (0%)",
+    "plan": "0/20 (0%)",
+    "implement": "0/20 (0%)",
+    "revise": "0/20 (0%)"
+  },
+  "status": "FAIL"
+}
