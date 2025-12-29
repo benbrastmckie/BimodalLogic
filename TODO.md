@@ -272,6 +272,69 @@ Ensures all commands and agents fully comply with metadata passing standards for
 
 ---
 
+### 222. ✅ Investigate and fix artifact path errors
+- **Effort**: 3 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/222_investigate_artifact_path_errors/reports/research-001.md]
+- **Plan**: [Implementation Plan](.opencode/specs/222_investigate_artifact_path_errors/plans/implementation-001.md)
+- **Plan Summary**: 6-phase implementation (3 hours). Phase 1: Fix lean-research-agent.md path pattern (0.5h). Phase 2: Migrate project 213 test migration (0.5h). Phase 3: Migrate projects 215 and 218 (0.5h). Phase 4: Update state.json references (0.5h). Phase 5: Cleanup and verification (0.5h). Phase 6: Integration test and documentation (0.5h). Fixes 4 path patterns in lean-research-agent.md and migrates 3 misplaced projects.
+- **Implementation Summary**: [.opencode/specs/222_investigate_artifact_path_errors/summaries/implementation-summary-20251228.md]
+- **Implementation Artifacts**:
+  - .opencode/agent/subagents/lean-research-agent.md (fixed 4 path patterns)
+  - .opencode/specs/213_resolve_is_valid_swap_involution_blocker/ (migrated from /specs/)
+  - .opencode/specs/215_fix_todo_task_removal/ (migrated from /specs/)
+  - .opencode/specs/218_fix_lean_lsp_mcp_integration/ (migrated from /specs/)
+  - TODO.md (updated artifact links for task 213)
+
+**Files Affected**:
+- .opencode/agent/subagents/lean-research-agent.md
+- TODO.md
+- .opencode/specs/state.json
+
+**Description**:
+Fixed artifact path creation errors where Lean research tasks created artifacts in `/specs/` instead of `/.opencode/specs/`. Root cause: 4 path patterns in lean-research-agent.md missing `.opencode/` prefix. Migrated 3 affected projects (213, 215, 218) to correct location and updated all artifact references. All 6 implementation phases completed successfully.
+
+**Acceptance Criteria**:
+- [x] lean-research-agent.md uses correct `.opencode/specs/` path pattern (4 patterns fixed)
+- [x] All 3 misplaced projects migrated to `.opencode/specs/`
+- [x] TODO.md artifact links updated and verified working
+- [x] state.json artifact paths updated (no changes needed - already correct)
+- [x] Empty /specs/ directory removed
+- [x] All subagents verified to use correct path patterns
+- [x] Implementation summary created
+
+**Impact**:
+Ensures all future Lean research tasks create artifacts in correct `.opencode/specs/` location. Fixes 3 existing projects with misplaced artifacts. Prevents future path confusion and maintains consistent artifact organization across all workflow commands.
+
+---
+
+### 224. Configure OpenCode to start in Orchestrator mode or auto-switch agent modes for workflow commands
+- **Effort**: TBD
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
+- **Priority**: Medium
+- **Language**: general
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/224_configure_opencode_default_agent/reports/research-001.md]
+- **Description**: Research how to configure OpenCode to start in Orchestrator mode by default or automatically switch agent modes when workflow commands are executed. Analyzed OpenCode agent system, command routing, and identified 4 potential solutions. Recommended solution: Add "default_agent": "orchestrator" to opencode.json configuration (minimal disruption, follows OpenCode conventions).
+- **Acceptance Criteria**:
+  - [x] OpenCode agent system architecture analyzed
+  - [x] Default agent configuration mechanism identified
+  - [x] Command routing behavior documented
+  - [x] 4 potential solutions evaluated
+  - [x] Recommended solution identified with implementation steps
+- **Impact**: Improves user experience by eliminating need to manually switch to Orchestrator mode before running workflow commands. Reduces errors from executing commands in wrong agent context.
+
+---
+
 ### 172. Complete API documentation for all Logos modules
 **Effort**: 30 hours
 **Status**: [PLANNED]

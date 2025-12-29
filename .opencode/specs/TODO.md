@@ -397,11 +397,12 @@
 - **Impact**: Provides more flexible research workflow - simple research creates focused reports without overhead of summary compilation, while complex research can be divided into manageable subtopics with a summary overview.
 
 
-### 222. Investigate and fix artifact creation in /specs instead of /.opencode/specs
+### 222. Investigate and fix artifact creation in /specs instead of /.opencode/specs ✅
 - **Effort**: 3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-28
 - **Planned**: 2025-12-28
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -410,6 +411,9 @@
   - Main Report: [.opencode/specs/222_investigate_artifact_path_errors/reports/research-001.md]
 - **Plan**: [.opencode/specs/222_investigate_artifact_path_errors/plans/implementation-001.md] (created 2025-12-28)
 - **Plan Summary**: 6-phase implementation (3 hours total). Phase 1: Fix lean-research-agent.md incorrect path pattern (line 497). Phase 2: Migrate project 213 as test case. Phase 3: Migrate projects 215 and 218. Phase 4: Update state.json references. Phase 5: Cleanup and verification. Phase 6: Integration testing and documentation. Root cause: specs/{task_slug} instead of .opencode/specs/{task_slug}.
+- **Implementation Artifacts**:
+  - lean-research-agent.md: [.opencode/agent/subagents/lean-research-agent.md] (fixed 4 path patterns)
+  - Implementation Summary: [.opencode/specs/222_investigate_artifact_path_errors/summaries/implementation-summary-20251228.md]
 - **Description**: Artifacts have started to be created in /home/benjamin/Projects/ProofChecker/specs/ instead of /home/benjamin/Projects/ProofChecker/.opencode/specs/. Investigate the root cause and which commands and subagents are responsible in order to implement a systematic fix to these issues. Confirmed affected project directories: 213_resolve_is_valid_swap_involution_blocker, 215_fix_todo_command_task_block_removal, 218_fix_lean_lsp_mcp_integration_and_opencode_module_import_errors. All artifacts should be created under .opencode/specs/ per artifact management standards.
 - **Acceptance Criteria**:
   - [ ] Root cause identified - which commands/subagents use wrong path

@@ -117,16 +117,45 @@
       "project_number": 222,
       "project_name": "investigate_artifact_path_errors",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-28T23:01:58Z",
       "started": "2025-12-28",
       "research_completed": "2025-12-28",
+      "planning_completed": "2025-12-28",
+      "completed": "2025-12-28",
       "last_updated": "2025-12-28",
       "artifacts": [
-        ".opencode/specs/222_investigate_artifact_path_errors/reports/research-001.md"
+        ".opencode/specs/222_investigate_artifact_path_errors/reports/research-001.md",
+        ".opencode/specs/222_investigate_artifact_path_errors/plans/implementation-001.md",
+        ".opencode/specs/222_investigate_artifact_path_errors/summaries/implementation-summary-20251228.md",
+        ".opencode/agent/subagents/lean-research-agent.md",
+        ".opencode/specs/213_resolve_is_valid_swap_involution_blocker/",
+        ".opencode/specs/215_fix_todo_task_removal/",
+        ".opencode/specs/218_fix_lean_lsp_mcp_integration/",
+        "TODO.md"
+      ],
+      "plan_path": ".opencode/specs/222_investigate_artifact_path_errors/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 6,
+        "estimated_hours": 3,
+        "complexity": "low"
+      },
+      "plan_versions": [
+        {
+          "version": 1,
+          "path": ".opencode/specs/222_investigate_artifact_path_errors/plans/implementation-001.md",
+          "created": "2025-12-28T15:30:00Z",
+          "reason": "Initial implementation plan"
+        }
+      ],
+      "estimated_hours": 3.0,
+      "phases": 6,
+      "files_modified": [
+        ".opencode/agent/subagents/lean-research-agent.md",
+        "TODO.md"
       ]
     },
     {
