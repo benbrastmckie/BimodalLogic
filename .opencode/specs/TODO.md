@@ -156,8 +156,8 @@
 - **Impact**: CRITICAL BLOCKER - Fixes systematic status tracking failure affecting ALL workflow commands. Currently state.json reflects correct status but TODO.md remains stale, causing confusion about task progress, breaking workflow dependencies (tasks appear NOT STARTED when actually RESEARCHED/PLANNED), and violating atomic update guarantees. This breaks the entire task tracking system's integrity. Essential for reliable project management and workflow execution. Builds on task 221's delegation fixes to ensure updates actually work when delegated.
 
 ### 228. Fix orchestrator routing to invoke commands instead of bypassing to subagents directly
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 4 hours
+- **Status**: [PLANNED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Priority**: High
@@ -166,6 +166,7 @@
 - **Dependencies**: None
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/reports/research-001.md]
+- **Plan**: [.opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/plans/implementation-001.md]
 - **Files Affected**:
   - .opencode/agent/orchestrator.md
   - .opencode/command/plan.md
