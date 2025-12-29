@@ -2,7 +2,7 @@
   "project_name": "fix_review_command",
   "project_number": 226,
   "type": "bugfix",
-  "phase": "research_completed",
+  "phase": "planning_completed",
   "reports": [
     {
       "path": ".opencode/specs/226_fix_review_command/reports/research-001.md",
@@ -10,7 +10,13 @@
       "summary": "Comprehensive analysis of 5 /review command issues with root causes, solutions, and implementation roadmap"
     }
   ],
-  "plans": [],
+  "plans": [
+    {
+      "path": ".opencode/specs/226_fix_review_command/plans/implementation-001.md",
+      "created": "2025-12-29",
+      "summary": "Implementation plan with 3 phases: Project Numbering and Task Creation (4h), Summary Formatting and Verbosity (2h), Context File Organization Cleanup (2h)"
+    }
+  ],
   "summaries": [],
   "status": "active",
   "created": "2025-12-29T00:37:19Z",

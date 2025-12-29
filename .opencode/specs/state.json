@@ -178,8 +178,8 @@
       "project_number": 226,
       "project_name": "fix_review_command",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-28T16:28:14Z",
@@ -187,8 +187,18 @@
       "research_completed": "2025-12-29",
       "last_updated": "2025-12-29",
       "artifacts": [
-        ".opencode/specs/226_fix_review_command/reports/research-001.md"
-      ]
+        ".opencode/specs/226_fix_review_command/reports/research-001.md",
+        ".opencode/specs/226_fix_review_command/plans/implementation-001.md"
+      ],
+      "planning_completed": "2025-12-29",
+      "plan_path": ".opencode/specs/226_fix_review_command/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 3,
+        "estimated_hours": 8,
+        "complexity": "medium"
+      },
+      "estimated_hours": 8.0,
+      "phases": 3
     }
   ],
   "completed_projects": [
@@ -731,7 +741,7 @@
         "Logos/Core/Semantics/Truth.lean"
       ],
       "implementation_notes": "BLOCKED after exhaustive attempts. Helper lemma truth_at_swap_swap complete (all 6 cases). Main theorem unprovable with current approach - truth_at pattern matching prevents equality transport. All strategies from plans v2/v3 failed. Requires expert consultation.",
-      "blocking_reason": "Fundamental type theory limitation - truth_at pattern matching prevents transport along \u03c6.swap.swap = \u03c6 equality. Exhausted all recommended approaches."
+      "blocking_reason": "Fundamental type theory limitation - truth_at pattern matching prevents transport along φ.swap.swap = φ equality. Exhausted all recommended approaches."
     },
     {
       "project_number": 194,

@@ -15,8 +15,8 @@
 ## High Priority
 
 ### 226. Fix /review command to use next_project_number, create matching task, include actionable follow-up tasks in summary, reduce verbosity, and improve context file organization
-- **Effort**: 8-10 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 8 hours
+- **Status**: [PLANNED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Priority**: High
@@ -25,6 +25,7 @@
 - **Dependencies**: None
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/226_fix_review_command/reports/research-001.md]
+- **Plan**: [.opencode/specs/226_fix_review_command/plans/implementation-001.md]
 - **Files Affected**:
   - .opencode/command/review.md
   - .opencode/agent/subagents/reviewer.md
@@ -60,11 +61,15 @@
 
 ### 227. Fix systematic status-sync-manager TODO.md update failures across all workflow commands
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/227_fix_systematic_status_sync_manager_failures/reports/research-001.md]
 - **Files Affected**:
   - .opencode/agent/subagents/status-sync-manager.md
   - .opencode/command/research.md
