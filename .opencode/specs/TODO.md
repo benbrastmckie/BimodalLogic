@@ -16,7 +16,7 @@
 
 ### 244. Phase 1: Context Index and /research Frontmatter Prototype (Task 240 OpenAgents Migration)
 - **Effort**: 12-16 hours
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Priority**: High
@@ -25,6 +25,8 @@
 - **Dependencies**: Task 240 (research completed)
 - **Research**: [Research Report 001](.opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/research-001.md)
 - **Plan**: [Implementation Plan 001](.opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/plans/implementation-001.md)
+- **Validation**: [Validation Report 001](.opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md)
+- **Summary**: [Implementation Summary](.opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/summaries/implementation-summary-20251229.md)
 
 **Description**:
 Implement Phase 1 of OpenAgents architectural migration: Create lazy-loading context index, migrate /research command to frontmatter delegation pattern, and validate improvements. This phase establishes the architectural patterns that will be applied to all commands in Phase 2. Goal: Reduce context window usage from 60-70% to under 15% during routing, reduce research.md from 677 lines to under 200 lines, achieve 100% Stage 7 execution reliability.

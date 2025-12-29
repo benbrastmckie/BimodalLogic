@@ -129,17 +129,26 @@
       "project_number": 244,
       "project_name": "phase_1_context_index_and_research_frontmatter_prototype",
       "type": "implementation",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_partial",
+      "status": "partial",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-28T23:24:32Z",
       "started": "2025-12-29",
       "planning_completed": "2025-12-29",
+      "implementation_started": "2025-12-29",
       "last_updated": "2025-12-29",
       "artifacts": [
         ".opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/research-001.md",
-        ".opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/plans/implementation-001.md"
+        ".opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/plans/implementation-001.md",
+        ".opencode/context/system/routing-guide.md",
+        ".opencode/command/research.md",
+        ".tmp/sessions/README.md",
+        ".opencode/scripts/cleanup-sessions.sh",
+        ".opencode/scripts/measure-context-usage.sh",
+        ".opencode/scripts/test-stage7-reliability.sh",
+        ".opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md",
+        ".opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/summaries/implementation-summary-20251229.md"
       ],
       "plan_path": ".opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/plans/implementation-001.md",
       "plan_metadata": {
@@ -148,7 +157,9 @@
         "complexity": "medium"
       },
       "estimated_hours": 14.0,
-      "phases": 7
+      "phases": 7,
+      "phases_completed": [1, 2, 4, 5, 7],
+      "phases_abandoned": [3, 6]
     }
   ],
   "completed_projects": [
