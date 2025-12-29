@@ -41,3 +41,4 @@ coverage/
 .backup_*/
 backup/
 backups/
+.tmp/

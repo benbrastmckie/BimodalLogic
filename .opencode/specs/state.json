@@ -124,6 +124,31 @@
       ],
       "estimated_hours": 56.0,
       "revised_hours": 78.0
+    },
+    {
+      "project_number": 244,
+      "project_name": "phase_1_context_index_and_research_frontmatter_prototype",
+      "type": "implementation",
+      "phase": "planning_completed",
+      "status": "planned",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2025-12-28T23:24:32Z",
+      "started": "2025-12-29",
+      "planning_completed": "2025-12-29",
+      "last_updated": "2025-12-29",
+      "artifacts": [
+        ".opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/research-001.md",
+        ".opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 7,
+        "estimated_hours": 14,
+        "complexity": "medium"
+      },
+      "estimated_hours": 14.0,
+      "phases": 7
     }
   ],
   "completed_projects": [
