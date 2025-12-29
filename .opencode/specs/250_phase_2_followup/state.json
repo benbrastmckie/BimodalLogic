@@ -1,0 +1,29 @@
+{
+  "project_name": "phase_2_followup",
+  "project_number": 250,
+  "type": "validation",
+  "phase": "planning",
+  "reports": [
+    ".opencode/specs/250_phase_2_followup/reports/research-001.md"
+  ],
+  "plans": [
+    ".opencode/specs/250_phase_2_followup/plans/implementation-001.md"
+  ],
+  "summaries": [],
+  "status": "active",
+  "created": "2025-12-29T16:03:52Z",
+  "last_updated": "2025-12-29",
+  "plan_metadata": {
+    "phase_count": 7,
+    "estimated_hours": 6,
+    "complexity": "medium"
+  },
+  "plan_versions": [
+    {
+      "version": 1,
+      "path": ".opencode/specs/250_phase_2_followup/plans/implementation-001.md",
+      "created": "2025-12-29T16:03:52Z",
+      "reason": "Initial implementation plan"
+    }
+  ]
+}
