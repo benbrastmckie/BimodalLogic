@@ -1,0 +1,49 @@
+[2025-12-29 09:56:24] Starting context window usage measurement
+[2025-12-29 09:56:24] Configuration:
+[2025-12-29 09:56:24]   Total context window: 100000 tokens
+[2025-12-29 09:56:24]   Target routing usage: <10% (<10000 tokens)
+[2025-12-29 09:56:24] 
+[2025-12-29 09:56:24] Measuring orchestrator routing context (Checkpoint 1)
+[2025-12-29 09:56:24]   Orchestrator file: 0 tokens
+[2025-12-29 09:56:24]   Context index: 2595 tokens
+[2025-12-29 09:56:24]   Checkpoint 1 total: 2595 tokens
+[2025-12-29 09:56:24] 
+[2025-12-29 09:56:24] Measuring command routing context for /research (Checkpoint 2)
+[2025-12-29 09:56:24]   Command file: 0 tokens
+[2025-12-29 09:56:24]   Checkpoint 2 total: 0 tokens
+[2025-12-29 09:56:24] 
+[2025-12-29 09:56:24] Measuring command routing context for /plan (Checkpoint 2)
+[2025-12-29 09:56:24]   Command file: 0 tokens
+[2025-12-29 09:56:24]   Checkpoint 2 total: 0 tokens
+[2025-12-29 09:56:24] 
+[2025-12-29 09:56:24] Measuring command routing context for /implement (Checkpoint 2)
+[2025-12-29 09:56:24]   Command file: 0 tokens
+[2025-12-29 09:56:24]   Checkpoint 2 total: 0 tokens
+[2025-12-29 09:56:24] 
+[2025-12-29 09:56:24] Measuring command routing context for /revise (Checkpoint 2)
+[2025-12-29 09:56:24]   Command file: 0 tokens
+[2025-12-29 09:56:24]   Checkpoint 2 total: 0 tokens
+[2025-12-29 09:56:24] 
+[2025-12-29 09:56:24] =========================================
+[2025-12-29 09:56:24] Context Window Usage Results
+[2025-12-29 09:56:24] =========================================
+[2025-12-29 09:56:24] 
+[2025-12-29 09:56:24] Checkpoint 1 (Orchestrator Routing):
+[2025-12-29 09:56:24]   Tokens: 2595
+[2025-12-29 09:56:24]   Percentage: 2%
+[2025-12-29 09:56:24] 
+[2025-12-29 09:56:24] Checkpoint 2 (Command Routing):
+[2025-12-29 09:56:24]   /research: 0 tokens (0%)
+[2025-12-29 09:56:24]   /plan: 0 tokens (0%)
+[2025-12-29 09:56:24]   /implement: 0 tokens (0%)
+[2025-12-29 09:56:24]   /revise: 0 tokens (0%)
+[2025-12-29 09:56:24] 
+[2025-12-29 09:56:24] Overall Routing Context (Worst Case):
+[2025-12-29 09:56:24]   Orchestrator + /: 2595 tokens
+[2025-12-29 09:56:24]   Percentage: 2%
+[2025-12-29 09:56:24]   Target: <10%
+[2025-12-29 09:56:24] 
+[2025-12-29 09:56:24] [PASS] Context window usage: 2% (below 10% target)
+[2025-12-29 09:56:24] 
+[2025-12-29 09:56:24] Results saved to: /home/benjamin/Projects/ProofChecker/.opencode/specs/247_phase_4_testing_and_documentation/metrics/context-usage-20251229_095624.json
+[2025-12-29 09:56:24] Log saved to: /home/benjamin/Projects/ProofChecker/.opencode/specs/247_phase_4_testing_and_documentation/logs/measure-context-usage-20251229_095624.log
