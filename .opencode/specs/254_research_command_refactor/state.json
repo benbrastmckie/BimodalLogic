@@ -1,0 +1,30 @@
+{
+  "project_name": "research_command_refactor",
+  "project_number": 254,
+  "type": "implementation",
+  "phase": "planning",
+  "reports": [
+    {
+      "type": "research_report",
+      "path": ".opencode/research/task-254-research-command-refactor.md",
+      "summary": "Root cause identified: workflow defined as XML documentation causing stage 4-8 skip. Solution: frontmatter delegation pattern from Task 240.",
+      "created": "2025-12-29"
+    }
+  ],
+  "plans": [
+    {
+      "type": "implementation_plan",
+      "path": ".opencode/specs/254_research_command_refactor/plans/implementation-001.md",
+      "version": 1,
+      "summary": "7-phase implementation plan to refactor /research command using frontmatter delegation pattern",
+      "created": "2025-12-29",
+      "phase_count": 7,
+      "estimated_hours": 8,
+      "complexity": "medium"
+    }
+  ],
+  "summaries": [],
+  "status": "active",
+  "created": "2025-12-29T19:30:00Z",
+  "last_updated": "2025-12-29"
+}

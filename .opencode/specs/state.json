@@ -1253,15 +1253,24 @@
       ]
     },
     "254": {
-      "status": "researched",
+      "status": "planned",
       "started": "2025-12-29",
       "research_completed": "2025-12-29",
+      "planning_started": "2025-12-29",
+      "planning_completed": "2025-12-29",
       "updated": "2025-12-29",
       "language": "markdown",
       "priority": "high",
       "artifacts": [
-        ".opencode/research/task-254-research-command-refactor.md"
-      ]
+        ".opencode/research/task-254-research-command-refactor.md",
+        ".opencode/specs/254_research_command_refactor/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/254_research_command_refactor/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 7,
+        "estimated_hours": 8,
+        "complexity": "medium"
+      }
     }
   }
 }
