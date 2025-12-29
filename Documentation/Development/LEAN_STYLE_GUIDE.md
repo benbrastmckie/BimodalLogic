@@ -856,6 +856,39 @@ Linting is enforced in the CI/CD pipeline:
 - **100-character line limit** strictly enforced
 - **No sorry placeholders** in non-test code (when enabled)
 
+## Semantic vs Syntactic Properties
+
+When proving properties about formulas, distinguish between syntactic and semantic properties:
+
+**Syntactic Properties** (operate on formula structure):
+- Derivations, proof trees, formula transformations
+- Involution properties (φ.swap.swap = φ)
+- Can use structural induction and rewriting
+- Example: `swap_past_future_involution` (Formula.lean)
+
+**Semantic Properties** (quantify over models):
+- Validity, satisfiability, truth in models
+- May not preserve under transformations
+- Require semantic analysis and counterexample testing
+- Example: `is_valid` (Validity.lean)
+
+**Key Lesson (Task 213)**: The involution property `φ.swap.swap = φ` (syntactic) does NOT imply
+`is_valid φ.swap ↔ is_valid φ` (semantic) because swap exchanges past and future
+quantification, which are not equivalent in general models.
+
+**Counterexample**: φ = all_past(atom "p") in a model where p is true at all future times
+but false at some past time. Then is_valid φ.swap holds (p always true in future) but
+is_valid φ does not (p not always true in past).
+
+**Derivable vs Valid**: Properties true for derivable formulas may be false for arbitrary
+valid formulas. The theorem `is_valid φ.swap → is_valid φ` is false for arbitrary formulas
+but true for derivable formulas (due to temporal_duality rule). Always check whether a
+theorem requires derivability as a precondition.
+
+**Circular Dependencies**: When proving soundness-related theorems, be aware of circular
+dependencies between derivability and validity. The temporal_duality soundness case requires
+soundness itself, creating a circular dependency that must be resolved at the file/module level.
+
 ## References
 
 - [Mathlib4 Style Guide](https://leanprover-community.github.io/contribute/style.html)

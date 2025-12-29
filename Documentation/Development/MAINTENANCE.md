@@ -8,8 +8,10 @@ This document describes the workflow for maintaining TODO.md and related project
 
 **Three-Document Model** (consolidated from four documents on 2025-12-05):
 - [TODO.md](../../TODO.md) - Active task tracking (active work only)
-- [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking (includes Known Limitations section)
-- [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
+- [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking (includes Known Limitations section)
+- [FEATURE_REGISTRY.md](../ProjectInfo/FEATURE_REGISTRY.md) - Feature tracking and implementation status
+- [SORRY_REGISTRY.md](../ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
+- [TACTIC_REGISTRY.md](../ProjectInfo/TACTIC_REGISTRY.md) - Tactic documentation and usage tracking
 
 ---
 
@@ -84,7 +86,9 @@ This model provides:
 
 2. Update related documentation:
    - **IMPLEMENTATION_STATUS.md**: Update module status, sorry counts, and Known Limitations section
+   - **FEATURE_REGISTRY.md**: Update feature completion status if applicable
    - **SORRY_REGISTRY.md**: Remove resolved placeholders
+   - **TACTIC_REGISTRY.md**: Update if task involved tactic implementation
 
 3. **Remove completed task from TODO.md entirely** (don't mark as complete)
 
@@ -126,9 +130,11 @@ Update these files in order:
 |-------|------|---------|
 | 1 | Spec summaries | Create completion summary |
 | 2 | IMPLEMENTATION_STATUS.md | Module %, sorry counts, Known Limitations section |
-| 3 | SORRY_REGISTRY.md | Remove resolved items |
-| 4 | TODO.md | Remove task, update counts |
-| 5 | Git commit | Comprehensive message |
+| 3 | FEATURE_REGISTRY.md | Update feature status if applicable |
+| 4 | SORRY_REGISTRY.md | Remove resolved items |
+| 5 | TACTIC_REGISTRY.md | Update tactic documentation if applicable |
+| 6 | TODO.md | Remove task, update counts |
+| 7 | Git commit | Comprehensive message |
 
 ### Decision Tree: Which Document to Update
 
@@ -139,8 +145,14 @@ Is this about module completion %?
 Is this about a gap/limitation being fixed?
   -> IMPLEMENTATION_STATUS.md Known Limitations section (remove entry)
 
+Is this about a feature being implemented?
+  -> FEATURE_REGISTRY.md (update feature status)
+
 Is this about a sorry placeholder?
   -> SORRY_REGISTRY.md (remove/move to resolved)
+
+Is this about a tactic being implemented or updated?
+  -> TACTIC_REGISTRY.md (update tactic documentation)
 
 Is this about task status?
   -> TODO.md (remove if complete, update if partial)
@@ -154,16 +166,84 @@ Is this about workflow or process?
 After major updates, verify bidirectional links work:
 
 ```bash
-# Check SORRY_REGISTRY.md references
-grep -l "SORRY_REGISTRY.md" TODO.md Documentation/ProjectInfo/*.md
+# Check registry references
+grep -l "IMPLEMENTATION_STATUS\|FEATURE_REGISTRY\|SORRY_REGISTRY\|TACTIC_REGISTRY" \
+  TODO.md Documentation/ProjectInfo/*.md Documentation/Development/MAINTENANCE.md
 
-# Check all three core docs reference each other appropriately
-for doc in TODO.md Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md \
-           Documentation/ProjectInfo/SORRY_REGISTRY.md; do
+# Check all core docs reference each other appropriately
+for doc in TODO.md \
+           Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md \
+           Documentation/ProjectInfo/FEATURE_REGISTRY.md \
+           Documentation/ProjectInfo/SORRY_REGISTRY.md \
+           Documentation/ProjectInfo/TACTIC_REGISTRY.md \
+           Documentation/Development/MAINTENANCE.md; do
   echo "=== $doc ==="
-  grep -E "(TODO\.md|IMPLEMENTATION_STATUS|SORRY_REGISTRY|MAINTENANCE)" "$doc"
+  grep -E "(TODO\.md|IMPLEMENTATION_STATUS|FEATURE_REGISTRY|SORRY_REGISTRY|TACTIC_REGISTRY|MAINTENANCE)" "$doc" || true
 done
 ```
+
+---
+
+## Backwards Compatibility Policy
+
+### Clean-Break Approach
+
+This project explicitly **bans backwards compatibility layers** in favor of clean-break approaches. When making breaking changes, we update all affected code directly rather than maintaining compatibility shims.
+
+**Rationale**:
+- **Avoids Technical Debt**: Compatibility layers accumulate over time, increasing maintenance burden
+- **Maintains Code Quality**: Direct updates ensure codebase remains clean and understandable
+- **Simplifies Reasoning**: No need to track which compatibility mode is active
+- **Reduces Test Surface**: Fewer code paths means fewer edge cases to test
+- **Enables Refactoring**: Freedom to restructure without preserving old interfaces
+
+### Clean-Break vs Compatibility Layer
+
+**Clean-Break Approach** (PREFERRED):
+```lean
+-- Before: Old API
+def oldFunction (x : Nat) : Nat := x + 1
+
+-- After: Break directly, update all call sites
+def newFunction (x : Nat) (y : Nat) : Nat := x + y
+```
+
+**Compatibility Layer Approach** (BANNED):
+```lean
+-- Old API maintained for backwards compatibility
+@[deprecated newFunction] 
+def oldFunction (x : Nat) : Nat := newFunction x 1
+
+-- New API
+def newFunction (x : Nat) (y : Nat) : Nat := x + y
+```
+
+### When to Use Clean-Breaks
+
+Apply clean-break approach for:
+- **API Changes**: Function signature modifications, renamed functions
+- **Module Restructuring**: Moving definitions between files, namespace changes
+- **Data Structure Changes**: Modified types, new fields
+- **Workflow Changes**: Updated command patterns, new argument formats
+
+### Implementation Process
+
+1. **Identify Breaking Change**: Determine scope of impact
+2. **Update All Call Sites**: Fix all usages in same commit
+3. **Update Tests**: Ensure all tests reflect new API
+4. **Update Documentation**: Synchronize docs with code changes
+5. **Single Atomic Commit**: All changes in one commit prevents broken states
+
+### Exceptions
+
+The only acceptable "compatibility" is:
+- **Temporary Migration Markers**: Clear TODO comments for multi-phase migrations
+- **Explicit Version Boundaries**: Clean breaks at major version bumps
+- **External API Stability**: For published libraries (not applicable to this project)
+
+**Duration Limits**:
+- Temporary migration markers must be resolved within 1 week
+- No indefinite compatibility modes allowed
 
 ---
 
@@ -247,11 +327,11 @@ git log --all -S "sorry" -- Logos/Core/Semantics/Truth.lean
 
 ### Resolution Process
 
-1. Identify sorry item in [SORRY_REGISTRY.md](SORRY_REGISTRY.md)
+1. Identify sorry item in [SORRY_REGISTRY.md](../ProjectInfo/SORRY_REGISTRY.md)
 
 2. Review resolution guidance and effort estimate
 
-3. Check for blockers in [IMPLEMENTATION_STATUS.md - Known Limitations](IMPLEMENTATION_STATUS.md#known-limitations)
+3. Check for blockers in [IMPLEMENTATION_STATUS.md - Known Limitations](../ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations)
 
 4. Implement proof/function to remove sorry
 
@@ -263,10 +343,12 @@ git log --all -S "sorry" -- Logos/Core/Semantics/Truth.lean
 
 8. Update IMPLEMENTATION_STATUS.md (decrement sorry count for module)
 
-9. Commit with clear message:
-   ```bash
-   git commit -m "Resolve sorry at File.lean:123 - [description]"
-   ```
+9. Update TACTIC_REGISTRY.md if sorry resolution involved new tactics
+
+10. Commit with clear message:
+    ```bash
+    git commit -m "Resolve sorry at File.lean:123 - [description]"
+    ```
 
 ### Blocker Resolution
 

@@ -181,13 +181,15 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 φ) (persisten
 ### Logos/Core/Metalogic/SoundnessLemmas.lean (1 sorry placeholder)
 
 **Active Sorry Placeholders** (1 total):
-- **SoundnessLemmas.lean:687** - `temporal_duality` soundness case
-  - **Context**: Temporal duality rule soundness proof
-  - **Goal**: Prove `is_valid T ψ'` from temporal duality derivation
-  - **Status**: Blocked by unprovable swap involution theorem (task 213 research)
-  - **Resolution**: Will be completed in Soundness.lean after main soundness theorem
+- **SoundnessLemmas.lean:684** - `temporal_duality` soundness case
+  - **Context**: Temporal duality rule soundness proof in derivable_implies_swap_valid
+  - **Goal**: Prove `is_valid T ψ'.swap_past_future.swap_past_future` from `DerivationTree [] ψ'`
+  - **Status**: Blocked by circular dependency with soundness theorem (task 213 analysis)
+  - **Circular Dependency**: Requires soundness (DerivationTree → is_valid), but soundness imports this file
+  - **Resolution**: Will be completed in Soundness.lean after main soundness theorem is proven
   - **Estimate**: 2-3 hours (depends on soundness theorem completion)
-  - **Related**: Task 213 proved `is_valid_swap_involution` is semantically false
+  - **Related**: Task 213 proved `is_valid_swap_involution` is semantically false for arbitrary formulas
+  - **Updated**: 2025-12-28 - Added comprehensive documentation of circular dependency (task 213)
 
 ### Documentation comment references (not actual placeholders)
 
