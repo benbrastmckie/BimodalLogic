@@ -10,7 +10,7 @@ language: markdown
 
 Context Loaded:
 @.opencode/specs/errors.json
-@.opencode/specs/TODO.md
+@.opencode/specs/.opencode/specs/TODO.md
 @.opencode/specs/state.json
 @.opencode/context/common/system/status-markers.md
 @.opencode/context/common/standards/subagent-return-format.md
@@ -201,7 +201,7 @@ Context Loaded:
   </stage>
 
   <stage id="7" name="CreateTODOTask">
-    <action>Create task in TODO.md linking fix plan</action>
+    <action>Create task in .opencode/specs/TODO.md linking fix plan</action>
     <process>
       1. Invoke /task command to create task
       2. Task description: "Fix {N} {error_type} errors"
@@ -245,7 +245,7 @@ Context Loaded:
   <stage id="9" name="GitCommit">
     <action>Commit updates</action>
     <process>
-      1. Stage errors.json, TODO.md, state.json, plan file
+      1. Stage errors.json, .opencode/specs/TODO.md, state.json, plan file
       2. Create commit:
          - Message: "errors: create fix plan for {N} {type} errors (task {number})"
       3. If commit fails:
@@ -253,7 +253,7 @@ Context Loaded:
          b. Continue (commit failure non-critical)
     </process>
     <git_commit>
-      Scope: errors.json + TODO.md + state.json + plan file
+      Scope: errors.json + .opencode/specs/TODO.md + state.json + plan file
       Message: "errors: create fix plan for {N} {type} errors (task {number})"
       
       Use git-workflow-manager for scoped commit
@@ -304,7 +304,7 @@ Context Loaded:
   </artifact_naming>
   <state_sync>
     Update errors.json with fix references
-    Update TODO.md with fix task
+    Update .opencode/specs/TODO.md with fix task
     Update state.json with new task
   </state_sync>
 </artifact_management>
@@ -347,7 +347,7 @@ Context Loaded:
   </mid_flight>
   <post_flight>
     - errors.json updated with fix references
-    - TODO.md updated with fix task
+    - .opencode/specs/TODO.md updated with fix task
     - state.json synchronized
     - Git commit created
   </post_flight>

@@ -44,7 +44,7 @@ temperature: 0.2
     Phase description if implementing a specific phase (called by task-executor)
   </parameter>
   <parameter name="task_description" type="string" optional="true">
-    Task description if not reading from TODO.md
+    Task description if not reading from .opencode/specs/TODO.md
   </parameter>
 </inputs_required>
 
@@ -59,7 +59,7 @@ temperature: 0.2
     <action>Read task details</action>
     <process>
       1. If task_description provided: Use directly
-      2. Else: Read task from TODO.md
+      2. Else: Read task from .opencode/specs/TODO.md
       3. Extract task description and requirements
       4. Identify scope and constraints
       5. Validate task is implementable
@@ -316,7 +316,7 @@ temperature: 0.2
     - Verify language is valid value
     - Verify session_id provided
     - Verify delegation_depth less than 3
-    - Check task description available (from TODO.md or parameter)
+    - Check task description available (from .opencode/specs/TODO.md or parameter)
   </pre_execution>
 
   <post_execution>

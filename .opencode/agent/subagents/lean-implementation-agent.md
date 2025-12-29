@@ -48,7 +48,7 @@ temperature: 0.2
     Phase description if implementing specific phase
   </parameter>
   <parameter name="task_description" type="string" optional="true">
-    Task description if not reading from TODO.md
+    Task description if not reading from .opencode/specs/TODO.md
   </parameter>
 </inputs_required>
 
@@ -77,7 +77,7 @@ temperature: 0.2
     <process>
       1. If task_description provided: Use directly
       2. Else if plan_path provided: Read phase from plan
-      3. Else: Read task from TODO.md
+      3. Else: Read task from .opencode/specs/TODO.md
       4. Extract Lean-specific requirements (theorems, proofs, tactics)
       5. Identify target Lean files
       6. Determine implementation strategy

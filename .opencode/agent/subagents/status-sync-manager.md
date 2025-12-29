@@ -8,7 +8,7 @@ temperature: 0.1
 
 <context>
   <specialist_domain>Atomic multi-file state synchronization</specialist_domain>
-  <task_scope>Update status markers across TODO.md, state.json, and plan files atomically</task_scope>
+  <task_scope>Update status markers across .opencode/specs/TODO.md, state.json, and plan files atomically</task_scope>
   <integration>Called by commands to ensure consistent status across all tracking files</integration>
 </context>
 
@@ -17,7 +17,7 @@ temperature: 0.1
 </role>
 
 <task>
-  Perform atomic status updates across TODO.md, state.json, project state, and plan files using two-phase commit protocol
+  Perform atomic status updates across .opencode/specs/TODO.md, state.json, project state, and plan files using two-phase commit protocol
 </task>
 
 <inputs_required>
@@ -43,7 +43,7 @@ temperature: 0.1
     Path to plan file if status affects plan
   </parameter>
   <parameter name="artifact_links" type="array" optional="true">
-    Artifact links to add to TODO.md (research reports, plans, etc.)
+    Artifact links to add to .opencode/specs/TODO.md (research reports, plans, etc.)
   </parameter>
   <parameter name="blocking_reason" type="string" optional="true">
     Reason for blocked status (required if new_status is blocked)
@@ -78,7 +78,7 @@ temperature: 0.1
   <step_1_prepare>
     <action>Phase 1: Prepare all updates in memory</action>
     <process>
-      1. Read TODO.md into memory
+      1. Read .opencode/specs/TODO.md into memory
       2. Read .opencode/specs/state.json into memory
       3. Read project state.json if exists
       4. Read plan file if plan_path provided
@@ -93,11 +93,11 @@ temperature: 0.1
     <action>Validate status transition and artifacts</action>
     <process>
       1. Pre-commit validation for all target files:
-         a. Verify TODO.md exists and is readable
+         a. Verify .opencode/specs/TODO.md exists and is readable
          b. Verify state.json exists and is readable
          c. Verify plan file exists and is readable (if plan_path provided)
          d. If any file missing or unreadable: abort before writing
-      2. Extract current status from TODO.md
+      2. Extract current status from .opencode/specs/TODO.md
       3. Check transition is valid per status-markers.md
       4. Verify required fields present (blocking_reason, etc.)
       5. Validate timestamp format (YYYY-MM-DD or ISO 8601)
@@ -133,7 +133,7 @@ temperature: 0.1
   <step_3_prepare_updates>
     <action>Prepare all updates in memory</action>
     <process>
-      1. Update TODO.md in memory:
+      1. Update .opencode/specs/TODO.md in memory:
          - Change status marker
          - Add/update timestamp fields
          - Add artifact links from validated_artifacts
@@ -194,7 +194,7 @@ temperature: 0.1
   <step_4_commit>
     <action>Phase 2: Commit all updates atomically</action>
     <process>
-      1. Write TODO.md (first, most critical)
+      1. Write .opencode/specs/TODO.md (first, most critical)
       2. Verify write succeeded
       3. Write state.json
       4. Verify write succeeded
@@ -220,7 +220,7 @@ temperature: 0.1
     <action>Post-commit validation and return</action>
     <process>
       1. Post-commit validation for all files written:
-         a. Verify TODO.md exists and size > 0
+         a. Verify .opencode/specs/TODO.md exists and size > 0
          b. Verify state.json exists and size > 0
          c. Verify project state.json exists and size > 0
          d. Verify plan file exists and size > 0 (if plan_path provided)
@@ -664,7 +664,7 @@ temperature: 0.1
       },
       "errors": [],
       "next_steps": "Status synchronized across all files",
-      "files_updated": ["TODO.md", "state.json"],
+      "files_updated": [".opencode/specs/TODO.md", "state.json"],
       "rollback_performed": false
     }
     ```
@@ -696,7 +696,7 @@ temperature: 0.1
       },
       "errors": [],
       "next_steps": "Task 195 ready for planning phase",
-      "files_updated": ["TODO.md", "state.json"],
+      "files_updated": [".opencode/specs/TODO.md", "state.json"],
       "rollback_performed": false
     }
     ```
@@ -726,7 +726,7 @@ temperature: 0.1
       "next_steps": "Fix file permissions and retry status update",
       "files_updated": [],
       "rollback_performed": true,
-      "rollback_details": "Restored TODO.md to original state"
+      "rollback_details": "Restored .opencode/specs/TODO.md to original state"
     }
     ```
 
@@ -816,7 +816,7 @@ temperature: 0.1
   </principle_4>
 
   <principle_5>
-    Write order matters: TODO.md first (most critical), then state files
+    Write order matters: .opencode/specs/TODO.md first (most critical), then state files
   </principle_5>
 
   <principle_6>

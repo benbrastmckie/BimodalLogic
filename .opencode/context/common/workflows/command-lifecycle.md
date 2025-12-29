@@ -50,7 +50,7 @@ All workflow commands follow this 8-stage pattern:
 2. Validate task number is integer
 3. If task number missing or invalid, return error with usage message
 4. Extract optional prompt from $ARGUMENTS (remaining text after task number)
-5. Load task from TODO.md
+5. Load task from .opencode/specs/TODO.md
 6. Validate task exists and is not [COMPLETED] or [ABANDONED]
 7. Extract task description and language field
 8. Mark task with in-progress status marker (command-specific)
@@ -59,11 +59,11 @@ All workflow commands follow this 8-stage pattern:
 
 **Status Update Mechanism**:
 - Atomic update via status-sync-manager
-- TODO.md: Update status marker, add/preserve **Started**: {date}
+- .opencode/specs/TODO.md: Update status marker, add/preserve **Started**: {date}
 - state.json: Update status field, add/update started timestamp
 
 **Validation Requirements**:
-- Task number must exist in TODO.md
+- Task number must exist in .opencode/specs/TODO.md
 - Task must not be [COMPLETED] or [ABANDONED]
 - Language field must be present (default to "general" if missing)
 - Command-specific validations (see Variations Table)
@@ -71,7 +71,7 @@ All workflow commands follow this 8-stage pattern:
 **Error Handling**:
 - Missing task number: "Error: Task number required. Usage: /{command} TASK_NUMBER [PROMPT]"
 - Invalid task number: "Error: Task number must be an integer. Got: {input}"
-- Task not found: "Error: Task {task_number} not found in TODO.md"
+- Task not found: "Error: Task {task_number} not found in .opencode/specs/TODO.md"
 - Task completed: "Error: Task {task_number} already [COMPLETED]"
 
 ### Stage 2: CheckLanguage / DetermineRouting
@@ -79,7 +79,7 @@ All workflow commands follow this 8-stage pattern:
 **Purpose**: Extract language field and determine target agent for delegation
 
 **Common Steps**:
-1. Extract Language field from TODO.md task entry
+1. Extract Language field from .opencode/specs/TODO.md task entry
 2. Validate extraction succeeded (non-empty result)
 3. If extraction fails: default to "general" and log warning
 4. Log extracted language: "Task {task_number} language: {language}"
@@ -89,7 +89,7 @@ All workflow commands follow this 8-stage pattern:
 
 **Language Extraction**:
 ```bash
-grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
+grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
 ```
 
 **Critical Importance**:
@@ -202,7 +202,7 @@ grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Langua
 4. Extract errors array from return object
 5. Validate artifact paths exist on disk
 6. Validate summary artifact exists (if required for multi-file outputs)
-7. Prepare artifact links for TODO.md
+7. Prepare artifact links for .opencode/specs/TODO.md
 8. Prepare status update based on return status
 
 **Summary Extraction (Metadata Passing)**:
@@ -217,7 +217,7 @@ grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Langua
   - Verify path exists on disk
   - Verify file is not empty
   - Extract artifact type and summary
-  - Prepare link format for TODO.md
+  - Prepare link format for .opencode/specs/TODO.md
 
 **Summary Artifact Validation** (only for multi-file outputs):
 - Check if command creates multiple files (e.g., /implement)
@@ -236,10 +236,10 @@ grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Langua
 **Purpose**: Update status, link artifacts, create git commit
 
 **Common Steps**:
-1. Update TODO.md with completion status marker (command-specific)
+1. Update .opencode/specs/TODO.md with completion status marker (command-specific)
 2. Add/update **Completed** timestamp (if completed)
 3. Update state.json with completion status and timestamp
-4. Link artifacts in TODO.md (command-specific format)
+4. Link artifacts in .opencode/specs/TODO.md (command-specific format)
 5. Validate all artifact links are correct
 6. Create git commit with scoped changes
 7. Validate git commit succeeded
@@ -249,7 +249,7 @@ grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Langua
 **Artifact Linking Patterns**: See Command-Specific Variations Table
 
 **Git Commit Pattern**:
-- Scope: Artifacts + TODO.md + state.json + (command-specific files)
+- Scope: Artifacts + .opencode/specs/TODO.md + state.json + (command-specific files)
 - Message: "task {number}: {action}" (command-specific action)
 - Delegate to git-workflow-manager
 - If git commit fails: Log error but continue (non-critical)
@@ -264,7 +264,7 @@ grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Langua
 
 CRITICAL: All status and artifact updates in Stage 7 MUST be delegated to status-sync-manager to ensure atomicity across all tracking files.
 
-**WARNING**: DO NOT manually update TODO.md, state.json, project state.json, or plan files directly. Manual updates create race conditions and inconsistent state. ALL updates MUST flow through status-sync-manager's two-phase commit protocol.
+**WARNING**: DO NOT manually update .opencode/specs/TODO.md, state.json, project state.json, or plan files directly. Manual updates create race conditions and inconsistent state. ALL updates MUST flow through status-sync-manager's two-phase commit protocol.
 
 **Validation Protocol**:
 1. Verify subagent returned validation success:
@@ -296,8 +296,8 @@ CRITICAL: All status and artifact updates in Stage 7 MUST be delegated to status
 
 **Anti-Pattern Examples** (DO NOT DO THIS):
 ```
-# WRONG: Manual TODO.md update
-sed -i 's/\[IMPLEMENTING\]/\[COMPLETED\]/' TODO.md
+# WRONG: Manual .opencode/specs/TODO.md update
+sed -i 's/\[IMPLEMENTING\]/\[COMPLETED\]/' .opencode/specs/TODO.md
 
 # WRONG: Manual state.json update
 jq '.status = "completed"' state.json > state.json.tmp && mv state.json.tmp state.json
@@ -312,7 +312,7 @@ Invoke status-sync-manager with all parameters
 **Atomicity Guarantees**:
 
 status-sync-manager ensures atomic updates across:
-- TODO.md (status markers, timestamps, artifact links)
+- .opencode/specs/TODO.md (status markers, timestamps, artifact links)
 - state.json (status, timestamps, artifacts array, plan_metadata, plan_versions)
 - project state.json (lazy created on first artifact write, CRITICAL: fails if creation fails)
 - plan file (phase statuses if phase_statuses provided, parsed and updated atomically)
@@ -326,7 +326,7 @@ Either all files update successfully or all are rolled back to original state.
 - [ ] plan_path provided to status-sync-manager (if plan exists)
 - [ ] validated_artifacts passed to status-sync-manager
 - [ ] session_id matches across delegation chain
-- [ ] No manual TODO.md, state.json, or plan file updates in command code
+- [ ] No manual .opencode/specs/TODO.md, state.json, or plan file updates in command code
 
 **Artifact Validation**:
 
@@ -413,6 +413,90 @@ status-sync-manager creates project state.json lazily:
 - Populates with project metadata
 - Adds to two-phase commit transaction
 
+### Orchestrator Stage Validation
+
+**Purpose**: Orchestrator validates Stage 7 completion before accepting command return
+
+**Background**: Task 231 identified systematic Stage 7 (Postflight) execution failures where Claude would skip or incompletely execute Stage 7, resulting in successful artifact creation but incomplete .opencode/specs/TODO.md/state.json updates. To prevent this, the orchestrator now validates that Stage 7 completed before accepting a command's return.
+
+**Validation Mechanism**:
+
+The orchestrator tracks command stage execution in the delegation registry:
+
+```javascript
+{
+  "sess_20251226_abc123": {
+    "session_id": "sess_20251226_abc123",
+    "command": "plan",
+    "is_command": true,
+    "command_stages": {
+      "current_stage": 7,
+      "stages_completed": [1, 2, 3, 4, 5, 6],
+      "stage_7_completed": false,
+      "stage_7_artifacts": {
+        "status_sync_manager_invoked": false,
+        "status_sync_manager_completed": false,
+        "todo_md_updated": false,
+        "state_json_updated": false,
+        "git_commit_created": false
+      }
+    }
+  }
+}
+```
+
+**Validation Steps** (orchestrator Step 10 ValidateReturn):
+
+1. **Check if delegation is command**:
+   - IF is_command == false: Skip stage validation (direct subagent delegation)
+   - IF is_command == true: Proceed with stage validation
+
+2. **Verify Stage 7 completed**:
+   - CHECK command_stages["stage_7_completed"] == true
+   - CHECK stage_7_artifacts["status_sync_manager_completed"] == true
+   - CHECK stage_7_artifacts["todo_md_updated"] == true
+   - CHECK stage_7_artifacts["state_json_updated"] == true
+
+3. **If validation fails**:
+   - LOG error to errors.json with type "stage_7_incomplete"
+   - VERIFY files on disk (check modification times)
+   - RETURN error to user with checkpoint details
+   - REJECT return (do not proceed to orchestrator Step 11)
+
+4. **Error message format**:
+   ```
+   Error: Command completed without updating task status
+   
+   Stage 7 (Postflight) did not execute:
+   - status-sync-manager invoked: false
+   - .opencode/specs/TODO.md updated: false
+   - state.json updated: false
+   
+   Artifacts created: [list]
+   
+   Manual steps required:
+   1. Update .opencode/specs/TODO.md status to [EXPECTED_STATUS]
+   2. Update state.json status to "expected_status"
+   3. Link artifacts in .opencode/specs/TODO.md
+   
+   Or retry: /command {task_number}
+   ```
+
+**Benefits**:
+
+- **Safety Layer**: Catches Stage 7 skips even if command-level checkpoints fail
+- **Clear Errors**: Provides actionable error messages with manual recovery steps
+- **Debugging**: Logs stage execution details for troubleshooting
+- **Atomicity**: Ensures status updates complete before command returns success
+
+**Integration with Command Checkpoints**:
+
+Commands have internal Stage 7 completion checkpoints (see Stage 7 section above). Orchestrator validation is an additional safety layer that catches failures even if command checkpoints are bypassed.
+
+**Reference**: Task 231 - Fix systematic command Stage 7 (Postflight) execution failures
+
+---
+
 ### Stage 8: ReturnSuccess
 
 **Purpose**: Return brief summary to user
@@ -448,7 +532,7 @@ Next steps: {recommendations}
 Use this checklist before invoking subagent (after Stage 3):
 
 - [ ] Task number parsed and validated
-- [ ] Task exists in TODO.md
+- [ ] Task exists in .opencode/specs/TODO.md
 - [ ] Task not [COMPLETED] or [ABANDONED]
 - [ ] Language field extracted
 - [ ] Status updated to in-progress marker
@@ -471,7 +555,7 @@ Use this checklist after receiving agent return (after Stage 6):
 - [ ] Summary artifact exists (if required)
 - [ ] Status updated to completion marker
 - [ ] state.json updated with completion status and timestamp
-- [ ] Artifacts linked in TODO.md
+- [ ] Artifacts linked in .opencode/specs/TODO.md
 - [ ] Git commit created with correct scope
 - [ ] Git commit succeeded (or error logged)
 - [ ] Return message formatted correctly
@@ -529,7 +613,7 @@ Use this checklist after receiving agent return (after Stage 6):
 | Command | Special Parameters | Purpose |
 |---------|-------------------|---------|
 | /research | divide_topics: boolean | Enable topic subdivision via --divide flag |
-| /plan | research_inputs: array | Paths to research artifacts from TODO.md |
+| /plan | research_inputs: array | Paths to research artifacts from .opencode/specs/TODO.md |
 | /revise | existing_plan_path: string, new_version: integer | Current plan and next version number |
 | /implement | plan_path: string, resume_from_phase: integer | Plan file and resume phase (if partial) |
 
@@ -539,7 +623,7 @@ Use this checklist after receiving agent return (after Stage 6):
 
 ### Variation Table 5: Artifact Types and Linking
 
-| Command | Artifact Types | Link Format in TODO.md | Justification |
+| Command | Artifact Types | Link Format in .opencode/specs/TODO.md | Justification |
 |---------|---------------|----------------------|---------------|
 | /research | reports/research-001.md, summaries/research-summary.md | - Main Report: [path]<br>- Summary: [path] | Research produces report + summary |
 | /plan | plans/implementation-001.md | - Plan: [path]<br>- Plan Summary: {summary} | Planning produces single plan file |
@@ -554,10 +638,10 @@ Use this checklist after receiving agent return (after Stage 6):
 
 | Command | Commit Scope | Message Format | Justification |
 |---------|-------------|----------------|---------------|
-| /research | Research artifacts + TODO.md + state.json | "task {number}: research completed" | Research artifacts are self-contained |
-| /plan | Plan file + TODO.md + state.json | "task {number}: plan created" | Plan file is self-contained |
-| /revise | New plan file + TODO.md + state.json | "task {number}: plan revised to v{version}" | New plan version is self-contained |
-| /implement | Implementation files + TODO.md + state.json + plan (if exists) | "task {number}: implementation completed" | Implementation may update plan status |
+| /research | Research artifacts + .opencode/specs/TODO.md + state.json | "task {number}: research completed" | Research artifacts are self-contained |
+| /plan | Plan file + .opencode/specs/TODO.md + state.json | "task {number}: plan created" | Plan file is self-contained |
+| /revise | New plan file + .opencode/specs/TODO.md + state.json | "task {number}: plan revised to v{version}" | New plan version is self-contained |
+| /implement | Implementation files + .opencode/specs/TODO.md + state.json + plan (if exists) | "task {number}: implementation completed" | Implementation may update plan status |
 
 **Justification**: Different artifact scopes per workflow
 
@@ -887,7 +971,7 @@ Commands should document only their variations from the common pattern:
       - Summary: [path]
     </artifact_linking>
     <git_commit>
-      Scope: Research artifacts + TODO.md + state.json
+      Scope: Research artifacts + .opencode/specs/TODO.md + state.json
       Message: "task {number}: research completed"
     </git_commit>
   </stage>

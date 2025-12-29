@@ -63,7 +63,7 @@ Context Loaded:
       <description>Single task number or range (e.g., 105-107)</description>
       <extraction>Extract first argument after command name as task number or range</extraction>
       <validation>
-        If single: Must be valid integer that exists in TODO.md
+        If single: Must be valid integer that exists in .opencode/specs/TODO.md
         If range: Must be format "N-M" where N and M are valid integers with N &lt; M
       </validation>
       <range_parsing>
@@ -81,7 +81,7 @@ Context Loaded:
       <required>false</required>
       <description>Optional additional context for implementation</description>
       <extraction>Extract remaining arguments after task number as prompt string</extraction>
-      <default>Use task description and plan from TODO.md</default>
+      <default>Use task description and plan from .opencode/specs/TODO.md</default>
     </prompt>
   </parameters>
   
@@ -110,8 +110,8 @@ Context Loaded:
       Return: "Error: Task number required. Usage: /implement TASK_NUMBER [PROMPT]"
     If task_number not integer or range:
       Return: "Error: Task must be integer or range (N-M). Got: {input}"
-    If task not found in TODO.md:
-      Return: "Error: Task {task_number} not found in TODO.md"
+    If task not found in .opencode/specs/TODO.md:
+      Return: "Error: Task {task_number} not found in .opencode/specs/TODO.md"
     If range invalid (start >= end):
       Return: "Error: Invalid range {start}-{end}. Start must be less than end."
     If some tasks in range missing:
@@ -128,7 +128,7 @@ Context Loaded:
       In-Progress: [IMPLEMENTING]
     </status_transition>
     <validation>
-      - Task number(s) must exist in TODO.md
+      - Task number(s) must exist in .opencode/specs/TODO.md
       - Tasks must not be [COMPLETED] or [ABANDONED]
       - If range: all tasks in range must be valid
       - Language field must be present
@@ -146,7 +146,7 @@ Context Loaded:
     </resume_logic>
     <status_update>
       Atomic update via status-sync-manager:
-        - TODO.md: [IMPLEMENTING], **Started**: {date}
+        - .opencode/specs/TODO.md: [IMPLEMENTING], **Started**: {date}
         - state.json: status = "implementing", started = "{date}"
         - Plan file (if exists): Mark resuming phase [IN PROGRESS]
     </status_update>
@@ -159,16 +159,16 @@ Context Loaded:
       Incorrect routing bypasses Lean-specific tooling (lean-lsp-mcp).
     </critical_importance>
     <language_extraction>
-      Extract Language field from TODO.md task using explicit bash command:
+      Extract Language field from .opencode/specs/TODO.md task using explicit bash command:
       ```bash
-      grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
+      grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
       ```
       Validate extraction succeeded (non-empty result)
       If extraction fails: default to "general" and log warning
       Log extracted language: "Task ${task_number} language: ${language}"
     </language_extraction>
     <plan_detection>
-      Check for plan existence in TODO.md (look for "Plan:" link)
+      Check for plan existence in .opencode/specs/TODO.md (look for "Plan:" link)
       Log plan status: "Task ${task_number} has_plan: ${has_plan}"
     </plan_detection>
     <routing>
@@ -243,69 +243,396 @@ Context Loaded:
       Failed: Keep [IMPLEMENTING]
       Blocked: [BLOCKED]
     </status_transition>
+    
     <validation_delegation>
-      Verify implementation agent returned validation success:
-        - Check agent return metadata for validation_result
-        - Verify all artifacts validated (exist, non-empty, token limit)
-        - Extract phase_statuses if phased implementation
-        - Validate phase_statuses format if present:
-          * Must be array
-          * Each entry must have: phase_number, status, timestamp
-          * Phase numbers must be positive integers
-          * Status must be: in_progress, completed, abandoned, blocked
-        - If validation failed: Abort update, return error to user
-        - If phase_statuses missing for phased implementation: Return error
+      EXECUTE: Verify implementation agent returned validation success
+      
+      STEP 1: CHECK implementation agent return metadata
+        - VERIFY return.status field exists and is valid
+        - VERIFY return.metadata.validation_result exists
+        - LOG: "Implementation agent validation: {validation_result}"
+        - IF validation_result != "success": ABORT with error
+      
+      STEP 2: VERIFY all artifacts validated
+        - CHECK all artifacts exist on disk
+        - CHECK all artifacts are non-empty (file size > 0)
+        - VERIFY summary artifact within token limit (<100 tokens, ~400 chars)
+        - LOG: "Implementation artifacts validated: {artifact_count} files"
+        - IF any artifact missing or empty: ABORT with error
+        - IF summary artifact exceeds token limit: ABORT with error
+      
+      STEP 3: EXTRACT and VALIDATE phase_statuses (if phased implementation)
+        - DETERMINE implementation mode (phased vs direct)
+        - IF phased implementation (task-executor or lean-implementation-agent with plan):
+          * VERIFY phase_statuses present in return object
+          * VERIFY phase_statuses is non-empty array
+          * VERIFY each entry has: phase_number, status, timestamp
+          * VERIFY phase numbers are positive integers
+          * VERIFY status values are valid: in_progress, completed, abandoned, blocked
+          * LOG: "Phase statuses validated: {phase_count} phases"
+          * IF phase_statuses missing: ABORT with error "phase_statuses missing for phased implementation"
+          * IF phase_statuses malformed: ABORT with error "phase_statuses malformed: {details}"
+        - IF direct implementation (implementer):
+          * phase_statuses not required
+          * LOG: "Direct implementation - no phase_statuses required"
+      
+      CHECKPOINT: Validation completed
+        - [ ] Implementation agent return validated
+        - [ ] All artifacts exist on disk
+        - [ ] Summary artifact within token limit
+        - [ ] phase_statuses validated (if phased)
+        - IF any checkpoint fails: ABORT Stage 7, return error to user
     </validation_delegation>
-    <phase_statuses_validation>
-      For phased implementations (task-executor):
-        - Verify phase_statuses present in return object
-        - Verify phase_statuses is non-empty array
-        - Verify each entry has required fields
-        - If missing or malformed: Return error with details
-        - Error message: "phase_statuses missing or malformed in task-executor return"
-      
-      For direct implementations (implementer):
-        - phase_statuses not required (no phases)
-        - Skip phase_statuses validation
-    </phase_statuses_validation>
+    
     <git_commit>
-      Scope: Implementation files + TODO.md + state.json + project state.json + plan (if exists)
-      Message: "task {number}: implementation completed"
+      <conditional>
+        IF status == "completed":
+          PROCEED with git commit
+        ELSE:
+          SKIP git commit
+          LOG: "Skipping git commit (status: {status})"
+          PROCEED to atomic_update
+      </conditional>
       
-      For phased implementation: Create commit per phase (delegated to task-executor)
-      For direct implementation: Create single commit
+      <invocation>
+        STEP 1: PREPARE git-workflow-manager delegation
+          ```json
+          {
+            "scope_files": [
+              "{implementation_files from agent return}",
+              "{summary_artifact from agent return}",
+              "{plan_path if exists}",
+              ".opencode/specs/TODO.md",
+              ".opencode/specs/state.json",
+              ".opencode/specs/{task_number}_{slug}/state.json"
+            ],
+            "message_template": "task {number}: implementation completed",
+            "task_context": {
+              "task_number": "{number}",
+              "description": "implementation completed"
+            },
+            "session_id": "{session_id}",
+            "delegation_depth": 2,
+            "delegation_path": ["orchestrator", "implement", "git-workflow-manager"]
+          }
+          ```
+        
+        NOTE: For phased implementation, per-phase commits are created by task-executor.
+        This commit is the final commit after all phases complete.
+        
+        STEP 2: INVOKE git-workflow-manager
+          - Subagent type: "git-workflow-manager"
+          - Delegation context: {prepared context}
+          - Timeout: 120s
+          - LOG: "Invoking git-workflow-manager for task {number}"
+        
+        STEP 3: WAIT for git-workflow-manager return
+          - Maximum wait: 120s
+          - IF timeout: LOG error (non-critical), continue
+        
+        STEP 4: VALIDATE return
+          - IF status == "completed":
+            * EXTRACT commit_hash from commit_info
+            * LOG: "Git commit created: {commit_hash}"
+          
+          - IF status == "failed":
+            * LOG error to errors.json (non-critical)
+            * INCLUDE warning in Stage 8 return
+            * CONTINUE (git failure doesn't fail command)
+      </invocation>
       
-      Commit only if status == "completed"
-      Use git-workflow-manager for scoped commit
+      CHECKPOINT: Git commit completed (if applicable)
+        - [ ] Git commit attempted (if status == "completed")
+        - [ ] Git commit succeeded OR failure logged (non-critical)
     </git_commit>
+    
     <atomic_update>
-      Delegate to status-sync-manager:
-        - task_number: {number}
-        - new_status: "completed" or "partial"
-        - timestamp: {ISO8601 date}
-        - session_id: {session_id}
-        - validated_artifacts: {artifacts from implementation agent return}
-        - plan_path: {plan_path if exists}
-        - phase_statuses: {phase_statuses from agent return if phased}
+      <action>INVOKE status-sync-manager subagent</action>
       
-      CRITICAL: Validate phase_statuses before passing to status-sync-manager:
-        - If phased implementation AND phase_statuses missing: Abort with error
-        - If phased implementation AND phase_statuses malformed: Abort with error
-        - Log phase_statuses parameter passing for debugging
+      <step_1_prepare_delegation>
+        PREPARE delegation context:
+        ```json
+        {
+          "task_number": "{number}",
+          "new_status": "{completed or partial}",
+          "timestamp": "{ISO8601 date}",
+          "session_id": "{session_id}",
+          "validated_artifacts": "{artifacts from implementation agent return}",
+          "plan_path": "{plan_path if exists}",
+          "phase_statuses": "{phase_statuses from agent return if phased}",
+          "delegation_depth": 2,
+          "delegation_path": ["orchestrator", "implement", "status-sync-manager"]
+        }
+        ```
+        
+        VALIDATE delegation context:
+          - VERIFY all required fields present
+          - VERIFY task_number is positive integer
+          - VERIFY new_status is valid value ("completed" or "partial")
+          - VERIFY timestamp is ISO8601 format
+          - IF phased implementation:
+            * VERIFY phase_statuses present
+            * VERIFY phase_statuses is non-empty array
+            * LOG: "Passing phase_statuses to status-sync-manager: {phase_count} phases"
+          - IF validation fails: ABORT with error
+      </step_1_prepare_delegation>
       
-      status-sync-manager performs two-phase commit:
-        - Phase 1: Prepare, validate artifacts, backup, parse plan file
-        - Phase 2: Write all files (TODO.md, state.json, project state.json, plan file) or rollback all
+      <step_2_invoke>
+        INVOKE status-sync-manager:
+          - Subagent type: "status-sync-manager"
+          - Delegation context: {prepared context}
+          - Timeout: 60s
+          - Delegation mechanism: Per subagent-delegation-guide.md
+        
+        LOG: "Invoking status-sync-manager for task {number}"
+      </step_2_invoke>
       
-      Atomicity guaranteed across:
-        - TODO.md (status, timestamps, artifact links, checkmark if completed)
-        - state.json (status, timestamps, artifacts array)
-        - project state.json (lazy created if needed, CRITICAL: fail if creation fails)
-        - plan file (phase statuses updated atomically if phase_statuses provided)
+      <step_3_wait>
+        WAIT for status-sync-manager return:
+          - Maximum wait: 60s
+          - IF timeout: ABORT with error "status-sync-manager timeout after 60s"
+      </step_3_wait>
+      
+      <step_4_validate_return>
+        VALIDATE status-sync-manager return:
+          - VERIFY return format matches subagent-return-format.md
+          - VERIFY status field == "completed" (not "failed" or "partial")
+          - VERIFY files_updated includes [".opencode/specs/TODO.md", "state.json"]
+          - IF phased implementation:
+            * VERIFY files_updated includes plan file
+            * VERIFY plan_phases_updated field exists and is true
+          - VERIFY rollback_performed == false
+          - IF validation fails: ABORT with error details
+        
+        LOG: "status-sync-manager completed: {files_updated}"
+      </step_4_validate_return>
+      
+      <step_5_verify_on_disk>
+        VERIFY files updated on disk:
+          - READ .opencode/specs/TODO.md and verify status marker changed to [COMPLETED] or [PARTIAL]
+          - READ state.json and verify status field == "completed" or "partial"
+          - IF phased implementation:
+            * READ plan file and verify phase statuses updated
+            * VERIFY at least one phase marked [COMPLETED]
+          - IF verification fails: ABORT with error
+        
+        CHECKPOINT: Atomic update completed successfully
+          - [ ] status-sync-manager returned "completed"
+          - [ ] .opencode/specs/TODO.md updated on disk
+          - [ ] state.json updated on disk
+          - [ ] Plan file updated (if phased)
+          - [ ] No rollback performed
+      </step_5_verify_on_disk>
+      
+      <status_sync_manager_protocol>
+        status-sync-manager performs two-phase commit:
+          - Phase 1: Prepare, validate artifacts, backup, parse plan file
+          - Phase 2: Write all files (.opencode/specs/TODO.md, state.json, project state.json, plan file) or rollback all
+        
+        Atomicity guaranteed across:
+          - .opencode/specs/TODO.md (status, timestamps, artifact links, checkmark if completed)
+          - state.json (status, timestamps, artifacts array)
+          - project state.json (lazy created if needed, CRITICAL: fail if creation fails)
+          - plan file (phase statuses updated atomically if phase_statuses provided)
+      </status_sync_manager_protocol>
     </atomic_update>
+    
+    <error_handling>
+      <error_case name="validation_failed">
+        IF validation fails before delegation:
+          STEP 1: ABORT immediately
+            - DO NOT invoke status-sync-manager
+            - DO NOT invoke git-workflow-manager
+          
+          STEP 2: LOG error to errors.json
+            ```json
+            {
+              "type": "validation_failed",
+              "severity": "high",
+              "context": {
+                "command": "implement",
+                "task_number": "{number}",
+                "session_id": "{session_id}",
+                "stage": 7
+              },
+              "message": "Implementation agent return validation failed: {error}",
+              "fix_status": "not_addressed"
+            }
+            ```
+          
+          STEP 3: RETURN validation error to user
+            ```
+            Error: Validation failed
+            
+            Details: {validation_error}
+            
+            Recommendation: Fix implementation agent implementation
+            ```
+      </error_case>
+      
+      <error_case name="phase_statuses_missing">
+        IF phased implementation AND phase_statuses missing:
+          STEP 1: ABORT immediately
+          
+          STEP 2: LOG error to errors.json
+            ```json
+            {
+              "type": "phase_statuses_missing",
+              "severity": "high",
+              "context": {
+                "command": "implement",
+                "task_number": "{number}",
+                "session_id": "{session_id}",
+                "stage": 7,
+                "implementation_mode": "phased"
+              },
+              "message": "phase_statuses missing in task-executor return",
+              "fix_status": "not_addressed"
+            }
+            ```
+          
+          STEP 3: RETURN error to user
+            ```
+            Error: phase_statuses missing
+            
+            Implementation mode: phased
+            Agent: {agent_name}
+            
+            phase_statuses required for phased implementations but not found in return object.
+            
+            Recommendation: Fix task-executor to include phase_statuses in return
+            ```
+      </error_case>
+      
+      <error_case name="status_sync_manager_failed">
+        IF status-sync-manager returns status == "failed":
+          STEP 1: EXTRACT error details
+            - error_type: {type from errors array}
+            - error_message: {message from errors array}
+            - rollback_performed: {boolean}
+          
+          STEP 2: LOG error to errors.json
+            ```json
+            {
+              "type": "status_sync_failed",
+              "severity": "high",
+              "context": {
+                "command": "implement",
+                "task_number": "{number}",
+                "session_id": "{session_id}",
+                "stage": 7
+              },
+              "message": "status-sync-manager failed: {error_message}",
+              "fix_status": "not_addressed"
+            }
+            ```
+          
+          STEP 3: ABORT Stage 7
+            - DO NOT proceed to git commit
+            - DO NOT proceed to Stage 8
+          
+          STEP 4: RETURN error to user
+            ```
+            Error: Failed to update task status
+            
+            Details: {error_message}
+            
+            Artifacts created:
+            - Implementation: {file_paths}
+            - Summary: {summary_path}
+            
+            Manual recovery steps:
+            1. Verify implementation artifacts exist
+            2. Manually update .opencode/specs/TODO.md status to [COMPLETED]
+            3. Manually update state.json status to "completed"
+            4. Manually update plan file phase statuses (if phased)
+            5. Manually link artifacts in .opencode/specs/TODO.md
+            
+            Or retry: /implement {task_number}
+            ```
+      </error_case>
+      
+      <error_case name="status_sync_manager_timeout">
+        IF status-sync-manager times out after 60s:
+          STEP 1: LOG timeout
+          
+          STEP 2: CHECK files on disk
+            - IF .opencode/specs/TODO.md updated: Partial success
+            - IF state.json updated: Partial success
+            - IF plan file updated: Partial success
+            - IF neither updated: Complete failure
+          
+          STEP 3: RETURN appropriate error
+            ```
+            Error: Status update timed out
+            
+            Status: {partial or complete failure}
+            
+            Files updated:
+            - .opencode/specs/TODO.md: {yes/no}
+            - state.json: {yes/no}
+            - Plan file: {yes/no}
+            
+            Recommendation: Check status-sync-manager implementation
+            Retry: /implement {task_number}
+            ```
+      </error_case>
+      
+      <error_case name="git_commit_failed">
+        IF git-workflow-manager returns status == "failed":
+          STEP 1: LOG error (non-critical)
+            - Git failure does not fail the command
+            - Artifacts and status updates still valid
+          
+          STEP 2: CONTINUE to Stage 8
+            - Include git failure warning in return
+          
+          STEP 3: RETURN success with warning
+            ```
+            Warning: Git commit failed
+            
+            Implementation completed successfully: {file_paths}
+            Task status updated to [COMPLETED]
+            
+            Manual commit required:
+              git add {files}
+              git commit -m "task {number}: implementation completed"
+            
+            Error: {git_error}
+            ```
+      </error_case>
+    </error_handling>
+    
+    <stage_7_completion_checkpoint>
+      VERIFY all Stage 7 steps completed:
+        - [ ] Implementation agent return validated
+        - [ ] All artifacts exist on disk
+        - [ ] Summary artifact within token limit
+        - [ ] phase_statuses validated (if phased)
+        - [ ] status-sync-manager invoked
+        - [ ] status-sync-manager returned "completed"
+        - [ ] .opencode/specs/TODO.md updated on disk (verified)
+        - [ ] state.json updated on disk (verified)
+        - [ ] Plan file updated (if phased, verified)
+        - [ ] git-workflow-manager invoked (if status == "completed")
+      
+      IF any checkpoint fails:
+        - ABORT Stage 8
+        - RETURN error to user with checkpoint failure details
+        - Include manual recovery instructions
+      
+      IF all checkpoints pass:
+        - LOG: "Stage 7 (Postflight) completed successfully"
+        - PROCEED to Stage 8
+    </stage_7_completion_checkpoint>
   </stage>
 
   <stage id="8" name="ReturnSuccess">
+    <prerequisite>
+      REQUIRE: Stage 7 completion checkpoint passed
+      IF Stage 7 not completed: ABORT with error
+    </prerequisite>
+    
     <return_format>
       Implementation completed for task {number}
       
@@ -376,7 +703,7 @@ Context Loaded:
   </artifact_naming>
   <state_sync>
     Update state.json with artifact paths when implementation completes
-    Sync TODO.md with implementation artifact links
+    Sync .opencode/specs/TODO.md with implementation artifact links
     Update plan file with phase statuses (if phased)
   </state_sync>
 </artifact_management>
@@ -388,7 +715,7 @@ Context Loaded:
     Include Started and Completed timestamps
   </status_markers>
   <language_routing>
-    Route based on TODO.md Language field
+    Route based on .opencode/specs/TODO.md Language field
     Validate lean-lsp-mcp availability for Lean tasks
   </language_routing>
   <no_emojis>

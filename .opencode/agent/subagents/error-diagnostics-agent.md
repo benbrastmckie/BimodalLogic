@@ -292,7 +292,7 @@ temperature: 0.2
             "type": "status_sync_failure",
             "count": 1,
             "severity": "medium",
-            "root_cause": "File I/O error during concurrent TODO.md update",
+            "root_cause": "File I/O error during concurrent .opencode/specs/TODO.md update",
             "affected_components": ["status-sync-manager"],
             "first_seen": "2025-12-23T11:20:00Z",
             "last_seen": "2025-12-23T11:20:00Z"

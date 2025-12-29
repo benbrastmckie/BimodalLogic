@@ -38,7 +38,7 @@
    - Never create project roots/subdirs until writing an artifact. When writing, create only the needed subdir (reports|plans|summaries). Do not emit placeholders.
 
 6. **Registry/State Sync**
-   - When commands mutate task/plan/implementation status or sorry/tactic counts, sync TODO.md, `.opencode/specs/state.json`, IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md in the same operation.
+   - When commands mutate task/plan/implementation status or sorry/tactic counts, sync .opencode/specs/TODO.md, `.opencode/specs/state.json`, IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md in the same operation.
 
 7. **Git Commits (Targeted)**
    - Commands must reference `git-commits.md` and use `git-workflow-manager` for scoped commits after artifacts/state updates are written.

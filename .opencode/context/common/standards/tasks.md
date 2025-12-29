@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Standards for creating, formatting, and managing tasks within the .opencode system. These standards ensure consistency across TODO.md, IMPLEMENTATION_STATUS.md, and state tracking.
+Standards for creating, formatting, and managing tasks within the .opencode system. These standards ensure consistency across .opencode/specs/TODO.md, IMPLEMENTATION_STATUS.md, and state tracking.
 
 ## Core Principles
 
@@ -22,7 +22,7 @@ Standards for creating, formatting, and managing tasks within the .opencode syst
 -   Increment `next_project_number` in `state.json` immediately after use.
 
 **Don't**:
--   Guess the next number by reading `TODO.md`.
+-   Guess the next number by reading `.opencode/specs/TODO.md`.
 -   Reuse IDs from archived or deleted tasks.
 
 ### Formatting Standards
@@ -45,7 +45,7 @@ Standards for creating, formatting, and managing tasks within the .opencode syst
 - **Blocking**: None (override if task blocks others)
 - **Acceptance Criteria**: Generic checklist (override for specific criteria)
 - **Impact**: Generic statement (override for specific impact)
-- **Status**: `pending`, `in-progress`, `blocked`, `completed` (displayed in TODO.md using status markers per status-markers.md)
+- **Status**: `pending`, `in-progress`, `blocked`, `completed` (displayed in .opencode/specs/TODO.md using status markers per status-markers.md)
 
 **When to Override Defaults**:
 
@@ -81,7 +81,7 @@ Override Impact when:
 
 ### Placement
 
-#### TODO.md
+#### .opencode/specs/TODO.md
 -   Insert under the appropriate Priority section (High, Medium, Low).
 -   Reorganization: /todo may regroup pending tasks by kind (feature, documentation, maintenance, research) while preserving numbering and metadata. Completed tasks move to the "Completed" section. Reorganization must not create or modify project directories or artifacts.
 -   Maintain lazy directory creation: no directories are created during TODO reordering.
@@ -91,7 +91,7 @@ Override Impact when:
 
 ## Command Integration
 
-- `/implement` **must** reuse the plan link attached in TODO.md when present and update that plan in place with status markers. When no plan is linked, `/implement` executes directly (no failure) while preserving lazy directory creation (no project roots/subdirs unless an artifact is written) and numbering/state sync; guidance to use `/plan {task}` remains recommended for complex work.
+- `/implement` **must** reuse the plan link attached in .opencode/specs/TODO.md when present and update that plan in place with status markers. When no plan is linked, `/implement` executes directly (no failure) while preserving lazy directory creation (no project roots/subdirs unless an artifact is written) and numbering/state sync; guidance to use `/plan {task}` remains recommended for complex work.
 - `/implement`, `/review`, and `/todo` **must** keep IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md in sync when they change task/plan/implementation status or sorry/tactic counts.
 - `/implement` must emit an implementation summary artifact (standard naming) whenever task execution writes implementation artifacts; status-only paths do not emit summaries. Maintain lazy directory creation.
 - `/review`, `/todo`, and `/implement` must capture/populate the `Language` metadata for every task they create or modify; backfill missing Language when encountered.

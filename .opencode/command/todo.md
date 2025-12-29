@@ -1,32 +1,32 @@
 ---
 name: todo
 agent: orchestrator
-description: "Maintain TODO.md (archive completed/abandoned tasks)"
+description: "Maintain .opencode/specs/TODO.md (archive completed/abandoned tasks)"
 context_level: 1
 language: markdown
 ---
 
 Context Loaded:
-@.opencode/specs/TODO.md
+@.opencode/specs/.opencode/specs/TODO.md
 @.opencode/specs/state.json
 @.opencode/context/common/system/status-markers.md
 @.opencode/context/common/system/git-commits.md
 
 <context>
   <system_context>
-    TODO.md maintenance workflow that archives completed and abandoned tasks while
+    .opencode/specs/TODO.md maintenance workflow that archives completed and abandoned tasks while
     preserving task numbering, state synchronization, and all project artifacts.
   </system_context>
   <domain_context>
     Task archival with user confirmation for bulk operations. Maintains consistency
-    between TODO.md, state.json, and archive/state.json. Moves project directories to archive.
+    between .opencode/specs/TODO.md, state.json, and archive/state.json. Moves project directories to archive.
   </domain_context>
   <task_context>
-    Archive completed and abandoned tasks from TODO.md, move project directories to archive,
+    Archive completed and abandoned tasks from .opencode/specs/TODO.md, move project directories to archive,
     update state.json and archive/state.json, preserve task numbering, and commit archival.
   </task_context>
   <execution_context>
-    Atomic updates across 4 entities (TODO.md, state.json, archive/state.json, project directories).
+    Atomic updates across 4 entities (.opencode/specs/TODO.md, state.json, archive/state.json, project directories).
     User confirmation for bulk operations (threshold: 5 tasks). Two-phase commit with rollback.
     Self-healing for missing archive infrastructure. Git commit after archival.
   </execution_context>
@@ -35,16 +35,16 @@ Context Loaded:
 <role>TODO Maintenance Command - Archive completed and abandoned tasks</role>
 
 <task>
-  Archive completed and abandoned tasks from TODO.md, move project directories to archive,
+  Archive completed and abandoned tasks from .opencode/specs/TODO.md, move project directories to archive,
   update state.json and archive/state.json atomically, preserve task numbering and all
   artifacts, and commit archival changes.
 </task>
 
 <workflow_execution>
   <stage id="1" name="ScanTODO">
-    <action>Scan TODO.md for completed and abandoned tasks</action>
+    <action>Scan .opencode/specs/TODO.md for completed and abandoned tasks</action>
     <process>
-      1. Load TODO.md
+      1. Load .opencode/specs/TODO.md
       2. Parse all task entries
       3. Identify tasks with [COMPLETED] status
       4. Identify tasks with [ABANDONED] status
@@ -150,7 +150,7 @@ Context Loaded:
   </stage>
 
   <stage id="4" name="PrepareUpdates">
-    <action>Prepare TODO.md and state.json updates</action>
+    <action>Prepare .opencode/specs/TODO.md and state.json updates</action>
     <task_block_structure>
       A complete task block consists of:
       1. Heading line: Matches pattern `^### \d+\. ` (e.g., "### 192. Fix bug...")
@@ -176,7 +176,7 @@ Context Loaded:
       
       CRITICAL: Task removal must remove the complete block (heading + all body lines),
       not just the heading line. Removing only the heading leaves orphaned metadata
-      lines scattered in TODO.md.
+      lines scattered in .opencode/specs/TODO.md.
     </task_block_structure>
     <block_boundaries>
       Task block boundaries are detected using these patterns (in precedence order):
@@ -209,7 +209,7 @@ Context Loaded:
       6. Task block = lines [N, boundary-1] (inclusive range)
     </block_boundaries>
     <process>
-      1. Create updated TODO.md content:
+      1. Create updated .opencode/specs/TODO.md content:
          a. Remove [COMPLETED] tasks (complete blocks):
             - Locate task heading line matching `^### \d+\. ` with [COMPLETED] status
             - Scan forward to find end boundary (next heading, section, separator, or EOF)
@@ -228,11 +228,11 @@ Context Loaded:
          c. Update repository_health metrics (reduce active_tasks count)
          d. Add recent_activities entries for each archived task
       3. Validate updates in memory:
-         a. Scan updated TODO.md for orphaned metadata lines
+         a. Scan updated .opencode/specs/TODO.md for orphaned metadata lines
          b. Detect orphaned content: lines matching `^- \*\*` without `^### ` heading in previous 5 lines
          c. If orphaned content detected:
             - Log error with line numbers and content preview
-            - Rollback removal (discard updated TODO.md)
+            - Rollback removal (discard updated .opencode/specs/TODO.md)
             - Return error: "Task removal incomplete - orphaned metadata detected at lines {line_numbers}"
             - Recommendation: "Fix block boundary detection and retry"
          d. If validation passes: Proceed to AtomicUpdate stage
@@ -249,27 +249,27 @@ Context Loaded:
     </numbering_preservation>
     <test_cases>
       Test Case 1: Single completed task
-      - Setup: TODO.md with 3 tasks, middle task [COMPLETED]
+      - Setup: .opencode/specs/TODO.md with 3 tasks, middle task [COMPLETED]
       - Expected: Middle task block removed completely (heading + body)
       - Validation: No orphaned metadata lines, tasks 1 and 3 preserved with full structure
       
       Test Case 2: Multiple completed tasks interspersed
-      - Setup: TODO.md with 5 tasks, tasks 2 and 4 [COMPLETED]
+      - Setup: .opencode/specs/TODO.md with 5 tasks, tasks 2 and 4 [COMPLETED]
       - Expected: Tasks 2 and 4 blocks removed completely
       - Validation: Tasks 1, 3, 5 preserved with full structure, no orphaned lines
       
       Test Case 3: Completed task at EOF
-      - Setup: TODO.md with 3 tasks, last task [COMPLETED]
+      - Setup: .opencode/specs/TODO.md with 3 tasks, last task [COMPLETED]
       - Expected: Last task block removed completely (boundary = EOF)
       - Validation: Tasks 1 and 2 preserved, no orphaned lines at end of file
       
       Test Case 4: Completed task before section heading
-      - Setup: TODO.md with task [COMPLETED] followed by "## Completed Tasks" section
+      - Setup: .opencode/specs/TODO.md with task [COMPLETED] followed by "## Completed Tasks" section
       - Expected: Task block removed, section heading preserved
       - Validation: Section heading remains, no orphaned lines before section
       
       Test Case 5: Mixed COMPLETED and ABANDONED
-      - Setup: TODO.md with 4 tasks, 2 [COMPLETED], 1 [ABANDONED], 1 [IN PROGRESS]
+      - Setup: .opencode/specs/TODO.md with 4 tasks, 2 [COMPLETED], 1 [ABANDONED], 1 [IN PROGRESS]
       - Expected: 3 task blocks removed (2 COMPLETED + 1 ABANDONED)
       - Validation: Only [IN PROGRESS] task remains with full structure
       
@@ -279,8 +279,8 @@ Context Loaded:
       - Validation: No orphaned list items, next task preserved
       
       Test Case 7: Empty TODO (no completed tasks)
-      - Setup: TODO.md with only [NOT STARTED] and [IN PROGRESS] tasks
-      - Expected: No changes to TODO.md
+      - Setup: .opencode/specs/TODO.md with only [NOT STARTED] and [IN PROGRESS] tasks
+      - Expected: No changes to .opencode/specs/TODO.md
       - Validation: All tasks preserved exactly as before
       
       Validation checklist (apply to all test cases):
@@ -298,11 +298,11 @@ Context Loaded:
   </stage>
 
   <stage id="5" name="AtomicUpdate">
-    <action>Atomically update 4 entities: TODO.md, state.json, archive/state.json, directories</action>
+    <action>Atomically update 4 entities: .opencode/specs/TODO.md, state.json, archive/state.json, directories</action>
     <process>
       **Phase 1 (Prepare)**:
       1. Backup current state:
-         - Backup TODO.md → TODO.md.bak
+         - Backup .opencode/specs/TODO.md → .opencode/specs/TODO.md.bak
          - Backup state.json → state.json.bak
          - Backup archive/state.json → archive/state.json.bak
          - No directory backup (rely on git, expensive operation)
@@ -314,7 +314,7 @@ Context Loaded:
          - Abort archival
       
       **Phase 2 (Commit)**:
-      1. Write updated TODO.md
+      1. Write updated .opencode/specs/TODO.md
       2. Verify write succeeded (file exists, size > 0)
       3. Write updated state.json
       4. Verify write succeeded
@@ -337,7 +337,7 @@ Context Loaded:
         2. Commit: Write 3 files + move directories or rollback all
       
       All or nothing across 4 entities:
-        - TODO.md updated or restored
+        - .opencode/specs/TODO.md updated or restored
         - state.json updated or restored
         - archive/state.json updated or restored
         - Directories moved or reversed
@@ -345,7 +345,7 @@ Context Loaded:
     <rollback_mechanism>
       rollback_archival():
         1. Restore files from backups:
-           - Copy TODO.md.bak → TODO.md
+           - Copy .opencode/specs/TODO.md.bak → .opencode/specs/TODO.md
            - Copy state.json.bak → state.json
            - Copy archive/state.json.bak → archive/state.json
         2. Reverse directory moves:
@@ -364,7 +364,7 @@ Context Loaded:
     <action>Commit archival changes</action>
     <process>
       1. Stage files:
-         - git add TODO.md
+         - git add .opencode/specs/TODO.md
          - git add .opencode/specs/state.json
          - git add .opencode/specs/archive/state.json
          - git add .opencode/specs/archive/  (pick up moved directories)
@@ -382,7 +382,7 @@ Context Loaded:
          - Archival already complete
     </process>
     <git_commit>
-      Scope: TODO.md + state.json + archive/state.json + moved directories
+      Scope: .opencode/specs/TODO.md + state.json + archive/state.json + moved directories
       Message: "todo: archive {N} completed/abandoned tasks"
       
       Use git-workflow-manager for scoped commit
@@ -392,7 +392,7 @@ Context Loaded:
   <stage id="7" name="ReturnSuccess">
     <action>Return comprehensive archival summary</action>
     <return_format>
-      TODO.md archival complete
+      .opencode/specs/TODO.md archival complete
       
       Tasks archived: {total_count}
       - Completed: {completed_count}
@@ -432,7 +432,7 @@ Context Loaded:
   </numbering_preservation>
   <atomic_updates>
     Use two-phase commit for 4 entities:
-      - TODO.md
+      - .opencode/specs/TODO.md
       - state.json
       - archive/state.json
       - Project directories
@@ -462,7 +462,7 @@ Context Loaded:
 
 <validation>
   <pre_flight>
-    - TODO.md loaded successfully
+    - .opencode/specs/TODO.md loaded successfully
     - state.json loaded successfully
     - Tasks to archive identified
     - archive/state.json exists or created (self-healing)
@@ -470,13 +470,13 @@ Context Loaded:
   </pre_flight>
   <mid_flight>
     - Archival context prepared (archive entries, move operations)
-    - TODO.md and state.json updates prepared in memory
+    - .opencode/specs/TODO.md and state.json updates prepared in memory
     - archive/state.json updates prepared in memory
     - Validation passed (well-formed JSON, valid paths)
     - Backups created
   </mid_flight>
   <post_flight>
-    - TODO.md updated (tasks removed)
+    - .opencode/specs/TODO.md updated (tasks removed)
     - state.json updated (tasks moved to completed_projects, metrics updated)
     - archive/state.json updated (new archive entries)
     - Project directories moved to archive
@@ -488,20 +488,20 @@ Context Loaded:
 
 <error_handling>
   <no_tasks_to_archive>
-    If TODO.md has no [COMPLETED] or [ABANDONED] tasks:
+    If .opencode/specs/TODO.md has no [COMPLETED] or [ABANDONED] tasks:
       - Return early
       - Message: "No tasks to archive"
       - No changes made
   </no_tasks_to_archive>
   <file_read_failure>
-    If TODO.md or state.json cannot be read:
+    If .opencode/specs/TODO.md or state.json cannot be read:
       - Return error
       - Provide file path
       - Recommend manual check
       - Do not proceed with archival
   </file_read_failure>
   <file_write_failure>
-    If any file write fails (TODO.md, state.json, archive/state.json):
+    If any file write fails (.opencode/specs/TODO.md, state.json, archive/state.json):
       - Rollback all files from backups
       - Reverse any directory moves
       - Log error to errors.json with failure details

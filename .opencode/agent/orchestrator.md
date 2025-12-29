@@ -111,10 +111,29 @@
         "deadline": "2025-12-26T11:00:00Z",
         "status": "running",
         "delegation_depth": 1,
-        "delegation_path": ["orchestrator", "implement", "task-executor"]
+        "delegation_path": ["orchestrator", "implement", "task-executor"],
+        
+        // NEW: Command stage tracking (for workflow commands only)
+        "is_command": true,
+        "command_stages": {
+          "current_stage": 4,
+          "stages_completed": [1, 2, 3],
+          "stage_7_completed": false,
+          "stage_7_artifacts": {
+            "status_sync_manager_invoked": false,
+            "status_sync_manager_completed": false,
+            "todo_md_updated": false,
+            "state_json_updated": false,
+            "git_commit_created": false
+          }
+        }
       }
     }
     ```
+    
+    NOTE: command_stages tracking is only populated for workflow commands
+    (plan, research, implement, revise). For direct subagent delegations,
+    is_command = false and command_stages is omitted.
   </schema>
   
   <operations>
@@ -188,9 +207,9 @@
     </critical_importance>
     
     <process>
-      1. If task number present: Read task from TODO.md using explicit bash command:
+      1. If task number present: Read task from .opencode/specs/TODO.md using explicit bash command:
          ```bash
-         grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
+         grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
          ```
       2. Validate extraction succeeded (non-empty result)
       3. If extraction fails or no language specified: default to "general" and log warning
@@ -258,7 +277,7 @@
       <implement_command>
         Use explicit IF/ELSE logic for all 4 cases:
         ```
-        Check for plan existence in TODO.md (look for "Plan:" link)
+        Check for plan existence in .opencode/specs/TODO.md (look for "Plan:" link)
         Log: "Task ${task_number} has_plan: ${has_plan}"
 
         IF language == "lean" AND has_plan == true:
@@ -549,6 +568,64 @@
       - Recommend subagent fix
     </validation_failure_handling>
     
+    <command_stage_validation>
+      IF delegation is command (not subagent):
+        EXTRACT command_execution from registry
+        
+        VERIFY Stage 7 completed:
+          - CHECK command_stages["stage_7_completed"] == true
+          - CHECK stage_7_artifacts["status_sync_manager_completed"] == true
+          - CHECK stage_7_artifacts["todo_md_updated"] == true
+          - CHECK stage_7_artifacts["state_json_updated"] == true
+        
+        IF any check fails:
+          ERROR: "Command returned without completing Stage 7"
+          
+          STEP 1: LOG error
+            ```json
+            {
+              "type": "stage_7_incomplete",
+              "severity": "high",
+              "context": {
+                "command": "{command_name}",
+                "task_number": "{task_number}",
+                "session_id": "{session_id}",
+                "stage_7_artifacts": "{stage_7_artifacts}"
+              },
+              "message": "Command completed without executing Stage 7 (Postflight)",
+              "fix_status": "not_addressed"
+            }
+            ```
+          
+          STEP 2: VERIFY files on disk
+            - CHECK .opencode/specs/TODO.md modification time > start_time
+            - CHECK state.json modification time > start_time
+            - IF files not updated: Confirm Stage 7 failure
+          
+          STEP 3: RETURN error to user
+            ```
+            Error: Command completed without updating task status
+            
+            Stage 7 (Postflight) did not execute:
+            - status-sync-manager invoked: {status}
+            - .opencode/specs/TODO.md updated: {status}
+            - state.json updated: {status}
+            
+            Artifacts created: {list}
+            
+            Manual steps required:
+            1. Update .opencode/specs/TODO.md status to [{expected_status}]
+            2. Update state.json status to "{expected_status_lower}"
+            3. Link artifacts in .opencode/specs/TODO.md
+            
+            Or retry: /{command} {task_number}
+            ```
+          
+          STEP 4: REJECT return
+            - DO NOT proceed to Stage 11
+            - DO NOT return success to user
+    </command_stage_validation>
+    
     <output>Validated return or error</output>
   </step_10>
 
@@ -655,7 +732,7 @@
       - Research report: .opencode/specs/195_lean_tools/reports/research-001.md
       - Summary: .opencode/specs/195_lean_tools/summaries/research-summary.md
 
-      Task 195 marked [RESEARCHED] and links added to TODO.md.
+      Task 195 marked [RESEARCHED] and links added to .opencode/specs/TODO.md.
       ```
     </example_success>
     

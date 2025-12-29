@@ -10,7 +10,7 @@ language: markdown
 
 Context Loaded:
 @.opencode/context/common/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
+@.opencode/specs/.opencode/specs/TODO.md
 @.opencode/specs/state.json
 @.opencode/context/common/system/status-markers.md
 @.opencode/context/common/standards/subagent-return-format.md
@@ -24,7 +24,7 @@ Context Loaded:
   </system_context>
   <domain_context>
     Implementation planning for both Lean and general tasks. Harvests research
-    links from TODO.md and incorporates findings into plan.
+    links from .opencode/specs/TODO.md and incorporates findings into plan.
   </domain_context>
   <task_context>
     Create implementation plan for specified task, harvest research if available,
@@ -57,9 +57,9 @@ Context Loaded:
       <position>1</position>
       <type>integer</type>
       <required>true</required>
-      <description>The task number from TODO.md to plan</description>
+      <description>The task number from .opencode/specs/TODO.md to plan</description>
       <extraction>Extract first argument after command name as task number</extraction>
-      <validation>Must be a valid integer that exists in TODO.md</validation>
+      <validation>Must be a valid integer that exists in .opencode/specs/TODO.md</validation>
     </task_number>
     
     <prompt>
@@ -68,7 +68,7 @@ Context Loaded:
       <required>false</required>
       <description>Optional additional context for planning</description>
       <extraction>Extract remaining arguments after task number as prompt string</extraction>
-      <default>Use task description and research findings from TODO.md</default>
+      <default>Use task description and research findings from .opencode/specs/TODO.md</default>
     </prompt>
   </parameters>
   
@@ -86,8 +86,8 @@ Context Loaded:
       Return: "Error: Task number required. Usage: /plan TASK_NUMBER [PROMPT]"
     If task_number not integer:
       Return: "Error: Task number must be an integer. Got: {input}"
-    If task not found in TODO.md:
-      Return: "Error: Task {task_number} not found in TODO.md"
+    If task not found in .opencode/specs/TODO.md:
+      Return: "Error: Task {task_number} not found in .opencode/specs/TODO.md"
   </error_handling>
 </argument_parsing>
 
@@ -100,21 +100,21 @@ Context Loaded:
       In-Progress: [PLANNING]
     </status_transition>
     <validation>
-      - Task number must exist in TODO.md
+      - Task number must exist in .opencode/specs/TODO.md
       - Task must not be [COMPLETED] or [ABANDONED]
       - Warn if plan already exists (suggest /revise instead)
     </validation>
     <status_update>
       Atomic update via status-sync-manager:
-        - TODO.md: [PLANNING], **Started**: {date}
+        - .opencode/specs/TODO.md: [PLANNING], **Started**: {date}
         - state.json: status = "planning", started = "{date}"
     </status_update>
   </stage>
 
   <stage id="2" name="HarvestResearch">
-    <action>Extract research links from TODO.md</action>
+    <action>Extract research links from .opencode/specs/TODO.md</action>
     <process>
-      1. Scan TODO.md task entry for research links
+      1. Scan .opencode/specs/TODO.md task entry for research links
       2. Extract paths to research reports and summaries
       3. Load research artifacts if present
       4. Extract key findings for plan context
@@ -148,7 +148,7 @@ Context Loaded:
       }
     </delegation_context>
     <special_context>
-      research_inputs: array (paths to research artifacts from TODO.md)
+      research_inputs: array (paths to research artifacts from .opencode/specs/TODO.md)
     </special_context>
     <routing>
       No language-based routing - always routes to planner subagent
@@ -164,42 +164,328 @@ Context Loaded:
       Failed: Keep [PLANNING]
       Blocked: [BLOCKED]
     </status_transition>
+    
     <validation_delegation>
-      Verify planner returned validation success and metadata:
-        - Check planner return metadata for validation_result
-        - Verify plan artifact validated (exists, non-empty)
-        - Extract plan_metadata (phase_count, estimated_hours, complexity)
-        - If validation failed: Abort update, return error to user
+      EXECUTE: Verify planner returned validation success and metadata
+      
+      STEP 1: CHECK planner return metadata
+        - VERIFY return.status field exists and is valid
+        - VERIFY return.metadata.validation_result exists
+        - LOG: "Planner validation: {validation_result}"
+        - IF validation_result != "success": ABORT with error
+      
+      STEP 2: VERIFY plan artifact validated
+        - CHECK plan artifact exists on disk
+        - CHECK plan artifact is non-empty (file size > 0)
+        - LOG: "Plan artifact validated: {plan_path}"
+        - IF artifact missing or empty: ABORT with error
+      
+      STEP 3: EXTRACT plan_metadata
+        - EXTRACT phase_count from planner return
+        - EXTRACT estimated_hours from planner return
+        - EXTRACT complexity from planner return
+        - VERIFY all required metadata fields present
+        - LOG: "Plan metadata: {phase_count} phases, {estimated_hours} hours, {complexity} complexity"
+        - IF any metadata missing: ABORT with error
+      
+      CHECKPOINT: Validation completed
+        - [ ] Planner return validated
+        - [ ] Plan artifact exists on disk
+        - [ ] Plan metadata extracted
+        - IF any checkpoint fails: ABORT Stage 7, return error to user
     </validation_delegation>
+    
     <git_commit>
-      Scope: Plan file + TODO.md + state.json + project state.json
-      Message: "task {number}: plan created"
+      <conditional>
+        IF status == "completed":
+          PROCEED with git commit
+        ELSE:
+          SKIP git commit
+          LOG: "Skipping git commit (status: {status})"
+          PROCEED to atomic_update
+      </conditional>
       
-      Commit only if status == "completed"
-      Use git-workflow-manager for scoped commit
+      <invocation>
+        STEP 1: PREPARE git-workflow-manager delegation
+          ```json
+          {
+            "scope_files": [
+              "{plan_path from planner return}",
+              ".opencode/specs/.opencode/specs/TODO.md",
+              ".opencode/specs/state.json",
+              ".opencode/specs/{task_number}_{slug}/state.json"
+            ],
+            "message_template": "task {number}: plan created",
+            "task_context": {
+              "task_number": "{number}",
+              "description": "plan created"
+            },
+            "session_id": "{session_id}",
+            "delegation_depth": 2,
+            "delegation_path": ["orchestrator", "plan", "git-workflow-manager"]
+          }
+          ```
+        
+        STEP 2: INVOKE git-workflow-manager
+          - Subagent type: "git-workflow-manager"
+          - Delegation context: {prepared context}
+          - Timeout: 120s
+          - LOG: "Invoking git-workflow-manager for task {number}"
+        
+        STEP 3: WAIT for git-workflow-manager return
+          - Maximum wait: 120s
+          - IF timeout: LOG error (non-critical), continue
+        
+        STEP 4: VALIDATE return
+          - IF status == "completed":
+            * EXTRACT commit_hash from commit_info
+            * LOG: "Git commit created: {commit_hash}"
+          
+          - IF status == "failed":
+            * LOG error to errors.json (non-critical)
+            * INCLUDE warning in Stage 8 return
+            * CONTINUE (git failure doesn't fail command)
+      </invocation>
+      
+      CHECKPOINT: Git commit completed (if applicable)
+        - [ ] Git commit attempted (if status == "completed")
+        - [ ] Git commit succeeded OR failure logged (non-critical)
     </git_commit>
+    
     <atomic_update>
-      Delegate to status-sync-manager:
-        - task_number: {number}
-        - new_status: "planned"
-        - timestamp: {ISO8601 date}
-        - session_id: {session_id}
-        - validated_artifacts: {artifacts from planner return}
-        - plan_path: {plan_path from planner return}
-        - plan_metadata: {plan_metadata from planner return}
+      <action>INVOKE status-sync-manager subagent</action>
       
-      status-sync-manager performs two-phase commit:
-        - Phase 1: Prepare, validate artifacts, backup
-        - Phase 2: Write all files or rollback all
+      <step_1_prepare_delegation>
+        PREPARE delegation context:
+        ```json
+        {
+          "task_number": "{number}",
+          "new_status": "planned",
+          "timestamp": "{ISO8601 date}",
+          "session_id": "{session_id}",
+          "validated_artifacts": "{artifacts from planner return}",
+          "plan_path": "{plan_path from planner return}",
+          "plan_metadata": "{plan_metadata from planner return}",
+          "delegation_depth": 2,
+          "delegation_path": ["orchestrator", "plan", "status-sync-manager"]
+        }
+        ```
+        
+        VALIDATE delegation context:
+          - VERIFY all required fields present
+          - VERIFY task_number is positive integer
+          - VERIFY new_status is valid value ("planned")
+          - VERIFY timestamp is ISO8601 format
+          - IF validation fails: ABORT with error
+      </step_1_prepare_delegation>
       
-      Atomicity guaranteed across:
-        - TODO.md (status, timestamps, plan link)
-        - state.json (status, timestamps, plan_path, plan_metadata)
-        - project state.json (lazy created if needed)
+      <step_2_invoke>
+        INVOKE status-sync-manager:
+          - Subagent type: "status-sync-manager"
+          - Delegation context: {prepared context}
+          - Timeout: 60s
+          - Delegation mechanism: Per subagent-delegation-guide.md
+        
+        LOG: "Invoking status-sync-manager for task {number}"
+      </step_2_invoke>
+      
+      <step_3_wait>
+        WAIT for status-sync-manager return:
+          - Maximum wait: 60s
+          - IF timeout: ABORT with error "status-sync-manager timeout after 60s"
+      </step_3_wait>
+      
+      <step_4_validate_return>
+        VALIDATE status-sync-manager return:
+          - VERIFY return format matches subagent-return-format.md
+          - VERIFY status field == "completed" (not "failed" or "partial")
+          - VERIFY files_updated includes [".opencode/specs/TODO.md", "state.json"]
+          - VERIFY rollback_performed == false
+          - IF validation fails: ABORT with error details
+        
+        LOG: "status-sync-manager completed: {files_updated}"
+      </step_4_validate_return>
+      
+      <step_5_verify_on_disk>
+        VERIFY files updated on disk:
+          - READ .opencode/specs/TODO.md and verify status marker changed to [PLANNED]
+          - READ state.json and verify status field == "planned"
+          - IF verification fails: ABORT with error
+        
+        CHECKPOINT: Atomic update completed successfully
+          - [ ] status-sync-manager returned "completed"
+          - [ ] .opencode/specs/TODO.md updated on disk
+          - [ ] state.json updated on disk
+          - [ ] No rollback performed
+      </step_5_verify_on_disk>
+      
+      <status_sync_manager_protocol>
+        status-sync-manager performs two-phase commit:
+          - Phase 1: Prepare, validate artifacts, backup
+          - Phase 2: Write all files or rollback all
+        
+        Atomicity guaranteed across:
+          - .opencode/specs/TODO.md (status, timestamps, plan link)
+          - state.json (status, timestamps, plan_path, plan_metadata)
+          - project state.json (lazy created if needed)
+      </status_sync_manager_protocol>
     </atomic_update>
+    
+    <error_handling>
+      <error_case name="validation_failed">
+        IF validation fails before delegation:
+          STEP 1: ABORT immediately
+            - DO NOT invoke status-sync-manager
+            - DO NOT invoke git-workflow-manager
+          
+          STEP 2: LOG error to errors.json
+            ```json
+            {
+              "type": "validation_failed",
+              "severity": "high",
+              "context": {
+                "command": "plan",
+                "task_number": "{number}",
+                "session_id": "{session_id}",
+                "stage": 7
+              },
+              "message": "Planner return validation failed: {error}",
+              "fix_status": "not_addressed"
+            }
+            ```
+          
+          STEP 3: RETURN validation error to user
+            ```
+            Error: Validation failed
+            
+            Details: {validation_error}
+            
+            Recommendation: Fix planner subagent implementation
+            ```
+      </error_case>
+      
+      <error_case name="status_sync_manager_failed">
+        IF status-sync-manager returns status == "failed":
+          STEP 1: EXTRACT error details
+            - error_type: {type from errors array}
+            - error_message: {message from errors array}
+            - rollback_performed: {boolean}
+          
+          STEP 2: LOG error to errors.json
+            ```json
+            {
+              "type": "status_sync_failed",
+              "severity": "high",
+              "context": {
+                "command": "plan",
+                "task_number": "{number}",
+                "session_id": "{session_id}",
+                "stage": 7
+              },
+              "message": "status-sync-manager failed: {error_message}",
+              "fix_status": "not_addressed"
+            }
+            ```
+          
+          STEP 3: ABORT Stage 7
+            - DO NOT proceed to git commit
+            - DO NOT proceed to Stage 8
+          
+          STEP 4: RETURN error to user
+            ```
+            Error: Failed to update task status
+            
+            Details: {error_message}
+            
+            Artifacts created:
+            - Plan: {plan_path}
+            
+            Manual recovery steps:
+            1. Verify plan artifact exists: {plan_path}
+            2. Manually update .opencode/specs/TODO.md status to [PLANNED]
+            3. Manually update state.json status to "planned"
+            4. Manually link plan in .opencode/specs/TODO.md
+            
+            Or retry: /plan {task_number}
+            ```
+      </error_case>
+      
+      <error_case name="status_sync_manager_timeout">
+        IF status-sync-manager times out after 60s:
+          STEP 1: LOG timeout
+          
+          STEP 2: CHECK files on disk
+            - IF .opencode/specs/TODO.md updated: Partial success
+            - IF state.json updated: Partial success
+            - IF neither updated: Complete failure
+          
+          STEP 3: RETURN appropriate error
+            ```
+            Error: Status update timed out
+            
+            Status: {partial or complete failure}
+            
+            Files updated:
+            - .opencode/specs/TODO.md: {yes/no}
+            - state.json: {yes/no}
+            
+            Recommendation: Check status-sync-manager implementation
+            Retry: /plan {task_number}
+            ```
+      </error_case>
+      
+      <error_case name="git_commit_failed">
+        IF git-workflow-manager returns status == "failed":
+          STEP 1: LOG error (non-critical)
+            - Git failure does not fail the command
+            - Artifacts and status updates still valid
+          
+          STEP 2: CONTINUE to Stage 8
+            - Include git failure warning in return
+          
+          STEP 3: RETURN success with warning
+            ```
+            Warning: Git commit failed
+            
+            Plan created successfully: {plan_path}
+            Task status updated to [PLANNED]
+            
+            Manual commit required:
+              git add {files}
+              git commit -m "task {number}: plan created"
+            
+            Error: {git_error}
+            ```
+      </error_case>
+    </error_handling>
+    
+    <stage_7_completion_checkpoint>
+      VERIFY all Stage 7 steps completed:
+        - [ ] Planner return validated
+        - [ ] Plan artifact exists on disk
+        - [ ] status-sync-manager invoked
+        - [ ] status-sync-manager returned "completed"
+        - [ ] .opencode/specs/TODO.md updated on disk (verified)
+        - [ ] state.json updated on disk (verified)
+        - [ ] git-workflow-manager invoked (if status == "completed")
+      
+      IF any checkpoint fails:
+        - ABORT Stage 8
+        - RETURN error to user with checkpoint failure details
+        - Include manual recovery instructions
+      
+      IF all checkpoints pass:
+        - LOG: "Stage 7 (Postflight) completed successfully"
+        - PROCEED to Stage 8
+    </stage_7_completion_checkpoint>
   </stage>
 
   <stage id="8" name="ReturnSuccess">
+    <prerequisite>
+      REQUIRE: Stage 7 completion checkpoint passed
+      IF Stage 7 not completed: ABORT with error
+    </prerequisite>
+    
     <return_format>
       If completed:
       ```
@@ -251,7 +537,7 @@ Context Loaded:
     Level 2 (Filtered) - Planning requires project context based on language
   </context_allocation>
   <research_harvesting>
-    Check TODO.md for research links
+    Check .opencode/specs/TODO.md for research links
     Load research artifacts if present
     Pass research findings to planner
   </research_harvesting>
@@ -268,7 +554,7 @@ Context Loaded:
   </artifact_naming>
   <state_sync>
     Update state.json with plan path when planning completes
-    Sync TODO.md with plan link
+    Sync .opencode/specs/TODO.md with plan link
   </state_sync>
 </artifact_management>
 

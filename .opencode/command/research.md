@@ -57,9 +57,9 @@ Context Loaded:
       <position>1</position>
       <type>integer</type>
       <required>true</required>
-      <description>The task number from TODO.md to research</description>
+      <description>The task number from .opencode/specs/TODO.md to research</description>
       <extraction>Extract first argument after command name as task number</extraction>
-      <validation>Must be a valid integer that exists in TODO.md</validation>
+      <validation>Must be a valid integer that exists in .opencode/specs/TODO.md</validation>
     </task_number>
     
     <prompt>
@@ -68,7 +68,7 @@ Context Loaded:
       <required>false</required>
       <description>Optional additional context or focus for research</description>
       <extraction>Extract remaining arguments after task number as prompt string</extraction>
-      <default>Use task description from TODO.md</default>
+      <default>Use task description from .opencode/specs/TODO.md</default>
     </prompt>
     
     <flags>
@@ -97,8 +97,8 @@ Context Loaded:
       Return: "Error: Task number required. Usage: /research TASK_NUMBER [PROMPT]"
     If task_number not integer:
       Return: "Error: Task number must be an integer. Got: {input}"
-    If task not found in TODO.md:
-      Return: "Error: Task {task_number} not found in TODO.md"
+    If task not found in .opencode/specs/TODO.md:
+      Return: "Error: Task {task_number} not found in .opencode/specs/TODO.md"
   </error_handling>
 </argument_parsing>
 
@@ -111,14 +111,14 @@ Context Loaded:
       In-Progress: [RESEARCHING]
     </status_transition>
     <validation>
-      - Task number must exist in TODO.md
+      - Task number must exist in .opencode/specs/TODO.md
       - Task must not be [COMPLETED] or [ABANDONED]
       - Language field must be present (default to "general")
       - Check for --divide flag (topic subdivision)
     </validation>
     <status_update>
       Atomic update via status-sync-manager:
-        - TODO.md: [RESEARCHING], **Started**: {date}
+        - .opencode/specs/TODO.md: [RESEARCHING], **Started**: {date}
         - state.json: status = "researching", started = "{date}"
     </status_update>
   </stage>
@@ -130,9 +130,9 @@ Context Loaded:
       Incorrect routing bypasses Lean-specific tooling (lean-lsp-mcp, Loogle).
     </critical_importance>
     <language_extraction>
-      Extract Language field from TODO.md task using explicit bash command:
+      Extract Language field from .opencode/specs/TODO.md task using explicit bash command:
       ```bash
-      grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
+      grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
       ```
       Validate extraction succeeded (non-empty result)
       If extraction fails: default to "general" and log warning
@@ -190,49 +190,335 @@ Context Loaded:
       Failed: Keep [RESEARCHING]
       Blocked: [BLOCKED]
     </status_transition>
+    
     <validation_delegation>
-      Verify researcher returned validation success:
-        - Check researcher return metadata for validation_result
-        - Verify research artifact validated (exists, non-empty)
-        - Expect 1 artifact: research report only (NO summary artifact)
-        - Summary returned as metadata in return object, not as artifact
-        - If validation failed: Abort update, return error to user
+      EXECUTE: Verify researcher returned validation success
+      
+      STEP 1: CHECK researcher return metadata
+        - VERIFY return.status field exists and is valid
+        - VERIFY return.metadata.validation_result exists
+        - LOG: "Researcher validation: {validation_result}"
+        - IF validation_result != "success": ABORT with error
+      
+      STEP 2: VERIFY research artifact validated
+        - CHECK research artifact exists on disk
+        - CHECK research artifact is non-empty (file size > 0)
+        - VERIFY exactly 1 artifact: research report only (NO summary artifact)
+        - LOG: "Research artifact validated: {report_path}"
+        - IF artifact missing or empty: ABORT with error
+        - IF summary artifact found: ABORT with error "Summary should be metadata, not artifact"
+      
+      STEP 3: VERIFY summary in metadata
+        - VERIFY return.summary field exists
+        - VERIFY summary is brief (<100 tokens)
+        - LOG: "Research summary in metadata: {summary_length} tokens"
+        - IF summary missing: ABORT with error
+      
+      CHECKPOINT: Validation completed
+        - [ ] Researcher return validated
+        - [ ] Research artifact exists on disk
+        - [ ] Summary in metadata (not as artifact)
+        - IF any checkpoint fails: ABORT Stage 7, return error to user
     </validation_delegation>
+    
     <artifact_linking>
-      Link 1 artifact in TODO.md:
+      Link 1 artifact in .opencode/specs/TODO.md:
         - Research Report: {report_path}
       
       NO summary artifact link (summary is metadata in return object)
       
       Reference: artifact-management.md "Context Window Protection via Metadata Passing"
     </artifact_linking>
+    
     <git_commit>
-      Scope: Research report + TODO.md + state.json + project state.json
-      Message: "task {number}: research completed"
+      <conditional>
+        IF status == "completed":
+          PROCEED with git commit
+        ELSE:
+          SKIP git commit
+          LOG: "Skipping git commit (status: {status})"
+          PROCEED to atomic_update
+      </conditional>
       
-      Commit only if status == "completed"
-      Use git-workflow-manager for scoped commit
+      <invocation>
+        STEP 1: PREPARE git-workflow-manager delegation
+          ```json
+          {
+            "scope_files": [
+              "{report_path from researcher return}",
+              ".opencode/specs/TODO.md",
+              ".opencode/specs/state.json",
+              ".opencode/specs/{task_number}_{slug}/state.json"
+            ],
+            "message_template": "task {number}: research completed",
+            "task_context": {
+              "task_number": "{number}",
+              "description": "research completed"
+            },
+            "session_id": "{session_id}",
+            "delegation_depth": 2,
+            "delegation_path": ["orchestrator", "research", "git-workflow-manager"]
+          }
+          ```
+        
+        STEP 2: INVOKE git-workflow-manager
+          - Subagent type: "git-workflow-manager"
+          - Delegation context: {prepared context}
+          - Timeout: 120s
+          - LOG: "Invoking git-workflow-manager for task {number}"
+        
+        STEP 3: WAIT for git-workflow-manager return
+          - Maximum wait: 120s
+          - IF timeout: LOG error (non-critical), continue
+        
+        STEP 4: VALIDATE return
+          - IF status == "completed":
+            * EXTRACT commit_hash from commit_info
+            * LOG: "Git commit created: {commit_hash}"
+          
+          - IF status == "failed":
+            * LOG error to errors.json (non-critical)
+            * INCLUDE warning in Stage 8 return
+            * CONTINUE (git failure doesn't fail command)
+      </invocation>
+      
+      CHECKPOINT: Git commit completed (if applicable)
+        - [ ] Git commit attempted (if status == "completed")
+        - [ ] Git commit succeeded OR failure logged (non-critical)
     </git_commit>
+    
     <atomic_update>
-      Delegate to status-sync-manager:
-        - task_number: {number}
-        - new_status: "researched"
-        - timestamp: {ISO8601 date}
-        - session_id: {session_id}
-        - validated_artifacts: {artifacts from researcher return}
+      <action>INVOKE status-sync-manager subagent</action>
       
-      status-sync-manager performs two-phase commit:
-        - Phase 1: Prepare, validate artifacts, backup
-        - Phase 2: Write all files or rollback all
+      <step_1_prepare_delegation>
+        PREPARE delegation context:
+        ```json
+        {
+          "task_number": "{number}",
+          "new_status": "researched",
+          "timestamp": "{ISO8601 date}",
+          "session_id": "{session_id}",
+          "validated_artifacts": "{artifacts from researcher return}",
+          "delegation_depth": 2,
+          "delegation_path": ["orchestrator", "research", "status-sync-manager"]
+        }
+        ```
+        
+        VALIDATE delegation context:
+          - VERIFY all required fields present
+          - VERIFY task_number is positive integer
+          - VERIFY new_status is valid value ("researched")
+          - VERIFY timestamp is ISO8601 format
+          - IF validation fails: ABORT with error
+      </step_1_prepare_delegation>
       
-      Atomicity guaranteed across:
-        - TODO.md (status, timestamps, artifact links)
-        - state.json (status, timestamps, artifacts array)
-        - project state.json (lazy created if needed)
+      <step_2_invoke>
+        INVOKE status-sync-manager:
+          - Subagent type: "status-sync-manager"
+          - Delegation context: {prepared context}
+          - Timeout: 60s
+          - Delegation mechanism: Per subagent-delegation-guide.md
+        
+        LOG: "Invoking status-sync-manager for task {number}"
+      </step_2_invoke>
+      
+      <step_3_wait>
+        WAIT for status-sync-manager return:
+          - Maximum wait: 60s
+          - IF timeout: ABORT with error "status-sync-manager timeout after 60s"
+      </step_3_wait>
+      
+      <step_4_validate_return>
+        VALIDATE status-sync-manager return:
+          - VERIFY return format matches subagent-return-format.md
+          - VERIFY status field == "completed" (not "failed" or "partial")
+          - VERIFY files_updated includes [".opencode/specs/TODO.md", "state.json"]
+          - VERIFY rollback_performed == false
+          - IF validation fails: ABORT with error details
+        
+        LOG: "status-sync-manager completed: {files_updated}"
+      </step_4_validate_return>
+      
+      <step_5_verify_on_disk>
+        VERIFY files updated on disk:
+          - READ .opencode/specs/TODO.md and verify status marker changed to [RESEARCHED]
+          - READ state.json and verify status field == "researched"
+          - IF verification fails: ABORT with error
+        
+        CHECKPOINT: Atomic update completed successfully
+          - [ ] status-sync-manager returned "completed"
+          - [ ] .opencode/specs/TODO.md updated on disk
+          - [ ] state.json updated on disk
+          - [ ] No rollback performed
+      </step_5_verify_on_disk>
+      
+      <status_sync_manager_protocol>
+        status-sync-manager performs two-phase commit:
+          - Phase 1: Prepare, validate artifacts, backup
+          - Phase 2: Write all files or rollback all
+        
+        Atomicity guaranteed across:
+          - .opencode/specs/TODO.md (status, timestamps, artifact links)
+          - state.json (status, timestamps, artifacts array)
+          - project state.json (lazy created if needed)
+      </status_sync_manager_protocol>
     </atomic_update>
+    
+    <error_handling>
+      <error_case name="validation_failed">
+        IF validation fails before delegation:
+          STEP 1: ABORT immediately
+            - DO NOT invoke status-sync-manager
+            - DO NOT invoke git-workflow-manager
+          
+          STEP 2: LOG error to errors.json
+            ```json
+            {
+              "type": "validation_failed",
+              "severity": "high",
+              "context": {
+                "command": "research",
+                "task_number": "{number}",
+                "session_id": "{session_id}",
+                "stage": 7
+              },
+              "message": "Researcher return validation failed: {error}",
+              "fix_status": "not_addressed"
+            }
+            ```
+          
+          STEP 3: RETURN validation error to user
+            ```
+            Error: Validation failed
+            
+            Details: {validation_error}
+            
+            Recommendation: Fix researcher subagent implementation
+            ```
+      </error_case>
+      
+      <error_case name="status_sync_manager_failed">
+        IF status-sync-manager returns status == "failed":
+          STEP 1: EXTRACT error details
+            - error_type: {type from errors array}
+            - error_message: {message from errors array}
+            - rollback_performed: {boolean}
+          
+          STEP 2: LOG error to errors.json
+            ```json
+            {
+              "type": "status_sync_failed",
+              "severity": "high",
+              "context": {
+                "command": "research",
+                "task_number": "{number}",
+                "session_id": "{session_id}",
+                "stage": 7
+              },
+              "message": "status-sync-manager failed: {error_message}",
+              "fix_status": "not_addressed"
+            }
+            ```
+          
+          STEP 3: ABORT Stage 7
+            - DO NOT proceed to git commit
+            - DO NOT proceed to Stage 8
+          
+          STEP 4: RETURN error to user
+            ```
+            Error: Failed to update task status
+            
+            Details: {error_message}
+            
+            Artifacts created:
+            - Research Report: {report_path}
+            
+            Manual recovery steps:
+            1. Verify research artifact exists: {report_path}
+            2. Manually update .opencode/specs/TODO.md status to [RESEARCHED]
+            3. Manually update state.json status to "researched"
+            4. Manually link research report in .opencode/specs/TODO.md
+            
+            Or retry: /research {task_number}
+            ```
+      </error_case>
+      
+      <error_case name="status_sync_manager_timeout">
+        IF status-sync-manager times out after 60s:
+          STEP 1: LOG timeout
+          
+          STEP 2: CHECK files on disk
+            - IF .opencode/specs/TODO.md updated: Partial success
+            - IF state.json updated: Partial success
+            - IF neither updated: Complete failure
+          
+          STEP 3: RETURN appropriate error
+            ```
+            Error: Status update timed out
+            
+            Status: {partial or complete failure}
+            
+            Files updated:
+            - .opencode/specs/TODO.md: {yes/no}
+            - state.json: {yes/no}
+            
+            Recommendation: Check status-sync-manager implementation
+            Retry: /research {task_number}
+            ```
+      </error_case>
+      
+      <error_case name="git_commit_failed">
+        IF git-workflow-manager returns status == "failed":
+          STEP 1: LOG error (non-critical)
+            - Git failure does not fail the command
+            - Artifacts and status updates still valid
+          
+          STEP 2: CONTINUE to Stage 8
+            - Include git failure warning in return
+          
+          STEP 3: RETURN success with warning
+            ```
+            Warning: Git commit failed
+            
+            Research completed successfully: {report_path}
+            Task status updated to [RESEARCHED]
+            
+            Manual commit required:
+              git add {files}
+              git commit -m "task {number}: research completed"
+            
+            Error: {git_error}
+            ```
+      </error_case>
+    </error_handling>
+    
+    <stage_7_completion_checkpoint>
+      VERIFY all Stage 7 steps completed:
+        - [ ] Researcher return validated
+        - [ ] Research artifact exists on disk
+        - [ ] status-sync-manager invoked
+        - [ ] status-sync-manager returned "completed"
+        - [ ] .opencode/specs/TODO.md updated on disk (verified)
+        - [ ] state.json updated on disk (verified)
+        - [ ] git-workflow-manager invoked (if status == "completed")
+      
+      IF any checkpoint fails:
+        - ABORT Stage 8
+        - RETURN error to user with checkpoint failure details
+        - Include manual recovery instructions
+      
+      IF all checkpoints pass:
+        - LOG: "Stage 7 (Postflight) completed successfully"
+        - PROCEED to Stage 8
+    </stage_7_completion_checkpoint>
   </stage>
 
   <stage id="8" name="ReturnSuccess">
+    <prerequisite>
+      REQUIRE: Stage 7 completion checkpoint passed
+      IF Stage 7 not completed: ABORT with error
+    </prerequisite>
+    
     <return_format>
       Research completed for task {number}
       
@@ -295,7 +581,7 @@ Context Loaded:
   </artifact_naming>
   <state_sync>
     Update state.json with artifact paths when research completes
-    Sync TODO.md with research report links
+    Sync .opencode/specs/TODO.md with research report links
   </state_sync>
 </artifact_management>
 
@@ -305,7 +591,7 @@ Context Loaded:
     Include Started and Completed timestamps
   </status_markers>
   <language_routing>
-    Route based on TODO.md Language field
+    Route based on .opencode/specs/TODO.md Language field
     Validate lean-lsp-mcp availability for Lean tasks
   </language_routing>
   <no_emojis>

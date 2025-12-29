@@ -1,9 +1,10 @@
 # Sorry Placeholder Registry
 
 **Last Updated**: 2025-12-28
-**Total Active Placeholders**: 6 (1 ModalS5 documented invalid, 1 Completeness, 1 SoundnessLemmas, 3 ProofSearch documentation examples)
+**Total Active Placeholders**: 5 (1 ModalS5 documented invalid, 1 Completeness, 1 SoundnessLemmas, 2 documentation examples in ProofSearch/Automation)
 **Total Axiom Declarations**: 11 (all in Completeness.lean for canonical model construction)
 **Total Resolved**: 60 (Plan 059 Phase 1: 6 De Morgan laws, Plan 060: diamond_disj_iff + s4_diamond_box_conj + s5_diamond_conj_diamond + k_dist_diamond + biconditional infrastructure, Task 46: 3 DeductionTheorem cases)
+**Note**: Count corrected from 6 to 5 after codebase review (sess_1766969902_lx) - ProofSearch has 3 sorry but only counted as documentation examples, Automation.lean has 1 documentation example
 
 This document tracks `sorry` placeholders (unproven theorems) and `axiom` declarations (unproven lemmas) in the Logos codebase. It provides resolution context, effort estimates, and cross-references to related tasks.
 
@@ -154,9 +155,9 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 φ) (persisten
 10. **Line 327**: `weak_completeness` - Weak completeness theorem
 11. **Line 347**: `strong_completeness` - Strong completeness theorem
 
-### Logos/Core/Automation/ProofSearch.lean (3 sorry placeholders)
+### Logos/Core/Automation/ProofSearch.lean (0 code placeholders, 3 documentation examples)
 
-**Active Sorry Placeholders** (3 total):
+**Documentation Examples** (3 total - NOT counted as active placeholders):
 - **ProofSearch.lean:448** - Test case 1: `bounded_search [] _ 1` example
   - **Context**: Documentation example showing bounded search usage
   - **Status**: Documentation only, not blocking functionality
@@ -168,6 +169,13 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 φ) (persisten
   
 - **ProofSearch.lean:458** - Test case 3: `bounded_search [p.box] p.box 3` example
   - **Context**: Documentation example showing bounded search usage with modal formulas
+  - **Status**: Documentation only, not blocking functionality
+
+### Logos/Automation.lean (0 code placeholders, 1 documentation example)
+
+**Documentation Examples** (1 total - NOT counted as active placeholders):
+- **Automation.lean:26** - Example: `modal_k_tactic` usage
+  - **Context**: Documentation example showing tactic usage
   - **Status**: Documentation only, not blocking functionality
 
 ### Logos/Core/Metalogic/SoundnessLemmas.lean (1 sorry placeholder)

@@ -53,7 +53,7 @@ temperature: 0.2
 
 <process_flow>
   <step_1>
-    <action>Read task from TODO.md</action>
+    <action>Read task from .opencode/specs/TODO.md</action>
     <process>
       1. Read .opencode/specs/TODO.md
       2. Find task entry for task_number
@@ -68,7 +68,7 @@ temperature: 0.2
   <step_2>
     <action>Harvest research findings if available</action>
     <process>
-      1. Check TODO.md for research artifact links
+      1. Check .opencode/specs/TODO.md for research artifact links
       2. If research links found:
          a. Read research report
          b. Read research summary
@@ -289,7 +289,7 @@ temperature: 0.2
     ```json
     {
       "status": "failed",
-      "summary": "Task {number} not found in TODO.md. Cannot create plan.",
+      "summary": "Task {number} not found in .opencode/specs/TODO.md. Cannot create plan.",
       "artifacts": [],
       "metadata": {
         "session_id": "sess_1703606400_a1b2c3",
@@ -300,7 +300,7 @@ temperature: 0.2
       },
       "errors": [{
         "type": "file_not_found",
-        "message": "Task {number} not found in TODO.md",
+        "message": "Task {number} not found in .opencode/specs/TODO.md",
         "code": "FILE_NOT_FOUND",
         "recoverable": true,
         "recommendation": "Verify task number and create task with /task command"
@@ -329,7 +329,7 @@ temperature: 0.2
         "recoverable": true,
         "recommendation": "Update task description with specific requirements and goals"
       }],
-      "next_steps": "Update task description in TODO.md and retry planning"
+      "next_steps": "Update task description in .opencode/specs/TODO.md and retry planning"
     }
     ```
   </error_handling>
@@ -340,7 +340,7 @@ temperature: 0.2
     - Verify task_number is positive integer
     - Verify session_id provided
     - Verify delegation_depth less than 3
-    - Check TODO.md exists and is readable
+    - Check .opencode/specs/TODO.md exists and is readable
   </pre_execution>
 
   <post_execution>

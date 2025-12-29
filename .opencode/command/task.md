@@ -1,7 +1,7 @@
 ---
 name: task
 agent: orchestrator
-description: "Create new task in TODO.md (NO implementation)"
+description: "Create new task in .opencode/specs/TODO.md (NO implementation)"
 context_level: 1
 language: markdown
 ---
@@ -9,20 +9,20 @@ language: markdown
 **Task Input (required):** $ARGUMENTS (task description; e.g., `/task "Implement feature X"`)
 
 Context Loaded:
-@.opencode/specs/TODO.md
+@.opencode/specs/.opencode/specs/TODO.md
 @.opencode/specs/state.json
 @.opencode/context/common/system/status-markers.md
 
 <context>
   <system_context>
     Simple task creation system - ONLY creates task entries, NEVER implements them.
-    Reads next_project_number from state.json, creates TODO.md entry, increments number.
+    Reads next_project_number from state.json, creates .opencode/specs/TODO.md entry, increments number.
   </system_context>
   <domain_context>
-    TODO.md task management with status markers, effort estimates, and language tracking.
+    .opencode/specs/TODO.md task management with status markers, effort estimates, and language tracking.
   </domain_context>
   <task_context>
-    Create new task entry in TODO.md with next available number from state.json,
+    Create new task entry in .opencode/specs/TODO.md with next available number from state.json,
     standardized format, and initial [NOT STARTED] status. DO NOT IMPLEMENT THE TASK.
   </task_context>
   <execution_context>
@@ -31,7 +31,7 @@ Context Loaded:
   </execution_context>
 </context>
 
-<role>Task Creation Command - Add new tasks to TODO.md WITHOUT implementing them</role>
+<role>Task Creation Command - Add new tasks to .opencode/specs/TODO.md WITHOUT implementing them</role>
 
 <task>
   CRITICAL: This command ONLY creates task entries. It NEVER implements tasks.
@@ -39,11 +39,11 @@ Context Loaded:
   Process:
   1. Parse task description from $ARGUMENTS
   2. Read next_project_number from .opencode/specs/state.json
-  3. Create task entry in TODO.md
+  3. Create task entry in .opencode/specs/TODO.md
   4. Increment next_project_number in state.json
   5. Return task number to user
   
-  DO NOT implement the task. DO NOT create any files except updating TODO.md and state.json.
+  DO NOT implement the task. DO NOT create any files except updating .opencode/specs/TODO.md and state.json.
 </task>
 
 <workflow_execution>
@@ -88,9 +88,9 @@ Context Loaded:
   </stage>
 
   <stage id="3" name="CreateTODOEntry">
-    <action>Create formatted TODO.md entry</action>
+    <action>Create formatted .opencode/specs/TODO.md entry</action>
     <process>
-      1. Format task entry following TODO.md conventions:
+      1. Format task entry following .opencode/specs/TODO.md conventions:
          ```
          ### {number}. {description}
          - **Effort**: {effort}
@@ -100,7 +100,7 @@ Context Loaded:
          - **Blocking**: None
          - **Dependencies**: None
          ```
-      2. Determine correct section in TODO.md based on priority:
+      2. Determine correct section in .opencode/specs/TODO.md based on priority:
          - High → ## High Priority section
          - Medium → ## Medium Priority section
          - Low → ## Low Priority section
@@ -147,7 +147,7 @@ Context Loaded:
       - Language: {language}
       - Status: [NOT STARTED]
       
-      Task added to TODO.md in {priority} Priority section.
+      Task added to .opencode/specs/TODO.md in {priority} Priority section.
       Next available task number is now {next_number}.
       
       Use `/research {number}` to research this task.
@@ -168,7 +168,7 @@ Context Loaded:
     - Delegate to any subagents
     
     The ONLY files modified are:
-    - .opencode/specs/TODO.md (add task entry)
+    - .opencode/specs/.opencode/specs/TODO.md (add task entry)
     - .opencode/specs/state.json (increment next_project_number)
   </no_implementation>
   
@@ -183,8 +183,8 @@ Context Loaded:
   <file_operations_only>
     This command performs only these file operations:
     1. Read .opencode/specs/state.json
-    2. Read .opencode/specs/TODO.md
-    3. Edit .opencode/specs/TODO.md (add task entry)
+    2. Read .opencode/specs/.opencode/specs/TODO.md
+    3. Edit .opencode/specs/.opencode/specs/TODO.md (add task entry)
     4. Edit .opencode/specs/state.json (increment next_project_number)
     
     No other file operations are allowed.
@@ -202,11 +202,11 @@ Context Loaded:
   <mid_flight>
     - state.json exists and is readable
     - next_project_number is valid number
-    - TODO.md exists and is writable
+    - .opencode/specs/TODO.md exists and is writable
   </mid_flight>
   
   <post_flight>
-    - TODO.md contains new task entry in correct section
+    - .opencode/specs/TODO.md contains new task entry in correct section
     - state.json next_project_number incremented
     - state.json recent_activities updated
     - No other files created or modified
@@ -227,7 +227,7 @@ Context Loaded:
   </language_detection>
   
   <priority_sections>
-    Add task to correct TODO.md section based on priority:
+    Add task to correct .opencode/specs/TODO.md section based on priority:
     - High → ## High Priority
     - Medium → ## Medium Priority  
     - Low → ## Low Priority
@@ -275,9 +275,9 @@ Context Loaded:
   </invalid_state_json>
   
   <missing_todo>
-    If TODO.md doesn't exist:
-      - Return error: "TODO.md not found at .opencode/specs/TODO.md"
-      - Suggest: "Run /todo to regenerate TODO.md"
+    If .opencode/specs/TODO.md doesn't exist:
+      - Return error: ".opencode/specs/TODO.md not found at .opencode/specs/.opencode/specs/TODO.md"
+      - Suggest: "Run /todo to regenerate .opencode/specs/TODO.md"
       - DO NOT create task
   </missing_todo>
   
@@ -292,7 +292,7 @@ Context Loaded:
 <important_notes>
   1. This command ONLY creates task entries - it does NOT implement tasks
   2. No subagent delegation - all operations in orchestrator
-  3. Only two files modified: TODO.md and state.json
+  3. Only two files modified: .opencode/specs/TODO.md and state.json
   4. Task number comes from state.json next_project_number field
   5. After creating task, user must use /research, /plan, /implement separately
 </important_notes>

@@ -98,7 +98,7 @@ Context Loaded:
     <process>
       1. Update plan phases/status markers with timestamps (if plan used).
       2. Emit or update summaries under summaries/implementation-summary-YYYYMMDD.md when artifacts are produced.
-      3. Sync TODO.md and state.json with status + timestamps + artifact links; update registries if impacted.
+      3. Sync .opencode/specs/TODO.md and state.json with status + timestamps + artifact links; update registries if impacted.
       4. Return concise summary and artifact references.
     </process>
   </stage>

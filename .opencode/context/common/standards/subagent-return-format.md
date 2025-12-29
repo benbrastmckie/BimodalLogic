@@ -206,7 +206,7 @@ Commands that invoke subagents MUST:
   <action>Process validated return</action>
   <process>
     1. Extract status from return
-    2. Extract artifacts and link in TODO.md
+    2. Extract artifacts and link in .opencode/specs/TODO.md
     3. Extract summary for user
     4. Handle errors if status != completed
     5. Proceed to postflight
@@ -227,7 +227,7 @@ Standardized error codes for consistent error handling:
 - `FILE_NOT_FOUND`: Required file missing
 - `CYCLE_DETECTED`: Delegation would create cycle
 - `MAX_DEPTH_EXCEEDED`: Delegation depth limit (3) exceeded
-- `STATUS_SYNC_FAILED`: Failed to update TODO.md/state.json
+- `STATUS_SYNC_FAILED`: Failed to update .opencode/specs/TODO.md/state.json
 - `GIT_COMMIT_FAILED`: Failed to create git commit
 - `UNKNOWN_ERROR`: Unexpected error occurred
 

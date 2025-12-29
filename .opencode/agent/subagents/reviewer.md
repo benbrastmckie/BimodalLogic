@@ -363,7 +363,7 @@ temperature: 0.3
     /review command will:
     - Create tasks from identified_tasks list (Stage 6)
     - Delegate to status-sync-manager for atomic state updates (Stage 7):
-      * Update TODO.md with created tasks
+      * Update .opencode/specs/TODO.md with created tasks
       * Update state.json with new task entries
       * Update state.json repository_health (technical_debt, last_assessed, review_artifacts)
       * Create project state.json with review metadata
@@ -373,7 +373,7 @@ temperature: 0.3
   <state_file_updates>
     Reviewer does NOT update state files directly. /review command is responsible for:
     
-    1. TODO.md updates (via status-sync-manager):
+    1. .opencode/specs/TODO.md updates (via status-sync-manager):
        - Add created tasks from identified_tasks list
        - Sequential task numbering
     

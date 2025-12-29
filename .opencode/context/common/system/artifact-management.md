@@ -7,7 +7,7 @@ Organization of .opencode/specs/ directory for project-based artifact management
 
 ```
 .opencode/specs/
-├── TODO.md                          # User-facing master task list
+├── .opencode/specs/TODO.md                          # User-facing master task list
 ├── state.json                       # Global state file
 ├── archive/
 │   ├── state.json                   # Archive state tracking
@@ -72,9 +72,9 @@ Version increments when:
 
 **Command contract boundaries:**
 - `/plan` may create the project directory and initial `plans/implementation-001.md` if missing. Creation is lazy: create the project root and `plans/` only when emitting the plan; do **not** pre-create `reports/` or `summaries/`.
-- `/revise` reuses the existing project directory and plan link from TODO.md; it increments the plan version in the same `plans/` folder and must **not** create new project directories or change numbering.
-- If no plan link exists in TODO.md, `/revise` must fail gracefully and instruct the user to run `/plan` first.
-- `/implement` reuses the plan path attached in TODO.md when present and updates that plan in place while executing. When no plan link exists on the TODO entry, `/implement` executes the task directly (no failure) while adhering to lazy directory creation (no project roots/subdirs unless an artifact is written) and keeping numbering/state sync intact. When /implement execution writes implementation artifacts, it must also emit an implementation summary in `summaries/implementation-summary-YYYYMMDD.md`; status-only paths do not emit summaries.
+- `/revise` reuses the existing project directory and plan link from .opencode/specs/TODO.md; it increments the plan version in the same `plans/` folder and must **not** create new project directories or change numbering.
+- If no plan link exists in .opencode/specs/TODO.md, `/revise` must fail gracefully and instruct the user to run `/plan` first.
+- `/implement` reuses the plan path attached in .opencode/specs/TODO.md when present and updates that plan in place while executing. When no plan link exists on the TODO entry, `/implement` executes the task directly (no failure) while adhering to lazy directory creation (no project roots/subdirs unless an artifact is written) and keeping numbering/state sync intact. When /implement execution writes implementation artifacts, it must also emit an implementation summary in `summaries/implementation-summary-YYYYMMDD.md`; status-only paths do not emit summaries.
 - `/implement`, `/task`, `/review`, and `/todo` must update IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md together when their operations change task/plan/implementation status or sorry/tactic counts.
 - `/research` and researcher agents: create the project root immediately before writing the first research artifact, and create only `reports/` (no `plans/` or `summaries/`) when emitting that artifact; do **not** pre-create other subdirs or placeholders.
 
@@ -112,7 +112,7 @@ Contains brief summaries for quick reference. **All detailed artifacts MUST have
 - Status markers must align with `.opencode/context/common/system/status-markers.md`.
 - Commands and agents should load these standards in their context when producing corresponding artifacts.
 
-## TODO.md Format
+## .opencode/specs/TODO.md Format
 
 ```markdown
 # TODO - LEAN 4 ProofChecker
@@ -160,7 +160,7 @@ Contains brief summaries for quick reference. **All detailed artifacts MUST have
 6. **Keep summaries brief** (1-2 pages max).
 7. **Link TODO items** to relevant reports/plans.
 8. **Update state files** after every operation.
-9. **Sync TODO.md** with project progress.
+9. **Sync .opencode/specs/TODO.md** with project progress.
 10. **Lean routing**: Use the TODO task `Language` field as the primary Lean intent signal (explicit `--lang` flag overrides; plan `lean:` is secondary). For Lean tasks, route `/implement` to the Lean research subagent when research is requested and the Lean implementation subagent when implementation is requested; validate required MCP servers from `.mcp.json` (at minimum `lean-lsp` via `uvx lean-lsp-mcp`) before creating project roots. If validation fails, return remediation steps and avoid filesystem changes.
 
 ## Context Window Protection via Metadata Passing

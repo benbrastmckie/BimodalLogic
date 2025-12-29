@@ -24,7 +24,7 @@
 
 ## 1. Maintenance Operations Performed
 
-### 1.1 TODO.md Maintenance
+### 1.1 .opencode/specs/TODO.md Maintenance
 
 **Tasks Removed**: {N} completed tasks  
 **Tasks Updated**: {N} tasks  

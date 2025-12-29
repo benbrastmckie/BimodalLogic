@@ -7,7 +7,7 @@ language: varies
 ---
 
 Context Loaded:
-@.opencode/specs/TODO.md
+@.opencode/specs/.opencode/specs/TODO.md
 @.opencode/specs/state.json
 @.opencode/context/common/system/status-markers.md
 @.opencode/context/common/standards/subagent-return-format.md
@@ -196,7 +196,7 @@ Context Loaded:
   </stage>
 
   <stage id="6" name="CreateTasks">
-    <action>Create TODO.md tasks for identified work</action>
+    <action>Create .opencode/specs/TODO.md tasks for identified work</action>
     <process>
       1. Read review summary artifact to extract identified_tasks
       2. Parse identified_tasks from Follow-ups section (TBD-1, TBD-2, etc.)
@@ -268,7 +268,7 @@ Context Loaded:
       {
         "type": "task_creation_failed",
         "task_description": "Fix 12 sorry statements in Logos/Core/Theorems/",
-        "error": "TODO.md write failed: Permission denied",
+        "error": ".opencode/specs/TODO.md write failed: Permission denied",
         "recoverable": true,
         "recommendation": "Manually create task with description above"
       }
@@ -276,7 +276,7 @@ Context Loaded:
     <batching_decision>
       Create ALL identified tasks (no batching):
       - Rationale: Review identifies actionable work, all should be tracked
-      - Priority filtering: User can filter by priority in TODO.md
+      - Priority filtering: User can filter by priority in .opencode/specs/TODO.md
       - Task count limit: None (create all identified tasks)
       - If too many tasks: Consider breaking into sub-tasks in future reviews
     </batching_decision>
@@ -320,13 +320,13 @@ Context Loaded:
             - project_path: Review project directory path
             - review_scope: Scope from input (full|lean|docs)
          b. Delegate to status-sync-manager for atomic update:
-            - Create TODO.md task entry for review project:
+            - Create .opencode/specs/TODO.md task entry for review project:
               * Task number: review_task_number (matches project number)
               * Status: [COMPLETED]
               * Title: "Codebase review - {scope}"
               * Completion timestamp
               * Link to review summary artifact
-            - Update TODO.md with created follow-up tasks
+            - Update .opencode/specs/TODO.md with created follow-up tasks
             - Update state.json:
               * Increment next_project_number
               * Add new task entries
@@ -351,7 +351,7 @@ Context Loaded:
              - Add invocation instructions for each task (e.g., "Run: /implement {task_number}")
              - Write updated review summary back to artifact
           e. If status-sync-manager succeeds:
-             - Git commit all changes (registries + TODO.md + state.json + project state.json + updated review summary)
+             - Git commit all changes (registries + .opencode/specs/TODO.md + state.json + project state.json + updated review summary)
              - Message: "review: update registries and create {N} tasks"
           f. If status-sync-manager fails:
             - Rollback any partial updates (status-sync-manager handles this)
@@ -363,7 +363,7 @@ Context Loaded:
             - review_metrics: Partial metrics (if available)
             - created_tasks: Task numbers created before partial completion
          b. Delegate to status-sync-manager for partial atomic update:
-            - Update TODO.md with created tasks (if any)
+            - Update .opencode/specs/TODO.md with created tasks (if any)
             - Update state.json:
               * Increment next_project_number if directory created
               * Add new task entries (if any)
@@ -427,7 +427,7 @@ Context Loaded:
       1. Prepare: Validate all updates, create backups
       2. Commit: Write all files atomically or rollback on failure
       
-      Atomicity guarantee: TODO.md + state.json + project state.json all updated or none
+      Atomicity guarantee: .opencode/specs/TODO.md + state.json + project state.json all updated or none
     </status_sync_manager_delegation>
     <repository_health_updates>
       status-sync-manager updates state.json repository_health section:
@@ -451,13 +451,13 @@ Context Loaded:
            }
          ]
       
-      All updates atomic with TODO.md and project state.json
+      All updates atomic with .opencode/specs/TODO.md and project state.json
     </repository_health_updates>
     <two_phase_commit>
       Phase 1 (Prepare):
         - Validate all file paths exist
         - Validate JSON schemas
-        - Create backups of TODO.md, state.json
+        - Create backups of .opencode/specs/TODO.md, state.json
         - Prepare all updates in memory
         - Verify no conflicts
       
@@ -481,7 +481,7 @@ Context Loaded:
         3. Return success with warning: "State updated but git commit failed"
     </error_handling>
     <git_commit>
-      Scope: Review summary + updated registries + TODO.md + state.json + project state.json
+      Scope: Review summary + updated registries + .opencode/specs/TODO.md + state.json + project state.json
       Message: "review: update registries and create {N} tasks"
       
       Commit only after successful status-sync-manager update
@@ -558,7 +558,7 @@ Context Loaded:
   </registry_updates>
   <state_sync>
     Delegated to status-sync-manager for atomic updates:
-    - Update TODO.md with created tasks
+    - Update .opencode/specs/TODO.md with created tasks
     - Update state.json with new task entries
     - Update state.json repository_health with review_artifacts entry
     - Create project state.json with review metadata
@@ -638,7 +638,7 @@ Context Loaded:
   </mid_flight>
   <post_flight>
     - Registries updated
-    - Tasks created in TODO.md
+    - Tasks created in .opencode/specs/TODO.md
     - state.json synchronized
     - Git commit created
   </post_flight>

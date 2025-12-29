@@ -10,7 +10,7 @@
 
 The OpenCode agent system implements **self-healing** to automatically recover from missing infrastructure files. This prevents commands from failing due to missing state.json, errors.json, or other critical files.
 
-**Key Concept**: When a command needs an infrastructure file that doesn't exist, the system automatically creates it from a template using data from TODO.md.
+**Key Concept**: When a command needs an infrastructure file that doesn't exist, the system automatically creates it from a template using data from .opencode/specs/TODO.md.
 
 ---
 
@@ -20,7 +20,7 @@ The OpenCode agent system implements **self-healing** to automatically recover f
 
 **state.json** - Main state tracking file
 - Template: `.opencode/context/common/templates/state-template.json`
-- Auto-created from TODO.md data on first run or after deletion
+- Auto-created from .opencode/specs/TODO.md data on first run or after deletion
 - Contains: active projects, health metrics, task counters
 
 **errors.json** - Error tracking file
@@ -32,9 +32,9 @@ The OpenCode agent system implements **self-healing** to automatically recover f
 
 ### Tier 2: Required (Cannot Auto-Create)
 
-**TODO.md** - User-authored task list
+**.opencode/specs/TODO.md** - User-authored task list
 - Cannot be auto-created (requires user content)
-- Failure to load TODO.md stops execution with clear error message
+- Failure to load .opencode/specs/TODO.md stops execution with clear error message
 
 **context/** files - Version-controlled system context
 - Should be present in git repository
@@ -53,7 +53,7 @@ The OpenCode agent system implements **self-healing** to automatically recover f
 Commands validate infrastructure in preflight and auto-create missing files from templates:
 
 1. Check if state.json exists → Auto-create from template if missing
-2. Load TODO.md → Required, fail if missing
+2. Load .opencode/specs/TODO.md → Required, fail if missing
 3. Continue with command execution
 
 **Implementation**: See `self-healing-implementation-details.md` for complete pseudo-code
@@ -67,7 +67,7 @@ Commands validate infrastructure in preflight and auto-create missing files from
 ```
 Note: Infrastructure file was missing and has been auto-created.
 - Created: .opencode/specs/state.json (from template)
-- Initialized with 37 tasks from TODO.md
+- Initialized with 37 tasks from .opencode/specs/TODO.md
 - Next project number set to 200
 
 This is normal for first-time setup.
@@ -84,7 +84,7 @@ To restore full functionality:
 git checkout HEAD -- .opencode/context/common/templates/state-template.json
 ```
 
-### TODO.md Missing (Cannot Auto-Create)
+### .opencode/specs/TODO.md Missing (Cannot Auto-Create)
 
 ```
 Error: Required file not found: .opencode/specs/TODO.md
@@ -94,7 +94,7 @@ This file is essential and cannot be auto-created.
 Recovery steps:
 1. Restore from git: git checkout HEAD -- .opencode/specs/TODO.md
 2. Restore from backup if available
-3. Create new TODO.md following standard format
+3. Create new .opencode/specs/TODO.md following standard format
 ```
 
 ---
@@ -103,7 +103,7 @@ Recovery steps:
 
 ### If Self-Healing Fails
 
-1. **Check TODO.md exists** - Required for state.json creation
+1. **Check .opencode/specs/TODO.md exists** - Required for state.json creation
 2. **Restore template from git**:
    ```bash
    git checkout HEAD -- .opencode/context/common/templates/state-template.json

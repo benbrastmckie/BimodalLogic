@@ -2,11 +2,11 @@
 
 **Version**: 1.0  
 **Last Updated**: 2025-12-23  
-**Scope**: TODO.md tasks, implementation plans, and state tracking
+**Scope**: .opencode/specs/TODO.md tasks, implementation plans, and state tracking
 
 ## Overview
 
-This document defines the standardized status markers used across the ProofChecker project for tracking task and phase progress. These markers ensure consistency across TODO.md, implementation plans, and all automation tools.
+This document defines the standardized status markers used across the ProofChecker project for tracking task and phase progress. These markers ensure consistency across .opencode/specs/TODO.md, implementation plans, and all automation tools.
 
 ## Standard Status Markers
 
@@ -15,7 +15,7 @@ This document defines the standardized status markers used across the ProofCheck
 **Meaning**: Task or phase has not yet begun.
 
 **Usage**:
-- Initial state for new tasks in TODO.md
+- Initial state for new tasks in .opencode/specs/TODO.md
 - Initial state for phases in implementation plans
 - Indicates no work has been performed
 
@@ -329,7 +329,7 @@ Command-specific status markers track the progress of specific command workflows
 
 ## Context-Specific Usage
 
-### TODO.md Tasks
+### .opencode/specs/TODO.md Tasks
 
 **Format**:
 ```markdown
@@ -352,8 +352,8 @@ Command-specific status markers track the progress of specific command workflows
 - `/research` command: Marks `[IN PROGRESS]` at start, `[RESEARCHED]` at completion
 - `/revise` command: Preserves current status, creates new plan version
 - `/todo` command: Removes `[COMPLETED]` **and** `[ABANDONED]` tasks from TODO/state (with confirmation thresholds) while preserving numbering and lazy creation guardrails
-- `status-sync-manager`: Atomic multi-file updates (TODO.md + state.json + plan files)
-- `batch-status-manager`: Atomic batch updates for TODO.md only
+- `status-sync-manager`: Atomic multi-file updates (.opencode/specs/TODO.md + state.json + plan files)
+- `batch-status-manager`: Atomic batch updates for .opencode/specs/TODO.md only
 - `todo-manager`: Manual status updates
 
 ---
@@ -427,7 +427,7 @@ Command-specific status markers track the progress of specific command workflows
 
 ## Timestamp Formats
 
-### TODO.md Format
+### .opencode/specs/TODO.md Format
 
 **Date Only** (YYYY-MM-DD):
 ```markdown
@@ -499,9 +499,9 @@ For backward compatibility, tools should recognize and convert legacy status val
 |----------|----------------|
 | `task-executor` | Marks tasks `[IN PROGRESS]` at start |
 | `batch-task-orchestrator` | Manages batch task status transitions |
-| `batch-status-manager` | Atomic TODO.md updates for multiple tasks |
+| `batch-status-manager` | Atomic .opencode/specs/TODO.md updates for multiple tasks |
 | `implementation-orchestrator` | Updates plan file phase status |
-| `todo-manager` | Manual TODO.md status updates |
+| `todo-manager` | Manual .opencode/specs/TODO.md status updates |
 
 ---
 
@@ -591,7 +591,7 @@ update_task(64, "COMPLETED")  # May fail, leaving inconsistent state
 
 ## Examples
 
-### TODO.md Task Lifecycle
+### .opencode/specs/TODO.md Task Lifecycle
 
 **Initial State**:
 ```markdown
@@ -681,7 +681,7 @@ Implement the core business logic for the feature.
 
 ### Timestamp Validation
 
-1. **TODO.md**: Must be YYYY-MM-DD format
+1. **.opencode/specs/TODO.md**: Must be YYYY-MM-DD format
 2. **Plans**: Must be ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
 3. **State files**: Must be YYYY-MM-DD format
 4. **Required**: Timestamps required for all status transitions
@@ -747,14 +747,14 @@ grep -r "Status: Complete" .opencode/specs/TODO.md
 ### Overview
 
 Commands that create or update plans (`/plan`, `/research`, `/revise`, `/implement`) must keep status markers synchronized across multiple files:
-- TODO.md (user-facing task list)
+- .opencode/specs/TODO.md (user-facing task list)
 - state.json (global project state)
 - Project state.json (project-specific state)
 - Plan files (implementation plans)
 
 ### Atomic Update Requirement
 
-All status updates across these files must be **atomic** - either all files are updated successfully, or none are updated. This prevents inconsistent states where TODO.md shows one status but state.json shows another.
+All status updates across these files must be **atomic** - either all files are updated successfully, or none are updated. This prevents inconsistent states where .opencode/specs/TODO.md shows one status but state.json shows another.
 
 ### status-sync-manager Specialist
 
@@ -768,7 +768,7 @@ The `status-sync-manager` specialist provides atomic multi-file updates using a 
 5. If any validation fails, abort (no files written)
 
 **Phase 2 (Commit)**:
-1. Write files in dependency order: TODO.md → state.json → project state → plan
+1. Write files in dependency order: .opencode/specs/TODO.md → state.json → project state → plan
 2. Verify each write before proceeding
 3. On any write failure, rollback all previous writes
 4. All files updated or none updated (atomic guarantee)
@@ -808,7 +808,7 @@ If any file write fails during the commit phase:
 
 ### Backward Compatibility
 
-- `batch-status-manager` remains for TODO.md-only updates
+- `batch-status-manager` remains for .opencode/specs/TODO.md-only updates
 - `status-sync-manager` used for multi-file updates
 - Commands choose appropriate specialist based on needs
 - No breaking changes to existing workflows
@@ -819,7 +819,7 @@ If any file write fails during the commit phase:
 
 See these files for reference implementations:
 
-- **TODO.md status tracking**: `.opencode/agent/subagents/task-executor.md`
+- **.opencode/specs/TODO.md status tracking**: `.opencode/agent/subagents/task-executor.md`
 - **Batch status updates**: `.opencode/agent/subagents/specialists/batch-status-manager.md`
 - **Plan phase tracking**: `.opencode/agent/subagents/implementation-orchestrator.md`
 - **Status transitions**: `.opencode/command/implement.md`
@@ -871,7 +871,7 @@ End-to-end testing scenarios:
 
 User-facing validation:
 
-1. **TODO.md Updates**
+1. **.opencode/specs/TODO.md Updates**
    - Run `/implement {number}` and verify status changes
    - Run `/implement {list}` and verify batch status changes
    - Check timestamp formatting

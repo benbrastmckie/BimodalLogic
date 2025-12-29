@@ -73,17 +73,17 @@ Context Loaded:
 
 ### Self-Healing Infrastructure
 
-The OpenCode system implements **automatic self-healing** for missing infrastructure files. When a command needs state.json or errors.json and they don't exist, they are automatically created from templates using data from TODO.md.
+The OpenCode system implements **automatic self-healing** for missing infrastructure files. When a command needs state.json or errors.json and they don't exist, they are automatically created from templates using data from .opencode/specs/TODO.md.
 
 **File Types**:
 - **Auto-Created**: state.json, errors.json (created from templates)
-- **Required**: TODO.md, context files (fail with clear error if missing)
+- **Required**: .opencode/specs/TODO.md, context files (fail with clear error if missing)
 - **Optional**: Project-specific configs (skip if missing)
 
 **User Experience**: On first run or after file deletion, you'll see:
 ```
 Note: Created .opencode/specs/state.json from template
-Initialized with 37 tasks from TODO.md
+Initialized with 37 tasks from .opencode/specs/TODO.md
 ```
 
 **For Details**: See `.opencode/context/common/system/self-healing-guide.md`

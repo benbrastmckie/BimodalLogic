@@ -87,7 +87,7 @@ For commands that don't take arguments, omit the Task Input line:
 ---
 name: todo
 agent: orchestrator
-description: "Show TODO.md"
+description: "Show .opencode/specs/TODO.md"
 ---
 
 Context Loaded:
@@ -242,9 +242,9 @@ Context Loaded:
 <stage id="1" name="ParseInput">
   <process>
     1. Parse and validate task_number
-    2. Load task from TODO.md
+    2. Load task from .opencode/specs/TODO.md
     3. If not found, return error:
-       "Error: Task {task_number} not found in TODO.md
+       "Error: Task {task_number} not found in .opencode/specs/TODO.md
        
        Please check the task number and try again."
   </process>
@@ -282,9 +282,9 @@ Context Loaded:
       3. If missing or invalid, return:
          "Error: Task number required. Usage: /research TASK_NUMBER [PROMPT]"
       4. Extract optional prompt from $ARGUMENTS (text after task_number)
-      5. Load task from TODO.md
+      5. Load task from .opencode/specs/TODO.md
       6. If task not found, return:
-         "Error: Task {task_number} not found in TODO.md"
+         "Error: Task {task_number} not found in .opencode/specs/TODO.md"
       7. Proceed with research workflow
     </process>
   </stage>

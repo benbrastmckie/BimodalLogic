@@ -167,7 +167,7 @@ Artifacts in `.opencode/specs/` are organized by project:
 - Use descriptive project names
 - Increment plan versions when revising
 - Keep summaries to 1-2 pages maximum
-- Link artifacts to TODO.md tasks
+- Link artifacts to .opencode/specs/TODO.md tasks
 - Update state.json after operations
 
 ## Validation

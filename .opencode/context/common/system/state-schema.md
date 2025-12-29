@@ -10,7 +10,7 @@ maintenance operations.
 ```
 .opencode/specs/
 ├── state.json                      # Main state (cross-references, health summary)
-├── TODO.md                         # User-facing task list
+├── .opencode/specs/TODO.md                         # User-facing task list
 ├── archive/
 │   └── state.json                  # Archived project tracking
 ├── maintenance/
@@ -452,7 +452,7 @@ def ensure_state_json_exists():
         # Load template
         template = read_json(".opencode/context/common/templates/state-template.json")
         
-        # Populate from TODO.md
+        # Populate from .opencode/specs/TODO.md
         todo_data = parse_todo_md()
         
         # Replace placeholders
@@ -469,7 +469,7 @@ def ensure_state_json_exists():
             "recent_activities": [
                 {
                     "timestamp": current_timestamp(),
-                    "activity": f"Auto-created state.json - initialized from TODO.md ({len(todo_data['tasks'])} tasks)"
+                    "activity": f"Auto-created state.json - initialized from .opencode/specs/TODO.md ({len(todo_data['tasks'])} tasks)"
                 }
             ],
             "pending_tasks": extract_pending_tasks(todo_data),
@@ -488,12 +488,12 @@ def ensure_state_json_exists():
 **When to Trigger Self-Healing**:
 - On first command execution if state.json missing
 - Before any state.json read operation
-- During TODO.md sync operations
+- During .opencode/specs/TODO.md sync operations
 - On explicit validation requests
 
 **Graceful Degradation**:
 - If template missing: Use minimal hardcoded defaults
-- If TODO.md unreadable: Create empty state with warnings
+- If .opencode/specs/TODO.md unreadable: Create empty state with warnings
 - Log all self-healing actions to recent_activities
 
 ### Missing File Detection
@@ -511,7 +511,7 @@ This file is required for task tracking.
 
 To fix:
 1. Restore from backup if available
-2. Create new TODO.md with standard format
+2. Create new .opencode/specs/TODO.md with standard format
 3. Run task system initialization
 ```
 

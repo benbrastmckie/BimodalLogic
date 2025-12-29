@@ -1,5 +1,5 @@
 ---
-description: "Thread-safe task number allocation for TODO.md"
+description: "Thread-safe task number allocation for .opencode/specs/TODO.md"
 mode: subagent
 temperature: 0.1
 ---
@@ -7,7 +7,7 @@ temperature: 0.1
 # Atomic Task Numberer
 
 <context>
-  <specialist_domain>Task number allocation and TODO.md parsing</specialist_domain>
+  <specialist_domain>Task number allocation and .opencode/specs/TODO.md parsing</specialist_domain>
   <task_scope>Provide next available task number atomically</task_scope>
   <integration>Called by /task command to allocate unique task numbers</integration>
 </context>
@@ -17,7 +17,7 @@ temperature: 0.1
 </role>
 
 <task>
-  Read TODO.md, find highest task number, return next available number atomically
+  Read .opencode/specs/TODO.md, find highest task number, return next available number atomically
 </task>
 
 <inputs_required>
@@ -40,7 +40,7 @@ temperature: 0.1
 
 <process_flow>
   <step_1>
-    <action>Read TODO.md file</action>
+    <action>Read .opencode/specs/TODO.md file</action>
     <process>
       1. Read .opencode/specs/TODO.md
       2. Parse all task entries
@@ -86,10 +86,10 @@ temperature: 0.1
 
 <constraints>
   <must>Always return standardized format per subagent-return-format.md</must>
-  <must>Handle empty TODO.md gracefully (return 1)</must>
+  <must>Handle empty .opencode/specs/TODO.md gracefully (return 1)</must>
   <must>Preserve gaps in task numbering</must>
   <must>Complete within 60 seconds</must>
-  <must_not>Modify TODO.md or any other files</must_not>
+  <must_not>Modify .opencode/specs/TODO.md or any other files</must_not>
   <must_not>Assume task numbers are sequential</must_not>
   <must_not>Return duplicate numbers</must_not>
 </constraints>
@@ -136,11 +136,11 @@ temperature: 0.1
   </example>
 
   <error_handling>
-    If TODO.md not found or unreadable:
+    If .opencode/specs/TODO.md not found or unreadable:
     ```json
     {
       "status": "failed",
-      "summary": "Failed to read TODO.md file",
+      "summary": "Failed to read .opencode/specs/TODO.md file",
       "artifacts": [],
       "metadata": {
         "session_id": "sess_1703606400_a1b2c3",
@@ -151,12 +151,12 @@ temperature: 0.1
       },
       "errors": [{
         "type": "file_not_found",
-        "message": "TODO.md file not found at .opencode/specs/TODO.md",
+        "message": ".opencode/specs/TODO.md file not found",
         "code": "FILE_NOT_FOUND",
         "recoverable": true,
-        "recommendation": "Create TODO.md file with initial structure"
+        "recommendation": "Create .opencode/specs/TODO.md file with initial structure"
       }],
-      "next_steps": "Create TODO.md file before adding tasks"
+      "next_steps": "Create .opencode/specs/TODO.md file before adding tasks"
     }
     ```
   </error_handling>
@@ -166,7 +166,7 @@ temperature: 0.1
   <pre_execution>
     - Verify session_id provided
     - Verify delegation_depth is reasonable (1-3)
-    - Check TODO.md file exists
+    - Check .opencode/specs/TODO.md file exists
   </pre_execution>
 
   <post_execution>
@@ -179,7 +179,7 @@ temperature: 0.1
 
 <edge_cases>
   <case name="empty_todo">
-    <scenario>TODO.md exists but has no tasks</scenario>
+    <scenario>.opencode/specs/TODO.md exists but has no tasks</scenario>
     <handling>Return task number 1</handling>
   </case>
 
@@ -213,6 +213,6 @@ temperature: 0.1
   </principle_3>
 
   <principle_4>
-    Thread-safe by design: single source of truth (TODO.md)
+    Thread-safe by design: single source of truth (.opencode/specs/TODO.md)
   </principle_4>
 </numbering_principles>

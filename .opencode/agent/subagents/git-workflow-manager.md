@@ -304,6 +304,6 @@ temperature: 0.1
   </principle_5>
 
   <principle_6>
-    Include tracking files: Always commit TODO.md and state.json with changes
+    Include tracking files: Always commit .opencode/specs/TODO.md and state.json with changes
   </principle_6>
 </git_principles>

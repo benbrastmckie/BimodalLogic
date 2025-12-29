@@ -51,7 +51,7 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
    - `.opencode/specs/state.json`
    - `.opencode/specs/archive/state.json`
    - `.opencode/specs/maintenance/state.json`
-2. Load TODO.md and status documents
+2. Load .opencode/specs/TODO.md and status documents
 3. Determine maintenance scope
 4. Generate operation ID: `maintenance-YYYYMMDD`
 
@@ -60,10 +60,10 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
 - Maintenance scope definition
 - Baseline metrics
 
-### Stage 2: TODO.md Maintenance
+### Stage 2: .opencode/specs/TODO.md Maintenance
 
 **Actions**:
-1. Scan TODO.md for completed tasks
+1. Scan .opencode/specs/TODO.md for completed tasks
 2. Identify tasks marked with ✅, [x], or in "Completed" sections
 3. If >5 completed tasks, request user confirmation
 4. Remove completed tasks from active sections
@@ -72,12 +72,12 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
 7. Update task counts in overview
 
 **Outputs**:
-- Updated TODO.md
+- Updated .opencode/specs/TODO.md
 - List of removed tasks
 - Before/after metrics
 
 **State Updates**:
-- None (TODO.md is documentation, not state)
+- None (.opencode/specs/TODO.md is documentation, not state)
 
 ### Stage 3: Project Archiving
 
@@ -437,11 +437,11 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
   - Return verification results
 
 ### TODO Manager (Subagent)
-- **Role**: Manage TODO.md updates
+- **Role**: Manage .opencode/specs/TODO.md updates
 - **Responsibilities**:
   - Clean up completed tasks
   - Update task priorities
-  - Reorganize TODO.md
+  - Reorganize .opencode/specs/TODO.md
   - Return summary of changes
 
 ---
