@@ -43,6 +43,41 @@ Logos has completed its MVP phase with a functional implementation of the TM bim
 
 ## Medium Priority (Complete within 3 months)
 
+### 231. Fix systematic command Stage 7 (Postflight) execution failures causing incomplete TODO.md and state.json updates
+- **Effort**: 8-10 hours
+- **Status**: [NOT STARTED]
+- **Created**: 2025-12-29
+- **Priority**: Critical
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Supersedes**: Tasks 227, 228, 229 (all ABANDONED due to incorrect root cause analysis)
+- **Files Affected**:
+  - .opencode/command/plan.md
+  - .opencode/command/research.md
+  - .opencode/command/implement.md
+  - .opencode/command/revise.md
+  - .opencode/agent/orchestrator.md
+  - .opencode/context/common/workflows/command-lifecycle.md
+- **Description**: CRITICAL FIX: All workflow commands (/plan, /research, /implement, /revise) are correctly loaded and executed by the orchestrator, but Claude frequently skips or incompletely executes Stage 7 (Postflight), which delegates to status-sync-manager for atomic TODO.md/state.json updates and creates git commits. This results in successful artifact creation but incomplete task tracking. Evidence: Task 224 (artifacts ✅, TODO.md manual ✅, state.json ❌), Task 229 (plan ✅, tracking required manual intervention). Root causes: (1) Weak prompting - Stage 7 uses descriptive language instead of imperative commands, (2) No validation - no checkpoint confirming Stage 7 completed before Stage 8 returns, (3) No error handling - command proceeds even if Stage 7 fails, (4) Orchestrator lacks stage completion validation, (5) Missing explicit delegation syntax for status-sync-manager invocation.
+- **Acceptance Criteria**:
+  - [ ] Stage 7 instructions strengthened in all 4 command files with imperative language
+  - [ ] Explicit delegation syntax added: `task_tool(subagent_type="status-sync-manager", ...)`
+  - [ ] Stage completion checkpoints added: "Stage N completed ✓" before proceeding
+  - [ ] Pre-Stage-8 validation added: Verify TODO.md and state.json updated before returning
+  - [ ] Error handling added: If Stage 7 fails, rollback and return error (don't proceed to Stage 8)
+  - [ ] Orchestrator enhanced with command stage validation to detect premature returns
+  - [ ] Monitoring/logging added to track stage execution (which executed, which skipped)
+  - [ ] command-lifecycle.md updated with stage validation patterns and mandatory checkpoints
+  - [ ] All 4 commands tested: 100% Stage 7 execution rate achieved
+  - [ ] Test: /plan task → TODO.md updated [PLANNED], state.json updated, git commit created
+  - [ ] Test: /research task → TODO.md updated [RESEARCHED], state.json updated, git commit created
+  - [ ] Test: /implement task → TODO.md updated [COMPLETED], state.json updated, plan phases updated, git commit created
+  - [ ] Test: /revise task → TODO.md updated [REVISED], state.json plan_versions updated, git commit created
+- **Impact**: Resolves systematic task tracking failures affecting ALL workflow commands. Ensures 100% reliability of TODO.md/state.json updates via status-sync-manager's atomic two-phase commit protocol. Eliminates manual intervention needed to sync tracking files. Consolidates fixes for tasks 227, 228, 229 with correct root cause understanding.
+
+---
+
 ### 208. Fix /implement and /research routing to use Lean-specific agents and tools
 - **Effort**: 2-3 hours
 - **Status**: [COMPLETED]
@@ -977,16 +1012,19 @@ This task was to document the creation and functionality of the `Context.lean` f
 **Impact**:
 Provides clear documentation for a core component of the syntax package, improving project maintainability and onboarding for new contributors.
 
-### 229. Review and optimize orchestrator-command integration for context efficiency
+### 229. ❌ Review and optimize orchestrator-command integration for context efficiency
 **Effort**: 6 hours
-**Status**: [PLANNED]
+**Status**: [ABANDONED]
 **Started**: 2025-12-29
 **Researched**: 2025-12-29
 **Planned**: 2025-12-29
+**Abandoned**: 2025-12-29
 **Priority**: High
 **Blocking**: None
 **Dependencies**: None
 **Language**: markdown
+**Superseded By**: Task 231
+**Abandonment Reason**: Root cause analysis was incorrect. Research concluded orchestrator bypasses commands, but investigation revealed commands ARE loaded and executed - the issue is Claude skipping Stage 7 (Postflight) within command execution. Task 231 addresses the correct root cause with proper fixes.
 **Research Artifacts**:
   - Main Report: [.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md]
 **Plan**: [Implementation Plan](.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/plans/implementation-001.md)

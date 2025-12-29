@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-29T02:00:00Z",
-  "next_project_number": 230,
+  "_last_updated": "2025-12-29T02:30:00Z",
+  "next_project_number": 232,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -226,84 +226,47 @@
       ]
     },
     {
-      "project_number": 227,
-      "project_name": "fix_systematic_status_sync_manager_failures",
+      "project_number": 231,
+      "project_name": "fix_systematic_command_stage_7_postflight_execution_failures",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
-      "priority": "high",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "critical",
       "language": "markdown",
-      "created": "2025-12-29T00:00:00Z",
-      "started": "2025-12-29",
-      "research_completed": "2025-12-29",
-      "last_updated": "2025-12-29",
-      "artifacts": [
-        ".opencode/specs/227_fix_systematic_status_sync_manager_failures/reports/research-001.md"
-      ],
-      "planning_completed": "2025-12-29",
-      "plan_path": ".opencode/specs/227_fix_systematic_status_sync_manager_failures/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 6,
-        "estimated_hours": 11,
-        "complexity": "medium"
-      },
-      "estimated_hours": 11.0,
-      "phases": 6
+      "created": "2025-12-29T02:30:00Z",
+      "started": null,
+      "last_updated": "2025-12-29T02:30:00Z",
+      "artifacts": [],
+      "estimated_hours": 10.0,
+      "supersedes": [227, 228, 229],
+      "supersedes_reason": "Tasks 227, 228, 229 based on incorrect root cause (orchestrator bypass). Real issue is Stage 7 execution incompleteness within commands."
+    }
+  ],
+  "completed_projects": [
+    {
+      "project_number": 229,
+      "project_name": "review_and_optimize_orchestrator_command_integration_for_context_efficiency",
+      "type": "bugfix",
+      "completed": "2025-12-29",
+      "abandoned": "2025-12-29",
+      "summary": "ABANDONED: Root cause analysis incorrect - assumed orchestrator bypasses commands, but commands ARE loaded. Real issue is Stage 7 execution incompleteness. Superseded by task 231."
     },
     {
       "project_number": 228,
       "project_name": "fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2025-12-29T00:41:46Z",
-      "started": "2025-12-29",
-      "research_completed": "2025-12-29",
-      "planning_completed": "2025-12-29",
-      "last_updated": "2025-12-29",
-      "artifacts": [
-        ".opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/reports/research-001.md",
-        ".opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/plans/implementation-001.md"
-      ],
-      "plan_path": ".opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 6,
-        "estimated_hours": 4,
-        "complexity": "medium"
-      },
-      "estimated_hours": 4.0,
-      "phases": 6
+      "completed": "2025-12-29",
+      "abandoned": "2025-12-29",
+      "summary": "ABANDONED: Partially correct diagnosis but wrong solution - orchestrator does load commands, issue is Stage 7 skipping within commands. Superseded by task 231."
     },
     {
-      "project_number": 229,
-      "project_name": "review_and_optimize_orchestrator_command_integration_for_context_efficiency",
+      "project_number": 227,
+      "project_name": "fix_systematic_status_sync_manager_failures",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2025-12-29T00:50:44Z",
-      "started": "2025-12-29",
-      "research_completed": "2025-12-29",
-      "planning_completed": "2025-12-29",
-      "last_updated": "2025-12-29",
-      "artifacts": [
-        ".opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md",
-        ".opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/plans/implementation-001.md"
-      ],
-      "plan_path": ".opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 7,
-        "estimated_hours": 6,
-        "complexity": "medium"
-      },
-      "estimated_hours": 6.0,
-      "phases": 7
-    }
-  ],
-  "completed_projects": [
+      "completed": "2025-12-29",
+      "abandoned": "2025-12-29",
+      "summary": "ABANDONED: Assumed status-sync-manager was being invoked but failing - actually not being invoked because Stage 7 skipped. Superseded by task 231."
+    },
     {
       "project_number": 225,
       "project_name": "codebase_review",
@@ -487,6 +450,14 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-29T02:30:00Z",
+      "activity": "Created task 231: Fix systematic command Stage 7 (Postflight) execution failures (8-10 hours, Critical priority). ROOT CAUSE CORRECTION: Commands ARE loaded by orchestrator, but Claude skips Stage 7 (Postflight) causing incomplete TODO.md/state.json updates. Abandoned tasks 227, 228, 229 (all based on incorrect assumption that orchestrator bypasses commands)."
+    },
+    {
+      "timestamp": "2025-12-29T02:00:00Z",
+      "activity": "Marked task 229 as PLANNED: 7-phase implementation plan created (6 hours total) - Audit command invocability, reduce orchestrator context to 3 files, refactor Step 7 RouteToCommand, refactor Step 4 PrepareRouting, simplify Step 3 CheckLanguage, testing and validation, documentation updates. Fixes critical architectural flaw causing 100% workflow failure and 60-70% context bloat."
+    },
     {
       "timestamp": "2025-12-29T02:00:00Z",
       "activity": "Marked task 229 as PLANNED: 7-phase implementation plan created (6 hours total) - Audit command invocability, reduce orchestrator context to 3 files, refactor Step 7 RouteToCommand, refactor Step 4 PrepareRouting, simplify Step 3 CheckLanguage, testing and validation, documentation updates. Fixes critical architectural flaw causing 100% workflow failure and 60-70% context bloat."
