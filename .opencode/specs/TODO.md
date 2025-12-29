@@ -15,16 +15,19 @@
 ## High Priority
 
 ### 229. Review and optimize orchestrator-command integration for context efficiency
-- **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 6 hours
+- **Status**: [PLANNED]
 - **Started**: 2025-12-29
-- **Completed**: 2025-12-29
+- **Researched**: 2025-12-29
+- **Planned**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md]
+- **Plan**: [Implementation Plan](.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/plans/implementation-001.md)
+- **Plan Summary**: 7-phase implementation plan (6 hours total). Phase 1: Audit command invocability (0.5h). Phase 2: Reduce orchestrator context to 3 core files (0.5h). Phase 3: Refactor Step 7 RouteToCommand (1.5h). Phase 4: Refactor Step 4 PrepareRouting to target commands (1h). Phase 5: Simplify/remove Step 3 CheckLanguage (0.5h). Phase 6: Testing and validation (1.5h). Phase 7: Documentation updates (0.5h). Fixes critical architectural flaw where orchestrator bypasses commands causing 100% workflow failure and 60-70% context bloat.
 - **Files Affected**:
   - .opencode/agent/orchestrator.md
   - .opencode/command/research.md
@@ -246,6 +249,28 @@
   - [ ] Documentation updated explaining the agent mode behavior
   - [ ] User experience improved - no need to manually switch agent modes
 - **Impact**: Improves user experience by eliminating the need to manually switch to Orchestrator mode before running workflow commands. Reduces errors from running commands in the wrong agent mode. Ensures commands are always executed by the appropriate agent without user intervention.
+
+### 230. Fix /review command to create completed task entry in TODO.md with review summary link
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/review.md
+  - .opencode/agent/subagents/reviewer.md
+- **Description**: When I ran /review, I got "Based on the review command workflow, I should NOT be creating tasks myself. The command specification indicates that the review command creates a review task entry (project 230_codebase_review) and the reviewer subagent should have formatted follow-up tasks in the review summary for manual /task invocation by the user.". Although it is right that the /review command should not create tasks to address remaining work, it SHOULD create a single task corresponding to the review task itself in TODO.md using the same number as the project directory, marking this as '[COMPLETED]', and including a link to the review summary that was produced. This helps to make the TODO.md a central dashboard to see all ongoing progress which the user can use to find links.
+- **Acceptance Criteria**:
+  - [ ] /review command creates TODO.md task entry with same number as project directory
+  - [ ] Task entry marked with status [COMPLETED] including completion timestamp
+  - [ ] Task entry includes link to review summary artifact
+  - [ ] Task entry includes brief description of review scope
+  - [ ] state.json updated to reflect completed review task
+  - [ ] Review task does NOT create follow-up tasks (those are in summary for manual /task invocation)
+  - [ ] TODO.md serves as central dashboard with link to review findings
+  - [ ] Documentation updated explaining /review task creation behavior
+- **Impact**: Makes TODO.md a comprehensive dashboard showing all project activities including reviews, with direct links to review summaries. Improves discoverability and tracking of review work.
 
 ### 203. Add --complex flag to /research for subtopic subdivision with summary
 - **Effort**: TBD
