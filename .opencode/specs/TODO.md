@@ -1,11 +1,11 @@
 # TODO
 
-**Last Updated:** 2025-12-29T02:01:18Z
+**Last Updated:** 2025-12-29T02:27:56Z
 
 ## Overview
 
-- **Total Tasks:** 25
-- **Completed:** 4
+- **Total Tasks:** 54
+- **Completed:** 8
 - **High Priority:** 8
 - **Medium Priority:** 8
 - **Low Priority:** 10
@@ -897,35 +897,37 @@ Ensures /review command automatically maintains registry consistency through wor
 
 ---
 
-### 190. Improve MAINTENANCE.md documentation structure and content
+### 190. ✅ Improve MAINTENANCE.md documentation structure and content
 **Effort**: 2 hours
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 **Started**: 2025-12-26
+**Completed**: 2025-12-29
 **Priority**: Medium
 **Blocking**: None
 **Dependencies**: None
 **Language**: markdown
 **Plan**: [Implementation Plan](.opencode/specs/190_improve_maintenance_md_documentation_structure_and_content/plans/implementation-002.md)
+**Summary**: [Implementation Summary](.opencode/specs/190_improve_maintenance_md_documentation/summaries/implementation-summary-20251229.md)
 
 **Files Affected**:
-- `Documentation/ProjectInfo/MAINTENANCE.md`
+- `Documentation/Development/MAINTENANCE.md` (458 → 571 lines, +113 lines)
 
 **Description**:
-Improve MAINTENANCE.md documentation by adding missing registry references (FEATURE_REGISTRY.md and TACTIC_REGISTRY.md), establishing a clear policy against backwards compatibility layers in favor of clean-break approaches, and enhancing overall structure and organization.
+Improved MAINTENANCE.md documentation by adding missing registry references (FEATURE_REGISTRY.md and TACTIC_REGISTRY.md), establishing a comprehensive Backwards Compatibility Policy section banning compatibility layers in favor of clean-break approaches, and enhancing cross-references throughout the document.
 
 **Acceptance Criteria**:
-- [ ] FEATURE_REGISTRY.md added to Related Documentation section
-- [ ] TACTIC_REGISTRY.md added to Related Documentation section
-- [ ] New section added explicitly banning backwards compatibility layers
-- [ ] Clean-break approach documented as preferred methodology
-- [ ] Rationale provided for avoiding technical debt from compatibility layers
-- [ ] Document structure improved for consistency
-- [ ] Section organization enhanced for better navigation
-- [ ] No content removed, only reorganized and enhanced
-- [ ] Cross-references updated where relevant
+- [x] FEATURE_REGISTRY.md added to Related Documentation section
+- [x] TACTIC_REGISTRY.md added to Related Documentation section
+- [x] New section added explicitly banning backwards compatibility layers
+- [x] Clean-break approach documented as preferred methodology
+- [x] Rationale provided for avoiding technical debt from compatibility layers
+- [x] Document structure improved for consistency
+- [x] Section organization enhanced for better navigation
+- [x] No content removed, only reorganized and enhanced
+- [x] Cross-references updated where relevant
 
 **Impact**:
-Improves MAINTENANCE.md documentation quality and completeness, providing clear guidance on registry synchronization and backwards compatibility policy.
+Improved MAINTENANCE.md documentation quality and completeness, providing clear guidance on registry synchronization and backwards compatibility policy. Added 113 lines including comprehensive Backwards Compatibility Policy section.
 
 ---
 
@@ -1020,7 +1022,7 @@ git log --all --grep="Complete Task" --oneline
 
 ### 209. Research Lean 4 techniques for completing task 193 involution proof
 **Effort**: 3 hours
-**Status**: [BLOCKED]
+**Status**: [COMPLETED]
 **Started**: 2025-12-28
 **Completed**: 2025-12-28
 **Priority**: High
@@ -1036,9 +1038,9 @@ git log --all --grep="Complete Task" --oneline
 - Logos/Core/Syntax/Formula.lean (added @[simp] attribute to swap_past_future_involution)
 
 **Description**:
-Research Lean 4 techniques, tactics, and proof patterns for completing the is_valid_swap_involution theorem proof in task 193. The proof is currently blocked by a type theory issue where the helper lemma truth_at_swap_swap is complete but the main involution theorem needs additional techniques. **BLOCKED by task 213** - comprehensive research revealed the theorem is unprovable as stated (semantically false).
+Research Lean 4 techniques, tactics, and proof patterns for completing the is_valid_swap_involution theorem proof in task 193. The proof is currently blocked by a type theory issue where the helper lemma truth_at_swap_swap is complete but the main involution theorem needs additional techniques. **Research completed successfully** - comprehensive investigation revealed the theorem is unprovable as stated (semantically false).
 
-**Critical Finding** (Task 213): The theorem `is_valid T φ.swap → is_valid T φ` is **unprovable** because it is semantically false for arbitrary formulas. The swap operation exchanges past and future quantification, which are not equivalent in general models. The theorem is only true for derivable formulas.
+**Critical Finding** (Task 213): The theorem `is_valid T φ.swap → is_valid T φ` is **unprovable** because it is semantically false for arbitrary formulas. The swap operation exchanges past and future quantification, which are not equivalent in general models. The theorem is only true for derivable formulas. Counterexample constructed and solution proposed.
 
 **Acceptance Criteria**:
 - [x] Research report created with Lean 4 proof techniques
@@ -1048,9 +1050,9 @@ Research Lean 4 techniques, tactics, and proof patterns for completing the is_va
 - [x] Blocker identified: theorem is unprovable as stated (task 213)
 
 **Impact**:
-Research completed and identified that the theorem is fundamentally unprovable. Task 213 provides the solution: replace with derivable-only version. This task will be marked COMPLETED once task 213 is implemented.
+Research successfully completed and definitively identified that the theorem is fundamentally unprovable. Task 213 created to implement the solution: replace with `derivable_valid_swap_involution` theorem restricted to derivable formulas. This research task is complete; implementation work tracked in task 213.
 
-**Note**: All 15 attempted proof strategies failed not due to technique limitations, but because the theorem statement is false. Task 213 provides the correct solution.
+**Note**: All 15 attempted proof strategies failed not due to technique limitations, but because the theorem statement is semantically false. Task 213 provides the correct reformulation and implementation plan.
 
 ---
 
@@ -1058,9 +1060,9 @@ Research completed and identified that the theorem is fundamentally unprovable. 
 
 ### 210. Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md
 **Effort**: 6-8 hours
-**Status**: [RESEARCHED]
+**Status**: [PLANNED]
 **Started**: 2025-12-28
-**Completed**: 2025-12-28
+**Completed**: 2025-12-29
 **Priority**: Medium
 **Blocking**: None
 **Dependencies**: None
@@ -1068,6 +1070,7 @@ Research completed and identified that the theorem is fundamentally unprovable. 
 **Research Artifacts**:
   - Main Report: [.opencode/specs/210_fix_lean_subagents/reports/research-001.md]
   - Summary: [.opencode/specs/210_fix_lean_subagents/summaries/research-summary.md]
+**Plan**: [.opencode/specs/210_fix_lean_subagents/plans/implementation-001.md]
 
 **Files Affected**:
 - .opencode/agent/subagents/lean-research-agent.md

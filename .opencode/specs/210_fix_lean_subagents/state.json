@@ -1,0 +1,33 @@
+{
+  "project_name": "fix_lean_subagents",
+  "project_number": 210,
+  "type": "bugfix",
+  "phase": "planning_completed",
+  "reports": [
+    {
+      "type": "research_report",
+      "path": ".opencode/specs/210_fix_lean_subagents/reports/research-001.md",
+      "summary": "Research identified 21 compliance issues across both Lean subagents",
+      "created": "2025-12-28T00:00:00Z"
+    }
+  ],
+  "plans": [
+    {
+      "type": "implementation_plan",
+      "path": ".opencode/specs/210_fix_lean_subagents/plans/implementation-001.md",
+      "summary": "3-phase implementation plan (8 hours total) to fix all 21 compliance issues",
+      "created": "2025-12-29T00:00:00Z"
+    }
+  ],
+  "summaries": [
+    {
+      "type": "research_summary",
+      "path": ".opencode/specs/210_fix_lean_subagents/summaries/research-summary.md",
+      "summary": "Brief research summary of compliance issues",
+      "created": "2025-12-28T00:00:00Z"
+    }
+  ],
+  "status": "active",
+  "created": "2025-12-28T00:00:00Z",
+  "last_updated": "2025-12-29"
+}
