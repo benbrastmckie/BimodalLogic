@@ -116,7 +116,7 @@ Critical for maintaining clean TODO.md and ensuring completed tasks are properly
 
 ---
 
-### 234. Systematically improve all commands to protect context window and eliminate confirmation prompts ✅
+### 234. Systematically improve all commands to protect context window and eliminate confirmation prompts
 - **Effort**: 8 hours
 - **Status**: [COMPLETED]
 - **Started**: 2025-12-29
@@ -706,48 +706,6 @@ Provides comprehensive automated testing across wide range of inputs, automatica
 
 ---
 
-### 177. Update examples to use latest APIs and add new feature demonstrations ✅
-**Effort**: 8 hours
-**Status**: [COMPLETED]
-**Started**: 2025-12-25
-**Completed**: 2025-12-25
-**Priority**: Medium
-**Blocking**: None
-**Dependencies**: Tasks 126, 127 (completed)
-**Language**: lean
-**Plan**: [Implementation Plan](.opencode/specs/177_examples_update/plans/implementation-001.md)
-**Summary**: [Implementation Summary](.opencode/specs/177_examples_update/summaries/implementation-summary-20251225.md)
-
-**Files Modified**:
-- `Archive/ModalProofs.lean` (241 → 346 lines, +105)
-- `Archive/TemporalProofs.lean` (301 → 356 lines, +55)
-- `Archive/BimodalProofs.lean` (216 → 297 lines, +81)
-- `Documentation/UserGuide/EXAMPLES.md` (448 → 586 lines, +138)
-
-**Description**:
-Successfully updated example files to demonstrate new automation capabilities (ProofSearch, heuristics) added in Tasks 126-127. Added 379 lines total (exceeded planned 160 lines by 137%). All changes are additive with zero breaking changes.
-
-**Implementation Highlights**:
-- Phase 1: Modal automation examples (105 lines) - automated proof search, SearchStats, heuristic strategies, context transformations
-- Phase 2: Temporal automation examples (55 lines) - temporal proof search, future_context transformations
-- Phase 3: Perpetuity automation examples (81 lines) - automated P1-P6 discovery, bimodal search
-- Phase 4: Documentation updates (138 lines) - comprehensive API documentation and cross-references
-
-**Acceptance Criteria**:
-- [x] All existing examples audited for correctness
-- [x] Examples updated to use latest APIs (ProofSearch imports added)
-- [x] New examples for ProofSearch and heuristics added
-- [x] New examples for perpetuity principles P1-P6 added
-- [~] All examples compile and run successfully (blocked by Tasks 183-184)
-- [x] Examples documented with clear explanations
-
-**Impact**:
-Provides comprehensive examples demonstrating automation features, improving usability and showcasing ProofSearch capabilities. Exceeds planned scope with high-quality documentation.
-
-**Note**: Build currently blocked by pre-existing errors in Truth.lean (Task 184) and DeductionTheorem.lean (Task 183). Example code is correct and will compile once blockers are resolved.
-
----
-
 ### 178. Complete advanced tutorial sections with hands-on exercises
 - **Effort**: 13 hours
 - **Status**: [NOT STARTED]
@@ -819,86 +777,7 @@ Provides comprehensive examples demonstrating automation features, improving usa
 
 ---
 
-### 183. ✅ Fix DeductionTheorem.lean build errors (3 errors)
-- **Effort**: 0.5 hours (30 minutes)
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-25
-- **Completed**: 2025-12-28
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: 173
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/183_deduction_theorem_build_errors/reports/research-001.md]
-  - Summary: [.opencode/specs/183_deduction_theorem_build_errors/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/183_deduction_theorem_build_errors/plans/implementation-002.md]
-- **Plan Summary**: Single-phase implementation (30 minutes). Replace 3 `.elim` patterns with idiomatic `by_cases` tactic at lines 256, 369, 376. Purely syntactic fix following proven patterns from Soundness.lean and Truth.lean. Very low risk - no logic changes, only tactic mode syntax.
-- **Implementation Summary**: [.opencode/specs/183_deduction_theorem_build_errors/summaries/implementation-summary-20251228.md]
-- **Files Affected**:
-  - Logos/Core/Metalogic/DeductionTheorem.lean
-- **Description**: Fix 3 pre-existing build errors in DeductionTheorem.lean that are blocking compilation of all test files including the new integration tests from task 173. These errors prevent verification that the 106 new integration tests (82% coverage) actually compile and pass. Errors: Line 255 (Decidable typeclass instance stuck), Line 297 (no goals to be solved), Line 371 (Decidable typeclass instance stuck).
-- **Root Cause Analysis** (2025-12-25):
-  - All 3 build errors stem from using `(em P).elim` pattern inside `match` expressions
-  - The `.elim` method is a term-mode construct, not a tactic, causing "unknown tactic" errors at lines 256, 369, and 376
-  - With `open Classical` already at the top of the file, `by_cases` automatically uses `Classical.propDecidable` for any proposition via excluded middle
-- **Solution** (Research Complete):
-  - Replace `(em P).elim (fun h => ...) (fun h => ...)` with `by_cases h : P` tactic
-  - This is the idiomatic Lean 4 pattern proven in the codebase (Soundness.lean line 282, Truth.lean lines 789-825)
-  - 3 simple replacements needed:
-    - Line 256: `(em (A ∈ Γ'')).elim` → `by_cases hA' : A ∈ Γ''`
-    - Line 369: `(em (Γ' = A :: Γ)).elim` → `by_cases h_eq : Γ' = A :: Γ`
-    - Line 376: `(em (A ∈ Γ')).elim` → `by_cases hA : A ∈ Γ'`
-  - Use `·` bullet points for case branches and remove closing parentheses
-  - Termination proofs are correct and will work once tactic errors are fixed
-- **Acceptance Criteria**:
-  - [x] All 3 build errors in DeductionTheorem.lean resolved
-  - [x] DeductionTheorem.lean compiles successfully with lake build
-  - [x] No new errors introduced
-  - [x] Existing tests continue to pass
-- **Impact**: Critical blocker for task 173. Fixing these errors will unblock compilation of 106 new integration tests and allow verification of 82% integration test coverage achievement.
-
----
-
----
-
-### 184. ✅ Fix Truth.lean build error (swap_past_future proof)
-**Effort**: 1-2 hours
-**Status**: [COMPLETED]
-**Started**: 2025-12-25
-**Completed**: 2025-12-28 (via task 219)
-**Priority**: High
-**Blocking**: Task 173 (integration tests), Task 185
-**Dependencies**: Task 213, Task 219
-**Language**: lean
-
-**Files Affected**:
-- `Logos/Core/Semantics/Truth.lean` (previously line 632, now restructured)
-- `Logos/Core/Metalogic/SoundnessLemmas.lean` (new file, contains extracted code)
-
-**Description**:
-Fix build error in Truth.lean at line 632 related to swap_past_future proof. This error is blocking integration test compilation and task 173. **RESOLVED by task 219** - the module restructuring extracted the problematic code to SoundnessLemmas.lean, eliminating the circular dependency. Truth.lean now builds successfully (579 lines, pure semantics only).
-
-**Resolution**:
-Task 219's module restructuring resolved this issue by:
-1. Extracting TemporalDuality namespace (~680 lines) from Truth.lean to SoundnessLemmas.lean
-2. Moving swap_past_future and is_valid_swap_involution code to the bridge module
-3. Truth.lean reduced from 1277 to 579 lines (pure semantics)
-4. Build verification: ✅ `lake build Logos.Core.Semantics.Truth` succeeds
-
-**Acceptance Criteria**:
-- [x] Build error at line 632 is resolved (code moved to SoundnessLemmas.lean)
-- [x] File compiles successfully with `lake build`
-- [x] No new errors introduced
-- [x] Existing tests continue to pass
-
-**Impact**:
-Unblocks task 173 (integration tests) and task 185 (test helper API fixes). Critical for project build health. **Resolved by task 219's architectural improvements.**
-
----
-
----
-
-### 185. ✅ Fix integration test helper API mismatches
+### 185. Fix integration test helper API mismatches
 - **Effort**: 1 hour
 - **Status**: [COMPLETED]
 - **Started**: 2025-12-25
@@ -927,7 +806,7 @@ Unblocks task 173 (integration tests) and task 185 (test helper API fixes). Crit
 
 ---
 
-### 186. Refactor MAINTENANCE.md to include /review update instructions ✅
+### 186. Refactor MAINTENANCE.md to include /review update instructions
 **Effort**: 1 hour
 **Status**: [COMPLETED]
 **Started**: 2025-12-25
@@ -954,7 +833,7 @@ Ensures /review command updates all relevant registries, maintaining consistency
 
 ---
 
-### 187. Refactor review.md workflow context to specify registry update workflow ✅
+### 187. Refactor review.md workflow context to specify registry update workflow
 **Effort**: 1 hour
 **Status**: [COMPLETED]
 **Started**: 2025-12-25
@@ -981,7 +860,7 @@ Provides clear workflow guidance for /review command to maintain registry consis
 
 ---
 
-### 188. Refactor /review command to load review.md workflow context ✅
+### 188. Refactor /review command to load review.md workflow context
 **Effort**: 1 hour
 **Status**: [COMPLETED]
 **Started**: 2025-12-25
@@ -1038,7 +917,7 @@ Ensures /review command automatically maintains registry consistency through wor
 
 ---
 
-### 190. ✅ Improve MAINTENANCE.md documentation structure and content
+### 190. Improve MAINTENANCE.md documentation structure and content
 **Effort**: 2 hours
 **Status**: [COMPLETED]
 **Started**: 2025-12-26
@@ -1199,7 +1078,7 @@ Research successfully completed and definitively identified that the theorem is 
 
 ---
 
-### ✅ 210. Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md
+### 210. Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md
 **Effort**: 6-8 hours
 **Status**: [COMPLETED]
 **Started**: 2025-12-28
@@ -1233,67 +1112,6 @@ Fix both Lean subagents (lean-research-agent and lean-implementation-agent) to f
 **Impact**:
 Ensures Lean subagents properly maintain TODO.md, state.json, and artifact files according to project standards, improving consistency and reliability of automated workflows.
 
---
-
-### 211. ✅ Standardize command lifecycle procedures across research, planning, and implementation workflows
-- **Effort**: 18 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-28
-- **Completed**: 2025-12-28
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/211_standardize_command_lifecycle_procedures/reports/research-001.md]
-  - Summary: [.opencode/specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md]
-- **Plan**: [Implementation Plan](.opencode/specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md)
-- **Plan Summary**: 4-phase implementation (18 hours). Phase 1: Create command-lifecycle.md with 8-stage pattern (4h). Phase 2: Update 4 command files with lifecycle references (6h). Phase 3: Update agent files with summary validation (4h). Phase 4: Testing and validation (4h, deferred). Achieves 39% duplication reduction (1,961 → 1,200 lines).
-- **Implementation Summary**: [.opencode/specs/211_standardize_command_lifecycle_procedures/summaries/implementation-summary-20251228.md]
-- **Implementation Artifacts**:
-  - .opencode/context/common/workflows/command-lifecycle.md
-  - .opencode/command/research.md
-  - .opencode/command/plan.md
-  - .opencode/command/revise.md
-  - .opencode/command/implement.md
-  - .opencode/agent/subagents/lean-implementation-agent.md
-  - .opencode/agent/subagents/task-executor.md
-  - .opencode/agent/subagents/researcher.md
-  - .opencode/agent/subagents/planner.md
-  - .opencode/agent/subagents/lean-research-agent.md
-  - .opencode/agent/subagents/implementer.md
-
-**Files Affected**:
-- .opencode/context/common/workflows/command-lifecycle.md (new)
-- .opencode/command/research.md
-- .opencode/command/plan.md
-- .opencode/command/revise.md
-- .opencode/command/implement.md
-- .opencode/agent/subagents/lean-implementation-agent.md
-- .opencode/agent/subagents/task-executor.md
-- .opencode/agent/subagents/researcher.md
-- .opencode/agent/subagents/planner.md
-- .opencode/agent/subagents/lean-research-agent.md
-- .opencode/agent/subagents/implementer.md
-
-**Description**:
-Extracted common 8-stage lifecycle pattern from workflow commands (/research, /plan, /revise, /implement) into single command-lifecycle.md context file. Research revealed 90% structural similarity with 1,961 lines duplicated content. Standardization reduced duplication to 1,200 lines (39% reduction), created single source of truth for lifecycle pattern, and clearly documented legitimate command-specific variations. All commands now reference standardized lifecycle stages while preserving command-specific logic.
-
-**Acceptance Criteria**:
-- [x] command-lifecycle.md created with 8-stage pattern documentation
-- [x] All 4 command files updated with lifecycle references
-- [x] Duplication reduced from 1,961 to 1,200 lines (39% reduction)
-- [x] Command-specific variations clearly documented
-- [x] Summary artifact validation added to lean-implementation-agent and task-executor
-- [x] All 6 agent files reference command-lifecycle.md for integration
-- [x] All existing functionality preserved
-- [ ] All commands tested successfully (deferred to normal usage)
-
-**Impact**:
-Provides single source of truth for command lifecycle pattern, reduces documentation duplication by 39%, improves consistency across workflow commands, and clearly documents legitimate variations. Enhances maintainability and reduces cognitive load for command development.
-
----
-
 ---
 
 ### 212. Research and improve lean-lsp-mcp usage in Lean implementation agent
@@ -1325,55 +1143,6 @@ Provides single source of truth for command lifecycle pattern, reduces documenta
 - [x] Integration tests created and passing
 
 **Impact**: Improves effectiveness of Lean implementation agent by better leveraging LSP capabilities for proof development and code navigation. Enables real-time compilation checking during Lean implementation tasks.
-
----
-
----
-
-### 213. ✅ Resolve is_valid_swap_involution blocker
-**Effort**: 3.5 hours (research only)
-**Status**: [COMPLETED]
-**Started**: 2025-12-28
-**Completed**: 2025-12-29
-**Priority**: High
-**Blocking**: Task 184, Task 193, Task 209
-**Dependencies**: None
-**Language**: lean
-**Research Artifacts**:
-  - Main Report: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md]
-  - Summary: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md]
-**Plan**: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-002.md]
-**Implementation Summary**: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/implementation-summary-20251229.md]
-
-**Files Reviewed**:
-- `Logos/Core/Metalogic/SoundnessLemmas.lean` (lines 664-684, temporal_duality case with documented sorry)
-- `Logos/Core/Metalogic/Soundness.lean` (lines 643-669, completed temporal_duality case)
-
-**Resolution**:
-**No code changes needed**. Comprehensive research proved that the current architecture is correct. The `sorry` in SoundnessLemmas.lean (temporal_duality case, line 684) is architecturally correct and properly documented. The circular dependency is resolved at the file level:
-- SoundnessLemmas.lean: Contains `derivable_implies_swap_valid` with documented sorry in temporal_duality case
-- Soundness.lean: Imports SoundnessLemmas and successfully completes full soundness proof including temporal_duality case
-- The sorry is never executed because Soundness.lean uses `derivable_implies_swap_valid` correctly
-
-**Critical Findings**:
-1. **Theorem is Unprovable**: The originally attempted `is_valid_swap_involution` (claiming `is_valid φ.swap → is_valid φ` for arbitrary formulas) is semantically false. Counterexample: φ = all_past(p), model where p is true in all future times but false in some past time.
-2. **Circular Dependency**: The temporal_duality case requires soundness (`DerivationTree [] ψ' → is_valid ψ'`) but `derivable_implies_swap_valid` is used BY soundness, creating unavoidable circular dependency within SoundnessLemmas.lean.
-3. **File-Level Resolution**: Soundness.lean successfully completes the soundness proof by using `derivable_implies_swap_valid` without executing the sorry case.
-
-**Build Verification**: ✅ `lake build Logos.Core.Metalogic.Soundness` succeeds (only expected warning about sorry in SoundnessLemmas)
-
-**Acceptance Criteria**:
-- [x] Research confirmed theorem is unprovable as originally stated
-- [x] Current architecture verified as correct
-- [x] Documentation in SoundnessLemmas.lean references task 213
-- [x] Soundness.lean builds successfully and completes soundness proof
-- [x] Circular dependency resolved at file level
-- [x] Implementation summary documents resolution
-
-**Impact**:
-Resolves 10.7 hours of blocked work across 4 tasks by confirming current implementation is architecturally correct. Provides important lesson: semantic properties (validity) don't follow from syntactic properties (involution). Sometimes a documented sorry is the correct architectural solution when it's never actually executed.
-
----
 
 ---
 
@@ -1464,7 +1233,7 @@ CRITICAL STRUCTURAL IMPROVEMENT: Eliminates circular dependency blocking soundne
 
 ---
 
-### 220. ✅ Metadata Passing Compliance Verification
+### 220. Metadata Passing Compliance Verification
 - **Effort**: 2.5 hours
 - **Status**: [COMPLETED]
 - **Started**: 2025-12-28
@@ -1511,7 +1280,7 @@ Ensures all commands and agents fully comply with metadata passing standards for
 
 ---
 
-### 222. Investigate and fix artifact creation in /specs instead of /.opencode/specs ✅
+### 222. Investigate and fix artifact creation in /specs instead of /.opencode/specs
 - **Effort**: 3 hours
 - **Status**: [COMPLETED]
 - **Started**: 2025-12-28
@@ -1697,7 +1466,7 @@ Ensures all commands and agents fully comply with metadata passing standards for
 
 ---
 
-### ✅ 231. Fix systematic command Stage 7 (Postflight) execution failures causing incomplete TODO.md and state.json updates
+### 231. Fix systematic command Stage 7 (Postflight) execution failures causing incomplete TODO.md and state.json updates
 - **Effort**: 10 hours (actual)
 - **Status**: [COMPLETED]
 - **Created**: 2025-12-29
@@ -1742,7 +1511,7 @@ Ensures all commands and agents fully comply with metadata passing standards for
 
 ---
 
-### ✅ 232. Systematically fix TODO.md path references and migrate tasks from project root to .opencode/specs
+### 232. Systematically fix TODO.md path references and migrate tasks from project root to .opencode/specs
 - **Effort**: 11 hours (estimated from research)
 - **Status**: [COMPLETED]
 - **Started**: 2025-12-29
