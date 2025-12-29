@@ -1,6 +1,6 @@
 # TODO
 
-**Last Updated:** 2025-12-29T02:27:56Z
+**Last Updated:** 2025-12-29T06:03:13Z
 
 ## Overview
 
@@ -16,11 +16,16 @@
 
 ### 240. Systematically investigate and fix persistent workflow command Stage 7 (Postflight) failures causing incomplete status updates
 - **Effort**: 12-16 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
+- **Started**: 2025-12-29
+- **Researched**: 2025-12-29
+- **Planned**: 2025-12-29
 - **Priority**: Critical
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [Research Report](.opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/plans/implementation-001.md)
 
 **Description**:
 Despite tasks 231, 221, and others attempting to fix Stage 7 (Postflight) execution failures in workflow commands (/research, /plan, /implement, /revise), the issue persists. When running `/research 236`, the research report was created successfully but the TODO.md file was NOT updated to [RESEARCHED] status and the research report was NOT linked (though this appears to have been corrected later, likely manually or through retry). This systematic failure affects ALL workflow commands and indicates a fundamental architectural problem that requires deep investigation and comprehensive refactoring. The problem manifests as: (1) Subagents complete their work and create artifacts successfully, (2) status-sync-manager is supposedly invoked but TODO.md/state.json remain unchanged, (3) No error messages are returned to user, creating silent failures, (4) Manual retries or corrections are required. Root causes to investigate: (A) Stage 7 is being skipped entirely by Claude despite explicit instructions, (B) status-sync-manager is not actually being invoked despite appearing in command specs, (C) status-sync-manager is being invoked but failing silently, (D) Orchestrator validation is insufficient to catch Stage 7 failures, (E) Command lifecycle pattern is fundamentally flawed and needs redesign, (F) Return validation is missing critical checks. This task will conduct systematic root cause analysis and implement a comprehensive, tested solution that ACTUALLY works.
@@ -34,6 +39,9 @@ Despite tasks 231, 221, and others attempting to fix Stage 7 (Postflight) execut
 6. Is there a fundamental design flaw in the command lifecycle pattern?
 7. What evidence exists of Stage 7 execution in actual command runs?
 8. Are there race conditions or timing issues?
+
+**Research Findings**:
+Root cause definitively identified: Stage 7 exists only as documentation (XML/narrative syntax), not executable instructions, with no orchestrator enforcement. Previous fixes (tasks 231, 221) addressed symptoms without fixing the architectural flaw. Recommended solution: Implement orchestrator validation layer with command_stages tracking and Stage 7 completion checks (6-10 hours, LOW risk, CRITICAL impact). All 8 research questions answered with definitive evidence from code analysis.
 
 **Acceptance Criteria**:
 - [ ] Comprehensive investigation conducted with evidence from actual command runs
@@ -102,14 +110,16 @@ CRITICAL - Protects context windows from bloat across all workflow commands, ena
 
 ### 238. Find and eliminate all emojis from .opencode system to maintain NO EMOJI standard
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-29
-- **Completed**: 2025-12-29
+- **Researched**: 2025-12-29
+- **Planned**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/238_find_and_eliminate_all_emojis/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/238_find_and_eliminate_all_emojis/plans/implementation-001.md)
 
 **Description**:
 Emojis have made their way back into /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md and some plans, reports, and summaries (e.g., checkmark emoji in completed tasks like task 234). The repository has a strict NO EMOJI standard that needs to be enforced. Unicode characters are acceptable, but emojis are not. This task requires: (1) Systematically search all .opencode system files for emoji usage (.opencode/specs/TODO.md, all plan files, all report files, all summary files, all command files, all agent files, all context files), (2) Remove all found emojis while preserving meaning (e.g., replace checkmark emojis with text-based markers), (3) Update context files and standards documentation to make the NO EMOJI standard more explicit and easier to enforce, (4) Add guidance to relevant standards files about emoji prevention.
@@ -136,7 +146,7 @@ Maintains repository consistency and professional standards. Emojis can cause pa
 
 ### 236. Investigate and fix task standard violations in TODO.md tasks 1-9
 - **Effort**: 4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Priority**: High
@@ -163,10 +173,6 @@ Ensures all tasks in TODO.md follow consistent standards, making them easier to 
 
 ---
 
----
-
----
-
 ### 1. Completeness Proofs
 *Effort**: 70-90 hours
 *Status**: INFRASTRUCTURE ONLY
@@ -184,8 +190,6 @@ Ensures all tasks in TODO.md follow consistent standards, making them easier to 
 
 **Files**:
 - `Logos/Core/Metalogic/Completeness.lean`
-
----
 
 ---
 
@@ -339,8 +343,6 @@ After refactoring `Context.lean`, update all references to the `Context` module 
 
 **Impact**:
 Ensures that the entire codebase is compatible with the refactored `Context` module.
-
----
 
 ---
 
@@ -558,12 +560,6 @@ Enables the first working path for automated proof search with termination guard
 
 ---
 
----
-
----
-
----
-
 ### 175. Establish CI/CD pipeline with automated testing and linting
 - **Effort**: 13 hours
 - **Status**: [NOT STARTED]
@@ -684,20 +680,6 @@ Enables the first working path for automated proof search with termination guard
 
 ---
 
----
-
----
-
----
-
----
-
----
-
----
-
----
-
 ### 189. Add --divide flag to /research command for topic subdivision
 - **Effort**: 3 hours
 - **Status**: [IN PROGRESS]
@@ -725,15 +707,6 @@ Enables the first working path for automated proof search with termination guard
   - [ ] Status markers and state sync work correctly for both modes
   - [ ] Documentation updated to explain --divide flag behavior
 - **Impact**: Provides more flexible research workflow - simple research creates focused reports without overhead of summary compilation, while complex research can be divided into manageable subtopics with a summary overview.
-
----
-
----
-
-See git history for other completed tasks:
-```bash
-git log --all --grep="Complete Task" --oneline
-```
 
 ---
 
@@ -796,16 +769,6 @@ git log --all --grep="Complete Task" --oneline
 
 ---
 
----
-
----
-
----
-
----
-
----
-
 ### 218. Fix lean-lsp-mcp integration and opencode module import errors
 **Effort**: 0.75 hours
 **Status**: [RESEARCHED]
@@ -842,30 +805,3 @@ Research revealed that OpenCode has native MCP (Model Context Protocol) support 
 CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client to proper OpenCode-native MCP integration. Enables lean-lsp-mcp tools for real-time Lean compilation checking, proof verification, and theorem search. Reduces context window usage by 2000-5000 tokens through selective per-agent tool enablement. Establishes foundation for additional MCP servers (Context7, Grep) to enhance Lean development workflow.
 
 ---
-
----
-
----
-
----
-
----
-
----
-
----
-
----
-
----
-
----
-
----
-
----
-
----
-
----
-

@@ -106,14 +106,14 @@
       "project_number": 236,
       "project_name": "investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_in_progress",
+      "status": "planning",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-29T05:28:00Z",
       "started": "2025-12-29",
       "research_completed": "2025-12-29",
-      "last_updated": "2025-12-29",
+      "last_updated": "2025-12-28",
       "artifacts": [
         ".opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/reports/research-001.md"
       ]
@@ -158,6 +158,31 @@
         "complexity": "medium"
       },
       "estimated_hours": 35.0
+    },
+    {
+      "project_number": 240,
+      "project_name": "systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures",
+      "type": "bugfix",
+      "phase": "planning_completed",
+      "status": "planned",
+      "priority": "critical",
+      "language": "markdown",
+      "created": "2025-12-29T05:50:22Z",
+      "started": "2025-12-29",
+      "research_completed": "2025-12-29",
+      "planning_completed": "2025-12-29",
+      "last_updated": "2025-12-29",
+      "artifacts": [
+        ".opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md",
+        ".opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 4,
+        "estimated_hours": 8,
+        "complexity": "medium"
+      },
+      "estimated_hours": 8.0
     }
   ],
   "completed_projects": [
