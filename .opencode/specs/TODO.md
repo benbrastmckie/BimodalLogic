@@ -51,6 +51,37 @@ CRITICAL - Protects context windows from bloat across all workflow commands, ena
 
 ---
 
+### 238. Find and eliminate all emojis from .opencode system to maintain NO EMOJI standard
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+Emojis have made their way back into /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md and some plans, reports, and summaries (e.g., checkmark emoji in completed tasks like task 234). The repository has a strict NO EMOJI standard that needs to be enforced. Unicode characters are acceptable, but emojis are not. This task requires: (1) Systematically search all .opencode system files for emoji usage (.opencode/specs/TODO.md, all plan files, all report files, all summary files, all command files, all agent files, all context files), (2) Remove all found emojis while preserving meaning (e.g., replace checkmark emojis with text-based markers), (3) Update context files and standards documentation to make the NO EMOJI standard more explicit and easier to enforce, (4) Add guidance to relevant standards files about emoji prevention.
+
+**Acceptance Criteria**:
+- [ ] Complete scan of .opencode/specs/TODO.md for emojis
+- [ ] Complete scan of .opencode/specs/*/plans/*.md for emojis
+- [ ] Complete scan of .opencode/specs/*/reports/*.md for emojis
+- [ ] Complete scan of .opencode/specs/*/summaries/*.md for emojis
+- [ ] Complete scan of .opencode/command/*.md for emojis
+- [ ] Complete scan of .opencode/agent/**/*.md for emojis
+- [ ] Complete scan of .opencode/context/**/*.md for emojis
+- [ ] All found emojis removed and replaced with appropriate text equivalents
+- [ ] status-markers.md updated with explicit NO EMOJI guidance
+- [ ] documentation.md standards updated with NO EMOJI enforcement
+- [ ] commands.md standards updated with NO EMOJI guidance for output
+- [ ] Quality checklist created or updated with emoji validation step
+- [ ] Git commit created documenting emoji removal
+
+**Impact**:
+Maintains repository consistency and professional standards. Emojis can cause parsing issues, display inconsistently across systems, and violate established documentation standards. Enforcing NO EMOJI standard ensures all documentation is text-based, parseable, and universally displayable.
+
+---
+
 ### 236. Investigate and fix task standard violations in TODO.md tasks 1-9
 - **Effort**: 4 hours
 - **Status**: [RESEARCHED]
@@ -82,10 +113,11 @@ Ensures all tasks in TODO.md follow consistent standards, making them easier to 
 
 ### 235. Find and fix root cause of /todo command not archiving completed tasks
 - **Effort**: 12 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Planned**: 2025-12-29
+- **Implementing**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
