@@ -257,34 +257,7 @@
       "estimated_hours": 56.0,
       "revised_hours": 78.0
     },
-    {
-      "project_number": 241,
-      "project_name": "optimize_no_emoji_validation",
-      "type": "enhancement",
-      "phase": "planning_completed",
-      "status": "planned",
-      "priority": "medium",
-      "language": "markdown",
-      "created": "2025-12-28T22:20:19Z",
-      "started": "2025-12-28",
-      "research_completed": "2025-12-28",
-      "planning_completed": "2025-12-28",
-      "completed": "2025-12-28",
-      "last_updated": "2025-12-28",
-      "artifacts": [
-        ".opencode/specs/241_optimize_no_emoji_validation/reports/research-001.md",
-        ".opencode/specs/241_optimize_no_emoji_validation/plans/implementation-001.md"
-      ],
-      "plan_path": ".opencode/specs/241_optimize_no_emoji_validation/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 7,
-        "estimated_hours": 5,
-        "complexity": "medium"
-      },
-      "estimated_hours": 5.0,
-      "phases": 7,
-      "dependencies": [238]
-    },
+
     {
       "project_number": 242,
       "project_name": "phase2_split_command_files",
@@ -312,6 +285,75 @@
     }
   ],
   "completed_projects": [
+    {
+      "project_number": 241,
+      "project_name": "optimize_no_emoji_validation",
+      "type": "enhancement",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2025-12-28T22:20:19Z",
+      "started": "2025-12-28",
+      "research_completed": "2025-12-28",
+      "planning_completed": "2025-12-28",
+      "completed": "2025-12-28",
+      "last_updated": "2025-12-28",
+      "artifacts": [
+        ".opencode/specs/241_optimize_no_emoji_validation/reports/research-001.md",
+        ".opencode/specs/241_optimize_no_emoji_validation/plans/implementation-001.md",
+        ".opencode/specs/241_optimize_no_emoji_validation/summaries/implementation-summary-20251228.md",
+        ".opencode/AGENTS.md",
+        ".opencode/agent/subagents/researcher.md",
+        ".opencode/agent/subagents/planner.md",
+        ".opencode/agent/subagents/implementer.md",
+        ".opencode/agent/subagents/task-executor.md",
+        ".opencode/agent/subagents/lean-research-agent.md",
+        ".opencode/agent/subagents/lean-implementation-agent.md",
+        ".opencode/agent/subagents/reviewer.md",
+        ".opencode/command/research.md",
+        ".opencode/command/plan.md",
+        ".opencode/command/implement.md",
+        ".opencode/command/revise.md",
+        ".opencode/command/task.md",
+        ".opencode/command/review.md",
+        ".opencode/command/errors.md",
+        ".opencode/command/todo.md",
+        ".opencode/agent/subagents/error-diagnostics-agent.md",
+        ".opencode/context/common/templates/command-template.md",
+        ".opencode/context/common/standards/documentation.md"
+      ],
+      "plan_path": ".opencode/specs/241_optimize_no_emoji_validation/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 7,
+        "estimated_hours": 5,
+        "complexity": "medium"
+      },
+      "estimated_hours": 5.0,
+      "phases": 7,
+      "dependencies": [238],
+      "files_modified": [
+        ".opencode/AGENTS.md",
+        ".opencode/agent/subagents/researcher.md",
+        ".opencode/agent/subagents/planner.md",
+        ".opencode/agent/subagents/implementer.md",
+        ".opencode/agent/subagents/task-executor.md",
+        ".opencode/agent/subagents/lean-research-agent.md",
+        ".opencode/agent/subagents/lean-implementation-agent.md",
+        ".opencode/agent/subagents/reviewer.md",
+        ".opencode/command/research.md",
+        ".opencode/command/plan.md",
+        ".opencode/command/implement.md",
+        ".opencode/command/revise.md",
+        ".opencode/command/task.md",
+        ".opencode/command/review.md",
+        ".opencode/command/errors.md",
+        ".opencode/command/todo.md",
+        ".opencode/agent/subagents/error-diagnostics-agent.md",
+        ".opencode/context/common/templates/command-template.md",
+        ".opencode/context/common/standards/documentation.md"
+      ]
+    },
     {
       "project_number": 230,
       "project_name": "fix_review_command_to_create_completed_task_entry_in_todomd_with_review_summary_link",

@@ -15,13 +15,16 @@
 ## High Priority
 
 ### 243. Implement Phase 4 from task 237 implementation plan (aggressive command file deduplication)
-- **Effort**: 12-16 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 24-30 hours (expanded to include context file improvements from task 240 research)
+- **Status**: [PLANNED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
-- **Dependencies**: Task 237 Phase 3 (completed)
+- **Dependencies**: Task 237 Phase 3 (completed), Task 240 research (completed)
 - **Research**: [Research Report](.opencode/specs/243_implement_phase_4_aggressive_command_deduplication/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/243_implement_phase_4_aggressive_command_deduplication/plans/implementation-001.md)
 
 **Description**:
 Implement Phase 4 from task 237's implementation plan: Remove duplicated lifecycle logic from command execution files (research.md, plan.md, implement.md, revise.md) by referencing command-lifecycle.md, reducing execution file sizes by 60-70%. This phase would analyze all 4 execution files line-by-line to identify common patterns (Stages 4-8 structure) and variations (status markers, artifacts, git commits). The goal is to create a minimal execution file structure that keeps only variations while referencing command-lifecycle.md for common logic, achieving execution file reduction from 15-25KB to 8-12KB each (56-72KB total savings).
@@ -50,7 +53,7 @@ Implement Phase 4 from task 237's implementation plan: Remove duplicated lifecyc
 
 ### 242. Implement Phase 2 from task 237 implementation plan (split command files into routing and execution)
 - **Effort**: 8-12 hours
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
 - **Started**: 2025-12-28
 - **Researched**: 2025-12-28
 - **Completed**: 2025-12-29
@@ -98,7 +101,7 @@ Implement Phase 2 from task 237's implementation plan: Split workflow command fi
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Comparative Analysis Report](.opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md)
-- **Original Plan**: [Implementation Plan](.opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/plans/implementation-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/plans/implementation-002.md)
 
 **Description**:
 Despite tasks 231, 221, and others attempting to fix Stage 7 (Postflight) execution failures in workflow commands (/research, /plan, /implement, /revise), the issue persists. When running `/research 236`, the research report was created successfully but the TODO.md file was NOT updated to [RESEARCHED] status and the research report was NOT linked (though this appears to have been corrected later, likely manually or through retry). This systematic failure affects ALL workflow commands and indicates a fundamental architectural problem that requires deep investigation and comprehensive refactoring. The problem manifests as: (1) Subagents complete their work and create artifacts successfully, (2) status-sync-manager is supposedly invoked but TODO.md/state.json remain unchanged, (3) No error messages are returned to user, creating silent failures, (4) Manual retries or corrections are required. Root causes to investigate: (A) Stage 7 is being skipped entirely by Claude despite explicit instructions, (B) status-sync-manager is not actually being invoked despite appearing in command specs, (C) status-sync-manager is being invoked but failing silently, (D) Orchestrator validation is insufficient to catch Stage 7 failures, (E) Command lifecycle pattern is fundamentally flawed and needs redesign, (F) Return validation is missing critical checks. This task will conduct systematic root cause analysis and implement a comprehensive, tested solution that ACTUALLY works.
@@ -269,9 +272,9 @@ Maintains repository consistency and professional standards. Emojis can cause pa
 
 ---
 
-### 241. Optimize NO EMOJI validation to eliminate redundant checks and reduce system overhead
+### 241. Optimize NO EMOJI validation to eliminate redundant checks and reduce system overhead [COMPLETED]
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-28
 - **Researched**: 2025-12-28
 - **Planned**: 2025-12-28
@@ -282,6 +285,28 @@ Maintains repository consistency and professional standards. Emojis can cause pa
 - **Dependencies**: 238
 - **Research**: [Research Report](.opencode/specs/241_optimize_no_emoji_validation/reports/research-001.md)
 - **Plan**: [Implementation Plan](.opencode/specs/241_optimize_no_emoji_validation/plans/implementation-001.md)
+- **Implementation Summary**: [Summary](.opencode/specs/241_optimize_no_emoji_validation/summaries/implementation-summary-20251228.md)
+- **Artifacts**:
+  - [AGENTS.md](.opencode/AGENTS.md) - Centralized NO EMOJI rule
+  - [researcher.md](.opencode/agent/subagents/researcher.md) - Removed redundant validation
+  - [planner.md](.opencode/agent/subagents/planner.md) - Removed redundant validation
+  - [implementer.md](.opencode/agent/subagents/implementer.md) - Removed redundant validation
+  - [task-executor.md](.opencode/agent/subagents/task-executor.md) - Removed redundant validation
+  - [lean-research-agent.md](.opencode/agent/subagents/lean-research-agent.md) - Removed redundant validation
+  - [lean-implementation-agent.md](.opencode/agent/subagents/lean-implementation-agent.md) - Removed redundant validation
+  - [reviewer.md](.opencode/agent/subagents/reviewer.md) - Removed redundant validation
+  - [research.md](.opencode/command/research.md) - Removed redundant validation
+  - [plan.md](.opencode/command/plan.md) - Removed redundant validation
+  - [implement.md](.opencode/command/implement.md) - Removed redundant validation
+  - [revise.md](.opencode/command/revise.md) - Removed redundant validation
+  - [task.md](.opencode/command/task.md) - Removed redundant validation
+  - [review.md](.opencode/command/review.md) - Removed redundant validation
+  - [errors.md](.opencode/command/errors.md) - Removed redundant validation
+  - [todo.md](.opencode/command/todo.md) - Removed redundant validation
+  - [error-diagnostics-agent.md](.opencode/agent/subagents/error-diagnostics-agent.md) - Removed redundant validation
+  - [command-template.md](.opencode/context/common/templates/command-template.md) - Removed redundant validation
+  - [documentation.md](.opencode/context/common/standards/documentation.md) - Updated to reference AGENTS.md
+  - [implementation-summary-20251228.md](.opencode/specs/241_optimize_no_emoji_validation/summaries/implementation-summary-20251228.md) - Implementation summary
 - **Description**: Task 238 implemented comprehensive NO EMOJI enforcement across all .opencode system files (24 files, 88 emoji instances removed). However, this introduced extensive validation checks and warning messages in multiple agent files, command files, and context files which may slow down the opencode system with redundant overhead. Design and implement a more efficient approach that prevents emojis WITHOUT excessive validation overhead. Proposed solution: Create a centralized AGENTS.md file (per https://opencode.ai/docs/rules/) with the NO EMOJIS rule, then remove all redundant mentions and validation checks from individual agent/command/context files. AGENTS.md is automatically loaded by OpenCode into all agent contexts, providing universal rule enforcement without duplication.
 
 **Research Questions**:
@@ -955,7 +980,7 @@ Enables the first working path for automated proof search with termination guard
 
 ### 218. Fix lean-lsp-mcp integration and opencode module import errors
 **Effort**: 0.75 hours
-**Status**: [RESEARCHED]
+**Status**: [PLANNED]
 **Started**: 2025-12-28
 **Researched**: 2025-12-28
 **Priority**: High
