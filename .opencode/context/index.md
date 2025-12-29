@@ -1,8 +1,8 @@
 # Context Index - Lazy-Loading Quick Map
 
-**Version**: 2.0  
+**Version**: 3.0  
 **Created**: 2025-12-23  
-**Updated**: 2025-12-29 (Task 240 Phase 1)  
+**Updated**: 2025-12-29 (Task 246 Phase 5 - Post-Consolidation)  
 **Purpose**: Quick reference map for on-demand context loading following OpenAgents patterns
 
 ---
@@ -21,37 +21,83 @@
 
 ---
 
-## Core Standards (common/standards/)
+## Core Standards (core/standards/)
 
-Load for: Return format, task entry validation, artifact creation
+**Consolidated files** - Load for delegation, return format, validation
 
-- **subagent-return-format.md** - Standardized return format for all agents (required for all workflows)
-- **tasks.md** - Task entry format, required fields, validation rules
-- **documentation.md** - Documentation standards, NO EMOJI policy
-- **plan.md** - Implementation plan structure and requirements
+- **delegation.md** (510 lines) - Unified delegation standard
+  - Return format schema (all agents MUST follow)
+  - Delegation patterns and safety mechanisms
+  - Session tracking, cycle detection, timeouts
+  - Validation framework
+  - Replaces: subagent-return-format.md, subagent-delegation-guide.md, delegation-patterns.md
 
-## Core Workflows (common/workflows/)
+---
 
-Load for: Delegation, lifecycle patterns
+## Core System (core/system/)
 
-- **subagent-delegation-guide.md** - Safe delegation patterns, timeouts, cycle detection
-- **command-lifecycle.md** - 8-stage command lifecycle pattern (deprecated after Phase 2, workflows move to agents)
+**Consolidated files** - Load for state management, artifacts, git
 
-## Core System (common/system/)
+- **state-management.md** (535 lines) - Unified state management standard
+  - Status markers and transition rules
+  - State schemas (main, archive, maintenance, project)
+  - Timestamp formats
+  - Status synchronization mechanisms
+  - Replaces: status-markers.md, state-schema.md
 
-Load for: Status updates, artifact management, git commits
+---
 
-- **status-markers.md** - Status transition rules and markers (required for all workflows)
-- **artifact-management.md** - Lazy directory creation, artifact naming (required for all workflows)
-- **git-commits.md** - Targeted commit patterns
-- **state-schema.md** - State file structure
+## Common Standards (common/standards/)
 
-## Core Specs (specs/)
+Load for: Task validation, artifact creation, documentation standards
 
-Load selectively: Use grep extraction for specific tasks, avoid loading full 109KB file
+- **tasks.md** (227 lines) - Task entry format, required fields, validation rules
+- **documentation.md** (178 lines) - Documentation standards, NO EMOJI policy
+- **plan.md** (104 lines) - Implementation plan structure and requirements
+- **code.md** (155 lines) - Code quality standards
+- **tests.md** (127 lines) - Test requirements and standards
+- **patterns.md** (213 lines) - Common design patterns
+- **summary.md** (60 lines) - Summary artifact standards
+- **report.md** (66 lines) - Report artifact standards
+- **analysis.md** (103 lines) - Analysis artifact standards
+- **frontmatter-standard.md** (92 lines) - YAML frontmatter requirements
+- **command-argument-handling.md** (58 lines) - Command argument parsing
+- **commands.md** (73 lines) - Command structure standards
 
-- **TODO.md** - Active task list (109KB - load via: `grep -A 50 "^### {task_number}\." TODO.md`)
-- **state.json** - Project state tracking (load full file, ~8KB)
+---
+
+## Common System (common/system/)
+
+Load for: Artifact management, git commits, context loading
+
+- **artifact-management.md** (274 lines) - Lazy directory creation, artifact naming (required for all workflows)
+- **git-commits.md** (34 lines) - Targeted commit patterns
+- **context-guide.md** (89 lines) - Context loading patterns
+- **self-healing-guide.md** (153 lines) - Self-healing mechanisms
+
+---
+
+## Common Workflows (common/workflows/)
+
+Load for: Review, task breakdown, sessions
+
+- **review.md** (164 lines) - Review workflow and criteria
+- **task-breakdown.md** (270 lines) - Task decomposition patterns
+- **sessions.md** (157 lines) - Session management
+- **delegation.md** (82 lines) - Delegation context template (temporary context files)
+
+---
+
+## Common Templates (common/templates/)
+
+Load for: Creating new agents, commands, orchestrators
+
+- **subagent-template.md** - Template for creating new agents
+- **command-template.md** - Template for creating new commands
+- **orchestrator-template.md** - Template for orchestrator patterns
+- **meta-guide.md** - Meta-documentation guide
+- **state-template.json** - State file template
+- **subagent-frontmatter-template.yaml** - Frontmatter template
 
 ---
 
@@ -63,22 +109,107 @@ Load only when needed for language-specific workflows:
 
 Load for: Lean implementation tasks (Language: lean)
 
-- **standards/lean4-style-guide.md** - Lean 4 coding conventions
-- **tools/leansearch-api.md** - LeanSearch REST API integration
-- **tools/loogle-api.md** - Loogle CLI interface
-- **tools/lsp-integration.md** - lean-lsp-mcp integration
+**Standards**:
+- **lean4-style-guide.md** - Lean 4 coding conventions
+- **proof-conventions-lean.md** - Lean-specific proof conventions
+- **proof-readability-criteria.md** - Proof readability standards
+
+**Tools**:
+- **leansearch-api.md** - LeanSearch REST API integration
+- **loogle-api.md** - Loogle CLI interface
+- **lsp-integration.md** - lean-lsp-mcp integration
+- **aesop-integration.md** - Aesop tactic integration
+- **mcp-tools-guide.md** - MCP tools overview
+
+**Patterns**:
+- **tactic-patterns.md** - Common tactic patterns
+
+**Processes**:
+- **end-to-end-proof-workflow.md** - Complete proof development workflow
+- **maintenance-workflow.md** - Proof maintenance procedures
+- **project-structure-best-practices.md** - Repository organization
+
+**Domain**:
+- **dependent-types.md** - Dependent type theory concepts
+- **key-mathematical-concepts.md** - Core mathematical concepts
+- **lean4-syntax.md** - Lean 4 syntax reference
+- **mathlib-overview.md** - Mathlib library overview
+
+**Templates**:
+- **definition-template.md** - Definition structure template
+- **new-file-template.md** - New Lean file template
+- **proof-structure-templates.md** - Proof structure templates
+- **maintenance-report-template.md** - Maintenance report template
+
+### Logic Context (project/logic/)
+
+Load for: Proof theory tasks
+
+**Standards**:
+- **proof-conventions.md** - Canonical proof principles
+- **notation-standards.md** - Notation conventions
+- **naming-conventions.md** - Naming standards
+
+**Processes**:
+- **modal-proof-strategies.md** - Modal logic proof strategies
+- **temporal-proof-strategies.md** - Temporal logic proof strategies
+- **proof-construction.md** - General proof construction
+- **verification-workflow.md** - Verification procedures
+
+**Domain**:
+- **kripke-semantics-overview.md** - Kripke semantics concepts
+- **metalogic-concepts.md** - Metalogic theory
+- **proof-theory-concepts.md** - Proof theory foundations
+- **task-semantics.md** - Task-based semantics
 
 ### Repo Context (project/repo/)
 
 Load for: General markdown/documentation tasks (Language: markdown)
 
 - **project-overview.md** - Repository structure and organization
+- **self-healing-implementation-details.md** - Self-healing system details
 
-### Logic Context (project/logic/)
+### Math Context (project/math/)
 
-Load for: Proof theory tasks
+Load for: Mathematical domain tasks
 
-- **standards/proof-conventions.md** - Canonical proof principles
+**Algebra**:
+- **groups-and-monoids.md** - Group theory concepts
+- **rings-and-fields.md** - Ring and field theory
+
+**Order Theory**:
+- **partial-orders.md** - Partial order concepts
+
+**Lattice Theory**:
+- **lattices.md** - Lattice theory concepts
+
+**Topology**:
+- **topological-spaces.md** - Topology concepts
+
+### Physics Context (project/physics/)
+
+Load for: Physics domain tasks
+
+**Dynamical Systems**:
+- **dynamical-systems.md** - Dynamical systems concepts
+
+---
+
+## System Context (system/)
+
+Load for: Orchestrator and routing patterns
+
+- **orchestrator-guide.md** - Orchestrator implementation patterns
+- **routing-guide.md** - Routing decision logic
+
+---
+
+## Core Specs (specs/)
+
+Load selectively: Use grep extraction for specific tasks, avoid loading full file
+
+- **TODO.md** - Active task list (large file - load via: `grep -A 50 "^### {task_number}\." TODO.md`)
+- **state.json** - Project state tracking (load full file, ~8KB)
 
 ---
 
@@ -87,8 +218,8 @@ Load for: Proof theory tasks
 **Research Workflow (researcher.md)**:
 ```
 Stage 4 loads:
-- @.opencode/context/common/standards/subagent-return-format.md
-- @.opencode/context/common/system/status-markers.md
+- @.opencode/context/core/standards/delegation.md
+- @.opencode/context/core/system/state-management.md
 - @.opencode/context/common/system/artifact-management.md
 - grep -A 50 "^### {task_number}\." .opencode/specs/TODO.md
 - @.opencode/specs/state.json
@@ -101,9 +232,9 @@ Language-specific:
 **Planning Workflow (planner.md)**:
 ```
 Stage 4 loads:
-- @.opencode/context/common/standards/subagent-return-format.md
+- @.opencode/context/core/standards/delegation.md
 - @.opencode/context/common/standards/plan.md
-- @.opencode/context/common/system/status-markers.md
+- @.opencode/context/core/system/state-management.md
 - @.opencode/context/common/system/artifact-management.md
 - grep -A 50 "^### {task_number}\." .opencode/specs/TODO.md
 - @.opencode/specs/state.json
@@ -113,8 +244,8 @@ Stage 4 loads:
 **Implementation Workflow (implementer.md, task-executor.md)**:
 ```
 Stage 4 loads:
-- @.opencode/context/common/standards/subagent-return-format.md
-- @.opencode/context/common/system/status-markers.md
+- @.opencode/context/core/standards/delegation.md
+- @.opencode/context/core/system/state-management.md
 - @.opencode/context/common/system/artifact-management.md
 - @.opencode/context/common/system/git-commits.md
 - grep -A 50 "^### {task_number}\." .opencode/specs/TODO.md
@@ -128,7 +259,7 @@ Language-specific:
 
 ---
 
-## Context Budget Targets (Task 240 Goals)
+## Context Budget Targets (Task 246 Goals)
 
 - **Routing**: <10% context window (Stages 1-3, no context loading)
 - **Execution**: 90% context window available (Stage 4+, selective loading)
@@ -136,43 +267,39 @@ Language-specific:
 
 ---
 
-## Migration Notes (Task 240)
+## Consolidation Summary (Task 246 Phase 3)
 
-**Phase 1 (Current)**: Index pattern established, /research migrated to frontmatter
-**Phase 2 (Planned)**: All commands migrate to frontmatter, orchestrator simplified
-**Phase 3 (Planned)**: Context consolidation, 70% size reduction
+**Completed**:
+- ✓ Delegation files merged: 1,003 → 510 lines (50% reduction)
+- ✓ State management files merged: 1,574 → 535 lines (66% reduction)
+- ✓ command-lifecycle.md removed: 1,138 lines eliminated (100% reduction)
+- ✓ Total reduction: 3,715 → 1,045 lines (72% reduction, 2,670 lines saved)
+
+**Deprecated Files** (1-month deprecation period until 2025-01-29):
+- subagent-return-format.md → core/standards/delegation.md#return-format
+- subagent-delegation-guide.md → core/standards/delegation.md#delegation-patterns
+- status-markers.md → core/system/state-management.md#status-markers
+- state-schema.md → core/system/state-management.md#state-schemas
+- command-lifecycle.md → (removed, see agent files for execution patterns)
+
+---
+
+## Migration Notes (Task 240 + Task 246)
+
+**Phase 1 (Complete)**: Index pattern established, /research migrated to frontmatter
+**Phase 2 (Complete)**: All commands migrate to frontmatter, orchestrator simplified
+**Phase 3 (Complete)**: Context consolidation, 72% size reduction achieved
 **Phase 4 (Planned)**: Testing and documentation
 
 ---
 
-## Legacy Organization (Pre-Task 240)
+## Quick Navigation
 
-The sections below preserve the original detailed file listings for reference during migration:
-
-<details>
-<summary>Common Context (detailed)</summary>
-
-- Standards: `standards/code.md`, `standards/documentation.md`, `standards/tests.md`, `standards/patterns.md`, `standards/plan.md`, `standards/report.md`, `standards/summary.md`, `standards/tasks.md`, `standards/analysis.md`
-- System: `system/artifact-management.md`, `system/status-markers.md`, `system/state-schema.md`, `system/context-guide.md`
-- Workflows: `workflows/delegation.md`, `workflows/review.md`, `workflows/task-breakdown.md`, `workflows/sessions.md`
-- Templates: `templates/meta-guide.md`, `templates/orchestrator-template.md`, `templates/subagent-template.md`
-</details>
-
-<details>
-<summary>Lean4 Context (detailed)</summary>
-
-- Standards: `standards/lean4-style-guide.md`, `standards/proof-conventions-lean.md`, `standards/proof-readability-criteria.md`
-- Patterns: `patterns/tactic-patterns.md`
-- Processes: `processes/end-to-end-proof-workflow.md`, `processes/maintenance-workflow.md`, `processes/project-structure-best-practices.md`
-- Templates: `templates/definition-template.md`, `templates/maintenance-report-template.md`, `templates/new-file-template.md`, `templates/proof-structure-templates.md`
-- Tools: `tools/aesop-integration.md`, `tools/leansearch-api.md`, `tools/loogle-api.md`, `tools/lsp-integration.md`, `tools/mcp-tools-guide.md`
-- Domain: `domain/dependent-types.md`, `domain/key-mathematical-concepts.md`, `domain/lean4-syntax.md`, `domain/mathlib-overview.md`
-</details>
-
-<details>
-<summary>Logic Context (detailed)</summary>
-
-- Standards: `standards/proof-conventions.md`, `standards/notation-standards.md`, `standards/naming-conventions.md`
-- Processes: `processes/modal-proof-strategies.md`, `processes/temporal-proof-strategies.md`, `processes/proof-construction.md`, `processes/verification-workflow.md`
-- Domain: `domain/kripke-semantics-overview.md`, `domain/metalogic-concepts.md`, `domain/proof-theory-concepts.md`, `domain/task-semantics.md`
-</details>
+**For Delegation**: → `core/standards/delegation.md`  
+**For State Management**: → `core/system/state-management.md`  
+**For Artifacts**: → `common/system/artifact-management.md`  
+**For Git Commits**: → `common/system/git-commits.md`  
+**For Task Format**: → `common/standards/tasks.md`  
+**For Plan Format**: → `common/standards/plan.md`  
+**For Lean Style**: → `project/lean4/standards/lean4-style-guide.md`  
+**For Proof Conventions**: → `project/logic/standards/proof-conventions.md`

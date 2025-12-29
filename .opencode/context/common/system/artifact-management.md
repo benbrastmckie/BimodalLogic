@@ -266,9 +266,5 @@ All agents create artifacts in these directories and return only:
 This protects the orchestrator's context window from artifact content bloat.
 
 ## Related Documentation
-- [State Schema Reference](state-schema.md) - Detailed state file schemas
-- [Status Markers](status-markers.md) - Standardized status markers and timestamps
-- [Plan Standard](../standards/plan.md)
-- [Report Standard](../standards/report.md)
-- [Summary Standard](../standards/summary.md)
-- [Documentation Standards](documentation-standards.md) - Documentation conventions
+
+See `.opencode/context/index.md` for navigation to all context files.

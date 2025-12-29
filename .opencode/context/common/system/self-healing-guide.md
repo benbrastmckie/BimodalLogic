@@ -146,8 +146,4 @@ rm .opencode/specs/state.json
 
 ## Related Documentation
 
-- **Implementation Details**: `.opencode/context/project/repo/self-healing-implementation-details.md`
-- **Schema Reference**: `.opencode/context/common/system/state-schema.md`
-- **Schema Evolution**: See state-schema.md section "Schema Evolution and Versioning"
-- **Context Organization**: `.opencode/context/common/system/context-guide.md`
-- **Template**: `.opencode/context/common/templates/state-template.json`
+See `.opencode/context/index.md` for navigation to all context files.

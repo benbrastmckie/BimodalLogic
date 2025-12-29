@@ -702,12 +702,7 @@ temperature: 0.7  # Too high for implementation
 
 ## Related Documentation
 
-- **Template**: `.opencode/context/common/templates/subagent-frontmatter-template.yaml`
-- **Schema**: `.opencode/context/common/schemas/frontmatter-schema.json`
-- **Validation Script**: `.opencode/scripts/validate_frontmatter.py`
-- **YAML Specification**: https://yaml.org/spec/1.2.2/
-- **JSON Schema**: https://json-schema.org/draft-07/schema
-- **SemVer**: https://semver.org/
+See `.opencode/context/index.md` for navigation to all context files.
 
 ---
 
