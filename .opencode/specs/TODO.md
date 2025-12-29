@@ -185,10 +185,11 @@ Ensures all tasks in TODO.md follow consistent standards, making them easier to 
 ---
 
 ### 1. Completeness Proofs
-*Effort**: 70-90 hours
-*Status**: INFRASTRUCTURE ONLY
-*Blocking**: Decidability
-*Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
+- **Effort**: 70-90 hours
+- **Status**: INFRASTRUCTURE ONLY
+- **Language**: lean
+- **Blocking**: Decidability
+- **Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
 
 **Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.
 
@@ -205,9 +206,10 @@ Ensures all tasks in TODO.md follow consistent standards, making them easier to 
 ---
 
 ### 2. Resolve Truth.lean Sorries
-**Effort**: 10-20 hours
-**Status**: PARTIAL
-**Priority**: Medium (Soundness depends on this for full temporal duality)
+- **Effort**: 10-20 hours
+- **Status**: PARTIAL
+- **Priority**: Medium (Soundness depends on this for full temporal duality)
+- **Language**: lean
 
 **Description**: Resolve the 3 remaining `sorry` placeholders in `Logos/Core/Semantics/Truth.lean` related to temporal swap validity. These require handling domain extension for history quantification.
 
@@ -222,8 +224,9 @@ Ensures all tasks in TODO.md follow consistent standards, making them easier to 
 ---
 
 ### 3. Automation Tactics
-**Effort**: 40-60 hours
-**Status**: PARTIAL (4/12 implemented)
+- **Effort**: 40-60 hours
+- **Status**: PARTIAL (4/12 implemented)
+- **Language**: lean
 
 **Description**: Implement the remaining planned tactics for TM logic to support easier proof construction.
 
@@ -240,8 +243,9 @@ Ensures all tasks in TODO.md follow consistent standards, making them easier to 
 ---
 
 ### 4. Proof Search
-**Effort**: 40-60 hours
-**Status**: PLANNED
+- **Effort**: 40-60 hours
+- **Status**: PLANNED
+- **Language**: lean
 
 **Description**: Implement automated proof search for TM logic.
 
@@ -255,8 +259,9 @@ Ensures all tasks in TODO.md follow consistent standards, making them easier to 
 ---
 
 ### 5. Decidability
-**Effort**: 40-60 hours
-**Status**: PLANNED
+- **Effort**: 40-60 hours
+- **Status**: PLANNED
+- **Language**: lean
 
 **Description**: Implement decision procedures for TM logic.
 
@@ -270,8 +275,9 @@ Ensures all tasks in TODO.md follow consistent standards, making them easier to 
 ---
 
 ### 6. ModalS5 Limitation
-**Effort**: Low
-**Status**: DOCUMENTED LIMITATION
+- **Effort**: Low
+- **Status**: DOCUMENTED LIMITATION
+- **Language**: lean
 
 **Description**: The theorem `diamond_mono_imp` in `ModalS5.lean` is marked with `sorry` because it is not valid as an object-level implication. This is a documented limitation.
 
@@ -284,11 +290,12 @@ Ensures all tasks in TODO.md follow consistent standards, making them easier to 
 ---
 
 ### 7. Document Creation of Context Files
-**Effort**: 1-2 hours
-**Status**: DONE
-**Priority**: Low
-**Blocking**: None
-**Dependencies**: None
+- **Effort**: 1-2 hours
+- **Status**: DONE
+- **Priority**: Low
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
 
 **Files Affected**:
 - `Logos/Core/Syntax/Context.lean`
@@ -308,11 +315,12 @@ Provides clear documentation for a core component of the syntax package, improvi
 ---
 
 ### 8. Refactor `Logos/Core/Syntax/Context.lean`
-**Effort**: 2-4 hours
-**Status**: PLANNED
-**Priority**: Medium
-**Blocking**: Task 9
-**Dependencies**: None
+- **Effort**: 2-4 hours
+- **Status**: PLANNED
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: Task 9
+- **Dependencies**: None
 
 **Files Affected**:
 - `Logos/Core/Syntax/Context.lean`
@@ -333,11 +341,12 @@ Improves the maintainability and readability of a core component of the syntax p
 ---
 
 ### 9. Update Context References
-**Effort**: 1-2 hours
-**Status**: PLANNED
-**Priority**: Medium
-**Blocking**: None
-**Dependencies**: Task 8
+- **Effort**: 1-2 hours
+- **Status**: PLANNED
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: Task 8
 
 **Files Affected**:
 - `Logos/Core/ProofSystem/Derivation.lean`
