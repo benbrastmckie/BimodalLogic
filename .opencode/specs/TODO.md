@@ -71,7 +71,7 @@
   - Main Report: [.opencode/specs/226_fix_review_command/reports/research-001.md]
 - **Plan**: [.opencode/specs/226_fix_review_command/plans/implementation-001.md]
 - **Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/226_fix_review_command/summaries/implementation-summary-20251229.md]
+  - Implementation Summary: [.opencode/specs/226_fix_review_command/summaries/implementation-summary-20251228.md]
   - Modified Files: .opencode/command/review.md, .opencode/agent/subagents/reviewer.md, .opencode/context/common/workflows/review.md
 - **Files Affected**:
   - .opencode/command/review.md

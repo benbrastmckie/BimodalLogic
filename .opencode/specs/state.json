@@ -206,7 +206,7 @@
       "artifacts": [
         ".opencode/specs/226_fix_review_command/reports/research-001.md",
         ".opencode/specs/226_fix_review_command/plans/implementation-001.md",
-        ".opencode/specs/226_fix_review_command/summaries/implementation-summary-20251229.md",
+        ".opencode/specs/226_fix_review_command/summaries/implementation-summary-20251228.md",
         ".opencode/command/review.md",
         ".opencode/agent/subagents/reviewer.md",
         ".opencode/context/common/workflows/review.md"
