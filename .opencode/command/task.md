@@ -58,12 +58,34 @@ Context Loaded:
          - "markdown", "doc", "README" → Language: markdown
          - Default → Language: general
       5. Validate description is non-empty
+      6. VALIDATION: Verify Language field will be set (required per tasks.md line 110)
+      7. VALIDATION: Verify metadata format will use `- **Field**:` pattern
+      8. VALIDATION: Verify all required fields present (Language, Effort, Priority, Status)
     </process>
     <validation>
       - Description must be non-empty string
       - Priority must be: Low|Medium|High (default: Medium)
       - Effort must be: TBD or time estimate like "2 hours"
+      - Language must be set (lean|markdown|general) - MANDATORY per tasks.md
+      - Metadata format must use `- **Field**:` pattern (not `*Field**:`)
+      - Required fields: Language, Effort, Priority, Status
     </validation>
+    <validation_errors>
+      If Language not detected or set:
+        - Error: "Language field is required but could not be detected"
+        - Guidance: "Use --language flag to specify: lean, markdown, or general"
+        - DO NOT create task
+      
+      If metadata format invalid:
+        - Error: "Metadata format must use `- **Field**:` pattern"
+        - Guidance: "Check task standards at .opencode/context/common/standards/tasks.md"
+        - DO NOT create task
+      
+      If required field missing:
+        - Error: "Required field missing: {field_name}"
+        - Guidance: "All tasks must have Language, Effort, Priority, and Status fields"
+        - DO NOT create task
+    </validation_errors>
     <examples>
       - `/task "Implement LeanSearch integration"` → priority=Medium, effort=TBD, language=lean
       - `/task "Fix build error" --priority High --effort "2 hours"` → priority=High, effort=2 hours
@@ -197,6 +219,10 @@ Context Loaded:
     - Priority validated (Low|Medium|High)
     - Effort validated (TBD or time estimate)
     - Language detected or defaulted to general
+    - Language field MUST be set (required per tasks.md line 110)
+    - Metadata format validated (uses `- **Field**:` pattern, not `*Field**:`)
+    - All required fields present (Language, Effort, Priority, Status)
+    - Validation errors return clear guidance and prevent task creation
   </pre_flight>
   
   <mid_flight>
@@ -300,4 +326,61 @@ Context Loaded:
   3. Only two files modified: .opencode/specs/TODO.md and state.json
   4. Task number comes from state.json next_project_number field
   5. After creating task, user must use /research, /plan, /implement separately
+  6. VALIDATION: Language field is MANDATORY per tasks.md line 110 quality checklist
+  7. VALIDATION: Metadata format must use `- **Field**:` pattern (not `*Field**:`)
+  8. VALIDATION: All required fields (Language, Effort, Priority, Status) must be present
 </important_notes>
+
+<task_standard_enforcement>
+  <validation_logic>
+    The /task command enforces task standards defined in .opencode/context/common/standards/tasks.md:
+    
+    1. Language Field Validation:
+       - Language field is MANDATORY (tasks.md line 110 quality checklist)
+       - Must be one of: lean, markdown, general, python, shell, json
+       - Detected from description keywords or defaulted to general
+       - If detection fails and no --language flag: ERROR and reject task creation
+    
+    2. Metadata Format Validation:
+       - All metadata fields must use `- **Field**:` pattern
+       - Incorrect patterns like `*Field**:` are REJECTED
+       - Ensures consistency with task standards
+    
+    3. Required Fields Validation:
+       - Language: MANDATORY (routing to Lean-specific agents)
+       - Effort: MANDATORY (defaults to TBD if not provided)
+       - Priority: MANDATORY (defaults to Medium if not provided)
+       - Status: MANDATORY (always [NOT STARTED] for new tasks)
+    
+    4. Error Messages:
+       - Clear, actionable error messages for validation failures
+       - Guidance on how to fix the issue
+       - Reference to task standards documentation
+       - Task creation BLOCKED until validation passes
+  </validation_logic>
+  
+  <language_field_importance>
+    The Language field is critical for routing tasks to appropriate agents:
+    - Language: lean → Routes to lean-research-agent and lean-implementation-agent
+    - Language: markdown → Routes to general agents with documentation focus
+    - Language: general → Routes to general-purpose agents
+    
+    Missing Language field prevents proper routing and breaks Lean-specific workflows.
+    This is why Language is MANDATORY per tasks.md line 110 quality checklist.
+  </language_field_importance>
+  
+  <manual_editing_warning>
+    WARNING: Manual editing of .opencode/specs/TODO.md bypasses validation.
+    
+    If you manually edit TODO.md:
+    - Ensure Language field is present for ALL tasks
+    - Use `- **Field**:` format (not `*Field**:`)
+    - Include all required fields (Language, Effort, Priority, Status)
+    - Follow task standards in .opencode/context/common/standards/tasks.md
+    
+    Manual edits that violate standards may cause:
+    - Routing failures (tasks sent to wrong agents)
+    - Parsing errors (automation tools can't read tasks)
+    - Workflow breakage (missing metadata breaks /implement, /research)
+  </manual_editing_warning>
+</task_standard_enforcement>
