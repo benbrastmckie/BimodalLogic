@@ -98,6 +98,37 @@
   - [ ] Documentation updated with proper delegation patterns and error handling
 - **Impact**: CRITICAL BLOCKER - Fixes systematic status tracking failure affecting ALL workflow commands. Currently state.json reflects correct status but TODO.md remains stale, causing confusion about task progress, breaking workflow dependencies (tasks appear NOT STARTED when actually RESEARCHED/PLANNED), and violating atomic update guarantees. This breaks the entire task tracking system's integrity. Essential for reliable project management and workflow execution. Builds on task 221's delegation fixes to ensure updates actually work when delegated.
 
+### 228. Fix orchestrator routing to invoke commands instead of bypassing to subagents directly
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/agent/orchestrator.md
+  - .opencode/command/plan.md
+  - .opencode/command/research.md
+  - .opencode/command/implement.md
+  - .opencode/command/revise.md
+- **Description**: The /plan command fails to update the task in TODO.md and does not include a link to the plan created. Root Cause: The orchestrator bypassed the /plan command layer and directly invoked the planner subagent, which meant the command's Stage 7 (Postflight) that delegates to status-sync-manager never executed, leaving TODO.md and state.json unupdated despite the plan artifact being successfully created. This is an architectural issue with the orchestrator's routing logic - it needs to invoke commands (which have full workflow specifications), not subagents directly. When a user invokes `/plan 224`, the orchestrator should route to the plan command (which has the complete 8-stage workflow including postflight status updates), not directly to the planner subagent. The correct delegation chain should be: User → Orchestrator → /plan COMMAND → planner subagent → status-sync-manager. Currently happening: User → Orchestrator → planner subagent (directly) → (no postflight, no status-sync-manager). Fix requires updating orchestrator's Stage 7 (RouteToAgent) to invoke command layer, which will then handle delegation to appropriate subagents and execute postflight procedures.
+- **Acceptance Criteria**:
+  - [ ] Root cause documented in orchestrator.md
+  - [ ] Orchestrator Stage 7 modified to invoke commands, not subagents
+  - [ ] /plan command invocation properly executes all 8 stages including postflight
+  - [ ] /research command invocation properly executes all 8 stages including postflight
+  - [ ] /implement command invocation properly executes all 8 stages including postflight
+  - [ ] /revise command invocation properly executes all 8 stages including postflight
+  - [ ] status-sync-manager properly invoked by commands after subagent completion
+  - [ ] TODO.md correctly updated with status markers after command completion
+  - [ ] state.json correctly updated with status and timestamps after command completion
+  - [ ] Plan links correctly added to TODO.md after /plan completion
+  - [ ] Test: /plan 224 updates TODO.md to [PLANNED] with plan link
+  - [ ] Test: /research updates TODO.md to [RESEARCHED] with research links
+  - [ ] Test: All workflow commands execute complete lifecycle
+  - [ ] Documentation updated explaining command vs subagent delegation
+- **Impact**: CRITICAL - Fixes systematic failure where workflow commands don't update TODO.md or state.json because orchestrator bypasses command layer (which contains postflight logic). This breaks task tracking for ALL workflow commands (/plan, /research, /implement, /revise). Essential architectural fix to ensure commands execute their full lifecycle including status updates via status-sync-manager.
+
  
 ### 185. Fix integration test helper API mismatches
 - **Effort**: 1 hour
@@ -122,7 +153,7 @@
 
 ### 224. Configure OpenCode to start in Orchestrator mode or auto-switch agent modes for workflow commands
 - **Effort**: 2 hours (estimated from research)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Priority**: Medium
@@ -131,6 +162,7 @@
 - **Dependencies**: None
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/224_configure_opencode_default_agent/reports/research-001.md]
+- **Plan**: [.opencode/specs/224_configure_opencode_default_agent/plans/implementation-001.md]
 - **Files Affected**:
   - opencode.json (potential agent configuration)
   - .opencode/rules/ (potential custom rules)

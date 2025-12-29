@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-29T00:37:19.528207Z",
-  "next_project_number": 228,
+  "_last_updated": "2025-12-29T00:41:46.063824+00:00",
+  "next_project_number": 229,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -376,6 +376,10 @@
   },
   "recent_activities": [
     {
+      "timestamp": "2025-12-29T00:41:46.063824+00:00",
+      "activity": "Created task 228: Fix orchestrator routing to invoke commands instead of bypassing to subagents directly (TBD effort, High priority, markdown)"
+    },
+    {
       "timestamp": "2025-12-28T16:28:14.744760Z",
       "activity": "Created task 226: Fix /review command to use next_project_number, create matching task, include actionable follow-up tasks in summary, reduce verbosity, and improve context file organization (8-10 hours effort, High priority, markdown)"
     },
@@ -727,7 +731,7 @@
         "Logos/Core/Semantics/Truth.lean"
       ],
       "implementation_notes": "BLOCKED after exhaustive attempts. Helper lemma truth_at_swap_swap complete (all 6 cases). Main theorem unprovable with current approach - truth_at pattern matching prevents equality transport. All strategies from plans v2/v3 failed. Requires expert consultation.",
-      "blocking_reason": "Fundamental type theory limitation - truth_at pattern matching prevents transport along φ.swap.swap = φ equality. Exhausted all recommended approaches."
+      "blocking_reason": "Fundamental type theory limitation - truth_at pattern matching prevents transport along \u03c6.swap.swap = \u03c6 equality. Exhausted all recommended approaches."
     },
     {
       "project_number": 194,

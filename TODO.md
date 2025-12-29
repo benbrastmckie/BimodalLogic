@@ -317,13 +317,14 @@ Ensures all future Lean research tasks create artifacts in correct `.opencode/sp
 
 ### 224. Configure OpenCode to start in Orchestrator mode or auto-switch agent modes for workflow commands
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Priority**: Medium
 - **Language**: general
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/224_configure_opencode_default_agent/reports/research-001.md]
+- **Plan**: [.opencode/specs/224_configure_opencode_default_agent/plans/implementation-001.md]
 - **Description**: Research how to configure OpenCode to start in Orchestrator mode by default or automatically switch agent modes when workflow commands are executed. Analyzed OpenCode agent system, command routing, and identified 4 potential solutions. Recommended solution: Add "default_agent": "orchestrator" to opencode.json configuration (minimal disruption, follows OpenCode conventions).
 - **Acceptance Criteria**:
   - [x] OpenCode agent system architecture analyzed
