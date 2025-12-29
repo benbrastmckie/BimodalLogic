@@ -112,6 +112,113 @@ Override Impact when:
 -   [ ] Dependencies are correctly listed.
 -   [ ] Acceptance criteria are testable.
 -   [ ] No emojis are present.
+-   [ ] Metadata format uses `- **Field**:` pattern (not `*Field**:` or other variants).
+-   [ ] All required fields present (Language, Effort, Priority, Status).
+
+## Troubleshooting
+
+### Missing Language Field
+
+**Problem**: Task is missing the Language field.
+
+**Impact**: 
+- Prevents proper routing to Lean-specific agents (lean-research-agent, lean-implementation-agent)
+- Breaks automation workflows that depend on Language field
+- Violates task standards (Language is MANDATORY per line 110 quality checklist)
+
+**Solution**:
+1. Identify the primary language for the task:
+   - Lean code tasks → `- **Language**: lean`
+   - Documentation tasks → `- **Language**: markdown`
+   - General tasks → `- **Language**: general`
+   - Python tasks → `- **Language**: python`
+   - Shell scripts → `- **Language**: shell`
+2. Add Language field to task metadata in TODO.md
+3. Ensure Language field is on its own line with correct formatting
+
+**Prevention**:
+- Use /task command to create tasks (enforces Language field)
+- Avoid manual editing of TODO.md
+- If manual editing required, follow task standards exactly
+
+### Incorrect Metadata Format
+
+**Problem**: Task uses `*Field**:` instead of `- **Field**:` format.
+
+**Impact**:
+- Breaks parsing by automation tools
+- Violates task standards
+- Makes tasks harder to read and maintain
+
+**Solution**:
+1. Find all metadata fields using incorrect format (e.g., `*Effort**:`, `*Status**:`)
+2. Replace with correct format: `- **Effort**:`, `- **Status**:`
+3. Ensure each field is on its own line
+4. Verify formatting matches task standards
+
+**Example Fix**:
+```markdown
+BEFORE (incorrect):
+*Effort**: 2 hours
+*Status**: [NOT STARTED]
+*Language**: lean
+
+AFTER (correct):
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+```
+
+**Prevention**:
+- Use /task command to create tasks (enforces correct format)
+- Use /review command to create tasks (validates format)
+- Avoid manual editing of TODO.md
+
+### Validation Errors from /task Command
+
+**Problem**: /task command rejects task creation with validation error.
+
+**Common Errors**:
+
+1. "Language field is required but could not be detected"
+   - Solution: Add `--language lean` (or markdown/general) flag to /task command
+   - Example: `/task "Fix bug in Foo.lean" --language lean`
+
+2. "Metadata format must use `- **Field**:` pattern"
+   - Solution: This error should not occur with /task command (internal validation)
+   - If it occurs: Report as bug in /task command implementation
+
+3. "Required field missing: {field_name}"
+   - Solution: This error should not occur with /task command (auto-populates defaults)
+   - If it occurs: Report as bug in /task command implementation
+
+**Prevention**:
+- Always use /task command for task creation
+- Provide --language flag if language detection might fail
+- Review task standards before creating tasks
+
+### Validation Errors from /review Command
+
+**Problem**: /review command reports non-compliant tasks after creation.
+
+**Common Violations**:
+
+1. "Task {number} missing required Language field"
+   - Solution: Manually add Language field to task in TODO.md
+   - Follow format: `- **Language**: {lean|markdown|general}`
+
+2. "Task {number} has incorrect metadata format"
+   - Solution: Fix metadata format to use `- **Field**:` pattern
+   - Replace `*Field**:` with `- **Field**:`
+
+3. "Task {number} missing required field: {field_name}"
+   - Solution: Add missing field to task in TODO.md
+   - Follow task standards for field format
+
+**Prevention**:
+- Ensure /task command validation is working correctly
+- Report validation failures to system maintainers
+- Manually verify created tasks comply with standards
 
 ## Maintenance
 
