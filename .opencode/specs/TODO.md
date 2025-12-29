@@ -1,6 +1,6 @@
 # TODO
 
-**Last Updated:** 2025-12-29T01:42:33Z
+**Last Updated:** 2025-12-29T02:01:18Z
 
 ## Overview
 
@@ -15,12 +15,14 @@
 ## High Priority
 
 ### 231. Fix systematic command Stage 7 (Postflight) execution failures causing incomplete TODO.md and state.json updates
-- **Effort**: 8-10 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 10 hours
+- **Status**: [PLANNED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/reports/research-001.md]
+- **Plan**: [.opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/plans/implementation-001.md]
+- **Plan Summary**: 5-phase implementation (10 hours total). Phase 1: Strengthen Stage 7 prompting in /plan command with imperative language (2h). Phase 2: Add validation checkpoints to all commands (2h). Phase 3: Implement explicit delegation syntax (2.5h). Phase 4: Add comprehensive error handling (2h). Phase 5: Add orchestrator stage validation (1.5h). Fixes 5 root causes: weak prompting, no validation checkpoints, missing error handling, implicit delegation syntax, no orchestrator validation. Achieves 100% Stage 7 execution rate across all 4 workflow commands.
 - **Created**: 2025-12-29
 - **Priority**: Critical
 - **Language**: markdown
@@ -267,13 +269,17 @@
 - **Impact**: Final step to unblock task 173. Once fixed, all 146 integration tests will compile and pass, delivering verified 82% integration test coverage and completing task 173. Dependency blocker task 184 now resolved by task 219.
 
 ### 232. Systematically fix TODO.md path references and migrate tasks from project root to .opencode/specs
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 11 hours (estimated from research)
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
 - **Created**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/232_systematically_fix_todomd_path_references/reports/research-001.md]
 - **Files Affected**:
   - All .opencode/command/*.md files (research.md, plan.md, implement.md, revise.md, task.md, todo.md, review.md)
   - All .opencode/agent/subagents/*.md files
