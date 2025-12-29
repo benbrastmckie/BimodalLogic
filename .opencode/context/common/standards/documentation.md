@@ -72,6 +72,8 @@ AI agent consumption.
 
 ### NO EMOJI Policy
 
+**Enforcement**: See `.opencode/AGENTS.md` for centralized rule (automatically loaded by OpenCode).
+
 **Prohibition**: No emojis are permitted anywhere in .opencode system files.
 
 **Rationale**:
