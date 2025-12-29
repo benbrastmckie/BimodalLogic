@@ -1,0 +1,40 @@
+{
+  "project_name": "investigate_fix_context_window_bloat_workflow_commands",
+  "project_number": 237,
+  "type": "bugfix",
+  "phase": "planning_completed",
+  "status": "planned",
+  "priority": "critical",
+  "language": "markdown",
+  "created": "2025-12-29T05:34:54Z",
+  "started": "2025-12-29",
+  "research_completed": "2025-12-29",
+  "planning_completed": "2025-12-29",
+  "last_updated": "2025-12-29",
+  "reports": [
+    {
+      "type": "research_report",
+      "path": ".opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/reports/research-001.md",
+      "summary": "Root cause identified: Commands load 78-86KB during routing (39-43% of budget) due to premature command file loading, context duplication, and large TODO.md. Recommended 4-phase fix plan reduces routing context to <6% through file splitting, deduplication, and selective loading.",
+      "created": "2025-12-29"
+    }
+  ],
+  "plans": [
+    {
+      "type": "implementation_plan",
+      "path": ".opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md",
+      "summary": "4-phase implementation plan (28-42 hours total). Phase 1: Eliminate orchestrator duplication (2-4 hours, 56KB savings, LOW risk). Phase 2: Split command files (8-12 hours, 72-104KB savings). Phase 3: Selective TODO.md loading (6-10 hours, 107KB savings). Phase 4: Aggressive deduplication (12-16 hours, 56-72KB savings). Total savings: 178-186KB (62-64% reduction).",
+      "created": "2025-12-29"
+    }
+  ],
+  "summaries": [],
+  "plan_path": ".opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md",
+  "plan_metadata": {
+    "phase_count": 4,
+    "estimated_hours": 35,
+    "complexity": "medium",
+    "extracted_from": "plans/implementation-001.md",
+    "extracted_at": "2025-12-29T00:00:00Z"
+  },
+  "estimated_hours": 35.0
+}
