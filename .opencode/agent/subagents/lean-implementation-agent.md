@@ -60,16 +60,36 @@ temperature: 0.2
 
 <process_flow>
   <step_1>
-    <action>Load Lean context</action>
+    <action>Load Lean context and mark task as IMPLEMENTING</action>
     <process>
-      1. Load context from .opencode/context/project/lean4/
-      2. Load relevant domain knowledge (modal logic, temporal logic, etc.)
-      3. Load tactic patterns and proof strategies
-      4. MCP tools configured via opencode.json (no manual check needed)
-      5. Tools available automatically if lean-lsp-mcp server running
+      1. Update TODO.md status marker:
+         a. Find task entry in .opencode/specs/TODO.md
+         b. Change status from [NOT STARTED]/[PLANNED] to [IMPLEMENTING]
+         c. Add **Started**: YYYY-MM-DD timestamp
+      2. Load context from .opencode/context/project/lean4/
+      3. Load relevant domain knowledge (modal logic, temporal logic, etc.)
+      4. Load tactic patterns and proof strategies
+      5. MCP tools configured via opencode.json (no manual check needed)
+      6. Tools available automatically if lean-lsp-mcp server running
     </process>
-    <validation>Context loaded successfully</validation>
-    <output>Lean context loaded</output>
+    <status_marker_update>
+      Update .opencode/specs/TODO.md:
+      - Find task by task_number
+      - Change **Status**: [NOT STARTED]/[PLANNED] → **Status**: [IMPLEMENTING]
+      - Add **Started**: {current_date} (YYYY-MM-DD format)
+      - Preserve all other task metadata
+      
+      Example:
+      ```markdown
+      ### 198. Implement Modal S4 Theorem
+      **Status**: [IMPLEMENTING]
+      **Started**: 2025-12-28
+      **Priority**: High
+      **Effort**: 6 hours
+      ```
+    </status_marker_update>
+    <validation>Context loaded successfully and status marker updated</validation>
+    <output>Lean context loaded and task marked as IMPLEMENTING</output>
   </step_1>
 
   <step_2>
@@ -222,26 +242,82 @@ temperature: 0.2
   </step_4>
 
   <step_5>
-    <action>Write final Lean files and implementation summary</action>
+    <action>Write final Lean files and implementation summary with validation</action>
     <process>
       1. Write all modified Lean files
       2. Verify writes succeeded
       3. Update imports in dependent files if needed
-      4. Create implementation summary artifact:
+      4. Create implementation summary artifact (REQUIRED):
          a. Determine project directory from task_number
          b. Create summaries/ subdirectory (lazy creation)
          c. Generate filename: implementation-summary-{YYYYMMDD}.md
-         d. Write summary (3-5 sentences, <100 tokens) including:
+         d. Draft summary content (3-5 sentences) including:
             - Lean files modified/created
             - Compilation status (success/degraded/failed)
             - Tool availability status (lean-lsp-mcp)
             - Iteration count (if compilation attempted)
             - Errors encountered (if any)
             - Next steps for user
-         e. No emojis in summary
-         f. Follow artifact-management.md summary standard
+         e. Validate summary BEFORE writing:
+            - Count tokens: Use chars ÷ 3 estimation
+            - Verify token count <100 tokens (~400 chars max)
+            - Count sentences: Split on '. ' and verify 3-5 sentences
+            - Verify no emojis in content (scan for emoji unicode ranges U+1F300-U+1F9FF, U+2600-U+26FF, U+2700-U+27BF)
+            - If validation fails: Revise summary to meet requirements
+            - If emojis detected: Remove emojis and re-validate
+         f. Write summary only after validation passes
+         g. Follow artifact-management.md summary standard
     </process>
-    <validation>All Lean files and summary artifact written successfully</validation>
+    <summary_artifact_enforcement>
+      CRITICAL: Summary artifact is REQUIRED for implementation.
+      
+      Summary requirements:
+      - Format: 3-5 sentences
+      - Token limit: <100 tokens (~400 chars)
+      - No emojis
+      - Focus on files changed, compilation status, next steps
+      
+      Validation process:
+      1. Draft summary content
+      2. Count tokens: len(summary) ÷ 3
+      3. Count sentences: summary.split('. ')
+      4. Check for emojis: Scan for emoji unicode ranges
+      5. If any check fails: Revise and re-validate
+      6. Only write summary after all checks pass
+      
+      Example valid summary:
+      "Implemented Modal S4 theorem in Logos/Core/Theorems/ModalS4.lean. Compilation successful after 3 iterations using lean-lsp-mcp. Created test cases in LogosTest/Core/Theorems/ModalS4Test.lean. All type checks passed. Next step: Run lake build to verify full project compilation."
+      
+      Token count: ~60 tokens (180 chars ÷ 3)
+      Sentence count: 5 sentences
+      Emojis: None
+    </summary_artifact_enforcement>
+    <lazy_creation>
+      Lazy directory creation (strict enforcement per artifact-management.md):
+      
+      CRITICAL: Create directories ONLY when writing files into them.
+      
+      Directory creation sequence:
+      1. Determine if project directory exists from task_number
+      2. If project directory doesn't exist: Create .opencode/specs/{task_number}_{topic}/ immediately before writing first artifact
+      3. Create summaries/ subdirectory only when writing summary artifact (not before)
+      4. Never pre-create unused subdirectories (e.g., reports/, plans/)
+      5. Never create placeholder files (.gitkeep, README.md, etc.)
+      
+      Timing validation:
+      - Project root: Created immediately before writing first artifact (if needed)
+      - summaries/: Created at the moment of writing implementation-summary-YYYYMMDD.md
+      - state.json: Updated after artifacts are written
+      
+      Forbidden patterns:
+      - Creating all subdirs (reports/, plans/, summaries/) upfront
+      - Creating project root before knowing artifacts will be written
+      - Creating empty directories "just in case"
+      - Adding placeholder files to mark directory structure
+      
+      Validation: Before returning, verify no empty unused subdirectories exist.
+    </lazy_creation>
+    <validation>All Lean files and summary artifact written and validated successfully</validation>
     <context_window_protection>
       Lean implementation creates N+1 artifacts:
       - N Lean files (implementation code)
@@ -256,23 +332,148 @@ temperature: 0.2
   </step_5>
 
   <step_6>
-    <action>Return standardized result</action>
+    <action>Validate artifacts, update status markers, update state, and return standardized result</action>
     <process>
-      1. Format return following subagent-return-format.md
-      2. List all Lean files modified/created in artifacts array
-      3. Include implementation summary artifact in artifacts array
-      4. Validate summary artifact before returning:
-         a. Verify summary artifact exists in artifacts array
-         b. Verify summary artifact path exists on disk
-         c. Verify summary file contains content
-         d. Verify summary within token limit (<100 tokens, ~400 chars)
-         e. If validation fails: Return status "failed" with error
-      5. Include compilation results if available
-      6. Include tool unavailability warning if applicable
-      7. Include session_id from input
-      8. Include metadata (duration, delegation info)
-      9. Return status: completed (if compiled) or partial (if degraded)
+      1. Validate all artifacts created successfully:
+         a. Verify all Lean files written to disk
+         b. Verify summary artifact exists in artifacts array
+         c. Verify summary artifact path exists on disk
+         d. Verify summary file contains content
+         e. Verify summary within token limit (<100 tokens, ~400 chars)
+         f. Verify summary is 3-5 sentences
+         g. If validation fails: Return status "failed" with error
+      2. Update TODO.md status marker:
+         a. Find task entry in .opencode/specs/TODO.md
+         b. Change status from [IMPLEMENTING] to [COMPLETED]/[PARTIAL]/[BLOCKED]
+         c. Add **Completed**: YYYY-MM-DD timestamp
+         d. Add **Implementation Artifacts**: section with links to Lean files and summary
+      3. Update state.json:
+         a. Update .opencode/specs/state.json active_projects array
+         b. Add/update project entry with status "completed"/"partial"/"blocked"
+         c. Add artifacts array with Lean file paths and summary path
+         d. Set created_at and updated_at timestamps (ISO 8601 format)
+      4. Update project state.json:
+         a. Update .opencode/specs/{task_number}_{topic}/state.json
+         b. Add implementation files to appropriate tracking arrays
+         c. Add implementation summary to summaries array
+         d. Set phase to "completed"/"partial"/"blocked"
+         e. Set timestamps in ISO 8601 format
+      5. Format return following subagent-return-format.md
+      6. List all Lean files modified/created in artifacts array
+      7. Include implementation summary artifact in artifacts array
+      8. Include compilation results if available
+      9. Include tool unavailability warning if applicable
+      10. Include session_id from input
+      11. Include metadata (duration, delegation info)
+      12. Return status: completed (if compiled) or partial (if degraded)
     </process>
+    <status_marker_update>
+      Update .opencode/specs/TODO.md:
+      - Find task by task_number
+      - Change **Status**: [IMPLEMENTING] → **Status**: [COMPLETED]/[PARTIAL]/[BLOCKED]
+      - Add **Completed**: {current_date} (YYYY-MM-DD format)
+      - Preserve **Started**: timestamp
+      - Add **Implementation Artifacts**: section with paths
+      
+      Artifact link format requirements:
+      - Lean files: Use project root paths (e.g., Logos/Core/...)
+      - Summary artifact: Use absolute path starting with .opencode/specs/
+      - List all modified/created Lean files
+      - Include summary artifact with "Summary:" prefix
+      - For [PARTIAL] status: Add note about compilation status
+      - For [BLOCKED] status: Include **Blocking Reason**: field
+      
+      Example (completed):
+      ```markdown
+      ### 198. Implement Modal S4 Theorem
+      **Status**: [COMPLETED]
+      **Started**: 2025-12-28
+      **Completed**: 2025-12-28
+      **Priority**: High
+      **Effort**: 6 hours
+      **Implementation Artifacts**:
+      - Logos/Core/Theorems/ModalS4.lean
+      - LogosTest/Core/Theorems/ModalS4Test.lean
+      - Summary: .opencode/specs/198_modal_s4_theorem/summaries/implementation-summary-20251228.md
+      ```
+      
+      Example (partial):
+      ```markdown
+      ### 198. Implement Modal S4 Theorem
+      **Status**: [PARTIAL]
+      **Started**: 2025-12-28
+      **Completed**: 2025-12-28
+      **Priority**: High
+      **Effort**: 6 hours
+      **Blocking Reason**: lean-lsp-mcp unavailable, compilation not verified
+      **Implementation Artifacts**:
+      - Logos/Core/Theorems/ModalS4.lean (compilation not verified)
+      - Summary: .opencode/specs/198_modal_s4_theorem/summaries/implementation-summary-20251228.md
+      ```
+      
+      Partial status workflow:
+      - Use [PARTIAL] when implementation is incomplete but can be resumed
+      - Use [PARTIAL] when lean-lsp-mcp unavailable (degraded mode)
+      - Use [PARTIAL] when compilation not verified
+      - Always include **Blocking Reason**: field explaining why partial
+      - Partial status allows task to be resumed later
+      - Partial status is NOT terminal (can transition to [IMPLEMENTING] again)
+      
+      Blocked status workflow:
+      - Use [BLOCKED] when implementation cannot proceed due to external blocker
+      - Use [BLOCKED] when dependency is missing or failed
+      - Use [BLOCKED] when compilation fails after max iterations
+      - Always include **Blocking Reason**: field explaining blocker
+      - Blocked status requires blocker resolution before resuming
+    </status_marker_update>
+    <state_update>
+      Update .opencode/specs/state.json:
+      ```json
+      {
+        "active_projects": [
+          {
+            "project_number": 198,
+            "project_name": "modal_s4_theorem",
+            "type": "implementation",
+            "status": "completed",
+            "created_at": "2025-12-28T10:00:00Z",
+            "updated_at": "2025-12-28T14:30:00Z",
+            "artifacts": [
+              "Logos/Core/Theorems/ModalS4.lean",
+              "LogosTest/Core/Theorems/ModalS4Test.lean",
+              ".opencode/specs/198_modal_s4_theorem/summaries/implementation-summary-20251228.md"
+            ]
+          }
+        ]
+      }
+      ```
+      
+      Update .opencode/specs/{task_number}_{topic}/state.json:
+      ```json
+      {
+        "project_name": "modal_s4_theorem",
+        "project_number": 198,
+        "type": "implementation",
+        "phase": "completed",
+        "summaries": ["summaries/implementation-summary-20251228.md"],
+        "status": "active",
+        "created_at": "2025-12-28T10:00:00Z",
+        "updated_at": "2025-12-28T14:30:00Z"
+      }
+      ```
+      
+      Timestamp formats (per state-schema.md):
+      - ISO 8601 for state.json: YYYY-MM-DDTHH:MM:SSZ (e.g., "2025-12-28T10:00:00Z")
+      - Simple date for TODO.md status changes: YYYY-MM-DD (e.g., "2025-12-28")
+      - Use UTC timezone for ISO 8601 timestamps
+      - Preserve existing timestamps when updating (don't overwrite **Started**)
+      
+      Examples:
+      - created_at: "2025-12-28T10:00:00Z" (ISO 8601)
+      - updated_at: "2025-12-28T14:30:00Z" (ISO 8601)
+      - **Started**: 2025-12-28 (YYYY-MM-DD)
+      - **Completed**: 2025-12-28 (YYYY-MM-DD)
+    </state_update>
     <validation>
       Before returning (Step 6):
       - Verify all artifacts created successfully
@@ -293,6 +494,14 @@ temperature: 0.2
 </process_flow>
 
 <constraints>
+  <must>Update TODO.md status markers ([NOT STARTED]/[PLANNED] → [IMPLEMENTING] → [COMPLETED]/[PARTIAL]/[BLOCKED])</must>
+  <must>Add timestamps to TODO.md (**Started**, **Completed** in YYYY-MM-DD format)</must>
+  <must>Update state.json with project status and artifacts</must>
+  <must>Update project state.json with implementation artifacts</must>
+  <must>Create summary artifact (3-5 sentences, <100 tokens, no emojis)</must>
+  <must>Validate summary artifact before writing (token count, sentence count, no emojis)</must>
+  <must>Validate summary artifact before returning (exists, non-empty, within limits)</must>
+  <must>Use lazy directory creation (create only when writing artifacts)</must>
   <must>Load Lean context from .opencode/context/project/lean4/</must>
   <must>Check lean-lsp-mcp availability before use</must>
   <must>Log tool unavailability to errors.json</must>
@@ -300,13 +509,13 @@ temperature: 0.2
   <must>Validate artifacts before returning (existence, non-empty, token limit)</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Iterate on compilation errors (max 5 iterations)</must>
-  <must>Create implementation summary artifact (3-5 sentences, <100 tokens)</must>
   <must>Include summary artifact in return artifacts array</must>
   <must_not>Fail task if lean-lsp-mcp unavailable (degrade gracefully)</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Write invalid Lean syntax</must_not>
   <must_not>Include emojis in summary artifacts</must_not>
   <must_not>Return without validating artifacts</must_not>
+  <must_not>Pre-create empty directories or placeholder files</must_not>
 </constraints>
 
 <output_specification>
@@ -477,10 +686,15 @@ temperature: 0.2
 
   <post_execution>
     - Verify all Lean files written
+    - Verify summary artifact created and validated (3-5 sentences, <100 tokens, no emojis)
+    - Verify TODO.md status updated to [COMPLETED]/[PARTIAL]/[BLOCKED] with timestamps
+    - Verify state.json updated with project status and artifacts
+    - Verify project state.json updated with implementation artifacts
     - Verify compilation checked (if tool available)
     - Verify tool unavailability logged (if applicable)
     - Verify return format matches subagent-return-format.md
     - Verify session_id matches input
+    - Verify artifact paths use absolute format for .opencode/specs/ files
   </post_execution>
 </validation_checks>
 
