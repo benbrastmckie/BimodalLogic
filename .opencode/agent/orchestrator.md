@@ -11,8 +11,8 @@ context_loading:
   strategy: minimal
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/command-structure.md"
-    - "system/routing-guide.md"
+    - "core/system/routing-guide.md"
+    - "core/workflows/delegation-guide.md"
   max_context_size: 10000
 delegation:
   max_depth: 3
@@ -584,8 +584,9 @@ created: 2025-12-29
   - **Subagent Ownership**: Subagents own their workflows, orchestrator just routes
   
   For detailed workflow documentation, see:
-  - `.opencode/context/system/routing-guide.md`
-  - `.opencode/context/core/standards/command-structure.md`
+  - `.opencode/context/core/system/routing-guide.md`
+  - `.opencode/context/core/workflows/delegation-guide.md`
+  - `.opencode/context/core/system/validation-strategy.md`
   - Individual command files in `.opencode/command/`
   - Individual subagent files in `.opencode/agent/subagents/`
 </notes>

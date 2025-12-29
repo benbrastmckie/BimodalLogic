@@ -1,39 +1,148 @@
 # Context Organization
 
-## Overview
-Unified context layout for the Logos project. Shared standards and system guides live in `common/`; domain-specific guidance lives in `project/` by domain (logic, lean4, math, physics, repo). Logic standards are canonical for proof principles and notation; Lean overlays add syntax/tooling/readability only.
+**Version**: 2.0  
+**Updated**: 2025-12-29  
+**Purpose**: Organize context files for efficient loading and clear separation of concerns
+
+---
 
 ## Directory Structure
+
 ```
 .opencode/context/
-  common/          # Shared standards, system guides, workflows, templates
-    standards/     # code, docs, tests, patterns, plan/report/summary/tasks
-    system/        # artifact-management, status-markers, state-schema, context-guide
-    templates/     # meta and agent templates
-    workflows/     # delegation, review, sessions, task-breakdown
-  project/         # Domain-specific context
-    logic/         # Canonical proof principles, notation, strategies
-    lean4/         # Lean overlays (syntax, tooling, readability)
-    math/          # Math domains (algebra, lattice, order, topology)
-    physics/       # Physics domains (dynamical systems)
-    repo/          # Repository overview
-  README.md
-  index.md
+├── core/                           # General/reusable context
+│   ├── standards/                  # Quality standards, formats
+│   │   └── subagent-return-format.md
+│   ├── workflows/                  # Common workflow patterns
+│   │   ├── delegation-guide.md
+│   │   └── status-transitions.md
+│   ├── system/                     # System-level guides
+│   │   ├── routing-guide.md
+│   │   ├── orchestrator-guide.md
+│   │   ├── context-loading-strategy.md
+│   │   └── validation-strategy.md
+│   └── templates/                  # Reusable templates
+│       ├── command-template.md
+│       └── agent-template.md
+│
+├── project/                        # ProofChecker-specific context
+│   ├── lean4/                      # Lean 4 domain knowledge
+│   │   ├── domain/
+│   │   ├── patterns/
+│   │   ├── processes/
+│   │   ├── standards/
+│   │   ├── templates/
+│   │   └── tools/
+│   ├── logic/                      # Logic domain knowledge
+│   │   ├── domain/
+│   │   ├── processes/
+│   │   └── standards/
+│   ├── math/                       # Math domain knowledge
+│   │   ├── algebra/
+│   │   ├── lattice-theory/
+│   │   ├── order-theory/
+│   │   └── topology/
+│   ├── physics/                    # Physics domain knowledge
+│   │   └── dynamical-systems/
+│   └── repo/                       # Repository-specific
+│       ├── project-overview.md
+│       └── self-healing-implementation-details.md
+│
+└── README.md                       # This file
 ```
 
-## Canonical vs. Overlay
-- **Canonical proof/notation**: `project/logic/standards/proof-conventions.md`, `project/logic/standards/notation-standards.md`.
-- **Lean overlay**: `project/lean4/standards/proof-conventions-lean.md` (references the canonical logic standards), plus Lean style/readability/patterns.
-- **System standards**: `common/system/status-markers.md`, `common/system/artifact-management.md` (do not duplicate in domain files).
+---
 
-## Usage Guidelines
-- Default to Level 1 context loads (1–2 files); Level 2 (3–4) only when needed; Level 3 rarely.
-- For Lean proofs: load logic canonical standards + Lean overlay as needed.
-- Keep links targeting `project/{logic|lean4|math|physics|repo}` and `common/...`; avoid legacy `core/` or root `lean4/` references.
-- File naming: lowercase-hyphenated (`proof-theory-concepts.md`).
-- Keep files focused (target 50–200 lines) and avoid duplication—point to shared standards instead.
+## Core vs Project
 
-## Maintenance Notes
-- When adding domain guidance, first check for existing standards in `common/` and `project/logic/` to avoid duplication.
-- Status markers, artifact rules, and task metadata belong in `common/system/`—reference them instead of copying.
-- Record moves/renames in the plan/summary for Task 144 to update agent/command references.
+### core/
+**Purpose**: General, reusable context applicable to any project
+
+**Contents**:
+- Standards (return formats, templates)
+- Workflows (delegation, status transitions)
+- System guides (routing, orchestrator, validation)
+- Templates (for creating new components)
+
+**When to use**: Context that doesn't depend on ProofChecker specifics
+
+### project/
+**Purpose**: ProofChecker-specific domain knowledge
+
+**Contents**:
+- Lean 4 theorem proving knowledge
+- Logic domain knowledge (modal, temporal)
+- Math domain knowledge (algebra, topology, etc.)
+- Physics domain knowledge
+- Repository-specific information
+
+**When to use**: Context specific to ProofChecker's domains
+
+---
+
+## Context Loading Strategy
+
+### Three-Tier Loading
+
+**Tier 1: Orchestrator (Minimal)**
+- Budget: <5% context window (~10KB)
+- Files: routing-guide.md, delegation-guide.md
+- Purpose: Routing and delegation safety
+
+**Tier 2: Commands (Targeted)**
+- Budget: 10-20% context window (~20-40KB)
+- Files: subagent-return-format.md, status-transitions.md, command-specific
+- Purpose: Command validation and formatting
+
+**Tier 3: Agents (Domain-Specific)**
+- Budget: 60-80% context window (~120-160KB)
+- Files: project/lean4/*, project/logic/*, etc.
+- Purpose: Domain-specific work with full context
+
+See `core/system/context-loading-strategy.md` for details.
+
+---
+
+## File Naming Conventions
+
+- Use kebab-case: `subagent-return-format.md`
+- Be descriptive: `context-loading-strategy.md` not `loading.md`
+- Group by purpose: `delegation-guide.md` in workflows/, not system/
+
+---
+
+## Adding New Context Files
+
+### For General/Reusable Context
+Add to `core/`:
+- Standards → `core/standards/`
+- Workflows → `core/workflows/`
+- System guides → `core/system/`
+- Templates → `core/templates/`
+
+### For ProofChecker-Specific Context
+Add to `project/`:
+- Lean 4 → `project/lean4/`
+- Logic → `project/logic/`
+- Math → `project/math/`
+- Physics → `project/physics/`
+- Repo-specific → `project/repo/`
+
+---
+
+## Migration from Old Structure
+
+**Old** → **New**:
+- `system/routing-guide.md` → `core/system/routing-guide.md`
+- `system/orchestrator-guide.md` → `core/system/orchestrator-guide.md`
+- All project-specific files remain in `project/`
+
+**Removed**:
+- `system/` directory (merged into `core/system/`)
+
+**Added**:
+- `core/standards/`
+- `core/workflows/`
+- `core/templates/`
+- `core/system/context-loading-strategy.md`
+- `core/system/validation-strategy.md`

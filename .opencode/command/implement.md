@@ -12,10 +12,10 @@ context_loading:
   index: ".opencode/context/index.md"
   required:
     - "core/standards/subagent-return-format.md"
-    - "core/system/status-markers.md"
-    - "system/routing-guide.md"
+    - "core/workflows/status-transitions.md"
+    - "core/system/routing-guide.md"
   optional:
-    - "project/processes/implementation-workflow.md"
+    - "project/lean4/processes/end-to-end-proof-workflow.md"
   max_context_size: 50000
 ---
 
