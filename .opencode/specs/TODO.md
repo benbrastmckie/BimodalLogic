@@ -561,7 +561,7 @@ Enables the first working path for automated proof search with termination guard
 
 ### 148. Ensure command updates also sync SORRY and TACTIC registries
 **Effort**: 2-3 hours
-**Status**: [NOT STARTED]
+**Status**: [ABANDONED]
 **Priority**: Medium
 **Blocking**: None
 **Dependencies**: None
@@ -745,8 +745,6 @@ Successfully updated example files to demonstrate new automation capabilities (P
 Provides comprehensive examples demonstrating automation features, improving usability and showcasing ProofSearch capabilities. Exceeds planned scope with high-quality documentation.
 
 **Note**: Build currently blocked by pre-existing errors in Truth.lean (Task 184) and DeductionTheorem.lean (Task 183). Example code is correct and will compile once blockers are resolved.
-
----
 
 ---
 
