@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-29T05:28:00Z",
-  "next_project_number": 237,
+  "_last_updated": "2025-12-29T05:34:54Z",
+  "next_project_number": 239,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -399,16 +399,41 @@
       "project_number": 235,
       "project_name": "find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-29T05:20:00Z",
       "started": "2025-12-29",
       "research_completed": "2025-12-29",
+      "planning_completed": "2025-12-29",
       "last_updated": "2025-12-29",
       "artifacts": [
-        ".opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/reports/research-001.md"
+        ".opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/reports/research-001.md",
+        ".opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 5,
+        "estimated_hours": 12,
+        "complexity": "medium-high"
+      },
+      "estimated_hours": 12.0
+    },
+    {
+      "project_number": 236,
+      "project_name": "investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9",
+      "type": "bugfix",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2025-12-29T05:28:00Z",
+      "started": "2025-12-29",
+      "research_completed": "2025-12-29",
+      "last_updated": "2025-12-29",
+      "artifacts": [
+        ".opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/reports/research-001.md"
       ]
     }
   ],
@@ -643,6 +668,10 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-29T05:34:54Z",
+      "activity": "Created task 237: Investigate and systematically fix context window bloat in workflow commands (10-15 hours effort, Critical priority, markdown)"
+    },
     {
       "timestamp": "2025-12-29T05:28:00.000000Z",
       "activity": "Created task 236: Investigate and fix task standard violations in TODO.md tasks 1-9 (4 hours effort, High priority, markdown)"

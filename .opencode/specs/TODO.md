@@ -14,13 +14,53 @@
 
 ## High Priority
 
+### 237. Investigate and systematically fix context window bloat in workflow commands
+- **Effort**: 10-15 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Critical
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+When running workflow commands (/research, /plan, /revise, /implement), the context window jumps to approximately 58% immediately, before any actual work begins. This indicates that context is being loaded too early and too broadly in the orchestrator or command routing stage. The root cause needs to be identified and a systematic solution implemented to protect the context window of both the primary agent (orchestrator) and subagents by loading exactly the context that is needed for each job and nothing more.
+
+**Research Questions**:
+1. At what stage is context being loaded (orchestrator routing vs command execution)?
+2. Which context files are being loaded and how large are they?
+3. Is context being loaded speculatively before knowing which command will execute?
+4. Are there duplicated context loads across agent boundaries?
+5. What is the minimal context needed for routing decisions vs execution?
+6. How can we defer context loading to the appropriate stage?
+
+**Acceptance Criteria**:
+- [ ] Root cause identified - which files/stages load excessive context
+- [ ] Baseline context usage measured for each workflow command at routing stage
+- [ ] Baseline context usage measured for each workflow command at execution stage
+- [ ] Context loading profiled - identify what consumes the 58% before work begins
+- [ ] Solution designed to defer context loading to appropriate stage
+- [ ] Orchestrator routing optimized to use <10% context (minimal routing info only)
+- [ ] Command execution stage loads full context only when needed
+- [ ] Language detection remains lightweight (bash grep only, no heavy context)
+- [ ] All 4 commands tested: context <15% at routing, appropriate usage at execution
+- [ ] Documentation updated with context loading best practices
+- [ ] Validation that context budget is protected throughout command lifecycle
+
+**Impact**:
+CRITICAL - Protects context windows from bloat across all workflow commands, enabling more efficient task execution and preventing early context exhaustion. Ensures context budget is preserved for actual implementation work rather than routing decisions. This is a systematic issue affecting user experience and command performance.
+
+---
+
 ### 236. Investigate and fix task standard violations in TODO.md tasks 1-9
 - **Effort**: 4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [Research Report](.opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/reports/research-001.md)
 
 **Description**:
 Tasks 1-9 in .opencode/specs/TODO.md do not follow the task standards defined in .opencode/context/common/standards/tasks.md. These tasks are missing required metadata fields including **Language**, and have non-standard formatting (using * instead of - for metadata bullets). Investigation needed to determine: (1) How these tasks were created (which command or agent), (2) Why task standards were not enforced at creation time, (3) Implement a fix to enforce task standards for all task creation mechanisms. The task standards require: Task ID from state.json, Title format "### {ID}. {Title}", Required metadata (Language is mandatory per line 110 quality checklist), Auto-populated defaults for Priority/Language/Effort/etc., Proper formatting with - bullets not *. Tasks 1-9 use format like "*Effort**: ..." and "*Status**: ..." instead of "- **Effort**: ..." and "- **Status**: ..." and are completely missing the **Language** field which is required.
@@ -41,15 +81,17 @@ Ensures all tasks in TODO.md follow consistent standards, making them easier to 
 ---
 
 ### 235. Find and fix root cause of /todo command not archiving completed tasks
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 12 hours
+- **Status**: [PLANNED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
+- **Planned**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/plans/implementation-001.md)
 
 **Description**:
 The /todo command is supposed to archive completed and abandoned tasks from .opencode/specs/TODO.md, but investigation reveals 24 [COMPLETED] tasks that were not archived despite running /todo. Root cause needs to be identified and fixed. Current state: TODO.md contains 57 total tasks with 24 having [COMPLETED] status. These should have been moved to archive/state.json and their project directories should have been moved to .opencode/specs/archive/. The command specification at .opencode/command/todo.md appears correct with proper 7-stage workflow including ScanTODO, ConfirmArchival, PrepareArchival, PrepareUpdates, AtomicUpdate, GitCommit, and ReturnSuccess. Possible causes: (1) Stage 1 ScanTODO may not be correctly identifying [COMPLETED] tasks, (2) Stage 2 ConfirmArchival may be blocking execution if threshold exceeded without user confirmation, (3) Stage 4 PrepareUpdates task block removal logic may have bugs, (4) Stage 5 AtomicUpdate two-phase commit may be failing silently, (5) Command may not have been invoked at all (user confusion), (6) Command may have returned early with "No tasks to archive" despite completed tasks existing.

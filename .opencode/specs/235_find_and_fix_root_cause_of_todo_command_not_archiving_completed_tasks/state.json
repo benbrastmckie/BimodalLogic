@@ -2,7 +2,7 @@
   "project_name": "find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks",
   "project_number": 235,
   "type": "bugfix",
-  "phase": "research_completed",
+  "phase": "planning_completed",
   "reports": [
     {
       "type": "research_report",
@@ -11,9 +11,19 @@
       "created": "2025-12-29"
     }
   ],
-  "plans": [],
+  "plans": [
+    {
+      "type": "implementation_plan",
+      "path": ".opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/plans/implementation-001.md",
+      "summary": "5-phase implementation plan (12 hours): Phase 1 - Manual TODO.md cleanup and standardization (2h), Phase 2 - Debug /todo command Stage 4/5 logic (3h), Phase 3 - Systematic status marker enforcement (3h), Phase 4 - Test /todo command with standardized markers (1.5h), Phase 5 - Verification and documentation (2.5h). Addresses both root causes: incomplete TODO.md updates and status marker inconsistency.",
+      "created": "2025-12-29",
+      "phase_count": 5,
+      "estimated_hours": 12,
+      "complexity": "medium-high"
+    }
+  ],
   "summaries": [],
-  "status": "researched",
+  "status": "planned",
   "created": "2025-12-29T05:20:00Z",
   "last_updated": "2025-12-29"
 }
