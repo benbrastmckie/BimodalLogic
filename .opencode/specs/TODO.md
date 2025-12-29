@@ -74,18 +74,20 @@ Root cause identified: Workflow defined as XML documentation rather than executa
 
 ---
 
-### 253. Improve /todo command to use git commits instead of backups and fix divider stacking
+### ✓ 253. Improve /todo command to use git commits instead of backups and fix divider stacking
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-29
 - **Researched**: 2025-12-29
 - **Planned**: 2025-12-29
+- **Completed**: 2025-12-29
 - **Priority**: High
 - **Language**: python
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/253_improve_todo_command/reports/research-001.md)
 - **Plan**: [Implementation Plan](.opencode/specs/253_improve_todo_command/plans/implementation-001.md)
+- **Implementation Summary**: [Summary](.opencode/specs/253_improve_todo_command/summaries/implementation-summary-20251229.md)
 
 **Description**:
 The /todo command currently creates backups before cleanup operations and generates a Python script from scratch each time. This approach should be replaced with a more robust workflow using git commits (one before cleanup, one after cleanup) and a dedicated, reusable Python script that aligns with the TODO.md file standards defined in .opencode/specs/TODO.md. Additionally, the script currently leaves multiple stacked `---` dividers separated by empty lines, which should be fixed to ensure only one divider appears between tasks and no dividers between headers or between headers and tasks.
@@ -103,16 +105,16 @@ The /todo command currently creates backups before cleanup operations and genera
 - Document script usage and alignment with TODO.md standards
 
 **Acceptance Criteria**:
-- [ ] Dedicated Python script created at .opencode/scripts/todo_cleanup.py
-- [ ] Script correctly parses TODO.md file format per .opencode/specs/TODO.md standards
-- [ ] Script handles dividers correctly: one divider between tasks, no dividers between headers or headers and tasks
-- [ ] No stacked `---` dividers with empty lines between them in output
-- [ ] /todo command uses git commit before cleanup operation
-- [ ] /todo command uses git commit after cleanup operation
-- [ ] /todo command no longer creates backup files
-- [ ] Script is reusable (no need to regenerate each time)
-- [ ] Script validated against .opencode/specs/TODO.md standards
-- [ ] Documentation updated with new workflow and script usage
+- [x] Dedicated Python script created at .opencode/scripts/todo_cleanup.py
+- [x] Script correctly parses TODO.md file format per .opencode/specs/TODO.md standards
+- [x] Script handles dividers correctly: one divider between tasks, no dividers between headers or headers and tasks
+- [x] No stacked `---` dividers with empty lines between them in output
+- [x] /todo command uses git commit before cleanup operation
+- [x] /todo command uses git commit after cleanup operation
+- [x] /todo command no longer creates backup files
+- [x] Script is reusable (no need to regenerate each time)
+- [x] Script validated against .opencode/specs/TODO.md standards
+- [x] Documentation updated with new workflow and script usage
 
 **Impact**: Improves /todo command reliability by using git for version control instead of backups, provides a maintainable dedicated script that aligns with TODO.md standards, and fixes formatting issues with stacked dividers for cleaner output.
 
