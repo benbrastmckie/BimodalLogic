@@ -2,7 +2,7 @@
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
   "_last_updated": "2025-12-29T05:14:32.850966Z",
-  "next_project_number": 235,
+  "next_project_number": 236,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -609,6 +609,10 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-29T05:20:00.000000Z",
+      "activity": "Created task 235: Find and fix root cause of /todo command not archiving completed tasks (TBD effort, High priority, markdown)"
+    },
     {
       "timestamp": "2025-12-29T05:14:32.850951Z",
       "activity": "Archived 5 tasks: 0 completed, 0 abandoned"

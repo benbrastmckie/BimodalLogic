@@ -133,14 +133,86 @@ grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | s
 
 ### Stage 4: InvokeAgent
 
-**Purpose**: Delegate to appropriate subagent and wait for return
+**Purpose**: Load execution context and delegate to appropriate subagent
+
+**Context Loading Pattern**:
+
+CRITICAL: Context files are loaded in Stage 4 (AFTER routing), NOT in command frontmatter.
+
+**Lightweight Routing Pattern (Stages 1-3)**:
+- Orchestrator loads minimal context during routing (Stages 1-3)
+- Command frontmatter contains NO "Context Loaded:" section
+- Routing decisions made with <10% context window usage
+- Fast routing to appropriate subagent
+
+**Full Execution Pattern (Stage 4+)**:
+- Context files loaded in Stage 4, after routing decision made
+- Full context available for subagent execution
+- Execution uses >90% of available context window
+- Protects orchestrator routing context from bloat
+
+**Context Loading in Stage 4**:
+All workflow commands load these 7 context files in Stage 4:
+```
+@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/specs/TODO.md
+@.opencode/specs/state.json
+@.opencode/context/common/system/status-markers.md
+@.opencode/context/common/standards/subagent-return-format.md
+@.opencode/context/common/workflows/subagent-delegation-guide.md
+@.opencode/context/common/system/git-commits.md
+```
+
+**Context Budget Guidance**:
+- Routing (Stages 1-3): <10% context window (lightweight, fast)
+- Execution (Stage 4+): >90% context window (full context, comprehensive)
+- Total: 100% context window efficiently allocated
+
+**Anti-Pattern** (DO NOT DO THIS):
+```markdown
+---
+name: command
+agent: orchestrator
+---
+
+Context Loaded:
+@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/specs/TODO.md
+...
+```
+This loads context during routing (Stages 1-3), consuming 60-70% of context window before delegation.
+
+**Correct Pattern**:
+```markdown
+---
+name: command
+agent: orchestrator
+---
+
+# Context loaded in Stage 4 (after routing)
+
+<stage id="4" name="InvokeAgent">
+  <context_loading>
+    Load context files after routing, before delegation:
+    @.opencode/context/common/workflows/command-lifecycle.md
+    @.opencode/specs/TODO.md
+    @.opencode/specs/state.json
+    @.opencode/context/common/system/status-markers.md
+    @.opencode/context/common/standards/subagent-return-format.md
+    @.opencode/context/common/workflows/subagent-delegation-guide.md
+    @.opencode/context/common/system/git-commits.md
+  </context_loading>
+  <!-- Follow command-lifecycle.md for agent invocation -->
+</stage>
+```
 
 **Common Steps**:
-1. Invoke target agent with delegation context
-2. Pass all required parameters (session_id, task_number, language, etc.)
-3. Set timeout from Stage 3
-4. Wait for agent return
-5. Capture return object
+1. Load context files (7 files listed above)
+2. Invoke target agent with delegation context
+3. Pass all required parameters (session_id, task_number, language, etc.)
+4. Set timeout from Stage 3
+5. Wait for agent return
+6. Capture return object
 
 **Invocation Pattern**:
 - Use subagent delegation mechanism per subagent-delegation-guide.md

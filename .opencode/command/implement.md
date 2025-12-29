@@ -8,14 +8,7 @@ language: varies
 
 **Task Input (required):** $ARGUMENTS (task number or range; e.g., `/implement 197`, `/implement 105-107`)
 
-Context Loaded:
-@.opencode/context/common/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
-@.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
+# Context loaded in Stage 4 (after routing)
 
 <context>
   <system_context>
@@ -234,7 +227,21 @@ Context Loaded:
     </special_context>
   </stage>
 
-  <!-- Stages 4-6: Follow command-lifecycle.md (no variations) -->
+  <stage id="4" name="InvokeAgent">
+    <context_loading>
+      Load context files after routing, before delegation:
+      @.opencode/context/common/workflows/command-lifecycle.md
+      @.opencode/specs/TODO.md
+      @.opencode/specs/state.json
+      @.opencode/context/common/system/status-markers.md
+      @.opencode/context/common/standards/subagent-return-format.md
+      @.opencode/context/common/workflows/subagent-delegation-guide.md
+      @.opencode/context/common/system/git-commits.md
+    </context_loading>
+    <!-- Follow command-lifecycle.md for agent invocation -->
+  </stage>
+
+  <!-- Stages 5-6: Follow command-lifecycle.md (no variations) -->
 
   <stage id="7" name="Postflight">
     <status_transition>

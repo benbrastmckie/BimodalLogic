@@ -14,6 +14,34 @@
 
 ## High Priority
 
+### 235. Find and fix root cause of /todo command not archiving completed tasks
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+The /todo command is supposed to archive completed and abandoned tasks from .opencode/specs/TODO.md, but investigation reveals 24 [COMPLETED] tasks that were not archived despite running /todo. Root cause needs to be identified and fixed. Current state: TODO.md contains 57 total tasks with 24 having [COMPLETED] status. These should have been moved to archive/state.json and their project directories should have been moved to .opencode/specs/archive/. The command specification at .opencode/command/todo.md appears correct with proper 7-stage workflow including ScanTODO, ConfirmArchival, PrepareArchival, PrepareUpdates, AtomicUpdate, GitCommit, and ReturnSuccess. Possible causes: (1) Stage 1 ScanTODO may not be correctly identifying [COMPLETED] tasks, (2) Stage 2 ConfirmArchival may be blocking execution if threshold exceeded without user confirmation, (3) Stage 4 PrepareUpdates task block removal logic may have bugs, (4) Stage 5 AtomicUpdate two-phase commit may be failing silently, (5) Command may not have been invoked at all (user confusion), (6) Command may have returned early with "No tasks to archive" despite completed tasks existing.
+
+**Acceptance Criteria**:
+- [ ] Root cause identified through investigation
+- [ ] Bug fix implemented if command has defect
+- [ ] All 24 [COMPLETED] tasks successfully archived
+- [ ] Project directories moved to .opencode/specs/archive/
+- [ ] archive/state.json updated with archived task entries
+- [ ] state.json completed_projects list updated
+- [ ] .opencode/specs/TODO.md contains only active tasks ([NOT STARTED], [IN PROGRESS], [RESEARCHED], [PLANNED], [BLOCKED])
+- [ ] Task numbering preserved (no renumbering)
+- [ ] Git commit created for archival
+- [ ] /todo command executes successfully on retry
+
+**Impact**:
+Critical for maintaining clean TODO.md and ensuring completed tasks are properly archived with their artifacts. Currently 24 completed tasks clutter the active task list making it difficult to focus on work in progress.
+
+---
+
 ### 234. Systematically improve all commands to protect context window and eliminate confirmation prompts ✅
 - **Effort**: 8 hours
 - **Status**: [PLANNED]
