@@ -175,16 +175,23 @@ Maintains repository consistency and professional standards. Emojis can cause pa
 
 ### 236. Investigate and fix task standard violations in TODO.md tasks 1-9
 - **Effort**: 4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-29
 - **Researched**: 2025-12-29
 - **Planned**: 2025-12-29
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/reports/research-001.md)
 - **Plan**: [Implementation Plan](.opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/plans/implementation-001.md)
+- **Implementation Summary**: [Summary](.opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/summaries/implementation-summary-20251228.md)
+- **Artifacts**:
+  - [TODO.md](.opencode/specs/TODO.md) - Fixed tasks 1-9 with Language field and bullet formatting
+  - [task.md](.opencode/command/task.md) - Enhanced with pre-flight validation
+  - [review.md](.opencode/command/review.md) - Enhanced with post-flight validation
+  - [tasks.md](.opencode/context/common/standards/tasks.md) - Added troubleshooting documentation
 
 **Description**:
 Tasks 1-9 in .opencode/specs/TODO.md do not follow the task standards defined in .opencode/context/common/standards/tasks.md. These tasks are missing required metadata fields including **Language**, and have non-standard formatting (using * instead of - for metadata bullets). Investigation needed to determine: (1) How these tasks were created (which command or agent), (2) Why task standards were not enforced at creation time, (3) Implement a fix to enforce task standards for all task creation mechanisms. The task standards require: Task ID from state.json, Title format "### {ID}. {Title}", Required metadata (Language is mandatory per line 110 quality checklist), Auto-populated defaults for Priority/Language/Effort/etc., Proper formatting with - bullets not *. Tasks 1-9 use format like "*Effort**: ..." and "*Status**: ..." instead of "- **Effort**: ..." and "- **Status**: ..." and are completely missing the **Language** field which is required.
