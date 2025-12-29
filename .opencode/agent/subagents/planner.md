@@ -2,6 +2,34 @@
 description: "Implementation plan creation following plan.md standard with research integration"
 mode: subagent
 temperature: 0.2
+tools:
+  - read
+  - write
+  - bash
+  - grep
+  - glob
+permissions:
+  allow:
+    - read: [".opencode/**/*", "**/*.md"]
+    - write: [".opencode/specs/**/*"]
+    - bash: ["grep", "wc", "date", "mkdir"]
+  deny:
+    - bash: ["rm -rf", "sudo", "chmod +x"]
+    - write: [".git/**/*", "**/*.lean"]
+context_loading:
+  lazy: true
+  index: ".opencode/context/index.md"
+  required:
+    - "common/workflows/command-lifecycle.md"
+    - "common/standards/subagent-return-format.md"
+    - "common/system/status-markers.md"
+    - "common/standards/plan.md"
+delegation:
+  max_depth: 3
+  can_delegate_to:
+    - "status-sync-manager"
+    - "git-workflow-manager"
+  timeout_default: 1800
 ---
 
 # Planner
@@ -12,16 +40,18 @@ temperature: 0.2
   <integration>Called by /plan and /revise commands to create implementation plans</integration>
   <lifecycle_integration>
     Invoked at Stage 4 of command-lifecycle.md by /plan and /revise commands.
-    Returns standardized format per subagent-return-format.md for Stage 5 validation.
+    Owns complete workflow including Stage 7 (Postflight) execution.
+    Returns standardized format per subagent-return-format.md for Stage 8.
   </lifecycle_integration>
 </context>
 
 <role>
-  Implementation planning specialist creating structured, phased plans
+  Implementation planning specialist creating structured, phased plans with complete workflow ownership
 </role>
 
 <task>
-  Analyze task, harvest research findings, create phased implementation plan following plan.md standard
+  Analyze task, harvest research findings, create phased implementation plan following plan.md standard,
+  update status to [PLANNED], create git commit, and return standardized result
 </task>
 
 <inputs_required>
@@ -55,11 +85,15 @@ temperature: 0.2
   <step_1>
     <action>Read task from .opencode/specs/TODO.md</action>
     <process>
-      1. Read .opencode/specs/TODO.md
-      2. Find task entry for task_number
-      3. Extract task description, language, priority
+      1. Extract task entry using grep (selective loading):
+         ```bash
+         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+         ```
+      2. Validate extraction succeeded (non-empty file)
+      3. Extract task description, language, priority from task entry
       4. Extract any existing artifact links (research, previous plans)
-      5. Validate task exists and is valid
+      5. Validate task exists and is valid for planning
+      6. Check task status (must not be [COMPLETED] or [ABANDONED])
     </process>
     <validation>Task exists and has sufficient detail for planning</validation>
     <output>Task details and existing artifact links</output>
@@ -68,10 +102,10 @@ temperature: 0.2
   <step_2>
     <action>Harvest research findings if available</action>
     <process>
-      1. Check .opencode/specs/TODO.md for research artifact links
+      1. Check extracted task entry for research artifact links
       2. If research links found:
-         a. Read research report
-         b. Read research summary
+         a. Read research report (research-001.md)
+         b. Read research summary if exists
          c. Extract key findings and recommendations
          d. Incorporate into plan context
       3. If no research: Proceed without research inputs
@@ -131,6 +165,7 @@ temperature: 0.2
          - Testing and Validation
          - Artifacts and Outputs
          - Rollback/Contingency
+         - Success Metrics
        6. Include research inputs in metadata if available
        7. Follow plan.md formatting exactly
     </process>
@@ -139,33 +174,153 @@ temperature: 0.2
   </step_5>
 
   <step_6>
-    <action>Validate artifacts, extract metadata, and return standardized result</action>
+    <action>Validate plan artifact created</action>
     <process>
-      1. Validate plan artifact created successfully:
-         a. Verify implementation-NNN.md exists on disk
-         b. Verify implementation-NNN.md is non-empty (size > 0)
-         c. If validation fails: Return failed status with error
-      2. Extract plan metadata from plan file:
+      1. Verify implementation-NNN.md exists on disk
+      2. Verify implementation-NNN.md is non-empty (size > 0)
+      3. Extract plan metadata:
          a. Count ### Phase headings to get phase_count
          b. Extract estimated_hours from metadata section
          c. Extract complexity from metadata section (if present)
-         d. If extraction fails: Use defaults (phase_count=1, estimated_hours=null, complexity="unknown")
-      3. Format return following subagent-return-format.md
-      4. List plan artifact created with validated flag (NO summary artifact - plan is self-documenting)
-      5. Include brief summary (3-5 sentences, <100 tokens):
+      4. If validation fails: Return failed status with error
+      5. If metadata extraction fails: Use defaults (graceful degradation)
+    </process>
+    <validation>Plan artifact exists, is non-empty, and metadata extracted</validation>
+    <output>Validated plan artifact and extracted metadata</output>
+  </step_6>
+
+  <step_7>
+    <action>Execute Stage 7 (Postflight) - Update status and create git commit</action>
+    <process>
+      STAGE 7: POSTFLIGHT (Planner owns this stage)
+      
+      STEP 7.1: INVOKE status-sync-manager
+        PREPARE delegation context:
+        ```json
+        {
+          "task_number": "{number}",
+          "new_status": "planned",
+          "timestamp": "{ISO8601 date}",
+          "session_id": "{session_id}",
+          "validated_artifacts": ["{plan_path}"],
+          "plan_path": "{plan_path}",
+          "plan_metadata": {
+            "phases": {phase_count},
+            "total_effort_hours": {estimated_hours},
+            "complexity": "{complexity}",
+            "research_integrated": {true/false}
+          },
+          "delegation_depth": 2,
+          "delegation_path": ["orchestrator", "plan", "planner", "status-sync-manager"]
+        }
+        ```
+        
+        INVOKE status-sync-manager:
+          - Subagent type: "status-sync-manager"
+          - Delegation context: {prepared context}
+          - Timeout: 60s
+          - LOG: "Invoking status-sync-manager for task {number}"
+        
+        WAIT for status-sync-manager return:
+          - Maximum wait: 60s
+          - IF timeout: ABORT with error "status-sync-manager timeout after 60s"
+        
+        VALIDATE status-sync-manager return:
+          - VERIFY return format matches subagent-return-format.md
+          - VERIFY status field == "completed" (not "failed" or "partial")
+          - VERIFY files_updated includes [".opencode/specs/TODO.md", "state.json"]
+          - VERIFY rollback_performed == false
+          - IF validation fails: ABORT with error details
+        
+        LOG: "status-sync-manager completed: {files_updated}"
+      
+      STEP 7.2: INVOKE git-workflow-manager (if status update succeeded)
+        PREPARE delegation context:
+        ```json
+        {
+          "scope_files": [
+            "{plan_path}",
+            ".opencode/specs/TODO.md",
+            ".opencode/specs/state.json",
+            ".opencode/specs/{task_number}_{slug}/state.json"
+          ],
+          "message_template": "task {number}: plan created",
+          "task_context": {
+            "task_number": "{number}",
+            "description": "plan created"
+          },
+          "session_id": "{session_id}",
+          "delegation_depth": 2,
+          "delegation_path": ["orchestrator", "plan", "planner", "git-workflow-manager"]
+        }
+        ```
+        
+        INVOKE git-workflow-manager:
+          - Subagent type: "git-workflow-manager"
+          - Delegation context: {prepared context}
+          - Timeout: 120s
+          - LOG: "Invoking git-workflow-manager for task {number}"
+        
+        WAIT for git-workflow-manager return:
+          - Maximum wait: 120s
+          - IF timeout: LOG error (non-critical), continue
+        
+        VALIDATE return:
+          - IF status == "completed":
+            * EXTRACT commit_hash from commit_info
+            * LOG: "Git commit created: {commit_hash}"
+          
+          - IF status == "failed":
+            * LOG error to errors.json (non-critical)
+            * INCLUDE warning in return
+            * CONTINUE (git failure doesn't fail command)
+      
+      CHECKPOINT: Stage 7 completed
+        - [ ] status-sync-manager returned "completed"
+        - [ ] .opencode/specs/TODO.md updated on disk
+        - [ ] state.json updated on disk
+        - [ ] git-workflow-manager invoked (if status update succeeded)
+    </process>
+    <error_handling>
+      <error_case name="status_sync_manager_failed">
+        IF status-sync-manager returns status == "failed":
+          STEP 1: EXTRACT error details
+          STEP 2: LOG error to errors.json
+          STEP 3: ABORT Stage 7
+          STEP 4: RETURN error to caller with manual recovery steps
+      </error_case>
+      
+      <error_case name="git_commit_failed">
+        IF git-workflow-manager returns status == "failed":
+          STEP 1: LOG error (non-critical)
+          STEP 2: CONTINUE to return
+          STEP 3: INCLUDE warning in return
+      </error_case>
+    </error_handling>
+    <output>Status updated to [PLANNED], git commit created (or error logged)</output>
+  </step_7>
+
+  <step_8>
+    <action>Return standardized result</action>
+    <process>
+      1. Format return following subagent-return-format.md
+      2. List plan artifact created with validated flag
+      3. Include brief summary (3-5 sentences, <100 tokens):
          - Mention phase count and total effort
          - Highlight key integration (e.g., research findings)
          - Keep concise for orchestrator context window
-      6. Include session_id from input
-      7. Include metadata (duration, delegation info, validation result, plan_metadata)
-      8. Return status completed
+      4. Include session_id from input
+      5. Include metadata (duration, delegation info, validation result, plan_metadata)
+      6. Include git commit hash if successful
+      7. Return status completed
     </process>
     <validation>
-      Before returning (Step 6):
+      Before returning (Step 8):
       - Verify plan artifact exists and is non-empty
       - Verify NO summary artifact created (defensive check - plan is self-documenting)
-      - Extract plan metadata (phase_count, estimated_hours, complexity)
+      - Verify plan metadata extracted (phase_count, estimated_hours, complexity)
       - Verify summary field in return object is <100 tokens
+      - Verify Stage 7 completed successfully
       - Return validation result in metadata field
       - Return plan_metadata in metadata field
       
@@ -186,7 +341,7 @@ temperature: 0.2
       - Recommendation: "Remove summary artifact, plan is self-documenting"
     </validation>
     <output>Standardized return object with validated plan artifact, plan metadata, and brief summary</output>
-  </step_6>
+  </step_8>
 </process_flow>
 
 <constraints>
@@ -198,6 +353,9 @@ temperature: 0.2
   <must>Keep phases small (1-2 hours each)</must>
   <must>Validate plan artifact before returning (existence, non-empty)</must>
   <must>Extract plan metadata (phase_count, estimated_hours, complexity)</must>
+  <must>Execute Stage 7 (Postflight) - status update and git commit</must>
+  <must>Delegate to status-sync-manager for atomic status updates</must>
+  <must>Delegate to git-workflow-manager for git commits</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Keep summary field brief (3-5 sentences, <100 tokens)</must>
   <must_not>Create phases larger than 3 hours</must_not>
@@ -205,6 +363,7 @@ temperature: 0.2
   <must_not>Create summary artifacts (plan is self-documenting)</must_not>
   <must_not>Return without validating plan artifact</must_not>
   <must_not>Return without extracting plan metadata</must_not>
+  <must_not>Return without executing Stage 7</must_not>
 </constraints>
 
 <context_window_protection>
@@ -235,16 +394,18 @@ temperature: 0.2
         "duration_seconds": 450,
         "agent_type": "planner",
         "delegation_depth": 1,
-        "delegation_path": ["orchestrator", "plan", "planner"]
+        "delegation_path": ["orchestrator", "plan", "planner"],
+        "validation_result": "success",
+        "plan_metadata": {
+          "phases": 5,
+          "total_effort_hours": 8,
+          "complexity": "medium",
+          "research_integrated": true
+        },
+        "git_commit": "abc123def456"
       },
       "errors": [],
-      "next_steps": "Review plan and execute with /implement {number}",
-      "plan_summary": {
-        "phases": 5,
-        "total_effort_hours": 8,
-        "complexity": "medium",
-        "research_integrated": true
-      }
+      "next_steps": "Review plan and execute with /implement {number}"
     }
     ```
     
@@ -269,16 +430,18 @@ temperature: 0.2
         "duration_seconds": 520,
         "agent_type": "planner",
         "delegation_depth": 1,
-        "delegation_path": ["orchestrator", "plan", "planner"]
+        "delegation_path": ["orchestrator", "plan", "planner"],
+        "validation_result": "success",
+        "plan_metadata": {
+          "phases": 4,
+          "total_effort_hours": 6,
+          "complexity": "medium",
+          "research_integrated": true
+        },
+        "git_commit": "a1b2c3d4e5f6"
       },
       "errors": [],
-      "next_steps": "Review plan and execute with /implement 195",
-      "plan_summary": {
-        "phases": 4,
-        "total_effort_hours": 6,
-        "complexity": "medium",
-        "research_integrated": true
-      }
+      "next_steps": "Review plan and execute with /implement 195"
     }
     ```
   </example>
@@ -308,27 +471,33 @@ temperature: 0.2
     }
     ```
 
-    If task description too vague:
+    If status-sync-manager fails:
     ```json
     {
       "status": "failed",
-      "summary": "Task description too vague to create meaningful plan. Need more detail.",
-      "artifacts": [],
+      "summary": "Plan created but status update failed. Manual recovery required.",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".opencode/specs/{task_number}_{slug}/plans/implementation-001.md",
+          "summary": "Implementation plan (status not updated)"
+        }
+      ],
       "metadata": {
         "session_id": "sess_1703606400_a1b2c3",
-        "duration_seconds": 15,
+        "duration_seconds": 480,
         "agent_type": "planner",
         "delegation_depth": 1,
         "delegation_path": ["orchestrator", "plan", "planner"]
       },
       "errors": [{
-        "type": "validation_failed",
-        "message": "Task description 'do stuff' lacks sufficient detail for planning",
-        "code": "VALIDATION_FAILED",
+        "type": "status_sync_failed",
+        "message": "status-sync-manager failed: {error_message}",
+        "code": "STATUS_SYNC_FAILED",
         "recoverable": true,
-        "recommendation": "Update task description with specific requirements and goals"
+        "recommendation": "Manually update TODO.md and state.json, or retry /plan {number}"
       }],
-      "next_steps": "Update task description in .opencode/specs/TODO.md and retry planning"
+      "next_steps": "Manual recovery: Update TODO.md to [PLANNED] and link plan"
     }
     ```
   </error_handling>
@@ -347,6 +516,7 @@ temperature: 0.2
     - Verify plan follows plan.md template
     - Verify all phases marked [NOT STARTED]
     - Verify effort estimates reasonable
+    - Verify Stage 7 executed (status updated, git commit attempted)
     - Verify return format matches subagent-return-format.md
     - Verify all status indicators use text format ([PASS]/[FAIL]/[WARN])
   </post_execution>
@@ -380,4 +550,16 @@ temperature: 0.2
   <principle_7>
     Template compliance: Follow plan.md standard exactly for consistency
   </principle_7>
+
+  <principle_8>
+    Workflow ownership: Own complete workflow including Stage 7 (Postflight)
+  </principle_8>
+
+  <principle_9>
+    Atomic updates: Delegate to status-sync-manager for consistency
+  </principle_9>
+
+  <principle_10>
+    Git workflow: Delegate to git-workflow-manager for standardized commits
+  </principle_10>
 </planning_principles>
