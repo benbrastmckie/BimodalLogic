@@ -1,18 +1,177 @@
 # TODO
 
-**Last Updated:** 2025-12-29T06:38:08Z
+**Last Updated:** 2025-12-28T23:24:32Z
 
 ## Overview
 
-- **Total Tasks:** 55
+- **Total Tasks:** 59
 - **Completed:** 8
-- **High Priority:** 8
+- **High Priority:** 12
 - **Medium Priority:** 9
 - **Low Priority:** 10
 
 ---
 
 ## High Priority
+
+### 244. Phase 1: Context Index and /research Frontmatter Prototype (Task 240 OpenAgents Migration)
+- **Effort**: 12-16 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Task 240 (research completed)
+
+**Description**:
+Implement Phase 1 of OpenAgents architectural migration: Create lazy-loading context index, migrate /research command to frontmatter delegation pattern, and validate improvements. This phase establishes the architectural patterns that will be applied to all commands in Phase 2. Goal: Reduce context window usage from 60-70% to under 15% during routing, reduce research.md from 677 lines to under 200 lines, achieve 100% Stage 7 execution reliability.
+
+**Tasks**:
+- Create .opencode/context/index.md with lazy-loading quick map (map 8-10 critical context files)
+- Add frontmatter to research.md with agent field pointing to researcher.md
+- Extract workflow stages (Stages 4-8) from research.md to researcher.md
+- Reduce research.md to 150-200 lines (frontmatter + description + usage only)
+- Update researcher.md to own full workflow including Stage 7 status updates
+- Add lazy-loading context instructions to researcher.md
+- Create .tmp/sessions/ directory structure
+- Test /research command with context window measurement (target: under 15%)
+- Validate Stage 7 execution with 20 consecutive /research runs (target: 100% success)
+- Create Phase 1 validation report with metrics
+
+**Acceptance Criteria**:
+- [ ] Context window usage during /research routing: under 15% (down from 60-70%)
+- [ ] research.md file size: under 200 lines (down from 677 lines)
+- [ ] Stage 7 execution rate: 100% in 20 consecutive runs
+- [ ] researcher.md owns complete workflow including status updates
+- [ ] index.md provides quick map to 8-10 critical context files
+- [ ] .tmp/sessions/ temporary context created and cleaned up correctly
+- [ ] Phase 1 validation report documents all metrics
+
+**Impact**: Validates OpenAgents patterns before full migration, delivers immediate value (context reduction, /research Stage 7 fix). Can rollback in 1-2 hours if patterns fail.
+
+### 245. Phase 2: Core Architecture - Migrate All Commands and Simplify Orchestrator (Task 240 OpenAgents Migration)
+- **Effort**: 20-30 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Task 244 (Phase 1 completed and validated)
+
+**Description**:
+Implement Phase 2 of OpenAgents architectural migration: Apply validated patterns from Phase 1 to all workflow commands (/plan, /implement, /revise) and simplify orchestrator to router pattern. This is the core architectural transformation that eliminates Stage 7 failures system-wide. Goal: All 4 command files under 200 lines, orchestrator under 100 lines (from 1,038), context window usage under 10% during routing, 100% Stage 7 execution reliability across all commands.
+
+**Tasks**:
+- Migrate /plan command to frontmatter delegation (extract to planner.md)
+- Migrate /implement command to frontmatter delegation (extract to implementer.md)
+- Migrate /revise command to frontmatter delegation (extract to task-executor.md)
+- Simplify orchestrator.md to router pattern (reduce from 1,038 to under 100 lines)
+- Remove redundant context loading from orchestrator
+- Preserve delegation registry, cycle detection, timeout enforcement
+- Add YAML frontmatter to all 6 subagents
+- Test all 4 commands with context window measurement (target: under 10%)
+- Validate Stage 7 execution 100% reliable (20 runs each command, 80 total)
+- Create Phase 2 validation report with metrics
+
+**Acceptance Criteria**:
+- [ ] All 4 command files under 200 lines each (total reduction from 2,848 to under 800 lines)
+- [ ] All 4 agents own complete workflows including Stage 7
+- [ ] Orchestrator under 100 lines (reduction from 1,038 lines)
+- [ ] Context window usage during routing: under 10% for all commands
+- [ ] Stage 7 execution rate: 100% in 80 total test runs (20 per command)
+- [ ] Delegation registry, cycle detection, timeout enforcement functional
+- [ ] All agents have YAML frontmatter with tools/permissions
+- [ ] Phase 2 validation report documents all metrics
+
+**Impact**: Eliminates Stage 7 failures system-wide, achieves 60-70% context window reduction, dramatically simplifies orchestrator and commands. This is the breakthrough architectural fix.
+
+### 246. Phase 3: Consolidation - Merge Context Files and Remove Obsolete (Task 240 OpenAgents Migration)
+- **Effort**: 16-20 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Task 245 (Phase 2 completed and validated)
+
+**Description**:
+Implement Phase 3 of OpenAgents architectural migration: Consolidate redundant context files following OpenAgents organization patterns. With workflows now owned by agents (not commands), command-lifecycle.md becomes obsolete. Merge related files, reorganize directory structure, eliminate duplication. Goal: Reduce total context system from 8,093 lines to 2,000-2,500 lines (70% reduction) while maintaining all functionality.
+
+**Tasks**:
+- Merge subagent-return-format.md and subagent-delegation-guide.md into delegation.md (1,048 → 500 lines)
+- Remove command-lifecycle.md (1,138 lines eliminated - workflow now in agents)
+- Merge status-markers.md and state-schema.md into state-management.md (1,088 → 600 lines)
+- Review and consolidate artifact-management.md, tasks.md, documentation.md
+- Reorganize context directory to core/standards/, core/workflows/, core/specs/, core/system/
+- Update index.md to reflect consolidated structure
+- Update all agent and command files to reference consolidated files
+- Remove obsolete context files
+- Test all 4 workflow commands after consolidation
+- Validate context window usage still under 10%
+- Measure total context system size (target: 2,000-2,500 lines)
+- Create Phase 3 validation report with metrics
+
+**Acceptance Criteria**:
+- [ ] Total context system: 2,000-2,500 lines (70% reduction from 8,093 lines)
+- [ ] command-lifecycle.md removed (1,138 lines eliminated)
+- [ ] Delegation guides consolidated to single delegation.md (~500 lines)
+- [ ] State management consolidated to single state-management.md (~600 lines)
+- [ ] Context directory reorganized to OpenAgents pattern
+- [ ] index.md updated to reflect consolidated structure
+- [ ] All commands and agents reference correct consolidated files
+- [ ] Context window usage still under 10% during routing
+- [ ] All 4 workflow commands functional after consolidation
+- [ ] Phase 3 validation report documents all metrics
+
+**Impact**: Massive context system simplification (70% reduction), eliminates duplication, establishes clean architectural foundation. Improved maintainability through single source of truth.
+
+### 247. Phase 4: Testing and Documentation (Task 240 OpenAgents Migration)
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Task 246 (Phase 3 completed and validated)
+
+**Description**:
+Implement Phase 4 of OpenAgents architectural migration: Comprehensive testing and documentation of all architectural changes. Run extensive validation suite, document patterns for future development, create migration guides. Goal: Prove 100% Stage 7 reliability across 80 test runs, document all improvements, establish standards for future command/agent development.
+
+**Tasks**:
+- Run comprehensive test suite: 20 runs each command (80 total runs)
+- Measure and document context window usage for each command (routing and execution)
+- Validate Stage 7 execution rate: 100% across all 80 test runs
+- Test delegation depth limits and cycle detection
+- Test session-based temporary context creation and cleanup
+- Test lazy-loading context index with various agent combinations
+- Validate orchestrator routing with all command types
+- Test error handling and rollback scenarios
+- Create architectural documentation explaining OpenAgents patterns
+- Update .opencode/README.md with architecture overview
+- Document frontmatter delegation pattern in command development guide
+- Document lazy-loading context index in context development guide
+- Document session-based temporary context in delegation guide
+- Create migration guide for future command/agent development
+- Update CONTRIBUTING.md with new patterns
+- Create before/after metrics summary
+- Create Phase 4 validation report and final implementation summary
+
+**Acceptance Criteria**:
+- [ ] 80 test runs completed with 100% Stage 7 execution rate
+- [ ] Context window usage documented: under 10% for all commands
+- [ ] Command file sizes documented: all under 200 lines
+- [ ] Orchestrator size documented: under 100 lines
+- [ ] Context system size documented: 2,000-2,500 lines (70% reduction)
+- [ ] Architectural documentation complete and reviewed
+- [ ] Migration guide created for future development
+- [ ] Before/after metrics summary created
+- [ ] Final implementation summary created with all achievements
+- [ ] Phase 4 validation report documents all results
+
+**Impact**: Provides proof of architectural success, establishes documentation for future development, creates knowledge base for maintaining OpenAgents patterns. Completes the migration.
+
+**Overall Migration Success Metrics** (All 4 Phases Combined):
+- Context window usage: under 10% during routing (down from 60-70%)
+- Command files: under 200 lines average (down from 712 lines average)
+- Orchestrator: under 100 lines (down from 1,038 lines)
+- Context system: 2,000-2,500 lines (down from 8,093 lines, 70% reduction)
+- Stage 7 execution: 100% reliable (up from approximately 60-70%)
 
 ### 243. Implement Phase 4 from task 237 implementation plan (aggressive command file deduplication)
 - **Effort**: 24-30 hours (expanded to include context file improvements from task 240 research)
@@ -50,45 +209,6 @@ Implement Phase 4 from task 237's implementation plan: Remove duplicated lifecyc
 - [ ] Code duplication reduced from 2,600 lines to 0 lines
 - [ ] Single source of truth achieved (command-lifecycle.md)
 - [ ] Maintainability improved through reduced duplication
-
-### 242. Implement Phase 2 from task 237 implementation plan (split command files into routing and execution)
-- **Effort**: 8-12 hours
-- **Status**: [ABANDONED]
-- **Started**: 2025-12-28
-- **Researched**: 2025-12-28
-- **Completed**: 2025-12-29
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: Task 237 Phase 1 (completed)
-- **Research**: [Research Report](.opencode/specs/242_phase2_split_command_files/reports/research-001.md)
-- **Plan**: [Implementation Plan](.opencode/specs/242_phase2_split_command_files/plans/implementation-001.md)
-
-**Description**:
-Implement Phase 2 from task 237's implementation plan: Split workflow command files (research.md, plan.md, implement.md, revise.md) into lightweight routing files (3-4KB for Stages 1-3) and comprehensive execution files (15-25KB for Stages 4-8). This phase was deferred during task 237 implementation due to requiring orchestrator architectural changes to support loading lightweight routing files during Stages 1-3 and delegating to execution files in Stage 4. Phase 2 would provide 72-104KB context savings (36-52% reduction) if implemented. Note: Phase 2 is marked DEFERRED in task 237 plan due to architectural complexity - this task should evaluate whether the architectural changes are warranted or if alternative approaches exist.
-
-**Research Questions**:
-1. Can orchestrator be refactored to support split file loading without breaking existing workflows?
-2. What architectural changes are required to support routing vs execution file separation?
-3. Are there alternative approaches that achieve similar context savings without file splitting?
-4. Is the 72-104KB savings worth the architectural complexity?
-
-**Research Findings** (2025-12-28):
-- Phase 2 requires orchestrator architectural changes with MEDIUM-HIGH risk for 72-104KB savings
-- Context transition (unloading routing file) is NOT feasible without major refactoring
-- Phase 3 (selective TODO.md loading) achieved 40KB savings with ZERO architectural risk (COMPLETED)
-- Phase 4 (aggressive deduplication) offers 56-72KB savings with LOWER risk than Phase 2
-- **Recommendation: ABANDON Phase 2, pursue Phase 4 instead** (Phase 3 + Phase 4 = 96-112KB total savings, lower risk)
-
-**Acceptance Criteria**:
-- [x] Architectural feasibility assessed (routing vs execution file loading)
-- [ ] If feasible: Orchestrator refactored to support split file loading
-- [ ] If feasible: All 4 commands split into routing (3-4KB) and execution (15-25KB) files
-- [ ] If feasible: Routing context reduced by 72-104KB (36-52%)
-- [x] If not feasible: Alternative approaches documented and evaluated
-- [ ] All commands function identically after changes
-- [ ] No functional regressions
-- [ ] Backward compatibility maintained
 
 ### 240. Systematically investigate and fix persistent workflow command Stage 7 (Postflight) failures causing incomplete status updates
 - **Effort**: 56-78 hours (revised from comparative analysis)
@@ -147,229 +267,11 @@ CRITICAL BLOCKER - Without reliable Stage 7 execution, the entire workflow syste
 
 ---
 
-### 237. Investigate and systematically fix context window bloat in workflow commands
-- **Effort**: 28-42 hours (revised from research)
-- **Status**: [SUPERSEDED]
-- **Started**: 2025-12-29
-- **Researched**: 2025-12-29
-- **Planned**: 2025-12-29
-- **Implementing**: 2025-12-28
-- **Superseded**: 2025-12-29
-- **Phases Completed**: 2 of 4 (Phase 1, Phase 3)
-- **Priority**: Critical
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Superseded By**: Task 240 comparative analysis identified architectural solution
-- **Research**: [Research Report](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/reports/research-001.md)
-- **Architectural Analysis**: [Task 240 Comparative Research](.opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md)
-- **Plan**: [Implementation Plan](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md)
-- **Implementation Summary**: [Phase 1-3 Summary](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/summaries/implementation-summary-20251228-phase3.md)
-- **Final Summary**: [Implementation Summary](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/summaries/implementation-summary-final.md)
-- **Phases Deferred**: 1 of 4 (Phase 2)
-- **Phase 1 Status**: [COMPLETED] - Eliminated 56KB orchestrator context duplication (28% reduction)
-- **Phase 2 Status**: [DEFERRED] - Requires orchestrator architectural changes, deferred to future work
-- **Phase 3 Status**: [COMPLETED] - Selective TODO.md loading implemented (40KB savings, 91% reduction)
-- **Phase 4 Status**: [NOT STARTED] - Aggressive command deduplication (optional)
-- **Total Savings**: 96KB (48% reduction from baseline)
-- **Artifacts**:
-  - [research.md](.opencode/command/research.md) - Task extraction logic implemented
-  - [plan.md](.opencode/command/plan.md) - Task extraction logic implemented
-  - [implement.md](.opencode/command/implement.md) - Task extraction logic implemented
-  - [revise.md](.opencode/command/revise.md) - Task extraction logic implemented
-
-**Description**:
-When running workflow commands (/research, /plan, /revise, /implement), the context window jumps to approximately 58% immediately, before any actual work begins. This indicates that context is being loaded too early and too broadly in the orchestrator or command routing stage. The root cause needs to be identified and a systematic solution implemented to protect the context window of both the primary agent (orchestrator) and subagents by loading exactly the context that is needed for each job and nothing more.
-
-**Research Questions**:
-1. At what stage is context being loaded (orchestrator routing vs command execution)?
-2. Which context files are being loaded and how large are they?
-3. Is context being loaded speculatively before knowing which command will execute?
-4. Are there duplicated context loads across agent boundaries?
-5. What is the minimal context needed for routing decisions vs execution?
-6. How can we defer context loading to the appropriate stage?
-
-**Research Findings**:
-Root cause identified: Commands load 78-86KB during routing (39-43% of budget) due to premature command file loading, context duplication, and large TODO.md. Recommended 4-phase fix plan reduces routing context to <6% through file splitting, deduplication, and selective loading. Phase 1 quick win: Eliminate orchestrator duplication (2-4 hours, 56KB savings, LOW risk).
-
-**Architectural Analysis** (Task 240):
-Comparative analysis of OpenAgents and ProofChecker systems reveals systematic architectural improvements that address context bloat: (1) Frontmatter-based delegation pattern eliminates workflow duplication in commands (commands average 262 lines vs 712 lines, 63% reduction), (2) Lazy-loading context index enables on-demand loading (2,207 total context lines vs 8,093 lines, 73% reduction), (3) Session-based temporary context (.tmp/sessions/) prevents upfront loading of all context, (4) Agent-driven architecture where commands define "what" and agents define "how" eliminates 1,138-line command-lifecycle.md. Recommended: Adopt OpenAgents patterns for systematic 60-70% context reduction rather than incremental Phase 2-4 fixes.
-
-**Acceptance Criteria**:
-- [x] Root cause identified - which files/stages load excessive context
-- [x] Baseline context usage measured for each workflow command at routing stage
-- [x] Baseline context usage measured for each workflow command at execution stage
-- [x] Context loading profiled - identify what consumes the 58% before work begins
-- [x] Solution designed to defer context loading to appropriate stage
-- [x] **Phase 1 Complete**: Orchestrator context duplication eliminated (56KB / 28% reduction)
-- [ ] **Phase 2 Deferred**: Command files split into routing and execution (requires orchestrator refactor)
-- [x] **Phase 3 Complete**: Selective TODO.md loading implemented (40KB / 91% reduction)
-- [ ] **Phase 4 Not Started**: Aggressive command deduplication (56-72KB additional reduction, optional)
-- [ ] Orchestrator routing optimized to use <10% context (Phase 1: 28% reduction achieved, need Phases 2-4 for <10% target)
-- [ ] Command execution stage loads full context only when needed
-- [ ] Language detection remains lightweight (bash grep only, no heavy context)
-- [ ] All 4 commands tested: context <15% at routing, appropriate usage at execution
-- [ ] Documentation updated with context loading best practices
-- [ ] Validation that context budget is protected throughout command lifecycle
-
-**Impact**:
-CRITICAL - Protects context windows from bloat across all workflow commands, enabling more efficient task execution and preventing early context exhaustion. Ensures context budget is preserved for actual implementation work rather than routing decisions. This is a systematic issue affecting user experience and command performance.
-
-**Status**: [SUPERSEDED] by Task 240 architectural analysis. Phase 1 (orchestrator deduplication) and Phase 3 (selective TODO loading) achieved 48% reduction (96KB savings). Phase 2 (command file splitting) requires orchestrator refactor but Task 240 comparative analysis recommends adopting OpenAgents frontmatter delegation pattern instead, which eliminates need for split files and achieves 60-70% systematic reduction through architectural alignment.
+---
 
 ---
 
-### 238. Find and eliminate all emojis from .opencode system to maintain NO EMOJI standard
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-29
-- **Researched**: 2025-12-29
-- **Planned**: 2025-12-29
-- **Completed**: 2025-12-28
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/238_find_and_eliminate_all_emojis/reports/research-001.md)
-- **Plan**: [Implementation Plan](.opencode/specs/238_find_and_eliminate_all_emojis/plans/implementation-001.md)
-- **Implementation Summary**: [Summary](.opencode/specs/238_find_and_eliminate_all_emojis/summaries/implementation-summary-20251228.md)
-- **Artifacts**:
-  - [researcher.md](.opencode/agent/subagents/researcher.md) - Enhanced with NO EMOJI validation
-  - [planner.md](.opencode/agent/subagents/planner.md) - Enhanced with NO EMOJI validation
-  - [implementer.md](.opencode/agent/subagents/implementer.md) - Enhanced with NO EMOJI validation
-  - [task-executor.md](.opencode/agent/subagents/task-executor.md) - Enhanced with NO EMOJI validation
-  - [lean-research-agent.md](.opencode/agent/subagents/lean-research-agent.md) - Enhanced with NO EMOJI validation
-  - [lean-implementation-agent.md](.opencode/agent/subagents/lean-implementation-agent.md) - Enhanced with NO EMOJI validation
-  - [research.md](.opencode/command/research.md) - Enhanced no_emojis tag with validation
-  - [plan.md](.opencode/command/plan.md) - Enhanced no_emojis tag with validation
-  - [implement.md](.opencode/command/implement.md) - Enhanced no_emojis tag with validation
-  - [revise.md](.opencode/command/revise.md) - Enhanced no_emojis tag with validation
-  - [task.md](.opencode/command/task.md) - Enhanced no_emojis tag with validation
-  - [review.md](.opencode/command/review.md) - Enhanced no_emojis tag with validation
-  - [documentation.md](.opencode/context/common/standards/documentation.md) - Added NO EMOJI Policy section
-  - [status-markers.md](.opencode/context/common/system/status-markers.md) - Fixed contradictory emoji examples
-
-**Description**:
-Emojis have made their way back into /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md and some plans, reports, and summaries (e.g., checkmark emoji in completed tasks like task 234). The repository has a strict NO EMOJI standard that needs to be enforced. Unicode characters are acceptable, but emojis are not. This task requires: (1) Systematically search all .opencode system files for emoji usage (.opencode/specs/TODO.md, all plan files, all report files, all summary files, all command files, all agent files, all context files), (2) Remove all found emojis while preserving meaning (e.g., replace checkmark emojis with text-based markers), (3) Update context files and standards documentation to make the NO EMOJI standard more explicit and easier to enforce, (4) Add guidance to relevant standards files about emoji prevention.
-
-**Acceptance Criteria**:
-- [ ] Complete scan of .opencode/specs/TODO.md for emojis
-- [ ] Complete scan of .opencode/specs/*/plans/*.md for emojis
-- [ ] Complete scan of .opencode/specs/*/reports/*.md for emojis
-- [ ] Complete scan of .opencode/specs/*/summaries/*.md for emojis
-- [ ] Complete scan of .opencode/command/*.md for emojis
-- [ ] Complete scan of .opencode/agent/**/*.md for emojis
-- [ ] Complete scan of .opencode/context/**/*.md for emojis
-- [ ] All found emojis removed and replaced with appropriate text equivalents
-- [ ] status-markers.md updated with explicit NO EMOJI guidance
-- [ ] documentation.md standards updated with NO EMOJI enforcement
-- [ ] commands.md standards updated with NO EMOJI guidance for output
-- [ ] Quality checklist created or updated with emoji validation step
-- [ ] Git commit created documenting emoji removal
-
-**Impact**:
-Maintains repository consistency and professional standards. Emojis can cause parsing issues, display inconsistently across systems, and violate established documentation standards. Enforcing NO EMOJI standard ensures all documentation is text-based, parseable, and universally displayable.
-
 ---
-
-### 241. Optimize NO EMOJI validation to eliminate redundant checks and reduce system overhead [COMPLETED]
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-28
-- **Researched**: 2025-12-28
-- **Planned**: 2025-12-28
-- **Completed**: 2025-12-28
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: 238
-- **Research**: [Research Report](.opencode/specs/241_optimize_no_emoji_validation/reports/research-001.md)
-- **Plan**: [Implementation Plan](.opencode/specs/241_optimize_no_emoji_validation/plans/implementation-001.md)
-- **Implementation Summary**: [Summary](.opencode/specs/241_optimize_no_emoji_validation/summaries/implementation-summary-20251228.md)
-- **Artifacts**:
-  - [AGENTS.md](.opencode/AGENTS.md) - Centralized NO EMOJI rule
-  - [researcher.md](.opencode/agent/subagents/researcher.md) - Removed redundant validation
-  - [planner.md](.opencode/agent/subagents/planner.md) - Removed redundant validation
-  - [implementer.md](.opencode/agent/subagents/implementer.md) - Removed redundant validation
-  - [task-executor.md](.opencode/agent/subagents/task-executor.md) - Removed redundant validation
-  - [lean-research-agent.md](.opencode/agent/subagents/lean-research-agent.md) - Removed redundant validation
-  - [lean-implementation-agent.md](.opencode/agent/subagents/lean-implementation-agent.md) - Removed redundant validation
-  - [reviewer.md](.opencode/agent/subagents/reviewer.md) - Removed redundant validation
-  - [research.md](.opencode/command/research.md) - Removed redundant validation
-  - [plan.md](.opencode/command/plan.md) - Removed redundant validation
-  - [implement.md](.opencode/command/implement.md) - Removed redundant validation
-  - [revise.md](.opencode/command/revise.md) - Removed redundant validation
-  - [task.md](.opencode/command/task.md) - Removed redundant validation
-  - [review.md](.opencode/command/review.md) - Removed redundant validation
-  - [errors.md](.opencode/command/errors.md) - Removed redundant validation
-  - [todo.md](.opencode/command/todo.md) - Removed redundant validation
-  - [error-diagnostics-agent.md](.opencode/agent/subagents/error-diagnostics-agent.md) - Removed redundant validation
-  - [command-template.md](.opencode/context/common/templates/command-template.md) - Removed redundant validation
-  - [documentation.md](.opencode/context/common/standards/documentation.md) - Updated to reference AGENTS.md
-  - [implementation-summary-20251228.md](.opencode/specs/241_optimize_no_emoji_validation/summaries/implementation-summary-20251228.md) - Implementation summary
-- **Description**: Task 238 implemented comprehensive NO EMOJI enforcement across all .opencode system files (24 files, 88 emoji instances removed). However, this introduced extensive validation checks and warning messages in multiple agent files, command files, and context files which may slow down the opencode system with redundant overhead. Design and implement a more efficient approach that prevents emojis WITHOUT excessive validation overhead. Proposed solution: Create a centralized AGENTS.md file (per https://opencode.ai/docs/rules/) with the NO EMOJIS rule, then remove all redundant mentions and validation checks from individual agent/command/context files. AGENTS.md is automatically loaded by OpenCode into all agent contexts, providing universal rule enforcement without duplication.
-
-**Research Questions**:
-1. What is the current overhead cost of distributed NO EMOJI validation? (count of validation blocks, line count, context window usage)
-2. How does AGENTS.md work in OpenCode? (automatic loading, precedence, combination with other instructions)
-3. What minimal NO EMOJI rule text in AGENTS.md would be sufficient?
-4. Which files currently have NO EMOJI validation/warnings that could be removed?
-5. Are there any validation checks that MUST remain (e.g., critical output validation)?
-6. What is the performance impact of current approach vs. AGENTS.md approach?
-
-**Acceptance Criteria**:
-- [ ] Research completed on current NO EMOJI validation overhead (file count, line count, duplication)
-- [ ] Research completed on AGENTS.md functionality and best practices
-- [ ] AGENTS.md file created with centralized NO EMOJI rule
-- [ ] All redundant NO EMOJI validation checks removed from agent files
-- [ ] All redundant NO EMOJI validation checks removed from command files  
-- [ ] All redundant NO EMOJI validation checks removed from context files
-- [ ] Only critical output validation checks retained (if any)
-- [ ] Testing confirms NO EMOJI rule still enforced via AGENTS.md
-- [ ] Documentation updated to reference AGENTS.md as primary source for NO EMOJI rule
-- [ ] Performance comparison documented (context window savings, overhead reduction)
-- [ ] Implementation summary created
-
-**Impact**:
-Reduces system overhead and context window bloat while maintaining NO EMOJI standard. Eliminates redundant validation checks across ~15-20 files (estimated 200-400 lines of duplicate validation code). AGENTS.md provides cleaner, more maintainable solution with automatic enforcement across all agents. Expected context window savings: 5-10KB per command invocation.
-
----
-
-### 236. Investigate and fix task standard violations in TODO.md tasks 1-9
-- **Effort**: 4 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-29
-- **Researched**: 2025-12-29
-- **Planned**: 2025-12-29
-- **Completed**: 2025-12-28
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/reports/research-001.md)
-- **Plan**: [Implementation Plan](.opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/plans/implementation-001.md)
-- **Implementation Summary**: [Summary](.opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/summaries/implementation-summary-20251228.md)
-- **Artifacts**:
-  - [TODO.md](.opencode/specs/TODO.md) - Fixed tasks 1-9 with Language field and bullet formatting
-  - [task.md](.opencode/command/task.md) - Enhanced with pre-flight validation
-  - [review.md](.opencode/command/review.md) - Enhanced with post-flight validation
-  - [tasks.md](.opencode/context/common/standards/tasks.md) - Added troubleshooting documentation
-
-**Description**:
-Tasks 1-9 in .opencode/specs/TODO.md do not follow the task standards defined in .opencode/context/common/standards/tasks.md. These tasks are missing required metadata fields including **Language**, and have non-standard formatting (using * instead of - for metadata bullets). Investigation needed to determine: (1) How these tasks were created (which command or agent), (2) Why task standards were not enforced at creation time, (3) Implement a fix to enforce task standards for all task creation mechanisms. The task standards require: Task ID from state.json, Title format "### {ID}. {Title}", Required metadata (Language is mandatory per line 110 quality checklist), Auto-populated defaults for Priority/Language/Effort/etc., Proper formatting with - bullets not *. Tasks 1-9 use format like "*Effort**: ..." and "*Status**: ..." instead of "- **Effort**: ..." and "- **Status**: ..." and are completely missing the **Language** field which is required.
-
-**Acceptance Criteria**:
-- [ ] Identify which command/agent created tasks 1-9 (likely /task, /review, or manual entry)
-- [ ] Review task creation code in identified command/agent for standards enforcement
-- [ ] Implement validation to enforce task standards (required fields, formatting, Language field)
-- [ ] Update tasks 1-9 to comply with task standards (add Language field, fix bullet formatting)
-- [ ] Add pre-flight validation to /task command to reject non-compliant task creation
-- [ ] Add post-flight validation to /review command to ensure created tasks are compliant
-- [ ] Test task creation with validation enabled
-- [ ] Document task standard enforcement in relevant command files
-
-**Impact**:
-Ensures all tasks in TODO.md follow consistent standards, making them easier to parse, track, and process by automation tools. Missing Language field prevents proper routing to Lean-specific agents.
 
 ---
 

@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2025-12-28T21:58:40.040600",
+  "_last_updated": "2025-12-28T23:28:52.938257",
   "archived_projects": [
     {
       "project_number": 126,
@@ -938,6 +938,75 @@
       "abandoned": null,
       "archived": "2025-12-28",
       "summary": "Systematically fix TODO.md path references and migrate tasks from project root to .opencode/specs"
+    },
+    {
+      "project_number": 236,
+      "project_name": "investigate_and_fix_task_standard_violations_in_to",
+      "type": "markdown",
+      "status": "completed",
+      "created": "2025-12-29T00:00:00Z",
+      "started": "2025-12-29",
+      "archived": "2025-12-28",
+      "summary": "Investigate and fix task standard violations in TODO.md tasks 1-9",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/236_investigate_and_fix_task_standard_violations_in_to/"
+      },
+      "completed": "2025-12-28"
+    },
+    {
+      "project_number": 237,
+      "project_name": "investigate_and_systematically_fix_context_window_",
+      "type": "markdown",
+      "status": "completed",
+      "created": "2025-12-29T00:00:00Z",
+      "started": "2025-12-29",
+      "archived": "2025-12-28",
+      "summary": "Investigate and systematically fix context window bloat in workflow commands",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/237_investigate_and_systematically_fix_context_window_/"
+      }
+    },
+    {
+      "project_number": 238,
+      "project_name": "find_and_eliminate_all_emojis_from_opencode_system",
+      "type": "markdown",
+      "status": "completed",
+      "created": "2025-12-29T00:00:00Z",
+      "started": "2025-12-29",
+      "archived": "2025-12-28",
+      "summary": "Find and eliminate all emojis from .opencode system to maintain NO EMOJI standard",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/238_find_and_eliminate_all_emojis_from_opencode_system/"
+      },
+      "completed": "2025-12-28"
+    },
+    {
+      "project_number": 241,
+      "project_name": "optimize_no_emoji_validation_to_eliminate_redundan",
+      "type": "markdown",
+      "status": "completed",
+      "created": "2025-12-28T00:00:00Z",
+      "started": "2025-12-28",
+      "archived": "2025-12-28",
+      "summary": "Optimize NO EMOJI validation to eliminate redundant checks and reduce system overhead [COMPLETED]",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/241_optimize_no_emoji_validation_to_eliminate_redundan/"
+      },
+      "completed": "2025-12-28"
+    },
+    {
+      "project_number": 242,
+      "project_name": "implement_phase_2_from_task_237_implementation_pla",
+      "type": "markdown",
+      "status": "abandoned",
+      "created": "2025-12-28T00:00:00Z",
+      "started": "2025-12-28",
+      "archived": "2025-12-28",
+      "summary": "Implement Phase 2 from task 237 implementation plan (split command files into routing and execution)",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/242_implement_phase_2_from_task_237_implementation_pla/"
+      },
+      "completed": "2025-12-29"
     }
   ]
 }
