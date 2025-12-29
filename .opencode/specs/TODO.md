@@ -14,9 +14,9 @@
 
 ## High Priority
 
-### 254. Refactor /research command to directly invoke agents and properly manage task status and state updates
+### ✓ 254. Refactor /research command to directly invoke agents and properly manage task status and state updates
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Priority**: High
@@ -25,6 +25,7 @@
 - **Dependencies**: None
 - **Research**: [task-254-research-command-refactor.md](.opencode/research/task-254-research-command-refactor.md)
 - **Plan**: [Implementation Plan](.opencode/specs/254_research_command_refactor/plans/implementation-001.md)
+- **Implementation Summary**: [Summary](.opencode/specs/254_research_command_refactor/summaries/implementation-summary-20251229.md)
 
 **Description**:
 The /research command is currently experiencing systematic failures where it stops after routing stages 1-3 and does not proceed to execution stages 4-8. The command does not update TODO.md status to [RESEARCHING] at start or [RESEARCHED] at completion, does not update state.json, does not link research reports back to TODO.md, and does not create git commits. The current implementation is split between research.md (routing) and research-routing.md (redundant), with research.md.backup also present. This task involves creating a single, unified /research command that directly invokes the appropriate research agent (researcher or lean-research-agent), properly manages all status transitions, state updates, and git commits following the patterns established in the OpenAgents migration (tasks 244-247).

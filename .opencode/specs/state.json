@@ -1253,17 +1253,22 @@
       ]
     },
     "254": {
-      "status": "planned",
+      "status": "completed",
       "started": "2025-12-29",
       "research_completed": "2025-12-29",
       "planning_started": "2025-12-29",
       "planning_completed": "2025-12-29",
+      "implementation_started": "2025-12-29",
+      "completed": "2025-12-29",
       "updated": "2025-12-29",
       "language": "markdown",
       "priority": "high",
       "artifacts": [
         ".opencode/research/task-254-research-command-refactor.md",
-        ".opencode/specs/254_research_command_refactor/plans/implementation-001.md"
+        ".opencode/specs/254_research_command_refactor/plans/implementation-001.md",
+        ".opencode/command/research.md",
+        ".opencode/agent/subagents/researcher.md",
+        ".opencode/specs/254_research_command_refactor/summaries/implementation-summary-20251229.md"
       ],
       "plan_path": ".opencode/specs/254_research_command_refactor/plans/implementation-001.md",
       "plan_metadata": {

@@ -2,7 +2,7 @@
   "project_name": "research_command_refactor",
   "project_number": 254,
   "type": "implementation",
-  "phase": "planning",
+  "phase": "implementation_completed",
   "reports": [
     {
       "type": "research_report",
@@ -23,8 +23,15 @@
       "complexity": "medium"
     }
   ],
-  "summaries": [],
-  "status": "active",
+  "summaries": [
+    {
+      "type": "implementation_summary",
+      "path": ".opencode/specs/254_research_command_refactor/summaries/implementation-summary-20251229.md",
+      "summary": "Simplified command file with frontmatter delegation (208 lines) and complete workflow ownership with status updates and git commits (536 lines)",
+      "created": "2025-12-29"
+    }
+  ],
+  "status": "completed",
   "created": "2025-12-29T19:30:00Z",
   "last_updated": "2025-12-29"
 }
