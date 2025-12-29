@@ -14,9 +14,9 @@
 
 ## High Priority
 
-### 234. Systematically improve all commands to protect context window and eliminate confirmation prompts
-- **Effort**: 8-10 hours
-- **Status**: [RESEARCHED]
+### 234. Systematically improve all commands to protect context window and eliminate confirmation prompts ✅
+- **Effort**: 8 hours
+- **Status**: [PLANNED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Priority**: High
@@ -24,6 +24,7 @@
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/plans/implementation-001.md)
 
 **Files Affected**:
 - .opencode/command/implement.md
@@ -65,13 +66,11 @@ CRITICAL - Protects orchestrator context window from bloat (currently 60-70% was
 
 ---
 
----
-
 ### 1. Completeness Proofs
-**Effort**: 70-90 hours
-**Status**: INFRASTRUCTURE ONLY
-**Blocking**: Decidability
-**Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
+*Effort**: 70-90 hours
+*Status**: INFRASTRUCTURE ONLY
+*Blocking**: Decidability
+*Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
 
 **Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.
 
@@ -103,8 +102,6 @@ CRITICAL - Protects orchestrator context window from bloat (currently 60-70% was
 
 **Files**:
 - `Logos/Core/Semantics/Truth.lean` (lines 697, 776, 798)
-
----
 
 ---
 
@@ -170,8 +167,6 @@ CRITICAL - Protects orchestrator context window from bloat (currently 60-70% was
 
 ---
 
----
-
 ### 7. Document Creation of Context Files
 **Effort**: 1-2 hours
 **Status**: DONE
@@ -218,8 +213,6 @@ Refactor the `Context.lean` file to improve clarity, performance, and alignment 
 
 **Impact**:
 Improves the maintainability and readability of a core component of the syntax package.
-
----
 
 ---
 
@@ -273,8 +266,6 @@ Implement bounded search driver with depth/visit limits, cache/visited threading
 
 **Impact**:
 Enables the first working path for automated proof search with termination guards.
-
----
 
 ---
 
@@ -466,8 +457,6 @@ Enables the first working path for automated proof search with termination guard
 
 ---
 
----
-
 ### 148. Ensure command updates also sync SORRY and TACTIC registries
 **Effort**: 2-3 hours
 **Status**: [NOT STARTED]
@@ -492,8 +481,6 @@ Update `/task`, `/add`, `/review`, `/todo`, and related command flows and standa
 
 **Impact**:
 Keeps implementation status and registries synchronized, reducing drift and missing updates across automation flows.
-
----
 
 ---
 
@@ -527,8 +514,6 @@ Complete comprehensive API documentation for all Logos modules with docstrings, 
 
 **Impact**:
 Provides complete API documentation for all Logos modules, improving usability and maintainability.
-
----
 
 ---
 
@@ -567,8 +552,6 @@ Integrated Plausible property-based testing framework and implemented comprehens
 
 **Impact**:
 Provides comprehensive automated testing across wide range of inputs, automatically finding edge cases and verifying critical properties of the TM logic proof system. Significantly improves test coverage and confidence in correctness.
-
----
 
 ---
 
