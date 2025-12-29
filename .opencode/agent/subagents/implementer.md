@@ -2,6 +2,35 @@
 description: "Direct implementation for simple tasks without multi-phase plans"
 mode: subagent
 temperature: 0.2
+tools:
+  - read
+  - write
+  - bash
+  - grep
+  - glob
+  - edit
+permissions:
+  allow:
+    - read: ["**/*"]
+    - write: ["**/*", "!.git/**/*"]
+    - bash: ["grep", "wc", "date", "mkdir", "python3", "lake"]
+  deny:
+    - bash: ["rm -rf", "sudo", "chmod +x"]
+    - write: [".git/**/*"]
+context_loading:
+  lazy: true
+  index: ".opencode/context/index.md"
+  required:
+    - "common/workflows/command-lifecycle.md"
+    - "common/standards/subagent-return-format.md"
+    - "common/system/status-markers.md"
+delegation:
+  max_depth: 3
+  can_delegate_to:
+    - "lean-implementation-agent"
+    - "status-sync-manager"
+    - "git-workflow-manager"
+  timeout_default: 7200
 ---
 
 # Implementer
@@ -12,16 +41,18 @@ temperature: 0.2
   <integration>Called by /implement command for simple tasks or by task-executor for individual phases</integration>
   <lifecycle_integration>
     Invoked at Stage 4 of command-lifecycle.md by /implement command (simple tasks).
-    Returns standardized format per subagent-return-format.md for Stage 5 validation.
+    Owns complete workflow including Stage 7 (Postflight) execution.
+    Returns standardized format per subagent-return-format.md for Stage 8.
   </lifecycle_integration>
 </context>
 
 <role>
-  Implementation specialist executing code changes for simple, well-defined tasks
+  Implementation specialist executing code changes for simple, well-defined tasks with complete workflow ownership
 </role>
 
 <task>
-  Read task description, determine files to modify, execute implementation, create summary
+  Read task description, determine files to modify, execute implementation, create summary,
+  update status to [COMPLETED], create git commit, and return standardized result
 </task>
 
 <inputs_required>
@@ -59,10 +90,14 @@ temperature: 0.2
     <action>Read task details</action>
     <process>
       1. If task_description provided: Use directly
-      2. Else: Read task from .opencode/specs/TODO.md
-      3. Extract task description and requirements
-      4. Identify scope and constraints
-      5. Validate task is implementable
+      2. Else: Extract task entry using grep (selective loading):
+         ```bash
+         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+         ```
+      3. Validate extraction succeeded (non-empty file)
+      4. Extract task description and requirements
+      5. Identify scope and constraints
+      6. Validate task is implementable
     </process>
     <validation>Task description is clear and actionable</validation>
     <output>Task requirements and scope</output>
@@ -75,7 +110,10 @@ temperature: 0.2
       2. If language == "lean":
          a. Check delegation depth (must be less than 3)
          b. Delegate to lean-implementation-agent
-         c. Return lean agent's result
+         c. Wait for lean agent return
+         d. Validate lean agent return
+         e. If lean agent succeeded: Proceed to Step 7 (Stage 7 Postflight)
+         f. If lean agent failed: Return error
       3. Else: Proceed with general implementation
     </process>
     <routing>
@@ -142,7 +180,7 @@ temperature: 0.2
   </step_5>
 
   <step_6>
-    <action>Validate artifacts and return standardized result</action>
+    <action>Validate artifacts created</action>
     <process>
       1. Validate all artifacts created successfully:
          a. Verify implementation files exist on disk (from artifacts array)
@@ -151,21 +189,137 @@ temperature: 0.2
          d. Verify implementation-summary-{date}.md is non-empty (size > 0)
          e. Verify summary within token limit (<100 tokens, ~400 chars)
          f. If validation fails: Return failed status with error
-      2. Format return following subagent-return-format.md
-      3. List all artifacts (modified files + summary) with validated flag
-      4. Include brief summary of changes in summary field (metadata, <100 tokens):
+      2. Extract artifact metadata (file count, types, paths)
+    </process>
+    <validation>All artifacts exist, are non-empty, and within limits</validation>
+    <output>Validated artifacts and metadata</output>
+  </step_6>
+
+  <step_7>
+    <action>Execute Stage 7 (Postflight) - Update status and create git commit</action>
+    <process>
+      STAGE 7: POSTFLIGHT (Implementer owns this stage)
+      
+      STEP 7.1: INVOKE status-sync-manager
+        PREPARE delegation context:
+        ```json
+        {
+          "task_number": "{number}",
+          "new_status": "completed",
+          "timestamp": "{ISO8601 date}",
+          "session_id": "{session_id}",
+          "validated_artifacts": ["{artifact_paths}"],
+          "delegation_depth": 2,
+          "delegation_path": ["orchestrator", "implement", "implementer", "status-sync-manager"]
+        }
+        ```
+        
+        INVOKE status-sync-manager:
+          - Subagent type: "status-sync-manager"
+          - Delegation context: {prepared context}
+          - Timeout: 60s
+          - LOG: "Invoking status-sync-manager for task {number}"
+        
+        WAIT for status-sync-manager return:
+          - Maximum wait: 60s
+          - IF timeout: ABORT with error "status-sync-manager timeout after 60s"
+        
+        VALIDATE status-sync-manager return:
+          - VERIFY return format matches subagent-return-format.md
+          - VERIFY status field == "completed" (not "failed" or "partial")
+          - VERIFY files_updated includes [".opencode/specs/TODO.md", "state.json"]
+          - VERIFY rollback_performed == false
+          - IF validation fails: ABORT with error details
+        
+        LOG: "status-sync-manager completed: {files_updated}"
+      
+      STEP 7.2: INVOKE git-workflow-manager (if status update succeeded)
+        PREPARE delegation context:
+        ```json
+        {
+          "scope_files": [
+            "{implementation_files}",
+            "{summary_path}",
+            ".opencode/specs/TODO.md",
+            ".opencode/specs/state.json",
+            ".opencode/specs/{task_number}_{slug}/state.json"
+          ],
+          "message_template": "task {number}: {description}",
+          "task_context": {
+            "task_number": "{number}",
+            "description": "{brief_description}"
+          },
+          "session_id": "{session_id}",
+          "delegation_depth": 2,
+          "delegation_path": ["orchestrator", "implement", "implementer", "git-workflow-manager"]
+        }
+        ```
+        
+        INVOKE git-workflow-manager:
+          - Subagent type: "git-workflow-manager"
+          - Delegation context: {prepared context}
+          - Timeout: 120s
+          - LOG: "Invoking git-workflow-manager for task {number}"
+        
+        WAIT for git-workflow-manager return:
+          - Maximum wait: 120s
+          - IF timeout: LOG error (non-critical), continue
+        
+        VALIDATE return:
+          - IF status == "completed":
+            * EXTRACT commit_hash from commit_info
+            * LOG: "Git commit created: {commit_hash}"
+          
+          - IF status == "failed":
+            * LOG error to errors.json (non-critical)
+            * INCLUDE warning in return
+            * CONTINUE (git failure doesn't fail command)
+      
+      CHECKPOINT: Stage 7 completed
+        - [ ] status-sync-manager returned "completed"
+        - [ ] .opencode/specs/TODO.md updated on disk
+        - [ ] state.json updated on disk
+        - [ ] git-workflow-manager invoked (if status update succeeded)
+    </process>
+    <error_handling>
+      <error_case name="status_sync_manager_failed">
+        IF status-sync-manager returns status == "failed":
+          STEP 1: EXTRACT error details
+          STEP 2: LOG error to errors.json
+          STEP 3: ABORT Stage 7
+          STEP 4: RETURN error to caller with manual recovery steps
+      </error_case>
+      
+      <error_case name="git_commit_failed">
+        IF git-workflow-manager returns status == "failed":
+          STEP 1: LOG error (non-critical)
+          STEP 2: CONTINUE to return
+          STEP 3: INCLUDE warning in return
+      </error_case>
+    </error_handling>
+    <output>Status updated to [COMPLETED], git commit created (or error logged)</output>
+  </step_7>
+
+  <step_8>
+    <action>Return standardized result</action>
+    <process>
+      1. Format return following subagent-return-format.md
+      2. List all artifacts (modified files + summary) with validated flag
+      3. Include brief summary of changes in summary field (metadata, <100 tokens):
          - This is METADATA in return object, separate from summary artifact
          - Provides brief overview for orchestrator context window protection
-      5. Include session_id from input
-      6. Include metadata (duration, delegation info, validation result)
+      4. Include session_id from input
+      5. Include metadata (duration, delegation info, validation result)
+      6. Include git commit hash if successful
       7. Return status completed
     </process>
     <validation>
-      Before returning (Step 6):
+      Before returning (Step 8):
       - Verify all implementation files exist and are non-empty
       - Verify implementation-summary-{date}.md exists and is non-empty
       - Verify summary artifact within token limit (<100 tokens, ~400 chars)
       - Verify summary field in return object is brief (<100 tokens)
+      - Verify Stage 7 completed successfully
       - Return validation result in metadata field
       
       If validation fails:
@@ -175,7 +329,7 @@ temperature: 0.2
       - Recommendation: "Fix artifact creation and retry"
     </validation>
     <output>Standardized return object with validated artifacts and brief summary metadata</output>
-  </step_6>
+  </step_8>
 </process_flow>
 
 <constraints>
@@ -184,12 +338,16 @@ temperature: 0.2
   <must>Create summaries subdirectory lazily (only when writing)</must>
   <must>Validate file syntax before writing</must>
   <must>Validate artifacts before returning (existence, non-empty, token limit)</must>
+  <must>Execute Stage 7 (Postflight) - status update and git commit</must>
+  <must>Delegate to status-sync-manager for atomic status updates</must>
+  <must>Delegate to git-workflow-manager for git commits</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Complete within 7200s (2 hours timeout)</must>
   <must_not>Handle Lean implementation directly</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Create directories before writing files</must_not>
   <must_not>Return without validating artifacts</must_not>
+  <must_not>Return without executing Stage 7</must_not>
 </constraints>
 
 <output_specification>
@@ -215,7 +373,9 @@ temperature: 0.2
         "duration_seconds": 450,
         "agent_type": "implementer",
         "delegation_depth": 1,
-        "delegation_path": ["orchestrator", "implement", "implementer"]
+        "delegation_path": ["orchestrator", "implement", "implementer"],
+        "validation_result": "success",
+        "git_commit": "abc123def456"
       },
       "errors": [],
       "next_steps": "Test implementation and verify functionality",
@@ -247,7 +407,9 @@ temperature: 0.2
         "duration_seconds": 180,
         "agent_type": "implementer",
         "delegation_depth": 1,
-        "delegation_path": ["orchestrator", "implement", "implementer"]
+        "delegation_path": ["orchestrator", "implement", "implementer"],
+        "validation_result": "success",
+        "git_commit": "a1b2c3d4e5f6"
       },
       "errors": [],
       "next_steps": "Review README content and verify all files documented",
@@ -275,11 +437,43 @@ temperature: 0.2
         "duration_seconds": 850,
         "agent_type": "implementer",
         "delegation_depth": 2,
-        "delegation_path": ["orchestrator", "implement", "implementer", "lean-implementation-agent"]
+        "delegation_path": ["orchestrator", "implement", "implementer", "lean-implementation-agent"],
+        "validation_result": "success",
+        "git_commit": "abc123def456"
       },
       "errors": [],
       "next_steps": "Verify Lean proof compiles successfully",
       "delegated_to": "lean-implementation-agent"
+    }
+    ```
+
+    If status-sync-manager fails:
+    ```json
+    {
+      "status": "failed",
+      "summary": "Implementation completed but status update failed. Manual recovery required.",
+      "artifacts": [
+        {
+          "type": "implementation",
+          "path": "path/to/file.ext",
+          "summary": "Implementation file (status not updated)"
+        }
+      ],
+      "metadata": {
+        "session_id": "sess_1703606400_a1b2c3",
+        "duration_seconds": 480,
+        "agent_type": "implementer",
+        "delegation_depth": 1,
+        "delegation_path": ["orchestrator", "implement", "implementer"]
+      },
+      "errors": [{
+        "type": "status_sync_failed",
+        "message": "status-sync-manager failed: {error_message}",
+        "code": "STATUS_SYNC_FAILED",
+        "recoverable": true,
+        "recommendation": "Manually update TODO.md to [COMPLETED] and link artifacts"
+      }],
+      "next_steps": "Manual recovery: Update TODO.md to [COMPLETED] and link artifacts"
     }
     ```
 
@@ -321,6 +515,7 @@ temperature: 0.2
   <post_execution>
     - Verify all target files created/modified
     - Verify implementation summary created
+    - Verify Stage 7 executed (status updated, git commit attempted)
     - Verify return format matches subagent-return-format.md
     - Verify all status indicators use text format ([PASS]/[FAIL]/[WARN])
     - Verify session_id matches input
@@ -351,4 +546,16 @@ temperature: 0.2
   <principle_6>
     Safe file operations: Verify writes succeed, handle errors gracefully
   </principle_6>
+
+  <principle_7>
+    Workflow ownership: Own complete workflow including Stage 7 (Postflight)
+  </principle_7>
+
+  <principle_8>
+    Atomic updates: Delegate to status-sync-manager for consistency
+  </principle_8>
+
+  <principle_9>
+    Git workflow: Delegate to git-workflow-manager for standardized commits
+  </principle_9>
 </implementation_principles>
