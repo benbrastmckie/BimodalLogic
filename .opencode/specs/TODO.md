@@ -1,12 +1,12 @@
 # TODO
 
-**Last Updated:** 2025-12-29T00:09:58Z
+**Last Updated:** 2025-12-29T00:37:44Z
 
 ## Overview
 
-- **Total Tasks:** 42
+- **Total Tasks:** 43
 - **Completed:** 5
-- **High Priority:** 12
+- **High Priority:** 13
 - **Medium Priority:** 19
 - **Low Priority:** 11
 
@@ -14,7 +14,51 @@
 
 ## High Priority
 
-### 225. Fix systematic status-sync-manager TODO.md update failures across all workflow commands
+### 226. Fix /review command to use next_project_number, create matching task, include actionable follow-up tasks in summary, reduce verbosity, and improve context file organization
+- **Effort**: 8-10 hours
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/226_fix_review_command/reports/research-001.md]
+- **Files Affected**:
+  - .opencode/command/review.md
+  - .opencode/agent/subagents/reviewer.md
+  - .opencode/context/common/workflows/review.md (potential cleanup/reorganization)
+  - .opencode/specs/state.json
+  - .opencode/specs/TODO.md
+- **Description**: Fix multiple critical issues with /review command workflow: (1) **Project numbering bug**: /review created directory 225_codebase_review but task 225 already exists in TODO.md. Root cause: /review didn't read next_project_number from state.json before creating directory, and didn't increment it immediately after creation. Fix: Read next_project_number, use it for directory name, increment immediately (atomic operation). (2) **Missing task creation**: /review should create a task entry with the same number as the project directory, with status [COMPLETED] and link to review summary artifact. This enables tracking reviews as completed work in TODO.md. (3) **Summary lacks actionable follow-ups**: Review summary artifact (.opencode/specs/225_codebase_review/summaries/review-summary.md) lists 5 follow-up tasks but doesn't format them in a way that /task can parse to create actual task entries. Fix: Add explicit "Follow-up Tasks" section with task descriptions formatted for easy /task invocation (e.g., "/task 'Fix 6 noncomputable errors...'"). (4) **Excessive verbosity**: /review subagent returns verbose output to orchestrator, bloating context window. Fix: Return only brief summary (2-5 sentences, <100 tokens) with artifact path. Full details in summary artifact. (5) **Context file organization**: .opencode/context/common/workflows/review.md may contain redundancy, inaccuracy, or scattered organization. Audit and improve to avoid bloating context or missing important context. Ensure exactly the right context files are loaded.
+- **Acceptance Criteria**:
+  - [ ] Root cause analysis completed for project numbering bug
+  - [ ] /review reads next_project_number from state.json before creating directory
+  - [ ] /review creates directory using next_project_number (e.g., 226_codebase_review)
+  - [ ] /review increments next_project_number immediately after directory creation (atomic)
+  - [ ] /review creates TODO.md task entry with same number as project directory
+  - [ ] Created task has status [COMPLETED] with completion timestamp
+  - [ ] Created task includes link to review summary artifact
+  - [ ] Review summary artifact includes explicit "Follow-up Tasks" section
+  - [ ] Follow-up tasks formatted for direct /task invocation (copy-paste ready)
+  - [ ] Each follow-up task includes: description, priority, language, estimated hours
+  - [ ] /review subagent returns brief summary only (<100 tokens) to orchestrator
+  - [ ] Full review details remain in summary artifact (not in return to orchestrator)
+  - [ ] Context file audit completed (.opencode/context/common/workflows/review.md)
+  - [ ] Redundant or inaccurate content removed from context files
+  - [ ] Context loading optimized - exactly the right files loaded, no bloat
+  - [ ] Test: /review creates directory with correct next_project_number
+  - [ ] Test: /review creates matching TODO.md task with [COMPLETED] status
+  - [ ] Test: Review summary includes actionable follow-up tasks
+  - [ ] Test: /review return to orchestrator is brief (<100 tokens)
+  - [ ] Test: Full review details available in summary artifact
+  - [ ] Documentation updated with new /review behavior
+  - [ ] No project number collisions occur
+  - [ ] next_project_number increments correctly after each /review
+- **Impact**: CRITICAL - Fixes project numbering collision bug that created 225_codebase_review when task 225 already existed. Enables tracking reviews as completed tasks in TODO.md. Makes review findings actionable by formatting follow-up tasks for easy /task invocation. Reduces context window bloat by returning only brief summaries to orchestrator. Improves context file organization to load exactly the right context without redundancy. Essential for reliable /review command execution and proper project tracking.
+
+### 227. Fix systematic status-sync-manager TODO.md update failures across all workflow commands
 - **Effort**: 6-8 hours
 - **Status**: [NOT STARTED]
 - **Priority**: High

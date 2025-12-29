@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-28T16:09:41.625402+00:00",
-  "next_project_number": 225,
+  "_last_updated": "2025-12-29T00:37:19.528207Z",
+  "next_project_number": 228,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -172,6 +172,22 @@
       "last_updated": "2025-12-29",
       "artifacts": [
         ".opencode/specs/224_configure_opencode_default_agent/reports/research-001.md"
+      ]
+    },
+    {
+      "project_number": 226,
+      "project_name": "fix_review_command",
+      "type": "bugfix",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2025-12-28T16:28:14Z",
+      "started": "2025-12-29",
+      "research_completed": "2025-12-29",
+      "last_updated": "2025-12-29",
+      "artifacts": [
+        ".opencode/specs/226_fix_review_command/reports/research-001.md"
       ]
     }
   ],
@@ -359,6 +375,14 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T16:28:14.744760Z",
+      "activity": "Created task 226: Fix /review command to use next_project_number, create matching task, include actionable follow-up tasks in summary, reduce verbosity, and improve context file organization (8-10 hours effort, High priority, markdown)"
+    },
+    {
+      "timestamp": "2025-12-29T00:09:58Z",
+      "activity": "Created task 225: Fix systematic status-sync-manager TODO.md update failures across all workflow commands (6-8 hours effort, High priority, markdown)"
+    },
     {
       "timestamp": "2025-12-28T16:09:41.625413+00:00",
       "activity": "Completed codebase review 225: Updated registries, found 6 sorry/11 axioms/11 build errors, 87.5% test coverage"
@@ -703,7 +727,7 @@
         "Logos/Core/Semantics/Truth.lean"
       ],
       "implementation_notes": "BLOCKED after exhaustive attempts. Helper lemma truth_at_swap_swap complete (all 6 cases). Main theorem unprovable with current approach - truth_at pattern matching prevents equality transport. All strategies from plans v2/v3 failed. Requires expert consultation.",
-      "blocking_reason": "Fundamental type theory limitation - truth_at pattern matching prevents transport along \u03c6.swap.swap = \u03c6 equality. Exhausted all recommended approaches."
+      "blocking_reason": "Fundamental type theory limitation - truth_at pattern matching prevents transport along φ.swap.swap = φ equality. Exhausted all recommended approaches."
     },
     {
       "project_number": 194,
