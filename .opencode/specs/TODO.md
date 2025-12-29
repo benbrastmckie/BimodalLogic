@@ -968,11 +968,13 @@ User reports that /research and /plan commands do not update TODO.md correctly. 
 
 ### 249. Phase 2 Follow-up: Add YAML Frontmatter to All 6 Subagents (Task 245 Phase 6)
 - **Effort**: 4.5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: markdown
 - **Dependencies**: Task 245 (Phase 2 Phases 1-5 and 8 completed)
 - **Research**: [Research Report 001](.opencode/specs/249_yaml_frontmatter_subagents/reports/research-001.md)
+- **Completed**: 2025-12-29
+- **Plan**: [Implementation Plan 001](.opencode/specs/249_yaml_frontmatter_subagents/plans/implementation-001.md)
 - **Description**: Add comprehensive YAML frontmatter to all 6 subagents (researcher.md, planner.md, implementer.md, task-executor.md, lean-research-agent.md, lean-implementation-agent.md) with tools, permissions, temperature configuration, and delegation settings. Create frontmatter template and standard documentation. Validate all frontmatter parses correctly and permissions deny dangerous commands.
 - **Tasks**:
   - Create YAML frontmatter template with all fields
