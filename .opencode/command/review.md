@@ -58,8 +58,10 @@ Context Loaded:
          - FEATURE_REGISTRY.md
       3. Determine review focus (Lean, docs, all)
       4. Read next_project_number from state.json
-      5. Generate project path: .opencode/specs/{number}_codebase_review
-      6. Prepare review context
+      5. Validate next_project_number is positive integer
+      6. Check for existing project directory collision
+      7. Generate project path: .opencode/specs/{next_project_number}_codebase_review
+      8. Prepare review context
     </process>
     <project_directory>
       Format: {next_project_number}_codebase_review
@@ -70,7 +72,8 @@ Context Loaded:
     <validation>
       - Registries exist (create if missing)
       - Review scope is valid
-      - next_project_number is valid integer
+      - next_project_number is valid positive integer
+      - No existing project directory with same number
     </validation>
   </stage>
 
@@ -195,8 +198,9 @@ Context Loaded:
   <stage id="6" name="CreateTasks">
     <action>Create TODO.md tasks for identified work</action>
     <process>
-      1. Extract identified_tasks array from reviewer return
-      2. For each identified task, invoke /task command:
+      1. Read review summary artifact to extract identified_tasks
+      2. Parse identified_tasks from Follow-ups section (TBD-1, TBD-2, etc.)
+      3. For each identified task, invoke /task command:
          a. One /task invocation per identified task (no batching)
          b. Set description from task.description
          c. Set priority from task.priority (high|medium|low)
@@ -208,7 +212,8 @@ Context Loaded:
          b. Track failed task descriptions for manual creation
          c. Include failed task count in summary
       4. Collect created task numbers (successful creations only)
-      5. Prepare task summary (created count, failed count)
+      5. Map placeholder numbers (TBD-1, TBD-2) to actual task numbers
+      6. Prepare task summary (created count, failed count)
     </process>
     <task_creation_loop>
       Example loop:
@@ -311,10 +316,17 @@ Context Loaded:
             - validated_artifacts: All artifacts from reviewer return (review summary + registries)
             - review_metrics: Metrics from reviewer return (sorry_count, axiom_count, build_errors, etc.)
             - created_tasks: Task numbers from Stage 6 CreateTasks
+            - review_task_number: Project number (matches next_project_number used for directory)
             - project_path: Review project directory path
             - review_scope: Scope from input (full|lean|docs)
          b. Delegate to status-sync-manager for atomic update:
-            - Update TODO.md with created tasks
+            - Create TODO.md task entry for review project:
+              * Task number: review_task_number (matches project number)
+              * Status: [COMPLETED]
+              * Title: "Codebase review - {scope}"
+              * Completion timestamp
+              * Link to review summary artifact
+            - Update TODO.md with created follow-up tasks
             - Update state.json:
               * Increment next_project_number
               * Add new task entries
@@ -331,10 +343,17 @@ Context Loaded:
               * metrics: review_metrics from reviewer
               * registries_updated: [IMPLEMENTATION_STATUS, SORRY_REGISTRY, TACTIC_REGISTRY, FEATURE_REGISTRY]
          c. Wait for status-sync-manager return (two-phase commit)
-         d. If status-sync-manager succeeds:
-            - Git commit all changes (registries + TODO.md + state.json + project state.json)
-            - Message: "review: update registries and create {N} tasks"
-         e. If status-sync-manager fails:
+          d. Replace placeholder task numbers in review summary:
+             - Read review summary artifact
+             - Replace TBD-1 with actual task number from Stage 6 mapping
+             - Replace TBD-2 with actual task number from Stage 6 mapping
+             - Continue for all placeholder numbers
+             - Add invocation instructions for each task (e.g., "Run: /implement {task_number}")
+             - Write updated review summary back to artifact
+          e. If status-sync-manager succeeds:
+             - Git commit all changes (registries + TODO.md + state.json + project state.json + updated review summary)
+             - Message: "review: update registries and create {N} tasks"
+          f. If status-sync-manager fails:
             - Rollback any partial updates (status-sync-manager handles this)
             - Log error to errors.json
             - Return failed status with rollback details
@@ -362,6 +381,7 @@ Context Loaded:
       Delegate to status-sync-manager with payload:
       {
         "operation": "review_complete",
+        "review_task_number": 207,
         "validated_artifacts": [
           {
             "type": "summary",

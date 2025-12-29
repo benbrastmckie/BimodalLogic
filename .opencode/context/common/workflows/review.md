@@ -20,141 +20,46 @@ The `/review` command performs comprehensive repository analysis and updates pro
 
 ## Workflow Stages
 
-### Stage 1: Repository Analysis
+The /review command follows the standard 8-stage workflow defined in @.opencode/context/common/workflows/command-lifecycle.md with review-specific adaptations:
 
-Perform comprehensive gap analysis covering:
+**Stage 1 (Preflight)**: Load registries, validate scope, read next_project_number, generate project path
+**Stage 2 (PrepareDelegation)**: Generate session_id, set delegation context for reviewer subagent
+**Stage 3 (InvokeReviewer)**: Delegate to reviewer subagent with review scope and registry context
+**Stage 4 (ReceiveResults)**: Validate reviewer return against subagent-return-format.md
+**Stage 5 (ProcessResults)**: Extract artifacts, metrics, identified tasks from reviewer return
+**Stage 6 (CreateTasks)**: Create TODO.md tasks from identified_tasks, map placeholder numbers to actual numbers
+**Stage 7 (Postflight)**: Replace placeholders in review summary, delegate to status-sync-manager for atomic updates, create review task entry, git commit
+**Stage 8 (ReturnSuccess)**: Return brief summary and artifact path to user
 
-**Functionality**:
-- [ ] Does what it's supposed to do
-- [ ] Edge cases handled
-- [ ] Error cases handled
-- [ ] No obvious bugs
+See @.opencode/command/review.md for complete stage specifications.
 
-**Code Quality**:
-- [ ] Clear, descriptive naming
-- [ ] Functions small and focused
-- [ ] No unnecessary complexity
-- [ ] Follows coding standards
-- [ ] DRY - no duplication
+## Review-Specific Workflow Details
 
-**Security**:
-- [ ] Input validation present
-- [ ] No SQL injection vulnerabilities
-- [ ] No XSS vulnerabilities
-- [ ] No hardcoded secrets
-- [ ] Sensitive data handled properly
-- [ ] Auth/authorization appropriate
+### Repository Analysis (Reviewer Subagent)
 
-**Testing**:
-- [ ] Tests present
-- [ ] Happy path covered
-- [ ] Edge cases covered
-- [ ] Error cases covered
-- [ ] All tests pass
+The reviewer subagent performs comprehensive gap analysis following the Review Checklist below.
 
-**Performance**:
-- [ ] No obvious performance issues
-- [ ] Efficient algorithms
-- [ ] No unnecessary operations
-- [ ] Resources properly managed
+### Registry Updates (Reviewer Subagent)
 
-**Maintainability**:
-- [ ] Easy to understand
-- [ ] Complex logic documented
-- [ ] Follows project conventions
-- [ ] Easy to modify/extend
+Update files specified in MAINTENANCE.md (or defaults):
+- IMPLEMENTATION_STATUS.md: Module completion, sorry counts, gaps/limitations
+- FEATURE_REGISTRY.md: New features, undocumented features, feature status
+- SORRY_REGISTRY.md: New/resolved sorry placeholders, counts, resolution guidance
+- TACTIC_REGISTRY.md: New tactics, descriptions, usage examples
 
-### Stage 2: Read Update Instructions
+### Task Creation (Review Command Stage 6)
 
-Locate and read the repository's MAINTENANCE.md file to extract update instructions:
+Create tasks via /task command for identified work:
+- Use placeholder numbers (TBD-1, TBD-2) in review summary
+- Map placeholders to actual task numbers after creation
+- Replace placeholders in review summary with actual numbers and invocation instructions
 
-1. **Find MAINTENANCE.md**:
-   - Check Documentation/ProjectInfo/MAINTENANCE.md (ProofChecker convention)
-   - Check docs/MAINTENANCE.md (common alternative)
-   - Check MAINTENANCE.md in repository root
-   - If not found, use default registry list (see Stage 3)
+### Artifact Management
 
-2. **Extract "Update Instructions for /review Command" section**:
-   - Read the section that specifies which files to update
-   - Extract the list of registry/status files
-   - Read task registration workflow requirements
-   - Note any repository-specific guidance
-
-3. **Parse file list**:
-   - Extract file paths from the update instructions
-   - Validate that files exist in the repository
-   - Prepare update operations for each file
-
-### Stage 3: Update Registry and Status Files
-
-Update the files specified in MAINTENANCE.md update instructions (or defaults if not found):
-
-**Default Registry Files** (if MAINTENANCE.md not found or section missing):
-- IMPLEMENTATION_STATUS.md
-- FEATURE_REGISTRY.md
-- SORRY_REGISTRY.md
-- TACTIC_REGISTRY.md
-
-**Update Operations**:
-
-1. **IMPLEMENTATION_STATUS.md**:
-   - Update module completion percentages based on analysis
-   - Update sorry counts from codebase scan
-   - Add new gaps/limitations discovered during review
-   - Remove limitations that have been resolved
-   - Update Known Limitations section
-
-2. **FEATURE_REGISTRY.md**:
-   - Register new features or capabilities discovered
-   - Add entries for undocumented features found in code
-   - Update feature status based on implementation state
-   - Cross-reference with IMPLEMENTATION_STATUS.md
-
-3. **SORRY_REGISTRY.md**:
-   - Add newly discovered sorry placeholders
-   - Remove resolved placeholders
-   - Update resolution guidance based on findings
-   - Update counts and module breakdowns
-
-4. **TACTIC_REGISTRY.md** (if applicable):
-   - Add newly discovered tactics
-   - Update tactic descriptions and usage examples
-   - Cross-reference with implementation files
-
-### Stage 4: Register Tasks for Remaining Work
-
-Create tasks in TODO.md for all remaining work identified during review:
-
-1. **Use /add command** for each identified task:
-   - Ensures proper task numbering via state.json
-   - Maintains lazy directory creation (no project roots created)
-   - Preserves all task metadata and status markers
-
-2. **Task metadata requirements**:
-   - Clear description of work to be done
-   - Effort estimate based on complexity
-   - Priority based on impact and urgency
-   - Language metadata (lean, markdown, etc.)
-   - Dependencies and blocking relationships
-   - Files affected
-
-3. **Task categories**:
-   - Missing features or capabilities
-   - Documentation gaps
-   - Test coverage gaps
-   - Performance issues
-   - Security vulnerabilities
-   - Code quality improvements
-   - Sorry placeholder resolutions
-
-### Stage 5: Generate Review Report (Optional)
-
-If requested or if significant findings warrant documentation:
-
-1. Create review project directory (lazy creation - only when writing report)
-2. Generate review report in reports/analysis-NNN.md or verification-NNN.md
-3. Include summary of findings, updated registries, and registered tasks
-4. Link report in TODO.md and state.json
+Follows @.opencode/context/common/system/artifact-management.md:
+- Lazy directory creation (project root created when writing first file)
+- Only summaries/ subdirectory created (not reports/ or plans/)
+- Review summary artifact triggers project state.json creation via status-sync-manager
 
 ## Principles
 
@@ -212,45 +117,18 @@ If requested or if significant findings warrant documentation:
 - [ ] Follows project conventions
 - [ ] Easy to modify/extend
 
-## Review Report Format
+## Review Summary Format
 
-```markdown
-## Code Review: {Feature/PR Name}
+Review summaries follow @.opencode/context/common/standards/summary.md:
+- Metadata: Status [COMPLETED], timestamps, priority
+- Overview: 2-3 sentences (<100 tokens)
+- What Changed: Registry updates performed
+- Key Findings: Critical findings (sorry count, build errors, etc.)
+- Impacts: Implications for codebase health
+- Follow-ups: Identified tasks with placeholder numbers (TBD-1, TBD-2)
+- References: Paths to updated registries
 
-**Summary:** {Brief overview}
-**Assessment:** Approve / Needs Work / Requires Changes
-
----
-
-### Issues Found
-
-#### Critical (Must Fix)
-- **File:** `src/auth.js:42`
-  **Issue:** Password stored in plain text
-  **Fix:** Hash password before storing
-
-#### Warnings (Should Fix)
-- **File:** `src/user.js:15`
-  **Issue:** No input validation
-  **Fix:** Validate email format
-
-#### Suggestions (Nice to Have)
-- **File:** `src/utils.js:28`
-  **Issue:** Could be more concise
-  **Fix:** Use array methods instead of loop
-
----
-
-### Positive Observations
-- Good test coverage (95%)
-- Clear function names
-- Proper error handling
-
----
-
-### Recommendations
-{Next steps, improvements, follow-up items}
-```
+Placeholder numbers replaced with actual task numbers and invocation instructions in Stage 7.
 
 ## Common Issues
 

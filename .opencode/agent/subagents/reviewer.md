@@ -132,12 +132,14 @@ temperature: 0.3
          - What Changed: Bullet list of registry updates performed
          - Key Findings: Bullet list of critical findings (sorry count, build errors, etc.)
          - Impacts: Bullet list of implications for codebase health
-         - Follow-ups: Bullet list of created tasks with priorities
+         - Follow-ups: Bullet list of identified tasks with placeholder numbers (TBD-1, TBD-2, etc.)
          - References: Paths to updated registries
       3. Keep summary concise (3-5 sentences in Overview, <100 tokens total overview)
       4. Use bullet lists for clarity
       5. No emojis in summary
       6. Follow markdown formatting standards
+      7. Use placeholder task numbers (TBD-1, TBD-2, etc.) in Follow-ups section
+         - /review command will replace placeholders with actual task numbers after creation
     </process>
     <project_state_json_trigger>
       Writing review summary artifact triggers project state.json creation:
@@ -164,18 +166,19 @@ temperature: 0.3
          - status: "completed" (or "partial" if timeout)
          - summary: Brief findings (2-5 sentences, <100 tokens)
          - artifacts: Array with review summary artifact
-         - metadata: session_id, duration, agent_type="reviewer", delegation info
+         - metadata: session_id, duration, agent_type="reviewer", delegation info, metrics_summary
          - errors: Empty array if successful
          - next_steps: "Review findings and address high-priority tasks"
       2. Include registry update paths in artifacts array
-      3. Include task list for /review command to create
-      4. Include brief metrics summary (sorry count, task count, etc.)
-      5. Validate return format before returning
+      3. Include task list for /review command to create (in identified_tasks field)
+      4. Move verbose metrics to metadata.metrics_summary (<20 tokens)
+      5. Remove verbose identified_tasks array from top level (keep in review summary artifact)
+      6. Validate return format before returning (<100 tokens total)
     </process>
     <return_format>
       {
         "status": "completed",
-        "summary": "Codebase review completed. Found {sorry_count} sorry statements, {axiom_count} axioms, {build_error_count} build errors. Identified {undocumented_tactic_count} undocumented tactics and {missing_feature_count} missing features. Created {task_count} tasks.",
+        "summary": "Review completed. Found {sorry_count} sorry, {axiom_count} axioms, {build_error_count} build errors. Identified {task_count} tasks.",
         "artifacts": [
           {
             "type": "summary",
@@ -208,7 +211,8 @@ temperature: 0.3
           "duration_seconds": 1800,
           "agent_type": "reviewer",
           "delegation_depth": 1,
-          "delegation_path": ["orchestrator", "review", "reviewer"]
+          "delegation_path": ["orchestrator", "review", "reviewer"],
+          "metrics_summary": "{sorry_count} sorry, {axiom_count} axioms, {build_errors} errors"
         },
         "errors": [],
         "next_steps": "Review findings and address high-priority tasks",
@@ -216,17 +220,10 @@ temperature: 0.3
           {
             "description": "Fix {N} sorry statements in {file}",
             "priority": "high",
-            "language": "lean"
+            "language": "lean",
+            "estimated_hours": 5
           }
-        ],
-        "metrics": {
-          "sorry_count": 10,
-          "axiom_count": 11,
-          "build_errors": 3,
-          "undocumented_tactics": 8,
-          "missing_features": 3,
-          "tasks_created": 5
-        }
+        ]
       }
     </return_format>
     <validation>
