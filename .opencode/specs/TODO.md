@@ -1,12 +1,12 @@
 # TODO
 
-**Last Updated:** 2025-12-29T00:50:44Z
+**Last Updated:** 2025-12-29T01:42:33Z
 
 ## Overview
 
-- **Total Tasks:** 24
+- **Total Tasks:** 25
 - **Completed:** 4
-- **High Priority:** 7
+- **High Priority:** 8
 - **Medium Priority:** 8
 - **Low Priority:** 10
 
@@ -262,6 +262,37 @@
   - [ ] Test execution time is under 2 minutes
 - **Impact**: Final step to unblock task 173. Once fixed, all 146 integration tests will compile and pass, delivering verified 82% integration test coverage and completing task 173. Dependency blocker task 184 now resolved by task 219.
 
+### 232. Systematically fix TODO.md path references and migrate tasks from project root to .opencode/specs
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Created**: 2025-12-29
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - All .opencode/command/*.md files (research.md, plan.md, implement.md, revise.md, task.md, todo.md, review.md)
+  - All .opencode/agent/subagents/*.md files
+  - All .opencode/context files referencing TODO.md
+  - /home/benjamin/Projects/ProofChecker/TODO.md (to be removed after migration)
+  - /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md (canonical location)
+- **Description**: Something has been adding tasks to /home/benjamin/Projects/ProofChecker/TODO.md instead of to /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md as it should. Systematically survey all commands and agents in the opencode system to identify which ones have the wrong TODO.md path references. Fix these references to use the correct .opencode/specs/TODO.md path. Update any context files accordingly to prevent confusion in the future. Migrate all tasks from the root TODO.md to .opencode/specs/TODO.md without creating redundancies (tasks that already exist in .opencode/specs/TODO.md should not be duplicated). Once all references are fixed and all unique tasks are migrated, remove the root TODO.md file to eliminate the confusion permanently.
+- **Acceptance Criteria**:
+  - [ ] Complete survey of all .opencode/command/*.md files for TODO.md path references
+  - [ ] Complete survey of all .opencode/agent/subagents/*.md files for TODO.md path references
+  - [ ] Complete survey of all .opencode/context files for TODO.md path references
+  - [ ] All wrong path references identified and documented
+  - [ ] All identified wrong paths fixed to use .opencode/specs/TODO.md
+  - [ ] Context files updated with correct path guidance
+  - [ ] All unique tasks from root TODO.md identified
+  - [ ] All unique tasks migrated to .opencode/specs/TODO.md (no duplicates)
+  - [ ] Migration verified - all tasks accounted for
+  - [ ] Root TODO.md file removed
+  - [ ] System tested - all commands work with corrected paths
+  - [ ] No references to root TODO.md remain in .opencode system
+  - [ ] Documentation updated to clarify canonical TODO.md location
+- **Impact**: Eliminates confusion and errors from having two TODO.md files in different locations. Ensures all commands and agents consistently use the canonical .opencode/specs/TODO.md file. Prevents future tasks from being added to the wrong location. Consolidates all task tracking in one authoritative location.
+
 ### 224. Configure OpenCode to start in Orchestrator mode or auto-switch agent modes for workflow commands
 - **Effort**: 2 hours (estimated from research)
 - **Status**: [COMPLETED]
@@ -298,13 +329,15 @@
 
 ### 230. Fix /review command to create completed task entry in TODO.md with review summary link
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
+- **Abandoned**: 2025-12-29
+- **Abandonment Reason**: Research revealed /review command specification already includes creating completed task entry via status-sync-manager delegation (review.md Stage 7). Root cause is orchestrator bypassing command layer (tasks 227/228/229), not specification deficiency. This task subsumed by task 231 which fixes systematic Stage 7 (Postflight) execution failures across all commands including /review.
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
-- **Dependencies**: None
+- **Dependencies**: Blocked by task 231 (fix systematic command Stage 7 postflight execution failures)
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/230_fix_review_command_to_create_completed_task_entry_in_todomd_with_review_summary_link/reports/research-001.md]
 - **Files Affected**:
