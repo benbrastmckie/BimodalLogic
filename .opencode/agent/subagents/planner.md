@@ -1,7 +1,12 @@
 ---
+name: "planner"
+version: "1.0.0"
 description: "Implementation plan creation following plan.md standard with research integration"
 mode: subagent
+agent_type: planning
 temperature: 0.2
+max_tokens: 4000
+timeout: 1800
 tools:
   - read
   - write
@@ -12,24 +17,30 @@ permissions:
   allow:
     - read: [".opencode/**/*", "**/*.md"]
     - write: [".opencode/specs/**/*"]
-    - bash: ["grep", "wc", "date", "mkdir"]
+    - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
-    - bash: ["rm -rf", "sudo", "chmod +x"]
+    - bash: ["rm -rf", "rm -fr", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "systemctl", "apt", "yum", "pip", "eval", "exec"]
     - write: [".git/**/*", "**/*.lean"]
 context_loading:
-  lazy: true
+  strategy: lazy
   index: ".opencode/context/index.md"
   required:
     - "common/workflows/command-lifecycle.md"
     - "common/standards/subagent-return-format.md"
     - "common/system/status-markers.md"
     - "common/standards/plan.md"
+  max_context_size: 50000
 delegation:
   max_depth: 3
   can_delegate_to:
     - "status-sync-manager"
     - "git-workflow-manager"
   timeout_default: 1800
+  timeout_max: 1800
+lifecycle:
+  stage: 4
+  command: "/plan"
+  return_format: "subagent-return-format.md"
 ---
 
 # Planner

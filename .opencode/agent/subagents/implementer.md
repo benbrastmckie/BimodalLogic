@@ -1,29 +1,35 @@
 ---
+name: "implementer"
+version: "1.0.0"
 description: "Direct implementation for simple tasks without multi-phase plans"
 mode: subagent
+agent_type: implementation
 temperature: 0.2
+max_tokens: 4000
+timeout: 7200
 tools:
   - read
   - write
+  - edit
   - bash
   - grep
   - glob
-  - edit
 permissions:
   allow:
     - read: ["**/*"]
     - write: ["**/*", "!.git/**/*"]
-    - bash: ["grep", "wc", "date", "mkdir", "python3", "lake"]
+    - bash: ["grep", "find", "wc", "date", "mkdir", "git", "python3", "lake"]
   deny:
-    - bash: ["rm -rf", "sudo", "chmod +x"]
-    - write: [".git/**/*"]
+    - bash: ["rm -rf", "rm -fr", "rm -r *", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "systemctl", "apt", "yum", "pip", "eval", "exec"]
+    - write: [".git/config", ".git/HEAD"]
 context_loading:
-  lazy: true
+  strategy: lazy
   index: ".opencode/context/index.md"
   required:
     - "common/workflows/command-lifecycle.md"
     - "common/standards/subagent-return-format.md"
     - "common/system/status-markers.md"
+  max_context_size: 50000
 delegation:
   max_depth: 3
   can_delegate_to:
@@ -31,6 +37,11 @@ delegation:
     - "status-sync-manager"
     - "git-workflow-manager"
   timeout_default: 7200
+  timeout_max: 7200
+lifecycle:
+  stage: 4
+  command: "/implement"
+  return_format: "subagent-return-format.md"
 ---
 
 # Implementer

@@ -1,7 +1,47 @@
 ---
+name: "lean-research-agent"
+version: "1.0.0"
 description: "Lean 4 library research agent with LeanExplore/Loogle/LeanSearch integration (future)"
 mode: subagent
+agent_type: research
 temperature: 0.3
+max_tokens: 4000
+timeout: 3600
+tools:
+  - read
+  - write
+  - bash
+  - webfetch
+  - grep
+  - glob
+permissions:
+  allow:
+    - read: ["**/*.lean", "**/*.md", ".opencode/**/*"]
+    - write: [".opencode/specs/**/*"]
+    - bash: ["grep", "find", "wc", "date", "mkdir", "loogle"]
+  deny:
+    - bash: ["rm -rf", "rm -fr", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "systemctl", "apt", "yum", "pip", "eval", "exec"]
+    - write: [".git/**/*", "**/*.lean", "lakefile.lean", "lean-toolchain"]
+    - read: [".env", "**/*.key", "**/*.pem", ".ssh/**/*"]
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "common/workflows/command-lifecycle.md"
+    - "common/standards/subagent-return-format.md"
+    - "common/system/status-markers.md"
+    - "project/lean4/lean-patterns.md"
+  max_context_size: 50000
+delegation:
+  max_depth: 3
+  can_delegate_to:
+    - "web-research-specialist"
+  timeout_default: 1800
+  timeout_max: 3600
+lifecycle:
+  stage: 4
+  command: "/research"
+  return_format: "subagent-return-format.md"
 ---
 
 # Lean Research Agent

@@ -1,7 +1,48 @@
 ---
+name: "researcher"
+version: "1.0.0"
 description: "General research agent for non-Lean tasks with topic subdivision support"
 mode: subagent
+agent_type: research
 temperature: 0.3
+max_tokens: 4000
+timeout: 3600
+tools:
+  - read
+  - write
+  - bash
+  - webfetch
+  - grep
+  - glob
+permissions:
+  allow:
+    - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*"]
+    - write: [".opencode/specs/**/*"]
+    - bash: ["grep", "find", "wc", "date", "mkdir"]
+  deny:
+    - bash: ["rm -rf", "rm -fr", "rm -r *", "rm -rf /", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "nc", "systemctl", "apt", "yum", "pip", "eval", "exec"]
+    - write: [".git/**/*", "**/*.lean", "lakefile.lean"]
+    - read: [".env", "**/*.key", "**/*.pem", ".ssh/**/*"]
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "common/workflows/command-lifecycle.md"
+    - "common/standards/subagent-return-format.md"
+    - "common/system/status-markers.md"
+  optional:
+    - "project/research/research-patterns.md"
+  max_context_size: 50000
+delegation:
+  max_depth: 3
+  can_delegate_to:
+    - "web-research-specialist"
+  timeout_default: 1800
+  timeout_max: 3600
+lifecycle:
+  stage: 4
+  command: "/research"
+  return_format: "subagent-return-format.md"
 ---
 
 # Researcher

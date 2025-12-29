@@ -1,7 +1,47 @@
 ---
+name: "task-executor"
+version: "1.0.0"
 description: "Multi-phase task execution with resume support and per-phase git commits"
 mode: subagent
+agent_type: execution
 temperature: 0.2
+max_tokens: 4000
+timeout: 7200
+tools:
+  - read
+  - write
+  - bash
+  - grep
+  - glob
+permissions:
+  allow:
+    - read: [".opencode/**/*"]
+    - write: [".opencode/specs/**/*"]
+    - bash: ["grep", "find", "wc", "date", "mkdir", "git"]
+  deny:
+    - bash: ["rm -rf", "rm -fr", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "systemctl", "apt", "yum", "pip", "eval", "exec"]
+    - write: [".git/config", ".git/HEAD"]
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "common/workflows/command-lifecycle.md"
+    - "common/standards/subagent-return-format.md"
+    - "common/system/status-markers.md"
+  max_context_size: 50000
+delegation:
+  max_depth: 3
+  can_delegate_to:
+    - "implementer"
+    - "lean-implementation-agent"
+    - "status-sync-manager"
+    - "git-workflow-manager"
+  timeout_default: 7200
+  timeout_max: 7200
+lifecycle:
+  stage: 4
+  command: "/implement"
+  return_format: "subagent-return-format.md"
 ---
 
 # Task Executor

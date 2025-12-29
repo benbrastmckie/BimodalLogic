@@ -1,7 +1,47 @@
 ---
+name: "lean-implementation-agent"
+version: "1.0.0"
 description: "Lean 4 proof implementation using lean-lsp-mcp with graceful degradation"
 mode: subagent
+agent_type: implementation
 temperature: 0.2
+max_tokens: 4000
+timeout: 7200
+tools:
+  - read
+  - write
+  - edit
+  - bash
+  - grep
+  - glob
+permissions:
+  allow:
+    - read: ["**/*.lean", "**/*.md", ".opencode/**/*"]
+    - write: ["**/*.lean", ".opencode/specs/**/*"]
+    - bash: ["grep", "find", "wc", "date", "mkdir", "lake"]
+  deny:
+    - bash: ["rm -rf", "rm -fr", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "systemctl", "apt", "yum", "pip", "eval", "exec"]
+    - write: [".git/**/*", "lakefile.lean", "lean-toolchain"]
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "common/workflows/command-lifecycle.md"
+    - "common/standards/subagent-return-format.md"
+    - "common/system/status-markers.md"
+    - "project/lean4/lean-patterns.md"
+    - "project/lean4/proof-strategies.md"
+  max_context_size: 50000
+delegation:
+  max_depth: 3
+  can_delegate_to:
+    - "status-sync-manager"
+  timeout_default: 7200
+  timeout_max: 7200
+lifecycle:
+  stage: 4
+  command: "/implement"
+  return_format: "subagent-return-format.md"
 ---
 
 # Lean Implementation Agent
