@@ -318,9 +318,7 @@ Context Loaded:
     Track fix effectiveness by checking recurrence
     Mark failed fixes appropriately
   </fix_effectiveness>
-  <no_emojis>
-    No emojis in error analysis or fix plans
-  </no_emojis>
+
   <atomic_updates>
     Use atomic write for errors.json updates
   </atomic_updates>

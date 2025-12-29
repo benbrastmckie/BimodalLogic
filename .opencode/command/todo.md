@@ -451,9 +451,7 @@ Context Loaded:
     Request confirmation if archiving > 5 tasks
     Display task list before archival
   </user_confirmation>
-  <no_emojis>
-    No emojis in output or commit messages
-  </no_emojis>
+
 </quality_standards>
 
 <usage_examples>

@@ -120,7 +120,6 @@ Context Loaded:
 <quality_standards>
   <status_markers>Use markers from status-markers.md with timestamps; preserve history.</status_markers>
   <language_routing>Lean intent from TODO Language or --lang; plan lean: is secondary.</language_routing>
-  <no_emojis>Outputs and artifacts must be emoji-free.</no_emojis>
   <validation>Reject invalid inputs and directory creation without artifacts.</validation>
 </quality_standards>
 
