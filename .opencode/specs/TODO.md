@@ -16,11 +16,12 @@
 
 ### 244. Phase 1: Context Index and /research Frontmatter Prototype (Task 240 OpenAgents Migration)
 - **Effort**: 12-16 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: Task 240 (research completed)
+- **Research**: [Research Report 001](.opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/research-001.md)
 
 **Description**:
 Implement Phase 1 of OpenAgents architectural migration: Create lazy-loading context index, migrate /research command to frontmatter delegation pattern, and validate improvements. This phase establishes the architectural patterns that will be applied to all commands in Phase 2. Goal: Reduce context window usage from 60-70% to under 15% during routing, reduce research.md from 677 lines to under 200 lines, achieve 100% Stage 7 execution reliability.
@@ -175,9 +176,11 @@ Implement Phase 4 of OpenAgents architectural migration: Comprehensive testing a
 
 ### 243. Implement Phase 4 from task 237 implementation plan (aggressive command file deduplication)
 - **Effort**: 24-30 hours (expanded to include context file improvements from task 240 research)
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
 - **Started**: 2025-12-29
-- **Completed**: 2025-12-29
+- **Abandoned**: 2025-12-29
+- **Abandonment Reason**: Superseded by task 240 OpenAgents migration approach. Task 240 research determined that the command file deduplication approach (task 237, phase 4 = task 243) should be replaced with OpenAgents frontmatter delegation pattern. See task 240 comparative analysis for systematic improvements. Partial work (phases 1-3): delegation-patterns.md created (503 lines consolidated), state-management.md pending.
+- **Superseded By**: Task 240
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -264,14 +267,6 @@ CRITICAL BLOCKER - Without reliable Stage 7 execution, the entire workflow syste
 2. Phase 1 prototype: context/index.md + /research frontmatter delegation
 3. Validate improvements: context <10% routing, Stage 7 100% reliable
 4. If successful, proceed with Phases 2-4 full migration
-
----
-
----
-
----
-
----
 
 ---
 
@@ -555,8 +550,6 @@ Enables the first working path for automated proof search with termination guard
 
 ### Decidability
 
----
-
 ### 136. Design Decidability.lean architecture and signatures
 - **Effort**: 2 hours
 - **Status**: [NOT STARTED]
@@ -611,8 +604,6 @@ Enables the first working path for automated proof search with termination guard
 - **Impact**: Delivers an initial, test-backed decision procedure for TM logic.
 
 ### Layer Extensions (Future Planning)
-
----
 
 ### 139. Draft Layer 1 counterfactual operator plan
 - **Effort**: 2 hours
@@ -916,3 +907,31 @@ Research revealed that OpenCode has native MCP (Model Context Protocol) support 
 CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client to proper OpenCode-native MCP integration. Enables lean-lsp-mcp tools for real-time Lean compilation checking, proof verification, and theorem search. Reduces context window usage by 2000-5000 tokens through selective per-agent tool enablement. Establishes foundation for additional MCP servers (Context7, Grep) to enhance Lean development workflow.
 
 ---
+
+### 248. Systematically investigate root cause of /research and /plan TODO.md update failures
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+User reports that /research and /plan commands do not update TODO.md correctly. However, examination of task 240 shows it WAS updated correctly to [RESEARCHED] status with timestamps and artifact links. Systematic investigation needed to: (1) Reproduce the issue with specific test cases, (2) Trace command execution through Stage 7 (Postflight), (3) Verify status-sync-manager invocation and completion, (4) Check for edge cases or specific conditions that cause failures, (5) Document actual failure pattern vs perceived issue.
+
+**Tasks**:
+- Run /research on test task and trace Stage 7 execution
+- Run /plan on test task and trace Stage 7 execution  
+- Compare successful cases (task 240) vs reported failures
+- Check orchestrator logs for Stage 7 skip patterns
+- Review status-sync-manager invocation success rate
+- Document reproduction steps if issue confirmed
+- If issue confirmed: create fix plan
+- If issue not confirmed: document evidence and close
+
+**Acceptance Criteria**:
+- [ ] Issue reproduced or determined to be false positive
+- [ ] Stage 7 execution traced for both /research and /plan
+- [ ] status-sync-manager invocation verified
+- [ ] Root cause documented with evidence
+- [ ] Fix plan created (if issue confirmed) or evidence documented (if false positive)
