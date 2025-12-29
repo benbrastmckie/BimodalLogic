@@ -158,7 +158,7 @@
 
 ### 224. Configure OpenCode to start in Orchestrator mode or auto-switch agent modes for workflow commands
 - **Effort**: 2 hours (estimated from research)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Priority**: Medium
@@ -168,6 +168,9 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/224_configure_opencode_default_agent/reports/research-001.md]
 - **Plan**: [.opencode/specs/224_configure_opencode_default_agent/plans/implementation-001.md]
+- **Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/224_configure_opencode_default_agent/summaries/implementation-summary-20251229.md]
+  - Modified Files: opencode.json
 - **Files Affected**:
   - opencode.json (potential agent configuration)
   - .opencode/rules/ (potential custom rules)
