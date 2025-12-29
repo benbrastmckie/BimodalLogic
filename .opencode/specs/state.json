@@ -16,40 +16,6 @@
   },
   "active_projects": [
     {
-      "project_number": 210,
-      "project_name": "fix_lean_subagents",
-      "type": "bugfix",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "markdown",
-      "created": "2025-12-28T00:00:00Z",
-      "started": "2025-12-28",
-      "research_completed": "2025-12-28",
-      "planning_completed": "2025-12-29",
-      "completed": "2025-12-29",
-      "last_updated": "2025-12-29",
-      "artifacts": [
-        ".opencode/specs/210_fix_lean_subagents/reports/research-001.md",
-        ".opencode/specs/210_fix_lean_subagents/summaries/research-summary.md",
-        ".opencode/specs/210_fix_lean_subagents/plans/implementation-001.md",
-        ".opencode/specs/210_fix_lean_subagents/summaries/implementation-summary-20251228.md",
-        ".opencode/agent/subagents/lean-research-agent.md",
-        ".opencode/agent/subagents/lean-implementation-agent.md"
-      ],
-      "plan_path": ".opencode/specs/210_fix_lean_subagents/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 3,
-        "estimated_hours": 8,
-        "complexity": "medium"
-      },
-      "estimated_hours": 8.0,
-      "files_modified": [
-        ".opencode/agent/subagents/lean-research-agent.md",
-        ".opencode/agent/subagents/lean-implementation-agent.md"
-      ]
-    },
-    {
       "project_number": 189,
       "project_name": "research_divide_flag",
       "type": "feature",
@@ -101,129 +67,6 @@
       ]
     },
     {
-      "project_number": 220,
-      "project_name": "metadata_passing_compliance_verification",
-      "type": "compliance_verification",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "markdown",
-      "created": "2025-12-28T22:04:59Z",
-      "started": "2025-12-28",
-      "research_completed": "2025-12-28",
-      "planning_completed": "2025-12-28",
-      "completed": "2025-12-28",
-      "last_updated": "2025-12-28",
-      "artifacts": [
-        ".opencode/specs/220_metadata_passing_compliance_verification/reports/research-001.md",
-        ".opencode/specs/220_metadata_passing_compliance_verification/plans/implementation-001.md",
-        ".opencode/specs/220_metadata_passing_compliance_verification/summaries/compliance-verification-report.md",
-        ".opencode/specs/220_metadata_passing_compliance_verification/summaries/implementation-summary-20251228.md",
-        ".opencode/agent/subagents/lean-research-agent.md",
-        ".opencode/agent/subagents/lean-implementation-agent.md",
-        ".opencode/agent/subagents/planner.md",
-        ".opencode/agent/subagents/task-executor.md"
-      ],
-      "plan_path": ".opencode/specs/220_metadata_passing_compliance_verification/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 6,
-        "estimated_hours": 2.5,
-        "complexity": "low"
-      },
-      "plan_versions": [
-        {
-          "version": 1,
-          "path": ".opencode/specs/220_metadata_passing_compliance_verification/plans/implementation-001.md",
-          "created": "2025-12-28T22:50:00Z",
-          "reason": "Initial compliance verification plan"
-        }
-      ],
-      "estimated_hours": 2.5,
-      "phases": 6,
-      "files_modified": [
-        ".opencode/agent/subagents/lean-research-agent.md",
-        ".opencode/agent/subagents/lean-implementation-agent.md",
-        ".opencode/agent/subagents/planner.md",
-        ".opencode/agent/subagents/task-executor.md"
-      ]
-    },
-    {
-      "project_number": 222,
-      "project_name": "investigate_artifact_path_errors",
-      "type": "bugfix",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2025-12-28T23:01:58Z",
-      "started": "2025-12-28",
-      "research_completed": "2025-12-28",
-      "planning_completed": "2025-12-28",
-      "completed": "2025-12-28",
-      "last_updated": "2025-12-28",
-      "artifacts": [
-        ".opencode/specs/222_investigate_artifact_path_errors/reports/research-001.md",
-        ".opencode/specs/222_investigate_artifact_path_errors/plans/implementation-001.md",
-        ".opencode/specs/222_investigate_artifact_path_errors/summaries/implementation-summary-20251228.md",
-        ".opencode/agent/subagents/lean-research-agent.md",
-        ".opencode/specs/213_resolve_is_valid_swap_involution_blocker/",
-        ".opencode/specs/215_fix_todo_task_removal/",
-        ".opencode/specs/218_fix_lean_lsp_mcp_integration/",
-        "TODO.md"
-      ],
-      "plan_path": ".opencode/specs/222_investigate_artifact_path_errors/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 6,
-        "estimated_hours": 3,
-        "complexity": "low"
-      },
-      "plan_versions": [
-        {
-          "version": 1,
-          "path": ".opencode/specs/222_investigate_artifact_path_errors/plans/implementation-001.md",
-          "created": "2025-12-28T15:30:00Z",
-          "reason": "Initial implementation plan"
-        }
-      ],
-      "estimated_hours": 3.0,
-      "phases": 6,
-      "files_modified": [
-        ".opencode/agent/subagents/lean-research-agent.md",
-        "TODO.md"
-      ]
-    },
-    {
-      "project_number": 224,
-      "project_name": "configure_opencode_default_agent",
-      "type": "configuration",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "general",
-      "created": "2025-12-29T00:00:00Z",
-      "started": "2025-12-29",
-      "research_completed": "2025-12-29",
-      "last_updated": "2025-12-29",
-      "artifacts": [
-        ".opencode/specs/224_configure_opencode_default_agent/reports/research-001.md",
-        ".opencode/specs/224_configure_opencode_default_agent/plans/implementation-001.md",
-        ".opencode/specs/224_configure_opencode_default_agent/summaries/implementation-summary-20251229.md",
-        "opencode.json"
-      ],
-      "completed": "2025-12-29",
-      "plan_path": ".opencode/specs/224_configure_opencode_default_agent/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 4,
-        "estimated_hours": 2,
-        "complexity": "low"
-      },
-      "estimated_hours": 2.0,
-      "phases": 4,
-      "files_modified": [
-        "opencode.json"
-      ]
-    },
-    {
       "project_number": 226,
       "project_name": "fix_review_command",
       "type": "bugfix",
@@ -258,168 +101,6 @@
         ".opencode/agent/subagents/reviewer.md",
         ".opencode/context/common/workflows/review.md"
       ]
-    },
-    {
-      "project_number": 231,
-      "project_name": "fix_systematic_command_stage_7_postflight_execution_failures",
-      "type": "bugfix",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "critical",
-      "language": "markdown",
-      "created": "2025-12-29T02:30:00Z",
-      "started": "2025-12-29",
-      "completed": "2025-12-29",
-      "last_updated": "2025-12-29",
-      "artifacts": [
-        ".opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/reports/research-001.md",
-        ".opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/plans/implementation-001.md",
-        ".opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/summaries/implementation-summary-20251228.md",
-        ".opencode/command/plan.md",
-        ".opencode/command/research.md",
-        ".opencode/command/implement.md",
-        ".opencode/command/revise.md",
-        ".opencode/agent/orchestrator.md",
-        ".opencode/context/common/workflows/command-lifecycle.md"
-      ],
-      "estimated_hours": 10.0,
-      "supersedes": [
-        227,
-        228,
-        229
-      ],
-      "supersedes_reason": "Tasks 227, 228, 229 based on incorrect root cause (orchestrator bypass). Real issue is Stage 7 execution incompleteness within commands.",
-      "research_completed": "2025-12-29",
-      "planning_completed": "2025-12-29",
-      "plan_path": ".opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 5,
-        "estimated_hours": 10,
-        "complexity": "medium"
-      },
-      "phases": 5,
-      "files_modified": [
-        ".opencode/command/plan.md",
-        ".opencode/command/research.md",
-        ".opencode/command/implement.md",
-        ".opencode/command/revise.md",
-        ".opencode/agent/orchestrator.md",
-        ".opencode/context/common/workflows/command-lifecycle.md"
-      ]
-    },
-    {
-      "project_number": 232,
-      "project_name": "systematically_fix_todomd_path_references",
-      "type": "bugfix",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2025-12-29T01:42:33Z",
-      "started": "2025-12-29",
-      "research_completed": "2025-12-29",
-      "planning_completed": "2025-12-29",
-      "completed": "2025-12-29",
-      "last_updated": "2025-12-29",
-      "estimated_hours": 11.0,
-      "artifacts": [
-        ".opencode/specs/232_systematically_fix_todomd_path_references/reports/research-001.md",
-        ".opencode/specs/232_systematically_fix_todomd_path_references/plans/implementation-001.md",
-        ".opencode/specs/232_systematically_fix_todomd_path_references/summaries/implementation-summary-20251228.md"
-      ],
-      "plan_path": ".opencode/specs/232_systematically_fix_todomd_path_references/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 6,
-        "estimated_hours": 11,
-        "complexity": "medium"
-      },
-      "phases": 6,
-      "files_modified": [
-        ".opencode/command/research.md",
-        ".opencode/command/plan.md",
-        ".opencode/command/implement.md",
-        ".opencode/command/revise.md",
-        ".opencode/command/task.md",
-        ".opencode/command/todo.md",
-        ".opencode/command/review.md",
-        ".opencode/command/errors.md",
-        ".opencode/agent/subagents/status-sync-manager.md",
-        ".opencode/agent/subagents/atomic-task-numberer.md",
-        ".opencode/agent/subagents/planner.md",
-        ".opencode/agent/subagents/reviewer.md",
-        ".opencode/agent/subagents/implementer.md",
-        ".opencode/agent/subagents/lean-implementation-agent.md",
-        ".opencode/agent/subagents/git-workflow-manager.md",
-        ".opencode/agent/subagents/error-diagnostics-agent.md",
-        ".opencode/context/common/workflows/command-lifecycle.md",
-        ".opencode/context/common/workflows/review.md",
-        ".opencode/context/common/standards/documentation.md",
-        ".opencode/context/common/standards/commands.md",
-        ".opencode/context/common/standards/command-argument-handling.md",
-        ".opencode/specs/TODO.md",
-        "TODO.md"
-      ]
-    },
-    {
-      "project_number": 234,
-      "project_name": "systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts",
-      "type": "enhancement",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2025-12-29T02:30:00Z",
-      "started": "2025-12-29",
-      "research_completed": "2025-12-29",
-      "planning_completed": "2025-12-29",
-      "last_updated": "2025-12-29",
-      "artifacts": [
-        ".opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/reports/research-001.md",
-        ".opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/plans/implementation-001.md",
-        ".opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/summaries/implementation-summary-20251228.md"
-      ],
-      "estimated_hours": 8.0,
-      "plan_path": ".opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 7,
-        "estimated_hours": 8,
-        "complexity": "medium"
-      },
-      "completed": "2025-12-29",
-      "phases": 7,
-      "files_modified": [
-        ".opencode/command/research.md",
-        ".opencode/command/plan.md",
-        ".opencode/command/implement.md",
-        ".opencode/command/revise.md",
-        ".opencode/context/common/workflows/command-lifecycle.md"
-      ]
-    },
-    {
-      "project_number": 235,
-      "project_name": "find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks",
-      "type": "bugfix",
-      "phase": "implementation_in_progress",
-      "status": "implementing",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2025-12-29T05:20:00Z",
-      "started": "2025-12-29",
-      "research_completed": "2025-12-29",
-      "planning_completed": "2025-12-29",
-      "implementation_started": "2025-12-29",
-      "last_updated": "2025-12-29",
-      "artifacts": [
-        ".opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/reports/research-001.md",
-        ".opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/plans/implementation-001.md"
-      ],
-      "plan_path": ".opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 5,
-        "estimated_hours": 12,
-        "complexity": "medium-high"
-      },
-      "estimated_hours": 12.0
     },
     {
       "project_number": 236,
@@ -680,13 +361,119 @@
       "type": "research",
       "completed": "2025-12-29",
       "summary": "Research Lean 4 techniques for completing task 193 involution proof"
+    },
+    {
+      "project_number": 235,
+      "project_name": "find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks",
+      "type": "bugfix",
+      "completed": "2025-12-28",
+      "summary": "Find and fix root cause of /todo command not archiving completed tasks"
+    },
+    {
+      "project_number": 234,
+      "project_name": "systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts",
+      "type": "enhancement",
+      "completed": "2025-12-28",
+      "summary": "Systematically improve all commands to protect context window and eliminate confirmation prompts"
+    },
+    {
+      "project_number": 148,
+      "project_name": "ensure_command_updates_also_sync_sorry_and_tactic_",
+      "type": "task",
+      "completed": "2025-12-28",
+      "summary": "Ensure command updates also sync SORRY and TACTIC registries",
+      "abandoned": "2025-12-29"
+    },
+    {
+      "project_number": 172,
+      "project_name": "complete_api_documentation_for_all_logos_modules",
+      "type": "task",
+      "completed": "2025-12-28",
+      "summary": "Complete API documentation for all Logos modules"
+    },
+    {
+      "project_number": 174,
+      "project_name": "add_property_based_testing_framework_and_metalogic",
+      "type": "task",
+      "completed": "2025-12-28",
+      "summary": "Add property-based testing framework and metalogic tests"
+    },
+    {
+      "project_number": 185,
+      "project_name": "fix_integration_test_helper_api_mismatches",
+      "type": "bugfix",
+      "completed": "2025-12-28",
+      "summary": "Fix integration test helper API mismatches"
+    },
+    {
+      "project_number": 186,
+      "project_name": "refactor_maintenancemd_to_include_review_update_in",
+      "type": "task",
+      "completed": "2025-12-28",
+      "summary": "Refactor MAINTENANCE.md to include /review update instructions"
+    },
+    {
+      "project_number": 187,
+      "project_name": "refactor_reviewmd_workflow_context_to_specify_regi",
+      "type": "task",
+      "completed": "2025-12-28",
+      "summary": "Refactor review.md workflow context to specify registry update workflow"
+    },
+    {
+      "project_number": 188,
+      "project_name": "refactor_review_command_to_load_reviewmd_workflow_",
+      "type": "task",
+      "completed": "2025-12-28",
+      "summary": "Refactor /review command to load review.md workflow context"
+    },
+    {
+      "project_number": 210,
+      "project_name": "fix_lean_subagents",
+      "type": "bugfix",
+      "completed": "2025-12-28",
+      "summary": "Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md"
+    },
+    {
+      "project_number": 220,
+      "project_name": "metadata_passing_compliance_verification",
+      "type": "compliance_verification",
+      "completed": "2025-12-28",
+      "summary": "Metadata Passing Compliance Verification"
+    },
+    {
+      "project_number": 222,
+      "project_name": "investigate_artifact_path_errors",
+      "type": "bugfix",
+      "completed": "2025-12-28",
+      "summary": "Investigate and fix artifact creation in /specs instead of /.opencode/specs"
+    },
+    {
+      "project_number": 224,
+      "project_name": "configure_opencode_default_agent",
+      "type": "configuration",
+      "completed": "2025-12-28",
+      "summary": "Configure OpenCode to start in Orchestrator mode or auto-switch agent modes for workflow commands"
+    },
+    {
+      "project_number": 231,
+      "project_name": "fix_systematic_command_stage_7_postflight_execution_failures",
+      "type": "bugfix",
+      "completed": "2025-12-28",
+      "summary": "Fix systematic command Stage 7 (Postflight) execution failures causing incomplete TODO.md and state.json updates"
+    },
+    {
+      "project_number": 232,
+      "project_name": "systematically_fix_todomd_path_references",
+      "type": "bugfix",
+      "completed": "2025-12-28",
+      "summary": "Systematically fix TODO.md path references and migrate tasks from project root to .opencode/specs"
     }
   ],
   "repository_health": {
     "last_assessed": "2025-12-29T00:05:34Z",
     "overall_score": 92,
-    "active_tasks": 10,
-    "completed_tasks": 35,
+    "active_tasks": 6,
+    "completed_tasks": 41,
     "blocked_tasks": 2,
     "in_progress_tasks": 2,
     "not_started_tasks": 23,
@@ -710,6 +497,10 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T21:58:40.040731",
+      "activity": "Archived 20 tasks: 19 completed, 1 abandoned"
+    },
     {
       "timestamp": "2025-12-29T06:00:00Z",
       "activity": "Marked task 238 as RESEARCHED: Comprehensive emoji analysis completed - Found 88 emoji instances across 24 files, root causes identified (agent non-compliance, missing validation), elimination strategy with prevention recommendations"
@@ -796,41 +587,6 @@
     }
   ],
   "pending_tasks": [
-    {
-      "project_number": 185,
-      "project_name": "fix_integration_test_helper_api_mismatches",
-      "type": "bugfix",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "lean",
-      "created": "2025-12-25T00:00:00Z",
-      "started": "2025-12-25",
-      "research_completed": "2025-12-29",
-      "planning_completed": "2025-12-29",
-      "completed": "2025-12-29",
-      "last_updated": "2025-12-29",
-      "artifacts": [
-        ".opencode/specs/185_fix_integration_test_helper_api_mismatches/reports/research-001.md",
-        ".opencode/specs/185_fix_integration_test_helper_api_mismatches/plans/implementation-001.md",
-        ".opencode/specs/185_fix_integration_test_helper_api_mismatches/summaries/implementation-summary-20251228.md",
-        "LogosTest/Core/Integration/Helpers.lean"
-      ],
-      "estimated_hours": 1.0,
-      "plan_path": ".opencode/specs/185_fix_integration_test_helper_api_mismatches/plans/implementation-001.md",
-      "plan_metadata": {
-        "phase_count": 5,
-        "estimated_hours": 1.0,
-        "complexity": "simple"
-      },
-      "dependencies": [
-        183,
-        184
-      ],
-      "files_modified": [
-        "LogosTest/Core/Integration/Helpers.lean"
-      ]
-    },
     {
       "project_number": 173,
       "title": "Implement integration tests for proof system and semantics",

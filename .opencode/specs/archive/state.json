@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2025-12-29T05:14:32.850974Z",
+  "_last_updated": "2025-12-28T21:58:40.040600",
   "archived_projects": [
     {
       "project_number": 126,
@@ -718,6 +718,226 @@
       "artifacts": {
         "base_path": null
       }
+    },
+    {
+      "project_number": 235,
+      "project_name": "find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks",
+      "type": "bugfix",
+      "status": "completed",
+      "created": "2025-12-29T05:20:00Z",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Find and fix root cause of /todo command not archiving completed tasks"
+    },
+    {
+      "project_number": 234,
+      "project_name": "systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts",
+      "type": "enhancement",
+      "status": "completed",
+      "created": "2025-12-29T02:30:00Z",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Systematically improve all commands to protect context window and eliminate confirmation prompts"
+    },
+    {
+      "project_number": 148,
+      "project_name": "ensure_command_updates_also_sync_sorry_and_tactic_",
+      "type": "task",
+      "status": "abandoned",
+      "created": "unknown",
+      "completed": null,
+      "abandoned": "2025-12-28",
+      "archived": "2025-12-28",
+      "summary": "Ensure command updates also sync SORRY and TACTIC registries"
+    },
+    {
+      "project_number": 172,
+      "project_name": "complete_api_documentation_for_all_logos_modules",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Complete API documentation for all Logos modules"
+    },
+    {
+      "project_number": 174,
+      "project_name": "add_property_based_testing_framework_and_metalogic",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Add property-based testing framework and metalogic tests"
+    },
+    {
+      "project_number": 185,
+      "project_name": "fix_integration_test_helper_api_mismatches",
+      "type": "bugfix",
+      "status": "completed",
+      "created": "2025-12-25T00:00:00Z",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Fix integration test helper API mismatches"
+    },
+    {
+      "project_number": 186,
+      "project_name": "refactor_maintenancemd_to_include_review_update_in",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Refactor MAINTENANCE.md to include /review update instructions"
+    },
+    {
+      "project_number": 187,
+      "project_name": "refactor_reviewmd_workflow_context_to_specify_regi",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Refactor review.md workflow context to specify registry update workflow"
+    },
+    {
+      "project_number": 188,
+      "project_name": "refactor_review_command_to_load_reviewmd_workflow_",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Refactor /review command to load review.md workflow context"
+    },
+    {
+      "project_number": 190,
+      "project_name": "improve_maintenancemd_documentation_structure_and_",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Improve MAINTENANCE.md documentation structure and content"
+    },
+    {
+      "project_number": 208,
+      "project_name": "fix_implement_and_research_routing_to_use_lean_spe",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Fix /implement and /research routing to use Lean-specific agents and tools"
+    },
+    {
+      "project_number": 209,
+      "project_name": "research_lean_4_techniques_for_completing_task_193",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Research Lean 4 techniques for completing task 193 involution proof"
+    },
+    {
+      "project_number": 210,
+      "project_name": "fix_lean_subagents",
+      "type": "bugfix",
+      "status": "completed",
+      "created": "2025-12-28T00:00:00Z",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md"
+    },
+    {
+      "project_number": 212,
+      "project_name": "research_and_improve_lean_lsp_mcp_usage_in_lean_im",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Research and improve lean-lsp-mcp usage in Lean implementation agent"
+    },
+    {
+      "project_number": 219,
+      "project_name": "restructure_module_hierarchy_separating_semantic_f",
+      "type": "task",
+      "status": "completed",
+      "created": "unknown",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Restructure module hierarchy separating semantic from proof system properties"
+    },
+    {
+      "project_number": 220,
+      "project_name": "metadata_passing_compliance_verification",
+      "type": "compliance_verification",
+      "status": "completed",
+      "created": "2025-12-28T22:04:59Z",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Metadata Passing Compliance Verification"
+    },
+    {
+      "project_number": 222,
+      "project_name": "investigate_artifact_path_errors",
+      "type": "bugfix",
+      "status": "completed",
+      "created": "2025-12-28T23:01:58Z",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Investigate and fix artifact creation in /specs instead of /.opencode/specs"
+    },
+    {
+      "project_number": 224,
+      "project_name": "configure_opencode_default_agent",
+      "type": "configuration",
+      "status": "completed",
+      "created": "2025-12-29T00:00:00Z",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Configure OpenCode to start in Orchestrator mode or auto-switch agent modes for workflow commands"
+    },
+    {
+      "project_number": 231,
+      "project_name": "fix_systematic_command_stage_7_postflight_execution_failures",
+      "type": "bugfix",
+      "status": "completed",
+      "created": "2025-12-29T02:30:00Z",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Fix systematic command Stage 7 (Postflight) execution failures causing incomplete TODO.md and state.json updates"
+    },
+    {
+      "project_number": 232,
+      "project_name": "systematically_fix_todomd_path_references",
+      "type": "bugfix",
+      "status": "completed",
+      "created": "2025-12-29T01:42:33Z",
+      "completed": "2025-12-28",
+      "abandoned": null,
+      "archived": "2025-12-28",
+      "summary": "Systematically fix TODO.md path references and migrate tasks from project root to .opencode/specs"
     }
   ]
 }
