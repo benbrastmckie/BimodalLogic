@@ -128,6 +128,22 @@
       "artifacts": [
         ".opencode/specs/222_investigate_artifact_path_errors/reports/research-001.md"
       ]
+    },
+    {
+      "project_number": 224,
+      "project_name": "configure_opencode_default_agent",
+      "type": "configuration",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "medium",
+      "language": "general",
+      "created": "2025-12-29T00:00:00Z",
+      "started": "2025-12-29",
+      "research_completed": "2025-12-29",
+      "last_updated": "2025-12-29",
+      "artifacts": [
+        ".opencode/specs/224_configure_opencode_default_agent/reports/research-001.md"
+      ]
     }
   ],
   "completed_projects": [

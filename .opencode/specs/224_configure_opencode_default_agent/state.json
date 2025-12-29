@@ -1,0 +1,19 @@
+{
+  "project_name": "configure_opencode_default_agent",
+  "project_number": 224,
+  "type": "configuration",
+  "phase": "research_completed",
+  "reports": [
+    {
+      "type": "research_report",
+      "path": "reports/research-001.md",
+      "summary": "Comprehensive research report analyzing OpenCode agent system, command routing, and 4 potential solutions with implementation guidance",
+      "created": "2025-12-29"
+    }
+  ],
+  "plans": [],
+  "summaries": [],
+  "status": "active",
+  "created": "2025-12-29T00:00:00Z",
+  "last_updated": "2025-12-29"
+}
