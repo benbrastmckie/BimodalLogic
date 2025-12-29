@@ -249,7 +249,7 @@
  
 ### 185. Fix integration test helper API mismatches
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-25
 - **Completed**: 2025-12-29
 - **Priority**: High
@@ -258,6 +258,8 @@
 - **Dependencies**: 183, 184
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/185_fix_integration_test_helper_api_mismatches/reports/research-001.md]
+- **Plan**: [.opencode/specs/185_fix_integration_test_helper_api_mismatches/plans/implementation-001.md]
+- **Plan Summary**: 5-phase implementation (1 hour total). Phase 1: Fix line 126 verify_validity type mismatch using valid_iff_empty_consequence.mpr (10 min). Phase 2: Fix line 131 verify_workflow validity unwrapping (10 min). Phase 3: Compile Helpers.lean and verify fixes (5 min). Phase 4: Run integration test suite - verify all 146 tests compile and pass (20 min). Phase 5: Validation and documentation (15 min). Fixes confusion between validity (⊨ φ) and semantic consequence ([] ⊨ φ) using conversion theorem. Trivial changes, well-understood API.
 - **Files Affected**:
   - LogosTest/Core/Integration/Helpers.lean
 - **Description**: Fix 3 API mismatches in integration test Helpers.lean that prevent test compilation after core build errors are fixed. Errors: Line 126 (semantic consequence type mismatch), Line 131 (validity unwrapping issue), Line 129 (unsolved goals in verify_workflow). These errors occur because test helpers assume an API that differs from the actual Logos implementation. **UPDATE (2025-12-28)**: Dependency task 184 now resolved by task 219 (Truth.lean compiles successfully). Task 183 (DeductionTheorem.lean) was completed separately. This task can now proceed once task 183 is verified complete. **RESEARCH COMPLETE (2025-12-29)**: Root cause identified - confusion between validity (⊨ φ) and semantic consequence ([] ⊨ φ). All 3 fixes are trivial using valid_iff_empty_consequence conversion theorem (< 30 min implementation).

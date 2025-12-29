@@ -2,7 +2,7 @@
   "project_name": "fix_integration_test_helper_api_mismatches",
   "project_number": 185,
   "type": "bugfix",
-  "phase": "research_completed",
+  "phase": "planning_completed",
   "reports": [
     {
       "type": "research_report",
@@ -11,9 +11,19 @@
       "summary": "Analyzed 3 API mismatches in Helpers.lean. Root cause: type mismatch between validity (⊨ φ) and semantic consequence ([] ⊨ φ). Fix: use valid_iff_empty_consequence conversion theorem. Effort: < 30 minutes."
     }
   ],
-  "plans": [],
+  "plans": [
+    {
+      "type": "implementation_plan",
+      "path": "plans/implementation-001.md",
+      "created": "2025-12-29T00:00:00Z",
+      "summary": "5-phase implementation plan (1 hour total). Fix line 126 type mismatch, fix line 131 validity unwrapping, compile verification, run 146 integration tests, validation and documentation.",
+      "phase_count": 5,
+      "estimated_hours": 1.0,
+      "complexity": "simple"
+    }
+  ],
   "summaries": [],
-  "status": "researched",
+  "status": "planned",
   "created": "2025-12-25T00:00:00Z",
   "last_updated": "2025-12-29"
 }

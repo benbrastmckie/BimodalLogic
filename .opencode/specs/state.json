@@ -279,18 +279,26 @@
       "project_number": 232,
       "project_name": "systematically_fix_todomd_path_references",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-29T01:42:33Z",
       "started": "2025-12-29",
       "research_completed": "2025-12-29",
+      "planning_completed": "2025-12-29",
       "last_updated": "2025-12-29",
       "estimated_hours": 11.0,
       "artifacts": [
-        ".opencode/specs/232_systematically_fix_todomd_path_references/reports/research-001.md"
-      ]
+        ".opencode/specs/232_systematically_fix_todomd_path_references/reports/research-001.md",
+        ".opencode/specs/232_systematically_fix_todomd_path_references/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/232_systematically_fix_todomd_path_references/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 6,
+        "estimated_hours": 11,
+        "complexity": "medium"
+      }
     }
   ],
   "completed_projects": [
@@ -823,18 +831,26 @@
       "project_number": 185,
       "project_name": "fix_integration_test_helper_api_mismatches",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "lean",
       "created": "2025-12-25T00:00:00Z",
       "started": "2025-12-25",
       "research_completed": "2025-12-29",
+      "planning_completed": "2025-12-29",
       "last_updated": "2025-12-29",
       "artifacts": [
-        ".opencode/specs/185_fix_integration_test_helper_api_mismatches/reports/research-001.md"
+        ".opencode/specs/185_fix_integration_test_helper_api_mismatches/reports/research-001.md",
+        ".opencode/specs/185_fix_integration_test_helper_api_mismatches/plans/implementation-001.md"
       ],
-      "estimated_hours": 1.5,
+      "estimated_hours": 1.0,
+      "plan_path": ".opencode/specs/185_fix_integration_test_helper_api_mismatches/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 5,
+        "estimated_hours": 1.0,
+        "complexity": "simple"
+      },
       "dependencies": [
         183,
         184
