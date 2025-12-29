@@ -14,16 +14,54 @@
 
 ## High Priority
 
-### 229. Review and optimize orchestrator-command integration for context efficiency
+### 231. Fix systematic command Stage 7 (Postflight) execution failures causing incomplete TODO.md and state.json updates
+- **Effort**: 8-10 hours
+- **Status**: [NOT STARTED]
+- **Created**: 2025-12-29
+- **Priority**: Critical
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Supersedes**: Tasks 227, 228, 229 (all ABANDONED due to incorrect root cause analysis)
+- **Files Affected**:
+  - .opencode/command/plan.md
+  - .opencode/command/research.md
+  - .opencode/command/implement.md
+  - .opencode/command/revise.md
+  - .opencode/agent/orchestrator.md
+  - .opencode/context/common/workflows/command-lifecycle.md
+- **Description**: CRITICAL FIX: All workflow commands (/plan, /research, /implement, /revise) are correctly loaded and executed by the orchestrator, but Claude frequently skips or incompletely executes Stage 7 (Postflight), which delegates to status-sync-manager for atomic TODO.md/state.json updates and creates git commits. This results in successful artifact creation but incomplete task tracking. Evidence: Task 224 (artifacts ✅, TODO.md manual ✅, state.json ❌), Task 229 (plan ✅, tracking required manual intervention). Root causes: (1) Weak prompting - Stage 7 uses descriptive language instead of imperative commands, (2) No validation - no checkpoint confirming Stage 7 completed before Stage 8 returns, (3) No error handling - command proceeds even if Stage 7 fails, (4) Orchestrator lacks stage completion validation, (5) Missing explicit delegation syntax for status-sync-manager invocation.
+- **Acceptance Criteria**:
+  - [ ] Stage 7 instructions strengthened in all 4 command files with imperative language
+  - [ ] Explicit delegation syntax added: `task_tool(subagent_type="status-sync-manager", ...)`
+  - [ ] Stage completion checkpoints added: "Stage N completed ✓" before proceeding
+  - [ ] Pre-Stage-8 validation added: Verify TODO.md and state.json updated before returning
+  - [ ] Error handling added: If Stage 7 fails, rollback and return error (don't proceed to Stage 8)
+  - [ ] Orchestrator enhanced with command stage validation to detect premature returns
+  - [ ] Monitoring/logging added to track stage execution (which executed, which skipped)
+  - [ ] command-lifecycle.md updated with stage validation patterns and mandatory checkpoints
+  - [ ] All 4 commands tested: 100% Stage 7 execution rate achieved
+  - [ ] Test: /plan task → TODO.md updated [PLANNED], state.json updated, git commit created
+  - [ ] Test: /research task → TODO.md updated [RESEARCHED], state.json updated, git commit created
+  - [ ] Test: /implement task → TODO.md updated [COMPLETED], state.json updated, plan phases updated, git commit created
+  - [ ] Test: /revise task → TODO.md updated [REVISED], state.json plan_versions updated, git commit created
+- **Impact**: Resolves systematic task tracking failures affecting ALL workflow commands. Ensures 100% reliability of TODO.md/state.json updates via status-sync-manager's atomic two-phase commit protocol. Eliminates manual intervention needed to sync tracking files. Consolidates fixes for tasks 227, 228, 229 with correct root cause understanding.
+
+---
+
+### 229. ❌ Review and optimize orchestrator-command integration for context efficiency
 - **Effort**: 6 hours
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
 - **Started**: 2025-12-29
 - **Researched**: 2025-12-29
 - **Planned**: 2025-12-29
+- **Abandoned**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Superseded By**: Task 231
+- **Abandonment Reason**: Root cause analysis was incorrect. Research concluded orchestrator bypasses commands, but investigation revealed commands ARE loaded and executed - the issue is Claude skipping Stage 7 (Postflight) within command execution. Task 231 addresses the correct root cause with proper fixes.
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md]
 - **Plan**: [Implementation Plan](.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/plans/implementation-001.md)
@@ -113,15 +151,19 @@
   - [ ] next_project_number increments correctly after each /review
 - **Impact**: CRITICAL - Fixes project numbering collision bug that created 225_codebase_review when task 225 already existed. Enables tracking reviews as completed tasks in TODO.md. Makes review findings actionable by formatting follow-up tasks for easy /task invocation. Reduces context window bloat by returning only brief summaries to orchestrator. Improves context file organization to load exactly the right context without redundancy. Essential for reliable /review command execution and proper project tracking.
 
-### 227. Fix systematic status-sync-manager TODO.md update failures across all workflow commands
+### 227. ❌ Fix systematic status-sync-manager TODO.md update failures across all workflow commands
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
 - **Started**: 2025-12-29
-- **Completed**: 2025-12-29
+- **Researched**: 2025-12-29
+- **Planned**: 2025-12-29
+- **Abandoned**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Superseded By**: Task 231
+- **Abandonment Reason**: Root cause analysis was incorrect. Assumed status-sync-manager was being invoked but failing - actually it was never being invoked because Claude skips Stage 7 (Postflight) in command execution. Task 231 addresses the correct root cause.
 - **Research Artifacts**:
 - **Plan**: [.opencode/specs/227_fix_systematic_status_sync_manager_failures/plans/implementation-001.md]
   - Main Report: [.opencode/specs/227_fix_systematic_status_sync_manager_failures/reports/research-001.md]
@@ -158,15 +200,19 @@
   - [ ] Documentation updated with proper delegation patterns and error handling
 - **Impact**: CRITICAL BLOCKER - Fixes systematic status tracking failure affecting ALL workflow commands. Currently state.json reflects correct status but TODO.md remains stale, causing confusion about task progress, breaking workflow dependencies (tasks appear NOT STARTED when actually RESEARCHED/PLANNED), and violating atomic update guarantees. This breaks the entire task tracking system's integrity. Essential for reliable project management and workflow execution. Builds on task 221's delegation fixes to ensure updates actually work when delegated.
 
-### 228. Fix orchestrator routing to invoke commands instead of bypassing to subagents directly
+### 228. ❌ Fix orchestrator routing to invoke commands instead of bypassing to subagents directly
 - **Effort**: 4 hours
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
 - **Started**: 2025-12-29
-- **Completed**: 2025-12-29
+- **Researched**: 2025-12-29
+- **Planned**: 2025-12-29
+- **Abandoned**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Superseded By**: Task 231
+- **Abandonment Reason**: Root cause analysis was partially incorrect. Assumed orchestrator bypasses commands, but investigation revealed commands ARE loaded and executed - the issue is Claude skipping Stage 7 (Postflight) within command execution. Task 231 addresses the correct root cause.
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/reports/research-001.md]
 - **Plan**: [.opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/plans/implementation-001.md]
