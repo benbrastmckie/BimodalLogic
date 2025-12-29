@@ -1058,21 +1058,38 @@
     {
       "project_number": 249,
       "title": "Phase 2 Follow-up: Add YAML Frontmatter to All 6 Subagents (Task 245 Phase 6)",
-      "status": "planned",
+      "status": "completed",
       "priority": "high",
       "language": "markdown",
       "estimated_hours": 4.5,
       "dependencies": [
         245
       ],
+      "started": "2025-12-29",
       "planning_completed": "2025-12-29",
+      "completed": "2025-12-29",
       "last_updated": "2025-12-29",
       "plan_path": ".opencode/specs/249_yaml_frontmatter_subagents/plans/implementation-001.md",
       "plan_metadata": {
         "phase_count": 9,
         "estimated_hours": 4.5,
         "complexity": "medium"
-      }
+      },
+      "artifacts": [
+        ".opencode/context/common/templates/subagent-frontmatter-template.yaml",
+        ".opencode/context/common/schemas/frontmatter-schema.json",
+        ".opencode/scripts/validate_frontmatter.py",
+        ".opencode/context/common/standards/frontmatter-standard.md",
+        ".opencode/specs/249_yaml_frontmatter_subagents/summaries/implementation-summary-20251229.md",
+        ".opencode/agent/subagents/researcher.md",
+        ".opencode/agent/subagents/planner.md",
+        ".opencode/agent/subagents/implementer.md",
+        ".opencode/agent/subagents/task-executor.md",
+        ".opencode/agent/subagents/lean-research-agent.md",
+        ".opencode/agent/subagents/lean-implementation-agent.md"
+      ],
+      "phases": 9,
+      "phases_completed": [1, 2, 3, 4, 5, 6, 7, 8, 9]
     },
     {
       "project_number": 250,

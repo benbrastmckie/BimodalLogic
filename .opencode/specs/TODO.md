@@ -968,37 +968,46 @@ User reports that /research and /plan commands do not update TODO.md correctly. 
 
 ### 249. Phase 2 Follow-up: Add YAML Frontmatter to All 6 Subagents (Task 245 Phase 6)
 - **Effort**: 4.5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: markdown
 - **Dependencies**: Task 245 (Phase 2 Phases 1-5 and 8 completed)
-- **Research**: [Research Report 001](.opencode/specs/249_yaml_frontmatter_subagents/reports/research-001.md)
+- **Started**: 2025-12-29
 - **Completed**: 2025-12-29
+- **Research**: [Research Report 001](.opencode/specs/249_yaml_frontmatter_subagents/reports/research-001.md)
 - **Plan**: [Implementation Plan 001](.opencode/specs/249_yaml_frontmatter_subagents/plans/implementation-001.md)
+- **Summary**: [Implementation Summary](.opencode/specs/249_yaml_frontmatter_subagents/summaries/implementation-summary-20251229.md)
 - **Description**: Add comprehensive YAML frontmatter to all 6 subagents (researcher.md, planner.md, implementer.md, task-executor.md, lean-research-agent.md, lean-implementation-agent.md) with tools, permissions, temperature configuration, and delegation settings. Create frontmatter template and standard documentation. Validate all frontmatter parses correctly and permissions deny dangerous commands.
+- **Artifacts**:
+  - **Template**: [Frontmatter Template](.opencode/context/common/templates/subagent-frontmatter-template.yaml)
+  - **Schema**: [JSON Schema](.opencode/context/common/schemas/frontmatter-schema.json)
+  - **Validation**: [Validation Script](.opencode/scripts/validate_frontmatter.py)
+  - **Standard**: [Frontmatter Standard](.opencode/context/common/standards/frontmatter-standard.md)
+  - **Updated Subagents**: researcher.md, planner.md, implementer.md, task-executor.md, lean-research-agent.md, lean-implementation-agent.md
 - **Tasks**:
-  - Create YAML frontmatter template with all fields
-  - Document frontmatter standard (fields, types, purposes)
-  - Add frontmatter to researcher.md (tools, permissions, delegation config)
-  - Add frontmatter to planner.md (tools, permissions, context loading)
-  - Add frontmatter to implementer.md (tools, permissions, git workflow config)
-  - Add frontmatter to task-executor.md (tools, permissions, context loading)
-  - Add frontmatter to lean-research-agent.md (Lean tools, permissions)
-  - Add frontmatter to lean-implementation-agent.md (Lean tools, permissions)
-  - Validate all frontmatter parses correctly
-  - Verify all required fields present
-  - Verify permissions deny dangerous commands (rm -rf, sudo, etc.)
-  - Verify context loading references correct files
-  - Verify delegation config matches agent capabilities
-  - Test tools and permissions enforcement
-  - Document frontmatter standard
+  - ✓ Create YAML frontmatter template with all fields
+  - ✓ Document frontmatter standard (fields, types, purposes)
+  - ✓ Add frontmatter to researcher.md (tools, permissions, delegation config)
+  - ✓ Add frontmatter to planner.md (tools, permissions, context loading)
+  - ✓ Add frontmatter to implementer.md (tools, permissions, git workflow config)
+  - ✓ Add frontmatter to task-executor.md (tools, permissions, context loading)
+  - ✓ Add frontmatter to lean-research-agent.md (Lean tools, permissions)
+  - ✓ Add frontmatter to lean-implementation-agent.md (Lean tools, permissions)
+  - ✓ Validate all frontmatter parses correctly
+  - ✓ Verify all required fields present
+  - ✓ Verify permissions deny dangerous commands (rm -rf, sudo, etc.)
+  - ✓ Verify context loading references correct files
+  - ✓ Verify delegation config matches agent capabilities
+  - ✓ Test tools and permissions enforcement
+  - ✓ Document frontmatter standard
 - **Acceptance Criteria**:
-  - All 6 subagents have comprehensive YAML frontmatter
-  - Frontmatter template documented
-  - All required fields present and validated
-  - Permissions deny dangerous commands
-  - Context loading references correct files
-  - Tools and permissions enforcement tested
+  - ✓ All 6 subagents have comprehensive YAML frontmatter
+  - ✓ Frontmatter template documented
+  - ✓ All required fields present and validated
+  - ✓ Permissions deny dangerous commands
+  - ✓ Context loading references correct files
+  - ✓ Tools and permissions enforcement tested
+- **Validation Results**: 6/6 subagents passed all 3 validation tiers (syntax, schema, semantic)
 
 ### 250. Phase 2 Follow-up: Comprehensive Testing and Validation (Task 245 Phase 7)
 - **Effort**: 6 hours
