@@ -298,11 +298,15 @@
 
 ### 230. Fix /review command to create completed task entry in TODO.md with review summary link
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/230_fix_review_command_to_create_completed_task_entry_in_todomd_with_review_summary_link/reports/research-001.md]
 - **Files Affected**:
   - .opencode/command/review.md
   - .opencode/agent/subagents/reviewer.md

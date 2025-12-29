@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-29T02:30:00Z",
+  "_last_updated": "2025-12-29T01:42:01Z",
   "next_project_number": 232,
   "project_numbering": {
     "min": 0,
@@ -238,8 +238,28 @@
       "last_updated": "2025-12-29T02:30:00Z",
       "artifacts": [],
       "estimated_hours": 10.0,
-      "supersedes": [227, 228, 229],
+      "supersedes": [
+        227,
+        228,
+        229
+      ],
       "supersedes_reason": "Tasks 227, 228, 229 based on incorrect root cause (orchestrator bypass). Real issue is Stage 7 execution incompleteness within commands."
+    },
+    {
+      "project_number": 230,
+      "project_name": "fix_review_command_to_create_completed_task_entry_in_todomd_with_review_summary_link",
+      "type": "bugfix",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2025-12-29T01:42:01Z",
+      "started": "2025-12-29",
+      "research_completed": "2025-12-29",
+      "last_updated": "2025-12-29",
+      "artifacts": [
+        ".opencode/specs/230_fix_review_command_to_create_completed_task_entry_in_todomd_with_review_summary_link/reports/research-001.md"
+      ]
     }
   ],
   "completed_projects": [
