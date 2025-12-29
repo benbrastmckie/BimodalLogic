@@ -48,7 +48,7 @@ If argument contains hyphen (-):
 
 ## Workflow
 
-This command follows the 8-stage command-lifecycle.md pattern with language-based routing:
+This command follows the standard workflow pattern with language-based routing:
 
 1. **Preflight**: Parse arguments, validate task(s) exist, update status to [IMPLEMENTING]
 2. **CheckLanguage**: Extract language from task entry, determine routing (lean → lean-implementation-agent, else → implementer)
@@ -115,7 +115,6 @@ Load minimal context for routing decisions:
 ### Execution Stage (Stage 4+)
 
 Implementer agent loads context on-demand per `.opencode/context/index.md`:
-- `common/workflows/command-lifecycle.md` (workflow stages)
 - `common/standards/subagent-return-format.md` (return format)
 - `common/system/status-markers.md` (status transitions)
 - `common/system/artifact-management.md` (lazy directory creation)

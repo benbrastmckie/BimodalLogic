@@ -8,12 +8,12 @@ temperature: 0.2
 max_tokens: 4000
 timeout: 7200
 tools:
-  - read
-  - write
-  - edit
-  - bash
-  - grep
-  - glob
+  read: true
+  write: true
+  edit: true
+  bash: true
+  grep: true
+  glob: true
 permissions:
   allow:
     - read: ["**/*"]
@@ -26,7 +26,6 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
     - "common/standards/subagent-return-format.md"
     - "common/system/status-markers.md"
   max_context_size: 50000
@@ -51,7 +50,6 @@ lifecycle:
   <task_scope>Execute straightforward implementations without complex phase management</task_scope>
   <integration>Called by /implement command for simple tasks or by task-executor for individual phases</integration>
   <lifecycle_integration>
-    Invoked at Stage 4 of command-lifecycle.md by /implement command (simple tasks).
     Owns complete workflow including Stage 7 (Postflight) execution.
     Returns standardized format per subagent-return-format.md for Stage 8.
   </lifecycle_integration>

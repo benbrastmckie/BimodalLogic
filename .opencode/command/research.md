@@ -42,7 +42,7 @@ Conduct research for a specified task, create research reports, and update task 
 
 ## Workflow
 
-This command follows the 8-stage command-lifecycle.md pattern with language-based routing:
+This command follows the standard workflow pattern with language-based routing:
 
 1. **Preflight**: Parse arguments, validate task exists, update status to [RESEARCHING]
 2. **CheckLanguage**: Extract language from task entry, determine routing (lean → lean-research-agent, else → researcher)
@@ -263,10 +263,9 @@ grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_nu
 
 ## References
 
-- **Workflow Pattern**: `.opencode/context/common/workflows/command-lifecycle.md`
 - **Agent Implementation**: `.opencode/agent/subagents/researcher.md`
 - **Routing Guide**: `.opencode/context/system/routing-guide.md`
 - **Context Index**: `.opencode/context/index.md`
-- **Status Markers**: `.opencode/context/common/system/status-markers.md`
+- **State Management**: `.opencode/context/core/system/state-management.md`
 - **Artifact Management**: `.opencode/context/common/system/artifact-management.md`
-- **Return Format**: `.opencode/context/common/standards/subagent-return-format.md`
+- **Delegation Standard**: `.opencode/context/core/standards/delegation.md`

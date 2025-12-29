@@ -8,12 +8,12 @@ temperature: 0.2
 max_tokens: 4000
 timeout: 7200
 tools:
-  - read
-  - write
-  - edit
-  - bash
-  - grep
-  - glob
+  read: true
+  write: true
+  edit: true
+  bash: true
+  grep: true
+  glob: true
 permissions:
   allow:
     - read: ["**/*.lean", "**/*.md", ".opencode/**/*"]
@@ -26,7 +26,6 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
     - "common/standards/subagent-return-format.md"
     - "common/system/status-markers.md"
     - "project/lean4/lean-patterns.md"
@@ -51,7 +50,6 @@ lifecycle:
   <task_scope>Implement Lean proofs, theorems, and tactics with compilation checking</task_scope>
   <integration>Called by implementer or task-executor for Lean-specific implementation tasks</integration>
   <lifecycle_integration>
-    Invoked at Stage 4 of command-lifecycle.md by /implement command (Lean tasks).
     Returns standardized format per subagent-return-format.md for Stage 5 validation.
     Summary artifact validation added per Phase 3 of task 211.
   </lifecycle_integration>

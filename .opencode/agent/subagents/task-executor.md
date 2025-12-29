@@ -8,11 +8,11 @@ temperature: 0.2
 max_tokens: 4000
 timeout: 7200
 tools:
-  - read
-  - write
-  - bash
-  - grep
-  - glob
+  read: true
+  write: true
+  bash: true
+  grep: true
+  glob: true
 permissions:
   allow:
     - read: [".opencode/**/*"]
@@ -25,7 +25,6 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
     - "common/standards/subagent-return-format.md"
     - "common/system/status-markers.md"
   max_context_size: 50000
@@ -51,7 +50,6 @@ lifecycle:
   <task_scope>Execute complex tasks with implementation plans, manage phase progression, support resume</task_scope>
   <integration>Called by /implement command for tasks with multi-phase plans</integration>
   <lifecycle_integration>
-    Invoked at Stage 4 of command-lifecycle.md by /implement command (phased tasks).
     Returns standardized format per subagent-return-format.md for Stage 5 validation.
     Summary artifact validation added per Phase 3 of task 211.
   </lifecycle_integration>

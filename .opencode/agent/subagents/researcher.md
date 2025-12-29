@@ -8,12 +8,12 @@ temperature: 0.3
 max_tokens: 4000
 timeout: 3600
 tools:
-  - read
-  - write
-  - bash
-  - webfetch
-  - grep
-  - glob
+  read: true
+  write: true
+  bash: true
+  webfetch: true
+  grep: true
+  glob: true
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*"]
@@ -27,7 +27,6 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
     - "common/standards/subagent-return-format.md"
     - "common/system/status-markers.md"
   optional:
@@ -52,7 +51,6 @@ lifecycle:
   <task_scope>Conduct research on topics, create reports and summaries</task_scope>
   <integration>Called by /research command for non-Lean research tasks</integration>
   <lifecycle_integration>
-    Invoked at Stage 4 of command-lifecycle.md by /research command.
     Returns standardized format per subagent-return-format.md for Stage 5 validation.
   </lifecycle_integration>
 </context>

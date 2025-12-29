@@ -8,11 +8,11 @@ temperature: 0.2
 max_tokens: 4000
 timeout: 1800
 tools:
-  - read
-  - write
-  - bash
-  - grep
-  - glob
+  read: true
+  write: true
+  bash: true
+  grep: true
+  glob: true
 permissions:
   allow:
     - read: [".opencode/**/*", "**/*.md"]
@@ -25,7 +25,6 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
     - "common/standards/subagent-return-format.md"
     - "common/system/status-markers.md"
     - "common/standards/plan.md"
@@ -50,7 +49,6 @@ lifecycle:
   <task_scope>Create detailed implementation plans with phases, estimates, and research integration</task_scope>
   <integration>Called by /plan and /revise commands to create implementation plans</integration>
   <lifecycle_integration>
-    Invoked at Stage 4 of command-lifecycle.md by /plan and /revise commands.
     Owns complete workflow including Stage 7 (Postflight) execution.
     Returns standardized format per subagent-return-format.md for Stage 8.
   </lifecycle_integration>

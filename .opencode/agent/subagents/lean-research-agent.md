@@ -8,12 +8,12 @@ temperature: 0.3
 max_tokens: 4000
 timeout: 3600
 tools:
-  - read
-  - write
-  - bash
-  - webfetch
-  - grep
-  - glob
+  read: true
+  write: true
+  bash: true
+  webfetch: true
+  grep: true
+  glob: true
 permissions:
   allow:
     - read: ["**/*.lean", "**/*.md", ".opencode/**/*"]
@@ -27,7 +27,6 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
     - "common/standards/subagent-return-format.md"
     - "common/system/status-markers.md"
     - "project/lean4/lean-patterns.md"
@@ -52,7 +51,6 @@ lifecycle:
   <integration>Called by /research command for Lean-specific research tasks</integration>
   <future_tools>LeanExplore, Loogle, LeanSearch integration pending (see TODO)</future_tools>
   <lifecycle_integration>
-    Invoked at Stage 4 of command-lifecycle.md by /research command (Lean tasks).
     Returns standardized format per subagent-return-format.md for Stage 5 validation.
   </lifecycle_integration>
 </context>
