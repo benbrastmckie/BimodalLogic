@@ -977,6 +977,54 @@ This task was to document the creation and functionality of the `Context.lean` f
 **Impact**:
 Provides clear documentation for a core component of the syntax package, improving project maintainability and onboarding for new contributors.
 
+### 229. Review and optimize orchestrator-command integration for context efficiency
+**Effort**: 6 hours
+**Status**: [PLANNED]
+**Started**: 2025-12-29
+**Researched**: 2025-12-29
+**Planned**: 2025-12-29
+**Priority**: High
+**Blocking**: None
+**Dependencies**: None
+**Language**: markdown
+**Research Artifacts**:
+  - Main Report: [.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md]
+**Plan**: [Implementation Plan](.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/plans/implementation-001.md)
+**Plan Summary**: 7-phase implementation plan (6 hours total). Phase 1: Audit command invocability (0.5h). Phase 2: Reduce orchestrator context to 3 core files (0.5h). Phase 3: Refactor Step 7 RouteToCommand (1.5h). Phase 4: Refactor Step 4 PrepareRouting to target commands (1h). Phase 5: Simplify/remove Step 3 CheckLanguage (0.5h). Phase 6: Testing and validation (1.5h). Phase 7: Documentation updates (0.5h). Fixes critical architectural flaw where orchestrator bypasses commands causing 100% workflow failure and 60-70% context bloat.
+
+**Files Affected**:
+- .opencode/agent/orchestrator.md
+- .opencode/command/plan.md
+- .opencode/command/research.md
+- .opencode/command/implement.md
+- .opencode/command/revise.md
+- .opencode/command/review.md
+- .opencode/context/common/workflows/command-lifecycle.md
+
+**Description**:
+CRITICAL ARCHITECTURAL FIX: Research identified that orchestrator.md routes directly to SUBAGENTS (planner, lean-research-agent, task-executor) instead of routing to COMMANDS (/plan, /research, /implement). This bypasses the entire command lifecycle (8 stages), causing 100% workflow failure for postflight procedures (no TODO.md/state.json updates), 60-70% context bloat in orchestrator (loading context meant for commands), and breaking the intended 3-layer architecture. The fix: modify orchestrator to route to commands, which then delegate to subagents internally, ensuring full workflow execution including status-sync-manager integration and git commits.
+
+**Current (Broken)**: User → Orchestrator → Subagent (direct bypass)
+**Expected (Correct)**: User → Orchestrator → Command → Subagent
+
+**Acceptance Criteria**:
+- [ ] All 5 command files have necessary frontmatter for orchestrator invocation
+- [ ] Orchestrator context reduced to 3 core files (60-70% reduction)
+- [ ] orchestrator.md Step 7 renamed to RouteToCommand with command invocation pattern
+- [ ] orchestrator.md Step 4 routing targets changed from subagents to commands
+- [ ] orchestrator.md Step 3 CheckLanguage removed (commands handle language extraction)
+- [ ] All 4 workflow commands execute full 8-stage lifecycle with status updates
+- [ ] TODO.md and state.json updated for all tested commands
+- [ ] Git commits created by postflight procedures
+- [ ] Architecture diagram created showing correct 3-layer flow
+- [ ] Documentation updated with command invocation patterns
+- [ ] Tasks 227 and 228 resolution documented (resolved architecturally)
+
+**Impact**:
+CRITICAL: Resolves the root cause of why all workflow commands fail to update TODO.md and state.json - they're being bypassed entirely by the orchestrator. Establishes correct 3-layer architecture (orchestrator → command → subagent), reduces context window by 60-70%, ensures 100% workflow completion. Resolves tasks 227 and 228 as side effects.
+
+---
+
 ### 190. Improve MAINTENANCE.md documentation structure and content
 **Effort**: 2 hours
 **Status**: [IN PROGRESS]
