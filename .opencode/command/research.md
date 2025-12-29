@@ -45,29 +45,19 @@ Conduct research for a specified task, create research reports, and update task 
 This command follows the standard workflow pattern with language-based routing:
 
 1. **Preflight**: Parse arguments, validate task exists, update status to [RESEARCHING]
-2. **CheckLanguage**: Extract language from task entry, determine routing (lean → lean-research-agent, else → researcher)
+2. **CheckLanguage**: Extract language from state.json (fallback to TODO.md), determine routing
 3. **PrepareDelegation**: Generate session ID, prepare delegation context with timeout (3600s)
 4. **InvokeAgent**: Delegate to researcher agent with task context
 5. **ValidateReturn**: Verify research artifact created and return format valid
 6. **PrepareReturn**: Format return object with artifact paths and summary
-7. **Postflight**: Update status to [RESEARCHED], create git commit, verify on disk
+7. **Postflight**: Update status to [RESEARCHED], link report in TODO.md, create git commit
 8. **ReturnSuccess**: Return standardized result to user
 
 **Implementation**: See `.opencode/agent/subagents/researcher.md` for complete workflow execution details.
 
 ## Language-Based Routing
 
-### Language Extraction
-
-Language is extracted from task entry in TODO.md:
-
-```bash
-grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
-```
-
-If extraction fails, defaults to "general" with warning logged.
-
-### Routing Rules
+Language extracted from state.json (preferred) or TODO.md (fallback). Defaults to "general" if extraction fails.
 
 | Language | Agent | Tools Available |
 |----------|-------|----------------|
@@ -75,28 +65,6 @@ If extraction fails, defaults to "general" with warning logged.
 | `markdown` | `researcher` | Web search, documentation review |
 | `python` | `researcher` | Web search, documentation review |
 | `general` | `researcher` | Web search, documentation review |
-
-**Critical**: Language extraction MUST occur before routing. Incorrect routing bypasses Lean-specific tooling.
-
-## Context Loading
-
-### Routing Stage (Stages 1-3)
-
-Load minimal context for routing decisions:
-- `.opencode/context/system/routing-guide.md` (routing logic)
-
-### Execution Stage (Stage 4+)
-
-Researcher agent loads context on-demand per `.opencode/context/index.md`:
-- `common/standards/subagent-return-format.md` (return format)
-- `common/system/status-markers.md` (status transitions)
-- `common/system/artifact-management.md` (lazy directory creation)
-- Task entry via `grep -A 50 "^### ${task_number}\." TODO.md` (~2KB vs 109KB full file)
-- `state.json` (project state)
-
-Language-specific context:
-- If lean: `project/lean4/tools/leansearch-api.md`, `project/lean4/tools/loogle-api.md`
-- If markdown: (no additional context)
 
 ## Artifacts Created
 
@@ -157,17 +125,6 @@ Usage: /research TASK_NUMBER [PROMPT]
 Warning: Language not found for task {task_number}, defaulting to 'general'
 
 Proceeding with researcher agent (web search, documentation)
-```
-
-### Routing Validation Failed
-
-```
-Error: Routing validation failed: language={language}, agent={agent}
-
-Expected: language=lean → agent=lean-research-agent
-Got: language=lean → agent=researcher
-
-Recommendation: Fix language extraction or routing logic
 ```
 
 ### Research Timeout
@@ -237,29 +194,9 @@ Error: {git_error}
 
 ## Implementation Notes
 
-### Lazy Directory Creation
-
-Directories created only when writing artifacts:
-- `.opencode/specs/{task_number}_{slug}/` created when writing first artifact
-- `reports/` subdirectory created when writing research-001.md
-- `summaries/` NOT created (summary is metadata, not artifact)
-
-### Task Extraction Optimization
-
-Extract only specific task entry from TODO.md to reduce context load:
-
-```bash
-grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
-```
-
-**Impact**: Reduces context from 109KB (full TODO.md) to ~2KB (task entry only), 98% reduction.
-
-### Delegation Safety
-
-- Max delegation depth: 3 (orchestrator → command → agent → utility)
-- Timeout: 3600s (1 hour) with partial result recovery
-- Session tracking: Unique session_id for all delegations
-- Cycle detection: Prevent infinite delegation loops
+- **Lazy Directory Creation**: Directories created only when writing artifacts
+- **Task Extraction**: Extract specific task entry from TODO.md (~2KB vs 109KB full file)
+- **Delegation Safety**: Max depth 3, timeout 3600s, session tracking enabled
 
 ## References
 

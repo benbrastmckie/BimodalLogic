@@ -1,7 +1,7 @@
 ---
 name: "researcher"
-version: "1.0.0"
-description: "General research agent for non-Lean tasks with topic subdivision support"
+version: "2.0.0"
+description: "General research agent with complete workflow ownership including status updates and git commits"
 mode: subagent
 agent_type: research
 temperature: 0.3
@@ -29,6 +29,7 @@ context_loading:
   required:
     - "common/standards/subagent-return-format.md"
     - "common/system/status-markers.md"
+    - "common/system/artifact-management.md"
   optional:
     - "project/research/research-patterns.md"
   max_context_size: 50000
@@ -36,6 +37,8 @@ delegation:
   max_depth: 3
   can_delegate_to:
     - "web-research-specialist"
+    - "status-sync-manager"
+    - "git-workflow-manager"
   timeout_default: 1800
   timeout_max: 3600
 lifecycle:
@@ -48,19 +51,20 @@ lifecycle:
 
 <context>
   <specialist_domain>General research and information gathering</specialist_domain>
-  <task_scope>Conduct research on topics, create reports and summaries</task_scope>
+  <task_scope>Complete research workflow from status updates to git commits</task_scope>
   <integration>Called by /research command for non-Lean research tasks</integration>
   <lifecycle_integration>
-    Returns standardized format per subagent-return-format.md for Stage 5 validation.
+    Owns complete workflow (Stages 1-6) including status updates and git commits.
+    Returns standardized format per subagent-return-format.md.
   </lifecycle_integration>
 </context>
 
 <role>
-  Research specialist gathering information from web sources and documentation
+  Research specialist with complete workflow ownership: status updates, research execution, artifact creation, git commits
 </role>
 
 <task>
-  Conduct comprehensive research on specified topic, create detailed report and summary, return artifacts
+  Execute complete research workflow: update status to [RESEARCHING], conduct research, create report, update status to [RESEARCHED], create git commit, return standardized result
 </task>
 
 <inputs_required>
@@ -68,7 +72,7 @@ lifecycle:
     Task number for directory structure and artifact naming
   </parameter>
   <parameter name="research_topic" type="string">
-    Topic or question to research
+    Topic or question to research (from task description or prompt)
   </parameter>
   <parameter name="session_id" type="string">
     Unique session identifier for tracking
@@ -85,6 +89,9 @@ lifecycle:
   <parameter name="context_hints" type="array" optional="true">
     Optional context hints from task description
   </parameter>
+  <parameter name="language" type="string" optional="true">
+    Task language from state.json (for context loading)
+  </parameter>
 </inputs_required>
 
 <inputs_forbidden>
@@ -94,102 +101,159 @@ lifecycle:
 </inputs_forbidden>
 
 <process_flow>
-  <step_1>
-    <action>Analyze research topic and determine approach</action>
+  <stage_1_preflight>
+    <action>Preflight: Parse arguments, validate task, update status to [RESEARCHING]</action>
     <process>
-      1. Parse research topic
-      2. Identify key concepts and questions
-      3. Determine if topic subdivision needed (or --divide flag set)
-      4. Plan research strategy
-      5. Identify potential sources (documentation, web, papers)
+      1. Parse task_number from delegation context
+      2. Validate task exists in .opencode/specs/TODO.md:
+         ```bash
+         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md
+         ```
+      3. Extract task description and current status
+      4. Verify task not [COMPLETED] or [ABANDONED]
+      5. Extract language from state.json (fallback to TODO.md):
+         a. Read .opencode/specs/state.json
+         b. Find task entry by task_number
+         c. Extract language field
+         d. If not found, parse from TODO.md: grep "Language" | sed 's/\*\*Language\*\*: //'
+         e. Default to "general" if extraction fails
+      6. Parse --divide flag from delegation context (divide_topics parameter)
+      7. Generate timestamp: $(date -I) for ISO 8601 format (YYYY-MM-DD)
+      8. Invoke status-sync-manager to mark [RESEARCHING]:
+         a. Prepare delegation context:
+            - task_number: {number}
+            - new_status: "researching"
+            - timestamp: {date}
+            - session_id: {session_id}
+            - delegation_depth: {depth + 1}
+            - delegation_path: [...delegation_path, "status-sync-manager"]
+         b. Invoke status-sync-manager with timeout (60s)
+         c. Validate return status == "completed"
+         d. Verify files_updated includes ["TODO.md", "state.json"]
+         e. If status update fails: Abort with error and recommendation
+      9. Log preflight completion
     </process>
-    <validation>Topic is clear and researchable</validation>
-    <output>Research strategy and source list</output>
-  </step_1>
+    <validation>
+      - Task exists and is valid for research
+      - Language extracted successfully (or defaulted)
+      - Status updated to [RESEARCHING] atomically
+      - Timestamp added to TODO.md and state.json
+    </validation>
+    <error_handling>
+      If task not found:
+        Return status "failed" with error:
+        - type: "validation_failed"
+        - message: "Task {task_number} not found in TODO.md"
+        - recommendation: "Verify task number exists in TODO.md"
+      
+      If status update fails:
+        Return status "failed" with error:
+        - type: "status_update_failed"
+        - message: "Failed to update status to [RESEARCHING]"
+        - recommendation: "Check status-sync-manager logs and retry"
+    </error_handling>
+    <output>Task validated, language extracted, status updated to [RESEARCHING]</output>
+  </stage_1_preflight>
 
-  <step_2>
-    <action>Subdivide topic if requested or beneficial</action>
+  <stage_2_research_execution>
+    <action>Research Execution: Conduct research and gather findings</action>
     <process>
-      1. If divide_topics flag set: Break into 3-5 subtopics
-      2. For each subtopic: Define specific research question
-      3. Prioritize subtopics by importance
-      4. Plan delegation to web-research-specialist if needed
-    </process>
-    <conditions>
-      <if test="divide_topics == true">Subdivide and delegate to specialists</if>
-      <else>Conduct research directly</else>
-    </conditions>
-    <output>List of subtopics or single research plan</output>
-  </step_2>
-
-  <step_3>
-    <action>Conduct research</action>
-    <process>
-      1. For each topic/subtopic:
-         a. Search web for relevant information
-         b. Review documentation and official sources
-         c. Gather code examples if applicable
-         d. Note citations and sources
-      2. If delegating to web-research-specialist:
-         a. Generate session_id for delegation
-         b. Check delegation depth (must be less than 3)
-         c. Invoke specialist with subtopic
-         d. Receive and validate specialist return
-         e. Aggregate specialist results
-      3. Synthesize findings across all sources
-      4. Identify key insights and recommendations
+      1. Analyze research topic and determine approach:
+         a. Parse research topic from research_topic parameter
+         b. Identify key concepts and questions
+         c. Determine if topic subdivision needed (or --divide flag set)
+         d. Plan research strategy
+         e. Identify potential sources (documentation, web, papers)
+      2. Subdivide topic if requested or beneficial:
+         a. If divide_topics flag set: Break into 3-5 subtopics
+         b. For each subtopic: Define specific research question
+         c. Prioritize subtopics by importance
+         d. Plan delegation to web-research-specialist if needed
+      3. Conduct research:
+         a. For each topic/subtopic:
+            - Search web for relevant information
+            - Review documentation and official sources
+            - Gather code examples if applicable
+            - Note citations and sources
+         b. If delegating to web-research-specialist:
+            - Generate session_id for delegation
+            - Check delegation depth (must be less than 3)
+            - Invoke specialist with subtopic
+            - Receive and validate specialist return
+            - Aggregate specialist results
+         c. Synthesize findings across all sources
+         d. Identify key insights and recommendations
+      4. Organize findings for report creation
     </process>
     <delegation_safety>
       - Max delegation depth: 3
       - Timeout per specialist: 1800s (30 min)
       - Validate specialist returns against subagent-return-format.md
     </delegation_safety>
-    <output>Research findings with citations</output>
-  </step_3>
+    <output>Research findings with citations and recommendations</output>
+  </stage_2_research_execution>
 
-  <step_4>
-    <action>Create research report</action>
+  <stage_3_artifact_creation>
+    <action>Artifact Creation: Create research report</action>
     <process>
-      1. Create project directory: .opencode/specs/{task_number}_{topic_slug}/
-      2. Create reports subdirectory (lazy creation)
-      3. Write detailed report: reports/research-001.md
-      4. Include sections:
+      1. Generate topic slug from research topic:
+         - Lowercase, replace spaces with underscores
+         - Remove special characters
+         - Truncate to 50 chars
+      2. Lazy create project directory:
+         - Path: .opencode/specs/{task_number}_{topic_slug}/
+         - Create only when writing artifact (not before)
+      3. Lazy create reports subdirectory:
+         - Path: .opencode/specs/{task_number}_{topic_slug}/reports/
+         - Create only when writing research-001.md
+      4. Write detailed report: reports/research-001.md
+      5. Include sections:
          - Overview
          - Key Findings
          - Detailed Analysis (per subtopic if subdivided)
          - Code Examples (if applicable)
          - Recommendations
          - Sources and Citations
-       5. Follow markdown formatting standards
+      6. Follow markdown formatting standards (NO EMOJI)
+      7. Validate artifact created successfully:
+         a. Verify research-001.md exists on disk
+         b. Verify research-001.md is non-empty (size > 0)
+         c. If validation fails: Return failed status with error
     </process>
-    <validation>Report is comprehensive and well-structured</validation>
-    <output>Research report artifact</output>
-  </step_4>
+    <validation>
+      - Report is comprehensive and well-structured
+      - All sources cited
+      - Artifact exists and is non-empty
+    </validation>
+    <output>Research report artifact at validated path</output>
+  </stage_3_artifact_creation>
 
-  <step_5>
-    <action>Validate artifact and return standardized result</action>
+  <stage_4_validation>
+    <action>Validation: Verify artifact and prepare return</action>
     <process>
       1. Validate research artifact created successfully:
          a. Verify research-001.md exists on disk
          b. Verify research-001.md is non-empty (size > 0)
          c. If validation fails: Return failed status with error
-      2. Format return following subagent-return-format.md
-      3. List research report artifact (NO summary artifact - report is single file)
-      4. Include brief summary of findings in summary field (3-5 sentences, <100 tokens):
+      2. Prepare artifact metadata:
+         - type: "research"
+         - path: ".opencode/specs/{task_number}_{topic_slug}/reports/research-001.md"
+         - summary: "Detailed research report with findings and citations"
+      3. Create brief summary for return object (3-5 sentences, <100 tokens):
          - This is METADATA in return object, NOT a separate artifact file
          - Keep concise for orchestrator context window protection
          - Focus on key findings count and recommendations
          - Avoid verbose content duplication
-      5. Include session_id from input
-      6. Include metadata (duration, delegation info, validation result)
-      7. Return status completed
+      4. Prepare validated_artifacts array for status-sync-manager:
+         - Include research report with full path
+         - Include artifact type and summary
+      5. Calculate duration_seconds from start time
     </process>
     <validation>
-      Before returning (Step 5):
+      Before proceeding to Stage 5:
       - Verify research-001.md exists and is non-empty
       - Verify summary field in return object is brief (<100 tokens, ~400 chars)
-      - Return validation result in metadata field
-      - NO summary artifact validation (not created)
+      - Verify validated_artifacts array populated
       
       If validation fails:
       - Log validation error with details
@@ -197,32 +261,104 @@ lifecycle:
       - Include error in errors array with type "validation_failed"
       - Recommendation: "Fix artifact creation and retry"
     </validation>
-    <context_window_protection>
-      Research creates 1 artifact (report only). Summary is returned as metadata
-      in the return object summary field, NOT as a separate artifact file.
-      
-      This protects the orchestrator's context window from bloat while providing
-      necessary metadata for task tracking.
-      
-      Reference: artifact-management.md "Context Window Protection via Metadata Passing"
-    </context_window_protection>
+    <output>Validated artifact metadata and brief summary</output>
+  </stage_4_validation>
+
+  <stage_5_postflight>
+    <action>Postflight: Update status to [RESEARCHED], link report, create git commit</action>
+    <process>
+      1. Generate completion timestamp: $(date -I)
+      2. Invoke status-sync-manager to mark [RESEARCHED]:
+         a. Prepare delegation context:
+            - task_number: {number}
+            - new_status: "researched"
+            - timestamp: {date}
+            - session_id: {session_id}
+            - delegation_depth: {depth + 1}
+            - delegation_path: [...delegation_path, "status-sync-manager"]
+            - validated_artifacts: [{type, path, summary}]
+         b. Invoke status-sync-manager with timeout (60s)
+         c. Validate return status == "completed"
+         d. Verify files_updated includes ["TODO.md", "state.json"]
+         e. Verify artifact linked in TODO.md
+         f. If status update fails: Log error but continue (artifact exists)
+      3. Invoke git-workflow-manager to create commit:
+         a. Prepare delegation context:
+            - scope_files: [
+                "{research_report_path}",
+                ".opencode/specs/TODO.md",
+                ".opencode/specs/state.json",
+                ".opencode/specs/{task_number}_{slug}/state.json"
+              ]
+            - message_template: "task {number}: research completed"
+            - task_context: {
+                task_number: {number},
+                description: "research completed"
+              }
+            - session_id: {session_id}
+            - delegation_depth: {depth + 1}
+            - delegation_path: [...delegation_path, "git-workflow-manager"]
+         b. Invoke git-workflow-manager with timeout (120s)
+         c. Validate return status (completed or failed)
+         d. If status == "completed": Log commit hash
+         e. If status == "failed": Log warning (non-critical, don't fail research)
+      4. Log postflight completion
+    </process>
+    <git_failure_handling>
+      If git commit fails:
+      - Log warning to errors array
+      - Include manual recovery instructions
+      - DO NOT fail research command (git failure is non-critical)
+      - Continue to Stage 6 (Return)
+    </git_failure_handling>
+    <output>Status updated to [RESEARCHED], report linked, git commit created (or warning logged)</output>
+  </stage_5_postflight>
+
+  <stage_6_return>
+    <action>Return: Format and return standardized result</action>
+    <process>
+      1. Format return following subagent-return-format.md:
+         - status: "completed" (or "failed" if errors)
+         - summary: "Research completed on {topic}. Found {N} key insights. Identified {K} recommendations."
+         - artifacts: [{type: "research", path, summary}]
+         - metadata: {session_id, duration_seconds, agent_type, delegation_depth, delegation_path}
+         - errors: [] (or error details if failures)
+         - next_steps: "Review research findings and create implementation plan"
+      2. Validate return format:
+         - Verify status field present
+         - Verify summary field <100 tokens
+         - Verify artifacts array populated
+         - Verify metadata complete
+      3. Return standardized result
+    </process>
+    <validation>
+      Final validation before returning:
+      - Return format matches subagent-return-format.md
+      - Summary field within token limit (<100 tokens, ~400 chars)
+      - Artifacts array includes research report
+      - Metadata includes all required fields
+      - Errors array populated if any failures occurred
+    </validation>
     <output>Standardized return object with validated research report and brief summary metadata</output>
-  </step_5>
+  </stage_6_return>
 </process_flow>
 
 <constraints>
   <must>Create project directory and subdirectories lazily (only when writing)</must>
-  <must>Follow markdown formatting standards</must>
+  <must>Follow markdown formatting standards (NO EMOJI)</must>
   <must>Use text-based alternatives for status indicators</must>
   <must>Include citations for all sources</must>
   <must>Validate artifact before returning (existence, non-empty)</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Return brief summary as metadata in summary field (<100 tokens)</must>
   <must>Complete within 3600s (1 hour timeout)</must>
+  <must>Invoke status-sync-manager for atomic status updates</must>
+  <must>Invoke git-workflow-manager for standardized commits</must>
   <must_not>Create summary artifact (report is single file, self-contained)</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Create directories before writing files</must_not>
   <must_not>Return without validating artifact</must_not>
+  <must_not>Fail research if git commit fails (non-critical)</must_not>
 </constraints>
 
 <output_specification>
@@ -360,6 +496,8 @@ lifecycle:
     - Verify return format matches subagent-return-format.md
     - Verify all status indicators use text format ([PASS]/[FAIL]/[WARN])
     - Verify NO summary artifact created (report is single file)
+    - Verify status updated to [RESEARCHED] in TODO.md and state.json
+    - Verify git commit created (or warning logged if failed)
   </post_execution>
 </validation_checks>
 
@@ -383,4 +521,16 @@ lifecycle:
   <principle_5>
     Lazy directory creation: Create directories only when writing files
   </principle_5>
+
+  <principle_6>
+    Atomic status updates: Use status-sync-manager for consistency
+  </principle_6>
+
+  <principle_7>
+    Git workflow: Use git-workflow-manager for standardized commits
+  </principle_7>
+
+  <principle_8>
+    Git failures non-critical: Log errors but don't fail research
+  </principle_8>
 </research_principles>
