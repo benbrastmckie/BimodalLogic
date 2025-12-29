@@ -2,6 +2,9 @@
 
 **Last Updated:** 2025-12-29T18:35:00Z
 
+
+---
+
 ## Overview
 
 - **Total Tasks:** 60
@@ -115,6 +118,55 @@ The /todo command currently creates backups before cleanup operations and genera
 
 ---
 
+### 255. Improve opencode system following the improvement plan
+- **Effort**: 8-12 hours
+- **Status**: [PLANNED]
+- **Priority**: Medium
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+- **Plan**: [Improvement Plan](.opencode/IMPROVEMENT_PLAN.md)
+
+**Description**:
+Restructure the ProofChecker .opencode system to implement clean `core/` and `project/` context organization, streamlined orchestrator (smart coordinator pattern), thin command files (declarative workflow setup), language-based routing via orchestrator, and clear validation strategy. The improvement plan is a comprehensive 4-phase migration (8-12 hours total) that reorganizes context directories, simplifies the orchestrator, reduces command file complexity, and updates documentation. This follows the architectural patterns identified in the OpenAgents migration research.
+
+**Tasks**:
+- Phase 1: Context Directory Reorganization (2-3 hours)
+  - Create new core/ directory structure (standards/, workflows/, system/, templates/)
+  - Create new core files (context-loading-strategy.md, validation-strategy.md, delegation-guide.md, status-transitions.md, subagent-return-format.md)
+  - Move existing files from system/ to core/system/
+  - Update orchestrator and command context references
+  - Update context README.md
+- Phase 2: Orchestrator Streamlining (3-4 hours)
+  - Backup current orchestrator
+  - Update orchestrator frontmatter (version 5.0, new context paths)
+  - Replace workflow execution section (reduce to 7 stages)
+  - Update routing intelligence section
+  - Update notes section
+- Phase 3: Command File Simplification (2-3 hours)
+  - Create command template
+  - Simplify /plan, /research, /implement commands (~120-140 lines each)
+  - Simplify /revise, /review, /errors commands
+  - Add routing frontmatter to all commands
+- Phase 4: Documentation Updates (1-2 hours)
+  - Update ARCHITECTURE.md with smart coordinator pattern
+  - Update README.md with new improvements
+  - Create orchestrator-design.md
+  - Update QUICK-START.md with command flow
+
+**Acceptance Criteria**:
+- [ ] Phase 1: context/core/ exists with 4 subdirectories, all files moved, references updated
+- [ ] Phase 2: Orchestrator is ~450 lines (down from 592), 7 stages, no syntax errors
+- [ ] Phase 3: Commands are 100-150 lines, all have routing frontmatter, use workflow_setup pattern
+- [ ] Phase 4: Documentation updated, orchestrator-design.md created, no broken links
+- [ ] .opencode/specs/ unchanged (TODO.md, state.json, project directories preserved)
+- [ ] System functions correctly after migration
+- [ ] All tasks and projects preserved
+
+**Impact**: Implements clean architectural patterns from OpenAgents migration research, reduces context window bloat through better organization, simplifies orchestrator and command files for maintainability, and provides clear separation between core (reusable) and project (ProofChecker-specific) context.
+
+---
+
 ### 251. Validate and Document Task 244 Phase 1 Abandoned Work (Phase 3 and Phase 6)
 - **Effort**: 3-4 hours
 - **Status**: [NOT STARTED]
@@ -144,6 +196,9 @@ Review and document the two abandoned phases from Task 244 implementation plan: 
 - [ ] Recommendations documented for any follow-up work needed
 
 **Impact**: Ensures completeness of Phase 1 migration documentation, clarifies what was accomplished vs abandoned, provides closure on Task 244 implementation plan.
+
+
+---
 
 ### 252. Implement Task 244 Phase 6: Stage 7 Reliability Testing with OpenCode CLI Integration
 - **Effort**: 4-6 hours
@@ -179,6 +234,9 @@ Phase 6 goal: Validate that the OpenAgents migration achieved 100% Stage 7 execu
 - [ ] Task 244 documentation updated with Phase 6 completion
 
 **Impact**: Provides quantitative validation that OpenAgents migration eliminated Stage 7 failures. Creates regression test infrastructure to protect against future regressions. Completes Task 244 Phase 1 validation goals.
+
+
+---
 
 ### 240. Systematically investigate and fix persistent workflow command Stage 7 (Postflight) failures causing incomplete status updates
 - **Effort**: 56-78 hours (revised from comparative analysis)
@@ -342,7 +400,6 @@ CRITICAL BLOCKER - Without reliable Stage 7 execution, the entire workflow syste
 
 ---
 
----
 
 ### 8. Refactor `Logos/Core/Syntax/Context.lean`
 - **Effort**: 2-4 hours
@@ -396,7 +453,6 @@ Ensures that the entire codebase is compatible with the refactored `Context` mod
 
 ---
 
----
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
@@ -470,6 +526,9 @@ Ensures that the entire codebase is compatible with the refactored `Context` mod
 
 ### Decidability
 
+
+---
+
 ### 136. Design Decidability.lean architecture and signatures
 - **Effort**: 2 hours
 - **Status**: [NOT STARTED]
@@ -524,6 +583,9 @@ Ensures that the entire codebase is compatible with the refactored `Context` mod
 - **Impact**: Delivers an initial, test-backed decision procedure for TM logic.
 
 ### Layer Extensions (Future Planning)
+
+
+---
 
 ### 139. Draft Layer 1 counterfactual operator plan
 - **Effort**: 2 hours
