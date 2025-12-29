@@ -16,7 +16,11 @@
 
 ### 231. Fix systematic command Stage 7 (Postflight) execution failures causing incomplete TODO.md and state.json updates
 - **Effort**: 8-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/reports/research-001.md]
 - **Created**: 2025-12-29
 - **Priority**: Critical
 - **Language**: markdown

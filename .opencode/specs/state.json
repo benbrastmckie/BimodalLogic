@@ -229,21 +229,24 @@
       "project_number": 231,
       "project_name": "fix_systematic_command_stage_7_postflight_execution_failures",
       "type": "bugfix",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "research_completed",
+      "status": "researched",
       "priority": "critical",
       "language": "markdown",
       "created": "2025-12-29T02:30:00Z",
-      "started": null,
-      "last_updated": "2025-12-29T02:30:00Z",
-      "artifacts": [],
+      "started": "2025-12-29",
+      "last_updated": "2025-12-29",
+      "artifacts": [
+        ".opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/reports/research-001.md"
+      ],
       "estimated_hours": 10.0,
       "supersedes": [
         227,
         228,
         229
       ],
-      "supersedes_reason": "Tasks 227, 228, 229 based on incorrect root cause (orchestrator bypass). Real issue is Stage 7 execution incompleteness within commands."
+      "supersedes_reason": "Tasks 227, 228, 229 based on incorrect root cause (orchestrator bypass). Real issue is Stage 7 execution incompleteness within commands.",
+      "research_completed": "2025-12-29"
     },
     {
       "project_number": 230,
