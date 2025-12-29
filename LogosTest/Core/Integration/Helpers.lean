@@ -123,12 +123,11 @@ def verify_soundness (Γ : Context) (φ : Formula) (d : DerivationTree Γ φ) :
 
 /-- Verify validity of theorem -/
 def verify_validity (φ : Formula) (d : DerivationTree [] φ) : ⊨ φ :=
-  soundness [] φ d
+  Validity.valid_iff_empty_consequence φ |>.mpr (soundness [] φ d)
 
 /-- Verify workflow: derivation → soundness → validity -/
 def verify_workflow (φ : Formula) (d : DerivationTree [] φ) : True := by
-  have valid : ⊨ φ := verify_validity φ d
-  have : ∀ F M τ t ht, truth_at M τ t ht φ := valid
+  have _valid : ⊨ φ := verify_validity φ d
   trivial
 
 -- ============================================================

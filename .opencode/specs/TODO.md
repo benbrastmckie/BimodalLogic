@@ -14,389 +14,216 @@
 
 ## High Priority
 
-### 231. Fix systematic command Stage 7 (Postflight) execution failures causing incomplete TODO.md and state.json updates
-- **Effort**: 10 hours
-- **Status**: [PLANNED]
-- **Started**: 2025-12-29
-- **Completed**: 2025-12-29
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/reports/research-001.md]
-- **Plan**: [.opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/plans/implementation-001.md]
-- **Plan Summary**: 5-phase implementation (10 hours total). Phase 1: Strengthen Stage 7 prompting in /plan command with imperative language (2h). Phase 2: Add validation checkpoints to all commands (2h). Phase 3: Implement explicit delegation syntax (2.5h). Phase 4: Add comprehensive error handling (2h). Phase 5: Add orchestrator stage validation (1.5h). Fixes 5 root causes: weak prompting, no validation checkpoints, missing error handling, implicit delegation syntax, no orchestrator validation. Achieves 100% Stage 7 execution rate across all 4 workflow commands.
-- **Created**: 2025-12-29
-- **Priority**: Critical
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Supersedes**: Tasks 227, 228, 229 (all ABANDONED due to incorrect root cause analysis)
-- **Files Affected**:
-  - .opencode/command/plan.md
-  - .opencode/command/research.md
-  - .opencode/command/implement.md
-  - .opencode/command/revise.md
-  - .opencode/agent/orchestrator.md
-  - .opencode/context/common/workflows/command-lifecycle.md
-- **Description**: CRITICAL FIX: All workflow commands (/plan, /research, /implement, /revise) are correctly loaded and executed by the orchestrator, but Claude frequently skips or incompletely executes Stage 7 (Postflight), which delegates to status-sync-manager for atomic TODO.md/state.json updates and creates git commits. This results in successful artifact creation but incomplete task tracking. Evidence: Task 224 (artifacts ✅, TODO.md manual ✅, state.json ❌), Task 229 (plan ✅, tracking required manual intervention). Root causes: (1) Weak prompting - Stage 7 uses descriptive language instead of imperative commands, (2) No validation - no checkpoint confirming Stage 7 completed before Stage 8 returns, (3) No error handling - command proceeds even if Stage 7 fails, (4) Orchestrator lacks stage completion validation, (5) Missing explicit delegation syntax for status-sync-manager invocation.
-- **Acceptance Criteria**:
-  - [ ] Stage 7 instructions strengthened in all 4 command files with imperative language
-  - [ ] Explicit delegation syntax added: `task_tool(subagent_type="status-sync-manager", ...)`
-  - [ ] Stage completion checkpoints added: "Stage N completed ✓" before proceeding
-  - [ ] Pre-Stage-8 validation added: Verify TODO.md and state.json updated before returning
-  - [ ] Error handling added: If Stage 7 fails, rollback and return error (don't proceed to Stage 8)
-  - [ ] Orchestrator enhanced with command stage validation to detect premature returns
-  - [ ] Monitoring/logging added to track stage execution (which executed, which skipped)
-  - [ ] command-lifecycle.md updated with stage validation patterns and mandatory checkpoints
-  - [ ] All 4 commands tested: 100% Stage 7 execution rate achieved
-  - [ ] Test: /plan task → TODO.md updated [PLANNED], state.json updated, git commit created
-  - [ ] Test: /research task → TODO.md updated [RESEARCHED], state.json updated, git commit created
-  - [ ] Test: /implement task → TODO.md updated [COMPLETED], state.json updated, plan phases updated, git commit created
-  - [ ] Test: /revise task → TODO.md updated [REVISED], state.json plan_versions updated, git commit created
-- **Impact**: Resolves systematic task tracking failures affecting ALL workflow commands. Ensures 100% reliability of TODO.md/state.json updates via status-sync-manager's atomic two-phase commit protocol. Eliminates manual intervention needed to sync tracking files. Consolidates fixes for tasks 227, 228, 229 with correct root cause understanding.
+### 1. Completeness Proofs
+**Effort**: 70-90 hours
+**Status**: INFRASTRUCTURE ONLY
+**Blocking**: Decidability
+**Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
+
+**Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.
+
+**Action Items**:
+1. Implement `lindenbaum` lemma (extend consistent sets to maximal consistent sets using Zorn's lemma).
+2. Prove properties of maximal consistent sets (deductive closure, negation completeness).
+3. Construct `canonical_frame` and prove frame properties (nullity, compositionality).
+4. Prove `truth_lemma` (correspondence between membership and truth).
+5. Prove `weak_completeness` and `strong_completeness`.
+
+**Files**:
+- `Logos/Core/Metalogic/Completeness.lean`
 
 ---
 
-### 229. ❌ Review and optimize orchestrator-command integration for context efficiency
-- **Effort**: 6 hours
-- **Status**: [ABANDONED]
-- **Started**: 2025-12-29
-- **Researched**: 2025-12-29
-- **Planned**: 2025-12-29
-- **Abandoned**: 2025-12-29
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Superseded By**: Task 231
-- **Abandonment Reason**: Root cause analysis was incorrect. Research concluded orchestrator bypasses commands, but investigation revealed commands ARE loaded and executed - the issue is Claude skipping Stage 7 (Postflight) within command execution. Task 231 addresses the correct root cause with proper fixes.
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md]
-- **Plan**: [Implementation Plan](.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/plans/implementation-001.md)
-- **Plan Summary**: 7-phase implementation plan (6 hours total). Phase 1: Audit command invocability (0.5h). Phase 2: Reduce orchestrator context to 3 core files (0.5h). Phase 3: Refactor Step 7 RouteToCommand (1.5h). Phase 4: Refactor Step 4 PrepareRouting to target commands (1h). Phase 5: Simplify/remove Step 3 CheckLanguage (0.5h). Phase 6: Testing and validation (1.5h). Phase 7: Documentation updates (0.5h). Fixes critical architectural flaw where orchestrator bypasses commands causing 100% workflow failure and 60-70% context bloat.
-- **Files Affected**:
-  - .opencode/agent/orchestrator.md
-  - .opencode/command/research.md
-  - .opencode/command/plan.md
-  - .opencode/command/implement.md
-  - .opencode/command/revise.md
-  - .opencode/command/review.md
-  - .opencode/context/common/workflows/command-lifecycle.md
-  - .opencode/context/common/standards/subagent-return-format.md
-- **Description**: ARCHITECTURAL REVIEW - Systematic analysis reveals critical architectural issue: orchestrator.md Step 4 (PrepareRouting) routes directly to SUBAGENTS (lean-research-agent, task-executor, planner, etc.) instead of routing to COMMANDS (research.md, plan.md, implement.md). This bypasses command-level context loading, workflow execution, preflight/postflight procedures, and status-sync-manager delegation. Root cause of task 228 (/plan bypasses postflight). **PROBLEM**: Current flow is User → Orchestrator → Subagent (direct). **EXPECTED**: User → Orchestrator → Command → Subagent. Commands contain the complete 8-stage workflow specification with context loading, validation, status updates, git commits. Subagents are implementation tools, not entry points. **CRITICAL IMPACTS**: (1) Context bloat - orchestrator loads context meant for commands, (2) Missing preflight/postflight - status updates fail (task 227, 228), (3) No command lifecycle - validation, git commits skipped, (4) Architecture violation - subagents exposed as primary delegation targets. **OPTIMIZATION OPPORTUNITIES**: (1) Orchestrator should have minimal context - only delegation registry, routing logic, return validation. Commands handle domain-specific context. (2) Commands should load exactly their needed context (Level 2 filtered by language). (3) Subagents should receive only task-specific context from commands. (4) Return validation should happen at orchestrator, not duplicated in commands. (5) Language routing should be command responsibility, not orchestrator. **FIX STRATEGY**: (1) Refactor orchestrator Step 7 (RouteToAgent) to invoke COMMANDS not SUBAGENTS. (2) Move language extraction and routing logic INTO commands (belongs in command Stage 2). (3) Reduce orchestrator context to core standards only (return format, delegation guide, status markers). (4) Let commands handle their own context loading via context_level specification. (5) Update all commands to be invokable by orchestrator (not just by users). (6) Ensure commands delegate to subagents internally (command-lifecycle.md Stage 4). **EXPECTED OUTCOMES**: (1) 60-70% reduction in orchestrator context window, (2) 100% workflow completion (preflight + postflight), (3) Clear architectural layers (orchestrator → command → subagent), (4) Context loaded exactly where needed, (5) No duplication of routing/validation logic, (6) All status updates via status-sync-manager, (7) Proper git commit integration, (8) Resolves task 228 root cause architecturally.
-- **Acceptance Criteria**:
-  - [ ] Root cause analysis documented: orchestrator routes to subagents instead of commands
-  - [ ] Architecture diagram created showing correct flow: User → Orchestrator → Command → Subagent
-  - [ ] All orchestrator routing targets audited (/research, /plan, /implement, /revise, /review, /errors)
-  - [ ] Orchestrator Step 7 refactored to invoke commands (not subagents)
-  - [ ] Language extraction logic moved from orchestrator to commands (Stage 2)
-  - [ ] Routing logic moved from orchestrator to commands (Stage 2)
-  - [ ] Orchestrator context reduced to: return-format.md, delegation-guide.md, status-markers.md only
-  - [ ] Commands updated to be invokable by orchestrator (accept delegation context)
-  - [ ] Commands updated to delegate to subagents internally (Stage 4 DelegateToSubagent)
-  - [ ] context_level specifications verified for all commands (Level 2 filtered context)
-  - [ ] Duplicate routing logic removed from orchestrator and commands
-  - [ ] Return validation remains in orchestrator (single source of truth)
-  - [ ] Preflight/postflight procedures execute for all commands
-  - [ ] status-sync-manager invoked correctly in all command postflights
-  - [ ] Git commits execute correctly via git-workflow-manager
-  - [ ] Context window measurements before/after documented
-  - [ ] Test: /research 197 executes full command lifecycle including postflight
-  - [ ] Test: /plan 196 executes full command lifecycle including status update
-  - [ ] Test: /implement 185 executes full command lifecycle with git commit
-  - [ ] Test: Language routing works correctly (lean tasks → lean agents)
-  - [ ] Test: Orchestrator context window reduced by 60-70%
-  - [ ] Test: No command workflow stages skipped
-  - [ ] Integration patterns documented in command-lifecycle.md
-  - [ ] Task 228 resolved as side effect of architectural fix
-- **Impact**: CRITICAL ARCHITECTURAL FIX - Resolves fundamental integration issue where orchestrator bypasses command layer, causing context bloat, missing workflow stages, and status update failures. Establishes correct 3-layer architecture (orchestrator → command → subagent) with clear separation of concerns. Reduces orchestrator context window by 60-70% by moving domain-specific context to commands. Ensures 100% workflow completion (preflight + postflight + status updates). Fixes root cause of tasks 227 and 228. Enables efficient context management where each layer loads only what it needs. Essential for scalable, maintainable agent system.
+---
 
-### ✅ 226. Fix /review command to use next_project_number, create matching task, include actionable follow-up tasks in summary, reduce verbosity, and improve context file organization
-- **Effort**: 8 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-29
-- **Completed**: 2025-12-29
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/226_fix_review_command/reports/research-001.md]
-- **Plan**: [.opencode/specs/226_fix_review_command/plans/implementation-001.md]
-- **Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/226_fix_review_command/summaries/implementation-summary-20251228.md]
-  - Modified Files: .opencode/command/review.md, .opencode/agent/subagents/reviewer.md, .opencode/context/common/workflows/review.md
-- **Files Affected**:
-  - .opencode/command/review.md
-  - .opencode/agent/subagents/reviewer.md
-  - .opencode/context/common/workflows/review.md (potential cleanup/reorganization)
-  - .opencode/specs/state.json
-  - .opencode/specs/TODO.md
-- **Description**: Fix multiple critical issues with /review command workflow: (1) **Project numbering bug**: /review created directory 225_codebase_review but task 225 already exists in TODO.md. Root cause: /review didn't read next_project_number from state.json before creating directory, and didn't increment it immediately after creation. Fix: Read next_project_number, use it for directory name, increment immediately (atomic operation). (2) **Missing task creation**: /review should create a task entry with the same number as the project directory, with status [COMPLETED] and link to review summary artifact. This enables tracking reviews as completed work in TODO.md. (3) **Summary lacks actionable follow-ups**: Review summary artifact (.opencode/specs/225_codebase_review/summaries/review-summary.md) lists 5 follow-up tasks but doesn't format them in a way that /task can parse to create actual task entries. Fix: Add explicit "Follow-up Tasks" section with task descriptions formatted for easy /task invocation (e.g., "/task 'Fix 6 noncomputable errors...'"). (4) **Excessive verbosity**: /review subagent returns verbose output to orchestrator, bloating context window. Fix: Return only brief summary (2-5 sentences, <100 tokens) with artifact path. Full details in summary artifact. (5) **Context file organization**: .opencode/context/common/workflows/review.md may contain redundancy, inaccuracy, or scattered organization. Audit and improve to avoid bloating context or missing important context. Ensure exactly the right context files are loaded.
-- **Acceptance Criteria**:
-  - [ ] Root cause analysis completed for project numbering bug
-  - [ ] /review reads next_project_number from state.json before creating directory
-  - [ ] /review creates directory using next_project_number (e.g., 226_codebase_review)
-  - [ ] /review increments next_project_number immediately after directory creation (atomic)
-  - [ ] /review creates TODO.md task entry with same number as project directory
-  - [ ] Created task has status [COMPLETED] with completion timestamp
-  - [ ] Created task includes link to review summary artifact
-  - [ ] Review summary artifact includes explicit "Follow-up Tasks" section
-  - [ ] Follow-up tasks formatted for direct /task invocation (copy-paste ready)
-  - [ ] Each follow-up task includes: description, priority, language, estimated hours
-  - [ ] /review subagent returns brief summary only (<100 tokens) to orchestrator
-  - [ ] Full review details remain in summary artifact (not in return to orchestrator)
-  - [ ] Context file audit completed (.opencode/context/common/workflows/review.md)
-  - [ ] Redundant or inaccurate content removed from context files
-  - [ ] Context loading optimized - exactly the right files loaded, no bloat
-  - [ ] Test: /review creates directory with correct next_project_number
-  - [ ] Test: /review creates matching TODO.md task with [COMPLETED] status
-  - [ ] Test: Review summary includes actionable follow-up tasks
-  - [ ] Test: /review return to orchestrator is brief (<100 tokens)
-  - [ ] Test: Full review details available in summary artifact
-  - [ ] Documentation updated with new /review behavior
-  - [ ] No project number collisions occur
-  - [ ] next_project_number increments correctly after each /review
-- **Impact**: CRITICAL - Fixes project numbering collision bug that created 225_codebase_review when task 225 already existed. Enables tracking reviews as completed tasks in TODO.md. Makes review findings actionable by formatting follow-up tasks for easy /task invocation. Reduces context window bloat by returning only brief summaries to orchestrator. Improves context file organization to load exactly the right context without redundancy. Essential for reliable /review command execution and proper project tracking.
+### 2. Resolve Truth.lean Sorries
+**Effort**: 10-20 hours
+**Status**: PARTIAL
+**Priority**: Medium (Soundness depends on this for full temporal duality)
 
-### 227. ❌ Fix systematic status-sync-manager TODO.md update failures across all workflow commands
-- **Effort**: 6-8 hours
-- **Status**: [ABANDONED]
-- **Started**: 2025-12-29
-- **Researched**: 2025-12-29
-- **Planned**: 2025-12-29
-- **Abandoned**: 2025-12-29
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Superseded By**: Task 231
-- **Abandonment Reason**: Root cause analysis was incorrect. Assumed status-sync-manager was being invoked but failing - actually it was never being invoked because Claude skips Stage 7 (Postflight) in command execution. Task 231 addresses the correct root cause.
-- **Research Artifacts**:
-- **Plan**: [.opencode/specs/227_fix_systematic_status_sync_manager_failures/plans/implementation-001.md]
-  - Main Report: [.opencode/specs/227_fix_systematic_status_sync_manager_failures/reports/research-001.md]
-- **Files Affected**:
-  - .opencode/agent/subagents/status-sync-manager.md
-  - .opencode/command/research.md
-  - .opencode/command/plan.md
-  - .opencode/command/revise.md
-  - .opencode/command/implement.md
-  - .opencode/agent/subagents/researcher.md
-  - .opencode/agent/subagents/planner.md
-  - .opencode/agent/subagents/lean-research-agent.md
-  - .opencode/agent/subagents/lean-implementation-agent.md
-  - .opencode/context/common/workflows/command-lifecycle.md
-  - .opencode/context/common/system/status-markers.md
-- **Description**: CRITICAL BUG - Systematic investigation reveals that ALL workflow commands (/research, /plan, /revise, /implement) fail to properly update TODO.md task statuses despite successfully updating state.json. Example manifestation: /research 224 completed successfully, created research-001.md artifact, updated state.json to "status": "researched", created project state.json - BUT TODO.md still shows "- **Status**: [NOT STARTED]" instead of "- **Status**: [PLANNED]". This indicates status-sync-manager is either (1) not being invoked by commands despite specification in command files, (2) failing silently when invoked, or (3) completing state.json updates but failing TODO.md updates in the two-phase commit. Root cause analysis required to identify which commands delegate properly vs perform manual updates, which fail to invoke status-sync-manager, and whether status-sync-manager itself has bugs in TODO.md update logic. The fix must ensure 100% atomic updates across TODO.md + state.json + project state.json for all 4 workflow commands, with proper error handling, rollback on failures, and validation that updates actually complete. This is distinct from task 221 which addressed missing delegation - this task focuses on fixing the update mechanism itself when delegation occurs. Investigation steps: (1) Audit actual command execution vs specification to identify delegation gaps, (2) Review status-sync-manager TODO.md update logic for bugs, (3) Add validation that status-sync-manager actually completes TODO.md updates, (4) Implement comprehensive error handling and rollback, (5) Add logging to trace update failures, (6) Test with real tasks to verify 100% update success rate.
-- **Acceptance Criteria**:
-  - [ ] Root cause analysis completed identifying exact failure point (delegation gap vs status-sync-manager bug)
-  - [ ] All 4 workflow commands audited for actual vs specified delegation to status-sync-manager
-  - [ ] status-sync-manager TODO.md update logic reviewed and bugs fixed if found
-  - [ ] Validation added that status-sync-manager actually completes TODO.md updates (not just state.json)
-  - [ ] Error handling added to detect and report TODO.md update failures
-  - [ ] Rollback mechanism verified to revert state.json if TODO.md update fails
-  - [ ] Logging added to trace update flow and capture failure details
-  - [ ] Test: /research task successfully updates both TODO.md and state.json to [RESEARCHED]
-  - [ ] Test: /plan task successfully updates both TODO.md and state.json to [PLANNED]
-  - [ ] Test: /revise task successfully updates both TODO.md and state.json to [REVISED]
-  - [ ] Test: /implement task successfully updates both TODO.md and state.json to [COMPLETED]
-  - [ ] Test: Rollback works - if TODO.md update fails, state.json reverted to original
-  - [ ] Test: Clear error messages when updates fail identifying which file failed
-  - [ ] 100% update success rate verified across all 4 commands with real task execution
-  - [ ] No "status-sync-manager didn't update TODO.md" errors occur
-  - [ ] Atomic guarantee enforced - both files update or neither updates
-  - [ ] Documentation updated with proper delegation patterns and error handling
-- **Impact**: CRITICAL BLOCKER - Fixes systematic status tracking failure affecting ALL workflow commands. Currently state.json reflects correct status but TODO.md remains stale, causing confusion about task progress, breaking workflow dependencies (tasks appear NOT STARTED when actually RESEARCHED/PLANNED), and violating atomic update guarantees. This breaks the entire task tracking system's integrity. Essential for reliable project management and workflow execution. Builds on task 221's delegation fixes to ensure updates actually work when delegated.
+**Description**: Resolve the 3 remaining `sorry` placeholders in `Logos/Core/Semantics/Truth.lean` related to temporal swap validity. These require handling domain extension for history quantification.
 
-### 228. ❌ Fix orchestrator routing to invoke commands instead of bypassing to subagents directly
-- **Effort**: 4 hours
-- **Status**: [ABANDONED]
-- **Started**: 2025-12-29
-- **Researched**: 2025-12-29
-- **Planned**: 2025-12-29
-- **Abandoned**: 2025-12-29
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Superseded By**: Task 231
-- **Abandonment Reason**: Root cause analysis was partially incorrect. Assumed orchestrator bypasses commands, but investigation revealed commands ARE loaded and executed - the issue is Claude skipping Stage 7 (Postflight) within command execution. Task 231 addresses the correct root cause.
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/reports/research-001.md]
-- **Plan**: [.opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/plans/implementation-001.md]
-- **Files Affected**:
-  - .opencode/agent/orchestrator.md
-  - .opencode/command/plan.md
-  - .opencode/command/research.md
-  - .opencode/command/implement.md
-  - .opencode/command/revise.md
-- **Description**: The /plan command fails to update the task in TODO.md and does not include a link to the plan created. Root Cause: The orchestrator bypassed the /plan command layer and directly invoked the planner subagent, which meant the command's Stage 7 (Postflight) that delegates to status-sync-manager never executed, leaving TODO.md and state.json unupdated despite the plan artifact being successfully created. This is an architectural issue with the orchestrator's routing logic - it needs to invoke commands (which have full workflow specifications), not subagents directly. When a user invokes `/plan 224`, the orchestrator should route to the plan command (which has the complete 8-stage workflow including postflight status updates), not directly to the planner subagent. The correct delegation chain should be: User → Orchestrator → /plan COMMAND → planner subagent → status-sync-manager. Currently happening: User → Orchestrator → planner subagent (directly) → (no postflight, no status-sync-manager). Fix requires updating orchestrator's Stage 7 (RouteToAgent) to invoke command layer, which will then handle delegation to appropriate subagents and execute postflight procedures.
-- **Acceptance Criteria**:
-  - [ ] Root cause documented in orchestrator.md
-  - [ ] Orchestrator Stage 7 modified to invoke commands, not subagents
-  - [ ] /plan command invocation properly executes all 8 stages including postflight
-  - [ ] /research command invocation properly executes all 8 stages including postflight
-  - [ ] /implement command invocation properly executes all 8 stages including postflight
-  - [ ] /revise command invocation properly executes all 8 stages including postflight
-  - [ ] status-sync-manager properly invoked by commands after subagent completion
-  - [ ] TODO.md correctly updated with status markers after command completion
-  - [ ] state.json correctly updated with status and timestamps after command completion
-  - [ ] Plan links correctly added to TODO.md after /plan completion
-  - [ ] Test: /plan 224 updates TODO.md to [PLANNED] with plan link
-  - [ ] Test: /research updates TODO.md to [RESEARCHED] with research links
-  - [ ] Test: All workflow commands execute complete lifecycle
-  - [ ] Documentation updated explaining command vs subagent delegation
-- **Impact**: CRITICAL - Fixes systematic failure where workflow commands don't update TODO.md or state.json because orchestrator bypasses command layer (which contains postflight logic). This breaks task tracking for ALL workflow commands (/plan, /research, /implement, /revise). Essential architectural fix to ensure commands execute their full lifecycle including status updates via status-sync-manager.
+**Action Items**:
+1. Resolve `truth_swap_of_valid_at_triple` (implication case).
+2. Resolve `truth_swap_of_valid_at_triple` (past case - domain extension).
+3. Resolve `truth_swap_of_valid_at_triple` (future case - domain extension).
 
- 
-### 185. Fix integration test helper API mismatches
-- **Effort**: 1 hour
-- **Status**: [PLANNED]
-- **Started**: 2025-12-25
-- **Completed**: 2025-12-29
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: 183, 184
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/185_fix_integration_test_helper_api_mismatches/reports/research-001.md]
-- **Plan**: [.opencode/specs/185_fix_integration_test_helper_api_mismatches/plans/implementation-001.md]
-- **Plan Summary**: 5-phase implementation (1 hour total). Phase 1: Fix line 126 verify_validity type mismatch using valid_iff_empty_consequence.mpr (10 min). Phase 2: Fix line 131 verify_workflow validity unwrapping (10 min). Phase 3: Compile Helpers.lean and verify fixes (5 min). Phase 4: Run integration test suite - verify all 146 tests compile and pass (20 min). Phase 5: Validation and documentation (15 min). Fixes confusion between validity (⊨ φ) and semantic consequence ([] ⊨ φ) using conversion theorem. Trivial changes, well-understood API.
-- **Files Affected**:
-  - LogosTest/Core/Integration/Helpers.lean
-- **Description**: Fix 3 API mismatches in integration test Helpers.lean that prevent test compilation after core build errors are fixed. Errors: Line 126 (semantic consequence type mismatch), Line 131 (validity unwrapping issue), Line 129 (unsolved goals in verify_workflow). These errors occur because test helpers assume an API that differs from the actual Logos implementation. **UPDATE (2025-12-28)**: Dependency task 184 now resolved by task 219 (Truth.lean compiles successfully). Task 183 (DeductionTheorem.lean) was completed separately. This task can now proceed once task 183 is verified complete. **RESEARCH COMPLETE (2025-12-29)**: Root cause identified - confusion between validity (⊨ φ) and semantic consequence ([] ⊨ φ). All 3 fixes are trivial using valid_iff_empty_consequence conversion theorem (< 30 min implementation).
-- **Acceptance Criteria**:
-  - [ ] Line 126 semantic consequence type mismatch fixed
-  - [ ] Line 131 validity unwrapping issue fixed
-  - [ ] Line 129 unsolved goals in verify_workflow fixed
-  - [ ] Helpers.lean compiles successfully
-  - [ ] All 146 integration tests compile successfully
-  - [ ] All 146 integration tests pass with lake exe test
-  - [ ] Test execution time is under 2 minutes
-- **Impact**: Final step to unblock task 173. Once fixed, all 146 integration tests will compile and pass, delivering verified 82% integration test coverage and completing task 173. Dependency blocker task 184 now resolved by task 219.
+**Files**:
+- `Logos/Core/Semantics/Truth.lean` (lines 697, 776, 798)
 
-### 232. Systematically fix TODO.md path references and migrate tasks from project root to .opencode/specs
-- **Effort**: 11 hours (estimated from research)
-- **Status**: [PLANNED]
-- **Started**: 2025-12-29
-- **Completed**: 2025-12-29
-- **Created**: 2025-12-29
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/232_systematically_fix_todomd_path_references/reports/research-001.md]
-- **Plan**: [.opencode/specs/232_systematically_fix_todomd_path_references/plans/implementation-001.md]
-- **Files Affected**:
-  - All .opencode/command/*.md files (research.md, plan.md, implement.md, revise.md, task.md, todo.md, review.md)
-  - All .opencode/agent/subagents/*.md files
-  - All .opencode/context files referencing TODO.md
-  - /home/benjamin/Projects/ProofChecker/TODO.md (to be removed after migration)
-  - /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md (canonical location)
-- **Description**: Something has been adding tasks to /home/benjamin/Projects/ProofChecker/TODO.md instead of to /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md as it should. Systematically survey all commands and agents in the opencode system to identify which ones have the wrong TODO.md path references. Fix these references to use the correct .opencode/specs/TODO.md path. Update any context files accordingly to prevent confusion in the future. Migrate all tasks from the root TODO.md to .opencode/specs/TODO.md without creating redundancies (tasks that already exist in .opencode/specs/TODO.md should not be duplicated). Once all references are fixed and all unique tasks are migrated, remove the root TODO.md file to eliminate the confusion permanently.
-- **Acceptance Criteria**:
-  - [ ] Complete survey of all .opencode/command/*.md files for TODO.md path references
-  - [ ] Complete survey of all .opencode/agent/subagents/*.md files for TODO.md path references
-  - [ ] Complete survey of all .opencode/context files for TODO.md path references
-  - [ ] All wrong path references identified and documented
-  - [ ] All identified wrong paths fixed to use .opencode/specs/TODO.md
-  - [ ] Context files updated with correct path guidance
-  - [ ] All unique tasks from root TODO.md identified
-  - [ ] All unique tasks migrated to .opencode/specs/TODO.md (no duplicates)
-  - [ ] Migration verified - all tasks accounted for
-  - [ ] Root TODO.md file removed
-  - [ ] System tested - all commands work with corrected paths
-  - [ ] No references to root TODO.md remain in .opencode system
-  - [ ] Documentation updated to clarify canonical TODO.md location
-- **Impact**: Eliminates confusion and errors from having two TODO.md files in different locations. Ensures all commands and agents consistently use the canonical .opencode/specs/TODO.md file. Prevents future tasks from being added to the wrong location. Consolidates all task tracking in one authoritative location.
+---
 
-### 224. Configure OpenCode to start in Orchestrator mode or auto-switch agent modes for workflow commands
-- **Effort**: 2 hours (estimated from research)
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-29
-- **Completed**: 2025-12-29
-- **Priority**: Medium
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/224_configure_opencode_default_agent/reports/research-001.md]
-- **Plan**: [.opencode/specs/224_configure_opencode_default_agent/plans/implementation-001.md]
-- **Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/224_configure_opencode_default_agent/summaries/implementation-summary-20251229.md]
-  - Modified Files: opencode.json
-- **Files Affected**:
-  - opencode.json (potential agent configuration)
-  - .opencode/rules/ (potential custom rules)
-  - .opencode/command/*.md (potential command enhancements)
-- **Description**: When starting OpenCode, it defaults to 'Build' agent mode. Users sometimes forget to switch to 'Orchestrator' before running workflow commands like /research or /implement, which can lead to commands being executed by the wrong agent. Research https://opencode.ai/docs/agents/, https://opencode.ai/docs/commands/, and https://opencode.ai/docs/rules/ to find an elegant solution that conforms to OpenCode best practices. Potential approaches: (1) Configure OpenCode to start in Orchestrator mode by default, (2) Make workflow commands automatically switch to the appropriate agent mode when invoked, (3) Add validation/warnings when commands are run in incorrect agent mode, (4) Use custom rules to enforce agent mode requirements. The solution should be minimally disruptive and follow OpenCode conventions.
-- **Research Findings** (2025-12-29): Research completed analyzing OpenCode agent mode system, command routing, and custom rules. Found official `default_agent` config option in opencode.json that sets startup agent. Analyzed 4 solutions: (1) default_agent config (recommended - 1 line change), (2) command-level agent frontmatter routing (already implemented), (3) subagent invocation patterns (workflow-specific), (4) custom rules (overkill for this use case). **Recommended Solution**: Add `"default_agent": "orchestrator"` to opencode.json root level. This is the most elegant, minimally disruptive solution that follows OpenCode conventions and works across CLI, web, and IDE interfaces. Orchestrator agent already configured with `mode: 'all'` allowing it to be primary agent, and all workflow commands already specify `agent: orchestrator` in frontmatter for proper routing.
-- **Acceptance Criteria**:
-  - [ ] Research completed on OpenCode agent configuration options
-  - [ ] Research completed on OpenCode command routing and agent mode switching
-  - [ ] Research completed on OpenCode custom rules for agent mode enforcement
-  - [ ] Viable solution identified that follows OpenCode best practices
-  - [ ] Solution implemented (configuration changes, rule additions, or command enhancements)
-  - [ ] OpenCode starts in Orchestrator mode by default OR workflow commands auto-switch to correct agent
-  - [ ] No breaking changes to existing workflows
-  - [ ] Solution tested with /research, /plan, /implement, /revise commands
-  - [ ] Documentation updated explaining the agent mode behavior
-  - [ ] User experience improved - no need to manually switch agent modes
-- **Impact**: Improves user experience by eliminating the need to manually switch to Orchestrator mode before running workflow commands. Reduces errors from running commands in the wrong agent mode. Ensures commands are always executed by the appropriate agent without user intervention.
+---
 
-### 230. Fix /review command to create completed task entry in TODO.md with review summary link
-- **Effort**: TBD
-- **Status**: [ABANDONED]
-- **Started**: 2025-12-29
-- **Completed**: 2025-12-29
-- **Abandoned**: 2025-12-29
-- **Abandonment Reason**: Research revealed /review command specification already includes creating completed task entry via status-sync-manager delegation (review.md Stage 7). Root cause is orchestrator bypassing command layer (tasks 227/228/229), not specification deficiency. This task subsumed by task 231 which fixes systematic Stage 7 (Postflight) execution failures across all commands including /review.
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: Blocked by task 231 (fix systematic command Stage 7 postflight execution failures)
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/230_fix_review_command_to_create_completed_task_entry_in_todomd_with_review_summary_link/reports/research-001.md]
-- **Files Affected**:
-  - .opencode/command/review.md
-  - .opencode/agent/subagents/reviewer.md
-- **Description**: When I ran /review, I got "Based on the review command workflow, I should NOT be creating tasks myself. The command specification indicates that the review command creates a review task entry (project 230_codebase_review) and the reviewer subagent should have formatted follow-up tasks in the review summary for manual /task invocation by the user.". Although it is right that the /review command should not create tasks to address remaining work, it SHOULD create a single task corresponding to the review task itself in TODO.md using the same number as the project directory, marking this as '[COMPLETED]', and including a link to the review summary that was produced. This helps to make the TODO.md a central dashboard to see all ongoing progress which the user can use to find links.
-- **Acceptance Criteria**:
-  - [ ] /review command creates TODO.md task entry with same number as project directory
-  - [ ] Task entry marked with status [COMPLETED] including completion timestamp
-  - [ ] Task entry includes link to review summary artifact
-  - [ ] Task entry includes brief description of review scope
-  - [ ] state.json updated to reflect completed review task
-  - [ ] Review task does NOT create follow-up tasks (those are in summary for manual /task invocation)
-  - [ ] TODO.md serves as central dashboard with link to review findings
-  - [ ] Documentation updated explaining /review task creation behavior
-- **Impact**: Makes TODO.md a comprehensive dashboard showing all project activities including reviews, with direct links to review summaries. Improves discoverability and tracking of review work.
+### 3. Automation Tactics
+**Effort**: 40-60 hours
+**Status**: PARTIAL (4/12 implemented)
 
-### 203. Add --complex flag to /research for subtopic subdivision with summary
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Files Affected**:
-  - .opencode/command/research.md
-  - .opencode/agent/subagents/researcher.md
-  - .opencode/agent/subagents/lean-research-agent.md
-- **Description**: Enhance the /research command to support a --complex flag that changes its behavior for handling complex research topics. Without --complex flag: /research creates a single research report (reports/research-001.md) with no summary - this is the current default behavior. With --complex flag: /research should (1) Divide the topic into 1-5 appropriate subtopics using intelligent analysis, (2) Spawn research subagents to complete each subtopic in parallel, creating individual research reports (reports/research-001.md, reports/research-002.md, etc.), (3) Each subagent returns only its report path and brief summary (not full content) to the primary agent, (4) Primary agent compiles all report paths and brief summaries into a research summary report (summaries/research-summary.md), (5) Update TODO.md and state.json with all report references and mark task as [RESEARCHED]. The --complex flag enables comprehensive research on large topics while protecting context windows through summarization.
-- **Acceptance Criteria**:
-  - [ ] --complex flag added to /research command argument parsing
-  - [ ] Without --complex: /research creates single report, no summary (current behavior preserved)
-  - [ ] With --complex: Topic intelligently divided into 1-5 subtopics
-  - [ ] With --complex: Separate research subagents spawned for each subtopic
-  - [ ] With --complex: Each subtopic generates individual report (reports/research-NNN.md)
-  - [ ] With --complex: Subagents return only report path + brief summary (not full content)
-  - [ ] With --complex: Primary agent creates research summary (summaries/research-summary.md) compiling all references
-  - [ ] Research summary contains only paths and brief summaries, not duplicated full content
-  - [ ] Lazy directory creation followed (summaries/ created only when writing summary)
-  - [ ] TODO.md updated with all report references and [RESEARCHED] status for both modes
-  - [ ] state.json updated correctly for both modes
-  - [ ] Documentation explains --complex flag behavior and use cases
-- **Impact**: Enables comprehensive research on complex topics by dividing them into manageable subtopics while protecting the primary agent's context window through summarization. Provides flexibility - simple topics get focused single reports, complex topics get thorough multi-report coverage with summary overview.
+**Description**: Implement the remaining planned tactics for TM logic to support easier proof construction.
+
+**Action Items**:
+1. Implement `modal_k_tactic`, `temporal_k_tactic`.
+2. Implement `modal_4_tactic`, `modal_b_tactic`.
+3. Implement `temp_4_tactic`, `temp_a_tactic`.
+4. Implement `modal_search`, `temporal_search`.
+5. Fix Aesop integration (blocked by Batteries dependency).
+
+**Files**:
+- `Logos/Core/Automation/Tactics.lean`
+
+---
+
+### 4. Proof Search
+**Effort**: 40-60 hours
+**Status**: PLANNED
+
+**Description**: Implement automated proof search for TM logic.
+
+**Action Items**:
+1. Implement breadth-first proof search.
+2. Implement heuristic-guided search.
+
+**Files**:
+- `Logos/Core/Automation/ProofSearch.lean`
+
+---
+
+### 5. Decidability
+**Effort**: 40-60 hours
+**Status**: PLANNED
+
+**Description**: Implement decision procedures for TM logic.
+
+**Action Items**:
+1. Implement tableau method.
+2. Implement satisfiability decision procedure.
+
+**Files**:
+- `Logos/Core/Metalogic/Decidability.lean` (to be created)
+
+---
+
+### 6. ModalS5 Limitation
+**Effort**: Low
+**Status**: DOCUMENTED LIMITATION
+
+**Description**: The theorem `diamond_mono_imp` in `ModalS5.lean` is marked with `sorry` because it is not valid as an object-level implication. This is a documented limitation.
+
+**Action Items**:
+1. Maintain documentation or find alternative formulation if possible.
+
+**Files**:
+- `Logos/Core/Theorems/ModalS5.lean`
+
+---
+
+---
+
+### 7. Document Creation of Context Files
+**Effort**: 1-2 hours
+**Status**: DONE
+**Priority**: Low
+**Blocking**: None
+**Dependencies**: None
+
+**Files Affected**:
+- `Logos/Core/Syntax/Context.lean`
+- `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
+
+**Description**:
+This task was to document the creation and functionality of the `Context.lean` file, which manages proof contexts (premise lists) in the LEAN 4 ProofChecker project. The documentation was added to `IMPLEMENTATION_STATUS.md` to reflect the completion of this core syntax component.
+
+**Acceptance Criteria**:
+- [x] `Context.lean` is fully implemented and tested.
+- [x] `IMPLEMENTATION_STATUS.md` accurately reflects the status of `Context.lean`.
+- [x] The role of `Context.lean` in the syntax package is clearly described.
+
+**Impact**:
+Provides clear documentation for a core component of the syntax package, improving project maintainability and onboarding for new contributors.
+
+---
+
+### 8. Refactor `Logos/Core/Syntax/Context.lean`
+**Effort**: 2-4 hours
+**Status**: PLANNED
+**Priority**: Medium
+**Blocking**: Task 9
+**Dependencies**: None
+
+**Files Affected**:
+- `Logos/Core/Syntax/Context.lean`
+- `LogosTest/Core/Syntax/ContextTest.lean`
+
+**Description**:
+Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4.
+
+**Acceptance Criteria**:
+- [ ] The `Context.lean` file is refactored for clarity and performance.
+- [ ] All related tests in `ContextTest.lean` are updated and pass.
+- [ ] The refactoring adheres to the LEAN 4 style guide.
+- [ ] The public API of the `Context` module remains backward-compatible or changes are documented.
+
+**Impact**:
+Improves the maintainability and readability of a core component of the syntax package.
+
+---
+
+---
+
+### 9. Update Context References
+**Effort**: 1-2 hours
+**Status**: PLANNED
+**Priority**: Medium
+**Blocking**: None
+**Dependencies**: Task 8
+
+**Files Affected**:
+- `Logos/Core/ProofSystem/Derivation.lean`
+- `Logos/Core/Metalogic/DeductionTheorem.lean`
+- Other files that import `Logos.Core.Syntax.Context`
+
+**Description**:
+After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary.
+
+**Acceptance Criteria**:
+- [ ] All references to the `Context` module are updated.
+- [ ] The project builds successfully after the updates.
+- [ ] All tests pass after the updates.
+
+**Impact**:
+Ensures that the entire codebase is compatible with the refactored `Context` module.
+
+---
+
+---
+
+### 126. Implement bounded_search and matches_axiom in ProofSearch
+**Effort**: 3 hours
+**Status**: COMPLETED (Started: 2025-12-22, Completed: 2025-12-22)
+**Priority**: Medium
+**Blocking**: None
+**Dependencies**: None
+**Artifacts**: [.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md](.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md), [.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/reports/research-001.md](.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/reports/research-001.md), [.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/summaries/implementation-summary-20251222.md](.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/summaries/implementation-summary-20251222.md)
+
+**Files Affected**:
+- `Logos/Core/Automation/ProofSearch.lean`
+- `LogosTest/Core/Automation/ProofSearchTest.lean`
+
+**Description**:
+Implement bounded search driver with depth/visit limits, cache/visited threading, and structural axiom matching for all 14 schemas to replace stubs and enable basic proof search execution. Lean intent true; plan ready at [.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md](.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md).
+
+**Acceptance Criteria**:
+- [x] `bounded_search` implemented with depth and visit limits.
+- [x] `matches_axiom` implemented with correct structural matching logic (all 14 schemas) and axiom stubs removed.
+- [x] `search_with_cache`/basic search runs on sample goals without timeouts.
+- [x] Tests cover axiom matching and bounded search termination (unit + integration under Automation).
+
+**Impact**:
+Enables the first working path for automated proof search with termination guards.
+
+---
+
+---
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
@@ -414,6 +241,8 @@
   - [ ] Related tests added or updated
 - **Impact**: Unlocks subsequent completeness proofs by establishing maximal consistency.
 
+---
+
 ### 133. Build canonical model constructors in Completeness.lean
 - **Effort**: 3 hours
 - **Status**: [NOT STARTED]
@@ -430,6 +259,8 @@
   - [ ] Construction type-checks with existing definitions
 - **Impact**: Provides the core model for subsequent truth lemma proofs.
 
+---
+
 ### 134. Prove truth lemma structure in Completeness.lean
 - **Effort**: 3 hours
 - **Status**: [NOT STARTED]
@@ -445,6 +276,8 @@
   - [ ] Proof integrates with canonical model components
   - [ ] Tests (or placeholders) updated to exercise lemma
 - **Impact**: Establishes the key bridge between syntax and semantics for completeness.
+
+---
 
 ### 135. Remove provable_iff_valid sorry in Completeness.lean
 - **Effort**: 2 hours
@@ -464,6 +297,8 @@
 
 ### Decidability
 
+---
+
 ### 136. Design Decidability.lean architecture and signatures
 - **Effort**: 2 hours
 - **Status**: [NOT STARTED]
@@ -480,6 +315,8 @@
   - [ ] No build warnings from new declarations
 - **Impact**: Establishes a foundation for future decidability proofs and implementations.
 
+---
+
 ### 137. Implement tableau core rules in Decidability.lean
 - **Effort**: 3 hours
 - **Status**: [NOT STARTED]
@@ -495,6 +332,8 @@
   - [ ] Basic examples compile demonstrating rule application
   - [ ] No placeholder axioms for these rules remain
 - **Impact**: Provides executable building blocks for the decision procedure.
+
+---
 
 ### 138. Implement satisfiability and validity decision procedure tests
 - **Effort**: 3 hours
@@ -515,6 +354,8 @@
 
 ### Layer Extensions (Future Planning)
 
+---
+
 ### 139. Draft Layer 1 counterfactual operator plan
 - **Effort**: 2 hours
 - **Status**: [NOT STARTED]
@@ -532,6 +373,8 @@
   - [ ] Clear follow-on tasks identified
 - **Impact**: Provides roadmap for counterfactual extensions post Layer 0.
 
+---
+
 ### 140. Draft Layer 2 epistemic operator plan
 - **Effort**: 2 hours
 - **Status**: [NOT STARTED]
@@ -548,6 +391,8 @@
   - [ ] Architecture updated with Layer 2 scope and assumptions
   - [ ] Follow-on tasks identified
 - **Impact**: Establishes roadmap for epistemic extensions.
+
+---
 
 ### 141. Draft Layer 3 normative operator plan
 - **Effort**: 2 hours
@@ -568,6 +413,111 @@
 
 ---
 
+---
+
+### 148. Ensure command updates also sync SORRY and TACTIC registries
+**Effort**: 2-3 hours
+**Status**: [NOT STARTED]
+**Priority**: Medium
+**Blocking**: None
+**Dependencies**: None
+
+**Files Affected**:
+- `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
+- `Documentation/ProjectInfo/SORRY_REGISTRY.md`
+- `Documentation/ProjectInfo/TACTIC_REGISTRY.md`
+- `Documentation/Development/MAINTENANCE.md`
+
+**Description**:
+Update `/task`, `/add`, `/review`, `/todo`, and related command flows and standards so that they always update `IMPLEMENTATION_STATUS.md`, `SORRY_REGISTRY.md`, and `TACTIC_REGISTRY.md` together. Ensure dry-run coverage and avoid creating project directories when no artifacts are written.
+
+**Acceptance Criteria**:
+- [ ] Command/agent standards updated to require registry updates for `/task`, `/add`, `/review`, `/todo`, and related commands.
+- [ ] IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md are updated in the same change when these commands modify tasks.
+- [ ] Dry-run behavior and safety notes are documented for these updates.
+- [ ] No project directories are created as part of these command updates.
+
+**Impact**:
+Keeps implementation status and registries synchronized, reducing drift and missing updates across automation flows.
+
+---
+
+---
+
+### 172. Complete API documentation for all Logos modules
+**Effort**: 30 hours
+**Status**: [PLANNED]
+**Started**: 2025-12-24
+**Completed**: 2025-12-24
+**Priority**: High
+**Blocking**: None
+**Dependencies**: None
+**Language**: lean
+**Research**: [Research Report](.opencode/specs/172_documentation/reports/research-001.md)
+**Research Summary**: Current state shows 98% module-level coverage but only 47% declaration-level coverage. Critical gaps identified in 4 files (Tactics.lean, Truth.lean, Propositional.lean, Derivation.lean). Recommended tools: doc-gen4 for centralized API reference, linters for quality enforcement. Revised effort estimate: 30 hours (up from 18 hours).
+**Plan**: [Implementation Plan](.opencode/specs/172_documentation/plans/implementation-001.md)
+**Plan Summary**: 5-phase implementation plan (30 hours total). Phase 1: Infrastructure setup with doc-gen4 and linters (3h). Phase 2: Critical gaps - Tactics, Truth, Propositional, Derivation (12h). Phase 3: Moderate gaps - TaskModel, ModalS4, ModalS5 (4.5h). Phase 4: Minor gaps - 18 remaining files (9h). Phase 5: Quality assurance and API reference generation (1.5h). Includes build blocker fixes for Truth.lean and DeductionTheorem.lean.
+
+**Files Affected**:
+- All Logos module files (24 modules)
+- `Documentation/Reference/API_REFERENCE.md`
+
+**Description**:
+Complete comprehensive API documentation for all Logos modules with docstrings, parameter descriptions, examples, and centralized API reference. Analysis shows excellent 95% coverage with only build errors blocking full verification.
+
+**Acceptance Criteria**:
+- [x] All public functions have docstrings
+- [x] Docstrings include parameter descriptions
+- [x] Complex functions include examples
+- [x] Centralized API reference generated
+- [ ] Zero docBlame warnings (pending build fixes)
+
+**Impact**:
+Provides complete API documentation for all Logos modules, improving usability and maintainability.
+
+---
+
+---
+
+### 174. Add property-based testing framework and metalogic tests
+**Effort**: 18-23 hours
+**Status**: [COMPLETED]
+**Started**: 2025-12-25
+**Completed**: 2025-12-25
+**Priority**: High
+**Blocking**: None
+**Dependencies**: None
+**Language**: lean
+**Plan**: [Implementation Plan](.opencode/specs/174_property_based_testing/plans/implementation-001.md)
+**Summary**: [Implementation Summary](.opencode/specs/174_property_based_testing/summaries/implementation-summary-20251225.md)
+
+**Files Affected**:
+- `LogosTest/Core/Property/Generators.lean`
+- `LogosTest/Core/Metalogic/SoundnessPropertyTest.lean`
+- `LogosTest/Core/ProofSystem/DerivationPropertyTest.lean`
+- `LogosTest/Core/Semantics/SemanticPropertyTest.lean`
+- `LogosTest/Core/Syntax/FormulaPropertyTest.lean`
+- `LogosTest/Core/Property/README.md`
+- `Documentation/Development/PROPERTY_TESTING_GUIDE.md` (NEW)
+- `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
+
+**Description**:
+Integrated Plausible property-based testing framework and implemented comprehensive property tests for metalogic (soundness, consistency), derivation (weakening, cut, substitution), semantics (frame properties, truth conditions), and formula transformations (NNF, CNF idempotence). Main technical challenge was implementing TaskModel generator with dependent types using SampleableExt proxy pattern.
+
+**Acceptance Criteria**:
+- [x] TaskModel generator implemented with dependent type handling
+- [x] 14/14 axiom schemas tested with 100-500 test cases each
+- [x] Enhanced property tests across 4 core modules
+- [x] 5,000+ total property test cases
+- [x] PROPERTY_TESTING_GUIDE.md created (500+ lines)
+- [x] All tests passing with performance targets met
+
+**Impact**:
+Provides comprehensive automated testing across wide range of inputs, automatically finding edge cases and verifying critical properties of the TM logic proof system. Significantly improves test coverage and confidence in correctness.
+
+---
+
+---
 
 ### 175. Establish CI/CD pipeline with automated testing and linting
 - **Effort**: 13 hours
@@ -592,6 +542,8 @@
   - [ ] CI/CD process documented in CI_CD_PROCESS.md
 - **Impact**: Ensures code quality automatically, prevents regressions, and enables confident merging of pull requests. Essential for maintaining production-ready code.
 
+---
+
 ### 176. Enhance proof search with domain-specific heuristics and caching
 - **Effort**: 18 hours
 - **Status**: [NOT STARTED]
@@ -614,6 +566,52 @@
   - [ ] Documentation for heuristic tuning added
 - **Impact**: Improves automation effectiveness by tailoring proof search to the structure of modal and temporal problems, reducing search time and increasing success rate.
 
+---
+
+### 177. Update examples to use latest APIs and add new feature demonstrations ✅
+**Effort**: 8 hours
+**Status**: [COMPLETED]
+**Started**: 2025-12-25
+**Completed**: 2025-12-25
+**Priority**: Medium
+**Blocking**: None
+**Dependencies**: Tasks 126, 127 (completed)
+**Language**: lean
+**Plan**: [Implementation Plan](.opencode/specs/177_examples_update/plans/implementation-001.md)
+**Summary**: [Implementation Summary](.opencode/specs/177_examples_update/summaries/implementation-summary-20251225.md)
+
+**Files Modified**:
+- `Archive/ModalProofs.lean` (241 → 346 lines, +105)
+- `Archive/TemporalProofs.lean` (301 → 356 lines, +55)
+- `Archive/BimodalProofs.lean` (216 → 297 lines, +81)
+- `Documentation/UserGuide/EXAMPLES.md` (448 → 586 lines, +138)
+
+**Description**:
+Successfully updated example files to demonstrate new automation capabilities (ProofSearch, heuristics) added in Tasks 126-127. Added 379 lines total (exceeded planned 160 lines by 137%). All changes are additive with zero breaking changes.
+
+**Implementation Highlights**:
+- Phase 1: Modal automation examples (105 lines) - automated proof search, SearchStats, heuristic strategies, context transformations
+- Phase 2: Temporal automation examples (55 lines) - temporal proof search, future_context transformations
+- Phase 3: Perpetuity automation examples (81 lines) - automated P1-P6 discovery, bimodal search
+- Phase 4: Documentation updates (138 lines) - comprehensive API documentation and cross-references
+
+**Acceptance Criteria**:
+- [x] All existing examples audited for correctness
+- [x] Examples updated to use latest APIs (ProofSearch imports added)
+- [x] New examples for ProofSearch and heuristics added
+- [x] New examples for perpetuity principles P1-P6 added
+- [~] All examples compile and run successfully (blocked by Tasks 183-184)
+- [x] Examples documented with clear explanations
+
+**Impact**:
+Provides comprehensive examples demonstrating automation features, improving usability and showcasing ProofSearch capabilities. Exceeds planned scope with high-quality documentation.
+
+**Note**: Build currently blocked by pre-existing errors in Truth.lean (Task 184) and DeductionTheorem.lean (Task 183). Example code is correct and will compile once blockers are resolved.
+
+---
+
+---
+
 ### 178. Complete advanced tutorial sections with hands-on exercises
 - **Effort**: 13 hours
 - **Status**: [NOT STARTED]
@@ -634,6 +632,8 @@
   - [ ] Troubleshooting guide created
   - [ ] Tutorial tested with new users for clarity
 - **Impact**: Improves onboarding by providing comprehensive learning path from basics to advanced topics with practical exercises.
+
+---
 
 ### 179. Implement performance benchmarks for proof search and derivation
 - **Effort**: 13 hours
@@ -658,6 +658,8 @@
   - [ ] Baseline performance measurements recorded
 - **Impact**: Ensures performance doesn't regress and provides data for optimization efforts. Critical for maintaining usable proof search times.
 
+---
+
 ### 180. Add test coverage metrics and reporting
 - **Effort**: 9 hours
 - **Status**: [NOT STARTED]
@@ -678,6 +680,192 @@
   - [ ] Coverage measurement process documented
   - [ ] Current coverage baseline established
 - **Impact**: Enables data-driven test improvement by identifying untested code paths and tracking coverage over time.
+
+---
+
+### 183. ✅ Fix DeductionTheorem.lean build errors (3 errors)
+- **Effort**: 0.5 hours (30 minutes)
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-25
+- **Completed**: 2025-12-28
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: 173
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/183_deduction_theorem_build_errors/reports/research-001.md]
+  - Summary: [.opencode/specs/183_deduction_theorem_build_errors/summaries/research-summary.md]
+- **Plan**: [.opencode/specs/183_deduction_theorem_build_errors/plans/implementation-002.md]
+- **Plan Summary**: Single-phase implementation (30 minutes). Replace 3 `.elim` patterns with idiomatic `by_cases` tactic at lines 256, 369, 376. Purely syntactic fix following proven patterns from Soundness.lean and Truth.lean. Very low risk - no logic changes, only tactic mode syntax.
+- **Implementation Summary**: [.opencode/specs/183_deduction_theorem_build_errors/summaries/implementation-summary-20251228.md]
+- **Files Affected**:
+  - Logos/Core/Metalogic/DeductionTheorem.lean
+- **Description**: Fix 3 pre-existing build errors in DeductionTheorem.lean that are blocking compilation of all test files including the new integration tests from task 173. These errors prevent verification that the 106 new integration tests (82% coverage) actually compile and pass. Errors: Line 255 (Decidable typeclass instance stuck), Line 297 (no goals to be solved), Line 371 (Decidable typeclass instance stuck).
+- **Root Cause Analysis** (2025-12-25):
+  - All 3 build errors stem from using `(em P).elim` pattern inside `match` expressions
+  - The `.elim` method is a term-mode construct, not a tactic, causing "unknown tactic" errors at lines 256, 369, and 376
+  - With `open Classical` already at the top of the file, `by_cases` automatically uses `Classical.propDecidable` for any proposition via excluded middle
+- **Solution** (Research Complete):
+  - Replace `(em P).elim (fun h => ...) (fun h => ...)` with `by_cases h : P` tactic
+  - This is the idiomatic Lean 4 pattern proven in the codebase (Soundness.lean line 282, Truth.lean lines 789-825)
+  - 3 simple replacements needed:
+    - Line 256: `(em (A ∈ Γ'')).elim` → `by_cases hA' : A ∈ Γ''`
+    - Line 369: `(em (Γ' = A :: Γ)).elim` → `by_cases h_eq : Γ' = A :: Γ`
+    - Line 376: `(em (A ∈ Γ')).elim` → `by_cases hA : A ∈ Γ'`
+  - Use `·` bullet points for case branches and remove closing parentheses
+  - Termination proofs are correct and will work once tactic errors are fixed
+- **Acceptance Criteria**:
+  - [x] All 3 build errors in DeductionTheorem.lean resolved
+  - [x] DeductionTheorem.lean compiles successfully with lake build
+  - [x] No new errors introduced
+  - [x] Existing tests continue to pass
+- **Impact**: Critical blocker for task 173. Fixing these errors will unblock compilation of 106 new integration tests and allow verification of 82% integration test coverage achievement.
+
+---
+
+---
+
+### 184. Fix Truth.lean build error (swap_past_future proof)
+**Effort**: 1-2 hours
+**Status**: [BLOCKED]
+**Started**: 2025-12-25
+**Priority**: High
+**Blocking**: Task 173 (integration tests), Task 185
+**Dependencies**: Task 213
+**Language**: lean
+
+**Files Affected**:
+- `Logos/Core/Semantics/Truth.lean` (line 632)
+
+**Description**:
+Fix build error in Truth.lean at line 632 related to swap_past_future proof. This error is blocking integration test compilation and task 173. **BLOCKED by task 213** - the is_valid_swap_involution theorem at line 691 is unprovable and must be resolved first.
+
+**Error Details**:
+- Line 632: swap_past_future proof error
+- Root cause: Depends on unprovable is_valid_swap_involution theorem
+
+**Acceptance Criteria**:
+- [ ] Build error at line 632 is resolved
+- [ ] File compiles successfully with `lake build`
+- [ ] No new errors introduced
+- [ ] Existing tests continue to pass
+
+**Impact**:
+Unblocks task 173 (integration tests) and task 185 (test helper API fixes). Critical for project build health.
+
+---
+
+---
+
+### 185. ✅ Fix integration test helper API mismatches
+- **Effort**: 1 hour
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-25
+- **Completed**: 2025-12-29
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 183, 184
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/185_fix_integration_test_helper_api_mismatches/reports/research-001.md]
+- **Plan**: [.opencode/specs/185_fix_integration_test_helper_api_mismatches/plans/implementation-001.md]
+- **Plan Summary**: 5-phase implementation (1 hour total). Phase 1: Fix line 126 verify_validity type mismatch using valid_iff_empty_consequence.mpr (10 min). Phase 2: Fix line 131 verify_workflow validity unwrapping (10 min). Phase 3: Compile Helpers.lean and verify fixes (5 min). Phase 4: Run integration test suite - verify all 146 tests compile and pass (20 min). Phase 5: Validation and documentation (15 min). Fixes confusion between validity (⊨ φ) and semantic consequence ([] ⊨ φ) using conversion theorem. Trivial changes, well-understood API.
+- **Implementation Summary**: [.opencode/specs/185_fix_integration_test_helper_api_mismatches/summaries/implementation-summary-20251228.md]
+- **Files Affected**:
+  - LogosTest/Core/Integration/Helpers.lean
+- **Description**: Fix 3 API mismatches in integration test Helpers.lean that prevent test compilation after core build errors are fixed. Errors: Line 126 (semantic consequence type mismatch), Line 131 (validity unwrapping issue), Line 129 (unsolved goals in verify_workflow). These errors occur because test helpers assume an API that differs from the actual Logos implementation. **UPDATE (2025-12-28)**: Dependency task 184 now resolved by task 219 (Truth.lean compiles successfully). Task 183 (DeductionTheorem.lean) was completed separately. This task can now proceed once task 183 is verified complete. **RESEARCH COMPLETE (2025-12-29)**: Root cause identified - confusion between validity (⊨ φ) and semantic consequence ([] ⊨ φ). All 3 fixes are trivial using valid_iff_empty_consequence conversion theorem (< 30 min implementation).
+- **Acceptance Criteria**:
+  - [x] Line 126 semantic consequence type mismatch fixed
+  - [x] Line 131 validity unwrapping issue fixed
+  - [x] Line 129 unsolved goals in verify_workflow fixed
+  - [x] Helpers.lean compiles successfully
+  - [x] All 146 integration tests compile successfully
+  - [x] All 146 integration tests pass with lake exe test
+  - [x] Test execution time is under 2 minutes
+- **Impact**: Final step to unblock task 173. Once fixed, all 146 integration tests will compile and pass, delivering verified 82% integration test coverage and completing task 173. Dependency blocker task 184 now resolved by task 219.
+
+---
+
+### 186. Refactor MAINTENANCE.md to include /review update instructions ✅
+**Effort**: 1 hour
+**Status**: [COMPLETED]
+**Started**: 2025-12-25
+**Completed**: 2025-12-25
+**Priority**: Medium
+**Blocking**: None
+**Dependencies**: None
+
+**Files Affected**:
+- `Documentation/ProjectInfo/MAINTENANCE.md`
+
+**Description**:
+Update MAINTENANCE.md to include instructions for /review command to update IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md when reviewing code changes.
+
+**Acceptance Criteria**:
+- [x] MAINTENANCE.md includes /review update workflow
+- [x] Registry update instructions are clear and actionable
+- [x] Examples provided for common review scenarios
+
+**Impact**:
+Ensures /review command updates all relevant registries, maintaining consistency across documentation.
+
+---
+
+---
+
+### 187. Refactor review.md workflow context to specify registry update workflow ✅
+**Effort**: 1 hour
+**Status**: [COMPLETED]
+**Started**: 2025-12-25
+**Completed**: 2025-12-25
+**Priority**: Medium
+**Blocking**: None
+**Dependencies**: None
+
+**Files Affected**:
+- `.opencode/context/workflow/review.md`
+
+**Description**:
+Update review.md workflow context to specify the registry update workflow for IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md.
+
+**Acceptance Criteria**:
+- [x] review.md includes registry update workflow
+- [x] Workflow specifies when and how to update each registry
+- [x] Integration with /review command is documented
+
+**Impact**:
+Provides clear workflow guidance for /review command to maintain registry consistency.
+
+---
+
+---
+
+### 188. Refactor /review command to load review.md workflow context ✅
+**Effort**: 1 hour
+**Status**: [COMPLETED]
+**Started**: 2025-12-25
+**Completed**: 2025-12-25
+**Priority**: Medium
+**Blocking**: None
+**Dependencies**: None
+
+**Files Affected**:
+- `.opencode/command/review.md`
+
+**Description**:
+Update /review command to load review.md workflow context, ensuring it follows the registry update workflow.
+
+**Acceptance Criteria**:
+- [x] /review command loads review.md workflow context
+- [x] Command follows registry update workflow
+- [x] Registry updates are atomic and consistent
+
+**Impact**:
+Ensures /review command automatically maintains registry consistency through workflow context.
+
+---
+
+---
 
 ### 189. Add --divide flag to /research command for topic subdivision
 - **Effort**: 3 hours
@@ -707,6 +895,474 @@
   - [ ] Documentation updated to explain --divide flag behavior
 - **Impact**: Provides more flexible research workflow - simple research creates focused reports without overhead of summary compilation, while complex research can be divided into manageable subtopics with a summary overview.
 
+---
+
+### 190. Improve MAINTENANCE.md documentation structure and content
+**Effort**: 2 hours
+**Status**: [IN PROGRESS]
+**Started**: 2025-12-26
+**Priority**: Medium
+**Blocking**: None
+**Dependencies**: None
+**Language**: markdown
+**Plan**: [Implementation Plan](.opencode/specs/190_improve_maintenance_md_documentation_structure_and_content/plans/implementation-002.md)
+
+**Files Affected**:
+- `Documentation/ProjectInfo/MAINTENANCE.md`
+
+**Description**:
+Improve MAINTENANCE.md documentation by adding missing registry references (FEATURE_REGISTRY.md and TACTIC_REGISTRY.md), establishing a clear policy against backwards compatibility layers in favor of clean-break approaches, and enhancing overall structure and organization.
+
+**Acceptance Criteria**:
+- [ ] FEATURE_REGISTRY.md added to Related Documentation section
+- [ ] TACTIC_REGISTRY.md added to Related Documentation section
+- [ ] New section added explicitly banning backwards compatibility layers
+- [ ] Clean-break approach documented as preferred methodology
+- [ ] Rationale provided for avoiding technical debt from compatibility layers
+- [ ] Document structure improved for consistency
+- [ ] Section organization enhanced for better navigation
+- [ ] No content removed, only reorganized and enhanced
+- [ ] Cross-references updated where relevant
+
+**Impact**:
+Improves MAINTENANCE.md documentation quality and completeness, providing clear guidance on registry synchronization and backwards compatibility policy.
+
+---
+
+See git history for other completed tasks:
+```bash
+git log --all --grep="Complete Task" --oneline
+```
+
+---
+
+### 203. Add --complex flag to /research for subtopic subdivision with summary
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/research.md
+  - .opencode/agent/subagents/researcher.md
+  - .opencode/agent/subagents/lean-research-agent.md
+- **Description**: Enhance the /research command to support a --complex flag that changes its behavior for handling complex research topics. Without --complex flag: /research creates a single research report (reports/research-001.md) with no summary - this is the current default behavior. With --complex flag: /research should (1) Divide the topic into 1-5 appropriate subtopics using intelligent analysis, (2) Spawn research subagents to complete each subtopic in parallel, creating individual research reports (reports/research-001.md, reports/research-002.md, etc.), (3) Each subagent returns only its report path and brief summary (not full content) to the primary agent, (4) Primary agent compiles all report paths and brief summaries into a research summary report (summaries/research-summary.md), (5) Update TODO.md and state.json with all report references and mark task as [RESEARCHED]. The --complex flag enables comprehensive research on large topics while protecting context windows through summarization.
+- **Acceptance Criteria**:
+  - [ ] --complex flag added to /research command argument parsing
+  - [ ] Without --complex: /research creates single report, no summary (current behavior preserved)
+  - [ ] With --complex: Topic intelligently divided into 1-5 subtopics
+  - [ ] With --complex: Separate research subagents spawned for each subtopic
+  - [ ] With --complex: Each subtopic generates individual report (reports/research-NNN.md)
+  - [ ] With --complex: Subagents return only report path + brief summary (not full content)
+  - [ ] With --complex: Primary agent creates research summary (summaries/research-summary.md) compiling all references
+  - [ ] Research summary contains only paths and brief summaries, not duplicated full content
+  - [ ] Lazy directory creation followed (summaries/ created only when writing summary)
+  - [ ] TODO.md updated with all report references and [RESEARCHED] status for both modes
+  - [ ] state.json updated correctly for both modes
+  - [ ] Documentation explains --complex flag behavior and use cases
+- **Impact**: Enables comprehensive research on complex topics by dividing them into manageable subtopics while protecting the primary agent's context window through summarization. Provides flexibility - simple topics get focused single reports, complex topics get thorough multi-report coverage with summary overview.
+
+---
+
+### 205. Implement Lean tool usage verification and monitoring system
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/command/research.md
+  - .opencode/command/implement.md
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/context/common/standards/lean-tool-verification.md (new)
+  - .opencode/specs/monitoring/ (new directory structure)
+- **Description**: Design and implement a comprehensive monitoring and verification system to detect and validate that Lean-specific tools (lean-lsp-mcp, Loogle, LeanExplore, LeanSearch) are being correctly used by the appropriate commands and agents when processing Lean tasks. The system should provide visibility into tool usage patterns, detect routing errors, track tool availability issues, and identify opportunities for improvement. This includes creating verification methods, logging standards, monitoring dashboards, and automated health checks to ensure the system is working optimally.
+- **Acceptance Criteria**:
+  - [ ] Verification method identified for detecting lean-lsp-mcp usage in /implement command for Lean tasks
+  - [ ] Verification method identified for detecting Loogle usage in /research command for Lean tasks
+  - [ ] Automated tool availability checks implemented (binary existence, process health, API connectivity)
+  - [ ] Tool usage logging standardized in lean-research-agent and lean-implementation-agent return formats
+  - [ ] Monitoring dashboard or report created showing tool usage metrics per command execution
+  - [ ] Health check command or script created to verify routing is working correctly
+  - [ ] Documentation created explaining verification methods and monitoring approach
+  - [ ] Error detection implemented for cases where tools should be used but aren't (routing failures)
+  - [ ] Recommendations provided for system improvements based on monitoring data
+  - [ ] All verification methods tested with real command executions on Lean tasks
+- **Impact**: Provides visibility and confidence that the Lean tool integration is working correctly, enables early detection of routing or configuration issues, and identifies opportunities to improve the system's effectiveness with Lean-specific research and implementation workflows.
+
+---
+
+### 208. Fix /implement and /research routing to use Lean-specific agents and tools
+- **Effort**: 2-3 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
+- **Priority**: High
+- **Language**: markdown
+- **Plan**: [Implementation Plan](.opencode/specs/208_fix_lean_routing/plans/implementation-001.md)
+- **Implementation Summary**: [Summary](.opencode/specs/208_fix_lean_routing/summaries/implementation-summary-20251228.md)
+- **Files Affected**:
+  - .opencode/command/research.md
+  - .opencode/command/implement.md
+  - .opencode/agent/orchestrator.md
+- **Description**: Fix routing logic in /research and /implement commands to ensure Lean tasks consistently route to lean-implementation-agent and lean-research-agent. Strengthen routing instructions with explicit validation, logging, and pre-invocation checks.
+- **Acceptance Criteria**:
+  - [x] research.md Stage 2 includes explicit validation and logging requirements
+  - [x] implement.md Stage 2 includes IF/ELSE routing logic and validation
+  - [x] orchestrator.md Stages 3-4 include bash extraction and routing validation
+  - [x] Routing decisions logged at all stages
+  - [x] Pre-invocation validation added to prevent incorrect routing
+
+---
+
+### 209. Research Lean 4 techniques for completing task 193 involution proof
+**Effort**: 3 hours
+**Status**: [BLOCKED]
+**Started**: 2025-12-28
+**Completed**: 2025-12-28
+**Priority**: High
+**Blocking**: None
+**Dependencies**: Task 213 (blocker identified)
+**Language**: lean
+**Research Artifacts**:
+  - Main Report: [.opencode/specs/209_research_lean4_involution_techniques/reports/research-001.md]
+  - Summary: [.opencode/specs/209_research_lean4_involution_techniques/summaries/research-summary.md]
+**Implementation Summary**: [.opencode/specs/209_research_lean4_involution_techniques/summaries/implementation-summary-20251228.md]
+
+**Files Affected**:
+- Logos/Core/Syntax/Formula.lean (added @[simp] attribute to swap_past_future_involution)
+
+**Description**:
+Research Lean 4 techniques, tactics, and proof patterns for completing the is_valid_swap_involution theorem proof in task 193. The proof is currently blocked by a type theory issue where the helper lemma truth_at_swap_swap is complete but the main involution theorem needs additional techniques. **BLOCKED by task 213** - comprehensive research revealed the theorem is unprovable as stated (semantically false).
+
+**Critical Finding** (Task 213): The theorem `is_valid T φ.swap → is_valid T φ` is **unprovable** because it is semantically false for arbitrary formulas. The swap operation exchanges past and future quantification, which are not equivalent in general models. The theorem is only true for derivable formulas.
+
+**Acceptance Criteria**:
+- [x] Research report created with Lean 4 proof techniques
+- [x] Specific tactics and patterns identified for involution proofs
+- [x] Recommendations provided for completing task 193
+- [x] Examples from Lean 4 ecosystem analyzed
+- [x] Blocker identified: theorem is unprovable as stated (task 213)
+
+**Impact**:
+Research completed and identified that the theorem is fundamentally unprovable. Task 213 provides the solution: replace with derivable-only version. This task will be marked COMPLETED once task 213 is implemented.
+
+**Note**: All 15 attempted proof strategies failed not due to technique limitations, but because the theorem statement is false. Task 213 provides the correct solution.
+
+---
+
+---
+
+### 210. Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md
+**Effort**: 6-8 hours
+**Status**: [RESEARCHED]
+**Started**: 2025-12-28
+**Completed**: 2025-12-28
+**Priority**: Medium
+**Blocking**: None
+**Dependencies**: None
+**Language**: markdown
+**Research Artifacts**:
+  - Main Report: [.opencode/specs/210_fix_lean_subagents/reports/research-001.md]
+  - Summary: [.opencode/specs/210_fix_lean_subagents/summaries/research-summary.md]
+
+**Files Affected**:
+- .opencode/agent/subagents/lean-research-agent.md
+- .opencode/agent/subagents/lean-implementation-agent.md
+
+**Description**:
+Fix both Lean subagents (lean-research-agent and lean-implementation-agent) to follow artifact-management.md, status-markers.md, and state-schema.md specifications. Research identified 21 compliance issues across both agents including missing status marker workflows, missing state.json updates, and missing summary artifact enforcement.
+
+**Acceptance Criteria**:
+- [ ] lean-research-agent follows artifact-management.md (summary enforcement, correct paths, validation)
+- [ ] lean-research-agent follows status-markers.md (workflow implementation, timestamp updates)
+- [ ] lean-research-agent follows state-schema.md (state.json updates, project state files)
+- [ ] lean-implementation-agent follows artifact-management.md (summary enforcement, correct paths, validation)
+- [ ] lean-implementation-agent follows status-markers.md (workflow implementation, timestamp updates)
+- [ ] lean-implementation-agent follows state-schema.md (state.json updates, project state files)
+- [ ] All cross-cutting issues resolved (lazy creation, emoji validation, return format consistency)
+
+**Impact**:
+Ensures Lean subagents properly maintain TODO.md, state.json, and artifact files according to project standards, improving consistency and reliability of automated workflows.
+
+---
+
+---
+
+### 211. ✅ Standardize command lifecycle procedures across research, planning, and implementation workflows
+- **Effort**: 18 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/211_standardize_command_lifecycle_procedures/reports/research-001.md]
+  - Summary: [.opencode/specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md]
+- **Plan**: [Implementation Plan](.opencode/specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md)
+- **Plan Summary**: 4-phase implementation (18 hours). Phase 1: Create command-lifecycle.md with 8-stage pattern (4h). Phase 2: Update 4 command files with lifecycle references (6h). Phase 3: Update agent files with summary validation (4h). Phase 4: Testing and validation (4h, deferred). Achieves 39% duplication reduction (1,961 → 1,200 lines).
+- **Implementation Summary**: [.opencode/specs/211_standardize_command_lifecycle_procedures/summaries/implementation-summary-20251228.md]
+- **Implementation Artifacts**:
+  - .opencode/context/common/workflows/command-lifecycle.md
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+  - .opencode/command/revise.md
+  - .opencode/command/implement.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/agent/subagents/task-executor.md
+  - .opencode/agent/subagents/researcher.md
+  - .opencode/agent/subagents/planner.md
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/subagents/implementer.md
+
+**Files Affected**:
+- .opencode/context/common/workflows/command-lifecycle.md (new)
+- .opencode/command/research.md
+- .opencode/command/plan.md
+- .opencode/command/revise.md
+- .opencode/command/implement.md
+- .opencode/agent/subagents/lean-implementation-agent.md
+- .opencode/agent/subagents/task-executor.md
+- .opencode/agent/subagents/researcher.md
+- .opencode/agent/subagents/planner.md
+- .opencode/agent/subagents/lean-research-agent.md
+- .opencode/agent/subagents/implementer.md
+
+**Description**:
+Extracted common 8-stage lifecycle pattern from workflow commands (/research, /plan, /revise, /implement) into single command-lifecycle.md context file. Research revealed 90% structural similarity with 1,961 lines duplicated content. Standardization reduced duplication to 1,200 lines (39% reduction), created single source of truth for lifecycle pattern, and clearly documented legitimate command-specific variations. All commands now reference standardized lifecycle stages while preserving command-specific logic.
+
+**Acceptance Criteria**:
+- [x] command-lifecycle.md created with 8-stage pattern documentation
+- [x] All 4 command files updated with lifecycle references
+- [x] Duplication reduced from 1,961 to 1,200 lines (39% reduction)
+- [x] Command-specific variations clearly documented
+- [x] Summary artifact validation added to lean-implementation-agent and task-executor
+- [x] All 6 agent files reference command-lifecycle.md for integration
+- [x] All existing functionality preserved
+- [ ] All commands tested successfully (deferred to normal usage)
+
+**Impact**:
+Provides single source of truth for command lifecycle pattern, reduces documentation duplication by 39%, improves consistency across workflow commands, and clearly documents legitimate variations. Enhances maintainability and reduces cognitive load for command development.
+
+---
+
+---
+
+### 212. Research and improve lean-lsp-mcp usage in Lean implementation agent
+**Effort**: 14 hours
+**Status**: [COMPLETED]
+**Started**: 2025-12-28
+**Completed**: 2025-12-28
+**Priority**: High
+**Language**: markdown
+**Blocking**: None
+**Dependencies**: None
+**Research Artifacts**:
+  - Main Report: [.opencode/specs/212_research_lean_lsp_mcp_usage/reports/research-001.md]
+  - Summary: [.opencode/specs/212_research_lean_lsp_mcp_usage/summaries/research-summary.md]
+**Plan**: [.opencode/specs/212_research_lean_lsp_mcp_usage/plans/implementation-001.md]
+**Implementation Summary**: [.opencode/specs/212_research_lean_lsp_mcp_usage/summaries/implementation-summary-20251228.md]
+**Plan Summary**: Implementation plan with 5 phases (14 hours total). Phase 1: Create MCP Client Wrapper (4h). Phase 2: Update Lean Agents (3h). Phase 3: Enhance Documentation (2.5h). Phase 4: Integration Tests (3h). Phase 5: Validation and Refinement (1.5h). Integrates research findings on lean-lsp-mcp usage gaps and MCP client infrastructure requirements.
+
+**Description**: Research current usage patterns of lean-lsp-mcp in the Lean implementation agent and identify opportunities for improvement. Analyze how the agent leverages LSP capabilities for code navigation, type information, and proof assistance. Provide recommendations for enhanced integration.
+
+**Acceptance Criteria**:
+- [x] Current lean-lsp-mcp usage patterns documented
+- [x] Integration opportunities identified
+- [x] Recommendations provided for improved usage
+- [x] Research report and summary created
+- [x] MCP client wrapper implemented
+- [x] lean-implementation-agent.md updated with concrete tool invocation patterns
+- [x] mcp-tools-guide.md enhanced with agent integration documentation
+- [x] Integration tests created and passing
+
+**Impact**: Improves effectiveness of Lean implementation agent by better leveraging LSP capabilities for proof development and code navigation. Enables real-time compilation checking during Lean implementation tasks.
+
+---
+
+---
+
+### 213. Resolve is_valid_swap_involution blocker
+**Effort**: 6 hours
+**Status**: [PLANNED]
+**Started**: 2025-12-28
+**Priority**: High
+**Blocking**: Task 184, Task 193, Task 209
+**Dependencies**: None
+**Language**: lean
+**Research Artifacts**:
+  - Main Report: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md]
+  - Summary: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md]
+**Plan**: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-002.md]
+**Plan Summary**: Revised implementation plan (6 hours total) with usage context verification. Phase 1: Remove unprovable theorem (0.5h). Phase 2: Add provable theorem with usage verification (2.5h). Phase 3: Update temporal_duality case with type verification (1.5h). Phase 4: Build verification (1h). Phase 5: Documentation updates (1h). Verified that proposed solution matches usage site requirements at Truth.lean line 1226-1235.
+
+**Files Affected**:
+- `Logos/Core/Semantics/Truth.lean` (lines 681-694, 1226-1235)
+- `Documentation/ProjectInfo/SORRY_REGISTRY.md`
+- `Documentation/Development/LEAN_STYLE_GUIDE.md`
+- `TODO.md`
+
+**Description**:
+Resolve the unprovable `is_valid_swap_involution` theorem blocker that has blocked tasks 184, 193, and 209 for 10.7 hours. Research definitively identified that the theorem is semantically false for arbitrary formulas but true for derivable formulas. Solution: Replace with `derivable_valid_swap_involution` restricted to derivable formulas. Usage context verified: temporal_duality case has exactly the right type of derivation tree available.
+
+**Critical Finding**: The theorem `is_valid T φ.swap → is_valid T φ` is unprovable because swap exchanges past and future quantification, which are not equivalent in general models. However, it IS true for derivable formulas due to the temporal_duality rule.
+
+**Usage Context Verification**: The temporal_duality case (line 1226-1235) has `h_ψ' : DerivationTree [] ψ'` where `ψ' = φ.swap`, which is exactly `DerivationTree [] φ.swap_past_future` - the type needed for the new theorem. Type alignment verified ✅
+
+**Acceptance Criteria**:
+- [ ] Unprovable theorem removed from Truth.lean
+- [ ] New `derivable_valid_swap_involution` theorem added and proven
+- [ ] temporal_duality case updated to use new theorem
+- [ ] Type alignment verified at usage site
+- [ ] All builds and tests pass
+- [ ] Documentation and registries updated
+- [ ] Tasks 184, 193, 209, 213 marked as COMPLETED
+
+**Impact**:
+Resolves 10.7 hours of blocked work across 4 tasks. Unblocks Truth.lean build and enables completion of temporal duality soundness proof. Provides important lesson on semantic vs syntactic properties.
+
+---
+
+---
+
+### 218. Fix lean-lsp-mcp integration and opencode module import errors
+**Effort**: 0.75 hours
+**Status**: [RESEARCHED]
+**Started**: 2025-12-28
+**Researched**: 2025-12-28
+**Priority**: High
+**Blocking**: None
+**Dependencies**: 212 (completed)
+**Language**: python
+**Research Artifacts**:
+  - Main Report: [.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md]
+**Research Findings** (2025-12-28): CRITICAL DISCOVERY: OpenCode has native MCP support via opencode.json configuration, NOT .mcp.json. Task 212's custom Python MCP client approach is architecturally incompatible - OpenCode agents use natural language tool instructions, not Python imports. The ModuleNotFoundError is a symptom of wrong architectural approach, not missing __init__.py files. Solution requires complete pivot from Python-based integration to configuration-based integration: (1) Create opencode.json with lean-lsp-mcp server configuration, (2) Update lean-implementation-agent.md to use natural language MCP tool instructions instead of Python imports, (3) Remove custom MCP client from task 212 (architecturally incompatible). Proper approach enables 15+ lean-lsp-mcp tools (compile, check-proof, search, etc.) via native OpenCode MCP bridge. Previous plan obsolete - new configuration-based approach estimated 1-2 hours.
+
+**Files Affected**:
+- opencode.json (new, MCP server configuration)
+- .opencode/agent/subagents/lean-implementation-agent.md (update to use MCP tool instructions)
+- .opencode/agent/subagents/lean-research-agent.md (update to use MCP tool instructions)
+- Documentation/UserGuide/MCP_INTEGRATION.md (new, user guide)
+- .opencode/tool/mcp/client.py (mark deprecated, incompatible with OpenCode architecture)
+
+**Description**:
+Research revealed that OpenCode has native MCP (Model Context Protocol) support that makes task 212's custom Python MCP client unnecessary and architecturally incompatible. OpenCode agents interact with MCP servers through natural language tool instructions, not Python imports. The proper integration approach uses opencode.json configuration to register MCP servers, making their tools automatically available to agents. This enables lean-implementation-agent to use lean-lsp-mcp's 15+ tools for real-time compilation checking, proof state inspection, and theorem search during Lean proof implementation.
+
+**Acceptance Criteria**:
+- [ ] opencode.json created with lean-lsp-mcp server configuration
+- [ ] lean-implementation-agent.md updated with MCP tool usage instructions
+- [ ] lean-research-agent.md updated with MCP tool usage instructions  
+- [ ] MCP integration guide created in user documentation
+- [ ] Test Lean task implementation successfully uses lean-lsp-mcp tools
+- [ ] No Python import errors (using configuration-based approach)
+- [ ] Selective tool enablement reduces context window usage
+
+**Impact**:
+CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client to proper OpenCode-native MCP integration. Enables lean-lsp-mcp tools for real-time Lean compilation checking, proof verification, and theorem search. Reduces context window usage by 2000-5000 tokens through selective per-agent tool enablement. Establishes foundation for additional MCP servers (Context7, Grep) to enhance Lean development workflow.
+
+---
+
+### 219. Restructure module hierarchy separating semantic from proof system properties
+**Effort**: 2.5 hours (actual), 13 hours (estimated)
+**Status**: [COMPLETED]
+**Started**: 2025-12-28
+**Completed**: 2025-12-28
+**Priority**: High
+**Blocking**: None
+**Dependencies**: 213 (circular dependency analysis)
+**Language**: lean
+**Research Artifacts**:
+  - Main Report: [.opencode/specs/219_restructure_module_hierarchy/reports/research-001.md]
+  - Summary: [.opencode/specs/219_restructure_module_hierarchy/summaries/research-summary.md]
+**Plan**: [.opencode/specs/219_restructure_module_hierarchy/plans/implementation-001.md]
+**Implementation Summary**: [.opencode/specs/219_restructure_module_hierarchy/summaries/implementation-summary-20251228.md]
+
+**Files Created**:
+- Logos/Core/Metalogic/SoundnessLemmas.lean (706 lines)
+
+**Files Modified**:
+- Logos/Core/Semantics/Truth.lean (reduced from 1277 to 579 lines)
+- Logos/Core/Metalogic/Soundness.lean (updated temporal_duality case)
+- Logos/Core/Metalogic.lean (added SoundnessLemmas import)
+
+**Description**:
+Resolved circular dependency between Truth.lean and Soundness.lean by extracting the TemporalDuality namespace (~680 lines) to a new SoundnessLemmas.lean bridge module. This establishes clean layered dependencies: Soundness → SoundnessLemmas → Truth (pure semantics). Truth.lean now contains only pure semantic definitions without proof system imports. All modules compile successfully.
+
+**Implementation Summary** (2025-12-28):
+Successfully completed phases 1-5 of the 9-phase implementation plan. Created SoundnessLemmas.lean with all bridge theorems (axiom_swap_valid, derivable_implies_swap_valid). Updated Truth.lean to remove TemporalDuality namespace and proof system imports (Axioms, Derivation). Updated Soundness.lean to import SoundnessLemmas and use it for temporal_duality case. All modules compile successfully. Circular dependency eliminated. Module sizes within guidelines (Truth: 579 lines, SoundnessLemmas: 706 lines, Soundness: 680 lines). Phases 6-9 (testing, documentation, validation) deferred to future work.
+
+**Acceptance Criteria**:
+- [x] SoundnessLemmas.lean created with ~680 lines of bridge theorems
+- [x] TemporalDuality namespace fully moved from Truth.lean to SoundnessLemmas.lean
+- [x] Truth.lean updated: imports removed, namespace removed, reduced to ~600 lines
+- [x] Soundness.lean updated: imports SoundnessLemmas, temporal_duality case updated
+- [x] Circular dependency eliminated (verified with compilation)
+- [x] All modules compile: lake build succeeds
+- [ ] All tests pass: lake exe test (deferred to phase 6)
+- [ ] New tests created: SoundnessLemmasTest.lean (deferred to phase 6)
+- [ ] Documentation updated: Module hierarchy documented (deferred to phase 7)
+- [ ] SORRY_REGISTRY.md updated (not needed - expected sorry documented)
+
+**Impact**:
+CRITICAL STRUCTURAL IMPROVEMENT: Eliminates circular dependency blocking soundness completion. Establishes clean 3-layer architecture (Metalogic → Bridge → Semantics). Enables future proof work on temporal_duality case. Reduces Truth.lean complexity by 55% (1277→579 lines). All changes backward compatible - no API breaks. Foundation for continued metalogic development.
+
+---
+
+---
+
+---
+
+### 220. ✅ Metadata Passing Compliance Verification
+- **Effort**: 2.5 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-28
+- **Completed**: 2025-12-28
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Task 217 (completed)
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/220_metadata_passing_compliance_verification/reports/research-001.md]
+- **Plan**: [Implementation Plan](.opencode/specs/220_metadata_passing_compliance_verification/plans/implementation-001.md)
+- **Plan Summary**: 6-phase implementation (2.5 hours). Phase 1: Complete lean-research-agent documentation review (0.5h). Phase 2: Complete lean-implementation-agent documentation review (0.5h). Phase 3: Enhance planner validation (0.25h). Phase 4: Enhance task-executor error messages (0.25h). Phase 5: Create compliance verification report (0.5h). Phase 6: Final validation and documentation (0.5h). Achieves 100% compliance across all 10 files (up from 94%).
+- **Implementation Summary**: [.opencode/specs/220_metadata_passing_compliance_verification/summaries/implementation-summary-20251228.md]
+- **Compliance Report**: [.opencode/specs/220_metadata_passing_compliance_verification/summaries/compliance-verification-report.md]
+- **Implementation Artifacts**:
+  - .opencode/agent/subagents/lean-research-agent.md (fixed documentation)
+  - .opencode/agent/subagents/lean-implementation-agent.md (fixed examples)
+  - .opencode/agent/subagents/planner.md (enhanced validation)
+  - .opencode/agent/subagents/task-executor.md (enhanced error messages)
+
+**Files Affected**:
+- .opencode/agent/subagents/lean-research-agent.md
+- .opencode/agent/subagents/lean-implementation-agent.md
+- .opencode/agent/subagents/planner.md
+- .opencode/agent/subagents/task-executor.md
+
+**Description**:
+Completed comprehensive compliance verification of all workflow commands and subagents against metadata passing standards. Fixed 3 identified gaps: lean-research-agent documentation (removed incorrect summary artifact references), lean-implementation-agent examples (added missing summary artifacts), planner validation (added defensive checks), and task-executor error messages (added explicit token limits). Achieved 100% compliance across all 10 files.
+
+**Acceptance Criteria**:
+- [x] All 10 files verified for compliance with metadata passing standards
+- [x] Lean-research-agent.md documentation review completed (lines 400-973)
+- [x] Lean-implementation-agent.md documentation review completed (lines 200-514)
+- [x] Planner.md enhanced with defensive validation check
+- [x] Task-executor.md enhanced with explicit error message
+- [x] Compliance verification report created documenting final state
+- [x] All files maintain 100% compliance with metadata passing standards
+- [x] No regressions in existing functionality
+
+**Impact**:
+Ensures all commands and agents fully comply with metadata passing standards for artifact management. Improves documentation clarity, adds defensive validation checks, and enhances error messages for better debugging. Provides foundation for ongoing compliance monitoring.
+
+---
+
+---
 
 ### 222. Investigate and fix artifact creation in /specs instead of /.opencode/specs ✅
 - **Effort**: 3 hours
@@ -847,3 +1503,341 @@
   - [x] Documentation updated with examples of correct status-sync-manager delegation
   - [x] All changes tested with real tasks for each of the 4 commands
 - **Impact**: CRITICAL BLOCKER - Fixes comprehensive status update system failures causing "status-sync-manager didn't update TODO.md" errors and similar issues. Ensures atomic updates across all tracking files (TODO.md, state.json, project state.json, plans) via mandatory delegation to status-sync-manager's two-phase commit protocol. Eliminates manual updates that cause partial failures. Enables proper artifact tracking via project state.json lazy creation. Enables plan progress tracking via phase status updates. Delivers 100% atomicity coverage and consistent state across entire system. Essential for reliable task tracking, artifact management, and workflow execution.
+
+---
+
+### 224. Configure OpenCode to start in Orchestrator mode or auto-switch agent modes for workflow commands
+- **Effort**: 2 hours (estimated from research)
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
+- **Priority**: Medium
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/224_configure_opencode_default_agent/reports/research-001.md]
+- **Plan**: [.opencode/specs/224_configure_opencode_default_agent/plans/implementation-001.md]
+- **Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/224_configure_opencode_default_agent/summaries/implementation-summary-20251229.md]
+  - Modified Files: opencode.json
+- **Files Affected**:
+  - opencode.json (potential agent configuration)
+  - .opencode/rules/ (potential custom rules)
+  - .opencode/command/*.md (potential command enhancements)
+- **Description**: When starting OpenCode, it defaults to 'Build' agent mode. Users sometimes forget to switch to 'Orchestrator' before running workflow commands like /research or /implement, which can lead to commands being executed by the wrong agent. Research https://opencode.ai/docs/agents/, https://opencode.ai/docs/commands/, and https://opencode.ai/docs/rules/ to find an elegant solution that conforms to OpenCode best practices. Potential approaches: (1) Configure OpenCode to start in Orchestrator mode by default, (2) Make workflow commands automatically switch to the appropriate agent mode when invoked, (3) Add validation/warnings when commands are run in incorrect agent mode, (4) Use custom rules to enforce agent mode requirements. The solution should be minimally disruptive and follow OpenCode conventions.
+- **Research Findings** (2025-12-29): Research completed analyzing OpenCode agent mode system, command routing, and custom rules. Found official `default_agent` config option in opencode.json that sets startup agent. Analyzed 4 solutions: (1) default_agent config (recommended - 1 line change), (2) command-level agent frontmatter routing (already implemented), (3) subagent invocation patterns (workflow-specific), (4) custom rules (overkill for this use case). **Recommended Solution**: Add `"default_agent": "orchestrator"` to opencode.json root level. This is the most elegant, minimally disruptive solution that follows OpenCode conventions and works across CLI, web, and IDE interfaces. Orchestrator agent already configured with `mode: 'all'` allowing it to be primary agent, and all workflow commands already specify `agent: orchestrator` in frontmatter for proper routing.
+- **Acceptance Criteria**:
+  - [ ] Research completed on OpenCode agent configuration options
+  - [ ] Research completed on OpenCode command routing and agent mode switching
+  - [ ] Research completed on OpenCode custom rules for agent mode enforcement
+  - [ ] Viable solution identified that follows OpenCode best practices
+  - [ ] Solution implemented (configuration changes, rule additions, or command enhancements)
+  - [ ] OpenCode starts in Orchestrator mode by default OR workflow commands auto-switch to correct agent
+  - [ ] No breaking changes to existing workflows
+  - [ ] Solution tested with /research, /plan, /implement, /revise commands
+  - [ ] Documentation updated explaining the agent mode behavior
+  - [ ] User experience improved - no need to manually switch agent modes
+- **Impact**: Improves user experience by eliminating the need to manually switch to Orchestrator mode before running workflow commands. Reduces errors from running commands in the wrong agent mode. Ensures commands are always executed by the appropriate agent without user intervention.
+
+---
+
+### 227. ❌ Fix systematic status-sync-manager TODO.md update failures across all workflow commands
+- **Effort**: 6-8 hours
+- **Status**: [ABANDONED]
+- **Started**: 2025-12-29
+- **Researched**: 2025-12-29
+- **Planned**: 2025-12-29
+- **Abandoned**: 2025-12-29
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Superseded By**: Task 231
+- **Abandonment Reason**: Root cause analysis was incorrect. Assumed status-sync-manager was being invoked but failing - actually it was never being invoked because Claude skips Stage 7 (Postflight) in command execution. Task 231 addresses the correct root cause.
+- **Research Artifacts**:
+- **Plan**: [.opencode/specs/227_fix_systematic_status_sync_manager_failures/plans/implementation-001.md]
+  - Main Report: [.opencode/specs/227_fix_systematic_status_sync_manager_failures/reports/research-001.md]
+- **Files Affected**:
+  - .opencode/agent/subagents/status-sync-manager.md
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+  - .opencode/command/revise.md
+  - .opencode/command/implement.md
+  - .opencode/agent/subagents/researcher.md
+  - .opencode/agent/subagents/planner.md
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/context/common/workflows/command-lifecycle.md
+  - .opencode/context/common/system/status-markers.md
+- **Description**: CRITICAL BUG - Systematic investigation reveals that ALL workflow commands (/research, /plan, /revise, /implement) fail to properly update TODO.md task statuses despite successfully updating state.json. Example manifestation: /research 224 completed successfully, created research-001.md artifact, updated state.json to "status": "researched", created project state.json - BUT TODO.md still shows "- **Status**: [NOT STARTED]" instead of "- **Status**: [PLANNED]". This indicates status-sync-manager is either (1) not being invoked by commands despite specification in command files, (2) failing silently when invoked, or (3) completing state.json updates but failing TODO.md updates in the two-phase commit. Root cause analysis required to identify which commands delegate properly vs perform manual updates, which fail to invoke status-sync-manager, and whether status-sync-manager itself has bugs in TODO.md update logic. The fix must ensure 100% atomic updates across TODO.md + state.json + project state.json for all 4 workflow commands, with proper error handling, rollback on failures, and validation that updates actually complete. This is distinct from task 221 which addressed missing delegation - this task focuses on fixing the update mechanism itself when delegation occurs. Investigation steps: (1) Audit actual command execution vs specification to identify delegation gaps, (2) Review status-sync-manager TODO.md update logic for bugs, (3) Add validation that status-sync-manager actually completes TODO.md updates, (4) Implement comprehensive error handling and rollback, (5) Add logging to trace update failures, (6) Test with real tasks to verify 100% update success rate.
+- **Acceptance Criteria**:
+  - [ ] Root cause analysis completed identifying exact failure point (delegation gap vs status-sync-manager bug)
+  - [ ] All 4 workflow commands audited for actual vs specified delegation to status-sync-manager
+  - [ ] status-sync-manager TODO.md update logic reviewed and bugs fixed if found
+  - [ ] Validation added that status-sync-manager actually completes TODO.md updates (not just state.json)
+  - [ ] Error handling added to detect and report TODO.md update failures
+  - [ ] Rollback mechanism verified to revert state.json if TODO.md update fails
+  - [ ] Logging added to trace update flow and capture failure details
+  - [ ] Test: /research task successfully updates both TODO.md and state.json to [RESEARCHED]
+  - [ ] Test: /plan task successfully updates both TODO.md and state.json to [PLANNED]
+  - [ ] Test: /revise task successfully updates both TODO.md and state.json to [REVISED]
+  - [ ] Test: /implement task successfully updates both TODO.md and state.json to [COMPLETED]
+  - [ ] Test: Rollback works - if TODO.md update fails, state.json reverted to original
+  - [ ] Test: Clear error messages when updates fail identifying which file failed
+  - [ ] 100% update success rate verified across all 4 commands with real task execution
+  - [ ] No "status-sync-manager didn't update TODO.md" errors occur
+  - [ ] Atomic guarantee enforced - both files update or neither updates
+  - [ ] Documentation updated with proper delegation patterns and error handling
+- **Impact**: CRITICAL BLOCKER - Fixes systematic status tracking failure affecting ALL workflow commands. Currently state.json reflects correct status but TODO.md remains stale, causing confusion about task progress, breaking workflow dependencies (tasks appear NOT STARTED when actually RESEARCHED/PLANNED), and violating atomic update guarantees. This breaks the entire task tracking system's integrity. Essential for reliable project management and workflow execution. Builds on task 221's delegation fixes to ensure updates actually work when delegated.
+
+---
+
+### 228. ❌ Fix orchestrator routing to invoke commands instead of bypassing to subagents directly
+- **Effort**: 4 hours
+- **Status**: [ABANDONED]
+- **Started**: 2025-12-29
+- **Researched**: 2025-12-29
+- **Planned**: 2025-12-29
+- **Abandoned**: 2025-12-29
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Superseded By**: Task 231
+- **Abandonment Reason**: Root cause analysis was partially incorrect. Assumed orchestrator bypasses commands, but investigation revealed commands ARE loaded and executed - the issue is Claude skipping Stage 7 (Postflight) within command execution. Task 231 addresses the correct root cause.
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/reports/research-001.md]
+- **Plan**: [.opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/plans/implementation-001.md]
+- **Files Affected**:
+  - .opencode/agent/orchestrator.md
+  - .opencode/command/plan.md
+  - .opencode/command/research.md
+  - .opencode/command/implement.md
+  - .opencode/command/revise.md
+- **Description**: The /plan command fails to update the task in TODO.md and does not include a link to the plan created. Root Cause: The orchestrator bypassed the /plan command layer and directly invoked the planner subagent, which meant the command's Stage 7 (Postflight) that delegates to status-sync-manager never executed, leaving TODO.md and state.json unupdated despite the plan artifact being successfully created. This is an architectural issue with the orchestrator's routing logic - it needs to invoke commands (which have full workflow specifications), not subagents directly. When a user invokes `/plan 224`, the orchestrator should route to the plan command (which has the complete 8-stage workflow including postflight status updates), not directly to the planner subagent. The correct delegation chain should be: User → Orchestrator → /plan COMMAND → planner subagent → status-sync-manager. Currently happening: User → Orchestrator → planner subagent (directly) → (no postflight, no status-sync-manager). Fix requires updating orchestrator's Stage 7 (RouteToAgent) to invoke command layer, which will then handle delegation to appropriate subagents and execute postflight procedures.
+- **Acceptance Criteria**:
+  - [ ] Root cause documented in orchestrator.md
+  - [ ] Orchestrator Stage 7 modified to invoke commands, not subagents
+  - [ ] /plan command invocation properly executes all 8 stages including postflight
+  - [ ] /research command invocation properly executes all 8 stages including postflight
+  - [ ] /implement command invocation properly executes all 8 stages including postflight
+  - [ ] /revise command invocation properly executes all 8 stages including postflight
+  - [ ] status-sync-manager properly invoked by commands after subagent completion
+  - [ ] TODO.md correctly updated with status markers after command completion
+  - [ ] state.json correctly updated with status and timestamps after command completion
+  - [ ] Plan links correctly added to TODO.md after /plan completion
+  - [ ] Test: /plan 224 updates TODO.md to [PLANNED] with plan link
+  - [ ] Test: /research updates TODO.md to [RESEARCHED] with research links
+  - [ ] Test: All workflow commands execute complete lifecycle
+  - [ ] Documentation updated explaining command vs subagent delegation
+- **Impact**: CRITICAL - Fixes systematic failure where workflow commands don't update TODO.md or state.json because orchestrator bypasses command layer (which contains postflight logic). This breaks task tracking for ALL workflow commands (/plan, /research, /implement, /revise). Essential architectural fix to ensure commands execute their full lifecycle including status updates via status-sync-manager.
+
+---
+
+### 229. ❌ Review and optimize orchestrator-command integration for context efficiency
+- **Effort**: 6 hours
+- **Status**: [ABANDONED]
+- **Started**: 2025-12-29
+- **Researched**: 2025-12-29
+- **Planned**: 2025-12-29
+- **Abandoned**: 2025-12-29
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Superseded By**: Task 231
+- **Abandonment Reason**: Root cause analysis was incorrect. Research concluded orchestrator bypasses commands, but investigation revealed commands ARE loaded and executed - the issue is Claude skipping Stage 7 (Postflight) within command execution. Task 231 addresses the correct root cause with proper fixes.
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md]
+- **Plan**: [Implementation Plan](.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/plans/implementation-001.md)
+- **Plan Summary**: 7-phase implementation plan (6 hours total). Phase 1: Audit command invocability (0.5h). Phase 2: Reduce orchestrator context to 3 core files (0.5h). Phase 3: Refactor Step 7 RouteToCommand (1.5h). Phase 4: Refactor Step 4 PrepareRouting to target commands (1h). Phase 5: Simplify/remove Step 3 CheckLanguage (0.5h). Phase 6: Testing and validation (1.5h). Phase 7: Documentation updates (0.5h). Fixes critical architectural flaw where orchestrator bypasses commands causing 100% workflow failure and 60-70% context bloat.
+- **Files Affected**:
+  - .opencode/agent/orchestrator.md
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+  - .opencode/command/implement.md
+  - .opencode/command/revise.md
+  - .opencode/command/review.md
+  - .opencode/context/common/workflows/command-lifecycle.md
+  - .opencode/context/common/standards/subagent-return-format.md
+- **Description**: ARCHITECTURAL REVIEW - Systematic analysis reveals critical architectural issue: orchestrator.md Step 4 (PrepareRouting) routes directly to SUBAGENTS (lean-research-agent, task-executor, planner, etc.) instead of routing to COMMANDS (research.md, plan.md, implement.md). This bypasses command-level context loading, workflow execution, preflight/postflight procedures, and status-sync-manager delegation. Root cause of task 228 (/plan bypasses postflight). **PROBLEM**: Current flow is User → Orchestrator → Subagent (direct). **EXPECTED**: User → Orchestrator → Command → Subagent. Commands contain the complete 8-stage workflow specification with context loading, validation, status updates, git commits. Subagents are implementation tools, not entry points. **CRITICAL IMPACTS**: (1) Context bloat - orchestrator loads context meant for commands, (2) Missing preflight/postflight - status updates fail (task 227, 228), (3) No command lifecycle - validation, git commits skipped, (4) Architecture violation - subagents exposed as primary delegation targets. **OPTIMIZATION OPPORTUNITIES**: (1) Orchestrator should have minimal context - only delegation registry, routing logic, return validation. Commands handle domain-specific context. (2) Commands should load exactly their needed context (Level 2 filtered by language). (3) Subagents should receive only task-specific context from commands. (4) Return validation should happen at orchestrator, not duplicated in commands. (5) Language routing should be command responsibility, not orchestrator. **FIX STRATEGY**: (1) Refactor orchestrator Step 7 (RouteToAgent) to invoke COMMANDS not SUBAGENTS. (2) Move language extraction and routing logic INTO commands (belongs in command Stage 2). (3) Reduce orchestrator context to core standards only (return format, delegation guide, status markers). (4) Let commands handle their own context loading via context_level specification. (5) Update all commands to be invokable by orchestrator (not just by users). (6) Ensure commands delegate to subagents internally (command-lifecycle.md Stage 4). **EXPECTED OUTCOMES**: (1) 60-70% reduction in orchestrator context window, (2) 100% workflow completion (preflight + postflight), (3) Clear architectural layers (orchestrator → command → subagent), (4) Context loaded exactly where needed, (5) No duplication of routing/validation logic, (6) All status updates via status-sync-manager, (7) Proper git commit integration, (8) Resolves task 228 root cause architecturally.
+- **Acceptance Criteria**:
+  - [ ] Root cause analysis documented: orchestrator routes to subagents instead of commands
+  - [ ] Architecture diagram created showing correct flow: User → Orchestrator → Command → Subagent
+  - [ ] All orchestrator routing targets audited (/research, /plan, /implement, /revise, /review, /errors)
+  - [ ] Orchestrator Step 7 refactored to invoke commands (not subagents)
+  - [ ] Language extraction logic moved from orchestrator to commands (Stage 2)
+  - [ ] Routing logic moved from orchestrator to commands (Stage 2)
+  - [ ] Orchestrator context reduced to: return-format.md, delegation-guide.md, status-markers.md only
+  - [ ] Commands updated to be invokable by orchestrator (accept delegation context)
+  - [ ] Commands updated to delegate to subagents internally (Stage 4 DelegateToSubagent)
+  - [ ] context_level specifications verified for all commands (Level 2 filtered context)
+  - [ ] Duplicate routing logic removed from orchestrator and commands
+  - [ ] Return validation remains in orchestrator (single source of truth)
+  - [ ] Preflight/postflight procedures execute for all commands
+  - [ ] status-sync-manager invoked correctly in all command postflights
+  - [ ] Git commits execute correctly via git-workflow-manager
+  - [ ] Context window measurements before/after documented
+  - [ ] Test: /research 197 executes full command lifecycle including postflight
+  - [ ] Test: /plan 196 executes full command lifecycle including status update
+  - [ ] Test: /implement 185 executes full command lifecycle with git commit
+  - [ ] Test: Language routing works correctly (lean tasks → lean agents)
+  - [ ] Test: Orchestrator context window reduced by 60-70%
+  - [ ] Test: No command workflow stages skipped
+  - [ ] Integration patterns documented in command-lifecycle.md
+  - [ ] Task 228 resolved as side effect of architectural fix
+- **Impact**: CRITICAL ARCHITECTURAL FIX - Resolves fundamental integration issue where orchestrator bypasses command layer, causing context bloat, missing workflow stages, and status update failures. Establishes correct 3-layer architecture (orchestrator → command → subagent) with clear separation of concerns. Reduces orchestrator context window by 60-70% by moving domain-specific context to commands. Ensures 100% workflow completion (preflight + postflight + status updates). Fixes root cause of tasks 227 and 228. Enables efficient context management where each layer loads only what it needs. Essential for scalable, maintainable agent system.
+
+### ✅ 226. Fix /review command to use next_project_number, create matching task, include actionable follow-up tasks in summary, reduce verbosity, and improve context file organization
+- **Effort**: 8 hours
+- **Status**: [COMPLETED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/226_fix_review_command/reports/research-001.md]
+- **Plan**: [.opencode/specs/226_fix_review_command/plans/implementation-001.md]
+- **Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/226_fix_review_command/summaries/implementation-summary-20251228.md]
+  - Modified Files: .opencode/command/review.md, .opencode/agent/subagents/reviewer.md, .opencode/context/common/workflows/review.md
+- **Files Affected**:
+  - .opencode/command/review.md
+  - .opencode/agent/subagents/reviewer.md
+  - .opencode/context/common/workflows/review.md (potential cleanup/reorganization)
+  - .opencode/specs/state.json
+  - .opencode/specs/TODO.md
+- **Description**: Fix multiple critical issues with /review command workflow: (1) **Project numbering bug**: /review created directory 225_codebase_review but task 225 already exists in TODO.md. Root cause: /review didn't read next_project_number from state.json before creating directory, and didn't increment it immediately after creation. Fix: Read next_project_number, use it for directory name, increment immediately (atomic operation). (2) **Missing task creation**: /review should create a task entry with the same number as the project directory, with status [COMPLETED] and link to review summary artifact. This enables tracking reviews as completed work in TODO.md. (3) **Summary lacks actionable follow-ups**: Review summary artifact (.opencode/specs/225_codebase_review/summaries/review-summary.md) lists 5 follow-up tasks but doesn't format them in a way that /task can parse to create actual task entries. Fix: Add explicit "Follow-up Tasks" section with task descriptions formatted for easy /task invocation (e.g., "/task 'Fix 6 noncomputable errors...'"). (4) **Excessive verbosity**: /review subagent returns verbose output to orchestrator, bloating context window. Fix: Return only brief summary (2-5 sentences, <100 tokens) with artifact path. Full details in summary artifact. (5) **Context file organization**: .opencode/context/common/workflows/review.md may contain redundancy, inaccuracy, or scattered organization. Audit and improve to avoid bloating context or missing important context. Ensure exactly the right context files are loaded.
+- **Acceptance Criteria**:
+  - [ ] Root cause analysis completed for project numbering bug
+  - [ ] /review reads next_project_number from state.json before creating directory
+  - [ ] /review creates directory using next_project_number (e.g., 226_codebase_review)
+  - [ ] /review increments next_project_number immediately after directory creation (atomic)
+  - [ ] /review creates TODO.md task entry with same number as project directory
+  - [ ] Created task has status [COMPLETED] with completion timestamp
+  - [ ] Created task includes link to review summary artifact
+  - [ ] Review summary artifact includes explicit "Follow-up Tasks" section
+  - [ ] Follow-up tasks formatted for direct /task invocation (copy-paste ready)
+  - [ ] Each follow-up task includes: description, priority, language, estimated hours
+  - [ ] /review subagent returns brief summary only (<100 tokens) to orchestrator
+  - [ ] Full review details remain in summary artifact (not in return to orchestrator)
+  - [ ] Context file audit completed (.opencode/context/common/workflows/review.md)
+  - [ ] Redundant or inaccurate content removed from context files
+  - [ ] Context loading optimized - exactly the right files loaded, no bloat
+  - [ ] Test: /review creates directory with correct next_project_number
+  - [ ] Test: /review creates matching TODO.md task with [COMPLETED] status
+  - [ ] Test: Review summary includes actionable follow-up tasks
+  - [ ] Test: /review return to orchestrator is brief (<100 tokens)
+  - [ ] Test: Full review details available in summary artifact
+  - [ ] Documentation updated with new /review behavior
+  - [ ] No project number collisions occur
+  - [ ] next_project_number increments correctly after each /review
+- **Impact**: CRITICAL - Fixes project numbering collision bug that created 225_codebase_review when task 225 already existed. Enables tracking reviews as completed tasks in TODO.md. Makes review findings actionable by formatting follow-up tasks for easy /task invocation. Reduces context window bloat by returning only brief summaries to orchestrator. Improves context file organization to load exactly the right context without redundancy. Essential for reliable /review command execution and proper project tracking.
+
+---
+
+### 230. Fix /review command to create completed task entry in TODO.md with review summary link
+- **Effort**: TBD
+- **Status**: [ABANDONED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
+- **Abandoned**: 2025-12-29
+- **Abandonment Reason**: Research revealed /review command specification already includes creating completed task entry via status-sync-manager delegation (review.md Stage 7). Root cause is orchestrator bypassing command layer (tasks 227/228/229), not specification deficiency. This task subsumed by task 231 which fixes systematic Stage 7 (Postflight) execution failures across all commands including /review.
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Blocked by task 231 (fix systematic command Stage 7 postflight execution failures)
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/230_fix_review_command_to_create_completed_task_entry_in_todomd_with_review_summary_link/reports/research-001.md]
+- **Files Affected**:
+  - .opencode/command/review.md
+  - .opencode/agent/subagents/reviewer.md
+- **Description**: When I ran /review, I got "Based on the review command workflow, I should NOT be creating tasks myself. The command specification indicates that the review command creates a review task entry (project 230_codebase_review) and the reviewer subagent should have formatted follow-up tasks in the review summary for manual /task invocation by the user.". Although it is right that the /review command should not create tasks to address remaining work, it SHOULD create a single task corresponding to the review task itself in TODO.md using the same number as the project directory, marking this as '[COMPLETED]', and including a link to the review summary that was produced. This helps to make the TODO.md a central dashboard to see all ongoing progress which the user can use to find links.
+- **Acceptance Criteria**:
+  - [ ] /review command creates TODO.md task entry with same number as project directory
+  - [ ] Task entry marked with status [COMPLETED] including completion timestamp
+  - [ ] Task entry includes link to review summary artifact
+  - [ ] Task entry includes brief description of review scope
+  - [ ] state.json updated to reflect completed review task
+  - [ ] Review task does NOT create follow-up tasks (those are in summary for manual /task invocation)
+  - [ ] TODO.md serves as central dashboard with link to review findings
+  - [ ] Documentation updated explaining /review task creation behavior
+- **Impact**: Makes TODO.md a comprehensive dashboard showing all project activities including reviews, with direct links to review summaries. Improves discoverability and tracking of review work.
+
+---
+
+### 231. Fix systematic command Stage 7 (Postflight) execution failures causing incomplete TODO.md and state.json updates
+- **Effort**: 8-10 hours
+- **Status**: [NOT STARTED]
+- **Created**: 2025-12-29
+- **Priority**: Critical
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Supersedes**: Tasks 227, 228, 229 (all ABANDONED due to incorrect root cause analysis)
+- **Files Affected**:
+  - .opencode/command/plan.md
+  - .opencode/command/research.md
+  - .opencode/command/implement.md
+  - .opencode/command/revise.md
+  - .opencode/agent/orchestrator.md
+  - .opencode/context/common/workflows/command-lifecycle.md
+- **Description**: CRITICAL FIX: All workflow commands (/plan, /research, /implement, /revise) are correctly loaded and executed by the orchestrator, but Claude frequently skips or incompletely executes Stage 7 (Postflight), which delegates to status-sync-manager for atomic TODO.md/state.json updates and creates git commits. This results in successful artifact creation but incomplete task tracking. Evidence: Task 224 (artifacts ✅, TODO.md manual ✅, state.json ❌), Task 229 (plan ✅, tracking required manual intervention). Root causes: (1) Weak prompting - Stage 7 uses descriptive language instead of imperative commands, (2) No validation - no checkpoint confirming Stage 7 completed before Stage 8 returns, (3) No error handling - command proceeds even if Stage 7 fails, (4) Orchestrator lacks stage completion validation, (5) Missing explicit delegation syntax for status-sync-manager invocation.
+- **Acceptance Criteria**:
+  - [ ] Stage 7 instructions strengthened in all 4 command files with imperative language
+  - [ ] Explicit delegation syntax added: `task_tool(subagent_type="status-sync-manager", ...)`
+  - [ ] Stage completion checkpoints added: "Stage N completed ✓" before proceeding
+  - [ ] Pre-Stage-8 validation added: Verify TODO.md and state.json updated before returning
+  - [ ] Error handling added: If Stage 7 fails, rollback and return error (don't proceed to Stage 8)
+  - [ ] Orchestrator enhanced with command stage validation to detect premature returns
+  - [ ] Monitoring/logging added to track stage execution (which executed, which skipped)
+  - [ ] command-lifecycle.md updated with stage validation patterns and mandatory checkpoints
+  - [ ] All 4 commands tested: 100% Stage 7 execution rate achieved
+  - [ ] Test: /plan task → TODO.md updated [PLANNED], state.json updated, git commit created
+  - [ ] Test: /research task → TODO.md updated [RESEARCHED], state.json updated, git commit created
+  - [ ] Test: /implement task → TODO.md updated [COMPLETED], state.json updated, plan phases updated, git commit created
+  - [ ] Test: /revise task → TODO.md updated [REVISED], state.json plan_versions updated, git commit created
+- **Impact**: Resolves systematic task tracking failures affecting ALL workflow commands. Ensures 100% reliability of TODO.md/state.json updates via status-sync-manager's atomic two-phase commit protocol. Eliminates manual intervention needed to sync tracking files. Consolidates fixes for tasks 227, 228, 229 with correct root cause understanding.
+
+---
+
+---
+
+### 232. Systematically fix TODO.md path references and migrate tasks from project root to .opencode/specs
+- **Effort**: 11 hours (estimated from research)
+- **Status**: [PLANNED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
+- **Created**: 2025-12-29
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/232_systematically_fix_todomd_path_references/reports/research-001.md]
+- **Plan**: [.opencode/specs/232_systematically_fix_todomd_path_references/plans/implementation-001.md]
+- **Files Affected**:
+  - All .opencode/command/*.md files (research.md, plan.md, implement.md, revise.md, task.md, todo.md, review.md)
+  - All .opencode/agent/subagents/*.md files
+  - All .opencode/context files referencing TODO.md
+  - /home/benjamin/Projects/ProofChecker/TODO.md (to be removed after migration)
+  - /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md (canonical location)
+- **Description**: Something has been adding tasks to /home/benjamin/Projects/ProofChecker/TODO.md instead of to /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md as it should. Systematically survey all commands and agents in the opencode system to identify which ones have the wrong TODO.md path references. Fix these references to use the correct .opencode/specs/TODO.md path. Update any context files accordingly to prevent confusion in the future. Migrate all tasks from the root TODO.md to .opencode/specs/TODO.md without creating redundancies (tasks that already exist in .opencode/specs/TODO.md should not be duplicated). Once all references are fixed and all unique tasks are migrated, remove the root TODO.md file to eliminate the confusion permanently.
+- **Acceptance Criteria**:
+  - [ ] Complete survey of all .opencode/command/*.md files for TODO.md path references
+  - [ ] Complete survey of all .opencode/agent/subagents/*.md files for TODO.md path references
+  - [ ] Complete survey of all .opencode/context files for TODO.md path references
+  - [ ] All wrong path references identified and documented
+  - [ ] All identified wrong paths fixed to use .opencode/specs/TODO.md
+  - [ ] Context files updated with correct path guidance
+  - [ ] All unique tasks from root TODO.md identified
+  - [ ] All unique tasks migrated to .opencode/specs/TODO.md (no duplicates)
+  - [ ] Migration verified - all tasks accounted for
+  - [ ] Root TODO.md file removed
+  - [ ] System tested - all commands work with corrected paths
+  - [ ] No references to root TODO.md remain in .opencode system
+  - [ ] Documentation updated to clarify canonical TODO.md location
+- **Impact**: Eliminates confusion and errors from having two TODO.md files in different locations. Ensures all commands and agents consistently use the canonical .opencode/specs/TODO.md file. Prevents future tasks from being added to the wrong location. Consolidates all task tracking in one authoritative location.
