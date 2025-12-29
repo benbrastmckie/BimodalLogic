@@ -249,15 +249,18 @@
  
 ### 185. Fix integration test helper API mismatches
 - **Effort**: 1 hour
-- **Status**: [IN PROGRESS]
+- **Status**: [RESEARCHED]
 - **Started**: 2025-12-25
+- **Completed**: 2025-12-29
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: 183, 184
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/185_fix_integration_test_helper_api_mismatches/reports/research-001.md]
 - **Files Affected**:
   - LogosTest/Core/Integration/Helpers.lean
-- **Description**: Fix 3 API mismatches in integration test Helpers.lean that prevent test compilation after core build errors are fixed. Errors: Line 126 (semantic consequence type mismatch), Line 131 (validity unwrapping issue), Line 129 (unsolved goals in verify_workflow). These errors occur because test helpers assume an API that differs from the actual Logos implementation. **UPDATE (2025-12-28)**: Dependency task 184 now resolved by task 219 (Truth.lean compiles successfully). Task 183 (DeductionTheorem.lean) was completed separately. This task can now proceed once task 183 is verified complete.
+- **Description**: Fix 3 API mismatches in integration test Helpers.lean that prevent test compilation after core build errors are fixed. Errors: Line 126 (semantic consequence type mismatch), Line 131 (validity unwrapping issue), Line 129 (unsolved goals in verify_workflow). These errors occur because test helpers assume an API that differs from the actual Logos implementation. **UPDATE (2025-12-28)**: Dependency task 184 now resolved by task 219 (Truth.lean compiles successfully). Task 183 (DeductionTheorem.lean) was completed separately. This task can now proceed once task 183 is verified complete. **RESEARCH COMPLETE (2025-12-29)**: Root cause identified - confusion between validity (⊨ φ) and semantic consequence ([] ⊨ φ). All 3 fixes are trivial using valid_iff_empty_consequence conversion theorem (< 30 min implementation).
 - **Acceptance Criteria**:
   - [ ] Line 126 semantic consequence type mismatch fixed
   - [ ] Line 131 validity unwrapping issue fixed
@@ -270,7 +273,7 @@
 
 ### 232. Systematically fix TODO.md path references and migrate tasks from project root to .opencode/specs
 - **Effort**: 11 hours (estimated from research)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Created**: 2025-12-29
@@ -280,6 +283,7 @@
 - **Dependencies**: None
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/232_systematically_fix_todomd_path_references/reports/research-001.md]
+- **Plan**: [.opencode/specs/232_systematically_fix_todomd_path_references/plans/implementation-001.md]
 - **Files Affected**:
   - All .opencode/command/*.md files (research.md, plan.md, implement.md, revise.md, task.md, todo.md, review.md)
   - All .opencode/agent/subagents/*.md files
