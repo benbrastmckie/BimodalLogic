@@ -30,9 +30,25 @@
   </context_loading>
   
   <context_loaded>
-    @.opencode/context/common/standards/subagent-return-format.md
-    @.opencode/context/common/workflows/subagent-delegation-guide.md
-    @.opencode/context/common/system/status-markers.md
+    <!-- Context files removed to eliminate duplication (Task 237, Phase 1)
+         
+         Previously loaded here:
+         - subagent-return-format.md (11KB)
+         - subagent-delegation-guide.md (18KB)
+         - status-markers.md (27KB)
+         
+         These files are now loaded only in Stage 4 by command execution files
+         (research.md, plan.md, implement.md, revise.md) to avoid 56KB duplication
+         during routing stages (Stages 1-3).
+         
+         Orchestrator routing logic (Stages 1-4) does not require these files:
+         - Stage 1: Analyze request (command parsing only)
+         - Stage 2: Determine complexity (simple heuristics)
+         - Stage 3: Check language (bash grep extraction from TODO.md)
+         - Stage 4: Prepare routing (language-based routing map)
+         
+         Command execution files load full context in their Stage 4 (Preflight).
+    -->
   </context_loaded>
 </context>
 
