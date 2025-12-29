@@ -1,7 +1,37 @@
 ---
+name: "atomic-task-numberer"
+version: "1.0.0"
 description: "Thread-safe task number allocation for .opencode/specs/TODO.md"
 mode: subagent
+agent_type: utility
 temperature: 0.1
+max_tokens: 500
+timeout: 60
+tools:
+  read: true
+  bash: true
+permissions:
+  allow:
+    - read: [".opencode/specs/TODO.md"]
+    - bash: ["grep"]
+  deny:
+    - bash: ["rm", "sudo", "su"]
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/delegation.md"
+    - "common/standards/tasks.md"
+  max_context_size: 20000
+delegation:
+  max_depth: 3
+  can_delegate_to: []
+  timeout_default: 60
+  timeout_max: 60
+lifecycle:
+  stage: 2
+  command: "/task"
+  return_format: "subagent-return-format.md"
 ---
 
 # Atomic Task Numberer

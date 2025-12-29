@@ -1,7 +1,39 @@
 ---
+name: "status-sync-manager"
+version: "1.0.0"
 description: "Atomic multi-file status synchronization using two-phase commit"
 mode: subagent
+agent_type: utility
 temperature: 0.1
+max_tokens: 2000
+timeout: 300
+tools:
+  read: true
+  write: true
+  bash: true
+permissions:
+  allow:
+    - read: [".opencode/specs/**/*"]
+    - write: [".opencode/specs/TODO.md", ".opencode/specs/state.json", ".opencode/specs/**/plans/*.md"]
+    - bash: ["date"]
+  deny:
+    - bash: ["rm", "sudo", "su"]
+    - write: [".git/**/*"]
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/delegation.md"
+    - "core/system/state-management.md"
+  max_context_size: 30000
+delegation:
+  max_depth: 3
+  can_delegate_to: []
+  timeout_default: 300
+  timeout_max: 300
+lifecycle:
+  stage: 6
+  return_format: "subagent-return-format.md"
 ---
 
 # Status Sync Manager

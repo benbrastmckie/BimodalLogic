@@ -27,9 +27,13 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/standards/subagent-return-format.md"
-    - "common/system/status-markers.md"
-    - "project/lean4/lean-patterns.md"
+    - "core/standards/delegation.md"
+    - "core/system/state-management.md"
+    - "common/system/artifact-management.md"
+    - "project/lean4/tools/leansearch-api.md"
+    - "project/lean4/tools/loogle-api.md"
+  optional:
+    - "project/lean4/domain/mathlib-overview.md"
   max_context_size: 50000
 delegation:
   max_depth: 3

@@ -26,8 +26,10 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/standards/subagent-return-format.md"
-    - "common/system/status-markers.md"
+    - "core/standards/delegation.md"
+    - "core/system/state-management.md"
+    - "common/system/artifact-management.md"
+    - "common/system/git-commits.md"
   max_context_size: 50000
 delegation:
   max_depth: 3

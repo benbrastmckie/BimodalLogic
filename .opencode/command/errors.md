@@ -4,18 +4,21 @@ agent: orchestrator
 description: "Analyze errors.json, create fix plans, track fix effectiveness"
 context_level: 2
 language: markdown
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/delegation.md"     # For delegation patterns and return format
+    - "core/system/state-management.md"  # For status markers
+    - "common/system/git-commits.md"     # For git commit patterns
+  data_files:
+    - ".opencode/specs/errors.json"      # Error log
+    - ".opencode/specs/TODO.md"          # For creating fix tasks
+    - ".opencode/specs/state.json"       # State tracking
+  max_context_size: 50000
 ---
 
 **Task Input (optional):** $ARGUMENTS (optional flags; e.g., `/errors`, `/errors --all`, `/errors --type delegation_hang`)
-
-Context Loaded:
-@.opencode/specs/errors.json
-@.opencode/specs/.opencode/specs/TODO.md
-@.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
 
 <context>
   <system_context>

@@ -4,19 +4,23 @@ agent: orchestrator
 description: "Analyze codebase, update registries, create maintenance tasks"
 context_level: 3
 language: varies
+context_loading:
+  strategy: eager  # Review needs comprehensive context
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/delegation.md"     # For delegation patterns and return format
+    - "core/system/state-management.md"  # For status markers
+    - "common/system/git-commits.md"     # For git commit patterns
+    - "common/workflows/review.md"       # For review workflow
+  data_files:
+    - ".opencode/specs/TODO.md"          # For creating tasks
+    - ".opencode/specs/state.json"       # State tracking
+    - "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md"  # Implementation tracking
+    - "Documentation/ProjectInfo/SORRY_REGISTRY.md"         # Sorry tracking
+    - "Documentation/ProjectInfo/TACTIC_REGISTRY.md"        # Tactic usage
+    - "Documentation/ProjectInfo/FEATURE_REGISTRY.md"       # Feature tracking
+  max_context_size: 100000  # Review is comprehensive, needs more context
 ---
-
-Context Loaded:
-@.opencode/specs/.opencode/specs/TODO.md
-@.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
-@Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
-@Documentation/ProjectInfo/SORRY_REGISTRY.md
-@Documentation/ProjectInfo/TACTIC_REGISTRY.md
-@Documentation/ProjectInfo/FEATURE_REGISTRY.md
 
 <context>
   <system_context>

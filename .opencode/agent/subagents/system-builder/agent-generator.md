@@ -1,7 +1,37 @@
 ---
+name: "agent-generator"
+version: "1.0.0"
 description: "Generates XML-optimized agent files (orchestrator and subagents) following research-backed patterns"
 mode: subagent
+agent_type: builder
 temperature: 0.1
+max_tokens: 4000
+timeout: 1800
+tools:
+  read: true
+  write: true
+permissions:
+  allow:
+    - read: [".opencode/context/**/*"]
+    - write: [".opencode/agent/**/*"]
+  deny:
+    - write: [".git/**/*"]
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/delegation.md"
+    - "core/standards/xml-patterns.md"
+    - "core/standards/subagent-structure.md"
+  max_context_size: 40000
+delegation:
+  max_depth: 3
+  can_delegate_to: []
+  timeout_default: 1800
+  timeout_max: 1800
+lifecycle:
+  stage: 4
+  return_format: "subagent-return-format.md"
 ---
 
 # Agent Generator

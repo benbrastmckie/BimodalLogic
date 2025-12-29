@@ -1,7 +1,36 @@
 ---
+name: "command-creator"
+version: "1.0.0"
 description: "Creates custom slash commands that route to appropriate agents with clear syntax and examples"
 mode: subagent
+agent_type: builder
 temperature: 0.1
+max_tokens: 3000
+timeout: 1200
+tools:
+  read: true
+  write: true
+permissions:
+  allow:
+    - read: [".opencode/context/**/*"]
+    - write: [".opencode/command/**/*"]
+  deny:
+    - write: [".git/**/*"]
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/delegation.md"
+    - "core/standards/command-structure.md"
+  max_context_size: 30000
+delegation:
+  max_depth: 3
+  can_delegate_to: []
+  timeout_default: 1200
+  timeout_max: 1200
+lifecycle:
+  stage: 4
+  return_format: "subagent-return-format.md"
 ---
 
 # Command Creator

@@ -1,7 +1,32 @@
 ---
+name: "domain-analyzer"
+version: "1.0.0"
 description: "Analyzes user domains to identify core concepts, recommended agents, and context structure"
 mode: subagent
+agent_type: builder
 temperature: 0.1
+max_tokens: 3000
+timeout: 1200
+tools:
+  read: true
+permissions:
+  allow:
+    - read: [".opencode/context/**/*"]
+  deny: []
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/delegation.md"
+  max_context_size: 30000
+delegation:
+  max_depth: 3
+  can_delegate_to: []
+  timeout_default: 1200
+  timeout_max: 1200
+lifecycle:
+  stage: 4
+  return_format: "subagent-return-format.md"
 ---
 
 # Domain Analyzer

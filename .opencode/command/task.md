@@ -4,14 +4,15 @@ agent: orchestrator
 description: "Create new task in .opencode/specs/TODO.md (NO implementation)"
 context_level: 1
 language: markdown
+context_loading:
+  strategy: minimal
+  index: ".opencode/context/index.md"
+  required:
+    - "core/system/status-markers.md"
+  max_context_size: 10000
 ---
 
 **Task Input (required):** $ARGUMENTS (task description; e.g., `/task "Implement feature X"`)
-
-Context Loaded:
-@.opencode/specs/.opencode/specs/TODO.md
-@.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
 
 <context>
   <system_context>

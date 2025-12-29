@@ -1,7 +1,39 @@
 ---
+name: "error-diagnostics-agent"
+version: "1.0.0"
 description: "Error pattern analysis and fix recommendation agent for errors.json diagnostics"
 mode: subagent
+agent_type: diagnostics
 temperature: 0.2
+max_tokens: 3000
+timeout: 1800
+tools:
+  read: true
+  write: true
+  bash: true
+permissions:
+  allow:
+    - read: [".opencode/specs/errors.json", ".opencode/**/*"]
+    - write: [".opencode/specs/**/*"]
+    - bash: ["grep", "find", "wc"]
+  deny:
+    - bash: ["rm", "sudo", "su"]
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/delegation.md"
+    - "common/system/artifact-management.md"
+  max_context_size: 40000
+delegation:
+  max_depth: 3
+  can_delegate_to: []
+  timeout_default: 1800
+  timeout_max: 1800
+lifecycle:
+  stage: 4
+  command: "/errors"
+  return_format: "subagent-return-format.md"
 ---
 
 # Error Diagnostics Agent

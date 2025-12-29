@@ -127,7 +127,7 @@ The /todo command currently creates backups before cleanup operations and genera
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
-- **Plan**: [Improvement Plan](.opencode/IMPROVEMENT_PLAN.md)
+- **Plan**: [Implementation Plan](.opencode/specs/255_improve_opencode_system/plans/implementation-001.md)
 
 **Description**:
 Restructure the ProofChecker .opencode system to implement clean `core/` and `project/` context organization, streamlined orchestrator (smart coordinator pattern), thin command files (declarative workflow setup), language-based routing via orchestrator, and clear validation strategy. The improvement plan is a comprehensive 4-phase migration (8-12 hours total) that reorganizes context directories, simplifies the orchestrator, reduces command file complexity, and updates documentation. This follows the architectural patterns identified in the OpenAgents migration research.
@@ -204,7 +204,7 @@ Review and document the two abandoned phases from Task 244 implementation plan: 
 
 ### 252. Implement Task 244 Phase 6: Stage 7 Reliability Testing with OpenCode CLI Integration
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -242,7 +242,7 @@ Phase 6 goal: Validate that the OpenAgents migration achieved 100% Stage 7 execu
 
 ### 240. Systematically investigate and fix persistent workflow command Stage 7 (Postflight) failures causing incomplete status updates
 - **Effort**: 56-78 hours (revised from comparative analysis)
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Started**: 2025-12-29
 - **Researched**: 2025-12-29
 - **Completed**: 2025-12-29

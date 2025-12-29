@@ -1,372 +1,351 @@
 ---
 name: implement
-agent: subagents/implementer
+agent: orchestrator
 description: "Execute implementation with resume support and [COMPLETED] status"
 context_level: 2
 language: varies
 routing:
   lean: lean-implementation-agent
   default: implementer
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/subagent-return-format.md"
+    - "core/system/status-markers.md"
+    - "system/routing-guide.md"
+  optional:
+    - "project/processes/implementation-workflow.md"
+  max_context_size: 50000
 ---
 
 **Task Input (required):** $ARGUMENTS (task number or range; e.g., `/implement 197`, `/implement 105-107`)
 
-## Purpose
-
-Execute implementation for specified tasks with plan-based execution, resume support, and status tracking. Supports both phased (with plan) and direct (no plan) implementation. Updates task status to [COMPLETED] and creates implementation artifacts.
-
-## Usage
-
-```bash
-/implement TASK_NUMBER [PROMPT]
-/implement TASK_RANGE [PROMPT]
-```
-
-### Examples
-
-- `/implement 196` - Implement task 196 using plan if available
-- `/implement 196 "Focus on error handling"` - Implement with custom focus
-- `/implement 105-107` - Batch implement tasks 105-107
-- `/implement 105-107 "Batch implementation"` - Batch with custom context
-
-### Arguments
-
-| Argument | Type | Required | Description |
-|----------|------|----------|-------------|
-| TASK_NUMBER | integer | Yes | Task number from .opencode/specs/TODO.md |
-| TASK_RANGE | range | Yes | Task range (e.g., 105-107) for batch implementation |
-| PROMPT | string | No | Optional additional context for implementation |
-
-### Range Parsing
-
-If argument contains hyphen (-):
-- Split on hyphen to get start and end
-- Validate both are integers
-- Validate start < end
-- Generate list of task numbers: [start, start+1, ..., end]
-- Execute tasks sequentially
-
-## Workflow
-
-This command follows the standard workflow pattern with language-based routing:
-
-1. **Preflight**: Parse arguments, validate task(s) exist, update status to [IMPLEMENTING]
-2. **CheckLanguage**: Extract language from task entry, determine routing (lean → lean-implementation-agent, else → implementer)
-3. **PrepareDelegation**: Check for plan, determine resume point, generate session ID, prepare delegation context
-4. **InvokeAgent**: Delegate to implementer agent (or task-executor if plan exists) with task context
-5. **ValidateReturn**: Verify implementation artifacts created and return format valid
-6. **PrepareReturn**: Format return object with artifact paths and summary
-7. **Postflight**: Update status to [COMPLETED], create git commit(s), verify on disk
-8. **ReturnSuccess**: Return standardized result to user
-
-**Implementation**: See `.opencode/agent/subagents/implementer.md` for complete workflow execution details.
-
-## Plan-Based vs Direct Implementation
-
-### With Plan (Phased Implementation)
-
-If task has plan in TODO.md:
-- Load plan file and parse phases
-- Find first [NOT STARTED] or [IN PROGRESS] phase
-- Resume from that phase (skip [COMPLETED] phases)
-- Delegate to task-executor for phase orchestration
-- Create git commit per completed phase
-- Update phase status markers in plan file
-- Support resume on timeout or failure
-
-### Without Plan (Direct Implementation)
-
-If task has no plan:
-- Single-pass implementation
-- Delegate directly to implementer agent
-- Create single git commit for entire task
-- No phase tracking or resume support
-
-## Language-Based Routing
-
-### Language Extraction
-
-Language is extracted from task entry in TODO.md:
-
-```bash
-grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
-```
-
-If extraction fails, defaults to "general" with warning logged.
-
-### Routing Rules
-
-| Language | Agent | Tools Available |
-|----------|-------|----------------|
-| `lean` | `lean-implementation-agent` | lean-lsp-mcp, lake build, lean --version |
-| `markdown` | `implementer` | File operations, git |
-| `python` | `implementer` | File operations, git, python tools |
-| `general` | `implementer` | File operations, git |
-
-**Critical**: Language extraction MUST occur before routing. Incorrect routing bypasses language-specific tooling.
-
-## Context Loading
-
-### Routing Stage (Stages 1-3)
-
-Load minimal context for routing decisions:
-- `.opencode/context/system/routing-guide.md` (routing logic)
-
-### Execution Stage (Stage 4+)
-
-Implementer agent loads context on-demand per `.opencode/context/index.md`:
-- `common/standards/subagent-return-format.md` (return format)
-- `common/system/status-markers.md` (status transitions)
-- `common/system/artifact-management.md` (lazy directory creation)
-- Task entry via `grep -A 50 "^### ${task_number}\." TODO.md` (~2KB vs 109KB full file)
-- `state.json` (project state)
-- Plan file if exists (for phase tracking and resume)
-
-Language-specific context:
-- If lean: `project/lean4/tools/lean-lsp-mcp.md`, `project/lean4/build-system.md`
-- If markdown: (no additional context)
-
-## Resume Support
-
-### Resume Logic
-
-If plan exists:
-1. Read plan file and parse phase status markers
-2. Find first phase with [NOT STARTED] or [IN PROGRESS]
-3. Skip all [COMPLETED] phases
-4. Resume from incomplete phase
-5. Continue until all phases complete or timeout
-
-If no plan:
-- No resume support (single-pass implementation)
-- Retry requires full re-execution
-
-### Resume Invocation
-
-```bash
-/implement {task_number}
-```
-
-Same command works for both initial implementation and resume. The implementer automatically detects incomplete phases and resumes.
-
-## Artifacts Created
-
-### Implementation Files (required)
-
-Paths vary by language and task:
-- Lean: `Logos/**/*.lean`, `LogosTest/**/*.lean`
-- Markdown: `Documentation/**/*.md`, `.opencode/**/*.md`
-- Python: `**/*.py`
-- Config: `**/*.json`, `**/*.yaml`, etc.
-
-**Note**: Directories created lazily when writing artifacts (not during routing).
-
-### Implementation Summary (required for multi-file outputs)
-
-Path: `.opencode/specs/{task_number}_{slug}/summaries/implementation-summary-{YYYYMMDD}.md`
-
-Contains:
-- What was implemented
-- Files modified/created
-- Key decisions made
-- Testing recommendations
-
-**Token Limit**: Summary must be <100 tokens (~400 characters) to protect orchestrator context window.
-
-**Rationale**: Multi-file implementations create N+1 artifacts (N implementation files + 1 summary). Summary provides unified overview without requiring orchestrator to read all N files.
-
-Reference: `artifact-management.md` "Context Window Protection via Metadata Passing"
-
-### Git Commits
-
-- **With Plan**: One commit per completed phase
-- **Without Plan**: One commit for entire task
-
-Commit messages follow format: `task {number}: {description}` or `task {number} phase {N}: {phase_name}`
-
-## Status Transitions
-
-| From | To | Condition |
-|------|-----|-----------|
-| [NOT STARTED] | [IMPLEMENTING] | Implementation started (Stage 1) |
-| [PLANNED] | [IMPLEMENTING] | Implementation started (Stage 1) |
-| [REVISED] | [IMPLEMENTING] | Implementation started (Stage 1) |
-| [IMPLEMENTING] | [COMPLETED] | Implementation completed successfully (Stage 7) |
-| [IMPLEMENTING] | [IMPLEMENTING] | Implementation failed or partial (Stage 7) |
-| [IMPLEMENTING] | [BLOCKED] | Implementation blocked by dependency (Stage 7) |
-
-**Status Update**: Delegated to `status-sync-manager` for atomic synchronization across TODO.md and state.json.
-
-**Timestamps**: `**Started**: {date}` added in Stage 1, `**Completed**: {date}` added in Stage 7.
-
-## Error Handling
-
-### Task Not Found
-
-```
-Error: Task {task_number} not found in .opencode/specs/TODO.md
-
-Recommendation: Verify task number exists in TODO.md
-```
-
-### Invalid Task Number
-
-```
-Error: Task must be integer or range (N-M). Got: {input}
-
-Usage: /implement TASK_NUMBER [PROMPT]
-```
-
-### Invalid Range
-
-```
-Error: Invalid range {start}-{end}. Start must be less than end.
-
-Usage: /implement START-END [PROMPT]
-```
-
-### Task Already Completed
-
-```
-Error: Task {task_number} is already [COMPLETED]
-
-Recommendation: Cannot re-implement completed tasks
-```
-
-### Implementation Timeout
-
-```
-Error: Implementation timed out
-
-Status: Partial implementation may exist
-Task status: [IMPLEMENTING]
-Phase status: [IN PROGRESS] (if plan exists)
-
-Recommendation: Resume with /implement {task_number}
-```
-
-### Validation Failure
-
-```
-Error: Implementation validation failed
-
-Details: {validation_error}
-
-Recommendation: Fix implementer subagent implementation
-```
-
-### Git Commit Failure (non-critical)
-
-```
-Warning: Git commit failed
-
-Implementation completed successfully
-Task status updated to [COMPLETED]
-
-Manual commit required:
-  git add {files}
-  git commit -m "task {number}: {description}"
-
-Error: {git_error}
-```
-
-### Language Extraction Failure
-
-```
-Warning: Could not extract language from task entry
-
-Defaulting to: general
-Agent: implementer
-
-Recommendation: Add **Language**: {language} to task entry in TODO.md
-```
-
-## Quality Standards
-
-### Atomic Updates
-
-Status updates delegated to `status-sync-manager` for atomic synchronization:
-- `.opencode/specs/TODO.md` (status, timestamps, artifact links)
-- `state.json` (status, timestamps, artifact_paths)
-- Plan file (phase status markers if plan exists)
-- Project state.json (lazy created if needed)
-
-Two-phase commit ensures consistency across all files.
-
-### Lazy Directory Creation
-
-Directories created only when writing artifacts:
-- `.opencode/specs/{task_number}_{slug}/` created when writing first artifact
-- `summaries/` subdirectory created when writing implementation-summary.md
-
-No directories created during routing or validation stages.
-
-### Git Workflow
-
-Git commits delegated to `git-workflow-manager` for standardized commits:
-- Commit message format: `task {number}: {description}`
-- Scope files: All implementation artifacts + TODO.md + state.json
-- Per-phase commits if plan exists
-- Single commit if no plan
-
-## Return Format
-
-### Completed
-
-```
-Implementation completed for task {number}.
-{brief_1_sentence_overview}
-Files: {file_count} modified/created.
-Summary: {summary_path}
-```
-
-Example:
-```
-Implementation completed for task 195.
-Integrated LeanSearch API with error handling and tests.
-Files: 3 modified/created.
-Summary: .opencode/specs/195_lean_tools/summaries/implementation-summary-20251229.md
-```
-
-### Partial (with resume)
-
-```
-Implementation partially completed for task {number}.
-{brief_reason}
-Phase {N} in progress.
-Resume with: /implement {number}
-```
-
-### Batch Completed
-
-```
-Batch implementation completed for tasks {start}-{end}.
-{N} tasks completed successfully.
-{M} tasks failed.
-See individual task summaries for details.
-```
-
-**Token Limit**: Return must be under 100 tokens (approximately 400 characters).
-
-## Delegation Context
-
-Implementer receives:
-- `task_number`: Task number for implementation
-- `language`: Programming language from task entry
-- `session_id`: Unique session identifier
-- `delegation_depth`: 1 (from orchestrator → implement → implementer)
-- `delegation_path`: ["orchestrator", "implement", "implementer"]
-- `timeout`: 3600s (1 hour) for simple tasks, 7200s (2 hours) for phased tasks
-- `task_context`: Task description, plan path (if exists), resume phase (if applicable)
-
-Implementer returns standardized format per `subagent-return-format.md`.
-
-## Notes
-
-- **Resume Support**: Automatic resume from incomplete phases if plan exists
-- **Language Routing**: Lean tasks route to lean-implementation-agent with specialized tools
-- **Phase Tracking**: Plan-based tasks track phase status and support resume
-- **Git Workflow**: Per-phase commits for plan-based, single commit for direct
-- **Context Window Protection**: Summary artifact for multi-file outputs
-- **Atomic Updates**: status-sync-manager ensures consistency across files
-- **Lazy Creation**: Directories created only when writing artifacts
+<context>
+  <system_context>
+    Implementation command that executes task implementations with plan-based or direct execution,
+    language-based routing, and resume support for long-running operations.
+  </system_context>
+  <domain_context>
+    ProofChecker task implementation with support for Lean 4, markdown, and general languages.
+    Integrates with plan-based phased execution and direct single-pass implementation.
+  </domain_context>
+  <task_context>
+    Parse task number/range, validate tasks exist, extract language for routing, delegate to
+    appropriate implementer agent, validate return, and update status to [COMPLETED].
+  </task_context>
+  <execution_context>
+    Routing layer only. Delegates to implementer subagent for actual execution.
+    Supports batch implementation for task ranges.
+  </execution_context>
+</context>
+
+<role>Implementation command - Route tasks to implementer with language-based agent selection</role>
+
+<task>
+  Parse task number or range, validate tasks exist, extract language from task entry,
+  route to appropriate implementer agent (lean-implementation-agent for Lean, implementer for others),
+  validate implementation artifacts, and relay results to user.
+</task>
+
+<workflow_execution>
+  <stage id="1" name="Preflight">
+    <action>Parse arguments and validate tasks</action>
+    <process>
+      1. Parse task number or range from $ARGUMENTS
+      2. If range (contains hyphen):
+         - Split on hyphen to get start and end
+         - Validate both are integers
+         - Validate start &lt; end
+         - Generate task list: [start, start+1, ..., end]
+      3. If single task:
+         - Validate is integer
+         - Create single-item task list
+      4. For each task in list:
+         - Validate task exists in TODO.md
+         - Validate task is not [COMPLETED]
+         - Update status to [IMPLEMENTING]
+    </process>
+    <validation>
+      - Task number must be integer or range (N-M)
+      - All tasks must exist in TODO.md
+      - No tasks can be [COMPLETED]
+      - Range start must be less than end
+    </validation>
+    <checkpoint>Tasks validated and status updated to [IMPLEMENTING]</checkpoint>
+  </stage>
+
+  <stage id="2" name="CheckLanguage">
+    <action>Extract language for routing</action>
+    <process>
+      1. For each task, extract language from task entry:
+         ```bash
+         grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
+         ```
+      2. Determine target agent based on language:
+         - lean → lean-implementation-agent
+         - markdown → implementer
+         - python → implementer
+         - general → implementer
+      3. If extraction fails:
+         - Default to "general" with warning
+         - Log warning to errors.json
+    </process>
+    <routing_rules>
+      | Language | Agent | Tools |
+      |----------|-------|-------|
+      | lean | lean-implementation-agent | lean-lsp-mcp, lake build |
+      | markdown | implementer | File operations, git |
+      | python | implementer | File operations, git, python |
+      | general | implementer | File operations, git |
+    </routing_rules>
+    <checkpoint>Language extracted and routing target determined</checkpoint>
+  </stage>
+
+  <stage id="3" name="PrepareDelegation">
+    <action>Prepare delegation context</action>
+    <process>
+      1. Generate session_id: sess_{timestamp}_{random_6char}
+      2. Set delegation_depth = 1
+      3. Set delegation_path = ["orchestrator", "implement", "{agent}"]
+      4. Set timeout:
+         - With plan: 7200s (2 hours)
+         - Without plan: 3600s (1 hour)
+      5. Prepare task context:
+         - task_number
+         - language
+         - custom_prompt (if provided)
+         - plan_path (if exists)
+    </process>
+    <checkpoint>Delegation context prepared</checkpoint>
+  </stage>
+
+  <stage id="4" name="Delegate">
+    <action>Delegate to implementer subagent</action>
+    <process>
+      1. For each task in task list:
+         - Invoke target agent (from CheckLanguage stage)
+         - Pass delegation context
+         - Pass task context
+         - Wait for return
+      2. If batch (multiple tasks):
+         - Execute sequentially
+         - Collect results
+         - Continue on individual task failure
+    </process>
+    <checkpoint>Subagent(s) invoked</checkpoint>
+  </stage>
+
+  <stage id="5" name="ValidateReturn">
+    <action>Validate subagent return</action>
+    <process>
+      1. Validate against subagent-return-format.md
+      2. Check required fields present:
+         - status (completed|partial|failed|blocked)
+         - summary (&lt;100 tokens)
+         - artifacts (array)
+         - metadata (object)
+         - session_id (matches expected)
+      3. Verify artifacts exist on disk (if status = completed)
+      4. Check token limits (summary &lt;100 tokens)
+    </process>
+    <checkpoint>Return validated</checkpoint>
+  </stage>
+
+  <stage id="6" name="ReturnSuccess">
+    <action>Return result to user</action>
+    <return_format>
+      <single_task>
+        Implementation completed for task {number}.
+        {brief_summary}
+        Files: {file_count} modified/created.
+        {if summary_artifact:}
+        Summary: {summary_path}
+      </single_task>
+      
+      <batch_tasks>
+        Batch implementation completed for tasks {start}-{end}.
+        {N} tasks completed successfully.
+        {M} tasks failed.
+        See individual task summaries for details.
+      </batch_tasks>
+      
+      <partial>
+        Implementation partially completed for task {number}.
+        {brief_reason}
+        Phase {N} in progress.
+        Resume with: /implement {number}
+      </partial>
+    </return_format>
+    <checkpoint>Result returned to user</checkpoint>
+  </stage>
+</workflow_execution>
+
+<routing_intelligence>
+  <language_routing>
+    Language-based routing ensures correct tooling:
+    - Lean tasks → lean-implementation-agent (with lean-lsp-mcp, lake build)
+    - Other tasks → implementer (with general file operations)
+    
+    See `.opencode/context/project/processes/implementation-workflow.md` for:
+    - Language extraction logic
+    - Routing rules
+    - Agent capabilities
+  </language_routing>
+  
+  <context_allocation>
+    Level 2 (Filtered):
+    - Load command frontmatter
+    - Load required context (return format, status markers, routing guide)
+    - Load optional context (implementation workflow) if needed
+    - Subagent loads additional context per its context_loading frontmatter
+  </context_allocation>
+</routing_intelligence>
+
+<delegation>
+  Detailed implementation workflow in `.opencode/agent/subagents/implementer.md`
+  
+  Implementer handles:
+  - Plan-based vs direct implementation
+  - Resume support (automatic detection of incomplete phases)
+  - Artifact creation (implementation files + summary)
+  - Status updates (via status-sync-manager)
+  - Git commits (via git-workflow-manager)
+  
+  See also: `.opencode/context/project/processes/implementation-workflow.md`
+</delegation>
+
+<quality_standards>
+  <atomic_updates>
+    Status updates delegated to status-sync-manager for atomic synchronization:
+    - TODO.md (status, timestamps, artifact links)
+    - state.json (status, timestamps, artifact_paths)
+    - Plan file (phase status markers if plan exists)
+  </atomic_updates>
+  
+  <lazy_directory_creation>
+    Directories created only when writing artifacts:
+    - .opencode/specs/{number}_{slug}/ created when writing first artifact
+    - summaries/ subdirectory created when writing summary
+  </lazy_directory_creation>
+  
+  <git_workflow>
+    Git commits delegated to git-workflow-manager:
+    - Per-phase commits if plan exists
+    - Single commit if no plan
+    - Message format: "task {number}: {description}"
+  </git_workflow>
+  
+  <token_limits>
+    Summary artifacts: &lt;100 tokens (~400 characters)
+    Protects orchestrator context window from bloat
+  </token_limits>
+</quality_standards>
+
+<usage_examples>
+  - `/implement 196` - Implement task 196 using plan if available
+  - `/implement 196 "Focus on error handling"` - Implement with custom focus
+  - `/implement 105-107` - Batch implement tasks 105-107
+  - `/implement 105-107 "Batch implementation"` - Batch with custom context
+</usage_examples>
+
+<validation>
+  <pre_flight>
+    - Task number is valid integer or range
+    - All tasks exist in TODO.md
+    - No tasks are [COMPLETED]
+    - Range is valid (start &lt; end)
+  </pre_flight>
+  <mid_flight>
+    - Language extracted successfully (or defaulted)
+    - Routing target determined
+    - Delegation context prepared
+    - Return validated against schema
+  </mid_flight>
+  <post_flight>
+    - Implementation artifacts created
+    - Status updated to [COMPLETED]
+    - Git commit created
+    - Return relayed to user
+  </post_flight>
+</validation>
+
+<error_handling>
+  <task_not_found>
+    Error: Task {task_number} not found in .opencode/specs/TODO.md
+    
+    Recommendation: Verify task number exists in TODO.md
+  </task_not_found>
+  
+  <invalid_task_number>
+    Error: Task must be integer or range (N-M). Got: {input}
+    
+    Usage: /implement TASK_NUMBER [PROMPT]
+  </invalid_task_number>
+  
+  <invalid_range>
+    Error: Invalid range {start}-{end}. Start must be less than end.
+    
+    Usage: /implement START-END [PROMPT]
+  </invalid_range>
+  
+  <task_already_completed>
+    Error: Task {task_number} is already [COMPLETED]
+    
+    Recommendation: Cannot re-implement completed tasks
+  </task_already_completed>
+  
+  <implementation_timeout>
+    Error: Implementation timed out
+    
+    Status: Partial implementation may exist
+    Task status: [IMPLEMENTING]
+    Phase status: [IN PROGRESS] (if plan exists)
+    
+    Recommendation: Resume with /implement {task_number}
+  </implementation_timeout>
+  
+  <language_extraction_failure>
+    Warning: Could not extract language from task entry
+    
+    Defaulting to: general
+    Agent: implementer
+    
+    Recommendation: Add **Language**: {language} to task entry in TODO.md
+  </language_extraction_failure>
+  
+  <validation_failure>
+    Error: Implementation validation failed
+    
+    Details: {validation_error}
+    
+    Recommendation: Fix implementer subagent implementation
+  </validation_failure>
+  
+  <git_commit_failure>
+    Warning: Git commit failed
+    
+    Implementation completed successfully
+    Task status updated to [COMPLETED]
+    
+    Manual commit required:
+      git add {files}
+      git commit -m "task {number}: {description}"
+    
+    Error: {git_error}
+  </git_commit_failure>
+</error_handling>
+
+<notes>
+  - **Resume Support**: Automatic resume from incomplete phases if plan exists
+  - **Language Routing**: Lean tasks route to lean-implementation-agent with specialized tools
+  - **Phase Tracking**: Plan-based tasks track phase status and support resume
+  - **Git Workflow**: Per-phase commits for plan-based, single commit for direct
+  - **Context Window Protection**: Summary artifact for multi-file outputs
+  - **Atomic Updates**: status-sync-manager ensures consistency across files
+  - **Lazy Creation**: Directories created only when writing artifacts
+  
+  For detailed workflow documentation, see:
+  - `.opencode/context/project/processes/implementation-workflow.md`
+  - `.opencode/agent/subagents/implementer.md`
+</notes>

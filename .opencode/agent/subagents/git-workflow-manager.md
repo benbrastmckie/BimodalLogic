@@ -1,7 +1,36 @@
 ---
+name: "git-workflow-manager"
+version: "1.0.0"
 description: "Git workflow manager for scoped commits with auto-generated messages"
 mode: subagent
+agent_type: utility
 temperature: 0.1
+max_tokens: 1000
+timeout: 300
+tools:
+  bash: true
+  read: true
+permissions:
+  allow:
+    - bash: ["git"]
+    - read: [".opencode/specs/**/*"]
+  deny:
+    - bash: ["rm", "sudo", "su"]
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/delegation.md"
+    - "common/system/git-commits.md"
+  max_context_size: 20000
+delegation:
+  max_depth: 3
+  can_delegate_to: []
+  timeout_default: 300
+  timeout_max: 300
+lifecycle:
+  stage: 7
+  return_format: "subagent-return-format.md"
 ---
 
 # Git Workflow Manager

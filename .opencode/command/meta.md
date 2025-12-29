@@ -1,5 +1,22 @@
 ---
+name: meta
+agent: meta-builder-orchestrator
 description: "Interactive system builder that creates complete context-aware AI architectures tailored to user domains"
+context_level: 3
+language: varies
+context_loading:
+  strategy: eager  # Complex system builder needs comprehensive context
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/xml-patterns.md"
+    - "core/standards/command-structure.md"
+    - "core/standards/subagent-structure.md"
+    - "core/standards/git-safety.md"
+  optional:
+    - "project/processes/implementation-workflow.md"
+    - "project/processes/planning-workflow.md"
+    - "project/processes/research-workflow.md"
+  max_context_size: 100000
 ---
 
 <target_domain> $ARGUMENTS </target_domain>

@@ -1,280 +1,305 @@
 ---
 name: revise
-agent: subagents/planner
+agent: orchestrator
 description: "Create new plan versions with [REVISED] status"
 context_level: 2
 language: markdown
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/subagent-return-format.md"
+    - "core/system/status-markers.md"
+    - "system/routing-guide.md"
+  optional:
+    - "project/processes/planning-workflow.md"
+    - "core/standards/plan.md"
+  max_context_size: 50000
 ---
 
 **Task Input (required):** $ARGUMENTS (task number and optional prompt; e.g., `/revise 196`, `/revise 196 "Adjust approach"`)
 
-## Purpose
-
-Create new plan versions for tasks with existing plans. Increments plan version number (implementation-002.md, etc.) and updates task status to [REVISED]. Useful for adjusting approach based on new information or changing requirements.
-
-## Usage
-
-```bash
-/revise TASK_NUMBER [PROMPT]
-```
-
-### Examples
-
-- `/revise 196` - Create new plan version for task 196
-- `/revise 196 "Adjust phase breakdown based on new findings"` - Revise with specific reason
-
-### Arguments
-
-| Argument | Type | Required | Description |
-|----------|------|----------|-------------|
-| TASK_NUMBER | integer | Yes | Task number from .opencode/specs/TODO.md |
-| PROMPT | string | No | Reason for revision or specific changes needed |
-
-## Workflow
-
-This command follows the standard workflow pattern:
-
-1. **Preflight**: Parse arguments, validate task exists with plan, update status to [REVISING]
-2. **CheckLanguage**: Extract language from task entry (for context loading)
-3. **PrepareDelegation**: Calculate next plan version, generate session ID, prepare delegation context with timeout (1800s)
-4. **InvokeAgent**: Delegate to planner agent with task context, existing plan, and revision reason
-5. **ValidateReturn**: Verify new plan artifact created and return format valid
-6. **PrepareReturn**: Format return object with artifact paths and summary
-7. **Postflight**: Update status to [REVISED], update plan link, create git commit, verify on disk
-8. **ReturnSuccess**: Return standardized result to user
-
-**Implementation**: See `.opencode/agent/subagents/planner.md` for complete workflow execution details.
-
-## Plan Version Management
-
-### Version Numbering
-
-Plans are versioned sequentially:
-- First plan: `implementation-001.md`
-- First revision: `implementation-002.md`
-- Second revision: `implementation-003.md`
-- etc.
-
-### Version Calculation
-
-1. Extract current plan path from .opencode/specs/TODO.md
-2. Parse version number from filename (implementation-001.md → 1)
-3. Increment version: next_version = current + 1
-4. Format new plan path: implementation-{next_version:03d}.md
-5. Verify new plan path doesn't exist
-
-### Existing Plan Preservation
-
-- Original plan files are never modified
-- New plan version created as separate file
-- All plan versions preserved in plans/ directory
-- TODO.md plan link updated to point to latest version
-
-## Context Loading
-
-### Routing Stage (Stages 1-3)
-
-Load minimal context for routing decisions:
-- `.opencode/context/system/routing-guide.md` (routing logic)
-
-### Execution Stage (Stage 4+)
-
-Planner agent loads context on-demand per `.opencode/context/index.md`:
-- `common/standards/subagent-return-format.md` (return format)
-- `common/system/status-markers.md` (status transitions)
-- `common/system/artifact-management.md` (lazy directory creation)
-- `common/standards/plan.md` (plan template)
-- Task entry via `grep -A 50 "^### ${task_number}\." TODO.md` (~2KB vs 109KB full file)
-- `state.json` (project state)
-- Existing plan file (for context and comparison)
-- Research artifacts if linked in TODO.md
-
-## Artifacts Created
-
-### Revised Implementation Plan (required)
-
-Path: `.opencode/specs/{task_number}_{slug}/plans/implementation-{version:03d}.md`
-
-Contains same structure as original plan:
-- Metadata (task, status, effort, priority, complexity, language)
-- Overview (problem, scope, constraints, definition of done)
-- Goals and Non-Goals
-- Risks and Mitigations
-- Implementation Phases (each with [NOT STARTED] marker)
-- Testing and Validation
-- Artifacts and Outputs
-- Rollback/Contingency
-- Success Metrics
-
-**Note**: Revision reason included in plan metadata or overview.
-
-### Summary (metadata only)
-
-Summary is included in return object metadata (3-5 sentences, <100 tokens), NOT as separate artifact file.
-
-**Rationale**: Plan is self-documenting. Protects orchestrator context window from bloat.
-
-Reference: `artifact-management.md` "Context Window Protection via Metadata Passing"
-
-## Status Transitions
-
-| From | To | Condition |
-|------|-----|-----------|
-| [PLANNED] | [REVISING] | Revision started (Stage 1) |
-| [REVISED] | [REVISING] | Revision started (Stage 1) |
-| [REVISING] | [REVISED] | Revision completed successfully (Stage 7) |
-| [REVISING] | [REVISING] | Revision failed or partial (Stage 7) |
-| [REVISING] | [BLOCKED] | Revision blocked by dependency (Stage 7) |
-
-**Status Update**: Delegated to `status-sync-manager` for atomic synchronization across TODO.md and state.json.
-
-**Timestamps**: `**Started**: {date}` preserved from original planning, `**Revised**: {date}` added in Stage 7.
-
-## Error Handling
-
-### Task Not Found
-
-```
-Error: Task {task_number} not found in .opencode/specs/TODO.md
-
-Recommendation: Verify task number exists in TODO.md
-```
-
-### Invalid Task Number
-
-```
-Error: Task number must be an integer. Got: {input}
-
-Usage: /revise TASK_NUMBER [PROMPT]
-```
-
-### No Existing Plan
-
-```
-Error: Task {task_number} has no plan. Use /plan instead.
-
-Recommendation: Create initial plan with /plan {task_number}
-```
-
-### Task Already Completed
-
-```
-Error: Task {task_number} is already [COMPLETED]
-
-Recommendation: Cannot revise completed tasks
-```
-
-### Revision Timeout
-
-```
-Error: Revision timed out after 1800s
-
-Status: Partial plan may exist
-Task status: [REVISING]
-
-Recommendation: Resume with /revise {task_number}
-```
-
-### Validation Failure
-
-```
-Error: Plan validation failed
-
-Details: {validation_error}
-
-Recommendation: Fix planner subagent implementation
-```
-
-### Git Commit Failure (non-critical)
-
-```
-Warning: Git commit failed
-
-Plan revised successfully: {plan_path}
-Task status updated to [REVISED]
-
-Manual commit required:
-  git add {files}
-  git commit -m "task {number}: plan revised (version {version})"
-
-Error: {git_error}
-```
-
-## Quality Standards
-
-### Plan Template Compliance
-
-All revised plans must follow `.opencode/context/common/standards/plan.md` template:
-- Metadata section with all required fields
-- Phase breakdown with [NOT STARTED] markers
-- Acceptance criteria per phase
-- Effort estimates (1-2 hours per phase)
-- Success metrics
-
-### Atomic Updates
-
-Status updates delegated to `status-sync-manager` for atomic synchronization:
-- `.opencode/specs/TODO.md` (status, timestamps, plan link updated to new version)
-- `state.json` (status, timestamps, plan_path updated to new version, plan_metadata)
-- Project state.json (lazy created if needed)
-
-Two-phase commit ensures consistency across all files.
-
-### Version Tracking
-
-- Plan version number tracked in state.json
-- TODO.md plan link always points to latest version
-- All previous plan versions preserved in plans/ directory
-
-## Return Format
-
-### Completed
-
-```
-Plan revised for task {number} (version {version}).
-{brief_1_sentence_overview}
-{phase_count} phases, {effort} hours estimated.
-Plan: {plan_path}
-```
-
-Example:
-```
-Plan revised for task 195 (version 2).
-Simplified approach based on new LeanSearch API findings.
-3 phases, 4 hours estimated.
-Plan: .opencode/specs/195_lean_tools/plans/implementation-002.md
-```
-
-### Partial
-
-```
-Plan partially revised for task {number}.
-{brief_reason}
-Resume with: /revise {number}
-Plan: {plan_path}
-```
-
-**Token Limit**: Return must be under 100 tokens (approximately 400 characters).
-
-## Delegation Context
-
-Planner receives:
-- `task_number`: Task number for revision
-- `session_id`: Unique session identifier
-- `delegation_depth`: 1 (from orchestrator → revise → planner)
-- `delegation_path`: ["orchestrator", "revise", "planner"]
-- `timeout`: 1800s (30 minutes)
-- `task_context`: Task description, language, research links
-- `revision_context`: Revision reason, existing plan path, new version number
-
-Planner returns standardized format per `subagent-return-format.md`.
-
-## Notes
-
-- **Version Preservation**: All plan versions preserved, never overwritten
-- **Research Integration**: Planner automatically loads research artifacts from TODO.md links
-- **Phase Sizing**: Phases kept small (1-2 hours each) for manageable execution
-- **Template Compliance**: All plans follow plan.md standard exactly
-- **Context Window Protection**: Summary in return metadata, not separate artifact
-- **Atomic Updates**: status-sync-manager ensures consistency across files
-- **Git Workflow**: Delegated to git-workflow-manager for standardized commits
+<context>
+  <system_context>
+    Plan revision command that creates new plan versions for tasks with existing plans.
+    Increments plan version number and updates task status to [REVISED].
+  </system_context>
+  <domain_context>
+    ProofChecker plan revision with version management, preserving all previous plan versions
+    while creating updated plans based on new information or changing requirements.
+  </domain_context>
+  <task_context>
+    Parse task number, validate task has existing plan, calculate next version number,
+    delegate to planner for revision, and update status to [REVISED].
+  </task_context>
+  <execution_context>
+    Routing layer only. Delegates to planner subagent for actual plan revision.
+    Planner handles version management and plan preservation.
+  </execution_context>
+</context>
+
+<role>Plan revision command - Route tasks to planner for plan version updates</role>
+
+<task>
+  Parse task number, validate task exists with existing plan, calculate next plan version,
+  delegate to planner subagent for plan revision, validate new plan artifact, and relay results to user.
+</task>
+
+<workflow_execution>
+  <stage id="1" name="Preflight">
+    <action>Parse arguments and validate task</action>
+    <process>
+      1. Parse task number from $ARGUMENTS
+      2. Parse optional revision reason from $ARGUMENTS
+      3. Validate task number is integer
+      4. Validate task exists in TODO.md
+      5. Validate task has existing plan:
+         - Check for **Plan**: link in task entry
+         - If no plan: Error (use /plan instead)
+      6. Update status to [REVISING]
+    </process>
+    <validation>
+      - Task number must be integer
+      - Task must exist in TODO.md
+      - Task must have existing plan (cannot revise non-existent plan)
+    </validation>
+    <checkpoint>Task validated and status updated to [REVISING]</checkpoint>
+  </stage>
+
+  <stage id="2" name="CalculateVersion">
+    <action>Calculate next plan version number</action>
+    <process>
+      1. Extract current plan path from TODO.md task entry
+      2. Parse version number from filename:
+         - implementation-001.md → version 1
+         - implementation-002.md → version 2
+         - etc.
+      3. Increment version: next_version = current + 1
+      4. Format new plan path: implementation-{next_version:03d}.md
+      5. Verify new plan path doesn't already exist
+    </process>
+    <version_numbering>
+      - First plan: implementation-001.md
+      - First revision: implementation-002.md
+      - Second revision: implementation-003.md
+      - etc.
+    </version_numbering>
+    <checkpoint>Next version calculated</checkpoint>
+  </stage>
+
+  <stage id="3" name="PrepareDelegation">
+    <action>Prepare delegation context</action>
+    <process>
+      1. Generate session_id: sess_{timestamp}_{random_6char}
+      2. Set delegation_depth = 1
+      3. Set delegation_path = ["orchestrator", "revise", "planner"]
+      4. Set timeout = 1800s (30 minutes)
+      5. Prepare task context:
+         - task_number
+         - current_plan_path
+         - next_version
+         - revision_reason (if provided)
+    </process>
+    <checkpoint>Delegation context prepared</checkpoint>
+  </stage>
+
+  <stage id="4" name="Delegate">
+    <action>Delegate to planner subagent</action>
+    <process>
+      1. Invoke planner with task context
+      2. Pass delegation context
+      3. Pass revision context (current plan, next version, reason)
+      4. Wait for return
+    </process>
+    <checkpoint>Planner invoked</checkpoint>
+  </stage>
+
+  <stage id="5" name="ValidateReturn">
+    <action>Validate planner return</action>
+    <process>
+      1. Validate against subagent-return-format.md
+      2. Check required fields present:
+         - status (completed|partial|failed|blocked)
+         - summary (&lt;100 tokens)
+         - artifacts (array with new plan artifact)
+         - metadata (object with version, phase_count, estimated_hours)
+         - session_id (matches expected)
+      3. Verify new plan artifact exists on disk
+      4. Verify old plan still exists (preserved)
+      5. Check token limits (summary &lt;100 tokens)
+    </process>
+    <checkpoint>Return validated</checkpoint>
+  </stage>
+
+  <stage id="6" name="ReturnSuccess">
+    <action>Return result to user</action>
+    <return_format>
+      <completed>
+        Plan revised for task {number}.
+        {brief_summary}
+        Version {version}, {phase_count} phases, {effort} hours estimated.
+        Plan: {new_plan_path}
+        Previous: {old_plan_path}
+      </completed>
+      
+      <partial>
+        Plan partially revised for task {number}.
+        {brief_reason}
+        Resume with: /revise {number}
+        Plan: {new_plan_path}
+      </partial>
+    </return_format>
+    <checkpoint>Result returned to user</checkpoint>
+  </stage>
+</workflow_execution>
+
+<routing_intelligence>
+  <context_allocation>
+    Level 2 (Filtered):
+    - Load command frontmatter
+    - Load required context (return format, status markers, routing guide)
+    - Load optional context (planning workflow, plan template) if needed
+    - Planner loads additional context per its context_loading frontmatter
+  </context_allocation>
+</routing_intelligence>
+
+<delegation>
+  Detailed planning workflow in `.opencode/agent/subagents/planner.md`
+  
+  Planner handles:
+  - Plan revision (creates new version, preserves old)
+  - Version management (increments version number)
+  - Research integration (if new research available)
+  - Phase breakdown updates
+  - Status updates (via status-sync-manager)
+  - Git commits (via git-workflow-manager)
+  
+  See also: `.opencode/context/project/processes/planning-workflow.md`
+</delegation>
+
+<quality_standards>
+  <plan_preservation>
+    Original plan files are never modified:
+    - New plan version created as separate file
+    - All plan versions preserved in plans/ directory
+    - TODO.md plan link updated to point to latest version
+  </plan_preservation>
+  
+  <version_management>
+    Plans are versioned sequentially:
+    - implementation-001.md (first plan)
+    - implementation-002.md (first revision)
+    - implementation-003.md (second revision)
+    - etc.
+  </version_management>
+  
+  <atomic_updates>
+    Status updates delegated to status-sync-manager for atomic synchronization:
+    - TODO.md (status, timestamps, plan link to new version)
+    - state.json (status, timestamps, plan_path, plan_metadata)
+  </atomic_updates>
+  
+  <lazy_directory_creation>
+    Directories already exist from original plan creation.
+    New plan file written to existing plans/ subdirectory.
+  </lazy_directory_creation>
+</quality_standards>
+
+<usage_examples>
+  - `/revise 196` - Create new plan version for task 196
+  - `/revise 196 "Adjust phase breakdown based on new findings"` - Revise with specific reason
+</usage_examples>
+
+<validation>
+  <pre_flight>
+    - Task number is valid integer
+    - Task exists in TODO.md
+    - Task has existing plan (cannot revise non-existent plan)
+    - Next version number calculated correctly
+  </pre_flight>
+  <mid_flight>
+    - Delegation context prepared
+    - Return validated against schema
+    - New plan artifact exists
+    - Old plan still exists (preserved)
+  </mid_flight>
+  <post_flight>
+    - New plan artifact created
+    - Old plan preserved
+    - Status updated to [REVISED]
+    - TODO.md plan link updated to new version
+    - Git commit created
+    - Return relayed to user
+  </post_flight>
+</validation>
+
+<error_handling>
+  <task_not_found>
+    Error: Task {task_number} not found in .opencode/specs/TODO.md
+    
+    Recommendation: Verify task number exists in TODO.md
+  </task_not_found>
+  
+  <invalid_task_number>
+    Error: Task number must be an integer. Got: {input}
+    
+    Usage: /revise TASK_NUMBER [PROMPT]
+  </invalid_task_number>
+  
+  <no_existing_plan>
+    Error: Task {task_number} has no existing plan
+    
+    Recommendation: Use /plan {task_number} to create initial plan
+  </no_existing_plan>
+  
+  <version_already_exists>
+    Error: Plan version {version} already exists for task {task_number}
+    
+    Existing plan: {plan_path}
+    
+    Recommendation: Check plan directory for existing versions
+  </version_already_exists>
+  
+  <revision_timeout>
+    Error: Plan revision timed out after 1800s
+    
+    Status: Partial revision may exist
+    Task status: [REVISING]
+    
+    Recommendation: Resume with /revise {task_number}
+  </revision_timeout>
+  
+  <validation_failure>
+    Error: Plan revision validation failed
+    
+    Details: {validation_error}
+    
+    Recommendation: Fix planner subagent implementation
+  </validation_failure>
+  
+  <git_commit_failure>
+    Warning: Git commit failed
+    
+    Plan revised successfully: {new_plan_path}
+    Task status updated to [REVISED]
+    
+    Manual commit required:
+      git add {files}
+      git commit -m "task {number}: plan revised (version {version})"
+    
+    Error: {git_error}
+  </git_commit_failure>
+</error_handling>
+
+<notes>
+  - **Version Management**: Plans versioned sequentially (001, 002, 003, etc.)
+  - **Plan Preservation**: Original plans never modified, all versions preserved
+  - **Research Integration**: Planner can incorporate new research if available
+  - **Context Window Protection**: Summary in return metadata, not separate artifact
+  - **Atomic Updates**: status-sync-manager ensures consistency across files
+  - **Git Workflow**: Delegated to git-workflow-manager for standardized commits
+  
+  For detailed workflow documentation, see:
+  - `.opencode/context/project/processes/planning-workflow.md`
+  - `.opencode/agent/subagents/planner.md`
+</notes>

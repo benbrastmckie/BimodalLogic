@@ -1,7 +1,44 @@
 ---
+name: "reviewer"
+version: "1.0.0"
 description: "Codebase analysis and registry update agent for repository-wide reviews"
 mode: subagent
+agent_type: review
 temperature: 0.3
+max_tokens: 4000
+timeout: 3600
+tools:
+  read: true
+  write: true
+  bash: true
+  grep: true
+  glob: true
+permissions:
+  allow:
+    - read: ["**/*"]
+    - write: [".opencode/specs/**/*", "registry.json"]
+    - bash: ["grep", "find", "wc", "date", "mkdir"]
+  deny:
+    - bash: ["rm -rf", "rm -fr", "sudo", "su"]
+    - write: [".git/**/*"]
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/delegation.md"
+    - "core/system/state-management.md"
+    - "common/system/artifact-management.md"
+  max_context_size: 50000
+delegation:
+  max_depth: 3
+  can_delegate_to:
+    - "git-workflow-manager"
+  timeout_default: 3600
+  timeout_max: 3600
+lifecycle:
+  stage: 4
+  command: "/review"
+  return_format: "subagent-return-format.md"
 ---
 
 # Reviewer
