@@ -16,15 +16,15 @@ Task 193 implementation failed to complete the `is_valid_swap_involution` theore
 **Key Finding**: The recommended `simp only` pattern from Perpetuity/Helpers.lean works for **derivations** (syntactic objects) but **not** for `truth_at` propositions (semantic objects defined by structural recursion). This crucial distinction was not apparent from research reports.
 
 **What Works (85% complete)**:
-- ✅ Helper lemma `truth_at_swap_swap` fully proven with structural induction (6 cases)
-- ✅ @[simp] attribute added to `swap_past_future_involution`
-- ✅ Truth.lean compiles with documented sorry
-- ✅ All tests pass
+- [PASS] Helper lemma `truth_at_swap_swap` fully proven with structural induction (6 cases)
+- [PASS] @[simp] attribute added to `swap_past_future_involution`
+- [PASS] Truth.lean compiles with documented sorry
+- [PASS] All tests pass
 
 **What Remains (15%, blocked)**:
-- ❌ Main theorem `is_valid_swap_involution` at line 691 still admits sorry
-- ❌ Cannot transport truth values across propositional equality
-- ❌ All recommended proof strategies exhausted
+- [FAIL] Main theorem `is_valid_swap_involution` at line 691 still admits sorry
+- [FAIL] Cannot transport truth values across propositional equality
+- [FAIL] All recommended proof strategies exhausted
 
 ---
 
@@ -442,16 +442,16 @@ axiom is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_futur
 ### What Still Works (85%)
 
 All the important infrastructure is in place:
-- ✅ Helper lemma `truth_at_swap_swap` handles the double-swap case
-- ✅ Formula swap operations well-defined
-- ✅ Involution property proven at formula level
-- ✅ Truth.lean compiles and tests pass
+- [PASS] Helper lemma `truth_at_swap_swap` handles the double-swap case
+- [PASS] Formula swap operations well-defined
+- [PASS] Involution property proven at formula level
+- [PASS] Truth.lean compiles and tests pass
 
 ### What's Blocked (15%)
 
 Only this specific theorem:
-- ❌ `is_valid_swap_involution` at line 691
-- ⚠️ Downstream usage at line ~1171 (may need this theorem)
+- [FAIL] `is_valid_swap_involution` at line 691
+- [WARN] Downstream usage at line ~1171 (may need this theorem)
 
 ### Workarounds
 
@@ -478,11 +478,11 @@ If downstream code needs this property:
 
 ### What Went Well
 
-- ✅ Systematic exploration of all recommended approaches
-- ✅ Clear documentation of each failed attempt
-- ✅ Identification of root cause (pattern matching)
-- ✅ Comprehensive error analysis
-- ✅ Multiple fallback plans attempted
+- [PASS] Systematic exploration of all recommended approaches
+- [PASS] Clear documentation of each failed attempt
+- [PASS] Identification of root cause (pattern matching)
+- [PASS] Comprehensive error analysis
+- [PASS] Multiple fallback plans attempted
 
 ### What Could Improve
 

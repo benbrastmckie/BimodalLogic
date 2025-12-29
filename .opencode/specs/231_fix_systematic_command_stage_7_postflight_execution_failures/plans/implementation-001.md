@@ -73,8 +73,8 @@ Fix systematic Stage 7 (Postflight) execution failures across all workflow comma
 
 ### Evidence from Task History
 
-- **Task 224**: Plan created ✅, TODO.md manual ✅, state.json ❌ (research-001.md lines 600-615)
-- **Task 229**: Plan created ✅, tracking manual intervention required (research-001.md lines 617-628)
+- **Task 224**: Plan created [PASS], TODO.md manual [PASS], state.json [FAIL] (research-001.md lines 600-615)
+- **Task 229**: Plan created [PASS], tracking manual intervention required (research-001.md lines 617-628)
 - **Pattern**: Artifacts succeed, Stage 7 skipped, tracking incomplete
 
 ---

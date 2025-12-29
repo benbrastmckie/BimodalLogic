@@ -46,7 +46,7 @@ function cas(p: pointer to int, old: int, new: int) is
 
 **Use Case:** When you need conditional updates based on expected state
 
-#### Pattern 2: Fetch-and-Add (FAA) ⭐ RECOMMENDED
+#### Pattern 2: Fetch-and-Add (FAA) [STAR] RECOMMENDED
 ```
 function fetch_and_add(p: pointer to int, a: int) returns int
     done ← false
@@ -77,7 +77,7 @@ function fetch_and_add(p: pointer to int, a: int) returns int
 | Pattern | Complexity | Race Conditions | Recommended For |
 |---------|-----------|-----------------|-----------------|
 | Read-Reserve-Increment | High | Possible | Never (unsafe) |
-| Increment-Then-Use (FAA) | Low | None | Task numbering ✓ |
+| Increment-Then-Use (FAA) | Low | None | Task numbering [YES] |
 | CAS with retry | Medium | None | Conditional updates |
 
 ### 1.4 Recommendation for Task Numbering
@@ -369,7 +369,7 @@ fn create_task(description: String) -> Result<Task> {
 
 **Output:**
 ```
-✓ Task #165 created: Implement atomic task numbering
+[YES] Task #165 created: Implement atomic task numbering
   Status: todo
   Created: 2025-12-24 10:30:00
 ```
@@ -415,14 +415,14 @@ pub fn add_task(description: String) -> Result<Task> {
 
 **User-Facing Errors:**
 ```
-✗ Error: Description cannot be empty
+[NO] Error: Description cannot be empty
   Usage: /add <description>
   
-✗ Error: Failed to write task to state file
+[NO] Error: Failed to write task to state file
   The task number #165 has been reserved but the task was not created.
   Please try again or contact support.
   
-⚠ Warning: Task #165 created but TODO.md update failed
+[WARN] Warning: Task #165 created but TODO.md update failed
   You may need to run '/sync' to update TODO.md
 ```
 

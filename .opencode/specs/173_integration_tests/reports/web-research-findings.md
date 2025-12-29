@@ -686,12 +686,12 @@ end CoverageTracking
 
 | Operator | Unit Test | Integration Test | Property Test | Soundness | Completeness |
 |----------|-----------|------------------|---------------|-----------|--------------|
-| □        | ✓         | ✓                | ✓             | ✓         | ✗            |
-| ◇        | ✓         | ✓                | ✓             | ✓         | ✗            |
-| ⊃        | ✓         | ✓                | ✓             | ✓         | ✓            |
-| ∧        | ✓         | ✓                | ✓             | ✓         | ✓            |
-| ∨        | ✓         | ✓                | ✓             | ✓         | ✓            |
-| ¬        | ✓         | ✓                | ✓             | ✓         | ✓            |
+| □        | [YES]         | [YES]                | [YES]             | [YES]         | [NO]            |
+| ◇        | [YES]         | [YES]                | [YES]             | [YES]         | [NO]            |
+| ⊃        | [YES]         | [YES]                | [YES]             | [YES]         | [YES]            |
+| ∧        | [YES]         | [YES]                | [YES]             | [YES]         | [YES]            |
+| ∨        | [YES]         | [YES]                | [YES]             | [YES]         | [YES]            |
+| ¬        | [YES]         | [YES]                | [YES]             | [YES]         | [YES]            |
 ```
 
 ---
@@ -867,9 +867,9 @@ def test_with_diagnostics : IO Unit := do
   
   match result with
   | some proof =>
-      IO.println s!"✓ Found proof: {proof}"
+      IO.println s!"[YES] Found proof: {proof}"
   | none =>
-      IO.println "✗ Failed to find proof"
+      IO.println "[NO] Failed to find proof"
       IO.println "Diagnostics:"
       IO.println s!"  Formula: {φ}"
       IO.println s!"  Search depth: {maxDepth}"
@@ -1206,13 +1206,13 @@ Integration testing in Lean 4 is fundamentally different from traditional softwa
 
 **For the ProofChecker project**, the recommended approach is:
 
-✅ **Use proof-based integration tests** for soundness, completeness, and other metalogic properties  
-✅ **Add Plausible** for property-based testing to find edge cases  
-✅ **Organize tests** in `LogosTest/Integration/` mirroring the main structure  
-✅ **Create end-to-end tests** that exercise full proof workflows  
-✅ **Use custom test harnesses** for tactic testing  
-✅ **Track coverage manually** through proof obligations and test matrices  
-✅ **Set up CI** to run tests on every commit  
+[PASS] **Use proof-based integration tests** for soundness, completeness, and other metalogic properties  
+[PASS] **Add Plausible** for property-based testing to find edge cases  
+[PASS] **Organize tests** in `LogosTest/Integration/` mirroring the main structure  
+[PASS] **Create end-to-end tests** that exercise full proof workflows  
+[PASS] **Use custom test harnesses** for tactic testing  
+[PASS] **Track coverage manually** through proof obligations and test matrices  
+[PASS] **Set up CI** to run tests on every commit  
 
 This approach provides strong correctness guarantees while maintaining the flexibility to test complex integration scenarios.
 

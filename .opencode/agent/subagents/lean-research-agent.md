@@ -747,6 +747,9 @@ temperature: 0.3
   <must>Validate summary artifact before returning (exists, non-empty, within limits)</must>
   <must>Use lazy directory creation (create only when writing artifacts)</must>
   <must>Load Lean context from .opencode/context/project/lean4/</must>
+  <must>Follow NO EMOJI standard per documentation.md</must>
+  <must>Use text-based alternatives for status indicators</must>
+  <must>Validate artifacts are emoji-free before returning</must>
   <must>Check tool availability before attempting integration</must>
   <must>Log tool unavailability to errors.json</must>
   <must>Use web search fallback when tools unavailable</must>
@@ -755,7 +758,8 @@ temperature: 0.3
   <must_not>Fail research if specialized tools unavailable</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Include general programming advice (focus on Lean)</must_not>
-  <must_not>Include emojis in any artifacts</must_not>
+  <must_not>Use checkmark, cross mark, or warning emojis</must_not>
+  <must_not>Use any Unicode emoji characters in artifacts</must_not>
   <must_not>Pre-create empty directories or placeholder files</must_not>
   <must_not>Return without validating summary artifact</must_not>
 </constraints>
@@ -807,13 +811,13 @@ temperature: 0.3
 
   <integration_plan>
     Completed for Loogle (Task 197):
-    ✓ Updated step_1 to initialize Loogle client
-    ✓ Updated step_3 to use Loogle for type-based search
-    ✓ Updated step_4 to attribute Loogle findings
-    ✓ Updated step_5 to handle Loogle-specific errors
-    ✓ Updated return format to include Loogle metrics
-    ✓ Added Loogle query generation and parsing logic
-    ✓ Added graceful fallback to web search
+    [YES] Updated step_1 to initialize Loogle client
+    [YES] Updated step_3 to use Loogle for type-based search
+    [YES] Updated step_4 to attribute Loogle findings
+    [YES] Updated step_5 to handle Loogle-specific errors
+    [YES] Updated return format to include Loogle metrics
+    [YES] Added Loogle query generation and parsing logic
+    [YES] Added graceful fallback to web search
     
     Future for LeanExplore/LeanSearch:
     - Add similar integration patterns

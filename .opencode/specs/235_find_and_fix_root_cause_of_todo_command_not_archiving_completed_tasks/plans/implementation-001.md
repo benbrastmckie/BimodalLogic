@@ -20,7 +20,7 @@
 
 ## Overview
 
-Research identified two root causes for /todo command archival failures: (1) Incomplete TODO.md updates during archival - tasks successfully move to archive/state.json and archive/ directories but entries remain in TODO.md, creating dual-state inconsistency for 23+ tasks, and (2) Status marker format inconsistency - 88% of completed tasks (23 of 26) use non-standard formats like `COMPLETED` (no brackets), `✅ [COMPLETED]` (emoji in heading), or mixed formats that may not match the command's identification pattern. This plan addresses both root causes through manual cleanup, command debugging, systematic enforcement, and verification.
+Research identified two root causes for /todo command archival failures: (1) Incomplete TODO.md updates during archival - tasks successfully move to archive/state.json and archive/ directories but entries remain in TODO.md, creating dual-state inconsistency for 23+ tasks, and (2) Status marker format inconsistency - 88% of completed tasks (23 of 26) use non-standard formats like `COMPLETED` (no brackets), `[PASS] [COMPLETED]` (emoji in heading), or mixed formats that may not match the command's identification pattern. This plan addresses both root causes through manual cleanup, command debugging, systematic enforcement, and verification.
 
 ## Goals & Non-Goals
 
@@ -63,16 +63,16 @@ Research identified two root causes for /todo command archival failures: (1) Inc
 
 **Goal**: Prepare TODO.md for successful /todo execution by standardizing status markers and removing duplicate entries
 
-**Status**: ✅ COMPLETED (2025-12-29)
+**Status**: [PASS] COMPLETED (2025-12-29)
 **Actual Time**: 2 hours
 **Git Commits**: 
 - `baa5ae6`: Checkpoint before TODO.md cleanup (task 235 phase 1)
-- `e45b93a`: task 235 phase 1: remove duplicate archived tasks (177, 183, 184, 211, 213) and standardize status markers (remove ✅ emojis from all headings)
+- `e45b93a`: task 235 phase 1: remove duplicate archived tasks (177, 183, 184, 211, 213) and standardize status markers (remove [PASS] emojis from all headings)
 
 **Tasks**:
 - [x] Create git checkpoint before manual edits (git commit -m "Checkpoint before TODO.md cleanup")
-- [x] Identify all tasks with non-standard status markers (grep for COMPLETED without brackets, ✅ emoji)
-- [x] Standardize status markers: Change `COMPLETED` to `[COMPLETED]`, remove ✅ from headings, ensure brackets present
+- [x] Identify all tasks with non-standard status markers (grep for COMPLETED without brackets, [PASS] emoji)
+- [x] Standardize status markers: Change `COMPLETED` to `[COMPLETED]`, remove [PASS] from headings, ensure brackets present
 - [x] Cross-reference TODO.md tasks against archive/state.json to identify duplicates (tasks in both files)
 - [x] For each duplicate task: Verify project directory in archive/, verify entry in archive/state.json, remove from TODO.md
 - [x] Validate TODO.md syntax: Check task numbering preserved, no orphaned metadata, proper section structure
@@ -88,14 +88,14 @@ Research identified two root causes for /todo command archival failures: (1) Inc
   - Task 184: Fix Truth.lean build error
   - Task 211: Standardize command lifecycle procedures
   - Task 213: Resolve is_valid_swap_involution blocker
-- **Status markers standardized** (11 tasks, ✅ emoji removed from headings):
+- **Status markers standardized** (11 tasks, [PASS] emoji removed from headings):
   - Tasks 185, 186, 187, 188, 190, 210, 220, 222, 231, 232, 234
 - **Impact**: Removed 231 lines from TODO.md
 - **Dual-state resolution progress**: 5 of 23+ tasks resolved (22%)
 
 **Acceptance Criteria**:
 - [x] All status markers use standard format: `[COMPLETED]`, `[ABANDONED]`, `[NOT STARTED]`, etc. with square brackets
-- [x] No ✅ emoji in task headings (only 1 remaining in task 235 description text)
+- [x] No [PASS] emoji in task headings (only 1 remaining in task 235 description text)
 - [x] All tasks in archive/state.json removed from TODO.md (5 duplicate tasks removed)
 - [x] TODO.md syntax validated (no orphaned metadata, proper structure)
 - [x] Git commit created documenting cleanup changes
@@ -137,10 +137,10 @@ Research identified two root causes for /todo command archival failures: (1) Inc
 - [ ] Audit /revise command for status marker preservation
 - [ ] Audit status-sync-manager for status marker validation (check if it accepts non-standard formats)
 - [ ] Audit task-executor for status marker updates
-- [ ] Identify sources creating ✅ emoji in headings (likely manual additions or specific command)
+- [ ] Identify sources creating [PASS] emoji in headings (likely manual additions or specific command)
 - [ ] Identify sources creating COMPLETED without brackets
 - [ ] Add validation to status-sync-manager: Reject status markers without square brackets
-- [ ] Add validation to status-sync-manager: Reject emoji in status markers (✅, ❌, etc.)
+- [ ] Add validation to status-sync-manager: Reject emoji in status markers ([PASS], [FAIL], etc.)
 - [ ] Update workflow commands to only use standard status markers per status-markers.md
 - [ ] Add pre-write validation in all commands: Verify status markers match standard format before writing TODO.md
 - [ ] Document enforcement mechanisms in status-markers.md (validation rules, rejection criteria)
@@ -216,7 +216,7 @@ Research identified two root causes for /todo command archival failures: (1) Inc
 
 **Unit Tests**:
 - Test status-sync-manager validation: Reject `COMPLETED` without brackets
-- Test status-sync-manager validation: Reject `✅ [COMPLETED]` with emoji
+- Test status-sync-manager validation: Reject `[PASS] [COMPLETED]` with emoji
 - Test status-sync-manager validation: Accept `[COMPLETED]` standard format
 - Test /todo Stage 1 identification: Match `[COMPLETED]` tasks
 - Test /todo Stage 4 block removal: Remove complete task blocks with boundaries

@@ -42,10 +42,10 @@
 
 ### Research Areas Explored
 
-1. ✅ **Existing codebase patterns** (SUCCESSFUL)
-2. ✅ **Loogle integration** (SUCCESSFUL - tool available)
-3. ⚠️ **Lean Zulip** (Limited - requires JavaScript)
-4. ✅ **Local grep searches** (SUCCESSFUL)
+1. [PASS] **Existing codebase patterns** (SUCCESSFUL)
+2. [PASS] **Loogle integration** (SUCCESSFUL - tool available)
+3. [WARN] **Lean Zulip** (Limited - requires JavaScript)
+4. [PASS] **Local grep searches** (SUCCESSFUL)
 
 ---
 
@@ -56,7 +56,7 @@
 **File**: `Logos/Core/Semantics/Truth.lean`  
 **Lines**: 625-700
 
-**Helper Lemma** (Lines 632-671): ✅ **COMPLETE**
+**Helper Lemma** (Lines 632-671): [PASS] **COMPLETE**
 ```lean
 @[simp]
 theorem truth_at_swap_swap {F : TaskFrame T} (M : TaskModel F)
@@ -87,7 +87,7 @@ theorem truth_at_swap_swap {F : TaskFrame T} (M : TaskModel F)
     · exact (ih τ s hs).mpr (h s hs h_ord)
 ```
 
-**Main Theorem** (Lines 696-700): ❌ **INCOMPLETE**
+**Main Theorem** (Lines 696-700): [FAIL] **INCOMPLETE**
 ```lean
 theorem is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_future) :
     is_valid T φ := by
@@ -264,7 +264,7 @@ theorem is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_fut
 
 ### Tool Status
 
-**Loogle CLI**: ✅ **AVAILABLE AND FUNCTIONAL**
+**Loogle CLI**: [PASS] **AVAILABLE AND FUNCTIONAL**
 
 - Binary Path: `/home/benjamin/.cache/loogle/.lake/build/bin/loogle`
 - Mode: Interactive JSON mode

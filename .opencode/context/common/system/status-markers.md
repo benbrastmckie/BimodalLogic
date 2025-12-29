@@ -342,7 +342,7 @@ Command-specific status markers track the progress of specific command workflows
 **Lifecycle**:
 1. Created: `[NOT STARTED]`
 2. Work begins: `[IN PROGRESS]` + `**Started**: YYYY-MM-DD`
-3. Work completes: `[COMPLETED]` + `**Completed**: YYYY-MM-DD` + ✅ to title
+3. Work completes: `[COMPLETED]` + `**Completed**: YYYY-MM-DD`
 4. Or blocked: `[BLOCKED]` + `**Blocked**: YYYY-MM-DD` + `**Blocking Reason**: {reason}`
 5. Or abandoned: `[ABANDONED]` + `**Abandoned**: YYYY-MM-DD` + `**Abandonment Reason**: {reason}`
 
@@ -367,7 +367,7 @@ Command-specific status markers track the progress of specific command workflows
 ## Phase 2: Implement Core Logic [IN PROGRESS]
 (Started: 2025-12-20T10:15:30Z)
 
-## Phase 3: Testing [COMPLETED] ✅
+## Phase 3: Testing [COMPLETED]
 (Started: 2025-12-20T11:00:00Z)
 (Completed: 2025-12-20T11:45:00Z)
 ```
@@ -375,7 +375,7 @@ Command-specific status markers track the progress of specific command workflows
 **Lifecycle**:
 1. Created: `[NOT STARTED]`
 2. Phase begins: `[IN PROGRESS]` + `(Started: ISO8601_timestamp)`
-3. Phase completes: `[COMPLETED]` + `(Completed: ISO8601_timestamp)` + ✅
+3. Phase completes: `[COMPLETED]` + `(Completed: ISO8601_timestamp)`
 4. Or blocked: `[BLOCKED]` + `(Blocked by: {dependency}, Reason: {reason})`
 5. Or abandoned: `[ABANDONED]` + `(Abandoned: ISO8601_timestamp, Reason: {reason})`
 
@@ -612,7 +612,7 @@ update_task(64, "COMPLETED")  # May fail, leaving inconsistent state
 
 **After task completes**:
 ```markdown
-### 63. Add Missing Directory READMEs ✅
+### 63. Add Missing Directory READMEs
 **Effort**: 1 hour
 **Status**: [COMPLETED]
 **Started**: 2025-12-20
@@ -652,7 +652,7 @@ Create project directory structure and initialize configuration files.
 
 **After phase completes**:
 ```markdown
-## Phase 1: Setup Infrastructure [COMPLETED] ✅
+## Phase 1: Setup Infrastructure [COMPLETED]
 (Started: 2025-12-20T10:00:00Z)
 (Completed: 2025-12-20T10:30:00Z)
 

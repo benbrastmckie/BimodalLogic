@@ -104,19 +104,19 @@ temperature: 0.2
 ### Evidence 3: The Critical Difference
 
 **Agents that appear in Tab cycle (PRIMARY):**
-- lean-implementation-agent: ✓ In opencode.json, ✗ No mode specified in JSON
-- lean-research-agent: ✓ In opencode.json, ✗ No mode specified in JSON
+- lean-implementation-agent: [YES] In opencode.json, [NO] No mode specified in JSON
+- lean-research-agent: [YES] In opencode.json, [NO] No mode specified in JSON
 
 **Agents that DON'T appear in Tab cycle (SUBAGENT-ONLY):**
-- researcher: ✗ NOT in opencode.json
-- planner: ✗ NOT in opencode.json
-- implementer: ✗ NOT in opencode.json
-- task-executor: ✗ NOT in opencode.json
-- atomic-task-numberer: ✗ NOT in opencode.json
-- status-sync-manager: ✗ NOT in opencode.json
-- error-diagnostics-agent: ✗ NOT in opencode.json
-- git-workflow-manager: ✗ NOT in opencode.json
-- reviewer: ✗ NOT in opencode.json
+- researcher: [NO] NOT in opencode.json
+- planner: [NO] NOT in opencode.json
+- implementer: [NO] NOT in opencode.json
+- task-executor: [NO] NOT in opencode.json
+- atomic-task-numberer: [NO] NOT in opencode.json
+- status-sync-manager: [NO] NOT in opencode.json
+- error-diagnostics-agent: [NO] NOT in opencode.json
+- git-workflow-manager: [NO] NOT in opencode.json
+- reviewer: [NO] NOT in opencode.json
 
 **Pattern:** The ONLY difference is presence in opencode.json "agent" section without explicit mode.
 

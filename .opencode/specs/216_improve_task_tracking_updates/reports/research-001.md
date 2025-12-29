@@ -120,10 +120,10 @@ Git Commit:
 
 | Command | TODO.md | state.json | project state.json | plan file | Git Commit |
 |---------|---------|------------|-------------------|-----------|------------|
-| /research | ✅ (via status-sync-manager) | ✅ (via status-sync-manager) | ❌ (not created) | N/A | ✅ (via git-workflow-manager) |
-| /plan | ✅ (via status-sync-manager) | ✅ (via status-sync-manager) | ❌ (not created) | N/A | ✅ (via git-workflow-manager) |
-| /revise | ✅ (via status-sync-manager) | ✅ (via status-sync-manager) | ❌ (not created) | N/A | ✅ (via git-workflow-manager) |
-| /implement | ✅ (via status-sync-manager) | ✅ (via status-sync-manager) | ❌ (not created) | ✅ (manual in command) | ✅ (via git-workflow-manager) |
+| /research | [PASS] (via status-sync-manager) | [PASS] (via status-sync-manager) | [FAIL] (not created) | N/A | [PASS] (via git-workflow-manager) |
+| /plan | [PASS] (via status-sync-manager) | [PASS] (via status-sync-manager) | [FAIL] (not created) | N/A | [PASS] (via git-workflow-manager) |
+| /revise | [PASS] (via status-sync-manager) | [PASS] (via status-sync-manager) | [FAIL] (not created) | N/A | [PASS] (via git-workflow-manager) |
+| /implement | [PASS] (via status-sync-manager) | [PASS] (via status-sync-manager) | [FAIL] (not created) | [PASS] (manual in command) | [PASS] (via git-workflow-manager) |
 
 **Key Observations**:
 - status-sync-manager handles TODO.md and state.json consistently
@@ -135,12 +135,12 @@ Git Commit:
 
 | Agent/Manager | Responsibility | Files Updated | Atomic? |
 |---------------|----------------|---------------|---------|
-| status-sync-manager | Status transitions, timestamps, artifact links | TODO.md, state.json | ✅ Yes (two-phase commit) |
-| git-workflow-manager | Git commits | N/A (commits files) | ✅ Yes (atomic commit) |
-| /research command | Artifact linking (manual) | TODO.md (direct edit) | ❌ No |
-| /plan command | Plan metadata (manual) | TODO.md (direct edit) | ❌ No |
-| /revise command | Plan link update (manual) | TODO.md (direct edit) | ❌ No |
-| /implement command | Plan phase updates (manual) | Plan file (direct edit) | ❌ No |
+| status-sync-manager | Status transitions, timestamps, artifact links | TODO.md, state.json | [PASS] Yes (two-phase commit) |
+| git-workflow-manager | Git commits | N/A (commits files) | [PASS] Yes (atomic commit) |
+| /research command | Artifact linking (manual) | TODO.md (direct edit) | [FAIL] No |
+| /plan command | Plan metadata (manual) | TODO.md (direct edit) | [FAIL] No |
+| /revise command | Plan link update (manual) | TODO.md (direct edit) | [FAIL] No |
+| /implement command | Plan phase updates (manual) | Plan file (direct edit) | [FAIL] No |
 
 **Critical Finding**: Commands perform manual updates outside status-sync-manager, breaking atomicity guarantees.
 
@@ -366,7 +366,7 @@ def validate_artifacts_exist(artifacts):
 
 **Current Behavior**:
 - status-sync-manager rollback restores TODO.md (lines 125-131)
-- Atomic guarantee preserved ✅
+- Atomic guarantee preserved [PASS]
 
 **Risk Level**: Low (status-sync-manager handles this correctly)
 
@@ -382,8 +382,8 @@ def validate_artifacts_exist(artifacts):
 
 **Example**:
 ```
-1. status-sync-manager: [RESEARCHING] → [RESEARCHED] ✅
-2. Command: Add artifact links to TODO.md ❌ (fails)
+1. status-sync-manager: [RESEARCHING] → [RESEARCHED] [PASS]
+2. Command: Add artifact links to TODO.md [FAIL] (fails)
 Result: Task marked [RESEARCHED] but no artifact links
 ```
 
@@ -399,8 +399,8 @@ Result: Task marked [RESEARCHED] but no artifact links
 
 **Example**:
 ```
-1. status-sync-manager: [IMPLEMENTING] → [COMPLETED] ✅
-2. Command: Mark plan phases [COMPLETED] ❌ (fails)
+1. status-sync-manager: [IMPLEMENTING] → [COMPLETED] [PASS]
+2. Command: Mark plan phases [COMPLETED] [FAIL] (fails)
 Result: Task marked [COMPLETED] but plan shows incomplete phases
 ```
 
@@ -698,9 +698,9 @@ Commands → Manual updates → Artifact links, plan files
 
 | Approach | Atomicity | Rollback | Consistency | Failure Recovery |
 |----------|-----------|----------|-------------|------------------|
-| Centralized | ✅ Full | ✅ Automatic | ✅ Guaranteed | ✅ Excellent |
-| Distributed | ❌ None | ❌ Manual | ❌ Risk of drift | ❌ Poor |
-| Hybrid | ✅ Full | ✅ Automatic | ✅ Guaranteed | ✅ Excellent |
+| Centralized | [PASS] Full | [PASS] Automatic | [PASS] Guaranteed | [PASS] Excellent |
+| Distributed | [FAIL] None | [FAIL] Manual | [FAIL] Risk of drift | [FAIL] Poor |
+| Hybrid | [PASS] Full | [PASS] Automatic | [PASS] Guaranteed | [PASS] Excellent |
 
 **Analysis**: Centralized and Hybrid both provide full atomicity. Distributed has reliability risks.
 

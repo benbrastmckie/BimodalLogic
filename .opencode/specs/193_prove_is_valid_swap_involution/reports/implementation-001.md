@@ -17,13 +17,13 @@
 **Approach**: Add helper lemma `truth_at_swap_swap` using structural induction to prove equivalence case-by-case, then apply it in the main theorem.
 
 **Result**: **PARTIAL COMPLETION**
-- ✅ **Helper lemma complete**: `truth_at_swap_swap` fully proven with all 6 cases (lines 632-671)
-- ❌ **Main theorem incomplete**: Blocked by complex type theory interaction between propositional equality and pattern matching (line 691, still admits `sorry`)
+- [PASS] **Helper lemma complete**: `truth_at_swap_swap` fully proven with all 6 cases (lines 632-671)
+- [FAIL] **Main theorem incomplete**: Blocked by complex type theory interaction between propositional equality and pattern matching (line 691, still admits `sorry`)
 
 **Files Modified**:
 - `Logos/Core/Semantics/Truth.lean`: 64 lines added (lines 625-688)
 
-**Build Status**: ✅ Compiles successfully with expected `sorry` warning
+**Build Status**: [PASS] Compiles successfully with expected `sorry` warning
 
 ---
 
@@ -164,12 +164,12 @@ theorem truth_at_swap_swap {F : TaskFrame T} (M : TaskModel F)
 
 #### Verification
 
-**Type Checking**: ✅ All cases type-check correctly
+**Type Checking**: [PASS] All cases type-check correctly
 - Each case produces a proof of the goal `truth_at ... φ.swap.swap ↔ truth_at ... φ`
 - Induction hypotheses applied correctly with proper variable instantiation
 - Temporal cases handle history parameter `τ` correctly
 
-**Build Status**: ✅ Compiles successfully
+**Build Status**: [PASS] Compiles successfully
 ```bash
 lake build Logos.Core.Semantics.Truth
 # Building Logos.Core.Semantics.Truth
@@ -403,10 +403,10 @@ warning: declaration uses 'sorry'
 ```
 
 **Analysis**:
-- ✅ File compiles successfully
-- ⚠️ Expected warning for `sorry` in `is_valid_swap_involution`
-- ✅ No type errors in helper lemma
-- ✅ No syntax errors
+- [PASS] File compiles successfully
+- [WARN] Expected warning for `sorry` in `is_valid_swap_involution`
+- [PASS] No type errors in helper lemma
+- [PASS] No syntax errors
 
 ### Full Build
 
@@ -415,7 +415,7 @@ warning: declaration uses 'sorry'
 lake build
 ```
 
-**Result**: ✅ Full build succeeds with existing `sorry` count
+**Result**: [PASS] Full build succeeds with existing `sorry` count
 - No new build errors introduced
 - Existing warnings preserved
 - Downstream dependencies compile correctly
@@ -427,7 +427,7 @@ lake build
 lake exe test
 ```
 
-**Result**: ✅ All existing tests pass
+**Result**: [PASS] All existing tests pass
 - No regressions introduced
 - Helper lemma doesn't break existing proofs
 - Truth.lean integration tests pass
@@ -611,7 +611,7 @@ The proof strategy should be:
 
 ## Acceptance Criteria Review
 
-### ✅ Completed Criteria
+### [PASS] Completed Criteria
 
 - [x] Helper lemma `truth_at_swap_swap` has complete proof (no sorry)
 - [x] All 6 cases (atom, bot, imp, box, all_past, all_future) proven correctly
@@ -620,12 +620,12 @@ The proof strategy should be:
 - [x] All tests pass with `lake exe test`
 - [x] Proof is mathematically sound and type-checks (for helper lemma)
 
-### ❌ Incomplete Criteria
+### [FAIL] Incomplete Criteria
 
 - [ ] Main theorem `is_valid_swap_involution` has complete proof (still sorry at line 691)
 - [ ] No sorry in is_valid_swap_involution (blocked by type theory issue)
 
-### 📊 Completion Percentage
+### [CHART] Completion Percentage
 
 **Overall**: 85% complete
 - **Helper lemma**: 100% complete
@@ -696,12 +696,12 @@ The proof strategy should be:
 
 | Case | Lines | Complexity | Status | Notes |
 |------|-------|------------|--------|-------|
-| atom | 637-639 | Trivial | ✅ Complete | Direct via `simp` |
-| bot | 641-643 | Trivial | ✅ Complete | Direct via `simp` |
-| imp | 645-650 | Medium | ✅ Complete | Apply IH to both subformulas |
-| box | 652-657 | Medium | ✅ Complete | Apply IH to successor states |
-| all_past | 659-664 | Medium | ✅ Complete | Apply IH to past moments |
-| all_future | 666-671 | Medium | ✅ Complete | Apply IH to future moments |
+| atom | 637-639 | Trivial | [PASS] Complete | Direct via `simp` |
+| bot | 641-643 | Trivial | [PASS] Complete | Direct via `simp` |
+| imp | 645-650 | Medium | [PASS] Complete | Apply IH to both subformulas |
+| box | 652-657 | Medium | [PASS] Complete | Apply IH to successor states |
+| all_past | 659-664 | Medium | [PASS] Complete | Apply IH to past moments |
+| all_future | 666-671 | Medium | [PASS] Complete | Apply IH to future moments |
 
 **Total Cases**: 6  
 **Completed**: 6 (100%)
@@ -743,10 +743,10 @@ Build completed successfully
 ```
 
 **Analysis**:
-- ✅ Single warning for expected `sorry`
-- ✅ No type errors
-- ✅ No syntax errors
-- ✅ Build succeeds
+- [PASS] Single warning for expected `sorry`
+- [PASS] No type errors
+- [PASS] No syntax errors
+- [PASS] Build succeeds
 
 ### Appendix D: Git Diff
 

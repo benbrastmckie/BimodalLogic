@@ -19,9 +19,9 @@
 - implementation-002.md (0.5 hours, single-phase) - Revised after 85% completion
 
 **Current Status**: 85% complete
-- ✅ Helper lemma `truth_at_swap_swap` fully proven (lines 632-671)
-- ✅ Build verified, tests pass
-- ❌ Main theorem `is_valid_swap_involution` blocked at line 691
+- [PASS] Helper lemma `truth_at_swap_swap` fully proven (lines 632-671)
+- [PASS] Build verified, tests pass
+- [FAIL] Main theorem `is_valid_swap_involution` blocked at line 691
 
 **Reason for v3 Revision**: Task 209 research identified a simpler solution using `simp only` pattern from Perpetuity/Helpers.lean (line 74). This approach avoids the need for the involution helper entirely. Plan v3 tries the simpler approach first, with v2's involution helper as fallback.
 
@@ -32,14 +32,14 @@
 Complete the remaining 15% of task 193 by first attempting the simpler `simp only` solution identified in task 209 research. If that fails, fall back to the involution helper approach from plan v2.
 
 **What's Done** (85%):
-- ✅ Helper lemma `truth_at_swap_swap` with full structural induction (6 cases, lines 632-671)
-- ✅ `@[simp]` attribute added to `swap_past_future_involution` (Formula.lean line 231)
-- ✅ Build verification and testing complete
+- [PASS] Helper lemma `truth_at_swap_swap` with full structural induction (6 cases, lines 632-671)
+- [PASS] `@[simp]` attribute added to `swap_past_future_involution` (Formula.lean line 231)
+- [PASS] Build verification and testing complete
 
 **What Remains** (15%):
-- ❌ Fix main theorem proof at line 691 (remove `sorry`)
-- ❌ Verify solution compiles
-- ❌ Update documentation
+- [FAIL] Fix main theorem proof at line 691 (remove `sorry`)
+- [FAIL] Verify solution compiles
+- [FAIL] Update documentation
 
 ---
 
@@ -183,7 +183,7 @@ Step 1: truth_at_involution.mpr converts φ.swap → φ.swap.swap
   h1 : truth_at M τ t ht φ.swap.swap
 
 Step 2: truth_at_swap_swap.mp converts φ.swap.swap → φ
-  Closes goal ✓
+  Closes goal [YES]
 ```
 
 **Testing**:
@@ -257,11 +257,11 @@ lake exe test
 ```
 
 **Verification Steps**:
-1. ✓ No `sorry` at line 691
-2. ✓ Truth.lean compiles without errors
-3. ✓ Downstream usage compiles (check line ~1171)
-4. ✓ No new build errors
-5. ✓ All tests pass
+1. [YES] No `sorry` at line 691
+2. [YES] Truth.lean compiles without errors
+3. [YES] Downstream usage compiles (check line ~1171)
+4. [YES] No new build errors
+5. [YES] All tests pass
 
 **Check for sorry**:
 ```bash
@@ -315,11 +315,11 @@ grep -n "sorry" Logos/Core/Semantics/Truth.lean
 ## Dependencies
 
 **Already Satisfied** (from previous work):
-- ✅ `truth_at_swap_swap` helper lemma (lines 632-671, fully proven)
-- ✅ `Formula.swap_past_future_involution` theorem (Formula.lean)
-- ✅ `@[simp]` attribute on involution (Formula.lean line 231, added in task 209)
-- ✅ `Logos/Core/Syntax/Formula.lean` (swap definition)
-- ✅ `Logos/Core/Semantics/TaskModel.lean` (model definitions)
+- [PASS] `truth_at_swap_swap` helper lemma (lines 632-671, fully proven)
+- [PASS] `Formula.swap_past_future_involution` theorem (Formula.lean)
+- [PASS] `@[simp]` attribute on involution (Formula.lean line 231, added in task 209)
+- [PASS] `Logos/Core/Syntax/Formula.lean` (swap definition)
+- [PASS] `Logos/Core/Semantics/TaskModel.lean` (model definitions)
 
 **No New Dependencies**: All components in place.
 
@@ -449,9 +449,9 @@ This plan completes the final 15% of task 193 using a two-pronged approach:
 - Clear verification steps
 
 **Deliverables**:
-- ✓ Complete proof for `is_valid_swap_involution` (no `sorry`)
-- ✓ Updated documentation
-- ✓ Full build verification
-- ✓ Task 193 → [COMPLETED]
+- [YES] Complete proof for `is_valid_swap_involution` (no `sorry`)
+- [YES] Updated documentation
+- [YES] Full build verification
+- [YES] Task 193 → [COMPLETED]
 
 The proof leverages either direct simplification or helper composition to bridge from `truth_at ... φ.swap` to `truth_at ... φ`, completing the final theorem needed for temporal swap invariance.

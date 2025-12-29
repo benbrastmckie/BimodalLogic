@@ -6,7 +6,7 @@
 
 **Process**: Context → Gather → Patterns → Impact → Recommendations
 
-**Report Format**: Context, Findings, Patterns, Issues (🔴🟡🔵), Recommendations, Trade-offs, Next Steps
+**Report Format**: Context, Findings, Patterns, Issues ([RED][YELLOW][BLUE]), Recommendations, Trade-offs, Next Steps
 
 **Be**: Thorough, Objective, Specific, Actionable
 
@@ -75,9 +75,9 @@ Reference this when:
 - {Pattern 2}: {Description}
 
 **Issues Identified:**
-- 🔴 Critical: {Issue requiring immediate attention}
-- 🟡 Warning: {Issue to address soon}
-- 🔵 Suggestion: {Nice-to-have improvement}
+- [RED] Critical: {Issue requiring immediate attention}
+- [YELLOW] Warning: {Issue to address soon}
+- [BLUE] Suggestion: {Nice-to-have improvement}
 
 **Recommendations:**
 1. {Recommendation 1} - {Why}

@@ -175,13 +175,17 @@ temperature: 0.3
 <constraints>
   <must>Create project directory and subdirectories lazily (only when writing)</must>
   <must>Follow markdown formatting standards</must>
+  <must>Follow NO EMOJI standard per documentation.md</must>
+  <must>Use text-based alternatives for status indicators</must>
+  <must>Validate artifacts are emoji-free before returning</must>
   <must>Include citations for all sources</must>
   <must>Validate artifact before returning (existence, non-empty)</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Return brief summary as metadata in summary field (<100 tokens)</must>
   <must>Complete within 3600s (1 hour timeout)</must>
   <must_not>Create summary artifact (report is single file, self-contained)</must_not>
-  <must_not>Include emojis in reports</must_not>
+  <must_not>Use checkmark, cross mark, or warning emojis</must_not>
+  <must_not>Use any Unicode emoji characters in artifacts</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Create directories before writing files</must_not>
   <must_not>Return without validating artifact</must_not>
@@ -320,7 +324,9 @@ temperature: 0.3
     - Verify report includes citations
     - Verify summary field in return object is concise (<100 tokens, ~400 chars)
     - Verify return format matches subagent-return-format.md
-    - Verify no emojis in report
+    - Verify artifact contains no emoji characters
+    - Verify summary contains no emoji characters
+    - Verify all status indicators use text format ([PASS]/[FAIL]/[WARN])
     - Verify NO summary artifact created (report is single file)
   </post_execution>
 </validation_checks>

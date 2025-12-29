@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-Investigation reveals the **definitive root cause** of the /todo command archival failure: **Status marker format inconsistency**. The command specification expects `[COMPLETED]` status markers (with square brackets), but 23 of 26 completed tasks in TODO.md use alternative formats like `COMPLETED` (no brackets), `✅` (checkmark emoji), or mixed formats. The /todo command's Stage 1 (ScanTODO) regex pattern only matches `[COMPLETED]` and `[ABANDONED]` with square brackets, causing it to skip 88% of completed tasks.
+Investigation reveals the **definitive root cause** of the /todo command archival failure: **Status marker format inconsistency**. The command specification expects `[COMPLETED]` status markers (with square brackets), but 23 of 26 completed tasks in TODO.md use alternative formats like `COMPLETED` (no brackets), `[PASS]` (checkmark emoji), or mixed formats. The /todo command's Stage 1 (ScanTODO) regex pattern only matches `[COMPLETED]` and `[ABANDONED]` with square brackets, causing it to skip 88% of completed tasks.
 
 **Impact**: 23 completed tasks remain in TODO.md instead of being archived, cluttering the active task list and preventing proper artifact organization.
 
@@ -64,7 +64,7 @@ Examined `.opencode/command/todo.md` (541 lines) to understand the complete 7-st
 - Status marker formats identified:
   - `COMPLETED` (no brackets): 1 task (line 276)
   - `[COMPLETED]`: 3 tasks (lines 550, 637, 752)
-  - `✅` prefix with `[COMPLETED]`: 19 tasks (lines 794, 831, 860, 887, 914, 971, 1071, 1094, 1169, 1230, 1264, 1348, 1398, 1445, 1477, 1525, 1587, 1631, 1676)
+  - `[PASS]` prefix with `[COMPLETED]`: 19 tasks (lines 794, 831, 860, 887, 914, 971, 1071, 1094, 1169, 1230, 1264, 1348, 1398, 1445, 1477, 1525, 1587, 1631, 1676)
 
 **Archive State** (`.opencode/specs/archive/state.json`):
 - Last updated: 2025-12-29T05:14:32.850974Z
@@ -89,26 +89,26 @@ be221a3 todo: archive 9 completed tasks
 
 **Hypothesis Testing**:
 
-1. **Command never executed?** ❌ REJECTED
+1. **Command never executed?** [FAIL] REJECTED
    - Git history shows 8 successful /todo executions
    - Most recent: 2025-12-29 (commit 2f9c499)
 
-2. **Stage 1 regex not matching?** ✅ CONFIRMED
+2. **Stage 1 regex not matching?** [PASS] CONFIRMED
    - Specification requires `[COMPLETED]` with square brackets
    - 23 of 26 tasks use alternative formats (88% mismatch rate)
    - Command correctly skips non-conforming status markers
 
-3. **Stage 2 blocking on threshold?** ❌ REJECTED
+3. **Stage 2 blocking on threshold?** [FAIL] REJECTED
    - Threshold is 5 tasks
    - Only 3 tasks have correct `[COMPLETED]` format
    - Would proceed automatically without confirmation
 
-4. **Stage 4 task block removal failing?** ❌ REJECTED
+4. **Stage 4 task block removal failing?** [FAIL] REJECTED
    - Recent fix in task 215 (commit 4739bc3) addressed block removal logic
    - Specification now includes explicit boundary detection and validation
    - No orphaned metadata lines detected in current TODO.md
 
-5. **Stage 5 atomic update failing?** ❌ REJECTED
+5. **Stage 5 atomic update failing?** [FAIL] REJECTED
    - Git commits prove successful archival operations
    - No rollback evidence in git history
    - archive/state.json successfully updated
@@ -134,15 +134,15 @@ The /todo command is working correctly according to its specification. The issue
    - Task 126: Implement bounded_search and matches_axiom in ProofSearch
 
 2. **Checkmark Emoji Prefix** (19 tasks):
-   - Format: `### NNN. ✅ Task Title` or `**Status**: [COMPLETED]` with ✅ in heading
+   - Format: `### NNN. [PASS] Task Title` or `**Status**: [COMPLETED]` with [PASS] in heading
    - Tasks: 177, 183, 184, 185, 186, 187, 188, 190, 208, 209, 211, 212, 213, 219, 220, 221, 222, 231, 232
-   - Example (line 794): `### 184. ✅ Fix Truth.lean build error (swap_past_future proof)`
+   - Example (line 794): `### 184. [PASS] Fix Truth.lean build error (swap_past_future proof)`
 
 3. **Correct Format** (3 tasks):
    - Tasks: 174, 208, 212
    - Example (line 550): `**Status**: [COMPLETED]`
 
-**Pattern**: The checkmark emoji (✅) appears to be a visual indicator added to task headings, but the status field still contains `[COMPLETED]`. However, the /todo command's Stage 1 identification logic may be scanning task headings rather than status fields, or the emoji in headings may be interfering with task block identification.
+**Pattern**: The checkmark emoji ([PASS]) appears to be a visual indicator added to task headings, but the status field still contains `[COMPLETED]`. However, the /todo command's Stage 1 identification logic may be scanning task headings rather than status fields, or the emoji in headings may be interfering with task block identification.
 
 ### Command Execution History
 
@@ -213,25 +213,25 @@ While the primary issue is incomplete TODO.md updates, the status marker inconsi
 2. Task 174 (line 550) - `[COMPLETED]` - ALSO in archive/state.json
 3. Task 177 (line 637) - `[COMPLETED]` - ALSO in archive/state.json
 4. Task 183 (line 752) - `[COMPLETED]` - ALSO in archive/state.json
-5. Task 184 (line 794) - `✅ [COMPLETED]` - ALSO in archive/state.json
-6. Task 185 (line 831) - `✅ [COMPLETED]`
-7. Task 186 (line 860) - `✅ [COMPLETED]`
-8. Task 187 (line 887) - `✅ [COMPLETED]`
-9. Task 188 (line 914) - `✅ [COMPLETED]`
-10. Task 190 (line 971) - `✅ [COMPLETED]`
+5. Task 184 (line 794) - `[PASS] [COMPLETED]` - ALSO in archive/state.json
+6. Task 185 (line 831) - `[PASS] [COMPLETED]`
+7. Task 186 (line 860) - `[PASS] [COMPLETED]`
+8. Task 187 (line 887) - `[PASS] [COMPLETED]`
+9. Task 188 (line 914) - `[PASS] [COMPLETED]`
+10. Task 190 (line 971) - `[PASS] [COMPLETED]`
 11. Task 208 (line 1071) - `[COMPLETED]` - ALSO in archive/state.json
 12. Task 209 (line 1094) - `[COMPLETED]` - ALSO in archive/state.json
-13. Task 211 (line 1169) - `✅ [COMPLETED]` - ALSO in archive/state.json
+13. Task 211 (line 1169) - `[PASS] [COMPLETED]` - ALSO in archive/state.json
 14. Task 212 (line 1230) - `[COMPLETED]` - ALSO in archive/state.json
-15. Task 213 (line 1264) - `✅ [COMPLETED]` - ALSO in archive/state.json
+15. Task 213 (line 1264) - `[PASS] [COMPLETED]` - ALSO in archive/state.json
 16. Task 219 (line 1348) - `[COMPLETED]`
-17. Task 220 (line 1398) - `✅ [COMPLETED]`
-18. Task 221 (line 1445) - `✅ [COMPLETED]`
-19. Task 222 (line 1477) - `✅ [COMPLETED]`
+17. Task 220 (line 1398) - `[PASS] [COMPLETED]`
+18. Task 221 (line 1445) - `[PASS] [COMPLETED]`
+19. Task 222 (line 1477) - `[PASS] [COMPLETED]`
 20. Task 224 (line 1587) - `[COMPLETED]`
 21. Task 226 (line 1631) - `[COMPLETED]`
-22. Task 231 (line 1676) - `✅ [COMPLETED]`
-23. Task 232 (line 1676+) - `✅ [COMPLETED]`
+22. Task 231 (line 1676) - `[PASS] [COMPLETED]`
+23. Task 232 (line 1676+) - `[PASS] [COMPLETED]`
 
 **Tasks already in archive/state.json**: At least 11 tasks (126, 174, 177, 183, 184, 208, 209, 211, 212, 213, and others)
 
@@ -308,7 +308,7 @@ The specification (lines 152-297) defines:
 
 1. **Standardize Status Markers**:
    - Edit TODO.md to change all `COMPLETED` (no brackets) to `[COMPLETED]`
-   - Remove ✅ emoji from task headings (keep in status field if desired)
+   - Remove [PASS] emoji from task headings (keep in status field if desired)
    - Ensure all completed tasks use exactly `[COMPLETED]` format
 
 2. **Remove Duplicate Entries**:
@@ -334,12 +334,12 @@ Update `.opencode/command/todo.md` Stage 1 to accept multiple status marker form
   Tasks to remove (any of these formats):
     - Status: [COMPLETED]
     - Status: COMPLETED (no brackets)
-    - Heading contains: ✅ (checkmark emoji)
+    - Heading contains: [PASS] (checkmark emoji)
     - Status: [ABANDONED]
   
   Matching logic:
     - Check status field for [COMPLETED] or COMPLETED
-    - OR check heading for ✅ emoji
+    - OR check heading for [PASS] emoji
     - OR check status field for [ABANDONED]
 </identification>
 ```
@@ -380,7 +380,7 @@ Investigate why TODO.md updates are not being committed:
   - OR task IS removed (if Option 1 fix implemented)
 
 ### Test Case 3: Emoji Format
-- Setup: Create test TODO.md with 3 tasks, 1 with `✅` in heading and `[COMPLETED]` in status
+- Setup: Create test TODO.md with 3 tasks, 1 with `[PASS]` in heading and `[COMPLETED]` in status
 - Execute: `/todo`
 - Verify:
   - Task removed from TODO.md
@@ -520,7 +520,7 @@ be221a3 todo: archive 9 completed tasks
 
 **Non-Standard Formats Found**:
 - `COMPLETED` (no brackets)
-- `✅ [COMPLETED]` (emoji prefix)
+- `[PASS] [COMPLETED]` (emoji prefix)
 - `**Status**: COMPLETED (Started: ..., Completed: ...)` (inline metadata)
 
 **Recommendation**: Enforce standard formats in all workflow commands.

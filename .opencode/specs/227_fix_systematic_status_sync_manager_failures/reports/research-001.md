@@ -5,9 +5,9 @@
 **Root Cause Identified**: status-sync-manager is **NOT being invoked** by workflow commands despite specification in command files. All 4 workflow commands (/research, /plan, /revise, /implement) specify delegation to status-sync-manager in their documentation, but the actual command execution does NOT delegate to this specialist. This is a **delegation gap**, not a status-sync-manager implementation bug.
 
 **Evidence**: Task 224 shows:
-- TODO.md: `[RESEARCHED]` with timestamps ✅ (manually updated by command)
-- Global state.json: Task entry missing entirely ❌ (status-sync-manager never invoked)
-- Project state.json: Exists with correct data ✅ (manually created by command)
+- TODO.md: `[RESEARCHED]` with timestamps [PASS] (manually updated by command)
+- Global state.json: Task entry missing entirely [FAIL] (status-sync-manager never invoked)
+- Project state.json: Exists with correct data [PASS] (manually created by command)
 
 **Impact**: 100% of workflow command executions fail to maintain atomic state across tracking files, creating inconsistent state where TODO.md shows one status but state.json shows another (or nothing).
 
@@ -47,9 +47,9 @@
 **Finding**: Commands manually update TODO.md and create project state.json directly, bypassing status-sync-manager's two-phase commit protocol.
 
 **Evidence from Task 224**:
-- TODO.md updated to `[RESEARCHED]` ✅
-- Project state.json created with correct structure ✅
-- Global state.json NOT updated (task entry missing) ❌
+- TODO.md updated to `[RESEARCHED]` [PASS]
+- Project state.json created with correct structure [PASS]
+- Global state.json NOT updated (task entry missing) [FAIL]
 
 **This proves**: Commands are doing manual file updates, not delegating to status-sync-manager.
 
@@ -107,10 +107,10 @@ Invoke status-sync-manager with all parameters
 
 | Command | Specifies Delegation | Actually Delegates | Evidence |
 |---------|---------------------|-------------------|----------|
-| /research | ✅ (line 217-232) | ❌ | Task 224 global state.json missing |
-| /plan | ✅ (line 181-199) | ❌ | Same pattern expected |
-| /revise | ✅ (line 186-206) | ❌ | Same pattern expected |
-| /implement | ✅ (line 281-305) | ❌ | Same pattern expected |
+| /research | [PASS] (line 217-232) | [FAIL] | Task 224 global state.json missing |
+| /plan | [PASS] (line 181-199) | [FAIL] | Same pattern expected |
+| /revise | [PASS] (line 186-206) | [FAIL] | Same pattern expected |
+| /implement | [PASS] (line 281-305) | [FAIL] | Same pattern expected |
 
 **Root Cause**: Commands were written before status-sync-manager existed or before delegation was standardized. Documentation was updated but implementation was not.
 
@@ -194,9 +194,9 @@ Invoke status-sync-manager with all parameters
 
 **Example from Task 224**:
 ```
-TODO.md:          [RESEARCHED] ✅
-state.json:       null ❌
-project state:    {status: "active", phase: "research_completed"} ✅
+TODO.md:          [RESEARCHED] [PASS]
+state.json:       null [FAIL]
+project state:    {status: "active", phase: "research_completed"} [PASS]
 ```
 
 ### User Impact

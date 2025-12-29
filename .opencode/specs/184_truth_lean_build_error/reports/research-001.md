@@ -408,7 +408,7 @@ Rewrite goal using ← involution:
   Goal becomes: truth_at M τ t ht (φ.swap_past_future.swap_past_future)
 
 Now exact match:
-  h F M τ t ht closes goal ✓
+  h F M τ t ht closes goal [YES]
 ```
 
 ---

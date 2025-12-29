@@ -218,11 +218,11 @@ Required metadata fields:
 
 | Aspect | Current Implementation | Recommended (research-001) | Match? |
 |--------|----------------------|---------------------------|--------|
-| Pattern | Fetch-and-add via script | Fetch-and-add | ✓ Yes |
-| Atomicity | External script with locking | Atomic operation | ✓ Yes |
-| Increment timing | Before use | Before use | ✓ Yes |
-| Batch support | Yes (count parameter) | Not required | ✓ Bonus |
-| Error handling | Retry logic | Graceful degradation | ✓ Yes |
+| Pattern | Fetch-and-add via script | Fetch-and-add | [YES] Yes |
+| Atomicity | External script with locking | Atomic operation | [YES] Yes |
+| Increment timing | Before use | Before use | [YES] Yes |
+| Batch support | Yes (count parameter) | Not required | [YES] Bonus |
+| Error handling | Retry logic | Graceful degradation | [YES] Yes |
 
 **Conclusion:** Current atomic numbering implementation already follows best practices from research-001.
 
@@ -421,9 +421,9 @@ Output:
 
 | Field | Current | Desired Default | Rationale |
 |-------|---------|----------------|-----------|
-| Number | From atomic service | From atomic service | ✓ Already correct |
-| Description | Required from user | Required from user | ✓ Already correct |
-| Status | [NOT STARTED] | [NOT STARTED] | ✓ Already correct |
+| Number | From atomic service | From atomic service | [YES] Already correct |
+| Description | Required from user | Required from user | [YES] Already correct |
+| Status | [NOT STARTED] | [NOT STARTED] | [YES] Already correct |
 | Effort | Required/Inferred | Inferred from description | Auto-estimate |
 | Priority | Required/Inferred | Medium | Most tasks are medium |
 | Language | Required | markdown | Safe default, user can change |
@@ -690,10 +690,10 @@ creates_subdir: []
 ```
 
 **Verification:**
-- `/add` never creates project directories ✓
-- Task-adder never creates project directories ✓
-- Only TODO.md and state.json are modified ✓
-- Project directories created by /research or /plan ✓
+- `/add` never creates project directories [YES]
+- Task-adder never creates project directories [YES]
+- Only TODO.md and state.json are modified [YES]
+- Project directories created by /research or /plan [YES]
 
 **Conclusion:** Lazy directory creation is already correctly implemented.
 
@@ -711,9 +711,9 @@ Create project directories only when writing artifacts:
 ```
 
 **Current Implementation:**
-- /add: Never creates ✓
-- /research: Creates on write ✓
-- /plan: Creates on write ✓
+- /add: Never creates [YES]
+- /research: Creates on write [YES]
+- /plan: Creates on write [YES]
 
 **Conclusion:** Fully aligned with standards.
 
@@ -953,11 +953,11 @@ def generate_impact(description: str) -> str:
 The current `/add` command implementation already uses atomic numbering and follows best practices for state management. The main gap is the requirement for extensive metadata input, which creates friction for simple task creation.
 
 **Key Findings:**
-1. ✓ Atomic numbering already implemented correctly
-2. ✓ Lazy directory creation already correct
-3. ✓ State management follows best practices
-4. ✗ Too much required metadata (10 fields vs. 1 essential)
-5. ✗ Number allocation happens in subagent (should be in orchestrator)
+1. [YES] Atomic numbering already implemented correctly
+2. [YES] Lazy directory creation already correct
+3. [YES] State management follows best practices
+4. [NO] Too much required metadata (10 fields vs. 1 essential)
+5. [NO] Number allocation happens in subagent (should be in orchestrator)
 
 **Recommended Changes:**
 1. Simplify to single-description input

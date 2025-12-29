@@ -784,18 +784,18 @@ Soundness.lean
 
 | File | Lines | Status |
 |------|-------|--------|
-| Truth.lean | 1277 | ⚠️ Exceeds max (1200) |
-| Soundness.lean | 679 | ✅ OK |
+| Truth.lean | 1277 | [WARN] Exceeds max (1200) |
+| Soundness.lean | 679 | [PASS] OK |
 
 ### Projected File Sizes After Phase 1
 
 | File | Current | After | Target | Status |
 |------|---------|-------|--------|--------|
-| Truth.lean | 1277 | ~600 | ≤1200 | ✅ Within |
-| SoundnessLemmas.lean | 0 | ~680 | ≤1200 | ✅ Within |
-| Soundness.lean | 679 | ~690 | ≤1200 | ✅ Within |
+| Truth.lean | 1277 | ~600 | ≤1200 | [PASS] Within |
+| SoundnessLemmas.lean | 0 | ~680 | ≤1200 | [PASS] Within |
+| Soundness.lean | 679 | ~690 | ≤1200 | [PASS] Within |
 
-**All files within target after Phase 1** ✅
+**All files within target after Phase 1** [PASS]
 
 ---
 

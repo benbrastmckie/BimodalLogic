@@ -202,7 +202,7 @@ The routing bug is a **prompt execution consistency issue** in a Claude-based AI
 
 ### lean-lsp-mcp
 
-**Status**: ✅ Configured and ready
+**Status**: [PASS] Configured and ready
 - Server name: "lean-lsp"
 - Command: `uvx lean-lsp-mcp`
 - Project path: `/home/benjamin/Documents/Philosophy/Projects/ProofChecker`
@@ -212,7 +212,7 @@ The routing bug is a **prompt execution consistency issue** in a Claude-based AI
 
 ### Loogle CLI
 
-**Status**: ✅ Integrated (Task 197)
+**Status**: [PASS] Integrated (Task 197)
 - Binary: `/home/benjamin/.cache/loogle/.lake/build/bin/loogle`
 - Index: `~/.cache/lean-research-agent/loogle-mathlib.index`
 - Mode: Persistent interactive mode with JSON output
@@ -221,12 +221,12 @@ The routing bug is a **prompt execution consistency issue** in a Claude-based AI
 
 ### LeanExplore
 
-**Status**: ❌ Not yet integrated
+**Status**: [FAIL] Not yet integrated
 - Future enhancement for browsing Lean libraries
 
 ### LeanSearch
 
-**Status**: ❌ Not yet integrated
+**Status**: [FAIL] Not yet integrated
 - Future enhancement for semantic search over Lean libraries
 
 ---

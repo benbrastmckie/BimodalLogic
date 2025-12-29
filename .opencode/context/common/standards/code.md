@@ -7,15 +7,15 @@
 **Golden Rule**: If you can't easily test it, refactor it
 
 **Critical Patterns** (use these):
-- ✅ Pure functions (same input = same output, no side effects)
-- ✅ Immutability (create new data, don't modify)
-- ✅ Composition (build complex from simple)
-- ✅ Small functions (< 50 lines)
-- ✅ Explicit dependencies (dependency injection)
+- [PASS] Pure functions (same input = same output, no side effects)
+- [PASS] Immutability (create new data, don't modify)
+- [PASS] Composition (build complex from simple)
+- [PASS] Small functions (< 50 lines)
+- [PASS] Explicit dependencies (dependency injection)
 
 **Anti-Patterns** (avoid these):
-- ❌ Mutation, side effects, deep nesting
-- ❌ God modules, global state, large functions
+- [FAIL] Mutation, side effects, deep nesting
+- [FAIL] God modules, global state, large functions
 
 ---
 
@@ -52,41 +52,41 @@ component/
 
 ### Pure Functions
 ```javascript
-// ✅ Pure
+// [PASS] Pure
 const add = (a, b) => a + b;
 const formatUser = (user) => ({ ...user, fullName: `${user.firstName} ${user.lastName}` });
 
-// ❌ Impure (side effects)
+// [FAIL] Impure (side effects)
 let total = 0;
 const addToTotal = (value) => { total += value; return total; };
 ```
 
 ### Immutability
 ```javascript
-// ✅ Immutable
+// [PASS] Immutable
 const addItem = (items, item) => [...items, item];
 const updateUser = (user, changes) => ({ ...user, ...changes });
 
-// ❌ Mutable
+// [FAIL] Mutable
 const addItem = (items, item) => { items.push(item); return items; };
 ```
 
 ### Composition
 ```javascript
-// ✅ Compose small functions
+// [PASS] Compose small functions
 const processUser = pipe(validateUser, enrichUserData, saveUser);
 const isValidEmail = (email) => validateEmail(normalizeEmail(email));
 
-// ❌ Deep inheritance
+// [FAIL] Deep inheritance
 class ExtendedUserManagerWithValidation extends UserManager { }
 ```
 
 ### Declarative
 ```javascript
-// ✅ Declarative
+// [PASS] Declarative
 const activeUsers = users.filter(u => u.isActive).map(u => u.name);
 
-// ❌ Imperative
+// [FAIL] Imperative
 const names = [];
 for (let i = 0; i < users.length; i++) {
   if (users[i].isActive) names.push(users[i].name);
@@ -104,7 +104,7 @@ for (let i = 0; i < users.length; i++) {
 ## Error Handling
 
 ```javascript
-// ✅ Explicit error handling
+// [PASS] Explicit error handling
 function parseJSON(text) {
   try {
     return { success: true, data: JSON.parse(text) };
@@ -113,7 +113,7 @@ function parseJSON(text) {
   }
 }
 
-// ✅ Validate at boundaries
+// [PASS] Validate at boundaries
 function createUser(userData) {
   const validation = validateUserData(userData);
   if (!validation.isValid) {
@@ -126,7 +126,7 @@ function createUser(userData) {
 ## Dependency Injection
 
 ```javascript
-// ✅ Dependencies explicit
+// [PASS] Dependencies explicit
 function createUserService(database, logger) {
   return {
     createUser: (userData) => {
@@ -136,29 +136,29 @@ function createUserService(database, logger) {
   };
 }
 
-// ❌ Hidden dependencies
+// [FAIL] Hidden dependencies
 import db from './database.js';
 function createUser(userData) { return db.insert('users', userData); }
 ```
 
 ## Anti-Patterns
 
-❌ **Mutation**: Modifying data in place
-❌ **Side effects**: console.log, API calls in pure functions
-❌ **Deep nesting**: Use early returns instead
-❌ **God modules**: Split into focused modules
-❌ **Global state**: Pass dependencies explicitly
-❌ **Large functions**: Keep < 50 lines
+[FAIL] **Mutation**: Modifying data in place
+[FAIL] **Side effects**: console.log, API calls in pure functions
+[FAIL] **Deep nesting**: Use early returns instead
+[FAIL] **God modules**: Split into focused modules
+[FAIL] **Global state**: Pass dependencies explicitly
+[FAIL] **Large functions**: Keep < 50 lines
 
 ## Best Practices
 
-✅ Pure functions whenever possible
-✅ Immutable data structures
-✅ Small, focused functions (< 50 lines)
-✅ Compose small functions into larger ones
-✅ Explicit dependencies (dependency injection)
-✅ Validate at boundaries
-✅ Self-documenting code
-✅ Test in isolation
+[PASS] Pure functions whenever possible
+[PASS] Immutable data structures
+[PASS] Small, focused functions (< 50 lines)
+[PASS] Compose small functions into larger ones
+[PASS] Explicit dependencies (dependency injection)
+[PASS] Validate at boundaries
+[PASS] Self-documenting code
+[PASS] Test in isolation
 
 **Golden Rule**: If you can't easily test it, refactor it.

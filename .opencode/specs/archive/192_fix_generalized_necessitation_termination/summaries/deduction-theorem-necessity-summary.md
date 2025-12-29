@@ -43,7 +43,7 @@ by_cases hA : A ∈ Γ'          -- Membership (undecidable)
 - Rewrite deduction theorem without `by_cases`
 - Still likely noncomputable due to structural recursion
 
-**Verdict**: ❌ High effort, zero benefit
+**Verdict**: [FAIL] High effort, zero benefit
 
 ### Option 2: Curry-Howard Encoding (Theoretical Only)
 
@@ -52,7 +52,7 @@ by_cases hA : A ∈ Γ'          -- Membership (undecidable)
 - Incompatible with current DerivationTree-based system
 - Different theorem focus (normalization vs. derivations)
 
-**Verdict**: ❌ Fundamentally different architecture
+**Verdict**: [FAIL] Fundamentally different architecture
 
 ### Option 3: Quotient Types (Too Complex)
 
@@ -61,7 +61,7 @@ by_cases hA : A ∈ Γ'          -- Membership (undecidable)
 - Major changes throughout codebase
 - Quotient equality still undecidable
 
-**Verdict**: ❌ Too complex, little benefit
+**Verdict**: [FAIL] Too complex, little benefit
 
 ---
 
@@ -94,35 +94,35 @@ by_cases hA : A ∈ Γ'          -- Membership (undecidable)
 ### Classical (Current Approach)
 
 **Pros**:
-- ✅ Simple proofs (use Law of Excluded Middle)
-- ✅ Matches mathematical intuition
-- ✅ Less code, easier maintenance
-- ✅ Standard for Lean 4
-- ✅ No practical downsides
+- [PASS] Simple proofs (use Law of Excluded Middle)
+- [PASS] Matches mathematical intuition
+- [PASS] Less code, easier maintenance
+- [PASS] Standard for Lean 4
+- [PASS] No practical downsides
 
 **Cons**:
-- ❌ Cannot extract executable code (irrelevant for theorem proving)
-- ❌ Cannot use `#eval` (not needed)
+- [FAIL] Cannot extract executable code (irrelevant for theorem proving)
+- [FAIL] Cannot use `#eval` (not needed)
 
 ### Constructive (Alternative)
 
 **Pros**:
-- ✅ Extractable code (in theory)
-- ✅ Philosophically satisfying (for intuitionists)
+- [PASS] Extractable code (in theory)
+- [PASS] Philosophically satisfying (for intuitionists)
 
 **Cons**:
-- ❌ Complex proofs
-- ❌ Requires extensive boilerplate
-- ❌ Still likely noncomputable
-- ❌ High implementation cost
-- ❌ Against community norms
-- ❌ **Zero practical benefit**
+- [FAIL] Complex proofs
+- [FAIL] Requires extensive boilerplate
+- [FAIL] Still likely noncomputable
+- [FAIL] High implementation cost
+- [FAIL] Against community norms
+- [FAIL] **Zero practical benefit**
 
 ---
 
 ## Recommendations
 
-### 1. Accept Noncomputable Status ✅ (Recommended)
+### 1. Accept Noncomputable Status [PASS] (Recommended)
 
 **Action**:
 - Mark `generalized_modal_k` and `generalized_temporal_k` as `noncomputable`

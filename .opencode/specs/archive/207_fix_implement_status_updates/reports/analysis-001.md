@@ -370,7 +370,7 @@ If any write fails:
 
 ## Proposed Solutions
 
-### Solution A: Orchestrator Executes Command Workflows ✅ RECOMMENDED
+### Solution A: Orchestrator Executes Command Workflows [PASS] RECOMMENDED
 
 **Description**: Extend orchestrator to execute workflow stages from command specifications.
 
@@ -397,7 +397,7 @@ If any write fails:
    ```
    Stage 1: AnalyzeRequest
    Stage 2: DetermineComplexity
-   ★ Stage 2.5: ExecuteCommandPreflight (NEW)
+   [STAR] Stage 2.5: ExecuteCommandPreflight (NEW)
    Stage 3: CheckLanguage
    Stage 4: PrepareRouting
    Stage 5: CheckCycleAndDepth
@@ -405,7 +405,7 @@ If any write fails:
    Stage 7: RouteToAgent
    Stage 8: MonitorDelegation
    Stage 9: ReceiveResults
-   ★ Stage 9.5: ExecuteCommandPostflight (NEW)
+   [STAR] Stage 9.5: ExecuteCommandPostflight (NEW)
    Stage 10: ValidateReturn
    Stage 11: ProcessResults
    Stage 12: CleanupDelegation
@@ -489,7 +489,7 @@ If any write fails:
 
 ---
 
-### Solution C: Implementation Agents Handle Status ❌ NOT RECOMMENDED
+### Solution C: Implementation Agents Handle Status [FAIL] NOT RECOMMENDED
 
 **Description**: Modify implementation agents to call status-sync-manager directly.
 
@@ -1100,7 +1100,7 @@ Stage 13: ReturnToUser
 ```
 Stage 1: AnalyzeRequest
 Stage 2: DetermineComplexity
-★ Stage 2.5: ExecuteCommandPreflight  ← NEW: Status update
+[STAR] Stage 2.5: ExecuteCommandPreflight  ← NEW: Status update
 Stage 3: CheckLanguage
 Stage 4: PrepareRouting
 Stage 5: CheckCycleAndDepth
@@ -1108,7 +1108,7 @@ Stage 6: RegisterDelegation
 Stage 7: RouteToAgent
 Stage 8: MonitorDelegation
 Stage 9: ReceiveResults
-★ Stage 9.5: ExecuteCommandPostflight ← NEW: Status update
+[STAR] Stage 9.5: ExecuteCommandPostflight ← NEW: Status update
 Stage 10: ValidateReturn
 Stage 11: ProcessResults
 Stage 12: CleanupDelegation

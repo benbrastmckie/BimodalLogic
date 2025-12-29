@@ -11,7 +11,7 @@
 Is the tactic a simple sequence of existing tactics?
 ├─ YES → Use macro-based approach (Pattern 1)
 └─ NO → Does it need pattern matching on goal structure?
-    ├─ YES → Use elab_rules (Pattern 2) ✓ RECOMMENDED
+    ├─ YES → Use elab_rules (Pattern 2) [YES] RECOMMENDED
     └─ NO → Does it need iteration/search?
         ├─ YES → Use direct TacticM (Pattern 3)
         └─ NO → Use macro-based approach (Pattern 1)
@@ -34,7 +34,7 @@ macro "modal_t" : tactic =>
 **Pros:** Simple, declarative, easy to maintain  
 **Cons:** No custom logic, no pattern matching
 
-### Pattern 2: elab_rules (Pattern-Matched Tactics) ✓ RECOMMENDED
+### Pattern 2: elab_rules (Pattern-Matched Tactics) [YES] RECOMMENDED
 
 **Use when:** Need to match goal structure and construct proof terms
 
@@ -282,7 +282,7 @@ example (P Q : Formula) : [] ⊢ P.imp Q := by
 
 ## 6. Common Pitfalls
 
-❌ **Forgetting to open namespaces**
+[FAIL] **Forgetting to open namespaces**
 ```lean
 -- Wrong
 elab "my_tactic" : tactic => do
@@ -294,7 +294,7 @@ elab "my_tactic" : tactic => do
   let goal ← getMainGoal  -- Clean
 ```
 
-❌ **Not checking definitional equality**
+[FAIL] **Not checking definitional equality**
 ```lean
 -- Wrong
 if innerFormula == rhs then ...  -- Syntactic equality only
@@ -303,7 +303,7 @@ if innerFormula == rhs then ...  -- Syntactic equality only
 if ← isDefEq innerFormula rhs then ...  -- Definitional equality
 ```
 
-❌ **Missing error messages**
+[FAIL] **Missing error messages**
 ```lean
 -- Wrong
 match goalType with
@@ -314,7 +314,7 @@ match goalType with
 | _ => throwError "modal_t: goal must be derivability relation, got {goalType}"
 ```
 
-❌ **Using macro when elab_rules is needed**
+[FAIL] **Using macro when elab_rules is needed**
 ```lean
 -- Wrong (can't pattern match in macro)
 macro "modal_t" : tactic => ...  -- Can't inspect goal structure

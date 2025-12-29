@@ -23,11 +23,11 @@ This research investigated how `lean-lsp-mcp` is intended to be used and identif
 ## Research Scope
 
 ### Objectives
-1. ✅ Research lean-lsp-mcp tool usage best practices
-2. ✅ Understand how to invoke lean-lsp-mcp in agent workflows
-3. ✅ Identify gaps in lean-implementation-agent preventing tool usage
-4. ✅ Determine context file improvements needed
-5. ✅ Review lean-research-agent for similar issues
+1. [PASS] Research lean-lsp-mcp tool usage best practices
+2. [PASS] Understand how to invoke lean-lsp-mcp in agent workflows
+3. [PASS] Identify gaps in lean-implementation-agent preventing tool usage
+4. [PASS] Determine context file improvements needed
+5. [PASS] Review lean-research-agent for similar issues
 
 ### Tools Used
 - **Web Research**: PyPI documentation, GitHub repository
@@ -129,7 +129,7 @@ This research investigated how `lean-lsp-mcp` is intended to be used and identif
 
 #### .mcp.json Analysis
 
-**Status**: ✅ Properly configured
+**Status**: [PASS] Properly configured
 
 The `.mcp.json` file correctly configures lean-lsp-mcp:
 - Server name: "lean-lsp"
@@ -151,20 +151,20 @@ Tool is installed and accessible.
 
 #### Context Files Analysis
 
-**mcp-tools-guide.md** (Status: 🟡 Partial):
-- ✅ Documents lean-lsp-mcp capabilities
-- ✅ Describes when to use each tool
-- ✅ Provides example usage patterns
-- ❌ Does NOT explain how to invoke MCP tools from agents
-- ❌ Shows TypeScript examples, not agent invocation patterns
-- ❌ No concrete integration instructions
+**mcp-tools-guide.md** (Status: [YELLOW] Partial):
+- [PASS] Documents lean-lsp-mcp capabilities
+- [PASS] Describes when to use each tool
+- [PASS] Provides example usage patterns
+- [FAIL] Does NOT explain how to invoke MCP tools from agents
+- [FAIL] Shows TypeScript examples, not agent invocation patterns
+- [FAIL] No concrete integration instructions
 
-**lsp-integration.md** (Status: 🟡 Partial):
-- ✅ Documents LSP protocol details
-- ✅ Describes connection management
-- ✅ Provides message format examples
-- ❌ Focused on low-level LSP protocol, not MCP tool usage
-- ❌ No agent integration patterns
+**lsp-integration.md** (Status: [YELLOW] Partial):
+- [PASS] Documents LSP protocol details
+- [PASS] Describes connection management
+- [PASS] Provides message format examples
+- [FAIL] Focused on low-level LSP protocol, not MCP tool usage
+- [FAIL] No agent integration patterns
 
 **Key Gap**: Context files describe WHAT the tools do, but not HOW agents should invoke them.
 
@@ -322,14 +322,14 @@ Tool is installed and accessible.
 
 **File Location**: `.opencode/agent/subagents/lean-research-agent.md`
 
-**Loogle Integration Status**: 🟢 Better than lean-implementation-agent
+**Loogle Integration Status**: [GREEN] Better than lean-implementation-agent
 
 The lean-research-agent has MORE detailed integration for Loogle CLI:
-- ✅ Detailed Loogle client implementation
-- ✅ Process startup logic
-- ✅ Query execution patterns
-- ✅ Error handling specifics
-- ✅ Graceful degradation
+- [PASS] Detailed Loogle client implementation
+- [PASS] Process startup logic
+- [PASS] Query execution patterns
+- [PASS] Error handling specifics
+- [PASS] Graceful degradation
 
 **However**: Loogle CLI is different from lean-lsp-mcp MCP tools:
 - Loogle: Direct CLI process (subprocess.Popen)
@@ -665,7 +665,7 @@ def invoke_mcp_tool(
 
 #### Loogle CLI Integration (lean-research-agent)
 
-**Status**: ✅ Well-documented and implemented
+**Status**: [PASS] Well-documented and implemented
 
 **Approach**: Direct subprocess management
 - Binary path: `/home/benjamin/.cache/loogle/.lake/build/bin/loogle`
@@ -703,7 +703,7 @@ class LoogleClient:
 
 #### lean-lsp-mcp Integration (lean-implementation-agent)
 
-**Status**: ❌ Not implemented
+**Status**: [FAIL] Not implemented
 
 **Approach**: Should use MCP protocol
 - Server: lean-lsp (configured in .mcp.json)

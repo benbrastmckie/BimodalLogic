@@ -20,7 +20,7 @@ Integrate Plausible property-based testing framework and implement comprehensive
 - Create CI/CD workflow for property tests
 - Document baseline test coverage
 
-### Phase 2: TaskModel Generator (4-6 hours) ⚠️ **MAIN CHALLENGE**
+### Phase 2: TaskModel Generator (4-6 hours) [WARN] **MAIN CHALLENGE**
 - Implement SampleableExt instance for TaskModel with dependent types
 - Use proxy pattern to handle valuation dependency on WorldState
 - Add helper generators for specific patterns
@@ -61,10 +61,10 @@ Integrate Plausible property-based testing framework and implement comprehensive
 ## Dependencies
 
 **Completed Infrastructure:**
-- ✅ Plausible framework integrated in lakefile.lean
-- ✅ Basic generators for Formula, Context, TaskFrame
-- ✅ Property test directory structure
-- ✅ README.md with testing patterns
+- [PASS] Plausible framework integrated in lakefile.lean
+- [PASS] Basic generators for Formula, Context, TaskFrame
+- [PASS] Property test directory structure
+- [PASS] README.md with testing patterns
 
 **To Implement:**
 - TaskModel generator (Phase 2)

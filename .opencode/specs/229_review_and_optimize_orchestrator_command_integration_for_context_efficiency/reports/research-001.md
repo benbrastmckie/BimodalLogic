@@ -63,7 +63,7 @@ Orchestrator Step 9-13: ReceiveResults, ValidateReturn, ProcessResults, ReturnTo
   - Validates return
   - Returns to user
   ↓
-RESULT: Plan artifact created ✅, TODO.md NOT updated ❌, state.json NOT updated ❌
+RESULT: Plan artifact created [PASS], TODO.md NOT updated [FAIL], state.json NOT updated [FAIL]
 ```
 
 **Problem**: Orchestrator routes directly to planner subagent, bypassing /plan command's 8-stage workflow.
@@ -118,7 +118,7 @@ planner subagent:
   ↓
 Orchestrator: Returns to user
   ↓
-RESULT: Plan artifact created ✅, TODO.md updated ✅, state.json updated ✅, git commit ✅
+RESULT: Plan artifact created [PASS], TODO.md updated [PASS], state.json updated [PASS], git commit [PASS]
 ```
 
 **Solution**: Orchestrator routes to /plan command, which executes full 8-stage workflow including postflight.
@@ -249,9 +249,9 @@ Context Loaded:
 
 | Context File | Orchestrator | Commands | Size (est.) | Duplication |
 |--------------|--------------|----------|-------------|-------------|
-| subagent-return-format.md | ✅ | ✅ | ~2,000 tokens | 100% |
-| subagent-delegation-guide.md | ✅ | ✅ | ~3,500 tokens | 100% |
-| status-markers.md | ✅ | ✅ | ~4,000 tokens | 100% |
+| subagent-return-format.md | [PASS] | [PASS] | ~2,000 tokens | 100% |
+| subagent-delegation-guide.md | [PASS] | [PASS] | ~3,500 tokens | 100% |
+| status-markers.md | [PASS] | [PASS] | ~4,000 tokens | 100% |
 | **Total Duplication** | | | **~9,500 tokens** | |
 
 **Orchestrator-Only Context** (should NOT be in orchestrator):
@@ -332,27 +332,27 @@ Stage 8: ReturnSuccess
 
 | Stage | Executed? | By Whom | Impact |
 |-------|-----------|---------|--------|
-| 1. Preflight | ❌ | N/A | No status update to [PLANNING]/[RESEARCHING]/[IMPLEMENTING] |
-| 2. CheckLanguage | ⚠️ | Orchestrator | Wrong layer - belongs in command |
-| 3. PrepareDelegation | ⚠️ | Orchestrator | Wrong layer - belongs in command |
-| 4. InvokeAgent | ✅ | Orchestrator | Subagent invoked (but bypasses command) |
-| 5. ReceiveResults | ✅ | Orchestrator | Return validated |
-| 6. ProcessResults | ⚠️ | Orchestrator | Partial - no artifact linking |
-| 7. Postflight | ❌ | N/A | **NO TODO.md/state.json updates, NO git commits** |
-| 8. ReturnSuccess | ⚠️ | Orchestrator | Returns to user but incomplete |
+| 1. Preflight | [FAIL] | N/A | No status update to [PLANNING]/[RESEARCHING]/[IMPLEMENTING] |
+| 2. CheckLanguage | [WARN] | Orchestrator | Wrong layer - belongs in command |
+| 3. PrepareDelegation | [WARN] | Orchestrator | Wrong layer - belongs in command |
+| 4. InvokeAgent | [PASS] | Orchestrator | Subagent invoked (but bypasses command) |
+| 5. ReceiveResults | [PASS] | Orchestrator | Return validated |
+| 6. ProcessResults | [WARN] | Orchestrator | Partial - no artifact linking |
+| 7. Postflight | [FAIL] | N/A | **NO TODO.md/state.json updates, NO git commits** |
+| 8. ReturnSuccess | [WARN] | Orchestrator | Returns to user but incomplete |
 
 **Expected Execution** (orchestrator routes to command):
 
 | Stage | Executed? | By Whom | Impact |
 |-------|-----------|---------|--------|
-| 1. Preflight | ✅ | Command | Status updated to in-progress |
-| 2. CheckLanguage | ✅ | Command | Language extracted, routing determined |
-| 3. PrepareDelegation | ✅ | Command | Session ID generated, context prepared |
-| 4. InvokeAgent | ✅ | Command | Subagent invoked (depth 1) |
-| 5. ReceiveResults | ✅ | Command | Return validated |
-| 6. ProcessResults | ✅ | Command | Artifacts extracted, linked |
-| 7. Postflight | ✅ | Command | **TODO.md/state.json updated, git commits created** |
-| 8. ReturnSuccess | ✅ | Command | Brief summary returned to orchestrator |
+| 1. Preflight | [PASS] | Command | Status updated to in-progress |
+| 2. CheckLanguage | [PASS] | Command | Language extracted, routing determined |
+| 3. PrepareDelegation | [PASS] | Command | Session ID generated, context prepared |
+| 4. InvokeAgent | [PASS] | Command | Subagent invoked (depth 1) |
+| 5. ReceiveResults | [PASS] | Command | Return validated |
+| 6. ProcessResults | [PASS] | Command | Artifacts extracted, linked |
+| 7. Postflight | [PASS] | Command | **TODO.md/state.json updated, git commits created** |
+| 8. ReturnSuccess | [PASS] | Command | Brief summary returned to orchestrator |
 
 ### 3.3 Preflight Procedures Bypassed
 

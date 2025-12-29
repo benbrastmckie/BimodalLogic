@@ -155,7 +155,7 @@ All four commands follow this 8-stage pattern:
 | /research | [RESEARCHED] + Completed timestamp | Keep [RESEARCHING] | Keep [RESEARCHING] |
 | /plan | [PLANNED] + Completed timestamp | Keep [PLANNING] | Keep [PLANNING] |
 | /revise | [REVISED] + Completed timestamp | Keep [REVISING] | Keep [REVISING] |
-| /implement | [COMPLETED] + Completed timestamp + ✅ | [PARTIAL] + note | Keep [IMPLEMENTING] |
+| /implement | [COMPLETED] + Completed timestamp + [PASS] | [PARTIAL] + note | Keep [IMPLEMENTING] |
 
 **Justification**: Legitimate - different workflow semantics
 

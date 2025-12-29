@@ -48,12 +48,12 @@ EXISTS  # This one exists!
 
 **Directory Structure Analysis**:
 ```
-.opencode/                          # ❌ Missing __init__.py
-├── tool/                           # ❌ Missing __init__.py
-│   └── mcp/                        # ✅ Has __init__.py
-│       ├── __init__.py             # ✅ Exports functions
-│       ├── client.py               # ✅ Implementation
-│       └── test_client.py          # ✅ Tests (uses sys.path workaround)
+.opencode/                          # [FAIL] Missing __init__.py
+├── tool/                           # [FAIL] Missing __init__.py
+│   └── mcp/                        # [PASS] Has __init__.py
+│       ├── __init__.py             # [PASS] Exports functions
+│       ├── client.py               # [PASS] Implementation
+│       └── test_client.py          # [PASS] Tests (uses sys.path workaround)
 ```
 
 ### 2. Current Workaround in test_client.py
@@ -142,11 +142,11 @@ return {
 ```
 
 **Analysis**: Task 212 created:
-- ✅ Configuration checking (`check_mcp_server_configured`)
-- ✅ Server config retrieval (`get_mcp_server_config`)
-- ✅ MCP config file discovery (`find_mcp_config`)
-- ✅ Tool invocation interface (`invoke_mcp_tool`)
-- ❌ Actual MCP protocol communication (placeholder)
+- [PASS] Configuration checking (`check_mcp_server_configured`)
+- [PASS] Server config retrieval (`get_mcp_server_config`)
+- [PASS] MCP config file discovery (`find_mcp_config`)
+- [PASS] Tool invocation interface (`invoke_mcp_tool`)
+- [FAIL] Actual MCP protocol communication (placeholder)
 
 **Impact**: Even if imports work, `invoke_mcp_tool` will return an error until MCP protocol integration is complete.
 
@@ -161,16 +161,16 @@ $ cd /home/benjamin/Projects/ProofChecker && python3 .opencode/tool/mcp/test_cli
 MCP Client Integration Tests
 ============================================================
 Test: find_mcp_config()
-  ✓ Found .mcp.json at: /home/benjamin/Projects/ProofChecker/.mcp.json
+  [YES] Found .mcp.json at: /home/benjamin/Projects/ProofChecker/.mcp.json
 
 Test: check_mcp_server_configured('lean-lsp')
-  ✓ lean-lsp server is configured and available
+  [YES] lean-lsp server is configured and available
 
 Test: check_mcp_server_configured('nonexistent')
-  ✓ Correctly returns False for non-existent server
+  [YES] Correctly returns False for non-existent server
 
 Test: get_mcp_server_config('lean-lsp')
-  ✓ Got server config:
+  [YES] Got server config:
     - Type: stdio
     - Command: uvx
     - Args: ['lean-lsp-mcp']
@@ -178,10 +178,10 @@ Test: get_mcp_server_config('lean-lsp')
 Test: invoke_mcp_tool() - not yet implemented
   Result: success=False
   Error: MCP protocol client not yet implemented. [...]
-  ✓ Correctly returns 'not yet implemented' error
+  [YES] Correctly returns 'not yet implemented' error
 
 Test: invoke_mcp_tool() - invalid server
-  ✓ Correctly returns error: MCP server 'nonexistent' not configured or unavailable
+  [YES] Correctly returns error: MCP server 'nonexistent' not configured or unavailable
 
 ============================================================
 Results: 6 passed, 0 failed
@@ -200,7 +200,7 @@ Results: 6 passed, 0 failed
 
 ### Configuration (.mcp.json)
 
-**Status**: ✅ Correctly configured
+**Status**: [PASS] Correctly configured
 
 **Evidence**:
 ```json
@@ -227,32 +227,32 @@ Results: 6 passed, 0 failed
 
 ### Client Functions
 
-**Status**: ✅ Implemented and tested
+**Status**: [PASS] Implemented and tested
 
 **Functions**:
 
 1. **check_mcp_server_configured(server_name)**
    - Purpose: Check if MCP server is configured and command is available
-   - Implementation: ✅ Complete
-   - Tests: ✅ Passing
+   - Implementation: [PASS] Complete
+   - Tests: [PASS] Passing
    - Usage: Pre-flight check before invoking tools
 
 2. **find_mcp_config()**
    - Purpose: Locate .mcp.json in project hierarchy
-   - Implementation: ✅ Complete
-   - Tests: ✅ Passing
+   - Implementation: [PASS] Complete
+   - Tests: [PASS] Passing
    - Usage: Internal helper for config loading
 
 3. **get_mcp_server_config(server_name)**
    - Purpose: Retrieve server configuration dictionary
-   - Implementation: ✅ Complete
-   - Tests: ✅ Passing
+   - Implementation: [PASS] Complete
+   - Tests: [PASS] Passing
    - Usage: Access server settings programmatically
 
 4. **invoke_mcp_tool(server, tool, arguments, timeout)**
    - Purpose: Invoke MCP tool on configured server
-   - Implementation: ⚠️ Placeholder (returns "not yet implemented" error)
-   - Tests: ✅ Passing (validates error handling)
+   - Implementation: [WARN] Placeholder (returns "not yet implemented" error)
+   - Tests: [PASS] Passing (validates error handling)
    - Usage: Main tool invocation interface
 
 ### Integration with lean-implementation-agent
@@ -285,8 +285,8 @@ if mcp_available:
 ```
 
 **Current Blockers**:
-1. ❌ Import fails (ModuleNotFoundError)
-2. ⚠️ invoke_mcp_tool returns "not yet implemented" error
+1. [FAIL] Import fails (ModuleNotFoundError)
+2. [WARN] invoke_mcp_tool returns "not yet implemented" error
 
 ---
 
@@ -317,7 +317,7 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'opencode'
 ```
 
-**Result**: ❌ Still fails (because .opencode/__init__.py is missing)
+**Result**: [FAIL] Still fails (because .opencode/__init__.py is missing)
 
 **Test 2**: Add .opencode to PYTHONPATH (after creating __init__.py files)
 ```bash
@@ -366,12 +366,12 @@ project_root/
 ```
 ProofChecker/                  # Project root (in PYTHONPATH)
 ├── .opencode/                 # Top-level package
-│   ├── __init__.py           # ❌ MISSING - Required!
+│   ├── __init__.py           # [FAIL] MISSING - Required!
 │   ├── tool/                 # Subpackage
-│   │   ├── __init__.py       # ❌ MISSING - Required!
+│   │   ├── __init__.py       # [FAIL] MISSING - Required!
 │   │   └── mcp/              # Sub-subpackage
-│   │       ├── __init__.py   # ✅ EXISTS
-│   │       └── client.py     # ✅ EXISTS
+│   │       ├── __init__.py   # [PASS] EXISTS
+│   │       └── client.py     # [PASS] EXISTS
 ```
 
 ### 2. Import Path Options
@@ -390,7 +390,7 @@ ProofChecker/                  # Project root (in PYTHONPATH)
 
 **Option C**: Import as `.opencode.tool.mcp.client`
 - Requires: Package name cannot start with dot
-- Result: ❌ Invalid (dots are reserved for relative imports)
+- Result: [FAIL] Invalid (dots are reserved for relative imports)
 
 **Recommendation**: Use Option A (`opencode.tool.mcp.client`) for clarity and consistency.
 
@@ -731,9 +731,9 @@ Error: MCP protocol client not yet implemented. [...]
 ```
 
 **Analysis**: This confirms:
-- ✅ Import works
-- ✅ Server configuration check works
-- ⚠️ Tool invocation returns expected "not yet implemented" error
+- [PASS] Import works
+- [PASS] Server configuration check works
+- [WARN] Tool invocation returns expected "not yet implemented" error
 
 ### Phase 4: End-to-End Verification
 
@@ -753,10 +753,10 @@ Error: MCP protocol client not yet implemented. [...]
 7. Agent logs warning about MCP protocol integration pending
 
 **Success Criteria**:
-- ✅ No ModuleNotFoundError
-- ✅ Graceful degradation to lake build
-- ✅ Warning logged about MCP protocol pending
-- ✅ Implementation completes successfully
+- [PASS] No ModuleNotFoundError
+- [PASS] Graceful degradation to lake build
+- [PASS] Warning logged about MCP protocol pending
+- [PASS] Implementation completes successfully
 
 ---
 
@@ -825,11 +825,11 @@ Error: MCP protocol client not yet implemented. [...]
 ### Related Tasks
 
 - **Task 212**: Created MCP client wrapper (completed)
-  - Status: ✅ Infrastructure complete
+  - Status: [PASS] Infrastructure complete
   - Remaining: MCP protocol integration
   
 - **Task 208**: Fixed Lean routing in /research and /implement (completed)
-  - Status: ✅ Routing logic correct
+  - Status: [PASS] Routing logic correct
   - Impact: Ensures Lean tasks reach lean-implementation-agent
 
 - **Task 205**: Lean tool usage verification and monitoring (not started)

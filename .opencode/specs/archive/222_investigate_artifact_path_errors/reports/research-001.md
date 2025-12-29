@@ -44,12 +44,12 @@ Audited 7 subagents and 5 workflow commands for path usage patterns:
 **Pattern**: All affected projects are Lean research tasks that used lean-research-agent
 
 **Unaffected Agents** (all use correct `.opencode/specs/` pattern):
-- researcher.md (lines 114, 199, 230, 286) - ✓ Correct
-- planner.md (lines 122, 230, 264) - ✓ Correct
-- implementer.md (lines 210, 242) - ✓ Correct
-- task-executor.md (lines 274, 329, 368) - ✓ Correct
-- lean-implementation-agent.md (lines 326, 365, 400, 441) - ✓ Correct
-- reviewer.md (lines 37, 258, 453) - ✓ Correct
+- researcher.md (lines 114, 199, 230, 286) - [YES] Correct
+- planner.md (lines 122, 230, 264) - [YES] Correct
+- implementer.md (lines 210, 242) - [YES] Correct
+- task-executor.md (lines 274, 329, 368) - [YES] Correct
+- lean-implementation-agent.md (lines 326, 365, 400, 441) - [YES] Correct
+- reviewer.md (lines 37, 258, 453) - [YES] Correct
 
 ## Detailed Findings
 
@@ -92,7 +92,7 @@ All workflow commands use correct `.opencode/specs/` pattern:
 2. Subagent creates directory: `.opencode/specs/{number}_{slug}/`
 3. Subagent writes artifact with full path
 4. Returns artifact path in standardized format
-5. ✓ Artifact created in correct location
+5. [YES] Artifact created in correct location
 
 **Broken Flow** (lean-research-agent):
 1. /research command invokes lean-research-agent for Lean task
@@ -100,7 +100,7 @@ All workflow commands use correct `.opencode/specs/` pattern:
 3. Creates directory: `specs/{number}_{slug}/` (missing `.opencode/`)
 4. Writes artifact to wrong location
 5. Returns incorrect path
-6. ✗ Artifact created in `/specs/` instead of `/.opencode/specs/`
+6. [NO] Artifact created in `/specs/` instead of `/.opencode/specs/`
 
 ## Migration Assessment
 

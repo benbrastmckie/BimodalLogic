@@ -49,9 +49,9 @@ How to fix three build errors in DeductionTheorem.lean related to classical reas
 ```
 error: ././././Logos/Core/Metalogic/DeductionTheorem.lean:256:8: unknown tactic
 error: ././././Logos/Core/Metalogic/DeductionTheorem.lean:253:43: unsolved goals
-Γ'✝ : Context
+Γ'[DAGGER] : Context
 A φ : Formula
-h : Γ'✝ ⊢ φ
+h : Γ'[DAGGER] ⊢ φ
 Γ' : Context
 ψ : Formula
 Γ'' : Context
@@ -242,7 +242,7 @@ inductive Formula : Type where
 ```lean
 match h with
 | DerivationTree.weakening Γ' _ φ h1 h2 =>
-    (em (A ∈ Γ')).elim  -- ❌ FAILS: .elim is not a tactic
+    (em (A ∈ Γ')).elim  -- [FAIL] FAILS: .elim is not a tactic
       (fun hA => ...)
       (fun hA => ...)
 ```
@@ -251,7 +251,7 @@ match h with
 ```lean
 match h with
 | DerivationTree.weakening Γ' _ φ h1 h2 =>
-    by_cases hA : A ∈ Γ'  -- ✅ WORKS: by_cases is a tactic
+    by_cases hA : A ∈ Γ'  -- [PASS] WORKS: by_cases is a tactic
     · -- Case: A ∈ Γ'
       ...
     · -- Case: A ∉ Γ'
@@ -312,7 +312,7 @@ decreasing_by
 **Expected Structure** (depends on recursive calls):
 - Modus ponens case: 2 recursive calls → 2 goals
 - Weakening case with `by_cases`: 1 recursive call (only in first branch) → 1 goal
-- **Total**: 3 goals ✓
+- **Total**: 3 goals [YES]
 
 **The Issue**:
 - The termination proof structure is correct in principle
@@ -324,11 +324,11 @@ decreasing_by
 ### Approach 1: Use `by_cases` Tactic (RECOMMENDED)
 
 **Pros**:
-- ✅ Idiomatic Lean 4 pattern
-- ✅ Proven in Soundness.lean and Truth.lean
-- ✅ Minimal changes to existing code structure
-- ✅ Clear and readable
-- ✅ Works with existing termination proofs
+- [PASS] Idiomatic Lean 4 pattern
+- [PASS] Proven in Soundness.lean and Truth.lean
+- [PASS] Minimal changes to existing code structure
+- [PASS] Clear and readable
+- [PASS] Works with existing termination proofs
 
 **Cons**:
 - None significant
@@ -339,13 +339,13 @@ Replace `(em P).elim (fun h => ...) (fun h => ...)` with `by_cases h : P` and us
 ### Approach 2: Use `rcases Classical.em` Pattern
 
 **Pros**:
-- ✅ More explicit about using classical logic
-- ✅ Proven in mathlib4
-- ✅ Allows pattern matching (e.g., `rfl` for equality)
+- [PASS] More explicit about using classical logic
+- [PASS] Proven in mathlib4
+- [PASS] Allows pattern matching (e.g., `rfl` for equality)
 
 **Cons**:
-- ⚠️ Slightly more verbose than `by_cases`
-- ⚠️ Less familiar to readers not familiar with `rcases`
+- [WARN] Slightly more verbose than `by_cases`
+- [WARN] Less familiar to readers not familiar with `rcases`
 
 **Implementation**:
 Replace `(em P).elim` with `rcases Classical.em P with (h | h)`.
@@ -353,13 +353,13 @@ Replace `(em P).elim` with `rcases Classical.em P with (h | h)`.
 ### Approach 3: Use `have` bindings with term-mode `.elim`
 
 **Pros**:
-- ✅ More explicit about using classical logic
-- ✅ Separates case analysis from match expression
+- [PASS] More explicit about using classical logic
+- [PASS] Separates case analysis from match expression
 
 **Cons**:
-- ❌ More verbose
-- ❌ Less idiomatic in Lean 4
-- ❌ Harder to read
+- [FAIL] More verbose
+- [FAIL] Less idiomatic in Lean 4
+- [FAIL] Harder to read
 
 **Implementation**:
 ```lean
@@ -554,10 +554,10 @@ decreasing_by
 ```
 
 **Verification**:
-- Modus ponens case: 2 recursive calls → 2 goals ✓
-- Weakening case (deduction_with_mem): 1 recursive call (only when A ∈ Γ'') → 1 goal ✓
-- Weakening case (deduction_theorem): 1 recursive call (only when Γ' = A :: Γ) → 1 goal ✓
-- **Total**: 3 goals for each function ✓
+- Modus ponens case: 2 recursive calls → 2 goals [YES]
+- Weakening case (deduction_with_mem): 1 recursive call (only when A ∈ Γ'') → 1 goal [YES]
+- Weakening case (deduction_theorem): 1 recursive call (only when Γ' = A :: Γ) → 1 goal [YES]
+- **Total**: 3 goals for each function [YES]
 
 ## Termination Proof Guidance
 

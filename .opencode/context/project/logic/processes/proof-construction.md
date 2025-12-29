@@ -357,12 +357,12 @@ theorem perpetuity_1 (φ : Formula) : ⊢ φ.box.imp φ.always := by
 ```
 
 **Verification**:
-- ✓ Compiles without errors
-- ✓ No `sorry` placeholders
-- ✓ Type signatures correct
-- ✓ Clear component structure
-- ✓ Descriptive variable names
-- ✓ Explanatory comment
+- [YES] Compiles without errors
+- [YES] No `sorry` placeholders
+- [YES] Type signatures correct
+- [YES] Clear component structure
+- [YES] Descriptive variable names
+- [YES] Explanatory comment
 
 ---
 

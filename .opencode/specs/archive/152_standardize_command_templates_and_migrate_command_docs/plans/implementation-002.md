@@ -38,7 +38,7 @@ Reorient the effort to restore YAML/@subagent/XML markup as the authoritative fo
 
 ## Implementation Phases
 
-### Phase 1: Confirm scope and exemplars [COMPLETED] ✅
+### Phase 1: Confirm scope and exemplars [COMPLETED] [PASS]
 (Started: 2025-12-23T14:05:00Z)
 (Completed: 2025-12-23T15:10:00Z)
 - **Goal:** Lock requirements using research-001, standards, and exemplar command docs.
@@ -48,7 +48,7 @@ Reorient the effort to restore YAML/@subagent/XML markup as the authoritative fo
   - [x] Extract required YAML keys/sections from `.opencode/command/meta.md` and `.opencode/command/context.md` as canonical ordering.
 - **Timing:** 1 hour
 
-### Phase 2: Draft commands standard and command template (YAML/XML) [COMPLETED] ✅
+### Phase 2: Draft commands standard and command template (YAML/XML) [COMPLETED] [PASS]
 (Started: 2025-12-23T14:10:00Z)
 (Completed: 2025-12-23T15:20:00Z)
 - **Goal:** Author `commands.md` and `command-template.md` using YAML front matter + @subagent/XML workflow blocks.
@@ -58,7 +58,7 @@ Reorient the effort to restore YAML/@subagent/XML markup as the authoritative fo
   - [x] Cross-link tasks.md, plan.md, artifact-management.md, status-markers.md, and patterns (if referenced).
 - **Timing:** 1.5 hours
 
-### Phase 3: Migrate `.opencode/command` docs and README to YAML/XML [COMPLETED] ✅
+### Phase 3: Migrate `.opencode/command` docs and README to YAML/XML [COMPLETED] [PASS]
 (Started: 2025-12-23T14:20:00Z)
 (Completed: 2025-12-23T15:35:00Z)
 - **Goal:** Apply the new template to all command docs and README.
@@ -68,7 +68,7 @@ Reorient the effort to restore YAML/@subagent/XML markup as the authoritative fo
   - [x] Update `.opencode/command/README.md` to reference the YAML/XML standard/template and remove Markdown-metadata guidance.
 - **Timing:** 1.5 hours
 
-### Phase 4: Update /meta templates and guidance to YAML/XML [COMPLETED] ✅
+### Phase 4: Update /meta templates and guidance to YAML/XML [COMPLETED] [PASS]
 (Started: 2025-12-23T14:40:00Z)
 (Completed: 2025-12-23T15:40:00Z)
 - **Goal:** Align meta templates/guides with the YAML/@subagent/XML command standard.
@@ -78,7 +78,7 @@ Reorient the effort to restore YAML/@subagent/XML markup as the authoritative fo
   - [x] Ensure /meta generation examples mirror the restored command structure.
 - **Timing:** 1 hour
 
-### Phase 5: Validation and drift checks [COMPLETED] ✅
+### Phase 5: Validation and drift checks [COMPLETED] [PASS]
 (Started: 2025-12-23T15:40:00Z)
 (Completed: 2025-12-23T15:50:00Z)
 - **Goal:** Verify migrations and references are clean and consistent.

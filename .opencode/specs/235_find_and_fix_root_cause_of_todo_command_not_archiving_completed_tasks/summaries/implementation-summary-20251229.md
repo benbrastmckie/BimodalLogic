@@ -11,7 +11,7 @@
 
 Task 235 root cause identified: /todo command successfully archives tasks to archive/state.json and moves project directories, but fails to remove task entries from TODO.md during Stage 4/5 execution. Phase 1 manual cleanup completed successfully (5 duplicates removed, 11 status markers standardized). Phase 2 investigation reveals the command specification is comprehensive but requires debugging to understand why TODO.md updates fail.
 
-## Phase 1: Manual TODO.md Cleanup and Standardization ✅ COMPLETED
+## Phase 1: Manual TODO.md Cleanup and Standardization [PASS] COMPLETED
 
 **Status**: COMPLETED (2025-12-29)  
 **Time**: 2 hours  
@@ -27,7 +27,7 @@ Task 235 root cause identified: /todo command successfully archives tasks to arc
    - Task 211: Standardize command lifecycle procedures
    - Task 213: Resolve is_valid_swap_involution blocker
 
-2. **Status markers standardized** (11 tasks, ✅ emoji removed from headings):
+2. **Status markers standardized** (11 tasks, [PASS] emoji removed from headings):
    - Tasks 185, 186, 187, 188, 190, 210, 220, 222, 231, 232, 234
 
 3. **Impact**: Removed 231 lines from TODO.md
@@ -54,8 +54,8 @@ The `/todo` command specification at `.opencode/command/todo.md` is comprehensiv
 1. Stage 1 (ScanTODO): Scan for completed/abandoned tasks
 2. Stage 2 (ConfirmArchival): User confirmation if > 5 tasks
 3. Stage 3 (PrepareArchival): Prepare directory moves and archive updates
-4. **Stage 4 (PrepareUpdates)**: Prepare TODO.md and state.json updates ⚠️
-5. **Stage 5 (AtomicUpdate)**: Execute two-phase commit ⚠️
+4. **Stage 4 (PrepareUpdates)**: Prepare TODO.md and state.json updates [WARN]
+5. **Stage 5 (AtomicUpdate)**: Execute two-phase commit [WARN]
 6. Stage 6 (GitCommit): Create commit
 7. Stage 7 (ReturnSuccess): Return summary
 
@@ -66,9 +66,9 @@ The specification is **excellent and detailed**, including:
 - Stage 5 (lines 300-361): Two-phase atomic update with rollback
 
 Research findings show:
-- ✅ Archive/state.json updates WORK (tasks added to archive)
-- ✅ Directory moves WORK (project dirs moved to archive/)
-- ❌ TODO.md updates FAIL (entries remain despite archival)
+- [PASS] Archive/state.json updates WORK (tasks added to archive)
+- [PASS] Directory moves WORK (project dirs moved to archive/)
+- [FAIL] TODO.md updates FAIL (entries remain despite archival)
 
 This suggests Stage 4/5 logic either:
 1. Not executing (workflow stops before Stage 4)

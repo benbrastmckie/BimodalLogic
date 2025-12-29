@@ -104,10 +104,10 @@ lake exe test
 
 ## Expected Results
 
-✅ `lake build Logos.Core.Semantics.Truth` - Success, no type errors  
-✅ `lake build` - Success, no new errors  
-✅ `grep -n "sorry"` - No matches in `is_valid_swap_involution`  
-✅ `lake exe test` - All tests pass
+[PASS] `lake build Logos.Core.Semantics.Truth` - Success, no type errors  
+[PASS] `lake build` - Success, no new errors  
+[PASS] `grep -n "sorry"` - No matches in `is_valid_swap_involution`  
+[PASS] `lake exe test` - All tests pass
 
 ---
 

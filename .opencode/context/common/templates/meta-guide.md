@@ -186,9 +186,9 @@ The system presents a complete architecture summary showing:
 - Estimated file counts
 
 You can:
-- ✅ **Proceed** - Generate the complete system
-- 🔄 **Revise** - Adjust specific components
-- ❌ **Cancel** - Start over
+- [PASS] **Proceed** - Generate the complete system
+- [REVISE] **Revise** - Adjust specific components
+- [FAIL] **Cancel** - Start over
 
 ## System Architecture
 

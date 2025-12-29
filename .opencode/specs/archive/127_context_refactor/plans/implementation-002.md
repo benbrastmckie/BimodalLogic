@@ -42,7 +42,7 @@ Apply the post-refactor mapping to agent/command documentation so all context re
 
 ## Phases & Tasks
 
-### Phase 1: Prepare mapping & targets [COMPLETED] ✅
+### Phase 1: Prepare mapping & targets [COMPLETED] [PASS]
 - [x] Confirm old→new mapping:
   - `core/...` → `common/...`
   - `context/lean4/...` → `context/project/lean4/...`
@@ -53,12 +53,12 @@ Apply the post-refactor mapping to agent/command documentation so all context re
   - Agents: `orchestrator.md`, `subagents/context-analyzer.md`, `subagents/context-refactor.md`, `subagents/context-references.md`, `subagents/lean-implementation-orchestrator.md`, `subagents/verification-specialist.md`
   - Commands/docs: `command/meta.md`, `command/document.md`, `command/refactor.md`, `command/review.md`, `command/README.md`, `command/context.md`
 
-### Phase 2: Apply reference updates [COMPLETED] ✅
+### Phase 2: Apply reference updates [COMPLETED] [PASS]
 - [x] Replace legacy prefixes and update context lists to explicit domains (`common/` + `project/{logic|lean4}`) per file above.
 - [x] Update Lean proof conventions references to the overlay file; keep canonical proof/notation pointing to logic standards.
 - [x] Refresh narrative pointers to `context/README.md` and `context/index.md` as authoritative maps.
 
-### Phase 3: Verify links and document results [COMPLETED] ✅
+### Phase 3: Verify links and document results [COMPLETED] [PASS]
 - [x] Run path validation via ripgrep for legacy prefixes (`core/`, root `context/lean4`, old proof-conventions filename) across agents/commands; no remaining hits after updates.
 - [x] Capture outcomes and remaining issues in task summary (see implementation-summary-20251223.md).
 

@@ -32,12 +32,12 @@ What property-based testing frameworks are available for Lean 4, and how can the
 - **Maintenance**: Regularly updated by Lean community
 
 **Key Features**:
-- ✅ Tactic integration (`plausible` tactic)
-- ✅ Command interface (`#test`)
-- ✅ Automatic derivation (`deriving Arbitrary`)
-- ✅ Automatic shrinking of counterexamples
-- ✅ No external dependencies (pure Lean)
-- ✅ Configurable test parameters
+- [PASS] Tactic integration (`plausible` tactic)
+- [PASS] Command interface (`#test`)
+- [PASS] Automatic derivation (`deriving Arbitrary`)
+- [PASS] Automatic shrinking of counterexamples
+- [PASS] No external dependencies (pure Lean)
+- [PASS] Configurable test parameters
 
 **No viable alternatives found**:
 - LeanCheck: No Lean 4 port exists
@@ -351,12 +351,12 @@ structure Configuration where
 
 **Plausible** is the recommended property-based testing framework for Lean 4 and is ideal for the Logos project. It provides:
 
-- ✅ Easy integration via lakefile.lean
-- ✅ Automatic derivation for custom types
-- ✅ Good shrinking for minimal counterexamples
-- ✅ Active maintenance by Lean community
-- ✅ No external dependencies
-- ✅ Comprehensive documentation
+- [PASS] Easy integration via lakefile.lean
+- [PASS] Automatic derivation for custom types
+- [PASS] Good shrinking for minimal counterexamples
+- [PASS] Active maintenance by Lean community
+- [PASS] No external dependencies
+- [PASS] Comprehensive documentation
 
 **Next Steps**:
 1. Add Plausible to project dependencies

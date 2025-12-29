@@ -70,6 +70,33 @@ AI agent consumption.
 - Use `1.`, `2.`, `3.` for ordered lists
 - Indent nested lists with 2 spaces
 
+### NO EMOJI Policy
+
+**Prohibition**: No emojis are permitted anywhere in .opencode system files.
+
+**Rationale**:
+- Emojis are ambiguous and culture-dependent
+- Text-based alternatives are clearer and more accessible
+- Emojis interfere with grep/search operations
+- Professional documentation should use precise language
+
+**Text Alternatives**:
+| Emoji | Text Alternative | Usage |
+|-------|-----------------|-------|
+| [PASS] (was checkmark) | [PASS], [COMPLETE], [YES] | Success indicators |
+| [FAIL] (was cross mark) | [FAIL], [NOT RECOMMENDED], [NO] | Failure indicators |
+| [WARN] (was warning) | [WARN], [PARTIAL], [CAUTION] | Warning indicators |
+| [TARGET] (was target) | [TARGET], [GOAL] | Objectives |
+| [IDEA] (was lightbulb) | [IDEA], [TIP], [NOTE] | Suggestions |
+
+**Validation**:
+Before committing any artifact, verify no emojis present:
+```bash
+grep -E "[\x{1F300}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]" file.md
+```
+
+If emojis found, replace with text alternatives from table above.
+
 ### Cross-References
 
 #### Internal Links
@@ -203,7 +230,7 @@ Use this checklist when creating or updating documentation:
 
 - [ ] Content is clear and technically precise
 - [ ] No historical information or version mentions
-- [ ] No emojis used
+- [ ] No emojis used (verified with grep -E "[\x{1F300}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]" file.md)
 - [ ] Line length ≤ 100 characters
 - [ ] ATX-style headings used
 - [ ] Code blocks have language specification

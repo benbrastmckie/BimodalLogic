@@ -8,7 +8,7 @@
 
 ## Verification Results
 
-### Task 183: DeductionTheorem.lean Build Errors ✅ VERIFIED COMPLETE
+### Task 183: DeductionTheorem.lean Build Errors [PASS] VERIFIED COMPLETE
 - **File**: Logos/Core/Metalogic/DeductionTheorem.lean (455 lines)
 - **Compilation Status**: SUCCESS - builds without errors
 - **Module Build**: `lake build Logos.Core.Metalogic` - SUCCESS
@@ -16,7 +16,7 @@
 - **Previous Errors**: 3 build errors at lines 256, 369, 376 (`.elim` pattern issues)
 - **Resolution**: All errors resolved by task 183 implementation (completed 2025-12-28)
 
-### Task 184: Truth.lean Build Error ✅ VERIFIED COMPLETE  
+### Task 184: Truth.lean Build Error [PASS] VERIFIED COMPLETE  
 - **File**: Logos/Core/Semantics/Truth.lean (580 lines)
 - **Compilation Status**: SUCCESS - builds without errors
 - **Module Build**: `lake build Logos.Core.Semantics` - SUCCESS
@@ -24,7 +24,7 @@
 - **Previous Error**: Circular dependency with Soundness.lean blocking compilation
 - **Resolution**: Resolved by task 219 (module hierarchy restructuring, completed 2025-12-28)
 
-### Full Codebase Build Status ⚠️ PARTIAL
+### Full Codebase Build Status [WARN] PARTIAL
 - **Core Modules**: All core modules (Syntax, Semantics, ProofSystem, Metalogic, Theorems) compile successfully
 - **Unrelated Errors**: Build failures in ProofSearch.lean (3 errors) and integration tests (unrelated to tasks 183-184)
 - **ProofSearch Errors**: 
@@ -33,13 +33,13 @@
   - Lines 447-456: 3 documentation sorry placeholders
 - **Impact**: ProofSearch errors do not affect verification of tasks 183-184 completion
 
-### Test Suite Status ⚠️ PARTIAL
+### Test Suite Status [WARN] PARTIAL
 - **Test Build**: Partial success - core module tests build successfully
 - **Failed Tests**: Integration tests blocked by ProofSearch.lean errors (unrelated to tasks 183-184)
 - **Core Tests**: Syntax, Semantics, Metalogic test modules build successfully
 - **Verification**: Tasks 183-184 fixes do not introduce regressions
 
-### SORRY_REGISTRY Status ✅ VERIFIED
+### SORRY_REGISTRY Status [PASS] VERIFIED
 - **DeductionTheorem.lean**: 0 sorry placeholders (all resolved)
 - **Truth.lean**: 0 sorry placeholders in core semantics (3 expected sorry in TemporalDuality namespace moved to SoundnessLemmas.lean)
 - **Registry Accuracy**: SORRY_REGISTRY.md accurately reflects current state
@@ -47,12 +47,12 @@
 
 ## Acceptance Criteria Verification
 
-1. ✅ **Task 184 completion verified**: Truth.lean compiles with no errors (resolved by task 219)
-2. ✅ **Task 183 completion verified**: DeductionTheorem.lean compiles with no errors  
-3. ⚠️ **Full codebase builds**: Core modules build successfully, unrelated ProofSearch errors present
-4. ⚠️ **All tests pass**: Core tests pass, integration tests blocked by unrelated ProofSearch errors
-5. ✅ **No regressions**: Tasks 183-184 fixes introduce no new errors
-6. ✅ **Documentation updated**: SORRY_REGISTRY.md accurately reflects completion
+1. [PASS] **Task 184 completion verified**: Truth.lean compiles with no errors (resolved by task 219)
+2. [PASS] **Task 183 completion verified**: DeductionTheorem.lean compiles with no errors  
+3. [WARN] **Full codebase builds**: Core modules build successfully, unrelated ProofSearch errors present
+4. [WARN] **All tests pass**: Core tests pass, integration tests blocked by unrelated ProofSearch errors
+5. [PASS] **No regressions**: Tasks 183-184 fixes introduce no new errors
+6. [PASS] **Documentation updated**: SORRY_REGISTRY.md accurately reflects completion
 
 ## Findings
 

@@ -384,14 +384,14 @@ theorem derivable_implies_swap_valid_complete :
 ```
 
 **Pros**:
-- ✅ Simple and immediate
-- ✅ No architectural changes needed
-- ✅ Clearly documented why the sorry exists
-- ✅ Clear path to completion (in Soundness.lean)
+- [PASS] Simple and immediate
+- [PASS] No architectural changes needed
+- [PASS] Clearly documented why the sorry exists
+- [PASS] Clear path to completion (in Soundness.lean)
 
 **Cons**:
-- ❌ Leaves a sorry in the codebase (but documented and intentional)
-- ❌ Doesn't solve the structural problem for future similar cases
+- [FAIL] Leaves a sorry in the codebase (but documented and intentional)
+- [FAIL] Doesn't solve the structural problem for future similar cases
 
 **Status**: **Implemented** (current solution)
 
@@ -449,15 +449,15 @@ theorem derivable_implies_swap_valid_complete :
 ```
 
 **Pros**:
-- ✅ Cleaner module organization
-- ✅ Separates pure semantics from proof-system bridges
-- ✅ Makes dependencies explicit
-- ✅ Easier to understand what depends on what
+- [PASS] Cleaner module organization
+- [PASS] Separates pure semantics from proof-system bridges
+- [PASS] Makes dependencies explicit
+- [PASS] Easier to understand what depends on what
 
 **Cons**:
-- ⚠️ Requires creating new module
-- ⚠️ Need to move `derivable_implies_swap_valid` from Truth.lean
-- ⚠️ Need to update imports in multiple files
+- [WARN] Requires creating new module
+- [WARN] Need to move `derivable_implies_swap_valid` from Truth.lean
+- [WARN] Need to update imports in multiple files
 
 **Status**: **Recommended for future refactoring**
 
@@ -501,15 +501,15 @@ Truth.lean       Derivation.lean
 ```
 
 **Pros**:
-- ✅ Very clean separation of concerns
-- ✅ Pure semantics module (Truth.lean) has no proof system dependencies
-- ✅ Bridge theorems clearly identified in TruthMetatheory.lean
-- ✅ Follows mathlib patterns for similar separations
+- [PASS] Very clean separation of concerns
+- [PASS] Pure semantics module (Truth.lean) has no proof system dependencies
+- [PASS] Bridge theorems clearly identified in TruthMetatheory.lean
+- [PASS] Follows mathlib patterns for similar separations
 
 **Cons**:
-- ⚠️ More significant refactoring required
-- ⚠️ Need to update many import statements
-- ⚠️ Need to decide boundary between Truth and TruthMetatheory
+- [WARN] More significant refactoring required
+- [WARN] Need to update many import statements
+- [WARN] Need to decide boundary between Truth and TruthMetatheory
 
 **Status**: **Best practice for large-scale refactoring**
 
@@ -518,10 +518,10 @@ Truth.lean       Derivation.lean
 **Approach**: Make Truth.lean and Soundness.lean mutually recursive.
 
 **Why this is a bad idea**:
-- ❌ Lean does not support mutual imports between files
-- ❌ Would require combining both files into one (losing modularity)
-- ❌ Would make the codebase much harder to understand
-- ❌ Would violate logical layering principles
+- [FAIL] Lean does not support mutual imports between files
+- [FAIL] Would require combining both files into one (losing modularity)
+- [FAIL] Would make the codebase much harder to understand
+- [FAIL] Would violate logical layering principles
 
 **Status**: **Rejected**
 
@@ -531,9 +531,9 @@ Truth.lean       Derivation.lean
 
 ### Phase 1: Short-term (Current - Complete)
 
-✅ **Accept the sorry** in Truth.lean with clear documentation  
-✅ **Document the circular dependency** in comments  
-✅ **Plan to complete in Soundness.lean** after main soundness theorem
+[PASS] **Accept the sorry** in Truth.lean with clear documentation  
+[PASS] **Document the circular dependency** in comments  
+[PASS] **Plan to complete in Soundness.lean** after main soundness theorem
 
 **Status**: Implemented in task 213
 
@@ -825,11 +825,11 @@ The long-term solution involves **separating semantic theorems from metatheoreti
 
 **Key Recommendations**:
 
-1. ✅ **Short-term**: Accept documented sorries (current approach - implemented)
+1. [PASS] **Short-term**: Accept documented sorries (current approach - implemented)
 2. ⏭️ **Medium-term**: Extract bridge theorems to `SoundnessLemmas.lean` or similar
-3. 🎯 **Long-term**: Split Truth.lean into pure semantics and metatheory modules
-4. 📋 **Process**: Adopt module layering policy and dependency checking
-5. 📚 **Culture**: Train team on recognizing and avoiding circular dependencies
+3. [TARGET] **Long-term**: Split Truth.lean into pure semantics and metatheory modules
+4. [CLIPBOARD] **Process**: Adopt module layering policy and dependency checking
+5. [DOCS] **Culture**: Train team on recognizing and avoiding circular dependencies
 
 **Impact**: Following these recommendations will prevent similar circular dependencies in future development and make the codebase more maintainable, understandable, and extensible.
 

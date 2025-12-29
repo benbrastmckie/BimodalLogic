@@ -93,17 +93,17 @@ theorem is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_fut
 
 From previous implementation (85% complete):
 
-✅ Helper lemma `truth_at_swap_swap` fully proven (lines 632-671)
+[PASS] Helper lemma `truth_at_swap_swap` fully proven (lines 632-671)
 - All 6 structural induction cases complete
 - Atom, bot, imp, box, all_past, all_future
 - No sorry, fully type-checked
 
-✅ Simp attribute added (Formula.lean line 231)
+[PASS] Simp attribute added (Formula.lean line 231)
 - `@[simp]` on `swap_past_future_involution`
 - Done in task 209
 - Enables simplifier to use involution
 
-✅ Build and tests verified
+[PASS] Build and tests verified
 - Truth.lean compiles (except main theorem)
 - All tests pass
 - No regressions
@@ -112,17 +112,17 @@ From previous implementation (85% complete):
 
 ## What Remains (15%)
 
-❌ Fix main theorem at line 691
+[FAIL] Fix main theorem at line 691
 - Remove `sorry`
 - Try primary solution first (5-10 min)
 - Use fallback if needed (20 min)
 
-❌ Update documentation
+[FAIL] Update documentation
 - Remove "sorry" reference from docstring
 - Explain proof strategy used
 - 5 minutes
 
-❌ Final verification
+[FAIL] Final verification
 - Build check
 - Test suite
 - Downstream usage

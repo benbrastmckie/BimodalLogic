@@ -244,6 +244,9 @@ temperature: 0.2
 
 <constraints>
   <must>Skip [COMPLETED] phases when resuming</must>
+  <must>Follow NO EMOJI standard per documentation.md</must>
+  <must>Use text-based alternatives for status indicators</must>
+  <must>Validate artifacts are emoji-free before returning</must>
   <must>Collect phase_statuses array for delegation to status-sync-manager</must>
   <must>Create git commit per completed phase</must>
   <must>Route to language-specific agents based on language parameter</must>
@@ -253,7 +256,8 @@ temperature: 0.2
   <must_not>Re-execute completed phases</must_not>
   <must_not>Proceed to next phase if current phase fails</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
-  <must_not>Include emojis in summaries</must_not>
+  <must_not>Use checkmark, cross mark, or warning emojis</must_not>
+  <must_not>Use any Unicode emoji characters in artifacts</must_not>
   <must_not>Update plan file directly (delegate to status-sync-manager)</must_not>
 </constraints>
 
@@ -448,7 +452,9 @@ temperature: 0.2
     - Verify git commits created for completed phases
     - Verify implementation summary created
     - Verify return format matches subagent-return-format.md
-    - Verify no emojis in artifacts
+    - Verify artifact contains no emoji characters
+    - Verify summary contains no emoji characters
+    - Verify all status indicators use text format ([PASS]/[FAIL]/[WARN])
     - Verify phase_statuses included in return object
   </post_execution>
 </validation_checks>

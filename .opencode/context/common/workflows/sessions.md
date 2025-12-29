@@ -43,10 +43,10 @@
 
 **Each session has unique ID - prevents concurrent agent conflicts**
 
-✅ Multiple agent instances can run simultaneously
-✅ No file conflicts between sessions
-✅ Each session tracks only its own files
-✅ Safe cleanup - only deletes own session folder
+[PASS] Multiple agent instances can run simultaneously
+[PASS] No file conflicts between sessions
+[PASS] Each session tracks only its own files
+[PASS] Safe cleanup - only deletes own session folder
 
 ## Manifest Structure
 

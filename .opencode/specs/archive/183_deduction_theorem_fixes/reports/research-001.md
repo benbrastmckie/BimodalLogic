@@ -172,7 +172,7 @@ inductive Formula : Type where
 ```lean
 match h with
 | DerivationTree.weakening Γ' _ φ h1 h2 =>
-    (em (A ∈ Γ')).elim  -- ❌ FAILS: .elim is not a tactic
+    (em (A ∈ Γ')).elim  -- [FAIL] FAILS: .elim is not a tactic
       (fun hA => ...)
       (fun hA => ...)
 ```
@@ -181,7 +181,7 @@ match h with
 ```lean
 match h with
 | DerivationTree.weakening Γ' _ φ h1 h2 =>
-    by_cases hA : A ∈ Γ'  -- ✅ WORKS: by_cases is a tactic
+    by_cases hA : A ∈ Γ'  -- [PASS] WORKS: by_cases is a tactic
     · -- Case: A ∈ Γ'
       ...
     · -- Case: A ∉ Γ'
@@ -207,7 +207,7 @@ decreasing_by
 **Expected Structure** (depends on recursive calls):
 - Modus ponens case: 2 recursive calls → 2 goals
 - Weakening case with `by_cases`: 1 recursive call (only in first branch) → 1 goal
-- **Total**: 3 goals ✓
+- **Total**: 3 goals [YES]
 
 **The Issue**:
 - The termination proof structure is correct in principle
@@ -426,10 +426,10 @@ decreasing_by
 ```
 
 **Verification**:
-- Modus ponens case: 2 recursive calls → 2 goals ✓
-- Weakening case (deduction_with_mem): 1 recursive call (only when A ∈ Γ'') → 1 goal ✓
-- Weakening case (deduction_theorem): 1 recursive call (only when Γ' = A :: Γ) → 1 goal ✓
-- **Total**: 3 goals for each function ✓
+- Modus ponens case: 2 recursive calls → 2 goals [YES]
+- Weakening case (deduction_with_mem): 1 recursive call (only when A ∈ Γ'') → 1 goal [YES]
+- Weakening case (deduction_theorem): 1 recursive call (only when Γ' = A :: Γ) → 1 goal [YES]
+- **Total**: 3 goals for each function [YES]
 
 ## Alternative Approaches
 

@@ -8,14 +8,14 @@
 
 ## Key Findings
 
-### What Task 209 Got Right ✅
+### What Task 209 Got Right [PASS]
 
 1. **Correct Pattern**: Found `simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at h` in Perpetuity/Helpers.lean
 2. **Correct Diagnosis**: Identified that `truth_at` pattern matching prevents direct equality substitution
 3. **Correct Preparation**: Added `@[simp]` attribute to `swap_past_future_involution`
 4. **Comprehensive Research**: Explored multiple alternatives and documented them well
 
-### What Went Wrong ❌
+### What Went Wrong [FAIL]
 
 1. **Implementation Gap**: The recommended 4-line proof was NOT implemented
 2. **Incorrect Attempt**: Used `simpa` instead of `simp only` with explicit hypothesis
@@ -135,7 +135,7 @@ theorem is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_fut
 
 ## Loogle Research Results
 
-**Tool Status**: ✅ Available at `/home/benjamin/.nix-profile/bin/loogle`
+**Tool Status**: [PASS] Available at `/home/benjamin/.nix-profile/bin/loogle`
 
 **Key Findings**:
 - `Eq.mp`: 101 declarations - standard equality transport, but not ideal for pattern-matched definitions

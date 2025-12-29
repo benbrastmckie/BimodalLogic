@@ -131,7 +131,7 @@ This test plan validates that /plan, /research, /revise, and /task commands corr
    - state.json status → "in_progress"
 3. Verify postflight updates:
    - TODO.md status → [COMPLETED]
-   - TODO.md ✅ added to title
+   - TODO.md [PASS] added to title
    - TODO.md **Completed** field added
    - state.json status → "completed"
    - state.json completed field added
@@ -142,7 +142,7 @@ This test plan validates that /plan, /research, /revise, and /task commands corr
 
 **Validation**:
 - [ ] TODO.md status is [COMPLETED]
-- [ ] TODO.md title has ✅
+- [ ] TODO.md title has [PASS]
 - [ ] state.json status is "completed"
 - [ ] Plan file header status is [COMPLETED]
 - [ ] All timestamps are present and correct
@@ -333,13 +333,13 @@ This test plan validates that /plan, /research, /revise, and /task commands corr
 ## Success Criteria
 
 All tests must pass with:
-- ✅ Atomic updates across all files
-- ✅ Correct status transitions
-- ✅ Proper timestamp formats
-- ✅ Rollback on failures
-- ✅ Lazy directory creation preserved
-- ✅ Field naming consistency
-- ✅ No file corruption
+- [PASS] Atomic updates across all files
+- [PASS] Correct status transitions
+- [PASS] Proper timestamp formats
+- [PASS] Rollback on failures
+- [PASS] Lazy directory creation preserved
+- [PASS] Field naming consistency
+- [PASS] No file corruption
 
 ## Test Results
 

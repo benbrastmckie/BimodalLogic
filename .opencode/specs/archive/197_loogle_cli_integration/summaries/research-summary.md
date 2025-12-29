@@ -112,12 +112,12 @@
 
 | Tool | Status | Notes |
 |------|--------|-------|
-| Loogle Binary | ✅ Available | `/home/benjamin/.cache/loogle/.lake/build/bin/loogle` |
-| Loogle Source | ✅ Available | `/home/benjamin/.cache/loogle/` |
-| JSON Output | ✅ Supported | `--json` flag |
-| Interactive Mode | ✅ Supported | `--interactive` flag |
-| Index Persistence | ✅ Supported | `--write-index`, `--read-index` |
-| Web API | ✅ Available | `https://loogle.lean-lang.org/json?q=` |
+| Loogle Binary | [PASS] Available | `/home/benjamin/.cache/loogle/.lake/build/bin/loogle` |
+| Loogle Source | [PASS] Available | `/home/benjamin/.cache/loogle/` |
+| JSON Output | [PASS] Supported | `--json` flag |
+| Interactive Mode | [PASS] Supported | `--interactive` flag |
+| Index Persistence | [PASS] Supported | `--write-index`, `--read-index` |
+| Web API | [PASS] Available | `https://loogle.lean-lang.org/json?q=` |
 
 ## References
 

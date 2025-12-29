@@ -61,11 +61,11 @@ This research traces artifact creation flows across 4 commands (/research, /plan
 - Delegated to: git-workflow-manager
 
 **Compliance**:
-- ✅ Lazy directory creation
-- ✅ Summary artifact required (<100 tokens, 3-5 sentences)
-- ✅ Naming conventions followed
-- ✅ Status markers correct
-- ✅ State.json updates complete
+- [PASS] Lazy directory creation
+- [PASS] Summary artifact required (<100 tokens, 3-5 sentences)
+- [PASS] Naming conventions followed
+- [PASS] Status markers correct
+- [PASS] State.json updates complete
 
 ---
 
@@ -102,11 +102,11 @@ This research traces artifact creation flows across 4 commands (/research, /plan
 - Delegated to: git-workflow-manager
 
 **Compliance**:
-- ✅ Lazy directory creation
-- ✅ NO summary artifact (plan is self-documenting - documented exception)
-- ✅ Naming conventions followed
-- ✅ Status markers correct
-- ✅ State.json updates complete
+- [PASS] Lazy directory creation
+- [PASS] NO summary artifact (plan is self-documenting - documented exception)
+- [PASS] Naming conventions followed
+- [PASS] Status markers correct
+- [PASS] State.json updates complete
 
 **Rationale for No Summary**:
 From planner.md line 170: "No summary artifact created - plan artifact is self-documenting. Unlike /implement (which creates multiple code files), /plan creates ONE artifact (the plan) which serves as its own documentation."
@@ -147,11 +147,11 @@ From planner.md line 170: "No summary artifact created - plan artifact is self-d
 - Delegated to: git-workflow-manager
 
 **Compliance**:
-- ✅ Lazy directory creation (reuses existing)
-- ✅ NO summary artifact (same rationale as /plan)
-- ✅ Version incrementing correct
-- ✅ Status markers correct
-- ✅ State.json updates complete
+- [PASS] Lazy directory creation (reuses existing)
+- [PASS] NO summary artifact (same rationale as /plan)
+- [PASS] Version incrementing correct
+- [PASS] Status markers correct
+- [PASS] State.json updates complete
 
 ---
 
@@ -183,7 +183,7 @@ ELSE IF language != "lean" AND has_plan == false:
 **Status Markers**:
 - Preflight (Stage 1): `[NOT STARTED]`, `[PLANNED]`, or `[REVISED]` → `[IMPLEMENTING]`
 - Postflight (Stage 7):
-  - Success: `[IMPLEMENTING]` → `[COMPLETED]` + **Completed**: {date} + ✅
+  - Success: `[IMPLEMENTING]` → `[COMPLETED]` + **Completed**: {date} + [PASS]
   - Partial: `[IMPLEMENTING]` → `[PARTIAL]` + note about resume
   - Failed: Keep `[IMPLEMENTING]`
   - Blocked: `[IMPLEMENTING]` → `[BLOCKED]`
@@ -209,12 +209,12 @@ ELSE IF language != "lean" AND has_plan == false:
 - Delegated to: git-workflow-manager
 
 **Compliance**:
-- ✅ Lazy directory creation
-- ✅ Summary artifact required (<100 tokens, 3-5 sentences)
-- ✅ Naming conventions followed (date-stamped)
-- ✅ Status markers correct
-- ✅ State.json updates complete
-- ✅ Language-based routing validated
+- [PASS] Lazy directory creation
+- [PASS] Summary artifact required (<100 tokens, 3-5 sentences)
+- [PASS] Naming conventions followed (date-stamped)
+- [PASS] Status markers correct
+- [PASS] State.json updates complete
+- [PASS] Language-based routing validated
 
 ---
 
@@ -272,11 +272,11 @@ ELSE IF language != "lean" AND has_plan == false:
 ```
 
 **Compliance**:
-- ✅ Lazy directory creation (lines 166, 173)
-- ✅ Summary artifact created (Step 5)
-- ✅ Summary within token limit (line 207: <100 tokens)
-- ✅ Return format matches subagent-return-format.md
-- ✅ No emojis (line 125, 142)
+- [PASS] Lazy directory creation (lines 166, 173)
+- [PASS] Summary artifact created (Step 5)
+- [PASS] Summary within token limit (line 207: <100 tokens)
+- [PASS] Return format matches subagent-return-format.md
+- [PASS] No emojis (line 125, 142)
 
 ---
 
@@ -341,11 +341,11 @@ ELSE IF language != "lean" AND has_plan == false:
 ```
 
 **Compliance**:
-- ✅ Lazy directory creation (line 334-336)
-- ✅ Summary artifact created (Step 4)
-- ✅ Summary within token limit (line 476: <100 tokens)
-- ✅ Return format matches subagent-return-format.md
-- ✅ Tool unavailability logged to errors.json (Step 5)
+- [PASS] Lazy directory creation (line 334-336)
+- [PASS] Summary artifact created (Step 4)
+- [PASS] Summary within token limit (line 476: <100 tokens)
+- [PASS] Return format matches subagent-return-format.md
+- [PASS] Tool unavailability logged to errors.json (Step 5)
 
 ---
 
@@ -401,11 +401,11 @@ ELSE IF language != "lean" AND has_plan == false:
 ```
 
 **Compliance**:
-- ✅ Lazy directory creation (line 161-162)
-- ✅ NO summary artifact (documented exception, line 170)
-- ✅ Naming conventions followed (version format)
-- ✅ Return format matches subagent-return-format.md
-- ✅ Summary field brief (<100 tokens, line 204)
+- [PASS] Lazy directory creation (line 161-162)
+- [PASS] NO summary artifact (documented exception, line 170)
+- [PASS] Naming conventions followed (version format)
+- [PASS] Return format matches subagent-return-format.md
+- [PASS] Summary field brief (<100 tokens, line 204)
 
 ---
 
@@ -462,12 +462,12 @@ ELSE IF language != "lean" AND has_plan == false:
 ```
 
 **Compliance**:
-- ✅ Lazy directory creation (line 250)
-- ✅ Summary artifact required (Step 5)
-- ✅ Summary validation before return (Step 6, lines 274-297)
-- ✅ Summary within token limit (<100 tokens, line 310)
-- ✅ Return format matches subagent-return-format.md
-- ✅ Tool unavailability logged (line 170-176)
+- [PASS] Lazy directory creation (line 250)
+- [PASS] Summary artifact required (Step 5)
+- [PASS] Summary validation before return (Step 6, lines 274-297)
+- [PASS] Summary within token limit (<100 tokens, line 310)
+- [PASS] Return format matches subagent-return-format.md
+- [PASS] Tool unavailability logged (line 170-176)
 
 ---
 
@@ -522,12 +522,12 @@ ELSE IF language != "lean" AND has_plan == false:
 ```
 
 **Compliance**:
-- ✅ Lazy directory creation (line 153)
-- ✅ Summary artifact required (Step 5)
-- ✅ Summary validation before return (Step 6, lines 176-200)
-- ✅ Summary within token limit (<100 tokens)
-- ✅ Return format matches subagent-return-format.md
-- ✅ Per-phase git commits (Step 4)
+- [PASS] Lazy directory creation (line 153)
+- [PASS] Summary artifact required (Step 5)
+- [PASS] Summary validation before return (Step 6, lines 176-200)
+- [PASS] Summary within token limit (<100 tokens)
+- [PASS] Return format matches subagent-return-format.md
+- [PASS] Per-phase git commits (Step 4)
 
 ---
 
@@ -577,11 +577,11 @@ ELSE IF language != "lean" AND has_plan == false:
 ```
 
 **Compliance**:
-- ✅ Lazy directory creation (line 120-121)
-- ✅ Summary artifact created (Step 5)
-- ✅ Return format matches subagent-return-format.md
-- ✅ Language routing to lean-implementation-agent (Step 2)
-- ⚠️ No explicit summary validation before return (gap identified)
+- [PASS] Lazy directory creation (line 120-121)
+- [PASS] Summary artifact created (Step 5)
+- [PASS] Return format matches subagent-return-format.md
+- [PASS] Language routing to lean-implementation-agent (Step 2)
+- [WARN] No explicit summary validation before return (gap identified)
 
 ---
 
@@ -591,21 +591,21 @@ ELSE IF language != "lean" AND has_plan == false:
 
 | Command/Agent | Lazy Directory Creation | Summary Required | Summary <100 Tokens | Naming Conventions | No Emojis |
 |---------------|------------------------|------------------|---------------------|-------------------|-----------|
-| /research | ✅ | ✅ | ✅ | ✅ | ✅ |
-| /plan | ✅ | ❌ (Exception) | N/A | ✅ | ✅ |
-| /revise | ✅ | ❌ (Exception) | N/A | ✅ | ✅ |
-| /implement | ✅ | ✅ | ✅ | ✅ | ✅ |
-| researcher | ✅ | ✅ | ✅ | ✅ | ✅ |
-| lean-research-agent | ✅ | ✅ | ✅ | ✅ | ✅ |
-| planner | ✅ | ❌ (Exception) | N/A | ✅ | ✅ |
-| lean-implementation-agent | ✅ | ✅ | ✅ | ✅ | ✅ |
-| task-executor | ✅ | ✅ | ✅ | ✅ | ✅ |
-| implementer | ✅ | ✅ | ⚠️ (Not validated) | ✅ | ✅ |
+| /research | [PASS] | [PASS] | [PASS] | [PASS] | [PASS] |
+| /plan | [PASS] | [FAIL] (Exception) | N/A | [PASS] | [PASS] |
+| /revise | [PASS] | [FAIL] (Exception) | N/A | [PASS] | [PASS] |
+| /implement | [PASS] | [PASS] | [PASS] | [PASS] | [PASS] |
+| researcher | [PASS] | [PASS] | [PASS] | [PASS] | [PASS] |
+| lean-research-agent | [PASS] | [PASS] | [PASS] | [PASS] | [PASS] |
+| planner | [PASS] | [FAIL] (Exception) | N/A | [PASS] | [PASS] |
+| lean-implementation-agent | [PASS] | [PASS] | [PASS] | [PASS] | [PASS] |
+| task-executor | [PASS] | [PASS] | [PASS] | [PASS] | [PASS] |
+| implementer | [PASS] | [PASS] | [WARN] (Not validated) | [PASS] | [PASS] |
 
 **Legend**:
-- ✅ Compliant
-- ❌ Non-compliant (documented exception)
-- ⚠️ Partial compliance (gap identified)
+- [PASS] Compliant
+- [FAIL] Non-compliant (documented exception)
+- [WARN] Partial compliance (gap identified)
 
 **Exceptions**:
 - /plan and planner: No summary artifact because plan is self-documenting (single artifact)
@@ -617,15 +617,15 @@ ELSE IF language != "lean" AND has_plan == false:
 
 | Command/Agent | In-Progress Marker | Completion Marker | Timestamps | Atomic Updates |
 |---------------|-------------------|-------------------|------------|----------------|
-| /research | ✅ [RESEARCHING] | ✅ [RESEARCHED] | ✅ | ✅ |
-| /plan | ✅ [PLANNING] | ✅ [PLANNED] | ✅ | ✅ |
-| /revise | ✅ [REVISING] | ✅ [REVISED] | ✅ | ✅ |
-| /implement | ✅ [IMPLEMENTING] | ✅ [COMPLETED]/[PARTIAL] | ✅ | ✅ |
+| /research | [PASS] [RESEARCHING] | [PASS] [RESEARCHED] | [PASS] | [PASS] |
+| /plan | [PASS] [PLANNING] | [PASS] [PLANNED] | [PASS] | [PASS] |
+| /revise | [PASS] [REVISING] | [PASS] [REVISED] | [PASS] | [PASS] |
+| /implement | [PASS] [IMPLEMENTING] | [PASS] [COMPLETED]/[PARTIAL] | [PASS] | [PASS] |
 | researcher | N/A (returns to command) | N/A | N/A | N/A |
 | lean-research-agent | N/A | N/A | N/A | N/A |
 | planner | N/A | N/A | N/A | N/A |
 | lean-implementation-agent | N/A | N/A | N/A | N/A |
-| task-executor | ✅ (updates plan phases) | ✅ | ✅ | ✅ |
+| task-executor | [PASS] (updates plan phases) | [PASS] | [PASS] | [PASS] |
 | implementer | N/A | N/A | N/A | N/A |
 
 **Note**: Subagents don't directly update status markers; they return to commands which handle status updates.
@@ -636,10 +636,10 @@ ELSE IF language != "lean" AND has_plan == false:
 
 | Command | active_projects | artifacts | status | timestamps | Compliance |
 |---------|----------------|-----------|--------|------------|------------|
-| /research | ✅ | ✅ | ✅ researched | ✅ started, completed | ✅ |
-| /plan | ✅ | ✅ | ✅ planned | ✅ started, completed | ✅ |
-| /revise | ✅ | ✅ | ✅ revised | ✅ started, completed | ✅ |
-| /implement | ✅ | ✅ | ✅ completed/partial | ✅ started, completed | ✅ |
+| /research | [PASS] | [PASS] | [PASS] researched | [PASS] started, completed | [PASS] |
+| /plan | [PASS] | [PASS] | [PASS] planned | [PASS] started, completed | [PASS] |
+| /revise | [PASS] | [PASS] | [PASS] revised | [PASS] started, completed | [PASS] |
+| /implement | [PASS] | [PASS] | [PASS] completed/partial | [PASS] started, completed | [PASS] |
 
 **Timestamp Format**: YYYY-MM-DD (per state-schema.md line 292-296)
 
@@ -649,10 +649,10 @@ ELSE IF language != "lean" AND has_plan == false:
 
 | Command | Stage 1 Preflight | Stage 2 Language | Stage 3 Delegation | Stage 7 Postflight | Stage 8 Return |
 |---------|------------------|------------------|-------------------|-------------------|----------------|
-| /research | ✅ | ✅ | ✅ | ✅ | ✅ |
-| /plan | ✅ | ✅ (harvest) | ✅ | ✅ | ✅ |
-| /revise | ✅ | ✅ (version) | ✅ | ✅ | ✅ |
-| /implement | ✅ | ✅ | ✅ | ✅ | ✅ |
+| /research | [PASS] | [PASS] | [PASS] | [PASS] | [PASS] |
+| /plan | [PASS] | [PASS] (harvest) | [PASS] | [PASS] | [PASS] |
+| /revise | [PASS] | [PASS] (version) | [PASS] | [PASS] | [PASS] |
+| /implement | [PASS] | [PASS] | [PASS] | [PASS] | [PASS] |
 
 All commands follow the 8-stage pattern with documented variations per command-lifecycle.md.
 
@@ -829,10 +829,10 @@ All commands follow the 8-stage pattern with documented variations per command-l
 
 | Command | Creates Root | Creates reports/ | Creates plans/ | Creates summaries/ |
 |---------|-------------|-----------------|---------------|-------------------|
-| /research | ✅ (when writing) | ✅ (when writing) | ❌ | ✅ (when writing) |
-| /plan | ✅ (when writing) | ❌ | ✅ (when writing) | ❌ |
-| /revise | ❌ (reuses) | ❌ | ❌ (reuses) | ❌ |
-| /implement | ✅ (when writing summary) | ❌ | ❌ | ✅ (when writing) |
+| /research | [PASS] (when writing) | [PASS] (when writing) | [FAIL] | [PASS] (when writing) |
+| /plan | [PASS] (when writing) | [FAIL] | [PASS] (when writing) | [FAIL] |
+| /revise | [FAIL] (reuses) | [FAIL] | [FAIL] (reuses) | [FAIL] |
+| /implement | [PASS] (when writing summary) | [FAIL] | [FAIL] | [PASS] (when writing) |
 
 **Compliance**: All follow lazy directory creation per artifact-management.md line 155
 

@@ -23,12 +23,12 @@ This research investigated MCP server best practices for OpenCode integration, w
 ## Research Scope
 
 ### Objectives
-1. ✅ Research OpenCode MCP server configuration best practices
-2. ✅ Understand how MCP servers integrate into agent workflows
-3. ✅ Identify proper setup for lean-lsp-mcp in OpenCode
-4. ✅ Determine how agents invoke MCP tools
-5. ✅ Identify common pitfalls and solutions
-6. ✅ Recommend additional useful MCP servers for Lean development
+1. [PASS] Research OpenCode MCP server configuration best practices
+2. [PASS] Understand how MCP servers integrate into agent workflows
+3. [PASS] Identify proper setup for lean-lsp-mcp in OpenCode
+4. [PASS] Determine how agents invoke MCP tools
+5. [PASS] Identify common pitfalls and solutions
+6. [PASS] Recommend additional useful MCP servers for Lean development
 
 ### Sources
 - **Primary**: https://opencode.ai/docs/mcp-servers/
@@ -52,9 +52,9 @@ OpenCode has **built-in MCP server support** that automatically makes MCP tools 
 **CRITICAL**: OpenCode uses `opencode.json` for MCP configuration, NOT `.mcp.json`.
 
 The project currently has:
-- ✅ `.mcp.json` - Used by Claude Desktop/other MCP clients
-- ❌ No `opencode.json` in project root - Missing OpenCode configuration
-- ✅ `~/.config/opencode/opencode.json` - Global OpenCode config (only keybinds)
+- [PASS] `.mcp.json` - Used by Claude Desktop/other MCP clients
+- [FAIL] No `opencode.json` in project root - Missing OpenCode configuration
+- [PASS] `~/.config/opencode/opencode.json` - Global OpenCode config (only keybinds)
 
 **Required**: Create project-specific `opencode.json` with MCP server configuration.
 
@@ -1024,16 +1024,16 @@ Increase timeout in MCP server config:
 ### Impact
 
 **Before** (Task 212 approach):
-- ❌ Module import errors
-- ❌ Architectural mismatch
-- ❌ Unnecessary code complexity
-- ❌ Agents cannot use MCP tools
+- [FAIL] Module import errors
+- [FAIL] Architectural mismatch
+- [FAIL] Unnecessary code complexity
+- [FAIL] Agents cannot use MCP tools
 
 **After** (Task 218 approach):
-- ✅ No import errors (no imports needed)
-- ✅ Architectural alignment with OpenCode
-- ✅ Simple configuration-based integration
-- ✅ Agents can use MCP tools naturally
+- [PASS] No import errors (no imports needed)
+- [PASS] Architectural alignment with OpenCode
+- [PASS] Simple configuration-based integration
+- [PASS] Agents can use MCP tools naturally
 
 ### Success Metrics
 

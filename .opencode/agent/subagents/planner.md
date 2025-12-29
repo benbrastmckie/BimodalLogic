@@ -192,6 +192,9 @@ temperature: 0.2
 
 <constraints>
   <must>Follow plan.md template exactly</must>
+  <must>Follow NO EMOJI standard per documentation.md</must>
+  <must>Use text-based alternatives for status indicators</must>
+  <must>Validate artifacts are emoji-free before returning</must>
   <must>Create project directory and subdirectories lazily (only when writing)</must>
   <must>Mark all phases as [NOT STARTED] initially</must>
   <must>Include research inputs in metadata if available</must>
@@ -200,7 +203,8 @@ temperature: 0.2
   <must>Extract plan metadata (phase_count, estimated_hours, complexity)</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Keep summary field brief (3-5 sentences, <100 tokens)</must>
-  <must_not>Include emojis in plan</must_not>
+  <must_not>Use checkmark, cross mark, or warning emojis</must_not>
+  <must_not>Use any Unicode emoji characters in artifacts</must_not>
   <must_not>Create phases larger than 3 hours</must_not>
   <must_not>Create directories before writing files</must_not>
   <must_not>Create summary artifacts (plan is self-documenting)</must_not>
@@ -349,7 +353,9 @@ temperature: 0.2
     - Verify all phases marked [NOT STARTED]
     - Verify effort estimates reasonable
     - Verify return format matches subagent-return-format.md
-    - Verify no emojis in plan
+    - Verify artifact contains no emoji characters
+    - Verify summary contains no emoji characters
+    - Verify all status indicators use text format ([PASS]/[FAIL]/[WARN])
   </post_execution>
 </validation_checks>
 

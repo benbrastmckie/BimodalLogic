@@ -51,10 +51,10 @@ async with stdio_client(server_params) as (read, write):
 ```
 
 **Key Points**:
-- ✅ Uses official `mcp` package (pip install mcp)
-- ✅ Spawns server as subprocess
-- ✅ Communicates via stdio protocol
-- ✅ No PYTHONPATH or `__init__.py` needed
+- [PASS] Uses official `mcp` package (pip install mcp)
+- [PASS] Spawns server as subprocess
+- [PASS] Communicates via stdio protocol
+- [PASS] No PYTHONPATH or `__init__.py` needed
 
 ---
 
@@ -114,20 +114,20 @@ diagnostics = check_lean_diagnostics("file.lean")
 ## Why This Matters
 
 **Current Plan Issues**:
-1. ❌ Reinvents the wheel (custom wrapper vs official SDK)
-2. ❌ Doesn't follow MCP best practices
-3. ❌ Requires PYTHONPATH configuration
-4. ❌ Protocol still not implemented (placeholder returns error)
-5. ❌ More complex architecture
-6. ❌ Higher maintenance burden
+1. [FAIL] Reinvents the wheel (custom wrapper vs official SDK)
+2. [FAIL] Doesn't follow MCP best practices
+3. [FAIL] Requires PYTHONPATH configuration
+4. [FAIL] Protocol still not implemented (placeholder returns error)
+5. [FAIL] More complex architecture
+6. [FAIL] Higher maintenance burden
 
 **MCP SDK Benefits**:
-1. ✅ Official, maintained by MCP team
-2. ✅ Follows MCP best practices
-3. ✅ No PYTHONPATH needed
-4. ✅ Protocol fully implemented
-5. ✅ Simpler architecture
-6. ✅ Compatible with MCP Inspector and ecosystem tools
+1. [PASS] Official, maintained by MCP team
+2. [PASS] Follows MCP best practices
+3. [PASS] No PYTHONPATH needed
+4. [PASS] Protocol fully implemented
+5. [PASS] Simpler architecture
+6. [PASS] Compatible with MCP Inspector and ecosystem tools
 
 ---
 

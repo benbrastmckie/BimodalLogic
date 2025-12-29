@@ -10,7 +10,7 @@ This guide describes the MCP (Model Context Protocol) tools available for Lean 4
 
 **Purpose**: Real-time interaction with Lean Language Server
 
-**Status**: 🟡 Partial (wrapper implemented, MCP integration pending)
+**Status**: [YELLOW] Partial (wrapper implemented, MCP integration pending)
 
 **When to Use**:
 - Validating proofs incrementally during implementation
@@ -68,7 +68,7 @@ if (diagnostics.success) {
 
 **Purpose**: Explore Lean project structure and dependencies
 
-**Status**: 🔴 Planned (not yet implemented)
+**Status**: [RED] Planned (not yet implemented)
 
 **When to Use**:
 - Understanding Mathlib organization
@@ -111,7 +111,7 @@ const deps = await explorer.exploreDependencies('dist_triangle');
 
 **Purpose**: Search theorems by type signature and patterns
 
-**Status**: 🔴 Planned (not yet implemented)
+**Status**: [RED] Planned (not yet implemented)
 
 **When to Use**:
 - Finding theorems with specific type signatures
@@ -155,7 +155,7 @@ const applicable = await loogle.searchUnify('a + b = b + a');
 
 **Purpose**: Natural language semantic search over Mathlib
 
-**Status**: 🔴 Planned (not yet implemented)
+**Status**: [RED] Planned (not yet implemented)
 
 **When to Use**:
 - Initial exploration of unfamiliar areas
@@ -656,10 +656,10 @@ If MCP tool unavailable:
 ## Implementation Status
 
 ### Phase 1: Foundation (Current)
-- ✅ Type definitions created
-- ✅ Error handling framework created
-- ✅ LSP client wrapper created (basic)
-- ✅ MCP tools guide created
+- [PASS] Type definitions created
+- [PASS] Error handling framework created
+- [PASS] LSP client wrapper created (basic)
+- [PASS] MCP tools guide created
 - ⏳ MCP protocol integration (pending)
 
 ### Phase 2: Additional Clients (Planned)

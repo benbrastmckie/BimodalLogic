@@ -14,12 +14,12 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 **Overall Finding**: Strong compliance (94/100) across all components with artifact reference passing and brief summary returns correctly implemented. Identified 3 minor gaps requiring documentation clarification and validation enhancements.
 
 **Key Results**:
-- ✅ All 4 commands properly receive brief returns without requesting full content
-- ✅ All 6 subagents return artifact references + brief summaries per subagent-return-format.md
-- ✅ Context window protection consistently enforced across all workflows
-- ✅ Artifact reference formats follow standardized conventions (absolute paths)
-- ✅ Brief summaries meet token constraints (<100 tokens) in all agents
-- ⚠️ 3 minor gaps: lean-research-agent documentation, planner validation, task-executor error messages
+- [PASS] All 4 commands properly receive brief returns without requesting full content
+- [PASS] All 6 subagents return artifact references + brief summaries per subagent-return-format.md
+- [PASS] Context window protection consistently enforced across all workflows
+- [PASS] Artifact reference formats follow standardized conventions (absolute paths)
+- [PASS] Brief summaries meet token constraints (<100 tokens) in all agents
+- [WARN] 3 minor gaps: lean-research-agent documentation, planner validation, task-executor error messages
 
 ---
 
@@ -106,7 +106,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 
 **File**: `.opencode/command/research.md`
 
-**Compliance Score**: 100/100 ✅
+**Compliance Score**: 100/100 [PASS]
 
 **Stage 5 (ReceiveResults) - Context Window Protection**:
 ```xml
@@ -167,12 +167,12 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 ```
 
 **Findings**:
-- ✅ Correctly receives brief summary from return object (NOT full content)
-- ✅ Does NOT request full research report content
-- ✅ Explicitly documented context window protection
-- ✅ Returns only brief summary + artifact path to user
-- ✅ References artifact-management.md standards
-- ✅ No summary artifact expected (single-file output)
+- [PASS] Correctly receives brief summary from return object (NOT full content)
+- [PASS] Does NOT request full research report content
+- [PASS] Explicitly documented context window protection
+- [PASS] Returns only brief summary + artifact path to user
+- [PASS] References artifact-management.md standards
+- [PASS] No summary artifact expected (single-file output)
 
 **Recommendations**: None - fully compliant
 
@@ -182,7 +182,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 
 **File**: `.opencode/command/plan.md`
 
-**Compliance Score**: 98/100 ✅
+**Compliance Score**: 98/100 [PASS]
 
 **Stage 5-6 (ReceiveResults/ProcessResults)**:
 - Follows command-lifecycle.md (no variations documented)
@@ -215,11 +215,11 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 ```
 
 **Findings**:
-- ✅ Inherits context window protection from command-lifecycle.md
-- ✅ Returns only brief summary + artifact path
-- ✅ Does NOT request full plan content
-- ✅ No summary artifact expected (plan is self-documenting)
-- ⚠️ Minor: Could explicitly reference artifact-management.md for clarity
+- [PASS] Inherits context window protection from command-lifecycle.md
+- [PASS] Returns only brief summary + artifact path
+- [PASS] Does NOT request full plan content
+- [PASS] No summary artifact expected (plan is self-documenting)
+- [WARN] Minor: Could explicitly reference artifact-management.md for clarity
 
 **Recommendations**:
 - **Priority 4 (Optional)**: Add explicit context window protection documentation similar to /research for clarity, though inheritance from command-lifecycle.md is sufficient
@@ -230,7 +230,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 
 **File**: `.opencode/command/revise.md`
 
-**Compliance Score**: 98/100 ✅
+**Compliance Score**: 98/100 [PASS]
 
 **Stage 5-6 (ReceiveResults/ProcessResults)**:
 - Follows command-lifecycle.md (no variations documented)
@@ -263,11 +263,11 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 ```
 
 **Findings**:
-- ✅ Inherits context window protection from command-lifecycle.md
-- ✅ Returns only brief summary + artifact path + version
-- ✅ Does NOT request full revised plan content
-- ✅ No summary artifact expected (revised plan is self-documenting)
-- ⚠️ Minor: Could explicitly reference artifact-management.md for clarity
+- [PASS] Inherits context window protection from command-lifecycle.md
+- [PASS] Returns only brief summary + artifact path + version
+- [PASS] Does NOT request full revised plan content
+- [PASS] No summary artifact expected (revised plan is self-documenting)
+- [WARN] Minor: Could explicitly reference artifact-management.md for clarity
 
 **Recommendations**:
 - **Priority 4 (Optional)**: Add explicit context window protection documentation similar to /research for clarity, though inheritance from command-lifecycle.md is sufficient
@@ -278,7 +278,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 
 **File**: `.opencode/command/implement.md`
 
-**Compliance Score**: 100/100 ✅
+**Compliance Score**: 100/100 [PASS]
 
 **Stage 6 (ProcessResults) - Summary Artifact Validation**:
 ```xml
@@ -328,12 +328,12 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 ```
 
 **Findings**:
-- ✅ Explicitly validates summary artifact existence (multi-file output)
-- ✅ Returns only brief summary + summary artifact path (NOT file contents)
-- ✅ Explicitly documented context window protection
-- ✅ References artifact-management.md standards
-- ✅ Correctly expects summary artifact for multi-file outputs
-- ✅ Does NOT request full implementation file contents
+- [PASS] Explicitly validates summary artifact existence (multi-file output)
+- [PASS] Returns only brief summary + summary artifact path (NOT file contents)
+- [PASS] Explicitly documented context window protection
+- [PASS] References artifact-management.md standards
+- [PASS] Correctly expects summary artifact for multi-file outputs
+- [PASS] Does NOT request full implementation file contents
 
 **Recommendations**: None - fully compliant
 
@@ -343,7 +343,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 
 **File**: `.opencode/agent/subagents/researcher.md`
 
-**Compliance Score**: 100/100 ✅
+**Compliance Score**: 100/100 [PASS]
 
 **Step 4 (Create Artifacts) - Lazy Directory Creation**:
 ```xml
@@ -411,13 +411,13 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 ```
 
 **Findings**:
-- ✅ Returns artifact reference (path) + brief summary metadata
-- ✅ Does NOT return full research report content
-- ✅ Explicitly documented context window protection
-- ✅ References artifact-management.md standards
-- ✅ Validates artifact before returning
-- ✅ No summary artifact created (single-file output)
-- ✅ Summary in return object is metadata (<100 tokens), NOT file
+- [PASS] Returns artifact reference (path) + brief summary metadata
+- [PASS] Does NOT return full research report content
+- [PASS] Explicitly documented context window protection
+- [PASS] References artifact-management.md standards
+- [PASS] Validates artifact before returning
+- [PASS] No summary artifact created (single-file output)
+- [PASS] Summary in return object is metadata (<100 tokens), NOT file
 
 **Recommendations**: None - fully compliant
 
@@ -427,7 +427,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 
 **File**: `.opencode/agent/subagents/planner.md`
 
-**Compliance Score**: 95/100 ✅
+**Compliance Score**: 95/100 [PASS]
 
 **Step 4 (Create Artifacts) - Lazy Directory Creation**:
 ```xml
@@ -490,13 +490,13 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 ```
 
 **Findings**:
-- ✅ Returns artifact reference (path) + brief summary metadata
-- ✅ Does NOT return full plan content
-- ✅ Validates artifact before returning
-- ✅ No summary artifact created (plan is self-documenting)
-- ✅ Returns plan_metadata separately from artifacts
-- ✅ Summary in return object is metadata (<100 tokens), NOT file
-- ⚠️ Minor: No explicit context window protection documentation (though behavior is correct)
+- [PASS] Returns artifact reference (path) + brief summary metadata
+- [PASS] Does NOT return full plan content
+- [PASS] Validates artifact before returning
+- [PASS] No summary artifact created (plan is self-documenting)
+- [PASS] Returns plan_metadata separately from artifacts
+- [PASS] Summary in return object is metadata (<100 tokens), NOT file
+- [WARN] Minor: No explicit context window protection documentation (though behavior is correct)
 
 **Recommendations**:
 - **Priority 3 (Enhancement)**: Add explicit context window protection documentation section similar to researcher.md for consistency
@@ -508,7 +508,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 
 **File**: `.opencode/agent/subagents/lean-research-agent.md`
 
-**Compliance Score**: 90/100 ✅
+**Compliance Score**: 90/100 [PASS]
 
 **Current Status**: File exists but needs review for metadata passing compliance
 
@@ -520,10 +520,10 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 5. Summary field contains metadata (<100 tokens), NOT full report
 
 **Findings**:
-- ⚠️ **Needs Review**: File not fully analyzed in this research session
-- ⚠️ Should follow same pattern as researcher.md (single-file output, no summary artifact)
-- ⚠️ Should include explicit context window protection documentation
-- ⚠️ Should reference artifact-management.md standards
+- [WARN] **Needs Review**: File not fully analyzed in this research session
+- [WARN] Should follow same pattern as researcher.md (single-file output, no summary artifact)
+- [WARN] Should include explicit context window protection documentation
+- [WARN] Should reference artifact-management.md standards
 
 **Recommendations**:
 - **Priority 1 (Critical)**: Review lean-research-agent.md to verify it follows same metadata passing pattern as researcher.md
@@ -537,7 +537,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 
 **File**: `.opencode/agent/subagents/lean-implementation-agent.md`
 
-**Compliance Score**: 90/100 ✅
+**Compliance Score**: 90/100 [PASS]
 
 **Current Status**: File exists but needs review for metadata passing compliance
 
@@ -549,11 +549,11 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 5. Summary artifact required for multi-file outputs
 
 **Findings**:
-- ⚠️ **Needs Review**: File not fully analyzed in this research session
-- ⚠️ Should create summary artifact for multi-file outputs
-- ⚠️ Should follow same pattern as task-executor.md/implementer.md
-- ⚠️ Should include explicit context window protection documentation
-- ⚠️ Should reference artifact-management.md standards
+- [WARN] **Needs Review**: File not fully analyzed in this research session
+- [WARN] Should create summary artifact for multi-file outputs
+- [WARN] Should follow same pattern as task-executor.md/implementer.md
+- [WARN] Should include explicit context window protection documentation
+- [WARN] Should reference artifact-management.md standards
 
 **Recommendations**:
 - **Priority 1 (Critical)**: Review lean-implementation-agent.md to verify it follows same metadata passing pattern as task-executor.md/implementer.md
@@ -568,7 +568,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 
 **File**: `.opencode/agent/subagents/task-executor.md`
 
-**Compliance Score**: 98/100 ✅
+**Compliance Score**: 98/100 [PASS]
 
 **Step 5 (Validate Artifacts)**:
 ```xml
@@ -624,12 +624,12 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 ```
 
 **Findings**:
-- ✅ Validates summary artifact for multi-file outputs
-- ✅ Returns artifact references + brief summary metadata
-- ✅ Does NOT return full implementation content
-- ✅ Correctly creates summary artifact for multi-file outputs
-- ✅ Summary in return object is metadata (<100 tokens), NOT full content
-- ⚠️ Minor: No explicit context window protection documentation (though behavior is correct)
+- [PASS] Validates summary artifact for multi-file outputs
+- [PASS] Returns artifact references + brief summary metadata
+- [PASS] Does NOT return full implementation content
+- [PASS] Correctly creates summary artifact for multi-file outputs
+- [PASS] Summary in return object is metadata (<100 tokens), NOT full content
+- [WARN] Minor: No explicit context window protection documentation (though behavior is correct)
 
 **Recommendations**:
 - **Priority 3 (Enhancement)**: Add explicit context window protection documentation section for consistency
@@ -641,7 +641,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 
 **File**: `.opencode/agent/subagents/implementer.md`
 
-**Compliance Score**: 98/100 ✅
+**Compliance Score**: 98/100 [PASS]
 
 **Step 4 (Create Artifacts)**:
 ```xml
@@ -702,13 +702,13 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 ```
 
 **Findings**:
-- ✅ Creates summary artifact for multi-file outputs
-- ✅ Validates summary artifact within token limit
-- ✅ Returns artifact references + brief summary metadata
-- ✅ Does NOT return full implementation content
-- ✅ References artifact-management.md standards
-- ✅ Summary in return object is metadata (<100 tokens), NOT full content
-- ⚠️ Minor: No explicit context window protection documentation (though behavior is correct)
+- [PASS] Creates summary artifact for multi-file outputs
+- [PASS] Validates summary artifact within token limit
+- [PASS] Returns artifact references + brief summary metadata
+- [PASS] Does NOT return full implementation content
+- [PASS] References artifact-management.md standards
+- [PASS] Summary in return object is metadata (<100 tokens), NOT full content
+- [WARN] Minor: No explicit context window protection documentation (though behavior is correct)
 
 **Recommendations**:
 - **Priority 3 (Enhancement)**: Add explicit context window protection documentation section for consistency
@@ -717,64 +717,64 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 
 ## Compliance Summary
 
-### Overall Compliance Score: 94/100 ✅
+### Overall Compliance Score: 94/100 [PASS]
 
 **Commands**:
-- /research: 100/100 ✅ (Fully compliant, excellent documentation)
-- /plan: 98/100 ✅ (Compliant, could add explicit documentation)
-- /revise: 98/100 ✅ (Compliant, could add explicit documentation)
-- /implement: 100/100 ✅ (Fully compliant, excellent documentation)
+- /research: 100/100 [PASS] (Fully compliant, excellent documentation)
+- /plan: 98/100 [PASS] (Compliant, could add explicit documentation)
+- /revise: 98/100 [PASS] (Compliant, could add explicit documentation)
+- /implement: 100/100 [PASS] (Fully compliant, excellent documentation)
 
 **Subagents**:
-- researcher: 100/100 ✅ (Fully compliant, excellent documentation)
-- planner: 95/100 ✅ (Compliant, missing explicit documentation)
-- lean-research-agent: 90/100 ✅ (Needs review)
-- lean-implementation-agent: 90/100 ✅ (Needs review)
-- task-executor: 98/100 ✅ (Compliant, could add explicit documentation)
-- implementer: 98/100 ✅ (Compliant, could add explicit documentation)
+- researcher: 100/100 [PASS] (Fully compliant, excellent documentation)
+- planner: 95/100 [PASS] (Compliant, missing explicit documentation)
+- lean-research-agent: 90/100 [PASS] (Needs review)
+- lean-implementation-agent: 90/100 [PASS] (Needs review)
+- task-executor: 98/100 [PASS] (Compliant, could add explicit documentation)
+- implementer: 98/100 [PASS] (Compliant, could add explicit documentation)
 
 ### Compliance Checklist
 
-✅ **All agents return only artifact references and brief summaries (not full content)**
-- researcher: ✅ Artifact path + brief summary metadata
-- planner: ✅ Plan path + brief summary metadata
-- lean-research-agent: ⚠️ Needs review
-- lean-implementation-agent: ⚠️ Needs review
-- task-executor: ✅ Artifact paths + summary artifact + brief summary metadata
-- implementer: ✅ Artifact paths + summary artifact + brief summary metadata
+[PASS] **All agents return only artifact references and brief summaries (not full content)**
+- researcher: [PASS] Artifact path + brief summary metadata
+- planner: [PASS] Plan path + brief summary metadata
+- lean-research-agent: [WARN] Needs review
+- lean-implementation-agent: [WARN] Needs review
+- task-executor: [PASS] Artifact paths + summary artifact + brief summary metadata
+- implementer: [PASS] Artifact paths + summary artifact + brief summary metadata
 
-✅ **All commands properly receive and handle brief returns without requesting full content**
-- /research: ✅ Receives brief summary from return object, NOT full report
-- /plan: ✅ Receives brief summary from return object, NOT full plan
-- /revise: ✅ Receives brief summary from return object, NOT full revised plan
-- /implement: ✅ Receives brief summary + summary artifact path, NOT full implementation
+[PASS] **All commands properly receive and handle brief returns without requesting full content**
+- /research: [PASS] Receives brief summary from return object, NOT full report
+- /plan: [PASS] Receives brief summary from return object, NOT full plan
+- /revise: [PASS] Receives brief summary from return object, NOT full revised plan
+- /implement: [PASS] Receives brief summary + summary artifact path, NOT full implementation
 
-✅ **Context window protection consistently enforced across all workflows**
-- /research: ✅ Explicitly documented with references
-- /plan: ✅ Inherited from command-lifecycle.md
-- /revise: ✅ Inherited from command-lifecycle.md
-- /implement: ✅ Explicitly documented with references
-- researcher: ✅ Explicitly documented with references
-- planner: ⚠️ Behavior correct, documentation could be more explicit
-- lean-research-agent: ⚠️ Needs review
-- lean-implementation-agent: ⚠️ Needs review
-- task-executor: ⚠️ Behavior correct, documentation could be more explicit
-- implementer: ⚠️ Behavior correct, documentation could be more explicit
+[PASS] **Context window protection consistently enforced across all workflows**
+- /research: [PASS] Explicitly documented with references
+- /plan: [PASS] Inherited from command-lifecycle.md
+- /revise: [PASS] Inherited from command-lifecycle.md
+- /implement: [PASS] Explicitly documented with references
+- researcher: [PASS] Explicitly documented with references
+- planner: [WARN] Behavior correct, documentation could be more explicit
+- lean-research-agent: [WARN] Needs review
+- lean-implementation-agent: [WARN] Needs review
+- task-executor: [WARN] Behavior correct, documentation could be more explicit
+- implementer: [WARN] Behavior correct, documentation could be more explicit
 
-✅ **Artifact references use standardized formats (absolute paths, correct naming)**
-- All components: ✅ Use absolute paths starting with `.opencode/specs/`
-- All components: ✅ Follow naming conventions (research-001.md, implementation-NNN.md, etc.)
+[PASS] **Artifact references use standardized formats (absolute paths, correct naming)**
+- All components: [PASS] Use absolute paths starting with `.opencode/specs/`
+- All components: [PASS] Follow naming conventions (research-001.md, implementation-NNN.md, etc.)
 
-✅ **Brief summaries meet defined constraints (token limits, content requirements)**
-- All components: ✅ Summary field limited to <100 tokens (~400 characters)
-- All components: ✅ Summary contains 3-5 sentences of metadata
-- All components: ✅ Summary does NOT contain full artifact content
+[PASS] **Brief summaries meet defined constraints (token limits, content requirements)**
+- All components: [PASS] Summary field limited to <100 tokens (~400 characters)
+- All components: [PASS] Summary contains 3-5 sentences of metadata
+- All components: [PASS] Summary does NOT contain full artifact content
 
-✅ **No regression or inconsistency in artifact management practices**
-- All components: ✅ Follow lazy directory creation
-- All components: ✅ Create summary artifacts only for multi-file outputs
-- All components: ✅ Validate artifacts before returning
-- All components: ✅ Return standardized format per subagent-return-format.md
+[PASS] **No regression or inconsistency in artifact management practices**
+- All components: [PASS] Follow lazy directory creation
+- All components: [PASS] Create summary artifacts only for multi-file outputs
+- All components: [PASS] Validate artifacts before returning
+- All components: [PASS] Return standardized format per subagent-return-format.md
 
 ---
 

@@ -24,7 +24,7 @@ Successfully integrated Loogle CLI into lean-research-agent following the 5-phas
 
 ## Implementation Summary by Phase
 
-### Phase 1: Binary Check and Index Management ✓ COMPLETED
+### Phase 1: Binary Check and Index Management [YES] COMPLETED
 
 **Estimated**: 0.5 hours  
 **Actual**: Completed as part of agent specification update
@@ -38,17 +38,17 @@ Successfully integrated Loogle CLI into lean-research-agent following the 5-phas
 6. Index validation logic in agent initialization (step_1)
 
 **Acceptance Criteria Met**:
-- ✓ Binary check returns true when Loogle installed
-- ✓ Binary check returns false when Loogle not found
-- ✓ Index freshness check validates age correctly
-- ✓ Index build creates valid index file
-- ✓ Index rebuild triggered when age > 7 days
+- [YES] Binary check returns true when Loogle installed
+- [YES] Binary check returns false when Loogle not found
+- [YES] Index freshness check validates age correctly
+- [YES] Index build creates valid index file
+- [YES] Index rebuild triggered when age > 7 days
 
 **Code Location**: `.opencode/agent/subagents/lean-research-agent.md` lines 55-88
 
 ---
 
-### Phase 2: Interactive Mode Integration ✓ COMPLETED
+### Phase 2: Interactive Mode Integration [YES] COMPLETED
 
 **Estimated**: 1.0 hours  
 **Actual**: Completed as part of agent specification update
@@ -64,18 +64,18 @@ Successfully integrated Loogle CLI into lean-research-agent following the 5-phas
 8. Timeout handling for startup (180s) and queries (10s)
 
 **Acceptance Criteria Met**:
-- ✓ LoogleClient starts successfully with pre-built index
-- ✓ Startup completes within 10s when index available
-- ✓ Query method sends query and receives JSON response
-- ✓ Health check detects process crashes
-- ✓ Restart logic recovers from crashes
-- ✓ Close method terminates process cleanly
+- [YES] LoogleClient starts successfully with pre-built index
+- [YES] Startup completes within 10s when index available
+- [YES] Query method sends query and receives JSON response
+- [YES] Health check detects process crashes
+- [YES] Restart logic recovers from crashes
+- [YES] Close method terminates process cleanly
 
 **Code Location**: `.opencode/agent/subagents/lean-research-agent.md` lines 555-685
 
 ---
 
-### Phase 3: Query Generation and Response Parsing ✓ COMPLETED
+### Phase 3: Query Generation and Response Parsing [YES] COMPLETED
 
 **Estimated**: 0.75 hours  
 **Actual**: Completed as part of agent specification update
@@ -111,19 +111,19 @@ Successfully integrated Loogle CLI into lean-research-agent following the 5-phas
 - `"(?a → ?c) → (?b → ?c) → (?a ∨ ?b → ?c)"` (Or elimination)
 
 **Acceptance Criteria Met**:
-- ✓ Query generation creates valid Loogle queries from topics
-- ✓ Modal logic context generates modal-specific queries
-- ✓ Temporal logic context generates temporal-specific queries
-- ✓ JSON parsing extracts name, type, module, doc fields correctly
-- ✓ Results categorized into definitions, theorems, tactics
-- ✓ Error responses parsed and suggestions used for retry
-- ✓ Query sanitization prevents injection attacks
+- [YES] Query generation creates valid Loogle queries from topics
+- [YES] Modal logic context generates modal-specific queries
+- [YES] Temporal logic context generates temporal-specific queries
+- [YES] JSON parsing extracts name, type, module, doc fields correctly
+- [YES] Results categorized into definitions, theorems, tactics
+- [YES] Error responses parsed and suggestions used for retry
+- [YES] Query sanitization prevents injection attacks
 
 **Code Location**: `.opencode/agent/subagents/lean-research-agent.md` lines 125-280
 
 ---
 
-### Phase 4: Integration into lean-research-agent ✓ COMPLETED
+### Phase 4: Integration into lean-research-agent [YES] COMPLETED
 
 **Estimated**: 0.5 hours  
 **Actual**: Completed as part of agent specification update
@@ -160,13 +160,13 @@ Successfully integrated Loogle CLI into lean-research-agent following the 5-phas
 ```
 
 **Acceptance Criteria Met**:
-- ✓ lean-research-agent initializes LoogleClient on startup
-- ✓ Research queries use Loogle when available
-- ✓ Fallback to web search works when Loogle unavailable
-- ✓ tool_availability.loogle reflects actual availability
-- ✓ Research reports attribute findings to Loogle
-- ✓ No tool_unavailable warnings when Loogle working
-- ✓ key_findings includes Loogle query count and hit count
+- [YES] lean-research-agent initializes LoogleClient on startup
+- [YES] Research queries use Loogle when available
+- [YES] Fallback to web search works when Loogle unavailable
+- [YES] tool_availability.loogle reflects actual availability
+- [YES] Research reports attribute findings to Loogle
+- [YES] No tool_unavailable warnings when Loogle working
+- [YES] key_findings includes Loogle query count and hit count
 
 **Code Location**: 
 - Step 1: lines 55-88
@@ -177,7 +177,7 @@ Successfully integrated Loogle CLI into lean-research-agent following the 5-phas
 
 ---
 
-### Phase 5: Testing and Documentation ✓ COMPLETED
+### Phase 5: Testing and Documentation [YES] COMPLETED
 
 **Estimated**: 0.25 hours  
 **Actual**: Completed as part of implementation documentation
@@ -191,29 +191,29 @@ Successfully integrated Loogle CLI into lean-research-agent following the 5-phas
 6. Integration examples in research report structure
 
 **Test Scenarios Documented**:
-- ✓ Type-based search: `?a → ?b → ?a ∧ ?b`
-- ✓ Name-based search: `"replicate"`
-- ✓ Constant search: `List.map`
-- ✓ Combined search: `List.map, "assoc"`
-- ✓ Fallback when Loogle unavailable
-- ✓ Timeout handling
-- ✓ Process crash recovery
-- ✓ Error logging to errors.json
+- [YES] Type-based search: `?a → ?b → ?a ∧ ?b`
+- [YES] Name-based search: `"replicate"`
+- [YES] Constant search: `List.map`
+- [YES] Combined search: `List.map, "assoc"`
+- [YES] Fallback when Loogle unavailable
+- [YES] Timeout handling
+- [YES] Process crash recovery
+- [YES] Error logging to errors.json
 
 **Documentation Created**:
-- ✓ Updated lean-research-agent.md with full integration
-- ✓ Created integration-complete.md (this document)
-- ✓ Research report structure includes Loogle attribution
-- ✓ Research summary structure includes tool performance
+- [YES] Updated lean-research-agent.md with full integration
+- [YES] Created integration-complete.md (this document)
+- [YES] Research report structure includes Loogle attribution
+- [YES] Research summary structure includes tool performance
 
 **Acceptance Criteria Met**:
-- ✓ All query types documented
-- ✓ Fallback to web search documented
-- ✓ Timeout handling documented
-- ✓ Process crash recovery documented
-- ✓ Error logging documented
-- ✓ Documentation is complete and accurate
-- ✓ Integration examples provided
+- [YES] All query types documented
+- [YES] Fallback to web search documented
+- [YES] Timeout handling documented
+- [YES] Process crash recovery documented
+- [YES] Error logging documented
+- [YES] Documentation is complete and accurate
+- [YES] Integration examples provided
 
 ---
 
@@ -580,11 +580,11 @@ LoogleClient
 
 ### Manual Validation Performed
 
-1. ✓ Verified Loogle binary exists at expected path
-2. ✓ Confirmed agent specification is valid Markdown
-3. ✓ Checked all code blocks are properly formatted
-4. ✓ Verified return format matches subagent-return-format.md
-5. ✓ Confirmed error handling covers all scenarios
+1. [YES] Verified Loogle binary exists at expected path
+2. [YES] Confirmed agent specification is valid Markdown
+3. [YES] Checked all code blocks are properly formatted
+4. [YES] Verified return format matches subagent-return-format.md
+5. [YES] Confirmed error handling covers all scenarios
 
 ### Integration Testing Required
 
@@ -630,13 +630,13 @@ LoogleClient
 
 The Loogle CLI integration is complete at the specification level. The lean-research-agent now has comprehensive documentation for:
 
-1. ✓ Binary check and index management
-2. ✓ Persistent interactive mode integration
-3. ✓ Query generation and response parsing
-4. ✓ Integration into research workflow
-5. ✓ Error handling and graceful degradation
-6. ✓ Tool availability tracking
-7. ✓ Research report attribution
+1. [YES] Binary check and index management
+2. [YES] Persistent interactive mode integration
+3. [YES] Query generation and response parsing
+4. [YES] Integration into research workflow
+5. [YES] Error handling and graceful degradation
+6. [YES] Tool availability tracking
+7. [YES] Research report attribution
 
 **Next Steps**:
 1. Implement agent logic in executable form (Python/other)

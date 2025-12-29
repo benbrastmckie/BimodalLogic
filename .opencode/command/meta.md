@@ -81,23 +81,23 @@ description: "Interactive system builder that creates complete context-aware AI 
         **How would you like to proceed?**
         
         **Option 1: Extend Existing System** (Recommended)
-        - ✅ Keep all existing files
-        - ✅ Add new agents/workflows/commands for your new domain
-        - ✅ Merge context files intelligently
-        - ✅ Integrate new capabilities with existing ones
-        - ✅ Create unified orchestrator that routes to both
+        - [PASS] Keep all existing files
+        - [PASS] Add new agents/workflows/commands for your new domain
+        - [PASS] Merge context files intelligently
+        - [PASS] Integrate new capabilities with existing ones
+        - [PASS] Create unified orchestrator that routes to both
         - Best for: Adding new capabilities to active project
         
         **Option 2: Create Separate System**
-        - ✅ Keep existing system intact
-        - ✅ Create new system in separate namespace
-        - ✅ Both systems coexist independently
+        - [PASS] Keep existing system intact
+        - [PASS] Create new system in separate namespace
+        - [PASS] Both systems coexist independently
         - Best for: Multi-domain projects with distinct needs
         
         **Option 3: Replace Existing System**
-        - ⚠️  Backup existing to .opencode.backup.{timestamp}/
-        - ⚠️  Create fresh system (existing work preserved in backup)
-        - ⚠️  Use with caution
+        - [WARN]  Backup existing to .opencode.backup.{timestamp}/
+        - [WARN]  Create fresh system (existing work preserved in backup)
+        - [WARN]  Use with caution
         - Best for: Complete system redesign
         
         **Option 4: Cancel**
@@ -160,7 +160,7 @@ description: "Interactive system builder that creates complete context-aware AI 
         - Custom slash commands
         - Documentation and testing guide
         
-        Let's begin! 🚀
+        Let's begin! [START]
       </for_fresh_build>
       
       <for_extend_existing>
@@ -186,7 +186,7 @@ description: "Interactive system builder that creates complete context-aware AI 
         **Existing Capabilities Preserved**:
         {list_existing_agents_and_capabilities}
         
-        Let's begin! 🚀
+        Let's begin! [START]
       </for_extend_existing>
     </output_format>
     <checkpoint>User understands process and is ready to proceed</checkpoint>
@@ -540,9 +540,9 @@ description: "Interactive system builder that creates complete context-aware AI 
       **Does this architecture meet your needs?**
       
       Options:
-      - ✅ **Proceed** - Generate the complete system
-      - 🔄 **Revise** - Adjust specific components
-      - ❌ **Cancel** - Start over
+      - [PASS] **Proceed** - Generate the complete system
+      - [REVISE] **Revise** - Adjust specific components
+      - [FAIL] **Cancel** - Start over
     </output_format>
     <decision>
       <if test="user_confirms">Proceed to Stage 7 (Generate System)</if>
@@ -592,12 +592,12 @@ description: "Interactive system builder that creates complete context-aware AI 
     <action>Present completed system with documentation and next steps</action>
     <prerequisites>System generation complete</prerequisites>
     <output_format>
-      ## ✅ Your Context-Aware AI System is Ready!
+      ## [PASS] Your Context-Aware AI System is Ready!
       
       **System**: {domain_name} AI System
       **Location**: `.opencode/`
       
-      ### 📁 Generated Structure
+      ### [FOLDER] Generated Structure
       
       ```
       .opencode/
@@ -627,7 +627,7 @@ description: "Interactive system builder that creates complete context-aware AI 
           └── {workflow-2}.md
       ```
       
-      ### 🚀 Quick Start
+      ### [START] Quick Start
       
       **1. Test Your Main Command**:
       ```bash
@@ -644,7 +644,7 @@ description: "Interactive system builder that creates complete context-aware AI 
       - Review routing logic and workflows
       - Understand context allocation strategy
       
-      ### 📚 Key Components
+      ### [DOCS] Key Components
       
       **Main Orchestrator**: `{domain}-orchestrator`
       - Entry point for all requests
@@ -666,7 +666,7 @@ description: "Interactive system builder that creates complete context-aware AI 
         - `/{command.name}`: {command.description}
       }
       
-      ### 🧪 Testing Checklist
+      ### [TEST] Testing Checklist
       
       - [ ] Test main orchestrator with simple request
       - [ ] Test each subagent independently
@@ -676,14 +676,14 @@ description: "Interactive system builder that creates complete context-aware AI 
       - [ ] Validate error handling
       - [ ] Check edge cases
       
-      ### 📖 Documentation
+      ### [BOOK] Documentation
       
       - **System Guide**: `.opencode/README.md`
       - **Architecture**: `.opencode/ARCHITECTURE.md`
       - **Context Management**: `.opencode/context/README.md`
       - **Workflow Guide**: `.opencode/workflows/README.md`
       
-      ### 🎯 Next Steps
+      ### [TARGET] Next Steps
       
       1. **Test the system** with your actual use cases
       2. **Customize context files** with your specific domain knowledge
@@ -691,7 +691,7 @@ description: "Interactive system builder that creates complete context-aware AI 
       4. **Add examples** to improve agent performance
       5. **Monitor and optimize** based on results
       
-      ### 💡 Tips for Success
+      ### [IDEA] Tips for Success
       
       - Start with simple use cases and gradually increase complexity
       - Keep context files focused (50-200 lines each)
@@ -701,7 +701,7 @@ description: "Interactive system builder that creates complete context-aware AI 
       
       ---
       
-      **Your system is production-ready!** 🎉
+      **Your system is production-ready!** [CELEBRATE]
       
       Need help? Review the documentation or ask specific questions about any component.
     </output_format>

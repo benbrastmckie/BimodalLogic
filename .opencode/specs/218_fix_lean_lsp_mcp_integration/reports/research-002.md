@@ -200,10 +200,10 @@ Official MCP documentation shows clients should:
 4. Use `ClientSession` for protocol handling
 
 The current plan:
-1. ❌ Creates custom wrapper instead of using SDK
-2. ❌ Tries to import server code instead of spawning process
-3. ❌ Doesn't use standard transport mechanisms
-4. ❌ Implements custom protocol handling
+1. [FAIL] Creates custom wrapper instead of using SDK
+2. [FAIL] Tries to import server code instead of spawning process
+3. [FAIL] Doesn't use standard transport mechanisms
+4. [FAIL] Implements custom protocol handling
 
 **Problem 3: Architectural Mismatch**
 
@@ -236,10 +236,10 @@ The current wrapper is a **placeholder** that doesn't actually communicate with 
 ### What the Current Plan Gets Right
 
 **Positive Aspects**:
-1. ✅ Identifies need for MCP integration
-2. ✅ Creates configuration checking functions
-3. ✅ Implements graceful degradation
-4. ✅ Documents integration patterns
+1. [PASS] Identifies need for MCP integration
+2. [PASS] Creates configuration checking functions
+3. [PASS] Implements graceful degradation
+4. [PASS] Documents integration patterns
 
 **These aspects should be preserved** in the recommended solution.
 
@@ -443,34 +443,34 @@ except Exception as e:
 ### Why This Approach Is Better
 
 **1. Uses Official SDK**
-- ✅ Maintained by MCP team
-- ✅ Protocol updates handled automatically
-- ✅ Battle-tested by Claude Desktop, VSCode, etc.
-- ✅ Comprehensive error handling
+- [PASS] Maintained by MCP team
+- [PASS] Protocol updates handled automatically
+- [PASS] Battle-tested by Claude Desktop, VSCode, etc.
+- [PASS] Comprehensive error handling
 
 **2. Follows MCP Best Practices**
-- ✅ Process isolation (server runs separately)
-- ✅ Standard transport (stdio)
-- ✅ Proper session management
-- ✅ Language-agnostic design
+- [PASS] Process isolation (server runs separately)
+- [PASS] Standard transport (stdio)
+- [PASS] Proper session management
+- [PASS] Language-agnostic design
 
 **3. Simpler Architecture**
-- ✅ No PYTHONPATH configuration needed
-- ✅ No `__init__.py` files required
-- ✅ Works from any directory
-- ✅ Standard pip/uv installation
+- [PASS] No PYTHONPATH configuration needed
+- [PASS] No `__init__.py` files required
+- [PASS] Works from any directory
+- [PASS] Standard pip/uv installation
 
 **4. Better Error Handling**
-- ✅ Connection failures handled gracefully
-- ✅ Server crashes don't crash client
-- ✅ Timeout support built-in
-- ✅ Clear error messages
+- [PASS] Connection failures handled gracefully
+- [PASS] Server crashes don't crash client
+- [PASS] Timeout support built-in
+- [PASS] Clear error messages
 
 **5. Future-Proof**
-- ✅ Can add remote servers (SSE/HTTP transport)
-- ✅ Can use multiple MCP servers simultaneously
-- ✅ Compatible with MCP ecosystem tools
-- ✅ Easy to test with MCP Inspector
+- [PASS] Can add remote servers (SSE/HTTP transport)
+- [PASS] Can use multiple MCP servers simultaneously
+- [PASS] Compatible with MCP ecosystem tools
+- [PASS] Easy to test with MCP Inspector
 
 ---
 
@@ -549,7 +549,7 @@ except Exception as e:
 - Technical debt accumulation
 - Confusing for future developers
 
-**Verdict**: ❌ Not recommended (throws good money after bad)
+**Verdict**: [FAIL] Not recommended (throws good money after bad)
 
 ### Alternative 2: Hybrid Approach
 
@@ -595,23 +595,23 @@ def invoke_mcp_tool(server, tool, arguments, timeout=30):
 - Hides MCP SDK features
 - Still requires PYTHONPATH fix
 
-**Verdict**: ⚠️ Acceptable compromise if API stability is critical
+**Verdict**: [WARN] Acceptable compromise if API stability is critical
 
 ### Alternative 3: Use MCP SDK Directly (Recommended)
 
 **Approach**: Replace wrapper entirely with MCP SDK usage
 
 **Pros**:
-- ✅ Simplest architecture
-- ✅ Best practices alignment
-- ✅ Full SDK feature access
-- ✅ No PYTHONPATH issues
+- [PASS] Simplest architecture
+- [PASS] Best practices alignment
+- [PASS] Full SDK feature access
+- [PASS] No PYTHONPATH issues
 
 **Cons**:
 - Requires updating agent code
 - Different API than current wrapper
 
-**Verdict**: ✅ **Recommended** (best long-term solution)
+**Verdict**: [PASS] **Recommended** (best long-term solution)
 
 ---
 
@@ -694,33 +694,33 @@ After all agents migrated:
 **DO NOT implement the current plan as-is.**
 
 Instead:
-1. ✅ Install MCP SDK: `uv add mcp`
-2. ✅ Create `lean_client.py` using recommended template
-3. ✅ Test with MCP Inspector
-4. ✅ Update lean-implementation-agent to use new client
-5. ✅ Document MCP SDK usage in mcp-tools-guide.md
+1. [PASS] Install MCP SDK: `uv add mcp`
+2. [PASS] Create `lean_client.py` using recommended template
+3. [PASS] Test with MCP Inspector
+4. [PASS] Update lean-implementation-agent to use new client
+5. [PASS] Document MCP SDK usage in mcp-tools-guide.md
 
 **Skip**:
-- ❌ Creating `__init__.py` files (not needed)
-- ❌ Configuring PYTHONPATH (not needed)
-- ❌ Custom MCP protocol implementation (use SDK)
+- [FAIL] Creating `__init__.py` files (not needed)
+- [FAIL] Configuring PYTHONPATH (not needed)
+- [FAIL] Custom MCP protocol implementation (use SDK)
 
 ### If Current Plan Already Implemented
 
 **Implement hybrid approach** (Alternative 2):
-1. ✅ Keep existing wrapper API for backward compatibility
-2. ✅ Add MCP SDK as dependency
-3. ✅ Implement wrapper functions using SDK internally
-4. ✅ Gradually migrate agents to direct SDK usage
-5. ✅ Deprecate wrapper API over time
+1. [PASS] Keep existing wrapper API for backward compatibility
+2. [PASS] Add MCP SDK as dependency
+3. [PASS] Implement wrapper functions using SDK internally
+4. [PASS] Gradually migrate agents to direct SDK usage
+5. [PASS] Deprecate wrapper API over time
 
 ### Long-Term Strategy
 
 **Adopt MCP SDK as standard**:
-1. ✅ Use official MCP SDK for all MCP integrations
-2. ✅ Follow MCP best practices for new tools
-3. ✅ Contribute improvements back to MCP ecosystem
-4. ✅ Stay current with MCP protocol updates
+1. [PASS] Use official MCP SDK for all MCP integrations
+2. [PASS] Follow MCP best practices for new tools
+3. [PASS] Contribute improvements back to MCP ecosystem
+4. [PASS] Stay current with MCP protocol updates
 
 ---
 
@@ -849,11 +849,11 @@ from opencode.tool.mcp.lean_client import check_lean_diagnostics, check_lean_goa
 - If already implemented: **Migrate to MCP SDK** (hybrid approach for backward compatibility)
 
 **Impact**:
-- ✅ Simpler architecture (no PYTHONPATH, no `__init__.py`)
-- ✅ Faster implementation (1-2 hours vs 3-4.5 hours)
-- ✅ Better maintainability (SDK handles protocol)
-- ✅ MCP ecosystem compatibility (works with Inspector, etc.)
-- ✅ Future-proof (protocol updates automatic)
+- [PASS] Simpler architecture (no PYTHONPATH, no `__init__.py`)
+- [PASS] Faster implementation (1-2 hours vs 3-4.5 hours)
+- [PASS] Better maintainability (SDK handles protocol)
+- [PASS] MCP ecosystem compatibility (works with Inspector, etc.)
+- [PASS] Future-proof (protocol updates automatic)
 
 **Next Steps**:
 1. Review this research with team

@@ -21,17 +21,17 @@
 
 ## MCP Client Infrastructure Status
 
-**Task 212 Implementation**: ✅ Correctly implemented and tested
+**Task 212 Implementation**: [PASS] Correctly implemented and tested
 
 **Available Functions**:
-- `check_mcp_server_configured()` - ✅ Working
-- `find_mcp_config()` - ✅ Working
-- `get_mcp_server_config()` - ✅ Working
-- `invoke_mcp_tool()` - ⚠️ Placeholder (returns "not yet implemented")
+- `check_mcp_server_configured()` - [PASS] Working
+- `find_mcp_config()` - [PASS] Working
+- `get_mcp_server_config()` - [PASS] Working
+- `invoke_mcp_tool()` - [WARN] Placeholder (returns "not yet implemented")
 
-**Configuration**: ✅ .mcp.json correctly configured for lean-lsp server via uvx
+**Configuration**: [PASS] .mcp.json correctly configured for lean-lsp server via uvx
 
-**Test Results**: ✅ All 6 tests passing (using sys.path workaround)
+**Test Results**: [PASS] All 6 tests passing (using sys.path workaround)
 
 ---
 
@@ -109,11 +109,11 @@
 
 ## Tool Availability
 
-**Python Environment**: ✅ Python 3.12.12 (Nix)  
-**uvx**: ✅ Available at /run/current-system/sw/bin/uvx  
-**lean-lsp-mcp**: ✅ Configured in .mcp.json  
-**MCP Client Wrapper**: ✅ Implemented (import blocked)  
-**MCP Protocol Integration**: ⚠️ Pending (placeholder implementation)
+**Python Environment**: [PASS] Python 3.12.12 (Nix)  
+**uvx**: [PASS] Available at /run/current-system/sw/bin/uvx  
+**lean-lsp-mcp**: [PASS] Configured in .mcp.json  
+**MCP Client Wrapper**: [PASS] Implemented (import blocked)  
+**MCP Protocol Integration**: [WARN] Pending (placeholder implementation)
 
 ---
 

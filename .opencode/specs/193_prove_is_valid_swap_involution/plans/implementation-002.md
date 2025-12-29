@@ -31,15 +31,15 @@
 Complete the remaining 15% of task 193 by adding a simple involution helper lemma and updating the main theorem to use it. The bulk of the work (helper lemma with structural induction) is already complete. This revision focuses solely on the blocker resolution.
 
 **What's Already Done** (from previous implementation):
-- ✅ Helper lemma `truth_at_swap_swap` with full structural induction (6 cases)
-- ✅ Build verification (compiles successfully)
-- ✅ Test verification (all tests pass)
-- ✅ Comprehensive inline documentation
+- [PASS] Helper lemma `truth_at_swap_swap` with full structural induction (6 cases)
+- [PASS] Build verification (compiles successfully)
+- [PASS] Test verification (all tests pass)
+- [PASS] Comprehensive inline documentation
 
 **What Remains** (this revision):
-- ❌ Add `truth_at_involution` helper (5 lines)
-- ❌ Update main theorem to compose helpers (3 lines)
-- ❌ Remove `sorry` from line 691
+- [FAIL] Add `truth_at_involution` helper (5 lines)
+- [FAIL] Update main theorem to compose helpers (3 lines)
+- [FAIL] Remove `sorry` from line 691
 
 ---
 
@@ -148,13 +148,13 @@ Step 1 (h1): Convert φ.swap to φ.swap.swap
 
 Step 2 (exact): Convert φ.swap.swap to φ
   truth_at_swap_swap.mp : truth_at ... φ.swap.swap → truth_at ... φ
-  Closes goal ✓
+  Closes goal [YES]
 ```
 
 **Why This Works**:
 - `truth_at_involution` converts the hypothesis from `φ.swap` to `φ.swap.swap`
 - `truth_at_swap_swap` converts from `φ.swap.swap` to `φ`
-- Composition gives: `φ.swap → φ.swap.swap → φ` ✓
+- Composition gives: `φ.swap → φ.swap.swap → φ` [YES]
 
 #### 1.3: Update Docstring (5 minutes)
 
@@ -279,10 +279,10 @@ lake exe test
 | **Total Effort** | 2.0 hours | 0.5 hours (30 min) |
 | **Phases** | 1 (with 4 tasks) | 1 (with 4 tasks) |
 | **Completion** | 85% (blocked) | 15% remaining |
-| **Helper Lemma** | Planned (1h) | ✅ Complete |
+| **Helper Lemma** | Planned (1h) | [PASS] Complete |
 | **Main Theorem** | Planned (15min) | Blocked → Clear path |
-| **Testing** | Planned (30min) | ✅ Complete |
-| **Documentation** | Planned (15min) | ✅ Partial, needs docstring update |
+| **Testing** | Planned (30min) | [PASS] Complete |
+| **Documentation** | Planned (15min) | [PASS] Partial, needs docstring update |
 | **Blocker** | None anticipated | Type theory issue → Resolved with involution helper |
 | **Risk Level** | Low | Very Low |
 

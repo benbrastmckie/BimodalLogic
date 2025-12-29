@@ -52,7 +52,7 @@ The status-sync-manager specialist exists and provides comprehensive atomic upda
 </stage>
 ```
 
-**Analysis**: ✅ **CORRECT** - Delegates to status-sync-manager properly
+**Analysis**: [PASS] **CORRECT** - Delegates to status-sync-manager properly
 - Passes validated_artifacts from researcher return
 - Relies on status-sync-manager for atomic updates
 - No manual TODO.md/state.json manipulation
@@ -88,7 +88,7 @@ The status-sync-manager specialist exists and provides comprehensive atomic upda
 </stage>
 ```
 
-**Analysis**: ✅ **CORRECT** - Delegates to status-sync-manager properly
+**Analysis**: [PASS] **CORRECT** - Delegates to status-sync-manager properly
 - Passes plan_metadata for state.json tracking
 - Passes plan_path for TODO.md linking
 - No manual updates
@@ -126,7 +126,7 @@ The status-sync-manager specialist exists and provides comprehensive atomic upda
 </stage>
 ```
 
-**Analysis**: ✅ **CORRECT** - Delegates to status-sync-manager properly
+**Analysis**: [PASS] **CORRECT** - Delegates to status-sync-manager properly
 - Passes plan_version for version history tracking
 - Passes revision_reason for audit trail
 - Updates plan_versions array in state.json
@@ -163,7 +163,7 @@ The status-sync-manager specialist exists and provides comprehensive atomic upda
 </stage>
 ```
 
-**Analysis**: ⚠️ **PARTIALLY CORRECT** - Delegates to status-sync-manager but **plan file updates may not occur**
+**Analysis**: [WARN] **PARTIALLY CORRECT** - Delegates to status-sync-manager but **plan file updates may not occur**
 - Passes phase_statuses parameter
 - status-sync-manager should update plan file
 - **BUT**: No evidence that plan file is actually updated with phase statuses
@@ -197,7 +197,7 @@ The status-sync-manager specialist exists and provides comprehensive atomic upda
 </step_5>
 ```
 
-**Analysis**: ✅ **CORRECT** - No manual status updates
+**Analysis**: [PASS] **CORRECT** - No manual status updates
 - Validates artifacts before returning
 - Returns validated_artifacts in return object
 - Delegates status updates to command layer
@@ -228,7 +228,7 @@ The status-sync-manager specialist exists and provides comprehensive atomic upda
 </step_6>
 ```
 
-**Analysis**: ✅ **CORRECT** - No manual status updates
+**Analysis**: [PASS] **CORRECT** - No manual status updates
 - Extracts plan_metadata for status-sync-manager
 - Returns validated_artifacts with plan_metadata
 - Delegates status updates to command layer
@@ -267,7 +267,7 @@ The status-sync-manager specialist exists and provides comprehensive atomic upda
 </step_3>
 ```
 
-**Analysis**: ❌ **INCORRECT** - **MANUAL PLAN FILE UPDATES**
+**Analysis**: [FAIL] **INCORRECT** - **MANUAL PLAN FILE UPDATES**
 - Directly modifies plan file (lines 95-96, 107-109, 113-114, 118)
 - Does NOT delegate to status-sync-manager
 - Creates race conditions with status-sync-manager updates
@@ -297,7 +297,7 @@ The status-sync-manager specialist exists and provides comprehensive atomic upda
 </step_6>
 ```
 
-**Analysis**: ✅ **CORRECT** - No manual status updates
+**Analysis**: [PASS] **CORRECT** - No manual status updates
 - Validates artifacts before returning
 - Returns validated_artifacts in return object
 - Delegates status updates to command layer
@@ -326,7 +326,7 @@ The status-sync-manager specialist exists and provides comprehensive atomic upda
 </step_6>
 ```
 
-**Analysis**: ✅ **CORRECT** - No manual status updates
+**Analysis**: [PASS] **CORRECT** - No manual status updates
 - Validates artifacts before returning
 - Returns validated_artifacts in return object
 - Delegates status updates to command layer
@@ -339,15 +339,15 @@ The status-sync-manager specialist exists and provides comprehensive atomic upda
 
 | Component | Delegates to status-sync-manager? | Manual Updates? | Status |
 |-----------|----------------------------------|-----------------|--------|
-| /research command | ✅ Yes | ❌ No | ✅ Correct |
-| /plan command | ✅ Yes | ❌ No | ✅ Correct |
-| /revise command | ✅ Yes | ❌ No | ✅ Correct |
-| /implement command | ✅ Yes | ❌ No | ⚠️ Partial (plan updates unclear) |
-| researcher subagent | N/A (returns to command) | ❌ No | ✅ Correct |
-| planner subagent | N/A (returns to command) | ❌ No | ✅ Correct |
-| task-executor subagent | ❌ **NO** | ✅ **YES** | ❌ **INCORRECT** |
-| implementer subagent | N/A (returns to command) | ❌ No | ✅ Correct |
-| lean-implementation-agent | N/A (returns to command) | ❌ No | ✅ Correct |
+| /research command | [PASS] Yes | [FAIL] No | [PASS] Correct |
+| /plan command | [PASS] Yes | [FAIL] No | [PASS] Correct |
+| /revise command | [PASS] Yes | [FAIL] No | [PASS] Correct |
+| /implement command | [PASS] Yes | [FAIL] No | [WARN] Partial (plan updates unclear) |
+| researcher subagent | N/A (returns to command) | [FAIL] No | [PASS] Correct |
+| planner subagent | N/A (returns to command) | [FAIL] No | [PASS] Correct |
+| task-executor subagent | [FAIL] **NO** | [PASS] **YES** | [FAIL] **INCORRECT** |
+| implementer subagent | N/A (returns to command) | [FAIL] No | [PASS] Correct |
+| lean-implementation-agent | N/A (returns to command) | [FAIL] No | [PASS] Correct |
 
 **Key Finding**: Commands delegate correctly, but **task-executor bypasses status-sync-manager** for plan file updates.
 
@@ -712,7 +712,7 @@ From status-sync-manager.md (lines 292-355) and state-schema.md (lines 256-304):
    /home/benjamin/Projects/ProofChecker/.opencode/specs/193_prove_is_valid_swap_involution/state.json
    ```
 
-**Analysis**: ✅ **PARTIALLY IMPLEMENTED**
+**Analysis**: [PASS] **PARTIALLY IMPLEMENTED**
 - Some project state.json files exist (tasks 190, 193)
 - Specification is complete and correct
 - **BUT**: Not all projects have state.json files
@@ -836,7 +836,7 @@ From status-sync-manager.md (lines 63-65, 110-135) and task-executor.md (lines 9
 </step_3>
 ```
 
-**Analysis**: ❌ **INCORRECT IMPLEMENTATION**
+**Analysis**: [FAIL] **INCORRECT IMPLEMENTATION**
 - task-executor **directly modifies plan file** (lines 95-96, 107-109, 113-114, 118)
 - Does NOT delegate to status-sync-manager
 - Creates race conditions with status-sync-manager updates
@@ -862,7 +862,7 @@ From status-sync-manager.md (lines 63-65, 110-135) and task-executor.md (lines 9
 </atomic_update>
 ```
 
-**Analysis**: ⚠️ **SPECIFICATION CORRECT, IMPLEMENTATION UNCLEAR**
+**Analysis**: [WARN] **SPECIFICATION CORRECT, IMPLEMENTATION UNCLEAR**
 - /implement command specifies phase_statuses parameter
 - status-sync-manager should update plan file
 - **BUT**: task-executor bypasses status-sync-manager for plan updates
@@ -1094,19 +1094,19 @@ From status-sync-manager.md (lines 63-65, 110-135) and task-executor.md (lines 9
 
 **Verification Checklist**:
 
-1. **✅ /research command** (research.md lines 186-232):
+1. **[PASS] /research command** (research.md lines 186-232):
    - Already delegates correctly
    - No changes required
 
-2. **✅ /plan command** (plan.md lines 160-199):
+2. **[PASS] /plan command** (plan.md lines 160-199):
    - Already delegates correctly
    - No changes required
 
-3. **✅ /revise command** (revise.md lines 163-206):
+3. **[PASS] /revise command** (revise.md lines 163-206):
    - Already delegates correctly
    - No changes required
 
-4. **⚠️ /implement command** (implement.md lines 239-282):
+4. **[WARN] /implement command** (implement.md lines 239-282):
    - Delegates to status-sync-manager
    - **ADD**: Validation that phase_statuses is passed
    - **ADD**: Error handling if status-sync-manager fails
@@ -1529,13 +1529,13 @@ From status-sync-manager.md (lines 63-65, 110-135) and task-executor.md (lines 9
 ### 9.3 Expected Outcomes
 
 **After Fix**:
-- ✅ All status updates go through status-sync-manager
-- ✅ Atomic updates across TODO.md, state.json, project state.json, plan files
-- ✅ Project state.json created for all projects with artifacts
-- ✅ Plan files updated with phase statuses during /implement
-- ✅ Resume support works correctly
-- ✅ No status synchronization failures
-- ✅ No manual intervention required
+- [PASS] All status updates go through status-sync-manager
+- [PASS] Atomic updates across TODO.md, state.json, project state.json, plan files
+- [PASS] Project state.json created for all projects with artifacts
+- [PASS] Plan files updated with phase statuses during /implement
+- [PASS] Resume support works correctly
+- [PASS] No status synchronization failures
+- [PASS] No manual intervention required
 
 **Benefits**:
 - Improved system reliability

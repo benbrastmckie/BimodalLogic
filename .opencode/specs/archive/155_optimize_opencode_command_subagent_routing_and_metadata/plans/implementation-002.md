@@ -50,7 +50,7 @@
 
 ## Phases and Steps
 
-### Phase A: Analyze current command/agent/subagent mapping vs standards [COMPLETED] ✅
+### Phase A: Analyze current command/agent/subagent mapping vs standards [COMPLETED] [PASS]
 (Completed: 2025-12-24T00:45:00Z)
 **Owner**: context-references + dependency-mapper
 
@@ -64,7 +64,7 @@
    - **Output**: Issues list with severity.
    - **Verification**: Issues mapped to commands and standards references.
 
-### Phase B: Update command metadata and routing flows [COMPLETED] ✅
+### Phase B: Update command metadata and routing flows [COMPLETED] [PASS]
 (Started: 2025-12-23T21:30:00Z) (Completed: 2025-12-23T21:45:00Z)
 **Owner**: implementer + doc-writer (guided by researcher findings)
 
@@ -79,7 +79,7 @@
    - **Verification**: Dry-run text present; no side-effect actions listed.
    - **Progress**: review.md, revise.md, and meta.md updated with ordered subagents, MCP/registry metadata, lazy-creation notes, and dry-run/routing-check semantics.
 
-### Phase C: Validate docs/standards alignment [COMPLETED] ✅
+### Phase C: Validate docs/standards alignment [COMPLETED] [PASS]
 (Completed: 2025-12-24T00:50:00Z)
 **Owner**: doc-analyzer + style-checker
 
@@ -93,7 +93,7 @@
    - **Output**: Updated examples per command.
    - **Verification**: Examples match syntax and avoid Lean routing unless explicit.
 
-### Phase D: State/TODO sync and closure criteria [COMPLETED] ✅
+### Phase D: State/TODO sync and closure criteria [COMPLETED] [PASS]
 (Completed: 2025-12-24T00:50:00Z)
 **Owner**: batch-status-manager + task-adder (advice), implementer for doc edits
 

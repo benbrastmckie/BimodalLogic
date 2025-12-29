@@ -41,7 +41,7 @@ $ lake build Logos.Core.Metalogic.DeductionTheorem
 Build completed successfully.
 
 $ lake build Logos.Core.Metalogic
-⚠ [warnings from Mathlib only - no errors in Logos code]
+[WARN] [warnings from Mathlib only - no errors in Logos code]
 Build completed successfully.
 ```
 

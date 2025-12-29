@@ -504,6 +504,9 @@ temperature: 0.2
   <must>Use lazy directory creation (create only when writing artifacts)</must>
   <must>Load Lean context from .opencode/context/project/lean4/</must>
   <must>Check lean-lsp-mcp availability before use</must>
+  <must>Follow NO EMOJI standard per documentation.md</must>
+  <must>Use text-based alternatives for status indicators</must>
+  <must>Validate artifacts are emoji-free before returning</must>
   <must>Log tool unavailability to errors.json</must>
   <must>Follow Lean 4 syntax and style conventions</must>
   <must>Validate artifacts before returning (existence, non-empty, token limit)</must>
@@ -513,7 +516,8 @@ temperature: 0.2
   <must_not>Fail task if lean-lsp-mcp unavailable (degrade gracefully)</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Write invalid Lean syntax</must_not>
-  <must_not>Include emojis in summary artifacts</must_not>
+  <must_not>Use checkmark, cross mark, or warning emojis</must_not>
+  <must_not>Use any Unicode emoji characters in artifacts</must_not>
   <must_not>Return without validating artifacts</must_not>
   <must_not>Pre-create empty directories or placeholder files</must_not>
 </constraints>
@@ -686,7 +690,10 @@ temperature: 0.2
 
   <post_execution>
     - Verify all Lean files written
-    - Verify summary artifact created and validated (3-5 sentences, <100 tokens, no emojis)
+    - Verify summary artifact created and validated (3-5 sentences, <100 tokens)
+    - Verify artifact contains no emoji characters
+    - Verify summary contains no emoji characters
+    - Verify all status indicators use text format ([PASS]/[FAIL]/[WARN])
     - Verify TODO.md status updated to [COMPLETED]/[PARTIAL]/[BLOCKED] with timestamps
     - Verify state.json updated with project status and artifacts
     - Verify project state.json updated with implementation artifacts

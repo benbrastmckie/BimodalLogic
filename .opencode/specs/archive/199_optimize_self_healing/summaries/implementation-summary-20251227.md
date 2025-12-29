@@ -135,7 +135,7 @@ Verified self-healing still works correctly:
 # Verified: state.json auto-created successfully
 ```
 
-**Result**: Self-healing functionality unchanged ✓
+**Result**: Self-healing functionality unchanged [YES]
 
 ### Test 2: Context Loading
 
@@ -146,7 +146,7 @@ wc -l .opencode/context/common/system/context-guide.md
 # Output: 89 lines (down from 177)
 ```
 
-**Result**: Context bloat reduced by 50% ✓
+**Result**: Context bloat reduced by 50% [YES]
 
 ### Test 3: Documentation Quality
 
@@ -157,7 +157,7 @@ Verified all content preserved and accessible:
 - **Schema docs**: state-schema.md has schema evolution documentation
 - **Cross-references**: All files link to each other appropriately
 
-**Result**: Documentation quality improved ✓
+**Result**: Documentation quality improved [YES]
 
 ---
 
@@ -206,12 +206,12 @@ Annual savings (assuming 1000 command executions):
 
 | Criterion | Target | Actual | Status |
 |-----------|--------|--------|--------|
-| self-healing-guide.md reduction | 438 → 120 lines (73%) | 439 → 153 lines (65%) | ⚠️ Close |
-| context-guide.md self-healing | 93 → 20 lines (78%) | 115 → 28 lines (76%) | ✅ Exceeded |
-| Implementation details created | 300 lines | 601 lines | ✅ Exceeded |
-| Schema evolution documented | Added to state-schema.md | 119 lines added | ✅ Complete |
-| Self-healing functionality | No regression | Unchanged | ✅ Verified |
-| Documentation quality | Maintained | Improved | ✅ Better |
+| self-healing-guide.md reduction | 438 → 120 lines (73%) | 439 → 153 lines (65%) | [WARN] Close |
+| context-guide.md self-healing | 93 → 20 lines (78%) | 115 → 28 lines (76%) | [PASS] Exceeded |
+| Implementation details created | 300 lines | 601 lines | [PASS] Exceeded |
+| Schema evolution documented | Added to state-schema.md | 119 lines added | [PASS] Complete |
+| Self-healing functionality | No regression | Unchanged | [PASS] Verified |
+| Documentation quality | Maintained | Improved | [PASS] Better |
 
 **Overall**: 5/6 targets met or exceeded, 1 close (28% over target for guide.md)
 

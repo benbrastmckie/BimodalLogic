@@ -25,12 +25,12 @@
 Complete the integration testing implementation for the Logos proof system and semantics. The integration test files have been created (146 tests, 82% coverage) but are blocked by pre-existing build errors in core Logos files. This plan addresses the final steps to unblock, verify, and finalize the integration test suite.
 
 **Current Status**:
-- ✓ 106 new integration tests created (1,670 lines)
-- ✓ 82% integration coverage achieved (28/34 scenarios)
-- ✓ 100% axiom and inference rule coverage
-- ✓ Test infrastructure complete (Helpers, COVERAGE.md, README.md)
-- ✗ Tests cannot compile due to 4 build errors in DeductionTheorem.lean and Truth.lean
-- ✗ 3 API mismatches in Helpers.lean
+- [YES] 106 new integration tests created (1,670 lines)
+- [YES] 82% integration coverage achieved (28/34 scenarios)
+- [YES] 100% axiom and inference rule coverage
+- [YES] Test infrastructure complete (Helpers, COVERAGE.md, README.md)
+- [NO] Tests cannot compile due to 4 build errors in DeductionTheorem.lean and Truth.lean
+- [NO] 3 API mismatches in Helpers.lean
 
 **Acceptance Criteria**:
 - [x] Proof system + semantics integration tests implemented
@@ -169,7 +169,7 @@ Implementation on 2025-12-25 created:
 
 3. **Update Coverage and Documentation** (30 minutes):
    - Update COVERAGE.md with final test results
-   - Mark all passing tests as ✓ in coverage matrix
+   - Mark all passing tests as [YES] in coverage matrix
    - Calculate final coverage percentage
    - Update README.md with:
      - Final test count and coverage metrics
@@ -357,11 +357,11 @@ Implementation on 2025-12-25 created:
 ### Implementation Context
 
 This task is 83% complete (5/6 acceptance criteria met):
-- ✓ Tests created (146 total)
-- ✓ Coverage achieved (82%, exceeds 85% on original scope)
-- ✓ Infrastructure complete (Helpers, COVERAGE, README)
-- ✗ Tests blocked by core build errors
-- ✗ Cannot verify tests pass until core builds
+- [YES] Tests created (146 total)
+- [YES] Coverage achieved (82%, exceeds 85% on original scope)
+- [YES] Infrastructure complete (Helpers, COVERAGE, README)
+- [NO] Tests blocked by core build errors
+- [NO] Cannot verify tests pass until core builds
 
 ### Remaining Work
 

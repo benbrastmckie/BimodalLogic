@@ -165,15 +165,15 @@ Audit the four commands to verify they correctly update TODO.md and state.json s
 **Lifecycle** (lines 244-248):
 1. Created: `[NOT STARTED]`
 2. Work begins: `[IN PROGRESS]` + `**Started**: YYYY-MM-DD`
-3. Work completes: `[COMPLETED]` + `**Completed**: YYYY-MM-DD` + ✅ to title
+3. Work completes: `[COMPLETED]` + `**Completed**: YYYY-MM-DD` + [PASS] to title
 4. Or blocked: `[BLOCKED]` + `**Blocked**: YYYY-MM-DD` + `**Blocking Reason**: {reason}`
 5. Or abandoned: `[ABANDONED]` + `**Abandoned**: YYYY-MM-DD` + `**Abandonment Reason**: {reason}`
 
 **Command Compliance**:
-- **/plan**: ✅ Uses [IN PROGRESS] → [PLANNED] with timestamps
-- **/research**: ✅ Uses [IN PROGRESS] → [RESEARCHED] with timestamps
-- **/revise**: ❌ Does not specify status updates
-- **/task**: ✅ Uses [IN PROGRESS] → [COMPLETED] with timestamps
+- **/plan**: [PASS] Uses [IN PROGRESS] → [PLANNED] with timestamps
+- **/research**: [PASS] Uses [IN PROGRESS] → [RESEARCHED] with timestamps
+- **/revise**: [FAIL] Does not specify status updates
+- **/task**: [PASS] Uses [IN PROGRESS] → [COMPLETED] with timestamps
 
 #### state.json Status Values
 
@@ -204,10 +204,10 @@ Audit the four commands to verify they correctly update TODO.md and state.json s
 - `completed`
 
 **Command Compliance**:
-- **/plan**: ✅ Uses `in_progress` → `planned` (lines 55, 79 in plan.md)
-- **/research**: ✅ Uses `in_progress` → `researched` (lines 53, 69 in research.md)
-- **/revise**: ❌ Does not specify state.json updates
-- **/task**: ✅ Uses `in_progress` → `completed` (lines 67, 82 in task.md)
+- **/plan**: [PASS] Uses `in_progress` → `planned` (lines 55, 79 in plan.md)
+- **/research**: [PASS] Uses `in_progress` → `researched` (lines 53, 69 in research.md)
+- **/revise**: [FAIL] Does not specify state.json updates
+- **/task**: [PASS] Uses `in_progress` → `completed` (lines 67, 82 in task.md)
 
 #### Timestamp Fields
 
@@ -222,10 +222,10 @@ All timestamps use ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`
 - State Files: `YYYY-MM-DD` (lines 343-350)
 
 **Command Compliance**:
-- **/plan**: ✅ Specifies YYYY-MM-DD for TODO.md (line 55)
-- **/research**: ✅ Specifies YYYY-MM-DD for TODO.md (line 53)
-- **/revise**: ❌ Does not specify timestamp updates
-- **/task**: ✅ Specifies YYYY-MM-DD for TODO.md, ISO8601 for plans (line 67)
+- **/plan**: [PASS] Specifies YYYY-MM-DD for TODO.md (line 55)
+- **/research**: [PASS] Specifies YYYY-MM-DD for TODO.md (line 53)
+- **/revise**: [FAIL] Does not specify timestamp updates
+- **/task**: [PASS] Specifies YYYY-MM-DD for TODO.md, ISO8601 for plans (line 67)
 
 **Missing Timestamp Fields**:
 - **state.json**: Commands do not explicitly specify `started_at` and `completed_at` fields
@@ -303,32 +303,32 @@ All commands correctly specify lazy directory creation:
 #### /plan Command (plan.md)
 - Line 62: "derive slug and plan project root; if `--dry-run`, preview slug only; otherwise create root + reports/ only when writing artifacts (lazy creation)"
 - Line 94: "Create project root and plans/ only when emitting the plan"
-- **Compliance**: ✅ Correct
+- **Compliance**: [PASS] Correct
 
 #### /research Command (research.md)
 - Line 60: "Derive slug and plan project root; if `--dry-run`, preview slug only; otherwise create root + reports/ only when writing artifacts (lazy creation)"
 - Line 84: "Create project root/reports/ only when writing research artifacts"
-- **Compliance**: ✅ Correct
+- **Compliance**: [PASS] Correct
 
 #### /revise Command (revise.md)
 - Line 15: `creates_root_on: never (reuses existing plans/)`
 - Line 84: "No new project roots; only create the new plan file in existing plans/ subdir"
-- **Compliance**: ✅ Correct
+- **Compliance**: [PASS] Correct
 
 #### /task Command (task.md)
 - Line 22: `creates_root_on: "Only when delegated agent writes first artifact"`
 - Line 96: "Derive slug `.opencode/specs/NNN_slug/`; create project root/subdir only when writing an artifact"
-- **Compliance**: ✅ Correct
+- **Compliance**: [PASS] Correct
 
 **task-executor.md**:
 - Lines 229-251: Stage 4 (CreateProjectDirectory) with lazy creation
 - Line 235: "Lazily create directory: .opencode/specs/NNN_task_name/ **only immediately before writing the first artifact**"
 - Line 249: "If execution only updates TODO/status markers with no artifacts, **skip directory creation entirely**"
-- **Compliance**: ✅ Correct
+- **Compliance**: [PASS] Correct
 
 **batch-task-orchestrator.md**:
 - Line 543: "Preserve lazy directory creation: never create project roots/subdirs unless a delegated execution writes an artifact"
-- **Compliance**: ✅ Correct
+- **Compliance**: [PASS] Correct
 
 ### 6. Current Implementation Analysis
 
@@ -582,10 +582,10 @@ All commands correctly specify lazy directory creation:
 
 All commands correctly implement lazy directory creation:
 
-- **/plan**: ✅ Creates project root + plans/ only when writing plan artifact
-- **/research**: ✅ Creates project root + reports/ only when writing research artifact
-- **/revise**: ✅ Never creates project root (reuses existing plans/)
-- **/task**: ✅ Creates project root + subdirs only when delegated agent writes artifact
+- **/plan**: [PASS] Creates project root + plans/ only when writing plan artifact
+- **/research**: [PASS] Creates project root + reports/ only when writing research artifact
+- **/revise**: [PASS] Never creates project root (reuses existing plans/)
+- **/task**: [PASS] Creates project root + subdirs only when delegated agent writes artifact
 
 **Compliance**: 100% - All commands correctly defer directory creation until artifact write time.
 

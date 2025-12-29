@@ -9,12 +9,12 @@
 Analysis of 24 Logos/Core modules reveals **good overall documentation coverage** with comprehensive module docstrings and declaration docstrings for most public definitions. The codebase follows Lean 4 documentation conventions well.
 
 **Key Findings**:
-- ✅ All analyzed modules have module docstrings (/-! ... -/)
-- ✅ Most public definitions have declaration docstrings (/-- ... -/)
-- ✅ Formal symbols are properly wrapped in backticks
-- ⚠️ Some helper functions lack docstrings
-- ⚠️ Some complex functions lack usage examples
-- ⚠️ Build errors in 2 modules (DeductionTheorem.lean, Truth.lean)
+- [PASS] All analyzed modules have module docstrings (/-! ... -/)
+- [PASS] Most public definitions have declaration docstrings (/-- ... -/)
+- [PASS] Formal symbols are properly wrapped in backticks
+- [WARN] Some helper functions lack docstrings
+- [WARN] Some complex functions lack usage examples
+- [WARN] Build errors in 2 modules (DeductionTheorem.lean, Truth.lean)
 
 ## Statistics
 
@@ -28,38 +28,38 @@ Analysis of 24 Logos/Core modules reveals **good overall documentation coverage*
 
 ## Per-Module Analysis
 
-### ✅ Excellent Documentation (No Changes Needed)
+### [PASS] Excellent Documentation (No Changes Needed)
 
 #### 1. Logos/Core/Syntax/Formula.lean
 - **Status**: Excellent
-- **Module docstring**: ✅ Comprehensive
-- **Declaration docstrings**: ✅ All public definitions documented
-- **Examples**: ✅ Present in docstrings
-- **Formal symbols**: ✅ Properly backticked
+- **Module docstring**: [PASS] Comprehensive
+- **Declaration docstrings**: [PASS] All public definitions documented
+- **Examples**: [PASS] Present in docstrings
+- **Formal symbols**: [PASS] Properly backticked
 - **Notes**: Model documentation standard for the project
 
 #### 2. Logos/Core/Syntax/Context.lean
 - **Status**: Excellent
-- **Module docstring**: ✅ Comprehensive
-- **Declaration docstrings**: ✅ All public definitions documented
-- **Examples**: ✅ Present (Context.map example)
-- **Theorems**: ✅ All documented
+- **Module docstring**: [PASS] Comprehensive
+- **Declaration docstrings**: [PASS] All public definitions documented
+- **Examples**: [PASS] Present (Context.map example)
+- **Theorems**: [PASS] All documented
 
 #### 3. Logos/Core/Automation/Tactics.lean
 - **Status**: Excellent
-- **Module docstring**: ✅ Comprehensive with implementation status
-- **Declaration docstrings**: ✅ All tactics documented
-- **Examples**: ✅ Usage examples for each tactic
-- **Helper functions**: ✅ All documented
+- **Module docstring**: [PASS] Comprehensive with implementation status
+- **Declaration docstrings**: [PASS] All tactics documented
+- **Examples**: [PASS] Usage examples for each tactic
+- **Helper functions**: [PASS] All documented
 
 #### 4. Logos/Core/Automation/ProofSearch.lean
 - **Status**: Excellent
-- **Module docstring**: ✅ Comprehensive with algorithm description
-- **Declaration docstrings**: ✅ All functions documented
-- **Examples**: ✅ Algorithm pseudocode and usage examples
-- **Complexity analysis**: ✅ Included in docstrings
+- **Module docstring**: [PASS] Comprehensive with algorithm description
+- **Declaration docstrings**: [PASS] All functions documented
+- **Examples**: [PASS] Algorithm pseudocode and usage examples
+- **Complexity analysis**: [PASS] Included in docstrings
 
-### ⚠️ Good Documentation (Minor Improvements Needed)
+### [WARN] Good Documentation (Minor Improvements Needed)
 
 #### 5. Logos/Core/Automation/AesopRules.lean
 - **Status**: Good
@@ -101,7 +101,7 @@ Analysis of 24 Logos/Core modules reveals **good overall documentation coverage*
 - **Missing**: Verify all theorems have docstrings with proof sketches
 - **Action**: Add proof intuition to theorem docstrings
 
-### ❌ Build Errors (Cannot Analyze Fully)
+### [FAIL] Build Errors (Cannot Analyze Fully)
 
 #### Logos/Core/Metalogic/DeductionTheorem.lean
 - **Error**: Type class instance problem (line 255, 297, 371)
@@ -166,14 +166,14 @@ Expected: Zero warnings
 
 ## Documentation Standards Compliance
 
-### ✅ Compliant
+### [PASS] Compliant
 - Module docstrings use `/-! ... -/` format
 - Declaration docstrings use `/-- ... -/` format
 - Formal symbols wrapped in backticks
 - 100-character line limit mostly followed
 - ATX-style headings in docstrings
 
-### ⚠️ Needs Verification
+### [WARN] Needs Verification
 - All public definitions have docstrings (need docBlame check)
 - All complex functions have examples
 - All theorems have proof sketches/intuition

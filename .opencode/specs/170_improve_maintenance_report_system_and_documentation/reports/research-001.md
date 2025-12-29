@@ -265,11 +265,11 @@ This research analyzes the maintenance report system to clarify command responsi
 - Summary metadata returned in return object summary field (<100 tokens)
 
 **Compliance Check**:
-- ✅ /review follows lazy directory creation
-- ✅ /review creates review summary artifact
-- ✅ reviewer.md returns summary metadata in return object
-- ✅ /review does NOT create unnecessary summary artifact (review summary is the artifact)
-- ❌ /review does NOT update project state.json (gap identified)
+- [PASS] /review follows lazy directory creation
+- [PASS] /review creates review summary artifact
+- [PASS] reviewer.md returns summary metadata in return object
+- [PASS] /review does NOT create unnecessary summary artifact (review summary is the artifact)
+- [FAIL] /review does NOT update project state.json (gap identified)
 
 ---
 
@@ -376,11 +376,11 @@ Atomicity guaranteed across:
 
 | Command | Uses status-sync-manager? | Updates project state.json? | Updates state.json? |
 |---------|--------------------------|----------------------------|---------------------|
-| /research | ✅ Yes | ✅ Yes (lazy) | ✅ Yes (active_projects) |
-| /plan | ✅ Yes | ✅ Yes (lazy) | ✅ Yes (active_projects) |
-| /revise | ✅ Yes | ✅ Yes (lazy) | ✅ Yes (active_projects) |
-| /implement | ✅ Yes | ✅ Yes (lazy) | ✅ Yes (active_projects) |
-| /review | ❌ No | ❌ No | ⚠️ Partial (repository_health only) |
+| /research | [PASS] Yes | [PASS] Yes (lazy) | [PASS] Yes (active_projects) |
+| /plan | [PASS] Yes | [PASS] Yes (lazy) | [PASS] Yes (active_projects) |
+| /revise | [PASS] Yes | [PASS] Yes (lazy) | [PASS] Yes (active_projects) |
+| /implement | [PASS] Yes | [PASS] Yes (lazy) | [PASS] Yes (active_projects) |
+| /review | [FAIL] No | [FAIL] No | [WARN] Partial (repository_health only) |
 
 **Gap Identified**: /review should use status-sync-manager for atomic updates across TODO.md, state.json, and project state.json
 
@@ -425,12 +425,12 @@ Atomicity guaranteed across:
 ```
 
 **Current /review State Updates**:
-- ✅ Updates repository_health.review_artifacts array
-- ✅ Increments next_project_number
-- ✅ Updates TODO.md with created tasks
-- ✅ Updates state.json with new task entries (via /task command)
-- ❌ Does NOT update repository_health metrics (sorry_count, axiom_count, etc.)
-- ❌ Does NOT create project state.json
+- [PASS] Updates repository_health.review_artifacts array
+- [PASS] Increments next_project_number
+- [PASS] Updates TODO.md with created tasks
+- [PASS] Updates state.json with new task entries (via /task command)
+- [FAIL] Does NOT update repository_health metrics (sorry_count, axiom_count, etc.)
+- [FAIL] Does NOT create project state.json
 
 **Recommended /review State Updates**:
 1. Update repository_health.review_artifacts array (already done)
@@ -476,26 +476,26 @@ Atomicity guaranteed across:
 ### 10. Context File Consistency Analysis
 
 **Files Analyzed**:
-- .opencode/command/todo.md (541 lines) - ✅ Well-documented
-- .opencode/command/review.md (405 lines) - ⚠️ Missing state update details
-- .opencode/command/revise.md (309 lines) - ✅ Well-documented
-- .opencode/command/research.md (355 lines) - ✅ Well-documented
-- .opencode/command/plan.md (330 lines) - ✅ Well-documented
-- .opencode/command/implement.md (416 lines) - ✅ Well-documented
-- .opencode/agent/subagents/reviewer.md (364 lines) - ✅ Well-documented
-- .opencode/context/common/workflows/command-lifecycle.md (930 lines) - ✅ Comprehensive
-- .opencode/context/common/system/artifact-management.md (275 lines) - ✅ Comprehensive
-- .opencode/context/common/standards/report.md (67 lines) - ✅ Clear
-- .opencode/context/common/standards/summary.md (61 lines) - ✅ Clear
+- .opencode/command/todo.md (541 lines) - [PASS] Well-documented
+- .opencode/command/review.md (405 lines) - [WARN] Missing state update details
+- .opencode/command/revise.md (309 lines) - [PASS] Well-documented
+- .opencode/command/research.md (355 lines) - [PASS] Well-documented
+- .opencode/command/plan.md (330 lines) - [PASS] Well-documented
+- .opencode/command/implement.md (416 lines) - [PASS] Well-documented
+- .opencode/agent/subagents/reviewer.md (364 lines) - [PASS] Well-documented
+- .opencode/context/common/workflows/command-lifecycle.md (930 lines) - [PASS] Comprehensive
+- .opencode/context/common/system/artifact-management.md (275 lines) - [PASS] Comprehensive
+- .opencode/context/common/standards/report.md (67 lines) - [PASS] Clear
+- .opencode/context/common/standards/summary.md (61 lines) - [PASS] Clear
 
 **Consistency Findings**:
-- ✅ All workflow commands follow command-lifecycle.md 8-stage pattern
-- ✅ All commands use lazy directory creation
-- ✅ All commands create artifacts following standards
-- ✅ All commands (except /review) use status-sync-manager for atomic updates
-- ⚠️ /review.md missing status-sync-manager integration details
-- ⚠️ /review.md missing project state.json update details
-- ⚠️ /review.md missing task creation batching details
+- [PASS] All workflow commands follow command-lifecycle.md 8-stage pattern
+- [PASS] All commands use lazy directory creation
+- [PASS] All commands create artifacts following standards
+- [PASS] All commands (except /review) use status-sync-manager for atomic updates
+- [WARN] /review.md missing status-sync-manager integration details
+- [WARN] /review.md missing project state.json update details
+- [WARN] /review.md missing task creation batching details
 
 **Recommendations for Context File Updates**:
 1. Update /review.md Stage 7 (Postflight) to use status-sync-manager
@@ -863,33 +863,33 @@ Atomicity guaranteed across:
 | **Creates Tasks** | No | Yes | No | No | No | No |
 | **Updates Registries** | No | Yes | No | No | No | No |
 | **Creates Artifacts** | No | Yes | Yes | Yes | Yes | Yes |
-| **Uses status-sync-manager** | No | ❌ No | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Updates project state.json** | No | ❌ No | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Updates state.json** | Yes | ⚠️ Partial | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Lazy Directory Creation** | No | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Uses status-sync-manager** | No | [FAIL] No | [PASS] Yes | [PASS] Yes | [PASS] Yes | [PASS] Yes |
+| **Updates project state.json** | No | [FAIL] No | [PASS] Yes | [PASS] Yes | [PASS] Yes | [PASS] Yes |
+| **Updates state.json** | Yes | [WARN] Partial | [PASS] Yes | [PASS] Yes | [PASS] Yes | [PASS] Yes |
+| **Lazy Directory Creation** | No | [PASS] Yes | [PASS] Yes | [PASS] Yes | [PASS] Yes | [PASS] Yes |
 | **Git Commit** | Yes | Yes | Yes | Yes | Yes | Yes |
 
 ### B. State File Update Patterns
 
 **Current /review Updates**:
-- ✅ state.json.repository_health.review_artifacts
-- ✅ state.json.next_project_number
-- ✅ TODO.md (via /task command)
-- ✅ state.json.active_projects (via /task command)
+- [PASS] state.json.repository_health.review_artifacts
+- [PASS] state.json.next_project_number
+- [PASS] TODO.md (via /task command)
+- [PASS] state.json.active_projects (via /task command)
 
 **Missing /review Updates**:
-- ❌ state.json.repository_health.last_assessed
-- ❌ state.json.repository_health.technical_debt
-- ❌ project state.json
-- ❌ maintenance/state.json
+- [FAIL] state.json.repository_health.last_assessed
+- [FAIL] state.json.repository_health.technical_debt
+- [FAIL] project state.json
+- [FAIL] maintenance/state.json
 
 **Recommended /review Updates**:
-- ✅ All current updates (keep)
-- ➕ state.json.repository_health.last_assessed
-- ➕ state.json.repository_health.technical_debt
-- ➕ project state.json (lazy creation)
-- ➕ maintenance/state.json (review operation entry)
-- ➕ Use status-sync-manager for atomic updates
+- [PASS] All current updates (keep)
+- [PLUS] state.json.repository_health.last_assessed
+- [PLUS] state.json.repository_health.technical_debt
+- [PLUS] project state.json (lazy creation)
+- [PLUS] maintenance/state.json (review operation entry)
+- [PLUS] Use status-sync-manager for atomic updates
 
 ### C. Artifact Management Compliance
 
@@ -901,12 +901,12 @@ Atomicity guaranteed across:
 - Follows summary.md standard
 
 **Compliance Check**:
-- ✅ Lazy directory creation
-- ✅ Single artifact (review summary)
-- ✅ No unnecessary summary artifact
-- ✅ Summary metadata in return object
-- ✅ Follows summary.md standard
-- ❌ Missing project state.json
+- [PASS] Lazy directory creation
+- [PASS] Single artifact (review summary)
+- [PASS] No unnecessary summary artifact
+- [PASS] Summary metadata in return object
+- [PASS] Follows summary.md standard
+- [FAIL] Missing project state.json
 
 ### D. Implementation Roadmap
 

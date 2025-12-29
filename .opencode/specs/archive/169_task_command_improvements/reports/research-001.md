@@ -166,10 +166,10 @@ This research analyzes the current /task command implementation to identify gaps
 4. State sync: update project state alongside artifact writes
 
 **Gap Analysis**:
-- ✅ Lazy creation enforced
-- ✅ State sync implemented
-- ⚠️ Summary creation inconsistent
-- ❌ Context protection not enforced (agents return full details)
+- [PASS] Lazy creation enforced
+- [PASS] State sync implemented
+- [WARN] Summary creation inconsistent
+- [FAIL] Context protection not enforced (agents return full details)
 
 ### 3. Simple vs Complex Task Handling
 

@@ -170,12 +170,12 @@ This line:
 
 | Command | Arguments | Status |
 |---------|-----------|--------|
-| `/research` | Required: task number | ✅ Updated |
-| `/plan` | Required: task number | ✅ Updated |
-| `/implement` | Required: task number or range | ✅ Updated |
-| `/task` | Required: description | ✅ Updated |
-| `/revise` | Required: task number + optional prompt | ✅ Updated |
-| `/errors` | Optional: flags | ✅ Updated |
+| `/research` | Required: task number | [PASS] Updated |
+| `/plan` | Required: task number | [PASS] Updated |
+| `/implement` | Required: task number or range | [PASS] Updated |
+| `/task` | Required: description | [PASS] Updated |
+| `/revise` | Required: task number + optional prompt | [PASS] Updated |
+| `/errors` | Optional: flags | [PASS] Updated |
 | `/review` | Optional: scope | Not needed (no args currently) |
 | `/todo` | None | Not needed (no args) |
 

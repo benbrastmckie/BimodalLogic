@@ -37,10 +37,10 @@ Complete the clean-break refactor of the .opencode system to solve all critical 
 **Approach**: Clean break - rebuild all agents and commands from scratch with proper architecture.
 
 **Current Progress**:
-- ✅ Context files copied from backup
-- ✅ TODO.md and state files preserved
-- ✅ Standardized return format created (subagent-return-format.md)
-- 🔄 Remaining: All agents, commands, error system, documentation
+- [PASS] Context files copied from backup
+- [PASS] TODO.md and state files preserved
+- [PASS] Standardized return format created (subagent-return-format.md)
+- [REVISE] Remaining: All agents, commands, error system, documentation
 
 ---
 
@@ -61,7 +61,7 @@ Create foundational files and schemas that all other components depend on.
 #### Task 1.1: Create errors.json Schema [COMPLETED]
 
 **Files Created**:
-- ✅ `.opencode/specs/errors.json`
+- [PASS] `.opencode/specs/errors.json`
 
 **Content**:
 ```json
@@ -105,19 +105,19 @@ Create foundational files and schemas that all other components depend on.
 #### Task 1.2: Create Delegation Standards Documentation [COMPLETED]
 
 **Files Created**:
-- ✅ `.opencode/context/common/workflows/subagent-delegation-guide.md`
+- [PASS] `.opencode/context/common/workflows/subagent-delegation-guide.md`
 
 **Content Includes**:
-1. ✅ Session ID generation and tracking
-2. ✅ Delegation depth limits (max 3)
-3. ✅ Delegation path tracking for cycle detection
-4. ✅ Timeout handling (default 3600s)
-5. ✅ Return format validation
-6. ✅ Error propagation patterns
-7. ✅ Orchestrator delegation registry
-8. ✅ Common delegation patterns
-9. ✅ Testing delegation safety
-10. ✅ Troubleshooting guide
+1. [PASS] Session ID generation and tracking
+2. [PASS] Delegation depth limits (max 3)
+3. [PASS] Delegation path tracking for cycle detection
+4. [PASS] Timeout handling (default 3600s)
+5. [PASS] Return format validation
+6. [PASS] Error propagation patterns
+7. [PASS] Orchestrator delegation registry
+8. [PASS] Common delegation patterns
+9. [PASS] Testing delegation safety
+10. [PASS] Troubleshooting guide
 
 **Acceptance Criteria**:
 - [x] Delegation guide created with all patterns
@@ -127,12 +127,12 @@ Create foundational files and schemas that all other components depend on.
 #### Task 1.3: Update Status Markers Documentation [COMPLETED]
 
 **Files Verified**:
-- ✅ `.opencode/context/common/system/status-markers.md` (exists from backup)
+- [PASS] `.opencode/context/common/system/status-markers.md` (exists from backup)
 
 **Verification Results**:
-- ✅ Command-specific markers ([RESEARCHED], [PLANNED]) already documented
-- ✅ Atomic status update patterns already documented
-- ✅ status-sync-manager usage already documented
+- [PASS] Command-specific markers ([RESEARCHED], [PLANNED]) already documented
+- [PASS] Atomic status update patterns already documented
+- [PASS] status-sync-manager usage already documented
 
 **Acceptance Criteria**:
 - [x] Status markers documentation verified complete
@@ -506,7 +506,7 @@ Create commands with explicit return handling stages to prevent delegation hangs
     If completed:
       - Update TODO.md: status = [COMPLETED]
       - Update TODO.md: Completed timestamp
-      - Update TODO.md: Add ✅ to title
+      - Update TODO.md: Add [PASS] to title
       - Update state.json: status = "completed"
       - Update plan file: all phases [COMPLETED]
     If partial:
@@ -949,7 +949,7 @@ Create specialized agents for Lean 4 development.
 #### Task 5.2: Create lean-research-agent [COMPLETED]
 
 **Files Created**:
-- ✅ `.opencode/agent/subagents/lean-research-agent.md`
+- [PASS] `.opencode/agent/subagents/lean-research-agent.md`
 
 **Purpose**: Research Lean libraries using LeanExplore, Loogle, LeanSearch
 
@@ -1292,38 +1292,38 @@ Create comprehensive documentation and testing guide.
 
 ### Actual Progress as of 2025-12-26T23:00:00Z
 
-1. ✅ Phase 1: Core Infrastructure - COMPLETED
-   - ✅ errors.json schema created
-   - ✅ delegation guide created
-   - ✅ status markers verified
+1. [PASS] Phase 1: Core Infrastructure - COMPLETED
+   - [PASS] errors.json schema created
+   - [PASS] delegation guide created
+   - [PASS] status markers verified
 
-2. ✅ Phase 2: Main Orchestrator - COMPLETED
-   - ✅ orchestrator.md with delegation registry, cycle detection, timeouts
+2. [PASS] Phase 2: Main Orchestrator - COMPLETED
+   - [PASS] orchestrator.md with delegation registry, cycle detection, timeouts
 
-3. ✅ Phase 3: Core Commands - COMPLETED
-   - ✅ /task, /research, /plan, /implement, /revise, /review, /todo, /errors
-   - ✅ All 8 commands with explicit return handling
+3. [PASS] Phase 3: Core Commands - COMPLETED
+   - [PASS] /task, /research, /plan, /implement, /revise, /review, /todo, /errors
+   - [PASS] All 8 commands with explicit return handling
 
-4. ✅ Phase 4: Core Subagents - COMPLETED
-   - ✅ atomic-task-numberer, status-sync-manager, researcher, planner, implementer, task-executor
-   - ✅ All 6 subagents with standardized return format
+4. [PASS] Phase 4: Core Subagents - COMPLETED
+   - [PASS] atomic-task-numberer, status-sync-manager, researcher, planner, implementer, task-executor
+   - [PASS] All 6 subagents with standardized return format
 
-5. ✅ Phase 5: Lean-Specific Agents - COMPLETED
-   - ✅ lean-implementation-agent (with lean-lsp-mcp integration)
-   - ✅ lean-research-agent (with tool integration placeholders)
+5. [PASS] Phase 5: Lean-Specific Agents - COMPLETED
+   - [PASS] lean-implementation-agent (with lean-lsp-mcp integration)
+   - [PASS] lean-research-agent (with tool integration placeholders)
 
-6. ✅ Phase 6: Error Diagnostics Agent - COMPLETED
-   - ✅ error-diagnostics-agent.md
+6. [PASS] Phase 6: Error Diagnostics Agent - COMPLETED
+   - [PASS] error-diagnostics-agent.md
 
-7. ✅ Phase 7: Support Agents - COMPLETED
-   - ✅ git-workflow-manager.md
-   - ✅ batch-task-orchestrator skipped (implemented in /implement command)
+7. [PASS] Phase 7: Support Agents - COMPLETED
+   - [PASS] git-workflow-manager.md
+   - [PASS] batch-task-orchestrator skipped (implemented in /implement command)
 
-8. ✅ Phase 8: Documentation - COMPLETED
-   - ✅ ARCHITECTURE.md
-   - ✅ QUICK-START.md
-   - ✅ TESTING.md
-   - ✅ README.md
+8. [PASS] Phase 8: Documentation - COMPLETED
+   - [PASS] ARCHITECTURE.md
+   - [PASS] QUICK-START.md
+   - [PASS] TESTING.md
+   - [PASS] README.md
 
 **Progress**: 8 / 8 phases completed (100%)
 **Total Actual Effort**: ~6.5 hours (vs 18 hours estimated)
@@ -1353,13 +1353,13 @@ After all phases complete:
 ## Current Status
 
 **Completed**:
-- ✅ Directory structure created
-- ✅ Context files copied from backup
-- ✅ TODO.md and state files preserved
-- ✅ subagent-return-format.md created
+- [PASS] Directory structure created
+- [PASS] Context files copied from backup
+- [PASS] TODO.md and state files preserved
+- [PASS] subagent-return-format.md created
 
 **In Progress**:
-- 🔄 This implementation plan
+- [REVISE] This implementation plan
 
 **Next Immediate Steps**:
 1. Create errors.json with empty schema

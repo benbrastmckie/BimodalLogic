@@ -64,7 +64,7 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
 
 **Actions**:
 1. Scan .opencode/specs/TODO.md for completed tasks
-2. Identify tasks marked with ✅, [x], or in "Completed" sections
+2. Identify tasks marked with [PASS], [x], or in "Completed" sections
 3. If >5 completed tasks, request user confirmation
 4. Remove completed tasks from active sections
 5. Update "Completion History" section
@@ -449,10 +449,10 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
 ## Migration from Legacy Approach
 
 ### Phase 1: Create State Files (Completed)
-1. ✅ Create archive/state.json with schema
-2. ✅ Create maintenance/state.json with schema
-3. ✅ Update state.json with references
-4. ✅ Document schemas in STATE_SCHEMA_GUIDE.md
+1. [PASS] Create archive/state.json with schema
+2. [PASS] Create maintenance/state.json with schema
+3. [PASS] Update state.json with references
+4. [PASS] Document schemas in STATE_SCHEMA_GUIDE.md
 
 ### Phase 2: Migrate ARCHIVE_INDEX.md (Next)
 1. Extract all project data from ARCHIVE_INDEX.md

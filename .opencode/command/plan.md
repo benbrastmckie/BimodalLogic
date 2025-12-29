@@ -149,15 +149,47 @@ language: markdown
   </stage>
 
   <stage id="4" name="InvokeAgent">
+    <task_extraction>
+      Extract only the specific task entry from TODO.md to reduce context load:
+      
+      CRITICAL: Use selective loading to reduce context from 109KB to ~2KB (98% reduction)
+      
+      Extraction command:
+      ```bash
+      # Extract task entry (header + 50 lines of content)
+      grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+      
+      # Validate extraction succeeded (non-empty file)
+      if [ ! -s /tmp/task-${task_number}.md ]; then
+        echo "ERROR: Task ${task_number} not found in TODO.md"
+        exit 1
+      fi
+      
+      # Log extraction success
+      echo "Extracted task ${task_number} entry ($(wc -l < /tmp/task-${task_number}.md) lines)"
+      ```
+      
+      Fallback: If extraction fails, load full TODO.md and log warning
+      
+      Edge cases handled:
+      - Task at end of file (grep -A 50 captures remaining lines)
+      - Task with long description (50 lines sufficient for all current tasks)
+      - Non-existent task (validation catches and errors)
+      - Malformed task entry (validation catches empty file)
+    </task_extraction>
+    
     <context_loading>
       Load context files after routing, before delegation:
       @.opencode/context/common/workflows/command-lifecycle.md
-      @.opencode/specs/TODO.md
+      @/tmp/task-${task_number}.md (extracted task entry, ~2KB vs 109KB full TODO.md)
       @.opencode/specs/state.json
       @.opencode/context/common/system/status-markers.md
       @.opencode/context/common/standards/subagent-return-format.md
       @.opencode/context/common/workflows/subagent-delegation-guide.md
       @.opencode/context/common/system/git-commits.md
+      
+      NOTE: Task extraction reduces context load by 107KB (98% of TODO.md)
+      Full TODO.md is 109KB, extracted task entry is ~2KB
     </context_loading>
     <!-- Follow command-lifecycle.md for agent invocation -->
   </stage>
@@ -580,6 +612,11 @@ language: markdown
   </plan_template>
   <no_emojis>
     No emojis in plans or status updates
+    
+    Validation: Before returning artifacts, verify:
+    - grep -E "[\x{1F300}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]" artifact.md returns no results
+    - If emojis found: Replace with text alternatives ([PASS]/[FAIL]/[WARN])
+    - Fail command if emojis cannot be removed
   </no_emojis>
   <atomic_updates>
     Use status-sync-manager for atomic multi-file updates

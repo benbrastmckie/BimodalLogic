@@ -424,31 +424,31 @@ theorem perpetuity_1 (φ : Formula) : ⊢ φ.box.imp φ.always := by
 ### Verification Steps
 
 #### 1. Syntactic Verification
-- ✓ Type-checks: `⊢ φ.box.imp φ.always` matches theorem signature
-- ✓ No `sorry` placeholders
-- ✓ All imports resolve
+- [YES] Type-checks: `⊢ φ.box.imp φ.always` matches theorem signature
+- [YES] No `sorry` placeholders
+- [YES] All imports resolve
 
 #### 2. Semantic Verification
-- ✓ Helper lemmas are sound:
+- [YES] Helper lemmas are sound:
   - `box_to_past`: Uses temporal duality on `box_to_future` (sound)
   - `box_to_present`: Uses MT axiom (sound in S5)
   - `box_to_future`: Uses MF + MT (both sound)
-- ✓ Composition lemma is sound:
+- [YES] Composition lemma is sound:
   - `combine_imp_conj_3`: Conjunction introduction (sound)
 
 #### 3. Quality Verification
-- ✓ Decomposition: Goal decomposed into 3 components (past, present, future)
-- ✓ Component-based: Uses pre-proven helper lemmas
-- ✓ Comments: Explanatory comment about `always` definition
-- ✓ Variable names: Descriptive (`h_past`, `h_present`, `h_future`)
-- ✓ Conciseness: 5 lines, clear and readable
+- [YES] Decomposition: Goal decomposed into 3 components (past, present, future)
+- [YES] Component-based: Uses pre-proven helper lemmas
+- [YES] Comments: Explanatory comment about `always` definition
+- [YES] Variable names: Descriptive (`h_past`, `h_present`, `h_future`)
+- [YES] Conciseness: 5 lines, clear and readable
 
 #### 4. Completeness Verification
-- ✓ All subgoals proven
-- ✓ No circular reasoning
-- ✓ Dependency graph is acyclic
+- [YES] All subgoals proven
+- [YES] No circular reasoning
+- [YES] Dependency graph is acyclic
 
-**Verdict**: ✅ Proof is verified and meets all quality standards.
+**Verdict**: [PASS] Proof is verified and meets all quality standards.
 
 ---
 

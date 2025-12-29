@@ -73,7 +73,7 @@ Task 143 executes the `.opencode/context/` refactor promised by plan 127, replac
 - **Scope creep into agent references (Task 144)** → Document finalized mapping for 144 but avoid touching agent/command files here.
 
 ## Implementation Phases
-### Phase 1: Finalize mapping and dedup rules [COMPLETED] ✅
+### Phase 1: Finalize mapping and dedup rules [COMPLETED] [PASS]
 - **Goal:** Produce concrete mapping and dedup plan aligned to acceptance criteria.
 - **Tasks:**
   - [x] Inspect current `.opencode/context/common/` and `.opencode/context/project/` inventory vs index.md and context-guide.md.
@@ -81,7 +81,7 @@ Task 143 executes the `.opencode/context/` refactor promised by plan 127, replac
   - [x] Define Lean-vs-Logic ownership notes for each overlapping standard/process.
 - **Timing:** ~0.75 hour
 
-### Phase 2: Apply moves and content updates [COMPLETED] ✅
+### Phase 2: Apply moves and content updates [COMPLETED] [PASS]
 - **Goal:** Execute mapping, relocate/rename files, and update content/READMEs.
 - **Tasks:**
   - [x] Rename Lean proof conventions to `proof-conventions-lean.md` and rewrite to reference logic canonical rules.
@@ -90,7 +90,7 @@ Task 143 executes the `.opencode/context/` refactor promised by plan 127, replac
   - [x] Clean duplicated Lean guidance (status/artifact snippets) by replacing with links to common/system standards.
 - **Timing:** ~1.0 hour
 
-### Phase 3: Index cleanup and verification [COMPLETED] ✅
+### Phase 3: Index cleanup and verification [COMPLETED] [PASS]
 - **Goal:** Align index and verify links/dependencies.
 - **Tasks:**
   - [x] Rewrite `index.md` quick maps to match the new `common/` and `project/` paths and corrected filenames.
@@ -98,7 +98,7 @@ Task 143 executes the `.opencode/context/` refactor promised by plan 127, replac
   - [x] Search for old paths (`.opencode/context/lean4/`, `core/`) and update references within context docs.
 - **Timing:** ~0.75 hour
 
-### Phase 4: Hand-off and rollback safeguards [COMPLETED] ✅
+### Phase 4: Hand-off and rollback safeguards [COMPLETED] [PASS]
 - **Goal:** Document outputs for Task 144 and ensure safe rollback.
 - **Tasks:**
   - [x] Summarize final mapping and link-check results for Task 144 hand-off.

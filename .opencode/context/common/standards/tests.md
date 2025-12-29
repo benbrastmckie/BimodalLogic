@@ -8,11 +8,11 @@
 
 **AAA Pattern**: Arrange → Act → Assert
 
-**Test** (✅ DO):
+**Test** ([PASS] DO):
 - Happy path, edge cases, error cases
 - Business logic, public APIs
 
-**Don't Test** (❌ DON'T):
+**Don't Test** ([FAIL] DON'T):
 - Third-party libraries, framework internals
 - Simple getters/setters, private details
 
@@ -44,14 +44,14 @@ test('calculateTotal returns sum of item prices', () => {
 
 ## What to Test
 
-### ✅ DO Test
+### [PASS] DO Test
 - Happy path (normal usage)
 - Edge cases (boundaries, empty, null, undefined)
 - Error cases (invalid input, failures)
 - Business logic (core functionality)
 - Public APIs (exported functions)
 
-### ❌ DON'T Test
+### [FAIL] DON'T Test
 - Third-party libraries
 - Framework internals
 - Simple getters/setters
@@ -103,25 +103,25 @@ test('getUser retrieves from database', () => {
 ## Test Naming
 
 ```javascript
-// ✅ Good: Descriptive, clear expectation
+// [PASS] Good: Descriptive, clear expectation
 test('calculateDiscount returns 10% off for premium users', () => {});
 test('validateEmail returns false for invalid format', () => {});
 test('createUser throws error when email exists', () => {});
 
-// ❌ Bad: Vague, unclear
+// [FAIL] Bad: Vague, unclear
 test('it works', () => {});
 test('test user', () => {});
 ```
 
 ## Best Practices
 
-✅ Test one thing per test
-✅ Use descriptive test names
-✅ Keep tests independent
-✅ Mock external dependencies
-✅ Test edge cases and errors
-✅ Make tests readable
-✅ Run tests frequently
-✅ Fix failing tests immediately
+[PASS] Test one thing per test
+[PASS] Use descriptive test names
+[PASS] Keep tests independent
+[PASS] Mock external dependencies
+[PASS] Test edge cases and errors
+[PASS] Make tests readable
+[PASS] Run tests frequently
+[PASS] Fix failing tests immediately
 
 **Golden Rule**: If you can't test it easily, refactor it.

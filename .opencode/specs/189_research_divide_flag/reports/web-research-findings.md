@@ -379,12 +379,12 @@ From "More Agents Is All You Need":
 ```
 
 **Avoid Context Bloat**:
-- ✅ Link to detailed reports
-- ✅ Use structured summaries
-- ✅ Include only key excerpts
-- ❌ Don't embed full reports
-- ❌ Don't duplicate content
-- ❌ Don't include raw source text
+- [PASS] Link to detailed reports
+- [PASS] Use structured summaries
+- [PASS] Include only key excerpts
+- [FAIL] Don't embed full reports
+- [FAIL] Don't duplicate content
+- [FAIL] Don't include raw source text
 
 ---
 

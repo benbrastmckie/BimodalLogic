@@ -168,7 +168,7 @@ All four commands follow the same Stage 7 pattern defined in `command-lifecycle.
 ```xml
 <stage id="7" name="Postflight">
   <status_transition>
-    Completion: [COMPLETED] + **Completed**: {date} + ✅
+    Completion: [COMPLETED] + **Completed**: {date} + [PASS]
     Partial: [PARTIAL] + note about resume
     Failed: Keep [IMPLEMENTING]
     Blocked: [BLOCKED]
@@ -602,7 +602,7 @@ When orchestrator invokes a command (e.g., /plan), it should:
 ### 3.1 Task 224 Evidence
 
 **Task**: Create implementation plan for fixing orchestrator command bypass  
-**Status**: Plan created ✅, TODO.md manually updated ✅, state.json not updated ❌
+**Status**: Plan created [PASS], TODO.md manually updated [PASS], state.json not updated [FAIL]
 
 **Analysis**:
 - Planner subagent successfully created plan artifact
@@ -616,7 +616,7 @@ When orchestrator invokes a command (e.g., /plan), it should:
 ### 3.2 Task 229 Evidence
 
 **Task**: Fix orchestrator command bypass (superseded by Task 231)  
-**Status**: Plan created ✅, tracking required manual intervention
+**Status**: Plan created [PASS], tracking required manual intervention
 
 **Analysis**:
 - Same pattern as Task 224

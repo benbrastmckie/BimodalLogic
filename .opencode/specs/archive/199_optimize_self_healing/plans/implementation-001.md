@@ -218,26 +218,26 @@ cat .opencode/context/common/system/context-guide.md | wc -l       # Should be ~
 ## Success Criteria
 
 1. **Context Reduction**:
-   - self-healing-guide.md: 438 → 120 lines (73% reduction) ✓
-   - context-guide.md self-healing: 93 → 20 lines (78% reduction) ✓
-   - Total loaded context: 93 → 20 lines (78% reduction) ✓
+   - self-healing-guide.md: 438 → 120 lines (73% reduction) [YES]
+   - context-guide.md self-healing: 93 → 20 lines (78% reduction) [YES]
+   - Total loaded context: 93 → 20 lines (78% reduction) [YES]
 
 2. **Functional Preservation**:
-   - Self-healing works on first run ✓
-   - Self-healing works after corruption ✓
-   - Normal operations work without regression ✓
-   - Commands load successfully ✓
+   - Self-healing works on first run [YES]
+   - Self-healing works after corruption [YES]
+   - Normal operations work without regression [YES]
+   - Commands load successfully [YES]
 
 3. **Documentation Quality**:
-   - Essential reference in self-healing-guide.md (120 lines) ✓
-   - Detailed implementation in separate file (300 lines) ✓
-   - Clear cross-references between files ✓
-   - Schema evolution in appropriate location ✓
+   - Essential reference in self-healing-guide.md (120 lines) [YES]
+   - Detailed implementation in separate file (300 lines) [YES]
+   - Clear cross-references between files [YES]
+   - Schema evolution in appropriate location [YES]
 
 4. **Verification**:
-   - All tests pass ✓
-   - Metrics documented ✓
-   - No functional regression ✓
+   - All tests pass [YES]
+   - Metrics documented [YES]
+   - No functional regression [YES]
 
 ---
 

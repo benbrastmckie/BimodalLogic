@@ -185,7 +185,7 @@ mode: subagent
 - Increases context window bloat (unnecessary tools in prompts)
 - NOT recommended by OpenCode documentation
 
-**Verdict:** ❌ NOT RECOMMENDED - Loses important functionality
+**Verdict:** [FAIL] NOT RECOMMENDED - Loses important functionality
 
 ### Approach B: Move Tool Config to Markdown Frontmatter
 
@@ -212,7 +212,7 @@ tools:
 - Markdown frontmatter may not support complex tool patterns
 - Less flexible than JSON configuration
 
-**Verdict:** ⚠️ POSSIBLE but not preferred by OpenCode patterns
+**Verdict:** [WARN] POSSIBLE but not preferred by OpenCode patterns
 
 ### Approach C: Use Global Tool Disabling with Agent Overrides
 
@@ -244,7 +244,7 @@ tools:
 - More verbose than current approach
 - Requires wildcard support (confirmed available)
 
-**Verdict:** ✅ RECOMMENDED - Cleaner and more explicit
+**Verdict:** [PASS] RECOMMENDED - Cleaner and more explicit
 
 ### Approach D: Verify Mode Field Recognition
 
@@ -264,7 +264,7 @@ tools:
 - Requires debugging OpenCode behavior
 - May be OpenCode bug requiring upstream fix
 
-**Verdict:** ✅ RECOMMENDED - Should be investigated first
+**Verdict:** [PASS] RECOMMENDED - Should be investigated first
 
 ## Recommended Solution
 

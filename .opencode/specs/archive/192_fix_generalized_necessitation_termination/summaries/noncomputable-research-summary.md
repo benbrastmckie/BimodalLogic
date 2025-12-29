@@ -32,11 +32,11 @@ The `noncomputable` keyword marks Lean 4 definitions that cannot be compiled to 
 
 | Aspect | Computable | Non-Computable |
 |--------|-----------|----------------|
-| **Logical Correctness** | ✅ | ✅ |
-| **Type-Checking** | ✅ | ✅ |
-| **Proof Usage** | ✅ | ✅ |
-| **Executable Code** | ✅ | ❌ |
-| **#eval Command** | ✅ | ❌ |
+| **Logical Correctness** | [PASS] | [PASS] |
+| **Type-Checking** | [PASS] | [PASS] |
+| **Proof Usage** | [PASS] | [PASS] |
+| **Executable Code** | [PASS] | [FAIL] |
+| **#eval Command** | [PASS] | [FAIL] |
 
 ---
 
@@ -116,17 +116,17 @@ noncomputable def is_even_classical (n : Nat) : Bool :=
 
 ### What Changes
 
-- ❌ Cannot use `#eval` on these functions
-- ❌ Cannot compile to executable bytecode
-- ❌ Cannot call from `def` (only from `noncomputable def`)
+- [FAIL] Cannot use `#eval` on these functions
+- [FAIL] Cannot compile to executable bytecode
+- [FAIL] Cannot call from `def` (only from `noncomputable def`)
 
 ### What Stays the Same
 
-- ✅ Type signatures unchanged
-- ✅ Theorem statements unchanged
-- ✅ Proof validity unchanged
-- ✅ Usage in other proofs works
-- ✅ Type-checking complexity unchanged
+- [PASS] Type signatures unchanged
+- [PASS] Theorem statements unchanged
+- [PASS] Proof validity unchanged
+- [PASS] Usage in other proofs works
+- [PASS] Type-checking complexity unchanged
 
 ### Performance
 

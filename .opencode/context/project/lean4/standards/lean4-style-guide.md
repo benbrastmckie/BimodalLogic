@@ -227,30 +227,30 @@ theorem example_proof (φ ψ : Formula) (h : ⊢ φ.imp ψ) (h2 : ⊢ φ) : ⊢ 
 
 ## 8. Common Violations to Avoid
 
-❌ **PascalCase for functions/theorems**
+[FAIL] **PascalCase for functions/theorems**
 ```lean
 def TruthAt ...                 -- Wrong
 theorem Soundness ...           -- Wrong
 ```
 
-❌ **Tabs instead of spaces**
+[FAIL] **Tabs instead of spaces**
 ```lean
 def example := by
 	sorry                       -- Wrong (tab)
 ```
 
-❌ **Lines over 100 characters**
+[FAIL] **Lines over 100 characters**
 ```lean
 theorem strong_completeness (Γ : Context) (φ : Formula) : Γ ⊨ φ → Γ ⊢ φ := by sorry  -- Too long
 ```
 
-❌ **Missing docstrings**
+[FAIL] **Missing docstrings**
 ```lean
 theorem soundness (Γ : Context) (φ : Formula) : Γ ⊢ φ → Γ ⊨ φ := by  -- Missing docstring
   sorry
 ```
 
-❌ **Inconsistent operator notation**
+[FAIL] **Inconsistent operator notation**
 ```lean
 theorem perpetuity_1 (φ : Formula) : ⊢ (□φ → always φ) := by sorry  -- Mix of □ and text
 ```

@@ -18,10 +18,10 @@
 3. The helper lemma `truth_at_swap_swap` relates `φ.swap.swap` to `φ`, not `φ.swap` to `φ`
 
 **Task 209 Findings Review**:
-- ✅ Correctly identified the `simp only` pattern from Perpetuity/Helpers.lean
-- ✅ Added `@[simp]` attribute to `swap_past_future_involution` in Formula.lean
-- ❌ The recommended solution was not successfully implemented
-- ❌ The implementation summary incorrectly states the proof remains incomplete with `sorry`, but actually has a type error
+- [PASS] Correctly identified the `simp only` pattern from Perpetuity/Helpers.lean
+- [PASS] Added `@[simp]` attribute to `swap_past_future_involution` in Formula.lean
+- [FAIL] The recommended solution was not successfully implemented
+- [FAIL] The implementation summary incorrectly states the proof remains incomplete with `sorry`, but actually has a type error
 
 **Revised Solution**: Use the `simp only` pattern correctly with proper hypothesis manipulation.
 
@@ -262,7 +262,7 @@ theorem is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_fut
 
 ### Tool Status
 
-**Loogle CLI**: ✅ Available at `/home/benjamin/.nix-profile/bin/loogle` and `/home/benjamin/.cache/loogle/.lake/build/bin/loogle`
+**Loogle CLI**: [PASS] Available at `/home/benjamin/.nix-profile/bin/loogle` and `/home/benjamin/.cache/loogle/.lake/build/bin/loogle`
 
 ### Queries Executed
 
@@ -291,7 +291,7 @@ Loogle confirmed the research findings:
 
 ## Alternative Approaches NOT Recommended
 
-### ❌ Using `conv` tactic
+### [FAIL] Using `conv` tactic
 
 ```lean
 theorem is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_future) :
@@ -303,7 +303,7 @@ theorem is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_fut
 
 **Why not**: More complex than `simp only`, and `conv` is for goal manipulation, not hypothesis manipulation.
 
-### ❌ Using `subst` tactic
+### [FAIL] Using `subst` tactic
 
 ```lean
 theorem is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_future) :
@@ -316,7 +316,7 @@ theorem is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_fut
 
 **Why not**: `subst` requires the equality to be in the form `x = expr` where `x` is a variable, but `φ.swap.swap = φ` is not in this form.
 
-### ❌ Using `calc` mode
+### [FAIL] Using `calc` mode
 
 ```lean
 theorem is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_future) :

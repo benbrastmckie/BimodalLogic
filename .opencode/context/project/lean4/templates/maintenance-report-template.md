@@ -14,9 +14,9 @@
 {2-3 sentence overview of maintenance operation, key achievements, and project health}
 
 **Key Metrics**:
-- ✅ {Metric 1}: {Value} ({Change from last})
-- ✅ {Metric 2}: {Value} ({Change from last})
-- ✅ {Metric 3}: {Value} ({Change from last})
+- [PASS] {Metric 1}: {Value} ({Change from last})
+- [PASS] {Metric 2}: {Value} ({Change from last})
+- [PASS] {Metric 3}: {Value} ({Change from last})
 
 **Project Health**: {Excellent | Good | Fair | Poor} - {Brief justification}
 
@@ -32,7 +32,7 @@
 
 #### Removed Tasks
 {List each removed task with:}
-- **Task {N}**: {Title} ✅
+- **Task {N}**: {Title} [PASS]
   - **Completed**: {YYYY-MM-DD}
   - **Reason**: {Why removed}
   - **Archive**: {Link to archive if applicable}
@@ -88,7 +88,7 @@
 - **Location**: {File path and line number}
 - **Issue**: {Description of discrepancy}
 - **Impact**: {High | Medium | Low} - {Impact description}
-- **Resolution**: {✅ CORRECTED | ⚠️ DOCUMENTED | ❌ PENDING} - {Resolution details}
+- **Resolution**: {[PASS] CORRECTED | [WARN] DOCUMENTED | [FAIL] PENDING} - {Resolution details}
 - **Recommendation**: {Follow-up action if needed}
 
 ### 2.2 Minor Discrepancies ({N} found)
@@ -105,8 +105,8 @@
 
 | Module | Completion % | Status | Sorries | Axioms |
 |--------|--------------|--------|---------|--------|
-| {Module 1} | {XX}% | {✅ | ⚠️ | ❌} | {N} | {N} |
-| {Module 2} | {XX}% | {✅ | ⚠️ | ❌} | {N} | {N} |
+| {Module 1} | {XX}% | {[PASS] | [WARN] | [FAIL]} | {N} | {N} |
+| {Module 2} | {XX}% | {[PASS] | [WARN] | [FAIL]} | {N} | {N} |
 | **TOTAL** | **{XX}%** | **{Status}** | **{N}** | **{N}** |
 
 ### 3.2 Active Tasks
@@ -134,9 +134,9 @@
 ### 3.5 Recent Progress
 
 **Major Achievements** (Last {N} Days):
-1. ✅ {Achievement 1}
-2. ✅ {Achievement 2}
-3. ✅ {Achievement 3}
+1. [PASS] {Achievement 1}
+2. [PASS] {Achievement 2}
+3. [PASS] {Achievement 3}
 
 ---
 
@@ -236,7 +236,7 @@ lake test
 ## 8. Next Steps
 
 ### 8.1 Immediate Actions (Today)
-1. ✅ Review maintenance report
+1. [PASS] Review maintenance report
 2. ⏳ {Action 2}
 3. ⏳ {Action 3}
 
@@ -259,9 +259,9 @@ lake test
 - Readiness for next phase
 
 **Key Metrics**:
-- ✅ {Metric 1}
-- ✅ {Metric 2}
-- ✅ {Metric 3}
+- [PASS] {Metric 1}
+- [PASS] {Metric 2}
+- [PASS] {Metric 3}
 
 **Documentation Quality**: {Grade} ({XX}%)  
 **Project Health**: {Status}  

@@ -67,7 +67,7 @@ This implementation plan is based on comprehensive research completed on 2025-12
 **Estimated Effort**: 18-23 hours (validated by complexity analysis)
 
 ### Breakdown
-- ✅ Basic infrastructure setup: 2-3 hours (COMPLETED - Plausible integrated, generators exist)
+- [PASS] Basic infrastructure setup: 2-3 hours (COMPLETED - Plausible integrated, generators exist)
 - TaskModel generator implementation: 4-6 hours
 - Property test enhancement: 8-10 hours (4 test files)
 - Documentation updates: 2-3 hours
@@ -100,22 +100,22 @@ This implementation plan is based on comprehensive research completed on 2025-12
 
 ### Potential Challenges
 
-1. **TaskModel Generator Complexity** ⚠️ HIGH RISK
+1. **TaskModel Generator Complexity** [WARN] HIGH RISK
    - Dependent types (valuation depends on WorldState)
    - Mitigation: Use SampleableExt with proxy pattern
    - Estimated effort: 3-4 hours
 
-2. **Decidability Requirements** ⚠️ MEDIUM RISK
+2. **Decidability Requirements** [WARN] MEDIUM RISK
    - Properties must be decidable (e.g., `Derivable Γ φ` is not)
    - Mitigation: Test specific axiom instances
    - Estimated effort: 2-3 hours
 
-3. **Generator Performance** ⚠️ MEDIUM RISK
+3. **Generator Performance** [WARN] MEDIUM RISK
    - Recursive generation can be slow
    - Mitigation: Size control and tuning
    - Estimated effort: 1-2 hours
 
-4. **Shrinking Strategy** ⚠️ LOW-MEDIUM RISK
+4. **Shrinking Strategy** [WARN] LOW-MEDIUM RISK
    - Complex formulas may not shrink well
    - Mitigation: Formula shrinking already implemented
    - Estimated effort: 2-3 hours
@@ -157,32 +157,32 @@ This implementation plan is based on comprehensive research completed on 2025-12
 ### Required Modules
 
 **Core Logos Modules:**
-- ✅ `Logos.Core.Syntax.Formula` - Formula type with 6 constructors
-- ✅ `Logos.Core.Syntax.Context` - Context (List Formula)
-- ✅ `Logos.Core.ProofSystem.Derivation` - Derivation rules
-- ✅ `Logos.Core.ProofSystem.Axioms` - Axiom schemas
-- ✅ `Logos.Core.Semantics.TaskFrame` - Frame structure
-- ✅ `Logos.Core.Semantics.TaskModel` - Model structure
-- ✅ `Logos.Core.Semantics.Truth` - Truth conditions
-- ✅ `Logos.Core.Semantics.Validity` - Validity definitions
-- ✅ `Logos.Core.Metalogic.Soundness` - Soundness theorem
-- ✅ `Logos.Core.Metalogic.DeductionTheorem` - Deduction theorem
+- [PASS] `Logos.Core.Syntax.Formula` - Formula type with 6 constructors
+- [PASS] `Logos.Core.Syntax.Context` - Context (List Formula)
+- [PASS] `Logos.Core.ProofSystem.Derivation` - Derivation rules
+- [PASS] `Logos.Core.ProofSystem.Axioms` - Axiom schemas
+- [PASS] `Logos.Core.Semantics.TaskFrame` - Frame structure
+- [PASS] `Logos.Core.Semantics.TaskModel` - Model structure
+- [PASS] `Logos.Core.Semantics.Truth` - Truth conditions
+- [PASS] `Logos.Core.Semantics.Validity` - Validity definitions
+- [PASS] `Logos.Core.Metalogic.Soundness` - Soundness theorem
+- [PASS] `Logos.Core.Metalogic.DeductionTheorem` - Deduction theorem
 
 **Test Infrastructure:**
-- ✅ `LogosTest.Core.Property.Generators` - Existing generators
-- ✅ `LogosTest.Core.Property.README` - Testing patterns
+- [PASS] `LogosTest.Core.Property.Generators` - Existing generators
+- [PASS] `LogosTest.Core.Property.README` - Testing patterns
 
 **External Libraries:**
-- ✅ Plausible framework (type classes: Arbitrary, Shrinkable, SampleableExt, Testable)
-- ✅ Mathlib4 (supporting utilities)
+- [PASS] Plausible framework (type classes: Arbitrary, Shrinkable, SampleableExt, Testable)
+- [PASS] Mathlib4 (supporting utilities)
 
 ### Prerequisites
 
 **Completed:**
-- ✅ Plausible dependency added to lakefile.lean
-- ✅ Basic generators for Formula, Context, TaskFrame
-- ✅ Property test directory structure
-- ✅ README.md with testing patterns
+- [PASS] Plausible dependency added to lakefile.lean
+- [PASS] Basic generators for Formula, Context, TaskFrame
+- [PASS] Property test directory structure
+- [PASS] README.md with testing patterns
 
 **To Implement:**
 - TaskModel generator (main work item)
