@@ -259,14 +259,7 @@ Context Loaded:
     - Low → ## Low Priority
   </priority_sections>
   
-  <no_emojis>
-    No emojis in task entries or command output
-    
-    Validation: Before returning artifacts, verify:
-    - grep -E "[\x{1F300}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]" artifact.md returns no results
-    - If emojis found: Replace with text alternatives ([PASS]/[FAIL]/[WARN])
-    - Fail command if emojis cannot be removed
-  </no_emojis>
+
   
   <atomic_updates>
     state.json updates must be atomic to prevent corruption

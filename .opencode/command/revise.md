@@ -608,14 +608,7 @@ language: markdown
     Increment version number correctly
     Use zero-padded format (001, 002, etc.)
   </version_incrementing>
-  <no_emojis>
-    No emojis in plans or status updates
-    
-    Validation: Before returning artifacts, verify:
-    - grep -E "[\x{1F300}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]" artifact.md returns no results
-    - If emojis found: Replace with text alternatives ([PASS]/[FAIL]/[WARN])
-    - Fail command if emojis cannot be removed
-  </no_emojis>
+
 </quality_standards>
 
 <usage_examples>

@@ -687,14 +687,7 @@ Context Loaded:
        - Validation errors included in review return object
        - User notified of non-compliant tasks for manual fix
   </task_validation>
-  <no_emojis>
-    No emojis in registries or task descriptions
-    
-    Validation: Before returning artifacts, verify:
-    - grep -E "[\x{1F300}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]" artifact.md returns no results
-    - If emojis found: Replace with text alternatives ([PASS]/[FAIL]/[WARN])
-    - Fail command if emojis cannot be removed
-  </no_emojis>
+
 </quality_standards>
 
 <usage_examples>
