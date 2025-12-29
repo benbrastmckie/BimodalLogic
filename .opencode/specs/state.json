@@ -19,19 +19,23 @@
       "project_number": 210,
       "project_name": "fix_lean_subagents",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "medium",
       "language": "markdown",
       "created": "2025-12-28T00:00:00Z",
       "started": "2025-12-28",
       "research_completed": "2025-12-28",
       "planning_completed": "2025-12-29",
+      "completed": "2025-12-29",
       "last_updated": "2025-12-29",
       "artifacts": [
         ".opencode/specs/210_fix_lean_subagents/reports/research-001.md",
         ".opencode/specs/210_fix_lean_subagents/summaries/research-summary.md",
-        ".opencode/specs/210_fix_lean_subagents/plans/implementation-001.md"
+        ".opencode/specs/210_fix_lean_subagents/plans/implementation-001.md",
+        ".opencode/specs/210_fix_lean_subagents/summaries/implementation-summary-20251228.md",
+        ".opencode/agent/subagents/lean-research-agent.md",
+        ".opencode/agent/subagents/lean-implementation-agent.md"
       ],
       "plan_path": ".opencode/specs/210_fix_lean_subagents/plans/implementation-001.md",
       "plan_metadata": {
@@ -39,7 +43,11 @@
         "estimated_hours": 8,
         "complexity": "medium"
       },
-      "estimated_hours": 8.0
+      "estimated_hours": 8.0,
+      "files_modified": [
+        ".opencode/agent/subagents/lean-research-agent.md",
+        ".opencode/agent/subagents/lean-implementation-agent.md"
+      ]
     },
     {
       "project_number": 189,

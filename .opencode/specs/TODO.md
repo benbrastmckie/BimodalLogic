@@ -1159,7 +1159,7 @@ Research successfully completed and definitively identified that the theorem is 
 
 ---
 
-### 210. Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md
+### ✅ 210. Fix Lean subagents to follow artifact-management.md, status-markers.md, and state-schema.md
 **Effort**: 6-8 hours
 **Status**: [COMPLETED]
 **Started**: 2025-12-28
@@ -1172,6 +1172,7 @@ Research successfully completed and definitively identified that the theorem is 
   - Main Report: [.opencode/specs/210_fix_lean_subagents/reports/research-001.md]
   - Summary: [.opencode/specs/210_fix_lean_subagents/summaries/research-summary.md]
 **Plan**: [.opencode/specs/210_fix_lean_subagents/plans/implementation-001.md]
+**Implementation Summary**: [.opencode/specs/210_fix_lean_subagents/summaries/implementation-summary-20251228.md]
 
 **Files Affected**:
 - .opencode/agent/subagents/lean-research-agent.md
