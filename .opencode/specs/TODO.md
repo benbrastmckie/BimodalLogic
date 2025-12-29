@@ -64,6 +64,8 @@ Implement Phase 1 of OpenAgents architectural migration: Create lazy-loading con
 - **Phase 3 Completed**: 2025-12-29
 - **Phase 4 Completed**: 2025-12-29
 - **Phase 5 Completed**: 2025-12-29
+- **Phase 6 Completed**: 2025-12-29 (via Task 249)
+- **Phase 7 Moved**: Moved to Task 250
 - **Phase 8 Completed**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
@@ -91,26 +93,26 @@ Implement Phase 1 of OpenAgents architectural migration: Create lazy-loading con
 Implement Phase 2 of OpenAgents architectural migration: Apply validated patterns from Phase 1 to all workflow commands (/plan, /implement, /revise) and simplify orchestrator to router pattern. This is the core architectural transformation that eliminates Stage 7 failures system-wide. Goal: All 4 command files under 200 lines, orchestrator under 100 lines (from 1,038), context window usage under 10% during routing, 100% Stage 7 execution reliability across all commands.
 
 **Tasks**:
-- Migrate /plan command to frontmatter delegation (extract to planner.md)
-- Migrate /implement command to frontmatter delegation (extract to implementer.md)
-- Migrate /revise command to frontmatter delegation (extract to task-executor.md)
-- Simplify orchestrator.md to router pattern (reduce from 1,038 to under 100 lines)
-- Remove redundant context loading from orchestrator
-- Preserve delegation registry, cycle detection, timeout enforcement
-- Add YAML frontmatter to all 6 subagents
-- Test all 4 commands with context window measurement (target: under 10%)
-- Validate Stage 7 execution 100% reliable (20 runs each command, 80 total)
-- Create Phase 2 validation report with metrics
+- ✓ Migrate /plan command to frontmatter delegation (extract to planner.md)
+- ✓ Migrate /implement command to frontmatter delegation (extract to implementer.md)
+- ✓ Migrate /revise command to frontmatter delegation (extract to task-executor.md)
+- ✓ Simplify orchestrator.md to router pattern (reduce from 1,038 to under 100 lines)
+- ✓ Remove redundant context loading from orchestrator
+- ✓ Preserve delegation registry, cycle detection, timeout enforcement
+- ✓ Add YAML frontmatter to all 6 subagents (completed via Task 249)
+- → Test all 4 commands with context window measurement (moved to Task 250)
+- → Validate Stage 7 execution 100% reliable (moved to Task 250)
+- ✓ Create Phase 2 validation report with metrics
 
 **Acceptance Criteria**:
-- [ ] All 4 command files under 200 lines each (total reduction from 2,848 to under 800 lines)
-- [ ] All 4 agents own complete workflows including Stage 7
-- [ ] Orchestrator under 100 lines (reduction from 1,038 lines)
-- [ ] Context window usage during routing: under 10% for all commands
-- [ ] Stage 7 execution rate: 100% in 80 total test runs (20 per command)
-- [ ] Delegation registry, cycle detection, timeout enforcement functional
-- [ ] All agents have YAML frontmatter with tools/permissions
-- [ ] Phase 2 validation report documents all metrics
+- [x] All 4 command files under 200 lines each (total reduction from 2,848 to under 800 lines)
+- [x] All 4 agents own complete workflows including Stage 7
+- [x] Orchestrator under 100 lines (reduction from 1,038 lines)
+- [ ] Context window usage during routing: under 10% for all commands (moved to Task 250)
+- [ ] Stage 7 execution rate: 100% in 80 total test runs (20 per command) (moved to Task 250)
+- [x] Delegation registry, cycle detection, timeout enforcement functional
+- [x] All agents have YAML frontmatter with tools/permissions (completed via Task 249)
+- [x] Phase 2 validation report documents all metrics
 
 **Impact**: Eliminates Stage 7 failures system-wide, achieves 60-70% context window reduction, dramatically simplifies orchestrator and commands. This is the breakthrough architectural fix.
 

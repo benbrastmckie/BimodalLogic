@@ -238,44 +238,57 @@ Phase 2 applies validated patterns from Phase 1 to all workflow commands (/plan,
 - ✅ Total routing context under 10% of budget
 - ✅ Rollback tested and documented
 
-### Phase 6: Add YAML Frontmatter to All Subagents [DEFERRED]
+### Phase 6: Add YAML Frontmatter to All Subagents [COMPLETED via Task 249]
 
-**Status**: Deferred to follow-up task (Phase 2 validation takes priority)
+**Status**: Completed via Task 249 (2025-12-29)
 
 **Goal**: Add comprehensive YAML frontmatter to all 6 subagents with tools, permissions, and configuration
 
 **Tasks**:
-- [ ] Create YAML frontmatter template with all fields
-- [ ] Document frontmatter standard (fields, types, purposes)
-- [ ] Add frontmatter to researcher.md (tools, permissions, delegation config)
-- [ ] Add frontmatter to planner.md (tools, permissions, context loading)
-- [ ] Add frontmatter to implementer.md (tools, permissions, git workflow config)
-- [ ] Add frontmatter to task-executor.md (tools, permissions, context loading)
-- [ ] Add frontmatter to lean-research-agent.md (Lean tools, permissions)
-- [ ] Add frontmatter to lean-implementation-agent.md (Lean tools, permissions)
-- [ ] Validate all frontmatter parses correctly
-- [ ] Verify all required fields present
-- [ ] Verify permissions deny dangerous commands (rm -rf, sudo, etc.)
-- [ ] Verify context loading references correct files
-- [ ] Verify delegation config matches agent capabilities
-- [ ] Test tools and permissions enforcement
-- [ ] Document frontmatter standard
+- [x] Create YAML frontmatter template with all fields
+- [x] Document frontmatter standard (fields, types, purposes)
+- [x] Add frontmatter to researcher.md (tools, permissions, delegation config)
+- [x] Add frontmatter to planner.md (tools, permissions, context loading)
+- [x] Add frontmatter to implementer.md (tools, permissions, git workflow config)
+- [x] Add frontmatter to task-executor.md (tools, permissions, context loading)
+- [x] Add frontmatter to lean-research-agent.md (Lean tools, permissions)
+- [x] Add frontmatter to lean-implementation-agent.md (Lean tools, permissions)
+- [x] Validate all frontmatter parses correctly
+- [x] Verify all required fields present
+- [x] Verify permissions deny dangerous commands (rm -rf, sudo, etc.)
+- [x] Verify context loading references correct files
+- [x] Verify delegation config matches agent capabilities
+- [x] Test tools and permissions enforcement
+- [x] Document frontmatter standard
 
-**Timing**: 4.5 hours (0.5 hours template + 3 hours updates + 1 hour validation)
+**Timing**: 4.5 hours (actual)
 
 **Acceptance Criteria**:
-- All 6 subagents have comprehensive YAML frontmatter
-- Frontmatter template documented
-- All required fields present and validated
-- Permissions deny dangerous commands
-- Context loading references correct files
-- Tools and permissions enforcement tested
+- ✓ All 6 subagents have comprehensive YAML frontmatter
+- ✓ Frontmatter template documented
+- ✓ All required fields present and validated
+- ✓ Permissions deny dangerous commands
+- ✓ Context loading references correct files
+- ✓ Tools and permissions enforcement tested
 
-### Phase 7: Comprehensive Testing and Validation [NOT STARTED]
+**Artifacts**:
+- Template: `.opencode/context/common/templates/subagent-frontmatter-template.yaml`
+- Schema: `.opencode/context/common/schemas/frontmatter-schema.json`
+- Validation: `.opencode/scripts/validate_frontmatter.py`
+- Standard: `.opencode/context/common/standards/frontmatter-standard.md`
+- Updated: researcher.md, planner.md, implementer.md, task-executor.md, lean-research-agent.md, lean-implementation-agent.md
+
+**Validation**: 6/6 subagents passed all 3 validation tiers (syntax, schema, semantic)
+
+### Phase 7: Comprehensive Testing and Validation [MOVED to Task 250]
+
+**Status**: Moved to Task 250 (Phase 2 Follow-up: Comprehensive Testing and Validation)
+
+**Reason**: Phase 6 (frontmatter addition) was deferred to Task 249 to prioritize validation and avoid blocking. Phase 7 similarly moved to Task 250 to allow incremental delivery and validation.
 
 **Goal**: Run comprehensive test suite and validate all Phase 2 success metrics
 
-**Tasks**:
+**Tasks** (see Task 250 for implementation):
 - [ ] Run 20 /research runs (validate Phase 1 still works)
 - [ ] Run 20 /plan runs (validate Phase 2 migration)
 - [ ] Run 20 /implement runs (validate Phase 2 migration)
@@ -292,9 +305,9 @@ Phase 2 applies validated patterns from Phase 1 to all workflow commands (/plan,
 - [ ] Create before/after metrics comparison
 - [ ] Document all test results
 
-**Timing**: 6 hours (4 hours testing + 1 hour context measurement + 1 hour documentation)
+**Timing**: 6 hours (estimated for Task 250)
 
-**Acceptance Criteria**:
+**Acceptance Criteria** (tracked in Task 250):
 - 80/80 test runs successful (100% Stage 7 execution)
 - Context window usage under 10% for all commands during routing
 - All command files under target line counts (plan: 250, revise: 250, implement: 300, research: 272)
