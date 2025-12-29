@@ -1,18 +1,59 @@
 # TODO
 
-**Last Updated:** 2025-12-28T23:58:07Z
+**Last Updated:** 2025-12-29T00:09:58Z
 
 ## Overview
 
-- **Total Tasks:** 41
+- **Total Tasks:** 42
 - **Completed:** 5
-- **High Priority:** 11
+- **High Priority:** 12
 - **Medium Priority:** 19
 - **Low Priority:** 11
 
 ---
 
 ## High Priority
+
+### 225. Fix systematic status-sync-manager TODO.md update failures across all workflow commands
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/agent/subagents/status-sync-manager.md
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+  - .opencode/command/revise.md
+  - .opencode/command/implement.md
+  - .opencode/agent/subagents/researcher.md
+  - .opencode/agent/subagents/planner.md
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - .opencode/context/common/workflows/command-lifecycle.md
+  - .opencode/context/common/system/status-markers.md
+- **Description**: CRITICAL BUG - Systematic investigation reveals that ALL workflow commands (/research, /plan, /revise, /implement) fail to properly update TODO.md task statuses despite successfully updating state.json. Example manifestation: /research 224 completed successfully, created research-001.md artifact, updated state.json to "status": "researched", created project state.json - BUT TODO.md still shows "- **Status**: [NOT STARTED]" instead of "- **Status**: [RESEARCHED]". This indicates status-sync-manager is either (1) not being invoked by commands despite specification in command files, (2) failing silently when invoked, or (3) completing state.json updates but failing TODO.md updates in the two-phase commit. Root cause analysis required to identify which commands delegate properly vs perform manual updates, which fail to invoke status-sync-manager, and whether status-sync-manager itself has bugs in TODO.md update logic. The fix must ensure 100% atomic updates across TODO.md + state.json + project state.json for all 4 workflow commands, with proper error handling, rollback on failures, and validation that updates actually complete. This is distinct from task 221 which addressed missing delegation - this task focuses on fixing the update mechanism itself when delegation occurs. Investigation steps: (1) Audit actual command execution vs specification to identify delegation gaps, (2) Review status-sync-manager TODO.md update logic for bugs, (3) Add validation that status-sync-manager actually completes TODO.md updates, (4) Implement comprehensive error handling and rollback, (5) Add logging to trace update failures, (6) Test with real tasks to verify 100% update success rate.
+- **Acceptance Criteria**:
+  - [ ] Root cause analysis completed identifying exact failure point (delegation gap vs status-sync-manager bug)
+  - [ ] All 4 workflow commands audited for actual vs specified delegation to status-sync-manager
+  - [ ] status-sync-manager TODO.md update logic reviewed and bugs fixed if found
+  - [ ] Validation added that status-sync-manager actually completes TODO.md updates (not just state.json)
+  - [ ] Error handling added to detect and report TODO.md update failures
+  - [ ] Rollback mechanism verified to revert state.json if TODO.md update fails
+  - [ ] Logging added to trace update flow and capture failure details
+  - [ ] Test: /research task successfully updates both TODO.md and state.json to [RESEARCHED]
+  - [ ] Test: /plan task successfully updates both TODO.md and state.json to [PLANNED]
+  - [ ] Test: /revise task successfully updates both TODO.md and state.json to [REVISED]
+  - [ ] Test: /implement task successfully updates both TODO.md and state.json to [COMPLETED]
+  - [ ] Test: Rollback works - if TODO.md update fails, state.json reverted to original
+  - [ ] Test: Clear error messages when updates fail identifying which file failed
+  - [ ] 100% update success rate verified across all 4 commands with real task execution
+  - [ ] No "status-sync-manager didn't update TODO.md" errors occur
+  - [ ] Atomic guarantee enforced - both files update or neither updates
+  - [ ] Documentation updated with proper delegation patterns and error handling
+- **Impact**: CRITICAL BLOCKER - Fixes systematic status tracking failure affecting ALL workflow commands. Currently state.json reflects correct status but TODO.md remains stale, causing confusion about task progress, breaking workflow dependencies (tasks appear NOT STARTED when actually RESEARCHED/PLANNED), and violating atomic update guarantees. This breaks the entire task tracking system's integrity. Essential for reliable project management and workflow execution. Builds on task 221's delegation fixes to ensure updates actually work when delegated.
+
  
 ### 185. Fix integration test helper API mismatches
 - **Effort**: 1 hour
@@ -36,17 +77,22 @@
 - **Impact**: Final step to unblock task 173. Once fixed, all 146 integration tests will compile and pass, delivering verified 82% integration test coverage and completing task 173. Dependency blocker task 184 now resolved by task 219.
 
 ### 224. Configure OpenCode to start in Orchestrator mode or auto-switch agent modes for workflow commands
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 2 hours (estimated from research)
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/224_configure_opencode_default_agent/reports/research-001.md]
 - **Files Affected**:
   - opencode.json (potential agent configuration)
   - .opencode/rules/ (potential custom rules)
   - .opencode/command/*.md (potential command enhancements)
 - **Description**: When starting OpenCode, it defaults to 'Build' agent mode. Users sometimes forget to switch to 'Orchestrator' before running workflow commands like /research or /implement, which can lead to commands being executed by the wrong agent. Research https://opencode.ai/docs/agents/, https://opencode.ai/docs/commands/, and https://opencode.ai/docs/rules/ to find an elegant solution that conforms to OpenCode best practices. Potential approaches: (1) Configure OpenCode to start in Orchestrator mode by default, (2) Make workflow commands automatically switch to the appropriate agent mode when invoked, (3) Add validation/warnings when commands are run in incorrect agent mode, (4) Use custom rules to enforce agent mode requirements. The solution should be minimally disruptive and follow OpenCode conventions.
+- **Research Findings** (2025-12-29): Research completed analyzing OpenCode agent mode system, command routing, and custom rules. Found official `default_agent` config option in opencode.json that sets startup agent. Analyzed 4 solutions: (1) default_agent config (recommended - 1 line change), (2) command-level agent frontmatter routing (already implemented), (3) subagent invocation patterns (workflow-specific), (4) custom rules (overkill for this use case). **Recommended Solution**: Add `"default_agent": "orchestrator"` to opencode.json root level. This is the most elegant, minimally disruptive solution that follows OpenCode conventions and works across CLI, web, and IDE interfaces. Orchestrator agent already configured with `mode: 'all'` allowing it to be primary agent, and all workflow commands already specify `agent: orchestrator` in frontmatter for proper routing.
 - **Acceptance Criteria**:
   - [ ] Research completed on OpenCode agent configuration options
   - [ ] Research completed on OpenCode command routing and agent mode switching
