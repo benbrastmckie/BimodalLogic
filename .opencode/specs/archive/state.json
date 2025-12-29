@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2025-12-29T00:00:50.867080+00:00",
+  "_last_updated": "2025-12-29T05:14:32.850974Z",
   "archived_projects": [
     {
       "project_number": 126,
@@ -653,6 +653,71 @@
       "status": "completed",
       "archived": "2025-12-29",
       "summary": "Fix opencode.json agent configuration causing Lean agents to appear as primary agents instead of subagents"
+    },
+    {
+      "project_number": 233,
+      "project_name": "research_and_fix_systematic_command_execution_fail",
+      "type": "bugfix",
+      "status": "unknown",
+      "created": "2025-12-29T02:01:18Z",
+      "started": "2025-12-28",
+      "archived": "2025-12-29",
+      "summary": "Research and fix systematic command execution failures causing incomplete TODO.md updates",
+      "artifacts": {
+        "base_path": null
+      }
+    },
+    {
+      "project_number": 227,
+      "project_name": "fix_systematic_status_sync_manager_todomd_update_f",
+      "type": "task",
+      "status": "unknown",
+      "created": "unknown",
+      "started": null,
+      "archived": "2025-12-29",
+      "summary": "Fix systematic status-sync-manager TODO.md update failures across all workflow commands",
+      "artifacts": {
+        "base_path": null
+      }
+    },
+    {
+      "project_number": 228,
+      "project_name": "fix_orchestrator_routing_to_invoke_commands_instea",
+      "type": "task",
+      "status": "unknown",
+      "created": "unknown",
+      "started": null,
+      "archived": "2025-12-29",
+      "summary": "Fix orchestrator routing to invoke commands instead of bypassing to subagents directly",
+      "artifacts": {
+        "base_path": null
+      }
+    },
+    {
+      "project_number": 229,
+      "project_name": "review_and_optimize_orchestrator_command_integrati",
+      "type": "task",
+      "status": "unknown",
+      "created": "unknown",
+      "started": null,
+      "archived": "2025-12-29",
+      "summary": "Review and optimize orchestrator-command integration for context efficiency",
+      "artifacts": {
+        "base_path": null
+      }
+    },
+    {
+      "project_number": 230,
+      "project_name": "fix_review_command_to_create_completed_task_entry_",
+      "type": "bugfix",
+      "status": "unknown",
+      "created": "2025-12-29T01:42:01Z",
+      "started": "2025-12-29",
+      "archived": "2025-12-29",
+      "summary": "Fix /review command to create completed task entry in TODO.md with review summary link",
+      "artifacts": {
+        "base_path": null
+      }
     }
   ]
 }

@@ -16,11 +16,14 @@
 
 ### 234. Systematically improve all commands to protect context window and eliminate confirmation prompts
 - **Effort**: 8-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [Research Report](.opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/reports/research-001.md)
 
 **Files Affected**:
 - .opencode/command/implement.md
@@ -61,49 +64,6 @@ Systematically improve all workflow commands to protect the primary agent's (orc
 CRITICAL - Protects orchestrator context window from bloat (currently 60-70% wasted on routing decisions), eliminates unnecessary user friction from confirmation prompts, and ensures commands immediately begin work when invoked. Improves user experience by making workflows feel instant and responsive. Preserves context budget for actual implementation work rather than routing decisions.
 
 ---
-
-### 233. Research and fix systematic command execution failures causing incomplete TODO.md updates
-- **Effort**: 10-15 hours
-- **Status**: [RESEARCHED]
-- **Started**: 2025-12-28
-- **Completed**: 2025-12-29
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/233_research_and_fix_systematic_command_execution_failures_causing_incomplete_todomd_updates/reports/research-001.md)
-
-**Files Affected**:
-- .opencode/command/research.md
-- .opencode/command/plan.md
-- .opencode/command/implement.md
-- .opencode/command/revise.md
-- .opencode/agent/orchestrator.md
-- .opencode/agent/subagents/status-sync-manager.md
-- .opencode/context/common/workflows/command-lifecycle.md
-
-**Description**:
-Systematically research and fix issues where running /implement and other commands does not always work as desired, often failing to update the appropriate task in specs/TODO.md. Recent analysis revealed that when orchestrator is invoked directly to "implement task 190" it performed implementation work directly (editing files, creating summaries) but skipped Stage 7 (Postflight), which is responsible for: (1) Delegating to status-sync-manager for atomic TODO.md/state.json updates, (2) Creating git commits. This is the issue described in Task 231: Even when commands are loaded, Claude may skip or incompletely execute Stage 7. Root cause analysis shows the user invoked with "Task Input: 190" and context loaded with all command contexts, but the /implement command wasn't executed as a command. Instead work was done directly without following the command lifecycle. The issue is systematic across all commands - Claude may skip Stage 7 (Postflight) causing incomplete TODO.md/state.json updates and missing git commits.
-
-**Research Questions**:
-1. What are all the ways commands can fail to execute Stage 7 (Postflight)?
-2. Is this a prompting issue, context loading issue, or architectural issue?
-3. Do commands need stronger validation that Stage 7 completes?
-4. Should orchestrator validate Stage 7 completion before accepting returns?
-5. Are there other systematic execution issues beyond Stage 7?
-
-**Acceptance Criteria**:
-- [ ] Root cause analysis completed identifying all failure modes
-- [ ] All systematic execution issues documented with examples
-- [ ] Fix implemented ensuring 100% Stage 7 execution rate
-- [ ] Orchestrator validation added to check Stage 7 completion
-- [ ] Commands strengthened with explicit Stage 7 checkpoints
-- [ ] Testing confirms reliable TODO.md/state.json updates
-- [ ] Git commits consistently created after command completion
-- [ ] Documentation updated with execution validation patterns
-
-**Impact**:
-CRITICAL - Fixes systematic command execution failures that cause task tracking inconsistencies, missing TODO.md updates, missing state.json updates, and missing git commits. Essential for reliable workflow automation and proper task tracking across the entire system.
 
 ---
 
@@ -818,33 +778,38 @@ Provides comprehensive examples demonstrating automation features, improving usa
 
 ---
 
-### 184. Fix Truth.lean build error (swap_past_future proof)
+### 184. ✅ Fix Truth.lean build error (swap_past_future proof)
 **Effort**: 1-2 hours
-**Status**: [BLOCKED]
+**Status**: [COMPLETED]
 **Started**: 2025-12-25
+**Completed**: 2025-12-28 (via task 219)
 **Priority**: High
 **Blocking**: Task 173 (integration tests), Task 185
-**Dependencies**: Task 213
+**Dependencies**: Task 213, Task 219
 **Language**: lean
 
 **Files Affected**:
-- `Logos/Core/Semantics/Truth.lean` (line 632)
+- `Logos/Core/Semantics/Truth.lean` (previously line 632, now restructured)
+- `Logos/Core/Metalogic/SoundnessLemmas.lean` (new file, contains extracted code)
 
 **Description**:
-Fix build error in Truth.lean at line 632 related to swap_past_future proof. This error is blocking integration test compilation and task 173. **BLOCKED by task 213** - the is_valid_swap_involution theorem at line 691 is unprovable and must be resolved first.
+Fix build error in Truth.lean at line 632 related to swap_past_future proof. This error is blocking integration test compilation and task 173. **RESOLVED by task 219** - the module restructuring extracted the problematic code to SoundnessLemmas.lean, eliminating the circular dependency. Truth.lean now builds successfully (579 lines, pure semantics only).
 
-**Error Details**:
-- Line 632: swap_past_future proof error
-- Root cause: Depends on unprovable is_valid_swap_involution theorem
+**Resolution**:
+Task 219's module restructuring resolved this issue by:
+1. Extracting TemporalDuality namespace (~680 lines) from Truth.lean to SoundnessLemmas.lean
+2. Moving swap_past_future and is_valid_swap_involution code to the bridge module
+3. Truth.lean reduced from 1277 to 579 lines (pure semantics)
+4. Build verification: ✅ `lake build Logos.Core.Semantics.Truth` succeeds
 
 **Acceptance Criteria**:
-- [ ] Build error at line 632 is resolved
-- [ ] File compiles successfully with `lake build`
-- [ ] No new errors introduced
-- [ ] Existing tests continue to pass
+- [x] Build error at line 632 is resolved (code moved to SoundnessLemmas.lean)
+- [x] File compiles successfully with `lake build`
+- [x] No new errors introduced
+- [x] Existing tests continue to pass
 
 **Impact**:
-Unblocks task 173 (integration tests) and task 185 (test helper API fixes). Critical for project build health.
+Unblocks task 173 (integration tests) and task 185 (test helper API fixes). Critical for project build health. **Resolved by task 219's architectural improvements.**
 
 ---
 
@@ -1642,230 +1607,11 @@ Ensures all commands and agents fully comply with metadata passing standards for
 
 ---
 
-### 227. ❌ Fix systematic status-sync-manager TODO.md update failures across all workflow commands
-- **Effort**: 6-8 hours
-- **Status**: [ABANDONED]
-- **Started**: 2025-12-29
-- **Researched**: 2025-12-29
-- **Planned**: 2025-12-29
-- **Abandoned**: 2025-12-29
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Superseded By**: Task 231
-- **Abandonment Reason**: Root cause analysis was incorrect. Assumed status-sync-manager was being invoked but failing - actually it was never being invoked because Claude skips Stage 7 (Postflight) in command execution. Task 231 addresses the correct root cause.
-- **Research Artifacts**:
-- **Plan**: [.opencode/specs/227_fix_systematic_status_sync_manager_failures/plans/implementation-001.md]
-  - Main Report: [.opencode/specs/227_fix_systematic_status_sync_manager_failures/reports/research-001.md]
-- **Files Affected**:
-  - .opencode/agent/subagents/status-sync-manager.md
-  - .opencode/command/research.md
-  - .opencode/command/plan.md
-  - .opencode/command/revise.md
-  - .opencode/command/implement.md
-  - .opencode/agent/subagents/researcher.md
-  - .opencode/agent/subagents/planner.md
-  - .opencode/agent/subagents/lean-research-agent.md
-  - .opencode/agent/subagents/lean-implementation-agent.md
-  - .opencode/context/common/workflows/command-lifecycle.md
-  - .opencode/context/common/system/status-markers.md
-- **Description**: CRITICAL BUG - Systematic investigation reveals that ALL workflow commands (/research, /plan, /revise, /implement) fail to properly update TODO.md task statuses despite successfully updating state.json. Example manifestation: /research 224 completed successfully, created research-001.md artifact, updated state.json to "status": "researched", created project state.json - BUT TODO.md still shows "- **Status**: [NOT STARTED]" instead of "- **Status**: [PLANNED]". This indicates status-sync-manager is either (1) not being invoked by commands despite specification in command files, (2) failing silently when invoked, or (3) completing state.json updates but failing TODO.md updates in the two-phase commit. Root cause analysis required to identify which commands delegate properly vs perform manual updates, which fail to invoke status-sync-manager, and whether status-sync-manager itself has bugs in TODO.md update logic. The fix must ensure 100% atomic updates across TODO.md + state.json + project state.json for all 4 workflow commands, with proper error handling, rollback on failures, and validation that updates actually complete. This is distinct from task 221 which addressed missing delegation - this task focuses on fixing the update mechanism itself when delegation occurs. Investigation steps: (1) Audit actual command execution vs specification to identify delegation gaps, (2) Review status-sync-manager TODO.md update logic for bugs, (3) Add validation that status-sync-manager actually completes TODO.md updates, (4) Implement comprehensive error handling and rollback, (5) Add logging to trace update failures, (6) Test with real tasks to verify 100% update success rate.
-- **Acceptance Criteria**:
-  - [ ] Root cause analysis completed identifying exact failure point (delegation gap vs status-sync-manager bug)
-  - [ ] All 4 workflow commands audited for actual vs specified delegation to status-sync-manager
-  - [ ] status-sync-manager TODO.md update logic reviewed and bugs fixed if found
-  - [ ] Validation added that status-sync-manager actually completes TODO.md updates (not just state.json)
-  - [ ] Error handling added to detect and report TODO.md update failures
-  - [ ] Rollback mechanism verified to revert state.json if TODO.md update fails
-  - [ ] Logging added to trace update flow and capture failure details
-  - [ ] Test: /research task successfully updates both TODO.md and state.json to [RESEARCHED]
-  - [ ] Test: /plan task successfully updates both TODO.md and state.json to [PLANNED]
-  - [ ] Test: /revise task successfully updates both TODO.md and state.json to [REVISED]
-  - [ ] Test: /implement task successfully updates both TODO.md and state.json to [COMPLETED]
-  - [ ] Test: Rollback works - if TODO.md update fails, state.json reverted to original
-  - [ ] Test: Clear error messages when updates fail identifying which file failed
-  - [ ] 100% update success rate verified across all 4 commands with real task execution
-  - [ ] No "status-sync-manager didn't update TODO.md" errors occur
-  - [ ] Atomic guarantee enforced - both files update or neither updates
-  - [ ] Documentation updated with proper delegation patterns and error handling
-- **Impact**: CRITICAL BLOCKER - Fixes systematic status tracking failure affecting ALL workflow commands. Currently state.json reflects correct status but TODO.md remains stale, causing confusion about task progress, breaking workflow dependencies (tasks appear NOT STARTED when actually RESEARCHED/PLANNED), and violating atomic update guarantees. This breaks the entire task tracking system's integrity. Essential for reliable project management and workflow execution. Builds on task 221's delegation fixes to ensure updates actually work when delegated.
+---
 
 ---
 
-### 228. ❌ Fix orchestrator routing to invoke commands instead of bypassing to subagents directly
-- **Effort**: 4 hours
-- **Status**: [ABANDONED]
-- **Started**: 2025-12-29
-- **Researched**: 2025-12-29
-- **Planned**: 2025-12-29
-- **Abandoned**: 2025-12-29
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Superseded By**: Task 231
-- **Abandonment Reason**: Root cause analysis was partially incorrect. Assumed orchestrator bypasses commands, but investigation revealed commands ARE loaded and executed - the issue is Claude skipping Stage 7 (Postflight) within command execution. Task 231 addresses the correct root cause.
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/reports/research-001.md]
-- **Plan**: [.opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/plans/implementation-001.md]
-- **Files Affected**:
-  - .opencode/agent/orchestrator.md
-  - .opencode/command/plan.md
-  - .opencode/command/research.md
-  - .opencode/command/implement.md
-  - .opencode/command/revise.md
-- **Description**: The /plan command fails to update the task in TODO.md and does not include a link to the plan created. Root Cause: The orchestrator bypassed the /plan command layer and directly invoked the planner subagent, which meant the command's Stage 7 (Postflight) that delegates to status-sync-manager never executed, leaving TODO.md and state.json unupdated despite the plan artifact being successfully created. This is an architectural issue with the orchestrator's routing logic - it needs to invoke commands (which have full workflow specifications), not subagents directly. When a user invokes `/plan 224`, the orchestrator should route to the plan command (which has the complete 8-stage workflow including postflight status updates), not directly to the planner subagent. The correct delegation chain should be: User → Orchestrator → /plan COMMAND → planner subagent → status-sync-manager. Currently happening: User → Orchestrator → planner subagent (directly) → (no postflight, no status-sync-manager). Fix requires updating orchestrator's Stage 7 (RouteToAgent) to invoke command layer, which will then handle delegation to appropriate subagents and execute postflight procedures.
-- **Acceptance Criteria**:
-  - [ ] Root cause documented in orchestrator.md
-  - [ ] Orchestrator Stage 7 modified to invoke commands, not subagents
-  - [ ] /plan command invocation properly executes all 8 stages including postflight
-  - [ ] /research command invocation properly executes all 8 stages including postflight
-  - [ ] /implement command invocation properly executes all 8 stages including postflight
-  - [ ] /revise command invocation properly executes all 8 stages including postflight
-  - [ ] status-sync-manager properly invoked by commands after subagent completion
-  - [ ] TODO.md correctly updated with status markers after command completion
-  - [ ] state.json correctly updated with status and timestamps after command completion
-  - [ ] Plan links correctly added to TODO.md after /plan completion
-  - [ ] Test: /plan 224 updates TODO.md to [PLANNED] with plan link
-  - [ ] Test: /research updates TODO.md to [RESEARCHED] with research links
-  - [ ] Test: All workflow commands execute complete lifecycle
-  - [ ] Documentation updated explaining command vs subagent delegation
-- **Impact**: CRITICAL - Fixes systematic failure where workflow commands don't update TODO.md or state.json because orchestrator bypasses command layer (which contains postflight logic). This breaks task tracking for ALL workflow commands (/plan, /research, /implement, /revise). Essential architectural fix to ensure commands execute their full lifecycle including status updates via status-sync-manager.
-
 ---
-
-### 229. ❌ Review and optimize orchestrator-command integration for context efficiency
-- **Effort**: 6 hours
-- **Status**: [ABANDONED]
-- **Started**: 2025-12-29
-- **Researched**: 2025-12-29
-- **Planned**: 2025-12-29
-- **Abandoned**: 2025-12-29
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Superseded By**: Task 231
-- **Abandonment Reason**: Root cause analysis was incorrect. Research concluded orchestrator bypasses commands, but investigation revealed commands ARE loaded and executed - the issue is Claude skipping Stage 7 (Postflight) within command execution. Task 231 addresses the correct root cause with proper fixes.
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md]
-- **Plan**: [Implementation Plan](.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/plans/implementation-001.md)
-- **Plan Summary**: 7-phase implementation plan (6 hours total). Phase 1: Audit command invocability (0.5h). Phase 2: Reduce orchestrator context to 3 core files (0.5h). Phase 3: Refactor Step 7 RouteToCommand (1.5h). Phase 4: Refactor Step 4 PrepareRouting to target commands (1h). Phase 5: Simplify/remove Step 3 CheckLanguage (0.5h). Phase 6: Testing and validation (1.5h). Phase 7: Documentation updates (0.5h). Fixes critical architectural flaw where orchestrator bypasses commands causing 100% workflow failure and 60-70% context bloat.
-- **Files Affected**:
-  - .opencode/agent/orchestrator.md
-  - .opencode/command/research.md
-  - .opencode/command/plan.md
-  - .opencode/command/implement.md
-  - .opencode/command/revise.md
-  - .opencode/command/review.md
-  - .opencode/context/common/workflows/command-lifecycle.md
-  - .opencode/context/common/standards/subagent-return-format.md
-- **Description**: ARCHITECTURAL REVIEW - Systematic analysis reveals critical architectural issue: orchestrator.md Step 4 (PrepareRouting) routes directly to SUBAGENTS (lean-research-agent, task-executor, planner, etc.) instead of routing to COMMANDS (research.md, plan.md, implement.md). This bypasses command-level context loading, workflow execution, preflight/postflight procedures, and status-sync-manager delegation. Root cause of task 228 (/plan bypasses postflight). **PROBLEM**: Current flow is User → Orchestrator → Subagent (direct). **EXPECTED**: User → Orchestrator → Command → Subagent. Commands contain the complete 8-stage workflow specification with context loading, validation, status updates, git commits. Subagents are implementation tools, not entry points. **CRITICAL IMPACTS**: (1) Context bloat - orchestrator loads context meant for commands, (2) Missing preflight/postflight - status updates fail (task 227, 228), (3) No command lifecycle - validation, git commits skipped, (4) Architecture violation - subagents exposed as primary delegation targets. **OPTIMIZATION OPPORTUNITIES**: (1) Orchestrator should have minimal context - only delegation registry, routing logic, return validation. Commands handle domain-specific context. (2) Commands should load exactly their needed context (Level 2 filtered by language). (3) Subagents should receive only task-specific context from commands. (4) Return validation should happen at orchestrator, not duplicated in commands. (5) Language routing should be command responsibility, not orchestrator. **FIX STRATEGY**: (1) Refactor orchestrator Step 7 (RouteToAgent) to invoke COMMANDS not SUBAGENTS. (2) Move language extraction and routing logic INTO commands (belongs in command Stage 2). (3) Reduce orchestrator context to core standards only (return format, delegation guide, status markers). (4) Let commands handle their own context loading via context_level specification. (5) Update all commands to be invokable by orchestrator (not just by users). (6) Ensure commands delegate to subagents internally (command-lifecycle.md Stage 4). **EXPECTED OUTCOMES**: (1) 60-70% reduction in orchestrator context window, (2) 100% workflow completion (preflight + postflight), (3) Clear architectural layers (orchestrator → command → subagent), (4) Context loaded exactly where needed, (5) No duplication of routing/validation logic, (6) All status updates via status-sync-manager, (7) Proper git commit integration, (8) Resolves task 228 root cause architecturally.
-- **Acceptance Criteria**:
-  - [ ] Root cause analysis documented: orchestrator routes to subagents instead of commands
-  - [ ] Architecture diagram created showing correct flow: User → Orchestrator → Command → Subagent
-  - [ ] All orchestrator routing targets audited (/research, /plan, /implement, /revise, /review, /errors)
-  - [ ] Orchestrator Step 7 refactored to invoke commands (not subagents)
-  - [ ] Language extraction logic moved from orchestrator to commands (Stage 2)
-  - [ ] Routing logic moved from orchestrator to commands (Stage 2)
-  - [ ] Orchestrator context reduced to: return-format.md, delegation-guide.md, status-markers.md only
-  - [ ] Commands updated to be invokable by orchestrator (accept delegation context)
-  - [ ] Commands updated to delegate to subagents internally (Stage 4 DelegateToSubagent)
-  - [ ] context_level specifications verified for all commands (Level 2 filtered context)
-  - [ ] Duplicate routing logic removed from orchestrator and commands
-  - [ ] Return validation remains in orchestrator (single source of truth)
-  - [ ] Preflight/postflight procedures execute for all commands
-  - [ ] status-sync-manager invoked correctly in all command postflights
-  - [ ] Git commits execute correctly via git-workflow-manager
-  - [ ] Context window measurements before/after documented
-  - [ ] Test: /research 197 executes full command lifecycle including postflight
-  - [ ] Test: /plan 196 executes full command lifecycle including status update
-  - [ ] Test: /implement 185 executes full command lifecycle with git commit
-  - [ ] Test: Language routing works correctly (lean tasks → lean agents)
-  - [ ] Test: Orchestrator context window reduced by 60-70%
-  - [ ] Test: No command workflow stages skipped
-  - [ ] Integration patterns documented in command-lifecycle.md
-  - [ ] Task 228 resolved as side effect of architectural fix
-- **Impact**: CRITICAL ARCHITECTURAL FIX - Resolves fundamental integration issue where orchestrator bypasses command layer, causing context bloat, missing workflow stages, and status update failures. Establishes correct 3-layer architecture (orchestrator → command → subagent) with clear separation of concerns. Reduces orchestrator context window by 60-70% by moving domain-specific context to commands. Ensures 100% workflow completion (preflight + postflight + status updates). Fixes root cause of tasks 227 and 228. Enables efficient context management where each layer loads only what it needs. Essential for scalable, maintainable agent system.
-
-### ✅ 226. Fix /review command to use next_project_number, create matching task, include actionable follow-up tasks in summary, reduce verbosity, and improve context file organization
-- **Effort**: 8 hours
-- **Status**: [COMPLETED]
-- **Started**: 2025-12-29
-- **Completed**: 2025-12-29
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/226_fix_review_command/reports/research-001.md]
-- **Plan**: [.opencode/specs/226_fix_review_command/plans/implementation-001.md]
-- **Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/226_fix_review_command/summaries/implementation-summary-20251228.md]
-  - Modified Files: .opencode/command/review.md, .opencode/agent/subagents/reviewer.md, .opencode/context/common/workflows/review.md
-- **Files Affected**:
-  - .opencode/command/review.md
-  - .opencode/agent/subagents/reviewer.md
-  - .opencode/context/common/workflows/review.md (potential cleanup/reorganization)
-  - .opencode/specs/state.json
-  - .opencode/specs/TODO.md
-- **Description**: Fix multiple critical issues with /review command workflow: (1) **Project numbering bug**: /review created directory 225_codebase_review but task 225 already exists in TODO.md. Root cause: /review didn't read next_project_number from state.json before creating directory, and didn't increment it immediately after creation. Fix: Read next_project_number, use it for directory name, increment immediately (atomic operation). (2) **Missing task creation**: /review should create a task entry with the same number as the project directory, with status [COMPLETED] and link to review summary artifact. This enables tracking reviews as completed work in TODO.md. (3) **Summary lacks actionable follow-ups**: Review summary artifact (.opencode/specs/225_codebase_review/summaries/review-summary.md) lists 5 follow-up tasks but doesn't format them in a way that /task can parse to create actual task entries. Fix: Add explicit "Follow-up Tasks" section with task descriptions formatted for easy /task invocation (e.g., "/task 'Fix 6 noncomputable errors...'"). (4) **Excessive verbosity**: /review subagent returns verbose output to orchestrator, bloating context window. Fix: Return only brief summary (2-5 sentences, <100 tokens) with artifact path. Full details in summary artifact. (5) **Context file organization**: .opencode/context/common/workflows/review.md may contain redundancy, inaccuracy, or scattered organization. Audit and improve to avoid bloating context or missing important context. Ensure exactly the right context files are loaded.
-- **Acceptance Criteria**:
-  - [ ] Root cause analysis completed for project numbering bug
-  - [ ] /review reads next_project_number from state.json before creating directory
-  - [ ] /review creates directory using next_project_number (e.g., 226_codebase_review)
-  - [ ] /review increments next_project_number immediately after directory creation (atomic)
-  - [ ] /review creates TODO.md task entry with same number as project directory
-  - [ ] Created task has status [COMPLETED] with completion timestamp
-  - [ ] Created task includes link to review summary artifact
-  - [ ] Review summary artifact includes explicit "Follow-up Tasks" section
-  - [ ] Follow-up tasks formatted for direct /task invocation (copy-paste ready)
-  - [ ] Each follow-up task includes: description, priority, language, estimated hours
-  - [ ] /review subagent returns brief summary only (<100 tokens) to orchestrator
-  - [ ] Full review details remain in summary artifact (not in return to orchestrator)
-  - [ ] Context file audit completed (.opencode/context/common/workflows/review.md)
-  - [ ] Redundant or inaccurate content removed from context files
-  - [ ] Context loading optimized - exactly the right files loaded, no bloat
-  - [ ] Test: /review creates directory with correct next_project_number
-  - [ ] Test: /review creates matching TODO.md task with [COMPLETED] status
-  - [ ] Test: Review summary includes actionable follow-up tasks
-  - [ ] Test: /review return to orchestrator is brief (<100 tokens)
-  - [ ] Test: Full review details available in summary artifact
-  - [ ] Documentation updated with new /review behavior
-  - [ ] No project number collisions occur
-  - [ ] next_project_number increments correctly after each /review
-- **Impact**: CRITICAL - Fixes project numbering collision bug that created 225_codebase_review when task 225 already existed. Enables tracking reviews as completed tasks in TODO.md. Makes review findings actionable by formatting follow-up tasks for easy /task invocation. Reduces context window bloat by returning only brief summaries to orchestrator. Improves context file organization to load exactly the right context without redundancy. Essential for reliable /review command execution and proper project tracking.
-
----
-
-### 230. Fix /review command to create completed task entry in TODO.md with review summary link
-- **Effort**: TBD
-- **Status**: [ABANDONED]
-- **Started**: 2025-12-29
-- **Completed**: 2025-12-29
-- **Abandoned**: 2025-12-29
-- **Abandonment Reason**: Research revealed /review command specification already includes creating completed task entry via status-sync-manager delegation (review.md Stage 7). Root cause is orchestrator bypassing command layer (tasks 227/228/229), not specification deficiency. This task subsumed by task 231 which fixes systematic Stage 7 (Postflight) execution failures across all commands including /review.
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: Blocked by task 231 (fix systematic command Stage 7 postflight execution failures)
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/230_fix_review_command_to_create_completed_task_entry_in_todomd_with_review_summary_link/reports/research-001.md]
-- **Files Affected**:
-  - .opencode/command/review.md
-  - .opencode/agent/subagents/reviewer.md
-- **Description**: When I ran /review, I got "Based on the review command workflow, I should NOT be creating tasks myself. The command specification indicates that the review command creates a review task entry (project 230_codebase_review) and the reviewer subagent should have formatted follow-up tasks in the review summary for manual /task invocation by the user.". Although it is right that the /review command should not create tasks to address remaining work, it SHOULD create a single task corresponding to the review task itself in TODO.md using the same number as the project directory, marking this as '[COMPLETED]', and including a link to the review summary that was produced. This helps to make the TODO.md a central dashboard to see all ongoing progress which the user can use to find links.
-- **Acceptance Criteria**:
-  - [ ] /review command creates TODO.md task entry with same number as project directory
-  - [ ] Task entry marked with status [COMPLETED] including completion timestamp
-  - [ ] Task entry includes link to review summary artifact
-  - [ ] Task entry includes brief description of review scope
-  - [ ] state.json updated to reflect completed review task
-  - [ ] Review task does NOT create follow-up tasks (those are in summary for manual /task invocation)
-  - [ ] TODO.md serves as central dashboard with link to review findings
-  - [ ] Documentation updated explaining /review task creation behavior
-- **Impact**: Makes TODO.md a comprehensive dashboard showing all project activities including reviews, with direct links to review summaries. Improves discoverability and tracking of review work.
 
 ---
 
