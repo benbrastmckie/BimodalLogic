@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2025-12-28T14:32:11.168715Z",
+  "_last_updated": "2025-12-29T00:00:50.867080+00:00",
   "archived_projects": [
     {
       "project_number": 126,
@@ -613,6 +613,46 @@
       "summary": "Standardize pre-flight and post-flight procedures across research, planning, revision, and implementation workflows",
       "completed": "2025-12-28",
       "type": "markdown"
+    },
+    {
+      "project_number": 193,
+      "project_name": "prove_is_valid_swap_involution_theorem_in_truth_le",
+      "type": "task",
+      "status": "abandoned",
+      "archived": "2025-12-29",
+      "summary": "Prove is_valid_swap_involution theorem in Truth.lean (currently sorry)"
+    },
+    {
+      "project_number": 184,
+      "project_name": "fix_truth_lean_build_error_swap_past_future_proof",
+      "type": "task",
+      "status": "abandoned",
+      "archived": "2025-12-29",
+      "summary": "Fix Truth.lean build error (swap_past_future proof)"
+    },
+    {
+      "project_number": 218,
+      "project_name": "fix_lean_lsp_mcp_integration_and_opencode_module_i",
+      "type": "task",
+      "status": "completed",
+      "archived": "2025-12-29",
+      "summary": "Fix lean-lsp-mcp integration and opencode module import errors in Lean implementation workflow"
+    },
+    {
+      "project_number": 209,
+      "project_name": "research_lean_4_techniques_for_completing_task_193",
+      "type": "task",
+      "status": "abandoned",
+      "archived": "2025-12-29",
+      "summary": "Research Lean 4 techniques for completing task 193 involution proof"
+    },
+    {
+      "project_number": 223,
+      "project_name": "fix_opencode_json_agent_configuration_causing_lean",
+      "type": "task",
+      "status": "completed",
+      "archived": "2025-12-29",
+      "summary": "Fix opencode.json agent configuration causing Lean agents to appear as primary agents instead of subagents"
     }
   ]
 }
