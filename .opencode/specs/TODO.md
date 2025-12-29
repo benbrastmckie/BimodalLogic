@@ -1,31 +1,104 @@
 # TODO
 
-**Last Updated:** 2025-12-29T06:03:13Z
+**Last Updated:** 2025-12-29T06:38:08Z
 
 ## Overview
 
-- **Total Tasks:** 54
+- **Total Tasks:** 55
 - **Completed:** 8
 - **High Priority:** 8
-- **Medium Priority:** 8
+- **Medium Priority:** 9
 - **Low Priority:** 10
 
 ---
 
 ## High Priority
 
-### 240. Systematically investigate and fix persistent workflow command Stage 7 (Postflight) failures causing incomplete status updates
+### 243. Implement Phase 4 from task 237 implementation plan (aggressive command file deduplication)
 - **Effort**: 12-16 hours
+- **Status**: [RESEARCHED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Task 237 Phase 3 (completed)
+- **Research**: [Research Report](.opencode/specs/243_implement_phase_4_aggressive_command_deduplication/reports/research-001.md)
+
+**Description**:
+Implement Phase 4 from task 237's implementation plan: Remove duplicated lifecycle logic from command execution files (research.md, plan.md, implement.md, revise.md) by referencing command-lifecycle.md, reducing execution file sizes by 60-70%. This phase would analyze all 4 execution files line-by-line to identify common patterns (Stages 4-8 structure) and variations (status markers, artifacts, git commits). The goal is to create a minimal execution file structure that keeps only variations while referencing command-lifecycle.md for common logic, achieving execution file reduction from 15-25KB to 8-12KB each (56-72KB total savings).
+
+**Phase 4 Tasks** (from implementation plan):
+1. Analyze command execution file duplication (2 hours) - identify common patterns and variations
+2. Design minimal execution file structure (2 hours) - variations-only template with lifecycle references
+3. Refactor research-execution.md (2 hours) - remove common logic, keep only variations
+4. Refactor plan-execution.md (2 hours) - remove common logic, keep only variations
+5. Refactor revise-execution.md (2 hours) - remove common logic, keep only variations
+6. Refactor implement-execution.md (2 hours) - remove common logic, keep only variations
+7. Update command-lifecycle.md (2 hours) - enhance with variation interpretation logic
+8. Integration testing (4 hours) - verify lifecycle stages execute identically across commands
+
+**Acceptance Criteria**:
+- [ ] All 4 execution files refactored to variations-only (8-12KB each vs 15-25KB before)
+- [ ] Common lifecycle logic consolidated in command-lifecycle.md only
+- [ ] Variations applied correctly by orchestrator
+- [ ] Execution context reduced by 56-72KB additional savings
+- [ ] All commands function identically to before deduplication
+- [ ] Lifecycle stages execute consistently across commands
+- [ ] No functional regressions
+- [ ] Code duplication reduced from 2,600 lines to 0 lines
+- [ ] Single source of truth achieved (command-lifecycle.md)
+- [ ] Maintainability improved through reduced duplication
+
+### 242. Implement Phase 2 from task 237 implementation plan (split command files into routing and execution)
+- **Effort**: 8-12 hours
 - **Status**: [PLANNED]
+- **Started**: 2025-12-28
+- **Researched**: 2025-12-28
+- **Completed**: 2025-12-29
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Task 237 Phase 1 (completed)
+- **Research**: [Research Report](.opencode/specs/242_phase2_split_command_files/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/242_phase2_split_command_files/plans/implementation-001.md)
+
+**Description**:
+Implement Phase 2 from task 237's implementation plan: Split workflow command files (research.md, plan.md, implement.md, revise.md) into lightweight routing files (3-4KB for Stages 1-3) and comprehensive execution files (15-25KB for Stages 4-8). This phase was deferred during task 237 implementation due to requiring orchestrator architectural changes to support loading lightweight routing files during Stages 1-3 and delegating to execution files in Stage 4. Phase 2 would provide 72-104KB context savings (36-52% reduction) if implemented. Note: Phase 2 is marked DEFERRED in task 237 plan due to architectural complexity - this task should evaluate whether the architectural changes are warranted or if alternative approaches exist.
+
+**Research Questions**:
+1. Can orchestrator be refactored to support split file loading without breaking existing workflows?
+2. What architectural changes are required to support routing vs execution file separation?
+3. Are there alternative approaches that achieve similar context savings without file splitting?
+4. Is the 72-104KB savings worth the architectural complexity?
+
+**Research Findings** (2025-12-28):
+- Phase 2 requires orchestrator architectural changes with MEDIUM-HIGH risk for 72-104KB savings
+- Context transition (unloading routing file) is NOT feasible without major refactoring
+- Phase 3 (selective TODO.md loading) achieved 40KB savings with ZERO architectural risk (COMPLETED)
+- Phase 4 (aggressive deduplication) offers 56-72KB savings with LOWER risk than Phase 2
+- **Recommendation: ABANDON Phase 2, pursue Phase 4 instead** (Phase 3 + Phase 4 = 96-112KB total savings, lower risk)
+
+**Acceptance Criteria**:
+- [x] Architectural feasibility assessed (routing vs execution file loading)
+- [ ] If feasible: Orchestrator refactored to support split file loading
+- [ ] If feasible: All 4 commands split into routing (3-4KB) and execution (15-25KB) files
+- [ ] If feasible: Routing context reduced by 72-104KB (36-52%)
+- [x] If not feasible: Alternative approaches documented and evaluated
+- [ ] All commands function identically after changes
+- [ ] No functional regressions
+- [ ] Backward compatibility maintained
+
+### 240. Systematically investigate and fix persistent workflow command Stage 7 (Postflight) failures causing incomplete status updates
+- **Effort**: 56-78 hours (revised from comparative analysis)
+- **Status**: [RESEARCHED]
 - **Started**: 2025-12-29
 - **Researched**: 2025-12-29
-- **Planned**: 2025-12-29
+- **Completed**: 2025-12-29
 - **Priority**: Critical
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md)
-- **Plan**: [Implementation Plan](.opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/plans/implementation-001.md)
+- **Research**: [Comparative Analysis Report](.opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md)
+- **Original Plan**: [Implementation Plan](.opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/plans/implementation-001.md)
 
 **Description**:
 Despite tasks 231, 221, and others attempting to fix Stage 7 (Postflight) execution failures in workflow commands (/research, /plan, /implement, /revise), the issue persists. When running `/research 236`, the research report was created successfully but the TODO.md file was NOT updated to [RESEARCHED] status and the research report was NOT linked (though this appears to have been corrected later, likely manually or through retry). This systematic failure affects ALL workflow commands and indicates a fundamental architectural problem that requires deep investigation and comprehensive refactoring. The problem manifests as: (1) Subagents complete their work and create artifacts successfully, (2) status-sync-manager is supposedly invoked but TODO.md/state.json remain unchanged, (3) No error messages are returned to user, creating silent failures, (4) Manual retries or corrections are required. Root causes to investigate: (A) Stage 7 is being skipped entirely by Claude despite explicit instructions, (B) status-sync-manager is not actually being invoked despite appearing in command specs, (C) status-sync-manager is being invoked but failing silently, (D) Orchestrator validation is insufficient to catch Stage 7 failures, (E) Command lifecycle pattern is fundamentally flawed and needs redesign, (F) Return validation is missing critical checks. This task will conduct systematic root cause analysis and implement a comprehensive, tested solution that ACTUALLY works.
@@ -40,49 +113,67 @@ Despite tasks 231, 221, and others attempting to fix Stage 7 (Postflight) execut
 7. What evidence exists of Stage 7 execution in actual command runs?
 8. Are there race conditions or timing issues?
 
-**Research Findings**:
-Root cause definitively identified: Stage 7 exists only as documentation (XML/narrative syntax), not executable instructions, with no orchestrator enforcement. Previous fixes (tasks 231, 221) addressed symptoms without fixing the architectural flaw. Recommended solution: Implement orchestrator validation layer with command_stages tracking and Stage 7 completion checks (6-10 hours, LOW risk, CRITICAL impact). All 8 research questions answered with definitive evidence from code analysis.
+**Research Findings** (Comparative Analysis):
+Comparative analysis of OpenAgents and ProofChecker .opencode systems reveals systematic architectural solution. Root cause: Commands contain Stage 7 logic as XML documentation (narrative), not executable code. Claude skips XML stages because they're guidelines, not requirements. OpenAgents avoids this through agent-driven architecture where commands define "what" (frontmatter with `agent:` field) and agents own "how" (workflow stages as executable code). Key findings: (1) OpenAgents commands 63% smaller (262 vs 712 lines) through frontmatter delegation, (2) OpenAgents context 73% smaller (2,207 vs 8,093 lines) via lazy-loading index, (3) OpenAgents uses session-based temporary context (.tmp/sessions/), (4) OpenAgents orchestrator 69x simpler (15 vs 1,038 lines). Recommended: Adopt OpenAgents architectural patterns rather than band-aid orchestrator validation. Estimated effort: 56-78 hours for 4-phase migration achieving 60-70% systematic improvements.
 
 **Acceptance Criteria**:
-- [ ] Comprehensive investigation conducted with evidence from actual command runs
-- [ ] Root cause definitively identified with proof (not speculation)
-- [ ] Evidence collected showing whether Stage 7 actually executes
-- [ ] Evidence collected showing whether status-sync-manager is actually invoked
-- [ ] Evidence collected showing orchestrator validation behavior
-- [ ] Alternative architectural approaches evaluated
-- [ ] Solution designed that addresses proven root cause
-- [ ] Solution implemented across all 4 workflow commands
-- [ ] Extensive testing confirms Stage 7 executes 100% reliably
+- [x] Comprehensive investigation conducted - OpenAgents vs ProofChecker comparative analysis
+- [x] Root cause definitively identified - Commands contain workflow as XML documentation, not executable code
+- [x] Evidence collected - OpenAgents agents own workflows, ProofChecker commands embed workflows
+- [x] Evidence collected - Stage 7 is XML narrative in commands, not enforced by runtime
+- [x] Evidence collected - Orchestrator has no stage completion validation
+- [x] Alternative architectural approaches evaluated - OpenAgents frontmatter delegation pattern
+- [x] Solution designed - 4-phase migration to agent-driven architecture
+- [ ] Phase 1 implemented - Context index, frontmatter prototype (12-16 hours)
+- [ ] Phase 2 implemented - Migrate all commands to frontmatter pattern (20-30 hours)
+- [ ] Phase 3 implemented - Consolidate context files (16-20 hours)
+- [ ] Phase 4 implemented - Testing and documentation (8-12 hours)
+- [ ] Extensive testing confirms Stage 7 executes 100% reliably (agents own it)
 - [ ] Validation confirms TODO.md/state.json update 100% reliably
 - [ ] User testing confirms no more silent failures
-- [ ] Documentation updated with lessons learned
-- [ ] Monitoring/logging added to detect future failures
+- [ ] Documentation updated with OpenAgents patterns
 
 **Impact**:
-CRITICAL BLOCKER - Without reliable Stage 7 execution, the entire workflow system is fundamentally broken. Tasks appear to complete but tracking files are not updated, requiring manual intervention and creating confusion. This affects user productivity, system reliability, and project tracking accuracy. Must be resolved definitively.
+CRITICAL BLOCKER - Without reliable Stage 7 execution, the entire workflow system is fundamentally broken. Tasks appear to complete but tracking files are not updated, requiring manual intervention and creating confusion. Comparative analysis reveals this is symptom of architectural mismatch (command-driven vs agent-driven architecture). OpenAgents patterns provide systematic solution addressing both Stage 7 failures (Task 240) and context bloat (Task 237) through architectural alignment. 4-phase migration delivers 60-70% improvements across command size, context size, and reliability.
+
+**Next Steps**:
+1. Create implementation plan for 4-phase migration to OpenAgents patterns
+2. Phase 1 prototype: context/index.md + /research frontmatter delegation
+3. Validate improvements: context <10% routing, Stage 7 100% reliable
+4. If successful, proceed with Phases 2-4 full migration
 
 ---
 
 ### 237. Investigate and systematically fix context window bloat in workflow commands
 - **Effort**: 28-42 hours (revised from research)
-- **Status**: [PARTIAL]
+- **Status**: [SUPERSEDED]
 - **Started**: 2025-12-29
 - **Researched**: 2025-12-29
 - **Planned**: 2025-12-29
 - **Implementing**: 2025-12-28
+- **Superseded**: 2025-12-29
+- **Phases Completed**: 2 of 4 (Phase 1, Phase 3)
 - **Priority**: Critical
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Superseded By**: Task 240 comparative analysis identified architectural solution
 - **Research**: [Research Report](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/reports/research-001.md)
+- **Architectural Analysis**: [Task 240 Comparative Research](.opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md)
 - **Implementation Summary**: [Phase 1-3 Summary](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/summaries/implementation-summary-20251228-phase3.md)
-- **Phases Completed**: 2 of 4 (Phase 1, Phase 3)
+- **Final Summary**: [Implementation Summary](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/summaries/implementation-summary-final.md)
 - **Phases Deferred**: 1 of 4 (Phase 2)
 - **Phase 1 Status**: [COMPLETED] - Eliminated 56KB orchestrator context duplication (28% reduction)
 - **Phase 2 Status**: [DEFERRED] - Requires orchestrator architectural changes, deferred to future work
-- **Phase 3 Status**: [COMPLETED] - Selective TODO.md loading implemented (40KB / 91% reduction)
+- **Phase 3 Status**: [COMPLETED] - Selective TODO.md loading implemented (40KB savings, 91% reduction)
+- **Phase 4 Status**: [NOT STARTED] - Aggressive command deduplication (optional)
 - **Total Savings**: 96KB (48% reduction from baseline)
-- **Plan**: [Implementation Plan](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md)
+- **Artifacts**:
+  - [research.md](.opencode/command/research.md) - Task extraction logic implemented
+  - [plan.md](.opencode/command/plan.md) - Task extraction logic implemented
+  - [implement.md](.opencode/command/implement.md) - Task extraction logic implemented
+  - [revise.md](.opencode/command/revise.md) - Task extraction logic implemented
 
 **Description**:
 When running workflow commands (/research, /plan, /revise, /implement), the context window jumps to approximately 58% immediately, before any actual work begins. This indicates that context is being loaded too early and too broadly in the orchestrator or command routing stage. The root cause needs to be identified and a systematic solution implemented to protect the context window of both the primary agent (orchestrator) and subagents by loading exactly the context that is needed for each job and nothing more.
@@ -97,6 +188,9 @@ When running workflow commands (/research, /plan, /revise, /implement), the cont
 
 **Research Findings**:
 Root cause identified: Commands load 78-86KB during routing (39-43% of budget) due to premature command file loading, context duplication, and large TODO.md. Recommended 4-phase fix plan reduces routing context to <6% through file splitting, deduplication, and selective loading. Phase 1 quick win: Eliminate orchestrator duplication (2-4 hours, 56KB savings, LOW risk).
+
+**Architectural Analysis** (Task 240):
+Comparative analysis of OpenAgents and ProofChecker systems reveals systematic architectural improvements that address context bloat: (1) Frontmatter-based delegation pattern eliminates workflow duplication in commands (commands average 262 lines vs 712 lines, 63% reduction), (2) Lazy-loading context index enables on-demand loading (2,207 total context lines vs 8,093 lines, 73% reduction), (3) Session-based temporary context (.tmp/sessions/) prevents upfront loading of all context, (4) Agent-driven architecture where commands define "what" and agents define "how" eliminates 1,138-line command-lifecycle.md. Recommended: Adopt OpenAgents patterns for systematic 60-70% context reduction rather than incremental Phase 2-4 fixes.
 
 **Acceptance Criteria**:
 - [x] Root cause identified - which files/stages load excessive context
@@ -117,6 +211,8 @@ Root cause identified: Commands load 78-86KB during routing (39-43% of budget) d
 
 **Impact**:
 CRITICAL - Protects context windows from bloat across all workflow commands, enabling more efficient task execution and preventing early context exhaustion. Ensures context budget is preserved for actual implementation work rather than routing decisions. This is a systematic issue affecting user experience and command performance.
+
+**Status**: [SUPERSEDED] by Task 240 architectural analysis. Phase 1 (orchestrator deduplication) and Phase 3 (selective TODO loading) achieved 48% reduction (96KB savings). Phase 2 (command file splitting) requires orchestrator refactor but Task 240 comparative analysis recommends adopting OpenAgents frontmatter delegation pattern instead, which eliminates need for split files and achieves 60-70% systematic reduction through architectural alignment.
 
 ---
 
@@ -170,6 +266,47 @@ Emojis have made their way back into /home/benjamin/Projects/ProofChecker/.openc
 
 **Impact**:
 Maintains repository consistency and professional standards. Emojis can cause parsing issues, display inconsistently across systems, and violate established documentation standards. Enforcing NO EMOJI standard ensures all documentation is text-based, parseable, and universally displayable.
+
+---
+
+### 241. Optimize NO EMOJI validation to eliminate redundant checks and reduce system overhead
+- **Effort**: 4-6 hours
+- **Status**: [PLANNED]
+- **Started**: 2025-12-28
+- **Researched**: 2025-12-28
+- **Planned**: 2025-12-28
+- **Completed**: 2025-12-28
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: 238
+- **Research**: [Research Report](.opencode/specs/241_optimize_no_emoji_validation/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/241_optimize_no_emoji_validation/plans/implementation-001.md)
+- **Description**: Task 238 implemented comprehensive NO EMOJI enforcement across all .opencode system files (24 files, 88 emoji instances removed). However, this introduced extensive validation checks and warning messages in multiple agent files, command files, and context files which may slow down the opencode system with redundant overhead. Design and implement a more efficient approach that prevents emojis WITHOUT excessive validation overhead. Proposed solution: Create a centralized AGENTS.md file (per https://opencode.ai/docs/rules/) with the NO EMOJIS rule, then remove all redundant mentions and validation checks from individual agent/command/context files. AGENTS.md is automatically loaded by OpenCode into all agent contexts, providing universal rule enforcement without duplication.
+
+**Research Questions**:
+1. What is the current overhead cost of distributed NO EMOJI validation? (count of validation blocks, line count, context window usage)
+2. How does AGENTS.md work in OpenCode? (automatic loading, precedence, combination with other instructions)
+3. What minimal NO EMOJI rule text in AGENTS.md would be sufficient?
+4. Which files currently have NO EMOJI validation/warnings that could be removed?
+5. Are there any validation checks that MUST remain (e.g., critical output validation)?
+6. What is the performance impact of current approach vs. AGENTS.md approach?
+
+**Acceptance Criteria**:
+- [ ] Research completed on current NO EMOJI validation overhead (file count, line count, duplication)
+- [ ] Research completed on AGENTS.md functionality and best practices
+- [ ] AGENTS.md file created with centralized NO EMOJI rule
+- [ ] All redundant NO EMOJI validation checks removed from agent files
+- [ ] All redundant NO EMOJI validation checks removed from command files  
+- [ ] All redundant NO EMOJI validation checks removed from context files
+- [ ] Only critical output validation checks retained (if any)
+- [ ] Testing confirms NO EMOJI rule still enforced via AGENTS.md
+- [ ] Documentation updated to reference AGENTS.md as primary source for NO EMOJI rule
+- [ ] Performance comparison documented (context window savings, overhead reduction)
+- [ ] Implementation summary created
+
+**Impact**:
+Reduces system overhead and context window bloat while maintaining NO EMOJI standard. Eliminates redundant validation checks across ~15-20 files (estimated 200-400 lines of duplicate validation code). AGENTS.md provides cleaner, more maintainable solution with automatic enforcement across all agents. Expected context window savings: 5-10KB per command invocation.
 
 ---
 
