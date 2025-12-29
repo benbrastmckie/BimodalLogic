@@ -214,6 +214,13 @@ Context Loaded:
       4. Collect created task numbers (successful creations only)
       5. Map placeholder numbers (TBD-1, TBD-2) to actual task numbers
       6. Prepare task summary (created count, failed count)
+      7. POST-FLIGHT VALIDATION: Verify each created task complies with standards
+         a. Read created task entry from TODO.md
+         b. Validate Language field is present
+         c. Validate metadata uses `- **Field**:` format (not `*Field**:`)
+         d. Validate all required fields present (Language, Effort, Priority, Status)
+         e. If validation fails: Log error with task number and specific violation
+         f. Track non-compliant tasks for reporting
     </process>
     <task_creation_loop>
       Example loop:
@@ -273,6 +280,45 @@ Context Loaded:
         "recommendation": "Manually create task with description above"
       }
     </error_handling>
+    <post_flight_validation>
+      After creating each task, validate compliance with task standards:
+      
+      1. Language Field Validation:
+         - Read created task entry from TODO.md
+         - Verify Language field is present
+         - If missing: Log error with task number
+         - Error type: "task_standard_violation"
+         - Recommendation: "Add Language field to task {number}"
+      
+      2. Metadata Format Validation:
+         - Verify all metadata uses `- **Field**:` pattern
+         - Check for incorrect patterns like `*Field**:`
+         - If wrong format: Log error with task number and field name
+         - Error type: "task_format_violation"
+         - Recommendation: "Fix metadata format in task {number}: use `- **Field**:` not `*Field**:`"
+      
+      3. Required Fields Validation:
+         - Verify Language, Effort, Priority, Status fields present
+         - If missing: Log error with task number and missing field
+         - Error type: "task_missing_field"
+         - Recommendation: "Add {field_name} to task {number}"
+      
+      4. Validation Reporting:
+         - Track all non-compliant tasks in validation_errors array
+         - Include validation error count in review summary
+         - Provide specific violations for each non-compliant task
+         - Return validation errors in review return object
+      
+      Example validation error:
+      {
+        "type": "task_standard_violation",
+        "task_number": 201,
+        "violation": "missing_language_field",
+        "error": "Task 201 missing required Language field",
+        "recoverable": true,
+        "recommendation": "Add Language field to task 201 in TODO.md"
+      }
+    </post_flight_validation>
     <batching_decision>
       Create ALL identified tasks (no batching):
       - Rationale: Review identifies actionable work, all should be tracked
@@ -613,7 +659,34 @@ Context Loaded:
     Create specific, actionable tasks
     Set appropriate priorities
     Link to review findings
+    Validate created tasks comply with task standards
+    Ensure Language field present for all tasks
+    Ensure metadata format uses `- **Field**:` pattern
+    Report validation errors for non-compliant tasks
   </task_creation>
+  <task_validation>
+    Post-flight validation ensures created tasks comply with standards:
+    
+    1. Language Field Check:
+       - MANDATORY per tasks.md line 110 quality checklist
+       - Must be present for routing to appropriate agents
+       - Missing Language field is validation error
+    
+    2. Metadata Format Check:
+       - Must use `- **Field**:` pattern (not `*Field**:`)
+       - Ensures consistency with task standards
+       - Wrong format is validation error
+    
+    3. Required Fields Check:
+       - Language, Effort, Priority, Status must be present
+       - Missing required field is validation error
+    
+    4. Validation Reporting:
+       - All validation errors logged with task number
+       - Specific violation type and recommendation provided
+       - Validation errors included in review return object
+       - User notified of non-compliant tasks for manual fix
+  </task_validation>
   <no_emojis>
     No emojis in registries or task descriptions
     
@@ -644,6 +717,10 @@ Context Loaded:
   <post_flight>
     - Registries updated
     - Tasks created in .opencode/specs/TODO.md
+    - Created tasks validated for compliance with task standards
+    - All created tasks have Language field
+    - All created tasks use correct bullet formatting (`- **Field**:`)
+    - Validation errors logged for non-compliant tasks
     - state.json synchronized
     - Git commit created
   </post_flight>

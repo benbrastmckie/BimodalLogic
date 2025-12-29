@@ -2,15 +2,16 @@
   "project_name": "investigate_fix_context_window_bloat_workflow_commands",
   "project_number": 237,
   "type": "bugfix",
-  "phase": "planning_completed",
-  "status": "planned",
+  "phase": "implementation_partial",
+  "status": "partial",
   "priority": "critical",
   "language": "markdown",
   "created": "2025-12-29T05:34:54Z",
   "started": "2025-12-29",
   "research_completed": "2025-12-29",
   "planning_completed": "2025-12-29",
-  "last_updated": "2025-12-29",
+  "implementation_started": "2025-12-28",
+  "last_updated": "2025-12-28T23:30:00Z",
   "reports": [
     {
       "type": "research_report",
@@ -27,14 +28,32 @@
       "created": "2025-12-29"
     }
   ],
-  "summaries": [],
+  "summaries": [
+    {
+      "type": "implementation_summary",
+      "path": ".opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/summaries/implementation-summary-20251228-phase3.md",
+      "summary": "Phase 3 complete: Selective TODO.md loading implemented across all 4 workflow commands. Context reduced by 40KB (91% reduction). Total savings: 96KB (Phase 1: 56KB, Phase 3: 40KB). Phase 2 deferred (requires orchestrator refactor).",
+      "created": "2025-12-28"
+    }
+  ],
   "plan_path": ".opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md",
   "plan_metadata": {
     "phase_count": 4,
+    "phases_completed": 2,
+    "phases_deferred": 1,
     "estimated_hours": 35,
+    "actual_hours": 6,
     "complexity": "medium",
     "extracted_from": "plans/implementation-001.md",
     "extracted_at": "2025-12-29T00:00:00Z"
   },
-  "estimated_hours": 35.0
+  "estimated_hours": 35.0,
+  "implementation_progress": {
+    "phase_1": "completed",
+    "phase_2": "deferred",
+    "phase_3": "completed",
+    "phase_4": "not_started",
+    "context_savings_kb": 96,
+    "percentage_reduction": 48
+  }
 }

@@ -75,10 +75,13 @@ CRITICAL BLOCKER - Without reliable Stage 7 execution, the entire workflow syste
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/reports/research-001.md)
-- **Implementation Summary**: [Summary](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/summaries/implementation-summary-20251228.md)
-- **Phases Completed**: 1 of 4
+- **Implementation Summary**: [Phase 1-3 Summary](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/summaries/implementation-summary-20251228-phase3.md)
+- **Phases Completed**: 2 of 4 (Phase 1, Phase 3)
+- **Phases Deferred**: 1 of 4 (Phase 2)
 - **Phase 1 Status**: [COMPLETED] - Eliminated 56KB orchestrator context duplication (28% reduction)
-- **Phase 2 Status**: [IN PROGRESS] - Proof-of-concept created, requires orchestrator architectural changes
+- **Phase 2 Status**: [DEFERRED] - Requires orchestrator architectural changes, deferred to future work
+- **Phase 3 Status**: [COMPLETED] - Selective TODO.md loading implemented (40KB / 91% reduction)
+- **Total Savings**: 96KB (48% reduction from baseline)
 - **Plan**: [Implementation Plan](.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md)
 
 **Description**:
@@ -102,9 +105,9 @@ Root cause identified: Commands load 78-86KB during routing (39-43% of budget) d
 - [x] Context loading profiled - identify what consumes the 58% before work begins
 - [x] Solution designed to defer context loading to appropriate stage
 - [x] **Phase 1 Complete**: Orchestrator context duplication eliminated (56KB / 28% reduction)
-- [ ] **Phase 2**: Command files split into routing and execution (72-104KB additional reduction) - IN PROGRESS
-- [ ] **Phase 3**: Selective TODO.md loading implemented (107KB additional reduction)
-- [ ] **Phase 4**: Aggressive command deduplication (56-72KB additional reduction)
+- [ ] **Phase 2 Deferred**: Command files split into routing and execution (requires orchestrator refactor)
+- [x] **Phase 3 Complete**: Selective TODO.md loading implemented (40KB / 91% reduction)
+- [ ] **Phase 4 Not Started**: Aggressive command deduplication (56-72KB additional reduction, optional)
 - [ ] Orchestrator routing optimized to use <10% context (Phase 1: 28% reduction achieved, need Phases 2-4 for <10% target)
 - [ ] Command execution stage loads full context only when needed
 - [ ] Language detection remains lightweight (bash grep only, no heavy context)
@@ -119,16 +122,33 @@ CRITICAL - Protects context windows from bloat across all workflow commands, ena
 
 ### 238. Find and eliminate all emojis from .opencode system to maintain NO EMOJI standard
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-29
 - **Researched**: 2025-12-29
 - **Planned**: 2025-12-29
+- **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/238_find_and_eliminate_all_emojis/reports/research-001.md)
 - **Plan**: [Implementation Plan](.opencode/specs/238_find_and_eliminate_all_emojis/plans/implementation-001.md)
+- **Implementation Summary**: [Summary](.opencode/specs/238_find_and_eliminate_all_emojis/summaries/implementation-summary-20251228.md)
+- **Artifacts**:
+  - [researcher.md](.opencode/agent/subagents/researcher.md) - Enhanced with NO EMOJI validation
+  - [planner.md](.opencode/agent/subagents/planner.md) - Enhanced with NO EMOJI validation
+  - [implementer.md](.opencode/agent/subagents/implementer.md) - Enhanced with NO EMOJI validation
+  - [task-executor.md](.opencode/agent/subagents/task-executor.md) - Enhanced with NO EMOJI validation
+  - [lean-research-agent.md](.opencode/agent/subagents/lean-research-agent.md) - Enhanced with NO EMOJI validation
+  - [lean-implementation-agent.md](.opencode/agent/subagents/lean-implementation-agent.md) - Enhanced with NO EMOJI validation
+  - [research.md](.opencode/command/research.md) - Enhanced no_emojis tag with validation
+  - [plan.md](.opencode/command/plan.md) - Enhanced no_emojis tag with validation
+  - [implement.md](.opencode/command/implement.md) - Enhanced no_emojis tag with validation
+  - [revise.md](.opencode/command/revise.md) - Enhanced no_emojis tag with validation
+  - [task.md](.opencode/command/task.md) - Enhanced no_emojis tag with validation
+  - [review.md](.opencode/command/review.md) - Enhanced no_emojis tag with validation
+  - [documentation.md](.opencode/context/common/standards/documentation.md) - Added NO EMOJI Policy section
+  - [status-markers.md](.opencode/context/common/system/status-markers.md) - Fixed contradictory emoji examples
 
 **Description**:
 Emojis have made their way back into /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md and some plans, reports, and summaries (e.g., checkmark emoji in completed tasks like task 234). The repository has a strict NO EMOJI standard that needs to be enforced. Unicode characters are acceptable, but emojis are not. This task requires: (1) Systematically search all .opencode system files for emoji usage (.opencode/specs/TODO.md, all plan files, all report files, all summary files, all command files, all agent files, all context files), (2) Remove all found emojis while preserving meaning (e.g., replace checkmark emojis with text-based markers), (3) Update context files and standards documentation to make the NO EMOJI standard more explicit and easier to enforce, (4) Add guidance to relevant standards files about emoji prevention.
