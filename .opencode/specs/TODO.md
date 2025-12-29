@@ -1,18 +1,110 @@
 # TODO
 
-**Last Updated:** 2025-12-29T17:36:00Z
+**Last Updated:** 2025-12-29T18:35:00Z
 
 ## Overview
 
-- **Total Tasks:** 59
+- **Total Tasks:** 60
 - **Completed:** 8
-- **High Priority:** 12
+- **High Priority:** 13
 - **Medium Priority:** 9
 - **Low Priority:** 10
 
 ---
 
 ## High Priority
+
+### 254. Refactor /research command to directly invoke agents and properly manage task status and state updates
+- **Effort**: 6-8 hours
+- **Status**: [RESEARCHED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research**: [task-254-research-command-refactor.md](.opencode/research/task-254-research-command-refactor.md)
+
+**Description**:
+The /research command is currently experiencing systematic failures where it stops after routing stages 1-3 and does not proceed to execution stages 4-8. The command does not update TODO.md status to [RESEARCHING] at start or [RESEARCHED] at completion, does not update state.json, does not link research reports back to TODO.md, and does not create git commits. The current implementation is split between research.md (routing) and research-routing.md (redundant), with research.md.backup also present. This task involves creating a single, unified /research command that directly invokes the appropriate research agent (researcher or lean-research-agent), properly manages all status transitions, state updates, and git commits following the patterns established in the OpenAgents migration (tasks 244-247).
+
+**Research Findings**:
+Root cause identified: Workflow defined as XML documentation rather than executable code, causing stages 4-8 to be skipped. Solution: Implement frontmatter delegation pattern from Task 240 OpenAgents migration. Single research.md (150-200 lines) delegates to researcher.md agent owning complete workflow with status-sync-manager and git-workflow-manager integration. See research report for detailed implementation guidance.
+
+**Tasks**:
+- Remove redundant/backup files (research.md.backup, research-routing.md if not needed)
+- Create unified /research command following frontmatter delegation pattern from tasks 244-247
+- Implement proper argument parsing (task_number, optional prompt, --divide flag)
+- Use state.json for language field lookup instead of parsing TODO.md
+- Implement status update to [RESEARCHING] at command start (before agent invocation)
+- Directly invoke appropriate research agent based on language (lean → lean-research-agent, else → researcher)
+- Implement status update to [RESEARCHED] at command completion (after agent returns)
+- Update state.json with status transitions following state-management.md schema
+- Link research report path back to TODO.md task entry
+- Update project state.json with artifacts array per state-schema.md
+- Create git commit after successful research completion
+- Follow artifact-management.md for lazy directory creation (no pre-creation)
+- Ensure proper error handling and recovery for partial completions
+- Validate against delegation.md return format requirements
+- Test with both Lean and markdown tasks to verify routing
+
+**Acceptance Criteria**:
+- [ ] Single /research command file with frontmatter delegation (research.md)
+- [ ] research.md.backup and research-routing.md removed (if redundant)
+- [ ] Command parses arguments correctly (task_number, prompt, --divide)
+- [ ] Language field read from state.json (not TODO.md parsing)
+- [ ] TODO.md status updates to [RESEARCHING] before agent invocation
+- [ ] Appropriate research agent invoked based on language field
+- [ ] TODO.md status updates to [RESEARCHED] after successful completion
+- [ ] state.json updated with proper status transitions
+- [ ] Research report path linked in TODO.md task entry
+- [ ] project state.json artifacts array updated
+- [ ] git commit created after successful research
+- [ ] Lazy directory creation follows artifact-management.md
+- [ ] Error handling includes recovery instructions
+- [ ] Return format validates against delegation.md schema
+- [ ] Tested successfully with both Lean and markdown tasks
+
+**Impact**: Fixes systematic research workflow failures, ensures proper task tracking and state management, provides reliable research command following OpenAgents migration patterns, eliminates redundant/backup files for cleaner codebase.
+
+---
+
+### 253. Improve /todo command to use git commits instead of backups and fix divider stacking
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: python
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+The /todo command currently creates backups before cleanup operations and generates a Python script from scratch each time. This approach should be replaced with a more robust workflow using git commits (one before cleanup, one after cleanup) and a dedicated, reusable Python script that aligns with the TODO.md file standards defined in .opencode/specs/TODO.md. Additionally, the script currently leaves multiple stacked `---` dividers separated by empty lines, which should be fixed to ensure only one divider appears between tasks and no dividers between headers or between headers and tasks.
+
+**Tasks**:
+- Create a dedicated Python script (.opencode/scripts/todo_cleanup.py) that follows TODO.md file standards
+- Ensure script properly parses TODO.md format (task headers, metadata fields, dividers)
+- Fix divider handling to avoid stacked `---` dividers with empty lines between them
+- Implement proper divider logic: one divider between tasks, no divider between headers or headers and tasks
+- Update /todo command to use git commits instead of backup files
+- Add pre-cleanup git commit with descriptive message
+- Add post-cleanup git commit with descriptive message
+- Remove backup file creation logic from /todo command
+- Test script with current TODO.md file to verify correct behavior
+- Document script usage and alignment with TODO.md standards
+
+**Acceptance Criteria**:
+- [ ] Dedicated Python script created at .opencode/scripts/todo_cleanup.py
+- [ ] Script correctly parses TODO.md file format per .opencode/specs/TODO.md standards
+- [ ] Script handles dividers correctly: one divider between tasks, no dividers between headers or headers and tasks
+- [ ] No stacked `---` dividers with empty lines between them in output
+- [ ] /todo command uses git commit before cleanup operation
+- [ ] /todo command uses git commit after cleanup operation
+- [ ] /todo command no longer creates backup files
+- [ ] Script is reusable (no need to regenerate each time)
+- [ ] Script validated against .opencode/specs/TODO.md standards
+- [ ] Documentation updated with new workflow and script usage
+
+**Impact**: Improves /todo command reliability by using git for version control instead of backups, provides a maintainable dedicated script that aligns with TODO.md standards, and fixes formatting issues with stacked dividers for cleaner output.
+
+---
 
 ### 251. Validate and Document Task 244 Phase 1 Abandoned Work (Phase 3 and Phase 6)
 - **Effort**: 3-4 hours
