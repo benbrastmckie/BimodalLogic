@@ -1,6 +1,6 @@
 # TODO
 
-**Last Updated:** 2025-12-29T15:56:25Z
+**Last Updated:** 2025-12-29T16:50:16Z
 
 ## Overview
 
@@ -119,11 +119,14 @@ Implement Phase 2 of OpenAgents architectural migration: Apply validated pattern
 
 ### 246. Phase 3: Consolidation - Merge Context Files and Remove Obsolete (Task 240 OpenAgents Migration)
 - **Effort**: 16-20 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
+- **Started**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: Task 245 (Phase 2 completed and validated)
+- **Research**: [Research Report 001](.opencode/specs/246_phase_3_consolidation_merge_context_files_and_remove_obsolete/reports/research-001.md)
+- **Plan**: [Implementation Plan 001](.opencode/specs/246_phase_3_consolidation_merge_context_files_and_remove_obsolete/plans/implementation-001.md)
 
 **Description**:
 Implement Phase 3 of OpenAgents architectural migration: Consolidate redundant context files following OpenAgents organization patterns. With workflows now owned by agents (not commands), command-lifecycle.md becomes obsolete. Merge related files, reorganize directory structure, eliminate duplication. Goal: Reduce total context system from 8,093 lines to 2,000-2,500 lines (70% reduction) while maintaining all functionality.
@@ -206,6 +209,71 @@ Implement Phase 4 of OpenAgents architectural migration: Comprehensive testing a
 - Orchestrator: under 100 lines (down from 1,038 lines)
 - Context system: 2,000-2,500 lines (down from 8,093 lines, 70% reduction)
 - Stage 7 execution: 100% reliable (up from approximately 60-70%)
+
+### 251. Validate and Document Task 244 Phase 1 Abandoned Work (Phase 3 and Phase 6)
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Task 244 (completed)
+
+**Description**:
+Review and document the two abandoned phases from Task 244 implementation plan: Phase 3 (researcher.md Workflow Ownership) and Phase 6 (Stage 7 Reliability Testing). Determine if the work these phases intended to accomplish was completed through alternative means or if follow-up work is needed. Create documentation explaining why these phases were abandoned and what impact (if any) this has on the overall migration success.
+
+**Tasks**:
+- Review Phase 3 abandonment reason: "Architectural mismatch - command-lifecycle pattern not needed in agent"
+- Verify if researcher.md workflow ownership was accomplished through other means
+- Review Phase 6 abandonment reason: "Requires OpenCode CLI integration - template created"
+- Determine if Stage 7 reliability testing can be performed manually or needs automation
+- Check if Task 245 Phase 2 work superseded the need for these phases
+- Document findings in validation addendum report
+- Update Task 244 implementation summary with clarifications
+- Recommend if any follow-up work is needed
+
+**Acceptance Criteria**:
+- [ ] Both abandoned phases reviewed and documented
+- [ ] Verification that intended outcomes were achieved (or why not needed)
+- [ ] Validation addendum report created in Task 244 spec directory
+- [ ] Task 244 implementation summary updated with clarifications
+- [ ] Recommendations documented for any follow-up work needed
+
+**Impact**: Ensures completeness of Phase 1 migration documentation, clarifies what was accomplished vs abandoned, provides closure on Task 244 implementation plan.
+
+### 252. Implement Task 244 Phase 6: Stage 7 Reliability Testing with OpenCode CLI Integration
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Task 244 (completed), Task 245 (completed)
+
+**Description**:
+Complete Task 244 Phase 6 which was abandoned due to OpenCode CLI integration requirements. Now that Phase 2 is complete and all 4 commands (/research, /plan, /implement, /revise) have been migrated to frontmatter delegation, implement comprehensive Stage 7 reliability testing to validate 100% execution rate across all workflow commands.
+
+Phase 6 goal: Validate that the OpenAgents migration achieved 100% Stage 7 execution reliability, eliminating the systematic postflight failures that plagued the system before. This testing infrastructure will serve as regression protection for future changes.
+
+**Tasks**:
+- Create CLI-integrated reliability test script (.opencode/scripts/test-stage7-reliability.sh)
+- Test /research command Stage 7 execution (20 consecutive runs, validate TODO.md/state.json updates)
+- Test /plan command Stage 7 execution (20 consecutive runs, validate TODO.md/state.json updates)
+- Test /implement command Stage 7 execution (20 consecutive runs, validate TODO.md/state.json/git updates)
+- Test /revise command Stage 7 execution (20 consecutive runs, validate plan updates)
+- Calculate success rates and generate metrics report
+- Create validation report with baseline vs post-migration reliability
+- Update Task 244 validation report with Phase 6 completion data
+
+**Acceptance Criteria**:
+- [ ] Reliability test script supports all 4 workflow commands
+- [ ] /research Stage 7 reliability: 100% (20/20 runs with TODO.md/state.json updates verified)
+- [ ] /plan Stage 7 reliability: 100% (20/20 runs with TODO.md/state.json updates verified)
+- [ ] /implement Stage 7 reliability: 100% (20/20 runs with TODO.md/state.json/git updates verified)
+- [ ] /revise Stage 7 reliability: 100% (20/20 runs with plan updates verified)
+- [ ] Metrics report documents baseline (0%) vs post-migration (target: 100%)
+- [ ] Validation report created with recommendations for regression testing
+- [ ] Task 244 documentation updated with Phase 6 completion
+
+**Impact**: Provides quantitative validation that OpenAgents migration eliminated Stage 7 failures. Creates regression test infrastructure to protect against future regressions. Completes Task 244 Phase 1 validation goals.
 
 ### 243. Implement Phase 4 from task 237 implementation plan (aggressive command file deduplication)
 - **Effort**: 24-30 hours (expanded to include context file improvements from task 240 research)
