@@ -73,14 +73,16 @@ Root cause identified: Workflow defined as XML documentation rather than executa
 
 ### 253. Improve /todo command to use git commits instead of backups and fix divider stacking
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-29
 - **Researched**: 2025-12-29
+- **Planned**: 2025-12-29
 - **Priority**: High
 - **Language**: python
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/253_improve_todo_command/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/253_improve_todo_command/plans/implementation-001.md)
 
 **Description**:
 The /todo command currently creates backups before cleanup operations and generates a Python script from scratch each time. This approach should be replaced with a more robust workflow using git commits (one before cleanup, one after cleanup) and a dedicated, reusable Python script that aligns with the TODO.md file standards defined in .opencode/specs/TODO.md. Additionally, the script currently leaves multiple stacked `---` dividers separated by empty lines, which should be fixed to ensure only one divider appears between tasks and no dividers between headers or between headers and tasks.
