@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-29T00:00:50.867063+00:00",
+  "_last_updated": "2025-12-28T16:09:41.625402+00:00",
   "next_project_number": 225,
   "project_numbering": {
     "min": 0,
@@ -177,6 +177,13 @@
   ],
   "completed_projects": [
     {
+      "project_number": 225,
+      "project_name": "codebase_review",
+      "type": "review",
+      "completed": "2025-12-29",
+      "summary": "Comprehensive codebase review completed. Updated all 4 registries. Found 6 sorry (down from 10), 11 axioms, 11 build errors. Test coverage 87.5%. Created review summary and identified 5 follow-up tasks."
+    },
+    {
       "project_number": 219,
       "project_name": "restructure_module_hierarchy",
       "type": "refactoring",
@@ -325,7 +332,7 @@
     }
   ],
   "repository_health": {
-    "last_assessed": "2025-12-28T20:57:08Z",
+    "last_assessed": "2025-12-29T00:05:34Z",
     "overall_score": 92,
     "active_tasks": 19,
     "completed_tasks": 35,
@@ -337,15 +344,25 @@
     "low_priority_tasks": 11,
     "production_readiness": "excellent",
     "technical_debt": {
-      "sorry_count": 10,
+      "sorry_count": 6,
       "axiom_count": 11,
-      "build_errors": 3,
+      "build_errors": 11,
       "status": "well-documented",
-      "_comment": "Technical debt tracked in task system. 10 sorry (1 invalid/unprovable theorem at Truth.lean:691, 1 completeness, 3 proof search docs, 5 doc comments), 11 axioms (all completeness). Build errors: 2 in GeneralizedNecessitation.lean (task 192 - completed), 1 in Truth.lean (tasks 193-194-213 - unprovable theorem identified)."
+      "_comment": "Technical debt tracked in task system. 6 sorry (3 documentation examples, 1 invalid theorem, 1 completeness, 1 SoundnessLemmas), 11 axioms (all completeness). Build errors: 6 noncomputable (Perpetuity/Principles + AesopRules), 5 ProofSearch errors."
     },
-    "review_artifacts": []
+    "review_artifacts": [
+      {
+        "timestamp": "2025-12-29T00:05:34Z",
+        "path": ".opencode/specs/225_codebase_review/summaries/review-summary.md",
+        "scope": "full"
+      }
+    ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-28T16:09:41.625413+00:00",
+      "activity": "Completed codebase review 225: Updated registries, found 6 sorry/11 axioms/11 build errors, 87.5% test coverage"
+    },
     {
       "timestamp": "2025-12-29T00:00:50.867075+00:00",
       "activity": "Archived 5 tasks: 2 completed, 3 abandoned"

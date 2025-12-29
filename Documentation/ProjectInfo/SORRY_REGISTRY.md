@@ -1,7 +1,7 @@
 # Sorry Placeholder Registry
 
 **Last Updated**: 2025-12-28
-**Total Active Placeholders**: 10 (1 ModalS5 documented invalid, 1 Completeness, 3 ProofSearch automation, 5 documentation comments)
+**Total Active Placeholders**: 6 (1 ModalS5 documented invalid, 1 Completeness, 1 SoundnessLemmas, 3 ProofSearch documentation examples)
 **Total Axiom Declarations**: 11 (all in Completeness.lean for canonical model construction)
 **Total Resolved**: 60 (Plan 059 Phase 1: 6 De Morgan laws, Plan 060: diamond_disj_iff + s4_diamond_box_conj + s5_diamond_conj_diamond + k_dist_diamond + biconditional infrastructure, Task 46: 3 DeductionTheorem cases)
 
@@ -158,28 +158,39 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 φ) (persisten
 
 **Active Sorry Placeholders** (3 total):
 - **ProofSearch.lean:448** - Test case 1: `bounded_search [] _ 1` example
-  - **Context**: Documentation placeholder showing bounded search usage
+  - **Context**: Documentation example showing bounded search usage
   - **Status**: Documentation only, not blocking functionality
+  - **Note**: ProofSearch has 11 build errors (dependent elimination, unknown constant List.qsort, termination_by issues)
   
 - **ProofSearch.lean:453** - Test case 2: `bounded_search [] q 2` example
-  - **Context**: Documentation placeholder showing bounded search usage
+  - **Context**: Documentation example showing bounded search usage
   - **Status**: Documentation only, not blocking functionality
   
 - **ProofSearch.lean:458** - Test case 3: `bounded_search [p.box] p.box 3` example
-  - **Context**: Documentation placeholder showing bounded search usage with modal formulas
+  - **Context**: Documentation example showing bounded search usage with modal formulas
   - **Status**: Documentation only, not blocking functionality
 
-### Documentation comment placeholders (5)
+### Logos/Core/Metalogic/SoundnessLemmas.lean (1 sorry placeholder)
+
+**Active Sorry Placeholders** (1 total):
+- **SoundnessLemmas.lean:687** - `temporal_duality` soundness case
+  - **Context**: Temporal duality rule soundness proof
+  - **Goal**: Prove `is_valid T ψ'` from temporal duality derivation
+  - **Status**: Blocked by unprovable swap involution theorem (task 213 research)
+  - **Resolution**: Will be completed in Soundness.lean after main soundness theorem
+  - **Estimate**: 2-3 hours (depends on soundness theorem completion)
+  - **Related**: Task 213 proved `is_valid_swap_involution` is semantically false
+
+### Documentation comment references (not actual placeholders)
+
+**Note**: The following are documentation comments that mention "sorry" but are not actual code placeholders:
 
 **Logos/Core/Metalogic/Completeness.lean**:
-- **Lines 217-218**: Documentation comments with sorry markers explaining required proofs for nullity and compositionality properties
-  - **Status**: Comments only, not actual code placeholders
+- **Lines 217-218**: Documentation comments explaining required proofs for nullity and compositionality properties
 
 **Logos/Core/Theorems/ModalS5.lean**:
 - **Line 93**: Documentation comment explaining diamond_mono_imp sorry
-  - **Status**: Comment documenting intentional sorry for invalid theorem
 
 **Logos/Core/Theorems/Propositional.lean**:
 - **Lines 30, 497**: Documentation comments mentioning "sorry" in context descriptions
-  - **Status**: Comments only, not code placeholders
 

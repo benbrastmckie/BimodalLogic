@@ -1,5 +1,9 @@
 # Feature Registry
 
+**Last Updated**: 2025-12-28
+**Total Features**: 2 (routing & task execution)
+**Status**: All features active and documented
+
 ## Routing & Task Execution
 
 ### /revise plan versioning guardrails (Tasks 144, 152, 154)

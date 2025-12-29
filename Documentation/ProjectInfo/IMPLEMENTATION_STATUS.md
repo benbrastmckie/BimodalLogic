@@ -10,9 +10,13 @@
 - Status: PRODUCTION-READY for Layer 0
 
 ## Latest Changes (2025-12-28)
-- **Codebase review completed**: Updated SORRY_REGISTRY.md with accurate counts (10 sorry, 11 axioms)
-- **Build status**: 3 active build errors in GeneralizedNecessitation.lean (2 errors, task 192) and Truth.lean (1 error, task 193/194)
+- **Codebase review completed**: Updated SORRY_REGISTRY.md with accurate counts (6 sorry, 11 axioms)
+- **Build status**: 11 active build errors across 3 files:
+  - Perpetuity/Principles.lean: 4 noncomputable errors (lines 681, 725, 775, 893)
+  - Automation/AesopRules.lean: 2 noncomputable errors (lines 220, 230)
+  - Automation/ProofSearch.lean: 5 errors (dependent elimination, List.qsort, termination_by)
 - **Technical debt**: All tracked in TODO.md with clear resolution paths
+- **Test coverage**: 28 test files for 32 core Lean files (87.5% file coverage)
 
 ## Previous Changes (2025-12-25)
 - **Task 174 completed**: Property-based testing framework fully integrated with Plausible. All 7 phases complete:
