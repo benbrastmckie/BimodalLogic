@@ -1,10 +1,10 @@
 # TODO
 
-**Last Updated:** 2025-12-29T00:48:09Z
+**Last Updated:** 2025-12-29T00:50:44Z
 
 ## Overview
 
-- **Total Tasks:** 23
+- **Total Tasks:** 24
 - **Completed:** 4
 - **High Priority:** 7
 - **Medium Priority:** 8
@@ -14,9 +14,53 @@
 
 ## High Priority
 
-### 226. Fix /review command to use next_project_number, create matching task, include actionable follow-up tasks in summary, reduce verbosity, and improve context file organization
+### 229. Review and optimize orchestrator-command integration for context efficiency
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .opencode/agent/orchestrator.md
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+  - .opencode/command/implement.md
+  - .opencode/command/revise.md
+  - .opencode/command/review.md
+  - .opencode/context/common/workflows/command-lifecycle.md
+  - .opencode/context/common/standards/subagent-return-format.md
+- **Description**: ARCHITECTURAL REVIEW - Systematic analysis reveals critical architectural issue: orchestrator.md Step 4 (PrepareRouting) routes directly to SUBAGENTS (lean-research-agent, task-executor, planner, etc.) instead of routing to COMMANDS (research.md, plan.md, implement.md). This bypasses command-level context loading, workflow execution, preflight/postflight procedures, and status-sync-manager delegation. Root cause of task 228 (/plan bypasses postflight). **PROBLEM**: Current flow is User → Orchestrator → Subagent (direct). **EXPECTED**: User → Orchestrator → Command → Subagent. Commands contain the complete 8-stage workflow specification with context loading, validation, status updates, git commits. Subagents are implementation tools, not entry points. **CRITICAL IMPACTS**: (1) Context bloat - orchestrator loads context meant for commands, (2) Missing preflight/postflight - status updates fail (task 227, 228), (3) No command lifecycle - validation, git commits skipped, (4) Architecture violation - subagents exposed as primary delegation targets. **OPTIMIZATION OPPORTUNITIES**: (1) Orchestrator should have minimal context - only delegation registry, routing logic, return validation. Commands handle domain-specific context. (2) Commands should load exactly their needed context (Level 2 filtered by language). (3) Subagents should receive only task-specific context from commands. (4) Return validation should happen at orchestrator, not duplicated in commands. (5) Language routing should be command responsibility, not orchestrator. **FIX STRATEGY**: (1) Refactor orchestrator Step 7 (RouteToAgent) to invoke COMMANDS not SUBAGENTS. (2) Move language extraction and routing logic INTO commands (belongs in command Stage 2). (3) Reduce orchestrator context to core standards only (return format, delegation guide, status markers). (4) Let commands handle their own context loading via context_level specification. (5) Update all commands to be invokable by orchestrator (not just by users). (6) Ensure commands delegate to subagents internally (command-lifecycle.md Stage 4). **EXPECTED OUTCOMES**: (1) 60-70% reduction in orchestrator context window, (2) 100% workflow completion (preflight + postflight), (3) Clear architectural layers (orchestrator → command → subagent), (4) Context loaded exactly where needed, (5) No duplication of routing/validation logic, (6) All status updates via status-sync-manager, (7) Proper git commit integration, (8) Resolves task 228 root cause architecturally.
+- **Acceptance Criteria**:
+  - [ ] Root cause analysis documented: orchestrator routes to subagents instead of commands
+  - [ ] Architecture diagram created showing correct flow: User → Orchestrator → Command → Subagent
+  - [ ] All orchestrator routing targets audited (/research, /plan, /implement, /revise, /review, /errors)
+  - [ ] Orchestrator Step 7 refactored to invoke commands (not subagents)
+  - [ ] Language extraction logic moved from orchestrator to commands (Stage 2)
+  - [ ] Routing logic moved from orchestrator to commands (Stage 2)
+  - [ ] Orchestrator context reduced to: return-format.md, delegation-guide.md, status-markers.md only
+  - [ ] Commands updated to be invokable by orchestrator (accept delegation context)
+  - [ ] Commands updated to delegate to subagents internally (Stage 4 DelegateToSubagent)
+  - [ ] context_level specifications verified for all commands (Level 2 filtered context)
+  - [ ] Duplicate routing logic removed from orchestrator and commands
+  - [ ] Return validation remains in orchestrator (single source of truth)
+  - [ ] Preflight/postflight procedures execute for all commands
+  - [ ] status-sync-manager invoked correctly in all command postflights
+  - [ ] Git commits execute correctly via git-workflow-manager
+  - [ ] Context window measurements before/after documented
+  - [ ] Test: /research 197 executes full command lifecycle including postflight
+  - [ ] Test: /plan 196 executes full command lifecycle including status update
+  - [ ] Test: /implement 185 executes full command lifecycle with git commit
+  - [ ] Test: Language routing works correctly (lean tasks → lean agents)
+  - [ ] Test: Orchestrator context window reduced by 60-70%
+  - [ ] Test: No command workflow stages skipped
+  - [ ] Integration patterns documented in command-lifecycle.md
+  - [ ] Task 228 resolved as side effect of architectural fix
+- **Impact**: CRITICAL ARCHITECTURAL FIX - Resolves fundamental integration issue where orchestrator bypasses command layer, causing context bloat, missing workflow stages, and status update failures. Establishes correct 3-layer architecture (orchestrator → command → subagent) with clear separation of concerns. Reduces orchestrator context window by 60-70% by moving domain-specific context to commands. Ensures 100% workflow completion (preflight + postflight + status updates). Fixes root cause of tasks 227 and 228. Enables efficient context management where each layer loads only what it needs. Essential for scalable, maintainable agent system.
+
+### ✅ 226. Fix /review command to use next_project_number, create matching task, include actionable follow-up tasks in summary, reduce verbosity, and improve context file organization
 - **Effort**: 8 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2025-12-29
 - **Completed**: 2025-12-29
 - **Priority**: High
@@ -26,6 +70,9 @@
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/226_fix_review_command/reports/research-001.md]
 - **Plan**: [.opencode/specs/226_fix_review_command/plans/implementation-001.md]
+- **Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/226_fix_review_command/summaries/implementation-summary-20251229.md]
+  - Modified Files: .opencode/command/review.md, .opencode/agent/subagents/reviewer.md, .opencode/context/common/workflows/review.md
 - **Files Affected**:
   - .opencode/command/review.md
   - .opencode/agent/subagents/reviewer.md
@@ -105,11 +152,15 @@
 
 ### 228. Fix orchestrator routing to invoke commands instead of bypassing to subagents directly
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2025-12-29
+- **Completed**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/reports/research-001.md]
 - **Files Affected**:
   - .opencode/agent/orchestrator.md
   - .opencode/command/plan.md

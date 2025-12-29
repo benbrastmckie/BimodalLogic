@@ -2,7 +2,7 @@
   "project_name": "fix_review_command",
   "project_number": 226,
   "type": "bugfix",
-  "phase": "planning_completed",
+  "phase": "implementation_completed",
   "reports": [
     {
       "path": ".opencode/specs/226_fix_review_command/reports/research-001.md",
@@ -17,8 +17,20 @@
       "summary": "Implementation plan with 3 phases: Project Numbering and Task Creation (4h), Summary Formatting and Verbosity (2h), Context File Organization Cleanup (2h)"
     }
   ],
-  "summaries": [],
-  "status": "active",
+  "summaries": [
+    {
+      "path": ".opencode/specs/226_fix_review_command/summaries/implementation-summary-20251229.md",
+      "created": "2025-12-29",
+      "summary": "Implementation completed: Fixed project numbering, task creation, summary formatting, verbosity reduction, and context file organization"
+    }
+  ],
+  "status": "completed",
   "created": "2025-12-29T00:37:19Z",
-  "last_updated": "2025-12-29"
+  "last_updated": "2025-12-29",
+  "completed": "2025-12-29",
+  "files_modified": [
+    ".opencode/command/review.md",
+    ".opencode/agent/subagents/reviewer.md",
+    ".opencode/context/common/workflows/review.md"
+  ]
 }

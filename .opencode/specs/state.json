@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-29T00:48:00.767573Z",
-  "next_project_number": 229,
+  "_last_updated": "2025-12-29T00:50:44Z",
+  "next_project_number": 230,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -193,19 +193,24 @@
       "project_number": 226,
       "project_name": "fix_review_command",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "high",
       "language": "markdown",
       "created": "2025-12-28T16:28:14Z",
       "started": "2025-12-29",
       "research_completed": "2025-12-29",
+      "planning_completed": "2025-12-29",
+      "completed": "2025-12-29",
       "last_updated": "2025-12-29",
       "artifacts": [
         ".opencode/specs/226_fix_review_command/reports/research-001.md",
-        ".opencode/specs/226_fix_review_command/plans/implementation-001.md"
+        ".opencode/specs/226_fix_review_command/plans/implementation-001.md",
+        ".opencode/specs/226_fix_review_command/summaries/implementation-summary-20251229.md",
+        ".opencode/command/review.md",
+        ".opencode/agent/subagents/reviewer.md",
+        ".opencode/context/common/workflows/review.md"
       ],
-      "planning_completed": "2025-12-29",
       "plan_path": ".opencode/specs/226_fix_review_command/plans/implementation-001.md",
       "plan_metadata": {
         "phase_count": 3,
@@ -213,7 +218,12 @@
         "complexity": "medium"
       },
       "estimated_hours": 8.0,
-      "phases": 3
+      "phases": 3,
+      "files_modified": [
+        ".opencode/command/review.md",
+        ".opencode/agent/subagents/reviewer.md",
+        ".opencode/context/common/workflows/review.md"
+      ]
     },
     {
       "project_number": 227,
@@ -416,6 +426,10 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-29T00:50:44Z",
+      "activity": "Created task 229: Review and optimize orchestrator-command integration for context efficiency (6-8 hours, High priority, markdown)"
+    },
     {
       "timestamp": "2025-12-29T00:41:46.063824+00:00",
       "activity": "Created task 228: Fix orchestrator routing to invoke commands instead of bypassing to subagents directly (TBD effort, High priority, markdown)"

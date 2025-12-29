@@ -50,6 +50,8 @@ The /review command has 5 critical issues: (1) project numbering bug causing dir
 
 ### Phase 1: Fix Project Numbering and Task Creation [COMPLETED]
 
+- **Started**: 2025-12-29T00:50:15Z
+- **Completed**: 2025-12-29T00:50:15Z
 - **Goal**: Ensure /review uses next_project_number from state.json and creates matching TODO.md task entry
 - **Tasks**:
   - [ ] Read .opencode/command/review.md Stage 1 (lines 60-69)
@@ -70,6 +72,8 @@ The /review command has 5 critical issues: (1) project numbering bug causing dir
 
 ### Phase 2: Fix Summary Formatting and Verbosity [COMPLETED]
 
+- **Started**: 2025-12-29T00:51:10Z
+- **Completed**: 2025-12-29T00:51:10Z
 - **Goal**: Format follow-up tasks with actual task numbers and reduce reviewer return to <100 tokens
 - **Tasks**:
   - [ ] Read .opencode/agent/subagents/reviewer.md Step 4 (lines 123-157)
@@ -96,6 +100,8 @@ The /review command has 5 critical issues: (1) project numbering bug causing dir
 
 ### Phase 3: Context File Organization Cleanup [COMPLETED]
 
+- **Started**: 2025-12-29T00:51:37Z
+- **Completed**: 2025-12-29T00:51:37Z
 - **Goal**: Eliminate 60% duplication in review.md via reference pattern
 - **Tasks**:
   - [ ] Read .opencode/context/common/workflows/review.md (287 lines)
