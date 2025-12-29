@@ -57,15 +57,22 @@ Implement Phase 1 of OpenAgents architectural migration: Create lazy-loading con
 
 ### 245. Phase 2: Core Architecture - Migrate All Commands and Simplify Orchestrator (Task 240 OpenAgents Migration)
 - **Effort**: 20-30 hours
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Started**: 2025-12-29
-- **Completed**: 2025-12-29
+- **Phase 1 Completed**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: Task 244 (Phase 1 completed and validated)
 - **Research**: [Research Report](.opencode/specs/245_phase2_core_architecture/reports/research-001.md)
 - **Plan**: [Implementation Plan](.opencode/specs/245_phase2_core_architecture/plans/implementation-001.md)
+- **Artifacts**:
+  - [Backup Script](.opencode/backups/phase2/backup-phase2-files.sh)
+  - [Context Measurement Script](.opencode/backups/phase2/measure-context-usage.sh)
+  - [Stage 7 Validation Script](.opencode/backups/phase2/validate-stage7.sh)
+  - [Command Rollback Script](.opencode/backups/phase2/rollback-command.sh)
+  - [Orchestrator Rollback Script](.opencode/backups/phase2/rollback-orchestrator.sh)
+  - [Implementation Summary](.opencode/specs/245_phase2_core_architecture/summaries/implementation-summary-20251229.md)
 
 **Description**:
 Implement Phase 2 of OpenAgents architectural migration: Apply validated patterns from Phase 1 to all workflow commands (/plan, /implement, /revise) and simplify orchestrator to router pattern. This is the core architectural transformation that eliminates Stage 7 failures system-wide. Goal: All 4 command files under 200 lines, orchestrator under 100 lines (from 1,038), context window usage under 10% during routing, 100% Stage 7 execution reliability across all commands.
