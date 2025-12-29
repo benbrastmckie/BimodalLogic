@@ -965,3 +965,66 @@ User reports that /research and /plan commands do not update TODO.md correctly. 
 - [ ] status-sync-manager invocation verified
 - [ ] Root cause documented with evidence
 - [ ] Fix plan created (if issue confirmed) or evidence documented (if false positive)
+
+### 249. Phase 2 Follow-up: Add YAML Frontmatter to All 6 Subagents (Task 245 Phase 6)
+- **Effort**: 4.5 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Dependencies**: Task 245 (Phase 2 Phases 1-5 and 8 completed)
+- **Description**: Add comprehensive YAML frontmatter to all 6 subagents (researcher.md, planner.md, implementer.md, task-executor.md, lean-research-agent.md, lean-implementation-agent.md) with tools, permissions, temperature configuration, and delegation settings. Create frontmatter template and standard documentation. Validate all frontmatter parses correctly and permissions deny dangerous commands.
+- **Tasks**:
+  - Create YAML frontmatter template with all fields
+  - Document frontmatter standard (fields, types, purposes)
+  - Add frontmatter to researcher.md (tools, permissions, delegation config)
+  - Add frontmatter to planner.md (tools, permissions, context loading)
+  - Add frontmatter to implementer.md (tools, permissions, git workflow config)
+  - Add frontmatter to task-executor.md (tools, permissions, context loading)
+  - Add frontmatter to lean-research-agent.md (Lean tools, permissions)
+  - Add frontmatter to lean-implementation-agent.md (Lean tools, permissions)
+  - Validate all frontmatter parses correctly
+  - Verify all required fields present
+  - Verify permissions deny dangerous commands (rm -rf, sudo, etc.)
+  - Verify context loading references correct files
+  - Verify delegation config matches agent capabilities
+  - Test tools and permissions enforcement
+  - Document frontmatter standard
+- **Acceptance Criteria**:
+  - All 6 subagents have comprehensive YAML frontmatter
+  - Frontmatter template documented
+  - All required fields present and validated
+  - Permissions deny dangerous commands
+  - Context loading references correct files
+  - Tools and permissions enforcement tested
+
+### 250. Phase 2 Follow-up: Comprehensive Testing and Validation (Task 245 Phase 7)
+- **Effort**: 6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Dependencies**: Task 245 (Phase 2 Phases 1-5 and 8 completed), Task 249 (YAML frontmatter completed)
+- **Description**: Run comprehensive test suite with 80 total test runs (20 per command: /research, /plan, /implement, /revise) to validate 100% Stage 7 execution reliability. Measure context window usage during routing and execution for all commands. Validate all command files under target line counts, orchestrator under 100 lines, and delegation safety features functional. Create before/after metrics comparison.
+- **Tasks**:
+  - Run 20 /research runs (validate Phase 1 still works)
+  - Run 20 /plan runs (validate Phase 2 migration)
+  - Run 20 /implement runs (validate Phase 2 migration)
+  - Run 20 /revise runs (validate Phase 2 migration)
+  - Validate 100% Stage 7 execution across all 80 runs
+  - Measure context window usage for all 4 commands during routing
+  - Measure context window usage for all 4 commands during execution
+  - Validate all command files under target line counts
+  - Validate orchestrator under 100 lines
+  - Validate delegation registry functional
+  - Validate cycle detection blocks depth >3
+  - Validate timeout enforcement recovers partial results
+  - Test error handling and rollback for each command
+  - Create before/after metrics comparison
+  - Document all test results
+- **Acceptance Criteria**:
+  - 80/80 test runs successful (100% Stage 7 execution)
+  - Context window usage under 10% for all commands during routing
+  - All command files under target line counts (plan: 250, revise: 250, implement: 300, research: 272)
+  - Orchestrator under 100 lines (currently 66 lines)
+  - Delegation safety features functional (registry, cycle detection, timeout)
+  - Before/after metrics documented
+  - Test results documented in validation report
