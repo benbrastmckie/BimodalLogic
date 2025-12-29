@@ -1,7 +1,5 @@
 # Logos: A Formal Language of Thought
 
-> **For AI System Usage**: See 
-
 The **Logos** is designed to train AI systems to conduct verified reasoning in a formal language of thought that is interpreted by explicit semantic models. Including extensional, tense, modal, causal, counterfactual, epistemic, and normative operators in the Logos equips AI systems to perform complex reasoning tasks for planning and evaluating actions in coordination with other agents under conditions of uncertainty.
 
 Combining an **axiomatic proof system** implemented in LEAN 4 with a **recursive semantic theory** implemented in the [Model-Checker](https://github.com/benbrastmckie/ModelChecker) creates a dual verification architecture that generates comprehensive training signals without human annotation.
