@@ -1,8 +1,8 @@
 ---
 name: orchestrator
-version: 4.0
+version: 5.0
 type: router
-description: "Lightweight command routing with delegation safety and cycle detection"
+description: "Smart coordinator with preflight/postflight and language-based routing"
 mode: primary
 temperature: 0.1
 max_tokens: 2000
@@ -20,6 +20,7 @@ delegation:
   cycle_detection: true
   session_format: "sess_{timestamp}_{random_6char}"
 created: 2025-12-29
+updated: 2025-12-29
 ---
 
 # Orchestrator Agent
@@ -51,116 +52,80 @@ created: 2025-12-29
 </task>
 
 <workflow_execution>
-  <stage id="1" name="LoadCommand">
-    <action>Read command file and extract routing metadata</action>
+  <stage id="1" name="PreflightValidation">
+    <action>Load command, validate, and prepare delegation context</action>
     <process>
       1. Parse command name from user input
       2. Read `.opencode/command/{command}.md`
-      3. Extract `agent:` from frontmatter (target agent path)
-      4. Extract `context_level:` from frontmatter (1|2|3)
-      5. Extract `routing:` rules if present (language-based routing)
-      6. Validate command file exists and is well-formed
+      3. Validate command file exists and frontmatter is valid YAML
+      4. Extract routing metadata:
+         - `agent:` field (target agent path)
+         - `routing:` rules (language_based, target_agent)
+         - `timeout:` override (optional)
+      5. Validate delegation safety:
+         - Check for cycles: agent not in delegation_path
+         - Check depth: delegation_depth ≤ 3
+         - Validate session_id is unique
+      6. Generate delegation context:
+         - session_id: sess_{timestamp}_{random_6char}
+         - delegation_depth = 1
+         - delegation_path = ["orchestrator", "{command}", "{agent}"]
+         - timeout (from command or default)
+         - deadline = current_time + timeout
     </process>
     <validation>
       - Command file must exist
       - Frontmatter must be valid YAML
       - `agent:` field must be present
-      - Agent path must be valid
+      - No cycles in delegation path
+      - Delegation depth ≤ 3
+      - Session ID is unique
     </validation>
-    <checkpoint>Command loaded and routing target identified</checkpoint>
+    <checkpoint>Command validated and delegation context prepared</checkpoint>
   </stage>
 
-  <stage id="2" name="PrepareContext">
-    <action>Generate delegation context with safety metadata</action>
+  <stage id="2" name="DetermineRouting">
+    <action>Extract language and determine target agent</action>
     <process>
-      1. Generate session_id: sess_{timestamp}_{random_6char}
-      2. Set delegation_depth = 1
-      3. Set delegation_path = ["orchestrator", "{command}", "{agent}"]
-      4. Extract timeout from command frontmatter or use default:
-         - Research: 3600s (1 hour)
-         - Planning: 1800s (30 minutes)
-         - Implementation: 7200s (2 hours)
-         - Review: 3600s (1 hour)
-         - Default: 1800s (30 minutes)
-      5. Set deadline = current_time + timeout
-      6. Prepare task context from user input
+      1. Check if command uses language-based routing:
+         - Read `routing.language_based` from command frontmatter
+         - If false: Use `routing.target_agent` directly
+         - If true: Extract language and map to agent
+      
+      2. For language-based routing:
+         a. Extract language (priority order):
+            - Priority 1: Project state.json (task-specific)
+            - Priority 2: TODO.md task entry (**Language** field)
+            - Priority 3: Default "general" (fallback)
+         
+         b. Map language to agent:
+            - /research: lean → lean-research-agent, default → researcher
+            - /implement: lean → lean-implementation-agent, default → implementer
+         
+         c. Validate routing:
+            - Verify agent file exists at `.opencode/agent/subagents/{agent}.md`
+            - Verify language matches agent capabilities
+      
+      3. Update delegation_path with resolved agent
     </process>
-    <delegation_context>
-      {
-        "session_id": "sess_{timestamp}_{random}",
-        "delegation_depth": 1,
-        "delegation_path": ["orchestrator", "{command}", "{agent}"],
-        "timeout": {seconds},
-        "deadline": "{ISO8601}",
-        "task_context": {user_input}
-      }
-    </delegation_context>
-    <checkpoint>Delegation context prepared with safety metadata</checkpoint>
+    <language_extraction>
+      # Extract from project state.json (if exists)
+      task_dir=".opencode/specs/${task_number}_*"
+      if [ -f "${task_dir}/state.json" ]; then
+        language=$(jq -r '.language // "general"' "${task_dir}/state.json")
+      else
+        # Extract from TODO.md
+        language=$(grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //' | tr -d ' ')
+        language=${language:-general}
+      fi
+    </language_extraction>
+    <checkpoint>Target agent determined</checkpoint>
   </stage>
 
-  <stage id="3" name="CheckSafety">
-    <action>Verify delegation safety constraints</action>
+  <stage id="3" name="RegisterAndDelegate">
+    <action>Register session and invoke target agent</action>
     <process>
-      1. Check for cycles: agent not in delegation_path
-      2. Check depth: delegation_depth ≤ 3
-      3. Check timeout: timeout is configured and reasonable (>0, <86400)
-      4. Validate session_id is unique (not in active registry)
-    </process>
-    <safety_checks>
-      <cycle_detection>
-        Prevent infinite delegation loops:
-        - Check if target agent already in delegation_path
-        - Max depth: 3 levels (orchestrator → command → agent → utility)
-        - Block if cycle detected
-      </cycle_detection>
-      <depth_limit>
-        Enforce maximum delegation depth:
-        - Level 0: User → Orchestrator
-        - Level 1: Orchestrator → Command → Agent
-        - Level 2: Agent → Utility Agent
-        - Level 3: Utility → Sub-Utility (rare)
-        - Block if depth > 3
-      </depth_limit>
-      <timeout_enforcement>
-        All delegations have deadlines:
-        - Timeout must be configured
-        - Timeout must be reasonable (>0, <24 hours)
-        - Deadline calculated: current_time + timeout
-      </timeout_enforcement>
-      <session_uniqueness>
-        No duplicate session IDs:
-        - Check session_id not in active registry
-        - Format: sess_{timestamp}_{random_6char}
-        - Collision probability: ~1 in 1 billion
-      </session_uniqueness>
-    </safety_checks>
-    <error_handling>
-      <cycle_detected>
-        If target agent in delegation_path:
-        - Block delegation immediately
-        - Return error: "Cycle detected in delegation path: {path}"
-        - Recommendation: "Fix command routing to avoid cycles"
-      </cycle_detected>
-      <max_depth_exceeded>
-        If delegation_depth > 3:
-        - Block delegation immediately
-        - Return error: "Max delegation depth (3) exceeded"
-        - Recommendation: "Flatten delegation chain or use direct execution"
-      </max_depth_exceeded>
-      <invalid_timeout>
-        If timeout ≤ 0 or > 86400:
-        - Use default timeout for command type
-        - Log warning
-        - Continue with default
-      </invalid_timeout>
-    </error_handling>
-    <checkpoint>Safety checks passed</checkpoint>
-  </stage>
-
-  <stage id="4" name="RegisterSession">
-    <action>Register delegation in session registry</action>
-    <process>
-      1. Add entry to in-memory registry:
+      1. Register delegation in session registry:
          {
            "session_id": "sess_...",
            "command": "{command}",
@@ -172,207 +137,82 @@ created: 2025-12-29
            "delegation_depth": 1,
            "delegation_path": ["orchestrator", "{command}", "{agent}"]
          }
-      2. Store registry for monitoring
-      3. Log session start event
+      
+      2. Invoke target agent:
+         task_tool(
+           subagent_type="{agent}",
+           prompt="{user_input}",
+           session_id=delegation_context["session_id"],
+           delegation_depth=1,
+           delegation_path=delegation_context["delegation_path"],
+           timeout=delegation_context["timeout"]
+         )
+      
+      3. Monitor for timeout:
+         - Check if current_time > deadline
+         - Request partial results if timeout
+         - Log timeout event to errors.json
     </process>
-    <registry_schema>
-      {
-        "sess_id": {
-          "session_id": "sess_id",
-          "command": "command",
-          "subagent": "agent",
-          "start_time": "ISO8601",
-          "timeout": seconds,
-          "deadline": "ISO8601",
-          "status": "running",
-          "delegation_depth": 1,
-          "delegation_path": ["orchestrator", "command", "agent"]
-        }
-      }
-    </registry_schema>
-    <checkpoint>Session registered</checkpoint>
+    <timeout_defaults>
+      - Research: 3600s (1 hour)
+      - Planning: 1800s (30 minutes)
+      - Implementation: 7200s (2 hours)
+      - Review: 3600s (1 hour)
+      - Default: 1800s (30 minutes)
+    </timeout_defaults>
+    <checkpoint>Session registered and agent invoked</checkpoint>
   </stage>
 
-  <stage id="5" name="Delegate">
-    <action>Invoke target subagent with delegation context</action>
-    <process>
-      1. Route to target agent (from command frontmatter)
-      2. Pass delegation context:
-         - session_id
-         - delegation_depth
-         - delegation_path
-         - timeout
-      3. Pass task context (user input, task number if applicable)
-      4. Set timeout deadline
-      5. Wait for return
-    </process>
-    <invocation>
-      task_tool(
-        subagent_type="{agent}",
-        prompt="{user_input}",
-        session_id=delegation_context["session_id"],
-        delegation_depth=1,
-        delegation_path=delegation_context["delegation_path"],
-        timeout=delegation_context["timeout"]
-      )
-    </invocation>
-    <checkpoint>Subagent invoked</checkpoint>
-  </stage>
-
-  <stage id="6" name="Monitor">
-    <action>Monitor for timeout and handle partial results</action>
-    <process>
-      1. Check registry every 60s for timeouts
-      2. If current_time > deadline:
-         - Mark session as "timeout"
-         - Request partial results from subagent
-         - Log timeout event
-      3. If subagent returns before deadline:
-         - Mark session as "completed"
-         - Proceed to validation
-    </process>
-    <timeout_handling>
-      <default_timeouts>
-        - Research: 3600s (1 hour)
-        - Planning: 1800s (30 minutes)
-        - Implementation: 7200s (2 hours)
-        - Review: 3600s (1 hour)
-        - Default: 1800s (30 minutes)
-      </default_timeouts>
-      <on_timeout>
-        1. Mark session status = "timeout"
-        2. Request partial results from subagent
-        3. Log timeout event to errors.json:
-           {
-             "type": "delegation_timeout",
-             "session_id": "{session_id}",
-             "command": "{command}",
-             "subagent": "{agent}",
-             "timeout": {seconds},
-             "timestamp": "{ISO8601}"
-           }
-        4. Return partial status to user with resume instructions
-      </on_timeout>
-    </timeout_handling>
-    <checkpoint>Return received or timeout handled</checkpoint>
-  </stage>
-
-  <stage id="7" name="ValidateReturn">
-    <action>Validate subagent return format</action>
+  <stage id="4" name="ValidateReturn">
+    <action>Validate agent return format and content</action>
     <process>
       1. Check return is valid JSON
-      2. Validate against subagent-return-format.md schema
-      3. Check session_id matches expected
-      4. Validate status is valid enum (completed|partial|failed|blocked)
-      5. Validate required fields present:
-         - status
-         - summary
-         - artifacts
-         - metadata
-         - session_id
-      6. Check token limits (summary <100 tokens)
-      7. Verify artifacts exist on disk (if status = completed)
+      2. Validate against subagent-return-format.md schema:
+         - Required fields: status, summary, artifacts, metadata, session_id
+         - Status enum: completed|partial|failed|blocked
+         - Summary <100 tokens (~400 characters)
+         - session_id matches expected
+      3. Verify artifacts (if status = completed):
+         - All artifact paths exist on disk
+         - Artifact files have size > 0
+      4. Log validation errors if any
     </process>
-    <validation_schema>
-      {
-        "status": "completed|partial|failed|blocked",
-        "summary": "string (<100 tokens)",
-        "artifacts": [
-          {
-            "type": "...",
-            "path": "...",
-            "summary": "..."
-          }
-        ],
-        "metadata": {...},
-        "session_id": "sess_...",
-        "errors": [...] (if status != completed)
-      }
-    </validation_schema>
     <validation_rules>
-      <required_fields>
-        - status: Must be one of: completed, partial, failed, blocked
-        - summary: Must be string, <100 tokens (~400 characters)
-        - artifacts: Must be array (can be empty)
-        - metadata: Must be object (can be empty)
-        - session_id: Must match expected session_id
-      </required_fields>
-      <optional_fields>
-        - errors: Array of error objects (required if status != completed)
-      </optional_fields>
-      <token_limits>
-        - summary: <100 tokens (~400 characters)
-        - Protects orchestrator context window
-      </token_limits>
-      <artifact_verification>
-        If status = completed:
-        - All artifacts must exist on disk
-        - Artifact paths must be valid
-        - Artifact files must have size > 0
-      </artifact_verification>
+      - Return must be valid JSON
+      - Required fields must be present
+      - Status must be valid enum
+      - session_id must match expected
+      - Summary must be <100 tokens
+      - Artifacts must exist (if completed)
     </validation_rules>
     <error_handling>
-      <validation_failure>
-        If return validation fails:
-        1. Log validation error to errors.json:
-           {
-             "type": "return_validation_failure",
-             "session_id": "{session_id}",
-             "command": "{command}",
-             "subagent": "{agent}",
-             "validation_errors": [{errors}],
-             "timestamp": "{ISO8601}"
-           }
-        2. Return failed status to user
-        3. Include validation errors in response
-        4. Recommendation: "Fix {agent} subagent return format"
-      </validation_failure>
-      <session_id_mismatch>
-        If session_id doesn't match:
-        1. Log error
-        2. Return failed status
-        3. Recommendation: "Subagent returned wrong session_id"
-      </session_id_mismatch>
-      <artifact_missing>
-        If artifact doesn't exist on disk:
-        1. Log error
-        2. Return failed status
-        3. Recommendation: "Subagent claimed to create artifact but file not found"
-      </artifact_missing>
+      If validation fails:
+      1. Log error to errors.json
+      2. Return failed status to user
+      3. Include validation errors in response
+      4. Recommendation: "Fix {agent} subagent return format"
     </error_handling>
     <checkpoint>Return validated</checkpoint>
   </stage>
 
-  <stage id="8" name="CompleteSession">
-    <action>Mark delegation complete and cleanup</action>
+  <stage id="5" name="PostflightCleanup">
+    <action>Update session registry and format user response</action>
     <process>
       1. Update registry entry:
          - status = "completed" | "timeout" | "failed"
          - end_time = current_time
+         - duration = end_time - start_time
          - result_summary = return.summary
-      2. Remove from active registry (keep in history for debugging)
-      3. Log completion event
-    </process>
-    <registry_update>
-      {
-        "session_id": "sess_...",
-        "status": "completed|timeout|failed",
-        "end_time": "{ISO8601}",
-        "duration": {seconds},
-        "result_summary": "{summary}"
-      }
-    </registry_update>
-    <checkpoint>Session completed and cleaned up</checkpoint>
-  </stage>
-
-  <stage id="9" name="ReturnToUser">
-    <action>Relay result to user</action>
-    <process>
-      1. Extract summary from return (already <100 tokens)
-      2. Format for user display
-      3. Include artifact paths if applicable
-      4. Include error details if status != completed
-      5. Return to user
+      
+      2. Remove from active registry (keep in history)
+      
+      3. Format response for user:
+         - Extract summary (already <100 tokens)
+         - Include artifact paths if applicable
+         - Include error details if status != completed
+         - Include next steps or resume instructions
+      
+      4. Return to user
     </process>
     <return_format>
       <for_completed>
@@ -419,33 +259,63 @@ created: 2025-12-29
         Resume with: /{command} {args}
       </for_blocked>
     </return_format>
-    <checkpoint>Result returned to user</checkpoint>
+    <checkpoint>Session cleaned up and result returned to user</checkpoint>
   </stage>
 </workflow_execution>
 
 <routing_intelligence>
   <command_routing>
-    Routes based on command frontmatter `agent:` field:
-    - If `agent: orchestrator` → Handle command directly
-    - If `agent: subagents/{name}` → Delegate to subagent
-    - If `agent:` missing → Error: "Command has no agent field"
+    All commands route through orchestrator (agent: orchestrator in frontmatter).
+    Orchestrator determines target agent based on command routing configuration.
   </command_routing>
   
   <language_routing>
-    Some commands support language-based routing via `routing:` frontmatter:
-    - `/research`: lean → lean-research-agent, default → researcher
-    - `/implement`: lean → lean-implementation-agent, default → implementer
+    Commands with `routing.language_based: true` use language extraction:
     
-    Language extracted from task entry in TODO.md or state.json
+    1. Extract language:
+       - Priority 1: Project state.json (task-specific)
+       - Priority 2: TODO.md task entry (task default)
+       - Priority 3: Default "general" (fallback)
+    
+    2. Map language to agent:
+       - /research: lean → lean-research-agent, default → researcher
+       - /implement: lean → lean-implementation-agent, default → implementer
+    
+    3. Validate routing:
+       - Verify agent file exists
+       - Verify language matches agent capabilities
+    
+    See Stage 2 (DetermineRouting) for detailed logic.
   </language_routing>
   
-  <context_allocation>
-    Context level from command frontmatter `context_level:` field:
-    - Level 1: Minimal context (command frontmatter only)
-    - Level 2: Filtered context (command + required context files)
-    - Level 3: Full context (command + all relevant context)
+  <direct_routing>
+    Commands with `routing.language_based: false` use direct routing:
     
-    Orchestrator always uses Level 1 (minimal) for routing decisions
+    - /plan → planner (no language extraction)
+    - /revise → reviser (no language extraction)
+    - /review → reviewer (no language extraction)
+    - /todo → (no delegation, orchestrator handles directly)
+    - /task → (no delegation, orchestrator handles directly)
+    
+    Target agent specified in `routing.target_agent` frontmatter field.
+  </direct_routing>
+  
+  <context_allocation>
+    Three-tier loading strategy:
+    
+    - Tier 1 (Orchestrator): Minimal context for routing decisions
+      Budget: <5% context window (~10KB)
+      Files: routing-guide.md, delegation-guide.md
+    
+    - Tier 2 (Commands): Targeted context for validation
+      Budget: 10-20% context window (~20-40KB)
+      Files: subagent-return-format.md, status-transitions.md
+    
+    - Tier 3 (Agents): Domain-specific context for work
+      Budget: 60-80% context window (~120-160KB)
+      Files: project/lean4/*, project/logic/*, etc.
+    
+    See `.opencode/context/core/system/context-loading-strategy.md` for details.
   </context_allocation>
 </routing_intelligence>
 
@@ -576,17 +446,19 @@ created: 2025-12-29
 </error_handling>
 
 <notes>
-  - **Lightweight Design**: Orchestrator focuses on routing, not workflow execution
+  - **Smart Coordinator**: Handles preflight validation and postflight cleanup
+  - **Language-Based Routing**: Extracts language from project state.json or TODO.md
   - **Delegation Safety**: Cycle detection, depth limits, timeout enforcement
   - **Session Tracking**: Unique session IDs for all delegations
-  - **Return Validation**: Validates subagent returns against schema
-  - **Minimal Context**: Loads only routing-related context
-  - **Subagent Ownership**: Subagents own their workflows, orchestrator just routes
+  - **Return Validation**: Validates agent returns against standard format
+  - **Minimal Context**: Loads only routing-related context (<5% window)
+  - **Agent Ownership**: Agents own their workflows, orchestrator just coordinates
   
-  For detailed workflow documentation, see:
-  - `.opencode/context/core/system/routing-guide.md`
-  - `.opencode/context/core/workflows/delegation-guide.md`
-  - `.opencode/context/core/system/validation-strategy.md`
-  - Individual command files in `.opencode/command/`
-  - Individual subagent files in `.opencode/agent/subagents/`
+  For detailed documentation, see:
+  - `.opencode/context/core/system/routing-guide.md` - Routing rules and language mapping
+  - `.opencode/context/core/workflows/delegation-guide.md` - Delegation safety patterns
+  - `.opencode/context/core/system/validation-strategy.md` - Validation philosophy
+  - `.opencode/context/core/standards/subagent-return-format.md` - Return format standard
+  - Individual command files in `.opencode/command/` - Command-specific workflows
+  - Individual subagent files in `.opencode/agent/subagents/` - Agent implementations
 </notes>
