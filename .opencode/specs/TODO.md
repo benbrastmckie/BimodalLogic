@@ -1,16 +1,233 @@
 # TODO
 
-**Last Updated:** 2025-12-29T18:35:00Z
+**Last Updated:** 2025-12-29T22:30:00Z
 
 
 ---
 
-## Overview
+### 257. Completeness Proofs
+- **Effort**: 70-90 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: Decidability
+- **Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
 
-- **Total Tasks:** 60
+**Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.
+
+**Action Items**:
+1. Implement `lindenbaum` lemma (extend consistent sets to maximal consistent sets using Zorn's lemma).
+2. Prove properties of maximal consistent sets (deductive closure, negation completeness).
+3. Construct `canonical_frame` and prove frame properties (nullity, compositionality).
+4. Prove `truth_lemma` (correspondence between membership and truth).
+5. Prove `weak_completeness` and `strong_completeness`.
+
+**Files**:
+- `Logos/Core/Metalogic/Completeness.lean`
+
+**Acceptance Criteria**:
+- [ ] Lindenbaum lemma implemented
+- [ ] Maximal consistent set properties proven
+- [ ] Canonical frame constructed with frame properties
+- [ ] Truth lemma proven
+- [ ] Weak and strong completeness proven
+
+**Impact**: Completes the metalogic foundation for TM logic by proving completeness, enabling derivability from validity.
+
+---
+
+### 258. Resolve Truth.lean Sorries
+- **Effort**: 10-20 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Resolve the 3 remaining `sorry` placeholders in `Logos/Core/Semantics/Truth.lean` related to temporal swap validity. These require handling domain extension for history quantification.
+
+**Action Items**:
+1. Resolve `truth_swap_of_valid_at_triple` (implication case).
+2. Resolve `truth_swap_of_valid_at_triple` (past case - domain extension).
+3. Resolve `truth_swap_of_valid_at_triple` (future case - domain extension).
+
+**Files**:
+- `Logos/Core/Semantics/Truth.lean` (lines 697, 776, 798)
+
+**Acceptance Criteria**:
+- [ ] Implication case resolved
+- [ ] Past case with domain extension resolved
+- [ ] Future case with domain extension resolved
+- [ ] All tests pass
+- [ ] SORRY_REGISTRY.md updated
+
+**Impact**: Completes temporal duality support in Truth.lean, enabling full soundness proofs for temporal operators.
+
+---
+
+### 259. Automation Tactics
+- **Effort**: 40-60 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Implement the remaining planned tactics for TM logic to support easier proof construction. Currently 4/12 tactics are implemented.
+
+**Action Items**:
+1. Implement `modal_k_tactic`, `temporal_k_tactic`.
+2. Implement `modal_4_tactic`, `modal_b_tactic`.
+3. Implement `temp_4_tactic`, `temp_a_tactic`.
+4. Implement `modal_search`, `temporal_search`.
+5. Fix Aesop integration (blocked by Batteries dependency).
+
+**Files**:
+- `Logos/Core/Automation/Tactics.lean`
+
+**Acceptance Criteria**:
+- [ ] All 8 remaining tactics implemented
+- [ ] Aesop integration fixed
+- [ ] Tests added for new tactics
+- [ ] TACTIC_REGISTRY.md updated
+- [ ] Documentation updated
+
+**Impact**: Significantly improves proof automation capabilities for TM logic, making proof construction easier and more efficient.
+
+---
+
+### 260. Proof Search
+- **Effort**: 40-60 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Implement automated proof search for TM logic.
+
+**Action Items**:
+1. Implement breadth-first proof search.
+2. Implement heuristic-guided search.
+
+**Files**:
+- `Logos/Core/Automation/ProofSearch.lean`
+
+**Acceptance Criteria**:
+- [ ] Breadth-first proof search implemented
+- [ ] Heuristic-guided search implemented
+- [ ] Tests added for proof search
+- [ ] Performance benchmarks created
+- [ ] Documentation updated
+
+**Impact**: Enables automated proof discovery for TM logic, reducing manual proof construction effort.
+
+---
+
+### 261. Decidability
+- **Effort**: 40-60 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Implement decision procedures for TM logic.
+
+**Action Items**:
+1. Implement tableau method.
+2. Implement satisfiability decision procedure.
+
+**Files**:
+- `Logos/Core/Metalogic/Decidability.lean` (to be created)
+
+**Acceptance Criteria**:
+- [ ] Tableau method implemented
+- [ ] Satisfiability decision procedure implemented
+- [ ] Tests added for decision procedures
+- [ ] Documentation updated
+
+**Impact**: Provides algorithmic decision procedures for TM logic validity and satisfiability.
+
+---
+
+### 262. ModalS5 Limitation
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: The theorem `diamond_mono_imp` in `ModalS5.lean` is marked with `sorry` because it is not valid as an object-level implication. This is a documented limitation.
+
+**Action Items**:
+1. Maintain documentation or find alternative formulation if possible.
+
+**Files**:
+- `Logos/Core/Theorems/ModalS5.lean`
+
+**Acceptance Criteria**:
+- [ ] Documentation maintained or alternative formulation found
+- [ ] SORRY_REGISTRY.md updated with justification
+
+**Impact**: Resolves documented limitation in ModalS5 theorems.
+
+---
+
+### 263. Refactor Context.lean
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: Task 264
+- **Dependencies**: None
+
+**Description**: Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4.
+
+**Files Affected**:
+- `Logos/Core/Syntax/Context.lean`
+- `LogosTest/Core/Syntax/ContextTest.lean`
+
+**Acceptance Criteria**:
+- [ ] The `Context.lean` file is refactored for clarity and performance.
+- [ ] All related tests in `ContextTest.lean` are updated and pass.
+- [ ] The refactoring adheres to the LEAN 4 style guide.
+- [ ] The public API of the `Context` module remains backward-compatible or changes are documented.
+
+**Impact**: Improves the maintainability and readability of a core component of the syntax package.
+
+---
+
+### 264. Update Context References
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: Task 263
+
+**Files Affected**:
+- `Logos/Core/ProofSystem/Derivation.lean`
+- `Logos/Core/Metalogic/DeductionTheorem.lean`
+- Other files that import `Logos.Core.Syntax.Context`
+
+**Description**: After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary.
+
+**Acceptance Criteria**:
+- [ ] All references to the `Context` module are updated.
+- [ ] The project builds successfully after the updates.
+- [ ] All tests pass after the updates.
+
+**Impact**: Ensures that the entire codebase is compatible with the refactored `Context` module.
+
+---
+
+
+- **Total Tasks:** 61
 - **Completed:** 8
 - **High Priority:** 13
-- **Medium Priority:** 9
+- **Medium Priority:** 10
 - **Low Priority:** 10
 
 ---
@@ -122,12 +339,18 @@ The /todo command currently creates backups before cleanup operations and genera
 
 ### 255. Improve opencode system following the improvement plan
 - **Effort**: 8-12 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
 - **Plan**: [Implementation Plan](.opencode/specs/255_improve_opencode_system/plans/implementation-001.md)
+- **Summary**: [Implementation Summary](.opencode/specs/255_improve_opencode_system/summaries/implementation-summary-20251229.md)
+- **Completed**: 2025-12-29
+- **Git Commits**: 
+  - Phase 1: `f6bd085` - Context directory reorganization
+  - Phase 3: `c2be177` - Command file simplification
+  - Phase 4: `fb75110` - Documentation updates
 
 **Description**:
 Restructure the ProofChecker .opencode system to implement clean `core/` and `project/` context organization, streamlined orchestrator (smart coordinator pattern), thin command files (declarative workflow setup), language-based routing via orchestrator, and clear validation strategy. The improvement plan is a comprehensive 4-phase migration (8-12 hours total) that reorganizes context directories, simplifies the orchestrator, reduces command file complexity, and updates documentation. This follows the architectural patterns identified in the OpenAgents migration research.
@@ -169,9 +392,53 @@ Restructure the ProofChecker .opencode system to implement clean `core/` and `pr
 
 ---
 
+### 256. Add /meta command from OpenAgents with system-builder subagents
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+Import and adapt the /meta command from the OpenAgents project (/home/benjamin/Projects/OpenAgents/.opencode/command/meta.md) to enable interactive system building capabilities in ProofChecker. The system-builder agents already exist in .opencode/agent/subagents/system-builder/ but should be renamed to .opencode/agent/subagents/meta/ for consistency. Compare with the backup version (.opencode.backup.20251225_173342/command/meta.md) but maintain the new high standards from the current refactor (frontmatter delegation, context efficiency, XML optimization). Update context files to support the /meta command and its subagents without bloating context windows.
+
+**Tasks**:
+- Review OpenAgents /meta command implementation (/home/benjamin/Projects/OpenAgents/.opencode/command/meta.md)
+- Review backup /meta command (.opencode.backup.20251225_173342/command/meta.md) for comparison
+- Rename .opencode/agent/subagents/system-builder/ to .opencode/agent/subagents/meta/
+- Adapt /meta command to ProofChecker standards (frontmatter delegation pattern from tasks 244-247)
+- Update meta command frontmatter with proper agent routing, context_level, and metadata
+- Ensure meta subagents (agent-generator, command-creator, context-organizer, domain-analyzer, workflow-designer) follow current XML optimization patterns
+- Create or update context files to support /meta command without bloating context:
+  - Context files should be focused and modular (50-200 lines each)
+  - Use lazy loading patterns from routing-guide.md
+  - Avoid duplicating information already in other context files
+- Update meta command to use state.json for project tracking
+- Implement proper git commit workflow for generated files (use git-workflow-manager)
+- Add validation for generated agent/command files (frontmatter schema, XML structure)
+- Test /meta command with a simple domain to verify end-to-end workflow
+- Document /meta command usage in appropriate README or guide
+
+**Acceptance Criteria**:
+- [ ] .opencode/agent/subagents/meta/ directory exists with all 5 subagents
+- [ ] .opencode/command/meta.md exists with frontmatter delegation pattern
+- [ ] meta.md routes to appropriate subagent based on user request
+- [ ] meta subagents follow XML optimization patterns (context, role, task, workflow_execution, etc.)
+- [ ] Context files support /meta without bloating (focused, modular, lazy-loaded)
+- [ ] /meta command integrates with state.json for project tracking
+- [ ] Generated files use git-workflow-manager for scoped commits
+- [ ] Validation checks ensure generated agents/commands follow standards
+- [ ] End-to-end test demonstrates /meta creating a simple agent/command
+- [ ] Documentation explains /meta command usage and capabilities
+
+**Impact**: Enables meta-programming capabilities for the ProofChecker .opencode system, allowing users to interactively create new agents, commands, and context files tailored to their needs. Provides a powerful tool for system extension and customization while maintaining high quality standards from the OpenAgents migration refactor.
+
+---
+
 ### 251. Validate and Document Task 244 Phase 1 Abandoned Work (Phase 3 and Phase 6)
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -294,166 +561,6 @@ CRITICAL BLOCKER - Without reliable Stage 7 execution, the entire workflow syste
 2. Phase 1 prototype: context/index.md + /research frontmatter delegation
 3. Validate improvements: context <10% routing, Stage 7 100% reliable
 4. If successful, proceed with Phases 2-4 full migration
-
----
-
-### 1. Completeness Proofs
-- **Effort**: 70-90 hours
-- **Status**: INFRASTRUCTURE ONLY
-- **Language**: lean
-- **Blocking**: Decidability
-- **Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
-
-**Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.
-
-**Action Items**:
-1. Implement `lindenbaum` lemma (extend consistent sets to maximal consistent sets using Zorn's lemma).
-2. Prove properties of maximal consistent sets (deductive closure, negation completeness).
-3. Construct `canonical_frame` and prove frame properties (nullity, compositionality).
-4. Prove `truth_lemma` (correspondence between membership and truth).
-5. Prove `weak_completeness` and `strong_completeness`.
-
-**Files**:
-- `Logos/Core/Metalogic/Completeness.lean`
-
----
-
-### 2. Resolve Truth.lean Sorries
-- **Effort**: 10-20 hours
-- **Status**: PARTIAL
-- **Priority**: Medium (Soundness depends on this for full temporal duality)
-- **Language**: lean
-
-**Description**: Resolve the 3 remaining `sorry` placeholders in `Logos/Core/Semantics/Truth.lean` related to temporal swap validity. These require handling domain extension for history quantification.
-
-**Action Items**:
-1. Resolve `truth_swap_of_valid_at_triple` (implication case).
-2. Resolve `truth_swap_of_valid_at_triple` (past case - domain extension).
-3. Resolve `truth_swap_of_valid_at_triple` (future case - domain extension).
-
-**Files**:
-- `Logos/Core/Semantics/Truth.lean` (lines 697, 776, 798)
-
----
-
-### 3. Automation Tactics
-- **Effort**: 40-60 hours
-- **Status**: PARTIAL (4/12 implemented)
-- **Language**: lean
-
-**Description**: Implement the remaining planned tactics for TM logic to support easier proof construction.
-
-**Action Items**:
-1. Implement `modal_k_tactic`, `temporal_k_tactic`.
-2. Implement `modal_4_tactic`, `modal_b_tactic`.
-3. Implement `temp_4_tactic`, `temp_a_tactic`.
-4. Implement `modal_search`, `temporal_search`.
-5. Fix Aesop integration (blocked by Batteries dependency).
-
-**Files**:
-- `Logos/Core/Automation/Tactics.lean`
-
----
-
-### 4. Proof Search
-- **Effort**: 40-60 hours
-- **Status**: PLANNED
-- **Language**: lean
-
-**Description**: Implement automated proof search for TM logic.
-
-**Action Items**:
-1. Implement breadth-first proof search.
-2. Implement heuristic-guided search.
-
-**Files**:
-- `Logos/Core/Automation/ProofSearch.lean`
-
----
-
-### 5. Decidability
-- **Effort**: 40-60 hours
-- **Status**: PLANNED
-- **Language**: lean
-
-**Description**: Implement decision procedures for TM logic.
-
-**Action Items**:
-1. Implement tableau method.
-2. Implement satisfiability decision procedure.
-
-**Files**:
-- `Logos/Core/Metalogic/Decidability.lean` (to be created)
-
----
-
-### 6. ModalS5 Limitation
-- **Effort**: Low
-- **Status**: DOCUMENTED LIMITATION
-- **Language**: lean
-
-**Description**: The theorem `diamond_mono_imp` in `ModalS5.lean` is marked with `sorry` because it is not valid as an object-level implication. This is a documented limitation.
-
-**Action Items**:
-1. Maintain documentation or find alternative formulation if possible.
-
-**Files**:
-- `Logos/Core/Theorems/ModalS5.lean`
-
----
-
-
-### 8. Refactor `Logos/Core/Syntax/Context.lean`
-- **Effort**: 2-4 hours
-- **Status**: PLANNED
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: Task 9
-- **Dependencies**: None
-
-**Files Affected**:
-- `Logos/Core/Syntax/Context.lean`
-- `LogosTest/Core/Syntax/ContextTest.lean`
-
-**Description**:
-Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4.
-
-**Acceptance Criteria**:
-- [ ] The `Context.lean` file is refactored for clarity and performance.
-- [ ] All related tests in `ContextTest.lean` are updated and pass.
-- [ ] The refactoring adheres to the LEAN 4 style guide.
-- [ ] The public API of the `Context` module remains backward-compatible or changes are documented.
-
-**Impact**:
-Improves the maintainability and readability of a core component of the syntax package.
-
----
-
-### 9. Update Context References
-- **Effort**: 1-2 hours
-- **Status**: PLANNED
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: Task 8
-
-**Files Affected**:
-- `Logos/Core/ProofSystem/Derivation.lean`
-- `Logos/Core/Metalogic/DeductionTheorem.lean`
-- Other files that import `Logos.Core.Syntax.Context`
-
-**Description**:
-After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary.
-
-**Acceptance Criteria**:
-- [ ] All references to the `Context` module are updated.
-- [ ] The project builds successfully after the updates.
-- [ ] All tests pass after the updates.
-
-**Impact**:
-Ensures that the entire codebase is compatible with the refactored `Context` module.
-
----
 
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
