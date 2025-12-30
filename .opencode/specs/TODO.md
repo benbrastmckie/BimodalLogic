@@ -394,7 +394,10 @@ Restructure the ProofChecker .opencode system to implement clean `core/` and `pr
 
 ### 256. Add /meta command from OpenAgents with system-builder subagents
 - **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Research Started**: 2025-12-29
+- **Research Completed**: 2025-12-29
+- **Research Report**: .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
