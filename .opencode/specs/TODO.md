@@ -316,11 +316,11 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 - Document /meta command usage in appropriate README or guide
 
 **Acceptance Criteria**:
-- [ ] .opencode/agent/subagents/meta/ directory exists with all 5 subagents
-- [ ] .opencode/command/meta.md exists with frontmatter delegation pattern
+- [x] .opencode/agent/subagents/meta/ directory exists with all 5 subagents
+- [x] .opencode/command/meta.md exists with frontmatter delegation pattern
 - [ ] meta.md routes to appropriate subagent based on user request
 - [ ] meta subagents follow XML optimization patterns (context, role, task, workflow_execution, etc.)
-- [ ] Context files support /meta without bloating (focused, modular, lazy-loaded)
+- [x] Context files support /meta without bloating (focused, modular, lazy-loaded)
 - [ ] /meta command integrates with state.json for project tracking
 - [ ] Generated files use git-workflow-manager for scoped commits
 - [ ] Validation checks ensure generated agents/commands follow standards

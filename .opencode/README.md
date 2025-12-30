@@ -334,7 +334,7 @@ All commands include explicit argument parsing specifications that tell the orch
 │       ├── lean-research-agent.md
 │       ├── error-diagnostics-agent.md
 │       ├── git-workflow-manager.md
-│       └── system-builder/          # System architecture generation
+│       └── meta/                    # Meta-programming and system generation
 │           ├── agent-generator.md
 │           ├── command-creator.md
 │           ├── context-organizer.md
