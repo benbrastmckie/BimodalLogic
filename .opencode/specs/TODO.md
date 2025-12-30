@@ -5,9 +5,51 @@
 
 ---
 
+### 265. Clean up context directory structure by migrating common/ to core/ and removing archive/
+- **Effort**: 8-12 hours
+- **Status**: [RESEARCHED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Systematically migrate all content from `.opencode/context/common/` to `.opencode/context/core/` or `.opencode/context/project/`, remove the deprecated `.opencode/context/archive/` directory, resolve content duplication (especially subagent-return-format.md), and update 100+ file references throughout the codebase.
+
+**Action Items**:
+1. Audit all files in `common/` and `archive/` for unique content
+2. Resolve duplication between `common/standards/subagent-return-format.md` and `core/standards/subagent-return-format.md`
+3. Migrate unique content from `common/` to appropriate `core/` or `project/` locations
+4. Update 100+ references from `@.opencode/context/common/` to `@.opencode/context/core/`
+5. Remove `archive/` directory (contains only duplicates/deprecated redirects)
+6. Remove `common/` directory after migration complete
+7. Validate all context references still work
+8. Update context index if needed
+
+**Files to Migrate**:
+- `common/standards/frontmatter-standard.md` (712 lines) → `core/standards/`
+- `common/workflows/delegation-patterns.md` (726 lines) → merge with `core/standards/delegation.md`
+- All other `common/` files → appropriate `core/` locations
+
+**Files to Remove**:
+- `archive/command-lifecycle.md` (duplicate)
+- `archive/delegation-patterns.md` (deprecated redirect)
+
+**Acceptance Criteria**:
+- [ ] No files remain in `context/archive/`
+- [ ] No files remain in `context/common/`
+- [ ] All unique content migrated to `core/` or `project/`
+- [ ] All 100+ references updated to point to new locations
+- [ ] No broken context references
+- [ ] Context index updated
+- [ ] All commands and agents still function correctly
+
+**Impact**: Simplifies context organization, eliminates duplication, ensures all context lives in either `core/` (general) or `project/` (specific) as intended.
+
+---
+
 ### 257. Completeness Proofs
 - **Effort**: 70-90 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: Decidability
@@ -38,7 +80,7 @@
 
 ### 258. Resolve Truth.lean Sorries
 - **Effort**: 10-20 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -67,7 +109,7 @@
 
 ### 259. Automation Tactics
 - **Effort**: 40-60 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -98,7 +140,7 @@
 
 ### 260. Proof Search
 - **Effort**: 40-60 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -126,7 +168,7 @@
 
 ### 261. Decidability
 - **Effort**: 40-60 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -153,7 +195,7 @@
 
 ### 262. ModalS5 Limitation
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -177,7 +219,7 @@
 
 ### 263. Refactor Context.lean
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: Task 264
@@ -201,7 +243,7 @@
 
 ### 264. Update Context References
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -239,12 +281,15 @@
 
 ### 256. Add /meta command from OpenAgents with system-builder subagents
 - **Effort**: 14 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Research Started**: 2025-12-29
 - **Research Completed**: 2025-12-29
 - **Research Report**: .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md
 - **Plan Created**: 2025-12-29
 - **Implementation Plan**: .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md
+- **Implementation Started**: 2025-12-29
+- **Implementation Summary**: .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/summaries/implementation-summary-20251229.md
+- **Progress**: Phases 1, 2, 4 complete (command migration, directory rename, context files). Phases 3, 5, 6 remain (agent updates, testing, documentation).
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -290,7 +335,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -308,7 +353,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 133. Build canonical model constructors in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -326,7 +371,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 134. Prove truth lemma structure in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -344,7 +389,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 135. Remove provable_iff_valid sorry in Completeness.lean
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -365,7 +410,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 136. Design Decidability.lean architecture and signatures
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -383,7 +428,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 137. Implement tableau core rules in Decidability.lean
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -401,7 +446,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 138. Implement satisfiability and validity decision procedure tests
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -423,7 +468,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 139. Draft Layer 1 counterfactual operator plan
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -442,7 +487,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 140. Draft Layer 2 epistemic operator plan
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -461,7 +506,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 141. Draft Layer 3 normative operator plan
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -480,7 +525,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 175. Establish CI/CD pipeline with automated testing and linting
 - **Effort**: 13 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -505,7 +550,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 176. Enhance proof search with domain-specific heuristics and caching
 - **Effort**: 18 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -529,7 +574,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 178. Complete advanced tutorial sections with hands-on exercises
 - **Effort**: 13 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -552,7 +597,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 179. Implement performance benchmarks for proof search and derivation
 - **Effort**: 13 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -577,7 +622,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 180. Add test coverage metrics and reporting
 - **Effort**: 9 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -630,7 +675,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 203. Add --complex flag to /research for subtopic subdivision with summary
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -659,7 +704,7 @@ Import and adapt the /meta command from the OpenAgents project (/home/benjamin/P
 
 ### 205. Implement Lean tool usage verification and monitoring system
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
