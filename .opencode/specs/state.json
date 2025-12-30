@@ -129,17 +129,26 @@
       "project_number": 256,
       "project_name": "add_meta_command_from_openagents_with_system_builder_subagents",
       "type": "feature",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planned",
+      "status": "planned",
       "priority": "medium",
       "language": "markdown",
       "created": "2025-12-29T22:30:00Z",
       "started": "2025-12-29",
       "research_completed": "2025-12-29",
-      "last_updated": "2025-12-29",
+      "plan_created": "2025-12-29",
+      "last_updated": "2025-12-29T16:46:00Z",
       "artifacts": [
-        ".opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md"
-      ]
+        ".opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md",
+        ".opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 14,
+        "complexity": "medium-high",
+        "research_integrated": true
+      }
     }
   ],
   "completed_projects": [
