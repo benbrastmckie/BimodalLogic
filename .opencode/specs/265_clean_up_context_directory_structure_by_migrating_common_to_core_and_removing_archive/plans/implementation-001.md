@@ -75,7 +75,7 @@ This plan systematically migrates all content from `.opencode/context/common/` t
 - [ ] No broken references to archive/ files
 - [ ] Git commit created with clear message
 
-### Phase 2: Content Conflict Resolution [NOT STARTED]
+### Phase 2: Content Conflict Resolution [COMPLETED]
 
 **Goal:** Resolve duplicate files between common/ and core/ before migration
 
@@ -129,7 +129,7 @@ This plan systematically migrates all content from `.opencode/context/common/` t
 - [ ] Merged files validated for completeness
 - [ ] Git commit created documenting resolutions
 
-### Phase 3: Common Directory Migration [NOT STARTED]
+### Phase 3: Common Directory Migration [COMPLETED]
 
 **Goal:** Migrate all active files from common/ to core/ preserving structure
 

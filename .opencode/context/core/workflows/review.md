@@ -20,7 +20,7 @@ The `/review` command performs comprehensive repository analysis and updates pro
 
 ## Workflow Stages
 
-The /review command follows the standard 8-stage workflow defined in @.opencode/context/common/workflows/command-lifecycle.md with review-specific adaptations:
+The /review command follows the standard 8-stage workflow defined in @.opencode/context/core/workflows/command-lifecycle.md with review-specific adaptations:
 
 **Stage 1 (Preflight)**: Load registries, validate scope, read next_project_number, generate project path
 **Stage 2 (PrepareDelegation)**: Generate session_id, set delegation context for reviewer subagent
@@ -56,7 +56,7 @@ Create tasks via /task command for identified work:
 
 ### Artifact Management
 
-Follows @.opencode/context/common/system/artifact-management.md:
+Follows @.opencode/context/core/system/artifact-management.md:
 - Lazy directory creation (project root created when writing first file)
 - Only summaries/ subdirectory created (not reports/ or plans/)
 - Review summary artifact triggers project state.json creation via status-sync-manager
@@ -119,7 +119,7 @@ Follows @.opencode/context/common/system/artifact-management.md:
 
 ## Review Summary Format
 
-Review summaries follow @.opencode/context/common/standards/summary.md:
+Review summaries follow @.opencode/context/core/standards/summary.md:
 - Metadata: Status [COMPLETED], timestamps, priority
 - Overview: 2-3 sentences (<100 tokens)
 - What Changed: Registry updates performed

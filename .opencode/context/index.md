@@ -220,7 +220,7 @@ Load selectively: Use grep extraction for specific tasks, avoid loading full fil
 Stage 4 loads:
 - @.opencode/context/core/standards/delegation.md
 - @.opencode/context/core/system/state-management.md
-- @.opencode/context/common/system/artifact-management.md
+- @.opencode/context/core/system/artifact-management.md
 - grep -A 50 "^### {task_number}\." .opencode/specs/TODO.md
 - @.opencode/specs/state.json
 
@@ -233,9 +233,9 @@ Language-specific:
 ```
 Stage 4 loads:
 - @.opencode/context/core/standards/delegation.md
-- @.opencode/context/common/standards/plan.md
+- @.opencode/context/core/standards/plan.md
 - @.opencode/context/core/system/state-management.md
-- @.opencode/context/common/system/artifact-management.md
+- @.opencode/context/core/system/artifact-management.md
 - grep -A 50 "^### {task_number}\." .opencode/specs/TODO.md
 - @.opencode/specs/state.json
 - Research artifacts from task (if exist)
@@ -246,8 +246,8 @@ Stage 4 loads:
 Stage 4 loads:
 - @.opencode/context/core/standards/delegation.md
 - @.opencode/context/core/system/state-management.md
-- @.opencode/context/common/system/artifact-management.md
-- @.opencode/context/common/system/git-commits.md
+- @.opencode/context/core/system/artifact-management.md
+- @.opencode/context/core/system/git-commits.md
 - grep -A 50 "^### {task_number}\." .opencode/specs/TODO.md
 - @.opencode/specs/state.json
 - Plan file (if exists)

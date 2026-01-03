@@ -43,7 +43,7 @@ Successfully standardized context loading across all command files using frontma
 Context Loaded:
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
+@.opencode/context/core/system/status-markers.md
 ```
 
 **After** (frontmatter declaration):

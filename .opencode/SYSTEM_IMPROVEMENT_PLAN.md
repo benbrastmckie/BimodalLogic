@@ -442,7 +442,7 @@ This plan systematically improves the ProofChecker/.opencode/ agent system by:
 Context Loaded:
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
+@.opencode/context/core/system/status-markers.md
 ```
 
 **Pattern B** - Frontmatter (subagents):
