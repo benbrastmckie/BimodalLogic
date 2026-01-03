@@ -34,7 +34,7 @@ context_loading:
   index: ".opencode/context/index.md"
   required:
     - "core/standards/delegation.md"
-    - "core/standards/subagent-return-format.md"
+    - "core/standards/delegation.md"
   optional:
     - "domain/routing-rules.md"
   max_context_size: 30000
@@ -103,7 +103,7 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/subagent-return-format.md"
+    - "core/standards/delegation.md"
     - "core/workflows/research-workflow.md"
   max_context_size: 50000
 delegation:
@@ -212,7 +212,7 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/subagent-return-format.md"
+    - "core/standards/delegation.md"
   max_context_size: 40000
 delegation:
   max_depth: 3
@@ -255,7 +255,7 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/subagent-return-format.md"
+    - "core/standards/delegation.md"
     - "domain/generation-templates.md"
   max_context_size: 50000
 delegation:

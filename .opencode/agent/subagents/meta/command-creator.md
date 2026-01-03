@@ -22,7 +22,8 @@ context_loading:
   required:
     - "core/standards/delegation.md"
     - "core/standards/command-structure.md"
-    - "core/standards/subagent-return-format.md"
+    - "core/standards/command-argument-handling.md"
+    - "core/system/routing-logic.md"
   max_context_size: 30000
 delegation:
   max_depth: 3
