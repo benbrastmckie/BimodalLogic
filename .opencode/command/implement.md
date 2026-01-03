@@ -29,13 +29,12 @@ Executes task implementations with plan-based or direct execution, language-base
 
 ## Workflow Setup
 
-**Orchestrator handles:**
-- Parse task number or range from arguments
-- Validate tasks exist and are not [COMPLETED]
-- Extract language for routing (lean → lean-implementation-agent, others → implementer)
-- Delegate to appropriate implementer agent
-- Validate return format
-- Relay result to user
+**Orchestrator handles (Stage 1-5):**
+- **Stage 1 (PreflightValidation):** Parse task number or range from arguments, validate tasks exist
+- **Stage 2 (DetermineRouting):** Extract language from task entry (state.json or TODO.md), map to agent using routing table, validate routing
+- **Stage 3 (RegisterAndDelegate):** Register session and invoke target agent
+- **Stage 4 (ValidateReturn):** Validate return format, verify artifacts exist and are non-empty
+- **Stage 5 (PostflightCleanup):** Update session registry and relay result to user
 
 **Implementer subagent handles:**
 - Plan-based vs direct implementation
@@ -70,6 +69,22 @@ Executes task implementations with plan-based or direct execution, language-base
 | markdown | implementer | File operations, git |
 | python | implementer | File operations, git, python |
 | general | implementer | File operations, git |
+
+**Language Extraction (Orchestrator Stage 2):**
+1. Priority 1: Project state.json (task-specific) - `.opencode/specs/{task_number}_*/state.json`
+2. Priority 2: TODO.md task entry (**Language** field) - `grep -A 20 "^### {task_number}\."`
+3. Priority 3: Default "general" (fallback) - If extraction fails
+
+**Routing Validation (Orchestrator Stage 2):**
+- Verify agent file exists at `.opencode/agent/subagents/{agent}.md`
+- If language="lean": Agent must start with "lean-" (e.g., lean-implementation-agent)
+- If language!="lean": Agent must NOT start with "lean-" (e.g., implementer)
+- Log routing decision: `[INFO] Routing to {agent} (language={language})`
+
+**Artifact Validation (Orchestrator Stage 4):**
+- If status="completed": Artifacts array must be non-empty
+- All artifact files must exist on disk
+- All artifact files must be non-empty (size > 0 bytes)
 
 **Implementer Responsibilities:**
 - Detect plan existence and execute plan-based or direct implementation

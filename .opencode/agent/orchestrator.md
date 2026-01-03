@@ -89,7 +89,7 @@ updated: 2025-12-29
     <process>
       1. Check if command uses language-based routing:
          - Read `routing.language_based` from command frontmatter
-         - If false: Use `routing.target_agent` directly
+         - If false: Use `routing.default` directly (skip language extraction)
          - If true: Extract language and map to agent
       
       2. For language-based routing:
@@ -98,28 +98,118 @@ updated: 2025-12-29
             - Priority 2: TODO.md task entry (**Language** field)
             - Priority 3: Default "general" (fallback)
          
-         b. Map language to agent:
-            - /research: lean → lean-research-agent, default → researcher
-            - /implement: lean → lean-implementation-agent, default → implementer
+         b. Map language to agent using routing table from command frontmatter:
+            - If language == "lean": Use `routing.lean` agent
+            - Else: Use `routing.default` agent
          
          c. Validate routing:
             - Verify agent file exists at `.opencode/agent/subagents/{agent}.md`
-            - Verify language matches agent capabilities
+            - Verify language matches agent capabilities:
+              * If language == "lean": Agent must start with "lean-"
+              * If language != "lean": Agent must NOT start with "lean-"
+            - Log validation result: [PASS] or [FAIL]
       
       3. Update delegation_path with resolved agent
+      
+      4. Log routing decision:
+         - [INFO] Task {N} language: {language}
+         - [INFO] Routing to {agent} (language={language})
     </process>
+    <implementation>
+      STEP 2.1: Extract task number from arguments
+        - Parse first argument as task_number
+        - Validate task_number is positive integer
+        - Verify task exists in .opencode/specs/TODO.md
+      
+      STEP 2.2: Check if language-based routing enabled
+        - Read command frontmatter `routing.language_based` field
+        - If false: target_agent = routing.default, SKIP to Step 2.5
+        - If true: CONTINUE to Step 2.3
+      
+      STEP 2.3: Extract language from task entry
+        a. Try Priority 1: Project state.json
+           - Find task directory: .opencode/specs/{task_number}_*/
+           - If state.json exists: Extract language field
+           - If language found: USE and SKIP to Step 2.4
+        
+        b. Try Priority 2: TODO.md **Language** field
+           - Extract task entry: grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md
+           - Extract language line: grep "Language" | sed 's/\*\*Language\*\*: //' | tr -d ' '
+           - If language found: USE and SKIP to Step 2.4
+        
+        c. Fallback Priority 3: Default "general"
+           - language = "general"
+           - LOG: [WARN] Language not found for task {N}, defaulting to 'general'
+      
+      STEP 2.4: Map language to agent using routing table
+        - Read routing.lean and routing.default from command frontmatter
+        - IF language == "lean": target_agent = routing.lean
+        - ELSE: target_agent = routing.default
+        - LOG: [INFO] Task {N} language: {language}
+        - LOG: [INFO] Routing to {target_agent} (language={language})
+      
+      STEP 2.5: Validate routing
+        a. Verify agent file exists:
+           - Check file: .opencode/agent/subagents/{target_agent}.md
+           - If NOT exists: ABORT with error "Agent file not found: {target_agent}"
+        
+        b. Verify language matches agent capabilities:
+           - IF language == "lean" AND target_agent does NOT start with "lean-":
+             * LOG: [FAIL] Routing validation failed: language=lean but agent={target_agent}
+             * ABORT with error "Routing mismatch: Lean task must route to lean-* agent"
+           
+           - IF language != "lean" AND target_agent starts with "lean-":
+             * LOG: [FAIL] Routing validation failed: language={language} but agent={target_agent}
+             * ABORT with error "Routing mismatch: Non-lean task cannot route to lean-* agent"
+           
+           - ELSE:
+             * LOG: [PASS] Routing validation succeeded
+        
+        c. Update delegation_path:
+           - delegation_path = ["orchestrator", "{command}", "{target_agent}"]
+      
+      STEP 2.6: Return routing decision
+        - Return target_agent, language, delegation_path
+    </implementation>
     <language_extraction>
       # Extract from project state.json (if exists)
-      task_dir=".opencode/specs/${task_number}_*"
-      if [ -f "${task_dir}/state.json" ]; then
-        language=$(jq -r '.language // "general"' "${task_dir}/state.json")
-      else
-        # Extract from TODO.md
-        language=$(grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //' | tr -d ' ')
-        language=${language:-general}
+      task_dir=$(find .opencode/specs -maxdepth 1 -type d -name "${task_number}_*" | head -n 1)
+      if [ -n "$task_dir" ] && [ -f "${task_dir}/state.json" ]; then
+        language=$(jq -r '.language // empty' "${task_dir}/state.json")
       fi
+      
+      # Fallback to TODO.md if not found in state.json
+      if [ -z "$language" ]; then
+        language=$(grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //' | tr -d ' ')
+      fi
+      
+      # Default to "general" if still not found
+      language=${language:-general}
+      
+      echo "[INFO] Task ${task_number} language: ${language}"
     </language_extraction>
-    <checkpoint>Target agent determined</checkpoint>
+    <routing_validation>
+      # Validate agent file exists
+      agent_file=".opencode/agent/subagents/${target_agent}.md"
+      if [ ! -f "$agent_file" ]; then
+        echo "[FAIL] Agent file not found: ${target_agent}"
+        exit 1
+      fi
+      
+      # Validate language matches agent capabilities
+      if [ "$language" == "lean" ] && [[ ! "$target_agent" =~ ^lean- ]]; then
+        echo "[FAIL] Routing validation failed: language=lean but agent=${target_agent}"
+        exit 1
+      fi
+      
+      if [ "$language" != "lean" ] && [[ "$target_agent" =~ ^lean- ]]; then
+        echo "[FAIL] Routing validation failed: language=${language} but agent=${target_agent}"
+        exit 1
+      fi
+      
+      echo "[PASS] Routing validation succeeded"
+    </routing_validation>
+    <checkpoint>Target agent determined and validated</checkpoint>
   </stage>
 
   <stage id="3" name="RegisterAndDelegate">
@@ -173,26 +263,85 @@ updated: 2025-12-29
          - Summary <100 tokens (~400 characters)
          - session_id matches expected
       3. Verify artifacts (if status = completed):
+         - Artifacts array must be non-empty
          - All artifact paths exist on disk
-         - Artifact files have size > 0
+         - Artifact files have size > 0 bytes
+         - Log validation: [PASS] {N} artifacts validated or [FAIL] Artifact missing: {path}
       4. Log validation errors if any
     </process>
+    <implementation>
+      STEP 4.1: Validate JSON structure
+        - Parse return as JSON
+        - If parse fails: ABORT with error "Invalid JSON return from {agent}"
+      
+      STEP 4.2: Validate required fields
+        - Check fields exist: status, summary, artifacts, metadata, session_id
+        - If missing: ABORT with error "Missing required field: {field}"
+      
+      STEP 4.3: Validate status field
+        - Check status in [completed, partial, failed, blocked]
+        - If invalid: ABORT with error "Invalid status: {status}"
+      
+      STEP 4.4: Validate session_id
+        - Check session_id matches expected value
+        - If mismatch: ABORT with error "Session ID mismatch: expected {expected}, got {actual}"
+      
+      STEP 4.5: Validate summary token limit
+        - Check summary length <100 tokens (~400 characters)
+        - If exceeded: LOG warning (non-critical)
+      
+      STEP 4.6: Validate artifacts (CRITICAL - prevents phantom research)
+        IF status == "completed":
+          a. Check artifacts array is non-empty:
+             - IF artifacts.length == 0:
+               * LOG: [FAIL] Agent returned 'completed' status but created no artifacts
+               * ABORT with error "Phantom research detected: status=completed but no artifacts"
+          
+          b. For each artifact in artifacts array:
+             - Extract artifact.path
+             - Check file exists on disk: [ -f "{path}" ]
+             - IF NOT exists:
+               * LOG: [FAIL] Artifact does not exist: {path}
+               * ABORT with error "Artifact validation failed: {path} not found"
+             
+             - Check file is non-empty: [ -s "{path}" ]
+             - IF empty (size == 0):
+               * LOG: [FAIL] Artifact is empty: {path}
+               * ABORT with error "Artifact validation failed: {path} is empty"
+          
+          c. Log success:
+             - LOG: [PASS] {N} artifacts validated
+        
+        ELSE (status != "completed"):
+          - SKIP artifact validation (partial/failed/blocked may have no artifacts)
+      
+      STEP 4.7: Return validation result
+        - If all validations pass: CONTINUE to Stage 5
+        - If any validation fails: ABORT with error details
+    </implementation>
     <validation_rules>
       - Return must be valid JSON
       - Required fields must be present
       - Status must be valid enum
       - session_id must match expected
       - Summary must be <100 tokens
-      - Artifacts must exist (if completed)
+      - Artifacts must exist and be non-empty (if status=completed)
+      - Artifacts array must be non-empty (if status=completed)
     </validation_rules>
     <error_handling>
       If validation fails:
-      1. Log error to errors.json
+      1. Log error to errors.json with details
       2. Return failed status to user
       3. Include validation errors in response
       4. Recommendation: "Fix {agent} subagent return format"
+      
+      If phantom research detected (status=completed but no artifacts):
+      1. Log error: "Phantom research detected for task {N}"
+      2. Return failed status to user
+      3. Error message: "Agent returned 'completed' status but created no artifacts"
+      4. Recommendation: "Verify {agent} creates artifacts before updating status"
     </error_handling>
-    <checkpoint>Return validated</checkpoint>
+    <checkpoint>Return validated and artifacts verified</checkpoint>
   </stage>
 
   <stage id="5" name="PostflightCleanup">

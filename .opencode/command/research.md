@@ -30,13 +30,12 @@ Conducts research for tasks and creates research reports with [RESEARCHED] statu
 
 ## Workflow Setup
 
-**Orchestrator handles:**
-- Parse task number and flags from arguments
-- Validate task exists and is not [COMPLETED]
-- Extract language from task entry (state.json or TODO.md)
-- Route to appropriate researcher agent based on language
-- Validate return format
-- Relay result to user
+**Orchestrator handles (Stage 1-5):**
+- **Stage 1 (PreflightValidation):** Parse task number and flags from arguments, validate task exists
+- **Stage 2 (DetermineRouting):** Extract language from task entry (state.json or TODO.md), map to agent using routing table, validate routing
+- **Stage 3 (RegisterAndDelegate):** Register session and invoke target agent
+- **Stage 4 (ValidateReturn):** Validate return format, verify artifacts exist and are non-empty (prevents phantom research)
+- **Stage 5 (PostflightCleanup):** Update session registry and relay result to user
 
 **Researcher subagent handles:**
 - Research execution (web search, documentation, or Lean-specific tools)
@@ -68,10 +67,22 @@ Conducts research for tasks and creates research reports with [RESEARCHED] statu
 | python | researcher | Web search, documentation review |
 | general | researcher | Web search, documentation review |
 
-**Language Extraction:**
-1. Priority 1: Project state.json (task-specific)
-2. Priority 2: TODO.md task entry (**Language** field)
-3. Priority 3: Default "general" (fallback)
+**Language Extraction (Orchestrator Stage 2):**
+1. Priority 1: Project state.json (task-specific) - `.opencode/specs/{task_number}_*/state.json`
+2. Priority 2: TODO.md task entry (**Language** field) - `grep -A 20 "^### {task_number}\."`
+3. Priority 3: Default "general" (fallback) - If extraction fails
+
+**Routing Validation (Orchestrator Stage 2):**
+- Verify agent file exists at `.opencode/agent/subagents/{agent}.md`
+- If language="lean": Agent must start with "lean-" (e.g., lean-research-agent)
+- If language!="lean": Agent must NOT start with "lean-" (e.g., researcher)
+- Log routing decision: `[INFO] Routing to {agent} (language={language})`
+
+**Artifact Validation (Orchestrator Stage 4):**
+- If status="completed": Artifacts array must be non-empty
+- All artifact files must exist on disk
+- All artifact files must be non-empty (size > 0 bytes)
+- Prevents "phantom research" (status updated but no artifacts created)
 
 ## Delegation
 

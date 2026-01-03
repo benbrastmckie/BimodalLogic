@@ -76,17 +76,40 @@ Before delegating to agent, verify routing is correct:
 
 ```bash
 # Validate lean routing
-if [ "$language" == "lean" ] && [ "$agent" != "lean-research-agent" ] && [ "$agent" != "lean-implementation-agent" ]; then
+if [ "$language" == "lean" ] && [[ ! "$agent" =~ ^lean- ]]; then
   echo "[FAIL] Routing validation failed: language=lean but agent=${agent}"
   exit 1
 fi
 
 # Validate non-lean routing
-if [ "$language" != "lean" ] && [[ "$agent" == "lean-"* ]]; then
+if [ "$language" != "lean" ] && [[ "$agent" =~ ^lean- ]]; then
   echo "[FAIL] Routing validation failed: language=${language} but agent=${agent}"
   exit 1
 fi
+
+echo "[PASS] Routing validation succeeded"
 ```
+
+### Implementation Status
+
+**Stage 2 (DetermineRouting) Implementation:**
+- ✅ Language extraction from state.json (Priority 1)
+- ✅ Language extraction from TODO.md (Priority 2)
+- ✅ Default to "general" fallback (Priority 3)
+- ✅ Routing table lookup from command frontmatter
+- ✅ Agent file existence validation
+- ✅ Language/agent capability validation
+- ✅ Logging for routing decisions
+
+**Stage 4 (ValidateReturn) Artifact Validation:**
+- ✅ Artifacts array non-empty check (prevents phantom research)
+- ✅ Artifact file existence check
+- ✅ Artifact file non-empty check (size > 0)
+- ✅ Validation logging ([PASS]/[FAIL])
+
+**Commands with Language-Based Routing:**
+- ✅ /research (lean → lean-research-agent, default → researcher)
+- ✅ /implement (lean → lean-implementation-agent, default → implementer)
 
 ---
 
@@ -311,6 +334,114 @@ See `.opencode/context/index.md` for execution context loading patterns.
 
 - **Routing Stage**: <10% context window (this file only, ~200 lines)
 - **Execution Stage**: 90% context window available (selective loading)
+
+---
+
+## Troubleshooting
+
+### Phantom Research (Status Updated but No Artifacts)
+
+**Symptom:** Task status shows [RESEARCHED] but no research report exists.
+
+**Root Cause:** Agent returned status="completed" without creating artifacts.
+
+**Detection:** Stage 4 artifact validation catches this:
+```
+[FAIL] Agent returned 'completed' status but created no artifacts
+Error: Phantom research detected: status=completed but no artifacts
+```
+
+**Prevention:** Orchestrator Stage 4 now validates:
+1. Artifacts array is non-empty (if status=completed)
+2. All artifact files exist on disk
+3. All artifact files are non-empty (size > 0)
+
+**Recovery:**
+1. Reset task status to [NOT STARTED]
+2. Re-run command: `/research {task_number}`
+3. Verify artifacts created after completion
+
+### Language Routing Mismatch
+
+**Symptom:** Lean task routed to general researcher (or vice versa).
+
+**Root Cause:** Language extraction failed or routing validation skipped.
+
+**Detection:** Stage 2 routing validation catches this:
+```
+[FAIL] Routing validation failed: language=lean but agent=researcher
+Error: Routing mismatch: Lean task must route to lean-* agent
+```
+
+**Prevention:** Orchestrator Stage 2 now validates:
+1. If language="lean": Agent must start with "lean-"
+2. If language!="lean": Agent must NOT start with "lean-"
+
+**Recovery:**
+1. Verify **Language** field in TODO.md task entry
+2. Verify routing configuration in command frontmatter
+3. Re-run command after fixing language field
+
+### Language Extraction Failed
+
+**Symptom:** Warning message "Language not found for task {N}, defaulting to 'general'".
+
+**Root Cause:** Task entry missing **Language** field in TODO.md.
+
+**Detection:** Stage 2 language extraction logs warning:
+```
+[WARN] Language not found for task 258, defaulting to 'general'
+```
+
+**Fix:**
+1. Add **Language** field to task entry in TODO.md:
+   ```markdown
+   ### 258. Resolve Truth.lean sorries
+   - **Status**: [NOT STARTED]
+   - **Language**: lean
+   - **Priority**: High
+   ```
+2. Re-run command
+
+### Agent File Not Found
+
+**Symptom:** Error "Agent file not found: {agent}".
+
+**Root Cause:** Routing configuration references non-existent agent.
+
+**Detection:** Stage 2 agent file validation:
+```
+[FAIL] Agent file not found: lean-research-agent
+```
+
+**Fix:**
+1. Verify agent file exists: `.opencode/agent/subagents/{agent}.md`
+2. Fix routing configuration in command frontmatter
+3. Create missing agent file if needed
+
+### Routing Logs
+
+**Example successful routing (Lean task):**
+```
+[INFO] Task 258 language: lean
+[INFO] Routing to lean-research-agent (language=lean)
+[PASS] Routing validation succeeded
+```
+
+**Example successful routing (Markdown task):**
+```
+[INFO] Task 256 language: markdown
+[INFO] Routing to researcher (language=markdown)
+[PASS] Routing validation succeeded
+```
+
+**Example failed routing (mismatch):**
+```
+[INFO] Task 258 language: lean
+[INFO] Routing to researcher (language=lean)
+[FAIL] Routing validation failed: language=lean but agent=researcher
+Error: Routing mismatch: Lean task must route to lean-* agent
+```
 
 ---
 
