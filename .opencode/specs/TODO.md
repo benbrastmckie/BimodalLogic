@@ -24,12 +24,14 @@
 
 ### 265. Clean up context directory structure by migrating common/ to core/ and removing archive/
 - **Effort**: 10 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Plan**: [implementation-001.md](.opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260103.md](.opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/summaries/implementation-summary-20260103.md)
+- **Completed**: 2026-01-03
 
 **Description**: Systematically migrate all content from `.opencode/context/common/` to `.opencode/context/core/` or `.opencode/context/project/`, remove the deprecated `.opencode/context/archive/` directory, resolve content duplication (especially subagent-return-format.md), and update 100+ file references throughout the codebase.
 
