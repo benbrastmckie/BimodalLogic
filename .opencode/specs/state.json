@@ -1402,6 +1402,11 @@
         ".opencode/command/todo.md",
         ".opencode/specs/TODO.md"
       ]
+    },
+    "266": {
+      "status": "planned",
+      "plan_path": ".opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/plans/implementation-001.md",
+      "updated_at": "2026-01-03T09:50:30Z"
     }
   }
 }

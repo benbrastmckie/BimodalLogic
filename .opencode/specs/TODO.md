@@ -6,11 +6,12 @@
 ---
 
 ### 266. Fix /research command language-based routing to properly invoke lean-research-agent for Lean tasks
-- **Effort**: 5-7 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 6 hours
+- **Status**: [PLANNED]
 - **Research Started**: 2026-01-03
 - **Research Completed**: 2026-01-03
 - **Research Report**: .opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/reports/research-001.md
+- **Plan**: [implementation-001.md](.opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/plans/implementation-001.md)
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
