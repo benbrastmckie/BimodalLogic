@@ -145,12 +145,18 @@ Create safety commits before:
 
 ### Final Commits
 
-**Format**: `{operation}: {description}`
+**Format**: `{area}: {what}` or `{operation}: {description}`
 
 **Examples**:
 - `todo: archive 5 completed tasks`
 - `implement: task 195 - LeanSearch integration`
 - `review: update registries and create 3 tasks`
+- `commands: add targeted git commit rules (task 156)`
+
+**Guidelines**:
+- Keep imperative, concise, and scoped to staged changes
+- Include task/plan IDs when known (e.g., `(task 156)`)
+- No emojis in messages
 
 **Purpose**: Describe actual changes made
 
@@ -162,6 +168,36 @@ Create safety commits before:
 - `rollback: todo archival failed - reverted to abc123`
 
 **Purpose**: Document rollback events (if manual rollback needed)
+
+---
+
+## Scoping Rules for Commits
+
+### When to Commit
+- After artifacts are written (code, docs, reports, plans, summaries)
+- After status/state/TODO updates are applied
+- Once validation steps for the scope are done (e.g., `lake build`, `lake exe test`, lint or file-level checks when code changed)
+
+### Scoping Best Practices
+- Stage only files relevant to the current task/feature
+- **Avoid repo-wide adds**: Do not use `git add -A` or `git commit -am`
+- Use targeted staging: `git add <file1> <file2>`
+- Split unrelated changes into separate commits
+- Prefer smaller, cohesive commits
+- Exclude build artifacts, lockfiles, or generated files unless intentionally changed
+
+### Recommended Commit Flow
+1. Review changes: `git status --short`, `git diff --stat` (and `git diff` for details)
+2. Stage target files only: `git add path/to/file1 path/to/file2`
+3. Re-check scope: `git status --short` to confirm only intended files are staged
+4. Run relevant checks (as needed): `lake build`, `lake exe test`, formatters/linters
+5. Commit with a focused message: `git commit -m "<area>: <summary> (task 156)"`
+6. Leave unstaged any out-of-scope changes for follow-up commits
+
+### Safety Checks Before Commit
+- Ensure artifacts exist and references are updated (TODO/state/IMPLEMENTATION_STATUS/SORRY_REGISTRY/TACTIC_REGISTRY when applicable)
+- Avoid committing during blocked/abandoned states
+- Verify only intended files are staged
 
 ---
 

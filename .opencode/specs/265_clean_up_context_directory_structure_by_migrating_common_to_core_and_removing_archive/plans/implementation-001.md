@@ -55,7 +55,7 @@ This plan systematically migrates all content from `.opencode/context/common/` t
 
 ## Implementation Phases
 
-### Phase 1: Archive Directory Removal [NOT STARTED]
+### Phase 1: Archive Directory Removal [COMPLETED]
 
 **Goal:** Remove deprecated archive/ directory and update references
 
