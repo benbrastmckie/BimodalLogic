@@ -318,6 +318,77 @@ All commands include explicit argument parsing specifications that tell the orch
 
 ---
 
+## Command Argument Patterns
+
+All commands follow standardized argument handling (see `context/core/standards/command-argument-handling.md`).
+
+### Task-Based Commands
+
+Commands that operate on tasks from TODO.md:
+
+| Command | Usage | Description |
+|---------|-------|-------------|
+| /research | `/research TASK_NUMBER [PROMPT]` | Conduct research for task |
+| /plan | `/plan TASK_NUMBER [PROMPT]` | Create implementation plan |
+| /implement | `/implement TASK_NUMBER [PROMPT]` | Execute implementation |
+
+**Pattern**: Task number is parsed from `$ARGUMENTS`, validated, and formatted as `"Task: {number}"` for subagent.
+
+**Example**:
+```bash
+/research 176                    # Research task 176
+/research 176 "focus on API"     # Research with custom focus
+```
+
+### Direct Commands
+
+Commands that don't require task numbers:
+
+| Command | Usage | Description |
+|---------|-------|-------------|
+| /meta | `/meta [PROMPT]` | Interactive system builder |
+| /review | `/review [SCOPE]` | Analyze codebase and update registries |
+| /todo | `/todo` | Archive completed/abandoned tasks |
+| /errors | `/errors [--all] [--type TYPE]` | Analyze errors.json |
+
+**Pattern**: `$ARGUMENTS` passed as-is to subagent (may be empty).
+
+**Example**:
+```bash
+/meta                            # Start meta builder
+/review lean                     # Review Lean code only
+/errors --all                    # Analyze all errors
+```
+
+### Creating New Commands
+
+See: `.opencode/docs/guides/creating-commands.md`
+
+Key requirements:
+- Follow command template (`.opencode/context/core/templates/command-template.md`)
+- Implement standard argument handling
+- Document usage with examples
+- Test with orchestrator
+
+---
+
+## Standards Quick Reference
+
+Quick links to common standards:
+
+| Standard | File | Purpose |
+|----------|------|---------|
+| Command Arguments | `core/standards/command-argument-handling.md` | $ARGUMENTS parsing and validation |
+| Delegation | `core/standards/delegation.md` | Subagent return format and delegation patterns |
+| State Management | `core/system/state-management.md` | Status markers and state schemas |
+| Routing Logic | `core/system/routing-logic.md` | Language extraction and agent mapping |
+| Validation Rules | `core/system/validation-rules.md` | Return format and artifact validation |
+| Task Format | `core/standards/tasks.md` | Task entry format and required fields |
+
+See `.opencode/docs/STANDARDS_QUICK_REF.md` for detailed quick reference.
+
+---
+
 ## Meta Command Guide
 
 The `/meta` command provides an interactive 8-stage workflow for building complete .opencode system architectures tailored to specific domains. It guides you through domain analysis, agent design, workflow creation, command definition, and context organization.
