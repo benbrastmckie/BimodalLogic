@@ -204,6 +204,33 @@ Load for: Orchestrator and routing patterns
 
 ---
 
+## Meta Context (meta/)
+
+Load for: /meta command and system-builder workflows
+
+**When to Load**: Only when executing /meta command or meta subagents (domain-analyzer, agent-generator, workflow-designer, command-creator, context-organizer)
+
+**Interview Patterns**:
+- **interview-patterns.md** (226 lines) - Progressive disclosure, adaptive questioning, validation checkpoints
+
+**Architecture Design**:
+- **architecture-principles.md** (272 lines) - Modular design, hierarchical organization, context efficiency
+
+**Domain Knowledge**:
+- **domain-patterns.md** (260 lines) - Development, business, hybrid, and ProofChecker-specific domain patterns
+
+**Agent Templates**:
+- **agent-templates.md** (336 lines) - Orchestrator, research, validation, processing, and generation templates
+
+**Loading Strategy**:
+- Load interview-patterns.md for domain-analyzer (Stage 4)
+- Load architecture-principles.md for workflow-designer and agent-generator (Stage 4)
+- Load domain-patterns.md for domain-analyzer (Stage 4)
+- Load agent-templates.md for agent-generator (Stage 4)
+- Never load during routing (Stages 1-3)
+
+---
+
 ## Core Specs (specs/)
 
 Load selectively: Use grep extraction for specific tasks, avoid loading full file

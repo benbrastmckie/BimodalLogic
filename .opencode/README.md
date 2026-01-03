@@ -314,6 +314,177 @@ All commands include explicit argument parsing specifications that tell the orch
 
 - `/meta <domain_description>` - Interactive system builder to create custom .opencode architectures for new domains
   - Example: `/meta "Create a system for managing e-commerce orders"`
+  - See "Meta Command Guide" section below for detailed usage
+
+---
+
+## Meta Command Guide
+
+The `/meta` command provides an interactive 8-stage workflow for building complete .opencode system architectures tailored to specific domains. It guides you through domain analysis, agent design, workflow creation, command definition, and context organization.
+
+### When to Use /meta
+
+Use `/meta` when you need to:
+- Create a new domain-specific AI system from scratch
+- Extend ProofChecker with new specialized capabilities
+- Build custom agents and commands for a specific workflow
+- Design a complete .opencode architecture for a new project
+
+### 8-Stage Interview Process
+
+The `/meta` command uses an interactive interview process:
+
+**Stage 1: Domain Discovery**
+- Identifies your domain (e.g., e-commerce, data engineering, proof verification)
+- Extracts core concepts and terminology
+- Determines primary use cases and user personas
+
+**Stage 2: Agent Specialization**
+- Recommends specialized agents for your domain
+- Defines agent roles and responsibilities
+- Establishes agent hierarchy (orchestrators, workers, validators)
+
+**Stage 3: Workflow Design**
+- Maps workflows to agent interactions
+- Defines delegation patterns
+- Establishes error handling and validation points
+
+**Stage 4: Command Creation**
+- Designs user-facing commands
+- Defines command syntax and arguments
+- Maps commands to agent workflows
+
+**Stage 5: Context Organization**
+- Structures domain knowledge into context files
+- Defines lazy loading strategies
+- Ensures context efficiency (<10% during routing)
+
+**Stage 6: Architecture Review**
+- Presents complete system architecture
+- Allows refinement and adjustments
+- Validates against quality standards
+
+**Stage 7: System Generation**
+- Creates all agent files with 8-stage workflows
+- Creates command files with frontmatter delegation
+- Creates context files with focused content
+- Integrates with status-sync-manager and git-workflow-manager
+
+**Stage 8: Validation and Delivery**
+- Validates all generated files
+- Checks quality standards (NO EMOJI, file sizes, frontmatter)
+- Creates git commit with scoped files
+- Returns summary with artifact paths
+
+### Example Usage
+
+**Simple Task Tracking System**:
+```
+/meta "Create a task tracking system for software development teams"
+```
+
+The system will guide you through:
+1. Analyzing task tracking domain (tasks, sprints, backlogs, etc.)
+2. Designing agents (task-creator, sprint-planner, backlog-organizer)
+3. Creating workflows (task creation → planning → execution → review)
+4. Defining commands (/sprint, /backlog, /task-status)
+5. Organizing context (agile methodology, task states, team roles)
+6. Generating complete system architecture
+
+**Proof Verification System** (ProofChecker-specific):
+```
+/meta "Create a proof verification system for modal logic theorems"
+```
+
+The system will:
+1. Analyze modal logic domain (Kripke semantics, accessibility relations, etc.)
+2. Design specialized agents (modal-proof-checker, kripke-validator, theorem-prover)
+3. Create proof workflows (theorem statement → proof search → validation → formalization)
+4. Define commands (/prove-modal, /check-kripke, /verify-theorem)
+5. Organize logic context (modal axioms, proof strategies, semantic models)
+6. Generate Lean-aware system with lean-lsp-mcp integration
+
+### Integration Points
+
+The `/meta` command integrates with:
+
+**status-sync-manager**: Atomic updates to TODO.md and state.json when creating tracked tasks
+
+**git-workflow-manager**: Scoped commits for generated files (agents, commands, context)
+
+**Context Index**: Automatic updates to `.opencode/context/index.md` with lazy loading strategies
+
+**Quality Standards**: All generated files follow current standards:
+- NO EMOJI (text-based status indicators only)
+- Frontmatter delegation pattern (commands <300 lines)
+- 8-stage workflow pattern (agents implement complete lifecycle)
+- Context efficiency (files <200 lines target, <300 lines max)
+- Standardized return formats (subagent-return-format.md)
+
+### Generated Artifacts
+
+A typical `/meta` execution creates:
+
+**Agent Files** (`.opencode/agent/subagents/{domain}/`):
+- Orchestrator agents (routing, delegation)
+- Worker agents (execution, processing)
+- Validator agents (checking, verification)
+
+**Command Files** (`.opencode/command/`):
+- User-facing commands with frontmatter delegation
+- Clear syntax and argument specifications
+- Usage examples and documentation
+
+**Context Files** (`.opencode/context/{domain}/`):
+- Domain knowledge and terminology
+- Workflow patterns and best practices
+- Templates and examples
+- Integration guides
+
+**Documentation**:
+- README files for agent directories
+- Usage guides for commands
+- Context index updates
+
+### Troubleshooting
+
+**Issue**: Generated files exceed size limits
+- **Solution**: Use `/meta` refinement stage to request smaller, more focused files
+- **Prevention**: Specify "modular design" and "small files" in domain description
+
+**Issue**: Generated agents don't follow 8-stage workflow
+- **Solution**: This should not happen - all meta subagents enforce 8-stage pattern
+- **Recovery**: Manually update agent files using templates in `.opencode/context/meta/agent-templates.md`
+
+**Issue**: Context files bloat context window
+- **Solution**: Review lazy loading strategy in context index
+- **Prevention**: Specify "context efficiency" requirement in domain description
+
+**Issue**: Git commit fails after generation
+- **Solution**: Non-critical - manually commit generated files
+- **Recovery**: `git add .opencode/agent/subagents/{domain}/ .opencode/command/{command}.md .opencode/context/{domain}/ && git commit -m "Add {domain} system via /meta"`
+
+### Best Practices
+
+1. **Start Simple**: Begin with a simple domain to understand the workflow
+2. **Be Specific**: Provide detailed domain descriptions for better agent design
+3. **Review Architecture**: Carefully review Stage 6 architecture before generation
+4. **Test Incrementally**: Test generated commands with simple inputs first
+5. **Refine Iteratively**: Use `/meta` multiple times to refine your system
+6. **Document Usage**: Add examples to generated command files
+7. **Monitor Context**: Check context usage stays <10% during routing
+
+### Meta Subagents
+
+The `/meta` command delegates to 5 specialized subagents:
+
+- **domain-analyzer**: Analyzes domains to extract concepts and patterns
+- **agent-generator**: Creates agent files with 8-stage workflows
+- **workflow-designer**: Designs delegation patterns and workflows
+- **command-creator**: Creates command files with frontmatter delegation
+- **context-organizer**: Organizes domain knowledge into context files
+
+All meta subagents follow the 8-stage workflow pattern and integrate with status-sync-manager and git-workflow-manager.
 
 ---
 
