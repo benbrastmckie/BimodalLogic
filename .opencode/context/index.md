@@ -216,29 +216,29 @@ Load for: Orchestrator and routing patterns
 
 ---
 
-## Meta Context (meta/)
+## Meta Context (Integrated into core/)
 
 Load for: /meta command and system-builder workflows
 
 **When to Load**: Only when executing /meta command or meta subagents (domain-analyzer, agent-generator, workflow-designer, command-creator, context-organizer)
 
-**Interview Patterns**:
+**Note**: Meta context files have been integrated into core/ subdirectories for better organization (Task 267, 2026-01-03)
+
+**Interview Patterns** (core/workflows/):
 - **interview-patterns.md** (226 lines) - Progressive disclosure, adaptive questioning, validation checkpoints
 
-**Architecture Design**:
+**Architecture Design** (core/standards/):
 - **architecture-principles.md** (272 lines) - Modular design, hierarchical organization, context efficiency
-
-**Domain Knowledge**:
 - **domain-patterns.md** (260 lines) - Development, business, hybrid, and ProofChecker-specific domain patterns
 
-**Agent Templates**:
+**Agent Templates** (core/templates/):
 - **agent-templates.md** (336 lines) - Orchestrator, research, validation, processing, and generation templates
 
 **Loading Strategy**:
-- Load interview-patterns.md for domain-analyzer (Stage 4)
-- Load architecture-principles.md for workflow-designer and agent-generator (Stage 4)
-- Load domain-patterns.md for domain-analyzer (Stage 4)
-- Load agent-templates.md for agent-generator (Stage 4)
+- Load core/workflows/interview-patterns.md for domain-analyzer (Stage 4)
+- Load core/standards/architecture-principles.md for workflow-designer and agent-generator (Stage 4)
+- Load core/standards/domain-patterns.md for domain-analyzer (Stage 4)
+- Load core/templates/agent-templates.md for agent-generator (Stage 4)
 - Never load during routing (Stages 1-3)
 
 ---

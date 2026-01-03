@@ -263,9 +263,9 @@ Build validation into every stage of the workflow.
 
 ## Related Principles
 
-- **Interview Patterns**: `.opencode/context/meta/interview-patterns.md`
-- **Domain Patterns**: `.opencode/context/meta/domain-patterns.md`
-- **Agent Templates**: `.opencode/context/meta/agent-templates.md`
+- **Interview Patterns**: `.opencode/context/core/workflows/interview-patterns.md`
+- **Domain Patterns**: `.opencode/context/core/standards/domain-patterns.md`
+- **Agent Templates**: `.opencode/context/core/templates/agent-templates.md`
 
 ---
 

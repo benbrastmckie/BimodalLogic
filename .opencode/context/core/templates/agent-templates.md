@@ -327,9 +327,9 @@ All templates follow the 8-stage workflow pattern:
 
 ## Related Templates
 
-- **Interview Patterns**: `.opencode/context/meta/interview-patterns.md`
-- **Architecture Principles**: `.opencode/context/meta/architecture-principles.md`
-- **Domain Patterns**: `.opencode/context/meta/domain-patterns.md`
+- **Interview Patterns**: `.opencode/context/core/workflows/interview-patterns.md`
+- **Architecture Principles**: `.opencode/context/core/standards/architecture-principles.md`
+- **Domain Patterns**: `.opencode/context/core/standards/domain-patterns.md`
 
 ---
 

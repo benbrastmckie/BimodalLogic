@@ -525,7 +525,7 @@ A typical `/meta` execution creates:
 
 **Issue**: Generated agents don't follow 8-stage workflow
 - **Solution**: This should not happen - all meta subagents enforce 8-stage pattern
-- **Recovery**: Manually update agent files using templates in `.opencode/context/meta/agent-templates.md`
+- **Recovery**: Manually update agent files using templates in `.opencode/context/core/templates/agent-templates.md`
 
 **Issue**: Context files bloat context window
 - **Solution**: Review lazy loading strategy in context index

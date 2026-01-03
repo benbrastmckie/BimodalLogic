@@ -23,9 +23,9 @@ context_loading:
     - "core/standards/subagent-return-format.md"
     - "core/workflows/status-transitions.md"
   optional:
-    - "meta/interview-patterns.md"
-    - "meta/architecture-principles.md"
-    - "meta/domain-patterns.md"
+    - "core/workflows/interview-patterns.md"
+    - "core/standards/architecture-principles.md"
+    - "core/standards/domain-patterns.md"
   max_context_size: 60000
 delegation:
   max_depth: 3
@@ -642,8 +642,8 @@ updated: 2026-01-03
   - **Standardized Return**: Returns per subagent-return-format.md
   
   For detailed documentation, see:
-  - `.opencode/context/meta/interview-patterns.md` - Interview techniques
-  - `.opencode/context/meta/architecture-principles.md` - Design principles
-  - `.opencode/context/meta/domain-patterns.md` - Domain-specific patterns
+  - `.opencode/context/core/workflows/interview-patterns.md` - Interview techniques
+  - `.opencode/context/core/standards/architecture-principles.md` - Design principles
+  - `.opencode/context/core/standards/domain-patterns.md` - Domain-specific patterns
   - `.opencode/context/core/standards/subagent-return-format.md` - Return format
 </notes>

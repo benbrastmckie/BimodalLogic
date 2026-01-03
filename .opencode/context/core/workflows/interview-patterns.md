@@ -217,9 +217,9 @@ Build shared context incrementally throughout the interview.
 
 ## Related Patterns
 
-- **Architecture Principles**: `.opencode/context/meta/architecture-principles.md`
-- **Domain Patterns**: `.opencode/context/meta/domain-patterns.md`
-- **Agent Templates**: `.opencode/context/meta/agent-templates.md`
+- **Architecture Principles**: `.opencode/context/core/standards/architecture-principles.md`
+- **Domain Patterns**: `.opencode/context/core/standards/domain-patterns.md`
+- **Agent Templates**: `.opencode/context/core/templates/agent-templates.md`
 
 ---
 

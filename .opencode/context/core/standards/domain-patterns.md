@@ -251,9 +251,9 @@ context/verification/
 
 ## Related Patterns
 
-- **Interview Patterns**: `.opencode/context/meta/interview-patterns.md`
-- **Architecture Principles**: `.opencode/context/meta/architecture-principles.md`
-- **Agent Templates**: `.opencode/context/meta/agent-templates.md`
+- **Interview Patterns**: `.opencode/context/core/workflows/interview-patterns.md`
+- **Architecture Principles**: `.opencode/context/core/standards/architecture-principles.md`
+- **Agent Templates**: `.opencode/context/core/templates/agent-templates.md`
 
 ---
 
