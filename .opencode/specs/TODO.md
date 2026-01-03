@@ -8,7 +8,8 @@
 
 ### 267. Integrate context/meta/ into context/core/ with proper subdirectory organization
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-03
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -47,12 +48,22 @@ All context files should belong to either:
 6. Test /meta command still works correctly
 
 **Acceptance Criteria**:
-- [ ] All 4 meta context files moved to appropriate core/ subdirectories
-- [ ] No `.opencode/context/meta/` directory exists
-- [ ] All references updated (command files, agent files, context index, README)
-- [ ] No broken references (validated with grep)
-- [ ] /meta command still functions correctly
-- [ ] Context organization follows core/ vs project/ convention
+- [x] All 4 meta context files moved to appropriate core/ subdirectories
+- [x] No `.opencode/context/meta/` directory exists
+- [x] All references updated (command files, agent files, context index, README)
+- [x] No broken references (validated with grep)
+- [x] /meta command still functions correctly
+- [x] Context organization follows core/ vs project/ convention
+
+**Implementation Summary**:
+- Moved `interview-patterns.md` → `core/workflows/interview-patterns.md`
+- Moved `architecture-principles.md` → `core/standards/architecture-principles.md`
+- Moved `domain-patterns.md` → `core/standards/domain-patterns.md`
+- Moved `agent-templates.md` → `core/templates/agent-templates.md`
+- Updated references in: `.opencode/command/meta.md`, `.opencode/agent/subagents/meta.md`, `.opencode/context/index.md`, `.opencode/README.md`
+- Updated cross-references in all 4 moved files
+- Removed empty `.opencode/context/meta/` directory
+- Git commit: 33d4d45
 
 ---
 
