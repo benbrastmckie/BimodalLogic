@@ -6,14 +6,19 @@
 ---
 
 ### 266. Fix /research command language-based routing to properly invoke lean-research-agent for Lean tasks
-- **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Effort**: 5-7 hours
+- **Status**: [RESEARCHED]
+- **Research Started**: 2026-01-03
+- **Research Completed**: 2026-01-03
+- **Research Report**: .opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/reports/research-001.md
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 
 **Description**: The `/research` command has `routing.language_based: true` configured and the orchestrator documents language extraction logic in Stage 2, but when `/research 258` was invoked (task 258 has Language: lean), it did not call the lean-research-agent as expected. Research how the /research command should direct the orchestrator to call appropriate subagents based on language, relying on those subagents to do the correct work while the orchestrator manages preflight and postflight. Review how /research works for non-lean tasks since this seems to work, in order to fix the way the /research command works for lean tasks. Ensure the /research command does not depart from the agent system standards, maintaining uniformity with other commands as appropriate.
+
+**Research Findings**: Root cause identified - orchestrator does NOT implement Stage 2 (DetermineRouting) as documented. Language extraction and routing logic exists only in documentation, not in actual implementation. This causes Lean tasks to route to default `researcher` instead of `lean-research-agent`, resulting in "phantom research" (status updated without artifacts). Fix requires implementing Stage 2 in orchestrator to extract language from TODO.md and route based on command frontmatter routing configuration.
 
 ---
 
@@ -93,7 +98,7 @@
 
 ### 258. Resolve Truth.lean Sorries
 - **Effort**: 10-20 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -117,6 +122,8 @@
 - [ ] SORRY_REGISTRY.md updated
 
 **Impact**: Completes temporal duality support in Truth.lean, enabling full soundness proofs for temporal operators.
+
+**Note**: Status was incorrectly marked [RESEARCHED] without artifacts. Reset to [NOT STARTED] pending task 266 fix.
 
 ---
 
@@ -256,7 +263,7 @@
 
 ### 264. Update Context References
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -278,35 +285,23 @@
 
 ---
 
-
-- **Total Tasks:** 61
-- **Completed:** 8
-- **High Priority:** 13
-- **Medium Priority:** 10
-- **Low Priority:** 10
-
----
-
 ## High Priority
 
-
-
-
 ### 256. Add /meta command from OpenAgents with system-builder subagents
-- **Effort**: 14 hours
-- **Status**: [IMPLEMENTING]
-- **Research Started**: 2025-12-29
-- **Research Completed**: 2025-12-29
-- **Research Report**: .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md
-- **Plan Created**: 2025-12-29
-- **Implementation Plan**: .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md
-- **Implementation Started**: 2025-12-29
-- **Implementation Summary**: .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/summaries/implementation-summary-20251229.md
-- **Progress**: Phases 1, 2, 4 complete (command migration, directory rename, context files). Phases 3, 5, 6 remain (agent updates, testing, documentation).
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
+ **Effort**: 14 hours
+ **Status**: [IMPLEMENTING]
+ **Research Started**: 2025-12-29
+ **Research Completed**: 2025-12-29
+ **Research Report**: .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md
+ **Plan Created**: 2025-12-29
+ **Implementation Plan**: .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md
+ **Implementation Started**: 2025-12-29
+ **Implementation Summary**: .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/summaries/implementation-summary-20251229.md
+ **Progress**: Phases 1, 2, 4 complete (command migration, directory rename, context files). Phases 3, 5, 6 remain (agent updates, testing, documentation).
+ **Priority**: Medium
+ **Language**: markdown
+ **Blocking**: None
+ **Dependencies**: None
 
 **Description**:
 Import and adapt the /meta command from the OpenAgents project (/home/benjamin/Projects/OpenAgents/.opencode/command/meta.md) to enable interactive system building capabilities in ProofChecker. The system-builder agents already exist in .opencode/agent/subagents/system-builder/ but should be renamed to .opencode/agent/subagents/meta/ for consistency. Compare with the backup version (.opencode.backup.20251225_173342/command/meta.md) but maintain the new high standards from the current refactor (frontmatter delegation, context efficiency, XML optimization). Update context files to support the /meta command and its subagents without bloating context windows.
