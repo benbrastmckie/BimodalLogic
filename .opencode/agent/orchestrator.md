@@ -12,7 +12,10 @@ context_loading:
   index: ".opencode/context/index.md"
   required:
     - "core/system/routing-guide.md"
+    - "core/system/routing-logic.md"
+    - "core/system/validation-rules.md"
     - "core/workflows/delegation-guide.md"
+    - "core/standards/command-argument-handling.md"
   max_context_size: 10000
 delegation:
   max_depth: 3
@@ -52,249 +55,66 @@ updated: 2025-12-29
 </task>
 
 <critical_instructions>
-  COMMAND TYPES:
+  ARGUMENT HANDLING:
   
-  1. TASK-BASED COMMANDS (require task number argument):
-     - /research, /implement, /plan
-     - MUST have task number in $ARGUMENTS
-     - Format prompt as "Task: {task_number}"
+  All commands follow the standard defined in:
+  @.opencode/context/core/standards/command-argument-handling.md
   
-  2. DIRECT COMMANDS (no task number required):
-     - /meta, /review, /revise
-     - May have $ARGUMENTS or be empty
-     - Delegate directly to routing.default agent
-     - Pass $ARGUMENTS as-is to subagent
+  Key points:
+  - OpenCode provides $ARGUMENTS variable automatically
+  - Task-based commands: Parse task number, validate, format as "Task: {number}"
+  - Direct commands: Pass $ARGUMENTS as-is
+  - See standard for validation rules and error messages
   
-  WHEN USER TYPES: "/research 258"
-  OpenCode automatically sets: $ARGUMENTS = "258"
+  ROUTING LOGIC:
   
-  YOU MUST:
-  1. Read task_number from $ARGUMENTS variable (it will be "258")
-  2. Validate task 258 exists in TODO.md
-  3. Format prompt as "Task: 258" (NOT $ARGUMENTS directly)
-  4. Pass "Task: 258" to the researcher subagent
+  Language-based routing defined in:
+  @.opencode/context/core/system/routing-logic.md
   
-  WHEN USER TYPES: "/meta"
-  OpenCode automatically sets: $ARGUMENTS = "" (empty)
+  Key points:
+  - Extract language from state.json or TODO.md
+  - Map language to agent using routing table
+  - Validate routing before delegation
   
-  YOU MUST:
-  1. Read routing.default from command frontmatter (will be "meta")
-  2. Delegate directly to meta subagent
-  3. Pass empty prompt or user's follow-up message
-  4. NO task number validation required
+  VALIDATION RULES:
   
-  THE $ARGUMENTS VARIABLE IS PROVIDED BY OPENCODE - YOU DON'T PARSE IT FROM USER INPUT.
-  DO NOT pass $ARGUMENTS directly to subagents for task-based commands.
-  DO format it as "Task: {$ARGUMENTS}" for task-based commands.
-  DO pass $ARGUMENTS as-is for direct commands.
+  Return validation defined in:
+  @.opencode/context/core/system/validation-rules.md
+  
+  Key points:
+  - Validate JSON structure and required fields
+  - Verify artifacts exist and are non-empty (prevents phantom research)
+  - Check session_id matches expected value
 </critical_instructions>
 
 <workflow_execution>
   <stage id="1" name="PreflightValidation">
     <action>Load command, validate, parse arguments, and prepare delegation context</action>
     <process>
-      CRITICAL: OpenCode provides $ARGUMENTS variable with the command arguments.
+      See: @.opencode/context/core/standards/command-argument-handling.md
       
-      1. Determine command type:
-         - Read `.opencode/command/{command}.md`
-         - Check if command requires task number:
-           * Task-based: research, implement, plan (require task number)
-           * Direct: meta, review, revise (no task number required)
-      
-      2. For TASK-BASED commands (research/implement/plan):
-         a. Read task_number from $ARGUMENTS variable:
-            EXAMPLE: User types "/research 258" → $ARGUMENTS = "258"
-            EXAMPLE: User types "/implement 267" → $ARGUMENTS = "267"
-            EXAMPLE: User types "/plan 195" → $ARGUMENTS = "195"
-            
-            ACTION: Read the $ARGUMENTS variable directly
-            - Parse task_number from $ARGUMENTS (first token if multiple arguments)
-            - If $ARGUMENTS is empty: STOP and return error
-         
-         b. Validate task_number:
-            - Check task_number is a positive integer
-            - Use bash to verify task exists:
-              ```bash
-              grep -q "^### ${task_number}\." .opencode/specs/TODO.md
-              ```
-            - If task not found: STOP and return error message
-         
-         c. Store task_number for Stage 3 prompt formatting
-      
-      3. For DIRECT commands (meta/review/revise):
-         a. Read $ARGUMENTS (may be empty or contain user input)
-         b. NO task number validation required
-         c. Store $ARGUMENTS for Stage 3 prompt formatting
-      
-      4. Validate command file exists and frontmatter is valid YAML
-      
-      5. Extract routing metadata:
-         - `agent:` field (target agent path)
-         - `routing:` rules (language_based, default)
-         - `timeout:` override (optional)
-      
-      6. Validate delegation safety:
-         - Check for cycles: agent not in delegation_path
-         - Check depth: delegation_depth ≤ 3
-         - Validate session_id is unique
-      
-      7. Generate delegation context:
-         - session_id: sess_{timestamp}_{random_6char}
-         - delegation_depth = 1
-         - delegation_path = ["orchestrator", "{command}", "{agent}"]
-         - timeout (from command or default)
-         - deadline = current_time + timeout
-         - command_type: "task-based" | "direct"
-         - arguments: {task_number OR $ARGUMENTS} (STORE THIS FOR STAGE 3)
+      1. Determine command type (task-based or direct)
+      2. Parse arguments according to command type:
+         - Task-based: Extract and validate task number from $ARGUMENTS
+         - Direct: Read $ARGUMENTS as-is
+      3. Validate command file exists and frontmatter is valid YAML
+      4. Extract routing metadata from frontmatter
+      5. Validate delegation safety (cycles, depth, session)
+      6. Generate delegation context
     </process>
-    <validation>
-      - Command file must exist
-      - Frontmatter must be valid YAML
-      - `agent:` field must be present
-      - Task number MUST be read from $ARGUMENTS (for research/implement/plan)
-      - Task MUST exist in TODO.md (for research/implement/plan)
-      - No cycles in delegation path
-      - Delegation depth ≤ 3
-      - Session ID is unique
-    </validation>
-    <checkpoint>Command validated, task_number from $ARGUMENTS, delegation context prepared</checkpoint>
+    <checkpoint>Command validated, arguments parsed, delegation context prepared</checkpoint>
   </stage>
 
   <stage id="2" name="DetermineRouting">
     <action>Extract language and determine target agent</action>
     <process>
-      1. Check command type from Stage 1:
-         - If command_type == "direct": Use routing.default directly, SKIP to Step 3
-         - If command_type == "task-based": CONTINUE to Step 2
+      See: @.opencode/context/core/system/routing-logic.md
       
-      2. For TASK-BASED commands with language-based routing:
-         a. Check if command uses language-based routing:
-            - Read `routing.language_based` from command frontmatter
-            - If false: Use `routing.default` directly (skip language extraction)
-            - If true: Extract language and map to agent
-         
-         b. Extract language (priority order):
-            - Priority 1: Project state.json (task-specific)
-            - Priority 2: TODO.md task entry (**Language** field)
-            - Priority 3: Default "general" (fallback)
-         
-         c. Map language to agent using routing table from command frontmatter:
-            - If language == "lean": Use `routing.lean` agent
-            - Else: Use `routing.default` agent
-         
-         d. Validate routing:
-            - Verify agent file exists at `.opencode/agent/subagents/{agent}.md`
-            - Verify language matches agent capabilities:
-              * If language == "lean": Agent must start with "lean-"
-              * If language != "lean": Agent must NOT start with "lean-"
-            - Log validation result: [PASS] or [FAIL]
-         
-         e. Log routing decision:
-            - [INFO] Task {N} language: {language}
-            - [INFO] Routing to {agent} (language={language})
-      
-      3. For DIRECT commands:
-         a. Read routing.default from command frontmatter
-         b. Verify agent file exists at `.opencode/agent/subagents/{agent}.md`
-         c. Log routing decision:
-            - [INFO] Routing to {agent} (direct command)
-      
-      4. Update delegation_path with resolved agent
+      1. Check if language-based routing enabled
+      2. Extract language (if needed) from state.json or TODO.md
+      3. Map language to agent using routing table
+      4. Validate routing decision
     </process>
-    <implementation>
-      STEP 2.1: Extract task number from arguments
-        - Parse first argument as task_number
-        - Validate task_number is positive integer
-        - Verify task exists in .opencode/specs/TODO.md
-      
-      STEP 2.2: Check if language-based routing enabled
-        - Read command frontmatter `routing.language_based` field
-        - If false: target_agent = routing.default, SKIP to Step 2.5
-        - If true: CONTINUE to Step 2.3
-      
-      STEP 2.3: Extract language from task entry
-        a. Try Priority 1: Project state.json
-           - Find task directory: .opencode/specs/{task_number}_*/
-           - If state.json exists: Extract language field
-           - If language found: USE and SKIP to Step 2.4
-        
-        b. Try Priority 2: TODO.md **Language** field
-           - Extract task entry: grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md
-           - Extract language line: grep "Language" | sed 's/\*\*Language\*\*: //' | tr -d ' '
-           - If language found: USE and SKIP to Step 2.4
-        
-        c. Fallback Priority 3: Default "general"
-           - language = "general"
-           - LOG: [WARN] Language not found for task {N}, defaulting to 'general'
-      
-      STEP 2.4: Map language to agent using routing table
-        - Read routing.lean and routing.default from command frontmatter
-        - IF language == "lean": target_agent = routing.lean
-        - ELSE: target_agent = routing.default
-        - LOG: [INFO] Task {N} language: {language}
-        - LOG: [INFO] Routing to {target_agent} (language={language})
-      
-      STEP 2.5: Validate routing
-        a. Verify agent file exists:
-           - Check file: .opencode/agent/subagents/{target_agent}.md
-           - If NOT exists: ABORT with error "Agent file not found: {target_agent}"
-        
-        b. Verify language matches agent capabilities:
-           - IF language == "lean" AND target_agent does NOT start with "lean-":
-             * LOG: [FAIL] Routing validation failed: language=lean but agent={target_agent}
-             * ABORT with error "Routing mismatch: Lean task must route to lean-* agent"
-           
-           - IF language != "lean" AND target_agent starts with "lean-":
-             * LOG: [FAIL] Routing validation failed: language={language} but agent={target_agent}
-             * ABORT with error "Routing mismatch: Non-lean task cannot route to lean-* agent"
-           
-           - ELSE:
-             * LOG: [PASS] Routing validation succeeded
-        
-        c. Update delegation_path:
-           - delegation_path = ["orchestrator", "{command}", "{target_agent}"]
-      
-      STEP 2.6: Return routing decision
-        - Return target_agent, language, delegation_path
-    </implementation>
-    <language_extraction>
-      # Extract from project state.json (if exists)
-      task_dir=$(find .opencode/specs -maxdepth 1 -type d -name "${task_number}_*" | head -n 1)
-      if [ -n "$task_dir" ] && [ -f "${task_dir}/state.json" ]; then
-        language=$(jq -r '.language // empty' "${task_dir}/state.json")
-      fi
-      
-      # Fallback to TODO.md if not found in state.json
-      if [ -z "$language" ]; then
-        language=$(grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //' | tr -d ' ')
-      fi
-      
-      # Default to "general" if still not found
-      language=${language:-general}
-      
-      echo "[INFO] Task ${task_number} language: ${language}"
-    </language_extraction>
-    <routing_validation>
-      # Validate agent file exists
-      agent_file=".opencode/agent/subagents/${target_agent}.md"
-      if [ ! -f "$agent_file" ]; then
-        echo "[FAIL] Agent file not found: ${target_agent}"
-        exit 1
-      fi
-      
-      # Validate language matches agent capabilities
-      if [ "$language" == "lean" ] && [[ ! "$target_agent" =~ ^lean- ]]; then
-        echo "[FAIL] Routing validation failed: language=lean but agent=${target_agent}"
-        exit 1
-      fi
-      
-      if [ "$language" != "lean" ] && [[ "$target_agent" =~ ^lean- ]]; then
-        echo "[FAIL] Routing validation failed: language=${language} but agent=${target_agent}"
-        exit 1
-      fi
-      
-      echo "[PASS] Routing validation succeeded"
-    </routing_validation>
     <checkpoint>Target agent determined and validated</checkpoint>
   </stage>
 
@@ -375,91 +195,14 @@ updated: 2025-12-29
   <stage id="4" name="ValidateReturn">
     <action>Validate agent return format and content</action>
     <process>
-      1. Check return is valid JSON
-      2. Validate against subagent-return-format.md schema:
-         - Required fields: status, summary, artifacts, metadata, session_id
-         - Status enum: completed|partial|failed|blocked
-         - Summary <100 tokens (~400 characters)
-         - session_id matches expected
-      3. Verify artifacts (if status = completed):
-         - Artifacts array must be non-empty
-         - All artifact paths exist on disk
-         - Artifact files have size > 0 bytes
-         - Log validation: [PASS] {N} artifacts validated or [FAIL] Artifact missing: {path}
-      4. Log validation errors if any
+      See: @.opencode/context/core/system/validation-rules.md
+      
+      1. Validate JSON structure
+      2. Validate required fields
+      3. Validate status enum
+      4. Validate session_id
+      5. Validate artifacts (if status=completed)
     </process>
-    <implementation>
-      STEP 4.1: Validate JSON structure
-        - Parse return as JSON
-        - If parse fails: ABORT with error "Invalid JSON return from {agent}"
-      
-      STEP 4.2: Validate required fields
-        - Check fields exist: status, summary, artifacts, metadata, session_id
-        - If missing: ABORT with error "Missing required field: {field}"
-      
-      STEP 4.3: Validate status field
-        - Check status in [completed, partial, failed, blocked]
-        - If invalid: ABORT with error "Invalid status: {status}"
-      
-      STEP 4.4: Validate session_id
-        - Check session_id matches expected value
-        - If mismatch: ABORT with error "Session ID mismatch: expected {expected}, got {actual}"
-      
-      STEP 4.5: Validate summary token limit
-        - Check summary length <100 tokens (~400 characters)
-        - If exceeded: LOG warning (non-critical)
-      
-      STEP 4.6: Validate artifacts (CRITICAL - prevents phantom research)
-        IF status == "completed":
-          a. Check artifacts array is non-empty:
-             - IF artifacts.length == 0:
-               * LOG: [FAIL] Agent returned 'completed' status but created no artifacts
-               * ABORT with error "Phantom research detected: status=completed but no artifacts"
-          
-          b. For each artifact in artifacts array:
-             - Extract artifact.path
-             - Check file exists on disk: [ -f "{path}" ]
-             - IF NOT exists:
-               * LOG: [FAIL] Artifact does not exist: {path}
-               * ABORT with error "Artifact validation failed: {path} not found"
-             
-             - Check file is non-empty: [ -s "{path}" ]
-             - IF empty (size == 0):
-               * LOG: [FAIL] Artifact is empty: {path}
-               * ABORT with error "Artifact validation failed: {path} is empty"
-          
-          c. Log success:
-             - LOG: [PASS] {N} artifacts validated
-        
-        ELSE (status != "completed"):
-          - SKIP artifact validation (partial/failed/blocked may have no artifacts)
-      
-      STEP 4.7: Return validation result
-        - If all validations pass: CONTINUE to Stage 5
-        - If any validation fails: ABORT with error details
-    </implementation>
-    <validation_rules>
-      - Return must be valid JSON
-      - Required fields must be present
-      - Status must be valid enum
-      - session_id must match expected
-      - Summary must be <100 tokens
-      - Artifacts must exist and be non-empty (if status=completed)
-      - Artifacts array must be non-empty (if status=completed)
-    </validation_rules>
-    <error_handling>
-      If validation fails:
-      1. Log error to errors.json with details
-      2. Return failed status to user
-      3. Include validation errors in response
-      4. Recommendation: "Fix {agent} subagent return format"
-      
-      If phantom research detected (status=completed but no artifacts):
-      1. Log error: "Phantom research detected for task {N}"
-      2. Return failed status to user
-      3. Error message: "Agent returned 'completed' status but created no artifacts"
-      4. Recommendation: "Verify {agent} creates artifacts before updating status"
-    </error_handling>
     <checkpoint>Return validated and artifacts verified</checkpoint>
   </stage>
 

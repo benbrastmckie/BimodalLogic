@@ -36,7 +36,7 @@
 
 ## Core System (core/system/)
 
-**Consolidated files** - Load for state management, artifacts, git
+**Consolidated files** - Load for state management, artifacts, git, routing, validation
 
 - **state-management.md** (535 lines) - Unified state management standard
   - Status markers and transition rules
@@ -44,6 +44,18 @@
   - Timestamp formats
   - Status synchronization mechanisms
   - Replaces: status-markers.md, state-schema.md
+
+- **routing-logic.md** (250 lines) - Language extraction and agent mapping
+  - Language extraction priority (state.json → TODO.md → default)
+  - Agent mapping tables (lean → lean-*, default → general)
+  - Routing validation rules
+  - Direct routing patterns
+
+- **validation-rules.md** (200 lines) - Return format and artifact validation
+  - Required field validation
+  - Artifact existence checks (prevents phantom research)
+  - Error handling patterns
+  - Validation summary logging
 
 ---
 
@@ -61,7 +73,7 @@ Load for: Task validation, artifact creation, documentation standards
 - **report.md** (66 lines) - Report artifact standards
 - **analysis.md** (103 lines) - Analysis artifact standards
 - **frontmatter-standard.md** (92 lines) - YAML frontmatter requirements
-- **command-argument-handling.md** (58 lines) - Command argument parsing
+- **command-argument-handling.md** (444 lines) - Command argument parsing with $ARGUMENTS
 - **commands.md** (73 lines) - Command structure standards
 
 ---

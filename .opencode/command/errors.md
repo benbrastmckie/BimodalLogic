@@ -12,9 +12,10 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/subagent-return-format.md"
-    - "core/workflows/status-transitions.md"
+    - "core/standards/delegation.md"
+    - "core/system/state-management.md"
     - "core/system/routing-guide.md"
+    - "core/standards/command-argument-handling.md"
   data_files:
     - ".opencode/specs/errors.json"
     - ".opencode/specs/TODO.md"
