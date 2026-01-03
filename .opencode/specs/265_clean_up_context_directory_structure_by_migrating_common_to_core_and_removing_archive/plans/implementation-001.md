@@ -1,7 +1,7 @@
 # Implementation Plan: Clean up context directory structure by migrating common/ to core/ and removing archive/
 
 - **Task**: 265 - Clean up context directory structure by migrating common/ to core/ and removing archive/
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Priority**: High
 - **Dependencies**: None
@@ -189,7 +189,7 @@ This plan systematically migrates all content from `.opencode/context/common/` t
 - [ ] File structure preserved in core/
 - [ ] Git commit created with file moves
 
-### Phase 4: Reference Updates and Validation [NOT STARTED]
+### Phase 4: Reference Updates and Validation [COMPLETED]
 
 **Goal:** Update all 120 references and validate migration success
 
@@ -257,7 +257,7 @@ This plan systematically migrates all content from `.opencode/context/common/` t
 - [ ] Context loading validated
 - [ ] Git commit created
 
-### Phase 5: Documentation and Cleanup [NOT STARTED]
+### Phase 5: Documentation and Cleanup [COMPLETED]
 
 **Goal:** Update documentation and finalize migration
 
