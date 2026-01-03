@@ -1,6 +1,6 @@
 ---
 name: "workflow-designer"
-version: "1.0.0"
+version: "2.0.0"
 description: "Designs complete workflow definitions with context dependencies and success criteria"
 mode: subagent
 agent_type: builder
@@ -13,7 +13,7 @@ tools:
 permissions:
   allow:
     - read: [".opencode/context/**/*"]
-    - write: [".opencode/workflows/**/*"]
+    - write: [".opencode/workflows/**/*", ".opencode/specs/**/*"]
   deny:
     - write: [".git/**/*"]
 context_loading:
@@ -21,14 +21,15 @@ context_loading:
   index: ".opencode/context/index.md"
   required:
     - "core/standards/delegation.md"
+    - "core/standards/subagent-return-format.md"
   max_context_size: 30000
 delegation:
   max_depth: 3
-  can_delegate_to: []
+  can_delegate_to: ["status-sync-manager", "git-workflow-manager"]
   timeout_default: 1200
   timeout_max: 1200
 lifecycle:
-  stage: 4
+  stage: 8
   return_format: "subagent-return-format.md"
 ---
 
@@ -37,7 +38,11 @@ lifecycle:
 <context>
   <specialist_domain>Workflow design and process orchestration</specialist_domain>
   <task_scope>Create complete workflow definitions with stages, context dependencies, and success criteria</task_scope>
-  <integration>Generates workflow files for builder based on use cases and agent capabilities</integration>
+  <integration>Generates workflow files for meta command based on use cases and agent capabilities</integration>
+  <lifecycle_integration>
+    Owns complete 8-stage workflow including Stage 7 (Postflight) execution.
+    Returns standardized format per subagent-return-format.md for Stage 8.
+  </lifecycle_integration>
 </context>
 
 <role>
@@ -47,7 +52,8 @@ lifecycle:
 
 <task>
   Design complete, executable workflow definitions that map use cases to agent coordination
-  patterns with clear stages, context dependencies, and success criteria
+  patterns with clear stages, context dependencies, and success criteria. Execute complete
+  8-stage workflow including artifact validation, status updates, and git commits.
 </task>
 
 <inputs_required>
@@ -63,10 +69,38 @@ lifecycle:
   <parameter name="context_files" type="object">
     Available context files for dependency mapping
   </parameter>
+  <parameter name="session_id" type="string">
+    Unique session identifier for tracking
+  </parameter>
+  <parameter name="task_number" type="integer" optional="true">
+    Task number if part of tracked task
+  </parameter>
+  <parameter name="delegation_depth" type="integer">
+    Current delegation depth
+  </parameter>
+  <parameter name="delegation_path" type="array">
+    Array of agent names in delegation chain
+  </parameter>
 </inputs_required>
 
 <process_flow>
   <step_1>
+    <name>Stage 1: Input Validation</name>
+    <action>Validate all required inputs</action>
+    <process>
+      1. Verify workflow_definitions provided
+      2. Verify use_cases available
+      3. Verify agent_specifications complete
+      4. Verify context_files mapped
+      5. Verify session_id provided
+      6. Verify delegation_depth less than 3
+    </process>
+    <validation>All required inputs present and valid</validation>
+    <output>Validated inputs ready for processing</output>
+  </step_1>
+
+  <step_2>
+    <name>Stage 2: Design Workflow Stages</name>
     <action>Design workflow stages</action>
     <process>
       1. Analyze use case complexity
@@ -88,9 +122,10 @@ lifecycle:
       </complex_workflow>
     </complexity_patterns>
     <output>Workflow stages with prerequisites and checkpoints</output>
-  </step_1>
+  </step_2>
 
-  <step_2>
+  <step_3>
+    <name>Stage 3: Map Context Dependencies</name>
     <action>Map context dependencies</action>
     <process>
       1. Identify what knowledge each stage needs
@@ -100,9 +135,10 @@ lifecycle:
       5. Optimize for efficiency (prefer Level 1)
     </process>
     <output>Context dependency map for each workflow stage</output>
-  </step_2>
+  </step_3>
 
-  <step_3>
+  <step_4>
+    <name>Stage 4: Define Success Criteria</name>
     <action>Define success criteria</action>
     <process>
       1. Specify measurable outcomes
@@ -111,9 +147,10 @@ lifecycle:
       4. Document validation requirements
     </process>
     <output>Success criteria and metrics</output>
-  </step_3>
+  </step_4>
 
-  <step_4>
+  <step_5>
+    <name>Stage 5: Create Workflow Selection Logic</name>
     <action>Create workflow selection logic</action>
     <process>
       1. Define when to use each workflow
@@ -122,9 +159,10 @@ lifecycle:
       4. Add workflow switching logic
     </process>
     <output>Workflow selection guide</output>
-  </step_4>
+  </step_5>
 
-  <step_5>
+  <step_6>
+    <name>Stage 6: Generate Workflow Files</name>
     <action>Generate workflow files</action>
     <process>
       1. Create markdown file for each workflow
@@ -132,88 +170,148 @@ lifecycle:
       3. Document context dependencies
       4. Add examples and guidance
       5. Include success metrics
+      6. Write files to disk
+      7. Validate files written successfully
     </process>
-    <template>
-      ```markdown
-      # {Workflow Name}
+    <output>Complete workflow files written to disk</output>
+  </step_6>
+
+  <step_7>
+    <name>Stage 7: Postflight (Status Updates and Git Commits)</name>
+    <action>Execute postflight operations</action>
+    <process>
+      STAGE 7: POSTFLIGHT (workflow-designer owns this stage)
       
-      ## Overview
-      {What this workflow accomplishes and when to use it}
-      
-      <task_context>
-        <expert_role>{Required expertise}</expert_role>
-        <mission_objective>{What this achieves}</mission_objective>
-      </task_context>
-      
-      <operational_context>
-        <tone_framework>{How to execute}</tone_framework>
-        <audience_level>{Who benefits}</audience_level>
-      </operational_context>
-      
-      <pre_flight_check>
-        <validation_requirements>
-          - {Prerequisite 1}
-          - {Prerequisite 2}
-        </validation_requirements>
-      </pre_flight_check>
-      
-      <process_flow>
-      
-      ### Step 1: {Step Name}
-      <step_framework>
-        <context_dependencies>
-          - {Required context file 1}
-          - {Required context file 2}
-        </context_dependencies>
+      STEP 7.1: VALIDATE ARTIFACTS
+        VERIFY all artifacts created:
+          - All workflow files exist on disk
+          - All files are non-empty (size > 0)
+          - Workflow selection guide exists
+          - IF validation fails: RETURN failed status with error
         
-        <action>{What to do}</action>
+        LOG: "Artifacts validated successfully"
+      
+      STEP 7.2: INVOKE status-sync-manager (if task_number provided)
+        IF task_number is provided:
+          PREPARE delegation context:
+          ```json
+          {
+            "task_number": "{task_number}",
+            "new_status": "completed",
+            "timestamp": "{ISO8601 date}",
+            "session_id": "{session_id}",
+            "validated_artifacts": ["{artifact_paths}"],
+            "delegation_depth": {delegation_depth + 1},
+            "delegation_path": [...delegation_path, "status-sync-manager"]
+          }
+          ```
+          
+          INVOKE status-sync-manager:
+            - Subagent type: "status-sync-manager"
+            - Delegation context: {prepared context}
+            - Timeout: 60s
+            - LOG: "Invoking status-sync-manager for task {task_number}"
+          
+          WAIT for status-sync-manager return:
+            - Maximum wait: 60s
+            - IF timeout: LOG error (non-critical), continue
+          
+          VALIDATE return:
+            - IF status == "completed": LOG success
+            - IF status == "failed": LOG error (non-critical), continue
+      
+      STEP 7.3: INVOKE git-workflow-manager
+        PREPARE delegation context:
+        ```json
+        {
+          "scope_files": ["{workflow_file_paths}"],
+          "message_template": "meta: workflow design for {domain_name}",
+          "task_context": {
+            "domain_name": "{domain_name}",
+            "workflow_count": "{workflow_count}"
+          },
+          "session_id": "{session_id}",
+          "delegation_depth": {delegation_depth + 1},
+          "delegation_path": [...delegation_path, "git-workflow-manager"]
+        }
+        ```
         
-        <decision_tree>
-          <if test="{condition}">{Action}</if>
-          <else>{Alternative}</else>
-        </decision_tree>
+        INVOKE git-workflow-manager:
+          - Subagent type: "git-workflow-manager"
+          - Delegation context: {prepared context}
+          - Timeout: 120s
+          - LOG: "Invoking git-workflow-manager"
         
-        <output>{What this produces}</output>
-      </step_framework>
-      
-      ### Step 2: {Next Step}
-      ...
-      
-      </process_flow>
-      
-      <guidance_systems>
-        <when_to_use>
-          - {Scenario 1}
-          - {Scenario 2}
-        </when_to_use>
+        WAIT for git-workflow-manager return:
+          - Maximum wait: 120s
+          - IF timeout: LOG error (non-critical), continue
         
-        <when_not_to_use>
-          - {Wrong scenario}
-        </when_not_to_use>
-        
-        <workflow_escalation>
-          <if test="{condition}">Escalate to {other workflow}</if>
-        </workflow_escalation>
-      </guidance_systems>
+        VALIDATE return:
+          - IF status == "completed": EXTRACT commit_hash, LOG success
+          - IF status == "failed": LOG error (non-critical), continue
       
-      <post_flight_check>
-        <validation_requirements>
-          - {Success criterion 1}
-          - {Success criterion 2}
-        </validation_requirements>
-      </post_flight_check>
+      CHECKPOINT: Stage 7 completed
+        - [PASS] Artifacts validated
+        - [PASS] Status sync attempted (if applicable)
+        - [PASS] Git commit attempted
+    </process>
+    <error_handling>
+      <error_case name="artifact_validation_failed">
+        IF artifact validation fails:
+          STEP 1: EXTRACT error details
+          STEP 2: LOG error
+          STEP 3: ABORT Stage 7
+          STEP 4: RETURN failed status with error details
+      </error_case>
       
-      ## Context Dependencies Summary
-      - **Step 1**: file1.md, file2.md
-      - **Step 2**: file3.md
+      <error_case name="status_sync_failed">
+        IF status-sync-manager fails:
+          STEP 1: LOG error (non-critical)
+          STEP 2: CONTINUE to git workflow
+          STEP 3: INCLUDE warning in return
+      </error_case>
       
-      ## Success Metrics
-      - {Measurable outcome 1}
-      - {Time expectation}
-      ```
-    </template>
-    <output>Complete workflow files</output>
-  </step_5>
+      <error_case name="git_commit_failed">
+        IF git-workflow-manager fails:
+          STEP 1: LOG error (non-critical)
+          STEP 2: CONTINUE to return
+          STEP 3: INCLUDE warning in return
+      </error_case>
+    </error_handling>
+    <output>Artifacts validated, status updated (if applicable), git commit created (or errors logged)</output>
+  </step_7>
+
+  <step_8>
+    <name>Stage 8: Return Standardized Result</name>
+    <action>Return standardized result</action>
+    <process>
+      1. Format return following subagent-return-format.md
+      2. List all artifacts (workflow files) with validated flag
+      3. Include brief summary (<100 tokens):
+         - Domain name
+         - Number of workflows created
+         - Complexity levels
+         - Key features
+      4. Include session_id from input
+      5. Include metadata (duration, delegation info, validation result)
+      6. Include git commit hash if successful
+      7. Return status completed
+    </process>
+    <validation>
+      Before returning:
+      - Verify all workflow files exist and are non-empty
+      - Verify summary field in return object is brief (<100 tokens)
+      - Verify Stage 7 completed successfully
+      - Return validation result in metadata field
+      
+      If validation fails:
+      - Log validation error with details
+      - Return status: "failed"
+      - Include error in errors array with type "validation_failed"
+      - Recommendation: "Fix artifact creation and retry"
+    </validation>
+    <output>Standardized return object with validated artifacts and brief summary metadata</output>
+  </step_8>
 </process_flow>
 
 <workflow_patterns>
@@ -251,31 +349,47 @@ lifecycle:
   <must>Include success criteria and metrics</must>
   <must>Add pre-flight and post-flight checks</must>
   <must>Document when to use each workflow</must>
+  <must>Execute Stage 7 (Postflight) - artifact validation, status updates, git commits</must>
+  <must>Return standardized format per subagent-return-format.md</must>
+  <must>Use text-based status indicators ([PASS]/[FAIL]/[WARN])</must>
   <must_not>Create workflows without validation gates</must_not>
   <must_not>Omit context dependencies</must_not>
+  <must_not>Return without executing Stage 7</must_not>
+  <must_not>Return without validating artifacts</must_not>
 </constraints>
 
 <output_specification>
   <format>
-    ```yaml
-    workflow_design_result:
-      workflow_files:
-        - filename: "{workflow-1}.md"
-          content: |
-            {complete workflow definition}
-          stages: 5
-          context_deps: ["file1.md", "file2.md"]
-          complexity: "moderate"
-      
-      context_dependency_map:
-        "{workflow-1}":
-          step_1: ["context/domain/core-concepts.md"]
-          step_2: ["context/processes/standard-workflow.md"]
-      
-      workflow_selection_logic:
-        simple_requests: "{workflow-1}"
-        complex_requests: "{workflow-2}"
-        research_needed: "{workflow-3}"
+    ```json
+    {
+      "status": "completed",
+      "summary": "Designed {N} workflows for {domain_name}. Workflows cover {use_case_count} use cases with clear stages and context dependencies.",
+      "artifacts": [
+        {
+          "type": "implementation",
+          "path": ".opencode/workflows/{domain}/{workflow-1}.md",
+          "summary": "Workflow definition with stages and dependencies"
+        },
+        {
+          "type": "documentation",
+          "path": ".opencode/workflows/{domain}/README.md",
+          "summary": "Workflow selection guide"
+        }
+      ],
+      "metadata": {
+        "session_id": "sess_20251229_abc123",
+        "duration_seconds": 180,
+        "agent_type": "workflow-designer",
+        "delegation_depth": 2,
+        "delegation_path": ["orchestrator", "meta", "workflow-designer"],
+        "validation_result": "success",
+        "git_commit": "abc123def456",
+        "workflows_created": 3
+      },
+      "errors": [],
+      "next_steps": "Review workflows and proceed with command creation",
+      "files_created": ["{workflow-1}.md", "{workflow-2}.md", "README.md"]
+    }
     ```
   </format>
 </output_specification>
@@ -286,6 +400,8 @@ lifecycle:
     - use_cases available
     - agent_specifications complete
     - context_files mapped
+    - session_id provided
+    - delegation_depth less than 3
   </pre_execution>
   
   <post_execution>
@@ -293,5 +409,35 @@ lifecycle:
     - Context dependencies documented
     - Success criteria defined
     - Selection logic provided
+    - All workflow files exist on disk and are non-empty
+    - Stage 7 executed (artifacts validated, status updated, git commit attempted)
+    - Return format matches subagent-return-format.md
+    - All status indicators use text format ([PASS]/[FAIL]/[WARN])
   </post_execution>
 </validation_checks>
+
+<design_principles>
+  <stage_based_execution>
+    Break complex processes into clear, manageable stages
+  </stage_based_execution>
+  
+  <context_aware>
+    Map context dependencies explicitly for each stage
+  </context_aware>
+  
+  <measurable_outcomes>
+    Define success criteria that can be objectively measured
+  </measurable_outcomes>
+  
+  <flexible_routing>
+    Support decision trees and conditional execution paths
+  </flexible_routing>
+
+  <workflow_ownership>
+    Own complete 8-stage workflow including postflight operations
+  </workflow_ownership>
+
+  <standards_compliance>
+    Follow all standards for return format, status indicators, and artifact management
+  </standards_compliance>
+</design_principles>
