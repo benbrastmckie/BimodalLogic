@@ -1,6 +1,15 @@
-# Logos: A Formal Language of Thought
+# Logos: Verified Reasoning in a Formal Language of Thought
 
-The **Logos** is designed to train AI systems to conduct verified reasoning in a formal language of thought that is interpreted by explicit semantic models. Including extensional, tense, modal, causal, counterfactual, epistemic, and normative operators in the Logos equips AI systems to perform complex reasoning tasks for planning and evaluating actions in coordination with other agents under conditions of uncertainty.
+The **Logos** is an extensible formal language equipped with an axiomatic proof system and recursive semantic theory to provide an unbounded source of data to train AI systems to conduct verified reasoning witnessed by proof receipts in LEAN 4. The modular architecture includes the following layers: 
+
+- **Core Layer**: Temporal, modal, and Boolean operators for reasoning about different possible pasts and futures.
+- **Explanatory Layer**: Counterfactual conditional, constitutive explanatory, and causal operators for explanatory reasoning.
+- **Epistemic Layer**: Epistemic modals, indicative conditionals, and probability operators for reasoning in conditions of uncertainty. 
+- **Normative Layer**: Permission, obligation, preference, and normative explanatory operators for reasoning about values and laws.
+
+Including historical modal operators for reasoning about different possible histories and tense operators for reasoning about past and future times in addition to the Boolean operators provides an essential foundation for reasoning about past and future contingency. To plan actions that effectively navigate the range of possible futures, the explanatory layer includes counterfactual conditional operators to evaluate what would/might be the case were a possible history minimally changed at a given time. For instance, Constructing plan  contingency. constructing and evaluating plans that help to in order skillfully navigate future contingency.
+
+, causal, counterfactual, epistemic, and normative operators in the Logos provides resources AI systems to perform complex reasoning tasks for planning and evaluating actions in coordination with other agents under conditions of uncertainty.
 
 Combining an **axiomatic proof system** implemented in LEAN 4 with a **recursive semantic theory** implemented in the [Model-Checker](https://github.com/benbrastmckie/ModelChecker) creates a dual verification architecture that generates comprehensive training signals without human annotation.
 

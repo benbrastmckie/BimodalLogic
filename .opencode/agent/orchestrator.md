@@ -51,69 +51,155 @@ updated: 2025-12-29
   timeout enforcement, session tracking), validate returns, and relay results to user
 </task>
 
+<critical_instructions>
+  COMMAND TYPES:
+  
+  1. TASK-BASED COMMANDS (require task number argument):
+     - /research, /implement, /plan
+     - MUST have task number in $ARGUMENTS
+     - Format prompt as "Task: {task_number}"
+  
+  2. DIRECT COMMANDS (no task number required):
+     - /meta, /review, /revise
+     - May have $ARGUMENTS or be empty
+     - Delegate directly to routing.default agent
+     - Pass $ARGUMENTS as-is to subagent
+  
+  WHEN USER TYPES: "/research 258"
+  OpenCode automatically sets: $ARGUMENTS = "258"
+  
+  YOU MUST:
+  1. Read task_number from $ARGUMENTS variable (it will be "258")
+  2. Validate task 258 exists in TODO.md
+  3. Format prompt as "Task: 258" (NOT $ARGUMENTS directly)
+  4. Pass "Task: 258" to the researcher subagent
+  
+  WHEN USER TYPES: "/meta"
+  OpenCode automatically sets: $ARGUMENTS = "" (empty)
+  
+  YOU MUST:
+  1. Read routing.default from command frontmatter (will be "meta")
+  2. Delegate directly to meta subagent
+  3. Pass empty prompt or user's follow-up message
+  4. NO task number validation required
+  
+  THE $ARGUMENTS VARIABLE IS PROVIDED BY OPENCODE - YOU DON'T PARSE IT FROM USER INPUT.
+  DO NOT pass $ARGUMENTS directly to subagents for task-based commands.
+  DO format it as "Task: {$ARGUMENTS}" for task-based commands.
+  DO pass $ARGUMENTS as-is for direct commands.
+</critical_instructions>
+
 <workflow_execution>
   <stage id="1" name="PreflightValidation">
-    <action>Load command, validate, and prepare delegation context</action>
+    <action>Load command, validate, parse arguments, and prepare delegation context</action>
     <process>
-      1. Parse command name from user input
-      2. Read `.opencode/command/{command}.md`
-      3. Validate command file exists and frontmatter is valid YAML
-      4. Extract routing metadata:
+      CRITICAL: OpenCode provides $ARGUMENTS variable with the command arguments.
+      
+      1. Determine command type:
+         - Read `.opencode/command/{command}.md`
+         - Check if command requires task number:
+           * Task-based: research, implement, plan (require task number)
+           * Direct: meta, review, revise (no task number required)
+      
+      2. For TASK-BASED commands (research/implement/plan):
+         a. Read task_number from $ARGUMENTS variable:
+            EXAMPLE: User types "/research 258" → $ARGUMENTS = "258"
+            EXAMPLE: User types "/implement 267" → $ARGUMENTS = "267"
+            EXAMPLE: User types "/plan 195" → $ARGUMENTS = "195"
+            
+            ACTION: Read the $ARGUMENTS variable directly
+            - Parse task_number from $ARGUMENTS (first token if multiple arguments)
+            - If $ARGUMENTS is empty: STOP and return error
+         
+         b. Validate task_number:
+            - Check task_number is a positive integer
+            - Use bash to verify task exists:
+              ```bash
+              grep -q "^### ${task_number}\." .opencode/specs/TODO.md
+              ```
+            - If task not found: STOP and return error message
+         
+         c. Store task_number for Stage 3 prompt formatting
+      
+      3. For DIRECT commands (meta/review/revise):
+         a. Read $ARGUMENTS (may be empty or contain user input)
+         b. NO task number validation required
+         c. Store $ARGUMENTS for Stage 3 prompt formatting
+      
+      4. Validate command file exists and frontmatter is valid YAML
+      
+      5. Extract routing metadata:
          - `agent:` field (target agent path)
-         - `routing:` rules (language_based, target_agent)
+         - `routing:` rules (language_based, default)
          - `timeout:` override (optional)
-      5. Validate delegation safety:
+      
+      6. Validate delegation safety:
          - Check for cycles: agent not in delegation_path
          - Check depth: delegation_depth ≤ 3
          - Validate session_id is unique
-      6. Generate delegation context:
+      
+      7. Generate delegation context:
          - session_id: sess_{timestamp}_{random_6char}
          - delegation_depth = 1
          - delegation_path = ["orchestrator", "{command}", "{agent}"]
          - timeout (from command or default)
          - deadline = current_time + timeout
+         - command_type: "task-based" | "direct"
+         - arguments: {task_number OR $ARGUMENTS} (STORE THIS FOR STAGE 3)
     </process>
     <validation>
       - Command file must exist
       - Frontmatter must be valid YAML
       - `agent:` field must be present
+      - Task number MUST be read from $ARGUMENTS (for research/implement/plan)
+      - Task MUST exist in TODO.md (for research/implement/plan)
       - No cycles in delegation path
       - Delegation depth ≤ 3
       - Session ID is unique
     </validation>
-    <checkpoint>Command validated and delegation context prepared</checkpoint>
+    <checkpoint>Command validated, task_number from $ARGUMENTS, delegation context prepared</checkpoint>
   </stage>
 
   <stage id="2" name="DetermineRouting">
     <action>Extract language and determine target agent</action>
     <process>
-      1. Check if command uses language-based routing:
-         - Read `routing.language_based` from command frontmatter
-         - If false: Use `routing.default` directly (skip language extraction)
-         - If true: Extract language and map to agent
+      1. Check command type from Stage 1:
+         - If command_type == "direct": Use routing.default directly, SKIP to Step 3
+         - If command_type == "task-based": CONTINUE to Step 2
       
-      2. For language-based routing:
-         a. Extract language (priority order):
+      2. For TASK-BASED commands with language-based routing:
+         a. Check if command uses language-based routing:
+            - Read `routing.language_based` from command frontmatter
+            - If false: Use `routing.default` directly (skip language extraction)
+            - If true: Extract language and map to agent
+         
+         b. Extract language (priority order):
             - Priority 1: Project state.json (task-specific)
             - Priority 2: TODO.md task entry (**Language** field)
             - Priority 3: Default "general" (fallback)
          
-         b. Map language to agent using routing table from command frontmatter:
+         c. Map language to agent using routing table from command frontmatter:
             - If language == "lean": Use `routing.lean` agent
             - Else: Use `routing.default` agent
          
-         c. Validate routing:
+         d. Validate routing:
             - Verify agent file exists at `.opencode/agent/subagents/{agent}.md`
             - Verify language matches agent capabilities:
               * If language == "lean": Agent must start with "lean-"
               * If language != "lean": Agent must NOT start with "lean-"
             - Log validation result: [PASS] or [FAIL]
+         
+         e. Log routing decision:
+            - [INFO] Task {N} language: {language}
+            - [INFO] Routing to {agent} (language={language})
       
-      3. Update delegation_path with resolved agent
+      3. For DIRECT commands:
+         a. Read routing.default from command frontmatter
+         b. Verify agent file exists at `.opencode/agent/subagents/{agent}.md`
+         c. Log routing decision:
+            - [INFO] Routing to {agent} (direct command)
       
-      4. Log routing decision:
-         - [INFO] Task {N} language: {language}
-         - [INFO] Routing to {agent} (language={language})
+      4. Update delegation_path with resolved agent
     </process>
     <implementation>
       STEP 2.1: Extract task number from arguments
@@ -215,6 +301,8 @@ updated: 2025-12-29
   <stage id="3" name="RegisterAndDelegate">
     <action>Register session and invoke target agent</action>
     <process>
+      CRITICAL: Format prompt based on command_type from Stage 1.
+      
       1. Register delegation in session registry:
          {
            "session_id": "sess_...",
@@ -228,17 +316,48 @@ updated: 2025-12-29
            "delegation_path": ["orchestrator", "{command}", "{agent}"]
          }
       
-      2. Invoke target agent:
+      2. Format prompt for subagent (CRITICAL STEP):
+         
+         FOR TASK-BASED COMMANDS (research, implement, plan):
+         - You MUST include the task_number from $ARGUMENTS (validated in Stage 1)
+         - Format the prompt EXACTLY as: "Task: {task_number}"
+         - Example: If $ARGUMENTS = "258", format as "Task: 258"
+         - Example: If $ARGUMENTS = "267", format as "Task: 267"
+         - DO NOT pass $ARGUMENTS directly - the subagent needs "Task: {number}" format
+         
+         FOR DIRECT COMMANDS (meta, review, revise):
+         - Pass $ARGUMENTS as-is (may be empty string)
+         - If $ARGUMENTS is empty: Pass empty string ""
+         - If $ARGUMENTS has content: Pass it directly
+         - Example: /meta → prompt = ""
+         - Example: /meta "build proof system" → prompt = "build proof system"
+      
+      3. Invoke target agent using the task tool:
+         
+         EXAMPLE for /research 258 (where $ARGUMENTS = "258"):
          task_tool(
-           subagent_type="{agent}",
-           prompt="{user_input}",
+           subagent_type="researcher",
+           prompt="Task: 258",
            session_id=delegation_context["session_id"],
            delegation_depth=1,
            delegation_path=delegation_context["delegation_path"],
            timeout=delegation_context["timeout"]
          )
+         
+         EXAMPLE for /meta (where $ARGUMENTS = ""):
+         task_tool(
+           subagent_type="meta",
+           prompt="",
+           session_id=delegation_context["session_id"],
+           delegation_depth=1,
+           delegation_path=delegation_context["delegation_path"],
+           timeout=delegation_context["timeout"]
+         )
+         
+         The prompt parameter MUST be "Task: {task_number}" for task-based commands.
+         The prompt parameter MUST be $ARGUMENTS (or "") for direct commands.
       
-      3. Monitor for timeout:
+      4. Monitor for timeout:
          - Check if current_time > deadline
          - Request partial results if timeout
          - Log timeout event to errors.json
@@ -250,7 +369,7 @@ updated: 2025-12-29
       - Review: 3600s (1 hour)
       - Default: 1800s (30 minutes)
     </timeout_defaults>
-    <checkpoint>Session registered and agent invoked</checkpoint>
+    <checkpoint>Session registered and agent invoked with prompt="Task: {task_number from $ARGUMENTS}"</checkpoint>
   </stage>
 
   <stage id="4" name="ValidateReturn">
@@ -536,6 +655,24 @@ updated: 2025-12-29
     - /todo - Maintain TODO.md
     - /task - Manage tasks
   </command_not_found>
+  
+  <missing_task_number>
+    Error: Task number required for /{command} command
+    
+    Usage: /{command} <task_number>
+    
+    Example: /{command} 258
+    
+    The task number should be a positive integer corresponding to a task in .opencode/specs/TODO.md
+  </missing_task_number>
+  
+  <task_not_found>
+    Error: Task {task_number} not found in TODO.md
+    
+    Please verify the task number exists in .opencode/specs/TODO.md
+    
+    You can list all tasks with: grep "^###" .opencode/specs/TODO.md
+  </task_not_found>
   
   <missing_agent_field>
     Error: Command /{command} configuration invalid

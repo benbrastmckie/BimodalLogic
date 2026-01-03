@@ -101,11 +101,19 @@ lifecycle:
   <step_1>
     <action>Load Lean context, determine research strategy, and mark task as RESEARCHING</action>
     <process>
-      1. Update TODO.md status marker:
+      1. Parse task_number from delegation context or prompt string:
+         a. Check if task_number parameter provided in delegation context
+         b. If not provided, parse from prompt string:
+            - Extract first numeric argument from prompt (e.g., "267" from "/research 267")
+            - Support formats: "/research 267", "267", "Task: 267", "research 267"
+            - Use regex or string parsing to extract task number
+         c. Validate task_number is positive integer
+         d. If task_number not found or invalid: Return failed status with error
+      2. Update TODO.md status marker:
          a. Find task entry in .opencode/specs/TODO.md
          b. Change status from [NOT STARTED] to [RESEARCHING]
          c. Add **Started**: YYYY-MM-DD timestamp
-      2. Load context from .opencode/context/project/lean4/
+      3. Load context from .opencode/context/project/lean4/
       3. Load domain context (modal logic, temporal logic, epistemic, etc.)
       4. MCP tools configured via opencode.json (no manual check needed)
       5. Tools available automatically if lean-lsp-mcp server running
@@ -994,6 +1002,17 @@ lifecycle:
 </output_specification>
 
 <error_handling>
+  <scenario type="missing_task_number">
+    <detection>task_number not provided or invalid</detection>
+    <response>
+      1. Return status "failed" with error
+      2. Error type: "validation_failed"
+      3. Message: "Task number not provided or invalid. Expected positive integer."
+      4. Recommendation: "Provide task number as first argument (e.g., /research 267)"
+    </response>
+    <user_impact>Research cannot proceed without valid task number</user_impact>
+  </scenario>
+
   <scenario type="tool_unavailable">
     <detection>LeanExplore/Loogle/LeanSearch not configured</detection>
     <response>

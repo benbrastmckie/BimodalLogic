@@ -1,7 +1,160 @@
 # TODO
 
-**Last Updated:** 2025-12-29T22:30:00Z
+**Last Updated:** 2026-01-03T10:37:44Z
 
+
+---
+
+### 268. Fix orchestrator and subagent argument parsing for slash commands like /research 267
+- **Effort**: 3-4 hours
+- **Status**: [COMPLETE]
+- **Completed**: 2026-01-03
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+When a user types `/research 267`, the system fails to extract and pass the task number correctly between the orchestrator and researcher subagent. The researcher reports "I need you to provide the required task number" even though the user provided it.
+
+**Root Cause (Two-Part Issue)**:
+
+1. **Orchestrator Side:** The orchestrator agent is not implementing the argument parsing logic documented in orchestrator.md Stage 2 (DetermineRouting). It should:
+   - Parse `/research 267` to extract task_number=267
+   - Validate the task number exists in TODO.md
+   - Pass the task number to the subagent in a structured format
+
+2. **Researcher Side:** The researcher.md defines `<inputs_required>` with a `task_number` parameter but has no fallback logic to parse it from the raw prompt string. Line 105 says "Parse task_number from delegation context" but provides no implementation of HOW to parse it.
+
+**Current Behavior**:
+- User types: `/research 267`
+- Orchestrator passes: Raw prompt string to researcher via task tool
+- Researcher expects: Structured `task_number` parameter
+- Researcher receives: Unstructured prompt string
+- Result: Parsing fails, researcher asks for task number
+
+**Fix Required**:
+
+**Part 1 - Orchestrator (orchestrator.md):**
+1. Implement Stage 1 (PreflightValidation) argument parsing:
+   - Extract task number from command string (e.g., "267" from "/research 267")
+   - Validate task number is positive integer
+   - Verify task exists in TODO.md
+2. Format prompt for subagent to include task number clearly:
+   - Option A: Pass structured format like "Task: 267\nPrompt: {optional_prompt}"
+   - Option B: Pass as first argument: "267 {optional_prompt}"
+
+**Part 2 - Researcher (researcher.md):**
+1. Add explicit parsing logic at Stage 1 Preflight step 1:
+   - Parse task number from prompt string (first numeric argument)
+   - Support formats: "/research 267", "267", "Task: 267", etc.
+   - Validate extracted task number
+2. Add error handling for missing/invalid task numbers
+3. Update documentation to show parsing implementation
+
+**Part 3 - Other Subagents:**
+Apply same parsing logic to:
+- implementer.md (for /implement command)
+- planner.md (for /plan command)
+- Any other subagents that expect task_number parameter
+
+**Acceptance Criteria**:
+- [x] `/research 267` successfully extracts task number in orchestrator
+- [x] Orchestrator validates task exists before delegating
+- [x] Researcher receives and parses task number from prompt
+- [x] `/implement 267` and `/plan 267` work correctly
+- [x] Error messages are clear when task number is missing or invalid
+- [x] Parsing logic is documented in both orchestrator.md and subagent files
+- [x] All language-based routing commands work with task numbers
+
+**Implementation Summary**:
+
+**Root Cause Identified:**
+The orchestrator was not using the OpenCode built-in `$ARGUMENTS` variable. OpenCode automatically extracts arguments from slash commands (e.g., "/research 258" → $ARGUMENTS = "258"), but the orchestrator was trying to parse from "user input" which doesn't exist in that form.
+
+**Part 1 - Orchestrator (orchestrator.md):**
+- Added `<critical_instructions>` section explaining $ARGUMENTS usage
+- Stage 1 (PreflightValidation): Updated to read task number from $ARGUMENTS variable
+  - Reads task_number directly from $ARGUMENTS (provided by OpenCode)
+  - Validates task number is positive integer
+  - Verifies task exists in TODO.md before delegation
+  - Returns clear error messages for missing/invalid task numbers
+- Stage 3 (RegisterAndDelegate): Updated prompt formatting to use task number from $ARGUMENTS
+  - Formats prompt as "Task: {task_number from $ARGUMENTS}"
+  - Ensures subagent receives structured task number parameter
+- Error handling: Added missing_task_number and task_not_found error scenarios
+
+**Part 2 - Command Files:**
+- research.md: Added `**Task Input (required):** $ARGUMENTS (task number; e.g., `/research 258`)`
+- Updated workflow documentation to reference $ARGUMENTS variable
+
+**Part 3 - Subagents (Fallback Parsing):**
+Added explicit argument parsing logic to all subagents that expect task_number parameter:
+- researcher.md: Added parsing in Stage 1 Preflight with error handling
+- implementer.md: Added parsing in Step 1 with error handling
+- planner.md: Added parsing in Step 1 with error handling
+- lean-research-agent.md: Added parsing in Step 1 with error handling
+- lean-implementation-agent.md: Added parsing in Step 2 with error handling
+
+All subagents now support multiple input formats:
+- "Task: 267" (structured format from orchestrator - PRIMARY)
+- "/command 267" (fallback if orchestrator bypassed)
+- "267" (fallback task number only)
+- "command 267" (fallback with command name)
+
+Error handling added for missing or invalid task numbers with clear recommendations.
+
+**Result**: Commands like `/research 258`, `/implement 267`, and `/plan 258` now work correctly with the orchestrator reading task number from $ARGUMENTS and passing it to the appropriate subagent in "Task: {number}" format.
+
+---
+
+### 267. Integrate context/meta/ into context/core/ with proper subdirectory organization
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+Integrate `.opencode/context/meta/` into `.opencode/context/core/` by distributing the 4 meta context files to appropriate subdirectories in `core/` to maintain organization. Update all references throughout the `.opencode/` system to prevent feature regressions.
+
+**Current State**:
+- `.opencode/context/meta/` contains 4 files:
+  - `interview-patterns.md` (5171 bytes)
+  - `architecture-principles.md` (6641 bytes)
+  - `domain-patterns.md` (5781 bytes)
+  - `agent-templates.md` (7254 bytes)
+
+**Target Organization**:
+All context files should belong to either:
+- `context/core/` - General context files applicable across projects
+- `context/project/` - Repository-specific context files
+
+**Tasks**:
+1. Analyze each meta context file to determine appropriate core/ subdirectory:
+   - `interview-patterns.md` → likely `core/processes/` or `core/workflows/`
+   - `architecture-principles.md` → likely `core/standards/` or `core/patterns/`
+   - `domain-patterns.md` → likely `core/patterns/` or `core/templates/`
+   - `agent-templates.md` → likely `core/templates/` or `core/standards/`
+2. Move files to appropriate core/ subdirectories
+3. Update all references in:
+   - `.opencode/command/meta.md` (frontmatter context_loading)
+   - `.opencode/agent/subagents/meta/*.md` (5 agents)
+   - `.opencode/context/index.md` (meta/ section)
+   - `.opencode/README.md` (Meta Command Guide)
+   - Any other files referencing context/meta/
+4. Remove empty `.opencode/context/meta/` directory
+5. Validate no broken references (grep validation)
+6. Test /meta command still works correctly
+
+**Acceptance Criteria**:
+- [ ] All 4 meta context files moved to appropriate core/ subdirectories
+- [ ] No `.opencode/context/meta/` directory exists
+- [ ] All references updated (command files, agent files, context index, README)
+- [ ] No broken references (validated with grep)
+- [ ] /meta command still functions correctly
+- [ ] Context organization follows core/ vs project/ convention
 
 ---
 
@@ -104,32 +257,39 @@
 
 ### 258. Resolve Truth.lean Sorries
 - **Effort**: 10-20 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2026-01-03
+- **Completed**: 2026-01-03
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: .opencode/specs/258_resolve_truth_lean_sorries/reports/research-001.md
+  - Summary: .opencode/specs/258_resolve_truth_lean_sorries/summaries/research-summary.md
 
 **Description**: Resolve the 3 remaining `sorry` placeholders in `Logos/Core/Semantics/Truth.lean` related to temporal swap validity. These require handling domain extension for history quantification.
 
+**Research Findings**: The 3 sorries mentioned in the task description (lines 697, 776, 798) were already resolved in Task 213 (commit 1cf688b, 2025-12-28). Current Truth.lean has 580 lines with zero sorries. The unprovable `is_valid_swap_involution` theorem and `truth_swap_of_valid_at_triple` function were removed after semantic analysis proved them false. Task 258 is ALREADY RESOLVED.
+
 **Action Items**:
-1. Resolve `truth_swap_of_valid_at_triple` (implication case).
-2. Resolve `truth_swap_of_valid_at_triple` (past case - domain extension).
-3. Resolve `truth_swap_of_valid_at_triple` (future case - domain extension).
+1. ~~Resolve `truth_swap_of_valid_at_triple` (implication case)~~ - Already resolved in Task 213
+2. ~~Resolve `truth_swap_of_valid_at_triple` (past case - domain extension)~~ - Already resolved in Task 213
+3. ~~Resolve `truth_swap_of_valid_at_triple` (future case - domain extension)~~ - Already resolved in Task 213
 
 **Files**:
-- `Logos/Core/Semantics/Truth.lean` (lines 697, 776, 798)
+- `Logos/Core/Semantics/Truth.lean` (current: 580 lines, 0 sorries)
 
 **Acceptance Criteria**:
-- [ ] Implication case resolved
-- [ ] Past case with domain extension resolved
-- [ ] Future case with domain extension resolved
-- [ ] All tests pass
-- [ ] SORRY_REGISTRY.md updated
+- [x] Implication case resolved (removed in Task 213)
+- [x] Past case with domain extension resolved (removed in Task 213)
+- [x] Future case with domain extension resolved (removed in Task 213)
+- [x] All tests pass (Truth.lean builds successfully)
+- [x] SORRY_REGISTRY.md updated (shows 0 sorries in Truth.lean)
 
-**Impact**: Completes temporal duality support in Truth.lean, enabling full soundness proofs for temporal operators.
+**Impact**: Task objectives already achieved through Task 213. Truth.lean is clean, well-documented, and builds successfully.
 
-**Note**: Status was incorrectly marked [RESEARCHED] without artifacts. Reset to [NOT STARTED] pending task 266 fix.
+**Recommendation**: Mark task as ALREADY RESOLVED or OBSOLETE. See Task 213 for resolution details.
 
 ---
 

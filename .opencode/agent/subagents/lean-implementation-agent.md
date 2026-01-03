@@ -136,14 +136,29 @@ lifecycle:
   <step_2>
     <action>Read task requirements</action>
     <process>
-      1. If task_description provided: Use directly
-      2. Else if plan_path provided: Read phase from plan
-      3. Else: Read task from .opencode/specs/TODO.md
-      4. Extract Lean-specific requirements (theorems, proofs, tactics)
-      5. Identify target Lean files
-      6. Determine implementation strategy
+      1. Parse task_number from delegation context or prompt string:
+         a. Check if task_number parameter provided in delegation context
+         b. If not provided, parse from prompt string:
+            - Extract first numeric argument from prompt (e.g., "267" from "/implement 267")
+            - Support formats: "/implement 267", "267", "Task: 267", "implement 267"
+            - Use regex or string parsing to extract task number
+         c. Validate task_number is positive integer
+         d. If task_number not found or invalid: Return failed status with error
+      2. If task_description provided: Use directly
+      3. Else if plan_path provided: Read phase from plan
+      4. Else: Read task from .opencode/specs/TODO.md
+      5. Extract Lean-specific requirements (theorems, proofs, tactics)
+      6. Identify target Lean files
+      7. Determine implementation strategy
     </process>
     <validation>Requirements are clear and implementable</validation>
+    <error_handling>
+      If task_number not provided or invalid:
+        Return status "failed" with error:
+        - type: "validation_failed"
+        - message: "Task number not provided or invalid. Expected positive integer."
+        - recommendation: "Provide task number as first argument (e.g., /implement 267)"
+    </error_handling>
     <output>Lean implementation requirements</output>
   </step_2>
 

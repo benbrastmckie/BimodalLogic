@@ -100,17 +100,32 @@ lifecycle:
   <step_1>
     <action>Read task details</action>
     <process>
-      1. If task_description provided: Use directly
-      2. Else: Extract task entry using grep (selective loading):
+      1. Parse task_number from delegation context or prompt string:
+         a. Check if task_number parameter provided in delegation context
+         b. If not provided, parse from prompt string:
+            - Extract first numeric argument from prompt (e.g., "267" from "/implement 267")
+            - Support formats: "/implement 267", "267", "Task: 267", "implement 267"
+            - Use regex or string parsing to extract task number
+         c. Validate task_number is positive integer
+         d. If task_number not found or invalid: Return failed status with error
+      2. If task_description provided: Use directly
+      3. Else: Extract task entry using grep (selective loading):
          ```bash
          grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
          ```
-      3. Validate extraction succeeded (non-empty file)
-      4. Extract task description and requirements
-      5. Identify scope and constraints
-      6. Validate task is implementable
+      4. Validate extraction succeeded (non-empty file)
+      5. Extract task description and requirements
+      6. Identify scope and constraints
+      7. Validate task is implementable
     </process>
     <validation>Task description is clear and actionable</validation>
+    <error_handling>
+      If task_number not provided or invalid:
+        Return status "failed" with error:
+        - type: "validation_failed"
+        - message: "Task number not provided or invalid. Expected positive integer."
+        - recommendation: "Provide task number as first argument (e.g., /implement 267)"
+    </error_handling>
     <output>Task requirements and scope</output>
   </step_1>
 

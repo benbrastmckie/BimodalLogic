@@ -22,6 +22,8 @@ context_loading:
   max_context_size: 50000
 ---
 
+**Task Input (required):** $ARGUMENTS (task number; e.g., `/research 258`)
+
 **Usage:** `/research TASK_NUMBER [PROMPT] [--divide]`
 
 ## Description
@@ -31,7 +33,7 @@ Conducts research for tasks and creates research reports with [RESEARCHED] statu
 ## Workflow Setup
 
 **Orchestrator handles (Stage 1-5):**
-- **Stage 1 (PreflightValidation):** Parse task number and flags from arguments, validate task exists
+- **Stage 1 (PreflightValidation):** Read task number from $ARGUMENTS variable, validate task exists in TODO.md
 - **Stage 2 (DetermineRouting):** Extract language from task entry (state.json or TODO.md), map to agent using routing table, validate routing
 - **Stage 3 (RegisterAndDelegate):** Register session and invoke target agent
 - **Stage 4 (ValidateReturn):** Validate return format, verify artifacts exist and are non-empty (prevents phantom research)

@@ -102,7 +102,14 @@ lifecycle:
   <stage_1_preflight>
     <action>Preflight: Parse arguments, validate task, update status to [RESEARCHING]</action>
     <process>
-      1. Parse task_number from delegation context
+      1. Parse task_number from delegation context or prompt string:
+         a. Check if task_number parameter provided in delegation context
+         b. If not provided, parse from prompt string:
+            - Extract first numeric argument from prompt (e.g., "267" from "/research 267")
+            - Support formats: "/research 267", "267", "Task: 267", "research 267"
+            - Use regex or string parsing to extract task number
+         c. Validate task_number is positive integer
+         d. If task_number not found or invalid: Return failed status with error
       2. Validate task exists in .opencode/specs/TODO.md:
          ```bash
          grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md
@@ -138,6 +145,12 @@ lifecycle:
       - Timestamp added to TODO.md and state.json
     </validation>
     <error_handling>
+      If task_number not provided or invalid:
+        Return status "failed" with error:
+        - type: "validation_failed"
+        - message: "Task number not provided or invalid. Expected positive integer."
+        - recommendation: "Provide task number as first argument (e.g., /research 267)"
+      
       If task not found:
         Return status "failed" with error:
         - type: "validation_failed"

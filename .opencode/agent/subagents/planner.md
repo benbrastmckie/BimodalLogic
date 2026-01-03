@@ -95,17 +95,32 @@ lifecycle:
   <step_1>
     <action>Read task from .opencode/specs/TODO.md</action>
     <process>
-      1. Extract task entry using grep (selective loading):
+      1. Parse task_number from delegation context or prompt string:
+         a. Check if task_number parameter provided in delegation context
+         b. If not provided, parse from prompt string:
+            - Extract first numeric argument from prompt (e.g., "267" from "/plan 267")
+            - Support formats: "/plan 267", "267", "Task: 267", "plan 267"
+            - Use regex or string parsing to extract task number
+         c. Validate task_number is positive integer
+         d. If task_number not found or invalid: Return failed status with error
+      2. Extract task entry using grep (selective loading):
          ```bash
          grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
          ```
-      2. Validate extraction succeeded (non-empty file)
-      3. Extract task description, language, priority from task entry
-      4. Extract any existing artifact links (research, previous plans)
-      5. Validate task exists and is valid for planning
-      6. Check task status (must not be [COMPLETED] or [ABANDONED])
+      3. Validate extraction succeeded (non-empty file)
+      4. Extract task description, language, priority from task entry
+      5. Extract any existing artifact links (research, previous plans)
+      6. Validate task exists and is valid for planning
+      7. Check task status (must not be [COMPLETED] or [ABANDONED])
     </process>
     <validation>Task exists and has sufficient detail for planning</validation>
+    <error_handling>
+      If task_number not provided or invalid:
+        Return status "failed" with error:
+        - type: "validation_failed"
+        - message: "Task number not provided or invalid. Expected positive integer."
+        - recommendation: "Provide task number as first argument (e.g., /plan 267)"
+    </error_handling>
     <output>Task details and existing artifact links</output>
   </step_1>
 
