@@ -1,7 +1,63 @@
 # TODO
 
-**Last Updated:** 2026-01-03T10:37:44Z
+**Last Updated:** 2026-01-03T18:15:00Z
 
+
+---
+
+
+## High Priority
+
+### 269. Fix /meta command to accept user prompts directly instead of forcing interactive interview
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+The `/meta` command currently ignores user-provided prompts and always starts an interactive interview. This differs from the OpenAgents implementation where `/meta` accepts `$ARGUMENTS` directly via `<target_domain> $ARGUMENTS </target_domain>` pattern, allowing users to provide requirements upfront.
+
+**Current Behavior**:
+```bash
+/meta "I want to revise my opencode system..."
+# Ignores the prompt, shows generic interview message
+```
+
+**Expected Behavior** (from OpenAgents):
+```bash
+/meta "I want to revise my opencode system..."
+# Uses the prompt as target_domain, proceeds with requirements
+```
+
+**Root Cause**:
+- ProofChecker `/meta` command (`.opencode/command/meta.md`) does NOT pass `$ARGUMENTS` to the meta agent
+- OpenAgents `/meta` command passes `$ARGUMENTS` via `<target_domain> $ARGUMENTS </target_domain>` in the agent file
+- ProofChecker meta agent (`.opencode/agent/subagents/meta.md`) expects interactive interview, not prompt-based input
+
+**Solution**:
+1. Update `.opencode/command/meta.md` to pass `$ARGUMENTS` to meta agent (similar to OpenAgents pattern)
+2. Update `.opencode/agent/subagents/meta.md` to:
+   - Check if `$ARGUMENTS` is provided (non-empty)
+   - If provided: Use as target_domain, skip Stage 1 (InitiateInterview), proceed directly to Stage 2 with domain context
+   - If empty: Fall back to current interactive interview workflow
+3. Add `<target_domain>` XML tag to meta agent to receive `$ARGUMENTS`
+4. Update Stage 1 logic to be conditional based on `$ARGUMENTS` presence
+
+**Files to Modify**:
+- `.opencode/command/meta.md` - Add `$ARGUMENTS` passing
+- `.opencode/agent/subagents/meta.md` - Add conditional workflow based on `$ARGUMENTS`
+
+**Acceptance Criteria**:
+- [ ] `/meta "prompt text"` uses the prompt directly without interactive interview
+- [ ] `/meta` (no arguments) falls back to interactive interview
+- [ ] Both modes create appropriate tasks in TODO.md with linked artifacts
+- [ ] Both modes follow task-breakdown.md and artifact-management.md standards
+- [ ] Both modes use next_project_number from state.json for task numbering
+- [ ] Both modes create project directories in `.opencode/specs/NNN_*/`
+
+**Impact**: Enables faster /meta usage for users who know their requirements, while preserving interactive mode for exploratory use.
 
 ---
 
@@ -245,6 +301,80 @@ All context files should belong to either:
 - [ ] SORRY_REGISTRY.md updated with justification
 
 **Impact**: Resolves documented limitation in ModalS5 theorems.
+
+---
+
+### 270. Fix /research command to conduct research instead of implementing tasks
+- **Effort**: 6-8 hours
+- **Status**: [COMPLETED]
+- **Started**: 2026-01-03
+- **Completed**: 2026-01-03
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+The `/research` command is incorrectly executing full task implementation instead of conducting research and creating research artifacts. When `/research 267` was run, it violated the status transition rules defined in `.opencode/context/core/system/state-management.md` by changing the task status to [COMPLETED] instead of [RESEARCHED], and implemented the task directly instead of creating research artifacts.
+
+**Expected Behavior** (per state-management.md):
+1. Status transition: `[NOT STARTED]` → `[RESEARCHING]` → `[RESEARCHED]`
+2. Create research artifacts in `.opencode/specs/267_*/reports/research-001.md`
+3. Link research artifacts in TODO.md and state.json using status-sync-manager
+4. Follow artifact-management.md standards (lazy directory creation)
+5. Create git commit for research artifacts only
+
+**Actual Behavior** (INCORRECT):
+1. Status transition: `[NOT STARTED]` → `[COMPLETED]` (invalid transition)
+2. Implemented task directly (moved files, updated references)
+3. No research artifacts created
+4. Violated command-specific status marker rules
+
+**Root Cause**:
+The researcher subagent (`.opencode/agent/subagents/researcher.md`) is executing implementation workflows instead of research-only workflows. It needs to be constrained to:
+- Research execution only (web search, documentation review, analysis)
+- Research report creation (NOT implementation)
+- Status updates via status-sync-manager: `[RESEARCHING]` → `[RESEARCHED]`
+- Artifact validation per artifact-management.md
+
+**Action Items**:
+1. Audit researcher.md workflow to identify implementation logic
+2. Remove implementation execution from researcher.md
+3. Ensure researcher.md creates research artifacts only
+4. Validate status transitions follow state-management.md:
+   - Valid transition: `[NOT STARTED]` → `[RESEARCHING]` → `[RESEARCHED]`
+   - Invalid transition: `[NOT STARTED]` → `[COMPLETED]` (skip research phase)
+5. Validate artifact creation follows artifact-management.md:
+   - Lazy directory creation (`.opencode/specs/{number}_{slug}/`)
+   - Research report in `reports/research-001.md`
+   - Artifact links in TODO.md and state.json via status-sync-manager
+6. Test /research command with markdown task (like 267)
+7. Test /research command with lean task (language-based routing)
+8. Verify no implementation occurs during research
+9. Update documentation if needed
+
+**Acceptance Criteria**:
+- [ ] /research command creates research artifacts only (no implementation)
+- [ ] Research artifacts follow artifact-management.md standards
+- [ ] Status transitions follow state-management.md: `[NOT STARTED]` → `[RESEARCHING]` → `[RESEARCHED]`
+- [ ] Artifact links added to TODO.md and state.json via status-sync-manager
+- [ ] No implementation occurs during /research
+- [ ] Language-based routing works correctly (lean vs general)
+- [ ] Lazy directory creation followed
+- [ ] Git commits created for research artifacts only
+- [ ] Atomic status updates via status-sync-manager (two-phase commit)
+
+**Files Affected**:
+- `.opencode/agent/subagents/researcher.md` (remove implementation logic)
+- `.opencode/command/research.md` (validate workflow documentation)
+- `.opencode/context/core/system/state-management.md` (reference standard)
+
+**Impact**: Fixes critical workflow bug where /research implements tasks instead of researching them, preventing proper research/plan/implement workflow separation and violating status transition rules.
+
+**References**:
+- State Management Standard: `.opencode/context/core/system/state-management.md`
+- Artifact Management: `.opencode/context/common/system/artifact-management.md`
+- Status Sync Manager: `.opencode/agent/subagents/status-sync-manager.md`
 
 ---
 

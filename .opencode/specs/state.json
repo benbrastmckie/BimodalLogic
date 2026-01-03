@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-03T18:09:11Z",
-  "next_project_number": 269,
+  "_last_updated": "2026-01-03T18:18:35Z",
+  "next_project_number": 271,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -962,6 +962,18 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2026-01-03T18:30:00Z",
+      "activity": "Completed task 270: Fixed /research command by adding explicit constraints to researcher.md preventing implementation, restricting permissions, and enforcing [RESEARCHED] status transitions"
+    },
+    {
+      "timestamp": "2026-01-03T18:18:35Z",
+      "activity": "Created task 270: Fix /research command to conduct research instead of implementing tasks (6-8 hours, High priority, markdown)"
+    },
+    {
+      "timestamp": "2026-01-03T18:15:00Z",
+      "activity": "Created task 269: Fix /meta command to accept user prompts directly instead of forcing interactive interview (2-3 hours, High priority, markdown)"
+    },
     {
       "timestamp": "2026-01-03T18:09:11.240570Z",
       "activity": "Completed task 267: Integrated context/meta/ into context/core/ with proper subdirectory organization. Moved 4 files, updated all references, removed empty meta/ directory. Git commit: 33d4d45"

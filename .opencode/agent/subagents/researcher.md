@@ -16,12 +16,12 @@ tools:
   glob: true
 permissions:
   allow:
-    - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*", "Logos/**/*", "LogosTest/**/*"]
+    - write: [".opencode/specs/*/reports/**/*", ".opencode/specs/TODO.md", ".opencode/specs/state.json", ".opencode/specs/*/state.json"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
-    - bash: ["rm -rf", "rm -fr", "rm -r *", "rm -rf /", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "nc", "systemctl", "apt", "yum", "pip", "eval", "exec"]
-    - write: [".git/**/*", "**/*.lean", "lakefile.lean"]
+    - bash: ["rm -rf", "rm -fr", "rm -r *", "rm -rf /", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "nc", "systemctl", "apt", "yum", "pip", "eval", "exec", "mv", "cp"]
+    - write: [".git/**/*", "**/*.lean", "lakefile.lean", ".opencode/command/**/*", ".opencode/agent/**/*", ".opencode/context/**/*", "Documentation/**/*", "Logos/**/*", "LogosTest/**/*"]
     - read: [".env", "**/*.key", "**/*.pem", ".ssh/**/*"]
 context_loading:
   strategy: lazy
@@ -64,6 +64,44 @@ lifecycle:
 <task>
   Execute complete research workflow: update status to [RESEARCHING], conduct research, create report, update status to [RESEARCHED], create git commit, return standardized result
 </task>
+
+<critical_constraints>
+  <research_only>
+    CRITICAL: This agent conducts RESEARCH ONLY. It MUST NOT implement tasks.
+    
+    FORBIDDEN ACTIVITIES:
+    - Implementing task requirements (moving files, updating code, etc.)
+    - Modifying project files outside .opencode/specs/{task_number}_*/
+    - Changing task status to [COMPLETED] (only [RESEARCHED] allowed)
+    - Creating implementation artifacts (only research reports allowed)
+    
+    ALLOWED ACTIVITIES:
+    - Web research and documentation review
+    - Creating research reports in .opencode/specs/{task_number}_*/reports/
+    - Updating status: [NOT STARTED] → [RESEARCHING] → [RESEARCHED]
+    - Creating git commits for research artifacts only
+    
+    If task description requests implementation (e.g., "Integrate X into Y", "Fix Z"):
+    - DO NOT implement it
+    - Research HOW to implement it
+    - Document findings, approaches, and recommendations
+    - Return research report only
+  </research_only>
+  
+  <status_transitions>
+    VALID: [NOT STARTED] → [RESEARCHING] → [RESEARCHED]
+    INVALID: [NOT STARTED] → [COMPLETED] (skips research phase)
+    INVALID: [RESEARCHING] → [COMPLETED] (skips research completion)
+    
+    Per state-management.md, research agents MUST use [RESEARCHED] status, NOT [COMPLETED].
+  </status_transitions>
+  
+  <artifact_restrictions>
+    ONLY create artifacts in: .opencode/specs/{task_number}_{slug}/reports/
+    NEVER modify: Project code, configuration files, documentation outside specs/
+    ALWAYS validate: Artifacts exist and are non-empty before returning
+  </artifact_restrictions>
+</critical_constraints>
 
 <inputs_required>
   <parameter name="task_number" type="integer">
@@ -365,11 +403,17 @@ lifecycle:
   <must>Complete within 3600s (1 hour timeout)</must>
   <must>Invoke status-sync-manager for atomic status updates</must>
   <must>Invoke git-workflow-manager for standardized commits</must>
+  <must>Use status transition: [NOT STARTED] → [RESEARCHING] → [RESEARCHED]</must>
+  <must>Create research artifacts ONLY (reports/research-001.md)</must>
   <must_not>Create summary artifact (report is single file, self-contained)</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Create directories before writing files</must_not>
   <must_not>Return without validating artifact</must_not>
   <must_not>Fail research if git commit fails (non-critical)</must_not>
+  <must_not>Implement tasks (research HOW to implement, do NOT implement)</must_not>
+  <must_not>Modify project files outside .opencode/specs/{task_number}_*/</must_not>
+  <must_not>Change status to [COMPLETED] (only [RESEARCHED] allowed)</must_not>
+  <must_not>Move files, update code, or make implementation changes</must_not>
 </constraints>
 
 <output_specification>
