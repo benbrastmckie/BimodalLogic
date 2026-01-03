@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2025-12-30T00:38:18.504339Z",
-  "next_project_number": 266,
+  "_last_updated": "2026-01-03T09:37:06.015319Z",
+  "next_project_number": 267,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -147,6 +147,31 @@
         "phases": 6,
         "total_effort_hours": 14,
         "complexity": "medium-high",
+        "research_integrated": true
+      }
+    },
+    {
+      "project_number": 265,
+      "project_name": "clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive",
+      "type": "refactoring",
+      "phase": "planned",
+      "status": "planned",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2025-12-30T00:38:18.504339Z",
+      "started": "2026-01-03",
+      "research_completed": "2025-12-29",
+      "plan_created": "2026-01-03",
+      "last_updated": "2026-01-03T09:37:06.015273Z",
+      "artifacts": [
+        ".opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/reports/research-001.md",
+        ".opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 10,
+        "complexity": "medium",
         "research_integrated": true
       }
     }
@@ -904,6 +929,10 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2025-12-30T00:45:00.000000Z",
+      "activity": "Created task 266: Fix /research command language-based routing to properly invoke lean-research-agent for Lean tasks (4-6 hours, High priority)"
+    },
     {
       "timestamp": "2025-12-30T00:38:18.504339Z",
       "activity": "Created task 265: Clean up context directory structure by migrating common/ to core/ and removing archive/ (8-12 hours, High priority)"

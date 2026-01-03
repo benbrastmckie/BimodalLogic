@@ -5,13 +5,26 @@
 
 ---
 
-### 265. Clean up context directory structure by migrating common/ to core/ and removing archive/
-- **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+### 266. Fix /research command language-based routing to properly invoke lean-research-agent for Lean tasks
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+
+**Description**: The `/research` command has `routing.language_based: true` configured and the orchestrator documents language extraction logic in Stage 2, but when `/research 258` was invoked (task 258 has Language: lean), it did not call the lean-research-agent as expected. Research how the /research command should direct the orchestrator to call appropriate subagents based on language, relying on those subagents to do the correct work while the orchestrator manages preflight and postflight. Review how /research works for non-lean tasks since this seems to work, in order to fix the way the /research command works for lean tasks. Ensure the /research command does not depart from the agent system standards, maintaining uniformity with other commands as appropriate.
+
+---
+
+### 265. Clean up context directory structure by migrating common/ to core/ and removing archive/
+- **Effort**: 10 hours
+- **Status**: [PLANNED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Plan**: [implementation-001.md](.opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md)
 
 **Description**: Systematically migrate all content from `.opencode/context/common/` to `.opencode/context/core/` or `.opencode/context/project/`, remove the deprecated `.opencode/context/archive/` directory, resolve content duplication (especially subagent-return-format.md), and update 100+ file references throughout the codebase.
 
