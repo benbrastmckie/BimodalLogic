@@ -1,10 +1,10 @@
 ---
-last_updated: 2026-01-04T06:15:00Z
+last_updated: 2026-01-04T06:25:00Z
 next_project_number: 286
 repository_health:
   overall_score: 92
   production_readiness: excellent
-  last_assessed: 2025-12-29T00:05:34Z
+  last_assessed: 2026-01-04T06:25:00Z
 task_counts:
   active: 5
   completed: 50
@@ -31,15 +31,15 @@ technical_debt:
 ## High Priority
 
 ### 283. Fix systematic status synchronization failure across all workflow commands
-- **Effort**: 6-8 hours
-- **Status**: [PLANNED] (2026-01-04)
+- **Effort**: 3-4 hours (revised from 6-8 hours)
+- **Status**: [REVISED] (2026-01-04)
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](283_fix_systematic_status_synchronization_failure/reports/research-001.md)
-- **Plan**: [Implementation Plan](283_fix_systematic_status_synchronization_failure/plans/implementation-001.md)
-- **Note**: This task's research artifact link was NOT automatically added by /research command - had to be added manually. This is the EXACT bug this task is meant to fix.
+- **Plan**: [Implementation Plan v1](283_fix_systematic_status_synchronization_failure/plans/implementation-001.md) | [Implementation Plan v2](283_fix_systematic_status_synchronization_failure/plans/implementation-002.md) (current)
+- **Note**: Research and revision artifact links were NOT automatically added by /research and /revise commands - had to be added manually. /plan command DID work correctly. This is the EXACT bug this task is meant to fix.
 
 **Description**:
 Multiple tasks (269, 284) have exposed a **systematic status synchronization failure** affecting ALL workflow commands (/research, /plan, /implement, /revise). When commands complete successfully, status is NOT updated in TODO.md or state.json, and tasks are NOT added to state.json's active_projects or completed_projects arrays. This is a critical workflow bug that breaks task tracking.
@@ -195,6 +195,77 @@ Fixes the systematic status synchronization failure affecting ALL workflow comma
 - Task 275: "Fix workflow status updates" - marked COMPLETED but fix didn't work
 - Task 279: Systematically fix metadata lookup to use state.json instead of TODO.md
 - Task 280: Fix orchestrator Stage 4 validation (should catch missing status updates)
+
+---
+
+### 286. Research alternative to task 283 with subagent-owned pre-flight and post-flight work
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+Currently the orchestrator is in charge of running pre-flight and post-flight work, including synchronization of the task status and artifact links where lack of validation leads to failures. It might make more sense to move as much of the pre-flight and post-flight work including all synchronization to the subagents doing the work instead of leaving this to the orchestrator. That way the commands such as /research, /plan, /revise, and /implement would just be responsible for parsing and passing the appropriate arguments to the correct subagents and then all further work will then be handled by those subagents including status synchronization and git commits. Research an alternative to task 283 that works along these lines.
+
+**Research Scope**:
+
+1. **Current Architecture Analysis**:
+   - Document current orchestrator responsibilities (Stage 1 preflight, Stage 5 postflight)
+   - Document current subagent responsibilities (work execution only)
+   - Identify validation failures caused by orchestrator-owned synchronization
+   - Analyze task 283's proposed orchestrator-centric solution
+
+2. **Alternative Architecture Design**:
+   - Move preflight work to subagents (status updates, validation, state.json entry creation)
+   - Move postflight work to subagents (status updates, artifact links, git commits)
+   - Reduce orchestrator to argument parsing and routing only
+   - Define subagent ownership of complete workflow lifecycle
+
+3. **Comparison Analysis**:
+   - Compare orchestrator-centric (task 283) vs. subagent-centric (this task) approaches
+   - Analyze validation enforcement: orchestrator validation vs. subagent self-validation
+   - Analyze failure modes: centralized vs. distributed responsibility
+   - Analyze complexity: orchestrator complexity vs. subagent complexity
+
+4. **Implementation Strategy**:
+   - Define subagent preflight responsibilities (status updates, validation)
+   - Define subagent postflight responsibilities (status updates, artifact links, git commits)
+   - Define orchestrator responsibilities (argument parsing, routing, return validation)
+   - Define migration path from current architecture to subagent-owned architecture
+
+5. **Trade-offs and Recommendations**:
+   - Identify benefits of subagent-owned approach (ownership, encapsulation, autonomy)
+   - Identify drawbacks of subagent-owned approach (duplication, coordination complexity)
+   - Compare with orchestrator-owned approach (task 283)
+   - Recommend best approach with justification
+
+**Files to Analyze**:
+- `.opencode/agent/orchestrator.md` - Current orchestrator responsibilities
+- `.opencode/agent/subagents/researcher.md` - Current researcher responsibilities
+- `.opencode/agent/subagents/planner.md` - Current planner responsibilities
+- `.opencode/agent/subagents/implementer.md` - Current implementer responsibilities
+- `.opencode/agent/subagents/status-sync-manager.md` - Current synchronization mechanism
+- `.opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md` - Task 283 analysis
+- `.opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md` - Task 283 solution
+
+**Acceptance Criteria**:
+- [ ] Current architecture documented (orchestrator vs. subagent responsibilities)
+- [ ] Alternative architecture designed (subagent-owned pre-flight and post-flight)
+- [ ] Comparison analysis completed (orchestrator-centric vs. subagent-centric)
+- [ ] Implementation strategy defined (migration path, responsibilities)
+- [ ] Trade-offs identified (benefits and drawbacks of each approach)
+- [ ] Recommendation provided (best approach with justification)
+- [ ] Research report created with findings and recommendation
+
+**Impact**: 
+Provides alternative architectural approach to task 283 that moves responsibility for pre-flight and post-flight work from orchestrator to subagents. Enables comparison of centralized (orchestrator-owned) vs. distributed (subagent-owned) approaches to status synchronization and workflow management. Informs decision on best architecture for fixing systematic status synchronization failures.
+
+**Related Tasks**:
+- Task 283: Fix systematic status synchronization failure (orchestrator-centric approach)
+- Task 285: Audit and fix status update behavior (related to status synchronization)
+- Task 275: Fix workflow status updates (previous attempt at fixing status synchronization)
 
 ---
 
@@ -385,14 +456,6 @@ Ensures all workflow commands follow the two-phase status update pattern defined
 
 ---
 
-
-
-
-
-
-
-
-
 ### 257. Completeness Proofs
  **Effort**: 70-90 hours
  **Status**: [NOT STARTED]
@@ -426,9 +489,9 @@ Ensures all workflow commands follow the two-phase status update pattern defined
 
 ### 258. Resolve Truth.lean Sorries
 - **Effort**: 0.5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-03
-- **Completed**: 2026-01-03
+- **Completed**: 2026-01-04
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -438,6 +501,9 @@ Ensures all workflow commands follow the two-phase status update pattern defined
   - Summary: [.opencode/specs/258_resolve_truth_lean_sorries/summaries/research-summary.md]
 - **Plan Artifacts**:
   - Implementation Plan: [.opencode/specs/258_resolve_truth_lean_sorries/plans/implementation-001.md]
+- **Implementation Artifacts**:
+  - Summary: [.opencode/specs/258_resolve_truth_lean_sorries/summaries/implementation-summary-20260104.md]
+  - Note: No code changes needed - task already resolved in Task 213 (commit 1cf688b)
 
 **Description**: Resolve the 3 remaining `sorry` placeholders in `Logos/Core/Semantics/Truth.lean` related to temporal swap validity. These require handling domain extension for history quantification.
 
@@ -466,15 +532,18 @@ Ensures all workflow commands follow the two-phase status update pattern defined
 
 ### 259. Automation Tactics
 - **Effort**: 17-23 hours (revised from 40-60 hours based on research findings)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED] (2026-01-04)
 - **Started**: 2026-01-04
-- **Completed**: 2026-01-04 (research phase)
+- **Researched**: 2026-01-04
+- **Planned**: 2026-01-04
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
 - **Research Artifacts**:
   - Main Report: [.opencode/specs/259_automation_tactics/reports/research-001.md]
+- **Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/259_automation_tactics/plans/implementation-001.md]
 
 **Description**: Implement the remaining planned tactics for TM logic to support easier proof construction. Research found 10/12 tactics fully implemented (83% complete), 2 tactics with infrastructure ready but delegating to tm_auto. Aesop integration functional with 2 noncomputable errors. ProofSearch.lean provides production-ready bounded search infrastructure (461 lines).
 
