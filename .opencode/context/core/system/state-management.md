@@ -274,13 +274,47 @@ This standard defines the complete state management system for ProofChecker, inc
 
 ## Timestamp Formats
 
-### TODO.md Format
-**Date Only** (YYYY-MM-DD):
+### TODO.md Structure
+
+TODO.md follows standard YAML frontmatter format with metadata header at the beginning:
+
 ```markdown
-**Started**: 2025-12-20
-**Completed**: 2025-12-20
-**Blocked**: 2025-12-20
+---
+last_updated: 2026-01-04T04:45:44Z
+next_project_number: 280
+repository_health:
+  overall_score: 92
+  production_readiness: excellent
+task_counts:
+  active: 4
+  completed: 50
+  total: 81
+priority_distribution:
+  high: 15
+  medium: 12
+  low: 11
+technical_debt:
+  sorry_count: 6
+  axiom_count: 11
+  build_errors: 11
+---
+
+# TODO
+
+## High Priority
+
+### 272. Task Title
+- **Effort**: 14 hours
+- **Status**: [PLANNED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Started**: 2025-12-20
+- **Completed**: 2025-12-20
+- **Blocked**: 2025-12-20
 ```
+
+**YAML Header**: Auto-generated from state.json, surfaces repository health and task metrics  
+**Task Timestamps**: Date only format (YYYY-MM-DD)
 
 ### Implementation Plan Format
 **ISO 8601 with Timezone** (YYYY-MM-DDTHH:MM:SSZ):

@@ -195,10 +195,12 @@ This implementation will:
 1. Read current state.json
 2. Generate YAML header using schema from Phase 1
 3. Backup current TODO.md
-4. Prepend YAML header to TODO.md
+4. Prepend YAML frontmatter to TODO.md (before `# TODO` heading)
 5. Verify YAML header displays correctly in markdown viewers
 6. Test TODO.md parsing with existing workflow commands
 7. Commit updated TODO.md
+
+**Note**: YAML frontmatter must be at the very beginning of the file, before any markdown content including the `# TODO` heading. This follows standard YAML frontmatter format used by Jekyll, Hugo, and other static site generators.
 
 **Acceptance Criteria**:
 - TODO.md contains valid YAML header with current state.json data

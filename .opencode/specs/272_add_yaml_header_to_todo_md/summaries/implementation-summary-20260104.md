@@ -18,16 +18,17 @@ Added a standardized YAML header to `.opencode/specs/TODO.md` that surfaces key 
 ## Files Modified
 
 1. **`.opencode/specs/TODO.md`**
-   - Added YAML header between `---` delimiters
-   - Header includes warning comment: "Auto-generated from state.json - do not edit manually"
+   - Added YAML frontmatter at the very beginning of the file (before `# TODO` heading)
+   - Header placed between `---` delimiters following standard YAML frontmatter format
    - Preserves all existing task entries below header
    - Backup created: `.opencode/specs/TODO.md.backup-20260104`
 
 ## YAML Header Format
 
+The YAML header is placed at the very beginning of TODO.md, before the `# TODO` heading:
+
 ```yaml
 ---
-# Auto-generated from state.json - do not edit manually
 last_updated: 2026-01-04T04:45:44Z
 next_project_number: 280
 repository_health:
@@ -51,13 +52,15 @@ technical_debt:
   build_errors: 11
   status: well-documented
 ---
+
+# TODO
 ```
 
 ## Key Decisions
 
 1. **Field Selection**: Included high-value fields for users (health score, task counts, technical debt) while excluding verbose fields (active_projects, recent_activities)
 
-2. **Warning Comment**: Added "Auto-generated from state.json - do not edit manually" to prevent manual edits that would be overwritten
+2. **Standard YAML Frontmatter**: Follows industry-standard YAML frontmatter format (used by Jekyll, Hugo, etc.) with header at the very beginning of the file before any markdown content
 
 3. **Compact Format**: Header fits in ~25 lines, minimal visual overhead
 

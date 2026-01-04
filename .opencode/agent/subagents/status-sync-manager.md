@@ -164,20 +164,26 @@ lifecycle:
   <step_3_prepare_updates>
     <action>Prepare all updates in memory</action>
     <process>
-      1. Update .opencode/specs/TODO.md in memory:
+      1. Regenerate TODO.md YAML header from state.json:
+         - Extract metadata from state.json (repository_health, task_counts, etc.)
+         - Generate YAML frontmatter with current values
+         - Place YAML header at very beginning of file (before # TODO heading)
+         - Format: --- (delimiter) + YAML fields + --- (delimiter) + blank line + # TODO
+         - Gracefully handle missing fields (use defaults or omit)
+      2. Update .opencode/specs/TODO.md task entry in memory:
          - Change status marker
          - Add/update timestamp fields
          - Add artifact links from validated_artifacts
          - Add blocking/abandonment reason if applicable
          - Add checkmark to title if completed
-      2. Update state.json in memory:
+      3. Update state.json in memory:
          - Change status field (lowercase, underscore)
          - Add/update timestamp fields
          - Add artifact references from validated_artifacts
          - Add plan_metadata if provided (phase_count, estimated_hours, complexity)
          - Append to plan_versions array if plan_version provided
          - Update plan_path to latest version if plan_version provided
-      3. Update plan file if plan_path and phase_statuses provided:
+      4. Update plan file if plan_path and phase_statuses provided:
          - Parse plan file to extract current phase markers
          - For each phase_status in phase_statuses array:
            a. Locate phase heading (### Phase {N}:)
@@ -186,7 +192,7 @@ lifecycle:
          - Validate phase numbers are valid (exist in plan)
          - Validate status transitions are valid
          - Update overall plan status if all phases complete
-      4. Validate all updates well-formed
+      5. Validate all updates well-formed
     </process>
     <plan_file_parsing>
       Parse plan file to extract phase information:
