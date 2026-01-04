@@ -1,6 +1,6 @@
 # TODO
 
-**Last Updated:** 2026-01-03T20:03:00Z
+**Last Updated:** 2026-01-03T20:36:00Z
 
 ---
 
@@ -335,11 +335,12 @@ When `/research`, `/plan`, `/revise`, and `/implement` commands run on a task nu
 ---
 
 ### 272. Add standardized YAML header to TODO.md with state.json metadata
-- **Effort**: 12-16 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 14 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Research**: [Research Report](272_add_yaml_header_to_todo_md/reports/research-001.md)
+- **Plan**: [Implementation Plan](272_add_yaml_header_to_todo_md/plans/implementation-001.md)
 - **Blocking**: None
 - **Dependencies**: None
 

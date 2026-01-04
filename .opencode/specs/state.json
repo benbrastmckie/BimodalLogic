@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-03T20:35:00Z",
+  "_last_updated": "2026-01-03T20:36:00Z",
   "next_project_number": 278,
   "project_numbering": {
     "min": 0,
@@ -284,17 +284,26 @@
       "project_number": 272,
       "project_name": "add_yaml_header_to_todo_md",
       "type": "feature",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "medium",
       "language": "markdown",
       "created": "2026-01-03T19:51:30Z",
       "started": "2026-01-03",
       "research_completed": "2026-01-03",
-      "last_updated": "2026-01-03T20:16:00Z",
+      "plan_created": "2026-01-03",
+      "last_updated": "2026-01-03T20:36:00Z",
       "artifacts": [
-        ".opencode/specs/272_add_yaml_header_to_todo_md/reports/research-001.md"
+        ".opencode/specs/272_add_yaml_header_to_todo_md/reports/research-001.md",
+        ".opencode/specs/272_add_yaml_header_to_todo_md/plans/implementation-001.md"
       ],
+      "plan_path": ".opencode/specs/272_add_yaml_header_to_todo_md/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 14,
+        "complexity": "medium",
+        "research_integrated": true
+      },
       "estimated_hours": 14.0
     },
     {
