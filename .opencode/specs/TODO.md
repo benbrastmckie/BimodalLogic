@@ -7,6 +7,58 @@
 
 ## High Priority
 
+### 277. Improve OpenCode header and summary display for task commands
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+Improve the OpenCode system to always display the task number in the header when running task-based commands (`/task`, `/research`, `/plan`, `/revise`, `/implement`) and display the command name when running direct commands (`/todo`, `/errors`, `/review`, `/meta`). Additionally, ensure all final summaries conclude with the task number and command run for easy reference, and make all summaries returned to the user brief.
+
+**Current Behavior**:
+- Headers may not consistently show task numbers for task-based commands
+- Command names may not be displayed for direct commands
+- Final summaries may not include task number and command reference
+- Summaries may be verbose
+
+**Expected Behavior**:
+- Task-based commands (`/task`, `/research`, `/plan`, `/revise`, `/implement`): Header displays "Task: {number}"
+- Direct commands (`/todo`, `/errors`, `/review`, `/meta`): Header displays "Command: /{command}"
+- Final summaries conclude with: "Task {number} - /{command}" for task-based commands
+- Final summaries conclude with: "Command: /{command}" for direct commands
+- All summaries are brief and concise
+
+**Files to Modify**:
+- `.opencode/command/task.md` - Add header display logic
+- `.opencode/command/research.md` - Add header display logic
+- `.opencode/command/plan.md` - Add header display logic
+- `.opencode/command/revise.md` - Add header display logic
+- `.opencode/command/implement.md` - Add header display logic
+- `.opencode/command/todo.md` - Add header display logic
+- `.opencode/command/errors.md` - Add header display logic
+- `.opencode/command/review.md` - Add header display logic
+- `.opencode/command/meta.md` - Add header display logic
+- `.opencode/agent/subagents/researcher.md` - Update summary format
+- `.opencode/agent/subagents/planner.md` - Update summary format
+- `.opencode/agent/subagents/implementer.md` - Update summary format
+- `.opencode/context/core/standards/command-output.md` (create) - Document header and summary standards
+
+**Acceptance Criteria**:
+- [ ] Task-based commands display "Task: {number}" in header
+- [ ] Direct commands display "Command: /{command}" in header
+- [ ] Final summaries for task-based commands conclude with "Task {number} - /{command}"
+- [ ] Final summaries for direct commands conclude with "Command: /{command}"
+- [ ] All summaries are brief (target: <100 tokens)
+- [ ] Header and summary standards documented in command-output.md
+- [ ] All commands tested and verified
+
+**Impact**: Improves user experience by providing clear context about which task or command is running, and makes summaries more concise and easier to reference.
+
+---
+
 ### 275. Fix workflow commands to update status at beginning and end in both TODO.md and state.json
 - **Effort**: 8 hours
 - **Status**: [PLANNED]
@@ -241,7 +293,10 @@ The `/research` command creates research reports but does not update TODO.md tas
 
 ### 276. Investigate and remove redundant project-level state.json files in favor of centralized specs/state.json
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2026-01-03
+- **Completed**: 2026-01-03
+- **Research**: [Research Report](276_investigate_remove_redundant_project_level_state_json/reports/research-001.md)
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
