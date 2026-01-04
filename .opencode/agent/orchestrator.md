@@ -16,6 +16,7 @@ context_loading:
     - "core/system/validation-rules.md"
     - "core/workflows/delegation-guide.md"
     - "core/standards/command-argument-handling.md"
+    - "core/standards/command-output.md"
   max_context_size: 10000
 delegation:
   max_depth: 3
@@ -100,9 +101,13 @@ updated: 2025-12-29
       3. Validate command file exists and frontmatter is valid YAML
       4. Extract routing metadata from frontmatter
       5. Validate delegation safety (cycles, depth, session)
-      6. Generate delegation context
+      6. Generate delegation context with command metadata:
+         - command_type: "task-based" | "direct"
+         - command_name: extracted from command file name
+         - task_number: extracted from $ARGUMENTS (if task-based)
+         - session_id, delegation_path, timeout, etc.
     </process>
-    <checkpoint>Command validated, arguments parsed, delegation context prepared</checkpoint>
+    <checkpoint>Command validated, arguments parsed, delegation context prepared with metadata</checkpoint>
   </stage>
 
   <stage id="2" name="DetermineRouting">
@@ -209,6 +214,8 @@ updated: 2025-12-29
   <stage id="5" name="PostflightCleanup">
     <action>Update session registry and format user response</action>
     <process>
+      See: @.opencode/context/core/standards/command-output.md
+      
       1. Update registry entry:
          - status = "completed" | "timeout" | "failed"
          - end_time = current_time
@@ -217,16 +224,25 @@ updated: 2025-12-29
       
       2. Remove from active registry (keep in history)
       
-      3. Format response for user:
+      3. Format header based on command type (from delegation_context):
+         - Task-based commands: "Task: {task_number}"
+         - Direct commands: "Command: /{command_name}"
+         - Fallback (if metadata missing): Use generic format
+      
+      4. Format response for user:
+         - Display header (from step 3)
          - Extract summary (already <100 tokens)
          - Include artifact paths if applicable
          - Include error details if status != completed
          - Include next steps or resume instructions
+         - DO NOT add conclusion (header provides context)
       
-      4. Return to user
+      5. Return to user
     </process>
     <return_format>
       <for_completed>
+        {header}
+        
         {subagent_summary}
         
         {if artifacts:}
@@ -236,6 +252,8 @@ updated: 2025-12-29
       </for_completed>
       
       <for_partial>
+        {header}
+        
         {subagent_summary}
         
         Status: Partial
@@ -245,6 +263,8 @@ updated: 2025-12-29
       </for_partial>
       
       <for_failed>
+        {header}
+        
         {subagent_summary}
         
         Status: Failed
@@ -258,6 +278,8 @@ updated: 2025-12-29
       </for_failed>
       
       <for_blocked>
+        {header}
+        
         {subagent_summary}
         
         Status: Blocked
@@ -269,6 +291,17 @@ updated: 2025-12-29
         
         Resume with: /{command} {args}
       </for_blocked>
+      
+      <header_format>
+        Task-based commands (command_type == "task-based"):
+          Task: {task_number}
+        
+        Direct commands (command_type == "direct"):
+          Command: /{command_name}
+        
+        Fallback (if metadata missing):
+          {subagent_summary without header}
+      </header_format>
     </return_format>
     <checkpoint>Session cleaned up and result returned to user</checkpoint>
   </stage>
@@ -482,12 +515,14 @@ updated: 2025-12-29
   - **Return Validation**: Validates agent returns against standard format
   - **Minimal Context**: Loads only routing-related context (<5% window)
   - **Agent Ownership**: Agents own their workflows, orchestrator just coordinates
+  - **Command Output**: Displays headers for task-based and direct commands (Stage 5)
   
   For detailed documentation, see:
   - `.opencode/context/core/system/routing-guide.md` - Routing rules and language mapping
   - `.opencode/context/core/workflows/delegation-guide.md` - Delegation safety patterns
   - `.opencode/context/core/system/validation-strategy.md` - Validation philosophy
   - `.opencode/context/core/standards/subagent-return-format.md` - Return format standard
+  - `.opencode/context/core/standards/command-output.md` - Command output format standard
   - Individual command files in `.opencode/command/` - Command-specific workflows
   - Individual subagent files in `.opencode/agent/subagents/` - Agent implementations
 </notes>
