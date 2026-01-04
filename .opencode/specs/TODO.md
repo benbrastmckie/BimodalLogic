@@ -324,7 +324,8 @@ Commands and subagents update status only at the end via status-sync-manager, no
 
 ### 271. Revise /meta command to create tasks with linked artifacts instead of implementing directly
 - **Effort**: 13 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-03
 - **Priority**: High
 - **Language**: markdown
 - **Research**: [Research Report](271_revise_meta_command_task_creation/reports/research-001.md)

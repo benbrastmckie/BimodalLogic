@@ -60,28 +60,30 @@ Executes task implementations with plan-based or direct execution, language-base
 
 ## Delegation
 
-**Target Agent:** Language-based routing  
+**Target Agent:** Type-based routing  
 **Timeout:** 7200s (2 hours)  
-**Language-Based Routing:** Yes
+**Type-Based Routing:** Yes
 
 **Routing Rules:**
-| Language | Agent | Tools |
+| Type | Agent | Tools |
 |----------|-------|-------|
 | lean | lean-implementation-agent | lean-lsp-mcp, lake build |
+| meta | meta | File operations, git, delegation to meta subagents |
 | markdown | implementer | File operations, git |
 | python | implementer | File operations, git, python |
 | general | implementer | File operations, git |
 
-**Language Extraction (Orchestrator Stage 2):**
+**Type Extraction (Orchestrator Stage 2):**
 1. Priority 1: Project state.json (task-specific) - `.opencode/specs/{task_number}_*/state.json`
-2. Priority 2: TODO.md task entry (**Language** field) - `grep -A 20 "^### {task_number}\."`
+2. Priority 2: TODO.md task entry (**Type** field) - `grep -A 20 "^### {task_number}\."`
 3. Priority 3: Default "general" (fallback) - If extraction fails
 
 **Routing Validation (Orchestrator Stage 2):**
 - Verify agent file exists at `.opencode/agent/subagents/{agent}.md`
-- If language="lean": Agent must start with "lean-" (e.g., lean-implementation-agent)
-- If language!="lean": Agent must NOT start with "lean-" (e.g., implementer)
-- Log routing decision: `[INFO] Routing to {agent} (language={language})`
+- If type="lean": Agent must start with "lean-" (e.g., lean-implementation-agent)
+- If type="meta": Agent must be "meta" (delegates to meta subagents)
+- If type!="lean" and type!="meta": Agent must be "implementer"
+- Log routing decision: `[INFO] Routing to {agent} (type={type})`
 
 **Artifact Validation (Orchestrator Stage 4):**
 - If status="completed": Artifacts array must be non-empty
@@ -139,17 +141,17 @@ Status: Partial implementation may exist
 Resume with: /implement {task_number}
 ```
 
-**Language Extraction Failure:**
+**Type Extraction Failure:**
 ```
-Warning: Could not extract language from task entry
+Warning: Could not extract type from task entry
 Defaulting to: general (implementer agent)
-Recommendation: Add **Language**: {language} to task entry in TODO.md
+Recommendation: Add **Type**: {type} to task entry in TODO.md
 ```
 
 ## Notes
 
 - **Resume Support**: Automatic resume from incomplete phases if plan exists
-- **Language Routing**: Lean tasks route to lean-implementation-agent with specialized tools
+- **Type-Based Routing**: Lean tasks route to lean-implementation-agent, meta tasks route to meta agent, others route to implementer
 - **Batch Support**: Can implement multiple tasks sequentially (e.g., 105-107)
 - **Git Workflow**: Per-phase commits for plan-based, single commit for direct
 - **Context Window Protection**: Summary artifact for multi-file outputs

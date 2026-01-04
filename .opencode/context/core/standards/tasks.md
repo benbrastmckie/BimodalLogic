@@ -38,7 +38,7 @@ Standards for creating, formatting, and managing tasks within the .opencode syst
 
 **Auto-Populated Fields (Defaults Used if Not Provided)**:
 - **Priority**: Medium (override if task is urgent or low priority)
-- **Language**: markdown (override if task involves code)
+- **Type**: markdown (override if task involves code or meta work)
 - **Effort**: 2 hours (override if you have better estimate)
 - **Files Affected**: TBD (override if you know which files)
 - **Dependencies**: None (override if task depends on others)
@@ -53,9 +53,10 @@ Override Priority when:
 - Task is urgent or blocking critical work → High
 - Task is nice-to-have or low impact → Low
 
-Override Language when:
+Override Type when:
 - Task involves Lean code → lean
-- Task involves specific language → specify language
+- Task involves meta work (agents, commands, context) → meta
+- Task involves specific language → specify language (python, shell, etc.)
 
 Override Effort when:
 - You have a better estimate based on task complexity
@@ -94,11 +95,11 @@ Override Impact when:
 - `/implement` **must** reuse the plan link attached in .opencode/specs/TODO.md when present and update that plan in place with status markers. When no plan is linked, `/implement` executes directly (no failure) while preserving lazy directory creation (no project roots/subdirs unless an artifact is written) and numbering/state sync; guidance to use `/plan {task}` remains recommended for complex work.
 - `/implement`, `/review`, and `/todo` **must** keep IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md in sync when they change task/plan/implementation status or sorry/tactic counts.
 - `/implement` must emit an implementation summary artifact (standard naming) whenever task execution writes implementation artifacts; status-only paths do not emit summaries. Maintain lazy directory creation.
-- `/review`, `/todo`, and `/implement` must capture/populate the `Language` metadata for every task they create or modify; backfill missing Language when encountered.
-- `/implement` uses the TODO task `Language` field as the authoritative Lean intent signal. Plan `lean:` metadata is secondary. If `Language` is missing, warn and default to non-Lean unless the user explicitly supplies `--lang lean` (explicit flag wins over metadata when they disagree).
+- `/review`, `/todo`, and `/implement` must capture/populate the `Type` metadata for every task they create or modify; backfill missing Type when encountered.
+- `/implement` uses the TODO task `Type` field as the authoritative routing signal. Plan metadata is secondary. If `Type` is missing, warn and default to general unless the user explicitly supplies `--type {type}` (explicit flag wins over metadata when they disagree).
 - Commands mirror status markers (`[NOT STARTED]`, `[IN PROGRESS]`, `[BLOCKED]`, `[ABANDONED]`, `[COMPLETED]`) and timestamps between plan files and TODO/state, without altering numbering rules.
 - **Lean routing and MCP validation**:
-  - Lean research requests **must** use the Lean research subagent; Lean implementation requests **must** use the Lean implementation subagent, selected from the TODO `Language` field (or explicit flag override) rather than heuristics.
+  - Lean research requests **must** use the Lean research subagent; Lean implementation requests **must** use the Lean implementation subagent, selected from the TODO `Type` field (or explicit flag override) rather than heuristics.
   - Validate Lean MCP server availability against `.mcp.json` before dispatch; fail with a clear error if required servers are missing/unreachable or if the command is absent/returns non-zero during a health ping.
   - Default required Lean server: `lean-lsp` (stdio via `uvx lean-lsp-mcp`); planned servers (`lean-explore`, `loogle`, `lean-search`) should raise a "planned/not configured" warning instead of proceeding silently.
   - When validation fails, surface remediation steps (install command, set env like `LEAN_PROJECT_PATH`, supply API keys) and do **not** create project directories or artifacts.
@@ -107,37 +108,38 @@ Override Impact when:
 
 -   [ ] Task ID is unique and retrieved from `state.json`.
 -   [ ] Title is clear and descriptive.
--   [ ] Metadata (Effort, Status, Priority, **Language**) is complete.
--   [ ] Language field reflects the primary language for the work (e.g., `lean`, `markdown`, `python`, `shell`, `json`).
+-   [ ] Metadata (Effort, Status, Priority, **Type**) is complete.
+-   [ ] Type field reflects the primary type for the work (e.g., `lean`, `markdown`, `python`, `shell`, `json`, `meta`).
 -   [ ] Dependencies are correctly listed.
 -   [ ] Acceptance criteria are testable.
 -   [ ] No emojis are present.
 -   [ ] Metadata format uses `- **Field**:` pattern (not `*Field**:` or other variants).
--   [ ] All required fields present (Language, Effort, Priority, Status).
+-   [ ] All required fields present (Type, Effort, Priority, Status).
 
 ## Troubleshooting
 
-### Missing Language Field
+### Missing Type Field
 
-**Problem**: Task is missing the Language field.
+**Problem**: Task is missing the Type field.
 
 **Impact**: 
-- Prevents proper routing to Lean-specific agents (lean-research-agent, lean-implementation-agent)
-- Breaks automation workflows that depend on Language field
-- Violates task standards (Language is MANDATORY per line 110 quality checklist)
+- Prevents proper routing to specialized agents (lean-research-agent, lean-implementation-agent, meta subagents)
+- Breaks automation workflows that depend on Type field
+- Violates task standards (Type is MANDATORY per line 110 quality checklist)
 
 **Solution**:
-1. Identify the primary language for the task:
-   - Lean code tasks → `- **Language**: lean`
-   - Documentation tasks → `- **Language**: markdown`
-   - General tasks → `- **Language**: general`
-   - Python tasks → `- **Language**: python`
-   - Shell scripts → `- **Language**: shell`
-2. Add Language field to task metadata in TODO.md
-3. Ensure Language field is on its own line with correct formatting
+1. Identify the primary type for the task:
+   - Lean code tasks → `- **Type**: lean`
+   - Documentation tasks → `- **Type**: markdown`
+   - General tasks → `- **Type**: general`
+   - Python tasks → `- **Type**: python`
+   - Shell scripts → `- **Type**: shell`
+   - Meta work (agents, commands, context) → `- **Type**: meta`
+2. Add Type field to task metadata in TODO.md
+3. Ensure Type field is on its own line with correct formatting
 
 **Prevention**:
-- Use /task command to create tasks (enforces Language field)
+- Use /task command to create tasks (enforces Type field)
 - Avoid manual editing of TODO.md
 - If manual editing required, follow task standards exactly
 
@@ -180,9 +182,9 @@ AFTER (correct):
 
 **Common Errors**:
 
-1. "Language field is required but could not be detected"
-   - Solution: Add `--language lean` (or markdown/general) flag to /task command
-   - Example: `/task "Fix bug in Foo.lean" --language lean`
+1. "Type field is required but could not be detected"
+   - Solution: Add `--type lean` (or markdown/general/meta) flag to /task command
+   - Example: `/task "Fix bug in Foo.lean" --type lean`
 
 2. "Metadata format must use `- **Field**:` pattern"
    - Solution: This error should not occur with /task command (internal validation)
@@ -194,7 +196,7 @@ AFTER (correct):
 
 **Prevention**:
 - Always use /task command for task creation
-- Provide --language flag if language detection might fail
+- Provide --type flag if type detection might fail
 - Review task standards before creating tasks
 
 ### Validation Errors from /review Command
@@ -203,9 +205,9 @@ AFTER (correct):
 
 **Common Violations**:
 
-1. "Task {number} missing required Language field"
-   - Solution: Manually add Language field to task in TODO.md
-   - Follow format: `- **Language**: {lean|markdown|general}`
+1. "Task {number} missing required Type field"
+   - Solution: Manually add Type field to task in TODO.md
+   - Follow format: `- **Type**: {lean|markdown|general|meta}`
 
 2. "Task {number} has incorrect metadata format"
    - Solution: Fix metadata format to use `- **Field**:` pattern

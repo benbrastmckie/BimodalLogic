@@ -272,7 +272,8 @@ def validate_todo_format(lines: List[str]) -> List[ValidationError]:
             status = status_match.group(1)
             valid_statuses = [
                 'NOT STARTED', 'IN PROGRESS', 'RESEARCHED', 'PLANNED',
-                'BLOCKED', 'COMPLETED', 'ABANDONED'
+                'BLOCKED', 'COMPLETED', 'ABANDONED',
+                'RESEARCHING', 'PLANNING', 'IMPLEMENTING', 'REVISING'
             ]
             if status not in valid_statuses:
                 errors.append(ValidationError(

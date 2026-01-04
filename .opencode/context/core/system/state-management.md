@@ -307,7 +307,7 @@ technical_debt:
 - **Effort**: 14 hours
 - **Status**: [PLANNED]
 - **Priority**: Medium
-- **Language**: markdown
+- **Type**: markdown
 - **Started**: 2025-12-20
 - **Completed**: 2025-12-20
 - **Blocked**: 2025-12-20
