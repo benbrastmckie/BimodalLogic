@@ -29,12 +29,13 @@ technical_debt:
 
 ### 280. Fix orchestrator Stage 4 validation to enforce subagent return format and prevent phantom research
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](280_fix_orchestrator_stage_4_validation/reports/research-001.md)
+- **Plan**: [Implementation Plan](280_fix_orchestrator_stage_4_validation/plans/implementation-001.md)
 
 **Description**:
 When running `/research 279`, the researcher agent returned plain text instead of the required JSON format (per subagent-return-format.md), and the orchestrator's Stage 4 (ValidateReturn) did not catch this violation. This resulted in "phantom research" - the orchestrator claimed research was completed successfully, but no artifacts were created, no status was updated, and no directory was created. This is a critical validation failure affecting ALL workflow commands (/research, /plan, /implement, /revise).

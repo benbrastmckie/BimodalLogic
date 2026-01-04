@@ -394,17 +394,27 @@
       "project_number": 280,
       "project_name": "fix_orchestrator_stage_4_validation_to_enforce_subagent_return_format_and_prevent_phantom_research",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-04T05:00:30Z",
       "last_updated": "2026-01-03",
       "started": "2026-01-03",
       "research_completed": "2026-01-03",
+      "planning_completed": "2026-01-03",
       "artifacts": [
-        ".opencode/specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md"
-      ]
+        ".opencode/specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md",
+        ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 7,
+        "complexity": "medium",
+        "research_integrated": true
+      },
+      "estimated_hours": 7.0
     }
   ],
   "completed_projects": [
