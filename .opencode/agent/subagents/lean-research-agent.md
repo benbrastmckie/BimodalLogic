@@ -620,15 +620,9 @@ lifecycle:
          b. Add/update project entry with status "researched"
          c. Add artifacts array with research report and summary paths
          d. Set created_at and updated_at timestamps (ISO 8601 format)
-      4. Update project state.json:
-         a. Create/update .opencode/specs/{task_number}_{topic}/state.json
-         b. Add research artifacts to reports array
-         c. Add research summary to summaries array
-         d. Set phase to "researched"
-         e. Set timestamps in ISO 8601 format
-      5. Format return following subagent-return-format.md
-      6. List research report artifact AND summary artifact
-      7. Include brief summary of key findings in summary field (3-5 sentences, <100 tokens):
+      4. Format return following subagent-return-format.md
+      5. List research report artifact AND summary artifact
+      6. Include brief summary of key findings in summary field (3-5 sentences, <100 tokens):
          - This is METADATA in return object, NOT a separate artifact file
          - Keep concise for orchestrator context window protection
          - Focus on counts (definitions, theorems, tactics found)
@@ -786,7 +780,6 @@ lifecycle:
   <must>Update TODO.md status markers ([NOT STARTED] → [RESEARCHING] → [RESEARCHED])</must>
   <must>Add timestamps to TODO.md (**Started**, **Completed** in YYYY-MM-DD format)</must>
   <must>Update state.json with project status and artifacts</must>
-  <must>Create project state.json with research artifacts</must>
   <must>Create summary artifact (3-5 sentences, <100 tokens)</must>
   <must>Validate summary artifact before writing (token count, sentence count)</must>
   <must>Validate summary artifact before returning (exists, non-empty, within limits)</must>

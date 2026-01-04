@@ -404,17 +404,11 @@ lifecycle:
          b. Add/update project entry with status "completed"/"partial"/"blocked"
          c. Add artifacts array with Lean file paths and summary path
          d. Set created_at and updated_at timestamps (ISO 8601 format)
-      4. Update project state.json:
-         a. Update .opencode/specs/{task_number}_{topic}/state.json
-         b. Add implementation files to appropriate tracking arrays
-         c. Add implementation summary to summaries array
-         d. Set phase to "completed"/"partial"/"blocked"
-         e. Set timestamps in ISO 8601 format
-      5. Format return following subagent-return-format.md
-      6. List all Lean files modified/created in artifacts array
-      7. Include implementation summary artifact in artifacts array
-      8. Include compilation results if available
-      9. Include tool unavailability warning if applicable
+      4. Format return following subagent-return-format.md
+      5. List all Lean files modified/created in artifacts array
+      6. Include implementation summary artifact in artifacts array
+      7. Include compilation results if available
+      8. Include tool unavailability warning if applicable
       10. Include session_id from input
       11. Include metadata (duration, delegation info)
       12. Return status: completed (if compiled) or partial (if degraded)
@@ -549,7 +543,6 @@ lifecycle:
   <must>Update TODO.md status markers ([NOT STARTED]/[PLANNED] → [IMPLEMENTING] → [COMPLETED]/[PARTIAL]/[BLOCKED])</must>
   <must>Add timestamps to TODO.md (**Started**, **Completed** in YYYY-MM-DD format)</must>
   <must>Update state.json with project status and artifacts</must>
-  <must>Update project state.json with implementation artifacts</must>
   <must>Create summary artifact (3-5 sentences, <100 tokens)</must>
   <must>Validate summary artifact before writing (token count, sentence count)</must>
   <must>Validate summary artifact before returning (exists, non-empty, within limits)</must>
@@ -742,7 +735,6 @@ lifecycle:
     - Verify all status indicators use text format ([PASS]/[FAIL]/[WARN])
     - Verify TODO.md status updated to [COMPLETED]/[PARTIAL]/[BLOCKED] with timestamps
     - Verify state.json updated with project status and artifacts
-    - Verify project state.json updated with implementation artifacts
     - Verify compilation checked (if tool available)
     - Verify tool unavailability logged (if applicable)
     - Verify return format matches subagent-return-format.md

@@ -266,8 +266,7 @@ lifecycle:
           "scope_files": [
             "{plan_path}",
             ".opencode/specs/TODO.md",
-            ".opencode/specs/state.json",
-            ".opencode/specs/{task_number}_{slug}/state.json"
+            ".opencode/specs/state.json"
           ],
           "message_template": "task {number}: plan created",
           "task_context": {

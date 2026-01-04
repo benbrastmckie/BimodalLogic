@@ -162,7 +162,6 @@ lifecycle:
       1. Create summaries subdirectory in project_path (lazy creation):
          - Do NOT create project root yet (will be created when writing file)
          - Create only summaries/ subdirectory when writing summary file
-         - Trigger: Writing review summary triggers project state.json creation by /review command
       2. Write summaries/review-summary.md following summary.md standard:
          - Metadata: Status [COMPLETED], timestamps, priority, dependencies
          - Overview: 2-3 sentences on review scope and context
@@ -177,21 +176,13 @@ lifecycle:
       7. Use placeholder task numbers (TBD-1, TBD-2, etc.) in Follow-ups section
          - /review command will replace placeholders with actual task numbers after creation
     </process>
-    <project_state_json_trigger>
-      Writing review summary artifact triggers project state.json creation:
-      - /review command detects review summary artifact in return
-      - /review delegates to status-sync-manager to create project state.json
-      - Project state.json includes review metadata, metrics, and registries_updated
-      - Reviewer does NOT create project state.json directly
-      - /review command is responsible for project state.json creation
-    </project_state_json_trigger>
     <validation>
       - Summary follows summary.md standard
       - Overview is 3-5 sentences
       - All required sections present
       - File written successfully
     </validation>
-    <output>Review summary artifact created (triggers project state.json creation)</output>
+    <output>Review summary artifact created</output>
   </step_4>
 
   <step_5>
@@ -421,16 +412,6 @@ lifecycle:
          * path (review summary artifact)
          * scope (review_scope)
     
-    3. Project state.json creation (via status-sync-manager):
-       - type: "review"
-       - status: "completed|in_progress"
-       - scope: review_scope
-       - created: timestamp
-       - completed: timestamp
-       - artifacts: [review summary artifact]
-       - metrics: review_metrics from reviewer return
-       - registries_updated: [IMPLEMENTATION_STATUS, SORRY_REGISTRY, TACTIC_REGISTRY, FEATURE_REGISTRY]
-    
     All updates atomic (all succeed or all rollback via two-phase commit)
   </state_file_updates>
   <metrics_return_format>
@@ -446,7 +427,7 @@ lifecycle:
     }
     
     Required fields used for state.json repository_health updates
-    Optional fields used for review summary and project state.json
+    Optional fields used for review summary only
   </metrics_return_format>
   <identified_tasks_return_format>
     Reviewer must return identified_tasks in this format for task creation:

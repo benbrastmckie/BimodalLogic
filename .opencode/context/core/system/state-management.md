@@ -270,33 +270,6 @@ This standard defines the complete state management system for ProofChecker, inc
 }
 ```
 
-### Project State File
-
-**Location**: `.opencode/specs/NNN_project_name/state.json`
-
-**Purpose**: Track individual project progress, artifacts, metadata
-
-**Schema**:
-```json
-{
-  "project_name": "bimodal_proof_system",
-  "project_number": 1,
-  "type": "implementation",
-  "phase": "planning",
-  "reports": ["reports/research-001.md"],
-  "plans": ["plans/implementation-001.md"],
-  "summaries": ["summaries/project-summary.md"],
-  "plan_metadata": {
-    "phase_count": 4,
-    "estimated_hours": 12,
-    "complexity": "medium"
-  },
-  "status": "active",
-  "created": "2025-01-15T10:00:00Z",
-  "last_updated": "2025-01-16"
-}
-```
-
 ---
 
 ## Timestamp Formats
@@ -356,7 +329,6 @@ This standard defines the complete state management system for ProofChecker, inc
 Commands that create or update plans must keep status synchronized across:
 - `.opencode/specs/TODO.md` (user-facing task list)
 - `state.json` (global project state)
-- Project `state.json` (project-specific state)
 - Plan files (implementation plans)
 
 ### Atomic Update Requirement
@@ -375,7 +347,7 @@ The `status-sync-manager` specialist provides atomic multi-file updates using tw
 5. If any validation fails, abort (no files written)
 
 **Phase 2 (Commit)**:
-1. Write files in dependency order: TODO.md → state.json → project state → plan
+1. Write files in dependency order: TODO.md → state.json → plan
 2. Verify each write before proceeding
 3. On any write failure, rollback all previous writes
 4. All files updated or none updated (atomic guarantee)

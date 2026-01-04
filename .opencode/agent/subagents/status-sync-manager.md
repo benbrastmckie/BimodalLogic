@@ -40,7 +40,7 @@ lifecycle:
 
 <context>
   <specialist_domain>Atomic multi-file state synchronization</specialist_domain>
-  <task_scope>Update status markers across .opencode/specs/TODO.md, state.json, and plan files atomically</task_scope>
+  <task_scope>Update status markers across .opencode/specs/TODO.md and state.json atomically</task_scope>
   <integration>Called by commands to ensure consistent status across all tracking files</integration>
 </context>
 
@@ -49,7 +49,7 @@ lifecycle:
 </role>
 
 <task>
-  Perform atomic status updates across .opencode/specs/TODO.md, state.json, project state, and plan files using two-phase commit protocol
+  Perform atomic status updates across .opencode/specs/TODO.md, state.json, and plan files using two-phase commit protocol
 </task>
 
 <inputs_required>
@@ -112,10 +112,9 @@ lifecycle:
     <process>
       1. Read .opencode/specs/TODO.md into memory
       2. Read .opencode/specs/state.json into memory
-      3. Read project state.json if exists
-      4. Read plan file if plan_path provided
-      5. Validate all files readable
-      6. Create backups of original content
+      3. Read plan file if plan_path provided
+      4. Validate all files readable
+      5. Create backups of original content
     </process>
     <validation>All target files exist and are readable</validation>
     <output>In-memory copies of all files with backups</output>
@@ -178,13 +177,7 @@ lifecycle:
          - Add plan_metadata if provided (phase_count, estimated_hours, complexity)
          - Append to plan_versions array if plan_version provided
          - Update plan_path to latest version if plan_version provided
-      3. Create or update project state.json:
-         - If project state.json does not exist: create lazily (CRITICAL: fail if creation fails)
-         - Use state-schema.md template for initial structure
-         - Populate with project_name, project_number, type, phase, status
-         - Add creation timestamp and last_updated timestamp
-         - Add artifact references (reports, plans, summaries)
-      4. Update plan file if plan_path and phase_statuses provided:
+      3. Update plan file if plan_path and phase_statuses provided:
          - Parse plan file to extract current phase markers
          - For each phase_status in phase_statuses array:
            a. Locate phase heading (### Phase {N}:)
@@ -193,7 +186,7 @@ lifecycle:
          - Validate phase numbers are valid (exist in plan)
          - Validate status transitions are valid
          - Update overall plan status if all phases complete
-      5. Validate all updates well-formed
+      4. Validate all updates well-formed
     </process>
     <plan_file_parsing>
       Parse plan file to extract phase information:
@@ -230,11 +223,9 @@ lifecycle:
       2. Verify write succeeded
       3. Write state.json
       4. Verify write succeeded
-      5. Write project state.json (CRITICAL: fail if write fails, no silent failures)
-      6. Verify write succeeded (abort and rollback if fails)
-      7. Write plan file if plan_path and phase_statuses provided
-      8. Verify write succeeded
-      9. If any write fails: rollback all previous writes
+      5. Write plan file if plan_path and phase_statuses provided
+      6. Verify write succeeded
+      7. If any write fails: rollback all previous writes
     </process>
     <rollback_on_failure>
       If any write fails:
@@ -254,9 +245,8 @@ lifecycle:
       1. Post-commit validation for all files written:
          a. Verify .opencode/specs/TODO.md exists and size > 0
          b. Verify state.json exists and size > 0
-         c. Verify project state.json exists and size > 0
-         d. Verify plan file exists and size > 0 (if plan_path provided)
-         e. If any validation fails: Log error (files already written, cannot rollback)
+         c. Verify plan file exists and size > 0 (if plan_path provided)
+         d. If any validation fails: Log error (files already written, cannot rollback)
       2. Rollback validation (if rollback occurred):
          a. Verify all files restored to original state
          b. Verify no partial state remains
@@ -384,75 +374,6 @@ lifecycle:
     ```
   </example_metadata>
 </plan_metadata_tracking>
-
-<project_state_creation>
-  <purpose>
-    Create project state.json lazily on first artifact write
-  </purpose>
-
-  <lazy_creation_policy>
-    Project state.json is created when:
-    1. First artifact is added to project (research report, plan, etc.)
-    2. Project directory exists but state.json does not
-    3. status-sync-manager is updating project status
-  </lazy_creation_policy>
-
-  <creation_process>
-    When creating project state.json:
-    1. Check if .opencode/specs/{task_number}_{slug}/state.json exists
-    2. If not exists:
-       a. Create directory if needed (lazy directory creation)
-       b. Use state-schema.md template for initial structure
-       c. Populate with project metadata:
-          - project_name: Extract from task description
-          - project_number: task_number
-          - type: Extract from task metadata (implementation, research, etc.)
-          - phase: Determine from current status (planning, implementation, etc.)
-          - status: Current task status
-       d. Add creation timestamp (ISO 8601)
-       e. Add last_updated timestamp (YYYY-MM-DD)
-       f. Initialize empty arrays for reports, plans, summaries
-    3. Add to two-phase commit transaction
-  </creation_process>
-
-  <state_template>
-    ```json
-    {
-      "project_name": "leansearch_api_integration",
-      "project_number": 195,
-      "type": "implementation",
-      "phase": "planning",
-      "reports": [],
-      "plans": [],
-      "summaries": [],
-      "status": "active",
-      "created": "2025-12-28T10:00:00Z",
-      "last_updated": "2025-12-28"
-    }
-    ```
-  </state_template>
-
-  <update_process>
-    When updating existing project state.json:
-    1. Read current state.json
-    2. Update last_updated timestamp
-    3. Append to reports/plans/summaries arrays as needed
-    4. Update phase if status changed
-    5. Add to two-phase commit transaction
-  </update_process>
-
-  <error_handling>
-    If project state.json creation fails:
-    1. Log error with details
-    2. Abort update (do not write any files)
-    3. Rollback all previously written files
-    4. Return failed status with specific error
-    5. Include remediation steps in error message
-    
-    CRITICAL: Project state.json creation is now CRITICAL, not gracefully degraded.
-    Failures must surface to user with clear error messages.
-  </error_handling>
-</project_state_creation>
 
 <plan_file_phase_updates>
   <purpose>
@@ -650,7 +571,6 @@ lifecycle:
   <must>Rollback all writes if any single write fails</must>
   <must>Validate status transitions per status-markers.md</must>
   <must>Validate artifacts exist before linking (artifact validation protocol)</must>
-  <must>Create project state.json lazily on first artifact write (CRITICAL: fail if creation fails)</must>
   <must>Track plan metadata in state.json (phase_count, estimated_hours, complexity)</must>
   <must>Track plan version history in plan_versions array</must>
   <must>Preserve Started timestamp when updating status</must>
@@ -665,7 +585,6 @@ lifecycle:
   <must_not>Proceed with invalid status transitions</must_not>
   <must_not>Link artifacts without validation</must_not>
   <must_not>Lose data during rollback</must_not>
-  <must_not>Silently fail project state.json creation</must_not>
   <must_not>Update plan file without validation</must_not>
 </constraints>
 
@@ -856,14 +775,10 @@ lifecycle:
   </principle_6>
 
   <principle_7>
-    Lazy creation: Create project state.json on first artifact write
+    Track metadata: Store plan metadata for querying without parsing
   </principle_7>
 
   <principle_8>
-    Track metadata: Store plan metadata for querying without parsing
-  </principle_8>
-
-  <principle_9>
     Preserve versions: Append to plan_versions array, never overwrite
-  </principle_9>
+  </principle_8>
 </synchronization_principles>

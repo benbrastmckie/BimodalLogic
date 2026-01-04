@@ -1,6 +1,6 @@
 # TODO
 
-**Last Updated:** 2026-01-03T20:36:00Z
+**Last Updated:** 2026-01-04T04:44:09Z
 
 ---
 
@@ -347,12 +347,14 @@ The `/research` command creates research reports but does not update TODO.md tas
 
 ---
 
-### 276. Investigate and remove redundant project-level state.json files in favor of centralized specs/state.json
+### 276. ✓ Investigate and remove redundant project-level state.json files in favor of centralized specs/state.json
 - **Effort**: 8 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-03
+- **Completed**: 2026-01-03
 - **Research**: [Research Report](276_investigate_remove_redundant_project_level_state_json/reports/research-001.md)
 - **Plan**: [Implementation Plan](276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md)
+- **Implementation**: [Implementation Summary](276_investigate_remove_redundant_project_level_state_json/summaries/implementation-summary-20260103.md)
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -1402,4 +1404,207 @@ Research revealed that OpenCode has native MCP (Model Context Protocol) support 
 CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client to proper OpenCode-native MCP integration. Enables lean-lsp-mcp tools for real-time Lean compilation checking, proof verification, and theorem search. Reduces context window usage by 2000-5000 tokens through selective per-agent tool enablement. Establishes foundation for additional MCP servers (Context7, Grep) to enhance Lean development workflow.
 
 ---
+
+
+### 279. Systematically fix metadata lookup to use state.json instead of TODO.md
+- **Effort**: 12-16 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+When running `/implement 276`, the command output showed "Extract task 276 details from TODO.md" which indicates that commands and subagents are extracting metadata from TODO.md instead of from the authoritative source (specs/state.json). TODO.md should be kept in sync as a user-facing version of state.json, but all metadata lookups should reference state.json as the single source of truth.
+
+**Current Behavior**:
+```bash
+/implement 276
+# Output shows: "Extract task 276 details from TODO.md"
+# Problem: Using TODO.md for metadata lookup instead of state.json
+```
+
+**Expected Behavior**:
+```bash
+/implement 276
+# Should: Extract task 276 metadata from state.json
+# Should: Use state.json as single source of truth
+# Should: Update TODO.md to reflect state.json changes (sync direction: state.json → TODO.md)
+```
+
+**Root Cause Analysis**:
+
+Comprehensive codebase search reveals widespread use of TODO.md for metadata extraction:
+
+1. **Orchestrator** (`.opencode/agent/orchestrator.md`):
+   - Stage 2 (DetermineRouting): "Extract language from state.json or TODO.md"
+   - Should be: Extract language from state.json ONLY
+
+2. **Workflow Commands** (4 files):
+   - `/research` - "Extract language from task entry (state.json or TODO.md)"
+   - `/plan` - "Extract language from task entry (state.json or TODO.md)"
+   - `/implement` - "Extract language from task entry (state.json or TODO.md)"
+   - `/revise` - "Extract language from task entry (state.json or TODO.md)"
+   - Should be: Extract from state.json ONLY
+
+3. **Subagents** (7 files):
+   - `researcher.md` - "Extract language from state.json (fallback to TODO.md)"
+   - `planner.md` - "Read task from .opencode/specs/TODO.md"
+   - `implementer.md` - "grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md"
+   - `lean-research-agent.md` - "Extract language from state.json (fallback to TODO.md)"
+   - `lean-implementation-agent.md` - "Read task from .opencode/specs/TODO.md"
+   - `lean-planner.md` - "Read task from .opencode/specs/TODO.md"
+   - `status-sync-manager.md` - "Extract current status from .opencode/specs/TODO.md"
+   - Should be: Extract from state.json ONLY
+
+4. **Context Files** (6 files):
+   - `routing-guide.md` - "Extract language from task entry in TODO.md"
+   - `routing-logic.md` - "task_entry=$(grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md)"
+   - `research-workflow.md` - "Read task from TODO.md using grep"
+   - `planning-workflow.md` - "Read task from TODO.md using grep"
+   - `implementation-workflow.md` - "Read task from TODO.md using grep"
+   - `subagent-structure.md` - "Read task from TODO.md"
+   - Should be: Document state.json as source of truth
+
+**Metadata Fields Affected**:
+
+The following metadata fields are currently extracted from TODO.md but should come from state.json:
+
+1. **Language** - Used for routing to Lean-specific agents
+2. **Priority** - Used for task prioritization
+3. **Status** - Used for workflow state tracking
+4. **Effort** - Used for estimation
+5. **Dependencies** - Used for task ordering
+6. **Blocking** - Used for identifying blockers
+7. **Description** - Used for task context
+8. **Artifacts** - Used for linking research/plans/implementations
+
+**Correct Architecture**:
+
+```
+state.json (authoritative source)
+    ↓
+    | (read metadata)
+    ↓
+Commands/Subagents
+    ↓
+    | (update metadata)
+    ↓
+status-sync-manager
+    ↓
+    | (atomic two-phase commit)
+    ↓
+state.json + TODO.md (synchronized)
+```
+
+**Sync Direction**: state.json → TODO.md (NOT bidirectional)
+
+**Files to Modify** (25 files total):
+
+**Orchestrator** (1 file):
+- `.opencode/agent/orchestrator.md` - Update Stage 2 to extract language from state.json only
+
+**Commands** (4 files):
+- `.opencode/command/research.md` - Update Stage 1 to read from state.json
+- `.opencode/command/plan.md` - Update Stage 1 to read from state.json
+- `.opencode/command/implement.md` - Update Stage 1 to read from state.json
+- `.opencode/command/revise.md` - Update Stage 1 to read from state.json
+
+**Subagents** (7 files):
+- `.opencode/agent/subagents/researcher.md` - Remove TODO.md fallback, use state.json only
+- `.opencode/agent/subagents/planner.md` - Replace grep TODO.md with jq state.json
+- `.opencode/agent/subagents/implementer.md` - Replace grep TODO.md with jq state.json
+- `.opencode/agent/subagents/lean-research-agent.md` - Remove TODO.md fallback, use state.json only
+- `.opencode/agent/subagents/lean-implementation-agent.md` - Replace grep TODO.md with jq state.json
+- `.opencode/agent/subagents/lean-planner.md` - Replace grep TODO.md with jq state.json
+- `.opencode/agent/subagents/status-sync-manager.md` - Extract status from state.json, not TODO.md
+
+**Context Files** (6 files):
+- `.opencode/context/core/system/routing-guide.md` - Document state.json as source
+- `.opencode/context/core/system/routing-logic.md` - Update examples to use state.json
+- `.opencode/context/project/processes/research-workflow.md` - Update to use state.json
+- `.opencode/context/project/processes/planning-workflow.md` - Update to use state.json
+- `.opencode/context/project/processes/implementation-workflow.md` - Update to use state.json
+- `.opencode/context/core/standards/subagent-structure.md` - Document state.json pattern
+
+**Standards** (2 files):
+- `.opencode/context/core/system/state-management.md` - Clarify state.json as authoritative source
+- `.opencode/context/core/system/artifact-management.md` - Document metadata lookup pattern
+
+**Templates** (1 file):
+- `.opencode/context/core/templates/command-template.md` - Update template to use state.json
+
+**Documentation** (4 files):
+- `.opencode/docs/guides/creating-commands.md` - Update examples to use state.json
+- `.opencode/ARCHITECTURE.md` - Document state.json as source of truth
+- `.opencode/REFACTOR.md` - Update refactoring notes
+- `.opencode/REBUILD_SUMMARY.md` - Update rebuild notes
+
+**Implementation Strategy**:
+
+**Phase 1: Update Metadata Extraction Pattern** (4 hours)
+1. Create helper function for state.json metadata extraction:
+   ```bash
+   # Extract task metadata from state.json
+   task_metadata=$(jq -r --arg task_num "$task_number" \
+     '.active_projects[] | select(.project_number == ($task_num | tonumber))' \
+     .opencode/specs/state.json)
+   
+   # Extract specific fields
+   language=$(echo "$task_metadata" | jq -r '.language // "general"')
+   priority=$(echo "$task_metadata" | jq -r '.priority // "medium"')
+   status=$(echo "$task_metadata" | jq -r '.status // "not_started"')
+   ```
+
+2. Document pattern in state-management.md
+3. Create examples in routing-guide.md
+
+**Phase 2: Update Orchestrator and Commands** (3 hours)
+1. Update orchestrator.md Stage 2 (DetermineRouting)
+2. Update research.md Stage 1 (PreflightValidation)
+3. Update plan.md Stage 1 (PreflightValidation)
+4. Update implement.md Stage 1 (PreflightValidation)
+5. Update revise.md Stage 1 (PreflightValidation)
+
+**Phase 3: Update Subagents** (4 hours)
+1. Update researcher.md - Remove TODO.md fallback
+2. Update planner.md - Replace grep with jq
+3. Update implementer.md - Replace grep with jq
+4. Update lean-research-agent.md - Remove TODO.md fallback
+5. Update lean-implementation-agent.md - Replace grep with jq
+6. Update lean-planner.md - Replace grep with jq
+7. Update status-sync-manager.md - Extract status from state.json
+
+**Phase 4: Update Context and Documentation** (3 hours)
+1. Update 6 context files (routing, workflows, standards)
+2. Update 2 standards files (state-management, artifact-management)
+3. Update 1 template file (command-template)
+4. Update 4 documentation files (guides, architecture, notes)
+
+**Phase 5: Testing and Validation** (2 hours)
+1. Test /research command with Lean task (language routing)
+2. Test /plan command with markdown task
+3. Test /implement command with general task
+4. Test /revise command
+5. Verify metadata extracted from state.json, not TODO.md
+6. Verify TODO.md still synchronized correctly
+7. Verify no grep TODO.md commands in output
+
+**Acceptance Criteria**:
+- [ ] All metadata extraction uses state.json as source of truth
+- [ ] No commands or subagents extract metadata from TODO.md
+- [ ] TODO.md remains synchronized via status-sync-manager (state.json → TODO.md)
+- [ ] Language-based routing works correctly (Lean tasks → lean-research-agent)
+- [ ] All workflow commands tested and verified
+- [ ] Context files document state.json as authoritative source
+- [ ] No "Extract task NNN details from TODO.md" messages in command output
+- [ ] grep TODO.md only used for validation/testing, not metadata extraction
+
+**Impact**: 
+Establishes state.json as the single source of truth for task metadata, eliminating confusion about which file is authoritative. Ensures TODO.md is kept in sync as a user-facing view of state.json, but all programmatic access uses state.json. Fixes the issue observed in /implement 276 where TODO.md was being used for metadata lookup.
+
+**Related Tasks**:
+- Task 276: Investigate redundant project-level state.json files (related to state management)
+- Task 272: Add YAML header to TODO.md (sync state.json → TODO.md)
+- Task 275: Fix workflow status updates (uses status-sync-manager)
 
