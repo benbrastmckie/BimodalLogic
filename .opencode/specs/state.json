@@ -324,18 +324,22 @@
       "started": "2026-01-03",
       "research_completed": "2026-01-03",
       "planning_completed": "2026-01-03",
+      "plan_revised": "2026-01-03",
       "last_updated": "2026-01-03T20:50:00Z",
       "artifacts": [
         ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md",
-        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md"
+        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md",
+        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-002.md"
       ],
-      "estimated_hours": 4.5,
-      "research_summary": "Research into OpenCode header and summary display patterns reveals orchestrator already formats prompts as 'Task: {number}' for internal delegation but lacks user-facing headers and summary conclusions. Recommended solution: modify orchestrator Stage 5 (PostflightCleanup) to add headers and conclusions. Estimated effort: 4.5 hours.",
+      "estimated_hours": 3.5,
+      "research_summary": "Research into OpenCode header and summary display patterns reveals orchestrator already formats prompts as 'Task: {number}' for internal delegation but lacks user-facing headers. Recommended solution: modify orchestrator Stage 5 (PostflightCleanup) to add headers. Estimated effort: 3.5 hours (revised from 4.5 hours - removed summary conclusions as redundant with header).",
       "plan_metadata": {
         "phase_count": 5,
-        "estimated_hours": 4.5,
+        "estimated_hours": 3.5,
         "complexity": "medium",
-        "research_integrated": true
+        "research_integrated": true,
+        "plan_version": 2,
+        "revision_reason": "Removed summary conclusion formatting (redundant with header display)"
       }
     },
     {

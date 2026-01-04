@@ -1,7 +1,6 @@
 # TODO
 
 ---
-# Auto-generated from state.json - do not edit manually
 last_updated: 2026-01-04T04:45:44Z
 next_project_number: 280
 repository_health:
@@ -30,13 +29,14 @@ technical_debt:
 ## High Priority
 
 ### 278. Investigate and fix /implement command argument parsing failure
-- **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Effort**: 5 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
 - **Analysis**: [Analysis Report](278_investigate_fix_implement_argument_parsing/reports/analysis-001.md)
+- **Plan**: [Implementation Plan](278_investigate_fix_implement_argument_parsing/plans/implementation-001.md)
 
 **Description**:
 When running `/implement 271`, the orchestrator returns an error message saying "However, I need you to provide the task number you want to implement" despite 271 being provided as an argument. This suggests the orchestrator is not properly parsing the `$ARGUMENTS` variable or the argument is not being passed correctly from the user invocation to the orchestrator.
@@ -84,58 +84,42 @@ When running `/implement 271`, the orchestrator returns an error message saying 
 
 ---
 
-### 277. Improve OpenCode header and summary display for task commands
-- **Effort**: 4.5 hours
+### 277. Improve OpenCode header display for task commands
+- **Effort**: 3.5 hours
 - **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: general
 - **Started**: 2026-01-03
 - **Research**: [Research Report](277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md)
-- **Plan**: [Implementation Plan](277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md)
+- **Plan**: [Implementation Plan v2](277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-002.md)
 - **Blocking**: None
 - **Dependencies**: None
 
 **Description**:
-Improve the OpenCode system to always display the task number in the header when running task-based commands (`/task`, `/research`, `/plan`, `/revise`, `/implement`) and display the command name when running direct commands (`/todo`, `/errors`, `/review`, `/meta`). Additionally, ensure all final summaries conclude with the task number and command run for easy reference, and make all summaries returned to the user brief.
+Improve the OpenCode system to always display the task number in the header when running task-based commands (`/task`, `/research`, `/plan`, `/revise`, `/implement`) and display the command name when running direct commands (`/todo`, `/errors`, `/review`, `/meta`). Ensure all summaries returned to the user are brief.
 
 **Current Behavior**:
 - Headers may not consistently show task numbers for task-based commands
 - Command names may not be displayed for direct commands
-- Final summaries may not include task number and command reference
 - Summaries may be verbose
 
 **Expected Behavior**:
 - Task-based commands (`/task`, `/research`, `/plan`, `/revise`, `/implement`): Header displays "Task: {number}"
 - Direct commands (`/todo`, `/errors`, `/review`, `/meta`): Header displays "Command: /{command}"
-- Final summaries conclude with: "Task {number} - /{command}" for task-based commands
-- Final summaries conclude with: "Command: /{command}" for direct commands
 - All summaries are brief and concise
 
 **Files to Modify**:
-- `.opencode/command/task.md` - Add header display logic
-- `.opencode/command/research.md` - Add header display logic
-- `.opencode/command/plan.md` - Add header display logic
-- `.opencode/command/revise.md` - Add header display logic
-- `.opencode/command/implement.md` - Add header display logic
-- `.opencode/command/todo.md` - Add header display logic
-- `.opencode/command/errors.md` - Add header display logic
-- `.opencode/command/review.md` - Add header display logic
-- `.opencode/command/meta.md` - Add header display logic
-- `.opencode/agent/subagents/researcher.md` - Update summary format
-- `.opencode/agent/subagents/planner.md` - Update summary format
-- `.opencode/agent/subagents/implementer.md` - Update summary format
-- `.opencode/context/core/standards/command-output.md` (create) - Document header and summary standards
+- `.opencode/agent/orchestrator.md` - Add header display logic in Stage 5
+- `.opencode/context/core/standards/command-output.md` (create) - Document header standards
 
 **Acceptance Criteria**:
 - [ ] Task-based commands display "Task: {number}" in header
 - [ ] Direct commands display "Command: /{command}" in header
-- [ ] Final summaries for task-based commands conclude with "Task {number} - /{command}"
-- [ ] Final summaries for direct commands conclude with "Command: /{command}"
 - [ ] All summaries are brief (target: <100 tokens)
-- [ ] Header and summary standards documented in command-output.md
+- [ ] Header standards documented in command-output.md
 - [ ] All commands tested and verified
 
-**Impact**: Improves user experience by providing clear context about which task or command is running, and makes summaries more concise and easier to reference.
+**Impact**: Improves user experience by providing clear context about which task or command is running, and makes summaries more concise.
 
 ---
 
