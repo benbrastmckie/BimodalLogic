@@ -468,125 +468,183 @@ $ARGUMENTS
     <checkpoint>Architecture confirmed by user</checkpoint>
   </stage>
 
-  <stage id="7" name="GenerateSystem">
-    <action>Delegate to meta subagents to create all components</action>
+  <stage id="7" name="CreateTasksWithArtifacts">
+    <action>Create tasks in TODO.md with plan artifacts for each component</action>
     <process>
       1. Inform user:
-         "Creating your .opencode system. This will take a few minutes..."
+         "Creating implementation tasks with detailed plans. This will take a few minutes..."
       
-      2. Delegate to domain-analyzer:
-         - Pass: domain, purpose, target_users, domain_type, knowledge_areas
-         - Receive: domain analysis report, recommended structure
+      2. Read next_project_number from .opencode/specs/state.json
       
-      3. Delegate to workflow-designer:
-         - Pass: use_cases, agent_count, hierarchy
-         - Receive: workflow definitions with stages and dependencies
+      3. Determine task breakdown based on system complexity:
+         a. Simple system (1-2 agents, 3-4 use cases): 4 tasks
+            - Task 1: Planning task (design architecture and workflow patterns)
+            - Tasks 2-4: Implementation tasks (agents, commands, context)
+         
+         b. Moderate system (3-5 agents, 4-6 use cases): 7 tasks
+            - Task 1: Planning task (design architecture and workflow patterns)
+            - Tasks 2-7: Implementation tasks (one per major component group)
+         
+         c. Complex system (6-8 agents, 7+ use cases): 10-15 tasks
+            - Task 1: Planning task (design architecture and workflow patterns)
+            - Tasks 2-15: Implementation tasks (one per agent/command/context group)
       
-      4. Delegate to agent-generator:
-         - Pass: agent specifications, workflows, domain analysis
-         - Receive: agent files (.opencode/agent/subagents/{domain}/*.md)
+      4. For each task:
+         a. Generate task title and slug from interview results
+         b. Assign task number: next_project_number + task_index
+         c. Create project directory: .opencode/specs/{number}_{slug}/
+         d. Generate plan artifact (plans/implementation-001.md):
+            - Metadata block (Task, Status, Effort, Priority, Dependencies, Artifacts, Standards, Type, Lean Intent)
+            - Set Type field to 'meta' for all meta-related tasks
+            - Overview (2-4 sentences)
+            - Goals & Non-Goals
+            - Risks & Mitigations
+            - Implementation Phases (1-2 hours each, status markers [NOT STARTED])
+            - Testing & Validation
+            - Artifacts & Outputs
+            - Rollback/Contingency
+         e. Write plan artifact to disk
+         f. Validate plan artifact exists and is non-empty
+         g. Extract plan metadata (phase_count, estimated_hours, complexity)
       
-      5. Delegate to command-creator:
-         - Pass: custom_commands, agent mappings
-         - Receive: command files (.opencode/command/*.md)
+      5. For each task, create task entry in TODO.md:
+         a. Format: ### {number}. {title}
+         b. Include required fields:
+            - **Effort**: {hours} hours
+            - **Status**: [NOT STARTED]
+            - **Priority**: {High|Medium|Low}
+            - **Type**: meta
+            - **Plan**: [Implementation Plan]({path}/plans/implementation-001.md)
+            - **Blocking**: None
+            - **Dependencies**: {list or None}
+         c. Include description with context from interview
       
-      6. Delegate to context-organizer:
-         - Pass: knowledge_areas, external_tools, file_types
-         - Receive: context files (.opencode/context/{domain}/*.md)
+      6. For each task, update state.json:
+         a. Add to active_projects array:
+            {
+              "project_number": {number},
+              "project_name": "{slug}",
+              "type": "meta",
+              "phase": "planning",
+              "status": "not_started",
+              "priority": "{high|medium|low}",
+              "created": "{ISO8601}",
+              "artifacts": {
+                "plans": ["{path}/plans/implementation-001.md"]
+              }
+            }
+         b. Increment next_project_number
       
       7. Validate all artifacts:
-         a. Check all files exist
-         b. Check all files are non-empty
-         c. Check frontmatter is valid YAML
-         d. Check files follow standards (<300 lines for commands, <200 lines for context)
+         a. Check all project directories created
+         b. Check all plan artifacts exist and are non-empty
+         c. Check plan metadata extracted (phase_count, estimated_hours, complexity)
+         d. Check task entries in TODO.md follow tasks.md standard
+         e. Check task entries use 'Type' field (not 'Language')
+         f. Check Type field set to 'meta' for meta tasks
+         g. Check state.json updates are correct
       
       8. If validation fails:
          - Log errors
          - Return status "failed" with error details
       
       9. If validation passes:
-         - Collect all artifact paths
+         - Collect task numbers and artifact paths
          - Proceed to Stage 8
     </process>
     <validation>
-      - All delegations must complete successfully
-      - All artifacts must exist and be valid
-      - Frontmatter must be valid YAML
-      - File size limits must be respected
+      - All plan artifacts must exist and be non-empty
+      - All task entries must follow tasks.md standard
+      - All task entries must use 'Type' field (not 'Language')
+      - Type field must be set to 'meta' for meta tasks
+      - state.json must be updated correctly with 'type' field
+      - next_project_number must be incremented for each task
     </validation>
-    <checkpoint>System generated and validated</checkpoint>
+    <checkpoint>Tasks created with plan artifacts</checkpoint>
   </stage>
 
-  <stage id="8" name="DeliverSystem">
-    <action>Present completed system, create documentation, and commit</action>
+  <stage id="8" name="DeliverTaskSummary">
+    <action>Present task list with artifact links and usage instructions</action>
     <process>
-      1. Generate usage documentation:
-         - Create README.md in .opencode/agent/subagents/{domain}/
-         - List all agents, commands, and context files
-         - Provide usage examples
-         - Include integration guides
-      
-      2. Update TODO.md:
-         - Add task entries for each generated component
-         - Mark as completed
-         - Include artifact paths
-      
-      3. Create git commit (if integration_mode != "new"):
-         - Delegate to git-workflow-manager
-         - Commit message: "Add {domain} .opencode system with {agent_count} agents and {command_count} commands"
-         - Include all generated files
-      
-      4. Present system to user:
-         "Your .opencode system is ready!
+      1. Format task list presentation:
+         "Your {domain} system tasks are ready for implementation!
          
-         AGENTS CREATED:
-         {for each agent:}
-         - {agent.path}: {agent.description}
+         TASKS CREATED ({task_count}):
+         {for each task:}
+         - Task {number}: {title}
+           * Type: meta
+           * Status: [NOT STARTED]
+           * Plan: {plan_path}
+           * Effort: {hours} hours
          
-         COMMANDS CREATED:
-         {for each command:}
-         - /{command.name}: {command.description}
+         TOTAL EFFORT: {total_hours} hours
          
-         CONTEXT FILES CREATED:
-         {for each context file:}
-         - {file.path}: {file.description}
+         USAGE INSTRUCTIONS:
+         1. Review the plan artifacts for each task:
+            - Each plan includes detailed phases, estimates, and acceptance criteria
+            - Plans are self-documenting with metadata and phase breakdown
          
-         DOCUMENTATION:
-         - {readme_path}
+         2. Implement tasks using /implement command:
+            - Run `/implement {task_number}` for each task when ready
+            - Meta tasks will route to meta subagents (domain-analyzer, workflow-designer, agent-generator, command-creator, context-organizer)
+            - Tasks can be implemented in order or in parallel (if no dependencies)
+         
+         3. Example workflow:
+            - `/implement {first_task_number}` - Start with planning task
+            - Review generated architecture design
+            - `/implement {second_task_number}` - Implement first component group
+            - Continue with remaining tasks
          
          NEXT STEPS:
-         1. Review the generated files
-         2. Try the custom commands: {list first 2 commands}
-         3. Customize agents and context as needed
-         
-         To get started, try: /{first_command}"
+         - Review plan artifacts in .opencode/specs/{number}_{slug}/plans/
+         - Run `/implement {first_task_number}` to start implementation
+         - Track progress in TODO.md"
       
-      5. Return standardized format:
+      2. Create git commit:
+         - Delegate to git-workflow-manager
+         - Commit message: "meta: create tasks for {domain} system ({task_count} tasks)"
+         - Include: TODO.md, state.json, all task directories with plan artifacts
+      
+      3. Return standardized format:
          {
            "status": "completed",
-           "summary": "Created {domain} .opencode system with {agent_count} agents, {command_count} commands, and {context_count} context files",
+           "summary": "Created {task_count} tasks for {domain} system with detailed plan artifacts. Total effort: {total_hours} hours. Review plans and run /implement for each task.",
            "artifacts": [
-             {for each file:}
-             {"type": "agent|command|context|documentation", "path": "{path}", "description": "{description}"}
+             {for each task:}
+             {
+               "type": "plan",
+               "path": "{plan_path}",
+               "summary": "Task {number}: {title} ({hours} hours, {phase_count} phases)"
+             }
            ],
            "metadata": {
+             "session_id": "{session_id}",
+             "duration_seconds": {duration},
+             "agent_type": "meta",
+             "delegation_depth": {depth},
+             "delegation_path": {path},
              "domain": "{domain}",
-             "agent_count": {agent_count},
-             "command_count": {command_count},
-             "context_count": {context_count},
-             "integration_mode": "{integration_mode}",
-             "timestamp": "{ISO8601}"
+             "task_count": {task_count},
+             "first_task_number": {first_number},
+             "last_task_number": {last_number},
+             "total_effort_hours": {total_hours},
+             "plan_metadata": {
+               "average_phase_count": {avg_phases},
+               "complexity": "{simple|moderate|complex}"
+             }
            },
-           "session_id": "{session_id}"
+           "errors": [],
+           "next_steps": "Review plan artifacts in .opencode/specs/{number}_{slug}/plans/ and run /implement {first_task_number} to start implementation"
          }
     </process>
     <validation>
-      - README.md must be created
-      - TODO.md must be updated
-      - Git commit must succeed (if applicable)
+      - TODO.md must be updated with all task entries
+      - state.json must be updated with all tasks
+      - Git commit must succeed
       - Return format must match subagent-return-format.md
+      - Summary field must be brief (<100 tokens)
     </validation>
-    <checkpoint>System delivered and documented</checkpoint>
+    <checkpoint>Task summary delivered with usage instructions</checkpoint>
   </stage>
 </workflow_execution>
 

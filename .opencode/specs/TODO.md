@@ -27,6 +27,94 @@ technical_debt:
 
 ## High Priority
 
+### 283. Fix /research command to properly handle already-completed tasks and sync TODO.md status with state.json
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+When running `/research 269`, the command failed because task 269 is already completed according to state.json (status: "completed", completed: "2026-01-03", git_commit: "a4fa33f"), but TODO.md shows conflicting status `[NOT STARTED]`. The researcher agent correctly rejected the research request because you cannot research a completed task, but this exposed two critical issues:
+
+1. **Status Synchronization Failure**: TODO.md status markers are out of sync with state.json authoritative status
+2. **Missing Preflight Validation**: /research command does not validate task status before delegating to researcher
+
+**Root Cause Analysis**:
+
+**Issue 1: Status Synchronization Failure**
+- state.json shows task 269 as completed (2026-01-03, git commit a4fa33f)
+- TODO.md shows task 269 as `[NOT STARTED]`
+- This indicates status-sync-manager was not invoked when task 269 was completed
+- OR status-sync-manager failed to update TODO.md status marker
+
+**Issue 2: Missing Preflight Validation**
+- /research command does not check task status before delegating
+- Should reject research requests for tasks with status: completed, blocked, or in_progress
+- Should only allow research for tasks with status: not_started
+
+**Expected Behavior**:
+
+```bash
+/research 269
+# Orchestrator Stage 1 (PreflightValidation) should:
+# 1. Extract task 269 metadata from state.json
+# 2. Check status field
+# 3. If status == "completed": Return error "Task 269 already completed (2026-01-03)"
+# 4. If status == "in_progress": Return error "Task 269 already in progress"
+# 5. If status == "blocked": Return error "Task 269 is blocked"
+# 6. If status == "not_started": Proceed to Stage 2 (DetermineRouting)
+```
+
+**Fix Strategy**:
+
+**Phase 1: Add Preflight Status Validation** (2 hours)
+1. Update orchestrator Stage 1 (PreflightValidation) to extract task status from state.json
+2. Add status validation logic:
+   - completed → Error: "Task {number} already completed ({date})"
+   - in_progress → Error: "Task {number} already in progress"
+   - blocked → Error: "Task {number} is blocked by: {blockers}"
+   - not_started → Proceed to Stage 2
+3. Test with completed, in_progress, blocked, and not_started tasks
+4. Update orchestrator.md documentation
+
+**Phase 2: Fix Status Synchronization** (1-2 hours)
+1. Investigate why task 269 status was not synchronized
+2. Verify status-sync-manager was invoked when task 269 completed
+3. If not invoked: Fix completion workflow to invoke status-sync-manager
+4. If invoked but failed: Fix status-sync-manager TODO.md update logic
+5. Run status-sync-manager manually to fix task 269 status in TODO.md
+6. Verify TODO.md now shows `[COMPLETED]` for task 269
+
+**Files to Modify**:
+- `.opencode/agent/orchestrator.md` - Add status validation to Stage 1
+- `.opencode/agent/subagents/status-sync-manager.md` - Fix TODO.md status update (if needed)
+- `.opencode/command/research.md` - Document status validation
+- `.opencode/command/plan.md` - Document status validation
+- `.opencode/command/implement.md` - Document status validation
+- `.opencode/context/core/system/state-management.md` - Document status validation pattern
+
+**Acceptance Criteria**:
+- [ ] /research rejects completed tasks with clear error message
+- [ ] /research rejects in_progress tasks with clear error message
+- [ ] /research rejects blocked tasks with clear error message
+- [ ] /research accepts not_started tasks and proceeds normally
+- [ ] Task 269 status synchronized: TODO.md shows `[COMPLETED]`
+- [ ] Status validation documented in orchestrator.md
+- [ ] All workflow commands (/research, /plan, /implement) have status validation
+- [ ] No regression in existing workflow command behavior
+
+**Impact**: 
+Prevents wasted research effort on already-completed tasks, ensures TODO.md status markers stay synchronized with state.json authoritative status, and provides clear error messages when tasks are in invalid states for research.
+
+**Related Issues**:
+- Task 269 status mismatch (completed in state.json, NOT STARTED in TODO.md)
+- Task 279: Systematically fix metadata lookup to use state.json instead of TODO.md
+- Task 275: Fix workflow status updates (completed - added preflight/postflight updates)
+
+---
+
 ### 280. Fix orchestrator Stage 4 validation to enforce subagent return format and prevent phantom research
 - **Effort**: 6-8 hours
 - **Status**: [COMPLETED]
