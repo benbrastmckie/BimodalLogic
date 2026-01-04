@@ -81,9 +81,64 @@ Orchestrator maintains in-memory registry:
 
 Updated in Stage 4 (PrepareContext) and Stage 7 (PostflightCleanup).
 
+## JSON Return Format Enforcement
+
+**Problem**: When orchestrator invokes subagents via task tool, Claude does NOT automatically follow the JSON return format specified in the agent's markdown file. This causes validation failures in orchestrator Stage 4 because subagents return plain text instead of required JSON structure.
+
+**Solution**: Orchestrator Stage 3 (RegisterAndDelegate) appends explicit JSON format instruction to all subagent invocations.
+
+### JSON Format Instruction
+
+```
+CRITICAL RETURN FORMAT REQUIREMENT:
+You MUST return ONLY valid JSON matching the schema in subagent-return-format.md.
+Do NOT return plain text, markdown narrative, or any other format.
+
+Required JSON structure:
+{
+  "status": "completed|partial|failed|blocked",
+  "summary": "Brief 2-5 sentence summary (<100 tokens)",
+  "artifacts": [{type, path, summary}, ...],
+  "metadata": {session_id, duration_seconds, agent_type, delegation_depth, delegation_path},
+  "errors": [{type, message, recoverable, recommendation}, ...],
+  "next_steps": "What user should do next"
+}
+
+VALIDATION: Your return will be validated by orchestrator Stage 4. If you return
+plain text instead of JSON, validation will fail with "Return is not valid JSON" error.
+```
+
+### Usage Pattern
+
+**Task-based commands** (research, plan, implement, revise):
+```python
+prompt = f"Task: {task_number}" + JSON_FORMAT_INSTRUCTION
+```
+
+**Direct commands** (meta, review, todo, errors):
+```python
+prompt = $ARGUMENTS + JSON_FORMAT_INSTRUCTION
+# If $ARGUMENTS is empty: prompt = "" + JSON_FORMAT_INSTRUCTION
+```
+
+### Enforcement Points
+
+1. **Orchestrator Stage 3**: Appends JSON_FORMAT_INSTRUCTION to all task tool invocations
+2. **Orchestrator Stage 4**: Validates return is valid JSON with required fields
+3. **Subagent Specification**: Each agent's markdown file defines JSON return format
+4. **Validation Failure**: If subagent returns plain text, orchestrator Stage 4 fails with clear error
+
+### Benefits
+
+- **Prevents "phantom research"**: Ensures subagents return structured data
+- **Enables validation**: Orchestrator can verify artifacts exist and are non-empty
+- **Consistent format**: All subagents return same JSON structure
+- **Clear errors**: Validation failures provide actionable error messages
+
 ## Safety Guarantees
 
 1. **No Infinite Loops**: Cycle detection prevents A→B→A patterns
 2. **No Runaway Depth**: Max depth of 3 prevents deep chains
 3. **No Indefinite Waits**: Timeout enforcement with graceful degradation
 4. **Session Tracking**: Unique IDs enable debugging and monitoring
+5. **JSON Format Enforcement**: Explicit instruction ensures subagents return valid JSON

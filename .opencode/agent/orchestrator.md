@@ -244,10 +244,34 @@ updated: 2025-12-29
       
       3. Invoke target agent using the task tool:
          
+         CRITICAL JSON FORMAT ENFORCEMENT:
+         When invoking subagents via task tool, you MUST append the following instruction
+         to ensure JSON return format compliance:
+         
+         JSON_FORMAT_INSTRUCTION = """
+         
+         CRITICAL RETURN FORMAT REQUIREMENT:
+         You MUST return ONLY valid JSON matching the schema in subagent-return-format.md.
+         Do NOT return plain text, markdown narrative, or any other format.
+         
+         Required JSON structure:
+         {
+           "status": "completed|partial|failed|blocked",
+           "summary": "Brief 2-5 sentence summary (<100 tokens)",
+           "artifacts": [{type, path, summary}, ...],
+           "metadata": {session_id, duration_seconds, agent_type, delegation_depth, delegation_path},
+           "errors": [{type, message, recoverable, recommendation}, ...],
+           "next_steps": "What user should do next"
+         }
+         
+         VALIDATION: Your return will be validated by orchestrator Stage 4. If you return
+         plain text instead of JSON, validation will fail with "Return is not valid JSON" error.
+         """
+         
          EXAMPLE for /implement 271 (where task_number = "271" from Stage 1):
          task_tool(
            subagent_type="implementer",
-           prompt="Task: 271",
+           prompt="Task: 271" + JSON_FORMAT_INSTRUCTION,
            session_id=delegation_context["session_id"],
            delegation_depth=1,
            delegation_path=delegation_context["delegation_path"],
@@ -257,7 +281,7 @@ updated: 2025-12-29
          EXAMPLE for /research 258 (where task_number = "258" from Stage 1):
          task_tool(
            subagent_type="researcher",
-           prompt="Task: 258",
+           prompt="Task: 258" + JSON_FORMAT_INSTRUCTION,
            session_id=delegation_context["session_id"],
            delegation_depth=1,
            delegation_path=delegation_context["delegation_path"],
@@ -267,7 +291,7 @@ updated: 2025-12-29
          EXAMPLE for /meta (where $ARGUMENTS = ""):
          task_tool(
            subagent_type="meta",
-           prompt="",
+           prompt="" + JSON_FORMAT_INSTRUCTION,
            session_id=delegation_context["session_id"],
            delegation_depth=1,
            delegation_path=delegation_context["delegation_path"],
@@ -275,10 +299,12 @@ updated: 2025-12-29
          )
          
          CRITICAL RULES:
-         - For task-based commands: prompt MUST be "Task: {task_number from Stage 1}"
-         - For direct commands: prompt MUST be $ARGUMENTS (or "")
+         - For task-based commands: prompt MUST be "Task: {task_number from Stage 1}" + JSON_FORMAT_INSTRUCTION
+         - For direct commands: prompt MUST be $ARGUMENTS + JSON_FORMAT_INSTRUCTION (or "" + JSON_FORMAT_INSTRUCTION)
+         - ALWAYS append JSON_FORMAT_INSTRUCTION to enforce return format
          - DO NOT pass $ARGUMENTS directly for task-based commands
          - DO NOT skip prompt formatting
+         - DO NOT skip JSON format instruction
       
       4. Monitor for timeout:
          - Check if current_time > deadline

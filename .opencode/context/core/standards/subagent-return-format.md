@@ -1,5 +1,14 @@
 # Subagent Return Format Standard
 
+## Overview
+
+All subagents MUST return valid JSON matching this schema. This is enforced by:
+1. **Orchestrator Stage 3**: Appends explicit JSON format instruction to all subagent invocations
+2. **Orchestrator Stage 4**: Validates return is valid JSON with required fields
+3. **Subagent Specification**: Each agent's markdown file defines this return format
+
+**CRITICAL**: When invoked via task tool, you MUST return ONLY valid JSON. Do NOT return plain text, markdown narrative, or any other format. Orchestrator Stage 4 will reject non-JSON returns with "Return is not valid JSON" error.
+
 ## Schema
 
 All subagents MUST return this JSON structure:
@@ -209,3 +218,80 @@ If validation fails:
   "next_steps": "Run /implement 246 to resume from phase 3"
 }
 ```
+
+## Enforcement Mechanism
+
+### Problem Statement
+
+When orchestrator invokes subagents via task tool (e.g., researcher, planner, implementer), Claude does NOT automatically follow the JSON return format specified in the agent's markdown file. This causes validation failures in orchestrator Stage 4 because subagents return plain text instead of the required JSON structure.
+
+### Solution: Explicit JSON Format Instruction
+
+Orchestrator Stage 3 (RegisterAndDelegate) appends the following instruction to all subagent invocations:
+
+```
+CRITICAL RETURN FORMAT REQUIREMENT:
+You MUST return ONLY valid JSON matching the schema in subagent-return-format.md.
+Do NOT return plain text, markdown narrative, or any other format.
+
+Required JSON structure:
+{
+  "status": "completed|partial|failed|blocked",
+  "summary": "Brief 2-5 sentence summary (<100 tokens)",
+  "artifacts": [{type, path, summary}, ...],
+  "metadata": {session_id, duration_seconds, agent_type, delegation_depth, delegation_path},
+  "errors": [{type, message, recoverable, recommendation}, ...],
+  "next_steps": "What user should do next"
+}
+
+VALIDATION: Your return will be validated by orchestrator Stage 4. If you return
+plain text instead of JSON, validation will fail with "Return is not valid JSON" error.
+```
+
+### Enforcement Flow
+
+1. **User invokes command**: `/research 269`
+2. **Orchestrator Stage 1**: Validates command and extracts task number
+3. **Orchestrator Stage 2**: Determines target agent (researcher)
+4. **Orchestrator Stage 3**: Invokes researcher via task tool with:
+   - Prompt: `"Task: 269" + JSON_FORMAT_INSTRUCTION`
+   - This ensures researcher knows to return JSON
+5. **Researcher executes**: Reads task, conducts research, creates artifacts
+6. **Researcher returns**: Valid JSON matching schema (not plain text)
+7. **Orchestrator Stage 4**: Validates return:
+   - Check JSON validity
+   - Check required fields
+   - Check artifacts exist on disk
+   - Check artifacts are non-empty
+8. **Orchestrator Stage 5**: Formats response for user
+
+### Validation Failures
+
+If subagent returns plain text instead of JSON:
+
+```
+Error: Subagent return validation failed
+
+Subagent: researcher
+Session: sess_1735460684_a1b2c3
+
+Validation errors:
+- Cannot parse return as JSON
+
+Recommendation: Fix researcher subagent return format
+```
+
+### Benefits
+
+1. **Prevents "phantom research"**: Ensures subagents return structured data with artifact paths
+2. **Enables artifact validation**: Orchestrator can verify files exist and are non-empty
+3. **Consistent format**: All subagents return same JSON structure
+4. **Clear errors**: Validation failures provide actionable error messages
+5. **Context window protection**: Summary field (<100 tokens) prevents bloat
+
+### Implementation Notes
+
+- **Enforcement point**: Orchestrator Stage 3 (RegisterAndDelegate)
+- **Validation point**: Orchestrator Stage 4 (ValidateReturn)
+- **Documentation**: See `.opencode/context/core/workflows/delegation-guide.md`
+- **Impact**: Fixes critical validation failures affecting ALL workflow commands

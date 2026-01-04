@@ -394,11 +394,13 @@ The `/meta` command currently implements work directly after the interview. Inst
 
 ### 282. Add JSON return format enforcement to subagent invocation via task tool
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING] (Started: 2026-01-03)
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
+- **Completed**: 2026-01-03
+- **Implementation**: [Implementation Summary](282_json_return_enforcement/summaries/implementation-summary-20260103.md)
 
 **Description**:
 When the orchestrator invokes subagents via the task tool (e.g., researcher, planner, implementer), Claude does NOT automatically follow the JSON return format specified in the agent's markdown file. This causes validation failures in orchestrator Stage 4 (ValidateReturn) because subagents return plain text instead of the required JSON structure defined in subagent-return-format.md.
@@ -479,7 +481,7 @@ The task tool invocation does NOT enforce the return format specified in the age
 
 ### 269. Fix /meta command to accept user prompts directly instead of forcing interactive interview
 - **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
+- **Status**: [NOT STARTED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
