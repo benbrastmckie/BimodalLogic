@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-04T07:00:00Z
-next_project_number: 287
+last_updated: 2026-01-04T12:00:00Z
+next_project_number: 289
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -201,7 +201,7 @@ Fixes the systematic status synchronization failure affecting ALL workflow comma
 
 ### 286. Research alternative to task 283 with subagent-owned pre-flight and post-flight work
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -271,15 +271,17 @@ Provides alternative architectural approach to task 283 that moves responsibilit
 ---
 
 ### 285. Audit and fix status update behavior in /research, /plan, /revise, and /implement commands
-- **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 6-8 hours (revised from 8-12 hours)
+- **Status**: [PLANNED]
 - **Started**: 2026-01-04
 - **Researched**: 2026-01-04
+- **Planned**: 2026-01-04
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/285_audit_and_fix_status_update_behavior/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/285_audit_and_fix_status_update_behavior/plans/implementation-001.md)
 - **Artifacts**:
   - Task Description: [.opencode/specs/285_audit_and_fix_status_update_behavior/task-description.md]
 
@@ -1347,12 +1349,13 @@ Establishes state.json as the single source of truth for task metadata, eliminat
 ---
 
 ### 287. Fix /revise command to replace old plan link instead of appending new link
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED] (2026-01-04)
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [Research Report](287_fix_revise_command_plan_link_replacement/reports/research-001.md)
 
 **Description**:
 When running `/revise` for a task that already has a plan, the command appends the new plan link to the existing plan link instead of replacing it. This creates confusing entries like:
@@ -1406,9 +1409,10 @@ Simplifies TODO.md plan links by showing only the current plan, avoiding confusi
 
 ---
 
-### 287. Extend Task 283 fix to all remaining subagents with inconsistent step naming
+### 289. Extend Task 283 fix to all remaining subagents with inconsistent step naming
+- **Started**: 2026-01-04
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -1486,6 +1490,18 @@ Completes the systematic fix started in Task 283 by extending it to all remainin
 - Task 283: Fix systematic status synchronization failure (completed - fixed general subagents only)
 - Task 285: Audit and fix status update behavior (research revealed Lean subagent issues)
 - Task 259: Automation Tactics (Lean task that likely failed due to lean-research-agent naming issue)
+
+---
+
+### 288. Fix command confusion and status synchronization issues
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Systematically fix command confusion and status synchronization issues identified when running `/implement 259`. Root causes include: (1) Agents recommending incorrect commands (e.g., suggesting `/task 259` instead of `/implement 259`), (2) Status not being updated from `[PLANNED]` to `[IMPLEMENTING]` or `[COMPLETED]`, (3) No validation to prevent incorrect command recommendations, (4) Missing centralized command purpose documentation. Solution should include: creating command reference guide, adding validation to prevent incorrect recommendations, enforcing status updates with validation, and updating all affected command and agent files for uniformity and consistency.
 
 ---
 
