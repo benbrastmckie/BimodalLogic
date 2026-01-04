@@ -483,6 +483,44 @@
   ],
   "completed_projects": [
     {
+      "project_number": 284,
+      "project_name": "todo_auto_commit",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "general",
+      "created": "2026-01-04T06:00:00Z",
+      "started": "2026-01-04",
+      "completed": "2026-01-04",
+      "last_updated": "2026-01-04",
+      "artifacts": [
+        ".opencode/command/todo.md",
+        ".opencode/specs/284_todo_auto_commit/summaries/implementation-summary-20260103.md"
+      ],
+      "git_commit": "d961fa9",
+      "summary": "Modified /todo command to auto-commit changes before archiving, eliminating manual git commit step"
+    },
+    {
+      "project_number": 269,
+      "project_name": "fix_meta_command_accept_user_prompts",
+      "type": "bugfix",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2026-01-03T18:15:00Z",
+      "started": "2026-01-03",
+      "completed": "2026-01-03",
+      "last_updated": "2026-01-03",
+      "artifacts": [
+        ".opencode/command/meta.md",
+        ".opencode/agent/subagents/meta.md"
+      ],
+      "git_commit": "a4fa33f",
+      "summary": "Fixed /meta command to accept user prompts directly via $ARGUMENTS, supporting both prompt mode (skip interview) and interactive mode (full interview)"
+    },
+    {
       "project_number": 241,
       "project_name": "optimize_no_emoji_validation",
       "type": "enhancement",
@@ -1787,26 +1825,6 @@
       "status": "planned",
       "plan_path": ".opencode/specs/278_investigate_fix_implement_argument_parsing/plans/implementation-001.md",
       "updated_at": "2026-01-03T21:00:00Z"
-    },
-    "284": {
-      "project_number": 284,
-      "project_name": "todo_auto_commit",
-      "type": "feature",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "general",
-      "created": "2026-01-04T06:00:00Z",
-      "started": "2026-01-03",
-      "completed": "2026-01-03",
-      "last_updated": "2026-01-03T22:08:00Z",
-      "artifacts": [
-        ".opencode/command/todo.md",
-        ".opencode/specs/284_todo_auto_commit/summaries/implementation-summary-20260103.md"
-      ],
-      "files_modified": [
-        ".opencode/command/todo.md"
-      ]
     }
   }
 }

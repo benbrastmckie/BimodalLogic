@@ -27,91 +27,168 @@ technical_debt:
 
 ## High Priority
 
-### 283. Fix /research command to properly handle already-completed tasks and sync TODO.md status with state.json
-- **Effort**: 3-4 hours
-- **Status**: [ABANDONED]
+### 283. Fix systematic status synchronization failure across all workflow commands
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 
 **Description**:
-When running `/research 269`, the command failed because task 269 is already completed according to state.json (status: "completed", completed: "2026-01-03", git_commit: "a4fa33f"), but TODO.md shows conflicting status `[NOT STARTED]`. The researcher agent correctly rejected the research request because you cannot research a completed task, but this exposed two critical issues:
+Multiple tasks (269, 284) have exposed a **systematic status synchronization failure** affecting ALL workflow commands (/research, /plan, /implement, /revise). When commands complete successfully, status is NOT updated in TODO.md or state.json, and tasks are NOT added to state.json's active_projects or completed_projects arrays. This is a critical workflow bug that breaks task tracking.
 
-1. **Status Synchronization Failure**: TODO.md status markers are out of sync with state.json authoritative status
-2. **Missing Preflight Validation**: /research command does not validate task status before delegating to researcher
+**Evidence of Systematic Failure**:
+
+1. **Task 269** (completed 2026-01-03):
+   - state.json: status="completed", git_commit="a4fa33f"
+   - TODO.md: status=`[NOT STARTED]` (WRONG)
+   - Result: /research 269 failed with "cannot research completed task"
+
+2. **Task 284** (completed 2026-01-04):
+   - state.json: Task 284 NOT in active_projects or completed_projects (MISSING)
+   - TODO.md: status=`[NOT STARTED]` (WRONG)
+   - Result: Implementer claimed success but no status updates occurred
+
+3. **Task 275** (Fix workflow status updates):
+   - Marked as [COMPLETED] but the fix clearly didn't work
+   - Status synchronization still broken after "fix"
 
 **Root Cause Analysis**:
 
-**Issue 1: Status Synchronization Failure**
-- state.json shows task 269 as completed (2026-01-03, git commit a4fa33f)
-- TODO.md shows task 269 as `[NOT STARTED]`
-- This indicates status-sync-manager was not invoked when task 269 was completed
-- OR status-sync-manager failed to update TODO.md status marker
+**Issue 1: Status-Sync-Manager Not Invoked**
+- Subagents (researcher, planner, implementer) complete work successfully
+- Subagents return JSON with status="completed"
+- BUT status-sync-manager is NEVER invoked to update TODO.md and state.json
+- Result: Status remains `[NOT STARTED]` despite completion
 
-**Issue 2: Missing Preflight Validation**
-- /research command does not check task status before delegating
-- Should reject research requests for tasks with status: completed, blocked, or in_progress
-- Should only allow research for tasks with status: not_started
+**Issue 2: Missing Preflight Status Updates**
+- Commands should update status to `[RESEARCHING]`, `[PLANNING]`, `[IMPLEMENTING]` at START
+- This never happens - status remains `[NOT STARTED]` during execution
+- Task 275 claimed to fix this but it's still broken
+
+**Issue 3: Missing Postflight Status Updates**
+- Commands should update status to `[RESEARCHED]`, `[PLANNED]`, `[COMPLETED]` at END
+- This never happens - status remains `[NOT STARTED]` after completion
+- Task 275 claimed to fix this but it's still broken
+
+**Issue 4: Missing state.json Project Entries**
+- New tasks created with /task are NOT added to state.json active_projects
+- Completed tasks are NOT moved to state.json completed_projects
+- Result: state.json is incomplete and out of sync with TODO.md
 
 **Expected Behavior**:
 
 ```bash
-/research 269
-# Orchestrator Stage 1 (PreflightValidation) should:
-# 1. Extract task 269 metadata from state.json
-# 2. Check status field
-# 3. If status == "completed": Return error "Task 269 already completed (2026-01-03)"
-# 4. If status == "in_progress": Return error "Task 269 already in progress"
-# 5. If status == "blocked": Return error "Task 269 is blocked"
-# 6. If status == "not_started": Proceed to Stage 2 (DetermineRouting)
+# PREFLIGHT (Command Start):
+/implement 284
+# 1. Orchestrator Stage 1: Validate task exists in state.json
+# 2. Orchestrator Stage 1: Update status to [IMPLEMENTING] in TODO.md and state.json
+# 3. Orchestrator Stage 2-3: Route to implementer and delegate
+
+# POSTFLIGHT (Command End):
+# 4. Implementer: Complete work, return JSON with status="completed"
+# 5. Orchestrator Stage 4: Validate return format and artifacts
+# 6. Orchestrator Stage 5: Update status to [COMPLETED] in TODO.md and state.json
+# 7. Orchestrator Stage 5: Move task from active_projects to completed_projects in state.json
+# 8. User sees: "Task 284 completed successfully"
 ```
 
 **Fix Strategy**:
 
-**Phase 1: Add Preflight Status Validation** (2 hours)
-1. Update orchestrator Stage 1 (PreflightValidation) to extract task status from state.json
-2. Add status validation logic:
-   - completed → Error: "Task {number} already completed ({date})"
-   - in_progress → Error: "Task {number} already in progress"
-   - blocked → Error: "Task {number} is blocked by: {blockers}"
-   - not_started → Proceed to Stage 2
-3. Test with completed, in_progress, blocked, and not_started tasks
-4. Update orchestrator.md documentation
+**Phase 1: Fix Orchestrator Preflight Status Updates** (2 hours)
+1. Update orchestrator Stage 1 (PreflightValidation):
+   - Extract task metadata from state.json
+   - Validate task exists in active_projects or create entry if missing
+   - Invoke status-sync-manager to update status to in-progress state:
+     * /research → [RESEARCHING]
+     * /plan → [PLANNING]
+     * /implement → [IMPLEMENTING]
+     * /revise → [REVISING]
+2. Add validation to reject already-completed tasks:
+   - If status == "completed": Error "Task {number} already completed ({date})"
+   - If status == "blocked": Error "Task {number} is blocked by: {blockers}"
+3. Test preflight updates with all workflow commands
 
-**Phase 2: Fix Status Synchronization** (1-2 hours)
-1. Investigate why task 269 status was not synchronized
-2. Verify status-sync-manager was invoked when task 269 completed
-3. If not invoked: Fix completion workflow to invoke status-sync-manager
-4. If invoked but failed: Fix status-sync-manager TODO.md update logic
-5. Run status-sync-manager manually to fix task 269 status in TODO.md
-6. Verify TODO.md now shows `[COMPLETED]` for task 269
+**Phase 2: Fix Orchestrator Postflight Status Updates** (2 hours)
+1. Update orchestrator Stage 5 (PostflightCleanup):
+   - After validating subagent return (Stage 4)
+   - Extract status from subagent return JSON
+   - Invoke status-sync-manager to update status to completion state:
+     * researcher → [RESEARCHED]
+     * planner → [PLANNED]
+     * implementer → [COMPLETED]
+     * reviser → [REVISED]
+   - If status="completed": Move task from active_projects to completed_projects
+2. Add artifact links to TODO.md and state.json
+3. Test postflight updates with all workflow commands
+
+**Phase 3: Fix /task Command to Create state.json Entries** (1 hour)
+1. Update /task command to add new tasks to state.json active_projects:
+   ```json
+   {
+     "project_number": 284,
+     "project_name": "todo_auto_commit",
+     "type": "feature",
+     "phase": "not_started",
+     "status": "not_started",
+     "priority": "medium",
+     "language": "general",
+     "created": "2026-01-04T06:00:00Z",
+     "last_updated": "2026-01-04T06:00:00Z"
+   }
+   ```
+2. Ensure /task creates both TODO.md entry AND state.json entry atomically
+3. Test /task creates entries in both files
+
+**Phase 4: Verify Task 275 "Fix" and Identify Why It Failed** (1 hour)
+1. Review task 275 implementation to understand what was "fixed"
+2. Identify why the fix didn't work (likely: documentation updated but code not changed)
+3. Determine if task 275 needs to be re-implemented or if this task supersedes it
+4. Document findings in task 283 implementation notes
+
+**Phase 5: Manual Cleanup of Broken Tasks** (1 hour)
+1. Fix task 269 status in TODO.md (currently [NOT STARTED], should be [COMPLETED])
+2. Verify task 284 status is correct (manually fixed already)
+3. Audit all tasks marked [COMPLETED] in TODO.md and verify they exist in state.json completed_projects
+4. Audit all tasks in state.json completed_projects and verify they're marked [COMPLETED] in TODO.md
+5. Create cleanup script for future use
 
 **Files to Modify**:
-- `.opencode/agent/orchestrator.md` - Add status validation to Stage 1
-- `.opencode/agent/subagents/status-sync-manager.md` - Fix TODO.md status update (if needed)
-- `.opencode/command/research.md` - Document status validation
-- `.opencode/command/plan.md` - Document status validation
-- `.opencode/command/implement.md` - Document status validation
-- `.opencode/context/core/system/state-management.md` - Document status validation pattern
+- `.opencode/agent/orchestrator.md` - Add preflight (Stage 1) and postflight (Stage 5) status updates
+- `.opencode/agent/subagents/status-sync-manager.md` - Verify it works correctly when invoked
+- `.opencode/command/task.md` - Add state.json active_projects entry creation
+- `.opencode/command/research.md` - Document preflight/postflight status updates
+- `.opencode/command/plan.md` - Document preflight/postflight status updates
+- `.opencode/command/implement.md` - Document preflight/postflight status updates
+- `.opencode/command/revise.md` - Document preflight/postflight status updates
+- `.opencode/context/core/system/state-management.md` - Document status update pattern
+- `.opencode/context/core/workflows/command-lifecycle.md` - Document preflight/postflight pattern
 
 **Acceptance Criteria**:
-- [ ] /research rejects completed tasks with clear error message
-- [ ] /research rejects in_progress tasks with clear error message
-- [ ] /research rejects blocked tasks with clear error message
-- [ ] /research accepts not_started tasks and proceeds normally
+- [ ] /task creates entries in BOTH TODO.md and state.json active_projects
+- [ ] /research updates status to [RESEARCHING] at start, [RESEARCHED] at end
+- [ ] /plan updates status to [PLANNING] at start, [PLANNED] at end
+- [ ] /implement updates status to [IMPLEMENTING] at start, [COMPLETED] at end
+- [ ] /revise updates status to [REVISING] at start, [REVISED] at end
+- [ ] Completed tasks moved from active_projects to completed_projects in state.json
+- [ ] Orchestrator rejects already-completed tasks with clear error message
 - [ ] Task 269 status synchronized: TODO.md shows `[COMPLETED]`
-- [ ] Status validation documented in orchestrator.md
-- [ ] All workflow commands (/research, /plan, /implement) have status validation
+- [ ] Task 284 exists in state.json completed_projects (verify manual fix)
+- [ ] All tasks in TODO.md with [COMPLETED] status exist in state.json completed_projects
+- [ ] All tasks in state.json completed_projects have [COMPLETED] status in TODO.md
 - [ ] No regression in existing workflow command behavior
+- [ ] Task 275 findings documented (why did the "fix" fail?)
 
 **Impact**: 
-Prevents wasted research effort on already-completed tasks, ensures TODO.md status markers stay synchronized with state.json authoritative status, and provides clear error messages when tasks are in invalid states for research.
+Fixes the systematic status synchronization failure affecting ALL workflow commands. Ensures TODO.md and state.json stay synchronized throughout the entire task lifecycle (creation → research → planning → implementation → completion). Prevents "phantom completions" where work is done but status never updates. Enables accurate task tracking and prevents wasted effort on already-completed tasks.
 
 **Related Issues**:
-- Task 269 status mismatch (completed in state.json, NOT STARTED in TODO.md)
+- Task 269: Status mismatch (completed in state.json, [NOT STARTED] in TODO.md)
+- Task 284: Status never updated despite successful implementation
+- Task 275: "Fix workflow status updates" - marked COMPLETED but fix didn't work
 - Task 279: Systematically fix metadata lookup to use state.json instead of TODO.md
-- Task 275: Fix workflow status updates (completed - added preflight/postflight updates)
+- Task 280: Fix orchestrator Stage 4 validation (should catch missing status updates)
 
 ---
 
@@ -625,17 +702,13 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ---
 
-
-
-
-
 ### 257. Completeness Proofs
-- **Effort**: 70-90 hours
-- **Status**: [RESEARCHED]
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: Decidability
-- **Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
+ **Effort**: 70-90 hours
+ **Status**: [NOT STARTED]
+ **Priority**: Low
+ **Language**: lean
+ **Blocking**: Decidability
+ **Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
 
 **Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.
 
@@ -700,7 +773,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 259. Automation Tactics
 - **Effort**: 40-60 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -731,7 +804,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 260. Proof Search
 - **Effort**: 40-60 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -759,7 +832,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 261. Decidability
 - **Effort**: 40-60 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -786,7 +859,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 262. ModalS5 Limitation
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -864,7 +937,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -882,7 +955,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 133. Build canonical model constructors in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -900,7 +973,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 134. Prove truth lemma structure in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -918,7 +991,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 135. Remove provable_iff_valid sorry in Completeness.lean
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -939,7 +1012,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 136. Design Decidability.lean architecture and signatures
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -957,7 +1030,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 137. Implement tableau core rules in Decidability.lean
 - **Effort**: 3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -975,7 +1048,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 138. Implement satisfiability and validity decision procedure tests
 - **Effort**: 3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -997,7 +1070,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 139. Draft Layer 1 counterfactual operator plan
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -1016,7 +1089,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 140. Draft Layer 2 epistemic operator plan
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -1035,7 +1108,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 141. Draft Layer 3 normative operator plan
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -1054,7 +1127,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 175. Establish CI/CD pipeline with automated testing and linting
 - **Effort**: 13 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -1079,7 +1152,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 176. Enhance proof search with domain-specific heuristics and caching
 - **Effort**: 18 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -1103,7 +1176,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 178. Complete advanced tutorial sections with hands-on exercises
 - **Effort**: 13 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -1126,7 +1199,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 179. Implement performance benchmarks for proof search and derivation
 - **Effort**: 13 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -1151,7 +1224,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 180. Add test coverage metrics and reporting
 - **Effort**: 9 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -1204,7 +1277,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 203. Add --complex flag to /research for subtopic subdivision with summary
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -1233,7 +1306,7 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 
 ### 205. Implement Lean tool usage verification and monitoring system
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -1507,11 +1580,13 @@ Establishes state.json as the single source of truth for task metadata, eliminat
 
 ### 284. Modify /todo command to commit changes before archiving instead of prompting user
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
+- **Completed**: 2026-01-04
+- **Implementation**: [Implementation Summary](.opencode/specs/284_todo_auto_commit/summaries/implementation-summary-20260103.md)
 
 **Description**:
 The `/todo` command currently asks the user to commit all changes before archiving completed and abandoned tasks. This creates friction in the workflow and requires manual intervention. The command should automatically commit all changes with an appropriate commit message before performing the archiving operation.
