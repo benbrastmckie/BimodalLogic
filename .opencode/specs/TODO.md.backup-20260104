@@ -1,29 +1,7 @@
 # TODO
 
----
-# Auto-generated from state.json - do not edit manually
-last_updated: 2026-01-04T04:45:44Z
-next_project_number: 280
-repository_health:
-  overall_score: 92
-  production_readiness: excellent
-  last_assessed: 2025-12-29T00:05:34Z
-task_counts:
-  active: 4
-  completed: 50
-  blocked: 2
-  in_progress: 2
-  not_started: 23
-  total: 81
-priority_distribution:
-  high: 15
-  medium: 12
-  low: 11
-technical_debt:
-  sorry_count: 6
-  axiom_count: 11
-  build_errors: 11
-  status: well-documented
+**Last Updated:** 2026-01-04T04:44:09Z
+
 ---
 
 
@@ -415,16 +393,13 @@ When `/research`, `/plan`, `/revise`, and `/implement` commands run on a task nu
 
 ---
 
-### 272. ✓ Add standardized YAML header to TODO.md with state.json metadata
+### 272. Add standardized YAML header to TODO.md with state.json metadata
 - **Effort**: 14 hours
-- **Status**: [COMPLETED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: markdown
-- **Started**: 2026-01-03
-- **Completed**: 2026-01-04
 - **Research**: [Research Report](272_add_yaml_header_to_todo_md/reports/research-001.md)
 - **Plan**: [Implementation Plan](272_add_yaml_header_to_todo_md/plans/implementation-001.md)
-- **Implementation**: [Implementation Summary](272_add_yaml_header_to_todo_md/summaries/implementation-summary-20260104.md)
 - **Blocking**: None
 - **Dependencies**: None
 
