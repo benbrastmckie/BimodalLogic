@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-04T05:00:30Z",
-  "next_project_number": 281,
+  "_last_updated": "2026-01-03T21:15:00Z",
+  "next_project_number": 282,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -415,6 +415,24 @@
         "research_integrated": true
       },
       "estimated_hours": 7.0
+    },
+    {
+      "project_number": 281,
+      "project_name": "fix_opencode_arguments_variable_not_being_passed_to_orchestrator",
+      "type": "bugfix",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "high",
+      "language": "general",
+      "created": "2026-01-03T21:15:00Z",
+      "started": "2026-01-03",
+      "research_completed": "2026-01-03",
+      "last_updated": "2026-01-03",
+      "artifacts": [
+        ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md"
+      ],
+      "research_summary": "Root cause identified: OpenCode agent invocation mechanism does not pass $ARGUMENTS to agents specified in command frontmatter. The $ARGUMENTS variable is substituted in command file content but not available in orchestrator execution context. Recommended solutions: (1) Add frontmatter argument passing configuration, (2) Update OpenCode configuration, or (3) Change agent invocation method. Estimated 6-8 hours to implement fix.",
+      "estimated_hours": 6.0
     }
   ],
   "completed_projects": [
@@ -1425,6 +1443,10 @@
     {
       "timestamp": "2025-12-29T00:00:50.867075+00:00",
       "activity": "Archived 5 tasks: 2 completed, 3 abandoned"
+    },
+    {
+      "timestamp": "2026-01-03T21:15:00Z",
+      "activity": "Created task 281: Fix OpenCode $ARGUMENTS variable not being passed to orchestrator (4-6 hours, High priority)"
     }
   ],
   "pending_tasks": [
