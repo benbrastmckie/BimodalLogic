@@ -2,6 +2,7 @@
 
 **Last Updated:** 2026-01-03T18:15:00Z
 
+/meta I want to revise my opencode system by revising the /meta command and subsequent dependencies to proceed as it does currently but instead of implementing the work directly, the /meta command should conclude by creating an appropriate number of task in /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md following /home/benjamin/Projects/ProofChecker/.opencode/context/core/standards/tasks.md and /home/benjamin/Projects/ProofChecker/.opencode/context/core/workflows/task-breakdown.md to complete the work where each task links any relevant research artifacts and a detailed plan artifact for each task that is organized as described in /home/benjamin/Projects/ProofChecker/.opencode/context/core/system/artifact-management.md rather than directly implementing the changes. It is also important to use next_project_number in /home/benjamin/Projects/ProofChecker/.opencode/specs/state.json for the task numbers which are also used to create the appropriately numbered project directories in specs/ for the user to review. The end goal for the /meta command is just to create the tasks with linked artifacts in the appropriate project directories and not to implement the plans created so that the user can review them first and implement them by running `/implement NNN` etc for each task number created.                              
 
 ---
 
