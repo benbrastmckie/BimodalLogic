@@ -9,9 +9,12 @@
 
 ### 275. Fix workflow commands to update status at beginning and end in both TODO.md and state.json
 - **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: markdown
+- **Started**: 2026-01-03
+- **Completed**: 2026-01-03
+- **Research**: [Research Report](275_fix_workflow_status_updates/reports/research-001.md)
 - **Blocking**: None
 - **Dependencies**: None
 
