@@ -21,11 +21,17 @@ context_loading:
   max_context_size: 60000
 ---
 
+**Task Input (optional):** $ARGUMENTS (user prompt describing requirements; e.g., `/meta "I want to revise my opencode system..."`)
+
+**Usage:** `/meta [PROMPT]`
+
 # /meta Command
 
 ## Purpose
 
-The `/meta` command is an interactive system builder that creates complete .opencode architectures through guided interviews. It analyzes your domain, identifies use cases, designs workflows, and generates agents, commands, and context files tailored to your specific needs.
+The `/meta` command is a system builder that creates complete .opencode architectures. It can work in two modes:
+1. **Prompt Mode** (with arguments): Accepts requirements directly and proceeds with system generation
+2. **Interactive Mode** (no arguments): Conducts guided interview to gather requirements
 
 **Use this command when you need to**:
 - Create a new .opencode system for a specific domain
@@ -38,30 +44,41 @@ The `/meta` command is an interactive system builder that creates complete .open
 ## Usage
 
 ```
-/meta
+/meta [PROMPT]
 ```
 
-The command initiates an interactive interview process with no arguments required.
+- **With prompt**: Provide requirements directly, skip interactive interview
+- **Without prompt**: Start interactive interview to gather requirements
 
 ### Examples
 
 ```
-# Example 1: Create a new system
-/meta
-> I want to build a system for managing formal proofs
-[Interactive interview follows]
+# Example 1: Prompt mode - provide requirements directly
+/meta "I want to revise my opencode system to add proof verification capabilities"
 
-# Example 2: Extend existing system
+# Example 2: Prompt mode - create new system
+/meta "Create a system for managing customer support tickets with automated routing"
+
+# Example 3: Interactive mode - guided interview
 /meta
-> I want to add proof verification capabilities to my existing system
-[Interactive interview follows]
+> [Interactive interview follows]
 ```
 
 ---
 
 ## Workflow
 
-This command delegates to the `meta` agent, which executes an 8-stage interactive workflow:
+This command delegates to the `meta` agent, which executes an 8-stage workflow:
+
+**Prompt Mode (with $ARGUMENTS):**
+- Skips Stage 1 (InitiateInterview)
+- Uses $ARGUMENTS as target_domain
+- Proceeds directly to Stage 2 (GatherDomainInformation) with domain context
+- Continues through remaining stages
+
+**Interactive Mode (no $ARGUMENTS):**
+- Executes full 8-stage interactive interview
+- Gathers requirements through guided questions
 
 ### Stage 0: Detect Existing Project
 - Scans for existing .opencode directory
