@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-04T06:25:00Z
-next_project_number: 286
+last_updated: 2026-01-04T07:00:00Z
+next_project_number: 287
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -272,11 +272,14 @@ Provides alternative architectural approach to task 283 that moves responsibilit
 
 ### 285. Audit and fix status update behavior in /research, /plan, /revise, and /implement commands
 - **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2026-01-04
+- **Researched**: 2026-01-04
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [Research Report](.opencode/specs/285_audit_and_fix_status_update_behavior/reports/research-001.md)
 - **Artifacts**:
   - Task Description: [.opencode/specs/285_audit_and_fix_status_update_behavior/task-description.md]
 
@@ -533,7 +536,7 @@ Ensures all workflow commands follow the two-phase status update pattern defined
 
 ### 259. Automation Tactics
 - **Effort**: 17-23 hours (revised from 40-60 hours based on research findings)
-- **Status**: [IMPLEMENTING] (2026-01-04)
+- **Status**: [PLANNED] (2026-01-04)
 - **Started**: 2026-01-04
 - **Researched**: 2026-01-04
 - **Planned**: 2026-01-04
@@ -1400,6 +1403,89 @@ Simplifies TODO.md plan links by showing only the current plan, avoiding confusi
 **Related Tasks**:
 - Task 283: Example task showing the current appending behavior
 - Task 275: Fix workflow status updates (related to status-sync-manager)
+
+---
+
+### 287. Extend Task 283 fix to all remaining subagents with inconsistent step naming
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Task 283 (completed)
+
+**Description**:
+Task 283 successfully fixed general subagents (researcher, planner, implementer) by standardizing from `stage_1_preflight` to `step_0_preflight`. However, research on task 285 revealed that Lean subagents (lean-research-agent, lean-planner, lean-implementation-agent) still use inconsistent `<step_1>` naming instead of `<step_0_preflight>`. This causes the same status synchronization failure for Lean tasks.
+
+**Evidence of Remaining Issues**:
+
+1. **Task 285 /research failure**:
+   - Research completed successfully but status NOT updated
+   - Artifact links NOT added to TODO.md
+   - state.json NOT updated
+   - Same pattern as pre-Task 283 failures
+
+2. **Research findings from task 285**:
+   - General subagents use `<step_0_preflight>` consistently (Task 283 fix working)
+   - Lean subagents use `<step_1>` instead of `<step_0_preflight>` (inconsistent)
+   - Lean subagents update TODO.md directly instead of delegating to status-sync-manager
+   - Task 259 failure explained by lean-research-agent using `<step_1>` naming
+
+**Root Cause**:
+Task 283 only fixed the general subagents but did not audit or fix the Lean-specific subagents. The Lean subagents have TWO issues:
+1. **Naming inconsistency**: Use `<step_1>` instead of `<step_0_preflight>`
+2. **Direct TODO.md updates**: Update TODO.md directly instead of delegating to status-sync-manager
+
+**Affected Subagents**:
+- `.opencode/agent/subagents/lean-research-agent.md`
+- `.opencode/agent/subagents/lean-planner.md`
+- `.opencode/agent/subagents/lean-implementation-agent.md`
+
+**Fix Strategy**:
+
+**Phase 1: Audit All Subagents** (30 minutes)
+1. Search all subagent files for step naming patterns
+2. Identify all subagents with inconsistent naming
+3. Document findings in audit report
+
+**Phase 2: Standardize Lean Subagent Naming** (1 hour)
+1. Update lean-research-agent.md: Change `<step_1>` to `<step_0_preflight>`
+2. Update lean-planner.md: Change `<step_1>` to `<step_0_preflight>`
+3. Update lean-implementation-agent.md: Change `<step_1>` to `<step_0_preflight>`
+
+**Phase 3: Fix Direct TODO.md Updates** (1 hour)
+1. Review Lean subagents for direct TODO.md updates
+2. Replace direct updates with status-sync-manager delegation
+3. Ensure atomic updates across TODO.md and state.json
+
+**Phase 4: Update Documentation** (30 minutes)
+1. Update subagent-structure.md with Lean subagent examples
+2. Document the `<step_0_preflight>` standard for ALL subagents
+3. Add validation checklist for new subagents
+
+**Files to Modify**:
+- `.opencode/agent/subagents/lean-research-agent.md`
+- `.opencode/agent/subagents/lean-planner.md`
+- `.opencode/agent/subagents/lean-implementation-agent.md`
+- `.opencode/context/core/standards/subagent-structure.md`
+
+**Acceptance Criteria**:
+- [ ] All subagents use `<step_0_preflight>` naming consistently
+- [ ] No subagents use `<step_1>` or `stage_` naming
+- [ ] Lean subagents delegate to status-sync-manager (no direct TODO.md updates)
+- [ ] /research on Lean tasks updates status correctly
+- [ ] /plan on Lean tasks updates status correctly
+- [ ] /implement on Lean tasks updates status correctly
+- [ ] Task 259 (Lean task) can be researched without status update failures
+- [ ] Documentation updated with Lean subagent examples
+
+**Impact**: 
+Completes the systematic fix started in Task 283 by extending it to all remaining subagents. Ensures consistent status synchronization across ALL workflow commands for ALL task types (general, markdown, Lean). Fixes the root cause of task 285 and task 259 failures.
+
+**Related Tasks**:
+- Task 283: Fix systematic status synchronization failure (completed - fixed general subagents only)
+- Task 285: Audit and fix status update behavior (research revealed Lean subagent issues)
+- Task 259: Automation Tactics (Lean task that likely failed due to lean-research-agent naming issue)
 
 ---
 

@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-04T06:30:00Z",
-  "next_project_number": 287,
+  "_last_updated": "2026-01-04T07:00:00Z",
+  "next_project_number": 288,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -501,15 +501,20 @@
       "project_number": 285,
       "project_name": "audit_and_fix_status_update_behavior",
       "type": "bugfix",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "research_completed",
+      "status": "researched",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-04T06:15:00Z",
-      "last_updated": "2026-01-04T06:15:00Z",
+      "started": "2026-01-04",
+      "research_completed": "2026-01-04",
+      "last_updated": "2026-01-04T10:00:00Z",
       "artifacts": [
-        ".opencode/specs/285_audit_and_fix_status_update_behavior/task-description.md"
-      ]
+        ".opencode/specs/285_audit_and_fix_status_update_behavior/task-description.md",
+        ".opencode/specs/285_audit_and_fix_status_update_behavior/reports/research-001.md"
+      ],
+      "research_summary": "Found that Task 283 successfully fixed general subagents (researcher, planner, implementer) but Lean subagents (lean-research-agent, lean-planner, lean-implementation-agent) still use inconsistent <step_1> naming instead of <step_0_preflight>. This explains Task 259 failure. Recommended extending Task 283 fix to Lean subagents.",
+      "estimated_hours": 8.0
     },
     {
       "project_number": 282,
@@ -526,8 +531,8 @@
       "project_number": 259,
       "project_name": "automation_tactics",
       "type": "feature",
-      "phase": "implementation_in_progress",
-      "status": "implementing",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-04T00:00:00Z",
@@ -1364,8 +1369,12 @@
   },
   "recent_activities": [
     {
+      "timestamp": "2026-01-04T07:00:00Z",
+      "activity": "Created task 287: Extend Task 283 fix to all remaining subagents with inconsistent step naming (2-3 hours, High priority, markdown)"
+    },
+    {
       "timestamp": "2026-01-04T06:30:00Z",
-      "activity": "Created task 287: Fix /revise command to replace old plan link instead of appending new link (TBD, Medium priority, general)"
+      "activity": "Created task 286: Fix /revise command to replace old plan link instead of appending new link (TBD, Medium priority, general)"
     },
     {
       "timestamp": "2026-01-04T06:20:00Z",
