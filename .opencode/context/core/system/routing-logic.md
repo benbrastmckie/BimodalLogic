@@ -95,9 +95,12 @@ fi
 |---------|----------|-------|
 | /research | lean | lean-research-agent |
 | /research | general | researcher |
+| /plan | lean | lean-planner |
+| /plan | general | planner |
+| /revise | lean | lean-planner |
+| /revise | general | planner |
 | /implement | lean | lean-implementation-agent |
 | /implement | general | implementer |
-| /plan | any | planner (no language-based routing) |
 | /review | any | reviewer (no language-based routing) |
 
 ## Routing Validation
@@ -167,7 +170,6 @@ echo "[INFO] Routing to ${target_agent} (direct command)"
 
 | Command | Target Agent | Reason |
 |---------|--------------|--------|
-| /plan | planner | Planning is language-agnostic |
 | /review | reviewer | Review is language-agnostic |
 | /todo | (orchestrator) | No delegation |
 | /task | (orchestrator) | No delegation |

@@ -5,8 +5,9 @@ description: "Create new plan versions with [REVISED] status"
 context_level: 2
 language: markdown
 routing:
-  language_based: false
-  target_agent: planner
+  language_based: true
+  lean: lean-planner
+  default: planner
 timeout: 1800
 context_loading:
   strategy: lazy
@@ -24,19 +25,18 @@ context_loading:
 
 ## Description
 
-Creates new plan versions for tasks with existing plans. Increments version number, preserves all previous versions, and updates task status to [REVISED].
+Creates new plan versions for tasks with existing plans. Supports language-based routing: Lean tasks route to lean-planner (with proof strategies and mathlib integration), general tasks route to planner. Increments version number, preserves all previous versions, and updates task status to [REVISED].
 
 ## Workflow Setup
 
-**Orchestrator handles:**
-- Parse task number from arguments
-- Validate task exists and has existing plan
-- Calculate next version number
-- Delegate to planner subagent
-- Validate return format
-- Relay result to user
+**Orchestrator handles (Stage 1-5):**
+- **Stage 1 (PreflightValidation):** Parse task number from $ARGUMENTS, validate task exists and has existing plan
+- **Stage 2 (DetermineRouting):** Extract language from task entry (state.json or TODO.md), map to agent (lean → lean-planner, general → planner)
+- **Stage 3 (RegisterAndDelegate):** Register session and invoke target planner with revision context
+- **Stage 4 (ValidateReturn):** Validate return format, verify plan artifact exists
+- **Stage 5 (PostflightCleanup):** Update session registry and relay result to user
 
-**Planner subagent handles:**
+**Planner/Lean-planner subagent handles:**
 - Plan revision (creates new version, preserves old)
 - Version management (increments version number)
 - Research integration (if new research available)

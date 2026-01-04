@@ -5,8 +5,9 @@ description: "Create implementation plans with [PLANNED] status"
 context_level: 2
 language: markdown
 routing:
-  language_based: false
-  target_agent: planner
+  language_based: true
+  lean: lean-planner
+  default: planner
 timeout: 1800
 context_loading:
   strategy: lazy
@@ -25,18 +26,18 @@ context_loading:
 
 ## Description
 
-Creates implementation plans with phased breakdown, effort estimates, and research integration. Delegates to planner subagent which handles research harvesting, phase breakdown, and status updates.
+Creates implementation plans with phased breakdown, effort estimates, and research integration. Supports language-based routing: Lean tasks route to lean-planner (with proof strategies and mathlib integration), general tasks route to planner.
 
 ## Workflow Setup
 
-**Orchestrator handles:**
-- Parse task number from arguments
-- Validate task exists and is not [COMPLETED]
-- Delegate to planner subagent
-- Validate return format
-- Relay result to user
+**Orchestrator handles (Stage 1-5):**
+- **Stage 1 (PreflightValidation):** Parse task number from $ARGUMENTS, validate task exists
+- **Stage 2 (DetermineRouting):** Extract language from task entry (state.json or TODO.md), map to agent (lean → lean-planner, general → planner)
+- **Stage 3 (RegisterAndDelegate):** Register session and invoke target planner
+- **Stage 4 (ValidateReturn):** Validate return format, verify plan artifact exists
+- **Stage 5 (PostflightCleanup):** Update session registry and relay result to user
 
-**Planner subagent handles:**
+**Planner/Lean-planner subagent handles:**
 - Research integration (automatic harvesting from TODO.md)
 - Phase breakdown (1-2 hours per phase target)
 - Effort estimation
