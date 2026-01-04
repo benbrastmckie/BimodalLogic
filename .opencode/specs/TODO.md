@@ -1,11 +1,99 @@
 # TODO
 
-**Last Updated:** 2026-01-03T19:15:00Z
+**Last Updated:** 2026-01-03T20:03:00Z
 
 ---
 
 
 ## High Priority
+
+### 275. Fix workflow commands to update status at beginning and end in both TODO.md and state.json
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+The `/implement` command correctly updates task status to `[COMPLETED]` at the end, but does NOT update status to `[IMPLEMENTING]` at the beginning. This inconsistency should be fixed across all workflow commands (`/research`, `/plan`, `/revise`, `/implement`) to ensure status is updated at both the beginning and end of command execution in both TODO.md and state.json files.
+
+**Current Behavior**:
+```bash
+/implement 274
+# Beginning: Status remains [NOT STARTED] or [PLANNED]
+# End: Status updated to [COMPLETED]
+# Problem: No status update at beginning
+```
+
+**Expected Behavior**:
+```bash
+/implement 274
+# Beginning: Status updated to [IMPLEMENTING]
+# End: Status updated to [COMPLETED]
+
+/research 275
+# Beginning: Status updated to [RESEARCHING]
+# End: Status updated to [RESEARCHED]
+
+/plan 275
+# Beginning: Status updated to [PLANNING]
+# End: Status updated to [PLANNED]
+
+/revise 275
+# Beginning: Status updated to [REVISING]
+# End: Status updated to [REVISED]
+```
+
+**Status Transitions** (per state-management.md):
+- `/research`: `[NOT STARTED]` → `[RESEARCHING]` → `[RESEARCHED]`
+- `/plan`: `[RESEARCHED]` → `[PLANNING]` → `[PLANNED]`
+- `/revise`: `[PLANNED]` → `[REVISING]` → `[REVISED]`
+- `/implement`: `[PLANNED]` → `[IMPLEMENTING]` → `[COMPLETED]`
+
+**Root Cause**:
+Commands and subagents update status only at the end via status-sync-manager, not at the beginning. The beginning status update is missing from the workflow.
+
+**Solution**:
+1. Update each command to invoke status-sync-manager at the beginning:
+   - `/research` → Update to `[RESEARCHING]` before delegating to researcher
+   - `/plan` → Update to `[PLANNING]` before delegating to planner
+   - `/revise` → Update to `[REVISING]` before delegating to reviser
+   - `/implement` → Update to `[IMPLEMENTING]` before delegating to implementer
+2. Update each subagent to invoke status-sync-manager at the end:
+   - researcher → Update to `[RESEARCHED]` after creating research artifacts
+   - planner → Update to `[PLANNED]` after creating plan artifacts
+   - reviser → Update to `[REVISED]` after revising plan artifacts
+   - implementer → Update to `[COMPLETED]` after implementation (already working)
+3. Update context files to document the two-phase status update pattern:
+   - `.opencode/context/core/workflows/command-lifecycle.md` - Document beginning and end status updates
+   - `.opencode/context/core/system/state-management.md` - Update status transition documentation
+
+**Files to Modify**:
+- `.opencode/command/research.md` - Add beginning status update to `[RESEARCHING]`
+- `.opencode/command/plan.md` - Add beginning status update to `[PLANNING]`
+- `.opencode/command/revise.md` - Add beginning status update to `[REVISING]`
+- `.opencode/command/implement.md` - Add beginning status update to `[IMPLEMENTING]`
+- `.opencode/agent/subagents/researcher.md` - Ensure end status update to `[RESEARCHED]`
+- `.opencode/agent/subagents/planner.md` - Ensure end status update to `[PLANNED]`
+- `.opencode/agent/subagents/reviser.md` - Ensure end status update to `[REVISED]`
+- `.opencode/agent/subagents/implementer.md` - Verify end status update to `[COMPLETED]` (already working)
+- `.opencode/context/core/workflows/command-lifecycle.md` - Document two-phase status updates
+- `.opencode/context/core/system/state-management.md` - Update status transition documentation
+
+**Acceptance Criteria**:
+- [ ] `/research` updates status to `[RESEARCHING]` at beginning, `[RESEARCHED]` at end
+- [ ] `/plan` updates status to `[PLANNING]` at beginning, `[PLANNED]` at end
+- [ ] `/revise` updates status to `[REVISING]` at beginning, `[REVISED]` at end
+- [ ] `/implement` updates status to `[IMPLEMENTING]` at beginning, `[COMPLETED]` at end
+- [ ] All status updates occur in both TODO.md and state.json via status-sync-manager
+- [ ] Status transitions follow state-management.md standard
+- [ ] Context files document two-phase status update pattern
+- [ ] All workflow commands tested and verified
+
+**Impact**: Ensures consistent status tracking across all workflow commands, providing accurate visibility into task progress at both the beginning and end of command execution.
+
+---
 
 ### 274. Remove status metadata from research reports (belongs in TODO.md and state.json only)
 - **Effort**: 2-3 hours
@@ -150,7 +238,7 @@ The `/research` command creates research reports but does not update TODO.md tas
 
 ### 272. Add standardized YAML header to TODO.md with state.json metadata
 - **Effort**: TBD
-- **Status**: [COMPLETED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -230,12 +318,13 @@ technical_debt:
 ---
 
 ### 271. Revise /meta command to create tasks with linked artifacts instead of implementing directly
-- **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 13 hours
+- **Status**: [PLANNED]
 - **Completed**: 2026-01-03
 - **Priority**: High
 - **Language**: markdown
 - **Research**: [Research Report](271_revise_meta_command_task_creation/reports/research-001.md)
+- **Plan**: [Implementation Plan](271_revise_meta_command_task_creation/plans/implementation-001.md)
 - **Blocking**: None
 - **Dependencies**: None
 
