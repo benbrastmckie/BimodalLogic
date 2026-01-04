@@ -55,6 +55,21 @@ updated: 2025-12-29
   timeout enforcement, session tracking), validate returns, and relay results to user
 </task>
 
+<command_type_lists>
+  TASK-BASED COMMANDS (require task number in $ARGUMENTS):
+  - research
+  - plan
+  - implement
+  - revise
+  
+  DIRECT COMMANDS (accept optional arguments in $ARGUMENTS):
+  - meta
+  - review
+  - todo
+  - errors
+  - task
+</command_type_lists>
+
 <critical_instructions>
   ARGUMENT HANDLING:
   
@@ -92,20 +107,76 @@ updated: 2025-12-29
   <stage id="1" name="PreflightValidation">
     <action>Load command, validate, parse arguments, and prepare delegation context</action>
     <process>
+      CRITICAL: You MUST execute ALL steps in order. Do NOT skip any step.
+      
       See: @.opencode/context/core/standards/command-argument-handling.md
       
-      1. Determine command type (task-based or direct)
-      2. Parse arguments according to command type:
-         - Task-based: Extract and validate task number from $ARGUMENTS
-         - Direct: Read $ARGUMENTS as-is
-      3. Validate command file exists and frontmatter is valid YAML
-      4. Extract routing metadata from frontmatter
-      5. Validate delegation safety (cycles, depth, session)
-      6. Generate delegation context with command metadata:
-         - command_type: "task-based" | "direct"
-         - command_name: extracted from command file name
-         - task_number: extracted from $ARGUMENTS (if task-based)
-         - session_id, delegation_path, timeout, etc.
+      Step 1: Determine command type
+      - Extract command name from invocation (e.g., "implement" from "/implement 271")
+      - Check if command is in TASK-BASED COMMANDS list: [research, plan, implement, revise]
+        * If YES: Set command_type = "task-based"
+        * If NO: Set command_type = "direct"
+      - LOG: "Command type determined: {command_type}"
+      
+      Step 2: Parse and validate arguments (CRITICAL STEP - DO NOT SKIP)
+      - IF command_type == "task-based":
+        a. Check if $ARGUMENTS is empty or whitespace only
+           * If YES: ABORT with error "Task number required for /{command} command"
+        b. Extract first token from $ARGUMENTS (split on whitespace)
+           * Example: $ARGUMENTS = "271" → task_number = "271"
+           * Example: $ARGUMENTS = "271 extra args" → task_number = "271"
+        c. Validate task_number is a positive integer
+           * Use regex: ^[1-9][0-9]*$
+           * If INVALID: ABORT with error "Task number must be positive integer, got: {task_number}"
+        d. Store task_number for use in Stage 3
+           * IMPORTANT: You will need this value in Stage 3 to format the prompt
+        e. LOG: "Task number parsed and validated: {task_number}"
+      
+      - IF command_type == "direct":
+        a. Read $ARGUMENTS as-is (may be empty string)
+        b. No validation required
+        c. LOG: "Direct command arguments: {$ARGUMENTS}"
+      
+      Step 3: Validate command file exists and frontmatter is valid YAML
+      - Check file exists: .opencode/command/{command}.md
+      - Parse YAML frontmatter
+      - Validate required fields: name, agent
+      - LOG: "Command file validated: {command}.md"
+      
+      Step 4: Extract routing metadata from frontmatter
+      - Extract agent field
+      - Extract routing configuration (if present)
+      - Extract timeout (if present)
+      - LOG: "Routing metadata extracted: agent={agent}"
+      
+      Step 5: Validate delegation safety (cycles, depth, session)
+      - Check delegation_depth ≤ 3
+      - Check for cycles in delegation_path
+      - Generate unique session_id: sess_{timestamp}_{random_6char}
+      - LOG: "Delegation safety validated: session_id={session_id}"
+      
+      Step 6: Generate delegation context with command metadata
+      - Create delegation context object:
+        {
+          "command_type": "{task-based|direct}",
+          "command_name": "{command}",
+          "task_number": "{number}" (if task-based),
+          "session_id": "{session_id}",
+          "delegation_depth": 1,
+          "delegation_path": ["orchestrator", "{command}", "{target_agent}"],
+          "timeout": {timeout_seconds}
+        }
+      - LOG: "Delegation context prepared: {delegation_context}"
+      
+      CHECKPOINT: Verify all required data extracted
+      - [ ] command_type determined
+      - [ ] task_number extracted and validated (if task-based)
+      - [ ] command file validated
+      - [ ] routing metadata extracted
+      - [ ] delegation safety validated
+      - [ ] delegation context generated
+      
+      If ANY checkpoint fails: ABORT and return error to user
     </process>
     <checkpoint>Command validated, arguments parsed, delegation context prepared with metadata</checkpoint>
   </stage>
@@ -128,6 +199,14 @@ updated: 2025-12-29
     <process>
       CRITICAL: Format prompt based on command_type from Stage 1.
       
+      PRE-STAGE VALIDATION (CRITICAL - DO NOT SKIP):
+      - Verify delegation_context exists from Stage 1
+      - Verify command_type is set ("task-based" or "direct")
+      - IF command_type == "task-based":
+        * Verify task_number was extracted in Stage 1
+        * If task_number is MISSING: ABORT with error "Stage 1 failed to extract task_number"
+      - LOG: "Pre-Stage 3 validation passed: command_type={command_type}, task_number={task_number}"
+      
       1. Register delegation in session registry:
          {
            "session_id": "sess_...",
@@ -143,23 +222,39 @@ updated: 2025-12-29
       
       2. Format prompt for subagent (CRITICAL STEP):
          
-         FOR TASK-BASED COMMANDS (research, implement, plan):
-         - You MUST include the task_number from $ARGUMENTS (validated in Stage 1)
+         FOR TASK-BASED COMMANDS (command_type == "task-based"):
+         - CRITICAL: You MUST use the task_number extracted in Stage 1, Step 2
          - Format the prompt EXACTLY as: "Task: {task_number}"
-         - Example: If $ARGUMENTS = "258", format as "Task: 258"
-         - Example: If $ARGUMENTS = "267", format as "Task: 267"
-         - DO NOT pass $ARGUMENTS directly - the subagent needs "Task: {number}" format
+         - DO NOT use $ARGUMENTS directly - use the validated task_number from Stage 1
+         - Examples:
+           * If task_number = "258" (from Stage 1): prompt = "Task: 258"
+           * If task_number = "267" (from Stage 1): prompt = "Task: 267"
+           * If task_number = "271" (from Stage 1): prompt = "Task: 271"
+         - VALIDATION: Verify prompt matches pattern "Task: [0-9]+"
+         - LOG: "Formatted prompt for task-based command: {prompt}"
          
-         FOR DIRECT COMMANDS (meta, review, revise):
+         FOR DIRECT COMMANDS (command_type == "direct"):
          - Pass $ARGUMENTS as-is (may be empty string)
          - If $ARGUMENTS is empty: Pass empty string ""
          - If $ARGUMENTS has content: Pass it directly
-         - Example: /meta → prompt = ""
-         - Example: /meta "build proof system" → prompt = "build proof system"
+         - Examples:
+           * /meta → prompt = ""
+           * /meta "build proof system" → prompt = "build proof system"
+         - LOG: "Formatted prompt for direct command: {prompt}"
       
       3. Invoke target agent using the task tool:
          
-         EXAMPLE for /research 258 (where $ARGUMENTS = "258"):
+         EXAMPLE for /implement 271 (where task_number = "271" from Stage 1):
+         task_tool(
+           subagent_type="implementer",
+           prompt="Task: 271",
+           session_id=delegation_context["session_id"],
+           delegation_depth=1,
+           delegation_path=delegation_context["delegation_path"],
+           timeout=delegation_context["timeout"]
+         )
+         
+         EXAMPLE for /research 258 (where task_number = "258" from Stage 1):
          task_tool(
            subagent_type="researcher",
            prompt="Task: 258",
@@ -179,13 +274,21 @@ updated: 2025-12-29
            timeout=delegation_context["timeout"]
          )
          
-         The prompt parameter MUST be "Task: {task_number}" for task-based commands.
-         The prompt parameter MUST be $ARGUMENTS (or "") for direct commands.
+         CRITICAL RULES:
+         - For task-based commands: prompt MUST be "Task: {task_number from Stage 1}"
+         - For direct commands: prompt MUST be $ARGUMENTS (or "")
+         - DO NOT pass $ARGUMENTS directly for task-based commands
+         - DO NOT skip prompt formatting
       
       4. Monitor for timeout:
          - Check if current_time > deadline
          - Request partial results if timeout
          - Log timeout event to errors.json
+      
+      POST-DELEGATION VALIDATION:
+      - Verify task_tool was invoked
+      - Verify prompt was formatted correctly
+      - LOG: "Agent invoked: {agent} with prompt: {prompt}"
     </process>
     <timeout_defaults>
       - Research: 3600s (1 hour)
@@ -194,7 +297,7 @@ updated: 2025-12-29
       - Review: 3600s (1 hour)
       - Default: 1800s (30 minutes)
     </timeout_defaults>
-    <checkpoint>Session registered and agent invoked with prompt="Task: {task_number from $ARGUMENTS}"</checkpoint>
+    <checkpoint>Session registered and agent invoked with prompt="Task: {task_number from Stage 1}"</checkpoint>
   </stage>
 
   <stage id="4" name="ValidateReturn">
@@ -390,6 +493,13 @@ updated: 2025-12-29
 
 <validation>
   <pre_flight>
+    Stage 1 (PreflightValidation) MUST validate:
+    - Command type determined (task-based or direct)
+    - For task-based commands:
+      * $ARGUMENTS is not empty
+      * task_number extracted from $ARGUMENTS
+      * task_number is positive integer
+      * task_number stored for Stage 3
     - Command file exists
     - Frontmatter is valid YAML
     - Agent field is present
@@ -397,20 +507,34 @@ updated: 2025-12-29
     - No cycles in delegation path
     - Delegation depth ≤ 3
     - Timeout is configured
+    - Delegation context generated with all required fields
+    
+    If ANY validation fails: ABORT and return error to user
   </pre_flight>
   
   <mid_flight>
+    Stage 3 (RegisterAndDelegate) MUST validate:
+    - Delegation context exists from Stage 1
+    - For task-based commands:
+      * task_number available from Stage 1
+      * Prompt formatted as "Task: {task_number}"
+      * Prompt matches pattern "Task: [0-9]+"
     - Session registered
-    - Subagent invoked
+    - Subagent invoked with correct prompt
     - Timeout monitored
+    
+    If ANY validation fails: ABORT and return error to user
   </mid_flight>
   
   <post_flight>
+    Stage 4 (ValidateReturn) MUST validate:
     - Return is valid JSON
     - Return matches schema
     - Session ID matches
     - Artifacts exist (if completed)
     - Summary <100 tokens
+    
+    Stage 5 (PostflightCleanup) MUST complete:
     - Session cleaned up
     - Result returned to user
   </post_flight>

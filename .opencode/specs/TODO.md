@@ -91,9 +91,11 @@ Orchestrator Stage 4 (ValidateReturn) references validation-rules.md but does NO
 
 ### 278. Investigate and fix /implement command argument parsing failure
 - **Effort**: 5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: general
+- **Completed**: 2026-01-03
+- **Implementation**: [Summary](.opencode/specs/278_investigate_fix_implement_argument_parsing/summaries/implementation-summary-20260103.md)
 - **Blocking**: None
 - **Dependencies**: None
 - **Analysis**: [Analysis Report](278_investigate_fix_implement_argument_parsing/reports/analysis-001.md)
