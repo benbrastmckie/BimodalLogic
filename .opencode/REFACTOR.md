@@ -192,7 +192,7 @@ The rebuild is structured in 10 phases spanning approximately 85-110 hours of wo
 
 ---
 
-### Phase 3: Command System Frontmatter Verification [NOT STARTED]
+### Phase 3: Command System Frontmatter Verification [IN PROGRESS - Pending Phase 4]
 
 **Objective**: Verify all commands use frontmatter delegation pattern and specify correct routing
 
@@ -246,7 +246,7 @@ The rebuild is structured in 10 phases spanning approximately 85-110 hours of wo
 
 ---
 
-### Phase 4: Subagent Compliance Verification [NOT STARTED]
+### Phase 4: Subagent Compliance Verification [IN PROGRESS]
 
 **Objective**: Ensure all subagents comply with DESIGN.md standards for frontmatter, workflow, and return format
 

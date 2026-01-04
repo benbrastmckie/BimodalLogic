@@ -9,8 +9,7 @@ context_loading:
   index: ".opencode/context/index.md"
   required:
     - "core/system/state-management.md"  # For status markers and state schemas
-    - "common/system/git-commits.md"     # For git commit patterns
-    - "common/system/artifact-management.md"  # For directory operations
+    - "core/system/artifact-management.md"  # For directory operations
   data_files:
     - ".opencode/specs/TODO.md"          # Main TODO file
     - ".opencode/specs/state.json"       # State tracking
