@@ -7,6 +7,60 @@
 
 ## High Priority
 
+### 278. Investigate and fix /implement command argument parsing failure
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+When running `/implement 271`, the orchestrator returns an error message saying "However, I need you to provide the task number you want to implement" despite 271 being provided as an argument. This suggests the orchestrator is not properly parsing the `$ARGUMENTS` variable or the argument is not being passed correctly from the user invocation to the orchestrator.
+
+**Current Behavior**:
+```bash
+/implement 271
+# Returns: "However, I need you to provide the task number you want to implement.
+#          Usage: /implement TASK_NUMBER [PROMPT]
+#          Examples:
+#          - /implement 196 - Implement task 196
+#          - /implement 196 "Focus on error handling" - Implement with custom focus
+#          - /implement 105-107 - Batch implement tasks 105-107"
+```
+
+**Expected Behavior**:
+```bash
+/implement 271
+# Should parse 271 from $ARGUMENTS
+# Should format as "Task: 271"
+# Should delegate to implementer subagent with prompt="Task: 271"
+```
+
+**Root Cause Investigation Needed**:
+1. Is `$ARGUMENTS` being populated correctly by OpenCode?
+2. Is the orchestrator's Stage 1 (PreflightValidation) parsing logic working?
+3. Is there a mismatch between how arguments are passed and how they're expected?
+4. Are there similar issues with other commands (/research, /plan, /revise)?
+
+**Files to Investigate**:
+- `.opencode/agent/orchestrator.md` - Stage 1 argument parsing logic
+- `.opencode/command/implement.md` - Command frontmatter and argument handling
+- `.opencode/context/core/standards/command-argument-handling.md` - Argument handling standard
+- `.opencode/context/core/system/routing-logic.md` - Routing and delegation logic
+
+**Acceptance Criteria**:
+- [ ] `/implement 271` successfully parses 271 as task number
+- [ ] Orchestrator Stage 1 correctly extracts task number from $ARGUMENTS
+- [ ] Orchestrator Stage 3 correctly formats prompt as "Task: 271"
+- [ ] Similar commands (/research, /plan, /revise) tested and working
+- [ ] Root cause documented and fixed
+- [ ] No regression in other command argument handling
+
+**Impact**: Critical bug preventing all task-based workflow commands from functioning. Blocks implementation of tasks 271, 275, 276, and all other planned work.
+
+---
+
 ### 277. Improve OpenCode header and summary display for task commands
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
@@ -292,11 +346,11 @@ The `/research` command creates research reports but does not update TODO.md tas
 ---
 
 ### 276. Investigate and remove redundant project-level state.json files in favor of centralized specs/state.json
-- **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 8 hours
+- **Status**: [PLANNED]
 - **Started**: 2026-01-03
-- **Completed**: 2026-01-03
 - **Research**: [Research Report](276_investigate_remove_redundant_project_level_state_json/reports/research-001.md)
+- **Plan**: [Implementation Plan](276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md)
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
