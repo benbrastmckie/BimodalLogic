@@ -197,16 +197,28 @@
       "project_number": 258,
       "project_name": "resolve_truth_lean_sorries",
       "type": "research",
-      "phase": "researched",
-      "status": "researched",
+      "phase": "planned",
+      "status": "planned",
       "priority": "medium",
       "language": "lean",
       "created_at": "2026-01-03T10:00:00Z",
-      "updated_at": "2026-01-03T10:30:00Z",
+      "updated_at": "2026-01-04T00:00:00Z",
+      "plan_created": "2026-01-04",
       "artifacts": [
         ".opencode/specs/258_resolve_truth_lean_sorries/reports/research-001.md",
-        ".opencode/specs/258_resolve_truth_lean_sorries/summaries/research-summary.md"
-      ]
+        ".opencode/specs/258_resolve_truth_lean_sorries/summaries/research-summary.md",
+        ".opencode/specs/258_resolve_truth_lean_sorries/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/258_resolve_truth_lean_sorries/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 2,
+        "total_effort_hours": 0.5,
+        "complexity": "simple",
+        "research_integrated": true,
+        "language": "lean",
+        "proof_strategy": "Verification and documentation (no proofs needed - already resolved)",
+        "mathlib_dependencies": []
+      }
     },
     {
       "project_number": 271,

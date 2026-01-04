@@ -235,8 +235,8 @@ Fixes the systematic status synchronization failure affecting ALL workflow comma
 ---
 
 ### 258. Resolve Truth.lean Sorries
-- **Effort**: 10-20 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 0.5 hours
+- **Status**: [PLANNED]
 - **Started**: 2026-01-03
 - **Completed**: 2026-01-03
 - **Priority**: Medium
@@ -244,8 +244,10 @@ Fixes the systematic status synchronization failure affecting ALL workflow comma
 - **Blocking**: None
 - **Dependencies**: None
 - **Research Artifacts**:
-  - Main Report: .opencode/specs/258_resolve_truth_lean_sorries/reports/research-001.md
-  - Summary: .opencode/specs/258_resolve_truth_lean_sorries/summaries/research-summary.md
+  - Main Report: [.opencode/specs/258_resolve_truth_lean_sorries/reports/research-001.md]
+  - Summary: [.opencode/specs/258_resolve_truth_lean_sorries/summaries/research-summary.md]
+- **Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/258_resolve_truth_lean_sorries/plans/implementation-001.md]
 
 **Description**: Resolve the 3 remaining `sorry` placeholders in `Logos/Core/Semantics/Truth.lean` related to temporal swap validity. These require handling domain extension for history quantification.
 
