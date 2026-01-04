@@ -27,8 +27,8 @@ context_loading:
   required:
     - "core/standards/delegation.md"
     - "core/system/state-management.md"
-    - "common/standards/plan.md"
-    - "common/system/artifact-management.md"
+    - "core/standards/plan.md"
+    - "core/system/artifact-management.md"
   max_context_size: 50000
 delegation:
   max_depth: 3
