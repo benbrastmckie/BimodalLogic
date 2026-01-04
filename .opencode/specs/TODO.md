@@ -362,18 +362,18 @@ technical_debt:
 ---
 
 ### 271. Revise /meta command to create tasks with linked artifacts instead of implementing directly
-- **Effort**: 13 hours
+- **Effort**: 10 hours
 - **Status**: [PLANNED]
 - **Completed**: 2026-01-03
 - **Priority**: High
 - **Language**: markdown
 - **Research**: [Research Report](271_revise_meta_command_task_creation/reports/research-001.md)
-- **Plan**: [Implementation Plan](271_revise_meta_command_task_creation/plans/implementation-001.md)
+- **Plan**: [Implementation Plan v2](271_revise_meta_command_task_creation/plans/implementation-002.md)
 - **Blocking**: None
 - **Dependencies**: None
 
 **Description**:
-The `/meta` command currently implements work directly after the interview. Instead, it should conclude by creating an appropriate number of tasks in `.opencode/specs/TODO.md` following task standards, with each task linking to relevant research artifacts and a detailed plan artifact organized per artifact-management.md. The end goal is to create tasks with linked artifacts in appropriately numbered project directories for user review, NOT to implement the plans.
+The `/meta` command currently implements work directly after the interview. Instead, it should conclude by creating an appropriate number of tasks in `.opencode/specs/TODO.md` following task standards, with each task linking to a detailed plan artifact (plan only - no research or summary artifacts). Additionally, this task migrates the system from 'Language' field to 'Type' field and updates /implement routing to handle meta tasks properly.
 
 **Current Behavior**:
 - `/meta` conducts interview (Stages 0-6)
@@ -385,16 +385,15 @@ The `/meta` command currently implements work directly after the interview. Inst
 - Stage 7 (CreateTasksWithArtifacts): 
   - Use `next_project_number` from state.json for task numbering
   - Create project directories in `.opencode/specs/NNN_*/` for each task
-  - Generate research artifacts analyzing requirements
-  - Generate detailed plan artifacts for each task
-  - Create task entries in TODO.md linking to artifacts
+  - Generate ONLY plan artifacts for each task (self-documenting)
+  - Create task entries in TODO.md linking to plan artifacts
+  - Set Type field to 'meta' for meta-related tasks
   - Increment `next_project_number` for each task created
 - Stage 8 (DeliverTaskSummary): Present task list with artifact links, instruct user to review and run `/implement NNN` for each task
 
 **Tasks to Create** (examples based on interview):
-1. Research task: Analyze domain requirements and identify core concepts
-2. Planning task: Design agent architecture and workflow patterns
-3. Implementation tasks (one per agent/command/context group):
+1. Planning task: Design agent architecture and workflow patterns
+2. Implementation tasks (one per agent/command/context group):
    - Create domain-specific agents
    - Create custom commands
    - Create context files
@@ -402,33 +401,34 @@ The `/meta` command currently implements work directly after the interview. Inst
 **Artifact Structure** (per task):
 ```
 .opencode/specs/NNN_task_name/
-├── reports/
-│   └── research-001.md          # Domain analysis, requirements
-├── plans/
-│   └── implementation-001.md    # Detailed implementation plan
-└── summaries/
-    ├── research-summary.md      # Brief research summary
-    └── plan-summary.md          # Brief plan summary
+└── plans/
+    └── implementation-001.md    # Detailed implementation plan (self-documenting)
 ```
 
 **Files to Modify**:
 - `.opencode/agent/subagents/meta.md` - Revise Stage 7 and Stage 8
 - `.opencode/command/meta.md` - Update workflow description
+- `.opencode/command/implement.md` - Add meta task routing
+- `.opencode/context/core/standards/tasks.md` - Language → Type migration
+- `.opencode/context/core/standards/plan.md` - Language → Type migration
+- `.opencode/context/core/standards/report.md` - Language → Type migration
+- `.opencode/context/core/system/state-management.md` - Language → Type migration
 
 **Acceptance Criteria**:
 - [ ] `/meta` creates tasks in TODO.md using next_project_number from state.json
 - [ ] Each task has a project directory in `.opencode/specs/NNN_*/`
-- [ ] Each task links to research artifact and plan artifact
-- [ ] Research artifacts analyze domain requirements per research standards
+- [ ] Each task links to plan artifact ONLY (no research or summary artifacts)
 - [ ] Plan artifacts follow plan.md standard with phases and estimates
-- [ ] Summary artifacts follow summary.md standard (<100 tokens)
-- [ ] Task entries follow tasks.md standard (Language, Effort, Priority, Status fields)
+- [ ] Task entries use 'Type' field instead of 'Language' field
+- [ ] Meta tasks set Type to 'meta'
 - [ ] Task breakdown follows task-breakdown.md workflow
 - [ ] state.json next_project_number incremented for each task
-- [ ] NO implementation performed - only tasks and artifacts created
-- [ ] User can review artifacts and run `/implement NNN` for each task
+- [ ] Language→Type migration completed across all system files
+- [ ] /implement command routes meta tasks to meta subagents
+- [ ] NO implementation performed - only tasks and plan artifacts created
+- [ ] User can review plan artifacts and run `/implement NNN` for each task
 
-**Impact**: Enables user review of /meta output before implementation, following the research → plan → implement workflow used by other commands.
+**Impact**: Enables user review of /meta output before implementation, simplifies artifact generation (plan only), and improves semantic clarity with Type field migration.
 
 ---
 
