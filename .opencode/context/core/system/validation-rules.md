@@ -4,6 +4,10 @@
 
 This standard defines validation rules for subagent returns, including return format validation and artifact verification.
 
+**ENFORCEMENT**: These validation rules are ENFORCED by the orchestrator Stage 4 (ValidateReturn). All subagent returns are validated before proceeding to Stage 5 (PostflightCleanup). Validation failures result in immediate error reporting to the user and workflow termination.
+
+**IMPLEMENTATION**: See `.opencode/agent/orchestrator.md` Stage 4 for the executable validation logic that implements these rules.
+
 ## Return Format Validation
 
 All subagents must return a standard JSON format (see `core/standards/delegation.md`).
@@ -268,9 +272,34 @@ After all validations pass, log summary:
 [PASS] {N} artifacts validated
 ```
 
+## Implementation Status
+
+**STATUS**: ✅ ENFORCED (as of Task 280)
+
+These validation rules are now ACTIVELY ENFORCED by the orchestrator Stage 4 (ValidateReturn). Prior to Task 280, these rules were documented but not executed, leading to "phantom research" incidents where agents claimed completion without creating artifacts.
+
+**Key Changes**:
+- Orchestrator Stage 4 rewritten from documentation-only to executable validation logic
+- All 5 validation steps now executed for every subagent return
+- Validation failures result in immediate error reporting and workflow termination
+- Prevents phantom research/planning/implementation across all workflow commands
+
+**Validation Execution Flow**:
+1. Subagent returns JSON to orchestrator
+2. Orchestrator Stage 4 executes validation steps 1-5
+3. If validation fails: Error reported to user, workflow terminated
+4. If validation passes: Proceed to Stage 5 (PostflightCleanup)
+
+**Testing**:
+- Validation tested with malformed returns (plain text, missing fields, invalid status)
+- Validation tested with phantom research scenarios (status=completed, no artifacts)
+- Validation tested with missing/empty artifact files
+- All workflow commands (/research, /plan, /implement, /revise) protected
+
 ## See Also
 
+- **Orchestrator Stage 4**: `.opencode/agent/orchestrator.md` (lines 303-450) - Executable validation logic
 - Delegation Standard: `.opencode/context/core/standards/delegation.md`
-- Orchestrator: `.opencode/agent/orchestrator.md`
+- Subagent Return Format: `.opencode/context/core/standards/subagent-return-format.md`
 - State Management: `.opencode/context/core/system/state-management.md`
 - Routing Logic: `.opencode/context/core/system/routing-logic.md`

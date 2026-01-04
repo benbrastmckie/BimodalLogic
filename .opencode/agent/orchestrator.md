@@ -303,15 +303,168 @@ updated: 2025-12-29
   <stage id="4" name="ValidateReturn">
     <action>Validate agent return format and content</action>
     <process>
-      See: @.opencode/context/core/system/validation-rules.md
+      CRITICAL: Execute validation logic to prevent phantom research.
+      Reference: @.opencode/context/core/system/validation-rules.md
       
-      1. Validate JSON structure
-      2. Validate required fields
-      3. Validate status enum
-      4. Validate session_id
-      5. Validate artifacts (if status=completed)
+      STEP 1: VALIDATE JSON STRUCTURE
+        - Parse subagent return with jq to verify it's valid JSON
+        - If parse fails:
+          * LOG: "[FAIL] Invalid JSON return from {agent}"
+          * FORMAT error response:
+            - Error: "Cannot parse return as JSON"
+            - Recommendation: "Fix {agent} subagent return format"
+          * RETURN failed status to user
+          * DO NOT proceed to Stage 5
+        - If parse succeeds:
+          * LOG: "[PASS] Return is valid JSON"
+      
+      STEP 2: VALIDATE REQUIRED FIELDS
+        - Check required top-level fields exist:
+          * status (string, required)
+          * summary (string, required)
+          * artifacts (array, required - can be empty)
+          * metadata (object, required)
+        - Check required metadata subfields:
+          * metadata.session_id (string, required)
+          * metadata.agent_type (string, required)
+          * metadata.delegation_depth (integer, required)
+          * metadata.delegation_path (array, required)
+        - For each missing field:
+          * LOG: "[FAIL] Missing required field: {field}"
+          * FORMAT error response:
+            - Error: "Subagent return is incomplete - missing field: {field}"
+            - Recommendation: "Fix {agent} subagent to include all required fields"
+          * RETURN failed status to user
+          * DO NOT proceed to Stage 5
+        - If all fields present:
+          * LOG: "[PASS] All required fields present"
+      
+      STEP 3: VALIDATE STATUS ENUM
+        - Extract status field from return
+        - Verify status is one of: "completed", "partial", "failed", "blocked"
+        - If status is invalid:
+          * LOG: "[FAIL] Invalid status: {status}"
+          * FORMAT error response:
+            - Error: "Invalid status value: {status}"
+            - Valid values: "completed, partial, failed, blocked"
+            - Recommendation: "Fix {agent} subagent to use valid status enum"
+          * RETURN failed status to user
+          * DO NOT proceed to Stage 5
+        - If status is valid:
+          * LOG: "[PASS] Status is valid: {status}"
+      
+      STEP 4: VALIDATE SESSION ID
+        - Extract metadata.session_id from return
+        - Compare with expected_session_id from delegation context (Stage 3)
+        - If session_id mismatch:
+          * LOG: "[FAIL] Session ID mismatch"
+          * LOG: "Expected: {expected_session_id}"
+          * LOG: "Got: {returned_session_id}"
+          * FORMAT error response:
+            - Error: "Session ID mismatch - possible session hijacking or stale return"
+            - Expected: {expected_session_id}
+            - Got: {returned_session_id}
+            - Recommendation: "Fix {agent} subagent to return correct session_id"
+          * RETURN failed status to user
+          * DO NOT proceed to Stage 5
+        - If session_id matches:
+          * LOG: "[PASS] Session ID matches: {session_id}"
+      
+      STEP 5: VALIDATE ARTIFACTS (CRITICAL - Prevents Phantom Research)
+        - Extract status from return
+        - IF status == "completed":
+          
+          STEP 5a: Check artifacts array is non-empty
+            - Extract artifacts array from return
+            - Count artifacts: artifact_count = length of artifacts array
+            - IF artifact_count == 0:
+              * LOG: "[FAIL] Agent returned 'completed' status but created no artifacts"
+              * LOG: "Error: Phantom research detected - status=completed but no artifacts"
+              * FORMAT error response:
+                - Error: "Phantom research/planning/implementation detected"
+                - Details: "Agent returned 'completed' status but created no artifacts"
+                - Impact: "No work was actually done despite 'completed' status"
+                - Recommendation: "Verify {agent} creates artifacts before updating status to 'completed'"
+              * RETURN failed status to user
+              * DO NOT proceed to Stage 5
+            - ELSE:
+              * LOG: "[INFO] Artifact count: {artifact_count}"
+          
+          STEP 5b: Verify each artifact file exists on disk
+            - Extract artifact paths: artifacts[].path
+            - FOR EACH artifact path:
+              * Check if file exists: [ -f "$path" ]
+              * IF file does NOT exist:
+                - LOG: "[FAIL] Artifact does not exist: {path}"
+                - FORMAT error response:
+                  * Error: "Artifact validation failed - file not found"
+                  * Missing file: {path}
+                  * Recommendation: "Verify {agent} writes artifacts to correct paths"
+                - RETURN failed status to user
+                - DO NOT proceed to Stage 5
+              * ELSE:
+                - LOG: "[PASS] Artifact exists: {path}"
+          
+          STEP 5c: Verify each artifact file is non-empty
+            - FOR EACH artifact path:
+              * Check if file is non-empty: [ -s "$path" ]
+              * IF file is empty (size == 0):
+                - LOG: "[FAIL] Artifact is empty: {path}"
+                - FORMAT error response:
+                  * Error: "Artifact validation failed - file is empty"
+                  * Empty file: {path}
+                  * Recommendation: "Verify {agent} writes content to artifacts"
+                - RETURN failed status to user
+                - DO NOT proceed to Stage 5
+              * ELSE:
+                - Get file size: stat -c%s "$path" (Linux) or stat -f%z "$path" (macOS)
+                - LOG: "[PASS] Artifact is non-empty: {path} ({file_size} bytes)"
+          
+          STEP 5d: Log validation success
+            - LOG: "[PASS] {artifact_count} artifacts validated successfully"
+        
+        - ELSE (status is partial/failed/blocked):
+          * LOG: "[INFO] Skipping artifact validation for status: {status}"
+          * LOG: "[INFO] Artifact validation only required for status=completed"
+      
+      STEP 6: LOG VALIDATION SUCCESS
+        - LOG: "[PASS] Return validation succeeded"
+        - LOG: "[PASS] All validation checks passed - proceeding to Stage 5"
     </process>
-    <checkpoint>Return validated and artifacts verified</checkpoint>
+    
+    <validation_failure_handling>
+      If any validation step fails:
+      
+      1. LOG error to errors.json:
+         {
+           "timestamp": "{ISO8601}",
+           "error_type": "validation_failed",
+           "agent": "{agent_name}",
+           "validation_step": "{step_name}",
+           "error_message": "{error_details}",
+           "session_id": "{session_id}"
+         }
+      
+      2. FORMAT error response for user:
+         - Header: "Task: {task_number}" or "Command: /{command}"
+         - Status: Failed
+         - Error: {validation_error_message}
+         - Recommendation: {fix_recommendation}
+         - Details: {additional_context}
+      
+      3. RETURN failed status to user:
+         - DO NOT update task status in TODO.md
+         - DO NOT create git commit
+         - DO NOT proceed to Stage 5
+         - User must see validation failure immediately
+      
+      4. ABORT orchestrator workflow:
+         - Validation failure is CRITICAL
+         - Cannot proceed with invalid return
+         - User intervention required
+    </validation_failure_handling>
+    
+    <checkpoint>Return validated and artifacts verified (ACTUALLY EXECUTED)</checkpoint>
   </stage>
 
   <stage id="5" name="PostflightCleanup">

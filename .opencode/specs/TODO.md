@@ -29,13 +29,14 @@ technical_debt:
 
 ### 280. Fix orchestrator Stage 4 validation to enforce subagent return format and prevent phantom research
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](280_fix_orchestrator_stage_4_validation/reports/research-001.md)
 - **Plan**: [Implementation Plan](280_fix_orchestrator_stage_4_validation/plans/implementation-001.md)
+- **Implementation**: [Implementation Summary](280_fix_orchestrator_stage_4_validation/summaries/implementation-summary-20260103.md)
 
 **Description**:
 When running `/research 279`, the researcher agent returned plain text instead of the required JSON format (per subagent-return-format.md), and the orchestrator's Stage 4 (ValidateReturn) did not catch this violation. This resulted in "phantom research" - the orchestrator claimed research was completed successfully, but no artifacts were created, no status was updated, and no directory was created. This is a critical validation failure affecting ALL workflow commands (/research, /plan, /implement, /revise).
@@ -390,13 +391,11 @@ The `/meta` command currently implements work directly after the interview. Inst
 
 ### 269. Fix /meta command to accept user prompts directly instead of forcing interactive interview
 - **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
+- **Status**: [NOT STARTED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
-- **Completed**: 2026-01-03
-- **Implementation**: Git commit a4fa33f
 
 **Description**:
 The `/meta` command currently ignores user-provided prompts and always starts an interactive interview. This differs from the OpenAgents implementation where `/meta` accepts `$ARGUMENTS` directly via `<target_domain> $ARGUMENTS </target_domain>` pattern, allowing users to provide requirements upfront.
