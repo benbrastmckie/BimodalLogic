@@ -268,7 +268,7 @@ lifecycle:
 
 **Example**: See planner.md and researcher.md for reference implementations.
 
-**History**: This standard was established in Task 283 after discovering that inconsistent naming (stage_1_preflight vs step_0_preflight) caused Claude to skip preflight execution in some subagents.
+**History**: This standard was established in Task 283 after discovering that inconsistent naming (stage_1_preflight vs step_0_preflight) caused Claude to skip preflight execution in some subagents. Task 289 extended this fix to Lean-specific subagents (lean-research-agent, lean-planner, lean-implementation-agent).
 
 ### 6. Delegation Patterns (if applicable)
 

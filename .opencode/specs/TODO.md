@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-01-04T17:30:00Z
+last_updated: 2026-01-04T17:47:49Z
 next_project_number: 293
 repository_health:
   overall_score: 92
@@ -309,18 +309,22 @@ Provides alternative architectural approach to task 283 that moves responsibilit
 
 ### 285. Audit and fix status update behavior in /research, /plan, /revise, and /implement commands
 - **Effort**: 6-8 hours (revised from 8-12 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-04
 - **Researched**: 2026-01-04
 - **Planned**: 2026-01-04
+- **Implementing**: 2026-01-04
+- **Completed**: 2026-01-04
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/285_audit_and_fix_status_update_behavior/reports/research-001.md)
 - **Plan**: [Implementation Plan](.opencode/specs/285_audit_and_fix_status_update_behavior/plans/implementation-001.md)
+- **Implementation**: [Implementation Summary](.opencode/specs/285_audit_and_fix_status_update_behavior/summaries/implementation-summary-20260104.md)
 - **Artifacts**:
   - Task Description: [.opencode/specs/285_audit_and_fix_status_update_behavior/task-description.md]
+- **Note**: Core work (Phases 1-3) was already completed by Task 289. This implementation verified the fix and updated documentation to reference Task 289.
 
 **Description**:
 When running `/research 259`, the lean-research-agent was correctly invoked, but the task status was NOT updated to `[RESEARCHING]` before work began. This violates the two-phase status update pattern defined in `.opencode/context/core/system/state-management.md`. All workflow commands (`/research`, `/plan`, `/revise`, `/implement`) must update status markers at BOTH the beginning (preflight) and end (postflight) of execution.
@@ -1595,11 +1599,14 @@ lean-research-agent.md step_6 (lines 641-750):
 
 ### 291. Fix lean-research-agent to delegate status updates to status-sync-manager instead of direct file manipulation
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2026-01-04
+- **Researched**: 2026-01-04
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: Task 290 (researched)
+- **Research**: [Research Report](.opencode/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md)
 
 **Description**:
 Root cause identified for `/research 290` status update failure: lean-research-agent.md directly manipulates TODO.md and state.json files (lines 651-662) instead of delegating to status-sync-manager and git-workflow-manager like researcher.md does. This bypasses atomic updates and causes status synchronization failures.
@@ -1684,11 +1691,12 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 292. Diagnose and fix /implement 259 command failure - orchestrator unable to extract $ARGUMENTS
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [Research Report](.opencode/specs/292_diagnose_and_fix_implement_259_command_failure/reports/research-001.md)
 
 **Description**:
 When running `/implement 259`, the orchestrator workflow fails at Stage 1 (PreflightValidation) while attempting to extract the `$ARGUMENTS` variable. The command output shows:
