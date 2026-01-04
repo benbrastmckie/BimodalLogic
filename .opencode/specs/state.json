@@ -420,29 +420,32 @@
       "project_number": 281,
       "project_name": "fix_opencode_arguments_variable_not_being_passed_to_orchestrator",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "planning_revised",
+      "status": "revised",
       "priority": "high",
       "language": "general",
       "created": "2026-01-03T21:15:00Z",
       "started": "2026-01-03",
       "research_completed": "2026-01-03",
       "planning_completed": "2026-01-03",
+      "planning_revised": "2026-01-03",
       "last_updated": "2026-01-03",
       "artifacts": [
         ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md",
         ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-002.md",
-        ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-001.md"
+        ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-001.md",
+        ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-002.md"
       ],
       "research_summary": "ROOT CAUSE IDENTIFIED: Line 34 of /implement command says \"from arguments\" instead of \"from $ARGUMENTS\". This typo causes orchestrator to not recognize where to extract task number. Fix: Change \"arguments\" to \"$ARGUMENTS\" (add $ prefix). Estimated fix time: 5 minutes. Research-001 hypothesis was incorrect - OpenCode DOES pass $ARGUMENTS (proven by /research, /plan, /revise working).",
-      "plan_path": ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-001.md",
+      "plan_path": ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-002.md",
       "plan_metadata": {
         "phases": 4,
-        "total_effort_hours": 4,
-        "complexity": "medium",
-        "research_integrated": true
+        "total_effort_hours": 0.25,
+        "complexity": "trivial",
+        "research_integrated": true,
+        "supersedes": "implementation-001.md"
       },
-      "estimated_hours": 4.0
+      "estimated_hours": 0.25
     }
   ],
   "completed_projects": [
