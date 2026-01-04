@@ -62,8 +62,8 @@ lifecycle:
 </role>
 
 <task>
-  Read task description, determine files to modify, execute implementation, create summary,
-  update status to [COMPLETED], create git commit, and return standardized result
+  Update status to [IMPLEMENTING], read task description, determine files to modify, execute implementation, 
+  create summary, update status to [COMPLETED], create git commit, and return standardized result
 </task>
 
 <inputs_required>
@@ -97,8 +97,8 @@ lifecycle:
 </inputs_forbidden>
 
 <process_flow>
-  <step_1>
-    <action>Read task details</action>
+  <step_0_preflight>
+    <action>Preflight: Validate task and update status to [IMPLEMENTING]</action>
     <process>
       1. Parse task_number from delegation context or prompt string:
          a. Check if task_number parameter provided in delegation context
@@ -108,24 +108,69 @@ lifecycle:
             - Use regex or string parsing to extract task number
          c. Validate task_number is positive integer
          d. If task_number not found or invalid: Return failed status with error
-      2. If task_description provided: Use directly
-      3. Else: Extract task entry using grep (selective loading):
+      2. Validate task exists in .opencode/specs/TODO.md:
          ```bash
-         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md
          ```
-      4. Validate extraction succeeded (non-empty file)
-      5. Extract task description and requirements
-      6. Identify scope and constraints
-      7. Validate task is implementable
+      3. Extract task description and current status
+      4. Verify task not [COMPLETED] or [ABANDONED]
+      5. Verify task is in valid starting status ([PLANNED] or [NOT STARTED])
+      6. Generate timestamp: $(date -I) for ISO 8601 format (YYYY-MM-DD)
+      7. Invoke status-sync-manager to mark [IMPLEMENTING]:
+         a. Prepare delegation context:
+            - task_number: {number}
+            - new_status: "implementing"
+            - timestamp: {date}
+            - session_id: {session_id}
+            - delegation_depth: {depth + 1}
+            - delegation_path: [...delegation_path, "status-sync-manager"]
+         b. Invoke status-sync-manager with timeout (60s)
+         c. Validate return status == "completed"
+         d. Verify files_updated includes ["TODO.md", "state.json"]
+         e. If status update fails: Abort with error and recommendation
+      8. Log preflight completion
     </process>
-    <validation>Task description is clear and actionable</validation>
+    <validation>
+      - Task exists and is valid for implementation
+      - Status updated to [IMPLEMENTING] atomically
+      - Timestamp added to TODO.md and state.json
+    </validation>
     <error_handling>
       If task_number not provided or invalid:
         Return status "failed" with error:
         - type: "validation_failed"
         - message: "Task number not provided or invalid. Expected positive integer."
         - recommendation: "Provide task number as first argument (e.g., /implement 267)"
+      
+      If task not found:
+        Return status "failed" with error:
+        - type: "validation_failed"
+        - message: "Task {task_number} not found in TODO.md"
+        - recommendation: "Verify task number exists in TODO.md"
+      
+      If status update fails:
+        Return status "failed" with error:
+        - type: "status_update_failed"
+        - message: "Failed to update status to [IMPLEMENTING]"
+        - recommendation: "Check status-sync-manager logs and retry"
     </error_handling>
+    <output>Task validated, status updated to [IMPLEMENTING]</output>
+  </step_0_preflight>
+
+  <step_1>
+    <action>Read task details</action>
+    <process>
+      1. If task_description provided: Use directly
+      2. Else: Extract task entry using grep (selective loading):
+         ```bash
+         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+         ```
+      3. Validate extraction succeeded (non-empty file)
+      4. Extract task description and requirements
+      5. Identify scope and constraints
+      6. Validate task is implementable
+    </process>
+    <validation>Task description is clear and actionable</validation>
     <output>Task requirements and scope</output>
   </step_1>
 
@@ -138,7 +183,7 @@ lifecycle:
          b. Delegate to lean-implementation-agent
          c. Wait for lean agent return
          d. Validate lean agent return
-         e. If lean agent succeeded: Proceed to Step 7 (Stage 7 Postflight)
+         e. If lean agent succeeded: Proceed to Step 8 (Stage 7 Postflight)
          f. If lean agent failed: Return error
       3. Else: Proceed with general implementation
     </process>
@@ -344,7 +389,7 @@ lifecycle:
       - Verify implementation-summary-{date}.md exists and is non-empty
       - Verify summary artifact within token limit (<100 tokens, ~400 chars)
       - Verify summary field in return object is brief (<100 tokens)
-      - Verify Stage 7 completed successfully
+      - Verify Step 0 (Preflight) and Step 7 (Postflight) completed successfully
       - Return validation result in metadata field
       
       If validation fails:
@@ -538,9 +583,10 @@ lifecycle:
   </pre_execution>
 
   <post_execution>
+    - Verify Step 0 (Preflight) executed (status updated to [IMPLEMENTING])
     - Verify all target files created/modified
     - Verify implementation summary created
-    - Verify Stage 7 executed (status updated, git commit attempted)
+    - Verify Step 7 (Postflight) executed (status updated to [COMPLETED], git commit attempted)
     - Verify return format matches subagent-return-format.md
     - Verify all status indicators use text format ([PASS]/[FAIL]/[WARN])
     - Verify session_id matches input

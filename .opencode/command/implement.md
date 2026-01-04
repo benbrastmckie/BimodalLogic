@@ -38,10 +38,11 @@ Executes task implementations with plan-based or direct execution, language-base
 - **Stage 5 (PostflightCleanup):** Update session registry and relay result to user
 
 **Implementer subagent handles:**
+- Update status to [IMPLEMENTING] at beginning (preflight)
 - Plan-based vs direct implementation
 - Resume support (automatic detection of incomplete phases)
 - Artifact creation (implementation files + summary)
-- Status updates ([IMPLEMENTING] → [COMPLETED])
+- Update status to [COMPLETED] at end (postflight)
 - Git commits (per-phase or single)
 
 ## Arguments
@@ -88,9 +89,11 @@ Executes task implementations with plan-based or direct execution, language-base
 - All artifact files must be non-empty (size > 0 bytes)
 
 **Implementer Responsibilities:**
+- Update status to [IMPLEMENTING] at beginning (preflight)
 - Detect plan existence and execute plan-based or direct implementation
 - Resume from incomplete phases automatically
 - Create implementation artifacts and summary
+- Update status to [COMPLETED] at end (postflight)
 - Update status atomically via status-sync-manager
 - Create git commits via git-workflow-manager
 

@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-04T04:45:44Z
-next_project_number: 281
+last_updated: 2026-01-04T05:30:00Z
+next_project_number: 283
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -230,12 +230,15 @@ When running `/implement 271`, the orchestrator returns an error message saying 
 
 ### 275. Fix workflow commands to update status at beginning and end in both TODO.md and state.json
 - **Effort**: 8 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: markdown
 - **Started**: 2026-01-03
+- **Completed**: 2026-01-03
 - **Research**: [Research Report](275_fix_workflow_status_updates/reports/research-001.md)
 - **Plan**: [Implementation Plan](275_fix_workflow_status_updates/plans/implementation-001.md)
+- **Implementation**: [Implementation Summary](275_fix_workflow_status_updates/summaries/implementation-summary-20260103.md)
+- **Verification**: [Verification Report](275_fix_workflow_status_updates/reports/verification-001.md)
 - **Blocking**: None
 - **Dependencies**: None
 
@@ -389,13 +392,100 @@ The `/meta` command currently implements work directly after the interview. Inst
 
 ---
 
+### 282. Add JSON return format enforcement to subagent invocation via task tool
+- **Effort**: 4-6 hours
+- **Status**: [RESEARCHING] (Started: 2026-01-03)
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+When the orchestrator invokes subagents via the task tool (e.g., researcher, planner, implementer), Claude does NOT automatically follow the JSON return format specified in the agent's markdown file. This causes validation failures in orchestrator Stage 4 (ValidateReturn) because subagents return plain text instead of the required JSON structure defined in subagent-return-format.md.
+
+**Current Behavior**:
+```bash
+/research 269
+# Orchestrator invokes researcher via task tool
+# Researcher returns plain text narrative instead of JSON
+# Orchestrator Stage 4 validation fails: "Return is not valid JSON"
+# User sees validation error instead of research results
+```
+
+**Expected Behavior**:
+```bash
+/research 269
+# Orchestrator invokes researcher via task tool
+# Researcher returns JSON format per subagent-return-format.md
+# Orchestrator Stage 4 validation passes
+# User sees formatted research summary
+```
+
+**Root Cause**:
+The task tool invocation does NOT enforce the return format specified in the agent's markdown file. When Claude acts as a subagent, it reads the agent specification but does NOT automatically format its response as JSON. The agent specification defines the contract (Stage 6 return format), but there's no enforcement mechanism.
+
+**Evidence**:
+1. researcher.md lines 381-496 clearly define JSON return format requirement
+2. When invoked via task tool, researcher returns plain text instead
+3. Orchestrator Stage 4 validation correctly rejects plain text return
+4. Same issue affects ALL subagents (planner, implementer, lean-research-agent, etc.)
+
+**Solution Options**:
+
+**Option 1: Add explicit JSON formatting instruction to task tool prompt** (RECOMMENDED)
+- Modify orchestrator Stage 3 (RegisterAndDelegate) to append JSON format instruction
+- Example: "CRITICAL: Return ONLY valid JSON matching subagent-return-format.md schema. Do NOT return plain text."
+- Pros: Simple, immediate fix, works with existing agent specifications
+- Cons: Relies on Claude following instructions (not guaranteed)
+
+**Option 2: Add JSON schema validation to agent frontmatter**
+- Add `return_schema` field to agent frontmatter with JSON schema
+- Task tool validates return against schema before returning to orchestrator
+- Pros: Enforced at tool level, guaranteed validation
+- Cons: Requires task tool modification (may not be possible)
+
+**Option 3: Add post-processing wrapper to convert plain text to JSON**
+- Orchestrator Stage 4 detects plain text return
+- Attempts to parse plain text and convert to JSON format
+- Pros: Backward compatible, handles both formats
+- Cons: Complex parsing logic, error-prone, doesn't fix root cause
+
+**Recommended Approach**: Option 1 (explicit JSON formatting instruction)
+
+**Implementation Plan**:
+1. Update orchestrator Stage 3 (RegisterAndDelegate) to append JSON format instruction to prompt
+2. Add instruction: "CRITICAL: You MUST return ONLY valid JSON matching the schema in subagent-return-format.md. Do NOT return plain text, markdown, or narrative. Return format: {status, summary, artifacts, metadata, errors, next_steps}"
+3. Test with /research, /plan, /implement commands
+4. Verify Stage 4 validation passes
+5. Document pattern in delegation-guide.md
+
+**Files to Modify**:
+- `.opencode/agent/orchestrator.md` - Add JSON format instruction to Stage 3
+- `.opencode/context/core/workflows/delegation-guide.md` - Document JSON enforcement pattern
+- `.opencode/context/core/standards/subagent-return-format.md` - Add enforcement notes
+
+**Acceptance Criteria**:
+- [ ] Orchestrator Stage 3 appends JSON format instruction to all subagent invocations
+- [ ] /research command returns JSON format (not plain text)
+- [ ] /plan command returns JSON format (not plain text)
+- [ ] /implement command returns JSON format (not plain text)
+- [ ] Orchestrator Stage 4 validation passes for all commands
+- [ ] No "Return is not valid JSON" errors
+- [ ] JSON format instruction documented in delegation-guide.md
+
+**Impact**: Fixes critical validation failures affecting ALL workflow commands. Ensures subagents return standardized JSON format, enabling orchestrator Stage 4 validation to work correctly and preventing "phantom research" issues.
+
+---
+
 ### 269. Fix /meta command to accept user prompts directly instead of forcing interactive interview
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Completed**: 2026-01-03
+- **Git Commit**: a4fa33f
 
 **Description**:
 The `/meta` command currently ignores user-provided prompts and always starts an interactive interview. This differs from the OpenAgents implementation where `/meta` accepts `$ARGUMENTS` directly via `<target_domain> $ARGUMENTS </target_domain>` pattern, allowing users to provide requirements upfront.
@@ -1118,7 +1208,7 @@ CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client
 
 ### 279. Systematically fix metadata lookup to use state.json instead of TODO.md
 - **Effort**: 12-16 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING] (Started: 2026-01-03)
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None

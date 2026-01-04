@@ -60,8 +60,8 @@ lifecycle:
 </role>
 
 <task>
-  Analyze task, harvest research findings, create phased implementation plan following plan.md standard,
-  update status to [PLANNED], create git commit, and return standardized result
+  Update status to [PLANNING], analyze task, harvest research findings, create phased implementation plan 
+  following plan.md standard, update status to [PLANNED], create git commit, and return standardized result
 </task>
 
 <inputs_required>
@@ -92,8 +92,8 @@ lifecycle:
 </inputs_forbidden>
 
 <process_flow>
-  <step_1>
-    <action>Read task from .opencode/specs/TODO.md</action>
+  <step_0_preflight>
+    <action>Preflight: Validate task and update status to [PLANNING]</action>
     <process>
       1. Parse task_number from delegation context or prompt string:
          a. Check if task_number parameter provided in delegation context
@@ -103,24 +103,68 @@ lifecycle:
             - Use regex or string parsing to extract task number
          c. Validate task_number is positive integer
          d. If task_number not found or invalid: Return failed status with error
-      2. Extract task entry using grep (selective loading):
+      2. Validate task exists in .opencode/specs/TODO.md:
          ```bash
-         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md
          ```
-      3. Validate extraction succeeded (non-empty file)
-      4. Extract task description, language, priority from task entry
-      5. Extract any existing artifact links (research, previous plans)
-      6. Validate task exists and is valid for planning
-      7. Check task status (must not be [COMPLETED] or [ABANDONED])
+      3. Extract task description and current status
+      4. Verify task not [COMPLETED] or [ABANDONED]
+      5. Verify task is in valid starting status ([RESEARCHED] or [NOT STARTED])
+      6. Generate timestamp: $(date -I) for ISO 8601 format (YYYY-MM-DD)
+      7. Invoke status-sync-manager to mark [PLANNING]:
+         a. Prepare delegation context:
+            - task_number: {number}
+            - new_status: "planning"
+            - timestamp: {date}
+            - session_id: {session_id}
+            - delegation_depth: {depth + 1}
+            - delegation_path: [...delegation_path, "status-sync-manager"]
+         b. Invoke status-sync-manager with timeout (60s)
+         c. Validate return status == "completed"
+         d. Verify files_updated includes ["TODO.md", "state.json"]
+         e. If status update fails: Abort with error and recommendation
+      8. Log preflight completion
     </process>
-    <validation>Task exists and has sufficient detail for planning</validation>
+    <validation>
+      - Task exists and is valid for planning
+      - Status updated to [PLANNING] atomically
+      - Timestamp added to TODO.md and state.json
+    </validation>
     <error_handling>
       If task_number not provided or invalid:
         Return status "failed" with error:
         - type: "validation_failed"
         - message: "Task number not provided or invalid. Expected positive integer."
         - recommendation: "Provide task number as first argument (e.g., /plan 267)"
+      
+      If task not found:
+        Return status "failed" with error:
+        - type: "validation_failed"
+        - message: "Task {task_number} not found in TODO.md"
+        - recommendation: "Verify task number exists in TODO.md"
+      
+      If status update fails:
+        Return status "failed" with error:
+        - type: "status_update_failed"
+        - message: "Failed to update status to [PLANNING]"
+        - recommendation: "Check status-sync-manager logs and retry"
     </error_handling>
+    <output>Task validated, status updated to [PLANNING]</output>
+  </step_0_preflight>
+
+  <step_1>
+    <action>Read task from .opencode/specs/TODO.md</action>
+    <process>
+      1. Extract task entry using grep (selective loading):
+         ```bash
+         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+         ```
+      2. Validate extraction succeeded (non-empty file)
+      3. Extract task description, language, priority from task entry
+      4. Extract any existing artifact links (research, previous plans)
+      5. Validate task has sufficient detail for planning
+    </process>
+    <validation>Task exists and has sufficient detail for planning</validation>
     <output>Task details and existing artifact links</output>
   </step_1>
 
@@ -344,7 +388,7 @@ lifecycle:
       - Verify NO summary artifact created (defensive check - plan is self-documenting)
       - Verify plan metadata extracted (phase_count, estimated_hours, complexity)
       - Verify summary field in return object is <100 tokens
-      - Verify Stage 7 completed successfully
+      - Verify Step 0 (Preflight) and Step 7 (Postflight) completed successfully
       - Return validation result in metadata field
       - Return plan_metadata in metadata field
       
@@ -536,11 +580,12 @@ lifecycle:
   </pre_execution>
 
   <post_execution>
+    - Verify Step 0 (Preflight) executed (status updated to [PLANNING])
     - Verify plan artifact created successfully
     - Verify plan follows plan.md template
     - Verify all phases marked [NOT STARTED]
     - Verify effort estimates reasonable
-    - Verify Stage 7 executed (status updated, git commit attempted)
+    - Verify Step 7 (Postflight) executed (status updated to [PLANNED], git commit attempted)
     - Verify return format matches subagent-return-format.md
     - Verify all status indicators use text format ([PASS]/[FAIL]/[WARN])
   </post_execution>

@@ -37,11 +37,12 @@ Creates new plan versions for tasks with existing plans. Supports language-based
 - **Stage 5 (PostflightCleanup):** Update session registry and relay result to user
 
 **Planner/Lean-planner subagent handles:**
+- Update status to [REVISING] at beginning (preflight)
 - Plan revision (creates new version, preserves old)
 - Version management (increments version number)
 - Research integration (if new research available)
 - Phase breakdown updates
-- Status updates ([REVISING] → [REVISED])
+- Update status to [REVISED] at end (postflight)
 - Git commits
 
 ## Arguments
@@ -63,9 +64,11 @@ Creates new plan versions for tasks with existing plans. Supports language-based
 **Language-Based Routing:** No (always routes to planner)
 
 **Planner Responsibilities:**
+- Update status to [REVISING] at beginning (preflight)
 - Create new plan version (implementation-00N.md)
 - Preserve all previous plan versions
 - Incorporate new research if available
+- Update status to [REVISED] at end (postflight)
 - Update status atomically via status-sync-manager
 - Create git commit via git-workflow-manager
 

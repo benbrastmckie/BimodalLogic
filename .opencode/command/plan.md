@@ -38,11 +38,12 @@ Creates implementation plans with phased breakdown, effort estimates, and resear
 - **Stage 5 (PostflightCleanup):** Update session registry and relay result to user
 
 **Planner/Lean-planner subagent handles:**
+- Update status to [PLANNING] at beginning (preflight)
 - Research integration (automatic harvesting from TODO.md)
 - Phase breakdown (1-2 hours per phase target)
 - Effort estimation
 - Plan template compliance
-- Status updates ([PLANNING] → [PLANNED])
+- Update status to [PLANNED] at end (postflight)
 - Git commits
 
 ## Arguments
@@ -64,9 +65,11 @@ Creates implementation plans with phased breakdown, effort estimates, and resear
 **Language-Based Routing:** No (always routes to planner)
 
 **Planner Responsibilities:**
+- Update status to [PLANNING] at beginning (preflight)
 - Harvest research artifacts from TODO.md links
 - Create phased implementation plan
 - Follow plan.md template standard
+- Update status to [PLANNED] at end (postflight)
 - Update status atomically via status-sync-manager
 - Create git commit via git-workflow-manager
 

@@ -41,10 +41,11 @@ Conducts research for tasks and creates research reports with [RESEARCHED] statu
 - **Stage 5 (PostflightCleanup):** Update session registry and relay result to user
 
 **Researcher subagent handles:**
+- Update status to [RESEARCHING] at beginning (preflight)
 - Research execution (web search, documentation, or Lean-specific tools)
 - Topic subdivision (if --divide flag specified)
 - Research report creation
-- Status updates ([RESEARCHING] → [RESEARCHED])
+- Update status to [RESEARCHED] at end (postflight)
 - Git commits
 
 ## Arguments
@@ -94,8 +95,10 @@ Conducts research for tasks and creates research reports with [RESEARCHED] statu
 **Language-Based Routing:** Yes
 
 **Researcher Responsibilities:**
+- Update status to [RESEARCHING] at beginning (preflight)
 - Execute research using appropriate tools
 - Create comprehensive research report
+- Update status to [RESEARCHED] at end (postflight)
 - Update status atomically via status-sync-manager
 - Create git commit via git-workflow-manager
 

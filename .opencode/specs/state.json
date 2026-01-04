@@ -2,7 +2,7 @@
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
   "_last_updated": "2026-01-03T21:15:00Z",
-  "next_project_number": 282,
+  "next_project_number": 283,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -257,18 +257,28 @@
       "project_number": 275,
       "project_name": "fix_workflow_status_updates",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-03T20:03:00Z",
       "started": "2026-01-03",
       "research_completed": "2026-01-03",
       "planning_completed": "2026-01-03",
+      "completed": "2026-01-03",
       "last_updated": "2026-01-03",
       "artifacts": [
         ".opencode/specs/275_fix_workflow_status_updates/reports/research-001.md",
-        ".opencode/specs/275_fix_workflow_status_updates/plans/implementation-001.md"
+        ".opencode/specs/275_fix_workflow_status_updates/reports/verification-001.md",
+        ".opencode/specs/275_fix_workflow_status_updates/plans/implementation-001.md",
+        ".opencode/specs/275_fix_workflow_status_updates/summaries/implementation-summary-20260103.md",
+        ".opencode/agent/subagents/planner.md",
+        ".opencode/agent/subagents/implementer.md",
+        ".opencode/command/research.md",
+        ".opencode/command/plan.md",
+        ".opencode/command/implement.md",
+        ".opencode/command/revise.md",
+        ".opencode/context/core/workflows/command-lifecycle.md"
       ],
       "plan_path": ".opencode/specs/275_fix_workflow_status_updates/plans/implementation-001.md",
       "plan_metadata": {
@@ -278,7 +288,21 @@
         "research_integrated": true
       },
       "research_summary": "Comprehensive analysis of workflow command status update patterns. Found that researcher subagent correctly implements two-phase status updates (preflight to [RESEARCHING], postflight to [RESEARCHED]). Planner and implementer subagents need verification for preflight status updates. Estimated 6-8 hours to add missing preflight updates and update documentation.",
-      "estimated_hours": 8.0
+      "implementation_summary": "Added preflight status updates to planner.md and implementer.md subagents, updated command documentation to clarify two-phase status pattern, and created comprehensive command lifecycle documentation. All workflow subagents now follow consistent two-phase pattern.",
+      "estimated_hours": 8.0,
+      "files_modified": [
+        ".opencode/agent/subagents/planner.md",
+        ".opencode/agent/subagents/implementer.md",
+        ".opencode/command/research.md",
+        ".opencode/command/plan.md",
+        ".opencode/command/implement.md",
+        ".opencode/command/revise.md"
+      ],
+      "files_created": [
+        ".opencode/context/core/workflows/command-lifecycle.md",
+        ".opencode/specs/275_fix_workflow_status_updates/reports/verification-001.md",
+        ".opencode/specs/275_fix_workflow_status_updates/summaries/implementation-summary-20260103.md"
+      ]
     },
     {
       "project_number": 272,
@@ -444,6 +468,17 @@
       "implementation_summary": "Fixed typo in /implement command line 34 by adding $ prefix to \"arguments\". Single line change. Actual effort: 15 minutes. Fix verified by comparing with working commands. No regression.",
       "actual_hours": 0.25,
       "estimated_hours": 0.25
+    },
+    {
+      "project_number": 282,
+      "project_name": "add_json_return_format_enforcement_to_subagent_invocation",
+      "type": "bugfix",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "general",
+      "created": "2026-01-04T05:47:55Z",
+      "last_updated": "2026-01-04T05:47:55Z"
     }
   ],
   "completed_projects": [
@@ -1218,6 +1253,10 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2026-01-04T05:47:55Z",
+      "activity": "Created task 282: Add JSON return format enforcement to subagent invocation via task tool (4-6 hours, High priority, general)"
+    },
     {
       "timestamp": "2026-01-03T18:30:00Z",
       "activity": "Completed task 269: Fixed /meta command to accept user prompts directly via $ARGUMENTS. Added dual mode support (prompt mode skips interview, interactive mode conducts full interview). Git commit: a4fa33f"
