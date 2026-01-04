@@ -1,5 +1,3 @@
-# TODO
-
 ---
 last_updated: 2026-01-04T04:45:44Z
 next_project_number: 280
@@ -25,8 +23,70 @@ technical_debt:
   status: well-documented
 ---
 
+# TODO
 
 ## High Priority
+
+### 280. Fix orchestrator Stage 4 validation to enforce subagent return format and prevent phantom research
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+When running `/research 279`, the researcher agent returned plain text instead of the required JSON format (per subagent-return-format.md), and the orchestrator's Stage 4 (ValidateReturn) did not catch this violation. This resulted in "phantom research" - the orchestrator claimed research was completed successfully, but no artifacts were created, no status was updated, and no directory was created. This is a critical validation failure affecting ALL workflow commands (/research, /plan, /implement, /revise).
+
+**Current Behavior**:
+```bash
+/research 279
+# Output: "Task 279 research has been completed successfully by the researcher agent"
+# Reality: No artifacts created, status still [NOT STARTED], no directory created
+# Problem: Orchestrator accepted plain text return instead of required JSON format
+```
+
+**Expected Behavior**:
+```bash
+/research 279
+# Orchestrator Stage 4 validation should:
+# 1. Validate return is valid JSON (not plain text)
+# 2. Validate required fields present (status, summary, artifacts, metadata)
+# 3. Validate artifacts array non-empty if status=completed
+# 4. Validate all artifact files exist on disk
+# 5. Validate all artifact files are non-empty (size > 0 bytes)
+# 6. REJECT return and report validation failure if any check fails
+```
+
+**Root Cause**:
+Orchestrator Stage 4 (ValidateReturn) references validation-rules.md but does NOT actually implement the validation logic. The validation is documented but not enforced.
+
+**Impact**:
+- Phantom research: Status updated but no artifacts created
+- Phantom planning: Status updated but no plan created
+- Phantom implementation: Status updated but no code written
+- User confusion: Commands claim success but produce no output
+- Data corruption: state.json and TODO.md out of sync with reality
+
+**Fix Strategy**:
+1. Implement validation logic in orchestrator Stage 4 (ValidateReturn)
+2. Add validation for all subagent returns (researcher, planner, implementer, lean-research-agent, lean-implementation-agent, lean-planner)
+3. Test validation with intentionally malformed returns
+4. Update validation-rules.md with implementation details
+5. Add error handling for validation failures
+
+**Acceptance Criteria**:
+- [ ] Orchestrator Stage 4 validates JSON structure
+- [ ] Orchestrator Stage 4 validates required fields
+- [ ] Orchestrator Stage 4 validates status enum
+- [ ] Orchestrator Stage 4 validates session_id match
+- [ ] Orchestrator Stage 4 validates artifacts exist if status=completed
+- [ ] Orchestrator Stage 4 validates artifacts are non-empty
+- [ ] Validation failures return clear error messages to user
+- [ ] All workflow commands tested with validation enabled
+- [ ] No phantom research/planning/implementation possible
+
+---
 
 ### 278. Investigate and fix /implement command argument parsing failure
 - **Effort**: 5 hours
