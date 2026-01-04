@@ -23,7 +23,7 @@ Investigation reveals that the reported "/research and /plan TODO.md update fail
   - .opencode/command/research.md (677 lines)
   - .opencode/command/plan.md (652 lines)
   - .opencode/agent/subagents/status-sync-manager.md (838 lines)
-  - .opencode/context/common/workflows/command-lifecycle.md (1,139 lines)
+  - .opencode/context/core/workflows/command-lifecycle.md (1,139 lines)
   - Task 240 research report (comparative analysis)
 
 ## Key Findings
@@ -518,7 +518,7 @@ Possible reasons:
 - **research.md**: .opencode/command/research.md (677 lines)
 - **plan.md**: .opencode/command/plan.md (652 lines)
 - **status-sync-manager.md**: .opencode/agent/subagents/status-sync-manager.md (838 lines)
-- **command-lifecycle.md**: .opencode/context/common/workflows/command-lifecycle.md (1,139 lines)
+- **command-lifecycle.md**: .opencode/context/core/workflows/command-lifecycle.md (1,139 lines)
 - **orchestrator.md**: .opencode/agent/orchestrator.md (1,109 lines)
 
 ### Related Tasks

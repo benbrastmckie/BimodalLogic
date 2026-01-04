@@ -119,7 +119,7 @@ All agents must use lazy-loading pattern:
 
 1. Read `.opencode/context/index.md`
 2. Load required context:
-   - `.opencode/context/common/standards/agent-workflow.md`
+   - `.opencode/context/core/standards/agent-workflow.md`
    - `.opencode/context/agents/research-context.md`
 3. Parse context for relevant information
 ```
@@ -308,8 +308,8 @@ Analyzes code for potential issues and suggests improvements.
 - **ADR-001: Context Index**: `.opencode/docs/migrations/001-openagents-migration/adr/ADR-001-context-index.md`
 - **ADR-002: Agent Workflow Ownership**: `.opencode/docs/migrations/001-openagents-migration/adr/ADR-002-agent-workflow-ownership.md`
 - **ADR-003: Frontmatter Delegation**: `.opencode/docs/migrations/001-openagents-migration/adr/ADR-003-frontmatter-delegation.md`
-- **Workflow Standard**: `.opencode/context/common/standards/agent-workflow.md`
-- **Return Format**: `.opencode/context/common/standards/subagent-return-format.md`
+- **Workflow Standard**: `.opencode/context/core/standards/agent-workflow.md`
+- **Return Format**: `.opencode/context/core/standards/subagent-return-format.md`
 
 ---
 

@@ -94,21 +94,21 @@
    - Line 50: `/plan and /revise reuse linked research inputs; /task and /implement reuse the plan path`
    - Line 60: `| /task | task-executor | plan phases + emitted artifacts |`
    - Line 73: `/task and /implement update the linked plan phases`
-   - Line 74: `Follow [context/common/standards/tasks.md]`
+   - Line 74: `Follow [context/core/standards/tasks.md]`
    - Line 106: `| /task {description} | Execute generic task | task-executor |`
    - Update: All /task references to /implement
 
 ### Medium Priority (Standards & Context)
 
-10. **`.opencode/context/common/standards/tasks.md`**
+10. **`.opencode/context/core/standards/tasks.md`**
     - Multiple references to /task workflow
     - Update: All /task references to /implement
 
-11. **`.opencode/context/common/standards/commands.md`**
+11. **`.opencode/context/core/standards/commands.md`**
     - Command standards referencing /task
     - Update: All /task references to /implement
 
-12. **`.opencode/context/common/workflows/task-breakdown.md`**
+12. **`.opencode/context/core/workflows/task-breakdown.md`**
     - Workflow patterns using /task
     - Update: All /task references to /implement
 

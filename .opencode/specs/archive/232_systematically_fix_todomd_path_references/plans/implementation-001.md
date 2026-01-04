@@ -437,11 +437,11 @@ The OpenCode system has two TODO.md files in different locations, causing confus
    - `.opencode/agent/subagents/error-diagnostics-agent.md`
 
 3. **Updated Context Files** (5 files)
-   - `.opencode/context/common/workflows/command-lifecycle.md`
-   - `.opencode/context/common/workflows/review.md`
-   - `.opencode/context/common/standards/documentation.md`
-   - `.opencode/context/common/standards/commands.md`
-   - `.opencode/context/common/standards/command-argument-handling.md`
+   - `.opencode/context/core/workflows/command-lifecycle.md`
+   - `.opencode/context/core/workflows/review.md`
+   - `.opencode/context/core/standards/documentation.md`
+   - `.opencode/context/core/standards/commands.md`
+   - `.opencode/context/core/standards/command-argument-handling.md`
 
 4. **Canonical TODO.md** (updated)
    - `.opencode/specs/TODO.md` (with 40 migrated tasks)

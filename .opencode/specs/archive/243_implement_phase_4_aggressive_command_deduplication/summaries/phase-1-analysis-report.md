@@ -43,11 +43,11 @@ Categories:
 #### 1. Delegation Guides (1,004 lines → 500 lines target)
 
 **Files to consolidate**:
-- `common/workflows/subagent-delegation-guide.md` - 648 lines
-- `common/standards/subagent-return-format.md` - 355 lines
+- `core/workflows/subagent-delegation-guide.md` - 648 lines
+- `core/standards/subagent-return-format.md` - 355 lines
 - **Total**: 1,003 lines
 
-**Consolidation target**: `common/workflows/delegation-patterns.md` (~500 lines)
+**Consolidation target**: `core/workflows/delegation-patterns.md` (~500 lines)
 
 **Overlap identified**:
 - Both define session ID tracking (40-50 lines duplicated)
@@ -64,16 +64,16 @@ Categories:
 - Remove duplicated session ID, timeout, error handling sections
 - **Savings**: 503 lines (50%)
 
-**Note**: `common/workflows/delegation.md` already exists (82 lines) but serves a different purpose (delegation context template). Will rename to `delegation-context-template.md` to avoid confusion.
+**Note**: `core/workflows/delegation.md` already exists (82 lines) but serves a different purpose (delegation context template). Will rename to `delegation-context-template.md` to avoid confusion.
 
 #### 2. State Tracking Files (1,088 lines → 600 lines target)
 
 **Files to consolidate**:
-- `common/system/status-markers.md` - 888 lines
-- `common/system/state-schema.md` - 686 lines
+- `core/system/status-markers.md` - 888 lines
+- `core/system/state-schema.md` - 686 lines
 - **Total**: 1,574 lines
 
-**Consolidation target**: `common/system/state-management.md` (~600 lines)
+**Consolidation target**: `core/system/state-management.md` (~600 lines)
 
 **Overlap identified**:
 - Both define task status transitions (100-120 lines duplicated)
@@ -93,7 +93,7 @@ Categories:
 
 #### 3. Command Lifecycle File
 
-**File**: `common/workflows/command-lifecycle.md` - 1,138 lines
+**File**: `core/workflows/command-lifecycle.md` - 1,138 lines
 
 **Analysis**: This file is the foundation for variations-only pattern. No consolidation needed, but will be enhanced in Phase 8 with variation interpretation logic.
 
@@ -115,9 +115,9 @@ Categories:
 #### 4. Documentation Standards
 
 **Files**:
-- `common/standards/documentation.md` - 438 lines
-- `common/standards/report.md` - 66 lines
-- `common/standards/summary.md` - 60 lines
+- `core/standards/documentation.md` - 438 lines
+- `core/standards/report.md` - 66 lines
+- `core/standards/summary.md` - 60 lines
 
 **Potential consolidation**: Merge report.md and summary.md into documentation.md
 - **Savings**: ~40-50 lines (overlap in formatting standards)
@@ -125,8 +125,8 @@ Categories:
 #### 5. Testing Standards
 
 **Files**:
-- `common/standards/tests.md` - 127 lines
-- `common/standards/code.md` - 164 lines
+- `core/standards/tests.md` - 127 lines
+- `core/standards/code.md` - 164 lines
 
 **Analysis**: Minimal overlap, keep separate. code.md covers general code quality, tests.md covers testing specifics.
 
@@ -220,12 +220,12 @@ Total:      2,777 lines, 101KB
 ### Files to Archive
 
 After Phase 9 (obsolete file removal):
-- `common/workflows/subagent-delegation-guide.md` → archived
-- `common/standards/subagent-return-format.md` → archived
-- `common/system/status-markers.md` → archived
-- `common/system/state-schema.md` → archived
-- `common/standards/report.md` → archived
-- `common/standards/summary.md` → archived
+- `core/workflows/subagent-delegation-guide.md` → archived
+- `core/standards/subagent-return-format.md` → archived
+- `core/system/status-markers.md` → archived
+- `core/system/state-schema.md` → archived
+- `core/standards/report.md` → archived
+- `core/standards/summary.md` → archived
 
 **Total archived**: 6 files, 2,703 lines
 

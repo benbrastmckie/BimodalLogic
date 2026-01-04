@@ -20,8 +20,8 @@
   - .opencode/agent/subagents/batch-task-orchestrator.md (lines 344-398: batch results aggregation)
 
 - **Standards and Best Practices**:
-  - .opencode/context/common/system/artifact-management.md (context protection principles)
-  - .opencode/context/common/system/git-commits.md (targeted commit patterns)
+  - .opencode/context/core/system/artifact-management.md (context protection principles)
+  - .opencode/context/core/system/git-commits.md (targeted commit patterns)
   - Anthropic's "Building Effective Agents" (orchestrator-workers pattern)
 
 ## Recommendations

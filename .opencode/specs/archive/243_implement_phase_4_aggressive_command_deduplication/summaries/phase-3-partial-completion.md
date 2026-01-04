@@ -28,7 +28,7 @@ Phase 3 began context file consolidation with the creation of delegation-pattern
 
 ### 1. delegation-patterns.md Created
 
-**File**: `.opencode/context/common/workflows/delegation-patterns.md`  
+**File**: `.opencode/context/core/workflows/delegation-patterns.md`  
 **Size**: 500 lines (estimated)  
 **Consolidates**:
 - subagent-delegation-guide.md (648 lines)
@@ -53,7 +53,7 @@ Phase 3 began context file consolidation with the creation of delegation-pattern
 
 ### 2. state-management.md Creation (Not Started)
 
-**Target File**: `.opencode/context/common/system/state-management.md`  
+**Target File**: `.opencode/context/core/system/state-management.md`  
 **Target Size**: ~600 lines  
 **Consolidates**:
 - status-markers.md (888 lines)
@@ -88,7 +88,7 @@ Phase 3 began context file consolidation with the creation of delegation-pattern
 
 ### 3. File Renaming (Not Started)
 
-**Action**: Rename `.opencode/context/common/workflows/delegation.md` to `delegation-context-template.md`
+**Action**: Rename `.opencode/context/core/workflows/delegation.md` to `delegation-context-template.md`
 
 **Reason**: Avoid confusion with new delegation-patterns.md file
 

@@ -8,10 +8,10 @@
 - **Research Inputs**: [Research Report](.opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/reports/research-001.md)
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/tasks.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/tasks.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -132,7 +132,7 @@ Research revealed that all workflow commands already follow immediate delegation
 
 - **Goal**: Document context loading stage separation in command-lifecycle.md
 - **Tasks**:
-  - [ ] Read current command-lifecycle.md (.opencode/context/common/workflows/command-lifecycle.md)
+  - [ ] Read current command-lifecycle.md (.opencode/context/core/workflows/command-lifecycle.md)
   - [ ] Add section to Stage 4 (InvokeAgent) documenting context loading pattern
   - [ ] Document lightweight routing pattern (Stages 1-3: minimal context)
   - [ ] Document full execution pattern (Stage 4+: full context)
@@ -223,7 +223,7 @@ Research revealed that all workflow commands already follow immediate delegation
   - .opencode/command/plan.md (context loading moved to Stage 4, path error fixed)
   - .opencode/command/implement.md (context loading moved to Stage 4)
   - .opencode/command/revise.md (context loading moved to Stage 4, path error fixed)
-  - .opencode/context/common/workflows/command-lifecycle.md (context loading documentation added)
+  - .opencode/context/core/workflows/command-lifecycle.md (context loading documentation added)
 
 - **New Files**:
   - .opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/plans/implementation-001.md (this file)

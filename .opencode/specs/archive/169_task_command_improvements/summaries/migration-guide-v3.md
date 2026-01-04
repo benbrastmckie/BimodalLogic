@@ -1176,7 +1176,7 @@ Use this checklist to ensure complete migration:
 - **Implementation Plan**: `.opencode/specs/169_task_command_improvements/plans/implementation-003.md`
 - **Research Report**: `.opencode/specs/169_task_command_improvements/reports/research-001.md`
 - **Test Results**: `.opencode/specs/169_task_command_improvements/summaries/test-results-v3.md`
-- **Artifact Management**: `.opencode/context/common/system/artifact-management.md`
+- **Artifact Management**: `.opencode/context/core/system/artifact-management.md`
 
 ### Schemas
 - **Task Executor Return Schema**: `.opencode/specs/169_task_command_improvements/schemas/task-executor-return-schema.json`

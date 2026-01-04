@@ -275,8 +275,8 @@ Two-tier fix with parallel phases:
 
 ### Referenced (No Changes)
 
-1. `.opencode/context/common/system/artifact-management.md` (summary standard)
-2. `.opencode/context/common/standards/subagent-return-format.md` (return format)
+1. `.opencode/context/core/system/artifact-management.md` (summary standard)
+2. `.opencode/context/core/standards/subagent-return-format.md` (return format)
 3. `.opencode/agent/subagents/task-executor.md` (reference pattern, lines 145-160)
 
 ---

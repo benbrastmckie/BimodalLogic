@@ -82,7 +82,7 @@ Research completed on 2025-12-27 identified the actual state of self-healing con
 - No functional changes, only reorganization
 
 **Files Modified**:
-- `.opencode/context/common/system/self-healing-guide.md` (438 → 120 lines)
+- `.opencode/context/core/system/self-healing-guide.md` (438 → 120 lines)
 - `.opencode/context/project/repo/self-healing-implementation-details.md` (new, 300 lines)
 
 ---
@@ -118,7 +118,7 @@ Research completed on 2025-12-27 identified the actual state of self-healing con
 - No loss of essential context organization information
 
 **Files Modified**:
-- `.opencode/context/common/system/context-guide.md` (177 → 104 lines, -73)
+- `.opencode/context/core/system/context-guide.md` (177 → 104 lines, -73)
 
 ---
 
@@ -153,8 +153,8 @@ Research completed on 2025-12-27 identified the actual state of self-healing con
 - No duplication between files
 
 **Files Modified**:
-- `.opencode/context/common/system/state-schema.md` (499 → ~510 lines, +11)
-- `.opencode/context/common/system/self-healing-guide.md` (references updated)
+- `.opencode/context/core/system/state-schema.md` (499 → ~510 lines, +11)
+- `.opencode/context/core/system/self-healing-guide.md` (references updated)
 
 ---
 
@@ -204,8 +204,8 @@ rm .opencode/specs/state.json
 /research 199  # Should work normally (state.json exists)
 
 # Test 3: Verify context files
-cat .opencode/context/common/system/self-healing-guide.md | wc -l  # Should be ~120
-cat .opencode/context/common/system/context-guide.md | wc -l       # Should be ~104
+cat .opencode/context/core/system/self-healing-guide.md | wc -l  # Should be ~120
+cat .opencode/context/core/system/context-guide.md | wc -l       # Should be ~104
 ```
 
 **Files Validated**:
@@ -273,7 +273,7 @@ cat .opencode/context/common/system/context-guide.md | wc -l       # Should be ~
 If issues discovered:
 
 1. **Immediate**: Revert file changes via git
-2. **Restore**: `git checkout HEAD -- .opencode/context/common/system/`
+2. **Restore**: `git checkout HEAD -- .opencode/context/core/system/`
 3. **Verify**: Test commands work with original files
 
 ---

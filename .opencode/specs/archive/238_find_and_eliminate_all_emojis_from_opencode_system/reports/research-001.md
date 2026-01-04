@@ -156,17 +156,17 @@ This is a positive finding - the core agent specifications are emoji-free.
 
 | File | Count | Type |
 |------|-------|------|
-| `.opencode/context/common/standards/code.md` | 33 | Standards |
+| `.opencode/context/core/standards/code.md` | 33 | Standards |
 | `.opencode/context/project/lean4/templates/maintenance-report-template.md` | 14 | Template |
-| `.opencode/context/common/standards/tests.md` | 14 | Standards |
+| `.opencode/context/core/standards/tests.md` | 14 | Standards |
 | `.opencode/context/project/repo/project-overview.md` | 7 | Overview |
 | `.opencode/context/project/lean4/standards/lean4-style-guide.md` | 5 | Standards |
 | `.opencode/context/project/lean4/processes/maintenance-workflow.md` | 5 | Process |
-| `.opencode/context/common/system/status-markers.md` | 5 | System |
+| `.opencode/context/core/system/status-markers.md` | 5 | System |
 | `.opencode/context/project/lean4/tools/mcp-tools-guide.md` | 4 | Tools |
 | `.opencode/context/project/lean4/patterns/tactic-patterns.md` | 4 | Patterns |
-| `.opencode/context/common/workflows/sessions.md` | 4 | Workflow |
-| `.opencode/context/common/templates/meta-guide.md` | 2 | Template |
+| `.opencode/context/core/workflows/sessions.md` | 4 | Workflow |
+| `.opencode/context/core/templates/meta-guide.md` | 2 | Template |
 | `.opencode/context/project/logic/processes/verification-workflow.md` | 1 | Process |
 
 **Critical Finding**: Context files contain emojis in templates and examples, which propagate emoji usage to generated artifacts.
@@ -192,7 +192,7 @@ This is a positive finding - the core agent specifications are emoji-free.
 
 ## Standards Review - Current NO EMOJI Policy
 
-### Documentation Standards (.opencode/context/common/standards/documentation.md)
+### Documentation Standards (.opencode/context/core/standards/documentation.md)
 
 **Lines 32-35** (First occurrence):
 ```markdown
@@ -218,7 +218,7 @@ Mathematical symbols (→, ∧, ∨, ¬, □, ◇) are NOT emojis and must be pr
 
 **Assessment**: The NO EMOJI policy is clearly documented with text-based alternatives provided. However, the policy is violated in 24% of markdown files.
 
-### Status Markers Specification (.opencode/context/common/system/status-markers.md)
+### Status Markers Specification (.opencode/context/core/system/status-markers.md)
 
 **Line 138**:
 ```markdown
@@ -309,8 +309,8 @@ All 8 workflow command files contain explicit `<no_emojis>` tags:
 
 **Evidence**:
 - 14 emojis in `.opencode/context/project/lean4/templates/maintenance-report-template.md`
-- 33 emojis in `.opencode/context/common/standards/code.md`
-- 14 emojis in `.opencode/context/common/standards/tests.md`
+- 33 emojis in `.opencode/context/core/standards/code.md`
+- 14 emojis in `.opencode/context/core/standards/tests.md`
 
 **Pattern**: Templates and standards files use emojis in examples, which are then copied by agents when generating artifacts.
 
@@ -391,7 +391,7 @@ All 8 workflow command files contain explicit `<no_emojis>` tags:
    ```
 3. Manual verification of high-impact files:
    - `.opencode/specs/TODO.md`
-   - `.opencode/context/common/system/status-markers.md`
+   - `.opencode/context/core/system/status-markers.md`
    - All command files
    - All agent files
 4. Git commit with message: "Remove all emojis from .opencode system per NO EMOJI standard"
@@ -414,7 +414,7 @@ All 8 workflow command files contain explicit `<no_emojis>` tags:
 **Objective**: Remove emoji examples from standards and templates
 
 **Files to Update**:
-1. `.opencode/context/common/system/status-markers.md`
+1. `.opencode/context/core/system/status-markers.md`
    - Remove [PASS] from lines 345, 370, 378, 615, 655
    - Replace with text-based status markers
    - Strengthen NO EMOJI guidance
@@ -423,11 +423,11 @@ All 8 workflow command files contain explicit `<no_emojis>` tags:
    - Replace all emoji examples with text alternatives
    - Add explicit NO EMOJI reminder
 
-3. `.opencode/context/common/standards/code.md`
+3. `.opencode/context/core/standards/code.md`
    - Replace emoji examples with text alternatives
    - Strengthen NO EMOJI policy
 
-4. `.opencode/context/common/standards/tests.md`
+4. `.opencode/context/core/standards/tests.md`
    - Replace emoji examples with text alternatives
 
 **Example Fix for status-markers.md**:
@@ -514,13 +514,13 @@ All 8 workflow command files contain explicit `<no_emojis>` tags:
    chmod +x .git/hooks/pre-commit
    ```
 
-3. Document hook in `.opencode/context/common/standards/documentation.md`
+3. Document hook in `.opencode/context/core/standards/documentation.md`
 
 ### Phase 5: Update Quality Checklist (15 minutes)
 
 **Objective**: Add emoji validation to quality checklist
 
-**File**: `.opencode/context/common/standards/documentation.md`
+**File**: `.opencode/context/core/standards/documentation.md`
 
 **Addition to Quality Checklist** (line 200):
 ```markdown
@@ -545,7 +545,7 @@ Use this checklist when creating or updating documentation:
 **Recommendation**: Consolidate NO EMOJI policy into single authoritative section
 
 **Implementation**:
-- Update `.opencode/context/common/standards/documentation.md`
+- Update `.opencode/context/core/standards/documentation.md`
 - Add dedicated "NO EMOJI Policy" section with:
   - Clear prohibition statement
   - Rationale (parsing, display, professionalism)
@@ -634,7 +634,7 @@ grep -r "[PASS]\|[FAIL]\|[WARN]" .opencode --include="*.md"
 
 **Files to Update**:
 - `.opencode/context/project/lean4/templates/maintenance-report-template.md`
-- `.opencode/context/common/templates/meta-guide.md`
+- `.opencode/context/core/templates/meta-guide.md`
 - All template files in `.opencode/context/`
 
 **Replacement Strategy**:
@@ -820,8 +820,8 @@ The root cause is not a lack of standards but a lack of enforcement mechanisms. 
 ## Sources
 
 - `.opencode/specs/TODO.md` - Task 238 description
-- `.opencode/context/common/standards/documentation.md` - NO EMOJI policy
-- `.opencode/context/common/system/status-markers.md` - Status marker standards
+- `.opencode/context/core/standards/documentation.md` - NO EMOJI policy
+- `.opencode/context/core/system/status-markers.md` - Status marker standards
 - `.opencode/command/*.md` - Command specifications with `<no_emojis>` tags
 - `.opencode/specs/*/reports/*.md` - Research reports (1,200+ emojis)
 - `.opencode/specs/*/summaries/*.md` - Implementation summaries (400+ emojis)

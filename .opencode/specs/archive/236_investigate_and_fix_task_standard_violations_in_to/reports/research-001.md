@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-Tasks 1-9 in `.opencode/specs/TODO.md` violate task standards defined in `.opencode/context/common/standards/tasks.md` in two critical ways:
+Tasks 1-9 in `.opencode/specs/TODO.md` violate task standards defined in `.opencode/context/core/standards/tasks.md` in two critical ways:
 
 1. **Missing Language field** - All 9 tasks lack the mandatory `**Language**` metadata field
 2. **Wrong bullet formatting** - Tasks 1-6 use `*Effort**:` instead of `- **Effort**:`
@@ -64,7 +64,7 @@ Research identified **three mechanisms** for task creation:
 
 ### 1.2 Task Standards Specification
 
-**File**: `.opencode/context/common/standards/tasks.md`
+**File**: `.opencode/context/core/standards/tasks.md`
 
 **Required Fields** (Lines 36-48):
 - Description (user-provided)
@@ -352,7 +352,7 @@ done
 **Effort**: 15 minutes  
 **Owner**: Documentation update
 
-**Update `.opencode/context/common/standards/tasks.md`**:
+**Update `.opencode/context/core/standards/tasks.md`**:
 - Add warning about manual task creation
 - Emphasize using `/task` command for all new tasks
 - Document validation mechanisms
@@ -437,7 +437,7 @@ done
 ### 10.1 Files Analyzed
 
 1. `.opencode/specs/TODO.md` - Task list with violations
-2. `.opencode/context/common/standards/tasks.md` - Task standards specification
+2. `.opencode/context/core/standards/tasks.md` - Task standards specification
 3. `.opencode/command/task.md` - Task creation command
 4. `.opencode/command/review.md` - Review command with task creation
 5. `.opencode/specs/state.json` - Project state tracking

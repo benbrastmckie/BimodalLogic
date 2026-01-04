@@ -47,7 +47,7 @@ All delegation follows strict safety patterns to prevent hangs and loops:
 - **Timeout Enforcement**: All delegations have timeouts (default 3600s)
 - **Return Validation**: All subagent returns validated against standard format
 
-See `.opencode/context/common/workflows/subagent-delegation-guide.md` for detailed patterns.
+See `.opencode/context/core/workflows/subagent-delegation-guide.md` for detailed patterns.
 
 ### 2. Standardized Returns
 
@@ -77,7 +77,7 @@ This enables:
 - Error propagation
 - Session tracking
 
-See `.opencode/context/common/standards/subagent-return-format.md` for full specification.
+See `.opencode/context/core/standards/subagent-return-format.md` for full specification.
 
 ### 3. Atomic State Updates
 
@@ -846,7 +846,7 @@ The meta system builder is fully integrated into ProofChecker's .opencode system
 
 - Quick Start Guide: `.opencode/QUICK-START.md`
 - Testing Guide: `.opencode/TESTING.md`
-- Delegation Guide: `.opencode/context/common/workflows/subagent-delegation-guide.md`
-- Return Format Standard: `.opencode/context/common/standards/subagent-return-format.md`
+- Delegation Guide: `.opencode/context/core/workflows/subagent-delegation-guide.md`
+- Return Format Standard: `.opencode/context/core/standards/subagent-return-format.md`
 - Task 191 Research: `.opencode/specs/191_fix_subagent_delegation_hang/reports/research-001.md`
 - Task 191 Plan: `.opencode/specs/191_fix_subagent_delegation_hang/plans/implementation-001.md`

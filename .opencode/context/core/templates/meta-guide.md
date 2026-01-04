@@ -6,7 +6,7 @@ Complete guide for using the `/meta` command to create and modify agents and com
 
 The `/meta` command provides an interactive system builder that creates agents and commands tailored to your needs. It follows research-backed patterns from Stanford and Anthropic for optimal AI agent performance using XML optimization and hierarchical routing.
 
-All generated commands must follow `.opencode/context/common/standards/commands.md` using YAML front matter (including context_level and language) plus XML/@subagent sections; meta outputs should reference `.opencode/context/common/templates/command-template.md`.
+All generated commands must follow `.opencode/context/core/standards/commands.md` using YAML front matter (including context_level and language) plus XML/@subagent sections; meta outputs should reference `.opencode/context/core/templates/command-template.md`.
 
 ## Quick Start
 
@@ -241,7 +241,7 @@ Subagent A    Subagent B      Subagent C
 - Compliance requirements
 - Error handling standards
 
-**Template Knowledge** (`.opencode/context/common/templates/`)
+**Template Knowledge** (`.opencode/context/core/templates/`)
 - Output format templates
 - Common patterns and structures
 - Reusable components
@@ -450,7 +450,7 @@ After your system is generated:
 
 ## Resources
 
-- **Templates**: `.opencode/context/common/templates/`
+- **Templates**: `.opencode/context/core/templates/`
 - **Meta Agent**: `.opencode/agent/subagents/meta.md`
 - **Documentation**: `.opencode/README.md`, `.opencode/ARCHITECTURE.md`
 - **Patterns**: Review template files for best practices

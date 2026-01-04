@@ -334,7 +334,7 @@ Update planner and task-executor agents to support plan status synchronization, 
 
 ### Deliverables
 
-1. .opencode/context/common/workflows/command-lifecycle.md (enhanced, ~150 additional lines)
+1. .opencode/context/core/workflows/command-lifecycle.md (enhanced, ~150 additional lines)
 2. .opencode/command/plan.md (updated with phase initialization)
 3. .opencode/command/revise.md (updated with phase initialization)
 4. .opencode/command/implement.md (updated with phase status updates)
@@ -471,7 +471,7 @@ state.json:  plan_artifacts updated with new version
 
 ### Files to be Modified
 
-- .opencode/context/common/workflows/command-lifecycle.md (enhance with plan status synchronization)
+- .opencode/context/core/workflows/command-lifecycle.md (enhance with plan status synchronization)
 - .opencode/command/plan.md (add phase initialization)
 - .opencode/command/revise.md (add phase initialization)
 - .opencode/command/implement.md (add phase status updates)
@@ -480,11 +480,11 @@ state.json:  plan_artifacts updated with new version
 
 ### Related Standards
 
-- .opencode/context/common/system/status-markers.md (status marker format)
-- .opencode/context/common/standards/subagent-return-format.md (return format)
-- .opencode/context/common/system/artifact-management.md (artifact management)
-- .opencode/context/common/system/git-commits.md (commit patterns)
-- .opencode/context/common/system/state-schema.md (state.json schema)
+- .opencode/context/core/system/status-markers.md (status marker format)
+- .opencode/context/core/standards/subagent-return-format.md (return format)
+- .opencode/context/core/system/artifact-management.md (artifact management)
+- .opencode/context/core/system/git-commits.md (commit patterns)
+- .opencode/context/core/system/state-schema.md (state.json schema)
 
 ### Related Tasks
 

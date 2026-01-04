@@ -12,10 +12,10 @@
   - Summary: .opencode/specs/208_fix_lean_routing/summaries/research-summary.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/workflows/subagent-delegation-guide.md
-  - .opencode/context/common/standards/subagent-return-format.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/workflows/subagent-delegation-guide.md
+  - .opencode/context/core/standards/subagent-return-format.md
 - **Language**: markdown
 - **Lean Intent**: false
 

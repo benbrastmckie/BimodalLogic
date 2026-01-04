@@ -125,10 +125,10 @@ Successfully centralized NO EMOJI validation in AGENTS.md and removed redundant 
 - `.opencode/command/errors.md`
 - `.opencode/command/todo.md`
 - `.opencode/agent/subagents/error-diagnostics-agent.md`
-- `.opencode/context/common/templates/command-template.md`
+- `.opencode/context/core/templates/command-template.md`
 
 **Documentation (1)**:
-- `.opencode/context/common/standards/documentation.md`
+- `.opencode/context/core/standards/documentation.md`
 
 ## Recommendations
 

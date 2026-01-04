@@ -632,8 +632,8 @@ The status-sync-manager specialist is correctly designed and ready to use. The c
 3. `.opencode/command/plan.md` - Plan command (330 lines)
 4. `.opencode/command/revise.md` - Revise command (309 lines)
 5. `.opencode/command/implement.md` - Implement command (439 lines)
-6. `.opencode/context/common/workflows/command-lifecycle.md` - Lifecycle standard (983 lines)
-7. `.opencode/context/common/system/status-markers.md` - Status marker specification (889 lines)
+6. `.opencode/context/core/workflows/command-lifecycle.md` - Lifecycle standard (983 lines)
+7. `.opencode/context/core/system/status-markers.md` - Status marker specification (889 lines)
 
 ### Evidence Files
 

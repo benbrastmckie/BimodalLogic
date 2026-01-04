@@ -9,10 +9,10 @@
 - **Research Inputs**: .opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/workflows/command-lifecycle.md
-  - .opencode/context/common/workflows/subagent-delegation-guide.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/workflows/command-lifecycle.md
+  - .opencode/context/core/workflows/subagent-delegation-guide.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -256,7 +256,7 @@ This fix resolves tasks 227 and 228 as side effects and establishes the correct 
 - .opencode/command/implement.md (frontmatter if needed)
 - .opencode/command/revise.md (frontmatter if needed)
 - .opencode/command/review.md (frontmatter if needed)
-- .opencode/context/common/workflows/command-lifecycle.md (orchestrator integration section)
+- .opencode/context/core/workflows/command-lifecycle.md (orchestrator integration section)
 
 **Documentation**:
 - Updated orchestrator.md with command invocation pattern

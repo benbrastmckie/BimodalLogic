@@ -83,8 +83,8 @@ Systematically improve task tracking file update procedures across all workflow 
 - .opencode/command/implement.md (-20 lines)
 
 **Documentation**:
-- .opencode/context/common/workflows/command-lifecycle.md (+50 lines)
-- .opencode/context/common/system/state-schema.md (+40 lines)
+- .opencode/context/core/workflows/command-lifecycle.md (+50 lines)
+- .opencode/context/core/system/state-schema.md (+40 lines)
 
 ---
 
@@ -509,8 +509,8 @@ Validate all 4 commands work correctly with enhanced status-sync-manager, verify
 - No functionality regressions
 
 **Documentation Updates**:
-- .opencode/context/common/workflows/command-lifecycle.md (+50 lines)
-- .opencode/context/common/system/state-schema.md (+40 lines)
+- .opencode/context/core/workflows/command-lifecycle.md (+50 lines)
+- .opencode/context/core/system/state-schema.md (+40 lines)
 
 ### Acceptance Criteria
 
@@ -582,8 +582,8 @@ Validate all 4 commands work correctly with enhanced status-sync-manager, verify
 7. .opencode/command/plan.md (delegation, -20 lines)
 8. .opencode/command/revise.md (delegation, -20 lines)
 9. .opencode/command/implement.md (delegation, -20 lines)
-10. .opencode/context/common/workflows/command-lifecycle.md (update protocol, +50 lines)
-11. .opencode/context/common/system/state-schema.md (field schemas, +40 lines)
+10. .opencode/context/core/workflows/command-lifecycle.md (update protocol, +50 lines)
+11. .opencode/context/core/system/state-schema.md (field schemas, +40 lines)
 12. Test validation report
 
 **Net Change**: +205 lines total (285 added - 80 removed)
@@ -707,17 +707,17 @@ None identified
 - .opencode/command/implement.md
 
 **Documentation**:
-- .opencode/context/common/workflows/command-lifecycle.md
-- .opencode/context/common/system/state-schema.md
+- .opencode/context/core/workflows/command-lifecycle.md
+- .opencode/context/core/system/state-schema.md
 
 ### Related Standards
 
-- .opencode/context/common/system/status-markers.md
-- .opencode/context/common/system/state-schema.md
-- .opencode/context/common/system/artifact-management.md
-- .opencode/context/common/workflows/command-lifecycle.md
-- .opencode/context/common/standards/subagent-return-format.md
-- .opencode/context/common/system/git-commits.md
+- .opencode/context/core/system/status-markers.md
+- .opencode/context/core/system/state-schema.md
+- .opencode/context/core/system/artifact-management.md
+- .opencode/context/core/workflows/command-lifecycle.md
+- .opencode/context/core/standards/subagent-return-format.md
+- .opencode/context/core/system/git-commits.md
 
 ### Related Tasks
 

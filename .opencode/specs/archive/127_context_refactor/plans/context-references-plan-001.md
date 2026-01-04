@@ -16,30 +16,30 @@ status: pending-refactor-structure
 ## 2) Current context references (by file)
 ### Agents
 - `.opencode/agent/subagents/lean-implementation-orchestrator.md`
-  - Loaded: `@context/project/lean4/`, `@context/project/logic/`, `@context/common/standards/code.md`, `@context/common/standards/tests.md`, `@context/common/standards/documentation.md`
+  - Loaded: `@context/project/lean4/`, `@context/project/logic/`, `@context/core/standards/code.md`, `@context/core/standards/tests.md`, `@context/core/standards/documentation.md`
   - Narrative: `.opencode/context/project/lean4`, `.../logic`
 - `.opencode/agent/subagents/task-adder.md`
-  - Narrative: `.opencode/context/common/system/context-guide.md`
+  - Narrative: `.opencode/context/core/system/context-guide.md`
 - `.opencode/agent/subagents/specialists/context-analyzer.md`
   - Narrative: `.opencode/context/`, `.opencode/agent/`, `.opencode/command/`; instructions to `glob` `.opencode/context/`
 - `.opencode/agent/subagents/context-references.md`
-  - Narrative: `.opencode/context/common/system/context-guide.md`; instructions to find `@/` or `.opencode/context/`
+  - Narrative: `.opencode/context/core/system/context-guide.md`; instructions to find `@/` or `.opencode/context/`
 - `.opencode/agent/subagents/context-refactor.md`
-  - Narrative: `.opencode/context/common/system/context-guide.md`
+  - Narrative: `.opencode/context/core/system/context-guide.md`
 
 ### Commands
 - `.opencode/command/lean.md`
-  - Loaded: `@.opencode/context/project/lean4/`, `@.opencode/context/project/logic/`, `@.opencode/context/common/standards/{code,tests,documentation}.md`, `@.opencode/context/project/repo/project-overview.md`
+  - Loaded: `@.opencode/context/project/lean4/`, `@.opencode/context/project/logic/`, `@.opencode/context/core/standards/{code,tests,documentation}.md`, `@.opencode/context/project/repo/project-overview.md`
 - `.opencode/command/task.md`
-  - Loaded: `@.opencode/specs/TODO.md`, `@.opencode/specs/state.json`, `@.opencode/context/common/system/{state-schema,artifact-management,status-markers}.md`, `@.opencode/context/common/standards/{tasks,patterns}.md`, `@.opencode/context/common/workflows/task-breakdown.md`, `@.opencode/context/project/repo/project-overview.md`, optional Lean contexts `@.opencode/context/project/lean4/*`, `@.opencode/context/project/logic/*`
+  - Loaded: `@.opencode/specs/TODO.md`, `@.opencode/specs/state.json`, `@.opencode/context/core/system/{state-schema,artifact-management,status-markers}.md`, `@.opencode/context/core/standards/{tasks,patterns}.md`, `@.opencode/context/core/workflows/task-breakdown.md`, `@.opencode/context/project/repo/project-overview.md`, optional Lean contexts `@.opencode/context/project/lean4/*`, `@.opencode/context/project/logic/*`
 - `.opencode/command/plan.md`
   - Loaded: same as `/task` plus optional Lean contexts; non-Lean avoidance noted
 - `.opencode/command/add.md`
-  - Loaded: `@.opencode/specs/TODO.md`, `@.opencode/specs/state.json`, `@.opencode/context/common/system/{state-schema,artifact-management}.md`, `@.opencode/context/common/standards/{tasks,patterns}.md`
+  - Loaded: `@.opencode/specs/TODO.md`, `@.opencode/specs/state.json`, `@.opencode/context/core/system/{state-schema,artifact-management}.md`, `@.opencode/context/core/standards/{tasks,patterns}.md`
 - `.opencode/command/research.md`
-  - Loaded: `@.opencode/specs/TODO.md`, `@.opencode/specs/state.json`, `@.opencode/context/common/system/{state-schema,artifact-management}.md`, `@.opencode/context/common/standards/{tasks,patterns}.md`, `@.opencode/context/common/workflows/task-breakdown.md`
+  - Loaded: `@.opencode/specs/TODO.md`, `@.opencode/specs/state.json`, `@.opencode/context/core/system/{state-schema,artifact-management}.md`, `@.opencode/context/core/standards/{tasks,patterns}.md`, `@.opencode/context/core/workflows/task-breakdown.md`
 - `.opencode/command/context.md`
-  - Loaded: `@context/common/system/context-guide.md`
+  - Loaded: `@context/core/system/context-guide.md`
 - `.opencode/command/meta.md`
   - Narrative: generated structure lists `.opencode/context/`; docs list `.opencode/context/README.md`
 - `.opencode/command/README.md`
@@ -61,8 +61,8 @@ For each file below, re-run this plan when a non-placeholder refactor plan is av
 - `.opencode/command/task.md`: update loaded contexts and optional Lean paths to new structure.
 - `.opencode/command/plan.md`: update loaded contexts and optional Lean paths to new structure.
 - `.opencode/command/add.md`: update common/system and standards paths.
-- `.opencode/command/research.md`: update common/system/standards/workflows paths.
-- `.opencode/command/context.md`: update `@context/common/system/context-guide.md` to new path.
+- `.opencode/command/research.md`: update core/system/standards/workflows paths.
+- `.opencode/command/context.md`: update `@context/core/system/context-guide.md` to new path.
 - `.opencode/command/meta.md`: update narrative examples of `.opencode/context/` and documentation links.
 - `.opencode/command/README.md`: update context allocation narrative to reflect new hierarchy.
 

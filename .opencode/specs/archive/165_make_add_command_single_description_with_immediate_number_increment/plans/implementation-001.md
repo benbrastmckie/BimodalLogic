@@ -671,7 +671,7 @@ After creation, edit TODO.md to customize metadata if needed. All fields can be 
 
 #### Stage 4.2: Update Standards Documentation
 
-**File**: `.opencode/context/common/standards/tasks.md`
+**File**: `.opencode/context/core/standards/tasks.md`
 
 **Actions**:
 1. Document metadata auto-population strategy
@@ -716,7 +716,7 @@ Auto-population provides sensible defaults for quick task creation. Manual editi
 - [ ] Examples updated
 - [ ] Edit guidance added
 
-**File**: `.opencode/context/common/standards/commands.md`
+**File**: `.opencode/context/core/standards/commands.md`
 
 **Actions**:
 1. Update /add command documentation with new workflow
@@ -891,12 +891,12 @@ Verification:
 - `.opencode/specs/TODO.md` - Task list with metadata
 
 **Standards**:
-- `.opencode/context/common/standards/tasks.md` - Task metadata format specification
-- `.opencode/context/common/standards/commands.md` - Command structure requirements
+- `.opencode/context/core/standards/tasks.md` - Task metadata format specification
+- `.opencode/context/core/standards/commands.md` - Command structure requirements
 
 **System Documentation**:
-- `.opencode/context/common/system/state-schema.md` - State file structure
-- `.opencode/context/common/system/artifact-management.md` - Lazy directory creation rules
+- `.opencode/context/core/system/state-schema.md` - State file structure
+- `.opencode/context/core/system/artifact-management.md` - Lazy directory creation rules
 
 ### Prerequisites
 
@@ -1124,8 +1124,8 @@ Verification:
 **Action**: Update tasks.md and commands.md with new patterns
 
 **Files**: 
-- `.opencode/context/common/standards/tasks.md`
-- `.opencode/context/common/standards/commands.md`
+- `.opencode/context/core/standards/tasks.md`
+- `.opencode/context/core/standards/commands.md`
 
 **Approach**:
 1. Document metadata auto-population strategy
@@ -1358,7 +1358,7 @@ Verification:
 
 ### Standards Documentation
 
-**File**: `.opencode/context/common/standards/tasks.md`
+**File**: `.opencode/context/core/standards/tasks.md`
 
 **Required Sections**:
 1. Metadata Auto-Population: Strategy and default values
@@ -1367,7 +1367,7 @@ Verification:
 4. Editing Tasks: Guidance on manual customization
 5. Examples: Auto-populated tasks
 
-**File**: `.opencode/context/common/standards/commands.md`
+**File**: `.opencode/context/core/standards/commands.md`
 
 **Required Sections**:
 1. /add Command: New workflow and usage

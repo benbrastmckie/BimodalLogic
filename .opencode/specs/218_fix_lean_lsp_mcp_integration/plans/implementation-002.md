@@ -11,10 +11,10 @@
   - Summary: .opencode/specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary-002.md
 - **Artifacts**: plans/implementation-002.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/tasks.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/tasks.md
 - **Language**: python
 - **Lean Intent**: false
 - **Plan Version**: 2 (revised based on research-002.md findings)

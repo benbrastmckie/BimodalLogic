@@ -374,7 +374,7 @@ The researcher subagent (`.opencode/agent/subagents/researcher.md`) is executing
 
 **References**:
 - State Management Standard: `.opencode/context/core/system/state-management.md`
-- Artifact Management: `.opencode/context/common/system/artifact-management.md`
+- Artifact Management: `.opencode/context/core/system/artifact-management.md`
 - Status Sync Manager: `.opencode/agent/subagents/status-sync-manager.md`
 
 ---
@@ -813,7 +813,7 @@ The researcher subagent (`.opencode/agent/subagents/researcher.md`) is executing
   - .opencode/command/implement.md
   - .opencode/agent/subagents/lean-research-agent.md
   - .opencode/agent/subagents/lean-implementation-agent.md
-  - .opencode/context/common/standards/lean-tool-verification.md (new)
+  - .opencode/context/core/standards/lean-tool-verification.md (new)
   - .opencode/specs/monitoring/ (new directory structure)
 - **Description**: Design and implement a comprehensive monitoring and verification system to detect and validate that Lean-specific tools (lean-lsp-mcp, Loogle, LeanExplore, LeanSearch) are being correctly used by the appropriate commands and agents when processing Lean tasks. The system should provide visibility into tool usage patterns, detect routing errors, track tool availability issues, and identify opportunities for improvement. This includes creating verification methods, logging standards, monitoring dashboards, and automated health checks to ensure the system is working optimally.
 - **Acceptance Criteria**:

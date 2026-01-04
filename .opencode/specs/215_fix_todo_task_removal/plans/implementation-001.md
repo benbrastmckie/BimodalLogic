@@ -330,5 +330,5 @@ The implementation will be considered successful when:
 1. Research Report: `.opencode/specs/215_fix_todo_task_removal/reports/research-001.md`
 2. Research Summary: `.opencode/specs/215_fix_todo_task_removal/summaries/research-summary.md`
 3. Command Specification: `.opencode/command/todo.md`
-4. Status Markers: `.opencode/context/common/system/status-markers.md`
-5. Artifact Management: `.opencode/context/common/system/artifact-management.md`
+4. Status Markers: `.opencode/context/core/system/status-markers.md`
+5. Artifact Management: `.opencode/context/core/system/artifact-management.md`

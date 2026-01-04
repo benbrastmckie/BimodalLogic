@@ -223,7 +223,7 @@ awk '/^---$/{if(prev=="---" || prev=="") print NR": STACKED"; prev="---"; next} 
 6. **Branch safety**: Can work on feature branches for testing
 
 **Alignment with Standards**:
-- Follows `.opencode/context/common/system/git-commits.md` standard
+- Follows `.opencode/context/core/system/git-commits.md` standard
 - Uses targeted, scoped commits (not `git add -A`)
 - Includes task references in commit messages
 
@@ -1034,5 +1034,5 @@ The current /todo command uses a fragile backup-based approach and generates Pyt
 2. `.opencode/specs/TODO.md` - TODO.md file format and structure
 3. `.opencode/specs/state.json` - State file schema
 4. `.opencode/tmp/archive_tasks.py` - Existing Python archival script
-5. `.opencode/context/common/system/git-commits.md` - Git commit standards
+5. `.opencode/context/core/system/git-commits.md` - Git commit standards
 6. `.opencode/context/core/system/state-management.md` - State management standards

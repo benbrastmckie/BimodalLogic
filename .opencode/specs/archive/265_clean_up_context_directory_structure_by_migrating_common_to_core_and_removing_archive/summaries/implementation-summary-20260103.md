@@ -18,13 +18,13 @@ Successfully migrated all context files from `.opencode/context/common/` to `.op
 
 ### Phase 2: Content Conflict Resolution
 - Deleted deprecated redirects:
-  - `common/standards/subagent-return-format.md` (27 lines)
-  - `common/workflows/delegation-patterns.md` (726 lines)
+  - `core/standards/subagent-return-format.md` (27 lines)
+  - `core/workflows/delegation-patterns.md` (726 lines)
 - Merged and deleted:
-  - `common/system/git-commits.md` → merged into `core/standards/git-safety.md`
-  - `common/system/context-guide.md` → merged into `core/system/context-loading-strategy.md`
+  - `core/system/git-commits.md` → merged into `core/standards/git-safety.md`
+  - `core/system/context-guide.md` → merged into `core/system/context-loading-strategy.md`
 - Renamed:
-  - `common/workflows/delegation.md` → `core/templates/delegation-context-template.md`
+  - `core/workflows/delegation.md` → `core/templates/delegation-context-template.md`
 
 ### Phase 3: Common Directory Migration
 - Migrated 23 active files from `common/` to `core/`:
@@ -34,10 +34,10 @@ Successfully migrated all context files from `.opencode/context/common/` to `.op
   - 5 template files (meta-guide.md, orchestrator-template.md, subagent-template.md, state-template.json, subagent-frontmatter-template.yaml)
   - 1 schema file (frontmatter-schema.json)
 - Deleted 4 deprecated redirect files:
-  - `common/system/status-markers.md`
-  - `common/system/state-schema.md`
-  - `common/workflows/subagent-delegation-guide.md`
-  - `common/templates/command-template.md` (older version)
+  - `core/system/status-markers.md`
+  - `core/system/state-schema.md`
+  - `core/workflows/subagent-delegation-guide.md`
+  - `core/templates/command-template.md` (older version)
 - Removed: `common/` directory
 
 ### Phase 4: Reference Updates

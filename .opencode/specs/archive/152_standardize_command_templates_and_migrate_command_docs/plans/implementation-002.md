@@ -9,10 +9,10 @@
 - **Research Inputs**: ../reports/research-001.md
 - **Artifacts**: plans/implementation-002.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/tasks.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/tasks.md
 - **Language**: markdown
 - **Lean Intent**: false
 - **Delta (v2 vs v1)**: Reverse direction — migrate command docs and meta templates **from Markdown metadata/section order back to YAML front matter + @subagent/XML markup**, matching the styling in `.opencode/command/meta.md` and `.opencode/command/context.md`; update templates/standards to enforce this markup.
@@ -96,8 +96,8 @@ Reorient the effort to restore YAML/@subagent/XML markup as the authoritative fo
 
 ## Artifacts & Outputs
 - plans/implementation-002.md (this plan)
-- .opencode/context/common/standards/commands.md (updated to YAML/@subagent/XML requirements)
-- .opencode/context/common/templates/command-template.md (YAML/XML template)
+- .opencode/context/core/standards/commands.md (updated to YAML/@subagent/XML requirements)
+- .opencode/context/core/templates/command-template.md (YAML/XML template)
 - Migrated .opencode/command/*.md and README.md (updated)
 - Updated meta templates/guides aligned to YAML/XML standard
 

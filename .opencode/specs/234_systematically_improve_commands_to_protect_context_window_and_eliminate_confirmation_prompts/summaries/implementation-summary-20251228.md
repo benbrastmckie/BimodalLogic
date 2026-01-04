@@ -56,7 +56,7 @@ Successfully moved context loading from command frontmatter to Stage 4 for all 4
 2. `.opencode/command/plan.md` - Context loading moved to Stage 4, path error fixed
 3. `.opencode/command/implement.md` - Context loading moved to Stage 4
 4. `.opencode/command/revise.md` - Context loading moved to Stage 4, path error fixed
-5. `.opencode/context/common/workflows/command-lifecycle.md` - Context loading documentation added
+5. `.opencode/context/core/workflows/command-lifecycle.md` - Context loading documentation added
 
 ## Context Usage Improvements
 

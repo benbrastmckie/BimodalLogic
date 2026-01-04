@@ -17,7 +17,7 @@ Successfully optimized self-healing infrastructure documentation to reduce conte
 
 ### Phase 1: Reduce self-healing-guide.md to Essential Reference
 
-**File**: `.opencode/context/common/system/self-healing-guide.md`
+**File**: `.opencode/context/core/system/self-healing-guide.md`
 
 **Before**: 439 lines (comprehensive guide with pseudo-code and examples)
 **After**: 153 lines (essential reference only)
@@ -41,7 +41,7 @@ Successfully optimized self-healing infrastructure documentation to reduce conte
 
 ### Phase 2: Consolidate context-guide.md Self-Healing Content
 
-**File**: `.opencode/context/common/system/context-guide.md`
+**File**: `.opencode/context/core/system/context-guide.md`
 
 **Before**: 177 lines total, 115 lines self-healing section
 **After**: 89 lines total, 28 lines self-healing section
@@ -79,7 +79,7 @@ Successfully optimized self-healing infrastructure documentation to reduce conte
 
 ### Phase 4: Add Schema Evolution to state-schema.md
 
-**File**: `.opencode/context/common/system/state-schema.md`
+**File**: `.opencode/context/core/system/state-schema.md`
 
 **Before**: 499 lines
 **After**: 618 lines
@@ -142,7 +142,7 @@ Verified self-healing still works correctly:
 Verified commands load optimized context:
 
 ```bash
-wc -l .opencode/context/common/system/context-guide.md
+wc -l .opencode/context/core/system/context-guide.md
 # Output: 89 lines (down from 177)
 ```
 
@@ -186,16 +186,16 @@ Annual savings (assuming 1000 command executions):
 
 ## Files Modified
 
-1. `.opencode/context/common/system/self-healing-guide.md`
+1. `.opencode/context/core/system/self-healing-guide.md`
    - 439 → 153 lines (-65%)
    
-2. `.opencode/context/common/system/context-guide.md`
+2. `.opencode/context/core/system/context-guide.md`
    - 177 → 89 lines (-50%)
    
 3. `.opencode/context/project/repo/self-healing-implementation-details.md`
    - Created: 601 lines (detailed reference)
    
-4. `.opencode/context/common/system/state-schema.md`
+4. `.opencode/context/core/system/state-schema.md`
    - 499 → 618 lines (+24% for schema evolution docs)
 
 **Total**: 4 files modified, 1 file created
@@ -256,5 +256,5 @@ Annual savings (assuming 1000 command executions):
 
 - Plan: `.opencode/specs/199_optimize_self_healing/plans/implementation-001.md`
 - Research: `.opencode/specs/199_optimize_self_healing/reports/research-001.md`
-- Self-Healing Guide: `.opencode/context/common/system/self-healing-guide.md`
+- Self-Healing Guide: `.opencode/context/core/system/self-healing-guide.md`
 - Implementation Details: `.opencode/context/project/repo/self-healing-implementation-details.md`

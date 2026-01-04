@@ -15,10 +15,10 @@
   - .opencode/command/plan.md
   - .opencode/command/implement.md
   - .opencode/agent/subagents/reviewer.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/workflows/command-lifecycle.md
-  - .opencode/context/common/standards/report.md
-  - .opencode/context/common/standards/summary.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/workflows/command-lifecycle.md
+  - .opencode/context/core/standards/report.md
+  - .opencode/context/core/standards/summary.md
   - .opencode/specs/state.json
   - .opencode/specs/maintenance/maintenance-report-20251224.md
   - .opencode/specs/maintenance/state.json
@@ -230,7 +230,7 @@ This research analyzes the maintenance report system to clarify command responsi
 
 ### 4. Artifact Management Integration
 
-**File**: .opencode/context/common/system/artifact-management.md (275 lines)
+**File**: .opencode/context/core/system/artifact-management.md (275 lines)
 
 **Key Principles**:
 1. **Lazy directory creation**: Create project root and subdirectories only when writing first artifact
@@ -331,7 +331,7 @@ None of these commands create tasks from their reports. They:
 
 ### 7. Workflow Patterns from Other Commands
 
-**File**: .opencode/context/common/workflows/command-lifecycle.md (930 lines)
+**File**: .opencode/context/core/workflows/command-lifecycle.md (930 lines)
 
 **8-Stage Lifecycle Pattern** (followed by /research, /plan, /revise, /implement):
 
@@ -483,10 +483,10 @@ Atomicity guaranteed across:
 - .opencode/command/plan.md (330 lines) - [PASS] Well-documented
 - .opencode/command/implement.md (416 lines) - [PASS] Well-documented
 - .opencode/agent/subagents/reviewer.md (364 lines) - [PASS] Well-documented
-- .opencode/context/common/workflows/command-lifecycle.md (930 lines) - [PASS] Comprehensive
-- .opencode/context/common/system/artifact-management.md (275 lines) - [PASS] Comprehensive
-- .opencode/context/common/standards/report.md (67 lines) - [PASS] Clear
-- .opencode/context/common/standards/summary.md (61 lines) - [PASS] Clear
+- .opencode/context/core/workflows/command-lifecycle.md (930 lines) - [PASS] Comprehensive
+- .opencode/context/core/system/artifact-management.md (275 lines) - [PASS] Comprehensive
+- .opencode/context/core/standards/report.md (67 lines) - [PASS] Clear
+- .opencode/context/core/standards/summary.md (61 lines) - [PASS] Clear
 
 **Consistency Findings**:
 - [PASS] All workflow commands follow command-lifecycle.md 8-stage pattern
@@ -947,10 +947,10 @@ Atomicity guaranteed across:
 - .opencode/agent/subagents/reviewer.md
 
 **Standard Files**:
-- .opencode/context/common/system/artifact-management.md
-- .opencode/context/common/workflows/command-lifecycle.md
-- .opencode/context/common/standards/report.md
-- .opencode/context/common/standards/summary.md
+- .opencode/context/core/system/artifact-management.md
+- .opencode/context/core/workflows/command-lifecycle.md
+- .opencode/context/core/standards/report.md
+- .opencode/context/core/standards/summary.md
 
 **State Files**:
 - .opencode/specs/state.json

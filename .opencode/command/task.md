@@ -79,7 +79,7 @@ context_loading:
       
       If metadata format invalid:
         - Error: "Metadata format must use `- **Field**:` pattern"
-        - Guidance: "Check task standards at .opencode/context/common/standards/tasks.md"
+        - Guidance: "Check task standards at .opencode/context/core/standards/tasks.md"
         - DO NOT create task
       
       If required field missing:
@@ -327,7 +327,7 @@ context_loading:
 
 <task_standard_enforcement>
   <validation_logic>
-    The /task command enforces task standards defined in .opencode/context/common/standards/tasks.md:
+    The /task command enforces task standards defined in .opencode/context/core/standards/tasks.md:
     
     1. Language Field Validation:
        - Language field is MANDATORY (tasks.md line 110 quality checklist)
@@ -370,7 +370,7 @@ context_loading:
     - Ensure Language field is present for ALL tasks
     - Use `- **Field**:` format (not `*Field**:`)
     - Include all required fields (Language, Effort, Priority, Status)
-    - Follow task standards in .opencode/context/common/standards/tasks.md
+    - Follow task standards in .opencode/context/core/standards/tasks.md
     
     Manual edits that violate standards may cause:
     - Routing failures (tasks sent to wrong agents)

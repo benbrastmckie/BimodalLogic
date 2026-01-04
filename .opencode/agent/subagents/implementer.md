@@ -29,7 +29,7 @@ context_loading:
     - "core/standards/delegation.md"
     - "core/system/state-management.md"
     - "core/system/artifact-management.md"
-    - "common/system/git-commits.md"
+    - "core/system/git-commits.md"
   max_context_size: 50000
 delegation:
   max_depth: 3

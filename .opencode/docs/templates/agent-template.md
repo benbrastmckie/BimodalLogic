@@ -82,7 +82,7 @@ The following inputs must NOT be provided to this agent:
 4. Validate context loaded successfully
 
 **Context Files**:
-- `.opencode/context/common/standards/<standard>.md`
+- `.opencode/context/core/standards/<standard>.md`
 - `.opencode/context/agents/<agent-context>.md`
 
 **Validation**:
@@ -379,8 +379,8 @@ Use this checklist when creating a new agent:
 
 ## See Also
 
-- **Workflow Standard**: `.opencode/context/common/standards/agent-workflow.md`
-- **Return Format**: `.opencode/context/common/standards/subagent-return-format.md`
+- **Workflow Standard**: `.opencode/context/core/standards/agent-workflow.md`
+- **Return Format**: `.opencode/context/core/standards/subagent-return-format.md`
 - **Context Index**: `.opencode/context/index.md`
 - **Command Template**: `.opencode/docs/templates/command-template.md`
 

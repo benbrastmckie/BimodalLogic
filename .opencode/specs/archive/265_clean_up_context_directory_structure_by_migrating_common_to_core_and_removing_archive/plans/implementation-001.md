@@ -8,10 +8,10 @@
 - **Research Inputs**: reports/research-001.md (comprehensive file inventory, reference analysis, content conflict resolution)
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
-  - @.opencode/context/common/standards/plan.md
-  - @.opencode/context/common/system/status-markers.md
-  - @.opencode/context/common/system/artifact-management.md
-  - @.opencode/context/common/standards/tasks.md
+  - @.opencode/context/core/standards/plan.md
+  - @.opencode/context/core/system/status-markers.md
+  - @.opencode/context/core/system/artifact-management.md
+  - @.opencode/context/core/standards/tasks.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -83,38 +83,38 @@ This plan systematically migrates all content from `.opencode/context/common/` t
 - [ ] **Conflict 1: subagent-return-format.md**
   - [ ] Verify common/ version is deprecated redirect (27 lines)
   - [ ] Verify core/ version is authoritative (212 lines)
-  - [ ] Delete `common/standards/subagent-return-format.md`
+  - [ ] Delete `core/standards/subagent-return-format.md`
   - [ ] Keep `core/standards/subagent-return-format.md`
 - [ ] **Conflict 2: delegation-patterns.md**
-  - [ ] Read `common/workflows/delegation-patterns.md` (726 lines)
+  - [ ] Read `core/workflows/delegation-patterns.md` (726 lines)
   - [ ] Read `core/standards/delegation.md` (510 lines)
   - [ ] Verify common/ is deprecated redirect
-  - [ ] Delete `common/workflows/delegation-patterns.md`
+  - [ ] Delete `core/workflows/delegation-patterns.md`
   - [ ] Keep `core/standards/delegation.md`
 - [ ] **Conflict 3: command-lifecycle.md**
   - [ ] Verify file already removed in Phase 1 (was in archive/)
   - [ ] No action needed
 - [ ] **Merge 1: git-commits.md → git-safety.md**
-  - [ ] Read `common/system/git-commits.md` (34 lines)
+  - [ ] Read `core/system/git-commits.md` (34 lines)
   - [ ] Read `core/standards/git-safety.md` (536 lines)
   - [ ] Identify unique content in git-commits.md
   - [ ] Merge unique commit patterns into git-safety.md
   - [ ] Validate merged content complete
-  - [ ] Delete `common/system/git-commits.md`
+  - [ ] Delete `core/system/git-commits.md`
 - [ ] **Merge 2: context-guide.md → context-loading-strategy.md**
-  - [ ] Read `common/system/context-guide.md` (89 lines)
+  - [ ] Read `core/system/context-guide.md` (89 lines)
   - [ ] Read `core/system/context-loading-strategy.md` (102 lines)
   - [ ] Identify unique patterns in context-guide.md
   - [ ] Merge unique patterns into context-loading-strategy.md
   - [ ] Validate merged content complete
-  - [ ] Delete `common/system/context-guide.md`
+  - [ ] Delete `core/system/context-guide.md`
 - [ ] **Merge 3: commands.md → command-structure.md**
-  - [ ] Read `common/standards/commands.md` (70 lines)
+  - [ ] Read `core/standards/commands.md` (70 lines)
   - [ ] Read `core/standards/command-structure.md` (612 lines)
   - [ ] Verify commands.md is redundant (covered by command-structure.md)
-  - [ ] Delete `common/standards/commands.md` if redundant
+  - [ ] Delete `core/standards/commands.md` if redundant
 - [ ] **Rename: delegation.md → delegation-context-template.md**
-  - [ ] Read `common/workflows/delegation.md` (82 lines)
+  - [ ] Read `core/workflows/delegation.md` (82 lines)
   - [ ] Verify different purpose than core/standards/delegation.md
   - [ ] Move to `core/templates/delegation-context-template.md`
   - [ ] Preserve as separate template
@@ -141,39 +141,39 @@ This plan systematically migrates all content from `.opencode/context/common/` t
   - [ ] `core/templates/`
   - [ ] `core/schemas/`
 - [ ] **Migrate Standards Files (9 files):**
-  - [ ] Move `common/standards/analysis.md` → `core/standards/`
-  - [ ] Move `common/standards/code.md` → `core/standards/`
-  - [ ] Move `common/standards/command-argument-handling.md` → `core/standards/`
-  - [ ] Move `common/standards/documentation.md` → `core/standards/`
-  - [ ] Move `common/standards/frontmatter-standard.md` → `core/standards/`
-  - [ ] Move `common/standards/patterns.md` → `core/standards/`
-  - [ ] Move `common/standards/plan.md` → `core/standards/`
-  - [ ] Move `common/standards/report.md` → `core/standards/`
-  - [ ] Move `common/standards/summary.md` → `core/standards/`
-  - [ ] Move `common/standards/tasks.md` → `core/standards/`
-  - [ ] Move `common/standards/tests.md` → `core/standards/`
+  - [ ] Move `core/standards/analysis.md` → `core/standards/`
+  - [ ] Move `core/standards/code.md` → `core/standards/`
+  - [ ] Move `core/standards/command-argument-handling.md` → `core/standards/`
+  - [ ] Move `core/standards/documentation.md` → `core/standards/`
+  - [ ] Move `core/standards/frontmatter-standard.md` → `core/standards/`
+  - [ ] Move `core/standards/patterns.md` → `core/standards/`
+  - [ ] Move `core/standards/plan.md` → `core/standards/`
+  - [ ] Move `core/standards/report.md` → `core/standards/`
+  - [ ] Move `core/standards/summary.md` → `core/standards/`
+  - [ ] Move `core/standards/tasks.md` → `core/standards/`
+  - [ ] Move `core/standards/tests.md` → `core/standards/`
 - [ ] **Migrate System Files (2 files):**
-  - [ ] Move `common/system/artifact-management.md` → `core/system/`
-  - [ ] Move `common/system/self-healing-guide.md` → `core/system/`
+  - [ ] Move `core/system/artifact-management.md` → `core/system/`
+  - [ ] Move `core/system/self-healing-guide.md` → `core/system/`
 - [ ] **Migrate Workflow Files (3 files):**
-  - [ ] Move `common/workflows/review.md` → `core/workflows/`
-  - [ ] Move `common/workflows/sessions.md` → `core/workflows/`
-  - [ ] Move `common/workflows/task-breakdown.md` → `core/workflows/`
+  - [ ] Move `core/workflows/review.md` → `core/workflows/`
+  - [ ] Move `core/workflows/sessions.md` → `core/workflows/`
+  - [ ] Move `core/workflows/task-breakdown.md` → `core/workflows/`
 - [ ] **Migrate Template Files (5 files):**
-  - [ ] Move `common/templates/meta-guide.md` → `core/templates/`
-  - [ ] Move `common/templates/orchestrator-template.md` → `core/templates/`
-  - [ ] Move `common/templates/subagent-template.md` → `core/templates/`
-  - [ ] Move `common/templates/state-template.json` → `core/templates/`
-  - [ ] Move `common/templates/subagent-frontmatter-template.yaml` → `core/templates/`
-  - [ ] Delete `common/templates/command-template.md` (core/ version is newer)
+  - [ ] Move `core/templates/meta-guide.md` → `core/templates/`
+  - [ ] Move `core/templates/orchestrator-template.md` → `core/templates/`
+  - [ ] Move `core/templates/subagent-template.md` → `core/templates/`
+  - [ ] Move `core/templates/state-template.json` → `core/templates/`
+  - [ ] Move `core/templates/subagent-frontmatter-template.yaml` → `core/templates/`
+  - [ ] Delete `core/templates/command-template.md` (core/ version is newer)
 - [ ] **Migrate Schema Files (1 file):**
   - [ ] Move `common/schemas/frontmatter-schema.json` → `core/schemas/`
 - [ ] **Remove Deprecated Redirect Files (5 files):**
-  - [ ] Delete `common/standards/subagent-return-format.md` (deprecated redirect)
-  - [ ] Delete `common/system/status-markers.md` (deprecated redirect)
-  - [ ] Delete `common/system/state-schema.md` (deprecated redirect)
-  - [ ] Delete `common/workflows/subagent-delegation-guide.md` (deprecated redirect)
-  - [ ] Delete `common/workflows/delegation-patterns.md` (deprecated redirect)
+  - [ ] Delete `core/standards/subagent-return-format.md` (deprecated redirect)
+  - [ ] Delete `core/system/status-markers.md` (deprecated redirect)
+  - [ ] Delete `core/system/state-schema.md` (deprecated redirect)
+  - [ ] Delete `core/workflows/subagent-delegation-guide.md` (deprecated redirect)
+  - [ ] Delete `core/workflows/delegation-patterns.md` (deprecated redirect)
 - [ ] Verify all active files migrated (24 files total)
 - [ ] Verify all deprecated files deleted (8 files total)
 - [ ] Remove empty common/ subdirectories

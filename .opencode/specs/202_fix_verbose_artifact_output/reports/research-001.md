@@ -15,7 +15,7 @@
   - .opencode/agent/subagents/lean-research-agent.md
   - .opencode/agent/subagents/planner.md
   - .opencode/agent/subagents/task-executor.md
-  - .opencode/context/common/standards/subagent-return-format.md
+  - .opencode/context/core/standards/subagent-return-format.md
   - .opencode/specs/169_task_command_improvements/reports/research-001.md (Task 169 findings)
 - **Artifacts**: This report
 - **Standards**: subagent-return-format.md, status-markers.md, artifact-management.md

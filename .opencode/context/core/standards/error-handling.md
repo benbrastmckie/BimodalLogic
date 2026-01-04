@@ -1038,8 +1038,8 @@ validation:
 ## References
 
 **Related Standards**:
-- `.opencode/context/common/standards/patterns.md` - Error handling patterns
-- `.opencode/context/common/standards/code.md` - Code error handling
+- `.opencode/context/core/standards/patterns.md` - Error handling patterns
+- `.opencode/context/core/standards/code.md` - Code error handling
 - `.opencode/context/core/standards/git-safety.md` - Git error handling
 - `.opencode/context/core/standards/subagent-structure.md` - Subagent error handling
 - `.opencode/context/core/standards/command-structure.md` - Command error handling

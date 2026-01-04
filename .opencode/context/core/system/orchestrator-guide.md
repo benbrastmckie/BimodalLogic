@@ -13,8 +13,8 @@ This guide provides detailed examples and troubleshooting information for the or
 **Related Files**:
 - `.opencode/agent/orchestrator.md` - Main orchestrator (routing logic)
 - `.opencode/context/system/routing-guide.md` - Command→Agent mapping
-- `.opencode/context/common/workflows/subagent-delegation-guide.md` - Delegation safety
-- `.opencode/context/common/standards/subagent-return-format.md` - Return validation
+- `.opencode/context/core/workflows/subagent-delegation-guide.md` - Delegation safety
+- `.opencode/context/core/standards/subagent-return-format.md` - Return validation
 
 ---
 
@@ -487,9 +487,9 @@ Orchestrator:
 
 - **Orchestrator**: `.opencode/agent/orchestrator.md`
 - **Routing Guide**: `.opencode/context/system/routing-guide.md`
-- **Delegation Guide**: `.opencode/context/common/workflows/subagent-delegation-guide.md`
-- **Return Format**: `.opencode/context/common/standards/subagent-return-format.md`
-- **Command Lifecycle**: `.opencode/context/common/workflows/command-lifecycle.md`
+- **Delegation Guide**: `.opencode/context/core/workflows/subagent-delegation-guide.md`
+- **Return Format**: `.opencode/context/core/standards/subagent-return-format.md`
+- **Command Lifecycle**: `.opencode/context/core/workflows/command-lifecycle.md`
 
 ---
 

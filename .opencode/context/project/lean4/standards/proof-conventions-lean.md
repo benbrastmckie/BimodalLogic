@@ -5,7 +5,7 @@ Lean-specific overlay that sits on top of the canonical logic conventions in `pr
 
 - **Canonical base**: `project/logic/standards/proof-conventions.md`, `project/logic/standards/notation-standards.md`
 - **Lean overlays**: naming, docstrings, tactic hygiene, sorry policy, file structure, and readability.
-- **Status & Artifacts**: Status markers and artifact handling live in `common/system/status-markers.md` and `common/system/artifact-management.md` (do not duplicate here).
+- **Status & Artifacts**: Status markers and artifact handling live in `core/system/status-markers.md` and `core/system/artifact-management.md` (do not duplicate here).
 
 ## Lean-Specific Conventions
 

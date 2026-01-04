@@ -85,13 +85,13 @@ sessions    → workflows/sessions.md   [medium]   session management, cleanup
 ```markdown
 # research.md frontmatter (lines 11-18)
 Context Loaded:
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
+@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/workflows/subagent-delegation-guide.md
+@.opencode/context/core/system/git-commits.md
 ```
 
 **Impact**: 7 files loaded during orchestrator routing (Stages 1-3), consuming ~5,000 tokens before delegation
@@ -779,8 +779,8 @@ echo ""
 echo "Checkpoint 1: Orchestrator Routing"
 orchestrator_lines=$(wc -l .opencode/agent/orchestrator.md | awk '{print $1}')
 routing_guide_lines=$(wc -l .opencode/context/system/routing-guide.md | awk '{print $1}')
-status_markers_lines=$(wc -l .opencode/context/common/system/status-markers.md | awk '{print $1}')
-return_format_lines=$(wc -l .opencode/context/common/standards/subagent-return-format.md | awk '{print $1}')
+status_markers_lines=$(wc -l .opencode/context/core/system/status-markers.md | awk '{print $1}')
+return_format_lines=$(wc -l .opencode/context/core/standards/subagent-return-format.md | awk '{print $1}')
 
 checkpoint1_lines=$((orchestrator_lines + routing_guide_lines + status_markers_lines + return_format_lines))
 checkpoint1_tokens=$((checkpoint1_lines * 4))
@@ -820,12 +820,12 @@ echo ""
 # Checkpoint 3: Agent execution
 echo "Checkpoint 3: Agent Execution (Stage 4+)"
 researcher_lines=$(wc -l .opencode/agent/subagents/researcher.md | awk '{print $1}')
-lifecycle_lines=$(wc -l .opencode/context/common/workflows/command-lifecycle.md | awk '{print $1}')
+lifecycle_lines=$(wc -l .opencode/context/core/workflows/command-lifecycle.md | awk '{print $1}')
 todo_lines=$(wc -l .opencode/specs/TODO.md | awk '{print $1}')
 state_lines=$(wc -l .opencode/specs/state.json | awk '{print $1}')
-delegation_lines=$(wc -l .opencode/context/common/workflows/subagent-delegation-guide.md | awk '{print $1}')
-git_lines=$(wc -l .opencode/context/common/system/git-commits.md | awk '{print $1}')
-artifact_lines=$(wc -l .opencode/context/common/system/artifact-management.md | awk '{print $1}')
+delegation_lines=$(wc -l .opencode/context/core/workflows/subagent-delegation-guide.md | awk '{print $1}')
+git_lines=$(wc -l .opencode/context/core/system/git-commits.md | awk '{print $1}')
+artifact_lines=$(wc -l .opencode/context/core/system/artifact-management.md | awk '{print $1}')
 
 checkpoint3_lines=$((researcher_lines + lifecycle_lines + todo_lines + state_lines + delegation_lines + git_lines + artifact_lines))
 checkpoint3_tokens=$((checkpoint3_lines * 4))
@@ -1407,7 +1407,7 @@ Phase 1 of the OpenAgents migration focuses on establishing architectural patter
 - `.opencode/command/research.md` (677 lines) - Current command structure
 - `.opencode/agent/subagents/researcher.md` (348 lines) - Current agent structure
 - `.opencode/agent/orchestrator.md` (1,108 lines) - Current orchestrator
-- `.opencode/context/common/workflows/command-lifecycle.md` (1,138 lines) - 8-stage pattern
+- `.opencode/context/core/workflows/command-lifecycle.md` (1,138 lines) - 8-stage pattern
 - `.opencode/context/common/` (8,819 lines total) - Current context system
 
 ### Related Research

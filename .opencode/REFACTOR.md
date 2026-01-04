@@ -100,10 +100,10 @@ The rebuild is structured in 10 phases spanning approximately 85-110 hours of wo
   - Identify files that need merging or splitting
   - Note any files to be deprecated or removed
 - [ ] Execute file migrations
-  - Move `common/standards/` → `core/standards/`
-  - Move `common/system/` → `core/system/`
-  - Move `common/workflows/` → `core/workflows/`
-  - Move `common/templates/` → `core/templates/`
+  - Move `core/standards/` → `core/standards/`
+  - Move `core/system/` → `core/system/`
+  - Move `core/workflows/` → `core/workflows/`
+  - Move `core/templates/` → `core/templates/`
   - Ensure `project/` structure remains: `lean4/`, `logic/`, `repo/`, `math/`, `physics/`
 - [ ] Update all references to moved files
   - Update agent frontmatter `context_loading.required` paths

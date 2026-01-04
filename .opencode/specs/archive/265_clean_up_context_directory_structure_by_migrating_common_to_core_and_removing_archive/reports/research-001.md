@@ -158,16 +158,16 @@ This research provides a comprehensive analysis of the context directory cleanup
 
 | File Referenced | Reference Count | Status |
 |-----------------|-----------------|--------|
-| @.opencode/context/common/workflows/command-lifecycle.md | 18 | Deprecated, in archive/ |
-| @.opencode/context/common/system/status-markers.md | 19 | Deprecated redirect |
-| @.opencode/context/common/standards/subagent-return-format.md | 16 | Deprecated redirect |
-| @.opencode/context/common/system/git-commits.md | 15 | Active, needs migration |
-| @.opencode/context/common/workflows/subagent-delegation-guide.md | 13 | Deprecated redirect |
-| @.opencode/context/common/system/artifact-management.md | 3 | Active, needs migration |
-| @.opencode/context/common/standards/tasks.md | 1 | Active, needs migration |
-| @.opencode/context/common/standards/plan.md | 1 | Active, needs migration |
-| @.opencode/context/common/standards/summary.md | 1 | Active, needs migration |
-| @.opencode/context/common/workflows/review.md | 3 | Active, needs migration |
+| @.opencode/context/core/workflows/command-lifecycle.md | 18 | Deprecated, in archive/ |
+| @.opencode/context/core/system/status-markers.md | 19 | Deprecated redirect |
+| @.opencode/context/core/standards/subagent-return-format.md | 16 | Deprecated redirect |
+| @.opencode/context/core/system/git-commits.md | 15 | Active, needs migration |
+| @.opencode/context/core/workflows/subagent-delegation-guide.md | 13 | Deprecated redirect |
+| @.opencode/context/core/system/artifact-management.md | 3 | Active, needs migration |
+| @.opencode/context/core/standards/tasks.md | 1 | Active, needs migration |
+| @.opencode/context/core/standards/plan.md | 1 | Active, needs migration |
+| @.opencode/context/core/standards/summary.md | 1 | Active, needs migration |
+| @.opencode/context/core/workflows/review.md | 3 | Active, needs migration |
 
 #### 2.2.2 Files with References (Categorized)
 
@@ -195,9 +195,9 @@ This research provides a comprehensive analysis of the context directory cleanup
 **Context Files** (16 references, 4 files):
 - `.opencode/context/archive/command-lifecycle.md` (16 refs) - Self-references
 - `.opencode/context/index.md` (5 refs) - Index references
-- `.opencode/context/common/templates/command-template.md` (4 refs) - Template references
-- `.opencode/context/common/workflows/review.md` (3 refs) - Workflow references
-- `.opencode/context/common/system/context-guide.md` (1 ref) - Guide reference
+- `.opencode/context/core/templates/command-template.md` (4 refs) - Template references
+- `.opencode/context/core/workflows/review.md` (3 refs) - Workflow references
+- `.opencode/context/core/system/context-guide.md` (1 ref) - Guide reference
 
 ### 2.3 Reference Update Mapping
 
@@ -205,25 +205,25 @@ This research provides a comprehensive analysis of the context directory cleanup
 
 | Old Reference | New Reference | Count | Files Affected |
 |---------------|---------------|-------|----------------|
-| @.opencode/context/common/system/status-markers.md | @.opencode/context/core/system/state-management.md | 19 | 7 files |
-| @.opencode/context/common/workflows/command-lifecycle.md | (Remove - deprecated) | 18 | 6 files |
-| @.opencode/context/common/standards/subagent-return-format.md | @.opencode/context/core/standards/delegation.md | 16 | 6 files |
-| @.opencode/context/common/workflows/subagent-delegation-guide.md | @.opencode/context/core/standards/delegation.md | 13 | 6 files |
-| @.opencode/context/common/system/state-schema.md | @.opencode/context/core/system/state-management.md | 0 | 0 files |
-| @.opencode/context/common/workflows/delegation-patterns.md | @.opencode/context/core/standards/delegation.md | 0 | 0 files |
+| @.opencode/context/core/system/status-markers.md | @.opencode/context/core/system/state-management.md | 19 | 7 files |
+| @.opencode/context/core/workflows/command-lifecycle.md | (Remove - deprecated) | 18 | 6 files |
+| @.opencode/context/core/standards/subagent-return-format.md | @.opencode/context/core/standards/delegation.md | 16 | 6 files |
+| @.opencode/context/core/workflows/subagent-delegation-guide.md | @.opencode/context/core/standards/delegation.md | 13 | 6 files |
+| @.opencode/context/core/system/state-schema.md | @.opencode/context/core/system/state-management.md | 0 | 0 files |
+| @.opencode/context/core/workflows/delegation-patterns.md | @.opencode/context/core/standards/delegation.md | 0 | 0 files |
 
 **Phase 2: Update Active File References** (57 references)
 
 | Old Reference | New Reference | Count | Files Affected |
 |---------------|---------------|-------|----------------|
-| @.opencode/context/common/system/git-commits.md | @.opencode/context/core/standards/git-safety.md | 15 | 7 files |
-| @.opencode/context/common/system/artifact-management.md | @.opencode/context/core/system/artifact-management.md | 3 | 3 files |
-| @.opencode/context/common/workflows/review.md | @.opencode/context/core/workflows/review.md | 3 | 2 files |
-| @.opencode/context/common/standards/tasks.md | @.opencode/context/core/standards/tasks.md | 1 | 1 file |
-| @.opencode/context/common/standards/plan.md | @.opencode/context/core/standards/plan.md | 1 | 1 file |
-| @.opencode/context/common/standards/summary.md | @.opencode/context/core/standards/summary.md | 1 | 1 file |
-| @.opencode/context/common/standards/patterns.md | @.opencode/context/core/standards/patterns.md | 1 | 1 file |
-| @.opencode/context/common/system/context-guide.md | @.opencode/context/core/system/context-loading-strategy.md | 1 | 1 file |
+| @.opencode/context/core/system/git-commits.md | @.opencode/context/core/standards/git-safety.md | 15 | 7 files |
+| @.opencode/context/core/system/artifact-management.md | @.opencode/context/core/system/artifact-management.md | 3 | 3 files |
+| @.opencode/context/core/workflows/review.md | @.opencode/context/core/workflows/review.md | 3 | 2 files |
+| @.opencode/context/core/standards/tasks.md | @.opencode/context/core/standards/tasks.md | 1 | 1 file |
+| @.opencode/context/core/standards/plan.md | @.opencode/context/core/standards/plan.md | 1 | 1 file |
+| @.opencode/context/core/standards/summary.md | @.opencode/context/core/standards/summary.md | 1 | 1 file |
+| @.opencode/context/core/standards/patterns.md | @.opencode/context/core/standards/patterns.md | 1 | 1 file |
+| @.opencode/context/core/system/context-guide.md | @.opencode/context/core/system/context-loading-strategy.md | 1 | 1 file |
 | (Other active files) | (Corresponding core/ paths) | 31 | Various |
 
 ---
@@ -270,7 +270,7 @@ Three files exist in both common/ and core/ with different content:
 
 #### 3.2.1 git-commits.md vs git-safety.md
 
-**common/system/git-commits.md**: 34 lines (targeted commit patterns)
+**core/system/git-commits.md**: 34 lines (targeted commit patterns)
 **core/standards/git-safety.md**: 536 lines (comprehensive git safety guide)
 
 **Analysis**:
@@ -283,7 +283,7 @@ Three files exist in both common/ and core/ with different content:
 
 #### 3.2.2 context-guide.md vs context-loading-strategy.md
 
-**common/system/context-guide.md**: 89 lines (context loading patterns)
+**core/system/context-guide.md**: 89 lines (context loading patterns)
 **core/system/context-loading-strategy.md**: 102 lines (lazy-loading strategy)
 
 **Analysis**:
@@ -296,7 +296,7 @@ Three files exist in both common/ and core/ with different content:
 
 #### 3.2.3 commands.md vs command-structure.md
 
-**common/standards/commands.md**: 70 lines (command structure standards)
+**core/standards/commands.md**: 70 lines (command structure standards)
 **core/standards/command-structure.md**: 612 lines (comprehensive command structure)
 
 **Analysis**:
@@ -360,13 +360,13 @@ Three files exist in both common/ and core/ with different content:
 
 ```bash
 # Update status-markers.md references (19 refs)
-find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/common/system/status-markers\.md|@.opencode/context/core/system/state-management.md|g' {} +
+find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/system/status-markers\.md|@.opencode/context/core/system/state-management.md|g' {} +
 
 # Update subagent-return-format.md references (16 refs)
-find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/common/standards/subagent-return-format\.md|@.opencode/context/core/standards/delegation.md|g' {} +
+find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/standards/subagent-return-format\.md|@.opencode/context/core/standards/delegation.md|g' {} +
 
 # Update subagent-delegation-guide.md references (13 refs)
-find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/common/workflows/subagent-delegation-guide\.md|@.opencode/context/core/standards/delegation.md|g' {} +
+find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/workflows/subagent-delegation-guide\.md|@.opencode/context/core/standards/delegation.md|g' {} +
 
 # Remove command-lifecycle.md references (18 refs) - deprecated, no replacement
 find .opencode -type f -name "*.md" -exec sed -i '/@\.opencode\/context\/common\/workflows\/command-lifecycle\.md/d' {} +
@@ -376,25 +376,25 @@ find .opencode -type f -name "*.md" -exec sed -i '/@\.opencode\/context\/common\
 
 ```bash
 # Update git-commits.md references (15 refs)
-find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/common/system/git-commits\.md|@.opencode/context/core/standards/git-safety.md|g' {} +
+find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/system/git-commits\.md|@.opencode/context/core/standards/git-safety.md|g' {} +
 
 # Update artifact-management.md references (3 refs)
-find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/common/system/artifact-management\.md|@.opencode/context/core/system/artifact-management.md|g' {} +
+find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/system/artifact-management\.md|@.opencode/context/core/system/artifact-management.md|g' {} +
 
 # Update review.md references (3 refs)
-find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/common/workflows/review\.md|@.opencode/context/core/workflows/review.md|g' {} +
+find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/workflows/review\.md|@.opencode/context/core/workflows/review.md|g' {} +
 
 # Update tasks.md, plan.md, summary.md, patterns.md references (4 refs)
-find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/common/standards/tasks\.md|@.opencode/context/core/standards/tasks.md|g' {} +
-find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/common/standards/plan\.md|@.opencode/context/core/standards/plan.md|g' {} +
-find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/common/standards/summary\.md|@.opencode/context/core/standards/summary.md|g' {} +
-find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/common/standards/patterns\.md|@.opencode/context/core/standards/patterns.md|g' {} +
+find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/standards/tasks\.md|@.opencode/context/core/standards/tasks.md|g' {} +
+find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/standards/plan\.md|@.opencode/context/core/standards/plan.md|g' {} +
+find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/standards/summary\.md|@.opencode/context/core/standards/summary.md|g' {} +
+find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/standards/patterns\.md|@.opencode/context/core/standards/patterns.md|g' {} +
 
 # Update context-guide.md references (1 ref)
-find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/common/system/context-guide\.md|@.opencode/context/core/system/context-loading-strategy.md|g' {} +
+find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/system/context-guide\.md|@.opencode/context/core/system/context-loading-strategy.md|g' {} +
 
 # Update command-template.md references (4 refs)
-find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/common/templates/command-template\.md|@.opencode/context/core/templates/command-template.md|g' {} +
+find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/templates/command-template\.md|@.opencode/context/core/templates/command-template.md|g' {} +
 ```
 
 **Step 1.3: Validate References** (30 min)
@@ -426,28 +426,28 @@ mkdir -p .opencode/context/core/schemas
 
 ```bash
 # Move active standards files
-mv .opencode/context/common/standards/analysis.md .opencode/context/core/standards/
-mv .opencode/context/common/standards/code.md .opencode/context/core/standards/
-mv .opencode/context/common/standards/command-argument-handling.md .opencode/context/core/standards/
-mv .opencode/context/common/standards/documentation.md .opencode/context/core/standards/
-mv .opencode/context/common/standards/frontmatter-standard.md .opencode/context/core/standards/
-mv .opencode/context/common/standards/patterns.md .opencode/context/core/standards/
-mv .opencode/context/common/standards/plan.md .opencode/context/core/standards/
-mv .opencode/context/common/standards/report.md .opencode/context/core/standards/
-mv .opencode/context/common/standards/summary.md .opencode/context/core/standards/
-mv .opencode/context/common/standards/tasks.md .opencode/context/core/standards/
-mv .opencode/context/common/standards/tests.md .opencode/context/core/standards/
+mv .opencode/context/core/standards/analysis.md .opencode/context/core/standards/
+mv .opencode/context/core/standards/code.md .opencode/context/core/standards/
+mv .opencode/context/core/standards/command-argument-handling.md .opencode/context/core/standards/
+mv .opencode/context/core/standards/documentation.md .opencode/context/core/standards/
+mv .opencode/context/core/standards/frontmatter-standard.md .opencode/context/core/standards/
+mv .opencode/context/core/standards/patterns.md .opencode/context/core/standards/
+mv .opencode/context/core/standards/plan.md .opencode/context/core/standards/
+mv .opencode/context/core/standards/report.md .opencode/context/core/standards/
+mv .opencode/context/core/standards/summary.md .opencode/context/core/standards/
+mv .opencode/context/core/standards/tasks.md .opencode/context/core/standards/
+mv .opencode/context/core/standards/tests.md .opencode/context/core/standards/
 
 # Delete redundant commands.md (covered by command-structure.md)
-rm .opencode/context/common/standards/commands.md
+rm .opencode/context/core/standards/commands.md
 ```
 
 **Step 2.3: Migrate System Files** (1 hour)
 
 ```bash
 # Move active system files
-mv .opencode/context/common/system/artifact-management.md .opencode/context/core/system/
-mv .opencode/context/common/system/self-healing-guide.md .opencode/context/core/system/
+mv .opencode/context/core/system/artifact-management.md .opencode/context/core/system/
+mv .opencode/context/core/system/self-healing-guide.md .opencode/context/core/system/
 
 # Merge context-guide.md into context-loading-strategy.md
 # (Manual merge - preserve unique patterns)
@@ -460,28 +460,28 @@ mv .opencode/context/common/system/self-healing-guide.md .opencode/context/core/
 
 ```bash
 # Move active workflow files
-mv .opencode/context/common/workflows/review.md .opencode/context/core/workflows/
-mv .opencode/context/common/workflows/sessions.md .opencode/context/core/workflows/
-mv .opencode/context/common/workflows/task-breakdown.md .opencode/context/core/workflows/
+mv .opencode/context/core/workflows/review.md .opencode/context/core/workflows/
+mv .opencode/context/core/workflows/sessions.md .opencode/context/core/workflows/
+mv .opencode/context/core/workflows/task-breakdown.md .opencode/context/core/workflows/
 
 # Rename and move delegation.md template
-mv .opencode/context/common/workflows/delegation.md .opencode/context/core/templates/delegation-context-template.md
+mv .opencode/context/core/workflows/delegation.md .opencode/context/core/templates/delegation-context-template.md
 ```
 
 **Step 2.5: Migrate Template Files** (30 min)
 
 ```bash
 # Move active template files
-mv .opencode/context/common/templates/meta-guide.md .opencode/context/core/templates/
-mv .opencode/context/common/templates/orchestrator-template.md .opencode/context/core/templates/
-mv .opencode/context/common/templates/subagent-template.md .opencode/context/core/templates/
+mv .opencode/context/core/templates/meta-guide.md .opencode/context/core/templates/
+mv .opencode/context/core/templates/orchestrator-template.md .opencode/context/core/templates/
+mv .opencode/context/core/templates/subagent-template.md .opencode/context/core/templates/
 
 # Move non-markdown templates
-mv .opencode/context/common/templates/state-template.json .opencode/context/core/templates/
-mv .opencode/context/common/templates/subagent-frontmatter-template.yaml .opencode/context/core/templates/
+mv .opencode/context/core/templates/state-template.json .opencode/context/core/templates/
+mv .opencode/context/core/templates/subagent-frontmatter-template.yaml .opencode/context/core/templates/
 
 # Delete redundant command-template.md (core version is newer)
-rm .opencode/context/common/templates/command-template.md
+rm .opencode/context/core/templates/command-template.md
 ```
 
 **Step 2.6: Migrate Schema Files** (10 min)
@@ -508,15 +508,15 @@ Update `.opencode/context/index.md` to reflect new structure:
 
 ```bash
 # Remove deprecated redirect files
-rm .opencode/context/common/standards/subagent-return-format.md
-rm .opencode/context/common/system/status-markers.md
-rm .opencode/context/common/system/state-schema.md
-rm .opencode/context/common/workflows/subagent-delegation-guide.md
-rm .opencode/context/common/workflows/delegation-patterns.md
+rm .opencode/context/core/standards/subagent-return-format.md
+rm .opencode/context/core/system/status-markers.md
+rm .opencode/context/core/system/state-schema.md
+rm .opencode/context/core/workflows/subagent-delegation-guide.md
+rm .opencode/context/core/workflows/delegation-patterns.md
 
 # Remove merged files
-rm .opencode/context/common/system/git-commits.md
-rm .opencode/context/common/system/context-guide.md
+rm .opencode/context/core/system/git-commits.md
+rm .opencode/context/core/system/context-guide.md
 ```
 
 **Step 3.2: Remove Archive Directory** (5 min)
@@ -832,19 +832,19 @@ Complete mapping of all files from common/ to core/:
    - Scope: All files with active references
 
 3. **Commit 3**: Migrate standards files
-   - Message: "task 265: migrate common/standards/ to core/standards/"
+   - Message: "task 265: migrate core/standards/ to core/standards/"
    - Scope: 11 standards files
 
 4. **Commit 4**: Migrate system files
-   - Message: "task 265: migrate common/system/ to core/system/"
+   - Message: "task 265: migrate core/system/ to core/system/"
    - Scope: 4 system files + merges
 
 5. **Commit 5**: Migrate workflow files
-   - Message: "task 265: migrate common/workflows/ to core/workflows/"
+   - Message: "task 265: migrate core/workflows/ to core/workflows/"
    - Scope: 4 workflow files
 
 6. **Commit 6**: Migrate template and schema files
-   - Message: "task 265: migrate common/templates/ and common/schemas/ to core/"
+   - Message: "task 265: migrate core/templates/ and common/schemas/ to core/"
    - Scope: 6 template files + 1 schema
 
 7. **Commit 7**: Remove deprecated files and directories

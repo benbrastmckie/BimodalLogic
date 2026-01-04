@@ -133,9 +133,9 @@ context_loading:
   
   # Required context files (relative to .opencode/context/)
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
-    - "common/system/status-markers.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
+    - "core/system/status-markers.md"
   
   # Optional context files (loaded if available)
   optional:

@@ -117,7 +117,7 @@ message to extract command arguments.
 ```
 
 4. **Created documentation**:
-- `.opencode/context/common/standards/command-argument-handling.md`
+- `.opencode/context/core/standards/command-argument-handling.md`
 
 ### Files Modified
 
@@ -126,7 +126,7 @@ message to extract command arguments.
 - `.opencode/command/plan.md`
 - `.opencode/command/task.md`
 - `.opencode/agent/orchestrator.md`
-- `.opencode/context/common/standards/command-argument-handling.md` (new)
+- `.opencode/context/core/standards/command-argument-handling.md` (new)
 
 ### Problems with This Approach
 
@@ -290,7 +290,7 @@ If you are the orchestrator reading this command file, you MUST:
    - `.opencode/agent/orchestrator.md`
 
 4. Delete or rewrite:
-   - `.opencode/context/common/standards/command-argument-handling.md`
+   - `.opencode/context/core/standards/command-argument-handling.md`
 
 ### Phase 2: Implement $ARGUMENTS Pattern
 

@@ -9,8 +9,8 @@
   - .opencode/command/task.md
   - .opencode/agent/subagents/task-executor.md
   - .opencode/agent/subagents/batch-task-orchestrator.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/report.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/report.md
   - Web research on context window protection patterns
   - Anthropic's "Building Effective Agents" (Dec 2024)
 - **Artifacts**: This report
@@ -736,9 +736,9 @@ Completed {task_type} task affecting {file_count} files. {Brief description of c
 - .opencode/command/task.md - /task command specification
 - .opencode/agent/subagents/task-executor.md - Task executor agent
 - .opencode/agent/subagents/batch-task-orchestrator.md - Batch orchestrator
-- .opencode/context/common/system/artifact-management.md - Artifact standards
-- .opencode/context/common/system/status-markers.md - Status markers
-- .opencode/context/common/system/git-commits.md - Git commit standards
+- .opencode/context/core/system/artifact-management.md - Artifact standards
+- .opencode/context/core/system/status-markers.md - Status markers
+- .opencode/context/core/system/git-commits.md - Git commit standards
 
 **External Research**:
 - Anthropic's "Building Effective Agents" (Dec 2024)

@@ -16,9 +16,9 @@ research_inputs:
 artifacts:
   - plans/implementation-002.md
 standards:
-  - .opencode/context/common/standards/tasks.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/system/status-markers.md
+  - .opencode/context/core/standards/tasks.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/system/status-markers.md
 ---
 
 # Implementation Plan (Revision): Route `/task` via Task `Language` metadata, not heuristics

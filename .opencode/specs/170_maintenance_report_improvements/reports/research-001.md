@@ -11,10 +11,10 @@
   - .opencode/specs/maintenance/maintenance-report-20251224.md
   - .opencode/command/todo.md
   - .opencode/agent/subagents/reviewer.md
-  - .opencode/context/common/standards/report.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/state-schema.md
+  - .opencode/context/core/standards/report.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/state-schema.md
   - .opencode/specs/maintenance/state.json
   - Web research on maintenance report best practices
 - **Artifacts**:
@@ -235,7 +235,7 @@ Based on web research of GitHub, GitLab, SonarQube, and DevOps methodologies:
 - **Current**: Reports created ad-hoc without template
 - **Impact**: Inconsistency risk, manual effort, no guidance for report creators
 - **Best Practice**: Markdown template with standardized sections and placeholders
-- **Recommendation**: Create .opencode/context/common/standards/maintenance-report.md
+- **Recommendation**: Create .opencode/context/core/standards/maintenance-report.md
 
 **Gap 2: No Report Versioning**
 - **Current**: Reports lack version field
@@ -410,7 +410,7 @@ Based on industry research and current state analysis, the following best practi
 
 ### Decision 1: Create Separate Maintenance Report Standard
 
-**Decision**: Create .opencode/context/common/standards/maintenance-report.md as a separate standard rather than extending report.md.
+**Decision**: Create .opencode/context/core/standards/maintenance-report.md as a separate standard rather than extending report.md.
 
 **Rationale**:
 - Maintenance reports have unique requirements (operation metadata, validation, statistics)
@@ -466,7 +466,7 @@ Based on industry research and current state analysis, the following best practi
 
 ### Priority 1: Create Maintenance Report Template Standard
 
-**Action**: Create .opencode/context/common/standards/maintenance-report.md
+**Action**: Create .opencode/context/core/standards/maintenance-report.md
 
 **Content**:
 1. **Scope**: Maintenance reports produced by /todo command and reviewer agent
@@ -518,7 +518,7 @@ Based on industry research and current state analysis, the following best practi
 2. **Artifact Management Section**:
    - Maintenance reports created in .opencode/specs/maintenance/
    - Naming convention: maintenance-report-YYYYMMDD.md
-   - Report template: @context/common/standards/maintenance-report.md
+   - Report template: @context/core/standards/maintenance-report.md
    - State tracking: maintenance/state.json updated with report path
 3. **Quality Standards Section**:
    - Reports must follow maintenance-report.md standard
@@ -575,7 +575,7 @@ Based on industry research and current state analysis, the following best practi
    - Operation metadata in state.json must match report metadata
    - Validation: Ensure report exists before adding to state
 5. **Template Usage**:
-   - Use .opencode/context/common/standards/maintenance-report.md
+   - Use .opencode/context/core/standards/maintenance-report.md
    - Populate all required sections
    - Include all required metadata
    - Follow status-markers.md conventions
@@ -625,7 +625,7 @@ Based on industry research and current state analysis, the following best practi
 **Additions**:
 1. **Stage 6 (ArchiveCompletedProjects)**:
    - Add note: "When performing TODO maintenance, generate maintenance report per maintenance-report.md standard"
-   - Reference: @context/common/standards/maintenance-report.md
+   - Reference: @context/core/standards/maintenance-report.md
 2. **Artifact Creation Section**:
    - Add: "Maintenance reports: .opencode/specs/maintenance/maintenance-report-YYYYMMDD.md"
 3. **Quality Standards Section**:
@@ -645,7 +645,7 @@ Based on industry research and current state analysis, the following best practi
 1. **Common Issues**:
    - **Issue**: Report generation fails
      - **Cause**: Template not found
-     - **Solution**: Verify .opencode/context/common/standards/maintenance-report.md exists
+     - **Solution**: Verify .opencode/context/core/standards/maintenance-report.md exists
    - **Issue**: State file update fails
      - **Cause**: Invalid JSON
      - **Solution**: Validate JSON syntax with `jq empty state.json`
@@ -750,10 +750,10 @@ Based on industry research and current state analysis, the following best practi
 
 ### Immediate (Complete with Task 170)
 
-1. [PASS] Create .opencode/context/common/standards/maintenance-report.md
+1. [PASS] Create .opencode/context/core/standards/maintenance-report.md
 2. [PASS] Update .opencode/command/todo.md with report generation documentation
 3. [PASS] Add metric definitions to maintenance-report.md
-4. [PASS] Update .opencode/context/common/system/artifact-management.md with report generation process
+4. [PASS] Update .opencode/context/core/system/artifact-management.md with report generation process
 5. [PASS] Add methodology section to maintenance-report.md template
 6. [PASS] Update .opencode/agent/subagents/reviewer.md to reference maintenance reports
 
@@ -991,10 +991,10 @@ Based on industry research and current state analysis, the following best practi
 1. .opencode/specs/maintenance/maintenance-report-20251224.md - Example maintenance report
 2. .opencode/command/todo.md - /todo command documentation
 3. .opencode/agent/subagents/reviewer.md - Reviewer agent documentation
-4. .opencode/context/common/standards/report.md - Report standard
-5. .opencode/context/common/system/artifact-management.md - Artifact management standard
-6. .opencode/context/common/system/status-markers.md - Status markers specification
-7. .opencode/context/common/system/state-schema.md - State schema reference
+4. .opencode/context/core/standards/report.md - Report standard
+5. .opencode/context/core/system/artifact-management.md - Artifact management standard
+6. .opencode/context/core/system/status-markers.md - Status markers specification
+7. .opencode/context/core/system/state-schema.md - State schema reference
 8. .opencode/specs/maintenance/state.json - Maintenance state tracking
 
 ### External Research

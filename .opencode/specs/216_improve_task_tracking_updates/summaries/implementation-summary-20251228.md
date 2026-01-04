@@ -44,8 +44,8 @@ Successfully implemented 4-phase enhancement to task tracking system. Enhanced s
 7. .opencode/command/plan.md (delegation updated, net change)
 8. .opencode/command/revise.md (delegation updated, net change)
 9. .opencode/command/implement.md (delegation updated, net change)
-10. .opencode/context/common/workflows/command-lifecycle.md (update protocol, +90 lines)
-11. .opencode/context/common/system/state-schema.md (field schemas, +50 lines)
+10. .opencode/context/core/workflows/command-lifecycle.md (update protocol, +90 lines)
+11. .opencode/context/core/system/state-schema.md (field schemas, +50 lines)
 
 ## Key Achievements
 

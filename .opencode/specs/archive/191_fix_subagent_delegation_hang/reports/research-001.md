@@ -494,7 +494,7 @@ Why do commands that call subagents (like /implement, /research, /plan) often ge
 **Approach**: Define and enforce single return format schema for all subagents.
 
 **Files to Create**:
-- `.opencode/context/common/standards/subagent-return-format.md`
+- `.opencode/context/core/standards/subagent-return-format.md`
 
 **Files to Modify**:
 - All subagent files to use standardized return format

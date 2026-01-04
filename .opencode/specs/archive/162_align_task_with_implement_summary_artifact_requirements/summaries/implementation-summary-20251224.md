@@ -10,8 +10,8 @@
 
 ## Files Modified
 - .opencode/command/task.md
-- .opencode/context/common/standards/tasks.md
-- .opencode/context/common/system/artifact-management.md
+- .opencode/context/core/standards/tasks.md
+- .opencode/context/core/system/artifact-management.md
 - .opencode/specs/TODO.md
 - .opencode/specs/state.json
 

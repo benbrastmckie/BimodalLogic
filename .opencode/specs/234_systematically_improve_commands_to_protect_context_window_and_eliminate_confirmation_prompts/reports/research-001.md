@@ -107,9 +107,9 @@ Examined "Context Loaded:" sections in all command files and orchestrator.md to 
 
 ```
 <context_loaded>
-  @.opencode/context/common/standards/subagent-return-format.md
-  @.opencode/context/common/workflows/subagent-delegation-guide.md
-  @.opencode/context/common/system/status-markers.md
+  @.opencode/context/core/standards/subagent-return-format.md
+  @.opencode/context/core/workflows/subagent-delegation-guide.md
+  @.opencode/context/core/system/status-markers.md
 </context_loaded>
 ```
 
@@ -120,65 +120,65 @@ Examined "Context Loaded:" sections in all command files and orchestrator.md to 
 1. **/research** (lines 11-18):
 ```
 Context Loaded:
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
+@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/workflows/subagent-delegation-guide.md
+@.opencode/context/core/system/git-commits.md
 ```
 **7 files loaded**
 
 2. **/plan** (lines 11-18):
 ```
 Context Loaded:
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/.opencode/specs/TODO.md  # NOTE: Duplicate path error
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
+@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/workflows/subagent-delegation-guide.md
+@.opencode/context/core/system/git-commits.md
 ```
 **7 files loaded** (with path error)
 
 3. **/implement** (lines 11-18):
 ```
 Context Loaded:
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
+@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/workflows/subagent-delegation-guide.md
+@.opencode/context/core/system/git-commits.md
 ```
 **7 files loaded**
 
 4. **/revise** (lines 11-18):
 ```
 Context Loaded:
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/.opencode/specs/TODO.md  # NOTE: Duplicate path error
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
+@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/workflows/subagent-delegation-guide.md
+@.opencode/context/core/system/git-commits.md
 ```
 **7 files loaded** (with path error)
 
 5. **/todo** (lines 9-16):
 ```
 Context Loaded:
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
 @.opencode/specs/archive/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/system/git-commits.md
+@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/system/git-commits.md
 ```
 **7 files loaded**
 
@@ -683,13 +683,13 @@ delegate_to_agent "$agent" "$task_number" "$language" "$mode"
 **Current** (implement.md lines 11-18):
 ```
 Context Loaded:
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
+@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/workflows/subagent-delegation-guide.md
+@.opencode/context/core/system/git-commits.md
 ```
 
 **Problem**: All 7 files loaded during orchestrator routing (Step 2), consuming ~5000 lines of context.
@@ -704,13 +704,13 @@ Context Loaded (Routing Stage):
 # None - orchestrator loads only command structure
 
 Context Loaded (Execution Stage):
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
+@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/workflows/subagent-delegation-guide.md
+@.opencode/context/core/system/git-commits.md
 ```
 
 ### Example 2: /plan Duplicate Path Error
@@ -732,9 +732,9 @@ Context Loaded (Execution Stage):
 **Current** (orchestrator.md lines 32-36):
 ```
 <context_loaded>
-  @.opencode/context/common/standards/subagent-return-format.md
-  @.opencode/context/common/workflows/subagent-delegation-guide.md
-  @.opencode/context/common/system/status-markers.md
+  @.opencode/context/core/standards/subagent-return-format.md
+  @.opencode/context/core/workflows/subagent-delegation-guide.md
+  @.opencode/context/core/system/status-markers.md
 </context_loaded>
 ```
 
@@ -775,13 +775,13 @@ language: varies
 **Task Input (required):** $ARGUMENTS
 
 Context Loaded:
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
+@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/workflows/subagent-delegation-guide.md
+@.opencode/context/core/system/git-commits.md
 ```
 
 **After** (frontmatter):
@@ -805,13 +805,13 @@ language: varies
   <action>Load full context and delegate to subagent</action>
   <context_loading>
     Load context files for execution:
-    - .opencode/context/common/workflows/command-lifecycle.md
+    - .opencode/context/core/workflows/command-lifecycle.md
     - .opencode/specs/TODO.md
     - .opencode/specs/state.json
-    - .opencode/context/common/system/status-markers.md
-    - .opencode/context/common/standards/subagent-return-format.md
-    - .opencode/context/common/workflows/subagent-delegation-guide.md
-    - .opencode/context/common/system/git-commits.md
+    - .opencode/context/core/system/status-markers.md
+    - .opencode/context/core/standards/subagent-return-format.md
+    - .opencode/context/core/workflows/subagent-delegation-guide.md
+    - .opencode/context/core/system/git-commits.md
   </context_loading>
   <delegation>
     Invoke target agent with full context and delegation parameters

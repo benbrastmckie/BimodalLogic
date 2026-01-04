@@ -10,11 +10,11 @@
   - Summary: .opencode/specs/206_update_review_command_summaries/summaries/research-summary.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/subagent-return-format.md
-  - .opencode/context/common/standards/summary.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/subagent-return-format.md
+  - .opencode/context/core/standards/summary.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -146,8 +146,8 @@ The /review command currently updates project registries and creates tasks but d
 - .opencode/agent/subagents/reviewer.md (new subagent specification)
 - .opencode/command/review.md (updated command workflow)
 - .opencode/specs/state.json (updated schema with review_artifacts)
-- .opencode/context/common/system/state-schema.md (updated documentation)
-- .opencode/context/common/system/artifact-management.md (updated with /review example)
+- .opencode/context/core/system/state-schema.md (updated documentation)
+- .opencode/context/core/system/artifact-management.md (updated with /review example)
 - .opencode/specs/NNN_codebase_review/summaries/review-summary.md (example artifact created by /review)
 - .opencode/specs/206_update_review_command_summaries/summaries/implementation-summary-YYYYMMDD.md (implementation summary)
 

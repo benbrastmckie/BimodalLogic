@@ -3,7 +3,7 @@
 **Project**: #152_standardize_command_templates_and_migrate_command_docs  
 **Date**: 2025-12-23  
 **Research Type**: standards definition and migration guidance  
-**Inputs**: .opencode/specs/TODO.md; .opencode/specs/state.json; .opencode/context/common/system/state-schema.md; .opencode/context/common/system/artifact-management.md; .opencode/context/common/standards/tasks.md; .opencode/context/common/standards/patterns.md; .opencode/context/common/workflows/task-breakdown.md; .opencode/command/README.md and command docs (legacy YAML/@ tags)
+**Inputs**: .opencode/specs/TODO.md; .opencode/specs/state.json; .opencode/context/core/system/state-schema.md; .opencode/context/core/system/artifact-management.md; .opencode/context/core/standards/tasks.md; .opencode/context/core/standards/patterns.md; .opencode/context/core/workflows/task-breakdown.md; .opencode/command/README.md and command docs (legacy YAML/@ tags)
 
 ## Research Question
 Define a unified command documentation standard and template aligned with status markers, lazy directory rules, and artifact/state synchronization; provide migration guidance for existing command docs and /meta context/templates.
@@ -29,7 +29,7 @@ Define a unified command documentation standard and template aligned with status
 - Status markers and lifecycle: allowed markers (`[NOT STARTED]`, `[IN PROGRESS]`, `[BLOCKED]`, `[ABANDONED]`, `[COMPLETED]`) and mapping to state.status/phase; lazy-creation boundaries for commands (create project root + needed subdir only when writing artifacts)
 - Required metadata per command: name, primary agent, intent, context level (1-3), language support, inputs/outputs, artifacts produced, registry sync responsibilities (IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, TACTIC_REGISTRY.md), related standards
 - Invocation and arguments: syntax pattern, argument validation rules, supported flags (e.g., `--lang` override), examples
-- Routing and context loading: agent/subagent roles, context selection rules (common/standards/system + project/{logic,lean4,math,physics,repo} as applicable), Lean routing and MCP validation requirements
+- Routing and context loading: agent/subagent roles, context selection rules (core/standards/system + project/{logic,lean4,math,physics,repo} as applicable), Lean routing and MCP validation requirements
 - Artifact and state updates: artifact naming (reports/research-NNN.md, plans/implementation-NNN.md, summaries/*), TODO.md link/update rules, state.json updates (fields + timestamps), lazy directory rules, numbering reuse
 - Error handling and safety: input validation, missing TODO/plan behavior, dry-run behavior, no emojis, security/logging defaults
 - Examples: minimal and expanded invocation showing status updates and artifact paths
@@ -60,14 +60,14 @@ Define a unified command documentation standard and template aligned with status
   - Use status markers textually; align with status-markers.md and state schema
 
 ## Migration checklist and priority
-1. Author `commands.md` standard in `.opencode/context/common/standards/commands.md` using the outline above; cross-link to tasks.md, artifact-management.md, and status-markers.md.
-2. Add template file at `.opencode/context/common/templates/command-template.md` with the sections/placeholders listed above.
+1. Author `commands.md` standard in `.opencode/context/core/standards/commands.md` using the outline above; cross-link to tasks.md, artifact-management.md, and status-markers.md.
+2. Add template file at `.opencode/context/core/templates/command-template.md` with the sections/placeholders listed above.
 3. Migrate command docs in `.opencode/command/`:
    - Remove YAML front matter and `@context`/`@subagent` tags; replace with Markdown metadata and context lists.
    - Normalize section order to match the template; add status/registry/lazy-creation notes.
    - Ensure each command includes language/routing rules, artifact/state/TODO updates, registry sync responsibilities, and examples aligned with numbering/lazy creation.
 4. Update `.opencode/command/README.md` to reference the new standard/template, clarify context levels, and remove legacy XML/subagent language.
-5. Extend /meta support: add references/templates under `.opencode/context/common/templates/` or `.opencode/meta/` (when present) so /meta-generated commands use the new standard; ensure meta docs mention status markers, registry sync, lazy creation, and language routing.
+5. Extend /meta support: add references/templates under `.opencode/context/core/templates/` or `.opencode/meta/` (when present) so /meta-generated commands use the new standard; ensure meta docs mention status markers, registry sync, lazy creation, and language routing.
 6. Verify IMPLEMENTATION_STATUS.md/SORRY_REGISTRY.md/TACTIC_REGISTRY.md touchpoints for commands that mutate status or sorry/tactic counts; document expectations in commands.md.
 7. Run drift scan: search `.opencode/command/*.md`, `.opencode/context/common/*`, `.opencode/meta/*` for legacy `@` tags, XML front matter, or outdated context paths; update links and numbering references.
 
@@ -78,7 +78,7 @@ Define a unified command documentation standard and template aligned with status
 - Status markers: keep TODO markers and plan phase markers aligned with status-markers.md and state.status/phase fields.
 
 ## File targets and migration risks
-- Targets: `.opencode/command/*.md`, `.opencode/command/README.md`, `.opencode/context/common/templates/`, `.opencode/context/common/standards/commands.md` (new), `.opencode/context/common/system/*` references, `.opencode/meta/*` (when present).
+- Targets: `.opencode/command/*.md`, `.opencode/command/README.md`, `.opencode/context/core/templates/`, `.opencode/context/core/standards/commands.md` (new), `.opencode/context/core/system/*` references, `.opencode/meta/*` (when present).
 - Risks: legacy YAML/@subagent syntax causing parser drift; inconsistent context paths after refactor; missing meta directory requiring creation when adding templates; registry sync omissions; accidental project directory creation during command runs; numbering/status mismatches with IMPLEMENTATION_STATUS.md/SORRY_REGISTRY.md/TACTIC_REGISTRY.md.
 - Mitigations: adhere to lazy-creation rules in commands.md, spell out registry sync steps per command, provide examples with correct status markers, and run link/path checks post-migration.
 

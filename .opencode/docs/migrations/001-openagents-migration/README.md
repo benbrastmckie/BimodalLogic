@@ -237,13 +237,13 @@ Detailed metrics comparison:
 - **Context Index**: `.opencode/context/index.md`
 - **Command Files**: `.opencode/command/*.md`
 - **Agent Files**: `.opencode/agents/*.md`
-- **Standards**: `.opencode/context/common/standards/*.md`
+- **Standards**: `.opencode/context/core/standards/*.md`
 
 ### External Resources
 
 - **OpenAgents Framework**: (Reference to OpenAgents documentation if available)
-- **8-Stage Workflow**: `.opencode/context/common/standards/agent-workflow.md`
-- **Subagent Return Format**: `.opencode/context/common/standards/subagent-return-format.md`
+- **8-Stage Workflow**: `.opencode/context/core/standards/agent-workflow.md`
+- **Subagent Return Format**: `.opencode/context/core/standards/subagent-return-format.md`
 
 ---
 

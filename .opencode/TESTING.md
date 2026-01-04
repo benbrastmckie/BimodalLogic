@@ -1052,5 +1052,5 @@ Validate with real-world usage:
 
 - Architecture: `.opencode/ARCHITECTURE.md`
 - Quick Start: `.opencode/QUICK-START.md`
-- Delegation Guide: `.opencode/context/common/workflows/subagent-delegation-guide.md`
-- Return Format: `.opencode/context/common/standards/subagent-return-format.md`
+- Delegation Guide: `.opencode/context/core/workflows/subagent-delegation-guide.md`
+- Return Format: `.opencode/context/core/standards/subagent-return-format.md`

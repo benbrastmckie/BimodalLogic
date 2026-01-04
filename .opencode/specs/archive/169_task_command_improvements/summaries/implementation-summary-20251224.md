@@ -476,7 +476,7 @@ Execute all phases in one /implement command.
 8. `.opencode/README.md` - Updated workflow and command list (4 locations)
 9. `.opencode/QUICK-START.md` - Updated example (1 location)
 10. `.opencode/SYSTEM_SUMMARY.md` - Updated table and workflows (4 locations)
-11. `.opencode/context/common/standards/tasks.md` - Updated standards (2 locations)
+11. `.opencode/context/core/standards/tasks.md` - Updated standards (2 locations)
 12. `.opencode/agent/subagents/status-sync-manager.md` - Updated integration references (4 locations)
 13. `.opencode/command/document.md` - Updated task invocation reference (1 location)
 14. Multiple files - Bulk /task {number} → /implement {number} replacements
@@ -507,7 +507,7 @@ Execute all phases in one /implement command.
 
 ### Phase 8 (Documentation)
 25. `.opencode/specs/169_task_command_improvements/summaries/migration-guide-v3.md` - Created
-26. `.opencode/context/common/system/artifact-management.md` - Updated summaries section
+26. `.opencode/context/core/system/artifact-management.md` - Updated summaries section
 27. `TODO.md` - Added task 169 entry marked [COMPLETED]
 28. `.opencode/specs/169_task_command_improvements/summaries/implementation-summary-20251224.md` - Updated with all phases
 

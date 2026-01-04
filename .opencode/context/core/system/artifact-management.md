@@ -106,10 +106,10 @@ Contains brief summaries for quick reference. **All detailed artifacts MUST have
   - Example: "Task 169 implements context window protection for /implement command. Reduces return formats by 95% through artifact-first approach. Enforces summary artifacts for all detailed work. Adds complexity-based routing and validation layer."
 
 ## Template Standards
-- Plans must follow `.opencode/context/common/standards/plan.md`.
-- Reports must follow `.opencode/context/common/standards/report.md`.
-- Summaries must follow `.opencode/context/common/standards/summary.md`.
-- Status markers must align with `.opencode/context/common/system/status-markers.md`.
+- Plans must follow `.opencode/context/core/standards/plan.md`.
+- Reports must follow `.opencode/context/core/standards/report.md`.
+- Summaries must follow `.opencode/context/core/standards/summary.md`.
+- Status markers must align with `.opencode/context/core/system/status-markers.md`.
 - Commands and agents should load these standards in their context when producing corresponding artifacts.
 
 ## .opencode/specs/TODO.md Format
@@ -252,9 +252,9 @@ This pattern is enforced by `subagent-return-format.md`:
 
 ### References
 
-- **Authoritative Standard**: `.opencode/context/common/standards/subagent-return-format.md`
-- **Command Lifecycle**: `.opencode/context/common/workflows/command-lifecycle.md` (Stages 5-6)
-- **Summary Standard**: `.opencode/context/common/standards/summary.md`
+- **Authoritative Standard**: `.opencode/context/core/standards/subagent-return-format.md`
+- **Command Lifecycle**: `.opencode/context/core/workflows/command-lifecycle.md` (Stages 5-6)
+- **Summary Standard**: `.opencode/context/core/standards/summary.md`
 
 ## Context Protection (Legacy)
 

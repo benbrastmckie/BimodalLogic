@@ -707,7 +707,7 @@ Archive location: .opencode/specs/archive/state.json
 
 ### Context Documentation
 
-**File**: `.opencode/context/common/system/state-schema.md`
+**File**: `.opencode/context/core/system/state-schema.md`
 
 **Updates**:
 - Document `/todo` command's archival workflow

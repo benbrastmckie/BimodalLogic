@@ -105,7 +105,7 @@ Create foundational files and schemas that all other components depend on.
 #### Task 1.2: Create Delegation Standards Documentation [COMPLETED]
 
 **Files Created**:
-- [PASS] `.opencode/context/common/workflows/subagent-delegation-guide.md`
+- [PASS] `.opencode/context/core/workflows/subagent-delegation-guide.md`
 
 **Content Includes**:
 1. [PASS] Session ID generation and tracking
@@ -127,7 +127,7 @@ Create foundational files and schemas that all other components depend on.
 #### Task 1.3: Update Status Markers Documentation [COMPLETED]
 
 **Files Verified**:
-- [PASS] `.opencode/context/common/system/status-markers.md` (exists from backup)
+- [PASS] `.opencode/context/core/system/status-markers.md` (exists from backup)
 
 **Verification Results**:
 - [PASS] Command-specific markers ([RESEARCHED], [PLANNED]) already documented
@@ -1384,7 +1384,7 @@ If interrupted at any point:
 
 **Critical Files to Track**:
 - This plan: `.opencode/specs/196_complete_opencode_refactor/plans/implementation-001.md`
-- Standardized return format: `.opencode/context/common/standards/subagent-return-format.md`
+- Standardized return format: `.opencode/context/core/standards/subagent-return-format.md`
 - errors.json: `.opencode/specs/errors.json`
 
 **Validation Commands**:
@@ -1405,7 +1405,7 @@ ls -la .opencode/agent/subagents/
 ls -la .opencode/command/
 
 # Check standards created
-ls -la .opencode/context/common/standards/
+ls -la .opencode/context/core/standards/
 ```
 
 ---

@@ -5,7 +5,7 @@
 - **Date**: 2025-12-22
 - **Researcher**: subagents/researcher
 - **Scope**: Lean task routing, MCP server validation, artifact/dry-run behaviors
-- **Sources Reviewed**: `.mcp.json`, `.opencode/specs/TODO.md`, `.opencode/specs/state.json`, `.opencode/context/common/system/state-schema.md`, `.opencode/context/common/system/artifact-management.md`, `.opencode/context/common/standards/tasks.md`, `.opencode/context/common/standards/patterns.md`, `.opencode/context/common/workflows/task-breakdown.md`
+- **Sources Reviewed**: `.mcp.json`, `.opencode/specs/TODO.md`, `.opencode/specs/state.json`, `.opencode/context/core/system/state-schema.md`, `.opencode/context/core/system/artifact-management.md`, `.opencode/context/core/standards/tasks.md`, `.opencode/context/core/standards/patterns.md`, `.opencode/context/core/workflows/task-breakdown.md`
 
 ## MCP Server Inventory & Validation Rules
 - **Configured**: `lean-lsp` (stdio via `uvx lean-lsp-mcp`, env `LEAN_LOG_LEVEL=WARNING`, `LEAN_PROJECT_PATH=/home/benjamin/Documents/Philosophy/Projects/ProofChecker`). Treat this as required for all Lean tasks.
@@ -32,8 +32,8 @@
 - Observability: dry-run should report selected subagent, validated servers, and any remediation without creating `.opencode/specs/147_...` until an artifact is actually written.
 
 ## Documentation Updates Made
-- Added Lean routing and MCP validation requirements to `.opencode/context/common/standards/tasks.md` (subagent selection, server validation, dry-run routing check).
-- Added Lean routing + dry-run best practice to `.opencode/context/common/system/artifact-management.md` (validate `.mcp.json`, avoid filesystem changes on validation failure, keep lazy creation).
+- Added Lean routing and MCP validation requirements to `.opencode/context/core/standards/tasks.md` (subagent selection, server validation, dry-run routing check).
+- Added Lean routing + dry-run best practice to `.opencode/context/core/system/artifact-management.md` (validate `.mcp.json`, avoid filesystem changes on validation failure, keep lazy creation).
 
 ## Recommendations / Next Steps
 - Implement automatic `lean-lsp` health ping used by `/task --check-mcp` before dispatch.

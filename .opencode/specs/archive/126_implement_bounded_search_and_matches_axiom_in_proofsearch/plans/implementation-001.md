@@ -9,7 +9,7 @@
 - **Dependencies**: None
 - **Research Inputs**: .opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/reports/research-001.md
 - **Artifacts**: .opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md; Logos/Core/Automation/ProofSearch.lean; LogosTest/Core/Automation/ProofSearchTest.lean
-- **Standards**: .opencode/context/common/standards/plan.md; .opencode/context/common/system/status-markers.md; .opencode/context/common/system/artifact-management.md; .opencode/context/common/standards/tasks.md
+- **Standards**: .opencode/context/core/standards/plan.md; .opencode/context/core/system/status-markers.md; .opencode/context/core/system/artifact-management.md; .opencode/context/core/standards/tasks.md
 
 ## Overview
 Implement a terminating bounded proof search driver and exact axiom matching in `Logos/Core/Automation/ProofSearch.lean`, replacing stubs while threading caches and visit limits. Ensure schema checks cover all 14 axioms with negative coverage and integrate depth/visit guards to avoid timeouts. Preserve API stability while enabling search runs to complete reliably.

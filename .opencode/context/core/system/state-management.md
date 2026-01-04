@@ -531,5 +531,5 @@ When updating status, preserve previous timestamps:
 ## Related Documentation
 
 - Delegation Standard: `.opencode/context/core/standards/delegation.md`
-- Artifact Management: `.opencode/context/common/system/artifact-management.md`
-- Git Commits: `.opencode/context/common/system/git-commits.md`
+- Artifact Management: `.opencode/context/core/system/artifact-management.md`
+- Git Commits: `.opencode/context/core/system/git-commits.md`

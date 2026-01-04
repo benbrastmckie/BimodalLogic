@@ -9,10 +9,10 @@
 - **Dependencies**: None
 - **Sources/Inputs**:
   - .opencode/command/review.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/subagent-return-format.md
-  - .opencode/context/common/standards/summary.md
-  - .opencode/context/common/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/subagent-return-format.md
+  - .opencode/context/core/standards/summary.md
+  - .opencode/context/core/system/status-markers.md
   - .opencode/command/research.md (reference implementation)
   - .opencode/specs/TODO.md
   - .opencode/specs/state.json
@@ -469,7 +469,7 @@ From `status-markers.md`:
 - Add `review_artifacts` array to `repository_health` section
 - Document schema change in state-schema.md
 
-**4. Create Review Summary Template** (optional: `.opencode/context/common/standards/review-summary-template.md`)
+**4. Create Review Summary Template** (optional: `.opencode/context/core/standards/review-summary-template.md`)
 - Define standard structure for review summaries
 - Provide example review summary
 - Document required sections and format
@@ -709,11 +709,11 @@ From `status-markers.md`:
 1. Create `.opencode/agent/subagents/reviewer.md` (new)
 2. Update `.opencode/command/review.md` (modify stages 2, 4, 5, 7, 8)
 3. Update `.opencode/specs/state.json` (add review_artifacts)
-4. Update `.opencode/context/common/system/state-schema.md` (document review_artifacts)
+4. Update `.opencode/context/core/system/state-schema.md` (document review_artifacts)
 
 **Optional Documentation**:
-1. Create `.opencode/context/common/standards/review-summary-template.md` (template)
-2. Update `.opencode/context/common/system/artifact-management.md` (add /review example)
+1. Create `.opencode/context/core/standards/review-summary-template.md` (template)
+2. Update `.opencode/context/core/system/artifact-management.md` (add /review example)
 
 ---
 
@@ -758,10 +758,10 @@ Implementation is successful when:
 ## References
 
 - .opencode/command/review.md (current /review command implementation)
-- .opencode/context/common/system/artifact-management.md (lazy directory creation, project numbering)
-- .opencode/context/common/standards/subagent-return-format.md (return format standard)
-- .opencode/context/common/standards/summary.md (summary format standard)
-- .opencode/context/common/system/status-markers.md (status markers)
+- .opencode/context/core/system/artifact-management.md (lazy directory creation, project numbering)
+- .opencode/context/core/standards/subagent-return-format.md (return format standard)
+- .opencode/context/core/standards/summary.md (summary format standard)
+- .opencode/context/core/system/status-markers.md (status markers)
 - .opencode/command/research.md (reference implementation)
 - .opencode/specs/TODO.md (task tracking)
 - .opencode/specs/state.json (state management)

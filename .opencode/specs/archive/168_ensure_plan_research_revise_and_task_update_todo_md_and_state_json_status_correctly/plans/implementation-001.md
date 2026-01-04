@@ -114,9 +114,9 @@ Verify and fix status synchronization across /plan, /research, /revise, and /tas
 - Bash tool for validation scripts
 
 ### Dependencies
-- `.opencode/context/common/system/status-markers.md` (status marker definitions)
-- `.opencode/context/common/system/state-schema.md` (state.json schema)
-- `.opencode/context/common/standards/plan.md` (plan format standards)
+- `.opencode/context/core/system/status-markers.md` (status marker definitions)
+- `.opencode/context/core/system/state-schema.md` (state.json schema)
+- `.opencode/context/core/standards/plan.md` (plan format standards)
 - `.opencode/agent/subagents/specialists/batch-status-manager.md` (existing specialist)
 
 ## Dependencies
@@ -124,19 +124,19 @@ Verify and fix status synchronization across /plan, /research, /revise, and /tas
 ### Required Modules/Standards
 
 ```markdown
-- status-markers.md (.opencode/context/common/system/)
+- status-markers.md (.opencode/context/core/system/)
   Usage: Status marker definitions and transition rules
 
-- state-schema.md (.opencode/context/common/system/)
+- state-schema.md (.opencode/context/core/system/)
   Usage: State file structure and field naming conventions
 
 - batch-status-manager.md (.opencode/agent/subagents/specialists/)
   Usage: Reference implementation for atomic TODO.md updates
 
-- tasks.md (.opencode/context/common/standards/)
+- tasks.md (.opencode/context/core/standards/)
   Usage: Task metadata and formatting standards
 
-- artifact-management.md (.opencode/context/common/system/)
+- artifact-management.md (.opencode/context/core/system/)
   Usage: Lazy directory creation and artifact lifecycle rules
 ```
 
@@ -148,12 +148,12 @@ Verify and fix status synchronization across /plan, /research, /revise, and /tas
    - Needs: Extension for state.json and plan files
 
 2. **status-markers standard** (exists)
-   - Location: `.opencode/context/common/system/status-markers.md`
+   - Location: `.opencode/context/core/system/status-markers.md`
    - Status: Complete specification with [RESEARCHED] and [PLANNED] markers
    - Needs: Documentation of multi-file synchronization
 
 3. **state-schema standard** (exists)
-   - Location: `.opencode/context/common/system/state-schema.md`
+   - Location: `.opencode/context/core/system/state-schema.md`
    - Status: Defines state.json structure
    - Needs: Field naming clarification (started vs started_at)
 
@@ -559,7 +559,7 @@ None - uses built-in file system operations and markdown/JSON parsing.
 
 **Action**: Document multi-file synchronization in status-markers.md
 
-**File**: `.opencode/context/common/system/status-markers.md`
+**File**: `.opencode/context/core/system/status-markers.md`
 
 **Approach**:
 1. Add section on multi-file atomic updates
@@ -574,7 +574,7 @@ None - uses built-in file system operations and markdown/JSON parsing.
 
 **Action**: Clarify field naming conventions in state-schema.md
 
-**File**: `.opencode/context/common/system/state-schema.md`
+**File**: `.opencode/context/core/system/state-schema.md`
 
 **Approach**:
 1. Add explicit field naming section:

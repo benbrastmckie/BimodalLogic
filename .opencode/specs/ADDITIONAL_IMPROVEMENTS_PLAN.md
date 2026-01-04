@@ -1571,7 +1571,7 @@ Duplicate Paragraphs:
 
 2. "Status markers follow a standard format..." (2 occurrences)
    - core/system/state-management.md:23
-   - common/standards/tasks.md:67
+   - core/standards/tasks.md:67
    
    Recommendation: Keep in state-management.md, reference from tasks.md
 
@@ -1619,7 +1619,7 @@ Files >250 lines:
 - core/system/state-management.md (535 lines)
   → Split into: status-markers.md, state-schemas.md, status-sync.md
   
-- common/workflows/task-breakdown.md (270 lines)
+- core/workflows/task-breakdown.md (270 lines)
   → Split into: task-decomposition.md, phase-planning.md
 ```
 

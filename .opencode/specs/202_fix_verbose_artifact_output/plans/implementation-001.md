@@ -12,10 +12,10 @@
   - Summary: .opencode/specs/202_fix_verbose_artifact_output/summaries/research-summary.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/subagent-return-format.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/subagent-return-format.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -194,8 +194,8 @@ Research completed on 2025-12-27 identified the following key findings:
 **Modified Files**:
 - .opencode/agent/subagents/task-executor.md (return format section updated)
 - .opencode/agent/subagents/batch-task-orchestrator.md (return format section updated)
-- .opencode/context/common/system/artifact-management.md (batch summary pattern added)
-- .opencode/context/common/standards/subagent-return-format.md (batch example added)
+- .opencode/context/core/system/artifact-management.md (batch summary pattern added)
+- .opencode/context/core/standards/subagent-return-format.md (batch example added)
 
 **New Artifacts**:
 - .opencode/specs/batch_{timestamp}/summaries/batch-summary.md (created by batch-task-orchestrator)

@@ -186,9 +186,9 @@ RESULT: Plan artifact created [PASS], TODO.md updated [PASS], state.json updated
 
 ```xml
 <context_loaded>
-  @.opencode/context/common/standards/subagent-return-format.md
-  @.opencode/context/common/workflows/subagent-delegation-guide.md
-  @.opencode/context/common/system/status-markers.md
+  @.opencode/context/core/standards/subagent-return-format.md
+  @.opencode/context/core/workflows/subagent-delegation-guide.md
+  @.opencode/context/core/system/status-markers.md
 </context_loaded>
 ```
 
@@ -227,13 +227,13 @@ RESULT: Plan artifact created [PASS], TODO.md updated [PASS], state.json updated
 
 ```
 Context Loaded:
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
+@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/workflows/subagent-delegation-guide.md
+@.opencode/context/core/system/git-commits.md
 ```
 
 **Plus Command-Specific Context**:
@@ -730,26 +730,26 @@ result = execute_command(
 
 **Orchestrator Context** (~5,000 tokens):
 ```
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/status-markers.md (for validation only)
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/workflows/subagent-delegation-guide.md
+@.opencode/context/core/system/status-markers.md (for validation only)
 ```
 
 **Command Context** (~10,000-12,000 tokens):
 ```
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
+@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/workflows/subagent-delegation-guide.md
+@.opencode/context/core/system/git-commits.md
 @.opencode/context/project/{language}/ (filtered by context_level)
 ```
 
 **Subagent Context** (~5,000-8,000 tokens):
 ```
-@.opencode/context/common/standards/subagent-return-format.md (for validation)
+@.opencode/context/core/standards/subagent-return-format.md (for validation)
 Task-specific context from command
 Domain knowledge for specialty
 ```
@@ -1052,9 +1052,9 @@ The orchestrator-command integration suffers from a critical architectural flaw 
 4. `.opencode/command/implement.md` (439 lines) - Implement command workflow
 5. `.opencode/command/revise.md` (309 lines) - Revise command workflow
 6. `.opencode/command/review.md` (673 lines) - Review command workflow
-7. `.opencode/context/common/workflows/command-lifecycle.md` (983 lines) - 8-stage pattern
-8. `.opencode/context/common/workflows/subagent-delegation-guide.md` (649 lines) - Delegation safety
-9. `.opencode/context/common/standards/subagent-return-format.md` (356 lines) - Return format
+7. `.opencode/context/core/workflows/command-lifecycle.md` (983 lines) - 8-stage pattern
+8. `.opencode/context/core/workflows/subagent-delegation-guide.md` (649 lines) - Delegation safety
+9. `.opencode/context/core/standards/subagent-return-format.md` (356 lines) - Return format
 
 ### Related Tasks
 

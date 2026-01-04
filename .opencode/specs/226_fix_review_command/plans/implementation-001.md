@@ -8,12 +8,12 @@
 - **Research Inputs**: .opencode/specs/226_fix_review_command/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/tasks.md
-  - .opencode/context/common/workflows/command-lifecycle.md
-  - .opencode/context/common/standards/subagent-return-format.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/tasks.md
+  - .opencode/context/core/workflows/command-lifecycle.md
+  - .opencode/context/core/standards/subagent-return-format.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -104,7 +104,7 @@ The /review command has 5 critical issues: (1) project numbering bug causing dir
 - **Completed**: 2025-12-28T16:54:00Z
 - **Goal**: Eliminate 60% duplication in review.md via reference pattern
 - **Tasks**:
-  - [ ] Read .opencode/context/common/workflows/review.md (287 lines)
+  - [ ] Read .opencode/context/core/workflows/review.md (287 lines)
   - [ ] Identify duplicated sections (workflow stages, artifact management, validation)
   - [ ] Refactor Workflow Stages section to reference command-lifecycle.md
   - [ ] Preserve reviewer-specific adaptations (8 stage customizations)
@@ -118,7 +118,7 @@ The /review command has 5 critical issues: (1) project numbering bug causing dir
   - [ ] Test: Verify no functionality lost
 - **Timing**: 2 hours
 - **Files Modified**:
-  - .opencode/context/common/workflows/review.md
+  - .opencode/context/core/workflows/review.md
 
 ## Testing & Validation
 
@@ -160,7 +160,7 @@ The /review command has 5 critical issues: (1) project numbering bug causing dir
 **Modified Files**:
 - .opencode/command/review.md (Stage 1, Stage 6, Stage 7)
 - .opencode/agent/subagents/reviewer.md (Step 4, Step 5)
-- .opencode/context/common/workflows/review.md (refactored)
+- .opencode/context/core/workflows/review.md (refactored)
 
 **Created Artifacts**:
 - plans/implementation-001.md (this file)
@@ -186,7 +186,7 @@ The /review command has 5 critical issues: (1) project numbering bug causing dir
 - Reviewer return will be verbose (degraded but functional)
 
 **If Phase 3 fails** (context file organization):
-- Revert .opencode/context/common/workflows/review.md to original
+- Revert .opencode/context/core/workflows/review.md to original
 - /review command will work with duplicated content (degraded but functional)
 - Context window will be larger but no functionality lost
 

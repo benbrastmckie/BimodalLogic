@@ -77,8 +77,8 @@ This command creates the following artifacts:
 ## See Also
 
 - **Agent**: `.opencode/agents/<agent-name>.md`
-- **Workflow Standard**: `.opencode/context/common/standards/agent-workflow.md`
-- **Return Format**: `.opencode/context/common/standards/subagent-return-format.md`
+- **Workflow Standard**: `.opencode/context/core/standards/agent-workflow.md`
+- **Return Format**: `.opencode/context/core/standards/subagent-return-format.md`
 
 ---
 

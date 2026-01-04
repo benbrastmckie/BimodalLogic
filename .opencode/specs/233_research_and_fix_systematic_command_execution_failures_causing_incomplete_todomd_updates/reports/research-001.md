@@ -573,13 +573,13 @@ This research comprehensively analyzes systematic command execution failures tha
 
 ```
 Context Loaded:
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/workflows/subagent-delegation-guide.md
-@.opencode/context/common/system/git-commits.md
+@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/workflows/subagent-delegation-guide.md
+@.opencode/context/core/system/git-commits.md
 ```
 
 **Conclusion**: [PASS] No context loading issues. All critical context files are loaded.
@@ -777,7 +777,7 @@ Context Loaded:
 
 **Files Modified**:
 - .opencode/agent/orchestrator.md
-- .opencode/context/common/workflows/command-lifecycle.md
+- .opencode/context/core/workflows/command-lifecycle.md
 
 ---
 
@@ -823,7 +823,7 @@ Context Loaded:
 3. .opencode/command/implement.md
 4. .opencode/command/revise.md
 5. .opencode/agent/orchestrator.md
-6. .opencode/context/common/workflows/command-lifecycle.md
+6. .opencode/context/core/workflows/command-lifecycle.md
 
 **Total**: 6 files modified
 
@@ -1008,7 +1008,7 @@ Test orchestrator stage validation:
 3. .opencode/command/implement.md
 4. .opencode/command/revise.md
 5. .opencode/agent/orchestrator.md
-6. .opencode/context/common/workflows/command-lifecycle.md
+6. .opencode/context/core/workflows/command-lifecycle.md
 
 ---
 

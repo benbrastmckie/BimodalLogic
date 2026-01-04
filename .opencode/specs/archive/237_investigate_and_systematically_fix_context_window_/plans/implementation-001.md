@@ -558,7 +558,7 @@ This implementation will systematically fix all four root causes through a phase
 - `.opencode/command/plan-execution.md` (deduplicated)
 - `.opencode/command/revise-execution.md` (deduplicated)
 - `.opencode/command/implement-execution.md` (deduplicated)
-- `.opencode/context/common/workflows/command-lifecycle.md` (variation logic added)
+- `.opencode/context/core/workflows/command-lifecycle.md` (variation logic added)
 
 ### Documentation Updates
 
@@ -569,9 +569,9 @@ This implementation will systematically fix all four root causes through a phase
 - Document deduplication via command-lifecycle.md
 
 **Updated Documentation Files**:
-- `.opencode/context/common/workflows/command-lifecycle.md`
+- `.opencode/context/core/workflows/command-lifecycle.md`
 - `.opencode/agent/orchestrator.md`
-- `.opencode/context/common/system/artifact-management.md` (if needed)
+- `.opencode/context/core/system/artifact-management.md` (if needed)
 
 ### Measurement Reports
 
@@ -718,7 +718,7 @@ This implementation will systematically fix all four root causes through a phase
 - `.opencode/command/plan.md` (exists)
 - `.opencode/command/revise.md` (exists)
 - `.opencode/command/implement.md` (exists)
-- `.opencode/context/common/workflows/command-lifecycle.md` (exists)
+- `.opencode/context/core/workflows/command-lifecycle.md` (exists)
 - `.opencode/specs/TODO.md` (exists)
 
 **Required Tools**:

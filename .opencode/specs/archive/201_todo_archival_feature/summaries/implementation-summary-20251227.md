@@ -417,7 +417,7 @@ For each archived task:
 2. **Research Summary**: `.opencode/specs/201_todo_archival_feature/summaries/research-summary.md`
 3. **Implementation Plan**: `.opencode/specs/201_todo_archival_feature/plans/implementation-001.md`
 4. **Archive State Schema**: `.opencode/specs/archive/state.json`
-5. **State Schema Reference**: `.opencode/context/common/system/state-schema.md`
+5. **State Schema Reference**: `.opencode/context/core/system/state-schema.md`
 
 ---
 

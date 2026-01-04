@@ -378,9 +378,9 @@ The system is production-ready with full metadata passing compliance. Recommende
 
 ## References
 
-1. `.opencode/context/common/system/artifact-management.md` - Metadata passing standards
-2. `.opencode/context/common/workflows/command-lifecycle.md` - Stage 5-6 validation
-3. `.opencode/context/common/standards/subagent-return-format.md` - Return format schema
+1. `.opencode/context/core/system/artifact-management.md` - Metadata passing standards
+2. `.opencode/context/core/workflows/command-lifecycle.md` - Stage 5-6 validation
+3. `.opencode/context/core/standards/subagent-return-format.md` - Return format schema
 4. Task 217 - Context file revisions for metadata passing
 5. Task 220 Research Report - Initial compliance analysis
 

@@ -8,10 +8,10 @@
 - **Research Inputs**: `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-001.md`, `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-002.md`
 - **Artifacts**: `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-002.md` (this plan)
 - **Standards**:
-  - `.opencode/context/common/standards/plan.md`
-  - `.opencode/context/common/system/status-markers.md`
-  - `.opencode/context/common/system/artifact-management.md`
-  - `.opencode/context/common/standards/tasks.md`
+  - `.opencode/context/core/standards/plan.md`
+  - `.opencode/context/core/system/status-markers.md`
+  - `.opencode/context/core/system/artifact-management.md`
+  - `.opencode/context/core/standards/tasks.md`
 - **Language**: lean
 - **Lean Intent**: true
 - **Revision Note**: Supersedes implementation-001.md. This version performs the Lean refactor and transport-lemma additions so tasks 129/130 can be abandoned after completion, instead of merely revising their TODO text.

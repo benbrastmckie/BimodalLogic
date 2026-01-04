@@ -51,7 +51,7 @@ Successfully reverted verbose command argument handling workarounds and implemen
 
 ### Phase 2: Documentation
 
-8. **`.opencode/context/common/standards/command-argument-handling.md`**:
+8. **`.opencode/context/core/standards/command-argument-handling.md`**:
    - Complete rewrite (250+ lines)
    - Documents $ARGUMENTS pattern comprehensively
    - Includes examples for all argument types
@@ -243,7 +243,7 @@ The $ARGUMENTS pattern was proven in the old system - we just needed to look at 
 ### Created/Updated
 
 1. **Command Argument Handling Standard**: Complete guide to $ARGUMENTS pattern
-   - Location: `.opencode/context/common/standards/command-argument-handling.md`
+   - Location: `.opencode/context/core/standards/command-argument-handling.md`
    - Content: Comprehensive examples, error handling, migration guide
 
 2. **Investigation Report**: Full root cause analysis

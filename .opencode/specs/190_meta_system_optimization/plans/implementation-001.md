@@ -8,10 +8,10 @@
 - **Research Inputs**: None linked
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/commands.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/commands.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -53,7 +53,7 @@ Execute a comprehensive optimization review of the .opencode meta-system to alig
 - **Tasks**:
   - [ ] Validate task number 190 exists in TODO.md with correct metadata
   - [ ] Verify scope parameter is "all" (commands, agents, contexts, docs, routing)
-  - [ ] Load context references from common/standards/ and common/system/
+  - [ ] Load context references from core/standards/ and core/system/
   - [ ] Verify access to .opencode/command/, .opencode/agent/, .opencode/context/
   - [ ] Initialize analysis tracking structure (in-memory)
   - [ ] Validate no Lean intent (language: markdown)
@@ -115,7 +115,7 @@ Execute a comprehensive optimization review of the .opencode meta-system to alig
   - [ ] Route to doc-analyzer specialist to check plan artifacts in .opencode/specs/
   - [ ] Verify all plan files follow plan.md standard (metadata, section order, status markers)
   - [ ] Check command documentation completeness (all commands have usage_examples)
-  - [ ] Verify workflow documentation in common/workflows/ is referenced by relevant commands
+  - [ ] Verify workflow documentation in core/workflows/ is referenced by relevant commands
   - [ ] Check for orphaned documentation (docs not referenced by any command/agent)
   - [ ] Validate status marker usage across all plan artifacts
   - [ ] Check timestamp format compliance (YYYY-MM-DD in TODO, ISO8601 in plans)

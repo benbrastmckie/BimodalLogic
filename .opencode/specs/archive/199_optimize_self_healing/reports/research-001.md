@@ -20,12 +20,12 @@ The self-healing feature for auto-creating missing state.json creates significan
 ### Files Involved
 
 1. **self-healing-guide.md** (438 lines)
-   - Location: `.opencode/context/common/system/self-healing-guide.md`
+   - Location: `.opencode/context/core/system/self-healing-guide.md`
    - Purpose: Comprehensive guide for auto-creating missing infrastructure
    - Content: Templates, implementation patterns, data extraction functions, testing
 
 2. **context-guide.md** (177 lines)
-   - Location: `.opencode/context/common/system/context-guide.md`
+   - Location: `.opencode/context/core/system/context-guide.md`
    - Contains: 93 lines of self-healing documentation (lines 62-177)
    - Overlap with self-healing-guide.md
 
@@ -38,9 +38,9 @@ The self-healing feature for auto-creating missing state.json creates significan
 **Commands Loading State Files**:
 - All 9 commands load: `@.opencode/specs/state.json`
 - All 9 commands load: `@.opencode/specs/TODO.md`
-- 7 commands load: `@.opencode/context/common/system/status-markers.md` (784 lines)
-- 6 commands load: `@.opencode/context/common/standards/subagent-return-format.md` (356 lines)
-- 6 commands load: `@.opencode/context/common/workflows/subagent-delegation-guide.md` (649 lines)
+- 7 commands load: `@.opencode/context/core/system/status-markers.md` (784 lines)
+- 6 commands load: `@.opencode/context/core/standards/subagent-return-format.md` (356 lines)
+- 6 commands load: `@.opencode/context/core/workflows/subagent-delegation-guide.md` (649 lines)
 
 **No Commands Currently Load**:
 - `self-healing-guide.md` (438 lines) - NOT loaded by any command
@@ -279,7 +279,7 @@ Context Loaded:
 if not session.infrastructure_validated:
     # Load self-healing-guide.md only if needed
     if not exists(".opencode/specs/state.json"):
-        load_context("@.opencode/context/common/system/self-healing-guide.md")
+        load_context("@.opencode/context/core/system/self-healing-guide.md")
         auto_create_state_json()
     
     if not exists(".opencode/specs/errors.json"):

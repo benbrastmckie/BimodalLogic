@@ -45,7 +45,7 @@ Successfully implemented pragmatic improvements to the /add command focusing on 
 - Simple template-based auto-generation (not complex algorithms)
 - Clear inference rules based on description content
 
-### 3. Standards Documentation Updates (.opencode/context/common/standards/tasks.md)
+### 3. Standards Documentation Updates (.opencode/context/core/standards/tasks.md)
 
 **Added**:
 - Clear distinction between required and auto-populated fields
@@ -130,7 +130,7 @@ Successfully implemented pragmatic improvements to the /add command focusing on 
    - Documented inference logic
    - Documented auto-generation templates
 
-3. `.opencode/context/common/standards/tasks.md`
+3. `.opencode/context/core/standards/tasks.md`
    - Reorganized Metadata section
    - Added Required Fields subsection
    - Added Auto-Populated Fields subsection

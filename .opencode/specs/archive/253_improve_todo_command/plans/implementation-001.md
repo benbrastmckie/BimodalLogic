@@ -8,12 +8,12 @@
 - **Research Inputs**: .opencode/specs/253_improve_todo_command/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/tasks.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/tasks.md
   - .opencode/specs/TODO.md (file format standard)
-  - .opencode/context/common/system/git-commits.md (git safety standard)
+  - .opencode/context/core/system/git-commits.md (git safety standard)
 - **Language**: python
 - **Lean Intent**: false
 

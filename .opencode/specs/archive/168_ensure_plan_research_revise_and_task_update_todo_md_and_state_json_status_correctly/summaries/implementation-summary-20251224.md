@@ -30,7 +30,7 @@ Successfully implemented atomic status synchronization across /plan, /research, 
 
 **Files Modified**:
 - `.opencode/command/task.md` - Fixed `started_at` → `started` on line 67
-- `.opencode/context/common/system/state-schema.md` - Added field naming convention section
+- `.opencode/context/core/system/state-schema.md` - Added field naming convention section
 - `.opencode/specs/state.json` - Updated all `_at` suffixes to standardized names
 
 **Changes**:
@@ -81,8 +81,8 @@ Successfully implemented atomic status synchronization across /plan, /research, 
 ### Phase 6: Documentation Updates [PASS]
 
 **Files Modified**:
-- `.opencode/context/common/system/status-markers.md` - Added multi-file synchronization section
-- `.opencode/context/common/system/state-schema.md` - Added field naming convention section
+- `.opencode/context/core/system/status-markers.md` - Added multi-file synchronization section
+- `.opencode/context/core/system/state-schema.md` - Added field naming convention section
 
 **Files Created**:
 - `.opencode/specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/troubleshooting.md` - Comprehensive troubleshooting guide
@@ -132,8 +132,8 @@ Successfully implemented atomic status synchronization across /plan, /research, 
 3. `.opencode/command/research.md` - Added status-sync-manager integration
 4. `.opencode/command/revise.md` - Added status-sync-manager, status preservation
 5. `.opencode/agent/subagents/batch-task-orchestrator.md` - Updated routing logic
-6. `.opencode/context/common/system/status-markers.md` - Added multi-file sync section
-7. `.opencode/context/common/system/state-schema.md` - Added field naming conventions
+6. `.opencode/context/core/system/status-markers.md` - Added multi-file sync section
+7. `.opencode/context/core/system/state-schema.md` - Added field naming conventions
 8. `.opencode/specs/state.json` - Updated field naming (25+ entries)
 9. `.opencode/specs/TODO.md` - Updated task 168 status
 10. `.opencode/specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/state.json` - Updated status

@@ -30,8 +30,8 @@ Enumerate the concrete context references in agent/command documentation that mu
 
 ## Reference Updates Needed (Agents)
 - `.opencode/agent/orchestrator.md`
-  - Replace legacy `core/standards`, `core/processes`, `core/templates`, `core/patterns`, `domain/` mentions with the new layout: `common/standards/`, `common/workflows/`, `common/templates/`, and domain-specific `project/{logic|lean4}/...` (patterns/processes live under the relevant project domain; proof principles under `project/logic/...`, Lean overlays under `project/lean4/...`).
-  - Update workflow routing/context selection examples to cite `common/system/{artifact-management,status-markers}` and `project/logic` (canonical) + `project/lean4` (overlay) rather than `core/`.
+  - Replace legacy `core/standards`, `core/processes`, `core/templates`, `core/patterns`, `domain/` mentions with the new layout: `core/standards/`, `core/workflows/`, `core/templates/`, and domain-specific `project/{logic|lean4}/...` (patterns/processes live under the relevant project domain; proof principles under `project/logic/...`, Lean overlays under `project/lean4/...`).
+  - Update workflow routing/context selection examples to cite `core/system/{artifact-management,status-markers}` and `project/logic` (canonical) + `project/lean4` (overlay) rather than `core/`.
 - `.opencode/agent/subagents/context-analyzer.md`
   - Clarify scanning targets to the new `common/` vs `project/{logic,lean4,...}` layout and the renamed Lean overlay file; avoid legacy `core/` or root `lean4/` language.
 - `.opencode/agent/subagents/context-refactor.md` and `.opencode/agent/subagents/context-references.md`
@@ -44,7 +44,7 @@ Enumerate the concrete context references in agent/command documentation that mu
   - Update “Context Loaded” and structure examples to the new layout (`.opencode/context/common/{templates,system/context-guide.md}` and `.opencode/context/project/{logic,lean4,math,physics,repo}`); replace generated structure block that still shows legacy `context/domain|processes|standards` tree with the normalized `common/` + `project/` layout.
   - In detection/merge steps, scan `common/` and `project/` subtrees (including `project/lean4/standards/proof-conventions-lean.md` and canonical logic standards) instead of legacy `context/` flat lists.
 - `.opencode/command/document.md` and `.opencode/command/refactor.md`
-  - Replace broad `@context/project/` load with explicit domain paths matching new structure: e.g., `@context/project/logic/` (canonical proof/notation/processes) plus `@context/project/lean4/` when Lean-specific; include `@context/common/standards/documentation.md`/`code.md` as primary anchors.
+  - Replace broad `@context/project/` load with explicit domain paths matching new structure: e.g., `@context/project/logic/` (canonical proof/notation/processes) plus `@context/project/lean4/` when Lean-specific; include `@context/core/standards/documentation.md`/`code.md` as primary anchors.
 - `.opencode/command/review.md`
   - Context list uses `@context/project/`; align to `project/{logic,lean4}` (and `project/repo/project-overview.md`) plus `common/system` standards instead of legacy `project/` root to avoid ambiguous loads.
 - `.opencode/command/README.md`

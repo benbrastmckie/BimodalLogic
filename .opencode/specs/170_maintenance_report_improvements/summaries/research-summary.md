@@ -32,7 +32,7 @@
 
 ## Recommendations
 
-1. **Create Maintenance Report Template Standard**: Develop .opencode/context/common/standards/maintenance-report.md with required sections (Executive Summary, Operations Performed, Validation, Statistics, Next Steps), metadata requirements, and metric definitions.
+1. **Create Maintenance Report Template Standard**: Develop .opencode/context/core/standards/maintenance-report.md with required sections (Executive Summary, Operations Performed, Validation, Statistics, Next Steps), metadata requirements, and metric definitions.
 
 2. **Update /todo Command Documentation**: Add report generation workflow to todo.md documenting when/how reports are created, template usage, state synchronization, and retention policy.
 

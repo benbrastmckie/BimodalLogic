@@ -518,8 +518,8 @@ Language is auto-detected but can be specified in task description.
 
 - Read full architecture: `.opencode/ARCHITECTURE.md`
 - Review testing guide: `.opencode/TESTING.md`
-- Explore delegation patterns: `.opencode/context/common/workflows/subagent-delegation-guide.md`
-- Check return format standard: `.opencode/context/common/standards/subagent-return-format.md`
+- Explore delegation patterns: `.opencode/context/core/workflows/subagent-delegation-guide.md`
+- Check return format standard: `.opencode/context/core/standards/subagent-return-format.md`
 
 ---
 

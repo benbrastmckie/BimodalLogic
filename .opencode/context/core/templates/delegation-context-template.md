@@ -42,9 +42,9 @@ Status: in_progress
 - {file 4} - {purpose}
 
 ## Static Context Available
-- @context/common/standards/code.md (for code quality)
-- @context/common/standards/tests.md (for test requirements)
-- @context/common/{standards|workflows}/{other-relevant}.md
+- @context/core/standards/code.md (for code quality)
+- @context/core/standards/tests.md (for test requirements)
+- @context/core/{standards|workflows}/{other-relevant}.md
 
 ## Constraints/Notes
 {Important context, preferences, compatibility}

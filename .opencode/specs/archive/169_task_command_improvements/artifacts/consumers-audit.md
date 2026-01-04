@@ -32,10 +32,10 @@
 - `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` - Task status references
 
 ### 4. Standards and Context Files
-- `.opencode/context/common/standards/tasks.md` - Task execution standards
-- `.opencode/context/common/standards/commands.md` - Command standards
-- `.opencode/context/common/system/artifact-management.md` - Artifact requirements
-- `.opencode/context/common/workflows/task-breakdown.md` - Task workflow patterns
+- `.opencode/context/core/standards/tasks.md` - Task execution standards
+- `.opencode/context/core/standards/commands.md` - Command standards
+- `.opencode/context/core/system/artifact-management.md` - Artifact requirements
+- `.opencode/context/core/workflows/task-breakdown.md` - Task workflow patterns
 
 ### 5. Spec Files (Non-Archive)
 - `.opencode/specs/TODO.md` - Task 169 description and acceptance criteria
@@ -97,9 +97,9 @@
 - All user-facing guides and tutorials
 
 **Category 4: Standards and Context** (5+ files)
-- context/common/standards/tasks.md
-- context/common/standards/commands.md
-- context/common/workflows/task-breakdown.md
+- context/core/standards/tasks.md
+- context/core/standards/commands.md
+- context/core/workflows/task-breakdown.md
 
 **Category 5: Spec Files** (5+ files)
 - specs/TODO.md

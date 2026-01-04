@@ -22,7 +22,7 @@ Fixed task standard violations in TODO.md tasks 1-9 and enhanced validation in /
 - .opencode/specs/TODO.md (tasks 1-9 updated)
 - .opencode/command/task.md (validation enhanced)
 - .opencode/command/review.md (validation enhanced)
-- .opencode/context/common/standards/tasks.md (troubleshooting added)
+- .opencode/context/core/standards/tasks.md (troubleshooting added)
 
 ## Git Commits
 

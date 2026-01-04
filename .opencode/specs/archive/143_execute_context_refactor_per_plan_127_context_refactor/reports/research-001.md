@@ -11,9 +11,9 @@
   - `.opencode/specs/127_context_refactor/plans/context-references-plan-001.md`
   - `.opencode/context/index.md`
   - `.opencode/context/README.md`
-  - `.opencode/context/common/system/context-guide.md`
-  - `.opencode/context/common/system/artifact-management.md`
-  - `.opencode/context/common/standards/report.md`
+  - `.opencode/context/core/system/context-guide.md`
+  - `.opencode/context/core/system/artifact-management.md`
+  - `.opencode/context/core/standards/report.md`
 - **Artifacts**: `.opencode/specs/143_execute_context_refactor_per_plan_127_context_refactor/reports/research-001.md`
 - **Standards**: status-markers.md; artifact-management.md; report.md; tasks.md
 
@@ -58,4 +58,4 @@ Task 143 aims to apply the context refactor described in plan 127 to `.opencode/
 - [ ] Plan verification checks for links and dependency references executed and documented; issues fixed.
 
 ## Appendix
-- References: `.opencode/context/index.md`, `.opencode/context/README.md`, `.opencode/context/common/system/context-guide.md`, `.opencode/context/common/system/artifact-management.md`, `.opencode/specs/127_context_refactor/plans/context-references-plan-001.md`, `.opencode/context/common/standards/report.md`.
+- References: `.opencode/context/index.md`, `.opencode/context/README.md`, `.opencode/context/core/system/context-guide.md`, `.opencode/context/core/system/artifact-management.md`, `.opencode/specs/127_context_refactor/plans/context-references-plan-001.md`, `.opencode/context/core/standards/report.md`.

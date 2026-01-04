@@ -14,8 +14,8 @@ artifacts:
   - plans/implementation-001.md
 related_files:
   - .mcp.json
-  - .opencode/context/common/standards/tasks.md
-  - .opencode/context/common/system/artifact-management.md
+  - .opencode/context/core/standards/tasks.md
+  - .opencode/context/core/system/artifact-management.md
 ---
 
 # Implementation Plan: Ensure /task uses Lean subagents and MCP servers correctly
@@ -31,8 +31,8 @@ System-level update so `/task` auto-detects Lean tasks (research vs implementati
 
 ## Deliverables
 - Updated `.mcp.json` (if needed for validation metadata/flags) aligned with server validation rules.
-- Updated `.opencode/context/common/standards/tasks.md` with Lean routing heuristics, subagent selection, and fallback guidance.
-- Updated `.opencode/context/common/system/artifact-management.md` covering Lean MCP validation gating, dry-run behaviors, and lazy creation constraints.
+- Updated `.opencode/context/core/standards/tasks.md` with Lean routing heuristics, subagent selection, and fallback guidance.
+- Updated `.opencode/context/core/system/artifact-management.md` covering Lean MCP validation gating, dry-run behaviors, and lazy creation constraints.
 - Dry-run playbook demonstrating correct routing/validation without creating project directories.
 
 ## Approach / Phases (1–2h scope)

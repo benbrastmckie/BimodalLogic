@@ -14,7 +14,7 @@ Successfully added comprehensive YAML frontmatter to all 6 subagents following t
 ### Phases Completed
 
 1. **Phase 1**: Created frontmatter template and JSON schema ✓
-   - Template: `.opencode/context/common/templates/subagent-frontmatter-template.yaml`
+   - Template: `.opencode/context/core/templates/subagent-frontmatter-template.yaml`
    - Schema: `.opencode/context/common/schemas/frontmatter-schema.json`
    - All 13 essential fields documented with examples
 
@@ -60,7 +60,7 @@ Successfully added comprehensive YAML frontmatter to all 6 subagents following t
    - Validation summary: 6/6 passed (100%)
 
 9. **Phase 9**: Documented frontmatter standard ✓
-   - Documentation: `.opencode/context/common/standards/frontmatter-standard.md`
+   - Documentation: `.opencode/context/core/standards/frontmatter-standard.md`
    - Complete field reference with examples
    - Best practices and common pitfalls
    - Temperature guidelines by agent type
@@ -68,10 +68,10 @@ Successfully added comprehensive YAML frontmatter to all 6 subagents following t
 ## Artifacts Created
 
 ### Infrastructure
-1. `.opencode/context/common/templates/subagent-frontmatter-template.yaml` (230 lines)
+1. `.opencode/context/core/templates/subagent-frontmatter-template.yaml` (230 lines)
 2. `.opencode/context/common/schemas/frontmatter-schema.json` (138 lines)
 3. `.opencode/scripts/validate_frontmatter.py` (450 lines)
-4. `.opencode/context/common/standards/frontmatter-standard.md` (720 lines)
+4. `.opencode/context/core/standards/frontmatter-standard.md` (720 lines)
 
 ### Updated Subagents
 1. `.opencode/agent/subagents/researcher.md` (frontmatter: 43 lines)

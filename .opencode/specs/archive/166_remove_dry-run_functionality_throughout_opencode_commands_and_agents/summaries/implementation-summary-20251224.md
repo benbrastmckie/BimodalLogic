@@ -18,9 +18,9 @@ Successfully removed all dry-run and routing-check functionality from the .openc
 - Confirmed 17 files to modify (14 commands, 1 agent, 3 standards)
 
 ### Phase 2: Update Standards and Templates
-- Updated `.opencode/context/common/standards/commands.md`: Removed dry_run YAML field requirement and dry-run semantics section
-- Updated `.opencode/context/common/standards/tasks.md`: Removed dry-run/routing check support requirement
-- Updated `.opencode/context/common/system/git-commits.md`: Removed dry-run commit exclusion
+- Updated `.opencode/context/core/standards/commands.md`: Removed dry_run YAML field requirement and dry-run semantics section
+- Updated `.opencode/context/core/standards/tasks.md`: Removed dry-run/routing check support requirement
+- Updated `.opencode/context/core/system/git-commits.md`: Removed dry-run commit exclusion
 
 ### Phase 3: Remove Dry-Run from High-Usage Commands
 - **optimize.md** (13 references): Removed dry_run YAML field, workflow stages, flag parsing, conditional branches, and examples
@@ -81,9 +81,9 @@ Successfully removed all dry-run and routing-check functionality from the .openc
 15. `.opencode/agent/subagents/batch-task-orchestrator.md`
 
 ### Standards Files (3):
-16. `.opencode/context/common/standards/commands.md`
-17. `.opencode/context/common/standards/tasks.md`
-18. `.opencode/context/common/system/git-commits.md`
+16. `.opencode/context/core/standards/commands.md`
+17. `.opencode/context/core/standards/tasks.md`
+18. `.opencode/context/core/system/git-commits.md`
 
 ### State Files (2):
 19. `.opencode/specs/TODO.md` (task 166 completion)

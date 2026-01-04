@@ -153,7 +153,7 @@ Successfully consolidated OpenCode context system achieving **72% reduction** in
 **Status**: [COMPLETED] 2025-12-29T09:09:00-08:00
 
 **Deliverables**:
-- ✓ Removed `.opencode/context/common/workflows/command-lifecycle.md` (1,138 lines)
+- ✓ Removed `.opencode/context/core/workflows/command-lifecycle.md` (1,138 lines)
 - ✓ Reduction: 1,138 lines eliminated (100% reduction)
 - ✓ Archived original file to `.opencode/context/archive/command-lifecycle.md`
 - ✓ Updated 20 references in command and agent files
@@ -527,10 +527,10 @@ Phase 3 consolidation successfully achieved **72% reduction** in key consolidati
 - index.md: 305 lines
 
 ### Common Directory (5,223 lines)
-- common/standards/: 1,352 lines (13 files)
-- common/system/: 800 lines (4 files)
-- common/workflows/: 780 lines (6 files)
-- common/templates/: 291 lines (6 files)
+- core/standards/: 1,352 lines (13 files)
+- core/system/: 800 lines (4 files)
+- core/workflows/: 780 lines (6 files)
+- core/templates/: 291 lines (6 files)
 
 ### Project Directory (14,444 lines)
 - project/lean4/: 8,500+ lines (domain knowledge)

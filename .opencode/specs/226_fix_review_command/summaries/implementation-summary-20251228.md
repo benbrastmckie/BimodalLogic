@@ -19,7 +19,7 @@ Fixed 5 critical issues in /review command: project numbering now uses next_proj
 
 1. `.opencode/command/review.md` - Updated Stage 1, Stage 6, Stage 7
 2. `.opencode/agent/subagents/reviewer.md` - Updated Step 4, Step 5
-3. `.opencode/context/common/workflows/review.md` - Refactored to eliminate duplication
+3. `.opencode/context/core/workflows/review.md` - Refactored to eliminate duplication
 4. `.opencode/specs/226_fix_review_command/summaries/implementation-summary-20251228.md` - This summary
 
 ## Key Improvements

@@ -391,10 +391,10 @@ The OpenCode agent system requires systematic documentation and implementation o
 ### Modified Files
 
 **Context Files** (2):
-1. `.opencode/context/common/system/artifact-management.md`
+1. `.opencode/context/core/system/artifact-management.md`
    - Add context window protection section (~50 lines)
    
-2. `.opencode/context/common/workflows/command-lifecycle.md`
+2. `.opencode/context/core/workflows/command-lifecycle.md`
    - Update Stages 5-6 to clarify metadata passing (~20 lines)
 
 **Command Files** (4):
@@ -472,9 +472,9 @@ If documentation changes break existing workflows:
 ## Dependencies
 
 ### Required Context Files
-- `.opencode/context/common/standards/subagent-return-format.md` (authoritative return format)
-- `.opencode/context/common/system/artifact-management.md` (authoritative artifact requirements)
-- `.opencode/context/common/workflows/command-lifecycle.md` (command pattern)
+- `.opencode/context/core/standards/subagent-return-format.md` (authoritative return format)
+- `.opencode/context/core/system/artifact-management.md` (authoritative artifact requirements)
+- `.opencode/context/core/workflows/command-lifecycle.md` (command pattern)
 - `.opencode/specs/217_research_artifact_creation/reports/research-001.md` (gap analysis)
 - `.opencode/specs/217_research_artifact_creation/summaries/research-summary.md` (key findings)
 

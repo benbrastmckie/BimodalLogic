@@ -91,7 +91,7 @@ Fix the most critical root causes that account for 80% of delegation hang scenar
 #### Task 1.1: Create Standardized Return Format Schema (1 hour)
 
 **Files to Create**:
-- `.opencode/context/common/standards/subagent-return-format.md`
+- `.opencode/context/core/standards/subagent-return-format.md`
 
 **Changes**:
 
@@ -686,7 +686,7 @@ Thoroughly test all fixes and ensure all commands work correctly with subagent d
 #### Task 3.4: Update Documentation (45 minutes)
 
 **Files to Create/Modify**:
-- `.opencode/context/common/workflows/subagent-delegation.md` (new)
+- `.opencode/context/core/workflows/subagent-delegation.md` (new)
 - `.opencode/context/common/troubleshooting/delegation-hangs.md` (new)
 - Update existing command docs with delegation patterns
 

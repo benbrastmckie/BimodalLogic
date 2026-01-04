@@ -866,12 +866,12 @@ Commands → Manual updates → Artifact links, plan files
    - Add validation delegation
 
 #### Documentation Files
-10. `.opencode/context/common/system/state-schema.md` (+50 lines)
+10. `.opencode/context/core/system/state-schema.md` (+50 lines)
     - Add plan_metadata field schema
     - Add plan_versions array schema
     - Add project state.json creation guidance
 
-11. `.opencode/context/common/workflows/command-lifecycle.md` (+30 lines)
+11. `.opencode/context/core/workflows/command-lifecycle.md` (+30 lines)
     - Add validation protocol section
     - Add atomicity guarantees section
     - Update postflight procedures
@@ -897,7 +897,7 @@ Commands → Manual updates → Artifact links, plan files
 ### 5.1 Where to Document Update Procedures
 
 #### Primary Documentation Location
-**File**: `.opencode/context/common/workflows/command-lifecycle.md`  
+**File**: `.opencode/context/core/workflows/command-lifecycle.md`  
 **Section**: New "Stage 7: Postflight - Update Procedures"
 
 **Rationale**:
@@ -945,7 +945,7 @@ All status and artifact updates MUST go through status-sync-manager for atomicit
 
 **Content**: Concrete examples from each command showing how to call status-sync-manager
 
-**File**: `.opencode/context/common/system/state-schema.md`  
+**File**: `.opencode/context/core/system/state-schema.md`  
 **Section**: Enhanced "Project State File" section
 
 **Content**: When and how to create project state.json, new field schemas
@@ -1138,10 +1138,10 @@ command-lifecycle.md defines 8 stages:
 4. `.opencode/command/implement.md` (394 lines)
 5. `.opencode/agent/subagents/status-sync-manager.md` (341 lines)
 6. `.opencode/agent/subagents/git-workflow-manager.md` (310 lines)
-7. `.opencode/context/common/system/status-markers.md` (889 lines)
-8. `.opencode/context/common/system/state-schema.md` (642 lines)
-9. `.opencode/context/common/system/artifact-management.md` (182 lines)
-10. `.opencode/context/common/workflows/command-lifecycle.md` (809 lines)
+7. `.opencode/context/core/system/status-markers.md` (889 lines)
+8. `.opencode/context/core/system/state-schema.md` (642 lines)
+9. `.opencode/context/core/system/artifact-management.md` (182 lines)
+10. `.opencode/context/core/workflows/command-lifecycle.md` (809 lines)
 
 ### Standards Referenced
 - status-markers.md: Status transition rules, timestamp formats

@@ -176,7 +176,7 @@ This document describes the complete planning workflow executed by the planner s
    - Success criteria clear
 
 **Plan Template Compliance**:
-All plans must follow `.opencode/context/common/standards/plan.md` template exactly.
+All plans must follow `.opencode/context/core/standards/plan.md` template exactly.
 
 **Checkpoint**: Plan document created
 
@@ -466,7 +466,7 @@ Error: {git_error}
 
 ### Plan Template Compliance
 
-All plans must follow `.opencode/context/common/standards/plan.md` template:
+All plans must follow `.opencode/context/core/standards/plan.md` template:
 - Metadata section with all required fields
 - Phase breakdown with [NOT STARTED] markers
 - Acceptance criteria per phase
@@ -535,7 +535,7 @@ Load context on-demand:
 
 - **Command**: `.opencode/command/plan.md`
 - **Subagent**: `.opencode/agent/subagents/planner.md`
-- **Plan Template**: `.opencode/context/common/standards/plan.md`
+- **Plan Template**: `.opencode/context/core/standards/plan.md`
 - **Return Format**: `.opencode/context/core/standards/subagent-return-format.md`
 - **Status Markers**: `.opencode/context/core/system/status-markers.md`
 - **Artifact Management**: `.opencode/context/core/system/artifact-management.md`

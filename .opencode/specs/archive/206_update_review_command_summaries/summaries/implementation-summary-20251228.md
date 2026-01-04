@@ -15,10 +15,10 @@
 - **Artifacts**:
   - summaries/implementation-summary-20251228.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/subagent-return-format.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/summary.md
-  - .opencode/context/common/system/status-markers.md
+  - .opencode/context/core/standards/subagent-return-format.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/summary.md
+  - .opencode/context/core/system/status-markers.md
 
 ---
 
@@ -55,7 +55,7 @@ The /review command has been successfully updated to create persistent review su
 - Added review_artifacts array to repository_health section in .opencode/specs/state.json
 - Schema: Array of objects with timestamp, path, scope fields
 - Updated _schema_version from 1.0.0 to 1.1.0 (minor version bump for new optional field)
-- Documented new field in .opencode/context/common/system/state-schema.md
+- Documented new field in .opencode/context/core/system/state-schema.md
 - Added schema version history entry for v1.1.0
 - Ensured backward compatibility (review_artifacts is optional, defaults to empty array)
 
@@ -95,7 +95,7 @@ The /review command has been successfully updated to create persistent review su
 - .opencode/agent/subagents/reviewer.md (created, 354 lines)
 - .opencode/command/review.md (updated, 8 stages modified)
 - .opencode/specs/state.json (updated, added review_artifacts array)
-- .opencode/context/common/system/state-schema.md (updated, documented review_artifacts field)
+- .opencode/context/core/system/state-schema.md (updated, documented review_artifacts field)
 - .opencode/specs/206_update_review_command_summaries/summaries/implementation-summary-20251228.md (created, this file)
 
 **Lines Added/Modified**:
@@ -133,7 +133,7 @@ The /review command has been successfully updated to create persistent review su
    - Checkmark in title
 
 4. **Optional Enhancements** (not required for task 206):
-   - Create .opencode/context/common/standards/review-summary-template.md
+   - Create .opencode/context/core/standards/review-summary-template.md
    - Update artifact-management.md with /review example (if desired)
    - Add /review examples to NAVIGATION.md
 
@@ -144,8 +144,8 @@ The /review command has been successfully updated to create persistent review su
 - Research Report: .opencode/specs/206_update_review_command_summaries/reports/research-001.md
 - Research Summary: .opencode/specs/206_update_review_command_summaries/summaries/research-summary.md
 - Implementation Plan: .opencode/specs/206_update_review_command_summaries/plans/implementation-001.md
-- Subagent Return Format: .opencode/context/common/standards/subagent-return-format.md
-- Artifact Management: .opencode/context/common/system/artifact-management.md
-- Summary Standard: .opencode/context/common/standards/summary.md
-- Status Markers: .opencode/context/common/system/status-markers.md
-- State Schema: .opencode/context/common/system/state-schema.md
+- Subagent Return Format: .opencode/context/core/standards/subagent-return-format.md
+- Artifact Management: .opencode/context/core/system/artifact-management.md
+- Summary Standard: .opencode/context/core/standards/summary.md
+- Status Markers: .opencode/context/core/system/status-markers.md
+- State Schema: .opencode/context/core/system/state-schema.md

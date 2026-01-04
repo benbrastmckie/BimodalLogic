@@ -860,11 +860,11 @@ This research validates that the 70% reduction target (8,093 → 2,000-2,500 lin
 5. CrewAI Documentation - https://docs.crewai.com/
 
 ### Project Files Analyzed
-1. .opencode/context/common/standards/subagent-return-format.md (356 lines)
-2. .opencode/context/common/workflows/subagent-delegation-guide.md (649 lines)
-3. .opencode/context/common/system/status-markers.md (889 lines)
-4. .opencode/context/common/system/state-schema.md (687 lines)
-5. .opencode/context/common/workflows/command-lifecycle.md (1,138 lines)
+1. .opencode/context/core/standards/subagent-return-format.md (356 lines)
+2. .opencode/context/core/workflows/subagent-delegation-guide.md (649 lines)
+3. .opencode/context/core/system/status-markers.md (889 lines)
+4. .opencode/context/core/system/state-schema.md (687 lines)
+5. .opencode/context/core/workflows/command-lifecycle.md (1,138 lines)
 
 ### Related Tasks
 1. Task 240 - OpenAgents Migration

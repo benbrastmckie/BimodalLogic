@@ -2068,7 +2068,7 @@ Expected: Orchestrator validation catches Stage 7 skip
 - `.opencode/command/revise.md` (309 lines)
 
 **Lifecycle Specification**:
-- `.opencode/context/common/workflows/command-lifecycle.md` (983 lines)
+- `.opencode/context/core/workflows/command-lifecycle.md` (983 lines)
 
 **Subagent Specifications**:
 - `.opencode/agent/subagents/status-sync-manager.md` (838 lines)
@@ -2078,9 +2078,9 @@ Expected: Orchestrator validation catches Stage 7 skip
 - `.opencode/agent/orchestrator.md` (1016 lines)
 
 **Standards**:
-- `.opencode/context/common/standards/subagent-return-format.md`
-- `.opencode/context/common/system/status-markers.md`
-- `.opencode/context/common/system/git-commits.md`
+- `.opencode/context/core/standards/subagent-return-format.md`
+- `.opencode/context/core/system/status-markers.md`
+- `.opencode/context/core/system/git-commits.md`
 
 ### 8.2 Related Tasks
 

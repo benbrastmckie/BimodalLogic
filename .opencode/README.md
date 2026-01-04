@@ -247,13 +247,13 @@ The system builder creates production-ready AI agent systems following research-
 
 ### Standards and Patterns
 
-- **Delegation Guide**: [context/common/workflows/subagent-delegation-guide.md](context/common/workflows/subagent-delegation-guide.md)
+- **Delegation Guide**: [context/core/workflows/subagent-delegation-guide.md](context/core/workflows/subagent-delegation-guide.md)
   - Session ID tracking
   - Cycle detection
   - Timeout enforcement
   - Return validation
 
-- **Return Format Standard**: [context/common/standards/subagent-return-format.md](context/common/standards/subagent-return-format.md)
+- **Return Format Standard**: [context/core/standards/subagent-return-format.md](context/core/standards/subagent-return-format.md)
   - Standardized return format
   - Field specifications
   - Validation requirements

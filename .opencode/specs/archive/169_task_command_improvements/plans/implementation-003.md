@@ -13,11 +13,11 @@
 - **Research Inputs**: .opencode/specs/169_task_command_improvements/reports/research-001.md (820 lines)
 - **Artifacts**: plans/implementation-003.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/tasks.md
-  - .opencode/context/common/system/git-commits.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/tasks.md
+  - .opencode/context/core/system/git-commits.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -276,7 +276,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
   - [ ] Update .opencode/command/implement.md with complexity assessment stage and new workflow
   - [ ] Update .opencode/agent/subagents/task-executor.md with new return format and summary creation
   - [ ] Update .opencode/agent/subagents/batch-task-orchestrator.md with progressive summarization
-  - [ ] Update .opencode/context/common/system/artifact-management.md with summary requirements and examples
+  - [ ] Update .opencode/context/core/system/artifact-management.md with summary requirements and examples
   - [ ] Update all consuming commands identified in Phase 0 with new format documentation
   - [ ] Update all user guides and tutorials with /implement command (replace /task)
   - [ ] Update all examples showing /implement usage (replace /task)
@@ -334,7 +334,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 - **Updated Agents**: 
   - .opencode/agent/subagents/task-executor.md
   - .opencode/agent/subagents/batch-task-orchestrator.md
-- **Updated Standards**: .opencode/context/common/system/artifact-management.md
+- **Updated Standards**: .opencode/context/core/system/artifact-management.md
 - **Test Results**: .opencode/specs/169_task_command_improvements/summaries/test-results-v3.md (created during Phase 7)
 - **Migration Guide**: .opencode/specs/169_task_command_improvements/summaries/migration-guide-v3.md (created during Phase 8)
 

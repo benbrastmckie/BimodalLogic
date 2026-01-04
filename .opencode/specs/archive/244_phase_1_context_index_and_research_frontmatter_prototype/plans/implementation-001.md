@@ -809,7 +809,7 @@ time (
   # Simulate routing phase
   cat .opencode/agent/orchestrator.md > /dev/null
   cat .opencode/context/system/routing-guide.md > /dev/null
-  cat .opencode/context/common/system/status-markers.md > /dev/null
+  cat .opencode/context/core/system/status-markers.md > /dev/null
 )
 
 # Should complete in <1 second

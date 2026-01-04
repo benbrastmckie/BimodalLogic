@@ -506,5 +506,5 @@ Standardized error codes for consistent error handling:
 ## Related Documentation
 
 - Status Management: `.opencode/context/core/system/state-management.md`
-- Artifact Management: `.opencode/context/common/system/artifact-management.md`
+- Artifact Management: `.opencode/context/core/system/artifact-management.md`
 - Task 191 Research: `.opencode/specs/191_fix_subagent_delegation_hang/reports/research-001.md`

@@ -103,7 +103,7 @@
 - `.opencode/command/add.md` - Current command implementation
 - `.opencode/agent/subagents/task-adder.md` - Task creation logic
 - `.opencode/specs/state.json` - Numbering schema
-- `.opencode/context/common/standards/tasks.md` - Metadata requirements
+- `.opencode/context/core/standards/tasks.md` - Metadata requirements
 
 **External References:**
 - clig.dev CLI Guidelines - Human-first design principles

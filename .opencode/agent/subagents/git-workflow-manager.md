@@ -21,7 +21,7 @@ context_loading:
   index: ".opencode/context/index.md"
   required:
     - "core/standards/delegation.md"
-    - "common/system/git-commits.md"
+    - "core/system/git-commits.md"
   max_context_size: 20000
 delegation:
   max_depth: 3

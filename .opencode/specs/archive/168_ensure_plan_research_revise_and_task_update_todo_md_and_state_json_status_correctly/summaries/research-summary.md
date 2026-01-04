@@ -14,8 +14,8 @@
 
 ## Most Relevant Resources
 
-- `.opencode/context/common/system/status-markers.md`: Defines status marker standards and timestamp formats
-- `.opencode/context/common/system/state-schema.md`: Defines state.json schema and field naming
+- `.opencode/context/core/system/status-markers.md`: Defines status marker standards and timestamp formats
+- `.opencode/context/core/system/state-schema.md`: Defines state.json schema and field naming
 - `.opencode/agent/subagents/specialists/batch-status-manager.md`: Current TODO.md-only atomic update specialist
 - `.opencode/command/task.md`: Most complete specification for atomic TODO/plan/state updates
 

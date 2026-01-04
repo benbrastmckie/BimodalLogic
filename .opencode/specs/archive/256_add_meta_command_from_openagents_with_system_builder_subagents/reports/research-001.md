@@ -169,9 +169,9 @@ The /meta command uses a **progressive disclosure** interview pattern:
    - Backup explicitly lists context files:
      ```
      Context Loaded:
-     @context/common/templates/
-     @context/common/system/context-guide.md
-     @context/common/standards/patterns.md
+     @context/core/templates/
+     @context/core/system/context-guide.md
+     @context/core/standards/patterns.md
      @context/context/index.md
      ```
    - OpenAgents version has no context loading declaration

@@ -707,7 +707,7 @@ def create_directories(divide_flag: bool, artifact_type: str):
 4. Update project state.json schema with subtopic metadata
 
 **Files**:
-- `.opencode/context/common/system/state-schema.md`
+- `.opencode/context/core/system/state-schema.md`
 - `.opencode/agent/subagents/specialists/status-sync-manager.md`
 
 ### Phase 4: Documentation Updates
@@ -722,8 +722,8 @@ def create_directories(divide_flag: bool, artifact_type: str):
 4. Update NAVIGATION.md with new feature
 
 **Files**:
-- `.opencode/context/common/system/artifact-management.md`
-- `.opencode/context/common/system/status-markers.md`
+- `.opencode/context/core/system/artifact-management.md`
+- `.opencode/context/core/system/status-markers.md`
 - `Documentation/NAVIGATION.md`
 
 ### Phase 5: Testing and Validation

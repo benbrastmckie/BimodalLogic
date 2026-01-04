@@ -287,8 +287,8 @@
   - All now reference consolidated files:
     - `core/standards/delegation.md` (replaces subagent-return-format.md)
     - `core/system/state-management.md` (replaces status-markers.md, state-schema.md)
-    - `common/system/artifact-management.md`
-    - `common/system/git-commits.md`
+    - `core/system/artifact-management.md`
+    - `core/system/git-commits.md`
     
 - ✅ Verified no explicit "Context Loaded:" sections in commands
   - All 9 commands already use frontmatter context_loading
@@ -451,7 +451,7 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/standards/subagent-return-format.md"
+    - "core/standards/subagent-return-format.md"
 ```
 
 **Pattern C** - No explicit loading (implement.md, plan.md, research.md)

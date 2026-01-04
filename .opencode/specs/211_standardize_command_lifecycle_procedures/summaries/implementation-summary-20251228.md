@@ -39,7 +39,7 @@ Successfully standardized pre-flight and post-flight procedures across all workf
 
 ## Artifacts Created
 
-1. .opencode/context/common/workflows/command-lifecycle.md (808 lines, new file)
+1. .opencode/context/core/workflows/command-lifecycle.md (808 lines, new file)
 2. .opencode/command/research.md (updated, 332 lines)
 3. .opencode/command/plan.md (updated, 309 lines)
 4. .opencode/command/revise.md (updated, 286 lines)

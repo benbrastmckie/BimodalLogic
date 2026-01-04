@@ -11,10 +11,10 @@
   - .opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md (Comparative analysis)
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/tasks.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/tasks.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -373,12 +373,12 @@ This plan synthesizes findings from task 240's OpenAgents comparative analysis a
 - .opencode/command/revise.md (modified, 150-250 lines)
 
 **Phase 8:**
-- .opencode/context/common/workflows/command-lifecycle.md (modified, enhanced with variation interpretation)
+- .opencode/context/core/workflows/command-lifecycle.md (modified, enhanced with variation interpretation)
 
 **Phase 9:**
-- .opencode/context/common/workflows/subagent-delegation-guide.md (archived or removed)
-- .opencode/context/common/standards/subagent-return-format.md (archived or removed)
-- .opencode/context/common/system/status-markers.md (archived or removed)
+- .opencode/context/core/workflows/subagent-delegation-guide.md (archived or removed)
+- .opencode/context/core/standards/subagent-return-format.md (archived or removed)
+- .opencode/context/core/system/status-markers.md (archived or removed)
 
 **Phase 10:**
 - Comprehensive integration test report

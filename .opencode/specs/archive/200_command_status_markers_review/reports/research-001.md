@@ -888,7 +888,7 @@ The command-specific status marker implementation is **production-ready and full
 
 ## Related Documentation
 
-- Status Markers Specification: `.opencode/context/common/system/status-markers.md`
+- Status Markers Specification: `.opencode/context/core/system/status-markers.md`
 - Research Command: `.opencode/command/research.md`
 - Plan Command: `.opencode/command/plan.md`
 - Revise Command: `.opencode/command/revise.md`

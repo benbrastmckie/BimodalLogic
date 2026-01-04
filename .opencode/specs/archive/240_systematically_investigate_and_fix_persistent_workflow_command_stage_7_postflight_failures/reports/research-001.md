@@ -369,7 +369,7 @@ Add YAML frontmatter with tools/permissions to all agents.
 - Orchestrator: /home/benjamin/Projects/ProofChecker/.opencode/agent/orchestrator.md (1,038 lines)
 - Commands: /home/benjamin/Projects/ProofChecker/.opencode/command/ (average 712 lines)
 - Context: /home/benjamin/Projects/ProofChecker/.opencode/context/common/ (8,093 lines total)
-- Command Lifecycle: /home/benjamin/Projects/ProofChecker/.opencode/context/common/workflows/command-lifecycle.md (1,138 lines)
+- Command Lifecycle: /home/benjamin/Projects/ProofChecker/.opencode/context/core/workflows/command-lifecycle.md (1,138 lines)
 
 ### Related Tasks
 - Task 237: Context window bloat (found 60-70% usage before work begins)

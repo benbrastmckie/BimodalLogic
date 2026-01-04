@@ -265,7 +265,7 @@ When metadata is not provided by user, task-adder applies these defaults:
 
 ### Step 4: Update Standards Documentation
 
-**File**: `.opencode/context/common/standards/tasks.md`
+**File**: `.opencode/context/core/standards/tasks.md`
 
 **Action**: Document metadata defaults and auto-population strategy
 
@@ -574,7 +574,7 @@ Verify: All tasks from file in TODO.md
 
 ### Standards Documentation
 
-**File**: `.opencode/context/common/standards/tasks.md`
+**File**: `.opencode/context/core/standards/tasks.md`
 
 **Required Updates**:
 1. Metadata requirements (required vs. optional)

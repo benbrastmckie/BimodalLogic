@@ -23,8 +23,8 @@
 ## Phase 2: Delegation Files Consolidation
 
 ### Source Files
-- `.opencode/context/common/standards/subagent-return-format.md` (355 lines)
-- `.opencode/context/common/workflows/subagent-delegation-guide.md` (648 lines)
+- `.opencode/context/core/standards/subagent-return-format.md` (355 lines)
+- `.opencode/context/core/workflows/subagent-delegation-guide.md` (648 lines)
 - **Total**: 1,003 lines
 
 ### Target File
@@ -49,8 +49,8 @@
 ## Phase 3: State Management Files Consolidation
 
 ### Source Files
-- `.opencode/context/common/system/status-markers.md` (888 lines)
-- `.opencode/context/common/system/state-schema.md` (686 lines)
+- `.opencode/context/core/system/status-markers.md` (888 lines)
+- `.opencode/context/core/system/state-schema.md` (686 lines)
 - **Total**: 1,574 lines
 
 ### Target File
@@ -74,7 +74,7 @@
 ## Phase 4: Command Lifecycle Removal
 
 ### Source File
-- `.opencode/context/common/workflows/command-lifecycle.md` (1,138 lines)
+- `.opencode/context/core/workflows/command-lifecycle.md` (1,138 lines)
 
 ### Action
 - **Remove**: Entire file (obsolete after OpenAgents migration)
@@ -94,10 +94,10 @@
 ## Phase 5: Examples Consolidation
 
 ### Files Modified
-- `.opencode/context/common/workflows/delegation-patterns.md` (725 → 29 lines, archived)
-- `.opencode/context/common/system/artifact-management.md` (274 → 270 lines)
-- `.opencode/context/common/standards/frontmatter-standard.md` (717 → 711 lines)
-- `.opencode/context/common/system/self-healing-guide.md` (153 → 149 lines)
+- `.opencode/context/core/workflows/delegation-patterns.md` (725 → 29 lines, archived)
+- `.opencode/context/core/system/artifact-management.md` (274 → 270 lines)
+- `.opencode/context/core/standards/frontmatter-standard.md` (717 → 711 lines)
+- `.opencode/context/core/system/self-healing-guide.md` (153 → 149 lines)
 - `.opencode/context/index.md` (179 → 305 lines, comprehensive update)
 
 ### Actions Completed

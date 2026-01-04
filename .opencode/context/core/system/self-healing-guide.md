@@ -19,7 +19,7 @@ The OpenCode agent system implements **self-healing** to automatically recover f
 ### Tier 1: Auto-Created from Templates
 
 **state.json** - Main state tracking file
-- Template: `.opencode/context/common/templates/state-template.json`
+- Template: `.opencode/context/core/templates/state-template.json`
 - Auto-created from .opencode/specs/TODO.md data on first run or after deletion
 - Contains: active projects, health metrics, task counters
 
@@ -81,7 +81,7 @@ Reason: Template file missing
 Fallback: Created minimal state.json (degraded mode)
 
 To restore full functionality:
-git checkout HEAD -- .opencode/context/common/templates/state-template.json
+git checkout HEAD -- .opencode/context/core/templates/state-template.json
 ```
 
 ### .opencode/specs/TODO.md Missing (Cannot Auto-Create)
@@ -106,12 +106,12 @@ Recovery steps:
 1. **Check .opencode/specs/TODO.md exists** - Required for state.json creation
 2. **Restore template from git**:
    ```bash
-   git checkout HEAD -- .opencode/context/common/templates/state-template.json
+   git checkout HEAD -- .opencode/context/core/templates/state-template.json
    ```
 3. **Restore from backup**:
    ```bash
-   cp .opencode.backup.*/context/common/templates/state-template.json \
-      .opencode/context/common/templates/
+   cp .opencode.backup.*/context/core/templates/state-template.json \
+      .opencode/context/core/templates/
    ```
 4. **Create manually** following schema in `state-schema.md`
 

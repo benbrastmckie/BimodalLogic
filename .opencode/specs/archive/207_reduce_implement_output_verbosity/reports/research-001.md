@@ -40,7 +40,7 @@ Example verbose return for task 191 (hypothetical):
 Implementation completed for task 191
 - Status: [COMPLETED]
 - Artifacts: 
-  - .opencode/context/common/standards/subagent-return-format.md
+  - .opencode/context/core/standards/subagent-return-format.md
   - .opencode/command/implement.md
   - .opencode/command/research.md
   - .opencode/command/plan.md
@@ -303,8 +303,8 @@ The /implement command should:
 
 ### Files to Reference
 
-1. `.opencode/context/common/system/artifact-management.md` (summary standard)
-2. `.opencode/context/common/standards/subagent-return-format.md` (return format validation)
+1. `.opencode/context/core/system/artifact-management.md` (summary standard)
+2. `.opencode/context/core/standards/subagent-return-format.md` (return format validation)
 3. `.opencode/agent/subagents/task-executor.md` (reference implementation for summary creation)
 
 ### No Breaking Changes
@@ -391,8 +391,8 @@ The /implement command should:
 2. `.opencode/command/implement.md` (Stage 8, lines 366-387)
 3. `.opencode/agent/subagents/task-executor.md` (Step 5, lines 145-177)
 4. `.opencode/agent/subagents/lean-implementation-agent.md` (Step 6, lines 146-158)
-5. `.opencode/context/common/system/artifact-management.md` (summary requirements, lines 83-107)
-6. `.opencode/context/common/standards/subagent-return-format.md` (return format standard)
+5. `.opencode/context/core/system/artifact-management.md` (summary requirements, lines 83-107)
+6. `.opencode/context/core/standards/subagent-return-format.md` (return format standard)
 7. Task 202 (related: fix verbose artifact output in other commands)
 
 ---

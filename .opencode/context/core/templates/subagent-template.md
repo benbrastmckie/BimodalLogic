@@ -4,7 +4,7 @@ This template is used to generate specialized subagent files.
 
 ## Template Structure
 
-(Use YAML front matter + XML blocks; align with `.opencode/context/common/standards/commands.md` and include context_level/language when relevant.)
+(Use YAML front matter + XML blocks; align with `.opencode/context/core/standards/commands.md` and include context_level/language when relevant.)
 
 ```markdown
 ---

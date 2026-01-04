@@ -659,8 +659,8 @@ The fix will be considered successful when:
 1. `.opencode/command/todo.md` - /todo command specification
 2. `TODO.md` - Main project TODO file
 3. `.opencode/specs/TODO.md` - Specs TODO file with orphaned content
-4. `.opencode/context/common/system/status-markers.md` - Status marker specification
-5. `.opencode/context/common/system/artifact-management.md` - Artifact management standards
+4. `.opencode/context/core/system/status-markers.md` - Status marker specification
+5. `.opencode/context/core/system/artifact-management.md` - Artifact management standards
 
 ---
 

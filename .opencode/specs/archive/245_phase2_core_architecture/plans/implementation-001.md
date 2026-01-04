@@ -8,10 +8,10 @@
 - **Research Inputs**: .opencode/specs/245_phase2_core_architecture/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/tasks.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/tasks.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -272,10 +272,10 @@ Phase 2 applies validated patterns from Phase 1 to all workflow commands (/plan,
 - ✓ Tools and permissions enforcement tested
 
 **Artifacts**:
-- Template: `.opencode/context/common/templates/subagent-frontmatter-template.yaml`
+- Template: `.opencode/context/core/templates/subagent-frontmatter-template.yaml`
 - Schema: `.opencode/context/common/schemas/frontmatter-schema.json`
 - Validation: `.opencode/scripts/validate_frontmatter.py`
-- Standard: `.opencode/context/common/standards/frontmatter-standard.md`
+- Standard: `.opencode/context/core/standards/frontmatter-standard.md`
 - Updated: researcher.md, planner.md, implementer.md, task-executor.md, lean-research-agent.md, lean-implementation-agent.md
 
 **Validation**: 6/6 subagents passed all 3 validation tiers (syntax, schema, semantic)

@@ -467,7 +467,7 @@ Subagents return artifact links + brief summaries (metadata) to calling agents, 
 
 ### Proposed Solution
 
-**Fix Location**: `.opencode/context/common/workflows/review.md`
+**Fix Location**: `.opencode/context/core/workflows/review.md`
 
 **Refactoring Approach**: Extract to References Pattern
 
@@ -514,7 +514,7 @@ Subagents return artifact links + brief summaries (metadata) to calling agents, 
 
 **Standard Lifecycle**: /review follows the 8-stage command lifecycle pattern defined in command-lifecycle.md with reviewer-specific adaptations.
 
-**Reference**: See `.opencode/context/common/workflows/command-lifecycle.md` for detailed stage descriptions.
+**Reference**: See `.opencode/context/core/workflows/command-lifecycle.md` for detailed stage descriptions.
 
 **Reviewer-Specific Adaptations**:
 
@@ -559,7 +559,7 @@ Subagents return artifact links + brief summaries (metadata) to calling agents, 
 
 ## Artifact Management
 
-**Reference**: See `.opencode/context/common/system/artifact-management.md` for detailed artifact standards.
+**Reference**: See `.opencode/context/core/system/artifact-management.md` for detailed artifact standards.
 
 **Review-Specific Artifacts**:
 - Project directory: {next_project_number}_codebase_review
@@ -756,15 +756,15 @@ All fixes are internal to /review command and reviewer subagent. No changes to:
 ## References
 
 ### System Architecture
-- `.opencode/context/common/workflows/command-lifecycle.md` - 8-stage command pattern
-- `.opencode/context/common/system/artifact-management.md` - Artifact standards
-- `.opencode/context/common/system/status-markers.md` - Status format
-- `.opencode/context/common/standards/subagent-return-format.md` - Return format
+- `.opencode/context/core/workflows/command-lifecycle.md` - 8-stage command pattern
+- `.opencode/context/core/system/artifact-management.md` - Artifact standards
+- `.opencode/context/core/system/status-markers.md` - Status format
+- `.opencode/context/core/standards/subagent-return-format.md` - Return format
 
 ### Review Command
 - `.opencode/command/review.md` - Review command specification
 - `.opencode/agent/subagents/reviewer.md` - Reviewer subagent specification
-- `.opencode/context/common/workflows/review.md` - Review workflow context
+- `.opencode/context/core/workflows/review.md` - Review workflow context
 
 ### State Management
 - `.opencode/agent/subagents/status-sync-manager.md` - Atomic state updates

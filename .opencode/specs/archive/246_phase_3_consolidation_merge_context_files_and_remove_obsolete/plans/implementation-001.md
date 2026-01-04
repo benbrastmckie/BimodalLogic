@@ -309,7 +309,7 @@ Consolidate the context system from 8,093 lines to 2,000-2,500 lines (70% reduct
 3. Verify each command file has routing patterns documented
 4. Verify each agent file has execution patterns documented (Stages 4-8)
 5. Update command files if routing patterns missing
-6. Remove command-lifecycle.md from .opencode/context/common/workflows/
+6. Remove command-lifecycle.md from .opencode/context/core/workflows/
 7. Archive command-lifecycle.md to .opencode/context/archive/
 8. Update content mapping documenting removal
 9. Find all references to command-lifecycle.md: `grep -r "command-lifecycle.md" .opencode/`

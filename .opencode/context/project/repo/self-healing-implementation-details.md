@@ -11,8 +11,8 @@
 
 This document contains detailed implementation pseudocode, data extraction functions, and testing scenarios for the self-healing infrastructure. For user-facing documentation, see:
 
-- **Quick Reference**: `.opencode/context/common/system/self-healing-guide.md`
-- **Schema Reference**: `.opencode/context/common/system/state-schema.md`
+- **Quick Reference**: `.opencode/context/core/system/self-healing-guide.md`
+- **Schema Reference**: `.opencode/context/core/system/state-schema.md`
 
 ---
 
@@ -229,7 +229,7 @@ def ensure_state_json():
     log_info("Self-healing: state.json missing or invalid, creating from template")
     
     # 1. Load template
-    template_path = ".opencode/context/common/templates/state-template.json"
+    template_path = ".opencode/context/core/templates/state-template.json"
     if not file_exists(template_path):
         log_error("Self-healing failed: Template missing")
         return create_minimal_state()  # Fallback
@@ -394,7 +394,7 @@ def create_minimal_state():
         log_warning("Self-healing: Created minimal state.json (degraded mode)")
         log_warning("  - Template file missing, using fallback minimal structure")
         log_warning("  - To restore full functionality, restore template from git:")
-        log_warning("    git checkout HEAD -- .opencode/context/common/templates/state-template.json")
+        log_warning("    git checkout HEAD -- .opencode/context/core/templates/state-template.json")
     except Exception as e:
         log_error(f"Critical: Cannot create even minimal state.json: {e}")
         raise IOError(f"Self-healing completely failed: {e}")
@@ -418,7 +418,7 @@ rm .opencode/specs/state.json
 # Expected behavior:
 # 1. Command detects missing state.json in preflight
 # 2. Calls ensure_state_json()
-# 3. Loads template from .opencode/context/common/templates/state-template.json
+# 3. Loads template from .opencode/context/core/templates/state-template.json
 # 4. Parses .opencode/specs/TODO.md (must exist)
 # 5. Extracts task data (37 tasks found)
 # 6. Populates template fields
@@ -441,8 +441,8 @@ cat .opencode/specs/state.json | jq '.recent_activities[0].activity'
 
 ```bash
 # Setup: Remove template file
-mv .opencode/context/common/templates/state-template.json \
-   .opencode/context/common/templates/state-template.json.backup
+mv .opencode/context/core/templates/state-template.json \
+   .opencode/context/core/templates/state-template.json.backup
 
 # Execute: Run command
 /research 197
@@ -464,8 +464,8 @@ cat .opencode/specs/state.json | jq '.active_projects | length'
 # Should show: 0 (minimal state has empty arrays)
 
 # Cleanup: Restore template
-mv .opencode/context/common/templates/state-template.json.backup \
-   .opencode/context/common/templates/state-template.json
+mv .opencode/context/core/templates/state-template.json.backup \
+   .opencode/context/core/templates/state-template.json
 ```
 
 ### Test Case 3: Missing .opencode/specs/TODO.md (Failure)
@@ -550,7 +550,7 @@ cat .opencode/specs/state.json | jq '.recent_activities[0].activity'
 
 ```
 [INFO] Self-healing: state.json missing, creating from template
-[INFO] Self-healing: Loaded template from .opencode/context/common/templates/state-template.json
+[INFO] Self-healing: Loaded template from .opencode/context/core/templates/state-template.json
 [INFO] Self-healing: Parsed .opencode/specs/TODO.md successfully (37 tasks found)
 [INFO] Self-healing: Extracted 4 active projects, 2 completed projects
 [INFO] Self-healing: Calculated repository health (score: 85)
@@ -568,14 +568,14 @@ cat .opencode/specs/state.json | jq '.recent_activities[0].activity'
 [WARN] Self-healing: Created minimal state.json (degraded mode)
 [WARN]   - Template file missing, using fallback minimal structure
 [WARN]   - To restore full functionality, restore template from git:
-[WARN]     git checkout HEAD -- .opencode/context/common/templates/state-template.json
+[WARN]     git checkout HEAD -- .opencode/context/core/templates/state-template.json
 ```
 
 ### Failed Self-Healing
 
 ```
 [WARN] Self-healing: state.json missing, creating from template
-[INFO] Self-healing: Loaded template from .opencode/context/common/templates/state-template.json
+[INFO] Self-healing: Loaded template from .opencode/context/core/templates/state-template.json
 [ERROR] Cannot auto-create state.json: .opencode/specs/TODO.md missing
 [ERROR] Required file .opencode/specs/TODO.md not found. Self-healing can only create state.json when .opencode/specs/TODO.md exists.
 
@@ -588,14 +588,14 @@ Recovery steps:
 2. Or restore from backup if available
 
 3. Create new .opencode/specs/TODO.md following the standard format
-   Template: .opencode/context/common/templates/todo-template.md
+   Template: .opencode/context/core/templates/todo-template.md
 ```
 
 ---
 
 ## Related Documentation
 
-- **Quick Reference**: `.opencode/context/common/system/self-healing-guide.md`
-- **Schema Reference**: `.opencode/context/common/system/state-schema.md`
-- **Context Organization**: `.opencode/context/common/system/context-guide.md`
-- **Template**: `.opencode/context/common/templates/state-template.json`
+- **Quick Reference**: `.opencode/context/core/system/self-healing-guide.md`
+- **Schema Reference**: `.opencode/context/core/system/state-schema.md`
+- **Context Organization**: `.opencode/context/core/system/context-guide.md`
+- **Template**: `.opencode/context/core/templates/state-template.json`

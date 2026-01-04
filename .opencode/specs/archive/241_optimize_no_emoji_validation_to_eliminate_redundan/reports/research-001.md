@@ -329,7 +329,7 @@ Mathematical symbols (→, ∧, ∨, ¬, □, ◇) are NOT emojis - preserve the
 **Lines Removed**: ~5 lines per file × 6 files = 30 lines, ~1.5KB
 
 **Category 3: Context Files** (1 file - KEEP as reference)
-- `.opencode/context/common/standards/documentation.md`
+- `.opencode/context/core/standards/documentation.md`
 
 **Retention Strategy**:
 - **KEEP** NO EMOJI Policy section as reference documentation
@@ -343,7 +343,7 @@ Mathematical symbols (→, ∧, ∨, ¬, □, ◇) are NOT emojis - preserve the
 - `.opencode/command/errors.md`
 - `.opencode/command/todo.md`
 - `.opencode/agent/subagents/error-diagnostics-agent.md`
-- `.opencode/context/common/templates/command-template.md`
+- `.opencode/context/core/templates/command-template.md`
 
 **Removal Strategy**:
 - Remove emoji validation references
@@ -610,7 +610,7 @@ Task 238 successfully eliminated emojis but introduced significant validation ov
    - Files modified and validation added
    - Prevention mechanisms implemented
 
-4. Documentation Standards: `.opencode/context/common/standards/documentation.md`
+4. Documentation Standards: `.opencode/context/core/standards/documentation.md`
    - NO EMOJI Policy section (lines 73-98)
    - Text alternatives table
    - Validation commands

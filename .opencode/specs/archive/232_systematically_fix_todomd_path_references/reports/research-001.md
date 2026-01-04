@@ -121,9 +121,9 @@ grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Langua
 
 | Category | Files with TODO.md Refs | Path Pattern | Classification |
 |----------|-------------------------|--------------|----------------|
-| common/workflows/ | 2 files (review.md, command-lifecycle.md) | `TODO.md` (relative) | Context-dependent |
-| common/standards/ | 3 files (documentation.md, commands.md, command-argument-handling.md) | `TODO.md` (relative) | Context-dependent |
-| common/system/ | 0 files | N/A | N/A |
+| core/workflows/ | 2 files (review.md, command-lifecycle.md) | `TODO.md` (relative) | Context-dependent |
+| core/standards/ | 3 files (documentation.md, commands.md, command-argument-handling.md) | `TODO.md` (relative) | Context-dependent |
+| core/system/ | 0 files | N/A | N/A |
 | project/lean4/ | 0 files | N/A | N/A |
 | project/logic/ | 0 files | N/A | N/A |
 | project/repo/ | 0 files | N/A | N/A |
@@ -937,11 +937,11 @@ research.md/implement.md (extracts Language from TODO.md via bash)
 12-15. system-builder/* (no references)
 
 **Context Files** (70+):
-1. common/workflows/review.md
-2. common/workflows/command-lifecycle.md
-3. common/standards/documentation.md
-4. common/standards/commands.md
-5. common/standards/command-argument-handling.md
+1. core/workflows/review.md
+2. core/workflows/command-lifecycle.md
+3. core/standards/documentation.md
+4. core/standards/commands.md
+5. core/standards/command-argument-handling.md
 6-70. Other context files (no references)
 
 ### Appendix B: Migration Task List

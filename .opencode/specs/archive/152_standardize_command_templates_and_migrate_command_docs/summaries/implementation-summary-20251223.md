@@ -3,7 +3,7 @@
 **Task**: 152 – Standardize command templates and migrate command docs
 
 ## What Changed
-- Added command documentation standard `.opencode/context/common/standards/commands.md` and YAML/XML command template `.opencode/context/common/templates/command-template.md`.
+- Added command documentation standard `.opencode/context/core/standards/commands.md` and YAML/XML command template `.opencode/context/core/templates/command-template.md`.
 - Migrated all command docs in `.opencode/command/` (add, context, document, implement, lean, meta, plan, refactor, research, review, revise, task, todo, README) to the YAML front matter + XML/@subagent structure with context_level/language metadata, status/lazy-creation/registry notes, and Lean routing rules.
 - Updated meta templates (orchestrator/subagent) and meta-guide to reference the restored YAML/XML command standard; refreshed plan implementation-002 status to completed.
 

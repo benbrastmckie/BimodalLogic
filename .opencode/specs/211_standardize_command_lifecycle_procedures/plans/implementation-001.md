@@ -115,7 +115,7 @@ Create new context file defining standardized 8-stage lifecycle pattern for all 
 
 ### Deliverable
 
-New file: .opencode/context/common/workflows/command-lifecycle.md (~500 lines)
+New file: .opencode/context/core/workflows/command-lifecycle.md (~500 lines)
 
 **Structure**:
 ```
@@ -214,12 +214,12 @@ Each command file should follow this pattern:
 ```xml
 <!-- Context Loading -->
 Context Loaded:
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/common/system/status-markers.md
-@.opencode/context/common/standards/subagent-return-format.md
-@.opencode/context/common/system/git-commits.md
+@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/subagent-return-format.md
+@.opencode/context/core/system/git-commits.md
 
 <!-- Workflow Execution -->
 <workflow_execution>
@@ -541,7 +541,7 @@ Test validation report documenting:
 
 ### Deliverables
 
-1. .opencode/context/common/workflows/command-lifecycle.md (~500 lines)
+1. .opencode/context/core/workflows/command-lifecycle.md (~500 lines)
 2. .opencode/command/research.md (updated, ~300 lines)
 3. .opencode/command/plan.md (updated, ~290 lines)
 4. .opencode/command/revise.md (updated, ~280 lines)
@@ -643,7 +643,7 @@ None identified
 
 ### Files to be Created
 
-- .opencode/context/common/workflows/command-lifecycle.md (new)
+- .opencode/context/core/workflows/command-lifecycle.md (new)
 
 ### Files to be Modified
 
@@ -660,10 +660,10 @@ None identified
 
 ### Related Standards
 
-- .opencode/context/common/system/status-markers.md
-- .opencode/context/common/standards/subagent-return-format.md
-- .opencode/context/common/system/artifact-management.md
-- .opencode/context/common/system/git-commits.md
+- .opencode/context/core/system/status-markers.md
+- .opencode/context/core/standards/subagent-return-format.md
+- .opencode/context/core/system/artifact-management.md
+- .opencode/context/core/system/git-commits.md
 
 ### Related Tasks
 

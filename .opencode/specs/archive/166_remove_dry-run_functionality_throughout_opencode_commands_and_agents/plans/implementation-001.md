@@ -10,10 +10,10 @@
 - **Research Inputs**: .opencode/specs/166_remove_dry-run_functionality_throughout_opencode_commands_and_agents/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file), summaries/implementation-summary-20251224.md
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/tasks.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/tasks.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -90,14 +90,14 @@ Remove all dry-run and routing-check functionality from the .opencode system to 
 
 - **Goal:** Remove dry-run from foundational standards to establish new baseline
 - **Tasks:**
-  - [x] Update .opencode/context/common/standards/commands.md:
+  - [x] Update .opencode/context/core/standards/commands.md:
     - [x] Remove line 18 (`dry_run:` YAML field requirement)
     - [x] Remove line 49 (skip for dry-runs guidance)
     - [x] Remove line 70 (dry-run/health-check guidance)
     - [x] Remove or update section 7 (dry-run semantics)
-  - [x] Update .opencode/context/common/standards/tasks.md:
+  - [x] Update .opencode/context/core/standards/tasks.md:
     - [x] Remove line 72 (dry-run/routing check support)
-  - [x] Update .opencode/context/common/system/git-commits.md:
+  - [x] Update .opencode/context/core/system/git-commits.md:
     - [x] Remove line 8 (dry-run commit exclusion)
   - [x] Verify no other standards files reference dry-run
 - **Timing:** 20-30 minutes
@@ -307,7 +307,7 @@ grep -r "dry_run:" .opencode/agent/
 grep -r "--dry-run" .opencode/command/
 grep -r "--dry-run" .opencode/agent/
 grep -r "routing-check" .opencode/
-grep -r "dry.run" .opencode/context/common/standards/
+grep -r "dry.run" .opencode/context/core/standards/
 ```
 
 **File Count Verification:**
@@ -343,9 +343,9 @@ grep -r "dry.run" .opencode/context/common/standards/
 14. .opencode/agent/subagents/batch-task-orchestrator.md
 
 *Standards Files (3):*
-15. .opencode/context/common/standards/commands.md
-16. .opencode/context/common/standards/tasks.md
-17. .opencode/context/common/system/git-commits.md
+15. .opencode/context/core/standards/commands.md
+16. .opencode/context/core/standards/tasks.md
+17. .opencode/context/core/system/git-commits.md
 
 *State Files (2):*
 18. .opencode/specs/TODO.md (task 166 completion)

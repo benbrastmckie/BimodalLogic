@@ -32,7 +32,7 @@ Task 191 has been successfully completed. All three phases of the implementation
 #### Task 1.1: Create Standardized Return Format Schema [PASS]
 
 **File Created**:
-- `.opencode/context/common/standards/subagent-return-format.md`
+- `.opencode/context/core/standards/subagent-return-format.md`
 
 **Deliverables**:
 - Complete JSON schema with required fields (status, summary, artifacts, metadata, errors, next_steps)
@@ -213,7 +213,7 @@ Beyond the plan requirements, return handling was also added to:
 #### Documentation Created/Updated [PASS]
 
 **File Created**:
-- `.opencode/context/common/workflows/subagent-delegation-guide.md` (649 lines)
+- `.opencode/context/core/workflows/subagent-delegation-guide.md` (649 lines)
 
 **Content**:
 - Comprehensive delegation patterns and best practices
@@ -311,8 +311,8 @@ Beyond the plan requirements, return handling was also added to:
 ## Files Created/Modified
 
 ### New Files Created (2):
-1. `.opencode/context/common/standards/subagent-return-format.md` (356 lines)
-2. `.opencode/context/common/workflows/subagent-delegation-guide.md` (649 lines)
+1. `.opencode/context/core/standards/subagent-return-format.md` (356 lines)
+2. `.opencode/context/core/workflows/subagent-delegation-guide.md` (649 lines)
 
 ### Commands Modified (5):
 1. `.opencode/command/implement.md` - Added stages 5-6, delegation context

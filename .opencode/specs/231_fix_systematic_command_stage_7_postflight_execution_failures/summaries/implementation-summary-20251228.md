@@ -161,7 +161,7 @@ Successfully implemented all 5 phases to fix systematic Stage 7 (Postflight) exe
 3. `.opencode/command/implement.md` - Strengthened Stage 7, added checkpoints, explicit delegation, error handling, phase_statuses validation
 4. `.opencode/command/revise.md` - Strengthened Stage 7, added checkpoints, explicit delegation, error handling, plan_version validation
 5. `.opencode/agent/orchestrator.md` - Extended delegation registry, added command stage validation
-6. `.opencode/context/common/workflows/command-lifecycle.md` - Added orchestrator stage validation section
+6. `.opencode/context/core/workflows/command-lifecycle.md` - Added orchestrator stage validation section
 
 ---
 

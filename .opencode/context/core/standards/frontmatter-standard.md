@@ -352,8 +352,8 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
   optional:
     - "project/lean4/lean-patterns.md"
   max_context_size: 50000
@@ -509,8 +509,8 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
   max_context_size: 50000
 delegation:
   max_depth: 3
@@ -556,8 +556,8 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
   max_context_size: 50000
 delegation:
   max_depth: 3

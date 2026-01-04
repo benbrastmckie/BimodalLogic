@@ -13,10 +13,10 @@
   - plans/implementation-001.md (this file)
   - summaries/implementation-summary-YYYYMMDD.md (upon completion)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/tasks.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/tasks.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -147,7 +147,7 @@ Task 238 successfully eliminated 88 emoji instances from 24 .opencode system fil
   - [ ] Update .opencode/command/errors.md: Remove emoji validation references
   - [ ] Update .opencode/command/todo.md: Remove emoji validation references
   - [ ] Update .opencode/agent/subagents/error-diagnostics-agent.md: Remove emoji validation references
-  - [ ] Update .opencode/context/common/templates/command-template.md: Remove emoji validation from template
+  - [ ] Update .opencode/context/core/templates/command-template.md: Remove emoji validation from template
   - [ ] Ensure template no longer includes emoji validation in generated commands
 - **Timing**: 30 minutes
 - **Acceptance Criteria**:
@@ -162,7 +162,7 @@ Task 238 successfully eliminated 88 emoji instances from 24 .opencode system fil
 - **Completed**: 2025-12-28T10:35:00Z
 - **Goal**: Update documentation.md to reference AGENTS.md as primary enforcement mechanism
 - **Tasks**:
-  - [ ] Read .opencode/context/common/standards/documentation.md
+  - [ ] Read .opencode/context/core/standards/documentation.md
   - [ ] Update NO EMOJI Policy section to reference AGENTS.md
   - [ ] Add note: "Enforcement: See .opencode/AGENTS.md for centralized rule (automatically loaded)"
   - [ ] Keep detailed policy content as reference (not loaded in every invocation)
@@ -261,7 +261,7 @@ Task 238 successfully eliminated 88 emoji instances from 24 .opencode system fil
 - Other files (4): errors.md, todo.md, error-diagnostics-agent.md, command-template.md
 
 **Updated Files** (1):
-- .opencode/context/common/standards/documentation.md (reference to AGENTS.md added)
+- .opencode/context/core/standards/documentation.md (reference to AGENTS.md added)
 
 **Performance Metrics**:
 - Context window savings: 98% reduction (12,000 → 250 tokens per session)

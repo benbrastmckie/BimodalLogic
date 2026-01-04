@@ -78,7 +78,7 @@ Orchestrator must: Parse "176", validate task exists, format as "Task: 176"
 
 #### Issue 2: Missing Command Argument Standards Documentation
 
-**Problem**: No context file at `context/common/standards/command-argument-handling.md` (referenced in index.md line 64 but doesn't exist).
+**Problem**: No context file at `context/core/standards/command-argument-handling.md` (referenced in index.md line 64 but doesn't exist).
 
 **Impact**:
 - Developers creating new commands lack clear guidance
@@ -87,8 +87,8 @@ Orchestrator must: Parse "176", validate task exists, format as "Task: 176"
 
 **Evidence**:
 ```bash
-$ ls .opencode/context/common/standards/command-argument-handling.md
-ls: cannot access '.opencode/context/common/standards/command-argument-handling.md': No such file or directory
+$ ls .opencode/context/core/standards/command-argument-handling.md
+ls: cannot access '.opencode/context/core/standards/command-argument-handling.md': No such file or directory
 ```
 
 #### Issue 3: Orchestrator Complexity
@@ -148,7 +148,7 @@ $ grep -r "subagent-return-format.md" .opencode/command/
 
 #### 1.1 Create Command Argument Handling Standard
 
-**File**: `.opencode/context/common/standards/command-argument-handling.md`
+**File**: `.opencode/context/core/standards/command-argument-handling.md`
 
 **Purpose**: Single source of truth for `$ARGUMENTS` parsing, validation, and error handling.
 
@@ -422,7 +422,7 @@ routing:
 
 **Task Input (required):** $ARGUMENTS (task number; e.g., `/{command} 197`)
 
-See: `.opencode/context/common/standards/command-argument-handling.md`
+See: `.opencode/context/core/standards/command-argument-handling.md`
 
 <workflow_setup>
   <stage_1_parse_arguments>
@@ -451,7 +451,7 @@ routing:
 
 **Task Input (optional):** $ARGUMENTS (user input; e.g., `/{command} "options"`)
 
-See: `.opencode/context/common/standards/command-argument-handling.md`
+See: `.opencode/context/core/standards/command-argument-handling.md`
 
 <workflow_setup>
   <stage_1_parse_arguments>
@@ -547,7 +547,7 @@ additional_args=$(echo "$ARGUMENTS" | cut -d' ' -f2-)
      required:
        - "core/system/routing-guide.md"
        - "core/workflows/delegation-guide.md"
-       - "common/standards/command-argument-handling.md"  # ADD THIS
+       - "core/standards/command-argument-handling.md"  # ADD THIS
      max_context_size: 10000
    ```
 
@@ -579,7 +579,7 @@ additional_args=$(echo "$ARGUMENTS" | cut -d' ' -f2-)
      ARGUMENT HANDLING:
      
      All commands follow the standard defined in:
-     @.opencode/context/common/standards/command-argument-handling.md
+     @.opencode/context/core/standards/command-argument-handling.md
      
      Key points:
      - OpenCode provides $ARGUMENTS variable automatically
@@ -596,7 +596,7 @@ additional_args=$(echo "$ARGUMENTS" | cut -d' ' -f2-)
    <stage id="1" name="PreflightValidation">
      <action>Load command, validate, parse arguments, and prepare delegation context</action>
      <process>
-       See: @.opencode/context/common/standards/command-argument-handling.md
+       See: @.opencode/context/core/standards/command-argument-handling.md
        
        1. Determine command type (task-based or direct)
        2. Parse arguments according to command type:
@@ -627,7 +627,7 @@ additional_args=$(echo "$ARGUMENTS" | cut -d' ' -f2-)
 **Pattern to Add** (after frontmatter, before main content):
 
 ```markdown
-**Task Input**: $ARGUMENTS (see `.opencode/context/common/standards/command-argument-handling.md`)
+**Task Input**: $ARGUMENTS (see `.opencode/context/core/standards/command-argument-handling.md`)
 
 **Usage**: /{command} TASK_NUMBER [OPTIONS]
 
@@ -648,7 +648,7 @@ additional_args=$(echo "$ARGUMENTS" | cut -d' ' -f2-)
 # AFTER
 **Task Input (required):** $ARGUMENTS (task number; e.g., `/research 258`)
 
-See: `.opencode/context/common/standards/command-argument-handling.md` for argument handling standard.
+See: `.opencode/context/core/standards/command-argument-handling.md` for argument handling standard.
 ```
 
 **implement.md** (line 24):
@@ -659,7 +659,7 @@ See: `.opencode/context/common/standards/command-argument-handling.md` for argum
 # AFTER
 **Usage:** `/implement TASK_NUMBER [PROMPT]` or `/implement START-END [PROMPT]`
 
-See: `.opencode/context/common/standards/command-argument-handling.md` for argument handling standard.
+See: `.opencode/context/core/standards/command-argument-handling.md` for argument handling standard.
 ```
 
 **plan.md** (line 23):
@@ -670,7 +670,7 @@ See: `.opencode/context/common/standards/command-argument-handling.md` for argum
 # AFTER
 **Usage:** `/plan TASK_NUMBER [PROMPT]`
 
-See: `.opencode/context/common/standards/command-argument-handling.md` for argument handling standard.
+See: `.opencode/context/core/standards/command-argument-handling.md` for argument handling standard.
 ```
 
 **task.md** (line 14):
@@ -681,7 +681,7 @@ See: `.opencode/context/common/standards/command-argument-handling.md` for argum
 # AFTER
 **Task Input (required):** $ARGUMENTS (task description; e.g., `/task "Implement feature X"`)
 
-See: `.opencode/context/common/standards/command-argument-handling.md` for argument handling standard.
+See: `.opencode/context/core/standards/command-argument-handling.md` for argument handling standard.
 
 Note: /task is a direct command (no task number required).
 ```
@@ -694,7 +694,7 @@ Note: /task is a direct command (no task number required).
 # AFTER
 **Usage:** `/review [SCOPE]`
 
-See: `.opencode/context/common/standards/command-argument-handling.md` for argument handling standard.
+See: `.opencode/context/core/standards/command-argument-handling.md` for argument handling standard.
 
 Note: /review is a direct command (no task number required).
 ```
@@ -707,7 +707,7 @@ Note: /review is a direct command (no task number required).
 # AFTER
 **Usage:** `/errors [--all] [--type TYPE]`
 
-See: `.opencode/context/common/standards/command-argument-handling.md` for argument handling standard.
+See: `.opencode/context/core/standards/command-argument-handling.md` for argument handling standard.
 
 Note: /errors is a direct command (no task number required).
 ```
@@ -720,7 +720,7 @@ Note: /errors is a direct command (no task number required).
 # AFTER
 **Usage:** `/todo`
 
-See: `.opencode/context/common/standards/command-argument-handling.md` for argument handling standard.
+See: `.opencode/context/core/standards/command-argument-handling.md` for argument handling standard.
 
 Note: /todo is a direct command with no arguments.
 ```
@@ -739,7 +739,7 @@ Note: /todo is a direct command with no arguments.
      required:
        - "core/standards/delegation.md"
        - "core/system/state-management.md"
-       - "common/standards/command-argument-handling.md"  # ADD THIS
+       - "core/standards/command-argument-handling.md"  # ADD THIS
      optional:
        - "{domain-specific context files}"
      max_context_size: 50000
@@ -750,7 +750,7 @@ Note: /todo is a direct command with no arguments.
    ## Argument Handling
    
    All commands MUST follow the standard defined in:
-   `.opencode/context/common/standards/command-argument-handling.md`
+   `.opencode/context/core/standards/command-argument-handling.md`
    
    ### Task-Based Command Pattern
    
@@ -759,7 +759,7 @@ Note: /todo is a direct command with no arguments.
    ```markdown
    **Task Input (required):** $ARGUMENTS (task number; e.g., `/{command} 197`)
    
-   See: `.opencode/context/common/standards/command-argument-handling.md`
+   See: `.opencode/context/core/standards/command-argument-handling.md`
    
    <workflow_setup>
      <stage_1_parse_arguments>
@@ -782,7 +782,7 @@ Note: /todo is a direct command with no arguments.
    ```markdown
    **Task Input (optional):** $ARGUMENTS (user input; e.g., `/{command} "options"`)
    
-   See: `.opencode/context/common/standards/command-argument-handling.md`
+   See: `.opencode/context/core/standards/command-argument-handling.md`
    
    <workflow_setup>
      <stage_1_parse_arguments>
@@ -1409,7 +1409,7 @@ After all validations pass, log summary:
   <stage id="1" name="PreflightValidation">
     <action>Load command, validate, parse arguments, and prepare delegation context</action>
     <process>
-      See: @.opencode/context/common/standards/command-argument-handling.md
+      See: @.opencode/context/core/standards/command-argument-handling.md
       
       1. Determine command type (task-based or direct)
       2. Parse arguments according to command type
@@ -1526,7 +1526,7 @@ context_loading:
   required:
     - "core/standards/delegation.md"
     - "core/system/state-management.md"
-    - "common/standards/command-argument-handling.md"
+    - "core/standards/command-argument-handling.md"
 ```
 
 **Rationale**: Per `context/index.md` lines 306-310:
@@ -1547,7 +1547,7 @@ for file in .opencode/command/*.md; do
   # Add command-argument-handling.md if not present
   if ! grep -q "command-argument-handling.md" "$file"; then
     # Add after delegation.md line
-    sed -i '/delegation.md/a\    - "common/standards/command-argument-handling.md"' "$file"
+    sed -i '/delegation.md/a\    - "core/standards/command-argument-handling.md"' "$file"
   fi
 done
 
@@ -1608,11 +1608,11 @@ echo "Updated all command files"
    **For State Management**: → `core/system/state-management.md`  
    **For Routing**: → `core/system/routing-logic.md`  
    **For Validation**: → `core/system/validation-rules.md`  
-   **For Command Arguments**: → `common/standards/command-argument-handling.md`  
-   **For Artifacts**: → `common/system/artifact-management.md`  
-   **For Git Commits**: → `common/system/git-commits.md`  
-   **For Task Format**: → `common/standards/tasks.md`  
-   **For Plan Format**: → `common/standards/plan.md`  
+   **For Command Arguments**: → `core/standards/command-argument-handling.md`  
+   **For Artifacts**: → `core/system/artifact-management.md`  
+   **For Git Commits**: → `core/system/git-commits.md`  
+   **For Task Format**: → `core/standards/tasks.md`  
+   **For Plan Format**: → `core/standards/plan.md`  
    **For Lean Style**: → `project/lean4/standards/lean4-style-guide.md`  
    **For Proof Conventions**: → `project/logic/standards/proof-conventions.md`
    ```
@@ -1624,8 +1624,8 @@ echo "Updated all command files"
    Stage 4 loads:
    - @.opencode/context/core/standards/delegation.md
    - @.opencode/context/core/system/state-management.md
-   - @.opencode/context/common/system/artifact-management.md
-   - @.opencode/context/common/standards/command-argument-handling.md
+   - @.opencode/context/core/system/artifact-management.md
+   - @.opencode/context/core/standards/command-argument-handling.md
    - grep -A 50 "^### {task_number}\." .opencode/specs/TODO.md
    - @.opencode/specs/state.json
    
@@ -1683,7 +1683,7 @@ echo "Updated all command files"
    ```markdown
    ## Command Argument Patterns
    
-   All commands follow standardized argument handling (see `context/common/standards/command-argument-handling.md`).
+   All commands follow standardized argument handling (see `context/core/standards/command-argument-handling.md`).
    
    ### Task-Based Commands
    
@@ -1742,12 +1742,12 @@ echo "Updated all command files"
    
    | Standard | File | Purpose |
    |----------|------|---------|
-   | Command Arguments | `common/standards/command-argument-handling.md` | $ARGUMENTS parsing and validation |
+   | Command Arguments | `core/standards/command-argument-handling.md` | $ARGUMENTS parsing and validation |
    | Delegation | `core/standards/delegation.md` | Subagent return format and delegation patterns |
    | State Management | `core/system/state-management.md` | Status markers and state schemas |
    | Routing Logic | `core/system/routing-logic.md` | Language extraction and agent mapping |
    | Validation Rules | `core/system/validation-rules.md` | Return format and artifact validation |
-   | Task Format | `common/standards/tasks.md` | Task entry format and required fields |
+   | Task Format | `core/standards/tasks.md` | Task entry format and required fields |
    
    See `.opencode/docs/STANDARDS_QUICK_REF.md` for detailed quick reference.
    ```
@@ -1812,7 +1812,7 @@ echo "Updated all command files"
        Include in context_loading.required:
        - "core/standards/delegation.md"
        - "core/system/state-management.md"
-       - "common/standards/command-argument-handling.md"
+       - "core/standards/command-argument-handling.md"
      </frontmatter>
      
      <validation>
@@ -1848,13 +1848,13 @@ echo "Updated all command files"
      required:
        - "core/standards/delegation.md"
        - "core/system/state-management.md"
-       - "common/standards/command-argument-handling.md"
+       - "core/standards/command-argument-handling.md"
      max_context_size: 50000
    ---
    
    **Task Input**: $ARGUMENTS ({description})
    
-   See: `.opencode/context/common/standards/command-argument-handling.md` for argument handling standard.
+   See: `.opencode/context/core/standards/command-argument-handling.md` for argument handling standard.
    
    **Usage**: /{command_name} {usage_pattern}
    
@@ -1888,7 +1888,7 @@ echo "Updated all command files"
    ```markdown
    **Task Input (required):** $ARGUMENTS (task number; e.g., `/{command} 197`)
    
-   See: `.opencode/context/common/standards/command-argument-handling.md`
+   See: `.opencode/context/core/standards/command-argument-handling.md`
    
    <workflow_setup>
      <stage_1_parse_arguments>
@@ -1911,7 +1911,7 @@ echo "Updated all command files"
    ```markdown
    **Task Input (optional):** $ARGUMENTS (user input; e.g., `/{command} "options"`)
    
-   See: `.opencode/context/common/standards/command-argument-handling.md`
+   See: `.opencode/context/core/standards/command-argument-handling.md`
    
    <workflow_setup>
      <stage_1_parse_arguments>
@@ -2317,7 +2317,7 @@ If issues arise during implementation:
 
 ### New Files (8)
 
-1. `.opencode/context/common/standards/command-argument-handling.md` (~120 lines)
+1. `.opencode/context/core/standards/command-argument-handling.md` (~120 lines)
 2. `.opencode/context/core/system/routing-logic.md` (~150 lines)
 3. `.opencode/context/core/system/validation-rules.md` (~100 lines)
 4. `.opencode/docs/guides/creating-commands.md` (~400 lines)

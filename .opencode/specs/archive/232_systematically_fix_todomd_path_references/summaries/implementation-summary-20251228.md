@@ -16,7 +16,7 @@ Successfully completed all 6 phases of the implementation plan, fixing 150+ rela
 **Files Modified**:
 - `.opencode/command/research.md` - Fixed language extraction bash command (line 135)
 - `.opencode/command/implement.md` - Fixed language extraction bash command (line 164)
-- `.opencode/context/common/workflows/command-lifecycle.md` - Fixed language extraction bash command (line 92)
+- `.opencode/context/core/workflows/command-lifecycle.md` - Fixed language extraction bash command (line 92)
 - `.opencode/agent/subagents/status-sync-manager.md` - Fixed 9 file I/O references
 - `.opencode/agent/subagents/atomic-task-numberer.md` - Fixed 8 file I/O references
 
@@ -76,11 +76,11 @@ Successfully completed all 6 phases of the implementation plan, fixing 150+ rela
 **Objective**: Fix all 30 relative TODO.md references in 5 context files.
 
 **Files Modified**:
-- `.opencode/context/common/workflows/command-lifecycle.md` - Fixed all references
-- `.opencode/context/common/workflows/review.md` - Fixed all references
-- `.opencode/context/common/standards/documentation.md` - Fixed all references
-- `.opencode/context/common/standards/commands.md` - Fixed all references
-- `.opencode/context/common/standards/command-argument-handling.md` - Fixed all references
+- `.opencode/context/core/workflows/command-lifecycle.md` - Fixed all references
+- `.opencode/context/core/workflows/review.md` - Fixed all references
+- `.opencode/context/core/standards/documentation.md` - Fixed all references
+- `.opencode/context/core/standards/commands.md` - Fixed all references
+- `.opencode/context/core/standards/command-argument-handling.md` - Fixed all references
 - All other context files with TODO.md references
 
 **Changes**:

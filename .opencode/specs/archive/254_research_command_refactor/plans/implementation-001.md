@@ -708,8 +708,8 @@ If implementation fails or causes regressions:
 **Standards**:
 - `.opencode/context/core/standards/delegation.md` - Delegation patterns and return format
 - `.opencode/context/core/system/state-management.md` - Status markers and state.json schema
-- `.opencode/context/common/system/git-commits.md` - Git commit patterns
-- `.opencode/context/common/system/artifact-management.md` - Lazy directory creation, artifact patterns
+- `.opencode/context/core/system/git-commits.md` - Git commit patterns
+- `.opencode/context/core/system/artifact-management.md` - Lazy directory creation, artifact patterns
 
 **Successful Patterns**:
 - `.opencode/command/plan.md` - Frontmatter delegation, status updates, git commits

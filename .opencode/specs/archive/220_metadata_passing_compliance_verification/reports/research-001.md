@@ -28,9 +28,9 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 ### Files Analyzed
 
 **Standards Documentation** (created/updated by task 217):
-1. `.opencode/context/common/system/artifact-management.md` - Metadata passing standards
-2. `.opencode/context/common/workflows/command-lifecycle.md` - Stage 5 (ReceiveResults), Stage 6 (ProcessResults)
-3. `.opencode/context/common/standards/subagent-return-format.md` - Return format schema
+1. `.opencode/context/core/system/artifact-management.md` - Metadata passing standards
+2. `.opencode/context/core/workflows/command-lifecycle.md` - Stage 5 (ReceiveResults), Stage 6 (ProcessResults)
+3. `.opencode/context/core/standards/subagent-return-format.md` - Return format schema
 
 **Workflow Commands**:
 1. `.opencode/command/research.md`
@@ -913,9 +913,9 @@ The system is **production-ready** with metadata passing compliance. Minor enhan
 
 ## References
 
-1. `.opencode/context/common/system/artifact-management.md` - Metadata passing standards (authoritative)
-2. `.opencode/context/common/workflows/command-lifecycle.md` - Stage 5-6 validation and processing
-3. `.opencode/context/common/standards/subagent-return-format.md` - Return format schema
+1. `.opencode/context/core/system/artifact-management.md` - Metadata passing standards (authoritative)
+2. `.opencode/context/core/workflows/command-lifecycle.md` - Stage 5-6 validation and processing
+3. `.opencode/context/core/standards/subagent-return-format.md` - Return format schema
 4. Task 217 - Context file revisions for metadata passing (prerequisite)
 5. Task 169 - Original context window protection task
 

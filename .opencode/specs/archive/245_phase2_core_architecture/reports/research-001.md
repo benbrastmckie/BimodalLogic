@@ -362,11 +362,11 @@ Route user requests to appropriate agents based on command and language.
    - Reason: Commands load context, not orchestrator
 
 2. **Delegation Guide** (Lines 200-400)
-   - Moved to: `.opencode/context/common/workflows/subagent-delegation-guide.md`
+   - Moved to: `.opencode/context/core/workflows/subagent-delegation-guide.md`
    - Reason: Already exists, orchestrator was duplicating
 
 3. **Return Format Validation** (Lines 500-600)
-   - Moved to: `.opencode/context/common/standards/subagent-return-format.md`
+   - Moved to: `.opencode/context/core/standards/subagent-return-format.md`
    - Reason: Already exists, orchestrator was duplicating
 
 4. **Language Extraction Logic** (Lines 300-400)
@@ -500,8 +500,8 @@ context_loading:
   strategy: "lazy"
   index: ".opencode/context/index.md"
   required:
-    - "common/standards/subagent-return-format.md"
-    - "common/system/status-markers.md"
+    - "core/standards/subagent-return-format.md"
+    - "core/system/status-markers.md"
   
 delegation:
   enabled: true
@@ -558,8 +558,8 @@ permissions:
 context_loading:
   strategy: "lazy"
   required:
-    - "common/standards/subagent-return-format.md"
-    - "common/system/artifact-management.md"
+    - "core/standards/subagent-return-format.md"
+    - "core/system/artifact-management.md"
 
 delegation:
   enabled: true
@@ -592,9 +592,9 @@ permissions:
 context_loading:
   strategy: "lazy"
   required:
-    - "common/standards/subagent-return-format.md"
-    - "common/standards/plan.md"
-    - "common/system/artifact-management.md"
+    - "core/standards/subagent-return-format.md"
+    - "core/standards/plan.md"
+    - "core/system/artifact-management.md"
 
 delegation:
   enabled: false
@@ -626,9 +626,9 @@ permissions:
 context_loading:
   strategy: "lazy"
   required:
-    - "common/standards/subagent-return-format.md"
-    - "common/system/git-commits.md"
-    - "common/system/artifact-management.md"
+    - "core/standards/subagent-return-format.md"
+    - "core/system/git-commits.md"
+    - "core/system/artifact-management.md"
 
 delegation:
   enabled: false
@@ -659,8 +659,8 @@ permissions:
 context_loading:
   strategy: "lazy"
   required:
-    - "common/standards/subagent-return-format.md"
-    - "common/system/git-commits.md"
+    - "core/standards/subagent-return-format.md"
+    - "core/system/git-commits.md"
 
 delegation:
   enabled: false
@@ -691,7 +691,7 @@ permissions:
 context_loading:
   strategy: "lazy"
   required:
-    - "common/standards/subagent-return-format.md"
+    - "core/standards/subagent-return-format.md"
     - "project/lean4/tools/leansearch-api.md"
     - "project/lean4/tools/loogle-api.md"
 
@@ -729,8 +729,8 @@ permissions:
 context_loading:
   strategy: "lazy"
   required:
-    - "common/standards/subagent-return-format.md"
-    - "common/system/git-commits.md"
+    - "core/standards/subagent-return-format.md"
+    - "core/system/git-commits.md"
     - "project/lean4/tools/lean-lsp-mcp.md"
 
 delegation:

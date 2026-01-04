@@ -109,10 +109,10 @@ context_loading:
   lazy: true
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
-    - "common/system/status-markers.md"
-    - "common/standards/plan.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
+    - "core/system/status-markers.md"
+    - "core/standards/plan.md"
 delegation:
   max_depth: 3
   can_delegate_to:
@@ -173,8 +173,8 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
   optional:
     - "project/research/research-patterns.md"
 
@@ -326,8 +326,8 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
   optional:
     - "project/lean4/lean-patterns.md"
   max_context_size: 50000  # tokens
@@ -338,8 +338,8 @@ context_loading:
 context_loading:
   strategy: eager
   files:
-    - ".opencode/context/common/workflows/command-lifecycle.md"
-    - ".opencode/context/common/standards/subagent-return-format.md"
+    - ".opencode/context/core/workflows/command-lifecycle.md"
+    - ".opencode/context/core/standards/subagent-return-format.md"
   max_context_size: 50000
 ```
 
@@ -360,16 +360,16 @@ context_loading:
 **Relative Paths** (from `.opencode/context/`):
 ```yaml
 required:
-  - "common/workflows/command-lifecycle.md"
-  - "common/standards/plan.md"
+  - "core/workflows/command-lifecycle.md"
+  - "core/standards/plan.md"
   - "project/lean4/lean-patterns.md"
 ```
 
 **Absolute Paths**:
 ```yaml
 required:
-  - ".opencode/context/common/workflows/command-lifecycle.md"
-  - ".opencode/context/common/standards/plan.md"
+  - ".opencode/context/core/workflows/command-lifecycle.md"
+  - ".opencode/context/core/standards/plan.md"
 ```
 
 **Index-Based Discovery**:
@@ -730,8 +730,8 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
   optional:
     - "project/{domain}/{specific_context}.md"
   max_context_size: 50000
@@ -931,8 +931,8 @@ metadata:
 - **Example**:
   ```yaml
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
   ```
 
 #### `context_loading.optional`
@@ -1231,8 +1231,8 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
 delegation:
   max_depth: 3
   can_delegate_to: ["web-research-specialist"]
@@ -1259,10 +1259,10 @@ context_loading:
   lazy: true
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
-    - "common/system/status-markers.md"
-    - "common/standards/plan.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
+    - "core/system/status-markers.md"
+    - "core/standards/plan.md"
 delegation:
   max_depth: 3
   can_delegate_to: ["status-sync-manager", "git-workflow-manager"]
@@ -1292,8 +1292,8 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
 delegation:
   max_depth: 3
   can_delegate_to: ["lean-implementation-agent", "status-sync-manager"]
@@ -1323,9 +1323,9 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
-    - "common/standards/plan.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
+    - "core/standards/plan.md"
 delegation:
   max_depth: 3
   can_delegate_to: ["implementer", "lean-implementation-agent", "status-sync-manager"]
@@ -1355,8 +1355,8 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
     - "project/lean4/lean-patterns.md"
 delegation:
   max_depth: 3
@@ -1387,8 +1387,8 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "common/workflows/command-lifecycle.md"
-    - "common/standards/subagent-return-format.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/standards/subagent-return-format.md"
     - "project/lean4/lean-patterns.md"
     - "project/lean4/proof-strategies.md"
 delegation:

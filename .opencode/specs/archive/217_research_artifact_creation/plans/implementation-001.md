@@ -241,8 +241,8 @@ If Phase 3 finds more inconsistencies:
 ## Dependencies
 
 ### Required Context Files
-- `.opencode/context/common/system/artifact-management.md` (authoritative limits)
-- `.opencode/context/common/standards/subagent-return-format.md` (return format)
+- `.opencode/context/core/system/artifact-management.md` (authoritative limits)
+- `.opencode/context/core/standards/subagent-return-format.md` (return format)
 - `.opencode/specs/217_research_artifact_creation/reports/research-001.md` (gap analysis)
 
 ### Reference Files

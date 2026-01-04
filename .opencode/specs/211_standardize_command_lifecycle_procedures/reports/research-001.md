@@ -35,10 +35,10 @@ Key findings:
 - .opencode/agent/subagents/implementer.md (316 lines)
 
 **Supporting Standards** (5 files):
-- .opencode/context/common/system/status-markers.md (889 lines)
-- .opencode/context/common/standards/subagent-return-format.md (356 lines)
-- .opencode/context/common/system/artifact-management.md (182 lines)
-- .opencode/context/common/system/git-commits.md (35 lines)
+- .opencode/context/core/system/status-markers.md (889 lines)
+- .opencode/context/core/standards/subagent-return-format.md (356 lines)
+- .opencode/context/core/system/artifact-management.md (182 lines)
+- .opencode/context/core/system/git-commits.md (35 lines)
 
 ### Analysis Approach
 
@@ -496,7 +496,7 @@ Each command file should:
 
 ```markdown
 Context Loaded:
-@.opencode/context/common/workflows/command-lifecycle.md
+@.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
 ...
@@ -640,7 +640,7 @@ If validation fails: Log error, keep in-progress status, return actionable messa
 3. Document pre-flight and post-flight checklists (1 hour)
 4. Add error handling patterns (0.5 hours)
 
-**Deliverable**: .opencode/context/common/workflows/command-lifecycle.md (~500 lines)
+**Deliverable**: .opencode/context/core/workflows/command-lifecycle.md (~500 lines)
 
 ### Phase 2: Update Commands (6 hours)
 
@@ -867,10 +867,10 @@ Example:
 - .opencode/agent/subagents/implementer.md (316 lines)
 
 ### Supporting Standards
-- .opencode/context/common/system/status-markers.md (889 lines)
-- .opencode/context/common/standards/subagent-return-format.md (356 lines)
-- .opencode/context/common/system/artifact-management.md (182 lines)
-- .opencode/context/common/system/git-commits.md (35 lines)
+- .opencode/context/core/system/status-markers.md (889 lines)
+- .opencode/context/core/standards/subagent-return-format.md (356 lines)
+- .opencode/context/core/system/artifact-management.md (182 lines)
+- .opencode/context/core/system/git-commits.md (35 lines)
 
 ### Related Tasks
 - Task 191: Fix subagent delegation hang (created subagent-return-format.md)

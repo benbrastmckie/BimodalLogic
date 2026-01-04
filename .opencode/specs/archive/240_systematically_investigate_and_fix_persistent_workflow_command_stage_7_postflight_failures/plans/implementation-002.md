@@ -9,10 +9,10 @@
   - .opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md (Comparative analysis of OpenAgents vs ProofChecker)
 - **Artifacts**: plans/implementation-002.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/tasks.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/tasks.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -258,11 +258,11 @@ Comparative analysis of OpenAgents and ProofChecker systems identified the root 
 **Phase 3:**
 - .opencode/context/core/workflows/delegation.md (new, consolidated)
 - .opencode/context/core/system/state-management.md (new, consolidated)
-- .opencode/context/common/workflows/command-lifecycle.md (removed)
-- .opencode/context/common/system/status-markers.md (merged into state-management.md)
-- .opencode/context/common/system/state-schema.md (merged into state-management.md)
-- .opencode/context/common/workflows/subagent-delegation-guide.md (merged into delegation.md)
-- .opencode/context/common/system/subagent-return-format.md (merged into delegation.md)
+- .opencode/context/core/workflows/command-lifecycle.md (removed)
+- .opencode/context/core/system/status-markers.md (merged into state-management.md)
+- .opencode/context/core/system/state-schema.md (merged into state-management.md)
+- .opencode/context/core/workflows/subagent-delegation-guide.md (merged into delegation.md)
+- .opencode/context/core/system/subagent-return-format.md (merged into delegation.md)
 - .opencode/context/index.md (updated to reflect consolidation)
 - Phase 3 validation report
 
@@ -270,7 +270,7 @@ Comparative analysis of OpenAgents and ProofChecker systems identified the root 
 - .opencode/README.md (updated with architecture overview)
 - .opencode/docs/ARCHITECTURE.md (new, OpenAgents patterns documentation)
 - .opencode/docs/MIGRATION_GUIDE.md (new, guide for future development)
-- .opencode/context/common/standards/CONTRIBUTING.md (updated with new patterns)
+- .opencode/context/core/standards/CONTRIBUTING.md (updated with new patterns)
 - Final implementation summary with before/after metrics
 - Phase 4 validation report
 

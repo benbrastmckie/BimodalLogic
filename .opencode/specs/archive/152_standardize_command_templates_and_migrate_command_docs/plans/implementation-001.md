@@ -7,10 +7,10 @@
 - **Research Inputs**: .opencode/specs/152_standardize_command_templates_and_migrate_command_docs/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
-  - .opencode/context/common/standards/plan.md
-  - .opencode/context/common/system/status-markers.md
-  - .opencode/context/common/system/artifact-management.md
-  - .opencode/context/common/standards/tasks.md
+  - .opencode/context/core/standards/plan.md
+  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/system/artifact-management.md
+  - .opencode/context/core/standards/tasks.md
 - **Language**: markdown
 - **Lean Intent**: false
 
@@ -86,8 +86,8 @@ Create a unified command documentation standard and template, then migrate all e
 
 ## Artifacts & Outputs
 - plans/implementation-001.md (this plan)
-- .opencode/context/common/standards/commands.md (new)
-- .opencode/context/common/templates/command-template.md (new)
+- .opencode/context/core/standards/commands.md (new)
+- .opencode/context/core/templates/command-template.md (new)
 - Migrated .opencode/command/*.md and README.md (updated)
 - Updated meta templates/guides (if present) aligned to new standard
 

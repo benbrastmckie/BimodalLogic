@@ -100,7 +100,7 @@ Examined all 4 command files to identify common patterns:
 
 **Opportunity**: Refactor command files to reference lifecycle stages instead of duplicating them, keeping only variations inline.
 
-**Source**: .opencode/context/common/workflows/command-lifecycle.md analysis
+**Source**: .opencode/context/core/workflows/command-lifecycle.md analysis
 
 ---
 
@@ -1882,7 +1882,7 @@ echo "scale=2; (2805 - {new_total}) / 2805 * 100" | bc
 ### Primary Sources
 
 1. **command-lifecycle.md** (v1.0, 2025-12-28)
-   - Location: .opencode/context/common/workflows/command-lifecycle.md
+   - Location: .opencode/context/core/workflows/command-lifecycle.md
    - Purpose: Standardized 8-stage lifecycle pattern for workflow commands
    - Content: 1,139 lines documenting lifecycle stages, variation tables, error patterns
    - Created: Task 211 (Standardize command lifecycle procedures)
@@ -1902,22 +1902,22 @@ echo "scale=2; (2805 - {new_total}) / 2805 * 100" | bc
 ### Related Standards
 
 4. **status-markers.md**
-   - Location: .opencode/context/common/system/status-markers.md
+   - Location: .opencode/context/core/system/status-markers.md
    - Purpose: Defines all status markers and transition rules
    - Relevance: Status marker variations must comply with this standard
 
 5. **subagent-return-format.md**
-   - Location: .opencode/context/common/standards/subagent-return-format.md
+   - Location: .opencode/context/core/standards/subagent-return-format.md
    - Purpose: Standardized return format for all agents
    - Relevance: Return content variations must comply with this format
 
 6. **artifact-management.md**
-   - Location: .opencode/context/common/system/artifact-management.md
+   - Location: .opencode/context/core/system/artifact-management.md
    - Purpose: Lazy directory creation and artifact requirements
    - Relevance: Artifact variations must follow lazy creation pattern
 
 7. **git-commits.md**
-   - Location: .opencode/context/common/system/git-commits.md
+   - Location: .opencode/context/core/system/git-commits.md
    - Purpose: Targeted git commit patterns
    - Relevance: Git commit variations must follow targeted commit pattern
 

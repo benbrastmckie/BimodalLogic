@@ -859,7 +859,7 @@ All commands follow the 8-stage pattern with documented variations per command-l
 ### 7.2 Medium Priority
 
 **3. Document Summary Artifact Exceptions**
-- **File**: `.opencode/context/common/system/artifact-management.md`
+- **File**: `.opencode/context/core/system/artifact-management.md`
 - **Location**: Line 84 (Summary Requirements section)
 - **Action**: Add explicit exception for /plan and /revise
 - **Text**: "Exception: /plan and /revise do not create summary artifacts because the plan file is self-documenting (single artifact serving as own documentation)."

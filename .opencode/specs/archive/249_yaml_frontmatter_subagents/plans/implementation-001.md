@@ -125,7 +125,7 @@ This plan implements comprehensive YAML frontmatter for all 6 subagents followin
 **Objective**: Create comprehensive frontmatter template with all 13 essential fields and JSON schema for validation.
 
 **Tasks**:
-1. Create `.opencode/context/common/templates/subagent-frontmatter-template.yaml` with all fields
+1. Create `.opencode/context/core/templates/subagent-frontmatter-template.yaml` with all fields
 2. Create `.opencode/context/common/schemas/frontmatter-schema.json` for validation
 3. Document all 13 essential fields (name, version, description, mode, agent_type, temperature, tools, permissions, context_loading, delegation, lifecycle, max_tokens, timeout)
 4. Include comprehensive dangerous command deny list (30+ commands from research)
@@ -140,7 +140,7 @@ This plan implements comprehensive YAML frontmatter for all 6 subagents followin
 - [NOT STARTED] All fields documented with types and examples
 
 **Artifacts**:
-- `.opencode/context/common/templates/subagent-frontmatter-template.yaml`
+- `.opencode/context/core/templates/subagent-frontmatter-template.yaml`
 - `.opencode/context/common/schemas/frontmatter-schema.json`
 
 ---
@@ -372,7 +372,7 @@ This plan implements comprehensive YAML frontmatter for all 6 subagents followin
 **Objective**: Create comprehensive frontmatter documentation with field reference, best practices, and examples.
 
 **Tasks**:
-1. Create `.opencode/context/common/standards/frontmatter-standard.md`
+1. Create `.opencode/context/core/standards/frontmatter-standard.md`
 2. Document all 13 essential fields with types, descriptions, examples
 3. Document dangerous command deny list with rationale
 4. Document temperature guidelines by agent type
@@ -394,7 +394,7 @@ This plan implements comprehensive YAML frontmatter for all 6 subagents followin
 - [NOT STARTED] Best practices documented
 
 **Artifacts**:
-- `.opencode/context/common/standards/frontmatter-standard.md`
+- `.opencode/context/core/standards/frontmatter-standard.md`
 
 ---
 
@@ -457,7 +457,7 @@ This plan implements comprehensive YAML frontmatter for all 6 subagents followin
 
 ### Primary Artifacts
 
-1. **Frontmatter Template**: `.opencode/context/common/templates/subagent-frontmatter-template.yaml`
+1. **Frontmatter Template**: `.opencode/context/core/templates/subagent-frontmatter-template.yaml`
    - Comprehensive template with all 13 essential fields
    - Dangerous command deny list (30+ commands)
    - Field descriptions and examples
@@ -472,7 +472,7 @@ This plan implements comprehensive YAML frontmatter for all 6 subagents followin
    - --all flag for batch validation
    - Detailed error reporting
 
-4. **Frontmatter Standard**: `.opencode/context/common/standards/frontmatter-standard.md`
+4. **Frontmatter Standard**: `.opencode/context/core/standards/frontmatter-standard.md`
    - Field reference with types and examples
    - Best practices and guidelines
    - Examples for each agent type

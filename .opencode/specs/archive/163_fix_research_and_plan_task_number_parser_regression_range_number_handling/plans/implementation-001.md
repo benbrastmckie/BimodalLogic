@@ -204,9 +204,9 @@ The root cause is a parsing logic flaw where numeric arguments are discarded bef
 - `.opencode/command/plan.md`
 - `.opencode/agent/subagents/researcher.md`
 - `.opencode/agent/subagents/planner.md`
-- `.opencode/context/common/standards/commands.md`
-- `.opencode/context/common/standards/tasks.md`
-- `.opencode/context/common/system/status-markers.md`
+- `.opencode/context/core/standards/commands.md`
+- `.opencode/context/core/standards/tasks.md`
+- `.opencode/context/core/system/status-markers.md`
 
 ## Dependencies
 

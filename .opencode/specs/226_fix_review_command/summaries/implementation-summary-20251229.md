@@ -34,7 +34,7 @@ Fixed 5 critical /review command issues: project numbering bug, missing TODO.md 
 
 1. `.opencode/command/review.md` - Updated with project numbering validation, task creation, and placeholder replacement
 2. `.opencode/agent/subagents/reviewer.md` - Updated with placeholder task numbers and reduced verbosity
-3. `.opencode/context/common/workflows/review.md` - Refactored to eliminate duplication (287→164 lines)
+3. `.opencode/context/core/workflows/review.md` - Refactored to eliminate duplication (287→164 lines)
 4. `.opencode/specs/226_fix_review_command/plans/implementation-001.md` - Updated with phase completion statuses
 5. `.opencode/specs/226_fix_review_command/summaries/implementation-summary-20251229.md` - This file
 
@@ -67,4 +67,4 @@ None. All 3 phases completed successfully. Implementation ready for testing with
 - Modified Files:
   - `.opencode/command/review.md`
   - `.opencode/agent/subagents/reviewer.md`
-  - `.opencode/context/common/workflows/review.md`
+  - `.opencode/context/core/workflows/review.md`

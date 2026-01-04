@@ -16,7 +16,7 @@
    - `creates_root_on`: condition that triggers project root creation (if ever)
    - `creates_subdir`: subdir(s) created when artifacts are written (reports|plans|summaries)
 
-2. **Context Loaded block** (plain list with `@` paths). Include common/system + standards and the minimal project contexts needed. For Lean flows, add project/lean4 and project/logic only when the TODO `Language: lean` or `--lang lean` flag applies.
+2. **Context Loaded block** (plain list with `@` paths). Include core/system + standards and the minimal project contexts needed. For Lean flows, add project/lean4 and project/logic only when the TODO `Language: lean` or `--lang lean` flag applies.
 
 3. **XML Sections** (order is mandatory):
    - `<context>`: system/domain/task/execution contexts
@@ -67,4 +67,4 @@
 
 ## Migration Guidance
 - All command docs under `.opencode/command/` must follow this standard with YAML + XML ordering above.
-- Templates under `.opencode/context/common/templates/` must reflect this structure and be referenced by /meta outputs.
+- Templates under `.opencode/context/core/templates/` must reflect this structure and be referenced by /meta outputs.

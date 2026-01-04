@@ -626,7 +626,7 @@ def execute_directory_moves(move_operations):
    - Add examples of archival output
    - Document error scenarios
 
-2. **`.opencode/context/common/system/state-schema.md`**
+2. **`.opencode/context/core/system/state-schema.md`**
    - Add section on `/todo` command archival workflow
    - Include examples of archive state entries
 
@@ -783,9 +783,9 @@ None (all functionality self-contained)
 - **Research Summary**: `.opencode/specs/201_todo_archival_feature/summaries/research-summary.md`
 - **Existing /todo Command**: `.opencode/command/todo.md`
 - **Archive State Schema**: `.opencode/specs/archive/state.json`
-- **State Schema Reference**: `.opencode/context/common/system/state-schema.md`
-- **Status Markers**: `.opencode/context/common/system/status-markers.md`
-- **Git Commits Standard**: `.opencode/context/common/system/git-commits.md`
+- **State Schema Reference**: `.opencode/context/core/system/state-schema.md`
+- **Status Markers**: `.opencode/context/core/system/status-markers.md`
+- **Git Commits Standard**: `.opencode/context/core/system/git-commits.md`
 
 ---
 

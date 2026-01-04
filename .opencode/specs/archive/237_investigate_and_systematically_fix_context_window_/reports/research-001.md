@@ -847,9 +847,9 @@ agent: orchestrator
 **Change**:
 ```diff
 - <context_loaded>
--   @.opencode/context/common/standards/subagent-return-format.md
--   @.opencode/context/common/workflows/subagent-delegation-guide.md
--   @.opencode/context/common/system/status-markers.md
+-   @.opencode/context/core/standards/subagent-return-format.md
+-   @.opencode/context/core/workflows/subagent-delegation-guide.md
+-   @.opencode/context/core/system/status-markers.md
 - </context_loaded>
 + <context_loaded>
 +   <!-- No context files loaded during routing -->
@@ -1011,12 +1011,12 @@ The context window bloat in workflow commands is caused by:
    - `.opencode/agent/orchestrator.md` (1,093 lines, 37KB)
 
 3. **Context Files**:
-   - `.opencode/context/common/workflows/command-lifecycle.md` (1,139 lines, 40KB)
+   - `.opencode/context/core/workflows/command-lifecycle.md` (1,139 lines, 40KB)
    - `.opencode/specs/TODO.md` (109KB)
-   - `.opencode/context/common/system/status-markers.md` (27KB)
-   - `.opencode/context/common/standards/subagent-return-format.md` (11KB)
-   - `.opencode/context/common/workflows/subagent-delegation-guide.md` (18KB)
-   - `.opencode/context/common/system/git-commits.md` (2KB)
+   - `.opencode/context/core/system/status-markers.md` (27KB)
+   - `.opencode/context/core/standards/subagent-return-format.md` (11KB)
+   - `.opencode/context/core/workflows/subagent-delegation-guide.md` (18KB)
+   - `.opencode/context/core/system/git-commits.md` (2KB)
 
 4. **File Size Measurements**:
    - `wc -c` output for all context files

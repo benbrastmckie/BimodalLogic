@@ -507,7 +507,7 @@ be221a3 todo: archive 9 completed tasks
 
 ### Appendix D: Status Marker Standards
 
-**Per `.opencode/context/common/system/status-markers.md`** (assumed):
+**Per `.opencode/context/core/system/status-markers.md`** (assumed):
 
 **Standard Formats**:
 - `[NOT STARTED]` - Task created but not begun

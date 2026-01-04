@@ -543,16 +543,16 @@ Recommended approach: Fix in three phases (critical → high → medium/low) wit
 ## 12. References
 
 **Specifications Reviewed**:
-- `.opencode/context/common/system/artifact-management.md` (182 lines)
-- `.opencode/context/common/system/status-markers.md` (889 lines)
-- `.opencode/context/common/system/state-schema.md` (642 lines)
+- `.opencode/context/core/system/artifact-management.md` (182 lines)
+- `.opencode/context/core/system/status-markers.md` (889 lines)
+- `.opencode/context/core/system/state-schema.md` (642 lines)
 
 **Agent Files Analyzed**:
 - `.opencode/agent/subagents/lean-research-agent.md` (963 lines)
 - `.opencode/agent/subagents/lean-implementation-agent.md` (374 lines)
 
 **Related Documentation**:
-- `.opencode/context/common/system/subagent-return-format.md`
-- `.opencode/context/common/standards/plan.md`
-- `.opencode/context/common/standards/report.md`
-- `.opencode/context/common/standards/summary.md`
+- `.opencode/context/core/system/subagent-return-format.md`
+- `.opencode/context/core/standards/plan.md`
+- `.opencode/context/core/standards/report.md`
+- `.opencode/context/core/standards/summary.md`
