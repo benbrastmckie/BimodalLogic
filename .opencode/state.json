@@ -1,0 +1,88 @@
+{
+  "active_projects": [
+    {
+      "project_number": 259,
+      "project_name": "automation_tactics",
+      "type": "feature",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-04T00:00:00Z",
+      "started": "2026-01-04",
+      "research_completed": "2026-01-04",
+      "last_updated": "2026-01-04",
+      "artifacts": [
+        ".opencode/specs/259_automation_tactics/reports/research-001.md"
+      ],
+      "research_summary": "Research completed on automation tactics implementation. Found 10/12 tactics fully implemented (83% complete), 2 tactics with infrastructure ready but delegating to tm_auto. Aesop integration functional with 2 noncomputable errors. ProofSearch.lean provides production-ready bounded search infrastructure (461 lines). Revised effort estimate: 17-23 hours (down from 40-60 hours).",
+      "estimated_hours": 20.0
+    },
+    {
+      "project_number": 260,
+      "project_name": "investigate_claude_code_cli_argument_mechanism",
+      "type": "meta",
+      "phase": "planning",
+      "status": "not_started",
+      "priority": "critical",
+      "created": "2026-01-04T17:55:39Z",
+      "artifacts": {
+        "plans": [".opencode/specs/260_investigate_claude_code_cli_argument_mechanism/plans/implementation-001.md"]
+      }
+    },
+    {
+      "project_number": 261,
+      "project_name": "redesign_argument_passing_mechanism",
+      "type": "meta",
+      "phase": "planning",
+      "status": "not_started",
+      "priority": "critical",
+      "created": "2026-01-04T17:55:39Z",
+      "dependencies": [260],
+      "artifacts": {
+        "plans": [".opencode/specs/261_redesign_argument_passing_mechanism/plans/implementation-001.md"]
+      }
+    },
+    {
+      "project_number": 262,
+      "project_name": "update_orchestrator_for_new_argument_mechanism",
+      "type": "meta",
+      "phase": "planning",
+      "status": "not_started",
+      "priority": "critical",
+      "created": "2026-01-04T17:55:39Z",
+      "dependencies": [261],
+      "artifacts": {
+        "plans": [".opencode/specs/262_update_orchestrator_for_new_argument_mechanism/plans/implementation-001.md"]
+      }
+    },
+    {
+      "project_number": 263,
+      "project_name": "update_all_commands_for_new_argument_mechanism",
+      "type": "meta",
+      "phase": "planning",
+      "status": "not_started",
+      "priority": "critical",
+      "created": "2026-01-04T17:55:39Z",
+      "dependencies": [261, 262],
+      "artifacts": {
+        "plans": [".opencode/specs/263_update_all_commands_for_new_argument_mechanism/plans/implementation-001.md"]
+      }
+    },
+    {
+      "project_number": 264,
+      "project_name": "test_and_document_argument_passing",
+      "type": "meta",
+      "phase": "planning",
+      "status": "not_started",
+      "priority": "critical",
+      "created": "2026-01-04T17:55:39Z",
+      "dependencies": [262, 263],
+      "artifacts": {
+        "plans": [".opencode/specs/264_test_and_document_argument_passing/plans/implementation-001.md"]
+      }
+    }
+  ],
+  "completed_projects": [],
+  "archived_projects": []
+}
