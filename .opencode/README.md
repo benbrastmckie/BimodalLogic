@@ -1,8 +1,9 @@
 # .opencode System
 
-**Version**: 2.0  
+**Version**: 3.0  
 **Status**: Active  
-**Created**: 2025-12-26
+**Created**: 2025-12-26  
+**Rebuilt**: 2026-01-04
 
 ---
 
@@ -42,12 +43,18 @@ Status changes are synchronized atomically across multiple files:
 
 Two-phase commit ensures consistency with rollback on failure.
 
-### Language-Specific Routing
+### Language-Based Routing
 
-Tasks are automatically routed to appropriate agents based on language:
+All workflow commands (/research, /plan, /revise, /implement) automatically route tasks to appropriate agents based on language:
 
-- **Lean tasks**: Use lean-lsp-mcp for compilation and diagnostics
-- **General tasks**: Use standard development tools
+- **Lean tasks**: Route to lean-research-agent, lean-planner, and lean-implementation-agent
+  - Proof strategy identification and tactic recommendations
+  - Mathlib dependency analysis and integration
+  - Type signature design for dependent types
+  - LSP integration for compilation and diagnostics
+- **General tasks**: Route to researcher, planner, and implementer
+  - Standard development tools and workflows
+  - Web research and documentation analysis
 - **Future**: Python, JavaScript, Rust-specific agents
 
 ### Error Tracking and Analysis
