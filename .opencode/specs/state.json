@@ -567,19 +567,28 @@
       "project_number": 287,
       "project_name": "fix_revise_command_plan_link_replacement",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "medium",
       "language": "general",
       "created": "2026-01-04T06:30:00Z",
       "started": "2026-01-04",
       "research_completed": "2026-01-04",
-      "last_updated": "2026-01-04T07:10:00Z",
+      "last_updated": "2026-01-04T08:43:00Z",
       "artifacts": [
-        ".opencode/specs/287_fix_revise_command_plan_link_replacement/reports/research-001.md"
+        ".opencode/specs/287_fix_revise_command_plan_link_replacement/reports/research-001.md",
+        ".opencode/specs/287_fix_revise_command_plan_link_replacement/plans/implementation-001.md"
       ],
       "research_summary": "Root cause identified: status-sync-manager appends plan links instead of replacing them. Fix requires adding plan link replacement logic with regex pattern matching in step_3_prepare_updates. Estimated effort: 2-3 hours.",
-      "estimated_hours": 2.5
+      "estimated_hours": 2.5,
+      "planning_completed": "2026-01-04",
+      "plan_path": ".opencode/specs/287_fix_revise_command_plan_link_replacement/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 5,
+        "estimated_hours": 2.5,
+        "complexity": "medium",
+        "research_integrated": true
+      }
     }
   ],
   "completed_projects": [
