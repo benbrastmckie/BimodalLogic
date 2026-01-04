@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-04T05:30:00Z
-next_project_number: 283
+last_updated: 2026-01-04T06:00:00Z
+next_project_number: 284
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -29,7 +29,7 @@ technical_debt:
 
 ### 283. Fix /research command to properly handle already-completed tasks and sync TODO.md status with state.json
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -572,7 +572,7 @@ The task tool invocation does NOT enforce the return format specified in the age
 
 ### 269. Fix /meta command to accept user prompts directly instead of forcing interactive interview
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -1500,4 +1500,60 @@ Establishes state.json as the single source of truth for task metadata, eliminat
 - Task 276: Investigate redundant project-level state.json files (related to state management)
 - Task 272: Add YAML header to TODO.md (sync state.json → TODO.md)
 - Task 275: Fix workflow status updates (uses status-sync-manager)
+
+---
+
+## Medium Priority
+
+### 284. Modify /todo command to commit changes before archiving instead of prompting user
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+The `/todo` command currently asks the user to commit all changes before archiving completed and abandoned tasks. This creates friction in the workflow and requires manual intervention. The command should automatically commit all changes with an appropriate commit message before performing the archiving operation.
+
+**Current Behavior**:
+```bash
+/todo
+# Output: "Please commit all changes before running /todo to archive tasks"
+# User must manually: git add . && git commit -m "message" && /todo
+```
+
+**Expected Behavior**:
+```bash
+/todo
+# Automatically:
+# 1. Check for uncommitted changes (git status --porcelain)
+# 2. If changes exist: git add . && git commit -m "Archive completed and abandoned tasks"
+# 3. Proceed with archiving completed and abandoned tasks
+# 4. Update TODO.md and state.json
+```
+
+**Implementation Strategy**:
+1. Add pre-archiving git commit logic to /todo command
+2. Generate appropriate commit message (e.g., "Archive completed and abandoned tasks - {count} tasks archived")
+3. Handle edge cases:
+   - No uncommitted changes: Skip commit, proceed with archiving
+   - Git commit fails: Abort archiving, return error to user
+   - No tasks to archive: Skip commit and archiving
+4. Update /todo command documentation
+
+**Files to Modify**:
+- `.opencode/command/todo.md` - Add git commit logic before archiving
+- `.opencode/context/core/workflows/todo-workflow.md` - Document auto-commit behavior (if exists)
+
+**Acceptance Criteria**:
+- [ ] /todo automatically commits changes before archiving
+- [ ] Commit message includes count of tasks being archived
+- [ ] No user prompt for committing changes
+- [ ] Edge cases handled correctly (no changes, commit failure, no tasks)
+- [ ] Documentation updated to reflect auto-commit behavior
+- [ ] No regression in existing /todo functionality
+
+**Impact**: 
+Streamlines the /todo workflow by eliminating manual git commit step, reducing friction and making task archiving more efficient.
 

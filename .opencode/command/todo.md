@@ -96,31 +96,31 @@ context_loading:
   </stage>
 
   <stage id="3" name="GitPreCommit">
-    <action>Create pre-cleanup git snapshot</action>
+    <action>Auto-commit uncommitted changes and create pre-cleanup git snapshot</action>
     <process>
       1. Check git status:
          - Run: git status --porcelain
-         - If dirty working tree (uncommitted changes): Abort with error
          - If merge in progress: Abort with error
          - Run: git symbolic-ref -q HEAD
          - If detached HEAD: Abort with error
-      2. Stage files:
+      2. Auto-commit uncommitted changes (if any):
+         - If dirty working tree (uncommitted changes):
+           a. Stage all changes: git add .
+           b. Create commit with message: "Auto-commit before archiving {N} completed/abandoned tasks"
+           c. If commit fails: Abort archival with error
+      3. Stage TODO/state files:
          - git add .opencode/specs/TODO.md
          - git add .opencode/specs/state.json
          - git add .opencode/specs/archive/state.json
-      3. Create commit:
+      4. Create pre-cleanup snapshot commit:
          - Message: "todo: snapshot before archiving {N} tasks (task 253)"
          - Example: "todo: snapshot before archiving 5 tasks (task 253)"
-      4. If commit fails:
+      5. If snapshot commit fails:
          - Log error with details
          - Abort archival
          - Return error: "Failed to create pre-cleanup snapshot"
     </process>
     <error_handling>
-      If dirty working tree:
-        - Return error: "Uncommitted changes detected. Commit or stash before running /todo"
-        - Abort archival
-      
       If merge in progress:
         - Return error: "Merge in progress. Resolve merge before running /todo"
         - Abort archival
@@ -129,7 +129,11 @@ context_loading:
         - Return error: "Detached HEAD detected. Checkout branch before running /todo"
         - Abort archival
       
-      If commit fails:
+      If auto-commit fails:
+        - Return error: "Failed to auto-commit changes: {error_details}"
+        - Abort archival
+      
+      If snapshot commit fails:
         - Return error: "Failed to create pre-cleanup snapshot: {error_details}"
         - Abort archival
     </error_handling>

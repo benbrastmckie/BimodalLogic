@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-04T05:58:01Z",
-  "next_project_number": 284,
+  "_last_updated": "2026-01-04T06:00:00Z",
+  "next_project_number": 285,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -482,25 +482,6 @@
     }
   ],
   "completed_projects": [
-    {
-      "project_number": 269,
-      "project_name": "fix_meta_command_accept_user_prompts",
-      "type": "bugfix",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2026-01-03T18:15:00Z",
-      "started": "2026-01-03",
-      "completed": "2026-01-03",
-      "last_updated": "2026-01-03",
-      "artifacts": [
-        ".opencode/command/meta.md",
-        ".opencode/agent/subagents/meta.md"
-      ],
-      "git_commit": "a4fa33f",
-      "summary": "Fixed /meta command to accept user prompts directly via $ARGUMENTS, supporting both prompt mode (skip interview) and interactive mode (full interview)"
-    },
     {
       "project_number": 241,
       "project_name": "optimize_no_emoji_validation",
@@ -1254,6 +1235,10 @@
   },
   "recent_activities": [
     {
+      "timestamp": "2026-01-04T06:00:00Z",
+      "activity": "Created task 284: Modify /todo command to commit changes before archiving instead of prompting user (TBD, Medium priority, general)"
+    },
+    {
       "timestamp": "2026-01-04T05:58:01Z",
       "activity": "Created task 283: Fix /research command to properly handle already-completed tasks and sync TODO.md status with state.json (3-4 hours, High priority, markdown)"
     },
@@ -1802,6 +1787,26 @@
       "status": "planned",
       "plan_path": ".opencode/specs/278_investigate_fix_implement_argument_parsing/plans/implementation-001.md",
       "updated_at": "2026-01-03T21:00:00Z"
+    },
+    "284": {
+      "project_number": 284,
+      "project_name": "todo_auto_commit",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "general",
+      "created": "2026-01-04T06:00:00Z",
+      "started": "2026-01-03",
+      "completed": "2026-01-03",
+      "last_updated": "2026-01-03T22:08:00Z",
+      "artifacts": [
+        ".opencode/command/todo.md",
+        ".opencode/specs/284_todo_auto_commit/summaries/implementation-summary-20260103.md"
+      ],
+      "files_modified": [
+        ".opencode/command/todo.md"
+      ]
     }
   }
 }
