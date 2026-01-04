@@ -8,13 +8,13 @@
 ## High Priority
 
 ### 275. Fix workflow commands to update status at beginning and end in both TODO.md and state.json
-- **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 8 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: markdown
 - **Started**: 2026-01-03
-- **Completed**: 2026-01-03
 - **Research**: [Research Report](275_fix_workflow_status_updates/reports/research-001.md)
+- **Plan**: [Implementation Plan](275_fix_workflow_status_updates/plans/implementation-001.md)
 - **Blocking**: None
 - **Dependencies**: None
 
@@ -239,11 +239,52 @@ The `/research` command creates research reports but does not update TODO.md tas
 
 ---
 
-### 272. Add standardized YAML header to TODO.md with state.json metadata
-- **Effort**: TBD
+### 276. Investigate and remove redundant project-level state.json files in favor of centralized specs/state.json
+- **Effort**: 6-8 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+When `/research`, `/plan`, `/revise`, and `/implement` commands run on a task number, they lazily create a project directory (e.g., `.opencode/specs/258_resolve_truth_lean_sorries/`) and create a project-level `state.json` file within that directory. This project-level state.json appears to duplicate information already tracked in the centralized `.opencode/specs/state.json` file's `active_projects` array. This task investigates whether the project-level state.json files serve a unique purpose or can be removed to simplify the system and improve performance.
+
+**Current Behavior**:
+- Central state file: `.opencode/specs/state.json` contains `active_projects` array with metadata for all projects
+- Project-level state files: `.opencode/specs/{number}_{slug}/state.json` created lazily for each project
+- Both files contain similar metadata: project_number, project_name, type, phase, status, artifacts, timestamps
+- status-sync-manager writes to both files atomically
+- No evidence found of project-level state.json being read by any command or agent
+
+**Investigation Goals**:
+1. Determine if project-level state.json is ever read (not just written) by any command or agent
+2. Identify any unique information in project-level state.json not available in specs/state.json
+3. Assess performance impact of maintaining duplicate state files
+4. Evaluate simplification benefits of using only specs/state.json
+
+**Potential Outcomes**:
+- **If redundant**: Remove project-level state.json creation from status-sync-manager, update all agents to use only specs/state.json, document migration path
+- **If necessary**: Document the specific purpose and usage patterns, clarify when each state file should be used
+
+**Success Criteria**:
+- [ ] Comprehensive search for all reads of project-level state.json files
+- [ ] Analysis of metadata differences between project-level and central state.json
+- [ ] Performance comparison (file I/O, atomic writes, lookup speed)
+- [ ] Decision documented with clear rationale
+- [ ] If removing: migration plan created with backward compatibility strategy
+- [ ] If keeping: usage patterns documented in architecture guide
+
+**Impact**: Simplifies state management by eliminating redundant project-level state.json files if they serve no unique purpose, reducing file I/O overhead and improving system performance. If project-level state.json is necessary, clarifies its purpose and usage patterns.
+
+---
+
+### 272. Add standardized YAML header to TODO.md with state.json metadata
+- **Effort**: 12-16 hours
+- **Status**: [RESEARCHED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Research**: [Research Report](272_add_yaml_header_to_todo_md/reports/research-001.md)
 - **Blocking**: None
 - **Dependencies**: None
 

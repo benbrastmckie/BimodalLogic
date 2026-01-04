@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-03T20:11:00Z",
-  "next_project_number": 276,
+  "_last_updated": "2026-01-03T20:18:00Z",
+  "next_project_number": 277,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -257,17 +257,26 @@
       "project_number": 275,
       "project_name": "fix_workflow_status_updates",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-03T20:03:00Z",
       "started": "2026-01-03",
       "research_completed": "2026-01-03",
+      "planning_completed": "2026-01-03",
       "last_updated": "2026-01-03",
       "artifacts": [
-        ".opencode/specs/275_fix_workflow_status_updates/reports/research-001.md"
+        ".opencode/specs/275_fix_workflow_status_updates/reports/research-001.md",
+        ".opencode/specs/275_fix_workflow_status_updates/plans/implementation-001.md"
       ],
+      "plan_path": ".opencode/specs/275_fix_workflow_status_updates/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 8,
+        "complexity": "medium",
+        "research_integrated": true
+      },
       "research_summary": "Comprehensive analysis of workflow command status update patterns. Found that researcher subagent correctly implements two-phase status updates (preflight to [RESEARCHING], postflight to [RESEARCHED]). Planner and implementer subagents need verification for preflight status updates. Estimated 6-8 hours to add missing preflight updates and update documentation.",
       "estimated_hours": 8.0
     }
@@ -1025,6 +1034,10 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2026-01-03T20:11:00Z",
+      "activity": "Created task 276: Investigate and remove redundant project-level state.json files in favor of centralized specs/state.json (6-8 hours, Medium priority, markdown)"
+    },
     {
       "timestamp": "2026-01-03T20:03:00Z",
       "activity": "Created task 275: Fix workflow commands to update status at beginning and end in both TODO.md and state.json (8-12 hours, High priority, markdown)"
