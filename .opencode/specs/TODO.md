@@ -1550,15 +1550,17 @@ Completes the systematic fix started in Task 283 by extending it to all remainin
 ---
 
 ### 290. Fix lean-research-agent preflight status updates and artifact linking to match standard workflow behavior
-- **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 2.5 hours
+- **Status**: [PLANNED]
 - **Started**: 2026-01-04
 - **Researched**: 2026-01-04
+- **Planned**: 2026-01-04
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: Task 289 (completed)
 - **Research**: [Research Report](.opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/plans/implementation-001.md)
 
 **Description**:
 After fixing the step naming inconsistency in Task 289, `/research 260` (a Lean task) still exhibits two issues that differ from the standard workflow behavior seen in `/plan` and `/research` on non-Lean tasks:

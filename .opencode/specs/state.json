@@ -594,19 +594,28 @@
       "project_number": 290,
       "project_name": "fix_lean_research_agent_preflight_status_updates_and_artifact_linking",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-04T09:00:00Z",
       "started": "2026-01-04",
       "research_completed": "2026-01-04",
-      "last_updated": "2026-01-04T17:30:00Z",
+      "last_updated": "2026-01-04T17:40:00Z",
       "artifacts": [
-        ".opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md"
+        ".opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md",
+        ".opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/plans/implementation-001.md"
       ],
       "research_summary": "Research completed on Task 290. Investigation reveals preflight status updates ARE working correctly (Task 289 fix successful). The actual issue is outdated documentation in lean-research-agent.md requiring summary artifact creation, contradicting standard workflow. Recommended fix: remove summary artifact requirements to match researcher.md behavior. Estimated effort: 2-3 hours.",
-      "estimated_hours": 2.5
+      "estimated_hours": 2.5,
+      "planning_completed": "2026-01-04",
+      "plan_path": ".opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 2.5,
+        "complexity": "low-medium",
+        "research_integrated": true
+      }
     },
     {
       "project_number": 291,
