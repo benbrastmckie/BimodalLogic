@@ -61,7 +61,8 @@ User Input → Orchestrator → Command Parser → Subagent Router → Specializ
 │   └── subagents/
 │       ├── researcher.md                  # General research agent
 │       ├── lean-research-agent.md         # Lean-specific research
-│       ├── planner.md                     # Implementation planning
+│       ├── planner.md                     # General planning agent
+│       ├── lean-planner.md                # Lean-specific planning
 │       ├── implementer.md                 # General implementation
 │       ├── lean-implementation-agent.md   # Lean implementation
 │       ├── reviewer.md                    # Codebase review
@@ -151,19 +152,29 @@ All commands follow a consistent lifecycle pattern:
 
 ### 4. Language-Based Routing
 
-Tasks are automatically routed to specialized agents based on language:
+Tasks are automatically routed to specialized agents based on language. The `/research`, `/plan`, `/revise`, and `/implement` commands all use language-based routing to invoke the appropriate specialized agents.
 
-| Language | Research Agent | Implementation Agent |
-|----------|----------------|---------------------|
-| lean | lean-research-agent | lean-implementation-agent |
-| markdown | researcher | implementer |
-| python | researcher | implementer |
-| general | researcher | implementer |
+**Routing Table**:
+
+| Language | Research Agent | Planning Agent | Implementation Agent |
+|----------|----------------|----------------|---------------------|
+| lean | lean-research-agent | lean-planner | lean-implementation-agent |
+| markdown | researcher | planner | implementer |
+| python | researcher | planner | implementer |
+| general | researcher | planner | implementer |
+
+**Note**: The routing table is extensible. Future enhancements may include language-specific agents for Python, TypeScript, or other languages. Each language can have specialized agents for research, planning/revision, and implementation phases.
 
 **Language Extraction Priority**:
 1. Project state.json (`language` field)
 2. TODO.md task entry (`**Language**` field)
 3. Default to "general" if not found
+
+**Commands Using Language-Based Routing**:
+- `/research NNN` - Routes to Research Agent based on task language
+- `/plan NNN` - Routes to Planning Agent based on task language
+- `/revise NNN` - Routes to Planning Agent based on task language (same as /plan)
+- `/implement NNN` - Routes to Implementation Agent based on task language
 
 ### 5. Atomic State Updates
 
@@ -205,6 +216,7 @@ Status updates across multiple files (TODO.md, state.json, project state.json) a
 
 Commands define the user interface and specify routing behavior via frontmatter:
 
+**Example: /research command**
 ```yaml
 ---
 name: research
@@ -213,7 +225,29 @@ description: "Conduct research and create reports"
 routing:
   language_based: true
   lean: lean-research-agent
+  markdown: researcher
+  python: researcher
   default: researcher
+context_loading:
+  strategy: lazy
+  required:
+    - "core/standards/delegation.md"
+    - "core/system/state-management.md"
+---
+```
+
+**Example: /plan command**
+```yaml
+---
+name: plan
+agent: orchestrator
+description: "Create implementation plans"
+routing:
+  language_based: true
+  lean: lean-planner
+  markdown: planner
+  python: planner
+  default: planner
 context_loading:
   strategy: lazy
   required:
@@ -234,14 +268,14 @@ context_loading:
 #### `/plan NNN [DESCRIPTION]`
 - **Purpose**: Create implementation plans based on research
 - **Arguments**: Mandatory task number, optional description
-- **Routing**: Language-based (planner or lean-specific planner)
+- **Routing**: Language-based (lean-planner or planner)
 - **Artifacts**: Implementation plans in `plans/implementation-NNN.md`
 - **Status Transition**: [RESEARCHED] → [PLANNING] → [PLANNED]
 
 #### `/revise NNN DESCRIPTION`
 - **Purpose**: Revise existing plans with new requirements
 - **Arguments**: Mandatory task number AND description
-- **Routing**: Language-based
+- **Routing**: Language-based (lean-planner or planner, same routing as /plan)
 - **Artifacts**: Revised plans (increments version number)
 - **Status Transition**: [PLANNED] → [REVISING] → [REVISED]
 
@@ -321,13 +355,18 @@ context_loading:
 }
 ```
 
-#### Planner
+#### Planner / Lean Planner
 
 **Responsibilities**:
 - Harvest linked research artifacts from TODO.md
 - Create implementation plans with phases, estimates, complexity
 - Include research inputs section in plan
 - Update task status to [PLANNED]
+- Handle plan revisions (via /revise command)
+
+**Language-Specific Variants**:
+- **planner**: General planning agent for markdown, python, and general tasks
+- **lean-planner**: Lean 4-specific planning agent with knowledge of Lean proof strategies, tactic patterns, and mathlib integration
 
 **Research Integration**: Plans must cite linked research artifacts or explicitly state none linked.
 
@@ -914,10 +953,10 @@ Content...
 
 ```
 [NOT STARTED] → [RESEARCHING] → [RESEARCHED] → [PLANNING] → [PLANNED] → [IMPLEMENTING] → [COMPLETED]
-                      ↓                            ↓                ↓            ↓
-                 [BLOCKED]                    [REVISING]       [PARTIAL]    [BLOCKED]
-                      ↓                            ↓                            ↓
-                 [ABANDONED]                  [REVISED] ──────────────────────→
+                      ↓                            ↓            ↓            ↓
+                 [BLOCKED]                    [REVISING]    [PARTIAL]    [BLOCKED]
+                      ↓                            ↓                         ↓
+                 [ABANDONED]                  [REVISED] ────────────────────→
 ```
 
 **Status Sync Manager** ensures atomic updates across:
@@ -1051,7 +1090,7 @@ Both systems follow similar architectural patterns:
 |--------|--------------|-----------|
 | **Primary Domain** | Lean 4 formal verification | General software development |
 | **Language Routing** | Automatic routing based on task language | Manual agent selection |
-| **Specialized Agents** | lean-research-agent, lean-implementation-agent | Lean-specific orchestrator |
+| **Specialized Agents** | lean-research-agent, lean-planner, lean-implementation-agent | Lean-specific orchestrator |
 | **Tool Integration** | LeanExplore, Loogle, LeanSearch, lean-lsp-mcp | Standard dev tools |
 | **State Management** | TODO.md + state.json + project state.json | specs/TODO.md + specs/state.json |
 | **Project Directories** | Optional project state.json | Not used |
