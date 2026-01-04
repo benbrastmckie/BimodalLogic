@@ -62,10 +62,12 @@ When running `/implement 271`, the orchestrator returns an error message saying 
 ---
 
 ### 277. Improve OpenCode header and summary display for task commands
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 4.5 hours
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: general
+- **Started**: 2026-01-03
+- **Research**: [Research Report](277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md)
 - **Blocking**: None
 - **Dependencies**: None
 
