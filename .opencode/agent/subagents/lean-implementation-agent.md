@@ -28,7 +28,7 @@ context_loading:
   required:
     - "core/standards/delegation.md"
     - "core/system/state-management.md"
-    - "common/system/artifact-management.md"
+    - "core/system/artifact-management.md"
     - "project/lean4/standards/lean4-style-guide.md"
     - "project/lean4/tools/lsp-integration.md"
   optional:

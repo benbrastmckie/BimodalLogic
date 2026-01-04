@@ -59,7 +59,7 @@
 
 ---
 
-## Common Standards (common/standards/)
+## Core Standards (core/standards/)
 
 Load for: Task validation, artifact creation, documentation standards
 
@@ -78,7 +78,7 @@ Load for: Task validation, artifact creation, documentation standards
 
 ---
 
-## Common System (common/system/)
+## Core System (core/system/)
 
 Load for: Artifact management, git commits, context loading
 
@@ -89,7 +89,7 @@ Load for: Artifact management, git commits, context loading
 
 ---
 
-## Common Workflows (common/workflows/)
+## Core Workflows (core/workflows/)
 
 Load for: Review, task breakdown, sessions
 
@@ -100,7 +100,7 @@ Load for: Review, task breakdown, sessions
 
 ---
 
-## Common Templates (common/templates/)
+## Core Templates (core/templates/)
 
 Load for: Creating new agents, commands, orchestrators
 
@@ -336,9 +336,9 @@ Language-specific:
 
 **For Delegation**: → `core/standards/delegation.md`  
 **For State Management**: → `core/system/state-management.md`  
-**For Artifacts**: → `common/system/artifact-management.md`  
-**For Git Commits**: → `common/system/git-commits.md`  
-**For Task Format**: → `common/standards/tasks.md`  
-**For Plan Format**: → `common/standards/plan.md`  
+**For Artifacts**: → `core/system/artifact-management.md`  
+**For Git Commits**: → `core/system/git-commits.md`  
+**For Task Format**: → `core/standards/tasks.md`  
+**For Plan Format**: → `core/standards/plan.md`  
 **For Lean Style**: → `project/lean4/standards/lean4-style-guide.md`  
 **For Proof Conventions**: → `project/logic/standards/proof-conventions.md`

@@ -23,7 +23,7 @@ context_loading:
   index: ".opencode/context/index.md"
   required:
     - "core/standards/delegation.md"
-    - "common/system/artifact-management.md"
+    - "core/system/artifact-management.md"
   max_context_size: 40000
 delegation:
   max_depth: 3
