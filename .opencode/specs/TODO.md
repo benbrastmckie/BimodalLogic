@@ -98,7 +98,7 @@ Orchestrator Stage 4 (ValidateReturn) references validation-rules.md but does NO
 - **Blocking**: None
 - **Dependencies**: None
 - **Started**: 2026-01-03
-- **Research**: [Research Report](281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md)
+- **Research**: [Research Report 001](281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md) | [Research Report 002](281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-002.md)
 - **Plan**: [Implementation Plan](281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-001.md)
 
 **Description**:
