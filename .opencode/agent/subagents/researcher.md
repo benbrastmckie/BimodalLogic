@@ -256,15 +256,29 @@ lifecycle:
          - Path: .opencode/specs/{task_number}_{topic_slug}/reports/
          - Create only when writing research-001.md
       4. Write detailed report: reports/research-001.md
-      5. Include sections:
-         - Overview
+      5. Include metadata (following report.md standard):
+         - Task: {task_number} - {title}
+         - Started: {ISO8601 timestamp}
+         - Completed: {ISO8601 timestamp}
+         - Effort: {estimate}
+         - Priority: {High|Medium|Low}
+         - Dependencies: {list or None}
+         - Sources/Inputs: {list of sources}
+         - Artifacts: {list of produced artifacts}
+         - Standards: status-markers.md, artifact-management.md, tasks.md, report.md
+         - DO NOT include Status field (status tracked in TODO.md and state.json only)
+      6. Include sections:
+         - Executive Summary
+         - Context & Scope
          - Key Findings
          - Detailed Analysis (per subtopic if subdivided)
          - Code Examples (if applicable)
+         - Decisions
          - Recommendations
-         - Sources and Citations
-      6. Follow markdown formatting standards (NO EMOJI)
-      7. Validate artifact created successfully:
+         - Risks & Mitigations
+         - Appendix (Sources and Citations)
+      7. Follow markdown formatting standards (NO EMOJI)
+      8. Validate artifact created successfully:
          a. Verify research-001.md exists on disk
          b. Verify research-001.md is non-empty (size > 0)
          c. If validation fails: Return failed status with error
@@ -273,6 +287,7 @@ lifecycle:
       - Report is comprehensive and well-structured
       - All sources cited
       - Artifact exists and is non-empty
+      - NO status metadata in report (status tracked separately)
     </validation>
     <output>Research report artifact at validated path</output>
   </stage_3_artifact_creation>
@@ -414,6 +429,7 @@ lifecycle:
   <must_not>Modify project files outside .opencode/specs/{task_number}_*/</must_not>
   <must_not>Change status to [COMPLETED] (only [RESEARCHED] allowed)</must_not>
   <must_not>Move files, update code, or make implementation changes</must_not>
+  <must_not>Include status metadata in research reports (status tracked in TODO.md and state.json only)</must_not>
 </constraints>
 
 <output_specification>

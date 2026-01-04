@@ -4,15 +4,16 @@
 
 ## Metadata (required)
 - **Task**: `{id} - {title}`
-- **Status**: `[NOT STARTED]` | `[IN PROGRESS]` | `[BLOCKED]` | `[ABANDONED]` | `[COMPLETED]` (see status-markers.md)
 - **Started**: `{ISO8601}` when work begins
-- **Completed/Blocked/Abandoned**: `{ISO8601}` as applicable
+- **Completed**: `{ISO8601}` when work completes
 - **Effort**: `{estimate}`
 - **Priority**: `High | Medium | Low`
 - **Dependencies**: `{list or None}`
 - **Sources/Inputs**: bullet list of inputs consulted
 - **Artifacts**: list of produced artifacts (paths)
 - **Standards**: status-markers.md, artifact-management.md, tasks.md, this file
+
+**Note**: Status metadata (e.g., `[RESEARCHING]`, `[COMPLETED]`) belongs in TODO.md and state.json only, NOT in research reports. Reports are artifacts that document findings, not workflow state.
 
 ## Structure
 1. **Executive Summary** – 4-6 bullets.
@@ -23,10 +24,11 @@
 6. **Risks & Mitigations** – optional but recommended.
 7. **Appendix** – references, data, links.
 
-## Status Marker Usage
-- Use status markers for overall report status; subsections may omit markers unless phased execution is tracked.
-- Include timestamps for each transition.
-- Do not use emojis.
+## Timestamps
+- Include **Started** timestamp when research/analysis begins
+- Include **Completed** timestamp when report is finalized
+- Do not use emojis
+- Do not include status markers (status tracked in TODO.md and state.json only)
 
 ## Writing Guidance
 - Be objective, cite sources/paths.
@@ -38,10 +40,14 @@
 ```
 # Research Report: {title}
 - **Task**: {id} - {title}
-- **Status**: [IN PROGRESS]
 - **Started**: 2025-12-22T10:00:00Z
+- **Completed**: 2025-12-22T13:00:00Z
 - **Effort**: 3 hours
+- **Priority**: High
+- **Dependencies**: None
 - **Sources/Inputs**: ...
+- **Artifacts**: ...
+- **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
 ## Executive Summary
 - ...

@@ -1,11 +1,233 @@
 # TODO
 
-**Last Updated:** 2026-01-03T18:45:00Z
+**Last Updated:** 2026-01-03T19:15:00Z
 
 ---
 
 
 ## High Priority
+
+### 274. Remove status metadata from research reports (belongs in TODO.md and state.json only)
+- **Effort**: 2-3 hours
+- **Status**: [COMPLETED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Completed**: 2026-01-03
+- **Artifacts**: .opencode/specs/274_remove_status_metadata_from_research_reports/summaries/implementation-summary-20260103.md
+
+**Description**:
+Research reports created by `/research` command incorrectly include status metadata (e.g., `**Status**: [RESEARCHING]`) in the report file itself. Status should only be tracked in TODO.md and state.json, not in artifact files. This creates redundancy and potential inconsistency.
+
+**Current Behavior**:
+```bash
+/research 271
+# Creates: .opencode/specs/271_*/reports/research-001.md
+# Report contains: **Status**: [RESEARCHING]
+# Problem: Status metadata duplicated in artifact file
+```
+
+**Expected Behavior**:
+```bash
+/research 271
+# Creates: .opencode/specs/271_*/reports/research-001.md
+# Report contains: NO status metadata
+# Status tracked in: TODO.md and state.json only
+```
+
+**Example Issue**:
+File: `.opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md`
+Contains: `**Status**: [RESEARCHING]`
+Should contain: Research findings only, no status metadata
+
+**Root Cause**:
+- Researcher subagent includes status in research report template
+- Research report template should not include status metadata
+- Status belongs in TODO.md and state.json, not in artifact files
+
+**Solution**:
+1. Update researcher subagent to remove status from research report template
+2. Update research report standard/template to exclude status metadata
+3. Research reports should contain:
+   - Research findings
+   - Analysis and recommendations
+   - References and citations
+   - NO status metadata (tracked separately in TODO.md/state.json)
+
+**Files to Modify**:
+- `.opencode/agent/subagents/researcher.md` - Remove status from report template
+- `.opencode/context/core/standards/report.md` (if exists) - Update research report standard
+
+**Acceptance Criteria**:
+- [ ] Research reports do NOT include status metadata
+- [ ] Status tracked only in TODO.md and state.json
+- [ ] Researcher subagent updated to exclude status from reports
+- [ ] Research report standard/template updated (if exists)
+- [ ] No redundant metadata in artifact files
+
+**Impact**: Eliminates redundant status metadata in research reports, ensuring single source of truth in TODO.md and state.json.
+
+---
+
+### 273. Fix /research command to link research artifacts in TODO.md task entries
+- **Effort**: 4-6 hours
+- **Status**: [COMPLETED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+The `/research` command creates research reports but does not update TODO.md task entries to link to those reports. This violates the artifact linking standard and makes it difficult for users to find research artifacts. The fix should be minimal, avoiding needless complexity or context bloat.
+
+**Current Behavior**:
+```bash
+/research 271
+# Creates: .opencode/specs/271_*/reports/research-001.md
+# Updates: Task 271 status to [RESEARCHED]
+# Missing: Link to research report in TODO.md task entry
+```
+
+**Expected Behavior**:
+```bash
+/research 271
+# Creates: .opencode/specs/271_*/reports/research-001.md
+# Updates: Task 271 status to [RESEARCHED]
+# Adds: Research link in TODO.md task entry
+```
+
+**Standard Format** (to be specified in context file):
+```markdown
+### 271. Task title
+- **Effort**: 8-12 hours
+- **Status**: [RESEARCHED]
+- **Priority**: High
+- **Language**: markdown
+- **Research**: [Research Report](271_task_name/reports/research-001.md)
+- **Blocking**: None
+- **Dependencies**: None
+```
+
+**Root Cause**:
+- `/research` command delegates to researcher subagent
+- Researcher updates status via status-sync-manager
+- Status-sync-manager updates status field but does NOT add artifact links
+- No context file specifies the standard format for artifact links in TODO.md
+
+**Solution** (minimal, avoiding complexity):
+1. Create/update context file specifying TODO.md artifact link format:
+   - Location: `.opencode/context/core/standards/todo-format.md` (or similar)
+   - Content: Standard format for Research, Plan, Implementation links
+   - Keep it simple: just the link format, no complex logic
+
+2. Update researcher subagent to add research link when updating status:
+   - After creating research report
+   - Before delegating to status-sync-manager
+   - Add `- **Research**: [Research Report](path/to/report.md)` line
+
+3. Update status-sync-manager to preserve artifact links:
+   - When updating TODO.md task entry
+   - Preserve existing Research/Plan/Implementation links
+   - Only update Status, Completed, and other metadata fields
+
+**Files to Modify**:
+- `.opencode/context/core/standards/todo-format.md` (create) - Specify artifact link format
+- `.opencode/agent/subagents/researcher.md` - Add research link when updating TODO.md
+- `.opencode/agent/subagents/status-sync-manager.md` - Preserve artifact links during updates
+
+**Acceptance Criteria**:
+- [ ] Context file specifies standard TODO.md artifact link format
+- [ ] `/research NNN` adds Research link to TODO.md task entry
+- [ ] Research link format: `- **Research**: [Research Report](path/to/report.md)`
+- [ ] status-sync-manager preserves existing artifact links
+- [ ] Solution is minimal and avoids needless complexity
+- [ ] No context bloat - single focused context file for format
+
+**Impact**: Makes research artifacts discoverable in TODO.md, following artifact linking standards without adding complexity.
+
+---
+
+### 272. Add standardized YAML header to TODO.md with state.json metadata
+- **Effort**: TBD
+- **Status**: [COMPLETED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+Add a standardized YAML header to `.opencode/specs/TODO.md` that makes relevant information from `specs/state.json` accessible to users in a readable format. All commands that update TODO.md and state.json should keep this metadata synchronized by modifying the appropriate subagents to perform this work systematically. Context files should be revised to specify the required TODO.md format.
+
+**Current State**:
+- TODO.md has a simple text header with "Last Updated" timestamp
+- state.json contains rich metadata (next_project_number, repository_health, active_projects, etc.)
+- No standardized way to surface state.json metadata in TODO.md
+- Commands update TODO.md and state.json independently without header synchronization
+
+**Proposed YAML Header** (example):
+```yaml
+---
+last_updated: 2026-01-03T19:50:47Z
+next_project_number: 272
+repository_health:
+  overall_score: 92
+  production_readiness: excellent
+  active_tasks: 4
+  completed_tasks: 50
+  high_priority_tasks: 15
+  medium_priority_tasks: 12
+  low_priority_tasks: 11
+technical_debt:
+  sorry_count: 6
+  axiom_count: 11
+  build_errors: 11
+  status: well-documented
+---
+```
+
+**Tasks**:
+1. Design YAML header schema for TODO.md based on state.json metadata
+2. Identify which state.json fields should be surfaced in TODO.md header
+3. Update TODO.md to include YAML header with current state.json metadata
+4. Modify subagents to update TODO.md YAML header when updating state.json:
+   - status-sync-manager.md (atomic TODO.md + state.json updates)
+   - researcher.md (updates state.json on research completion)
+   - planner.md (updates state.json on plan creation)
+   - implementer.md (updates state.json on implementation)
+   - task-executor.md (updates state.json during multi-phase execution)
+5. Update context files to specify TODO.md YAML header format:
+   - .opencode/context/core/standards/tasks.md (task format standard)
+   - .opencode/context/core/system/state-management.md (state synchronization)
+   - .opencode/context/core/system/artifact-management.md (TODO.md structure)
+6. Update /todo command to regenerate YAML header from state.json
+7. Test header synchronization across all workflow commands
+
+**Files to Modify**:
+- .opencode/specs/TODO.md (add YAML header)
+- .opencode/agent/subagents/status-sync-manager.md (header sync logic)
+- .opencode/agent/subagents/researcher.md (update header on research)
+- .opencode/agent/subagents/planner.md (update header on planning)
+- .opencode/agent/subagents/implementer.md (update header on implementation)
+- .opencode/agent/subagents/task-executor.md (update header during execution)
+- .opencode/command/todo.md (header regeneration logic)
+- .opencode/context/core/standards/tasks.md (document header format)
+- .opencode/context/core/system/state-management.md (document sync requirements)
+- .opencode/context/core/system/artifact-management.md (document TODO.md structure)
+
+**Acceptance Criteria**:
+- [ ] YAML header schema designed and documented
+- [ ] TODO.md includes YAML header with state.json metadata
+- [ ] All subagents update TODO.md header when updating state.json
+- [ ] Context files specify TODO.md YAML header format
+- [ ] /todo command regenerates header from state.json
+- [ ] Header synchronization tested across all workflow commands
+- [ ] No duplicate metadata between header and state.json
+- [ ] Header remains human-readable and accessible
+
+**Impact**: Makes state.json metadata accessible to users directly in TODO.md, improving visibility into project health, task counts, and technical debt without requiring manual state.json inspection. Ensures metadata consistency across TODO.md and state.json through systematic synchronization.
+
+---
 
 ### 271. Revise /meta command to create tasks with linked artifacts instead of implementing directly
 - **Effort**: 8-12 hours
@@ -13,6 +235,7 @@
 - **Completed**: 2026-01-03
 - **Priority**: High
 - **Language**: markdown
+- **Research**: [Research Report](271_revise_meta_command_task_creation/reports/research-001.md)
 - **Blocking**: None
 - **Dependencies**: None
 

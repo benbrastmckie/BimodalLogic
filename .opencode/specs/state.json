@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-03T19:50:47Z",
-  "next_project_number": 272,
+  "_last_updated": "2026-01-03T20:03:00Z",
+  "next_project_number": 275,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -223,8 +223,26 @@
       "artifacts": [
         ".opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md"
       ],
-      "research_summary": "Comprehensive revision plan to align /meta command with research \u2192 plan \u2192 implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
+      "research_summary": "Comprehensive revision plan to align /meta command with research → plan → implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
       "estimated_hours": 13.0
+    },
+    {
+      "project_number": 274,
+      "project_name": "remove_status_metadata_from_research_reports",
+      "type": "bugfix",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2026-01-03T20:00:00Z",
+      "started": "2026-01-03",
+      "completed": "2026-01-03",
+      "last_updated": "2026-01-03",
+      "artifacts": [
+        ".opencode/specs/274_remove_status_metadata_from_research_reports/summaries/implementation-summary-20260103.md",
+        ".opencode/context/core/standards/report.md",
+        ".opencode/agent/subagents/researcher.md"
+      ]
     }
   ],
   "completed_projects": [
@@ -370,7 +388,7 @@
       "project_name": "resolve_is_valid_swap_involution_blocker",
       "type": "research",
       "completed": "2025-12-29",
-      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas \u2192 Soundness). Full soundness proof succeeds."
+      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas → Soundness). Full soundness proof succeeds."
     },
     {
       "project_number": 214,
@@ -405,7 +423,7 @@
       "started": "2025-12-26",
       "completed": "2025-12-29",
       "last_updated": "2025-12-29",
-      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 \u2192 571 lines, +113 lines)",
+      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 → 571 lines, +113 lines)",
       "artifacts": [
         ".opencode/specs/190_improve_maintenance_md_documentation/plans/implementation-002.md",
         ".opencode/specs/190_improve_maintenance_md_documentation/summaries/implementation-summary-20251229.md",
@@ -981,6 +999,18 @@
   },
   "recent_activities": [
     {
+      "timestamp": "2026-01-03T19:15:00Z",
+      "activity": "Created task 274: Remove status metadata from research reports (belongs in TODO.md and state.json only) (2-3 hours, High priority, markdown)"
+    },
+    {
+      "timestamp": "2026-01-03T19:00:00Z",
+      "activity": "Created task 273: Fix /research command to link research artifacts in TODO.md task entries (4-6 hours, High priority, markdown)"
+    },
+    {
+      "timestamp": "2026-01-03T19:51:30Z",
+      "activity": "Created task 272: Add standardized YAML header to TODO.md with state.json metadata (TBD, Medium priority, markdown)"
+    },
+    {
       "timestamp": "2026-01-03T18:45:00Z",
       "activity": "Created task 271: Revise /meta command to create tasks with linked artifacts instead of implementing directly (8-12 hours, High priority, markdown)"
     },
@@ -1260,7 +1290,7 @@
       "modified_files": [
         "Logos/Core/Semantics/Truth.lean"
       ],
-      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T \u03c6.swap \u2192 is_valid T \u03c6 is semantically FALSE for arbitrary formulas. Counterexample: \u03c6 = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
+      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T φ.swap → is_valid T φ is semantically FALSE for arbitrary formulas. Counterexample: φ = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
       "blocking_reason": "Theorem is semantically false for arbitrary formulas (proven by task 213). Not a type theory limitation but a fundamental logical impossibility. Task correctly marked impossible."
     },
     {
