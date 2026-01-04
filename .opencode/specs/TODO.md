@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-04T12:00:00Z
-next_project_number: 289
+last_updated: 2026-01-04T17:30:00Z
+next_project_number: 293
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -29,6 +29,43 @@ technical_debt:
 ---
 
 ## High Priority
+
+### 289. Fix /task command to never implement solutions, only create task entries
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+The `/task` command is currently implementing solutions instead of creating task entries. When a user runs `/task "Identify the root cause and fix X"`, the orchestrator interprets this as a general problem-solving instruction and implements the fix directly, rather than creating a task entry in TODO.md and state.json.
+
+**Root Cause**:
+The orchestrator is designed as a router/delegator but lacks logic to handle "self-execution" commands (commands with `agent: orchestrator` and no routing configuration). When `/task` is invoked, the orchestrator receives the entire command file content as context and interprets it as a general instruction rather than as a workflow to execute.
+
+**Expected Behavior**:
+- `/task "Fix the /implement command"` should create a new task entry in TODO.md
+- It should increment next_project_number in state.json
+- It should return the task number to the user
+- It should NEVER implement the fix
+
+**Current Behavior**:
+- `/task "Fix the /implement command"` implements the fix directly
+- It modifies multiple files (.opencode/agent/orchestrator.md, .opencode/command/*.md)
+- It returns a summary of the implementation
+- It does NOT create a task entry
+
+**Fix Required**:
+Add self-execution mode to orchestrator:
+1. Stage 2: Detect commands with no routing configuration
+2. Stage 2a: Execute command workflow directly (new stage)
+3. Stage 3: Skip delegation for self-execution commands
+4. Ensure `/task` follows its `<critical_constraints>` section exactly
+
+**Files Involved**:
+- `.opencode/agent/orchestrator.md` - Add self-execution detection and Stage 2a
+- `.opencode/command/task.md` - Already has correct constraints, just needs orchestrator to respect them
 
 ### 283. Fix systematic status synchronization failure across all workflow commands
 - **Effort**: 3-4 hours (revised from 6-8 hours)
@@ -1502,13 +1539,265 @@ Completes the systematic fix started in Task 283 by extending it to all remainin
 
 ### 288. Fix command confusion and status synchronization issues
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 
 **Description**: Systematically fix command confusion and status synchronization issues identified when running `/implement 259`. Root causes include: (1) Agents recommending incorrect commands (e.g., suggesting `/task 259` instead of `/implement 259`), (2) Status not being updated from `[PLANNED]` to `[IMPLEMENTING]` or `[COMPLETED]`, (3) No validation to prevent incorrect command recommendations, (4) Missing centralized command purpose documentation. Solution should include: creating command reference guide, adding validation to prevent incorrect recommendations, enforcing status updates with validation, and updating all affected command and agent files for uniformity and consistency.
+
+---
+
+### 290. Fix lean-research-agent preflight status updates and artifact linking to match standard workflow behavior
+- **Effort**: 3-4 hours
+- **Status**: [RESEARCHED]
+- **Started**: 2026-01-04
+- **Researched**: 2026-01-04
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Task 289 (completed)
+- **Research**: [Research Report](.opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md)
+
+**Description**:
+After fixing the step naming inconsistency in Task 289, `/research 260` (a Lean task) still exhibits two issues that differ from the standard workflow behavior seen in `/plan` and `/research` on non-Lean tasks:
+
+1. **Missing preflight status update**: Status is NOT updated to `[RESEARCHING]` when research starts (only updated to `[RESEARCHED]` at the end)
+2. **Unnecessary summary artifact**: Creates and links both a research report AND a summary (old behavior), when only the research report should be created and linked
+
+**Research Findings**:
+Research revealed that the actual root cause is NOT missing preflight status updates (Task 289 fix is working). The real issues are:
+1. **Outdated documentation in lean-research-agent.md** requiring summary artifact creation
+2. **Direct file manipulation** instead of delegating to status-sync-manager and git-workflow-manager
+
+**Root Cause** (from research):
+lean-research-agent.md step_6 (lines 641-750):
+- Lines 651-657: Directly updates TODO.md status marker
+- Lines 658-662: Directly updates state.json
+- Does NOT delegate to status-sync-manager
+- Does NOT delegate to git-workflow-manager
+- Lines 647-649, 657, 664, 686-688: Requires summary artifact creation (outdated)
+
+**Recommended Fix**:
+1. Replace direct file updates with status-sync-manager delegation (matching researcher.md)
+2. Remove summary artifact requirements
+3. Add git-workflow-manager delegation for automatic commits
+
+**Related Tasks**:
+- Task 283: Fixed general subagents step naming (completed)
+- Task 289: Fixed Lean subagents step naming (completed)
+- Task 291: Implementation task for this fix
+
+---
+
+### 291. Fix lean-research-agent to delegate status updates to status-sync-manager instead of direct file manipulation
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: Task 290 (researched)
+
+**Description**:
+Root cause identified for `/research 290` status update failure: lean-research-agent.md directly manipulates TODO.md and state.json files (lines 651-662) instead of delegating to status-sync-manager and git-workflow-manager like researcher.md does. This bypasses atomic updates and causes status synchronization failures.
+
+**Evidence**:
+- `/research 290` created research report successfully
+- Status remained `[NOT STARTED]` instead of updating to `[RESEARCHED]`
+- No artifact link added to TODO.md
+- No state.json update
+- No git commit created
+
+**Root Cause**:
+lean-research-agent.md step_6 (lines 641-750):
+- Line 651-657: Directly updates TODO.md status marker
+- Line 658-662: Directly updates state.json
+- Does NOT delegate to status-sync-manager
+- Does NOT delegate to git-workflow-manager
+
+Compare with researcher.md step_4_postflight (lines 331-379):
+- Line 335: Invokes status-sync-manager to mark [RESEARCHED]
+- Line 349: Invokes git-workflow-manager to create commit
+- Proper delegation ensures atomic updates
+
+**Fix Strategy**:
+
+**Phase 1: Update lean-research-agent step_6 to match researcher step_4_postflight** (1.5 hours)
+1. Replace direct TODO.md updates with status-sync-manager delegation:
+   - Remove lines 651-657 (direct TODO.md manipulation)
+   - Add status-sync-manager invocation matching researcher.md line 335-348
+   - Pass validated_artifacts array to status-sync-manager
+2. Replace direct state.json updates with status-sync-manager delegation:
+   - Remove lines 658-662 (direct state.json manipulation)
+   - status-sync-manager handles both TODO.md and state.json atomically
+3. Add git-workflow-manager delegation:
+   - Add git-workflow-manager invocation matching researcher.md line 349-368
+   - Pass scope_files including research report, TODO.md, state.json
+4. Update step_6 documentation to reflect delegation pattern
+
+**Phase 2: Remove summary artifact requirement** (30 minutes)
+1. Remove summary artifact validation (line 647-649):
+   - Remove "Verify summary artifact created" check
+   - Remove "Verify summary artifact is <100 tokens" check
+2. Remove summary artifact linking (line 657, 664, 686-688):
+   - Remove summary from artifact links in TODO.md
+   - Remove summary from state.json artifacts array
+3. Update return format to list only research report (line 664)
+4. Match researcher.md behavior (single artifact only)
+
+**Phase 3: Test with Lean task** (1 hour)
+1. Test `/research` on a Lean task (e.g., task 260)
+2. Verify status updates to `[RESEARCHING]` at start
+3. Verify status updates to `[RESEARCHED]` at end
+4. Verify artifact link added to TODO.md (research report only, no summary)
+5. Verify state.json updated with artifact path
+6. Verify git commit created
+7. Verify no regression in research quality
+
+**Files to Modify**:
+- `.opencode/agent/subagents/lean-research-agent.md` - Update step_6 to delegate to status-sync-manager and git-workflow-manager
+
+**Acceptance Criteria**:
+- [ ] lean-research-agent step_6 delegates to status-sync-manager (not direct file updates)
+- [ ] lean-research-agent step_6 delegates to git-workflow-manager (not manual git commands)
+- [ ] Summary artifact requirement removed (only research report created)
+- [ ] `/research` on Lean tasks updates status to `[RESEARCHING]` at start
+- [ ] `/research` on Lean tasks updates status to `[RESEARCHED]` at end
+- [ ] Artifact link added to TODO.md (research report only)
+- [ ] state.json updated with artifact path
+- [ ] Git commit created automatically
+- [ ] Behavior matches researcher.md exactly
+- [ ] No regression in Lean research functionality
+
+**Impact**: 
+Fixes the root cause of status synchronization failures for Lean tasks. Ensures lean-research-agent uses the same atomic update pattern as researcher.md via status-sync-manager and git-workflow-manager delegation. Eliminates direct file manipulation that bypasses validation and atomic updates.
+
+**Related Tasks**:
+- Task 283: Fixed general subagents step naming (completed)
+- Task 289: Fixed Lean subagents step naming (completed)
+- Task 290: Identified this root cause through research
+
+---
+
+### 292. Diagnose and fix /implement 259 command failure - orchestrator unable to extract $ARGUMENTS
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+When running `/implement 259`, the orchestrator workflow fails at Stage 1 (PreflightValidation) while attempting to extract the `$ARGUMENTS` variable. The command output shows:
+
+```
+I'll execute the /implement command by following the orchestrator workflow stages.
+
+Stage 1: PreflightValidation
+
+→ Read .opencode/command/implement.md
+
+┃
+┃  # Extract $ARGUMENTS variable
+┃
+┃  $ echo "$ARGUMENTS"
+```
+
+The command appears to hang or fail at this point without completing the argument extraction or proceeding to subsequent stages.
+
+**Expected Behavior**:
+```bash
+/implement 259
+# Stage 1: Extract task number 259 from $ARGUMENTS
+# Stage 2: Determine routing (language-based routing to lean-implementation-agent)
+# Stage 3: Register session and invoke lean-implementation-agent
+# Stage 4: Validate return format and artifacts
+# Stage 5: Update status and return result to user
+```
+
+**Current Behavior**:
+```bash
+/implement 259
+# Stage 1: Starts PreflightValidation
+# Stage 1: Attempts to extract $ARGUMENTS
+# Stage 1: FAILS or HANGS - no output after "$ echo "$ARGUMENTS""
+# No subsequent stages executed
+```
+
+**Potential Root Causes**:
+
+1. **$ARGUMENTS Variable Not Set**:
+   - OpenCode may not be passing the `$ARGUMENTS` variable to the orchestrator
+   - The variable may be empty or undefined
+   - Task 281 fixed a similar issue in `/implement` command (missing `$` prefix)
+
+2. **Orchestrator Stage 1 Logic Error**:
+   - Stage 1 (PreflightValidation) may have incorrect argument parsing logic
+   - The `echo "$ARGUMENTS"` command may be failing silently
+   - Validation may be rejecting valid input
+
+3. **Command File Configuration Error**:
+   - `.opencode/command/implement.md` may have incorrect frontmatter
+   - Routing configuration may be malformed
+   - Agent field may be missing or incorrect
+
+4. **Task Number Validation Failure**:
+   - Task 259 may not exist in state.json or TODO.md
+   - Task 259 may be in an invalid state (e.g., already completed)
+   - Validation logic may be too strict
+
+**Investigation Steps**:
+
+1. **Verify $ARGUMENTS is being passed**:
+   - Check if OpenCode is setting the `$ARGUMENTS` variable
+   - Compare with working commands (`/research`, `/plan`, `/revise`)
+   - Test with simple echo command to verify variable exists
+
+2. **Verify task 259 exists and is valid**:
+   - Check state.json for task 259 entry
+   - Check TODO.md for task 259 entry
+   - Verify task status is `[PLANNED]` (ready for implementation)
+
+3. **Review orchestrator Stage 1 logic**:
+   - Read `.opencode/agent/orchestrator.md` Stage 1 (PreflightValidation)
+   - Check argument parsing logic
+   - Check validation rules
+   - Compare with working commands
+
+4. **Review /implement command configuration**:
+   - Read `.opencode/command/implement.md` frontmatter
+   - Verify routing configuration
+   - Verify agent field is correct
+   - Compare with working commands
+
+5. **Test with different task numbers**:
+   - Try `/implement 260` (another Lean task)
+   - Try `/implement 287` (a general task)
+   - Determine if issue is specific to task 259 or affects all tasks
+
+**Files to Investigate**:
+- `.opencode/agent/orchestrator.md` - Stage 1 (PreflightValidation) logic
+- `.opencode/command/implement.md` - Command configuration and frontmatter
+- `.opencode/specs/state.json` - Verify task 259 exists
+- `.opencode/specs/TODO.md` - Verify task 259 status
+- `.opencode/context/core/standards/command-argument-handling.md` - Argument parsing standard
+
+**Acceptance Criteria**:
+- [ ] Root cause identified (which of the 4 potential causes is the actual issue)
+- [ ] Fix implemented and tested
+- [ ] `/implement 259` completes successfully
+- [ ] Task 259 status updated to `[IMPLEMENTING]` then `[COMPLETED]`
+- [ ] No regression in other `/implement` command usage
+- [ ] Documentation updated if needed
+
+**Impact**: 
+Blocks implementation of task 259 (Automation Tactics) and potentially all other `/implement` command usage. Critical workflow command must be fixed to enable task completion.
+
+**Related Tasks**:
+- Task 259: Automation Tactics (blocked by this issue)
+- Task 281: Fixed similar $ARGUMENTS issue in `/implement` command (completed)
+- Task 285: Audit and fix status update behavior (may be related)
 
 ---
 
