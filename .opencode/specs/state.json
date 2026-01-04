@@ -431,9 +431,10 @@
       "last_updated": "2026-01-03",
       "artifacts": [
         ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md",
+        ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-002.md",
         ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-001.md"
       ],
-      "research_summary": "Root cause identified: OpenCode agent invocation mechanism does not pass $ARGUMENTS to agents specified in command frontmatter. The $ARGUMENTS variable is substituted in command file content but not available in orchestrator execution context. Recommended solutions: (1) Add frontmatter argument passing configuration, (2) Update OpenCode configuration, or (3) Change agent invocation method. Estimated 6-8 hours to implement fix.",
+      "research_summary": "ROOT CAUSE IDENTIFIED: Line 34 of /implement command says \"from arguments\" instead of \"from $ARGUMENTS\". This typo causes orchestrator to not recognize where to extract task number. Fix: Change \"arguments\" to \"$ARGUMENTS\" (add $ prefix). Estimated fix time: 5 minutes. Research-001 hypothesis was incorrect - OpenCode DOES pass $ARGUMENTS (proven by /research, /plan, /revise working).",
       "plan_path": ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 4,
