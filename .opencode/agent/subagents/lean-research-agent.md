@@ -98,8 +98,8 @@ lifecycle:
 </inputs_forbidden>
 
 <process_flow>
-  <step_1>
-    <action>Load Lean context, determine research strategy, and mark task as RESEARCHING</action>
+  <step_0_preflight>
+    <action>Preflight: Validate task and update status to [RESEARCHING]</action>
     <process>
       1. Parse task_number from delegation context or prompt string:
          a. Check if task_number parameter provided in delegation context
@@ -109,15 +109,24 @@ lifecycle:
             - Use regex or string parsing to extract task number
          c. Validate task_number is positive integer
          d. If task_number not found or invalid: Return failed status with error
-      2. Update TODO.md status marker:
-         a. Find task entry in .opencode/specs/TODO.md
-         b. Change status from [NOT STARTED] to [RESEARCHING]
-         c. Add **Started**: YYYY-MM-DD timestamp
-      3. Load context from .opencode/context/project/lean4/
-      3. Load domain context (modal logic, temporal logic, epistemic, etc.)
-      4. MCP tools configured via opencode.json (no manual check needed)
-      5. Tools available automatically if lean-lsp-mcp server running
-      6. Determine research strategy based on available tools
+      2. Validate task exists in .opencode/specs/TODO.md
+      3. Extract task description and current status
+      4. Verify task not [COMPLETED] or [ABANDONED]
+      5. Verify task is in valid starting status ([PLANNED] or [NOT STARTED])
+      6. Generate timestamp: $(date -I) for ISO 8601 format (YYYY-MM-DD)
+      7. Invoke status-sync-manager to mark [RESEARCHING]:
+         a. Prepare delegation context:
+            - task_number: {number}
+            - new_status: "researching"
+            - timestamp: {date}
+            - session_id: {session_id}
+            - delegation_depth: {depth + 1}
+            - delegation_path: [...delegation_path, "status-sync-manager"]
+         b. Invoke status-sync-manager with timeout (60s)
+         c. Validate return status == "completed"
+         d. Verify files_updated includes ["TODO.md", "state.json"]
+         e. If status update fails: Abort with error and recommendation
+       8. Log preflight completion
     </process>
     <status_marker_update>
       Update .opencode/specs/TODO.md:
@@ -168,7 +177,38 @@ lifecycle:
          - Set loogle_available = false
          - Continue with web search fallback
     </loogle_initialization>
-    <validation>Context loaded successfully</validation>
+    <validation>Task validated, status updated to [RESEARCHING]</validation>
+    <error_handling>
+      If task_number not provided or invalid:
+        Return status "failed" with error:
+        - type: "validation_failed"
+        - message: "Task number not provided or invalid. Expected positive integer."
+        - recommendation: "Provide task number as first argument (e.g., /research 267)"
+      
+      If task not found:
+        Return status "failed" with error:
+        - type: "validation_failed"
+        - message: "Task {task_number} not found in TODO.md"
+        - recommendation: "Verify task number exists in TODO.md"
+      
+      If status update fails:
+        Return status "failed" with error:
+        - type: "status_update_failed"
+        - message: "Failed to update status to [RESEARCHING]"
+        - recommendation: "Check status-sync-manager logs and retry"
+    </error_handling>
+    <output>Task validated, status updated to [RESEARCHING], Lean context loaded</output>
+  </step_0_preflight>
+
+  <step_1>
+    <action>Determine research strategy and initialize tools</action>
+    <process>
+      1. Load domain context (modal logic, temporal logic, epistemic, etc.)
+      2. MCP tools configured via opencode.json (no manual check needed)
+      3. Tools available automatically if lean-lsp-mcp server running
+      4. Determine research strategy based on available tools
+    </process>
+    <validation>Research strategy determined and tools initialized</validation>
     <output>Lean context, Loogle client (if available), and research strategy</output>
   </step_1>
 

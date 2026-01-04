@@ -105,8 +105,8 @@ lifecycle:
 </inputs_forbidden>
 
 <process_flow>
-  <step_1>
-    <action>Read Lean task from .opencode/specs/TODO.md</action>
+  <step_0_preflight>
+    <action>Preflight: Validate task and update status to [PLANNING]</action>
     <process>
       1. Parse task_number from delegation context or prompt string:
          a. Check if task_number parameter provided in delegation context
@@ -116,17 +116,31 @@ lifecycle:
             - Use regex or string parsing to extract task number
          c. Validate task_number is positive integer
          d. If task_number not found or invalid: Return failed status with error
-      2. Extract task entry using grep (selective loading):
+      2. Validate task exists in .opencode/specs/TODO.md:
          ```bash
-         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md
          ```
-      3. Validate extraction succeeded (non-empty file)
-      4. Extract task description, language (should be "lean"), priority from task entry
-      5. Extract any existing artifact links (research, previous plans)
-      6. Validate task language is "lean" (abort if not)
-      7. Check task status (must not be [COMPLETED] or [ABANDONED])
+      3. Extract task description, language (should be "lean"), priority from task entry
+      4. Extract any existing artifact links (research, previous plans)
+      5. Validate task language is "lean" (abort if not)
+      6. Verify task not [COMPLETED] or [ABANDONED]
+      7. Verify task is in valid starting status ([RESEARCHED] or [NOT STARTED])
+      8. Generate timestamp: $(date -I) for ISO 8601 format (YYYY-MM-DD)
+      9. Invoke status-sync-manager to mark [PLANNING]:
+         a. Prepare delegation context:
+            - task_number: {number}
+            - new_status: "planning"
+            - timestamp: {date}
+            - session_id: {session_id}
+            - delegation_depth: {depth + 1}
+            - delegation_path: [...delegation_path, "status-sync-manager"]
+         b. Invoke status-sync-manager with timeout (60s)
+         c. Validate return status == "completed"
+         d. Verify files_updated includes ["TODO.md", "state.json"]
+         e. If status update fails: Abort with error and recommendation
+      10. Log preflight completion
     </process>
-    <validation>Task exists, is Lean-specific, and has sufficient detail for planning</validation>
+    <validation>Task validated, status updated to [PLANNING]</validation>
     <error_handling>
       If task_number not provided or invalid:
         Return status "failed" with error:
@@ -134,12 +148,35 @@ lifecycle:
         - message: "Task number not provided or invalid. Expected positive integer."
         - recommendation: "Provide task number as first argument (e.g., /plan 267)"
       
+      If task not found:
+        Return status "failed" with error:
+        - type: "validation_failed"
+        - message: "Task {task_number} not found in TODO.md"
+        - recommendation: "Verify task number exists in TODO.md"
+      
       If task language is not "lean":
         Return status "failed" with error:
         - type: "routing_error"
         - message: "Task {number} is not a Lean task (language: {language}). Use planner for general tasks."
         - recommendation: "Verify task language or use /plan command which routes automatically"
+      
+      If status update fails:
+        Return status "failed" with error:
+        - type: "status_update_failed"
+        - message: "Failed to update status to [PLANNING]"
+        - recommendation: "Check status-sync-manager logs and retry"
     </error_handling>
+    <output>Task validated, status updated to [PLANNING], Lean task details loaded</output>
+  </step_0_preflight>
+
+  <step_1>
+    <action>Read Lean task details and existing artifacts</action>
+    <process>
+      1. Extract task description, language, priority from task entry
+      2. Extract any existing artifact links (research, previous plans)
+      3. Validate task has sufficient detail for planning
+    </process>
+    <validation>Task details extracted successfully</validation>
     <output>Lean task details and existing artifact links</output>
   </step_1>
 

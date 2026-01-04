@@ -1411,9 +1411,15 @@ Simplifies TODO.md plan links by showing only the current plan, avoiding confusi
 
 ### 289. Extend Task 283 fix to all remaining subagents with inconsistent step naming
 - **Started**: 2026-01-04
+- **Completed**: 2026-01-04
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: High
+- **Implementation Artifacts**:
+  - .opencode/agent/subagents/lean-research-agent.md
+  - .opencode/agent/subagents/lean-planner.md
+  - .opencode/agent/subagents/lean-implementation-agent.md
+  - Summary: .opencode/specs/289_extend_task_283_fix/summaries/implementation-summary-20260104.md
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: Task 283 (completed)
