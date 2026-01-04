@@ -115,16 +115,20 @@ This command delegates to the `meta` agent, which executes an 8-stage workflow:
 - Gets user confirmation
 - Validates understanding before generation
 
-### Stage 7: Generate System
-- Routes to meta subagents for generation
-- Creates agents, commands, context files
+### Stage 7: Create Tasks With Artifacts
+- Determines task breakdown based on system complexity
+- Creates project directories in .opencode/specs/NNN_*/
+- Generates plan artifacts ONLY (plans/implementation-001.md)
+- Creates task entries in TODO.md with Type field set to 'meta'
+- Updates state.json with task metadata and increments next_project_number
 - Validates all artifacts
 
-### Stage 8: Deliver System
-- Presents completed system
-- Provides usage documentation
-- Updates TODO.md and state.json
-- Creates scoped git commit
+### Stage 8: Deliver Task Summary
+- Presents task list with plan artifact links
+- Provides usage instructions for /implement command
+- Explains meta task routing to meta subagents
+- Creates git commit with TODO.md, state.json, and plan artifacts
+- Returns standardized format with task metadata
 
 ---
 
@@ -132,31 +136,28 @@ This command delegates to the `meta` agent, which executes an 8-stage workflow:
 
 This command creates the following artifacts:
 
-- **Agents**: `.opencode/agent/subagents/<domain>/`
-  - Orchestrator agents for routing and delegation
-  - Subagents for specialized tasks
-  - All agents follow 8-stage workflow pattern
+- **Task Entries**: `.opencode/specs/TODO.md`
+  - Task entries for each component to be implemented
+  - Type field set to 'meta' for meta-related tasks
+  - Status set to [NOT STARTED]
+  - Links to plan artifacts
 
-- **Commands**: `.opencode/command/<command-name>.md`
-  - Custom slash commands with frontmatter delegation
-  - Clear syntax, routing, and documentation
-  - All commands <300 lines
+- **Plan Artifacts**: `.opencode/specs/NNN_task_name/plans/implementation-001.md`
+  - Detailed implementation plans for each task
+  - Self-documenting with metadata, phases, and estimates
+  - Follows plan.md standard
+  - ONLY artifact type created (no research or summary artifacts)
 
-- **Context Files**: `.opencode/context/<domain>/`
-  - Domain-specific knowledge files
-  - Process and workflow documentation
-  - Standards and templates
-  - All files <200 lines (target) or <300 lines (maximum)
+- **State Tracking**: Updates to `.opencode/specs/state.json`
+  - Task metadata in active_projects array
+  - Incremented next_project_number for each task
+  - Type field set to 'meta' for meta tasks
 
-- **Documentation**: README files and usage guides
-  - System overview and architecture
-  - Usage examples and tutorials
-  - Integration guides
+- **Git Commit**: Scoped commit with all artifacts
+  - Commit message: "meta: create tasks for {domain} system ({N} tasks)"
+  - Includes: TODO.md, state.json, all task directories with plan artifacts
 
-- **State Tracking**: Updates to TODO.md and state.json
-  - Task entries for generated components
-  - Artifact tracking
-  - Timestamp recording
+**Note**: The /meta command creates TASKS with PLAN ARTIFACTS, not the final system. Use `/implement {task_number}` to implement each task, which will route to meta subagents (domain-analyzer, workflow-designer, agent-generator, command-creator, context-organizer) to create the actual agents, commands, and context files.
 
 ---
 
