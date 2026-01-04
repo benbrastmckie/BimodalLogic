@@ -52,7 +52,7 @@ lifecycle:
   <task_scope>Complete research workflow from status updates to git commits</task_scope>
   <integration>Called by /research command for non-Lean research tasks</integration>
   <lifecycle_integration>
-    Owns complete workflow (Stages 1-6) including status updates and git commits.
+    Owns complete workflow (Steps 0-5) including status updates and git commits.
     Returns standardized format per subagent-return-format.md.
   </lifecycle_integration>
 </context>
@@ -137,7 +137,7 @@ lifecycle:
 </inputs_forbidden>
 
 <process_flow>
-  <stage_1_preflight>
+  <step_0_preflight>
     <action>Preflight: Parse arguments, validate task, update status to [RESEARCHING]</action>
     <process>
       1. Parse task_number from delegation context or prompt string:
@@ -202,9 +202,9 @@ lifecycle:
         - recommendation: "Check status-sync-manager logs and retry"
     </error_handling>
     <output>Task validated, language extracted, status updated to [RESEARCHING]</output>
-  </stage_1_preflight>
+  </step_0_preflight>
 
-  <stage_2_research_execution>
+  <step_1_research_execution>
     <action>Research Execution: Conduct research and gather findings</action>
     <process>
       1. Analyze research topic and determine approach:
@@ -240,9 +240,9 @@ lifecycle:
       - Validate specialist returns against subagent-return-format.md
     </delegation_safety>
     <output>Research findings with citations and recommendations</output>
-  </stage_2_research_execution>
+  </step_1_research_execution>
 
-  <stage_3_artifact_creation>
+  <step_2_artifact_creation>
     <action>Artifact Creation: Create research report</action>
     <process>
       1. Generate topic slug from research topic:
@@ -290,9 +290,9 @@ lifecycle:
       - NO status metadata in report (status tracked separately)
     </validation>
     <output>Research report artifact at validated path</output>
-  </stage_3_artifact_creation>
+  </step_2_artifact_creation>
 
-  <stage_4_validation>
+  <step_3_validation>
     <action>Validation: Verify artifact and prepare return</action>
     <process>
       1. Validate research artifact created successfully:
@@ -314,7 +314,7 @@ lifecycle:
       5. Calculate duration_seconds from start time
     </process>
     <validation>
-      Before proceeding to Stage 5:
+      Before proceeding to Step 4:
       - Verify research-001.md exists and is non-empty
       - Verify summary field in return object is brief (<100 tokens, ~400 chars)
       - Verify validated_artifacts array populated
@@ -326,9 +326,9 @@ lifecycle:
       - Recommendation: "Fix artifact creation and retry"
     </validation>
     <output>Validated artifact metadata and brief summary</output>
-  </stage_4_validation>
+  </step_3_validation>
 
-  <stage_5_postflight>
+  <step_4_postflight>
     <action>Postflight: Update status to [RESEARCHED], link report, create git commit</action>
     <process>
       1. Generate completion timestamp: $(date -I)
@@ -373,12 +373,12 @@ lifecycle:
       - Log warning to errors array
       - Include manual recovery instructions
       - DO NOT fail research command (git failure is non-critical)
-      - Continue to Stage 6 (Return)
+       - Continue to Step 5 (Return)
     </git_failure_handling>
     <output>Status updated to [RESEARCHED], report linked, git commit created (or warning logged)</output>
-  </stage_5_postflight>
+  </step_4_postflight>
 
-  <stage_6_return>
+  <step_5_return>
     <action>Return: Format and return standardized result</action>
     <process>
       1. Format return following subagent-return-format.md:
@@ -404,7 +404,7 @@ lifecycle:
       - Errors array populated if any failures occurred
     </validation>
     <output>Standardized return object with validated research report and brief summary metadata</output>
-  </stage_6_return>
+  </step_5_return>
 </process_flow>
 
 <constraints>

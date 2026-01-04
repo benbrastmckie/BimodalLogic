@@ -32,13 +32,14 @@ technical_debt:
 
 ### 283. Fix systematic status synchronization failure across all workflow commands
 - **Effort**: 3-4 hours (revised from 6-8 hours)
-- **Status**: [REVISED] (2026-01-04)
+- **Status**: [COMPLETED] (2026-01-04)
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](283_fix_systematic_status_synchronization_failure/reports/research-001.md)
 - **Plan**: [Implementation Plan v1](283_fix_systematic_status_synchronization_failure/plans/implementation-001.md) | [Implementation Plan v2](283_fix_systematic_status_synchronization_failure/plans/implementation-002.md) (current)
+- **Implementation**: [Implementation Summary](283_fix_systematic_status_synchronization_failure/summaries/implementation-summary-20260104.md)
 - **Note**: Research and revision artifact links were NOT automatically added by /research and /revise commands - had to be added manually. /plan command DID work correctly. This is the EXACT bug this task is meant to fix.
 
 **Description**:
@@ -532,7 +533,7 @@ Ensures all workflow commands follow the two-phase status update pattern defined
 
 ### 259. Automation Tactics
 - **Effort**: 17-23 hours (revised from 40-60 hours based on research findings)
-- **Status**: [PLANNED] (2026-01-04)
+- **Status**: [IMPLEMENTING] (2026-01-04)
 - **Started**: 2026-01-04
 - **Researched**: 2026-01-04
 - **Planned**: 2026-01-04
@@ -1339,6 +1340,66 @@ Establishes state.json as the single source of truth for task metadata, eliminat
 - Task 276: Investigate redundant project-level state.json files (related to state management)
 - Task 272: Add YAML header to TODO.md (sync state.json → TODO.md)
 - Task 275: Fix workflow status updates (uses status-sync-manager)
+
+---
+
+### 287. Fix /revise command to replace old plan link instead of appending new link
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+When running `/revise` for a task that already has a plan, the command appends the new plan link to the existing plan link instead of replacing it. This creates confusing entries like:
+
+```
+- **Plan**: [Implementation Plan v1](283_fix_systematic_status_synchronization_failure/plans/implementation-001.md) | [Implementation Plan v2](283_fix_systematic_status_synchronization_failure/plans/implementation-002.md) (current)
+```
+
+Instead, the `/revise` command should replace the old plan link with the new plan link to avoid confusion. The old plan file should remain in the project directory for reference if needed, but only the current plan should be linked in TODO.md.
+
+**Expected Behavior**:
+```
+# Before /revise:
+- **Plan**: [Implementation Plan](283_fix_systematic_status_synchronization_failure/plans/implementation-001.md)
+
+# After /revise:
+- **Plan**: [Implementation Plan](283_fix_systematic_status_synchronization_failure/plans/implementation-002.md)
+
+# Old plan file still exists at:
+# .opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md
+```
+
+**Current Behavior**:
+```
+# Before /revise:
+- **Plan**: [Implementation Plan](283_fix_systematic_status_synchronization_failure/plans/implementation-001.md)
+
+# After /revise:
+- **Plan**: [Implementation Plan v1](283_fix_systematic_status_synchronization_failure/plans/implementation-001.md) | [Implementation Plan v2](283_fix_systematic_status_synchronization_failure/plans/implementation-002.md) (current)
+```
+
+**Files to Modify**:
+- `.opencode/command/revise.md` - Update plan link replacement logic
+- `.opencode/agent/subagents/planner.md` - Update plan link update behavior (if responsible)
+- `.opencode/agent/subagents/status-sync-manager.md` - Update plan link synchronization (if responsible)
+
+**Acceptance Criteria**:
+- [ ] `/revise` replaces old plan link with new plan link in TODO.md
+- [ ] Old plan file remains in project directory for reference
+- [ ] Only current plan link shown in TODO.md (no "v1 | v2 (current)" format)
+- [ ] state.json updated with new plan_path
+- [ ] No regression in existing /revise functionality
+- [ ] Tested with tasks that have existing plans
+
+**Impact**: 
+Simplifies TODO.md plan links by showing only the current plan, avoiding confusion from multiple plan versions. Old plans remain available in the project directory for reference but don't clutter the task entry.
+
+**Related Tasks**:
+- Task 283: Example task showing the current appending behavior
+- Task 275: Fix workflow status updates (related to status-sync-manager)
 
 ---
 

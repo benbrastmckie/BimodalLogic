@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-04T06:15:00Z",
-  "next_project_number": 286,
+  "_last_updated": "2026-01-04T06:30:00Z",
+  "next_project_number": 287,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -192,33 +192,6 @@
       ],
       "research_summary": "Root cause: orchestrator does NOT implement Stage 2 (DetermineRouting). Language extraction exists only in documentation. Lean tasks route to default researcher instead of lean-research-agent, causing phantom research. Fix: implement Stage 2 to extract language from TODO.md and route based on command frontmatter. Estimated 5-7 hours.",
       "estimated_hours": 6.0
-    },
-    {
-      "project_number": 258,
-      "project_name": "resolve_truth_lean_sorries",
-      "type": "research",
-      "phase": "planned",
-      "status": "planned",
-      "priority": "medium",
-      "language": "lean",
-      "created_at": "2026-01-03T10:00:00Z",
-      "updated_at": "2026-01-04T00:00:00Z",
-      "plan_created": "2026-01-04",
-      "artifacts": [
-        ".opencode/specs/258_resolve_truth_lean_sorries/reports/research-001.md",
-        ".opencode/specs/258_resolve_truth_lean_sorries/summaries/research-summary.md",
-        ".opencode/specs/258_resolve_truth_lean_sorries/plans/implementation-001.md"
-      ],
-      "plan_path": ".opencode/specs/258_resolve_truth_lean_sorries/plans/implementation-001.md",
-      "plan_metadata": {
-        "phases": 2,
-        "total_effort_hours": 0.5,
-        "complexity": "simple",
-        "research_integrated": true,
-        "language": "lean",
-        "proof_strategy": "Verification and documentation (no proofs needed - already resolved)",
-        "mathlib_dependencies": []
-      }
     },
     {
       "project_number": 271,
@@ -485,28 +458,44 @@
       "project_number": 283,
       "project_name": "fix_systematic_status_synchronization_failure",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-04T05:58:01Z",
       "started": "2026-01-04",
       "research_completed": "2026-01-04",
       "plan_created": "2026-01-04",
-      "last_updated": "2026-01-04T06:26:00Z",
+      "completed": "2026-01-04",
+      "last_updated": "2026-01-04T07:00:00Z",
       "artifacts": [
         ".opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md",
-        ".opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md"
+        ".opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md",
+        ".opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-002.md",
+        ".opencode/specs/283_fix_systematic_status_synchronization_failure/summaries/implementation-summary-20260104.md",
+        ".opencode/agent/subagents/researcher.md",
+        ".opencode/context/core/standards/subagent-structure.md"
       ],
       "research_summary": "Root cause: subagent specs correct (Task 275 fix), but no enforcement mechanism. Orchestrator validates OUTPUT but not PROCESS. Recommended: extend Stage 4 validation, add stage logging, move status updates to orchestrator.",
-      "plan_path": ".opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md",
+      "plan_path": ".opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-002.md",
       "plan_metadata": {
-        "phases": 6,
-        "total_effort_hours": 8.5,
-        "complexity": "medium-high",
-        "research_integrated": true
+        "phases": 5,
+        "total_effort_hours": 3.5,
+        "complexity": "low-medium",
+        "research_integrated": true,
+        "revision_version": 2,
+        "revision_reason": "Root cause discovered - inconsistent stage naming between planner (step_0_preflight) and researcher (stage_1_preflight)"
       },
-      "notes": "This task's state.json entry was NOT automatically created by /research command - had to be added manually. This is the EXACT bug this task is meant to fix."
+      "notes": "Research and revision artifact links were NOT automatically added by /research and /revise commands - had to be added manually. /plan command DID work correctly. This demonstrates the exact bug this task is meant to fix.",
+      "planning_revised": "2026-01-04",
+      "plan_summary": "Revised plan v2: Root cause is naming inconsistency - planner uses step_0_preflight while researcher uses stage_1_preflight, causing Claude to skip preflight. Fix by standardizing to step_N_name pattern. Reduced effort from 6-8h to 3-4h.",
+      "implementation_summary": "Fixed systematic status synchronization by standardizing stage naming. Changed researcher.md from stage_1_preflight to step_0_preflight. Updated subagent-structure.md to document naming standard. Actual effort: 1 hour.",
+      "actual_hours": 1.0,
+      "estimated_hours": 3.5,
+      "files_modified": [
+        ".opencode/agent/subagents/researcher.md",
+        ".opencode/context/core/standards/subagent-structure.md"
+      ]
     },
     {
       "project_number": 285,
@@ -532,9 +521,58 @@
       "language": "general",
       "created": "2026-01-04T05:47:55Z",
       "last_updated": "2026-01-04T05:47:55Z"
+    },
+    {
+      "project_number": 259,
+      "project_name": "automation_tactics",
+      "type": "feature",
+      "phase": "implementation_in_progress",
+      "status": "implementing",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-04T00:00:00Z",
+      "started": "2026-01-04",
+      "research_completed": "2026-01-04",
+      "planning_completed": "2026-01-04",
+      "last_updated": "2026-01-04T12:00:00Z",
+      "artifacts": [
+        ".opencode/specs/259_automation_tactics/reports/research-001.md",
+        ".opencode/specs/259_automation_tactics/plans/implementation-001.md"
+      ],
+      "research_summary": "Research completed on automation tactics implementation. Found 10/12 tactics fully implemented (83% complete), 2 tactics with infrastructure ready but delegating to tm_auto. Aesop integration functional with 2 noncomputable errors. ProofSearch.lean provides production-ready bounded search infrastructure (461 lines). Revised effort estimate: 17-23 hours (down from 40-60 hours).",
+      "plan_path": ".opencode/specs/259_automation_tactics/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 20,
+        "complexity": "medium",
+        "research_integrated": true
+      },
+      "estimated_hours": 20.0
     }
   ],
   "completed_projects": [
+    {
+      "project_number": 258,
+      "project_name": "resolve_truth_lean_sorries",
+      "type": "implementation",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-03T10:00:00Z",
+      "started": "2026-01-03",
+      "research_completed": "2026-01-03",
+      "plan_created": "2026-01-04",
+      "completed": "2026-01-04",
+      "last_updated": "2026-01-04T09:35:46Z",
+      "artifacts": [
+        ".opencode/specs/258_resolve_truth_lean_sorries/reports/research-001.md",
+        ".opencode/specs/258_resolve_truth_lean_sorries/summaries/research-summary.md",
+        ".opencode/specs/258_resolve_truth_lean_sorries/plans/implementation-001.md",
+        ".opencode/specs/258_resolve_truth_lean_sorries/summaries/implementation-summary-20260104.md"
+      ],
+      "summary": "Task 258 objectives already achieved through Task 213 (commit 1cf688b). Truth.lean has 0 sorries and builds successfully. No implementation work needed."
+    },
     {
       "project_number": 284,
       "project_name": "todo_auto_commit",
@@ -1298,7 +1336,7 @@
     }
   ],
   "repository_health": {
-    "last_assessed": "2026-01-04T06:15:00Z",
+    "last_assessed": "2026-01-04T06:25:00Z",
     "overall_score": 92,
     "active_tasks": 5,
     "completed_tasks": 51,
@@ -1325,6 +1363,14 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2026-01-04T06:30:00Z",
+      "activity": "Created task 287: Fix /revise command to replace old plan link instead of appending new link (TBD, Medium priority, general)"
+    },
+    {
+      "timestamp": "2026-01-04T06:20:00Z",
+      "activity": "Created task 286: Research alternative to task 283 with subagent-owned pre-flight and post-flight work (6-8 hours, High priority, markdown)"
+    },
     {
       "timestamp": "2026-01-04T06:15:00Z",
       "activity": "Created task 285: Audit and fix status update behavior in /research, /plan, /revise, and /implement commands (8-12 hours, High priority, markdown)"

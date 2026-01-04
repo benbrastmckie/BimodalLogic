@@ -205,6 +205,71 @@ lifecycle:
 7. **Prepare Return** - Format return object
 8. **Return** - Return to command
 
+### Step Naming Standard
+
+**CRITICAL**: All subagents MUST use the following step naming convention:
+
+```xml
+<process_flow>
+  <step_0_preflight>
+    <action>Preflight: Validate inputs and update status to [WORKING]</action>
+    <process>
+      1. Parse and validate inputs
+      2. Invoke status-sync-manager to update status
+      3. Verify status update succeeded
+    </process>
+    <output>Inputs validated, status updated</output>
+  </step_0_preflight>
+  
+  <step_1>
+    <action>First main workflow step</action>
+    <process>...</process>
+    <output>...</output>
+  </step_1>
+  
+  <step_2>
+    <action>Second main workflow step</action>
+    <process>...</process>
+    <output>...</output>
+  </step_2>
+  
+  <!-- ... more steps ... -->
+  
+  <step_N_postflight>
+    <action>Postflight: Update status to [DONE] and create git commit</action>
+    <process>
+      1. Invoke status-sync-manager to update final status
+      2. Invoke git-workflow-manager to create commit
+      3. Verify operations succeeded
+    </process>
+    <output>Status updated, git commit created</output>
+  </step_N_postflight>
+  
+  <step_N+1_return>
+    <action>Return: Format and return standardized result</action>
+    <process>
+      1. Format return per subagent-return-format.md
+      2. Validate return format
+      3. Return to caller
+    </process>
+    <output>Standardized return object</output>
+  </step_N+1_return>
+</process_flow>
+```
+
+**Rationale**: The explicit "step_0" numbering signals to Claude that preflight MUST execute BEFORE the main workflow begins. Using "stage_1" or other numbering is ambiguous and may cause Claude to skip or defer preflight execution.
+
+**Key Requirements**:
+- Use `<step_0_preflight>` for preflight (NOT `<stage_1_preflight>`)
+- Use `<step_1>`, `<step_2>`, etc. for main workflow steps
+- Use `<step_N_postflight>` for postflight (where N is last step number)
+- Use `<step_N+1_return>` for return step
+- Number steps sequentially starting from 0
+
+**Example**: See planner.md and researcher.md for reference implementations.
+
+**History**: This standard was established in Task 283 after discovering that inconsistent naming (stage_1_preflight vs step_0_preflight) caused Claude to skip preflight execution in some subagents.
+
 ### 6. Delegation Patterns (if applicable)
 
 ```xml
