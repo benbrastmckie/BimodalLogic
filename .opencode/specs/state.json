@@ -394,12 +394,13 @@
       "project_number": 280,
       "project_name": "fix_orchestrator_stage_4_validation_to_enforce_subagent_return_format_and_prevent_phantom_research",
       "type": "bugfix",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "research_in_progress",
+      "status": "researching",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-04T05:00:30Z",
-      "last_updated": "2026-01-04T05:00:30Z"
+      "last_updated": "2026-01-03",
+      "started": "2026-01-03"
     }
   ],
   "completed_projects": [

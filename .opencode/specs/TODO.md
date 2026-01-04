@@ -25,6 +25,9 @@ technical_debt:
 
 # TODO
 
+
+---
+
 ## High Priority
 
 ### 280. Fix orchestrator Stage 4 validation to enforce subagent return format and prevent phantom research
@@ -144,46 +147,6 @@ When running `/implement 271`, the orchestrator returns an error message saying 
 
 ---
 
-### 277. Improve OpenCode header display for task commands
-- **Effort**: 3.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: general
-- **Started**: 2026-01-03
-- **Completed**: 2026-01-03
-- **Research**: [Research Report](277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md)
-- **Plan**: [Implementation Plan v2](277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-002.md)
-- **Implementation**: [Implementation Summary](277_improve_opencode_header_and_summary_display_for_task_commands/summaries/implementation-summary-20260103.md)
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**:
-Improve the OpenCode system to always display the task number in the header when running task-based commands (`/task`, `/research`, `/plan`, `/revise`, `/implement`) and display the command name when running direct commands (`/todo`, `/errors`, `/review`, `/meta`). Ensure all summaries returned to the user are brief.
-
-**Current Behavior**:
-- Headers may not consistently show task numbers for task-based commands
-- Command names may not be displayed for direct commands
-- Summaries may be verbose
-
-**Expected Behavior**:
-- Task-based commands (`/task`, `/research`, `/plan`, `/revise`, `/implement`): Header displays "Task: {number}"
-- Direct commands (`/todo`, `/errors`, `/review`, `/meta`): Header displays "Command: /{command}"
-- All summaries are brief and concise
-
-**Files to Modify**:
-- `.opencode/agent/orchestrator.md` - Add header display logic in Stage 5
-- `.opencode/context/core/standards/command-output.md` (create) - Document header standards
-
-**Acceptance Criteria**:
-- [x] Task-based commands display "Task: {number}" in header
-- [x] Direct commands display "Command: /{command}" in header
-- [x] All summaries are brief (target: <100 tokens)
-- [x] Header standards documented in command-output.md
-- [ ] All commands tested and verified (requires testing phase)
-
-**Impact**: Improves user experience by providing clear context about which task or command is running, and makes summaries more concise.
-
----
 
 ### 275. Fix workflow commands to update status at beginning and end in both TODO.md and state.json
 - **Effort**: 8 hours
@@ -276,98 +239,7 @@ Commands and subagents update status only at the end via status-sync-manager, no
 
 ---
 
-### 274. Remove status metadata from research reports (belongs in TODO.md and state.json only)
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Completed**: 2026-01-03
-- **Artifacts**: .opencode/specs/274_remove_status_metadata_from_research_reports/summaries/implementation-summary-20260103.md
 
-**Description**:
-Research reports created by `/research` command incorrectly include status metadata (e.g., `**Status**: [RESEARCHING]`) in the report file itself. Status should only be tracked in TODO.md and state.json, not in artifact files. This creates redundancy and potential inconsistency.
-
-**Current Behavior**:
-```bash
-/research 271
-# Creates: .opencode/specs/271_*/reports/research-001.md
-# Report contains: **Status**: [RESEARCHING]
-# Problem: Status metadata duplicated in artifact file
-```
-
-**Expected Behavior**:
-```bash
-/research 271
-# Creates: .opencode/specs/271_*/reports/research-001.md
-# Report contains: NO status metadata
-# Status tracked in: TODO.md and state.json only
-```
-
-**Example Issue**:
-File: `.opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md`
-Contains: `**Status**: [RESEARCHING]`
-Should contain: Research findings only, no status metadata
-
-**Root Cause**:
-- Researcher subagent includes status in research report template
-- Research report template should not include status metadata
-- Status belongs in TODO.md and state.json, not in artifact files
-
-**Solution**:
-1. Update researcher subagent to remove status from research report template
-2. Update research report standard/template to exclude status metadata
-3. Research reports should contain:
-   - Research findings
-   - Analysis and recommendations
-   - References and citations
-   - NO status metadata (tracked separately in TODO.md/state.json)
-
-**Files to Modify**:
-- `.opencode/agent/subagents/researcher.md` - Remove status from report template
-- `.opencode/context/core/standards/report.md` (if exists) - Update research report standard
-
-**Acceptance Criteria**:
-- [ ] Research reports do NOT include status metadata
-- [ ] Status tracked only in TODO.md and state.json
-- [ ] Researcher subagent updated to exclude status from reports
-- [ ] Research report standard/template updated (if exists)
-- [ ] No redundant metadata in artifact files
-
-**Impact**: Eliminates redundant status metadata in research reports, ensuring single source of truth in TODO.md and state.json.
-
----
-
-### 273. Fix /research command to link research artifacts in TODO.md task entries
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**:
-The `/research` command creates research reports but does not update TODO.md task entries to link to those reports. This violates the artifact linking standard and makes it difficult for users to find research artifacts. The fix should be minimal, avoiding needless complexity or context bloat.
-
-**Current Behavior**:
-```bash
-/research 271
-# Creates: .opencode/specs/271_*/reports/research-001.md
-# Updates: Task 271 status to [RESEARCHED]
-# Missing: Link to research report in TODO.md task entry
-```
-
-**Expected Behavior**:
-```bash
-/research 271
-# Creates: .opencode/specs/271_*/reports/research-001.md
-# Updates: Task 271 status to [RESEARCHED]
-# Adds: Research link in TODO.md task entry
-```
-
-**Standard Format** (to be specified in context file):
-```markdown
 ### 271. Task title
 - **Effort**: 8-12 hours
 - **Status**: [RESEARCHED]
@@ -417,76 +289,7 @@ The `/research` command creates research reports but does not update TODO.md tas
 
 ---
 
-### 276. ✓ Investigate and remove redundant project-level state.json files in favor of centralized specs/state.json
-- **Effort**: 8 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-03
-- **Completed**: 2026-01-03
-- **Research**: [Research Report](276_investigate_remove_redundant_project_level_state_json/reports/research-001.md)
-- **Plan**: [Implementation Plan](276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md)
-- **Implementation**: [Implementation Summary](276_investigate_remove_redundant_project_level_state_json/summaries/implementation-summary-20260103.md)
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
 
-**Description**:
-When `/research`, `/plan`, `/revise`, and `/implement` commands run on a task number, they lazily create a project directory (e.g., `.opencode/specs/258_resolve_truth_lean_sorries/`) and create a project-level `state.json` file within that directory. This project-level state.json appears to duplicate information already tracked in the centralized `.opencode/specs/state.json` file's `active_projects` array. This task investigates whether the project-level state.json files serve a unique purpose or can be removed to simplify the system and improve performance.
-
-**Current Behavior**:
-- Central state file: `.opencode/specs/state.json` contains `active_projects` array with metadata for all projects
-- Project-level state files: `.opencode/specs/{number}_{slug}/state.json` created lazily for each project
-- Both files contain similar metadata: project_number, project_name, type, phase, status, artifacts, timestamps
-- status-sync-manager writes to both files atomically
-- No evidence found of project-level state.json being read by any command or agent
-
-**Investigation Goals**:
-1. Determine if project-level state.json is ever read (not just written) by any command or agent
-2. Identify any unique information in project-level state.json not available in specs/state.json
-3. Assess performance impact of maintaining duplicate state files
-4. Evaluate simplification benefits of using only specs/state.json
-
-**Potential Outcomes**:
-- **If redundant**: Remove project-level state.json creation from status-sync-manager, update all agents to use only specs/state.json, document migration path
-- **If necessary**: Document the specific purpose and usage patterns, clarify when each state file should be used
-
-**Success Criteria**:
-- [ ] Comprehensive search for all reads of project-level state.json files
-- [ ] Analysis of metadata differences between project-level and central state.json
-- [ ] Performance comparison (file I/O, atomic writes, lookup speed)
-- [ ] Decision documented with clear rationale
-- [ ] If removing: migration plan created with backward compatibility strategy
-- [ ] If keeping: usage patterns documented in architecture guide
-
-**Impact**: Simplifies state management by eliminating redundant project-level state.json files if they serve no unique purpose, reducing file I/O overhead and improving system performance. If project-level state.json is necessary, clarifies its purpose and usage patterns.
-
----
-
-### 272. ✓ Add standardized YAML header to TODO.md with state.json metadata
-- **Effort**: 14 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: markdown
-- **Started**: 2026-01-03
-- **Completed**: 2026-01-04
-- **Research**: [Research Report](272_add_yaml_header_to_todo_md/reports/research-001.md)
-- **Plan**: [Implementation Plan](272_add_yaml_header_to_todo_md/plans/implementation-001.md)
-- **Implementation**: [Implementation Summary](272_add_yaml_header_to_todo_md/summaries/implementation-summary-20260104.md)
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**:
-Add a standardized YAML header to `.opencode/specs/TODO.md` that makes relevant information from `specs/state.json` accessible to users in a readable format. All commands that update TODO.md and state.json should keep this metadata synchronized by modifying the appropriate subagents to perform this work systematically. Context files should be revised to specify the required TODO.md format.
-
-**Current State**:
-- TODO.md has a simple text header with "Last Updated" timestamp
-- state.json contains rich metadata (next_project_number, repository_health, active_projects, etc.)
-- No standardized way to surface state.json metadata in TODO.md
-- Commands update TODO.md and state.json independently without header synchronization
-
-**Proposed YAML Header** (example):
-```yaml
----
 last_updated: 2026-01-03T19:50:47Z
 next_project_number: 272
 repository_health:
@@ -673,66 +476,6 @@ The `/meta` command currently ignores user-provided prompts and always starts an
 ---
 
 
-### 267. Integrate context/meta/ into context/core/ with proper subdirectory organization
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-03
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**:
-Integrate `.opencode/context/meta/` into `.opencode/context/core/` by distributing the 4 meta context files to appropriate subdirectories in `core/` to maintain organization. Update all references throughout the `.opencode/` system to prevent feature regressions.
-
-**Current State**:
-- `.opencode/context/meta/` contains 4 files:
-  - `interview-patterns.md` (5171 bytes)
-  - `architecture-principles.md` (6641 bytes)
-  - `domain-patterns.md` (5781 bytes)
-  - `agent-templates.md` (7254 bytes)
-
-**Target Organization**:
-All context files should belong to either:
-- `context/core/` - General context files applicable across projects
-- `context/project/` - Repository-specific context files
-
-**Tasks**:
-1. Analyze each meta context file to determine appropriate core/ subdirectory:
-   - `interview-patterns.md` → likely `core/processes/` or `core/workflows/`
-   - `architecture-principles.md` → likely `core/standards/` or `core/patterns/`
-   - `domain-patterns.md` → likely `core/patterns/` or `core/templates/`
-   - `agent-templates.md` → likely `core/templates/` or `core/standards/`
-2. Move files to appropriate core/ subdirectories
-3. Update all references in:
-   - `.opencode/command/meta.md` (frontmatter context_loading)
-   - `.opencode/agent/subagents/meta/*.md` (5 agents)
-   - `.opencode/context/index.md` (meta/ section)
-   - `.opencode/README.md` (Meta Command Guide)
-   - Any other files referencing context/meta/
-4. Remove empty `.opencode/context/meta/` directory
-5. Validate no broken references (grep validation)
-6. Test /meta command still works correctly
-
-**Acceptance Criteria**:
-- [x] All 4 meta context files moved to appropriate core/ subdirectories
-- [x] No `.opencode/context/meta/` directory exists
-- [x] All references updated (command files, agent files, context index, README)
-- [x] No broken references (validated with grep)
-- [x] /meta command still functions correctly
-- [x] Context organization follows core/ vs project/ convention
-
-**Implementation Summary**:
-- Moved `interview-patterns.md` → `core/workflows/interview-patterns.md`
-- Moved `architecture-principles.md` → `core/standards/architecture-principles.md`
-- Moved `domain-patterns.md` → `core/standards/domain-patterns.md`
-- Moved `agent-templates.md` → `core/templates/agent-templates.md`
-- Updated references in: `.opencode/command/meta.md`, `.opencode/agent/subagents/meta.md`, `.opencode/context/index.md`, `.opencode/README.md`
-- Updated cross-references in all 4 moved files
-- Removed empty `.opencode/context/meta/` directory
-- Git commit: 33d4d45
-
----
 
 
 
@@ -915,79 +658,6 @@ All context files should belong to either:
 
 ---
 
-### 270. Fix /research command to conduct research instead of implementing tasks
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-03
-- **Completed**: 2026-01-03
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**:
-The `/research` command is incorrectly executing full task implementation instead of conducting research and creating research artifacts. When `/research 267` was run, it violated the status transition rules defined in `.opencode/context/core/system/state-management.md` by changing the task status to [COMPLETED] instead of [RESEARCHED], and implemented the task directly instead of creating research artifacts.
-
-**Expected Behavior** (per state-management.md):
-1. Status transition: `[NOT STARTED]` → `[RESEARCHING]` → `[RESEARCHED]`
-2. Create research artifacts in `.opencode/specs/267_*/reports/research-001.md`
-3. Link research artifacts in TODO.md and state.json using status-sync-manager
-4. Follow artifact-management.md standards (lazy directory creation)
-5. Create git commit for research artifacts only
-
-**Actual Behavior** (INCORRECT):
-1. Status transition: `[NOT STARTED]` → `[COMPLETED]` (invalid transition)
-2. Implemented task directly (moved files, updated references)
-3. No research artifacts created
-4. Violated command-specific status marker rules
-
-**Root Cause**:
-The researcher subagent (`.opencode/agent/subagents/researcher.md`) is executing implementation workflows instead of research-only workflows. It needs to be constrained to:
-- Research execution only (web search, documentation review, analysis)
-- Research report creation (NOT implementation)
-- Status updates via status-sync-manager: `[RESEARCHING]` → `[RESEARCHED]`
-- Artifact validation per artifact-management.md
-
-**Action Items**:
-1. Audit researcher.md workflow to identify implementation logic
-2. Remove implementation execution from researcher.md
-3. Ensure researcher.md creates research artifacts only
-4. Validate status transitions follow state-management.md:
-   - Valid transition: `[NOT STARTED]` → `[RESEARCHING]` → `[RESEARCHED]`
-   - Invalid transition: `[NOT STARTED]` → `[COMPLETED]` (skip research phase)
-5. Validate artifact creation follows artifact-management.md:
-   - Lazy directory creation (`.opencode/specs/{number}_{slug}/`)
-   - Research report in `reports/research-001.md`
-   - Artifact links in TODO.md and state.json via status-sync-manager
-6. Test /research command with markdown task (like 267)
-7. Test /research command with lean task (language-based routing)
-8. Verify no implementation occurs during research
-9. Update documentation if needed
-
-**Acceptance Criteria**:
-- [ ] /research command creates research artifacts only (no implementation)
-- [ ] Research artifacts follow artifact-management.md standards
-- [ ] Status transitions follow state-management.md: `[NOT STARTED]` → `[RESEARCHING]` → `[RESEARCHED]`
-- [ ] Artifact links added to TODO.md and state.json via status-sync-manager
-- [ ] No implementation occurs during /research
-- [ ] Language-based routing works correctly (lean vs general)
-- [ ] Lazy directory creation followed
-- [ ] Git commits created for research artifacts only
-- [ ] Atomic status updates via status-sync-manager (two-phase commit)
-
-**Files Affected**:
-- `.opencode/agent/subagents/researcher.md` (remove implementation logic)
-- `.opencode/command/research.md` (validate workflow documentation)
-- `.opencode/context/core/system/state-management.md` (reference standard)
-
-**Impact**: Fixes critical workflow bug where /research implements tasks instead of researching them, preventing proper research/plan/implement workflow separation and violating status transition rules.
-
-**References**:
-- State Management Standard: `.opencode/context/core/system/state-management.md`
-- Artifact Management: `.opencode/context/core/system/artifact-management.md`
-- Status Sync Manager: `.opencode/agent/subagents/status-sync-manager.md`
-
----
 
 ### 263. Refactor Context.lean
 - **Effort**: 2-4 hours
