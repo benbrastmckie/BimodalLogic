@@ -31,7 +31,7 @@ Executes task implementations with plan-based or direct execution, language-base
 ## Workflow Setup
 
 **Orchestrator handles (Stage 1-5):**
-- **Stage 1 (PreflightValidation):** Parse task number or range from arguments, validate tasks exist
+- **Stage 1 (PreflightValidation):** Parse task number or range from $ARGUMENTS, validate tasks exist
 - **Stage 2 (DetermineRouting):** Extract language from task entry (state.json or TODO.md), map to agent using routing table, validate routing
 - **Stage 3 (RegisterAndDelegate):** Register session and invoke target agent
 - **Stage 4 (ValidateReturn):** Validate return format, verify artifacts exist and are non-empty
