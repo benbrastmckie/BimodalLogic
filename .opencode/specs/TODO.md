@@ -91,14 +91,15 @@ Orchestrator Stage 4 (ValidateReturn) references validation-rules.md but does NO
 ---
 
 ### 281. Fix OpenCode $ARGUMENTS variable not being passed to orchestrator
-- **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 4 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
 - **Started**: 2026-01-03
 - **Research**: [Research Report](281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md)
+- **Plan**: [Implementation Plan](281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-001.md)
 
 **Description**:
 After implementing task 278 (orchestrator argument parsing fix), the `/implement 275` command still fails with "Arguments provided: (empty)" error. The orchestrator's new validation logic is working correctly and detecting that `$ARGUMENTS` is empty, but this reveals the real root cause: OpenCode is not passing the task number argument to the orchestrator at all.
@@ -387,7 +388,7 @@ The `/meta` command currently implements work directly after the interview. Inst
 
 ### 269. Fix /meta command to accept user prompts directly instead of forcing interactive interview
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [NOT STARTED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
