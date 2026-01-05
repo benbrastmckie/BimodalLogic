@@ -722,8 +722,8 @@
       "project_number": 307,
       "project_name": "verify_or_revert_core_logic_changes_in_high_risk_files_4_5",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "research_completed",
+      "status": "researched",
       "priority": "high",
       "language": "markdown",
       "description": "Based on test results from task 304, either keep the core logic changes in meta.md and task-creator.md (if commands work) or revert them to previous versions (if commands fail or create_task doesn't exist). This is a critical decision point.",
@@ -731,7 +731,11 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T08:00:00Z",
-      "last_updated": "2026-01-05T08:00:00Z"
+      "last_updated": "2026-01-05",
+      "research_completed": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/307_verify_or_revert_core_logic_changes_in_high_risk_files_4_5/reports/research-001.md"
+      ]
     },
     {
       "project_number": 308,
