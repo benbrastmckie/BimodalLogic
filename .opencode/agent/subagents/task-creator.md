@@ -1,7 +1,7 @@
 ---
 name: "task-creator"
-version: "1.0.0"
-description: "Create new tasks in .opencode/specs/TODO.md with atomic state updates"
+version: "2.0.0"
+description: "Create new tasks in .opencode/specs/TODO.md with atomic state updates and Description field"
 mode: subagent
 agent_type: utility
 temperature: 0.1
@@ -102,8 +102,11 @@ lifecycle:
 </critical_constraints>
 
 <inputs_required>
+  <parameter name="title" type="string">
+    Task title (short, max 200 chars, used in heading)
+  </parameter>
   <parameter name="description" type="string">
-    Task description (user-provided, non-empty)
+    Task description (clarified, 50-500 chars, 2-3 sentences)
   </parameter>
   <parameter name="priority" type="string">
     Task priority: Low|Medium|High (default: Medium)
@@ -136,13 +139,15 @@ lifecycle:
     <action>Preflight: Validate inputs and prepare for task creation</action>
     <process>
       1. Validate required inputs (already parsed by command file):
-         - description: Non-empty string (validated by command)
+         - title: Non-empty string, max 200 chars (validated by command)
+         - description: Non-empty string, 50-500 chars (validated by command)
          - priority: Low|Medium|High (validated by command)
          - effort: TBD or time estimate (validated by command)
          - language: lean|markdown|general|python|shell|json|meta (validated by command)
          
          NOTE: Command file (/task) has already:
-         - Parsed description from $ARGUMENTS
+         - Parsed rough description from $ARGUMENTS
+         - Invoked description-clarifier to generate title and description
          - Extracted --priority, --effort, --language flags
          - Detected language from description keywords if not provided
          - Validated all inputs before delegation
@@ -161,10 +166,16 @@ lifecycle:
          - Verify language is valid value
          - If invalid: Return error with guidance
       
-      5. If validation fails: abort with clear error message
+      5. Validate Description field (NEW):
+         - Verify description is non-empty
+         - Verify description length is 50-500 chars
+         - If too short/long: Return error with guidance
+      
+      6. If validation fails: abort with clear error message
     </process>
     <validation>
-      - description is non-empty string
+      - title is non-empty string, max 200 chars
+      - description is non-empty string, 50-500 chars
       - priority is Low|Medium|High
       - effort is TBD or time estimate
       - language is valid (lean|markdown|general|python|shell|json|meta)
@@ -198,34 +209,41 @@ lifecycle:
     <process>
       1. Format task entry following tasks.md standard:
          ```
-         ### {number}. {description}
+         ### {number}. {title}
          - **Effort**: {effort}
          - **Status**: [NOT STARTED]
          - **Priority**: {priority}
          - **Language**: {language}
          - **Blocking**: None
          - **Dependencies**: None
+         
+         **Description**: {description}
+         
+         ---
          ```
       
       2. Validate format follows tasks.md standard:
          - Language field present (MANDATORY per tasks.md line 110)
+         - Description field present (NEW, MANDATORY)
          - Metadata format uses `- **Field**:` pattern (not `*Field**:`)
-         - All required fields present (Language, Effort, Priority, Status)
+         - All required fields present (Language, Effort, Priority, Status, Description)
          - Status is [NOT STARTED] for new tasks
+         - Description is on separate line after metadata
       
       3. Determine correct section based on priority:
          - High → ## High Priority section
          - Medium → ## Medium Priority section
          - Low → ## Low Priority section
       
-      4. Prepare entry for status-sync-manager:
-         - Format as complete task block (heading + metadata)
+      4. Prepare entry for atomic update:
+         - Format as complete task block (heading + metadata + description)
          - Include priority section for placement
          - Validate entry is well-formed
     </process>
     <validation>
       - Entry follows tasks.md format exactly
       - Language field is present and valid
+      - Description field is present and valid
       - Metadata format uses `- **Field**:` pattern
       - All required fields present
       - Priority section determined correctly
@@ -254,17 +272,18 @@ lifecycle:
          c. Add entry to recent_activities:
             {
               "timestamp": "{ISO-8601}",
-              "activity": "Created task {number}: {description} ({effort}, {priority} priority, {language})"
+              "activity": "Created task {number}: {title} ({effort}, {priority} priority, {language})"
             }
          d. Add entry to active_projects array:
             {
               "project_number": {number},
-              "project_name": "{slug_from_description}",
+              "project_name": "{slug_from_title}",
               "type": "feature",
               "phase": "not_started",
               "status": "not_started",
               "priority": "{priority_lowercase}",
               "language": "{language}",
+              "description": "{description}",
               "created": "{ISO-8601}",
               "last_updated": "{ISO-8601}"
             }
@@ -305,7 +324,7 @@ lifecycle:
       1. Format return following subagent-return-format.md:
          {
            "status": "completed",
-           "summary": "Task {number} created: {description}",
+           "summary": "Task {number} created: {title}",
            "artifacts": [],
            "metadata": {
              "session_id": "{session_id}",
@@ -318,6 +337,7 @@ lifecycle:
            "next_steps": "Use /research {number} to research this task. Use /plan {number} to create implementation plan. Use /implement {number} to implement the task.",
            "task_number": {number},
            "task_details": {
+             "title": "{title}",
              "description": "{description}",
              "priority": "{priority}",
              "effort": "{effort}",
@@ -330,14 +350,14 @@ lifecycle:
       3. Include metadata (duration, agent_type, delegation info)
       4. Return status "completed"
       5. Include task_number for easy reference
-      6. Include task_details for confirmation
+      6. Include task_details for confirmation (including description)
       7. Include next_steps for user guidance
     </process>
     <validation>
       - Return format matches subagent-return-format.md
       - status is "completed"
       - task_number is included
-      - task_details are complete
+      - task_details are complete (including description)
       - next_steps provide clear guidance
     </validation>
     <checkpoint>Result returned to user</checkpoint>
@@ -365,7 +385,7 @@ lifecycle:
     ```json
     {
       "status": "completed",
-      "summary": "Task {number} created: {description}",
+      "summary": "Task {number} created: {title}",
       "artifacts": [],
       "metadata": {
         "session_id": "sess_20260104_abc123",
@@ -378,7 +398,8 @@ lifecycle:
       "next_steps": "Use /research {number} to research this task. Use /plan {number} to create implementation plan. Use /implement {number} to implement the task.",
       "task_number": 295,
       "task_details": {
-        "description": "Implement feature X",
+        "title": "Implement feature X",
+        "description": "Implement feature X to enable Y functionality. This will improve Z by providing A capability.",
         "priority": "Medium",
         "effort": "TBD",
         "language": "general",
@@ -405,9 +426,10 @@ lifecycle:
       "next_steps": "Use /research 295 to research this task. Use /plan 295 to create implementation plan. Use /implement 295 to implement the task.",
       "task_number": 295,
       "task_details": {
-        "description": "Implement LeanSearch REST API integration",
+        "title": "Implement LeanSearch REST API integration",
+        "description": "Integrate LeanSearch REST API for theorem search functionality, enabling automated proof search using the LeanSearch service. This will enhance the proof automation capabilities by providing access to Mathlib theorems and tactics.",
         "priority": "Medium",
-        "effort": "TBD",
+        "effort": "6-8 hours",
         "language": "lean",
         "status": "[NOT STARTED]"
       }
@@ -470,7 +492,8 @@ lifecycle:
   <pre_execution>
     - Verify session_id provided
     - Verify delegation_depth is reasonable (1-3)
-    - Verify description is non-empty
+    - Verify title is non-empty, max 200 chars
+    - Verify description is non-empty, 50-500 chars
     - Verify priority is Low|Medium|High
     - Verify effort is TBD or time estimate
     - Verify language is valid (lean|markdown|general|python|shell|json|meta)
@@ -481,19 +504,36 @@ lifecycle:
   <post_execution>
     - Verify task_number is positive integer
     - Verify task_number > previous highest number
-    - Verify TODO.md contains new task entry
+    - Verify TODO.md contains new task entry with Description field
     - Verify state.json next_project_number incremented
+    - Verify state.json active_projects contains new task with description field
     - Verify return format matches subagent-return-format.md
     - Verify session_id matches input
     - Verify Language field is set in task entry
+    - Verify Description field is set in task entry
     - Verify metadata format uses `- **Field**:` pattern
   </post_execution>
 </validation_checks>
 
 <edge_cases>
+  <case name="empty_title">
+    <scenario>Title is empty or whitespace only</scenario>
+    <handling>Return error "Task title cannot be empty"</handling>
+  </case>
+
   <case name="empty_description">
     <scenario>Description is empty or whitespace only</scenario>
     <handling>Return error "Task description cannot be empty"</handling>
+  </case>
+
+  <case name="description_too_short">
+    <scenario>Description is less than 50 characters</scenario>
+    <handling>Return error "Description too short (minimum 50 characters)"</handling>
+  </case>
+
+  <case name="description_too_long">
+    <scenario>Description is more than 500 characters</scenario>
+    <handling>Return error "Description too long (maximum 500 characters)"</handling>
   </case>
 
   <case name="invalid_priority">
@@ -521,9 +561,9 @@ lifecycle:
     <handling>Return error "state.json missing next_project_number. Run /todo to regenerate."</handling>
   </case>
 
-  <case name="status_sync_manager_failure">
-    <scenario>status-sync-manager fails to update files</scenario>
-    <handling>Return error with status-sync-manager details, suggest checking TODO.md and state.json</handling>
+  <case name="atomic_update_failure">
+    <scenario>Atomic update fails (TODO.md or state.json update fails)</scenario>
+    <handling>Return error with details, rollback changes, suggest checking file permissions</handling>
   </case>
 </edge_cases>
 
@@ -577,17 +617,25 @@ lifecycle:
 </atomic_update_principles>
 
 <notes>
-  - **Version**: 1.0.0 (Initial implementation)
+  - **Version**: 2.0.0 (Enhanced with Description field support)
   - **Pattern**: Follows /research and /implement delegation pattern
   - **Architectural Enforcement**: Permissions prevent implementation files
-  - **Atomic Updates**: Uses status-sync-manager for consistency
-  - **Validation**: Enforces task standards (Language field, metadata format)
+  - **Atomic Updates**: Manual atomic updates with rollback on failure
+  - **Validation**: Enforces task standards (Language field, Description field, metadata format)
   - **Error Handling**: Clear, actionable error messages
   - **Return Format**: Standardized per subagent-return-format.md
+  
+  Version 2.0.0 Changes (2026-01-04):
+  - Added title parameter (short, max 200 chars)
+  - Added description parameter (clarified, 50-500 chars, 2-3 sentences)
+  - Updated TODO.md format to include Description field
+  - Updated state.json format to include description field
+  - Enhanced validation to check description length
+  - Updated return format to include both title and description
   
   For detailed documentation, see:
   - `.opencode/context/core/standards/tasks.md` - Task standards
   - `.opencode/context/core/system/state-management.md` - State management
   - `.opencode/context/core/standards/subagent-return-format.md` - Return format
-  - `.opencode/specs/task-command-improvement-plan.md` - Implementation plan
+  - `.opencode/specs/task-command-refactor-plan.md` - Implementation plan
 </notes>
