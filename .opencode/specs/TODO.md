@@ -25,6 +25,9 @@ technical_debt:
 
 # TODO
 
+
+---
+
 ## High Priority
 
 ### 312. Fix workflow command postflight failures causing missing artifact links and status updates
@@ -41,57 +44,8 @@ technical_debt:
 
 ---
 
-### 309. Implement Option 1 (Direct Delegation) from task 309 analysis to optimize /task command performance
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/309_optimize_task_command_performance/reports/research-001.md)
-- **Researched**: 2026-01-05
-- **Plan**: [implementation-001.md](.opencode/specs/309_optimize_task_command_performance/plans/implementation-001.md)
-- **Planned**: 2026-01-05
-- **Implementation**: [implementation-summary-20260105.md](.opencode/specs/309_optimize_task_command_performance/summaries/implementation-summary-20260105.md)
-- **Implemented**: 2026-01-05
 
-**Description**: Implement Option 1 (Direct Delegation) from task 309 analysis to optimize /task command performance. Modify /task command Stage 4 to delegate directly to status-sync-manager instead of task-creator, eliminating unnecessary delegation layer and achieving 40-50% performance improvement.
 
----
-
-### 306. Refactor /meta command to create tasks instead of direct implementation
-- **Effort**: 8 hours (actual: 6 hours)
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md)
-- **Researched**: 2026-01-05
-- **Plan**: [implementation-003.md](.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-003.md)
-- **Planned**: 2026-01-05
-- **Revised**: 2026-01-05 (v3)
-- **Implementation**: [implementation-summary-20260105.md](.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/summaries/implementation-summary-20260105.md)
-- **Implemented**: 2026-01-05
-- **Completed**: 2026-01-05
-
-**Description**: Refactor the /meta command to always create an appropriate number of tasks (similar to /task command) rather than directly implementing the work. Preserve the interview functionality to clarify requirements when needed, or run in full interactive mode when /meta is called with no arguments. The result should be task creation with dependencies indicated and plan artifacts stored in the appropriate artifact structure per artifact-management.md.
-
----
-
-### 304. Test commands after unintended changes (2/5)
-- **Effort**: 30 minutes
-- **Status**: [ABANDONED]
-- **Priority**: High
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: None
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: User requested abandonment via /abandon command
-
-**Description**: Test /task, /meta, and /todo commands to verify they still work correctly after the unintended changes. Document any failures or unexpected behavior. This determines whether to keep or revert core logic changes.
-
----
 
 ### 307. Verify or revert core logic changes in high-risk files (4/5)
 - **Effort**: 1 hour
@@ -107,38 +61,6 @@ technical_debt:
 
 ---
 
-### 299. Create Task Reviser Subagent
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Dependencies**: None
-- **Plan**: [implementation-001.md](.opencode/specs/299_create_task_reviser_subagent/plans/implementation-001.md)
-- **Planned**: 2026-01-05
-- **Implementation**: [implementation-summary-20260105.md](.opencode/specs/299_create_task_reviser_subagent/summaries/implementation-summary-20260105.md)
-- **Implemented**: 2026-01-05
-
-**Description**: Create a new subagent `task-reviser.md` that handles task-only revision mode when no plan exists. This subagent will update task descriptions, requirements, and metadata in TODO.md and state.json atomically.
-
-**Action Items**:
-1. Create `.opencode/agent/subagents/task-reviser.md` following subagent template
-2. Implement task metadata extraction from state.json
-3. Implement task description revision logic with user prompts
-4. Integrate with status-sync-manager for atomic updates
-5. Add validation for task existence and revision context
-6. Return standardized format per subagent-return-format.md
-
-**Acceptance Criteria**:
-- [ ] task-reviser.md created with proper frontmatter
-- [ ] Extracts task metadata from state.json
-- [ ] Prompts user for revision details (description, priority, effort)
-- [ ] Updates TODO.md and state.json atomically via status-sync-manager
-- [ ] Returns standardized format with updated task info
-- [ ] Handles errors gracefully with rollback
-
-**Impact**: Enables task revision without requiring a plan, supporting early-stage task refinement.
-
----
 
 ### 300. Add Report Detection to Planner
 - **Effort**: 4 hours
@@ -466,6 +388,9 @@ technical_debt:
 
 ### Decidability
 
+
+---
+
 ### 136. Design Decidability.lean architecture and signatures
 - **Effort**: 2 hours
 - **Status**: [NOT STARTED]
@@ -520,6 +445,9 @@ technical_debt:
 - **Impact**: Delivers an initial, test-backed decision procedure for TM logic.
 
 ### Layer Extensions (Future Planning)
+
+
+---
 
 ### 139. Draft Layer 1 counterfactual operator plan
 - **Effort**: 2 hours
@@ -1122,23 +1050,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ## Medium Priority
 
-### 310. Enhance workflow commands with start and end status updates
-- **Effort**: 9-12 hours
-- **Status**: [COMPLETED]
-- **Research**: [Research Report](.opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/reports/research-001.md)
-- **Researched**: 2026-01-05
-- **Plan**: [implementation-001.md](.opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md)
-- **Planned**: 2026-01-05
-- **Implementation**: [implementation-summary-20260105.md](.opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/summaries/implementation-summary-20260105.md)
-- **Implemented**: 2026-01-05
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Enhance workflow commands (/research, /plan, /revise, /implement) to update task status at the beginning and end of execution. Commands should set status to '[RESEARCHING]', '[PLANNING]', '[REVISING]', or '[IMPLEMENTING]' at start, report if already in progress, and update to final status ('[RESEARCHED]', '[PLANNED]', '[REVISED]', '[IMPLEMENTED]'/'[BLOCKED]'/'[PARTIAL]') at completion.
-
----
 
 ### 305. Remove performance cruft from all 6 modified files (3/5)
 - **Effort**: 30 minutes
@@ -1252,25 +1163,10 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 277. Improve Opencode Header And Summary Display For Task Commands
-- **Effort**: 3.5
-- **Status**: [ABANDONED]
-- **Priority**: High
-- **Language**: general
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: User requested abandonment
-- **Artifacts**:
-  - .opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md
-  - .opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md
-  - .opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-002.md
-
-**Description**: Task 277
-
----
 
 ### 280. Fix Orchestrator Stage 4 Validation To Enforce Subagent Return Format And Prevent Phantom Research
 - **Effort**: 6.0
-- **Status**: [REVISED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: markdown
 - **Artifacts**:
@@ -1331,4 +1227,3 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Description**: Refactor the /abandon command to accept a range or list of task numbers (e.g., '293-295, 302, 303') to abandon multiple tasks in a single invocation. This enables efficient bulk abandonment of tasks without requiring multiple command executions.
 
----
