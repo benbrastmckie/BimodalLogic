@@ -613,7 +613,7 @@
       "project_name": "add_report_detection_to_planner",
       "type": "feature",
       "phase": "planning_completed",
-      "status": "planned",
+      "status": "completed",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-05T01:22:38Z",
@@ -625,7 +625,8 @@
       "planned": "2026-01-05",
       "artifacts": [
         ".opencode/specs/300_add_report_detection_to_planner/reports/research-001.md",
-        ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md"
+        ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md",
+        ".opencode/specs/300_add_report_detection_to_planner/summaries/implementation-summary-20260105.md"
       ],
       "plan_path": ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md",
       "plan_metadata": {
@@ -642,7 +643,8 @@
           }
         ]
       },
-      "research_summary": "Research completed on enhancing planner to detect new reports. Current planner harvests ALL research but cannot distinguish new reports from already-integrated ones. Solution: use filesystem timestamps (mtime) to detect reports created after last plan version. Requires plan_metadata schema extension to track reports_integrated array. 4-phase implementation (4 hours): schema extension, report detection, research harvesting enhancement, postflight integration."
+      "research_summary": "Research completed on enhancing planner to detect new reports. Current planner harvests ALL research but cannot distinguish new reports from already-integrated ones. Solution: use filesystem timestamps (mtime) to detect reports created after last plan version. Requires plan_metadata schema extension to track reports_integrated array. 4-phase implementation (4 hours): schema extension, report detection, research harvesting enhancement, postflight integration.",
+      "completed": "2026-01-05"
     },
     {
       "project_number": 301,

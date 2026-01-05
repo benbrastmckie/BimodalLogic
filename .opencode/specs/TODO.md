@@ -62,39 +62,6 @@ technical_debt:
 ---
 
 
-### 300. Add Report Detection to Planner
-- **Effort**: 4 hours
-- **Status**: [PLANNED]
-- **Priority**: High
-- **Language**: meta
-- **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/300_add_report_detection_to_planner/reports/research-001.md)
-- **Researched**: 2026-01-05
-- **Plan**: [implementation-001.md](.opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md)
-- **Planned**: 2026-01-05
-
-**Description**: Enhance the planner subagent to detect new reports created since the last plan version and integrate their findings into plan revisions.
-
-**Action Items**:
-1. Add report directory scanning logic to planner
-2. Implement timestamp comparison (report mtime vs plan mtime)
-3. Extract new report paths and read their contents
-4. Integrate new report findings into plan revision context
-5. Update plan metadata to track integrated reports
-6. Add validation for report file existence and format
-
-**Acceptance Criteria**:
-- [ ] Planner scans `.opencode/specs/NNN_*/reports/` directory
-- [ ] Compares report modification times with plan creation time
-- [ ] Identifies reports created after last plan version
-- [ ] Reads and extracts key findings from new reports
-- [ ] Includes new findings in revised plan Overview and Phases
-- [ ] Updates plan metadata with `reports_integrated` field
-- [ ] Logs report integration in plan revision notes
-
-**Impact**: Ensures plan revisions leverage the latest research and analysis findings, improving plan quality and accuracy.
-
----
 
 ### 301. Enhance Revise Command with Dual-Mode Routing
 - **Effort**: 3 hours

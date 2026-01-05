@@ -391,12 +391,22 @@ lifecycle:
             "total_effort_hours": {estimated_hours},
             "complexity": "{complexity}",
             "research_integrated": {true/false},
-            "plan_version": {plan_version}
+            "plan_version": {plan_version},
+            "reports_integrated": [
+              {
+                "path": "reports/research-NNN.md",
+                "integrated_in_plan_version": {plan_version},
+                "integrated_date": "{YYYY-MM-DD}"
+              }
+            ]
           },
           "delegation_depth": 2,
           "delegation_path": ["orchestrator", "{revision_mode ? 'revise' : 'plan'}", "planner", "status-sync-manager"]
         }
         ```
+        
+        NOTE: reports_integrated array includes ALL reports integrated across all plan versions,
+        not just new reports from this version. This provides complete audit trail.
         
         INVOKE status-sync-manager:
           - Subagent type: "status-sync-manager"
