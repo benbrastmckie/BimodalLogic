@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T01:49:54Z",
-  "next_project_number": 294,
+  "_last_updated": "2026-01-05T03:39:53Z",
+  "next_project_number": 295,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -673,6 +673,22 @@
       "created": "2026-01-05T01:49:54Z",
       "last_updated": "2026-01-05T01:49:54Z",
       "estimated_hours": 5.0
+    },
+    {
+      "project_number": 294,
+      "project_name": "revise_meta_command_to_accept_optional_task_number",
+      "type": "feature",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-05T03:39:48Z",
+      "last_updated": "2026-01-04",
+      "started": "2026-01-04",
+      "research_completed": "2026-01-04",
+      "artifacts": [
+        ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md"
+      ]
     }
   ],
   "completed_projects": [
@@ -1461,13 +1477,14 @@
     }
   ],
   "repository_health": {
-    "last_assessed": "2026-01-04T06:25:00Z",
+    "last_assessed": "2026-01-05T02:00:00Z",
     "overall_score": 92,
-    "active_tasks": 5,
+    "active_tasks": 6,
     "completed_tasks": 51,
     "blocked_tasks": 2,
     "in_progress_tasks": 2,
-    "not_started_tasks": 24,
+    "not_started_tasks": 25,
+    "critical_priority_tasks": 1,
     "high_priority_tasks": 16,
     "medium_priority_tasks": 12,
     "low_priority_tasks": 11,
@@ -1488,6 +1505,14 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2026-01-05T03:39:53Z",
+      "activity": "Created task 294: Revise /meta command to accept optional task number (TBD, Medium priority, markdown)"
+    },
+    {
+      "timestamp": "2026-01-05T02:00:00Z",
+      "activity": "Created task 260: Investigate Claude Code CLI Argument Mechanism (2 hours, Critical priority, meta)"
+    },
     {
       "timestamp": "2026-01-05T01:49:54Z",
       "activity": "Created task 293: Design and implement better command argument handling for orchestrator (4-6 hours, High priority, general)"

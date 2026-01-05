@@ -148,7 +148,7 @@ technical_debt:
 
 ### 263. Refactor Context.lean
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: Task 264
@@ -1027,4 +1027,18 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 
 ## Medium Priority
+
+
+### 294. Revise /meta command to accept optional task number
+- **Effort**: TBD
+- **Status**: [RESEARCHED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Revise the /meta command to accept an optional task number in the same way as the /research and /implement commands so that I can improve my workflow using the /meta command. The /meta command should still work if used with no arguments or a prompt only.
+
+**Research Artifacts**:
+  - Main Report: [.opencode/specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md]
 
