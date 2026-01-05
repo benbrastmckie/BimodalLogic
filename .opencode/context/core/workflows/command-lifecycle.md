@@ -262,57 +262,55 @@ The `/task` command follows a different pattern from workflow commands since it 
 - Detect language from description keywords if not provided
 - Validate all inputs (description non-empty, priority valid, etc.)
 
-**Stage 2 (Delegate):**
-- Delegate to task-creator subagent
-- task-creator allocates task number from state.json
-- task-creator formats TODO.md entry
-- task-creator invokes status-sync-manager for atomic updates
-- Relay result to user
+**Stage 2 (CreateTask):**
+- Read next_project_number from state.json using jq
+- Format TODO.md entry with proper metadata
+- Append to correct priority section in TODO.md
+- Update state.json (increment next_project_number, add to active_projects)
+- Verify updates succeeded
+- Return task number to user
 
-### task-creator Subagent Workflow
+### Inline Implementation
 
-**Step 0 (Preflight):**
-- Validate inputs (description, priority, effort, language)
-- Validate state.json exists and is readable
-- Validate TODO.md exists and is readable
-- Validate Language field will be set (MANDATORY)
+Unlike /research and /implement which delegate to subagents, /task uses **inline implementation** with executable pseudocode directly in Stage 2:
 
-**Step 1 (AllocateNumber):**
-- Read next_project_number from state.json
-- Validate it's a number >= 0
-- Store for use in task creation
+```bash
+# Read next project number
+next_number=$(jq -r '.next_project_number' .opencode/specs/state.json)
 
-**Step 2 (CreateEntry):**
-- Format TODO.md entry following task standards
-- Validate format (Language field, metadata format, required fields)
-- Determine correct section based on priority
+# Format TODO.md entry
+entry="### ${next_number}. ${description}
+- **Effort**: ${effort}
+- **Status**: [NOT STARTED]
+- **Priority**: ${priority}
+- **Language**: ${language}
+- **Blocking**: None
+- **Dependencies**: None
 
-**Step 3 (SyncState):**
-- Invoke status-sync-manager for atomic update
-- Update TODO.md with new task entry
-- Update state.json next_project_number
-- Verify atomic update succeeded
+---"
 
-**Step 4 (Return):**
-- Return standardized result with task number
-- Include task details for confirmation
-- Include next steps (use /research, /plan, /implement)
+# Append to TODO.md (using Edit tool)
+# Update state.json (using jq)
+jq '.next_project_number = (.next_project_number + 1) | 
+    .active_projects += [...]' .opencode/specs/state.json
+```
 
 ### Key Differences from Workflow Commands
 
-1. **No Two-Phase Status Update**: Task creation is atomic (single status-sync-manager call)
+1. **No Two-Phase Status Update**: Task creation is atomic (single file update operation)
 2. **No Preflight/Postflight**: Task doesn't exist yet, so no status to update
 3. **No Git Commit**: Task creation doesn't create artifacts (only TODO.md + state.json updates)
-4. **Architectural Enforcement**: task-creator permissions prevent implementation files
-5. **Delegation Required**: Command MUST delegate to task-creator (no inline execution)
+4. **Inline Implementation**: No delegation to subagent (executable pseudocode in command file)
+5. **Matches /research Pattern**: Stage 1 has executable logic that Claude can directly follow
 
 ### Atomic Updates
 
-task-creator uses status-sync-manager to ensure:
-- TODO.md and state.json updated together or not at all
-- Task number is unique and sequential
-- No partial state updates
-- Rollback on failure
+/task ensures atomic updates by:
+- Reading state.json to get next_project_number
+- Updating TODO.md first (using Edit tool)
+- Updating state.json second (using jq)
+- Verifying both updates succeeded
+- If state.json update fails: Manual rollback required (documented in error message)
 
 ### Validation
 
@@ -332,10 +330,10 @@ task-creator uses status-sync-manager to ensure:
 
 ### References
 
-- **Task Creator Subagent:** `.opencode/agent/subagents/task-creator.md`
-- **Task Command:** `.opencode/command/task.md`
+- **Task Command:** `.opencode/command/task.md` (inline implementation)
 - **Task Standards:** `.opencode/context/core/standards/tasks.md`
-- **Implementation Plan:** `.opencode/specs/task-command-improvement-plan.md`
+- **Original Implementation Plan:** `.opencode/specs/task-command-improvement-plan.md`
+- **Fix Plan:** `.opencode/specs/task-command-fix-plan.md`
 
 ## References
 
