@@ -53,8 +53,29 @@ lifecycle:
 </task>
 
 <inputs_required>
+  <parameter name="operation" type="string">
+    Operation to perform: update_status, create_task, archive_tasks
+  </parameter>
   <parameter name="task_number" type="integer">
-    Task number to update
+    Task number to update (for update_status operation)
+  </parameter>
+  <parameter name="task_numbers" type="array" optional="true">
+    Task numbers to archive (for archive_tasks operation)
+  </parameter>
+  <parameter name="title" type="string" optional="true">
+    Task title (for create_task operation, max 200 chars)
+  </parameter>
+  <parameter name="description" type="string" optional="true">
+    Task description (for create_task operation, 50-500 chars)
+  </parameter>
+  <parameter name="priority" type="string" optional="true">
+    Task priority: Low, Medium, High (for create_task operation)
+  </parameter>
+  <parameter name="effort" type="string" optional="true">
+    Task effort estimate (for create_task operation)
+  </parameter>
+  <parameter name="language" type="string" optional="true">
+    Task language: lean, markdown, general, python, shell, json, meta (for create_task operation)
   </parameter>
   <parameter name="new_status" type="string">
     New status marker: not_started, in_progress, researched, planned, blocked, abandoned, completed
@@ -107,6 +128,220 @@ lifecycle:
 </inputs_forbidden>
 
 <process_flow>
+  <operation_routing>
+    <action>Route to appropriate operation based on operation parameter</action>
+    <process>
+      1. Check operation parameter value
+      2. If operation == "create_task": Execute create_task_flow
+      3. If operation == "archive_tasks": Execute archive_tasks_flow
+      4. If operation == "update_status" or not specified: Execute update_status_flow (default)
+      5. If operation invalid: Return error
+    </process>
+    <validation>Operation parameter is valid</validation>
+    <output>Routed to appropriate operation flow</output>
+  </operation_routing>
+
+  <create_task_flow>
+    <step_0_validate_inputs>
+      <action>Validate create_task inputs</action>
+      <process>
+        1. Validate required inputs:
+           - title (non-empty string, max 200 chars)
+           - description (non-empty string, 50-500 chars)
+           - priority (Low|Medium|High)
+           - effort (non-empty string)
+           - language (lean|markdown|general|python|shell|json|meta)
+        2. Validate state.json exists and is readable
+        3. Validate TODO.md exists and is readable
+        4. Read next_project_number from state.json
+        5. Validate task number not already in use
+        6. If validation fails: abort with clear error message
+      </process>
+      <validation>All inputs valid, task number available</validation>
+      <output>Validated inputs, allocated task number</output>
+    </step_0_validate_inputs>
+
+    <step_1_prepare_entries>
+      <action>Prepare TODO.md and state.json entries</action>
+      <process>
+        1. Generate task slug from title (lowercase, underscores)
+        2. Format TODO.md entry:
+           ```
+           ### {number}. {title}
+           - **Effort**: {effort}
+           - **Status**: [NOT STARTED]
+           - **Priority**: {priority}
+           - **Language**: {language}
+           - **Blocking**: None
+           - **Dependencies**: None
+           
+           **Description**: {description}
+           
+           ---
+           ```
+        3. Format state.json entry:
+           ```json
+           {
+             "project_number": {number},
+             "project_name": "{slug}",
+             "type": "feature",
+             "phase": "not_started",
+             "status": "not_started",
+             "priority": "{priority_lowercase}",
+             "language": "{language}",
+             "description": "{description}",
+             "effort": "{effort}",
+             "blocking": [],
+             "dependencies": [],
+             "created": "{timestamp}",
+             "last_updated": "{timestamp}"
+           }
+           ```
+        4. Validate entries are well-formed
+      </process>
+      <validation>Entries formatted correctly</validation>
+      <output>Formatted TODO.md and state.json entries</output>
+    </step_1_prepare_entries>
+
+    <step_2_backup_and_update>
+      <action>Backup files and perform atomic update</action>
+      <process>
+        1. Read current TODO.md content
+        2. Read current state.json content
+        3. Create backups of both files
+        4. Determine correct priority section in TODO.md:
+           - High priority: Insert after "## High Priority Tasks" heading
+           - Medium priority: Insert after "## Medium Priority Tasks" heading
+           - Low priority: Insert after "## Low Priority Tasks" heading
+        5. Insert TODO.md entry in correct section
+        6. Parse state.json
+        7. Append entry to active_projects array
+        8. Increment next_project_number by 1
+        9. Update _last_updated timestamp
+        10. Validate both updates well-formed
+      </process>
+      <validation>Updates prepared, backups created</validation>
+      <output>Updated TODO.md and state.json content in memory</output>
+    </step_2_backup_and_update>
+
+    <step_3_commit>
+      <action>Commit updates atomically</action>
+      <process>
+        1. Write TODO.md (first, most critical)
+        2. Verify write succeeded
+        3. Write state.json
+        4. Verify write succeeded
+        5. If any write fails: rollback all previous writes
+      </process>
+      <rollback_on_failure>
+        If any write fails:
+        1. Immediately stop further writes
+        2. Restore all previously written files from backups
+        3. Log error with details
+        4. Return failed status with rollback info
+      </rollback_on_failure>
+      <validation>Both files written successfully or both restored</validation>
+      <output>Task created atomically in both files</output>
+    </step_3_commit>
+
+    <step_4_return>
+      <action>Return success with task number</action>
+      <process>
+        1. Format return following subagent-return-format.md
+        2. Include task number created
+        3. Include files updated
+        4. Include session_id from input
+        5. Return status completed or failed
+      </process>
+      <output>Standardized return object with task number</output>
+    </step_4_return>
+  </create_task_flow>
+
+  <archive_tasks_flow>
+    <step_0_validate_inputs>
+      <action>Validate archive_tasks inputs</action>
+      <process>
+        1. Validate task_numbers is non-empty array
+        2. Validate all task numbers are positive integers
+        3. Validate state.json exists and is readable
+        4. Validate TODO.md exists and is readable
+        5. For each task number:
+           - Verify task exists in state.json active_projects
+           - Verify task status is "completed" or "abandoned"
+           - If task not found or wrong status: abort with error
+        6. If validation fails: abort with clear error message
+      </process>
+      <validation>All tasks exist and are archivable</validation>
+      <output>Validated task numbers</output>
+    </step_0_validate_inputs>
+
+    <step_1_prepare_archival>
+      <action>Prepare archival updates</action>
+      <process>
+        1. Read current TODO.md content
+        2. Read current state.json content
+        3. Create backups of both files
+        4. For each task number:
+           - Extract task entry from TODO.md
+           - Extract task entry from state.json active_projects
+           - Prepare for removal from TODO.md
+           - Prepare for move to completed_projects in state.json
+        5. Validate all tasks found
+      </process>
+      <validation>All tasks located, backups created</validation>
+      <output>Prepared archival operations</output>
+    </step_1_prepare_archival>
+
+    <step_2_update_files>
+      <action>Update files atomically</action>
+      <process>
+        1. Remove task entries from TODO.md
+        2. Parse state.json
+        3. For each task:
+           - Remove from active_projects array
+           - Add to completed_projects array (create if not exists)
+        4. Update _last_updated timestamp
+        5. Validate both updates well-formed
+      </process>
+      <validation>Updates prepared correctly</validation>
+      <output>Updated TODO.md and state.json content in memory</output>
+    </step_2_update_files>
+
+    <step_3_commit>
+      <action>Commit updates atomically</action>
+      <process>
+        1. Write TODO.md (first, most critical)
+        2. Verify write succeeded
+        3. Write state.json
+        4. Verify write succeeded
+        5. If any write fails: rollback all previous writes
+      </process>
+      <rollback_on_failure>
+        If any write fails:
+        1. Immediately stop further writes
+        2. Restore all previously written files from backups
+        3. Log error with details
+        4. Return failed status with rollback info
+      </rollback_on_failure>
+      <validation>Both files written successfully or both restored</validation>
+      <output>Tasks archived atomically</output>
+    </step_3_commit>
+
+    <step_4_return>
+      <action>Return success with archived count</action>
+      <process>
+        1. Format return following subagent-return-format.md
+        2. Include count of tasks archived
+        3. Include task numbers archived
+        4. Include files updated
+        5. Include session_id from input
+        6. Return status completed or failed
+      </process>
+      <output>Standardized return object with archived count</output>
+    </step_4_return>
+  </archive_tasks_flow>
+
+  <update_status_flow>
   <step_1_prepare>
     <action>Phase 1: Prepare all updates in memory</action>
     <process>
@@ -356,6 +591,7 @@ lifecycle:
     </process>
     <output>Standardized return object with validation results</output>
   </step_5_return>
+  </update_status_flow>
 </process_flow>
 
 <artifact_validation_protocol>
@@ -666,7 +902,7 @@ lifecycle:
 <constraints>
   <must>Use two-phase commit (prepare, then commit)</must>
   <must>Rollback all writes if any single write fails</must>
-  <must>Validate status transitions per status-markers.md</must>
+  <must>Validate status transitions per status-markers.md (for update_status)</must>
   <must>Validate artifacts exist before linking (artifact validation protocol)</must>
   <must>Track plan metadata in state.json (phase_count, estimated_hours, complexity)</must>
   <must>Track plan version history in plan_versions array</must>
@@ -678,11 +914,18 @@ lifecycle:
   <must>Validate phase numbers and transitions before updating</must>
   <must>Include plan file in rollback mechanism</must>
   <must>Perform pre-commit, post-commit, and rollback validation</must>
+  <must>Validate description field (50-500 chars) for create_task operation</must>
+  <must>Include description field in both TODO.md and state.json for create_task</must>
+  <must>Validate task numbers unique before creating task</must>
+  <must>Validate tasks are completed/abandoned before archiving</must>
+  <must>Move archived tasks to completed_projects array in state.json</must>
   <must_not>Leave files in inconsistent state</must_not>
   <must_not>Proceed with invalid status transitions</must_not>
   <must_not>Link artifacts without validation</must_not>
   <must_not>Lose data during rollback</must_not>
   <must_not>Update plan file without validation</must_not>
+  <must_not>Create task with duplicate number</must_not>
+  <must_not>Archive task that is not completed/abandoned</must_not>
 </constraints>
 
 <output_specification>
@@ -718,7 +961,7 @@ lifecycle:
     ```
   </format>
 
-  <example_success>
+  <example_success_update_status>
     ```json
     {
       "status": "completed",
@@ -748,7 +991,75 @@ lifecycle:
       "rollback_performed": false
     }
     ```
-  </example_success>
+  </example_success_update_status>
+
+  <example_success_create_task>
+    ```json
+    {
+      "status": "completed",
+      "summary": "Atomically created task 296 in both TODO.md and state.json with description field",
+      "artifacts": [
+        {
+          "type": "task_creation",
+          "path": ".opencode/specs/TODO.md",
+          "summary": "Created task entry with Description field in High Priority section"
+        },
+        {
+          "type": "task_creation",
+          "path": ".opencode/specs/state.json",
+          "summary": "Added task to active_projects with description field, incremented next_project_number"
+        }
+      ],
+      "metadata": {
+        "session_id": "sess_1703606400_a1b2c3",
+        "duration_seconds": 0.8,
+        "agent_type": "status-sync-manager",
+        "delegation_depth": 2,
+        "delegation_path": ["orchestrator", "task-creator", "status-sync-manager"],
+        "task_number": 296,
+        "task_title": "Create /sync command"
+      },
+      "errors": [],
+      "next_steps": "Task 296 created successfully. Ready for research or planning.",
+      "files_updated": [".opencode/specs/TODO.md", ".opencode/specs/state.json"],
+      "rollback_performed": false
+    }
+    ```
+  </example_success_create_task>
+
+  <example_success_archive_tasks>
+    ```json
+    {
+      "status": "completed",
+      "summary": "Atomically archived 5 tasks from TODO.md and moved to completed_projects in state.json",
+      "artifacts": [
+        {
+          "type": "task_archival",
+          "path": ".opencode/specs/TODO.md",
+          "summary": "Removed 5 completed/abandoned task entries"
+        },
+        {
+          "type": "task_archival",
+          "path": ".opencode/specs/state.json",
+          "summary": "Moved 5 tasks from active_projects to completed_projects"
+        }
+      ],
+      "metadata": {
+        "session_id": "sess_1703606400_a1b2c3",
+        "duration_seconds": 1.2,
+        "agent_type": "status-sync-manager",
+        "delegation_depth": 2,
+        "delegation_path": ["orchestrator", "todo", "status-sync-manager"],
+        "tasks_archived": [250, 251, 252, 253, 254],
+        "archived_count": 5
+      },
+      "errors": [],
+      "next_steps": "5 tasks archived successfully. TODO.md cleaned up.",
+      "files_updated": [".opencode/specs/TODO.md", ".opencode/specs/state.json"],
+      "rollback_performed": false
+    }
+    ```
+  </example_success_archive_tasks>
 
   <error_handling>
     If write fails and rollback succeeds:

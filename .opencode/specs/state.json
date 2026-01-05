@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-04T19:50:00Z",
-  "next_project_number": 296,
+  "_last_updated": "2026-01-05T07:51:30Z",
+  "next_project_number": 297,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -703,6 +703,18 @@
       "language": "meta",
       "created": "2026-01-04T20:25:54-08:00",
       "last_updated": "2026-01-04T20:25:54-08:00"
+    },
+    {
+      "project_number": 296,
+      "project_name": "create_sync_command_to_synchronize_todo_md_and_state_json",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Create a /sync command that bidirectionally synchronizes .opencode/specs/TODO.md and .opencode/specs/state.json, ensuring both files contain identical task information with the most recent changes from either file. The command should detect discrepancies between the two files, intelligently resolve conflicts by preferring the most recently updated data, and perform atomic updates to both files using the existing status-sync-manager's two-phase commit protocol. This addresses the architectural requirement that state.json is the authoritative source for metadata reads while TODO.md serves as the user-facing view, with synchronization ensuring consistency between them.",
+      "created": "2026-01-05T07:51:30Z",
+      "last_updated": "2026-01-05T07:51:30Z"
     }
   ],
   "completed_projects": [
@@ -1519,6 +1531,10 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2026-01-05T07:51:30Z",
+      "activity": "Created task 296: Create /sync command for bidirectional TODO.md and state.json synchronization (6-8 hours, Medium priority, meta)"
+    },
     {
       "timestamp": "2026-01-05T03:39:53Z",
       "activity": "Created task 294: Revise /meta command to accept optional task number (TBD, Medium priority, markdown)"
