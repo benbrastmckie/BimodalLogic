@@ -122,6 +122,8 @@ routing:
   <stage id="2" name="Delegate">
     <action>Delegate to task-creator subagent</action>
     <process>
+      CRITICAL: You are NOW delegating to task-creator. You are NOT implementing anything.
+      
       1. Invoke task-creator via task tool:
          task(
            subagent_type="task-creator",
@@ -130,15 +132,34 @@ routing:
          )
       
       2. Wait for task-creator to complete
+         - task-creator will allocate task number
+         - task-creator will update TODO.md and state.json
+         - task-creator will return task number
       
       3. Relay result to user:
          - Pass through task-creator's response
          - Include task number
          - Include next steps (use /research, /plan, /implement)
+      
+      STOP HERE. Do NOT implement the task. Do NOT create any files.
+      The task entry has been created. The user will use /research, /plan, /implement later.
     </process>
     <checkpoint>Delegated to task-creator, result relayed</checkpoint>
   </stage>
 </workflow_execution>
+
+<absolutely_critical_final_reminder>
+  If you have executed Stage 1 (ParseAndValidate) and Stage 2 (Delegate), you are DONE.
+  
+  DO NOT:
+  - Implement the task
+  - Create any files
+  - Examine existing code
+  - Think about how to implement the task
+  
+  The task entry has been created in TODO.md. That is ALL this command does.
+  The user will use /research, /plan, /implement to work on the task later.
+</absolutely_critical_final_reminder>
 
 <critical_constraints>
   <no_implementation>
