@@ -22,20 +22,94 @@ context_loading:
   max_context_size: 50000
 ---
 
+**Task Input (required):** $ARGUMENTS
+
+<context>
+  <system_context>Planning command with language-based routing</system_context>
+  <task_context>Parse task number, validate, extract language, delegate to planner</task_context>
+</context>
+
+<role>Planning command agent - Parse arguments and route to appropriate planner</role>
+
+<task>
+  Parse task number from $ARGUMENTS, validate task exists in TODO.md, extract language, route to appropriate planner based on language
+</task>
+
+<workflow_execution>
+  <stage id="1" name="ParseAndValidate">
+    <action>Parse task number and validate</action>
+    <process>
+      1. Parse task number from $ARGUMENTS
+         - $ARGUMENTS contains: "196" or "196 Focus on phase breakdown"
+         - Extract first token as task_number
+         - Validate is integer
+      2. Validate task exists in .opencode/specs/TODO.md
+         - Read TODO.md and search for task entry
+         - Format: "### ${task_number}."
+         - If not found: Return error message
+      3. Extract task description and current status
+      4. Check if plan already exists (warn if it does)
+    </process>
+    <checkpoint>Task number parsed and validated</checkpoint>
+  </stage>
+  
+  <stage id="2" name="ExtractLanguage">
+    <action>Extract language for routing</action>
+    <process>
+      1. Extract language from TODO.md task entry
+         - Look for **Language**: field in task entry
+         - Parse language value (lean, general, etc.)
+         - Default to "general" if not found
+      2. Determine target agent based on routing config
+         - lean → lean-planner
+         - general → planner
+    </process>
+    <checkpoint>Language extracted, target agent determined</checkpoint>
+  </stage>
+  
+  <stage id="3" name="PrepareContext">
+    <action>Prepare delegation context</action>
+    <process>
+      1. Extract custom prompt from $ARGUMENTS if present
+         - If $ARGUMENTS contains multiple tokens, rest is custom prompt
+      2. Prepare task context object:
+         - task_number: parsed number
+         - language: extracted language
+         - description: task description from TODO.md
+         - custom_prompt: optional custom prompt from user
+    </process>
+    <checkpoint>Context prepared for delegation</checkpoint>
+  </stage>
+  
+  <stage id="4" name="Delegate">
+    <action>Delegate to planner with parsed context</action>
+    <process>
+      1. Invoke target agent via task tool:
+         task(
+           subagent_type="${target_agent}",
+           prompt="Create implementation plan for task ${task_number}: ${description}. ${custom_prompt}",
+           description="Plan task ${task_number}"
+         )
+      2. Wait for planner to complete
+      3. Relay result to user
+    </process>
+    <checkpoint>Delegated to planner, result relayed</checkpoint>
+  </stage>
+</workflow_execution>
+
 **Usage:** `/plan TASK_NUMBER [PROMPT]`
 
 ## Description
 
 Creates implementation plans with phased breakdown, effort estimates, and research integration. Supports language-based routing: Lean tasks route to lean-planner (with proof strategies and mathlib integration), general tasks route to planner.
 
-## Workflow Setup
+## Command Workflow
 
-**Orchestrator handles (Stage 1-5):**
-- **Stage 1 (PreflightValidation):** Parse task number from $ARGUMENTS, validate task exists
-- **Stage 2 (DetermineRouting):** Extract language from task entry (state.json or TODO.md), map to agent (lean → lean-planner, general → planner)
-- **Stage 3 (RegisterAndDelegate):** Register session and invoke target planner
-- **Stage 4 (ValidateReturn):** Validate return format, verify plan artifact exists
-- **Stage 5 (PostflightCleanup):** Update session registry and relay result to user
+**Plan command handles (Stage 1-4):**
+- **Stage 1 (ParseAndValidate):** Parse task number from $ARGUMENTS, validate task exists
+- **Stage 2 (ExtractLanguage):** Extract language from task entry, map to agent (lean → lean-planner, general → planner)
+- **Stage 3 (PrepareContext):** Prepare delegation context with parsed data
+- **Stage 4 (Delegate):** Invoke target planner and relay result to user
 
 **Planner/Lean-planner subagent handles:**
 - Update status to [PLANNING] at beginning (preflight)
