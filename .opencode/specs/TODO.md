@@ -1,17 +1,17 @@
 ---
-last_updated: 2026-01-04T17:47:49Z
-next_project_number: 293
+last_updated: 2026-01-05T08:04:58Z
+next_project_number: 299
 repository_health:
   overall_score: 92
   production_readiness: excellent
   last_assessed: 2026-01-04T06:25:00Z
 task_counts:
-  active: 5
+  active: 7
   completed: 50
   blocked: 2
   in_progress: 2
-  not_started: 24
-  total: 82
+  not_started: 26
+  total: 84
 priority_distribution:
   high: 16
   medium: 12
@@ -1079,5 +1079,21 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Dependencies**: None
 
 **Description**: Refactor the /task command to directly create task entries in TODO.md and state.json without delegating to description-clarifier and task-creator subagents. The command should reformulate the user's rough description into a clear 2-3 sentence description inline, look up next_project_number from state.json, create the task entry in both files atomically, and increment next_project_number. This simplifies the architecture by removing unnecessary delegation layers while maintaining the same functionality. The command should still support optional flags (--priority, --effort, --language) and perform basic language detection from keywords in the description.
+
+---
+
+### 298. Create /abandon command to mark tasks as [ABANDONED] with reason
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
+- **Started**: 2026-01-05
+- **Researched**: 2026-01-05
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Research Artifacts**:
+  - Main Report: [.opencode/specs/298_abandon_command/reports/research-001.md]
+
+**Description**: Create a /abandon command that takes a task number as argument (similar to /implement) and updates the status of the task in TODO.md and state.json to [ABANDONED]. The command should validate that the task exists and is not already completed or abandoned, prompt for an abandonment reason if not provided inline, and delegate to status-sync-manager to perform atomic updates to both files. The command should follow the same architectural patterns as /implement, /research, and /plan commands for consistency.
 
 ---
