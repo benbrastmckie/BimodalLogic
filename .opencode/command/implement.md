@@ -1,6 +1,6 @@
 ---
 name: implement
-agent: implementer
+agent: orchestrator
 description: "Execute implementation with resume support and [COMPLETED] status"
 timeout: 7200
 routing:

@@ -1,6 +1,6 @@
 ---
 name: research
-agent: researcher
+agent: orchestrator
 description: "Conduct research and create reports with [RESEARCHED] status"
 timeout: 3600
 routing:

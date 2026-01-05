@@ -1,6 +1,6 @@
 ---
 name: revise
-agent: planner
+agent: orchestrator
 description: "Create new plan versions with [REVISED] status"
 timeout: 1800
 routing:
