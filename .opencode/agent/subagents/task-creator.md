@@ -9,14 +9,18 @@ max_tokens: 1000
 timeout: 120
 tools:
   read: true
+  write: true
+  edit: true
   bash: true
 permissions:
   allow:
     - read: [".opencode/specs/state.json", ".opencode/specs/TODO.md", ".opencode/context/**/*"]
-    - bash: ["date", "jq"]
+    - write: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+    - edit: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+    - bash: ["date", "jq", "grep", "wc"]
   deny:
-    - write: ["**/*.lean", "**/*.py", "**/*.sh", "**/*.rs", "**/*.c", "**/*.cpp", "**/*.java"]
-    - bash: ["lake", "python", "lean", "cargo", "gcc", "javac", "rm", "sudo", "su"]
+    - write: ["**/*.lean", "**/*.py", "**/*.sh", "**/*.rs", "**/*.c", "**/*.cpp", "**/*.java", ".git/**/*", ".opencode/command/**/*", ".opencode/agent/**/*"]
+    - bash: ["lake", "python", "lean", "cargo", "gcc", "javac", "rm", "sudo", "su", "mv", "cp"]
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
@@ -26,7 +30,7 @@ context_loading:
   max_context_size: 20000
 delegation:
   max_depth: 3
-  can_delegate_to: ["status-sync-manager"]
+  can_delegate_to: []
   timeout_default: 120
   timeout_max: 120
 lifecycle:
@@ -90,9 +94,10 @@ lifecycle:
   </validation_requirements>
   
   <atomic_updates>
-    MUST use status-sync-manager for all TODO.md and state.json updates.
-    NEVER manually edit these files.
-    Ensures atomic updates (both files updated together or not at all).
+    MUST update TODO.md and state.json atomically (both files or neither).
+    CANNOT use status-sync-manager (expects task to already exist).
+    Implements manual atomic updates with rollback on failure.
+    Ensures both files updated together or not at all.
   </atomic_updates>
 </critical_constraints>
 
@@ -228,45 +233,71 @@ lifecycle:
     <checkpoint>TODO.md entry formatted and validated</checkpoint>
   </step_2_create_entry>
 
-  <step_3_sync_state>
-    <action>Invoke status-sync-manager for atomic update</action>
+  <step_3_update_files>
+    <action>Update TODO.md and state.json atomically</action>
     <process>
-      1. Prepare status-sync-manager invocation:
-         - task_number: allocated_number
-         - new_status: "not_started"
-         - timestamp: current_date (ISO 8601 format)
-         - session_id: session_id from input
-         - delegation_depth: 2 (orchestrator → task → task-creator → status-sync-manager)
-         - delegation_path: ["orchestrator", "task", "task-creator", "status-sync-manager"]
-         - artifact_links: [] (no artifacts for new tasks)
-         - plan_metadata: null (no plan yet)
-         - todo_entry: formatted_entry (from step 2)
-         - priority_section: priority (High|Medium|Low)
+      NOTE: We do NOT use status-sync-manager for task creation because:
+      - status-sync-manager expects task to already exist in TODO.md
+      - Task creation is a special case (adding new entry, not updating existing)
+      - We handle atomic updates manually with proper error handling
       
-      2. Invoke status-sync-manager via task tool:
-         task(
-           subagent_type="status-sync-manager",
-           prompt="Create task {number}: {description}. Priority: {priority}. Language: {language}.",
-           description="Create task entry atomically"
-         )
+      1. Append task entry to TODO.md:
+         a. Read current TODO.md content
+         b. Find correct priority section (## High Priority, ## Medium Priority, ## Low Priority)
+         c. Append formatted task entry to that section
+         d. Write updated TODO.md atomically
+         e. If write fails: abort and return error
       
-      3. Wait for status-sync-manager to complete
+      2. Update state.json:
+         a. Read current state.json
+         b. Increment next_project_number by 1
+         c. Add entry to recent_activities:
+            {
+              "timestamp": "{ISO-8601}",
+              "activity": "Created task {number}: {description} ({effort}, {priority} priority, {language})"
+            }
+         d. Add entry to active_projects array:
+            {
+              "project_number": {number},
+              "project_name": "{slug_from_description}",
+              "type": "feature",
+              "phase": "not_started",
+              "status": "not_started",
+              "priority": "{priority_lowercase}",
+              "language": "{language}",
+              "created": "{ISO-8601}",
+              "last_updated": "{ISO-8601}"
+            }
+         e. Update _last_updated timestamp
+         f. Write state.json atomically using jq
+         g. If write fails: rollback TODO.md and return error
       
-      4. Verify atomic update succeeded:
-         - Check status-sync-manager returned status "completed"
-         - Verify TODO.md contains new task entry
-         - Verify state.json next_project_number incremented
-         - If failed: return error with rollback information
+      3. Verify atomic update succeeded:
+         - Read TODO.md and verify task entry present
+         - Read state.json and verify next_project_number incremented
+         - Read state.json and verify active_projects contains new task
+         - If verification fails: return error with details
     </process>
     <error_handling>
-      If status-sync-manager fails:
-        - Return error: "Failed to create task entry atomically"
-        - Include status-sync-manager error details
-        - Suggest: "Check TODO.md and state.json for corruption"
-        - DO NOT retry (status-sync-manager handles rollback)
+      If TODO.md update fails:
+        - Return error: "Failed to update TODO.md"
+        - Include error details
+        - Suggest: "Check TODO.md file permissions and format"
+        - DO NOT update state.json
+      
+      If state.json update fails:
+        - Rollback TODO.md changes (remove added entry)
+        - Return error: "Failed to update state.json (TODO.md rolled back)"
+        - Include error details
+        - Suggest: "Check state.json file permissions and format"
+      
+      If verification fails:
+        - Return error: "Atomic update verification failed"
+        - Include details of what failed
+        - Suggest: "Manually verify TODO.md and state.json consistency"
     </error_handling>
     <checkpoint>TODO.md and state.json updated atomically</checkpoint>
-  </step_3_sync_state>
+  </step_3_update_files>
 
   <step_4_return>
     <action>Return standardized result</action>
@@ -317,7 +348,8 @@ lifecycle:
   <must>Always validate Language field is set (MANDATORY per tasks.md)</must>
   <must>Always validate metadata format uses `- **Field**:` pattern</must>
   <must>Always validate all required fields present</must>
-  <must>Always use status-sync-manager for atomic updates</must>
+  <must>Always update TODO.md and state.json atomically (both or neither)</must>
+  <must>Always rollback TODO.md if state.json update fails</must>
   <must>Always return standardized format per subagent-return-format.md</must>
   <must>Complete within 120 seconds</must>
   <must_not>Create any implementation files (*.lean, *.py, *.sh, etc.)</must_not>
@@ -326,7 +358,6 @@ lifecycle:
   <must_not>Create any spec directories (.opencode/specs/{number}_*/)</must_not>
   <must_not>Create any research files</must_not>
   <must_not>Create any plan files</must_not>
-  <must_not>Manually edit TODO.md or state.json (use status-sync-manager)</must_not>
 </constraints>
 
 <output_specification>
@@ -525,20 +556,24 @@ lifecycle:
 
 <atomic_update_principles>
   <principle_1>
-    NEVER manually edit TODO.md or state.json
+    Update TODO.md first, then state.json
   </principle_1>
   
   <principle_2>
-    ALWAYS use status-sync-manager for updates
+    If state.json update fails, rollback TODO.md changes
   </principle_2>
   
   <principle_3>
-    status-sync-manager ensures atomic updates (both files or neither)
+    Verify both files updated correctly before returning success
   </principle_3>
   
   <principle_4>
-    If status-sync-manager fails, rollback is automatic
+    CANNOT use status-sync-manager (expects task to already exist)
   </principle_4>
+  
+  <principle_5>
+    Manual atomic updates with explicit rollback on failure
+  </principle_5>
 </atomic_update_principles>
 
 <notes>
