@@ -21,7 +21,7 @@ This registry provides a high-level view of tactic implementation status across 
 | `temp_a_tactic` | Apply axiom TA (φ → F(Pφ)) | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
 | `apply_axiom` | Apply TM axiom by unification | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
 | `assumption_search` | Search context for matching assumption | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
-| `tm_auto` | Comprehensive TM automation (Aesop) | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
+| `tm_auto` | Comprehensive TM automation (Aesop) | 🚧 Partial (noncomputable errors fixed, proof reconstruction issues remain) | `Logos/Core/Automation/Tactics.lean` |
 | `s5_simp` | Simplify S5 modal formulas | 📋 Planned | N/A |
 | `temporal_simp` | Simplify temporal formulas | 📋 Planned | N/A |
 | `bimodal_simp` | Simplify using MF/TF axioms | 📋 Planned | N/A |
@@ -31,8 +31,8 @@ This registry provides a high-level view of tactic implementation status across 
 
 | Tactic | Purpose | Status | Location |
 |--------|---------|--------|----------|
-| `modal_search` | Bounded modal proof search (Infrastructure Ready) | 🚧 In Progress | `Logos/Core/Automation/Tactics.lean` |
-| `temporal_search` | Bounded temporal proof search (Infrastructure Ready) | 🚧 In Progress | `Logos/Core/Automation/Tactics.lean` |
+| `modal_search` | Bounded modal proof search | 🚧 Delegates to tm_auto (full implementation pending ProofSearch.lean fixes) | `Logos/Core/Automation/Tactics.lean` |
+| `temporal_search` | Bounded temporal proof search | 🚧 Delegates to tm_auto (full implementation pending ProofSearch.lean fixes) | `Logos/Core/Automation/Tactics.lean` |
 
 ## Layer 1 - Extended Modalities
 
@@ -49,7 +49,7 @@ This registry provides a high-level view of tactic implementation status across 
 
 | Rule Set | Purpose | Status |
 |----------|---------|--------|
-| `TMLogic` | TM-specific automation rules | ✅ Complete |
+| `TMLogic` | TM-specific automation rules | 🚧 Partial (noncomputable errors fixed 2026-01-04, proof reconstruction issues remain) |
 
 ### Registered Rules
 

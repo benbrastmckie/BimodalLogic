@@ -48,10 +48,18 @@ example : ⊢ (□p → p) := by
 
 ## Implementation Status
 
-- **Phase 4** ✓: `apply_axiom` (macro), `modal_t` (elab_rules)
-- **Phase 5**: `tm_auto` with Aesop integration
-- **Phase 6**: `assumption_search` with TacticM
-- **Phase 7**: Bounded proof search (infrastructure only, 15-20 hours estimated)
+- **Phase 4** ✅: `apply_axiom` (macro), `modal_t` (elab_rules)
+- **Phase 5** 🚧: `tm_auto` with Aesop integration (noncomputable errors fixed 2026-01-04, proof reconstruction issues remain)
+- **Phase 6** ✅: `assumption_search` with TacticM
+- **Phase 7** 🚧: Bounded proof search (infrastructure has build errors, needs fixing before modal_search/temporal_search can be fully implemented)
+
+### Recent Updates (2026-01-04)
+
+- Fixed 2 noncomputable errors in AesopRules.lean (apply_modal_k, apply_temporal_k)
+- AesopRules.lean now builds successfully
+- tm_auto tactic still has Aesop proof reconstruction issues (internal error during proof reconstruction)
+- ProofSearch.lean has existing build errors (termination proof issues, List.qsort not available)
+- modal_search and temporal_search currently delegate to tm_auto (full implementation pending ProofSearch.lean fixes)
 
 ## Building and Type-Checking
 

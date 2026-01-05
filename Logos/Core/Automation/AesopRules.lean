@@ -217,7 +217,7 @@ Generalized Modal K rule as safe apply rule.
 To prove `□φ` from `□Γ`, if we can prove `φ` from `Γ`, then we're done.
 -/
 @[aesop safe apply]
-def apply_modal_k {Γ : Context} {φ : Formula} :
+noncomputable def apply_modal_k {Γ : Context} {φ : Formula} :
     DerivationTree Γ φ → DerivationTree (Context.map Formula.box Γ) (Formula.box φ) :=
   generalized_modal_k Γ φ
 
@@ -227,7 +227,7 @@ Generalized Temporal K rule as safe apply rule.
 To prove `Fφ` from `FΓ`, if we can prove `φ` from `Γ`, then we're done.
 -/
 @[aesop safe apply]
-def apply_temporal_k {Γ : Context} {φ : Formula} :
+noncomputable def apply_temporal_k {Γ : Context} {φ : Formula} :
     DerivationTree Γ φ → DerivationTree (Context.map Formula.all_future Γ) (Formula.all_future φ) :=
   generalized_temporal_k Γ φ
 

@@ -2,6 +2,7 @@
 
 **Project**: ProofChecker Context Organization Simplification
 **Created**: 2026-01-04
+**Updated**: 2026-01-04 (Post-Architecture Discovery)
 **Status**: DRAFT - Ready for Review
 
 ## Executive Summary
@@ -9,6 +10,8 @@
 The `.opencode/context/core/` directory has accumulated redundant files, unclear organization, and inconsistent naming patterns. This plan reorganizes the context structure to eliminate redundancy, improve clarity, and maintain a clean, maintainable system.
 
 **Critical Requirement**: All references throughout the system must be updated to prevent breaking the agent system.
+
+**CRITICAL ARCHITECTURAL NOTE**: This refactor plan has been updated to reflect the **actual working architecture** discovered during implementation of the argument passing fixes. The ProofChecker system uses a **three-layer delegation pattern** that is fundamentally different from other .opencode systems like OpenAgents. This architecture MUST be preserved and documented in context files.
 
 ## Current State Analysis
 
@@ -101,6 +104,81 @@ Files that may no longer be needed after command argument refactor:
 - **Development standards** (code, tests, documentation)
 - **Meta-builder files** (domain patterns, architecture principles)
 
+## Critical Architecture Documentation
+
+### ProofChecker's Three-Layer Delegation Pattern
+
+**MUST BE DOCUMENTED IN CONTEXT FILES**
+
+ProofChecker uses a unique three-layer delegation architecture that differs fundamentally from other .opencode systems:
+
+```
+Layer 1: Orchestrator (.opencode/agent/orchestrator.md)
+- Role: Pure router
+- Input: Command name from user (e.g., "/implement 259")
+- Process: Load command file, delegate to command file with $ARGUMENTS
+- Output: Relays result from command file to user
+- Complexity: ~150 lines (v7.0)
+
+Layer 2: Command File (.opencode/command/{command}.md)
+- Role: Command-specific argument parsing and routing agent
+- Input: $ARGUMENTS from orchestrator (e.g., "259" or "259 custom prompt")
+- Has: Full agent structure with <workflow_execution> stages
+- Process:
+  1. Parse task number from $ARGUMENTS
+  2. Validate task exists in TODO.md
+  3. Extract language/metadata from task entry
+  4. Route to appropriate execution subagent
+  5. Delegate with parsed context
+- Output: Delegates to execution subagent, relays result
+- Complexity: ~150 lines per command
+
+Layer 3: Execution Subagent (.opencode/agent/subagents/{agent}.md)
+- Role: Actual work execution
+- Input: Parsed task context from command file
+- Has: <process_flow> with implementation steps
+- Process: Execute task workflow, create artifacts, update status
+- Output: Returns result to command file
+- Complexity: ~300 lines per subagent
+```
+
+**Key Architectural Principles**:
+
+1. **Command Files ARE Agents**: They have `<workflow_execution>`, receive `$ARGUMENTS`, and delegate to subagents
+2. **agent: orchestrator Means**: "Orchestrator delegates to THIS COMMAND FILE" (not "orchestrator handles this")
+3. **$ARGUMENTS Only Available**: To orchestrator and command files (NOT to execution subagents)
+4. **Task-Based Pattern**: Commands take task numbers (e.g., `/implement 259`), not topics
+5. **Language-Based Routing**: Command files extract language from TODO.md and route to language-specific subagents
+
+**Why This Architecture Exists**:
+
+- ProofChecker uses **task-based commands** (task numbers from TODO.md)
+- Requires validation against TODO.md before execution
+- Requires language extraction for routing (lean vs general)
+- Each command has different argument patterns (task number, range, custom prompt)
+- Command files provide command-specific parsing logic
+- Execution subagents receive clean, validated inputs
+
+**This is NOT the OpenAgents Pattern**:
+
+OpenAgents uses topic-based commands (`/research "topic"`) with direct subagent invocation. ProofChecker's task-based pattern requires the three-layer delegation architecture.
+
+**Critical for /meta Command**:
+
+The `/meta` command and its subagents (agent-generator, command-creator, etc.) MUST understand this architecture when:
+- Creating new .opencode systems modeled after ProofChecker
+- Extending the ProofChecker system with new commands
+- Revising existing commands or agents
+
+**Documentation Requirements**:
+
+This architecture MUST be documented in:
+1. `orchestration/architecture.md` - Complete three-layer pattern explanation
+2. `orchestration/orchestrator.md` - Orchestrator's pure router role
+3. `formats/command-structure.md` - Command files as agents with workflows
+4. `templates/command-template.md` - Template showing workflow_execution structure
+5. Meta-builder context files for system generation
+
 ## Proposed Solution
 
 ### Design Principles
@@ -110,12 +188,14 @@ Files that may no longer be needed after command argument refactor:
 3. **Logical Grouping**: Related files in same directory
 4. **Minimal Redundancy**: Merge overlapping files
 5. **Clear Purpose**: Directory names indicate content type
+6. **Architecture Preservation**: Document ProofChecker's unique three-layer pattern
 
 ### New Directory Structure
 
 ```
 .opencode/context/core/
-├── orchestration/              # Orchestrator, routing, delegation (6 files)
+├── orchestration/              # Orchestrator, routing, delegation (7 files)
+│   ├── architecture.md         # **NEW** Three-layer delegation pattern
 │   ├── orchestrator.md         # Orchestrator design & usage (merged)
 │   ├── routing.md              # Routing logic (merged)
 │   ├── delegation.md           # Delegation patterns (merged)
@@ -123,7 +203,8 @@ Files that may no longer be needed after command argument refactor:
 │   ├── state-management.md     # State & artifact management (merged)
 │   └── sessions.md             # Session management (if needed)
 │
-├── formats/                    # Artifact & output formats (6 files)
+├── formats/                    # Artifact & output formats (7 files)
+│   ├── command-structure.md    # **NEW** Command files as agents
 │   ├── subagent-return.md      # Subagent JSON return format
 │   ├── command-output.md       # User-facing command output
 │   ├── plan-format.md          # Implementation plan structure
@@ -150,7 +231,7 @@ Files that may no longer be needed after command argument refactor:
 ├── templates/                  # File templates (6 files)
 │   ├── agent-template.md       # Agent file template
 │   ├── subagent-template.md    # Subagent file template
-│   ├── command-template.md     # Command file template
+│   ├── command-template.md     # Command file template (with workflows!)
 │   ├── orchestrator-template.md # Orchestrator template
 │   ├── delegation-context.md   # Delegation context template
 │   └── state-template.json     # State.json template
@@ -160,16 +241,241 @@ Files that may no longer be needed after command argument refactor:
     └── subagent-frontmatter.yaml # Subagent frontmatter template
 ```
 
-**Total**: 32 files across 6 directories (down from 47 files)
+**Total**: 34 files across 6 directories (down from 47 files)
 
-**Reduction**: 15 files eliminated (32% reduction)
+**Reduction**: 13 files eliminated (28% reduction)
+
+**New Files Added**: 2 critical architecture documentation files
+- `orchestration/architecture.md` - Documents three-layer delegation pattern
+- `formats/command-structure.md` - Documents command files as agents with workflows
+
+### New Architecture Documentation Files
+
+#### orchestration/architecture.md (NEW)
+
+**Purpose**: Document ProofChecker's unique three-layer delegation pattern
+
+**Content**:
+```markdown
+# ProofChecker Architecture: Three-Layer Delegation Pattern
+
+## Overview
+
+ProofChecker uses a unique three-layer delegation architecture that differs from other .opencode systems like OpenAgents. This architecture is essential for task-based commands that require validation against TODO.md and language-based routing.
+
+## The Three Layers
+
+### Layer 1: Orchestrator (Pure Router)
+**File**: `.opencode/agent/orchestrator.md`
+**Role**: Load command file and delegate with $ARGUMENTS
+**Complexity**: ~150 lines
+
+Workflow:
+1. Extract command name from user input
+2. Load .opencode/command/{command}.md
+3. Delegate to command file with $ARGUMENTS
+4. Relay result to user
+
+### Layer 2: Command File (Argument Parsing Agent)
+**Files**: `.opencode/command/*.md`
+**Role**: Parse arguments, validate, route to execution subagent
+**Complexity**: ~150 lines per command
+
+Workflow:
+1. Receive $ARGUMENTS from orchestrator
+2. Parse task number from $ARGUMENTS
+3. Validate task exists in TODO.md
+4. Extract language/metadata from task entry
+5. Route to appropriate execution subagent
+6. Delegate with parsed context
+
+### Layer 3: Execution Subagent (Work Executor)
+**Files**: `.opencode/agent/subagents/*.md`
+**Role**: Execute actual work (research, planning, implementation)
+**Complexity**: ~300 lines per subagent
+
+Workflow:
+1. Receive parsed context from command file
+2. Execute task workflow
+3. Create artifacts
+4. Update status
+5. Return result
+
+## Key Architectural Principles
+
+1. **Command Files ARE Agents**: They have <workflow_execution>, not just metadata
+2. **agent: orchestrator**: Means "delegate to this command file", not "orchestrator handles"
+3. **$ARGUMENTS Availability**: Only orchestrator and command files have access
+4. **Task-Based Pattern**: Commands take task numbers, not topics
+5. **Language-Based Routing**: Command files extract language and route accordingly
+
+## Why This Architecture?
+
+ProofChecker's task-based workflow requires:
+- Validation against TODO.md before execution
+- Language extraction for routing (lean vs general)
+- Command-specific argument parsing (task number, range, custom prompt)
+- Clean, validated inputs to execution subagents
+
+## Comparison with OpenAgents
+
+| Aspect | OpenAgents | ProofChecker |
+|--------|------------|--------------|
+| Command pattern | Topic-based | Task-based |
+| Arguments | Natural language | Task numbers |
+| Validation | None | TODO.md lookup required |
+| Routing | Keyword-based | Language-based |
+| Command files | Simple metadata | Full agents with workflows |
+| Layers | 2 (orchestrator → subagent) | 3 (orchestrator → command → subagent) |
+
+## Critical for System Generation
+
+When using `/meta` to create or extend .opencode systems:
+
+**If modeling after ProofChecker**:
+- ✅ Use three-layer delegation
+- ✅ Command files have <workflow_execution>
+- ✅ Command files parse arguments
+- ✅ Execution subagents receive parsed context
+
+**If creating topic-based system**:
+- ✅ Use two-layer delegation (like OpenAgents)
+- ✅ Command files can be simple metadata
+- ✅ Direct subagent invocation possible
+
+**Never mix patterns** - task-based requires three layers!
+```
+
+#### formats/command-structure.md (NEW)
+
+**Purpose**: Document command files as agents with workflow execution
+
+**Content**:
+```markdown
+# Command File Structure: Commands as Agents
+
+## Overview
+
+In ProofChecker's architecture, command files in `.opencode/command/` are NOT just metadata files. They are **full agents** with workflow execution stages.
+
+## Command File Anatomy
+
+### Frontmatter (YAML)
+```yaml
+---
+name: implement
+agent: orchestrator  # Orchestrator delegates to THIS FILE
+description: "Execute implementation"
+timeout: 7200
+routing:
+  language_based: true
+  lean: lean-implementation-agent
+  default: implementer
+---
+```
+
+### Task Input Declaration
+```markdown
+**Task Input (required):** $ARGUMENTS
+```
+
+This declares that the command receives $ARGUMENTS from orchestrator.
+
+### Agent Structure
+```xml
+<context>
+  <system_context>What this command does</system_context>
+  <task_context>Specific responsibilities</task_context>
+</context>
+
+<role>Command agent role</role>
+
+<task>Parse arguments, validate, route to execution subagent</task>
+```
+
+### Workflow Execution (CRITICAL)
+```xml
+<workflow_execution>
+  <stage id="1" name="ParseAndValidate">
+    <action>Parse task number and validate</action>
+    <process>
+      1. Parse task number from $ARGUMENTS
+      2. Validate task exists in TODO.md
+      3. Extract task description
+    </process>
+  </stage>
+  
+  <stage id="2" name="ExtractLanguage">
+    <action>Extract language for routing</action>
+    <process>
+      1. Extract language from TODO.md
+      2. Determine target agent
+    </process>
+  </stage>
+  
+  <stage id="3" name="Delegate">
+    <action>Delegate to execution subagent</action>
+    <process>
+      1. Invoke target agent with parsed context
+      2. Relay result to user
+    </process>
+  </stage>
+</workflow_execution>
+```
+
+## Why Commands Have Workflows
+
+1. **$ARGUMENTS Access**: Only orchestrator and command files receive $ARGUMENTS
+2. **Command-Specific Parsing**: Each command has different argument patterns
+3. **Validation**: Task-based commands must validate against TODO.md
+4. **Routing Logic**: Language-based routing requires metadata extraction
+5. **Clean Delegation**: Execution subagents receive parsed, validated inputs
+
+## Command File Responsibilities
+
+1. **Parse Arguments**: Extract task number, custom prompt, flags from $ARGUMENTS
+2. **Validate Inputs**: Check task exists, validate format
+3. **Extract Metadata**: Get language, description, status from TODO.md
+4. **Route**: Determine appropriate execution subagent
+5. **Delegate**: Invoke subagent with clean, parsed context
+6. **Relay**: Pass result back to user
+
+## Common Mistake
+
+**WRONG** (v6.0 attempt):
+```yaml
+---
+agent: implementer  # Direct invocation
+---
+
+# Simple metadata file, no workflows
+```
+
+**Problem**: Implementer doesn't receive $ARGUMENTS, can't parse task number!
+
+**CORRECT** (working pattern):
+```yaml
+---
+agent: orchestrator  # Delegates to this command file
+---
+
+<workflow_execution>
+  <!-- Parse, validate, route -->
+</workflow_execution>
+```
+
+## Template
+
+See `.opencode/context/core/templates/command-template.md` for complete template with workflow stages.
+```
 
 ### File Consolidation Map
 
-#### Orchestration Directory (6 files)
+#### Orchestration Directory (7 files - includes 1 new)
 
 | New File | Merged From | Rationale |
 |----------|-------------|-----------|
+| `architecture.md` | **NEW FILE** | Document three-layer delegation pattern |
 | `orchestrator.md` | `system/orchestrator-design.md`<br>`system/orchestrator-guide.md` | Merge design + usage into single reference |
 | `routing.md` | `system/routing-guide.md`<br>`system/routing-logic.md` | Merge routing patterns into single file |
 | `delegation.md` | `standards/delegation.md`<br>`workflows/delegation-guide.md` | Merge delegation standard + guide |
@@ -177,10 +483,11 @@ Files that may no longer be needed after command argument refactor:
 | `state-management.md` | `system/state-management.md`<br>`system/artifact-management.md` | Merge state + artifact management |
 | `sessions.md` | `workflows/sessions.md` | Keep if sessions are used, else delete |
 
-#### Formats Directory (6 files)
+#### Formats Directory (7 files - includes 1 new)
 
 | New File | Merged From | Rationale |
 |----------|-------------|-----------|
+| `command-structure.md` | **NEW FILE** | Document command files as agents with workflows |
 | `subagent-return.md` | `standards/subagent-return-format.md` | Rename for clarity |
 | `command-output.md` | `standards/command-output.md` | Keep as-is (clear purpose) |
 | `plan-format.md` | `standards/plan.md` | Rename for consistency |
@@ -980,12 +1287,186 @@ See workflow documentation:
 
 ---
 
+## Appendix C: Meta-Builder Integration Requirements
+
+### Critical: /meta Command Must Understand Architecture
+
+The `/meta` command and its subagents are responsible for creating and extending .opencode agent systems. They MUST understand ProofChecker's three-layer delegation architecture to avoid breaking the system.
+
+### Required Context Files for Meta-Builder
+
+When `/meta` is invoked, it MUST load these context files:
+
+**Architecture Understanding**:
+- `core/orchestration/architecture.md` - Three-layer delegation pattern
+- `core/formats/command-structure.md` - Command files as agents
+
+**Templates**:
+- `core/templates/command-template.md` - Must include workflow_execution
+- `core/templates/agent-template.md` - Execution subagent structure
+- `core/templates/orchestrator-template.md` - Pure router pattern
+
+**Standards**:
+- `core/standards/task-management.md` - Task-based vs topic-based patterns
+- `core/workflows/command-lifecycle.md` - How commands execute
+
+### Meta-Builder Subagent Requirements
+
+#### agent-generator.md
+
+**MUST understand**:
+- Three-layer delegation pattern
+- Command files have workflow_execution
+- Execution subagents receive parsed context
+- Orchestrator is pure router
+
+**When generating**:
+- ✅ Command files: Include <workflow_execution> with parsing stages
+- ✅ Execution subagents: Expect parsed context, not raw $ARGUMENTS
+- ✅ Orchestrator: Keep as pure router, don't add command-specific logic
+
+#### command-creator.md
+
+**MUST understand**:
+- Command files are agents, not metadata
+- Must include workflow_execution stages
+- Must parse $ARGUMENTS
+- Must validate and route
+
+**When creating commands**:
+- ✅ Include frontmatter with `agent: orchestrator`
+- ✅ Include `**Task Input (required):** $ARGUMENTS`
+- ✅ Include <workflow_execution> with stages:
+  1. ParseAndValidate
+  2. ExtractMetadata (if needed)
+  3. Delegate
+- ✅ Include routing configuration if language-based
+
+#### context-organizer.md
+
+**MUST ensure**:
+- `orchestration/architecture.md` exists and is current
+- `formats/command-structure.md` exists and is current
+- Templates reflect three-layer pattern
+- No contradictory documentation
+
+### Pattern Detection for Meta-Builder
+
+When `/meta` analyzes an existing system or creates a new one, it must detect the pattern:
+
+**Task-Based Pattern** (like ProofChecker):
+- Commands take task numbers
+- Requires TODO.md validation
+- Requires metadata extraction
+- **→ Use three-layer delegation**
+- **→ Command files have workflows**
+
+**Topic-Based Pattern** (like OpenAgents):
+- Commands take natural language topics
+- No validation needed
+- Simple routing
+- **→ Use two-layer delegation**
+- **→ Command files can be simple metadata**
+
+### Meta-Builder Validation Checklist
+
+When `/meta` creates or modifies the system, validate:
+
+- [ ] Command files have `agent: orchestrator` (for task-based)
+- [ ] Command files have <workflow_execution> (for task-based)
+- [ ] Command files parse $ARGUMENTS
+- [ ] Execution subagents receive parsed context
+- [ ] Orchestrator remains pure router
+- [ ] Architecture documentation is current
+- [ ] Templates match actual implementation
+- [ ] No contradictory patterns mixed
+
+### Error Prevention
+
+**Common mistakes meta-builder must avoid**:
+
+1. ❌ Creating command files without workflows (v6.0 mistake)
+2. ❌ Using `agent: {subagent}` for task-based commands
+3. ❌ Adding argument parsing to orchestrator
+4. ❌ Expecting execution subagents to parse $ARGUMENTS
+5. ❌ Mixing task-based and topic-based patterns
+
+**Correct patterns**:
+
+1. ✅ Command files have workflows for task-based systems
+2. ✅ Use `agent: orchestrator` to delegate to command file
+3. ✅ Keep orchestrator as pure router
+4. ✅ Command files parse, execution subagents execute
+5. ✅ Choose one pattern and stick to it
+
+### Meta-Builder Context Loading
+
+**Minimum context for system generation**:
+```yaml
+context_loading:
+  required:
+    - "core/orchestration/architecture.md"
+    - "core/formats/command-structure.md"
+    - "core/templates/command-template.md"
+    - "core/templates/agent-template.md"
+    - "core/standards/task-management.md"
+```
+
+**Why these files are critical**:
+- `architecture.md`: Understand three-layer pattern
+- `command-structure.md`: Know command files are agents
+- `command-template.md`: See workflow_execution structure
+- `agent-template.md`: See execution subagent structure
+- `task-management.md`: Distinguish task-based vs topic-based
+
+### Testing Meta-Builder Understanding
+
+After context refactor, test `/meta` with:
+
+1. **Create new command**: `/meta "Create /analyze command for task analysis"`
+   - Verify: Command file has workflow_execution
+   - Verify: Command file parses $ARGUMENTS
+   - Verify: Routes to execution subagent
+
+2. **Extend system**: `/meta "Add support for batch task operations"`
+   - Verify: Preserves three-layer pattern
+   - Verify: Doesn't modify orchestrator
+   - Verify: Creates command file with workflows
+
+3. **Create new system**: `/meta "Create .opencode system for data pipeline management"`
+   - Verify: Asks about task-based vs topic-based
+   - Verify: Uses appropriate pattern
+   - Verify: Generates correct architecture
+
+### Documentation Updates for Meta-Builder
+
+After context refactor, update:
+
+1. **Meta-builder context files** (`.opencode/context/project/meta/`):
+   - Add ProofChecker architecture as example
+   - Document three-layer pattern
+   - Explain when to use each pattern
+
+2. **Meta-builder agent prompts**:
+   - Reference `core/orchestration/architecture.md`
+   - Load architecture context before generation
+   - Validate against architecture principles
+
+3. **Meta-builder templates**:
+   - Update command template with workflows
+   - Update agent template for execution subagents
+   - Add architecture decision guide
+
+---
+
 **End of Context Refactor Plan**
 
 **Next Steps**:
-1. Review this plan
+1. Review this plan (especially architecture documentation sections)
 2. Approve or request changes
 3. Create backup of .opencode/context/core/
 4. Begin Phase 1 implementation
-5. Test thoroughly after each phase
-6. Document any deviations from plan
+5. Create new architecture documentation files
+6. Test thoroughly after each phase
+7. Verify /meta command understands new architecture
+8. Document any deviations from plan
