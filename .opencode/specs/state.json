@@ -835,15 +835,15 @@
       "project_number": 285,
       "project_name": "audit_and_fix_status_update_behavior",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "abandoned",
+      "status": "abandoned",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-04T06:15:00Z",
       "started": "2026-01-04",
       "research_completed": "2026-01-04",
       "planning_completed": "2026-01-04",
-      "last_updated": "2026-01-04T10:05:00Z",
+      "last_updated": "2026-01-05T09:55:00Z",
       "artifacts": [
         ".opencode/specs/285_audit_and_fix_status_update_behavior/task-description.md",
         ".opencode/specs/285_audit_and_fix_status_update_behavior/reports/research-001.md",
@@ -857,7 +857,9 @@
         "complexity": "medium",
         "research_integrated": true
       },
-      "estimated_hours": 7.0
+      "estimated_hours": 7.0,
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment"
     },
     {
       "project_number": 287,

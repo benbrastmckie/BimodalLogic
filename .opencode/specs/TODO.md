@@ -10,8 +10,8 @@ task_counts:
   completed: 53
   blocked: 0
   in_progress: 1
-  not_started: 35
-  abandoned: 4
+  not_started: 34
+  abandoned: 5
   total: 118
 priority_distribution:
   high: 28
@@ -1513,7 +1513,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 285. Audit And Fix Status Update Behavior
 - **Effort**: 7.0
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-01-05
+- **Abandonment Reason**: User requested abandonment
 - **Priority**: High
 - **Language**: markdown
 - **Artifacts**:
