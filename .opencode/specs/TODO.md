@@ -1,21 +1,22 @@
 ---
-last_updated: 2026-01-05T00:00:00Z
-next_project_number: 303
+last_updated: 2026-01-05T09:38:06Z
+next_project_number: 309
 repository_health:
   overall_score: 92
   production_readiness: excellent
   last_assessed: 2026-01-04T06:25:00Z
 task_counts:
-  active: 11
-  completed: 50
-  blocked: 2
-  in_progress: 2
-  not_started: 30
-  total: 88
+  active: 65
+  completed: 53
+  blocked: 0
+  in_progress: 1
+  not_started: 35
+  abandoned: 4
+  total: 118
 priority_distribution:
-  high: 20
-  medium: 12
-  low: 11
+  high: 28
+  medium: 20
+  low: 13
 technical_debt:
   sorry_count: 6
   axiom_count: 11
@@ -29,6 +30,57 @@ technical_debt:
 ---
 
 ## High Priority
+
+### 306. Refactor /meta command to create tasks instead of direct implementation
+- **Effort**: 4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Refactor the /meta command to always create an appropriate number of tasks (similar to /task command) rather than directly implementing the work. Preserve the interview functionality to clarify requirements when needed, or run in full interactive mode when /meta is called with no arguments. The result should be task creation with dependencies indicated and plan artifacts stored in the appropriate artifact structure per artifact-management.md.
+
+---
+
+### 303. ✓ Verify status-sync-manager create_task functionality (1/5)
+- **Effort**: 15 minutes
+- **Status**: [COMPLETED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+- **Started**: 2026-01-05
+- **Completed**: 2026-01-05
+- **Investigation Report**: [investigation-report-20260105.md](.opencode/specs/303_verify_status_sync_manager_create_task_functionality/investigation-report-20260105.md)
+
+**Description**: Verify that status-sync-manager has create_task_flow functionality by checking the agent file. Check git history for meta.md and task-creator.md to understand recent changes. This is the first step in investigating unintended changes.
+
+---
+
+### 304. Test commands after unintended changes (2/5)
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Test /task, /meta, and /todo commands to verify they still work correctly after the unintended changes. Document any failures or unexpected behavior. This determines whether to keep or revert core logic changes.
+
+---
+
+### 307. Verify or revert core logic changes in high-risk files (4/5)
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Based on test results from task 304, either keep the core logic changes in meta.md and task-creator.md (if commands work) or revert them to previous versions (if commands fail or create_task doesn't exist). This is a critical decision point.
+
+---
 
 ### 299. Create Task Reviser Subagent
 - **Effort**: 3 hours
@@ -1149,6 +1201,30 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ## Medium Priority
 
 
+### 305. Remove performance cruft from all 6 modified files (3/5)
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Remove optimization sections from frontmatter, performance blocks from workflow stages, and verbose comments from all 6 files (todo.md, review.md, reviewer.md, meta.md, task-creator.md, state-lookup.md). Keep state-lookup.md documentation changes.
+
+---
+
+### 308. Final cleanup and comprehensive testing (5/5)
+- **Effort**: 15 minutes
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Complete final cleanup of any remaining cruft from files not reverted. Test all commands (/task, /meta, /todo, /review) comprehensively to ensure everything works correctly. Commit clean changes with proper documentation.
+
+---
+
 ### 295. Create /sync command to synchronize TODO.md and state.json
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
@@ -1466,7 +1542,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 292. Diagnose And Fix Implement 259 Command Failure
 - **Effort**: 2.5
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-01-05
+- **Abandonment Reason**: User requested abandonment
 - **Priority**: High
 - **Language**: general
 - **Artifacts**:
@@ -1480,7 +1558,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 293. Design And Implement Better Command Argument Handling For Orchestrator
 - **Effort**: 5.0
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-01-05
+- **Abandonment Reason**: User requested abandonment
 - **Priority**: High
 - **Language**: general
 
@@ -1492,11 +1572,13 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ## Medium Priority
 
-### 256. Add Meta Command From Openagents With System Builder Subagents
+### 256. ✓ Add Meta Command From Openagents With System Builder Subagents
 - **Effort**: TBD
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
 - **Priority**: Medium
 - **Language**: markdown
+- **Abandoned**: 2026-01-05
+- **Abandonment Reason**: Task superseded by simpler /meta command implementation. The complex system-builder subagents approach is no longer needed.
 - **Artifacts**:
   - .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md
   - .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md
@@ -1552,9 +1634,11 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 287. Fix Revise Command Plan Link Replacement
 - **Effort**: 2.5
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
 - **Priority**: Medium
 - **Language**: general
+- **Abandoned**: 2026-01-05
+- **Abandonment Reason**: User requested abandonment. Task is no longer needed.
 - **Artifacts**:
   - .opencode/specs/287_fix_revise_command_plan_link_replacement/reports/research-001.md
   - .opencode/specs/287_fix_revise_command_plan_link_replacement/plans/implementation-001.md

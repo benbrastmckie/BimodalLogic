@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T01:22:38Z",
-  "next_project_number": 303,
+  "_last_updated": "2026-01-05T09:47:00Z",
+  "next_project_number": 309,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -345,15 +345,17 @@
       "project_number": 256,
       "project_name": "add_meta_command_from_openagents_with_system_builder_subagents",
       "type": "feature",
-      "phase": "planned",
-      "status": "planned",
+      "phase": "abandoned",
+      "status": "abandoned",
       "priority": "medium",
       "language": "markdown",
       "created": "2025-12-29T22:30:00Z",
       "started": "2025-12-29",
       "research_completed": "2025-12-29",
       "plan_created": "2025-12-29",
-      "last_updated": "2025-12-29T16:46:00Z",
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "Task superseded by simpler /meta command implementation. The complex system-builder subagents approach is no longer needed.",
+      "last_updated": "2026-01-05",
       "artifacts": [
         ".opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md",
         ".opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md"
@@ -530,7 +532,7 @@
         ".opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md",
         ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md"
       ],
-      "research_summary": "Comprehensive revision plan to align /meta command with research \u2192 plan \u2192 implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
+      "research_summary": "Comprehensive revision plan to align /meta command with research → plan → implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
       "estimated_hours": 13.0,
       "plan_created": "2026-01-03",
       "plan_path": ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md",
@@ -861,14 +863,14 @@
       "project_number": 287,
       "project_name": "fix_revise_command_plan_link_replacement",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "abandoned",
+      "status": "abandoned",
       "priority": "medium",
       "language": "general",
       "created": "2026-01-04T06:30:00Z",
       "started": "2026-01-04",
       "research_completed": "2026-01-04",
-      "last_updated": "2026-01-04T08:43:00Z",
+      "last_updated": "2026-01-05T00:00:00Z",
       "artifacts": [
         ".opencode/specs/287_fix_revise_command_plan_link_replacement/reports/research-001.md",
         ".opencode/specs/287_fix_revise_command_plan_link_replacement/plans/implementation-001.md"
@@ -882,7 +884,9 @@
         "estimated_hours": 2.5,
         "complexity": "medium",
         "research_integrated": true
-      }
+      },
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment. Task is no longer needed."
     },
     {
       "project_number": 289,
@@ -944,8 +948,8 @@
       "project_number": 292,
       "project_name": "diagnose_and_fix_implement_259_command_failure",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "abandoned",
+      "status": "abandoned",
       "priority": "high",
       "language": "general",
       "created": "2026-01-04T17:30:00Z",
@@ -953,7 +957,7 @@
       "research_completed": "2026-01-04T17:38:00Z",
       "planning_started": "2026-01-04",
       "planning_completed": "2026-01-04",
-      "last_updated": "2026-01-04",
+      "last_updated": "2026-01-05T09:50:00Z",
       "artifacts": [
         ".opencode/specs/292_diagnose_and_fix_implement_259_command_failure/reports/research-001.md",
         ".opencode/specs/292_diagnose_and_fix_implement_259_command_failure/plans/implementation-001.md"
@@ -966,19 +970,23 @@
         "complexity": "low-medium",
         "research_integrated": true
       },
-      "estimated_hours": 2.5
+      "estimated_hours": 2.5,
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment"
     },
     {
       "project_number": 293,
       "project_name": "design_and_implement_better_command_argument_handling_for_orchestrator",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "abandoned",
+      "status": "abandoned",
       "priority": "high",
       "language": "general",
       "created": "2026-01-05T01:49:54Z",
-      "last_updated": "2026-01-05T01:49:54Z",
-      "estimated_hours": 5.0
+      "last_updated": "2026-01-05T09:45:00Z",
+      "estimated_hours": 5.0,
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment"
     },
     {
       "project_number": 294,
@@ -1099,6 +1107,110 @@
       "last_updated": "2026-01-05T01:22:38Z",
       "effort": "2 hours",
       "description": "Create comprehensive tests for the dual-mode revision workflow, covering task-only revision, plan revision without new reports, and plan revision with new reports."
+    },
+    {
+      "project_number": 303,
+      "project_name": "verify_status_sync_manager_create_task_functionality_1_5",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "general",
+      "description": "Verify that status-sync-manager has create_task_flow functionality by checking the agent file. Check git history for meta.md and task-creator.md to understand recent changes. This is the first step in investigating unintended changes.",
+      "effort": "15 minutes",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T00:00:00Z",
+      "last_updated": "2026-01-05T09:47:00Z",
+      "started": "2026-01-05T09:47:00Z",
+      "completed": "2026-01-05T09:47:00Z",
+      "artifacts": [
+        {
+          "type": "investigation_report",
+          "path": ".opencode/specs/303_verify_status_sync_manager_create_task_functionality/investigation-report-20260105.md",
+          "summary": "Comprehensive investigation report confirming create_task functionality exists"
+        },
+        {
+          "type": "summary",
+          "path": ".opencode/specs/303_verify_status_sync_manager_create_task_functionality/summaries/implementation-summary-20260105.md",
+          "summary": "Implementation summary for investigation"
+        }
+      ]
+    },
+    {
+      "project_number": 304,
+      "project_name": "test_commands_after_unintended_changes_2_5",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "general",
+      "description": "Test /task, /meta, and /todo commands to verify they still work correctly after the unintended changes. Document any failures or unexpected behavior. This determines whether to keep or revert core logic changes.",
+      "effort": "30 minutes",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T08:00:00Z",
+      "last_updated": "2026-01-05T08:00:00Z"
+    },
+    {
+      "project_number": 305,
+      "project_name": "remove_performance_cruft_from_all_6_modified_files_3_5",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "markdown",
+      "description": "Remove optimization sections from frontmatter, performance blocks from workflow stages, and verbose comments from all 6 files (todo.md, review.md, reviewer.md, meta.md, task-creator.md, state-lookup.md). Keep state-lookup.md documentation changes.",
+      "effort": "30 minutes",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T08:00:00Z",
+      "last_updated": "2026-01-05T08:00:00Z"
+    },
+    {
+      "project_number": 306,
+      "project_name": "refactor_/meta_command_to_create_tasks_instead_of_direct_implementation",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "description": "Refactor the /meta command to always create an appropriate number of tasks (similar to /task command) rather than directly implementing the work. Preserve the interview functionality to clarify requirements when needed, or run in full interactive mode when /meta is called with no arguments. The result should be task creation with dependencies indicated and plan artifacts stored in the appropriate artifact structure per artifact-management.md.",
+      "effort": "4 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T08:00:00Z",
+      "last_updated": "2026-01-05T08:00:00Z"
+    },
+    {
+      "project_number": 307,
+      "project_name": "verify_or_revert_core_logic_changes_in_high_risk_files_4_5",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "markdown",
+      "description": "Based on test results from task 304, either keep the core logic changes in meta.md and task-creator.md (if commands work) or revert them to previous versions (if commands fail or create_task doesn't exist). This is a critical decision point.",
+      "effort": "1 hour",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T08:00:00Z",
+      "last_updated": "2026-01-05T08:00:00Z"
+    },
+    {
+      "project_number": 308,
+      "project_name": "final_cleanup_and_comprehensive_testing_5_5",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "general",
+      "description": "Complete final cleanup of any remaining cruft from files not reverted. Test all commands (/task, /meta, /todo, /review) comprehensively to ensure everything works correctly. Commit clean changes with proper documentation.",
+      "effort": "15 minutes",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T09:38:06Z",
+      "last_updated": "2026-01-05T09:38:06Z"
     }
   ],
   "completed_projects": [
@@ -1304,7 +1416,7 @@
       "project_name": "resolve_is_valid_swap_involution_blocker",
       "type": "research",
       "completed": "2025-12-29",
-      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas \u2192 Soundness). Full soundness proof succeeds."
+      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas → Soundness). Full soundness proof succeeds."
     },
     {
       "project_number": 214,
@@ -1339,7 +1451,7 @@
       "started": "2025-12-26",
       "completed": "2025-12-29",
       "last_updated": "2025-12-29",
-      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 \u2192 571 lines, +113 lines)",
+      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 → 571 lines, +113 lines)",
       "artifacts": [
         ".opencode/specs/190_improve_maintenance_md_documentation/plans/implementation-002.md",
         ".opencode/specs/190_improve_maintenance_md_documentation/summaries/implementation-summary-20251229.md",
@@ -2303,7 +2415,7 @@
       "modified_files": [
         "Logos/Core/Semantics/Truth.lean"
       ],
-      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T \u03c6.swap \u2192 is_valid T \u03c6 is semantically FALSE for arbitrary formulas. Counterexample: \u03c6 = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
+      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T φ.swap → is_valid T φ is semantically FALSE for arbitrary formulas. Counterexample: φ = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
       "blocking_reason": "Theorem is semantically false for arbitrary formulas (proven by task 213). Not a type theory limitation but a fundamental logical impossibility. Task correctly marked impossible."
     },
     {
