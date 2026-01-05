@@ -1180,17 +1180,19 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 296. Create /sync command for bidirectional TODO.md and state.json synchronization
 - **Effort**: 8-10 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-05
 - **Researched**: 2026-01-05
 - **Planned**: 2026-01-05
 - **Revised**: 2026-01-05
+- **Completed**: 2026-01-05
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/296_sync_command/reports/research-001.md)
 - **Plan**: [Implementation Plan v2](.opencode/specs/296_sync_command/plans/implementation-002.md) (revised: git blame-based per-field conflict resolution)
+- **Implementation**: [Implementation Summary](.opencode/specs/296_sync_command/summaries/implementation-summary-20260105.md)
 
 **Description**: Create a /sync command that bidirectionally synchronizes .opencode/specs/TODO.md and .opencode/specs/state.json, ensuring both files contain identical task information with the most recent changes from either file. The command should detect discrepancies between the two files, intelligently resolve conflicts by preferring the most recently updated data, and perform atomic updates to both files using the existing status-sync-manager's two-phase commit protocol. This addresses the architectural requirement that state.json is the authoritative source for metadata reads while TODO.md serves as the user-facing view, with synchronization ensuring consistency between them.
 
