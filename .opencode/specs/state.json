@@ -311,14 +311,34 @@
       "project_number": 260,
       "project_name": "proof_search",
       "type": "feature",
-      "phase": "planning",
-      "status": "planning",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T08:05:37-08:00",
+      "last_updated": "2026-01-05T08:07:35-08:00",
       "effort": "40-60 hours",
-      "description": "Implement automated proof search for TM logic."
+      "description": "Implement automated proof search for TM logic.",
+      "planning_completed": "2026-01-05T08:07:35-08:00",
+      "plan_path": ".opencode/specs/260_proof_search/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 76,
+        "complexity": "medium-high",
+        "research_integrated": true,
+        "language": "lean",
+        "proof_strategy": "Extend existing bounded DFS with proof term construction, tactic integration, and BFS variant",
+        "mathlib_dependencies": [
+          "Std.Data.HashMap",
+          "Std.Data.HashSet",
+          "Lean.Elab.Tactic",
+          "Aesop"
+        ]
+      },
+      "estimated_hours": 76,
+      "artifacts": [
+        ".opencode/specs/260_proof_search/plans/implementation-001.md"
+      ]
     },
     {
       "project_number": 261,
