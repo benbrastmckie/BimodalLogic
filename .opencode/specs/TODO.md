@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-05T13:15:00Z
-next_project_number: 311
+last_updated: 2026-01-05T13:45:00Z
+next_project_number: 313
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -26,6 +26,18 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 312. Fix workflow command postflight failures causing missing artifact links and status updates
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 307 created research-001.md but task status remains [NOT STARTED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.
+
+---
 
 ### 309. Implement Option 1 (Direct Delegation) from task 309 analysis to optimize /task command performance
 - **Effort**: 3 hours
@@ -54,9 +66,9 @@ technical_debt:
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md)
 - **Researched**: 2026-01-05
-- **Plan**: [implementation-002.md](.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-002.md)
+- **Plan**: [implementation-003.md](.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-003.md)
 - **Planned**: 2026-01-05
-- **Revised**: 2026-01-05
+- **Revised**: 2026-01-05 (v3)
 
 **Description**: Refactor the /meta command to always create an appropriate number of tasks (similar to /task command) rather than directly implementing the work. Preserve the interview functionality to clarify requirements when needed, or run in full interactive mode when /meta is called with no arguments. The result should be task creation with dependencies indicated and plan artifacts stored in the appropriate artifact structure per artifact-management.md.
 
@@ -78,11 +90,13 @@ technical_debt:
 
 ### 307. Verify or revert core logic changes in high-risk files (4/5)
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [Research Report](.opencode/specs/307_verify_or_revert_core_logic_changes_in_high_risk_files_4_5/reports/research-001.md)
+- **Researched**: 2026-01-05
 
 **Description**: Based on test results from task 304, either keep the core logic changes in meta.md and task-creator.md (if commands work) or revert them to previous versions (if commands fail or create_task doesn't exist). This is a critical decision point.
 
