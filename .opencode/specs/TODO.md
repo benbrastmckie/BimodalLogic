@@ -32,7 +32,7 @@ technical_debt:
 
 ### 312. Fix workflow command postflight failures causing missing artifact links and status updates
 - **Effort**: 6-8 hours
-- **Status**: [REVISED]
+- **Status**: [ABANDONED]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
@@ -42,6 +42,7 @@ technical_debt:
 - **Plan**: [Implementation Plan v2](.opencode/specs/312_fix_workflow_command_postflight_failures/plans/implementation-002.md)
 - **Planned**: 2026-01-05
 - **Revised**: 2026-01-05
+- **Abandoned**: 2026-01-05
 
 **Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 307 created research-001.md but task status remains [RESEARCHED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.
 
@@ -171,6 +172,7 @@ technical_debt:
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/260_proof_search/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/260_proof_search/plans/implementation-001.md)
 
 **Description**: Implement automated proof search for TM logic.
 
@@ -1030,7 +1032,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 305. Remove performance cruft from all 6 modified files (3/5)
 - **Effort**: 30 minutes
-- **Status**: [REVISING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -1039,6 +1041,8 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Researched**: 2026-01-05
 - **Plan**: [implementation-001.md](305_remove_performance_cruft_from_all_6_modified_files_3_5/plans/implementation-001.md)
 - **Planned**: 2026-01-05
+- **Implementation**: [Implementation Summary](305_remove_performance_cruft_from_all_6_modified_files_3_5/summaries/implementation-summary-20260105.md)
+- **Completed**: 2026-01-05
 
 **Description**: Remove optimization sections from frontmatter, performance blocks from workflow stages, and verbose comments from all 6 files (todo.md, review.md, reviewer.md, meta.md, task-creator.md, state-lookup.md). Keep state-lookup.md documentation changes.
 
@@ -1147,9 +1151,11 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 271. Revise Meta Command Task Creation
 - **Effort**: 13.0
-- **Status**: [REVISING]
+- **Status**: [ABANDONED]
 - **Priority**: High
 - **Language**: markdown
+- **Abandoned**: 2026-01-05
+- **Abandonment Reason**: Task has been effectively implemented. The /meta command now creates tasks with plan artifacts instead of directly implementing the system (Stage 7: CreateTasksWithArtifacts). The core functionality described in task 271 is already present in the codebase, making this task redundant.
 - **Artifacts**:
   - .opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md
   - .opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md

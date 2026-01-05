@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T21:45:00",
+  "_last_updated": "2026-01-05T21:50:00",
   "next_project_number": 314,
   "project_numbering": {
     "min": 0,
@@ -439,14 +439,14 @@
       "project_number": 271,
       "project_name": "revise_meta_command_task_creation",
       "type": "feature",
-      "phase": "planned",
-      "status": "planned",
+      "phase": "abandoned",
+      "status": "abandoned",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-03T18:45:00Z",
       "started": "2026-01-03",
       "research_completed": "2026-01-03",
-      "last_updated": "2026-01-03",
+      "last_updated": "2026-01-05",
       "artifacts": [
         ".opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md",
         ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md"
@@ -460,7 +460,9 @@
         "total_effort_hours": 13,
         "complexity": "medium-high",
         "research_integrated": true
-      }
+      },
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "Task has been effectively implemented. The /meta command now creates tasks with plan artifacts instead of directly implementing the system (Stage 7: CreateTasksWithArtifacts). The core functionality described in task 271 is already present in the codebase, making this task redundant."
     },
     {
       "project_number": 277,
@@ -750,8 +752,8 @@
       "project_number": 305,
       "project_name": "remove_performance_cruft_from_all_6_modified_files_3_5",
       "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "completed",
+      "status": "completed",
       "priority": "medium",
       "language": "markdown",
       "description": "Remove optimization sections from frontmatter, performance blocks from workflow stages, and verbose comments from all 6 files (todo.md, review.md, reviewer.md, meta.md, task-creator.md, state-lookup.md). Keep state-lookup.md documentation changes.",
@@ -763,9 +765,11 @@
       "research_completed": "2026-01-05",
       "artifacts": [
         ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/reports/research-001.md",
-        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/plans/implementation-001.md"
+        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/plans/implementation-001.md",
+        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/summaries/implementation-summary-20260105.md"
       ],
-      "plan_completed": "2026-01-05"
+      "plan_completed": "2026-01-05",
+      "completed": "2026-01-05"
     },
     {
       "project_number": 306,
@@ -901,8 +905,8 @@
       "project_number": 312,
       "project_name": "fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates",
       "type": "bugfix",
-      "phase": "revised",
-      "status": "revised",
+      "phase": "abandoned",
+      "status": "abandoned",
       "priority": "high",
       "language": "meta",
       "description": "Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 307 created research-001.md but task status remains [NOT STARTED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.",
@@ -910,7 +914,9 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T05:31:28-08:00",
-      "last_updated": "2026-01-05T07:46:35-08:00",
+      "last_updated": "2026-01-05",
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment",
       "artifacts": [
         ".opencode/specs/312_fix_workflow_command_postflight_failures/reports/research-001.md"
       ],
