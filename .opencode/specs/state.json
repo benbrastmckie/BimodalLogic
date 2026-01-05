@@ -490,7 +490,7 @@
       "project_name": "fix_orchestrator_stage_4_validation_to_enforce_subagent_return_format_and_prevent_phantom_research",
       "type": "bugfix",
       "phase": "planning_completed",
-      "status": "planned",
+      "status": "revised",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-04T05:00:30Z",
@@ -499,17 +499,21 @@
       "research_completed": "2026-01-03",
       "planning_completed": "2026-01-03",
       "artifacts": [
-        ".opencode/specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md",
-        ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-001.md"
+        ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-001.md",
+        ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-002.md",
+        ".opencode/specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md"
       ],
-      "plan_path": ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-001.md",
+      "plan_path": ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-002.md",
       "plan_metadata": {
         "phases": 5,
-        "total_effort_hours": 7,
+        "total_effort_hours": 6,
         "complexity": "medium",
-        "research_integrated": true
+        "research_integrated": true,
+        "plan_version": 2
       },
-      "estimated_hours": 7.0
+      "estimated_hours": 6.0,
+      "effort_hours": 6.0,
+      "revised_date": "2026-01-05"
     },
     {
       "project_number": 282,

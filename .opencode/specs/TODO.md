@@ -32,7 +32,7 @@ technical_debt:
 
 ### 312. Fix workflow command postflight failures causing missing artifact links and status updates
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
@@ -49,7 +49,7 @@ technical_debt:
 
 ### 307. Verify or revert core logic changes in high-risk files (4/5)
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -595,7 +595,7 @@ technical_debt:
 
 ### 189. Add --divide flag to /research command for topic subdivision
 - **Effort**: 3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Started**: 2025-12-26
 - **Priority**: Medium
 - **Language**: markdown
@@ -925,7 +925,7 @@ Establishes state.json as the single source of truth for task metadata, eliminat
 
 ### 291. Fix lean-research-agent to delegate status updates to status-sync-manager instead of direct file manipulation
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Started**: 2026-01-04
 - **Researched**: 2026-01-04
 - **Priority**: High
@@ -1081,7 +1081,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 240. Systematically Investigate And Fix Persistent Workflow Command Stage 7 Postflight Failures
 - **Effort**: 56.0
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Critical
 - **Language**: markdown
 - **Artifacts**:
@@ -1106,7 +1106,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 266. Fix Research Command Language Based Routing To Properly Invoke Lean Research Agent For Lean Tasks
 - **Effort**: 6.0
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: markdown
 - **Artifacts**:
