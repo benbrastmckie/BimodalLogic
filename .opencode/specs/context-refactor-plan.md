@@ -2,8 +2,10 @@
 
 **Project**: ProofChecker Context Organization Simplification
 **Created**: 2026-01-04
-**Updated**: 2026-01-04 (Post-Architecture Discovery)
+**Updated**: 2026-01-05 (Post-State.json Optimization Integration)
 **Status**: DRAFT - Ready for Review
+
+**IMPORTANT NOTE**: On 2026-01-05, some unintended code changes were made during an attempt to update this plan. See `.opencode/specs/unintended-changes-report.md` for details. The changes may need to be reviewed/reverted before proceeding with this context refactor.
 
 ## Executive Summary
 
@@ -27,6 +29,8 @@ The `.opencode/context/core/` directory has accumulated redundant files, unclear
 ```
 
 **Total**: 47 files across 5 directories
+
+**Note**: This count includes `state-lookup.md` which was created during state.json Phase 1 optimization (already implemented)
 
 ### Identified Issues
 
@@ -242,39 +246,67 @@ This architecture MUST be documented in:
     └── subagent-frontmatter.yaml # Subagent frontmatter template
 ```
 
-**Total**: 34 files across 6 directories (down from 47 files)
+**Total**: 35 files across 6 directories (down from 47 files)
 
-**Reduction**: 13 files eliminated (28% reduction)
+**Reduction**: 12 files eliminated (26% reduction)
 
 **New Files Added**: 2 critical architecture documentation files
 - `orchestration/architecture.md` - Documents three-layer delegation pattern
 - `formats/command-structure.md` - Documents command files as agents with workflows
 
-### State Management Optimization (IMPLEMENTED)
+**Existing Files Preserved**: 1 optimization file
+- `orchestration/state-lookup.md` - Already exists from Phase 1 optimization (moved from `system/`)
 
-**Critical Update**: The system has been optimized to use `state.json` for fast task lookup instead of parsing `TODO.md`. This optimization is now part of the core architecture and must be documented in context files.
+**Note**: The file count includes `state-lookup.md` which was created during state.json Phase 1 optimization and will be moved from `system/` to `orchestration/` during this refactor.
 
-**Key Changes**:
+### State Management Optimization (ALREADY IMPLEMENTED)
+
+**Critical Update**: The system has been optimized to use `state.json` for fast task lookup instead of parsing `TODO.md`. This optimization was completed in two phases and is now part of the core architecture.
+
+**Phase 1 Optimization (COMPLETED)**:
 - ✅ Command files use `state.json` for task lookup (8x faster: 100ms → 12ms)
 - ✅ `jq` queries replace `grep`/`sed` markdown parsing
 - ✅ All metadata extracted at once (language, status, description, priority)
 - ✅ `status-sync-manager` maintains synchronization between `state.json` and `TODO.md`
 - ✅ Read/write separation: reads from `state.json`, writes via `status-sync-manager`
 
-**New Context Files Created**:
-- `.opencode/context/core/system/state-lookup.md` - Fast lookup patterns using `jq`
+**Phase 2 Optimization (COMPLETED)**:
+- ✅ `/todo` command uses `state.json` for scanning (13x faster: 200ms → 15ms)
+- ✅ `/meta` command uses `status-sync-manager.create_task()` for atomic task creation
+- ✅ `/task` command uses `status-sync-manager.create_task()` for atomic task creation
+- ✅ Description field support added (50-500 chars, validated)
+- ✅ Bulk archival operations via `status-sync-manager.archive_tasks()`
 
-**Files Updated**:
+**Context Files Created (Already Exist)**:
+- `.opencode/context/core/system/state-lookup.md` - Fast lookup patterns using `jq` (v1.1 with Phase 2 patterns)
+
+**Command Files Updated (Already Done)**:
 - `.opencode/command/implement.md` - Uses `state.json` lookup in Stage 1
 - `.opencode/command/research.md` - Uses `state.json` lookup in Stage 1
 - `.opencode/command/plan.md` - Uses `state.json` lookup in Stage 1
 - `.opencode/command/revise.md` - Uses `state.json` lookup in Stage 1
+- `.opencode/command/todo.md` - Uses `state.json` for scanning in Stage 1
+- `.opencode/command/review.md` - Uses `state.json` for next_project_number
+
+**Subagent Files Updated (Already Done)**:
+- `.opencode/agent/subagents/status-sync-manager.md` - Enhanced with `create_task()` and `archive_tasks()` operations
+- `.opencode/agent/subagents/meta.md` - Uses `status-sync-manager` for atomic task creation
+- `.opencode/agent/subagents/task-creator.md` - Uses `status-sync-manager` for atomic task creation
+- `.opencode/agent/subagents/reviewer.md` - References `state-lookup.md`
 
 **Impact on Context Refactor**:
-- `state-lookup.md` must be included in `orchestration/` or `system/` directory
-- `state-management.md` must document read/write separation pattern
-- Command templates must show `state.json` lookup pattern
-- Meta-builder must understand `state.json` optimization when creating new commands
+- ✅ `state-lookup.md` already exists in `system/` directory - will move to `orchestration/`
+- ✅ `state-management.md` must document read/write separation pattern and Phase 1/2 optimizations
+- ✅ Command templates must show `state.json` lookup pattern (already standard)
+- ✅ Meta-builder must understand `state.json` optimization when creating new commands
+- ✅ All command files now reference `state-lookup.md` in their context_loading sections
+
+**Documentation Created (Already Exists)**:
+- `.opencode/specs/state-json-optimization-plan.md` - Phase 1 plan and implementation
+- `.opencode/specs/state-json-phase2-optimization-plan.md` - Phase 2 plan and implementation
+- `.opencode/specs/state-json-phase2-testing-guide.md` - Comprehensive testing guide
+- `.opencode/specs/state-json-phase2-validation-summary.md` - Validation results
+- `.opencode/specs/state-json-phase2-complete-summary.md` - Complete summary
 
 ### New Architecture Documentation Files
 
@@ -1486,14 +1518,155 @@ After context refactor, update:
 
 ---
 
+## Appendix D: Coordination with State.json Optimizations
+
+### Background
+
+The state.json Phase 1 and Phase 2 optimizations were completed before this context refactor plan. This appendix documents how the refactor must account for these optimizations.
+
+### State.json Optimization Files
+
+**Already Created**:
+- `.opencode/context/core/system/state-lookup.md` (v1.1) - Fast lookup patterns
+- `.opencode/specs/state-json-optimization-plan.md` - Phase 1 plan
+- `.opencode/specs/state-json-phase2-optimization-plan.md` - Phase 2 plan
+- `.opencode/specs/state-json-phase2-testing-guide.md` - Testing guide
+- `.opencode/specs/state-json-phase2-validation-summary.md` - Validation results
+- `.opencode/specs/state-json-phase2-complete-summary.md` - Complete summary
+
+### Impact on Context Refactor
+
+#### 1. state-lookup.md Must Be Preserved
+
+**Current Location**: `.opencode/context/core/system/state-lookup.md`
+**New Location**: `.opencode/context/core/orchestration/state-lookup.md`
+
+**Action**: Move (not merge) during refactor
+**Reason**: This file is complete and actively used by all commands
+
+#### 2. state-management.md Must Document Optimizations
+
+**Current Content**: Basic state management patterns
+**Required Updates**:
+- Document read/write separation (reads from state.json, writes via status-sync-manager)
+- Document Phase 1 optimization (8x faster task lookup)
+- Document Phase 2 optimization (13x faster scanning, atomic operations)
+- Reference state-lookup.md for query patterns
+
+**Action**: Enhance during merge with artifact-management.md
+
+#### 3. Command Templates Must Show state.json Pattern
+
+**Current Templates**: May show TODO.md parsing
+**Required Updates**:
+- Show state.json lookup in Stage 1 (ParseAndValidate)
+- Show jq query patterns
+- Show metadata extraction
+- Reference state-lookup.md
+
+**Action**: Update command-template.md during refactor
+
+#### 4. Meta-Builder Must Understand Optimization
+
+**Required Knowledge**:
+- All new commands should use state.json for task lookup
+- Use jq queries, not grep/sed
+- Reference state-lookup.md in context_loading
+- Use status-sync-manager for writes
+
+**Action**: Update meta-builder context files to include state.json patterns
+
+### Files Affected by Optimizations
+
+**Command Files** (already updated):
+- `.opencode/command/implement.md` - References state-lookup.md
+- `.opencode/command/research.md` - References state-lookup.md
+- `.opencode/command/plan.md` - References state-lookup.md
+- `.opencode/command/revise.md` - References state-lookup.md
+- `.opencode/command/todo.md` - References state-lookup.md
+- `.opencode/command/review.md` - References state-lookup.md
+
+**Subagent Files** (already updated):
+- `.opencode/agent/subagents/status-sync-manager.md` - Enhanced with create_task(), archive_tasks()
+- `.opencode/agent/subagents/meta.md` - Uses status-sync-manager for task creation
+- `.opencode/agent/subagents/task-creator.md` - Uses status-sync-manager for task creation
+- `.opencode/agent/subagents/reviewer.md` - References state-lookup.md
+
+**Impact**: All these files reference `state-lookup.md` in their context_loading sections. When we move state-lookup.md from `system/` to `orchestration/`, we must update all these references.
+
+### Reference Update for state-lookup.md
+
+**Old Reference**: `core/system/state-lookup.md`
+**New Reference**: `core/orchestration/state-lookup.md`
+
+**Files to Update** (in Phase 3):
+```bash
+# Update command files
+sed -i 's|core/system/state-lookup.md|core/orchestration/state-lookup.md|g' .opencode/command/*.md
+
+# Update subagent files
+sed -i 's|core/system/state-lookup.md|core/orchestration/state-lookup.md|g' .opencode/agent/subagents/*.md
+```
+
+### Validation After Refactor
+
+**Test state.json optimization still works**:
+1. Run `/implement 259` - Should use state.json lookup (fast)
+2. Run `/todo` - Should use state.json scanning (fast)
+3. Run `/task "Test task"` - Should use status-sync-manager (atomic)
+4. Check logs for "state-lookup.md not found" errors
+
+**Expected Results**:
+- ✅ All commands load state-lookup.md successfully
+- ✅ No performance regression
+- ✅ No errors about missing files
+
+### Documentation Requirements
+
+**orchestration/state-management.md** must include:
+- Section on "State.json Optimization" explaining Phase 1 and Phase 2
+- Performance comparison (before/after)
+- Read/write separation pattern
+- Reference to state-lookup.md for query patterns
+- Reference to status-sync-manager for write operations
+
+**orchestration/state-lookup.md** (moved from system/):
+- Keep all existing content (v1.1 with Phase 2 patterns)
+- Update any internal references if needed
+- Ensure examples are current
+
+**templates/command-template.md** must include:
+- Example Stage 1 using state.json lookup
+- Example jq query
+- Reference to state-lookup.md in context_loading
+- Comment explaining why state.json is used (performance)
+
+### Unintended Changes Note
+
+**IMPORTANT**: On 2026-01-05, some code files were unintentionally modified during an attempt to update this plan. See `.opencode/specs/unintended-changes-report.md` for details.
+
+**Files Potentially Affected**:
+- `.opencode/command/todo.md` - May have been re-optimized (check git history)
+- `.opencode/agent/subagents/meta.md` - May have been re-optimized (check git history)
+- `.opencode/agent/subagents/task-creator.md` - May have been re-optimized (check git history)
+
+**Action Before Refactor**:
+1. Review unintended-changes-report.md
+2. Compare with git history
+3. Decide whether to keep or revert changes
+4. Ensure state.json optimizations are preserved
+
+---
+
 **End of Context Refactor Plan**
 
 **Next Steps**:
-1. Review this plan (especially architecture documentation sections)
-2. Approve or request changes
-3. Create backup of .opencode/context/core/
-4. Begin Phase 1 implementation
-5. Create new architecture documentation files
-6. Test thoroughly after each phase
-7. Verify /meta command understands new architecture
-8. Document any deviations from plan
+1. **FIRST**: Review `.opencode/specs/unintended-changes-report.md` and decide on code changes
+2. Review this plan (especially architecture documentation sections)
+3. Approve or request changes
+4. Create backup of .opencode/context/core/
+5. Begin Phase 1 implementation
+6. Create new architecture documentation files
+7. Test thoroughly after each phase (including state.json optimization)
+8. Verify /meta command understands new architecture
+9. Document any deviations from plan
