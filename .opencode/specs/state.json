@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T07:51:30Z",
-  "next_project_number": 297,
+  "_last_updated": "2026-01-05T01:22:38Z",
+  "next_project_number": 303,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -16,6 +16,186 @@
   },
   "active_projects": [
     {
+      "project_number": 132,
+      "project_name": "prove_lindenbaum_maximal_consistency_lemma_in_completeness.lean",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "3 hours"
+    },
+    {
+      "project_number": 133,
+      "project_name": "build_canonical_model_constructors_in_completeness.lean",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "3 hours"
+    },
+    {
+      "project_number": 134,
+      "project_name": "prove_truth_lemma_structure_in_completeness.lean",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "3 hours"
+    },
+    {
+      "project_number": 135,
+      "project_name": "remove_provable_iff_valid_sorry_in_completeness.lean",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2 hours"
+    },
+    {
+      "project_number": 136,
+      "project_name": "design_decidability.lean_architecture_and_signatures",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2 hours"
+    },
+    {
+      "project_number": 137,
+      "project_name": "implement_tableau_core_rules_in_decidability.lean",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "3 hours"
+    },
+    {
+      "project_number": 138,
+      "project_name": "implement_satisfiability_and_validity_decision_procedure_tests",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "3 hours"
+    },
+    {
+      "project_number": 139,
+      "project_name": "draft_layer_1_counterfactual_operator_plan",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2 hours"
+    },
+    {
+      "project_number": 140,
+      "project_name": "draft_layer_2_epistemic_operator_plan",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2 hours"
+    },
+    {
+      "project_number": 141,
+      "project_name": "draft_layer_3_normative_operator_plan",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2 hours"
+    },
+    {
+      "project_number": 175,
+      "project_name": "establish_ci/cd_pipeline_with_automated_testing_and_linting",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "13 hours"
+    },
+    {
+      "project_number": 176,
+      "project_name": "enhance_proof_search_with_domain_specific_heuristics_and_caching",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "18 hours"
+    },
+    {
+      "project_number": 178,
+      "project_name": "complete_advanced_tutorial_sections_with_hands_on_exercises",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "13 hours"
+    },
+    {
+      "project_number": 179,
+      "project_name": "implement_performance_benchmarks_for_proof_search_and_derivation",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "13 hours"
+    },
+    {
+      "project_number": 180,
+      "project_name": "add_test_coverage_metrics_and_reporting",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "9 hours"
+    },
+    {
       "project_number": 189,
       "project_name": "research_divide_flag",
       "type": "feature",
@@ -27,6 +207,42 @@
       "started": "2025-12-25",
       "research_completed": "2025-12-25",
       "last_updated": "2025-12-26"
+    },
+    {
+      "project_number": 203,
+      "project_name": "add___complex_flag_to_/research_for_subtopic_subdivision_with_summary",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "TBD"
+    },
+    {
+      "project_number": 205,
+      "project_name": "implement_lean_tool_usage_verification_and_monitoring_system",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "6-8 hours"
+    },
+    {
+      "project_number": 218,
+      "project_name": "fix_lean_lsp_mcp_integration_and_opencode_module_import_errors",
+      "type": "feature",
+      "phase": "planning_completed",
+      "status": "planned",
+      "priority": "high",
+      "language": "python",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "0.75 hours"
     },
     {
       "project_number": 221,
@@ -151,6 +367,111 @@
       }
     },
     {
+      "project_number": 257,
+      "project_name": "completeness_proofs",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "70-90 hours",
+      "description": "Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`."
+    },
+    {
+      "project_number": 259,
+      "project_name": "automation_tactics",
+      "type": "feature",
+      "phase": "planning_completed",
+      "status": "planned",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-04T00:00:00Z",
+      "started": "2026-01-04",
+      "research_completed": "2026-01-04",
+      "planning_completed": "2026-01-04",
+      "last_updated": "2026-01-04T12:00:00Z",
+      "artifacts": [
+        ".opencode/specs/259_automation_tactics/reports/research-001.md",
+        ".opencode/specs/259_automation_tactics/plans/implementation-001.md"
+      ],
+      "research_summary": "Research completed on automation tactics implementation. Found 10/12 tactics fully implemented (83% complete), 2 tactics with infrastructure ready but delegating to tm_auto. Aesop integration functional with 2 noncomputable errors. ProofSearch.lean provides production-ready bounded search infrastructure (461 lines). Revised effort estimate: 17-23 hours (down from 40-60 hours).",
+      "plan_path": ".opencode/specs/259_automation_tactics/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 20,
+        "complexity": "medium",
+        "research_integrated": true
+      },
+      "estimated_hours": 20.0
+    },
+    {
+      "project_number": 260,
+      "project_name": "proof_search",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "40-60 hours",
+      "description": "Implement automated proof search for TM logic."
+    },
+    {
+      "project_number": 261,
+      "project_name": "decidability",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "40-60 hours",
+      "description": "Implement decision procedures for TM logic."
+    },
+    {
+      "project_number": 262,
+      "project_name": "modals5_limitation",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2 hours",
+      "description": "The theorem `diamond_mono_imp` in `ModalS5.lean` is marked with `sorry` because it is not valid as an object-level implication. This is a documented limitation."
+    },
+    {
+      "project_number": 263,
+      "project_name": "refactor_context.lean",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2-4 hours",
+      "description": "Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4."
+    },
+    {
+      "project_number": 264,
+      "project_name": "update_context_references",
+      "type": "feature",
+      "phase": "researching",
+      "status": "researching",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "1-2 hours",
+      "description": "After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary."
+    },
+    {
       "project_number": 265,
       "project_name": "clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive",
       "type": "refactoring",
@@ -209,7 +530,7 @@
         ".opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md",
         ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md"
       ],
-      "research_summary": "Comprehensive revision plan to align /meta command with research → plan → implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
+      "research_summary": "Comprehensive revision plan to align /meta command with research \u2192 plan \u2192 implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
       "estimated_hours": 13.0,
       "plan_created": "2026-01-03",
       "plan_path": ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md",
@@ -219,6 +540,38 @@
         "complexity": "medium-high",
         "research_integrated": true
       }
+    },
+    {
+      "project_number": 272,
+      "project_name": "add_yaml_header_to_todo_md",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-03T19:51:30Z",
+      "started": "2026-01-03",
+      "research_completed": "2026-01-03",
+      "plan_created": "2026-01-03",
+      "completed": "2026-01-04",
+      "last_updated": "2026-01-04T04:45:44Z",
+      "artifacts": [
+        ".opencode/specs/272_add_yaml_header_to_todo_md/reports/research-001.md",
+        ".opencode/specs/272_add_yaml_header_to_todo_md/plans/implementation-001.md",
+        ".opencode/specs/272_add_yaml_header_to_todo_md/summaries/implementation-summary-20260104.md",
+        ".opencode/specs/TODO.md"
+      ],
+      "plan_path": ".opencode/specs/272_add_yaml_header_to_todo_md/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 14,
+        "complexity": "medium",
+        "research_integrated": true
+      },
+      "estimated_hours": 14.0,
+      "files_modified": [
+        ".opencode/specs/TODO.md"
+      ]
     },
     {
       "project_number": 274,
@@ -290,68 +643,6 @@
       ]
     },
     {
-      "project_number": 272,
-      "project_name": "add_yaml_header_to_todo_md",
-      "type": "feature",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "markdown",
-      "created": "2026-01-03T19:51:30Z",
-      "started": "2026-01-03",
-      "research_completed": "2026-01-03",
-      "plan_created": "2026-01-03",
-      "completed": "2026-01-04",
-      "last_updated": "2026-01-04T04:45:44Z",
-      "artifacts": [
-        ".opencode/specs/272_add_yaml_header_to_todo_md/reports/research-001.md",
-        ".opencode/specs/272_add_yaml_header_to_todo_md/plans/implementation-001.md",
-        ".opencode/specs/272_add_yaml_header_to_todo_md/summaries/implementation-summary-20260104.md",
-        ".opencode/specs/TODO.md"
-      ],
-      "plan_path": ".opencode/specs/272_add_yaml_header_to_todo_md/plans/implementation-001.md",
-      "plan_metadata": {
-        "phases": 6,
-        "total_effort_hours": 14,
-        "complexity": "medium",
-        "research_integrated": true
-      },
-      "estimated_hours": 14.0,
-      "files_modified": [
-        ".opencode/specs/TODO.md"
-      ]
-    },
-    {
-      "project_number": 277,
-      "project_name": "improve_opencode_header_and_summary_display_for_task_commands",
-      "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
-      "priority": "high",
-      "language": "general",
-      "created": "2026-01-03T20:35:00Z",
-      "started": "2026-01-03",
-      "research_completed": "2026-01-03",
-      "planning_completed": "2026-01-03",
-      "plan_revised": "2026-01-03",
-      "last_updated": "2026-01-03T20:50:00Z",
-      "artifacts": [
-        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md",
-        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md",
-        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-002.md"
-      ],
-      "estimated_hours": 3.5,
-      "research_summary": "Research into OpenCode header and summary display patterns reveals orchestrator already formats prompts as 'Task: {number}' for internal delegation but lacks user-facing headers. Recommended solution: modify orchestrator Stage 5 (PostflightCleanup) to add headers. Estimated effort: 3.5 hours (revised from 4.5 hours - removed summary conclusions as redundant with header).",
-      "plan_metadata": {
-        "phase_count": 5,
-        "estimated_hours": 3.5,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 2,
-        "revision_reason": "Removed summary conclusion formatting (redundant with header display)"
-      }
-    },
-    {
       "project_number": 276,
       "project_name": "investigate_remove_redundant_project_level_state_json",
       "type": "research",
@@ -387,6 +678,36 @@
         "research_integrated": true
       },
       "completed": "2026-01-03"
+    },
+    {
+      "project_number": 277,
+      "project_name": "improve_opencode_header_and_summary_display_for_task_commands",
+      "type": "feature",
+      "phase": "planning_completed",
+      "status": "planned",
+      "priority": "high",
+      "language": "general",
+      "created": "2026-01-03T20:35:00Z",
+      "started": "2026-01-03",
+      "research_completed": "2026-01-03",
+      "planning_completed": "2026-01-03",
+      "plan_revised": "2026-01-03",
+      "last_updated": "2026-01-03T20:50:00Z",
+      "artifacts": [
+        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md",
+        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md",
+        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-002.md"
+      ],
+      "estimated_hours": 3.5,
+      "research_summary": "Research into OpenCode header and summary display patterns reveals orchestrator already formats prompts as 'Task: {number}' for internal delegation but lacks user-facing headers. Recommended solution: modify orchestrator Stage 5 (PostflightCleanup) to add headers. Estimated effort: 3.5 hours (revised from 4.5 hours - removed summary conclusions as redundant with header).",
+      "plan_metadata": {
+        "phase_count": 5,
+        "estimated_hours": 3.5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 2,
+        "revision_reason": "Removed summary conclusion formatting (redundant with header display)"
+      }
     },
     {
       "project_number": 279,
@@ -453,6 +774,17 @@
       "implementation_summary": "Fixed typo in /implement command line 34 by adding $ prefix to \"arguments\". Single line change. Actual effort: 15 minutes. Fix verified by comparing with working commands. No regression.",
       "actual_hours": 0.25,
       "estimated_hours": 0.25
+    },
+    {
+      "project_number": 282,
+      "project_name": "add_json_return_format_enforcement_to_subagent_invocation",
+      "type": "bugfix",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "general",
+      "created": "2026-01-04T05:47:55Z",
+      "last_updated": "2026-01-04T05:47:55Z"
     },
     {
       "project_number": 283,
@@ -526,44 +858,6 @@
       "estimated_hours": 7.0
     },
     {
-      "project_number": 282,
-      "project_name": "add_json_return_format_enforcement_to_subagent_invocation",
-      "type": "bugfix",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "high",
-      "language": "general",
-      "created": "2026-01-04T05:47:55Z",
-      "last_updated": "2026-01-04T05:47:55Z"
-    },
-    {
-      "project_number": 259,
-      "project_name": "automation_tactics",
-      "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
-      "priority": "medium",
-      "language": "lean",
-      "created": "2026-01-04T00:00:00Z",
-      "started": "2026-01-04",
-      "research_completed": "2026-01-04",
-      "planning_completed": "2026-01-04",
-      "last_updated": "2026-01-04T12:00:00Z",
-      "artifacts": [
-        ".opencode/specs/259_automation_tactics/reports/research-001.md",
-        ".opencode/specs/259_automation_tactics/plans/implementation-001.md"
-      ],
-      "research_summary": "Research completed on automation tactics implementation. Found 10/12 tactics fully implemented (83% complete), 2 tactics with infrastructure ready but delegating to tm_auto. Aesop integration functional with 2 noncomputable errors. ProofSearch.lean provides production-ready bounded search infrastructure (461 lines). Revised effort estimate: 17-23 hours (down from 40-60 hours).",
-      "plan_path": ".opencode/specs/259_automation_tactics/plans/implementation-001.md",
-      "plan_metadata": {
-        "phases": 6,
-        "total_effort_hours": 20,
-        "complexity": "medium",
-        "research_integrated": true
-      },
-      "estimated_hours": 20.0
-    },
-    {
       "project_number": 287,
       "project_name": "fix_revise_command_plan_link_replacement",
       "type": "bugfix",
@@ -589,6 +883,18 @@
         "complexity": "medium",
         "research_integrated": true
       }
+    },
+    {
+      "project_number": 289,
+      "project_name": "extend_task_283_fix_to_all_remaining_subagents_with_inconsistent_step_naming",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2-3 hours"
     },
     {
       "project_number": 290,
@@ -715,6 +1021,84 @@
       "description": "Create a /sync command that bidirectionally synchronizes .opencode/specs/TODO.md and .opencode/specs/state.json, ensuring both files contain identical task information with the most recent changes from either file. The command should detect discrepancies between the two files, intelligently resolve conflicts by preferring the most recently updated data, and perform atomic updates to both files using the existing status-sync-manager's two-phase commit protocol. This addresses the architectural requirement that state.json is the authoritative source for metadata reads while TODO.md serves as the user-facing view, with synchronization ensuring consistency between them.",
       "created": "2026-01-05T07:51:30Z",
       "last_updated": "2026-01-05T07:51:30Z"
+    },
+    {
+      "project_number": 297,
+      "project_name": "simplify_/task_command_to_directly_create_tasks_without_subagent_delegation",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "6 hours",
+      "description": "Refactor the /task command to directly create task entries in TODO.md and state.json without delegating to description-clarifier and task-creator subagents. The command should reformulate the user's rough description into a clear description inline, look up next_project_number from state.json, create the task entry in both files atomically, and increment next_project_number. This simplifies the architecture by removing unnecessary delegation layers while maintaining the same functionality. The command should support the optional flag --divide which creates divides the task into an appropriate number of tasks (between 1-5 tasks). No other flags are needed."
+    },
+    {
+      "project_number": 298,
+      "project_name": "create_/abandon_command_to_mark_tasks_as_[abandoned]_with_reason",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2.5 hours",
+      "description": "Create a /abandon command that takes a task number as argument (similar to /implement) and updates the status of the task in TODO.md and state.json to [ABANDONED]. The command should validate that the task exists and is not already completed or abandoned, prompt for an abandonment reason if not provided inline, and delegate to status-sync-manager to perform atomic updates to both files. The command should follow the same architectural patterns as /implement, /research, and /plan commands for consistency."
+    },
+    {
+      "project_number": 299,
+      "project_name": "create_task_reviser_subagent",
+      "type": "feature",
+      "phase": "planning_completed",
+      "status": "planned",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "3 hours",
+      "description": "Create a new subagent `task-reviser.md` that handles task-only revision mode when no plan exists. This subagent will update task descriptions, requirements, and metadata in TODO.md and state.json atomically."
+    },
+    {
+      "project_number": 300,
+      "project_name": "add_report_detection_to_planner",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "4 hours",
+      "description": "Enhance the planner subagent to detect new reports created since the last plan version and integrate their findings into plan revisions."
+    },
+    {
+      "project_number": 301,
+      "project_name": "enhance_revise_command_with_dual_mode_routing",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "3 hours",
+      "description": "Update `/revise` command to detect plan presence and route to either task-reviser (no plan) or planner (plan exists with report integration)."
+    },
+    {
+      "project_number": 302,
+      "project_name": "test_dual_mode_revision_workflow",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2 hours",
+      "description": "Create comprehensive tests for the dual-mode revision workflow, covering task-only revision, plan revision without new reports, and plan revision with new reports."
     }
   ],
   "completed_projects": [
@@ -920,7 +1304,7 @@
       "project_name": "resolve_is_valid_swap_involution_blocker",
       "type": "research",
       "completed": "2025-12-29",
-      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas → Soundness). Full soundness proof succeeds."
+      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas \u2192 Soundness). Full soundness proof succeeds."
     },
     {
       "project_number": 214,
@@ -955,7 +1339,7 @@
       "started": "2025-12-26",
       "completed": "2025-12-29",
       "last_updated": "2025-12-29",
-      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 → 571 lines, +113 lines)",
+      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 \u2192 571 lines, +113 lines)",
       "artifacts": [
         ".opencode/specs/190_improve_maintenance_md_documentation/plans/implementation-002.md",
         ".opencode/specs/190_improve_maintenance_md_documentation/summaries/implementation-summary-20251229.md",
@@ -1919,7 +2303,7 @@
       "modified_files": [
         "Logos/Core/Semantics/Truth.lean"
       ],
-      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T φ.swap → is_valid T φ is semantically FALSE for arbitrary formulas. Counterexample: φ = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
+      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T \u03c6.swap \u2192 is_valid T \u03c6 is semantically FALSE for arbitrary formulas. Counterexample: \u03c6 = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
       "blocking_reason": "Theorem is semantically false for arbitrary formulas (proven by task 213). Not a type theory limitation but a fundamental logical impossibility. Task correctly marked impossible."
     },
     {

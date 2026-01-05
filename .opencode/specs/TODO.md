@@ -1248,3 +1248,318 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 **Description**: Create a /abandon command that takes a task number as argument (similar to /implement) and updates the status of the task in TODO.md and state.json to [ABANDONED]. The command should validate that the task exists and is not already completed or abandoned, prompt for an abandonment reason if not provided inline, and delegate to status-sync-manager to perform atomic updates to both files. The command should follow the same architectural patterns as /implement, /research, and /plan commands for consistency.
 
 ---
+
+## High Priority
+
+### 221. Fix Comprehensive Status Update Failures
+- **Effort**: 9.0
+- **Status**: [COMPLETED]
+- **Priority**: High
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/221_fix_comprehensive_status_update_failures/reports/research-001.md
+  - .opencode/specs/221_fix_comprehensive_status_update_failures/plans/implementation-001.md
+  - .opencode/specs/221_fix_comprehensive_status_update_failures/summaries/implementation-summary-20251228.md
+
+**Description**: Task 221
+
+
+---
+
+### 226. Fix Review Command
+- **Effort**: 8.0
+- **Status**: [COMPLETED]
+- **Priority**: High
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/226_fix_review_command/reports/research-001.md
+  - .opencode/specs/226_fix_review_command/plans/implementation-001.md
+  - .opencode/specs/226_fix_review_command/summaries/implementation-summary-20251228.md
+
+**Description**: Task 226
+
+
+---
+
+### 240. Systematically Investigate And Fix Persistent Workflow Command Stage 7 Postflight Failures
+- **Effort**: 56.0
+- **Status**: [RESEARCHED]
+- **Priority**: Critical
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md
+
+**Description**: Task 240
+
+
+---
+
+### 265. Clean Up Context Directory Structure By Migrating Common To Core And Removing Archive
+- **Effort**: TBD
+- **Status**: [PLANNED]
+- **Priority**: High
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/reports/research-001.md
+  - .opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md
+
+**Description**: Task 265
+
+
+---
+
+### 266. Fix Research Command Language Based Routing To Properly Invoke Lean Research Agent For Lean Tasks
+- **Effort**: 6.0
+- **Status**: [RESEARCHED]
+- **Priority**: High
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/reports/research-001.md
+
+**Description**: Task 266
+
+
+---
+
+### 271. Revise Meta Command Task Creation
+- **Effort**: 13.0
+- **Status**: [PLANNED]
+- **Priority**: High
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md
+  - .opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md
+
+**Description**: Task 271
+
+
+---
+
+### 274. Remove Status Metadata From Research Reports
+- **Effort**: TBD
+- **Status**: [COMPLETED]
+- **Priority**: High
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/274_remove_status_metadata_from_research_reports/summaries/implementation-summary-20260103.md
+  - .opencode/context/core/standards/report.md
+  - .opencode/agent/subagents/researcher.md
+
+**Description**: Task 274
+
+
+---
+
+### 275. Fix Workflow Status Updates
+- **Effort**: 8.0
+- **Status**: [COMPLETED]
+- **Priority**: High
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/275_fix_workflow_status_updates/reports/research-001.md
+  - .opencode/specs/275_fix_workflow_status_updates/reports/verification-001.md
+  - .opencode/specs/275_fix_workflow_status_updates/plans/implementation-001.md
+
+**Description**: Task 275
+
+
+---
+
+### 277. Improve Opencode Header And Summary Display For Task Commands
+- **Effort**: 3.5
+- **Status**: [PLANNED]
+- **Priority**: High
+- **Language**: general
+- **Artifacts**:
+  - .opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md
+  - .opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md
+  - .opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-002.md
+
+**Description**: Task 277
+
+
+---
+
+### 280. Fix Orchestrator Stage 4 Validation To Enforce Subagent Return Format And Prevent Phantom Research
+- **Effort**: 7.0
+- **Status**: [PLANNED]
+- **Priority**: High
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md
+  - .opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-001.md
+
+**Description**: Task 280
+
+
+---
+
+### 281. Fix Opencode Arguments Variable Not Being Passed To Orchestrator
+- **Effort**: 0.25
+- **Status**: [COMPLETED]
+- **Priority**: High
+- **Language**: general
+- **Artifacts**:
+  - .opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md
+  - .opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-002.md
+  - .opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-001.md
+
+**Description**: Task 281
+
+
+---
+
+### 282. Add Json Return Format Enforcement To Subagent Invocation
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+
+**Description**: Task 282
+
+
+---
+
+### 283. Fix Systematic Status Synchronization Failure
+- **Effort**: 3.5
+- **Status**: [COMPLETED]
+- **Priority**: High
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
+  - .opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md
+  - .opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-002.md
+
+**Description**: Task 283
+
+
+---
+
+### 285. Audit And Fix Status Update Behavior
+- **Effort**: 7.0
+- **Status**: [PLANNED]
+- **Priority**: High
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/285_audit_and_fix_status_update_behavior/task-description.md
+  - .opencode/specs/285_audit_and_fix_status_update_behavior/reports/research-001.md
+  - .opencode/specs/285_audit_and_fix_status_update_behavior/plans/implementation-001.md
+
+**Description**: Task 285
+
+
+---
+
+### 290. Fix Lean Research Agent Preflight Status Updates And Artifact Linking
+- **Effort**: 2.5
+- **Status**: [PLANNED]
+- **Priority**: High
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md
+  - .opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/plans/implementation-001.md
+
+**Description**: Task 290
+
+
+---
+
+### 292. Diagnose And Fix Implement 259 Command Failure
+- **Effort**: 2.5
+- **Status**: [PLANNED]
+- **Priority**: High
+- **Language**: general
+- **Artifacts**:
+  - .opencode/specs/292_diagnose_and_fix_implement_259_command_failure/reports/research-001.md
+  - .opencode/specs/292_diagnose_and_fix_implement_259_command_failure/plans/implementation-001.md
+
+**Description**: Task 292
+
+
+---
+
+### 293. Design And Implement Better Command Argument Handling For Orchestrator
+- **Effort**: 5.0
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+
+**Description**: Task 293
+
+
+---
+
+
+## Medium Priority
+
+### 256. Add Meta Command From Openagents With System Builder Subagents
+- **Effort**: TBD
+- **Status**: [PLANNED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md
+  - .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md
+
+**Description**: Task 256
+
+
+---
+
+### 259. Automation Tactics
+- **Effort**: 20.0
+- **Status**: [PLANNED]
+- **Priority**: Medium
+- **Language**: lean
+- **Artifacts**:
+  - .opencode/specs/259_automation_tactics/reports/research-001.md
+  - .opencode/specs/259_automation_tactics/plans/implementation-001.md
+
+**Description**: Task 259
+
+
+---
+
+### 272. Add Yaml Header To Todo Md
+- **Effort**: 14.0
+- **Status**: [COMPLETED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/272_add_yaml_header_to_todo_md/reports/research-001.md
+  - .opencode/specs/272_add_yaml_header_to_todo_md/plans/implementation-001.md
+  - .opencode/specs/272_add_yaml_header_to_todo_md/summaries/implementation-summary-20260104.md
+
+**Description**: Task 272
+
+
+---
+
+### 276. Investigate Remove Redundant Project Level State Json
+- **Effort**: 8.0
+- **Status**: [COMPLETED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Artifacts**:
+  - .opencode/specs/276_investigate_remove_redundant_project_level_state_json/reports/research-001.md
+  - .opencode/specs/276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md
+  - .opencode/specs/276_investigate_remove_redundant_project_level_state_json/summaries/implementation-summary-20260103.md
+
+**Description**: Task 276
+
+
+---
+
+### 287. Fix Revise Command Plan Link Replacement
+- **Effort**: 2.5
+- **Status**: [PLANNED]
+- **Priority**: Medium
+- **Language**: general
+- **Artifacts**:
+  - .opencode/specs/287_fix_revise_command_plan_link_replacement/reports/research-001.md
+  - .opencode/specs/287_fix_revise_command_plan_link_replacement/plans/implementation-001.md
+
+**Description**: Task 287
+
+
+---
