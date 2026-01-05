@@ -27,10 +27,16 @@ context_loading:
   required:
     - "core/standards/tasks.md"
     - "core/system/state-management.md"
+    - "core/system/state-lookup.md"  # For fast state.json queries (Phase 2 optimization)
   max_context_size: 20000
+  optimization:
+    phase: 2
+    performance: "Atomic task creation via status-sync-manager"
+    approach: "Use status-sync-manager.create_task() for guaranteed consistency"
 delegation:
   max_depth: 3
-  can_delegate_to: []
+  can_delegate_to:
+    - "status-sync-manager"  # For atomic task creation (Phase 2 optimization)
   timeout_default: 120
   timeout_max: 120
 lifecycle:
@@ -95,8 +101,8 @@ lifecycle:
   
   <atomic_updates>
     MUST update TODO.md and state.json atomically (both files or neither).
-    CANNOT use status-sync-manager (expects task to already exist).
-    Implements manual atomic updates with rollback on failure.
+    USES status-sync-manager.create_task() for atomic task creation (Phase 2 optimization).
+    status-sync-manager provides automatic rollback on failure.
     Ensures both files updated together or not at all.
   </atomic_updates>
 </critical_constraints>
@@ -252,70 +258,64 @@ lifecycle:
   </step_2_create_entry>
 
   <step_3_update_files>
-    <action>Update TODO.md and state.json atomically</action>
+    <action>Update TODO.md and state.json atomically via status-sync-manager (Phase 2 optimization)</action>
     <process>
-      NOTE: We do NOT use status-sync-manager for task creation because:
-      - status-sync-manager expects task to already exist in TODO.md
-      - Task creation is a special case (adding new entry, not updating existing)
-      - We handle atomic updates manually with proper error handling
+      NOTE: We NOW use status-sync-manager.create_task() for atomic task creation:
+      - status-sync-manager was enhanced in Phase 2 to support task creation
+      - Provides atomic updates with automatic rollback on failure
+      - Validates task number uniqueness
+      - Handles priority section placement
+      - Increments next_project_number atomically
       
-      1. Append task entry to TODO.md:
-         a. Read current TODO.md content
-         b. Find correct priority section (## High Priority, ## Medium Priority, ## Low Priority)
-         c. Append formatted task entry to that section
-         d. Write updated TODO.md atomically
-         e. If write fails: abort and return error
+      1. Prepare task metadata for status-sync-manager:
+         - task_number: {next_number} (from Step 1)
+         - title: {title} (from input)
+         - description: {description} (from input, 50-500 chars)
+         - priority: {priority} (from input, High|Medium|Low)
+         - effort: {effort} (from input)
+         - language: {language} (from input)
+         - status: "not_started" (default for new tasks)
       
-      2. Update state.json:
-         a. Read current state.json
-         b. Increment next_project_number by 1
-         c. Add entry to recent_activities:
-            {
-              "timestamp": "{ISO-8601}",
-              "activity": "Created task {number}: {title} ({effort}, {priority} priority, {language})"
-            }
-         d. Add entry to active_projects array:
-            {
-              "project_number": {number},
-              "project_name": "{slug_from_title}",
-              "type": "feature",
-              "phase": "not_started",
-              "status": "not_started",
-              "priority": "{priority_lowercase}",
-              "language": "{language}",
-              "description": "{description}",
-              "created": "{ISO-8601}",
-              "last_updated": "{ISO-8601}"
-            }
-         e. Update _last_updated timestamp
-         f. Write state.json atomically using jq
-         g. If write fails: rollback TODO.md and return error
+      2. Delegate to status-sync-manager with operation="create_task":
+         - Pass all task metadata
+         - status-sync-manager creates entry in both TODO.md and state.json atomically
+         - Validates task number uniqueness
+         - Places in correct priority section
+         - Increments next_project_number
+         - Automatic rollback on failure
       
-      3. Verify atomic update succeeded:
+      3. Receive return from status-sync-manager:
+         - If status == "completed": Task created successfully
+         - If status == "failed": Task creation failed, no changes made
+         - Extract error details if failed
+      
+      4. Verify atomic update succeeded (if status == "completed"):
          - Read TODO.md and verify task entry present
          - Read state.json and verify next_project_number incremented
          - Read state.json and verify active_projects contains new task
+         - Verify description field present in both TODO.md and state.json
          - If verification fails: return error with details
     </process>
     <error_handling>
-      If TODO.md update fails:
-        - Return error: "Failed to update TODO.md"
-        - Include error details
-        - Suggest: "Check TODO.md file permissions and format"
-        - DO NOT update state.json
-      
-      If state.json update fails:
-        - Rollback TODO.md changes (remove added entry)
-        - Return error: "Failed to update state.json (TODO.md rolled back)"
-        - Include error details
-        - Suggest: "Check state.json file permissions and format"
+      If status-sync-manager returns "failed":
+        - Return error: "Failed to create task atomically"
+        - Include error details from status-sync-manager
+        - Suggest: "Check TODO.md and state.json file permissions and format"
+        - No rollback needed (status-sync-manager already handled it)
       
       If verification fails:
         - Return error: "Atomic update verification failed"
         - Include details of what failed
         - Suggest: "Manually verify TODO.md and state.json consistency"
     </error_handling>
-    <checkpoint>TODO.md and state.json updated atomically</checkpoint>
+    <optimization>
+      Phase 2 optimization: Use status-sync-manager.create_task() for:
+      - Guaranteed atomic updates (both files or neither)
+      - Automatic rollback on failure
+      - Consistent task creation across all commands (/task, /meta)
+      - Better error handling and validation
+    </optimization>
+    <checkpoint>TODO.md and state.json updated atomically via status-sync-manager</checkpoint>
   </step_3_update_files>
 
   <step_4_return>

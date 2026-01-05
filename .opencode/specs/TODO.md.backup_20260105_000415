@@ -511,7 +511,7 @@ technical_debt:
 
 ### 189. Add --divide flag to /research command for topic subdivision
 - **Effort**: 3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [IN PROGRESS]
 - **Started**: 2025-12-26
 - **Priority**: Medium
 - **Language**: markdown
@@ -638,7 +638,7 @@ CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client
 
 ### 279. Systematically fix metadata lookup to use state.json instead of TODO.md
 - **Effort**: 12-16 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING] (Started: 2026-01-03)
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -1067,17 +1067,5 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Dependencies**: None
 
 **Description**: Create a /sync command that bidirectionally synchronizes .opencode/specs/TODO.md and .opencode/specs/state.json, ensuring both files contain identical task information with the most recent changes from either file. The command should detect discrepancies between the two files, intelligently resolve conflicts by preferring the most recently updated data, and perform atomic updates to both files using the existing status-sync-manager's two-phase commit protocol. This addresses the architectural requirement that state.json is the authoritative source for metadata reads while TODO.md serves as the user-facing view, with synchronization ensuring consistency between them.
-
----
-
-### 297. Simplify /task command to directly create tasks without subagent delegation
-- **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Refactor the /task command to directly create task entries in TODO.md and state.json without delegating to description-clarifier and task-creator subagents. The command should reformulate the user's rough description into a clear 2-3 sentence description inline, look up next_project_number from state.json, create the task entry in both files atomically, and increment next_project_number. This simplifies the architecture by removing unnecessary delegation layers while maintaining the same functionality. The command should still support optional flags (--priority, --effort, --language) and perform basic language detection from keywords in the description.
 
 ---

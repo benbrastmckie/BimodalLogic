@@ -230,8 +230,8 @@ class StateValidator:
                 ))
             
             # Check description
-            todo_desc = todo_task.get('description', '').strip()
-            state_desc = state_task.get('description', '').strip()
+            todo_desc = (todo_task.get('description') or '').strip()
+            state_desc = (state_task.get('description') or '').strip()
             
             if not todo_desc and state_desc:
                 self.issues.append(Issue(
