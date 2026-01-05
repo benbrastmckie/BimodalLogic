@@ -40,7 +40,7 @@ technical_debt:
 - **Research**: [Research Report](.opencode/specs/312_fix_workflow_command_postflight_failures/reports/research-001.md)
 - **Researched**: 2026-01-05
 
-**Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 307 created research-001.md but task status remains [RESEARCHING] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.
+**Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 307 created research-001.md but task status remains [RESEARCHED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.
 
 ---
 
@@ -939,7 +939,7 @@ Root cause identified for `/research 290` status update failure: lean-research-a
 
 **Evidence**:
 - `/research 290` created research report successfully
-- Status remained `[RESEARCHING]` instead of updating to `[RESEARCHED]`
+- Status remained `[RESEARCHED]` instead of updating to `[RESEARCHED]`
 - No artifact link added to TODO.md
 - No state.json update
 - No git commit created
@@ -983,7 +983,7 @@ Compare with researcher.md step_4_postflight (lines 331-379):
 
 **Phase 3: Test with Lean task** (1 hour)
 1. Test `/research` on a Lean task (e.g., task 260)
-2. Verify status updates to `[RESEARCHING]` at start
+2. Verify status updates to `[RESEARCHED]` at start
 3. Verify status updates to `[RESEARCHED]` at end
 4. Verify artifact link added to TODO.md (research report only, no summary)
 5. Verify state.json updated with artifact path
@@ -997,7 +997,7 @@ Compare with researcher.md step_4_postflight (lines 331-379):
 - [ ] lean-research-agent step_6 delegates to status-sync-manager (not direct file updates)
 - [ ] lean-research-agent step_6 delegates to git-workflow-manager (not manual git commands)
 - [ ] Summary artifact requirement removed (only research report created)
-- [ ] `/research` on Lean tasks updates status to `[RESEARCHING]` at start
+- [ ] `/research` on Lean tasks updates status to `[RESEARCHED]` at start
 - [ ] `/research` on Lean tasks updates status to `[RESEARCHED]` at end
 - [ ] Artifact link added to TODO.md (research report only)
 - [ ] state.json updated with artifact path
@@ -1049,6 +1049,8 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ---
 
 ### 313. Configure opencode agent system to prevent permission interruptions
+- **Research**: [Research Report](.opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/reports/research-001.md)
+- **Researched**: 2026-01-05
 - **Effort**: TBD
 - **Status**: [RESEARCHED]
 - **Priority**: Medium
