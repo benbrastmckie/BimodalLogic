@@ -409,9 +409,9 @@ Orchestrator simplified to pure router:
 </stage>
 ```
 
-### Phase 4: Update Subagents
+### Phase 4: Update Subagents ✅ COMPLETED
 
-Subagents receive parsed context from command files:
+Subagents updated to receive parsed context from command files:
 ```xml
 <step_0_preflight>
   1. Extract task_number from delegation context (parsed by command file)
@@ -420,6 +420,14 @@ Subagents receive parsed context from command files:
   4. Proceed
 </step_0_preflight>
 ```
+
+Updated subagents:
+- implementer.md
+- researcher.md
+- planner.md
+- lean-implementation-agent.md
+- lean-research-agent.md
+- lean-planner.md
 
 ---
 

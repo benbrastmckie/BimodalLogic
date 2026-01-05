@@ -103,13 +103,14 @@ lifecycle:
   <step_0_preflight>
     <action>Preflight: Extract validated inputs and update status to [IMPLEMENTING]</action>
     <process>
-      1. Extract task inputs from delegation context (already validated by orchestrator):
+      1. Extract task inputs from delegation context (already parsed and validated by command file):
          - task_number: Integer (already validated to exist in TODO.md)
          - language: String (should be "lean" for this agent)
          - task_description: String (already extracted from TODO.md)
          - Example: task_number=259, language="lean", task_description="Implement automation tactics"
          
-         NOTE: Orchestrator has already:
+         NOTE: Command file (/implement) has already:
+         - Parsed task_number from $ARGUMENTS
          - Validated task_number exists in TODO.md
          - Extracted language from task metadata
          - Routed to lean-implementation-agent because language="lean"

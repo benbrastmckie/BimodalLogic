@@ -106,67 +106,41 @@ lifecycle:
 
 <process_flow>
   <step_0_preflight>
-    <action>Preflight: Validate task and update status to [PLANNING]</action>
+    <action>Preflight: Extract validated inputs and update status to [PLANNING]</action>
     <process>
-      1. Parse task_number from delegation context or prompt string:
-         a. Check if task_number parameter provided in delegation context
-         b. If not provided, parse from prompt string:
-            - Extract first numeric argument from prompt (e.g., "267" from "/plan 267")
-            - Support formats: "/plan 267", "267", "Task: 267", "plan 267"
-            - Use regex or string parsing to extract task number
-         c. Validate task_number is positive integer
-         d. If task_number not found or invalid: Return failed status with error
-      2. Validate task exists in .opencode/specs/TODO.md:
-         ```bash
-         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md
-         ```
-      3. Extract task description, language (should be "lean"), priority from task entry
-      4. Extract any existing artifact links (research, previous plans)
-      5. Validate task language is "lean" (abort if not)
-      6. Verify task not [COMPLETED] or [ABANDONED]
-      7. Verify task is in valid starting status ([RESEARCHED] or [NOT STARTED])
-      8. Generate timestamp: $(date -I) for ISO 8601 format (YYYY-MM-DD)
-      9. Invoke status-sync-manager to mark [PLANNING]:
-         a. Prepare delegation context:
-            - task_number: {number}
-            - new_status: "planning"
-            - timestamp: {date}
-            - session_id: {session_id}
-            - delegation_depth: {depth + 1}
-            - delegation_path: [...delegation_path, "status-sync-manager"]
-         b. Invoke status-sync-manager with timeout (60s)
-         c. Validate return status == "completed"
-         d. Verify files_updated includes ["TODO.md", "state.json"]
-         e. If status update fails: Abort with error and recommendation
-      10. Log preflight completion
+      1. Extract task inputs from delegation context (already parsed and validated by command file):
+         - task_number: Integer (already validated to exist in TODO.md)
+         - language: String (should be "lean" for this agent)
+         - task_description: String (already extracted from TODO.md)
+         - Example: task_number=267, language="lean", task_description="Create Lean implementation plan"
+         
+         NOTE: Command file (/plan or /revise) has already:
+         - Parsed task_number from $ARGUMENTS
+         - Validated task_number exists in TODO.md
+         - Extracted language from task metadata
+         - Routed to lean-planner because language="lean"
+         - Extracted task description
+         
+         No re-parsing or re-validation needed!
+      
+      2. Extract any existing artifact links from TODO.md:
+         - Read task entry
+         - Extract research links
+         - Extract previous plan links (for /revise)
+      
+      3. Validate task is in valid starting status:
+         - Valid: [RESEARCHED] or [NOT STARTED]
+         - Invalid: [COMPLETED] or [ABANDONED]
+         - If invalid: Return error
+      
+      4. Update status to [PLANNING]:
+         - Delegate to status-sync-manager with task_number and new_status="planning"
+         - Validate status update succeeded
+         - Generate timestamp: $(date -I)
+      
+      5. Proceed to Lean planning with validated inputs
     </process>
-    <validation>Task validated, status updated to [PLANNING]</validation>
-    <error_handling>
-      If task_number not provided or invalid:
-        Return status "failed" with error:
-        - type: "validation_failed"
-        - message: "Task number not provided or invalid. Expected positive integer."
-        - recommendation: "Provide task number as first argument (e.g., /plan 267)"
-      
-      If task not found:
-        Return status "failed" with error:
-        - type: "validation_failed"
-        - message: "Task {task_number} not found in TODO.md"
-        - recommendation: "Verify task number exists in TODO.md"
-      
-      If task language is not "lean":
-        Return status "failed" with error:
-        - type: "routing_error"
-        - message: "Task {number} is not a Lean task (language: {language}). Use planner for general tasks."
-        - recommendation: "Verify task language or use /plan command which routes automatically"
-      
-      If status update fails:
-        Return status "failed" with error:
-        - type: "status_update_failed"
-        - message: "Failed to update status to [PLANNING]"
-        - recommendation: "Check status-sync-manager logs and retry"
-    </error_handling>
-    <output>Task validated, status updated to [PLANNING], Lean task details loaded</output>
+    <checkpoint>Task inputs extracted from validated context, status updated to [PLANNING]</checkpoint>
   </step_0_preflight>
 
   <step_1>

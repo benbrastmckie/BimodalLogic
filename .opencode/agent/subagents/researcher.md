@@ -140,17 +140,18 @@ lifecycle:
   <step_0_preflight>
     <action>Preflight: Extract validated inputs and update status to [RESEARCHING]</action>
     <process>
-      1. Extract task inputs from delegation context (already validated by orchestrator):
+      1. Extract task inputs from delegation context (already parsed and validated by command file):
          - task_number: Integer (already validated to exist in TODO.md)
          - language: String (already extracted from task metadata)
          - task_description: String (already extracted from TODO.md)
          - Example: task_number=271, language="lean", task_description="Research modal logic"
          
-         NOTE: Orchestrator has already:
+         NOTE: Command file (/research) has already:
+         - Parsed task_number from $ARGUMENTS
          - Validated task_number exists in TODO.md
          - Extracted language from task metadata
          - Extracted task description
-         - Performed language-based routing
+         - Performed language-based routing to this subagent
          
          No re-parsing or re-validation needed!
       
