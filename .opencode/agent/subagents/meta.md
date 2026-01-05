@@ -28,10 +28,6 @@ context_loading:
     - "core/standards/architecture-principles.md"
     - "core/standards/domain-patterns.md"
   max_context_size: 60000
-  optimization:
-    phase: 2
-    performance: "Atomic task creation via status-sync-manager"
-    approach: "Use status-sync-manager.create_task() for guaranteed consistency"
 delegation:
   max_depth: 3
   can_delegate_to: 

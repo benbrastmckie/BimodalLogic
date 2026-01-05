@@ -15,20 +15,16 @@ context_loading:
     - "core/standards/delegation.md"
     - "core/system/state-management.md"
     - "core/system/routing-guide.md"
-    - "core/system/state-lookup.md"  # For fast state.json queries (Phase 2 optimization)
+    - "core/system/state-lookup.md"  # Fast state.json queries
     - "core/standards/command-argument-handling.md"
   data_files:
     - ".opencode/specs/TODO.md"
-    - ".opencode/specs/state.json"  # Primary source for next_project_number and task queries
+    - ".opencode/specs/state.json"  # State tracking
     - "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md"
     - "Documentation/ProjectInfo/SORRY_REGISTRY.md"
     - "Documentation/ProjectInfo/TACTIC_REGISTRY.md"
     - "Documentation/ProjectInfo/FEATURE_REGISTRY.md"
   max_context_size: 100000
-  optimization:
-    phase: 2
-    performance: "Fast task metadata access via state.json"
-    approach: "Read next_project_number from state.json (already implemented)"
 ---
 
 **Usage:** `/review [SCOPE]`

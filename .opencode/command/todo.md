@@ -10,16 +10,12 @@ context_loading:
   required:
     - "core/system/state-management.md"  # For status markers and state schemas
     - "core/system/artifact-management.md"  # For directory operations
-    - "core/system/state-lookup.md"      # For fast state.json queries (Phase 2 optimization)
+    - "core/system/state-lookup.md"      # Fast state.json queries
   data_files:
     - ".opencode/specs/TODO.md"          # Main TODO file
-    - ".opencode/specs/state.json"       # State tracking (primary source for task scanning)
+    - ".opencode/specs/state.json"       # State tracking
     - ".opencode/specs/archive/state.json"  # Archive state (lazy-created)
   max_context_size: 50000
-  optimization:
-    phase: 2
-    performance: "13x faster task scanning (200ms → 15ms)"
-    approach: "Query state.json with jq instead of parsing TODO.md"
 ---
 
 <context>
@@ -68,14 +64,6 @@ context_loading:
       5. Count total tasks to archive
       6. Prepare archival list with metadata
     </process>
-    <performance>
-      Total time: ~15ms (13x faster than TODO.md scanning)
-      
-      Comparison:
-        - Old approach (TODO.md parsing): ~200ms
-        - New approach (state.json query): ~15ms
-        - Improvement: 13x faster
-    </performance>
     <identification>
       Tasks to archive (from state.json):
         - status == "completed"

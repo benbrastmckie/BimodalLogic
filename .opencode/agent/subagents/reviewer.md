@@ -28,11 +28,8 @@ context_loading:
     - "core/standards/delegation.md"
     - "core/system/state-management.md"
     - "core/system/artifact-management.md"
-    - "core/system/state-lookup.md"  # For fast state.json queries (Phase 2 optimization)
+    - "core/system/state-lookup.md"  # Fast state.json queries
   max_context_size: 50000
-  optimization:
-    phase: 2
-    note: "Use state.json for task queries (language-specific, status-based) instead of parsing TODO.md"
 delegation:
   max_depth: 3
   can_delegate_to:
