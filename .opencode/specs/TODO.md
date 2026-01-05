@@ -32,14 +32,25 @@ technical_debt:
 
 ### 293. Design and implement better command argument handling for orchestrator
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED] (2026-01-04)
+- **Completed**: 2026-01-04
 - **Priority**: High
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
+- **Implementation**: Completed via argument-passing-root-cause-analysis.md refactor
+- **Related**: See `.opencode/specs/argument-passing-root-cause-analysis.md` for full implementation details
 
 **Description**:
 The current command argument handling system is clunky and creates poor user experience. When running `/implement 290`, the orchestrator displays verbose logging like "Stage 1: PreflightValidation → Read .opencode/command/implement.md → Extract task number from arguments → $ echo '290' → 290 → LOG Stage 1: PreflightValidation - Command type determined: task-based". This is unnecessarily verbose and exposes internal implementation details to users.
+
+**COMPLETED SOLUTION**:
+Implemented three-layer delegation architecture with command files as argument parsing agents:
+- Orchestrator simplified to pure router (2 stages, ~150 lines)
+- Command files handle argument parsing with workflow_execution stages
+- Command files support `/command TASK_NUMBER [PROMPT]` format
+- Execution subagents receive clean, validated inputs
+- All goals from this task achieved
 
 **Current Issues**:
 1. **Verbose Logging**: Orchestrator Stage 1 logs every step of argument parsing
@@ -656,10 +667,11 @@ Ensures all workflow commands follow the two-phase status update pattern defined
 
 ### 259. Automation Tactics
 - **Effort**: 17-23 hours (revised from 40-60 hours based on research findings)
-- **Status**: [PLANNED] (2026-01-04)
+- **Status**: [IMPLEMENTING] (2026-01-04)
 - **Started**: 2026-01-04
 - **Researched**: 2026-01-04
 - **Planned**: 2026-01-04
+- **Implementing**: 2026-01-04
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -1772,16 +1784,26 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 292. Diagnose and fix /implement 259 command failure - orchestrator unable to extract $ARGUMENTS
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED] (2026-01-04)
+- **Status**: [COMPLETED] (2026-01-04)
+- **Completed**: 2026-01-04
 - **Priority**: High
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/292_diagnose_and_fix_implement_259_command_failure/reports/research-001.md)
 - **Plan**: [Implementation Plan](.opencode/specs/292_diagnose_and_fix_implement_259_command_failure/plans/implementation-001.md)
+- **Implementation**: Completed via argument-passing-root-cause-analysis.md refactor (Task 293)
+- **Related**: See `.opencode/specs/argument-passing-root-cause-analysis.md` for root cause analysis and solution
 
 **Description**:
-When running `/implement 259`, the orchestrator workflow fails at Stage 1 (PreflightValidation) while attempting to extract the `$ARGUMENTS` variable. The command output shows:
+When running `/implement 259`, the orchestrator workflow fails at Stage 1 (PreflightValidation) while attempting to extract the `$ARGUMENTS` variable.
+
+**COMPLETED SOLUTION**:
+Root cause identified and fixed through architectural refactor:
+- Command files now receive $ARGUMENTS and parse them directly
+- Orchestrator simplified to pure router that delegates to command files
+- Command files extract task number, validate, and route to execution subagents
+- Three-layer delegation architecture eliminates argument passing issues The command output shows:
 
 ```
 I'll execute the /implement command by following the orchestrator workflow stages.
