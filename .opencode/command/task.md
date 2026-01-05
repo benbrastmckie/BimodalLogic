@@ -9,6 +9,8 @@ routing:
 
 **Task Input (required):** $ARGUMENTS (task description; e.g., `/task "Implement feature X"`)
 
+**CRITICAL WARNING**: This command ONLY creates task entries. It MUST NOT implement tasks.
+
 <context>
   <system_context>Task creation command with delegation to task-creator subagent</system_context>
   <task_context>Parse task description and flags, delegate to task-creator for atomic creation</task_context>
@@ -17,10 +19,59 @@ routing:
 <role>Task creation command - Parse arguments and route to task-creator subagent</role>
 
 <task>
-  Parse task description from $ARGUMENTS, extract optional flags, delegate to task-creator subagent for atomic task creation
+  CRITICAL: This command ONLY creates task entries in TODO.md. It NEVER implements tasks.
+  
+  Process:
+  1. Parse task description from $ARGUMENTS
+  2. Extract optional flags (--priority, --effort, --language)
+  3. Validate all inputs
+  4. Delegate to task-creator subagent
+  5. Return task number to user
+  
+  DO NOT implement the task. DO NOT create any files except via task-creator delegation.
+  DO NOT examine existing files to understand how to implement the task.
+  DO NOT create /sync commands or any other implementation.
+  
+  ONLY parse arguments and delegate to task-creator.
 </task>
 
+<critical_constraints>
+  <absolutely_forbidden>
+    This command MUST NOT:
+    - Implement the task described in $ARGUMENTS
+    - Create any commands, agents, or implementation files
+    - Examine existing code to understand implementation
+    - Create /sync commands or similar
+    - Do anything except parse arguments and delegate to task-creator
+    
+    If you find yourself thinking about HOW to implement the task:
+    - STOP immediately
+    - You are violating the command constraints
+    - Return to parsing arguments and delegating to task-creator
+  </absolutely_forbidden>
+  
+  <only_allowed_actions>
+    The ONLY actions allowed:
+    1. Parse task description from $ARGUMENTS
+    2. Extract --priority, --effort, --language flags
+    3. Validate inputs
+    4. Delegate to task-creator subagent
+    5. Return result to user
+  </only_allowed_actions>
+</critical_constraints>
+
 <workflow_execution>
+  <critical_reminder>
+    STOP: Before executing any stage, remember:
+    - This command ONLY creates task entries
+    - This command NEVER implements tasks
+    - If $ARGUMENTS says "Implement X" or "Create Y", you are NOT implementing X or creating Y
+    - You are creating a TASK ENTRY that describes implementing X or creating Y
+    - The task will be implemented LATER by /implement command
+    
+    Your ONLY job: Parse arguments → Delegate to task-creator → Return task number
+  </critical_reminder>
+  
   <stage id="1" name="ParseAndValidate">
     <action>Parse task description and extract optional flags</action>
     <process>
