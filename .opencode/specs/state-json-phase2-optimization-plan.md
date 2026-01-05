@@ -2,8 +2,34 @@
 
 **Project**: ProofChecker State Management Optimization - Phase 2
 **Created**: 2026-01-05
+**Revised**: 2026-01-05 (Coordinated with task-command-refactor-plan.md)
 **Status**: DRAFT - Ready for Review
 **Depends On**: state-json-optimization-plan.md (Phase 1 - COMPLETED)
+**Coordinates With**: task-command-refactor-plan.md (IN PROGRESS)
+
+## Revision Summary (2026-01-05)
+
+This plan has been revised to coordinate with `task-command-refactor-plan.md`, which enhances the `/task` command to include description clarification. Key changes:
+
+### Changes to Phase 1 (Synchronization Utilities)
+- **status-sync-manager.create_task()** now supports separate `title` and `description` parameters
+- TODO.md format includes **Description**: field (per task-command-refactor-plan.md)
+- state.json format includes "description" field (per task-command-refactor-plan.md)
+- Validation utilities check description field consistency
+- Repair utilities handle missing description fields
+- **Effort increased**: 3 hours → 3.5 hours
+
+### Changes to Phase 5 (/task Command)
+- **Scope changed**: Focus on task-creator subagent integration with sync manager
+- **Workflow unchanged**: /task command workflow handled by task-command-refactor-plan.md
+- task-creator subagent updated to use status-sync-manager.create_task()
+- Ensures atomic task creation with description field
+- **Effort increased**: 1.5 hours → 2 hours
+
+### Implementation Coordination
+- **Critical Path**: This plan Phase 1 → task-command-refactor-plan.md Phase 2 → This plan Phase 5 → task-command-refactor-plan.md Phase 3
+- **Parallel Work**: Phases 2-4 (/todo, /review, /meta) can proceed independently
+- **Total Effort**: 13.5 hours → 14.5 hours
 
 ## Executive Summary
 
@@ -111,11 +137,13 @@ Synchronization:
 
 ## Implementation Plan
 
-### Phase 1: Enhance Synchronization Utilities (3 hours)
+### Phase 1: Enhance Synchronization Utilities (3.5 hours)
 
 **Goal**: Improve status-sync-manager and create validation/repair utilities
 
-#### Task 1.1: Enhance status-sync-manager (1.5 hours)
+**Note**: This phase coordinates with task-command-refactor-plan.md to support description field in task creation.
+
+#### Task 1.1: Enhance status-sync-manager (2 hours)
 
 **Current Capabilities**:
 - Atomic status updates
@@ -128,6 +156,7 @@ Synchronization:
    - Atomic creation in both TODO.md and state.json
    - Validate task number uniqueness
    - Handle priority section placement
+   - **Support description field** (per task-command-refactor-plan.md)
 
 2. **Bulk Operations Support**:
    - Add `archive_tasks()` method
@@ -136,7 +165,7 @@ Synchronization:
    - Update TODO.md in single transaction
 
 3. **Metadata Sync**:
-   - Ensure all fields sync correctly (language, priority, effort, etc.)
+   - Ensure all fields sync correctly (language, priority, effort, **description**, etc.)
    - Validate metadata consistency
    - Handle optional fields gracefully
 
@@ -144,12 +173,47 @@ Synchronization:
 ```markdown
 New Methods in status-sync-manager:
 
-1. create_task(task_number, description, metadata)
+1. create_task(task_number, title, description, metadata)
    - Validate task_number not in use
-   - Create entry in state.json active_projects
-   - Create entry in TODO.md (correct priority section)
+   - Validate description is non-empty (50-500 chars, per task-command-refactor-plan.md)
+   - Create entry in state.json active_projects with description field
+   - Create entry in TODO.md with Description field (correct priority section)
    - Atomic commit (both or neither)
    - Return success/failure
+
+   TODO.md format (per task-command-refactor-plan.md):
+   ```
+   ### {number}. {title}
+   - **Effort**: {effort}
+   - **Status**: [NOT STARTED]
+   - **Priority**: {priority}
+   - **Language**: {language}
+   - **Blocking**: None
+   - **Dependencies**: None
+   
+   **Description**: {description}
+   
+   ---
+   ```
+
+   state.json format (per task-command-refactor-plan.md):
+   ```json
+   {
+     "project_number": {number},
+     "project_name": "{slug}",
+     "type": "feature",
+     "phase": "not_started",
+     "status": "not_started",
+     "priority": "{priority}",
+     "language": "{language}",
+     "description": "{description}",
+     "effort": "{effort}",
+     "blocking": [],
+     "dependencies": [],
+     "created": "{timestamp}",
+     "last_updated": "{timestamp}"
+   }
+   ```
 
 2. archive_tasks(task_numbers, archive_metadata)
    - Validate all tasks exist
@@ -161,6 +225,7 @@ New Methods in status-sync-manager:
 
 3. validate_metadata(task_number)
    - Compare TODO.md and state.json metadata
+   - Include description field in comparison
    - Return differences if any
    - Suggest corrections
 ```
@@ -168,13 +233,22 @@ New Methods in status-sync-manager:
 **Files to Modify**:
 - `.opencode/agent/subagents/status-sync-manager.md`
 
+**Coordination with task-command-refactor-plan.md**:
+- ✅ create_task() signature includes title and description (separate parameters)
+- ✅ TODO.md format includes **Description**: field
+- ✅ state.json format includes "description" field
+- ✅ Validation ensures description is 50-500 chars
+- ✅ Compatible with task-creator subagent updates (task-command-refactor-plan.md Phase 2)
+
 **Validation**:
 - [ ] create_task() creates task atomically in both files
+- [ ] Description field appears in both TODO.md and state.json
 - [ ] archive_tasks() handles bulk operations correctly
 - [ ] Rollback works for all new methods
-- [ ] Metadata stays synchronized
+- [ ] Metadata stays synchronized (including description)
+- [ ] Multi-line descriptions work correctly
 
-**Estimated Effort**: 1.5 hours
+**Estimated Effort**: 2 hours (increased from 1.5 hours due to description field support)
 
 #### Task 1.2: Create Validation Utility (1 hour)
 
@@ -227,6 +301,7 @@ Usage:
    - Priority matches
    - Language matches
    - Effort matches
+   - Description matches (NEW - per task-command-refactor-plan.md)
    - Severity: WARNING (metadata mismatch)
 
 3. Numbering:
@@ -237,6 +312,8 @@ Usage:
 4. Structure:
    - state.json is valid JSON
    - TODO.md has required sections
+   - TODO.md has Description field for each task (NEW)
+   - state.json has description field for each task (NEW)
    - Severity: CRITICAL (structure issues)
 ```
 
@@ -279,23 +356,29 @@ Features:
 **Repair Strategies**:
 ```python
 1. Missing Task in state.json:
-   - Parse task from TODO.md
-   - Add to state.json active_projects
+   - Parse task from TODO.md (including Description field)
+   - Add to state.json active_projects (including description field)
    - Preserve all metadata
 
 2. Missing Task in TODO.md:
-   - Get task from state.json
-   - Add to TODO.md (correct priority section)
-   - Format according to standards
+   - Get task from state.json (including description field)
+   - Add to TODO.md with Description field (correct priority section)
+   - Format according to standards (per task-command-refactor-plan.md)
 
 3. Metadata Mismatch:
    - Prompt user: "Use state.json or TODO.md as source?"
    - Or: Use state.json by default (automation-friendly)
    - Update the other file
+   - Include description field in comparison
 
 4. Incorrect next_project_number:
    - Calculate: max(all_task_numbers) + 1
    - Update state.json
+
+5. Missing Description Field (NEW):
+   - If TODO.md has Description but state.json doesn't: copy to state.json
+   - If state.json has description but TODO.md doesn't: copy to TODO.md
+   - If neither has description: mark as WARNING (legacy task)
 ```
 
 **Files to Modify**:
@@ -516,79 +599,100 @@ Stage 7: Create Tasks With Artifacts
 
 ---
 
-### Phase 5: Optimize /task Command (1.5 hours)
+### Phase 5: Optimize /task Command (2 hours)
 
-**Goal**: Use enhanced sync manager for atomic task creation
+**Goal**: Integrate with task-creator subagent for atomic task creation with description clarification
 
-#### Current Approach
+#### Current Approach (Per task-command-refactor-plan.md)
+
+The `/task` command is being refactored to include description clarification:
 
 ```xml
-<stage id="3" name="CreateTODOEntry">
-  1. Format task entry
-  2. Determine correct section in TODO.md
-  3. Append entry to appropriate section
-  4. Use Edit tool to add entry
+<stage id="1" name="ParseAndValidate">
+  - Parse rough description from $ARGUMENTS
+  - Extract optional flags (--priority, --effort, --language, --skip-clarification)
+  - Validate description is non-empty
 </stage>
 
-<stage id="4" name="UpdateStateJson">
-  1. Read current state.json
-  2. Increment next_project_number by 1
-  3. Add entry to recent_activities
-  4. Update _last_updated timestamp
-  5. Write state.json atomically
+<stage id="2" name="ClarifyDescription">
+  - Invoke description-clarifier subagent
+  - Research and clarify task description
+  - Extract metadata (language, priority, effort)
+  - Override flags with clarified metadata if not explicitly set
+</stage>
+
+<stage id="3" name="CreateTask">
+  - Invoke task-creator subagent
+  - Pass clarified description and metadata
+  - task-creator handles TODO.md and state.json updates
 </stage>
 ```
 
-**Issue**: Two separate stages, not atomic across both files
+**Issue**: task-creator subagent (per task-command-refactor-plan.md Phase 2) will be updated to require description field and create entries in both TODO.md and state.json, but needs to use enhanced sync manager for atomic operations.
 
 #### Proposed Approach
 
-```xml
-<stage id="3" name="CreateTask">
-  <action>Create task atomically in both TODO.md and state.json</action>
-  <process>
-    1. Prepare task metadata:
-       - task_number (from state.json)
-       - description
-       - priority
-       - effort
-       - language
-       - status: [NOT STARTED]
-    
-    2. Call status-sync-manager.create_task():
-       - Atomic creation in both files
-       - Validates task number uniqueness
-       - Places in correct priority section
-       - Increments next_project_number
-       - Rollback on failure
-    
-    3. Validate creation succeeded
-  </process>
-  <checkpoint>Task created atomically</checkpoint>
-</stage>
+**Phase 5 focuses on ensuring task-creator uses enhanced sync manager**, not modifying /task command workflow (which is handled by task-command-refactor-plan.md).
 
-<stage id="4" name="ReturnSuccess">
-  (Same as before)
-</stage>
-```
+**Changes to task-creator subagent**:
+
+1. **Update Step 3 (UpdateFiles) to use enhanced sync manager**:
+   ```xml
+   <step_3_update_files>
+     <action>Create task atomically using enhanced sync manager</action>
+     <process>
+       1. Prepare task metadata:
+          - task_number (from next_project_number)
+          - title
+          - description (NEW - from clarified description)
+          - priority
+          - effort
+          - language
+          - status: not_started
+       
+       2. Call status-sync-manager.create_task():
+          - Atomic creation in both TODO.md and state.json
+          - Validates task number uniqueness
+          - Places in correct priority section
+          - Increments next_project_number
+          - Rollback on failure
+       
+       3. Validate creation succeeded
+       4. Return task number and metadata
+     </process>
+     <checkpoint>Task created atomically</checkpoint>
+   </step_3_update_files>
+   ```
+
+2. **Remove separate TODO.md and state.json update logic**:
+   - Old approach: Step 2 formats TODO entry, Step 3 updates both files separately
+   - New approach: Step 2 prepares metadata, Step 3 delegates to sync manager
 
 **Files to Modify**:
-- `.opencode/command/task.md`
+- `.opencode/agent/subagents/task-creator.md` (update Step 3 to use sync manager)
+
+**Coordination with task-command-refactor-plan.md**:
+- ✅ task-command-refactor-plan.md Phase 2 adds description field to task-creator inputs
+- ✅ This phase (state.json Phase 5) makes task-creator use sync manager for atomic updates
+- ✅ Both changes are compatible and complementary
 
 **Benefits**:
 - ✅ Atomic task creation (both files or neither)
-- ✅ Simpler workflow (3 stages → 2 stages)
+- ✅ Consistent with other optimized commands
 - ✅ Better error handling (automatic rollback)
 - ✅ Guaranteed consistency
+- ✅ Works seamlessly with description clarification workflow
 
 **Validation**:
-- [ ] Task created atomically
-- [ ] Appears in both TODO.md and state.json
+- [ ] task-creator uses enhanced sync manager
+- [ ] Task created atomically in both TODO.md and state.json
+- [ ] Description field included (from task-command-refactor-plan.md)
 - [ ] Metadata is consistent
 - [ ] Rollback works on failure
 - [ ] next_project_number increments correctly
+- [ ] Works with /task command's clarification workflow
 
-**Estimated Effort**: 1.5 hours
+**Estimated Effort**: 2 hours (increased from 1.5 hours due to coordination with task-command-refactor-plan.md)
 
 ---
 
@@ -604,9 +708,11 @@ Stage 7: Create Tasks With Artifacts
 | `/todo` | No tasks to archive | Fast scan, early return |
 | `/review` | Full codebase review | Fast task queries, atomic task creation |
 | `/meta` | Create 3 tasks | Atomic creation, all tasks in both files |
-| `/task` | Create single task | Atomic creation, correct metadata |
-| `validate_state_sync.py` | Check consistency | Reports no issues |
-| `validate_state_sync.py --fix` | Repair desync | Fixes issues, validates after |
+| `/task` | Create task with clarification | Clarified description, atomic creation, Description field in both files |
+| `/task` | Create task with --skip-clarification | No clarification, atomic creation, Description field in both files |
+| `validate_state_sync.py` | Check consistency | Reports no issues, validates description fields |
+| `validate_state_sync.py` | Check task with missing description | Reports WARNING for missing description field |
+| `validate_state_sync.py --fix` | Repair desync | Fixes issues, validates after, repairs missing descriptions |
 
 #### Performance Testing
 
@@ -633,13 +739,17 @@ time /task "Test task"  # Atomic creation
 #### Consistency Testing
 
 ```bash
-# Create tasks with /task
-/task "Test task 1"
-/task "Test task 2"
+# Create tasks with /task (with description clarification per task-command-refactor-plan.md)
+/task "sync thing for todo and state"
+# Expected: Clarifies description, creates task with Description field in both files
 
-# Validate consistency
+/task "Test task 2" --skip-clarification
+# Expected: Creates task without clarification, still includes Description field
+
+# Validate consistency (including description field)
 python3 .opencode/scripts/validate_state_sync.py
 # Expected: No inconsistencies found
+# Expected: Description field present in both TODO.md and state.json
 
 # Archive tasks with /todo
 /todo
@@ -654,6 +764,15 @@ python3 .opencode/scripts/validate_state_sync.py
 # Validate consistency
 python3 .opencode/scripts/validate_state_sync.py
 # Expected: No inconsistencies found
+
+# Test description field validation
+# Manually remove Description field from TODO.md for task 296
+python3 .opencode/scripts/validate_state_sync.py
+# Expected: WARNING - Description field missing in TODO.md for task 296
+
+# Repair description field
+python3 .opencode/scripts/validate_state_sync.py --fix
+# Expected: Copies description from state.json to TODO.md
 ```
 
 #### Synchronization Testing
@@ -677,9 +796,13 @@ python3 .opencode/scripts/validate_state_sync.py
 - [ ] Performance targets met
 - [ ] Consistency maintained across all operations
 - [ ] Rollback works correctly
-- [ ] Validation utility detects issues
-- [ ] Repair utility fixes issues
+- [ ] Validation utility detects issues (including missing description fields)
+- [ ] Repair utility fixes issues (including missing description fields)
 - [ ] No regressions in existing functionality
+- [ ] Description field appears in all new tasks (TODO.md and state.json)
+- [ ] Description field validation works correctly
+- [ ] Multi-line descriptions work correctly
+- [ ] Legacy tasks without descriptions handled gracefully
 
 **Estimated Effort**: 2 hours
 
@@ -741,27 +864,36 @@ python3 .opencode/scripts/validate_state_sync.py
 
 ### Example 1: Enhanced status-sync-manager.create_task()
 
-**Before** (separate updates):
+**Before** (separate updates, per task-command-refactor-plan.md):
 ```python
-# In /task command
-# Stage 3: Create TODO entry
-todo_entry = format_task_entry(number, description, metadata)
+# In task-creator subagent
+# Step 2: Create TODO entry
+todo_entry = format_task_entry(number, title, description, metadata)
 append_to_todo(todo_entry, priority_section)
 
-# Stage 4: Update state.json
+# Step 3: Update state.json
 state = read_state_json()
 state['next_project_number'] += 1
-state['active_projects'].append(task_metadata)
+state['active_projects'].append({
+    'project_number': number,
+    'project_name': slug,
+    'description': description,  # NEW field
+    'priority': priority,
+    'effort': effort,
+    'language': language,
+    ...
+})
 write_state_json(state)
 ```
 
 **After** (atomic via sync manager):
 ```python
-# In /task command
-# Stage 3: Create task atomically
+# In task-creator subagent (updated per task-command-refactor-plan.md Phase 2)
+# Step 3: Create task atomically
 result = status_sync_manager.create_task(
     task_number=next_number,
-    description=description,
+    title=title,
+    description=clarified_description,  # From description-clarifier
     metadata={
         'priority': priority,
         'effort': effort,
@@ -775,13 +907,40 @@ if not result.success:
     return error(result.error_message)
 ```
 
-**sync-manager implementation**:
+**sync-manager implementation** (enhanced for description field):
 ```python
-def create_task(task_number, description, metadata):
+def create_task(task_number, title, description, metadata):
     # Phase 1: Prepare
     validate_task_number_unique(task_number)
-    todo_entry = format_todo_entry(task_number, description, metadata)
-    state_entry = format_state_entry(task_number, description, metadata)
+    validate_description(description)  # 50-500 chars
+    
+    # Format TODO.md entry with Description field
+    todo_entry = format_todo_entry(task_number, title, description, metadata)
+    # Example:
+    # ### 296. Create /sync command
+    # - **Effort**: 4 hours
+    # - **Status**: [NOT STARTED]
+    # - **Priority**: High
+    # - **Language**: meta
+    # - **Blocking**: None
+    # - **Dependencies**: None
+    # 
+    # **Description**: Create a /sync command that synchronizes TODO.md and state.json bidirectionally.
+    # 
+    # ---
+    
+    # Format state.json entry with description field
+    state_entry = format_state_entry(task_number, title, description, metadata)
+    # Example:
+    # {
+    #   "project_number": 296,
+    #   "project_name": "create_sync_command",
+    #   "description": "Create a /sync command that synchronizes TODO.md and state.json bidirectionally.",
+    #   "priority": "high",
+    #   "language": "meta",
+    #   "effort": "4 hours",
+    #   ...
+    # }
     
     # Backup current state
     backup_todo = read_file('TODO.md')
@@ -801,6 +960,7 @@ def create_task(task_number, description, metadata):
         # Verify both succeeded
         verify_task_in_todo(task_number)
         verify_task_in_state(task_number)
+        verify_description_in_both(task_number, description)  # NEW
         
         return success()
     except Exception as e:
@@ -1043,12 +1203,12 @@ If issues arise:
 
 ## Implementation Timeline
 
-### Total Estimated Effort: ~13.5 hours
+### Total Estimated Effort: ~14.5 hours
 
-**Phase 1**: Enhance Synchronization Utilities (3 hours)
-- Task 1.1: Enhance status-sync-manager (1.5 hours)
-- Task 1.2: Create validation utility (1 hour)
-- Task 1.3: Create repair utility (30 minutes)
+**Phase 1**: Enhance Synchronization Utilities (3.5 hours)
+- Task 1.1: Enhance status-sync-manager (2 hours) - includes description field support
+- Task 1.2: Create validation utility (1 hour) - includes description field validation
+- Task 1.3: Create repair utility (30 minutes) - includes description field repair
 
 **Phase 2**: Optimize /todo Command (2 hours)
 
@@ -1056,24 +1216,47 @@ If issues arise:
 
 **Phase 4**: Optimize /meta Command (2 hours)
 
-**Phase 5**: Optimize /task Command (1.5 hours)
+**Phase 5**: Optimize /task Command (2 hours) - coordinates with task-command-refactor-plan.md
 
 **Phase 6**: Testing and Validation (2 hours)
 
 **Phase 7**: Documentation and Cleanup (1 hour)
 
+### Coordination with task-command-refactor-plan.md
+
+**Dependencies**:
+- ✅ Phase 1 (this plan) must complete before task-command-refactor-plan.md Phase 2
+- ✅ status-sync-manager.create_task() must support description field
+- ✅ Validation utilities must check description field consistency
+
+**Parallel Work**:
+- ⚙️ task-command-refactor-plan.md Phase 1 (description-clarifier) can proceed independently
+- ⚙️ This plan's Phase 2-4 (/todo, /review, /meta) can proceed independently
+
+**Sequential Work**:
+1. This plan Phase 1 (enhance sync manager with description support)
+2. task-command-refactor-plan.md Phase 2 (update task-creator to use sync manager)
+3. This plan Phase 5 (verify task-creator integration)
+4. task-command-refactor-plan.md Phase 3 (update /task command workflow)
+
 ### Recommended Approach
 
-**Week 1**:
-- Day 1: Phase 1 (synchronization utilities)
-- Day 2: Phase 2 (/todo optimization)
-- Day 3: Phase 3 (/review optimization)
+**Week 1** (Coordinated with task-command-refactor-plan.md):
+- Day 1: Phase 1 (synchronization utilities with description support) - **PREREQUISITE for task-command-refactor-plan.md Phase 2**
+- Day 2: Phase 2 (/todo optimization) + task-command-refactor-plan.md Phase 1 (description-clarifier) in parallel
+- Day 3: Phase 3 (/review optimization) + task-command-refactor-plan.md Phase 2 (task-creator updates) in parallel
 
 **Week 2**:
 - Day 1: Phase 4 (/meta optimization)
-- Day 2: Phase 5 (/task optimization)
-- Day 3: Phase 6 (testing and validation)
-- Day 4: Phase 7 (documentation)
+- Day 2: Phase 5 (verify task-creator integration) + task-command-refactor-plan.md Phase 3 (/task workflow)
+- Day 3: Phase 6 (testing and validation) + task-command-refactor-plan.md Phase 4 (testing)
+- Day 4: Phase 7 (documentation) + task-command-refactor-plan.md Phase 5 (documentation)
+
+**Critical Path**:
+1. ✅ This plan Phase 1 (sync manager with description support) - **BLOCKS task-command-refactor-plan.md Phase 2**
+2. ✅ task-command-refactor-plan.md Phase 2 (task-creator uses sync manager) - **BLOCKS this plan Phase 5**
+3. ✅ This plan Phase 5 (verify integration) - **BLOCKS task-command-refactor-plan.md Phase 3**
+4. ✅ task-command-refactor-plan.md Phase 3 (/task workflow) - **COMPLETES /task refactor**
 
 ## Conclusion
 
@@ -1085,8 +1268,32 @@ This Phase 2 optimization extends the successful Phase 1 approach to all remaini
 - ✅ **Automated repair**: Fix common issues automatically
 - ✅ **Better performance**: 3-25x faster operations
 - ✅ **Better reliability**: Atomic updates prevent partial failures
+- ✅ **Description field support**: Coordinates with task-command-refactor-plan.md for enhanced task creation
 
 The implementation builds on Phase 1's proven success (25-50x improvement) and extends it to the entire command ecosystem.
+
+### Key Coordination Points with task-command-refactor-plan.md
+
+1. **status-sync-manager.create_task()** (this plan Phase 1):
+   - Adds description parameter (title and description separate)
+   - Supports Description field in TODO.md
+   - Supports description field in state.json
+   - Validates description length (50-500 chars)
+
+2. **task-creator subagent** (both plans):
+   - task-command-refactor-plan.md Phase 2: Adds description input validation
+   - This plan Phase 5: Updates to use status-sync-manager.create_task()
+   - Result: Atomic task creation with description field
+
+3. **/task command** (task-command-refactor-plan.md):
+   - Adds description clarification workflow
+   - Delegates to task-creator (which uses sync manager from this plan)
+   - Result: Clarified descriptions + atomic creation
+
+4. **Validation utilities** (this plan Phase 1):
+   - Validates description field consistency
+   - Repairs missing description fields
+   - Supports legacy tasks without descriptions
 
 ---
 
@@ -1104,9 +1311,12 @@ The implementation builds on Phase 1's proven success (25-50x improvement) and e
 - Phase 1 (state-json-optimization-plan.md) must be completed ✅
 - All Phase 1 commands must be working correctly ✅
 - state.json must be properly maintained ✅
+- **NEW**: Coordinates with task-command-refactor-plan.md for /task command enhancement
 
 **Related Documents**:
 - `.opencode/specs/state-json-optimization-plan.md` (Phase 1 - COMPLETED)
+- `.opencode/specs/task-command-refactor-plan.md` (Parallel work - IN PROGRESS)
 - `.opencode/context/core/system/state-lookup.md` (Phase 1 patterns)
 - `.opencode/context/core/system/state-management.md` (State management standard)
 - `.opencode/agent/subagents/status-sync-manager.md` (Current sync manager)
+- `.opencode/agent/subagents/task-creator.md` (To be updated by both plans)
