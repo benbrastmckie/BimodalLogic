@@ -2,7 +2,10 @@
 name: "task-creator"
 version: "3.0.0"
 description: "Create new tasks in TODO.md and state.json atomically (NEVER implements tasks)"
-status: "active"
+status: "deprecated"
+deprecation_reason: "Eliminated unnecessary delegation layer. /task command now delegates directly to status-sync-manager for 40-50% performance improvement."
+deprecated_date: "2026-01-05"
+replacement: "status-sync-manager (operation: create_task)"
 mode: subagent
 agent_type: utility
 temperature: 0.1
