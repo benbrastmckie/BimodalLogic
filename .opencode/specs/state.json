@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T10:15:00Z",
-  "next_project_number": 311,
+  "_last_updated": "2026-01-05T10:30:00Z",
+  "next_project_number": 312,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -689,7 +689,10 @@
       "dependencies": [],
       "created": "2026-01-05T08:00:00Z",
       "last_updated": "2026-01-05",
-      "research_completed": "2026-01-05"
+      "research_completed": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/reports/research-001.md"
+      ]
     },
     {
       "project_number": 306,
@@ -764,20 +767,38 @@
       "project_number": 310,
       "project_name": "enhance_workflow_commands_with_start_and_end_status_updates",
       "type": "feature",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "medium",
       "language": "meta",
       "description": "Enhance workflow commands (/research, /plan, /revise, /implement) to update task status at the beginning and end of execution. Commands should set status to '[RESEARCHING]', '[PLANNING]', '[REVISING]', or '[IMPLEMENTING]' at start, report if already in progress, and update to final status ('[RESEARCHED]', '[PLANNED]', '[REVISED]', '[IMPLEMENTED]'/'[BLOCKED]'/'[PARTIAL]') at completion.",
-      "effort": "TBD",
+      "effort": "9-12 hours",
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T10:00:00Z",
-      "last_updated": "2026-01-05T10:15:00Z",
+      "last_updated": "2026-01-05T02:31:00Z",
       "research_completed": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/reports/research-001.md"
-      ]
+        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/reports/research-001.md",
+        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md",
+      "planned": "2026-01-05"
+    },
+    {
+      "project_number": 311,
+      "project_name": "refactor_/abandon_command_to_support_ranges_and_lists_of_task_numbers",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Refactor the /abandon command to accept a range or list of task numbers (e.g., '293-295, 302, 303') to abandon multiple tasks in a single invocation. This enables efficient bulk abandonment of tasks without requiring multiple command executions.",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T10:30:00Z",
+      "last_updated": "2026-01-05T10:30:00Z"
     }
   ],
   "completed_projects": [

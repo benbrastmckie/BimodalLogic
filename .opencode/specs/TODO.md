@@ -1093,10 +1093,12 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ## Medium Priority
 
 ### 310. Enhance workflow commands with start and end status updates
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 9-12 hours
+- **Status**: [PLANNED]
 - **Research**: [Research Report](.opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/reports/research-001.md)
 - **Researched**: 2026-01-05
+- **Plan**: [implementation-001.md](.opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md)
+- **Planned**: 2026-01-05
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
@@ -1274,5 +1276,17 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
   - .opencode/specs/259_automation_tactics/plans/implementation-001.md
 
 **Description**: Task 259
+
+---
+
+### 311. Refactor /abandon command to support ranges and lists of task numbers
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Refactor the /abandon command to accept a range or list of task numbers (e.g., '293-295, 302, 303') to abandon multiple tasks in a single invocation. This enables efficient bulk abandonment of tasks without requiring multiple command executions.
 
 ---
