@@ -1110,13 +1110,19 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 305. Remove performance cruft from all 6 modified files (3/5)
 - **Effort**: 30 minutes
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [Research Report](305_remove_performance_cruft_from_all_6_modified_files_3_5/reports/research-001.md)
+- **Researched**: 2026-01-05
+- **Plan**: [implementation-001.md](305_remove_performance_cruft_from_all_6_modified_files_3_5/plans/implementation-001.md)
+- **Planned**: 2026-01-05
 
 **Description**: Remove optimization sections from frontmatter, performance blocks from workflow stages, and verbose comments from all 6 files (todo.md, review.md, reviewer.md, meta.md, task-creator.md, state-lookup.md). Keep state-lookup.md documentation changes.
+
+**Research Summary**: Comprehensive analysis identified 3 types of cruft to remove: optimization sections in frontmatter (5 files), performance blocks in workflow stages (1 file), and verbose comments (4 files). state-lookup.md documentation changes should be preserved. Core logic changes in meta.md and task-creator.md require separate verification (task 307).
 
 ---
 

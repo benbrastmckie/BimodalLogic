@@ -679,8 +679,8 @@
       "project_number": 305,
       "project_name": "remove_performance_cruft_from_all_6_modified_files_3_5",
       "type": "feature",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "medium",
       "language": "markdown",
       "description": "Remove optimization sections from frontmatter, performance blocks from workflow stages, and verbose comments from all 6 files (todo.md, review.md, reviewer.md, meta.md, task-creator.md, state-lookup.md). Keep state-lookup.md documentation changes.",
@@ -691,8 +691,10 @@
       "last_updated": "2026-01-05",
       "research_completed": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/reports/research-001.md"
-      ]
+        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/reports/research-001.md",
+        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/plans/implementation-001.md"
+      ],
+      "plan_completed": "2026-01-05"
     },
     {
       "project_number": 306,
