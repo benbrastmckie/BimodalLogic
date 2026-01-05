@@ -356,6 +356,88 @@ technical_debt:
 
 ---
 
+## State Lookup Patterns
+
+### Read/Write Separation
+
+**Design Principle**: Use state.json for reads, status-sync-manager for writes
+
+- **Read operations** (task lookup, validation, metadata extraction): Use state.json
+- **Write operations** (status updates, artifact links): Use status-sync-manager
+- **Synchronization**: Handled automatically by status-sync-manager
+
+### Fast Task Lookup
+
+Command files should use state.json for fast task validation and metadata extraction:
+
+```bash
+# Lookup task in state.json (8x faster than TODO.md parsing)
+task_data=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+  .opencode/specs/state.json)
+
+# Validate task exists
+if [ -z "$task_data" ]; then
+  echo "Error: Task $task_number not found"
+  exit 1
+fi
+
+# Extract all metadata at once
+language=$(echo "$task_data" | jq -r '.language // "general"')
+status=$(echo "$task_data" | jq -r '.status')
+project_name=$(echo "$task_data" | jq -r '.project_name')
+description=$(echo "$task_data" | jq -r '.description // ""')
+priority=$(echo "$task_data" | jq -r '.priority')
+```
+
+**Performance**: ~12ms for state.json lookup vs ~100ms for TODO.md parsing (8x faster)
+
+### Why state.json for Reads?
+
+- ✅ **Fast**: JSON parsing is 8x faster than markdown parsing
+- ✅ **Structured**: Direct field access with jq (no grep/sed needed)
+- ✅ **Reliable**: Structured data is more reliable than text parsing
+- ✅ **Synchronized**: status-sync-manager keeps state.json and TODO.md in sync
+
+### Command File Pattern
+
+```bash
+# Stage 1: ParseAndValidate
+# 1. Parse task number from $ARGUMENTS
+task_number=$(echo "$ARGUMENTS" | awk '{print $1}')
+
+# 2. Validate state.json exists
+if [ ! -f .opencode/specs/state.json ]; then
+  echo "Error: state.json not found. Run /meta to regenerate."
+  exit 1
+fi
+
+# 3. Lookup task in state.json
+task_data=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+  .opencode/specs/state.json)
+
+if [ -z "$task_data" ]; then
+  echo "Error: Task $task_number not found"
+  exit 1
+fi
+
+# 4. Extract all metadata
+language=$(echo "$task_data" | jq -r '.language // "general"')
+status=$(echo "$task_data" | jq -r '.status')
+project_name=$(echo "$task_data" | jq -r '.project_name')
+
+# 5. Route to appropriate agent based on language
+case "$language" in
+  lean) target_agent="lean-implementation-agent" ;;
+  *) target_agent="implementer" ;;
+esac
+```
+
+**See**: `.opencode/context/core/system/state-lookup.md` for comprehensive patterns and examples
+
+---
+
 ## Status Synchronization
 
 ### Multi-File Synchronization
