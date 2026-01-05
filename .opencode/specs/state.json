@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-04T17:47:49Z",
-  "next_project_number": 293,
+  "_last_updated": "2026-01-05T01:49:54Z",
+  "next_project_number": 294,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -661,6 +661,18 @@
         "research_integrated": true
       },
       "estimated_hours": 2.5
+    },
+    {
+      "project_number": 293,
+      "project_name": "design_and_implement_better_command_argument_handling_for_orchestrator",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "general",
+      "created": "2026-01-05T01:49:54Z",
+      "last_updated": "2026-01-05T01:49:54Z",
+      "estimated_hours": 5.0
     }
   ],
   "completed_projects": [
@@ -1476,6 +1488,10 @@
     ]
   },
   "recent_activities": [
+    {
+      "timestamp": "2026-01-05T01:49:54Z",
+      "activity": "Created task 293: Design and implement better command argument handling for orchestrator (4-6 hours, High priority, general)"
+    },
     {
       "timestamp": "2026-01-04T17:47:49Z",
       "activity": "Completed research for task 292: Investigation reveals issue may already be fixed by Task 281. Task 259 exists and is valid. Recommendation: verify /implement 259 works."

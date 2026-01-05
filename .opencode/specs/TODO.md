@@ -30,6 +30,83 @@ technical_debt:
 
 ## High Priority
 
+### 293. Design and implement better command argument handling for orchestrator
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**:
+The current command argument handling system is clunky and creates poor user experience. When running `/implement 290`, the orchestrator displays verbose logging like "Stage 1: PreflightValidation → Read .opencode/command/implement.md → Extract task number from arguments → $ echo '290' → 290 → LOG Stage 1: PreflightValidation - Command type determined: task-based". This is unnecessarily verbose and exposes internal implementation details to users.
+
+**Current Issues**:
+1. **Verbose Logging**: Orchestrator Stage 1 logs every step of argument parsing
+2. **Poor UX**: Users see internal implementation details (command type, argument extraction, validation)
+3. **Inflexible**: Task-based commands require exact format "Task: {number}" for delegation
+4. **No Optional Prompts**: Cannot easily pass optional prompts to commands (e.g., `/implement 290 "Focus on error handling"`)
+5. **Hardcoded Parsing**: Stage 1 has complex parsing logic that's duplicated across command types
+
+**Desired Behavior**:
+- `/implement 290` → Clean execution with minimal logging
+- `/implement 290 "Focus on error handling"` → Pass optional prompt to implementer
+- `/research 258 "Investigate LeanSearch API"` → Pass research focus to researcher
+- `/plan 267` → Simple task number extraction
+- Internal argument parsing should be silent unless errors occur
+
+**Design Goals**:
+1. **Clean User Experience**: Minimal logging, hide internal details
+2. **Flexible Argument Parsing**: Support task numbers + optional prompts
+3. **Consistent Interface**: All task-based commands use same pattern
+4. **Better Error Messages**: Clear, actionable errors for invalid arguments
+5. **Extensible**: Easy to add new argument patterns (ranges, lists, flags)
+
+**Proposed Solution**:
+1. **Simplify Stage 1 Parsing**:
+   - Remove verbose logging (LOG statements)
+   - Parse arguments silently
+   - Only log errors
+   
+2. **Enhance Argument Format**:
+   - Support: `/command TASK_NUMBER [PROMPT]`
+   - Examples:
+     * `/implement 290` → task_number=290, prompt=""
+     * `/implement 290 "Focus on X"` → task_number=290, prompt="Focus on X"
+     * `/research 258 "Investigate Y"` → task_number=258, prompt="Investigate Y"
+   
+3. **Improve Delegation Format**:
+   - Current: `prompt = "Task: {task_number}"`
+   - Proposed: `prompt = "Task: {task_number}\n\n{optional_prompt}"`
+   - Allows subagents to receive both task number and user guidance
+   
+4. **Better Error Handling**:
+   - Missing task number: "Error: Task number required. Usage: /implement TASK_NUMBER [PROMPT]"
+   - Invalid format: "Error: Invalid task number '{input}'. Must be positive integer."
+   - Task not found: "Error: Task {number} not found in TODO.md"
+
+**Implementation Plan**:
+1. **Phase 1**: Update orchestrator Stage 1 to remove verbose logging (1 hour)
+2. **Phase 2**: Enhance argument parsing to support optional prompts (1.5 hours)
+3. **Phase 3**: Update delegation format to pass prompts to subagents (1 hour)
+4. **Phase 4**: Update all task-based commands to document new format (0.5 hours)
+5. **Phase 5**: Test with /implement, /research, /plan, /revise (1 hour)
+
+**Files to Modify**:
+- `.opencode/agent/orchestrator.md` - Stage 1 parsing logic
+- `.opencode/context/core/standards/command-argument-handling.md` - Update standard
+- `.opencode/command/implement.md` - Update usage examples
+- `.opencode/command/research.md` - Update usage examples
+- `.opencode/command/plan.md` - Update usage examples
+- `.opencode/command/revise.md` - Update usage examples
+
+**Success Criteria**:
+- `/implement 290` runs with minimal logging
+- `/implement 290 "Focus on error handling"` passes prompt to implementer
+- Error messages are clear and actionable
+- All task-based commands support optional prompts
+- Documentation updated with new patterns
+
 ### 289. Fix /task command to never implement solutions, only create task entries
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
