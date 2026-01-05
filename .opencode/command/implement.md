@@ -19,56 +19,54 @@ routing:
 <role>Implementation command agent - Parse arguments and route to appropriate implementer</role>
 
 <task>
-  Parse task number from $ARGUMENTS, validate task exists in TODO.md, extract language, route to appropriate implementer based on language
+  Parse task number from $ARGUMENTS, lookup task in state.json, extract metadata, route to appropriate implementer based on language
 </task>
 
 <workflow_execution>
   <stage id="1" name="ParseAndValidate">
-    <action>Parse task number and validate</action>
+    <action>Parse task number and lookup in state.json</action>
     <process>
       1. Parse task number from $ARGUMENTS
          - $ARGUMENTS contains: "259" or "259 custom prompt" or "105-107"
          - Extract first token as task_number
          - Validate is integer or range (N-M)
-      2. Validate task exists in .opencode/specs/TODO.md
-         - Read TODO.md and search for task entry
-         - Format: "### ${task_number}."
-         - If not found: Return error message
-      3. Extract task description and current status
-    </process>
-    <checkpoint>Task number parsed and validated</checkpoint>
-  </stage>
-  
-  <stage id="2" name="ExtractLanguage">
-    <action>Extract language for routing</action>
-    <process>
-      1. Extract language from TODO.md task entry
-         - Look for **Language**: field in task entry
-         - Parse language value (lean, general, meta, etc.)
-         - Default to "general" if not found
-      2. Determine target agent based on routing config
+      
+      2. Validate state.json exists and is valid
+         - Check .opencode/specs/state.json exists
+         - Validate is valid JSON with jq
+         - If missing/corrupt: Return error "Run /meta to regenerate state.json"
+      
+      3. Lookup task in state.json
+         - Use jq to find task by project_number:
+           task_data=$(jq -r --arg num "$task_number" \
+             '.active_projects[] | select(.project_number == ($num | tonumber))' \
+             .opencode/specs/state.json)
+         - If task_data is empty: Return error "Task $task_number not found"
+      
+      4. Extract all metadata at once
+         - language=$(echo "$task_data" | jq -r '.language // "general"')
+         - status=$(echo "$task_data" | jq -r '.status')
+         - project_name=$(echo "$task_data" | jq -r '.project_name')
+         - description=$(echo "$task_data" | jq -r '.description // ""')
+         - priority=$(echo "$task_data" | jq -r '.priority')
+      
+      5. Validate task status allows implementation
+         - If status is "completed": Return error "Task $task_number already completed"
+         - If status is "abandoned": Return error "Task $task_number is abandoned"
+      
+      6. Extract custom prompt from $ARGUMENTS if present
+         - If $ARGUMENTS has multiple tokens: custom_prompt = remaining tokens
+         - Else: custom_prompt = ""
+      
+      7. Determine target agent based on language
          - lean → lean-implementation-agent
          - meta → meta
          - general → implementer
     </process>
-    <checkpoint>Language extracted, target agent determined</checkpoint>
+    <checkpoint>Task validated, metadata extracted, target agent determined</checkpoint>
   </stage>
   
-  <stage id="3" name="PrepareContext">
-    <action>Prepare delegation context</action>
-    <process>
-      1. Extract custom prompt from $ARGUMENTS if present
-         - If $ARGUMENTS contains multiple tokens, rest is custom prompt
-      2. Prepare task context object:
-         - task_number: parsed number
-         - language: extracted language
-         - description: task description from TODO.md
-         - custom_prompt: optional custom prompt from user
-    </process>
-    <checkpoint>Context prepared for delegation</checkpoint>
-  </stage>
-  
-  <stage id="4" name="Delegate">
+  <stage id="2" name="Delegate">
     <action>Delegate to implementer with parsed context</action>
     <process>
       1. Invoke target agent via task tool:
@@ -77,7 +75,9 @@ routing:
            prompt="Implement task ${task_number}: ${description}. ${custom_prompt}",
            description="Implement task ${task_number}"
          )
+      
       2. Wait for implementer to complete
+      
       3. Relay result to user
     </process>
     <checkpoint>Delegated to implementer, result relayed</checkpoint>
@@ -96,12 +96,12 @@ routing:
 ## What This Does
 
 1. Parses task number from arguments
-2. Validates task exists in TODO.md
-3. Extracts language for routing
+2. Validates task exists in state.json (8x faster than TODO.md parsing)
+3. Extracts all metadata at once (language, status, description, priority)
 4. Routes to appropriate implementation agent based on task language
 5. Agent executes implementation (plan-based or direct)
 6. Creates implementation artifacts
-7. Updates task status to [COMPLETED]
+7. Updates task status to [COMPLETED] via status-sync-manager
 8. Creates git commit(s)
 
 ## Language-Based Routing
