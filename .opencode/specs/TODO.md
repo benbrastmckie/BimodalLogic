@@ -1192,14 +1192,17 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 297. Simplify /task command to directly create tasks without subagent delegation
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 
-**Description**: Refactor the /task command to directly create task entries in TODO.md and state.json without delegating to description-clarifier and task-creator subagents. The command should reformulate the user's rough description into a clear 2-3 sentence description inline, look up next_project_number from state.json, create the task entry in both files atomically, and increment next_project_number. This simplifies the architecture by removing unnecessary delegation layers while maintaining the same functionality. The command should still support optional flags (--priority, --effort, --language) and perform basic language detection from keywords in the description.
+**Description**: Refactor the /task command to directly create task entries in TODO.md and state.json without delegating to description-clarifier and task-creator subagents. The command should reformulate the user's rough description into a clear description inline, look up next_project_number from state.json, create the task entry in both files atomically, and increment next_project_number. This simplifies the architecture by removing unnecessary delegation layers while maintaining the same functionality. The command should support the optional flag --divide which creates divides the task into an appropriate number of tasks (between 1-5 tasks). No other flags are needed.
 
+
+**Research Artifacts**:
+  - Main Report: [.opencode/specs/297_simplify_task_command/reports/research-001.md]
 ---
 
 ### 298. Create /abandon command to mark tasks as [ABANDONED] with reason
