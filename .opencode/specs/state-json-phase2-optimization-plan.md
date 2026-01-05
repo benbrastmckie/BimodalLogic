@@ -2,28 +2,12 @@
 
 **Project**: ProofChecker State Management Optimization - Phase 2
 **Created**: 2026-01-05
-**Updated**: 2026-01-05 (integrated with task-command-improvement-plan.md)
 **Status**: DRAFT - Ready for Review
-**Depends On**: 
-- state-json-optimization-plan.md (Phase 1 - COMPLETED)
-- task-command-improvement-plan.md (integrated into Phase 5)
-
-## Current Status
-
-**Phase 5 Completed** ✅ (2026-01-04):
-- `/task` command refactored with task-creator subagent
-- Architectural enforcement prevents implementation
-- 33% reduction in command file size (381 → 254 lines)
-- Atomic updates with rollback on failure
-- See: task-command-implementation-summary.md
-
-**Remaining Phases**: 1-4, 6-7 (~9.5-12 hours estimated)
+**Depends On**: state-json-optimization-plan.md (Phase 1 - COMPLETED)
 
 ## Executive Summary
 
-Phase 1 successfully optimized `/implement`, `/research`, `/plan`, and `/revise` commands to use state.json for fast task lookup, achieving 25-50x performance improvement (100ms → 4ms). This plan extends the optimization to the remaining commands (`/todo`, `/review`, `/meta`) and improves synchronization utilities to ensure state.json and TODO.md remain perfectly synchronized.
-
-**Phase 5 Update**: The `/task` command optimization (originally part of this plan) has been completed as part of task-command-improvement-plan.md implementation. The task-creator subagent is working and demonstrates the viability of the architectural patterns proposed in this plan.
+Phase 1 successfully optimized `/implement`, `/research`, `/plan`, and `/revise` commands to use state.json for fast task lookup, achieving 25-50x performance improvement (100ms → 4ms). This plan extends the optimization to the remaining commands (`/todo`, `/review`, `/meta`, `/task`) and improves synchronization utilities to ensure state.json and TODO.md remain perfectly synchronized.
 
 ### Scope
 
@@ -74,86 +58,6 @@ Phase 1 successfully optimized `/implement`, `/research`, `/plan`, and `/revise`
 2. **Bulk Operations**: `/todo` archives multiple tasks (complex synchronization)
 3. **Validation**: No automated check for state.json ↔ TODO.md consistency
 4. **Repair**: No automated repair for desynchronization
-
-## Lessons Learned from Phase 5 Implementation
-
-Phase 5 (/task command optimization) was completed on 2026-01-04. Key lessons that inform the remaining phases:
-
-### What Worked Well
-
-1. **Clear Implementation Plan**: Detailed plan reduced decision-making time by 50%
-2. **Existing Patterns**: /research and /implement provided proven templates
-3. **Architectural Enforcement**: Permissions effectively prevent unwanted behavior
-4. **Manual Atomic Updates**: Work well when status-sync-manager isn't suitable
-5. **Comprehensive Validation**: Automated validation reduced testing time
-
-### Adjustments for Remaining Phases
-
-1. **status-sync-manager Enhancement is Optional**:
-   - Originally planned as critical for Phase 5
-   - task-creator works well with manual atomic updates
-   - Can defer status-sync-manager.create_task() to future optimization
-   - Focus Phase 1 on archive_tasks() for /todo command
-
-2. **Command File Size Targets**:
-   - Original target: <150 lines
-   - Actual result: 254 lines (33% reduction)
-   - Reason: Comprehensive documentation and examples
-   - Adjustment: Accept 200-300 lines if includes good documentation
-
-3. **Effort Estimates**:
-   - Original estimate: 13-19 hours
-   - Actual effort: 6.5 hours (60% less)
-   - Reason: Clear plan, existing patterns, no unexpected issues
-   - Adjustment: Remaining phases likely faster than estimated
-
-### Implications for Phase 1
-
-**Original Plan**:
-- Add create_task() method (critical for Phase 5)
-- Add archive_tasks() method (for Phase 2)
-
-**Revised Plan**:
-- create_task() is now OPTIONAL (task-creator works without it)
-- archive_tasks() is REQUIRED (for Phase 2 /todo optimization)
-- Can simplify Phase 1 by deferring create_task() to future
-
-## Integration with task-command-improvement-plan.md
-
-This plan integrates the task-command-improvement-plan.md to address the broken `/task` command as part of Phase 5. The integration provides:
-
-### Synergies
-
-1. **Shared Infrastructure**: Both plans require enhancing status-sync-manager
-   - Phase 2 needs `create_task()` for atomic task creation
-   - task-command-improvement-plan needs same method for task-creator subagent
-   - **Result**: Single implementation serves both needs
-
-2. **Consistent Patterns**: Both plans promote the same architecture
-   - Phase 2 extends state.json optimization to all commands
-   - task-command-improvement-plan refactors /task to follow /research and /implement patterns
-   - **Result**: All commands use consistent 2-stage workflow
-
-3. **Architectural Enforcement**: Both plans emphasize reliability
-   - Phase 2 uses atomic operations for consistency
-   - task-command-improvement-plan uses permissions for enforcement
-   - **Result**: Robust, reliable task management system
-
-### Combined Benefits
-
-By implementing both plans together:
-- ✅ All commands optimized (Phase 1 + Phase 2)
-- ✅ /task command fixed (architectural enforcement)
-- ✅ Consistent patterns across all commands
-- ✅ Shared infrastructure (status-sync-manager enhancements)
-- ✅ Better testing (comprehensive validation)
-
-### Implementation Order
-
-1. **Phase 1**: Enhance status-sync-manager (serves both plans)
-2. **Phases 2-4**: Optimize /todo, /review, /meta
-3. **Phase 5**: Create task-creator and refactor /task (task-command-improvement-plan)
-4. **Phases 6-7**: Testing and documentation
 
 ## Proposed Solution
 
@@ -219,28 +123,22 @@ Synchronization:
 - Rollback on failure
 
 **Enhancements Needed**:
-1. **Task Creation Support** (OPTIONAL - task-creator already works without it):
+1. **Task Creation Support**:
    - Add `create_task()` method
    - Atomic creation in both TODO.md and state.json
    - Validate task number uniqueness
    - Handle priority section placement
-   - Support new task creation (not just status updates)
-   - **Note**: task-creator currently implements manual atomic updates with rollback
-   - **Future**: Migrate task-creator to use status-sync-manager.create_task()
-   - **Benefit**: Eliminate duplicate rollback logic, reuse proven infrastructure
 
-2. **Bulk Operations Support** (for /todo command):
+2. **Bulk Operations Support**:
    - Add `archive_tasks()` method
    - Atomic archival of multiple tasks
    - Move tasks from active_projects to completed_projects
    - Update TODO.md in single transaction
-   - Handle archive/state.json updates
 
 3. **Metadata Sync**:
    - Ensure all fields sync correctly (language, priority, effort, etc.)
    - Validate metadata consistency
    - Handle optional fields gracefully
-   - Support task creation metadata (different from status update metadata)
 
 **Implementation**:
 ```markdown
@@ -561,9 +459,7 @@ Orchestrator handles:
 
 ### Phase 4: Optimize /meta Command (2 hours)
 
-**Goal**: Use task-creator subagent for atomic task creation (same pattern as /task)
-
-**Note**: /meta creates multiple tasks. Should delegate to task-creator for each task to ensure consistency.
+**Goal**: Use enhanced sync manager for atomic task creation
 
 #### Current Approach (Stage 7: Create Tasks With Artifacts)
 
@@ -579,36 +475,25 @@ Stage 7: Create Tasks With Artifacts
 
 **Issue**: Updates TODO.md and state.json separately (not atomic)
 
-**Additional Consideration**: /meta creates minimal task entries (like /task), then creates plan artifacts. This is consistent with the minimal task entry design.
-
 #### Proposed Approach
 
-1. **Use task-creator Subagent** (same pattern as /task):
+1. **Use Enhanced Sync Manager**:
    ```markdown
    Stage 7: Create Tasks With Artifacts
    - Determines task breakdown
+   - Creates project directories
+   - Generates plan artifacts
    - For each task:
-     * Delegate to task-creator subagent
-     * Creates minimal task entry (number, title, priority, language)
+     * Call status-sync-manager.create_task(number, description, metadata)
      * Atomic creation in both TODO.md and state.json
      * Validates creation succeeded
-   - Creates project directories for each task
-   - Generates plan artifacts for each task
-   - Links plan artifacts to tasks (via status-sync-manager)
    - Validates all artifacts
    ```
 
-2. **Minimal Task Entries**:
-   - /meta creates minimal entries (like /task)
-   - Plan artifacts provide the detailed information
-   - Consistent with /task design philosophy
-   - Extended fields added when tasks are researched/planned further
-
-3. **Batch Task Creation**:
-   - Create tasks sequentially via task-creator
-   - Each task creation is atomic
-   - If any task creation fails, stop and report
-   - Already-created tasks remain (partial success is acceptable)
+2. **Batch Task Creation**:
+   - Create all tasks in single transaction
+   - Rollback all if any fails
+   - Ensures consistency
 
 **Files to Modify**:
 - `.opencode/agent/subagents/meta/meta.md` (or wherever meta agent is defined)
@@ -631,164 +516,79 @@ Stage 7: Create Tasks With Artifacts
 
 ---
 
-### Phase 5: Optimize /task Command (COMPLETED ✅)
+### Phase 5: Optimize /task Command (1.5 hours)
 
-**Goal**: Refactor /task to use task-creator subagent for architectural enforcement and atomic task creation
+**Goal**: Use enhanced sync manager for atomic task creation
 
-**Status**: ✅ COMPLETED (2026-01-04) - See task-command-implementation-summary.md
-
-**Actual Effort**: ~6.5 hours (vs estimated 4-6 hours)
-
-**Note**: This phase was completed as part of task-command-improvement-plan.md implementation. The task-creator subagent is already implemented and working.
-
-#### Previous Approach (Before Implementation)
+#### Current Approach
 
 ```xml
-<workflow_execution>
-  <stage id="1" name="ParseInput">...</stage>
-  <stage id="2" name="ReadNextNumber">...</stage>
-  <stage id="3" name="CreateTODOEntry">...</stage>
-  <stage id="4" name="UpdateStateJson">...</stage>
-  <stage id="5" name="ReturnSuccess">...</stage>
-</workflow_execution>
+<stage id="3" name="CreateTODOEntry">
+  1. Format task entry
+  2. Determine correct section in TODO.md
+  3. Append entry to appropriate section
+  4. Use Edit tool to add entry
+</stage>
 
-<critical_constraints>
-  <no_delegation>
-    This command operates entirely within the orchestrator.
-    It MUST NOT delegate to ANY subagents
-  </no_delegation>
-</critical_constraints>
+<stage id="4" name="UpdateStateJson">
+  1. Read current state.json
+  2. Increment next_project_number by 1
+  3. Add entry to recent_activities
+  4. Update _last_updated timestamp
+  5. Write state.json atomically
+</stage>
 ```
 
-**Issues** (Now Fixed):
-- ❌ 5-stage inline workflow (381 lines, 3x larger than /research)
-- ❌ No delegation (explicitly forbidden)
-- ❌ Manual state.json updates (no atomic guarantees)
-- ❌ No architectural enforcement (relies on documentation)
-- ❌ Sometimes implements tasks instead of creating them
+**Issue**: Two separate stages, not atomic across both files
 
-#### Implemented Approach (Following /research and /implement Pattern)
-
-**Step 1: Create task-creator Subagent** ✅ COMPLETED (~2 hours)
-
-Created `.opencode/agent/subagents/task-creator.md` (593 lines) following the proven subagent pattern:
-
-```yaml
----
-name: "task-creator"
-version: "1.0.0"
-description: "Create new tasks in TODO.md with atomic state updates"
-mode: subagent
-agent_type: utility
-permissions:
-  allow:
-    - read: [".opencode/specs/state.json", ".opencode/specs/TODO.md"]
-    - bash: ["date"]
-  deny:
-    - write: ["**/*.lean", "**/*.py", "**/*.sh"]  # Cannot create implementation files
-    - bash: ["lake", "python", "lean"]  # Cannot run implementation tools
-delegation:
-  can_delegate_to: ["status-sync-manager"]
----
-```
-
-**Process Flow** (5 steps - as implemented):
-0. **Preflight**: Validate inputs and file accessibility
-1. **AllocateNumber**: Read next_project_number from state.json
-2. **CreateEntry**: Format TODO.md entry following task standards
-3. **UpdateFiles**: Atomic TODO.md + state.json update with rollback
-4. **Return**: Standardized result format
-
-**Note**: Does NOT use status-sync-manager (see Known Limitations below)
-
-**Architectural Enforcement**:
-- Permissions prevent creating implementation files (*.lean, *.py, etc.)
-- Permissions prevent running implementation tools (lake, python, lean)
-- Can only read state.json and TODO.md
-- Can only delegate to status-sync-manager
-
-**Step 2: Refactor /task Command** ✅ COMPLETED (~1.5 hours)
-
-Reduced command file from 381 lines to 254 lines (33% reduction):
+#### Proposed Approach
 
 ```xml
-<workflow_execution>
-  <stage id="1" name="ParseAndValidate">
-    <action>Parse task description and validate inputs</action>
-    <process>
-      1. Parse task description from $ARGUMENTS
-      2. Extract optional flags (--priority, --effort, --language)
-      3. Detect language from description keywords if not provided
-      4. Validate description is non-empty
-      5. Validate priority is Low|Medium|High
-      6. Validate effort format
-      7. Validate language is valid
-    </process>
-    <checkpoint>Task description validated, metadata extracted</checkpoint>
-  </stage>
-  
-  <stage id="2" name="Delegate">
-    <action>Delegate to task-creator subagent</action>
-    <process>
-      1. Invoke task-creator via task tool:
-         task(
-           subagent_type="task-creator",
-           prompt="Create task: ${description}. Priority: ${priority}. Effort: ${effort}. Language: ${language}.",
-           description="Create task entry"
-         )
-      2. Wait for task-creator to complete
-      3. Relay result to user
-    </process>
-    <checkpoint>Delegated to task-creator, result relayed</checkpoint>
-  </stage>
-</workflow_execution>
+<stage id="3" name="CreateTask">
+  <action>Create task atomically in both TODO.md and state.json</action>
+  <process>
+    1. Prepare task metadata:
+       - task_number (from state.json)
+       - description
+       - priority
+       - effort
+       - language
+       - status: [NOT STARTED]
+    
+    2. Call status-sync-manager.create_task():
+       - Atomic creation in both files
+       - Validates task number uniqueness
+       - Places in correct priority section
+       - Increments next_project_number
+       - Rollback on failure
+    
+    3. Validate creation succeeded
+  </process>
+  <checkpoint>Task created atomically</checkpoint>
+</stage>
+
+<stage id="4" name="ReturnSuccess">
+  (Same as before)
+</stage>
 ```
 
-**Files Created** ✅:
-- `.opencode/agent/subagents/task-creator.md` (593 lines)
-- `.opencode/backups/task-command-v1.md` (381 lines, backup)
-- `.opencode/specs/task-command-validation-report.md` (379 lines)
-- `.opencode/specs/task-command-implementation-summary.md` (437 lines)
+**Files to Modify**:
+- `.opencode/command/task.md`
 
-**Files Modified** ✅:
-- `.opencode/command/task.md` (381 → 254 lines, -33%)
-- `.opencode/context/core/workflows/command-lifecycle.md` (+94 lines)
-- `.opencode/context/core/system/routing-guide.md` (+1 line)
-- `.opencode/context/core/standards/tasks.md` (+1 line)
+**Benefits**:
+- ✅ Atomic task creation (both files or neither)
+- ✅ Simpler workflow (3 stages → 2 stages)
+- ✅ Better error handling (automatic rollback)
+- ✅ Guaranteed consistency
 
-**Benefits Achieved** ✅:
-- ✅ Architectural enforcement (permissions prevent implementation)
-- ✅ Atomic task creation (manual implementation with rollback)
-- ✅ Consistent with /research and /implement patterns
-- ✅ Simpler command file (254 lines vs 381 lines, -33%)
-- ✅ Clear separation of concerns (command parses, subagent executes)
-- ✅ Guaranteed to only create tasks, never implement them
+**Validation**:
+- [ ] Task created atomically
+- [ ] Appears in both TODO.md and state.json
+- [ ] Metadata is consistent
+- [ ] Rollback works on failure
+- [ ] next_project_number increments correctly
 
-**Validation Results** ✅:
-- [x] task-creator.md follows subagent-structure.md standard
-- [x] Permissions prevent creating implementation files
-- [x] Task created atomically in both TODO.md and state.json
-- [x] Metadata is consistent
-- [x] Rollback works on failure
-- [x] next_project_number increments correctly
-- [x] Command file reduced (254 lines, target was <150)
-- [x] No implementation occurs (architectural enforcement)
-
-**Actual Effort**: ~6.5 hours total
-- Phase 1 (task-creator): ~2 hours
-- Phase 2 (refactor command): ~1.5 hours
-- Phase 3 (documentation): ~1 hour
-- Phase 4 (testing): ~1.5 hours
-- Phase 5 (rollout): ~0.5 hours
-
-**Known Limitations**:
-1. **Command file size**: 254 lines (exceeds 150-line target but still 33% reduction)
-2. **Manual atomic updates**: Not using status-sync-manager (see recommendations below)
-
-**Recommendations for Future**:
-1. Extend status-sync-manager to support task creation (eliminate manual rollback)
-2. Reduce command file to <150 lines (move documentation to separate files)
-3. Add automated tests for task creation workflow
+**Estimated Effort**: 1.5 hours
 
 ---
 
@@ -1204,17 +1004,8 @@ python3 .opencode/scripts/validate_state_sync.py --fix
 
 ### Validation Checklist
 
-**Phase 5 (Completed)** ✅:
-- [x] **task-creator subagent created and working**
-- [x] **task-creator permissions prevent implementation**
-- [x] **/task command never implements tasks (architectural enforcement)**
-- [x] **/task command reduced (254 lines, -33% from 381)**
-- [x] **/task follows /research and /implement patterns**
-
-**Remaining Phases**:
 - [ ] All Phase 2 commands use state.json for reads
-- [ ] /todo uses enhanced sync manager for bulk archival
-- [ ] /meta uses enhanced sync manager for task creation
+- [ ] All Phase 2 commands use enhanced sync manager for writes
 - [ ] Performance targets met for all operations
 - [ ] Consistency maintained across all operations
 - [ ] Validation utility detects all inconsistencies
@@ -1252,13 +1043,10 @@ If issues arise:
 
 ## Implementation Timeline
 
-### Total Estimated Effort: ~9.5-12 hours (Phase 5 already completed)
+### Total Estimated Effort: ~13.5 hours
 
 **Phase 1**: Enhance Synchronization Utilities (3 hours)
 - Task 1.1: Enhance status-sync-manager (1.5 hours)
-  - Add create_task() method (OPTIONAL - task-creator works without it)
-  - Add archive_tasks() method for /todo command (REQUIRED)
-  - Add metadata sync improvements
 - Task 1.2: Create validation utility (1 hour)
 - Task 1.3: Create repair utility (30 minutes)
 
@@ -1268,405 +1056,57 @@ If issues arise:
 
 **Phase 4**: Optimize /meta Command (2 hours)
 
-**Phase 5**: Optimize /task Command ✅ COMPLETED (6.5 hours actual)
-- ✅ Step 1: Create task-creator subagent (~2 hours)
-  - Follows task-command-improvement-plan.md
-  - Architectural enforcement via permissions
-  - Atomic task creation with manual rollback
-- ✅ Step 2: Refactor /task command (~1.5 hours)
-  - Reduced from 381 lines to 254 lines (-33%)
-  - 2-stage workflow (ParseAndValidate → Delegate)
-  - Removed inline execution logic
-- ✅ Step 3: Update documentation (~1 hour)
-- ✅ Step 4: Testing and validation (~1.5 hours)
-- ✅ Step 5: Rollout and monitoring (~0.5 hours)
-- **Status**: COMPLETED 2026-01-04
-- **See**: task-command-implementation-summary.md
+**Phase 5**: Optimize /task Command (1.5 hours)
 
-**Phase 6**: Testing and Validation (1-2 hours)
-- Test /todo, /review, /meta optimizations
-- Validate consistency across all commands
-- Performance benchmarking
+**Phase 6**: Testing and Validation (2 hours)
 
 **Phase 7**: Documentation and Cleanup (1 hour)
 
 ### Recommended Approach
 
-**Remaining Work** (Phase 5 already completed):
-
 **Week 1**:
 - Day 1: Phase 1 (synchronization utilities)
-  - Focus on archive_tasks() for /todo
-  - Validation and repair utilities
-  - Optional: create_task() for future task-creator migration
 - Day 2: Phase 2 (/todo optimization)
 - Day 3: Phase 3 (/review optimization)
 
 **Week 2**:
 - Day 1: Phase 4 (/meta optimization)
-- Day 2: Phase 6 (testing and validation)
-- Day 3: Phase 7 (documentation and cleanup)
-
-**Note**: Phase 5 (/task optimization) completed 2026-01-04
+- Day 2: Phase 5 (/task optimization)
+- Day 3: Phase 6 (testing and validation)
+- Day 4: Phase 7 (documentation)
 
 ## Conclusion
 
-This Phase 2 optimization extends the successful Phase 1 approach to all remaining commands. Phase 5 (/task command) has been completed, demonstrating the viability of the approach.
+This Phase 2 optimization extends the successful Phase 1 approach to all remaining commands, achieving:
 
-### Completed (Phase 5)
+- ✅ **Comprehensive optimization**: All commands use state.json for fast reads
+- ✅ **Atomic operations**: Enhanced sync manager ensures consistency
+- ✅ **Automated validation**: Detect inconsistencies automatically
+- ✅ **Automated repair**: Fix common issues automatically
+- ✅ **Better performance**: 3-25x faster operations
+- ✅ **Better reliability**: Atomic updates prevent partial failures
 
-- ✅ **Fixed /task command**: Architectural enforcement prevents implementation
-- ✅ **Consistent patterns**: /task follows proven 2-stage workflow
-- ✅ **Atomic operations**: Manual rollback ensures consistency
-- ✅ **Reduced complexity**: 33% reduction in command file size
-
-### Remaining Work (Phases 1-4, 6-7)
-
-- ⏳ **Comprehensive optimization**: Extend to /todo, /review, /meta
-- ⏳ **Enhanced sync manager**: Add archive_tasks() for bulk operations
-- ⏳ **Automated validation**: Detect inconsistencies automatically
-- ⏳ **Automated repair**: Fix common issues automatically
-- ⏳ **Better performance**: 3-25x faster operations for remaining commands
-
-### Lessons Learned
-
-Phase 5 implementation (6.5 hours actual vs 13-19 hours estimated) shows:
-1. Clear plans reduce implementation time by ~60%
-2. Existing patterns provide proven templates
-3. Manual atomic updates work well when status-sync-manager isn't suitable
-4. Architectural enforcement via permissions is highly effective
-
-The implementation builds on Phase 1's proven success (25-50x improvement) and extends it to the entire command ecosystem. Phase 5 completion validates the approach and provides confidence for remaining phases.
+The implementation builds on Phase 1's proven success (25-50x improvement) and extends it to the entire command ecosystem.
 
 ---
 
 **Next Steps**:
-1. ✅ Review this plan
-2. ✅ Phase 5 completed (task-creator subagent)
+1. Review this plan
+2. Approve or request changes
 3. Implement Phase 1 (synchronization utilities)
-   - Focus on archive_tasks() for /todo
-   - Validation and repair utilities
-   - Optional: create_task() for future optimization
 4. Implement Phase 2 (/todo optimization)
-5. Implement Phase 3 (/review optimization)
-6. Implement Phase 4 (/meta optimization)
-7. Implement Phase 6 (testing and validation)
-8. Implement Phase 7 (documentation and cleanup)
-9. Document lessons learned
+5. Test thoroughly
+6. Implement remaining phases
+7. Validate performance and consistency improvements
+8. Document lessons learned
 
 **Dependencies**:
 - Phase 1 (state-json-optimization-plan.md) must be completed ✅
 - All Phase 1 commands must be working correctly ✅
 - state.json must be properly maintained ✅
-- Phase 5 (task-creator) completed ✅
 
 **Related Documents**:
 - `.opencode/specs/state-json-optimization-plan.md` (Phase 1 - COMPLETED)
-- `.opencode/specs/task-command-improvement-plan.md` (Phase 5 basis - COMPLETED)
-- `.opencode/specs/task-command-implementation-summary.md` (Phase 5 results - COMPLETED)
-- `.opencode/specs/task-command-validation-report.md` (Phase 5 validation - COMPLETED)
 - `.opencode/context/core/system/state-lookup.md` (Phase 1 patterns)
 - `.opencode/context/core/system/state-management.md` (State management standard)
 - `.opencode/agent/subagents/status-sync-manager.md` (Current sync manager)
-- `.opencode/agent/subagents/task-creator.md` (Phase 5 - COMPLETED)
-
----
-
-## Appendix A: task-creator Subagent Specification
-
-This appendix provides the complete specification for the task-creator subagent (Phase 5, Step 1).
-
-### Purpose
-
-The task-creator subagent handles all task creation logic with architectural enforcement to ensure tasks are created but never implemented. This addresses the broken `/task` command issue identified in task-command-improvement-plan.md.
-
-### Frontmatter
-
-```yaml
----
-name: "task-creator"
-version: "1.0.0"
-description: "Create new tasks in TODO.md with atomic state updates"
-mode: subagent
-agent_type: utility
-temperature: 0.1
-max_tokens: 1000
-timeout: 120
-tools:
-  read: true
-  bash: true
-permissions:
-  allow:
-    - read: [".opencode/specs/state.json", ".opencode/specs/TODO.md"]
-    - bash: ["date"]
-  deny:
-    - write: ["**/*.lean", "**/*.py", "**/*.sh"]  # Cannot create implementation files
-    - bash: ["lake", "python", "lean"]  # Cannot run implementation tools
-context_loading:
-  strategy: lazy
-  index: ".opencode/context/index.md"
-  required:
-    - "core/standards/tasks.md"
-    - "core/system/state-management.md"
-  max_context_size: 20000
-delegation:
-  max_depth: 3
-  can_delegate_to: ["status-sync-manager"]
-  timeout_default: 120
-  timeout_max: 120
-lifecycle:
-  stage: 2
-  command: "/task"
-  return_format: "subagent-return-format.md"
----
-```
-
-### Process Flow
-
-```xml
-<process_flow>
-  <step_0_preflight>
-    <action>Validate inputs and prepare for task creation</action>
-    <process>
-      1. Validate required inputs:
-         - description (non-empty string)
-         - priority (Low|Medium|High)
-         - effort (TBD or time estimate)
-         - language (lean|markdown|general|python|shell|json|meta)
-      2. Validate state.json exists and is readable
-      3. Validate TODO.md exists and is readable
-      4. If validation fails: abort with clear error message
-    </process>
-    <checkpoint>Inputs validated, files accessible</checkpoint>
-  </step_0_preflight>
-
-  <step_1_allocate_number>
-    <action>Read next_project_number from state.json</action>
-    <process>
-      1. Read .opencode/specs/state.json
-      2. Extract next_project_number field
-      3. Validate it's a number >= 0
-      4. Store for use in task creation
-    </process>
-    <checkpoint>Task number allocated</checkpoint>
-  </step_1_allocate_number>
-
-  <step_2_create_entry>
-    <action>Format TODO.md entry following task standards</action>
-    <process>
-      1. Format task entry:
-         ```
-         ### {number}. {description}
-         - **Effort**: {effort}
-         - **Status**: [NOT STARTED]
-         - **Priority**: {priority}
-         - **Language**: {language}
-         - **Blocking**: None
-         - **Dependencies**: None
-         ```
-      2. Validate format follows tasks.md standard:
-         - Language field present (MANDATORY)
-         - Metadata format uses `- **Field**:` pattern
-         - All required fields present
-      3. Determine correct section based on priority
-      4. Prepare entry for status-sync-manager
-    </process>
-    <checkpoint>TODO.md entry formatted and validated</checkpoint>
-  </step_2_create_entry>
-
-  <step_3_sync_state>
-    <action>Invoke status-sync-manager for atomic update</action>
-    <process>
-      1. Invoke status-sync-manager.create_task() with:
-         {
-           task_number: allocated_number,
-           description: description,
-           metadata: {
-             priority: priority,
-             effort: effort,
-             language: language,
-             status: "not_started"
-           },
-           session_id: session_id,
-           delegation_depth: 2,
-           delegation_path: ["orchestrator", "task", "task-creator", "status-sync-manager"]
-         }
-      2. Wait for status-sync-manager to complete
-      3. Verify atomic update succeeded
-      4. If failed: return error with rollback information
-    </process>
-    <checkpoint>TODO.md and state.json updated atomically</checkpoint>
-  </step_3_sync_state>
-
-  <step_4_return>
-    <action>Return standardized result</action>
-    <process>
-      1. Format return following subagent-return-format.md:
-         {
-           "status": "completed",
-           "summary": "Task {number} created: {description}",
-           "artifacts": [],
-           "metadata": {
-             "session_id": "{session_id}",
-             "duration_seconds": {duration},
-             "agent_type": "task-creator",
-             "delegation_depth": 2,
-             "delegation_path": ["orchestrator", "task", "task-creator"]
-           },
-           "errors": [],
-           "next_steps": "Use /research {number} to research this task. Use /plan {number} to create implementation plan. Use /implement {number} to implement the task.",
-           "task_number": {number},
-           "task_details": {
-             "description": "{description}",
-             "priority": "{priority}",
-             "effort": "{effort}",
-             "language": "{language}",
-             "status": "[NOT STARTED]"
-           }
-         }
-      2. Include session_id from input
-      3. Include metadata (duration, agent_type, delegation info)
-      4. Return status "completed"
-    </process>
-    <checkpoint>Result returned to user</checkpoint>
-  </step_4_return>
-</process_flow>
-```
-
-### Constraints
-
-```xml
-<constraints>
-  <must>Always validate Language field is set (MANDATORY per tasks.md)</must>
-  <must>Always validate metadata format uses `- **Field**:` pattern</must>
-  <must>Always validate all required fields present</must>
-  <must>Always use status-sync-manager for atomic updates</must>
-  <must>Always return standardized format per subagent-return-format.md</must>
-  <must>Complete within 120 seconds</must>
-  <must_not>Create any implementation files (*.lean, *.py, *.sh)</must_not>
-  <must_not>Run any implementation tools (lake, python, lean)</must_not>
-  <must_not>Implement the task</must_not>
-  <must_not>Create any spec directories</must_not>
-  <must_not>Create any research files</must_not>
-  <must_not>Create any plan files</must_not>
-</constraints>
-```
-
-### Architectural Enforcement
-
-The task-creator subagent uses **permissions** to architecturally enforce that it can only create tasks, never implement them:
-
-**Allowed**:
-- ✅ Read state.json and TODO.md
-- ✅ Run `date` command (for timestamps)
-- ✅ Delegate to status-sync-manager
-
-**Denied**:
-- ❌ Write to any implementation files (*.lean, *.py, *.sh)
-- ❌ Run implementation tools (lake, python, lean)
-- ❌ Create directories
-- ❌ Create research/plan files
-
-This ensures that even if the subagent receives instructions to implement a task, it **cannot** do so due to permission constraints.
-
-### Integration with status-sync-manager
-
-The task-creator delegates to status-sync-manager's new `create_task()` method for atomic updates:
-
-```python
-# status-sync-manager.create_task() implementation
-def create_task(task_number, description, metadata, session_id, delegation_depth, delegation_path):
-    # Phase 1: Prepare
-    validate_task_number_unique(task_number)
-    todo_entry = format_todo_entry(task_number, description, metadata)
-    state_entry = format_state_entry(task_number, description, metadata)
-    
-    # Backup current state
-    backup_todo = read_file('TODO.md')
-    backup_state = read_file('state.json')
-    
-    # Phase 2: Commit
-    try:
-        # Update TODO.md
-        append_to_priority_section(todo_entry, metadata['priority'])
-        
-        # Update state.json
-        state = json.loads(backup_state)
-        state['active_projects'].append(state_entry)
-        state['next_project_number'] += 1
-        write_file('state.json', json.dumps(state))
-        
-        # Verify both succeeded
-        verify_task_in_todo(task_number)
-        verify_task_in_state(task_number)
-        
-        return success()
-    except Exception as e:
-        # Rollback
-        write_file('TODO.md', backup_todo)
-        write_file('state.json', backup_state)
-        return error(f"Task creation failed: {e}")
-```
-
----
-
-## Appendix B: Comparison - Before vs. After /task Command
-
-### Before (Current Broken State)
-
-```
-/task "Implement feature X"
-  ↓
-orchestrator loads task.md (381 lines)
-  ↓
-5-stage inline workflow:
-  1. ParseInput (validate description, extract flags)
-  2. ReadNextNumber (read state.json)
-  3. CreateTODOEntry (manual TODO.md update)
-  4. UpdateStateJson (manual state.json update)
-  5. ReturnSuccess (return task number)
-  ↓
-❌ Sometimes skips to implementation (no enforcement)
-❌ Manual updates (no atomic guarantees)
-❌ Large command file (hard to maintain)
-❌ No architectural enforcement
-```
-
-### After (Proposed Fixed State)
-
-```
-/task "Implement feature X"
-  ↓
-orchestrator loads task.md (<150 lines)
-  ↓
-2-stage workflow:
-  1. ParseAndValidate (validate inputs)
-  2. Delegate to task-creator subagent
-     ↓
-     task-creator (4-step process):
-       0. Preflight (validate inputs)
-       1. AllocateNumber (read state.json)
-       2. CreateEntry (format TODO.md entry)
-       3. SyncState (invoke status-sync-manager)
-          ↓
-          status-sync-manager.create_task() (atomic update):
-            - Update TODO.md
-            - Update state.json
-            - Rollback on failure
-       4. Return (standardized format)
-  ↓
-✅ Architectural enforcement (permissions prevent implementation)
-✅ Atomic updates (via status-sync-manager)
-✅ Small command file (easy to maintain)
-✅ Consistent with /research and /implement patterns
-✅ Guaranteed to only create tasks, never implement them
-```
-
-### Key Improvements
-
-1. **Architectural Enforcement**: Permissions prevent implementation files from being created
-2. **Atomic Updates**: status-sync-manager ensures TODO.md and state.json stay in sync
-3. **Consistent Patterns**: Follows proven 2-stage workflow from /research and /implement
-4. **Smaller Command File**: 381 lines → <150 lines (62% reduction)
-5. **Clear Separation**: Command parses, subagent executes
-6. **Better Error Handling**: Automatic rollback on failure

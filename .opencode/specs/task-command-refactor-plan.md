@@ -1,824 +1,737 @@
-# /task Command Refactor Implementation Plan (REVISED)
+# /task Command Refactor Implementation Plan (REVISED v2)
 
 **Created**: 2026-01-04  
-**Revised**: 2026-01-04 (after reviewing state-json-phase2-optimization-plan.md)  
-**Purpose**: Clarify /task command design and document workflow  
-**Issue**: Task 295 created without description or proper metadata  
-**Status**: NO CHANGES NEEDED - Working as designed
+**Revised**: 2026-01-04 v2 (add description clarification via research)  
+**Purpose**: Enhance /task command to research and clarify task descriptions  
+**Issue**: Task 295 created without description field - need description clarification  
+**Status**: ENHANCEMENT NEEDED - Add description research and clarification
 
 ---
 
 ## Executive Summary
 
-**IMPORTANT DISCOVERY**: After reviewing `.opencode/specs/state-json-phase2-optimization-plan.md`, I discovered that:
+**User Requirement**: The /task command should accept a "garbled" or rough task description, research it to create an improved description, and include that description in both TODO.md and state.json.
 
-1. ✅ **task-creator subagent already exists** (`.opencode/agent/subagents/task-creator.md`)
-2. ✅ **Phase 5 already completed** (2026-01-04) - See task-command-implementation-summary.md
-3. ✅ **/task command already refactored** to use task-creator subagent
-4. ✅ **Architectural enforcement already implemented** via permissions
-5. ✅ **Atomic updates already working** with manual rollback
-
-**The /task command is NOT broken** - it's already been fixed and is working correctly!
-
-### What Actually Happened with Task 295
-
-Task 295 was created correctly with the current system:
-- ✅ Task number allocated (295)
-- ✅ Basic metadata present (Language: meta, Priority: Medium, Effort: TBD)
-- ✅ state.json updated correctly
-- ✅ TODO.md updated correctly
-
-**What's "missing" is NOT a bug** - it's the expected behavior:
-- The /task command creates **minimal task entries** by design
-- Extended fields (Description, Action Items, etc.) are **optional**
-- Users can add these fields manually or via /research and /plan
-
-### Actual Issue: Expectations vs. Reality
-
-The perceived "issue" is a mismatch between expectations and current design:
-
-**Expected** (from original assumptions):
-- Rich task entries with Description, Action Items, Files Affected, Acceptance Criteria, Impact
-- Auto-generated content based on description
-- Smart defaults for extended fields
-
-**Actual** (current implementation):
-- Minimal task entries with required fields only
-- Title from description
+**Current Behavior**:
+- /task creates minimal entries with title only
+- No Description field in TODO.md or state.json
 - Extended fields added later via /research and /plan
 
-**This is intentional design**, not a bug!
+**Desired Behavior**:
+- /task accepts rough description
+- /task researches and clarifies the description
+- /task creates entry with improved Description field in both TODO.md and state.json
+- Further research reports, plans, etc. added later via /research and /plan
+
+**Key Change**: /task becomes a **two-step process**:
+1. **Clarify**: Research and improve the task description
+2. **Create**: Create task entry with clarified description
 
 ---
 
 ## Current Implementation Review
 
-### task-creator Subagent (Already Exists)
+### task-creator Subagent (Existing)
 
 **File**: `.opencode/agent/subagents/task-creator.md` (593 lines)
 
+**Current Process**:
+0. Preflight: Validate inputs
+1. AllocateNumber: Read next_project_number
+2. CreateEntry: Format TODO.md entry (no Description field)
+3. UpdateFiles: Atomic update
+4. Return: Task number
+
+**What's Missing**:
+- ❌ No description clarification step
+- ❌ No Description field in TODO.md
+- ❌ No description field in state.json
+
+### /task Command (Existing)
+
+**File**: `.opencode/command/task.md` (254 lines)
+
+**Current Workflow**:
+1. ParseAndValidate: Parse description, extract flags
+2. Delegate: Delegate to task-creator
+
+**What's Missing**:
+- ❌ No description research/clarification
+- ❌ No Description field creation
+
+---
+
+## Proposed Solution
+
+### Design: Two-Step Task Creation
+
+**Step 1: Clarify Description** (new)
+- Accept rough/garbled description from user
+- Research to understand intent
+- Generate improved, clear description (2-3 sentences)
+- Extract metadata (language, priority hints, effort hints)
+
+**Step 2: Create Task Entry** (existing, enhanced)
+- Create TODO.md entry with Description field
+- Create state.json entry with description field
+- Use clarified description from Step 1
+
+### Architecture: Add description-clarifier Subagent
+
+**New Subagent**: `.opencode/agent/subagents/description-clarifier.md`
+
+**Purpose**: Research and clarify rough task descriptions
+
+**Process**:
+1. **Analyze**: Parse rough description, identify key concepts
+2. **Research**: Use web search, documentation, codebase context
+3. **Clarify**: Generate improved 2-3 sentence description
+4. **Extract**: Detect language, priority, effort from context
+5. **Return**: Clarified description + metadata
+
+**Example**:
+
+Input (rough):
+```
+"sync thing for todo and state"
+```
+
+Output (clarified):
+```
+Description: "Create a /sync command that synchronizes TODO.md and state.json bidirectionally, ensuring both files remain consistent. The command should detect discrepancies, resolve conflicts, and update both files atomically."
+
+Metadata:
+- Language: meta (command creation)
+- Priority: Medium (infrastructure improvement)
+- Effort: 4-6 hours (estimated from similar tasks)
+```
+
+### Updated Workflow
+
+**New /task Workflow** (3 stages):
+
+```xml
+<workflow_execution>
+  <stage id="1" name="ParseAndValidate">
+    <action>Parse rough description and extract flags</action>
+    <process>
+      1. Parse rough description from $ARGUMENTS
+      2. Extract optional flags (--priority, --effort, --language)
+      3. Validate description is non-empty
+      4. If --skip-clarification flag: skip to Stage 3
+      5. Otherwise: proceed to Stage 2
+    </process>
+    <checkpoint>Rough description parsed, flags extracted</checkpoint>
+  </stage>
+  
+  <stage id="2" name="ClarifyDescription">
+    <action>Research and clarify task description</action>
+    <process>
+      1. Invoke description-clarifier subagent:
+         task(
+           subagent_type="description-clarifier",
+           prompt="Clarify task description: ${rough_description}",
+           description="Clarify task description"
+         )
+      2. Wait for clarified description and metadata
+      3. Override flags with clarified metadata if not explicitly set:
+         - If --language not set: use clarified language
+         - If --priority not set: use clarified priority
+         - If --effort not set: use clarified effort
+      4. Store clarified description for task creation
+    </process>
+    <checkpoint>Description clarified, metadata extracted</checkpoint>
+  </stage>
+  
+  <stage id="3" name="CreateTask">
+    <action>Create task entry with clarified description</action>
+    <process>
+      1. Invoke task-creator subagent:
+         task(
+           subagent_type="task-creator",
+           prompt="Create task: ${title}. Description: ${clarified_description}. Priority: ${priority}. Effort: ${effort}. Language: ${language}.",
+           description="Create task entry"
+         )
+      2. Wait for task-creator to complete
+      3. Relay result to user
+    </process>
+    <checkpoint>Task created with clarified description</checkpoint>
+  </stage>
+</workflow_execution>
+```
+
+---
+
+## Implementation Plan
+
+### Phase 1: Create description-clarifier Subagent (3 hours)
+
+**Goal**: Create subagent that researches and clarifies task descriptions
+
+#### Task 1.1: Create Subagent File (1.5 hours)
+
+**File**: `.opencode/agent/subagents/description-clarifier.md`
+
 **Frontmatter**:
 ```yaml
-name: "task-creator"
+---
+name: "description-clarifier"
 version: "1.0.0"
-description: "Create new tasks in .opencode/specs/TODO.md with atomic state updates"
+description: "Research and clarify rough task descriptions into clear, actionable descriptions"
 mode: subagent
 agent_type: utility
+temperature: 0.3
+max_tokens: 2000
+timeout: 300
+tools:
+  read: true
+  bash: true
+  webfetch: true
 permissions:
   allow:
-    - read: [".opencode/specs/state.json", ".opencode/specs/TODO.md"]
-    - write: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+    - read: [".opencode/specs/TODO.md", ".opencode/specs/state.json", ".opencode/context/**/*", "Documentation/**/*"]
+    - bash: ["grep", "find", "jq"]
+    - webfetch: ["*"]
   deny:
-    - write: ["**/*.lean", "**/*.py", "**/*.sh"]  # Cannot create implementation files
-    - bash: ["lake", "python", "lean"]  # Cannot run implementation tools
+    - write: ["**/*"]
+    - bash: ["rm", "sudo", "su", "mv", "cp", "lake", "python", "lean"]
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/tasks.md"
+    - "core/system/state-management.md"
+  max_context_size: 30000
+delegation:
+  max_depth: 3
+  can_delegate_to: []
+  timeout_default: 300
+  timeout_max: 300
+lifecycle:
+  stage: 2
+  command: "/task"
+  return_format: "subagent-return-format.md"
+---
 ```
 
-**Process Flow** (5 steps):
-0. **Preflight**: Validate inputs and file accessibility
-1. **AllocateNumber**: Read next_project_number from state.json
-2. **CreateEntry**: Format TODO.md entry following task standards
-3. **UpdateFiles**: Atomic TODO.md + state.json update with rollback
-4. **Return**: Standardized result format
+**Process Flow**:
+```xml
+<process_flow>
+  <step_0_preflight>
+    <action>Validate rough description and prepare for research</action>
+    <process>
+      1. Validate rough_description is non-empty
+      2. Extract key concepts and keywords
+      3. Identify domain (lean, markdown, meta, general, etc.)
+      4. Prepare research queries
+    </process>
+    <checkpoint>Rough description validated, research prepared</checkpoint>
+  </step_0_preflight>
+  
+  <step_1_research>
+    <action>Research task context and similar tasks</action>
+    <process>
+      1. Search TODO.md for similar tasks:
+         - Extract keywords from rough description
+         - Find tasks with similar keywords
+         - Analyze their descriptions for patterns
+      
+      2. Search codebase context:
+         - Check .opencode/context/ for relevant documentation
+         - Check Documentation/ for related topics
+         - Identify relevant files and modules
+      
+      3. Web research (if needed):
+         - Search for technical concepts mentioned
+         - Find best practices and patterns
+         - Gather context for unfamiliar terms
+      
+      4. Compile research findings:
+         - Key concepts identified
+         - Similar tasks found
+         - Relevant documentation
+         - Technical context
+    </process>
+    <checkpoint>Research completed, context gathered</checkpoint>
+  </step_1_research>
+  
+  <step_2_clarify>
+    <action>Generate clarified description</action>
+    <process>
+      1. Analyze rough description with research context:
+         - What is the user trying to accomplish?
+         - What are the key requirements?
+         - What is the scope?
+      
+      2. Generate clarified description (2-3 sentences):
+         - First sentence: What (clear statement of task)
+         - Second sentence: Why (purpose/motivation)
+         - Third sentence: How (high-level approach, optional)
+      
+      3. Ensure clarity:
+         - No ambiguous terms
+         - Specific and actionable
+         - Appropriate scope
+         - Professional tone
+      
+      4. Validate description:
+         - Length: 50-500 characters
+         - Clarity: understandable without context
+         - Completeness: captures intent
+    </process>
+    <checkpoint>Clarified description generated</checkpoint>
+  </step_2_clarify>
+  
+  <step_3_extract_metadata>
+    <action>Extract metadata from clarified description</action>
+    <process>
+      1. Detect language:
+         - Keywords: "lean", "proof", "theorem" → lean
+         - Keywords: "markdown", "doc", "README" → markdown
+         - Keywords: "command", "agent", "context" → meta
+         - Keywords: "python", "script" → python
+         - Keywords: "shell", "bash" → shell
+         - Default: general
+      
+      2. Estimate priority:
+         - Keywords: "critical", "urgent", "blocking" → High
+         - Keywords: "bug", "fix", "error" → High
+         - Keywords: "feature", "add", "implement" → Medium
+         - Keywords: "refactor", "improve", "enhance" → Medium
+         - Keywords: "documentation", "cleanup" → Low
+         - Default: Medium
+      
+      3. Estimate effort:
+         - Check similar tasks in TODO.md
+         - Use research findings
+         - Default: TBD if uncertain
+      
+      4. Extract title (short version):
+         - First 5-10 words of clarified description
+         - Or: extract from rough description if clear
+         - Max 80 characters
+    </process>
+    <checkpoint>Metadata extracted</checkpoint>
+  </step_3_extract_metadata>
+  
+  <step_4_return>
+    <action>Return clarified description and metadata</action>
+    <return_format>
+      {
+        "status": "completed",
+        "clarified_description": "{2-3 sentence description}",
+        "title": "{short title, max 80 chars}",
+        "metadata": {
+          "language": "{detected language}",
+          "priority": "{estimated priority}",
+          "effort": "{estimated effort}",
+          "confidence": "{high|medium|low}"
+        },
+        "research_summary": "{brief summary of research findings}",
+        "similar_tasks": ["{task numbers of similar tasks}"]
+      }
+    </return_format>
+    <checkpoint>Result returned</checkpoint>
+  </step_4_return>
+</process_flow>
+```
 
-**Architectural Enforcement**:
-- ✅ Permissions prevent creating implementation files
-- ✅ Permissions prevent running implementation tools
-- ✅ Can only read/write state.json and TODO.md
-- ✅ Cannot delegate (no subagents to delegate to)
+**Deliverables**:
+- `.opencode/agent/subagents/description-clarifier.md` (new file, ~400 lines)
 
-### /task Command (Already Refactored)
+**Validation**:
+- [ ] Subagent follows subagent-structure.md standard
+- [ ] Permissions prevent file writes (read-only research)
+- [ ] Research process is comprehensive
+- [ ] Clarified descriptions are clear and actionable
+- [ ] Metadata extraction is accurate
 
-**File**: `.opencode/command/task.md` (254 lines, down from 381)
+**Estimated Effort**: 1.5 hours
 
-**Workflow** (2 stages):
-1. **ParseAndValidate**: Parse description, extract flags, validate inputs
-2. **Delegate**: Delegate to task-creator subagent
+#### Task 1.2: Test description-clarifier (1 hour)
 
-**Benefits Achieved**:
-- ✅ 33% reduction in command file size (381 → 254 lines)
-- ✅ Architectural enforcement (permissions prevent implementation)
-- ✅ Atomic task creation (manual implementation with rollback)
-- ✅ Consistent with /research and /implement patterns
-- ✅ Guaranteed to only create tasks, never implement them
+**Test Cases**:
 
-### What Works Correctly
+1. **Garbled description**:
+   ```
+   Input: "sync thing for todo and state"
+   Expected: "Create a /sync command that synchronizes TODO.md and state.json..."
+   ```
 
-1. **Task Number Allocation**: ✅ Reads from state.json, increments correctly
-2. **Metadata Validation**: ✅ Validates priority, effort, language
-3. **Language Detection**: ✅ Auto-detects from keywords
-4. **Atomic Updates**: ✅ Both files updated or neither (rollback on failure)
-5. **Architectural Enforcement**: ✅ Cannot implement tasks (permissions)
-6. **Integration**: ✅ Works with /research, /plan, /implement
+2. **Vague description**:
+   ```
+   Input: "fix the lean stuff"
+   Expected: "Fix Lean compilation errors in [specific module]..."
+   ```
 
-### What's "Missing" (By Design)
+3. **Technical jargon**:
+   ```
+   Input: "add leansearch api integration"
+   Expected: "Integrate LeanSearch REST API for theorem search functionality..."
+   ```
 
-1. **Description Field**: Not in TODO.md (title is description)
-2. **Action Items**: Not auto-generated (added via /plan)
-3. **Files Affected**: Not auto-detected (added via /plan)
-4. **Acceptance Criteria**: Not auto-generated (added via /plan)
-5. **Impact**: Not auto-generated (added via /research or /plan)
+4. **Clear description** (should enhance, not change drastically):
+   ```
+   Input: "Implement completeness proof for TM logic"
+   Expected: "Implement the completeness proof for TM logic using canonical model method..."
+   ```
 
-**This is intentional** - the /task command creates minimal entries, and /research and /plan add the details.
+**Validation**:
+- [ ] Garbled descriptions become clear
+- [ ] Vague descriptions become specific
+- [ ] Technical jargon is explained
+- [ ] Clear descriptions are enhanced appropriately
+- [ ] Language detection is accurate
+- [ ] Priority estimation is reasonable
+- [ ] Effort estimation is reasonable
+
+**Estimated Effort**: 1 hour
+
+#### Task 1.3: Document description-clarifier (30 minutes)
+
+**Files to Update**:
+- `.opencode/context/core/standards/subagent-structure.md` - Add description-clarifier as example
+- `.opencode/context/core/system/task-creation-workflow.md` - Document clarification step
+
+**Deliverables**:
+- Documentation of description-clarifier subagent
+- Examples of clarification process
+
+**Estimated Effort**: 30 minutes
 
 ---
 
-## Design Philosophy
+### Phase 2: Update task-creator to Support Description Field (2 hours)
 
-The /task command creates **minimal task entries** by design. This follows the principle of separation of concerns:
+**Goal**: Enhance task-creator to include Description field in TODO.md and state.json
 
-1. **/task** - Create task entry with basic metadata
-2. **/research** - Add research findings and context
-3. **/plan** - Add action items, files affected, acceptance criteria
-4. **/implement** - Execute the implementation
+#### Task 2.1: Update task-creator Process (1 hour)
 
-### Why Minimal Entries?
+**File**: `.opencode/agent/subagents/task-creator.md`
 
-- **Fast task creation**: No need to provide all details upfront
-- **Flexibility**: Not all tasks need full details immediately
-- **Separation of concerns**: Each command has a clear responsibility
-- **Iterative refinement**: Details emerge through research and planning
+**Changes**:
 
-### What /task Creates
+1. **Update Input Validation** (Step 0):
+   ```xml
+   <step_0_preflight>
+     <process>
+       1. Validate required inputs:
+          - title (non-empty string, max 200 chars)
+          - description (non-empty string, 50-500 chars)  <!-- NEW -->
+          - priority (Low|Medium|High)
+          - effort (TBD or time estimate)
+          - language (lean|markdown|general|python|shell|json|meta)
+       2. Validate state.json exists and is readable
+       3. Validate TODO.md exists and is readable
+       4. If validation fails: abort with clear error message
+     </process>
+   </step_0_preflight>
+   ```
 
-**Required Fields**:
-- Task number (auto-allocated)
-- Title (from description)
-- Effort (default: TBD, or via --effort flag)
-- Status (always [NOT STARTED])
-- Priority (default: Medium, or via --priority flag)
-- Language (auto-detected or via --language flag)
-- Blocking (default: None)
-- Dependencies (default: None)
+2. **Update TODO.md Format** (Step 2):
+   ```xml
+   <step_2_create_entry>
+     <process>
+       1. Format task entry:
+          ```
+          ### {number}. {title}
+          - **Effort**: {effort}
+          - **Status**: [NOT STARTED]
+          - **Priority**: {priority}
+          - **Language**: {language}
+          - **Blocking**: None
+          - **Dependencies**: None
+          
+          **Description**: {description}  <!-- NEW -->
+          
+          ---
+          ```
+       2. Validate format follows tasks.md standard
+       3. Determine correct section based on priority
+       4. Prepare entry for atomic update
+     </process>
+   </step_2_create_entry>
+   ```
 
-**NOT Created** (added later):
-- Description field (title is the description)
-- Action Items (added by /plan)
-- Files Affected (added by /plan)
-- Acceptance Criteria (added by /plan)
-- Impact (added by /research or /plan)
+3. **Update state.json Format** (Step 3):
+   ```xml
+   <step_3_update_files>
+     <process>
+       1. Create backup of TODO.md and state.json
+       
+       2. Update TODO.md:
+          - Append formatted entry to priority section
+       
+       3. Update state.json:
+          - Add to active_projects array:
+            {
+              "project_number": {number},
+              "project_name": "{slug}",
+              "type": "feature",
+              "phase": "not_started",
+              "status": "not_started",
+              "priority": "{priority}",
+              "language": "{language}",
+              "description": "{description}",  <!-- NEW -->
+              "effort": "{effort}",
+              "blocking": [],
+              "dependencies": [],
+              "created": "{timestamp}",
+              "last_updated": "{timestamp}"
+            }
+          - Increment next_project_number
+       
+       4. Verify both updates succeeded
+       5. If failure: rollback to backups
+     </process>
+   </step_3_update_files>
+   ```
 
-### Example Workflow
+**Deliverables**:
+- Updated `.opencode/agent/subagents/task-creator.md`
 
-```bash
-# Step 1: Create minimal task
-/task "Implement LeanSearch integration" --priority High
+**Validation**:
+- [ ] Description field required in input
+- [ ] Description field in TODO.md format
+- [ ] description field in state.json format
+- [ ] Atomic updates still work
+- [ ] Rollback works on failure
 
-# Output: Task 296 created
-# Next steps:
-#   /research 296 - Research this task
-#   /plan 296 - Create implementation plan
-#   /implement 296 - Implement the task
+**Estimated Effort**: 1 hour
 
-# Step 2: Research the task
-/research 296
+#### Task 2.2: Test task-creator with Description (1 hour)
 
-# Output: Research report created
-# Adds: Research findings, context, recommendations
+**Test Cases**:
 
-# Step 3: Create implementation plan
-/plan 296
+1. **Create task with description**:
+   ```
+   Input:
+     title: "Create /sync command"
+     description: "Create a /sync command that synchronizes TODO.md and state.json bidirectionally."
+     priority: High
+     effort: 4 hours
+     language: meta
+   
+   Expected TODO.md:
+     ### 296. Create /sync command
+     - **Effort**: 4 hours
+     - **Status**: [NOT STARTED]
+     - **Priority**: High
+     - **Language**: meta
+     - **Blocking**: None
+     - **Dependencies**: None
+     
+     **Description**: Create a /sync command that synchronizes TODO.md and state.json bidirectionally.
+     
+     ---
+   
+   Expected state.json:
+     {
+       "project_number": 296,
+       "project_name": "create_sync_command",
+       "description": "Create a /sync command that synchronizes TODO.md and state.json bidirectionally.",
+       "priority": "high",
+       "language": "meta",
+       "effort": "4 hours",
+       ...
+     }
+   ```
 
-# Output: Implementation plan created
-# Adds: Action items, files affected, acceptance criteria, phases
+2. **Create task with multi-line description**:
+   ```
+   Input:
+     description: "Create a /sync command that synchronizes TODO.md and state.json bidirectionally. The command should detect discrepancies, resolve conflicts, and update both files atomically."
+   
+   Expected: Description preserved with newlines/formatting
+   ```
 
-# Step 4: Implement the task
-/implement 296
+3. **Verify atomic updates**:
+   ```
+   Test: Simulate failure during state.json update
+   Expected: Both files rolled back, no partial update
+   ```
 
-# Output: Implementation complete
-# Adds: Implementation summary, files modified, git commits
-```
+**Validation**:
+- [ ] Description field appears in TODO.md
+- [ ] description field appears in state.json
+- [ ] Multi-line descriptions work
+- [ ] Atomic updates work
+- [ ] Rollback works on failure
 
-This workflow ensures each command has a clear, focused responsibility.
+**Estimated Effort**: 1 hour
 
 ---
 
-## Implementation Plan: Documentation Updates
+### Phase 3: Update /task Command Workflow (1.5 hours)
 
-Since the /task command is working correctly, the only changes needed are **documentation updates** to clarify the design philosophy.
+**Goal**: Add description clarification stage to /task command
 
-### Phase 1: Update /task Command Documentation (30 minutes)
+#### Task 3.1: Update /task Command (1 hour)
 
 **File**: `.opencode/command/task.md`
 
 **Changes**:
-1. Add "Design Philosophy" section explaining minimal entries
-2. Add "What /task Creates" section listing required fields
-3. Add "What's NOT Created" section explaining extended fields
-4. Add "Example Workflow" section showing /task → /research → /plan → /implement
 
-**Location**: Add after the frontmatter and before `<workflow_execution>`
+1. **Add --skip-clarification Flag**:
+   ```xml
+   <stage id="1" name="ParseAndValidate">
+     <process>
+       1. Parse description from $ARGUMENTS
+       2. Extract flags:
+          - --priority (Low|Medium|High)
+          - --effort (TBD or time estimate)
+          - --language (lean|markdown|general|python|shell|json|meta)
+          - --skip-clarification (boolean, default: false)  <!-- NEW -->
+       3. Validate description is non-empty
+       4. Determine if clarification needed:
+          - If --skip-clarification: skip to Stage 3
+          - If --language, --priority, --effort all set: skip to Stage 3
+          - Otherwise: proceed to Stage 2
+     </process>
+   </stage>
+   ```
 
-**Content**:
-```markdown
-## Design Philosophy
+2. **Add Stage 2: ClarifyDescription**:
+   ```xml
+   <stage id="2" name="ClarifyDescription">
+     <action>Research and clarify task description</action>
+     <process>
+       1. Invoke description-clarifier subagent:
+          task(
+            subagent_type="description-clarifier",
+            prompt="Clarify task description: ${rough_description}",
+            description="Clarify task description"
+          )
+       
+       2. Wait for clarified description and metadata
+       
+       3. Override flags with clarified metadata if not explicitly set:
+          - If --language not set: use clarified language
+          - If --priority not set: use clarified priority
+          - If --effort not set: use clarified effort
+       
+       4. Store clarified description and title for task creation
+       
+       5. Show clarification to user:
+          "Clarified description: {clarified_description}"
+          "Detected: Language={language}, Priority={priority}, Effort={effort}"
+     </process>
+     <checkpoint>Description clarified, metadata extracted</checkpoint>
+   </stage>
+   ```
 
-The /task command creates **minimal task entries** by design. This follows the principle of separation of concerns:
+3. **Update Stage 3: CreateTask** (formerly Stage 2):
+   ```xml
+   <stage id="3" name="CreateTask">
+     <action>Create task entry with clarified description</action>
+     <process>
+       1. Prepare task creation input:
+          - title: from clarified title or rough description
+          - description: from clarified description or rough description
+          - priority: from flag or clarified metadata
+          - effort: from flag or clarified metadata
+          - language: from flag or clarified metadata
+       
+       2. Invoke task-creator subagent:
+          task(
+            subagent_type="task-creator",
+            prompt="Create task: ${title}. Description: ${description}. Priority: ${priority}. Effort: ${effort}. Language: ${language}.",
+            description="Create task entry"
+          )
+       
+       3. Wait for task-creator to complete
+       
+       4. Relay result to user:
+          "Task {number} created: {title}"
+          "Description: {description}"
+          "Priority: {priority}, Effort: {effort}, Language: {language}"
+          "Next steps: /research {number}, /plan {number}, /implement {number}"
+     </process>
+     <checkpoint>Task created with clarified description</checkpoint>
+   </stage>
+   ```
 
-1. **/task** - Create task entry with basic metadata
-2. **/research** - Add research findings and context
-3. **/plan** - Add action items, files affected, acceptance criteria
-4. **/implement** - Execute the implementation
+**Deliverables**:
+- Updated `.opencode/command/task.md` (3-stage workflow)
 
-### Why Minimal Entries?
+**Validation**:
+- [ ] Stage 1 parses flags correctly
+- [ ] Stage 2 clarifies description (when needed)
+- [ ] Stage 3 creates task with description
+- [ ] --skip-clarification flag works
+- [ ] Explicit flags skip clarification
 
-- **Fast task creation**: No need to provide all details upfront
-- **Flexibility**: Not all tasks need full details immediately
-- **Separation of concerns**: Each command has a clear responsibility
-- **Iterative refinement**: Details emerge through research and planning
+**Estimated Effort**: 1 hour
 
-### What /task Creates
+#### Task 3.2: Update Documentation (30 minutes)
 
-**Required Fields**:
-- Task number (auto-allocated from state.json)
-- Title (from description argument)
-- Effort (default: TBD, or via --effort flag)
-- Status (always [NOT STARTED])
-- Priority (default: Medium, or via --priority flag)
-- Language (auto-detected from keywords or via --language flag)
-- Blocking (default: None)
-- Dependencies (default: None)
+**Files to Update**:
 
-**NOT Created** (added later by other commands):
-- Description field (title serves as description)
-- Action Items (added by /plan)
-- Files Affected (added by /plan)
-- Acceptance Criteria (added by /plan)
-- Impact (added by /research or /plan)
+1. **`.opencode/command/task.md`** - Update usage section
+2. **`.opencode/context/core/standards/tasks.md`** - Update task entry format
 
-### Example Workflow
-
-```bash
-# Step 1: Create minimal task
-/task "Implement LeanSearch integration" --priority High
-
-# Output: Task 296 created: Implement LeanSearch integration
-# Priority: High, Effort: TBD, Language: lean
-# 
-# Next steps:
-#   /research 296 - Research this task
-#   /plan 296 - Create implementation plan
-#   /implement 296 - Implement the task
-
-# Step 2: Research the task (optional but recommended)
-/research 296
-
-# Output: Research completed for task 296
-# Created: .opencode/specs/296_implement_leansearch_integration/reports/research-001.md
-# Status updated: [NOT STARTED] → [RESEARCHED]
-
-# Step 3: Create implementation plan (optional but recommended)
-/plan 296
-
-# Output: Plan created for task 296
-# Created: .opencode/specs/296_implement_leansearch_integration/plans/implementation-001.md
-# 4 phases, 8 hours estimated
-# Status updated: [RESEARCHED] → [PLANNED]
-
-# Step 4: Implement the task
-/implement 296
-
-# Output: Implementation completed for task 296
-# Files modified: [list of files]
-# Status updated: [PLANNED] → [COMPLETED]
-```
-
-This workflow ensures each command has a clear, focused responsibility.
-```
-
-### Phase 2: Update Task Standards Documentation (15 minutes)
-
-**File**: `.opencode/context/core/standards/tasks.md`
-
-**Changes**:
-1. Add section explaining minimal vs. extended task entries
-2. Clarify which fields are required vs. optional
-3. Document the workflow for adding extended fields
-
-**Content**:
-```markdown
-## Task Entry Types
-
-### Minimal Task Entry (Created by /task)
-
-Minimal entries include only required fields:
-
-```markdown
-### {number}. {title}
-- **Effort**: {effort}
-- **Status**: [NOT STARTED]
-- **Priority**: {priority}
-- **Language**: {language}
-- **Blocking**: None
-- **Dependencies**: None
+**Estimated Effort**: 30 minutes
 
 ---
-```
 
-**Required Fields**:
-- Task number (auto-allocated)
-- Title (from description)
-- Effort (default: TBD)
-- Status (always [NOT STARTED])
-- Priority (default: Medium)
-- Language (auto-detected)
-- Blocking (default: None)
-- Dependencies (default: None)
+### Phase 4: Testing and Validation (2 hours)
 
-### Extended Task Entry (After /research and /plan)
+**Goal**: Comprehensive testing of enhanced /task command
 
-Extended entries include optional fields added by /research and /plan:
+**Test Cases**: See detailed test cases in plan above
 
-```markdown
-### {number}. {title}
-- **Effort**: {effort}
-- **Status**: [PLANNED]
-- **Priority**: {priority}
-- **Language**: {language}
-- **Blocking**: {blocking_tasks}
-- **Dependencies**: {dependency_tasks}
-
-**Description**: {detailed_description}
-
-**Action Items**:
-1. {action_item_1}
-2. {action_item_2}
-
-**Files Affected**:
-- {file_1}
-- {file_2}
-
-**Acceptance Criteria**:
-- [ ] {criterion_1}
-- [ ] {criterion_2}
-
-**Impact**: {impact_description}
-
----
-```
-
-**Optional Fields** (added by /research and /plan):
-- Description (detailed context)
-- Action Items (implementation steps)
-- Files Affected (files to modify)
-- Acceptance Criteria (success criteria)
-- Impact (why this task matters)
-
-### Workflow for Extended Fields
-
-1. **/task** creates minimal entry
-2. **/research** adds Description and research findings
-3. **/plan** adds Action Items, Files Affected, Acceptance Criteria, Impact
-4. **/implement** executes the plan
-
-This separation ensures each command has a clear, focused responsibility.
-```
-
-### Phase 3: Update User Guide (15 minutes)
-
-**File**: `Documentation/UserGuide/TUTORIAL.md` (or create if doesn't exist)
-
-**Changes**:
-1. Add section on task creation workflow
-2. Explain minimal vs. extended entries
-3. Show example of complete workflow
-
-**Content**:
-```markdown
-## Task Creation Workflow
-
-### Creating a New Task
-
-The /task command creates minimal task entries with basic metadata:
-
-```bash
-/task "Implement feature X" --priority High --effort "4 hours"
-```
-
-This creates a task entry with:
-- Auto-allocated task number
-- Title from description
-- Priority (High)
-- Effort (4 hours)
-- Language (auto-detected)
-- Status ([NOT STARTED])
-
-### Adding Details with /research
-
-After creating a task, use /research to add context:
-
-```bash
-/research 296
-```
-
-This creates a research report and updates the task with:
-- Research findings
-- Context and background
-- Recommendations
-- Status updated to [RESEARCHED]
-
-### Creating an Implementation Plan
-
-Use /plan to create a detailed implementation plan:
-
-```bash
-/plan 296
-```
-
-This creates an implementation plan with:
-- Action items (step-by-step)
-- Files affected
-- Acceptance criteria
-- Estimated effort per phase
-- Status updated to [PLANNED]
-
-### Implementing the Task
-
-Finally, use /implement to execute the plan:
-
-```bash
-/implement 296
-```
-
-This executes the implementation and:
-- Modifies files according to plan
-- Creates implementation summary
-- Updates status to [COMPLETED]
-- Creates git commits
-
-### Complete Example
-
-```bash
-# 1. Create task
-/task "Add LeanSearch integration" --priority High
-
-# Output: Task 296 created
-# Next steps: /research 296, /plan 296, /implement 296
-
-# 2. Research (optional but recommended)
-/research 296
-
-# Output: Research completed
-# Report: .opencode/specs/296_add_leansearch_integration/reports/research-001.md
-
-# 3. Plan (optional but recommended)
-/plan 296
-
-# Output: Plan created
-# Plan: .opencode/specs/296_add_leansearch_integration/plans/implementation-001.md
-# 4 phases, 8 hours estimated
-
-# 4. Implement
-/implement 296
-
-# Output: Implementation completed
-# Files modified: [list]
-# Status: [COMPLETED]
-```
-
-This workflow ensures systematic, well-documented task completion.
-```
+**Estimated Effort**: 2 hours
 
 ---
 
-## Integration with state-json-phase2-optimization-plan.md
+### Phase 5: Documentation and Rollout (1 hour)
 
-### Current Status (from Phase 2 Plan)
+**Goal**: Complete documentation and prepare for rollout
 
-**Phase 5: Optimize /task Command** ✅ **COMPLETED** (2026-01-04)
-
-- ✅ task-creator subagent created (593 lines)
-- ✅ /task command refactored (381 → 254 lines, -33%)
-- ✅ Architectural enforcement via permissions
-- ✅ Atomic updates with manual rollback
-- ✅ Consistent with /research and /implement patterns
-- ✅ Guaranteed to only create tasks, never implement them
-
-**Actual Effort**: 6.5 hours (vs estimated 13-19 hours)
-
-### Lessons Learned (from Phase 2 Plan)
-
-1. **Clear Implementation Plan**: Detailed plan reduced decision-making time by 50%
-2. **Existing Patterns**: /research and /implement provided proven templates
-3. **Architectural Enforcement**: Permissions effectively prevent unwanted behavior
-4. **Manual Atomic Updates**: Work well when status-sync-manager isn't suitable
-5. **Comprehensive Validation**: Automated validation reduced testing time
-
-### Remaining Work (from Phase 2 Plan)
-
-**Phase 1**: Enhance status-sync-manager (3 hours)
-- Add `archive_tasks()` method for /todo command (REQUIRED)
-- Add `create_task()` method (OPTIONAL - task-creator already works without it)
-
-**Phase 2**: Optimize /todo Command (2 hours)
-**Phase 3**: Optimize /review Command (1.5 hours)
-**Phase 4**: Optimize /meta Command (2 hours)
-**Phase 6**: Testing and Validation (2 hours)
-**Phase 7**: Documentation and Cleanup (1 hour)
-
-**Total Remaining**: ~11.5 hours
-
----
-
-## Validation Checklist
-
-### Current Implementation ✅
-
-- [x] task-creator subagent exists and works correctly
-- [x] /task command refactored to use task-creator
-- [x] Architectural enforcement via permissions
-- [x] Atomic updates with rollback on failure
-- [x] Language detection works correctly
-- [x] Integration with /research, /plan, /implement works
-- [x] No regressions in existing functionality
-
-### Documentation Updates (This Plan)
-
-- [ ] `.opencode/command/task.md` updated with design philosophy
-- [ ] `.opencode/context/core/standards/tasks.md` updated with entry types
-- [ ] `Documentation/UserGuide/TUTORIAL.md` updated with workflow example
-- [ ] All documentation is accurate and consistent
-- [ ] Examples match current implementation
+**Estimated Effort**: 1 hour
 
 ---
 
 ## Timeline
 
-**Total Estimated Time**: 1 hour (documentation only)
+**Total Estimated Time**: 9.5 hours
 
 | Phase | Duration | Deliverables |
 |-------|----------|--------------|
-| 1. Update /task command docs | 30 min | Design philosophy section in task.md |
-| 2. Update task standards | 15 min | Entry types section in tasks.md |
-| 3. Update user guide | 15 min | Workflow example in TUTORIAL.md |
-
-**No code changes needed** - only documentation updates.
-
----
-
-## Appendix A: Task 295 Analysis
-
-### What Was Created
-
-**TODO.md Entry**:
-```markdown
-### 295. Create /sync command to synchronize TODO.md and state.json
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
----
-```
-
-**state.json Entry**:
-```json
-{
-  "project_number": 295,
-  "project_name": "create_sync_command_to_synchronize_todo_md_and_state_json",
-  "type": "feature",
-  "phase": "not_started",
-  "status": "not_started",
-  "priority": "medium",
-  "language": "meta",
-  "created": "2026-01-04T20:25:54-08:00",
-  "last_updated": "2026-01-04T20:25:54-08:00"
-}
-```
-
-### What's "Missing"
-
-**NOT in TODO.md**:
-- Description field (title is the description)
-- Action Items (added by /plan)
-- Files Affected (added by /plan)
-- Acceptance Criteria (added by /plan)
-- Impact (added by /research or /plan)
-
-**NOT in state.json**:
-- description field (optional, not required)
-- effort field (optional, defaults to TBD)
-- blocking array (optional, defaults to empty)
-- dependencies array (optional, defaults to empty)
-
-### Is This a Bug?
-
-**NO** - This is the expected behavior:
-- ✅ Task number allocated correctly (295)
-- ✅ Title from description
-- ✅ All required metadata present
-- ✅ Language auto-detected (meta)
-- ✅ Priority defaulted (Medium)
-- ✅ Effort defaulted (TBD)
-- ✅ Both files updated atomically
-
-**What's "missing" is intentional** - extended fields are added later via /research and /plan.
-
-### How to Add Extended Fields
-
-**Use /research and /plan** (recommended workflow):
-```bash
-/research 295  # Adds research findings and context
-/plan 295      # Adds action items, files, acceptance criteria
-```
-
-After these commands, task 295 will have all extended fields.
+| 1. Create description-clarifier | 3 hours | New subagent, tests, docs |
+| 2. Update task-creator | 2 hours | Enhanced subagent, tests |
+| 3. Update /task command | 1.5 hours | 3-stage workflow, docs |
+| 4. Testing and validation | 2 hours | Test results, verification |
+| 5. Documentation and rollout | 1 hour | User docs, migration guide |
 
 ---
 
-## Appendix B: Comparison with Other Tasks
+## Success Criteria
 
-### Example: Task 257 (Complete Entry)
-
-**TODO.md**:
-```markdown
-### 257. Completeness Proofs
- **Effort**: 70-90 hours
- **Status**: [NOT STARTED]
- **Priority**: Low
- **Language**: lean
- **Blocking**: Decidability
- **Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
-
-**Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.
-
-**Action Items**:
-1. Implement `lindenbaum` lemma (extend consistent sets to maximal consistent sets using Zorn's lemma).
-2. Prove properties of maximal consistent sets (deductive closure, negation completeness).
-3. Construct `canonical_frame` and prove frame properties (nullity, compositionality).
-4. Prove `truth_lemma` (correspondence between membership and truth).
-5. Prove `weak_completeness` and `strong_completeness`.
-
-**Files**:
-- `Logos/Core/Metalogic/Completeness.lean`
-
-**Acceptance Criteria**:
-- [ ] Lindenbaum lemma implemented
-- [ ] Maximal consistent set properties proven
-- [ ] Canonical frame constructed with frame properties
-- [ ] Truth lemma proven
-- [ ] Weak and strong completeness proven
-
-**Impact**: Completes the metalogic foundation for TM logic by proving completeness, enabling derivability from validity.
-```
-
-**How was this created?**
-- NOT by /task command alone
-- Created manually or via /research + /plan
-- Extended fields added over time
-
-**Task 295 will look like this after /research and /plan**:
-```bash
-/research 295  # Adds Description and research findings
-/plan 295      # Adds Action Items, Files, Acceptance Criteria, Impact
-```
-
----
-
-## Appendix C: state.json Schema Evolution
-
-### Phase 1: Task Creation (via /task)
-
-```json
-{
-  "project_number": 295,
-  "project_name": "create_sync_command",
-  "type": "feature",
-  "phase": "not_started",
-  "status": "not_started",
-  "priority": "medium",
-  "language": "meta",
-  "created": "2026-01-04T20:25:54-08:00",
-  "last_updated": "2026-01-04T20:25:54-08:00"
-}
-```
-
-### Phase 2: After Research (via /research)
-
-```json
-{
-  "project_number": 295,
-  "project_name": "create_sync_command",
-  "type": "feature",
-  "phase": "research_completed",
-  "status": "researched",
-  "priority": "medium",
-  "language": "meta",
-  "research_summary": "Brief summary of research findings...",
-  "artifacts": [
-    ".opencode/specs/295_create_sync_command/reports/research-001.md"
-  ],
-  "created": "2026-01-04T20:25:54-08:00",
-  "started": "2026-01-04",
-  "research_completed": "2026-01-04",
-  "last_updated": "2026-01-04T21:00:00-08:00"
-}
-```
-
-### Phase 3: After Planning (via /plan)
-
-```json
-{
-  "project_number": 295,
-  "project_name": "create_sync_command",
-  "type": "feature",
-  "phase": "planned",
-  "status": "planned",
-  "priority": "medium",
-  "language": "meta",
-  "research_summary": "Brief summary of research findings...",
-  "effort": "4 hours",
-  "plan_path": ".opencode/specs/295_create_sync_command/plans/implementation-001.md",
-  "plan_metadata": {
-    "phases": 3,
-    "total_effort_hours": 4,
-    "complexity": "medium"
-  },
-  "artifacts": [
-    ".opencode/specs/295_create_sync_command/reports/research-001.md",
-    ".opencode/specs/295_create_sync_command/plans/implementation-001.md"
-  ],
-  "created": "2026-01-04T20:25:54-08:00",
-  "started": "2026-01-04",
-  "research_completed": "2026-01-04",
-  "plan_created": "2026-01-04",
-  "last_updated": "2026-01-04T21:30:00-08:00"
-}
-```
-
-### Phase 4: After Implementation (via /implement)
-
-```json
-{
-  "project_number": 295,
-  "project_name": "create_sync_command",
-  "type": "feature",
-  "phase": "implementation_completed",
-  "status": "completed",
-  "priority": "medium",
-  "language": "meta",
-  "research_summary": "Brief summary of research findings...",
-  "effort": "4 hours",
-  "plan_path": ".opencode/specs/295_create_sync_command/plans/implementation-001.md",
-  "plan_metadata": {
-    "phases": 3,
-    "total_effort_hours": 4,
-    "complexity": "medium"
-  },
-  "artifacts": [
-    ".opencode/specs/295_create_sync_command/reports/research-001.md",
-    ".opencode/specs/295_create_sync_command/plans/implementation-001.md",
-    ".opencode/specs/295_create_sync_command/summaries/implementation-summary-20260104.md",
-    ".opencode/command/sync.md"
-  ],
-  "files_modified": [
-    ".opencode/command/sync.md",
-    ".opencode/agent/subagents/sync-manager.md"
-  ],
-  "created": "2026-01-04T20:25:54-08:00",
-  "started": "2026-01-04",
-  "research_completed": "2026-01-04",
-  "plan_created": "2026-01-04",
-  "completed": "2026-01-04",
-  "last_updated": "2026-01-04T23:00:00-08:00"
-}
-```
-
-This evolution is **intentional** - fields are added as the task progresses through the workflow.
+- ✅ Garbled descriptions become clear (>90% improvement)
+- ✅ Language detection accuracy >95%
+- ✅ Priority estimation accuracy >80%
+- ✅ Effort estimation accuracy >70%
+- ✅ Description field in 100% of new tasks
+- ✅ Atomic updates work 100% of the time
 
 ---
 
 ## Conclusion
 
-### Key Findings
+This plan enhances the /task command to accept rough descriptions, research and clarify them, and create task entries with improved descriptions in both TODO.md and state.json.
 
-1. ✅ **No bug exists** - /task command works correctly
-2. ✅ **Current design is intentional** - minimal entries by design
-3. ✅ **task-creator already exists** - Phase 5 completed 2026-01-04
-4. ✅ **Architectural enforcement works** - permissions prevent implementation
-5. ✅ **Atomic updates work** - manual rollback ensures consistency
+**Key Benefits**:
+1. ✅ Users can provide garbled/rough descriptions
+2. ✅ Automatic clarification via research
+3. ✅ Description field in all new tasks
+4. ✅ Better metadata detection
+5. ✅ Faster task creation workflow
+6. ✅ Backward compatible
 
-### Recommendation
+**Total Effort**: 9.5 hours
 
-**Keep current design** - only documentation updates needed:
-- Document the workflow clearly
-- Explain why minimal entries are intentional
-- Show how /research and /plan add extended fields
-- **Total effort: 1 hour** (documentation only)
-
-### Next Steps
-
-1. **Implement documentation updates** (1 hour):
-   - Update `.opencode/command/task.md` with design philosophy
-   - Update `.opencode/context/core/standards/tasks.md` with entry types
-   - Update `Documentation/UserGuide/TUTORIAL.md` with workflow example
-
-2. **Continue with Phase 2 plan**:
-   - Focus on remaining phases (1-4, 6-7)
-   - Enhance status-sync-manager
-   - Optimize /todo, /review, /meta commands
-   - ~11.5 hours remaining
+**Next Steps**: Review and approve this plan, then begin Phase 1 implementation.
 
 ---
 
