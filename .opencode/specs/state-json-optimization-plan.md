@@ -498,9 +498,17 @@ time /implement 259  # Should be <100ms total
 3. Add migration notes for future commands
 
 **Validation**:
-- [ ] No references to old TODO.md parsing patterns
-- [ ] Templates reflect new approach
-- [ ] Documentation is complete
+- [x] No references to old TODO.md parsing patterns (updated command-template.md)
+- [x] Templates reflect new approach (state.json lookup examples added)
+- [x] Documentation is complete (performance notes added)
+
+**Changes Made**:
+- Updated command-template.md with state.json lookup patterns
+- Added performance optimization section to template
+- Documented 25-50x performance improvement
+- Added reference to state-lookup.md for comprehensive patterns
+
+**Status**: ✅ COMPLETED (2026-01-05)
 
 **Estimated Effort**: 15 minutes
 
