@@ -1389,15 +1389,16 @@ Establishes state.json as the single source of truth for task metadata, eliminat
 
 ---
 
-### 287. Fix /revise command to replace old plan link instead of appending new link
+### 287. Fix /revise command to replace old plan link instead of appending new link ✓
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED] (2026-01-04)
+- **Status**: [COMPLETED] (2026-01-04)
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](287_fix_revise_command_plan_link_replacement/reports/research-001.md)
 - **Plan**: [Implementation Plan](287_fix_revise_command_plan_link_replacement/plans/implementation-001.md)
+- **Implementation**: [Implementation Summary](287_fix_revise_command_plan_link_replacement/summaries/implementation-summary-20260104.md)
 
 **Description**:
 When running `/revise` for a task that already has a plan, the command appends the new plan link to the existing plan link instead of replacing it. This creates confusing entries like:

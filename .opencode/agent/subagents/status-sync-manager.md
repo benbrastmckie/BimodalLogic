@@ -173,7 +173,7 @@ lifecycle:
       2. Update .opencode/specs/TODO.md task entry in memory:
          - Change status marker
          - Add/update timestamp fields
-         - Add artifact links from validated_artifacts
+         - Add artifact links from validated_artifacts (with plan link replacement logic)
          - Add blocking/abandonment reason if applicable
          - Add checkmark to title if completed
       3. Update state.json in memory:
@@ -194,6 +194,97 @@ lifecycle:
          - Update overall plan status if all phases complete
       5. Validate all updates well-formed
     </process>
+    <artifact_link_update_logic>
+      When adding artifact links from validated_artifacts:
+      1. Detect artifact type from validated_artifacts array
+      2. For each artifact:
+         a. Extract artifact type (plan, research, implementation, etc.)
+         b. If type == "plan":
+            - Use REPLACEMENT mode (replace existing plan link)
+            - Search for existing plan link: ^- \*\*Plan\*\*:.*$
+            - If existing plan link found:
+              * Replace entire line with new plan link
+              * Format: - **Plan**: [Implementation Plan]({new_plan_path})
+            - If no existing plan link found:
+              * Append new plan link after description
+              * Format: - **Plan**: [Implementation Plan]({new_plan_path})
+         c. If type != "plan":
+            - Use APPEND mode (add to existing artifact links)
+            - Append new artifact link after existing links
+            - Format: - **{Type}**: [{Title}]({path})
+      3. Preserve TODO.md formatting (indentation, markdown syntax)
+      4. Handle edge cases:
+         a. Multiple appended plan links (current bug): Replace all with single new link
+         b. Malformed plan link: Log warning, append new link
+         c. No existing plan link: Append new link (first plan creation)
+    </artifact_link_update_logic>
+    <plan_link_replacement_algorithm>
+      Algorithm for replacing plan links:
+      
+      STEP 1: Detect plan artifact
+      ```
+      FOR each artifact in validated_artifacts:
+        IF artifact.type == "plan":
+          plan_replacement_mode = true
+          new_plan_path = artifact.path
+          new_plan_title = artifact.title OR "Implementation Plan"
+        END IF
+      END FOR
+      ```
+      
+      STEP 2: Search for existing plan link
+      ```
+      Read TODO.md task entry
+      Search for line matching pattern: ^- \*\*Plan\*\*:.*$
+      IF found:
+        existing_plan_line = matched line
+        replacement_needed = true
+      ELSE:
+        replacement_needed = false (first plan)
+      END IF
+      ```
+      
+      STEP 3: Replace or append
+      ```
+      IF replacement_needed:
+        Replace existing_plan_line with:
+        - **Plan**: [{new_plan_title}]({new_plan_path})
+      ELSE:
+        Append new line after description:
+        - **Plan**: [{new_plan_title}]({new_plan_path})
+      END IF
+      ```
+      
+      STEP 4: Validate replacement
+      ```
+      Verify new plan link exists in updated TODO.md task entry
+      Verify old plan link removed (if replacement occurred)
+      Verify old plan file still exists on disk (preservation check)
+      ```
+    </plan_link_replacement_algorithm>
+    <edge_case_handling>
+      Edge cases for plan link replacement:
+      
+      1. No existing plan (first plan creation):
+         - replacement_needed = false
+         - Append plan link after description
+         - No replacement occurs
+      
+      2. Malformed existing plan link:
+         - Log warning: "Malformed plan link detected: {line}"
+         - Attempt replacement anyway (best effort)
+         - If replacement fails: Append new link
+      
+      3. Multiple appended plan links (current bug):
+         - Pattern matches first occurrence
+         - Replace entire line (removes all appended links)
+         - Result: Single new plan link
+      
+      4. Plan file deleted from disk:
+         - Replacement still occurs (link update independent of file existence)
+         - Log warning: "Old plan file not found: {old_plan_path}"
+         - Continue with replacement (graceful degradation)
+    </edge_case_handling>
     <plan_file_parsing>
       Parse plan file to extract phase information:
       1. Read plan file content

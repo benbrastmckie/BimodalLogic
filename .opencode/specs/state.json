@@ -2061,6 +2061,26 @@
       "status": "planned",
       "plan_path": ".opencode/specs/278_investigate_fix_implement_argument_parsing/plans/implementation-001.md",
       "updated_at": "2026-01-03T21:00:00Z"
+    },
+    "287": {
+      "status": "completed",
+      "plan_path": ".opencode/specs/287_fix_revise_command_plan_link_replacement/plans/implementation-001.md",
+      "updated_at": "2026-01-04T00:00:00Z",
+      "completed_at": "2026-01-04T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "research_report",
+          "path": ".opencode/specs/287_fix_revise_command_plan_link_replacement/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".opencode/specs/287_fix_revise_command_plan_link_replacement/plans/implementation-001.md"
+        },
+        {
+          "type": "implementation",
+          "path": ".opencode/specs/287_fix_revise_command_plan_link_replacement/summaries/implementation-summary-20260104.md"
+        }
+      ]
     }
   }
 }
