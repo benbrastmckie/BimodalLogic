@@ -1,18 +1,18 @@
 ---
-last_updated: 2026-01-05T09:38:06Z
+last_updated: 2026-01-05T09:58:56Z
 next_project_number: 309
 repository_health:
   overall_score: 92
   production_readiness: excellent
   last_assessed: 2026-01-04T06:25:00Z
 task_counts:
-  active: 65
-  completed: 53
+  active: 48
+  completed: 82
   blocked: 0
-  in_progress: 1
+  in_progress: 3
   not_started: 34
-  abandoned: 5
-  total: 118
+  abandoned: 19
+  total: 149
 priority_distribution:
   high: 28
   medium: 20
@@ -43,20 +43,6 @@ technical_debt:
 
 ---
 
-### 303. ✓ Verify status-sync-manager create_task functionality (1/5)
-- **Effort**: 15 minutes
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: None
-- **Started**: 2026-01-05
-- **Completed**: 2026-01-05
-- **Investigation Report**: [investigation-report-20260105.md](.opencode/specs/303_verify_status_sync_manager_create_task_functionality/investigation-report-20260105.md)
-
-**Description**: Verify that status-sync-manager has create_task_flow functionality by checking the agent file. Check git history for meta.md and task-creator.md to understand recent changes. This is the first step in investigating unintended changes.
-
----
 
 ### 304. Test commands after unintended changes (2/5)
 - **Effort**: 30 minutes
@@ -1013,95 +999,6 @@ Establishes state.json as the single source of truth for task metadata, eliminat
 ---
 
 
-### 289. Extend Task 283 fix to all remaining subagents with inconsistent step naming
-- **Started**: 2026-01-04
-- **Completed**: 2026-01-04
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Implementation Artifacts**:
-  - .opencode/agent/subagents/lean-research-agent.md
-  - .opencode/agent/subagents/lean-planner.md
-  - .opencode/agent/subagents/lean-implementation-agent.md
-  - Summary: .opencode/specs/289_extend_task_283_fix/summaries/implementation-summary-20260104.md
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: Task 283 (completed)
-
-**Description**:
-Task 283 successfully fixed general subagents (researcher, planner, implementer) by standardizing from `stage_1_preflight` to `step_0_preflight`. However, research on task 285 revealed that Lean subagents (lean-research-agent, lean-planner, lean-implementation-agent) still use inconsistent `<step_1>` naming instead of `<step_0_preflight>`. This causes the same status synchronization failure for Lean tasks.
-
-**Evidence of Remaining Issues**:
-
-1. **Task 285 /research failure**:
-   - Research completed successfully but status NOT updated
-   - Artifact links NOT added to TODO.md
-   - state.json NOT updated
-   - Same pattern as pre-Task 283 failures
-
-2. **Research findings from task 285**:
-   - General subagents use `<step_0_preflight>` consistently (Task 283 fix working)
-   - Lean subagents use `<step_1>` instead of `<step_0_preflight>` (inconsistent)
-   - Lean subagents update TODO.md directly instead of delegating to status-sync-manager
-   - Task 259 failure explained by lean-research-agent using `<step_1>` naming
-
-**Root Cause**:
-Task 283 only fixed the general subagents but did not audit or fix the Lean-specific subagents. The Lean subagents have TWO issues:
-1. **Naming inconsistency**: Use `<step_1>` instead of `<step_0_preflight>`
-2. **Direct TODO.md updates**: Update TODO.md directly instead of delegating to status-sync-manager
-
-**Affected Subagents**:
-- `.opencode/agent/subagents/lean-research-agent.md`
-- `.opencode/agent/subagents/lean-planner.md`
-- `.opencode/agent/subagents/lean-implementation-agent.md`
-
-**Fix Strategy**:
-
-**Phase 1: Audit All Subagents** (30 minutes)
-1. Search all subagent files for step naming patterns
-2. Identify all subagents with inconsistent naming
-3. Document findings in audit report
-
-**Phase 2: Standardize Lean Subagent Naming** (1 hour)
-1. Update lean-research-agent.md: Change `<step_1>` to `<step_0_preflight>`
-2. Update lean-planner.md: Change `<step_1>` to `<step_0_preflight>`
-3. Update lean-implementation-agent.md: Change `<step_1>` to `<step_0_preflight>`
-
-**Phase 3: Fix Direct TODO.md Updates** (1 hour)
-1. Review Lean subagents for direct TODO.md updates
-2. Replace direct updates with status-sync-manager delegation
-3. Ensure atomic updates across TODO.md and state.json
-
-**Phase 4: Update Documentation** (30 minutes)
-1. Update subagent-structure.md with Lean subagent examples
-2. Document the `<step_0_preflight>` standard for ALL subagents
-3. Add validation checklist for new subagents
-
-**Files to Modify**:
-- `.opencode/agent/subagents/lean-research-agent.md`
-- `.opencode/agent/subagents/lean-planner.md`
-- `.opencode/agent/subagents/lean-implementation-agent.md`
-- `.opencode/context/core/standards/subagent-structure.md`
-
-**Acceptance Criteria**:
-- [ ] All subagents use `<step_0_preflight>` naming consistently
-- [ ] No subagents use `<step_1>` or `stage_` naming
-- [ ] Lean subagents delegate to status-sync-manager (no direct TODO.md updates)
-- [ ] /research on Lean tasks updates status correctly
-- [ ] /plan on Lean tasks updates status correctly
-- [ ] /implement on Lean tasks updates status correctly
-- [ ] Task 259 (Lean task) can be researched without status update failures
-- [ ] Documentation updated with Lean subagent examples
-
-**Impact**: 
-Completes the systematic fix started in Task 283 by extending it to all remaining subagents. Ensures consistent status synchronization across ALL workflow commands for ALL task types (general, markdown, Lean). Fixes the root cause of task 285 and task 259 failures.
-
-**Related Tasks**:
-- Task 283: Fix systematic status synchronization failure (completed - fixed general subagents only)
-- Task 285: Audit and fix status update behavior (research revealed Lean subagent issues)
-- Task 259: Automation Tactics (Lean task that likely failed due to lean-research-agent naming issue)
-
----
 
 
 
@@ -1254,108 +1151,13 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
   - Implementation Plan: [.opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md]
 
 
-### 296. Create /sync command for bidirectional TODO.md and state.json synchronization
-- **Effort**: 8-10 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-05
-- **Researched**: 2026-01-05
-- **Planned**: 2026-01-05
-- **Revised**: 2026-01-05
-- **Completed**: 2026-01-05
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/296_sync_command/reports/research-001.md)
-- **Plan**: [Implementation Plan v2](.opencode/specs/296_sync_command/plans/implementation-002.md) (revised: git blame-based per-field conflict resolution)
-- **Implementation**: [Implementation Summary](.opencode/specs/296_sync_command/summaries/implementation-summary-20260105.md)
-
-**Description**: Create a /sync command that bidirectionally synchronizes .opencode/specs/TODO.md and .opencode/specs/state.json, ensuring both files contain identical task information with the most recent changes from either file. The command should detect discrepancies between the two files, intelligently resolve conflicts by preferring the most recently updated data, and perform atomic updates to both files using the existing status-sync-manager's two-phase commit protocol. This addresses the architectural requirement that state.json is the authoritative source for metadata reads while TODO.md serves as the user-facing view, with synchronization ensuring consistency between them.
-
 ---
 
-### 297. Simplify /task command to directly create tasks without subagent delegation
-- **Effort**: 6 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-05
-- **Planned**: 2026-01-05
-- **Started**: 2026-01-05
-- **Completed**: 2026-01-05
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
 
-**Description**: Refactor the /task command to directly create task entries in TODO.md and state.json without delegating to description-clarifier and task-creator subagents. The command should reformulate the user's rough description into a clear description inline, look up next_project_number from state.json, create the task entry in both files atomically, and increment next_project_number. This simplifies the architecture by removing unnecessary delegation layers while maintaining the same functionality. The command should support the optional flag --divide which creates divides the task into an appropriate number of tasks (between 1-5 tasks). No other flags are needed.
-
-**Research Artifacts**:
-  - Main Report: [.opencode/specs/297_simplify_task_command/reports/research-001.md]
-  - Main Branch Comparison: [.opencode/specs/297_simplify_task_command/reports/research-002-main-branch-comparison.md]
-
-**Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/297_simplify_task_command/plans/implementation-001.md]
-
-**Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/297_simplify_task_command/summaries/implementation-summary-20260105.md]
-
-**Research Summary**: Main branch /task command (380 lines, 5 stages, NO delegation, <5s) is exactly what we want. Current branch overcomplicated it with description-clarifier + task-creator (454 lines, 420s timeout). Recommendation: Revert to main branch approach with ONE improvement - atomic updates via status-sync-manager. Remove unnecessary subagents. Preserve simplicity: "Direct file operations only. No subagent delegation."
-
----
-
-### 298. Create /abandon command to mark tasks as [ABANDONED] with reason
-- **Effort**: 2.5 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-05
-- **Researched**: 2026-01-05
-- **Planned**: 2026-01-05
-- **Completed**: 2026-01-05
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/298_abandon_command/reports/research-001.md]
-- **Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/298_abandon_command/plans/implementation-001.md]
-- **Implementation Artifacts**:
-  - Command File: [.opencode/command/abandon.md]
-  - Implementation Summary: [.opencode/specs/298_abandon_command/summaries/implementation-summary-20260105.md]
-
-**Description**: Create a /abandon command that takes a task number as argument (similar to /implement) and updates the status of the task in TODO.md and state.json to [ABANDONED]. The command should validate that the task exists and is not already completed or abandoned, prompt for an abandonment reason if not provided inline, and delegate to status-sync-manager to perform atomic updates to both files. The command should follow the same architectural patterns as /implement, /research, and /plan commands for consistency.
-
----
 
 ## High Priority
 
-### 221. Fix Comprehensive Status Update Failures
-- **Effort**: 9.0
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: markdown
-- **Artifacts**:
-  - .opencode/specs/221_fix_comprehensive_status_update_failures/reports/research-001.md
-  - .opencode/specs/221_fix_comprehensive_status_update_failures/plans/implementation-001.md
-  - .opencode/specs/221_fix_comprehensive_status_update_failures/summaries/implementation-summary-20251228.md
 
-**Description**: Task 221
-
-
----
-
-### 226. Fix Review Command
-- **Effort**: 8.0
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: markdown
-- **Artifacts**:
-  - .opencode/specs/226_fix_review_command/reports/research-001.md
-  - .opencode/specs/226_fix_review_command/plans/implementation-001.md
-  - .opencode/specs/226_fix_review_command/summaries/implementation-summary-20251228.md
-
-**Description**: Task 226
-
-
----
 
 ### 240. Systematically Investigate And Fix Persistent Workflow Command Stage 7 Postflight Failures
 - **Effort**: 56.0
@@ -1411,35 +1213,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 274. Remove Status Metadata From Research Reports
-- **Effort**: TBD
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: markdown
-- **Artifacts**:
-  - .opencode/specs/274_remove_status_metadata_from_research_reports/summaries/implementation-summary-20260103.md
-  - .opencode/context/core/standards/report.md
-  - .opencode/agent/subagents/researcher.md
 
-**Description**: Task 274
-
-
----
-
-### 275. Fix Workflow Status Updates
-- **Effort**: 8.0
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: markdown
-- **Artifacts**:
-  - .opencode/specs/275_fix_workflow_status_updates/reports/research-001.md
-  - .opencode/specs/275_fix_workflow_status_updates/reports/verification-001.md
-  - .opencode/specs/275_fix_workflow_status_updates/plans/implementation-001.md
-
-**Description**: Task 275
-
-
----
 
 ### 277. Improve Opencode Header And Summary Display For Task Commands
 - **Effort**: 3.5
@@ -1470,20 +1244,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 281. Fix Opencode Arguments Variable Not Being Passed To Orchestrator
-- **Effort**: 0.25
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: general
-- **Artifacts**:
-  - .opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md
-  - .opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-002.md
-  - .opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-001.md
-
-**Description**: Task 281
-
-
----
 
 ### 282. Add Json Return Format Enforcement To Subagent Invocation
 - **Effort**: TBD
@@ -1496,37 +1256,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 283. Fix Systematic Status Synchronization Failure
-- **Effort**: 3.5
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: markdown
-- **Artifacts**:
-  - .opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
-  - .opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md
-  - .opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-002.md
 
-**Description**: Task 283
-
-
----
-
-### 285. Audit And Fix Status Update Behavior
-- **Effort**: 7.0
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: User requested abandonment
-- **Priority**: High
-- **Language**: markdown
-- **Artifacts**:
-  - .opencode/specs/285_audit_and_fix_status_update_behavior/task-description.md
-  - .opencode/specs/285_audit_and_fix_status_update_behavior/reports/research-001.md
-  - .opencode/specs/285_audit_and_fix_status_update_behavior/plans/implementation-001.md
-
-**Description**: Task 285
-
-
----
 
 ### 290. Fix Lean Research Agent Preflight Status Updates And Artifact Linking
 - **Effort**: 2.5
@@ -1542,53 +1272,11 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 292. Diagnose And Fix Implement 259 Command Failure
-- **Effort**: 2.5
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: User requested abandonment
-- **Priority**: High
-- **Language**: general
-- **Artifacts**:
-  - .opencode/specs/292_diagnose_and_fix_implement_259_command_failure/reports/research-001.md
-  - .opencode/specs/292_diagnose_and_fix_implement_259_command_failure/plans/implementation-001.md
 
-**Description**: Task 292
-
-
----
-
-### 293. Design And Implement Better Command Argument Handling For Orchestrator
-- **Effort**: 5.0
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: User requested abandonment
-- **Priority**: High
-- **Language**: general
-
-**Description**: Task 293
-
-
----
 
 
 ## Medium Priority
 
-### 256. ✓ Add Meta Command From Openagents With System Builder Subagents
-- **Effort**: TBD
-- **Status**: [ABANDONED]
-- **Priority**: Medium
-- **Language**: markdown
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: Task superseded by simpler /meta command implementation. The complex system-builder subagents approach is no longer needed.
-- **Artifacts**:
-  - .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md
-  - .opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md
-
-**Description**: Task 256
-
-
----
 
 ### 259. Automation Tactics
 - **Effort**: 20.0
@@ -1600,52 +1288,5 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
   - .opencode/specs/259_automation_tactics/plans/implementation-001.md
 
 **Description**: Task 259
-
-
----
-
-### 272. Add Yaml Header To Todo Md
-- **Effort**: 14.0
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: markdown
-- **Artifacts**:
-  - .opencode/specs/272_add_yaml_header_to_todo_md/reports/research-001.md
-  - .opencode/specs/272_add_yaml_header_to_todo_md/plans/implementation-001.md
-  - .opencode/specs/272_add_yaml_header_to_todo_md/summaries/implementation-summary-20260104.md
-
-**Description**: Task 272
-
-
----
-
-### 276. Investigate Remove Redundant Project Level State Json
-- **Effort**: 8.0
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: markdown
-- **Artifacts**:
-  - .opencode/specs/276_investigate_remove_redundant_project_level_state_json/reports/research-001.md
-  - .opencode/specs/276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md
-  - .opencode/specs/276_investigate_remove_redundant_project_level_state_json/summaries/implementation-summary-20260103.md
-
-**Description**: Task 276
-
-
----
-
-### 287. Fix Revise Command Plan Link Replacement
-- **Effort**: 2.5
-- **Status**: [ABANDONED]
-- **Priority**: Medium
-- **Language**: general
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: User requested abandonment. Task is no longer needed.
-- **Artifacts**:
-  - .opencode/specs/287_fix_revise_command_plan_link_replacement/reports/research-001.md
-  - .opencode/specs/287_fix_revise_command_plan_link_replacement/plans/implementation-001.md
-
-**Description**: Task 287
-
 
 ---
