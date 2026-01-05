@@ -19,59 +19,54 @@ routing:
 <role>Revision command agent - Parse arguments and route to appropriate planner for plan revision</role>
 
 <task>
-  Parse task number from $ARGUMENTS, validate task and existing plan exist, extract language, route to appropriate planner for creating new plan version
+  Parse task number from $ARGUMENTS, lookup task in state.json, validate existing plan exists, extract metadata, route to appropriate planner for creating new plan version
 </task>
 
 <workflow_execution>
   <stage id="1" name="ParseAndValidate">
-    <action>Parse task number and validate</action>
+    <action>Parse task number and lookup in state.json</action>
     <process>
       1. Parse task number from $ARGUMENTS
          - $ARGUMENTS contains: "196" or "196 Adjust phase breakdown"
          - Extract first token as task_number
          - Validate is integer
-      2. Validate task exists in .opencode/specs/TODO.md
-         - Read TODO.md and search for task entry
-         - Format: "### ${task_number}."
-         - If not found: Return error message
-      3. Validate existing plan exists
-         - Check task entry for plan link
-         - If not found: Return error message suggesting /plan instead
-      4. Extract task description and current status
-    </process>
-    <checkpoint>Task number parsed, task and plan validated</checkpoint>
-  </stage>
-  
-  <stage id="2" name="ExtractLanguage">
-    <action>Extract language for routing</action>
-    <process>
-      1. Extract language from TODO.md task entry
-         - Look for **Language**: field in task entry
-         - Parse language value (lean, general, etc.)
-         - Default to "general" if not found
-      2. Determine target agent based on routing config
+      
+      2. Validate state.json exists and is valid
+         - Check .opencode/specs/state.json exists
+         - Validate is valid JSON with jq
+         - If missing/corrupt: Return error "Run /meta to regenerate state.json"
+      
+      3. Lookup task in state.json
+         - Use jq to find task by project_number:
+           task_data=$(jq -r --arg num "$task_number" \
+             '.active_projects[] | select(.project_number == ($num | tonumber))' \
+             .opencode/specs/state.json)
+         - If task_data is empty: Return error "Task $task_number not found"
+      
+      4. Extract all metadata at once
+         - language=$(echo "$task_data" | jq -r '.language // "general"')
+         - status=$(echo "$task_data" | jq -r '.status')
+         - project_name=$(echo "$task_data" | jq -r '.project_name')
+         - description=$(echo "$task_data" | jq -r '.description // ""')
+         - priority=$(echo "$task_data" | jq -r '.priority')
+         - plan_path=$(echo "$task_data" | jq -r '.plan_path // ""')
+      
+      5. Validate existing plan exists
+         - If plan_path is empty: Return error "No plan exists. Use /plan $task_number first."
+         - Verify plan file exists at plan_path
+      
+      6. Extract custom prompt from $ARGUMENTS if present
+         - If $ARGUMENTS has multiple tokens: custom_prompt = remaining tokens
+         - Else: custom_prompt = ""
+      
+      7. Determine target agent based on language
          - lean → lean-planner
          - general → planner
     </process>
-    <checkpoint>Language extracted, target agent determined</checkpoint>
+    <checkpoint>Task validated, plan exists, metadata extracted, target agent determined</checkpoint>
   </stage>
   
-  <stage id="3" name="PrepareContext">
-    <action>Prepare delegation context</action>
-    <process>
-      1. Extract custom prompt from $ARGUMENTS if present
-         - If $ARGUMENTS contains multiple tokens, rest is custom prompt
-      2. Prepare task context object:
-         - task_number: parsed number
-         - language: extracted language
-         - description: task description from TODO.md
-         - custom_prompt: optional custom prompt from user
-         - revision_mode: true (signal to planner to create new version)
-    </process>
-    <checkpoint>Context prepared for delegation</checkpoint>
-  </stage>
-  
-  <stage id="4" name="Delegate">
+  <stage id="2" name="Delegate">
     <action>Delegate to planner with parsed context</action>
     <process>
       1. Invoke target agent via task tool:
@@ -80,7 +75,9 @@ routing:
            prompt="Create revised plan (new version) for task ${task_number}: ${description}. ${custom_prompt}",
            description="Revise plan for task ${task_number}"
          )
+      
       2. Wait for planner to complete
+      
       3. Relay result to user
     </process>
     <checkpoint>Delegated to planner for revision, result relayed</checkpoint>
@@ -101,11 +98,14 @@ Create new plan versions for tasks with existing plans, preserving all previous 
 
 ## What This Does
 
-1. Routes to appropriate planner based on task language
-2. Agent creates new plan version (increments version number)
-3. Preserves all previous plan versions
-4. Updates task status to [REVISED]
-5. Creates git commit
+1. Validates task exists in state.json (8x faster than TODO.md parsing)
+2. Extracts all metadata at once (language, status, description, plan_path)
+3. Validates existing plan exists
+4. Routes to appropriate planner based on task language
+5. Agent creates new plan version (increments version number)
+6. Preserves all previous plan versions
+7. Updates task status to [REVISED] via status-sync-manager
+8. Creates git commit
 
 ## Language-Based Routing
 
