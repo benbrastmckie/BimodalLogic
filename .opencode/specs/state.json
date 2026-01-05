@@ -764,8 +764,8 @@
       "project_number": 310,
       "project_name": "enhance_workflow_commands_with_start_and_end_status_updates",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "research_completed",
+      "status": "researched",
       "priority": "medium",
       "language": "meta",
       "description": "Enhance workflow commands (/research, /plan, /revise, /implement) to update task status at the beginning and end of execution. Commands should set status to '[RESEARCHING]', '[PLANNING]', '[REVISING]', or '[IMPLEMENTING]' at start, report if already in progress, and update to final status ('[RESEARCHED]', '[PLANNED]', '[REVISED]', '[IMPLEMENTED]'/'[BLOCKED]'/'[PARTIAL]') at completion.",
@@ -773,7 +773,11 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T10:00:00Z",
-      "last_updated": "2026-01-05T10:00:00Z"
+      "last_updated": "2026-01-05T10:15:00Z",
+      "research_completed": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/reports/research-001.md"
+      ]
     }
   ],
   "completed_projects": [

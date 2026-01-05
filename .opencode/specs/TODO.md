@@ -1094,7 +1094,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 310. Enhance workflow commands with start and end status updates
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Research**: [Research Report](.opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/reports/research-001.md)
+- **Researched**: 2026-01-05
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
