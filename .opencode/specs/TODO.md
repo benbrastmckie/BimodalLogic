@@ -1555,7 +1555,7 @@ Completes the systematic fix started in Task 283 by extending it to all remainin
 
 ### 290. Fix lean-research-agent preflight status updates and artifact linking to match standard workflow behavior
 - **Effort**: 2.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-04
 - **Researched**: 2026-01-04
 - **Planned**: 2026-01-04
@@ -1690,13 +1690,14 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ---
 
 ### 292. Diagnose and fix /implement 259 command failure - orchestrator unable to extract $ARGUMENTS
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 2-3 hours
+- **Status**: [PLANNED] (2026-01-04)
 - **Priority**: High
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/292_diagnose_and_fix_implement_259_command_failure/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/292_diagnose_and_fix_implement_259_command_failure/plans/implementation-001.md)
 
 **Description**:
 When running `/implement 259`, the orchestrator workflow fails at Stage 1 (PreflightValidation) while attempting to extract the `$ARGUMENTS` variable. The command output shows:
