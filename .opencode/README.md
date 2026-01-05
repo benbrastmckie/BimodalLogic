@@ -327,7 +327,7 @@ All commands include explicit argument parsing specifications that tell the orch
 
 ## Command Argument Patterns
 
-Commands receive user's original prompt unchanged and parse arguments as needed.
+ProofChecker uses a **task-based pattern** where commands operate on task numbers from TODO.md.
 
 ### Task-Based Commands
 
@@ -339,7 +339,14 @@ Commands that operate on tasks from TODO.md:
 | /plan | `/plan TASK_NUMBER [PROMPT]` | Create implementation plan |
 | /implement | `/implement TASK_NUMBER [PROMPT]` | Execute implementation |
 
-**Pattern**: Orchestrator passes original prompt to subagent. Subagent extracts task number from prompt.
+**Pattern (v6.1 Hybrid)**:
+1. Orchestrator extracts task number from `$ARGUMENTS`
+2. Orchestrator validates task exists in TODO.md
+3. Orchestrator extracts language metadata for routing
+4. Orchestrator delegates to appropriate subagent with validated context
+5. Subagent receives clean inputs (task_number, language, task_description)
+
+**This is different from OpenAgents** which uses topic-based commands like `/research "topic"`.
 
 **Example**:
 ```bash

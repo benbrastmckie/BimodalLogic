@@ -2,49 +2,77 @@
 
 ## Overview
 
-This guide provides a streamlined walkthrough for creating new commands in the ProofChecker .opencode system.
+This guide provides a streamlined walkthrough for creating new task-based commands in the ProofChecker .opencode system.
 
 ## Prerequisites
 
 Before creating a new command, understand:
 
-1. **Command Structure**: Simple frontmatter + usage documentation
-2. **Routing**: Orchestrator routes to target agent specified in frontmatter
-3. **Argument Handling**: Subagents parse their own arguments from original prompt
-4. **Return Format**: Standard subagent return schema
+1. **Task-Based Pattern**: ProofChecker uses task numbers from TODO.md, not topics
+2. **Orchestrator-Mediated**: All task-based commands route through orchestrator
+3. **Hybrid Architecture**: Orchestrator validates, subagents execute
+4. **Language Routing**: Lean tasks route to lean-specific agents
 
 **Required Reading**:
-- `.opencode/agent/orchestrator.md` - Simple routing logic
+- `.opencode/agent/orchestrator.md` - Hybrid architecture (v6.1)
+- `.opencode/specs/opencode-invocation-diagnostic-plan.md` - Architecture rationale
 - `.opencode/context/core/standards/delegation.md` - Subagent return format
+
+## ProofChecker vs OpenAgents
+
+**IMPORTANT**: ProofChecker has a different command pattern than OpenAgents.
+
+| Aspect | ProofChecker | OpenAgents |
+|--------|--------------|------------|
+| **Arguments** | Task numbers (integers) | Topics (natural language) |
+| **Workflow** | Task exists first | Creates new projects |
+| **Validation** | TODO.md lookup required | No validation needed |
+| **Routing** | Language-based (lean vs general) | Keyword-based |
+| **Example** | `/research 259` | `/research "modal logic"` |
+
+**You cannot copy OpenAgents patterns directly to ProofChecker.**
 
 ## Step-by-Step Process
 
-### Step 1: Determine Target Agent
+### Step 1: Understand the Hybrid Architecture
 
-**Question**: Which subagent will handle this command?
+ProofChecker uses a **hybrid architecture** (v6.1):
 
-- `/research` → researcher (or lean-research-agent for Lean tasks)
-- `/plan` → planner (or lean-planner for Lean tasks)
-- `/implement` → implementer (or lean-implementation-agent for Lean tasks)
-- `/revise` → planner
-- `/review` → reviewer
+**Orchestrator Responsibilities**:
+1. Extract task number from `$ARGUMENTS`
+2. Validate task exists in TODO.md
+3. Extract language from task metadata
+4. Route to appropriate subagent (lean vs general)
+5. Pass validated context to subagent
 
-**Routing Options**:
-- **Simple**: One agent for all tasks
-- **Language-based**: Different agents based on task language (lean vs general)
+**Subagent Responsibilities**:
+1. Receive validated inputs (task_number, language, task_description)
+2. Update task status
+3. Execute workflow
+4. Return standardized result
+
+**Why This Pattern?**:
+- Only orchestrator has access to `$ARGUMENTS`
+- Task validation prevents errors
+- Language extraction enables routing
+- Subagents receive clean, pre-validated inputs
 
 ### Step 2: Create Command File
 
 Create `.opencode/command/{command-name}.md` with this structure:
 
-**Simple Command Template**:
+**Task-Based Command Template**:
 
 ```markdown
 ---
 name: {command-name}
-agent: {target-agent}
-description: "{Brief description}"
+agent: orchestrator
+description: "{Brief description with status}"
 timeout: 3600
+routing:
+  language_based: true
+  lean: lean-{command}-agent
+  default: {command}er
 ---
 
 # /{command-name} - {Title}
@@ -61,105 +89,86 @@ timeout: 3600
 
 ## What This Does
 
-1. Routes to {agent} subagent
-2. Agent executes workflow
-3. Creates artifacts
-4. Updates task status
-5. Creates git commit
-
-See `.opencode/agent/subagents/{agent}.md` for details.
-```
-
-**Language-Based Routing Template**:
-
-```markdown
----
-name: {command-name}
-agent: {default-agent}
-description: "{Brief description}"
-timeout: 3600
-routing:
-  language_based: true
-  lean: {lean-agent}
-  default: {default-agent}
----
-
-# /{command-name} - {Title}
-
-{Brief description}
-
-## Usage
-
-\`\`\`bash
-/{command-name} TASK_NUMBER [PROMPT]
-\`\`\`
-
-## What This Does
-
 1. Routes to appropriate agent based on task language
 2. Agent executes workflow
 3. Creates artifacts
-4. Updates task status
+4. Updates task status to [{STATUS}]
 5. Creates git commit
 
 ## Language-Based Routing
 
 | Language | Agent | Tools |
 |----------|-------|-------|
-| lean | {lean-agent} | {lean-specific tools} |
-| general | {default-agent} | {general tools} |
+| lean | lean-{command}-agent | {lean-specific tools} |
+| general | {command}er | {general tools} |
 
 See `.opencode/agent/subagents/{agent}.md` for details.
 ```
 
+**Key Points**:
+- **MUST use `agent: orchestrator`** (not `agent: implementer` or direct agent!)
+- Include `routing` configuration for language-based routing
+- Keep documentation concise (<50 lines)
+
 ### Step 3: Create or Update Subagent
 
-If creating a new subagent, it must:
+If creating a new subagent, follow this pattern:
 
-1. **Parse arguments from original prompt** (Step 0)
-   - Extract task number from prompt string
-   - Example: "/command 271" → task_number = 271
-   
-2. **Validate task exists** (Step 0)
-   - Check task exists in TODO.md
-   - Return error if not found
-   
-3. **Update status** (Step 0)
-   - Delegate to status-sync-manager
-   - Set appropriate starting status
-   
-4. **Execute workflow** (Steps 1-N)
-   - Perform actual work
-   - Create artifacts
-   
-5. **Return standardized result** (Final step)
-   - Use subagent-return-format.md schema
-   - Include artifacts, summary, status
-
-**Step 0 Template**:
+**Step 0 Template** (Receives Validated Inputs):
 
 ```xml
 <step_0_preflight>
-  <action>Preflight: Parse arguments, validate task, update status</action>
+  <action>Preflight: Extract validated inputs and update status</action>
   <process>
-    1. Parse task number from prompt:
-       - Prompt format: "/{command} 271" or "271" or "/{command} 271 extra"
-       - Extract first integer from prompt string
-       - If no integer found: Return error "Task number required"
+    1. Extract task inputs from delegation context (already validated by orchestrator):
+       - task_number: Integer (already validated to exist in TODO.md)
+       - language: String (already extracted from task metadata)
+       - task_description: String (already extracted from TODO.md)
+       - Example: task_number=259, language="lean", task_description="..."
+       
+       NOTE: Orchestrator has already:
+       - Validated task_number exists in TODO.md
+       - Extracted language from task metadata
+       - Extracted task description
+       - Performed language-based routing
+       
+       No re-parsing or re-validation needed!
     
-    2. Validate task exists:
-       - Read .opencode/specs/TODO.md
-       - Find task entry: grep "^### ${task_number}\."
-       - If not found: Return error "Task {task_number} not found"
-    
-    3. Update status to [{STATUS}]:
+    2. Update status to [{STATUS}]:
        - Delegate to status-sync-manager
        - Validate status update succeeded
     
-    4. Proceed to execution
+    3. Proceed to execution with validated inputs
   </process>
-  <checkpoint>Task validated and status updated</checkpoint>
+  <checkpoint>Task inputs extracted from validated context, status updated</checkpoint>
 </step_0_preflight>
+```
+
+**Workflow Steps** (Steps 1-N):
+
+Implement your specific workflow. Subagent has access to:
+- `task_number`: Validated integer
+- `language`: String ("lean", "general", etc.)
+- `task_description`: Full description from TODO.md
+
+**Return Format**:
+
+Must return JSON matching `subagent-return-format.md` schema:
+```json
+{
+  "status": "completed|partial|failed|blocked",
+  "summary": "Brief summary <100 tokens",
+  "artifacts": [{"type": "...", "path": "...", "summary": "..."}],
+  "metadata": {
+    "session_id": "...",
+    "duration_seconds": 123,
+    "agent_type": "...",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "agent"]
+  },
+  "errors": [],
+  "next_steps": "What user should do next"
+}
 ```
 
 ### Step 4: Test Command
@@ -167,82 +176,155 @@ If creating a new subagent, it must:
 Test your new command:
 
 ```bash
-# Create test task in TODO.md if needed
-/todo add "Test task for new command"
+# Find a test task
+grep "^###" .opencode/specs/TODO.md | head -5
 
 # Test command
 /{command-name} {task-number}
 
 # Verify:
-# 1. Command routes to correct agent
-# 2. Agent receives original prompt
-# 3. Agent parses arguments correctly
-# 4. Artifacts created
-# 5. Status updated
-# 6. Git commit created
+# 1. Orchestrator extracts task number from $ARGUMENTS
+# 2. Orchestrator validates task exists
+# 3. Orchestrator extracts language from TODO.md
+# 4. Orchestrator routes to correct agent
+# 5. Subagent receives validated context
+# 6. Artifacts created
+# 7. Status updated
+# 8. Git commit created
+```
+
+## Architecture Flow
+
+### How Commands Work (v6.1 Hybrid)
+
+```
+User types: /implement 259
+  ↓
+OpenCode reads command file: agent: orchestrator
+  ↓
+OpenCode invokes orchestrator with $ARGUMENTS = "259"
+  ↓
+Orchestrator Stage 1 (ExtractAndValidate):
+  - Parse task_number from $ARGUMENTS: 259
+  - Validate task 259 exists in TODO.md
+  - Extract language: "lean"
+  - Extract task_description: "Implement automation tactics"
+  ↓
+Orchestrator Stage 2 (Route):
+  - Check routing config: language_based = true
+  - Map language "lean" → agent "lean-implementation-agent"
+  - Prepare delegation context
+  ↓
+Orchestrator Stage 3 (Delegate):
+  - Invoke lean-implementation-agent with validated context:
+    * task_number = 259
+    * language = "lean"
+    * task_description = "Implement automation tactics"
+  ↓
+Subagent Step 0:
+  - Extract validated inputs from delegation context
+  - Update status to [IMPLEMENTING]
+  - Proceed with validated inputs (no parsing!)
+  ↓
+Subagent executes workflow, returns result
+  ↓
+Orchestrator relays result to user
 ```
 
 ## Key Principles
 
-1. **Simple Routing**: Orchestrator just routes, doesn't parse
-2. **Subagent Ownership**: Subagents parse their own arguments
-3. **Original Prompts**: Always pass user's original prompt unchanged
-4. **Trust Model**: Trust subagents to handle their workflows
-5. **Minimal Documentation**: Command files should be <50 lines
+1. **Orchestrator-Mediated**: All task-based commands route through orchestrator
+2. **Validate Once**: Orchestrator validates, subagent receives clean inputs
+3. **No Re-Parsing**: Subagent uses validated context, doesn't re-parse prompts
+4. **Language Routing**: Orchestrator extracts language, routes to correct agent
+5. **Clean Separation**: Orchestrator validates/routes, subagent executes
+
+## Common Mistakes
+
+### ❌ WRONG: Direct Invocation
+
+```markdown
+---
+name: implement
+agent: implementer  # WRONG! Bypasses orchestrator
+---
+```
+
+**Problem**: OpenCode directly invokes implementer, bypassing orchestrator.
+Implementer has no access to `$ARGUMENTS`, cannot extract task number.
+
+### ❌ WRONG: Subagent Parses Prompt
+
+```xml
+<step_0_preflight>
+  <process>
+    1. Parse task number from prompt string  # WRONG! Orchestrator already did this
+    2. Validate task exists  # WRONG! Already validated
+  </process>
+</step_0_preflight>
+```
+
+**Problem**: Duplicate parsing, duplicate validation. Fragile and inefficient.
+
+### ✅ CORRECT: Use Validated Inputs
+
+```markdown
+---
+name: implement
+agent: orchestrator  # CORRECT! Routes through orchestrator
+routing:
+  language_based: true
+  lean: lean-implementation-agent
+  default: implementer
+---
+```
+
+```xml
+<step_0_preflight>
+  <process>
+    1. Extract validated inputs from delegation context  # CORRECT!
+       - task_number, language, task_description
+    2. Update status
+    3. Proceed with validated inputs
+  </process>
+</step_0_preflight>
+```
 
 ## Examples
 
-See existing command files:
-- `.opencode/command/research.md` - Language-based routing example
-- `.opencode/command/plan.md` - Simple routing example
-- `.opencode/command/implement.md` - Language-based with resume support
-
-See existing subagents:
-- `.opencode/agent/subagents/researcher.md` - General research workflow
-- `.opencode/agent/subagents/planner.md` - Planning workflow
-- `.opencode/agent/subagents/implementer.md` - Implementation workflow
+See existing implementations:
+- `.opencode/command/implement.md` - Language-based command
+- `.opencode/command/research.md` - Language-based command
+- `.opencode/command/plan.md` - Language-based command
+- `.opencode/agent/orchestrator.md` - Hybrid orchestrator (v6.1)
+- `.opencode/agent/subagents/implementer.md` - Subagent with validated inputs
+- `.opencode/agent/subagents/lean-implementation-agent.md` - Lean-specific agent
 
 ## Troubleshooting
 
-**Command not found**:
-- Check file exists: `.opencode/command/{name}.md`
-- Check frontmatter has `name` field
+**"Task number not provided"**:
+- Check command file has `agent: orchestrator` (not direct agent)
+- Orchestrator extracts from `$ARGUMENTS`, subagent receives validated context
 
-**Arguments not parsed**:
-- Check subagent Step 0 extracts task number from prompt
-- Verify orchestrator passes original prompt unchanged
+**"Task not found"**:
+- Task number doesn't exist in TODO.md
+- Orchestrator validates this in Stage 1
 
 **Wrong agent invoked**:
-- Check frontmatter `agent` field
-- Check `routing` configuration if language-based
+- Check routing configuration in command frontmatter
+- Check language field in TODO.md task entry
+- Orchestrator uses language to route to correct agent
 
-**Status not updated**:
-- Check subagent delegates to status-sync-manager
-- Verify status-sync-manager return validated
+**Subagent can't access task_number**:
+- Check Step 0 extracts from delegation_context
+- Orchestrator passes validated context as parameters
 
-## Migration from Old System
+## Version History
 
-If migrating from the old system (v5.0 orchestrator):
-
-**Old Pattern** (Orchestrator parsed arguments):
-```
-User: /research 271
-Orchestrator: Parse 271, format as "Task: 271"
-Subagent: Receive "Task: 271", re-parse to get 271
-```
-
-**New Pattern** (Subagent parses arguments):
-```
-User: /research 271
-Orchestrator: Pass "/research 271" unchanged
-Subagent: Receive "/research 271", parse to get 271
-```
-
-**Changes Required**:
-1. Orchestrator: Remove argument parsing (already done in v6.0)
-2. Command files: Remove workflow stages, simplify to routing metadata
-3. Subagents: Simplify Step 0 to parse from original prompt
+- **v6.1 (2026-01-04)**: Hybrid architecture - orchestrator validates, subagents receive clean inputs
+- **v6.0 (2026-01-04)**: Failed attempt to eliminate orchestrator (incompatible with task-based pattern)
+- **v5.0 (2025-12-29)**: Original 5-stage orchestrator (too complex)
 
 ---
 
-**Last Updated**: 2026-01-04 (v6.0 - Simplified architecture)
+**Last Updated**: 2026-01-04 (v6.1 - Hybrid architecture)
