@@ -1029,6 +1029,18 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ## Medium Priority
 
 
+### 295. Create /sync command to synchronize TODO.md and state.json
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+---
+
+
+
 ### 294. Revise /meta command to accept optional task number
 - **Effort**: 10 hours
 - **Status**: [PLANNED]

@@ -2,7 +2,7 @@
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
   "_last_updated": "2026-01-04T19:50:00Z",
-  "next_project_number": 295,
+  "next_project_number": 296,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -692,6 +692,17 @@
       ],
       "planning_completed": "2026-01-04",
       "plan_path": ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md"
+    },
+    {
+      "project_number": 295,
+      "project_name": "create_sync_command_to_synchronize_todo_md_and_state_json",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "created": "2026-01-04T20:25:54-08:00",
+      "last_updated": "2026-01-04T20:25:54-08:00"
     }
   ],
   "completed_projects": [
