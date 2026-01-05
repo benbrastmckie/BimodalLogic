@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document describes the lifecycle of workflow commands (`/research`, `/plan`, `/revise`, `/implement`) and the two-phase status update pattern that all workflow subagents follow.
+This document describes the lifecycle of workflow commands (`/research`, `/plan`, `/revise`, `/implement`, `/task`) and the two-phase status update pattern that all workflow subagents follow.
+
+**Note**: `/task` follows a different pattern since it creates tasks rather than modifying them. See "Task Creation Pattern" section below.
 
 ## Command Lifecycle Stages
 
@@ -248,6 +250,93 @@ All workflow subagents implement a `<step_7>` section for postflight:
 </step_7>
 ```
 
+## Task Creation Pattern
+
+The `/task` command follows a different pattern from workflow commands since it **creates** tasks rather than modifying existing ones.
+
+### /task Command Lifecycle
+
+**Stage 1 (ParseAndValidate):**
+- Parse task description from $ARGUMENTS
+- Extract optional flags (--priority, --effort, --language)
+- Detect language from description keywords if not provided
+- Validate all inputs (description non-empty, priority valid, etc.)
+
+**Stage 2 (Delegate):**
+- Delegate to task-creator subagent
+- task-creator allocates task number from state.json
+- task-creator formats TODO.md entry
+- task-creator invokes status-sync-manager for atomic updates
+- Relay result to user
+
+### task-creator Subagent Workflow
+
+**Step 0 (Preflight):**
+- Validate inputs (description, priority, effort, language)
+- Validate state.json exists and is readable
+- Validate TODO.md exists and is readable
+- Validate Language field will be set (MANDATORY)
+
+**Step 1 (AllocateNumber):**
+- Read next_project_number from state.json
+- Validate it's a number >= 0
+- Store for use in task creation
+
+**Step 2 (CreateEntry):**
+- Format TODO.md entry following task standards
+- Validate format (Language field, metadata format, required fields)
+- Determine correct section based on priority
+
+**Step 3 (SyncState):**
+- Invoke status-sync-manager for atomic update
+- Update TODO.md with new task entry
+- Update state.json next_project_number
+- Verify atomic update succeeded
+
+**Step 4 (Return):**
+- Return standardized result with task number
+- Include task details for confirmation
+- Include next steps (use /research, /plan, /implement)
+
+### Key Differences from Workflow Commands
+
+1. **No Two-Phase Status Update**: Task creation is atomic (single status-sync-manager call)
+2. **No Preflight/Postflight**: Task doesn't exist yet, so no status to update
+3. **No Git Commit**: Task creation doesn't create artifacts (only TODO.md + state.json updates)
+4. **Architectural Enforcement**: task-creator permissions prevent implementation files
+5. **Delegation Required**: Command MUST delegate to task-creator (no inline execution)
+
+### Atomic Updates
+
+task-creator uses status-sync-manager to ensure:
+- TODO.md and state.json updated together or not at all
+- Task number is unique and sequential
+- No partial state updates
+- Rollback on failure
+
+### Validation
+
+**Pre-execution:**
+- Description is non-empty
+- Priority is Low|Medium|High
+- Effort is TBD or time estimate
+- Language is valid (lean|markdown|general|python|shell|json|meta)
+- Language field MANDATORY per tasks.md line 110
+
+**Post-execution:**
+- Task number allocated correctly
+- TODO.md contains new task entry
+- state.json next_project_number incremented
+- Language field is set
+- Metadata format uses `- **Field**:` pattern
+
+### References
+
+- **Task Creator Subagent:** `.opencode/agent/subagents/task-creator.md`
+- **Task Command:** `.opencode/command/task.md`
+- **Task Standards:** `.opencode/context/core/standards/tasks.md`
+- **Implementation Plan:** `.opencode/specs/task-command-improvement-plan.md`
+
 ## References
 
 - **State Management:** `.opencode/context/core/system/state-management.md`
@@ -255,7 +344,8 @@ All workflow subagents implement a `<step_7>` section for postflight:
 - **Researcher (Reference Implementation):** `.opencode/agent/subagents/researcher.md`
 - **Planner:** `.opencode/agent/subagents/planner.md`
 - **Implementer:** `.opencode/agent/subagents/implementer.md`
-- **Command Files:** `.opencode/command/{research,plan,revise,implement}.md`
+- **Task Creator:** `.opencode/agent/subagents/task-creator.md`
+- **Command Files:** `.opencode/command/{research,plan,revise,implement,task}.md`
 
 ## Validation
 

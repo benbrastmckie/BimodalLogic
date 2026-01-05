@@ -92,6 +92,7 @@ Override Impact when:
 
 ## Command Integration
 
+- `/task` **must** delegate to task-creator subagent for atomic task creation. task-creator enforces task standards (Language field mandatory, metadata format, required fields) and uses status-sync-manager for atomic TODO.md + state.json updates. Direct file manipulation is forbidden.
 - `/implement` **must** reuse the plan link attached in .opencode/specs/TODO.md when present and update that plan in place with status markers. When no plan is linked, `/implement` executes directly (no failure) while preserving lazy directory creation (no project roots/subdirs unless an artifact is written) and numbering/state sync; guidance to use `/plan {task}` remains recommended for complex work.
 - `/implement`, `/review`, and `/todo` **must** keep IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md in sync when they change task/plan/implementation status or sorry/tactic counts.
 - `/implement` must emit an implementation summary artifact (standard naming) whenever task execution writes implementation artifacts; status-only paths do not emit summaries. Maintain lazy directory creation.

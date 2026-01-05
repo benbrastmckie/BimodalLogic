@@ -26,6 +26,7 @@ Commands that follow the 8-stage command-lifecycle.md pattern:
 | `/plan` | `subagents/planner` | Create implementation plans, update [PLANNED] status |
 | `/implement` | `task-executor` | Execute phased implementation, update [IMPLEMENTED] status |
 | `/revise` | `subagents/reviser` | Revise artifacts based on feedback, update status |
+| `/task` | `subagents/task-creator` | Create new task entries in TODO.md with atomic state updates |
 
 **Routing Pattern**: Command file frontmatter specifies `agent:` field, orchestrator delegates directly.
 
