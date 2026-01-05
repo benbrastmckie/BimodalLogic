@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T22:00:00",
+  "_last_updated": "2026-01-05T08:35:51",
   "next_project_number": 320,
   "project_numbering": {
     "min": 0,
@@ -245,31 +245,6 @@
       "effort": "0.75 hours"
     },
     {
-      "project_number": 240,
-      "project_name": "systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures",
-      "type": "research",
-      "phase": "abandoned",
-      "status": "abandoned",
-      "priority": "critical",
-      "language": "markdown",
-      "created": "2025-12-29T05:50:22Z",
-      "started": "2025-12-29",
-      "research_completed": "2025-12-29",
-      "completed": "2025-12-29",
-      "last_updated": "2026-01-05",
-      "artifacts": [
-        ".opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md"
-      ],
-      "research_summary": "Comparative analysis of OpenAgents and ProofChecker systems reveals architectural solution: adopt frontmatter delegation pattern, lazy-loading context index, session-based temporary context, and simplified orchestrator. Eliminates Stage 7 failures by moving workflow ownership from commands to agents. 4-phase migration (56-78 hours) achieves 60-70% systematic improvements.",
-      "supersedes_tasks": [
-        237
-      ],
-      "estimated_hours": 56.0,
-      "revised_hours": 78.0,
-      "abandoned": "2026-01-05",
-      "abandonment_reason": "User requested abandonment"
-    },
-    {
       "project_number": 257,
       "project_name": "completeness_proofs",
       "type": "feature",
@@ -345,7 +320,7 @@
       ],
       "started": "2026-01-05",
       "completed": "2026-01-05",
-      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom φ) from witness function."
+      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom \u03c6) from witness function."
     },
     {
       "project_number": 261,
@@ -400,80 +375,36 @@
       "description": "After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary."
     },
     {
-      "project_number": 265,
-      "project_name": "clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive",
-      "type": "refactoring",
-      "phase": "abandoned",
-      "status": "abandoned",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2025-12-30T00:38:18.504339Z",
-      "started": "2026-01-03",
-      "research_completed": "2025-12-29",
-      "plan_created": "2026-01-03",
-      "last_updated": "2026-01-05",
-      "artifacts": [
-        ".opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/reports/research-001.md",
-        ".opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md"
-      ],
-      "plan_path": ".opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md",
-      "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 10,
-        "complexity": "medium",
-        "research_integrated": true
-      },
-      "abandoned": "2026-01-05",
-      "abandonment_reason": "User requested abandonment"
-    },
-    {
-      "project_number": 266,
-      "project_name": "fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks",
-      "type": "bugfix",
-      "phase": "abandoned",
-      "status": "abandoned",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2025-12-30T00:45:00Z",
-      "started": "2026-01-03",
-      "research_completed": "2026-01-03",
-      "last_updated": "2026-01-05",
-      "artifacts": [
-        ".opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/reports/research-001.md"
-      ],
-      "research_summary": "Root cause: orchestrator does NOT implement Stage 2 (DetermineRouting). Language extraction exists only in documentation. Lean tasks route to default researcher instead of lean-research-agent, causing phantom research. Fix: implement Stage 2 to extract language from TODO.md and route based on command frontmatter. Estimated 5-7 hours.",
-      "estimated_hours": 6.0,
-      "abandoned": "2026-01-05",
-      "abandonment_reason": "User requested abandonment"
-    },
-    {
-      "project_number": 271,
-      "project_name": "revise_meta_command_task_creation",
+      "project_number": 277,
+      "project_name": "improve_opencode_header_and_summary_display_for_task_commands",
       "type": "feature",
       "phase": "abandoned",
       "status": "abandoned",
       "priority": "high",
-      "language": "markdown",
-      "created": "2026-01-03T18:45:00Z",
+      "language": "general",
+      "created": "2026-01-03T20:35:00Z",
       "started": "2026-01-03",
       "research_completed": "2026-01-03",
+      "planning_completed": "2026-01-03",
+      "plan_revised": "2026-01-03",
       "last_updated": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md",
-        ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md"
+        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md",
+        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md",
+        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-002.md"
       ],
-      "research_summary": "Comprehensive revision plan to align /meta command with research → plan → implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
-      "estimated_hours": 13.0,
-      "plan_created": "2026-01-03",
-      "plan_path": ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md",
+      "estimated_hours": 3.5,
+      "research_summary": "Research into OpenCode header and summary display patterns reveals orchestrator already formats prompts as 'Task: {number}' for internal delegation but lacks user-facing headers. Recommended solution: modify orchestrator Stage 5 (PostflightCleanup) to add headers. Estimated effort: 3.5 hours (revised from 4.5 hours - removed summary conclusions as redundant with header).",
       "plan_metadata": {
-        "phases": 9,
-        "total_effort_hours": 13,
-        "complexity": "medium-high",
-        "research_integrated": true
+        "phase_count": 5,
+        "estimated_hours": 3.5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 2,
+        "revision_reason": "Removed summary conclusion formatting (redundant with header display)"
       },
       "abandoned": "2026-01-05",
-      "abandonment_reason": "Task has been effectively implemented. The /meta command now creates tasks with plan artifacts instead of directly implementing the system (Stage 7: CreateTasksWithArtifacts). The core functionality described in task 271 is already present in the codebase, making this task redundant."
+      "abandonment_reason": "User requested abandonment"
     },
     {
       "project_number": 279,
@@ -485,45 +416,6 @@
       "language": "markdown",
       "created": "2026-01-04T04:44:02Z",
       "last_updated": "2026-01-04T04:44:02Z"
-    },
-    {
-      "project_number": 280,
-      "project_name": "fix_orchestrator_stage_4_validation_to_enforce_subagent_return_format_and_prevent_phantom_research",
-      "type": "bugfix",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2026-01-04T05:00:30Z",
-      "last_updated": "2026-01-05T15:50:00Z",
-      "started": "2026-01-03",
-      "research_completed": "2026-01-03",
-      "planning_completed": "2026-01-03",
-      "artifacts": [
-        ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-001.md",
-        ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-002.md",
-        ".opencode/specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md",
-        ".opencode/specs/280_fix_orchestrator_stage_4_validation/validation-template.md",
-        ".opencode/specs/280_fix_orchestrator_stage_4_validation/summaries/implementation-summary-20260105.md",
-        ".opencode/command/research.md",
-        ".opencode/command/plan.md",
-        ".opencode/command/revise.md",
-        ".opencode/command/implement.md",
-        ".opencode/context/core/system/validation-rules.md",
-        ".opencode/context/core/system/validation-strategy.md"
-      ],
-      "plan_path": ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-002.md",
-      "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 6,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 2
-      },
-      "estimated_hours": 6.0,
-      "effort_hours": 6.0,
-      "revised_date": "2026-01-05",
-      "completed": "2026-01-05"
     },
     {
       "project_number": 282,
@@ -623,41 +515,42 @@
       "last_updated": "2026-01-05T07:51:30Z"
     },
     {
-      "project_number": 301,
-      "project_name": "enhance_revise_command_with_dual_mode_routing",
+      "project_number": 300,
+      "project_name": "add_report_detection_to_planner",
       "type": "feature",
-      "phase": "implementation_completed",
+      "phase": "planning_completed",
       "status": "completed",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T08:07:00-08:00",
-      "effort": "3 hours",
-      "description": "Update `/revise` command to detect plan presence and route to either task-reviser (no plan) or planner (plan exists with report integration).",
-      "research_artifacts": [
-        ".opencode/specs/301_enhance_revise_command_with_dual_mode_routing/reports/research-001.md"
+      "last_updated": "2026-01-05",
+      "effort": "4 hours",
+      "description": "Enhance the planner subagent to detect new reports created since the last plan version and integrate their findings into plan revisions.",
+      "started": "2026-01-05",
+      "research_completed": "2026-01-05",
+      "planned": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/300_add_report_detection_to_planner/reports/research-001.md",
+        ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md",
+        ".opencode/specs/300_add_report_detection_to_planner/summaries/implementation-summary-20260105.md"
       ],
-      "plan_path": ".opencode/specs/301_enhance_revise_command_with_dual_mode_routing/plans/implementation-001.md",
-      "planning_completed": "2026-01-05T07:47:12-08:00",
+      "plan_path": ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md",
       "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 3,
+        "phases": 4,
+        "total_effort_hours": 4,
         "complexity": "medium",
         "research_integrated": true,
         "plan_version": 1,
         "reports_integrated": [
           {
-            "path": "reports/research-001.md",
+            "path": ".opencode/specs/300_add_report_detection_to_planner/reports/research-001.md",
             "integrated_in_plan_version": 1,
             "integrated_date": "2026-01-05"
           }
         ]
       },
-      "completed": "2026-01-05",
-      "artifacts": [
-        ".opencode/specs/301_enhance_revise_command_with_dual_mode_routing/summaries/implementation-summary-20260105.md",
-        ".opencode/command/revise.md"
-      ]
+      "research_summary": "Research completed on enhancing planner to detect new reports. Current planner harvests ALL research but cannot distinguish new reports from already-integrated ones. Solution: use filesystem timestamps (mtime) to detect reports created after last plan version. Requires plan_metadata schema extension to track reports_integrated array. 4-phase implementation (4 hours): schema extension, report detection, research harvesting enhancement, postflight integration.",
+      "completed": "2026-01-05"
     },
     {
       "project_number": 302,
@@ -673,27 +566,21 @@
       "description": "Create comprehensive tests for the dual-mode revision workflow, covering task-only revision, plan revision without new reports, and plan revision with new reports."
     },
     {
-      "project_number": 305,
-      "project_name": "remove_performance_cruft_from_all_6_modified_files_3_5",
+      "project_number": 304,
+      "project_name": "test_commands_after_unintended_changes_2_5",
       "type": "feature",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "markdown",
-      "description": "Remove optimization sections from frontmatter, performance blocks from workflow stages, and verbose comments from all 6 files (todo.md, review.md, reviewer.md, meta.md, task-creator.md, state-lookup.md). Keep state-lookup.md documentation changes.",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "general",
+      "description": "Test /task, /meta, and /todo commands to verify they still work correctly after the unintended changes. Document any failures or unexpected behavior. This determines whether to keep or revert core logic changes.",
       "effort": "30 minutes",
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T08:00:00Z",
       "last_updated": "2026-01-05",
-      "research_completed": "2026-01-05",
-      "artifacts": [
-        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/reports/research-001.md",
-        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/plans/implementation-001.md",
-        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/summaries/implementation-summary-20260105.md"
-      ],
-      "plan_completed": "2026-01-05",
-      "completed": "2026-01-05"
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment via /abandon command"
     },
     {
       "project_number": 306,
@@ -763,6 +650,54 @@
       "last_updated": "2026-01-05T09:38:06Z"
     },
     {
+      "project_number": 309,
+      "project_name": "implement_option_1_direct_delegation_from_task_309_analysis_to_optimize_/task_command_performance",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Implement Option 1 (Direct Delegation) from task 309 analysis to optimize /task command performance. Modify /task command Stage 4 to delegate directly to status-sync-manager instead of task-creator, eliminating unnecessary delegation layer and achieving 40-50% performance improvement.",
+      "effort": "3 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T09:50:00Z",
+      "started": "2026-01-05",
+      "research_completed": "2026-01-05",
+      "last_updated": "2026-01-05T02:22:00Z",
+      "artifacts": [
+        ".opencode/specs/309_optimize_task_command_performance/reports/research-001.md",
+        ".opencode/specs/309_optimize_task_command_performance/plans/implementation-001.md",
+        ".opencode/specs/309_optimize_task_command_performance/summaries/implementation-summary-20260105.md"
+      ],
+      "planned": "2026-01-05",
+      "implemented": "2026-01-05"
+    },
+    {
+      "project_number": 310,
+      "project_name": "enhance_workflow_commands_with_start_and_end_status_updates",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Enhance workflow commands (/research, /plan, /revise, /implement) to update task status at the beginning and end of execution. Commands should set status to '[RESEARCHING]', '[PLANNING]', '[REVISING]', or '[IMPLEMENTING]' at start, report if already in progress, and update to final status ('[RESEARCHED]', '[PLANNED]', '[REVISED]', '[IMPLEMENTED]'/'[BLOCKED]'/'[PARTIAL]') at completion.",
+      "effort": "9-12 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T10:00:00Z",
+      "last_updated": "2026-01-05T02:40:00Z",
+      "research_completed": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/reports/research-001.md",
+        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md",
+        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/summaries/implementation-summary-20260105.md"
+      ],
+      "plan_path": ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md",
+      "planned": "2026-01-05",
+      "implemented": "2026-01-05"
+    },
+    {
       "project_number": 311,
       "project_name": "refactor_/abandon_command_to_support_ranges_and_lists_of_task_numbers",
       "type": "feature",
@@ -776,74 +711,6 @@
       "dependencies": [],
       "created": "2026-01-05T10:30:00Z",
       "last_updated": "2026-01-05T10:30:00Z"
-    },
-    {
-      "project_number": 312,
-      "project_name": "fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates",
-      "type": "bugfix",
-      "phase": "abandoned",
-      "status": "abandoned",
-      "priority": "high",
-      "language": "meta",
-      "description": "Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 307 created research-001.md but task status remains [NOT STARTED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.",
-      "effort": "6-8 hours",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-05T05:31:28-08:00",
-      "last_updated": "2026-01-05",
-      "abandoned": "2026-01-05",
-      "abandonment_reason": "User requested abandonment",
-      "artifacts": [
-        ".opencode/specs/312_fix_workflow_command_postflight_failures/reports/research-001.md"
-      ],
-      "plan_path": ".opencode/specs/312_fix_workflow_command_postflight_failures/plans/implementation-002.md",
-      "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 5,
-        "complexity": "low-medium",
-        "research_integrated": true,
-        "plan_version": 2,
-        "reports_integrated": [
-          {
-            "path": "reports/research-001.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-01-05"
-          }
-        ]
-      }
-    },
-    {
-      "project_number": 313,
-      "project_name": "configure_opencode_agent_system_to_prevent_permission_interruptions",
-      "type": "feature",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "meta",
-      "description": "Configure opencode agent system to prevent permission interruptions and ensure greater autonomy by relying on git commits for safety while avoiding other backups.",
-      "effort": "12 hours",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-05",
-      "last_updated": "2026-01-05",
-      "planning_completed": "2026-01-05",
-      "implementation_completed": "2026-01-05",
-      "plan_path": ".opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/plans/implementation-001.md",
-      "implementation_path": ".opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/summaries/implementation-summary-20260105.md",
-      "plan_metadata": {
-        "phases": 6,
-        "total_effort_hours": 12,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 1,
-        "reports_integrated": [
-          {
-            "path": "reports/research-001.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-01-05"
-          }
-        ]
-      }
     },
     {
       "project_number": 314,
@@ -871,7 +738,7 @@
       "created": "2026-01-05T08:34:20.462436Z",
       "last_updated": "2026-01-05T08:34:20.462436Z",
       "effort": "15-20 hours",
-      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction."
+      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom \u03c6 is a Prop, not a Type, making it impossible to return Option (Axiom \u03c6) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction."
     },
     {
       "project_number": 316,
@@ -1129,7 +996,7 @@
       "project_name": "resolve_is_valid_swap_involution_blocker",
       "type": "research",
       "completed": "2025-12-29",
-      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas → Soundness). Full soundness proof succeeds."
+      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas \u2192 Soundness). Full soundness proof succeeds."
     },
     {
       "project_number": 214,
@@ -1164,7 +1031,7 @@
       "started": "2025-12-26",
       "completed": "2025-12-29",
       "last_updated": "2025-12-29",
-      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 → 571 lines, +113 lines)",
+      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 \u2192 571 lines, +113 lines)",
       "artifacts": [
         ".opencode/specs/190_improve_maintenance_md_documentation/plans/implementation-002.md",
         ".opencode/specs/190_improve_maintenance_md_documentation/summaries/implementation-summary-20251229.md",
@@ -1736,139 +1603,272 @@
       "summary": "Implemented task-reviser.md subagent (515 lines, 20KB) with 7-step workflow for task metadata revision. Delegates to status-sync-manager for atomic updates and git-workflow-manager for commits. Ready for integration with /revise command."
     },
     {
-      "project_number": 277,
-      "project_name": "improve_opencode_header_and_summary_display_for_task_commands",
-      "type": "feature",
+      "project_number": 240,
+      "project_name": "systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures",
+      "type": "research",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "critical",
+      "language": "markdown",
+      "created": "2025-12-29T05:50:22Z",
+      "started": "2025-12-29",
+      "research_completed": "2025-12-29",
+      "completed": "2025-12-29",
+      "last_updated": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md"
+      ],
+      "research_summary": "Comparative analysis of OpenAgents and ProofChecker systems reveals architectural solution: adopt frontmatter delegation pattern, lazy-loading context index, session-based temporary context, and simplified orchestrator. Eliminates Stage 7 failures by moving workflow ownership from commands to agents. 4-phase migration (56-78 hours) achieves 60-70% systematic improvements.",
+      "supersedes_tasks": [
+        237
+      ],
+      "estimated_hours": 56.0,
+      "revised_hours": 78.0,
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment"
+    },
+    {
+      "project_number": 265,
+      "project_name": "clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive",
+      "type": "refactoring",
       "phase": "abandoned",
       "status": "abandoned",
       "priority": "high",
-      "language": "general",
-      "created": "2026-01-03T20:35:00Z",
+      "language": "markdown",
+      "created": "2025-12-30T00:38:18.504339Z",
       "started": "2026-01-03",
-      "research_completed": "2026-01-03",
-      "planning_completed": "2026-01-03",
-      "plan_revised": "2026-01-03",
+      "research_completed": "2025-12-29",
+      "plan_created": "2026-01-03",
       "last_updated": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md",
-        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md",
-        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-002.md"
+        ".opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/reports/research-001.md",
+        ".opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md"
       ],
-      "estimated_hours": 3.5,
-      "research_summary": "Research into OpenCode header and summary display patterns reveals orchestrator already formats prompts as 'Task: {number}' for internal delegation but lacks user-facing headers. Recommended solution: modify orchestrator Stage 5 (PostflightCleanup) to add headers. Estimated effort: 3.5 hours (revised from 4.5 hours - removed summary conclusions as redundant with header).",
+      "plan_path": ".opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md",
       "plan_metadata": {
-        "phase_count": 5,
-        "estimated_hours": 3.5,
+        "phases": 5,
+        "total_effort_hours": 10,
         "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 2,
-        "revision_reason": "Removed summary conclusion formatting (redundant with header display)"
+        "research_integrated": true
       },
       "abandoned": "2026-01-05",
       "abandonment_reason": "User requested abandonment"
     },
     {
-      "project_number": 300,
-      "project_name": "add_report_detection_to_planner",
+      "project_number": 266,
+      "project_name": "fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks",
+      "type": "bugfix",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2025-12-30T00:45:00Z",
+      "started": "2026-01-03",
+      "research_completed": "2026-01-03",
+      "last_updated": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/reports/research-001.md"
+      ],
+      "research_summary": "Root cause: orchestrator does NOT implement Stage 2 (DetermineRouting). Language extraction exists only in documentation. Lean tasks route to default researcher instead of lean-research-agent, causing phantom research. Fix: implement Stage 2 to extract language from TODO.md and route based on command frontmatter. Estimated 5-7 hours.",
+      "estimated_hours": 6.0,
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment"
+    },
+    {
+      "project_number": 271,
+      "project_name": "revise_meta_command_task_creation",
       "type": "feature",
-      "phase": "planning_completed",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2026-01-03T18:45:00Z",
+      "started": "2026-01-03",
+      "research_completed": "2026-01-03",
+      "last_updated": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md",
+        ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md"
+      ],
+      "research_summary": "Comprehensive revision plan to align /meta command with research \u2192 plan \u2192 implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
+      "estimated_hours": 13.0,
+      "plan_created": "2026-01-03",
+      "plan_path": ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 9,
+        "total_effort_hours": 13,
+        "complexity": "medium-high",
+        "research_integrated": true
+      },
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "Task has been effectively implemented. The /meta command now creates tasks with plan artifacts instead of directly implementing the system (Stage 7: CreateTasksWithArtifacts). The core functionality described in task 271 is already present in the codebase, making this task redundant."
+    },
+    {
+      "project_number": 280,
+      "project_name": "fix_orchestrator_stage_4_validation_to_enforce_subagent_return_format_and_prevent_phantom_research",
+      "type": "bugfix",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2026-01-04T05:00:30Z",
+      "last_updated": "2026-01-05T15:50:00Z",
+      "started": "2026-01-03",
+      "research_completed": "2026-01-03",
+      "planning_completed": "2026-01-03",
+      "artifacts": [
+        ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-001.md",
+        ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-002.md",
+        ".opencode/specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md",
+        ".opencode/specs/280_fix_orchestrator_stage_4_validation/validation-template.md",
+        ".opencode/specs/280_fix_orchestrator_stage_4_validation/summaries/implementation-summary-20260105.md",
+        ".opencode/command/research.md",
+        ".opencode/command/plan.md",
+        ".opencode/command/revise.md",
+        ".opencode/command/implement.md",
+        ".opencode/context/core/system/validation-rules.md",
+        ".opencode/context/core/system/validation-strategy.md"
+      ],
+      "plan_path": ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-002.md",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 6,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 2
+      },
+      "estimated_hours": 6.0,
+      "effort_hours": 6.0,
+      "revised_date": "2026-01-05",
+      "completed": "2026-01-05"
+    },
+    {
+      "project_number": 301,
+      "project_name": "enhance_revise_command_with_dual_mode_routing",
+      "type": "feature",
+      "phase": "implementation_completed",
       "status": "completed",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05",
-      "effort": "4 hours",
-      "description": "Enhance the planner subagent to detect new reports created since the last plan version and integrate their findings into plan revisions.",
-      "started": "2026-01-05",
-      "research_completed": "2026-01-05",
-      "planned": "2026-01-05",
-      "artifacts": [
-        ".opencode/specs/300_add_report_detection_to_planner/reports/research-001.md",
-        ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md",
-        ".opencode/specs/300_add_report_detection_to_planner/summaries/implementation-summary-20260105.md"
+      "last_updated": "2026-01-05T08:07:00-08:00",
+      "effort": "3 hours",
+      "description": "Update `/revise` command to detect plan presence and route to either task-reviser (no plan) or planner (plan exists with report integration).",
+      "research_artifacts": [
+        ".opencode/specs/301_enhance_revise_command_with_dual_mode_routing/reports/research-001.md"
       ],
-      "plan_path": ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md",
+      "plan_path": ".opencode/specs/301_enhance_revise_command_with_dual_mode_routing/plans/implementation-001.md",
+      "planning_completed": "2026-01-05T07:47:12-08:00",
       "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 4,
+        "phases": 5,
+        "total_effort_hours": 3,
         "complexity": "medium",
         "research_integrated": true,
         "plan_version": 1,
         "reports_integrated": [
           {
-            "path": ".opencode/specs/300_add_report_detection_to_planner/reports/research-001.md",
+            "path": "reports/research-001.md",
             "integrated_in_plan_version": 1,
             "integrated_date": "2026-01-05"
           }
         ]
       },
-      "research_summary": "Research completed on enhancing planner to detect new reports. Current planner harvests ALL research but cannot distinguish new reports from already-integrated ones. Solution: use filesystem timestamps (mtime) to detect reports created after last plan version. Requires plan_metadata schema extension to track reports_integrated array. 4-phase implementation (4 hours): schema extension, report detection, research harvesting enhancement, postflight integration.",
-      "completed": "2026-01-05"
+      "completed": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/301_enhance_revise_command_with_dual_mode_routing/summaries/implementation-summary-20260105.md",
+        ".opencode/command/revise.md"
+      ]
     },
     {
-      "project_number": 304,
-      "project_name": "test_commands_after_unintended_changes_2_5",
+      "project_number": 305,
+      "project_name": "remove_performance_cruft_from_all_6_modified_files_3_5",
       "type": "feature",
-      "phase": "abandoned",
-      "status": "abandoned",
-      "priority": "high",
-      "language": "general",
-      "description": "Test /task, /meta, and /todo commands to verify they still work correctly after the unintended changes. Document any failures or unexpected behavior. This determines whether to keep or revert core logic changes.",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "markdown",
+      "description": "Remove optimization sections from frontmatter, performance blocks from workflow stages, and verbose comments from all 6 files (todo.md, review.md, reviewer.md, meta.md, task-creator.md, state-lookup.md). Keep state-lookup.md documentation changes.",
       "effort": "30 minutes",
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T08:00:00Z",
       "last_updated": "2026-01-05",
+      "research_completed": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/reports/research-001.md",
+        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/plans/implementation-001.md",
+        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/summaries/implementation-summary-20260105.md"
+      ],
+      "plan_completed": "2026-01-05",
+      "completed": "2026-01-05"
+    },
+    {
+      "project_number": 312,
+      "project_name": "fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates",
+      "type": "bugfix",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "description": "Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 307 created research-001.md but task status remains [NOT STARTED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.",
+      "effort": "6-8 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T05:31:28-08:00",
+      "last_updated": "2026-01-05",
       "abandoned": "2026-01-05",
-      "abandonment_reason": "User requested abandonment via /abandon command"
+      "abandonment_reason": "User requested abandonment",
+      "artifacts": [
+        ".opencode/specs/312_fix_workflow_command_postflight_failures/reports/research-001.md"
+      ],
+      "plan_path": ".opencode/specs/312_fix_workflow_command_postflight_failures/plans/implementation-002.md",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 5,
+        "complexity": "low-medium",
+        "research_integrated": true,
+        "plan_version": 2,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          }
+        ]
+      }
     },
     {
-      "project_number": 309,
-      "project_name": "implement_option_1_direct_delegation_from_task_309_analysis_to_optimize_/task_command_performance",
+      "project_number": 313,
+      "project_name": "configure_opencode_agent_system_to_prevent_permission_interruptions",
       "type": "feature",
-      "phase": "implementation_completed",
+      "phase": "completed",
       "status": "completed",
       "priority": "medium",
       "language": "meta",
-      "description": "Implement Option 1 (Direct Delegation) from task 309 analysis to optimize /task command performance. Modify /task command Stage 4 to delegate directly to status-sync-manager instead of task-creator, eliminating unnecessary delegation layer and achieving 40-50% performance improvement.",
-      "effort": "3 hours",
+      "description": "Configure opencode agent system to prevent permission interruptions and ensure greater autonomy by relying on git commits for safety while avoiding other backups.",
+      "effort": "12 hours",
       "blocking": [],
       "dependencies": [],
-      "created": "2026-01-05T09:50:00Z",
-      "started": "2026-01-05",
-      "research_completed": "2026-01-05",
-      "last_updated": "2026-01-05T02:22:00Z",
-      "artifacts": [
-        ".opencode/specs/309_optimize_task_command_performance/reports/research-001.md",
-        ".opencode/specs/309_optimize_task_command_performance/plans/implementation-001.md",
-        ".opencode/specs/309_optimize_task_command_performance/summaries/implementation-summary-20260105.md"
-      ],
-      "planned": "2026-01-05",
-      "implemented": "2026-01-05"
-    },
-    {
-      "project_number": 310,
-      "project_name": "enhance_workflow_commands_with_start_and_end_status_updates",
-      "type": "feature",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "meta",
-      "description": "Enhance workflow commands (/research, /plan, /revise, /implement) to update task status at the beginning and end of execution. Commands should set status to '[RESEARCHING]', '[PLANNING]', '[REVISING]', or '[IMPLEMENTING]' at start, report if already in progress, and update to final status ('[RESEARCHED]', '[PLANNED]', '[REVISED]', '[IMPLEMENTED]'/'[BLOCKED]'/'[PARTIAL]') at completion.",
-      "effort": "9-12 hours",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-05T10:00:00Z",
-      "last_updated": "2026-01-05T02:40:00Z",
-      "research_completed": "2026-01-05",
-      "artifacts": [
-        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/reports/research-001.md",
-        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md",
-        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/summaries/implementation-summary-20260105.md"
-      ],
-      "plan_path": ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md",
-      "planned": "2026-01-05",
-      "implemented": "2026-01-05"
+      "created": "2026-01-05",
+      "last_updated": "2026-01-05",
+      "planning_completed": "2026-01-05",
+      "implementation_completed": "2026-01-05",
+      "plan_path": ".opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/plans/implementation-001.md",
+      "implementation_path": ".opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/summaries/implementation-summary-20260105.md",
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 12,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          }
+        ]
+      }
     }
   ],
   "repository_health": {
@@ -2288,7 +2288,7 @@
       "modified_files": [
         "Logos/Core/Semantics/Truth.lean"
       ],
-      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T φ.swap → is_valid T φ is semantically FALSE for arbitrary formulas. Counterexample: φ = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
+      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T \u03c6.swap \u2192 is_valid T \u03c6 is semantically FALSE for arbitrary formulas. Counterexample: \u03c6 = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
       "blocking_reason": "Theorem is semantically false for arbitrary formulas (proven by task 213). Not a type theory limitation but a fundamental logical impossibility. Task correctly marked impossible."
     },
     {

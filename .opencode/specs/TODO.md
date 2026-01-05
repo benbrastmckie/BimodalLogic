@@ -30,30 +30,6 @@ technical_debt:
 
 ## High Priority
 
-### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
-- **Effort**: 15-20 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.
-
----
-
-### 316. Implement tactic integration for modal_search tactic (Phase 2)
-- **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Implement Phase 2 of task 260: Tactic Integration. Create modal_search tactic that constructs proofs in tactic mode, avoiding Prop vs Type issues. This phase is prioritized over Phase 1 as it may be easier than programmatic proof term construction and is more useful for end users (interactive proof development). Integrate with existing ProofSearch.lean infrastructure.
-
----
-
 ### 314. Conduct systematic review to complete context refactor plan aims
 - **Effort**: 16-24 hours
 - **Status**: [NOT STARTED]
@@ -72,7 +48,7 @@ technical_debt:
 
 ### 307. Verify or revert core logic changes in high-risk files (4/5)
 - **Effort**: 1 hour
-- **Status**: [PLANNING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -282,30 +258,6 @@ technical_debt:
 ---
 
 ## High Priority
-
-### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
-- **Effort**: 15-20 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.
-
----
-
-### 316. Implement tactic integration for modal_search tactic (Phase 2)
-- **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Implement Phase 2 of task 260: Tactic Integration. Create modal_search tactic that constructs proofs in tactic mode, avoiding Prop vs Type issues. This phase is prioritized over Phase 1 as it may be easier than programmatic proof term construction and is more useful for end users (interactive proof development). Integrate with existing ProofSearch.lean infrastructure.
-
----
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
@@ -1177,42 +1129,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ---
 
 ## Medium Priority
-
-### 317. Implement BFS variant for proof search completeness (Phase 3)
-- **Effort**: 10-15 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Implement Phase 3 of task 260: BFS Variant. Add breadth-first search variant to ProofSearch.lean to ensure completeness guarantees. Current implementation uses bounded DFS which may miss proofs. BFS variant will explore search space level-by-level, guaranteeing shortest proofs are found first.
-
----
-
-### 318. Implement advanced heuristics for proof search performance (Phase 4)
-- **Effort**: 12-18 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.
-
----
-
-### 319. Expand testing for proof search automation (Phase 5)
-- **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks.
-
----
 
 ### 259. Automation Tactics
 - **Effort**: 20.0
