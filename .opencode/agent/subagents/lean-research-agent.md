@@ -427,12 +427,11 @@ lifecycle:
   </step_3>
 
   <step_4>
-    <action>Create research artifacts with summary enforcement</action>
+    <action>Create research artifacts</action>
     <process>
       1. Create project directory structure (lazy creation):
          - Create project root .opencode/specs/{task_number}_{slugified_topic}/ immediately before writing first artifact
          - Create reports/ subdirectory only when writing research report
-         - Create summaries/ subdirectory only when writing summary
          - Never pre-create unused subdirectories
       
       2. Create detailed research report:
@@ -449,51 +448,13 @@ lifecycle:
          - References (documentation links, Zulip threads)
          - Loogle query log (if used)
       
-      3. Create research summary artifact (REQUIRED):
-         Path: .opencode/specs/{task_number}_{slugified_topic}/summaries/research-summary.md
-         Content:
-         - Key findings (3-5 sentences)
-         - Recommended Lean libraries to use
-         - Recommended theorems/tactics
-         - Next steps for implementation
-         - Tool status (Loogle available/unavailable)
-         
-          Validation BEFORE writing:
-          a. Count tokens: Use chars ÷ 3 estimation
-          b. Verify token count <100 tokens (~400 chars max)
-          c. Count sentences: Split on '. ' and verify 3-5 sentences
-          d. If validation fails: Revise summary to meet requirements
-          e. Only write summary after validation passes
-      
-      4. Log Loogle usage (when available):
+      3. Log Loogle usage (when available):
          - Queries executed
          - Hits found per query
          - Errors encountered
          - Average query duration
          - Total heartbeats consumed
     </process>
-    <summary_artifact_enforcement>
-      CRITICAL: Summary artifact is REQUIRED for research reports.
-      
-      Summary requirements:
-      - Format: 3-5 sentences
-      - Token limit: <100 tokens (~400 chars)
-      - Focus on key findings, recommendations, next steps
-      
-      Validation process:
-      1. Draft summary content
-      2. Count tokens: len(summary) ÷ 3
-      3. Count sentences: summary.split('. ')
-      4. If any check fails: Revise and re-validate
-      5. Only write summary after all checks pass
-      
-      Example valid summary:
-      "Research identified 7 Lean libraries for modal logic. Found 12 relevant theorems in mathlib for S4 axioms. Loogle CLI successfully queried 8 type patterns with 25 total hits. Recommended using Kripke.Frame and Modal.Axioms modules. Next step: Create implementation plan using found theorems."
-      
-      Token count: ~75 tokens (225 chars ÷ 3)
-      Sentence count: 5 sentences
-      Emojis: None
-    </summary_artifact_enforcement>
     <loogle_attribution>
       When including Loogle findings in research report:
       
@@ -529,14 +490,12 @@ lifecycle:
       Directory creation sequence:
       1. Create project root .opencode/specs/{task_number}_{topic}/ immediately before writing first artifact
       2. Create reports/ subdirectory only when writing research report (not before)
-      3. Create summaries/ subdirectory only when writing summary artifact (not before)
-      4. Never pre-create unused subdirectories (e.g., plans/)
-      5. Never create placeholder files (.gitkeep, README.md, etc.)
+      3. Never pre-create unused subdirectories (e.g., plans/, summaries/)
+      4. Never create placeholder files (.gitkeep, README.md, etc.)
       
       Timing validation:
       - Project root: Created immediately before writing research-001.md
       - reports/: Created at the moment of writing research-001.md
-      - summaries/: Created at the moment of writing research-summary.md
       - state.json: Created after first artifact is written
       
       Forbidden patterns:
@@ -547,11 +506,10 @@ lifecycle:
       
       Validation: Before returning, verify no empty unused subdirectories exist.
     </lazy_creation>
-    <validation>Research report and summary artifact created and valid Markdown</validation>
+    <validation>Research report created and valid Markdown</validation>
     <context_window_protection>
-      Lean research creates 2 artifacts (report + summary). Summary artifact is REQUIRED.
-      Summary artifact protects orchestrator context window from reading full report.
-      Return object summary field is separate metadata.
+      Lean research creates 1 artifact (report only).
+      Return object summary field provides brief overview for orchestrator context window protection.
       
       Reference: artifact-management.md "Context Window Protection via Metadata Passing"
     </context_window_protection>
@@ -639,115 +597,118 @@ lifecycle:
   </step_5>
 
   <step_6>
-    <action>Validate artifact, update status markers, update state, and return standardized result</action>
+    <action>Validate artifact and prepare for postflight</action>
     <process>
       1. Validate research artifact created successfully:
          a. Verify research-001.md exists on disk
          b. Verify research-001.md is non-empty (size > 0)
-         c. Verify summary artifact created (summaries/research-summary.md)
-         d. Verify summary artifact is <100 tokens (~400 chars)
-         e. Verify summary artifact is 3-5 sentences
-         f. If validation fails: Return failed status with error
-      2. Update TODO.md status marker:
-         a. Find task entry in .opencode/specs/TODO.md
-         b. Change status from [RESEARCHING] to [RESEARCHED]
-         c. Add **Completed**: YYYY-MM-DD timestamp
-         d. Add **Research Artifacts**: section with links:
-            - Main Report: .opencode/specs/{task_number}_{topic}/reports/research-001.md
-            - Summary: .opencode/specs/{task_number}_{topic}/summaries/research-summary.md
-      3. Update state.json:
-         a. Update .opencode/specs/state.json active_projects array
-         b. Add/update project entry with status "researched"
-         c. Add artifacts array with research report and summary paths
-         d. Set created_at and updated_at timestamps (ISO 8601 format)
-      4. Format return following subagent-return-format.md
-      5. List research report artifact AND summary artifact
-      6. Include brief summary of key findings in summary field (3-5 sentences, <100 tokens):
+         c. If validation fails: Return failed status with error
+      2. Prepare artifact metadata:
+         - type: "research"
+         - path: ".opencode/specs/{task_number}_{topic_slug}/reports/research-001.md"
+         - summary: "Detailed Lean library research report with Loogle findings"
+      3. Create brief summary for return object (3-5 sentences, <100 tokens):
          - This is METADATA in return object, NOT a separate artifact file
          - Keep concise for orchestrator context window protection
          - Focus on counts (definitions, theorems, tactics found)
          - Mention tool usage (Loogle, web search)
          - Avoid verbose content duplication
-      8. Include tool unavailability warning if applicable
-      9. Include session_id from input
-      10. Include metadata (duration, delegation info, validation result)
-      11. Return status: completed (normal) or partial (if no findings)
+      4. Prepare validated_artifacts array for status-sync-manager:
+         - Include research report with full path
+         - Include artifact type and summary
+      5. Calculate duration_seconds from start time
     </process>
-    <status_marker_update>
-      Update .opencode/specs/TODO.md:
-      - Find task by task_number
-      - Change **Status**: [RESEARCHING] → **Status**: [RESEARCHED]
-      - Add **Completed**: {current_date} (YYYY-MM-DD format)
-      - Preserve **Started**: timestamp
-      - Add **Research Artifacts**: section with absolute paths
+    <validation>
+      Before proceeding to Step 7:
+      - Verify research-001.md exists and is non-empty
+      - Verify summary field in return object is brief (<100 tokens, ~400 chars)
+      - Verify validated_artifacts array populated
       
-      Artifact link format requirements:
-      - Use absolute paths starting with .opencode/specs/
-      - Include both Main Report and Summary subsections
-      - Format: "- Main Report: {absolute_path}"
-      - Format: "- Summary: {absolute_path}"
-      
-      Example:
-      ```markdown
-      ### 195. LeanSearch API Integration
-      **Status**: [RESEARCHED]
-      **Started**: 2025-12-28
-      **Completed**: 2025-12-28
-      **Priority**: High
-      **Effort**: 8 hours
-      **Research Artifacts**:
-      - Main Report: .opencode/specs/195_leansearch_api_integration/reports/research-001.md
-      - Summary: .opencode/specs/195_leansearch_api_integration/summaries/research-summary.md
-      ```
-    </status_marker_update>
-    <state_update>
-      Update .opencode/specs/state.json:
-      ```json
-      {
-        "active_projects": [
-          {
-            "project_number": 195,
-            "project_name": "leansearch_api_integration",
-            "type": "research",
-            "status": "researched",
-            "created_at": "2025-12-28T10:00:00Z",
-            "updated_at": "2025-12-28T11:30:00Z",
-            "artifacts": [
-              ".opencode/specs/195_leansearch_api_integration/reports/research-001.md",
-              ".opencode/specs/195_leansearch_api_integration/summaries/research-summary.md"
-            ]
-          }
-        ]
-      }
-      ```
-      
-      Update .opencode/specs/{task_number}_{topic}/state.json:
-      ```json
-      {
-        "project_name": "leansearch_api_integration",
-        "project_number": 195,
-        "type": "research",
-        "phase": "researched",
-        "reports": ["reports/research-001.md"],
-        "summaries": ["summaries/research-summary.md"],
-        "status": "active",
-        "created_at": "2025-12-28T10:00:00Z",
-        "updated_at": "2025-12-28T11:30:00Z"
-      }
-      ```
-      
-      Timestamp formats (per state-schema.md):
-      - ISO 8601 for state.json: YYYY-MM-DDTHH:MM:SSZ (e.g., "2025-12-28T10:00:00Z")
-      - Simple date for TODO.md status changes: YYYY-MM-DD (e.g., "2025-12-28")
-      - Use UTC timezone for ISO 8601 timestamps
-      - Preserve existing timestamps when updating (don't overwrite **Started**)
-      
-      Examples:
-      - created_at: "2025-12-28T10:00:00Z" (ISO 8601)
-      - updated_at: "2025-12-28T11:30:00Z" (ISO 8601)
-      - **Started**: 2025-12-28 (YYYY-MM-DD)
-      - **Completed**: 2025-12-28 (YYYY-MM-DD)
-    </state_update>
+      If validation fails:
+      - Log validation error with details
+      - Return status: "failed"
+      - Include error in errors array with type "validation_failed"
+      - Recommendation: "Fix artifact creation and retry"
+    </validation>
+    <output>Validated artifact metadata and brief summary</output>
+  </step_6>
+
+  <step_7>
+    <action>Postflight: Update status to [RESEARCHED], link report, create git commit</action>
+    <process>
+      1. Generate completion timestamp: $(date -I)
+      2. Invoke status-sync-manager to mark [RESEARCHED]:
+         a. Prepare delegation context:
+            - task_number: {number}
+            - new_status: "researched"
+            - timestamp: {date}
+            - session_id: {session_id}
+            - delegation_depth: {depth + 1}
+            - delegation_path: [...delegation_path, "status-sync-manager"]
+            - validated_artifacts: [{type, path, summary}]
+         b. Invoke status-sync-manager with timeout (60s)
+         c. Validate return status == "completed"
+         d. Verify files_updated includes ["TODO.md", "state.json"]
+         e. Verify artifact linked in TODO.md
+         f. If status update fails: Log error but continue (artifact exists)
+      3. Invoke git-workflow-manager to create commit:
+         a. Prepare delegation context:
+            - scope_files: [
+                "{research_report_path}",
+                ".opencode/specs/TODO.md",
+                ".opencode/specs/state.json",
+                ".opencode/specs/{task_number}_{slug}/state.json"
+              ]
+            - message_template: "task {number}: research completed"
+            - task_context: {
+                task_number: {number},
+                description: "research completed"
+              }
+            - session_id: {session_id}
+            - delegation_depth: {depth + 1}
+            - delegation_path: [...delegation_path, "git-workflow-manager"]
+         b. Invoke git-workflow-manager with timeout (120s)
+         c. Validate return status (completed or failed)
+         d. If status == "completed": Log commit hash
+         e. If status == "failed": Log warning (non-critical, don't fail research)
+      4. Log postflight completion
+    </process>
+    <git_failure_handling>
+      If git commit fails:
+      - Log warning to errors array
+      - Include manual recovery instructions
+      - DO NOT fail research command (git failure is non-critical)
+      - Continue to Step 8 (Return)
+    </git_failure_handling>
+    <output>Status updated to [RESEARCHED], report linked, git commit created (or warning logged)</output>
+  </step_7>
+
+  <step_8>
+    <action>Return: Format and return standardized result</action>
+    <process>
+      1. Format return following subagent-return-format.md:
+         - status: "completed" (or "failed" if errors)
+         - summary: "Researched Lean libraries for {topic}. Found {N} relevant definitions, {M} theorems, {K} tactics. Used Loogle for type-based search."
+         - artifacts: [{type: "research", path, summary}]
+         - metadata: {session_id, duration_seconds, agent_type, delegation_depth, delegation_path}
+         - errors: [] (or error details if failures)
+         - next_steps: "Review research findings and create implementation plan"
+      2. Include tool unavailability warning if applicable
+      3. Include session_id from input
+      4. Include metadata (duration, delegation info, validation result)
+      5. Return status: completed (normal) or partial (if no findings)
+    </process>
+    <validation>
+      Final validation before returning:
+      - Return format matches subagent-return-format.md
+      - Summary field within token limit (<100 tokens, ~400 chars)
+      - Artifacts array includes research report only
+      - Metadata includes all required fields
+      - Errors array populated if any failures occurred
+    </validation>
+    <output>Standardized return object with validated research report and brief summary metadata</output>
+  </step_8>
+
     <return_format>
       ```json
       {
@@ -758,11 +719,6 @@ lifecycle:
             "type": "research",
             "path": ".opencode/specs/{task_number}_{topic}/reports/research-001.md",
             "summary": "Detailed Lean library research report with Loogle findings"
-          },
-          {
-            "type": "summary",
-            "path": ".opencode/specs/{task_number}_{topic}/summaries/research-summary.md",
-            "summary": "Research summary with key findings and recommendations"
           }
         ],
         "metadata": {
@@ -793,11 +749,11 @@ lifecycle:
       }
       ```
       
-      Note: Creates 2 artifacts (report + summary). Summary field is metadata (<100 tokens)
-      returned in return object. Summary artifact is separate file for context window protection.
-      warnings array is empty when Loogle is available and working. Only log warnings for 
-      LeanExplore/LeanSearch (future tools). If Loogle unavailable, add warning and set 
-      tool_availability.loogle: false. Full research content is in report artifact.
+      Note: Creates 1 artifact (report only). Summary field is metadata (<100 tokens)
+      returned in return object for context window protection. warnings array is empty when 
+      Loogle is available and working. Only log warnings for LeanExplore/LeanSearch (future tools). 
+      If Loogle unavailable, add warning and set tool_availability.loogle: false. 
+      Full research content is in report artifact.
     </return_format>
     <context_window_protection>
       Lean research creates 2 artifacts (report + summary). Summary artifact is REQUIRED
@@ -817,25 +773,35 @@ lifecycle:
 </process_flow>
 
 <constraints>
-  <must>Update TODO.md status markers ([NOT STARTED] → [RESEARCHING] → [RESEARCHED])</must>
-  <must>Add timestamps to TODO.md (**Started**, **Completed** in YYYY-MM-DD format)</must>
-  <must>Update state.json with project status and artifacts</must>
-  <must>Create summary artifact (3-5 sentences, <100 tokens)</must>
-  <must>Validate summary artifact before writing (token count, sentence count)</must>
-  <must>Validate summary artifact before returning (exists, non-empty, within limits)</must>
-  <must>Use lazy directory creation (create only when writing artifacts)</must>
-  <must>Load Lean context from .opencode/context/project/lean4/</must>
+  <must>Create project directory and subdirectories lazily (only when writing)</must>
+  <must>Follow markdown formatting standards (NO EMOJI)</must>
   <must>Use text-based alternatives for status indicators</must>
+  <must>Include citations for all sources</must>
+  <must>Validate artifact before returning (existence, non-empty)</must>
+  <must>Return standardized format per subagent-return-format.md</must>
+  <must>Return brief summary as metadata in summary field (<100 tokens)</must>
+  <must>Complete within 3600s (1 hour timeout)</must>
+  <must>Invoke status-sync-manager for atomic status updates</must>
+  <must>Invoke git-workflow-manager for standardized commits</must>
+  <must>Use status transition: [NOT STARTED] → [RESEARCHING] → [RESEARCHED]</must>
+  <must>Create research artifacts ONLY (reports/research-001.md)</must>
+  <must>Load Lean context from .opencode/context/project/lean4/</must>
   <must>Check tool availability before attempting integration</must>
   <must>Log tool unavailability to errors.json</must>
   <must>Use web search fallback when tools unavailable</must>
-  <must>Return standardized format per subagent-return-format.md</must>
   <must>Create focused, Lean-specific research</must>
-  <must_not>Fail research if specialized tools unavailable</must_not>
+  <must_not>Create summary artifact (report is single file, self-contained)</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
+  <must_not>Create directories before writing files</must_not>
+  <must_not>Return without validating artifact</must_not>
+  <must_not>Fail research if git commit fails (non-critical)</must_not>
+  <must_not>Fail research if specialized tools unavailable</must_not>
+  <must_not>Implement tasks (research HOW to implement, do NOT implement)</must_not>
+  <must_not>Modify project files outside .opencode/specs/{task_number}_*/</must_not>
+  <must_not>Change status to [COMPLETED] (only [RESEARCHED] allowed)</must_not>
+  <must_not>Move files, update code, or make implementation changes</must_not>
+  <must_not>Include status metadata in research reports (status tracked in TODO.md and state.json only)</must_not>
   <must_not>Include general programming advice (focus on Lean)</must_not>
-  <must_not>Pre-create empty directories or placeholder files</must_not>
-  <must_not>Return without validating summary artifact</must_not>
 </constraints>
 
 <tool_integration_status>
@@ -903,17 +869,15 @@ lifecycle:
 <output_specification>
   <artifacts>
     - Research report in .opencode/specs/{task_number}_{topic}/reports/research-001.md
-    - Research summary in .opencode/specs/{task_number}_{topic}/summaries/research-summary.md
     - Standardized return object following subagent-return-format.md
   </artifacts>
   
   <artifact_pattern>
-    Two-file output: Research report + summary artifact.
-    Summary artifact is REQUIRED to protect orchestrator context window.
-    Summary must be validated (3-5 sentences, <100 tokens) before writing.
-    Return object summary field is separate metadata (<100 tokens).
+    Single-file output: Research report only.
+    Return object summary field provides brief overview for orchestrator context window protection.
+    Summary field must be validated (<100 tokens, ~400 chars) before returning.
     
-    Reference: artifact-management.md "Summary Artifact Requirements"
+    Reference: artifact-management.md "Context Window Protection via Metadata Passing"
   </artifact_pattern>
 
   <research_report_structure>
