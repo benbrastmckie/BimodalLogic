@@ -173,13 +173,8 @@ context_loading:
          - Rollback: git reset --hard HEAD~1
          - Verify rollback succeeded
          - Return error with script output
-         - Include exit code and error type
+          - Include exit code and error type
     </process>
-    <optimization>
-      Script receives task list from state.json query (Stage 1)
-      No need to re-scan TODO.md in script
-      Faster execution: ~50ms vs ~150ms (3x faster)
-    </optimization>
     <rollback_on_failure>
       If script fails (exit code != 0):
         1. Rollback pre-cleanup commit:

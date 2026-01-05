@@ -22,7 +22,7 @@ context_loading:
   required:
     - "core/standards/subagent-return-format.md"
     - "core/workflows/status-transitions.md"
-    - "core/system/state-lookup.md"  # For fast state.json queries (Phase 2 optimization)
+    - "core/system/state-lookup.md"  # Fast state.json queries
   optional:
     - "core/workflows/interview-patterns.md"
     - "core/standards/architecture-principles.md"
