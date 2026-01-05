@@ -2,691 +2,247 @@
 
 ## Overview
 
-This guide provides a comprehensive walkthrough for creating new commands that work seamlessly with the orchestrator in the ProofChecker .opencode system.
+This guide provides a streamlined walkthrough for creating new commands in the ProofChecker .opencode system.
 
 ## Prerequisites
 
-Before creating a new command, ensure you understand:
+Before creating a new command, understand:
 
-1. **Command Types**: Task-based vs. direct commands
-2. **Argument Handling**: How `$ARGUMENTS` works
-3. **Routing Patterns**: Language-based vs. direct routing
-4. **Delegation Flow**: How orchestrator delegates to subagents
-5. **Return Format**: Standard subagent return schema
+1. **Command Structure**: Simple frontmatter + usage documentation
+2. **Routing**: Orchestrator routes to target agent specified in frontmatter
+3. **Argument Handling**: Subagents parse their own arguments from original prompt
+4. **Return Format**: Standard subagent return schema
 
 **Required Reading**:
-- `.opencode/context/core/standards/command-argument-handling.md`
-- `.opencode/context/core/system/routing-logic.md`
-- `.opencode/context/core/standards/delegation.md`
-- `.opencode/agent/orchestrator.md`
+- `.opencode/agent/orchestrator.md` - Simple routing logic
+- `.opencode/context/core/standards/delegation.md` - Subagent return format
 
 ## Step-by-Step Process
 
-### Step 1: Determine Command Type
+### Step 1: Determine Target Agent
 
-**Question**: Does your command operate on tasks from TODO.md?
+**Question**: Which subagent will handle this command?
 
-- **YES** → Task-based command (e.g., `/research`, `/plan`, `/implement`)
-- **NO** → Direct command (e.g., `/meta`, `/review`, `/errors`)
+- `/research` → researcher (or lean-research-agent for Lean tasks)
+- `/plan` → planner (or lean-planner for Lean tasks)
+- `/implement` → implementer (or lean-implementation-agent for Lean tasks)
+- `/revise` → planner
+- `/review` → reviewer
 
-**Task-Based Commands**:
-- Require a task number as first argument
-- Extract language from task metadata
-- May use language-based routing
-- Format prompt as `"Task: {number}"` for subagent
+**Routing Options**:
+- **Simple**: One agent for all tasks
+- **Language-based**: Different agents based on task language (lean vs general)
 
-**Direct Commands**:
-- May have optional arguments or no arguments
-- Don't require task validation
-- Pass `$ARGUMENTS` as-is to subagent
-- Use direct routing (no language extraction)
+### Step 2: Create Command File
 
-### Step 2: Choose Routing Strategy
+Create `.opencode/command/{command-name}.md` with this structure:
 
-**Question**: Does your command need different agents for different languages?
-
-- **YES** → Language-based routing (e.g., Lean tasks → lean-research-agent)
-- **NO** → Direct routing (e.g., all tasks → planner)
-
-**Language-Based Routing**:
-```yaml
-routing:
-  language_based: true
-  lean: lean-research-agent
-  default: researcher
-```
-
-**Direct Routing**:
-```yaml
-routing:
-  language_based: false
-  default: planner
-```
-
-### Step 3: Create Command File
-
-Create `.opencode/command/{command-name}.md` with proper frontmatter.
-
-**Template for Task-Based Command**:
+**Simple Command Template**:
 
 ```markdown
 ---
 name: {command-name}
-agent: orchestrator
-description: "{Brief description of what this command does}"
-context_level: 2
-language: markdown
-routing:
-  language_based: {true|false}
-  lean: {lean-agent-name}  # If language_based: true
-  default: {default-agent-name}
+agent: {target-agent}
+description: "{Brief description}"
 timeout: 3600
-context_loading:
-  strategy: lazy
-  index: ".opencode/context/index.md"
-  required:
-    - "core/standards/delegation.md"
-    - "core/system/state-management.md"
-    - "core/system/routing-guide.md"
-    - "core/standards/command-argument-handling.md"
-  optional:
-    - "{domain-specific context files}"
-  max_context_size: 50000
 ---
 
-**Task Input (required):** $ARGUMENTS (task number; e.g., `/{command-name} 258`)
+# /{command-name} - {Title}
 
-**Usage:** `/{command-name} TASK_NUMBER [OPTIONS]`
+{Brief description of what this command does}
 
-## Description
+## Usage
 
-{Detailed description of command functionality}
+\`\`\`bash
+/{command-name} TASK_NUMBER [PROMPT]
+/{command-name} 196
+/{command-name} 196 "Custom focus"
+\`\`\`
 
-## Workflow Setup
+## What This Does
 
-**Orchestrator handles (Stage 1-5):**
-- **Stage 1 (PreflightValidation):** Read task number from $ARGUMENTS variable, validate task exists in TODO.md
-- **Stage 2 (DetermineRouting):** Extract language from task entry (state.json or TODO.md), map to agent using routing table, validate routing
-- **Stage 3 (RegisterAndDelegate):** Register session and invoke target agent
-- **Stage 4 (ValidateReturn):** Validate return format, verify artifacts exist and are non-empty
-- **Stage 5 (PostflightCleanup):** Update session registry and relay result to user
+1. Routes to {agent} subagent
+2. Agent executes workflow
+3. Creates artifacts
+4. Updates task status
+5. Creates git commit
 
-**{Agent-name} subagent handles:**
-- {List of responsibilities}
-- Status updates
-- Git commits
-
-## Arguments
-
-**Required**:
-- `TASK_NUMBER`: Task number from TODO.md
-
-**Optional**:
-- `{option}`: {description}
-
-## Examples
-
-```bash
-# Basic usage
-/{command-name} 258
-
-# With options
-/{command-name} 258 --{option}
+See `.opencode/agent/subagents/{agent}.md` for details.
 ```
 
-## Error Handling
-
-**Missing task number**:
-```
-Error: Task number required for /{command-name} command
-
-Usage: /{command-name} <task_number> [options]
-
-Example: /{command-name} 258
-```
-
-**Invalid task number**:
-```
-Error: Task number must be an integer. Got: {input}
-
-Usage: /{command-name} TASK_NUMBER
-
-Example: /{command-name} 258
-```
-
-**Task not found**:
-```
-Error: Task {task_number} not found in TODO.md
-
-Please verify the task number exists in .opencode/specs/TODO.md
-```
-
-## See Also
-
-- Command Template: `.opencode/context/core/templates/command-template.md`
-- Argument Handling: `.opencode/context/core/standards/command-argument-handling.md`
-- Routing Logic: `.opencode/context/core/system/routing-logic.md`
-```
-
-**Template for Direct Command**:
+**Language-Based Routing Template**:
 
 ```markdown
 ---
 name: {command-name}
-agent: orchestrator
-description: "{Brief description of what this command does}"
-context_level: 2
-language: markdown
+agent: {default-agent}
+description: "{Brief description}"
+timeout: 3600
 routing:
-  language_based: false
-  default: {agent-name}
-timeout: 1800
-context_loading:
-  strategy: lazy
-  index: ".opencode/context/index.md"
-  required:
-    - "core/standards/delegation.md"
-    - "core/system/state-management.md"
-    - "core/standards/command-argument-handling.md"
-  max_context_size: 50000
+  language_based: true
+  lean: {lean-agent}
+  default: {default-agent}
 ---
 
-**Task Input (optional):** $ARGUMENTS (user input; e.g., `/{command-name} "options"`)
+# /{command-name} - {Title}
 
-**Usage:** `/{command-name} [OPTIONS]`
+{Brief description}
 
-## Description
+## Usage
 
-{Detailed description of command functionality}
+\`\`\`bash
+/{command-name} TASK_NUMBER [PROMPT]
+\`\`\`
 
-## Workflow Setup
+## What This Does
 
-**Orchestrator handles (Stage 1-5):**
-- **Stage 1 (PreflightValidation):** Read $ARGUMENTS (may be empty), no task validation required
-- **Stage 2 (DetermineRouting):** Use routing.default directly (no language extraction)
-- **Stage 3 (RegisterAndDelegate):** Register session and invoke target agent with $ARGUMENTS as-is
-- **Stage 4 (ValidateReturn):** Validate return format
-- **Stage 5 (PostflightCleanup):** Update session registry and relay result to user
+1. Routes to appropriate agent based on task language
+2. Agent executes workflow
+3. Creates artifacts
+4. Updates task status
+5. Creates git commit
 
-**{Agent-name} subagent handles:**
-- {List of responsibilities}
-- Artifact creation
-- Git commits (if applicable)
+## Language-Based Routing
 
-## Arguments
+| Language | Agent | Tools |
+|----------|-------|-------|
+| lean | {lean-agent} | {lean-specific tools} |
+| general | {default-agent} | {general tools} |
 
-**Optional**:
-- `{option}`: {description}
+See `.opencode/agent/subagents/{agent}.md` for details.
+```
+
+### Step 3: Create or Update Subagent
+
+If creating a new subagent, it must:
+
+1. **Parse arguments from original prompt** (Step 0)
+   - Extract task number from prompt string
+   - Example: "/command 271" → task_number = 271
+   
+2. **Validate task exists** (Step 0)
+   - Check task exists in TODO.md
+   - Return error if not found
+   
+3. **Update status** (Step 0)
+   - Delegate to status-sync-manager
+   - Set appropriate starting status
+   
+4. **Execute workflow** (Steps 1-N)
+   - Perform actual work
+   - Create artifacts
+   
+5. **Return standardized result** (Final step)
+   - Use subagent-return-format.md schema
+   - Include artifacts, summary, status
+
+**Step 0 Template**:
+
+```xml
+<step_0_preflight>
+  <action>Preflight: Parse arguments, validate task, update status</action>
+  <process>
+    1. Parse task number from prompt:
+       - Prompt format: "/{command} 271" or "271" or "/{command} 271 extra"
+       - Extract first integer from prompt string
+       - If no integer found: Return error "Task number required"
+    
+    2. Validate task exists:
+       - Read .opencode/specs/TODO.md
+       - Find task entry: grep "^### ${task_number}\."
+       - If not found: Return error "Task {task_number} not found"
+    
+    3. Update status to [{STATUS}]:
+       - Delegate to status-sync-manager
+       - Validate status update succeeded
+    
+    4. Proceed to execution
+  </process>
+  <checkpoint>Task validated and status updated</checkpoint>
+</step_0_preflight>
+```
+
+### Step 4: Test Command
+
+Test your new command:
+
+```bash
+# Create test task in TODO.md if needed
+/todo add "Test task for new command"
+
+# Test command
+/{command-name} {task-number}
+
+# Verify:
+# 1. Command routes to correct agent
+# 2. Agent receives original prompt
+# 3. Agent parses arguments correctly
+# 4. Artifacts created
+# 5. Status updated
+# 6. Git commit created
+```
+
+## Key Principles
+
+1. **Simple Routing**: Orchestrator just routes, doesn't parse
+2. **Subagent Ownership**: Subagents parse their own arguments
+3. **Original Prompts**: Always pass user's original prompt unchanged
+4. **Trust Model**: Trust subagents to handle their workflows
+5. **Minimal Documentation**: Command files should be <50 lines
 
 ## Examples
 
-```bash
-# No arguments
-/{command-name}
-
-# With arguments
-/{command-name} {example-args}
-```
-
-## See Also
-
-- Command Template: `.opencode/context/core/templates/command-template.md`
-- Argument Handling: `.opencode/context/core/standards/command-argument-handling.md`
-```
-
-### Step 4: Implement Argument Handling
-
-Follow the standard defined in `.opencode/context/core/standards/command-argument-handling.md`.
-
-**For Task-Based Commands**:
-
-1. **Document $ARGUMENTS**:
-   ```markdown
-   **Task Input (required):** $ARGUMENTS (task number; e.g., `/{command} 258`)
-   ```
-
-2. **Reference Standard**:
-   ```markdown
-   See: `.opencode/context/core/standards/command-argument-handling.md`
-   ```
-
-3. **Orchestrator Handles Parsing**:
-   - Stage 1: Extracts task_number from $ARGUMENTS
-   - Stage 1: Validates task_number is positive integer
-   - Stage 1: Verifies task exists in TODO.md
-   - Stage 3: Formats prompt as `"Task: {task_number}"`
-
-**For Direct Commands**:
-
-1. **Document $ARGUMENTS**:
-   ```markdown
-   **Task Input (optional):** $ARGUMENTS (user input; e.g., `/{command} "options"`)
-   ```
-
-2. **Reference Standard**:
-   ```markdown
-   See: `.opencode/context/core/standards/command-argument-handling.md`
-   ```
-
-3. **Orchestrator Handles Parsing**:
-   - Stage 1: Reads $ARGUMENTS (may be empty)
-   - Stage 3: Passes $ARGUMENTS as-is to subagent
-
-### Step 5: Configure Routing
-
-**For Language-Based Routing**:
-
-```yaml
-routing:
-  language_based: true
-  lean: lean-{agent-name}
-  default: {agent-name}
-```
-
-**Orchestrator will**:
-- Extract language from state.json or TODO.md
-- Map language to agent (lean → lean-*, default → general)
-- Validate routing before delegation
-
-**For Direct Routing**:
-
-```yaml
-routing:
-  language_based: false
-  default: {agent-name}
-```
-
-**Orchestrator will**:
-- Use routing.default directly
-- Skip language extraction
-- Validate agent file exists
-
-### Step 6: Define Context Loading
-
-Specify which context files the subagent needs.
-
-**Required Files** (always include):
-```yaml
-required:
-  - "core/standards/delegation.md"
-  - "core/system/state-management.md"
-  - "core/standards/command-argument-handling.md"
-```
-
-**Optional Files** (domain-specific):
-```yaml
-optional:
-  - "project/lean4/tools/leansearch-api.md"  # For Lean tasks
-  - "project/logic/domain/kripke-semantics-overview.md"  # For logic tasks
-```
-
-**Budget**:
-- Orchestrator: <10% context window (~10KB)
-- Commands: 10-20% context window (~20-40KB)
-- Agents: 60-80% context window (~120-160KB)
-
-### Step 7: Document Workflow
-
-Clearly document what orchestrator handles vs. what subagent handles.
-
-**Orchestrator Responsibilities** (always the same):
-- Stage 1: Parse and validate arguments
-- Stage 2: Determine routing
-- Stage 3: Register session and delegate
-- Stage 4: Validate return
-- Stage 5: Cleanup and relay result
-
-**Subagent Responsibilities** (command-specific):
-- Execute core workflow
-- Create artifacts
-- Update status markers
-- Commit changes to git
-
-### Step 8: Add Error Handling
-
-Document all error cases with clear messages.
-
-**Required Error Cases**:
-
-1. **Missing Required Arguments**:
-   ```
-   Error: {argument} required for /{command} command
-   
-   Usage: /{command} {usage-pattern}
-   
-   Example: /{command} {example}
-   ```
-
-2. **Invalid Argument Format**:
-   ```
-   Error: {argument} must be {expected-format}. Got: {actual}
-   
-   Usage: /{command} {usage-pattern}
-   
-   Example: /{command} {example}
-   ```
-
-3. **Task Not Found** (task-based only):
-   ```
-   Error: Task {task_number} not found in TODO.md
-   
-   Please verify the task number exists in .opencode/specs/TODO.md
-   ```
-
-### Step 9: Add Usage Examples
-
-Provide clear, realistic examples.
-
-**Minimum Examples**:
-- Basic usage (required arguments only)
-- Usage with optional arguments
-- Common use cases
-
-**Example**:
-```bash
-# Basic usage
-/research 258
-
-# With custom prompt
-/research 258 "Focus on API integration"
-
-# With flags
-/research 258 --divide
-```
-
-### Step 10: Test the Command
-
-**Test Cases**:
-
-1. **Valid Arguments**:
-   - Test with valid task number
-   - Test with optional arguments
-   - Verify orchestrator routes correctly
-   - Verify subagent receives correct prompt
-
-2. **Invalid Arguments**:
-   - Test with missing required arguments
-   - Test with invalid argument format
-   - Test with non-existent task number
-   - Verify error messages are clear
-
-3. **Routing**:
-   - Test language extraction (if language-based)
-   - Test agent mapping
-   - Verify correct agent is invoked
-
-4. **Return Validation**:
-   - Verify return format is valid
-   - Verify artifacts are created
-   - Verify status updates work
-
-**Testing Checklist**:
-- [ ] Command file has valid frontmatter
-- [ ] $ARGUMENTS documented with examples
-- [ ] Reference to command-argument-handling.md included
-- [ ] Routing configuration is correct
-- [ ] Context loading includes required files
-- [ ] Error handling covers all cases
-- [ ] Usage examples are clear
-- [ ] Command works with orchestrator
-- [ ] Subagent receives correct prompt
-- [ ] Return validation passes
-
-## Common Patterns
-
-### Pattern 1: Research-Style Command
-
-**Use Case**: Conduct research and create reports
-
-**Characteristics**:
-- Task-based (requires task number)
-- Language-based routing (Lean vs. general)
-- Creates research report artifact
-- Updates status to [RESEARCHED]
-
-**Example**: `/research`
-
-### Pattern 2: Planning-Style Command
-
-**Use Case**: Create implementation plans
-
-**Characteristics**:
-- Task-based (requires task number)
-- Direct routing (planning is language-agnostic)
-- Creates plan artifact
-- Updates status to [PLANNED]
-
-**Example**: `/plan`
-
-### Pattern 3: Implementation-Style Command
-
-**Use Case**: Execute implementations
-
-**Characteristics**:
-- Task-based (requires task number)
-- Language-based routing (Lean vs. general)
-- Creates code and test artifacts
-- Updates status to [IMPLEMENTED]
-
-**Example**: `/implement`
-
-### Pattern 4: Analysis-Style Command
-
-**Use Case**: Analyze codebase or errors
-
-**Characteristics**:
-- Direct command (no task number)
-- Direct routing (analysis is language-agnostic)
-- Creates analysis report
-- May update registries
-
-**Example**: `/review`, `/errors`
-
-### Pattern 5: Interactive-Style Command
-
-**Use Case**: Interactive workflows
-
-**Characteristics**:
-- Direct command (no task number)
-- Direct routing
-- May create multiple artifacts
-- Stateful interaction
-
-**Example**: `/meta`
+See existing command files:
+- `.opencode/command/research.md` - Language-based routing example
+- `.opencode/command/plan.md` - Simple routing example
+- `.opencode/command/implement.md` - Language-based with resume support
+
+See existing subagents:
+- `.opencode/agent/subagents/researcher.md` - General research workflow
+- `.opencode/agent/subagents/planner.md` - Planning workflow
+- `.opencode/agent/subagents/implementer.md` - Implementation workflow
 
 ## Troubleshooting
 
-### Issue: Orchestrator doesn't recognize command
+**Command not found**:
+- Check file exists: `.opencode/command/{name}.md`
+- Check frontmatter has `name` field
 
-**Symptom**: Command not found error
+**Arguments not parsed**:
+- Check subagent Step 0 extracts task number from prompt
+- Verify orchestrator passes original prompt unchanged
 
-**Cause**: Command file doesn't exist or has wrong name
+**Wrong agent invoked**:
+- Check frontmatter `agent` field
+- Check `routing` configuration if language-based
 
-**Solution**:
-1. Verify file exists at `.opencode/command/{command-name}.md`
-2. Verify filename matches command name
-3. Verify frontmatter has `name:` field matching command
+**Status not updated**:
+- Check subagent delegates to status-sync-manager
+- Verify status-sync-manager return validated
 
-### Issue: Subagent doesn't receive task number
+## Migration from Old System
 
-**Symptom**: Subagent receives empty prompt or raw $ARGUMENTS
+If migrating from the old system (v5.0 orchestrator):
 
-**Cause**: Orchestrator not formatting prompt correctly
+**Old Pattern** (Orchestrator parsed arguments):
+```
+User: /research 271
+Orchestrator: Parse 271, format as "Task: 271"
+Subagent: Receive "Task: 271", re-parse to get 271
+```
 
-**Solution**:
-1. Verify command is task-based (requires task number)
-2. Verify orchestrator Stage 3 formats prompt as `"Task: {number}"`
-3. Check orchestrator logs for prompt formatting
+**New Pattern** (Subagent parses arguments):
+```
+User: /research 271
+Orchestrator: Pass "/research 271" unchanged
+Subagent: Receive "/research 271", parse to get 271
+```
 
-### Issue: Language-based routing not working
+**Changes Required**:
+1. Orchestrator: Remove argument parsing (already done in v6.0)
+2. Command files: Remove workflow stages, simplify to routing metadata
+3. Subagents: Simplify Step 0 to parse from original prompt
 
-**Symptom**: Lean tasks route to general agent
+---
 
-**Cause**: Language extraction failing or routing misconfigured
-
-**Solution**:
-1. Verify task has **Language** field in TODO.md
-2. Verify routing.language_based is true
-3. Verify routing.lean and routing.default are set
-4. Check orchestrator logs for language extraction
-
-### Issue: Return validation fails
-
-**Symptom**: "Invalid return format" error
-
-**Cause**: Subagent return doesn't match schema
-
-**Solution**:
-1. Verify subagent returns valid JSON
-2. Verify all required fields present
-3. Verify status is valid enum
-4. Verify artifacts exist (if status=completed)
-5. Check validation-rules.md for requirements
-
-### Issue: Context loading fails
-
-**Symptom**: "Context file not found" error
-
-**Cause**: Referenced context file doesn't exist
-
-**Solution**:
-1. Verify all context files in `required:` exist
-2. Check paths are relative to `.opencode/context/`
-3. Verify no deprecated file references
-4. Check context/index.md for correct paths
-
-## Best Practices
-
-### 1. Follow Naming Conventions
-
-**Commands**: Use lowercase with hyphens (e.g., `my-command`)
-**Agents**: Use lowercase with hyphens (e.g., `my-agent`)
-**Files**: Match command/agent name exactly
-
-### 2. Keep Commands Focused
-
-Each command should have a single, clear purpose. Don't create "Swiss Army knife" commands.
-
-**Good**: `/research` (conducts research)
-**Bad**: `/do-everything` (research, plan, implement, review)
-
-### 3. Document Thoroughly
-
-Include:
-- Clear description
-- Usage examples
-- Error messages
-- Workflow breakdown
-- See Also references
-
-### 4. Test Edge Cases
-
-Don't just test happy path. Test:
-- Missing arguments
-- Invalid arguments
-- Non-existent tasks
-- Empty $ARGUMENTS
-- Malformed input
-
-### 5. Use Standard Patterns
-
-Follow existing commands as templates:
-- `/research` for research-style commands
-- `/plan` for planning-style commands
-- `/implement` for implementation-style commands
-- `/review` for analysis-style commands
-- `/meta` for interactive-style commands
-
-### 6. Validate Early
-
-Validate arguments in Stage 1 (orchestrator handles this). Don't pass invalid data to subagents.
-
-### 7. Provide Clear Errors
-
-Error messages should:
-- Explain what went wrong
-- Show correct usage
-- Provide examples
-- Suggest next steps
-
-### 8. Keep Context Minimal
-
-Only load context files actually needed. Don't load "just in case".
-
-### 9. Version Your Changes
-
-When modifying commands:
-- Update `updated:` field in frontmatter
-- Document changes in commit message
-- Update related documentation
-
-### 10. Follow Standards
-
-Always reference and follow:
-- `.opencode/context/core/standards/command-argument-handling.md`
-- `.opencode/context/core/system/routing-logic.md`
-- `.opencode/context/core/standards/delegation.md`
-
-## See Also
-
-- **Command Template**: `.opencode/context/core/templates/command-template.md`
-- **Argument Handling**: `.opencode/context/core/standards/command-argument-handling.md`
-- **Routing Logic**: `.opencode/context/core/system/routing-logic.md`
-- **Validation Rules**: `.opencode/context/core/system/validation-rules.md`
-- **Delegation Standard**: `.opencode/context/core/standards/delegation.md`
-- **Orchestrator**: `.opencode/agent/orchestrator.md`
-- **Standards Quick Reference**: `.opencode/docs/STANDARDS_QUICK_REF.md`
-
-## Quick Reference
-
-### Task-Based Command Checklist
-
-- [ ] Frontmatter with `routing.language_based` configured
-- [ ] `**Task Input (required):** $ARGUMENTS (task number; ...)`
-- [ ] Reference to command-argument-handling.md
-- [ ] Orchestrator handles argument parsing (documented)
-- [ ] Error handling for missing/invalid task number
-- [ ] Usage examples with task numbers
-- [ ] Context loading includes required standards
-- [ ] Tested with valid and invalid task numbers
-
-### Direct Command Checklist
-
-- [ ] Frontmatter with `routing.language_based: false`
-- [ ] `**Task Input (optional):** $ARGUMENTS (...)`
-- [ ] Reference to command-argument-handling.md
-- [ ] Orchestrator passes $ARGUMENTS as-is (documented)
-- [ ] Error handling for invalid arguments (if applicable)
-- [ ] Usage examples with and without arguments
-- [ ] Context loading includes required standards
-- [ ] Tested with various argument patterns
-
-### Routing Configuration Checklist
-
-- [ ] `routing.language_based` set correctly
-- [ ] `routing.lean` defined (if language_based: true)
-- [ ] `routing.default` defined
-- [ ] Agent files exist at `.opencode/agent/subagents/{agent}.md`
-- [ ] Language extraction works (if language_based: true)
-- [ ] Routing validation passes
-
-### Context Loading Checklist
-
-- [ ] `strategy: lazy` (for on-demand loading)
-- [ ] `index: ".opencode/context/index.md"`
-- [ ] Required standards included
-- [ ] Optional domain files included (if needed)
-- [ ] `max_context_size` set appropriately
-- [ ] No deprecated file references
-- [ ] All referenced files exist
-
-### Documentation Checklist
-
-- [ ] Clear description
-- [ ] Usage pattern documented
-- [ ] Examples provided
-- [ ] Error messages documented
-- [ ] Workflow breakdown included
-- [ ] See Also references added
-- [ ] Arguments documented
-- [ ] Edge cases covered
+**Last Updated**: 2026-01-04 (v6.0 - Simplified architecture)

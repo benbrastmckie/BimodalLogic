@@ -327,7 +327,7 @@ All commands include explicit argument parsing specifications that tell the orch
 
 ## Command Argument Patterns
 
-All commands follow standardized argument handling (see `context/core/standards/command-argument-handling.md`).
+Commands receive user's original prompt unchanged and parse arguments as needed.
 
 ### Task-Based Commands
 
@@ -339,7 +339,7 @@ Commands that operate on tasks from TODO.md:
 | /plan | `/plan TASK_NUMBER [PROMPT]` | Create implementation plan |
 | /implement | `/implement TASK_NUMBER [PROMPT]` | Execute implementation |
 
-**Pattern**: Task number is parsed from `$ARGUMENTS`, validated, and formatted as `"Task: {number}"` for subagent.
+**Pattern**: Orchestrator passes original prompt to subagent. Subagent extracts task number from prompt.
 
 **Example**:
 ```bash
@@ -385,7 +385,6 @@ Quick links to common standards:
 
 | Standard | File | Purpose |
 |----------|------|---------|
-| Command Arguments | `core/standards/command-argument-handling.md` | $ARGUMENTS parsing and validation |
 | Delegation | `core/standards/delegation.md` | Subagent return format and delegation patterns |
 | State Management | `core/system/state-management.md` | Status markers and state schemas |
 | Routing Logic | `core/system/routing-logic.md` | Language extraction and agent mapping |

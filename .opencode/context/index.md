@@ -73,7 +73,6 @@ Load for: Task validation, artifact creation, documentation standards
 - **report.md** (66 lines) - Report artifact standards
 - **analysis.md** (103 lines) - Analysis artifact standards
 - **frontmatter-standard.md** (92 lines) - YAML frontmatter requirements
-- **command-argument-handling.md** (444 lines) - Command argument parsing with $ARGUMENTS
 - **commands.md** (73 lines) - Command structure standards
 
 ---
