@@ -22,11 +22,16 @@ context_loading:
   required:
     - "core/standards/subagent-return-format.md"
     - "core/workflows/status-transitions.md"
+    - "core/system/state-lookup.md"  # For fast state.json queries (Phase 2 optimization)
   optional:
     - "core/workflows/interview-patterns.md"
     - "core/standards/architecture-principles.md"
     - "core/standards/domain-patterns.md"
   max_context_size: 60000
+  optimization:
+    phase: 2
+    performance: "Atomic task creation via status-sync-manager"
+    approach: "Use status-sync-manager.create_task() for guaranteed consistency"
 delegation:
   max_depth: 3
   can_delegate_to: 
@@ -507,60 +512,74 @@ $ARGUMENTS
          f. Validate plan artifact exists and is non-empty
          g. Extract plan metadata (phase_count, estimated_hours, complexity)
       
-      5. For each task, create task entry in TODO.md:
-         a. Format: ### {number}. {title}
-         b. Include required fields:
-            - **Effort**: {hours} hours
-            - **Status**: [NOT STARTED]
-            - **Priority**: {High|Medium|Low}
-            - **Type**: meta
-            - **Plan**: [Implementation Plan]({path}/plans/implementation-001.md)
-            - **Blocking**: None
-            - **Dependencies**: {list or None}
-         c. Include description with context from interview
+      5. For each task, create task entry atomically using status-sync-manager:
+         a. Prepare task metadata:
+            - task_number: next_project_number + task_index
+            - title: Generated from interview results
+            - description: Context from interview (50-500 chars)
+            - priority: High|Medium|Low
+            - effort: "{hours} hours"
+            - language: "meta" (for meta-related tasks)
+            - status: "not_started"
+         
+         b. Delegate to status-sync-manager with operation="create_task":
+            - Pass task_number, title, description, priority, effort, language
+            - status-sync-manager creates entry in both TODO.md and state.json atomically
+            - Validates task number uniqueness
+            - Places in correct priority section
+            - Increments next_project_number
+            - Rollback on failure
+         
+         c. Receive return from status-sync-manager:
+            - If status == "completed": Task created successfully
+            - If status == "failed": Log error, abort task creation
+         
+         d. After task created, add plan artifact link atomically:
+            - Delegate to status-sync-manager with operation="update_status"
+            - Pass validated_artifacts array with plan artifact:
+              [
+                {
+                  "type": "plan",
+                  "path": "{path}/plans/implementation-001.md",
+                  "title": "Implementation Plan",
+                  "validated": true,
+                  "size_bytes": {file_size}
+                }
+              ]
+            - status-sync-manager updates both TODO.md and state.json atomically
+            - Uses plan link replacement logic (replaces existing plan link if any)
+            - Rollback on failure
       
-      6. For each task, update state.json:
-         a. Add to active_projects array:
-            {
-              "project_number": {number},
-              "project_name": "{slug}",
-              "type": "meta",
-              "phase": "planning",
-              "status": "not_started",
-              "priority": "{high|medium|low}",
-              "created": "{ISO8601}",
-              "artifacts": {
-                "plans": ["{path}/plans/implementation-001.md"]
-              }
-            }
-         b. Increment next_project_number
-      
-      7. Validate all artifacts:
+      6. Validate all artifacts:
          a. Check all project directories created
          b. Check all plan artifacts exist and are non-empty
          c. Check plan metadata extracted (phase_count, estimated_hours, complexity)
-         d. Check task entries in TODO.md follow tasks.md standard
-         e. Check task entries use 'Type' field (not 'Language')
-         f. Check Type field set to 'meta' for meta tasks
-         g. Check state.json updates are correct
+         d. Check task entries in TODO.md follow tasks.md standard (created by status-sync-manager)
+         e. Check task entries have description field (created by status-sync-manager)
+         f. Check language field set to 'meta' for meta tasks (created by status-sync-manager)
+         g. Check state.json updates are correct (created by status-sync-manager)
+         h. Check plan artifact links added to TODO.md and state.json
       
-      8. If validation fails:
+      7. If validation fails:
          - Log errors
          - Return status "failed" with error details
+         - status-sync-manager will have rolled back task creation if it failed
       
-      9. If validation passes:
+      8. If validation passes:
          - Collect task numbers and artifact paths
          - Proceed to Stage 8
     </process>
     <validation>
       - All plan artifacts must exist and be non-empty
-      - All task entries must follow tasks.md standard
-      - All task entries must use 'Type' field (not 'Language')
-      - Type field must be set to 'meta' for meta tasks
-      - state.json must be updated correctly with 'type' field
-      - next_project_number must be incremented for each task
+      - All task entries must follow tasks.md standard (enforced by status-sync-manager)
+      - All task entries must have description field (enforced by status-sync-manager)
+      - Language field must be set to 'meta' for meta tasks (enforced by status-sync-manager)
+      - state.json must be updated correctly (enforced by status-sync-manager)
+      - next_project_number must be incremented for each task (enforced by status-sync-manager)
+      - Tasks created atomically (both TODO.md and state.json or neither)
+      - Plan artifact links added to both TODO.md and state.json
     </validation>
-    <checkpoint>Tasks created with plan artifacts</checkpoint>
+    <checkpoint>Tasks created atomically with plan artifacts via status-sync-manager</checkpoint>
   </stage>
 
   <stage id="8" name="DeliverTaskSummary">

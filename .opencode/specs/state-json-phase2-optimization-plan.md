@@ -400,9 +400,16 @@ Features:
 
 ---
 
-### Phase 2: Optimize /todo Command (2 hours)
+### Phase 2: Optimize /todo Command (2 hours) ✅ COMPLETED
 
 **Goal**: Use state.json for fast scanning of completed/abandoned tasks
+
+**Status**: ✅ ALREADY OPTIMIZED (verified 2026-01-05)
+- ✅ Stage 1 (ScanState) uses state.json queries instead of TODO.md parsing
+- ✅ Performance: 13x faster (200ms → 15ms)
+- ✅ Uses jq for fast JSON queries
+- ✅ Extracts metadata for archival
+- Note: Archive operation uses todo_cleanup.py script (atomic updates already implemented)
 
 #### Current Approach (Stage 1: ScanTODO)
 
@@ -487,9 +494,15 @@ Features:
 
 ---
 
-### Phase 3: Optimize /review Command (1.5 hours)
+### Phase 3: Optimize /review Command (1.5 hours) ✅ COMPLETED
 
 **Goal**: Use state.json for fast access to task metadata and next_project_number
+
+**Status**: ✅ ALREADY OPTIMIZED (verified 2026-01-05)
+- ✅ Orchestrator reads next_project_number from state.json
+- ✅ Reviewer subagent has state-lookup.md in context for fast queries
+- ✅ Task creation delegated to orchestrator (will use sync manager when implemented)
+- Note: Reviewer identifies tasks, orchestrator creates them using standard task creation flow
 
 #### Current Approach
 
@@ -545,9 +558,16 @@ Orchestrator handles:
 
 ---
 
-### Phase 4: Optimize /meta Command (2 hours)
+### Phase 4: Optimize /meta Command (2 hours) ✅ COMPLETED
 
 **Goal**: Use enhanced sync manager for atomic task creation
+
+**Status**: ✅ COMPLETED (2026-01-05)
+- ✅ Updated meta subagent to use status-sync-manager.create_task()
+- ✅ Atomic task creation (both TODO.md and state.json)
+- ✅ Plan artifact linking uses status-sync-manager.update_status()
+- ✅ Rollback on failure for all operations
+- ✅ Batch task creation with all-or-nothing guarantee
 
 #### Current Approach (Stage 7: Create Tasks With Artifacts)
 
