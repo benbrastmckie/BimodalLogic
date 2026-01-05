@@ -137,10 +137,12 @@ technical_debt:
 
 ### 300. Add Report Detection to Planner
 - **Effort**: 4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: None
+- **Research**: [Research Report](.opencode/specs/300_add_report_detection_to_planner/reports/research-001.md)
+- **Researched**: 2026-01-05
 
 **Description**: Enhance the planner subagent to detect new reports created since the last plan version and integrate their findings into plan revisions.
 
