@@ -101,27 +101,30 @@ lifecycle:
 
 <process_flow>
   <step_0_preflight>
-    <action>Preflight: Parse arguments, validate task, update status to [IMPLEMENTING]</action>
+    <action>Preflight: Extract validated inputs and update status to [IMPLEMENTING]</action>
     <process>
-      1. Parse task number from prompt:
-         - Prompt format: "/implement 196" or "196" or "/implement 196 custom prompt"
-         - Extract first integer from prompt string
-         - Example: "/implement 196" → task_number = 196
-         - If no integer found: Return error "Task number required"
+      1. Extract task inputs from delegation context (already validated by orchestrator):
+         - task_number: Integer (already validated to exist in TODO.md)
+         - language: String (should be "lean" for this agent)
+         - task_description: String (already extracted from TODO.md)
+         - Example: task_number=259, language="lean", task_description="Implement automation tactics"
+         
+         NOTE: Orchestrator has already:
+         - Validated task_number exists in TODO.md
+         - Extracted language from task metadata
+         - Routed to lean-implementation-agent because language="lean"
+         - Extracted task description
+         
+         No re-parsing or re-validation needed!
       
-      2. Validate task exists:
-         - Read .opencode/specs/TODO.md
-         - Find task entry: grep "^### ${task_number}\."
-         - If not found: Return error "Task {task_number} not found"
-      
-      3. Update status to [IMPLEMENTING]:
+      2. Update status to [IMPLEMENTING]:
          - Delegate to status-sync-manager with task_number and new_status="implementing"
          - Validate status update succeeded
          - Generate timestamp: $(date -I)
       
-      4. Proceed to Lean implementation
+      3. Proceed to Lean implementation with validated inputs
     </process>
-    <checkpoint>Task validated and status updated to [IMPLEMENTING]</checkpoint>
+    <checkpoint>Task inputs extracted from validated context, status updated to [IMPLEMENTING]</checkpoint>
   </step_0_preflight>
 
   <step_1>

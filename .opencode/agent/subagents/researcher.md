@@ -138,28 +138,30 @@ lifecycle:
 
 <process_flow>
   <step_0_preflight>
-    <action>Preflight: Parse arguments, validate task, update status to [RESEARCHING]</action>
+    <action>Preflight: Extract validated inputs and update status to [RESEARCHING]</action>
     <process>
-      1. Parse task number from prompt:
-         - Prompt format: "/research 271" or "271" or "/research 271 extra args"
-         - Extract first integer from prompt string
-         - Example: "/research 271" → task_number = 271
-         - Example: "271 focus on X" → task_number = 271
-         - If no integer found: Return error "Task number required"
+      1. Extract task inputs from delegation context (already validated by orchestrator):
+         - task_number: Integer (already validated to exist in TODO.md)
+         - language: String (already extracted from task metadata)
+         - task_description: String (already extracted from TODO.md)
+         - Example: task_number=271, language="lean", task_description="Research modal logic"
+         
+         NOTE: Orchestrator has already:
+         - Validated task_number exists in TODO.md
+         - Extracted language from task metadata
+         - Extracted task description
+         - Performed language-based routing
+         
+         No re-parsing or re-validation needed!
       
-      2. Validate task exists:
-         - Read .opencode/specs/TODO.md
-         - Find task entry: grep "^### ${task_number}\."
-         - If not found: Return error "Task {task_number} not found"
-      
-      3. Update status to [RESEARCHING]:
+      2. Update status to [RESEARCHING]:
          - Delegate to status-sync-manager with task_number and new_status="researching"
          - Validate status update succeeded
          - Generate timestamp: $(date -I)
       
-      4. Proceed to research execution
+      3. Proceed to research execution with validated inputs
     </process>
-    <checkpoint>Task validated and status updated to [RESEARCHING]</checkpoint>
+    <checkpoint>Task inputs extracted from validated context, status updated to [RESEARCHING]</checkpoint>
   </step_0_preflight>
 
   <step_1_research_execution>

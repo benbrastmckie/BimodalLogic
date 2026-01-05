@@ -93,27 +93,30 @@ lifecycle:
 
 <process_flow>
   <step_0_preflight>
-    <action>Preflight: Parse arguments, validate task, update status to [PLANNING]</action>
+    <action>Preflight: Extract validated inputs and update status to [PLANNING]</action>
     <process>
-      1. Parse task number from prompt:
-         - Prompt format: "/plan 196" or "196" or "/plan 196 custom prompt"
-         - Extract first integer from prompt string
-         - Example: "/plan 196" → task_number = 196
-         - If no integer found: Return error "Task number required"
+      1. Extract task inputs from delegation context (already validated by orchestrator):
+         - task_number: Integer (already validated to exist in TODO.md)
+         - language: String (already extracted from task metadata)
+         - task_description: String (already extracted from TODO.md)
+         - Example: task_number=196, language="lean", task_description="Create implementation plan"
+         
+         NOTE: Orchestrator has already:
+         - Validated task_number exists in TODO.md
+         - Extracted language from task metadata
+         - Extracted task description
+         - Performed language-based routing
+         
+         No re-parsing or re-validation needed!
       
-      2. Validate task exists:
-         - Read .opencode/specs/TODO.md
-         - Find task entry: grep "^### ${task_number}\."
-         - If not found: Return error "Task {task_number} not found"
-      
-      3. Update status to [PLANNING]:
+      2. Update status to [PLANNING]:
          - Delegate to status-sync-manager with task_number and new_status="planning"
          - Validate status update succeeded
          - Generate timestamp: $(date -I)
       
-      4. Proceed to planning
+      3. Proceed to planning with validated inputs
     </process>
-    <checkpoint>Task validated and status updated to [PLANNING]</checkpoint>
+    <checkpoint>Task inputs extracted from validated context, status updated to [PLANNING]</checkpoint>
   </step_0_preflight>
 
   <step_1>
