@@ -1030,8 +1030,8 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 
 ### 294. Revise /meta command to accept optional task number
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 10 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -1041,4 +1041,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Research Artifacts**:
   - Main Report: [.opencode/specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md]
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md]
 

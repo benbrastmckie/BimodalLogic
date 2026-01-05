@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T03:39:53Z",
+  "_last_updated": "2026-01-04T19:50:00Z",
   "next_project_number": 295,
   "project_numbering": {
     "min": 0,
@@ -678,8 +678,8 @@
       "project_number": 294,
       "project_name": "revise_meta_command_to_accept_optional_task_number",
       "type": "feature",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "medium",
       "language": "markdown",
       "created": "2026-01-05T03:39:48Z",
@@ -687,8 +687,11 @@
       "started": "2026-01-04",
       "research_completed": "2026-01-04",
       "artifacts": [
-        ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md"
-      ]
+        ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md",
+        ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md"
+      ],
+      "planning_completed": "2026-01-04",
+      "plan_path": ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md"
     }
   ],
   "completed_projects": [
