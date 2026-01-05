@@ -1,19 +1,19 @@
 ---
-last_updated: 2026-01-05T10:00:00Z
+last_updated: 2026-01-05T13:15:00Z
 next_project_number: 311
 repository_health:
   overall_score: 92
   production_readiness: excellent
   last_assessed: 2026-01-04T06:25:00Z
 task_counts:
-  active: 47
+  active: 46
   completed: 83
   in_progress: 3
   not_started: 33
-  abandoned: 19
+  abandoned: 20
   total: 149
 priority_distribution:
-  high: 28
+  high: 27
   medium: 20
   low: 13
 technical_debt:
@@ -46,14 +46,16 @@ technical_debt:
 ---
 
 ### 306. Refactor /meta command to create tasks instead of direct implementation
-- **Effort**: 4 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 8 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md)
 - **Researched**: 2026-01-05
+- **Plan**: [implementation-001.md](.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-001.md)
+- **Planned**: 2026-01-05
 
 **Description**: Refactor the /meta command to always create an appropriate number of tasks (similar to /task command) rather than directly implementing the work. Preserve the interview functionality to clarify requirements when needed, or run in full interactive mode when /meta is called with no arguments. The result should be task creation with dependencies indicated and plan artifacts stored in the appropriate artifact structure per artifact-management.md.
 
@@ -1226,9 +1228,11 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 277. Improve Opencode Header And Summary Display For Task Commands
 - **Effort**: 3.5
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
 - **Priority**: High
 - **Language**: general
+- **Abandoned**: 2026-01-05
+- **Abandonment Reason**: User requested abandonment
 - **Artifacts**:
   - .opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md
   - .opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md

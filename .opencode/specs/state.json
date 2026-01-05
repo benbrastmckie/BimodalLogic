@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T10:30:00Z",
+  "_last_updated": "2026-01-05",
   "next_project_number": 312,
   "project_numbering": {
     "min": 0,
@@ -446,8 +446,8 @@
       "project_number": 277,
       "project_name": "improve_opencode_header_and_summary_display_for_task_commands",
       "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "abandoned",
+      "status": "abandoned",
       "priority": "high",
       "language": "general",
       "created": "2026-01-03T20:35:00Z",
@@ -455,7 +455,7 @@
       "research_completed": "2026-01-03",
       "planning_completed": "2026-01-03",
       "plan_revised": "2026-01-03",
-      "last_updated": "2026-01-03T20:50:00Z",
+      "last_updated": "2026-01-05",
       "artifacts": [
         ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md",
         ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md",
@@ -470,7 +470,9 @@
         "research_integrated": true,
         "plan_version": 2,
         "revision_reason": "Removed summary conclusion formatting (redundant with header display)"
-      }
+      },
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment"
     },
     {
       "project_number": 279,
@@ -700,20 +702,29 @@
       "project_number": 306,
       "project_name": "refactor_/meta_command_to_create_tasks_instead_of_direct_implementation",
       "type": "feature",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "meta",
       "description": "Refactor the /meta command to always create an appropriate number of tasks (similar to /task command) rather than directly implementing the work. Preserve the interview functionality to clarify requirements when needed, or run in full interactive mode when /meta is called with no arguments. The result should be task creation with dependencies indicated and plan artifacts stored in the appropriate artifact structure per artifact-management.md.",
-      "effort": "4 hours",
+      "effort": "8 hours",
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T08:00:00Z",
       "last_updated": "2026-01-05",
       "research_completed": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md"
-      ]
+        ".opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md",
+        ".opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-001.md"
+      ],
+      "planning_completed": "2026-01-05",
+      "plan_path": ".opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 8,
+        "complexity": "medium",
+        "research_integrated": true
+      }
     },
     {
       "project_number": 307,
