@@ -1205,9 +1205,12 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Description**: Refactor the /task command to directly create task entries in TODO.md and state.json without delegating to description-clarifier and task-creator subagents. The command should reformulate the user's rough description into a clear description inline, look up next_project_number from state.json, create the task entry in both files atomically, and increment next_project_number. This simplifies the architecture by removing unnecessary delegation layers while maintaining the same functionality. The command should support the optional flag --divide which creates divides the task into an appropriate number of tasks (between 1-5 tasks). No other flags are needed.
 
-
 **Research Artifacts**:
   - Main Report: [.opencode/specs/297_simplify_task_command/reports/research-001.md]
+  - Main Branch Comparison: [.opencode/specs/297_simplify_task_command/reports/research-002-main-branch-comparison.md]
+
+**Research Summary**: Main branch /task command (380 lines, 5 stages, NO delegation, <5s) is exactly what we want. Current branch overcomplicated it with description-clarifier + task-creator (454 lines, 420s timeout). Recommendation: Revert to main branch approach with ONE improvement - atomic updates via status-sync-manager. Remove unnecessary subagents. Preserve simplicity: "Direct file operations only. No subagent delegation."
+
 ---
 
 ### 298. Create /abandon command to mark tasks as [ABANDONED] with reason
