@@ -190,7 +190,7 @@ technical_debt:
 
 ### 261. Decidability
 - **Effort**: 40-60 hours
-- **Status**: [PLANNED]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -1057,6 +1057,8 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ### 313. Configure opencode agent system to prevent permission interruptions
 - **Research**: [Research Report](.opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/reports/research-001.md)
 - **Researched**: 2026-01-05
+- **Plan**: [Implementation Plan](.opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/plans/implementation-001.md)
+- **Planned**: 2026-01-05
 - **Effort**: TBD
 - **Status**: [PLANNED]
 - **Priority**: Medium
