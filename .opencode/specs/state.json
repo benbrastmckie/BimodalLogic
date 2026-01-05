@@ -702,16 +702,20 @@
       "research_completed": "2026-01-05",
       "artifacts": [
         ".opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md",
-        ".opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-001.md"
+        ".opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-001.md",
+        ".opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-002.md"
       ],
       "planning_completed": "2026-01-05",
-      "plan_path": ".opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-001.md",
+      "plan_path": ".opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-002.md",
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": 8,
         "complexity": "medium",
-        "research_integrated": true
-      }
+        "research_integrated": true,
+        "plan_version": 2,
+        "revision_reason": "User requested systematic plan divided into phases where each phase becomes a separate task with its own implementation plan and dependencies"
+      },
+      "plan_revised": "2026-01-05"
     },
     {
       "project_number": 307,

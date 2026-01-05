@@ -54,8 +54,9 @@ technical_debt:
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md)
 - **Researched**: 2026-01-05
-- **Plan**: [implementation-001.md](.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-002.md)
 - **Planned**: 2026-01-05
+- **Revised**: 2026-01-05
 
 **Description**: Refactor the /meta command to always create an appropriate number of tasks (similar to /task command) rather than directly implementing the work. Preserve the interview functionality to clarify requirements when needed, or run in full interactive mode when /meta is called with no arguments. The result should be task creation with dependencies indicated and plan artifacts stored in the appropriate artifact structure per artifact-management.md.
 
