@@ -612,8 +612,8 @@
       "project_number": 300,
       "project_name": "add_report_detection_to_planner",
       "type": "feature",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-05T01:22:38Z",
@@ -622,9 +622,26 @@
       "description": "Enhance the planner subagent to detect new reports created since the last plan version and integrate their findings into plan revisions.",
       "started": "2026-01-05",
       "research_completed": "2026-01-05",
+      "planned": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/300_add_report_detection_to_planner/reports/research-001.md"
+        ".opencode/specs/300_add_report_detection_to_planner/reports/research-001.md",
+        ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md"
       ],
+      "plan_path": ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 4,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": ".opencode/specs/300_add_report_detection_to_planner/reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          }
+        ]
+      },
       "research_summary": "Research completed on enhancing planner to detect new reports. Current planner harvests ALL research but cannot distinguish new reports from already-integrated ones. Solution: use filesystem timestamps (mtime) to detect reports created after last plan version. Requires plan_metadata schema extension to track reports_integrated array. 4-phase implementation (4 hours): schema extension, report detection, research harvesting enhancement, postflight integration."
     },
     {

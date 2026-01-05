@@ -29,11 +29,13 @@ technical_debt:
 
 ### 312. Fix workflow command postflight failures causing missing artifact links and status updates
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [Research Report](.opencode/specs/312_fix_workflow_command_postflight_failures/reports/research-001.md)
+- **Researched**: 2026-01-05
 
 **Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 307 created research-001.md but task status remains [NOT STARTED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.
 
@@ -137,12 +139,14 @@ technical_debt:
 
 ### 300. Add Report Detection to Planner
 - **Effort**: 4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/300_add_report_detection_to_planner/reports/research-001.md)
 - **Researched**: 2026-01-05
+- **Plan**: [implementation-001.md](.opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md)
+- **Planned**: 2026-01-05
 
 **Description**: Enhance the planner subagent to detect new reports created since the last plan version and integrate their findings into plan revisions.
 
