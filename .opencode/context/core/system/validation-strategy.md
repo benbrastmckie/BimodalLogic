@@ -51,7 +51,8 @@ The orchestrator validates **structural correctness** and **safety constraints**
 
 **Cost**: ~10ms (JSON parsing + validation)  
 **Benefit**: Ensures consistent return handling  
-**Verdict**: ✅ Worth it
+**Verdict**: ✅ Worth it  
+**Status**: ✅ IMPLEMENTED (Task 280) - Command files Stage 3 (ValidateReturn)
 
 ## Low-Value Checks (DON'T Validate)
 
@@ -86,19 +87,19 @@ The orchestrator validates **structural correctness** and **safety constraints**
 
 ## Validation Stages
 
-### Stage 2: PreflightValidation
+### Command File Stage 1: ParseAndValidate
 **Validates**:
 - Task number (if required)
-- Task exists in TODO.md
-- Delegation safety (cycles, depth)
-- Session ID uniqueness
+- Task exists in state.json
+- Task status allows operation
+- Argument syntax and types
 
 **Does NOT validate**:
 - Business logic (plan exists, etc.)
 - File permissions
 - Domain-specific rules
 
-### Stage 6: ValidateReturn
+### Command File Stage 3: ValidateReturn
 **Validates**:
 - Return format (JSON schema)
 - Required fields present
@@ -106,11 +107,14 @@ The orchestrator validates **structural correctness** and **safety constraints**
 - Status enum valid
 - Summary token limit
 - Artifacts exist (if status=completed)
+- Artifacts are non-empty (if status=completed)
 
 **Does NOT validate**:
 - Artifact content/format
 - Business logic correctness
 - Domain-specific rules
+
+**Implementation**: See `.opencode/command/*.md` Stage 3 for executable validation logic
 
 ## Error Handling
 
@@ -128,14 +132,17 @@ The orchestrator validates **structural correctness** and **safety constraints**
 
 ## Summary
 
-| Validation Type | Orchestrator | Agent |
+| Validation Type | Command File | Agent |
 |----------------|--------------|-------|
 | Task exists | ✅ | ❌ |
 | Task number format | ✅ | ❌ |
-| Delegation safety | ✅ | ❌ |
+| Task status | ✅ | ❌ |
 | Return format | ✅ | ❌ |
+| Artifacts exist | ✅ | ❌ |
 | Plan exists | ❌ | ✅ |
 | Research complete | ❌ | ✅ |
 | File permissions | ❌ | ✅ |
 | Domain rules | ❌ | ✅ |
 | Artifact format | ❌ | ✅ |
+
+**Note**: In orchestrator v7.0, command files handle validation (not orchestrator). Orchestrator is a pure router that loads command files and delegates with $ARGUMENTS.

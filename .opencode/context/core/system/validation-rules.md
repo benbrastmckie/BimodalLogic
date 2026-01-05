@@ -4,9 +4,15 @@
 
 This standard defines validation rules for subagent returns, including return format validation and artifact verification.
 
-**ENFORCEMENT**: These validation rules are ENFORCED by the orchestrator Stage 4 (ValidateReturn). All subagent returns are validated before proceeding to Stage 5 (PostflightCleanup). Validation failures result in immediate error reporting to the user and workflow termination.
+**ENFORCEMENT**: These validation rules are ENFORCED by command files (`.opencode/command/*.md`) in Stage 3 (ValidateReturn). All subagent returns are validated before relaying results to the user. Validation failures result in immediate error reporting to the user and workflow termination.
 
-**IMPLEMENTATION**: See `.opencode/agent/orchestrator.md` Stage 4 for the executable validation logic that implements these rules.
+**IMPLEMENTATION**: See command files for executable validation logic:
+- `.opencode/command/research.md` Stage 3 (ValidateReturn)
+- `.opencode/command/plan.md` Stage 3 (ValidateReturn)
+- `.opencode/command/revise.md` Stage 3 (ValidateReturn)
+- `.opencode/command/implement.md` Stage 3 (ValidateReturn)
+
+**ARCHITECTURE NOTE**: In orchestrator v7.0 (pure router architecture), validation moved from orchestrator Stage 4 to command files Stage 3. This reflects the architectural shift from centralized orchestrator to distributed command files.
 
 ## Return Format Validation
 
@@ -276,19 +282,25 @@ After all validations pass, log summary:
 
 **STATUS**: ✅ ENFORCED (as of Task 280)
 
-These validation rules are now ACTIVELY ENFORCED by the orchestrator Stage 4 (ValidateReturn). Prior to Task 280, these rules were documented but not executed, leading to "phantom research" incidents where agents claimed completion without creating artifacts.
+These validation rules are now ACTIVELY ENFORCED by command files Stage 3 (ValidateReturn). Prior to Task 280, these rules were documented but not executed, leading to "phantom research" incidents where agents claimed completion without creating artifacts.
 
 **Key Changes**:
-- Orchestrator Stage 4 rewritten from documentation-only to executable validation logic
+- Command files Stage 3 (ValidateReturn) added with executable validation logic
 - All 5 validation steps now executed for every subagent return
 - Validation failures result in immediate error reporting and workflow termination
 - Prevents phantom research/planning/implementation across all workflow commands
 
 **Validation Execution Flow**:
-1. Subagent returns JSON to orchestrator
-2. Orchestrator Stage 4 executes validation steps 1-5
-3. If validation fails: Error reported to user, workflow terminated
-4. If validation passes: Proceed to Stage 5 (PostflightCleanup)
+1. Command file Stage 1: Parse and validate arguments
+2. Command file Stage 2: Delegate to subagent, capture return
+3. Command file Stage 3: Execute validation steps 1-5 on return
+4. If validation fails: Error reported to user, workflow terminated
+5. If validation passes: Proceed to Stage 4 (RelayResult)
+
+**Architecture Evolution**:
+- **v5.0**: Orchestrator Stage 4 (ValidateReturn) - documentation only, not executed
+- **v7.0**: Command files Stage 3 (ValidateReturn) - executable validation logic
+- **Rationale**: v7.0 orchestrator is pure router, command files handle delegation and validation
 
 **Testing**:
 - Validation tested with malformed returns (plain text, missing fields, invalid status)
@@ -298,7 +310,8 @@ These validation rules are now ACTIVELY ENFORCED by the orchestrator Stage 4 (Va
 
 ## See Also
 
-- **Orchestrator Stage 4**: `.opencode/agent/orchestrator.md` (lines 303-450) - Executable validation logic
+- **Command Files Stage 3**: `.opencode/command/*.md` Stage 3 (ValidateReturn) - Executable validation logic
+- **Validation Template**: `.opencode/specs/280_fix_orchestrator_stage_4_validation/validation-template.md` - Reusable validation section
 - Delegation Standard: `.opencode/context/core/standards/delegation.md`
 - Subagent Return Format: `.opencode/context/core/standards/subagent-return-format.md`
 - State Management: `.opencode/context/core/system/state-management.md`

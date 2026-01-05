@@ -1,19 +1,19 @@
 ---
-last_updated: 2026-01-05T13:45:00Z
+last_updated: 2026-01-05T15:50:00Z
 next_project_number: 313
 repository_health:
   overall_score: 92
   production_readiness: excellent
   last_assessed: 2026-01-04T06:25:00Z
 task_counts:
-  active: 46
-  completed: 83
+  active: 45
+  completed: 84
   in_progress: 3
   not_started: 33
   abandoned: 20
   total: 149
 priority_distribution:
-  high: 27
+  high: 26
   medium: 20
   low: 13
 technical_debt:
@@ -1155,16 +1155,25 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 280. Fix Orchestrator Stage 4 Validation To Enforce Subagent Return Format And Prevent Phantom Research
 - **Effort**: 6.0
-- **Status**: [REVISING]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: markdown
 - **Artifacts**:
   - .opencode/specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md
   - .opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-001.md
   - .opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-002.md
+  - .opencode/specs/280_fix_orchestrator_stage_4_validation/validation-template.md
+  - .opencode/specs/280_fix_orchestrator_stage_4_validation/summaries/implementation-summary-20260105.md
+  - .opencode/command/research.md
+  - .opencode/command/plan.md
+  - .opencode/command/revise.md
+  - .opencode/command/implement.md
+  - .opencode/context/core/system/validation-rules.md
+  - .opencode/context/core/system/validation-strategy.md
 - **Revised**: 2026-01-05
+- **Completed**: 2026-01-05
 
-**Description**: Task 280
+**Description**: Add subagent return validation to command files to prevent phantom operations and enforce return format. Implemented Stage 3 (ValidateReturn) in all workflow commands (/research, /plan, /revise, /implement) with 5 validation steps: JSON structure, required fields, status enum, session ID, and artifacts (if status=completed). Prevents phantom research/planning/implementation by validating artifacts exist and are non-empty before relaying results to user.
 
 ---
 
