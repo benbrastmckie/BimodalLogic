@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-05T09:58:56Z
-next_project_number: 309
+last_updated: 2026-01-05T09:50:00Z
+next_project_number: 310
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -26,10 +26,19 @@ technical_debt:
 
 # TODO
 
+## High Priority
+
+### 309. Implement Option 1 (Direct Delegation) from task 309 analysis to optimize /task command performance
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Implement Option 1 (Direct Delegation) from task 309 analysis to optimize /task command performance. Modify /task command Stage 4 to delegate directly to status-sync-manager instead of task-creator, eliminating unnecessary delegation layer and achieving 40-50% performance improvement.
 
 ---
-
-## High Priority
 
 ### 306. Refactor /meta command to create tasks instead of direct implementation
 - **Effort**: 4 hours
@@ -43,14 +52,15 @@ technical_debt:
 
 ---
 
-
 ### 304. Test commands after unintended changes (2/5)
 - **Effort**: 30 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Priority**: High
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
+- **Abandoned**: 2026-01-05
+- **Abandonment Reason**: User requested abandonment via /abandon command
 
 **Description**: Test /task, /meta, and /todo commands to verify they still work correctly after the unintended changes. Document any failures or unexpected behavior. This determines whether to keep or revert core logic changes.
 
@@ -189,8 +199,6 @@ technical_debt:
 
 ---
 
-
-
 ### 257. Completeness Proofs
  **Effort**: 70-90 hours
  **Status**: [NOT STARTED]
@@ -221,8 +229,6 @@ technical_debt:
 **Impact**: Completes the metalogic foundation for TM logic by proving completeness, enabling derivability from validity.
 
 ---
-
-
 
 ### 260. Proof Search
 - **Effort**: 40-60 hours
@@ -303,7 +309,6 @@ technical_debt:
 
 ---
 
-
 ### 263. Refactor Context.lean
 - **Effort**: 2-4 hours
 - **Status**: [NOT STARTED]
@@ -353,9 +358,6 @@ technical_debt:
 ---
 
 ## High Priority
-
-
-
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
@@ -429,9 +431,6 @@ technical_debt:
 
 ### Decidability
 
-
----
-
 ### 136. Design Decidability.lean architecture and signatures
 - **Effort**: 2 hours
 - **Status**: [NOT STARTED]
@@ -486,9 +485,6 @@ technical_debt:
 - **Impact**: Delivers an initial, test-backed decision procedure for TM logic.
 
 ### Layer Extensions (Future Planning)
-
-
----
 
 ### 139. Draft Layer 1 counterfactual operator plan
 - **Effort**: 2 hours
@@ -793,7 +789,6 @@ CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client
 
 ---
 
-
 ### 279. Systematically fix metadata lookup to use state.json instead of TODO.md
 - **Effort**: 12-16 hours
 - **Status**: [NOT STARTED]
@@ -998,10 +993,6 @@ Establishes state.json as the single source of truth for task metadata, eliminat
 
 ---
 
-
-
-
-
 ### 291. Fix lean-research-agent to delegate status updates to status-sync-manager instead of direct file manipulation
 - **Effort**: 2-3 hours
 - **Status**: [RESEARCHED]
@@ -1094,13 +1085,11 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-
 ## Medium Priority
-
 
 ### 305. Remove performance cruft from all 6 modified files (3/5)
 - **Effort**: 30 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -1132,8 +1121,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-
-
 ### 294. Revise /meta command to accept optional task number
 - **Effort**: 10 hours
 - **Status**: [PLANNED]
@@ -1153,11 +1140,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-
-
 ## High Priority
-
-
 
 ### 240. Systematically Investigate And Fix Persistent Workflow Command Stage 7 Postflight Failures
 - **Effort**: 56.0
@@ -1168,7 +1151,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
   - .opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md
 
 **Description**: Task 240
-
 
 ---
 
@@ -1182,7 +1164,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
   - .opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md
 
 **Description**: Task 265
-
 
 ---
 
@@ -1210,10 +1191,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Description**: Task 271
 
-
 ---
-
-
 
 ### 277. Improve Opencode Header And Summary Display For Task Commands
 - **Effort**: 3.5
@@ -1226,7 +1204,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
   - .opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-002.md
 
 **Description**: Task 277
-
 
 ---
 
@@ -1241,9 +1218,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Description**: Task 280
 
-
 ---
-
 
 ### 282. Add Json Return Format Enforcement To Subagent Invocation
 - **Effort**: TBD
@@ -1253,10 +1228,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Description**: Task 282
 
-
 ---
-
-
 
 ### 290. Fix Lean Research Agent Preflight Status Updates And Artifact Linking
 - **Effort**: 2.5
@@ -1269,14 +1241,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Description**: Task 290
 
-
 ---
 
-
-
-
 ## Medium Priority
-
 
 ### 259. Automation Tactics
 - **Effort**: 20.0

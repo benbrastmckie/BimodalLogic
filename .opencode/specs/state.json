@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T09:58:40Z",
-  "next_project_number": 309,
+  "_last_updated": "2026-01-05T09:50:00Z",
+  "next_project_number": 310,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -431,7 +431,7 @@
         ".opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md",
         ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md"
       ],
-      "research_summary": "Comprehensive revision plan to align /meta command with research \u2192 plan \u2192 implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
+      "research_summary": "Comprehensive revision plan to align /meta command with research → plan → implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
       "estimated_hours": 13.0,
       "plan_created": "2026-01-03",
       "plan_path": ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md",
@@ -662,8 +662,8 @@
       "project_number": 304,
       "project_name": "test_commands_after_unintended_changes_2_5",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "abandoned",
+      "status": "abandoned",
       "priority": "high",
       "language": "general",
       "description": "Test /task, /meta, and /todo commands to verify they still work correctly after the unintended changes. Document any failures or unexpected behavior. This determines whether to keep or revert core logic changes.",
@@ -671,14 +671,16 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T08:00:00Z",
-      "last_updated": "2026-01-05T08:00:00Z"
+      "last_updated": "2026-01-05",
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment via /abandon command"
     },
     {
       "project_number": 305,
       "project_name": "remove_performance_cruft_from_all_6_modified_files_3_5",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "research_completed",
+      "status": "researched",
       "priority": "medium",
       "language": "markdown",
       "description": "Remove optimization sections from frontmatter, performance blocks from workflow stages, and verbose comments from all 6 files (todo.md, review.md, reviewer.md, meta.md, task-creator.md, state-lookup.md). Keep state-lookup.md documentation changes.",
@@ -686,7 +688,8 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T08:00:00Z",
-      "last_updated": "2026-01-05T08:00:00Z"
+      "last_updated": "2026-01-05",
+      "research_completed": "2026-01-05"
     },
     {
       "project_number": 306,
@@ -732,6 +735,21 @@
       "dependencies": [],
       "created": "2026-01-05T09:38:06Z",
       "last_updated": "2026-01-05T09:38:06Z"
+    },
+    {
+      "project_number": 309,
+      "project_name": "implement_option_1_direct_delegation_from_task_309_analysis_to_optimize_/task_command_performance",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Implement Option 1 (Direct Delegation) from task 309 analysis to optimize /task command performance. Modify /task command Stage 4 to delegate directly to status-sync-manager instead of task-creator, eliminating unnecessary delegation layer and achieving 40-50% performance improvement.",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T09:50:00Z",
+      "last_updated": "2026-01-05T09:50:00Z"
     }
   ],
   "completed_projects": [
@@ -937,7 +955,7 @@
       "project_name": "resolve_is_valid_swap_involution_blocker",
       "type": "research",
       "completed": "2025-12-29",
-      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas \u2192 Soundness). Full soundness proof succeeds."
+      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas → Soundness). Full soundness proof succeeds."
     },
     {
       "project_number": 214,
@@ -972,7 +990,7 @@
       "started": "2025-12-26",
       "completed": "2025-12-29",
       "last_updated": "2025-12-29",
-      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 \u2192 571 lines, +113 lines)",
+      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 → 571 lines, +113 lines)",
       "artifacts": [
         ".opencode/specs/190_improve_maintenance_md_documentation/plans/implementation-002.md",
         ".opencode/specs/190_improve_maintenance_md_documentation/summaries/implementation-summary-20251229.md",
@@ -1936,7 +1954,7 @@
       "modified_files": [
         "Logos/Core/Semantics/Truth.lean"
       ],
-      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T \u03c6.swap \u2192 is_valid T \u03c6 is semantically FALSE for arbitrary formulas. Counterexample: \u03c6 = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
+      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T φ.swap → is_valid T φ is semantically FALSE for arbitrary formulas. Counterexample: φ = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
       "blocking_reason": "Theorem is semantically false for arbitrary formulas (proven by task 213). Not a type theory limitation but a fundamental logical impossibility. Task correctly marked impossible."
     },
     {
