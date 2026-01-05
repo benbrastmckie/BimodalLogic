@@ -39,10 +39,13 @@ context_loading:
   <stage id="1" name="ParseAndValidate">
     <action>Parse task number and lookup in state.json</action>
     <process>
-      1. Parse task number from $ARGUMENTS
-         - $ARGUMENTS contains: "196" or "196 Focus on phase breakdown"
+      1. Parse task number and flags from $ARGUMENTS
+         - $ARGUMENTS contains: "196" or "196 Focus on phase breakdown" or "196 --force"
          - Extract first token as task_number
          - Validate is integer
+         - Check for --force flag in remaining arguments
+         - If --force present: force_mode=true, log warning "Using --force flag to override validation"
+         - Else: force_mode=false
       
       2. Validate state.json exists and is valid
          - Check .opencode/specs/state.json exists
@@ -64,8 +67,48 @@ context_loading:
          - priority=$(echo "$task_data" | jq -r '.priority')
          - plan_path=$(echo "$task_data" | jq -r '.plan_path // ""')
       
-      5. Validate task status allows planning
-         - If status is "completed": Return error "Task $task_number already completed"
+      5. Validate task status allows planning (skip if --force flag present)
+         - If force_mode == false:
+           case "$status" in
+             "completed")
+               echo "Error: Task $task_number already completed"
+               echo "Recommendation: Task is done, no planning needed"
+               echo "To override: /plan $task_number --force"
+               exit 1
+               ;;
+             "abandoned")
+               echo "Error: Task $task_number is abandoned"
+               echo "Recommendation: Un-abandon task before planning"
+               echo "To override: /plan $task_number --force"
+               exit 1
+               ;;
+             "planning")
+               echo "Warning: Task $task_number is already being planned"
+               echo "If this is a stale status (e.g., previous planning crashed):"
+               echo "  1. Check for existing plan artifacts"
+               echo "  2. Use /sync to reset status if needed"
+               echo "To override: /plan $task_number --force"
+               exit 1
+               ;;
+             "planned")
+               echo "Info: Task $task_number already has a plan"
+               echo "Plan: $plan_path"
+               echo "Recommendation: Use /revise $task_number to update plan"
+               echo "To override: /plan $task_number --force"
+               exit 0
+               ;;
+             "not_started"|"researched"|"blocked"|"partial")
+               # Status allows planning, proceed
+               ;;
+             *)
+               echo "Warning: Unknown status '$status' for task $task_number"
+               echo "Proceeding with planning, but status may be invalid"
+               ;;
+           esac
+         - Else (force_mode == true):
+           echo "WARNING: Using --force flag to override status validation"
+           echo "Current status: $status"
+           echo "Proceeding with planning despite status"
       
       6. Check if plan already exists (warn if it does)
          - If plan_path is not empty: Warn "Plan exists at $plan_path. Use /revise to update."
@@ -124,12 +167,14 @@ Creates implementation plans with phased breakdown, effort estimates, and resear
 
 - `TASK_NUMBER` (required): Task number from TODO.md
 - `PROMPT` (optional): Custom planning focus or instructions
+- `--force` (optional): Override status validation (advanced users only)
 
 ## Examples
 
 ```bash
 /plan 196                          # Create plan for task 196
 /plan 196 "Focus on phase breakdown"  # Create plan with custom focus
+/plan 196 --force                  # Override status validation
 ```
 
 ## Delegation

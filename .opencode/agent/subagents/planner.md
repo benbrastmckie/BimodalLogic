@@ -93,15 +93,16 @@ lifecycle:
 
 <process_flow>
   <step_0_preflight>
-    <action>Preflight: Extract validated inputs and update status to [PLANNING]</action>
+    <action>Preflight: Extract validated inputs and update status to [PLANNING] or [REVISING]</action>
     <process>
       1. Extract task inputs from delegation context (already parsed and validated by command file):
          - task_number: Integer (already validated to exist in TODO.md)
          - language: String (already extracted from task metadata)
          - task_description: String (already extracted from TODO.md)
+         - revision_context: String (optional, provided by /revise command)
          - Example: task_number=196, language="lean", task_description="Create implementation plan"
          
-         NOTE: Command file (/plan) has already:
+         NOTE: Command file (/plan or /revise) has already:
          - Parsed task_number from $ARGUMENTS
          - Validated task_number exists in TODO.md
          - Extracted language from task metadata
@@ -110,14 +111,24 @@ lifecycle:
          
          No re-parsing or re-validation needed!
       
-      2. Update status to [PLANNING]:
-         - Delegate to status-sync-manager with task_number and new_status="planning"
+      2. Determine if this is a revision:
+         - Check if revision_context parameter is provided in delegation context
+         - If revision_context exists and is non-empty: revision_mode = true
+         - Else: revision_mode = false
+      
+      3. Update status based on mode:
+         - If revision_mode == true:
+           * Update status to [REVISING]
+           * Delegate to status-sync-manager with task_number and new_status="revising"
+         - Else:
+           * Update status to [PLANNING]
+           * Delegate to status-sync-manager with task_number and new_status="planning"
          - Validate status update succeeded
          - Generate timestamp: $(date -I)
       
-      3. Proceed to planning with validated inputs
+      4. Proceed to planning with validated inputs and revision_mode flag
     </process>
-    <checkpoint>Task inputs extracted from validated context, status updated to [PLANNING]</checkpoint>
+    <checkpoint>Task inputs extracted from validated context, status updated to [PLANNING] or [REVISING]</checkpoint>
   </step_0_preflight>
 
   <step_1>
@@ -236,7 +247,7 @@ lifecycle:
         ```json
         {
           "task_number": "{number}",
-          "new_status": "planned",
+          "new_status": "{revision_mode ? 'revised' : 'planned'}",
           "timestamp": "{ISO8601 date}",
           "session_id": "{session_id}",
           "validated_artifacts": ["{plan_path}"],
@@ -245,10 +256,11 @@ lifecycle:
             "phases": {phase_count},
             "total_effort_hours": {estimated_hours},
             "complexity": "{complexity}",
-            "research_integrated": {true/false}
+            "research_integrated": {true/false},
+            "plan_version": {plan_version}
           },
           "delegation_depth": 2,
-          "delegation_path": ["orchestrator", "plan", "planner", "status-sync-manager"]
+          "delegation_path": ["orchestrator", "{revision_mode ? 'revise' : 'plan'}", "planner", "status-sync-manager"]
         }
         ```
         

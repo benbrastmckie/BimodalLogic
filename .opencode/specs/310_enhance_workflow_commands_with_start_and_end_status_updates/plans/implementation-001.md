@@ -45,7 +45,7 @@ Research reveals that workflow commands already implement start and end status u
 
 ## Implementation Phases
 
-### Phase 1: Enhance Status Validation in /research Command [NOT STARTED]
+### Phase 1: Enhance Status Validation in /research Command [COMPLETED]
 
 - **Goal**: Add comprehensive status validation to /research command to detect already-in-progress and already-completed states
 - **Tasks**:
@@ -64,7 +64,7 @@ Research reveals that workflow commands already implement start and end status u
   - Error messages include helpful recommendations
   - No regression in normal /research workflow
 
-### Phase 2: Enhance Status Validation in /plan and /implement Commands [NOT STARTED]
+### Phase 2: Enhance Status Validation in /plan and /implement Commands [COMPLETED]
 
 - **Goal**: Add comprehensive status validation to /plan and /implement commands
 - **Tasks**:
@@ -87,7 +87,7 @@ Research reveals that workflow commands already implement start and end status u
   - /implement detects [BLOCKED] and reports blocker with resolution steps
   - All error messages include helpful recommendations
 
-### Phase 3: Fix /revise Command Status Updates [NOT STARTED]
+### Phase 3: Fix /revise Command Status Updates [COMPLETED]
 
 - **Goal**: Update /revise command and planner subagent to use [REVISING]/[REVISED] status markers
 - **Tasks**:
@@ -110,7 +110,7 @@ Research reveals that workflow commands already implement start and end status u
   - Plan content and format unchanged (only status markers differ)
   - Both /plan and /revise create valid plan artifacts
 
-### Phase 4: Document Edge Cases and Recovery Procedures [NOT STARTED]
+### Phase 4: Document Edge Cases and Recovery Procedures [COMPLETED]
 
 - **Goal**: Create comprehensive documentation for edge cases and manual recovery procedures
 - **Tasks**:
@@ -131,7 +131,7 @@ Research reveals that workflow commands already implement start and end status u
   - Documentation is clear and actionable
   - Links added to command error messages for relevant edge cases
 
-### Phase 5: Add --force Flag for Override [NOT STARTED]
+### Phase 5: Add --force Flag for Override [COMPLETED]
 
 - **Goal**: Add --force flag to all workflow commands to allow advanced users to override status validation
 - **Tasks**:
@@ -153,7 +153,9 @@ Research reveals that workflow commands already implement start and end status u
   - --force flag documented in command help text
   - Use cases documented: recovering from stale status, re-running research, testing
 
-### Phase 6: Create /sync Command for Status Repair [NOT STARTED]
+### Phase 6: Create /sync Command for Status Repair [DEFERRED]
+
+**Note**: Deferred to Task 295 which already exists for creating /sync command. This phase aligns with that task and should be implemented there to avoid duplication.
 
 - **Goal**: Create /sync command to automate status repair for common issues (aligns with task 295)
 - **Tasks**:
@@ -178,7 +180,7 @@ Research reveals that workflow commands already implement start and end status u
   - Delegates to status-sync-manager for atomic updates
   - Use cases: recovering from crashed commands, fixing desync, resetting stale statuses
 
-### Phase 7: Testing and Validation [NOT STARTED]
+### Phase 7: Testing and Validation [COMPLETED]
 
 - **Goal**: Comprehensive testing of all enhancements across all workflow commands
 - **Tasks**:

@@ -26,10 +26,13 @@ routing:
   <stage id="1" name="ParseAndValidate">
     <action>Parse task number and lookup in state.json</action>
     <process>
-      1. Parse task number from $ARGUMENTS
-         - $ARGUMENTS contains: "196" or "196 Adjust phase breakdown"
+      1. Parse task number and flags from $ARGUMENTS
+         - $ARGUMENTS contains: "196" or "196 Adjust phase breakdown" or "196 --force"
          - Extract first token as task_number
          - Validate is integer
+         - Check for --force flag in remaining arguments
+         - If --force present: force_mode=true, log warning "Using --force flag to override validation"
+         - Else: force_mode=false
       
       2. Validate state.json exists and is valid
          - Check .opencode/specs/state.json exists
@@ -51,15 +54,47 @@ routing:
          - priority=$(echo "$task_data" | jq -r '.priority')
          - plan_path=$(echo "$task_data" | jq -r '.plan_path // ""')
       
-      5. Validate existing plan exists
+      5. Validate task status allows revision (skip if --force flag present)
+         - If force_mode == false:
+           case "$status" in
+             "completed")
+               echo "Error: Task $task_number already completed"
+               echo "Recommendation: Task is done, no revision needed"
+               echo "To override: /revise $task_number --force"
+               exit 1
+               ;;
+             "abandoned")
+               echo "Error: Task $task_number is abandoned"
+               echo "Recommendation: Un-abandon task before revising"
+               echo "To override: /revise $task_number --force"
+               exit 1
+               ;;
+             "revising")
+               echo "Warning: Task $task_number plan is already being revised"
+               echo "If this is a stale status (e.g., previous revision crashed):"
+               echo "  1. Check for existing plan versions"
+               echo "  2. Use /sync to reset status if needed"
+               echo "To override: /revise $task_number --force"
+               exit 1
+               ;;
+             *)
+               # Other statuses allow revision, proceed
+               ;;
+           esac
+         - Else (force_mode == true):
+           echo "WARNING: Using --force flag to override status validation"
+           echo "Current status: $status"
+           echo "Proceeding with revision despite status"
+      
+      6. Validate existing plan exists
          - If plan_path is empty: Return error "No plan exists. Use /plan $task_number first."
          - Verify plan file exists at plan_path
       
-      6. Extract custom prompt from $ARGUMENTS if present
+      7. Extract custom prompt from $ARGUMENTS if present
          - If $ARGUMENTS has multiple tokens: custom_prompt = remaining tokens
          - Else: custom_prompt = ""
       
-      7. Determine target agent based on language
+      8. Determine target agent based on language
          - lean → lean-planner
          - general → planner
     </process>
@@ -69,11 +104,15 @@ routing:
   <stage id="2" name="Delegate">
     <action>Delegate to planner with parsed context</action>
     <process>
-      1. Invoke target agent via task tool:
+      1. Invoke target agent via task tool with revision_context:
          task(
            subagent_type="${target_agent}",
            prompt="Create revised plan (new version) for task ${task_number}: ${description}. ${custom_prompt}",
-           description="Revise plan for task ${task_number}"
+           description="Revise plan for task ${task_number}",
+           context={
+             "revision_context": "Plan revision requested via /revise command. ${custom_prompt}",
+             "existing_plan_path": "${plan_path}"
+           }
          )
       
       2. Wait for planner to complete
@@ -91,10 +130,14 @@ Create new plan versions for tasks with existing plans, preserving all previous 
 ## Usage
 
 ```bash
-/revise TASK_NUMBER [PROMPT]
+/revise TASK_NUMBER [PROMPT] [--force]
 /revise 196
 /revise 196 "Adjust phase breakdown"
+/revise 196 --force  # Override status validation
 ```
+
+**Flags:**
+- `--force`: Override status validation (advanced users only). Use to bypass already-in-progress checks.
 
 ## What This Does
 

@@ -26,10 +26,13 @@ routing:
   <stage id="1" name="ParseAndValidate">
     <action>Parse task number and lookup in state.json</action>
     <process>
-      1. Parse task number from $ARGUMENTS
-         - $ARGUMENTS contains: "259" or "259 custom prompt" or "105-107"
+      1. Parse task number and flags from $ARGUMENTS
+         - $ARGUMENTS contains: "259" or "259 custom prompt" or "105-107" or "259 --force"
          - Extract first token as task_number
          - Validate is integer or range (N-M)
+         - Check for --force flag in remaining arguments
+         - If --force present: force_mode=true, log warning "Using --force flag to override validation"
+         - Else: force_mode=false
       
       2. Validate state.json exists and is valid
          - Check .opencode/specs/state.json exists
@@ -50,9 +53,50 @@ routing:
          - description=$(echo "$task_data" | jq -r '.description // ""')
          - priority=$(echo "$task_data" | jq -r '.priority')
       
-      5. Validate task status allows implementation
-         - If status is "completed": Return error "Task $task_number already completed"
-         - If status is "abandoned": Return error "Task $task_number is abandoned"
+      5. Validate task status allows implementation (skip if --force flag present)
+         - If force_mode == false:
+           case "$status" in
+             "completed")
+               echo "Error: Task $task_number already completed"
+               echo "Recommendation: Task is done, no implementation needed"
+               echo "To override: /implement $task_number --force"
+               exit 1
+               ;;
+             "abandoned")
+               echo "Error: Task $task_number is abandoned"
+               echo "Recommendation: Un-abandon task before implementing"
+               echo "To override: /implement $task_number --force"
+               exit 1
+               ;;
+             "implementing")
+               echo "Warning: Task $task_number is already being implemented"
+               echo "If this is a stale status (e.g., previous implementation crashed):"
+               echo "  1. Check for existing implementation artifacts"
+               echo "  2. Use /sync to reset status if needed"
+               echo "  3. Or use /implement $task_number --resume to continue"
+               echo "To override: /implement $task_number --force"
+               exit 1
+               ;;
+             "blocked")
+               blocking_reason=$(echo "$task_data" | jq -r '.blocking_reason // "unknown"')
+               echo "Error: Task $task_number is blocked"
+               echo "Blocking reason: $blocking_reason"
+               echo "Recommendation: Resolve blocker before implementing"
+               echo "To override: /implement $task_number --force"
+               exit 1
+               ;;
+             "not_started"|"researched"|"planned"|"partial"|"revised")
+               # Status allows implementation, proceed
+               ;;
+             *)
+               echo "Warning: Unknown status '$status' for task $task_number"
+               echo "Proceeding with implementation, but status may be invalid"
+               ;;
+           esac
+         - Else (force_mode == true):
+           echo "WARNING: Using --force flag to override status validation"
+           echo "Current status: $status"
+           echo "Proceeding with implementation despite status"
       
       6. Extract custom prompt from $ARGUMENTS if present
          - If $ARGUMENTS has multiple tokens: custom_prompt = remaining tokens
@@ -87,11 +131,15 @@ routing:
 ## Usage
 
 ```bash
-/implement TASK_NUMBER [PROMPT]
+/implement TASK_NUMBER [PROMPT] [--force]
 /implement 196
 /implement 196 "Focus on error handling"
 /implement 105-107
+/implement 196 --force  # Override status validation
 ```
+
+**Flags:**
+- `--force`: Override status validation (advanced users only). Use to bypass already-in-progress or blocked checks.
 
 ## What This Does
 
