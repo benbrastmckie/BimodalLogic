@@ -313,12 +313,12 @@
       "project_number": 260,
       "project_name": "proof_search",
       "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_partial",
+      "status": "partial",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T08:07:35-08:00",
+      "last_updated": "2026-01-05T16:30:00Z",
       "effort": "40-60 hours",
       "description": "Implement automated proof search for TM logic.",
       "planning_completed": "2026-01-05T08:07:35-08:00",
@@ -339,8 +339,13 @@
       },
       "estimated_hours": 76,
       "artifacts": [
-        ".opencode/specs/260_proof_search/plans/implementation-001.md"
-      ]
+        ".opencode/specs/260_proof_search/plans/implementation-001.md",
+        ".opencode/specs/260_proof_search/summaries/implementation-summary-20260105.md",
+        "Logos/Core/Automation/ProofSearch.lean"
+      ],
+      "started": "2026-01-05",
+      "completed": "2026-01-05",
+      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom φ) from witness function."
     },
     {
       "project_number": 261,

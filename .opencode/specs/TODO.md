@@ -178,16 +178,20 @@ technical_debt:
 
 ### 260. Proof Search
 - **Effort**: 40-60 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Started**: 2026-01-05
+- **Completed**: 2026-01-05
 - **Priority**: Medium
 - **Language**: lean
-- **Blocking**: None
+- **Blocking**: Axiom refactor (Prop → Type) or Classical.choice research
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/260_proof_search/reports/research-001.md)
 - **Plan**: [Implementation Plan](.opencode/specs/260_proof_search/plans/implementation-001.md)
+- **Implementation**: [Implementation Summary](.opencode/specs/260_proof_search/summaries/implementation-summary-20260105.md)
 
 **Description**: Implement automated proof search for TM logic.
+
+**Blocking Reason**: Phase 1 (Proof Term Construction) blocked by `Axiom` being `Prop` instead of `Type`. Cannot return `Option (Axiom φ)` from witness function. Need either: (1) Axiom refactor to Type, (2) Classical.choice approach, or (3) pivot to Phase 2 (Tactic Integration).
 
 **Action Items**:
 1. Implement breadth-first proof search.
