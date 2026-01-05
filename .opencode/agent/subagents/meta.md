@@ -494,16 +494,407 @@ $ARGUMENTS
          a. Generate task title and slug from interview results
          b. Assign task number: next_project_number + task_index
          c. Create project directory: .opencode/specs/{number}_{slug}/
-         d. Generate plan artifact (plans/implementation-001.md):
-            - Metadata block (Task, Status, Effort, Priority, Dependencies, Artifacts, Standards, Type, Lean Intent)
-            - Set Type field to 'meta' for all meta-related tasks
-            - Overview (2-4 sentences)
-            - Goals & Non-Goals
-            - Risks & Mitigations
-            - Implementation Phases (1-2 hours each, status markers [NOT STARTED])
-            - Testing & Validation
-            - Artifacts & Outputs
-            - Rollback/Contingency
+         d. Generate plan artifact (plans/implementation-001.md) using templates:
+            
+            **Planning Task Template** (Task 1 - always first):
+            ```markdown
+            # Implementation Plan: Design {domain} System Architecture
+            
+            - **Task**: {number} - Design {domain} system architecture and workflow patterns
+            - **Status**: [NOT STARTED]
+            - **Effort**: 3-4 hours
+            - **Priority**: High
+            - **Dependencies**: None
+            - **Research Inputs**: /meta interview results (domain: {domain}, agents: {agent_count}, hierarchy: {hierarchy})
+            - **Artifacts**: 
+              - plans/implementation-001.md (this file)
+              - architecture.md (to be created)
+              - workflows.md (to be created)
+            - **Standards**:
+              - .opencode/context/core/standards/plan.md
+              - .opencode/context/core/system/status-markers.md
+              - .opencode/context/core/system/artifact-management.md
+              - .opencode/context/core/standards/tasks.md
+            - **Type**: meta
+            - **Lean Intent**: false
+            
+            ## Overview
+            
+            Design comprehensive architecture for {domain} system based on interview results. Create detailed specifications for {agent_count} agents ({hierarchy} structure), {custom_commands.length} custom commands, and context organization. Document workflows for {use_cases.length} primary use cases. This planning task establishes the foundation for all subsequent implementation tasks.
+            
+            ## Goals & Non-Goals
+            
+            **Goals**:
+            - Document domain requirements and constraints from interview
+            - Design {hierarchy} agent architecture with clear delegation paths
+            - Define workflows for {use_cases.length} use cases
+            - Specify integration points for {external_tools.length} external tools
+            - Create validation criteria for implementation tasks
+            
+            **Non-Goals**:
+            - Implementing agents, commands, or context files (separate tasks)
+            - Writing code or configuration (design only)
+            - Testing or validation (happens in implementation tasks)
+            
+            ## Risks & Mitigations
+            
+            | Risk | Mitigation |
+            |------|-----------|
+            | Architecture doesn't match requirements | Review interview results carefully, validate against use cases |
+            | Agent boundaries unclear | Define clear responsibilities and delegation paths |
+            | Workflow complexity underestimated | Break workflows into phases, identify dependencies |
+            
+            ## Implementation Phases
+            
+            ### Phase 1: Document Domain Requirements [NOT STARTED]
+            - **Goal:** Capture all requirements from interview stages 0-6
+            - **Tasks:**
+              - [ ] Document domain, purpose, target users
+              - [ ] List all {use_cases.length} use cases with complexity and dependencies
+              - [ ] Document knowledge areas: {knowledge_areas.join(", ")}
+              - [ ] List external tools: {external_tools.join(", ")}
+            - **Timing:** 1 hour
+            
+            ### Phase 2: Design Agent Architecture [NOT STARTED]
+            - **Goal:** Design {hierarchy} architecture with {agent_count} agents
+            - **Tasks:**
+              - [ ] Define agent roles and responsibilities
+              - [ ] Design delegation paths (orchestrator → subagents if hierarchical)
+              - [ ] Specify agent permissions and context requirements
+              - [ ] Document agent interaction patterns
+            - **Timing:** 1-1.5 hours
+            
+            ### Phase 3: Define Workflows [NOT STARTED]
+            - **Goal:** Map use cases to concrete workflows
+            - **Tasks:**
+              - [ ] Design workflow for each use case
+              - [ ] Identify workflow dependencies and sequencing
+              - [ ] Specify inputs, outputs, and state management
+              - [ ] Document error handling and rollback strategies
+            - **Timing:** 1 hour
+            
+            ### Phase 4: Specify Integrations [NOT STARTED]
+            - **Goal:** Detail integration requirements for external tools
+            - **Tasks:**
+              - [ ] Document integration points for each external tool
+              - [ ] Specify file operations and formats
+              - [ ] Define command interfaces and parameters
+              - [ ] Create validation criteria for integrations
+            - **Timing:** 30 minutes
+            
+            ## Testing & Validation
+            
+            - [ ] Architecture document complete and clear
+            - [ ] All {agent_count} agents have defined roles
+            - [ ] All {use_cases.length} use cases mapped to workflows
+            - [ ] All {external_tools.length} external tools have integration specs
+            - [ ] Validation criteria defined for implementation tasks
+            
+            ## Artifacts & Outputs
+            
+            - architecture.md - Complete architecture specification
+            - workflows.md - Workflow definitions for all use cases
+            - agent-specs.md - Detailed agent specifications
+            
+            ## Rollback/Contingency
+            
+            If architecture design is insufficient:
+            - Review interview results for missing information
+            - Consult with user for clarification
+            - Revise architecture based on feedback
+            - Update plan with /revise command
+            ```
+            
+            **Agent Implementation Task Template**:
+            ```markdown
+            # Implementation Plan: Create {agent_name} Agent(s)
+            
+            - **Task**: {number} - Create {agent_name} agent(s) for {domain} system
+            - **Status**: [NOT STARTED]
+            - **Effort**: {effort} hours
+            - **Priority**: High
+            - **Dependencies**: Task {planning_task_number} (architecture design)
+            - **Research Inputs**: Architecture design from Task {planning_task_number}
+            - **Artifacts**: 
+              - plans/implementation-001.md (this file)
+              - .opencode/agent/subagents/{domain}/{agent_file}.md
+            - **Standards**:
+              - .opencode/context/core/standards/plan.md
+              - .opencode/context/core/workflows/agent-workflow.md
+              - .opencode/context/core/standards/frontmatter-delegation.md
+            - **Type**: meta
+            - **Lean Intent**: false
+            
+            ## Overview
+            
+            Create {agent_description} following {hierarchy} architecture pattern. Implement 8-stage workflow with proper delegation, permissions, and context loading. Follow frontmatter delegation standard (<300 lines per file).
+            
+            ## Goals & Non-Goals
+            
+            **Goals**:
+            - Create agent file(s) in .opencode/agent/subagents/{domain}/
+            - Implement 8-stage workflow per agent-workflow.md
+            - Configure YAML frontmatter with delegation and permissions
+            - Follow frontmatter delegation pattern (<300 lines)
+            
+            **Non-Goals**:
+            - Creating context files (separate task)
+            - Creating commands (separate task)
+            - Testing agent functionality (validation only)
+            
+            ## Risks & Mitigations
+            
+            | Risk | Mitigation |
+            |------|-----------|
+            | Agent file too large (>300 lines) | Use frontmatter delegation, move workflow to agent body |
+            | Missing permissions | Reference architecture design for permission requirements |
+            | Incorrect delegation paths | Validate can_delegate_to lists against architecture |
+            
+            ## Implementation Phases
+            
+            ### Phase 1: Create Agent File Structure [NOT STARTED]
+            - **Goal:** Set up agent file with YAML frontmatter
+            - **Tasks:**
+              - [ ] Create .opencode/agent/subagents/{domain}/{agent_file}.md
+              - [ ] Add YAML frontmatter with metadata
+              - [ ] Configure delegation settings
+              - [ ] Set permissions based on agent role
+            - **Timing:** 30 minutes
+            
+            ### Phase 2: Implement 8-Stage Workflow [NOT STARTED]
+            - **Goal:** Implement complete workflow per agent-workflow.md
+            - **Tasks:**
+              - [ ] Define all 8 stages with actions and processes
+              - [ ] Add validation checkpoints for each stage
+              - [ ] Implement error handling and rollback
+              - [ ] Document stage transitions
+            - **Timing:** 1-1.5 hours
+            
+            ### Phase 3: Validation and Testing [NOT STARTED]
+            - **Goal:** Verify agent follows standards
+            - **Tasks:**
+              - [ ] Verify YAML frontmatter valid (parse with yq)
+              - [ ] Verify file size <300 lines
+              - [ ] Verify delegation paths correct
+              - [ ] Verify permissions appropriate for role
+            - **Timing:** 30 minutes
+            
+            ## Testing & Validation
+            
+            - [ ] Agent file created in correct directory
+            - [ ] YAML frontmatter valid and complete
+            - [ ] File size <300 lines
+            - [ ] Delegation paths match architecture
+            - [ ] Permissions appropriate for agent role
+            - [ ] 8-stage workflow implemented correctly
+            
+            ## Artifacts & Outputs
+            
+            - {agent_file}.md (200-300 lines)
+            
+            ## Rollback/Contingency
+            
+            If agent creation fails:
+            - Remove created agent file
+            - Review architecture design
+            - Adjust plan and retry
+            ```
+            
+            **Command Implementation Task Template**:
+            ```markdown
+            # Implementation Plan: Create {command_name} Command(s)
+            
+            - **Task**: {number} - Create {command_name} command(s) for {domain} system
+            - **Status**: [NOT STARTED]
+            - **Effort**: {effort} hours
+            - **Priority**: Medium
+            - **Dependencies**: Task {planning_task_number} (architecture design), Task {agent_task_number} (agents)
+            - **Research Inputs**: Architecture design and agent specifications
+            - **Artifacts**: 
+              - plans/implementation-001.md (this file)
+              - .opencode/command/{command_file}.md
+            - **Standards**:
+              - .opencode/context/core/standards/plan.md
+              - .opencode/context/core/standards/frontmatter-delegation.md
+            - **Type**: meta
+            - **Lean Intent**: false
+            
+            ## Overview
+            
+            Create {command_description} following frontmatter delegation pattern. Commands should be <300 lines and delegate to agents for workflow execution.
+            
+            ## Goals & Non-Goals
+            
+            **Goals**:
+            - Create command file(s) in .opencode/command/
+            - Implement frontmatter delegation to agents
+            - Configure command routing and parameters
+            - Follow <300 line limit
+            
+            **Non-Goals**:
+            - Implementing workflow logic (delegated to agents)
+            - Creating context files (separate task)
+            - Testing command functionality (validation only)
+            
+            ## Risks & Mitigations
+            
+            | Risk | Mitigation |
+            |------|-----------|
+            | Command file too large | Use frontmatter delegation exclusively |
+            | Incorrect routing | Validate agent delegation paths |
+            | Missing parameters | Review use cases for required inputs |
+            
+            ## Implementation Phases
+            
+            ### Phase 1: Create Command Files [NOT STARTED]
+            - **Goal:** Set up command files with frontmatter
+            - **Tasks:**
+              - [ ] Create .opencode/command/{command_file}.md
+              - [ ] Add YAML frontmatter with routing
+              - [ ] Configure parameters and flags
+              - [ ] Document usage and examples
+            - **Timing:** 1 hour
+            
+            ### Phase 2: Validation [NOT STARTED]
+            - **Goal:** Verify commands follow standards
+            - **Tasks:**
+              - [ ] Verify YAML frontmatter valid
+              - [ ] Verify file size <300 lines
+              - [ ] Verify routing to correct agents
+              - [ ] Test command invocation
+            - **Timing:** 30 minutes
+            
+            ## Testing & Validation
+            
+            - [ ] Command files created in correct directory
+            - [ ] YAML frontmatter valid and complete
+            - [ ] File sizes <300 lines
+            - [ ] Routing paths correct
+            - [ ] Usage documentation clear
+            
+            ## Artifacts & Outputs
+            
+            - {command_file}.md (100-200 lines)
+            
+            ## Rollback/Contingency
+            
+            If command creation fails:
+            - Remove created command files
+            - Review architecture design
+            - Adjust plan and retry
+            ```
+            
+            **Context Implementation Task Template**:
+            ```markdown
+            # Implementation Plan: Create {domain} Context Files
+            
+            - **Task**: {number} - Create context files for {domain} system
+            - **Status**: [NOT STARTED]
+            - **Effort**: {effort} hours
+            - **Priority**: Medium
+            - **Dependencies**: Task {planning_task_number} (architecture design)
+            - **Research Inputs**: Architecture design and knowledge areas
+            - **Artifacts**: 
+              - plans/implementation-001.md (this file)
+              - .opencode/context/{domain}/*.md
+            - **Standards**:
+              - .opencode/context/core/standards/plan.md
+              - .opencode/context/core/standards/context-efficiency.md
+            - **Type**: meta
+            - **Lean Intent**: false
+            
+            ## Overview
+            
+            Create context files for {knowledge_areas.length} knowledge areas. Organize as 80% Level 1 (core), 20% Level 2 (specialized), rare Level 3 (deep technical). Follow lazy loading pattern with context index.
+            
+            ## Goals & Non-Goals
+            
+            **Goals**:
+            - Create context files in .opencode/context/{domain}/
+            - Organize knowledge areas: {knowledge_areas.join(", ")}
+            - Follow 80/20 Level 1/Level 2 distribution
+            - Create context index for lazy loading
+            
+            **Non-Goals**:
+            - Creating agents or commands (separate tasks)
+            - Implementing workflows (separate task)
+            - Testing context loading (validation only)
+            
+            ## Risks & Mitigations
+            
+            | Risk | Mitigation |
+            |------|-----------|
+            | Context files too large | Split into smaller focused files |
+            | Wrong level distribution | Review context efficiency standard |
+            | Missing knowledge areas | Review interview results |
+            
+            ## Implementation Phases
+            
+            ### Phase 1: Create Level 1 Context [NOT STARTED]
+            - **Goal:** Create core domain knowledge files
+            - **Tasks:**
+              - [ ] Create .opencode/context/{domain}/ directory
+              - [ ] Create Level 1 files for core knowledge
+              - [ ] Document domain concepts and terminology
+              - [ ] Create integration guides for external tools
+            - **Timing:** 1-1.5 hours
+            
+            ### Phase 2: Create Level 2 Context [NOT STARTED]
+            - **Goal:** Create specialized knowledge files
+            - **Tasks:**
+              - [ ] Create Level 2 files for specialized topics
+              - [ ] Document advanced concepts
+              - [ ] Create detailed integration examples
+            - **Timing:** 30-45 minutes
+            
+            ### Phase 3: Create Context Index [NOT STARTED]
+            - **Goal:** Enable lazy loading of context
+            - **Tasks:**
+              - [ ] Create context index file
+              - [ ] Map knowledge areas to files
+              - [ ] Document loading strategy
+            - **Timing:** 15 minutes
+            
+            ## Testing & Validation
+            
+            - [ ] All context files created
+            - [ ] 80/20 Level 1/Level 2 distribution
+            - [ ] Context index complete
+            - [ ] All knowledge areas covered
+            - [ ] Integration guides present
+            
+            ## Artifacts & Outputs
+            
+            - .opencode/context/{domain}/*.md (multiple files)
+            - .opencode/context/{domain}/index.md
+            
+            ## Rollback/Contingency
+            
+            If context creation fails:
+            - Remove created context files
+            - Review architecture design
+            - Adjust plan and retry
+            ```
+            
+            **Template Selection Logic**:
+            - Task 1 (always): Use Planning Task Template
+            - Agent tasks: Use Agent Implementation Task Template
+            - Command tasks: Use Command Implementation Task Template
+            - Context tasks: Use Context Implementation Task Template
+            
+            **Template Population**:
+            - Replace {domain} with interview domain
+            - Replace {agent_count} with interview agent_count
+            - Replace {hierarchy} with interview hierarchy
+            - Replace {use_cases.length} with count of use cases
+            - Replace {knowledge_areas} with interview knowledge_areas
+            - Replace {external_tools} with interview external_tools
+            - Replace {custom_commands} with interview custom_commands
+            - Replace {effort} with calculated effort based on complexity
+            - Replace {number} with task_number
+            - Replace {planning_task_number} with first task number
+            - Replace {agent_task_number} with agent task number (if applicable)
+            
          e. Write plan artifact to disk
          f. Validate plan artifact exists and is non-empty
          g. Extract plan metadata (phase_count, estimated_hours, complexity)
