@@ -735,13 +735,13 @@
       "project_number": 298,
       "project_name": "create_abandon_command_to_mark_tasks_as_abandoned_with_reason",
       "type": "feature",
-      "phase": "researched",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "medium",
       "language": "markdown",
       "description": "Create a /abandon command that takes a task number as argument (similar to /implement) and updates the status of the task in TODO.md and state.json to [ABANDONED]. The command should validate that the task exists and is not already completed or abandoned, prompt for an abandonment reason if not provided inline, and delegate to status-sync-manager to perform atomic updates to both files. The command should follow the same architectural patterns as /implement, /research, and /plan commands for consistency.",
       "created": "2026-01-05T08:04:58Z",
-      "last_updated": "2026-01-05T00:13:07Z",
+      "last_updated": "2026-01-05",
       "started": "2026-01-05",
       "researched": "2026-01-05",
       "research_artifacts": [
@@ -750,7 +750,19 @@
           "path": ".opencode/specs/298_abandon_command/reports/research-001.md",
           "summary": "Comprehensive research on /plan command architecture and patterns for /abandon command"
         }
-      ]
+      ],
+      "planning_completed": "2026-01-05",
+      "estimated_hours": 2.5,
+      "artifacts": [
+        ".opencode/specs/298_abandon_command/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/298_abandon_command/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 2.5,
+        "complexity": "low-medium",
+        "research_integrated": true
+      }
     },
     {
       "project_number": 260,
