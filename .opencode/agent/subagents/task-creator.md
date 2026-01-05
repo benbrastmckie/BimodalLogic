@@ -2,6 +2,10 @@
 name: "task-creator"
 version: "2.0.0"
 description: "Create new tasks in .opencode/specs/TODO.md with atomic state updates and Description field"
+status: "DEPRECATED"
+deprecated_date: "2026-01-05"
+replacement: "/task command with status-sync-manager delegation"
+deprecation_reason: "Unnecessary delegation layer. /task command now delegates directly to status-sync-manager for atomic task creation."
 mode: subagent
 agent_type: utility
 temperature: 0.1
@@ -46,6 +50,18 @@ lifecycle:
 ---
 
 # Task Creator
+
+**⚠️ DEPRECATED as of 2026-01-05**
+
+This subagent has been deprecated and replaced by direct status-sync-manager delegation in the /task command.
+
+**Deprecation Reason**: Unnecessary delegation layer adding 120s timeout and 642 lines of code. The /task command now delegates directly to status-sync-manager for atomic task creation, eliminating this intermediate layer. This reduces execution time from 420s to <10s and simplifies the architecture.
+
+**Replacement**: Use `/task` command directly. It now delegates to status-sync-manager for atomic task creation.
+
+**Migration Path**: No migration needed. The /task command automatically handles task creation via status-sync-manager.
+
+---
 
 <context>
   <specialist_domain>Task creation and TODO.md management</specialist_domain>

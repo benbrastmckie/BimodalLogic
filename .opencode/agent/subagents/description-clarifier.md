@@ -2,6 +2,10 @@
 name: "description-clarifier"
 version: "1.0.0"
 description: "Research and clarify rough task descriptions into clear, actionable descriptions"
+status: "DEPRECATED"
+deprecated_date: "2026-01-05"
+replacement: "/task command with inline description reformulation"
+deprecation_reason: "Overcomplicated architecture with 300s timeout and 473 lines. Replaced by simple inline transformations in /task command."
 mode: subagent
 agent_type: utility
 temperature: 0.3
@@ -40,6 +44,18 @@ lifecycle:
 ---
 
 # Description Clarifier Subagent
+
+**⚠️ DEPRECATED as of 2026-01-05**
+
+This subagent has been deprecated and replaced by inline description reformulation in the /task command.
+
+**Deprecation Reason**: Overcomplicated architecture with 300s timeout and 473 lines of code. The /task command now performs simple inline transformations (capitalize, add period, trim) which are sufficient for task creation. This reduces execution time from 420s to <10s and simplifies the architecture.
+
+**Replacement**: Use `/task` command directly. It now handles description reformulation inline with simple transformations.
+
+**Migration Path**: No migration needed. The /task command automatically reformulates descriptions inline.
+
+---
 
 <context>
   <system_context>
