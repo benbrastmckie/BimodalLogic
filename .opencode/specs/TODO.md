@@ -89,12 +89,14 @@ technical_debt:
 
 ### 299. Create Task Reviser Subagent
 - **Effort**: 3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: None
 - **Plan**: [implementation-001.md](.opencode/specs/299_create_task_reviser_subagent/plans/implementation-001.md)
 - **Planned**: 2026-01-05
+- **Implementation**: [implementation-summary-20260105.md](.opencode/specs/299_create_task_reviser_subagent/summaries/implementation-summary-20260105.md)
+- **Implemented**: 2026-01-05
 
 **Description**: Create a new subagent `task-reviser.md` that handles task-only revision mode when no plan exists. This subagent will update task descriptions, requirements, and metadata in TODO.md and state.json atomically.
 
@@ -1243,13 +1245,15 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ---
 
 ### 280. Fix Orchestrator Stage 4 Validation To Enforce Subagent Return Format And Prevent Phantom Research
-- **Effort**: 7.0
-- **Status**: [PLANNED]
+- **Effort**: 6.0
+- **Status**: [REVISED]
 - **Priority**: High
 - **Language**: markdown
 - **Artifacts**:
   - .opencode/specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md
   - .opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-001.md
+  - .opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-002.md
+- **Revised**: 2026-01-05
 
 **Description**: Task 280
 
