@@ -71,6 +71,8 @@ technical_debt:
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: 299, 300
+- **Research**: [Research Report](.opencode/specs/301_enhance_revise_command_with_dual_mode_routing/reports/research-001.md)
+- **Researched**: 2026-01-05
 
 **Description**: Update `/revise` command to detect plan presence and route to either task-reviser (no plan) or planner (plan exists with report integration).
 
