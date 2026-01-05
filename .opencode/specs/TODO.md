@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-05T09:50:00Z
-next_project_number: 310
+last_updated: 2026-01-05T10:00:00Z
+next_project_number: 311
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -29,12 +29,16 @@ technical_debt:
 ## High Priority
 
 ### 309. Implement Option 1 (Direct Delegation) from task 309 analysis to optimize /task command performance
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 3 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [Research Report](.opencode/specs/309_optimize_task_command_performance/reports/research-001.md)
+- **Researched**: 2026-01-05
+- **Plan**: [implementation-001.md](.opencode/specs/309_optimize_task_command_performance/plans/implementation-001.md)
+- **Planned**: 2026-01-05
 
 **Description**: Implement Option 1 (Direct Delegation) from task 309 analysis to optimize /task command performance. Modify /task command Stage 4 to delegate directly to status-sync-manager instead of task-creator, eliminating unnecessary delegation layer and achieving 40-50% performance improvement.
 
@@ -1086,6 +1090,18 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ---
 
 ## Medium Priority
+
+### 310. Enhance workflow commands with start and end status updates
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Enhance workflow commands (/research, /plan, /revise, /implement) to update task status at the beginning and end of execution. Commands should set status to '[RESEARCHING]', '[PLANNING]', '[REVISING]', or '[IMPLEMENTING]' at start, report if already in progress, and update to final status ('[RESEARCHED]', '[PLANNED]', '[REVISED]', '[IMPLEMENTED]'/'[BLOCKED]'/'[PARTIAL]') at completion.
+
+---
 
 ### 305. Remove performance cruft from all 6 modified files (3/5)
 - **Effort**: 30 minutes

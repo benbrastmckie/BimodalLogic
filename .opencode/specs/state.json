@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T09:50:00Z",
-  "next_project_number": 310,
+  "_last_updated": "2026-01-05T10:15:00Z",
+  "next_project_number": 311,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -740,16 +740,38 @@
       "project_number": 309,
       "project_name": "implement_option_1_direct_delegation_from_task_309_analysis_to_optimize_/task_command_performance",
       "type": "feature",
+      "phase": "planning_completed",
+      "status": "planned",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Implement Option 1 (Direct Delegation) from task 309 analysis to optimize /task command performance. Modify /task command Stage 4 to delegate directly to status-sync-manager instead of task-creator, eliminating unnecessary delegation layer and achieving 40-50% performance improvement.",
+      "effort": "3 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T09:50:00Z",
+      "started": "2026-01-05",
+      "research_completed": "2026-01-05",
+      "last_updated": "2026-01-05T10:15:00Z",
+      "artifacts": [
+        ".opencode/specs/309_optimize_task_command_performance/reports/research-001.md",
+        ".opencode/specs/309_optimize_task_command_performance/plans/implementation-001.md"
+      ],
+      "planned": "2026-01-05"
+    },
+    {
+      "project_number": 310,
+      "project_name": "enhance_workflow_commands_with_start_and_end_status_updates",
+      "type": "feature",
       "phase": "not_started",
       "status": "not_started",
       "priority": "medium",
       "language": "meta",
-      "description": "Implement Option 1 (Direct Delegation) from task 309 analysis to optimize /task command performance. Modify /task command Stage 4 to delegate directly to status-sync-manager instead of task-creator, eliminating unnecessary delegation layer and achieving 40-50% performance improvement.",
+      "description": "Enhance workflow commands (/research, /plan, /revise, /implement) to update task status at the beginning and end of execution. Commands should set status to '[RESEARCHING]', '[PLANNING]', '[REVISING]', or '[IMPLEMENTING]' at start, report if already in progress, and update to final status ('[RESEARCHED]', '[PLANNED]', '[REVISED]', '[IMPLEMENTED]'/'[BLOCKED]'/'[PARTIAL]') at completion.",
       "effort": "TBD",
       "blocking": [],
       "dependencies": [],
-      "created": "2026-01-05T09:50:00Z",
-      "last_updated": "2026-01-05T09:50:00Z"
+      "created": "2026-01-05T10:00:00Z",
+      "last_updated": "2026-01-05T10:00:00Z"
     }
   ],
   "completed_projects": [
