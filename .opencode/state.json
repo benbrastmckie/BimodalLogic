@@ -81,6 +81,60 @@
       "artifacts": {
         "plans": [".opencode/specs/264_test_and_document_argument_passing/plans/implementation-001.md"]
       }
+    },
+    {
+      "project_number": 299,
+      "project_name": "create_task_reviser_subagent",
+      "type": "meta",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-05T00:00:00Z",
+      "description": "Create a new subagent task-reviser.md that handles task-only revision mode when no plan exists. This subagent will update task descriptions, requirements, and metadata in TODO.md and state.json atomically.",
+      "estimated_hours": 3.0,
+      "artifacts": {}
+    },
+    {
+      "project_number": 300,
+      "project_name": "add_report_detection_to_planner",
+      "type": "meta",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-05T00:00:00Z",
+      "description": "Enhance the planner subagent to detect new reports created since the last plan version and integrate their findings into plan revisions.",
+      "estimated_hours": 4.0,
+      "artifacts": {}
+    },
+    {
+      "project_number": 301,
+      "project_name": "enhance_revise_command_with_dual_mode_routing",
+      "type": "meta",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-05T00:00:00Z",
+      "description": "Update /revise command to detect plan presence and route to either task-reviser (no plan) or planner (plan exists with report integration).",
+      "estimated_hours": 3.0,
+      "dependencies": [299, 300],
+      "artifacts": {}
+    },
+    {
+      "project_number": 302,
+      "project_name": "test_dual_mode_revision_workflow",
+      "type": "meta",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-05T00:00:00Z",
+      "description": "Create comprehensive tests for the dual-mode revision workflow, covering task-only revision, plan revision without new reports, and plan revision with new reports.",
+      "estimated_hours": 2.0,
+      "dependencies": [301],
+      "artifacts": {}
     }
   ],
   "completed_projects": [],

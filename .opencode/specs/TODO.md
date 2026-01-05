@@ -1,19 +1,19 @@
 ---
-last_updated: 2026-01-05T08:04:58Z
-next_project_number: 299
+last_updated: 2026-01-05T00:00:00Z
+next_project_number: 303
 repository_health:
   overall_score: 92
   production_readiness: excellent
   last_assessed: 2026-01-04T06:25:00Z
 task_counts:
-  active: 7
+  active: 11
   completed: 50
   blocked: 2
   in_progress: 2
-  not_started: 26
-  total: 84
+  not_started: 30
+  total: 88
 priority_distribution:
-  high: 16
+  high: 20
   medium: 12
   low: 11
 technical_debt:
@@ -30,6 +30,124 @@ technical_debt:
 
 ## High Priority
 
+### 299. Create Task Reviser Subagent
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Dependencies**: None
+
+**Description**: Create a new subagent `task-reviser.md` that handles task-only revision mode when no plan exists. This subagent will update task descriptions, requirements, and metadata in TODO.md and state.json atomically.
+
+**Action Items**:
+1. Create `.opencode/agent/subagents/task-reviser.md` following subagent template
+2. Implement task metadata extraction from state.json
+3. Implement task description revision logic with user prompts
+4. Integrate with status-sync-manager for atomic updates
+5. Add validation for task existence and revision context
+6. Return standardized format per subagent-return-format.md
+
+**Acceptance Criteria**:
+- [ ] task-reviser.md created with proper frontmatter
+- [ ] Extracts task metadata from state.json
+- [ ] Prompts user for revision details (description, priority, effort)
+- [ ] Updates TODO.md and state.json atomically via status-sync-manager
+- [ ] Returns standardized format with updated task info
+- [ ] Handles errors gracefully with rollback
+
+**Impact**: Enables task revision without requiring a plan, supporting early-stage task refinement.
+
+---
+
+### 300. Add Report Detection to Planner
+- **Effort**: 4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Dependencies**: None
+
+**Description**: Enhance the planner subagent to detect new reports created since the last plan version and integrate their findings into plan revisions.
+
+**Action Items**:
+1. Add report directory scanning logic to planner
+2. Implement timestamp comparison (report mtime vs plan mtime)
+3. Extract new report paths and read their contents
+4. Integrate new report findings into plan revision context
+5. Update plan metadata to track integrated reports
+6. Add validation for report file existence and format
+
+**Acceptance Criteria**:
+- [ ] Planner scans `.opencode/specs/NNN_*/reports/` directory
+- [ ] Compares report modification times with plan creation time
+- [ ] Identifies reports created after last plan version
+- [ ] Reads and extracts key findings from new reports
+- [ ] Includes new findings in revised plan Overview and Phases
+- [ ] Updates plan metadata with `reports_integrated` field
+- [ ] Logs report integration in plan revision notes
+
+**Impact**: Ensures plan revisions leverage the latest research and analysis findings, improving plan quality and accuracy.
+
+---
+
+### 301. Enhance Revise Command with Dual-Mode Routing
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Dependencies**: 299, 300
+
+**Description**: Update `/revise` command to detect plan presence and route to either task-reviser (no plan) or planner (plan exists with report integration).
+
+**Action Items**:
+1. Update `.opencode/command/revise.md` workflow
+2. Add plan existence detection in Stage 1 (ParseAndValidate)
+3. Implement dual routing logic: task-reviser vs planner
+4. Pass report detection context to planner when plan exists
+5. Update command documentation with dual-mode examples
+6. Add validation for routing decision correctness
+
+**Acceptance Criteria**:
+- [ ] Stage 1 checks for plan_path in state.json
+- [ ] If plan_path empty/missing: route to task-reviser
+- [ ] If plan_path exists: route to planner with report context
+- [ ] Planner receives flag to check for new reports
+- [ ] Command documentation updated with both modes
+- [ ] Examples added for task-only and task+plan revision
+- [ ] Validation ensures correct routing based on plan presence
+
+**Impact**: Provides flexible revision workflow supporting both early-stage task refinement and plan updates with research integration.
+
+---
+
+### 302. Test Dual-Mode Revision Workflow
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Dependencies**: 301
+
+**Description**: Create comprehensive tests for the dual-mode revision workflow, covering task-only revision, plan revision without new reports, and plan revision with new reports.
+
+**Action Items**:
+1. Create test task without plan and test task-only revision
+2. Create test task with plan (no new reports) and test plan revision
+3. Create test task with plan and new reports, test report integration
+4. Validate atomic updates to TODO.md and state.json
+5. Verify git commits created correctly for each mode
+6. Document test cases and expected outcomes
+
+**Acceptance Criteria**:
+- [ ] Test case 1: Task-only revision updates description/priority/effort
+- [ ] Test case 2: Plan revision creates new version without reports
+- [ ] Test case 3: Plan revision integrates new reports into phases
+- [ ] All modes update TODO.md and state.json atomically
+- [ ] Git commits created with appropriate messages
+- [ ] Rollback works correctly on failures
+- [ ] Test documentation added to `.opencode/TESTING.md`
+
+**Impact**: Ensures reliability and correctness of dual-mode revision workflow across all scenarios.
+
+---
 
 
 
