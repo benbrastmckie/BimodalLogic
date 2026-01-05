@@ -32,10 +32,12 @@ technical_debt:
 
 ### 299. Create Task Reviser Subagent
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: None
+- **Plan**: [implementation-001.md](.opencode/specs/299_create_task_reviser_subagent/plans/implementation-001.md)
+- **Planned**: 2026-01-05
 
 **Description**: Create a new subagent `task-reviser.md` that handles task-only revision mode when no plan exists. This subagent will update task descriptions, requirements, and metadata in TODO.md and state.json atomically.
 
@@ -1202,10 +1204,11 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 298. Create /abandon command to mark tasks as [ABANDONED] with reason
 - **Effort**: 2.5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-05
 - **Researched**: 2026-01-05
 - **Planned**: 2026-01-05
+- **Completed**: 2026-01-05
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -1214,6 +1217,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
   - Main Report: [.opencode/specs/298_abandon_command/reports/research-001.md]
 - **Plan Artifacts**:
   - Implementation Plan: [.opencode/specs/298_abandon_command/plans/implementation-001.md]
+- **Implementation Artifacts**:
+  - Command File: [.opencode/command/abandon.md]
+  - Implementation Summary: [.opencode/specs/298_abandon_command/summaries/implementation-summary-20260105.md]
 
 **Description**: Create a /abandon command that takes a task number as argument (similar to /implement) and updates the status of the task in TODO.md and state.json to [ABANDONED]. The command should validate that the task exists and is not already completed or abandoned, prompt for an abandonment reason if not provided inline, and delegate to status-sync-manager to perform atomic updates to both files. The command should follow the same architectural patterns as /implement, /research, and /plan commands for consistency.
 

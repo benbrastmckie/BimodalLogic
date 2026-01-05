@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T08:04:58Z",
+  "_last_updated": "2026-01-05T08:30:16Z",
   "next_project_number": 299,
   "project_numbering": {
     "min": 0,
@@ -735,8 +735,8 @@
       "project_number": 298,
       "project_name": "create_abandon_command_to_mark_tasks_as_abandoned_with_reason",
       "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "medium",
       "language": "markdown",
       "description": "Create a /abandon command that takes a task number as argument (similar to /implement) and updates the status of the task in TODO.md and state.json to [ABANDONED]. The command should validate that the task exists and is not already completed or abandoned, prompt for an abandonment reason if not provided inline, and delegate to status-sync-manager to perform atomic updates to both files. The command should follow the same architectural patterns as /implement, /research, and /plan commands for consistency.",
@@ -754,7 +754,9 @@
       "planning_completed": "2026-01-05",
       "estimated_hours": 2.5,
       "artifacts": [
-        ".opencode/specs/298_abandon_command/plans/implementation-001.md"
+        ".opencode/specs/298_abandon_command/plans/implementation-001.md",
+        ".opencode/command/abandon.md",
+        ".opencode/specs/298_abandon_command/summaries/implementation-summary-20260105.md"
       ],
       "plan_path": ".opencode/specs/298_abandon_command/plans/implementation-001.md",
       "plan_metadata": {
@@ -762,7 +764,8 @@
         "total_effort_hours": 2.5,
         "complexity": "low-medium",
         "research_integrated": true
-      }
+      },
+      "completed": "2026-01-05"
     },
     {
       "project_number": 260,
@@ -1108,6 +1111,33 @@
       "dependencies": [],
       "created": "2026-01-05T00:04:15.844042",
       "last_updated": "2026-01-05T00:04:15.844044"
+    },
+    {
+      "project_number": 299,
+      "project_name": "create_task_reviser_subagent",
+      "type": "feature",
+      "phase": "planning_completed",
+      "status": "planned",
+      "priority": "high",
+      "language": "meta",
+      "description": "Create a new subagent task-reviser.md that handles task-only revision mode when no plan exists. This subagent will update task descriptions, requirements, and metadata in TODO.md and state.json atomically.",
+      "effort": "3 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T08:30:16Z",
+      "last_updated": "2026-01-05T08:30:16Z",
+      "started": "2026-01-05",
+      "planning_completed": "2026-01-05",
+      "plan_path": ".opencode/specs/299_create_task_reviser_subagent/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 7,
+        "total_effort_hours": 3,
+        "complexity": "medium",
+        "research_integrated": false
+      },
+      "artifacts": [
+        ".opencode/specs/299_create_task_reviser_subagent/plans/implementation-001.md"
+      ]
     }
   ],
   "completed_projects": [
