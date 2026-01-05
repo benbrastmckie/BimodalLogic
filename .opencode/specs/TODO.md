@@ -40,7 +40,7 @@ technical_debt:
 - **Research**: [Research Report](.opencode/specs/312_fix_workflow_command_postflight_failures/reports/research-001.md)
 - **Researched**: 2026-01-05
 
-**Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 307 created research-001.md but task status remains [NOT STARTED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.
+**Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 307 created research-001.md but task status remains [RESEARCHING] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.
 
 ---
 
@@ -65,7 +65,7 @@ technical_debt:
 
 ### 301. Enhance Revise Command with Dual-Mode Routing
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: 299, 300
@@ -95,7 +95,7 @@ technical_debt:
 
 ### 302. Test Dual-Mode Revision Workflow
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: 301
@@ -125,7 +125,7 @@ technical_debt:
 
 ### 257. Completeness Proofs
  **Effort**: 70-90 hours
- **Status**: [NOT STARTED]
+ **Status**: [RESEARCHED]
  **Priority**: Low
  **Language**: lean
  **Blocking**: Decidability
@@ -156,7 +156,7 @@ technical_debt:
 
 ### 260. Proof Search
 - **Effort**: 40-60 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -184,7 +184,7 @@ technical_debt:
 
 ### 261. Decidability
 - **Effort**: 40-60 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -211,7 +211,7 @@ technical_debt:
 
 ### 262. ModalS5 Limitation
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -235,7 +235,7 @@ technical_debt:
 
 ### 263. Refactor Context.lean
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: Task 264
@@ -259,7 +259,7 @@ technical_debt:
 
 ### 264. Update Context References
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -285,7 +285,7 @@ technical_debt:
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -303,7 +303,7 @@ technical_debt:
 
 ### 133. Build canonical model constructors in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -321,7 +321,7 @@ technical_debt:
 
 ### 134. Prove truth lemma structure in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -339,7 +339,7 @@ technical_debt:
 
 ### 135. Remove provable_iff_valid sorry in Completeness.lean
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -360,7 +360,7 @@ technical_debt:
 
 ### 136. Design Decidability.lean architecture and signatures
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -378,7 +378,7 @@ technical_debt:
 
 ### 137. Implement tableau core rules in Decidability.lean
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -396,7 +396,7 @@ technical_debt:
 
 ### 138. Implement satisfiability and validity decision procedure tests
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -418,7 +418,7 @@ technical_debt:
 
 ### 139. Draft Layer 1 counterfactual operator plan
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -437,7 +437,7 @@ technical_debt:
 
 ### 140. Draft Layer 2 epistemic operator plan
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -456,7 +456,7 @@ technical_debt:
 
 ### 141. Draft Layer 3 normative operator plan
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -475,7 +475,7 @@ technical_debt:
 
 ### 175. Establish CI/CD pipeline with automated testing and linting
 - **Effort**: 13 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -500,7 +500,7 @@ technical_debt:
 
 ### 176. Enhance proof search with domain-specific heuristics and caching
 - **Effort**: 18 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -524,7 +524,7 @@ technical_debt:
 
 ### 178. Complete advanced tutorial sections with hands-on exercises
 - **Effort**: 13 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -547,7 +547,7 @@ technical_debt:
 
 ### 179. Implement performance benchmarks for proof search and derivation
 - **Effort**: 13 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -572,7 +572,7 @@ technical_debt:
 
 ### 180. Add test coverage metrics and reporting
 - **Effort**: 9 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -625,7 +625,7 @@ technical_debt:
 
 ### 203. Add --complex flag to /research for subtopic subdivision with summary
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -654,7 +654,7 @@ technical_debt:
 
 ### 205. Implement Lean tool usage verification and monitoring system
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -721,7 +721,7 @@ CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client
 
 ### 279. Systematically fix metadata lookup to use state.json instead of TODO.md
 - **Effort**: 12-16 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -939,7 +939,7 @@ Root cause identified for `/research 290` status update failure: lean-research-a
 
 **Evidence**:
 - `/research 290` created research report successfully
-- Status remained `[NOT STARTED]` instead of updating to `[RESEARCHED]`
+- Status remained `[RESEARCHING]` instead of updating to `[RESEARCHED]`
 - No artifact link added to TODO.md
 - No state.json update
 - No git commit created
@@ -1038,7 +1038,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 308. Final cleanup and comprehensive testing (5/5)
 - **Effort**: 15 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
@@ -1048,9 +1048,21 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
+### 313. Configure opencode agent system to prevent permission interruptions
+- **Effort**: TBD
+- **Status**: [RESEARCHED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Configure opencode agent system to prevent permission interruptions and ensure greater autonomy by relying on git commits for safety while avoiding other backups.
+
+---
+
 ### 295. Create /sync command to synchronize TODO.md and state.json
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
@@ -1148,7 +1160,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 282. Add Json Return Format Enforcement To Subagent Invocation
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: general
 
@@ -1186,7 +1198,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 311. Refactor /abandon command to support ranges and lists of task numbers
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None

@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T05:36:18",
-  "next_project_number": 313,
+  "_last_updated": "2026-01-05T21:45:00",
+  "next_project_number": 314,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -655,13 +655,16 @@
       "project_name": "enhance_revise_command_with_dual_mode_routing",
       "type": "feature",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researched",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05",
       "effort": "3 hours",
-      "description": "Update `/revise` command to detect plan presence and route to either task-reviser (no plan) or planner (plan exists with report integration)."
+      "description": "Update `/revise` command to detect plan presence and route to either task-reviser (no plan) or planner (plan exists with report integration).",
+      "research_artifacts": [
+        ".opencode/specs/301_enhance_revise_command_with_dual_mode_routing/reports/research-001.md"
+      ]
     },
     {
       "project_number": 302,
@@ -848,8 +851,8 @@
       "project_number": 312,
       "project_name": "fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates",
       "type": "bugfix",
-      "phase": "researched",
-      "status": "researched",
+      "phase": "planning",
+      "status": "planning",
       "priority": "high",
       "language": "meta",
       "description": "Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 307 created research-001.md but task status remains [NOT STARTED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.",
@@ -857,10 +860,25 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T05:31:28-08:00",
-      "last_updated": "2026-01-05T13:37:00-08:00",
+      "last_updated": "2026-01-05T13:45:00-08:00",
       "artifacts": [
         ".opencode/specs/312_fix_workflow_command_postflight_failures/reports/research-001.md"
       ]
+    },
+    {
+      "project_number": 313,
+      "project_name": "configure_opencode_agent_system_to_prevent_permission_interruptions",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Configure opencode agent system to prevent permission interruptions and ensure greater autonomy by relying on git commits for safety while avoiding other backups.",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05",
+      "last_updated": "2026-01-05"
     }
   ],
   "completed_projects": [
