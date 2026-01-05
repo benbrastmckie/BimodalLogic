@@ -1,9 +1,11 @@
 ---
 name: revise
 agent: orchestrator
-description: "Create new plan versions with [REVISED] status"
+description: "Revise task metadata (no plan) or create new plan versions (plan exists) with dual-mode routing"
 timeout: 1800
 routing:
+  plan_based: true
+  task_only: task-reviser
   language_based: true
   lean: lean-planner
   default: planner
@@ -12,14 +14,14 @@ routing:
 **Task Input (required):** $ARGUMENTS
 
 <context>
-  <system_context>Plan revision command with language-based routing</system_context>
-  <task_context>Parse task number, validate, extract language, delegate to planner for revision</task_context>
+  <system_context>Dual-mode revision command with plan presence detection and language-based routing</system_context>
+  <task_context>Parse task number, validate, detect plan presence, route to task-reviser (no plan) or planner (plan exists) for revision</task_context>
 </context>
 
-<role>Revision command agent - Parse arguments and route to appropriate planner for plan revision</role>
+<role>Revision command agent - Parse arguments and route to appropriate agent based on plan presence and language</role>
 
 <task>
-  Parse task number from $ARGUMENTS, lookup task in state.json, validate existing plan exists, extract metadata, route to appropriate planner for creating new plan version
+  Parse task number from $ARGUMENTS, lookup task in state.json, detect plan presence, extract metadata, route to task-reviser for task-only revision or planner for plan revision
 </task>
 
 <workflow_execution>
@@ -86,17 +88,42 @@ routing:
            echo "Current status: $status"
            echo "Proceeding with revision despite status"
       
-      6. Validate existing plan exists
-         - If plan_path is empty: Return error "No plan exists. Use /plan $task_number first."
-         - Verify plan file exists at plan_path
+      6. Detect plan presence and determine routing mode
+         a. Extract plan_path from state.json (already done in step 4)
+         
+         b. Determine routing mode:
+            - If plan_path is empty or missing: routing_mode = "task-only"
+            - If plan_path is non-empty: routing_mode = "plan-revision"
+         
+         c. Validate plan file consistency (if plan_path set):
+            - If plan_path is non-empty AND file doesn't exist:
+              * Log error: "Inconsistent state: plan_path in state.json points to missing file"
+              * Recommendation: "Run /plan to create initial plan or /sync to fix state"
+              * Exit with error
+            - If plan_path is non-empty AND file exists:
+              * Log: "Plan exists at ${plan_path}, routing to planner for revision"
+            - If plan_path is empty:
+              * Log: "No plan exists, routing to task-reviser for task-only revision"
+         
+         d. Set routing_mode variable for Stage 2
       
       7. Extract custom prompt from $ARGUMENTS if present
          - If $ARGUMENTS has multiple tokens: custom_prompt = remaining tokens
          - Else: custom_prompt = ""
       
-      8. Determine target agent based on language
-         - lean → lean-planner
-         - general → planner
+      8. Determine target agent based on routing_mode and language
+         a. If routing_mode == "task-only":
+            - target_agent = "task-reviser"
+            - Log: "Routing to task-reviser for task metadata revision"
+         
+         b. If routing_mode == "plan-revision":
+            - If language == "lean": target_agent = "lean-planner"
+            - Else: target_agent = "planner"
+            - Log: "Routing to ${target_agent} for plan revision"
+         
+         c. Validate routing decision:
+            - Verify target_agent file exists in .opencode/agent/subagents/
+            - If missing: Exit with error "Agent ${target_agent} not found"
     </process>
     <checkpoint>Task validated, plan exists, metadata extracted, target agent determined</checkpoint>
   </stage>
@@ -108,16 +135,36 @@ routing:
          - session_id="sess_$(date +%s)_$(head -c 6 /dev/urandom | base64 | tr -dc 'a-z0-9')"
          - Store for validation: expected_session_id="$session_id"
       
-      2. Invoke target agent via task tool with revision_context:
-         task(
-           subagent_type="${target_agent}",
-           prompt="Create revised plan (new version) for task ${task_number}: ${description}. ${custom_prompt}",
-           description="Revise plan for task ${task_number}",
-           context={
-             "revision_context": "Plan revision requested via /revise command. ${custom_prompt}",
-             "existing_plan_path": "${plan_path}"
-           }
-         )
+      2. Invoke target agent via task tool with appropriate context:
+         
+         a. If routing_mode == "task-only":
+            task(
+              subagent_type="task-reviser",
+              prompt="Revise task metadata for task ${task_number}: ${description}. ${custom_prompt}",
+              description="Revise task metadata for task ${task_number}",
+              context={
+                "revision_context": "Task metadata revision requested via /revise command. ${custom_prompt}",
+                "task_number": ${task_number},
+                "session_id": "${session_id}",
+                "delegation_depth": 1,
+                "delegation_path": ["orchestrator", "revise", "task-reviser"]
+              }
+            )
+         
+         b. If routing_mode == "plan-revision":
+            task(
+              subagent_type="${target_agent}",
+              prompt="Create revised plan (new version) for task ${task_number}: ${description}. ${custom_prompt}",
+              description="Revise plan for task ${task_number}",
+              context={
+                "revision_context": "Plan revision requested via /revise command. ${custom_prompt}",
+                "existing_plan_path": "${plan_path}",
+                "task_number": ${task_number},
+                "session_id": "${session_id}",
+                "delegation_depth": 1,
+                "delegation_path": ["orchestrator", "revise", "${target_agent}"]
+              }
+            )
       
       3. Wait for planner to complete and capture return
          - Subagent returns JSON to stdout
@@ -250,17 +297,17 @@ routing:
   </stage>
 </workflow_execution>
 
-# /revise - Plan Revision Command
+# /revise - Dual-Mode Revision Command
 
-Create new plan versions for tasks with existing plans, preserving all previous versions.
+Revise task metadata when no plan exists, or create new plan versions when plan exists. Automatically detects plan presence and routes to appropriate agent.
 
 ## Usage
 
 ```bash
 /revise TASK_NUMBER [PROMPT] [--force]
-/revise 196
-/revise 196 "Adjust phase breakdown"
-/revise 196 --force  # Override status validation
+/revise 196                              # Task-only revision if no plan, plan revision if plan exists
+/revise 196 "Adjust phase breakdown"     # Plan revision with custom prompt
+/revise 196 --force                      # Override status validation
 ```
 
 **Flags:**
@@ -270,12 +317,49 @@ Create new plan versions for tasks with existing plans, preserving all previous 
 
 1. Validates task exists in state.json (8x faster than TODO.md parsing)
 2. Extracts all metadata at once (language, status, description, plan_path)
-3. Validates existing plan exists
-4. Routes to appropriate planner based on task language
-5. Agent creates new plan version (increments version number)
-6. Preserves all previous plan versions
-7. Updates task status to [REVISED] via status-sync-manager
-8. Creates git commit
+3. **Detects plan presence and determines routing mode**
+4. Routes to appropriate agent:
+   - **No Plan**: Routes to task-reviser for task metadata updates
+   - **Plan Exists**: Routes to planner for plan revision with research integration
+5. Agent performs revision and updates status
+6. Creates git commit
+
+## Dual-Mode Routing
+
+### Task-Only Revision (No Plan)
+
+When no plan exists (`plan_path` empty in state.json):
+- Routes to `task-reviser` subagent
+- Updates task metadata: description, priority, effort, dependencies
+- Prompts user for changes interactively
+- Updates TODO.md and state.json atomically via status-sync-manager
+- Creates git commit
+- Does NOT change task status (keeps current status)
+
+**Example**:
+```bash
+/revise 301
+# Prompts for new description, priority, effort, dependencies
+# Updates task metadata without creating plan
+```
+
+### Plan Revision (Plan Exists)
+
+When plan exists (`plan_path` non-empty in state.json):
+- Routes to `planner` (or `lean-planner` for Lean tasks)
+- Detects new research reports created since last plan version
+- Integrates new findings into revised plan
+- Creates new plan version (increments version number)
+- Preserves all previous plan versions
+- Updates status to [REVISED]
+- Creates git commit
+
+**Example**:
+```bash
+/revise 301 "Incorporate new routing research"
+# Creates implementation-002.md with new findings
+# Updates status to [REVISED]
+```
 
 ## Language-Based Routing
 
@@ -284,11 +368,25 @@ Create new plan versions for tasks with existing plans, preserving all previous 
 | lean | lean-planner | Proof strategies, mathlib integration |
 | general | planner | Standard implementation planning |
 
-## Version Management
+## Routing Validation
+
+The command validates routing decisions to ensure correctness:
+
+1. **Plan Consistency Check**: If `plan_path` is set in state.json, verifies file exists on disk
+2. **Agent Existence Check**: Verifies target agent file exists before delegation
+3. **Routing Mode Logging**: Logs routing decision for debugging
+
+**Error Handling**:
+- Inconsistent state (plan_path set but file missing): Abort with recovery instructions
+- Agent not found: Abort with error message
+- Invalid routing mode: Abort with error message
+
+## Version Management (Plan Revision Only)
 
 - Original plan files never modified
 - New plan version created as separate file
 - All plan versions preserved in plans/ directory
 - TODO.md plan link updated to point to latest version
 
-See `.opencode/agent/subagents/planner.md` for details.
+See `.opencode/agent/subagents/planner.md` for plan revision details.
+See `.opencode/agent/subagents/task-reviser.md` for task-only revision details.

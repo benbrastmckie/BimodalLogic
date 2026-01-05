@@ -68,7 +68,7 @@ technical_debt:
 
 ### 301. Enhance Revise Command with Dual-Mode Routing
 - **Effort**: 3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: 299, 300
@@ -76,6 +76,8 @@ technical_debt:
 - **Researched**: 2026-01-05
 - **Plan**: [Implementation Plan](.opencode/specs/301_enhance_revise_command_with_dual_mode_routing/plans/implementation-001.md)
 - **Planned**: 2026-01-05
+- **Implementation**: [Implementation Summary](.opencode/specs/301_enhance_revise_command_with_dual_mode_routing/summaries/implementation-summary-20260105.md)
+- **Completed**: 2026-01-05
 
 **Description**: Update `/revise` command to detect plan presence and route to either task-reviser (no plan) or planner (plan exists with report integration).
 
