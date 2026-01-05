@@ -99,34 +99,25 @@ lifecycle:
 
 <process_flow>
   <step_0_preflight>
-    <action>Preflight: Validate task and update status to [RESEARCHING]</action>
+    <action>Preflight: Parse arguments, validate task, update status to [RESEARCHING]</action>
     <process>
-      1. Parse task_number from delegation context or prompt string:
-         a. Check if task_number parameter provided in delegation context
-         b. If not provided, parse from prompt string:
-            - Extract first numeric argument from prompt (e.g., "267" from "/research 267")
-            - Support formats: "/research 267", "267", "Task: 267", "research 267"
-            - Use regex or string parsing to extract task number
-         c. Validate task_number is positive integer
-         d. If task_number not found or invalid: Return failed status with error
-      2. Validate task exists in .opencode/specs/TODO.md
-      3. Extract task description and current status
-      4. Verify task not [COMPLETED] or [ABANDONED]
-      5. Verify task is in valid starting status ([PLANNED] or [NOT STARTED])
-      6. Generate timestamp: $(date -I) for ISO 8601 format (YYYY-MM-DD)
-      7. Invoke status-sync-manager to mark [RESEARCHING]:
-         a. Prepare delegation context:
-            - task_number: {number}
-            - new_status: "researching"
-            - timestamp: {date}
-            - session_id: {session_id}
-            - delegation_depth: {depth + 1}
-            - delegation_path: [...delegation_path, "status-sync-manager"]
-         b. Invoke status-sync-manager with timeout (60s)
-         c. Validate return status == "completed"
-         d. Verify files_updated includes ["TODO.md", "state.json"]
-         e. If status update fails: Abort with error and recommendation
-       8. Log preflight completion
+      1. Parse task number from prompt:
+         - Prompt format: "/research 271" or "271" or "/research 271 extra args"
+         - Extract first integer from prompt string
+         - Example: "/research 271" → task_number = 271
+         - If no integer found: Return error "Task number required"
+      
+      2. Validate task exists:
+         - Read .opencode/specs/TODO.md
+         - Find task entry: grep "^### ${task_number}\."
+         - If not found: Return error "Task {task_number} not found"
+      
+      3. Update status to [RESEARCHING]:
+         - Delegate to status-sync-manager with task_number and new_status="researching"
+         - Validate status update succeeded
+         - Generate timestamp: $(date -I)
+      
+      4. Proceed to Lean research
     </process>
     <status_marker_update>
       Update .opencode/specs/TODO.md:

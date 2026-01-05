@@ -101,56 +101,27 @@ lifecycle:
 
 <process_flow>
   <step_0_preflight>
-    <action>Preflight: Validate task and update status to [IMPLEMENTING]</action>
+    <action>Preflight: Parse arguments, validate task, update status to [IMPLEMENTING]</action>
     <process>
-      1. Parse task_number from delegation context or prompt string:
-         a. Check if task_number parameter provided in delegation context
-         b. If not provided, parse from prompt string:
-            - Extract first numeric argument from prompt (e.g., "267" from "/implement 267")
-            - Support formats: "/implement 267", "267", "Task: 267", "implement 267"
-            - Use regex or string parsing to extract task number
-         c. Validate task_number is positive integer
-         d. If task_number not found or invalid: Return failed status with error
-      2. Validate task exists in .opencode/specs/TODO.md
-      3. Extract task description and current status
-      4. Verify task not [COMPLETED] or [ABANDONED]
-      5. Verify task is in valid starting status ([PLANNED] or [NOT STARTED])
-      6. Generate timestamp: $(date -I) for ISO 8601 format (YYYY-MM-DD)
-      7. Invoke status-sync-manager to mark [IMPLEMENTING]:
-         a. Prepare delegation context:
-            - task_number: {number}
-            - new_status: "implementing"
-            - timestamp: {date}
-            - session_id: {session_id}
-            - delegation_depth: {depth + 1}
-            - delegation_path: [...delegation_path, "status-sync-manager"]
-         b. Invoke status-sync-manager with timeout (60s)
-         c. Validate return status == "completed"
-         d. Verify files_updated includes ["TODO.md", "state.json"]
-         e. If status update fails: Abort with error and recommendation
-      8. Log preflight completion
+      1. Parse task number from prompt:
+         - Prompt format: "/implement 196" or "196" or "/implement 196 custom prompt"
+         - Extract first integer from prompt string
+         - Example: "/implement 196" → task_number = 196
+         - If no integer found: Return error "Task number required"
+      
+      2. Validate task exists:
+         - Read .opencode/specs/TODO.md
+         - Find task entry: grep "^### ${task_number}\."
+         - If not found: Return error "Task {task_number} not found"
+      
+      3. Update status to [IMPLEMENTING]:
+         - Delegate to status-sync-manager with task_number and new_status="implementing"
+         - Validate status update succeeded
+         - Generate timestamp: $(date -I)
+      
+      4. Proceed to Lean implementation
     </process>
-    <validation>Task validated, status updated to [IMPLEMENTING]</validation>
-    <error_handling>
-      If task_number not provided or invalid:
-        Return status "failed" with error:
-        - type: "validation_failed"
-        - message: "Task number not provided or invalid. Expected positive integer."
-        - recommendation: "Provide task number as first argument (e.g., /implement 267)"
-      
-      If task not found:
-        Return status "failed" with error:
-        - type: "validation_failed"
-        - message: "Task {task_number} not found in TODO.md"
-        - recommendation: "Verify task number exists in TODO.md"
-      
-      If status update fails:
-        Return status "failed" with error:
-        - type: "status_update_failed"
-        - message: "Failed to update status to [IMPLEMENTING]"
-        - recommendation: "Check status-sync-manager logs and retry"
-    </error_handling>
-    <output>Task validated, status updated to [IMPLEMENTING]</output>
+    <checkpoint>Task validated and status updated to [IMPLEMENTING]</checkpoint>
   </step_0_preflight>
 
   <step_1>
