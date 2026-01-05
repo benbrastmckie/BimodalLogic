@@ -356,11 +356,19 @@ lifecycle:
          a. Count ### Phase headings to get phase_count
          b. Extract estimated_hours from metadata section
          c. Extract complexity from metadata section (if present)
-      4. If validation fails: Return failed status with error
-      5. If metadata extraction fails: Use defaults (graceful degradation)
+      4. Validate reports_integrated array structure (if research_integrated):
+         a. Verify reports_integrated is valid JSON array
+         b. Verify each entry has required fields: path, integrated_in_plan_version, integrated_date
+         c. Verify integrated_date format is YYYY-MM-DD
+         d. If validation fails: Log warning but continue (graceful degradation)
+      5. If validation fails: Return failed status with error
+      6. If metadata extraction fails: Use defaults (graceful degradation)
     </process>
-    <validation>Plan artifact exists, is non-empty, and metadata extracted</validation>
-    <output>Validated plan artifact and extracted metadata</output>
+    <validation>
+      - Plan artifact exists, is non-empty, and metadata extracted
+      - reports_integrated array structure valid (if present)
+    </validation>
+    <output>Validated plan artifact and extracted metadata (including reports_integrated)</output>
   </step_6>
 
   <step_7>
