@@ -238,6 +238,7 @@ Orchestrator relays result to user
 3. **No Re-Parsing**: Subagent uses validated context, doesn't re-parse prompts
 4. **Language Routing**: Orchestrator extracts language, routes to correct agent
 5. **Clean Separation**: Orchestrator validates/routes, subagent executes
+6. **No Version History**: NEVER add version history sections to commands or agents (useless cruft)
 
 ## Common Mistakes
 
@@ -318,13 +319,3 @@ See existing implementations:
 **Subagent can't access task_number**:
 - Check Step 0 extracts from delegation_context
 - Orchestrator passes validated context as parameters
-
-## Version History
-
-- **v6.1 (2026-01-04)**: Hybrid architecture - orchestrator validates, subagents receive clean inputs
-- **v6.0 (2026-01-04)**: Failed attempt to eliminate orchestrator (incompatible with task-based pattern)
-- **v5.0 (2025-12-29)**: Original 5-stage orchestrator (too complex)
-
----
-
-**Last Updated**: 2026-01-04 (v6.1 - Hybrid architecture)

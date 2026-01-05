@@ -503,11 +503,3 @@ After creating a task, use these commands:
 **Philosophy**: Direct operations with minimal delegation. Delegate only for atomic updates.
 
 **Architectural Enforcement**: status-sync-manager has permissions that DENY code file writes and build tool execution, ensuring it can ONLY create task entries.
-
-## Version History
-
-- **v5.0.0** (2026-01-05): Optimized with direct delegation to status-sync-manager (eliminated task-creator layer, 40-50% performance improvement)
-- **v4.0.0** (2026-01-05): Full refactor with --divide flag, improved description reformulation, architectural enforcement
-- **v3.0.0** (2026-01-05): Simplified to direct implementation with atomic updates via status-sync-manager
-- **v2.0.0** (2026-01-04): Added description clarification with description-clarifier subagent
-- **v1.0.0** (2026-01-03): Initial inline implementation

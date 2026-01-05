@@ -54,6 +54,8 @@ Contains all research and analysis reports:
 - **verification-NNN.md**: Verification reports from reviewer agent
 - **refactoring-NNN.md**: Refactoring reports from refactorer agent
 
+**Report Editing Policy**: Research reports should NOT be edited after creation. Report modification times (mtime) are used by the planner to detect new reports created since the last plan version. If a report needs updates, create a new report version (research-002.md) instead of editing the original.
+
 ### plans/
 Contains implementation plans with version control:
 - **implementation-001.md**: Initial plan

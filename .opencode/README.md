@@ -746,27 +746,6 @@ Follow existing patterns and standards:
 
 ---
 
-## Version History
-
-### Version 2.0 (2025-12-26)
-
-Complete clean-break refactor addressing Task 191 issues:
-
-- Added delegation safety (session tracking, cycle detection, depth limits, timeouts)
-- Standardized return format for all subagents
-- Atomic status synchronization with two-phase commit
-- Language-based routing (Lean vs general)
-- Error tracking and analysis with /errors command
-- Automatic git commits with scoped changes
-- Resume support for interrupted implementations
-- Comprehensive documentation (ARCHITECTURE, QUICK-START, TESTING)
-
-### Version 1.0 (Previous)
-
-Initial implementation (deprecated due to critical issues).
-
----
-
 ## License
 
 See project LICENSE file.

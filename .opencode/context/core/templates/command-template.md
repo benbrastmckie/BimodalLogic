@@ -275,3 +275,10 @@ context_loading:
 - TODO.md parsing: ~100ms per lookup
 - state.json lookup: ~4ms per lookup
 - Improvement: 25-50x faster
+
+### Documentation Standards
+- **NO VERSION HISTORY**: Never add "Version History" sections to commands or agents
+- Version history is useless cruft that clutters documentation
+- Git history already tracks all changes comprehensively
+- Document current behavior only, not past versions
+- See `.opencode/context/core/standards/documentation.md` for full standards

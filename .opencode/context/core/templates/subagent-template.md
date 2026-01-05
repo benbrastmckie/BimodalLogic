@@ -220,3 +220,4 @@ Generated subagents must:
 4. **Explicit Output**: Define exact output format with examples
 5. **Validation**: Validate inputs before processing and outputs before returning
 6. **Error Handling**: Handle errors gracefully with clear messages
+7. **No Version History**: NEVER add "Version History" sections (useless cruft)

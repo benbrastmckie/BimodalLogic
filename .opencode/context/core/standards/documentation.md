@@ -33,6 +33,9 @@ AI agent consumption.
 - Include speculative future plans
 - Duplicate information across files
 - Use vague or ambiguous language
+- Add "Version History" sections (this is useless cruft)
+- Include version numbers in documentation (e.g., "v1.0.0", "v2.0.0")
+- Document what changed between versions
 
 ### Formatting Standards
 
@@ -98,6 +101,42 @@ grep -E "[\x{1F300}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]" file.md
 ```
 
 If emojis found, replace with text alternatives from table above.
+
+### NO VERSION HISTORY Policy
+
+**Prohibition**: Version history sections are FORBIDDEN in all .opencode documentation.
+
+**Rationale**:
+- Version history is useless cruft that clutters documentation
+- Git history already tracks all changes comprehensively
+- Historical information becomes stale and misleading
+- Documentation should describe current state only
+- Version numbers (v1.0.0, v2.0.0, etc.) add no value
+- "What changed" information is irrelevant to current usage
+
+**Examples of Forbidden Content**:
+```markdown
+## Version History
+
+- v5.0.0 (2026-01-05): Optimized with direct delegation
+- v4.0.0 (2026-01-05): Full refactor with --divide flag
+- v3.0.0 (2026-01-05): Simplified to direct implementation
+```
+
+**Correct Approach**:
+- Document current behavior only
+- Use git log to track changes
+- Update documentation in-place when behavior changes
+- Remove outdated information immediately
+
+**Validation**:
+Before committing any documentation, verify no version history:
+```bash
+grep -i "version history" file.md
+grep -E "v[0-9]+\.[0-9]+\.[0-9]+" file.md
+```
+
+If version history found, remove it entirely.
 
 ### Cross-References
 
@@ -267,11 +306,6 @@ When updating these standards:
 2. Update related documentation
 3. Notify affected agents/workflows
 4. Test with existing documentation
-
-### Version History
-- **2025-12-19**: Initial version integrating DIRECTORY_README_STANDARD and
-  DOC_QUALITY_CHECKLIST for .opencode AI system
-
 
 ---
 

@@ -219,7 +219,3 @@ TODO.md updated. Added 2 new tasks, updated 3 task statuses to [COMPLETED].
 - **subagent-return-format.md**: Defines return format from subagents
 - **command-argument-handling.md**: Defines argument parsing for commands
 - **summary.md**: Defines summary content guidelines
-
-## Version History
-
-- **v1.0** (2026-01-03): Initial standard created for task 277

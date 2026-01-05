@@ -28,8 +28,44 @@
 - **Lean Intent**: false
 ```
 
+## Plan Metadata Schema
+
+Plans may include a `plan_metadata` object in state.json tracking plan characteristics:
+
+```json
+{
+  "phases": 5,
+  "total_effort_hours": 8,
+  "complexity": "medium",
+  "research_integrated": true,
+  "plan_version": 1,
+  "reports_integrated": [
+    {
+      "path": "reports/research-001.md",
+      "integrated_in_plan_version": 1,
+      "integrated_date": "2026-01-05"
+    }
+  ]
+}
+```
+
+**Field Descriptions**:
+- `phases`: Number of implementation phases in plan
+- `total_effort_hours`: Total estimated effort across all phases
+- `complexity`: Plan complexity (simple, medium, complex)
+- `research_integrated`: Boolean indicating if research was incorporated
+- `plan_version`: Plan version number (1 for initial, increments with revisions)
+- `reports_integrated`: Array tracking which research reports were integrated into which plan versions
+
+**reports_integrated Schema**:
+- `path`: Relative path to research report (e.g., "reports/research-001.md")
+- `integrated_in_plan_version`: Plan version that integrated this report
+- `integrated_date`: Date report was integrated (YYYY-MM-DD format)
+
+**Backward Compatibility**: Plans without `reports_integrated` field use empty array default.
+
 ## Structure
-1. **Overview** – 2-4 sentences: problem, scope, constraints, definition of done.
+1. **Overview** – 2-4 sentences: problem, scope, constraints, definition of done. May include "Research Integration" subsection listing integrated reports.
 2. **Goals & Non-Goals** – bullets.
 3. **Risks & Mitigations** – bullets.
 4. **Implementation Phases** – under `## Implementation Phases` with each phase at level `###` and including a status marker at the end of the heading.

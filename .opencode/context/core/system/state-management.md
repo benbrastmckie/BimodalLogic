@@ -196,6 +196,38 @@ This standard defines the complete state management system for ProofChecker, inc
 }
 ```
 
+### Plan Metadata Schema
+
+Active projects may include `plan_metadata` tracking plan characteristics and research integration:
+
+```json
+{
+  "project_number": 300,
+  "plan_path": ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md",
+  "plan_metadata": {
+    "phases": 4,
+    "total_effort_hours": 4,
+    "complexity": "medium",
+    "research_integrated": true,
+    "plan_version": 1,
+    "reports_integrated": [
+      {
+        "path": "reports/research-001.md",
+        "integrated_in_plan_version": 1,
+        "integrated_date": "2026-01-05"
+      }
+    ]
+  }
+}
+```
+
+**reports_integrated Field**:
+- Tracks which research reports were integrated into which plan versions
+- Enables detection of new reports created after last plan version
+- Used by planner during plan revisions to avoid re-integrating old research
+- Array of objects with `path`, `integrated_in_plan_version`, `integrated_date`
+- Backward compatible: Missing field defaults to empty array
+
 ### Archive State File
 
 **Location**: `.opencode/specs/archive/state.json`
@@ -538,17 +570,6 @@ All state files include:
 - **MAJOR**: Breaking changes requiring migration
 - **MINOR**: New optional fields (backward compatible)
 - **PATCH**: Documentation or clarification only
-
-### Version History
-
-**1.0.0** (2025-12-27):
-- Initial standardized schema
-- Includes: project numbering, active/completed projects, health metrics
-
-**1.1.0** (2025-12-28):
-- Added `review_artifacts` array to `repository_health`
-- Tracks review summary artifacts created by /review command
-- Optional field (backward compatible)
 
 ---
 

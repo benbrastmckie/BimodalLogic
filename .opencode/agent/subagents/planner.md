@@ -132,7 +132,7 @@ lifecycle:
   </step_0_preflight>
 
   <step_1>
-    <action>Read task from .opencode/specs/TODO.md</action>
+    <action>Read task and detect new reports (if revision)</action>
     <process>
       1. Extract task entry using grep (selective loading):
          ```bash
@@ -142,28 +142,153 @@ lifecycle:
       3. Extract task description, language, priority from task entry
       4. Extract any existing artifact links (research, previous plans)
       5. Validate task has sufficient detail for planning
+      
+      6. If revision_mode == true (from step_0):
+         a. Extract plan_path from state.json:
+            ```bash
+            plan_path=$(jq -r --arg num "$task_number" \
+              '.active_projects[] | select(.project_number == ($num | tonumber)) | .plan_path // ""' \
+              .opencode/specs/state.json)
+            ```
+         
+         b. Validate plan_path consistency:
+            - If plan_path is non-empty AND file doesn't exist: ABORT with error
+            - Error message: "Inconsistent state: plan_path in state.json points to missing file. Run /plan to create initial plan."
+         
+         c. If plan_path exists, read existing plan metadata:
+            ```bash
+            # Extract reports_integrated from state.json plan_metadata
+            reports_integrated=$(jq -r --arg num "$task_number" \
+              '.active_projects[] | select(.project_number == ($num | tonumber)) | .plan_metadata.reports_integrated // []' \
+              .opencode/specs/state.json)
+            
+            # Get plan file mtime for timestamp comparison
+            if [ -f "$plan_path" ]; then
+              plan_mtime=$(stat -c %Y "$plan_path" 2>/dev/null || echo 0)
+            else
+              plan_mtime=0
+            fi
+            ```
+         
+         d. Scan reports directory for all research reports:
+            ```bash
+            # Determine project directory from task_number
+            project_dir=$(find .opencode/specs -maxdepth 1 -type d -name "${task_number}_*" | head -1)
+            reports_dir="${project_dir}/reports"
+            
+            # Scan for research reports if directory exists
+            new_reports=()
+            if [ -d "$reports_dir" ]; then
+              for report in "$reports_dir"/research-*.md; do
+                [ -f "$report" ] || continue
+                
+                # Get report mtime
+                report_mtime=$(stat -c %Y "$report")
+                
+                # Compare timestamps: report created after plan = NEW
+                if [ "$report_mtime" -gt "$plan_mtime" ]; then
+                  new_reports+=("$report")
+                fi
+              done
+            fi
+            ```
+         
+         e. Pass new_reports list to step_2 for integration
+         
+      7. Else (first plan, revision_mode == false):
+         - All reports are considered "new"
+         - Pass all reports to step_2
     </process>
-    <validation>Task exists and has sufficient detail for planning</validation>
-    <output>Task details and existing artifact links</output>
+    <validation>
+      - Task exists and has sufficient detail for planning
+      - If revision: plan_path file exists if plan_path set in state.json
+      - If revision: new_reports list contains only reports with mtime > plan_mtime
+    </validation>
+    <output>
+      - Task details and existing artifact links
+      - new_reports list (if revision_mode)
+      - reports_integrated list from previous plan (if revision_mode)
+    </output>
   </step_1>
 
   <step_2>
-    <action>Harvest research findings if available</action>
+    <action>Harvest research findings and generate integration summary</action>
     <process>
-      1. Check extracted task entry for research artifact links
-      2. If research links found:
-         a. Read research report (research-001.md)
-         b. Read research summary if exists
-         c. Extract key findings and recommendations
-         d. Incorporate into plan context
-      3. If no research: Proceed without research inputs
-      4. Note research inputs in plan metadata
+      1. Determine which reports to process:
+         - If revision_mode == true: Use new_reports list from step_1
+         - Else (first plan): Use all research artifact links from task entry
+      
+      2. If no reports to process:
+         - Proceed without research inputs
+         - Set research_integrated = false
+         - Skip to step 3
+      
+      3. For each NEW report to integrate:
+         a. Read report file
+         b. Extract key findings and recommendations from report
+         c. Extract report creation date from report metadata or file mtime
+         d. Incorporate findings into plan context
+         e. Build reports_integrated metadata entry:
+            ```json
+            {
+              "path": "reports/research-NNN.md",
+              "integrated_in_plan_version": {plan_version},
+              "integrated_date": "{YYYY-MM-DD}"
+            }
+            ```
+      
+      4. Generate integration summary for plan Overview section:
+         
+         a. If revision_mode == true:
+            - Create "Research Integration" subsection with two parts:
+            
+            **New Reports** (reports integrated in this plan version):
+            ```markdown
+            ### Research Integration
+            
+            This plan integrates findings from {N} new research report(s) created since plan v{previous_version}:
+            
+            **New Reports**:
+            - **research-NNN.md** (YYYY-MM-DD): {brief description}
+              - Key Finding: {finding 1}
+              - Key Finding: {finding 2}
+              - Recommendation: {recommendation}
+            
+            **Previously Integrated** (from plan v{previous_version}):
+            - research-001.md: {brief description from previous plan}
+            ```
+         
+         b. If first plan (revision_mode == false):
+            - Create "Research Integration" subsection listing all integrated reports:
+            ```markdown
+            ### Research Integration
+            
+            This plan integrates findings from {N} research report(s):
+            
+            **Integrated Reports**:
+            - **research-001.md** (YYYY-MM-DD): {brief description}
+              - Key Finding: {finding}
+              - Recommendation: {recommendation}
+            ```
+      
+      5. Combine reports_integrated entries:
+         - If revision: Merge new entries with previous reports_integrated from step_1
+         - If first plan: Use only new entries
+         - Result: Complete reports_integrated array for plan_metadata
+      
+      6. Set research_integrated = true if any reports processed
     </process>
     <conditions>
-      <if test="research_links_exist">Load and incorporate research findings</if>
-      <else>Proceed without research inputs</else>
+      <if test="revision_mode == true">Process only new_reports from step_1</if>
+      <if test="revision_mode == false">Process all research artifact links</if>
+      <if test="no_reports">Proceed without research inputs</if>
     </conditions>
-    <output>Research findings or empty if no research</output>
+    <output>
+      - Research findings incorporated into plan context
+      - Integration summary for plan Overview section
+      - reports_integrated metadata array (complete list for this plan version)
+      - research_integrated boolean flag
+    </output>
   </step_2>
 
   <step_3>
@@ -207,6 +332,7 @@ lifecycle:
       5. Populate plan sections:
          - Metadata (task, status, effort, language, etc.)
          - Overview (problem, scope, constraints, definition of done)
+           * If research_integrated == true: Include "Research Integration" subsection from step_2
          - Goals and Non-Goals
          - Risks and Mitigations
          - Implementation Phases (each phase with [NOT STARTED] marker)
@@ -218,7 +344,7 @@ lifecycle:
        7. Follow plan.md formatting exactly
     </process>
     <validation>Plan follows plan.md standard exactly</validation>
-    <output>Implementation plan artifact</output>
+    <output>Implementation plan artifact with research integration summary (if applicable)</output>
   </step_5>
 
   <step_6>

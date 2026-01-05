@@ -705,7 +705,3 @@ temperature: 0.7  # Too high for implementation
 See `.opencode/context/index.md` for navigation to all context files.
 
 ---
-
-## Version History
-
-- **1.0.0** (2025-12-29): Initial standard with 13 essential fields, 3-tier validation, comprehensive examples
