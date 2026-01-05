@@ -30,18 +30,6 @@ technical_debt:
 
 ## High Priority
 
-### 314. Conduct systematic review to complete context refactor plan aims
-- **Effort**: 16-24 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Conduct a systematic review of the opencode system to complete all aims of the original context refactor plan (.opencode/specs/context-refactor-plan.md) given recent changes. The plan aims to: (1) Eliminate redundancy by consolidating 47 files to 35 files (26% reduction), (2) Document ProofChecker's three-layer delegation architecture, (3) Improve naming consistency, (4) Reorganize context structure (orchestration, formats, standards, workflows, templates, schemas), (5) Update all references across agent/command/context files, (6) Integrate state.json optimization documentation. Review current state against plan objectives, identify completed work, remaining work, and any deviations requiring plan updates.
-
----
-
 ### 312. Fix workflow command postflight failures causing missing artifact links and status updates
 - **Effort**: 6-8 hours
 - **Status**: [ABANDONED]
@@ -1126,9 +1114,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 240. Systematically Investigate And Fix Persistent Workflow Command Stage 7 Postflight Failures
 - **Effort**: 56.0
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: User requested abandonment
+- **Status**: [PLANNING]
 - **Priority**: Critical
 - **Language**: markdown
 - **Artifacts**:
@@ -1140,9 +1126,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 265. Clean Up Context Directory Structure By Migrating Common To Core And Removing Archive
 - **Effort**: TBD
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: User requested abandonment
+- **Status**: [REVISING]
 - **Priority**: High
 - **Language**: markdown
 - **Artifacts**:
@@ -1155,9 +1139,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 266. Fix Research Command Language Based Routing To Properly Invoke Lean Research Agent For Lean Tasks
 - **Effort**: 6.0
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: User requested abandonment
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: markdown
 - **Artifacts**:
