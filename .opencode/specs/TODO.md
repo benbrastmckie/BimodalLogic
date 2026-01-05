@@ -30,6 +30,30 @@ technical_debt:
 
 ## High Priority
 
+### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
+- **Effort**: 15-20 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.
+
+---
+
+### 316. Implement tactic integration for modal_search tactic (Phase 2)
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Implement Phase 2 of task 260: Tactic Integration. Create modal_search tactic that constructs proofs in tactic mode, avoiding Prop vs Type issues. This phase is prioritized over Phase 1 as it may be easier than programmatic proof term construction and is more useful for end users (interactive proof development). Integrate with existing ProofSearch.lean infrastructure.
+
+---
+
 ### 314. Conduct systematic review to complete context refactor plan aims
 - **Effort**: 16-24 hours
 - **Status**: [NOT STARTED]
@@ -42,23 +66,6 @@ technical_debt:
 
 ---
 
-### 312. Fix workflow command postflight failures causing missing artifact links and status updates
-- **Effort**: 6-8 hours
-- **Status**: [ABANDONED]
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/312_fix_workflow_command_postflight_failures/reports/research-001.md)
-- **Researched**: 2026-01-05
-- **Plan**: [Implementation Plan v2](.opencode/specs/312_fix_workflow_command_postflight_failures/plans/implementation-002.md)
-- **Planned**: 2026-01-05
-- **Revised**: 2026-01-05
-- **Abandoned**: 2026-01-05
-
-**Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 307 created research-001.md but task status remains [RESEARCHED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.
-
----
 
 
 
@@ -79,41 +86,6 @@ technical_debt:
 
 
 
-### 301. Enhance Revise Command with Dual-Mode Routing
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Dependencies**: 299, 300
-- **Research**: [Research Report](.opencode/specs/301_enhance_revise_command_with_dual_mode_routing/reports/research-001.md)
-- **Researched**: 2026-01-05
-- **Plan**: [Implementation Plan](.opencode/specs/301_enhance_revise_command_with_dual_mode_routing/plans/implementation-001.md)
-- **Planned**: 2026-01-05
-- **Implementation**: [Implementation Summary](.opencode/specs/301_enhance_revise_command_with_dual_mode_routing/summaries/implementation-summary-20260105.md)
-- **Completed**: 2026-01-05
-
-**Description**: Update `/revise` command to detect plan presence and route to either task-reviser (no plan) or planner (plan exists with report integration).
-
-**Action Items**:
-1. Update `.opencode/command/revise.md` workflow
-2. Add plan existence detection in Stage 1 (ParseAndValidate)
-3. Implement dual routing logic: task-reviser vs planner
-4. Pass report detection context to planner when plan exists
-5. Update command documentation with dual-mode examples
-6. Add validation for routing decision correctness
-
-**Acceptance Criteria**:
-- [ ] Stage 1 checks for plan_path in state.json
-- [ ] If plan_path empty/missing: route to task-reviser
-- [ ] If plan_path exists: route to planner with report context
-- [ ] Planner receives flag to check for new reports
-- [ ] Command documentation updated with both modes
-- [ ] Examples added for task-only and task+plan revision
-- [ ] Validation ensures correct routing based on plan presence
-
-**Impact**: Provides flexible revision workflow supporting both early-stage task refinement and plan updates with research integration.
-
----
 
 ### 302. Test Dual-Mode Revision Workflow
 - **Effort**: 2 hours
@@ -178,9 +150,8 @@ technical_debt:
 
 ### 260. Proof Search
 - **Effort**: 40-60 hours
-- **Status**: [PARTIAL]
+- **Status**: [BLOCKED]
 - **Started**: 2026-01-05
-- **Completed**: 2026-01-05
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: Axiom refactor (Prop → Type) or Classical.choice research
@@ -311,6 +282,30 @@ technical_debt:
 ---
 
 ## High Priority
+
+### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
+- **Effort**: 15-20 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.
+
+---
+
+### 316. Implement tactic integration for modal_search tactic (Phase 2)
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Implement Phase 2 of task 260: Tactic Integration. Create modal_search tactic that constructs proofs in tactic mode, avoiding Prop vs Type issues. This phase is prioritized over Phase 1 as it may be easier than programmatic proof term construction and is more useful for end users (interactive proof development). Integrate with existing ProofSearch.lean infrastructure.
+
+---
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
@@ -1046,26 +1041,43 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ## Medium Priority
 
-
-### 305. Remove performance cruft from all 6 modified files (3/5)
-- **Effort**: 30 minutes
-- **Status**: [COMPLETED]
+### 317. Implement BFS variant for proof search completeness (Phase 3)
+- **Effort**: 10-15 hours
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
-- **Language**: markdown
+- **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
-- **Research**: [Research Report](305_remove_performance_cruft_from_all_6_modified_files_3_5/reports/research-001.md)
-- **Researched**: 2026-01-05
-- **Plan**: [implementation-001.md](305_remove_performance_cruft_from_all_6_modified_files_3_5/plans/implementation-001.md)
-- **Planned**: 2026-01-05
-- **Implementation**: [Implementation Summary](305_remove_performance_cruft_from_all_6_modified_files_3_5/summaries/implementation-summary-20260105.md)
-- **Completed**: 2026-01-05
 
-**Description**: Remove optimization sections from frontmatter, performance blocks from workflow stages, and verbose comments from all 6 files (todo.md, review.md, reviewer.md, meta.md, task-creator.md, state-lookup.md). Keep state-lookup.md documentation changes.
-
-**Research Summary**: Comprehensive analysis identified 3 types of cruft to remove: optimization sections in frontmatter (5 files), performance blocks in workflow stages (1 file), and verbose comments (4 files). state-lookup.md documentation changes should be preserved. Core logic changes in meta.md and task-creator.md require separate verification (task 307).
+**Description**: Implement Phase 3 of task 260: BFS Variant. Add breadth-first search variant to ProofSearch.lean to ensure completeness guarantees. Current implementation uses bounded DFS which may miss proofs. BFS variant will explore search space level-by-level, guaranteeing shortest proofs are found first.
 
 ---
+
+### 318. Implement advanced heuristics for proof search performance (Phase 4)
+- **Effort**: 12-18 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.
+
+---
+
+### 319. Expand testing for proof search automation (Phase 5)
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks.
+
+---
+
+
 
 ### 308. Final cleanup and comprehensive testing (5/5)
 - **Effort**: 15 minutes
@@ -1079,23 +1091,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 313. Configure opencode agent system to prevent permission interruptions
-- **Research**: [Research Report](.opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/reports/research-001.md)
-- **Researched**: 2026-01-05
-- **Plan**: [Implementation Plan](.opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/plans/implementation-001.md)
-- **Planned**: 2026-01-05
-- **Implementation**: [Implementation Summary](.opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/summaries/implementation-summary-20260105.md)
-- **Implemented**: 2026-01-05
-- **Effort**: 12 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Configure opencode agent system to prevent permission interruptions and ensure greater autonomy by relying on git commits for safety while avoiding other backups.
-
----
 
 ### 295. Create /sync command to synchronize TODO.md and state.json
 - **Effort**: TBD
@@ -1128,89 +1123,35 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ## High Priority
 
-### 240. Systematically Investigate And Fix Persistent Workflow Command Stage 7 Postflight Failures
-- **Effort**: 56.0
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: User requested abandonment
-- **Priority**: Critical
-- **Language**: markdown
-- **Artifacts**:
-  - .opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md
-
-**Description**: Task 240
-
----
-
-### 265. Clean Up Context Directory Structure By Migrating Common To Core And Removing Archive
-- **Effort**: TBD
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: User requested abandonment
+### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
+- **Effort**: 15-20 hours
+- **Status**: [NOT STARTED]
 - **Priority**: High
-- **Language**: markdown
-- **Artifacts**:
-  - .opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/reports/research-001.md
-  - .opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
 
-**Description**: Task 265
+**Description**: Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.
 
 ---
 
-### 266. Fix Research Command Language Based Routing To Properly Invoke Lean Research Agent For Lean Tasks
-- **Effort**: 6.0
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: User requested abandonment
+### 316. Implement tactic integration for modal_search tactic (Phase 2)
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
 - **Priority**: High
-- **Language**: markdown
-- **Artifacts**:
-  - .opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/reports/research-001.md
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
 
-**Description**: Task 266
-
-
----
-
-### 271. Revise Meta Command Task Creation
-- **Effort**: 13.0
-- **Status**: [ABANDONED]
-- **Priority**: High
-- **Language**: markdown
-- **Abandoned**: 2026-01-05
-- **Abandonment Reason**: Task has been effectively implemented. The /meta command now creates tasks with plan artifacts instead of directly implementing the system (Stage 7: CreateTasksWithArtifacts). The core functionality described in task 271 is already present in the codebase, making this task redundant.
-- **Artifacts**:
-  - .opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md
-  - .opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md
-
-**Description**: Task 271
+**Description**: Implement Phase 2 of task 260: Tactic Integration. Create modal_search tactic that constructs proofs in tactic mode, avoiding Prop vs Type issues. This phase is prioritized over Phase 1 as it may be easier than programmatic proof term construction and is more useful for end users (interactive proof development). Integrate with existing ProofSearch.lean infrastructure.
 
 ---
 
 
-### 280. Fix Orchestrator Stage 4 Validation To Enforce Subagent Return Format And Prevent Phantom Research
-- **Effort**: 6.0
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: markdown
-- **Artifacts**:
-  - .opencode/specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md
-  - .opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-001.md
-  - .opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-002.md
-  - .opencode/specs/280_fix_orchestrator_stage_4_validation/validation-template.md
-  - .opencode/specs/280_fix_orchestrator_stage_4_validation/summaries/implementation-summary-20260105.md
-  - .opencode/command/research.md
-  - .opencode/command/plan.md
-  - .opencode/command/revise.md
-  - .opencode/command/implement.md
-  - .opencode/context/core/system/validation-rules.md
-  - .opencode/context/core/system/validation-strategy.md
-- **Revised**: 2026-01-05
-- **Completed**: 2026-01-05
 
-**Description**: Add subagent return validation to command files to prevent phantom operations and enforce return format. Implemented Stage 3 (ValidateReturn) in all workflow commands (/research, /plan, /revise, /implement) with 5 validation steps: JSON structure, required fields, status enum, session ID, and artifacts (if status=completed). Prevents phantom research/planning/implementation by validating artifacts exist and are non-empty before relaying results to user.
 
----
+
+
 
 ### 282. Add Json Return Format Enforcement To Subagent Invocation
 - **Effort**: TBD
@@ -1236,6 +1177,42 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ---
 
 ## Medium Priority
+
+### 317. Implement BFS variant for proof search completeness (Phase 3)
+- **Effort**: 10-15 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Implement Phase 3 of task 260: BFS Variant. Add breadth-first search variant to ProofSearch.lean to ensure completeness guarantees. Current implementation uses bounded DFS which may miss proofs. BFS variant will explore search space level-by-level, guaranteeing shortest proofs are found first.
+
+---
+
+### 318. Implement advanced heuristics for proof search performance (Phase 4)
+- **Effort**: 12-18 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.
+
+---
+
+### 319. Expand testing for proof search automation (Phase 5)
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks.
+
+---
 
 ### 259. Automation Tactics
 - **Effort**: 20.0
