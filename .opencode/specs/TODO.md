@@ -63,7 +63,7 @@ technical_debt:
   - Research Report: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md]
 
 **Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-002.md]
+  - Implementation Plan: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-003.md]
 
 - **Priority**: High
 - **Language**: meta
