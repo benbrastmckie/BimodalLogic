@@ -90,8 +90,8 @@ technical_debt:
   - Research Report: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md]
 
 **Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-001.md]
-
+  - Implementation Plan v1: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-001.md]
+  - Implementation Plan v2 (current): [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-002.md]
 ---
 
 
