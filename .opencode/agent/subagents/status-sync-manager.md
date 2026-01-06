@@ -54,7 +54,7 @@ lifecycle:
 
 <inputs_required>
   <parameter name="operation" type="string">
-    Operation to perform: update_status, create_task, archive_tasks
+    Operation to perform: update_status, create_task, archive_tasks, update_task_metadata
   </parameter>
   <parameter name="task_number" type="integer">
     Task number to update (for update_status operation)
@@ -119,6 +119,9 @@ lifecycle:
   <parameter name="validated_artifacts" type="array" optional="true">
     Artifacts validated by subagents before linking (replaces artifact_links)
   </parameter>
+  <parameter name="updated_fields" type="object" optional="true">
+    Fields to update for update_task_metadata operation (description, priority, effort, dependencies)
+  </parameter>
 </inputs_required>
 
 <inputs_forbidden>
@@ -134,8 +137,9 @@ lifecycle:
       1. Check operation parameter value
       2. If operation == "create_task": Execute create_task_flow
       3. If operation == "archive_tasks": Execute archive_tasks_flow
-      4. If operation == "update_status" or not specified: Execute update_status_flow (default)
-      5. If operation invalid: Return error
+      4. If operation == "update_task_metadata": Execute update_task_metadata_flow
+      5. If operation == "update_status" or not specified: Execute update_status_flow (default)
+      6. If operation invalid: Return error
     </process>
     <validation>Operation parameter is valid</validation>
     <output>Routed to appropriate operation flow</output>
@@ -366,6 +370,111 @@ lifecycle:
       <output>Standardized return object with archived count</output>
     </step_4_return>
   </archive_tasks_flow>
+
+  <update_task_metadata_flow>
+    <step_0_validate_inputs>
+      <action>Validate update_task_metadata inputs</action>
+      <process>
+        1. Validate required inputs:
+           - task_number: Positive integer
+           - updated_fields: Non-empty object with at least one field
+           - Valid fields: description, priority, effort, dependencies
+        
+        2. Validate state.json exists and is readable
+        
+        3. Validate TODO.md exists and is readable
+        
+        4. Validate task exists in state.json active_projects:
+           - Find task by project_number
+           - If not found: Return error "Task {task_number} not found"
+        
+        5. Validate each field in updated_fields:
+           - If description provided: Validate 50-500 characters
+           - If priority provided: Validate is "Low", "Medium", or "High"
+           - If effort provided: Validate non-empty string
+           - If dependencies provided: Validate is array of integers, each task exists
+        
+        6. If validation fails: abort with clear error message
+      </process>
+      <validation>All inputs valid, task exists, fields valid</validation>
+      <output>Validated inputs</output>
+    </step_0_validate_inputs>
+
+    <step_1_prepare_updates>
+      <action>Prepare TODO.md and state.json updates in memory</action>
+      <process>
+        1. Read current TODO.md content
+        2. Read current state.json content
+        3. NO BACKUP FILES CREATED (git-only rollback)
+        
+        4. Update TODO.md task entry:
+           - Find task entry by searching for "### {task_number}."
+           - For each field in updated_fields:
+             * If description: Update **Description** line
+             * If priority: Update **Priority** line
+             * If effort: Update **Effort** line
+             * If dependencies: Update **Dependencies** line
+           - Preserve all other fields and formatting
+        
+        5. Update state.json:
+           - Parse state.json
+           - Find task in active_projects by project_number
+           - For each field in updated_fields:
+             * Update corresponding field in task object
+           - Update last_updated timestamp to current date
+           - Validate updated JSON is well-formed
+        
+        6. Validate both updates well-formed
+      </process>
+      <validation>Updates prepared correctly</validation>
+      <output>Updated TODO.md and state.json content in memory</output>
+    </step_1_prepare_updates>
+
+    <step_2_commit>
+      <action>Commit updates atomically using atomic write pattern</action>
+      <process>
+        1. Generate unique temp file names (include session_id):
+           - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
+           - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
+        
+        2. Write to temp files:
+           - Write updated TODO.md to todo_tmp
+           - Write updated state.json to state_tmp
+        
+        3. Verify temp files written successfully:
+           - Verify todo_tmp exists and size > 0
+           - Verify state_tmp exists and size > 0
+           - If verification fails: Remove temp files and abort
+        
+        4. Atomic rename (both files or neither):
+           - Rename todo_tmp to .opencode/specs/TODO.md (atomic)
+           - Rename state_tmp to .opencode/specs/state.json (atomic)
+           - If rename fails: Remove temp files and abort
+        
+        5. Clean up temp files on success
+      </process>
+      <rollback_on_failure>
+        If any write fails:
+        1. Remove all temp files
+        2. Return failed status with error details
+        3. Rely on git for recovery (no backup file rollback)
+      </rollback_on_failure>
+      <validation>Both files written atomically or temp files cleaned up</validation>
+      <output>Task metadata updated atomically</output>
+    </step_2_commit>
+
+    <step_3_return>
+      <action>Return success with updated fields</action>
+      <process>
+        1. Format return following subagent-return-format.md
+        2. Include fields updated
+        3. Include files updated
+        4. Include session_id from input
+        5. Return status completed or failed
+      </process>
+      <output>Standardized return object with update details</output>
+    </step_3_return>
+  </update_task_metadata_flow>
 
   <update_status_flow>
   <step_1_prepare>
@@ -1192,6 +1301,39 @@ lifecycle:
     }
     ```
   </example_success_archive_tasks>
+
+  <example_success_update_task_metadata>
+    ```json
+    {
+      "status": "completed",
+      "summary": "Atomically updated task 326 metadata: description, priority. Both TODO.md and state.json updated.",
+      "artifacts": [
+        {
+          "type": "metadata_update",
+          "path": ".opencode/specs/TODO.md",
+          "summary": "Updated description and priority fields"
+        },
+        {
+          "type": "metadata_update",
+          "path": ".opencode/specs/state.json",
+          "summary": "Updated description and priority fields, updated last_updated timestamp"
+        }
+      ],
+      "metadata": {
+        "session_id": "sess_1703606400_a1b2c3",
+        "duration_seconds": 0.9,
+        "agent_type": "status-sync-manager",
+        "delegation_depth": 2,
+        "delegation_path": ["orchestrator", "revise", "task-reviser", "status-sync-manager"],
+        "updated_fields": ["description", "priority"]
+      },
+      "errors": [],
+      "next_steps": "Task 326 metadata updated successfully. Use /plan 326 to create implementation plan.",
+      "files_updated": [".opencode/specs/TODO.md", ".opencode/specs/state.json"],
+      "rollback_performed": false
+    }
+    ```
+  </example_success_update_task_metadata>
 
   <error_handling>
     If write fails and rollback succeeds:
