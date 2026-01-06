@@ -27,6 +27,7 @@ context_loading:
     - "core/workflows/interview-patterns.md"
     - "core/standards/architecture-principles.md"
     - "core/standards/domain-patterns.md"
+    - "core/workflow/postflight-pattern.md"  # Load when creating/modifying workflow commands
   max_context_size: 60000
 delegation:
   max_depth: 3

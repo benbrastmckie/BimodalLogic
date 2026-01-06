@@ -24,6 +24,7 @@ context_loading:
     - "core/standards/command-structure.md"
     - "core/standards/command-argument-handling.md"
     - "core/system/routing-logic.md"
+    - "core/workflow/postflight-pattern.md"  # Required for workflow command creation
   max_context_size: 30000
 delegation:
   max_depth: 3
