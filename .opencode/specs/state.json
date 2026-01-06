@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T18:36:00Z",
-  "next_project_number": 322,
+  "_last_updated": "2026-01-05T00:00:00Z",
+  "next_project_number": 323,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -893,7 +893,7 @@
       "project_name": "fix_workflow_command_preflight_status_update_failures",
       "type": "bugfix",
       "phase": "planning_completed",
-      "status": "planned",
+      "status": "revised",
       "priority": "high",
       "language": "meta",
       "description": "Fix systematic preflight failures in workflow commands (/research, /plan, /revise, /implement) where status is not updated to in-progress markers ([RESEARCHING], [PLANNING], [REVISING], [IMPLEMENTING]) when starting work. Example: /research 315 does not update status to [RESEARCHING] at start. Ensure all workflow commands invoke status-sync-manager in preflight to atomically update status before delegating to subagents.",
@@ -916,24 +916,51 @@
           "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md",
           "created": "2026-01-05",
           "summary": "Implementation plan with 6 phases focusing on root cause debugging"
+        },
+        {
+          "type": "plan",
+          "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md",
+          "created": "2026-01-05",
+          "summary": "Revised plan integrating task 320 findings, error logging, and context window hypothesis"
         }
       ],
       "planned": "2026-01-05",
-      "plan_path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md",
+      "plan_path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md",
       "plan_metadata": {
         "phases": 6,
-        "total_effort_hours": 6,
+        "total_effort_hours": 5,
         "complexity": "medium",
         "research_integrated": true,
-        "plan_version": 1,
+        "plan_version": 2,
         "reports_integrated": [
           {
             "path": "reports/research-001.md",
             "integrated_in_plan_version": 1,
             "integrated_date": "2026-01-05"
+          },
+          {
+            "path": "../320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-01-05"
           }
         ]
-      }
+      },
+      "revised": "2026-01-05"
+    },
+    {
+      "project_number": 322,
+      "project_name": "add_bulk_operation_to_status_sync_manager_for_creating_updating_many_tasks",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Add new bulk operation to status-sync-manager for creating/updating many tasks, integrating with existing bulk functionality implemented for /abandon and /task --divide commands. The aim is optimization for elegant executions with bulk operations.",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T00:00:00Z",
+      "last_updated": "2026-01-05T00:00:00Z"
     }
   ],
   "completed_projects": [

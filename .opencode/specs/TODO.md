@@ -32,13 +32,14 @@ technical_debt:
 
 ### 321. Fix workflow command preflight status update failures
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [REVISED]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
 - **Researched**: 2026-01-05
 - **Planned**: 2026-01-05
+- **Revised**: 2026-01-05
 
 **Description**: Fix systematic preflight failures in workflow commands (/research, /plan, /revise, /implement) where status is not updated to in-progress markers ([RESEARCHING], [PLANNING], [REVISING], [IMPLEMENTING]) when starting work. Example: /research 315 does not update status to [RESEARCHING] at start. Ensure all workflow commands invoke status-sync-manager in preflight to atomically update status before delegating to subagents.
 
@@ -46,7 +47,8 @@ technical_debt:
   - Research Report: [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md]
 
 **Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md]
+  - Implementation Plan v1: [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md]
+  - Implementation Plan v2 (current): [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md]
 
 ---
 
@@ -56,10 +58,11 @@ technical_debt:
 - **Planned**: 2026-01-05
 
 **Research Artifacts**:
-
   - Research Report: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md]
+
 **Plan Artifacts**:
   - Implementation Plan: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-001.md]
+
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
@@ -1122,10 +1125,11 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ---
 
 ### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
-- **Effort**: 15-20 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 61-97 hours
+- **Status**: [PLANNED]
 - **Started**: 2026-01-05
 - **Researched**: 2026-01-05
+- **Planned**: 2026-01-05
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -1133,6 +1137,8 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Research**: 
   - [Initial Analysis](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-001.md)
   - [Approach Comparison for AI Training](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-002.md)
+- **Plan**:
+  - [Implementation Plan](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md)
 
 **Description**: Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.
 
@@ -1198,11 +1204,12 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 311. Refactor /abandon command to support ranges and lists of task numbers
+### 311. ✓ Refactor /abandon command to support ranges and lists of task numbers
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-05
 - **Planned**: 2026-01-05
+- **Completed**: 2026-01-05
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
@@ -1212,5 +1219,19 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Research Artifacts**:
   - Research Report: [.opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md]
-n**Plan Artifacts**:
+**Plan Artifacts**:
   - Implementation Plan: [.opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/plans/implementation-001.md]
+**Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/summaries/implementation-summary-20260105.md]
+
+### 322. Add bulk operation to status-sync-manager for creating/updating many tasks
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Add new bulk operation to status-sync-manager for creating/updating many tasks, integrating with existing bulk functionality implemented for /abandon and /task --divide commands. The aim is optimization for elegant executions with bulk operations.
+
+---
