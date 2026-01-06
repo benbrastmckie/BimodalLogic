@@ -1,19 +1,19 @@
 ---
-last_updated: 2026-01-05T15:50:00Z
+last_updated: 2026-01-05T16:38:30Z
 next_project_number: 313
 repository_health:
   overall_score: 92
   production_readiness: excellent
   last_assessed: 2026-01-04T06:25:00Z
 task_counts:
-  active: 45
+  active: 44
   completed: 84
   in_progress: 3
   not_started: 33
-  abandoned: 20
+  abandoned: 21
   total: 149
 priority_distribution:
-  high: 26
+  high: 25
   medium: 20
   low: 13
 technical_debt:
@@ -30,15 +30,31 @@ technical_debt:
 
 ## High Priority
 
-### 314. Conduct systematic review to complete context refactor plan aims
-- **Effort**: 16-24 hours
+### 320. Fix workflow command postflight failures causing missing artifact links and status updates
+- **Effort**: 6-8 hours
 - **Status**: [NOT STARTED]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
 
+**Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 314 created research-001.md but task status remains [NOT STARTED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.
+
+---
+
+### 314. Conduct systematic review to complete context refactor plan aims
+- **Effort**: 16-24 hours
+- **Status**: [RESEARCHED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+- **Researched**: 2026-01-05
+
 **Description**: Conduct a systematic review of the opencode system to complete all aims of the original context refactor plan (.opencode/specs/context-refactor-plan.md) given recent changes. The plan aims to: (1) Eliminate redundancy by consolidating 47 files to 35 files (26% reduction), (2) Document ProofChecker's three-layer delegation architecture, (3) Improve naming consistency, (4) Reorganize context structure (orchestration, formats, standards, workflows, templates, schemas), (5) Update all references across agent/command/context files, (6) Integrate state.json optimization documentation. Review current state against plan objectives, identify completed work, remaining work, and any deviations requiring plan updates.
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md]
 
 ---
 
@@ -48,13 +64,14 @@ technical_debt:
 
 ### 307. Verify or revert core logic changes in high-risk files (4/5)
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [Research Report](.opencode/specs/307_verify_or_revert_core_logic_changes_in_high_risk_files_4_5/reports/research-001.md)
 - **Researched**: 2026-01-05
+- **Abandoned**: 2026-01-05
 
 **Description**: Based on test results from task 304, either keep the core logic changes in meta.md and task-creator.md (if commands work) or revert them to previous versions (if commands fail or create_task doesn't exist). This is a critical decision point.
 
@@ -684,7 +701,7 @@ Research revealed that OpenCode has native MCP (Model Context Protocol) support 
 **Acceptance Criteria**:
 - [ ] opencode.json created with lean-lsp-mcp server configuration
 - [ ] lean-implementation-agent.md updated with MCP tool usage instructions
-- [ ] lean-research-agent.md updated with MCP tool usage instructions  
+- [ ] lean-research-agent.md updated with MCP tool usage instructions
 - [ ] MCP integration guide created in user documentation
 - [ ] Test Lean task implementation successfully uses lean-lsp-mcp tools
 - [ ] No Python import errors (using configuration-based approach)
@@ -838,7 +855,7 @@ state.json + TODO.md (synchronized)
    task_metadata=$(jq -r --arg task_num "$task_number" \
      '.active_projects[] | select(.project_number == ($task_num | tonumber))' \
      .opencode/specs/state.json)
-   
+
    # Extract specific fields
    language=$(echo "$task_metadata" | jq -r '.language // "general"')
    priority=$(echo "$task_metadata" | jq -r '.priority // "medium"')
@@ -889,7 +906,7 @@ state.json + TODO.md (synchronized)
 - [ ] No "Extract task NNN details from TODO.md" messages in command output
 - [ ] grep TODO.md only used for validation/testing, not metadata extraction
 
-**Impact**: 
+**Impact**:
 Establishes state.json as the single source of truth for task metadata, eliminating confusion about which file is authoritative. Ensures TODO.md is kept in sync as a user-facing view of state.json, but all programmatic access uses state.json. Fixes the issue observed in /implement 276 where TODO.md was being used for metadata lookup.
 
 **Related Tasks**:
@@ -981,7 +998,7 @@ Compare with researcher.md step_4_postflight (lines 331-379):
 - [ ] Behavior matches researcher.md exactly
 - [ ] No regression in Lean research functionality
 
-**Impact**: 
+**Impact**:
 Fixes the root cause of status synchronization failures for Lean tasks. Ensures lean-research-agent uses the same atomic update pattern as researcher.md via status-sync-manager and git-workflow-manager delegation. Eliminates direct file manipulation that bypasses validation and atomic updates.
 
 **Related Tasks**:
@@ -1077,13 +1094,18 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
 - **Effort**: 15-20 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2026-01-05
+- **Researched**: 2026-01-05
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [Research Report](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-001.md)
 
 **Description**: Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.
+
+**Research Findings** (2026-01-05): Analyzed three approaches with viability ratings: (1) Classical.choice (3/10) - noncomputable and complex, (2) Refactor to Type (6/10) - high-risk breaking change, (3) Tactic-Mode (9/10) - highly recommended. **Recommendation**: Implement Approach 3 (Pivot to Tactic-Mode Proof Construction) as primary solution. This avoids architectural issues, provides best user experience, aligns with Lean 4 philosophy, and is computable/testable. Implement Phase 2 of Task 260 (modal_search tactic) instead of Phase 1 (programmatic proof terms). Estimated effort: 28-44 hours for tactic implementation.
 
 ---
 
@@ -1152,4 +1174,3 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Dependencies**: None
 
 **Description**: Refactor the /abandon command to accept a range or list of task numbers (e.g., '293-295, 302, 303') to abandon multiple tasks in a single invocation. This enables efficient bulk abandonment of tasks without requiring multiple command executions.
-
