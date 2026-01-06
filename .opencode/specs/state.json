@@ -873,7 +873,7 @@
       "project_name": "investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321",
       "type": "bugfix",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researched",
       "priority": "high",
       "language": "meta",
       "description": "Investigate and prove the root cause of persistent workflow command postflight failures where artifacts are created but TODO.md is not updated with status markers or artifact links. Task 323 provides a concrete test case: /research 323 created research-001.md and updated state.json correctly, but TODO.md still shows [NOT STARTED] with no artifact links. This contradicts task 320 plan (implementation-005.md) which claims task 321 already fixed all critical bugs. Study the workflow execution report, compare expected vs actual behavior, identify the specific failure point in the preflight/postflight process, and prove the root cause with evidence before attempting any solution.",
@@ -881,7 +881,11 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T00:00:00Z",
-      "last_updated": "2026-01-05T00:00:00Z"
+      "last_updated": "2026-01-06",
+      "research_completed": "2026-01-06",
+      "artifacts": [
+        ".opencode/specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/reports/research-001.md"
+      ]
     },
     {
       "project_number": 325,
