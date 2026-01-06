@@ -59,8 +59,8 @@ lifecycle:
 <task>
   Revise task metadata (description, priority, effort, dependencies) atomically:
   1. Extract task metadata from state.json
-  2. Prompt user for revision details
-  3. Validate all inputs
+  2. Parse revision request from revision_context (non-interactive)
+  3. Validate all parsed changes
   4. Delegate to status-sync-manager for atomic updates
   5. Create git commit via git-workflow-manager
   6. Return standardized result
@@ -79,8 +79,8 @@ lifecycle:
     
     ALLOWED ACTIVITIES:
     - Reading state.json to extract task metadata
-    - Prompting user for revision details
-    - Validating user inputs
+    - Parsing revision request from revision_context (non-interactive)
+    - Validating parsed changes
     - Delegating to status-sync-manager for atomic updates
     - Delegating to git-workflow-manager for commits
     - Returning task details to user
@@ -113,6 +113,24 @@ lifecycle:
     If plan exists: Return error directing user to use /revise for plan revision.
     Plan detection: Check state.json for plan_path field (empty or missing = no plan).
   </plan_detection>
+  
+  <non_interactive_execution>
+    CRITICAL: This agent MUST execute non-interactively.
+    
+    FORBIDDEN:
+    - Asking user for confirmation ("Would you like me to proceed?")
+    - Prompting user for input ("Enter new description:")
+    - Requesting user approval ("Please confirm these changes:")
+    - Displaying proposed changes and waiting for response
+    
+    REQUIRED:
+    - Parse revision request from revision_context immediately
+    - Execute changes without confirmation
+    - Return results directly
+    
+    The user specifies what to change in the /revise command itself.
+    The agent executes the request without asking for permission.
+  </non_interactive_execution>
 </critical_constraints>
 
 <inputs_required>
@@ -176,72 +194,71 @@ lifecycle:
     <checkpoint>Inputs validated, task metadata extracted, no plan exists</checkpoint>
   </step_0_preflight>
 
-  <step_1_display_current_metadata>
-    <action>Display current task metadata to user</action>
+  <step_1_parse_revision_request>
+    <action>Parse revision request from user prompt</action>
     <process>
-      1. Format current task metadata for display:
-         ```
-         Current Task Metadata for Task {task_number}:
+      1. Extract revision_context from inputs (passed from /revise command)
+         - revision_context contains user's revision request
+         - Example: "Update description to clarify scope"
+         - Example: "Change priority to High and effort to 4 hours"
+      
+      2. Parse revision_context to extract requested changes:
+         a. Check for description update:
+            - Look for keywords: "description", "desc", "update description to"
+            - Extract new description from context
+            - Example: "Update description to X" → new_description = "X"
          
-         - Title: {project_name}
-         - Description: {description}
-         - Priority: {priority}
-         - Effort: {effort}
-         - Language: {language}
-         - Status: {status}
-         - Dependencies: {dependencies or "None"}
-         ```
+         b. Check for priority update:
+            - Look for keywords: "priority", "prio"
+            - Extract priority value: Low, Medium, High
+            - Example: "Change priority to High" → new_priority = "High"
+         
+         c. Check for effort update:
+            - Look for keywords: "effort", "estimate"
+            - Extract effort value
+            - Example: "Set effort to 4 hours" → new_effort = "4 hours"
+         
+         d. Check for dependencies update:
+            - Look for keywords: "dependencies", "depends on", "blocked by"
+            - Extract task numbers
+            - Example: "Add dependency on task 320" → new_dependencies = [320]
       
-      2. Display to user (this will be visible in the conversation)
+      3. If no specific changes detected in revision_context:
+         - Infer from context what user wants to revise
+         - If context is vague: Use entire context as new description
+         - Log: "No specific field changes detected, using context as description update"
       
-      3. Proceed to user prompts
+      4. Store parsed changes for validation
     </process>
-    <output>Current task metadata displayed to user</output>
-  </step_1_display_current_metadata>
+    <output>Parsed revision request with specific field changes</output>
+  </step_1_parse_revision_request>
 
-  <step_2_prompt_for_revisions>
-    <action>Prompt user for revision details</action>
+  <step_2_validate_changes>
+    <action>Validate parsed changes against task standards</action>
     <process>
-      1. Prompt for new description (optional):
-         "Enter new description (50-500 characters), or press Enter to keep current:
-         Current: {current_description}"
-         
-         - If user provides input: Validate 50-500 characters
-         - If user presses Enter: Keep current description
-         - If validation fails: Re-prompt with error message
+      1. Validate description if provided:
+         - Check length: 50-500 characters
+         - If invalid: Return error "Description must be 50-500 characters"
       
-      2. Prompt for new priority (optional):
-         "Enter new priority (Low/Medium/High), or press Enter to keep current:
-         Current: {current_priority}"
-         
-         - If user provides input: Validate is "Low", "Medium", or "High"
-         - If user presses Enter: Keep current priority
-         - If validation fails: Re-prompt with error message
+      2. Validate priority if provided:
+         - Check value is "Low", "Medium", or "High" (case-insensitive)
+         - Normalize to capitalized form
+         - If invalid: Return error "Priority must be Low, Medium, or High"
       
-      3. Prompt for new effort (optional):
-         "Enter new effort estimate (e.g., '3 hours', '1 day'), or press Enter to keep current:
-         Current: {current_effort}"
-         
-         - If user provides input: Validate format (number + time unit)
-         - If user presses Enter: Keep current effort
-         - If validation fails: Re-prompt with error message
+      3. Validate effort if provided:
+         - Check format matches pattern (number + time unit)
+         - Examples: "3 hours", "1 day", "2 weeks"
+         - If invalid: Return error "Effort must be in format: number + time unit"
       
-      4. Prompt for new dependencies (optional):
-         "Enter new dependencies (comma-separated task numbers), or press Enter to keep current:
-         Current: {current_dependencies or 'None'}"
-         
-         - If user provides input: Parse comma-separated task numbers
-         - Validate each task number exists in state.json
-         - If user presses Enter: Keep current dependencies
-         - If validation fails: Re-prompt with error message
+      4. Validate dependencies if provided:
+         - Parse comma-separated task numbers
+         - For each task number:
+           * Verify task exists in state.json active_projects
+           * If not found: Return error "Task {number} not found"
+         - Build validated dependencies array
       
-      5. Prompt for revision reason (optional):
-         "Enter reason for revision (for git commit message), or press Enter to skip:"
-         
-         - If user provides input: Store for git commit
-         - If user presses Enter: Use default message
-      
-      6. Collect all user inputs
+      5. If all validations pass: Proceed to update
+      6. If any validation fails: Return error with details
     </process>
     <validation>
       - Description: 50-500 characters if provided
@@ -249,40 +266,32 @@ lifecycle:
       - Effort: Valid format if provided
       - Dependencies: All task numbers exist if provided
     </validation>
-    <output>User inputs collected and validated</output>
-  </step_2_prompt_for_revisions>
+    <output>Validated changes ready for update</output>
+  </step_2_validate_changes>
 
-  <step_3_confirm_changes>
-    <action>Display changes and confirm with user</action>
+  <step_3_prepare_update>
+    <action>Prepare update with changed fields only</action>
     <process>
-      1. Determine which fields changed:
-         - Compare new values with current values
-         - Build list of changed fields
+      1. Build updated_fields object with only changed fields:
+         - Compare new values with current values from state.json
+         - Only include fields that actually changed
+         - Example: If only description changed, updated_fields = {description: "new value"}
       
       2. If no fields changed:
-         - Display: "No changes detected. Exiting without updates."
-         - Return early with status "completed" and message "No changes made"
+         - Return early with status "completed"
+         - Message: "No changes detected in revision request"
+         - Recommendation: "Specify what to change (e.g., 'Update description to X')"
       
-      3. Display changes to user:
-         ```
-         Proposed Changes for Task {task_number}:
-         
-         {for each changed field:}
-         - {field_name}: "{old_value}" → "{new_value}"
-         ```
+      3. Log changes for debugging:
+         - Log: "Preparing update for task {task_number}"
+         - Log: "Changed fields: {list_of_changed_fields}"
+         - For each changed field:
+           * Log: "{field}: '{old_value}' → '{new_value}'"
       
-      4. Prompt for confirmation:
-         "Confirm these changes? (yes/no):"
-         
-         - If user says "yes" or "y": Proceed to delegation
-         - If user says "no" or "n": Return early with status "completed" and message "User cancelled revision"
-         - If invalid input: Re-prompt
-      
-      5. If user confirms: Proceed to status-sync-manager delegation
+      4. Proceed to delegation with updated_fields
     </process>
-    <validation>User must confirm changes before proceeding</validation>
-    <output>Changes confirmed by user or early return</output>
-  </step_3_confirm_changes>
+    <output>Updated fields prepared for atomic update</output>
+  </step_3_prepare_update>
 
   <step_4_delegate_to_status_sync>
     <action>Delegate to status-sync-manager for atomic updates</action>
@@ -290,12 +299,7 @@ lifecycle:
       1. Prepare delegation context for status-sync-manager:
          - operation: "update_task_metadata"
          - task_number: {task_number}
-         - updated_fields: {
-             description: {new_description} (if changed),
-             priority: {new_priority} (if changed),
-             effort: {new_effort} (if changed),
-             dependencies: {new_dependencies} (if changed)
-           }
+         - updated_fields: {object with only changed fields}
          - timestamp: {ISO 8601 date from $(date -I)}
          - session_id: {session_id}
          - delegation_depth: {delegation_depth + 1}
@@ -500,9 +504,9 @@ lifecycle:
 
 <notes>
   - **Task-Only Revision**: Handles revision when no plan exists
+  - **Non-Interactive**: Parses revision request from revision_context, no user prompts
   - **Atomic Updates**: Delegates to status-sync-manager for atomic TODO.md and state.json updates
-  - **User Prompts**: Guides users through revision process with clear questions
-  - **Validation**: Validates all inputs before delegation
+  - **Validation**: Validates all parsed changes before delegation
   - **Error Resilience**: Handles failures gracefully with rollback capability
   - **Git Integration**: Creates git commit via git-workflow-manager (non-critical)
   - **Standard Return**: Returns per subagent-return-format.md
