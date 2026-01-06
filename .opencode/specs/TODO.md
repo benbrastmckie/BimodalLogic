@@ -42,38 +42,6 @@ technical_debt:
 
 ---
 
-### 320. ✓ Fix workflow command postflight failures causing missing artifact links and status updates
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Planned**: 2026-01-05
-- **Revised**: 2026-01-06 (v7)
-- **Completed**: 2026-01-06
-- **Researched**: 2026-01-06
-
-**Research Artifacts**:
-  - Research Report (fix strategy based on task 324 findings): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-004.md]
-  - Research Report (status-sync-manager bugs): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md]
-  - Research Report: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md]
-  - Research Report (task 321 analysis): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-003.md]
-  - Task 323 Workflow Execution Report (empirical evidence): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/artifacts/task-323-workflow-execution-report.md]
-
-**Plan Artifacts**:
-  - Implementation Plan v7 (current): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-007.md]
-  - Implementation Plan v6: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-006.md]
-  - Implementation Plan v5 (INCORRECT): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-005.md]
-  - Implementation Plan v4: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-004.md]
-
-**Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/summaries/implementation-summary-20260106.md]
-
-
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: Task 324 (investigation of root cause - COMPLETED)
-
-- **Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. **ROOT CAUSE IDENTIFIED (2026-01-06)**: Task 324 investigation and research-004.md proved that researcher.md bypasses status-sync-manager in step_4_postflight, using direct jq commands instead. planner.md and implementer.md work correctly. Fix is straightforward: copy working pattern from planner.md to researcher.md and document correct pattern in context/core/ files for enforcement.
----
 
 ### 324. Investigate and prove root cause of persistent workflow command postflight failures after task 321
 - **Effort**: TBD
@@ -99,35 +67,6 @@ technical_debt:
 
 ---
 
-### 314. ✓ Conduct systematic review to complete context refactor plan aims
-- **Effort**: 20 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-- **Researched**: 2026-01-05
-- **Planned**: 2026-01-05
-- **Started**: 2026-01-05
-- **Completed**: 2026-01-05
-
-**Description**: Conduct a systematic review of the opencode system to complete all aims of the original context refactor plan (.opencode/specs/context-refactor-plan.md) given recent changes. The plan aims to: (1) Eliminate redundancy by consolidating 47 files to 35 files (26% reduction), (2) Document ProofChecker's three-layer delegation architecture, (3) Improve naming consistency, (4) Reorganize context structure (orchestration, formats, standards, workflows, templates, schemas), (5) Update all references across agent/command/context files, (6) Integrate state.json optimization documentation. Review current state against plan objectives, identify completed work, remaining work, and any deviations requiring plan updates.
-
-**Research Artifacts**:
-  - Research Report: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md]
-
-**Plan Artifacts**:
-  - Implementation Plan v1: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-001.md]
-  - Implementation Plan v2 (current): [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-002.md]
-
-**Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/summaries/implementation-summary-20260106.md]
-
-
-**Implementation Artifacts**:
-  - Systematic Review Report: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/systematic-review-report.md]
-  - Implementation Summary: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/summaries/implementation-summary-20260105.md]
----
 
 
 
@@ -981,6 +920,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Dependencies**: None
 
 **Description**: Add new bulk operation to status-sync-manager for creating/updating many tasks, integrating with existing bulk functionality implemented for /abandon and /task --divide commands. The aim is optimization for elegant executions with bulk operations.
+
+
+---
 
 ### 327. Review context file references and optimize context loading strategy
 - **Effort**: 4-6 hours

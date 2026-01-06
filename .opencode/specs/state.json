@@ -949,8 +949,8 @@
       "project_number": 327,
       "project_name": "review_context_file_references_and_optimize_context_loading_strategy",
       "type": "feature",
-      "phase": "planning",
-      "status": "planning",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "medium",
       "language": "meta",
       "description": "Verify that all context file references are current and valid following task 314 implementation. Conduct systematic review of context loading patterns across commands and agents to identify opportunities for optimization. Goals: (1) Eliminate broken references to deprecated context files, (2) Prevent context bloating by loading only necessary context, (3) Ensure sufficient context is loaded for each operation type, (4) Document context loading best practices.",
@@ -966,7 +966,23 @@
           "path": ".opencode/specs/327_review_context_file_references_and_optimize_context_loading_strategy/reports/research-001.md",
           "summary": "Comprehensive analysis of context file references and loading patterns with 19 broken references identified"
         }
-      ]
+      ],
+      "planning_completed": "2026-01-06",
+      "plan_path": ".opencode/specs/327_review_context_file_references_and_optimize_context_loading_strategy/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 11,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-06"
+          }
+        ]
+      }
     },
     {
       "project_number": 328,
