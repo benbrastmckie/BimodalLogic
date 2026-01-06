@@ -6,8 +6,8 @@ repository_health:
   production_readiness: excellent
   last_assessed: 2026-01-05T02:00:00Z
 task_counts:
-  active: 51
-  completed: 63
+  active: 50
+  completed: 64
   in_progress: 2
   not_started: 33
   abandoned: 6
@@ -30,9 +30,9 @@ technical_debt:
 
 ## High Priority
 
-### 321. Fix workflow command preflight status update failures
+### 321. ✓ Fix workflow command preflight status update failures
 - **Effort**: 6-8 hours
-- **Status**: [REVISED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
@@ -40,6 +40,7 @@ technical_debt:
 - **Researched**: 2026-01-05
 - **Planned**: 2026-01-05
 - **Revised**: 2026-01-05
+- **Completed**: 2026-01-05
 
 **Description**: Fix systematic preflight failures in workflow commands (/research, /plan, /revise, /implement) where status is not updated to in-progress markers ([RESEARCHING], [PLANNING], [REVISING], [IMPLEMENTING]) when starting work. Example: /research 315 does not update status to [RESEARCHING] at start. Ensure all workflow commands invoke status-sync-manager in preflight to atomically update status before delegating to subagents.
 
@@ -50,6 +51,9 @@ technical_debt:
   - Implementation Plan v1: [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md]
   - Implementation Plan v2: [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md]
   - Implementation Plan v3 (current): [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md]
+
+**Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/summaries/implementation-summary-20260105.md]
 
 ---
 

@@ -27,7 +27,9 @@
       "priority": "critical",
       "created": "2026-01-04T17:55:39Z",
       "artifacts": {
-        "plans": [".opencode/specs/260_investigate_claude_code_cli_argument_mechanism/plans/implementation-001.md"]
+        "plans": [
+          ".opencode/specs/260_investigate_claude_code_cli_argument_mechanism/plans/implementation-001.md"
+        ]
       }
     },
     {
@@ -38,9 +40,13 @@
       "status": "not_started",
       "priority": "critical",
       "created": "2026-01-04T17:55:39Z",
-      "dependencies": [260],
+      "dependencies": [
+        260
+      ],
       "artifacts": {
-        "plans": [".opencode/specs/261_redesign_argument_passing_mechanism/plans/implementation-001.md"]
+        "plans": [
+          ".opencode/specs/261_redesign_argument_passing_mechanism/plans/implementation-001.md"
+        ]
       }
     },
     {
@@ -51,9 +57,13 @@
       "status": "not_started",
       "priority": "critical",
       "created": "2026-01-04T17:55:39Z",
-      "dependencies": [261],
+      "dependencies": [
+        261
+      ],
       "artifacts": {
-        "plans": [".opencode/specs/262_update_orchestrator_for_new_argument_mechanism/plans/implementation-001.md"]
+        "plans": [
+          ".opencode/specs/262_update_orchestrator_for_new_argument_mechanism/plans/implementation-001.md"
+        ]
       }
     },
     {
@@ -64,9 +74,14 @@
       "status": "not_started",
       "priority": "critical",
       "created": "2026-01-04T17:55:39Z",
-      "dependencies": [261, 262],
+      "dependencies": [
+        261,
+        262
+      ],
       "artifacts": {
-        "plans": [".opencode/specs/263_update_all_commands_for_new_argument_mechanism/plans/implementation-001.md"]
+        "plans": [
+          ".opencode/specs/263_update_all_commands_for_new_argument_mechanism/plans/implementation-001.md"
+        ]
       }
     },
     {
@@ -77,9 +92,14 @@
       "status": "not_started",
       "priority": "critical",
       "created": "2026-01-04T17:55:39Z",
-      "dependencies": [262, 263],
+      "dependencies": [
+        262,
+        263
+      ],
       "artifacts": {
-        "plans": [".opencode/specs/264_test_and_document_argument_passing/plans/implementation-001.md"]
+        "plans": [
+          ".opencode/specs/264_test_and_document_argument_passing/plans/implementation-001.md"
+        ]
       }
     },
     {
@@ -119,7 +139,10 @@
       "created": "2026-01-05T00:00:00Z",
       "description": "Update /revise command to detect plan presence and route to either task-reviser (no plan) or planner (plan exists with report integration).",
       "estimated_hours": 3.0,
-      "dependencies": [299, 300],
+      "dependencies": [
+        299,
+        300
+      ],
       "artifacts": {}
     },
     {
@@ -133,10 +156,35 @@
       "created": "2026-01-05T00:00:00Z",
       "description": "Create comprehensive tests for the dual-mode revision workflow, covering task-only revision, plan revision without new reports, and plan revision with new reports.",
       "estimated_hours": 2.0,
-      "dependencies": [301],
+      "dependencies": [
+        301
+      ],
       "artifacts": {}
     }
   ],
-  "completed_projects": [],
+  "completed_projects": [
+    {
+      "project_number": 321,
+      "project_name": "fix_workflow_command_preflight_status_update_failures",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-05T00:00:00Z",
+      "researched": "2026-01-05",
+      "planned": "2026-01-05",
+      "revised": "2026-01-05",
+      "completed": "2026-01-05",
+      "estimated_hours": 7.0,
+      "artifacts": [
+        ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md",
+        ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md",
+        ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md",
+        ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md",
+        ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/summaries/implementation-summary-20260105.md"
+      ]
+    }
+  ],
   "archived_projects": []
 }
