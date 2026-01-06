@@ -1,20 +1,20 @@
 ---
-last_updated: 2026-01-05T18:35:00Z
-next_project_number: 322
+last_updated: 2026-01-05T00:00:00Z
+next_project_number: 326
 repository_health:
   overall_score: 92
   production_readiness: excellent
   last_assessed: 2026-01-05T02:00:00Z
 task_counts:
-  active: 50
+  active: 51
   completed: 64
   in_progress: 2
-  not_started: 33
+  not_started: 34
   abandoned: 6
-  total: 114
+  total: 115
 priority_distribution:
   high: 17
-  medium: 21
+  medium: 22
   low: 13
 technical_debt:
   sorry_count: 6
@@ -53,6 +53,18 @@ technical_debt:
 - **Dependencies**: Task 321 (completed 2026-01-05)
 
 **Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. **CRITICAL UPDATE (2026-01-05)**: Task 321 implementation has COMPLETELY SOLVED this problem by fixing all 3 critical status-sync-manager bugs (Bug #7, #3, #2), enhancing all 6 subagents with preflight/postflight verification, creating status-markers.md convention file, implementing atomic writes, and adding defense-in-depth verification checkpoints. **NO REMAINING WORK** for task 320. Recommend marking as COMPLETED.
+---
+
+### 324. Investigate and prove root cause of persistent workflow command postflight failures after task 321
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Investigate and prove the root cause of persistent workflow command postflight failures where artifacts are created but TODO.md is not updated with status markers or artifact links. Task 323 provides a concrete test case: /research 323 created research-001.md and updated state.json correctly, but TODO.md still shows [NOT STARTED] with no artifact links. This contradicts task 320 plan (implementation-005.md) which claims task 321 already fixed all critical bugs. Study the workflow execution report, compare expected vs actual behavior, identify the specific failure point in the preflight/postflight process, and prove the root cause with evidence before attempting any solution.
+
 ---
 
 ### 314. Conduct systematic review to complete context refactor plan aims
@@ -877,6 +889,30 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Dependencies**: None
 
 **Description**: Fix the /todo command to run the markdown formatter on TODO.md after completing its archival operations. This ensures TODO.md remains properly formatted after task archival.
+
+---
+
+### 325. Create --recover flag for /task command to unarchive projects
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Create a --recover flag for the /task command together with a task number as an argument that can be used to unarchive a project directory from specs/archive/, updating the specs/TODO.md and specs/state.json files accordingly.
+
+---
+
+### 326. Create --divide flag for /task command with task division capability
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Create a --divide flag for the /task command that accepts a task number as an argument. This flag should divide an existing task into an appropriate number of subtasks, mark the original task as ABANDONED with references to the new task numbers, and create the new task entries atomically.
 
 ---
 
