@@ -33,11 +33,13 @@ technical_debt:
 
 ### 320. Fix workflow command postflight failures causing missing artifact links and status updates
 - **Effort**: TBD (pending task 324 investigation)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Planned**: 2026-01-05
 - **Revised**: 2026-01-05 (v6)
+- **Researched**: 2026-01-06
 
 **Research Artifacts**:
+  - Research Report (fix strategy based on task 324 findings): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-004.md]
   - Research Report (status-sync-manager bugs): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md]
   - Research Report: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md]
   - Research Report (task 321 analysis): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-003.md]
@@ -954,4 +956,16 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Dependencies**: None
 
 **Description**: Add new bulk operation to status-sync-manager for creating/updating many tasks, integrating with existing bulk functionality implemented for /abandon and /task --divide commands. The aim is optimization for elegant executions with bulk operations.
+
+### 327. Review context file references and optimize context loading strategy
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Verify that all context file references are current and valid following task 314 implementation. Conduct systematic review of context loading patterns across commands and agents to identify opportunities for optimization. Goals: (1) Eliminate broken references to deprecated context files, (2) Prevent context bloating by loading only necessary context, (3) Ensure sufficient context is loaded for each operation type, (4) Document context loading best practices.
+
+---
 

@@ -774,7 +774,7 @@
       "project_name": "fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates",
       "type": "bugfix",
       "phase": "planning_completed",
-      "status": "planned",
+      "status": "researched",
       "priority": "high",
       "language": "meta",
       "description": "Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 314 created research-001.md but task status remains [NOT STARTED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.",
@@ -784,7 +784,7 @@
         "324"
       ],
       "created": "2026-01-05T05:31:28-08:00",
-      "last_updated": "2026-01-05T20:55:35-08:00",
+      "last_updated": "2026-01-06",
       "started": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
@@ -799,7 +799,8 @@
           "path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md",
           "created": "2026-01-05T19:36:27-08:00",
           "summary": "Analysis of 7 potential bugs in status-sync-manager with 3 critical issues directly causing task 320 symptoms"
-        }
+        },
+        ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-004.md"
       ],
       "planning_completed": "2026-01-05",
       "plan_path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-006.md",
@@ -832,7 +833,8 @@
           }
         ],
         "revision_reason": "Plan v5 was INCORRECT - claimed task 321 completed all work without empirical verification. Task 323 test proves problem STILL EXISTS: TODO.md not updated during postflight. Plan v6 waits for task 324 investigation before proposing fixes."
-      }
+      },
+      "research_completed": "2026-01-06"
     },
     {
       "project_number": 322,
