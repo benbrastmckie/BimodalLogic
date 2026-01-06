@@ -774,7 +774,7 @@
       "project_name": "fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates",
       "type": "bugfix",
       "phase": "planning_completed",
-      "status": "researched",
+      "status": "revised",
       "priority": "high",
       "language": "meta",
       "description": "Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 314 created research-001.md but task status remains [NOT STARTED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.",
@@ -803,13 +803,13 @@
         ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-004.md"
       ],
       "planning_completed": "2026-01-05",
-      "plan_path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-006.md",
+      "plan_path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-007.md",
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": null,
         "complexity": "high",
         "research_integrated": true,
-        "plan_version": 6,
+        "plan_version": 7,
         "reports_integrated": [
           {
             "path": "reports/research-001.md",
@@ -830,9 +830,14 @@
             "path": "reports/research-003.md",
             "integrated_in_plan_version": 5,
             "integrated_date": "2026-01-05"
+          },
+          {
+            "path": "reports/research-004.md",
+            "integrated_in_plan_version": 7,
+            "integrated_date": "2026-01-06"
           }
         ],
-        "revision_reason": "Plan v5 was INCORRECT - claimed task 321 completed all work without empirical verification. Task 323 test proves problem STILL EXISTS: TODO.md not updated during postflight. Plan v6 waits for task 324 investigation before proposing fixes."
+        "revision_reason": "Integrated research-004.md findings: researcher.md bypasses status-sync-manager. Fix is straightforward - copy working pattern from planner.md."
       },
       "research_completed": "2026-01-06"
     },

@@ -32,10 +32,10 @@ technical_debt:
 
 
 ### 320. Fix workflow command postflight failures causing missing artifact links and status updates
-- **Effort**: TBD (pending task 324 investigation)
-- **Status**: [RESEARCHED]
+- **Effort**: 4-6 hours
+- **Status**: [REVISED]
 - **Planned**: 2026-01-05
-- **Revised**: 2026-01-05 (v6)
+- **Revised**: 2026-01-06 (v7)
 - **Researched**: 2026-01-06
 
 **Research Artifacts**:
@@ -46,16 +46,17 @@ technical_debt:
   - Task 323 Workflow Execution Report (empirical evidence): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/artifacts/task-323-workflow-execution-report.md]
 
 **Plan Artifacts**:
-  - Implementation Plan v6 (current): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-006.md]
+  - Implementation Plan v7 (current): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-007.md]
+  - Implementation Plan v6: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-006.md]
   - Implementation Plan v5 (INCORRECT): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-005.md]
   - Implementation Plan v4: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-004.md]
 
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
-- **Dependencies**: Task 324 (investigation of root cause)
+- **Dependencies**: Task 324 (investigation of root cause - COMPLETED)
 
-- **Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. **CRITICAL CORRECTION (2026-01-05)**: Plan v5 was INCORRECT - claimed task 321 completed all work based on reading implementation summary without empirical verification. Task 323 test (see workflow execution report) proves problem STILL EXISTS: TODO.md is NOT updated during postflight despite state.json being updated correctly. Plan v6 waits for task 324 investigation to identify root cause before proposing specific fixes.
+- **Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. **ROOT CAUSE IDENTIFIED (2026-01-06)**: Task 324 investigation and research-004.md proved that researcher.md bypasses status-sync-manager in step_4_postflight, using direct jq commands instead. planner.md and implementer.md work correctly. Fix is straightforward: copy working pattern from planner.md to researcher.md and document correct pattern in context/core/ files for enforcement.
 ---
 
 ### 324. Investigate and prove root cause of persistent workflow command postflight failures after task 321
