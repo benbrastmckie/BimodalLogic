@@ -972,8 +972,8 @@
       "project_number": 328,
       "project_name": "fix_task_command_to_only_create_task_entries_and_never_implement_directly",
       "type": "feature",
-      "phase": "researching",
-      "status": "researching",
+      "phase": "research_completed",
+      "status": "researched",
       "priority": "high",
       "language": "meta",
       "description": "Fix the /task command to ensure it ONLY creates task entries in TODO.md and state.json, and NEVER implements the work described in the task. The command should parse the task description, reformulate it naturally, optionally divide into subtasks if --divide flag is present, delegate to status-sync-manager for atomic task creation, and return task numbers to the user. The command must be architecturally prevented from creating code files, running build tools, or doing any implementation work. Implementation happens later via /implement command.",
@@ -981,7 +981,11 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-06T00:00:00Z",
-      "last_updated": "2026-01-06"
+      "last_updated": "2026-01-06",
+      "research_completed": "2026-01-06",
+      "artifacts": [
+        ".opencode/specs/328_fix_task_command_to_only_create_task_entries_and_never_implement_directly/reports/research-001.md"
+      ]
     }
   ],
   "completed_projects": [
