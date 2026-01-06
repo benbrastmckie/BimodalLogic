@@ -846,7 +846,7 @@
       "project_name": "fix_/todo_command_to_run_markdown_formatter_after_completion",
       "type": "feature",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researched",
       "priority": "medium",
       "language": "meta",
       "description": "Fix the /todo command to run the markdown formatter on TODO.md after completing its archival operations. This ensures TODO.md remains properly formatted after task archival.",
@@ -854,7 +854,11 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T00:00:00Z",
-      "last_updated": "2026-01-05T00:00:00Z"
+      "last_updated": "2026-01-05",
+      "research_completed": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md"
+      ]
     }
   ],
   "completed_projects": [
