@@ -53,7 +53,7 @@ technical_debt:
 - **Blocking**: None
 - **Dependencies**: Task 324 (investigation of root cause)
 
-**Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. **CRITICAL CORRECTION (2026-01-05)**: Plan v5 was INCORRECT - claimed task 321 completed all work based on reading implementation summary without empirical verification. Task 323 test (see workflow execution report) proves problem STILL EXISTS: TODO.md is NOT updated during postflight despite state.json being updated correctly. Plan v6 waits for task 324 investigation to identify root cause before proposing specific fixes.
+- **Description**: Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. **CRITICAL CORRECTION (2026-01-05)**: Plan v5 was INCORRECT - claimed task 321 completed all work based on reading implementation summary without empirical verification. Task 323 test (see workflow execution report) proves problem STILL EXISTS: TODO.md is NOT updated during postflight despite state.json being updated correctly. Plan v6 waits for task 324 investigation to identify root cause before proposing specific fixes.
 ---
 
 ### 324. Investigate and prove root cause of persistent workflow command postflight failures after task 321
