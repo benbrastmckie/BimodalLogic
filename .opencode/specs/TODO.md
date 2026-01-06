@@ -32,15 +32,17 @@ technical_debt:
 
 
 ### 320. Fix workflow command postflight failures causing missing artifact links and status updates
-- **Effort**: 6-8 hours
+- **Effort**: 2.5 hours
 - **Status**: [PLANNED]
 - **Planned**: 2026-01-05
 
 **Research Artifacts**:
   - Research Report (status-sync-manager bugs): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md]
   - Research Report: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md]
+  - Research Report (task 321 analysis): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-003.md]
 
 **Plan Artifacts**:
+  - Implementation Plan v4 (current): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-004.md]
   - Implementation Plan: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-003.md]
 
 - **Priority**: High
