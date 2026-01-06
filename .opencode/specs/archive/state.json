@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-06T21:38:04Z",
+  "_last_updated": "2026-01-06T21:40:18Z",
   "archived_projects": [
     {
       "project_number": 126,
@@ -2131,6 +2131,178 @@
         ".opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/summaries/implementation-summary-20260105.md"
       ],
       "completed": "2026-01-05"
+    },
+    {
+      "project_number": 324,
+      "project_name": "investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321",
+      "type": "bugfix",
+      "phase": "not_started",
+      "status": "completed",
+      "priority": "high",
+      "language": "meta",
+      "description": "Investigate and prove the root cause of persistent workflow command postflight failures where artifacts are created but TODO.md is not updated with status markers or artifact links. Task 323 provides a concrete test case: /research 323 created research-001.md and updated state.json correctly, but TODO.md still shows [NOT STARTED] with no artifact links. This contradicts task 320 plan (implementation-005.md) which claims task 321 already fixed all critical bugs. Study the workflow execution report, compare expected vs actual behavior, identify the specific failure point in the preflight/postflight process, and prove the root cause with evidence before attempting any solution.",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T00:00:00Z",
+      "last_updated": "2026-01-06",
+      "research_completed": "2026-01-06",
+      "artifacts": [
+        "324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/reports/research-001.md",
+        "324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/summaries/implementation-summary-20260106.md"
+      ],
+      "planning_completed": "2026-01-06",
+      "plan_path": ".opencode/specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 7,
+        "complexity": "medium-high",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-06"
+          }
+        ]
+      },
+      "implementation_completed": "2026-01-06"
+    },
+    {
+      "project_number": 277,
+      "project_name": "improve_opencode_header_and_summary_display_for_task_commands",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "general",
+      "created": "2026-01-03T20:35:00Z",
+      "started": "2026-01-03",
+      "research_completed": "2026-01-03",
+      "planning_completed": "2026-01-03",
+      "plan_revised": "2026-01-03",
+      "last_updated": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md",
+        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md",
+        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-002.md"
+      ],
+      "estimated_hours": 3.5,
+      "research_summary": "Research into OpenCode header and summary display patterns reveals orchestrator already formats prompts as 'Task: {number}' for internal delegation but lacks user-facing headers. Recommended solution: modify orchestrator Stage 5 (PostflightCleanup) to add headers. Estimated effort: 3.5 hours (revised from 4.5 hours - removed summary conclusions as redundant with header).",
+      "plan_metadata": {
+        "phase_count": 5,
+        "estimated_hours": 3.5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 2,
+        "revision_reason": "Removed summary conclusion formatting (redundant with header display)"
+      },
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment"
+    },
+    {
+      "project_number": 300,
+      "project_name": "add_report_detection_to_planner",
+      "type": "feature",
+      "phase": "planning_completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05",
+      "effort": "4 hours",
+      "description": "Enhance the planner subagent to detect new reports created since the last plan version and integrate their findings into plan revisions.",
+      "started": "2026-01-05",
+      "research_completed": "2026-01-05",
+      "planned": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/300_add_report_detection_to_planner/reports/research-001.md",
+        ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md",
+        ".opencode/specs/300_add_report_detection_to_planner/summaries/implementation-summary-20260105.md"
+      ],
+      "plan_path": ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 4,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": ".opencode/specs/300_add_report_detection_to_planner/reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          }
+        ]
+      },
+      "research_summary": "Research completed on enhancing planner to detect new reports. Current planner harvests ALL research but cannot distinguish new reports from already-integrated ones. Solution: use filesystem timestamps (mtime) to detect reports created after last plan version. Requires plan_metadata schema extension to track reports_integrated array. 4-phase implementation (4 hours): schema extension, report detection, research harvesting enhancement, postflight integration.",
+      "completed": "2026-01-05"
+    },
+    {
+      "project_number": 304,
+      "project_name": "test_commands_after_unintended_changes_2_5",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "general",
+      "description": "Test /task, /meta, and /todo commands to verify they still work correctly after the unintended changes. Document any failures or unexpected behavior. This determines whether to keep or revert core logic changes.",
+      "effort": "30 minutes",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T08:00:00Z",
+      "last_updated": "2026-01-05",
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment via /abandon command"
+    },
+    {
+      "project_number": 309,
+      "project_name": "implement_option_1_direct_delegation_from_task_309_analysis_to_optimize_/task_command_performance",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Implement Option 1 (Direct Delegation) from task 309 analysis to optimize /task command performance. Modify /task command Stage 4 to delegate directly to status-sync-manager instead of task-creator, eliminating unnecessary delegation layer and achieving 40-50% performance improvement.",
+      "effort": "3 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T09:50:00Z",
+      "started": "2026-01-05",
+      "research_completed": "2026-01-05",
+      "last_updated": "2026-01-05T02:22:00Z",
+      "artifacts": [
+        ".opencode/specs/309_optimize_task_command_performance/reports/research-001.md",
+        ".opencode/specs/309_optimize_task_command_performance/plans/implementation-001.md",
+        ".opencode/specs/309_optimize_task_command_performance/summaries/implementation-summary-20260105.md"
+      ],
+      "planned": "2026-01-05",
+      "implemented": "2026-01-05"
+    },
+    {
+      "project_number": 310,
+      "project_name": "enhance_workflow_commands_with_start_and_end_status_updates",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Enhance workflow commands (/research, /plan, /revise, /implement) to update task status at the beginning and end of execution. Commands should set status to '[RESEARCHING]', '[PLANNING]', '[REVISING]', or '[IMPLEMENTING]' at start, report if already in progress, and update to final status ('[RESEARCHED]', '[PLANNED]', '[REVISED]', '[IMPLEMENTED]'/'[BLOCKED]'/'[PARTIAL]') at completion.",
+      "effort": "9-12 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T10:00:00Z",
+      "last_updated": "2026-01-05T02:40:00Z",
+      "research_completed": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/reports/research-001.md",
+        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md",
+        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/summaries/implementation-summary-20260105.md"
+      ],
+      "plan_path": ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md",
+      "planned": "2026-01-05",
+      "implemented": "2026-01-05"
     }
   ],
   "last_updated": "2026-01-05T08:36:08.881111Z"
