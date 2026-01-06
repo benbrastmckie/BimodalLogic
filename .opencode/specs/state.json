@@ -896,7 +896,7 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T05:31:28-08:00",
-      "last_updated": "2026-01-05T19:04:44-08:00",
+      "last_updated": "2026-01-05T19:28:51-08:00",
       "started": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
@@ -908,20 +908,21 @@
         }
       ],
       "planning_completed": "2026-01-05",
-      "plan_path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-001.md",
+      "plan_path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-002.md",
       "plan_metadata": {
         "phases": 5,
-        "total_effort_hours": 6,
+        "total_effort_hours": 5,
         "complexity": "medium",
         "research_integrated": true,
-        "plan_version": 1,
+        "plan_version": 2,
         "reports_integrated": [
           {
             "path": "reports/research-001.md",
             "integrated_in_plan_version": 1,
             "integrated_date": "2026-01-05"
           }
-        ]
+        ],
+        "revision_reason": "User clarification on priorities: MOST IMPORTANT failures are missing artifact links and status updates, not git commits. Git failures are passing failures. Focus on minimal validation and brief user feedback."
       }
     },
     {
