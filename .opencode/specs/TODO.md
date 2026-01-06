@@ -1193,8 +1193,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 311. Refactor /abandon command to support ranges and lists of task numbers
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-05
+- **Planned**: 2026-01-05
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
@@ -1204,3 +1205,5 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Research Artifacts**:
   - Research Report: [.opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md]
+n**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/plans/implementation-001.md]

@@ -702,8 +702,8 @@
       "project_number": 311,
       "project_name": "refactor_/abandon_command_to_support_ranges_and_lists_of_task_numbers",
       "type": "feature",
-      "phase": "researched",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "medium",
       "language": "meta",
       "description": "Refactor the /abandon command to accept a range or list of task numbers (e.g., '293-295, 302, 303') to abandon multiple tasks in a single invocation. This enables efficient bulk abandonment of tasks without requiring multiple command executions.",
@@ -711,11 +711,28 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T10:30:00Z",
-      "last_updated": "2026-01-05T18:36:00Z",
+      "last_updated": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
         ".opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md"
-      ]
+      ],
+      "planning_completed": "2026-01-05",
+      "plan_path": ".opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 3.5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          }
+        ]
+      },
+      "estimated_hours": 3.5
     },
     {
       "project_number": 314,
