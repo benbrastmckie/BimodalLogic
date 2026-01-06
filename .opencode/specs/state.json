@@ -702,8 +702,8 @@
       "project_number": 311,
       "project_name": "refactor_/abandon_command_to_support_ranges_and_lists_of_task_numbers",
       "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "medium",
       "language": "meta",
       "description": "Refactor the /abandon command to accept a range or list of task numbers (e.g., '293-295, 302, 303') to abandon multiple tasks in a single invocation. This enables efficient bulk abandonment of tasks without requiring multiple command executions.",
@@ -714,7 +714,8 @@
       "last_updated": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md"
+        ".opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md",
+        ".opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/summaries/implementation-summary-20260105.md"
       ],
       "planning_completed": "2026-01-05",
       "plan_path": ".opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/plans/implementation-001.md",
@@ -732,7 +733,8 @@
           }
         ]
       },
-      "estimated_hours": 3.5
+      "estimated_hours": 3.5,
+      "completed": "2026-01-05"
     },
     {
       "project_number": 314,
@@ -770,13 +772,13 @@
       "project_number": 315,
       "project_name": "research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction",
       "type": "feature",
-      "phase": "researched",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-05T08:34:20.462436Z",
-      "last_updated": "2026-01-05T18:36:09Z",
-      "effort": "15-20 hours",
+      "last_updated": "2026-01-05T19:00:00Z",
+      "effort": "61-97 hours",
       "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
       "started": "2026-01-05",
       "researched": "2026-01-05",
@@ -792,8 +794,42 @@
           "path": ".opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-002.md",
           "created": "2026-01-05T18:36:09Z",
           "summary": "Comparative analysis of Approach 2 vs 3 for AI training data generation. Findings: (1) Approach 3 is Lean 4 standard, (2) Both approaches compatible (hybrid viable), (3) Approach 2 superior for AI training (5/5 vs 0/5). Recommends hybrid strategy: tactic first (28-44h), then programmatic API (33-53h)."
+        },
+        {
+          "type": "plan",
+          "path": ".opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md",
+          "created": "2026-01-05T19:00:00Z",
+          "summary": "Hybrid implementation plan: Phase 1 (Tactic Mode, 28-44h) + Phase 2 (Refactor to Type, 33-53h). Total 23 phases, 61-97 hours."
         }
-      ]
+      ],
+      "planned": "2026-01-05",
+      "plan_path": ".opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 23,
+        "total_effort_hours": 79,
+        "complexity": "complex",
+        "research_integrated": true,
+        "language": "lean",
+        "proof_strategy": "Hybrid: Phase 1 (Tactic Mode) + Phase 2 (Refactor to Type)",
+        "mathlib_dependencies": [
+          "Lean.Elab.Tactic",
+          "Lean.Meta",
+          "Aesop"
+        ],
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          },
+          {
+            "path": "reports/research-002.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          }
+        ]
+      }
     },
     {
       "project_number": 316,
