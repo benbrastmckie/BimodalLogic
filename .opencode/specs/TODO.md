@@ -30,12 +30,24 @@ technical_debt:
 
 ## High Priority
 
-
-### 320. Fix workflow command postflight failures causing missing artifact links and status updates
+### 328. Fix /task command to only create task entries and never implement directly
 - **Effort**: 4-6 hours
-- **Status**: [REVISED]
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Fix the /task command to ensure it ONLY creates task entries in TODO.md and state.json, and NEVER implements the work described in the task. The command should parse the task description, reformulate it naturally, optionally divide into subtasks if --divide flag is present, delegate to status-sync-manager for atomic task creation, and return task numbers to the user. The command must be architecturally prevented from creating code files, running build tools, or doing any implementation work. Implementation happens later via /implement command.
+
+---
+
+### 320. ✓ Fix workflow command postflight failures causing missing artifact links and status updates
+- **Effort**: 4-6 hours
+- **Status**: [COMPLETED]
 - **Planned**: 2026-01-05
 - **Revised**: 2026-01-06 (v7)
+- **Completed**: 2026-01-06
 - **Researched**: 2026-01-06
 
 **Research Artifacts**:
@@ -50,6 +62,10 @@ technical_debt:
   - Implementation Plan v6: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-006.md]
   - Implementation Plan v5 (INCORRECT): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-005.md]
   - Implementation Plan v4: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-004.md]
+
+**Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/summaries/implementation-summary-20260106.md]
+
 
 - **Priority**: High
 - **Language**: meta
@@ -75,6 +91,10 @@ technical_debt:
   - Implementation Plan: [.opencode/specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/plans/implementation-001.md]
   - Research Report: [.opencode/specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/reports/research-001.md]
 
+**Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/summaries/implementation-summary-20260106.md]
+
+
 **Description**: Investigate and prove the root cause of persistent workflow command postflight failures where artifacts are created but TODO.md is not updated with status markers or artifact links. Task 323 provides a concrete test case: /research 323 created research-001.md and updated state.json correctly, but TODO.md still shows [NOT STARTED] with no artifact links. This contradicts task 320 plan (implementation-005.md) which claims task 321 already fixed all critical bugs. Study the workflow execution report, compare expected vs actual behavior, identify the specific failure point in the preflight/postflight process, and prove the root cause with evidence before attempting any solution.
 
 ---
@@ -99,6 +119,10 @@ technical_debt:
 **Plan Artifacts**:
   - Implementation Plan v1: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-001.md]
   - Implementation Plan v2 (current): [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-002.md]
+
+**Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/summaries/implementation-summary-20260106.md]
+
 
 **Implementation Artifacts**:
   - Systematic Review Report: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/systematic-review-report.md]
@@ -960,7 +984,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 327. Review context file references and optimize context loading strategy
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
@@ -968,5 +992,8 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Description**: Verify that all context file references are current and valid following task 314 implementation. Conduct systematic review of context loading patterns across commands and agents to identify opportunities for optimization. Goals: (1) Eliminate broken references to deprecated context files, (2) Prevent context bloating by loading only necessary context, (3) Ensure sufficient context is loaded for each operation type, (4) Document context loading best practices.
 
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/327_review_context_file_references_and_optimize_context_loading_strategy/reports/research-001.md]
 ---
 
