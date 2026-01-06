@@ -930,7 +930,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Blocking**: None
 - **Dependencies**: None
 
-**Description**: Create a --divide flag for the /task command that accepts a task number as an argument. This flag should divide an existing task into an appropriate number of subtasks, mark the original task as ABANDONED with references to the new task numbers, and create the new task entries atomically.
+**Description**: Create a --divide flag for the /task command that accepts a task number as an argument. This flag should divide an existing task into an appropriate number of subtasks, add the new task numbers as dependencies to the original task, and create the new task entries atomically.
 
 ---
 

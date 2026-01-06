@@ -935,12 +935,12 @@
       "status": "not_started",
       "priority": "medium",
       "language": "meta",
-      "description": "Create a --divide flag for the /task command that accepts a task number as an argument. This flag should divide an existing task into an appropriate number of subtasks, mark the original task as ABANDONED with references to the new task numbers, and create the new task entries atomically.",
+      "description": "Create a --divide flag for the /task command that accepts a task number as an argument. This flag should divide an existing task into an appropriate number of subtasks, add the new task numbers as dependencies to the original task, and create the new task entries atomically.",
       "effort": "TBD",
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T00:00:00Z",
-      "last_updated": "2026-01-05T00:00:00Z"
+      "last_updated": "2026-01-06T00:00:00Z"
     },
     {
       "project_number": 327,
