@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-06T04:22:52Z",
+  "_last_updated": "2026-01-06T21:38:04Z",
   "archived_projects": [
     {
       "project_number": 126,
@@ -1636,7 +1636,7 @@
         ".opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md",
         ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md"
       ],
-      "research_summary": "Comprehensive revision plan to align /meta command with research \u2192 plan \u2192 implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
+      "research_summary": "Comprehensive revision plan to align /meta command with research → plan → implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
       "estimated_hours": 13.0,
       "plan_created": "2026-01-03",
       "plan_path": ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md",
@@ -2016,6 +2016,121 @@
         ]
       },
       "revised": "2026-01-05"
+    },
+    {
+      "project_number": 320,
+      "project_name": "fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates",
+      "type": "bugfix",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "meta",
+      "description": "Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 314 created research-001.md but task status remains [NOT STARTED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.",
+      "effort": "6-8 hours",
+      "blocking": [],
+      "dependencies": [
+        "324"
+      ],
+      "created": "2026-01-05T05:31:28-08:00",
+      "last_updated": "2026-01-06",
+      "started": "2026-01-05",
+      "researched": "2026-01-05",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md",
+          "created": "2026-01-05T18:45:00Z",
+          "summary": "Comprehensive analysis of postflight failures. Root cause: silent git commit failures, not missing postflight steps."
+        },
+        {
+          "type": "research",
+          "path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md",
+          "created": "2026-01-05T19:36:27-08:00",
+          "summary": "Analysis of 7 potential bugs in status-sync-manager with 3 critical issues directly causing task 320 symptoms"
+        },
+        ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-004.md",
+        ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/summaries/implementation-summary-20260106.md"
+      ],
+      "planning_completed": "2026-01-05",
+      "plan_path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-007.md",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": null,
+        "complexity": "high",
+        "research_integrated": true,
+        "plan_version": 7,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          },
+          {
+            "path": "reports/research-002.md",
+            "integrated_in_plan_version": 3,
+            "integrated_date": "2026-01-05"
+          },
+          {
+            "path": "reports/research-003.md",
+            "integrated_in_plan_version": 4,
+            "integrated_date": "2026-01-05"
+          },
+          {
+            "path": "reports/research-003.md",
+            "integrated_in_plan_version": 5,
+            "integrated_date": "2026-01-05"
+          },
+          {
+            "path": "reports/research-004.md",
+            "integrated_in_plan_version": 7,
+            "integrated_date": "2026-01-06"
+          }
+        ],
+        "revision_reason": "Integrated research-004.md findings: researcher.md bypasses status-sync-manager. Fix is straightforward - copy working pattern from planner.md."
+      },
+      "research_completed": "2026-01-06",
+      "completed": "2026-01-06",
+      "implementation_completed": "2026-01-06"
+    },
+    {
+      "project_number": 314,
+      "project_name": "conduct_systematic_review_to_complete_context_refactor_plan_aims",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "meta",
+      "description": "Conduct a systematic review of the opencode system to complete all aims of the original context refactor plan (.opencode/specs/context-refactor-plan.md) given recent changes. The plan aims to: (1) Eliminate redundancy by consolidating 47 files to 35 files (26% reduction), (2) Document ProofChecker's three-layer delegation architecture, (3) Improve naming consistency, (4) Reorganize context structure (orchestration, formats, standards, workflows, templates, schemas), (5) Update all references across agent/command/context files, (6) Integrate state.json optimization documentation. Review current state against plan objectives, identify completed work, remaining work, and any deviations requiring plan updates.",
+      "effort": "20 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T08:23:48.417376Z",
+      "last_updated": "2026-01-05",
+      "planning_completed": "2026-01-05",
+      "plan_path": ".opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-002.md",
+      "plan_metadata": {
+        "phases": 7,
+        "total_effort_hours": 20,
+        "complexity": "high",
+        "research_integrated": true,
+        "plan_version": 2,
+        "reports_integrated": [
+          {
+            "path": ".opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          }
+        ],
+        "revision_reason": "Incorporated preflight/postflight workflow context from tasks 320 and 321 to ensure adequate (not excessive) representation of workflow standards in refactored context structure"
+      },
+      "estimated_hours": 20,
+      "revised": "2026-01-05",
+      "started": "2026-01-05",
+      "implementation_artifacts": [
+        ".opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/systematic-review-report.md",
+        ".opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/summaries/implementation-summary-20260105.md"
+      ],
+      "completed": "2026-01-05"
     }
   ],
   "last_updated": "2026-01-05T08:36:08.881111Z"

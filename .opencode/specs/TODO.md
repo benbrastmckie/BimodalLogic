@@ -32,11 +32,15 @@ technical_debt:
 
 ### 328. Fix /task command to only create task entries and never implement directly
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-06
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/328_fix_task_command_to_only_create_task_entries_and_never_implement_directly/reports/research-001.md]
 
 **Description**: Fix the /task command to ensure it ONLY creates task entries in TODO.md and state.json, and NEVER implements the work described in the task. The command should parse the task description, reformulate it naturally, optionally divide into subtasks if --divide flag is present, delegate to status-sync-manager for atomic task creation, and return task numbers to the user. The command must be architecturally prevented from creating code files, running build tools, or doing any implementation work. Implementation happens later via /implement command.
 
