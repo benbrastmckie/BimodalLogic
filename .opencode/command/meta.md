@@ -21,17 +21,18 @@ context_loading:
   max_context_size: 60000
 ---
 
-**Task Input (optional):** $ARGUMENTS (user prompt describing requirements; e.g., `/meta "I want to revise my opencode system..."`)
+**Task Input (optional):** $ARGUMENTS (task number, user prompt, or empty; e.g., `/meta 294`, `/meta "I want to revise my opencode system..."`, or `/meta`)
 
-**Usage:** `/meta [PROMPT]`
+**Usage:** `/meta [TASK_NUMBER | PROMPT]`
 
 # /meta Command
 
 ## Purpose
 
-The `/meta` command is a system builder that creates complete .opencode architectures. It can work in two modes:
-1. **Prompt Mode** (with arguments): Accepts requirements directly and proceeds with system generation
-2. **Interactive Mode** (no arguments): Conducts guided interview to gather requirements
+The `/meta` command is a system builder that creates complete .opencode architectures. It can work in three modes:
+1. **Task Mode** (with task number): Creates implementation plan for existing meta task
+2. **Prompt Mode** (with text prompt): Accepts requirements directly and proceeds with system generation
+3. **Interactive Mode** (no arguments): Conducts guided interview to gather requirements
 
 **Use this command when you need to**:
 - Create a new .opencode system for a specific domain
@@ -44,22 +45,26 @@ The `/meta` command is a system builder that creates complete .opencode architec
 ## Usage
 
 ```
-/meta [PROMPT]
+/meta [TASK_NUMBER | PROMPT]
 ```
 
+- **With task number**: Create implementation plan for existing meta task
 - **With prompt**: Provide requirements directly, skip interactive interview
-- **Without prompt**: Start interactive interview to gather requirements
+- **Without arguments**: Start interactive interview to gather requirements
 
 ### Examples
 
 ```
-# Example 1: Prompt mode - provide requirements directly
+# Example 1: Task mode - create plan for existing task
+/meta 294
+
+# Example 2: Prompt mode - provide requirements directly
 /meta "I want to revise my opencode system to add proof verification capabilities"
 
-# Example 2: Prompt mode - create new system
+# Example 3: Prompt mode - create new system
 /meta "Create a system for managing customer support tickets with automated routing"
 
-# Example 3: Interactive mode - guided interview
+# Example 4: Interactive mode - guided interview
 /meta
 > [Interactive interview follows]
 ```
@@ -68,16 +73,24 @@ The `/meta` command is a system builder that creates complete .opencode architec
 
 ## Workflow
 
-This command delegates to the `meta` agent, which executes an 8-stage workflow:
+This command delegates to the `meta` agent, which executes a 9-stage workflow:
 
-**Prompt Mode (with $ARGUMENTS):**
-- Skips Stage 1 (InitiateInterview)
+**Task Mode (with task number):**
+- Stage 1 detects task number and extracts metadata from state.json
+- Skips Stages 2-7 (interview stages)
+- Proceeds directly to Stage 8 (CreateTasksWithArtifacts) to create plan for single task
+- Continues to Stage 9 (DeliverTaskSummary)
+
+**Prompt Mode (with text prompt):**
+- Stage 1 detects prompt mode
+- Skips Stage 2 (InitiateInterview)
 - Uses $ARGUMENTS as target_domain
-- Proceeds directly to Stage 2 (GatherDomainInformation) with domain context
+- Proceeds to Stage 3 (GatherDomainInformation) with domain context
 - Continues through remaining stages
 
 **Interactive Mode (no $ARGUMENTS):**
-- Executes full 8-stage interactive interview
+- Stage 1 detects interactive mode
+- Executes full 9-stage interactive interview
 - Gathers requirements through guided questions
 
 ### Stage 0: Detect Existing Project
@@ -85,50 +98,91 @@ This command delegates to the `meta` agent, which executes an 8-stage workflow:
 - Offers merge strategies if found (extend, separate, replace, cancel)
 - Determines integration approach
 
-### Stage 1: Initiate Interview
+### Stage 1: Parse and Validate (NEW)
+- Detects mode: Task Mode (integer) → Prompt Mode (text) → Interactive Mode (empty)
+- **Task Mode**: Parses task number, validates in state.json, extracts metadata
+- **Prompt Mode**: Parses prompt text for domain context
+- **Interactive Mode**: Prepares for full interview
+- Determines which stages to execute based on mode
+
+### Stage 2: Initiate Interview
+- **Conditional**: Skipped in Task Mode and Prompt Mode
 - Explains the meta-programming process
 - Sets expectations for interview stages
 - Confirms user readiness to proceed
 
-### Stage 2: Gather Domain Information
+### Stage 3: Gather Domain Information
+- **Conditional**: Skipped in Task Mode; pre-populated in Prompt Mode
 - Asks about domain, purpose, and target users
 - Captures high-level requirements
 - Identifies domain type (development, business, hybrid, formal verification)
 
-### Stage 3: Identify Use Cases
+### Stage 4: Identify Use Cases
+- **Conditional**: Skipped in Task Mode
 - Explores top 3-5 use cases
 - Assesses complexity and dependencies
 - Prioritizes capabilities
 
-### Stage 4: Assess Complexity
+### Stage 5: Assess Complexity
+- **Conditional**: Skipped in Task Mode
 - Determines agent count and hierarchy
 - Identifies knowledge types needed
 - Plans state management approach
 
-### Stage 5: Identify Integrations
+### Stage 6: Identify Integrations
+- **Conditional**: Skipped in Task Mode
 - Discovers external tool requirements
 - Plans file operations and custom commands
 - Maps integration points
 
-### Stage 6: Review and Confirm
+### Stage 7: Review and Confirm
+- **Conditional**: Skipped in Task Mode
 - Presents comprehensive architecture summary
 - Gets user confirmation
 - Validates understanding before generation
 
-### Stage 7: Create Tasks With Artifacts
-- Determines task breakdown based on system complexity
-- Creates project directories in .opencode/specs/NNN_*/
-- Generates plan artifacts ONLY (plans/implementation-001.md)
-- Creates task entries in TODO.md with Type field set to 'meta'
-- Updates state.json with task metadata and increments next_project_number
+### Stage 8: Create Tasks With Artifacts
+- **Task Mode**: Creates single plan artifact for existing task in task directory
+- **Prompt/Interactive Mode**: Creates multiple tasks with plan artifacts
+- Generates plan artifacts (plans/implementation-001.md)
+- Creates/updates task entries in TODO.md with Type field set to 'meta'
+- Updates state.json with task metadata
 - Validates all artifacts
 
-### Stage 8: Deliver Task Summary
-- Presents task list with plan artifact links
+### Stage 9: Deliver Task Summary
+- **Task Mode**: Presents plan artifact link and usage instructions for /implement
+- **Prompt/Interactive Mode**: Presents task list with plan artifact links
 - Provides usage instructions for /implement command
 - Explains meta task routing to meta subagents
-- Creates git commit with TODO.md, state.json, and plan artifacts
+- Creates git commit with artifacts
 - Returns standardized format with task metadata
+
+---
+
+## Mode Detection
+
+The /meta command automatically detects which mode to use based on $ARGUMENTS:
+
+1. **Task Mode Detection**:
+   - First token is an integer (e.g., "294")
+   - Task exists in state.json
+   - If task not found: Falls back to Prompt Mode with warning
+
+2. **Prompt Mode Detection**:
+   - First token is non-integer text (e.g., "I want to...")
+   - OR task number not found in state.json
+
+3. **Interactive Mode Detection**:
+   - No arguments provided
+
+### When to Use /meta vs /plan
+
+- **Use /meta for meta tasks**: Tasks that involve creating/modifying .opencode system components (agents, commands, context files)
+- **Use /plan for implementation tasks**: Tasks that involve implementing features, fixing bugs, or adding functionality to your project
+
+**Examples**:
+- `/meta 294` - Create plan for meta task 294 (revise /meta command)
+- `/plan 315` - Create plan for implementation task 315 (resolve Axiom blocker)
 
 ---
 

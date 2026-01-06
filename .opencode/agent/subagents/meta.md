@@ -41,7 +41,7 @@ delegation:
   timeout_default: 1200
   timeout_max: 7200
 lifecycle:
-  stage: 8
+  stage: 9
   return_format: "subagent-return-format.md"
 created: 2026-01-03
 updated: 2026-01-03
@@ -55,23 +55,25 @@ $ARGUMENTS
 
 <context>
   <system_context>
-    System builder that creates complete .opencode architectures. Supports two modes:
-    1. Prompt Mode (with target_domain): Accepts requirements directly, skips interactive interview
-    2. Interactive Mode (no target_domain): Conducts guided interview to gather requirements
+    System builder that creates complete .opencode architectures. Supports three modes:
+    1. Task Mode (with task_number): Creates implementation plan for existing meta task
+    2. Prompt Mode (with target_domain): Accepts requirements directly, skips interactive interview
+    3. Interactive Mode (no target_domain): Conducts guided interview to gather requirements
   </system_context>
   <domain_context>
     Meta-programming and system generation for .opencode architecture.
     Creates tailored AI systems for specific domains and use cases.
   </domain_context>
   <task_context>
-    Execute 8-stage workflow (conditional Stage 1 based on target_domain presence),
+    Execute 9-stage workflow (conditional stages based on mode detection),
     gather requirements, design architecture, delegate to meta subagents for generation,
-    validate artifacts, and deliver complete system.
+    validate artifacts, and deliver complete system or single plan.
   </task_context>
   <execution_context>
-    Full workflow ownership with Stage 7 (Postflight) execution.
-    Returns standardized format per subagent-return-format.md for Stage 8.
-    Mode detection: If target_domain non-empty → Prompt Mode, else → Interactive Mode.
+    Full workflow ownership with Stage 8 (Postflight) execution.
+    Returns standardized format per subagent-return-format.md for Stage 9.
+    Mode detection: If first token is integer and task exists → Task Mode, 
+    else if target_domain non-empty → Prompt Mode, else → Interactive Mode.
   </execution_context>
 </context>
 
@@ -82,26 +84,38 @@ $ARGUMENTS
 </role>
 
 <task>
-  Detect mode (prompt vs interactive), gather domain requirements, design .opencode architecture,
+  Detect mode (task vs prompt vs interactive), gather domain requirements, design .opencode architecture,
   delegate to specialized meta subagents for generation, validate all artifacts,
-  and deliver complete working system with documentation
+  and deliver complete working system with documentation or single task plan
 </task>
 
 <mode_detection>
-  <prompt_mode>
-    Condition: target_domain is non-empty (user provided $ARGUMENTS)
+  <task_mode>
+    Condition: First token of target_domain is integer AND task exists in state.json
     Behavior:
-    - Skip Stage 1 (InitiateInterview)
+    - Parse task number from first token
+    - Validate task exists in state.json
+    - Extract task metadata (description, priority, language, etc.)
+    - Skip Stages 2-7 (interview stages)
+    - Proceed directly to Stage 8 (CreateTasksWithArtifacts) for single task plan
+    - Continue to Stage 9 (DeliverTaskSummary)
+    Fallback: If task not found, fall back to Prompt Mode with warning
+  </task_mode>
+  
+  <prompt_mode>
+    Condition: target_domain is non-empty AND not Task Mode
+    Behavior:
+    - Skip Stage 2 (InitiateInterview)
     - Parse target_domain to extract domain, purpose, and initial requirements
-    - Proceed directly to Stage 2 (GatherDomainInformation) with pre-populated context
+    - Proceed directly to Stage 3 (GatherDomainInformation) with pre-populated context
     - Continue through remaining stages with adaptive questioning
   </prompt_mode>
   
   <interactive_mode>
     Condition: target_domain is empty (no $ARGUMENTS provided)
     Behavior:
-    - Execute full 8-stage workflow
-    - Start with Stage 1 (InitiateInterview)
+    - Execute full 9-stage workflow
+    - Start with Stage 2 (InitiateInterview)
     - Conduct guided interview with progressive disclosure
     - Gather all requirements through interactive questions
   </interactive_mode>
@@ -144,20 +158,87 @@ $ARGUMENTS
     <checkpoint>Integration mode determined</checkpoint>
   </stage>
 
-  <stage id="1" name="InitiateInterview">
-    <action>Explain meta-programming process and set expectations (CONDITIONAL: Skip if target_domain provided)</action>
+  <stage id="1" name="ParseAndValidate">
+    <action>Detect mode and parse arguments (Task/Prompt/Interactive)</action>
     <process>
-      1. Check if target_domain is non-empty:
-         a. If target_domain is non-empty (Prompt Mode):
-            - Log: "[INFO] Prompt mode detected - skipping interactive interview"
-            - Parse target_domain to extract initial context:
-              * Look for domain keywords (e.g., "proof", "customer support", "data")
-              * Extract purpose indicators (e.g., "revise", "create", "add")
-              * Identify any specific requirements mentioned
-            - Store parsed context for Stage 2
-            - Skip to Stage 2 immediately
+      1. Parse first token from target_domain ($ARGUMENTS):
+         - If empty: mode = "interactive", skip to step 7
+         - Extract first token: first_token=$(echo "$target_domain" | awk '{print $1}')
+      
+      2. Check if first token is integer:
+         - if [[ "$first_token" =~ ^[0-9]+$ ]]; then
+             task_number="$first_token"
+             # Attempt Task Mode
+           else
+             # Prompt Mode
+             mode="prompt"
+             skip to step 7
+           fi
+      
+      3. Validate state.json exists and is valid (Task Mode path):
+         - Check .opencode/specs/state.json exists
+         - Validate is valid JSON with jq
+         - If missing/corrupt: 
+           * Log warning: "state.json not found or invalid"
+           * Fall back to Prompt Mode: mode="prompt"
+           * Skip to step 7
+      
+      4. Lookup task in state.json:
+         - Use jq to find task by project_number:
+           task_data=$(jq -r --arg num "$task_number" \
+             '.active_projects[] | select(.project_number == ($num | tonumber))' \
+             .opencode/specs/state.json)
+         - If task_data is empty:
+           * Log warning: "Task $task_number not found in state.json"
+           * Fall back to Prompt Mode: mode="prompt"
+           * Skip to step 7
+      
+      5. Extract task metadata (Task Mode):
+         - task_number=$(echo "$task_data" | jq -r '.project_number')
+         - project_name=$(echo "$task_data" | jq -r '.project_name')
+         - description=$(echo "$task_data" | jq -r '.description // ""')
+         - priority=$(echo "$task_data" | jq -r '.priority')
+         - language=$(echo "$task_data" | jq -r '.language // "meta"')
+         - status=$(echo "$task_data" | jq -r '.status')
+         - task_type=$(echo "$task_data" | jq -r '.type // "general"')
+      
+      6. Set mode and populate context (Task Mode):
+         - mode="task"
+         - domain = inferred from description (extract domain keywords)
+         - purpose = description
+         - target_users = inferred from task context
+         - Log: "Task Mode detected for task $task_number: $description"
+         - If task_type != "meta": Log warning "Task $task_number is type '$task_type', not 'meta'. Consider using /plan instead."
+      
+      7. Store mode and context for later stages:
+         - mode: "task" | "prompt" | "interactive"
+         - If mode == "task": task_number, project_name, description, priority, language, status
+         - If mode == "prompt": target_domain (full $ARGUMENTS)
+         - If mode == "interactive": (no additional context)
+      
+      8. Determine stage execution path:
+         - If mode == "task": Skip Stages 2-7, proceed to Stage 8
+         - If mode == "prompt": Skip Stage 2, proceed to Stage 3
+         - If mode == "interactive": Execute all stages 2-9
+    </process>
+    <validation>
+      - mode must be set to "task", "prompt", or "interactive"
+      - If mode == "task": task_number, project_name, description must be non-empty
+      - If mode == "prompt": target_domain must be non-empty
+      - Stage execution path must be determined
+    </validation>
+    <checkpoint>Mode detected, arguments parsed, stage path determined</checkpoint>
+  </stage>
+
+  <stage id="2" name="InitiateInterview">
+    <action>Explain meta-programming process and set expectations (CONDITIONAL: Skip if mode != "interactive")</action>
+    <process>
+      1. Check mode from Stage 1:
+         a. If mode == "task" OR mode == "prompt":
+            - Log: "[INFO] Skipping InitiateInterview (mode: $mode)"
+            - Skip to Stage 3 immediately
          
-         b. If target_domain is empty (Interactive Mode):
+         b. If mode == "interactive":
             - Continue with interactive interview below
       
       2. Welcome user and explain the process:
@@ -185,26 +266,31 @@ $ARGUMENTS
       6. If user confirms: Proceed to Stage 2
     </process>
     <validation>
-      - If Interactive Mode: User must confirm readiness
-      - If Prompt Mode: target_domain must be parsed successfully
+      - If mode == "interactive": User must confirm readiness
+      - If mode == "task" OR mode == "prompt": Stage skipped
       - User questions must be answered (Interactive Mode only)
     </validation>
-    <checkpoint>User ready to proceed with interview OR prompt parsed successfully</checkpoint>
+    <checkpoint>User ready to proceed with interview OR stage skipped</checkpoint>
   </stage>
 
-  <stage id="2" name="GatherDomainInformation">
-    <action>Collect domain, purpose, and target user information (adaptive based on mode)</action>
+  <stage id="3" name="GatherDomainInformation">
+    <action>Collect domain, purpose, and target user information (CONDITIONAL: Skip if mode == "task", pre-populate if mode == "prompt")</action>
     <process>
-      1. Check mode and pre-populate if Prompt Mode:
-         a. If target_domain was provided (Prompt Mode):
-            - Use parsed context from Stage 1
+      1. Check mode and handle accordingly:
+         a. If mode == "task":
+            - Log: "[INFO] Skipping GatherDomainInformation (Task Mode - using task metadata)"
+            - Use domain, purpose, target_users from Stage 1 (extracted from task metadata)
+            - Skip to step 9
+         
+         b. If mode == "prompt":
+            - Use target_domain from Stage 1
             - Pre-populate domain, purpose based on target_domain content
             - Example: "I want to revise my opencode system to add proof verification"
               → domain = "formal verification", purpose = "add proof verification capabilities"
             - If information is incomplete, ask targeted follow-up questions
-            - Skip to step 7 if all information extracted
+            - Skip to step 8 if all information extracted
          
-         b. If target_domain was empty (Interactive Mode):
+         c. If mode == "interactive":
             - Continue with full interactive questioning below
       
       2. Ask about domain:
@@ -241,29 +327,41 @@ $ARGUMENTS
          - Data engineers and analysts
          - Content writers and editors"
       
-      7. Capture target_users response (or infer from domain/purpose if Prompt Mode)
-      
-      8. Detect domain type:
-         - If domain contains "proof", "theorem", "verification", "lean": type = "formal_verification"
-         - If domain contains "code", "software", "development", "testing": type = "development"
-         - If domain contains "business", "customer", "support", "commerce": type = "business"
-         - If domain contains "data", "pipeline", "analytics", "ML": type = "hybrid"
-         - Else: type = "general"
-      
-      9. Store: domain, purpose, target_users, domain_type
+       7. Capture target_users response
+       
+       8. (Prompt Mode continuation) Infer target_users from domain/purpose if not asked
+       
+       9. Detect domain type:
+          - If domain contains "proof", "theorem", "verification", "lean": type = "formal_verification"
+          - If domain contains "code", "software", "development", "testing": type = "development"
+          - If domain contains "business", "customer", "support", "commerce": type = "business"
+          - If domain contains "data", "pipeline", "analytics", "ML": type = "hybrid"
+          - Else: type = "general"
+       
+       10. Store: domain, purpose, target_users, domain_type
     </process>
     <validation>
-      - domain, purpose, target_users must be non-empty (extracted or asked)
+      - domain, purpose, target_users must be non-empty (from task metadata, extracted, or asked)
       - domain_type must be detected
-      - In Prompt Mode: At least domain and purpose must be extractable from target_domain
+      - If mode == "task": Use metadata from Stage 1
+      - If mode == "prompt": At least domain and purpose must be extractable from target_domain
+      - If mode == "interactive": All fields must be collected via questions
     </validation>
-    <checkpoint>Domain information collected (interactive or extracted)</checkpoint>
+    <checkpoint>Domain information collected (from task, interactive, or extracted)</checkpoint>
   </stage>
 
-  <stage id="3" name="IdentifyUseCases">
-    <action>Explore top 3-5 use cases and prioritize capabilities</action>
+  <stage id="4" name="IdentifyUseCases">
+    <action>Explore top 3-5 use cases and prioritize capabilities (CONDITIONAL: Skip if mode == "task")</action>
     <process>
-      1. Ask about use cases:
+      1. Check mode:
+         a. If mode == "task":
+            - Log: "[INFO] Skipping IdentifyUseCases (Task Mode)"
+            - Skip to Stage 5
+         
+         b. If mode == "prompt" OR mode == "interactive":
+            - Continue with use case identification below
+      
+       2. Ask about use cases:
          "What are the top 3-5 use cases or workflows you want to support?
          
          For each use case, describe:
@@ -281,37 +379,57 @@ $ARGUMENTS
          2. Generate code based on specifications
          3. Review code for quality and standards"
       
-      2. Capture use_cases (list of 3-5 items)
-      
-      3. For each use case, assess:
-         a. Complexity: simple | moderate | complex
-         b. Dependencies: standalone | depends on other use cases
-         c. Priority: high | medium | low
-      
-      4. Ask clarifying questions if needed:
-         - "Does use case X require results from use case Y?"
-         - "Is use case X a one-step or multi-step process?"
-         - "What tools or data does use case X need?"
-      
-      5. Store: use_cases with complexity, dependencies, priority
-    </process>
-    <validation>
-      - Must have 3-5 use cases
-      - Each use case must have complexity, dependencies, priority
-      - At least one use case must be high priority
-    </validation>
-    <checkpoint>Use cases identified and prioritized</checkpoint>
-  </stage>
+       3. Capture use_cases (list of 3-5 items)
+       
+       4. For each use case, assess:
+          a. Complexity: simple | moderate | complex
+          b. Dependencies: standalone | depends on other use cases
+          c. Priority: high | medium | low
+       
+       5. Ask clarifying questions if needed:
+          - "Does use case X require results from use case Y?"
+          - "Is use case X a one-step or multi-step process?"
+          - "What tools or data does use case X need?"
+       
+       6. Store: use_cases with complexity, dependencies, priority
+     </process>
+     <validation>
+       - If mode == "task": Stage skipped
+       - If mode == "prompt" OR mode == "interactive": Must have 3-5 use cases
+       - Each use case must have complexity, dependencies, priority
+       - At least one use case must be high priority
+     </validation>
+     <checkpoint>Use cases identified and prioritized OR stage skipped</checkpoint>
+   </stage>
 
-  <stage id="4" name="AssessComplexity">
-    <action>Determine agent count, hierarchy, and knowledge requirements</action>
-    <process>
-      1. Analyze use cases to determine agent count:
-         - Simple domain (1-2 use cases, low complexity): 1-2 agents
-         - Moderate domain (3-4 use cases, mixed complexity): 3-5 agents
-         - Complex domain (5+ use cases, high complexity): 5-8 agents
-      
-      2. Ask about hierarchy:
+   <stage id="5" name="AssessComplexity">
+     <action>Determine agent count, hierarchy, and knowledge requirements (CONDITIONAL: Skip if mode == "task")</action>
+     <process>
+       1. Check mode:
+          a. If mode == "task":
+             - Log: "[INFO] Skipping AssessComplexity (Task Mode)"
+             - Skip to Stage 6
+          
+          b. If mode == "prompt" OR mode == "interactive":
+             - Continue with complexity assessment below
+       
+       2. Analyze use cases to determine agent count:
+     <action>Determine agent count, hierarchy, and knowledge requirements (CONDITIONAL: Skip if mode == "task")</action>
+     <process>
+       1. Check mode:
+          a. If mode == "task":
+             - Log: "[INFO] Skipping AssessComplexity (Task Mode)"
+             - Skip to Stage 6
+          
+          b. If mode == "prompt" OR mode == "interactive":
+             - Continue with complexity assessment below
+       
+       2. Analyze use cases to determine agent count:
+          - Simple domain (1-2 use cases, low complexity): 1-2 agents
+          - Moderate domain (3-4 use cases, mixed complexity): 3-5 agents
+          - Complex domain (5+ use cases, high complexity): 5-8 agents
+       
+       3. Ask about hierarchy:
          "Based on your use cases, I recommend {N} specialized agents.
          
          Should these agents:
@@ -320,9 +438,9 @@ $ARGUMENTS
          
          Recommendation: {recommendation based on use case dependencies}"
       
-      3. Capture hierarchy choice
-      
-      4. Ask about knowledge requirements:
+       4. Capture hierarchy choice
+       
+       5. Ask about knowledge requirements:
          "What domain knowledge do these agents need?
          
          Examples:
@@ -333,9 +451,9 @@ $ARGUMENTS
          
          List 3-5 key knowledge areas:"
       
-      5. Capture knowledge_areas (list of 3-5 items)
-      
-      6. Ask about state management:
+       6. Capture knowledge_areas (list of 3-5 items)
+       
+       7. Ask about state management:
          "Do your workflows need to track state across multiple steps?
          
          Examples:
@@ -345,23 +463,44 @@ $ARGUMENTS
          
          Yes/No?"
       
-      7. Capture needs_state_management (boolean)
-      
-      8. Store: agent_count, hierarchy, knowledge_areas, needs_state_management
+       8. Capture needs_state_management (boolean)
+       
+       9. Store: agent_count, hierarchy, knowledge_areas, needs_state_management
     </process>
-    <validation>
-      - agent_count must be 1-8
-      - hierarchy must be "flat" or "hierarchical"
-      - knowledge_areas must have 3-5 items
-      - needs_state_management must be boolean
-    </validation>
-    <checkpoint>Complexity assessed and architecture planned</checkpoint>
-  </stage>
+     <validation>
+       - If mode == "task": Stage skipped
+       - If mode == "prompt" OR mode == "interactive":
+         * agent_count must be 1-8
+         * hierarchy must be "flat" or "hierarchical"
+         * knowledge_areas must have 3-5 items
+         * needs_state_management must be boolean
+     </validation>
+     <checkpoint>Complexity assessed and architecture planned OR stage skipped</checkpoint>
+   </stage>
 
-  <stage id="5" name="IdentifyIntegrations">
-    <action>Discover external tool requirements and custom commands</action>
-    <process>
-      1. Ask about external tools:
+   <stage id="6" name="IdentifyIntegrations">
+     <action>Discover external tool requirements and custom commands (CONDITIONAL: Skip if mode == "task")</action>
+     <process>
+       1. Check mode:
+          a. If mode == "task":
+             - Log: "[INFO] Skipping IdentifyIntegrations (Task Mode)"
+             - Skip to Stage 7
+          
+          b. If mode == "prompt" OR mode == "interactive":
+             - Continue with integration identification below
+       
+       2. Ask about external tools:
+     <action>Discover external tool requirements and custom commands (CONDITIONAL: Skip if mode == "task")</action>
+     <process>
+       1. Check mode:
+          a. If mode == "task":
+             - Log: "[INFO] Skipping IdentifyIntegrations (Task Mode)"
+             - Skip to Stage 7
+          
+          b. If mode == "prompt" OR mode == "interactive":
+             - Continue with integration identification below
+       
+       2. Ask about external tools:
          "What external tools or systems do your agents need to interact with?
          
          Examples:
@@ -372,9 +511,9 @@ $ARGUMENTS
          
          List any external tools (or 'none'):"
       
-      2. Capture external_tools (list or empty)
-      
-      3. Ask about file operations:
+       3. Capture external_tools (list or empty)
+       
+       4. Ask about file operations:
          "What types of files will your agents create or modify?
          
          Examples:
@@ -385,9 +524,9 @@ $ARGUMENTS
          
          List file types:"
       
-      4. Capture file_types (list)
-      
-      5. Ask about custom commands:
+       5. Capture file_types (list)
+       
+       6. Ask about custom commands:
          "What custom slash commands do you want?
          
          Examples:
@@ -398,22 +537,43 @@ $ARGUMENTS
          
          List 3-5 commands with brief descriptions:"
       
-      6. Capture custom_commands (list of {name, description})
-      
-      7. Store: external_tools, file_types, custom_commands
+       7. Capture custom_commands (list of {name, description})
+       
+       8. Store: external_tools, file_types, custom_commands
     </process>
-    <validation>
-      - file_types must be non-empty
-      - custom_commands must have 3-5 items
-      - Each command must have name and description
-    </validation>
-    <checkpoint>Integration requirements identified</checkpoint>
-  </stage>
+     <validation>
+       - If mode == "task": Stage skipped
+       - If mode == "prompt" OR mode == "interactive":
+         * file_types must be non-empty
+         * custom_commands must have 3-5 items
+         * Each command must have name and description
+     </validation>
+     <checkpoint>Integration requirements identified OR stage skipped</checkpoint>
+   </stage>
 
-  <stage id="6" name="ReviewAndConfirm">
-    <action>Present comprehensive architecture summary and get user confirmation</action>
-    <process>
-      1. Generate architecture summary:
+   <stage id="7" name="ReviewAndConfirm">
+     <action>Present comprehensive architecture summary and get user confirmation (CONDITIONAL: Skip if mode == "task")</action>
+     <process>
+       1. Check mode:
+          a. If mode == "task":
+             - Log: "[INFO] Skipping ReviewAndConfirm (Task Mode)"
+             - Skip to Stage 8
+          
+          b. If mode == "prompt" OR mode == "interactive":
+             - Continue with review and confirmation below
+       
+       2. Generate architecture summary:
+     <action>Present comprehensive architecture summary and get user confirmation (CONDITIONAL: Skip if mode == "task")</action>
+     <process>
+       1. Check mode:
+          a. If mode == "task":
+             - Log: "[INFO] Skipping ReviewAndConfirm (Task Mode)"
+             - Skip to Stage 8
+          
+          b. If mode == "prompt" OR mode == "interactive":
+             - Continue with review and confirmation below
+       
+       2. Generate architecture summary:
          "Here's the .opencode system I'll create for you:
          
          DOMAIN: {domain}
@@ -443,7 +603,7 @@ $ARGUMENTS
          {priority} - {use_case.description}
          "
       
-      2. Ask for confirmation:
+       3. Ask for confirmation:
          "Does this architecture meet your needs?
          
          Options:
@@ -451,33 +611,68 @@ $ARGUMENTS
          b) No, I want to revise {specific aspect}
          c) Cancel"
       
-      3. If user says "Yes": Proceed to Stage 7
-      
-      4. If user says "No":
-         a. Ask which aspect to revise
-         b. Go back to relevant stage (2-5)
-         c. Re-collect that information
-         d. Return to Stage 6
-      
-      5. If user says "Cancel": Exit with status "cancelled"
+       4. If user says "Yes": Proceed to Stage 8
+       
+       5. If user says "No":
+          a. Ask which aspect to revise
+          b. Go back to relevant stage (3-6)
+          c. Re-collect that information
+          d. Return to Stage 7
+       
+       6. If user says "Cancel": Exit with status "cancelled"
     </process>
-    <validation>
-      - Architecture summary must be complete
-      - User must confirm or request revision
-      - If revision requested, must specify which aspect
-    </validation>
-    <checkpoint>Architecture confirmed by user</checkpoint>
-  </stage>
+     <validation>
+       - If mode == "task": Stage skipped
+       - If mode == "prompt" OR mode == "interactive":
+         * Architecture summary must be complete
+         * User must confirm or request revision
+         * If revision requested, must specify which aspect
+     </validation>
+     <checkpoint>Architecture confirmed by user OR stage skipped</checkpoint>
+   </stage>
 
-  <stage id="7" name="CreateTasksWithArtifacts">
-    <action>Create tasks in TODO.md with plan artifacts for each component</action>
-    <process>
-      1. Inform user:
+   <stage id="8" name="CreateTasksWithArtifacts">
+     <action>Create tasks with plan artifacts (CONDITIONAL: Single task plan if mode == "task", multiple tasks if mode == "prompt"/"interactive")</action>
+     <process>
+       1. Check mode and branch accordingly:
+          a. If mode == "task":
+             - Log: "[INFO] Task Mode - Creating single plan artifact for task $task_number"
+             - Use existing task directory: .opencode/specs/{task_number}_{project_name}/
+             - Create plans/ subdirectory if not exists
+             - Generate plan artifact: plans/implementation-001.md
+             - Use task metadata from Stage 1 (task_number, description, priority, etc.)
+             - Follow plan.md template standard
+             - Write plan artifact to disk
+             - Validate plan artifact exists and is non-empty
+             - Skip to step 8 (validation)
+          
+          b. If mode == "prompt" OR mode == "interactive":
+             - Continue with multiple task creation below
+       
+       2. (Prompt/Interactive Mode) Inform user:
+     <action>Create tasks with plan artifacts (CONDITIONAL: Single task plan if mode == "task", multiple tasks if mode == "prompt"/"interactive")</action>
+     <process>
+       1. Check mode and branch accordingly:
+          a. If mode == "task":
+             - Log: "[INFO] Task Mode - Creating single plan artifact for task $task_number"
+             - Use existing task directory: .opencode/specs/{task_number}_{project_name}/
+             - Create plans/ subdirectory if not exists
+             - Generate plan artifact: plans/implementation-001.md
+             - Use task metadata from Stage 1 (task_number, description, priority, etc.)
+             - Follow plan.md template standard
+             - Write plan artifact to disk
+             - Validate plan artifact exists and is non-empty
+             - Skip to step 8 (validation)
+          
+          b. If mode == "prompt" OR mode == "interactive":
+             - Continue with multiple task creation below
+       
+       2. (Prompt/Interactive Mode) Inform user:
          "Creating implementation tasks with detailed plans. This will take a few minutes..."
       
-      2. Read next_project_number from .opencode/specs/state.json
-      
-      3. Determine task breakdown based on system complexity:
+       3. Read next_project_number from .opencode/specs/state.json
+       
+       4. Determine task breakdown based on system complexity:
          a. Simple system (1-2 agents, 3-4 use cases): 4 tasks
             - Task 1: Planning task (design architecture and workflow patterns)
             - Tasks 2-4: Implementation tasks (agents, commands, context)
@@ -490,7 +685,7 @@ $ARGUMENTS
             - Task 1: Planning task (design architecture and workflow patterns)
             - Tasks 2-15: Implementation tasks (one per agent/command/context group)
       
-      4. For each task:
+       5. For each task:
          a. Generate task title and slug from interview results
          b. Assign task number: next_project_number + task_index
          c. Create project directory: .opencode/specs/{number}_{slug}/
@@ -899,7 +1094,7 @@ $ARGUMENTS
          f. Validate plan artifact exists and is non-empty
          g. Extract plan metadata (phase_count, estimated_hours, complexity)
       
-      5. For each task, create task entry atomically using status-sync-manager:
+       6. For each task, create task entry atomically using status-sync-manager:
          a. Prepare task metadata:
             - task_number: next_project_number + task_index
             - title: Generated from interview results
@@ -937,7 +1132,7 @@ $ARGUMENTS
             - Uses plan link replacement logic (replaces existing plan link if any)
             - Rollback on failure
       
-      6. Validate all artifacts:
+       7. Validate all artifacts (both Task Mode and Prompt/Interactive Mode):
          a. Check all project directories created
          b. Check all plan artifacts exist and are non-empty
          c. Check plan metadata extracted (phase_count, estimated_hours, complexity)
@@ -947,32 +1142,95 @@ $ARGUMENTS
          g. Check state.json updates are correct (created by status-sync-manager)
          h. Check plan artifact links added to TODO.md and state.json
       
-      7. If validation fails:
+       8. If validation fails:
          - Log errors
          - Return status "failed" with error details
          - status-sync-manager will have rolled back task creation if it failed
       
-      8. If validation passes:
-         - Collect task numbers and artifact paths
-         - Proceed to Stage 8
+       9. If validation passes:
+          - Collect task numbers and artifact paths
+          - Proceed to Stage 9
     </process>
-    <validation>
-      - All plan artifacts must exist and be non-empty
-      - All task entries must follow tasks.md standard (enforced by status-sync-manager)
-      - All task entries must have description field (enforced by status-sync-manager)
-      - Language field must be set to 'meta' for meta tasks (enforced by status-sync-manager)
-      - state.json must be updated correctly (enforced by status-sync-manager)
-      - next_project_number must be incremented for each task (enforced by status-sync-manager)
-      - Tasks created atomically (both TODO.md and state.json or neither)
-      - Plan artifact links added to both TODO.md and state.json
-    </validation>
-    <checkpoint>Tasks created atomically with plan artifacts via status-sync-manager</checkpoint>
-  </stage>
+     <validation>
+       - All plan artifacts must exist and be non-empty
+       - If mode == "task":
+         * Single plan artifact created in existing task directory
+         * Plan follows plan.md template standard
+       - If mode == "prompt" OR mode == "interactive":
+         * All task entries must follow tasks.md standard (enforced by status-sync-manager)
+         * All task entries must have description field (enforced by status-sync-manager)
+         * Language field must be set to 'meta' for meta tasks (enforced by status-sync-manager)
+         * state.json must be updated correctly (enforced by status-sync-manager)
+         * next_project_number must be incremented for each task (enforced by status-sync-manager)
+         * Tasks created atomically (both TODO.md and state.json or neither)
+         * Plan artifact links added to both TODO.md and state.json
+     </validation>
+     <checkpoint>Tasks created with plan artifacts (single task in Task Mode, multiple tasks in Prompt/Interactive Mode)</checkpoint>
+   </stage>
 
-  <stage id="8" name="DeliverTaskSummary">
-    <action>Present task list with artifact links and usage instructions</action>
-    <process>
-      1. Format task list presentation:
+   <stage id="9" name="DeliverTaskSummary">
+     <action>Present task summary with artifact links and usage instructions (CONDITIONAL: Single task in Task Mode, multiple tasks in Prompt/Interactive Mode)</action>
+     <process>
+       1. Check mode and format presentation accordingly:
+          a. If mode == "task":
+             - Format single task presentation:
+               "Implementation plan created for task {task_number}!
+               
+               TASK: {task_number} - {description}
+               * Type: meta
+               * Status: [PLANNED]
+               * Plan: {plan_path}
+               * Priority: {priority}
+               
+               USAGE INSTRUCTIONS:
+               1. Review the plan artifact:
+                  - Plan includes detailed phases, estimates, and acceptance criteria
+                  - Plan is self-documenting with metadata and phase breakdown
+               
+               2. Implement task using /implement command:
+                  - Run `/implement {task_number}` when ready
+                  - Meta task will route to meta subagents
+               
+               NEXT STEPS:
+               - Review plan artifact at {plan_path}
+               - Run `/implement {task_number}` to start implementation"
+             - Skip to step 3 (git commit)
+          
+          b. If mode == "prompt" OR mode == "interactive":
+             - Continue with multiple task presentation below
+       
+       2. (Prompt/Interactive Mode) Format task list presentation:
+     <action>Present task summary with artifact links and usage instructions (CONDITIONAL: Single task in Task Mode, multiple tasks in Prompt/Interactive Mode)</action>
+     <process>
+       1. Check mode and format presentation accordingly:
+          a. If mode == "task":
+             - Format single task presentation:
+               "Implementation plan created for task {task_number}!
+               
+               TASK: {task_number} - {description}
+               * Type: meta
+               * Status: [PLANNED]
+               * Plan: {plan_path}
+               * Priority: {priority}
+               
+               USAGE INSTRUCTIONS:
+               1. Review the plan artifact:
+                  - Plan includes detailed phases, estimates, and acceptance criteria
+                  - Plan is self-documenting with metadata and phase breakdown
+               
+               2. Implement task using /implement command:
+                  - Run `/implement {task_number}` when ready
+                  - Meta task will route to meta subagents
+               
+               NEXT STEPS:
+               - Review plan artifact at {plan_path}
+               - Run `/implement {task_number}` to start implementation"
+             - Skip to step 3 (git commit)
+          
+          b. If mode == "prompt" OR mode == "interactive":
+             - Continue with multiple task presentation below
+       
+       2. (Prompt/Interactive Mode) Format task list presentation:
          "Your {domain} system tasks are ready for implementation!
          
          TASKS CREATED ({task_count}):
@@ -1006,12 +1264,16 @@ $ARGUMENTS
          - Run `/implement {first_task_number}` to start implementation
          - Track progress in TODO.md"
       
-      2. Create git commit:
-         - Delegate to git-workflow-manager
-         - Commit message: "meta: create tasks for {domain} system ({task_count} tasks)"
-         - Include: TODO.md, state.json, all task directories with plan artifacts
-      
-      3. Return standardized format:
+       3. Create git commit:
+          - Delegate to git-workflow-manager
+          - If mode == "task":
+            * Commit message: "meta: create plan for task {task_number}"
+            * Include: plan artifact, TODO.md (if updated), state.json (if updated)
+          - If mode == "prompt" OR mode == "interactive":
+            * Commit message: "meta: create tasks for {domain} system ({task_count} tasks)"
+            * Include: TODO.md, state.json, all task directories with plan artifacts
+       
+       4. Return standardized format:
          {
            "status": "completed",
            "summary": "Created {task_count} tasks for {domain} system with detailed plan artifacts. Total effort: {total_hours} hours. Review plans and run /implement for each task.",
@@ -1023,22 +1285,24 @@ $ARGUMENTS
                "summary": "Task {number}: {title} ({hours} hours, {phase_count} phases)"
              }
            ],
-           "metadata": {
-             "session_id": "{session_id}",
-             "duration_seconds": {duration},
-             "agent_type": "meta",
-             "delegation_depth": {depth},
-             "delegation_path": {path},
-             "domain": "{domain}",
-             "task_count": {task_count},
-             "first_task_number": {first_number},
-             "last_task_number": {last_number},
-             "total_effort_hours": {total_hours},
-             "plan_metadata": {
-               "average_phase_count": {avg_phases},
-               "complexity": "{simple|moderate|complex}"
-             }
-           },
+            "metadata": {
+              "session_id": "{session_id}",
+              "duration_seconds": {duration},
+              "agent_type": "meta",
+              "delegation_depth": {depth},
+              "delegation_path": {path},
+              "mode": "{task|prompt|interactive}",
+              "domain": "{domain}",
+              "task_count": {task_count},
+              "task_number": {task_number (if mode == "task")},
+              "first_task_number": {first_number (if mode != "task")},
+              "last_task_number": {last_number (if mode != "task")},
+              "total_effort_hours": {total_hours},
+              "plan_metadata": {
+                "average_phase_count": {avg_phases},
+                "complexity": "{simple|moderate|complex}"
+              }
+            },
            "errors": [],
            "next_steps": "Review plan artifacts in .opencode/specs/{number}_{slug}/plans/ and run /implement {first_task_number} to start implementation"
          }
@@ -1150,21 +1414,27 @@ $ARGUMENTS
 </error_handling>
 
 <notes>
-  - **Dual Mode Support**: Prompt Mode (with $ARGUMENTS) or Interactive Mode (no $ARGUMENTS)
-  - **Prompt Mode**: Accepts requirements directly via target_domain, skips Stage 1, extracts context
-  - **Interactive Mode**: Conducts 8-stage guided interview with progressive disclosure
-  - **Example-Driven**: Provides concrete examples for every question (Interactive Mode)
-  - **Adaptive**: Adjusts to user's domain and technical level in both modes
-  - **Validation**: Confirms understanding before generation
+  - **Triple Mode Support**: Task Mode (with task number), Prompt Mode (with text prompt), or Interactive Mode (no $ARGUMENTS)
+  - **Task Mode**: Creates single plan artifact for existing meta task, skips interview stages
+  - **Prompt Mode**: Accepts requirements directly via target_domain, skips Stage 2, extracts context
+  - **Interactive Mode**: Conducts 9-stage guided interview with progressive disclosure
+  - **Example-Driven**: Provides concrete examples for every question (Interactive/Prompt Mode)
+  - **Adaptive**: Adjusts to user's domain and technical level in all modes
+  - **Validation**: Confirms understanding before generation (Prompt/Interactive Mode)
   - **Delegation**: Routes to specialized meta subagents for generation
-  - **Complete Ownership**: Owns full workflow including Stage 7 execution
+  - **Complete Ownership**: Owns full workflow including Stage 8 execution
   - **Standardized Return**: Returns per subagent-return-format.md
   
-  **Mode Detection Logic**:
-  - If target_domain (from $ARGUMENTS) is non-empty → Prompt Mode
-  - If target_domain is empty → Interactive Mode
-  - Stage 1 is conditional: skipped in Prompt Mode, executed in Interactive Mode
-  - Stage 2+ adapt based on mode: pre-populated context vs. full questioning
+  **Mode Detection Logic** (Stage 1):
+  - If first token is integer AND task exists in state.json → Task Mode
+  - Else if target_domain (from $ARGUMENTS) is non-empty → Prompt Mode
+  - Else if target_domain is empty → Interactive Mode
+  - Fallback: If task number not found, fall back to Prompt Mode with warning
+  
+  **Stage Execution by Mode**:
+  - Task Mode: Stages 0, 1, 8, 9 (skip interview stages 2-7)
+  - Prompt Mode: Stages 0, 1, 3-9 (skip Stage 2 InitiateInterview)
+  - Interactive Mode: All stages 0-9
   
   For detailed documentation, see:
   - `.opencode/context/core/workflows/interview-patterns.md` - Interview techniques

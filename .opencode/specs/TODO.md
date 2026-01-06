@@ -1109,7 +1109,8 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 294. Revise /meta command to accept optional task number
 - **Effort**: 10 hours
-- **Status**: [REVISING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-05
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -1122,6 +1123,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Plan Artifacts**:
   - Implementation Plan: [.opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md]
+
+**Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/294_revise_meta_command_to_accept_optional_task_number/summaries/implementation-summary-20260105.md]
 
 
 ---
@@ -1180,14 +1184,17 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 290. Fix Lean Research Agent Preflight Status Updates And Artifact Linking
 - **Effort**: 2.5
-- **Status**: [REVISING]
+- **Status**: [ABANDONED]
 - **Priority**: High
 - **Language**: markdown
+- **Abandoned**: 2026-01-05
 - **Artifacts**:
   - .opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md
   - .opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/plans/implementation-001.md
 
 **Description**: Task 290
+
+**Abandonment Reason**: User requested abandonment
 
 ---
 

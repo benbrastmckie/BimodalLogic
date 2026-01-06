@@ -476,20 +476,22 @@
       "project_number": 294,
       "project_name": "revise_meta_command_to_accept_optional_task_number",
       "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "completed",
+      "status": "completed",
       "priority": "medium",
       "language": "markdown",
       "created": "2026-01-05T03:39:48Z",
-      "last_updated": "2026-01-04",
+      "last_updated": "2026-01-05",
       "started": "2026-01-04",
       "research_completed": "2026-01-04",
       "artifacts": [
         ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md",
-        ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md"
+        ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md",
+        ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/summaries/implementation-summary-20260105.md"
       ],
       "planning_completed": "2026-01-04",
-      "plan_path": ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md"
+      "plan_path": ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md",
+      "completed": "2026-01-05"
     },
     {
       "project_number": 295,
