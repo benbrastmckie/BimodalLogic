@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-05T09:58:40Z",
+  "_last_updated": "2026-01-06T04:22:52Z",
   "archived_projects": [
     {
       "project_number": 126,
@@ -1815,6 +1815,207 @@
           }
         ]
       }
+    },
+    {
+      "project_number": 282,
+      "project_name": "add_json_return_format_enforcement_to_subagent_invocation",
+      "type": "bugfix",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "general",
+      "created": "2026-01-04T05:47:55Z",
+      "last_updated": "2026-01-06T04:01:34Z",
+      "abandoned": "2026-01-06"
+    },
+    {
+      "project_number": 290,
+      "project_name": "fix_lean_research_agent_preflight_status_updates_and_artifact_linking",
+      "type": "bugfix",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2026-01-04T09:00:00Z",
+      "started": "2026-01-04",
+      "research_completed": "2026-01-04",
+      "last_updated": "2026-01-05T00:00:00Z",
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment",
+      "artifacts": [
+        ".opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md",
+        ".opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/plans/implementation-001.md"
+      ],
+      "research_summary": "Research completed on Task 290. Investigation reveals preflight status updates ARE working correctly (Task 289 fix successful). The actual issue is outdated documentation in lean-research-agent.md requiring summary artifact creation, contradicting standard workflow. Recommended fix: remove summary artifact requirements to match researcher.md behavior. Estimated effort: 2-3 hours.",
+      "estimated_hours": 2.5,
+      "planning_completed": "2026-01-04",
+      "plan_path": ".opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 2.5,
+        "complexity": "low-medium",
+        "research_integrated": true
+      }
+    },
+    {
+      "project_number": 294,
+      "project_name": "revise_meta_command_to_accept_optional_task_number",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-05T03:39:48Z",
+      "last_updated": "2026-01-05",
+      "started": "2026-01-04",
+      "research_completed": "2026-01-04",
+      "artifacts": [
+        ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md",
+        ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md",
+        ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/summaries/implementation-summary-20260105.md"
+      ],
+      "planning_completed": "2026-01-04",
+      "plan_path": ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md",
+      "completed": "2026-01-05"
+    },
+    {
+      "project_number": 295,
+      "project_name": "create_sync_command_to_synchronize_todo_md_and_state_json",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "created": "2026-01-04T20:25:54-08:00",
+      "last_updated": "2026-01-04T20:25:54-08:00"
+    },
+    {
+      "project_number": 307,
+      "project_name": "verify_or_revert_core_logic_changes_in_high_risk_files_4_5",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "markdown",
+      "description": "Based on test results from task 304, either keep the core logic changes in meta.md and task-creator.md (if commands work) or revert them to previous versions (if commands fail or create_task doesn't exist). This is a critical decision point.",
+      "effort": "1 hour",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T08:00:00Z",
+      "last_updated": "2026-01-05T16:38:30Z",
+      "research_completed": "2026-01-05",
+      "abandoned": "2026-01-05T16:38:30Z",
+      "artifacts": [
+        ".opencode/specs/307_verify_or_revert_core_logic_changes_in_high_risk_files_4_5/reports/research-001.md"
+      ]
+    },
+    {
+      "project_number": 311,
+      "project_name": "refactor_/abandon_command_to_support_ranges_and_lists_of_task_numbers",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Refactor the /abandon command to accept a range or list of task numbers (e.g., '293-295, 302, 303') to abandon multiple tasks in a single invocation. This enables efficient bulk abandonment of tasks without requiring multiple command executions.",
+      "effort": "3-4 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T10:30:00Z",
+      "last_updated": "2026-01-05",
+      "researched": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md",
+        ".opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/summaries/implementation-summary-20260105.md"
+      ],
+      "planning_completed": "2026-01-05",
+      "plan_path": ".opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 3.5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          }
+        ]
+      },
+      "estimated_hours": 3.5,
+      "completed": "2026-01-05"
+    },
+    {
+      "project_number": 321,
+      "project_name": "fix_workflow_command_preflight_status_update_failures",
+      "type": "bugfix",
+      "phase": "planning_completed",
+      "status": "revised",
+      "priority": "high",
+      "language": "meta",
+      "description": "Fix systematic preflight failures in workflow commands (/research, /plan, /revise, /implement) where status is not updated to in-progress markers ([RESEARCHING], [PLANNING], [REVISING], [IMPLEMENTING]) when starting work. Example: /research 315 does not update status to [RESEARCHING] at start. Ensure all workflow commands invoke status-sync-manager in preflight to atomically update status before delegating to subagents.",
+      "effort": "6-8 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T18:10:00Z",
+      "last_updated": "2026-01-05",
+      "started": "2026-01-05",
+      "researched": "2026-01-05",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md",
+          "created": "2026-01-05",
+          "summary": "Comprehensive analysis of preflight status update failures with 7.5 hour fix estimate"
+        },
+        {
+          "type": "plan",
+          "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md",
+          "created": "2026-01-05",
+          "summary": "Implementation plan with 6 phases focusing on root cause debugging"
+        },
+        {
+          "type": "plan",
+          "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md",
+          "created": "2026-01-05",
+          "summary": "Revised plan integrating task 320 findings, error logging, and context window hypothesis"
+        },
+        {
+          "type": "plan",
+          "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md",
+          "created": "2026-01-05",
+          "summary": "Revised plan v3 integrating status-sync-manager bug analysis, eliminating file locking, using git-only rollback, and focusing on timing-aware architecture"
+        }
+      ],
+      "planned": "2026-01-05",
+      "plan_path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 4.5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 3,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          },
+          {
+            "path": "../320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-01-05"
+          },
+          {
+            "path": "../320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md",
+            "integrated_in_plan_version": 3,
+            "integrated_date": "2026-01-05"
+          }
+        ]
+      },
+      "revised": "2026-01-05"
     }
   ],
   "last_updated": "2026-01-05T08:36:08.881111Z"
