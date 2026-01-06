@@ -896,7 +896,7 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T05:31:28-08:00",
-      "last_updated": "2026-01-05T19:28:51-08:00",
+      "last_updated": "2026-01-05T19:36:27-08:00",
       "started": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
@@ -905,6 +905,12 @@
           "path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md",
           "created": "2026-01-05T18:45:00Z",
           "summary": "Comprehensive analysis of postflight failures. Root cause: silent git commit failures, not missing postflight steps."
+        },
+        {
+          "type": "research",
+          "path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md",
+          "created": "2026-01-05T19:36:27-08:00",
+          "summary": "Analysis of 7 potential bugs in status-sync-manager with 3 critical issues directly causing task 320 symptoms"
         }
       ],
       "planning_completed": "2026-01-05",

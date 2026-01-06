@@ -58,6 +58,7 @@ technical_debt:
 - **Planned**: 2026-01-05
 
 **Research Artifacts**:
+  - Research Report (status-sync-manager bugs): [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md]
   - Research Report: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md]
 
 **Plan Artifacts**:
