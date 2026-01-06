@@ -58,11 +58,19 @@ technical_debt:
 
 ### 324. Investigate and prove root cause of persistent workflow command postflight failures after task 321
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
+- **Researched**: 2026-01-06
+- **Planned**: 2026-01-06
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
+
+**Research Artifacts**:
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/plans/implementation-001.md]
+  - Research Report: [.opencode/specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/reports/research-001.md]
 
 **Description**: Investigate and prove the root cause of persistent workflow command postflight failures where artifacts are created but TODO.md is not updated with status markers or artifact links. Task 323 provides a concrete test case: /research 323 created research-001.md and updated state.json correctly, but TODO.md still shows [NOT STARTED] with no artifact links. This contradicts task 320 plan (implementation-005.md) which claims task 321 already fixed all critical bugs. Study the workflow execution report, compare expected vs actual behavior, identify the specific failure point in the preflight/postflight process, and prove the root cause with evidence before attempting any solution.
 
