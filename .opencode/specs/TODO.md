@@ -721,32 +721,11 @@ CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client
 - **Dependencies**: None
 - **Researched**: 2026-01-05
 - **Research**: [research-001.md](279_systematically_fix_metadata_lookup_to_use_state_json_instead_of_todo_md/reports/research-001.md)
-
 **Description**:
 When running `/implement 276`, the command output showed "Extract task 276 details from TODO.md" which indicates that commands and subagents are extracting metadata from TODO.md instead of from the authoritative source (state.json). This research identifies 25 files across orchestrator, commands, subagents, context, standards, templates, and documentation that use TODO.md for metadata extraction instead of state.json.
 
-**Key Findings**:
-- 25 files extract metadata from TODO.md (orchestrator, 4 commands, 7 subagents, 6 context files, 2 standards, 1 template, 4 docs)
-- 8 metadata fields affected: language, priority, status, effort, dependencies, blocking, description, artifacts
-- Language field is CRITICAL for routing to Lean-specific agents
-- Current architecture violates single-source-of-truth principle
-
-**Recommended Solution**:
-Implement 5-phase migration (12-16 hours) to establish state.json as authoritative source:
-1. Phase 1: Create jq-based metadata extraction pattern (4 hours)
-2. Phase 2: Update orchestrator and commands (3 hours)
-3. Phase 3: Update subagents (4 hours)
-4. Phase 4: Update context and documentation (3 hours)
-5. Phase 5: Testing and validation (2 hours)
-
 **Impact**:
 Establishes state.json as single source of truth, eliminates "Extract task NNN details from TODO.md" messages, ensures correct language-based routing to Lean-specific agents, and preserves TODO.md as synchronized user-facing view.
-
-**Related Tasks**:
-- Task 276: Investigate redundant project-level state.json files
-- Task 272: Add YAML header to TODO.md
-- Task 275: Fix workflow status updates
-- Task 295/296: Create /sync command
 
 ---
 
@@ -759,63 +738,12 @@ Establishes state.json as single source of truth, eliminates "Extract task NNN d
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: Task 290 (researched)
-- **Research**: [Research Report](.opencode/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md)
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md]
 
 **Description**:
-Root cause identified for `/research 290` status update failure: lean-research-agent.md directly manipulates TODO.md and state.json files (lines 651-662) instead of delegating to status-sync-manager and git-workflow-manager like researcher.md does. This bypasses atomic updates and causes status synchronization failures.
-
-**Evidence**:
-- `/research 290` created research report successfully
-- Status remained `[RESEARCHED]` instead of updating to `[RESEARCHED]`
-- No artifact link added to TODO.md
-- No state.json update
-- No git commit created
-
-**Root Cause**:
-lean-research-agent.md step_6 (lines 641-750):
-- Line 651-657: Directly updates TODO.md status marker
-- Line 658-662: Directly updates state.json
-- Does NOT delegate to status-sync-manager
-- Does NOT delegate to git-workflow-manager
-
-Compare with researcher.md step_4_postflight (lines 331-379):
-- Line 335: Invokes status-sync-manager to mark [RESEARCHED]
-- Line 349: Invokes git-workflow-manager to create commit
-- Proper delegation ensures atomic updates
-
-**Fix Strategy**:
-
-**Phase 1: Update lean-research-agent step_6 to match researcher step_4_postflight** (1.5 hours)
-1. Replace direct TODO.md updates with status-sync-manager delegation:
-   - Remove lines 651-657 (direct TODO.md manipulation)
-   - Add status-sync-manager invocation matching researcher.md line 335-348
-   - Pass validated_artifacts array to status-sync-manager
-2. Replace direct state.json updates with status-sync-manager delegation:
-   - Remove lines 658-662 (direct state.json manipulation)
-   - status-sync-manager handles both TODO.md and state.json atomically
-3. Add git-workflow-manager delegation:
-   - Add git-workflow-manager invocation matching researcher.md line 349-368
-   - Pass scope_files including research report, TODO.md, state.json
-4. Update step_6 documentation to reflect delegation pattern
-
-**Phase 2: Remove summary artifact requirement** (30 minutes)
-1. Remove summary artifact validation (line 647-649):
-   - Remove "Verify summary artifact created" check
-   - Remove "Verify summary artifact is <100 tokens" check
-2. Remove summary artifact linking (line 657, 664, 686-688):
-   - Remove summary from artifact links in TODO.md
-   - Remove summary from state.json artifacts array
-3. Update return format to list only research report (line 664)
-4. Match researcher.md behavior (single artifact only)
-
-**Phase 3: Test with Lean task** (1 hour)
-1. Test `/research` on a Lean task (e.g., task 260)
-2. Verify status updates to `[RESEARCHED]` at start
-3. Verify status updates to `[RESEARCHED]` at end
-4. Verify artifact link added to TODO.md (research report only, no summary)
-5. Verify state.json updated with artifact path
-6. Verify git commit created
-7. Verify no regression in research quality
+Fix lean-research-agent.md to use proper delegation pattern for status updates instead of direct file manipulation. The agent currently bypasses status-sync-manager and git-workflow-manager, causing status synchronization failures. Update step_6 to match researcher.md's delegation pattern, remove summary artifact requirement, and ensure atomic updates across TODO.md and state.json. See research report for detailed root cause analysis, fix strategy, and code examples.
 
 **Files to Modify**:
 - `.opencode/agent/subagents/lean-research-agent.md` - Update step_6 to delegate to status-sync-manager and git-workflow-manager
@@ -824,8 +752,7 @@ Compare with researcher.md step_4_postflight (lines 331-379):
 - [ ] lean-research-agent step_6 delegates to status-sync-manager (not direct file updates)
 - [ ] lean-research-agent step_6 delegates to git-workflow-manager (not manual git commands)
 - [ ] Summary artifact requirement removed (only research report created)
-- [ ] `/research` on Lean tasks updates status to `[RESEARCHED]` at start
-- [ ] `/research` on Lean tasks updates status to `[RESEARCHED]` at end
+- [ ] `/research` on Lean tasks updates status to `[RESEARCHED]` at start and end
 - [ ] Artifact link added to TODO.md (research report only)
 - [ ] state.json updated with artifact path
 - [ ] Git commit created automatically
@@ -833,7 +760,7 @@ Compare with researcher.md step_4_postflight (lines 331-379):
 - [ ] No regression in Lean research functionality
 
 **Impact**:
-Fixes the root cause of status synchronization failures for Lean tasks. Ensures lean-research-agent uses the same atomic update pattern as researcher.md via status-sync-manager and git-workflow-manager delegation. Eliminates direct file manipulation that bypasses validation and atomic updates.
+Fixes the root cause of status synchronization failures for Lean tasks. Ensures lean-research-agent uses the same atomic update pattern as researcher.md via status-sync-manager and git-workflow-manager delegation.
 
 **Related Tasks**:
 - Task 283: Fixed general subagents step naming (completed)
