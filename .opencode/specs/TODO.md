@@ -1,20 +1,20 @@
 ---
-last_updated: 2026-01-05T16:38:30Z
-next_project_number: 313
+last_updated: 2026-01-05T18:10:00Z
+next_project_number: 322
 repository_health:
   overall_score: 92
   production_readiness: excellent
-  last_assessed: 2026-01-04T06:25:00Z
+  last_assessed: 2026-01-05T02:00:00Z
 task_counts:
-  active: 44
-  completed: 84
-  in_progress: 3
+  active: 51
+  completed: 63
+  in_progress: 2
   not_started: 33
-  abandoned: 21
-  total: 149
+  abandoned: 6
+  total: 114
 priority_distribution:
-  high: 25
-  medium: 20
+  high: 17
+  medium: 21
   low: 13
 technical_debt:
   sorry_count: 6
@@ -30,9 +30,29 @@ technical_debt:
 
 ## High Priority
 
+### 321. Fix workflow command preflight status update failures
+- **Effort**: 6-8 hours
+- **Status**: [RESEARCHED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+- **Researched**: 2026-01-05
+
+**Description**: Fix systematic preflight failures in workflow commands (/research, /plan, /revise, /implement) where status is not updated to in-progress markers ([RESEARCHING], [PLANNING], [REVISING], [IMPLEMENTING]) when starting work. Example: /research 315 does not update status to [RESEARCHING] at start. Ensure all workflow commands invoke status-sync-manager in preflight to atomically update status before delegating to subagents.
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md]
+
+---
+
 ### 320. Fix workflow command postflight failures causing missing artifact links and status updates
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-05
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
@@ -1090,8 +1110,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-## High Priority
-
 ### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
 - **Effort**: 15-20 hours
 - **Status**: [RESEARCHED]
@@ -1167,7 +1185,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 311. Refactor /abandon command to support ranges and lists of task numbers
 - **Effort**: TBD
-- **Status**: [PLANNED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
