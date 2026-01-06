@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T00:00:00Z",
+  "_last_updated": "2026-01-06T04:01:34Z",
   "next_project_number": 323,
   "project_numbering": {
     "min": 0,
@@ -410,36 +410,43 @@
       "project_number": 279,
       "project_name": "systematically_fix_metadata_lookup_to_use_state_json_instead_of_todo_md",
       "type": "bugfix",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "research_completed",
+      "status": "researched",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-04T04:44:02Z",
-      "last_updated": "2026-01-04T04:44:02Z"
+      "last_updated": "2026-01-05",
+      "research_completed": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/279_systematically_fix_metadata_lookup_to_use_state_json_instead_of_todo_md/reports/research-001.md"
+      ]
     },
     {
       "project_number": 282,
       "project_name": "add_json_return_format_enforcement_to_subagent_invocation",
       "type": "bugfix",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "abandoned",
+      "status": "abandoned",
       "priority": "high",
       "language": "general",
       "created": "2026-01-04T05:47:55Z",
-      "last_updated": "2026-01-04T05:47:55Z"
+      "last_updated": "2026-01-06T04:01:34Z",
+      "abandoned": "2026-01-06"
     },
     {
       "project_number": 290,
       "project_name": "fix_lean_research_agent_preflight_status_updates_and_artifact_linking",
       "type": "bugfix",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "abandoned",
+      "status": "abandoned",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-04T09:00:00Z",
       "started": "2026-01-04",
       "research_completed": "2026-01-04",
-      "last_updated": "2026-01-04T17:40:00Z",
+      "last_updated": "2026-01-05T00:00:00Z",
+      "abandoned": "2026-01-05",
+      "abandonment_reason": "User requested abandonment",
       "artifacts": [
         ".opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md",
         ".opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/plans/implementation-001.md"

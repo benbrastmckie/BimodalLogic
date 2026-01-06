@@ -1099,11 +1099,14 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 295. Create /sync command to synchronize TODO.md and state.json
 - **Effort**: TBD
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-01-05
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
+
+**Abandonment Reason**: User requested abandonment
 
 ---
 
@@ -1174,9 +1177,10 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 282. Add Json Return Format Enforcement To Subagent Invocation
 - **Effort**: TBD
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
 - **Priority**: High
 - **Language**: general
+- **Abandoned**: 2026-01-06
 
 **Description**: Task 282
 

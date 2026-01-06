@@ -100,6 +100,8 @@ lifecycle:
   <step_0_preflight>
     <action>Preflight: Extract validated inputs and update status to [IMPLEMENTING]</action>
     <process>
+      CRITICAL TIMING REQUIREMENT: This step MUST complete BEFORE step_1 begins.
+      
       1. Extract task inputs from delegation context (already parsed and validated by command file):
          - task_number: Integer (already validated to exist in TODO.md)
          - language: String (already extracted from task metadata)
@@ -115,14 +117,49 @@ lifecycle:
          
          No re-parsing or re-validation needed!
       
-      2. Update status to [IMPLEMENTING]:
-         - Delegate to status-sync-manager with task_number and new_status="implementing"
-         - Validate status update succeeded
-         - Generate timestamp: $(date -I)
+      2. Delegate to status-sync-manager (REQUIRED - DO NOT SKIP):
+         
+         INVOKE status-sync-manager:
+           Prepare delegation context:
+           {
+             "operation": "update_status",
+             "task_number": {task_number},
+             "new_status": "implementing",
+             "timestamp": "$(date -I)",
+             "session_id": "{session_id}",
+             "delegation_depth": {depth + 1},
+             "delegation_path": [...delegation_path, "status-sync-manager"]
+           }
+           
+           Execute delegation with timeout: 60s
+           
+           WAIT for status-sync-manager to return (maximum 60s)
+           
+           VERIFY return:
+             - status == "completed" (if "failed", abort with error)
+             - files_updated includes [".opencode/specs/TODO.md", "state.json"]
+           
+           IF status != "completed":
+             - Log error: "Preflight status update failed: {error_message}"
+             - Return status: "failed"
+             - DO NOT proceed to step_1
       
-      3. Proceed to implementation with validated inputs
+      3. Verify status was actually updated (defense in depth):
+         
+         Read state.json to verify status:
+           actual_status=$(jq -r --arg num "$task_number" \
+             '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
+             .opencode/specs/state.json)
+         
+         IF actual_status != "implementing":
+           - Log error: "Preflight verification failed - status not updated"
+           - Log: "Expected: implementing, Actual: $actual_status"
+           - Return status: "failed"
+           - DO NOT proceed to step_1
+      
+      4. Proceed to step_1 (implementation work begins)
     </process>
-    <checkpoint>Task inputs extracted from validated context, status updated to [IMPLEMENTING]</checkpoint>
+    <checkpoint>Status updated to [IMPLEMENTING], verified in state.json, ready to begin implementation</checkpoint>
   </step_0_preflight>
 
   <step_1>
@@ -271,6 +308,27 @@ lifecycle:
           - IF validation fails: ABORT with error details
         
         LOG: "status-sync-manager completed: {files_updated}"
+      
+      STEP 7.1.5: VERIFY status and artifact links were actually updated (defense in depth):
+        
+        Read state.json to verify status:
+          actual_status=$(jq -r --arg num "$task_number" \
+            '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
+            .opencode/specs/state.json)
+        
+        IF actual_status != "completed":
+          - Log error: "Postflight verification failed - status not updated"
+          - Log: "Expected: completed, Actual: $actual_status"
+          - Return status: "failed"
+          - DO NOT proceed to git commit
+        
+        Read TODO.md to verify artifact links:
+          for artifact_path in {validated_artifacts}:
+            grep -q "$artifact_path" .opencode/specs/TODO.md
+            IF not found:
+              - Log error: "Postflight verification failed - artifact not linked: $artifact_path"
+              - Return status: "failed"
+              - DO NOT proceed to git commit
       
       STEP 7.2: INVOKE git-workflow-manager (if status update succeeded)
         PREPARE delegation context:

@@ -95,6 +95,8 @@ lifecycle:
   <step_0_preflight>
     <action>Preflight: Extract validated inputs and update status to [PLANNING] or [REVISING]</action>
     <process>
+      CRITICAL TIMING REQUIREMENT: This step MUST complete BEFORE step_1 begins.
+      
       1. Extract task inputs from delegation context (already parsed and validated by command file):
          - task_number: Integer (already validated to exist in TODO.md)
          - language: String (already extracted from task metadata)
@@ -116,19 +118,53 @@ lifecycle:
          - If revision_context exists and is non-empty: revision_mode = true
          - Else: revision_mode = false
       
-      3. Update status based on mode:
-         - If revision_mode == true:
-           * Update status to [REVISING]
-           * Delegate to status-sync-manager with task_number and new_status="revising"
-         - Else:
-           * Update status to [PLANNING]
-           * Delegate to status-sync-manager with task_number and new_status="planning"
-         - Validate status update succeeded
-         - Generate timestamp: $(date -I)
+      3. Delegate to status-sync-manager (REQUIRED - DO NOT SKIP):
+         
+         Determine target status:
+           - If revision_mode == true: target_status = "revising"
+           - Else: target_status = "planning"
+         
+         INVOKE status-sync-manager:
+           Prepare delegation context:
+           {
+             "operation": "update_status",
+             "task_number": {task_number},
+             "new_status": "{target_status}",
+             "timestamp": "$(date -I)",
+             "session_id": "{session_id}",
+             "delegation_depth": {depth + 1},
+             "delegation_path": [...delegation_path, "status-sync-manager"]
+           }
+           
+           Execute delegation with timeout: 60s
+           
+           WAIT for status-sync-manager to return (maximum 60s)
+           
+           VERIFY return:
+             - status == "completed" (if "failed", abort with error)
+             - files_updated includes [".opencode/specs/TODO.md", "state.json"]
+           
+           IF status != "completed":
+             - Log error: "Preflight status update failed: {error_message}"
+             - Return status: "failed"
+             - DO NOT proceed to step_1
       
-      4. Proceed to planning with validated inputs and revision_mode flag
+      4. Verify status was actually updated (defense in depth):
+         
+         Read state.json to verify status:
+           actual_status=$(jq -r --arg num "$task_number" \
+             '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
+             .opencode/specs/state.json)
+         
+         IF actual_status != "{target_status}":
+           - Log error: "Preflight verification failed - status not updated"
+           - Log: "Expected: {target_status}, Actual: $actual_status"
+           - Return status: "failed"
+           - DO NOT proceed to step_1
+      
+      5. Proceed to step_1 (planning work begins)
     </process>
-    <checkpoint>Task inputs extracted from validated context, status updated to [PLANNING] or [REVISING]</checkpoint>
+    <checkpoint>Status updated to [PLANNING] or [REVISING], verified in state.json, ready to begin planning</checkpoint>
   </step_0_preflight>
 
   <step_1>
@@ -426,6 +462,29 @@ lifecycle:
           - IF validation fails: ABORT with error details
         
         LOG: "status-sync-manager completed: {files_updated}"
+      
+      STEP 7.1.5: VERIFY status and artifact link were actually updated (defense in depth):
+        
+        Read state.json to verify status:
+          actual_status=$(jq -r --arg num "$task_number" \
+            '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
+            .opencode/specs/state.json)
+        
+        expected_status="{revision_mode ? 'revised' : 'planned'}"
+        
+        IF actual_status != expected_status:
+          - Log error: "Postflight verification failed - status not updated"
+          - Log: "Expected: $expected_status, Actual: $actual_status"
+          - Return status: "failed"
+          - DO NOT proceed to git commit
+        
+        Read TODO.md to verify artifact link:
+          grep -q "{plan_path}" .opencode/specs/TODO.md
+        
+        IF artifact link not found:
+          - Log error: "Postflight verification failed - artifact not linked"
+          - Return status: "failed"
+          - DO NOT proceed to git commit
       
       STEP 7.2: INVOKE git-workflow-manager (if status update succeeded)
         PREPARE delegation context:

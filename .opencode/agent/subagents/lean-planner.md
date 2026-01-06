@@ -108,6 +108,8 @@ lifecycle:
   <step_0_preflight>
     <action>Preflight: Extract validated inputs and update status to [PLANNING]</action>
     <process>
+      CRITICAL TIMING REQUIREMENT: This step MUST complete BEFORE step_1 begins.
+      
       1. Extract task inputs from delegation context (already parsed and validated by command file):
          - task_number: Integer (already validated to exist in TODO.md)
          - language: String (should be "lean" for this agent)
@@ -133,14 +135,49 @@ lifecycle:
          - Invalid: [COMPLETED] or [ABANDONED]
          - If invalid: Return error
       
-      4. Update status to [PLANNING]:
-         - Delegate to status-sync-manager with task_number and new_status="planning"
-         - Validate status update succeeded
-         - Generate timestamp: $(date -I)
+      4. Delegate to status-sync-manager (REQUIRED - DO NOT SKIP):
+         
+         INVOKE status-sync-manager:
+           Prepare delegation context:
+           {
+             "operation": "update_status",
+             "task_number": {task_number},
+             "new_status": "planning",
+             "timestamp": "$(date -I)",
+             "session_id": "{session_id}",
+             "delegation_depth": {depth + 1},
+             "delegation_path": [...delegation_path, "status-sync-manager"]
+           }
+           
+           Execute delegation with timeout: 60s
+           
+           WAIT for status-sync-manager to return (maximum 60s)
+           
+           VERIFY return:
+             - status == "completed" (if "failed", abort with error)
+             - files_updated includes [".opencode/specs/TODO.md", "state.json"]
+           
+           IF status != "completed":
+             - Log error: "Preflight status update failed: {error_message}"
+             - Return status: "failed"
+             - DO NOT proceed to step_1
       
-      5. Proceed to Lean planning with validated inputs
+      5. Verify status was actually updated (defense in depth):
+         
+         Read state.json to verify status:
+           actual_status=$(jq -r --arg num "$task_number" \
+             '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
+             .opencode/specs/state.json)
+         
+         IF actual_status != "planning":
+           - Log error: "Preflight verification failed - status not updated"
+           - Log: "Expected: planning, Actual: $actual_status"
+           - Return status: "failed"
+           - DO NOT proceed to step_1
+      
+      6. Proceed to step_1 (Lean planning work begins)
     </process>
-    <checkpoint>Task inputs extracted from validated context, status updated to [PLANNING]</checkpoint>
+    <checkpoint>Status updated to [PLANNING], verified in state.json, ready to begin Lean planning</checkpoint>
   </step_0_preflight>
 
   <step_1>

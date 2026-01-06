@@ -140,6 +140,8 @@ lifecycle:
   <step_0_preflight>
     <action>Preflight: Extract validated inputs and update status to [RESEARCHING]</action>
     <process>
+      CRITICAL TIMING REQUIREMENT: This step MUST complete BEFORE step_1_research_execution begins.
+      
       1. Extract task inputs from delegation context (already parsed and validated by command file):
          - task_number: Integer (already validated to exist in TODO.md)
          - language: String (already extracted from task metadata)
@@ -155,14 +157,49 @@ lifecycle:
          
          No re-parsing or re-validation needed!
       
-      2. Update status to [RESEARCHING]:
-         - Delegate to status-sync-manager with task_number and new_status="researching"
-         - Validate status update succeeded
-         - Generate timestamp: $(date -I)
+      2. Delegate to status-sync-manager (REQUIRED - DO NOT SKIP):
+         
+         INVOKE status-sync-manager:
+           Prepare delegation context:
+           {
+             "operation": "update_status",
+             "task_number": {task_number},
+             "new_status": "researching",
+             "timestamp": "$(date -I)",
+             "session_id": "{session_id}",
+             "delegation_depth": {depth + 1},
+             "delegation_path": [...delegation_path, "status-sync-manager"]
+           }
+           
+           Execute delegation with timeout: 60s
+           
+           WAIT for status-sync-manager to return (maximum 60s)
+           
+           VERIFY return:
+             - status == "completed" (if "failed", abort with error)
+             - files_updated includes [".opencode/specs/TODO.md", "state.json"]
+           
+           IF status != "completed":
+             - Log error: "Preflight status update failed: {error_message}"
+             - Return status: "failed"
+             - DO NOT proceed to step_1_research_execution
       
-      3. Proceed to research execution with validated inputs
+      3. Verify status was actually updated (defense in depth):
+         
+         Read state.json to verify status:
+           actual_status=$(jq -r --arg num "$task_number" \
+             '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
+             .opencode/specs/state.json)
+         
+         IF actual_status != "researching":
+           - Log error: "Preflight verification failed - status not updated"
+           - Log: "Expected: researching, Actual: $actual_status"
+           - Return status: "failed"
+           - DO NOT proceed to step_1_research_execution
+      
+      4. Proceed to step_1_research_execution (research work begins)
     </process>
-    <checkpoint>Task inputs extracted from validated context, status updated to [RESEARCHING]</checkpoint>
+    <checkpoint>Status updated to [RESEARCHING], verified in state.json, ready to begin research</checkpoint>
   </step_0_preflight>
 
   <step_1_research_execution>
@@ -292,51 +329,113 @@ lifecycle:
   <step_4_postflight>
     <action>Postflight: Update status to [RESEARCHED], link report, create git commit</action>
     <process>
+      CRITICAL TIMING REQUIREMENT: This step MUST complete BEFORE step_5_return executes.
+      
       1. Generate completion timestamp: $(date -I)
-      2. Invoke status-sync-manager to mark [RESEARCHED]:
-         a. Prepare delegation context:
-            - task_number: {number}
-            - new_status: "researched"
-            - timestamp: {date}
-            - session_id: {session_id}
-            - delegation_depth: {depth + 1}
-            - delegation_path: [...delegation_path, "status-sync-manager"]
-            - validated_artifacts: [{type, path, summary}]
-         b. Invoke status-sync-manager with timeout (60s)
-         c. Validate return status == "completed"
-         d. Verify files_updated includes ["TODO.md", "state.json"]
-         e. Verify artifact linked in TODO.md
-         f. If status update fails: Log error but continue (artifact exists)
-      3. Invoke git-workflow-manager to create commit:
-         a. Prepare delegation context:
-            - scope_files: [
-                "{research_report_path}",
-                ".opencode/specs/TODO.md",
-                ".opencode/specs/state.json",
-                ".opencode/specs/{task_number}_{slug}/state.json"
-              ]
-            - message_template: "task {number}: research completed"
-            - task_context: {
-                task_number: {number},
-                description: "research completed"
-              }
-            - session_id: {session_id}
-            - delegation_depth: {depth + 1}
-            - delegation_path: [...delegation_path, "git-workflow-manager"]
-         b. Invoke git-workflow-manager with timeout (120s)
-         c. Validate return status (completed or failed)
-         d. If status == "completed": Log commit hash
-         e. If status == "failed": Log warning (non-critical, don't fail research)
-      4. Log postflight completion
+      
+      2. INVOKE status-sync-manager (REQUIRED - DO NOT SKIP):
+         
+         PREPARE delegation context:
+         {
+           "operation": "update_status",
+           "task_number": {task_number},
+           "new_status": "researched",
+           "timestamp": "$(date -I)",
+           "session_id": "{session_id}",
+           "delegation_depth": {depth + 1},
+           "delegation_path": [...delegation_path, "status-sync-manager"],
+           "validated_artifacts": [
+             {
+               "type": "research_report",
+               "path": "{research_report_path}",
+               "summary": "Research findings and recommendations",
+               "validated": true
+             }
+           ]
+         }
+         
+         INVOKE status-sync-manager:
+           - Execute delegation with timeout: 60s
+           - LOG: "Invoking status-sync-manager for task {task_number}"
+         
+         WAIT for status-sync-manager return (maximum 60s):
+           - IF timeout: ABORT with error "status-sync-manager timeout after 60s"
+         
+         VERIFY status-sync-manager return:
+           - VERIFY return format matches subagent-return-format.md
+           - VERIFY status field == "completed" (not "failed" or "partial")
+           - VERIFY files_updated includes [".opencode/specs/TODO.md", "state.json"]
+           - IF validation fails: ABORT with error details
+         
+         LOG: "status-sync-manager completed: {files_updated}"
+      
+      3. Verify status and artifact link were actually updated (defense in depth):
+         
+         Read state.json to verify status:
+           actual_status=$(jq -r --arg num "$task_number" \
+             '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
+             .opencode/specs/state.json)
+         
+         IF actual_status != "researched":
+           - Log error: "Postflight verification failed - status not updated"
+           - Log: "Expected: researched, Actual: $actual_status"
+           - Return status: "failed"
+           - DO NOT proceed to git commit
+         
+         Read TODO.md to verify artifact link:
+           grep -q "{research_report_path}" .opencode/specs/TODO.md
+         
+         IF artifact link not found:
+           - Log error: "Postflight verification failed - artifact not linked"
+           - Return status: "failed"
+           - DO NOT proceed to git commit
+      
+      4. INVOKE git-workflow-manager (if status update succeeded):
+         
+         PREPARE delegation context:
+         {
+           "scope_files": [
+             "{research_report_path}",
+             ".opencode/specs/TODO.md",
+             ".opencode/specs/state.json"
+           ],
+           "message_template": "task {task_number}: research completed",
+           "task_context": {
+             "task_number": {task_number},
+             "description": "research completed"
+           },
+           "session_id": "{session_id}",
+           "delegation_depth": {depth + 1},
+           "delegation_path": [...delegation_path, "git-workflow-manager"]
+         }
+         
+         INVOKE git-workflow-manager:
+           - Execute delegation with timeout: 120s
+           - LOG: "Invoking git-workflow-manager for task {task_number}"
+         
+         WAIT for git-workflow-manager return (maximum 120s):
+           - IF timeout: LOG error (non-critical), continue
+         
+         VALIDATE return:
+           - IF status == "completed":
+             * EXTRACT commit_hash from commit_info
+             * LOG: "Git commit created: {commit_hash}"
+           
+           - IF status == "failed":
+             * LOG error to errors.json (non-critical)
+             * INCLUDE warning in return
+             * CONTINUE (git failure doesn't fail command)
+      
+      5. Log postflight completion
     </process>
     <git_failure_handling>
       If git commit fails:
       - Log warning to errors array
       - Include manual recovery instructions
       - DO NOT fail research command (git failure is non-critical)
-       - Continue to Step 5 (Return)
+      - Continue to Step 5 (Return)
     </git_failure_handling>
-    <output>Status updated to [RESEARCHED], report linked, git commit created (or warning logged)</output>
+    <output>Status updated to [RESEARCHED], report linked, verified in state.json, git commit created (or warning logged)</output>
   </step_4_postflight>
 
   <step_5_return>

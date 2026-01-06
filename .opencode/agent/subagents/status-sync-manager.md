@@ -203,12 +203,12 @@ lifecycle:
       <output>Formatted TODO.md and state.json entries</output>
     </step_1_prepare_entries>
 
-    <step_2_backup_and_update>
-      <action>Backup files and perform atomic update</action>
+    <step_2_prepare_update>
+      <action>Prepare atomic update in memory</action>
       <process>
         1. Read current TODO.md content
         2. Read current state.json content
-        3. Create backups of both files
+        3. NO BACKUP FILES CREATED (git-only rollback)
         4. Determine correct priority section in TODO.md:
            - High priority: Insert after "## High Priority Tasks" heading
            - Medium priority: Insert after "## Medium Priority Tasks" heading
@@ -220,27 +220,40 @@ lifecycle:
         9. Update _last_updated timestamp
         10. Validate both updates well-formed
       </process>
-      <validation>Updates prepared, backups created</validation>
+      <validation>Updates prepared in memory</validation>
       <output>Updated TODO.md and state.json content in memory</output>
-    </step_2_backup_and_update>
+    </step_2_prepare_update>
 
     <step_3_commit>
-      <action>Commit updates atomically</action>
+      <action>Commit updates atomically using atomic write pattern</action>
       <process>
-        1. Write TODO.md (first, most critical)
-        2. Verify write succeeded
-        3. Write state.json
-        4. Verify write succeeded
-        5. If any write fails: rollback all previous writes
+        1. Generate unique temp file names (include session_id):
+           - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
+           - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
+        
+        2. Write to temp files:
+           - Write updated TODO.md to todo_tmp
+           - Write updated state.json to state_tmp
+        
+        3. Verify temp files written successfully:
+           - Verify todo_tmp exists and size > 0
+           - Verify state_tmp exists and size > 0
+           - If verification fails: Remove temp files and abort
+        
+        4. Atomic rename (both files or neither):
+           - Rename todo_tmp to .opencode/specs/TODO.md (atomic)
+           - Rename state_tmp to .opencode/specs/state.json (atomic)
+           - If rename fails: Remove temp files and abort
+        
+        5. Clean up temp files on success
       </process>
       <rollback_on_failure>
         If any write fails:
-        1. Immediately stop further writes
-        2. Restore all previously written files from backups
-        3. Log error with details
-        4. Return failed status with rollback info
+        1. Remove all temp files
+        2. Return failed status with error details
+        3. Rely on git for recovery (no backup file rollback)
       </rollback_on_failure>
-      <validation>Both files written successfully or both restored</validation>
+      <validation>Both files written atomically or temp files cleaned up</validation>
       <output>Task created atomically in both files</output>
     </step_3_commit>
 
@@ -280,7 +293,7 @@ lifecycle:
       <process>
         1. Read current TODO.md content
         2. Read current state.json content
-        3. Create backups of both files
+        3. NO BACKUP FILES CREATED (git-only rollback)
         4. For each task number:
            - Extract task entry from TODO.md
            - Extract task entry from state.json active_projects
@@ -288,7 +301,7 @@ lifecycle:
            - Prepare for move to completed_projects in state.json
         5. Validate all tasks found
       </process>
-      <validation>All tasks located, backups created</validation>
+      <validation>All tasks located</validation>
       <output>Prepared archival operations</output>
     </step_1_prepare_archival>
 
@@ -308,22 +321,35 @@ lifecycle:
     </step_2_update_files>
 
     <step_3_commit>
-      <action>Commit updates atomically</action>
+      <action>Commit updates atomically using atomic write pattern</action>
       <process>
-        1. Write TODO.md (first, most critical)
-        2. Verify write succeeded
-        3. Write state.json
-        4. Verify write succeeded
-        5. If any write fails: rollback all previous writes
+        1. Generate unique temp file names (include session_id):
+           - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
+           - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
+        
+        2. Write to temp files:
+           - Write updated TODO.md to todo_tmp
+           - Write updated state.json to state_tmp
+        
+        3. Verify temp files written successfully:
+           - Verify todo_tmp exists and size > 0
+           - Verify state_tmp exists and size > 0
+           - If verification fails: Remove temp files and abort
+        
+        4. Atomic rename (both files or neither):
+           - Rename todo_tmp to .opencode/specs/TODO.md (atomic)
+           - Rename state_tmp to .opencode/specs/state.json (atomic)
+           - If rename fails: Remove temp files and abort
+        
+        5. Clean up temp files on success
       </process>
       <rollback_on_failure>
         If any write fails:
-        1. Immediately stop further writes
-        2. Restore all previously written files from backups
-        3. Log error with details
-        4. Return failed status with rollback info
+        1. Remove all temp files
+        2. Return failed status with error details
+        3. Rely on git for recovery (no backup file rollback)
       </rollback_on_failure>
-      <validation>Both files written successfully or both restored</validation>
+      <validation>Both files written atomically or temp files cleaned up</validation>
       <output>Tasks archived atomically</output>
     </step_3_commit>
 
@@ -349,10 +375,10 @@ lifecycle:
       2. Read .opencode/specs/state.json into memory
       3. Read plan file if plan_path provided
       4. Validate all files readable
-      5. Create backups of original content
+      5. NO BACKUP FILES CREATED (per user requirement - git-only rollback)
     </process>
     <validation>All target files exist and are readable</validation>
-    <output>In-memory copies of all files with backups</output>
+    <output>In-memory copies of all files (no backups created)</output>
   </step_1_prepare>
 
   <step_2_validate>
@@ -362,28 +388,55 @@ lifecycle:
          a. Verify .opencode/specs/TODO.md exists and is readable
          b. Verify state.json exists and is readable
          c. Verify plan file exists and is readable (if plan_path provided)
-         d. If any file missing or unreadable: abort before writing
+         d. If any file missing or unreadable: ABORT with explicit error (Bug #3 fix)
+      
       2. Extract current status from .opencode/specs/TODO.md
-      3. Check transition is valid per status-markers.md
-      4. Verify required fields present (blocking_reason, etc.)
-      5. Validate timestamp format (YYYY-MM-DD or ISO 8601)
+      
+      3. Check transition is valid per status-markers.md:
+         a. Validate transition is allowed
+         b. If invalid transition: ABORT with explicit error (Bug #3 fix)
+            - Return status: "failed"
+            - Error type: "validation_failed"
+            - Error message: "Invalid status transition: {current} -> {new}"
+            - Exit immediately, do not proceed to prepare updates
+      
+      4. Verify required fields present:
+         a. If new_status == "blocked" and blocking_reason missing: ABORT (Bug #3 fix)
+         b. If new_status == "abandoned" and abandonment_reason missing: ABORT (Bug #3 fix)
+         c. Return explicit validation error with missing field name
+      
+      5. Validate timestamp format (YYYY-MM-DD or ISO 8601):
+         a. Verify timestamp matches expected format
+         b. If invalid format: ABORT with explicit error (Bug #3 fix)
+      
       6. Validate artifacts if validated_artifacts provided:
          a. Verify each artifact file exists on disk
          b. Verify each artifact file is non-empty (size > 0)
          c. Verify artifact paths are well-formed
-         d. If validation fails: abort before writing
+         d. If validation fails: ABORT with explicit error (Bug #3 fix)
+            - Return status: "failed"
+            - Error type: "artifact_validation_failed"
+            - Error message: "Artifact not found or empty: {path}"
+            - Exit immediately, do not proceed to prepare updates
+      
       7. Validate plan file format if plan_path provided:
          a. Verify plan file follows plan.md standard
          b. Verify phase headings are well-formed
          c. Verify phase numbers are sequential
-         d. If malformed: abort with clear error message
+         d. If malformed: ABORT with explicit error (Bug #3 fix)
+      
       8. Validate phase_statuses if provided:
          a. Verify phase_statuses is array
          b. Verify each entry has phase_number, status, timestamp
          c. Verify phase numbers exist in plan file
          d. Verify status transitions are valid
-         e. If validation fails: abort with specific error
-      9. If invalid transition: abort before writing
+         e. If validation fails: ABORT with explicit error (Bug #3 fix)
+      
+      9. All validation failures MUST abort with explicit errors:
+         - Return status: "failed"
+         - Include specific error type and message
+         - Do NOT proceed to step_3_prepare_updates
+         - Do NOT return status: "completed" on validation failure
     </process>
     <validation>
       All validation checks pass before proceeding to prepare updates:
@@ -392,6 +445,8 @@ lifecycle:
       - Artifacts exist and non-empty
       - Plan file well-formed (if applicable)
       - Phase statuses valid (if applicable)
+      
+      CRITICAL: Validation failures MUST abort with status: "failed" (Bug #3 fix)
     </validation>
     <output>Validation result (pass/fail with specific errors)</output>
   </step_2_validate>
@@ -549,26 +604,75 @@ lifecycle:
   </step_3_prepare_updates>
 
   <step_4_commit>
-    <action>Phase 2: Commit all updates atomically</action>
+    <action>Phase 2: Commit all updates atomically using atomic write pattern</action>
     <process>
-      1. Write .opencode/specs/TODO.md (first, most critical)
-      2. Verify write succeeded
-      3. Write state.json
-      4. Verify write succeeded
-      5. Write plan file if plan_path and phase_statuses provided
-      6. Verify write succeeded
-      7. If any write fails: rollback all previous writes
+      ATOMIC WRITE PATTERN (Bug #2 fix):
+      This eliminates the race condition window between TODO.md and state.json writes.
+      Uses atomic rename (mv) which is atomic on most filesystems.
+      NO FILE LOCKING - allows concurrent agent execution.
+      Last writer wins if concurrent updates occur (acceptable per user requirement).
+      
+      1. Generate unique temp file names (include session_id for uniqueness):
+         - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
+         - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
+         - plan_tmp = "{plan_path}.tmp.${session_id}" (if plan_path provided)
+      
+      2. Write to temp files:
+         a. Write updated TODO.md content to todo_tmp
+         b. Write updated state.json content to state_tmp
+         c. Write updated plan content to plan_tmp (if plan_path provided)
+      
+      3. Verify temp files written successfully:
+         a. Verify todo_tmp exists and size > 0
+         b. Verify state_tmp exists and size > 0
+         c. Verify plan_tmp exists and size > 0 (if plan_path provided)
+         d. If any verification fails:
+            - Remove all temp files
+            - Return status: "failed"
+            - Error type: "temp_file_write_failed"
+            - Error message: "Failed to write temp file: {path}"
+            - Do NOT proceed to atomic rename
+      
+      4. Atomic rename (all files or none):
+         a. Rename todo_tmp to .opencode/specs/TODO.md (atomic operation)
+         b. Rename state_tmp to .opencode/specs/state.json (atomic operation)
+         c. Rename plan_tmp to plan_path (atomic operation, if plan_path provided)
+         d. If any rename fails:
+            - Remove all temp files
+            - Return status: "failed"
+            - Error type: "atomic_rename_failed"
+            - Error message: "Atomic rename failed for: {path}"
+            - Note: Some files may have been renamed (last writer wins)
+            - Rely on git for recovery (no backup file rollback)
+      
+      5. Clean up on success:
+         a. Verify all temp files removed (should be renamed)
+         b. If temp files remain: Log warning and remove
+      
+      6. NO BACKUP FILES CREATED (per user requirement):
+         - Rely on git exclusively for recovery
+         - No .backup files created
+         - No rollback to backup files on failure
+         - Git is the only rollback mechanism
     </process>
     <rollback_on_failure>
-      If any write fails:
-      1. Immediately stop further writes
-      2. Restore all previously written files from backups
-      3. Restore plan file from backup if it was written
-      4. Log error with details
-      5. Return failed status with rollback info
-      6. Include specific file that failed in error message
+      SIMPLIFIED ROLLBACK (Bug #2 fix):
+      No backup file rollback - rely on git exclusively.
+      
+      If temp file write fails:
+      1. Remove all temp files
+      2. Return failed status with error details
+      3. Original files remain unchanged
+      4. No git recovery needed
+      
+      If atomic rename fails:
+      1. Remove all temp files
+      2. Return failed status with error details
+      3. Some files may have been updated (last writer wins)
+      4. Rely on git for recovery if needed
+      5. Document manual recovery procedure in error message
     </rollback_on_failure>
-    <output>All files updated or all restored to original state</output>
+    <output>All files updated atomically or temp files cleaned up</output>
   </step_4_commit>
 
   <step_5_return>
@@ -579,15 +683,43 @@ lifecycle:
          b. Verify state.json exists and size > 0
          c. Verify plan file exists and size > 0 (if plan_path provided)
          d. If any validation fails: Log error (files already written, cannot rollback)
-      2. Rollback validation (if rollback occurred):
+      
+      2. Post-commit content verification (Bug #7 fix):
+         a. Verify status marker was actually updated in TODO.md:
+            - Read TODO.md and search for task entry
+            - Extract status marker from task entry
+            - Verify marker matches expected new_status
+            - If mismatch: Return failed status with content verification error
+         
+         b. Verify status was actually updated in state.json:
+            - Read state.json and parse JSON
+            - Extract status field for task_number
+            - Verify status matches expected new_status
+            - If mismatch: Return failed status with state verification error
+         
+         c. Verify artifact links were added (if validated_artifacts provided):
+            - Read TODO.md and search for task entry
+            - For each artifact in validated_artifacts:
+              * Verify artifact path appears in task entry
+              * If missing: Return failed status with artifact link error
+         
+         d. Content verification failures are CRITICAL:
+            - Files were written but content is incorrect
+            - Cannot rollback (files already committed)
+            - Return status: "failed"
+            - Include error type: "content_verification_failed"
+            - Recommendation: "Manual recovery required - check TODO.md and state.json"
+      
+      3. Rollback validation (if rollback occurred):
          a. Verify all files restored to original state
          b. Verify no partial state remains
          c. If restoration failed: Log critical error
-      3. Format return following subagent-return-format.md
-      4. Include files updated
-      5. Include rollback info if applicable
-      6. Include session_id from input
-      7. Return status completed or failed
+      
+      4. Format return following subagent-return-format.md
+      5. Include files updated
+      6. Include rollback info if applicable
+      7. Include session_id from input
+      8. Return status completed or failed
     </process>
     <output>Standardized return object with validation results</output>
   </step_5_return>
