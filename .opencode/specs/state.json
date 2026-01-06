@@ -876,8 +876,8 @@
       "project_number": 321,
       "project_name": "fix_workflow_command_preflight_status_update_failures",
       "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "meta",
       "description": "Fix systematic preflight failures in workflow commands (/research, /plan, /revise, /implement) where status is not updated to in-progress markers ([RESEARCHING], [PLANNING], [REVISING], [IMPLEMENTING]) when starting work. Example: /research 315 does not update status to [RESEARCHING] at start. Ensure all workflow commands invoke status-sync-manager in preflight to atomically update status before delegating to subagents.",
@@ -894,8 +894,30 @@
           "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md",
           "created": "2026-01-05",
           "summary": "Comprehensive analysis of preflight status update failures with 7.5 hour fix estimate"
+        },
+        {
+          "type": "plan",
+          "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md",
+          "created": "2026-01-05",
+          "summary": "Implementation plan with 6 phases focusing on root cause debugging"
         }
-      ]
+      ],
+      "planned": "2026-01-05",
+      "plan_path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 6,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          }
+        ]
+      }
     }
   ],
   "completed_projects": [
