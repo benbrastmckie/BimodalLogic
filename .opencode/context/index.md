@@ -256,9 +256,9 @@ Load selectively: Use grep extraction for specific tasks, avoid loading full fil
 **Research Workflow (researcher.md)**:
 ```
 Stage 4 loads:
-- @.opencode/context/core/standards/delegation.md
-- @.opencode/context/core/system/state-management.md
-- @.opencode/context/core/system/artifact-management.md
+- @.opencode/context/core/orchestration/delegation.md
+- @.opencode/context/core/orchestration/state-management.md
+- @.opencode/context/core/orchestration/state-management.md
 - grep -A 50 "^### {task_number}\." .opencode/specs/TODO.md
 - @.opencode/specs/state.json
 
@@ -270,10 +270,10 @@ Language-specific:
 **Planning Workflow (planner.md)**:
 ```
 Stage 4 loads:
-- @.opencode/context/core/standards/delegation.md
-- @.opencode/context/core/standards/plan.md
-- @.opencode/context/core/system/state-management.md
-- @.opencode/context/core/system/artifact-management.md
+- @.opencode/context/core/orchestration/delegation.md
+- @.opencode/context/core/formats/plan-format.md
+- @.opencode/context/core/orchestration/state-management.md
+- @.opencode/context/core/orchestration/state-management.md
 - grep -A 50 "^### {task_number}\." .opencode/specs/TODO.md
 - @.opencode/specs/state.json
 - Research artifacts from task (if exist)
@@ -282,9 +282,9 @@ Stage 4 loads:
 **Implementation Workflow (implementer.md, task-executor.md)**:
 ```
 Stage 4 loads:
-- @.opencode/context/core/standards/delegation.md
-- @.opencode/context/core/system/state-management.md
-- @.opencode/context/core/system/artifact-management.md
+- @.opencode/context/core/orchestration/delegation.md
+- @.opencode/context/core/orchestration/state-management.md
+- @.opencode/context/core/orchestration/state-management.md
 - @.opencode/context/core/system/git-commits.md
 - grep -A 50 "^### {task_number}\." .opencode/specs/TODO.md
 - @.opencode/specs/state.json
