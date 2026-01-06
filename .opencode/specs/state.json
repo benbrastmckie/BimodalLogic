@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T18:35:00Z",
+  "_last_updated": "2026-01-05T18:36:00Z",
   "next_project_number": 322,
   "project_numbering": {
     "min": 0,
@@ -702,16 +702,20 @@
       "project_number": 311,
       "project_name": "refactor_/abandon_command_to_support_ranges_and_lists_of_task_numbers",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "researched",
+      "status": "researched",
       "priority": "medium",
       "language": "meta",
       "description": "Refactor the /abandon command to accept a range or list of task numbers (e.g., '293-295, 302, 303') to abandon multiple tasks in a single invocation. This enables efficient bulk abandonment of tasks without requiring multiple command executions.",
-      "effort": "TBD",
+      "effort": "3-4 hours",
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T10:30:00Z",
-      "last_updated": "2026-01-05T10:30:00Z"
+      "last_updated": "2026-01-05T18:36:00Z",
+      "researched": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md"
+      ]
     },
     {
       "project_number": 314,

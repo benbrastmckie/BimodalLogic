@@ -1192,11 +1192,15 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ---
 
 ### 311. Refactor /abandon command to support ranges and lists of task numbers
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 3-4 hours
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-05
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
 
 **Description**: Refactor the /abandon command to accept a range or list of task numbers (e.g., '293-295, 302, 303') to abandon multiple tasks in a single invocation. This enables efficient bulk abandonment of tasks without requiring multiple command executions.
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md]
