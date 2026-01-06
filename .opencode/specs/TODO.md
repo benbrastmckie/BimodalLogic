@@ -48,7 +48,8 @@ technical_debt:
 
 **Plan Artifacts**:
   - Implementation Plan v1: [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md]
-  - Implementation Plan v2 (current): [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md]
+  - Implementation Plan v2: [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md]
+  - Implementation Plan v3 (current): [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md]
 
 ---
 

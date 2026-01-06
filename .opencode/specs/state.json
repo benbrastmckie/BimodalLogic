@@ -965,16 +965,22 @@
           "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md",
           "created": "2026-01-05",
           "summary": "Revised plan integrating task 320 findings, error logging, and context window hypothesis"
+        },
+        {
+          "type": "plan",
+          "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md",
+          "created": "2026-01-05",
+          "summary": "Revised plan v3 integrating status-sync-manager bug analysis, eliminating file locking, using git-only rollback, and focusing on timing-aware architecture"
         }
       ],
       "planned": "2026-01-05",
-      "plan_path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md",
+      "plan_path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md",
       "plan_metadata": {
-        "phases": 6,
-        "total_effort_hours": 5,
+        "phases": 4,
+        "total_effort_hours": 4.5,
         "complexity": "medium",
         "research_integrated": true,
-        "plan_version": 2,
+        "plan_version": 3,
         "reports_integrated": [
           {
             "path": "reports/research-001.md",
@@ -984,6 +990,11 @@
           {
             "path": "../320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md",
             "integrated_in_plan_version": 2,
+            "integrated_date": "2026-01-05"
+          },
+          {
+            "path": "../320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md",
+            "integrated_in_plan_version": 3,
             "integrated_date": "2026-01-05"
           }
         ]
