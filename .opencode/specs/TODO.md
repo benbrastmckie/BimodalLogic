@@ -30,32 +30,6 @@ technical_debt:
 
 ## High Priority
 
-### 321. ✓ Fix workflow command preflight status update failures
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-- **Researched**: 2026-01-05
-- **Planned**: 2026-01-05
-- **Revised**: 2026-01-05
-- **Completed**: 2026-01-05
-
-**Description**: Fix systematic preflight failures in workflow commands (/research, /plan, /revise, /implement) where status is not updated to in-progress markers ([RESEARCHING], [PLANNING], [REVISING], [IMPLEMENTING]) when starting work. Example: /research 315 does not update status to [RESEARCHING] at start. Ensure all workflow commands invoke status-sync-manager in preflight to atomically update status before delegating to subagents.
-
-**Research Artifacts**:
-  - Research Report: [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md]
-
-**Plan Artifacts**:
-  - Implementation Plan v1: [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md]
-  - Implementation Plan v2: [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md]
-  - Implementation Plan v3 (current): [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md]
-
-**Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/summaries/implementation-summary-20260105.md]
-
----
 
 ### 320. Fix workflow command postflight failures causing missing artifact links and status updates
 - **Effort**: 6-8 hours
@@ -102,20 +76,6 @@ technical_debt:
 
 
 
-### 307. Verify or revert core logic changes in high-risk files (4/5)
-- **Effort**: 1 hour
-- **Status**: [ABANDONED]
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/307_verify_or_revert_core_logic_changes_in_high_risk_files_4_5/reports/research-001.md)
-- **Researched**: 2026-01-05
-- **Abandoned**: 2026-01-05
-
-**Description**: Based on test results from task 304, either keep the core logic changes in meta.md and task-creator.md (if commands work) or revert them to previous versions (if commands fail or create_task doesn't exist). This is a critical decision point.
-
----
 
 
 
@@ -935,41 +895,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ---
 
 
-### 295. Create /sync command to synchronize TODO.md and state.json
-- **Effort**: TBD
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-01-05
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
 
-**Abandonment Reason**: User requested abandonment
-
----
-
-### 294. Revise /meta command to accept optional task number
-- **Effort**: 10 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-05
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Revise the /meta command to accept an optional task number in the same way as the /research and /implement commands so that I can improve my workflow using the /meta command. The /meta command should still work if used with no arguments or a prompt only.
-
-**Research Artifacts**:
-  - Main Report: [.opencode/specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md]
-
-**Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md]
-
-**Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/294_revise_meta_command_to_accept_optional_task_number/summaries/implementation-summary-20260105.md]
-
-
----
 
 ### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
 - **Effort**: 61-97 hours
@@ -1013,32 +939,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 
 
-### 282. Add Json Return Format Enforcement To Subagent Invocation
-- **Effort**: TBD
-- **Status**: [ABANDONED]
-- **Priority**: High
-- **Language**: general
-- **Abandoned**: 2026-01-06
 
-**Description**: Task 282
-
----
-
-### 290. Fix Lean Research Agent Preflight Status Updates And Artifact Linking
-- **Effort**: 2.5
-- **Status**: [ABANDONED]
-- **Priority**: High
-- **Language**: markdown
-- **Abandoned**: 2026-01-05
-- **Artifacts**:
-  - .opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md
-  - .opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/plans/implementation-001.md
-
-**Description**: Task 290
-
-**Abandonment Reason**: User requested abandonment
-
----
 
 ## Medium Priority
 
@@ -1055,26 +956,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 311. ✓ Refactor /abandon command to support ranges and lists of task numbers
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-05
-- **Planned**: 2026-01-05
-- **Completed**: 2026-01-05
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Refactor the /abandon command to accept a range or list of task numbers (e.g., '293-295, 302, 303') to abandon multiple tasks in a single invocation. This enables efficient bulk abandonment of tasks without requiring multiple command executions.
-
-**Research Artifacts**:
-  - Research Report: [.opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md]
-**Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/plans/implementation-001.md]
-**Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/summaries/implementation-summary-20260105.md]
-
 ### 322. Add bulk operation to status-sync-manager for creating/updating many tasks
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
@@ -1085,4 +966,3 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Description**: Add new bulk operation to status-sync-manager for creating/updating many tasks, integrating with existing bulk functionality implemented for /abandon and /task --divide commands. The aim is optimization for elegant executions with bulk operations.
 
----
