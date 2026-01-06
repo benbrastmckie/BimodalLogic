@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-06T04:22:43Z",
-  "next_project_number": 323,
+  "_last_updated": "2026-01-05T00:00:00Z",
+  "next_project_number": 324,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -768,7 +768,7 @@
       "project_name": "fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates",
       "type": "bugfix",
       "phase": "planning_completed",
-      "status": "planned",
+      "status": "revised",
       "priority": "high",
       "language": "meta",
       "description": "Fix systematic postflight failures in workflow commands (/research, /plan, /revise, /implement) where artifacts are created successfully but not linked in TODO.md and status is not updated. Root cause: postflight steps (step_4_postflight in researcher, step_7 in planner) are not executing or failing silently. Example: /research 314 created research-001.md but task status remains [NOT STARTED] with no research link. Ensure all workflow commands invoke status-sync-manager in postflight with validated_artifacts array to atomically update status and link artifacts.",
@@ -776,7 +776,7 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T05:31:28-08:00",
-      "last_updated": "2026-01-05T20:30:00-08:00",
+      "last_updated": "2026-01-05T20:30:08-08:00",
       "started": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
@@ -794,13 +794,13 @@
         }
       ],
       "planning_completed": "2026-01-05",
-      "plan_path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-004.md",
+      "plan_path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-005.md",
       "plan_metadata": {
         "phases": 5,
-        "total_effort_hours": 2.5,
-        "complexity": "low-medium",
+        "total_effort_hours": 0,
+        "complexity": "none",
         "research_integrated": true,
-        "plan_version": 4,
+        "plan_version": 5,
         "reports_integrated": [
           {
             "path": "reports/research-001.md",
@@ -816,9 +816,14 @@
             "path": "reports/research-003.md",
             "integrated_in_plan_version": 4,
             "integrated_date": "2026-01-05"
+          },
+          {
+            "path": "reports/research-003.md",
+            "integrated_in_plan_version": 5,
+            "integrated_date": "2026-01-05"
           }
         ],
-        "revision_reason": "Task 321 (completed 2026-01-05) already fixed bugs #7, #3, #2, enhanced all 6 subagents with preflight/postflight verification, created status-markers.md, and implemented atomic writes. Plan v4 focuses ONLY on remaining work not covered by task 321."
+        "revision_reason": "Task 321 (completed 2026-01-05) already fixed ALL critical bugs (#7, #3, #2), enhanced all 6 subagents with preflight/postflight verification, created status-markers.md, and implemented atomic writes. NO REMAINING WORK for task 320. Recommend marking as COMPLETED."
       }
     },
     {
@@ -830,6 +835,21 @@
       "priority": "medium",
       "language": "meta",
       "description": "Add new bulk operation to status-sync-manager for creating/updating many tasks, integrating with existing bulk functionality implemented for /abandon and /task --divide commands. The aim is optimization for elegant executions with bulk operations.",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T00:00:00Z",
+      "last_updated": "2026-01-05T00:00:00Z"
+    },
+    {
+      "project_number": 323,
+      "project_name": "fix_/todo_command_to_run_markdown_formatter_after_completion",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Fix the /todo command to run the markdown formatter on TODO.md after completing its archival operations. This ensures TODO.md remains properly formatted after task archival.",
       "effort": "TBD",
       "blocking": [],
       "dependencies": [],
