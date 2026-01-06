@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-01-05T18:10:00Z
+last_updated: 2026-01-05T18:35:00Z
 next_project_number: 322
 repository_health:
   overall_score: 92
@@ -63,18 +63,22 @@ technical_debt:
 ---
 
 ### 314. Conduct systematic review to complete context refactor plan aims
-- **Effort**: 16-24 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 20 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
 - **Researched**: 2026-01-05
+- **Planned**: 2026-01-05
 
 **Description**: Conduct a systematic review of the opencode system to complete all aims of the original context refactor plan (.opencode/specs/context-refactor-plan.md) given recent changes. The plan aims to: (1) Eliminate redundancy by consolidating 47 files to 35 files (26% reduction), (2) Document ProofChecker's three-layer delegation architecture, (3) Improve naming consistency, (4) Reorganize context structure (orchestration, formats, standards, workflows, templates, schemas), (5) Update all references across agent/command/context files, (6) Integrate state.json optimization documentation. Review current state against plan objectives, identify completed work, remaining work, and any deviations requiring plan updates.
 
 **Research Artifacts**:
   - Research Report: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md]
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-001.md]
 
 ---
 
@@ -1119,11 +1123,15 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-001.md)
+- **Research**: 
+  - [Initial Analysis](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-001.md)
+  - [Approach Comparison for AI Training](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-002.md)
 
 **Description**: Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.
 
-**Research Findings** (2026-01-05): Analyzed three approaches with viability ratings: (1) Classical.choice (3/10) - noncomputable and complex, (2) Refactor to Type (6/10) - high-risk breaking change, (3) Tactic-Mode (9/10) - highly recommended. **Recommendation**: Implement Approach 3 (Pivot to Tactic-Mode Proof Construction) as primary solution. This avoids architectural issues, provides best user experience, aligns with Lean 4 philosophy, and is computable/testable. Implement Phase 2 of Task 260 (modal_search tactic) instead of Phase 1 (programmatic proof terms). Estimated effort: 28-44 hours for tactic implementation.
+**Research Findings** (2026-01-05): 
+- **Initial Analysis**: Analyzed three approaches with viability ratings: (1) Classical.choice (3/10) - noncomputable and complex, (2) Refactor to Type (6/10) - high-risk breaking change, (3) Tactic-Mode (9/10) - highly recommended for immediate implementation.
+- **Follow-up Analysis**: Compared Approach 2 vs 3 for AI training data generation (DUAL_VERIFICATION.md). Key findings: (1) Approach 3 is standard in Lean 4 ecosystem (Mathlib, Aesop, Duper), (2) Both approaches fully compatible (hybrid strategy viable), (3) Approach 2 vastly superior for AI training (5/5 vs 0/5 on requirements). **Hybrid Recommendation**: Phase 1 - Implement Approach 3 (tactic) for immediate user value (28-44 hours), Phase 2 - Implement Approach 2 (programmatic API) for AI training pipeline (33-53 hours). Alternative: Skip Phase 1 if AI training is primary goal.
 
 ---
 

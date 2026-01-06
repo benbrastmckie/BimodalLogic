@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-05T18:10:00Z",
+  "_last_updated": "2026-01-05T18:35:00Z",
   "next_project_number": 322,
   "project_numbering": {
     "min": 0,
@@ -717,16 +717,33 @@
       "project_number": 314,
       "project_name": "conduct_systematic_review_to_complete_context_refactor_plan_aims",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "planning_completed",
+      "status": "planned",
       "priority": "high",
       "language": "meta",
       "description": "Conduct a systematic review of the opencode system to complete all aims of the original context refactor plan (.opencode/specs/context-refactor-plan.md) given recent changes. The plan aims to: (1) Eliminate redundancy by consolidating 47 files to 35 files (26% reduction), (2) Document ProofChecker's three-layer delegation architecture, (3) Improve naming consistency, (4) Reorganize context structure (orchestration, formats, standards, workflows, templates, schemas), (5) Update all references across agent/command/context files, (6) Integrate state.json optimization documentation. Review current state against plan objectives, identify completed work, remaining work, and any deviations requiring plan updates.",
-      "effort": "16-24 hours",
+      "effort": "20 hours",
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T08:23:48.417376Z",
-      "last_updated": "2026-01-05T08:23:48.417383Z"
+      "last_updated": "2026-01-05T18:35:00Z",
+      "planning_completed": "2026-01-05",
+      "plan_path": ".opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 7,
+        "total_effort_hours": 20,
+        "complexity": "high",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": ".opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          }
+        ]
+      },
+      "estimated_hours": 20
     },
     {
       "project_number": 315,
@@ -737,7 +754,7 @@
       "priority": "high",
       "language": "lean",
       "created": "2026-01-05T08:34:20.462436Z",
-      "last_updated": "2026-01-05T18:06:50Z",
+      "last_updated": "2026-01-05T18:36:09Z",
       "effort": "15-20 hours",
       "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
       "started": "2026-01-05",
@@ -748,6 +765,12 @@
           "path": ".opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-001.md",
           "created": "2026-01-05T18:06:50Z",
           "summary": "Comprehensive analysis of three approaches to resolve Axiom Prop vs Type blocker. Recommends Approach 3 (Tactic-Mode) with 9/10 viability rating."
+        },
+        {
+          "type": "research",
+          "path": ".opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-002.md",
+          "created": "2026-01-05T18:36:09Z",
+          "summary": "Comparative analysis of Approach 2 vs 3 for AI training data generation. Findings: (1) Approach 3 is Lean 4 standard, (2) Both approaches compatible (hybrid viable), (3) Approach 2 superior for AI training (5/5 vs 0/5). Recommends hybrid strategy: tactic first (28-44h), then programmatic API (33-53h)."
         }
       ]
     },
