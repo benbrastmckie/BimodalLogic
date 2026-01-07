@@ -1,12 +1,12 @@
 ---
 last_updated: 2026-01-05T00:00:00Z
-next_project_number: 326
+  next_project_number: 330
 repository_health:
   overall_score: 92
   production_readiness: excellent
   last_assessed: 2026-01-05T02:00:00Z
 task_counts:
-  active: 51
+  active: 44
   completed: 64
   in_progress: 2
   not_started: 34
@@ -45,6 +45,20 @@ technical_debt:
 **Description**: Fix the /task command to ensure it ONLY creates task entries in TODO.md and state.json, and NEVER implements the work described in the task. The command should parse the task description, reformulate it naturally, optionally divide into subtasks if --divide flag is present, delegate to status-sync-manager for atomic task creation, and return task numbers to the user. The command must be architecturally prevented from creating code files, running build tools, or doing any implementation work. Implementation happens later via /implement command.
 
 ---
+
+
+### 329. Research and fix persistent state synchronization failures between TODO.md and state.json
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Research and address the persistent issue where workflow commands (/research, /plan, /revise, /implement) successfully update state.json but fail to update TODO.md with status changes and artifact links. This is a postflight failure where status-sync-manager is either not being invoked or failing silently. Example: Task 323 research completed, state.json shows status 'researched' with artifact link, but TODO.md shows [NOT STARTED] with no artifacts. This violates the architectural requirement that both files must be kept in sync via status-sync-manager. Related to tasks 312, 320, and 321.
+
+---
+
 
 
 ### 302. Test Dual-Mode Revision Workflow

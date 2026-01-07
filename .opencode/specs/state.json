@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-06T01:28:17Z",
-  "next_project_number": 329,
+  "_last_updated": "2026-01-06T00:00:00Z",
+  "next_project_number": 330,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -720,6 +720,21 @@
       "artifacts": [
         ".opencode/specs/328_fix_task_command_to_only_create_task_entries_and_never_implement_directly/reports/research-001.md"
       ]
+    },
+    {
+      "project_number": 329,
+      "project_name": "research_and_fix_persistent_state_synchronization_failures_between_todo_md_and_state_json",
+      "type": "bugfix",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "description": "Research and address the persistent issue where workflow commands (/research, /plan, /revise, /implement) successfully update state.json but fail to update TODO.md with status changes and artifact links. This is a postflight failure where status-sync-manager is either not being invoked or failing silently. Example: Task 323 research completed, state.json shows status 'researched' with artifact link, but TODO.md shows [NOT STARTED] with no artifacts. This violates the architectural requirement that both files must be kept in sync via status-sync-manager. Related to tasks 312, 320, and 321.",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-06T00:00:00Z",
+      "last_updated": "2026-01-06T00:00:00Z"
     }
   ],
   "completed_projects": [
