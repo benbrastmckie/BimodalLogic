@@ -592,7 +592,7 @@ technical_debt:
 
 ### 189. Add --divide flag to /research command for topic subdivision
 - **Effort**: 3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Started**: 2025-12-26
 - **Priority**: Medium
 - **Language**: markdown
@@ -735,7 +735,7 @@ Establishes state.json as single source of truth, eliminates "Extract task NNN d
 
 ### 291. Fix lean-research-agent to delegate status updates to status-sync-manager instead of direct file manipulation
 - **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Started**: 2026-01-04
 - **Researched**: 2026-01-04
 - **Priority**: High
@@ -897,8 +897,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ### 323. Fix /todo command to run markdown formatter after completion
 
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-05
+- **Planned**: 2026-01-07
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
@@ -906,6 +907,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Research Artifacts**:
   - Research Report: [.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md]
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-001.md]
 
 **Description**: Fix the /todo command to run the markdown formatter on TODO.md after completing its archival operations. This ensures TODO.md remains properly formatted after task archival.
 
@@ -1006,4 +1010,3 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 **Description**: Create a --sync flag for the /task command that synchronizes TODO.md and state.json. The flag should accept optional task number ranges (e.g., 343-345, 337) to sync specific tasks, or sync all tasks if no numbers are provided. Improve upon the current /sync command implementation, avoiding needless complexity and omitting dry-run mode.
 
 ---
-
