@@ -747,6 +747,19 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ## Medium Priority
 
+
+### 331. Create --abandon flag for /task command to abandon multiple tasks via ranges/lists
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Create the --abandon flag for the /task command to be able to specify a list or range of task numbers (or a list of ranges) in order to abandon those tasks in a manner similar to how the /abandon command works now while avoiding needless complexity.
+
+---
+
 ### 317. Implement BFS variant for proof search completeness (Phase 3)
 - **Effort**: 10-15 hours
 - **Status**: [NOT STARTED]
@@ -891,7 +904,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 259. Automation Tactics
 - **Effort**: 20.0
-- **Status**: [REVISING]
+- **Status**: [ABANDONED]
 - **Priority**: Medium
 - **Language**: lean
 - **Artifacts**:
@@ -932,6 +945,18 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
   - Implementation Plan: [.opencode/specs/327_review_context_file_references_and_optimize_context_loading_strategy/plans/implementation-001.md]
 
 **Description**: Verify that all context file references are current and valid following task 314 implementation. Conduct systematic review of context loading patterns across commands and agents to identify opportunities for optimization. Goals: (1) Eliminate broken references to deprecated context files, (2) Prevent context bloating by loading only necessary context, (3) Ensure sufficient context is loaded for each operation type, (4) Document context loading best practices.
+
+---
+
+### 330. Create --sync flag for /task command to synchronize TODO.md and state.json
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Create a --sync flag for the /task command that synchronizes TODO.md and state.json. The flag should accept optional task number ranges (e.g., 343-345, 337) to sync specific tasks, or sync all tasks if no numbers are provided. Improve upon the current /sync command implementation, avoiding needless complexity and omitting dry-run mode.
 
 ---
 
