@@ -92,6 +92,56 @@ timeout: 120
     <checkpoint>Input parsed and validated</checkpoint>
   </stage>
   
+  <stage id="1.5" name="ValidateNoImplementation">
+    <action>Validate that description is for task creation, not implementation</action>
+    <process>
+      CRITICAL: This validation gate prevents architectural violations.
+      
+      1. Check description for implementation keywords:
+         - Keywords indicating implementation attempt:
+           * "implement", "code", "write", "create file", "add function"
+           * "fix bug", "refactor", "update code", "modify"
+           * File extensions: ".lean", ".py", ".sh", ".md", ".json"
+           * Directory paths: "src/", "lib/", ".opencode/"
+         
+         - If ANY implementation keywords found:
+           a. Log: "ARCHITECTURAL VIOLATION DETECTED"
+           b. Log: "Description contains implementation keywords: ${keywords_found}"
+           c. Return error to user:
+              ```
+              Error: /task command creates TASK ENTRIES only, it does NOT implement tasks.
+              
+              Your description: "${description}"
+              
+              Detected implementation keywords: ${keywords_found}
+              
+              What you should do:
+              1. Use /task to create a task entry: /task "Task description"
+              2. Then use /implement to do the work: /implement {task_number}
+              
+              Example:
+                /task "Implement feature X"  # Creates task entry
+                /implement 350               # Implements the task
+              ```
+           d. ABORT - do NOT proceed to Stage 2
+      
+      2. Check for file paths in description:
+         - If description contains file paths (e.g., "Update src/Foo.lean"):
+           a. Log warning: "Description contains file path"
+           b. Suggest: "Consider using /implement after creating task"
+           c. Continue (file paths are OK in task descriptions)
+      
+      3. Log validation success:
+         - Log: "✓ Validation passed: Description is for task creation"
+         - Proceed to Stage 2
+    </process>
+    <validation>
+      - No implementation keywords detected
+      - Description is appropriate for task creation
+    </validation>
+    <checkpoint>Validated that description is for task creation, not implementation</checkpoint>
+  </stage>
+  
   <stage id="2" name="ReformulateDescription">
     <action>Reformulate description naturally (inline, no subagent)</action>
     <process>
@@ -217,50 +267,111 @@ timeout: 120
     <checkpoint>All tasks created atomically in TODO.md and state.json</checkpoint>
   </stage>
   
+  <stage id="4.5" name="ValidateNoArtifacts">
+    <action>Validate that NO artifacts were created (only task entries)</action>
+    <process>
+      CRITICAL: This validation gate ensures architectural compliance.
+      
+      1. Check for artifact creation:
+         - Scan .opencode/specs/ for new directories created during this session
+         - Check for new files in project directories (src/, lib/, etc.)
+         - Look for any files created with current timestamp
+      
+      2. If ANY artifacts found:
+         a. Log: "ARCHITECTURAL VIOLATION DETECTED"
+         b. Log: "Artifacts created during /task execution: ${artifacts_found}"
+         c. Return error to user:
+            ```
+            Error: /task command violated architectural constraint.
+            
+            This command created artifacts when it should ONLY create task entries.
+            
+            Artifacts created: ${artifacts_found}
+            
+            This is a bug in the /task command implementation.
+            Please report this issue.
+            
+            Manual cleanup:
+            1. Remove artifacts: rm -rf ${artifacts_found}
+            2. Verify task entries in TODO.md are correct
+            3. Use /implement to do the actual work
+            ```
+         d. ABORT - do NOT return success
+      
+      3. Verify only TODO.md and state.json were modified:
+         - Check git status for modified files
+         - Expected: .opencode/specs/TODO.md, .opencode/specs/state.json
+         - If other files modified:
+           a. Log warning: "Unexpected files modified: ${unexpected_files}"
+           b. Continue (may be legitimate, e.g., errors.json)
+      
+      4. Log validation success:
+         - Log: "✓ Validation passed: Only task entries created"
+         - Proceed to Stage 5
+    </process>
+    <validation>
+      - No artifacts created (no spec directories, no code files)
+      - Only TODO.md and state.json modified
+      - Architectural constraint maintained
+    </validation>
+    <checkpoint>Validated that only task entries were created, no implementation occurred</checkpoint>
+  </stage>
+  
   <stage id="5" name="ReturnSuccess">
-    <action>Return task numbers and next steps to user</action>
+    <action>Return task numbers and emphasize next steps</action>
     <process>
       1. Format success message:
-         - If single task:
-           ```
-           Task {number} created: {title}
-           - Priority: {priority}
-           - Effort: {effort}
-           - Language: {language}
-           - Status: [NOT STARTED]
-           
-           Next steps:
-             /research {number} - Research this task
-             /plan {number} - Create implementation plan
-             /implement {number} - Implement the task
-           ```
          
-         - If multiple tasks (--divide):
-           ```
-           Created {count} tasks:
-           - Task {number1}: {title1}
-           - Task {number2}: {title2}
-           - Task {number3}: {title3}
-           
-           All tasks:
-           - Priority: {priority}
-           - Effort: {effort}
-           - Language: {language}
-           - Status: [NOT STARTED]
-           
-           Next steps:
-             /research {number1} - Research first task
-             /implement {number1} - Implement first task
-             (Repeat for other tasks as needed)
-           ```
+         2. CRITICAL: Emphasize that task was CREATED, not IMPLEMENTED:
+            - If single task:
+              ```
+              ✅ Task {number} CREATED (not implemented): {title}
+              
+              Task Details:
+              - Priority: {priority}
+              - Effort: {effort}
+              - Language: {language}
+              - Status: [NOT STARTED]
+              
+              ⚠️  IMPORTANT: This task has been CREATED but NOT IMPLEMENTED.
+              
+              Next steps to IMPLEMENT this task:
+                1. /research {number}  - Research the task
+                2. /plan {number}      - Create implementation plan
+                3. /implement {number} - Implement the task
+              
+              Or skip research/planning and implement directly:
+                /implement {number}
+              ```
+            
+            - If multiple tasks (--divide):
+              ```
+              ✅ Created {count} tasks (not implemented):
+              - Task {number1}: {title1}
+              - Task {number2}: {title2}
+              - Task {number3}: {title3}
+              
+              All tasks:
+              - Priority: {priority}
+              - Effort: {effort}
+              - Language: {language}
+              - Status: [NOT STARTED]
+              
+              ⚠️  IMPORTANT: These tasks have been CREATED but NOT IMPLEMENTED.
+              
+              Next steps to IMPLEMENT these tasks:
+                /research {number1}    - Research first task
+                /implement {number1}   - Implement first task
+                (Repeat for other tasks as needed)
+              ```
       
-      2. Return message to user
+      3. Return message to user
       
-      3. STOP HERE. Do NOT implement any tasks.
+      4. STOP HERE. Do NOT implement any tasks.
          The task entries have been created in TODO.md and state.json.
          The user will use /research, /plan, /implement later.
     </process>
-    <checkpoint>Success message returned to user</checkpoint>
+    <checkpoint>Success message returned, user understands next steps</checkpoint>
   </stage>
 </workflow_execution>
 
