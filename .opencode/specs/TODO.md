@@ -872,8 +872,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ## Medium Priority
 
-### 323. Fix /todo command to run markdown formatter after completion
-
 ### 332. Design and implement comprehensive /task command enhancements
 - **Effort**: 18-24 hours
 - **Status**: [NOT STARTED]
@@ -886,12 +884,18 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
+### 323. Fix /todo command to run markdown formatter after completion
+
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-05
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md]
 
 **Description**: Fix the /todo command to run the markdown formatter on TODO.md after completing its archival operations. This ensures TODO.md remains properly formatted after task archival.
 

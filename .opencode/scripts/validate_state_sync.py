@@ -206,8 +206,8 @@ class StateValidator:
                 ))
             
             # Check priority
-            todo_priority = todo_task.get('priority', '').lower()
-            state_priority = state_task.get('priority', '').lower()
+            todo_priority = (todo_task.get('priority') or '').lower()
+            state_priority = (state_task.get('priority') or '').lower()
             if todo_priority != state_priority:
                 self.issues.append(Issue(
                     Severity.WARNING,
@@ -218,8 +218,8 @@ class StateValidator:
                 ))
             
             # Check language
-            todo_lang = todo_task.get('language', '').lower()
-            state_lang = state_task.get('language', '').lower()
+            todo_lang = (todo_task.get('language') or '').lower()
+            state_lang = (state_task.get('language') or '').lower()
             if todo_lang != state_lang:
                 self.issues.append(Issue(
                     Severity.WARNING,

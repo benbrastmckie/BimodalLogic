@@ -2,7 +2,7 @@
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
   "_last_updated": "2026-01-06T00:00:00Z",
-  "next_project_number": 333,
+  "next_project_number": 334,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -811,6 +811,21 @@
         322,
         330
       ],
+      "created": "2026-01-06T00:00:00Z",
+      "last_updated": "2026-01-06T00:00:00Z"
+    },
+    {
+      "project_number": 333,
+      "project_name": "fix_workflow_command_todo_md_state_json_synchronization_failures",
+      "type": "bugfix",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "description": "Systematically fix persistent synchronization failures in /research, /plan, /revise, and /implement commands where manual file manipulation (sed/awk) fails silently, leaving TODO.md unchanged while state.json updates successfully. Root cause identified in root-cause-analysis-todo-state-sync-failures.md: commands don't delegate to status-sync-manager for atomic updates. Solution: Add postflight stage to all workflow commands that delegates to status-sync-manager with validated_artifacts array, ensuring both files update atomically or neither updates. This addresses the architectural requirement that state.json and TODO.md must be kept in sync via status-sync-manager's two-phase commit protocol.",
+      "effort": "6-8 hours",
+      "blocking": [],
+      "dependencies": [],
       "created": "2026-01-06T00:00:00Z",
       "last_updated": "2026-01-06T00:00:00Z"
     }
