@@ -116,23 +116,101 @@ context_loading:
     <checkpoint>Task validated, metadata extracted, target agent determined</checkpoint>
   </stage>
   
+  <stage id="1.5" name="Preflight">
+    <action>Update status to [RESEARCHING] before delegating to researcher</action>
+    <process>
+      CRITICAL: This stage MUST complete BEFORE Stage 2 (Delegate) begins.
+      This addresses the user's complaint: "I still don't see that it updates the task status 
+      immediately upon starting the research process."
+      
+      1. Generate session_id for tracking:
+         - session_id="sess_$(date +%s)_$(head -c 6 /dev/urandom | base64 | tr -dc 'a-z0-9')"
+         - Store for later use: expected_session_id="$session_id"
+         - Log: "Generated session_id: ${session_id}"
+      
+      2. Delegate to status-sync-manager to update status:
+         
+         Log: "Preflight: Updating task ${task_number} status to RESEARCHING"
+         
+         INVOKE status-sync-manager via task tool:
+         task(
+           subagent_type="status-sync-manager",
+           prompt="{
+             \"operation\": \"update_status\",
+             \"task_number\": ${task_number},
+             \"new_status\": \"researching\",
+             \"timestamp\": \"$(date -I)\",
+             \"session_id\": \"${session_id}\",
+             \"delegation_depth\": 1,
+             \"delegation_path\": [\"orchestrator\", \"research\", \"status-sync-manager\"]
+           }",
+           description="Update task ${task_number} status to RESEARCHING"
+         )
+      
+      3. Validate status-sync-manager return:
+         a. Parse return as JSON
+         b. Extract status field: sync_status=$(echo "$sync_return" | jq -r '.status')
+         c. If sync_status != "completed":
+            - Log error: "Preflight failed: status-sync-manager returned ${sync_status}"
+            - Extract error message: error_msg=$(echo "$sync_return" | jq -r '.errors[0].message')
+            - Return error to user: "Failed to update status to RESEARCHING: ${error_msg}"
+            - ABORT - do NOT proceed to Stage 2 (Delegate)
+         d. Verify files_updated includes TODO.md and state.json:
+            - files_updated=$(echo "$sync_return" | jq -r '.files_updated[]')
+            - If TODO.md not in files_updated: Log warning "TODO.md not updated"
+            - If state.json not in files_updated: Log warning "state.json not updated"
+      
+      4. Verify status was actually updated (defense in depth):
+         
+         Log: "Preflight: Verifying status update succeeded"
+         
+         Read state.json to check current status:
+         actual_status=$(jq -r --arg num "$task_number" \
+           '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
+           .opencode/specs/state.json)
+         
+         If actual_status != "researching":
+           - Log error: "Preflight verification failed"
+           - Log: "Expected status: researching"
+           - Log: "Actual status: ${actual_status}"
+           - Return error to user: "Status update verification failed. Run /sync to fix state."
+           - ABORT - do NOT proceed to Stage 2 (Delegate)
+         
+         Log: "Preflight: Status verified as 'researching'"
+      
+      5. Log preflight success:
+         - Log: "✓ Preflight completed: Task ${task_number} status updated to RESEARCHING"
+         - Log: "Files updated: ${files_updated}"
+         - Log: "Proceeding to Stage 2 (Delegate to researcher)"
+    </process>
+    <validation>
+      - status-sync-manager returned "completed" status
+      - TODO.md and state.json were updated
+      - state.json status field verified as "researching"
+      - User can now see [RESEARCHING] status immediately
+    </validation>
+    <checkpoint>Status verified as [RESEARCHING] before delegation to researcher</checkpoint>
+  </stage>
+  
   <stage id="2" name="Delegate">
     <action>Delegate to researcher with parsed context</action>
     <process>
-      1. Generate session_id for tracking
-         - session_id="sess_$(date +%s)_$(head -c 6 /dev/urandom | base64 | tr -dc 'a-z0-9')"
-         - Store for validation: expected_session_id="$session_id"
+      1. Use session_id from Stage 1.5 (already generated)
+         - session_id is already set from Preflight stage
+         - Log: "Delegating to ${target_agent} with session_id: ${session_id}"
       
       2. Invoke target agent via task tool:
          task(
            subagent_type="${target_agent}",
            prompt="Research task ${task_number}: ${description}. Focus: ${research_focus}",
-           description="Research task ${task_number}"
+           description="Research task ${task_number}",
+           session_id="${session_id}"
          )
       
       3. Wait for researcher to complete and capture return
          - Subagent returns JSON to stdout
          - Capture in variable: subagent_return
+         - Log: "Researcher completed, validating return"
     </process>
     <checkpoint>Delegated to researcher, return captured</checkpoint>
   </stage>
