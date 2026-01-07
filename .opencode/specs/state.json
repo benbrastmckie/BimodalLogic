@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-06T21:40:18Z",
+  "_last_updated": "2026-01-06T01:28:17Z",
   "next_project_number": 329,
   "project_numbering": {
     "min": 0,
@@ -422,14 +422,15 @@
       "project_number": 302,
       "project_name": "test_dual_mode_revision_workflow",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "abandoned",
+      "status": "abandoned",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-06T21:50:00Z",
       "effort": "2 hours",
-      "description": "Create comprehensive tests for the dual-mode revision workflow, covering task-only revision, plan revision without new reports, and plan revision with new reports."
+      "description": "Create comprehensive tests for the dual-mode revision workflow, covering task-only revision, plan revision without new reports, and plan revision with new reports.",
+      "abandoned": "2026-01-06"
     },
     {
       "project_number": 306,
@@ -632,8 +633,8 @@
       "project_number": 325,
       "project_name": "create___recover_flag_for_/task_command_to_unarchive_projects",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "research_completed",
+      "status": "researched",
       "priority": "medium",
       "language": "meta",
       "description": "Create a --recover flag for the /task command together with a task number as an argument that can be used to unarchive a project directory from specs/archive/, updating the specs/TODO.md and specs/state.json files accordingly.",
@@ -641,7 +642,11 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T00:00:00Z",
-      "last_updated": "2026-01-05T00:00:00Z"
+      "last_updated": "2026-01-06",
+      "research_completed": "2026-01-06",
+      "artifacts": [
+        ".opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md"
+      ]
     },
     {
       "project_number": 326,
@@ -2114,7 +2119,7 @@
       "project_number": 324,
       "project_name": "investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321",
       "type": "bugfix",
-      "phase": "not_started",
+      "phase": "implementation_completed",
       "status": "completed",
       "priority": "high",
       "language": "meta",

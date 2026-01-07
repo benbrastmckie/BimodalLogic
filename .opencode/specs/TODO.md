@@ -49,7 +49,7 @@ technical_debt:
 
 ### 302. Test Dual-Mode Revision Workflow
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: 301
@@ -846,11 +846,14 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 325. Create --recover flag for /task command to unarchive projects
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md]
 
 **Description**: Create a --recover flag for the /task command together with a task number as an argument that can be used to unarchive a project directory from specs/archive/, updating the specs/TODO.md and specs/state.json files accordingly.
 
