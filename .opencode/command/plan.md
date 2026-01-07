@@ -123,23 +123,100 @@ context_loading:
     <checkpoint>Task validated, metadata extracted, target agent determined</checkpoint>
   </stage>
   
+  <stage id="1.5" name="Preflight">
+    <action>Update status to [PLANNING] before delegating to planner</action>
+    <process>
+      CRITICAL: This stage MUST complete BEFORE Stage 2 (Delegate) begins.
+      This ensures status updates immediately when planning starts.
+      
+      1. Generate session_id for tracking:
+         - session_id="sess_$(date +%s)_$(head -c 6 /dev/urandom | base64 | tr -dc 'a-z0-9')"
+         - Store for later use: expected_session_id="$session_id"
+         - Log: "Generated session_id: ${session_id}"
+      
+      2. Delegate to status-sync-manager to update status:
+         
+         Log: "Preflight: Updating task ${task_number} status to PLANNING"
+         
+         INVOKE status-sync-manager via task tool:
+         task(
+           subagent_type="status-sync-manager",
+           prompt="{
+             \"operation\": \"update_status\",
+             \"task_number\": ${task_number},
+             \"new_status\": \"planning\",
+             \"timestamp\": \"$(date -I)\",
+             \"session_id\": \"${session_id}\",
+             \"delegation_depth\": 1,
+             \"delegation_path\": [\"orchestrator\", \"plan\", \"status-sync-manager\"]
+           }",
+           description="Update task ${task_number} status to PLANNING"
+         )
+      
+      3. Validate status-sync-manager return:
+         a. Parse return as JSON
+         b. Extract status field: sync_status=$(echo "$sync_return" | jq -r '.status')
+         c. If sync_status != "completed":
+            - Log error: "Preflight failed: status-sync-manager returned ${sync_status}"
+            - Extract error message: error_msg=$(echo "$sync_return" | jq -r '.errors[0].message')
+            - Return error to user: "Failed to update status to PLANNING: ${error_msg}"
+            - ABORT - do NOT proceed to Stage 2 (Delegate)
+         d. Verify files_updated includes TODO.md and state.json:
+            - files_updated=$(echo "$sync_return" | jq -r '.files_updated[]')
+            - If TODO.md not in files_updated: Log warning "TODO.md not updated"
+            - If state.json not in files_updated: Log warning "state.json not updated"
+      
+      4. Verify status was actually updated (defense in depth):
+         
+         Log: "Preflight: Verifying status update succeeded"
+         
+         Read state.json to check current status:
+         actual_status=$(jq -r --arg num "$task_number" \
+           '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
+           .opencode/specs/state.json)
+         
+         If actual_status != "planning":
+           - Log error: "Preflight verification failed"
+           - Log: "Expected status: planning"
+           - Log: "Actual status: ${actual_status}"
+           - Return error to user: "Status update verification failed. Run /sync to fix state."
+           - ABORT - do NOT proceed to Stage 2 (Delegate)
+         
+         Log: "Preflight: Status verified as 'planning'"
+      
+      5. Log preflight success:
+         - Log: "✓ Preflight completed: Task ${task_number} status updated to PLANNING"
+         - Log: "Files updated: ${files_updated}"
+         - Log: "Proceeding to Stage 2 (Delegate to planner)"
+    </process>
+    <validation>
+      - status-sync-manager returned "completed" status
+      - TODO.md and state.json were updated
+      - state.json status field verified as "planning"
+      - User can now see [PLANNING] status immediately
+    </validation>
+    <checkpoint>Status verified as [PLANNING] before delegation to planner</checkpoint>
+  </stage>
+  
   <stage id="2" name="Delegate">
     <action>Delegate to planner with parsed context</action>
     <process>
-      1. Generate session_id for tracking
-         - session_id="sess_$(date +%s)_$(head -c 6 /dev/urandom | base64 | tr -dc 'a-z0-9')"
-         - Store for validation: expected_session_id="$session_id"
+      1. Use session_id from Stage 1.5 (already generated)
+         - session_id is already set from Preflight stage
+         - Log: "Delegating to ${target_agent} with session_id: ${session_id}"
       
       2. Invoke target agent via task tool:
          task(
            subagent_type="${target_agent}",
            prompt="Create implementation plan for task ${task_number}: ${description}. ${custom_prompt}",
-           description="Plan task ${task_number}"
+           description="Plan task ${task_number}",
+           session_id="${session_id}"
          )
       
       3. Wait for planner to complete and capture return
          - Subagent returns JSON to stdout
          - Capture in variable: subagent_return
+         - Log: "Planner completed, validating return"
     </process>
     <checkpoint>Delegated to planner, return captured</checkpoint>
   </stage>
@@ -248,6 +325,166 @@ context_loading:
            * Log: "Artifacts: ${artifact_count} validated"
     </process>
     <checkpoint>Subagent return validated, all checks passed</checkpoint>
+  </stage>
+  
+  <stage id="3.5" name="Postflight">
+    <action>Update status to [PLANNED], link artifacts, create git commit</action>
+    <process>
+      CRITICAL: This stage ensures artifacts are linked and status is updated.
+      This prevents manual fixes like those needed for Task 326.
+      
+      1. Extract artifacts from subagent return:
+         
+         Log: "Postflight: Extracting artifacts from planner return"
+         
+         Parse artifacts array from subagent return:
+         artifacts_json=$(echo "$subagent_return" | jq -c '.artifacts')
+         artifact_count=$(echo "$artifacts_json" | jq 'length')
+         
+         Log: "Subagent returned ${artifact_count} artifact(s)"
+         
+         If artifact_count == 0:
+           - Log warning: "Planner returned no artifacts"
+           - Log: "This may indicate planning failed or was incomplete"
+           - Continue (will update status but no artifacts to link)
+      
+      2. Validate artifacts exist on disk (CRITICAL):
+         
+         Log: "Postflight: Validating artifacts exist on disk"
+         
+         For each artifact in artifacts array:
+         for artifact_path in $(echo "$artifacts_json" | jq -r '.[].path'); do
+           # Check file exists
+           if [ ! -f "$artifact_path" ]; then
+             echo "ERROR: Artifact not found on disk: $artifact_path"
+             echo "Subagent claimed to create artifact but file does not exist"
+             exit 1
+           fi
+           
+           # Check file is non-empty
+           if [ ! -s "$artifact_path" ]; then
+             echo "ERROR: Artifact is empty: $artifact_path"
+             echo "Subagent created file but wrote no content"
+             exit 1
+           fi
+           
+           # Get file size for logging
+           file_size=$(stat -c%s "$artifact_path" 2>/dev/null || stat -f%z "$artifact_path")
+           echo "✓ Validated artifact: $artifact_path (${file_size} bytes)"
+         done
+         
+         Log: "✓ All ${artifact_count} artifact(s) validated on disk"
+      
+      3. Delegate to status-sync-manager to update status and link artifacts:
+         
+         Log: "Postflight: Updating task ${task_number} status to PLANNED and linking artifacts"
+         
+         INVOKE status-sync-manager via task tool:
+         task(
+           subagent_type="status-sync-manager",
+           prompt="{
+             \"operation\": \"update_status\",
+             \"task_number\": ${task_number},
+             \"new_status\": \"planned\",
+             \"timestamp\": \"$(date -I)\",
+             \"session_id\": \"${session_id}\",
+             \"delegation_depth\": 1,
+             \"delegation_path\": [\"orchestrator\", \"plan\", \"status-sync-manager\"],
+             \"validated_artifacts\": ${artifacts_json}
+           }",
+           description="Update task ${task_number} status to PLANNED and link artifacts"
+         )
+      
+      4. Validate status-sync-manager return:
+         a. Parse return as JSON
+         b. Extract status field: sync_status=$(echo "$sync_return" | jq -r '.status')
+         c. If sync_status != "completed":
+            - Log error: "Postflight failed: status-sync-manager returned ${sync_status}"
+            - Extract error message: error_msg=$(echo "$sync_return" | jq -r '.errors[0].message')
+            - Log warning: "Planning completed but status update failed: ${error_msg}"
+            - Log: "Manual fix: /sync ${task_number}"
+            - Continue (planning work is done, just status update failed)
+         d. Verify files_updated includes TODO.md and state.json
+      
+      5. Verify status and artifact links were actually updated (defense in depth):
+         
+         Log: "Postflight: Verifying status and artifact links"
+         
+         Read state.json to check current status:
+         actual_status=$(jq -r --arg num "$task_number" \
+           '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
+           .opencode/specs/state.json)
+         
+         If actual_status != "planned":
+           - Log warning: "Postflight verification failed - status not updated"
+           - Log: "Expected status: planned"
+           - Log: "Actual status: ${actual_status}"
+           - Log: "Manual fix: /sync ${task_number}"
+         Else:
+           - Log: "✓ Status verified as 'planned'"
+         
+         Verify artifact links in TODO.md:
+         for artifact_path in $(echo "$artifacts_json" | jq -r '.[].path'); do
+           if ! grep -q "$artifact_path" .opencode/specs/TODO.md; then
+             echo "WARNING: Artifact not linked in TODO.md: $artifact_path"
+             echo "Manual fix: Edit TODO.md to add artifact link"
+           else
+             echo "✓ Verified artifact link in TODO.md: $artifact_path"
+           fi
+         done
+      
+      6. Delegate to git-workflow-manager to create commit:
+         
+         Log: "Postflight: Creating git commit"
+         
+         Extract artifact paths for git commit:
+         artifact_paths=$(echo "$artifacts_json" | jq -r '.[].path' | tr '\n' ' ')
+         
+         INVOKE git-workflow-manager via task tool:
+         task(
+           subagent_type="git-workflow-manager",
+           prompt="{
+             \"scope_files\": [${artifact_paths}, \".opencode/specs/TODO.md\", \".opencode/specs/state.json\"],
+             \"message_template\": \"task ${task_number}: plan created\",
+             \"task_context\": {
+               \"task_number\": ${task_number},
+               \"description\": \"plan created\"
+             },
+             \"session_id\": \"${session_id}\",
+             \"delegation_depth\": 1,
+             \"delegation_path\": [\"orchestrator\", \"plan\", \"git-workflow-manager\"]
+           }",
+           description="Create git commit for task ${task_number} plan"
+         )
+      
+      7. Validate git-workflow-manager return:
+         a. Parse return as JSON
+         b. Extract status field: git_status=$(echo "$git_return" | jq -r '.status')
+         c. If git_status == "completed":
+            - Extract commit hash: commit_hash=$(echo "$git_return" | jq -r '.commit_info.commit_hash')
+            - Log: "✓ Git commit created: ${commit_hash}"
+         d. If git_status == "failed":
+            - Log warning: "Git commit failed (non-critical)"
+            - Extract error message: error_msg=$(echo "$git_return" | jq -r '.errors[0].message')
+            - Log: "Git error: ${error_msg}"
+            - Log: "Manual fix: git add . && git commit -m 'task ${task_number}: plan created'"
+            - Continue (git failure doesn't fail the command)
+      
+      8. Log postflight success:
+         - Log: "✓ Postflight completed: Task ${task_number} status updated to PLANNED"
+         - Log: "Artifacts linked: ${artifact_count}"
+         - Log: "Git commit: ${commit_hash}"
+         - Proceed to Stage 4 (RelayResult)
+    </process>
+    <validation>
+      - All artifacts validated on disk before status update
+      - status-sync-manager returned "completed" status
+      - state.json status field verified as "planned"
+      - Artifact links verified in TODO.md
+      - Git commit created (or warning logged)
+      - NO manual fixes needed
+    </validation>
+    <checkpoint>Status updated to [PLANNED], artifacts linked and verified, git commit created</checkpoint>
   </stage>
   
   <stage id="4" name="RelayResult">
