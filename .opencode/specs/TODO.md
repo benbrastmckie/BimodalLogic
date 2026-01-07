@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-05T00:00:00Z
-  next_project_number: 330
+last_updated: 2026-01-06T00:00:00Z
+  next_project_number: 333
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -860,6 +860,19 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ## Medium Priority
 
 ### 323. Fix /todo command to run markdown formatter after completion
+
+### 332. Design and implement comprehensive /task command enhancements
+- **Effort**: 18-24 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: 325, 326, 322, 330
+
+**Description**: Design and implement comprehensive enhancements to the /task command to consolidate tasks 325, 326, 322, and 330. This includes: (1) --recover flag to unarchive projects from specs/archive/, (2) --divide flag to divide existing tasks into subtasks with dependencies, (3) --sync flag to synchronize TODO.md and state.json with optional task ranges, and (4) bulk operations in status-sync-manager for creating/updating many tasks. Implementing these features together avoids conflicts, ensures architectural consistency, and improves the integrity of the /task command. Each feature should be designed with atomic operations, proper error handling, and integration with existing status-sync-manager patterns.
+
+---
+
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
@@ -896,6 +909,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/326_create___divide_flag_for_task_command_with_task_division_capability/reports/research-001.md]
 
 **Description**: Create a --divide flag for the /task command that accepts a task number as an argument. This flag should divide an existing task into an appropriate number of subtasks, add the new task numbers as dependencies to the original task, and create the new task entries atomically.
 
