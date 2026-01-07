@@ -859,8 +859,8 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ---
 
 ### 325. Create --recover flag for /task command to unarchive projects
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 6 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
@@ -868,6 +868,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Research Artifacts**:
   - Research Report: [.opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md]
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/plans/implementation-001.md]
 
 **Description**: Create a --recover flag for the /task command together with a task number as an argument that can be used to unarchive a project directory from specs/archive/, updating the specs/TODO.md and specs/state.json files accordingly.
 
