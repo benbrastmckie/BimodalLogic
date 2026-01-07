@@ -818,8 +818,8 @@
       "project_number": 333,
       "project_name": "fix_workflow_command_todo_md_state_json_synchronization_failures",
       "type": "bugfix",
-      "phase": "not_started",
-      "status": "planned",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "high",
       "language": "meta",
       "description": "Systematically fix persistent synchronization failures in /research, /plan, /revise, and /implement commands where manual file manipulation (sed/awk) fails silently, leaving TODO.md unchanged while state.json updates successfully. Root cause identified in root-cause-analysis-todo-state-sync-failures.md: commands don't delegate to status-sync-manager for atomic updates. Solution: Add postflight stage to all workflow commands that delegates to status-sync-manager with validated_artifacts array, ensuring both files update atomically or neither updates. This addresses the architectural requirement that state.json and TODO.md must be kept in sync via status-sync-manager's two-phase commit protocol.",
@@ -843,7 +843,15 @@
             "integrated_date": "2026-01-06"
           }
         ]
-      }
+      },
+      "completed": "2026-01-06",
+      "artifacts": [
+        {
+          "type": "implementation",
+          "path": ".opencode/specs/333_fix_workflow_command_todo_md_state_json_synchronization_failures/summaries/implementation-summary-20260106.md",
+          "summary": "Verification that all subagent specifications already implement correct status-sync-manager delegation pattern"
+        }
+      ]
     }
   ],
   "completed_projects": [
