@@ -9,7 +9,6 @@ context_loading:
   index: ".opencode/context/index.md"
   required:
     - "core/orchestration/state-management.md"  # For status markers and state schemas
-    - "core/orchestration/state-management.md"  # For directory operations
     - "core/orchestration/state-lookup.md"      # Fast state.json queries
   data_files:
     - ".opencode/specs/TODO.md"          # Main TODO file

@@ -7,6 +7,14 @@ routing:
   language_based: true
   lean: lean-implementation-agent
   default: implementer
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/orchestration/delegation.md"
+    - "core/orchestration/state-management.md"
+    - "core/standards/git-safety.md"
+  max_context_size: 30000
 ---
 
 **Task Input (required):** $ARGUMENTS

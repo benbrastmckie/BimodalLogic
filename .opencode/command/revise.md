@@ -9,6 +9,15 @@ routing:
   language_based: true
   lean: lean-planner
   default: planner
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/orchestration/delegation.md"
+    - "core/orchestration/state-management.md"
+  optional:
+    - "core/formats/plan-format.md"
+  max_context_size: 40000
 ---
 
 **Task Input (required):** $ARGUMENTS

@@ -1,19 +1,19 @@
 ---
 last_updated: 2026-01-06T00:00:00Z
-  next_project_number: 333
+  next_project_number: 334
 repository_health:
   overall_score: 92
   production_readiness: excellent
   last_assessed: 2026-01-05T02:00:00Z
 task_counts:
-  active: 44
+  active: 45
   completed: 64
   in_progress: 2
-  not_started: 34
+  not_started: 35
   abandoned: 6
-  total: 115
+  total: 116
 priority_distribution:
-  high: 17
+  high: 18
   medium: 22
   low: 13
 technical_debt:
@@ -56,6 +56,19 @@ technical_debt:
 - **Dependencies**: None
 
 **Description**: Research and address the persistent issue where workflow commands (/research, /plan, /revise, /implement) successfully update state.json but fail to update TODO.md with status changes and artifact links. This is a postflight failure where status-sync-manager is either not being invoked or failing silently. Example: Task 323 research completed, state.json shows status 'researched' with artifact link, but TODO.md shows [NOT STARTED] with no artifacts. This violates the architectural requirement that both files must be kept in sync via status-sync-manager. Related to tasks 312, 320, and 321.
+
+---
+
+
+### 333. Fix workflow command TODO.md/state.json synchronization failures
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Systematically fix persistent synchronization failures in /research, /plan, /revise, and /implement commands where manual file manipulation (sed/awk) fails silently, leaving TODO.md unchanged while state.json updates successfully. Root cause identified in root-cause-analysis-todo-state-sync-failures.md: commands don't delegate to status-sync-manager for atomic updates. Solution: Add postflight stage to all workflow commands that delegates to status-sync-manager with validated_artifacts array, ensuring both files update atomically or neither updates. This addresses the architectural requirement that state.json and TODO.md must be kept in sync via status-sync-manager's two-phase commit protocol.
 
 ---
 
@@ -946,9 +959,10 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 327. Review context file references and optimize context loading strategy
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-06
 - **Planned**: 2026-01-06
+- **Completed**: 2026-01-06
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
@@ -959,6 +973,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Plan Artifacts**:
   - Implementation Plan: [.opencode/specs/327_review_context_file_references_and_optimize_context_loading_strategy/plans/implementation-001.md]
+
+**Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/327_review_context_file_references_and_optimize_context_loading_strategy/summaries/implementation-summary-001.md]
 
 **Description**: Verify that all context file references are current and valid following task 314 implementation. Conduct systematic review of context loading patterns across commands and agents to identify opportunities for optimization. Goals: (1) Eliminate broken references to deprecated context files, (2) Prevent context bloating by loading only necessary context, (3) Ensure sufficient context is loaded for each operation type, (4) Document context loading best practices.
 

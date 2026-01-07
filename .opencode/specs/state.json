@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-07T01:51:08.078175Z",
-  "next_project_number": 332,
+  "_last_updated": "2026-01-06T00:00:00Z",
+  "next_project_number": 333,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -689,8 +689,8 @@
       "project_number": 327,
       "project_name": "review_context_file_references_and_optimize_context_loading_strategy",
       "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "medium",
       "language": "meta",
       "description": "Verify that all context file references are current and valid following task 314 implementation. Conduct systematic review of context loading patterns across commands and agents to identify opportunities for optimization. Goals: (1) Eliminate broken references to deprecated context files, (2) Prevent context bloating by loading only necessary context, (3) Ensure sufficient context is loaded for each operation type, (4) Document context loading best practices.",
@@ -705,6 +705,11 @@
           "type": "research",
           "path": ".opencode/specs/327_review_context_file_references_and_optimize_context_loading_strategy/reports/research-001.md",
           "summary": "Comprehensive analysis of context file references and loading patterns with 19 broken references identified"
+        },
+        {
+          "type": "implementation",
+          "path": ".opencode/specs/327_review_context_file_references_and_optimize_context_loading_strategy/summaries/implementation-summary-001.md",
+          "summary": "Fixed 45 broken context references, created validation infrastructure, documented best practices (1000+ lines), optimized context loading (91% command coverage)"
         }
       ],
       "planning_completed": "2026-01-06",
@@ -722,7 +727,8 @@
             "integrated_date": "2026-01-06"
           }
         ]
-      }
+      },
+      "completed": "2026-01-06"
     },
     {
       "project_number": 328,
@@ -785,6 +791,26 @@
       "effort": "TBD",
       "blocking": [],
       "dependencies": [],
+      "created": "2026-01-06T00:00:00Z",
+      "last_updated": "2026-01-06T00:00:00Z"
+    },
+    {
+      "project_number": 332,
+      "project_name": "design_and_implement_comprehensive_task_command_enhancements",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Design and implement comprehensive enhancements to the /task command to consolidate tasks 325, 326, 322, and 330. This includes: (1) --recover flag to unarchive projects from specs/archive/, (2) --divide flag to divide existing tasks into subtasks with dependencies, (3) --sync flag to synchronize TODO.md and state.json with optional task ranges, and (4) bulk operations in status-sync-manager for creating/updating many tasks. Implementing these features together avoids conflicts, ensures architectural consistency, and improves the integrity of the /task command. Each feature should be designed with atomic operations, proper error handling, and integration with existing status-sync-manager patterns.",
+      "effort": "18-24 hours",
+      "blocking": [],
+      "dependencies": [
+        325,
+        326,
+        322,
+        330
+      ],
       "created": "2026-01-06T00:00:00Z",
       "last_updated": "2026-01-06T00:00:00Z"
     }

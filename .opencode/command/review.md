@@ -9,12 +9,13 @@ routing:
   target_agent: reviewer
 timeout: 3600
 context_loading:
-  strategy: eager
+  strategy: lazy
   index: ".opencode/context/index.md"
   required:
     - "core/orchestration/delegation.md"
     - "core/orchestration/state-management.md"
-    - "core/orchestration/routing.md"
+    - "core/workflows/review-process.md"
+  optional:
     - "core/orchestration/state-lookup.md"  # Fast state.json queries
   data_files:
     - ".opencode/specs/TODO.md"
@@ -23,7 +24,7 @@ context_loading:
     - "Documentation/ProjectInfo/SORRY_REGISTRY.md"
     - "Documentation/ProjectInfo/TACTIC_REGISTRY.md"
     - "Documentation/ProjectInfo/FEATURE_REGISTRY.md"
-  max_context_size: 100000
+  max_context_size: 50000
 ---
 
 **Usage:** `/review [SCOPE]`
