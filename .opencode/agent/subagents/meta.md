@@ -20,14 +20,14 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/subagent-return-format.md"
+    - "core/formats/subagent-return.md"
     - "core/workflows/status-transitions.md"
-    - "core/system/state-lookup.md"  # Fast state.json queries
+    - "core/orchestration/state-lookup.md"  # Fast state.json queries
   optional:
-    - "core/workflows/interview-patterns.md"
-    - "core/standards/architecture-principles.md"
-    - "core/standards/domain-patterns.md"
-    - "core/workflow/postflight-pattern.md"  # Load when creating/modifying workflow commands
+    - "project/meta/interview-patterns.md"
+    - "project/meta/architecture-principles.md"
+    - "project/meta/domain-patterns.md"
+    - "core/workflows/preflight-postflight.md"  # Load when creating/modifying workflow commands
   max_context_size: 60000
 delegation:
   max_depth: 3
@@ -707,10 +707,10 @@ $ARGUMENTS
               - architecture.md (to be created)
               - workflows.md (to be created)
             - **Standards**:
-              - .opencode/context/core/standards/plan.md
+              - .opencode/context/core/formats/plan-format.md
               - .opencode/context/core/system/status-markers.md
-              - .opencode/context/core/system/artifact-management.md
-              - .opencode/context/core/standards/tasks.md
+              - .opencode/context/core/orchestration/state-management.md
+              - .opencode/context/core/standards/task-management.md
             - **Type**: meta
             - **Lean Intent**: false
             
@@ -815,7 +815,7 @@ $ARGUMENTS
               - plans/implementation-001.md (this file)
               - .opencode/agent/subagents/{domain}/{agent_file}.md
             - **Standards**:
-              - .opencode/context/core/standards/plan.md
+              - .opencode/context/core/formats/plan-format.md
               - .opencode/context/core/workflows/agent-workflow.md
               - .opencode/context/core/standards/frontmatter-delegation.md
             - **Type**: meta
@@ -910,7 +910,7 @@ $ARGUMENTS
               - plans/implementation-001.md (this file)
               - .opencode/command/{command_file}.md
             - **Standards**:
-              - .opencode/context/core/standards/plan.md
+              - .opencode/context/core/formats/plan-format.md
               - .opencode/context/core/standards/frontmatter-delegation.md
             - **Type**: meta
             - **Lean Intent**: false
@@ -994,7 +994,7 @@ $ARGUMENTS
               - plans/implementation-001.md (this file)
               - .opencode/context/{domain}/*.md
             - **Standards**:
-              - .opencode/context/core/standards/plan.md
+              - .opencode/context/core/formats/plan-format.md
               - .opencode/context/core/standards/context-efficiency.md
             - **Type**: meta
             - **Lean Intent**: false
@@ -1438,8 +1438,8 @@ $ARGUMENTS
   - Interactive Mode: All stages 0-9
   
   For detailed documentation, see:
-  - `.opencode/context/core/workflows/interview-patterns.md` - Interview techniques
-  - `.opencode/context/core/standards/architecture-principles.md` - Design principles
-  - `.opencode/context/core/standards/domain-patterns.md` - Domain-specific patterns
-  - `.opencode/context/core/standards/subagent-return-format.md` - Return format
+  - `.opencode/context/project/meta/interview-patterns.md` - Interview techniques
+  - `.opencode/context/project/meta/architecture-principles.md` - Design principles
+  - `.opencode/context/project/meta/domain-patterns.md` - Domain-specific patterns
+  - `.opencode/context/core/formats/subagent-return.md` - Return format
 </notes>

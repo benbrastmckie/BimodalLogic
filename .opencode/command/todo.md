@@ -8,9 +8,9 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/system/state-management.md"  # For status markers and state schemas
-    - "core/system/artifact-management.md"  # For directory operations
-    - "core/system/state-lookup.md"      # Fast state.json queries
+    - "core/orchestration/state-management.md"  # For status markers and state schemas
+    - "core/orchestration/state-management.md"  # For directory operations
+    - "core/orchestration/state-lookup.md"      # Fast state.json queries
   data_files:
     - ".opencode/specs/TODO.md"          # Main TODO file
     - ".opencode/specs/state.json"       # State tracking

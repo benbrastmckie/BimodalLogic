@@ -12,11 +12,10 @@ context_loading:
   strategy: eager
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/delegation.md"
-    - "core/system/state-management.md"
-    - "core/system/routing-guide.md"
-    - "core/system/state-lookup.md"  # Fast state.json queries
-    - "core/standards/command-argument-handling.md"
+    - "core/orchestration/delegation.md"
+    - "core/orchestration/state-management.md"
+    - "core/orchestration/routing.md"
+    - "core/orchestration/state-lookup.md"  # Fast state.json queries
   data_files:
     - ".opencode/specs/TODO.md"
     - ".opencode/specs/state.json"  # State tracking

@@ -7,6 +7,14 @@ routing:
   language_based: true
   lean: lean-research-agent
   default: researcher
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/orchestration/delegation.md"
+    - "core/orchestration/state-management.md"
+    - "core/formats/report-format.md"
+  max_context_size: 50000
 ---
 
 **Task Input (required):** $ARGUMENTS

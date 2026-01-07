@@ -11,13 +11,13 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/subagent-return-format.md"
+    - "core/formats/subagent-return.md"
     - "core/workflows/status-transitions.md"
   optional:
-    - "core/workflows/interview-patterns.md"
-    - "core/standards/architecture-principles.md"
-    - "core/standards/domain-patterns.md"
-    - "core/templates/agent-templates.md"
+    - "project/meta/interview-patterns.md"
+    - "project/meta/architecture-principles.md"
+    - "project/meta/domain-patterns.md"
+    - "core/templates/agent-template.md"
   max_context_size: 60000
 ---
 
@@ -299,7 +299,7 @@ All generated artifacts follow current ProofChecker standards:
 - **Subagents**: domain-analyzer, agent-generator, workflow-designer, command-creator, context-organizer
 - **Context Files**: `.opencode/context/core/` (workflows/, standards/, templates/)
 - **Workflow Standard**: `.opencode/context/core/workflows/agent-workflow.md`
-- **Return Format**: `.opencode/context/core/standards/subagent-return-format.md`
+- **Return Format**: `.opencode/context/core/formats/subagent-return.md`
 
 ---
 

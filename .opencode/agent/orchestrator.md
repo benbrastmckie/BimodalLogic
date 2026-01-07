@@ -11,7 +11,7 @@ context_loading:
   strategy: minimal
   index: ".opencode/context/index.md"
   required:
-    - "core/system/routing-guide.md"
+    - "core/orchestration/routing.md"
   max_context_size: 5000
 delegation:
   max_depth: 3
@@ -195,7 +195,7 @@ updated: 2026-01-04
   
   For detailed documentation, see:
   - `.opencode/specs/argument-passing-root-cause-analysis.md` - Architecture rationale
-  - `.opencode/context/core/system/routing-guide.md` - Routing rules
+  - `.opencode/context/core/orchestration/routing.md` - Routing rules
   - Individual command files in `.opencode/command/` - Command agents
   - Individual subagent files in `.opencode/agent/subagents/` - Execution agents
 </notes>

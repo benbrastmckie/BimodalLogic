@@ -20,11 +20,10 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/delegation.md"
-    - "core/standards/command-structure.md"
-    - "core/standards/command-argument-handling.md"
-    - "core/system/routing-logic.md"
-    - "core/workflow/postflight-pattern.md"  # Required for workflow command creation
+    - "core/orchestration/delegation.md"
+    - "core/formats/command-structure.md"
+    - "core/orchestration/routing.md"
+    - "core/workflows/preflight-postflight.md"  # Required for workflow command creation
   max_context_size: 30000
 delegation:
   max_depth: 3

@@ -12,9 +12,8 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/delegation.md"
-    - "core/system/state-management.md"
-    - "core/standards/command-argument-handling.md"
+    - "core/orchestration/delegation.md"
+    - "core/orchestration/state-management.md"
   max_context_size: 50000
 ---
 

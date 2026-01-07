@@ -25,10 +25,10 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/delegation.md"
-    - "core/system/state-management.md"
-    - "core/standards/plan.md"
-    - "core/system/artifact-management.md"
+    - "core/orchestration/delegation.md"
+    - "core/orchestration/state-management.md"
+    - "core/formats/plan-format.md"
+    - "core/orchestration/state-management.md"
   max_context_size: 50000
 delegation:
   max_depth: 3

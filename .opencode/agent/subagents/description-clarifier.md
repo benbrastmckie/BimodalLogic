@@ -29,8 +29,8 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/tasks.md"
-    - "core/system/state-management.md"
+    - "core/standards/task-management.md"
+    - "core/orchestration/state-management.md"
   max_context_size: 30000
 delegation:
   max_depth: 3
@@ -130,8 +130,8 @@ This subagent has been deprecated and replaced by inline description reformulati
       
       2. Search codebase context:
          - Check .opencode/context/ for relevant documentation
-           * core/standards/tasks.md - task creation standards
-           * core/system/state-management.md - state management
+           * core/standards/task-management.md - task creation standards
+           * core/orchestration/state-management.md - state management
            * domain-specific context files based on detected domain
          - Check Documentation/ for related topics
            * Architecture/ - for architectural tasks
@@ -483,6 +483,6 @@ This subagent has been deprecated and replaced by inline description reformulati
   
   For detailed documentation, see:
   - `.opencode/specs/task-command-refactor-plan.md` - Implementation plan
-  - `.opencode/context/core/standards/tasks.md` - Task creation standards
-  - `.opencode/context/core/system/state-management.md` - State management
+  - `.opencode/context/core/standards/task-management.md` - Task creation standards
+  - `.opencode/context/core/orchestration/state-management.md` - State management
 </notes>

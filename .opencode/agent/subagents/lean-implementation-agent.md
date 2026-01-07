@@ -26,9 +26,9 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/delegation.md"
-    - "core/system/state-management.md"
-    - "core/system/artifact-management.md"
+    - "core/orchestration/delegation.md"
+    - "core/orchestration/state-management.md"
+    - "core/orchestration/state-management.md"
     - "project/lean4/standards/lean4-style-guide.md"
     - "project/lean4/tools/lsp-integration.md"
   optional:

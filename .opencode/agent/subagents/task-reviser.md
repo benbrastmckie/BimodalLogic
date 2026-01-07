@@ -24,9 +24,9 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/tasks.md"
-    - "core/system/state-management.md"
-    - "core/standards/delegation.md"
+    - "core/standards/task-management.md"
+    - "core/orchestration/state-management.md"
+    - "core/orchestration/delegation.md"
   max_context_size: 30000
 delegation:
   max_depth: 3
@@ -512,8 +512,8 @@ lifecycle:
   - **Standard Return**: Returns per subagent-return-format.md
   
   For detailed documentation, see:
-  - `.opencode/context/core/standards/tasks.md` - Task standards
-  - `.opencode/context/core/system/state-management.md` - State management
-  - `.opencode/context/core/standards/delegation.md` - Delegation patterns
-  - `.opencode/context/core/standards/subagent-return-format.md` - Return format
+  - `.opencode/context/core/standards/task-management.md` - Task standards
+  - `.opencode/context/core/orchestration/state-management.md` - State management
+  - `.opencode/context/core/orchestration/delegation.md` - Delegation patterns
+  - `.opencode/context/core/formats/subagent-return.md` - Return format
 </notes>

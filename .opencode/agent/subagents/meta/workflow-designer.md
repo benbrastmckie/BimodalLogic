@@ -20,8 +20,8 @@ context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/standards/delegation.md"
-    - "core/standards/subagent-return-format.md"
+    - "core/orchestration/delegation.md"
+    - "core/formats/subagent-return.md"
   max_context_size: 30000
 delegation:
   max_depth: 3
