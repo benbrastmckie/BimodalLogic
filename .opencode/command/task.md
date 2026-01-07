@@ -267,54 +267,74 @@ timeout: 120
     <checkpoint>All tasks created atomically in TODO.md and state.json</checkpoint>
   </stage>
   
-  <stage id="4.5" name="ValidateNoArtifacts">
-    <action>Validate that NO artifacts were created (only task entries)</action>
+  <stage id="4.5" name="ValidateReturn">
+    <action>Validate return format and ensure no implementation occurred</action>
     <process>
       CRITICAL: This validation gate ensures architectural compliance.
       
-      1. Check for artifact creation:
+      1. Validate status-sync-manager return format:
+         - Parse return as JSON (if structured)
+         - Check status == "completed" or success indicator
+         - Extract task_number from metadata
+         - Validate task_number is positive integer
+         - If validation fails: Return error with details
+      
+      2. Validate no artifacts created:
          - Scan .opencode/specs/ for new directories created during this session
          - Check for new files in project directories (src/, lib/, etc.)
          - Look for any files created with current timestamp
+         
+         - If ANY artifacts found:
+           a. Log: "ARCHITECTURAL VIOLATION DETECTED"
+           b. Log: "Artifacts created during /task execution: ${artifacts_found}"
+           c. Return error to user:
+              ```
+              Error: /task command violated architectural constraint.
+              
+              This command created artifacts when it should ONLY create task entries.
+              
+              Artifacts created: ${artifacts_found}
+              
+              This is a bug in the /task command implementation.
+              Please report this issue.
+              
+              Manual cleanup:
+              1. Remove artifacts: rm -rf ${artifacts_found}
+              2. Verify task entries in TODO.md are correct
+              3. Use /implement to do the actual work
+              ```
+           d. ABORT - do NOT return success
       
-      2. If ANY artifacts found:
-         a. Log: "ARCHITECTURAL VIOLATION DETECTED"
-         b. Log: "Artifacts created during /task execution: ${artifacts_found}"
-         c. Return error to user:
-            ```
-            Error: /task command violated architectural constraint.
-            
-            This command created artifacts when it should ONLY create task entries.
-            
-            Artifacts created: ${artifacts_found}
-            
-            This is a bug in the /task command implementation.
-            Please report this issue.
-            
-            Manual cleanup:
-            1. Remove artifacts: rm -rf ${artifacts_found}
-            2. Verify task entries in TODO.md are correct
-            3. Use /implement to do the actual work
-            ```
-         d. ABORT - do NOT return success
+      3. Validate only task numbers in return:
+         - Check return does NOT contain:
+           * Artifact paths (e.g., ".opencode/specs/350_*/reports/")
+           * File paths (e.g., "src/Foo.lean")
+           * Implementation details (e.g., "Created function foo()")
+         - If any found:
+           a. Log: "ARCHITECTURAL VIOLATION: Return contains implementation details"
+           b. Return error to user
       
-      3. Verify only TODO.md and state.json were modified:
+      4. Verify only TODO.md and state.json were modified:
          - Check git status for modified files
          - Expected: .opencode/specs/TODO.md, .opencode/specs/state.json
          - If other files modified:
            a. Log warning: "Unexpected files modified: ${unexpected_files}"
            b. Continue (may be legitimate, e.g., errors.json)
       
-      4. Log validation success:
+      5. Log validation success:
+         - Log: "✓ Return validated: Task numbers only"
          - Log: "✓ Validation passed: Only task entries created"
          - Proceed to Stage 5
     </process>
     <validation>
+      - Return format is valid
+      - Return contains task numbers only
+      - No artifacts or implementation details in return
       - No artifacts created (no spec directories, no code files)
       - Only TODO.md and state.json modified
       - Architectural constraint maintained
     </validation>
-    <checkpoint>Validated that only task entries were created, no implementation occurred</checkpoint>
+    <checkpoint>Return validated, architectural constraints maintained</checkpoint>
   </stage>
   
   <stage id="5" name="ReturnSuccess">

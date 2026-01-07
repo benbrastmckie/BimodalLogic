@@ -14,11 +14,11 @@ tools:
 permissions:
   allow:
     - read: [".opencode/specs/**/*"]
-    - write: [".opencode/specs/TODO.md", ".opencode/specs/state.json", ".opencode/specs/**/plans/*.md"]
-    - bash: ["date"]
+    - write: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+    - bash: ["date", "jq"]
   deny:
-    - bash: ["rm", "sudo", "su"]
-    - write: [".git/**/*"]
+    - bash: ["rm", "sudo", "su", "lake", "lean", "python", "cargo", "npm"]
+    - write: [".git/**/*", "src/**/*", "lib/**/*", ".opencode/specs/**/reports/*", ".opencode/specs/**/plans/*"]
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
