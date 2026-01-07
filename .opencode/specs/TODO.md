@@ -62,8 +62,9 @@ technical_debt:
 
 ### 333. Fix workflow command TODO.md/state.json synchronization failures
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-06
+- **Planned**: 2026-01-06
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
@@ -71,6 +72,7 @@ technical_debt:
 
 **Research Artifacts**:
   - Research Report: [.opencode/specs/333_fix_workflow_command_todo_md_state_json_synchronization_failures/reports/research-001.md]
+  - Implementation Plan: [.opencode/specs/333_fix_workflow_command_todo_md_state_json_synchronization_failures/plans/implementation-001.md]
 
 **Description**: Systematically fix persistent synchronization failures in /research, /plan, /revise, and /implement commands where manual file manipulation (sed/awk) fails silently, leaving TODO.md unchanged while state.json updates successfully. Root cause identified in root-cause-analysis-todo-state-sync-failures.md: commands don't delegate to status-sync-manager for atomic updates. Solution: Add postflight stage to all workflow commands that delegates to status-sync-manager with validated_artifacts array, ensuring both files update atomically or neither updates. This addresses the architectural requirement that state.json and TODO.md must be kept in sync via status-sync-manager's two-phase commit protocol.
 
