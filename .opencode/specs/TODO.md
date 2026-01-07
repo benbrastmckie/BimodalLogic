@@ -891,7 +891,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 326. Create --divide flag for /task command with task division capability
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
