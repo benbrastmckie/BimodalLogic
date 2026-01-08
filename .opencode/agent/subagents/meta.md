@@ -687,48 +687,15 @@ $ARGUMENTS
     <checkpoint>Architecture confirmed by user OR stage skipped</checkpoint>
   </stage>
 
-   <stage id="8" name="CreateTasksWithArtifacts">
-     <action>Create tasks with plan artifacts (CONDITIONAL: Single task plan if mode == "task", multiple tasks if mode == "prompt"/"interactive")</action>
-     <process>
-       1. Check mode and branch accordingly:
-          a. If mode == "task":
-             - Log: "[INFO] Task Mode - Creating single plan artifact for task $task_number"
-             - Use existing task directory: .opencode/specs/{task_number}_{project_name}/
-             - Create plans/ subdirectory if not exists
-             - Generate plan artifact: plans/implementation-001.md
-             - Use task metadata from Stage 1 (task_number, description, priority, etc.)
-             - Follow plan.md template standard
-             - Write plan artifact to disk
-             - Validate plan artifact exists and is non-empty
-             - Skip to step 8 (validation)
-          
-          b. If mode == "prompt" OR mode == "interactive":
-             - Continue with multiple task creation below
-       
-       2. (Prompt/Interactive Mode) Inform user:
-     <action>Create tasks with plan artifacts (CONDITIONAL: Single task plan if mode == "task", multiple tasks if mode == "prompt"/"interactive")</action>
-     <process>
-       1. Check mode and branch accordingly:
-          a. If mode == "task":
-             - Log: "[INFO] Task Mode - Creating single plan artifact for task $task_number"
-             - Use existing task directory: .opencode/specs/{task_number}_{project_name}/
-             - Create plans/ subdirectory if not exists
-             - Generate plan artifact: plans/implementation-001.md
-             - Use task metadata from Stage 1 (task_number, description, priority, etc.)
-             - Follow plan.md template standard
-             - Write plan artifact to disk
-             - Validate plan artifact exists and is non-empty
-             - Skip to step 8 (validation)
-          
-          b. If mode == "prompt" OR mode == "interactive":
-             - Continue with multiple task creation below
-       
-       2. (Prompt/Interactive Mode) Inform user:
+  <stage id="8" name="CreateTasksWithArtifacts">
+    <action>Create tasks with plan artifacts (all modes create multiple tasks)</action>
+    <process>
+      1. Inform user:
          "Creating implementation tasks with detailed plans. This will take a few minutes..."
       
-       3. Read next_project_number from .opencode/specs/state.json
-       
-       4. Determine task breakdown based on system complexity:
+      2. Read next_project_number from .opencode/specs/state.json
+      
+      3. Determine task breakdown based on system complexity:
          a. Simple system (1-2 agents, 3-4 use cases): 4 tasks
             - Task 1: Planning task (design architecture and workflow patterns) - Dependencies: []
             - Task 2: Create agents - Dependencies: [Task 1]
@@ -749,7 +716,7 @@ $ARGUMENTS
             - Tasks 2-N: Implementation tasks (one per agent/command/context group) - Dependencies: [Task 1] + relevant prior tasks
             - Task N: Integration testing - Dependencies: [all implementation tasks]
       
-       5. For each task:
+      4. For each task:
          a. Generate task title and slug from interview results
          b. Assign task number: next_project_number + task_index
          c. Create project directory: .opencode/specs/{number}_{slug}/
@@ -1158,7 +1125,7 @@ $ARGUMENTS
          f. Validate plan artifact exists and is non-empty
          g. Extract plan metadata (phase_count, estimated_hours, complexity)
       
-       6. For each task, create task entry atomically using status-sync-manager:
+      5. For each task, create task entry atomically using status-sync-manager:
          a. Prepare task metadata:
             - task_number: next_project_number + task_index
             - title: Generated from interview results
@@ -1200,7 +1167,7 @@ $ARGUMENTS
             - Uses plan link replacement logic (replaces existing plan link if any)
             - Rollback on failure
       
-       7. Validate all artifacts (both Task Mode and Prompt/Interactive Mode):
+      6. Validate all artifacts:
          a. Check all project directories created
          b. Check all plan artifacts exist and are non-empty
          c. Check plan metadata extracted (phase_count, estimated_hours, complexity)
@@ -1213,98 +1180,35 @@ $ARGUMENTS
          j. Verify no circular dependencies exist
          k. Verify all dependency task numbers are valid
       
-       8. If validation fails:
+      7. If validation fails:
          - Log errors
          - Return status "failed" with error details
          - status-sync-manager will have rolled back task creation if it failed
       
-       9. If validation passes:
+      8. If validation passes:
           - Collect task numbers and artifact paths
           - Proceed to Stage 9
     </process>
      <validation>
-       - All plan artifacts must exist and be non-empty
-       - If mode == "task":
-         * Single plan artifact created in existing task directory
-         * Plan follows plan.md template standard
-       - If mode == "prompt" OR mode == "interactive":
-         * All task entries must follow tasks.md standard (enforced by status-sync-manager)
-         * All task entries must have description field (enforced by status-sync-manager)
-         * Language field must be set to 'meta' for meta tasks (enforced by status-sync-manager)
-         * Dependencies field must be set correctly for each task (enforced by status-sync-manager)
-         * No circular dependencies exist
-         * All dependency task numbers are valid
-         * state.json must be updated correctly (enforced by status-sync-manager)
-         * next_project_number must be incremented for each task (enforced by status-sync-manager)
-         * Tasks created atomically (both TODO.md and state.json or neither)
-         * Plan artifact links added to both TODO.md and state.json
-     </validation>
-     <checkpoint>Tasks created with plan artifacts (single task in Task Mode, multiple tasks in Prompt/Interactive Mode)</checkpoint>
-   </stage>
+      - All plan artifacts must exist and be non-empty
+      - All task entries must follow tasks.md standard (enforced by status-sync-manager)
+      - All task entries must have description field (enforced by status-sync-manager)
+      - Language field must be set to 'meta' for meta tasks (enforced by status-sync-manager)
+      - Dependencies field must be set correctly for each task (enforced by status-sync-manager)
+      - No circular dependencies exist
+      - All dependency task numbers are valid
+      - state.json must be updated correctly (enforced by status-sync-manager)
+      - next_project_number must be incremented for each task (enforced by status-sync-manager)
+      - Tasks created atomically (both TODO.md and state.json or neither)
+      - Plan artifact links added to both TODO.md and state.json
+    </validation>
+    <checkpoint>Tasks created with plan artifacts</checkpoint>
+  </stage>
 
-   <stage id="9" name="DeliverTaskSummary">
-     <action>Present task summary with artifact links and usage instructions (CONDITIONAL: Single task in Task Mode, multiple tasks in Prompt/Interactive Mode)</action>
-     <process>
-       1. Check mode and format presentation accordingly:
-          a. If mode == "task":
-             - Format single task presentation:
-               "Implementation plan created for task {task_number}!
-               
-               TASK: {task_number} - {description}
-               * Type: meta
-               * Status: [PLANNED]
-               * Plan: {plan_path}
-               * Priority: {priority}
-               
-               USAGE INSTRUCTIONS:
-               1. Review the plan artifact:
-                  - Plan includes detailed phases, estimates, and acceptance criteria
-                  - Plan is self-documenting with metadata and phase breakdown
-               
-               2. Implement task using /implement command:
-                  - Run `/implement {task_number}` when ready
-                  - Meta task will route to meta subagents
-               
-               NEXT STEPS:
-               - Review plan artifact at {plan_path}
-               - Run `/implement {task_number}` to start implementation"
-             - Skip to step 3 (git commit)
-          
-          b. If mode == "prompt" OR mode == "interactive":
-             - Continue with multiple task presentation below
-       
-       2. (Prompt/Interactive Mode) Format task list presentation:
-     <action>Present task summary with artifact links and usage instructions (CONDITIONAL: Single task in Task Mode, multiple tasks in Prompt/Interactive Mode)</action>
-     <process>
-       1. Check mode and format presentation accordingly:
-          a. If mode == "task":
-             - Format single task presentation:
-               "Implementation plan created for task {task_number}!
-               
-               TASK: {task_number} - {description}
-               * Type: meta
-               * Status: [PLANNED]
-               * Plan: {plan_path}
-               * Priority: {priority}
-               
-               USAGE INSTRUCTIONS:
-               1. Review the plan artifact:
-                  - Plan includes detailed phases, estimates, and acceptance criteria
-                  - Plan is self-documenting with metadata and phase breakdown
-               
-               2. Implement task using /implement command:
-                  - Run `/implement {task_number}` when ready
-                  - Meta task will route to meta subagents
-               
-               NEXT STEPS:
-               - Review plan artifact at {plan_path}
-               - Run `/implement {task_number}` to start implementation"
-             - Skip to step 3 (git commit)
-          
-          b. If mode == "prompt" OR mode == "interactive":
-             - Continue with multiple task presentation below
-       
-       2. (Prompt/Interactive Mode) Format task list presentation:
+  <stage id="9" name="DeliverTaskSummary">
+    <action>Present task summary with artifact links and usage instructions (all modes)</action>
+    <process>
+      1. Format task list presentation:
          "Your {domain} system tasks are ready for implementation!
          
          TASKS CREATED ({task_count}):
@@ -1345,16 +1249,12 @@ $ARGUMENTS
          - Implement remaining tasks in dependency order (check Dependencies field)
          - Track progress in TODO.md"
       
-       3. Create git commit:
-          - Delegate to git-workflow-manager
-          - If mode == "task":
-            * Commit message: "meta: create plan for task {task_number}"
-            * Include: plan artifact, TODO.md (if updated), state.json (if updated)
-          - If mode == "prompt" OR mode == "interactive":
-            * Commit message: "meta: create tasks for {domain} system ({task_count} tasks)"
-            * Include: TODO.md, state.json, all task directories with plan artifacts
-       
-       4. Return standardized format:
+      2. Create git commit:
+         - Delegate to git-workflow-manager
+         - Commit message: "meta: create tasks for {domain} system ({task_count} tasks)"
+         - Include: TODO.md, state.json, all task directories with plan artifacts
+      
+      3. Return standardized format:
          {
            "status": "completed",
            "summary": "Created {task_count} tasks for {domain} system with detailed plan artifacts. Total effort: {total_hours} hours. Review plans and run /implement for each task.",
@@ -1372,12 +1272,11 @@ $ARGUMENTS
               "agent_type": "meta",
               "delegation_depth": {depth},
               "delegation_path": {path},
-              "mode": "{task|prompt|interactive}",
+              "mode": "{direct|clarification|interactive}",
               "domain": "{domain}",
               "task_count": {task_count},
-              "task_number": {task_number (if mode == "task")},
-              "first_task_number": {first_number (if mode != "task")},
-              "last_task_number": {last_number (if mode != "task")},
+              "first_task_number": {first_number},
+              "last_task_number": {last_number},
               "total_effort_hours": {total_hours},
               "plan_metadata": {
                 "average_phase_count": {avg_phases},
@@ -1495,27 +1394,26 @@ $ARGUMENTS
 </error_handling>
 
 <notes>
-  - **Triple Mode Support**: Task Mode (with task number), Prompt Mode (with text prompt), or Interactive Mode (no $ARGUMENTS)
-  - **Task Mode**: Creates single plan artifact for existing meta task, skips interview stages
-  - **Prompt Mode**: Accepts requirements directly via target_domain, skips Stage 2, extracts context
+  - **Triple Mode Support**: Direct Mode (with description), Clarification Mode (with --ask description), or Interactive Mode (no $ARGUMENTS)
+  - **Direct Mode**: Creates tasks immediately from description, no questions asked, skips interview stages
+  - **Clarification Mode**: Asks 3-5 targeted follow-up questions before creating tasks, skips Stage 2
   - **Interactive Mode**: Conducts 9-stage guided interview with progressive disclosure
-  - **Example-Driven**: Provides concrete examples for every question (Interactive/Prompt Mode)
+  - **Example-Driven**: Provides concrete examples for every question (Interactive/Clarification Mode)
   - **Adaptive**: Adjusts to user's domain and technical level in all modes
-  - **Validation**: Confirms understanding before generation (Prompt/Interactive Mode)
+  - **Validation**: Confirms understanding before generation (Clarification/Interactive Mode)
   - **Delegation**: Routes to specialized meta subagents for generation
   - **Complete Ownership**: Owns full workflow including Stage 8 execution
   - **Standardized Return**: Returns per subagent-return-format.md
   
   **Mode Detection Logic** (Stage 1):
-  - If first token is integer AND task exists in state.json → Task Mode
-  - Else if target_domain (from $ARGUMENTS) is non-empty → Prompt Mode
-  - Else if target_domain is empty → Interactive Mode
-  - Fallback: If task number not found, fall back to Prompt Mode with warning
+  - If starts with --ask → Clarification Mode
+  - Else if description non-empty → Direct Mode
+  - Else → Interactive Mode
   
   **Stage Execution by Mode**:
-  - Task Mode: Stages 0, 1, 8, 9 (skip interview stages 2-7)
-  - Prompt Mode: Stages 0, 1, 3-9 (skip Stage 2 InitiateInterview)
-  - Interactive Mode: All stages 0-9
+  - Direct Mode: Stages 0, 1, 8, 9 (skip interview stages 2-7)
+  - Clarification Mode: Stages 0, 1, 3-9 (skip Stage 2 InitiateInterview, limited questions in 3-6)
+  - Interactive Mode: All stages 0-9 (full questions in all stages)
   
   For detailed documentation, see:
   - `.opencode/context/project/meta/interview-patterns.md` - Interview techniques
