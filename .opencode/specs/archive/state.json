@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-06T21:40:18Z",
+  "_last_updated": "2026-01-07T23:39:57Z",
   "archived_projects": [
     {
       "project_number": 126,
@@ -1636,7 +1636,7 @@
         ".opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md",
         ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md"
       ],
-      "research_summary": "Comprehensive revision plan to align /meta command with research → plan → implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
+      "research_summary": "Comprehensive revision plan to align /meta command with research \u2192 plan \u2192 implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
       "estimated_hours": 13.0,
       "plan_created": "2026-01-03",
       "plan_path": ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md",
@@ -2303,6 +2303,29 @@
       "plan_path": ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md",
       "planned": "2026-01-05",
       "implemented": "2026-01-05"
+    },
+    {
+      "project_number": 332,
+      "project_name": "design_and_implement_comprehensive_task_command_enhancements",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Design and implement comprehensive enhancements to the /task command to consolidate tasks 325, 326, 322, and 330. This includes: (1) --recover flag to unarchive projects from specs/archive/, (2) --divide flag to divide existing tasks into subtasks with dependencies, (3) --sync flag to synchronize TODO.md and state.json with optional task ranges, and (4) bulk operations in status-sync-manager for creating/updating many tasks. Implementing these features together avoids conflicts, ensures architectural consistency, and improves the integrity of the /task command. Each feature should be designed with atomic operations, proper error handling, and integration with existing status-sync-manager patterns.",
+      "effort": "18-24 hours",
+      "blocking": [],
+      "dependencies": [
+        325,
+        326,
+        322,
+        330
+      ],
+      "created": "2026-01-06T00:00:00Z",
+      "last_updated": "2026-01-07T23:39:57Z",
+      "abandoned": "2026-01-07",
+      "abandonment_reason": "User requested abandonment",
+      "archived": "2026-01-07T23:39:57Z"
     }
   ],
   "last_updated": "2026-01-05T08:36:08.881111Z"
