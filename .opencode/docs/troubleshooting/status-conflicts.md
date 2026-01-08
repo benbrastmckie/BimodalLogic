@@ -38,8 +38,8 @@ Multiple processes attempting to update task status at the same time. The first 
 
 3. **If stale status detected:**
    ```bash
-   # Use /sync command to reset status
-   /sync TASK_NUMBER
+   # Use /task --sync to reset status
+   /task --sync TASK_NUMBER
    ```
 
 4. **Re-run command after status reset:**
@@ -94,7 +94,7 @@ Workflow command crashed, timed out, or was interrupted before completing postfl
    **Option A: Resume work (if artifacts exist and are usable)**
    ```bash
    # Manually reset status to allow resumption
-   /sync TASK_NUMBER
+   /task --sync TASK_NUMBER
    
    # Re-run command (will resume from partial state if supported)
    /implement TASK_NUMBER --resume  # for implementation
@@ -104,8 +104,8 @@ Workflow command crashed, timed out, or was interrupted before completing postfl
    
    **Option B: Reset and start fresh (if artifacts are incomplete/corrupt)**
    ```bash
-   # Use /sync to reset status
-   /sync TASK_NUMBER
+   # Use /task --sync to reset status
+   /task --sync TASK_NUMBER
    
    # Remove partial artifacts if needed
    rm -rf .opencode/specs/TASK_NUMBER_*/reports/research-*.md  # example
@@ -126,9 +126,9 @@ Workflow command crashed, timed out, or was interrupted before completing postfl
 ### Prevention Tips
 
 - **Monitor long-running commands**: Set realistic timeouts for workflow commands
-- **Use /sync regularly**: Periodically check for and fix stale statuses
-- **Graceful interruption**: If you need to cancel a command, use Ctrl+C and then run `/sync` to reset status
-- **Automated cleanup**: Consider running `/sync --check-all` daily to detect stale statuses
+- **Use /task --sync regularly**: Periodically check for and fix stale statuses
+- **Graceful interruption**: If you need to cancel a command, use Ctrl+C and then run `/task --sync` to reset status
+- **Automated cleanup**: Consider running `/task --sync` daily to detect stale statuses
 
 ---
 
@@ -180,8 +180,8 @@ User attempting to re-run a workflow stage that has already completed, or attemp
    
    **Option B: Reset status manually**
    ```bash
-   # Use /sync to reset to earlier status
-   /sync TASK_NUMBER --reset-to not_started
+   # Use /task --sync to reset to earlier status
+   /task --sync TASK_NUMBER
    
    # Re-run workflow from beginning
    /research TASK_NUMBER
@@ -233,12 +233,12 @@ Two-phase commit rollback failed due to file system issues, permission errors, o
 
 3. **Manually synchronize files:**
    
-   **Option A: Use /sync command (recommended)**
+   **Option A: Use /task --sync command (recommended)**
    ```bash
-   /sync TASK_NUMBER  # Detects and fixes inconsistencies
+   /task --sync TASK_NUMBER  # Detects and fixes inconsistencies
    ```
    
-   **Option B: Manual git revert (if /sync fails)**
+   **Option B: Manual git revert (if /task --sync fails)**
    ```bash
    # Revert to last known good state
    git checkout HEAD -- .opencode/specs/TODO.md .opencode/specs/state.json
@@ -258,7 +258,7 @@ Two-phase commit rollback failed due to file system issues, permission errors, o
    # Update "status" field for task
    
    # Verify consistency
-   /sync TASK_NUMBER --verify
+   /task --sync TASK_NUMBER
    ```
 
 4. **Verify synchronization:**
@@ -273,7 +273,7 @@ Two-phase commit rollback failed due to file system issues, permission errors, o
 - **Monitor disk space**: Ensure adequate disk space before running workflow commands
 - **Check file permissions**: Verify write permissions on .opencode/specs/ directory
 - **Avoid manual edits**: Don't manually edit TODO.md or state.json while commands are running
-- **Use /sync regularly**: Run `/sync --check-all` to detect and fix inconsistencies early
+- **Use /task --sync regularly**: Run `/task --sync` to detect and fix inconsistencies early
 
 ---
 
@@ -306,14 +306,14 @@ Command execution exceeded configured timeout. This can happen for complex tasks
    **If partial artifacts are usable:**
    ```bash
    # For /implement with --resume support
-   /sync TASK_NUMBER  # Reset status
+   /task --sync TASK_NUMBER  # Reset status
    /implement TASK_NUMBER --resume  # Resume from last completed phase
    ```
    
    **If partial artifacts are incomplete:**
    ```bash
    # Reset status and start fresh
-   /sync TASK_NUMBER
+   /task --sync TASK_NUMBER
    
    # Remove incomplete artifacts
    rm -rf .opencode/specs/TASK_NUMBER_*/reports/research-*.md  # example
@@ -354,12 +354,12 @@ For any status conflict or edge case:
    - Check timestamps: `jq -r '.active_projects[] | select(.project_number == TASK_NUMBER)' .opencode/specs/state.json`
    - Check for artifacts: `ls -la .opencode/specs/TASK_NUMBER_*/`
 
-2. **Use /sync command (first line of defense):**
+2. **Use /task --sync command (first line of defense):**
    ```bash
-   /sync TASK_NUMBER  # Automated detection and repair
+   /task --sync TASK_NUMBER  # Automated detection and repair
    ```
 
-3. **If /sync doesn't resolve:**
+3. **If /task --sync doesn't resolve:**
    - Consult specific edge case section above
    - Follow manual recovery steps
    - Check git history for last known good state

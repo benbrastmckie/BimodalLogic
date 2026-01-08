@@ -84,7 +84,7 @@ context_loading:
                echo "Warning: Task $task_number plan is already being revised"
                echo "If this is a stale status (e.g., previous revision crashed):"
                echo "  1. Check for existing plan versions"
-               echo "  2. Use /sync to reset status if needed"
+               echo "  2. Use /task --sync to reset status if needed"
                echo "To override: /revise $task_number --force"
                exit 1
                ;;
@@ -107,7 +107,7 @@ context_loading:
          c. Validate plan file consistency (if plan_path set):
             - If plan_path is non-empty AND file doesn't exist:
               * Log error: "Inconsistent state: plan_path in state.json points to missing file"
-              * Recommendation: "Run /plan to create initial plan or /sync to fix state"
+              * Recommendation: "Run /plan to create initial plan or /task --sync to fix state"
               * Exit with error
             - If plan_path is non-empty AND file exists:
               * Log: "Plan exists at ${plan_path}, routing to planner for revision"
@@ -193,7 +193,7 @@ context_loading:
            - Log error: "Preflight verification failed"
            - Log: "Expected status: revising"
            - Log: "Actual status: ${actual_status}"
-           - Return error to user: "Status update verification failed. Run /sync to fix state."
+           - Return error to user: "Status update verification failed. Run /task --sync to fix state."
            - ABORT - do NOT proceed to Stage 2 (Delegate)
          
          Log: "Preflight: Status verified as 'revising'"
@@ -438,7 +438,7 @@ context_loading:
             - Log error: "Postflight failed: status-sync-manager returned ${sync_status}"
             - Extract error message: error_msg=$(echo "$sync_return" | jq -r '.errors[0].message')
             - Log warning: "Revision completed but status update failed: ${error_msg}"
-            - Log: "Manual fix: /sync ${task_number}"
+            - Log: "Manual fix: /task --sync ${task_number}"
             - Continue (revision work is done, just status update failed)
          d. Verify files_updated includes TODO.md and state.json
       
@@ -455,7 +455,7 @@ context_loading:
            - Log warning: "Postflight verification failed - status not updated"
            - Log: "Expected status: revised"
            - Log: "Actual status: ${actual_status}"
-           - Log: "Manual fix: /sync ${task_number}"
+           - Log: "Manual fix: /task --sync ${task_number}"
          Else:
            - Log: "✓ Status verified as 'revised'"
          

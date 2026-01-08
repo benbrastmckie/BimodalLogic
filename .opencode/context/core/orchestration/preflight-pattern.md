@@ -131,7 +131,7 @@ if [ "$actual_status" != "$target_status" ]; then
   echo "ERROR: Preflight verification failed"
   echo "Expected status: $target_status"
   echo "Actual status: $actual_status"
-  echo "Error: Status update verification failed. Run /sync to fix state."
+  echo "Error: Status update verification failed. Run /task --sync to fix state."
   echo "ABORT - do NOT proceed to Stage 2 (Delegate)"
   exit 1
 fi
@@ -143,7 +143,7 @@ echo "✓ Preflight: Status verified as '$target_status'"
 - Log error: `Preflight verification failed`
 - Log: `Expected status: ${target_status}`
 - Log: `Actual status: ${actual_status}`
-- Return error to user: `Status update verification failed. Run /sync to fix state.`
+- Return error to user: `Status update verification failed. Run /task --sync to fix state.`
 - ABORT - do NOT proceed to Stage 2 (Delegate)
 
 ### Step 5: Log Preflight Success
@@ -173,7 +173,7 @@ All preflight errors MUST:
 1. Log error with clear message
 2. Return error to user
 3. ABORT command execution (do NOT proceed to delegation)
-4. Provide recovery instructions (e.g., "Run /sync to fix state")
+4. Provide recovery instructions (e.g., "Run /task --sync to fix state")
 
 This ensures work never begins without status being updated first.
 

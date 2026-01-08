@@ -114,7 +114,7 @@ Verify status update and artifact linking succeeded:
 if ! echo "$sync_return" | jq empty 2>/dev/null; then
   echo "ERROR: Postflight failed - invalid JSON from status-sync-manager"
   echo "WARNING: Work completed but status update failed"
-  echo "Manual fix: /sync $task_number"
+  echo "Manual fix: /task --sync $task_number"
   # Continue (work is done, just status update failed)
 fi
 
@@ -129,7 +129,7 @@ if [ "$sync_status" != "completed" ]; then
   error_msg=$(echo "$sync_return" | jq -r '.errors[0].message // "Unknown error"')
   
   echo "WARNING: Work completed but status update failed: $error_msg"
-  echo "Manual fix: /sync $task_number"
+  echo "Manual fix: /task --sync $task_number"
   # Continue (work is done, just status update failed)
 fi
 
@@ -167,7 +167,7 @@ if [ "$actual_status" != "$target_status" ]; then
   echo "Expected status: $target_status"
   echo "Actual status: $actual_status"
   echo "This is the same issue that caused Task 326 manual fixes"
-  echo "Manual fix: /sync $task_number"
+  echo "Manual fix: /task --sync $task_number"
 else
   echo "✓ Status verified as '$target_status'"
 fi

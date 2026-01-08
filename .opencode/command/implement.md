@@ -81,7 +81,7 @@ context_loading:
                echo "Warning: Task $task_number is already being implemented"
                echo "If this is a stale status (e.g., previous implementation crashed):"
                echo "  1. Check for existing implementation artifacts"
-               echo "  2. Use /sync to reset status if needed"
+               echo "  2. Use /task --sync to reset status if needed"
                echo "  3. Or use /implement $task_number --resume to continue"
                echo "To override: /implement $task_number --force"
                exit 1
@@ -175,7 +175,7 @@ context_loading:
            - Log error: "Preflight verification failed"
            - Log: "Expected status: implementing"
            - Log: "Actual status: ${actual_status}"
-           - Return error to user: "Status update verification failed. Run /sync to fix state."
+           - Return error to user: "Status update verification failed. Run /task --sync to fix state."
            - ABORT - do NOT proceed to Stage 2 (Delegate)
          
          Log: "Preflight: Status verified as 'implementing'"
@@ -398,7 +398,7 @@ context_loading:
             - Log error: "Postflight failed: status-sync-manager returned ${sync_status}"
             - Extract error message: error_msg=$(echo "$sync_return" | jq -r '.errors[0].message')
             - Log warning: "Implementation completed but status update failed: ${error_msg}"
-            - Log: "Manual fix: /sync ${task_number}"
+            - Log: "Manual fix: /task --sync ${task_number}"
             - Continue (implementation work is done, just status update failed)
          d. Verify files_updated includes TODO.md and state.json
       
@@ -415,7 +415,7 @@ context_loading:
            - Log warning: "Postflight verification failed - status not updated"
            - Log: "Expected status: completed"
            - Log: "Actual status: ${actual_status}"
-           - Log: "Manual fix: /sync ${task_number}"
+           - Log: "Manual fix: /task --sync ${task_number}"
          Else:
            - Log: "✓ Status verified as 'completed'"
          
