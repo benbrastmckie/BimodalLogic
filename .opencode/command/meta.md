@@ -21,18 +21,19 @@ context_loading:
   max_context_size: 60000
 ---
 
-**Task Input (optional):** $ARGUMENTS (task number, user prompt, or empty; e.g., `/meta 294`, `/meta "I want to revise my opencode system..."`, or `/meta`)
+**Task Input (optional):** $ARGUMENTS (description, --ask description, or empty)
 
-**Usage:** `/meta [TASK_NUMBER | PROMPT]`
+**Usage:** `/meta [--ask] [DESCRIPTION]`
 
 # /meta Command
 
 ## Purpose
 
-The `/meta` command is a system builder that creates complete .opencode architectures. It can work in three modes:
-1. **Task Mode** (with task number): Creates implementation plan for existing meta task
-2. **Prompt Mode** (with text prompt): Accepts requirements directly and proceeds with system generation
-3. **Interactive Mode** (no arguments): Conducts guided interview to gather requirements
+The `/meta` command creates tasks to implement new .opencode system capabilities. It supports three modes:
+
+1. **Direct Mode** (`/meta {description}`): Creates tasks immediately from description
+2. **Clarification Mode** (`/meta --ask {description}`): Asks follow-up questions before creating tasks
+3. **Interactive Mode** (`/meta`): Conducts full guided interview to gather requirements
 
 **Use this command when you need to**:
 - Create a new .opencode system for a specific domain
@@ -45,26 +46,26 @@ The `/meta` command is a system builder that creates complete .opencode architec
 ## Usage
 
 ```
-/meta [TASK_NUMBER | PROMPT]
+/meta [--ask] [DESCRIPTION]
 ```
 
-- **With task number**: Create implementation plan for existing meta task
-- **With prompt**: Provide requirements directly, skip interactive interview
-- **Without arguments**: Start interactive interview to gather requirements
+- **Direct Mode**: Provide description, tasks created immediately
+- **Clarification Mode**: Provide description with --ask flag, answer follow-up questions
+- **Interactive Mode**: No arguments, full guided interview
 
 ### Examples
 
 ```
-# Example 1: Task mode - create plan for existing task
-/meta 294
+# Example 1: Direct mode - create tasks immediately
+/meta "Add proof verification capabilities to the system"
 
-# Example 2: Prompt mode - provide requirements directly
-/meta "I want to revise my opencode system to add proof verification capabilities"
-
-# Example 3: Prompt mode - create new system
+# Example 2: Direct mode - create new system
 /meta "Create a system for managing customer support tickets with automated routing"
 
-# Example 4: Interactive mode - guided interview
+# Example 3: Clarification mode - ask follow-up questions
+/meta --ask "Improve the testing workflow"
+
+# Example 4: Interactive mode - full guided interview
 /meta
 > [Interactive interview follows]
 ```
@@ -75,21 +76,22 @@ The `/meta` command is a system builder that creates complete .opencode architec
 
 This command delegates to the `meta` agent, which executes a 9-stage workflow:
 
-**Task Mode (with task number):**
-- Stage 1 detects task number and extracts metadata from state.json
+**Direct Mode (with description):**
+- Stage 1 detects Direct Mode
 - Skips Stages 2-7 (interview stages)
-- Proceeds directly to Stage 8 (CreateTasksWithArtifacts) to create plan for single task
+- Infers all requirements from description
+- Proceeds directly to Stage 8 (CreateTasksWithArtifacts)
 - Continues to Stage 9 (DeliverTaskSummary)
 
-**Prompt Mode (with text prompt):**
-- Stage 1 detects prompt mode
+**Clarification Mode (with --ask description):**
+- Stage 1 detects Clarification Mode
 - Skips Stage 2 (InitiateInterview)
-- Uses $ARGUMENTS as target_domain
-- Proceeds to Stage 3 (GatherDomainInformation) with domain context
-- Continues through remaining stages
+- Asks 3-5 targeted follow-up questions in Stages 3-6
+- Proceeds to Stage 7 (brief confirmation)
+- Continues to Stages 8-9
 
-**Interactive Mode (no $ARGUMENTS):**
-- Stage 1 detects interactive mode
+**Interactive Mode (no arguments):**
+- Stage 1 detects Interactive Mode
 - Executes full 9-stage interactive interview
 - Gathers requirements through guided questions
 
@@ -98,60 +100,58 @@ This command delegates to the `meta` agent, which executes a 9-stage workflow:
 - Offers merge strategies if found (extend, separate, replace, cancel)
 - Determines integration approach
 
-### Stage 1: Parse and Validate (NEW)
-- Detects mode: Task Mode (integer) → Prompt Mode (text) → Interactive Mode (empty)
-- **Task Mode**: Parses task number, validates in state.json, extracts metadata
-- **Prompt Mode**: Parses prompt text for domain context
+### Stage 1: Parse and Validate
+- Detects mode: --ask flag → Clarification Mode, description → Direct Mode, empty → Interactive Mode
+- **Direct Mode**: Parses description for inference
+- **Clarification Mode**: Parses description after --ask flag
 - **Interactive Mode**: Prepares for full interview
 - Determines which stages to execute based on mode
 
 ### Stage 2: Initiate Interview
-- **Conditional**: Skipped in Task Mode and Prompt Mode
+- **Conditional**: Skipped in Direct Mode and Clarification Mode
 - Explains the meta-programming process
 - Sets expectations for interview stages
 - Confirms user readiness to proceed
 
 ### Stage 3: Gather Domain Information
-- **Conditional**: Skipped in Task Mode; pre-populated in Prompt Mode
-- Asks about domain, purpose, and target users
-- Captures high-level requirements
+- **Direct Mode**: Infers domain/purpose/target_users from description, no questions
+- **Clarification Mode**: Asks 2-3 targeted questions for ambiguous information
+- **Interactive Mode**: Full questioning about domain, purpose, and target users
 - Identifies domain type (development, business, hybrid, formal verification)
 
 ### Stage 4: Identify Use Cases
-- **Conditional**: Skipped in Task Mode
-- Explores top 3-5 use cases
+- **Direct Mode**: Infers 3-5 use cases from description, no questions
+- **Clarification Mode**: Asks 1-2 questions to confirm/refine use cases
+- **Interactive Mode**: Full questioning about top 3-5 use cases
 - Assesses complexity and dependencies
-- Prioritizes capabilities
 
 ### Stage 5: Assess Complexity
-- **Conditional**: Skipped in Task Mode
-- Determines agent count and hierarchy
-- Identifies knowledge types needed
+- **Direct Mode**: Infers agent count/hierarchy from use cases, no questions
+- **Clarification Mode**: Asks 1 question to confirm architecture recommendation
+- **Interactive Mode**: Full questioning about agent count, hierarchy, knowledge areas
 - Plans state management approach
 
 ### Stage 6: Identify Integrations
-- **Conditional**: Skipped in Task Mode
-- Discovers external tool requirements
-- Plans file operations and custom commands
+- **Direct Mode**: Infers external tools/file types/commands from domain, no questions
+- **Clarification Mode**: Asks 1 question to confirm integrations
+- **Interactive Mode**: Full questioning about external tools, file types, custom commands
 - Maps integration points
 
 ### Stage 7: Review and Confirm
-- **Conditional**: Skipped in Task Mode
-- Presents comprehensive architecture summary
-- Gets user confirmation
+- **Direct Mode**: Skipped, proceeds directly to task creation
+- **Clarification Mode**: Brief confirmation with option to revise
+- **Interactive Mode**: Full architecture summary and confirmation
 - Validates understanding before generation
 
 ### Stage 8: Create Tasks With Artifacts
-- **Task Mode**: Creates single plan artifact for existing task in task directory
-- **Prompt/Interactive Mode**: Creates multiple tasks with plan artifacts
+- All modes create multiple tasks with plan artifacts
 - Generates plan artifacts (plans/implementation-001.md)
-- Creates/updates task entries in TODO.md with Type field set to 'meta'
+- Creates task entries in TODO.md with Type field set to 'meta'
 - Updates state.json with task metadata
 - Validates all artifacts
 
 ### Stage 9: Deliver Task Summary
-- **Task Mode**: Presents plan artifact link and usage instructions for /implement
-- **Prompt/Interactive Mode**: Presents task list with plan artifact links
+- All modes present task list with plan artifact links
 - Provides usage instructions for /implement command
 - Explains meta task routing to meta subagents
 - Creates git commit with artifacts
@@ -163,26 +163,31 @@ This command delegates to the `meta` agent, which executes a 9-stage workflow:
 
 The /meta command automatically detects which mode to use based on $ARGUMENTS:
 
-1. **Task Mode Detection**:
-   - First token is an integer (e.g., "294")
-   - Task exists in state.json
-   - If task not found: Falls back to Prompt Mode with warning
+1. **Direct Mode Detection**:
+   - Description provided without --ask flag
+   - Example: `/meta "Add proof verification"`
+   - Behavior: Creates tasks immediately, no questions asked
 
-2. **Prompt Mode Detection**:
-   - First token is non-integer text (e.g., "I want to...")
-   - OR task number not found in state.json
+2. **Clarification Mode Detection**:
+   - Description provided with --ask flag
+   - Example: `/meta --ask "Improve testing"`
+   - Behavior: Asks 3-5 targeted follow-up questions, then creates tasks
 
 3. **Interactive Mode Detection**:
    - No arguments provided
+   - Example: `/meta`
+   - Behavior: Conducts full guided interview (6 stages)
 
-### When to Use /meta vs /plan
+### When to Use Each Mode
 
-- **Use /meta for meta tasks**: Tasks that involve creating/modifying .opencode system components (agents, commands, context files)
-- **Use /plan for implementation tasks**: Tasks that involve implementing features, fixing bugs, or adding functionality to your project
+- **Use Direct Mode** when requirements are clear and complete
+- **Use Clarification Mode** when requirements are somewhat clear but may need refinement
+- **Use Interactive Mode** when requirements are unclear or complex
 
 **Examples**:
-- `/meta 294` - Create plan for meta task 294 (revise /meta command)
-- `/plan 315` - Create plan for implementation task 315 (resolve Axiom blocker)
+- `/meta "Add proof verification capabilities"` - Clear requirement, use Direct Mode
+- `/meta --ask "Improve the workflow"` - Vague requirement, use Clarification Mode
+- `/meta` - No idea what you need, use Interactive Mode
 
 ---
 
