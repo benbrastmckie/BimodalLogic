@@ -248,25 +248,45 @@ timeout: 120
       
       4. Wait for return from status-sync-manager
       
-      5. Validate return:
-         - Check status == "completed"
-         - Verify files_updated includes [TODO.md, state.json, archive/state.json]
-         - Extract success_count and failure_count
-         - If failures: Include error details
+       5. Validate return:
+          - Check status == "completed"
+          - Verify files_updated includes [TODO.md, state.json, archive/state.json]
+          - Extract success_count and failure_count
+          - If failures: Include error details
       
-      6. Format success message:
-         - "✅ Recovered {count} tasks from archive: {ranges}"
-         - List task numbers recovered
-         - Note: All tasks reset to [NOT STARTED] status
-    </process>
-    <validation>
-      - Task ranges parsed correctly
-      - All tasks exist in archive
-      - Return format valid
-      - Files updated correctly
-    </validation>
-    <checkpoint>Tasks recovered from archive, files updated atomically</checkpoint>
-  </stage>
+       6. Create git commit (non-critical):
+          - Delegate to git-workflow-manager:
+            * scope_files: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+            * message_template: "task: recover {count} tasks from archive ({ranges})"
+            * task_context:
+              - task_count: {success_count}
+              - task_ranges: {formatted ranges, e.g., "343-345" or "337, 343-345"}
+            * session_id: {session_id}
+            * delegation_depth: {depth + 1}
+            * delegation_path: [...path, "git-workflow-manager"]
+          - Wait for return from git-workflow-manager
+          - If git commit succeeds:
+            * Extract commit_hash from return
+            * Log: "Git commit created: {commit_hash}"
+          - If git commit fails:
+            * Log warning: "Git commit failed (non-critical): {error}"
+            * Continue with success message (files already updated)
+      
+       7. Format success message:
+          - "✅ Recovered {count} tasks from archive: {ranges}"
+          - List task numbers recovered
+          - Note: All tasks reset to [NOT STARTED] status
+          - If git commit succeeded: Include commit hash
+     </process>
+     <validation>
+       - Task ranges parsed correctly
+       - All tasks exist in archive
+       - Return format valid
+       - Files updated correctly
+       - Git commit created (or logged as non-critical failure)
+     </validation>
+     <checkpoint>Tasks recovered from archive, files updated atomically, git commit created</checkpoint>
+   </stage>
   
   <stage id="5" name="DivideExistingTask">
     <action>Divide existing task into subtasks (--divide flag)</action>
