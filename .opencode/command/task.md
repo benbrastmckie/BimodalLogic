@@ -297,13 +297,49 @@ timeout: 120
          - Extract subtask_descriptions array (1-5 subtasks)
          - Validate subtask count is 1-5
       
-      5. Create subtasks via task-creator:
-         - For each subtask description:
-           * Delegate to task-creator subagent
-           * Collect task_number from return
-           * If any creation fails: Rollback and abort
+       5. Create subtasks via status-sync-manager (with rollback tracking):
+          - Initialize created_subtasks array (empty)
+          - Read next_project_number from state.json (for rollback)
+          - For each subtask description:
+            * Delegate to status-sync-manager:
+              - operation: "create_task"
+              - title: {subtask title from description}
+              - description: {subtask description}
+              - priority: {same as parent}
+              - effort: {same as parent}
+              - language: {same as parent}
+              - session_id: {session_id}
+            * Wait for return
+            * If creation succeeds:
+              - Extract task_number from return
+              - Append task_number to created_subtasks array
+            * If creation fails:
+              - STOP immediately
+              - Initiate rollback (see step 5b)
+              - Return error with rollback details
+          
+          5b. Rollback mechanism (on subtask creation failure):
+              - Log: "Subtask creation failed, initiating rollback"
+              - Delegate to status-sync-manager to delete created subtasks:
+                * operation: "archive_tasks"
+                * task_numbers: {created_subtasks array}
+                * reason: "abandoned"
+                * force_archive: true (allow archiving any status)
+              - Wait for archive return
+              - If archive succeeds:
+                * Log: "Rollback successful: deleted {count} subtasks"
+              - If archive fails:
+                * Log: "Rollback failed: manual cleanup required for tasks {created_subtasks}"
+              - Return error:
+                ```
+                Error: Failed to create subtask {N}: {error details}
+                
+                Rollback: Deleted {count} created subtasks: {task_numbers}
+                
+                Recommendation: Fix error and retry division
+                ```
       
-      6. Update parent task dependencies:
+       6. Update parent task dependencies:
          - Delegate to status-sync-manager:
            * operation: "update_task_metadata"
            * task_number: {parent_task_number}
@@ -314,14 +350,22 @@ timeout: 120
          - List subtask numbers and titles
          - Note: Parent task now depends on subtasks
     </process>
-    <validation>
-      - Task exists and can be divided
-      - Subtask count is 1-5
-      - All subtasks created successfully
-      - Parent dependencies updated
-    </validation>
-    <checkpoint>Task divided into subtasks, parent dependencies updated</checkpoint>
-  </stage>
+     <validation>
+       - Task exists and can be divided
+       - Subtask count is 1-5
+       - All subtasks created successfully (or rollback initiated)
+       - Parent dependencies updated
+       - Rollback mechanism works correctly on failure
+     </validation>
+     <rollback>
+       On subtask creation failure:
+       - Track created subtasks during loop
+       - Delete created subtasks via archive_tasks (force_archive: true)
+       - Return error with rollback details
+       - Parent task unchanged (no dependencies added)
+     </rollback>
+     <checkpoint>Task divided into subtasks, parent dependencies updated (or rollback completed)</checkpoint>
+   </stage>
   
   <stage id="6" name="SyncTasks">
     <action>Synchronize TODO.md and state.json (--sync flag)</action>
