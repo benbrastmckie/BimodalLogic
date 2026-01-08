@@ -92,8 +92,23 @@ lifecycle:
 </inputs_forbidden>
 
 <process_flow>
-  <step_0_preflight>
-    <action>Preflight: Extract validated inputs and update status to [PLANNING] or [REVISING]</action>
+  <note>
+    ARCHITECTURAL CHANGE (2026-01-07):
+    Preflight and postflight are now handled by the /plan and /revise command files.
+    This subagent focuses on core planning work and artifact creation only.
+    
+    This change addresses the root cause identified in workflow-command-refactor-plan.md:
+    "Commands don't own status updates - they delegate to subagents and hope 
+    the subagents update status correctly."
+    
+    By moving status updates to the command level, we ensure:
+    - Guaranteed preflight (status updates to PLANNING before work starts)
+    - Guaranteed postflight (status updates to PLANNED after work completes)
+    - No more manual fixes like Task 326
+  </note>
+  
+  <deprecated_step_0_preflight>
+    <action>DEPRECATED: Preflight now handled by command file</action>
     <process>
       CRITICAL TIMING REQUIREMENT: This step MUST complete BEFORE step_1 begins.
       
@@ -164,8 +179,8 @@ lifecycle:
       
       5. Proceed to step_1 (planning work begins)
     </process>
-    <checkpoint>Status updated to [PLANNING] or [REVISING], verified in state.json, ready to begin planning</checkpoint>
-  </step_0_preflight>
+    <checkpoint>DEPRECATED - command file handles preflight</checkpoint>
+  </deprecated_step_0_preflight>
 
   <step_1>
     <action>Read task and detect new reports (if revision)</action>
@@ -407,10 +422,10 @@ lifecycle:
     <output>Validated plan artifact and extracted metadata (including reports_integrated)</output>
   </step_6>
 
-  <step_7>
-    <action>Execute Stage 7 (Postflight) - Update status and create git commit</action>
+  <deprecated_step_7>
+    <action>DEPRECATED: Postflight now handled by command file</action>
     <process>
-      STAGE 7: POSTFLIGHT (Planner owns this stage)
+      STAGE 7: POSTFLIGHT (Command file now owns this stage)
       
       STEP 7.1: INVOKE status-sync-manager
         PREPARE delegation context:
@@ -548,30 +563,48 @@ lifecycle:
           STEP 3: INCLUDE warning in return
       </error_case>
     </error_handling>
-    <output>Status updated to [PLANNED], git commit created (or error logged)</output>
-  </step_7>
+    <output>DEPRECATED - command file handles postflight</output>
+  </deprecated_step_7>
 
-  <step_8>
-    <action>Return standardized result</action>
+  <step_6_validate_and_return>
+    <action>Validate artifact and return standardized result</action>
     <process>
-      1. Format return following subagent-return-format.md
-      2. List plan artifact created with validated flag
-      3. Include brief summary (3-5 sentences, <100 tokens):
-         - Mention phase count and total effort
-         - Highlight key integration (e.g., research findings)
-         - Keep concise for orchestrator context window
+      1. Validate plan artifact created successfully:
+         a. Verify plan file exists on disk
+         b. Verify plan file is non-empty (size > 0)
+         c. If validation fails: Return failed status with error
+      2. Extract plan metadata:
+         - phase_count: Count of phases in plan
+         - estimated_hours: Total effort estimate
+         - complexity: High/Medium/Low
+         - research_integrated: true/false
+         - plan_version: Version number
+         - reports_integrated: Array of integrated reports
+      3. Format return following subagent-return-format.md:
+         - status: "completed" (or "failed" if errors)
+         - summary: Brief description (3-5 sentences, <100 tokens)
+           * Mention phase count and total effort
+           * Highlight key integration (e.g., research findings)
+           * Keep concise for orchestrator context window
+         - artifacts: [{type: "plan", path, summary}]
+         - metadata: {session_id, duration_seconds, agent_type, delegation_depth, delegation_path, plan_metadata}
+         - errors: [] (or error details if failures)
+         - next_steps: "Review plan and proceed to implementation"
       4. Include session_id from input
       5. Include metadata (duration, delegation info, validation result, plan_metadata)
-      6. Include git commit hash if successful
-      7. Return status completed
+      6. Return status completed
+      
+      Command file will handle:
+      - Status updates (PLANNING → PLANNED)
+      - Artifact linking in TODO.md
+      - Git commit creation
     </process>
     <validation>
-      Before returning (Step 8):
+      Before returning:
       - Verify plan artifact exists and is non-empty
       - Verify NO summary artifact created (defensive check - plan is self-documenting)
       - Verify plan metadata extracted (phase_count, estimated_hours, complexity)
       - Verify summary field in return object is <100 tokens
-      - Verify Step 0 (Preflight) and Step 7 (Postflight) completed successfully
       - Return validation result in metadata field
       - Return plan_metadata in metadata field
       
@@ -592,7 +625,7 @@ lifecycle:
       - Recommendation: "Remove summary artifact, plan is self-documenting"
     </validation>
     <output>Standardized return object with validated plan artifact, plan metadata, and brief summary</output>
-  </step_8>
+  </step_6_validate_and_return>
 </process_flow>
 
 <constraints>
@@ -604,17 +637,18 @@ lifecycle:
   <must>Keep phases small (1-2 hours each)</must>
   <must>Validate plan artifact before returning (existence, non-empty)</must>
   <must>Extract plan metadata (phase_count, estimated_hours, complexity)</must>
-  <must>Execute Stage 7 (Postflight) - status update and git commit</must>
+  <must>Return artifacts array with validated artifact paths for command file to link</must>
   <must>Delegate to status-sync-manager for atomic status updates</must>
   <must>Delegate to git-workflow-manager for git commits</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Keep summary field brief (3-5 sentences, <100 tokens)</must>
+  <must_not>Update status (command file owns status updates)</must_not>
+  <must_not>Create git commits (command file owns git commits)</must_not>
   <must_not>Create phases larger than 3 hours</must_not>
   <must_not>Create directories before writing files</must_not>
   <must_not>Create summary artifacts (plan is self-documenting)</must_not>
   <must_not>Return without validating plan artifact</must_not>
   <must_not>Return without extracting plan metadata</must_not>
-  <must_not>Return without executing Stage 7</must_not>
 </constraints>
 
 <context_window_protection>

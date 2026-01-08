@@ -105,8 +105,23 @@ lifecycle:
 </inputs_forbidden>
 
 <process_flow>
-  <step_0_preflight>
-    <action>Preflight: Extract validated inputs and update status to [PLANNING]</action>
+  <note>
+    ARCHITECTURAL CHANGE (2026-01-07):
+    Preflight and postflight are now handled by the /plan command file.
+    This subagent focuses on core planning work and artifact creation only.
+    
+    This change addresses the root cause identified in workflow-command-refactor-plan.md:
+    "Commands don't own status updates - they delegate to subagents and hope 
+    the subagents update status correctly."
+    
+    By moving status updates to the command level, we ensure:
+    - Guaranteed preflight (status updates to PLANNING before work starts)
+    - Guaranteed postflight (status updates to PLANNED after work completes)
+    - No more manual fixes like Task 326
+  </note>
+  
+  <deprecated_step_0_preflight>
+    <action>DEPRECATED: Preflight now handled by command file</action>
     <process>
       CRITICAL TIMING REQUIREMENT: This step MUST complete BEFORE step_1 begins.
       
@@ -177,8 +192,8 @@ lifecycle:
       
       6. Proceed to step_1 (Lean planning work begins)
     </process>
-    <checkpoint>Status updated to [PLANNING], verified in state.json, ready to begin Lean planning</checkpoint>
-  </step_0_preflight>
+    <checkpoint>DEPRECATED - command file handles preflight</checkpoint>
+  </deprecated_step_0_preflight>
 
   <step_1>
     <action>Read Lean task details and existing artifacts</action>
@@ -399,10 +414,10 @@ lifecycle:
     </output>
   </step_6>
 
-  <step_7>
-    <action>Execute Stage 7 (Postflight) - Update status and create git commit</action>
+  <deprecated_step_7>
+    <action>DEPRECATED: Postflight now handled by command file</action>
     <process>
-      STAGE 7: POSTFLIGHT (Lean Planner owns this stage)
+      STAGE 7: POSTFLIGHT (Command file now owns this stage)
       
       STEP 7.1: INVOKE status-sync-manager
         PREPARE delegation context:
@@ -510,35 +525,54 @@ lifecycle:
           STEP 3: INCLUDE warning in return
       </error_case>
     </error_handling>
-    <output>Status updated to [PLANNED], git commit created (or error logged)</output>
-  </step_7>
+    <output>DEPRECATED - command file handles postflight</output>
+  </deprecated_step_7>
 
-  <step_8>
-    <action>Return standardized result with Lean-specific metadata</action>
+  <step_6_validate_and_return>
+    <action>Validate artifact and return standardized result with Lean-specific metadata</action>
     <process>
-      1. Format return following subagent-return-format.md
-      2. List Lean plan artifact created with validated flag
-      3. Include brief summary (3-5 sentences, <100 tokens):
-         - Mention phase count, proof strategy, and total effort
-         - Highlight Lean-specific integration (mathlib, tactics)
-         - Note research integration if applicable
-         - Keep concise for orchestrator context window
+      1. Validate Lean plan artifact created successfully:
+         a. Verify plan file exists on disk
+         b. Verify plan file is non-empty (size > 0)
+         c. Verify Lean-specific sections present (Proof Strategy, Mathlib Integration)
+         d. If validation fails: Return failed status with error
+      2. Extract plan metadata (including Lean-specific fields):
+         - phase_count: Count of phases in plan
+         - estimated_hours: Total effort estimate
+         - complexity: High/Medium/Low
+         - research_integrated: true/false
+         - proof_strategy: Identified proof strategy
+         - mathlib_dependencies: List of mathlib dependencies
+      3. Format return following subagent-return-format.md:
+         - status: "completed" (or "failed" if errors)
+         - summary: Brief description (3-5 sentences, <100 tokens)
+           * Mention phase count, proof strategy, and total effort
+           * Highlight Lean-specific integration (mathlib, tactics)
+           * Note research integration if applicable
+           * Keep concise for orchestrator context window
+         - artifacts: [{type: "plan", path, summary}]
+         - metadata: {session_id, duration_seconds, agent_type, delegation_depth, delegation_path, plan_metadata}
+         - errors: [] (or error details if failures)
+         - next_steps: "Review Lean plan and proceed to implementation"
       4. Include session_id from input
       5. Include metadata:
          - Standard fields: duration, delegation info, validation result
          - Lean-specific fields: proof_strategy, mathlib_dependencies
          - plan_metadata with all extracted information
-      6. Include git commit hash if successful
-      7. Return status completed
+      6. Return status completed
+      
+      Command file will handle:
+      - Status updates (PLANNING → PLANNED)
+      - Artifact linking in TODO.md
+      - Git commit creation
     </process>
     <validation>
-      Before returning (Step 8):
+      Before returning:
       - Verify Lean plan artifact exists and is non-empty
       - Verify Lean-specific sections present (Proof Strategy, Mathlib Integration)
       - Verify NO summary artifact created (defensive check - plan is self-documenting)
       - Verify plan metadata extracted (including proof_strategy)
       - Verify summary field in return object is <100 tokens
-      - Verify Stage 7 completed successfully
       - Return validation result in metadata field
       - Return plan_metadata in metadata field (with Lean-specific fields)
       
@@ -562,7 +596,7 @@ lifecycle:
       Standardized return object with validated Lean plan artifact, Lean-specific metadata 
       (proof_strategy, mathlib_dependencies), and brief summary
     </output>
-  </step_8>
+  </step_6_validate_and_return>
 </process_flow>
 
 <constraints>
@@ -578,18 +612,17 @@ lifecycle:
   <must>Keep phases small (1-2 hours each, accounting for Lean complexity)</must>
   <must>Validate plan artifact before returning (existence, non-empty, Lean sections)</must>
   <must>Extract plan metadata including proof_strategy and mathlib_dependencies</must>
-  <must>Execute Stage 7 (Postflight) - status update and git commit</must>
-  <must>Delegate to status-sync-manager for atomic status updates</must>
-  <must>Delegate to git-workflow-manager for git commits</must>
+  <must>Return artifacts array with validated artifact paths for command file to link</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Keep summary field brief (3-5 sentences, <100 tokens)</must>
+  <must_not>Update status (command file owns status updates)</must_not>
+  <must_not>Create git commits (command file owns git commits)</must_not>
   <must_not>Process non-Lean tasks (abort with routing error)</must_not>
   <must_not>Create phases larger than 3 hours (even for complex Lean proofs)</must_not>
   <must_not>Create directories before writing files</must_not>
   <must_not>Create summary artifacts (plan is self-documenting)</must_not>
   <must_not>Return without validating plan artifact and Lean-specific sections</must_not>
   <must_not>Return without extracting Lean-specific metadata</must_not>
-  <must_not>Return without executing Stage 7</must_not>
   <must_not>Modify any .lean files (write permission denied)</must_not>
 </constraints>
 
