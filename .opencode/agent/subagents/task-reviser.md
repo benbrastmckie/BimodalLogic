@@ -158,6 +158,20 @@ lifecycle:
 </inputs_forbidden>
 
 <process_flow>
+  <note>
+    ARCHITECTURAL NOTE (2026-01-07):
+    task-reviser already follows the correct delegation pattern - it delegates to
+    status-sync-manager and git-workflow-manager rather than updating files directly.
+    
+    Unlike research/plan agents, task-reviser doesn't create artifacts or update status.
+    It only updates task metadata by delegating to status-sync-manager.
+    
+    This agent is already compliant with the workflow-command-refactor-plan.md principles:
+    - Doesn't update files directly (delegates to status-sync-manager)
+    - Doesn't create git commits directly (delegates to git-workflow-manager)
+    - Focuses on domain work (parsing revision requests, validating changes)
+  </note>
+  
   <step_0_preflight>
     <action>Preflight: Validate inputs and check plan existence</action>
     <process>
