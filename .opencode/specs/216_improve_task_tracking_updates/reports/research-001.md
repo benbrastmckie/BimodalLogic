@@ -1138,7 +1138,7 @@ command-lifecycle.md defines 8 stages:
 4. `.opencode/command/implement.md` (394 lines)
 5. `.opencode/agent/subagents/status-sync-manager.md` (341 lines)
 6. `.opencode/agent/subagents/git-workflow-manager.md` (310 lines)
-7. `.opencode/context/core/system/status-markers.md` (889 lines)
+7. `.opencode/context/core/standards/status-markers.md` (889 lines)
 8. `.opencode/context/core/system/state-schema.md` (642 lines)
 9. `.opencode/context/core/system/artifact-management.md` (182 lines)
 10. `.opencode/context/core/workflows/command-lifecycle.md` (809 lines)

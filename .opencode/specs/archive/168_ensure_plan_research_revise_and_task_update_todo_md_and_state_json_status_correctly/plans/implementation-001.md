@@ -114,7 +114,7 @@ Verify and fix status synchronization across /plan, /research, /revise, and /tas
 - Bash tool for validation scripts
 
 ### Dependencies
-- `.opencode/context/core/system/status-markers.md` (status marker definitions)
+- `.opencode/context/core/standards/status-markers.md` (status marker definitions)
 - `.opencode/context/core/system/state-schema.md` (state.json schema)
 - `.opencode/context/core/standards/plan.md` (plan format standards)
 - `.opencode/agent/subagents/specialists/batch-status-manager.md` (existing specialist)
@@ -148,7 +148,7 @@ Verify and fix status synchronization across /plan, /research, /revise, and /tas
    - Needs: Extension for state.json and plan files
 
 2. **status-markers standard** (exists)
-   - Location: `.opencode/context/core/system/status-markers.md`
+   - Location: `.opencode/context/core/standards/status-markers.md`
    - Status: Complete specification with [RESEARCHED] and [PLANNED] markers
    - Needs: Documentation of multi-file synchronization
 
@@ -559,7 +559,7 @@ None - uses built-in file system operations and markdown/JSON parsing.
 
 **Action**: Document multi-file synchronization in status-markers.md
 
-**File**: `.opencode/context/core/system/status-markers.md`
+**File**: `.opencode/context/core/standards/status-markers.md`
 
 **Approach**:
 1. Add section on multi-file atomic updates

@@ -127,7 +127,7 @@ Create foundational files and schemas that all other components depend on.
 #### Task 1.3: Update Status Markers Documentation [COMPLETED]
 
 **Files Verified**:
-- [PASS] `.opencode/context/core/system/status-markers.md` (exists from backup)
+- [PASS] `.opencode/context/core/standards/status-markers.md` (exists from backup)
 
 **Verification Results**:
 - [PASS] Command-specific markers ([RESEARCHED], [PLANNED]) already documented

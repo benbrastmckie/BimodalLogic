@@ -280,7 +280,7 @@ Complete two related improvements to orchestrator.md: (1) Address FIX comment on
       <references>
         <reference type="workflow">Delegation Guide: .opencode/context/core/workflows/subagent-delegation-guide.md</reference>
         <reference type="standard">Return Format: .opencode/context/core/standards/subagent-return-format.md</reference>
-        <reference type="system">Status Markers: .opencode/context/core/system/status-markers.md</reference>
+        <reference type="system">Status Markers: .opencode/context/core/standards/status-markers.md</reference>
         <reference type="research">Task 191 Research: .opencode/specs/191_fix_subagent_delegation_hang/reports/research-001.md</reference>
       </references>
       ```

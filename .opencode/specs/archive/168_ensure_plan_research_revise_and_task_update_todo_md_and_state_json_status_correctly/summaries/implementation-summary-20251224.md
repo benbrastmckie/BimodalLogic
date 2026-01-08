@@ -81,7 +81,7 @@ Successfully implemented atomic status synchronization across /plan, /research, 
 ### Phase 6: Documentation Updates [PASS]
 
 **Files Modified**:
-- `.opencode/context/core/system/status-markers.md` - Added multi-file synchronization section
+- `.opencode/context/core/standards/status-markers.md` - Added multi-file synchronization section
 - `.opencode/context/core/system/state-schema.md` - Added field naming convention section
 
 **Files Created**:
@@ -132,7 +132,7 @@ Successfully implemented atomic status synchronization across /plan, /research, 
 3. `.opencode/command/research.md` - Added status-sync-manager integration
 4. `.opencode/command/revise.md` - Added status-sync-manager, status preservation
 5. `.opencode/agent/subagents/batch-task-orchestrator.md` - Updated routing logic
-6. `.opencode/context/core/system/status-markers.md` - Added multi-file sync section
+6. `.opencode/context/core/standards/status-markers.md` - Added multi-file sync section
 7. `.opencode/context/core/system/state-schema.md` - Added field naming conventions
 8. `.opencode/specs/state.json` - Updated field naming (25+ entries)
 9. `.opencode/specs/TODO.md` - Updated task 168 status

@@ -544,7 +544,7 @@ Recommended approach: Fix in three phases (critical → high → medium/low) wit
 
 **Specifications Reviewed**:
 - `.opencode/context/core/system/artifact-management.md` (182 lines)
-- `.opencode/context/core/system/status-markers.md` (889 lines)
+- `.opencode/context/core/standards/status-markers.md` (889 lines)
 - `.opencode/context/core/system/state-schema.md` (642 lines)
 
 **Agent Files Analyzed**:

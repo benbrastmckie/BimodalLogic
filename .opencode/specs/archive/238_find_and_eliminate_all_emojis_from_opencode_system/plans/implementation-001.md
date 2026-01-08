@@ -9,7 +9,7 @@
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
-  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/standards/status-markers.md
   - .opencode/context/core/system/artifact-management.md
   - .opencode/context/core/standards/tasks.md
   - .opencode/context/core/standards/documentation.md
@@ -87,7 +87,7 @@ Research identified 1,891 emoji occurrences across 98 markdown files (24% of 409
 - **Goal**: Manually verify emoji replacements in critical system files
 - **Tasks**:
   - [ ] Review .opencode/specs/TODO.md for correct replacements (1 occurrence on line 138 - documentation reference, no change needed)
-  - [ ] Review .opencode/context/core/system/status-markers.md (5 occurrences - remove from examples on lines 345, 370, 378, 615, 655)
+  - [ ] Review .opencode/context/core/standards/status-markers.md (5 occurrences - remove from examples on lines 345, 370, 378, 615, 655)
   - [ ] Review .opencode/command/meta.md (14 occurrences - replace in examples)
   - [ ] Review .opencode/command/implement.md (1 occurrence - verify NO EMOJI policy documentation intact)
   - [ ] Review all 11 context files with emojis (code.md, maintenance-report-template.md, tests.md, etc.)
@@ -96,7 +96,7 @@ Research identified 1,891 emoji occurrences across 98 markdown files (24% of 409
 - **Timing**: 1-2 hours
 - **High-Impact Files**:
   - .opencode/specs/TODO.md
-  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/standards/status-markers.md
   - .opencode/command/*.md (9 files)
   - .opencode/agent/**/*.md (15 files)
   - .opencode/context/**/*.md (11 files with emojis)
@@ -108,8 +108,8 @@ Research identified 1,891 emoji occurrences across 98 markdown files (24% of 409
 
 - **Goal**: Remove emoji examples from standards and templates to prevent propagation
 - **Tasks**:
-  - [ ] Update .opencode/context/core/system/status-markers.md: Remove [PASS] from lines 345, 370, 378, 615, 655 (examples showing emoji usage)
-  - [ ] Update .opencode/context/core/system/status-markers.md: Strengthen NO EMOJI guidance at line 138 with explicit prohibition and text alternatives
+  - [ ] Update .opencode/context/core/standards/status-markers.md: Remove [PASS] from lines 345, 370, 378, 615, 655 (examples showing emoji usage)
+  - [ ] Update .opencode/context/core/standards/status-markers.md: Strengthen NO EMOJI guidance at line 138 with explicit prohibition and text alternatives
   - [ ] Update .opencode/context/project/lean4/templates/maintenance-report-template.md: Replace all 14 emoji examples with text alternatives, add NO EMOJI reminder
   - [ ] Update .opencode/context/core/standards/code.md: Replace all 33 emoji examples with text alternatives (Good/Bad sections)
   - [ ] Update .opencode/context/core/standards/tests.md: Replace all 14 emoji examples with text alternatives
@@ -213,7 +213,7 @@ Research identified 1,891 emoji occurrences across 98 markdown files (24% of 409
   git diff --stat
   
   # Review changes
-  git diff .opencode/context/core/system/status-markers.md
+  git diff .opencode/context/core/standards/status-markers.md
   git diff .opencode/agent/subagents/researcher.md
   ```
 
@@ -259,7 +259,7 @@ Research identified 1,891 emoji occurrences across 98 markdown files (24% of 409
 - .opencode/specs/*/reports/*.md (95 files - emoji replacements)
 - .opencode/specs/*/summaries/*.md (included in 95 files)
 - .opencode/specs/*/plans/*.md (included in 95 files)
-- .opencode/context/core/system/status-markers.md (remove emoji examples, strengthen guidance)
+- .opencode/context/core/standards/status-markers.md (remove emoji examples, strengthen guidance)
 - .opencode/context/core/standards/documentation.md (add NO EMOJI Policy section, update quality checklist)
 - .opencode/context/core/standards/code.md (replace emoji examples)
 - .opencode/context/core/standards/tests.md (replace emoji examples)

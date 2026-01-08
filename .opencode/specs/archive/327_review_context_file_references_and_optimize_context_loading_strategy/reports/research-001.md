@@ -135,7 +135,7 @@ grep -h "^\s*-\s*\"core/" .opencode/command/*.md .opencode/agent/subagents/*.md 
 ### 1.3 Valid Context File References
 
 **Analysis**: Only 1 file in deprecated `core/system/` directory:
-- `core/system/status-markers.md` (349 lines) - Should move to `core/orchestration/`
+- `core/standards/status-markers.md` (349 lines) - Should move to `core/orchestration/`
 
 **Files Actually Exist** (verified):
 ```
@@ -507,14 +507,14 @@ echo "Validating updates..."
 
 # Validation: Check for remaining broken references
 BROKEN_REFS=$(grep -r "core/system/" .opencode/command .opencode/agent --include="*.md" | \
-  grep -v "core/system/status-markers.md" | wc -l)
+  grep -v "core/standards/status-markers.md" | wc -l)
 
 if [ "$BROKEN_REFS" -eq 0 ]; then
   echo "[PASS] No broken core/system/ references found"
 else
   echo "[FAIL] Found $BROKEN_REFS broken core/system/ references"
   grep -r "core/system/" .opencode/command .opencode/agent --include="*.md" | \
-    grep -v "core/system/status-markers.md"
+    grep -v "core/standards/status-markers.md"
 fi
 
 echo ""

@@ -10,7 +10,7 @@ Why do `/research 161` and `/plan 161` prompt for a task number instead of accep
 
 ## Sources Consulted
 
-- `.opencode/context/core/system/status-markers.md` (status marker semantics)  
+- `.opencode/context/core/standards/status-markers.md` (status marker semantics)  
 - `.opencode/context/core/system/artifact-management.md` (lazy creation, numbering)  
 - `.opencode/context/core/standards/commands.md` and `/tasks.md` (command argument handling)  
 - Recent task fixes for related regressions: tasks 153, 160, 161, 162, 167 (doc notes and behavioral expectations)
@@ -65,7 +65,7 @@ Why do `/research 161` and `/plan 161` prompt for a task number instead of accep
 
 ## Relevant Resources
 
-- Status markers: `.opencode/context/core/system/status-markers.md`  
+- Status markers: `.opencode/context/core/standards/status-markers.md`  
 - Artifact management & lazy creation: `.opencode/context/core/system/artifact-management.md`  
 - Command/task standards: `.opencode/context/core/standards/commands.md`, `.opencode/context/core/standards/tasks.md`
 

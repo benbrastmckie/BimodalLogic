@@ -2079,7 +2079,7 @@ Expected: Orchestrator validation catches Stage 7 skip
 
 **Standards**:
 - `.opencode/context/core/standards/subagent-return-format.md`
-- `.opencode/context/core/system/status-markers.md`
+- `.opencode/context/core/standards/status-markers.md`
 - `.opencode/context/core/system/git-commits.md`
 
 ### 8.2 Related Tasks

@@ -35,7 +35,7 @@ Key findings:
 - .opencode/agent/subagents/implementer.md (316 lines)
 
 **Supporting Standards** (5 files):
-- .opencode/context/core/system/status-markers.md (889 lines)
+- .opencode/context/core/standards/status-markers.md (889 lines)
 - .opencode/context/core/standards/subagent-return-format.md (356 lines)
 - .opencode/context/core/system/artifact-management.md (182 lines)
 - .opencode/context/core/system/git-commits.md (35 lines)
@@ -867,7 +867,7 @@ Example:
 - .opencode/agent/subagents/implementer.md (316 lines)
 
 ### Supporting Standards
-- .opencode/context/core/system/status-markers.md (889 lines)
+- .opencode/context/core/standards/status-markers.md (889 lines)
 - .opencode/context/core/standards/subagent-return-format.md (356 lines)
 - .opencode/context/core/system/artifact-management.md (182 lines)
 - .opencode/context/core/system/git-commits.md (35 lines)

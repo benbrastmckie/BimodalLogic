@@ -18,7 +18,7 @@ artifacts:
 standards:
   - .opencode/context/core/standards/tasks.md
   - .opencode/context/core/system/artifact-management.md
-  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/standards/status-markers.md
 ---
 
 # Implementation Plan (Revision): Route `/task` via Task `Language` metadata, not heuristics

@@ -501,7 +501,7 @@ context_loading:
   index: ".opencode/context/index.md"
   required:
     - "core/standards/subagent-return-format.md"
-    - "core/system/status-markers.md"
+    - "core/standards/status-markers.md"
   
 delegation:
   enabled: true

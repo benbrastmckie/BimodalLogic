@@ -88,7 +88,7 @@ Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
 @.opencode/context/core/system/git-commits.md
@@ -779,7 +779,7 @@ echo ""
 echo "Checkpoint 1: Orchestrator Routing"
 orchestrator_lines=$(wc -l .opencode/agent/orchestrator.md | awk '{print $1}')
 routing_guide_lines=$(wc -l .opencode/context/system/routing-guide.md | awk '{print $1}')
-status_markers_lines=$(wc -l .opencode/context/core/system/status-markers.md | awk '{print $1}')
+status_markers_lines=$(wc -l .opencode/context/core/standards/status-markers.md | awk '{print $1}')
 return_format_lines=$(wc -l .opencode/context/core/standards/subagent-return-format.md | awk '{print $1}')
 
 checkpoint1_lines=$((orchestrator_lines + routing_guide_lines + status_markers_lines + return_format_lines))

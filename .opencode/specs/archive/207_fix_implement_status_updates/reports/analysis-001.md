@@ -267,7 +267,7 @@ Actual Workflow:
 - `.opencode/agent/subagents/status-sync-manager.md` (341 lines, fully implemented)
 
 **Status Markers Specification**:
-- `.opencode/context/core/system/status-markers.md` (889 lines)
+- `.opencode/context/core/standards/status-markers.md` (889 lines)
 
 **Implementation Agents**:
 - `.opencode/agent/subagents/lean-implementation-agent.md`
@@ -858,7 +858,7 @@ If any write fails:
 4. `.opencode/command/research.md` (exists, specification complete)
 5. `.opencode/command/plan.md` (exists, specification complete)
 6. `.opencode/command/revise.md` (exists, specification complete)
-7. `.opencode/context/core/system/status-markers.md` (exists, defines state machine)
+7. `.opencode/context/core/standards/status-markers.md` (exists, defines state machine)
 
 ### Required Tools
 

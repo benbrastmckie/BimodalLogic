@@ -784,7 +784,7 @@ None (all functionality self-contained)
 - **Existing /todo Command**: `.opencode/command/todo.md`
 - **Archive State Schema**: `.opencode/specs/archive/state.json`
 - **State Schema Reference**: `.opencode/context/core/system/state-schema.md`
-- **Status Markers**: `.opencode/context/core/system/status-markers.md`
+- **Status Markers**: `.opencode/context/core/standards/status-markers.md`
 - **Git Commits Standard**: `.opencode/context/core/system/git-commits.md`
 
 ---

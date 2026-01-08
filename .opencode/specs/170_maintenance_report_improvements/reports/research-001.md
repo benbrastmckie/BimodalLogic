@@ -13,7 +13,7 @@
   - .opencode/agent/subagents/reviewer.md
   - .opencode/context/core/standards/report.md
   - .opencode/context/core/system/artifact-management.md
-  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/standards/status-markers.md
   - .opencode/context/core/system/state-schema.md
   - .opencode/specs/maintenance/state.json
   - Web research on maintenance report best practices
@@ -993,7 +993,7 @@ Based on industry research and current state analysis, the following best practi
 3. .opencode/agent/subagents/reviewer.md - Reviewer agent documentation
 4. .opencode/context/core/standards/report.md - Report standard
 5. .opencode/context/core/system/artifact-management.md - Artifact management standard
-6. .opencode/context/core/system/status-markers.md - Status markers specification
+6. .opencode/context/core/standards/status-markers.md - Status markers specification
 7. .opencode/context/core/system/state-schema.md - State schema reference
 8. .opencode/specs/maintenance/state.json - Maintenance state tracking
 

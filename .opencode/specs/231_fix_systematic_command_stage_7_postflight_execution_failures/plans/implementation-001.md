@@ -985,7 +985,7 @@ If critical issues occur during implementation:
 
 - Research Report: [research-001.md](../reports/research-001.md)
 - Command Lifecycle: `.opencode/context/core/workflows/command-lifecycle.md`
-- Status Markers: `.opencode/context/core/system/status-markers.md`
+- Status Markers: `.opencode/context/core/standards/status-markers.md`
 - Subagent Return Format: `.opencode/context/core/standards/subagent-return-format.md`
 - Delegation Guide: `.opencode/context/core/workflows/subagent-delegation-guide.md`
 - Git Commits: `.opencode/context/core/system/git-commits.md`

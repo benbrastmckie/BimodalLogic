@@ -49,7 +49,7 @@
 ## Phase 3: State Management Files Consolidation
 
 ### Source Files
-- `.opencode/context/core/system/status-markers.md` (888 lines)
+- `.opencode/context/core/standards/status-markers.md` (888 lines)
 - `.opencode/context/core/system/state-schema.md` (686 lines)
 - **Total**: 1,574 lines
 

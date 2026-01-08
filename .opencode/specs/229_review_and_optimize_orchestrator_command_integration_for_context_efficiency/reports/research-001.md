@@ -188,7 +188,7 @@ RESULT: Plan artifact created [PASS], TODO.md updated [PASS], state.json updated
 <context_loaded>
   @.opencode/context/core/standards/subagent-return-format.md
   @.opencode/context/core/workflows/subagent-delegation-guide.md
-  @.opencode/context/core/system/status-markers.md
+  @.opencode/context/core/standards/status-markers.md
 </context_loaded>
 ```
 
@@ -230,7 +230,7 @@ Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
 @.opencode/context/core/system/git-commits.md
@@ -732,7 +732,7 @@ result = execute_command(
 ```
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
-@.opencode/context/core/system/status-markers.md (for validation only)
+@.opencode/context/core/standards/status-markers.md (for validation only)
 ```
 
 **Command Context** (~10,000-12,000 tokens):
@@ -740,7 +740,7 @@ result = execute_command(
 @.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
 @.opencode/context/core/system/git-commits.md

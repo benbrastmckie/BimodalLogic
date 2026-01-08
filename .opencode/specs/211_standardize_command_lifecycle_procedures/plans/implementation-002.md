@@ -480,7 +480,7 @@ state.json:  plan_artifacts updated with new version
 
 ### Related Standards
 
-- .opencode/context/core/system/status-markers.md (status marker format)
+- .opencode/context/core/standards/status-markers.md (status marker format)
 - .opencode/context/core/standards/subagent-return-format.md (return format)
 - .opencode/context/core/system/artifact-management.md (artifact management)
 - .opencode/context/core/system/git-commits.md (commit patterns)

@@ -206,7 +206,7 @@ The root cause is a parsing logic flaw where numeric arguments are discarded bef
 - `.opencode/agent/subagents/planner.md`
 - `.opencode/context/core/standards/commands.md`
 - `.opencode/context/core/standards/tasks.md`
-- `.opencode/context/core/system/status-markers.md`
+- `.opencode/context/core/standards/status-markers.md`
 
 ## Dependencies
 

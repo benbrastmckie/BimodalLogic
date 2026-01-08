@@ -63,6 +63,12 @@
 
 Load for: Task validation, artifact creation, documentation standards
 
+- **status-markers.md** (350 lines) - Status marker definitions and transitions
+  - Standard status markers (NOT STARTED, RESEARCHING, PLANNED, etc.)
+  - TODO.md vs state.json mapping
+  - Command → Status mapping
+  - Valid transition rules and diagrams
+  - Atomic synchronization protocol
 - **tasks.md** (227 lines) - Task entry format, required fields, validation rules
 - **documentation.md** (178 lines) - Documentation standards, NO EMOJI policy
 - **plan.md** (104 lines) - Implementation plan structure and requirements
@@ -316,9 +322,10 @@ Language-specific:
 **Deprecated Files** (1-month deprecation period until 2025-01-29):
 - subagent-return-format.md → core/standards/delegation.md#return-format
 - subagent-delegation-guide.md → core/standards/delegation.md#delegation-patterns
-- status-markers.md → core/system/state-management.md#status-markers
 - state-schema.md → core/system/state-management.md#state-schemas
 - command-lifecycle.md → (removed, see agent files for execution patterns)
+
+**Note**: status-markers.md has been moved from core/system/ to core/standards/ (2026-01-08) as it defines standards/conventions rather than system implementation.
 
 ---
 

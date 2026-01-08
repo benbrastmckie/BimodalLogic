@@ -10,7 +10,7 @@
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
-  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/standards/status-markers.md
   - .opencode/context/core/system/artifact-management.md
   - .opencode/context/core/standards/tasks.md
 - **Language**: markdown
@@ -248,7 +248,7 @@ Research identified two root causes for /todo command archival failures: (1) Inc
 - .opencode/command/plan.md (enforced standard status markers)
 - .opencode/command/implement.md (enforced standard status markers)
 - .opencode/command/revise.md (enforced standard status markers)
-- .opencode/context/core/system/status-markers.md (documented enforcement mechanisms)
+- .opencode/context/core/standards/status-markers.md (documented enforcement mechanisms)
 - .opencode/specs/archive/state.json (added archived task entries)
 - state.json (updated completed_projects list)
 

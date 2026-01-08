@@ -406,5 +406,5 @@ If you encounter a status conflict not covered in this document:
 
 - `.opencode/context/core/system/state-management.md` - State management architecture
 - `.opencode/context/core/workflows/status-transitions.md` - Status lifecycle diagram
-- `.opencode/context/core/system/status-markers.md` - Status marker definitions
+- `.opencode/context/core/standards/status-markers.md` - Status marker definitions
 - `.opencode/agent/subagents/status-sync-manager.md` - Atomic synchronization implementation

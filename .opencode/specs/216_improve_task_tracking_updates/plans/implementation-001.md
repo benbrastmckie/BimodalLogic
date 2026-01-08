@@ -712,7 +712,7 @@ None identified
 
 ### Related Standards
 
-- .opencode/context/core/system/status-markers.md
+- .opencode/context/core/standards/status-markers.md
 - .opencode/context/core/system/state-schema.md
 - .opencode/context/core/system/artifact-management.md
 - .opencode/context/core/workflows/command-lifecycle.md

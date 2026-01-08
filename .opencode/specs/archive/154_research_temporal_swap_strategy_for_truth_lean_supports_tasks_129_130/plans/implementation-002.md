@@ -9,7 +9,7 @@
 - **Artifacts**: `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-002.md` (this plan)
 - **Standards**:
   - `.opencode/context/core/standards/plan.md`
-  - `.opencode/context/core/system/status-markers.md`
+  - `.opencode/context/core/standards/status-markers.md`
   - `.opencode/context/core/system/artifact-management.md`
   - `.opencode/context/core/standards/tasks.md`
 - **Language**: lean

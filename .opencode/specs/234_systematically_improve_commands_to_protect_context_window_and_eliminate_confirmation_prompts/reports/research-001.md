@@ -109,7 +109,7 @@ Examined "Context Loaded:" sections in all command files and orchestrator.md to 
 <context_loaded>
   @.opencode/context/core/standards/subagent-return-format.md
   @.opencode/context/core/workflows/subagent-delegation-guide.md
-  @.opencode/context/core/system/status-markers.md
+  @.opencode/context/core/standards/status-markers.md
 </context_loaded>
 ```
 
@@ -123,7 +123,7 @@ Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
 @.opencode/context/core/system/git-commits.md
@@ -136,7 +136,7 @@ Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/.opencode/specs/TODO.md  # NOTE: Duplicate path error
 @.opencode/specs/state.json
-@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
 @.opencode/context/core/system/git-commits.md
@@ -149,7 +149,7 @@ Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
 @.opencode/context/core/system/git-commits.md
@@ -162,7 +162,7 @@ Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/.opencode/specs/TODO.md  # NOTE: Duplicate path error
 @.opencode/specs/state.json
-@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
 @.opencode/context/core/system/git-commits.md
@@ -176,7 +176,7 @@ Context Loaded:
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
 @.opencode/specs/archive/state.json
-@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/system/git-commits.md
 ```
@@ -686,7 +686,7 @@ Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
 @.opencode/context/core/system/git-commits.md
@@ -707,7 +707,7 @@ Context Loaded (Execution Stage):
 @.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
 @.opencode/context/core/system/git-commits.md
@@ -734,7 +734,7 @@ Context Loaded (Execution Stage):
 <context_loaded>
   @.opencode/context/core/standards/subagent-return-format.md
   @.opencode/context/core/workflows/subagent-delegation-guide.md
-  @.opencode/context/core/system/status-markers.md
+  @.opencode/context/core/standards/status-markers.md
 </context_loaded>
 ```
 
@@ -778,7 +778,7 @@ Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
 @.opencode/context/core/system/git-commits.md
@@ -808,7 +808,7 @@ language: varies
     - .opencode/context/core/workflows/command-lifecycle.md
     - .opencode/specs/TODO.md
     - .opencode/specs/state.json
-    - .opencode/context/core/system/status-markers.md
+    - .opencode/context/core/standards/status-markers.md
     - .opencode/context/core/standards/subagent-return-format.md
     - .opencode/context/core/workflows/subagent-delegation-guide.md
     - .opencode/context/core/system/git-commits.md

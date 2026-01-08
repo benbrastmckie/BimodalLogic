@@ -1566,7 +1566,7 @@ From status-sync-manager.md (lines 63-65, 110-135) and task-executor.md (lines 9
 
 **Context Files**:
 - .opencode/context/core/workflows/command-lifecycle.md (930 lines)
-- .opencode/context/core/system/status-markers.md (889 lines)
+- .opencode/context/core/standards/status-markers.md (889 lines)
 - .opencode/context/core/system/state-schema.md (687 lines)
 
 **Total Lines Analyzed**: 6,593 lines

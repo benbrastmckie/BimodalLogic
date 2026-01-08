@@ -159,7 +159,7 @@ This research provides a comprehensive analysis of the context directory cleanup
 | File Referenced | Reference Count | Status |
 |-----------------|-----------------|--------|
 | @.opencode/context/core/workflows/command-lifecycle.md | 18 | Deprecated, in archive/ |
-| @.opencode/context/core/system/status-markers.md | 19 | Deprecated redirect |
+| @.opencode/context/core/standards/status-markers.md | 19 | Deprecated redirect |
 | @.opencode/context/core/standards/subagent-return-format.md | 16 | Deprecated redirect |
 | @.opencode/context/core/system/git-commits.md | 15 | Active, needs migration |
 | @.opencode/context/core/workflows/subagent-delegation-guide.md | 13 | Deprecated redirect |
@@ -205,7 +205,7 @@ This research provides a comprehensive analysis of the context directory cleanup
 
 | Old Reference | New Reference | Count | Files Affected |
 |---------------|---------------|-------|----------------|
-| @.opencode/context/core/system/status-markers.md | @.opencode/context/core/system/state-management.md | 19 | 7 files |
+| @.opencode/context/core/standards/status-markers.md | @.opencode/context/core/system/state-management.md | 19 | 7 files |
 | @.opencode/context/core/workflows/command-lifecycle.md | (Remove - deprecated) | 18 | 6 files |
 | @.opencode/context/core/standards/subagent-return-format.md | @.opencode/context/core/standards/delegation.md | 16 | 6 files |
 | @.opencode/context/core/workflows/subagent-delegation-guide.md | @.opencode/context/core/standards/delegation.md | 13 | 6 files |
@@ -360,7 +360,7 @@ Three files exist in both common/ and core/ with different content:
 
 ```bash
 # Update status-markers.md references (19 refs)
-find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/system/status-markers\.md|@.opencode/context/core/system/state-management.md|g' {} +
+find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/standards/status-markers\.md|@.opencode/context/core/system/state-management.md|g' {} +
 
 # Update subagent-return-format.md references (16 refs)
 find .opencode -type f -name "*.md" -exec sed -i 's|@\.opencode/context/core/standards/subagent-return-format\.md|@.opencode/context/core/standards/delegation.md|g' {} +
@@ -509,7 +509,7 @@ Update `.opencode/context/index.md` to reflect new structure:
 ```bash
 # Remove deprecated redirect files
 rm .opencode/context/core/standards/subagent-return-format.md
-rm .opencode/context/core/system/status-markers.md
+rm .opencode/context/core/standards/status-markers.md
 rm .opencode/context/core/system/state-schema.md
 rm .opencode/context/core/workflows/subagent-delegation-guide.md
 rm .opencode/context/core/workflows/delegation-patterns.md

@@ -18,7 +18,7 @@
   - .opencode/context/core/standards/subagent-return-format.md
   - .opencode/context/core/system/artifact-management.md
   - .opencode/context/core/standards/summary.md
-  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/standards/status-markers.md
 
 ---
 
@@ -147,5 +147,5 @@ The /review command has been successfully updated to create persistent review su
 - Subagent Return Format: .opencode/context/core/standards/subagent-return-format.md
 - Artifact Management: .opencode/context/core/system/artifact-management.md
 - Summary Standard: .opencode/context/core/standards/summary.md
-- Status Markers: .opencode/context/core/system/status-markers.md
+- Status Markers: .opencode/context/core/standards/status-markers.md
 - State Schema: .opencode/context/core/system/state-schema.md

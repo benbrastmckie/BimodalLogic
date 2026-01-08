@@ -34,7 +34,7 @@ Successfully migrated all context files from `.opencode/context/common/` to `.op
   - 5 template files (meta-guide.md, orchestrator-template.md, subagent-template.md, state-template.json, subagent-frontmatter-template.yaml)
   - 1 schema file (frontmatter-schema.json)
 - Deleted 4 deprecated redirect files:
-  - `core/system/status-markers.md`
+  - `core/standards/status-markers.md`
   - `core/system/state-schema.md`
   - `core/workflows/subagent-delegation-guide.md`
   - `core/templates/command-template.md` (older version)

@@ -12,7 +12,7 @@
   - summaries/implementation-summary-20251229.md
 - **Standards**:
   - .opencode/context/core/standards/plan.md
-  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/standards/status-markers.md
   - .opencode/context/core/system/artifact-management.md
   - .opencode/context/core/standards/tasks.md
 - **Language**: markdown

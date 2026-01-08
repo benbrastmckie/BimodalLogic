@@ -217,7 +217,7 @@ Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/system/git-commits.md
 
@@ -660,7 +660,7 @@ None identified
 
 ### Related Standards
 
-- .opencode/context/core/system/status-markers.md
+- .opencode/context/core/standards/status-markers.md
 - .opencode/context/core/standards/subagent-return-format.md
 - .opencode/context/core/system/artifact-management.md
 - .opencode/context/core/system/git-commits.md

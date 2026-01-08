@@ -111,7 +111,7 @@ context_loading:
   required:
     - "core/workflows/command-lifecycle.md"
     - "core/standards/subagent-return-format.md"
-    - "core/system/status-markers.md"
+    - "core/standards/status-markers.md"
     - "core/standards/plan.md"
 delegation:
   max_depth: 3
@@ -1261,7 +1261,7 @@ context_loading:
   required:
     - "core/workflows/command-lifecycle.md"
     - "core/standards/subagent-return-format.md"
-    - "core/system/status-markers.md"
+    - "core/standards/status-markers.md"
     - "core/standards/plan.md"
 delegation:
   max_depth: 3

@@ -10,7 +10,7 @@
 - **Artifacts**: plans/implementation-002.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
-  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/standards/status-markers.md
   - .opencode/context/core/system/artifact-management.md
   - .opencode/context/core/standards/tasks.md
 - **Language**: markdown
@@ -259,7 +259,7 @@ Comparative analysis of OpenAgents and ProofChecker systems identified the root 
 - .opencode/context/core/workflows/delegation.md (new, consolidated)
 - .opencode/context/core/system/state-management.md (new, consolidated)
 - .opencode/context/core/workflows/command-lifecycle.md (removed)
-- .opencode/context/core/system/status-markers.md (merged into state-management.md)
+- .opencode/context/core/standards/status-markers.md (merged into state-management.md)
 - .opencode/context/core/system/state-schema.md (merged into state-management.md)
 - .opencode/context/core/workflows/subagent-delegation-guide.md (merged into delegation.md)
 - .opencode/context/core/system/subagent-return-format.md (merged into delegation.md)

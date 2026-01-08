@@ -377,7 +377,7 @@ Load minimal context for routing decisions:
 
 Planner loads context on-demand per `.opencode/context/index.md`:
 - `core/standards/subagent-return-format.md` (return format)
-- `core/system/status-markers.md` (status transitions)
+- `core/standards/status-markers.md` (status transitions)
 - `core/system/artifact-management.md` (lazy directory creation)
 - `core/standards/plan.md` (plan template)
 - Task entry via `grep -A 50 "^### ${task_number}\." TODO.md` (~2KB vs 109KB full file)
@@ -537,5 +537,5 @@ Load context on-demand:
 - **Subagent**: `.opencode/agent/subagents/planner.md`
 - **Plan Template**: `.opencode/context/core/standards/plan.md`
 - **Return Format**: `.opencode/context/core/standards/subagent-return-format.md`
-- **Status Markers**: `.opencode/context/core/system/status-markers.md`
+- **Status Markers**: `.opencode/context/core/standards/status-markers.md`
 - **Artifact Management**: `.opencode/context/core/system/artifact-management.md`

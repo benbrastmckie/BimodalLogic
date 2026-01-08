@@ -69,7 +69,7 @@ Categories:
 #### 2. State Tracking Files (1,088 lines → 600 lines target)
 
 **Files to consolidate**:
-- `core/system/status-markers.md` - 888 lines
+- `core/standards/status-markers.md` - 888 lines
 - `core/system/state-schema.md` - 686 lines
 - **Total**: 1,574 lines
 
@@ -222,7 +222,7 @@ Total:      2,777 lines, 101KB
 After Phase 9 (obsolete file removal):
 - `core/workflows/subagent-delegation-guide.md` → archived
 - `core/standards/subagent-return-format.md` → archived
-- `core/system/status-markers.md` → archived
+- `core/standards/status-markers.md` → archived
 - `core/system/state-schema.md` → archived
 - `core/standards/report.md` → archived
 - `core/standards/summary.md` → archived

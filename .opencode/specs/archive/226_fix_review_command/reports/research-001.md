@@ -758,7 +758,7 @@ All fixes are internal to /review command and reviewer subagent. No changes to:
 ### System Architecture
 - `.opencode/context/core/workflows/command-lifecycle.md` - 8-stage command pattern
 - `.opencode/context/core/system/artifact-management.md` - Artifact standards
-- `.opencode/context/core/system/status-markers.md` - Status format
+- `.opencode/context/core/standards/status-markers.md` - Status format
 - `.opencode/context/core/standards/subagent-return-format.md` - Return format
 
 ### Review Command

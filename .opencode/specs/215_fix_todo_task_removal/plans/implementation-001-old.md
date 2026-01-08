@@ -932,7 +932,7 @@ None. All prerequisites are satisfied.
 1. **Task 215 Research Report**: `specs/215_fix_todo_command_task_block_removal/reports/research-001.md`
 2. **Task 215 Research Summary**: `specs/215_fix_todo_command_task_block_removal/summaries/research-summary.md`
 3. **Current todo.md**: `.opencode/command/todo.md`
-4. **status-markers.md**: `.opencode/context/core/system/status-markers.md`
+4. **status-markers.md**: `.opencode/context/core/standards/status-markers.md`
 
 ---
 

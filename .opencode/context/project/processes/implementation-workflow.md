@@ -411,7 +411,7 @@ Load minimal context for routing decisions:
 
 Implementer loads context on-demand per `.opencode/context/index.md`:
 - `core/standards/subagent-return-format.md` (return format)
-- `core/system/status-markers.md` (status transitions)
+- `core/standards/status-markers.md` (status transitions)
 - `core/system/artifact-management.md` (lazy directory creation)
 - Task entry via `grep -A 50 "^### ${task_number}\." TODO.md` (~2KB vs 109KB full file)
 - `state.json` (project state)
@@ -570,6 +570,6 @@ Load context on-demand:
 - **Command**: `.opencode/command/implement.md`
 - **Subagent**: `.opencode/agent/subagents/implementer.md`
 - **Return Format**: `.opencode/context/core/standards/subagent-return-format.md`
-- **Status Markers**: `.opencode/context/core/system/status-markers.md`
+- **Status Markers**: `.opencode/context/core/standards/status-markers.md`
 - **Artifact Management**: `.opencode/context/core/system/artifact-management.md`
 - **Delegation**: `.opencode/context/core/standards/delegation.md`

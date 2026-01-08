@@ -1,6 +1,8 @@
 # Status Transitions
 
-## Status Markers
+**Note**: For complete status marker definitions, see `.opencode/context/core/standards/status-markers.md` (authoritative source).
+
+## Status Markers (Quick Reference)
 
 | Status | Marker | Description |
 |--------|--------|-------------|
@@ -9,10 +11,11 @@
 | Researched | `[RESEARCHED]` | Research completed |
 | Planning | `[PLANNING]` | Planning in progress |
 | Planned | `[PLANNED]` | Plan created |
+| Revising | `[REVISING]` | Plan revision in progress |
+| Revised | `[REVISED]` | Plan revision completed |
 | Implementing | `[IMPLEMENTING]` | Implementation in progress |
-| Implemented | `[IMPLEMENTED]` | Implementation completed |
-| Testing | `[TESTING]` | Testing in progress |
 | Completed | `[COMPLETED]` | Task fully completed |
+| Partial | `[PARTIAL]` | Implementation partially complete |
 | Blocked | `[BLOCKED]` | Task blocked by dependency |
 | Abandoned | `[ABANDONED]` | Task abandoned |
 

@@ -12,7 +12,7 @@
   - .opencode/context/core/system/artifact-management.md
   - .opencode/context/core/standards/subagent-return-format.md
   - .opencode/context/core/standards/summary.md
-  - .opencode/context/core/system/status-markers.md
+  - .opencode/context/core/standards/status-markers.md
   - .opencode/command/research.md (reference implementation)
   - .opencode/specs/TODO.md
   - .opencode/specs/state.json
@@ -761,7 +761,7 @@ Implementation is successful when:
 - .opencode/context/core/system/artifact-management.md (lazy directory creation, project numbering)
 - .opencode/context/core/standards/subagent-return-format.md (return format standard)
 - .opencode/context/core/standards/summary.md (summary format standard)
-- .opencode/context/core/system/status-markers.md (status markers)
+- .opencode/context/core/standards/status-markers.md (status markers)
 - .opencode/command/research.md (reference implementation)
 - .opencode/specs/TODO.md (task tracking)
 - .opencode/specs/state.json (state management)

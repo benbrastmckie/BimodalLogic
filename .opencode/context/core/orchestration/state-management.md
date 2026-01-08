@@ -755,7 +755,7 @@ Contains brief summaries for quick reference. **All detailed artifacts MUST have
 - Plans must follow `.opencode/context/core/standards/plan.md`.
 - Reports must follow `.opencode/context/core/standards/report.md`.
 - Summaries must follow `.opencode/context/core/standards/summary.md`.
-- Status markers must align with `.opencode/context/core/system/status-markers.md`.
+- Status markers must align with `.opencode/context/core/standards/status-markers.md`.
 - Commands and agents should load these standards in their context when producing corresponding artifacts.
 
 ## .opencode/specs/TODO.md Format

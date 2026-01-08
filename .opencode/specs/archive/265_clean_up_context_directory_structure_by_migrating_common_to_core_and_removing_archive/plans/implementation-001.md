@@ -9,7 +9,7 @@
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - @.opencode/context/core/standards/plan.md
-  - @.opencode/context/core/system/status-markers.md
+  - @.opencode/context/core/standards/status-markers.md
   - @.opencode/context/core/system/artifact-management.md
   - @.opencode/context/core/standards/tasks.md
 - **Language**: markdown
@@ -170,7 +170,7 @@ This plan systematically migrates all content from `.opencode/context/common/` t
   - [ ] Move `common/schemas/frontmatter-schema.json` → `core/schemas/`
 - [ ] **Remove Deprecated Redirect Files (5 files):**
   - [ ] Delete `core/standards/subagent-return-format.md` (deprecated redirect)
-  - [ ] Delete `core/system/status-markers.md` (deprecated redirect)
+  - [ ] Delete `core/standards/status-markers.md` (deprecated redirect)
   - [ ] Delete `core/system/state-schema.md` (deprecated redirect)
   - [ ] Delete `core/workflows/subagent-delegation-guide.md` (deprecated redirect)
   - [ ] Delete `core/workflows/delegation-patterns.md` (deprecated redirect)

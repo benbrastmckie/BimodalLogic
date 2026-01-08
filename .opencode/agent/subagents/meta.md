@@ -716,7 +716,7 @@ $ARGUMENTS
               - workflows.md (to be created)
             - **Standards**:
               - .opencode/context/core/formats/plan-format.md
-              - .opencode/context/core/system/status-markers.md
+              - .opencode/context/core/standards/status-markers.md
               - .opencode/context/core/orchestration/state-management.md
               - .opencode/context/core/standards/task-management.md
             - **Type**: meta

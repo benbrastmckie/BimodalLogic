@@ -6,7 +6,7 @@ Lean-specific context for Logos. Use these files for language, tooling, tactic p
 ## Canonical Sources
 - Logic proof conventions: `project/logic/standards/proof-conventions.md`
 - Logic notation: `project/logic/standards/notation-standards.md`
-- Artifact/status standards: `core/system/artifact-management.md`, `core/system/status-markers.md`
+- Artifact/status standards: `core/system/artifact-management.md`, `core/standards/status-markers.md`
 
 ## Lean-Specific Files
 - Standards: `standards/lean4-style-guide.md`, `standards/proof-conventions-lean.md`, `standards/proof-readability-criteria.md`

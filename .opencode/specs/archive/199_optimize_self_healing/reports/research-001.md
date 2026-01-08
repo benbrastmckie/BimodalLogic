@@ -38,7 +38,7 @@ The self-healing feature for auto-creating missing state.json creates significan
 **Commands Loading State Files**:
 - All 9 commands load: `@.opencode/specs/state.json`
 - All 9 commands load: `@.opencode/specs/TODO.md`
-- 7 commands load: `@.opencode/context/core/system/status-markers.md` (784 lines)
+- 7 commands load: `@.opencode/context/core/standards/status-markers.md` (784 lines)
 - 6 commands load: `@.opencode/context/core/standards/subagent-return-format.md` (356 lines)
 - 6 commands load: `@.opencode/context/core/workflows/subagent-delegation-guide.md` (649 lines)
 

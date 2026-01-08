@@ -1902,7 +1902,7 @@ echo "scale=2; (2805 - {new_total}) / 2805 * 100" | bc
 ### Related Standards
 
 4. **status-markers.md**
-   - Location: .opencode/context/core/system/status-markers.md
+   - Location: .opencode/context/core/standards/status-markers.md
    - Purpose: Defines all status markers and transition rules
    - Relevance: Status marker variations must comply with this standard
 

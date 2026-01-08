@@ -737,7 +737,7 @@ Completed {task_type} task affecting {file_count} files. {Brief description of c
 - .opencode/agent/subagents/task-executor.md - Task executor agent
 - .opencode/agent/subagents/batch-task-orchestrator.md - Batch orchestrator
 - .opencode/context/core/system/artifact-management.md - Artifact standards
-- .opencode/context/core/system/status-markers.md - Status markers
+- .opencode/context/core/standards/status-markers.md - Status markers
 - .opencode/context/core/system/git-commits.md - Git commit standards
 
 **External Research**:

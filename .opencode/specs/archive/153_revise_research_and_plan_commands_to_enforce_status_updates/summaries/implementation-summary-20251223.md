@@ -12,7 +12,7 @@
 ## Files Touched
 - `.opencode/command/research.md`
 - `.opencode/command/plan.md`
-- `.opencode/context/core/system/status-markers.md`
+- `.opencode/context/core/standards/status-markers.md`
 
 ## Status
 - TODO/state updated to reflect work completion and summary link. No plans or reports were created for this task.

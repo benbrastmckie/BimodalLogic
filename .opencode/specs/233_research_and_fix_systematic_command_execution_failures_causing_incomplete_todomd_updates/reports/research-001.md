@@ -576,7 +576,7 @@ Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
 @.opencode/specs/TODO.md
 @.opencode/specs/state.json
-@.opencode/context/core/system/status-markers.md
+@.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
 @.opencode/context/core/system/git-commits.md
