@@ -43,7 +43,6 @@ technical_debt:
 
 ---
 
-
 ### 329. Research and fix persistent state synchronization failures between TODO.md and state.json
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
@@ -55,7 +54,6 @@ technical_debt:
 **Description**: Research and address the persistent issue where workflow commands (/research, /plan, /revise, /implement) successfully update state.json but fail to update TODO.md with status changes and artifact links. This is a postflight failure where status-sync-manager is either not being invoked or failing silently. Example: Task 323 research completed, state.json shows status 'researched' with artifact link, but TODO.md shows [NOT STARTED] with no artifacts. This violates the architectural requirement that both files must be kept in sync via status-sync-manager. Related to tasks 312, 320, and 321.
 
 ---
-
 
 ### 333. Fix workflow command TODO.md/state.json synchronization failures
 - **Effort**: 6-8 hours
@@ -78,8 +76,6 @@ technical_debt:
 **Description**: Systematically fix persistent synchronization failures in /research, /plan, /revise, and /implement commands where manual file manipulation (sed/awk) fails silently, leaving TODO.md unchanged while state.json updates successfully. Root cause identified in root-cause-analysis-todo-state-sync-failures.md: commands don't delegate to status-sync-manager for atomic updates. Solution: Add postflight stage to all workflow commands that delegates to status-sync-manager with validated_artifacts array, ensuring both files update atomically or neither updates. This addresses the architectural requirement that state.json and TODO.md must be kept in sync via status-sync-manager's two-phase commit protocol.
 
 ---
-
-
 
 ### 302. Test Dual-Mode Revision Workflow
 - **Effort**: 2 hours
@@ -358,7 +354,6 @@ technical_debt:
 
 ### Decidability
 
-
 ---
 
 ### 136. Design Decidability.lean architecture and signatures
@@ -415,7 +410,6 @@ technical_debt:
 - **Impact**: Delivers an initial, test-backed decision procedure for TM logic.
 
 ### Layer Extensions (Future Planning)
-
 
 ---
 
@@ -776,8 +770,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ## Medium Priority
 
-
-
 ### 334. Create LaTeX documentation for Logos system mirroring layer structure
 - **Effort**: 4-6 hours
 - **Status**: [NOT STARTED]
@@ -786,7 +778,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Blocking**: None
 - **Dependencies**: None
 
-**Description**: Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Documentation/ with a cleaned up structure that mirrors the Logos layers. The documentation should: (1) Create and import a subfile for each Logos layer, (2) Maintain the same formatting standards as the original LaTeX document, (3) Exclude problem sets, (4) Include standardized sections for each layer: Syntax extensions from previous layer, Semantic frames and models definitions, Proof system extensions from previous layer, Metalogical properties that have been established, (5) Compile definitions in a clear and concise way without proofs, (6) Provide minimal explanation, (7) Serve as a nicely formatted readable LaTeX reference for learning the Logos system without reading Lean code.
+**Description**: Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ with a cleaned up structure that mirrors the Logos layers. The documentation should: (1) Create and import a subfile for each Logos layer, (2) Maintain the same formatting standards as the original LaTeX document, (3) Exclude problem sets, (4) Include standardized sections for each layer: Syntax extensions from previous layer, Semantic frames and models definitions, Proof system extensions from previous layer, Metalogical properties that have been established, (5) Compile definitions in a clear and concise way without proofs, (6) Provide minimal explanation, (7) Serve as a nicely formatted readable LaTeX reference for learning the Logos system without reading Lean code.
 
 ---
 
@@ -820,9 +812,10 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 318. Implement advanced heuristics for proof search performance (Phase 4)
 - **Effort**: 12-18 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2026-01-07
 - **Researched**: 2026-01-07
+- **Planned**: 2026-01-07
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -830,6 +823,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Research Artifacts**:
   - Research Report: [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md]
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/plans/implementation-001.md]
 
 **Description**: Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.
 
@@ -847,8 +843,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-
-
 ### 308. Final cleanup and comprehensive testing (5/5)
 - **Effort**: 15 minutes
 - **Status**: [REVISING]
@@ -860,9 +854,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 **Description**: Complete final cleanup of any remaining cruft from files not reverted. Test all commands (/task, /meta, /todo, /review) comprehensively to ensure everything works correctly. Commit clean changes with proper documentation.
 
 ---
-
-
-
 
 ### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
 - **Effort**: 61-97 hours
@@ -900,27 +891,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-
-
-
-
-
-
-
-
 ## Medium Priority
-
-### 332. Design and implement comprehensive /task command enhancements
-- **Effort**: 18-24 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: 325, 326, 322, 330
-
-**Description**: Design and implement comprehensive enhancements to the /task command to consolidate tasks 325, 326, 322, and 330. This includes: (1) --recover flag to unarchive projects from specs/archive/, (2) --divide flag to divide existing tasks into subtasks with dependencies, (3) --sync flag to synchronize TODO.md and state.json with optional task ranges, and (4) bulk operations in status-sync-manager for creating/updating many tasks. Implementing these features together avoids conflicts, ensures architectural consistency, and improves the integrity of the /task command. Each feature should be designed with atomic operations, proper error handling, and integration with existing status-sync-manager patterns.
-
----
 
 ### 323. Fix /todo command to run markdown formatter after completion
 
@@ -976,7 +947,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-
 ### 259. Automation Tactics
 - **Effort**: 20.0
 - **Status**: [ABANDONED]
@@ -999,7 +969,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Dependencies**: None
 
 **Description**: Add new bulk operation to status-sync-manager for creating/updating many tasks, integrating with existing bulk functionality implemented for /abandon and /task --divide commands. The aim is optimization for elegant executions with bulk operations.
-
 
 ---
 

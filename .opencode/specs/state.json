@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-07T06:18:36Z",
-  "next_project_number": 334,
+  "_last_updated": "2026-01-07T23:39:57Z",
+  "next_project_number": 335,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -561,27 +561,38 @@
       "project_number": 317,
       "project_name": "implement_bfs_variant_for_proof_search_completeness_phase_3",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "research_completed",
+      "status": "researched",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T08:34:20.462436Z",
-      "last_updated": "2026-01-05T08:34:20.462436Z",
+      "last_updated": "2026-01-07",
       "effort": "10-15 hours",
-      "description": "Implement Phase 3 of task 260: BFS Variant. Add breadth-first search variant to ProofSearch.lean to ensure completeness guarantees. Current implementation uses bounded DFS which may miss proofs. BFS variant will explore search space level-by-level, guaranteeing shortest proofs are found first."
+      "description": "Implement Phase 3 of task 260: BFS Variant. Add breadth-first search variant to ProofSearch.lean to ensure completeness guarantees. Current implementation uses bounded DFS which may miss proofs. BFS variant will explore search space level-by-level, guaranteeing shortest proofs are found first.",
+      "research_completed": "2026-01-07",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".opencode/specs/317_bfs_variant_phase3/reports/research-001.md",
+          "summary": "Comprehensive 1403-line research report analyzing BFS implementation strategies, completeness guarantees, and integration approaches for Lean 4 proof search"
+        }
+      ]
     },
     {
       "project_number": 318,
       "project_name": "implement_advanced_heuristics_for_proof_search_performance_phase_4",
       "type": "feature",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "planning",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T08:34:20.462436Z",
-      "last_updated": "2026-01-05T08:34:20.462436Z",
+      "last_updated": "2026-01-07T00:00:00Z",
       "effort": "12-18 hours",
-      "description": "Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search."
+      "description": "Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.",
+      "artifacts": [
+        ".opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md"
+      ]
     },
     {
       "project_number": 319,
@@ -812,26 +823,6 @@
       "last_updated": "2026-01-06T00:00:00Z"
     },
     {
-      "project_number": 332,
-      "project_name": "design_and_implement_comprehensive_task_command_enhancements",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "meta",
-      "description": "Design and implement comprehensive enhancements to the /task command to consolidate tasks 325, 326, 322, and 330. This includes: (1) --recover flag to unarchive projects from specs/archive/, (2) --divide flag to divide existing tasks into subtasks with dependencies, (3) --sync flag to synchronize TODO.md and state.json with optional task ranges, and (4) bulk operations in status-sync-manager for creating/updating many tasks. Implementing these features together avoids conflicts, ensures architectural consistency, and improves the integrity of the /task command. Each feature should be designed with atomic operations, proper error handling, and integration with existing status-sync-manager patterns.",
-      "effort": "18-24 hours",
-      "blocking": [],
-      "dependencies": [
-        325,
-        326,
-        322,
-        330
-      ],
-      "created": "2026-01-06T00:00:00Z",
-      "last_updated": "2026-01-06T00:00:00Z"
-    },
-    {
       "project_number": 333,
       "project_name": "fix_workflow_command_todo_md_state_json_synchronization_failures",
       "type": "bugfix",
@@ -869,6 +860,21 @@
           "summary": "Verification that all subagent specifications already implement correct status-sync-manager delegation pattern"
         }
       ]
+    },
+    {
+      "project_number": 334,
+      "project_name": "create_latex_documentation_for_logos_system_mirroring_layer_structure",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "general",
+      "description": "Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ with a cleaned up structure that mirrors the Logos layers. The documentation should: (1) Create and import a subfile for each Logos layer, (2) Maintain the same formatting standards as the original LaTeX document, (3) Exclude problem sets, (4) Include standardized sections for each layer: Syntax extensions from previous layer, Semantic frames and models definitions, Proof system extensions from previous layer, Metalogical properties that have been established, (5) Compile definitions in a clear and concise way without proofs, (6) Provide minimal explanation, (7) Serve as a nicely formatted readable LaTeX reference for learning the Logos system without reading Lean code.",
+      "effort": "4-6 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-07T00:00:00Z",
+      "last_updated": "2026-01-07"
     }
   ],
   "completed_projects": [
