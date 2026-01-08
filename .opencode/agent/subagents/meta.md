@@ -350,17 +350,42 @@ $ARGUMENTS
   </stage>
 
   <stage id="4" name="IdentifyUseCases">
-    <action>Explore top 3-5 use cases and prioritize capabilities (CONDITIONAL: Skip if mode == "task")</action>
+    <action>Explore use cases and prioritize capabilities (CONDITIONAL: behavior varies by mode)</action>
     <process>
       1. Check mode:
-         a. If mode == "task":
-            - Log: "[INFO] Skipping IdentifyUseCases (Task Mode)"
-            - Skip to Stage 5
          
-         b. If mode == "prompt" OR mode == "interactive":
-            - Continue with use case identification below
+         a. If mode == "direct":
+            - Log: "[INFO] Direct Mode - Inferring use cases from description"
+            - Parse description to extract use cases:
+              * Look for action verbs (automate, verify, test, deploy, etc.)
+              * Look for workflow mentions (research → implement → verify)
+              * Look for capability mentions (proof checking, test automation, etc.)
+            - Use LLM to extract 3-5 use cases:
+              * "Extract 3-5 use cases from: {description}"
+              * Example: "Add proof verification capabilities" →
+                1. Research proof strategies
+                2. Implement proofs in Lean 4
+                3. Verify proofs compile
+            - Assign default complexity/priority:
+              * complexity: "moderate" (default)
+              * dependencies: "standalone" (default)
+              * priority: "high" (default)
+            - Skip to step 6
+         
+         b. If mode == "clarification":
+            - Log: "[INFO] Clarification Mode - Asking about use cases"
+            - Parse description to extract initial use cases (same as Direct Mode)
+            - Ask 1-2 targeted questions:
+              * "I identified these use cases: {list}. Are these correct? Any missing?"
+              * If user adds/modifies: Update use cases list
+              * If user confirms: Proceed with extracted use cases
+            - Assign default complexity/priority (same as Direct Mode)
+            - Skip to step 6
+         
+         c. If mode == "interactive":
+            - Continue with full interactive questioning (steps 2-6 below)
       
-       2. Ask about use cases:
+      2. (Interactive Mode only) Ask about use cases:
          "What are the top 3-5 use cases or workflows you want to support?
          
          For each use case, describe:
@@ -378,57 +403,72 @@ $ARGUMENTS
          2. Generate code based on specifications
          3. Review code for quality and standards"
       
-       3. Capture use_cases (list of 3-5 items)
-       
-       4. For each use case, assess:
-          a. Complexity: simple | moderate | complex
-          b. Dependencies: standalone | depends on other use cases
-          c. Priority: high | medium | low
-       
-       5. Ask clarifying questions if needed:
-          - "Does use case X require results from use case Y?"
-          - "Is use case X a one-step or multi-step process?"
-          - "What tools or data does use case X need?"
-       
-       6. Store: use_cases with complexity, dependencies, priority
-     </process>
-     <validation>
-       - If mode == "task": Stage skipped
-       - If mode == "prompt" OR mode == "interactive": Must have 3-5 use cases
-       - Each use case must have complexity, dependencies, priority
-       - At least one use case must be high priority
-     </validation>
-     <checkpoint>Use cases identified and prioritized OR stage skipped</checkpoint>
-   </stage>
+      3. (Interactive Mode only) Capture use_cases (list of 3-5 items)
+      
+      4. (Interactive Mode only) For each use case, assess:
+         a. Complexity: simple | moderate | complex
+         b. Dependencies: standalone | depends on other use cases
+         c. Priority: high | medium | low
+      
+      5. (Interactive Mode only) Ask clarifying questions if needed:
+         - "Does use case X require results from use case Y?"
+         - "Is use case X a one-step or multi-step process?"
+         - "What tools or data does use case X need?"
+      
+      6. Store: use_cases with complexity, dependencies, priority
+    </process>
+    <validation>
+      - Must have 3-5 use cases (inferred, clarified, or fully gathered)
+      - Each use case must have complexity, dependencies, priority
+      - At least one use case must be high priority
+      - If mode == "direct": Use cases inferred from description
+      - If mode == "clarification": Use cases confirmed with user
+      - If mode == "interactive": Use cases fully gathered via questions
+    </validation>
+    <checkpoint>Use cases identified and prioritized</checkpoint>
+  </stage>
 
-   <stage id="5" name="AssessComplexity">
-     <action>Determine agent count, hierarchy, and knowledge requirements (CONDITIONAL: Skip if mode == "task")</action>
-     <process>
-       1. Check mode:
-          a. If mode == "task":
-             - Log: "[INFO] Skipping AssessComplexity (Task Mode)"
-             - Skip to Stage 6
-          
-          b. If mode == "prompt" OR mode == "interactive":
-             - Continue with complexity assessment below
-       
-       2. Analyze use cases to determine agent count:
-     <action>Determine agent count, hierarchy, and knowledge requirements (CONDITIONAL: Skip if mode == "task")</action>
-     <process>
-       1. Check mode:
-          a. If mode == "task":
-             - Log: "[INFO] Skipping AssessComplexity (Task Mode)"
-             - Skip to Stage 6
-          
-          b. If mode == "prompt" OR mode == "interactive":
-             - Continue with complexity assessment below
-       
-       2. Analyze use cases to determine agent count:
-          - Simple domain (1-2 use cases, low complexity): 1-2 agents
-          - Moderate domain (3-4 use cases, mixed complexity): 3-5 agents
-          - Complex domain (5+ use cases, high complexity): 5-8 agents
-       
-       3. Ask about hierarchy:
+  <stage id="5" name="AssessComplexity">
+    <action>Determine agent count, hierarchy, and knowledge requirements (CONDITIONAL: behavior varies by mode)</action>
+    <process>
+      1. Check mode:
+         
+         a. If mode == "direct":
+            - Log: "[INFO] Direct Mode - Inferring complexity from use cases"
+            - Analyze use cases to determine agent count:
+              * 1-2 use cases, low complexity → 1-2 agents
+              * 3-4 use cases, mixed complexity → 3-5 agents
+              * 5+ use cases, high complexity → 5-8 agents
+            - Determine hierarchy:
+              * If use cases have dependencies → "hierarchical"
+              * Else → "flat"
+            - Infer knowledge areas from domain and use cases:
+              * Extract key concepts (e.g., "proof strategies" from "proof verification")
+              * Generate 3-5 knowledge areas
+            - Determine state management:
+              * If use cases mention "track", "progress", "status" → needs_state_management = true
+              * Else → needs_state_management = false
+            - Skip to step 9
+         
+         b. If mode == "clarification":
+            - Log: "[INFO] Clarification Mode - Asking about complexity"
+            - Infer initial complexity (same as Direct Mode)
+            - Ask 1 targeted question:
+              * "I recommend {agent_count} agents in a {hierarchy} structure. Does this sound right?"
+              * If user agrees: Proceed with inferred values
+              * If user disagrees: Ask "How many agents do you think you need?" and update
+            - Infer knowledge areas and state management (same as Direct Mode)
+            - Skip to step 9
+         
+         c. If mode == "interactive":
+            - Continue with full interactive questioning (steps 2-9 below)
+      
+      2. (Interactive Mode only) Analyze use cases to determine agent count:
+         - Simple domain (1-2 use cases, low complexity): 1-2 agents
+         - Moderate domain (3-4 use cases, mixed complexity): 3-5 agents
+         - Complex domain (5+ use cases, high complexity): 5-8 agents
+      
+      3. (Interactive Mode only) Ask about hierarchy:
          "Based on your use cases, I recommend {N} specialized agents.
          
          Should these agents:
@@ -437,9 +477,9 @@ $ARGUMENTS
          
          Recommendation: {recommendation based on use case dependencies}"
       
-       4. Capture hierarchy choice
-       
-       5. Ask about knowledge requirements:
+      4. (Interactive Mode only) Capture hierarchy choice
+      
+      5. (Interactive Mode only) Ask about knowledge requirements:
          "What domain knowledge do these agents need?
          
          Examples:
@@ -450,9 +490,9 @@ $ARGUMENTS
          
          List 3-5 key knowledge areas:"
       
-       6. Capture knowledge_areas (list of 3-5 items)
-       
-       7. Ask about state management:
+      6. (Interactive Mode only) Capture knowledge_areas (list of 3-5 items)
+      
+      7. (Interactive Mode only) Ask about state management:
          "Do your workflows need to track state across multiple steps?
          
          Examples:
@@ -462,44 +502,59 @@ $ARGUMENTS
          
          Yes/No?"
       
-       8. Capture needs_state_management (boolean)
-       
-       9. Store: agent_count, hierarchy, knowledge_areas, needs_state_management
+      8. (Interactive Mode only) Capture needs_state_management (boolean)
+      
+      9. Store: agent_count, hierarchy, knowledge_areas, needs_state_management
     </process>
-     <validation>
-       - If mode == "task": Stage skipped
-       - If mode == "prompt" OR mode == "interactive":
-         * agent_count must be 1-8
-         * hierarchy must be "flat" or "hierarchical"
-         * knowledge_areas must have 3-5 items
-         * needs_state_management must be boolean
-     </validation>
-     <checkpoint>Complexity assessed and architecture planned OR stage skipped</checkpoint>
-   </stage>
+    <validation>
+      - agent_count must be 1-8
+      - hierarchy must be "flat" or "hierarchical"
+      - knowledge_areas must have 3-5 items
+      - needs_state_management must be boolean
+      - If mode == "direct": All fields inferred from use cases
+      - If mode == "clarification": Agent count/hierarchy confirmed with user
+      - If mode == "interactive": All fields collected via full questions
+    </validation>
+    <checkpoint>Complexity assessed and architecture planned</checkpoint>
+  </stage>
 
-   <stage id="6" name="IdentifyIntegrations">
-     <action>Discover external tool requirements and custom commands (CONDITIONAL: Skip if mode == "task")</action>
-     <process>
-       1. Check mode:
-          a. If mode == "task":
-             - Log: "[INFO] Skipping IdentifyIntegrations (Task Mode)"
-             - Skip to Stage 7
-          
-          b. If mode == "prompt" OR mode == "interactive":
-             - Continue with integration identification below
-       
-       2. Ask about external tools:
-     <action>Discover external tool requirements and custom commands (CONDITIONAL: Skip if mode == "task")</action>
-     <process>
-       1. Check mode:
-          a. If mode == "task":
-             - Log: "[INFO] Skipping IdentifyIntegrations (Task Mode)"
-             - Skip to Stage 7
-          
-          b. If mode == "prompt" OR mode == "interactive":
-             - Continue with integration identification below
-       
-       2. Ask about external tools:
+  <stage id="6" name="IdentifyIntegrations">
+    <action>Discover external tool requirements and custom commands (CONDITIONAL: behavior varies by mode)</action>
+    <process>
+      1. Check mode:
+         
+         a. If mode == "direct":
+            - Log: "[INFO] Direct Mode - Inferring integrations from description"
+            - Parse description and domain to infer external tools:
+              * If domain == "formal_verification" → ["Lean 4", "LSP"]
+              * If domain == "development" → ["Git", "CI/CD"]
+              * If domain == "business" → ["Database", "API"]
+              * If domain == "hybrid" → ["Data tools"]
+              * Else → []
+            - Infer file types from domain:
+              * If domain == "formal_verification" → [".lean"]
+              * If domain == "development" → [".py", ".js", ".ts"]
+              * Else → [".md", ".json"]
+            - Generate 3-5 custom commands from use cases:
+              * Extract action verbs from use cases
+              * Create command names: /{verb} (e.g., /verify, /test, /deploy)
+              * Generate descriptions from use case text
+            - Skip to step 8
+         
+         b. If mode == "clarification":
+            - Log: "[INFO] Clarification Mode - Asking about integrations"
+            - Infer initial integrations (same as Direct Mode)
+            - Ask 1 targeted question:
+              * "I identified these integrations: {tools}. Any others needed?"
+              * If user adds: Update external_tools list
+              * If user confirms: Proceed with inferred values
+            - Infer file types and commands (same as Direct Mode)
+            - Skip to step 8
+         
+         c. If mode == "interactive":
+            - Continue with full interactive questioning (steps 2-8 below)
+      
+      2. (Interactive Mode only) Ask about external tools:
          "What external tools or systems do your agents need to interact with?
          
          Examples:
@@ -510,9 +565,9 @@ $ARGUMENTS
          
          List any external tools (or 'none'):"
       
-       3. Capture external_tools (list or empty)
-       
-       4. Ask about file operations:
+      3. (Interactive Mode only) Capture external_tools (list or empty)
+      
+      4. (Interactive Mode only) Ask about file operations:
          "What types of files will your agents create or modify?
          
          Examples:
@@ -523,9 +578,9 @@ $ARGUMENTS
          
          List file types:"
       
-       5. Capture file_types (list)
-       
-       6. Ask about custom commands:
+      5. (Interactive Mode only) Capture file_types (list)
+      
+      6. (Interactive Mode only) Ask about custom commands:
          "What custom slash commands do you want?
          
          Examples:
@@ -536,19 +591,20 @@ $ARGUMENTS
          
          List 3-5 commands with brief descriptions:"
       
-       7. Capture custom_commands (list of {name, description})
-       
-       8. Store: external_tools, file_types, custom_commands
+      7. (Interactive Mode only) Capture custom_commands (list of {name, description})
+      
+      8. Store: external_tools, file_types, custom_commands
     </process>
-     <validation>
-       - If mode == "task": Stage skipped
-       - If mode == "prompt" OR mode == "interactive":
-         * file_types must be non-empty
-         * custom_commands must have 3-5 items
-         * Each command must have name and description
-     </validation>
-     <checkpoint>Integration requirements identified OR stage skipped</checkpoint>
-   </stage>
+    <validation>
+      - file_types must be non-empty
+      - custom_commands must have 3-5 items
+      - Each command must have name and description
+      - If mode == "direct": All fields inferred from description/domain
+      - If mode == "clarification": External tools confirmed with user
+      - If mode == "interactive": All fields fully gathered via questions
+    </validation>
+    <checkpoint>Integration requirements identified</checkpoint>
+  </stage>
 
    <stage id="7" name="ReviewAndConfirm">
      <action>Present comprehensive architecture summary and get user confirmation (CONDITIONAL: Skip if mode == "task")</action>
