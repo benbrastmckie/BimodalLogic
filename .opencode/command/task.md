@@ -505,24 +505,44 @@ timeout: 120
       
       4. Wait for return from status-sync-manager
       
-      5. Validate return:
-         - Check status == "completed"
-         - Verify files_updated includes [TODO.md, state.json, archive/state.json]
-         - Extract success_count
+       5. Validate return:
+          - Check status == "completed"
+          - Verify files_updated includes [TODO.md, state.json, archive/state.json]
+          - Extract success_count
       
-      6. Format success message:
-         - "✅ Abandoned {count} tasks: {ranges}"
-         - List task numbers abandoned
-         - Note: Tasks moved to archive/
-    </process>
-    <validation>
-      - Task ranges parsed correctly
-      - All tasks exist in active_projects
-      - Return format valid
-      - Files updated correctly
-    </validation>
-    <checkpoint>Tasks abandoned, moved to archive/ atomically</checkpoint>
-  </stage>
+       6. Create git commit (non-critical):
+          - Delegate to git-workflow-manager:
+            * scope_files: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+            * message_template: "task: abandon {count} tasks ({ranges})"
+            * task_context:
+              - task_count: {success_count}
+              - task_ranges: {formatted ranges, e.g., "343-345" or "337, 343-345"}
+            * session_id: {session_id}
+            * delegation_depth: {depth + 1}
+            * delegation_path: [...path, "git-workflow-manager"]
+          - Wait for return from git-workflow-manager
+          - If git commit succeeds:
+            * Extract commit_hash from return
+            * Log: "Git commit created: {commit_hash}"
+          - If git commit fails:
+            * Log warning: "Git commit failed (non-critical): {error}"
+            * Continue with success message (files already updated)
+      
+       7. Format success message:
+          - "✅ Abandoned {count} tasks: {ranges}"
+          - List task numbers abandoned
+          - Note: Tasks moved to archive/
+          - If git commit succeeded: Include commit hash
+     </process>
+     <validation>
+       - Task ranges parsed correctly
+       - All tasks exist in active_projects
+       - Return format valid
+       - Files updated correctly
+       - Git commit created (or logged as non-critical failure)
+     </validation>
+     <checkpoint>Tasks abandoned, moved to archive/ atomically, git commit created</checkpoint>
+   </stage>
   
   <stage id="8" name="ReturnSuccess">
     <action>Format and return success message based on operation</action>
