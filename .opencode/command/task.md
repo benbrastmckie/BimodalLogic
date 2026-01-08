@@ -1,103 +1,89 @@
 ---
 name: task
-agent: status-sync-manager
-description: "Create new task entries in TODO.md and state.json (NEVER implements tasks)"
+agent: orchestrator
+description: "Unified task lifecycle management: create, recover, divide, sync, abandon tasks"
 timeout: 120
 ---
 
-**Task Input (required):** $ARGUMENTS (task description; e.g., `/task "Implement feature X"`)
+**Task Input (required):** $ARGUMENTS (task description or flag with arguments)
 
-**CRITICAL ARCHITECTURAL CONSTRAINT**: This command creates TASK ENTRIES ONLY. It NEVER implements tasks.
+**CRITICAL ARCHITECTURAL CONSTRAINT**: This command manages task lifecycle. Task creation NEVER implements tasks.
 
 <context>
-  <system_context>Task creation command - creates entries in TODO.md describing work to be done</system_context>
-  <task_context>Parse description, optionally divide into subtasks, create task entries atomically</task_context>
+  <system_context>Unified task lifecycle management - create, recover, divide, sync, abandon tasks</system_context>
+  <task_context>Parse flags and arguments, route to appropriate operation, delegate to specialized subagents</task_context>
   <architectural_constraint>
-    This command is FORBIDDEN from implementing tasks. It only creates task entries.
+    Task creation is FORBIDDEN from implementing tasks. It only creates task entries.
     Implementation happens later via /implement command.
   </architectural_constraint>
 </context>
 
 <role>
-  Task entry creator - Parses user descriptions and creates structured task entries in TODO.md
+  Task lifecycle manager - Routes task operations to specialized subagents based on flags
 </role>
 
 <task>
-  Create task entries in TODO.md and state.json:
-  1. Parse task description from $ARGUMENTS
-  2. Extract optional flags (--priority, --effort, --language, --divide)
-  3. Reformulate description naturally (inline, no subagent)
-  4. If --divide: intelligently divide into 1-5 subtasks
-  5. Delegate to task-creator subagent for each task
-  6. Return task numbers to user
+  Manage task lifecycle operations:
+  1. Parse flags: --recover, --divide, --sync, --abandon, or none (create)
+  2. Extract and validate arguments based on flag
+  3. Route to appropriate stage based on flag
+  4. Delegate to specialized subagents for execution
+  5. Validate return format and results
+  6. Return success message to user
   
-  FORBIDDEN: Implementing tasks, creating code files, running build tools
+  FORBIDDEN (for task creation): Implementing tasks, creating code files, running build tools
 </task>
 
 <workflow_execution>
-  <critical_reminder>
-    STOP AND READ THIS CAREFULLY:
-    
-    This command creates TASK ENTRIES describing work to be done.
-    It does NOT do the work itself.
-    
-    Example:
-    - User says: /task "Implement feature X"
-    - You create: Task entry "Implement feature X" in TODO.md
-    - You do NOT: Actually implement feature X
-    
-    The task will be implemented LATER by /implement command.
-    
-    Your ONLY job: Parse → Reformulate → Create task entry → Return task number
-  </critical_reminder>
-  
-  <stage id="1" name="ParseInput">
-    <action>Parse task description and extract flags</action>
+  <stage id="1" name="ParseAndValidate">
+    <action>Parse flags and arguments, validate inputs, route to appropriate stage</action>
     <process>
-      1. Extract task description from $ARGUMENTS:
-         - Everything before first -- flag is description
-         - Example: "sync thing --priority High" → description = "sync thing"
+      1. Detect flag from $ARGUMENTS:
+         - Check for --recover: Unarchive tasks from archive/
+         - Check for --divide: Divide existing task into subtasks
+         - Check for --sync: Synchronize TODO.md and state.json
+         - Check for --abandon: Abandon tasks (move to archive/)
+         - If no flag: Default to task creation (backward compatibility)
+      
+      2. Extract arguments based on flag:
+         
+         **--recover TASK_RANGES**:
+         - Extract task_ranges after --recover
+         - Examples: "343", "343-345", "337, 343-345, 350"
          - Validate non-empty
-         - If empty: Return error "Task description cannot be empty"
+         - Route to Stage 4 (RecoverTasks)
+         
+         **--divide TASK_NUMBER [PROMPT]**:
+         - Extract task_number after --divide (required)
+         - Extract optional prompt (remaining arguments)
+         - Validate task_number is positive integer
+         - Route to Stage 5 (DivideExistingTask)
+         
+         **--sync [TASK_RANGES]**:
+         - Extract optional task_ranges after --sync
+         - If no ranges: sync ALL tasks (default)
+         - Examples: "343-345", "337, 343-345"
+         - Route to Stage 6 (SyncTasks)
+         
+         **--abandon TASK_RANGES**:
+         - Extract task_ranges after --abandon (required)
+         - Examples: "343-345", "337, 343-345, 350"
+         - Validate non-empty
+         - Route to Stage 7 (AbandonTasks)
+         
+         **No flag (task creation)**:
+         - Extract task description (everything before first -- flag)
+         - Extract optional flags: --priority, --effort, --language, --divide
+         - Validate description non-empty
+         - Route to Stage 2 (PrepareTasks)
       
-      2. Extract --priority flag (default: Medium):
-         - Look for --priority in $ARGUMENTS
-         - Valid values: Low, Medium, High
-         - If not provided: priority = "Medium"
-         - If invalid: Return error "Priority must be Low, Medium, or High"
+      3. Validation gates:
+         - Ensure only ONE flag present (--recover, --divide, --sync, --abandon, or none)
+         - If multiple flags: Return error "Only one flag allowed at a time"
+         - Validate required arguments present for each flag
+         - Validate argument formats (integers, ranges, etc.)
       
-      3. Extract --effort flag (default: TBD):
-         - Look for --effort in $ARGUMENTS
-         - Examples: --effort "2 hours", --effort 4h, --effort TBD
-         - If not provided: effort = "TBD"
-      
-      4. Extract --language flag (default: auto-detect):
-         - Look for --language in $ARGUMENTS
-         - Valid: lean, markdown, general, python, shell, json, meta
-         - If not provided: will be detected in Stage 2
-         - If invalid: Return error with valid options
-      
-      5. Extract --divide flag (default: false):
-         - Look for --divide in $ARGUMENTS
-         - If present: divide = true (will divide into subtasks)
-         - If not present: divide = false (single task)
-    </process>
-    <validation>
-      - Description is non-empty
-      - Priority is Low|Medium|High
-      - Effort is non-empty string
-      - Language is null or valid value
-      - Divide is boolean
-    </validation>
-    <checkpoint>Input parsed and validated</checkpoint>
-  </stage>
-  
-  <stage id="1.5" name="ValidateNoImplementation">
-    <action>Validate that description is for task creation, not implementation</action>
-    <process>
-      CRITICAL: This validation gate prevents architectural violations.
-      
-      1. Check description for implementation keywords:
+      4. For task creation (no flag), validate no implementation keywords:
          - Keywords indicating implementation attempt:
            * "implement", "code", "write", "create file", "add function"
            * "fix bug", "refactor", "update code", "modify"
@@ -105,68 +91,45 @@ timeout: 120
            * Directory paths: "src/", "lib/", ".opencode/"
          
          - If ANY implementation keywords found:
-           a. Log: "ARCHITECTURAL VIOLATION DETECTED"
-           b. Log: "Description contains implementation keywords: ${keywords_found}"
-           c. Return error to user:
-              ```
-              Error: /task command creates TASK ENTRIES only, it does NOT implement tasks.
-              
-              Your description: "${description}"
-              
-              Detected implementation keywords: ${keywords_found}
-              
-              What you should do:
-              1. Use /task to create a task entry: /task "Task description"
-              2. Then use /implement to do the work: /implement {task_number}
-              
-              Example:
-                /task "Implement feature X"  # Creates task entry
-                /implement 350               # Implements the task
-              ```
-           d. ABORT - do NOT proceed to Stage 2
-      
-      2. Check for file paths in description:
-         - If description contains file paths (e.g., "Update src/Foo.lean"):
-           a. Log warning: "Description contains file path"
-           b. Suggest: "Consider using /implement after creating task"
-           c. Continue (file paths are OK in task descriptions)
-      
-      3. Log validation success:
-         - Log: "✓ Validation passed: Description is for task creation"
-         - Proceed to Stage 2
+           Return error:
+           ```
+           Error: /task command creates TASK ENTRIES only, it does NOT implement tasks.
+           
+           Your description: "${description}"
+           
+           Detected implementation keywords: ${keywords_found}
+           
+           What you should do:
+           1. Use /task to create a task entry: /task "Task description"
+           2. Then use /implement to do the work: /implement {task_number}
+           
+           Example:
+             /task "Implement feature X"  # Creates task entry
+             /implement 350               # Implements the task
+           ```
     </process>
     <validation>
-      - No implementation keywords detected
-      - Description is appropriate for task creation
+      - Only one flag present (or none for task creation)
+      - Required arguments present for each flag
+      - Argument formats valid
+      - For task creation: No implementation keywords detected
     </validation>
-    <checkpoint>Validated that description is for task creation, not implementation</checkpoint>
+    <checkpoint>Input parsed, validated, and routed to appropriate stage</checkpoint>
   </stage>
   
-  <stage id="2" name="ReformulateDescription">
-    <action>Reformulate description naturally (inline, no subagent)</action>
+  <stage id="2" name="PrepareTasks">
+    <action>Prepare task list for creation (inline --divide for new tasks)</action>
     <process>
-      1. Clean and normalize:
-         - Trim leading/trailing whitespace
-         - Remove multiple spaces
-         - Fix common typos (teh→the, adn→and, etc.)
+      This stage handles task creation (no flag or inline --divide for new tasks).
       
-      2. Ensure proper sentence structure:
-         - Capitalize first letter
-         - Add period at end if missing
-         - Ensure complete sentences (subject + verb)
-      
-      3. Improve clarity:
-         - Remove filler words (just, really, very, etc.)
-         - Make imperative (start with verb)
+      1. Reformulate description naturally (inline, no subagent):
+         - Clean and normalize (trim, remove multiple spaces, fix typos)
+         - Ensure proper sentence structure (capitalize, punctuate)
+         - Improve clarity (remove filler words, make imperative)
+         - Generate title from description (first sentence or 80 chars)
          - Keep concise (2-3 sentences max)
       
-      4. Generate title from description:
-         - Use first sentence or first 80 chars
-         - Remove period at end
-         - Capitalize properly
-         - Example: "Sync thing for todo and state." → "Sync thing for todo and state"
-      
-      5. Detect language if not provided:
+      2. Detect language if not provided:
          - Check for keywords:
            * lean: "lean", "proof", "theorem", "lemma", "tactic", "axiom", "sorry"
            * markdown: "markdown", "doc", "readme", "documentation", "guide"
@@ -176,42 +139,26 @@ timeout: 120
            * json: "json", "yaml", "toml", "config"
          - If no keywords match: language = "general"
          - If multiple match: use first match
-    </process>
-    <validation>
-      - Description is well-formed (capitalized, punctuated)
-      - Title is non-empty, max 80 chars
-      - Language is set (never null)
-    </validation>
-    <checkpoint>Description reformulated, title generated, language detected</checkpoint>
-  </stage>
-  
-  <stage id="3" name="DivideIfRequested">
-    <action>If --divide flag present, divide into 1-5 subtasks</action>
-    <process>
-      1. Check if --divide flag present:
-         - If false: Skip to Stage 4 with single task
-         - If true: Continue with division logic
       
-      2. Analyze description for natural divisions:
-         - Look for bullet points or numbered lists
-         - Look for "and" conjunctions
-         - Look for comma-separated items
-         - Look for sequential steps (first, then, finally)
-         - Look for multiple verbs (implement X, add Y, fix Z)
+      3. If --divide flag present (inline division for new task):
+         - Analyze description for natural divisions:
+           * Bullet points or numbered lists
+           * "and" conjunctions
+           * Comma-separated items
+           * Sequential steps (first, then, finally)
+           * Multiple verbs (implement X, add Y, fix Z)
+         
+         - Determine number of subtasks (1-5):
+           * If no natural divisions: 1 task (no division)
+           * If 2-5 divisions: create that many tasks
+           * If >5 divisions: group into 5 logical subtasks
+         
+         - Generate subtask descriptions:
+           * Each subtask self-contained with clear scope
+           * Maintain original priority/effort for all
+           * Number subtasks: "Task 1/3: ...", "Task 2/3: ...", etc.
       
-      3. Determine number of subtasks (1-5):
-         - If no natural divisions found: 1 task (no division)
-         - If 2-5 natural divisions found: create that many tasks
-         - If >5 divisions found: group into 5 logical subtasks
-         - Aim for balanced subtasks (similar complexity)
-      
-      4. Generate subtask descriptions:
-         - Each subtask should be self-contained
-         - Each subtask should have clear scope
-         - Maintain original priority/effort for all subtasks
-         - Number subtasks: "Task 1/3: ...", "Task 2/3: ...", etc.
-      
-      5. Prepare task list:
+      4. Prepare task list:
          - Array of task objects: [{title, description, priority, effort, language}, ...]
          - Validate each task has all required fields
          - Ensure total subtasks is 1-5
@@ -225,179 +172,382 @@ timeout: 120
     <checkpoint>Task list prepared (1-5 tasks)</checkpoint>
   </stage>
   
-  <stage id="4" name="CreateTasks">
-    <action>Create task entries via status-sync-manager</action>
+  <stage id="3" name="CreateTasks">
+    <action>Create task entries via task-creator subagent</action>
     <process>
+      This stage handles task creation delegation.
+      
       1. For each task in task_list:
-         a. Delegate to status-sync-manager:
-            - operation: "create_task"
-            - title: task.title
-            - description: task.description
+         a. Delegate to task-creator subagent:
+            - task_title: task.title
+            - task_description: task.description
             - priority: task.priority
             - effort: task.effort
             - language: task.language
-            - timestamp: $(date -I)
             - session_id: {session_id}
             - delegation_depth: {depth + 1}
-            - delegation_path: [...path, "status-sync-manager"]
+            - delegation_path: [...path, "task-creator"]
          
-         b. Collect task_number from return.metadata.task_number:
-            - Store in created_tasks array
+         b. Wait for return from task-creator
+         
+         c. Validate return format:
+            - Check status == "completed"
+            - Extract task_number from return
             - Validate task_number is positive integer
-            - If task_number missing: Read next_project_number - 1 from state.json as fallback
          
-         c. Handle errors:
-            - If status-sync-manager fails: stop and return error
+         d. Collect task_number in created_tasks array
+         
+         e. Handle errors:
+            - If task-creator fails: stop and return error
             - Include details of which task failed
             - List successfully created tasks (if any)
-            - Note: status-sync-manager handles rollback automatically
       
       2. Validate all tasks created:
          - Verify created_tasks array has expected length
          - Verify all task_numbers are unique
          - Verify all task_numbers are sequential (if multiple)
+      
+      3. Validate no artifacts created (architectural constraint):
+         - Check return does NOT contain artifact paths
+         - Verify only TODO.md and state.json were modified
+         - If artifacts found: Return error (architectural violation)
     </process>
-    <error_handling>
-      If status-sync-manager fails:
-        - Return error: "Failed to create task {N}: {error details}"
-        - List successfully created tasks: "Created tasks: {numbers}"
-        - Note: Failed task was rolled back atomically
-        - Suggest: "Use /implement {number} to work on created tasks"
-    </error_handling>
+    <validation>
+      - All tasks created successfully
+      - All task_numbers valid and unique
+      - No artifacts created (task entries only)
+      - Only TODO.md and state.json modified
+    </validation>
     <checkpoint>All tasks created atomically in TODO.md and state.json</checkpoint>
   </stage>
   
-  <stage id="4.5" name="ValidateReturn">
-    <action>Validate return format and ensure no implementation occurred</action>
+  <stage id="4" name="RecoverTasks">
+    <action>Unarchive tasks from archive/ (--recover flag)</action>
     <process>
-      CRITICAL: This validation gate ensures architectural compliance.
+      This stage handles task recovery from archive/.
       
-      1. Validate status-sync-manager return format:
-         - Parse return as JSON (if structured)
-         - Check status == "completed" or success indicator
-         - Extract task_number from metadata
-         - Validate task_number is positive integer
+      1. Parse task_ranges from arguments:
+         - Support single numbers: "337"
+         - Support ranges: "343-345"
+         - Support lists: "337, 343-345, 350"
+         - Expand ranges to individual task numbers
+         - Deduplicate task numbers
+      
+      2. Validate task ranges:
+         - All task numbers are positive integers
+         - All tasks exist in archive/state.json
+         - No tasks already in active_projects
          - If validation fails: Return error with details
       
-      2. Validate no artifacts created:
-         - Scan .opencode/specs/ for new directories created during this session
-         - Check for new files in project directories (src/, lib/, etc.)
-         - Look for any files created with current timestamp
-         
-         - If ANY artifacts found:
-           a. Log: "ARCHITECTURAL VIOLATION DETECTED"
-           b. Log: "Artifacts created during /task execution: ${artifacts_found}"
-           c. Return error to user:
-              ```
-              Error: /task command violated architectural constraint.
-              
-              This command created artifacts when it should ONLY create task entries.
-              
-              Artifacts created: ${artifacts_found}
-              
-              This is a bug in the /task command implementation.
-              Please report this issue.
-              
-              Manual cleanup:
-              1. Remove artifacts: rm -rf ${artifacts_found}
-              2. Verify task entries in TODO.md are correct
-              3. Use /implement to do the actual work
-              ```
-           d. ABORT - do NOT return success
+      3. Delegate to status-sync-manager:
+         - operation: "unarchive_tasks"
+         - task_numbers: [array of task numbers]
+         - session_id: {session_id}
+         - delegation_depth: {depth + 1}
+         - delegation_path: [...path, "status-sync-manager"]
       
-      3. Validate only task numbers in return:
-         - Check return does NOT contain:
-           * Artifact paths (e.g., ".opencode/specs/350_*/reports/")
-           * File paths (e.g., "src/Foo.lean")
-           * Implementation details (e.g., "Created function foo()")
-         - If any found:
-           a. Log: "ARCHITECTURAL VIOLATION: Return contains implementation details"
-           b. Return error to user
+      4. Wait for return from status-sync-manager
       
-      4. Verify only TODO.md and state.json were modified:
-         - Check git status for modified files
-         - Expected: .opencode/specs/TODO.md, .opencode/specs/state.json
-         - If other files modified:
-           a. Log warning: "Unexpected files modified: ${unexpected_files}"
-           b. Continue (may be legitimate, e.g., errors.json)
+      5. Validate return:
+         - Check status == "completed"
+         - Verify files_updated includes [TODO.md, state.json, archive/state.json]
+         - Extract success_count and failure_count
+         - If failures: Include error details
       
-      5. Log validation success:
-         - Log: "✓ Return validated: Task numbers only"
-         - Log: "✓ Validation passed: Only task entries created"
-         - Proceed to Stage 5
+      6. Format success message:
+         - "✅ Recovered {count} tasks from archive: {ranges}"
+         - List task numbers recovered
+         - Note: All tasks reset to [NOT STARTED] status
     </process>
     <validation>
-      - Return format is valid
-      - Return contains task numbers only
-      - No artifacts or implementation details in return
-      - No artifacts created (no spec directories, no code files)
-      - Only TODO.md and state.json modified
-      - Architectural constraint maintained
+      - Task ranges parsed correctly
+      - All tasks exist in archive
+      - Return format valid
+      - Files updated correctly
     </validation>
-    <checkpoint>Return validated, architectural constraints maintained</checkpoint>
+    <checkpoint>Tasks recovered from archive, files updated atomically</checkpoint>
   </stage>
   
-  <stage id="5" name="ReturnSuccess">
-    <action>Return task numbers and emphasize next steps</action>
+  <stage id="5" name="DivideExistingTask">
+    <action>Divide existing task into subtasks (--divide flag)</action>
     <process>
-      1. Format success message:
+      This stage handles division of existing tasks.
+      
+      1. Parse task_number and optional_prompt from arguments:
+         - task_number is required (first argument after --divide)
+         - optional_prompt is remaining arguments (if any)
+         - Validate task_number is positive integer
+      
+      2. Validate task exists and can be divided:
+         - Read task metadata from state.json
+         - Verify task exists
+         - Verify task status allows division (not COMPLETED or ABANDONED)
+         - Verify task has no existing dependencies
+         - If validation fails: Return error with details
+      
+      3. Delegate to task-divider subagent for analysis:
+         - task_number: {task_number}
+         - task_description: {from state.json}
+         - optional_prompt: {optional_prompt}
+         - session_id: {session_id}
+         - delegation_depth: {depth + 1}
+         - delegation_path: [...path, "task-divider"]
+      
+      4. Wait for return from task-divider:
+         - Extract subtask_descriptions array (1-5 subtasks)
+         - Validate subtask count is 1-5
+      
+      5. Create subtasks via task-creator:
+         - For each subtask description:
+           * Delegate to task-creator subagent
+           * Collect task_number from return
+           * If any creation fails: Rollback and abort
+      
+      6. Update parent task dependencies:
+         - Delegate to status-sync-manager:
+           * operation: "update_task_metadata"
+           * task_number: {parent_task_number}
+           * updated_fields: {"dependencies": [subtask_numbers]}
+      
+      7. Format success message:
+         - "✅ Divided task {number} into {N} subtasks"
+         - List subtask numbers and titles
+         - Note: Parent task now depends on subtasks
+    </process>
+    <validation>
+      - Task exists and can be divided
+      - Subtask count is 1-5
+      - All subtasks created successfully
+      - Parent dependencies updated
+    </validation>
+    <checkpoint>Task divided into subtasks, parent dependencies updated</checkpoint>
+  </stage>
+  
+  <stage id="6" name="SyncTasks">
+    <action>Synchronize TODO.md and state.json (--sync flag)</action>
+    <process>
+      This stage handles synchronization with git blame conflict resolution.
+      
+      1. Parse task_ranges from arguments (optional):
+         - If no ranges: sync ALL tasks (default)
+         - If ranges provided: parse and expand
+         - Support single numbers: "337"
+         - Support ranges: "343-345"
+         - Support lists: "337, 343-345, 350"
+      
+      2. Validate task ranges (if provided):
+         - All task numbers are positive integers
+         - All tasks exist in TODO.md or state.json
+         - If validation fails: Return error with details
+      
+      3. Delegate to status-sync-manager:
+         - operation: "sync_tasks"
+         - task_ranges: [array of task numbers] or "all"
+         - conflict_resolution: "git_blame"
+         - session_id: {session_id}
+         - delegation_depth: {depth + 1}
+         - delegation_path: [...path, "status-sync-manager"]
+      
+      4. Wait for return from status-sync-manager
+      
+      5. Validate return:
+         - Check status == "completed"
+         - Verify files_updated includes [TODO.md, state.json]
+         - Extract synced_tasks count
+         - Extract conflicts_resolved count
+         - Extract conflict resolution details
+      
+      6. Format success message:
+         - "✅ Synced {count} tasks"
+         - If conflicts resolved: "Resolved {count} conflicts using git blame"
+         - Include conflict resolution summary
+    </process>
+    <validation>
+      - Task ranges parsed correctly (or "all")
+      - Return format valid
+      - Files updated correctly
+      - Conflicts resolved using git blame
+    </validation>
+    <checkpoint>Tasks synchronized, conflicts resolved using git blame</checkpoint>
+  </stage>
+  
+  <stage id="7" name="AbandonTasks">
+    <action>Abandon tasks (move to archive/) (--abandon flag)</action>
+    <process>
+      This stage handles task abandonment.
+      
+      1. Parse task_ranges from arguments:
+         - Support single numbers: "337"
+         - Support ranges: "343-345"
+         - Support lists: "337, 343-345, 350"
+         - Expand ranges to individual task numbers
+         - Deduplicate task numbers
+      
+      2. Validate task ranges:
+         - All task numbers are positive integers
+         - All tasks exist in active_projects
+         - If validation fails: Return error with details
+      
+      3. Delegate to status-sync-manager:
+         - operation: "archive_tasks"
+         - task_numbers: [array of task numbers]
+         - reason: "abandoned"
+         - session_id: {session_id}
+         - delegation_depth: {depth + 1}
+         - delegation_path: [...path, "status-sync-manager"]
+      
+      4. Wait for return from status-sync-manager
+      
+      5. Validate return:
+         - Check status == "completed"
+         - Verify files_updated includes [TODO.md, state.json, archive/state.json]
+         - Extract success_count
+      
+      6. Format success message:
+         - "✅ Abandoned {count} tasks: {ranges}"
+         - List task numbers abandoned
+         - Note: Tasks moved to archive/
+    </process>
+    <validation>
+      - Task ranges parsed correctly
+      - All tasks exist in active_projects
+      - Return format valid
+      - Files updated correctly
+    </validation>
+    <checkpoint>Tasks abandoned, moved to archive/ atomically</checkpoint>
+  </stage>
+  
+  <stage id="8" name="ReturnSuccess">
+    <action>Format and return success message based on operation</action>
+    <process>
+      This stage formats the final success message based on which operation was performed.
+      
+      1. Determine operation type:
+         - Task creation (no flag)
+         - Task recovery (--recover)
+         - Task division (--divide)
+         - Task synchronization (--sync)
+         - Task abandonment (--abandon)
+      
+      2. Format success message based on operation:
          
-         2. CRITICAL: Emphasize that task was CREATED, not IMPLEMENTED:
-            - If single task:
-              ```
-              ✅ Task {number} CREATED (not implemented): {title}
-              
-              Task Details:
-              - Priority: {priority}
-              - Effort: {effort}
-              - Language: {language}
-              - Status: [NOT STARTED]
-              
-              ⚠️  IMPORTANT: This task has been CREATED but NOT IMPLEMENTED.
-              
-              Next steps to IMPLEMENT this task:
-                1. /research {number}  - Research the task
-                2. /plan {number}      - Create implementation plan
-                3. /implement {number} - Implement the task
-              
-              Or skip research/planning and implement directly:
-                /implement {number}
-              ```
-            
-            - If multiple tasks (--divide):
-              ```
-              ✅ Created {count} tasks (not implemented):
-              - Task {number1}: {title1}
-              - Task {number2}: {title2}
-              - Task {number3}: {title3}
-              
-              All tasks:
-              - Priority: {priority}
-              - Effort: {effort}
-              - Language: {language}
-              - Status: [NOT STARTED]
-              
-              ⚠️  IMPORTANT: These tasks have been CREATED but NOT IMPLEMENTED.
-              
-              Next steps to IMPLEMENT these tasks:
-                /research {number1}    - Research first task
-                /implement {number1}   - Implement first task
-                (Repeat for other tasks as needed)
-              ```
+         **Task Creation**:
+         - If single task:
+           ```
+           ✅ Task {number} CREATED (not implemented): {title}
+           
+           Task Details:
+           - Priority: {priority}
+           - Effort: {effort}
+           - Language: {language}
+           - Status: [NOT STARTED]
+           
+           ⚠️  IMPORTANT: This task has been CREATED but NOT IMPLEMENTED.
+           
+           Next steps to IMPLEMENT this task:
+             1. /research {number}  - Research the task
+             2. /plan {number}      - Create implementation plan
+             3. /implement {number} - Implement the task
+           
+           Or skip research/planning and implement directly:
+             /implement {number}
+           ```
+         
+         - If multiple tasks (--divide):
+           ```
+           ✅ Created {count} tasks (not implemented):
+           - Task {number1}: {title1}
+           - Task {number2}: {title2}
+           - Task {number3}: {title3}
+           
+           All tasks:
+           - Priority: {priority}
+           - Effort: {effort}
+           - Language: {language}
+           - Status: [NOT STARTED]
+           
+           ⚠️  IMPORTANT: These tasks have been CREATED but NOT IMPLEMENTED.
+           
+           Next steps to IMPLEMENT these tasks:
+             /research {number1}    - Research first task
+             /implement {number1}   - Implement first task
+             (Repeat for other tasks as needed)
+           ```
+         
+         **Task Recovery**:
+         ```
+         ✅ Recovered {count} tasks from archive: {ranges}
+         
+         Recovered tasks:
+         - Task {number1}: {title1}
+         - Task {number2}: {title2}
+         
+         All tasks reset to [NOT STARTED] status.
+         
+         Next steps:
+           /implement {number1}   - Implement recovered task
+         ```
+         
+         **Task Division**:
+         ```
+         ✅ Divided task {number} into {N} subtasks
+         
+         Parent task: {number}. {title}
+         
+         Subtasks created:
+         - Task {sub1}: {title1}
+         - Task {sub2}: {title2}
+         - Task {sub3}: {title3}
+         
+         Parent task now depends on subtasks.
+         
+         Next steps:
+           /implement {sub1}   - Implement first subtask
+         ```
+         
+         **Task Synchronization**:
+         ```
+         ✅ Synced {count} tasks
+         
+         Conflicts resolved: {conflicts_count}
+         
+         Conflict resolution summary:
+         - Task {number1}: {field} from {source} (newer)
+         - Task {number2}: {field} from {source} (newer)
+         
+         All tasks synchronized between TODO.md and state.json.
+         ```
+         
+         **Task Abandonment**:
+         ```
+         ✅ Abandoned {count} tasks: {ranges}
+         
+         Abandoned tasks:
+         - Task {number1}: {title1}
+         - Task {number2}: {title2}
+         
+         Tasks moved to archive/.
+         
+         To recover: /task --recover {ranges}
+         ```
       
       3. Return message to user
       
-      4. STOP HERE. Do NOT implement any tasks.
-         The task entries have been created in TODO.md and state.json.
-         The user will use /research, /plan, /implement later.
+      4. STOP HERE. Operation complete.
     </process>
-    <checkpoint>Success message returned, user understands next steps</checkpoint>
+    <validation>
+      - Success message formatted correctly
+      - Task numbers/ranges included
+      - Next steps provided (if applicable)
+      - No artifacts created (for task creation)
+    </validation>
+    <checkpoint>Success message returned to user</checkpoint>
   </stage>
 </workflow_execution>
 
 <critical_constraints>
   <absolutely_forbidden>
-    This command MUST NOT:
+    For task creation, this command MUST NOT:
     - Implement any tasks described in $ARGUMENTS
     - Create any code files (*.lean, *.py, *.sh, *.md, etc.)
     - Create any spec directories (.opencode/specs/{number}_*/)
@@ -414,223 +564,135 @@ timeout: 120
   
   <only_allowed_actions>
     The ONLY actions allowed:
-    1. Parse description from $ARGUMENTS
-    2. Extract flags (--priority, --effort, --language, --divide)
-    3. Reformulate description inline (simple transformations)
-    4. Detect language from keywords
-    5. Divide into subtasks if --divide flag present
-    6. Delegate to status-sync-manager for each task
-    7. Return task numbers to user
+    1. Parse flags and arguments from $ARGUMENTS
+    2. Route to appropriate stage based on flag
+    3. Delegate to specialized subagents (task-creator, status-sync-manager, task-divider)
+    4. Validate return formats
+    5. Return success messages to user
   </only_allowed_actions>
   
   <architectural_enforcement>
     Technical barriers to prevent implementation:
-    - Command delegates to status-sync-manager (not implementer)
-    - status-sync-manager has permissions that DENY code file writes
-    - status-sync-manager has permissions that DENY build tool execution
-    - status-sync-manager can ONLY write to TODO.md and state.json
-    - Orchestrator validates return format (must be task numbers only)
+    - Command delegates to orchestrator (routes to specialized subagents)
+    - task-creator has permissions that DENY code file writes
+    - task-creator has permissions that DENY build tool execution
+    - task-creator can ONLY write to TODO.md and state.json
+    - Validation gates prevent architectural violations
   </architectural_enforcement>
 </critical_constraints>
 
 <validation>
   <pre_execution>
-    - Description validated (non-empty)
-    - Priority validated (Low|Medium|High)
-    - Effort validated (non-empty string)
-    - Language will be set (via detection or flag)
-    - Divide flag is boolean
-    - TODO.md exists and is readable
-    - state.json exists and is readable
+    - Flag validated (only one flag or none)
+    - Arguments validated based on flag
+    - Required arguments present
+    - Argument formats valid
+    - For task creation: No implementation keywords detected
   </pre_execution>
   
   <post_execution>
-    - Task numbers allocated correctly
-    - TODO.md contains new task entries
-    - state.json updated with new tasks
-    - state.json next_project_number incremented
-    - Language field is set (MANDATORY)
-    - Description field is set (MANDATORY)
-    - Metadata format uses `- **Field**:` pattern
-    - All required fields present
-    - NO implementation occurred
-    - NO code files created
-    - NO spec directories created
+    - Operation completed successfully
+    - Return format validated
+    - Files updated correctly (TODO.md, state.json, archive/state.json as needed)
+    - Success message formatted correctly
+    - For task creation: NO implementation occurred, NO artifacts created
   </post_execution>
 </validation>
 
 <error_handling>
-  <empty_description>
-    If description is empty:
-      - Return error: "Task description cannot be empty"
-      - Show usage: "/task \"Your task description here\""
-      - DO NOT create task
-  </empty_description>
+  <multiple_flags>
+    If multiple flags present:
+      - Return error: "Only one flag allowed at a time"
+      - Show usage: "/task [--recover|--divide|--sync|--abandon] ARGS"
+      - DO NOT proceed
+  </multiple_flags>
   
-  <invalid_priority>
-    If priority is not Low|Medium|High:
-      - Return error: "Priority must be Low, Medium, or High"
-      - Show usage: "/task \"description\" --priority High"
-      - DO NOT create task
-  </invalid_priority>
+  <missing_arguments>
+    If required arguments missing:
+      - Return error: "Missing required arguments for {flag}"
+      - Show usage for that flag
+      - DO NOT proceed
+  </missing_arguments>
   
-  <invalid_language>
-    If language is not valid:
-      - Return error: "Language must be lean, markdown, general, python, shell, json, or meta"
-      - Show usage: "/task \"description\" --language lean"
-      - DO NOT create task
-  </invalid_language>
+  <invalid_task_ranges>
+    If task ranges invalid:
+      - Return error: "Invalid task range format: {ranges}"
+      - Show valid formats: "123", "123-125", "123, 125-127"
+      - DO NOT proceed
+  </invalid_task_ranges>
   
-  <division_failed>
-    If --divide flag present but division fails:
-      - Return error: "Failed to divide task into subtasks"
-      - Suggest: "Try creating single task without --divide flag"
-      - DO NOT create any tasks
-  </division_failed>
+  <task_not_found>
+    If task not found:
+      - Return error: "Task {number} not found in {location}"
+      - Suggest checking TODO.md or archive/state.json
+      - DO NOT proceed
+  </task_not_found>
   
-  <task_creation_failed>
-    If status-sync-manager fails:
-      - Return error: "Failed to create task: {error details}"
-      - Include status-sync-manager error details
-      - List successfully created tasks (if any)
-      - Note: Failed task was rolled back atomically
-      - Suggest checking TODO.md and state.json
-  </task_creation_failed>
+  <subagent_failed>
+    If subagent fails:
+      - Return error: "Failed to {operation}: {error details}"
+      - Include subagent error details
+      - List partial results (if any)
+      - Suggest recovery steps
+  </subagent_failed>
 </error_handling>
 
 ## Usage
 
 ```bash
-# Basic task creation
+# Task creation (backward compatible)
 /task "Implement feature X"
-# → Creates: Task 303: "Implement feature X."
-
-# Task with priority
 /task "Fix bug in module Y" --priority High
-# → Creates: Task 304: "Fix bug in module Y." (High priority)
-
-# Task with all flags
-/task "Add documentation for Z" --priority Medium --effort "2 hours" --language markdown
-# → Creates: Task 305: "Add documentation for Z." (Medium, 2 hours, markdown)
-
-# Task with division
+/task "Add documentation" --priority Medium --effort "2 hours" --language markdown
 /task "Refactor system: update commands, fix agents, improve docs" --divide
-# → Creates: 
-#    Task 306: "Refactor system (1/3): Update commands."
-#    Task 307: "Refactor system (2/3): Fix agents."
-#    Task 308: "Refactor system (3/3): Improve docs."
+
+# Task recovery
+/task --recover 343                    # Recover single task
+/task --recover 343-345                # Recover range
+/task --recover 337, 343-345, 350      # Recover list
+
+# Task division (existing task)
+/task --divide 326                     # Divide task 326
+/task --divide 326 "Focus on UI, backend, tests"  # With prompt
+
+# Task synchronization
+/task --sync                           # Sync all tasks
+/task --sync 343-345                   # Sync range
+/task --sync 337, 343-345              # Sync list
+
+# Task abandonment
+/task --abandon 343-345                # Abandon range
+/task --abandon 337, 343-345, 350      # Abandon list
 ```
-
-## What This Does
-
-1. Parses description and optional flags from $ARGUMENTS
-2. Reformulates description inline (capitalize, punctuate, clarify)
-3. Detects language from keywords if not provided
-4. If --divide: divides into 1-5 subtasks based on natural divisions
-5. Delegates to status-sync-manager for each task
-6. Returns task numbers and next steps to user
-
-**CRITICAL**: This command ONLY creates task entries. It does NOT implement tasks.
 
 ## Flags
 
-| Flag | Values | Default | Description |
-|------|--------|---------|-------------|
-| --priority | Low\|Medium\|High | Medium | Task priority |
-| --effort | TBD or time estimate | TBD | Effort estimate |
-| --language | lean\|markdown\|general\|python\|shell\|json\|meta | Auto-detected | Task language |
-| --divide | (boolean) | false | Divide task into 1-5 subtasks |
+| Flag | Arguments | Description |
+|------|-----------|-------------|
+| (none) | DESCRIPTION [--priority] [--effort] [--language] [--divide] | Create new task(s) |
+| --recover | TASK_RANGES | Unarchive tasks from archive/ |
+| --divide | TASK_NUMBER [PROMPT] | Divide existing task into subtasks |
+| --sync | [TASK_RANGES] | Synchronize TODO.md and state.json (default: all tasks) |
+| --abandon | TASK_RANGES | Abandon tasks (move to archive/) |
 
-## Language Detection
+## Task Range Format
 
-If --language flag not provided, language is auto-detected from keywords:
-
-| Keywords | Language |
-|----------|----------|
-| lean, proof, theorem, lemma, tactic | lean |
-| markdown, doc, README, documentation | markdown |
-| command, agent, context, workflow | meta |
-| python, py | python |
-| shell, bash, sh | shell |
-| json, yaml, toml, config | json |
-| (default) | general |
-
-## Task Division (--divide flag)
-
-When --divide flag is present, the command analyzes the description for natural divisions:
-
-1. **Bullet points or numbered lists**: Each item becomes a subtask
-2. **"and" conjunctions**: Split on "and" to create subtasks
-3. **Comma-separated items**: Each item becomes a subtask
-4. **Sequential steps**: "first", "then", "finally" indicate subtasks
-5. **Multiple verbs**: "implement X, add Y, fix Z" creates 3 subtasks
-
-The command creates 1-5 subtasks based on natural divisions found. If no divisions found, creates single task.
-
-## Next Steps
-
-After creating a task, use these commands:
-
-- `/research {number}` - Research the task
-- `/plan {number}` - Create implementation plan
-- `/implement {number}` - Implement the task
-
-## Examples
-
-```bash
-# Basic task creation
-/task "Implement proof search"
-# → Detects: Language=lean, Priority=Medium, Effort=TBD
-# → Creates: Task 303: "Implement proof search."
-
-# Task with custom priority
-/task "Add feature X" --priority High
-# → Priority=High, Language=general, Effort=TBD
-
-# Task with all flags
-/task "Implement theorem Y" --priority High --effort "4 hours" --language lean
-# → Uses provided values
-
-# Task with language detection
-/task "Fix bug in Foo.lean"
-# → Detects: Language=lean (keyword: "lean")
-
-# Task with markdown detection
-/task "Update README documentation"
-# → Detects: Language=markdown (keywords: "README", "documentation")
-
-# Task with division
-/task "Refactor system: update commands, fix agents, improve docs" --divide
-# → Creates 3 tasks:
-#    Task 303: "Refactor system (1/3): Update commands."
-#    Task 304: "Refactor system (2/3): Fix agents."
-#    Task 305: "Refactor system (3/3): Improve docs."
-```
-
-## Important Notes
-
-1. This command ONLY creates task entries - it does NOT implement tasks
-2. Uses status-sync-manager for atomic updates (both TODO.md and state.json or neither)
-3. Description reformulation is inline (simple transformations only)
-4. Language detection is keyword-based (fast and accurate for common cases)
-5. Task numbers come from state.json next_project_number field
-6. After creating task, user must use /research, /plan, /implement separately
-7. Language field is MANDATORY per tasks.md quality checklist
-8. Description field is MANDATORY
-9. Metadata format uses `- **Field**:` pattern
-10. All required fields (Language, Effort, Priority, Status, Description) are enforced
-11. --divide flag divides task into 1-5 subtasks based on natural divisions
+Task ranges support:
+- Single numbers: `343`
+- Ranges: `343-345` (expands to 343, 344, 345)
+- Lists: `337, 343-345, 350` (expands to 337, 343, 344, 345, 350)
 
 ## Architecture
 
-**Optimized in v5.0.0**:
-- Direct delegation to status-sync-manager (eliminated task-creator layer)
-- Inline description reformulation (simple transformations)
-- Keyword-based language detection (fast, accurate)
-- Added --divide flag for task subdivision
-- Execution time: 3-5s for single task, 9-12s for 5 tasks (40-50% improvement from v4.0.0)
-- Lines of code: ~300 command + direct delegation (vs ~300 + 658 in v4.0.0)
+**Phase 3 Standards (v6.0.0)**:
+- agent field: "orchestrator" (routes to specialized subagents)
+- Flag-based routing (--recover, --divide, --sync, --abandon)
+- Validation gates at critical points
+- Delegation to specialized subagents:
+  * task-creator: Create task entries atomically
+  * status-sync-manager: Recover, sync, abandon tasks
+  * task-divider: Analyze and divide tasks
+- Backward compatible with existing /task "description" syntax
+- Execution time: 3-5s for single task, varies by operation
 
-**Philosophy**: Direct operations with minimal delegation. Delegate only for atomic updates.
-
-**Architectural Enforcement**: status-sync-manager has permissions that DENY code file writes and build tool execution, ensuring it can ONLY create task entries.
+**Philosophy**: Orchestrate, don't implement. Delegate to specialized subagents for execution.
