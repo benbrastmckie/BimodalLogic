@@ -112,13 +112,25 @@ context_loading:
       6. Check if plan already exists (warn if it does)
          - If plan_path is not empty: Warn "Plan exists at $plan_path. Use /revise to update."
       
-      7. Extract custom prompt from $ARGUMENTS if present
-         - If $ARGUMENTS has multiple tokens: custom_prompt = remaining tokens
-         - Else: custom_prompt = ""
-      
-      8. Determine target agent based on language
-         - lean → lean-planner
-         - general → planner
+       7. Extract custom prompt from $ARGUMENTS if present
+          - If $ARGUMENTS has multiple tokens: custom_prompt = remaining tokens
+          - Else: custom_prompt = ""
+       
+       8. Determine target agent based on language (CRITICAL - language-based routing)
+          - Extract language from task metadata (already extracted in step 4)
+          - Apply routing rules:
+            * If language == "lean": target_agent = "lean-planner"
+            * Else (language == "general" or any other value): target_agent = "planner"
+          - Validate routing decision:
+            * Verify target_agent is set to either "lean-planner" or "planner"
+            * If target_agent is not set: Return error "Routing failed: target_agent not determined"
+          - Log routing decision:
+            * Log: "Task ${task_number} language: ${language}"
+            * Log: "Routing to: ${target_agent}"
+          
+          IMPORTANT: Do NOT default to lean-planner for non-lean tasks.
+          Only use lean-planner when language == "lean".
+          All other languages (general, markdown, python, etc.) use planner.
     </process>
     <checkpoint>Task validated, metadata extracted, target agent determined</checkpoint>
   </stage>
@@ -542,9 +554,16 @@ Creates implementation plans with phased breakdown, effort estimates, and resear
 
 ## Delegation
 
-**Target Agent:** `planner` (`.opencode/agent/subagents/planner.md`)  
+**Target Agent:** Language-based routing:
+- `lean-planner` (`.opencode/agent/subagents/lean-planner.md`) for Lean tasks
+- `planner` (`.opencode/agent/subagents/planner.md`) for all other tasks
+
 **Timeout:** 1800s (30 minutes)  
-**Language-Based Routing:** No (always routes to planner)
+**Language-Based Routing:** Yes (routes based on task language field)
+
+**Routing Rules:**
+- `language == "lean"` → `lean-planner` (proof strategies, mathlib integration)
+- `language == "general"` or any other → `planner` (general implementation planning)
 
 **Planner Responsibilities:**
 - Update status to [PLANNING] at beginning (preflight)

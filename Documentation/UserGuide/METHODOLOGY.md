@@ -94,7 +94,7 @@ Layer 3 extends the Core Layer with operators for ethical and cooperative reason
 **Operators**:
 - Deontic: `O` (obligation), `P` (permission)
 - Preference: `≺` (preference ordering)
-- Normative explanatory: `⟼` (normative grounding)
+- Normative explanatory: `↦` (normative grounding)
 
 **Application Domains**: Multi-party negotiation, ethical AI decision-making, cooperative planning
 

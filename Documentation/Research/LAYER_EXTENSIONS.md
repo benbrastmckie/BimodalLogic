@@ -2,19 +2,17 @@
 
 ## Overview
 
-The Logos is organized into a series of expressive layers, each corresponding to a semantic frame of increasing complexity. A **semantic frame** defines the primitive semantic structure needed to interpret logical formulas—it specifies what kinds of entities exist in the semantic domain and how truth conditions are evaluated. Each layer introduces new operators whose meaning is defined through semantic clauses that reference the primitive structure of that layer's frame.
+The Logos is organized into a series of expressive layers, each corresponding to a semantic frame of increasing complexity. A **semantic frame** defines the primitive semantic structure needed to interpret logical formulas by specifying what kinds of elements exist in the semantic domain and how truth conditions are evaluated. Each layer introduces new operators whose meaning is defined through semantic clauses that reference the primitive structure of that layer's frame.
 
 **Semantic Progression**: The layers build systematically:
 
-1. **Core Layer Frame**: Defines domain of individuals, assignment of extensions to predicates/functions, and verifier/falsifier states for propositions. This frame provides semantic clauses for quantifiers, extensional connectives, and constitutive operators (grounding `≤`, essence `⊑`).
+1. **Constitutive Layer Frame**: Includes a complete lattice of states ordered by parthood to assign extensions to constants, variables, function symbols, and n-place predicates. This frame provides the resources needed to articulate semantic clauses for the quantifiers (`∀`, `∃`), extensional connectives (`¬`, `∧`, `∨`, `→`, `↔`), and constitutive operators (propositional identity `≡`, grounding `≤`, essence `⊑`).
 
-2. **Modal Layer Frame**: Extends the Core frame by adding a set of possible worlds (or history/time pairs), accessibility relations between worlds, and similarity orderings for counterfactual evaluation. This enriched frame provides semantic clauses for modal operators (`□`, `◇`), historical operators (`□ₕ`, `◇ₕ`), tense operators (`P`, `F`, `H`, `G`), and counterfactual conditionals (`□→`, `◇→`).
+2. **Causal Layer Frame**: Extends the Core frame by adding a task relation between states. This enriched frame provides resources for defining semantic clauses for the historical operators (`□`, `◇`), tense operators (`P`, `F`, `H`, `G`), counterfactual conditionals (`□→`, `◇→`), and causation operator (`○→`), distinguishing productive causal relations between earlier and later events from timeless constitutive explanatory relations.
 
-3. **Causal Layer Frame**: Extends the Modal frame by adding temporal ordering and causal production relations between events at different times. This frame provides semantic clauses for the causation operator (`○→`), distinguishing productive temporal causation from timeless constitutive grounding.
+3. **Epistemic Layer Frame**: Extends earlier frames by including a credence function that assigns probablistic information states to each agent. This frame provides semantic clauses for belief operators (`B_a`), probability operators (`Pr`), epistemic modals (`Mi`, `Mu`), and indicative conditionals (`⟹`).
 
-4. **Epistemic Layer Frame**: Extends earlier frames by adding information states for each agent, probability distributions over possible worlds, and epistemic accessibility relations. This frame provides semantic clauses for belief operators (`B_a`), probability operators (`Pr`), epistemic modals (`Mi`, `Mu`), and indicative conditionals (`⟹`).
-
-5. **Normative Layer Frame**: Extends earlier frames by adding ideality orderings over worlds (representing which worlds better satisfy norms), deontic accessibility relations, and preference orderings for agents. This frame provides semantic clauses for obligation (`O`), permission (`P`), preference (`≺`), and normative explanation (`⟼`).
+4. **Normative Layer Frame**: Adds value orderings over states in order to provide semantic clauses for obligation (`O`), permission (`P`), preference (`≺`), and normative explanation (`↦`).
 
 **Compositional Semantics**: Each layer's semantic frame includes all structure from previous layers. A formula combining operators from multiple layers (e.g., `B_a(F(O(p)))` - "agent a believes that it will be obligatory that p") is evaluated in the most complex frame needed, which contains all the semantic machinery required for each operator.
 
@@ -436,11 +434,11 @@ Layer 3 extends the Core Layer with operators for ethical and cooperative reason
 
 ### Normative Explanatory
 
-**Normative Explanation** (`⟼`): Connects normative facts to their explanatory grounds.
+**Normative Explanation** (`↦`): Connects normative facts to their explanatory grounds.
 
 **Integration with Layer 1**: Combines normative operators with constitutive grounding from explanatory extension.
 
-**Example**: `[promise made] ⟼ O([promise kept])` - making promise grounds obligation to keep it.
+**Example**: `[promise made] ↦ O([promise kept])` - making promise grounds obligation to keep it.
 
 ### Multi-Party Negotiation Example
 

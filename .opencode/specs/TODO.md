@@ -27,6 +27,20 @@ technical_debt:
 
 ## High Priority
 
+### 342. Research orchestrator command file workflow execution mechanism
+- **Effort**: 4-6 hours
+- **Status**: [IN PROGRESS]
+- **Started**: 2026-01-08
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Research how the orchestrator should execute command file workflow_execution stages. Analyze current orchestrator delegation mechanism, identify why command file stages are not being executed, compare with OpenAgents architecture (tasks 240-247), and design solution for parsing and executing workflow_execution stages including stage sequencing, context passing, error handling, and rollback mechanisms. Document findings and recommend implementation approach.
+
+---
+
+
 ### 334. Create LaTeX documentation for Logos system mirroring layer structure
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHED]
@@ -789,7 +803,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 336. Refactor /review command and reviewer subagent ✓
+### 336. Refactor /review, command and reviewer subagent ✓
 - **Effort**: 4-5 hours
 - **Status**: [COMPLETED]
 - **Completed**: 2026-01-08
@@ -887,16 +901,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 342. Research orchestrator command file workflow execution mechanism
-- **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-- **Description**: Research how the orchestrator should execute command file workflow_execution stages. Analyze current orchestrator delegation mechanism, identify why command file stages are not being executed, compare with OpenAgents architecture (tasks 240-247), and design solution for parsing and executing workflow_execution stages including stage sequencing, context passing, error handling, and rollback mechanisms. Document findings and recommend implementation approach.
-
----
 
 ### 343. Design command file workflow execution architecture
 - **Effort**: 3-4 hours

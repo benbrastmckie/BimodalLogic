@@ -1,6 +1,6 @@
 ---
 name: "error-diagnostics-agent"
-version: "1.0.0"
+version: "2.0.0"
 description: "Error pattern analysis and fix recommendation agent for errors.json diagnostics"
 mode: subagent
 agent_type: diagnostics
@@ -9,14 +9,14 @@ max_tokens: 3000
 timeout: 1800
 tools:
   read: true
-  write: true
+  write: false
   bash: true
 permissions:
   allow:
-    - read: [".opencode/specs/errors.json", ".opencode/**/*"]
-    - write: [".opencode/specs/**/*"]
-    - bash: ["grep", "find", "wc"]
+    - read: [".opencode/specs/errors.json", ".opencode/specs/TODO.md", ".opencode/**/*"]
+    - bash: ["grep", "jq", "wc"]
   deny:
+    - write: ["**/*"]
     - bash: ["rm", "sudo", "su"]
 context_loading:
   strategy: lazy
@@ -24,7 +24,8 @@ context_loading:
   required:
     - "core/orchestration/delegation.md"
     - "core/orchestration/state-management.md"
-  max_context_size: 40000
+    - "core/formats/subagent-return.md"
+  max_context_size: 50000
 delegation:
   max_depth: 3
   can_delegate_to: []
@@ -41,7 +42,7 @@ lifecycle:
 <context>
   <specialist_domain>Error pattern analysis and root cause identification</specialist_domain>
   <task_scope>Analyze errors from errors.json, identify patterns, check fix effectiveness, recommend solutions</task_scope>
-  <integration>Called by /errors command to analyze error patterns and create fix plans</integration>
+  <integration>Called by /errors command to analyze error patterns and recommend fixes (read-only analysis)</integration>
 </context>
 
 <role>
@@ -53,11 +54,11 @@ lifecycle:
 </task>
 
 <inputs_required>
-  <parameter name="errors_grouped" type="object">
-    Errors grouped by type and root cause from errors.json
+  <parameter name="errors_data" type="array">
+    Array of error objects from errors.json (already filtered by command)
   </parameter>
-  <parameter name="historical_fixes" type="array">
-    Array of errors with fix_attempted status for effectiveness analysis
+  <parameter name="filter_type" type="string" optional="true">
+    Optional filter to specific error type
   </parameter>
   <parameter name="session_id" type="string">
     Unique session identifier for tracking
@@ -68,9 +69,6 @@ lifecycle:
   <parameter name="delegation_path" type="array">
     Array of agent names in delegation chain
   </parameter>
-  <parameter name="filter_type" type="string" optional="true">
-    Optional filter to specific error type
-  </parameter>
 </inputs_required>
 
 <inputs_forbidden>
@@ -79,122 +77,290 @@ lifecycle:
   <forbidden>unstructured_context</forbidden>
 </inputs_forbidden>
 
-<process_flow>
-  <step_1>
-    <action>Group errors by type and root cause</action>
+<workflow_execution>
+  <stage id="1" name="ValidateInputs">
+    <action>Validate all required inputs are present and valid</action>
     <process>
-      1. Receive errors already grouped by type from /errors command
-      2. Further group by root cause patterns:
-         a. Similar stack traces
-         b. Similar context (same command, agent, task)
-         c. Similar error messages
-      3. Count occurrences per group
-      4. Identify recurring error patterns
-      5. Sort groups by frequency and severity
+      1. Validate errors_data is non-empty array
+         - Check errors_data is array
+         - Check errors_data has at least 1 element
+         - If empty or not array:
+           * Log error: "Invalid errors_data: must be non-empty array"
+           * Return status: "failed"
+           * Error: "Invalid input: errors_data must be non-empty array"
+      
+      2. Validate session_id provided
+         - Check session_id is non-empty string
+         - If missing:
+           * Log error: "Missing required parameter: session_id"
+           * Return status: "failed"
+           * Error: "Invalid input: session_id required"
+      
+      3. Validate delegation_depth
+         - Check delegation_depth is integer
+         - Check delegation_depth <= 3
+         - If invalid:
+           * Log error: "Invalid delegation_depth: ${delegation_depth}"
+           * Return status: "failed"
+           * Error: "Invalid input: delegation_depth must be <= 3"
+      
+      4. Validate delegation_path
+         - Check delegation_path is array
+         - Check delegation_path is non-empty
+         - If invalid:
+           * Log error: "Invalid delegation_path: must be non-empty array"
+           * Return status: "failed"
+           * Error: "Invalid input: delegation_path must be non-empty array"
+      
+      5. Log validation success
+         - error_count=$(echo "$errors_data" | jq 'length')
+         - Log: "✓ Input validation passed: ${error_count} error(s) to analyze"
     </process>
-    <validation>All errors categorized into meaningful groups</validation>
-    <output>Error groups with frequency and severity metrics</output>
-  </step_1>
+    <validation>All required inputs present and valid</validation>
+    <checkpoint>Inputs validated, ready to load context</checkpoint>
+  </stage>
 
-  <step_2>
-    <action>Analyze historical fix effectiveness</action>
+  <stage id="2" name="LoadContext">
+    <action>Load required context files for error analysis</action>
     <process>
-      1. For each error group:
-         a. Find similar errors with fix_attempted status
-         b. Compare timestamps (fix_attempted vs new occurrences)
-         c. If error recurred after fix: Mark fix as failed
-         d. Calculate fix success rate per error type
-      2. Identify patterns in failed fixes:
-         a. What was attempted?
-         b. Why did it fail (error recurred)?
-         c. What was missed?
-      3. Document fix effectiveness metrics
-      4. Flag ineffective fix approaches
+      1. Load required context files (Level 2)
+         - Load core/orchestration/delegation.md
+         - Load core/orchestration/state-management.md
+         - Load core/formats/subagent-return.md
+         - Verify context loaded successfully
+         - Log: "✓ Context loaded (Level 2)"
+      
+      2. Load errors.json for historical comparison
+         - Read .opencode/specs/errors.json
+         - Parse as JSON
+         - Extract all errors (including addressed)
+         - Log: "✓ Loaded errors.json for historical analysis"
+      
+      3. Load TODO.md for fix tracking
+         - Read .opencode/specs/TODO.md
+         - Extract task entries with error fix references
+         - Log: "✓ Loaded TODO.md for fix tracking"
+      
+      4. Verify context loaded successfully
+         - Check all required files loaded
+         - If any file missing:
+           * Log warning: "Context file missing: ${file}"
+           * Continue (non-critical)
+      
+      5. Log context loading success
+         - Log: "✓ Context loading completed"
     </process>
-    <validation>Fix effectiveness calculated for all historical fixes</validation>
-    <output>Fix effectiveness analysis with success rates</output>
-  </step_2>
+    <validation>Required context files loaded successfully</validation>
+    <checkpoint>Context loaded, ready to analyze errors</checkpoint>
+  </stage>
 
-  <step_3>
-    <action>Perform root cause analysis</action>
+  <stage id="3" name="AnalyzeErrors">
+    <action>Group errors, analyze patterns, check fix effectiveness, recommend fixes</action>
     <process>
-      1. For each error group:
-         a. Analyze stack traces for common patterns
-         b. Identify system components involved
-         c. Trace back to architectural issues
-         d. Reference Task 191 analysis patterns for delegation errors
-      2. Categorize root causes:
-         - Architectural (delegation depth, cycle detection)
-         - Implementation (missing validation, timeout handling)
-         - Integration (tool unavailable, API failures)
-         - State management (status sync, file I/O)
-      3. Prioritize by impact:
-         - Critical: System hangs, data loss
-         - High: Workflow blocked, manual intervention needed
-         - Medium: Degraded functionality, workarounds available
-         - Low: Minor issues, cosmetic problems
-      4. Document root cause for each group
+      1. Group errors by type and root cause
+         - Group errors by type field (delegation_hang, tool_failure, etc.)
+         - Within each type, group by root cause patterns:
+           * Similar stack traces
+           * Similar context (same command, agent, task)
+           * Similar error messages
+         - Count occurrences per group
+         - Identify recurring error patterns
+         - Sort groups by frequency and severity
+         - Log: "✓ Grouped errors into ${group_count} group(s)"
+      
+      2. Analyze historical fix effectiveness
+         - For each error group:
+           a. Find similar errors with fix_attempted status in historical errors.json
+           b. Compare timestamps (fix_attempted vs new occurrences)
+           c. If error recurred after fix: Mark fix as failed
+           d. Calculate fix success rate per error type
+         - Identify patterns in failed fixes:
+           a. What was attempted?
+           b. Why did it fail (error recurred)?
+           c. What was missed?
+         - Document fix effectiveness metrics
+         - Flag ineffective fix approaches
+         - Log: "✓ Analyzed fix effectiveness: ${success_rate} success rate"
+      
+      3. Perform root cause analysis
+         - For each error group:
+           a. Analyze stack traces for common patterns
+           b. Identify system components involved
+           c. Trace back to architectural issues
+           d. Reference Task 191 analysis patterns for delegation errors
+         - Categorize root causes:
+           * Architectural (delegation depth, cycle detection)
+           * Implementation (missing validation, timeout handling)
+           * Integration (tool unavailable, API failures)
+           * State management (status sync, file I/O)
+         - Prioritize by impact:
+           * Critical: System hangs, data loss
+           * High: Workflow blocked, manual intervention needed
+           * Medium: Degraded functionality, workarounds available
+           * Low: Minor issues, cosmetic problems
+         - Document root cause for each group
+         - Log: "✓ Root cause analysis completed for ${group_count} group(s)"
+      
+      4. Generate fix recommendations
+         - For each error group:
+           a. Based on root cause, recommend specific fixes
+           b. Reference successful fixes for similar errors
+           c. Avoid approaches that failed historically
+           d. Provide code-level specifics where possible
+         - Categorize fixes by scope:
+           * Quick wins (less than 1 hour, high impact)
+           * Standard fixes (1-3 hours, medium impact)
+           * Major refactors (more than 3 hours, architectural)
+         - Estimate effort per fix
+         - Suggest implementation order (dependencies, priority)
+         - Include testing recommendations
+         - Log: "✓ Generated ${rec_count} recommendation(s)"
+      
+      5. Create fix plan outline
+         - Group fixes by component:
+           * Orchestrator fixes
+           * Command fixes
+           * Subagent fixes
+           * Infrastructure fixes
+         - Identify dependencies between fixes
+         - Suggest implementation phases:
+           * Phase 1: Critical fixes (system stability)
+           * Phase 2: High-priority fixes (workflow improvements)
+           * Phase 3: Medium-priority fixes (quality of life)
+         - Estimate total effort
+         - Create outline for implementation plan
+         - Log: "✓ Fix plan outline created: ${phase_count} phase(s), ${total_effort}h total"
+      
+      6. Log analysis completion
+         - Log: "✓ Error analysis completed"
+         - Log: "Error groups: ${group_count}"
+         - Log: "Recommendations: ${rec_count}"
+         - Log: "Fix effectiveness: ${success_rate}"
     </process>
-    <validation>Root causes identified for all error groups</validation>
-    <output>Root cause analysis with categorization and priority</output>
-  </step_3>
+    <validation>All error groups analyzed, recommendations generated</validation>
+    <checkpoint>Error analysis completed, ready to validate outputs</checkpoint>
+  </stage>
 
-  <step_4>
-    <action>Generate fix recommendations</action>
+  <stage id="4" name="ValidateOutputs">
+    <action>Validate analysis results are complete and actionable</action>
     <process>
-      1. For each error group:
-         a. Based on root cause, recommend specific fixes
-         b. Reference successful fixes for similar errors
-         c. Avoid approaches that failed historically
-         d. Provide code-level specifics where possible
-      2. Categorize fixes by scope:
-         - Quick wins (less than 1 hour, high impact)
-         - Standard fixes (1-3 hours, medium impact)
-         - Major refactors (more than 3 hours, architectural)
-      3. Estimate effort per fix
-      4. Suggest implementation order (dependencies, priority)
-      5. Include testing recommendations
+      1. Validate all error groups analyzed
+         - Check error_groups array is non-empty
+         - Check each group has required fields: type, count, severity, root_cause
+         - If validation fails:
+           * Log error: "Error group validation failed: missing required fields"
+           * Return status: "partial"
+           * Include error in errors array
+      
+      2. Validate recommendations are specific and actionable
+         - Check recommendations array is non-empty
+         - Check each recommendation has: priority, fix, effort_hours, specifics
+         - Check specifics array is non-empty (code-level details)
+         - If validation fails:
+           * Log error: "Recommendation validation failed: missing specifics"
+           * Return status: "partial"
+           * Include error in errors array
+      
+      3. Validate fix plan outline is logical
+         - Check fix_plan_outline has phases array
+         - Check each phase has: name, effort_hours, fixes
+         - Check total_effort_hours is sum of phase efforts
+         - If validation fails:
+           * Log warning: "Fix plan outline incomplete"
+           * Continue (non-critical)
+      
+      4. Validate effort estimates are reasonable
+         - Check effort_hours for each recommendation is > 0
+         - Check total_effort_hours is reasonable (< 100 hours)
+         - If validation fails:
+           * Log warning: "Effort estimates may be unrealistic"
+           * Continue (non-critical)
+      
+      5. Log validation success
+         - Log: "✓ Output validation passed"
     </process>
-    <validation>Recommendations are specific and actionable</validation>
-    <output>Fix recommendations with effort estimates and priority</output>
-  </step_4>
+    <validation>All outputs validated and actionable</validation>
+    <checkpoint>Outputs validated, ready to return results</checkpoint>
+  </stage>
 
-  <step_5>
-    <action>Create fix plan outline</action>
+  <stage id="5" name="CreateArtifacts">
+    <action>Skip - no artifacts created (read-only analysis)</action>
     <process>
-      1. Group fixes by component:
-         - Orchestrator fixes
-         - Command fixes
-         - Subagent fixes
-         - Infrastructure fixes
-      2. Identify dependencies between fixes
-      3. Suggest implementation phases:
-         - Phase 1: Critical fixes (system stability)
-         - Phase 2: High-priority fixes (workflow improvements)
-         - Phase 3: Medium-priority fixes (quality of life)
-      4. Estimate total effort
-      5. Create outline for implementation plan
+      1. Log: "Skipping artifact creation (read-only analysis)"
+      2. Return empty artifacts array
+      3. Note: Error diagnostics is read-only analysis, no files created
     </process>
-    <validation>Fix plan is logical and prioritized</validation>
-    <output>Fix plan outline with phases and estimates</output>
-  </step_5>
+    <validation>No artifacts to validate (read-only analysis)</validation>
+    <checkpoint>Artifact creation skipped (read-only analysis)</checkpoint>
+  </stage>
 
-  <step_6>
-    <action>Return standardized result</action>
+  <stage id="6" name="UpdateState">
+    <action>Skip - no state updates needed (read-only analysis)</action>
     <process>
-      1. Format return following subagent-return-format.md
-      2. Include error analysis summary
-      3. Include fix effectiveness metrics
-      4. Include root cause analysis
-      5. Include fix recommendations
-      6. Include fix plan outline
-      7. Include session_id from input
-      8. Include metadata (duration, delegation info)
-      9. Return status completed
+      1. Log: "Skipping state updates (read-only analysis)"
+      2. Note: Error diagnostics doesn't modify TODO.md or state.json
+      3. Note: /errors command is read-only, no status updates
     </process>
-    <output>Standardized return object with analysis results</output>
-  </step_6>
-</process_flow>
+    <validation>No state updates to validate (read-only analysis)</validation>
+    <checkpoint>State update skipped (read-only analysis)</checkpoint>
+  </stage>
+
+  <stage id="7" name="CreateCommit">
+    <action>Skip - no git commits needed (no file changes)</action>
+    <process>
+      1. Log: "Skipping git commit (no file changes)"
+      2. Note: Error diagnostics is read-only, no files modified
+    </process>
+    <validation>No git commits to validate (read-only analysis)</validation>
+    <checkpoint>Git commit skipped (read-only analysis)</checkpoint>
+  </stage>
+
+  <stage id="8" name="ReturnResults">
+    <action>Format and return standardized results</action>
+    <process>
+      1. Calculate duration
+         - end_time=$(date +%s)
+         - duration_seconds=$((end_time - start_time))
+         - Log: "Analysis duration: ${duration_seconds}s"
+      
+      2. Format return following subagent-return-format.md
+         - status: "completed" (or "partial" if validation errors)
+         - summary: Brief findings (<100 tokens)
+           * "Analyzed ${group_count} error groups covering ${error_count} errors. Identified ${root_cause_count} root causes. ${failed_fix_count} of ${total_fix_count} historical fixes failed. Recommended ${rec_count} specific fixes prioritized by impact."
+         - artifacts: [] (empty, no files created)
+         - metadata:
+           * session_id: from input
+           * duration_seconds: calculated
+           * agent_type: "error-diagnostics-agent"
+           * delegation_depth: from input
+           * delegation_path: from input
+         - errors: [] (or error details if validation failed)
+         - next_steps: "Create implementation plan for recommended fixes using /plan"
+         - analysis: {
+             error_groups: [...],
+             fix_effectiveness: {...},
+             root_causes: [...],
+             recommendations: [...],
+             fix_plan_outline: {...}
+           }
+      
+      3. Validate return format
+         - Check all required fields present
+         - Check status is valid enum
+         - Check summary is <100 tokens
+         - Check metadata has all required fields
+         - If validation fails:
+           * Log error: "Return format validation failed"
+           * Fix format and retry
+      
+      4. Return JSON to stdout
+         - Output JSON to stdout (orchestrator will capture)
+         - Log: "✓ Return formatted and validated"
+    </process>
+    <validation>Return format matches subagent-return-format.md</validation>
+    <checkpoint>Results returned to orchestrator</checkpoint>
+  </stage>
+</workflow_execution>
 
 <constraints>
   <must>Analyze all error groups provided</must>
@@ -202,8 +368,12 @@ lifecycle:
   <must>Provide specific, actionable recommendations</must>
   <must>Prioritize fixes by impact and effort</must>
   <must>Return standardized format per subagent-return-format.md</must>
+  <must>Complete within 1800s timeout</must>
   <must_not>Make vague recommendations</must_not>
   <must_not>Ignore historical fix failures</must_not>
+  <must_not>Create artifacts (read-only analysis)</must_not>
+  <must_not>Modify state (read-only analysis)</must_not>
+  <must_not>Create git commits (read-only analysis)</must_not>
 </constraints>
 
 <output_specification>
@@ -221,7 +391,7 @@ lifecycle:
         "delegation_path": ["orchestrator", "errors", "error-diagnostics-agent"]
       },
       "errors": [],
-      "next_steps": "Create implementation plan for recommended fixes",
+      "next_steps": "Create implementation plan for recommended fixes using /plan",
       "analysis": {
         "error_groups": [
           {
@@ -323,7 +493,7 @@ lifecycle:
             "type": "status_sync_failure",
             "count": 1,
             "severity": "medium",
-            "root_cause": "File I/O error during concurrent .opencode/specs/TODO.md update",
+            "root_cause": "File I/O error during concurrent TODO.md update",
             "affected_components": ["status-sync-manager"],
             "first_seen": "2025-12-23T11:20:00Z",
             "last_seen": "2025-12-23T11:20:00Z"
@@ -478,14 +648,47 @@ lifecycle:
       }
     }
     ```
+
+    If validation fails:
+    ```json
+    {
+      "status": "partial",
+      "summary": "Error analysis partially completed. Some validation checks failed but core analysis succeeded.",
+      "artifacts": [],
+      "metadata": {
+        "session_id": "sess_1703606400_a1b2c3",
+        "duration_seconds": 180,
+        "agent_type": "error-diagnostics-agent",
+        "delegation_depth": 1,
+        "delegation_path": ["orchestrator", "errors", "error-diagnostics-agent"]
+      },
+      "errors": [
+        {
+          "type": "validation",
+          "message": "Some recommendations missing code-level specifics",
+          "recoverable": true,
+          "recommendation": "Review recommendations and add more specific details"
+        }
+      ],
+      "next_steps": "Review partial analysis and retry if needed",
+      "analysis": {
+        "error_groups": [...],
+        "fix_effectiveness": {...},
+        "root_causes": [...],
+        "recommendations": [...],
+        "fix_plan_outline": {...}
+      }
+    }
+    ```
   </error_handling>
 </output_specification>
 
 <validation_checks>
   <pre_execution>
-    - Verify errors_grouped is valid object
+    - Verify errors_data is non-empty array
     - Verify session_id provided
-    - Verify delegation_depth less than 3
+    - Verify delegation_depth <= 3
+    - Verify delegation_path is non-empty array
   </pre_execution>
 
   <post_execution>
@@ -494,6 +697,8 @@ lifecycle:
     - Verify root causes identified
     - Verify recommendations are specific and actionable
     - Verify return format matches subagent-return-format.md
+    - Verify summary is <100 tokens
+    - Verify session_id matches input
   </post_execution>
 </validation_checks>
 
@@ -516,9 +721,17 @@ lifecycle:
 
   <principle_5>
     Estimate realistically: Include testing and validation time in estimates
-  </principle_5>
+  </principle_6>
 
   <principle_6>
     Reference standards: Link recommendations to Task 191 analysis and delegation guide
   </principle_6>
+
+  <principle_7>
+    Read-only analysis: Never modify files, only analyze and recommend
+  </principle_7>
+
+  <principle_8>
+    Standardized return: Always return JSON matching subagent-return-format.md
+  </principle_8>
 </diagnostics_principles>

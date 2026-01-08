@@ -2,9 +2,8 @@
 
 The **Logos** is an extensible formal language equipped with an axiomatic proof system and recursive semantic theory in order to provide an unbounded source of data to train AI systems to conduct verified reasoning that is witnessed by proof receipts in LEAN 4. The modular architecture extends the expressive power of the language with the following layers: 
 
-- **Core Layer**: Predicates, functions, lambdas, quantifiers, extensional operators, and constitutive explanatory operators.
-- **Modal Layer**: Counterfactual conditional and tense operators for reasoning about past and future contingency.
-- **Causal Layer**: Causal operators for reasoning about the causal connections between earlier and later events.
+- **Constitutive Layer**: Predicates, functions, lambdas, quantifiers, extensional operators, and constitutive explanatory operators.
+- **Causal Layer**: Historical, counterfactual conditional, tense, and causal operators for reasoning about past and future contingency and causal connections between earlier and later events.
 - **Epistemic Layer**: Epistemic modals, indicative conditionals, and probability, and belief operators for reasoning under uncertainty.
 - **Normative Layer**: Permission, obligation, preference, and normative explanatory operators for reasoning about values and laws.
 
@@ -70,7 +69,7 @@ The Logos is an extensible formal language consisting of the logical operators n
 
 Constructing and evaluating plans amounts to identifying and ranking histories that proceed from the present moment into the anticipated future. The expected value of a plan is a function of its projected value, likelihood of success, and the value of counterfactual alternatives were the plan to fail along its course. Accordingly, robust planning requires counterfactual scrutiny, identifying potential fail points by evaluating the expected cost of the counterfactual histories that proceed from each potential fail point. Rather than relying on human intuition to estimate likely fail points or to rank alternatives, training AI systems to rigorously construct, counterfactually evaluate, and rank plans based on expected outcomes provides an invaluable resource for assisting human agents in effectively navigating future contingency under conditions of uncertainty and high complexity.
 
-In addition to tense, historical modal, and counterfactual operators, effective planning under natural conditions also requires explanatory for reasoning about constitution and causation, epistemic operators for reasoning about belief, likelihoods, and indicative conditionals, and normative operators for reasoning about imperatives and preferences. Accordingly both the proof theory and semantics for the Logos are implemented in layers in order to accommodate an extensible range of operators. The layer architecture enables applications to import precisely the operator combinations needed for a given domain without carrying unused overhead.
+In addition to tense, historical modal, and counterfactual operators, effective planning under natural conditions also requires constitutive operators for reasoning about constitution, causal operators for reasoning about causation, epistemic operators for reasoning about belief, likelihoods, and indicative conditionals, and normative operators for reasoning about imperatives and preferences. Accordingly both the proof theory and semantics for the Logos are implemented in layers in order to accommodate an extensible range of operators. The layer architecture enables applications to import precisely the operator combinations needed for a given domain without carrying unused overhead.
 
 **See also**: [Conceptual Engineering](Documentation/Research/CONCEPTUAL_ENGINEERING.md) | [Layer Extensions](Documentation/Research/LAYER_EXTENSIONS.md)
 
@@ -82,20 +81,24 @@ Logos implements a layered operator architecture supporting progressive extensib
 
 **See also**: [Conceptual Engineering](Documentation/Research/CONCEPTUAL_ENGINEERING.md) for philosophical motivation | [Layer Extensions](Documentation/Research/LAYER_EXTENSIONS.md) for technical specifications
 
-| Layer           | Operators                            | Status         |
-| --------------- | ------------------------------------ | -------------- |
-| **Core**        | Extensional, modal, temporal         | Complete (MVP) |
-| **Explanatory** | Counterfactual, causal, constitutive | Planned        |
-| **Epistemic**   | Belief, probability, indicative      | Planned        |
-| **Normative**   | Deontic, agential, preferential      | Planned        |
+| Layer              | Operators                                        | Status         |
+| ------------------ | ------------------------------------------------ | -------------- |
+| **Constitutive**   | Extensional, constitutive                        | Complete (MVP) |
+| **Causal**         | Modal, temporal, counterfactual, causal          | Complete (MVP) |
+| **Epistemic**      | Belief, probability, indicative                  | Planned        |
+| **Normative**      | Deontic, agential, preferential                  | Planned        |
 
 **See also**: [Methodology](Documentation/UserGuide/METHODOLOGY.md) | [Layer Extensions](Documentation/Research/LAYER_EXTENSIONS.md)
 
 ---
 
-## Core Layer (TM Logic)
+## Constitutive Layer
 
-The Core Layer implements TM (Tense and Modality) - a bimodal logic combining S5 modal logic (metaphysical necessity/possibility) with linear temporal logic (past/future operators).
+The Constitutive Layer provides fundamental descriptive resources—predicates and functions for expressing facts, quantifiers for generalizing over individuals, extensional connectives for truth-functional reasoning, and constitutive operators for expressing what grounds and explains what. This foundational layer enables systems to represent and reason about the basic structure of reality.
+
+## Causal Layer (TM Logic)
+
+The Causal Layer implements TM (Tense and Modality) - a bimodal logic combining S5 modal logic (metaphysical necessity/possibility) with linear temporal logic (past/future operators). This layer extends constitutive reasoning with temporal productive relationships, enabling systems to distinguish between timeless constitutive grounding (e.g., being crimson grounds being red) and temporal causal production (e.g., touching a hot stove causes pain).
 
 ### Operators
 
@@ -231,26 +234,27 @@ The dual verification architecture creates comprehensive learning signals withou
 
 The Logos architecture enables domain-specific operator combinations, demonstrating how planned extensions can be composed for specific use cases:
 
-### Medical Planning (Core + Explanatory + Epistemic)
+### Medical Planning (Constitutive + Causal + Epistemic)
 
-- **Core operators**: Modal (`□`, `◇`) + Temporal (`G`, `F`, `H`, `P`) for treatment timelines
-- **Explanatory operators**: Counterfactual (`□→`, `◇→`) for evaluating treatment strategies
+- **Constitutive operators**: Predicates, functions, quantifiers for representing medical facts and relationships
+- **Causal operators**: Modal (`□`, `◇`) + Temporal (`G`, `F`, `H`, `P`) for treatment timelines, Counterfactual (`□→`, `◇→`) for evaluating treatment strategies
 - **Epistemic operators**: Probability (`Pr`), belief (`B`) for uncertainty quantification in diagnosis and prognosis
 - **Example**: `Prescribe(DrugA) ∧ Taking(MedicationX) □→ F(Normalize(BloodPressure)) ∧ F(Occur(LiverDamage))`
   - Evaluates what would happen under Drug A prescription given current medication
   - Distinguishes necessary consequences (`□→`) from possible consequences (`◇→`)
 
-### Legal Reasoning (Core + Epistemic + Normative)
+### Legal Reasoning (Constitutive + Causal + Epistemic + Normative)
 
-- **Core operators**: Modal + Temporal for tracking events and beliefs across time
+- **Constitutive operators**: Predicates and functions for representing legal facts and evidence
+- **Causal operators**: Modal + Temporal for tracking events and beliefs across time
 - **Epistemic operators**: Belief (`B`), epistemic modals (`Mi`, `Mu`) for evidence analysis
 - **Normative operators**: Obligation (`O`), Permission (`P`) for legal requirements and permissions
 - **Example**: Tracking how evidence reveals agent beliefs and motives, constructing narratives connecting motive to action
 
-### Multi-Agent Coordination (Core + All Extensions)
+### Multi-Agent Coordination (All Layers)
 
-- **Core**: Modal + Temporal for action timelines and coordination constraints
-- **Explanatory**: Counterfactuals for evaluating alternative strategies
+- **Constitutive**: Predicates and functions for representing agent properties and relationships
+- **Causal**: Modal + Temporal for action timelines and coordination constraints, Counterfactuals for evaluating alternative strategies
 - **Epistemic**: Belief operators for modeling other agents' knowledge states
 - **Normative**: Deontic operators (`O`, `P`) for obligations and permissions in negotiation
 

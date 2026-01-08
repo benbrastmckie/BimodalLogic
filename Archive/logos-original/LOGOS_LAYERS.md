@@ -448,11 +448,11 @@ Layer 3 extends the Core Layer with operators for ethical and cooperative reason
 
 ### Normative Explanatory
 
-**Normative Explanation** (`⟼`): Connects normative facts to their explanatory grounds.
+**Normative Explanation** (`↦`): Connects normative facts to their explanatory grounds.
 
 **Integration with Layer 1**: Combines normative operators with constitutive grounding from explanatory extension.
 
-**Example**: `[promise made] ⟼ O([promise kept])` - making promise grounds obligation to keep it.
+**Example**: `[promise made] ↦ O([promise kept])` - making promise grounds obligation to keep it.
 
 ### Multi-Party Negotiation Example
 
@@ -664,7 +664,7 @@ For detailed implementation status, see:
 **Components to Implement**:
 - Deontic operators (`O`, `P`)
 - Preference operator (`≺`)
-- Normative explanatory (`⟼`)
+- Normative explanatory (`↦`)
 - Ideality orderings
 - Normative accessibility relations
 

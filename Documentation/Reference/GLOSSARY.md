@@ -95,7 +95,7 @@ This glossary maps terminology between Logos and Logos documentation, providing 
 | `O` | Obligation | "It is obligatory that A" | Deontic logic |
 | `P` | Permission | "It is permitted that A" | Deontic logic |
 | `≺` | Preference | "A is preferred over B" | Preference reasoning |
-| `⟼` | Normative Explanation | Normative grounding | Normative reasoning |
+| `↦` | Normative Explanation | Normative grounding | Normative reasoning |
 
 ## Verification Concepts
 
