@@ -100,8 +100,23 @@ lifecycle:
 </inputs_forbidden>
 
 <process_flow>
-  <step_0_preflight>
-    <action>Preflight: Extract validated inputs and update status to [IMPLEMENTING]</action>
+  <note>
+    ARCHITECTURAL CHANGE (2026-01-07):
+    Preflight and postflight are now handled by the /implement command file.
+    This subagent focuses on core implementation work and artifact creation only.
+    
+    This change addresses the root cause identified in workflow-command-refactor-plan.md:
+    "Commands don't own status updates - they delegate to subagents and hope 
+    the subagents update status correctly."
+    
+    By moving status updates to the command level, we ensure:
+    - Guaranteed preflight (status updates to IMPLEMENTING before work starts)
+    - Guaranteed postflight (status updates to COMPLETED after work completes)
+    - No more manual fixes like Task 326
+  </note>
+  
+  <deprecated_step_0_preflight>
+    <action>DEPRECATED: Preflight now handled by command file</action>
     <process>
       CRITICAL TIMING REQUIREMENT: This step MUST complete BEFORE step_1 begins.
       
@@ -162,8 +177,8 @@ lifecycle:
       
       4. Proceed to step_1 (Lean implementation work begins)
     </process>
-    <checkpoint>Status updated to [IMPLEMENTING], verified in state.json, ready to begin Lean implementation</checkpoint>
-  </step_0_preflight>
+    <checkpoint>DEPRECATED - command file handles preflight</checkpoint>
+  </deprecated_step_0_preflight>
 
   <step_1>
     <action>Load Lean context and initialize tools</action>
@@ -428,8 +443,8 @@ lifecycle:
     <output>Final Lean implementation files and summary artifact path</output>
   </step_5>
 
-  <step_6>
-    <action>Validate artifacts, update status markers, update state, and return standardized result</action>
+  <step_5_validate_and_return>
+    <action>Validate artifacts and return standardized result</action>
     <process>
       1. Validate all artifacts created successfully:
          a. Verify all Lean files written to disk
@@ -439,134 +454,28 @@ lifecycle:
          e. Verify summary within token limit (<100 tokens, ~400 chars)
          f. Verify summary is 3-5 sentences
          g. If validation fails: Return status "failed" with error
-      2. Update TODO.md status marker:
-         a. Find task entry in .opencode/specs/TODO.md
-         b. Change status from [IMPLEMENTING] to [COMPLETED]/[PARTIAL]/[BLOCKED]
-         c. Add **Completed**: YYYY-MM-DD timestamp
-         d. Add **Implementation Artifacts**: section with links to Lean files and summary
-      3. Update state.json:
-         a. Update .opencode/specs/state.json active_projects array
-         b. Add/update project entry with status "completed"/"partial"/"blocked"
-         c. Add artifacts array with Lean file paths and summary path
-         d. Set created_at and updated_at timestamps (ISO 8601 format)
-      4. Format return following subagent-return-format.md
-      5. List all Lean files modified/created in artifacts array
-      6. Include implementation summary artifact in artifacts array
-      7. Include compilation results if available
-      8. Include tool unavailability warning if applicable
-      10. Include session_id from input
-      11. Include metadata (duration, delegation info)
-      12. Return status: completed (if compiled) or partial (if degraded)
+      2. Format return following subagent-return-format.md:
+         - status: "completed" (if compiled) or "partial" (if degraded)
+         - summary: Brief description of implementation
+         - artifacts: Array of all Lean files and summary artifact
+         - metadata: {session_id, duration_seconds, agent_type, delegation_depth, delegation_path}
+         - errors: [] (or error details if failures)
+         - next_steps: "Review implementation and test"
+      3. List all Lean files modified/created in artifacts array
+      4. Include implementation summary artifact in artifacts array
+      5. Include compilation results if available
+      6. Include tool unavailability warning if applicable
+      7. Include session_id from input
+      8. Include metadata (duration, delegation info)
+      9. Return status: completed (if compiled) or partial (if degraded)
+      
+      Command file will handle:
+      - Status updates (IMPLEMENTING → COMPLETED/PARTIAL/BLOCKED)
+      - Artifact linking in TODO.md
+      - Git commit creation
     </process>
-    <status_marker_update>
-      Update .opencode/specs/TODO.md:
-      - Find task by task_number
-      - Change **Status**: [IMPLEMENTING] → **Status**: [COMPLETED]/[PARTIAL]/[BLOCKED]
-      - Add **Completed**: {current_date} (YYYY-MM-DD format)
-      - Preserve **Started**: timestamp
-      - Add **Implementation Artifacts**: section with paths
-      
-      Artifact link format requirements:
-      - Lean files: Use project root paths (e.g., Logos/Core/...)
-      - Summary artifact: Use absolute path starting with .opencode/specs/
-      - List all modified/created Lean files
-      - Include summary artifact with "Summary:" prefix
-      - For [PARTIAL] status: Add note about compilation status
-      - For [BLOCKED] status: Include **Blocking Reason**: field
-      
-      Example (completed):
-      ```markdown
-      ### 198. Implement Modal S4 Theorem
-      **Status**: [COMPLETED]
-      **Started**: 2025-12-28
-      **Completed**: 2025-12-28
-      **Priority**: High
-      **Effort**: 6 hours
-      **Implementation Artifacts**:
-      - Logos/Core/Theorems/ModalS4.lean
-      - LogosTest/Core/Theorems/ModalS4Test.lean
-      - Summary: .opencode/specs/198_modal_s4_theorem/summaries/implementation-summary-20251228.md
-      ```
-      
-      Example (partial):
-      ```markdown
-      ### 198. Implement Modal S4 Theorem
-      **Status**: [PARTIAL]
-      **Started**: 2025-12-28
-      **Completed**: 2025-12-28
-      **Priority**: High
-      **Effort**: 6 hours
-      **Blocking Reason**: lean-lsp-mcp unavailable, compilation not verified
-      **Implementation Artifacts**:
-      - Logos/Core/Theorems/ModalS4.lean (compilation not verified)
-      - Summary: .opencode/specs/198_modal_s4_theorem/summaries/implementation-summary-20251228.md
-      ```
-      
-      Partial status workflow:
-      - Use [PARTIAL] when implementation is incomplete but can be resumed
-      - Use [PARTIAL] when lean-lsp-mcp unavailable (degraded mode)
-      - Use [PARTIAL] when compilation not verified
-      - Always include **Blocking Reason**: field explaining why partial
-      - Partial status allows task to be resumed later
-      - Partial status is NOT terminal (can transition to [IMPLEMENTING] again)
-      
-      Blocked status workflow:
-      - Use [BLOCKED] when implementation cannot proceed due to external blocker
-      - Use [BLOCKED] when dependency is missing or failed
-      - Use [BLOCKED] when compilation fails after max iterations
-      - Always include **Blocking Reason**: field explaining blocker
-      - Blocked status requires blocker resolution before resuming
-    </status_marker_update>
-    <state_update>
-      Update .opencode/specs/state.json:
-      ```json
-      {
-        "active_projects": [
-          {
-            "project_number": 198,
-            "project_name": "modal_s4_theorem",
-            "type": "implementation",
-            "status": "completed",
-            "created_at": "2025-12-28T10:00:00Z",
-            "updated_at": "2025-12-28T14:30:00Z",
-            "artifacts": [
-              "Logos/Core/Theorems/ModalS4.lean",
-              "LogosTest/Core/Theorems/ModalS4Test.lean",
-              ".opencode/specs/198_modal_s4_theorem/summaries/implementation-summary-20251228.md"
-            ]
-          }
-        ]
-      }
-      ```
-      
-      Update .opencode/specs/{task_number}_{topic}/state.json:
-      ```json
-      {
-        "project_name": "modal_s4_theorem",
-        "project_number": 198,
-        "type": "implementation",
-        "phase": "completed",
-        "summaries": ["summaries/implementation-summary-20251228.md"],
-        "status": "active",
-        "created_at": "2025-12-28T10:00:00Z",
-        "updated_at": "2025-12-28T14:30:00Z"
-      }
-      ```
-      
-      Timestamp formats (per state-schema.md):
-      - ISO 8601 for state.json: YYYY-MM-DDTHH:MM:SSZ (e.g., "2025-12-28T10:00:00Z")
-      - Simple date for TODO.md status changes: YYYY-MM-DD (e.g., "2025-12-28")
-      - Use UTC timezone for ISO 8601 timestamps
-      - Preserve existing timestamps when updating (don't overwrite **Started**)
-      
-      Examples:
-      - created_at: "2025-12-28T10:00:00Z" (ISO 8601)
-      - updated_at: "2025-12-28T14:30:00Z" (ISO 8601)
-      - **Started**: 2025-12-28 (YYYY-MM-DD)
-      - **Completed**: 2025-12-28 (YYYY-MM-DD)
-    </state_update>
     <validation>
-      Before returning (Step 6):
+      Before returning:
       - Verify all artifacts created successfully
       - Verify summary artifact exists in artifacts array
       - Verify summary artifact path exists on disk
@@ -581,13 +490,11 @@ lifecycle:
       - Recommendation: "Fix summary artifact creation and retry"
     </validation>
     <output>Standardized return object with Lean artifacts and summary</output>
-  </step_6>
+  </step_5_validate_and_return>
 </process_flow>
 
 <constraints>
-  <must>Update TODO.md status markers ([NOT STARTED]/[PLANNED] → [IMPLEMENTING] → [COMPLETED]/[PARTIAL]/[BLOCKED])</must>
-  <must>Add timestamps to TODO.md (**Started**, **Completed** in YYYY-MM-DD format)</must>
-  <must>Update state.json with project status and artifacts</must>
+  <must>Return artifacts array with validated artifact paths for command file to link</must>
   <must>Create summary artifact (3-5 sentences, <100 tokens)</must>
   <must>Validate summary artifact before writing (token count, sentence count)</must>
   <must>Validate summary artifact before returning (exists, non-empty, within limits)</must>
@@ -601,6 +508,8 @@ lifecycle:
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Iterate on compilation errors (max 5 iterations)</must>
   <must>Include summary artifact in return artifacts array</must>
+  <must_not>Update status (command file owns status updates)</must_not>
+  <must_not>Create git commits (command file owns git commits)</must_not>
   <must_not>Fail task if lean-lsp-mcp unavailable (degrade gracefully)</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Write invalid Lean syntax</must_not>

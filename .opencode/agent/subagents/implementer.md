@@ -97,8 +97,23 @@ lifecycle:
 </inputs_forbidden>
 
 <process_flow>
-  <step_0_preflight>
-    <action>Preflight: Extract validated inputs and update status to [IMPLEMENTING]</action>
+  <note>
+    ARCHITECTURAL CHANGE (2026-01-07):
+    Preflight and postflight are now handled by the /implement command file.
+    This subagent focuses on core implementation work and artifact creation only.
+    
+    This change addresses the root cause identified in workflow-command-refactor-plan.md:
+    "Commands don't own status updates - they delegate to subagents and hope 
+    the subagents update status correctly."
+    
+    By moving status updates to the command level, we ensure:
+    - Guaranteed preflight (status updates to IMPLEMENTING before work starts)
+    - Guaranteed postflight (status updates to COMPLETED after work completes)
+    - No more manual fixes like Task 326
+  </note>
+  
+  <deprecated_step_0_preflight>
+    <action>DEPRECATED: Preflight now handled by command file</action>
     <process>
       CRITICAL TIMING REQUIREMENT: This step MUST complete BEFORE step_1 begins.
       
@@ -159,8 +174,8 @@ lifecycle:
       
       4. Proceed to step_1 (implementation work begins)
     </process>
-    <checkpoint>Status updated to [IMPLEMENTING], verified in state.json, ready to begin implementation</checkpoint>
-  </step_0_preflight>
+    <checkpoint>DEPRECATED - command file handles preflight</checkpoint>
+  </deprecated_step_0_preflight>
 
   <step_1>
     <action>Read task details</action>
@@ -255,8 +270,8 @@ lifecycle:
     <output>Implementation summary artifact</output>
   </step_5>
 
-  <step_6>
-    <action>Validate artifacts created</action>
+  <step_5_validate_and_return>
+    <action>Validate artifacts and return standardized result</action>
     <process>
       1. Validate all artifacts created successfully:
          a. Verify implementation files exist on disk (from artifacts array)
@@ -266,13 +281,28 @@ lifecycle:
          e. Verify summary within token limit (<100 tokens, ~400 chars)
          f. If validation fails: Return failed status with error
       2. Extract artifact metadata (file count, types, paths)
+      3. Format return following subagent-return-format.md:
+         - status: "completed" (or "partial"/"failed" if errors)
+         - summary: Brief description of implementation
+         - artifacts: Array of all implementation files and summary artifact
+         - metadata: {session_id, duration_seconds, agent_type, delegation_depth, delegation_path}
+         - errors: [] (or error details if failures)
+         - next_steps: "Review implementation and test"
+      4. Include session_id from input
+      5. Include metadata (duration, delegation info)
+      6. Return status completed
+      
+      Command file will handle:
+      - Status updates (IMPLEMENTING → COMPLETED/PARTIAL/BLOCKED)
+      - Artifact linking in TODO.md
+      - Git commit creation
     </process>
     <validation>All artifacts exist, are non-empty, and within limits</validation>
-    <output>Validated artifacts and metadata</output>
-  </step_6>
+    <output>Standardized return object with implementation artifacts and summary</output>
+  </step_5_validate_and_return>
 
-  <step_7>
-    <action>Execute Stage 7 (Postflight) - Update status and create git commit</action>
+  <deprecated_step_7>
+    <action>DEPRECATED: Postflight now handled by command file</action>
     <process>
       STAGE 7: POSTFLIGHT (Implementer owns this stage)
       
@@ -393,30 +423,16 @@ lifecycle:
           STEP 3: INCLUDE warning in return
       </error_case>
     </error_handling>
-    <output>Status updated to [COMPLETED], git commit created (or error logged)</output>
-  </step_7>
+    <output>DEPRECATED - command file handles postflight</output>
+  </deprecated_step_7>
 
-  <step_8>
-    <action>Return standardized result</action>
+  <deprecated_step_8>
+    <action>DEPRECATED: Merged into step_5_validate_and_return</action>
     <process>
-      1. Format return following subagent-return-format.md
-      2. List all artifacts (modified files + summary) with validated flag
-      3. Include brief summary of changes in summary field (metadata, <100 tokens):
-         - This is METADATA in return object, separate from summary artifact
-         - Provides brief overview for orchestrator context window protection
-      4. Include session_id from input
-      5. Include metadata (duration, delegation info, validation result)
-      6. Include git commit hash if successful
-      7. Return status completed
+      DEPRECATED - functionality moved to step_5_validate_and_return
     </process>
     <validation>
-      Before returning (Step 8):
-      - Verify all implementation files exist and are non-empty
-      - Verify implementation-summary-{date}.md exists and is non-empty
-      - Verify summary artifact within token limit (<100 tokens, ~400 chars)
-      - Verify summary field in return object is brief (<100 tokens)
-      - Verify Step 0 (Preflight) and Step 7 (Postflight) completed successfully
-      - Return validation result in metadata field
+      DEPRECATED - validation moved to step_5_validate_and_return
       
       If validation fails:
       - Log validation error with details
@@ -424,8 +440,8 @@ lifecycle:
       - Include error in errors array with type "validation_failed"
       - Recommendation: "Fix artifact creation and retry"
     </validation>
-    <output>Standardized return object with validated artifacts and brief summary metadata</output>
-  </step_8>
+    <output>DEPRECATED - merged into step_5_validate_and_return</output>
+  </deprecated_step_8>
 </process_flow>
 
 <constraints>
@@ -434,16 +450,15 @@ lifecycle:
   <must>Create summaries subdirectory lazily (only when writing)</must>
   <must>Validate file syntax before writing</must>
   <must>Validate artifacts before returning (existence, non-empty, token limit)</must>
-  <must>Execute Stage 7 (Postflight) - status update and git commit</must>
-  <must>Delegate to status-sync-manager for atomic status updates</must>
-  <must>Delegate to git-workflow-manager for git commits</must>
+  <must>Return artifacts array with validated artifact paths for command file to link</must>
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Complete within 7200s (2 hours timeout)</must>
+  <must_not>Update status (command file owns status updates)</must_not>
+  <must_not>Create git commits (command file owns git commits)</must_not>
   <must_not>Handle Lean implementation directly</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Create directories before writing files</must_not>
   <must_not>Return without validating artifacts</must_not>
-  <must_not>Return without executing Stage 7</must_not>
 </constraints>
 
 <output_specification>
