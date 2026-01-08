@@ -6,6 +6,7 @@ timeout: 7200
 routing:
   language_based: true
   lean: lean-implementation-agent
+  meta: meta
   default: implementer
 context_loading:
   strategy: lazy
