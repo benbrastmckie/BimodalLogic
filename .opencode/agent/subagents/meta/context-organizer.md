@@ -26,6 +26,7 @@ context_loading:
   optional:
     - "project/meta/architecture-principles.md"
     - "project/meta/context-revision-guide.md"
+    - "project/meta/standards-checklist.md"
   max_context_size: 40000
 delegation:
   max_depth: 3
@@ -162,6 +163,62 @@ lifecycle:
     <output>Template files (output-formats.md, common-patterns.md)</output>
   </step_5>
 
+  <step_5_5>
+    <name>Stage 5.5: Validate Against Standards</name>
+    <action>Validate all context files against standards checklist</action>
+    <process>
+      1. Load standards checklist from context
+         - Reference: .opencode/context/project/meta/standards-checklist.md
+         - Load context file standards section
+      
+      2. For each context file:
+         a. Validate file size (50-200 lines)
+            - Count lines in generated file
+            - If >200 lines: Split into focused files
+         
+         b. Validate single responsibility
+            - Check file covers single topic
+            - Verify clear focus
+         
+         c. Validate examples provided
+            - Check for concrete examples
+            - Verify examples are helpful
+         
+         d. Validate clear organization
+            - Check section headers
+            - Verify logical flow
+         
+         e. Validate no duplication
+            - Check for duplicate content across files
+            - Verify clear boundaries
+         
+         f. Score against 10-point criteria
+            - File size 50-200 lines (2 points)
+            - Single responsibility (2 points)
+            - Examples provided (2 points)
+            - Clear organization (2 points)
+            - No duplication (2 points)
+      
+      3. If any file scores <8/10:
+         a. Log issues and recommendations
+         b. Remediate issues
+         c. Re-validate and re-score
+      
+      4. Generate validation report
+    </process>
+    <standards_reference>
+      - .opencode/context/project/meta/standards-checklist.md
+      - .opencode/context/core/standards/documentation.md
+    </standards_reference>
+    <output>
+      validation_report: {
+        files: [{name, score, issues[], remediated[], passed}],
+        overall_score: number,
+        all_passed: boolean
+      }
+    </output>
+  </step_5_5>
+
   <step_6>
     <name>Stage 6: Create Context README and Validate</name>
     <action>Create context README and validate</action>
@@ -171,14 +228,8 @@ lifecycle:
       3. Map dependencies
       4. Provide usage guidance
       5. Write README to disk
-      6. Validate all context files:
-         - Check file sizes (50-200 lines target)
-         - Verify no duplication across files
-         - Validate dependencies are documented
-         - Ensure clear separation of concerns
-         - Check examples are concrete and helpful
     </process>
-    <output>context/README.md with complete guide, validation report</output>
+    <output>context/README.md with complete guide</output>
   </step_6>
 
   <step_6_5>

@@ -28,6 +28,7 @@ context_loading:
     - "core/formats/plan-format.md"
     - "project/meta/architecture-principles.md"
     - "project/meta/context-revision-guide.md"
+    - "project/meta/standards-checklist.md"
   max_context_size: 30000
 delegation:
   max_depth: 3
@@ -166,6 +167,63 @@ lifecycle:
     </process>
     <output>Workflow selection guide</output>
   </step_5>
+
+  <step_5_5>
+    <name>Stage 5.5: Validate Against Standards</name>
+    <action>Validate all workflows against standards checklist</action>
+    <process>
+      1. Load standards checklist from context
+         - Reference: .opencode/context/project/meta/standards-checklist.md
+         - Load workflow standards section
+      
+      2. For each workflow:
+         a. Validate file size (100-300 lines)
+            - Count lines in generated file
+            - Target: 200 lines
+         
+         b. Validate clear stages with prerequisites
+            - Check stage definitions
+            - Verify prerequisites documented
+         
+         c. Validate success criteria defined
+            - Check for success criteria section
+            - Verify criteria are measurable
+         
+         d. Validate context dependencies listed
+            - Check for context dependencies section
+            - Verify all dependencies documented
+         
+         e. Validate checkpoints included
+            - Check for checkpoint markers
+            - Verify checkpoints are actionable
+         
+         f. Score against 10-point criteria
+            - File size 100-300 lines (2 points)
+            - Clear stages (2 points)
+            - Success criteria (2 points)
+            - Context dependencies (2 points)
+            - Error handling (2 points)
+      
+      3. If any workflow scores <8/10:
+         a. Log issues and recommendations
+         b. Remediate issues
+         c. Re-validate and re-score
+      
+      4. Generate validation report
+    </process>
+    <standards_reference>
+      - .opencode/context/project/meta/standards-checklist.md
+      - .opencode/context/core/workflows/command-lifecycle.md
+      - .opencode/context/core/workflows/status-transitions.md
+    </standards_reference>
+    <output>
+      validation_report: {
+        workflows: [{name, score, issues[], remediated[], passed}],
+        overall_score: number,
+        all_passed: boolean
+      }
+    </output>
+  </step_5_5>
 
   <step_6>
     <name>Stage 6: Generate Workflow Files</name>

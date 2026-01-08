@@ -29,6 +29,7 @@ context_loading:
     - "core/templates/command-template.md"
     - "project/meta/architecture-principles.md"
     - "project/meta/context-revision-guide.md"
+    - "project/meta/standards-checklist.md"
   max_context_size: 30000
 delegation:
   max_depth: 3
@@ -162,6 +163,61 @@ lifecycle:
     </process>
     <output>Complete command files written to disk</output>
   </step_5>
+
+  <step_5_5>
+    <name>Stage 5.5: Validate Against Standards</name>
+    <action>Validate all commands against standards checklist</action>
+    <process>
+      1. Load standards checklist from context
+         - Reference: .opencode/context/project/meta/standards-checklist.md
+         - Load command standards section
+      
+      2. For each command:
+         a. Validate frontmatter completeness
+            - Check name, agent, description, timeout
+            - Validate routing configuration
+            - Validate context_loading section
+         
+         b. Validate delegation pattern
+            - Command delegates to agent (not implements directly)
+            - Agent field points to orchestrator or specific agent
+            - Routing configuration specifies target agents
+         
+         c. Validate file size <300 lines
+            - Count lines in generated file
+            - If >300 lines: Use frontmatter delegation pattern
+         
+         d. Validate usage examples present
+            - Check for example section
+            - Verify examples are concrete and helpful
+         
+         e. Score against 10-point criteria
+            - Frontmatter completeness (2 points)
+            - Delegation pattern (2 points)
+            - File size <300 lines (2 points)
+            - Usage examples (2 points)
+            - Documentation quality (2 points)
+      
+      3. If any command scores <8/10:
+         a. Log issues and recommendations
+         b. Remediate issues
+         c. Re-validate and re-score
+      
+      4. Generate validation report
+    </process>
+    <standards_reference>
+      - .opencode/context/project/meta/standards-checklist.md
+      - .opencode/context/core/formats/command-structure.md
+      - .opencode/context/core/orchestration/routing.md
+    </standards_reference>
+    <output>
+      validation_report: {
+        commands: [{name, score, issues[], remediated[], passed}],
+        overall_score: number,
+        all_passed: boolean
+      }
+    </output>
+  </step_5_5>
 
   <step_6>
     <name>Stage 6: Create Command Usage Guide</name>

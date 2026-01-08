@@ -26,319 +26,23 @@ technical_debt:
 # TODO
 
 
----
-
 ## High Priority
 
 
-
-
-
-### 257. Completeness Proofs
- **Effort**: 70-90 hours
- **Status**: [PLANNED]
- **Priority**: Low
- **Language**: lean
- **Blocking**: Decidability
- **Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
-
-**Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.
-
-**Action Items**:
-1. Implement `lindenbaum` lemma (extend consistent sets to maximal consistent sets using Zorn's lemma).
-2. Prove properties of maximal consistent sets (deductive closure, negation completeness).
-3. Construct `canonical_frame` and prove frame properties (nullity, compositionality).
-4. Prove `truth_lemma` (correspondence between membership and truth).
-5. Prove `weak_completeness` and `strong_completeness`.
-
-**Files**:
-- `Logos/Core/Metalogic/Completeness.lean`
-
-**Acceptance Criteria**:
-- [ ] Lindenbaum lemma implemented
-- [ ] Maximal consistent set properties proven
-- [ ] Canonical frame constructed with frame properties
-- [ ] Truth lemma proven
-- [ ] Weak and strong completeness proven
-
-**Impact**: Completes the metalogic foundation for TM logic by proving completeness, enabling derivability from validity.
-
----
-
-### 260. Proof Search
-- **Effort**: 40-60 hours
-- **Status**: [BLOCKED]
-- **Started**: 2026-01-05
+### 334. Create LaTeX documentation for Logos system mirroring layer structure
+- **Effort**: 4-6 hours
+- **Status**: [RESEARCHING]
+- **Researched**: 2026-01-08
 - **Priority**: Medium
-- **Language**: lean
-- **Blocking**: Axiom refactor (Prop → Type) or Classical.choice research
-- **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/260_proof_search/reports/research-001.md)
-- **Plan**: [Implementation Plan](.opencode/specs/260_proof_search/plans/implementation-001.md)
-- **Implementation**: [Implementation Summary](.opencode/specs/260_proof_search/summaries/implementation-summary-20260105.md)
-
-**Description**: Implement automated proof search for TM logic.
-
-**Blocking Reason**: Phase 1 (Proof Term Construction) blocked by `Axiom` being `Prop` instead of `Type`. Cannot return `Option (Axiom φ)` from witness function. Need either: (1) Axiom refactor to Type, (2) Classical.choice approach, or (3) pivot to Phase 2 (Tactic Integration).
-
-**Action Items**:
-1. Implement breadth-first proof search.
-2. Implement heuristic-guided search.
-
-**Files**:
-- `Logos/Core/Automation/ProofSearch.lean`
-
-**Acceptance Criteria**:
-- [ ] Breadth-first proof search implemented
-- [ ] Heuristic-guided search implemented
-- [ ] Tests added for proof search
-- [ ] Performance benchmarks created
-- [ ] Documentation updated
-
-**Impact**: Enables automated proof discovery for TM logic, reducing manual proof construction effort.
-
----
-
-### 261. Decidability
-- **Effort**: 40-60 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Low
-- **Language**: lean
+- **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
 
-**Description**: Implement decision procedures for TM logic.
-
-**Action Items**:
-1. Implement tableau method.
-2. Implement satisfiability decision procedure.
-
-**Files**:
-- `Logos/Core/Metalogic/Decidability.lean` (to be created)
-
-**Acceptance Criteria**:
-- [ ] Tableau method implemented
-- [ ] Satisfiability decision procedure implemented
-- [ ] Tests added for decision procedures
-- [ ] Documentation updated
-
-**Impact**: Provides algorithmic decision procedures for TM logic validity and satisfiability.
+**Description**: Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ with a cleaned up structure that mirrors the Logos layers. The documentation should: (1) Create and import a subfile for each Logos layer, (2) Maintain the same formatting standards as the original LaTeX document, (3) Exclude problem sets, (4) Include standardized sections for each layer: Syntax extensions from previous layer, Semantic frames and models definitions, Proof system extensions from previous layer, Metalogical properties that have been established, (5) Compile definitions in a clear and concise way without proofs, (6) Provide minimal explanation, (7) Serve as a nicely formatted readable LaTeX reference for learning the Logos system without reading Lean code.
 
 ---
 
-### 262. ModalS5 Limitation
-- **Effort**: 2 hours
-- **Status**: [PLANNED]
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
 
-**Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/262_update_orchestrator_for_new_argument_mechanism/plans/implementation-001.md]
-
-**Description**: The theorem `diamond_mono_imp` in `ModalS5.lean` is marked with `sorry` because it is not valid as an object-level implication. This is a documented limitation.
-
-**Action Items**:
-1. Maintain documentation or find alternative formulation if possible.
-
-**Files**:
-- `Logos/Core/Theorems/ModalS5.lean`
-
-**Acceptance Criteria**:
-- [ ] Documentation maintained or alternative formulation found
-- [ ] SORRY_REGISTRY.md updated with justification
-
-**Impact**: Resolves documented limitation in ModalS5 theorems.
-
----
-
-### 263. Refactor Context.lean
-- **Effort**: 2-4 hours
-- **Status**: [PLANNED]
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: Task 264
-- **Dependencies**: None
-
-**Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/263_update_all_commands_for_new_argument_mechanism/plans/implementation-001.md]
-
-**Description**: Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4.
-
-**Files Affected**:
-- `Logos/Core/Syntax/Context.lean`
-- `LogosTest/Core/Syntax/ContextTest.lean`
-
-**Acceptance Criteria**:
-- [ ] The `Context.lean` file is refactored for clarity and performance.
-- [ ] All related tests in `ContextTest.lean` are updated and pass.
-- [ ] The refactoring adheres to the LEAN 4 style guide.
-- [ ] The public API of the `Context` module remains backward-compatible or changes are documented.
-
-**Impact**: Improves the maintainability and readability of a core component of the syntax package.
-
----
-
-### 264. Update Context References
-- **Effort**: 1-2 hours
-- **Status**: [PLANNED]
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: Task 263
-
-**Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/264_test_and_document_argument_passing/plans/implementation-001.md]
-
-**Files Affected**:
-- `Logos/Core/ProofSystem/Derivation.lean`
-- `Logos/Core/Metalogic/DeductionTheorem.lean`
-- Other files that import `Logos.Core.Syntax.Context`
-
-**Description**: After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary.
-
-**Acceptance Criteria**:
-- [ ] All references to the `Context` module are updated.
-- [ ] The project builds successfully after the updates.
-- [ ] All tests pass after the updates.
-
-**Impact**: Ensures that the entire codebase is compatible with the refactored `Context` module.
-
----
-
-## High Priority
-
-### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
-- **Effort**: 3 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Files Affected**:
-  - Logos/Core/Metalogic/Completeness.lean
-- **Description**: Formalize and prove the Lindenbaum maximal consistency lemma to eliminate the first axiom placeholder.
-- **Acceptance Criteria**:
-  - [ ] Lindenbaum lemma proven and axiom removed
-  - [ ] Proof integrates with existing canonical model scaffolding
-  - [ ] Related tests added or updated
-- **Impact**: Unlocks subsequent completeness proofs by establishing maximal consistency.
-
----
-
-### 133. Build canonical model constructors in Completeness.lean
-- **Effort**: 3 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: 132
-- **Files Affected**:
-  - Logos/Core/Metalogic/Completeness.lean
-- **Description**: Implement canonical model construction helpers and remove associated axiom stubs.
-- **Acceptance Criteria**:
-  - [ ] Canonical model constructors implemented
-  - [ ] Corresponding axiom placeholders removed
-  - [ ] Construction type-checks with existing definitions
-- **Impact**: Provides the core model for subsequent truth lemma proofs.
-
----
-
-### 134. Prove truth lemma structure in Completeness.lean
-- **Effort**: 3 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: 133
-- **Files Affected**:
-  - Logos/Core/Metalogic/Completeness.lean
-- **Description**: Prove the truth lemma for the canonical model, removing the corresponding axiom placeholder.
-- **Acceptance Criteria**:
-  - [ ] Truth lemma proven and axiom removed
-  - [ ] Proof integrates with canonical model components
-  - [ ] Tests (or placeholders) updated to exercise lemma
-- **Impact**: Establishes the key bridge between syntax and semantics for completeness.
-
----
-
-### 135. Remove provable_iff_valid sorry in Completeness.lean
-- **Effort**: 2 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: 132, 133, 134
-- **Files Affected**:
-  - Logos/Core/Metalogic/Completeness.lean
-- **Description**: Complete the `provable_iff_valid` theorem using the proven canonical model and truth lemma to eliminate the remaining sorry.
-- **Acceptance Criteria**:
-  - [ ] `provable_iff_valid` fully proven
-  - [ ] No remaining axiom or sorry placeholders in Completeness.lean
-  - [ ] Completeness tests added or updated
-- **Impact**: Delivers full completeness, enabling derivability from validity.
-
-### Decidability
-
----
-
-### 136. Design Decidability.lean architecture and signatures
-- **Effort**: 2 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Files Affected**:
-  - Logos/Core/Metalogic/Decidability.lean
-- **Description**: Define the module structure, main theorems, and function signatures for decidability (tableau and satisfiability checks).
-- **Acceptance Criteria**:
-  - [ ] Module skeleton with signatures for tableau and decision procedures
-  - [ ] Documentation comments outline intended algorithms
-  - [ ] No build warnings from new declarations
-- **Impact**: Establishes a foundation for future decidability proofs and implementations.
-
----
-
-### 137. Implement tableau core rules in Decidability.lean
-- **Effort**: 3 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: 136
-- **Files Affected**:
-  - Logos/Core/Metalogic/Decidability.lean
-- **Description**: Implement the core tableau expansion rules and supporting helpers for validity checking.
-- **Acceptance Criteria**:
-  - [ ] Tableau expansion rules implemented and type-checking
-  - [ ] Basic examples compile demonstrating rule application
-  - [ ] No placeholder axioms for these rules remain
-- **Impact**: Provides executable building blocks for the decision procedure.
-
----
-
-### 138. Implement satisfiability and validity decision procedure tests
-- **Effort**: 3 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: 136, 137
-- **Files Affected**:
-  - Logos/Core/Metalogic/Decidability.lean
-  - LogosTest/Metalogic/DecidabilityTest.lean (new or updated)
-- **Description**: Wire the tableau components into a decision procedure and add tests covering satisfiable and unsatisfiable cases.
-- **Acceptance Criteria**:
-  - [ ] Decision procedure implemented and compiles
-  - [ ] Tests cover satisfiable and unsatisfiable scenarios
-  - [ ] No remaining placeholder axioms in the decision procedure path
-- **Impact**: Delivers an initial, test-backed decision procedure for TM logic.
-
-### Layer Extensions (Future Planning)
-
----
 
 ### 139. Draft Layer 1 counterfactual operator plan
 - **Effort**: 2 hours
@@ -397,30 +101,101 @@ technical_debt:
 
 ---
 
-### 175. Establish CI/CD pipeline with automated testing and linting
-- **Effort**: 13 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Files Affected**:
-  - .github/workflows/ci.yml (new)
-  - .github/workflows/lint.yml (new)
-  - .github/workflows/coverage.yml (new)
-  - Documentation/Development/CI_CD_PROCESS.md (new)
-- **Description**: Create GitHub Actions workflows for continuous integration and deployment. Currently all tests run manually. CI/CD pipeline should run tests, linting, style checks, coverage reporting, and documentation build checks automatically on every pull request and commit.
-- **Acceptance Criteria**:
-  - [ ] GitHub Actions workflow for tests created and passing
-  - [ ] Linting and style checks integrated into CI
-  - [ ] Coverage reporting integrated into CI
-  - [ ] Documentation build checks integrated into CI
-  - [ ] CI runs on all pull requests and commits to main
-  - [ ] CI failure blocks merge
-  - [ ] CI/CD process documented in CI_CD_PROCESS.md
-- **Impact**: Ensures code quality automatically, prevents regressions, and enables confident merging of pull requests. Essential for maintaining production-ready code.
+
+### 317. Implement BFS variant for proof search completeness (Phase 3)
+ **Effort**: 10-15 hours
+ **Status**: [PLANNING]
+ **Researched**: 2026-01-07
+ **Planned**: 2026-01-07
+ **Priority**: Medium
+ **Language**: lean
+ **Blocking**: None
+ **Dependencies**: None
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/317_bfs_variant_phase3/reports/research-001.md]
+
+**Description**: Implement Phase 3 of task 260: BFS Variant. Add breadth-first search variant to ProofSearch.lean to ensure completeness guarantees. Current implementation uses bounded DFS which may miss proofs. BFS variant will explore search space level-by-level, guaranteeing shortest proofs are found first.
 
 ---
+
+### 318. ✓ Implement advanced heuristics for proof search performance (Phase 4)
+- **Effort**: 12-18 hours
+- **Status**: [PARTIAL]
+- **Started**: 2026-01-07
+- **Researched**: 2026-01-07
+- **Planned**: 2026-01-07
+- **Implementing**: 2026-01-08
+- **Completed**: 2026-01-08
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md]
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/plans/implementation-001.md]
+
+**Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-20260108.md]
+
+**Description**: Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.
+
+**Progress**: Phase 1 of 5 completed (sorting implementation). Remaining phases: Formula complexity metrics, domain-specific heuristics, weight tuning, integration testing.
+
+---
+
+### 319. Expand testing for proof search automation (Phase 5)
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks.
+
+---
+
+### 308. Final cleanup and comprehensive testing (5/5)
+- **Effort**: 15 minutes
+- **Status**: [REVISING]
+- **Priority**: Medium
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Complete final cleanup of any remaining cruft from files not reverted. Test all commands (/task, /meta, /todo, /review) comprehensively to ensure everything works correctly. Commit clean changes with proper documentation.
+
+---
+
+### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
+- **Effort**: 61-97 hours
+- **Status**: [REVISING]
+- **Started**: 2026-01-05
+- **Researched**: 2026-01-05
+- **Planned**: 2026-01-05
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Research**:
+  - [Initial Analysis](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-001.md)
+  - [Approach Comparison for AI Training](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-002.md)
+- **Plan**:
+  - [Implementation Plan](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md)
+
+**Description**: Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.
+
+**Research Findings** (2026-01-05):
+- **Initial Analysis**: Analyzed three approaches with viability ratings: (1) Classical.choice (3/10) - noncomputable and complex, (2) Refactor to Type (6/10) - high-risk breaking change, (3) Tactic-Mode (9/10) - highly recommended for immediate implementation.
+- **Follow-up Analysis**: Compared Approach 2 vs 3 for AI training data generation (DUAL_VERIFICATION.md). Key findings: (1) Approach 3 is standard in Lean 4 ecosystem (Mathlib, Aesop, Duper), (2) Both approaches fully compatible (hybrid strategy viable), (3) Approach 2 vastly superior for AI training (5/5 vs 0/5 on requirements). **Hybrid Recommendation**: Phase 1 - Implement Approach 3 (tactic) for immediate user value (28-44 hours), Phase 2 - Implement Approach 2 (programmatic API) for AI training pipeline (33-53 hours). Alternative: Skip Phase 1 if AI training is primary goal.
+
+---
+
+## Medium Priority
 
 ### 176. Enhance proof search with domain-specific heuristics and caching
 - **Effort**: 18 hours
@@ -622,127 +397,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-## Medium Priority
-
-### 334. Create LaTeX documentation for Logos system mirroring layer structure
-- **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ with a cleaned up structure that mirrors the Logos layers. The documentation should: (1) Create and import a subfile for each Logos layer, (2) Maintain the same formatting standards as the original LaTeX document, (3) Exclude problem sets, (4) Include standardized sections for each layer: Syntax extensions from previous layer, Semantic frames and models definitions, Proof system extensions from previous layer, Metalogical properties that have been established, (5) Compile definitions in a clear and concise way without proofs, (6) Provide minimal explanation, (7) Serve as a nicely formatted readable LaTeX reference for learning the Logos system without reading Lean code.
-
----
-
-
-### 317. Implement BFS variant for proof search completeness (Phase 3)
-- **Effort**: 10-15 hours
-- **Status**: [PLANNING]
-- **Researched**: 2026-01-07
-- **Planned**: 2026-01-07
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-
-**Research Artifacts**:
-  - Research Report: [.opencode/specs/317_bfs_variant_phase3/reports/research-001.md]
-
-**Description**: Implement Phase 3 of task 260: BFS Variant. Add breadth-first search variant to ProofSearch.lean to ensure completeness guarantees. Current implementation uses bounded DFS which may miss proofs. BFS variant will explore search space level-by-level, guaranteeing shortest proofs are found first.
-
----
-
-### 318. ✓ Implement advanced heuristics for proof search performance (Phase 4)
-- **Effort**: 12-18 hours
-- **Status**: [PARTIAL]
-- **Started**: 2026-01-07
-- **Researched**: 2026-01-07
-- **Planned**: 2026-01-07
-- **Implementing**: 2026-01-08
-- **Completed**: 2026-01-08
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-
-**Research Artifacts**:
-  - Research Report: [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md]
-
-**Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/plans/implementation-001.md]
-
-**Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-20260108.md]
-
-**Description**: Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.
-
-**Progress**: Phase 1 of 5 completed (sorting implementation). Remaining phases: Formula complexity metrics, domain-specific heuristics, weight tuning, integration testing.
-
----
-
-### 319. Expand testing for proof search automation (Phase 5)
-- **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks.
-
----
-
-### 308. Final cleanup and comprehensive testing (5/5)
-- **Effort**: 15 minutes
-- **Status**: [REVISING]
-- **Priority**: Medium
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Complete final cleanup of any remaining cruft from files not reverted. Test all commands (/task, /meta, /todo, /review) comprehensively to ensure everything works correctly. Commit clean changes with proper documentation.
-
----
-
-### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
-- **Effort**: 61-97 hours
-- **Status**: [REVISING]
-- **Started**: 2026-01-05
-- **Researched**: 2026-01-05
-- **Planned**: 2026-01-05
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: 
-  - [Initial Analysis](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-001.md)
-  - [Approach Comparison for AI Training](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-002.md)
-- **Plan**:
-  - [Implementation Plan](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md)
-
-**Description**: Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.
-
-**Research Findings** (2026-01-05): 
-- **Initial Analysis**: Analyzed three approaches with viability ratings: (1) Classical.choice (3/10) - noncomputable and complex, (2) Refactor to Type (6/10) - high-risk breaking change, (3) Tactic-Mode (9/10) - highly recommended for immediate implementation.
-- **Follow-up Analysis**: Compared Approach 2 vs 3 for AI training data generation (DUAL_VERIFICATION.md). Key findings: (1) Approach 3 is standard in Lean 4 ecosystem (Mathlib, Aesop, Duper), (2) Both approaches fully compatible (hybrid strategy viable), (3) Approach 2 vastly superior for AI training (5/5 vs 0/5 on requirements). **Hybrid Recommendation**: Phase 1 - Implement Approach 3 (tactic) for immediate user value (28-44 hours), Phase 2 - Implement Approach 2 (programmatic API) for AI training pipeline (33-53 hours). Alternative: Skip Phase 1 if AI training is primary goal.
-
----
-
-### 316. Implement tactic integration for modal_search tactic (Phase 2)
-- **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Implement Phase 2 of task 260: Tactic Integration. Create modal_search tactic that constructs proofs in tactic mode, avoiding Prop vs Type issues. This phase is prioritized over Phase 1 as it may be easier than programmatic proof term construction and is more useful for end users (interactive proof development). Integrate with existing ProofSearch.lean infrastructure.
-
----
-
-## Medium Priority
 
 
 ### 323. Fix /todo command to run markdown formatter after completion
@@ -766,7 +420,348 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
+### 316. Implement tactic integration for modal_search tactic (Phase 2)
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
 
+**Description**: Implement Phase 2 of task 260: Tactic Integration. Create modal_search tactic that constructs proofs in tactic mode, avoiding Prop vs Type issues. This phase is prioritized over Phase 1 as it may be easier than programmatic proof term construction and is more useful for end users (interactive proof development). Integrate with existing ProofSearch.lean infrastructure.
 
+---
 
+## Low Priority
 
+### 257. Completeness Proofs
+
+ **Effort**: 70-90 hours
+ **Status**: [PLANNED]
+ **Priority**: Low
+ **Language**: lean
+ **Blocking**: Decidability
+ **Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
+
+**Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.
+
+**Action Items**:
+1. Implement `lindenbaum` lemma (extend consistent sets to maximal consistent sets using Zorn's lemma).
+2. Prove properties of maximal consistent sets (deductive closure, negation completeness).
+3. Construct `canonical_frame` and prove frame properties (nullity, compositionality).
+4. Prove `truth_lemma` (correspondence between membership and truth).
+5. Prove `weak_completeness` and `strong_completeness`.
+
+**Files**:
+- `Logos/Core/Metalogic/Completeness.lean`
+
+**Acceptance Criteria**:
+- [ ] Lindenbaum lemma implemented
+- [ ] Maximal consistent set properties proven
+- [ ] Canonical frame constructed with frame properties
+- [ ] Truth lemma proven
+- [ ] Weak and strong completeness proven
+
+**Impact**: Completes the metalogic foundation for TM logic by proving completeness, enabling derivability from validity.
+
+---
+
+### 260. Proof Search
+- **Effort**: 40-60 hours
+- **Status**: [BLOCKED]
+- **Started**: 2026-01-05
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: Axiom refactor (Prop → Type) or Classical.choice research
+- **Dependencies**: None
+- **Research**: [Research Report](.opencode/specs/260_proof_search/reports/research-001.md)
+- **Plan**: [Implementation Plan](.opencode/specs/260_proof_search/plans/implementation-001.md)
+- **Implementation**: [Implementation Summary](.opencode/specs/260_proof_search/summaries/implementation-summary-20260105.md)
+
+**Description**: Implement automated proof search for TM logic.
+
+**Blocking Reason**: Phase 1 (Proof Term Construction) blocked by `Axiom` being `Prop` instead of `Type`. Cannot return `Option (Axiom φ)` from witness function. Need either: (1) Axiom refactor to Type, (2) Classical.choice approach, or (3) pivot to Phase 2 (Tactic Integration).
+
+**Action Items**:
+1. Implement breadth-first proof search.
+2. Implement heuristic-guided search.
+
+**Files**:
+- `Logos/Core/Automation/ProofSearch.lean`
+
+**Acceptance Criteria**:
+- [ ] Breadth-first proof search implemented
+- [ ] Heuristic-guided search implemented
+- [ ] Tests added for proof search
+- [ ] Performance benchmarks created
+- [ ] Documentation updated
+
+**Impact**: Enables automated proof discovery for TM logic, reducing manual proof construction effort.
+
+---
+
+### 261. Decidability
+- **Effort**: 40-60 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Implement decision procedures for TM logic.
+
+**Action Items**:
+1. Implement tableau method.
+2. Implement satisfiability decision procedure.
+
+**Files**:
+- `Logos/Core/Metalogic/Decidability.lean` (to be created)
+
+**Acceptance Criteria**:
+- [ ] Tableau method implemented
+- [ ] Satisfiability decision procedure implemented
+- [ ] Tests added for decision procedures
+- [ ] Documentation updated
+
+**Impact**: Provides algorithmic decision procedures for TM logic validity and satisfiability.
+
+---
+
+### 262. ModalS5 Limitation
+- **Effort**: 2 hours
+- **Status**: [COMPLETED] ✓
+- **Completed**: 2026-01-08
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/262_update_orchestrator_for_new_argument_mechanism/plans/implementation-001.md]
+
+**Implementation Artifacts**:
+  - Summary: [.opencode/specs/262_update_orchestrator_for_new_argument_mechanism/summaries/implementation-summary-20260108.md]
+
+**Description**: The theorem `diamond_mono_imp` in `ModalS5.lean` is marked with `sorry` because it is not valid as an object-level implication. This is a documented limitation.
+
+**Action Items**:
+1. Maintain documentation or find alternative formulation if possible.
+
+**Files**:
+- `Logos/Core/Theorems/ModalS5.lean`
+
+**Acceptance Criteria**:
+- [ ] Documentation maintained or alternative formulation found
+- [ ] SORRY_REGISTRY.md updated with justification
+
+**Impact**: Resolves documented limitation in ModalS5 theorems.
+
+---
+
+### 263. Refactor Context.lean
+- **Effort**: 2-4 hours
+- **Status**: [PLANNED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: Task 264
+- **Dependencies**: None
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/263_update_all_commands_for_new_argument_mechanism/plans/implementation-001.md]
+
+**Description**: Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4.
+
+**Files Affected**:
+- `Logos/Core/Syntax/Context.lean`
+- `LogosTest/Core/Syntax/ContextTest.lean`
+
+**Acceptance Criteria**:
+- [ ] The `Context.lean` file is refactored for clarity and performance.
+- [ ] All related tests in `ContextTest.lean` are updated and pass.
+- [ ] The refactoring adheres to the LEAN 4 style guide.
+- [ ] The public API of the `Context` module remains backward-compatible or changes are documented.
+
+**Impact**: Improves the maintainability and readability of a core component of the syntax package.
+
+---
+
+### 264. Update Context References
+- **Effort**: 1-2 hours
+- **Status**: [PLANNED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: Task 263
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/264_test_and_document_argument_passing/plans/implementation-001.md]
+
+**Files Affected**:
+- `Logos/Core/ProofSystem/Derivation.lean`
+- `Logos/Core/Metalogic/DeductionTheorem.lean`
+- Other files that import `Logos.Core.Syntax.Context`
+
+**Description**: After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary.
+
+**Acceptance Criteria**:
+- [ ] All references to the `Context` module are updated.
+- [ ] The project builds successfully after the updates.
+- [ ] All tests pass after the updates.
+
+**Impact**: Ensures that the entire codebase is compatible with the refactored `Context` module.
+
+---
+
+### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Logos/Core/Metalogic/Completeness.lean
+- **Description**: Formalize and prove the Lindenbaum maximal consistency lemma to eliminate the first axiom placeholder.
+- **Acceptance Criteria**:
+  - [ ] Lindenbaum lemma proven and axiom removed
+  - [ ] Proof integrates with existing canonical model scaffolding
+  - [ ] Related tests added or updated
+- **Impact**: Unlocks subsequent completeness proofs by establishing maximal consistency.
+
+---
+
+### 133. Build canonical model constructors in Completeness.lean
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 132
+- **Files Affected**:
+  - Logos/Core/Metalogic/Completeness.lean
+- **Description**: Implement canonical model construction helpers and remove associated axiom stubs.
+- **Acceptance Criteria**:
+  - [ ] Canonical model constructors implemented
+  - [ ] Corresponding axiom placeholders removed
+  - [ ] Construction type-checks with existing definitions
+- **Impact**: Provides the core model for subsequent truth lemma proofs.
+
+---
+
+### 134. Prove truth lemma structure in Completeness.lean
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 133
+- **Files Affected**:
+  - Logos/Core/Metalogic/Completeness.lean
+- **Description**: Prove the truth lemma for the canonical model, removing the corresponding axiom placeholder.
+- **Acceptance Criteria**:
+  - [ ] Truth lemma proven and axiom removed
+  - [ ] Proof integrates with canonical model components
+  - [ ] Tests (or placeholders) updated to exercise lemma
+- **Impact**: Establishes the key bridge between syntax and semantics for completeness.
+
+---
+
+### 135. Remove provable_iff_valid sorry in Completeness.lean
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 132, 133, 134
+- **Files Affected**:
+  - Logos/Core/Metalogic/Completeness.lean
+- **Description**: Complete the `provable_iff_valid` theorem using the proven canonical model and truth lemma to eliminate the remaining sorry.
+- **Acceptance Criteria**:
+  - [ ] `provable_iff_valid` fully proven
+  - [ ] No remaining axiom or sorry placeholders in Completeness.lean
+  - [ ] Completeness tests added or updated
+- **Impact**: Delivers full completeness, enabling derivability from validity.
+
+### Decidability
+
+---
+
+### 136. Design Decidability.lean architecture and signatures
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Logos/Core/Metalogic/Decidability.lean
+- **Description**: Define the module structure, main theorems, and function signatures for decidability (tableau and satisfiability checks).
+- **Acceptance Criteria**:
+  - [ ] Module skeleton with signatures for tableau and decision procedures
+  - [ ] Documentation comments outline intended algorithms
+  - [ ] No build warnings from new declarations
+- **Impact**: Establishes a foundation for future decidability proofs and implementations.
+
+---
+
+### 137. Implement tableau core rules in Decidability.lean
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 136
+- **Files Affected**:
+  - Logos/Core/Metalogic/Decidability.lean
+- **Description**: Implement the core tableau expansion rules and supporting helpers for validity checking.
+- **Acceptance Criteria**:
+  - [ ] Tableau expansion rules implemented and type-checking
+  - [ ] Basic examples compile demonstrating rule application
+  - [ ] No placeholder axioms for these rules remain
+- **Impact**: Provides executable building blocks for the decision procedure.
+
+---
+
+### 138. Implement satisfiability and validity decision procedure tests
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 136, 137
+- **Files Affected**:
+  - Logos/Core/Metalogic/Decidability.lean
+  - LogosTest/Metalogic/DecidabilityTest.lean (new or updated)
+- **Description**: Wire the tableau components into a decision procedure and add tests covering satisfiable and unsatisfiable cases.
+- **Acceptance Criteria**:
+  - [ ] Decision procedure implemented and compiles
+  - [ ] Tests cover satisfiable and unsatisfiable scenarios
+  - [ ] No remaining placeholder axioms in the decision procedure path
+- **Impact**: Delivers an initial, test-backed decision procedure for TM logic.
+
+---
+
+### 175. Establish CI/CD pipeline with automated testing and linting
+- **Effort**: 13 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .github/workflows/ci.yml (new)
+  - .github/workflows/lint.yml (new)
+  - .github/workflows/coverage.yml (new)
+  - Documentation/Development/CI_CD_PROCESS.md (new)
+- **Description**: Create GitHub Actions workflows for continuous integration and deployment. Currently all tests run manually. CI/CD pipeline should run tests, linting, style checks, coverage reporting, and documentation build checks automatically on every pull request and commit.
+- **Acceptance Criteria**:
+  - [ ] GitHub Actions workflow for tests created and passing
+  - [ ] Linting and style checks integrated into CI
+  - [ ] Coverage reporting integrated into CI
+  - [ ] Documentation build checks integrated into CI
+  - [ ] CI runs on all pull requests and commits to main
+  - [ ] CI failure blocks merge
+  - [ ] CI/CD process documented in CI_CD_PROCESS.md
+- **Impact**: Ensures code quality automatically, prevents regressions, and enables confident merging of pull requests. Essential for maintaining production-ready code.
+
+---

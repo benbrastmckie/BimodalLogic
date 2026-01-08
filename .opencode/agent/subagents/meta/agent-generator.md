@@ -31,6 +31,7 @@ context_loading:
     - "core/templates/orchestrator-template.md"
     - "project/meta/architecture-principles.md"
     - "project/meta/context-revision-guide.md"
+    - "project/meta/standards-checklist.md"
   max_context_size: 40000
 delegation:
   max_depth: 3
@@ -181,27 +182,89 @@ lifecycle:
   </step_4>
 
   <step_5>
-    <name>Stage 5: Validate Agent Quality</name>
-    <action>Validate agent quality</action>
+    <name>Stage 5: Validate Against Standards</name>
+    <action>Validate all agents against standards checklist</action>
     <process>
-      1. Score each agent against 10-point criteria
-      2. Check for completeness (all required sections)
-      3. Verify executability (routing logic is implementable)
-      4. Validate consistency (similar patterns across agents)
-      5. Test readability (clear and understandable)
+      1. Load standards checklist from context
+         - Reference: .opencode/context/project/meta/standards-checklist.md
+         - Load agent standards section
+      
+      2. For each agent (orchestrator + subagents):
+         a. Validate frontmatter completeness
+            - Check all required fields present
+            - Validate context_loading section
+            - Validate delegation section
+            - Validate lifecycle section
+            - Validate permissions section
+         
+         b. Validate XML structure and component ordering
+            - Check <context> section (15-25% of prompt)
+            - Check <role> section (5-10% of prompt)
+            - Check <task> section present
+            - Check <workflow_execution> section with 8 stages
+            - Check <constraints> section present
+            - Check <validation_checks> section present
+         
+         c. Validate 8-stage workflow pattern
+            - Stage 1: Input validation
+            - Stages 2-6: Core work
+            - Stage 7: Postflight (status updates, git commits)
+            - Stage 8: Return standardized result
+            - Each stage has: name, action, process, output
+         
+         d. Validate delegation patterns
+            - @ symbol pattern used
+            - Context levels specified
+            - Delegation depth tracked
+            - can_delegate_to list correct
+         
+         e. Validate file size within limits
+            - Orchestrators: 300-600 lines (target 450)
+            - Subagents: 200-600 lines (target 400)
+         
+         f. Score against 10-point criteria
+            - Frontmatter completeness (2 points)
+            - XML structure (2 points)
+            - Workflow pattern (2 points)
+            - Delegation pattern (2 points)
+            - File size (2 points)
+      
+      3. If any agent scores <8/10:
+         a. Log issues and recommendations
+         b. Remediate issues:
+            - Add missing frontmatter fields
+            - Fix XML structure
+            - Correct workflow stages
+            - Fix delegation patterns
+            - Adjust file size if needed
+         c. Re-validate
+         d. Re-score
+      
+      4. Generate validation report
+         - Overall score for each agent
+         - Issues found and remediated
+         - Final pass/fail status
     </process>
+    <standards_reference>
+      - .opencode/context/project/meta/standards-checklist.md
+      - .opencode/context/core/workflows/command-lifecycle.md
+      - .opencode/context/core/orchestration/routing.md
+      - .opencode/context/core/formats/subagent-return.md
+    </standards_reference>
     <scoring_criteria>
-      <structure>Component order and ratios optimal (2 points)</structure>
-      <context>Hierarchical and complete (2 points)</context>
-      <routing>@ symbol pattern with context levels (2 points)</routing>
-      <workflow>Clear stages with checkpoints (2 points)</workflow>
-      <validation>Pre/post flight checks present (2 points)</validation>
+      <frontmatter>All required fields present and valid (2 points)</frontmatter>
+      <xml_structure>Optimal component ordering and ratios (2 points)</xml_structure>
+      <workflow>8-stage pattern with Postflight and Return (2 points)</workflow>
+      <delegation>@ symbol pattern with context levels (2 points)</delegation>
+      <file_size>Within target range (2 points)</file_size>
       <threshold>Must score 8+/10 to pass</threshold>
     </scoring_criteria>
     <output>
       validation_report: {
-        orchestrator: {score, issues[], recommendations[]},
-        subagents: [{name, score, issues[], recommendations[]}]
+        orchestrator: {score, issues[], remediated[], passed},
+        subagents: [{name, score, issues[], remediated[], passed}],
+        overall_score: number,
+        all_passed: boolean
       }
     </output>
   </step_5>
