@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-07T23:39:57Z",
+  "_last_updated": "2026-01-08T07:50:00Z",
   "archived_projects": [
     {
       "project_number": 126,
@@ -1636,7 +1636,7 @@
         ".opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md",
         ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md"
       ],
-      "research_summary": "Comprehensive revision plan to align /meta command with research \u2192 plan \u2192 implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
+      "research_summary": "Comprehensive revision plan to align /meta command with research → plan → implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
       "estimated_hours": 13.0,
       "plan_created": "2026-01-03",
       "plan_path": ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md",
@@ -2326,6 +2326,45 @@
       "abandoned": "2026-01-07",
       "abandonment_reason": "User requested abandonment",
       "archived": "2026-01-07T23:39:57Z"
+    },
+    {
+      "project_number": 259,
+      "project_name": "automation_tactics",
+      "type": "feature",
+      "status": "abandoned",
+      "created": "2026-01-04T00:00:00Z",
+      "abandoned": "2026-01-06",
+      "archived": "2026-01-08T07:50:00Z",
+      "summary": "Research completed on automation tactics implementation. Found 10/12 tactics fully implemented (83% complete), 2 tactics with infrastructure ready but delegating to tm_auto. Aesop integration functional with 2 noncomputable errors. ProofSearch.lean provides production-ready bounded search infrastructure (461 lines). Revised effort estimate: 17-23 hours (down from 40-60 hours).",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/259_automation_tactics/"
+      }
+    },
+    {
+      "project_number": 327,
+      "project_name": "review_context_file_references_and_optimize_context_loading_strategy",
+      "type": "feature",
+      "status": "completed",
+      "created": "2026-01-06T00:00:00Z",
+      "completed": "2026-01-06",
+      "archived": "2026-01-08T07:50:00Z",
+      "summary": "Fixed 45 broken context references, created validation infrastructure, documented best practices (1000+ lines), optimized context loading (91% command coverage)",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/327_review_context_file_references_and_optimize_context_loading_strategy/"
+      }
+    },
+    {
+      "project_number": 333,
+      "project_name": "fix_workflow_command_todo_md_state_json_synchronization_failures",
+      "type": "bugfix",
+      "status": "completed",
+      "created": "2026-01-06T00:00:00Z",
+      "completed": "2026-01-06",
+      "archived": "2026-01-08T07:50:00Z",
+      "summary": "Verification that all subagent specifications already implement correct status-sync-manager delegation pattern",
+      "artifacts": {
+        "base_path": ".opencode/specs/archive/333_fix_workflow_command_todo_md_state_json_synchronization_failures/"
+      }
     }
   ],
   "last_updated": "2026-01-05T08:36:08.881111Z"

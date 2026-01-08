@@ -25,31 +25,13 @@ technical_debt:
 
 # TODO
 
+
+---
+
 ## High Priority
 
 
 
-### 333. Fix workflow command TODO.md/state.json synchronization failures
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-06
-- **Planned**: 2026-01-06
-- **Completed**: 2026-01-06
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Research Artifacts**:
-  - Research Report: [.opencode/specs/333_fix_workflow_command_todo_md_state_json_synchronization_failures/reports/research-001.md]
-  - Implementation Plan: [.opencode/specs/333_fix_workflow_command_todo_md_state_json_synchronization_failures/plans/implementation-001.md]
-
-**Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/333_fix_workflow_command_todo_md_state_json_synchronization_failures/summaries/implementation-summary-20260106.md]
-
-**Description**: Systematically fix persistent synchronization failures in /research, /plan, /revise, and /implement commands where manual file manipulation (sed/awk) fails silently, leaving TODO.md unchanged while state.json updates successfully. Root cause identified in root-cause-analysis-todo-state-sync-failures.md: commands don't delegate to status-sync-manager for atomic updates. Solution: Add postflight stage to all workflow commands that delegates to status-sync-manager with validated_artifacts array, ensuring both files update atomically or neither updates. This addresses the architectural requirement that state.json and TODO.md must be kept in sync via status-sync-manager's two-phase commit protocol.
-
----
 
 
 ### 257. Completeness Proofs
@@ -674,10 +656,11 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 318. Implement advanced heuristics for proof search performance (Phase 4)
 - **Effort**: 12-18 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-07
 - **Researched**: 2026-01-07
 - **Planned**: 2026-01-07
+- **Implementing**: 2026-01-08
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -779,40 +762,5 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 
 
-### 259. Automation Tactics
-- **Effort**: 20.0
-- **Status**: [ABANDONED]
-- **Priority**: Medium
-- **Language**: lean
-- **Artifacts**:
-  - .opencode/specs/259_automation_tactics/reports/research-001.md
-  - .opencode/specs/259_automation_tactics/plans/implementation-001.md
-
-**Description**: Task 259
-
----
 
 
-### 327. Review context file references and optimize context loading strategy
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-06
-- **Planned**: 2026-01-06
-- **Completed**: 2026-01-06
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Research Artifacts**:
-  - Research Report: [.opencode/specs/327_review_context_file_references_and_optimize_context_loading_strategy/reports/research-001.md]
-
-**Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/327_review_context_file_references_and_optimize_context_loading_strategy/plans/implementation-001.md]
-
-**Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/327_review_context_file_references_and_optimize_context_loading_strategy/summaries/implementation-summary-001.md]
-
-**Description**: Verify that all context file references are current and valid following task 314 implementation. Conduct systematic review of context loading patterns across commands and agents to identify opportunities for optimization. Goals: (1) Eliminate broken references to deprecated context files, (2) Prevent context bloating by loading only necessary context, (3) Ensure sufficient context is loaded for each operation type, (4) Document context loading best practices.
-
----
