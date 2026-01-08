@@ -98,154 +98,68 @@ lifecycle:
 </inputs_forbidden>
 
 <process_flow>
-  <step_0_preflight>
-    <action>Preflight: Extract validated inputs and update status to [RESEARCHING]</action>
-    <process>
-      CRITICAL TIMING REQUIREMENT: This step MUST complete BEFORE step_1 begins.
-      
-      1. Extract task inputs from delegation context (already parsed and validated by command file):
-         - task_number: Integer (already validated to exist in TODO.md)
-         - language: String (should be "lean" for this agent)
-         - task_description: String (already extracted from TODO.md)
-         - Example: task_number=271, language="lean", task_description="Research Lean tactics"
-         
-         NOTE: Command file (/research) has already:
-         - Parsed task_number from $ARGUMENTS
-         - Validated task_number exists in TODO.md
-         - Extracted language from task metadata
-         - Routed to lean-research-agent because language="lean"
-         - Extracted task description
-         
-         No re-parsing or re-validation needed!
-      
-      2. Delegate to status-sync-manager (REQUIRED - DO NOT SKIP):
-         
-         INVOKE status-sync-manager:
-           Prepare delegation context:
-           {
-             "operation": "update_status",
-             "task_number": {task_number},
-             "new_status": "researching",
-             "timestamp": "$(date -I)",
-             "session_id": "{session_id}",
-             "delegation_depth": {depth + 1},
-             "delegation_path": [...delegation_path, "status-sync-manager"]
-           }
-           
-           Execute delegation with timeout: 60s
-           
-           WAIT for status-sync-manager to return (maximum 60s)
-           
-           VERIFY return:
-             - status == "completed" (if "failed", abort with error)
-             - files_updated includes [".opencode/specs/TODO.md", "state.json"]
-           
-           IF status != "completed":
-             - Log error: "Preflight status update failed: {error_message}"
-             - Return status: "failed"
-             - DO NOT proceed to step_1
-      
-      3. Verify status was actually updated (defense in depth):
-         
-         Read state.json to verify status:
-           actual_status=$(jq -r --arg num "$task_number" \
-             '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-             .opencode/specs/state.json)
-         
-         IF actual_status != "researching":
-           - Log error: "Preflight verification failed - status not updated"
-           - Log: "Expected: researching, Actual: $actual_status"
-           - Return status: "failed"
-           - DO NOT proceed to step_1
-      
-      4. Proceed to step_1 (Lean research work begins)
-    </process>
-    <status_marker_update>
-      Update .opencode/specs/TODO.md:
-      - Find task by task_number
-      - Change **Status**: [NOT STARTED] → **Status**: [RESEARCHING]
-      - Add **Started**: {current_date} (YYYY-MM-DD format)
-      - Preserve all other task metadata
-      
-      Example:
-      ```markdown
-      ### 195. LeanSearch API Integration
-      **Status**: [RESEARCHING]
-      **Started**: 2025-12-28
-      **Priority**: High
-      **Effort**: 8 hours
-      ```
-    </status_marker_update>
-    <tool_status>
-      LOOGLE CLI: INTEGRATED (Task 197)
-      - Binary path: /home/benjamin/.cache/loogle/.lake/build/bin/loogle
-      - Index path: ~/.cache/lean-research-agent/loogle-mathlib.index
-      - Mode: Persistent interactive mode with JSON output
-      - Startup timeout: 180s (index build on first run)
-      - Query timeout: 10s per query
-      
-      MCP SEARCH TOOLS: CONFIGURED (Task 218)
-      - lean-lsp-mcp_loogle: Type-based search (rate limited 3 req/30s)
-      - lean-lsp-mcp_leansearch: Natural language search (rate limited 3 req/30s)
-      - lean-lsp-mcp_local_search: Local project search (no rate limit)
-      - lean-lsp-mcp_leanfinder: Semantic search (rate limited 3 req/30s)
-      - lean-lsp-mcp_state_search: Premise search (rate limited 3 req/30s)
-      
-      FALLBACK: Web search for Lean 4 documentation and mathlib
-    </tool_status>
-    <loogle_initialization>
-      1. Check binary exists at /home/benjamin/.cache/loogle/.lake/build/bin/loogle
-      2. Check index freshness at ~/.cache/lean-research-agent/loogle-mathlib.index
-      3. If index missing or stale (> 7 days):
-         - Build index with --write-index flag
-         - Timeout: 180s for index build
-      4. Start Loogle in interactive mode:
-         - Command: loogle --json --interactive --read-index {index_path}
-         - Wait for "Loogle is ready.\n" on stdout
-         - Timeout: 180s for startup
-      5. Set loogle_available = true if successful
-      6. If any step fails:
-         - Log error to errors.json
-         - Set loogle_available = false
-         - Continue with web search fallback
-    </loogle_initialization>
-    <validation>Task validated, status updated to [RESEARCHING]</validation>
-    <error_handling>
-      If task_number not provided or invalid:
-        Return status "failed" with error:
-        - type: "validation_failed"
-        - message: "Task number not provided or invalid. Expected positive integer."
-        - recommendation: "Provide task number as first argument (e.g., /research 267)"
-      
-      If task not found:
-        Return status "failed" with error:
-        - type: "validation_failed"
-        - message: "Task {task_number} not found in TODO.md"
-        - recommendation: "Verify task number exists in TODO.md"
-      
-      If status update fails:
-        Return status "failed" with error:
-        - type: "status_update_failed"
-        - message: "Failed to update status to [RESEARCHING]"
-        - recommendation: "Check status-sync-manager logs and retry"
-    </error_handling>
-    <output>Task validated, status updated to [RESEARCHING], Lean context loaded</output>
-  </step_0_preflight>
+  <note>
+    ARCHITECTURAL CHANGE (2026-01-07):
+    Preflight and postflight are now handled by the /research command file.
+    This subagent focuses on core research work and artifact creation only.
+    
+    This change addresses the root cause identified in workflow-command-refactor-plan.md:
+    "Commands don't own status updates - they delegate to subagents and hope 
+    the subagents update status correctly."
+    
+    By moving status updates to the command level, we ensure:
+    - Guaranteed preflight (status updates to RESEARCHING before work starts)
+    - Guaranteed postflight (status updates to RESEARCHED after work completes)
+    - No more manual fixes like Task 326
+  </note>
+  
+  <tool_status>
+    LOOGLE CLI: INTEGRATED (Task 197)
+    - Binary path: /home/benjamin/.cache/loogle/.lake/build/bin/loogle
+    - Index path: ~/.cache/lean-research-agent/loogle-mathlib.index
+    - Mode: Persistent interactive mode with JSON output
+    - Startup timeout: 180s (index build on first run)
+    - Query timeout: 10s per query
+    
+    MCP SEARCH TOOLS: CONFIGURED (Task 218)
+    - lean-lsp-mcp_loogle: Type-based search (rate limited 3 req/30s)
+    - lean-lsp-mcp_leansearch: Natural language search (rate limited 3 req/30s)
+    - lean-lsp-mcp_local_search: Local project search (no rate limit)
+    - lean-lsp-mcp_leanfinder: Semantic search (rate limited 3 req/30s)
+    - lean-lsp-mcp_state_search: Premise search (rate limited 3 req/30s)
+    
+    FALLBACK: Web search for Lean 4 documentation and mathlib
+  </tool_status>
 
-  <step_1>
-    <action>Determine research strategy and initialize tools</action>
+  <step_1_initialize_tools>
+    <action>Initialize research tools and determine strategy</action>
     <process>
       1. Load domain context (modal logic, temporal logic, epistemic, etc.)
-      2. MCP tools configured via opencode.json (no manual check needed)
-      3. Tools available automatically if lean-lsp-mcp server running
-      4. Determine research strategy based on available tools
+      2. Initialize Loogle client if available:
+         a. Check binary exists at /home/benjamin/.cache/loogle/.lake/build/bin/loogle
+         b. Check index freshness at ~/.cache/lean-research-agent/loogle-mathlib.index
+         c. If index missing or stale (> 7 days):
+            - Build index with --write-index flag
+            - Timeout: 180s for index build
+         d. Start Loogle in interactive mode:
+            - Command: loogle --json --interactive --read-index {index_path}
+            - Wait for "Loogle is ready.\n" on stdout
+            - Timeout: 180s for startup
+         e. Set loogle_available = true if successful
+         f. If any step fails:
+            - Log error to errors.json
+            - Set loogle_available = false
+            - Continue with web search fallback
+      3. MCP tools configured via opencode.json (no manual check needed)
+      4. Tools available automatically if lean-lsp-mcp server running
+      5. Determine research strategy based on available tools
     </process>
     <validation>Research strategy determined and tools initialized</validation>
     <output>Lean context, Loogle client (if available), and research strategy</output>
-  </step_1>
+  </step_1_initialize_tools>
 
-  <step_2>
-    <action>Analyze research topic</action>
+  <step_2_analyze_topic>
+    <action>Analyze research topic and plan approach</action>
     <process>
       1. Parse Lean-specific keywords (theorems, tactics, types, etc.)
       2. Identify relevant Lean libraries (mathlib, Logos, etc.)
@@ -259,9 +173,9 @@ lifecycle:
     </examples>
     <validation>Research scope is clear and focused</validation>
     <output>Research plan with focused areas</output>
-  </step_2>
+  </step_2_analyze_topic>
 
-  <step_3>
+  <step_3_conduct_research>
     <action>Conduct Lean library research</action>
     <process>
       PRIMARY IMPLEMENTATION (MCP search tools + Loogle CLI):
@@ -458,7 +372,7 @@ lifecycle:
     <output>Lean library research results (Loogle + web search)</output>
   </step_3>
 
-  <step_4>
+  <step_4_create_artifacts>
     <action>Create research artifacts</action>
     <process>
       1. Create project directory structure (lazy creation):
@@ -548,8 +462,77 @@ lifecycle:
     <output>Research report with Loogle attribution</output>
   </step_4>
 
-  <step_5>
-    <action>Log tool unavailability if applicable</action>
+  <step_5_validate_and_return>
+    <action>Validate artifact and return standardized result</action>
+    <process>
+      1. Validate research artifact created successfully:
+         a. Verify research-001.md exists on disk
+         b. Verify research-001.md is non-empty (size > 0)
+         c. If validation fails: Return failed status with error
+      2. Prepare artifact metadata:
+         - type: "research"
+         - path: ".opencode/specs/{task_number}_{topic_slug}/reports/research-001.md"
+         - summary: "Detailed Lean library research report with Loogle findings"
+      3. Create brief summary for return object (3-5 sentences, <100 tokens):
+         - This is METADATA in return object, NOT a separate artifact file
+         - Keep concise for orchestrator context window protection
+         - Focus on counts (definitions, theorems, tactics found)
+         - Mention tool usage (Loogle, web search)
+         - Avoid verbose content duplication
+      4. Log tool unavailability if applicable:
+         IF Loogle not available:
+           1. Create error entry in errors.json:
+              {
+                "id": "error_{timestamp}_{random}",
+                "timestamp": "{current_time}",
+                "type": "tool_unavailable",
+                "severity": "medium",
+                "context": {
+                  "command": "research",
+                  "task_number": {task_number},
+                  "agent": "lean-research-agent",
+                  "tool": "loogle"
+                },
+                "message": "Loogle CLI not available, using web search fallback",
+                "fix_status": "not_addressed",
+                "fix_plan_ref": null,
+                "fix_task_ref": "Task 197: Integrate Loogle CLI tool",
+                "recurrence_count": 1,
+                "first_seen": "{current_time}",
+                "last_seen": "{current_time}"
+              }
+           2. Continue with fallback (don't fail research)
+           3. Include warning in return object
+         
+         IF LeanExplore/LeanSearch not available:
+           1. Log to errors.json (separate entries)
+           2. Note: These tools are not yet integrated (future work)
+           3. DO NOT log as errors if Loogle is working
+      5. Format return following subagent-return-format.md:
+         - status: "completed" (or "failed" if errors)
+         - summary: "Researched Lean libraries for {topic}. Found {N} relevant definitions, {M} theorems, {K} tactics. Used Loogle for type-based search."
+         - artifacts: [{type: "research", path, summary}]
+         - metadata: {session_id, duration_seconds, agent_type, delegation_depth, delegation_path}
+         - errors: [] (or error details if failures)
+         - next_steps: "Review research findings and create implementation plan"
+      6. Include tool unavailability warning if applicable
+      7. Include session_id from input
+      8. Include metadata (duration, delegation info, validation result)
+      9. Return status: completed (normal) or partial (if no findings)
+    </process>
+    <validation>
+      Final validation before returning:
+      - Return format matches subagent-return-format.md
+      - Summary field within token limit (<100 tokens, ~400 chars)
+      - Artifacts array includes research report only
+      - Metadata includes all required fields
+      - Errors array populated if any failures occurred
+    </validation>
+    <output>Standardized return object with validated research report and brief summary metadata</output>
+  </step_5_validate_and_return>
+  
+  <deprecated_step_5>
+    <action>DEPRECATED: Log tool unavailability if applicable</action>
     <process>
       IF Loogle not available:
         1. Create error entry in errors.json:
@@ -625,121 +608,8 @@ lifecycle:
       - Timeout: Log timeout, continue with next tool
       - Connection error: Log error, fall back to Loogle CLI or web search
     </graceful_degradation>
-    <output>Error logged if tools unavailable</output>
-  </step_5>
-
-  <step_6>
-    <action>Validate artifact and prepare for postflight</action>
-    <process>
-      1. Validate research artifact created successfully:
-         a. Verify research-001.md exists on disk
-         b. Verify research-001.md is non-empty (size > 0)
-         c. If validation fails: Return failed status with error
-      2. Prepare artifact metadata:
-         - type: "research"
-         - path: ".opencode/specs/{task_number}_{topic_slug}/reports/research-001.md"
-         - summary: "Detailed Lean library research report with Loogle findings"
-      3. Create brief summary for return object (3-5 sentences, <100 tokens):
-         - This is METADATA in return object, NOT a separate artifact file
-         - Keep concise for orchestrator context window protection
-         - Focus on counts (definitions, theorems, tactics found)
-         - Mention tool usage (Loogle, web search)
-         - Avoid verbose content duplication
-      4. Prepare validated_artifacts array for status-sync-manager:
-         - Include research report with full path
-         - Include artifact type and summary
-      5. Calculate duration_seconds from start time
-    </process>
-    <validation>
-      Before proceeding to Step 7:
-      - Verify research-001.md exists and is non-empty
-      - Verify summary field in return object is brief (<100 tokens, ~400 chars)
-      - Verify validated_artifacts array populated
-      
-      If validation fails:
-      - Log validation error with details
-      - Return status: "failed"
-      - Include error in errors array with type "validation_failed"
-      - Recommendation: "Fix artifact creation and retry"
-    </validation>
-    <output>Validated artifact metadata and brief summary</output>
-  </step_6>
-
-  <step_7>
-    <action>Postflight: Update status to [RESEARCHED], link report, create git commit</action>
-    <process>
-      1. Generate completion timestamp: $(date -I)
-      2. Invoke status-sync-manager to mark [RESEARCHED]:
-         a. Prepare delegation context:
-            - task_number: {number}
-            - new_status: "researched"
-            - timestamp: {date}
-            - session_id: {session_id}
-            - delegation_depth: {depth + 1}
-            - delegation_path: [...delegation_path, "status-sync-manager"]
-            - validated_artifacts: [{type, path, summary}]
-         b. Invoke status-sync-manager with timeout (60s)
-         c. Validate return status == "completed"
-         d. Verify files_updated includes ["TODO.md", "state.json"]
-         e. Verify artifact linked in TODO.md
-         f. If status update fails: Log error but continue (artifact exists)
-      3. Invoke git-workflow-manager to create commit:
-         a. Prepare delegation context:
-            - scope_files: [
-                "{research_report_path}",
-                ".opencode/specs/TODO.md",
-                ".opencode/specs/state.json",
-                ".opencode/specs/{task_number}_{slug}/state.json"
-              ]
-            - message_template: "task {number}: research completed"
-            - task_context: {
-                task_number: {number},
-                description: "research completed"
-              }
-            - session_id: {session_id}
-            - delegation_depth: {depth + 1}
-            - delegation_path: [...delegation_path, "git-workflow-manager"]
-         b. Invoke git-workflow-manager with timeout (120s)
-         c. Validate return status (completed or failed)
-         d. If status == "completed": Log commit hash
-         e. If status == "failed": Log warning (non-critical, don't fail research)
-      4. Log postflight completion
-    </process>
-    <git_failure_handling>
-      If git commit fails:
-      - Log warning to errors array
-      - Include manual recovery instructions
-      - DO NOT fail research command (git failure is non-critical)
-      - Continue to Step 8 (Return)
-    </git_failure_handling>
-    <output>Status updated to [RESEARCHED], report linked, git commit created (or warning logged)</output>
-  </step_7>
-
-  <step_8>
-    <action>Return: Format and return standardized result</action>
-    <process>
-      1. Format return following subagent-return-format.md:
-         - status: "completed" (or "failed" if errors)
-         - summary: "Researched Lean libraries for {topic}. Found {N} relevant definitions, {M} theorems, {K} tactics. Used Loogle for type-based search."
-         - artifacts: [{type: "research", path, summary}]
-         - metadata: {session_id, duration_seconds, agent_type, delegation_depth, delegation_path}
-         - errors: [] (or error details if failures)
-         - next_steps: "Review research findings and create implementation plan"
-      2. Include tool unavailability warning if applicable
-      3. Include session_id from input
-      4. Include metadata (duration, delegation info, validation result)
-      5. Return status: completed (normal) or partial (if no findings)
-    </process>
-    <validation>
-      Final validation before returning:
-      - Return format matches subagent-return-format.md
-      - Summary field within token limit (<100 tokens, ~400 chars)
-      - Artifacts array includes research report only
-      - Metadata includes all required fields
-      - Errors array populated if any failures occurred
-    </validation>
-    <output>Standardized return object with validated research report and brief summary metadata</output>
-  </step_8>
+    <output>DEPRECATED - merged into step_5_validate_and_return</output>
+  </deprecated_step_5>
 
     <return_format>
       ```json
@@ -786,22 +656,14 @@ lifecycle:
       Loogle is available and working. Only log warnings for LeanExplore/LeanSearch (future tools). 
       If Loogle unavailable, add warning and set tool_availability.loogle: false. 
       Full research content is in report artifact.
+      
+      Command file will handle:
+      - Status updates (RESEARCHING → RESEARCHED)
+      - Artifact linking in TODO.md
+      - Git commit creation
     </return_format>
-    <context_window_protection>
-      Lean research creates 2 artifacts (report + summary). Summary artifact is REQUIRED
-      to protect orchestrator context window from reading full report.
-      
-      Summary artifact requirements:
-      - 3-5 sentences
-      - <100 tokens (~400 chars)
-      - Validated before writing
-      
-      Return object summary field is separate metadata (<100 tokens) for immediate context.
-      
-      Reference: artifact-management.md "Context Window Protection via Metadata Passing"
-    </context_window_protection>
     <output>Standardized return object with validated research report and brief summary metadata</output>
-  </step_6>
+  </step_5_validate_and_return>
 </process_flow>
 
 <constraints>
@@ -813,24 +675,22 @@ lifecycle:
   <must>Return standardized format per subagent-return-format.md</must>
   <must>Return brief summary as metadata in summary field (<100 tokens)</must>
   <must>Complete within 3600s (1 hour timeout)</must>
-  <must>Invoke status-sync-manager for atomic status updates</must>
-  <must>Invoke git-workflow-manager for standardized commits</must>
-  <must>Use status transition: [NOT STARTED] → [RESEARCHING] → [RESEARCHED]</must>
+  <must>Return artifacts array with validated artifact paths for command file to link</must>
   <must>Create research artifacts ONLY (reports/research-001.md)</must>
   <must>Load Lean context from .opencode/context/project/lean4/</must>
   <must>Check tool availability before attempting integration</must>
   <must>Log tool unavailability to errors.json</must>
   <must>Use web search fallback when tools unavailable</must>
   <must>Create focused, Lean-specific research</must>
+  <must_not>Update status (command file owns status updates)</must_not>
+  <must_not>Create git commits (command file owns git commits)</must_not>
   <must_not>Create summary artifact (report is single file, self-contained)</must_not>
   <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Create directories before writing files</must_not>
   <must_not>Return without validating artifact</must_not>
-  <must_not>Fail research if git commit fails (non-critical)</must_not>
   <must_not>Fail research if specialized tools unavailable</must_not>
   <must_not>Implement tasks (research HOW to implement, do NOT implement)</must_not>
   <must_not>Modify project files outside .opencode/specs/{task_number}_*/</must_not>
-  <must_not>Change status to [COMPLETED] (only [RESEARCHED] allowed)</must_not>
   <must_not>Move files, update code, or make implementation changes</must_not>
   <must_not>Include status metadata in research reports (status tracked in TODO.md and state.json only)</must_not>
   <must_not>Include general programming advice (focus on Lean)</must_not>
@@ -1285,34 +1145,31 @@ lifecycle:
 </loogle_client_implementation>
 
 <validation>
-  <pre_flight>
+  <pre_execution>
     - task_number is valid integer
     - research_topic is non-empty string
     - session_id is present
     - delegation_depth < 3
     - delegation_path is valid array
-  </pre_flight>
+  </pre_execution>
 
-  <mid_flight>
+  <mid_execution>
     - Lean context loaded successfully
     - Research scope is clear
     - At least one research source available (tools or web)
     - Directory creation succeeds
     - Loogle client initialized (if binary available)
-  </mid_flight>
+  </mid_execution>
 
-  <post_flight>
+  <post_execution>
     - Research report created and valid Markdown
-    - Summary artifact created and validated (3-5 sentences, <100 tokens)
-    - TODO.md status updated to [RESEARCHED] with timestamps
-    - state.json updated with project status and artifacts
-    - Project state.json created with research artifacts
     - Return object follows subagent-return-format.md
     - All required fields present in return object
     - Summary field in return object is <100 tokens
-    - Artifacts list matches created files (2 artifacts: report + summary)
+    - Artifacts array includes research report with validated path
     - Artifact paths use absolute format (.opencode/specs/...)
     - Loogle client closed gracefully (if started)
-  </post_flight>
+    - Command file will handle status updates and git commits
+  </post_execution>
 </validation>
 
