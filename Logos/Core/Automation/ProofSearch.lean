@@ -333,13 +333,12 @@ def heuristic_score (weights : HeuristicWeights := {}) (Γ : Context) (φ : Form
 /--
 Order candidate subgoals by heuristic score so cheaper branches are explored first.
 
-TODO: Implement proper sorting. For now, returns targets as-is.
+Uses stable merge sort (O(n log n)) to order targets by ascending heuristic score.
+Lower scores indicate higher priority (axioms/assumptions before complex modus ponens).
 -/
 def orderSubgoalsByScore (weights : HeuristicWeights) (Γ : Context) (targets : List Formula) :
     List Formula :=
-  -- TODO: Implement sorting by heuristic score
-  -- For now, just return the targets in original order
-  targets
+  targets.mergeSort (fun φ ψ => heuristic_score weights Γ φ ≤ heuristic_score weights Γ ψ)
 
 /-!
 ## Search Functions
