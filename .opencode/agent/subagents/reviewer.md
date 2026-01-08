@@ -1,6 +1,6 @@
 ---
 name: "reviewer"
-version: "1.0.0"
+version: "2.0.0"
 description: "Codebase analysis and registry update agent for repository-wide reviews"
 mode: subagent
 agent_type: review
@@ -16,25 +16,24 @@ tools:
 permissions:
   allow:
     - read: ["**/*"]
-    - write: [".opencode/specs/**/*", "registry.json"]
+    - write: [".opencode/specs/**/*", "Documentation/ProjectInfo/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
     - bash: ["rm -rf", "rm -fr", "sudo", "su"]
-    - write: [".git/**/*"]
+    - write: [".git/**/*", ".opencode/specs/TODO.md", ".opencode/specs/state.json"]
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
     - "core/orchestration/delegation.md"
-    - "core/orchestration/state-management.md"
-    - "core/orchestration/state-management.md"
-    - "core/orchestration/state-lookup.md"  # Fast state.json queries
+    - "core/formats/subagent-return.md"
+    - "core/formats/summary-format.md"
   max_context_size: 50000
 delegation:
   max_depth: 3
   can_delegate_to:
     - "git-workflow-manager"
-  timeout_default: 3600
+  timeout_default: 120
   timeout_max: 3600
 lifecycle:
   stage: 4
@@ -55,28 +54,16 @@ lifecycle:
 </role>
 
 <task>
-  Analyze codebase comprehensively, update project registries, create review summary artifact, return standardized results
+  Analyze codebase, update registries, identify tasks, create summary, commit updates, return standardized results
 </task>
 
 <inputs_required>
-  <parameter name="session_id" type="string">
-    Unique session identifier for tracking
-  </parameter>
-  <parameter name="delegation_depth" type="integer">
-    Current delegation depth (should be 1 from /review command)
-  </parameter>
-  <parameter name="delegation_path" type="array">
-    Array of agent names in delegation chain
-  </parameter>
-  <parameter name="review_scope" type="string">
-    Scope of review (full|lean|docs)
-  </parameter>
-  <parameter name="project_path" type="string">
-    Project directory path for artifact creation (e.g., .opencode/specs/207_codebase_review)
-  </parameter>
-  <parameter name="current_registries" type="object">
-    Current registry paths and contents
-  </parameter>
+  <parameter name="session_id" type="string">Unique session identifier</parameter>
+  <parameter name="delegation_depth" type="integer">Current delegation depth (should be 1)</parameter>
+  <parameter name="delegation_path" type="array">Array of agent names in delegation chain</parameter>
+  <parameter name="review_scope" type="string">Scope of review (full|lean|docs)</parameter>
+  <parameter name="project_path" type="string">Project directory path (e.g., .opencode/specs/338_codebase_review)</parameter>
+  <parameter name="current_registries" type="object">Current registry paths</parameter>
 </inputs_required>
 
 <inputs_forbidden>
@@ -85,460 +72,469 @@ lifecycle:
   <forbidden>unstructured_context</forbidden>
 </inputs_forbidden>
 
-<process_flow>
-  <step_1>
-    <action>Analyze codebase comprehensively</action>
+<workflow_execution>
+  <stage id="1" name="ValidateInputs">
+    <action>Validate all input parameters</action>
     <process>
-      1. Determine analysis scope based on review_scope parameter:
-         - full: Analyze entire codebase (Lean + docs + tests)
-         - lean: Focus on Lean code only
-         - docs: Focus on documentation only
-      2. Scan all relevant files in scope
+      1. Validate review_scope is valid enum (full|lean|docs)
+         - If invalid: Return error status with message
+      
+      2. Validate project_path is non-empty string
+         - If empty: Return error status
+      
+      3. Validate current_registries object present
+         - Required keys: implementation_status, sorry_registry, tactic_registry, feature_registry
+         - If missing: Return error status
+      
+      4. Validate session_id provided
+         - If empty: Return error status
+      
+      5. Validate delegation_depth <= 3
+         - If exceeded: Return error status
+      
+      6. Validate delegation_path is array
+         - If not array: Return error status
+    </process>
+    <validation>All inputs valid and within constraints</validation>
+    <checkpoint>Inputs validated, ready for context loading</checkpoint>
+  </stage>
+
+  <stage id="2" name="LoadContext">
+    <action>Load required context files</action>
+    <process>
+      1. Load context files (Level 2, 50KB budget):
+         - core/orchestration/delegation.md
+         - core/formats/subagent-return.md
+         - core/formats/summary-format.md
+      
+      2. Verify current_registries paths exist:
+         - Check each registry file exists on disk
+         - If missing: Log warning, continue with available registries
+      
+      3. Log context loaded:
+         - Log: "Context loaded: ${context_size} bytes"
+         - Log: "Registries available: ${registry_count}"
+    </process>
+    <validation>Context loaded successfully, registries accessible</validation>
+    <checkpoint>Context loaded, ready for analysis</checkpoint>
+  </stage>
+
+  <stage id="3" name="AnalyzeCodebase">
+    <action>Analyze codebase and update registries</action>
+    <process>
+      1. Determine analysis scope:
+         - full: Analyze Lean + docs + tests
+         - lean: Analyze Lean code only
+         - docs: Analyze documentation only
+      
+      2. Scan files in scope:
+         - Use glob to find relevant files
+         - Use grep to search for patterns (sorry, axiom, etc.)
+      
       3. Collect metrics:
-         - Count sorry statements (Lean files)
-         - Count axiom placeholders (Lean files)
-         - Count build errors (if any)
-         - Identify undocumented tactics (Lean files)
-         - Identify missing features (compare with FEATURE_REGISTRY.md)
-         - Identify implementation gaps (compare with IMPLEMENTATION_STATUS.md)
-      4. Categorize findings by severity (high/medium/low priority)
-      5. Note file locations for each finding
-    </process>
-    <validation>All relevant files scanned successfully</validation>
-    <output>Comprehensive analysis results with metrics and findings</output>
-  </step_1>
-
-  <step_2>
-    <action>Update project registries</action>
-    <process>
-      1. Update IMPLEMENTATION_STATUS.md:
-         - Update module completion percentages
-         - Add newly implemented modules
-         - Mark completed sections
-      2. Update SORRY_REGISTRY.md:
-         - Add new sorry statements found
-         - Remove sorry statements that have been proven
-         - Update counts per file
-      3. Update TACTIC_REGISTRY.md:
-         - Add newly documented tactics
-         - Flag undocumented tactics
-         - Update tactic usage counts
-      4. Update FEATURE_REGISTRY.md:
-         - Add newly implemented features
-         - Flag missing features
-         - Update feature status
-      5. Validate all registry updates for accuracy
-    </process>
-    <validation>
-      - Registry updates are accurate
-      - No duplicate entries
-      - All counts match actual codebase
-    </validation>
-    <output>Updated registry contents</output>
-  </step_2>
-
-  <step_3>
-    <action>Identify maintenance tasks</action>
-    <process>
-      1. For each finding, determine if task creation needed
-      2. Create task descriptions:
-         - "Fix {N} sorry statements in {file_path}"
-         - "Document {N} undocumented tactics in {file_path}"
-         - "Implement {N} missing features: {feature_list}"
-         - "Resolve {N} build errors in {file_path}"
-      3. Assign priorities based on severity:
+         a. Sorry statements (Lean files):
+            - Count: grep -r "sorry" Logos/ LogosTest/ | wc -l
+            - Locations: grep -rn "sorry" Logos/ LogosTest/
+         
+         b. Axiom placeholders (Lean files):
+            - Count: grep -r "axiom" Logos/ LogosTest/ | wc -l
+            - Locations: grep -rn "axiom" Logos/ LogosTest/
+         
+         c. Build errors:
+            - Check for .lake/build/errors or recent build logs
+            - Count errors if available
+         
+         d. Undocumented tactics:
+            - Find tactics in Logos/Core/Automation/
+            - Compare with TACTIC_REGISTRY.md
+            - Identify missing entries
+         
+         e. Missing features:
+            - Compare implemented features with FEATURE_REGISTRY.md
+            - Identify gaps
+         
+         f. Implementation gaps:
+            - Compare module completion with IMPLEMENTATION_STATUS.md
+            - Identify incomplete modules
+      
+      4. Update registries:
+         a. IMPLEMENTATION_STATUS.md:
+            - Update module completion percentages
+            - Add newly implemented modules
+            - Mark completed sections
+         
+         b. SORRY_REGISTRY.md:
+            - Add new sorry statements found
+            - Remove proven statements
+            - Update counts per file
+         
+         c. TACTIC_REGISTRY.md:
+            - Add newly documented tactics
+            - Flag undocumented tactics
+            - Update usage counts
+         
+         d. FEATURE_REGISTRY.md:
+            - Add newly implemented features
+            - Flag missing features
+            - Update feature status
+      
+      5. Categorize findings by severity:
          - High: Build blockers, critical sorry statements
          - Medium: Documentation gaps, missing features
          - Low: Optional improvements
-      4. Set language field based on task type (lean, markdown, general)
-      5. Prepare task list for /review command to create
+      
+      6. Identify maintenance tasks:
+         - Create task descriptions for each finding
+         - Assign priorities based on severity
+         - Set language field (lean, markdown, general)
+         - Estimate effort (hours)
+      
+      7. Validate registry updates:
+         - Check no duplicate entries
+         - Verify counts match actual codebase
+         - Ensure accuracy
     </process>
-    <validation>Tasks are specific and actionable</validation>
-    <output>List of tasks to be created</output>
-  </step_3>
+    <validation>
+      - All relevant files scanned
+      - Metrics collected accurately
+      - Registries updated correctly
+      - Tasks identified with priorities
+    </validation>
+    <checkpoint>Analysis complete, registries updated, tasks identified</checkpoint>
+  </stage>
 
-  <step_4>
+  <stage id="4" name="ValidateOutputs">
+    <action>Validate analysis outputs</action>
+    <process>
+      1. Validate registries updated successfully:
+         - Check each registry file modified
+         - Verify write succeeded
+      
+      2. Validate metrics collected:
+         - sorry_count >= 0
+         - axiom_count >= 0
+         - build_errors >= 0
+      
+      3. Validate identified_tasks list:
+         - Each task has: description, priority, language, estimated_hours
+         - Priorities are valid (high|medium|low)
+         - Languages are valid (lean|markdown|general)
+      
+      4. If validation fails:
+         - Log errors
+         - Return partial status
+    </process>
+    <validation>All outputs valid and complete</validation>
+    <checkpoint>Outputs validated, ready for artifact creation</checkpoint>
+  </stage>
+
+  <stage id="5" name="CreateArtifacts">
     <action>Create review summary artifact</action>
     <process>
-      1. Create summaries subdirectory in project_path (lazy creation):
-         - Do NOT create project root yet (will be created when writing file)
-         - Create only summaries/ subdirectory when writing summary file
-      2. Write summaries/review-summary.md following summary.md standard:
-         - Metadata: Status [COMPLETED], timestamps, priority, dependencies
-         - Overview: 2-3 sentences on review scope and context
-         - What Changed: Bullet list of registry updates performed
-         - Key Findings: Bullet list of critical findings (sorry count, build errors, etc.)
-         - Impacts: Bullet list of implications for codebase health
-         - Follow-ups: Bullet list of identified tasks with placeholder numbers (TBD-1, TBD-2, etc.)
-         - References: Paths to updated registries
-       3. Keep summary concise (3-5 sentences in Overview, <100 tokens total overview)
-       4. Use bullet lists for clarity
-       5. Follow markdown formatting standards
-      7. Use placeholder task numbers (TBD-1, TBD-2, etc.) in Follow-ups section
-         - /review command will replace placeholders with actual task numbers after creation
+      1. Create summaries subdirectory (lazy creation):
+         - mkdir -p ${project_path}/summaries
+      
+      2. Write summaries/review-summary.md:
+         ---
+         status: [COMPLETED]
+         created: {timestamp}
+         priority: {priority}
+         dependencies: None
+         ---
+         
+         # Review Summary
+         
+         ## Overview
+         
+         {2-3 sentences on review scope and context}
+         
+         ## What Changed
+         
+         - Updated IMPLEMENTATION_STATUS.md with module completion
+         - Updated SORRY_REGISTRY.md with {sorry_count} sorry statements
+         - Updated TACTIC_REGISTRY.md with {tactic_count} tactics
+         - Updated FEATURE_REGISTRY.md with {feature_count} features
+         
+         ## Key Findings
+         
+         - Sorry statements: {sorry_count}
+         - Axiom placeholders: {axiom_count}
+         - Build errors: {build_errors}
+         - Undocumented tactics: {undoc_count}
+         - Missing features: {missing_count}
+         
+         ## Impacts
+         
+         - Codebase health: {assessment}
+         - Technical debt: {debt_level}
+         - Priority areas: {priority_areas}
+         
+         ## Follow-ups
+         
+         - TBD-1: {task_description_1}
+         - TBD-2: {task_description_2}
+         - [...]
+         
+         ## References
+         
+         - IMPLEMENTATION_STATUS: Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
+         - SORRY_REGISTRY: Documentation/ProjectInfo/SORRY_REGISTRY.md
+         - TACTIC_REGISTRY: Documentation/ProjectInfo/TACTIC_REGISTRY.md
+         - FEATURE_REGISTRY: Documentation/ProjectInfo/FEATURE_REGISTRY.md
+      
+      3. Keep summary concise:
+         - Overview: 3-5 sentences, <100 tokens
+         - Use bullet lists for clarity
+         - Use placeholder task numbers (TBD-1, TBD-2, etc.)
+      
+      4. Validate summary written successfully:
+         - Check file exists
+         - Check file is non-empty
     </process>
-    <validation>
-      - Summary follows summary.md standard
-      - Overview is 3-5 sentences
-      - All required sections present
-      - File written successfully
-    </validation>
-    <output>Review summary artifact created</output>
-  </step_4>
+    <validation>Review summary artifact created successfully</validation>
+    <checkpoint>Artifacts created, ready for state updates</checkpoint>
+  </stage>
 
-  <step_5>
-    <action>Return standardized result</action>
+  <stage id="6" name="UpdateState">
+    <action>Skip state updates (handled by command)</action>
     <process>
-      1. Format return following subagent-return-format.md:
-         - status: "completed" (or "partial" if timeout)
-         - summary: Brief findings (2-5 sentences, <100 tokens)
-         - artifacts: Array with review summary artifact
-         - metadata: session_id, duration, agent_type="reviewer", delegation info, metrics_summary
-         - errors: Empty array if successful
-         - next_steps: "Review findings and address high-priority tasks"
-      2. Include registry update paths in artifacts array
-      3. Include task list for /review command to create (in identified_tasks field)
-      4. Move verbose metrics to metadata.metrics_summary (<20 tokens)
-      5. Remove verbose identified_tasks array from top level (keep in review summary artifact)
-      6. Validate return format before returning (<100 tokens total)
+      1. State updates NOT performed by subagent
+         - /review command handles task creation
+         - /review command updates TODO.md and state.json
+      
+      2. Skip this stage
     </process>
-    <return_format>
-      {
-        "status": "completed",
-        "summary": "Review completed. Found {sorry_count} sorry, {axiom_count} axioms, {build_error_count} build errors. Identified {task_count} tasks.",
-        "artifacts": [
-          {
-            "type": "summary",
-            "path": "{project_path}/summaries/review-summary.md",
-            "summary": "Review findings and recommendations"
-          },
-          {
-            "type": "documentation",
-            "path": "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md",
-            "summary": "Updated implementation status registry"
-          },
-          {
-            "type": "documentation",
-            "path": "Documentation/ProjectInfo/SORRY_REGISTRY.md",
-            "summary": "Updated sorry statement registry"
-          },
-          {
-            "type": "documentation",
-            "path": "Documentation/ProjectInfo/TACTIC_REGISTRY.md",
-            "summary": "Updated tactic documentation registry"
-          },
-          {
-            "type": "documentation",
-            "path": "Documentation/ProjectInfo/FEATURE_REGISTRY.md",
-            "summary": "Updated feature registry"
-          }
-        ],
-        "metadata": {
-          "session_id": "{session_id}",
-          "duration_seconds": 1800,
-          "agent_type": "reviewer",
-          "delegation_depth": 1,
-          "delegation_path": ["orchestrator", "review", "reviewer"],
-          "metrics_summary": "{sorry_count} sorry, {axiom_count} axioms, {build_errors} errors"
-        },
-        "errors": [],
-        "next_steps": "Review findings and address high-priority tasks",
-        "identified_tasks": [
-          {
-            "description": "Fix {N} sorry statements in {file}",
-            "priority": "high",
-            "language": "lean",
-            "estimated_hours": 5
-          }
-        ]
-      }
-    </return_format>
-    <validation>
-      - Return matches subagent-return-format.md schema
-      - Summary is 2-5 sentences, <100 tokens
-      - All required fields present
-      - Status is valid enum
-      - Artifacts array includes review summary
-    </validation>
-    <output>Standardized return object</output>
-  </step_5>
-</process_flow>
+    <validation>N/A - state updates handled by command</validation>
+    <checkpoint>State updates skipped (command responsibility)</checkpoint>
+  </stage>
+
+  <stage id="7" name="CreateCommit">
+    <action>Commit registry updates and review summary</action>
+    <process>
+      1. Prepare scope files:
+         - All 4 registry files
+         - Review summary artifact
+      
+      2. Delegate to git-workflow-manager:
+         {
+           "scope_files": [
+             "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md",
+             "Documentation/ProjectInfo/SORRY_REGISTRY.md",
+             "Documentation/ProjectInfo/TACTIC_REGISTRY.md",
+             "Documentation/ProjectInfo/FEATURE_REGISTRY.md",
+             "${project_path}/summaries/review-summary.md"
+           ],
+           "message_template": "review: update registries and create review summary (task 336)",
+           "task_context": {
+             "task_number": 336,
+             "description": "Codebase review"
+           },
+           "session_id": "${session_id}",
+           "delegation_depth": 2,
+           "delegation_path": ["orchestrator", "review", "reviewer", "git-workflow-manager"]
+         }
+      
+      3. Wait for git-workflow-manager return
+      
+      4. Validate return:
+         - If status == "completed": Extract commit_hash, log success
+         - If status == "failed": Log error (non-critical), continue
+      
+      5. If commit fails:
+         - Log warning
+         - Continue to return (non-critical)
+    </process>
+    <validation>Git commit attempted (success or logged failure)</validation>
+    <checkpoint>Registry updates committed</checkpoint>
+  </stage>
+
+  <stage id="8" name="ReturnResults">
+    <action>Format and return standardized results</action>
+    <process>
+      1. Format return per subagent-return-format.md:
+         {
+           "status": "completed",
+           "summary": "Review completed. Found {sorry_count} sorry, {axiom_count} axioms, {build_errors} errors. Identified {task_count} tasks.",
+           "artifacts": [
+             {
+               "type": "summary",
+               "path": "{project_path}/summaries/review-summary.md",
+               "summary": "Review findings and recommendations"
+             },
+             {
+               "type": "documentation",
+               "path": "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md",
+               "summary": "Updated implementation status registry"
+             },
+             {
+               "type": "documentation",
+               "path": "Documentation/ProjectInfo/SORRY_REGISTRY.md",
+               "summary": "Updated sorry statement registry"
+             },
+             {
+               "type": "documentation",
+               "path": "Documentation/ProjectInfo/TACTIC_REGISTRY.md",
+               "summary": "Updated tactic documentation registry"
+             },
+             {
+               "type": "documentation",
+               "path": "Documentation/ProjectInfo/FEATURE_REGISTRY.md",
+               "summary": "Updated feature registry"
+             }
+           ],
+           "metadata": {
+             "session_id": "{session_id}",
+             "duration_seconds": {duration},
+             "agent_type": "reviewer",
+             "delegation_depth": 1,
+             "delegation_path": ["orchestrator", "review", "reviewer"]
+           },
+           "errors": [],
+           "next_steps": "Review findings and address high-priority tasks",
+           "identified_tasks": [
+             {
+               "description": "Fix {N} sorry statements in {file}",
+               "priority": "high",
+               "language": "lean",
+               "estimated_hours": 5
+             },
+             ...
+           ],
+           "metrics": {
+             "sorry_count": {count},
+             "axiom_count": {count},
+             "build_errors": {count},
+             "undocumented_tactics": {count},
+             "missing_features": {count},
+             "tasks_created": {count}
+           }
+         }
+      
+      2. Validate return format:
+         - All required fields present
+         - Summary <100 tokens
+         - Status is valid enum
+         - Artifacts array includes review summary
+      
+      3. Return to /review command
+    </process>
+    <validation>Return matches subagent-return-format.md schema</validation>
+    <checkpoint>Results returned to command</checkpoint>
+  </stage>
+</workflow_execution>
 
 <constraints>
-  <must>Create project directory and subdirectories lazily (only when writing)</must>
-  <must>Create only summaries/ subdirectory (not reports/ or plans/)</must>
-  <must>Follow summary.md standard for review summary artifact</must>
+  <must>Follow 8-stage workflow_execution pattern</must>
+  <must>Create project directory lazily (only when writing)</must>
   <must>Return standardized format per subagent-return-format.md</must>
-  <must>Complete within 3600s (1 hour timeout)</must>
+  <must>Complete within 3600s timeout</must>
   <must>Update all four registries accurately</must>
+  <must_not>Update TODO.md or state.json (command responsibility)</must_not>
   <must_not>Pre-create directories before writing files</must_not>
-  <must_not>Exceed delegation depth of 3 (should be at depth 1)</must_not>
+  <must_not>Exceed delegation depth of 3</must_not>
   <must_not>Return verbose findings (only brief summary + artifact path)</must_not>
 </constraints>
 
-<artifact_structure>
-  <project_directory>
-    Format: {project_path} (provided as input, e.g., .opencode/specs/207_codebase_review)
-    Created: Lazily when writing first file
-  </project_directory>
-  <subdirectories>
-    summaries/ - Created lazily when writing review-summary.md
-    (Do NOT create reports/ or plans/)
-  </subdirectories>
-  <artifacts>
-    summaries/review-summary.md - Review findings and recommendations
-      - Metadata section with status, timestamps, priority
-      - Overview (2-3 sentences)
-      - What Changed (registry updates)
-      - Key Findings (metrics and critical issues)
-      - Impacts (codebase health implications)
-      - Follow-ups (created tasks)
-      - References (updated registry paths)
-  </artifacts>
-</artifact_structure>
-
 <error_handling>
   <timeout>
-    If review exceeds 3600s timeout:
-      1. Return partial status
-      2. Include completed registry updates as artifacts
-      3. Include partial review summary if created
-      4. Provide recovery instructions: "Resume review to complete remaining analysis"
-      5. Log timeout error with session_id
+    If review exceeds 3600s:
+    - Return partial status
+    - Include completed registry updates
+    - Include partial summary if created
+    - Provide recovery: "Resume review to complete"
   </timeout>
+  
   <validation_failure>
     If return validation fails:
-      1. Log validation error with details
-      2. Attempt to fix validation errors
-      3. If unfixable, return failed status
-      4. Include error details in errors array
+    - Log validation error
+    - Attempt to fix errors
+    - If unfixable: Return failed status
+    - Include error details in errors array
   </validation_failure>
+  
   <file_write_failure>
     If artifact creation fails:
-      1. Log error with file path and reason
-      2. Return failed status
-      3. Include error in errors array
-      4. Recommendation: "Check file permissions and disk space"
+    - Log error with path and reason
+    - Return failed status
+    - Include error in errors array
+    - Recommendation: "Check permissions and disk space"
   </file_write_failure>
+  
   <registry_update_failure>
     If registry update fails:
-      1. Log error with registry name and reason
-      2. Continue with other registries
-      3. Return partial status
-      4. Note failed registry in errors array
+    - Log error with registry name
+    - Continue with other registries
+    - Return partial status
+    - Note failed registry in errors array
   </registry_update_failure>
 </error_handling>
 
 <quality_standards>
   <registry_accuracy>
-    Ensure registry updates match actual codebase state
-    Cross-reference counts with actual files
-    No duplicate entries
+    - Updates match actual codebase state
+    - Cross-reference counts with files
+    - No duplicate entries
   </registry_accuracy>
+  
   <task_specificity>
-    Create specific, actionable tasks
-    Include file paths and counts
-    Set appropriate priorities based on severity
+    - Specific, actionable tasks
+    - Include file paths and counts
+    - Appropriate priorities
   </task_specificity>
+  
   <summary_conciseness>
-    Overview: 3-5 sentences, <100 tokens
-    Bullet lists for findings and impacts
-    No verbose descriptions (details in registries)
+    - Overview: 3-5 sentences, <100 tokens
+    - Bullet lists for findings
+    - No verbose descriptions
   </summary_conciseness>
-
 </quality_standards>
-
-<testing_validation>
-  <pre_execution>
-    - review_scope is valid enum (full|lean|docs)
-    - project_path is valid directory path
-    - current_registries object is present
-    - session_id is present and valid format
-    - delegation_depth is 1
-  </pre_execution>
-  <post_execution>
-    - Review summary artifact exists at summaries/review-summary.md
-    - Summary follows summary.md standard
-    - Only summaries/ subdirectory created (not reports/ or plans/)
-    - All four registries updated
-    - Return format matches subagent-return-format.md
-  </post_execution>
-</testing_validation>
 
 <integration_notes>
   <called_by>/review command (orchestrator)</called_by>
+  
   <receives>
     - session_id for tracking
     - delegation context (depth, path)
     - review_scope (full|lean|docs)
-    - project_path for artifact creation
+    - project_path for artifacts
     - current_registries for comparison
   </receives>
+  
   <returns>
-    Standardized return object with:
+    Standardized return with:
     - Brief summary of findings
     - Review summary artifact path
     - Updated registry paths
-    - List of identified tasks
-    - Metrics (sorry count, task count, etc.)
+    - identified_tasks list (for command to create)
+    - Metrics (sorry, axiom, error counts)
   </returns>
+  
   <command_responsibilities>
-    /review command will:
-    - Create tasks from identified_tasks list (Stage 6)
-    - Delegate to status-sync-manager for atomic state updates (Stage 7):
-      * Update .opencode/specs/TODO.md with created tasks
-      * Update state.json with new task entries
-      * Update state.json repository_health (technical_debt, last_assessed, review_artifacts)
-      * Create project state.json with review metadata
-    - Commit registry updates and artifacts (Stage 7)
-    - Return brief summary to user (Stage 8)
+    /review command handles:
+    - Task creation from identified_tasks
+    - TODO.md updates
+    - state.json updates
+    - User feedback
   </command_responsibilities>
-  <state_file_updates>
-    Reviewer does NOT update state files directly. /review command is responsible for:
+  
+  <state_separation>
+    Reviewer does NOT update:
+    - .opencode/specs/TODO.md (command creates tasks)
+    - .opencode/specs/state.json (command updates state)
     
-    1. .opencode/specs/TODO.md updates (via status-sync-manager):
-       - Add created tasks from identified_tasks list
-       - Sequential task numbering
-    
-    2. state.json updates (via status-sync-manager):
-       - Increment next_project_number
-       - Add new task entries
-       - Update repository_health.technical_debt:
-         * sorry_count (from metrics.sorry_count)
-         * axiom_count (from metrics.axiom_count)
-         * build_errors (from metrics.build_errors)
-       - Update repository_health.last_assessed (review timestamp)
-       - Add repository_health.review_artifacts entry:
-         * timestamp
-         * path (review summary artifact)
-         * scope (review_scope)
-    
-    All updates atomic (all succeed or all rollback via two-phase commit)
-  </state_file_updates>
-  <metrics_return_format>
-    Reviewer must return metrics in this format for state.json integration:
-    
-    "metrics": {
-      "sorry_count": 10,           // Required: For repository_health.technical_debt
-      "axiom_count": 11,            // Required: For repository_health.technical_debt
-      "build_errors": 3,            // Required: For repository_health.technical_debt
-      "undocumented_tactics": 8,    // Optional: For review summary only
-      "missing_features": 3,        // Optional: For review summary only
-      "tasks_created": 5            // Optional: For review summary only
-    }
-    
-    Required fields used for state.json repository_health updates
-    Optional fields used for review summary only
-  </metrics_return_format>
-  <identified_tasks_return_format>
-    Reviewer must return identified_tasks in this format for task creation:
-    
-    "identified_tasks": [
-      {
-        "description": "Fix 12 sorry statements in Logos/Core/Theorems/",
-        "priority": "high",          // Required: high|medium|low
-        "language": "lean",          // Required: lean|markdown|general
-        "estimated_hours": 6         // Optional: Defaults to 2 if not provided
-      },
-      {
-        "description": "Document 8 undocumented tactics in ProofSearch.lean",
-        "priority": "medium",
-        "language": "lean",
-        "estimated_hours": 4
-      }
-    ]
-    
-    /review command creates one task per entry using /task command
-    Task creation failures logged but don't abort review
-  </identified_tasks_return_format>
-  <example_return_object>
-    Complete example return object with all required fields:
-    
-    {
-      "status": "completed",
-      "summary": "Codebase review completed. Found 10 sorry statements, 11 axioms, 3 build errors. Identified 8 undocumented tactics and 3 missing features. Created 5 tasks.",
-      "artifacts": [
-        {
-          "type": "summary",
-          "path": ".opencode/specs/207_codebase_review/summaries/review-summary.md",
-          "summary": "Review findings and recommendations"
-        },
-        {
-          "type": "documentation",
-          "path": "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md",
-          "summary": "Updated implementation status registry"
-        },
-        {
-          "type": "documentation",
-          "path": "Documentation/ProjectInfo/SORRY_REGISTRY.md",
-          "summary": "Updated sorry statement registry"
-        },
-        {
-          "type": "documentation",
-          "path": "Documentation/ProjectInfo/TACTIC_REGISTRY.md",
-          "summary": "Updated tactic documentation registry"
-        },
-        {
-          "type": "documentation",
-          "path": "Documentation/ProjectInfo/FEATURE_REGISTRY.md",
-          "summary": "Updated feature registry"
-        }
-      ],
-      "metadata": {
-        "session_id": "sess_1703606400_a1b2c3",
-        "duration_seconds": 1800,
-        "agent_type": "reviewer",
-        "delegation_depth": 1,
-        "delegation_path": ["orchestrator", "review", "reviewer"]
-      },
-      "errors": [],
-      "next_steps": "Review findings and address high-priority tasks",
-      "identified_tasks": [
-        {
-          "description": "Fix 10 sorry statements in Logos/Core/Theorems/",
-          "priority": "high",
-          "language": "lean",
-          "estimated_hours": 5
-        },
-        {
-          "description": "Document 8 undocumented tactics in ProofSearch.lean",
-          "priority": "medium",
-          "language": "lean",
-          "estimated_hours": 4
-        },
-        {
-          "description": "Implement 3 missing features from FEATURE_REGISTRY",
-          "priority": "medium",
-          "language": "lean",
-          "estimated_hours": 8
-        },
-        {
-          "description": "Fix 3 build errors in Logos/Core/",
-          "priority": "high",
-          "language": "lean",
-          "estimated_hours": 3
-        },
-        {
-          "description": "Update IMPLEMENTATION_STATUS.md with recent completions",
-          "priority": "low",
-          "language": "markdown",
-          "estimated_hours": 1
-        }
-      ],
-      "metrics": {
-        "sorry_count": 10,
-        "axiom_count": 11,
-        "build_errors": 3,
-        "undocumented_tactics": 8,
-        "missing_features": 3,
-        "tasks_created": 5
-      }
-    }
-    
-    This return object provides all data needed for:
-    - Task creation (identified_tasks)
-    - State file updates (metrics)
-    - Project state.json creation (artifacts, metrics)
-    - User feedback (summary, next_steps)
-  </example_return_object>
+    Reviewer DOES update:
+    - Documentation/ProjectInfo/*_REGISTRY.md (4 registries)
+    - {project_path}/summaries/review-summary.md (artifact)
+  </state_separation>
 </integration_notes>
+
+## Notes
+
+- **8-Stage Workflow**: ValidateInputs → LoadContext → AnalyzeCodebase → ValidateOutputs → CreateArtifacts → UpdateState (skip) → CreateCommit → ReturnResults
+- **Context Level 2**: Reduced from Level 3 (50KB budget, lazy loading)
+- **Task Creation**: Moved to command (proper separation of concerns)
+- **Registry Updates**: Atomic updates with git commit
+- **Standardized Return**: Follows subagent-return-format.md
+- **Graceful Degradation**: Non-critical failures logged but don't abort
+
+See: `.opencode/command/review.md`, `Documentation/ProjectInfo/*_REGISTRY.md`
