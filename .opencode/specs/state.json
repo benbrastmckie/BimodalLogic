@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-07T23:39:57Z",
+  "_last_updated": "2026-01-07T23:51:40Z",
   "next_project_number": 335,
   "project_numbering": {
     "min": 0,
@@ -196,31 +196,6 @@
       "effort": "9 hours"
     },
     {
-      "project_number": 189,
-      "project_name": "research_divide_flag",
-      "type": "feature",
-      "phase": "research_completed",
-      "status": "researched",
-      "priority": "medium",
-      "language": "markdown",
-      "created": "2025-12-25T00:00:00Z",
-      "started": "2025-12-25",
-      "research_completed": "2025-12-25",
-      "last_updated": "2025-12-26"
-    },
-    {
-      "project_number": 203,
-      "project_name": "add___complex_flag_to_/research_for_subtopic_subdivision_with_summary",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "markdown",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T01:22:38Z",
-      "effort": "TBD"
-    },
-    {
       "project_number": 205,
       "project_name": "implement_lean_tool_usage_verification_and_monitoring_system",
       "type": "feature",
@@ -376,21 +351,6 @@
       "description": "After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary."
     },
     {
-      "project_number": 279,
-      "project_name": "systematically_fix_metadata_lookup_to_use_state_json_instead_of_todo_md",
-      "type": "bugfix",
-      "phase": "research_completed",
-      "status": "researched",
-      "priority": "high",
-      "language": "markdown",
-      "created": "2026-01-04T04:44:02Z",
-      "last_updated": "2026-01-05",
-      "research_completed": "2026-01-05",
-      "artifacts": [
-        ".opencode/specs/279_systematically_fix_metadata_lookup_to_use_state_json_instead_of_todo_md/reports/research-001.md"
-      ]
-    },
-    {
       "project_number": 291,
       "project_name": "fix_lean_research_agent_delegate_status_updates",
       "type": "bugfix",
@@ -418,20 +378,6 @@
       "description": "Create a /sync command that bidirectionally synchronizes .opencode/specs/TODO.md and .opencode/specs/state.json, ensuring both files contain identical task information with the most recent changes from either file. The command should detect discrepancies between the two files, intelligently resolve conflicts by preferring the most recently updated data, and perform atomic updates to both files using the existing status-sync-manager's two-phase commit protocol. This addresses the architectural requirement that state.json is the authoritative source for metadata reads while TODO.md serves as the user-facing view, with synchronization ensuring consistency between them.",
       "created": "2026-01-05T07:51:30Z",
       "last_updated": "2026-01-05T07:51:30Z"
-    },
-    {
-      "project_number": 302,
-      "project_name": "test_dual_mode_revision_workflow",
-      "type": "feature",
-      "phase": "abandoned",
-      "status": "abandoned",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-06T21:50:00Z",
-      "effort": "2 hours",
-      "description": "Create comprehensive tests for the dual-mode revision workflow, covering task-only revision, plan revision without new reports, and plan revision with new reports.",
-      "abandoned": "2026-01-06"
     },
     {
       "project_number": 306,
@@ -561,8 +507,8 @@
       "project_number": 317,
       "project_name": "implement_bfs_variant_for_proof_search_completeness_phase_3",
       "type": "feature",
-      "phase": "research_completed",
-      "status": "researched",
+      "phase": "planning_completed",
+      "status": "planning",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T08:34:20.462436Z",
@@ -576,14 +522,15 @@
           "path": ".opencode/specs/317_bfs_variant_phase3/reports/research-001.md",
           "summary": "Comprehensive 1403-line research report analyzing BFS implementation strategies, completeness guarantees, and integration approaches for Lean 4 proof search"
         }
-      ]
+      ],
+      "planning_completed": "2026-01-07"
     },
     {
       "project_number": 318,
       "project_name": "implement_advanced_heuristics_for_proof_search_performance_phase_4",
       "type": "feature",
       "phase": "not_started",
-      "status": "planning",
+      "status": "planned",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T08:34:20.462436Z",
@@ -592,7 +539,13 @@
       "description": "Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.",
       "artifacts": [
         ".opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md"
-      ]
+      ],
+      "plan_path": ".opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 5,
+        "estimated_hours": 15,
+        "complexity": "medium"
+      }
     },
     {
       "project_number": 319,
@@ -606,21 +559,6 @@
       "last_updated": "2026-01-05T08:34:20.462436Z",
       "effort": "8-12 hours",
       "description": "Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks."
-    },
-    {
-      "project_number": 322,
-      "project_name": "add_bulk_operation_to_status_sync_manager_for_creating_updating_many_tasks",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "meta",
-      "description": "Add new bulk operation to status-sync-manager for creating/updating many tasks, integrating with existing bulk functionality implemented for /abandon and /task --divide commands. The aim is optimization for elegant executions with bulk operations.",
-      "effort": "TBD",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-05T00:00:00Z",
-      "last_updated": "2026-01-05T00:00:00Z"
     },
     {
       "project_number": 323,
@@ -657,61 +595,6 @@
           }
         ]
       }
-    },
-    {
-      "project_number": 325,
-      "project_name": "create___recover_flag_for_/task_command_to_unarchive_projects",
-      "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
-      "priority": "medium",
-      "language": "meta",
-      "description": "Create a --recover flag for the /task command together with a task number as an argument that can be used to unarchive a project directory from specs/archive/, updating the specs/TODO.md and specs/state.json files accordingly.",
-      "effort": "6 hours",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-05T00:00:00Z",
-      "last_updated": "2026-01-06",
-      "research_completed": "2026-01-06",
-      "planning_completed": "2026-01-06",
-      "artifacts": [
-        ".opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md",
-        ".opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/plans/implementation-001.md"
-      ],
-      "plan_path": ".opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/plans/implementation-001.md",
-      "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 6,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 1,
-        "reports_integrated": [
-          {
-            "path": "reports/research-001.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-01-06"
-          }
-        ]
-      }
-    },
-    {
-      "project_number": 326,
-      "project_name": "create___divide_flag_for_/task_command_with_task_division_capability",
-      "type": "feature",
-      "phase": "research_completed",
-      "status": "researched",
-      "priority": "medium",
-      "language": "meta",
-      "description": "Create a --divide flag for the /task command that accepts a task number as an argument. This flag should divide an existing task into an appropriate number of subtasks, add the new task numbers as dependencies to the original task, and create the new task entries atomically.",
-      "effort": "TBD",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-05T00:00:00Z",
-      "last_updated": "2026-01-06",
-      "research_completed": "2026-01-06",
-      "artifacts": [
-        ".opencode/specs/326_create___divide_flag_for_task_command_with_task_division_capability/reports/research-001.md"
-      ]
     },
     {
       "project_number": 327,
@@ -757,70 +640,6 @@
         ]
       },
       "completed": "2026-01-06"
-    },
-    {
-      "project_number": 328,
-      "project_name": "fix_task_command_to_only_create_task_entries_and_never_implement_directly",
-      "type": "feature",
-      "phase": "research_completed",
-      "status": "researched",
-      "priority": "high",
-      "language": "meta",
-      "description": "Fix the /task command to ensure it ONLY creates task entries in TODO.md and state.json, and NEVER implements the work described in the task. The command should parse the task description, reformulate it naturally, optionally divide into subtasks if --divide flag is present, delegate to status-sync-manager for atomic task creation, and return task numbers to the user. The command must be architecturally prevented from creating code files, running build tools, or doing any implementation work. Implementation happens later via /implement command.",
-      "effort": "4-6 hours",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-06T00:00:00Z",
-      "last_updated": "2026-01-06",
-      "research_completed": "2026-01-06",
-      "artifacts": [
-        ".opencode/specs/328_fix_task_command_to_only_create_task_entries_and_never_implement_directly/reports/research-001.md"
-      ]
-    },
-    {
-      "project_number": 329,
-      "project_name": "research_and_fix_persistent_state_synchronization_failures_between_todo_md_and_state_json",
-      "type": "bugfix",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "high",
-      "language": "meta",
-      "description": "Research and address the persistent issue where workflow commands (/research, /plan, /revise, /implement) successfully update state.json but fail to update TODO.md with status changes and artifact links. This is a postflight failure where status-sync-manager is either not being invoked or failing silently. Example: Task 323 research completed, state.json shows status 'researched' with artifact link, but TODO.md shows [NOT STARTED] with no artifacts. This violates the architectural requirement that both files must be kept in sync via status-sync-manager. Related to tasks 312, 320, and 321.",
-      "effort": "TBD",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-06T00:00:00Z",
-      "last_updated": "2026-01-06T00:00:00Z"
-    },
-    {
-      "project_number": 330,
-      "project_name": "create___sync_flag_for_task_command_to_synchronize_todo_md_and_state_json",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "meta",
-      "description": "Create a --sync flag for the /task command that synchronizes TODO.md and state.json. The flag should accept optional task number ranges (e.g., 343-345, 337) to sync specific tasks, or sync all tasks if no numbers are provided. Improve upon the current /sync command implementation, avoiding needless complexity and omitting dry-run mode.",
-      "effort": "TBD",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-06T17:40:11.648072Z",
-      "last_updated": "2026-01-06T17:40:11.648082Z"
-    },
-    {
-      "project_number": 331,
-      "project_name": "create___abandon_flag_for_task_command_to_abandon_multiple_tasks_via_ranges_lists",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "meta",
-      "description": "Create the --abandon flag for the /task command to be able to specify a list or range of task numbers (or a list of ranges) in order to abandon those tasks in a manner similar to how the /abandon command works now while avoiding needless complexity.",
-      "effort": "TBD",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-06T00:00:00Z",
-      "last_updated": "2026-01-06T00:00:00Z"
     },
     {
       "project_number": 333,
@@ -2441,6 +2260,228 @@
       "plan_path": ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md",
       "planned": "2026-01-05",
       "implemented": "2026-01-05"
+    },
+    {
+      "project_number": 189,
+      "project_name": "research_divide_flag",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2025-12-25T00:00:00Z",
+      "started": "2025-12-25",
+      "research_completed": "2025-12-25",
+      "last_updated": "2026-01-07T23:51:40Z",
+      "abandoned": "2026-01-07"
+    },
+    {
+      "project_number": 203,
+      "project_name": "add___complex_flag_to_/research_for_subtopic_subdivision_with_summary",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-07T23:51:40Z",
+      "effort": "TBD",
+      "abandoned": "2026-01-07"
+    },
+    {
+      "project_number": 279,
+      "project_name": "systematically_fix_metadata_lookup_to_use_state_json_instead_of_todo_md",
+      "type": "bugfix",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2026-01-04T04:44:02Z",
+      "last_updated": "2026-01-07T23:51:40Z",
+      "research_completed": "2026-01-05",
+      "artifacts": [
+        ".opencode/specs/279_systematically_fix_metadata_lookup_to_use_state_json_instead_of_todo_md/reports/research-001.md"
+      ],
+      "abandoned": "2026-01-07"
+    },
+    {
+      "project_number": 302,
+      "project_name": "test_dual_mode_revision_workflow",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-07T23:51:40Z",
+      "effort": "2 hours",
+      "description": "Create comprehensive tests for the dual-mode revision workflow, covering task-only revision, plan revision without new reports, and plan revision with new reports.",
+      "abandoned": "2026-01-07"
+    },
+    {
+      "project_number": 322,
+      "project_name": "add_bulk_operation_to_status_sync_manager_for_creating_updating_many_tasks",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Add new bulk operation to status-sync-manager for creating/updating many tasks, integrating with existing bulk functionality implemented for /abandon and /task --divide commands. The aim is optimization for elegant executions with bulk operations.",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T00:00:00Z",
+      "last_updated": "2026-01-07T23:51:40Z",
+      "abandoned": "2026-01-07"
+    },
+    {
+      "project_number": 325,
+      "project_name": "create___recover_flag_for_/task_command_to_unarchive_projects",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Create a --recover flag for the /task command together with a task number as an argument that can be used to unarchive a project directory from specs/archive/, updating the specs/TODO.md and specs/state.json files accordingly.",
+      "effort": "6 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T00:00:00Z",
+      "last_updated": "2026-01-07T23:51:40Z",
+      "research_completed": "2026-01-06",
+      "planning_completed": "2026-01-06",
+      "artifacts": [
+        ".opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md",
+        ".opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/plans/implementation-001.md"
+      ],
+      "plan_path": ".opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 6,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-06"
+          }
+        ]
+      },
+      "abandoned": "2026-01-07"
+    },
+    {
+      "project_number": 326,
+      "project_name": "create___divide_flag_for_/task_command_with_task_division_capability",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Create a --divide flag for the /task command that accepts a task number as an argument. This flag should divide an existing task into an appropriate number of subtasks, add the new task numbers as dependencies to the original task, and create the new task entries atomically.",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T00:00:00Z",
+      "last_updated": "2026-01-07T23:51:40Z",
+      "research_completed": "2026-01-06",
+      "artifacts": [
+        ".opencode/specs/326_create___divide_flag_for_task_command_with_task_division_capability/reports/research-001.md"
+      ],
+      "abandoned": "2026-01-07"
+    },
+    {
+      "project_number": 328,
+      "project_name": "fix_task_command_to_only_create_task_entries_and_never_implement_directly",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "description": "Fix the /task command to ensure it ONLY creates task entries in TODO.md and state.json, and NEVER implements the work described in the task. The command should parse the task description, reformulate it naturally, optionally divide into subtasks if --divide flag is present, delegate to status-sync-manager for atomic task creation, and return task numbers to the user. The command must be architecturally prevented from creating code files, running build tools, or doing any implementation work. Implementation happens later via /implement command.",
+      "effort": "4-6 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-06T00:00:00Z",
+      "last_updated": "2026-01-07T23:51:40Z",
+      "research_completed": "2026-01-06",
+      "artifacts": [
+        ".opencode/specs/328_fix_task_command_to_only_create_task_entries_and_never_implement_directly/reports/research-001.md"
+      ],
+      "abandoned": "2026-01-07"
+    },
+    {
+      "project_number": 329,
+      "project_name": "research_and_fix_persistent_state_synchronization_failures_between_todo_md_and_state_json",
+      "type": "bugfix",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "description": "Research and address the persistent issue where workflow commands (/research, /plan, /revise, /implement) successfully update state.json but fail to update TODO.md with status changes and artifact links. This is a postflight failure where status-sync-manager is either not being invoked or failing silently. Example: Task 323 research completed, state.json shows status 'researched' with artifact link, but TODO.md shows [NOT STARTED] with no artifacts. This violates the architectural requirement that both files must be kept in sync via status-sync-manager. Related to tasks 312, 320, and 321.",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-06T00:00:00Z",
+      "last_updated": "2026-01-07T23:51:40Z",
+      "abandoned": "2026-01-07"
+    },
+    {
+      "project_number": 330,
+      "project_name": "create___sync_flag_for_task_command_to_synchronize_todo_md_and_state_json",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Create a --sync flag for the /task command that synchronizes TODO.md and state.json. The flag should accept optional task number ranges (e.g., 343-345, 337) to sync specific tasks, or sync all tasks if no numbers are provided. Improve upon the current /sync command implementation, avoiding needless complexity and omitting dry-run mode.",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-06T17:40:11.648072Z",
+      "last_updated": "2026-01-07T23:51:40Z",
+      "abandoned": "2026-01-07"
+    },
+    {
+      "project_number": 331,
+      "project_name": "create___abandon_flag_for_task_command_to_abandon_multiple_tasks_via_ranges_lists",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Create the --abandon flag for the /task command to be able to specify a list or range of task numbers (or a list of ranges) in order to abandon those tasks in a manner similar to how the /abandon command works now while avoiding needless complexity.",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-06T00:00:00Z",
+      "last_updated": "2026-01-07T23:51:40Z",
+      "abandoned": "2026-01-07"
+    },
+    {
+      "project_number": 332,
+      "project_name": "design_and_implement_comprehensive_task_command_enhancements",
+      "type": "feature",
+      "phase": "abandoned",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Design and implement comprehensive /task command enhancements by consolidating --recover, --divide, bulk operations, and --sync features into a cohesive architecture. Ensure atomic operations, proper error handling, and integration with status-sync-manager patterns.",
+      "effort": "18-24 hours",
+      "blocking": [],
+      "dependencies": [
+        325,
+        326,
+        322,
+        330
+      ],
+      "created": "2026-01-07T00:00:00Z",
+      "last_updated": "2026-01-07T23:51:40Z",
+      "artifacts": [
+        ".opencode/specs/332_design_and_implement_comprehensive_task_command_enhancements/reports/research-001.md"
+      ],
+      "abandoned": "2026-01-07"
     }
   ],
   "repository_health": {

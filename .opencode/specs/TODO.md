@@ -1,17 +1,17 @@
 ---
-last_updated: 2026-01-06T00:00:00Z
+last_updated: 2026-01-08T07:46:26Z
   next_project_number: 335
 repository_health:
   overall_score: 92
   production_readiness: excellent
   last_assessed: 2026-01-05T02:00:00Z
 task_counts:
-  active: 45
+  active: 49
   completed: 64
   in_progress: 2
-  not_started: 35
+  not_started: 39
   abandoned: 6
-  total: 116
+  total: 120
 priority_distribution:
   high: 18
   medium: 22
@@ -27,33 +27,7 @@ technical_debt:
 
 ## High Priority
 
-### 328. Fix /task command to only create task entries and never implement directly
-- **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
-- **Researched**: 2026-01-06
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
 
-**Research Artifacts**:
-  - Research Report: [.opencode/specs/328_fix_task_command_to_only_create_task_entries_and_never_implement_directly/reports/research-001.md]
-
-**Description**: Fix the /task command to ensure it ONLY creates task entries in TODO.md and state.json, and NEVER implements the work described in the task. The command should parse the task description, reformulate it naturally, optionally divide into subtasks if --divide flag is present, delegate to status-sync-manager for atomic task creation, and return task numbers to the user. The command must be architecturally prevented from creating code files, running build tools, or doing any implementation work. Implementation happens later via /implement command.
-
----
-
-### 329. Research and fix persistent state synchronization failures between TODO.md and state.json
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Research and address the persistent issue where workflow commands (/research, /plan, /revise, /implement) successfully update state.json but fail to update TODO.md with status changes and artifact links. This is a postflight failure where status-sync-manager is either not being invoked or failing silently. Example: Task 323 research completed, state.json shows status 'researched' with artifact link, but TODO.md shows [NOT STARTED] with no artifacts. This violates the architectural requirement that both files must be kept in sync via status-sync-manager. Related to tasks 312, 320, and 321.
-
----
 
 ### 333. Fix workflow command TODO.md/state.json synchronization failures
 - **Effort**: 6-8 hours
@@ -77,35 +51,6 @@ technical_debt:
 
 ---
 
-### 302. Test Dual-Mode Revision Workflow
-- **Effort**: 2 hours
-- **Status**: [ABANDONED]
-- **Priority**: High
-- **Language**: meta
-- **Dependencies**: 301
-
-**Description**: Create comprehensive tests for the dual-mode revision workflow, covering task-only revision, plan revision without new reports, and plan revision with new reports.
-
-**Action Items**:
-1. Create test task without plan and test task-only revision
-2. Create test task with plan (no new reports) and test plan revision
-3. Create test task with plan and new reports, test report integration
-4. Validate atomic updates to TODO.md and state.json
-5. Verify git commits created correctly for each mode
-6. Document test cases and expected outcomes
-
-**Acceptance Criteria**:
-- [ ] Test case 1: Task-only revision updates description/priority/effort
-- [ ] Test case 2: Plan revision creates new version without reports
-- [ ] Test case 3: Plan revision integrates new reports into phases
-- [ ] All modes update TODO.md and state.json atomically
-- [ ] Git commits created with appropriate messages
-- [ ] Rollback works correctly on failures
-- [ ] Test documentation added to `.opencode/TESTING.md`
-
-**Impact**: Ensures reliability and correctness of dual-mode revision workflow across all scenarios.
-
----
 
 ### 257. Completeness Proofs
  **Effort**: 70-90 hours
@@ -590,64 +535,7 @@ technical_debt:
 
 ---
 
-### 189. Add --divide flag to /research command for topic subdivision
-- **Effort**: 3 hours
-- **Status**: [PLANNED]
-- **Started**: 2025-12-26
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research Artifacts**:
-  - Main Report: [.opencode/specs/189_research_divide_flag/reports/research-001.md]
-  - Summary: [.opencode/specs/189_research_divide_flag/summaries/research-summary.md]
-- **Files Affected**:
-  - .opencode/command/research.md
-  - .opencode/agent/subagents/researcher.md
-  - .opencode/agent/subagents/specialists/web-research-specialist.md
-- **Description**: Add a --divide flag to the /research command that changes its behavior. Without --divide, /research should create individual research reports only (no research summary). With --divide, /research should invoke a subagent to divide the research topic into natural subtopics, pass each subtopic to further research subagents to research and create individual reports, then compile the references and brief summaries into a research summary report. The research summary should contain only references to the individual reports and their brief summaries, not duplicate the full content.
-- **Acceptance Criteria**:
-  - [ ] --divide flag added to /research command documentation and input parsing
-  - [ ] Without --divide: /research creates only individual research reports (reports/research-NNN.md), no summary
-  - [ ] With --divide: /research divides topic into subtopics using a subagent
-  - [ ] With --divide: Each subtopic is researched by a separate subagent, creating individual reports
-  - [ ] With --divide: Research summary report (summaries/research-summary.md) is created compiling references and brief summaries
-  - [ ] Research summary contains only references and brief summaries, not full content
-  - [ ] All behavior follows lazy directory creation (create summaries/ only when writing summary)
-  - [ ] Status markers and state sync work correctly for both modes
-  - [ ] Documentation updated to explain --divide flag behavior
-- **Impact**: Provides more flexible research workflow - simple research creates focused reports without overhead of summary compilation, while complex research can be divided into manageable subtopics with a summary overview.
 
----
-
-### 203. Add --complex flag to /research for subtopic subdivision with summary
-- **Effort**: TBD
-- **Status**: [REVISING]
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Files Affected**:
-  - .opencode/command/research.md
-  - .opencode/agent/subagents/researcher.md
-  - .opencode/agent/subagents/lean-research-agent.md
-- **Description**: Enhance the /research command to support a --complex flag that changes its behavior for handling complex research topics. Without --complex flag: /research creates a single research report (reports/research-001.md) with no summary - this is the current default behavior. With --complex flag: /research should (1) Divide the topic into 1-5 appropriate subtopics using intelligent analysis, (2) Spawn research subagents to complete each subtopic in parallel, creating individual research reports (reports/research-001.md, reports/research-002.md, etc.), (3) Each subagent returns only its report path and brief summary (not full content) to the primary agent, (4) Primary agent compiles all report paths and brief summaries into a research summary report (summaries/research-summary.md), (5) Update TODO.md and state.json with all report references and mark task as [RESEARCHED]. The --complex flag enables comprehensive research on large topics while protecting context windows through summarization.
-- **Acceptance Criteria**:
-  - [ ] --complex flag added to /research command argument parsing
-  - [ ] Without --complex: /research creates single report, no summary (current behavior preserved)
-  - [ ] With --complex: Topic intelligently divided into 1-5 subtopics
-  - [ ] With --complex: Separate research subagents spawned for each subtopic
-  - [ ] With --complex: Each subtopic generates individual report (reports/research-NNN.md)
-  - [ ] With --complex: Subagents return only report path + brief summary (not full content)
-  - [ ] With --complex: Primary agent creates research summary (summaries/research-summary.md) compiling all references
-  - [ ] Research summary contains only paths and brief summaries, not duplicated full content
-  - [ ] Lazy directory creation followed (summaries/ created only when writing summary)
-  - [ ] TODO.md updated with all report references and [RESEARCHED] status for both modes
-  - [ ] state.json updated correctly for both modes
-  - [ ] Documentation explains --complex flag behavior and use cases
-- **Impact**: Enables comprehensive research on complex topics by dividing them into manageable subtopics while protecting the primary agent's context window through summarization. Provides flexibility - simple topics get focused single reports, complex topics get thorough multi-report coverage with summary overview.
-
----
 
 ### 205. Implement Lean tool usage verification and monitoring system
 - **Effort**: 6-8 hours
@@ -716,22 +604,6 @@ CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client
 
 ---
 
-### 279. Systematically fix metadata lookup to use state.json instead of TODO.md
-- **Effort**: 12-16 hours
-- **Status**: [RESEARCHED]
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Researched**: 2026-01-05
-- **Research**: [research-001.md](279_systematically_fix_metadata_lookup_to_use_state_json_instead_of_todo_md/reports/research-001.md)
-**Description**:
-When running `/implement 276`, the command output showed "Extract task 276 details from TODO.md" which indicates that commands and subagents are extracting metadata from TODO.md instead of from the authoritative source (state.json). This research identifies 25 files across orchestrator, commands, subagents, context, standards, templates, and documentation that use TODO.md for metadata extraction instead of state.json.
-
-**Impact**:
-Establishes state.json as single source of truth, eliminates "Extract task NNN details from TODO.md" messages, ensures correct language-based routing to Lean-specific agents, and preserves TODO.md as synchronized user-facing view.
-
----
 
 ### 291. Fix lean-research-agent to delegate status updates to status-sync-manager instead of direct file manipulation
 - **Effort**: 2-3 hours
@@ -782,22 +654,12 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 331. Create --abandon flag for /task command to abandon multiple tasks via ranges/lists
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Create the --abandon flag for the /task command to be able to specify a list or range of task numbers (or a list of ranges) in order to abandon those tasks in a manner similar to how the /abandon command works now while avoiding needless complexity.
-
----
 
 ### 317. Implement BFS variant for proof search completeness (Phase 3)
 - **Effort**: 10-15 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-07
+- **Planned**: 2026-01-07
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -893,6 +755,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ## Medium Priority
 
+
 ### 323. Fix /todo command to run markdown formatter after completion
 
 - **Effort**: TBD
@@ -914,38 +777,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 325. Create --recover flag for /task command to unarchive projects
-- **Effort**: 6 hours
-- **Status**: [PLANNED]
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
 
-**Research Artifacts**:
-  - Research Report: [.opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md]
-
-**Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/plans/implementation-001.md]
-
-**Description**: Create a --recover flag for the /task command together with a task number as an argument that can be used to unarchive a project directory from specs/archive/, updating the specs/TODO.md and specs/state.json files accordingly.
-
----
-
-### 326. Create --divide flag for /task command with task division capability
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Research Artifacts**:
-  - Research Report: [.opencode/specs/326_create___divide_flag_for_task_command_with_task_division_capability/reports/research-001.md]
-
-**Description**: Create a --divide flag for the /task command that accepts a task number as an argument. This flag should divide an existing task into an appropriate number of subtasks, add the new task numbers as dependencies to the original task, and create the new task entries atomically.
-
----
 
 ### 259. Automation Tactics
 - **Effort**: 20.0
@@ -960,17 +792,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 322. Add bulk operation to status-sync-manager for creating/updating many tasks
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Add new bulk operation to status-sync-manager for creating/updating many tasks, integrating with existing bulk functionality implemented for /abandon and /task --divide commands. The aim is optimization for elegant executions with bulk operations.
-
----
 
 ### 327. Review context file references and optimize context loading strategy
 - **Effort**: 4-6 hours
@@ -996,14 +817,3 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 330. Create --sync flag for /task command to synchronize TODO.md and state.json
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Create a --sync flag for the /task command that synchronizes TODO.md and state.json. The flag should accept optional task number ranges (e.g., 343-345, 337) to sync specific tasks, or sync all tasks if no numbers are provided. Improve upon the current /sync command implementation, avoiding needless complexity and omitting dry-run mode.
-
----
