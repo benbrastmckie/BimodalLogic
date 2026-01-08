@@ -28,6 +28,7 @@ context_loading:
   optional:
     - "core/templates/command-template.md"
     - "project/meta/architecture-principles.md"
+    - "project/meta/context-revision-guide.md"
   max_context_size: 30000
 delegation:
   max_depth: 3
@@ -174,6 +175,41 @@ lifecycle:
     </process>
     <output>Command usage documentation written to disk</output>
   </step_6>
+
+  <step_6_5>
+    <name>Stage 6.5: Assess Context File Changes</name>
+    <action>Determine if context files need updating based on generated commands</action>
+    <process>
+      1. Review generated commands for new patterns
+         - Check for new command structures
+         - Check for new routing patterns
+         - Check for new argument parsing patterns
+      
+      2. Check if patterns exist in current context files
+         - Search core/formats/command-structure.md
+         - Search core/orchestration/routing.md
+      
+      3. If new pattern discovered:
+         a. Determine which context file to update
+         b. Check file size (must stay under 200 lines)
+         c. If fits: Update in place
+         d. If doesn't fit: Create new file or split existing
+      
+      4. Update context index if files added/changed
+      5. Update agent context_loading sections if needed
+    </process>
+    <guidance>
+      Reference: .opencode/context/project/meta/context-revision-guide.md
+    </guidance>
+    <output>
+      context_changes: {
+        files_updated: [paths],
+        files_created: [paths],
+        index_updated: boolean,
+        agents_updated: [agent_names]
+      }
+    </output>
+  </step_6_5>
 
   <step_7>
     <name>Stage 7: Postflight (Status Updates and Git Commits)</name>

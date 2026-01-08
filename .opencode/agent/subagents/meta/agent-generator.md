@@ -30,6 +30,7 @@ context_loading:
     - "core/templates/agent-template.md"
     - "core/templates/orchestrator-template.md"
     - "project/meta/architecture-principles.md"
+    - "project/meta/context-revision-guide.md"
   max_context_size: 40000
 delegation:
   max_depth: 3
@@ -204,6 +205,84 @@ lifecycle:
       }
     </output>
   </step_5>
+
+  <step_5_5>
+    <name>Stage 5.5: Assess Context File Changes</name>
+    <action>Determine if context files need updating based on generated agents</action>
+    <process>
+      1. Review generated agents for new patterns/standards
+         - Check for new delegation patterns
+         - Check for new workflow patterns
+         - Check for new routing patterns
+         - Check for new validation patterns
+      
+      2. Check if patterns exist in current context files
+         - Search core/orchestration/ for delegation patterns
+         - Search core/workflows/ for workflow patterns
+         - Search core/orchestration/routing.md for routing patterns
+         - Search core/standards/ for validation patterns
+      
+      3. If new pattern discovered:
+         a. Determine which context file to update
+            - Delegation patterns → core/orchestration/delegation.md
+            - Workflow patterns → core/workflows/command-lifecycle.md
+            - Routing patterns → core/orchestration/routing.md
+            - Validation patterns → core/orchestration/validation.md
+         
+         b. Check file size (must stay under 200 lines)
+            - Read current file
+            - Count lines
+            - Estimate lines to add
+            - Calculate total
+         
+         c. If fits (total <200 lines): Update in place
+            - Add new pattern section
+            - Update examples
+            - Update version/date
+            - Write file
+         
+         d. If doesn't fit (total ≥200 lines): Create new file or split existing
+            - Identify natural boundary
+            - Create new file with focused content
+            - Update context index
+            - Document split in both files
+      
+      4. Update context index if files added/changed
+         - Add new files to .opencode/context/index.md
+         - Update descriptions
+         - Maintain organization
+      
+      5. Update agent context_loading sections if needed
+         - Find agents loading affected files
+         - Add new required files
+         - Update optional files
+         - Test context loading
+      
+      6. Log context changes
+         - Files updated
+         - Files created
+         - Files split
+         - Agents updated
+    </process>
+    <guidance>
+      Reference: .opencode/context/project/meta/context-revision-guide.md
+      
+      Decision tree:
+      - New pattern fits in existing file (<200 lines)? → Update in place
+      - New concept orthogonal to existing files? → Create new file
+      - Existing file >200 lines? → Split file
+      - Breaking change? → Update all dependent agents
+    </guidance>
+    <output>
+      context_changes: {
+        files_updated: [paths],
+        files_created: [paths],
+        files_split: [{old_path, new_paths[]}],
+        index_updated: boolean,
+        agents_updated: [agent_names]
+      }
+    </output>
+  </step_5_5>
 
   <step_6>
     <name>Stage 6: Write Agent Files to Disk</name>
