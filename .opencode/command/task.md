@@ -435,26 +435,48 @@ timeout: 120
       
       4. Wait for return from status-sync-manager
       
-      5. Validate return:
-         - Check status == "completed"
-         - Verify files_updated includes [TODO.md, state.json]
-         - Extract synced_tasks count
-         - Extract conflicts_resolved count
-         - Extract conflict resolution details
+       5. Validate return:
+          - Check status == "completed"
+          - Verify files_updated includes [TODO.md, state.json]
+          - Extract synced_tasks count
+          - Extract conflicts_resolved count
+          - Extract conflict resolution details
       
-      6. Format success message:
-         - "✅ Synced {count} tasks"
-         - If conflicts resolved: "Resolved {count} conflicts using git blame"
-         - Include conflict resolution summary
-    </process>
-    <validation>
-      - Task ranges parsed correctly (or "all")
-      - Return format valid
-      - Files updated correctly
-      - Conflicts resolved using git blame
-    </validation>
-    <checkpoint>Tasks synchronized, conflicts resolved using git blame</checkpoint>
-  </stage>
+       6. Create git commit (non-critical):
+          - Delegate to git-workflow-manager:
+            * scope_files: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+            * message_template: "task: sync TODO.md and state.json for {count} tasks ({ranges})"
+            * task_context:
+              - task_count: {synced_tasks count}
+              - task_ranges: {formatted ranges or "all"}
+              - conflicts_resolved: {conflicts_resolved count}
+              - conflict_summary: {conflict resolution details}
+            * session_id: {session_id}
+            * delegation_depth: {depth + 1}
+            * delegation_path: [...path, "git-workflow-manager"]
+          - Wait for return from git-workflow-manager
+          - If git commit succeeds:
+            * Extract commit_hash from return
+            * Log: "Git commit created: {commit_hash}"
+          - If git commit fails:
+            * Log warning: "Git commit failed (non-critical): {error}"
+            * Continue with success message (files already updated)
+      
+       7. Format success message:
+          - "✅ Synced {count} tasks"
+          - If conflicts resolved: "Resolved {count} conflicts using git blame"
+          - Include conflict resolution summary
+          - If git commit succeeded: Include commit hash
+     </process>
+     <validation>
+       - Task ranges parsed correctly (or "all")
+       - Return format valid
+       - Files updated correctly
+       - Conflicts resolved using git blame
+       - Git commit created (or logged as non-critical failure)
+     </validation>
+     <checkpoint>Tasks synchronized, conflicts resolved using git blame, git commit created</checkpoint>
+   </stage>
   
   <stage id="7" name="AbandonTasks">
     <action>Abandon tasks (move to archive/) (--abandon flag)</action>
