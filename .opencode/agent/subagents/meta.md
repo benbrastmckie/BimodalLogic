@@ -606,29 +606,32 @@ $ARGUMENTS
     <checkpoint>Integration requirements identified</checkpoint>
   </stage>
 
-   <stage id="7" name="ReviewAndConfirm">
-     <action>Present comprehensive architecture summary and get user confirmation (CONDITIONAL: Skip if mode == "task")</action>
-     <process>
-       1. Check mode:
-          a. If mode == "task":
-             - Log: "[INFO] Skipping ReviewAndConfirm (Task Mode)"
-             - Skip to Stage 8
-          
-          b. If mode == "prompt" OR mode == "interactive":
-             - Continue with review and confirmation below
-       
-       2. Generate architecture summary:
-     <action>Present comprehensive architecture summary and get user confirmation (CONDITIONAL: Skip if mode == "task")</action>
-     <process>
-       1. Check mode:
-          a. If mode == "task":
-             - Log: "[INFO] Skipping ReviewAndConfirm (Task Mode)"
-             - Skip to Stage 8
-          
-          b. If mode == "prompt" OR mode == "interactive":
-             - Continue with review and confirmation below
-       
-       2. Generate architecture summary:
+  <stage id="7" name="ReviewAndConfirm">
+    <action>Present architecture summary and get user confirmation (CONDITIONAL: behavior varies by mode)</action>
+    <process>
+      1. Check mode:
+         
+         a. If mode == "direct":
+            - Log: "[INFO] Direct Mode - Skipping confirmation, proceeding to task creation"
+            - Skip to Stage 8
+         
+         b. If mode == "clarification":
+            - Log: "[INFO] Clarification Mode - Brief confirmation"
+            - Generate brief summary:
+              "Based on your description and answers, I'll create:
+              - {agent_count} agents ({hierarchy} structure)
+              - {custom_commands.length} custom commands
+              - Context files for {domain}
+              
+              Proceed? (yes/no)"
+            - If user says "yes": Proceed to Stage 8
+            - If user says "no": Ask "What would you like to change?" and go back to relevant stage
+            - If user says "cancel": Exit with status "cancelled"
+         
+         c. If mode == "interactive":
+            - Continue with full confirmation (steps 2-6 below)
+      
+      2. (Interactive Mode only) Generate architecture summary:
          "Here's the .opencode system I'll create for you:
          
          DOMAIN: {domain}
@@ -658,7 +661,7 @@ $ARGUMENTS
          {priority} - {use_case.description}
          "
       
-       3. Ask for confirmation:
+      3. (Interactive Mode only) Ask for confirmation:
          "Does this architecture meet your needs?
          
          Options:
@@ -666,25 +669,23 @@ $ARGUMENTS
          b) No, I want to revise {specific aspect}
          c) Cancel"
       
-       4. If user says "Yes": Proceed to Stage 8
-       
-       5. If user says "No":
-          a. Ask which aspect to revise
-          b. Go back to relevant stage (3-6)
-          c. Re-collect that information
-          d. Return to Stage 7
-       
-       6. If user says "Cancel": Exit with status "cancelled"
+      4. (Interactive Mode only) If user says "Yes": Proceed to Stage 8
+      
+      5. (Interactive Mode only) If user says "No":
+         a. Ask which aspect to revise
+         b. Go back to relevant stage (3-6)
+         c. Re-collect that information
+         d. Return to Stage 7
+      
+      6. (Interactive Mode only) If user says "Cancel": Exit with status "cancelled"
     </process>
-     <validation>
-       - If mode == "task": Stage skipped
-       - If mode == "prompt" OR mode == "interactive":
-         * Architecture summary must be complete
-         * User must confirm or request revision
-         * If revision requested, must specify which aspect
-     </validation>
-     <checkpoint>Architecture confirmed by user OR stage skipped</checkpoint>
-   </stage>
+    <validation>
+      - If mode == "direct": Stage skipped
+      - If mode == "clarification": User must confirm or request changes
+      - If mode == "interactive": Architecture summary must be complete, user must confirm
+    </validation>
+    <checkpoint>Architecture confirmed by user OR stage skipped</checkpoint>
+  </stage>
 
    <stage id="8" name="CreateTasksWithArtifacts">
      <action>Create tasks with plan artifacts (CONDITIONAL: Single task plan if mode == "task", multiple tasks if mode == "prompt"/"interactive")</action>
