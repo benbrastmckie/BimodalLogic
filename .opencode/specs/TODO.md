@@ -25,6 +25,9 @@ technical_debt:
 
 # TODO
 
+
+---
+
 ## High Priority
 
 ### 342. Research orchestrator command file workflow execution mechanism
@@ -548,36 +551,6 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 262. ModalS5 Limitation
-- **Effort**: 2 hours
-- **Status**: [COMPLETED] ✓
-- **Completed**: 2026-01-08
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-
-**Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/262_update_orchestrator_for_new_argument_mechanism/plans/implementation-001.md]
-
-**Implementation Artifacts**:
-  - Summary: [.opencode/specs/262_update_orchestrator_for_new_argument_mechanism/summaries/implementation-summary-20260108.md]
-
-**Description**: The theorem `diamond_mono_imp` in `ModalS5.lean` is marked with `sorry` because it is not valid as an object-level implication. This is a documented limitation.
-
-**Action Items**:
-1. Maintain documentation or find alternative formulation if possible.
-
-**Files**:
-- `Logos/Core/Theorems/ModalS5.lean`
-
-**Acceptance Criteria**:
-- [ ] Documentation maintained or alternative formulation found
-- [ ] SORRY_REGISTRY.md updated with justification
-
-**Impact**: Resolves documented limitation in ModalS5 theorems.
-
----
 
 ### 263. Refactor Context.lean
 - **Effort**: 2-4 hours
@@ -803,47 +776,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 336. Refactor /review, command and reviewer subagent ✓
-- **Effort**: 4-5 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-08
-- **Priority**: High
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: None
 
-**Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/336_refactor_review_command/plans/implementation-001.md]
-
-**Implementation Artifacts**:
-  - Refactored Command: [.opencode/command/review.md]
-  - Refactored Subagent: [.opencode/agent/subagents/reviewer.md]
-  - Implementation Summary: [.opencode/specs/336_refactor_review_command/summaries/implementation-summary-20260108.md]
-
-**Description**: Refactor the /review command and reviewer subagent to follow modern .opencode standards. Simplify command file to <300 lines with 4-stage pattern, refactor subagent to use 8-stage workflow_execution, reduce context loading from Level 3 to Level 2, move task creation from subagent to command, ensure standardized return format.
-
----
-
-### 337. Refactor /todo command and create todo-manager subagent ✓
-- **Effort**: 4-5 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-08
-- **Priority**: High
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: None
-
-**Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/337_refactor_todo_command/plans/implementation-001.md]
-
-**Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/337_refactor_todo_command/summaries/implementation-summary-20260108.md]
-  - Refactored Command: [.opencode/command/todo.md]
-  - New Subagent: [.opencode/agent/subagents/todo-manager.md]
-
-**Description**: Refactor the /todo command to follow modern .opencode standards by extracting its embedded 372-line workflow into a new todo-manager subagent. Simplify command file to <300 lines with 4-stage pattern, create new subagent with 8-stage workflow_execution, maintain atomic updates and rollback logic, preserve user confirmation for bulk operations.
-
----
 
 ### 338. Update /task command to use status-sync-manager directly
 - **Effort**: 2-3 hours
@@ -933,4 +866,3 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Dependencies**: 342, 343, 344
 - **Description**: Comprehensive testing of all workflow commands (/implement, /research, /plan, /revise) to verify postflight stages execute correctly. Test artifact creation and linking, status updates to completed markers, git commit creation, error handling and rollback, and defense-in-depth verification. Validate that Task 335 scenario (artifacts created but status not updated) is fixed. Create test report documenting all test cases, results, and any issues found.
 
----
