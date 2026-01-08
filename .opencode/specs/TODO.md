@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-06T00:00:00Z
-  next_project_number: 334
+  next_project_number: 335
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -24,9 +24,6 @@ technical_debt:
 ---
 
 # TODO
-
-
----
 
 ## High Priority
 
@@ -208,11 +205,14 @@ technical_debt:
 
 ### 262. ModalS5 Limitation
 - **Effort**: 2 hours
-- **Status**: [REVISING]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/262_update_orchestrator_for_new_argument_mechanism/plans/implementation-001.md]
 
 **Description**: The theorem `diamond_mono_imp` in `ModalS5.lean` is marked with `sorry` because it is not valid as an object-level implication. This is a documented limitation.
 
@@ -232,11 +232,14 @@ technical_debt:
 
 ### 263. Refactor Context.lean
 - **Effort**: 2-4 hours
-- **Status**: [REVISING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: Task 264
 - **Dependencies**: None
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/263_update_all_commands_for_new_argument_mechanism/plans/implementation-001.md]
 
 **Description**: Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4.
 
@@ -256,11 +259,14 @@ technical_debt:
 
 ### 264. Update Context References
 - **Effort**: 1-2 hours
-- **Status**: [REVISING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: Task 263
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/264_test_and_document_argument_passing/plans/implementation-001.md]
 
 **Files Affected**:
 - `Logos/Core/ProofSystem/Derivation.lean`
@@ -282,7 +288,7 @@ technical_debt:
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -300,7 +306,7 @@ technical_debt:
 
 ### 133. Build canonical model constructors in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -318,7 +324,7 @@ technical_debt:
 
 ### 134. Prove truth lemma structure in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -336,7 +342,7 @@ technical_debt:
 
 ### 135. Remove provable_iff_valid sorry in Completeness.lean
 - **Effort**: 2 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -357,7 +363,7 @@ technical_debt:
 
 ### 136. Design Decidability.lean architecture and signatures
 - **Effort**: 2 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -375,7 +381,7 @@ technical_debt:
 
 ### 137. Implement tableau core rules in Decidability.lean
 - **Effort**: 3 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -393,7 +399,7 @@ technical_debt:
 
 ### 138. Implement satisfiability and validity decision procedure tests
 - **Effort**: 3 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -415,7 +421,7 @@ technical_debt:
 
 ### 139. Draft Layer 1 counterfactual operator plan
 - **Effort**: 2 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -434,7 +440,7 @@ technical_debt:
 
 ### 140. Draft Layer 2 epistemic operator plan
 - **Effort**: 2 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -453,7 +459,7 @@ technical_debt:
 
 ### 141. Draft Layer 3 normative operator plan
 - **Effort**: 2 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -472,7 +478,7 @@ technical_debt:
 
 ### 175. Establish CI/CD pipeline with automated testing and linting
 - **Effort**: 13 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -497,7 +503,7 @@ technical_debt:
 
 ### 176. Enhance proof search with domain-specific heuristics and caching
 - **Effort**: 18 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -521,7 +527,7 @@ technical_debt:
 
 ### 178. Complete advanced tutorial sections with hands-on exercises
 - **Effort**: 13 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -544,7 +550,7 @@ technical_debt:
 
 ### 179. Implement performance benchmarks for proof search and derivation
 - **Effort**: 13 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -569,7 +575,7 @@ technical_debt:
 
 ### 180. Add test coverage metrics and reporting
 - **Effort**: 9 hours
-- **Status**: [REVISING]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -771,6 +777,19 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ## Medium Priority
 
 
+
+### 334. Create LaTeX documentation for Logos system mirroring layer structure
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Documentation/ with a cleaned up structure that mirrors the Logos layers. The documentation should: (1) Create and import a subfile for each Logos layer, (2) Maintain the same formatting standards as the original LaTeX document, (3) Exclude problem sets, (4) Include standardized sections for each layer: Syntax extensions from previous layer, Semantic frames and models definitions, Proof system extensions from previous layer, Metalogical properties that have been established, (5) Compile definitions in a clear and concise way without proofs, (6) Provide minimal explanation, (7) Serve as a nicely formatted readable LaTeX reference for learning the Logos system without reading Lean code.
+
+---
+
 ### 331. Create --abandon flag for /task command to abandon multiple tasks via ranges/lists
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
@@ -785,11 +804,15 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 317. Implement BFS variant for proof search completeness (Phase 3)
 - **Effort**: 10-15 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-07
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/317_bfs_variant_phase3/reports/research-001.md]
 
 **Description**: Implement Phase 3 of task 260: BFS Variant. Add breadth-first search variant to ProofSearch.lean to ensure completeness guarantees. Current implementation uses bounded DFS which may miss proofs. BFS variant will explore search space level-by-level, guaranteeing shortest proofs are found first.
 
@@ -797,11 +820,16 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 318. Implement advanced heuristics for proof search performance (Phase 4)
 - **Effort**: 12-18 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2026-01-07
+- **Researched**: 2026-01-07
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md]
 
 **Description**: Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.
 

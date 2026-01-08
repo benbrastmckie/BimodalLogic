@@ -216,25 +216,30 @@ lifecycle:
     </step_1_prepare_entries>
 
     <step_2_prepare_update>
-      <action>Prepare atomic update in memory</action>
-      <process>
-        1. Read current TODO.md content
-        2. Read current state.json content
-        3. NO BACKUP FILES CREATED (git-only rollback)
-        4. Determine correct priority section in TODO.md:
-           - High priority: Insert after "## High Priority Tasks" heading
-           - Medium priority: Insert after "## Medium Priority Tasks" heading
-           - Low priority: Insert after "## Low Priority Tasks" heading
-        5. Insert TODO.md entry in correct section
-        6. Parse state.json
-        7. Append entry to active_projects array
-        8. Increment next_project_number by 1
-        9. Update _last_updated timestamp
-        10. Validate both updates well-formed
-      </process>
-      <validation>Updates prepared in memory</validation>
-      <output>Updated TODO.md and state.json content in memory</output>
-    </step_2_prepare_update>
+       <action>Prepare atomic update in memory</action>
+       <process>
+         1. Read current TODO.md content
+         2. Read current state.json content
+         3. NO BACKUP FILES CREATED (git-only rollback)
+         4. Determine correct priority section in TODO.md:
+            - High priority: Insert after "## High Priority Tasks" heading
+            - Medium priority: Insert after "## Medium Priority Tasks" heading
+            - Low priority: Insert after "## Low Priority Tasks" heading
+         5. Insert TODO.md entry in correct section
+         6. Update TODO.md YAML frontmatter metadata:
+            - Increment next_project_number by 1 in frontmatter
+            - Update last_updated timestamp in frontmatter
+            - Preserve all other metadata fields
+         7. Parse state.json
+         8. Append entry to active_projects array
+         9. Increment next_project_number by 1 in state.json
+         10. Update _last_updated timestamp in state.json
+         11. Validate both updates well-formed
+         12. Ensure next_project_number matches in both files
+       </process>
+       <validation>Updates prepared in memory, next_project_number synchronized</validation>
+       <output>Updated TODO.md and state.json content in memory</output>
+     </step_2_prepare_update>
 
     <step_3_commit>
       <action>Commit updates atomically using atomic write pattern</action>
