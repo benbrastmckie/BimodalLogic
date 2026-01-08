@@ -6,14 +6,14 @@ repository_health:
   production_readiness: excellent
   last_assessed: 2026-01-05T02:00:00Z
 task_counts:
-  active: 52
-  completed: 64
+  active: 51
+  completed: 65
   in_progress: 2
   not_started: 42
   abandoned: 6
   total: 123
 priority_distribution:
-  high: 21
+  high: 20
   medium: 22
   low: 13
 technical_debt:
@@ -789,9 +789,10 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ---
 
-### 336. Refactor /review command and reviewer subagent
+### 336. Refactor /review command and reviewer subagent ✓
 - **Effort**: 4-5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-08
 - **Priority**: High
 - **Language**: general
 - **Blocking**: None
@@ -800,13 +801,19 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 **Plan Artifacts**:
   - Implementation Plan: [.opencode/specs/336_refactor_review_command/plans/implementation-001.md]
 
+**Implementation Artifacts**:
+  - Refactored Command: [.opencode/command/review.md]
+  - Refactored Subagent: [.opencode/agent/subagents/reviewer.md]
+  - Implementation Summary: [.opencode/specs/336_refactor_review_command/summaries/implementation-summary-20260108.md]
+
 **Description**: Refactor the /review command and reviewer subagent to follow modern .opencode standards. Simplify command file to <300 lines with 4-stage pattern, refactor subagent to use 8-stage workflow_execution, reduce context loading from Level 3 to Level 2, move task creation from subagent to command, ensure standardized return format.
 
 ---
 
-### 337. Refactor /todo command and create todo-manager subagent
+### 337. Refactor /todo command and create todo-manager subagent ✓
 - **Effort**: 4-5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-08
 - **Priority**: High
 - **Language**: general
 - **Blocking**: None
@@ -814,6 +821,11 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Plan Artifacts**:
   - Implementation Plan: [.opencode/specs/337_refactor_todo_command/plans/implementation-001.md]
+
+**Implementation Artifacts**:
+  - Implementation Summary: [.opencode/specs/337_refactor_todo_command/summaries/implementation-summary-20260108.md]
+  - Refactored Command: [.opencode/command/todo.md]
+  - New Subagent: [.opencode/agent/subagents/todo-manager.md]
 
 **Description**: Refactor the /todo command to follow modern .opencode standards by extracting its embedded 372-line workflow into a new todo-manager subagent. Simplify command file to <300 lines with 4-stage pattern, create new subagent with 8-stage workflow_execution, maintain atomic updates and rollback logic, preserve user confirmation for bulk operations.
 
@@ -872,5 +884,49 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 **Plan**: [Implementation Plan](.opencode/specs/341_create_deprecation_policy_and_migration_guide/plans/implementation-001.md)
 
 **Description**: Create .opencode/context/core/standards/deprecation-policy.md documenting how to deprecate agents/commands safely. Include migration checklist: (1) Mark as deprecated with reason, (2) Update all callers, (3) Add deprecation warnings, (4) Remove after migration complete. Create migration guide for moving from deprecated agents to replacements.
+
+---
+
+### 342. Research orchestrator command file workflow execution mechanism
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+- **Description**: Research how the orchestrator should execute command file workflow_execution stages. Analyze current orchestrator delegation mechanism, identify why command file stages are not being executed, compare with OpenAgents architecture (tasks 240-247), and design solution for parsing and executing workflow_execution stages including stage sequencing, context passing, error handling, and rollback mechanisms. Document findings and recommend implementation approach.
+
+---
+
+### 343. Design command file workflow execution architecture
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: 342
+- **Description**: Design comprehensive architecture for orchestrator to execute command file workflow_execution stages. Define stage parsing mechanism, execution engine design, context passing between stages, error handling and rollback strategy, and integration with existing delegation system. Create detailed design document with sequence diagrams, data flow diagrams, and implementation specifications.
+
+---
+
+### 344. Implement orchestrator workflow execution engine
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: 342, 343
+- **Description**: Implement orchestrator workflow execution engine that parses command file workflow_execution stages and executes them in sequence. Implement stage parser, execution engine, context passing mechanism, error handling and rollback, and integration with existing delegation system. Ensure Stage 3.5 (Postflight) executes correctly for all workflow commands, including artifact extraction, validation, status updates via status-sync-manager, and git commits via git-workflow-manager.
+
+---
+
+### 345. Test and validate all workflow commands with postflight execution
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: 342, 343, 344
+- **Description**: Comprehensive testing of all workflow commands (/implement, /research, /plan, /revise) to verify postflight stages execute correctly. Test artifact creation and linking, status updates to completed markers, git commit creation, error handling and rollback, and defense-in-depth verification. Validate that Task 335 scenario (artifacts created but status not updated) is fixed. Create test report documenting all test cases, results, and any issues found.
 
 ---

@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-08T20:27:20Z",
-  "next_project_number": 342,
+  "_last_updated": "2026-01-08T20:45:00Z",
+  "next_project_number": 346,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -633,8 +633,8 @@
       "project_number": 336,
       "project_name": "refactor_review_command_and_reviewer_subagent",
       "type": "refactoring",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "high",
       "language": "general",
       "description": "Refactor the /review command and reviewer subagent to follow modern .opencode standards. Simplify command file to <300 lines with 4-stage pattern, refactor subagent to use 8-stage workflow_execution, reduce context loading from Level 3 to Level 2, move task creation from subagent to command, ensure standardized return format.",
@@ -642,21 +642,32 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-08T08:50:00Z",
-      "last_updated": "2026-01-08T08:50:00Z",
+      "last_updated": "2026-01-08T00:00:00Z",
       "artifacts": [
         {
-          "type": "plan",
-          "path": ".opencode/specs/336_refactor_review_command/plans/implementation-001.md",
-          "summary": "Implementation plan for refactoring /review command"
+          "type": "implementation",
+          "path": ".opencode/command/review.md",
+          "summary": "Refactored command file with 4-stage pattern (210 lines)"
+        },
+        {
+          "type": "implementation",
+          "path": ".opencode/agent/subagents/reviewer.md",
+          "summary": "Refactored subagent with 8-stage workflow_execution (540 lines)"
+        },
+        {
+          "type": "summary",
+          "path": ".opencode/specs/336_refactor_review_command/summaries/implementation-summary-20260108.md",
+          "summary": "Implementation summary documenting all changes"
         }
-      ]
+      ],
+      "completed": "2026-01-08"
     },
     {
       "project_number": 337,
       "project_name": "refactor_todo_command_and_create_todo_manager_subagent",
       "type": "refactoring",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "high",
       "language": "general",
       "description": "Refactor the /todo command to follow modern .opencode standards by extracting its embedded 372-line workflow into a new todo-manager subagent. Simplify command file to <300 lines with 4-stage pattern, create new subagent with 8-stage workflow_execution, maintain atomic updates and rollback logic, preserve user confirmation for bulk operations.",
@@ -664,14 +675,25 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-08T08:50:00Z",
-      "last_updated": "2026-01-08T08:50:00Z",
+      "last_updated": "2026-01-08T00:00:00Z",
       "artifacts": [
         {
-          "type": "plan",
-          "path": ".opencode/specs/337_refactor_todo_command/plans/implementation-001.md",
-          "summary": "Implementation plan for refactoring /todo command"
+          "type": "implementation",
+          "path": ".opencode/command/todo.md",
+          "summary": "Refactored command file (372→188 lines) with 4-stage pattern"
+        },
+        {
+          "type": "implementation",
+          "path": ".opencode/agent/subagents/todo-manager.md",
+          "summary": "New subagent (585 lines) with 8-stage workflow_execution pattern"
+        },
+        {
+          "type": "summary",
+          "path": ".opencode/specs/337_refactor_todo_command/summaries/implementation-summary-20260108.md",
+          "summary": "Implementation summary documenting refactoring approach and standards compliance"
         }
-      ]
+      ],
+      "completed": "2026-01-08"
     },
     {
       "project_number": 338,
@@ -731,6 +753,70 @@
       "effort": "2 hours",
       "description": "Create .opencode/context/core/standards/deprecation-policy.md documenting how to deprecate agents/commands safely. Include migration checklist: (1) Mark as deprecated with reason, (2) Update all callers, (3) Add deprecation warnings, (4) Remove after migration complete. Create migration guide for moving from deprecated agents to replacements.",
       "plan_path": ".opencode/specs/341_create_deprecation_policy_and_migration_guide/plans/implementation-001.md"
+    },
+    {
+      "project_number": 342,
+      "project_name": "research_orchestrator_command_file_workflow_execution_mechanism",
+      "type": "research",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-08T20:45:00Z",
+      "last_updated": "2026-01-08T20:45:00Z",
+      "effort": "4-6 hours",
+      "description": "Research how the orchestrator should execute command file workflow_execution stages. Analyze current orchestrator delegation mechanism, identify why command file stages are not being executed, compare with OpenAgents architecture (tasks 240-247), and design solution for parsing and executing workflow_execution stages including stage sequencing, context passing, error handling, and rollback mechanisms."
+    },
+    {
+      "project_number": 343,
+      "project_name": "design_command_file_workflow_execution_architecture",
+      "type": "design",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-08T20:45:00Z",
+      "last_updated": "2026-01-08T20:45:00Z",
+      "effort": "3-4 hours",
+      "description": "Design comprehensive architecture for orchestrator to execute command file workflow_execution stages. Define stage parsing mechanism, execution engine design, context passing between stages, error handling and rollback strategy, and integration with existing delegation system.",
+      "dependencies": [
+        342
+      ]
+    },
+    {
+      "project_number": 344,
+      "project_name": "implement_orchestrator_workflow_execution_engine",
+      "type": "implementation",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-08T20:45:00Z",
+      "last_updated": "2026-01-08T20:45:00Z",
+      "effort": "8-12 hours",
+      "description": "Implement orchestrator workflow execution engine that parses command file workflow_execution stages and executes them in sequence. Implement stage parser, execution engine, context passing mechanism, error handling and rollback, and integration with existing delegation system. Ensure Stage 3.5 (Postflight) executes correctly for all workflow commands.",
+      "dependencies": [
+        342,
+        343
+      ]
+    },
+    {
+      "project_number": 345,
+      "project_name": "test_and_validate_all_workflow_commands_with_postflight_execution",
+      "type": "testing",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-08T20:45:00Z",
+      "last_updated": "2026-01-08T20:45:00Z",
+      "effort": "4-6 hours",
+      "description": "Comprehensive testing of all workflow commands (/implement, /research, /plan, /revise) to verify postflight stages execute correctly. Test artifact creation and linking, status updates to completed markers, git commit creation, error handling and rollback, and defense-in-depth verification. Validate that Task 335 scenario is fixed.",
+      "dependencies": [
+        342,
+        343,
+        344
+      ]
     }
   ],
   "completed_projects": [
