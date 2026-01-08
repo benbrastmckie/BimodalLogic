@@ -2,7 +2,7 @@
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
   "_last_updated": "2026-01-08T00:00:00Z",
-  "next_project_number": 335,
+  "next_project_number": 338,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -268,7 +268,7 @@
       ],
       "started": "2026-01-05",
       "completed": "2026-01-05",
-      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom \u03c6) from witness function."
+      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom φ) from witness function."
     },
     {
       "project_number": 261,
@@ -415,7 +415,7 @@
       "created": "2026-01-05T08:34:20.462436Z",
       "last_updated": "2026-01-05T19:00:00Z",
       "effort": "61-97 hours",
-      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom \u03c6 is a Prop, not a Type, making it impossible to return Option (Axiom \u03c6) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
+      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
       "started": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
@@ -598,6 +598,72 @@
           "type": "research",
           "path": ".opencode/specs/334_latex_documentation_structure/reports/research-001.md",
           "summary": "Comprehensive research report analyzing source LaTeX structure and designing target documentation structure"
+        }
+      ]
+    },
+    {
+      "project_number": 335,
+      "project_name": "refactor_errors_command_and_error_diagnostics_agent",
+      "type": "refactoring",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "general",
+      "description": "Refactor the /errors command and error-diagnostics-agent subagent to follow modern .opencode standards. Simplify command file to <300 lines with 4-stage pattern, refactor subagent to use 8-stage workflow_execution, move all workflow logic from command to subagent, optimize context loading to Level 2, ensure standardized return format.",
+      "effort": "3-4 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-08T08:50:00Z",
+      "last_updated": "2026-01-08T08:50:00Z",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".opencode/specs/335_refactor_errors_command/plans/implementation-001.md",
+          "summary": "Implementation plan for refactoring /errors command"
+        }
+      ]
+    },
+    {
+      "project_number": 336,
+      "project_name": "refactor_review_command_and_reviewer_subagent",
+      "type": "refactoring",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "general",
+      "description": "Refactor the /review command and reviewer subagent to follow modern .opencode standards. Simplify command file to <300 lines with 4-stage pattern, refactor subagent to use 8-stage workflow_execution, reduce context loading from Level 3 to Level 2, move task creation from subagent to command, ensure standardized return format.",
+      "effort": "4-5 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-08T08:50:00Z",
+      "last_updated": "2026-01-08T08:50:00Z",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".opencode/specs/336_refactor_review_command/plans/implementation-001.md",
+          "summary": "Implementation plan for refactoring /review command"
+        }
+      ]
+    },
+    {
+      "project_number": 337,
+      "project_name": "refactor_todo_command_and_create_todo_manager_subagent",
+      "type": "refactoring",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "general",
+      "description": "Refactor the /todo command to follow modern .opencode standards by extracting its embedded 372-line workflow into a new todo-manager subagent. Simplify command file to <300 lines with 4-stage pattern, create new subagent with 8-stage workflow_execution, maintain atomic updates and rollback logic, preserve user confirmation for bulk operations.",
+      "effort": "4-5 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-08T08:50:00Z",
+      "last_updated": "2026-01-08T08:50:00Z",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".opencode/specs/337_refactor_todo_command/plans/implementation-001.md",
+          "summary": "Implementation plan for refactoring /todo command"
         }
       ]
     }
@@ -805,7 +871,7 @@
       "project_name": "resolve_is_valid_swap_involution_blocker",
       "type": "research",
       "completed": "2025-12-29",
-      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas \u2192 Soundness). Full soundness proof succeeds."
+      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas → Soundness). Full soundness proof succeeds."
     },
     {
       "project_number": 214,
@@ -840,7 +906,7 @@
       "started": "2025-12-26",
       "completed": "2025-12-29",
       "last_updated": "2025-12-29",
-      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 \u2192 571 lines, +113 lines)",
+      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 → 571 lines, +113 lines)",
       "artifacts": [
         ".opencode/specs/190_improve_maintenance_md_documentation/plans/implementation-002.md",
         ".opencode/specs/190_improve_maintenance_md_documentation/summaries/implementation-summary-20251229.md",
@@ -1499,7 +1565,7 @@
         ".opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md",
         ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md"
       ],
-      "research_summary": "Comprehensive revision plan to align /meta command with research \u2192 plan \u2192 implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
+      "research_summary": "Comprehensive revision plan to align /meta command with research → plan → implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
       "estimated_hours": 13.0,
       "plan_created": "2026-01-03",
       "plan_path": ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md",
@@ -2919,7 +2985,7 @@
       "modified_files": [
         "Logos/Core/Semantics/Truth.lean"
       ],
-      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T \u03c6.swap \u2192 is_valid T \u03c6 is semantically FALSE for arbitrary formulas. Counterexample: \u03c6 = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
+      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T φ.swap → is_valid T φ is semantically FALSE for arbitrary formulas. Counterexample: φ = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
       "blocking_reason": "Theorem is semantically false for arbitrary formulas (proven by task 213). Not a type theory limitation but a fundamental logical impossibility. Task correctly marked impossible."
     },
     {

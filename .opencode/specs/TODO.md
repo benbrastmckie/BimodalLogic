@@ -1,19 +1,19 @@
 ---
-last_updated: 2026-01-08T07:46:26Z
-  next_project_number: 335
+last_updated: 2026-01-08T08:50:00Z
+  next_project_number: 338
 repository_health:
   overall_score: 92
   production_readiness: excellent
   last_assessed: 2026-01-05T02:00:00Z
 task_counts:
-  active: 49
+  active: 52
   completed: 64
   in_progress: 2
-  not_started: 39
+  not_started: 42
   abandoned: 6
-  total: 120
+  total: 123
 priority_distribution:
-  high: 18
+  high: 21
   medium: 22
   low: 13
 technical_debt:
@@ -793,5 +793,50 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
   - [ ] CI failure blocks merge
   - [ ] CI/CD process documented in CI_CD_PROCESS.md
 - **Impact**: Ensures code quality automatically, prevents regressions, and enables confident merging of pull requests. Essential for maintaining production-ready code.
+
+---
+
+### 335. Refactor /errors command and error-diagnostics-agent
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/335_refactor_errors_command/plans/implementation-001.md]
+
+**Description**: Refactor the /errors command and error-diagnostics-agent subagent to follow modern .opencode standards. Simplify command file to <300 lines with 4-stage pattern, refactor subagent to use 8-stage workflow_execution, move all workflow logic from command to subagent, optimize context loading to Level 2, ensure standardized return format.
+
+---
+
+### 336. Refactor /review command and reviewer subagent
+- **Effort**: 4-5 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/336_refactor_review_command/plans/implementation-001.md]
+
+**Description**: Refactor the /review command and reviewer subagent to follow modern .opencode standards. Simplify command file to <300 lines with 4-stage pattern, refactor subagent to use 8-stage workflow_execution, reduce context loading from Level 3 to Level 2, move task creation from subagent to command, ensure standardized return format.
+
+---
+
+### 337. Refactor /todo command and create todo-manager subagent
+- **Effort**: 4-5 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Plan Artifacts**:
+  - Implementation Plan: [.opencode/specs/337_refactor_todo_command/plans/implementation-001.md]
+
+**Description**: Refactor the /todo command to follow modern .opencode standards by extracting its embedded 372-line workflow into a new todo-manager subagent. Simplify command file to <300 lines with 4-stage pattern, create new subagent with 8-stage workflow_execution, maintain atomic updates and rollback logic, preserve user confirmation for bulk operations.
 
 ---
