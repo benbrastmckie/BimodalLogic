@@ -675,16 +675,24 @@ $ARGUMENTS
        
        4. Determine task breakdown based on system complexity:
          a. Simple system (1-2 agents, 3-4 use cases): 4 tasks
-            - Task 1: Planning task (design architecture and workflow patterns)
-            - Tasks 2-4: Implementation tasks (agents, commands, context)
+            - Task 1: Planning task (design architecture and workflow patterns) - Dependencies: []
+            - Task 2: Create agents - Dependencies: [Task 1]
+            - Task 3: Create commands - Dependencies: [Task 1, Task 2]
+            - Task 4: Create context files - Dependencies: [Task 1]
          
          b. Moderate system (3-5 agents, 4-6 use cases): 7 tasks
-            - Task 1: Planning task (design architecture and workflow patterns)
-            - Tasks 2-7: Implementation tasks (one per major component group)
+            - Task 1: Planning task (design architecture and workflow patterns) - Dependencies: []
+            - Task 2: Create orchestrator agent - Dependencies: [Task 1]
+            - Task 3: Create subagent group 1 - Dependencies: [Task 1, Task 2]
+            - Task 4: Create subagent group 2 - Dependencies: [Task 1, Task 2]
+            - Task 5: Create commands - Dependencies: [Task 1, Task 2, Task 3, Task 4]
+            - Task 6: Create context files - Dependencies: [Task 1]
+            - Task 7: Integration testing - Dependencies: [Task 2, Task 3, Task 4, Task 5, Task 6]
          
          c. Complex system (6-8 agents, 7+ use cases): 10-15 tasks
-            - Task 1: Planning task (design architecture and workflow patterns)
-            - Tasks 2-15: Implementation tasks (one per agent/command/context group)
+            - Task 1: Planning task (design architecture and workflow patterns) - Dependencies: []
+            - Tasks 2-N: Implementation tasks (one per agent/command/context group) - Dependencies: [Task 1] + relevant prior tasks
+            - Task N: Integration testing - Dependencies: [all implementation tasks]
       
        5. For each task:
          a. Generate task title and slug from interview results
@@ -1104,9 +1112,13 @@ $ARGUMENTS
             - effort: "{hours} hours"
             - language: "meta" (for meta-related tasks)
             - status: "not_started"
+            - dependencies: Array of task numbers this task depends on
+              * Task 1 (Planning): [] (no dependencies)
+              * Task 2+ (Implementation): [planning_task_number] or [planning_task_number, agent_task_number]
+              * Example: Task 2 depends on Task 1, Task 3 depends on Tasks 1 and 2
          
          b. Delegate to status-sync-manager with operation="create_task":
-            - Pass task_number, title, description, priority, effort, language
+            - Pass task_number, title, description, priority, effort, language, dependencies
             - status-sync-manager creates entry in both TODO.md and state.json atomically
             - Validates task number uniqueness
             - Places in correct priority section
@@ -1142,6 +1154,9 @@ $ARGUMENTS
          f. Check language field set to 'meta' for meta tasks (created by status-sync-manager)
          g. Check state.json updates are correct (created by status-sync-manager)
          h. Check plan artifact links added to TODO.md and state.json
+         i. Check dependencies field set correctly for each task (created by status-sync-manager)
+         j. Verify no circular dependencies exist
+         k. Verify all dependency task numbers are valid
       
        8. If validation fails:
          - Log errors
@@ -1161,6 +1176,9 @@ $ARGUMENTS
          * All task entries must follow tasks.md standard (enforced by status-sync-manager)
          * All task entries must have description field (enforced by status-sync-manager)
          * Language field must be set to 'meta' for meta tasks (enforced by status-sync-manager)
+         * Dependencies field must be set correctly for each task (enforced by status-sync-manager)
+         * No circular dependencies exist
+         * All dependency task numbers are valid
          * state.json must be updated correctly (enforced by status-sync-manager)
          * next_project_number must be incremented for each task (enforced by status-sync-manager)
          * Tasks created atomically (both TODO.md and state.json or neither)
@@ -1241,8 +1259,14 @@ $ARGUMENTS
            * Status: [NOT STARTED]
            * Plan: {plan_path}
            * Effort: {hours} hours
+           * Dependencies: {dependency_list or "None"}
          
          TOTAL EFFORT: {total_hours} hours
+         
+         DEPENDENCY ORDER:
+         1. Start with Task {first_task_number} (no dependencies)
+         2. Then implement tasks with satisfied dependencies
+         3. Complete with integration/testing tasks
          
          USAGE INSTRUCTIONS:
          1. Review the plan artifacts for each task:
@@ -1255,14 +1279,15 @@ $ARGUMENTS
             - Tasks can be implemented in order or in parallel (if no dependencies)
          
          3. Example workflow:
-            - `/implement {first_task_number}` - Start with planning task
+            - `/implement {first_task_number}` - Start with planning task (no dependencies)
             - Review generated architecture design
-            - `/implement {second_task_number}` - Implement first component group
-            - Continue with remaining tasks
+            - `/implement {second_task_number}` - Implement first component group (depends on planning)
+            - Continue with remaining tasks in dependency order
          
          NEXT STEPS:
          - Review plan artifacts in .opencode/specs/{number}_{slug}/plans/
-         - Run `/implement {first_task_number}` to start implementation
+         - Run `/implement {first_task_number}` to start implementation (no dependencies)
+         - Implement remaining tasks in dependency order (check Dependencies field)
          - Track progress in TODO.md"
       
        3. Create git commit:
