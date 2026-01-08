@@ -90,6 +90,68 @@ def complexity : Formula → Nat
   | all_future φ => 1 + φ.complexity
 
 /--
+Modal depth: nesting level of modal operators (□, ◇).
+
+Computes the maximum nesting depth of box operators in a formula.
+Useful for heuristic scoring in proof search - deeply nested modalities
+require more modal K applications.
+
+Examples:
+- `modalDepth (atom "p")` = 0
+- `modalDepth (box (atom "p"))` = 1
+- `modalDepth (box (box (atom "p")))` = 2
+- `modalDepth (imp (box p) (box q))` = 1
+-/
+def modalDepth : Formula → Nat
+  | atom _ => 0
+  | bot => 0
+  | imp φ ψ => max φ.modalDepth ψ.modalDepth
+  | box φ => 1 + φ.modalDepth
+  | all_past φ => φ.modalDepth
+  | all_future φ => φ.modalDepth
+
+/--
+Temporal depth: nesting level of temporal operators (G, F, H, P).
+
+Computes the maximum nesting depth of temporal operators in a formula.
+Useful for heuristic scoring in proof search - deeply nested temporal
+operators require more temporal K applications.
+
+Examples:
+- `temporalDepth (atom "p")` = 0
+- `temporalDepth (all_future (atom "p"))` = 1
+- `temporalDepth (all_future (all_future (atom "p")))` = 2
+- `temporalDepth (imp (all_future p) (all_past q))` = 1
+-/
+def temporalDepth : Formula → Nat
+  | atom _ => 0
+  | bot => 0
+  | imp φ ψ => max φ.temporalDepth ψ.temporalDepth
+  | box φ => φ.temporalDepth
+  | all_past φ => 1 + φ.temporalDepth
+  | all_future φ => 1 + φ.temporalDepth
+
+/--
+Count implication operators in a formula.
+
+Counts the number of → operators in a formula.
+Useful for heuristic scoring - more implications mean more modus ponens opportunities.
+
+Examples:
+- `countImplications (atom "p")` = 0
+- `countImplications (imp p q)` = 1
+- `countImplications (imp (imp p q) r)` = 2
+- `countImplications (imp p (imp q r))` = 2
+-/
+def countImplications : Formula → Nat
+  | atom _ => 0
+  | bot => 0
+  | imp φ ψ => 1 + φ.countImplications + ψ.countImplications
+  | box φ => φ.countImplications
+  | all_past φ => φ.countImplications
+  | all_future φ => φ.countImplications
+
+/--
 Negation (¬φ) as derived operator: φ → ⊥
 -/
 def neg (φ : Formula) : Formula := φ.imp bot

@@ -161,4 +161,65 @@ example (p : Formula) : p.swap_temporal.swap_temporal = p := by
   | all_past p ih => simp [Formula.swap_temporal, ih]
   | all_future p ih => simp [Formula.swap_temporal, ih]
 
+/-! ## Formula Complexity Metrics Tests -/
+
+-- Define test formulas
+def p : Formula := Formula.atom "p"
+def q : Formula := Formula.atom "q"
+def r : Formula := Formula.atom "r"
+def s : Formula := Formula.atom "s"
+
+-- modalDepth tests: atoms and bot have depth 0
+example : (Formula.atom "p").modalDepth = 0 := rfl
+example : Formula.bot.modalDepth = 0 := rfl
+
+-- modalDepth tests: box increases depth
+example : p.box.modalDepth = 1 := rfl
+example : p.box.box.modalDepth = 2 := rfl
+
+-- modalDepth tests: max depth in implications
+example : (p.box.imp q.box).modalDepth = 1 := rfl
+example : (p.box.box.imp q.box).modalDepth = 2 := rfl
+
+-- modalDepth tests: temporal operators don't affect modal depth
+example : p.box.all_future.modalDepth = 1 := rfl
+example : p.all_future.box.modalDepth = 1 := rfl
+
+-- temporalDepth tests: atoms and bot have depth 0
+example : (Formula.atom "p").temporalDepth = 0 := rfl
+example : Formula.bot.temporalDepth = 0 := rfl
+
+-- temporalDepth tests: temporal operators increase depth
+example : p.all_future.temporalDepth = 1 := rfl
+example : p.all_past.temporalDepth = 1 := rfl
+example : p.all_future.all_future.temporalDepth = 2 := rfl
+example : p.all_past.all_past.temporalDepth = 2 := rfl
+
+-- temporalDepth tests: max depth in implications
+example : (p.all_future.imp q.all_past).temporalDepth = 1 := rfl
+example : (p.all_future.all_future.imp q.all_past).temporalDepth = 2 := rfl
+
+-- temporalDepth tests: modal operators don't affect temporal depth
+example : p.all_future.box.temporalDepth = 1 := rfl
+example : p.box.all_future.temporalDepth = 1 := rfl
+
+-- countImplications tests: atoms and bot have 0 implications
+example : (Formula.atom "p").countImplications = 0 := rfl
+example : Formula.bot.countImplications = 0 := rfl
+
+-- countImplications tests: count implications recursively
+example : (p.imp q).countImplications = 1 := rfl
+example : ((p.imp q).imp r).countImplications = 2 := rfl
+example : (p.imp (q.imp r)).countImplications = 2 := rfl
+example : ((p.imp q).imp (r.imp s)).countImplications = 3 := rfl
+
+-- countImplications tests: operators preserve implication count
+example : (p.imp q).box.countImplications = 1 := rfl
+example : (p.imp q).all_future.countImplications = 1 := rfl
+
+-- Mixed complexity tests: verify all metrics work together
+example : (p.all_future.box.imp q).modalDepth = 1 := rfl
+example : (p.all_future.box.imp q).temporalDepth = 1 := rfl
+example : (p.all_future.box.imp q).countImplications = 1 := rfl
+
 end LogosTest.Core.Syntax

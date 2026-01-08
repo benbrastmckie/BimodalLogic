@@ -119,14 +119,13 @@ technical_debt:
 
 ---
 
-### 318. ✓ Implement advanced heuristics for proof search performance (Phase 4)
+### 318. Implement advanced heuristics for proof search performance (Phase 4)
 - **Effort**: 12-18 hours
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-07
 - **Researched**: 2026-01-07
 - **Planned**: 2026-01-07
 - **Implementing**: 2026-01-08
-- **Completed**: 2026-01-08
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -139,11 +138,12 @@ technical_debt:
   - Implementation Plan: [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/plans/implementation-001.md]
 
 **Implementation Artifacts**:
-  - Implementation Summary: [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-20260108.md]
+  - Implementation Summary (Phase 1): [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-20260108.md]
+  - Implementation Summary (Phase 2): [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-phase2-20260108.md]
 
 **Description**: Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.
 
-**Progress**: Phase 1 of 5 completed (sorting implementation). Remaining phases: Formula complexity metrics, domain-specific heuristics, weight tuning, integration testing.
+**Progress**: Phases 1-2 of 5 completed (sorting implementation, formula complexity metrics). Remaining phases: Domain-specific heuristics, weight tuning, integration testing.
 
 ---
 
