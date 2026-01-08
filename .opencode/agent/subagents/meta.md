@@ -56,10 +56,10 @@ $ARGUMENTS
 
 <context>
   <system_context>
-    System builder that creates complete .opencode architectures. Supports three modes:
-    1. Task Mode (with task_number): Creates implementation plan for existing meta task
-    2. Prompt Mode (with target_domain): Accepts requirements directly, skips interactive interview
-    3. Interactive Mode (no target_domain): Conducts guided interview to gather requirements
+    System builder that creates tasks to implement .opencode architectures. Supports three modes:
+    1. Direct Mode (with description): Creates tasks immediately, no questions
+    2. Clarification Mode (with --ask description): Asks 3-5 follow-up questions before creating tasks
+    3. Interactive Mode (no arguments): Conducts full guided interview to gather requirements
   </system_context>
   <domain_context>
     Meta-programming and system generation for .opencode architecture.
@@ -73,8 +73,8 @@ $ARGUMENTS
   <execution_context>
     Full workflow ownership with Stage 8 (Postflight) execution.
     Returns standardized format per subagent-return-format.md for Stage 9.
-    Mode detection: If first token is integer and task exists → Task Mode, 
-    else if target_domain non-empty → Prompt Mode, else → Interactive Mode.
+    Mode detection: If starts with --ask → Clarification Mode,
+    else if description non-empty → Direct Mode, else → Interactive Mode.
   </execution_context>
 </context>
 
@@ -85,35 +85,35 @@ $ARGUMENTS
 </role>
 
 <task>
-  Detect mode (task vs prompt vs interactive), gather domain requirements, design .opencode architecture,
+  Detect mode (direct vs clarification vs interactive), gather domain requirements, design .opencode architecture,
   delegate to specialized meta subagents for generation, validate all artifacts,
-  and deliver complete working system with documentation or single task plan
+  and deliver complete working system with documentation
 </task>
 
 <mode_detection>
-  <task_mode>
-    Condition: First token of target_domain is integer AND task exists in state.json
+  <direct_mode>
+    Condition: description is non-empty AND does not start with --ask
     Behavior:
-    - Parse task number from first token
-    - Validate task exists in state.json
-    - Extract task metadata (description, priority, language, etc.)
+    - No questions asked
+    - Infer everything from description
     - Skip Stages 2-7 (interview stages)
-    - Proceed directly to Stage 8 (CreateTasksWithArtifacts) for single task plan
+    - Proceed directly to Stage 8 (CreateTasksWithArtifacts)
     - Continue to Stage 9 (DeliverTaskSummary)
-    Fallback: If task not found, fall back to Prompt Mode with warning
-  </task_mode>
+    - Fast and efficient for clear requirements
+  </direct_mode>
   
-  <prompt_mode>
-    Condition: target_domain is non-empty AND not Task Mode
+  <clarification_mode>
+    Condition: description starts with --ask
     Behavior:
     - Skip Stage 2 (InitiateInterview)
-    - Parse target_domain to extract domain, purpose, and initial requirements
-    - Proceed directly to Stage 3 (GatherDomainInformation) with pre-populated context
-    - Continue through remaining stages with adaptive questioning
-  </prompt_mode>
+    - Parse description after --ask flag
+    - Ask 3-5 targeted follow-up questions in Stages 3-6
+    - Proceed through Stages 3-9 with limited questioning
+    - Balances speed and accuracy
+  </clarification_mode>
   
   <interactive_mode>
-    Condition: target_domain is empty (no $ARGUMENTS provided)
+    Condition: description is empty (no $ARGUMENTS provided)
     Behavior:
     - Execute full 9-stage workflow
     - Start with Stage 2 (InitiateInterview)
@@ -160,72 +160,53 @@ $ARGUMENTS
   </stage>
 
   <stage id="1" name="ParseAndValidate">
-    <action>Detect mode and parse arguments (Task/Prompt/Interactive)</action>
+    <action>Detect mode and parse arguments (Direct/Clarification/Interactive)</action>
     <process>
-      1. Parse first token from target_domain ($ARGUMENTS):
-         - If empty: mode = "interactive", skip to step 7
-         - Extract first token: first_token=$(echo "$target_domain" | awk '{print $1}')
+      1. Parse $ARGUMENTS:
+         - If empty: mode = "interactive", skip to step 6
+         - Extract first token: first_token=$(echo "$ARGUMENTS" | awk '{print $1}')
       
-      2. Check if first token is integer:
-         - if [[ "$first_token" =~ ^[0-9]+$ ]]; then
-             task_number="$first_token"
-             # Attempt Task Mode
+      2. Check for --ask flag:
+         - if [[ "$first_token" == "--ask" ]]; then
+             mode="clarification"
+             description="${ARGUMENTS#--ask }"  # Remove --ask prefix
+             description=$(echo "$description" | xargs)  # Trim whitespace
+             if [[ -z "$description" ]]; then
+               echo "Error: --ask flag requires a description"
+               echo "Usage: /meta --ask {description}"
+               exit 1
+             fi
            else
-             # Prompt Mode
-             mode="prompt"
-             skip to step 7
+             mode="direct"
+             description="$ARGUMENTS"
            fi
       
-      3. Validate state.json exists and is valid (Task Mode path):
-         - Check .opencode/specs/state.json exists
-         - Validate is valid JSON with jq
-         - If missing/corrupt: 
-           * Log warning: "state.json not found or invalid"
-           * Fall back to Prompt Mode: mode="prompt"
-           * Skip to step 7
+      3. Validate description is non-empty (Direct/Clarification modes):
+         - if [[ -z "$description" ]]; then
+             echo "Error: Description required"
+             echo "Usage: /meta {description} or /meta --ask {description} or /meta"
+             exit 1
+           fi
       
-      4. Lookup task in state.json:
-         - Use jq to find task by project_number:
-           task_data=$(jq -r --arg num "$task_number" \
-             '.active_projects[] | select(.project_number == ($num | tonumber))' \
-             .opencode/specs/state.json)
-         - If task_data is empty:
-           * Log warning: "Task $task_number not found in state.json"
-           * Fall back to Prompt Mode: mode="prompt"
-           * Skip to step 7
-      
-      5. Extract task metadata (Task Mode):
-         - task_number=$(echo "$task_data" | jq -r '.project_number')
-         - project_name=$(echo "$task_data" | jq -r '.project_name')
-         - description=$(echo "$task_data" | jq -r '.description // ""')
-         - priority=$(echo "$task_data" | jq -r '.priority')
-         - language=$(echo "$task_data" | jq -r '.language // "meta"')
-         - status=$(echo "$task_data" | jq -r '.status')
-         - task_type=$(echo "$task_data" | jq -r '.type // "general"')
-      
-      6. Set mode and populate context (Task Mode):
-         - mode="task"
-         - domain = inferred from description (extract domain keywords)
-         - purpose = description
-         - target_users = inferred from task context
-         - Log: "Task Mode detected for task $task_number: $description"
-         - If task_type != "meta": Log warning "Task $task_number is type '$task_type', not 'meta'. Consider using /plan instead."
-      
-      7. Store mode and context for later stages:
-         - mode: "task" | "prompt" | "interactive"
-         - If mode == "task": task_number, project_name, description, priority, language, status
-         - If mode == "prompt": target_domain (full $ARGUMENTS)
+      4. Store mode and context:
+         - mode: "direct" | "clarification" | "interactive"
+         - If mode == "direct" OR mode == "clarification": description (full text)
          - If mode == "interactive": (no additional context)
       
-      8. Determine stage execution path:
-         - If mode == "task": Skip Stages 2-7, proceed to Stage 8
-         - If mode == "prompt": Skip Stage 2, proceed to Stage 3
+      5. Determine stage execution path:
+         - If mode == "direct": Skip Stages 2-7, proceed to Stage 8
+         - If mode == "clarification": Skip Stage 2, proceed to Stage 3 (with limited questions)
          - If mode == "interactive": Execute all stages 2-9
+      
+      6. Log mode detection:
+         - Log: "[INFO] Mode detected: $mode"
+         - If mode == "direct": Log: "[INFO] Creating tasks directly from description"
+         - If mode == "clarification": Log: "[INFO] Will ask follow-up questions before creating tasks"
+         - If mode == "interactive": Log: "[INFO] Starting full interactive interview"
     </process>
     <validation>
-      - mode must be set to "task", "prompt", or "interactive"
-      - If mode == "task": task_number, project_name, description must be non-empty
-      - If mode == "prompt": target_domain must be non-empty
+      - mode must be set to "direct", "clarification", or "interactive"
+      - If mode == "direct" OR mode == "clarification": description must be non-empty
       - Stage execution path must be determined
     </validation>
     <checkpoint>Mode detected, arguments parsed, stage path determined</checkpoint>
@@ -235,7 +216,7 @@ $ARGUMENTS
     <action>Explain meta-programming process and set expectations (CONDITIONAL: Skip if mode != "interactive")</action>
     <process>
       1. Check mode from Stage 1:
-         a. If mode == "task" OR mode == "prompt":
+         a. If mode == "direct" OR mode == "clarification":
             - Log: "[INFO] Skipping InitiateInterview (mode: $mode)"
             - Skip to Stage 3 immediately
          
@@ -268,7 +249,7 @@ $ARGUMENTS
     </process>
     <validation>
       - If mode == "interactive": User must confirm readiness
-      - If mode == "task" OR mode == "prompt": Stage skipped
+      - If mode == "direct" OR mode == "clarification": Stage skipped
       - User questions must be answered (Interactive Mode only)
     </validation>
     <checkpoint>User ready to proceed with interview OR stage skipped</checkpoint>
