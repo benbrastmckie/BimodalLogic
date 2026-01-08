@@ -146,6 +146,230 @@ The orchestrator validates **structural correctness** and **safety constraints**
 | Artifact format | ❌ | ✅ |
 
 **Note**: In orchestrator v7.0, command files handle validation (not orchestrator). Orchestrator is a pure router that loads command files and delegates with $ARGUMENTS.
+
+---
+
+## Validation Gates for /task Command Flags
+
+### Flag Validation (Stage 1)
+
+**Single Flag Enforcement**:
+```bash
+# Count flags present
+flag_count=0
+[[ "$ARGUMENTS" =~ --recover ]] && ((flag_count++))
+[[ "$ARGUMENTS" =~ --divide ]] && ((flag_count++))
+[[ "$ARGUMENTS" =~ --sync ]] && ((flag_count++))
+[[ "$ARGUMENTS" =~ --abandon ]] && ((flag_count++))
+
+if [ $flag_count -gt 1 ]; then
+  echo "[FAIL] Only one flag allowed at a time"
+  echo "Error: Multiple flags detected: $ARGUMENTS"
+  exit 1
+fi
+
+echo "[PASS] Single flag validation passed"
+```
+
+### Range Parsing Validation
+
+**Format Validation**:
+```bash
+# Validate range format: "343", "343-345", "337, 343-345, 350"
+validate_range() {
+  local range="$1"
+  
+  # Check for valid characters only (digits, dash, comma, space)
+  if ! [[ "$range" =~ ^[0-9,\ -]+$ ]]; then
+    echo "[FAIL] Invalid range format: $range"
+    echo "Valid formats: '343', '343-345', '337, 343-345, 350'"
+    exit 1
+  fi
+  
+  # Validate each part
+  IFS=',' read -ra parts <<< "$range"
+  for part in "${parts[@]}"; do
+    part=$(echo "$part" | tr -d ' ')
+    
+    if [[ "$part" =~ ^([0-9]+)-([0-9]+)$ ]]; then
+      # Range: validate start <= end
+      start="${BASH_REMATCH[1]}"
+      end="${BASH_REMATCH[2]}"
+      if [ "$start" -gt "$end" ]; then
+        echo "[FAIL] Invalid range: $part (start > end)"
+        exit 1
+      fi
+    elif ! [[ "$part" =~ ^[0-9]+$ ]]; then
+      echo "[FAIL] Invalid range part: $part"
+      exit 1
+    fi
+  done
+  
+  echo "[PASS] Range format validation passed"
+}
+```
+
+### Git Blame Timestamp Validation
+
+**Timestamp Extraction and Comparison**:
+```bash
+# Get git blame timestamp for TODO.md field
+get_todo_timestamp() {
+  local task_number="$1"
+  local field="$2"
+  
+  # Find task entry line range
+  start_line=$(grep -n "^### ${task_number}\." TODO.md | cut -d: -f1)
+  end_line=$(tail -n +$start_line TODO.md | grep -n "^---$" | head -1 | cut -d: -f1)
+  end_line=$((start_line + end_line - 1))
+  
+  # Get commit hash for field line
+  commit_hash=$(git blame -L ${start_line},${end_line} TODO.md | grep "$field" | awk '{print $1}')
+  
+  # Get commit timestamp
+  timestamp=$(git show -s --format=%ct "$commit_hash")
+  
+  echo "$timestamp"
+}
+
+# Get git blame timestamp for state.json field
+get_state_timestamp() {
+  local task_number="$1"
+  
+  # Get last commit that modified this task in state.json
+  timestamp=$(git log -1 --format=%ct -S "\"project_number\": $task_number" -- state.json)
+  
+  echo "$timestamp"
+}
+
+# Compare timestamps and determine winner
+resolve_conflict() {
+  local task_number="$1"
+  local field="$2"
+  local todo_timestamp=$(get_todo_timestamp "$task_number" "$field")
+  local state_timestamp=$(get_state_timestamp "$task_number")
+  
+  if [ "$state_timestamp" -gt "$todo_timestamp" ]; then
+    echo "state.json"  # state.json wins
+  elif [ "$todo_timestamp" -gt "$state_timestamp" ]; then
+    echo "TODO.md"  # TODO.md wins
+  else
+    echo "state.json"  # Tie-breaker: state.json wins
+  fi
+}
+```
+
+### Bulk Operation Validation
+
+**All-or-Nothing vs Partial Success**:
+
+**All-or-Nothing (Recommended)**:
+```bash
+# Validate all tasks before processing any
+validate_all_tasks() {
+  local task_numbers=("$@")
+  local errors=()
+  
+  for task_num in "${task_numbers[@]}"; do
+    # Check task exists in archive (for --recover)
+    if ! jq -e ".archived_projects[] | select(.project_number == $task_num)" archive/state.json > /dev/null; then
+      errors+=("Task $task_num not found in archive")
+    fi
+    
+    # Check task not already active
+    if jq -e ".active_projects[] | select(.project_number == $task_num)" state.json > /dev/null; then
+      errors+=("Task $task_num already active")
+    fi
+  done
+  
+  # If any errors, abort before processing
+  if [ ${#errors[@]} -gt 0 ]; then
+    echo "[FAIL] Validation failed for ${#errors[@]} tasks:"
+    printf '%s\n' "${errors[@]}"
+    exit 1
+  fi
+  
+  echo "[PASS] All tasks validated"
+}
+```
+
+**Partial Success (Alternative)**:
+```bash
+# Process tasks individually, report partial success
+process_with_partial_success() {
+  local task_numbers=("$@")
+  local success_count=0
+  local failure_count=0
+  local errors=()
+  
+  for task_num in "${task_numbers[@]}"; do
+    if process_task "$task_num"; then
+      ((success_count++))
+    else
+      ((failure_count++))
+      errors+=("Task $task_num: $error_message")
+    fi
+  done
+  
+  # Return partial success
+  echo "[INFO] Processed $success_count tasks successfully, $failure_count failed"
+  
+  if [ $failure_count -gt 0 ]; then
+    echo "[WARN] Partial failure:"
+    printf '%s\n' "${errors[@]}"
+  fi
+}
+```
+
+### Task Division Validation
+
+**Pre-Division Validation**:
+```bash
+# Validate task can be divided
+validate_division() {
+  local task_number="$1"
+  
+  # Check task exists
+  if ! jq -e ".active_projects[] | select(.project_number == $task_number)" state.json > /dev/null; then
+    echo "[FAIL] Task $task_number not found in active_projects"
+    exit 1
+  fi
+  
+  # Check task status allows division
+  status=$(jq -r ".active_projects[] | select(.project_number == $task_number) | .status" state.json)
+  if [[ "$status" == "completed" || "$status" == "abandoned" ]]; then
+    echo "[FAIL] Cannot divide $status task"
+    exit 1
+  fi
+  
+  # Check task has no existing dependencies
+  deps=$(jq -r ".active_projects[] | select(.project_number == $task_number) | .dependencies | length" state.json)
+  if [ "$deps" -gt 0 ]; then
+    echo "[FAIL] Task $task_number already has dependencies"
+    exit 1
+  fi
+  
+  echo "[PASS] Task division validation passed"
+}
+```
+
+**Subtask Count Validation**:
+```bash
+# Validate subtask count is 1-5
+validate_subtask_count() {
+  local count="$1"
+  
+  if [ "$count" -lt 1 ] || [ "$count" -gt 5 ]; then
+    echo "[FAIL] Subtask count must be 1-5, got: $count"
+    exit 1
+  fi
+  
+  echo "[PASS] Subtask count validation passed: $count"
+}
+```
+
+---
+
 # Validation Rules Standard
 
 ## Overview

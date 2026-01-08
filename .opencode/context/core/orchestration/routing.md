@@ -26,7 +26,7 @@ Commands that follow the 8-stage command-lifecycle.md pattern:
 | `/plan` | `subagents/planner` | Create implementation plans, update [PLANNED] status |
 | `/implement` | `task-executor` | Execute phased implementation, update [IMPLEMENTED] status |
 | `/revise` | `subagents/reviser` | Revise artifacts based on feedback, update status |
-| `/task` | `subagents/status-sync-manager` | Create new task entries in TODO.md with atomic state updates |
+| `/task` | `orchestrator` | Unified task lifecycle: create, recover, divide, sync, abandon tasks |
 
 **Routing Pattern**: Command file frontmatter specifies `agent:` field, orchestrator delegates directly.
 
@@ -215,6 +215,76 @@ Some commands support flags:
 | `/research` | `--divide` | Subdivide research into multiple topics |
 | `/plan` | `--phased` | Create phased implementation plan |
 | `/implement` | `--resume` | Resume from incomplete phase |
+| `/task` | `--recover` | Unarchive tasks from archive/ (supports ranges/lists) |
+| `/task` | `--divide` | Divide existing task into subtasks (single task only) |
+| `/task` | `--sync` | Synchronize TODO.md and state.json (git blame conflict resolution) |
+| `/task` | `--abandon` | Abandon tasks to archive/ (supports ranges/lists) |
+
+### /task Flag-Based Routing
+
+The `/task` command uses flag-based routing to different operations:
+
+**Flag Detection**:
+```bash
+# Detect which flag is present (only one allowed)
+if [[ "$ARGUMENTS" =~ --recover ]]; then
+  operation="recover"
+  args="${ARGUMENTS#*--recover }"  # Extract task ranges
+elif [[ "$ARGUMENTS" =~ --divide ]]; then
+  operation="divide"
+  args="${ARGUMENTS#*--divide }"  # Extract task number and optional prompt
+elif [[ "$ARGUMENTS" =~ --sync ]]; then
+  operation="sync"
+  args="${ARGUMENTS#*--sync }"  # Extract optional task ranges
+elif [[ "$ARGUMENTS" =~ --abandon ]]; then
+  operation="abandon"
+  args="${ARGUMENTS#*--abandon }"  # Extract task ranges
+else
+  operation="create"
+  args="$ARGUMENTS"  # Task description and optional flags
+fi
+```
+
+**Operation Routing**:
+- `create`: Route to Stage 2 (PrepareTasks) → Stage 3 (CreateTasks)
+- `recover`: Route to Stage 4 (RecoverTasks) → delegates to status-sync-manager
+- `divide`: Route to Stage 5 (DivideExistingTask) → delegates to task-divider + task-creator
+- `sync`: Route to Stage 6 (SyncTasks) → delegates to status-sync-manager
+- `abandon`: Route to Stage 7 (AbandonTasks) → delegates to status-sync-manager
+
+**Range Parsing** (for --recover, --sync, --abandon):
+```bash
+# Parse task ranges: "343", "343-345", "337, 343-345, 350"
+parse_ranges() {
+  local ranges="$1"
+  local task_numbers=()
+  
+  # Split on commas
+  IFS=',' read -ra parts <<< "$ranges"
+  
+  for part in "${parts[@]}"; do
+    part=$(echo "$part" | tr -d ' ')  # Trim whitespace
+    
+    if [[ "$part" =~ ^([0-9]+)-([0-9]+)$ ]]; then
+      # Range: expand to individual numbers
+      start="${BASH_REMATCH[1]}"
+      end="${BASH_REMATCH[2]}"
+      for ((i=start; i<=end; i++)); do
+        task_numbers+=("$i")
+      done
+    elif [[ "$part" =~ ^[0-9]+$ ]]; then
+      # Single number
+      task_numbers+=("$part")
+    else
+      echo "[FAIL] Invalid range format: $part"
+      exit 1
+    fi
+  done
+  
+  # Deduplicate and sort
+  printf '%s\n' "${task_numbers[@]}" | sort -nu
+}
+```
 
 ---
 

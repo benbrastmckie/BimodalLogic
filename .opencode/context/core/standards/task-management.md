@@ -105,6 +105,133 @@ Override Impact when:
   - Default required Lean server: `lean-lsp` (stdio via `uvx lean-lsp-mcp`); planned servers (`lean-explore`, `loogle`, `lean-search`) should raise a "planned/not configured" warning instead of proceeding silently.
   - When validation fails, surface remediation steps (install command, set env like `LEAN_PROJECT_PATH`, supply API keys) and do **not** create project directories or artifacts.
 
+## /task Flag Usage Patterns
+
+The `/task` command supports unified task lifecycle management through flags:
+
+### Task Creation (No Flag)
+
+**Standard Usage**:
+```bash
+/task "Implement feature X"
+/task "Fix bug in module Y" --priority High
+/task "Add documentation" --priority Medium --effort "2 hours" --language markdown
+```
+
+**Inline Division**:
+```bash
+/task "Refactor system: update commands, fix agents, improve docs" --divide
+# Creates 3 tasks: one for each natural division
+```
+
+**Standards**:
+- Description is mandatory (non-empty)
+- Language auto-detected from keywords or specified via --language flag
+- Priority defaults to Medium (Low|Medium|High)
+- Effort defaults to TBD
+- Creates task entries ONLY (never implements)
+- Delegates to task-creator for atomic TODO.md + state.json updates
+
+### Task Recovery (--recover)
+
+**Usage**:
+```bash
+/task --recover 343                    # Recover single task
+/task --recover 343-345                # Recover range
+/task --recover 337, 343-345, 350      # Recover list
+```
+
+**Standards**:
+- Supports range syntax: "343-345" expands to [343, 344, 345]
+- Supports list syntax: "337, 343-345" expands to [337, 343, 344, 345]
+- All tasks must exist in archive/state.json
+- All tasks reset to [NOT STARTED] status
+- Atomic operation: all tasks recovered or none
+- Updates TODO.md, state.json, archive/state.json
+- Moves directories from archive/ to specs/ (if exist, non-critical)
+
+### Task Division (--divide)
+
+**Usage**:
+```bash
+/task --divide 326                     # Divide task 326
+/task --divide 326 "Focus on UI, backend, tests"  # With prompt
+```
+
+**Standards**:
+- Operates on single task only (no bulk support)
+- Task must exist in active_projects
+- Task status must allow division (not COMPLETED or ABANDONED)
+- Task must have no existing dependencies
+- Creates 1-5 subtasks based on analysis
+- Parent task updated with dependencies to subtasks
+- Rollback on failure: delete created subtasks, restore state
+- Delegates to task-divider for analysis, task-creator for subtask creation
+
+### Task Synchronization (--sync)
+
+**Usage**:
+```bash
+/task --sync                           # Sync all tasks
+/task --sync 343-345                   # Sync range
+/task --sync 337, 343-345              # Sync list
+```
+
+**Standards**:
+- Default behavior: sync ALL tasks when no ranges specified
+- Supports range/list syntax for selective sync
+- Git blame conflict resolution: latest commit wins
+- For each field that differs:
+  1. Run git blame on TODO.md and state.json
+  2. Extract commit timestamps
+  3. Use value from file with latest commit
+  4. Log conflict resolution details
+- Atomic operation: both files updated or neither
+- Updates TODO.md and state.json only
+
+**Git Blame Conflict Resolution**:
+- Compare timestamps for each differing field
+- Latest commit wins (most recent change)
+- Tie-breaker: state.json wins (source of truth)
+- Log format: "Task 343: status from state.json (2026-01-07) > TODO.md (2026-01-06)"
+
+### Task Abandonment (--abandon)
+
+**Usage**:
+```bash
+/task --abandon 343-345                # Abandon range
+/task --abandon 337, 343-345, 350      # Abandon list
+```
+
+**Standards**:
+- Supports range/list syntax
+- All tasks must exist in active_projects
+- Atomic operation: all tasks abandoned or none
+- Updates TODO.md, state.json, archive/state.json
+- Moves directories from specs/ to archive/ (if exist, non-critical)
+- Tasks can be recovered later with --recover
+
+### Bulk Operation Standards
+
+**Range Syntax**:
+- Single number: `343`
+- Range: `343-345` (inclusive, expands to 343, 344, 345)
+- List: `337, 343-345, 350` (comma-separated, expands to 337, 343, 344, 345, 350)
+- Validation: All numbers must be positive integers
+- Deduplication: Duplicate numbers removed automatically
+
+**Error Reporting**:
+- Validate all tasks before processing (all-or-nothing)
+- Report all validation errors together (not one at a time)
+- Clear error messages: "Task 343 not found in archive"
+- Suggest recovery steps: "Use /task --recover to unarchive tasks"
+
+**Atomic Guarantees**:
+- Two-phase commit: prepare updates, then commit atomically
+- All files updated or none (TODO.md, state.json, archive/state.json)
+- Rollback on failure: remove temp files, rely on git for recovery
+- No partial updates: either all tasks processed or none
+
 ## Quality Checklist
 
 -   [ ] Task ID is unique and retrieved from `state.json`.
