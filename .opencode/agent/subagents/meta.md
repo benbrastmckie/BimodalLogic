@@ -256,26 +256,43 @@ $ARGUMENTS
   </stage>
 
   <stage id="3" name="GatherDomainInformation">
-    <action>Collect domain, purpose, and target user information (CONDITIONAL: Skip if mode == "task", pre-populate if mode == "prompt")</action>
+    <action>Collect domain, purpose, and target user information (CONDITIONAL: behavior varies by mode)</action>
     <process>
       1. Check mode and handle accordingly:
-         a. If mode == "task":
-            - Log: "[INFO] Skipping GatherDomainInformation (Task Mode - using task metadata)"
-            - Use domain, purpose, target_users from Stage 1 (extracted from task metadata)
-            - Skip to step 9
          
-         b. If mode == "prompt":
-            - Use target_domain from Stage 1
-            - Pre-populate domain, purpose based on target_domain content
-            - Example: "I want to revise my opencode system to add proof verification"
-              → domain = "formal verification", purpose = "add proof verification capabilities"
-            - If information is incomplete, ask targeted follow-up questions
-            - Skip to step 8 if all information extracted
+         a. If mode == "direct":
+            - Log: "[INFO] Direct Mode - Inferring domain information from description"
+            - Parse description to extract:
+              * domain: Look for keywords (proof, verification, testing, deployment, etc.)
+              * purpose: Use description as-is
+              * target_users: Infer from domain (e.g., "researchers" for proof domain)
+            - Use LLM to extract structured information:
+              * "Extract domain, purpose, and target users from: {description}"
+              * Example: "Add proof verification capabilities" → 
+                domain="formal verification", purpose="add proof verification", target_users="researchers"
+            - If extraction fails or is ambiguous:
+              * Use generic values: domain="general", purpose=description, target_users="developers"
+              * Log warning: "Could not extract specific domain, using generic values"
+            - Skip to step 9 (no questions asked)
+         
+         b. If mode == "clarification":
+            - Log: "[INFO] Clarification Mode - Asking targeted follow-up questions"
+            - Parse description to extract initial context (same as Direct Mode)
+            - Identify ambiguities or missing information:
+              * Is domain clear? (e.g., "system" is vague, "proof verification" is clear)
+              * Is purpose clear? (e.g., "improve workflow" is vague, "automate testing" is clear)
+              * Are target users clear? (e.g., "users" is vague, "QA engineers" is clear)
+            - Ask 2-3 targeted questions ONLY for ambiguous/missing information:
+              * If domain unclear: "What domain is this for? (e.g., formal verification, testing, deployment)"
+              * If purpose unclear: "What's the main goal? (e.g., automate X, improve Y, add Z capability)"
+              * If target users unclear: "Who will use this? (e.g., researchers, developers, QA engineers)"
+            - Capture responses and merge with extracted context
+            - Skip to step 9 (limited questions)
          
          c. If mode == "interactive":
-            - Continue with full interactive questioning below
+            - Continue with full interactive questioning (steps 2-8 below)
       
-      2. Ask about domain:
+      2. (Interactive Mode only) Ask about domain:
          "What domain or field is this system for?
          
          Examples:
@@ -285,9 +302,9 @@ $ARGUMENTS
          - Data engineering (pipelines, analytics, ML workflows)
          - Content creation (writing, editing, publishing)"
       
-      3. Capture domain response
+      3. (Interactive Mode only) Capture domain response
       
-      4. Ask about purpose:
+      4. (Interactive Mode only) Ask about purpose:
          "What's the primary purpose of this system?
          
          Examples:
@@ -297,9 +314,9 @@ $ARGUMENTS
          - Orchestrate data pipelines
          - Assist with content creation"
       
-      5. Capture purpose response
+      5. (Interactive Mode only) Capture purpose response
       
-      6. Ask about target users:
+      6. (Interactive Mode only) Ask about target users:
          "Who will use this system?
          
          Examples:
@@ -309,27 +326,27 @@ $ARGUMENTS
          - Data engineers and analysts
          - Content writers and editors"
       
-       7. Capture target_users response
-       
-       8. (Prompt Mode continuation) Infer target_users from domain/purpose if not asked
-       
-       9. Detect domain type:
-          - If domain contains "proof", "theorem", "verification", "lean": type = "formal_verification"
-          - If domain contains "code", "software", "development", "testing": type = "development"
-          - If domain contains "business", "customer", "support", "commerce": type = "business"
-          - If domain contains "data", "pipeline", "analytics", "ML": type = "hybrid"
-          - Else: type = "general"
-       
-       10. Store: domain, purpose, target_users, domain_type
+      7. (Interactive Mode only) Capture target_users response
+      
+      8. (Clarification Mode continuation) Merge extracted and asked information
+      
+      9. Detect domain type (all modes):
+         - If domain contains "proof", "theorem", "verification", "lean": type = "formal_verification"
+         - If domain contains "code", "software", "development", "testing": type = "development"
+         - If domain contains "business", "customer", "support", "commerce": type = "business"
+         - If domain contains "data", "pipeline", "analytics", "ML": type = "hybrid"
+         - Else: type = "general"
+      
+      10. Store: domain, purpose, target_users, domain_type
     </process>
     <validation>
-      - domain, purpose, target_users must be non-empty (from task metadata, extracted, or asked)
+      - domain, purpose, target_users must be non-empty (inferred, extracted, or asked)
       - domain_type must be detected
-      - If mode == "task": Use metadata from Stage 1
-      - If mode == "prompt": At least domain and purpose must be extractable from target_domain
-      - If mode == "interactive": All fields must be collected via questions
+      - If mode == "direct": All fields inferred from description
+      - If mode == "clarification": At least domain and purpose must be clear after questions
+      - If mode == "interactive": All fields collected via full questions
     </validation>
-    <checkpoint>Domain information collected (from task, interactive, or extracted)</checkpoint>
+    <checkpoint>Domain information collected (inferred, clarified, or fully gathered)</checkpoint>
   </stage>
 
   <stage id="4" name="IdentifyUseCases">
