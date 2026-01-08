@@ -773,23 +773,33 @@ timeout: 120
 /task "Add documentation" --priority Medium --effort "2 hours" --language markdown
 /task "Refactor system: update commands, fix agents, improve docs" --divide
 
-# Task recovery
+# Task recovery (unarchive from archive/)
 /task --recover 343                    # Recover single task
-/task --recover 343-345                # Recover range
-/task --recover 337, 343-345, 350      # Recover list
+/task --recover 343-345                # Recover range (3 tasks)
+/task --recover 337, 343-345, 350      # Recover list (5 tasks)
+# Note: All recovered tasks reset to [NOT STARTED] status
+# Note: Creates git commit with recovery details
 
-# Task division (existing task)
-/task --divide 326                     # Divide task 326
-/task --divide 326 "Focus on UI, backend, tests"  # With prompt
+# Task division (divide existing task into subtasks)
+/task --divide 326                     # Divide task 326 (AI analyzes description)
+/task --divide 326 "Focus on UI, backend, tests"  # With guidance prompt
+# Note: Creates 1-5 subtasks based on natural divisions
+# Note: Parent task depends on subtasks
+# Note: Rollback on failure (deletes created subtasks)
+# Note: Creates git commit with division details
 
-# Task synchronization
-/task --sync                           # Sync all tasks
-/task --sync 343-345                   # Sync range
-/task --sync 337, 343-345              # Sync list
+# Task synchronization (resolve conflicts between TODO.md and state.json)
+/task --sync                           # Sync all tasks (default)
+/task --sync 343-345                   # Sync range (3 tasks)
+/task --sync 337, 343-345              # Sync list (5 tasks)
+# Note: Uses git blame to resolve conflicts (latest commit wins)
+# Note: Creates git commit with conflict resolution summary
 
-# Task abandonment
-/task --abandon 343-345                # Abandon range
-/task --abandon 337, 343-345, 350      # Abandon list
+# Task abandonment (move to archive/)
+/task --abandon 343-345                # Abandon range (3 tasks)
+/task --abandon 337, 343-345, 350      # Abandon list (5 tasks)
+# Note: Tasks moved to archive/ with reason "abandoned"
+# Note: Creates git commit with abandonment details
 ```
 
 ## Flags
@@ -808,6 +818,28 @@ Task ranges support:
 - Single numbers: `343`
 - Ranges: `343-345` (expands to 343, 344, 345)
 - Lists: `337, 343-345, 350` (expands to 337, 343, 344, 345, 350)
+
+## Git Integration
+
+All state-changing operations create git commits for traceability:
+
+**Commit Messages**:
+- Task creation: `task: create task {number} - {title}`
+- Task recovery: `task: recover {count} tasks from archive ({ranges})`
+- Task division: `task: divide task {number} into {count} subtasks ({range})`
+- Task synchronization: `task: sync TODO.md and state.json for {count} tasks ({ranges})`
+- Task abandonment: `task: abandon {count} tasks ({ranges})`
+
+**Non-Critical Failures**:
+- Git commit failures are logged but don't fail operations
+- Files are already updated atomically before git commit
+- User can manually commit if needed
+
+**Rollback**:
+- Task division has automatic rollback on failure
+- Created subtasks are deleted if any creation fails
+- Parent task unchanged on rollback
+- Clear error message with rollback details
 
 ## Architecture
 
