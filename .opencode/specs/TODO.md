@@ -447,13 +447,17 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 316. Implement tactic integration for modal_search tactic (Phase 2)
 - **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-08
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
 
 **Description**: Implement Phase 2 of task 260: Tactic Integration. Create modal_search tactic that constructs proofs in tactic mode, avoiding Prop vs Type issues. This phase is prioritized over Phase 1 as it may be easier than programmatic proof term construction and is more useful for end users (interactive proof development). Integrate with existing ProofSearch.lean infrastructure.
+
+**Research Artifacts**:
+  - Research Report: [.opencode/specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/reports/research-001.md]
 
 ---
 
@@ -585,7 +589,8 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 263. Refactor Context.lean
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-08
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: Task 264
