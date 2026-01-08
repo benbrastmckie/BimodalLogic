@@ -25,36 +25,13 @@ technical_debt:
 
 # TODO
 
-
 ## High Priority
-
 
 ### 334. Create LaTeX documentation for Logos system mirroring layer structure
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHED]
 - **Researched**: 2026-01-08
-- **Priority**: Medium
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: None
-
-
-**Research Artifacts**:
-  - Research Report: [.opencode/specs/334_latex_documentation_structure/reports/research-001.md]
-
-**Description**: Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ with a cleaned up structure that mirrors the Logos layers. The documentation should: (1) Create and import a subfile for each Logos layer, (2) Maintain the same formatting standards as the original LaTeX document, (3) Exclude problem sets, (4) Include standardized sections for each layer: Syntax extensions from previous layer, Semantic frames and models definitions, Proof system extensions from previous layer, Metalogical properties that have been established, (5) Compile definitions in a clear and concise way without proofs, (6) Provide minimal explanation, (7) Serve as a nicely formatted readable LaTeX reference for learning the Logos system without reading Lean code.
-
----
-# TODO
-
-
-## High Priority
-
-
-### 334. Create LaTeX documentation for Logos system mirroring layer structure
-- **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
-- **Researched**: 2026-01-08
+- **Planned**: 2026-01-08
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
@@ -62,6 +39,7 @@ technical_debt:
 
 **Research Artifacts**:
   - Research Report: [.opencode/specs/334_latex_documentation_structure/reports/research-001.md]
+  - Research Report (Layer 1 Focus): [.opencode/specs/334_latex_documentation_structure/reports/research-002.md]
 
 **Description**: Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ with a cleaned up structure that mirrors the Logos layers. The documentation should: (1) Create and import a subfile for each Logos layer, (2) Maintain the same formatting standards as the original LaTeX document, (3) Exclude problem sets, (4) Include standardized sections for each layer: Syntax extensions from previous layer, Semantic frames and models definitions, Proof system extensions from previous layer, Metalogical properties that have been established, (5) Compile definitions in a clear and concise way without proofs, (6) Provide minimal explanation, (7) Serve as a nicely formatted readable LaTeX reference for learning the Logos system without reading Lean code.
 
@@ -838,5 +816,61 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
   - Implementation Plan: [.opencode/specs/337_refactor_todo_command/plans/implementation-001.md]
 
 **Description**: Refactor the /todo command to follow modern .opencode standards by extracting its embedded 372-line workflow into a new todo-manager subagent. Simplify command file to <300 lines with 4-stage pattern, create new subagent with 8-stage workflow_execution, maintain atomic updates and rollback logic, preserve user confirmation for bulk operations.
+
+---
+
+### 338. Update /task command to use status-sync-manager directly
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Plan**: [Implementation Plan](.opencode/specs/338_update_task_command_to_use_status_sync_manager_directly/plans/implementation-001.md)
+
+**Description**: Update Stage 3 (CreateTasks) in /task command to delegate directly to status-sync-manager with operation: create_task instead of deprecated task-creator. Follow the pattern from /research and /implement commands (Stage 1.5 Preflight). Add validation gates to verify task creation succeeded. Test with multiple scenarios.
+
+---
+
+### 339. Remove deprecated task-creator subagent
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: Task 338
+
+**Plan**: [Implementation Plan](.opencode/specs/339_remove_deprecated_task_creator_subagent/plans/implementation-001.md)
+
+**Description**: Remove .opencode/agent/subagents/task-creator.md file since it's deprecated and no longer used. Update any documentation that references it. Verify no other commands depend on it.
+
+---
+
+### 340. Add validation gates to all command files
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Plan**: [Implementation Plan](.opencode/specs/340_add_validation_gates_to_all_command_files/plans/implementation-001.md)
+
+**Description**: Audit all command files in .opencode/command/ to ensure they have proper validation gates that prevent architectural violations. Add pre-execution and post-execution validation following patterns from /research and /implement. Document validation gate patterns in .opencode/context/core/standards/validation-gates.md.
+
+---
+
+### 341. Create deprecation policy and migration guide
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Plan**: [Implementation Plan](.opencode/specs/341_create_deprecation_policy_and_migration_guide/plans/implementation-001.md)
+
+**Description**: Create .opencode/context/core/standards/deprecation-policy.md documenting how to deprecate agents/commands safely. Include migration checklist: (1) Mark as deprecated with reason, (2) Update all callers, (3) Add deprecation warnings, (4) Remove after migration complete. Create migration guide for moving from deprecated agents to replacements.
 
 ---

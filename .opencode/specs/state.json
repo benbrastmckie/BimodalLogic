@@ -1,8 +1,8 @@
 {
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
-  "_last_updated": "2026-01-08T00:00:00Z",
-  "next_project_number": 338,
+  "_last_updated": "2026-01-08T20:27:20Z",
+  "next_project_number": 342,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -582,7 +582,7 @@
       "project_number": 334,
       "project_name": "create_latex_documentation_for_logos_system_mirroring_layer_structure",
       "type": "feature",
-      "phase": "research_completed",
+      "phase": "planning_completed",
       "status": "researched",
       "priority": "medium",
       "language": "general",
@@ -591,15 +591,21 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-07T00:00:00Z",
-      "last_updated": "2026-01-08",
+      "last_updated": "2026-01-08T00:00:00Z",
       "researched": "2026-01-08",
       "artifacts": [
         {
           "type": "research",
           "path": ".opencode/specs/334_latex_documentation_structure/reports/research-001.md",
           "summary": "Comprehensive research report analyzing source LaTeX structure and designing target documentation structure"
+        },
+        {
+          "type": "research",
+          "path": ".opencode/specs/334_latex_documentation_structure/reports/research-002.md",
+          "summary": "Supplemental research report focusing on Constitutive and Causal layers from LAYER_EXTENSIONS.md for future Layer 1 documentation"
         }
-      ]
+      ],
+      "planned": "2026-01-08"
     },
     {
       "project_number": 335,
@@ -666,6 +672,65 @@
           "summary": "Implementation plan for refactoring /todo command"
         }
       ]
+    },
+    {
+      "project_number": 338,
+      "project_name": "update_task_command_to_use_status_sync_manager_directly",
+      "type": "bugfix",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "general",
+      "created": "2026-01-08T20:27:20Z",
+      "last_updated": "2026-01-08T20:27:20Z",
+      "effort": "2-3 hours",
+      "description": "Update Stage 3 (CreateTasks) in /task command to delegate directly to status-sync-manager with operation: create_task instead of deprecated task-creator. Follow the pattern from /research and /implement commands (Stage 1.5 Preflight). Add validation gates to verify task creation succeeded. Test with multiple scenarios.",
+      "plan_path": ".opencode/specs/338_update_task_command_to_use_status_sync_manager_directly/plans/implementation-001.md"
+    },
+    {
+      "project_number": 339,
+      "project_name": "remove_deprecated_task_creator_subagent",
+      "type": "maintenance",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "general",
+      "created": "2026-01-08T20:27:20Z",
+      "last_updated": "2026-01-08T20:27:20Z",
+      "effort": "1 hour",
+      "description": "Remove .opencode/agent/subagents/task-creator.md file since it is deprecated and no longer used. Update any documentation that references it. Verify no other commands depend on it.",
+      "dependencies": [
+        338
+      ],
+      "plan_path": ".opencode/specs/339_remove_deprecated_task_creator_subagent/plans/implementation-001.md"
+    },
+    {
+      "project_number": 340,
+      "project_name": "add_validation_gates_to_all_command_files",
+      "type": "enhancement",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "general",
+      "created": "2026-01-08T20:27:20Z",
+      "last_updated": "2026-01-08T20:27:20Z",
+      "effort": "3-4 hours",
+      "description": "Audit all command files in .opencode/command/ to ensure they have proper validation gates that prevent architectural violations. Add pre-execution and post-execution validation following patterns from /research and /implement. Document validation gate patterns in .opencode/context/core/standards/validation-gates.md.",
+      "plan_path": ".opencode/specs/340_add_validation_gates_to_all_command_files/plans/implementation-001.md"
+    },
+    {
+      "project_number": 341,
+      "project_name": "create_deprecation_policy_and_migration_guide",
+      "type": "documentation",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-08T20:27:20Z",
+      "last_updated": "2026-01-08T20:27:20Z",
+      "effort": "2 hours",
+      "description": "Create .opencode/context/core/standards/deprecation-policy.md documenting how to deprecate agents/commands safely. Include migration checklist: (1) Mark as deprecated with reason, (2) Update all callers, (3) Add deprecation warnings, (4) Remove after migration complete. Create migration guide for moving from deprecated agents to replacements.",
+      "plan_path": ".opencode/specs/341_create_deprecation_policy_and_migration_guide/plans/implementation-001.md"
     }
   ],
   "completed_projects": [
