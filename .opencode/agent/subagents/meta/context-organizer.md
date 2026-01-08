@@ -22,6 +22,9 @@ context_loading:
   required:
     - "core/orchestration/delegation.md"
     - "core/formats/subagent-return.md"
+    - "core/standards/documentation.md"
+  optional:
+    - "project/meta/architecture-principles.md"
   max_context_size: 40000
 delegation:
   max_depth: 3

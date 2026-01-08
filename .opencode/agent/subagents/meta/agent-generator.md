@@ -24,6 +24,12 @@ context_loading:
     - "core/standards/xml-structure.md"
     - "core/templates/subagent-template.md"
     - "core/formats/subagent-return.md"
+    - "core/workflows/command-lifecycle.md"
+    - "core/orchestration/routing.md"
+  optional:
+    - "core/templates/agent-template.md"
+    - "core/templates/orchestrator-template.md"
+    - "project/meta/architecture-principles.md"
   max_context_size: 40000
 delegation:
   max_depth: 3

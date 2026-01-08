@@ -23,7 +23,11 @@ context_loading:
     - "core/orchestration/delegation.md"
     - "core/formats/command-structure.md"
     - "core/orchestration/routing.md"
-    - "core/workflows/preflight-postflight.md"  # Required for workflow command creation
+    - "core/workflows/preflight-postflight.md"
+    - "core/workflows/command-lifecycle.md"
+  optional:
+    - "core/templates/command-template.md"
+    - "project/meta/architecture-principles.md"
   max_context_size: 30000
 delegation:
   max_depth: 3
