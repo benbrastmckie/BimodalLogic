@@ -54,13 +54,19 @@ lifecycle:
 
 <inputs_required>
   <parameter name="operation" type="string">
-    Operation to perform: update_status, create_task, archive_tasks, update_task_metadata
+    Operation to perform: update_status, create_task, archive_tasks, unarchive_tasks, update_task_metadata, sync_tasks
   </parameter>
   <parameter name="task_number" type="integer">
     Task number to update (for update_status operation)
   </parameter>
   <parameter name="task_numbers" type="array" optional="true">
-    Task numbers to archive (for archive_tasks operation)
+    Task numbers to archive/unarchive (for archive_tasks and unarchive_tasks operations)
+  </parameter>
+  <parameter name="reason" type="string" optional="true">
+    Reason for archival: "completed" or "abandoned" (for archive_tasks operation, default: "completed")
+  </parameter>
+  <parameter name="force_archive" type="boolean" optional="true">
+    Force archive regardless of status (for archive_tasks with reason="abandoned", default: false)
   </parameter>
   <parameter name="title" type="string" optional="true">
     Task title (for create_task operation, max 200 chars)
@@ -137,9 +143,11 @@ lifecycle:
       1. Check operation parameter value
       2. If operation == "create_task": Execute create_task_flow
       3. If operation == "archive_tasks": Execute archive_tasks_flow
-      4. If operation == "update_task_metadata": Execute update_task_metadata_flow
-      5. If operation == "update_status" or not specified: Execute update_status_flow (default)
-      6. If operation invalid: Return error
+      4. If operation == "unarchive_tasks": Execute unarchive_tasks_flow
+      5. If operation == "update_task_metadata": Execute update_task_metadata_flow
+      6. If operation == "sync_tasks": Execute sync_tasks_flow
+      7. If operation == "update_status" or not specified: Execute update_status_flow (default)
+      8. If operation invalid: Return error
     </process>
     <validation>Operation parameter is valid</validation>
     <output>Routed to appropriate operation flow</output>
@@ -284,8 +292,12 @@ lifecycle:
         4. Validate TODO.md exists and is readable
         5. For each task number:
            - Verify task exists in state.json active_projects
-           - Verify task status is "completed" or "abandoned"
-           - If task not found or wrong status: abort with error
+           - If force_archive is false (default):
+             * Verify task status is "completed" or "abandoned"
+             * If task not found or wrong status: abort with error
+           - If force_archive is true:
+             * Skip status check (allow archiving any status)
+             * Used for --abandon flag to abandon tasks regardless of status
         6. If validation fails: abort with clear error message
       </process>
       <validation>All tasks exist and are archivable</validation>
@@ -370,6 +382,114 @@ lifecycle:
       <output>Standardized return object with archived count</output>
     </step_4_return>
   </archive_tasks_flow>
+
+  <unarchive_tasks_flow>
+    <step_0_validate_inputs>
+      <action>Validate unarchive_tasks inputs</action>
+      <process>
+        1. Validate task_numbers is non-empty array
+        2. Validate all task numbers are positive integers
+        3. Validate state.json exists and is readable
+        4. Validate TODO.md exists and is readable
+        5. For each task number:
+           - Verify task exists in state.json completed_projects
+           - Verify task NOT in state.json active_projects
+           - If task not found in completed_projects: collect error
+           - If task already in active_projects: collect error
+        6. If any validation errors: abort with batch error report
+      </process>
+      <validation>All tasks exist in completed_projects and not in active_projects</validation>
+      <output>Validated task numbers</output>
+    </step_0_validate_inputs>
+
+    <step_1_prepare_recovery>
+      <action>Prepare recovery updates</action>
+      <process>
+        1. Read current TODO.md content
+        2. Read current state.json content
+        3. NO BACKUP FILES CREATED (git-only rollback)
+        4. For each task number:
+           - Extract task entry from state.json completed_projects
+           - Reset status to "not_started"
+           - Reset phase to "not_started"
+           - Update last_updated timestamp to current time
+           - Clear completion/archived timestamps
+           - Format TODO.md entry:
+             * Determine priority section (High/Medium/Low)
+             * Insert after appropriate section header
+             * Use [NOT STARTED] status marker
+           - Prepare for addition to state.json active_projects
+           - Prepare for removal from state.json completed_projects
+        5. Validate all tasks found and formatted
+      </process>
+      <validation>All tasks located and formatted</validation>
+      <output>Prepared recovery operations</output>
+    </step_1_prepare_recovery>
+
+    <step_2_commit>
+      <action>Commit updates atomically using atomic write pattern</action>
+      <process>
+        1. Generate unique temp file names (include session_id):
+           - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
+           - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
+        
+        2. Write to temp files:
+           - Write updated TODO.md to todo_tmp
+           - Write updated state.json to state_tmp
+        
+        3. Verify temp files written successfully:
+           - Verify todo_tmp exists and size > 0
+           - Verify state_tmp exists and size > 0
+           - If verification fails: Remove temp files and abort
+        
+        4. Atomic rename (both files or neither):
+           - Rename todo_tmp to .opencode/specs/TODO.md (atomic)
+           - Rename state_tmp to .opencode/specs/state.json (atomic)
+           - If any rename fails: Remove temp files and abort
+        
+        5. Clean up temp files on success
+      </process>
+      <rollback_on_failure>
+        If any write fails:
+        1. Remove all temp files
+        2. Return failed status with error details
+        3. Rely on git for recovery (no backup file rollback)
+      </rollback_on_failure>
+      <validation>Both files written atomically or temp files cleaned up</validation>
+      <output>Tasks recovered atomically</output>
+    </step_2_commit>
+
+    <step_3_move_directories>
+      <action>Move task directories from archive/ to specs/ (non-critical)</action>
+      <process>
+        1. For each task number:
+           - Find directory: .opencode/specs/archive/{number}_*
+           - If directory exists:
+             * Target: .opencode/specs/{number}_*
+             * Move directory: mv archive/{number}_* ./
+             * If move fails: Log warning, continue (non-critical)
+           - If directory not found: Skip (not all tasks have directories)
+        2. Log all directory moves (success and failure)
+        3. Continue even if some moves fail (non-critical operation)
+      </process>
+      <validation>Directory moves attempted (failures logged but not fatal)</validation>
+      <output>Directories moved (best effort)</output>
+    </step_3_move_directories>
+
+    <step_4_return>
+      <action>Return success with recovery count</action>
+      <process>
+        1. Format return following subagent-return-format.md
+        2. Include count of tasks recovered
+        3. Include task numbers recovered
+        4. Include files updated: [TODO.md, state.json]
+        5. Include success_count and failure_count
+        6. Include session_id from input
+        7. Return status completed or partial (if some directories failed to move)
+      </process>
+      <output>Standardized return object with recovery count</output>
+    </step_4_return>
+  </unarchive_tasks_flow>
 
   <update_task_metadata_flow>
     <step_0_validate_inputs>
@@ -475,6 +595,150 @@ lifecycle:
       <output>Standardized return object with update details</output>
     </step_3_return>
   </update_task_metadata_flow>
+
+  <sync_tasks_flow>
+    <step_0_validate_inputs>
+      <action>Validate sync_tasks inputs</action>
+      <process>
+        1. Validate task_ranges parameter:
+           - If "all" or empty: sync all tasks
+           - If array: validate all task numbers are positive integers
+        2. Validate state.json exists and is readable
+        3. Validate TODO.md exists and is readable
+        4. If task_ranges is array:
+           - Verify all tasks exist in TODO.md or state.json
+           - If task not found in either: collect error
+        5. If any validation errors: abort with batch error report
+      </process>
+      <validation>All inputs valid</validation>
+      <output>Validated task ranges or "all"</output>
+    </step_0_validate_inputs>
+
+    <step_1_analyze_differences>
+      <action>Compare TODO.md and state.json for each task</action>
+      <process>
+        1. Determine task scope:
+           - If task_ranges is "all" or empty: Extract all task numbers from both files
+           - If task_ranges is array: Use provided task numbers
+        
+        2. For each task in scope:
+           - Parse task entry from TODO.md (if exists)
+           - Parse task entry from state.json active_projects (if exists)
+           - Compare all fields: status, priority, effort, description, dependencies, language
+           - If any field differs: Mark task as "has_discrepancy"
+           - Record which fields differ and their values
+        
+        3. Categorize tasks:
+           - only_in_todo: Tasks in TODO.md but not in state.json
+           - only_in_state: Tasks in state.json but not in TODO.md
+           - in_both_with_discrepancies: Tasks in both with differences
+           - in_both_no_discrepancies: Tasks in both, identical
+        
+        4. Log analysis results:
+           - Total tasks analyzed
+           - Tasks with discrepancies
+           - Fields that differ
+      </process>
+      <validation>All tasks analyzed</validation>
+      <output>Discrepancy report with categorized tasks</output>
+    </step_1_analyze_differences>
+
+    <step_2_resolve_conflicts_with_git_blame>
+      <action>Use git blame to resolve conflicts (latest commit wins)</action>
+      <process>
+        1. For tasks with discrepancies:
+           For each differing field:
+             a. Get TODO.md timestamp:
+                - Find task entry line range in TODO.md
+                - Run: git blame -L <start>,<end> .opencode/specs/TODO.md
+                - Extract commit hash for field line
+                - Run: git show -s --format=%ct <commit_hash>
+                - Store timestamp_todo
+             
+             b. Get state.json timestamp:
+                - Run: git log -1 --format=%ct -S "\"project_number\": <task_number>" -- .opencode/specs/state.json
+                - Store timestamp_state
+             
+             c. Compare timestamps:
+                - If timestamp_state > timestamp_todo: Use state.json value
+                - If timestamp_todo > timestamp_state: Use TODO.md value
+                - If timestamps equal: Use state.json value (tie-breaker: state.json is source of truth)
+             
+             d. Log conflict resolution:
+                - "Task {number} field '{field}': {winner} ({timestamp}) > {loser} ({timestamp}) → {winner} wins"
+        
+        2. For tasks only in TODO.md:
+           - Run git log to check if task was deleted from state.json
+           - If deleted recently (within last 10 commits): Respect deletion (remove from TODO.md)
+           - If never existed in state.json: Add to state.json (new task)
+        
+        3. For tasks only in state.json:
+           - Run git log to check if task was deleted from TODO.md
+           - If deleted recently (within last 10 commits): Respect deletion (remove from state.json)
+           - If never existed in TODO.md: Add to TODO.md (new task)
+        
+        4. Build merged task objects using resolved field values
+        5. Collect conflict resolution log for return
+      </process>
+      <validation>All conflicts resolved using git blame</validation>
+      <output>Merged task objects with conflict resolution log</output>
+    </step_2_resolve_conflicts_with_git_blame>
+
+    <step_3_prepare_updates>
+      <action>Prepare synchronized updates</action>
+      <process>
+        1. For each task:
+           - Format TODO.md entry from merged object
+           - Format state.json entry from merged object
+           - Ensure consistency across all fields
+        2. Update TODO.md content in memory (replace all affected tasks)
+        3. Update state.json content in memory (replace all affected tasks)
+        4. Validate both updates well-formed (valid markdown, valid JSON)
+      </process>
+      <validation>Updates prepared correctly</validation>
+      <output>Updated TODO.md and state.json content in memory</output>
+    </step_3_prepare_updates>
+
+    <step_4_commit>
+      <action>Commit updates atomically</action>
+      <process>
+        1. Generate unique temp file names (include session_id):
+           - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
+           - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
+        
+        2. Write to temp files:
+           - Write updated TODO.md to todo_tmp
+           - Write updated state.json to state_tmp
+        
+        3. Verify temp files written successfully:
+           - Verify both temp files exist and size > 0
+           - If verification fails: Remove temp files and abort
+        
+        4. Atomic rename (both files or neither):
+           - Rename todo_tmp to .opencode/specs/TODO.md (atomic)
+           - Rename state_tmp to .opencode/specs/state.json (atomic)
+           - If any rename fails: Remove temp files and abort
+        
+        5. Clean up temp files on success
+      </process>
+      <validation>Both files written atomically</validation>
+      <output>Tasks synchronized</output>
+    </step_4_commit>
+
+    <step_5_return>
+      <action>Return success with sync details</action>
+      <process>
+        1. Format return following subagent-return-format.md
+        2. Include synced_tasks count
+        3. Include conflicts_resolved count
+        4. Include conflict resolution details (array of conflict logs)
+        5. Include files updated: [TODO.md, state.json]
+        6. Include session_id from input
+        7. Return status completed or failed
+      </process>
+      <output>Standardized return object with sync details</output>
+    </step_5_return>
+  </sync_tasks_flow>
 
   <update_status_flow>
   <step_1_prepare>
