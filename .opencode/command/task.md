@@ -340,21 +340,42 @@ timeout: 120
                 ```
       
        6. Update parent task dependencies:
-         - Delegate to status-sync-manager:
-           * operation: "update_task_metadata"
-           * task_number: {parent_task_number}
-           * updated_fields: {"dependencies": [subtask_numbers]}
+          - Delegate to status-sync-manager:
+            * operation: "update_task_metadata"
+            * task_number: {parent_task_number}
+            * updated_fields: {"dependencies": [subtask_numbers]}
       
-      7. Format success message:
-         - "✅ Divided task {number} into {N} subtasks"
-         - List subtask numbers and titles
-         - Note: Parent task now depends on subtasks
+       7. Create git commit (non-critical):
+          - Delegate to git-workflow-manager:
+            * scope_files: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+            * message_template: "task: divide task {number} into {count} subtasks ({range})"
+            * task_context:
+              - task_number: {parent_task_number}
+              - subtask_count: {length of created_subtasks}
+              - subtask_range: "{first_subtask}-{last_subtask}"
+            * session_id: {session_id}
+            * delegation_depth: {depth + 1}
+            * delegation_path: [...path, "git-workflow-manager"]
+          - Wait for return from git-workflow-manager
+          - If git commit succeeds:
+            * Extract commit_hash from return
+            * Log: "Git commit created: {commit_hash}"
+          - If git commit fails:
+            * Log warning: "Git commit failed (non-critical): {error}"
+            * Continue with success message (files already updated)
+      
+       8. Format success message:
+          - "✅ Divided task {number} into {N} subtasks"
+          - List subtask numbers and titles
+          - Note: Parent task now depends on subtasks
+          - If git commit succeeded: Include commit hash
     </process>
      <validation>
        - Task exists and can be divided
        - Subtask count is 1-5
        - All subtasks created successfully (or rollback initiated)
        - Parent dependencies updated
+       - Git commit created (or logged as non-critical failure)
        - Rollback mechanism works correctly on failure
      </validation>
      <rollback>
@@ -364,7 +385,7 @@ timeout: 120
        - Return error with rollback details
        - Parent task unchanged (no dependencies added)
      </rollback>
-     <checkpoint>Task divided into subtasks, parent dependencies updated (or rollback completed)</checkpoint>
+     <checkpoint>Task divided into subtasks, parent dependencies updated, git commit created (or rollback completed)</checkpoint>
    </stage>
   
   <stage id="6" name="SyncTasks">
