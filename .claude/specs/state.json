@@ -774,7 +774,7 @@
       "created": "2026-01-09T12:00:00Z",
       "last_updated": "2026-01-09T14:00:00Z",
       "effort": "6-8 hours",
-      "plan_version": 1,
+      "plan_version": 2,
       "artifacts": [
         {
           "path": ".claude/specs/347_logos_layer_documentation_revision/reports/research-001.md",
@@ -786,6 +786,10 @@
         },
         {
           "path": ".claude/specs/347_logos_layer_documentation_revision/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/347_logos_layer_documentation_revision/plans/implementation-002.md",
           "type": "plan"
         }
       ],
