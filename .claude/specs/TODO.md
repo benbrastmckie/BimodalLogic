@@ -30,6 +30,34 @@ technical_debt:
 
 ## High Priority
 
+### 348. Implement jq-based state lookup for agent commands
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Enhance claude code agent system to use jq for efficient state.json lookups by task number in /research, /plan, /revise, /implement, and /task commands. Instead of reading entire state.json files which can be extremely long, use jq to quickly look up relevant task data. From the task lookup in state.json, use grep to find relevant TODO.md sections for synchronized updates via skill-status-sync skill.
+
+**Implementation Goals**:
+1. Create standardized jq patterns for task lookup in state.json
+2. Create standardized grep patterns for TODO.md section lookup
+3. Update skill-status-sync to use these patterns for atomic updates
+4. Update command files (/research, /plan, /implement, /revise, /task) to use the standardized patterns
+5. Ensure all state changes go through skill-status-sync for consistency
+
+**Files Affected**:
+- .claude/skills/skill-status-sync/SKILL.md
+- .claude/commands/research.md
+- .claude/commands/plan.md
+- .claude/commands/implement.md
+- .claude/commands/revise.md
+- .claude/commands/task.md
+- .claude/context/core/orchestration/state-lookup.md
+
+---
+
 ### 347. Revise Logos layer documentation for new layer organization
 - **Effort**: 6-8 hours
 - **Status**: [RESEARCHED]

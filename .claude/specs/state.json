@@ -2,7 +2,7 @@
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
   "_last_updated": "2026-01-08T00:00:00Z",
-  "next_project_number": 348,
+  "next_project_number": 349,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -15,6 +15,19 @@
     "_comment": "References to specialized state files. These files are auto-created if missing."
   },
   "active_projects": [
+    {
+      "project_number": 348,
+      "project_name": "jq_based_state_lookup_for_commands",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-09T13:19:56Z",
+      "last_updated": "2026-01-09T13:19:56Z",
+      "effort": "4-6 hours",
+      "description": "Enhance claude code agent system to use jq for efficient state.json lookups by task number in /research, /plan, /revise, /implement, and /task commands. From task lookup, use grep to find relevant TODO.md sections for synchronized updates via skill-status-sync."
+    },
     {
       "project_number": 132,
       "project_name": "prove_lindenbaum_maximal_consistency_lemma_in_completeness.lean",
