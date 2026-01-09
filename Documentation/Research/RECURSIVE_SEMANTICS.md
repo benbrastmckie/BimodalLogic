@@ -180,9 +180,11 @@ FIX: the Nullity constraint should be removed and instead we will have the defin
 | **Parthood (Left)** | If d ⊑ s and s ⇒_x t, then d ⇒_x r for some r ⊑ t |
 | **Parthood (Right)** | If r ⊑ t and s ⇒_x t, then d ⇒_x r for some d ⊑ s |
 
-FIX: add the containment constraints from section sub:Containment in /home/benjamin/Projects/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex to the constraints above
+FIX: add the containment constraints from section sub:Containment in /home/benjamin/Projects/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex to the constraints above. Also add the Maximality constraint from sub:TaskSpace in the same paper.
 
 ### State Modality Definitions
+
+FIX: 'Connected' is no longer needed since the possibility of a state s is defined directly as s ⇒_0 s. Fix 'Possible state' accordingly.
 
 | Term | Definition |
 |------|------------|
