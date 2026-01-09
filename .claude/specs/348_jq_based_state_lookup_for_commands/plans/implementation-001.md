@@ -164,7 +164,7 @@ The existing `state-lookup.md` already documents optimal jq patterns. This imple
 ### Phase 6: Update /task Command (Already Partially Done)
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Verify jq patterns are complete for all modes

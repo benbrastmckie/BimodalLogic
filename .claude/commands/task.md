@@ -24,10 +24,9 @@ When $ARGUMENTS contains a description (no flags):
 
 ### Steps
 
-1. **Read state.json** for next_project_number:
-   ```
-   Read .claude/specs/state.json
-   Extract next_project_number (e.g., 346)
+1. **Read next_project_number via jq**:
+   ```bash
+   next_num=$(jq -r '.next_project_number' .claude/specs/state.json)
    ```
 
 2. **Parse description** from $ARGUMENTS:
@@ -107,10 +106,34 @@ When $ARGUMENTS contains a description (no flags):
 Parse task ranges after --recover (e.g., "343-345", "337, 343"):
 
 1. For each task number in range:
-   - Find in .claude/specs/archive/state.json
-   - Move entry back to state.json active_projects
-   - Update TODO.md with recovered entry
-   - Update status to [NOT STARTED]
+   **Lookup task in archive via jq**:
+   ```bash
+   task_data=$(jq -r --arg num "$task_number" \
+     '.completed_projects[] | select(.project_number == ($num | tonumber))' \
+     .claude/specs/archive/state.json)
+
+   if [ -z "$task_data" ]; then
+     echo "Error: Task $task_number not found in archive"
+     exit 1
+   fi
+   ```
+
+   **Move to active_projects via jq**:
+   ```bash
+   # Remove from archive
+   jq --arg num "$task_number" \
+     '.completed_projects |= map(select(.project_number != ($num | tonumber)))' \
+     .claude/specs/archive/state.json > /tmp/archive.json && \
+     mv /tmp/archive.json .claude/specs/archive/state.json
+
+   # Add to active with status reset
+   jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson task "$task_data" \
+     '.active_projects = [$task | .status = "not_started" | .last_updated = $ts] + .active_projects' \
+     .claude/specs/state.json > /tmp/state.json && \
+     mv /tmp/state.json .claude/specs/state.json
+   ```
+
+   **Update TODO.md**: Add recovered task entry under appropriate priority section
 
 2. Git commit: "task: recover tasks {ranges}"
 
@@ -118,28 +141,99 @@ Parse task ranges after --recover (e.g., "343-345", "337, 343"):
 
 Parse task number and optional prompt:
 
-1. Read task from state.json
+1. **Lookup task via jq**:
+   ```bash
+   task_data=$(jq -r --arg num "$task_number" \
+     '.active_projects[] | select(.project_number == ($num | tonumber))' \
+     .claude/specs/state.json)
+
+   if [ -z "$task_data" ]; then
+     echo "Error: Task $task_number not found"
+     exit 1
+   fi
+
+   description=$(echo "$task_data" | jq -r '.description // ""')
+   ```
+
 2. Analyze description for natural breakpoints
-3. Create 2-5 subtasks with sequential numbers
-4. Update original task with subtask references
+
+3. **Create 2-5 subtasks** using the Create Task jq pattern for each
+
+4. **Update original task** to reference subtasks:
+   ```bash
+   jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+     '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+       subtasks: [list_of_subtask_numbers],
+       last_updated: $ts
+     }' .claude/specs/state.json > /tmp/state.json && \
+     mv /tmp/state.json .claude/specs/state.json
+   ```
+
 5. Git commit: "task {N}: divide into subtasks"
 
 ## Sync Mode (--sync)
 
-1. Read both TODO.md and state.json
-2. Compare entries for consistency
-3. Use git blame to determine "latest wins"
-4. Sync discrepancies
-5. Git commit: "sync: reconcile TODO.md and state.json"
+1. **Read state.json task list via jq**:
+   ```bash
+   state_tasks=$(jq -r '.active_projects[].project_number' .claude/specs/state.json | sort -n)
+   state_next=$(jq -r '.next_project_number' .claude/specs/state.json)
+   ```
+
+2. **Read TODO.md task list via grep**:
+   ```bash
+   todo_tasks=$(grep -o "^### [0-9]\+\." .claude/specs/TODO.md | sed 's/[^0-9]//g' | sort -n)
+   todo_next=$(grep "^next_project_number:" .claude/specs/TODO.md | awk '{print $2}')
+   ```
+
+3. **Compare entries for consistency**:
+   - Tasks in state.json but not TODO.md → Add to TODO.md
+   - Tasks in TODO.md but not state.json → Add to state.json or mark as orphaned
+   - next_project_number mismatch → Use higher value
+
+4. **Use git blame to determine "latest wins"** for conflicting data
+
+5. **Sync discrepancies**:
+   - Use jq to update state.json
+   - Use Edit to update TODO.md
+   - Ensure next_project_number matches in both files
+
+6. Git commit: "sync: reconcile TODO.md and state.json"
 
 ## Abandon Mode (--abandon)
 
 Parse task ranges:
 
 1. For each task:
-   - Move from state.json active_projects to archive/state.json
-   - Update TODO.md status to [ABANDONED]
-   - Move task directory to archive/ (optional)
+   **Lookup and validate task via jq**:
+   ```bash
+   task_data=$(jq -r --arg num "$task_number" \
+     '.active_projects[] | select(.project_number == ($num | tonumber))' \
+     .claude/specs/state.json)
+
+   if [ -z "$task_data" ]; then
+     echo "Error: Task $task_number not found in active projects"
+     exit 1
+   fi
+   ```
+
+   **Move to archive via jq**:
+   ```bash
+   # Add to archive with abandoned status
+   jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson task "$task_data" \
+     '.completed_projects = [$task | .status = "abandoned" | .abandoned = $ts] + .completed_projects' \
+     .claude/specs/archive/state.json > /tmp/archive.json && \
+     mv /tmp/archive.json .claude/specs/archive/state.json
+
+   # Remove from active
+   jq --arg num "$task_number" \
+     '.active_projects |= map(select(.project_number != ($num | tonumber)))' \
+     .claude/specs/state.json > /tmp/state.json && \
+     mv /tmp/state.json .claude/specs/state.json
+   ```
+
+   **Update TODO.md**: Change status to [ABANDONED] via grep + Edit
+
+   **Move task directory** (optional): `mv .claude/specs/{N}_{SLUG} .claude/specs/archive/`
 
 2. Git commit: "task: abandon tasks {ranges}"
 
