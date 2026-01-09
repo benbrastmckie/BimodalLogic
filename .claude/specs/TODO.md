@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-09T12:00:00Z
-next_project_number: 349
+next_project_number: 350
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -206,6 +206,31 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 349. Address all [FIX] tags in RECURSIVE_SEMANTICS.md documentation
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Documentation/Research/RECURSIVE_SEMANTICS.md
+  - Documentation/Reference/GLOSSARY.md
+
+**Description**: Systematically address all 25 [FIX] tags in RECURSIVE_SEMANTICS.md. Fixes include: (1) Specify syntactic primitives including lambda abstraction and update GLOSSARY.md, (2) Use '| |' notation for interpretation function consistently instead of 'I', (3) Replace v_F/f_F with |F|⁺/|F|⁻ notation, (4) Use 'a', 'b' for variable assignments instead of greek letters, (5) Use reversed turnstile symbol if available, (6) Include model M and variable assignment in all semantic clauses, (7) Add semantic clauses for lambda abstraction, (8) Clarify intensional vs hyperintensional semantics relationship, (9) Redefine possible states as s ⇒_0 s and remove Nullity constraint, (10) Add containment and maximality constraints from counterfactual_worlds.tex, (11) Use ▷ for Until and reverse for Since operators, (12) Use right-arrow for imposition notation, (13) Include time vector v⃗ among contextual parameters throughout.
+
+**External Reference**: /home/benjamin/Projects/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex (sections sub:Containment and sub:TaskSpace)
+
+**Acceptance Criteria**:
+  - [ ] All 25 [FIX] tags addressed and removed
+  - [ ] Notation consistent throughout document (| | for interpretation, a for assignments)
+  - [ ] Lambda abstraction semantic clauses added to both layers
+  - [ ] Containment and Maximality constraints incorporated from external source
+  - [ ] GLOSSARY.md updated with new syntactic primitives
+  - [ ] Document compiles/renders correctly
+
+---
 
 ### 176. Enhance proof search with domain-specific heuristics and caching
 - **Effort**: 18 hours
