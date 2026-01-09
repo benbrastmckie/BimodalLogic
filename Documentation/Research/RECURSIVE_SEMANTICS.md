@@ -23,7 +23,7 @@ The Constitutive Layer provides the foundational mereological structure with bil
 
 ## Constitutive Layer: Hyperintensional Semantics
 
-FIX: specify what syntactic primitives will be interpreted in this layer including lambda abstraction, updating the GLOSSARY.md accordingly
+[FIX]: specify what syntactic primitives will be interpreted in this layer including lambda abstraction, updating the GLOSSARY.md accordingly
 
 The Constitutive Layer provides the foundational semantic structure based on exact truthmaker semantics. Evaluation is hyperintensional, distinguishing propositions that agree on truth-value across all possible worlds but differ in their exact verification and falsification conditions.
 
@@ -44,39 +44,39 @@ The lattice structure provides:
 
 ### Constitutive Model
 
-A *constitutive model* is a structure **M** = ⟨S, ⊑, I⟩ where: FIX: use '| |' for the interpretation function consistently rather than 'I'
+A *constitutive model* is a structure **M** = ⟨S, ⊑, I⟩ where: [FIX]: use '| |' for the interpretation function consistently rather than 'I'
 
 | Component | Description |
 |-----------|-------------|
 | **Frame** | ⟨S, ⊑⟩ is a constitutive frame |
 | **Interpretation** | I assigns meanings to non-logical vocabulary |
 
-The interpretation function I assigns: FIX: use '| |' instead of 'I'
+The interpretation function I assigns: [FIX]: use '| |' instead of 'I'
 - **n-place function symbols** f → functions from Sⁿ to S (0-place = individual constants mapping to states)
-- **n-place predicates** F → ordered pairs ⟨v_F, f_F⟩ where: FIX: replace v_F and f_F with |F|⁺ and |F|⁻ where these are both sets of functions of the kind indicated for v_F and f_F below
+- **n-place predicates** F → ordered pairs ⟨v_F, f_F⟩ where: [FIX]: replace v_F and f_F with |F|⁺ and |F|⁻ where these are both sets of functions of the kind indicated for v_F and f_F below
   - v_F : Sⁿ → S is the verifier function
   - f_F : Sⁿ → S is the falsifier function
 - **Sentence letters** (0-place predicates) p → ordered pairs ⟨|p|⁺, |p|⁻⟩ of verifier and falsifier states
 
 ### Variable Assignment
 
-FIX: greek letters are used for world-histories; use 'a', 'b',... for variable assignments (preferable with a bar above them 'a', 'b',... will also work as they are if no unicode characters are available for 'a', 'b',... with a bar over them)
+[FIX]: greek letters are used for world-histories; use 'a', 'b',... for variable assignments (preferable with a bar above them 'a', 'b',... will also work as they are if no unicode characters are available for 'a', 'b',... with a bar over them)
 
 A *variable assignment* σ is a function from variables to states: σ : Var → S
 
 The **extension** of a term relative to model M and assignment σ:
 - **Variable** x: ⟦x⟧^σ_M = σ(x)
-- **Function application** f(a₁,...,aₙ): ⟦f(a₁,...,aₙ)⟧^σ_M = I(f)(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) FIX: use '|f|' instead of 'I(f)'
+- **Function application** f(a₁,...,aₙ): ⟦f(a₁,...,aₙ)⟧^σ_M = I(f)(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) [FIX]: use '|f|' instead of 'I(f)'
 
 ### Verification and Falsification Clauses
 
-FIX: instead of '⊩⁻', it would be better to have '⊩' reversed if there is such a symbol, and then use '⊩' for verification by itself. If there is no reversed turnstile, then keep the verification and falsification symbols as they are.
+[FIX]: instead of '⊩⁻', it would be better to have '⊩' reversed if there is such a symbol, and then use '⊩' for verification by itself. If there is no reversed turnstile, then keep the verification and falsification symbols as they are.
 
 A state s **verifies** (s ⊩⁺ A) or **falsifies** (s ⊩⁻ A) a formula A relative to model M and assignment σ:
 
 #### Atomic Formulas
 
-FIX: it is important to include the model M and variable assignment a alongside the state where f is some verifying/falsifying function as follows:
+[FIX]: it is important to include the model M and variable assignment a alongside the state where f is some verifying/falsifying function as follows:
   M, a, s ⊩⁺ F(a₁,...,aₙ) iff there is some f in |F|⁺ where s = f(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M)
   M, a, s ⊩⁻ F(a₁,...,aₙ) iff there is some f in |F|⁺ where s = f(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M)
 
@@ -85,11 +85,11 @@ FIX: it is important to include the model M and variable assignment a alongside 
 | s ⊩⁺ F(a₁,...,aₙ) | iff s = v_F(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) |
 | s ⊩⁻ F(a₁,...,aₙ) | iff s = f_F(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) |
 
-FIX: include semantic clauses for lambda abstraction
+[FIX]: include semantic clauses for lambda abstraction
 
 #### Negation (¬)
 
-FIX: include the model M and variable assignment a in all of the semantic clauses below.
+[FIX]: include the model M and variable assignment a in all of the semantic clauses below.
 
 | | Condition |
 |---|-----------|
@@ -155,7 +155,7 @@ That is, A is a consequence of Γ iff the null state verifies A in any model whe
 
 ## Causal Layer: Intensional Semantics
 
-FIX: the semantics is intensional insofar as it determines truth-values relative to the contextual parameters (this includes a world-history, time, variable assignment) but this is not instead of being hyperintensional since the hyperintensional semantics is still the foundation. Rather, the intensional layer sits on top of the hyperintensional foundation in order to assign truth-values to sentences given an adequate range of contextual parameters needed to determine the truth-values of all sentences of the Causal Layer.
+[FIX]: the semantics is intensional insofar as it determines truth-values relative to the contextual parameters (this includes a world-history, time, variable assignment) but this is not instead of being hyperintensional since the hyperintensional semantics is still the foundation. Rather, the intensional layer sits on top of the hyperintensional foundation in order to assign truth-values to sentences given an adequate range of contextual parameters needed to determine the truth-values of all sentences of the Causal Layer.
 
 The Causal Layer extends the Constitutive Layer with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. Semantics at this layer is intensional rather than hyperintensional.
 
@@ -171,7 +171,7 @@ A *causal frame* is a structure **F** = ⟨S, ⊑, D, ⇒⟩ where:
 
 The task relation s ⇒_d t (read: "there is a task from s to t of duration d") satisfies:
 
-FIX: the Nullity constraint should be removed and instead we will have the definition of the possible states as any state s where s ⇒_0 s
+[FIX]: the Nullity constraint should be removed and instead we will have the definition of the possible states as any state s where s ⇒_0 s
 
 | Constraint | Formulation |
 |------------|-------------|
@@ -180,11 +180,11 @@ FIX: the Nullity constraint should be removed and instead we will have the defin
 | **Parthood (Left)** | If d ⊑ s and s ⇒_x t, then d ⇒_x r for some r ⊑ t |
 | **Parthood (Right)** | If r ⊑ t and s ⇒_x t, then d ⇒_x r for some d ⊑ s |
 
-FIX: add the containment constraints from section sub:Containment in /home/benjamin/Projects/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex to the constraints above. Also add the Maximality constraint from sub:TaskSpace in the same paper.
+[FIX]: add the containment constraints from section sub:Containment in /home/benjamin/Projects/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex to the constraints above. Also add the Maximality constraint from sub:TaskSpace in the same paper.
 
 ### State Modality Definitions
 
-FIX: The possibility of a state s is defined directly as s ⇒_0 s. Fix 'Possible state' and 'Impossible state' accordingly.
+[FIX]: The possibility of a state s is defined directly as s ⇒_0 s. Fix 'Possible state' and 'Impossible state' accordingly.
 
 | Term | Definition |
 |------|------------|
@@ -208,7 +208,7 @@ The set of all world-histories over F is denoted H_F.
 
 ### Causal Model
 
-FIX: Use '| |' instead of 'I' below:
+[FIX]: Use '| |' instead of 'I' below:
 
 A *causal model* is a structure **M** = ⟨S, ⊑, D, ⇒, I⟩ where:
 - ⟨S, ⊑, D, ⇒⟩ is a causal frame
@@ -216,26 +216,28 @@ A *causal model* is a structure **M** = ⟨S, ⊑, D, ⇒, I⟩ where:
 
 ### Truth Conditions
 
-FIX: the variable assignment should use 'a' instead of a greek letter to avoid confusion with the world-histories (or a 'a' symbol with a bar above if there is such a unicode character).
+[FIX]: the variable assignment should use 'a' instead of a greek letter to avoid confusion with the world-histories (or a 'a' symbol with a bar above if there is such a unicode character).
 
-FIX: the time need not be restricted to dom(τ)
+[FIX]: the time need not be restricted to dom(τ)
 
 Truth is evaluated relative to a model M, world-history τ, time x ∈ dom(τ), and assignment σ:
 
 #### Atomic Sentences
 
-FIX: the variable assignment is missing below and it would be good to replace ⊭ with a backwards ⊨ if there is such a unicode character (otherwise use ⊨⁺ and ⊨⁻):
+[FIX]: the variable assignment is missing below and it would be good to replace ⊭ with a backwards ⊨ if there is such a unicode character (otherwise use ⊨⁺ and ⊨⁻):
 
 | | Condition |
 |---|-----------|
 | M, τ, x ⊨ F(a₁,...,aₙ) | iff there exists s ⊑ τ(x) where s ⊩⁺ F(a₁,...,aₙ) |
 | M, τ, x ⊭ F(a₁,...,aₙ) | iff there exists s ⊑ τ(x) where s ⊩⁻ F(a₁,...,aₙ) |
 
-FIX: instead of using 's ⊩⁺ F(a₁,...,aₙ)' and 's ⊩⁻ F(a₁,...,aₙ)' which depends on defining ⊩⁺ and ⊩⁻, it would be better to use:
+[FIX]: instead of using 's ⊩⁺ F(a₁,...,aₙ)' and 's ⊩⁻ F(a₁,...,aₙ)' which depends on defining ⊩⁺ and ⊩⁻, it would be better to use:
   M, τ, x, a ⊨⁺ F(a₁,...,aₙ) | iff there is some f in |F|⁺ where f(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) ⊑ τ(x)
   M, τ, x, a ⊨⁻ F(a₁,...,aₙ) iff there is some f in |F|⁻ where f(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) ⊑ τ(x)
 
-FIX: note that it is derivable that M, τ, x, a ⊨⁺ A iff it is not the case that M, τ, x, a ⊨⁻ A, and similarly, that M, τ, x, a ⊨⁻ A iff it is not the case that M, τ, x, a ⊨⁺ A, justifying using ⊨ alone in place of ⊨⁺, and using ⊭ in place of ⊨⁻.
+[FIX]: note that it is derivable that M, τ, x, a ⊨⁺ A iff it is not the case that M, τ, x, a ⊨⁻ A, and similarly, that M, τ, x, a ⊨⁻ A iff it is not the case that M, τ, x, a ⊨⁺ A, justifying using ⊨ alone in place of ⊨⁺, and using ⊭ in place of ⊨⁻.
+
+[FIX]: add the clause for lambda abstraction here.
 
 #### Extensional Connectives
 
@@ -276,9 +278,9 @@ FIX: note that it is derivable that M, τ, x, a ⊨⁺ A iff it is not the case 
 
 #### Extended Tense Operators: Since and Until
 
-FIX: Use ▷ in place of U and the reverse of ▷ in place of S.
+[FIX]: Use ▷ in place of U and the reverse of ▷ in place of S.
 
-FIX: Also, the variable assignments are missing below. Fix this throughout the Causal Layer.
+[FIX]: Also, the variable assignments are missing below. Fix this throughout the Causal Layer.
 
 | Operator | Truth Condition |
 |----------|-----------------|
@@ -302,11 +304,13 @@ Where:
 
 **Intuitive reading**: A counterfactual "if φ were the case, then C" is true at world τ and time x iff the consequent C is true in any world β at x where β(x) is the result of minimally changing τ(x) to make the antecedent φ true.
 
+[FIX]: use a right-arrow instead of ▷ for imposition to avoid conflict with the until operator above.
+
 **Imposition notation**: We write t ▷_w w' ("imposing t on w yields w'") iff there exists maximal t-compatible part s ∈ w_t where s.t ⊑ w'.
 
 #### Store and Recall Operators (↑, ↓)
 
-FIX: include v⃗ among the contextual parameters throughout the Causal Layer
+[FIX]: include v⃗ among the contextual parameters throughout the Causal Layer
 
 For cross-temporal reference within counterfactual evaluation, the context is extended with a vector v⃗ = ⟨v₁, v₂, ...⟩ of stored times:
 
@@ -345,7 +349,9 @@ Different temporal structures yield different valid principles. The framework do
 
 ### Logical Consequence (Causal)
 
-> Γ ⊨ A iff for any model M, world-history τ ∈ H_F, time x ∈ dom(τ), and assignment σ: if M, τ, x ⊨ B for all B ∈ Γ, then M, τ, x ⊨ A
+[FIX]: use 'a' with a bar above it instead of σ consistently everywhere for variable assignments.
+
+> Γ ⊨ A iff for any model M, world-history τ ∈ H_F, time x ∈ dom(τ), and assignment σ: if M, τ, x, σ ⊨ B for all B ∈ Γ, then M, τ, x, σ ⊨ A
 
 ### Counterfactual Logic Axiom Schemata
 
