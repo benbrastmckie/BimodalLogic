@@ -116,7 +116,7 @@ The existing `state-lookup.md` already documents optimal jq patterns. This imple
 ### Phase 4: Update /implement Command
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Replace generic state.json read with explicit jq lookup

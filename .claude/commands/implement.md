@@ -23,10 +23,24 @@ task_number = first token from $ARGUMENTS
 force_mode = "--force" in $ARGUMENTS
 ```
 
-Read .claude/specs/state.json:
-- Find task by project_number
-- Extract: language, status, project_name, description
-- If not found: Error "Task {N} not found"
+**Lookup task via jq** (see skill-status-sync for patterns):
+```bash
+task_data=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+  .claude/specs/state.json)
+
+# Validate task exists
+if [ -z "$task_data" ]; then
+  echo "Error: Task $task_number not found in state.json"
+  exit 1
+fi
+
+# Extract fields
+language=$(echo "$task_data" | jq -r '.language // "general"')
+status=$(echo "$task_data" | jq -r '.status')
+project_name=$(echo "$task_data" | jq -r '.project_name')
+description=$(echo "$task_data" | jq -r '.description // ""')
+```
 
 ### 2. Validate Status
 
@@ -59,9 +73,14 @@ If all phases [COMPLETED]: Task already done
 
 ### 5. Update Status to IMPLEMENTING
 
-Update both files atomically:
-1. state.json: status = "implementing"
-2. TODO.md: Status: [IMPLEMENTING]
+**Invoke skill-status-sync** for atomic update:
+- task_number: {N}
+- operation: status_update
+- new_status: implementing
+
+This updates both files atomically:
+1. state.json: status = "implementing" (via jq)
+2. TODO.md: Status: [IMPLEMENTING] (via grep + Edit)
 
 ### 6. Execute Phases
 
@@ -119,8 +138,16 @@ git commit -m "task {N} phase {P}: {phase_name}"
 After all phases done:
 
 1. **Update Status to COMPLETED**
-   - state.json: status = "completed"
-   - TODO.md: Status: [COMPLETED], add Completed date
+   **Invoke skill-status-sync** for atomic update:
+   - task_number: {N}
+   - operation: status_update
+   - new_status: completed
+   - artifact_path: .claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md
+   - artifact_type: summary
+
+   This updates both files atomically:
+   - state.json: status = "completed", completed = ISO_DATE (via jq)
+   - TODO.md: Status: [COMPLETED], add Completed date (via grep + Edit)
 
 2. **Create Summary**
    Write to `.claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
