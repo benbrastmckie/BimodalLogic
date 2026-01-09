@@ -142,7 +142,7 @@ The existing `state-lookup.md` already documents optimal jq patterns. This imple
 ### Phase 5: Update /revise Command
 
 **Estimated effort**: 20 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add explicit jq lookup pattern

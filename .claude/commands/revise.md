@@ -23,10 +23,23 @@ task_number = first token from $ARGUMENTS
 revision_reason = remaining tokens (optional)
 ```
 
-Read .claude/specs/state.json:
-- Find task by project_number
-- Extract: language, status, project_name
-- If not found: Error "Task {N} not found"
+**Lookup task via jq** (see skill-status-sync for patterns):
+```bash
+task_data=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+  .claude/specs/state.json)
+
+# Validate task exists
+if [ -z "$task_data" ]; then
+  echo "Error: Task $task_number not found in state.json"
+  exit 1
+fi
+
+# Extract fields
+language=$(echo "$task_data" | jq -r '.language // "general"')
+status=$(echo "$task_data" | jq -r '.status')
+project_name=$(echo "$task_data" | jq -r '.project_name')
+```
 
 ### 2. Validate Status
 
@@ -110,14 +123,17 @@ Write to `.claude/specs/{N}_{SLUG}/plans/implementation-{NEW_VERSION}.md`:
 
 ### 6. Update Status
 
-Update both files atomically:
-1. state.json:
-   - status = "planned" (reset for re-implementation)
-   - plan_version = NEW_VERSION
-   - artifacts += [{path, type: "plan"}]
-2. TODO.md:
-   - Status: [PLANNED]
-   - Update Plan link to new version
+**Invoke skill-status-sync** for atomic update:
+- task_number: {N}
+- operation: status_update
+- new_status: planned (reset for re-implementation)
+- artifact_path: .claude/specs/{N}_{SLUG}/plans/implementation-{NEW_VERSION}.md
+- artifact_type: plan
+- plan_version: {NEW_VERSION}
+
+This updates both files atomically:
+1. state.json: status = "planned", plan_version = NEW_VERSION, artifacts += [{path, type}] (via jq)
+2. TODO.md: Status: [PLANNED], update Plan link (via grep + Edit)
 
 ### 7. Git Commit
 
