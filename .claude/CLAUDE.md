@@ -170,9 +170,21 @@ errors: create fix plan for {N} errors
 
 ## Rules References
 
-- @.claude/rules/state-management.md - Task state patterns
+Core rules (automatically applied based on file paths):
+- @.claude/rules/state-management.md - Task state patterns (paths: .opencode/specs/**)
 - @.claude/rules/git-workflow.md - Commit conventions
-- @.claude/rules/lean4.md - Lean development patterns
+- @.claude/rules/lean4.md - Lean development patterns (paths: **/*.lean)
+- @.claude/rules/error-handling.md - Error recovery patterns (paths: .opencode/**)
+- @.claude/rules/artifact-formats.md - Report/plan formats (paths: .opencode/specs/**)
+- @.claude/rules/workflows.md - Command lifecycle patterns (paths: .opencode/**)
+
+## Project Context Imports
+
+Domain knowledge (load as needed):
+- @.opencode/context/project/lean4/tools/mcp-tools-guide.md - Lean MCP tools reference
+- @.opencode/context/project/lean4/patterns/tactic-patterns.md - Lean tactic usage
+- @.opencode/context/project/logic/domain/kripke-semantics-overview.md - Modal logic semantics
+- @.opencode/context/project/repo/project-overview.md - Project structure
 
 ## Error Handling
 
