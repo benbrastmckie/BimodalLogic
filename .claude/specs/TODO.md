@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-09T12:00:00Z
-  next_project_number: 348
+next_project_number: 349
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -70,6 +70,7 @@ technical_debt:
 
 **Research Artifacts**:
   - Research Report: [.claude/specs/347_logos_layer_documentation_revision/reports/research-001.md]
+  - Research Report (Semantic Clauses): [.claude/specs/347_logos_layer_documentation_revision/reports/research-002.md]
 
 **Description**: Revise LAYER_EXTENSIONS.md using the FIX tags to incorporate the new Logos layer organization: Constitutive Layer, Causal Layer, Epistemic Layer, Normative Layer, and Agential Layer. Update GLOSSARY.md to match this new organization. Create a new RECURSIVE_SEMANTICS.md document providing full details for the hyperintensional semantics for the Constitutive Layer and intensional semantics for all following layers. Use [DETAILS] tags where more details are needed and [QUESTION: ...] tags for uncertain content requiring user review.
 

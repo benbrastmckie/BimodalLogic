@@ -20,21 +20,30 @@ This skill activates when:
 
 ### Phase 1: Prepare
 
-1. **Read Current State**
-   ```
-   Read .claude/specs/state.json
-   Read .claude/specs/TODO.md
+1. **Read Current State** (using jq/grep for efficiency)
+   ```bash
+   # Read task from state.json via jq (fast, ~12ms)
+   task_data=$(jq -r --arg num "$task_number" \
+     '.active_projects[] | select(.project_number == ($num | tonumber))' \
+     .claude/specs/state.json)
+
+   # Read next_project_number for create operations
+   next_num=$(jq -r '.next_project_number' .claude/specs/state.json)
+
+   # Find task section in TODO.md via grep
+   task_line=$(grep -n "^### ${task_number}\." .claude/specs/TODO.md | cut -d: -f1)
    ```
 
 2. **Validate Task Exists**
-   - Find task in state.json by project_number
-   - Find task in TODO.md by number prefix
+   - Check task_data is not empty (state.json)
+   - Check task_line is found (TODO.md)
    - If not in both: Error
 
 3. **Prepare Updates**
    - Calculate new status
-   - Prepare updated state.json content
-   - Prepare updated TODO.md content
+   - Prepare jq update for state.json
+   - Prepare Edit for TODO.md task entry
+   - For create operations: also prepare frontmatter update
    - Validate both are consistent
 
 ### Phase 2: Commit
@@ -70,6 +79,31 @@ If any write fails:
 | Complete implement | implementing | completed |
 | Block task | any | blocked |
 | Abandon task | any | abandoned |
+
+## Task Creation (Special Case)
+
+When creating a new task, BOTH files require additional updates beyond task entries:
+
+### state.json Updates
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  '.next_project_number = ($next_num | tonumber) + 1 |
+   .active_projects = [{new_task_object}] + .active_projects' \
+  .claude/specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json .claude/specs/state.json
+```
+
+### TODO.md Updates (TWO parts)
+1. **Frontmatter**: Update `next_project_number` in YAML frontmatter
+   ```bash
+   # Use sed or Edit to update frontmatter
+   sed -i 's/^next_project_number: [0-9]*/next_project_number: NEW_NUM/' \
+     .claude/specs/TODO.md
+   ```
+
+2. **Task Entry**: Add entry under appropriate priority section
+
+**CRITICAL**: `next_project_number` MUST match in both files after creation.
 
 ## Update Formats
 

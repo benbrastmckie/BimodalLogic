@@ -49,32 +49,44 @@ When $ARGUMENTS contains a description (no flags):
    mkdir -p .claude/specs/{NUMBER}_{SLUG}
    ```
 
-6. **Update state.json**:
-   - Increment next_project_number
-   - Add to active_projects array:
-     ```json
-     {
-       "project_number": N,
-       "project_name": "slug",
-       "status": "not_started",
-       "language": "detected",
-       "priority": "medium",
-       "created": "ISO_TIMESTAMP",
-       "last_updated": "ISO_TIMESTAMP"
-     }
-     ```
+6. **Update state.json** (via jq):
+   ```bash
+   jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+     '.next_project_number = {NEW_NUMBER} |
+      .active_projects = [{
+        "project_number": {N},
+        "project_name": "slug",
+        "status": "not_started",
+        "language": "detected",
+        "priority": "medium",
+        "created": $ts,
+        "last_updated": $ts
+      }] + .active_projects' \
+     .claude/specs/state.json > /tmp/state.json && \
+     mv /tmp/state.json .claude/specs/state.json
+   ```
 
-7. **Update TODO.md**:
-   - Add entry under appropriate priority section:
-     ```markdown
-     ### {N}. {Title}
-     - **Effort**: {estimate}
-     - **Status**: [NOT STARTED]
-     - **Priority**: {priority}
-     - **Language**: {language}
+7. **Update TODO.md** (TWO parts - frontmatter AND entry):
 
-     **Description**: {description}
-     ```
+   **Part A - Update frontmatter** (increment next_project_number):
+   ```bash
+   # Find and update next_project_number in YAML frontmatter
+   sed -i 's/^next_project_number: [0-9]*/next_project_number: {NEW_NUMBER}/' \
+     .claude/specs/TODO.md
+   ```
+
+   **Part B - Add task entry** under appropriate priority section:
+   ```markdown
+   ### {N}. {Title}
+   - **Effort**: {estimate}
+   - **Status**: [NOT STARTED]
+   - **Priority**: {priority}
+   - **Language**: {language}
+
+   **Description**: {description}
+   ```
+
+   **CRITICAL**: Both state.json AND TODO.md frontmatter MUST have matching next_project_number values.
 
 8. **Git commit**:
    ```
