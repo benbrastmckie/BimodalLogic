@@ -109,17 +109,19 @@ technical_debt:
 
 
 ### 317. Implement BFS variant for proof search completeness (Phase 3)
- **Effort**: 10-15 hours
- **Status**: [PLANNING]
- **Researched**: 2026-01-07
- **Planned**: 2026-01-07
- **Priority**: Medium
- **Language**: lean
- **Blocking**: None
- **Dependencies**: None
+- **Effort**: 10-15 hours
+- **Status**: [PLANNED]
+- **Researched**: 2026-01-07
+- **Planned**: 2026-01-07
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
 
 **Research Artifacts**:
   - Research Report: [.claude/specs/317_bfs_variant_phase3/reports/research-001.md]
+
+**Plan**: [.claude/specs/317_bfs_variant_phase3/plans/implementation-001.md]
 
 **Description**: Implement Phase 3 of task 260: BFS Variant. Add breadth-first search variant to ProofSearch.lean to ensure completeness guarantees. Current implementation uses bounded DFS which may miss proofs. BFS variant will explore search space level-by-level, guaranteeing shortest proofs are found first.
 

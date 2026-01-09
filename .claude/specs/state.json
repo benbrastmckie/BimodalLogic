@@ -470,8 +470,8 @@
       "project_number": 317,
       "project_name": "implement_bfs_variant_for_proof_search_completeness_phase_3",
       "type": "feature",
-      "phase": "planning_completed",
-      "status": "planning",
+      "phase": "planned",
+      "status": "planned",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T08:34:20.462436Z",
@@ -481,12 +481,17 @@
       "research_completed": "2026-01-07",
       "artifacts": [
         {
+          "type": "plan",
+          "path": ".claude/specs/317_bfs_variant_phase3/plans/implementation-001.md"
+        },
+        {
           "type": "research",
           "path": ".claude/specs/317_bfs_variant_phase3/reports/research-001.md",
           "summary": "Comprehensive 1403-line research report analyzing BFS implementation strategies, completeness guarantees, and integration approaches for Lean 4 proof search"
         }
       ],
-      "planning_completed": "2026-01-07"
+      "planning_completed": "2026-01-07",
+      "plan_version": "001"
     },
     {
       "project_number": 318,
