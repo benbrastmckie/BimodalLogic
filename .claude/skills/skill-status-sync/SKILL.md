@@ -1,13 +1,13 @@
 ---
 name: skill-status-sync
 description: Atomically update task status across TODO.md and state.json. Invoke when task status changes.
-allowed-tools: Read, Write, Edit
+allowed-tools: Read, Write, Edit, Bash
 context: fork
 ---
 
 # Status Sync Skill
 
-Atomic status updates across TODO.md and state.json.
+Atomic status updates across TODO.md and state.json using efficient jq/grep patterns.
 
 ## Trigger Conditions
 
@@ -15,22 +15,228 @@ This skill activates when:
 - Task status needs to change
 - Artifacts are added to a task
 - Task metadata needs updating
+- New task is created
+- Task is archived/abandoned
+
+---
+
+## Lookup Patterns (Read Operations)
+
+### Single Task Lookup by Number
+
+```bash
+# Get full task object from state.json (~5-10ms)
+task_data=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+  .claude/specs/state.json)
+
+# Validate task exists
+if [ -z "$task_data" ]; then
+  echo "Error: Task $task_number not found in state.json"
+  exit 1
+fi
+```
+
+### Field Extraction (from task_data)
+
+```bash
+# Extract all fields in one pass (fast, ~2-3ms each)
+language=$(echo "$task_data" | jq -r '.language // "general"')
+status=$(echo "$task_data" | jq -r '.status')
+project_name=$(echo "$task_data" | jq -r '.project_name')
+description=$(echo "$task_data" | jq -r '.description // ""')
+priority=$(echo "$task_data" | jq -r '.priority')
+effort=$(echo "$task_data" | jq -r '.effort // ""')
+```
+
+### Status Validation
+
+```bash
+# Check if status allows operation
+if [ "$status" = "completed" ]; then
+  echo "Error: Task $task_number is already completed"
+  exit 1
+fi
+
+if [ "$status" = "abandoned" ]; then
+  echo "Error: Task $task_number is abandoned. Use /task --recover first"
+  exit 1
+fi
+```
+
+### next_project_number Retrieval
+
+```bash
+# Get next available task number
+next_num=$(jq -r '.next_project_number' .claude/specs/state.json)
+```
+
+### Fast Existence Check
+
+```bash
+# Returns project_number or empty (fastest, ~5ms)
+exists=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber)) | .project_number' \
+  .claude/specs/state.json)
+
+if [ -z "$exists" ]; then
+  echo "Error: Task $task_number not found"
+  exit 1
+fi
+```
+
+---
+
+## TODO.md Patterns (grep-based)
+
+### Task Section Location
+
+```bash
+# Find line number where task entry starts
+task_line=$(grep -n "^### ${task_number}\." .claude/specs/TODO.md | cut -d: -f1)
+
+if [ -z "$task_line" ]; then
+  echo "Error: Task $task_number not found in TODO.md"
+  exit 1
+fi
+```
+
+### Read Task Section (for editing)
+
+```bash
+# Read task entry (header + following lines until next ### or ---)
+task_section=$(sed -n "${task_line},/^###\|^---/p" .claude/specs/TODO.md | head -n -1)
+```
+
+### Frontmatter Field Extraction
+
+```bash
+# Get next_project_number from TODO.md frontmatter
+todo_next_num=$(grep "^next_project_number:" .claude/specs/TODO.md | awk '{print $2}')
+```
+
+### Priority Section Location
+
+```bash
+# Find priority section headers
+high_line=$(grep -n "^## High Priority" .claude/specs/TODO.md | cut -d: -f1)
+medium_line=$(grep -n "^## Medium Priority" .claude/specs/TODO.md | cut -d: -f1)
+low_line=$(grep -n "^## Low Priority" .claude/specs/TODO.md | cut -d: -f1)
+```
+
+---
+
+## Update Patterns (Write Operations)
+
+### Status Update (Atomic)
+
+```bash
+# Update task status in state.json
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg status "$new_status" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: $status,
+    last_updated: $ts
+  }' .claude/specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json .claude/specs/state.json
+```
+
+### Artifact Addition
+
+```bash
+# Add artifact to task in state.json
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg path "$artifact_path" \
+   --arg type "$artifact_type" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    last_updated: $ts,
+    artifacts: ((.artifacts // []) + [{"path": $path, "type": $type}])
+  }' .claude/specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json .claude/specs/state.json
+```
+
+### Task Creation
+
+```bash
+# Create new task in state.json (increments next_project_number)
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg name "$project_name" \
+   --arg desc "$description" \
+   --arg lang "$language" \
+   --arg prio "$priority" \
+   --arg effort "$effort" \
+  '.next_project_number as $num |
+   .next_project_number = ($num + 1) |
+   .active_projects = [{
+     project_number: $num,
+     project_name: $name,
+     type: "feature",
+     phase: "not_started",
+     status: "not_started",
+     priority: $prio,
+     language: $lang,
+     created: $ts,
+     last_updated: $ts,
+     effort: $effort,
+     description: $desc
+   }] + .active_projects' \
+  .claude/specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json .claude/specs/state.json
+```
+
+### Task Archival
+
+```bash
+# Move task from active_projects (removes from active list)
+# Note: Full archival also requires updating archive/state.json
+jq '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: "abandoned",
+    abandoned: "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+  }' .claude/specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json .claude/specs/state.json
+```
+
+---
+
+## Frontmatter Sync (Critical)
+
+When creating tasks, `next_project_number` MUST be updated in BOTH files:
+
+### state.json Update
+Handled by the Task Creation jq pattern above (automatically increments).
+
+### TODO.md Frontmatter Update
+
+```bash
+# Update next_project_number in YAML frontmatter
+new_num=$((current_num + 1))
+sed -i "s/^next_project_number: [0-9]*/next_project_number: $new_num/" \
+  .claude/specs/TODO.md
+```
+
+### Consistency Verification
+
+```bash
+# Verify both files have matching next_project_number
+state_num=$(jq -r '.next_project_number' .claude/specs/state.json)
+todo_num=$(grep "^next_project_number:" .claude/specs/TODO.md | awk '{print $2}')
+
+if [ "$state_num" != "$todo_num" ]; then
+  echo "ERROR: next_project_number mismatch - state.json: $state_num, TODO.md: $todo_num"
+  exit 1
+fi
+```
+
+---
 
 ## Two-Phase Commit Pattern
 
 ### Phase 1: Prepare
 
-1. **Read Current State** (using jq/grep for efficiency)
+1. **Read Current State**
    ```bash
-   # Read task from state.json via jq (fast, ~12ms)
    task_data=$(jq -r --arg num "$task_number" \
      '.active_projects[] | select(.project_number == ($num | tonumber))' \
      .claude/specs/state.json)
-
-   # Read next_project_number for create operations
-   next_num=$(jq -r '.next_project_number' .claude/specs/state.json)
-
-   # Find task section in TODO.md via grep
    task_line=$(grep -n "^### ${task_number}\." .claude/specs/TODO.md | cut -d: -f1)
    ```
 
@@ -41,24 +247,15 @@ This skill activates when:
 
 3. **Prepare Updates**
    - Calculate new status
-   - Prepare jq update for state.json
+   - Prepare jq command for state.json
    - Prepare Edit for TODO.md task entry
    - For create operations: also prepare frontmatter update
-   - Validate both are consistent
 
 ### Phase 2: Commit
 
-1. **Write state.json First**
-   - Machine state is source of truth
-   - Faster to query and validate
-
-2. **Write TODO.md Second**
-   - User-facing representation
-   - May have formatting variations
-
-3. **Verify Both Updated**
-   - Re-read both files
-   - Confirm changes applied
+1. **Write state.json First** (machine state is source of truth)
+2. **Write TODO.md Second** (user-facing representation)
+3. **Verify Both Updated** (re-read and confirm)
 
 ### Rollback (if needed)
 
@@ -67,86 +264,49 @@ If any write fails:
 2. Attempt to restore original state
 3. Return error with details
 
+---
+
 ## Status Mapping
 
-| Operation | Old Status | New Status |
-|-----------|------------|------------|
-| Start research | not_started | researching |
-| Complete research | researching | researched |
-| Start planning | researched | planning |
-| Complete planning | planning | planned |
-| Start implement | planned | implementing |
-| Complete implement | implementing | completed |
-| Block task | any | blocked |
-| Abandon task | any | abandoned |
+| Operation | Old Status | New Status | state.json field |
+|-----------|------------|------------|------------------|
+| Start research | not_started | researching | status |
+| Complete research | researching | researched | status |
+| Start planning | researched/not_started | planning | status |
+| Complete planning | planning | planned | status, plan_version |
+| Start implement | planned | implementing | status |
+| Complete implement | implementing | completed | status, completed |
+| Block task | any | blocked | status, blocked_reason |
+| Abandon task | any | abandoned | status, abandoned |
 
-## Task Creation (Special Case)
-
-When creating a new task, BOTH files require additional updates beyond task entries:
-
-### state.json Updates
-```bash
-jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-  '.next_project_number = ($next_num | tonumber) + 1 |
-   .active_projects = [{new_task_object}] + .active_projects' \
-  .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
-```
-
-### TODO.md Updates (TWO parts)
-1. **Frontmatter**: Update `next_project_number` in YAML frontmatter
-   ```bash
-   # Use sed or Edit to update frontmatter
-   sed -i 's/^next_project_number: [0-9]*/next_project_number: NEW_NUM/' \
-     .claude/specs/TODO.md
-   ```
-
-2. **Task Entry**: Add entry under appropriate priority section
-
-**CRITICAL**: `next_project_number` MUST match in both files after creation.
-
-## Update Formats
-
-### state.json Update
-```json
-{
-  "project_number": N,
-  "status": "new_status",
-  "last_updated": "ISO_TIMESTAMP",
-  "artifacts": [
-    {"path": "...", "type": "research|plan|summary"}
-  ]
-}
-```
-
-### TODO.md Update
-```markdown
-### {N}. {Title}
-- **Status**: [{NEW_STATUS}]
-- **{Artifact}**: [link](path)
-```
+---
 
 ## Execution Flow
 
 ```
 1. Receive update request:
-   - task_number
-   - new_status
-   - artifacts (optional)
-   - metadata (optional)
+   - task_number (required)
+   - operation: status_update | artifact_add | task_create | task_archive
+   - new_status (for status_update)
+   - artifact_path, artifact_type (for artifact_add)
+   - task metadata (for task_create)
 
 2. Phase 1 - Prepare:
-   - Read both files
-   - Validate task exists
-   - Prepare updates
+   - Use jq to read task from state.json
+   - Use grep to locate task in TODO.md
+   - Validate task exists (or doesn't for create)
+   - Prepare update commands
 
 3. Phase 2 - Commit:
-   - Write state.json
-   - Write TODO.md
+   - Execute jq update on state.json
+   - Execute Edit on TODO.md
+   - For creates: also update frontmatter
    - Verify success
 
 4. Return result
 ```
+
+---
 
 ## Return Format
 
@@ -163,6 +323,8 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   ]
 }
 ```
+
+---
 
 ## Error Handling
 
@@ -201,3 +363,33 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   "recovery": "Run /task --sync to reconcile"
 }
 ```
+
+### Frontmatter Mismatch
+```json
+{
+  "status": "failed",
+  "error": "next_project_number mismatch between files",
+  "recovery": "Manually sync or run /task --sync"
+}
+```
+
+---
+
+## Integration Notes
+
+Command files should use this skill for ALL status updates:
+
+```
+# In command file documentation:
+### Update Status
+Invoke skill-status-sync with:
+- task_number: {N}
+- operation: status_update
+- new_status: {target_status}
+```
+
+This ensures:
+- Atomic updates across both files
+- Consistent jq/grep patterns
+- Proper error handling
+- Frontmatter sync for creates
