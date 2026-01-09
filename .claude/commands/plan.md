@@ -21,10 +21,24 @@ Create a phased implementation plan for a task.
 task_number = $ARGUMENTS
 ```
 
-Read .claude/specs/state.json:
-- Find task by project_number
-- Extract: language, status, project_name, description
-- If not found: Error "Task {N} not found"
+**Lookup task via jq** (see skill-status-sync for patterns):
+```bash
+task_data=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+  .claude/specs/state.json)
+
+# Validate task exists
+if [ -z "$task_data" ]; then
+  echo "Error: Task $task_number not found in state.json"
+  exit 1
+fi
+
+# Extract fields
+language=$(echo "$task_data" | jq -r '.language // "general"')
+status=$(echo "$task_data" | jq -r '.status')
+project_name=$(echo "$task_data" | jq -r '.project_name')
+description=$(echo "$task_data" | jq -r '.description // ""')
+```
 
 ### 2. Validate Status
 
@@ -43,9 +57,14 @@ Allowed: not_started, researched, partial
 
 ### 4. Update Status to PLANNING
 
-Update both files atomically:
-1. state.json: status = "planning"
-2. TODO.md: Status: [PLANNING]
+**Invoke skill-status-sync** for atomic update:
+- task_number: {N}
+- operation: status_update
+- new_status: planning
+
+This updates both files atomically:
+1. state.json: status = "planning" (via jq)
+2. TODO.md: Status: [PLANNING] (via grep + Edit)
 
 ### 5. Create Implementation Plan
 
@@ -132,14 +151,17 @@ Write to `.claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md`:
 
 ### 6. Update Status to PLANNED
 
-Update both files atomically:
-1. state.json:
-   - status = "planned"
-   - plan_version = NNN
-   - artifacts += [{path, type: "plan"}]
-2. TODO.md:
-   - Status: [PLANNED]
-   - Add Plan link
+**Invoke skill-status-sync** for atomic update:
+- task_number: {N}
+- operation: status_update
+- new_status: planned
+- artifact_path: .claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md
+- artifact_type: plan
+- plan_version: {NNN}
+
+This updates both files atomically:
+1. state.json: status = "planned", plan_version = NNN, artifacts += [{path, type}] (via jq)
+2. TODO.md: Status: [PLANNED], add Plan link (via grep + Edit)
 
 ### 7. Git Commit
 
