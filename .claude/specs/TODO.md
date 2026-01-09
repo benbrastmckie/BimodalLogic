@@ -32,12 +32,15 @@ technical_debt:
 
 ### 348. Implement jq-based state lookup for agent commands
 - **Effort**: 4-6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Started**: 2026-01-09
+- **Planned**: 2026-01-09
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
+
+**Plan**: [.claude/specs/348_jq_based_state_lookup_for_commands/plans/implementation-001.md]
 
 **Description**: Enhance claude code agent system to use jq for efficient state.json lookups by task number in /research, /plan, /revise, /implement, and /task commands. Instead of reading entire state.json files which can be extremely long, use jq to quickly look up relevant task data. From the task lookup in state.json, use grep to find relevant TODO.md sections for synchronized updates via skill-status-sync skill.
 

@@ -20,13 +20,14 @@
       "project_name": "jq_based_state_lookup_for_commands",
       "type": "feature",
       "phase": "not_started",
-      "status": "planning",
+      "status": "planned",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-09T13:19:56Z",
-      "last_updated": "2026-01-09T13:39:05Z",
+      "last_updated": "2026-01-09T13:41:02Z",
       "effort": "4-6 hours",
-      "description": "Enhance claude code agent system to use jq for efficient state.json lookups by task number in /research, /plan, /revise, /implement, and /task commands. From task lookup, use grep to find relevant TODO.md sections for synchronized updates via skill-status-sync."
+      "description": "Enhance claude code agent system to use jq for efficient state.json lookups by task number in /research, /plan, /revise, /implement, and /task commands. From task lookup, use grep to find relevant TODO.md sections for synchronized updates via skill-status-sync.",
+      "plan_version": "001"
     },
     {
       "project_number": 132,
