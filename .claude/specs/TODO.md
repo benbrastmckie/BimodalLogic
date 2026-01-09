@@ -183,7 +183,7 @@ technical_debt:
 
 ### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
 - **Effort**: 61-97 hours
-- **Status**: [REVISING]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-05
 - **Researched**: 2026-01-05
 - **Planned**: 2026-01-05
@@ -209,11 +209,16 @@ technical_debt:
 
 ### 349. Address all [FIX] tags in RECURSIVE_SEMANTICS.md documentation
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-09
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+
+**Research Artifacts**:
+  - Research Report: [.claude/specs/349_fix_recursive_semantics_documentation/reports/research-001.md]
+
 - **Files Affected**:
   - Documentation/Research/RECURSIVE_SEMANTICS.md
   - Documentation/Reference/GLOSSARY.md
@@ -361,7 +366,7 @@ technical_debt:
 
 ### 218. Fix lean-lsp-mcp integration and opencode module import errors
 **Effort**: 0.75 hours
-**Status**: [PLANNED]
+**Status**: [IMPLEMENTING]
 **Started**: 2025-12-28
 **Researched**: 2025-12-28
 **Priority**: High
@@ -399,7 +404,7 @@ CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client
 
 ### 291. Fix lean-research-agent to delegate status updates to status-sync-manager instead of direct file manipulation
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-04
 - **Researched**: 2026-01-04
 - **Priority**: High
@@ -437,7 +442,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ### 323. Fix /todo command to run markdown formatter after completion
 
 - **Effort**: TBD
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-05
 - **Planned**: 2026-01-07
 - **Priority**: Medium
@@ -488,7 +493,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 ### 257. Completeness Proofs
 
  **Effort**: 70-90 hours
- **Status**: [PLANNED]
+ **Status**: [IMPLEMENTING]
  **Priority**: Low
  **Language**: lean
  **Blocking**: Decidability
@@ -609,7 +614,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 264. Update Context References
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None

@@ -18,12 +18,12 @@
     {
       "project_number": 349,
       "project_name": "fix_recursive_semantics_documentation",
-      "status": "not_started",
+      "status": "researched",
       "language": "markdown",
       "priority": "medium",
       "effort": "4-6 hours",
       "created": "2026-01-09T17:59:23Z",
-      "last_updated": "2026-01-09T17:59:23Z"
+      "last_updated": "2026-01-09T18:05:08Z"
     },
     {
       "project_number": 132,
@@ -401,12 +401,12 @@
       "project_number": 315,
       "project_name": "research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction",
       "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementing",
+      "status": "implementing",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-05T08:34:20.462436Z",
-      "last_updated": "2026-01-05T19:00:00Z",
+      "last_updated": "2026-01-09",
       "effort": "61-97 hours",
       "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
       "started": "2026-01-05",
@@ -458,7 +458,8 @@
             "integrated_date": "2026-01-05"
           }
         ]
-      }
+      },
+      "implementing_started": "2026-01-09"
     },
     {
       "project_number": 316,
