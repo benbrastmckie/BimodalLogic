@@ -180,7 +180,7 @@ FIX: the Nullity constraint should be removed and instead we will have the defin
 | **Parthood (Left)** | If d ⊑ s and s ⇒_x t, then d ⇒_x r for some r ⊑ t |
 | **Parthood (Right)** | If r ⊑ t and s ⇒_x t, then d ⇒_x r for some d ⊑ s |
 
-
+FIX: add the containment constraints from section sub:Containment in /home/benjamin/Projects/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex to the constraints above
 
 ### State Modality Definitions
 

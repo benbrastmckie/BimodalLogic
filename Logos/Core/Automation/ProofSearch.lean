@@ -6,20 +6,52 @@ import Logos.Semantics
 /-!
 # Automated Proof Search
 
-This module implements bounded proof search for the TM bimodal logic system.
+This module implements automated proof search for the TM bimodal logic system,
+including both bounded depth-first search and iterative deepening variants.
 
 ## Main Functions
 
-- `bounded_search`: Depth-limited search for derivations
+- `search`: Unified search interface with configurable strategy (recommended)
+- `iddfs_search`: Iterative deepening DFS with completeness guarantees
+- `bounded_search`: Depth-limited DFS (may miss deep proofs)
 - `search_with_heuristics`: Heuristic-guided proof search
-- `proof_cache`: Memoization for repeated subgoals
+- `search_with_cache`: Cached search with memoization
 
-## Search Strategy
+## Search Strategies
 
-The proof search uses bounded depth-first search with:
-1. **Depth bound**: Limit recursion to prevent infinite loops (default: 5)
-2. **Heuristics**: Prefer axioms over complex inference rules
-3. **Caching**: Store successful derivations for reuse
+### SearchStrategy.IDDFS (Default - Recommended)
+
+Iterative Deepening Depth-First Search (IDDFS) combines the completeness of BFS
+with the space efficiency of DFS by running depth-limited searches with
+increasing depth limits.
+
+**Properties**:
+- **Complete**: Guaranteed to find a proof if one exists (within maxDepth)
+- **Optimal**: Guaranteed to find the shortest proof (minimum depth)
+- **Space efficient**: O(d) space complexity where d = solution depth
+- **Time complexity**: O(b^d) where b = branching factor
+
+**Algorithm**:
+```
+IDDFS(goal, maxDepth):
+  for depth = 0 to maxDepth:
+    result = bounded_search(goal, depth)
+    if result = SUCCESS:
+      return SUCCESS (shortest proof found)
+  return FAILURE (no proof within maxDepth)
+```
+
+The overhead of re-exploring shallow depths is minimal (~11% for branching
+factor 10) because the deepest level dominates the search cost.
+
+### SearchStrategy.BoundedDFS
+
+Traditional depth-limited DFS. Faster for shallow proofs but may miss proofs
+beyond the depth limit. Not complete or optimal.
+
+### SearchStrategy.BestFirst (Future)
+
+Priority queue-based search with heuristics. Placeholder for task 318.
 
 ## Design Pattern
 
@@ -48,33 +80,54 @@ bounded_search(goal, depth):
   return None
 ```
 
+## Complexity Analysis
+
+| Strategy | Time | Space | Complete | Optimal |
+|----------|------|-------|----------|---------|
+| IDDFS | O(b^d) | O(d) | Yes | Yes |
+| BoundedDFS | O(b^d) | O(d) | No | No |
+| BestFirst | O(b^d) | O(b^d) | Yes | Depends |
+
+Where b = branching factor, d = depth of shallowest solution.
+
 ## Implementation Status
 
-**Phase 7 Infrastructure Only**: This module provides framework and documentation.
-Full implementation requires:
+**Current Status**: Core search algorithms implemented with boolean result.
+Returns `true` if derivation exists, `false` otherwise.
 
-1. Proof term construction in `Prop` type
-2. Backtracking search with state management
-3. Proof caching with hash-consing
-4. Heuristic evaluation functions
+**Implemented**:
+- ✓ Bounded DFS with heuristics and caching
+- ✓ Iterative deepening DFS (IDDFS) with completeness guarantees
+- ✓ SearchStrategy enum with unified interface
+- ✓ Visit limit enforcement
+- ✓ Search statistics tracking
 
-Estimated effort: 15-20 hours (part of 30-40 hour Phase 7 estimate).
+**Future Work**:
+- Proof term construction (blocked by Axiom Prop vs Type issue)
+- Best-first search with priority queue (task 318)
+- Expanded testing suite (task 319)
 
-## Example Usage (Planned)
+## Example Usage
 
 ```lean
--- Automatic derivation search
-example (p q : Formula) (h1 : ⊢ p.box) (h2 : ⊢ p.imp q) : Option (⊢ q.box) :=
-  bounded_search (q.box) [] 5
+-- Use IDDFS (default, complete and optimal)
+let (found, cache, visited, stats, visits) := search [] myFormula
 
--- With caching
-def my_cache : ProofCache := ProofCache.empty
-example : Option (⊢ some_theorem) :=
-  search_with_cache my_cache some_theorem 10
+-- Use bounded DFS for quick shallow search
+let (found, _, _, _, _) := search [] myFormula (.BoundedDFS 5)
+
+-- Use IDDFS with custom depth limit
+let (found, _, _, _, _) := search [] myFormula (.IDDFS 50)
+
+-- With custom visit limit and heuristic weights
+let weights := { axiomWeight := 0, mpBase := 3 : HeuristicWeights }
+let (found, _, _, _, _) := search [] myFormula (.IDDFS 100) 5000 weights
 ```
 
 ## References
 
+* Korf, R.E. (1985). Depth-first iterative-deepening: An optimal admissible
+  tree search. Artificial Intelligence, 27(1), 97-109.
 * Automated Theorem Proving: https://www.cs.cmu.edu/~fp/courses/atp/
 * LEAN Proof Search: Mathlib's `solve_by_elim` tactic
 -/
