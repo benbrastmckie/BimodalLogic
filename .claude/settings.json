@@ -8,6 +8,7 @@
       "Bash(mkdir *)",
       "Bash(cp *)",
       "Bash(mv *)",
+      "Bash(chmod +x *)",
       "Read",
       "Write",
       "Edit",
@@ -33,7 +34,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'FILE=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r \".file_path // empty\"); if [[ \"$FILE\" == *\".opencode/specs/state.json\"* ]] || [[ \"$FILE\" == *\".opencode/specs/TODO.md\"* ]]; then echo \"{\\\"decision\\\": \\\"allow\\\", \\\"reason\\\": \\\"State file write - sync validation will run post-write\\\"}\"; else echo \"{\\\"decision\\\": \\\"allow\\\"}\"; fi'"
+            "command": "bash -c 'FILE=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r \".file_path // empty\" 2>/dev/null); if [[ \"$FILE\" == *\"state.json\"* ]]; then echo \"{\\\"decision\\\": \\\"allow\\\", \\\"reason\\\": \\\"State file write\\\"}\"; else echo \"{\\\"decision\\\": \\\"allow\\\"}\"; fi'"
           }
         ]
       }
@@ -44,7 +45,29 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'FILE=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r \".file_path // empty\"); if [[ \"$FILE\" == *\".opencode/specs/state.json\"* ]] || [[ \"$FILE\" == *\".opencode/specs/TODO.md\"* ]]; then echo \"[StateSync] Updated: $FILE\"; fi'"
+            "command": "bash -c 'FILE=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r \".file_path // empty\" 2>/dev/null); if [[ \"$FILE\" == *\".opencode/specs/state.json\"* ]]; then bash .claude/hooks/validate-state-sync.sh 2>/dev/null || echo \"{\\\"decision\\\": \\\"allow\\\"}\"; else echo \"{\\\"decision\\\": \\\"allow\\\"}\"; fi'"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/log-session.sh 2>/dev/null || echo '{\"decision\": \"allow\"}'"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-command.sh 2>/dev/null || echo '{\"decision\": \"allow\"}'"
           }
         ]
       }
