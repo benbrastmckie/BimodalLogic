@@ -32,7 +32,7 @@ technical_debt:
 
 ### 348. Implement jq-based state lookup for agent commands
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-09
 - **Planned**: 2026-01-09
 - **Priority**: High
@@ -64,7 +64,7 @@ technical_debt:
 
 ### 347. Revise Logos layer documentation for new layer organization
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-09
 - **Researched**: 2026-01-09
 - **Planned**: 2026-01-09
