@@ -777,6 +777,10 @@
         {
           "path": ".claude/specs/347_logos_layer_documentation_revision/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/347_logos_layer_documentation_revision/reports/research-002.md",
+          "type": "research"
         }
       ],
       "description": "Revise LAYER_EXTENSIONS.md using FIX tags for new Logos layer organization (Constitutive, Causal, Epistemic, Normative, Agential). Update GLOSSARY.md to match. Create new RECURSIVE_SEMANTICS.md with full hyperintensional semantics for Constitutive Layer and intensional semantics for following layers. Use [DETAILS] and [QUESTION: ...] tags for uncertain content."
