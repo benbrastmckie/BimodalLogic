@@ -2,5 +2,36 @@
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
   "_last_updated": "2026-01-09T02:30:00Z",
-  "archived_projects": []
+  "archived_projects": [],
+  "completed_projects": [
+    {
+      "project_number": 342,
+      "project_name": "research_orchestrator_command_file_workflow_execution_mechanism",
+      "type": "research",
+      "phase": "researching",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-08T20:45:00Z",
+      "effort": "4-6 hours",
+      "description": "Research how the orchestrator should execute command file workflow_execution stages. Analyze current orchestrator delegation mechanism, identify why command file stages are not being executed, compare with OpenAgents architecture (tasks 240-247), and design solution for parsing and executing workflow_execution stages including stage sequencing, context passing, error handling, and rollback mechanisms.",
+      "started": "2026-01-08",
+      "abandoned": "2026-01-09T16:27:01Z"
+    },
+    {
+      "project_number": 342,
+      "project_name": "research_orchestrator_command_file_workflow_execution_mechanism",
+      "type": "research",
+      "phase": "researching",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-08T20:45:00Z",
+      "last_updated": "2026-01-08T00:00:00Z",
+      "effort": "4-6 hours",
+      "description": "Research how the orchestrator should execute command file workflow_execution stages. Analyze current orchestrator delegation mechanism, identify why command file stages are not being executed, compare with OpenAgents architecture (tasks 240-247), and design solution for parsing and executing workflow_execution stages including stage sequencing, context passing, error handling, and rollback mechanisms.",
+      "started": "2026-01-08",
+      "abandoned": "2026-01-09T16:26:39Z"
+    }
+  ]
 }

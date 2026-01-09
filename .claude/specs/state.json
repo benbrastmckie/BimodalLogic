@@ -687,20 +687,6 @@
       "plan_path": ".claude/specs/341_create_deprecation_policy_and_migration_guide/plans/implementation-001.md"
     },
     {
-      "project_number": 342,
-      "project_name": "research_orchestrator_command_file_workflow_execution_mechanism",
-      "type": "research",
-      "phase": "researching",
-      "status": "in_progress",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-08T20:45:00Z",
-      "last_updated": "2026-01-08T00:00:00Z",
-      "effort": "4-6 hours",
-      "description": "Research how the orchestrator should execute command file workflow_execution stages. Analyze current orchestrator delegation mechanism, identify why command file stages are not being executed, compare with OpenAgents architecture (tasks 240-247), and design solution for parsing and executing workflow_execution stages including stage sequencing, context passing, error handling, and rollback mechanisms.",
-      "started": "2026-01-08"
-    },
-    {
       "project_number": 343,
       "project_name": "design_command_file_workflow_execution_architecture",
       "type": "design",
