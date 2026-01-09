@@ -32,7 +32,8 @@ technical_debt:
 
 ### 348. Implement jq-based state lookup for agent commands
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
+- **Started**: 2026-01-09
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
@@ -60,9 +61,10 @@ technical_debt:
 
 ### 347. Revise Logos layer documentation for new layer organization
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2026-01-09
 - **Researched**: 2026-01-09
+- **Planned**: 2026-01-09
 - **Priority**: High
 - **Language**: general
 - **Blocking**: None
@@ -71,6 +73,8 @@ technical_debt:
 **Research Artifacts**:
   - Research Report: [.claude/specs/347_logos_layer_documentation_revision/reports/research-001.md]
   - Research Report (Semantic Clauses): [.claude/specs/347_logos_layer_documentation_revision/reports/research-002.md]
+
+**Plan**: [.claude/specs/347_logos_layer_documentation_revision/plans/implementation-001.md]
 
 **Description**: Revise LAYER_EXTENSIONS.md using the FIX tags to incorporate the new Logos layer organization: Constitutive Layer, Causal Layer, Epistemic Layer, Normative Layer, and Agential Layer. Update GLOSSARY.md to match this new organization. Create a new RECURSIVE_SEMANTICS.md document providing full details for the hyperintensional semantics for the Constitutive Layer and intensional semantics for all following layers. Use [DETAILS] tags where more details are needed and [QUESTION: ...] tags for uncertain content requiring user review.
 
