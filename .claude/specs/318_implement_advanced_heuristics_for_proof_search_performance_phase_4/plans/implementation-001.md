@@ -44,7 +44,7 @@ The implementation is structured in 5 phases, each targeting 2-4 hours of work, 
 
 ---
 
-## Phase 1: Implement Sorting in orderSubgoalsByScore [NOT STARTED]
+## Phase 1: Implement Sorting in orderSubgoalsByScore [COMPLETED]
 
 **Goal**: Fix the critical gap - implement proper sorting to enable heuristic-guided search
 
@@ -89,7 +89,7 @@ The implementation is structured in 5 phases, each targeting 2-4 hours of work, 
 
 ---
 
-## Phase 2: Add Formula Complexity Metrics [NOT STARTED]
+## Phase 2: Add Formula Complexity Metrics [COMPLETED]
 
 **Goal**: Add `modalDepth`, `temporalDepth`, `countImplications` metrics to Formula.lean for structure analysis
 
@@ -141,7 +141,7 @@ The implementation is structured in 5 phases, each targeting 2-4 hours of work, 
 
 ---
 
-## Phase 3: Implement Domain-Specific Heuristics [NOT STARTED]
+## Phase 3: Implement Domain-Specific Heuristics [COMPLETED]
 
 **Goal**: Add modal-specific and temporal-specific heuristics to prioritize matching strategies
 
@@ -199,7 +199,7 @@ The implementation is structured in 5 phases, each targeting 2-4 hours of work, 
 
 ---
 
-## Phase 4: Tune Heuristic Weights [NOT STARTED]
+## Phase 4: Tune Heuristic Weights [IN PROGRESS]
 
 **Goal**: Empirically tune heuristic weights for optimal performance on benchmark suite
 

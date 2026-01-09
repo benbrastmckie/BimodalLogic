@@ -357,6 +357,67 @@ This function applies the all_future operator to every formula in the context.
 def future_context (Γ : Context) : Context :=
   Γ.map Formula.all_future
 
+/-!
+## Domain-Specific Heuristics
+
+Heuristic functions that provide bonuses/penalties based on formula structure.
+Lower scores are preferred (higher priority).
+-/
+
+/--
+Modal heuristic bonus: prioritize modal goals that can use modal axioms.
+
+Returns a negative bonus (priority boost) for modal goals (□φ, ◇φ).
+Modal goals benefit from modal axioms (T, 4, 5, B) so we explore them earlier.
+
+**Returns**:
+- `-5` for box goals (□φ)
+- `-5` for diamond goals (◇φ)
+- `0` for non-modal goals
+-/
+def modal_heuristic_bonus (φ : Formula) : Int :=
+  match φ with
+  | .box _ => -5
+  | .diamond _ => -5
+  | _ => 0
+
+/--
+Temporal heuristic bonus: prioritize temporal goals that can use temporal axioms.
+
+Returns a negative bonus (priority boost) for temporal goals (Gφ, Fφ, Hφ, Pφ).
+Temporal goals benefit from temporal axioms (4, A, L) so we explore them earlier.
+
+**Returns**:
+- `-5` for all_future goals (Gφ)
+- `-5` for some_future goals (Fφ)
+- `-5` for all_past goals (Hφ)
+- `-5` for some_past goals (Pφ)
+- `0` for non-temporal goals
+-/
+def temporal_heuristic_bonus (φ : Formula) : Int :=
+  match φ with
+  | .all_future _ => -5
+  | .some_future _ => -5
+  | .all_past _ => -5
+  | .some_past _ => -5
+  | _ => 0
+
+/--
+Structure-based heuristic penalty: penalize complex formulas.
+
+Computes penalty based on formula structure:
+- Base complexity (number of nodes)
+- Modal depth (nesting of □/◇)
+- Temporal depth (nesting of G/F/H/P)
+- Implication count (→ operators)
+
+**Formula**: `complexity + 2*modalDepth + 2*temporalDepth + countImplications`
+
+Higher penalty = lower priority (complex formulas are harder to prove).
+-/
+def structure_heuristic (φ : Formula) : Nat :=
+  φ.complexity + 2 * φ.modalDepth + 2 * φ.temporalDepth + φ.countImplications
+
 /--
 Compute heuristic score for a proof search branch (lower score = higher priority).
 
@@ -384,6 +445,30 @@ def heuristic_score (weights : HeuristicWeights := {}) (Γ : Context) (φ : Form
       weights.mpBase + min_complexity
 
 /--
+Advanced heuristic score combining base scoring with domain-specific adjustments.
+
+Combines:
+1. Base heuristic score (axiom/assumption/modus ponens/modal/temporal priorities)
+2. Modal bonus for modal goals
+3. Temporal bonus for temporal goals
+4. Structure penalty for complex formulas
+
+**Parameters**:
+- `weights`: Configurable heuristic weights
+- `Γ`: Current proof context
+- `φ`: Goal formula to score
+
+**Returns**: Combined score (lower = higher priority). Score is clamped to 0 minimum.
+-/
+def advanced_heuristic_score (weights : HeuristicWeights := {}) (Γ : Context) (φ : Formula) : Nat :=
+  let baseScore : Int := heuristic_score weights Γ φ
+  let modalBonus := modal_heuristic_bonus φ
+  let temporalBonus := temporal_heuristic_bonus φ
+  let structurePenalty : Int := structure_heuristic φ / 4  -- Damped to avoid overwhelming base score
+  let combined := baseScore + modalBonus + temporalBonus + structurePenalty
+  combined.toNat  -- Clamp to 0 if negative
+
+/--
 Order candidate subgoals by heuristic score so cheaper branches are explored first.
 
 Uses stable merge sort (O(n log n)) to order targets by ascending heuristic score.
@@ -392,6 +477,16 @@ Lower scores indicate higher priority (axioms/assumptions before complex modus p
 def orderSubgoalsByScore (weights : HeuristicWeights) (Γ : Context) (targets : List Formula) :
     List Formula :=
   targets.mergeSort (fun φ ψ => heuristic_score weights Γ φ ≤ heuristic_score weights Γ ψ)
+
+/--
+Order candidate subgoals by advanced heuristic score (includes domain-specific bonuses).
+
+Uses stable merge sort (O(n log n)) to order targets by ascending advanced heuristic score.
+Lower scores indicate higher priority. Includes modal/temporal bonuses and structure penalties.
+-/
+def orderSubgoalsByAdvancedScore (weights : HeuristicWeights) (Γ : Context) (targets : List Formula) :
+    List Formula :=
+  targets.mergeSort (fun φ ψ => advanced_heuristic_score weights Γ φ ≤ advanced_heuristic_score weights Γ ψ)
 
 /-!
 ## Search Functions

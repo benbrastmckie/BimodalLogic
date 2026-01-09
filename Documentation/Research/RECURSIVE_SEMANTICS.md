@@ -184,7 +184,7 @@ FIX: add the containment constraints from section sub:Containment in /home/benja
 
 ### State Modality Definitions
 
-FIX: 'Connected' is no longer needed since the possibility of a state s is defined directly as s ⇒_0 s. Fix 'Possible state' accordingly.
+FIX: The possibility of a state s is defined directly as s ⇒_0 s. Fix 'Possible state' and 'Impossible state' accordingly.
 
 | Term | Definition |
 |------|------------|
@@ -192,7 +192,7 @@ FIX: 'Connected' is no longer needed since the possibility of a state s is defin
 | **Possible state** | s ∈ P iff s ~ t for some t (equivalently: s ⇒_0 s) |
 | **Impossible state** | s ∉ P iff s is not connected to any state |
 | **Compatible states** | s ∘ t iff s.t ∈ P |
-| **Maximal state** | s is maximal iff for every t ∘ s, we have t ⊑ s |
+| **Maximal state** | s is maximal iff t ⊑ s for every compatible state t ∘ s |
 | **World-state** | w ∈ W iff w is a maximal possible state |
 | **Necessary state** | s ∈ N iff s ~ t implies s = t |
 
@@ -208,20 +208,34 @@ The set of all world-histories over F is denoted H_F.
 
 ### Causal Model
 
+FIX: Use '| |' instead of 'I' below:
+
 A *causal model* is a structure **M** = ⟨S, ⊑, D, ⇒, I⟩ where:
 - ⟨S, ⊑, D, ⇒⟩ is a causal frame
 - I is an interpretation as in the Constitutive Layer
 
 ### Truth Conditions
 
+FIX: the variable assignment should use 'a' instead of a greek letter to avoid confusion with the world-histories (or a 'a' symbol with a bar above if there is such a unicode character).
+
+FIX: the time need not be restricted to dom(τ)
+
 Truth is evaluated relative to a model M, world-history τ, time x ∈ dom(τ), and assignment σ:
 
 #### Atomic Sentences
+
+FIX: the variable assignment is missing below and it would be good to replace ⊭ with a backwards ⊨ if there is such a unicode character (otherwise use ⊨⁺ and ⊨⁻):
 
 | | Condition |
 |---|-----------|
 | M, τ, x ⊨ F(a₁,...,aₙ) | iff there exists s ⊑ τ(x) where s ⊩⁺ F(a₁,...,aₙ) |
 | M, τ, x ⊭ F(a₁,...,aₙ) | iff there exists s ⊑ τ(x) where s ⊩⁻ F(a₁,...,aₙ) |
+
+FIX: instead of using 's ⊩⁺ F(a₁,...,aₙ)' and 's ⊩⁻ F(a₁,...,aₙ)' which depends on defining ⊩⁺ and ⊩⁻, it would be better to use:
+  M, τ, x, a ⊨⁺ F(a₁,...,aₙ) | iff there is some f in |F|⁺ where f(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) ⊑ τ(x)
+  M, τ, x, a ⊨⁻ F(a₁,...,aₙ) iff there is some f in |F|⁻ where f(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) ⊑ τ(x)
+
+FIX: note that it is derivable that M, τ, x, a ⊨⁺ A iff it is not the case that M, τ, x, a ⊨⁻ A, and similarly, that M, τ, x, a ⊨⁻ A iff it is not the case that M, τ, x, a ⊨⁺ A, justifying using ⊨ alone in place of ⊨⁺, and using ⊭ in place of ⊨⁻.
 
 #### Extensional Connectives
 
@@ -261,6 +275,10 @@ Truth is evaluated relative to a model M, world-history τ, time x ∈ dom(τ), 
 - **▽A** := PA ∨ A ∨ FA ("Sometimes A" - at some time)
 
 #### Extended Tense Operators: Since and Until
+
+FIX: Use ▷ in place of U and the reverse of ▷ in place of S.
+
+FIX: Also, the variable assignments are missing below.
 
 | Operator | Truth Condition |
 |----------|-----------------|

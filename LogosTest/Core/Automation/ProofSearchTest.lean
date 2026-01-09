@@ -242,4 +242,75 @@ Performance comparison for various proof depths.
     let overhead := (iddfsTotal * 100 / dfsTotal) - 100
     IO.println s!"IDDFS overhead: ~{overhead}%"
 
+/-!
+## Domain-Specific Heuristics Tests
+
+Tests for modal, temporal, and structure-based heuristics.
+-/
+
+-- Test: Modal heuristic bonus
+/-- Modal goals get negative bonus (priority boost). -/
+example : modal_heuristic_bonus (Formula.box p) = -5 := rfl
+example : modal_heuristic_bonus p.diamond = -5 := rfl
+example : modal_heuristic_bonus p = 0 := rfl
+example : modal_heuristic_bonus (p.imp q) = 0 := rfl
+
+-- Test: Temporal heuristic bonus
+/-- Temporal goals get negative bonus (priority boost). -/
+example : temporal_heuristic_bonus (Formula.all_future p) = -5 := rfl
+example : temporal_heuristic_bonus (Formula.some_future p) = -5 := rfl
+example : temporal_heuristic_bonus (Formula.all_past p) = -5 := rfl
+example : temporal_heuristic_bonus (Formula.some_past p) = -5 := rfl
+example : temporal_heuristic_bonus p = 0 := rfl
+example : temporal_heuristic_bonus (Formula.box p) = 0 := rfl
+
+-- Test: Structure heuristic (uses complexity metrics from Formula.lean)
+#eval do
+  IO.println "=== Structure Heuristic Tests ==="
+  let simple := Formula.atom "p"
+  let modal := Formula.box p
+  let nested := Formula.box (Formula.box p)
+  let complex := (p.imp q).imp (Formula.box (Formula.all_future r))
+  IO.println s!"Atom: structure_heuristic = {structure_heuristic simple}"
+  IO.println s!"□p: structure_heuristic = {structure_heuristic modal}"
+  IO.println s!"□□p: structure_heuristic = {structure_heuristic nested}"
+  IO.println s!"(p→q)→□Gr: structure_heuristic = {structure_heuristic complex}"
+
+-- Test: Advanced heuristic score
+#eval do
+  IO.println "=== Advanced Heuristic Score Tests ==="
+  let modalT := (Formula.box p).imp p
+  let temporal4 := (Formula.all_future p).imp (Formula.all_future (Formula.all_future p))
+  let simple := p
+  IO.println s!"Modal T (□p→p): advanced = {advanced_heuristic_score {} [] modalT}"
+  IO.println s!"Temporal 4: advanced = {advanced_heuristic_score {} [] temporal4}"
+  IO.println s!"Simple atom p: advanced = {advanced_heuristic_score {} [] simple}"
+
+-- Test: orderSubgoalsByAdvancedScore ordering
+#eval do
+  IO.println "=== Advanced Ordering Test ==="
+  let targets := [
+    Formula.atom "x",  -- High penalty (dead end for non-axiom atom)
+    (Formula.box p).imp p,  -- Low (axiom)
+    Formula.box q,  -- Medium (modal goal, gets bonus)
+    p.imp (q.imp r)  -- Higher (complex implication)
+  ]
+  let ordered := orderSubgoalsByAdvancedScore {} [] targets
+  IO.println s!"Original order: atom, modal_T, □q, p→(q→r)"
+  IO.println "Sorted order (lower score = earlier):"
+  for (i, f) in ordered.enum do
+    IO.println s!"  {i}: score={advanced_heuristic_score {} [] f}"
+
+-- Verify that advanced heuristics prefer modal/temporal goals
+#eval do
+  IO.println "=== Modal/Temporal Priority Test ==="
+  let modalGoal := Formula.box p
+  let atomGoal := Formula.atom "x"
+  let modalScore := advanced_heuristic_score {} [] modalGoal
+  let atomScore := advanced_heuristic_score {} [] atomGoal
+  if modalScore < atomScore then
+    IO.println s!"✓ Modal goal prioritized: □p={modalScore} < x={atomScore}"
+  else
+    IO.println s!"✗ Modal goal not prioritized: □p={modalScore} >= x={atomScore}"
+
 end LogosTest.Core.Automation
