@@ -66,10 +66,11 @@ technical_debt:
 
 ### 347. Revise Logos layer documentation for new layer organization
 - **Effort**: 6-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-09
 - **Researched**: 2026-01-09
 - **Planned**: 2026-01-09
+- **Completed**: 2026-01-09
 - **Priority**: High
 - **Language**: general
 - **Blocking**: None
