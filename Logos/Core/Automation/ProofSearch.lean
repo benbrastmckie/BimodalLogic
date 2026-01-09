@@ -477,9 +477,71 @@ def iddfs_search (Γ : Context) (φ : Formula) (maxDepth : Nat := 100)
   termination_by maxDepth - depth
   iterate 0 ProofCache.empty {} 0
 
+/-!
+## Search Strategy Configuration
+-/
+
+/--
+Search strategy configuration.
+
+**Variants**:
+- `BoundedDFS depth`: Depth-limited DFS (may miss proofs beyond depth)
+- `IDDFS maxDepth`: Iterative deepening DFS (complete and optimal)
+- `BestFirst maxDepth`: Best-first search with heuristics (future enhancement)
+-/
+inductive SearchStrategy where
+  | BoundedDFS (depth : Nat)
+  | IDDFS (maxDepth : Nat)
+  | BestFirst (maxDepth : Nat)  -- Future enhancement (task 318)
+  deriving Repr
+
+/--
+Unified search interface with configurable strategy.
+
+**Default**: IDDFS with maxDepth=100 (complete and optimal)
+
+**Parameters**:
+- `Γ`: Proof context
+- `φ`: Goal formula
+- `strategy`: Search algorithm to use
+- `visitLimit`: Maximum total visits
+- `weights`: Heuristic weights
+
+**Returns**: Same as bounded_search and iddfs_search
+
+**Example**:
+```lean
+-- Use IDDFS (default, complete and optimal)
+let (found, _, _, _, _) := search [] myFormula
+
+-- Use bounded DFS (faster but may miss deep proofs)
+let (found, _, _, _, _) := search [] myFormula (.BoundedDFS 5)
+
+-- Use IDDFS with custom depth
+let (found, _, _, _, _) := search [] myFormula (.IDDFS 50)
+```
+-/
+def search (Γ : Context) (φ : Formula)
+    (strategy : SearchStrategy := .IDDFS 100)
+    (visitLimit : Nat := 10000)
+    (weights : HeuristicWeights := {})
+    : Bool × ProofCache × Visited × SearchStats × Nat :=
+  match strategy with
+  | .BoundedDFS depth =>
+      bounded_search Γ φ depth ProofCache.empty Visited.empty 0 visitLimit weights {}
+  | .IDDFS maxDepth =>
+      iddfs_search Γ φ maxDepth visitLimit weights
+  | .BestFirst _ =>
+      -- TODO: Implement best-first search (Phase 4 of task 260 / task 318)
+      -- For now, fall back to IDDFS
+      iddfs_search Γ φ 100 visitLimit weights
+
 /--
 Heuristic-guided proof search prioritizing likely-successful branches.
 Returns the result, updated cache/visited sets, and stats.
+
+**Note**: This function is preserved for backward compatibility.
+New code should use `search` with the appropriate `SearchStrategy`.
 -/
 def search_with_heuristics (Γ : Context) (φ : Formula) (depth : Nat)
     (visitLimit : Nat := 500) (weights : HeuristicWeights := {}) : Bool × ProofCache × Visited × SearchStats × Nat :=

@@ -167,7 +167,7 @@ IDDFS(goal, maxDepth):
 
 ---
 
-### Phase 2: Search Strategy Configuration [IN PROGRESS]
+### Phase 2: Search Strategy Configuration [COMPLETED]
 
 **Objective**: Add `SearchStrategy` enum and unified `search` interface
 
@@ -195,7 +195,7 @@ IDDFS(goal, maxDepth):
 
 ---
 
-### Phase 3: Documentation and Examples [NOT STARTED]
+### Phase 3: Documentation and Examples [IN PROGRESS]
 
 **Objective**: Update module documentation with IDDFS description and complexity analysis
 
