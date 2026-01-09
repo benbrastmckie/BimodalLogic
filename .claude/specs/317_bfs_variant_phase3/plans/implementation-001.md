@@ -133,7 +133,7 @@ IDDFS(goal, maxDepth):
 
 ## Implementation Phases
 
-### Phase 1: Core IDDFS Implementation [NOT STARTED]
+### Phase 1: Core IDDFS Implementation [COMPLETED]
 
 **Objective**: Implement `iddfs_search` function with iterative deepening logic
 
@@ -167,7 +167,7 @@ IDDFS(goal, maxDepth):
 
 ---
 
-### Phase 2: Search Strategy Configuration [NOT STARTED]
+### Phase 2: Search Strategy Configuration [IN PROGRESS]
 
 **Objective**: Add `SearchStrategy` enum and unified `search` interface
 

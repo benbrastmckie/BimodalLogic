@@ -12,7 +12,7 @@
 This document provides the formal recursive semantics for the Logos layered logic system. The semantics proceeds through increasingly expressive layers, each extending the frame and evaluation mechanisms of the previous layer:
 
 1. **Constitutive Layer**: Hyperintensional semantics over a mereological state space
-2. **Causal Layer**: Intensional semantics over world-histories with temporal and modal operators
+2. **Causal Layer**: Hyperintensional and intensional semantics over a task space
 3. **Epistemic Layer**: Extensions for belief, knowledge, and probability [DETAILS]
 4. **Normative Layer**: Extensions for obligation, permission, and value [DETAILS]
 5. **Agential Layer**: Extensions for multi-agent reasoning [DETAILS]
@@ -22,6 +22,8 @@ The Constitutive Layer provides the foundational mereological structure with bil
 ---
 
 ## Constitutive Layer: Hyperintensional Semantics
+
+FIX: specify what syntactic primitives will be interpreted in this layer including lambda abstraction, updating the GLOSSARY.md accordingly
 
 The Constitutive Layer provides the foundational semantic structure based on exact truthmaker semantics. Evaluation is hyperintensional, distinguishing propositions that agree on truth-value across all possible worlds but differ in their exact verification and falsification conditions.
 
@@ -42,40 +44,52 @@ The lattice structure provides:
 
 ### Constitutive Model
 
-A *constitutive model* is a structure **M** = ⟨S, ⊑, I⟩ where:
+A *constitutive model* is a structure **M** = ⟨S, ⊑, I⟩ where: FIX: use '| |' for the interpretation function consistently rather than 'I'
 
 | Component | Description |
 |-----------|-------------|
 | **Frame** | ⟨S, ⊑⟩ is a constitutive frame |
 | **Interpretation** | I assigns meanings to non-logical vocabulary |
 
-The interpretation function I assigns:
+The interpretation function I assigns: FIX: use '| |' instead of 'I'
 - **n-place function symbols** f → functions from Sⁿ to S (0-place = individual constants mapping to states)
-- **n-place predicates** F → ordered pairs ⟨v_F, f_F⟩ where:
+- **n-place predicates** F → ordered pairs ⟨v_F, f_F⟩ where: FIX: replace v_F and f_F with |F|⁺ and |F|⁻ where these are both sets of functions of the kind indicated for v_F and f_F below
   - v_F : Sⁿ → S is the verifier function
   - f_F : Sⁿ → S is the falsifier function
 - **Sentence letters** (0-place predicates) p → ordered pairs ⟨|p|⁺, |p|⁻⟩ of verifier and falsifier states
 
 ### Variable Assignment
 
+FIX: greek letters are used for world-histories; use 'a', 'b',... for variable assignments (preferable with a bar above them 'a', 'b',... will also work as they are if no unicode characters are available for 'a', 'b',... with a bar over them)
+
 A *variable assignment* σ is a function from variables to states: σ : Var → S
 
 The **extension** of a term relative to model M and assignment σ:
 - **Variable** x: ⟦x⟧^σ_M = σ(x)
-- **Function application** f(a₁,...,aₙ): ⟦f(a₁,...,aₙ)⟧^σ_M = I(f)(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M)
+- **Function application** f(a₁,...,aₙ): ⟦f(a₁,...,aₙ)⟧^σ_M = I(f)(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) FIX: use '|f|' instead of 'I(f)'
 
 ### Verification and Falsification Clauses
+
+FIX: instead of '⊩⁻', it would be better to have '⊩' reversed if there is such a symbol, and then use '⊩' for verification by itself. If there is no reversed turnstile, then keep the verification and falsification symbols as they are.
 
 A state s **verifies** (s ⊩⁺ A) or **falsifies** (s ⊩⁻ A) a formula A relative to model M and assignment σ:
 
 #### Atomic Formulas
+
+FIX: it is important to include the model M and variable assignment a alongside the state where f is some verifying/falsifying function as follows:
+  M, a, s ⊩⁺ F(a₁,...,aₙ) iff there is some f in |F|⁺ where s = f(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M)
+  M, a, s ⊩⁻ F(a₁,...,aₙ) iff there is some f in |F|⁺ where s = f(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M)
 
 | | Condition |
 |---|-----------|
 | s ⊩⁺ F(a₁,...,aₙ) | iff s = v_F(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) |
 | s ⊩⁻ F(a₁,...,aₙ) | iff s = f_F(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) |
 
+FIX: include semantic clauses for lambda abstraction
+
 #### Negation (¬)
+
+FIX: include the model M and variable assignment a in all of the semantic clauses below.
 
 | | Condition |
 |---|-----------|
@@ -121,7 +135,7 @@ A *bilateral proposition* is an ordered pair ⟨V, F⟩ where:
 
 | Operation | Definition |
 |-----------|------------|
-| **Product** | X ⊗ Y := {s.t \| s ∈ X, t ∈ Y} |
+| **Product** | X ⊗ Y := {s.t : s ∈ X, t ∈ Y} |
 | **Sum** | X ⊕ Y := X ∪ Y ∪ (X ⊗ Y) |
 | **Conjunction** | ⟨V,F⟩ ∧ ⟨V',F'⟩ := ⟨V ⊗ V', F ⊕ F'⟩ |
 | **Disjunction** | ⟨V,F⟩ ∨ ⟨V',F'⟩ := ⟨V ⊕ V', F ⊗ F'⟩ |
@@ -131,15 +145,17 @@ A *bilateral proposition* is an ordered pair ⟨V, F⟩ where:
 
 Logical consequence at the Constitutive Layer is restricted to propositional identity sentences:
 
-> Γ ⊨_C A iff for any model M and assignment σ: if □ ⊩⁺ B for all B ∈ Γ, then □ ⊩⁺ A
+> Γ ⊨ A iff for any model M and assignment σ: if M, σ, □ ⊩⁺ B for all B ∈ Γ, then M, σ, □ ⊩⁺ A
 
 That is, A is a consequence of Γ iff the null state verifies A in any model where it verifies all premises.
 
-[QUESTION: How exactly does evaluation transition from constitutive to causal semantics for non-identity sentences? The constitutive semantics cannot evaluate atomic sentences about contingent matters since world-states are not yet defined.]
+[QUESTION: How exactly does evaluation transition from constitutive to causal semantics for non-identity sentences? The constitutive semantics cannot evaluate atomic sentences about contingent matters since world-states are not yet defined.] ANSWER: evaluation is entirely distinct for the two layers. The Constitutive Layer is an important foundation and worth defining a logic for propositional identity, but this is not yet a useful layer in and of itself. Nevertheless, the same theorems of the logic for the Constitutive Layer will still be valid in the Causal Layer, though the definition of logical consequence for the Causal Layer is distinct, quantifying over all world-histories and times in addition to all models and variable assignments.
 
 ---
 
 ## Causal Layer: Intensional Semantics
+
+FIX: the semantics is intensional insofar as it determines truth-values relative to the contextual parameters (this includes a world-history, time, variable assignment) but this is not instead of being hyperintensional since the hyperintensional semantics is still the foundation. Rather, the intensional layer sits on top of the hyperintensional foundation in order to assign truth-values to sentences given an adequate range of contextual parameters needed to determine the truth-values of all sentences of the Causal Layer.
 
 The Causal Layer extends the Constitutive Layer with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. Semantics at this layer is intensional rather than hyperintensional.
 
@@ -155,12 +171,16 @@ A *causal frame* is a structure **F** = ⟨S, ⊑, D, ⇒⟩ where:
 
 The task relation s ⇒_d t (read: "there is a task from s to t of duration d") satisfies:
 
+FIX: the Nullity constraint should be removed and instead we will have the definition of the possible states as any state s where s ⇒_0 s
+
 | Constraint | Formulation |
 |------------|-------------|
 | **Nullity** | s ⇒_0 s for all possible states s |
 | **Compositionality** | If s ⇒_x t and t ⇒_y u, then s ⇒_{x+y} u |
 | **Parthood (Left)** | If d ⊑ s and s ⇒_x t, then d ⇒_x r for some r ⊑ t |
 | **Parthood (Right)** | If r ⊑ t and s ⇒_x t, then d ⇒_x r for some d ⊑ s |
+
+
 
 ### State Modality Definitions
 

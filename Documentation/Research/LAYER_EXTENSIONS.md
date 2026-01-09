@@ -20,6 +20,8 @@ See [RECURSIVE_SEMANTICS.md](RECURSIVE_SEMANTICS.md) for full formal semantic sp
 
 ### Constitutive Layer (Foundation)
 
+FIX: specify what syntactic primitives will be interpreted in this layer including lambda abstraction, updating the GLOSSARY.md accordingly
+
 The Constitutive Layer provides the foundational mereological structure upon which all other layers build. Its semantics is **hyperintensional**, distinguishing propositions that agree on truth-value across all possible worlds but differ in their verification and falsification conditions.
 
 #### Frame Structure

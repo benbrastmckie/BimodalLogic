@@ -110,9 +110,10 @@ technical_debt:
 
 ### 317. Implement BFS variant for proof search completeness (Phase 3)
 - **Effort**: 10-15 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-07
 - **Planned**: 2026-01-07
+- **Implementing**: 2026-01-09
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None

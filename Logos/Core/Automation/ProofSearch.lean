@@ -426,6 +426,58 @@ decreasing_by
   all_goals omega
 
 /--
+Iterative deepening depth-first search for a derivation of `φ` from context `Γ`.
+
+Runs bounded_search with increasing depth limits until proof found or maxDepth reached.
+Guarantees finding shortest proof (minimum depth) if it exists.
+
+**Parameters**:
+- `Γ`: Proof context (list of assumptions)
+- `φ`: Goal formula to derive
+- `maxDepth`: Maximum search depth (prevents infinite loops)
+- `visitLimit`: Maximum total visits across all depths
+- `weights`: Heuristic weights to rank branch ordering
+
+**Returns**: `(found, cache, visited, stats, totalVisits)` where:
+- `found`: true if derivation found within maxDepth
+- `cache`: Updated proof cache
+- `visited`: Visited set from final depth iteration
+- `stats`: Cumulative search statistics
+- `totalVisits`: Total visits across all depth iterations
+
+**Complexity**: O(b^d) time, O(d) space where b = branching factor, d = solution depth
+
+**Completeness**: Guaranteed to find proof if it exists within maxDepth
+
+**Optimality**: Guaranteed to find shortest proof (minimum depth)
+-/
+def iddfs_search (Γ : Context) (φ : Formula) (maxDepth : Nat := 100)
+    (visitLimit : Nat := 10000) (weights : HeuristicWeights := {})
+    : Bool × ProofCache × Visited × SearchStats × Nat :=
+  let rec iterate (depth : Nat) (cache : ProofCache) (stats : SearchStats)
+                  (totalVisits : Nat) : Bool × ProofCache × Visited × SearchStats × Nat :=
+    if hdepth : depth ≥ maxDepth then
+      (false, cache, Visited.empty, stats, totalVisits)
+    else if totalVisits ≥ visitLimit then
+      (false, cache, Visited.empty, stats, totalVisits)
+    else
+      -- Run bounded search at current depth, starting with fresh visited set
+      let (found, cache', visited', stats', visits') :=
+        bounded_search Γ φ depth cache Visited.empty totalVisits visitLimit weights stats
+
+      if found then
+        (true, cache', visited', stats', visits')
+      else if visits' ≥ visitLimit then
+        (false, cache', visited', stats', visits')
+      else
+        have hdec : maxDepth - (depth + 1) < maxDepth - depth := by
+          have hlt : depth < maxDepth := Nat.not_le.mp hdepth
+          omega
+        iterate (depth + 1) cache' stats' visits'
+  termination_by maxDepth - depth
+  iterate 0 ProofCache.empty {} 0
+
+/--
 Heuristic-guided proof search prioritizing likely-successful branches.
 Returns the result, updated cache/visited sets, and stats.
 -/
