@@ -225,7 +225,7 @@ IDDFS(goal, maxDepth):
 
 ---
 
-### Phase 4: Testing and Validation [IN PROGRESS]
+### Phase 4: Testing and Validation [COMPLETED]
 
 **Objective**: Add comprehensive tests for IDDFS correctness and completeness
 
@@ -270,7 +270,7 @@ example : ⊢ p.imp p  -- Trivial proof, should find at depth 0-1
 
 ---
 
-### Phase 5: Benchmarking and Performance Analysis [NOT STARTED]
+### Phase 5: Benchmarking and Performance Analysis [IN PROGRESS]
 
 **Objective**: Benchmark IDDFS vs bounded DFS and document performance characteristics
 
