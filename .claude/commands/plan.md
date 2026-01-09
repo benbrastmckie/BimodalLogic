@@ -21,7 +21,7 @@ Create a phased implementation plan for a task.
 task_number = $ARGUMENTS
 ```
 
-Read .opencode/specs/state.json:
+Read .claude/specs/state.json:
 - Find task by project_number
 - Extract: language, status, project_name, description
 - If not found: Error "Task {N} not found"
@@ -36,7 +36,7 @@ Allowed: not_started, researched, partial
 ### 3. Load Context
 
 1. **Task description** from TODO.md
-2. **Research reports** from .opencode/specs/{N}_{SLUG}/reports/
+2. **Research reports** from .claude/specs/{N}_{SLUG}/reports/
 3. **Relevant codebase context**:
    - For lean: Related .lean files
    - For general: Related source files
@@ -51,12 +51,12 @@ Update both files atomically:
 
 Create directory if needed:
 ```
-mkdir -p .opencode/specs/{N}_{SLUG}/plans/
+mkdir -p .claude/specs/{N}_{SLUG}/plans/
 ```
 
 Find next plan version (implementation-001.md, implementation-002.md, etc.)
 
-Write to `.opencode/specs/{N}_{SLUG}/plans/implementation-{NNN}.md`:
+Write to `.claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md`:
 
 ```markdown
 # Implementation Plan: Task #{N}
@@ -144,7 +144,7 @@ Update both files atomically:
 ### 7. Git Commit
 
 ```bash
-git add .opencode/specs/
+git add .claude/specs/
 git commit -m "task {N}: create implementation plan"
 ```
 
@@ -153,7 +153,7 @@ git commit -m "task {N}: create implementation plan"
 ```
 Plan created for Task #{N}
 
-Plan: .opencode/specs/{N}_{SLUG}/plans/implementation-{NNN}.md
+Plan: .claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md
 
 Phases:
 1. {Phase 1 name} - {effort}

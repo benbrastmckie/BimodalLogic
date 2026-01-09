@@ -1,5 +1,5 @@
 ---
-paths: .opencode/**/*
+paths: .claude/**/*
 ---
 
 # Error Handling Rules

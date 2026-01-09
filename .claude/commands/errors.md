@@ -18,7 +18,7 @@ Analyze errors.json, identify patterns, and create fix plans.
 
 ### 1. Load Error Data
 
-Read .opencode/specs/errors.json:
+Read .claude/specs/errors.json:
 ```json
 {
   "errors": [
@@ -57,7 +57,7 @@ Identify:
 
 ### 3. Create Analysis Report
 
-Write to `.opencode/specs/errors/analysis-{DATE}.md`:
+Write to `.claude/specs/errors/analysis-{DATE}.md`:
 
 ```markdown
 # Error Analysis Report
@@ -133,7 +133,7 @@ Note task numbers in report.
 ```
 Error Analysis Complete
 
-Report: .opencode/specs/errors/analysis-{DATE}.md
+Report: .claude/specs/errors/analysis-{DATE}.md
 
 Summary:
 - Total errors: {N}

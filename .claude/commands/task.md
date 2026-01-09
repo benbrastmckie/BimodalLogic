@@ -26,7 +26,7 @@ When $ARGUMENTS contains a description (no flags):
 
 1. **Read state.json** for next_project_number:
    ```
-   Read .opencode/specs/state.json
+   Read .claude/specs/state.json
    Extract next_project_number (e.g., 346)
    ```
 
@@ -46,7 +46,7 @@ When $ARGUMENTS contains a description (no flags):
 
 5. **Create task directory**:
    ```
-   mkdir -p .opencode/specs/{NUMBER}_{SLUG}
+   mkdir -p .claude/specs/{NUMBER}_{SLUG}
    ```
 
 6. **Update state.json**:
@@ -78,7 +78,7 @@ When $ARGUMENTS contains a description (no flags):
 
 8. **Git commit**:
    ```
-   git add .opencode/specs/
+   git add .claude/specs/
    git commit -m "task {N}: create {title}"
    ```
 
@@ -87,7 +87,7 @@ When $ARGUMENTS contains a description (no flags):
    Task #{N} created: {TITLE}
    Status: [NOT STARTED]
    Language: {language}
-   Path: .opencode/specs/{N}_{SLUG}/
+   Path: .claude/specs/{N}_{SLUG}/
    ```
 
 ## Recover Mode (--recover)
@@ -95,7 +95,7 @@ When $ARGUMENTS contains a description (no flags):
 Parse task ranges after --recover (e.g., "343-345", "337, 343"):
 
 1. For each task number in range:
-   - Find in .opencode/specs/archive/state.json
+   - Find in .claude/specs/archive/state.json
    - Move entry back to state.json active_projects
    - Update TODO.md with recovered entry
    - Update status to [NOT STARTED]

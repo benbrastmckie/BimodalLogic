@@ -1,12 +1,12 @@
 ---
-paths: .opencode/specs/**/*
+paths: .claude/specs/**/*
 ---
 
 # Artifact Format Rules
 
 ## Research Reports
 
-**Location**: `.opencode/specs/{N}_{SLUG}/reports/research-{NNN}.md`
+**Location**: `.claude/specs/{N}_{SLUG}/reports/research-{NNN}.md`
 
 ```markdown
 # Research Report: Task #{N}
@@ -40,7 +40,7 @@ paths: .opencode/specs/**/*
 
 ## Implementation Plans
 
-**Location**: `.opencode/specs/{N}_{SLUG}/plans/implementation-{NNN}.md`
+**Location**: `.claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md`
 
 ```markdown
 # Implementation Plan: Task #{N}
@@ -91,7 +91,7 @@ paths: .opencode/specs/**/*
 
 ## Implementation Summaries
 
-**Location**: `.opencode/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`
+**Location**: `.claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`
 
 ```markdown
 # Implementation Summary: Task #{N}

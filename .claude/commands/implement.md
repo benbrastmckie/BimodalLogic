@@ -23,7 +23,7 @@ task_number = first token from $ARGUMENTS
 force_mode = "--force" in $ARGUMENTS
 ```
 
-Read .opencode/specs/state.json:
+Read .claude/specs/state.json:
 - Find task by project_number
 - Extract: language, status, project_name, description
 - If not found: Error "Task {N} not found"
@@ -39,7 +39,7 @@ Allowed: planned, implementing, partial, researched, not_started
 
 Find latest plan:
 ```
-.opencode/specs/{N}_{SLUG}/plans/implementation-{LATEST}.md
+.claude/specs/{N}_{SLUG}/plans/implementation-{LATEST}.md
 ```
 
 Parse plan to extract:
@@ -123,7 +123,7 @@ After all phases done:
    - TODO.md: Status: [COMPLETED], add Completed date
 
 2. **Create Summary**
-   Write to `.opencode/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
+   Write to `.claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
    ```markdown
    # Implementation Summary: Task #{N}
 
@@ -173,7 +173,7 @@ Phase 2: {name} [IN PROGRESS]
 ```
 Implementation complete for Task #{N}
 
-Summary: .opencode/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md
+Summary: .claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md
 
 Status: [COMPLETED]
 ```

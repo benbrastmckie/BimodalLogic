@@ -14,6 +14,6 @@ TIMESTAMP=$(date -Iseconds)
 # Log session start
 echo "[$TIMESTAMP] Session started" >> "$LOG_FILE"
 
-# Output success
-echo '{"decision": "allow"}'
+# Output success - SessionStart hooks don't use "decision" field
+echo '{}'
 exit 0

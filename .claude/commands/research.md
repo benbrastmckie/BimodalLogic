@@ -23,7 +23,7 @@ task_number = first token from $ARGUMENTS
 focus_prompt = remaining tokens (optional)
 ```
 
-Read .opencode/specs/state.json:
+Read .claude/specs/state.json:
 - Find task by project_number
 - Extract: language, status, project_name, description
 - If not found: Error "Task {N} not found"
@@ -72,12 +72,12 @@ Search strategy:
 
 Create directory if needed:
 ```
-mkdir -p .opencode/specs/{N}_{SLUG}/reports/
+mkdir -p .claude/specs/{N}_{SLUG}/reports/
 ```
 
 Find next report number (research-001.md, research-002.md, etc.)
 
-Write report to `.opencode/specs/{N}_{SLUG}/reports/research-{NNN}.md`:
+Write report to `.claude/specs/{N}_{SLUG}/reports/research-{NNN}.md`:
 
 ```markdown
 # Research Report: Task #{N}
@@ -129,7 +129,7 @@ Update both files atomically:
 ### 7. Git Commit
 
 ```bash
-git add .opencode/specs/
+git add .claude/specs/
 git commit -m "task {N}: complete research"
 ```
 
@@ -138,7 +138,7 @@ git commit -m "task {N}: complete research"
 ```
 Research completed for Task #{N}
 
-Report: .opencode/specs/{N}_{SLUG}/reports/research-{NNN}.md
+Report: .claude/specs/{N}_{SLUG}/reports/research-{NNN}.md
 
 Key findings:
 - {finding 1}

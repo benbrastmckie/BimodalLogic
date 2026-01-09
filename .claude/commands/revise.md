@@ -23,7 +23,7 @@ task_number = first token from $ARGUMENTS
 revision_reason = remaining tokens (optional)
 ```
 
-Read .opencode/specs/state.json:
+Read .claude/specs/state.json:
 - Find task by project_number
 - Extract: language, status, project_name
 - If not found: Error "Task {N} not found"
@@ -37,7 +37,7 @@ Allowed: planned, implementing, partial, blocked
 
 ### 3. Load Current Context
 
-1. **Current plan** from .opencode/specs/{N}_{SLUG}/plans/implementation-{LATEST}.md
+1. **Current plan** from .claude/specs/{N}_{SLUG}/plans/implementation-{LATEST}.md
    - Extract phase statuses (what's done, what's remaining)
    - Note which phases succeeded/failed
 
@@ -57,7 +57,7 @@ Compare original plan assumptions vs reality:
 
 Increment version: implementation-002.md, implementation-003.md, etc.
 
-Write to `.opencode/specs/{N}_{SLUG}/plans/implementation-{NEW_VERSION}.md`:
+Write to `.claude/specs/{N}_{SLUG}/plans/implementation-{NEW_VERSION}.md`:
 
 ```markdown
 # Implementation Plan: Task #{N}
@@ -122,7 +122,7 @@ Update both files atomically:
 ### 7. Git Commit
 
 ```bash
-git add .opencode/specs/
+git add .claude/specs/
 git commit -m "task {N}: revise plan (v{NEW_VERSION})"
 ```
 

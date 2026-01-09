@@ -46,7 +46,7 @@ technical_debt:
 
 ### 334. Create LaTeX documentation for Logos system mirroring layer structure
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-08
 - **Planned**: 2026-01-08
 - **Priority**: Medium
@@ -442,7 +442,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 316. Implement tactic integration for modal_search tactic (Phase 2)
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-08
 - **Priority**: High
 - **Language**: lean

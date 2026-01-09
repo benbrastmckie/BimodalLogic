@@ -23,11 +23,11 @@ dry_run = "--dry-run" in $ARGUMENTS
 
 ### 2. Scan for Archivable Tasks
 
-Read .opencode/specs/state.json and identify:
+Read .claude/specs/state.json and identify:
 - Tasks with status = "completed"
 - Tasks with status = "abandoned"
 
-Read .opencode/specs/TODO.md and cross-reference:
+Read .claude/specs/TODO.md and cross-reference:
 - Entries marked [COMPLETED]
 - Entries marked [ABANDONED]
 
@@ -63,9 +63,9 @@ Exit here if dry run.
 
 **A. Update archive/state.json**
 
-Ensure .opencode/specs/archive/ exists.
+Ensure .claude/specs/archive/ exists.
 
-Read or create .opencode/specs/archive/state.json:
+Read or create .claude/specs/archive/state.json:
 ```json
 {
   "archived_projects": []
@@ -86,13 +86,13 @@ Optionally add to archive section at bottom (collapsed).
 
 **D. Preserve Artifacts**
 
-Task directories remain in .opencode/specs/{N}_{SLUG}/
+Task directories remain in .claude/specs/{N}_{SLUG}/
 (Don't move or delete - they're still valuable reference)
 
 ### 6. Git Commit
 
 ```bash
-git add .opencode/specs/
+git add .claude/specs/
 git commit -m "todo: archive {N} completed tasks"
 ```
 
@@ -113,7 +113,7 @@ Active tasks remaining: {N}
 - Medium priority: {N}
 - Low priority: {N}
 
-Archives: .opencode/specs/archive/state.json
+Archives: .claude/specs/archive/state.json
 ```
 
 ## Notes

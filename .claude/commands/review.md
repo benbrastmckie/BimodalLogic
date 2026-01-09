@@ -57,7 +57,7 @@ Categorize issues:
 
 ### 4. Create Review Report
 
-Write to `.opencode/specs/reviews/review-{DATE}.md`:
+Write to `.claude/specs/reviews/review-{DATE}.md`:
 
 ```markdown
 # Code Review Report
@@ -122,13 +122,13 @@ Link tasks to review report.
 ### 6. Update Registries (if applicable)
 
 If reviewing specific domains, update relevant registries:
-- `.opencode/docs/registries/lean-files.md`
-- `.opencode/docs/registries/documentation.md`
+- `.claude/docs/registries/lean-files.md`
+- `.claude/docs/registries/documentation.md`
 
 ### 7. Git Commit
 
 ```bash
-git add .opencode/specs/reviews/
+git add .claude/specs/reviews/
 git commit -m "review: {scope} code review"
 ```
 
@@ -137,7 +137,7 @@ git commit -m "review: {scope} code review"
 ```
 Review complete for: {scope}
 
-Report: .opencode/specs/reviews/review-{DATE}.md
+Report: .claude/specs/reviews/review-{DATE}.md
 
 Summary:
 - Critical: {N} issues

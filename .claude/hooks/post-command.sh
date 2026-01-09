@@ -14,6 +14,6 @@ TIMESTAMP=$(date -Iseconds)
 # Log session end
 echo "[$TIMESTAMP] Response completed" >> "$LOG_FILE"
 
-# Success
-echo '{"decision": "allow"}'
+# Success - Stop hooks use different schema than PreToolUse
+echo '{}'
 exit 0

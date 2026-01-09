@@ -4,10 +4,10 @@ This project uses a structured task management and agent orchestration system fo
 
 ## Quick Reference
 
-- **Task List**: @.opencode/specs/TODO.md
-- **Machine State**: @.opencode/specs/state.json
-- **Error Tracking**: @.opencode/specs/errors.json
-- **Architecture**: @.opencode/ARCHITECTURE.md
+- **Task List**: @.claude/specs/TODO.md
+- **Machine State**: @.claude/specs/state.json
+- **Error Tracking**: @.claude/specs/errors.json
+- **Architecture**: @.claude/ARCHITECTURE.md
 
 ## System Overview
 
@@ -23,7 +23,7 @@ Logos/                    # Lean 4 source code (layered logic system)
 └── Shared/              # Common definitions
 
 Documentation/           # Project documentation
-.opencode/specs/         # Task management artifacts
+.claude/specs/           # Task management artifacts
 .claude/                 # Claude Code configuration
 ```
 
@@ -39,7 +39,7 @@ Tasks progress through these states:
 
 ### Task Artifact Paths
 ```
-.opencode/specs/{NUMBER}_{SLUG}/
+.claude/specs/{NUMBER}_{SLUG}/
 ├── reports/                    # Research artifacts
 │   └── research-{NNN}.md
 ├── plans/                      # Implementation plans
@@ -73,7 +73,7 @@ Tasks have a `Language` field that determines tool selection:
 1. Validate task exists
 2. Update status to [RESEARCHING]
 3. Execute research (language-routed)
-4. Create report in specs/{N}_{SLUG}/reports/
+4. Create report in .claude/specs/{N}_{SLUG}/reports/
 5. Update status to [RESEARCHED]
 6. Git commit
 
@@ -81,7 +81,7 @@ Tasks have a `Language` field that determines tool selection:
 1. Validate task is [RESEARCHED] or [NOT STARTED]
 2. Update status to [PLANNING]
 3. Create phased plan with steps
-4. Write to specs/{N}_{SLUG}/plans/
+4. Write to .claude/specs/{N}_{SLUG}/plans/
 5. Update status to [PLANNED]
 6. Git commit
 
@@ -171,20 +171,20 @@ errors: create fix plan for {N} errors
 ## Rules References
 
 Core rules (automatically applied based on file paths):
-- @.claude/rules/state-management.md - Task state patterns (paths: .opencode/specs/**)
+- @.claude/rules/state-management.md - Task state patterns (paths: .claude/specs/**)
 - @.claude/rules/git-workflow.md - Commit conventions
 - @.claude/rules/lean4.md - Lean development patterns (paths: **/*.lean)
-- @.claude/rules/error-handling.md - Error recovery patterns (paths: .opencode/**)
-- @.claude/rules/artifact-formats.md - Report/plan formats (paths: .opencode/specs/**)
-- @.claude/rules/workflows.md - Command lifecycle patterns (paths: .opencode/**)
+- @.claude/rules/error-handling.md - Error recovery patterns (paths: .claude/**)
+- @.claude/rules/artifact-formats.md - Report/plan formats (paths: .claude/specs/**)
+- @.claude/rules/workflows.md - Command lifecycle patterns (paths: .claude/**)
 
 ## Project Context Imports
 
 Domain knowledge (load as needed):
-- @.opencode/context/project/lean4/tools/mcp-tools-guide.md - Lean MCP tools reference
-- @.opencode/context/project/lean4/patterns/tactic-patterns.md - Lean tactic usage
-- @.opencode/context/project/logic/domain/kripke-semantics-overview.md - Modal logic semantics
-- @.opencode/context/project/repo/project-overview.md - Project structure
+- @.claude/context/project/lean4/tools/mcp-tools-guide.md - Lean MCP tools reference
+- @.claude/context/project/lean4/patterns/tactic-patterns.md - Lean tactic usage
+- @.claude/context/project/logic/domain/kripke-semantics-overview.md - Modal logic semantics
+- @.claude/context/project/repo/project-overview.md - Project structure
 
 ## Error Handling
 

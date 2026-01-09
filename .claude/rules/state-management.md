@@ -1,5 +1,5 @@
 ---
-paths: .opencode/specs/**/*
+paths: .claude/specs/**/*
 ---
 
 # State Management Rules
@@ -111,27 +111,27 @@ When creating artifacts, update TODO.md with links:
 ### Research Completion
 ```markdown
 - **Status**: [RESEARCHED]
-- **Research**: [.opencode/specs/{N}_{SLUG}/reports/research-001.md]
+- **Research**: [.claude/specs/{N}_{SLUG}/reports/research-001.md]
 ```
 
 ### Plan Completion
 ```markdown
 - **Status**: [PLANNED]
-- **Plan**: [.opencode/specs/{N}_{SLUG}/plans/implementation-001.md]
+- **Plan**: [.claude/specs/{N}_{SLUG}/plans/implementation-001.md]
 ```
 
 ### Implementation Completion
 ```markdown
 - **Status**: [COMPLETED]
 - **Completed**: 2026-01-08
-- **Summary**: [.opencode/specs/{N}_{SLUG}/summaries/implementation-summary-20260108.md]
+- **Summary**: [.claude/specs/{N}_{SLUG}/summaries/implementation-summary-20260108.md]
 ```
 
 ## Directory Creation
 
 Create task directories lazily (only when first artifact is created):
 ```
-.opencode/specs/{NUMBER}_{SLUG}/
+.claude/specs/{NUMBER}_{SLUG}/
 ├── reports/      # Created on first research
 ├── plans/        # Created on first plan
 └── summaries/    # Created on completion

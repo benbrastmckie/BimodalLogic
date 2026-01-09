@@ -52,9 +52,9 @@ Include only files related to that task:
 task 334: complete research
 
 Modified:
-  .opencode/specs/TODO.md
-  .opencode/specs/state.json
-  .opencode/specs/334_task_slug/reports/research-001.md
+  .claude/specs/TODO.md
+  .claude/specs/state.json
+  .claude/specs/334_task_slug/reports/research-001.md
 ```
 
 ### Multi-Task Operations
@@ -63,9 +63,9 @@ Group related changes:
 todo: archive 5 completed tasks
 
 Modified:
-  .opencode/specs/TODO.md
-  .opencode/specs/state.json
-  .opencode/specs/archive/state.json
+  .claude/specs/TODO.md
+  .claude/specs/state.json
+  .claude/specs/archive/state.json
 ```
 
 ## Git Safety
