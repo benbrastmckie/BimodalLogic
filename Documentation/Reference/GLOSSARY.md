@@ -4,18 +4,20 @@ This glossary maps terminology between Logos and Logos documentation, providing 
 
 ## Layer Architecture
 
+The Logos is organized into five semantic layers, each building upon the previous with increasing expressive power. See [LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md) for full details and [RECURSIVE_SEMANTICS.md](../Research/RECURSIVE_SEMANTICS.md) for formal semantics.
+
 | Term | Definition | Related Terms |
 |------|------------|---------------|
-| Layer 0 | Core TM logic with Boolean, modal, and temporal operators | Core Layer, TM logic |
-| TM logic | Bimodal logic combining Tense (temporal) and Modality (modal) operators | Layer 0, Core Layer |
-| Layer 1 | Explanatory extension with counterfactual, constitutive, causal operators | Explanatory Extension |
-| Layer 2 | Epistemic extension with belief, probability, knowledge operators | Epistemic Extension |
-| Layer 3 | Normative extension with obligation, permission, preference operators | Normative Extension |
-| Core Layer | Foundation layer (Layer 0) providing Boolean, modal, temporal reasoning | Layer 0 |
-| Extension Layer | Additional operator layers (1-3) building on Core Layer | Layers 1-3 |
+| Constitutive Layer | Foundation layer with hyperintensional semantics over mereological state spaces | State space, Parthood, Bilateral proposition |
+| Causal Layer | Intensional semantics with modal, temporal, and counterfactual operators | World-history, Task relation, TM logic |
+| Epistemic Layer | Extensions for belief, knowledge, and probability operators | Credence function, Epistemic modality |
+| Normative Layer | Extensions for obligation, permission, and preference operators | Value ordering, Deontic logic |
+| Agential Layer | Extensions for multi-agent reasoning | Agent-relative accessibility |
+| TM logic | Bimodal logic combining Tense (temporal) and Modality (modal) operators | Causal Layer |
 | Progressive Extension | Methodology enabling incremental addition of operator layers | Layer Architecture |
+| Semantic Progression | Each layer's frame includes all structure from previous layers | Layer Architecture |
 
-## Boolean Operators (Layer 0)
+## Boolean Operators (Constitutive/Causal Layer)
 
 | Symbol | Name | Definition | Aliases |
 |--------|------|------------|---------|
@@ -27,7 +29,7 @@ This glossary maps terminology between Logos and Logos documentation, providing 
 | `⊥` | Falsity | Logical constant false | bot, bottom |
 | `⊤` | Truth | Logical constant true | top |
 
-## Modal Operators (Layer 0)
+## Modal Operators (Causal Layer)
 
 | Symbol | Name | Definition | Aliases |
 |--------|------|------------|---------|
@@ -37,7 +39,7 @@ This glossary maps terminology between Logos and Logos documentation, providing 
 
 **S5 Modal Logic**: Logos implements S5 axioms (MT, M4, MB) ensuring reflexivity, transitivity, and symmetry for modal accessibility relation.
 
-## Temporal Operators (Layer 0)
+## Temporal Operators (Causal Layer)
 
 | Symbol | Name | Function Name | Definition | Aliases |
 |--------|------|---------------|------------|---------|
@@ -58,7 +60,7 @@ This glossary maps terminology between Logos and Logos documentation, providing 
 - `G φ` → `Formula.all_future φ` (universal future, primitive)
 - `F φ` → `some_future φ` (existential future, derived via `¬(all_future ¬φ)`)
 
-## Bimodal Interaction (Layer 0)
+## Bimodal Interaction (Causal Layer)
 
 | Term | Definition | Related Axioms |
 |------|------------|----------------|
@@ -66,36 +68,80 @@ This glossary maps terminology between Logos and Logos documentation, providing 
 | Temporal perpetuity | What is always true remains always true | TL |
 | Perpetuity principles | Theorems connecting modal and temporal operators (P1-P6) | See Theorems section |
 
-## Explanatory Operators (Layer 1 - Planned)
+## Constitutive Operators (Constitutive Layer)
 
 | Symbol | Name | Definition | Domain |
 |--------|------|------------|--------|
-| `□→` | Would Counterfactual | "If it were...then it would" | Counterfactual reasoning |
-| `◇→` | Might Counterfactual | "If it were...then it might" | Counterfactual reasoning |
+| `≡` | Propositional Identity | "A just is B" (identical verifiers and falsifiers) | Hyperintensional reasoning |
 | `≤` | Grounding | "A is sufficient for B" or "A grounds B" | Constitutive reasoning |
 | `⊑` | Essence | "A is necessary for B" or "A is essential to B" | Constitutive reasoning |
-| `≡` | Identity | "A just is B" (propositional identity) | Constitutive reasoning |
 | `≼` | Relevance | "A is wholly relevant to B" | Constitutive reasoning |
-| `○→` | Causation | Productive causal relationships | Causal reasoning |
 
-## Epistemic Operators (Layer 2 - Planned)
+## Causal Operators (Causal Layer)
 
 | Symbol | Name | Definition | Domain |
 |--------|------|------------|--------|
-| `B` | Belief | "Agent a believes that A" | Belief modeling |
-| `Pr` | Probability | Probability quantification | Uncertainty reasoning |
+| `□→` | Would Counterfactual | "If it were...then it would" (mereological semantics) | Counterfactual reasoning |
+| `◇→` | Might Counterfactual | "If it were...then it might" | Counterfactual reasoning |
+| `○→` | Causation | Productive causal relationships | Causal reasoning |
+| `↑ⁱ` | Store | Store current time in register i | Temporal reference |
+| `↓ⁱ` | Recall | Evaluate at stored time i | Temporal reference |
+
+## Extended Tense Operators (Causal Layer)
+
+| Symbol | Name | Definition | Domain |
+|--------|------|------------|--------|
+| `S` | Since | "A since B" (A has held since B was true) | Temporal reasoning |
+| `U` | Until | "A until B" (A holds until B becomes true) | Temporal reasoning |
+
+## Epistemic Operators (Epistemic Layer)
+
+[DETAILS: Full semantic specifications pending]
+
+| Symbol | Name | Definition | Domain |
+|--------|------|------------|--------|
+| `B_a` | Belief | "Agent a believes that A" | Belief modeling |
+| `K_a` | Knowledge | "Agent a knows that A" | Epistemic modality |
+| `Pr` | Probability | Probability quantification (Pr(A) ≥ θ) | Uncertainty reasoning |
 | `Mi` | Might (epistemic) | "It might be the case that A" | Epistemic modality |
 | `Mu` | Must (epistemic) | "It must be the case that A" | Epistemic modality |
 | `⟹` | Indicative Conditional | "If...then" under actual beliefs | Conditional reasoning |
 
-## Normative Operators (Layer 3 - Planned)
+## Normative Operators (Normative Layer)
+
+[DETAILS: Full semantic specifications pending]
 
 | Symbol | Name | Definition | Domain |
 |--------|------|------------|--------|
 | `O` | Obligation | "It is obligatory that A" | Deontic logic |
 | `P` | Permission | "It is permitted that A" | Deontic logic |
-| `≺` | Preference | "A is preferred over B" | Preference reasoning |
-| `↦` | Normative Explanation | Normative grounding | Normative reasoning |
+| `≺_a` | Preference | "Agent a prefers B to A" | Preference reasoning |
+| `↦` | Normative Explanation | "A grounds obligation B" | Normative reasoning |
+
+## Constitutive Layer Concepts
+
+| Term | Definition | Related Terms |
+|------|------------|---------------|
+| State Space | Complete lattice ⟨S, ⊑⟩ of states ordered by parthood | Constitutive frame |
+| Parthood | Mereological relation ⊑ ordering states | State space |
+| Null State | Bottom element □ of the state lattice (fusion of empty set) | State space |
+| Full State | Top element ■ of the state lattice (fusion of all states) | State space |
+| Fusion | Least upper bound s.t of states s and t | State space, Mereology |
+| Compatibility | States s and t are compatible iff their fusion is possible | State space |
+| Verification | Relation between states and formulas (s ⊩⁺ A) | Hyperintensional semantics |
+| Falsification | Relation between states and formulas (s ⊩⁻ A) | Hyperintensional semantics |
+| Bilateral Proposition | Ordered pair ⟨V, F⟩ of verifier and falsifier states | Hyperintensional semantics |
+| Hyperintensional Semantics | Semantics distinguishing propositions with same truth-value profile | Constitutive Layer |
+
+## Causal Layer Concepts
+
+| Term | Definition | Related Terms |
+|------|------------|---------------|
+| Task Relation | Three-place relation ⇒ constraining state transitions with nullity and compositionality | Causal frame |
+| World-state | Maximal possible state | Causal Layer |
+| World-history | Function τ from convex time set to world-states respecting task relation | Causal frame |
+| Temporal Order | Totally ordered abelian group D = ⟨D, +, ≤⟩ of times | Causal frame |
+| Convex Time Set | Time interval without gaps | World-history |
 
 ## Verification Concepts
 
@@ -133,7 +179,7 @@ This glossary maps terminology between Logos and Logos documentation, providing 
 | P5 | `◇▽φ → △◇φ` | Persistent possibility |
 | P6 | `▽□φ → □△φ` | Occurrent necessity is perpetual |
 
-## Axioms (Layer 0)
+## Axioms (Causal Layer)
 
 | Name | Statement | Purpose |
 |------|-----------|---------|
@@ -153,10 +199,11 @@ For all implementation status information, see [IMPLEMENTATION_STATUS.md](../Pro
 ## Related Documentation
 
 - [METHODOLOGY.md](../UserGuide/METHODOLOGY.md) - Philosophical foundations
-- [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) - Layer 0 technical specification
+- [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) - Technical specification
 - [OPERATORS.md](OPERATORS.md) - Formal symbols reference
-- [Research/LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md) - Layers 1-3 specifications
+- [LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md) - Five-layer architecture overview
+- [RECURSIVE_SEMANTICS.md](../Research/RECURSIVE_SEMANTICS.md) - Full formal semantic specifications
 
 ---
 
-_Last updated: December 2025_
+_Last updated: January 2026_
