@@ -1,0 +1,54 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(lake *)",
+      "Bash(cd *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep",
+      "WebSearch",
+      "WebFetch",
+      "Task",
+      "TodoWrite",
+      "mcp__lean-lsp__*"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~)",
+      "Bash(sudo *)",
+      "Bash(chmod 777 *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'FILE=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r \".file_path // empty\"); if [[ \"$FILE\" == *\".opencode/specs/state.json\"* ]] || [[ \"$FILE\" == *\".opencode/specs/TODO.md\"* ]]; then echo \"{\\\"decision\\\": \\\"allow\\\", \\\"reason\\\": \\\"State file write - sync validation will run post-write\\\"}\"; else echo \"{\\\"decision\\\": \\\"allow\\\"}\"; fi'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'FILE=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r \".file_path // empty\"); if [[ \"$FILE\" == *\".opencode/specs/state.json\"* ]] || [[ \"$FILE\" == *\".opencode/specs/TODO.md\"* ]]; then echo \"[StateSync] Updated: $FILE\"; fi'"
+          }
+        ]
+      }
+    ]
+  },
+  "model": "claude-opus-4-5-20251101"
+}

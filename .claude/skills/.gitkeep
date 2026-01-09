@@ -1,0 +1,4 @@
+# Agent skills directory
+# Each subdirectory contains a SKILL.md file
+# Skills are auto-discovered by Claude Code based on description matching
+# See .claude-migration-plan.md for skill specifications
