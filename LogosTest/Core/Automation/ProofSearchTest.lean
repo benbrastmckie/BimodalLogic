@@ -179,4 +179,67 @@ example : (SearchStrategy.BestFirst 50 : SearchStrategy) = .BestFirst 50 := rfl
   else
     IO.println "✗ Strategy mismatch"
 
+/-!
+## Benchmarks: IDDFS vs BoundedDFS
+
+Performance comparison for various proof depths.
+-/
+
+-- Benchmark: Modal axioms (shallow proofs, depth ~1)
+#eval do
+  IO.println "=== Benchmark: Modal Axioms (depth ~1) ==="
+  let axioms := [
+    ((Formula.box p).imp p, "Modal T"),
+    ((Formula.box p).imp (Formula.box (Formula.box p)), "Modal 4"),
+    (p.imp (Formula.box p.diamond), "Modal B"),
+    ((Formula.box p).diamond.imp (Formula.box p), "Modal 5")
+  ]
+  for (formula, name) in axioms do
+    let (_, _, _, _, iddfs_visits) := search [] formula (.IDDFS 20) 1000
+    let (_, _, _, _, dfs_visits) := search [] formula (.BoundedDFS 20) 1000
+    IO.println s!"{name}: IDDFS visits={iddfs_visits}, DFS visits={dfs_visits}"
+
+-- Benchmark: Propositional axioms
+#eval do
+  IO.println "=== Benchmark: Propositional Axioms (depth ~1) ==="
+  let propK := (p.imp (q.imp r)).imp ((p.imp q).imp (p.imp r))
+  let propS := p.imp (q.imp p)
+  let exFalso := Formula.bot.imp p
+  let (k_found, _, _, _, k_visits) := search [] propK (.IDDFS 20) 1000
+  let (s_found, _, _, _, s_visits) := search [] propS (.IDDFS 20) 1000
+  let (ef_found, _, _, _, ef_visits) := search [] exFalso (.IDDFS 20) 1000
+  IO.println s!"Prop K: found={k_found}, visits={k_visits}"
+  IO.println s!"Prop S: found={s_found}, visits={s_visits}"
+  IO.println s!"Ex Falso: found={ef_found}, visits={ef_visits}"
+
+-- Benchmark: Visit limit behavior
+#eval do
+  IO.println "=== Benchmark: Visit Limit Behavior ==="
+  let nonAxiom := Formula.atom "x"
+  for limit in [10, 50, 100, 500] do
+    let (_, _, _, stats, visits) := iddfs_search [] nonAxiom 50 limit
+    IO.println s!"Limit={limit}: visits={visits}, visited={stats.visited}"
+
+-- Summary benchmark
+#eval do
+  IO.println "=== IDDFS vs BoundedDFS Summary ==="
+  let testCases := [
+    ([], (Formula.box p).imp p, "Modal T axiom"),
+    ([], (Formula.box p).imp (Formula.box (Formula.box p)), "Modal 4 axiom"),
+    ([p], p, "Proof from context"),
+    ([], (p.imp (q.imp r)).imp ((p.imp q).imp (p.imp r)), "Prop K axiom")
+  ]
+  let mut iddfsTotal := 0
+  let mut dfsTotal := 0
+  for (ctx, formula, name) in testCases do
+    let (_, _, _, _, iddfs_v) := search ctx formula (.IDDFS 20) 1000
+    let (_, _, _, _, dfs_v) := search ctx formula (.BoundedDFS 20) 1000
+    iddfsTotal := iddfsTotal + iddfs_v
+    dfsTotal := dfsTotal + dfs_v
+    IO.println s!"{name}: IDDFS={iddfs_v}, DFS={dfs_v}"
+  IO.println s!"Total: IDDFS={iddfsTotal}, DFS={dfsTotal}"
+  if dfsTotal > 0 then
+    let overhead := (iddfsTotal * 100 / dfsTotal) - 100
+    IO.println s!"IDDFS overhead: ~{overhead}%"
+
 end LogosTest.Core.Automation

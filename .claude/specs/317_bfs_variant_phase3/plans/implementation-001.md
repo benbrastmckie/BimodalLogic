@@ -270,7 +270,7 @@ example : ⊢ p.imp p  -- Trivial proof, should find at depth 0-1
 
 ---
 
-### Phase 5: Benchmarking and Performance Analysis [IN PROGRESS]
+### Phase 5: Benchmarking and Performance Analysis [COMPLETED]
 
 **Objective**: Benchmark IDDFS vs bounded DFS and document performance characteristics
 
