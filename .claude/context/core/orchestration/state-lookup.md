@@ -836,11 +836,54 @@ done
 
 ---
 
-**Version**: 1.1 (Phase 2 Optimizations)
-**Last Updated**: 2026-01-05
+## Integration with Command Files
+
+All command files now use these standardized patterns:
+
+### Command File Workflow
+
+1. **Parse and Validate**: Use jq lookup pattern
+   ```bash
+   task_data=$(jq -r --arg num "$task_number" \
+     '.active_projects[] | select(.project_number == ($num | tonumber))' \
+     .claude/specs/state.json)
+   ```
+
+2. **Status Updates**: Invoke skill-status-sync
+   - All status transitions go through skill-status-sync
+   - Ensures atomic updates to both files
+   - Handles frontmatter sync for creates
+
+### Command-Specific Patterns
+
+| Command | Lookup | Status Updates |
+|---------|--------|----------------|
+| /research | jq task lookup | skill-status-sync for RESEARCHING, RESEARCHED |
+| /plan | jq task lookup | skill-status-sync for PLANNING, PLANNED |
+| /implement | jq task lookup | skill-status-sync for IMPLEMENTING, COMPLETED |
+| /revise | jq task lookup | skill-status-sync for PLANNED (reset) |
+| /task | jq for all modes | skill-status-sync for create/archive |
+
+### Cross-Reference: skill-status-sync
+
+The skill-status-sync skill (`.claude/skills/skill-status-sync/SKILL.md`) provides:
+- Complete jq patterns for all CRUD operations
+- grep patterns for TODO.md section lookup
+- Two-phase commit pattern for atomic updates
+- Frontmatter sync for task creation
+- Error handling and rollback
+
+**Always use skill-status-sync for writes** - it ensures consistency between state.json and TODO.md.
+
+---
+
+**Version**: 1.2 (Command Integration)
+**Last Updated**: 2026-01-09
 **Related Documents**:
+- `.claude/skills/skill-status-sync/SKILL.md` - **Primary reference for write operations**
 - `.claude/context/core/system/state-management.md` - State management overview
-- `.claude/specs/state-json-optimization-plan.md` - Phase 1 optimization plan
-- `.claude/specs/state-json-phase2-optimization-plan.md` - Phase 2 optimization plan
-- `.claude/agent/subagents/status-sync-manager.md` - Synchronization mechanism
-- `.claude/specs/state-json-phase2-testing-guide.md` - Testing guide
+- `.claude/commands/research.md` - Research command with jq patterns
+- `.claude/commands/plan.md` - Plan command with jq patterns
+- `.claude/commands/implement.md` - Implement command with jq patterns
+- `.claude/commands/revise.md` - Revise command with jq patterns
+- `.claude/commands/task.md` - Task command with jq patterns

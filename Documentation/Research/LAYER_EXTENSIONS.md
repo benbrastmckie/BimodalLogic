@@ -1,586 +1,322 @@
-# Layer Extensions: Explanatory, Epistemic, Normative Operators
+# Logos Layer Extensions
 
 ## Overview
 
-The Logos is organized into a series of expressive layers, each corresponding to a semantic frame of increasing complexity. A **semantic frame** defines the primitive semantic structure needed to interpret logical formulas by specifying what kinds of elements exist in the semantic domain and how truth conditions are evaluated. Each layer introduces new operators whose meaning is defined through semantic clauses that reference the primitive structure of that layer's frame.
+The Logos is organized into five semantic layers, each building upon the previous with increasing expressive power. Each layer corresponds to a **semantic frame** that defines the primitive structure needed to interpret logical formulas. The layers are:
 
-**Semantic Progression**: The layers build systematically:
+1. **Constitutive Layer** - Hyperintensional semantics over mereological state spaces
+2. **Causal Layer** - Intensional semantics over world-histories with temporal and modal operators
+3. **Epistemic Layer** - Extensions for belief, knowledge, and probability
+4. **Normative Layer** - Extensions for obligation, permission, and value
+5. **Agential Layer** - Extensions for multi-agent reasoning
 
-<!-- FIX: a few elements are missing here.
+**Semantic Progression**: Each layer's frame includes all structure from previous layers. A formula combining operators from multiple layers (e.g., `B_a(F(O(p)))` - "agent a believes that it will be obligatory that p") is evaluated in the most complex frame needed.
 
-- I want to begin with a constitutive frame consisting of just a complete lattice of states where the order is referred to as parthood (one state being a part of another).
-- It then needs to be explained that the semantic primitives included in a constitutive frame are used to provide a hyperintensional semantic clauses to recursively interpret the Constitutive Layer consisting of predicates, function symbols, variables, lambda abstractors, extensional connectives, and propositional identity operator where the hyperintensional semantics recursively defines verification and falsification for all sentences of any complexity in the Constitutive Layer relative to just a model, variable assignment function, and state.
-- A model for the Constitutive Layer includes an interpretation function defined over the constitutive frame that assigns each n-place function symbol to a function from n states to a state (where 0-place functions are called constants and assigned to states), and the interpretation function also assigns n-place predicates to ordered pairs consisting of a set of verifier functions which take n states to a state as output, and a set of falsifier functions which also take n states and input to a state as output (0-place predicates are called sentence letters and these are assigned to ordered pairs consisting of a set of verifier states, followed by a set of falsifier states).
-- A variable assignment function maps variables to states, where given a model and variable assignment, the extension of a singular term 'k' is written '|k|' and is defined recursively: if the singular term is a variable 'x', then its value is given by the variable assignment; if the singular term is 'f(a_1,...,a_n)', then its value is given by first finding the extensions |a_1|, ..., |a_n| for the arguments, then finding the value of 'f' under the interpretation function provided by the model and letting the value (which is an n-place function) act on the extensions of the n arguments.
-- We may then provide a hyperintensional semantics for the Constitutive Layer which recursively defines verification and falsification where, for instance, a model, variable assignment, and state verify an atomic sentence F(a_1,...,a_n) iff there is a verifier function in the interpretation of 'F' which when it acts on the extension of the singular terms 'a_1',...,'a_n' returns the state (falsification is similar but where there is requrired to be a falsifier function in the interpretation of 'F').
-- The other hyperintensional semantic clauses are similar where, for instance, a model, variable assignment, and state verifies a negated sentences if that model, variable assignment, and state falsify the sentence being negated, and similarly, a model, variable assignment, and state falsifies a negated sentences if that model, variable assignment, and state verifies the sentence being negated.
-- A model, variable assignment, and state verifies a conjunction if that state is a fusion of a verifier for the left conjunct and a verifier for the right conjunct (where the model and variable assignment are held fixed); a model, variable assignment, and state falsifies a conjunction if that state a falsifier for the left conjunct or a falsifier for the right conjunct, or a fusion of a falsifier for the right conjunct together with a falsifier for the left conjunct (where the model and variable assignment are held fixed).
-- A model, variable assignment, and state verifies a disjunction if that state a verifier for the left conjunct or a verifier for the right conjunct, or a fusion of a verifier for the right conjunct together with a verifier for the left conjunct (where the model and variable assignment are held fixed); a model, variable assignment, and state falsifies a conjunction if that state is a fusion of a falsifier for the left conjunct and a falsifier for the right conjunct (where the model and variable assignment are held fixed).
-- A model, variable assignment, and state always verify \top; and a model, variable assignment, and state only falsify \top if that state is the full state (the fusion of all states).
-- A model, variable assignment, and state never verify \bot; and a model, variable assignment, and state only falsify \bot if that state is the null state (the fusion of no states).
-- A model, variable, assignment, and state verify a propositional identity sentence if that state is the null state and the sentences flanking the propositional identity have the same verifiers and falsifiers
-- A model, variable, assignment, and state falsify a propositional identity sentence if that state is the null state and the sentences flanking the propositional identity do not have the same verifiers and falsifiers
-- Given the hyperintensional semantics for the Constitutive Layer, we may then define a logical consequence relation (double turnstile) for a restricted class of constitutive sentences which consist propositional identity sentences or arbitrary combinations thereof (we cannot evaluate atomic sentences alone since we don't have the semantic resources yet to define world-states) where a constitutive sentence (the conclusion) is a logical consequence of some other constitutive sentences (the premises) just in case the conclusion is verified by the null state in any model in which the null state verifies all of the premises.
-- Although a useful foundation, the Constitutive Layer does not include the resources needed to evaluate anything besides complex combinations of propositional identity claims.
-- Causal frames extend constitutive frames to include a totally ordered abelian group of times and a three place task relation which satisfies a transitivity condition in order to provide an intensional semantics which evaluates complex sentences by recursively assigning them truth-values relative to a model, world-history, time, and variable assignment.
-- A state is possible just in case there is a null task from it to itself in zero duration, and impossible otherwise.
-- Two states are compatible just in case their fusion is possible.
-- A state s is maximal just in case for every state t, if t is compatible with s, then t is a part of s.
-- A world state is a maximal possible state.
-- A world-history is any function \tau from a convex set of times X to states where \tau(x) ==>_y-x \tau(y) for any x, y in X.
-- A model, world-history, time, and variable assignment makes an atomic sentence true/false (we use the double turnstile \vDash and \Dashv for this) just in case there is a verifier/falsifier state for that atomic sentence which is a part of the result of letting the world-history act on the time.
-- We then provide recursive clauses for all of the other connectives of the language, where now we may evaluate much more than we could in the intensional semantics for just the constitutive layer.
-- A conclusion is a logical consequence of some premises in the Causal Layer just in case for any model, world-history, time, and variable assignment that makes all the premises true, the conclusion is also true.
-- The epistemic and normative layers require further frame extensions, and I will return to do this later.
-- A fifth layer should also be included for multi-agent reasoning called the Agential Layer
--->
+See [RECURSIVE_SEMANTICS.md](RECURSIVE_SEMANTICS.md) for full formal semantic specifications, [METHODOLOGY.md](../UserGuide/METHODOLOGY.md) for philosophical methodology, and [GLOSSARY.md](../Reference/GLOSSARY.md) for term definitions.
 
-1. **Constitutive Layer**: A constitutive frame is a complete lattice of states ordered by parthood. A model defined over this frame assigns extensions to function symbols, variables, and n-place predicates. These resources may be used to provide hyperintensional semantic clauses for the lambda abstractor (`λ`), extensional connectives (`¬`, `∧`, `∨`, `⊥`, `⊤`), and the constitutive explanatory operators (`≡`, `⊑`, `≤`) that recursively define the verification and falsification relations which relate a model and state to a sentence of any complexity. We may then provide an intensional semantics for a restricted class of constitutive sentences of the form `A constitutive_operator B` where `A` and `B`, as well as sentences of arbitrary complexity where constitutive sentences are treated as atomic.
+---
 
-1. **Causal Layer**: A causal frame extends constitutive frames to include a totally ordered abelian group of times together with a three place task relation satisfying a transitivity constraint. This provides the resources needed to define world-states and world-histories which can be used to evaluate atomic sentences and provide semantic caluses for a wide range of additional operators. The models defined over a causal frame assign extensions to function symbols, variables, and n-place predicates in the same way as in the Constitutive Layer. We may then articulate intensional semantic clauses for the actuality predicate `Act`, quantifier (`∀`), extensional connectives (`¬`, `∧`, `∨`, `⊥`, `⊤`), modal operators (`□`, `◇`), tense operators (`P`, `F`, `H`, `G`), counterfactual conditionals (`□→`, `◇→`), and causation operator (`○→`).
+## The Five-Layer Architecture
 
-3. **Epistemic Layer**: Extends earlier frames by including a credence function that assigns probabilities to state transitions over a given duration. This enriched frame provides semantic clauses for belief operators (`B_a`), probability operators (`Pr`), epistemic modals (`Mi`, `Mu`), and indicative conditionals (`⟹`).
+### Constitutive Layer (Foundation)
 
-4. **Normative Layer**: Adds value orderings over states in order to provide semantic clauses for obligation (`O`), permission (`P`), preference (`≺`), and normative explanation (`↦`).
+The Constitutive Layer provides the foundational mereological structure upon which all other layers build. Its semantics is **hyperintensional**, distinguishing propositions that agree on truth-value across all possible worlds but differ in their verification and falsification conditions.
 
-**Compositional Semantics**: Each layer's semantic frame includes all structure from previous layers. A formula combining operators from multiple layers (e.g., `B_a(F(O(p)))` - "agent a believes that it will be obligatory that p") is evaluated in the most complex frame needed, which contains all the semantic machinery required for each operator.
+#### Frame Structure
 
-**From Semantics to Reasoning**: An **intended model** instantiates one of these semantic frames with concrete structure—specifying which individuals exist, which predicates hold of them, which worlds are accessible, what agents believe, which actions are obligatory, etc. Given an intended model representing a planning scenario:
+A *constitutive frame* is a complete lattice ⟨S, ⊑⟩ of states ordered by parthood, providing:
+- **Null state** (□): Bottom element (fusion of the empty set)
+- **Full state** (■): Top element (fusion of all states)
+- **Fusion** (s.t): Least upper bound of states s and t
+- **Compatibility** (s ∘ t): States are compatible iff their fusion is possible
 
-- The **proof-checker** verifies that proposed action plans follow deductively from the model's specifications
-- The **model-checker** searches for alternative models (counterexamples) to test whether proposed strategies are robust
-- Operators from different layers interact to support planning: temporal operators represent action sequences, counterfactuals evaluate hypothetical interventions, epistemic operators track what agents know, and normative operators constrain permissible actions
+#### Model Components
 
-This layered semantic architecture enables AI systems to reason about complex multi-agent planning problems: "If I perform action A (counterfactual), what will other agents believe (epistemic), what obligations will arise (normative), and how does this affect the probability of desired outcomes (epistemic with probability)?"
+A constitutive model includes an interpretation function that assigns:
+- **n-place function symbols** → functions from n states to a state (0-place = constants)
+- **n-place predicates** → ordered pairs ⟨verifier function, falsifier function⟩
+- **Sentence letters** → ordered pairs ⟨verifier state, falsifier state⟩
+- **Variable assignment** → function mapping variables to states
 
-The Logos thus provides a unified logical framework where each layer contributes semantic structure supporting increasingly sophisticated reasoning needed for AI planning and evaluation under uncertainty. The layers stack together systematically:
+#### Hyperintensional Semantics
 
-The **Core Layer** provides fundamental descriptive resources—predicates and functions for expressing facts, quantifiers for generalizing over individuals, and constitutive operators for expressing what grounds and explains what. This foundational layer enables systems to represent and reason about the basic structure of reality.
+The Constitutive Layer provides recursive verification and falsification clauses for:
+- **Atomic formulas** F(a₁,...,aₙ)
+- **Negation** (¬) - exchanges verification and falsification
+- **Conjunction** (∧) - fusion of verifiers, sum of falsifiers
+- **Disjunction** (∨) - sum of verifiers, fusion of falsifiers
+- **Top** (⊤) and **Bottom** (⊥)
+- **Propositional identity** (≡) - identical verifiers and falsifiers
 
-Building on this foundation, the **Modal Layer** adds operators for reasoning about possibility, necessity, and counterfactual scenarios. These operators are essential for planning, as they enable systems to evaluate what would happen under different conditions and to reason about contingent futures.
+#### Constitutive Operators
 
-The **Causal Layer** extends modal reasoning with temporal productive relationships, enabling systems to distinguish between timeless constitutive grounding (e.g., being crimson grounds being red) and temporal causal production (e.g., touching a hot stove causes pain).
+| Operator | Notation | Reading |
+|----------|----------|---------|
+| **Propositional Identity** | A ≡ B | "A just is B" |
+| **Grounding** | A ≤ B | "A is sufficient for B" |
+| **Essence** | A ⊑ B | "A is necessary for B" |
+| **Relevance** | A ≼ B | "A is wholly relevant to B" |
 
-The **Epistemic Layer** addresses reasoning under uncertainty by providing operators for beliefs, probabilities, and knowledge states. Multi-agent systems must reason not only about what is true, but about what different agents believe to be true.
+**Note**: Logical consequence at this layer is restricted to propositional identity sentences. Evaluation of contingent atomic sentences requires the Causal Layer.
 
-Finally, the **Normative Layer** provides operators for reasoning about obligations, permissions, and preferences. AI systems operating in human contexts must be able to represent and reason about ethical constraints, legal requirements, and value trade-offs.
+See [RECURSIVE_SEMANTICS.md](RECURSIVE_SEMANTICS.md) for full verification/falsification clauses.
 
-This layered architecture reflects the progressive methodology: start with a core logic that works reliably, then extend it systematically with operators needed for increasingly sophisticated reasoning tasks.
+---
 
-This document specifies the design for the following language extensions:
+### Causal Layer
 
-- **Core Layer**: Predicates, functions, lambdas, quantifiers, extensional operators, and constitutive explanatory operators.
-- **Modal Layer**: Historical, counterfactual conditional, and tense operators for reasoning about past and future contingency.
-- **Causal Layer**: Causal operators for reasoning about the causal connections between earlier and later events.
-- **Epistemic Layer**: Epistemic modals, indicative conditionals, and probability, and belief operators for reasoning under uncertainty.
-- **Normative Layer**: Permission, obligation, preference, and normative explanatory operators for reasoning about values and laws.
+The Causal Layer extends the Constitutive Layer with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. Semantics at this layer is **intensional** rather than hyperintensional.
 
-See [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) for the technical specification of the Modal Layer, [CONCEPTUAL_ENGINEERING.md](CONCEPTUAL_ENGINEERING.md) for philosophical motivation explaining why these operators are needed for planning under conditions of uncertainty in multi-agent systems, and [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) for current progress.
+#### Frame Extensions
 
-## Core Layer
+A *causal frame* extends a constitutive frame with:
+- **Temporal order** D = ⟨D, +, ≤⟩ - a totally ordered abelian group of times
+- **Task relation** ⇒ - constraining possible state transitions with nullity and compositionality
 
-The Core Layer provides first-order and second-order descriptive resources that form the foundation for all higher-layer reasoning. These include basic logical vocabulary (predicates, functions), abstraction and generalization mechanisms (lambdas, quantifiers), truth-functional connectives (extensional operators), and constitutive explanatory operators.
+#### State Modality Concepts
 
-### Predicates and Functions
+| Concept | Definition |
+|---------|------------|
+| **Possible state** | Has null task from itself to itself |
+| **Compatible states** | Fusion is possible |
+| **Maximal state** | Contains all compatible states as parts |
+| **World-state** | Maximal possible state |
+| **World-history** | Function τ from convex time set to world-states respecting task relation |
 
-**Predicates**: Represent properties and relations that can be true or false of individuals.
+#### Operators
 
-**Notation**: 
-- Unary predicates: `P(x)` - "x has property P"
-- Binary predicates: `R(x,y)` - "x stands in relation R to y"
-- N-ary predicates: `Q(x₁,...,xₙ)` - "individuals x₁,...,xₙ satisfy relation Q"
+**Modal Operators**:
+| Operator | Notation | Reading |
+|----------|----------|---------|
+| **Necessity** | □A | "Necessarily A" |
+| **Possibility** | ◇A | "Possibly A" |
 
-**Examples**:
-- `Red(x)` - x is red
-- `Taller(x,y)` - x is taller than y
-- `Between(x,y,z)` - x is between y and z
+**Core Tense Operators**:
+| Operator | Notation | Reading |
+|----------|----------|---------|
+| **Always Past** | HA | "It has always been that A" |
+| **Always Future** | GA | "It will always be that A" |
+| **Past** | PA | "It was the case that A" |
+| **Future** | FA | "It will be the case that A" |
 
-**Functions**: Map individuals to individuals, enabling reference to specific entities.
-
-**Notation**: `f(x₁,...,xₙ)` denotes the individual that results from applying function f to arguments x₁,...,xₙ.
-
-**Examples**:
-- `father(x)` - the father of x
-- `sum(x,y)` - the sum of x and y
-- `capital(x)` - the capital city of country x
-
-**Type System**: The Logos supports typed predicates and functions, with type checking ensuring well-formed formulas. See [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) for the complete type system specification.
-
-### Lambdas and Quantifiers
-
-**Lambda Abstraction** (`λ`): Creates property or relation terms from formulas with free variables.
-
-**Notation**: `λx.φ(x)` denotes the property that holds of y iff φ(y) is true.
-
-**Examples**:
-- `λx.Red(x)` - the property of being red
-- `λx.λy.Loves(x,y)` - the relation of loving
-- `λx.[father(x) = john]` - the property of being John's child
-
-**Application**: Lambda terms can be applied to arguments: `(λx.Red(x))(a)` reduces to `Red(a)`.
-
-**Universal Quantifier** (`∀`): "For all x, φ(x)" - expresses that formula holds for every individual in domain.
-
-**Notation**: `∀x.φ(x)` or `∀x:T.φ(x)` when specifying type T.
-
-**Examples**:
-- `∀x.Mortal(x)` - everything is mortal
-- `∀x.[Human(x) → Mortal(x)]` - all humans are mortal
-
-**Existential Quantifier** (`∃`): "There exists x such that φ(x)" - expresses that formula holds for at least one individual.
-
-**Notation**: `∃x.φ(x)` or `∃x:T.φ(x)` when specifying type T.
-
-**Examples**:
-- `∃x.Prime(x)` - there exists a prime number
-- `∃x.[Human(x) ∧ Wise(x)]` - there exists a wise human
-
-**Second-Order Quantification**: The Logos supports quantification over properties and relations, enabling expressive reasoning about concepts themselves.
-
-**Example**: `∀P.∀x.[P(x) → P(x)]` - for any property P and individual x, if x has P then x has P (second-order identity).
-
-### Extensional Operators
-
-The Core Layer includes standard truth-functional connectives that combine formulas based solely on their truth values.
-
-**Negation** (`¬`): "Not A" - reverses truth value.
-
-**Conjunction** (`∧`): "A and B" - true iff both A and B true.
-
-**Disjunction** (`∨`): "A or B" - true iff at least one of A or B true.
-
-**Material Implication** (`→`): "If A then B" - truth-functional conditional, true iff A false or B true.
-
-**Material Biconditional** (`↔`): "A if and only if B" - true iff A and B have same truth value.
-
-**Contrast with Hyperintensional Operators**: These extensional operators are truth-functional (output determined solely by input truth values), unlike the hyperintensional operators (grounding `≤`, essence `⊑`, counterfactuals `□→`) which distinguish between necessarily equivalent propositions based on their metaphysical structure.
-
-**Example**: `[2+2=4] ↔ [water is H2O]` is true (both sides true), but `[2+2=4] ≡ [water is H2O]` is false (different propositions despite same truth value).
-
-### Constitutive Operators
-
-**Grounding** (`≤`): "A is sufficient for B" or "A grounds B" - represents constitutive explanatory relationships where A metaphysically suffices for B.
-
-**Formal Characterization**:
-- Dual to essence: `A ≤ B := ¬A ⊑ ¬B`
-- Alternative definition: `A ≤ B := (A ∨ B) ≡ B`
-
-**State-Based Semantics**: In verifier/falsifier state pairs, `A ≤ B` holds when verifiers of A contained in verifiers of B. Every way of making A true already makes B true.
-
-**Examples**:
-- `[Sam is crimson] ≤ [Sam is red]` - being crimson grounds being red
-- `[Sam is a robin] ≤ [Sam is a bird]` - being a robin grounds being a bird
-- `[Having 79 protons] ≤ [Being gold]` - atomic structure grounds gold identity
-
-**Essence** (`⊑`): "A is necessary for B" or "A is essential to B" - represents constitutive necessity where A is metaphysically necessary for B.
-
-**Formal Characterization**:
-- Dual to ground: `A ⊑ B := ¬A ≤ ¬B`
-- Alternative definition: `A ⊑ B := B ≡ (A ∧ B)`
-
-**State-Based Semantics**: `A ⊑ B` holds when every verifier of B contains some verifier of A as part. No way to verify B without verifying A.
-
-**Examples**:
-- `[Having 79 protons] ⊑ [Being gold]` - atomic structure essential to gold
-- `[Being extended] ⊑ [Being physical]` - extension essential to physicality
-- `[Being trilateral] ⊑ [Being triangular]` - three sides essential to triangle
-
-**Propositional Identity** (`≡`): "A just is B" - strongest constitutive equivalence where A and B mutually ground each other.
-
-**Formal Definition**: `A ≡ B := (A ≤ B) ∧ (B ≤ A)` (mutual grounding)
-
-**Examples**:
-- `[Being a vixen] ≡ [Being a female fox]` - propositionally identical definitions
-- `[Being trilateral] ≡ [Being triangular]` - having three sides just is having three angles
-
-**Contrast with Weaker Equivalences**:
-- Material equivalence (`A ↔ B`): Same actual truth value (weakest)
-- Necessary equivalence (`□(A ↔ B)`): Same truth value at all possible worlds (stronger)
-- Propositional identity (`A ≡ B`): Same metaphysical structure (strongest)
-
-**Relevance** (`≼`): "A is wholly relevant to B" - interdefinable with ground and essence.
-
-**Definition via Ground**: `A ≼ B := (A ∧ B) ≤ B`
-
-**Definition via Essence**: `A ≼ B := (A ∨ B) ⊑ B`
-
-## Modal Layer
-
-### Counterfactual Operators
-
-**Would Counterfactual** (`□→`): "If it were the case that A, then it would be the case that B" - expresses what necessarily follows in counterfactual scenarios.
-
-**Formal Definition**: `□A := ⊤ □→ A` (necessity definable via counterfactual)
-
-**Semantics**: Truth evaluation using selection functions picking closest possible worlds where antecedent holds, checking if consequent holds in all selected worlds.
-
-**Might Counterfactual** (`◇→`): "If it were the case that A, then it might be the case that B" - expresses what is possible in counterfactual scenarios.
-
-**Formal Definition**: `◇→` is dual of `□→`
-
-**Semantics**: Consequent holds in at least one selected world where antecedent holds.
-
-**Contrast with Material Conditional**: Material implication (`A → B`) is truth-functional (true whenever A false or B true), while counterfactuals (`A □→ B`) require similarity-based evaluation across possible worlds. `¬p → ¬p` is trivially true, but `¬p □→ ¬p` requires checking closest worlds where `¬p` holds.
-
-### Historical and Tense Operators
-
-The Modal Layer includes operators for reasoning about temporal structure and alternative histories, essential for planning and counterfactual reasoning about past and future.
-
-**Historical Necessity** (`□ₕ`): "It is historically necessary that A" - true at time t in history h iff A holds at t in all possible histories.
-
-**Semantics**: Quantifies over all possible histories passing through evaluation point, checking if proposition holds in each.
-
-**Example**: `□ₕ[laws of physics hold]` - the laws of physics are historically necessary (hold across all possible histories).
-
-**Historical Possibility** (`◇ₕ`): "It is historically possible that A" - true at time t in history h iff A holds at t in at least one possible history.
-
-**Semantics**: Dual of historical necessity: `◇ₕA := ¬□ₕ¬A`.
-
-**Example**: `◇ₕ[coin lands heads]` - it is historically possible that the coin lands heads (there exists a history where this occurs).
-
-**Past Tense** (`P`): "It was the case that A" - true at time t iff A holds at some past time t' < t in the same history.
-
-**Semantics**: Quantifies existentially over past times in the current history.
-
-**Examples**:
-- `P[raining]` - it was raining (at some past time)
-- `P[dinosaurs exist]` - dinosaurs existed (at some past time)
-
-**Future Tense** (`F`): "It will be the case that A" - true at time t iff A holds at some future time t' > t in the same history.
-
-**Semantics**: Quantifies existentially over future times in the current history.
-
-**Examples**:
-- `F[sun rises]` - the sun will rise (at some future time)
-- `F[meeting occurs]` - a meeting will occur (at some future time)
-
-**Always Past** (`H`): "It has always been the case that A" - true at time t iff A holds at all past times t' < t in the same history.
-
-**Semantics**: Universal quantification over past times: `HA := ¬P¬A`.
-
-**Example**: `H[laws of physics hold]` - the laws of physics have always held.
-
-**Always Future** (`G`): "It will always be the case that A" - true at time t iff A holds at all future times t' > t in the same history.
-
-**Semantics**: Universal quantification over future times: `GA := ¬F¬A`.
-
-**Example**: `G[entropy increases]` - entropy will always increase (at all future times).
-
-**Temporal Ordering**: Time points are linearly ordered within each history (`<` relation), but different histories may branch from common past, creating tree structure for historical modality.
-
-**Integration with Counterfactuals**: Counterfactual conditionals (`□→`) select histories that differ minimally from a given history at a specified time, then evaluate consequent at later time in selected histories. This connects historical and temporal operators with counterfactual reasoning.
-
-**Example Analysis**: `If Paul had been home, the child wouldn't have gotten hurt` evaluated at time x in history h:
-- There is a past time y < x (past tense)
-- Consider all histories j where `Paul is home` at y (historical quantification)
-- That differ minimally from h (counterfactual selection)
-- In all such histories j, `child is not hurt` at x (counterfactual necessity)
-
-This combines past tense operator (P), historical quantification (□ₕ/◇ₕ), and counterfactual conditional (□→) to express complex temporal-modal reasoning.
-
-## Causal Layer
-
-The Core Layer and Modal Layer provide a foundation for evaluating causal claims which relate a causal event that is earlier in time to an effect that is later in time. For instance, `Pushing the button causes the launch sequence to initiate` relates the truth of `The button is pushed` at one time in a possible history to the truth of `The launch sequence is initiating` at a later time in that history. Since causal claims entail counterfactual conditional claims, testing counterfactual conditional claims may be used to either falsify or support for causal claims. For instance, `If the button is pushed, the launch sequence will initiate` is true at any time `x` in a possible history `h` in which `Pushing the button causes the launch sequence to initiate` is also true. The extent of the range of possible histories in which a causal claim is true at a given time determines the strength of that causal connection as well as the enabling and disabling conditions.
-
-### Causal Operator
-
-**Causation** (`○→`): Represents productive causal relationships with temporal character.
-
-**Contrast with Grounding**: Grounding (`≤`) is constitutive and timeless, while causation (`○→`) is productive and temporal.
-
-**Examples**:
-- `[Sam touches hot stove] ○→ [Sam feels pain]` - temporal causal production
-- Contrast: `[Sam is crimson] ≤ [Sam is red]` - timeless constitutive grounding
-
-**Development Status**: Theory developed in "Hyperintensional Causation" paper, implementation pending in model-checker.
-
-### Medical Treatment Planning Example
-
-**Scenario**: Physician treats hypertension patient currently taking medication X. Three treatment strategies available with different risk profiles requiring counterfactual analysis.
+**Extended Tense Operators**:
+| Operator | Notation | Reading |
+|----------|----------|---------|
+| **Since** | A S B | "A since B" |
+| **Until** | A U B | "A until B" |
+
+**Counterfactual Conditional**:
+| Operator | Notation | Reading |
+|----------|----------|---------|
+| **Would** | A □→ B | "If A were the case, B would be" |
+| **Might** | A ◇→ B | "If A were the case, B might be" |
+
+**Temporal Reference Operators**:
+| Operator | Notation | Reading |
+|----------|----------|---------|
+| **Store** | ↑ⁱA | Store current time in register i |
+| **Recall** | ↓ⁱA | Evaluate A at stored time i |
+
+**Causal Operator**:
+| Operator | Notation | Reading |
+|----------|----------|---------|
+| **Causation** | A ○→ B | "A causes B" |
+
+#### Bimodal Interaction
+
+The task semantics validates perpetuity principles connecting modal and temporal operators:
+- □φ → △φ (Necessary implies always)
+- ▽φ → ◇φ (Sometimes implies possible)
+- □△φ ↔ △□φ (Commutativity)
+
+#### Planning Applications
+
+The Causal Layer enables AI systems to reason about:
+- **Action sequences** via temporal operators
+- **Hypothetical interventions** via counterfactuals
+- **Causal relationships** via causation operator
+- **Cross-temporal reference** via store/recall operators
+
+##### Medical Treatment Planning Example
+
+A physician treating hypertension can model treatment strategies:
 
 **Strategy A (add Drug A)**:
 ```
 Prescribe(DrugA) ∧ Taking(MedicationX) □→ F(Normalize(BloodPressure)) ∧ F(Occur(LiverDamage))
 ```
-Drug A would normalize blood pressure but would cause liver damage due to interaction with medication X (would-counterfactual: certain bad outcome).
+Drug A would normalize blood pressure but cause liver damage.
 
-**Strategy B (continue medication X alone)**:
-```
-Continue(MedicationX) □→ F(Persist(Hypertension)) ∧ F(Increase(CardiovascularRisk))
-```
-Continuing alone would leave hypertension untreated, increasing cardiovascular risk (would-counterfactual: certain continued problem).
-
-**Strategy C (add Drug B)**:
+**Strategy B (add Drug B)**:
 ```
 Prescribe(DrugB) ∧ Taking(MedicationX) □→ F(Normalize(BloodPressure)) ∧ ¬F(Occur(LiverDamage))
 Prescribe(DrugB) ◇→ F(Occur(Stroke))
 ```
-Drug B would normalize blood pressure without liver interaction but might cause stroke with low probability (might-counterfactual: possible but uncertain bad outcome).
+Drug B would normalize blood pressure, might cause stroke.
 
-**Analysis**: The system weighs expected outcomes:
-- Certain liver damage (Strategy A)
-- Certain continued cardiovascular risk (Strategy B)
-- Uncertain stroke risk (Strategy C)
+Counterfactual operators distinguish necessary (`□→`) from possible (`◇→`) consequences.
 
-Counterfactual operators distinguish necessary consequences (`□→` would) from possible consequences (`◇→` might), enabling nuanced risk-benefit analysis. The proof-checker verifies deductive inferences from pharmacological knowledge while model-checker searches for countermodels to proposed treatment strategies.
+See [RECURSIVE_SEMANTICS.md](RECURSIVE_SEMANTICS.md) for full truth conditions.
 
-## Epistemic Layer
+---
 
-Layer 2 extends the Core Layer with operators for reasoning under uncertainty, enabling AI systems to represent and reason about beliefs, probabilities, and knowledge states.
+### Epistemic Layer
 
-**Philosophical Foundation**: See [CONCEPTUAL_ENGINEERING.md](CONCEPTUAL_ENGINEERING.md) Section 4 ("Epistemic and Normative Extensions: Layers 2-3 Requirements") for philosophical motivation.
+The Epistemic Layer extends the Causal Layer with structures for reasoning under uncertainty.
 
-### Belief Operator
+[DETAILS]
 
-**Belief** (`B`): "Agent a believes that A" - represents agent beliefs relative to information state.
+#### Frame Extension
 
-**Notation**: `B_a(A)` where subscript a identifies agent
+The epistemic frame extends the causal frame with a credence function assigning probabilities to state transitions.
 
-**Context Relativity**: Belief evaluation depends on agent's information state at evaluation context.
+[QUESTION: What is the exact structure of the credence function? Does it assign probabilities to individual state transitions or to sets of transitions?]
 
-**Multiple Agents**: Supports multi-agent scenarios with distinct belief states per agent.
+#### Operators
 
-**Example**: `B_Alice([weather is sunny]) ∧ ¬B_Bob([weather is sunny])` - Alice and Bob have different beliefs about weather.
+| Operator | Notation | Reading |
+|----------|----------|---------|
+| **Belief** | B_a(A) | "Agent a believes A" |
+| **Knowledge** | K_a(A) | "Agent a knows A" |
+| **Probability** | Pr(A) ≥ θ | "Probability of A at least θ" |
+| **Epistemic Possibility** | Mi(A) | "It might be that A" |
+| **Epistemic Necessity** | Mu(A) | "It must be that A" |
+| **Indicative Conditional** | A ⟹ B | "If A then B" (epistemic) |
 
-### Probability Operator
+#### Uncertainty Reasoning Applications
 
-**Probability** (`Pr`): Quantifies uncertainty by assigning probability values to propositions.
+##### Legal Evidence Analysis Example
 
-**Notation**: `Pr(A) ≥ θ` where θ is probability threshold specified in context.
+Prosecutors can model how evidence reveals suspect's beliefs across time:
 
-**Evaluation**: Checks whether proposition A exceeds specified probability threshold.
-
-**Integration with Belief**: `B_a(A)` can be analyzed as `Pr_a(A) ≥ θ_belief` where θ_belief is agent's credence threshold for belief.
-
-**Example**: `Pr([rain tomorrow]) ≥ 0.7` - probability of rain tomorrow at least 70%.
-
-### Epistemic Modals
-
-**Epistemic Possibility** (`Mi`): "It might be the case that A" - captures epistemic possibility relative to information state.
-
-**Interpretation**: Compatible with what agent knows or believes.
-
-**Epistemic Necessity** (`Mu`): "It must be the case that A" - captures epistemic necessity relative to information state.
-
-**Interpretation**: Follows from what agent knows or believes.
-
-**Contrast with Metaphysical Modals**:
-- Metaphysical necessity (`□`): True in all possible worlds
-- Epistemic necessity (`Mu`): True in all epistemically accessible worlds (compatible with knowledge)
-
-**Example**: `Mu([murderer is guilty])` given evidence, versus `□([water is H2O])` as metaphysical necessity.
-
-### Indicative Conditional
-
-**Indicative Conditional** (`⟹`): Expresses expectations given belief state.
-
-**Contrast with Counterfactual**: Indicative evaluates under actual beliefs, counterfactual evaluates under hypothetical scenarios.
-
-**Example**:
-- Indicative: "If it's raining, then the ground is wet" (`raining ⟹ wet_ground`)
-- Counterfactual: "If it were raining, then the ground would be wet" (`raining □→ wet_ground`)
-
-The indicative evaluates given current information, while counterfactual considers hypothetical alternative.
-
-### Legal Evidence Analysis Example
-
-**Scenario**: Prosecutors build murder case by tracking how evidence reveals suspect's beliefs and motives across time.
-
-**Evidence Timeline** (using epistemic and temporal operators):
-
-**Time T₁** (six months before murder):
+**Time T₁** (six months before):
 ```
 P(B_suspect([victim threatens job]))
 ```
-Evidence shows suspect believed victim would report misconduct, threatening suspect's career.
-
-**Time T₂** (three months before):
-```
-P(F(B_suspect([financial ruin inevitable])))
-```
-Suspect believed financial ruin would follow job loss based on debt documents.
+Evidence shows suspect believed victim would report misconduct.
 
 **Time T₃** (day of murder):
 ```
 P(B_suspect([victim alone at home]))
 ```
-Phone records show suspect knew victim's schedule and spouse's absence.
+Phone records show suspect knew victim's schedule.
 
-**Times T₄, T₅** (additional evidence):
-```
-B_witness1([suspect expressed anger])
-B_witness2([suspect researched methods])
-```
-Witnesses establish suspect's emotional state and preparation.
+The system integrates belief operators with temporal operators to establish motive through verified inference chains.
 
-**Analysis**: The system integrates belief operators (`B_a`) with temporal operators (`P`, `F`) to show how suspect's beliefs evolved over time, establishing motive through verified inference chains.
+[DETAILS: Full semantic clauses for epistemic operators pending specification]
 
-**Proof-Checker Validation**:
-```
-[B_suspect(threat) ∧ B_suspect(opportunity)] → [Motive(murder)]
-```
+---
 
-**Model-Checker Search**: Searches for alternative explanations that could account for the same evidence pattern.
+### Normative Layer
 
-**Epistemic Modeling**: Reveals not just what happened, but what different agents believed at different times, constructing narrative connecting motive to action through transparent logical inference.
+The Normative Layer extends the Epistemic Layer with structures for ethical and cooperative reasoning.
 
-## Normative Layer
+[DETAILS]
 
-**Philosophical Foundation**: See [CONCEPTUAL_ENGINEERING.md](CONCEPTUAL_ENGINEERING.md) Section 4 ("Epistemic and Normative Extensions: Layers 2-3 Requirements") for philosophical motivation.
+#### Frame Extension
 
-Layer 3 extends the Core Layer with operators for ethical and cooperative reasoning, enabling AI systems to represent and reason about obligations, permissions, and preferences.
+The normative frame extends the epistemic frame with value orderings over states.
 
-### Deontic Operators
+[QUESTION: How are value orderings structured? Are they complete orderings or partial orderings? Are they agent-relative?]
 
-**Obligation** (`O`): "It is obligatory that A" - represents what ought to be the case relative to set of laws or norms.
+#### Operators
 
-**Context Relativity**: Obligation evaluation depends on normative context (legal system, moral framework, organizational policy).
+| Operator | Notation | Reading |
+|----------|----------|---------|
+| **Obligation** | O(A) | "It is obligatory that A" |
+| **Permission** | P(A) | "It is permitted that A" |
+| **Preference** | A ≺_a B | "Agent a prefers B to A" |
+| **Normative Explanation** | A ↦ O(B) | "A grounds obligation B" |
 
-**Formal Semantics**: Deontic logic with possible worlds and ideality ordering.
+#### Multi-Agent Coordination Applications
 
-**Permission** (`P`): "It is permitted that A" - represents what is permissible relative to set of laws or norms.
+##### Multi-Party Negotiation Example
 
-**Relationship to Obligation**: `P(A) := ¬O(¬A)` (permitted iff not obligatory to refrain)
+Three organizations negotiate a joint research agreement:
 
-**Examples**:
-- Legal context: `O([pay taxes])` - obligation to pay taxes
-- Moral context: `P([assist others])` - permitted to help others
-- Organizational: `O([submit reports])` - obligation to submit reports
-
-### Preference Operator
-
-**Preference** (`≺`): "A is preferred over B" - represents agent preferences.
-
-**Notation**: `A ≺_a B` where subscript a identifies agent
-
-**Ordering Properties**: Preference can be partial order (transitive, asymmetric) or total order (all pairs comparable).
-
-**Multi-Agent Preferences**: Different agents may have different, potentially conflicting preference orderings.
-
-**Aggregation**: Finding collective preferences from individual preferences requires aggregation functions.
-
-**Example**: `[outcome_X] ≺_Alice [outcome_Y]` - Alice prefers Y to X.
-
-### Normative Explanatory
-
-**Normative Explanation** (`↦`): Connects normative facts to their explanatory grounds.
-
-**Integration with Layer 1**: Combines normative operators with constitutive grounding from explanatory extension.
-
-**Example**: `[promise made] ↦ O([promise kept])` - making promise grounds obligation to keep it.
-
-### Multi-Party Negotiation Example
-
-**Scenario**: Three organizations negotiate joint research agreement with heterogeneous standards for permissibility and different preference orderings.
-
-**Organization A (startup)**: Permissive standards with strong preferences for speed and flexibility.
-
-**Permissibility**:
+**Organization A (startup)**: Permissive standards, strong preference for speed
 ```
 P([option_IPsharing])
-P([option_ExclusiveRights])
-P([option_PublicationDelay])
-```
-Few restrictions - most options permitted.
-
-**Preferences**:
-```
 [QuickTimeline] ≺_A [StandardTimeline]
-[FlexibleTerms] ≺_A [RigidTerms]
 ```
-Strong preference for speed and flexibility.
 
-**Organization B (university)**: Restrictive standards with neutral preferences among remaining options.
-
-**Obligations**:
+**Organization B (university)**: Restrictive standards requiring open publication
 ```
 O(¬[option_ExclusiveRights])
 O([option_OpenPublication])
-O([option_EthicalReview])
 ```
-Many restrictions - requires open publication, ethical review, no exclusive rights.
 
-**Preferences**: Weak `≺_B` ordering - neutral among permissible options.
-
-**Organization C (government)**: Mixed standards with moderate preferences balancing public benefit against control.
-
-**Mixed Norms**:
+**Organization C (government)**: Mixed standards focusing on security
 ```
 O([option_NationalSecurity])
-P([option_IPsharing])
-```
-Moderate restrictions focusing on security.
-
-**Preferences**:
-```
-[PublicAccess] ≺_C [ControlledAccess] ≺_C [RestrictedAccess]
-```
-Ordered preference from public to restricted access.
-
-**Collective Agreement Analysis**:
-
-Finding best collective agreement requires:
-```
-best_option ∈ (∩[permitted_A, permitted_B, permitted_C]) ∩ max(aggregate[≺_A, ≺_B, ≺_C])
+[PublicAccess] ≺_C [ControlledAccess]
 ```
 
-The solution must be:
-1. In intersection of what all parties permit
-2. Maximize aggregated preferences
+Finding optimal collective agreement requires intersection of permitted options and aggregated preferences.
 
-**Multi-Agent Reasoning**: AI agents negotiate by caring about others' preferences:
-```
-B_A([option_X] ≺_B [option_Y])
-```
-Agent A believes agent B prefers Y over X.
+[DETAILS: Full semantic clauses for normative operators pending specification]
 
-This enables seeking solutions balancing everyone's interests through transparent preference aggregation.
+---
 
-**Complexity**: As number of parties increases, finding optimal collective agreements becomes increasingly complex. Rather than providing algorithms for solving such scenarios, the Logos provides expressive resources for modeling them.
+### Agential Layer
 
-## Operator Interactions
+The Agential Layer extends the Normative Layer for multi-agent reasoning scenarios.
 
-When multiple extensions combined, operators from different layers interact:
+[DETAILS]
 
-**Epistemic + Temporal** (Layer 2 + Core):
+[QUESTION: What frame extensions are required for multi-agent reasoning? Does this layer add agent indices, or agent-relative accessibility relations?]
+
+[QUESTION: How do individual and collective agency interact in the semantic framework?]
+
+---
+
+## Layer Interaction and Composition
+
+When operators from multiple layers combine, evaluation uses the most complex frame required:
+
+**Epistemic + Temporal** (Epistemic + Causal):
 ```
 B_a(Fp) → F(B_a(p) ∨ ¬B_a(p))
 ```
 If agent believes p will be true, then in future either agent believes p or doesn't.
 
-**Normative + Counterfactual** (Layer 3 + Layer 1):
+**Normative + Counterfactual** (Normative + Causal):
 ```
 O(p) → (¬p □→ violation)
 ```
 If p is obligatory, then if p were not the case, there would be a violation.
 
-**Belief + Preference** (Layer 2 + Layer 3):
+**Belief + Preference** (Epistemic + Normative):
 ```
 B_a([x] ≺_b [y]) → negotiate_toward([y])
 ```
 If agent A believes agent B prefers y, then A negotiates toward y.
 
-These interactions enable sophisticated multi-domain reasoning combining explanatory, epistemic, and normative capabilities.
+---
 
-### Future Extensions
+## Implementation Status
 
-The progressive methodology supports adding new operator families beyond the three current extensions:
+| Layer | Semantic Specification | Implementation Status |
+|-------|----------------------|----------------------|
+| **Constitutive** | Complete | Partial (proof-checker) |
+| **Causal** | Complete | Partial (model-checker) |
+| **Epistemic** | [DETAILS] | Not started |
+| **Normative** | [DETAILS] | Not started |
+| **Agential** | [DETAILS] | Not started |
 
-**Potential Future Layers**:
-- **Spatial Operators**: Reasoning about location and spatial relationships
-- **Computational Operators**: Reasoning about algorithms and computation
-- **Resource Operators**: Reasoning about resource consumption and allocation
-
-The architecture provides a **basic methodology** that can be extended as new reasoning domains require formal representation.
-
-## Related Documentation
-
-- [METHODOLOGY.md](../UserGuide/METHODOLOGY.md) - Philosophical foundations and layer overview
-- [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) - Layer 0 (Core TM) technical specification
-- [DUAL_VERIFICATION.md](DUAL_VERIFICATION.md) - RL training architecture
-- [PROOF_LIBRARY_DESIGN.md](PROOF_LIBRARY_DESIGN.md) - Theorem caching design
-- [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) - Current state of the project
+See [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) for current progress.
 
 ---
 
-_Last updated: December 2025_
+## Related Documentation
+
+- [RECURSIVE_SEMANTICS.md](RECURSIVE_SEMANTICS.md) - Full formal semantic specifications
+- [METHODOLOGY.md](../UserGuide/METHODOLOGY.md) - Philosophical foundations
+- [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) - Technical specification
+- [GLOSSARY.md](../Reference/GLOSSARY.md) - Term definitions
+- [CONCEPTUAL_ENGINEERING.md](CONCEPTUAL_ENGINEERING.md) - Philosophical motivation
+- [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) - Current state
+
+---
+
+_Last updated: January 2026_
