@@ -209,8 +209,9 @@ technical_debt:
 
 ### 349. Address all [FIX] tags in RECURSIVE_SEMANTICS.md documentation
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-09
+- **Planned**: 2026-01-09
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
@@ -218,6 +219,9 @@ technical_debt:
 
 **Research Artifacts**:
   - Research Report: [.claude/specs/349_fix_recursive_semantics_documentation/reports/research-001.md]
+
+**Plan Artifacts**:
+  - Implementation Plan: [.claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-001.md]
 
 - **Files Affected**:
   - Documentation/Research/RECURSIVE_SEMANTICS.md
