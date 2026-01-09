@@ -101,10 +101,20 @@ Returns `true` if derivation exists, `false` otherwise.
 - ✓ SearchStrategy enum with unified interface
 - ✓ Visit limit enforcement
 - ✓ Search statistics tracking
+- ✓ Domain-specific heuristics (modal, temporal, structure)
+- ✓ Advanced heuristic scoring with bonuses/penalties
+- ✓ Benchmark suite for performance analysis
+
+**Domain-Specific Heuristics** (task 318):
+- `modal_heuristic_bonus`: -5 priority boost for □/◇ goals
+- `temporal_heuristic_bonus`: -5 priority boost for G/F/H/P goals
+- `structure_heuristic`: Penalty based on formula complexity
+- `advanced_heuristic_score`: Combined scoring with all heuristics
+- `orderSubgoalsByAdvancedScore`: Ordering with advanced heuristics
 
 **Future Work**:
-- Proof term construction (blocked by Axiom Prop vs Type issue)
-- Best-first search with priority queue (task 318)
+- Proof term construction (blocked by Axiom Prop vs Type issue, task 315)
+- Best-first search with priority queue (deferred)
 - Expanded testing suite (task 319)
 
 ## Example Usage
