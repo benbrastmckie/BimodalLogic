@@ -278,7 +278,7 @@ FIX: note that it is derivable that M, τ, x, a ⊨⁺ A iff it is not the case 
 
 FIX: Use ▷ in place of U and the reverse of ▷ in place of S.
 
-FIX: Also, the variable assignments are missing below.
+FIX: Also, the variable assignments are missing below. Fix this throughout the Causal Layer.
 
 | Operator | Truth Condition |
 |----------|-----------------|
@@ -305,6 +305,8 @@ Where:
 **Imposition notation**: We write t ▷_w w' ("imposing t on w yields w'") iff there exists maximal t-compatible part s ∈ w_t where s.t ⊑ w'.
 
 #### Store and Recall Operators (↑, ↓)
+
+FIX: include v⃗ among the contextual parameters throughout the Causal Layer
 
 For cross-temporal reference within counterfactual evaluation, the context is extended with a vector v⃗ = ⟨v₁, v₂, ...⟩ of stored times:
 

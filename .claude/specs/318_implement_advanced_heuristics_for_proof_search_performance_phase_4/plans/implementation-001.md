@@ -199,7 +199,7 @@ The implementation is structured in 5 phases, each targeting 2-4 hours of work, 
 
 ---
 
-## Phase 4: Tune Heuristic Weights [IN PROGRESS]
+## Phase 4: Tune Heuristic Weights [COMPLETED]
 
 **Goal**: Empirically tune heuristic weights for optimal performance on benchmark suite
 
@@ -261,7 +261,7 @@ structure TunedHeuristicWeights where
 
 ---
 
-## Phase 5: Integration Testing and Documentation [NOT STARTED]
+## Phase 5: Integration Testing and Documentation [IN PROGRESS]
 
 **Goal**: Verify all phases integrate correctly and update documentation
 
