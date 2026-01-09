@@ -60,7 +60,7 @@ The existing `state-lookup.md` already documents optimal jq patterns. This imple
 ### Phase 2: Update /research Command
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Replace "Read .claude/specs/state.json" with explicit jq lookup

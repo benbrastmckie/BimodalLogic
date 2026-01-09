@@ -23,10 +23,24 @@ task_number = first token from $ARGUMENTS
 focus_prompt = remaining tokens (optional)
 ```
 
-Read .claude/specs/state.json:
-- Find task by project_number
-- Extract: language, status, project_name, description
-- If not found: Error "Task {N} not found"
+**Lookup task via jq** (see skill-status-sync for patterns):
+```bash
+task_data=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+  .claude/specs/state.json)
+
+# Validate task exists
+if [ -z "$task_data" ]; then
+  echo "Error: Task $task_number not found in state.json"
+  exit 1
+fi
+
+# Extract fields
+language=$(echo "$task_data" | jq -r '.language // "general"')
+status=$(echo "$task_data" | jq -r '.status')
+project_name=$(echo "$task_data" | jq -r '.project_name')
+description=$(echo "$task_data" | jq -r '.description // ""')
+```
 
 ### 2. Validate Status
 
@@ -37,9 +51,14 @@ Allowed statuses: not_started, planned, partial, blocked
 
 ### 3. Update Status to RESEARCHING
 
-Update both files atomically:
-1. state.json: status = "researching"
-2. TODO.md: Status: [RESEARCHING]
+**Invoke skill-status-sync** for atomic update:
+- task_number: {N}
+- operation: status_update
+- new_status: researching
+
+This updates both files atomically:
+1. state.json: status = "researching" (via jq)
+2. TODO.md: Status: [RESEARCHING] (via grep + Edit)
 
 ### 4. Route by Language
 
@@ -118,13 +137,16 @@ Write report to `.claude/specs/{N}_{SLUG}/reports/research-{NNN}.md`:
 
 ### 6. Update Status to RESEARCHED
 
-Update both files atomically:
-1. state.json:
-   - status = "researched"
-   - artifacts = [{path, type: "research"}]
-2. TODO.md:
-   - Status: [RESEARCHED]
-   - Add Research link
+**Invoke skill-status-sync** for atomic update:
+- task_number: {N}
+- operation: status_update
+- new_status: researched
+- artifact_path: .claude/specs/{N}_{SLUG}/reports/research-{NNN}.md
+- artifact_type: research
+
+This updates both files atomically:
+1. state.json: status = "researched", artifacts += [{path, type}] (via jq)
+2. TODO.md: Status: [RESEARCHED], add Research link (via grep + Edit)
 
 ### 7. Git Commit
 
