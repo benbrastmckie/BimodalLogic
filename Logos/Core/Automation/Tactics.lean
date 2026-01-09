@@ -730,10 +730,12 @@ def matchImplicationConsequent (formula target : Expr) : MetaM (Option Expr) := 
 
 /--
 Extract all formulas from a context expression (List Formula).
+List.cons has signature: List.cons {α} (a : α) (as : List α) : List α
+So the structure is: app (app (app (const List.cons) typeArg) elem) tail
 -/
 partial def extractContextFormulas (ctx : Expr) : MetaM (List Expr) := do
   match ctx with
-  | .app (.app (.const ``List.cons _) elem) tail =>
+  | .app (.app (.app (.const ``List.cons _) _typeArg) elem) tail =>
     let rest ← extractContextFormulas tail
     return elem :: rest
   | .app (.const ``List.nil _) _ => return []
@@ -965,14 +967,16 @@ example (p q : Formula) : [p, p.imp q] ⊢ q := by
 
 -- Test 8: Modus ponens - simple case with implication in context (tactic)
 -- Given p and p → q in context, prove q
--- Currently skipped due to context parsing complexity
--- example (p q : Formula) : [p, p.imp q] ⊢ q := by
---   modal_search
+example (p q : Formula) : [p, p.imp q] ⊢ q := by
+  modal_search
 
--- Test 9: Modus ponens - using prop_s axiom
--- prop_s: p → (q → p), so from [p] we can prove q → p via modus ponens
--- Currently skipped due to axiom-based MP complexity
--- example (p q : Formula) : [p] ⊢ q.imp p := by
---   modal_search
+-- Test 9: Modus ponens - implication first in context
+example (p q : Formula) : [p.imp q, p] ⊢ q := by
+  modal_search
+
+-- Test 10: Chained modus ponens (requires depth 3+)
+-- p, p → q, q → r ⊢ r requires: MP(p, p→q) = q, then MP(q, q→r) = r
+example (p q r : Formula) : [p, p.imp q, q.imp r] ⊢ r := by
+  modal_search 5
 
 end Logos.Core.Automation
