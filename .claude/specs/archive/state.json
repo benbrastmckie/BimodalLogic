@@ -32,6 +32,55 @@
       "description": "Research how the orchestrator should execute command file workflow_execution stages. Analyze current orchestrator delegation mechanism, identify why command file stages are not being executed, compare with OpenAgents architecture (tasks 240-247), and design solution for parsing and executing workflow_execution stages including stage sequencing, context passing, error handling, and rollback mechanisms.",
       "started": "2026-01-08",
       "abandoned": "2026-01-09T16:26:39Z"
-    }
+    },
+    [
+      {
+        "project_number": 348,
+        "project_name": "jq_based_state_lookup_for_commands",
+        "type": "feature",
+        "phase": "not_started",
+        "status": "completed",
+        "priority": "high",
+        "language": "meta",
+        "created": "2026-01-09T13:19:56Z",
+        "last_updated": "2026-01-09T13:55:25Z",
+        "effort": "4-6 hours",
+        "description": "Enhance claude code agent system to use jq for efficient state.json lookups by task number in /research, /plan, /revise, /implement, and /task commands. From task lookup, use grep to find relevant TODO.md sections for synchronized updates via skill-status-sync.",
+        "plan_version": "001",
+        "completed": "2026-01-09T13:55:25Z"
+      },
+      {
+        "project_number": 347,
+        "project_name": "logos_layer_documentation_revision",
+        "type": "documentation",
+        "phase": "completed",
+        "status": "completed",
+        "priority": "high",
+        "language": "general",
+        "created": "2026-01-09T12:00:00Z",
+        "last_updated": "2026-01-09T16:00:00Z",
+        "effort": "6-8 hours",
+        "plan_version": 2,
+        "artifacts": [
+          {
+            "path": ".claude/specs/347_logos_layer_documentation_revision/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/347_logos_layer_documentation_revision/reports/research-002.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/347_logos_layer_documentation_revision/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/347_logos_layer_documentation_revision/plans/implementation-002.md",
+            "type": "plan"
+          }
+        ],
+        "description": "Revise LAYER_EXTENSIONS.md using FIX tags for new Logos layer organization (Constitutive, Causal, Epistemic, Normative, Agential). Update GLOSSARY.md to match. Create new RECURSIVE_SEMANTICS.md with full hyperintensional semantics for Constitutive Layer and intensional semantics for following layers. Use [DETAILS] and [QUESTION: ...] tags for uncertain content."
+      }
+    ]
   ]
 }

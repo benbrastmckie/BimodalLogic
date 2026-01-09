@@ -6,14 +6,14 @@ repository_health:
   production_readiness: excellent
   last_assessed: 2026-01-05T02:00:00Z
 task_counts:
-  active: 52
-  completed: 65
+  active: 49
+  completed: 67
   in_progress: 2
   not_started: 43
-  abandoned: 6
+  abandoned: 7
   total: 124
 priority_distribution:
-  high: 20
+  high: 17
   medium: 22
   low: 14
 technical_debt:
@@ -29,82 +29,6 @@ technical_debt:
 ---
 
 ## High Priority
-
-### 348. Implement jq-based state lookup for agent commands
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-09
-- **Planned**: 2026-01-09
-- **Completed**: 2026-01-09
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Plan**: [.claude/specs/348_jq_based_state_lookup_for_commands/plans/implementation-001.md]
-**Summary**: [.claude/specs/348_jq_based_state_lookup_for_commands/summaries/implementation-summary-20260109.md]
-
-**Description**: Enhance claude code agent system to use jq for efficient state.json lookups by task number in /research, /plan, /revise, /implement, and /task commands. Instead of reading entire state.json files which can be extremely long, use jq to quickly look up relevant task data. From the task lookup in state.json, use grep to find relevant TODO.md sections for synchronized updates via skill-status-sync skill.
-
-**Implementation Goals**:
-1. Create standardized jq patterns for task lookup in state.json
-2. Create standardized grep patterns for TODO.md section lookup
-3. Update skill-status-sync to use these patterns for atomic updates
-4. Update command files (/research, /plan, /implement, /revise, /task) to use the standardized patterns
-5. Ensure all state changes go through skill-status-sync for consistency
-
-**Files Affected**:
-- .claude/skills/skill-status-sync/SKILL.md
-- .claude/commands/research.md
-- .claude/commands/plan.md
-- .claude/commands/implement.md
-- .claude/commands/revise.md
-- .claude/commands/task.md
-- .claude/context/core/orchestration/state-lookup.md
-
----
-
-### 347. Revise Logos layer documentation for new layer organization
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-09
-- **Researched**: 2026-01-09
-- **Planned**: 2026-01-09
-- **Completed**: 2026-01-09
-- **Priority**: High
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: None
-
-**Research Artifacts**:
-  - Research Report: [.claude/specs/347_logos_layer_documentation_revision/reports/research-001.md]
-  - Research Report (Semantic Clauses): [.claude/specs/347_logos_layer_documentation_revision/reports/research-002.md]
-
-**Plan**: [.claude/specs/347_logos_layer_documentation_revision/plans/implementation-002.md] (v2)
-
-**Description**: Revise LAYER_EXTENSIONS.md using the FIX tags to incorporate the new Logos layer organization: Constitutive Layer, Causal Layer, Epistemic Layer, Normative Layer, and Agential Layer. Update GLOSSARY.md to match this new organization. Create a new RECURSIVE_SEMANTICS.md document providing full details for the hyperintensional semantics for the Constitutive Layer and intensional semantics for all following layers. Use [DETAILS] tags where more details are needed and [QUESTION: ...] tags for uncertain content requiring user review.
-
-**Files Affected**:
-- Documentation/Research/LAYER_EXTENSIONS.md
-- Documentation/Reference/GLOSSARY.md
-- Documentation/Research/RECURSIVE_SEMANTICS.md (new)
-
----
-
-### 342. Research orchestrator command file workflow execution mechanism
-- **Effort**: 4-6 hours
-- **Status**: [ABANDONED]
-- **Started**: 2026-01-08
-- **Abandoned**: 2026-01-09
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Research how the orchestrator should execute command file workflow_execution stages. Analyze current orchestrator delegation mechanism, identify why command file stages are not being executed, compare with OpenAgents architecture (tasks 240-247), and design solution for parsing and executing workflow_execution stages including stage sequencing, context passing, error handling, and rollback mechanisms. Document findings and recommend implementation approach.
-
----
-
 
 ### 334. Create LaTeX documentation for Logos system mirroring layer structure
 - **Effort**: 4-6 hours
