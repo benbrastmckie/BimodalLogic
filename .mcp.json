@@ -6,7 +6,7 @@
       "args": ["lean-lsp-mcp"],
       "env": {
         "LEAN_LOG_LEVEL": "WARNING",
-        "LEAN_PROJECT_PATH": "/home/benjamin/Documents/Philosophy/Projects/ProofChecker"
+        "LEAN_PROJECT_PATH": "/home/benjamin/Projects/ProofChecker"
       }
     }
   },

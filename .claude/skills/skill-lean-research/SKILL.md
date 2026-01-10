@@ -1,7 +1,7 @@
 ---
 name: skill-lean-research
 description: Research Lean 4 and Mathlib for theorem proving tasks. Invoke for Lean-language research using LeanSearch, Loogle, and lean-lsp tools.
-allowed-tools: Read, Write, Edit, Glob, Grep, mcp__lean-lsp__lean_leansearch, mcp__lean-lsp__lean_loogle, mcp__lean-lsp__lean_leanfinder, mcp__lean-lsp__lean_local_search, mcp__lean-lsp__lean_hover_info
+allowed-tools: Read, Write, Edit, Glob, Grep, mcp__lean-lsp__lean_leansearch, mcp__lean-lsp__lean_loogle, mcp__lean-lsp__lean_leanfinder, mcp__lean-lsp__lean_local_search, mcp__lean-lsp__lean_hover_info, mcp__lean-lsp__lean_state_search, mcp__lean-lsp__lean_hammer_premise
 context:
   - .claude/context/project/lean4/tools/mcp-tools-guide.md
   - .claude/context/project/lean4/tools/leansearch-api.md

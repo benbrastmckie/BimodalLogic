@@ -173,10 +173,11 @@ technical_debt:
 
 ### 218. Ensure lean-lsp-mcp Integration for Claude Code System
 **Effort**: 1.5 hours
-**Status**: [PLANNED]
+**Status**: [COMPLETED]
 **Started**: 2025-12-28
 **Researched**: 2025-12-28
 **Revised**: 2026-01-10
+**Completed**: 2026-01-10
 **Priority**: High
 **Blocking**: None
 **Dependencies**: 212 (completed)
@@ -184,6 +185,7 @@ technical_debt:
 **Research Artifacts**:
   - Main Report: [.claude/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md]
 **Plan**: [.claude/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-005.md]
+**Summary**: [.claude/specs/218_fix_lean_lsp_mcp_integration/summaries/implementation-summary-20260110.md]
 **Plan Revision Notes** (v005, 2026-01-10): Migrated from OpenCode to Claude Code system. Previous plan (v004) was OpenCode-specific. Now verifying and documenting lean-lsp-mcp integration for Claude Code using `.mcp.json` config and `mcp__lean-lsp__*` tool calls.
 
 **Files Affected**:

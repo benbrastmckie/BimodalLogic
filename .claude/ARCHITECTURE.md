@@ -1,9 +1,10 @@
-# .opencode System Architecture
+# Claude Code System Architecture
 
-**Version**: 2.0  
-**Status**: Active  
-**Created**: 2025-12-26  
-**Purpose**: Document the architecture of the refactored .claude system
+**Version**: 2.1
+**Status**: Active
+**Created**: 2025-12-26
+**Updated**: 2026-01-10
+**Purpose**: Document the architecture of the .claude skill and task management system
 
 ---
 
@@ -193,7 +194,7 @@ The system has four levels of components:
 - `/review`: Analyze codebase and update registries
 - `/todo`: Maintain TODO.md (clean completed tasks)
 - `/errors`: Analyze errors and create fix plans
-- `/meta`: Build custom .opencode architectures through interactive interview
+- `/meta`: Build custom .claude architectures through interactive interview
 
 **Argument Parsing**:
 All commands include an explicit `<argument_parsing>` section that specifies:
@@ -699,14 +700,14 @@ The architecture supports extension through:
 
 ### Overview
 
-The `/meta` command provides an interactive system builder that creates complete .opencode architectures tailored to specific domains. It guides users through an interview process to gather requirements and automatically generates production-ready agent systems.
+The `/meta` command provides an interactive system builder that creates complete .claude architectures tailored to specific domains. It guides users through an interview process to gather requirements and automatically generates production-ready agent systems.
 
 ### Architecture Generation Process
 
 The meta system builder follows an 8-stage workflow:
 
 **Stage 0: DetectExistingProject**
-- Scans for existing .opencode structure
+- Scans for existing .claude structure
 - Identifies existing agents, commands, context files, and workflows
 - Offers merge options (extend, separate, replace, or cancel)
 - Ensures new systems integrate smoothly with existing work
@@ -828,7 +829,7 @@ Add new capabilities to the ProofChecker system for a different domain while pre
 Build a completely separate .claude system for a different project or domain.
 
 **Build New System**:
-Create a fresh .opencode architecture from scratch for a new project.
+Create a fresh .claude architecture from scratch for a new project.
 
 ### Integration with ProofChecker
 

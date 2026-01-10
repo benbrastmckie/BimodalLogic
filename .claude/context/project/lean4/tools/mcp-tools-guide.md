@@ -2,717 +2,396 @@
 
 ## Overview
 
-This guide describes the MCP (Model Context Protocol) tools available for Lean 4 development in the ProofChecker system. MCP tools provide real-time proof verification, theorem search, and project exploration capabilities.
+This guide describes the lean-lsp-mcp tools available for Lean 4 development in Claude Code. These tools are accessed directly via MCP (Model Context Protocol) with the `mcp__lean-lsp__*` prefix.
 
-## Available MCP Servers
+## Configuration
 
-### 1. lean-lsp-mcp (Proof Verification)
+The MCP server is configured in `.mcp.json`:
 
-**Purpose**: Real-time interaction with Lean Language Server
-
-**Status**: [YELLOW] Partial (wrapper implemented, MCP integration pending)
-
-**When to Use**:
-- Validating proofs incrementally during implementation
-- Getting current proof state at any position
-- Diagnosing compilation errors in real-time
-- Obtaining type information for expressions
-- Getting hover documentation
-
-**Key Functions**:
-- `getProofState(file, line, col)` - Get current goals and hypotheses
-- `checkProof(file, proof_text)` - Validate proof without writing file
-- `getDiagnostics(file)` - Get errors, warnings, info messages
-- `getHover(file, line, col)` - Get type and documentation info
-
-**Example Usage**:
-```typescript
-import { createLSPClient } from './.claude/tool/mcp/index.js';
-
-const lsp = createLSPClient();
-
-// During proof implementation:
-// 1. Write tactic line
-const result = await lsp.getProofState('file.lean', { line: 45, column: 10 });
-
-// 2. Check new proof state
-if (result.success) {
-  console.log('Goals:', result.data.goals);
-  console.log('Hypotheses:', result.data.hypotheses);
-}
-
-// 3. Get diagnostics to check for errors
-const diagnostics = await lsp.getDiagnostics('file.lean');
-
-// 4. Proceed only if no errors
-if (diagnostics.success) {
-  const errors = diagnostics.data.filter(d => d.severity === 'error');
-  if (errors.length === 0) {
-    // Continue with next step
+```json
+{
+  "mcpServers": {
+    "lean-lsp": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["lean-lsp-mcp"],
+      "env": {
+        "LEAN_PROJECT_PATH": "/path/to/project"
+      }
+    }
   }
 }
 ```
 
-**Benefits**:
-- Catch errors immediately without full compilation
-- See proof state after each tactic
-- Get suggestions from LSP
-- Faster iteration cycle
+**Note**: Ensure `LEAN_PROJECT_PATH` points to the correct project root.
 
-**Limitations** (Current):
-- MCP protocol integration not yet complete
-- Fallback to full compilation when unavailable
-- Cache may become stale if file changes externally
+## Available Tools
 
-### 2. LeanExplore (Structure Exploration)
+### Core Tools (No Rate Limit)
 
-**Purpose**: Explore Lean project structure and dependencies
+#### lean_goal
+**Purpose**: Get proof state at a position. MOST IMPORTANT tool.
 
-**Status**: [RED] Planned (not yet implemented)
-
-**When to Use**:
-- Understanding Mathlib organization
-- Finding related theorems in a namespace
-- Analyzing theorem dependencies
-- Discovering available type class instances
-- Navigating module hierarchy
-
-**Key Functions** (Planned):
-- `exploreModule(name)` - List all contents of a module
-- `exploreDependencies(theorem)` - Find what a theorem depends on
-- `exploreUsages(theorem)` - Find where a theorem is used
-- `exploreNamespace(ns)` - Navigate namespace hierarchy
-
-**Example Usage** (Planned):
-```typescript
-// To understand a Mathlib area:
-const explorer = createExploreClient();
-
-// 1. Explore namespace
-const contents = await explorer.exploreNamespace('Topology.MetricSpace');
-
-// 2. Review definitions and theorems
-console.log('Definitions:', contents.data.definitions);
-console.log('Theorems:', contents.data.theorems);
-
-// 3. Explore dependencies for key theorems
-const deps = await explorer.exploreDependencies('dist_triangle');
-
-// 4. Build mental model of the area
-```
-
-**Benefits** (When Implemented):
-- Understand Mathlib structure quickly
-- Find related theorems efficiently
-- Analyze proof dependencies
-- Discover available instances
-
-### 3. Loogle (Type-based Search)
-
-**Purpose**: Search theorems by type signature and patterns
-
-**Status**: [RED] Planned (not yet implemented)
-
-**When to Use**:
-- Finding theorems with specific type signatures
-- Searching for lemmas matching a pattern
-- Goal-directed theorem discovery
-- Finding theorems that could prove current goal
-
-**Key Functions** (Planned):
-- `searchByType(pattern)` - Find theorems matching type pattern
-- `searchByPattern(pattern)` - Pattern-based search
-- `searchUnify(goal)` - Find theorems that unify with goal
-
-**Pattern Syntax** (Planned):
-- `?a`, `?b` - Pattern variables
-- `_` - Wildcard
-- Exact type signatures
-
-**Example Usage** (Planned):
-```typescript
-const loogle = createLoogleClient();
-
-// To find commutativity theorems:
-const results = await loogle.searchByPattern('?a * ?b = ?b * ?a');
-
-// To find theorems about sqrt:
-const sqrtTheorems = await loogle.searchByType(
-  '∀ x : ℝ, x ≥ 0 → sqrt x * sqrt x = x'
-);
-
-// To find theorems for current goal:
-const applicable = await loogle.searchUnify('a + b = b + a');
-```
-
-**Benefits** (When Implemented):
-- Find exact theorems needed
-- Discover lemmas by type
-- Pattern-based discovery
-- Goal-directed search
-
-### 4. LeanSearch (Semantic Search)
-
-**Purpose**: Natural language semantic search over Mathlib
-
-**Status**: [RED] Planned (not yet implemented)
-
-**When to Use**:
-- Initial exploration of unfamiliar areas
-- Finding theorems without knowing exact terminology
-- Discovering related mathematical concepts
-- Broad conceptual search
-
-**Key Functions** (Planned):
-- `searchSemantic(query)` - Natural language search
-- `searchSimilar(theorem)` - Find similar theorems
-- `searchConcept(concept)` - Search by mathematical concept
-
-**Example Usage** (Planned):
-```typescript
-const search = createSearchClient();
-
-// Natural language queries:
-const results = await search.searchSemantic(
-  'theorems about continuity of square root function'
-);
-
-const cauchy = await search.searchSemantic(
-  'Cauchy sequences in metric spaces'
-);
-
-const compact = await search.searchConcept('compactness');
-```
-
-**Benefits** (When Implemented):
-- Find theorems without exact terminology
-- Discover related concepts
-- Exploratory search
-- Semantic understanding
-
-## Search Strategy Decision Tree
+**Usage**:
+- Omit `column` to see `goals_before` (line start) and `goals_after` (line end)
+- Shows how the tactic transforms the state
+- "no goals" = proof complete
 
 ```
-START: Need to find a theorem
-
-├─ Do you know the exact type signature?
-│  YES → Use Loogle (type-based search)
-│  NO → Continue
-│
-├─ Do you know the general pattern?
-│  YES → Use Loogle (pattern search)
-│  NO → Continue
-│
-├─ Do you know the mathematical concept?
-│  YES → Use LeanSearch (semantic search)
-│  NO → Continue
-│
-└─ Exploring a general area?
-   YES → Use LeanExplore (namespace exploration)
-   NO → Use LeanSearch (broad semantic search)
+Parameters:
+- file_path: Absolute path to Lean file
+- line: Line number (1-indexed)
+- column: Column (1-indexed, optional)
 ```
 
-## Multi-Tool Search Strategy
+#### lean_diagnostic_messages
+**Purpose**: Get compiler errors, warnings, and info messages.
 
-For comprehensive searches, use multiple tools in sequence:
+**Usage**:
+- Check after every edit
+- "no goals to be solved" = remove tactics
+- Filter by line range or declaration name
 
-1. **Start Broad**: LeanSearch with natural language
-2. **Refine**: LeanExplore to understand namespace structure
-3. **Precise**: Loogle for exact type matches
-4. **Verify**: lean-lsp to check if theorem applies
-
-## Integration with Agents
-
-### Researcher Agent
-- Uses all search tools (Loogle, LeanSearch, LeanExplore)
-- Merges results from multiple sources
-- Ranks by relevance and confidence
-
-### Implementer Agent
-- Uses lean-lsp for incremental validation
-- Validates each tactic before proceeding
-- Gets proof state after each step
-
-### Planner Agent
-- Uses Loogle for type-guided planning
-- Uses LeanExplore for dependency analysis
-- Builds proof strategy from available theorems
-
-### Reviser Agent
-- Uses lean-lsp for error diagnosis
-- Uses LeanSearch to find similar successful proofs
-- Generates specific revision recommendations
-
-## Agent Integration Guide
-
-### How to Invoke MCP Tools from Agents
-
-Agents invoke MCP tools using the Python client wrapper located at `.claude/tool/mcp/client.py`.
-
-#### Import MCP Client
-
-```python
-from opencode.tool.mcp.client import check_mcp_server_configured, invoke_mcp_tool
+```
+Parameters:
+- file_path: Absolute path to Lean file
+- start_line: Filter from line (optional)
+- end_line: Filter to line (optional)
+- declaration_name: Filter to declaration (optional, slower)
 ```
 
-#### Check Tool Availability
+#### lean_hover_info
+**Purpose**: Get type signature and documentation for a symbol.
 
-Before invoking MCP tools, check if the server is configured:
+**Usage**:
+- Column must be at START of identifier
+- Essential for understanding APIs
 
-```python
-# Check if lean-lsp server is available
-mcp_available = check_mcp_server_configured("lean-lsp")
-
-if mcp_available:
-    # Use MCP tools
-    pass
-else:
-    # Fall back to alternative approach
-    pass
+```
+Parameters:
+- file_path: Absolute path to Lean file
+- line: Line number (1-indexed)
+- column: Column at START of identifier (1-indexed)
 ```
 
-#### Invoke MCP Tools
+#### lean_completions
+**Purpose**: Get IDE autocompletions.
 
-Use `invoke_mcp_tool()` to call any MCP tool:
+**Usage**:
+- Use on INCOMPLETE code (after `.` or partial name)
 
-```python
-result = invoke_mcp_tool(
-    server="lean-lsp",           # MCP server name from .mcp.json
-    tool="lean_diagnostic_messages",  # Tool name
-    arguments={"file_path": "Logos/Core/Theorem.lean"},  # Tool arguments
-    timeout=30                   # Timeout in seconds (default: 30)
-)
-
-# Check result
-if result["success"]:
-    # Tool invocation succeeded
-    data = result["result"]
-    # Process data
-else:
-    # Tool invocation failed
-    error = result["error"]
-    # Handle error
+```
+Parameters:
+- file_path: Absolute path to Lean file
+- line: Line number (1-indexed)
+- column: Column number (1-indexed)
+- max_completions: Max completions (default: 32)
 ```
 
-### Available Tools by Agent
+#### lean_multi_attempt
+**Purpose**: Try multiple tactics without modifying file.
 
-#### lean-implementation-agent
+**Usage**:
+- Returns goal state for each tactic
+- Recommend trying 3+ tactics at once
 
-**Primary Tools**:
-- `lean_diagnostic_messages` - Check for compilation errors
-- `lean_goal` - Get proof state at position
-- `lean_run_code` - Test code snippet
-- `lean_build` - Rebuild project
-
-**Usage Pattern**:
-1. Write Lean code
-2. Call `lean_diagnostic_messages` to check for errors
-3. If errors: Analyze and fix
-4. Iterate until compilation succeeds
-
-#### lean-research-agent
-
-**Primary Tools**:
-- `lean_loogle` - Type-based search (if not using local CLI)
-- `lean_leansearch` - Natural language search
-- `lean_local_search` - Local project search
-- `lean_hover_info` - Get documentation
-
-**Usage Pattern**:
-1. Formulate search query
-2. Call appropriate search tool
-3. Parse and rank results
-4. Return relevant theorems
-
-### Tool Invocation Examples
-
-#### Example 1: Check Compilation Errors
-
-```python
-from opencode.tool.mcp.client import invoke_mcp_tool
-
-# Check diagnostics for a Lean file
-result = invoke_mcp_tool(
-    server="lean-lsp",
-    tool="lean_diagnostic_messages",
-    arguments={"file_path": "Logos/Core/Theorem.lean"}
-)
-
-if result["success"]:
-    diagnostics = result["result"]
-    
-    # Filter by severity (1=error, 2=warning, 3=info)
-    errors = [d for d in diagnostics if d.get("severity") == 1]
-    warnings = [d for d in diagnostics if d.get("severity") == 2]
-    
-    if errors:
-        print(f"Found {len(errors)} errors:")
-        for error in errors:
-            line = error["range"]["start"]["line"]
-            message = error["message"]
-            print(f"  Line {line}: {message}")
-    else:
-        print("No compilation errors")
-else:
-    print(f"Error: {result['error']}")
+```
+Parameters:
+- file_path: Absolute path to Lean file
+- line: Line number (1-indexed)
+- snippets: Array of tactics to try, e.g., ["simp", "ring", "omega"]
 ```
 
-#### Example 2: Get Proof Goal
+#### lean_local_search
+**Purpose**: Fast local search to verify declarations exist.
 
-```python
-# Get proof state at specific position
-result = invoke_mcp_tool(
-    server="lean-lsp",
-    tool="lean_goal",
-    arguments={
-        "file_path": "Logos/Core/Theorem.lean",
-        "line": 45,
-        "column": 10
-    }
-)
+**Usage**:
+- Use BEFORE trying a lemma name
+- No rate limit, very fast
 
-if result["success"]:
-    goal_state = result["result"]
-    print(f"Goals: {goal_state.get('goals', [])}")
-    print(f"Hypotheses: {goal_state.get('hypotheses', [])}")
-else:
-    print(f"Error: {result['error']}")
+```
+Parameters:
+- query: Declaration name or prefix
+- limit: Max matches (default: 10)
+- project_root: Project root (optional, inferred if omitted)
 ```
 
-#### Example 3: Run Code Snippet
+#### lean_file_outline
+**Purpose**: Get imports and declarations with type signatures.
 
-```python
-# Test a code snippet without writing to file
-result = invoke_mcp_tool(
-    server="lean-lsp",
-    tool="lean_run_code",
-    arguments={
-        "code": "theorem test : True := trivial"
-    }
-)
+**Usage**:
+- Token-efficient file skeleton
+- Good for understanding file structure
 
-if result["success"]:
-    output = result["result"]
-    print(f"Code execution result: {output}")
-else:
-    print(f"Error: {result['error']}")
+```
+Parameters:
+- file_path: Absolute path to Lean file
 ```
 
-#### Example 4: Search with Loogle
+#### lean_term_goal
+**Purpose**: Get the expected type at a position.
 
-```python
-# Type-based search using lean_loogle
-result = invoke_mcp_tool(
-    server="lean-lsp",
-    tool="lean_loogle",
-    arguments={
-        "query": "?a + ?b = ?b + ?a"
-    }
-)
-
-if result["success"]:
-    results = result["result"]
-    print(f"Found {len(results)} theorems:")
-    for theorem in results[:5]:  # Top 5 results
-        print(f"  - {theorem['name']}: {theorem['type']}")
-else:
-    print(f"Error: {result['error']}")
+```
+Parameters:
+- file_path: Absolute path to Lean file
+- line: Line number (1-indexed)
+- column: Column (optional, defaults to end of line)
 ```
 
-#### Example 5: Natural Language Search
+#### lean_declaration_file
+**Purpose**: Get file where a symbol is declared.
 
-```python
-# Semantic search using lean_leansearch
-result = invoke_mcp_tool(
-    server="lean-lsp",
-    tool="lean_leansearch",
-    arguments={
-        "query": "theorems about continuity of functions"
-    }
-)
+**Usage**:
+- Symbol must be present in file first
+- Use sparingly (large output)
 
-if result["success"]:
-    results = result["result"]
-    for theorem in results[:10]:  # Top 10 results
-        print(f"  - {theorem['name']}")
-        print(f"    {theorem['docstring']}")
-else:
-    print(f"Error: {result['error']}")
+```
+Parameters:
+- file_path: Absolute path to Lean file
+- symbol: Symbol (case sensitive, must be in file)
 ```
 
-### Error Handling Patterns
+#### lean_run_code
+**Purpose**: Run a code snippet and return diagnostics.
 
-#### Pattern 1: Graceful Degradation
+**Usage**:
+- Must include all imports
+- Use rarely
 
-```python
-from opencode.tool.mcp.client import check_mcp_server_configured, invoke_mcp_tool
-
-# Check availability first
-if check_mcp_server_configured("lean-lsp"):
-    # Use MCP tool
-    result = invoke_mcp_tool(
-        server="lean-lsp",
-        tool="lean_diagnostic_messages",
-        arguments={"file_path": "file.lean"}
-    )
-    
-    if result["success"]:
-        # Process result
-        pass
-    else:
-        # MCP tool failed - fall back
-        print(f"MCP tool failed: {result['error']}")
-        # Use alternative approach (e.g., lake build)
-else:
-    # MCP not available - fall back
-    print("lean-lsp-mcp not available, using lake build")
-    # Use alternative approach
+```
+Parameters:
+- code: Self-contained Lean code with imports
 ```
 
-#### Pattern 2: Retry on Timeout
+#### lean_build
+**Purpose**: Build the Lean project and restart LSP.
 
-```python
-def invoke_with_retry(server, tool, arguments, max_retries=2):
-    """Invoke MCP tool with retry on timeout."""
-    for attempt in range(max_retries):
-        result = invoke_mcp_tool(
-            server=server,
-            tool=tool,
-            arguments=arguments,
-            timeout=30
-        )
-        
-        if result["success"]:
-            return result
-        
-        # Check if timeout error
-        if "timeout" in result["error"].lower():
-            if attempt < max_retries - 1:
-                print(f"Timeout, retrying ({attempt + 1}/{max_retries})...")
-                continue
-        
-        # Non-timeout error or max retries reached
-        return result
-    
-    return result
+**Usage**:
+- Use only if needed (e.g., new imports)
+- SLOW!
+
+```
+Parameters:
+- lean_project_path: Path to Lean project (optional)
+- clean: Run lake clean first (default: false, slow)
+- output_lines: Return last N lines of build log (default: 20)
 ```
 
-#### Pattern 3: Error Logging
+### Search Tools (Rate Limited)
 
-```python
-import json
-from pathlib import Path
+#### lean_leansearch (3 req/30s)
+**Purpose**: Search Mathlib via leansearch.net using natural language.
 
-def log_mcp_error(error_message, error_code="MCP_ERROR"):
-    """Log MCP tool error to errors.json."""
-    errors_file = Path(".claude/errors.json")
-    
-    error_entry = {
-        "type": "mcp_tool_error",
-        "code": error_code,
-        "message": error_message,
-        "timestamp": datetime.now().isoformat()
-    }
-    
-    # Append to errors.json
-    if errors_file.exists():
-        with open(errors_file, 'r') as f:
-            errors = json.load(f)
-    else:
-        errors = []
-    
-    errors.append(error_entry)
-    
-    with open(errors_file, 'w') as f:
-        json.dump(errors, f, indent=2)
+**Examples**:
+- "sum of two even numbers is even"
+- "Cauchy-Schwarz inequality"
+- `{f : A → B} (hf : Injective f) : ∃ g, LeftInverse g f`
 
-# Usage
-result = invoke_mcp_tool(...)
-if not result["success"]:
-    log_mcp_error(result["error"], "MCP_TOOL_UNAVAILABLE")
+```
+Parameters:
+- query: Natural language or Lean term query
+- num_results: Max results (default: 5)
 ```
 
-### Troubleshooting MCP Tool Invocation
+#### lean_loogle (3 req/30s)
+**Purpose**: Search Mathlib by type signature via loogle.lean-lang.org.
 
-#### Issue 1: Server Not Configured
+**Examples**:
+- `Real.sin`
+- `"comm"`
+- `(?a → ?b) → List ?a → List ?b`
+- `_ * (_ ^ _)`
+- `|- _ < _ → _ + 1 < _ + 1`
 
-**Error**: `MCP server 'lean-lsp' not configured or unavailable`
-
-**Solutions**:
-1. Check `.mcp.json` exists in project root
-2. Verify `lean-lsp` server is configured in `.mcp.json`
-3. Check `uvx` command is available: `which uvx`
-4. Install lean-lsp-mcp: `uvx lean-lsp-mcp`
-
-#### Issue 2: Tool Not Found
-
-**Error**: `Tool 'lean_diagnostic_messages' not found`
-
-**Solutions**:
-1. Verify tool name is correct (check lean-lsp-mcp documentation)
-2. Check lean-lsp-mcp version: `uvx lean-lsp-mcp --version`
-3. Update lean-lsp-mcp: `uvx --reinstall lean-lsp-mcp`
-
-#### Issue 3: Timeout
-
-**Error**: `MCP tool invocation timed out`
-
-**Solutions**:
-1. Increase timeout: `invoke_mcp_tool(..., timeout=60)`
-2. Check if Lean LSP server is responsive
-3. Restart Lean LSP server
-4. Check system resources (CPU, memory)
-
-#### Issue 4: Invalid Arguments
-
-**Error**: `Invalid arguments for tool`
-
-**Solutions**:
-1. Check tool documentation for required arguments
-2. Verify argument types (string, int, dict, etc.)
-3. Ensure file paths are absolute or relative to project root
-4. Check argument names match tool specification
-
-### Difference Between CLI Tools and MCP Tools
-
-#### CLI Tools (e.g., Loogle CLI)
-
-**Approach**: Direct subprocess management
-
-```python
-import subprocess
-
-# Start Loogle CLI process
-process = subprocess.Popen(
-    ["/path/to/loogle", "--json", "--interactive"],
-    stdin=subprocess.PIPE,
-    stdout=subprocess.PIPE
-)
-
-# Send query
-process.stdin.write("?a + ?b = ?b + ?a\n")
-process.stdin.flush()
-
-# Read response
-response = process.stdout.readline()
-result = json.loads(response)
+```
+Parameters:
+- query: Type pattern, constant, or name substring
+- num_results: Max results (default: 8)
 ```
 
-**Characteristics**:
-- Direct process control
-- Custom communication protocol
-- Manual lifecycle management
-- Hardcoded binary paths
+#### lean_leanfinder (10 req/30s)
+**Purpose**: Semantic search by mathematical meaning via Lean Finder.
 
-#### MCP Tools (e.g., lean-lsp-mcp)
+**Examples**:
+- "commutativity of addition on natural numbers"
+- "I have h : n < m and need n + 1 < m + 1"
+- Proof state text
 
-**Approach**: MCP protocol via client wrapper
-
-```python
-from opencode.tool.mcp.client import invoke_mcp_tool
-
-# Invoke MCP tool
-result = invoke_mcp_tool(
-    server="lean-lsp",
-    tool="lean_loogle",
-    arguments={"query": "?a + ?b = ?b + ?a"}
-)
+```
+Parameters:
+- query: Mathematical concept or proof state
+- num_results: Max results (default: 5)
 ```
 
-**Characteristics**:
-- Standardized MCP protocol
-- Configuration via .mcp.json
-- Automatic lifecycle management
-- Multiple transport options (stdio, HTTP, SSE)
+#### lean_state_search (3 req/30s)
+**Purpose**: Find lemmas to close the goal at a position.
 
-**When to Use Each**:
-- **CLI Tools**: When tool has no MCP server, need direct control, or custom protocol
-- **MCP Tools**: When tool has MCP server, want standardized interface, or need multiple transports
+**Usage**:
+- Searches premise-search.com
+- Best for goal-directed search
 
-## Best Practices
+```
+Parameters:
+- file_path: Absolute path to Lean file
+- line: Line number (1-indexed)
+- column: Column number (1-indexed)
+- num_results: Max results (default: 5)
+```
 
-1. **Always validate with LSP** before writing files
-2. **Use type search first** when you know the signature
-3. **Combine search tools** for comprehensive results
-4. **Explore namespaces** to understand structure
-5. **Check dependencies** before using complex theorems
-6. **Verify incrementally** during proof construction
+#### lean_hammer_premise (3 req/30s)
+**Purpose**: Get premise suggestions for automation tactics.
+
+**Usage**:
+- Returns lemma names to try with `simp only [...]`, `aesop`, or as hints
+
+```
+Parameters:
+- file_path: Absolute path to Lean file
+- line: Line number (1-indexed)
+- column: Column number (1-indexed)
+- num_results: Max results (default: 32)
+```
+
+## Search Decision Tree
+
+```
+1. "Does X exist locally?" → lean_local_search
+2. "I need a lemma that says X" → lean_leansearch
+3. "Find lemma with type pattern" → lean_loogle
+4. "What's the Lean name for concept X?" → lean_leanfinder
+5. "What closes this goal?" → lean_state_search
+6. "What to feed simp?" → lean_hammer_premise
+```
+
+After finding a name:
+1. `lean_local_search` to verify it exists
+2. `lean_hover_info` for full signature
+
+## Proof Development Workflow
+
+### Implementation Pattern
+
+```
+1. Write initial code structure
+2. Check lean_goal for proof state
+3. Apply tactics
+4. Check lean_diagnostic_messages for errors
+5. Iterate until "no goals"
+6. Verify with lake build
+```
+
+### Tactic Selection with lean_multi_attempt
+
+Try multiple tactics efficiently:
+```
+lean_multi_attempt with snippets: ["simp", "ring", "omega", "aesop"]
+```
+
+Common effective tactics:
+- `simp [lemma1, lemma2]`
+- `ring`, `omega` (arithmetic)
+- `aesop` (automated reasoning)
+- `exact h`, `apply lemma`
+- `constructor`, `cases`, `induction`
 
 ## Error Handling
 
-If MCP tool unavailable:
-- **lean-lsp** → Fall back to full compilation
-- **Loogle** → Fall back to grep-based search
-- **LeanSearch** → Fall back to keyword search
-- **LeanExplore** → Fall back to manual file reading
+### Check isError Field
+Tool responses include `isError`:
+- `true` = failure (timeout/LSP error)
+- `false` with `[]` = no results found (not an error)
 
-## Performance Considerations
+### Common Issues
 
-- **LSP queries**: Fast (< 100ms), use liberally
-- **Loogle searches**: Moderate (< 1s), cache results
-- **LeanSearch**: Slower (1-3s), use for initial exploration
-- **LeanExplore**: Fast (< 500ms), good for navigation
+**Proof Stuck**:
+1. Use `lean_multi_attempt` with varied tactics
+2. Use `lean_state_search` to find closing lemmas
+3. Use `lean_hammer_premise` for simp hints
+4. Try different proof approach
 
-## Implementation Status
+**Type Mismatch**:
+1. Use `lean_hover_info` to check types
+2. Add explicit type annotations
+3. Look for conversion lemmas
 
-### Phase 1: Foundation (Current)
-- [PASS] Type definitions created
-- [PASS] Error handling framework created
-- [PASS] LSP client wrapper created (basic)
-- [PASS] MCP tools guide created
-- ⏳ MCP protocol integration (pending)
+**Missing Import**:
+1. Use `lean_local_search` to verify name
+2. Add required import
+3. Use `lean_build` to rebuild
 
-### Phase 2: Additional Clients (Planned)
-- ⬜ LeanExplore client
-- ⬜ Loogle client
-- ⬜ LeanSearch client
+### Fallback Strategies
 
-### Phase 3: Integration (Planned)
-- ⬜ Connect LSP to actual lean-lsp-mcp server
-- ⬜ Implement MCP protocol communication
-- ⬜ Add comprehensive error handling
-- ⬜ Add performance monitoring
+If MCP tools unavailable:
+- **Core tools** → Use `lake build` for compilation verification
+- **Search tools** → Use web search for Mathlib queries
 
-## Troubleshooting
+## Rate Limit Management
 
-### LSP Client Not Working
+### Limits by Tool
+| Tool | Rate Limit |
+|------|------------|
+| lean_leansearch | 3 req/30s |
+| lean_loogle | 3 req/30s |
+| lean_leanfinder | 10 req/30s |
+| lean_state_search | 3 req/30s |
+| lean_hammer_premise | 3 req/30s |
 
-**Problem**: LSP operations return "not available" errors
+### Best Practices
+1. Use `lean_local_search` first (no limit)
+2. Batch searches when possible
+3. Cache found theorem names for reuse
+4. Use lean_leanfinder for more queries (higher limit)
 
-**Solutions**:
-1. Check if lean-lsp-mcp is installed: `uvx lean-lsp-mcp`
-2. Verify `.mcp.json` configuration
-3. Check MCP server logs
-4. Fall back to full compilation
+## Skill Integration
 
-### Slow Response Times
+### skill-lean-implementation
+Uses core tools for proof development:
+- `lean_goal` - Check proof state
+- `lean_diagnostic_messages` - Verify compilation
+- `lean_hover_info` - Check types
+- `lean_completions` - Get completions
+- `lean_multi_attempt` - Try tactics
+- `lean_local_search` - Verify names
+- `lean_state_search` - Find closing lemmas
+- `lean_hammer_premise` - Get simp hints
 
-**Problem**: MCP operations are slow
+### skill-lean-research
+Uses search tools for theorem discovery:
+- `lean_leansearch` - Natural language search
+- `lean_loogle` - Type pattern search
+- `lean_leanfinder` - Semantic search
+- `lean_local_search` - Local project search
+- `lean_hover_info` - Get signatures
+- `lean_state_search` - Goal-directed search
+- `lean_hammer_premise` - Premise suggestions
 
-**Solutions**:
-1. Enable caching: `useCache: true`
-2. Increase cache TTL: `cacheTTL: 120000`
-3. Check network/server load
-4. Clear expired cache entries
+## Quick Reference
 
-### Stale Cache
+### Most Used Tools
 
-**Problem**: Cache returns outdated results
+| Task | Tool |
+|------|------|
+| Check proof state | `lean_goal` |
+| Check for errors | `lean_diagnostic_messages` |
+| Get type info | `lean_hover_info` |
+| Try multiple tactics | `lean_multi_attempt` |
+| Verify name exists | `lean_local_search` |
+| Find theorem (natural language) | `lean_leansearch` |
+| Find theorem (type pattern) | `lean_loogle` |
+| Find lemma to close goal | `lean_state_search` |
 
-**Solutions**:
-1. Reduce cache TTL
-2. Clear cache manually: `lsp.clearCache()`
-3. Disable cache for critical operations
+### Tool Invocation Format
 
-## References
-
-- [MCP Integration Plan](../../specs/mcp-integration-plan.md)
-- [MCP Integration Checklist](../../specs/mcp-integration-checklist.md)
-- [MCP Tools README](../../tool/mcp/README.md)
-- [TypeScript Type Definitions](../../tool/mcp/types.ts)
+In Claude Code, tools are called directly:
+```
+mcp__lean-lsp__lean_goal
+mcp__lean-lsp__lean_diagnostic_messages
+mcp__lean-lsp__lean_hover_info
+... etc
+```
 
 ## Version
 
-**Version**: 0.1.0  
-**Last Updated**: 2025-12-15  
-**Status**: Phase 1 - Foundation Complete
+**Version**: 2.0.0
+**Last Updated**: 2026-01-10
+**Platform**: Claude Code (migrated from OpenCode)
