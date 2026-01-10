@@ -4,9 +4,9 @@ _[Return to Project Overview](../../README.md)_
 
 ## Overview
 
-Logos is a formal language of thought designed to enable verified AI reasoning through progressive operator extensibility. The language implements a layered architecture where operators build incrementally from foundational logic (Boolean, modal, temporal) through domain-specific reasoning capabilities (explanatory, epistemic, normative). This design enables AI systems to reason with precisely the expressive power required for each application without unnecessary complexity.
+Logos is a formal language of thought designed to enable verified AI reasoning through progressive operator extensibility. The language implements an extension architecture where operators build incrementally from foundational logic (Boolean, modal, temporal) through domain-specific reasoning capabilities (explanatory, epistemic, normative). This design enables AI systems to reason with precisely the expressive power required for each application without unnecessary complexity.
 
-**Core Principle**: "Any combination of extensions can be added to the Core Layer"
+**Core Principle**: "Any combination of extensions can be added to the Core Extension"
 
 The complete Logos includes all three extensions, but applications can selectively load only needed operator families. A medical planning system might require Core + Explanatory operators, while a legal reasoning system might need Core + Epistemic operators, and a multi-agent coordination system might need all three extensions.
 
@@ -26,7 +26,7 @@ Logos implements task semantics for the bimodal logic TM (Tense and Modality), w
 
 ### Progressive Operator Methodology
 
-The Logos architecture follows a progressive extension strategy where operators are organized into layers building incrementally from foundational logic. This methodology enables domain-specific customization while maintaining mathematical rigor, allowing applications to use precisely the operators needed without carrying overhead from unused extensions.
+The Logos architecture follows a progressive extension strategy where operators are organized into extensions building incrementally from foundational logic. This methodology enables domain-specific customization while maintaining mathematical rigor, allowing applications to use precisely the operators needed without carrying overhead from unused extensions.
 
 #### Future Extensibility: Operator Discovery
 
@@ -42,11 +42,11 @@ Just as the space of theorems for any proof system and the space of models for a
 
 This contrasts sharply with natural language reasoning data, which is typically finite, noisy, and inconsistent—especially for sophisticated reasoning involving complex operator interactions that most humans cannot reliably perform without formal support. Like arithmetic computation, which vastly outstrips unaided human capability, complex logical reasoning requires formal systems to achieve accuracy and scale.
 
-## Layer Architecture
+## Extension Architecture
 
-### Layer 0 (Core TM): Boolean, Modal, Temporal
+### Extension 0 (Core TM): Boolean, Modal, Temporal
 
-The Core Layer provides foundational reasoning through Boolean connectives, modal operators (necessity/possibility), and temporal operators (past/future). This layer implements the bimodal logic TM with task semantics.
+The Core Extension provides foundational reasoning through Boolean connectives, modal operators (necessity/possibility), and temporal operators (past/future). This extension implements the bimodal logic TM with task semantics.
 
 **Operators**:
 - Boolean: `¬`, `∧`, `∨`, `→`, `↔`, `⊥`, `⊤`
@@ -60,9 +60,9 @@ The Core Layer provides foundational reasoning through Boolean connectives, moda
 
 **Implementation Status**: See [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) for current progress.
 
-### Layer 1 (Explanatory): Counterfactual, Constitutive, Causal
+### Extension 1 (Explanatory): Counterfactual, Constitutive, Causal
 
-Layer 1 extends the Core Layer with operators for explanatory reasoning, enabling AI systems to understand and reason about counterfactual scenarios, constitutive relationships, and causal connections.
+Extension 1 extends the Core Extension with operators for explanatory reasoning, enabling AI systems to understand and reason about counterfactual scenarios, constitutive relationships, and causal connections.
 
 **Operators**:
 - Counterfactual: `□→` (would), `◇→` (might)
@@ -73,9 +73,9 @@ Layer 1 extends the Core Layer with operators for explanatory reasoning, enablin
 
 **Implementation Status**: Planned for future development. See [Research/LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md) for specifications.
 
-### Layer 2 (Epistemic): Belief, Probability, Knowledge
+### Extension 2 (Epistemic): Belief, Probability, Knowledge
 
-Layer 2 extends the Core Layer with operators for reasoning under uncertainty, enabling AI systems to represent and reason about beliefs, probabilities, and knowledge states.
+Extension 2 extends the Core Extension with operators for reasoning under uncertainty, enabling AI systems to represent and reason about beliefs, probabilities, and knowledge states.
 
 **Operators**:
 - Belief: `B` (agent belief)
@@ -87,9 +87,9 @@ Layer 2 extends the Core Layer with operators for reasoning under uncertainty, e
 
 **Implementation Status**: Planned for future development. See [Research/LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md) for specifications.
 
-### Layer 3 (Normative): Obligation, Permission, Preference
+### Extension 3 (Normative): Obligation, Permission, Preference
 
-Layer 3 extends the Core Layer with operators for ethical and cooperative reasoning, enabling AI systems to represent and reason about obligations, permissions, and preferences.
+Extension 3 extends the Core Extension with operators for ethical and cooperative reasoning, enabling AI systems to represent and reason about obligations, permissions, and preferences.
 
 **Operators**:
 - Deontic: `O` (obligation), `P` (permission)
@@ -152,7 +152,7 @@ The semantic model theory underlying Logos enables not just **deductive reasonin
 - If the inference is valid, the proof-checker derives it with a machine-checkable proof (positive training signal)
 - If the inference is invalid, the model-checker refutes it with a counterexample (corrective training signal)
 
-**Current Focus**: The implemented Core Layer provides complete infrastructure for training deductive reasoning with modal and temporal operators.
+**Current Focus**: The implemented Core Extension provides complete infrastructure for training deductive reasoning with modal and temporal operators.
 
 #### Abductive Reasoning
 
@@ -163,7 +163,7 @@ The semantic model theory underlying Logos enables not just **deductive reasonin
 - Which claims **can be made true** by extending the model in specific ways
 - What **must be added** to the model to achieve goals
 
-**Future Capability**: Planned extensions (counterfactual, causal operators in Layer 1) will enable systematic hypothesis generation for explanatory reasoning.
+**Future Capability**: Planned extensions (counterfactual, causal operators in Extension 1) will enable systematic hypothesis generation for explanatory reasoning.
 
 #### Inductive Reasoning
 
@@ -193,26 +193,26 @@ Training AI systems to reason in Logos—interpreted through semantic models wit
 
 ## Combination Principles
 
-**Any combination of extensions can be added to the Core Layer**:
+**Any combination of extensions can be added to the Core Extension**:
 - Core only: Boolean, modal, temporal reasoning
-- Core + Layer 1: Adds explanatory reasoning
-- Core + Layer 2: Adds epistemic reasoning
-- Core + Layer 3: Adds normative reasoning
-- Core + Layers 1,2: Explanatory + epistemic
-- Core + Layers 1,3: Explanatory + normative
-- Core + Layers 2,3: Epistemic + normative
-- Core + Layers 1,2,3: Complete Logos
+- Core + Extension 1: Adds explanatory reasoning
+- Core + Extension 2: Adds epistemic reasoning
+- Core + Extension 3: Adds normative reasoning
+- Core + Extensions 1,2: Explanatory + epistemic
+- Core + Extensions 1,3: Explanatory + normative
+- Core + Extensions 2,3: Epistemic + normative
+- Core + Extensions 1,2,3: Complete Logos
 
 Applications select operator combinations matching domain requirements, optimizing for needed expressiveness without unnecessary overhead.
 
 ## Implementation Status
 
 See [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) for current progress including:
-- Layer 0 (Core TM) implementation status
+- Extension 0 (Core TM) implementation status
 - Metalogic completion (soundness, completeness)
 - Perpetuity principles (P1-P6)
 - Automation tactics
-- Planning for Layers 1-3
+- Planning for Extensions 1-3
 
 ## References
 
@@ -286,8 +286,8 @@ See [AI System Overview](../../.opencode/README.md) for complete workflow docume
 
 ## Related Documentation
 
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Layer 0 (Core TM) technical specification
-- [Research/LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md) - Layers 1-3 extension specifications
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Extension 0 (Core TM) technical specification
+- [Research/LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md) - Extensions 1-3 specifications
 - [Research/DUAL_VERIFICATION.md](../Research/DUAL_VERIFICATION.md) - RL training architecture
 - [Research/PROOF_LIBRARY_DESIGN.md](../Research/PROOF_LIBRARY_DESIGN.md) - Theorem caching design
 - [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) - Current implementation progress

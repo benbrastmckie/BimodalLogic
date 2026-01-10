@@ -1,28 +1,35 @@
-# Logos Layer Extensions
+# Logos Extensions
 
 ## Overview
 
-The Logos is organized into five semantic layers, each building upon the previous with increasing expressive power. Each layer corresponds to a **semantic frame** that defines the primitive structure needed to interpret logical formulas. The layers are:
+Logos is organized into semantic extensions, each building upon the previous with increasing expressive power. Each extension corresponds to a **semantic frame** that defines the primitive structure needed to interpret logical formulas. The extensions are:
 
-1. **Constitutive Layer** - Hyperintensional semantics over mereological state spaces
-2. **Causal Layer** - Intensional semantics over world-histories with temporal and modal operators
-3. **Epistemic Layer** - Extensions for belief, knowledge, and probability
-4. **Normative Layer** - Extensions for obligation, permission, and value
-5. **Agential Layer** - Extensions for multi-agent reasoning
+1. **Constitutive Foundation** - Hyperintensional semantics over mereological state spaces
+2. **Core Extension** - Intensional semantics over world-histories with temporal and modal operators
+3. **Epistemic Extension** - Extensions for belief, knowledge, and probability
+4. **Normative Extension** - Extensions for obligation, permission, and value
+5. **Spatial Extension** - Extensions for spatial reasoning and location
+6. **Agential Extension** - Extensions for multi-agent reasoning (requires at least one middle extension)
 
-**Semantic Progression**: Each layer's frame includes all structure from previous layers. A formula combining operators from multiple layers (e.g., `B_a(F(O(p)))` - "agent a believes that it will be obligatory that p") is evaluated in the most complex frame needed.
+**Semantic Progression**: Each extension's frame includes all structure from previous extensions. A formula combining operators from multiple extensions (e.g., `B_a(F(O(p)))` - "agent a believes that it will be obligatory that p") is evaluated in the most complex frame needed.
 
 See [RECURSIVE_SEMANTICS.md](RECURSIVE_SEMANTICS.md) for full formal semantic specifications, [METHODOLOGY.md](../UserGuide/METHODOLOGY.md) for philosophical methodology, and [GLOSSARY.md](../Reference/GLOSSARY.md) for term definitions.
 
 ---
 
-## The Five-Layer Architecture
+## Extension Architecture
 
-### Constitutive Layer (Foundation)
+### Constitutive Foundation
 
-FIX: specify what syntactic primitives will be interpreted in this layer including lambda abstraction, updating the GLOSSARY.md accordingly
+The Constitutive Foundation provides the foundational mereological structure upon which all other extensions build. Its semantics is **hyperintensional**, distinguishing propositions that agree on truth-value across all possible worlds but differ in their verification and falsification conditions. This foundation is non-modal: possibility and compatibility cannot be defined at this level since they require the task relation introduced in the Core Extension.
 
-The Constitutive Layer provides the foundational mereological structure upon which all other layers build. Its semantics is **hyperintensional**, distinguishing propositions that agree on truth-value across all possible worlds but differ in their verification and falsification conditions.
+#### Syntactic Primitives
+
+The Constitutive Foundation interprets these syntactic primitives:
+- Variables, individual constants, n-place function symbols, n-place predicates
+- Sentence letters (0-place predicates)
+- Lambda abstraction: λx.A (binding variable x in formula A)
+- Logical connectives: ¬, ∧, ∨, ⊤, ⊥, ≡
 
 #### Frame Structure
 
@@ -30,7 +37,6 @@ A *constitutive frame* is a complete lattice ⟨S, ⊑⟩ of states ordered by p
 - **Null state** (□): Bottom element (fusion of the empty set)
 - **Full state** (■): Top element (fusion of all states)
 - **Fusion** (s.t): Least upper bound of states s and t
-- **Compatibility** (s ∘ t): States are compatible iff their fusion is possible
 
 #### Model Components
 
@@ -42,7 +48,7 @@ A constitutive model includes an interpretation function that assigns:
 
 #### Hyperintensional Semantics
 
-The Constitutive Layer provides recursive verification and falsification clauses for:
+The Constitutive Foundation provides recursive verification and falsification clauses for:
 - **Atomic formulas** F(a₁,...,aₙ)
 - **Negation** (¬) - exchanges verification and falsification
 - **Conjunction** (∧) - fusion of verifiers, sum of falsifiers
@@ -59,19 +65,28 @@ The Constitutive Layer provides recursive verification and falsification clauses
 | **Essence** | A ⊑ B | "A is necessary for B" |
 | **Relevance** | A ≼ B | "A is wholly relevant to B" |
 
-**Note**: Logical consequence at this layer is restricted to propositional identity sentences. Evaluation of contingent atomic sentences requires the Causal Layer.
+Logical consequence at this foundation is restricted to propositional identity sentences. Evaluation of contingent atomic sentences requires the Core Extension.
 
 See [RECURSIVE_SEMANTICS.md](RECURSIVE_SEMANTICS.md) for full verification/falsification clauses.
 
 ---
 
-### Causal Layer
+### Core Extension
 
-The Causal Layer extends the Constitutive Layer with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. Semantics at this layer is **intensional** rather than hyperintensional.
+The Core Extension extends the Constitutive Foundation with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. Semantics at this extension is **intensional** rather than hyperintensional.
+
+#### Syntactic Primitives
+
+The Core Extension interprets these additional syntactic primitives:
+- Modal operators: □ (necessity), ◇ (possibility)
+- Temporal operators: H (always past), G (always future), P (some past), F (some future)
+- Extended temporal operators: ◁ (since), ▷ (until)
+- Counterfactual conditional: □→ (would-counterfactual)
+- Store/recall operators: ↑ⁱ (store), ↓ⁱ (recall)
 
 #### Frame Extensions
 
-A *causal frame* extends a constitutive frame with:
+A *core frame* extends a constitutive frame with:
 - **Temporal order** D = ⟨D, +, ≤⟩ - a totally ordered abelian group of times
 - **Task relation** ⇒ - constraining possible state transitions with nullity and compositionality
 
@@ -133,7 +148,7 @@ The task semantics validates perpetuity principles connecting modal and temporal
 
 #### Planning Applications
 
-The Causal Layer enables AI systems to reason about:
+The Core Extension enables AI systems to reason about:
 - **Action sequences** via temporal operators
 - **Hypothetical interventions** via counterfactuals
 - **Causal relationships** via causation operator
@@ -162,9 +177,9 @@ See [RECURSIVE_SEMANTICS.md](RECURSIVE_SEMANTICS.md) for full truth conditions.
 
 ---
 
-### Epistemic Layer
+### Epistemic Extension
 
-The Epistemic Layer extends the Causal Layer with structures for reasoning under uncertainty.
+The Epistemic Extension extends the Core Extension with structures for reasoning under uncertainty.
 
 [DETAILS]
 
@@ -209,9 +224,9 @@ The system integrates belief operators with temporal operators to establish moti
 
 ---
 
-### Normative Layer
+### Normative Extension
 
-The Normative Layer extends the Epistemic Layer with structures for ethical and cooperative reasoning.
+The Normative Extension extends the Epistemic Extension with structures for ethical and cooperative reasoning.
 
 [DETAILS]
 
@@ -260,29 +275,29 @@ Finding optimal collective agreement requires intersection of permitted options 
 
 ---
 
-### Agential Layer
+### Agential Extension
 
-The Agential Layer extends the Normative Layer for multi-agent reasoning scenarios.
+The Agential Extension extends the Normative Extension for multi-agent reasoning scenarios.
 
 [DETAILS]
 
-[QUESTION: What frame extensions are required for multi-agent reasoning? Does this layer add agent indices, or agent-relative accessibility relations?]
+[QUESTION: What frame extensions are required for multi-agent reasoning? Does this extension add agent indices, or agent-relative accessibility relations?]
 
 [QUESTION: How do individual and collective agency interact in the semantic framework?]
 
 ---
 
-## Layer Interaction and Composition
+## Extension Interaction and Composition
 
-When operators from multiple layers combine, evaluation uses the most complex frame required:
+When operators from multiple extensions combine, evaluation uses the most complex frame required:
 
-**Epistemic + Temporal** (Epistemic + Causal):
+**Epistemic + Temporal** (Epistemic + Core):
 ```
 B_a(Fp) → F(B_a(p) ∨ ¬B_a(p))
 ```
 If agent believes p will be true, then in future either agent believes p or doesn't.
 
-**Normative + Counterfactual** (Normative + Causal):
+**Normative + Counterfactual** (Normative + Core):
 ```
 O(p) → (¬p □→ violation)
 ```
@@ -298,13 +313,14 @@ If agent A believes agent B prefers y, then A negotiates toward y.
 
 ## Implementation Status
 
-| Layer | Semantic Specification | Implementation Status |
-|-------|----------------------|----------------------|
-| **Constitutive** | Complete | Partial (proof-checker) |
-| **Causal** | Complete | Partial (model-checker) |
-| **Epistemic** | [DETAILS] | Not started |
-| **Normative** | [DETAILS] | Not started |
-| **Agential** | [DETAILS] | Not started |
+| Extension | Semantic Specification | Implementation Status |
+|-----------|----------------------|----------------------|
+| **Constitutive Foundation** | Complete | Partial (proof-checker) |
+| **Core Extension** | Complete | Partial (model-checker) |
+| **Epistemic Extension** | [DETAILS] | Not started |
+| **Normative Extension** | [DETAILS] | Not started |
+| **Spatial Extension** | [DETAILS] | Not started |
+| **Agential Extension** | [DETAILS] | Not started |
 
 See [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) for current progress.
 

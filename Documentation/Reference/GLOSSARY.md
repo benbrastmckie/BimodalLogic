@@ -2,22 +2,23 @@
 
 This glossary maps terminology between Logos and Logos documentation, providing definitions for key concepts and operators.
 
-## Layer Architecture
+## Extension Architecture
 
-The Logos is organized into five semantic layers, each building upon the previous with increasing expressive power. See [LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md) for full details and [RECURSIVE_SEMANTICS.md](../Research/RECURSIVE_SEMANTICS.md) for formal semantics.
+Logos is organized into semantic extensions, each building upon the previous with increasing expressive power. See [LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md) for full details and [RECURSIVE_SEMANTICS.md](../Research/RECURSIVE_SEMANTICS.md) for formal semantics.
 
 | Term | Definition | Related Terms |
 |------|------------|---------------|
-| Constitutive Layer | Foundation layer with hyperintensional semantics over mereological state spaces | State space, Parthood, Bilateral proposition |
-| Causal Layer | Intensional semantics with modal, temporal, and counterfactual operators | World-history, Task relation, TM logic |
-| Epistemic Layer | Extensions for belief, knowledge, and probability operators | Credence function, Epistemic modality |
-| Normative Layer | Extensions for obligation, permission, and preference operators | Value ordering, Deontic logic |
-| Agential Layer | Extensions for multi-agent reasoning | Agent-relative accessibility |
-| TM logic | Bimodal logic combining Tense (temporal) and Modality (modal) operators | Causal Layer |
-| Progressive Extension | Methodology enabling incremental addition of operator layers | Layer Architecture |
-| Semantic Progression | Each layer's frame includes all structure from previous layers | Layer Architecture |
+| Constitutive Foundation | Foundation with hyperintensional semantics over mereological state spaces | State space, Parthood, Bilateral proposition |
+| Core Extension | Intensional semantics with modal, temporal, and counterfactual operators | World-history, Task relation, TM logic |
+| Epistemic Extension | Extensions for belief, knowledge, and probability operators | Credence function, Epistemic modality |
+| Normative Extension | Extensions for obligation, permission, and preference operators | Value ordering, Deontic logic |
+| Spatial Extension | Extensions for spatial reasoning and location operators | Location space, Spatial relations |
+| Agential Extension | Extensions for multi-agent reasoning (requires middle extension) | Agent-relative accessibility |
+| TM logic | Bimodal logic combining Tense (temporal) and Modality (modal) operators | Core Extension |
+| Progressive Extension | Methodology enabling incremental addition of operator extensions | Extension Architecture |
+| Semantic Progression | Each extension's frame includes all structure from previous extensions | Extension Architecture |
 
-## Boolean Operators (Constitutive/Causal Layer)
+## Boolean Operators (Constitutive Foundation/Core Extension)
 
 | Symbol | Name | Definition | Aliases |
 |--------|------|------------|---------|
@@ -29,7 +30,7 @@ The Logos is organized into five semantic layers, each building upon the previou
 | `⊥` | Falsity | Logical constant false | bot, bottom |
 | `⊤` | Truth | Logical constant true | top |
 
-## Modal Operators (Causal Layer)
+## Modal Operators (Core Extension)
 
 | Symbol | Name | Definition | Aliases |
 |--------|------|------------|---------|
@@ -39,7 +40,7 @@ The Logos is organized into five semantic layers, each building upon the previou
 
 **S5 Modal Logic**: Logos implements S5 axioms (MT, M4, MB) ensuring reflexivity, transitivity, and symmetry for modal accessibility relation.
 
-## Temporal Operators (Causal Layer)
+## Temporal Operators (Core Extension)
 
 | Symbol | Name | Function Name | Definition | Aliases |
 |--------|------|---------------|------------|---------|
@@ -60,7 +61,7 @@ The Logos is organized into five semantic layers, each building upon the previou
 - `G φ` → `Formula.all_future φ` (universal future, primitive)
 - `F φ` → `some_future φ` (existential future, derived via `¬(all_future ¬φ)`)
 
-## Bimodal Interaction (Causal Layer)
+## Bimodal Interaction (Core Extension)
 
 | Term | Definition | Related Axioms |
 |------|------------|----------------|
@@ -68,7 +69,7 @@ The Logos is organized into five semantic layers, each building upon the previou
 | Temporal perpetuity | What is always true remains always true | TL |
 | Perpetuity principles | Theorems connecting modal and temporal operators (P1-P6) | See Theorems section |
 
-## Constitutive Operators (Constitutive Layer)
+## Constitutive Operators (Constitutive Foundation)
 
 | Symbol | Name | Definition | Domain |
 |--------|------|------------|--------|
@@ -77,7 +78,7 @@ The Logos is organized into five semantic layers, each building upon the previou
 | `⊑` | Essence | "A is necessary for B" or "A is essential to B" | Constitutive reasoning |
 | `≼` | Relevance | "A is wholly relevant to B" | Constitutive reasoning |
 
-## Causal Operators (Causal Layer)
+## Causal Operators (Core Extension)
 
 | Symbol | Name | Definition | Domain |
 |--------|------|------------|--------|
@@ -86,16 +87,16 @@ The Logos is organized into five semantic layers, each building upon the previou
 | `○→` | Causation | Productive causal relationships | Causal reasoning |
 | `↑ⁱ` | Store | Store current time in register i | Temporal reference |
 | `↓ⁱ` | Recall | Evaluate at stored time i | Temporal reference |
-| `⊳` | Imposition | "imposing t on w yields w'" (t ⊳_w w') | Counterfactual semantics |
+| `→_w` | Imposition | "imposing t on w yields w'" (t →_w w') | Counterfactual semantics |
 
-## Extended Tense Operators (Causal Layer)
+## Extended Tense Operators (Core Extension)
 
 | Symbol | Name | Definition | Domain |
 |--------|------|------------|--------|
 | `◁` | Since | "A since B" (A has held since B was true) | Temporal reasoning |
 | `▷` | Until | "A until B" (A holds until B becomes true) | Temporal reasoning |
 
-## Epistemic Operators (Epistemic Layer)
+## Epistemic Operators (Epistemic Extension)
 
 [DETAILS: Full semantic specifications pending]
 
@@ -108,7 +109,7 @@ The Logos is organized into five semantic layers, each building upon the previou
 | `Mu` | Must (epistemic) | "It must be the case that A" | Epistemic modality |
 | `⟹` | Indicative Conditional | "If...then" under actual beliefs | Conditional reasoning |
 
-## Normative Operators (Normative Layer)
+## Normative Operators (Normative Extension)
 
 [DETAILS: Full semantic specifications pending]
 
@@ -119,13 +120,15 @@ The Logos is organized into five semantic layers, each building upon the previou
 | `≺_a` | Preference | "Agent a prefers B to A" | Preference reasoning |
 | `↦` | Normative Explanation | "A grounds obligation B" | Normative reasoning |
 
-## Constitutive Layer Concepts
+## Constitutive Foundation Concepts
 
 | Term | Definition | Related Terms |
 |------|------------|---------------|
 | State Space | Complete lattice ⟨S, ⊑⟩ of states ordered by parthood | Constitutive frame |
 | Interpretation Function | I assigns meanings to non-logical vocabulary in a model | Constitutive model, Semantic structure |
-| Variable Assignment | Function a̅ from variables to states | Constitutive model |
+| Variable Assignment | Function σ from variables to states (σ : Var → S) | Constitutive model |
+| Temporal Index | Sequence i⃗ = ⟨i₁, i₂, ...⟩ of stored times for cross-temporal reference | Store/recall operators |
+| Actuality Predicate | Act(t) checks whether state t is part of current world-state τ(x) | World-state, Universal quantifier |
 | Lambda Abstraction | λx.A binds variable x in formula A; (λx.A)(t) substitutes t for x | Higher-order semantics |
 | Parthood | Mereological relation ⊑ ordering states | State space |
 | Null State | Bottom element □ of the state lattice (fusion of empty set) | State space |
@@ -135,15 +138,15 @@ The Logos is organized into five semantic layers, each building upon the previou
 | Verification | Relation between states and formulas (s ⊩⁺ A) | Hyperintensional semantics |
 | Falsification | Relation between states and formulas (s ⊩⁻ A) | Hyperintensional semantics |
 | Bilateral Proposition | Ordered pair ⟨V, F⟩ of verifier and falsifier states | Hyperintensional semantics |
-| Hyperintensional Semantics | Semantics distinguishing propositions with same truth-value profile | Constitutive Layer |
+| Hyperintensional Semantics | Semantics distinguishing propositions with same truth-value profile | Constitutive Foundation |
 
-## Causal Layer Concepts
+## Core Extension Concepts
 
 | Term | Definition | Related Terms |
 |------|------------|---------------|
 | Task Relation | Three-place relation ⇒ constraining state transitions with compositionality, containment, and maximality constraints | Causal frame |
 | Possible State | State s where s ⇒_0 s (state has a trivial task to itself) | Task relation, Causal frame |
-| World-state | Maximal possible state | Causal Layer |
+| World-state | Maximal possible state | Core Extension |
 | World-history | Function τ from convex time set to world-states respecting task relation | Causal frame |
 | Temporal Order | Totally ordered abelian group D = ⟨D, +, ≤⟩ of times | Causal frame |
 | Convex Time Set | Time interval without gaps | World-history |
@@ -184,7 +187,7 @@ The Logos is organized into five semantic layers, each building upon the previou
 | P5 | `◇▽φ → △◇φ` | Persistent possibility |
 | P6 | `▽□φ → □△φ` | Occurrent necessity is perpetual |
 
-## Axioms (Causal Layer)
+## Axioms (Core Extension)
 
 | Name | Statement | Purpose |
 |------|-----------|---------|
@@ -206,7 +209,7 @@ For all implementation status information, see [IMPLEMENTATION_STATUS.md](../Pro
 - [METHODOLOGY.md](../UserGuide/METHODOLOGY.md) - Philosophical foundations
 - [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) - Technical specification
 - [OPERATORS.md](OPERATORS.md) - Formal symbols reference
-- [LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md) - Five-layer architecture overview
+- [LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md) - Extension architecture overview
 - [RECURSIVE_SEMANTICS.md](../Research/RECURSIVE_SEMANTICS.md) - Full formal semantic specifications
 
 ---
