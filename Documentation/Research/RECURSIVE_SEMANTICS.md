@@ -1,7 +1,7 @@
-# Recursive Semantics for the Logos Layered Logic System
+# Recursive Semantics for Logos
 
 **Related Documents**:
-- [LAYER_EXTENSIONS.md](LAYER_EXTENSIONS.md) - Layer architecture overview
+- [LAYER_EXTENSIONS.md](LAYER_EXTENSIONS.md) - Extension architecture overview
 - [METHODOLOGY.md](../UserGuide/METHODOLOGY.md) - Philosophical methodology
 - [GLOSSARY.md](../Reference/GLOSSARY.md) - Term definitions
 
@@ -9,31 +9,66 @@
 
 ## Introduction
 
-<!-- FIX: Instead of using 'Layer', I want to use 'Extension' throughout. Also, the 'Causal Extension' should be renamed 'Core Extension' and then the 'Epistemic Extension' and 'Normative Extension' should both have the 'Core Extension' as the only dependency, where the 'Agential Extension' should depend on the 'Epistemic Extension', 'Normative Extension', and an additional 'Spatial Extension' that I want to add, where these three are modular plugins that can combine to enrich the 'Agential Extension', but not all of these three middle layer extensions are required for the 'Agential Extension' to load. -->
+A semantic frame provides the primitive structures used to interpret a formal language. Extending the expressive power of a language requires strategic extensions to the primitive semantic resources provided by the frame, including precisely the resources needed and nothing more. This ensures that language and frame remain in perfect step with each other.
 
-<!-- FIX: don't use alliteration such as 'Logos layered logic system' below or elsewhere -->
+This document provides the recursive semantics for Logos. The semantics proceeds through increasingly expressive extensions, each extending the frame and evaluation mechanisms of the previous:
 
-<!-- FIX: it is important to explain how a frame provides semantic primitives that can be used to interpret a language, where to extend the expressive power of that language requires strategic extensions to the primitive semantic resources provided by a frame, including just the resources needed and nothing more so that the language and frame are in perfect step with each other -->
+### Extension Dependencies
 
-This document provides the recursive semantics for the Logos layered logic system. The semantics proceeds through increasingly expressive layers, each extending the frame and evaluation mechanisms of the previous layer:
+The following diagram shows the dependency structure among extensions:
 
-1. **Constitutive Layer**: Hyperintensional semantics over a mereological state space
-2. **Causal Layer**: Hyperintensional and intensional semantics over a task space
-3. **Epistemic Layer**: Extensions for belief, knowledge, and probability [DETAILS]
-4. **Normative Layer**: Extensions for obligation, permission, and value [DETAILS]
-5. **Agential Layer**: Extensions for multi-agent reasoning [DETAILS]
+```
+┌─────────────────────────────────────────────────┐
+│           Constitutive Foundation               │
+│         (hyperintensional base layer)           │
+└─────────────────────┬───────────────────────────┘
+                      │ required
+                      ▼
+┌─────────────────────────────────────────────────┐
+│              Core Extension                     │
+│    (modal, temporal, counterfactual operators)  │
+└─────────────────────┬───────────────────────────┘
+                      │
+        ┌─────────────┼─────────────┐
+        │ optional    │ optional    │ optional
+        ▼             ▼             ▼
+┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+│  Epistemic   │ │  Normative   │ │   Spatial    │
+│  Extension   │ │  Extension   │ │  Extension   │
+│ (belief,     │ │ (obligation, │ │ (location,   │
+│  knowledge,  │ │  permission, │ │  spatial     │
+│  probability)│ │  preference) │ │  relations)  │
+└──────┬───────┘ └──────┬───────┘ └──────┬───────┘
+       │                │                │
+       └────────────────┼────────────────┘
+                        │ at least one required
+                        ▼
+┌─────────────────────────────────────────────────┐
+│             Agential Extension                  │
+│           (multi-agent reasoning)               │
+└─────────────────────────────────────────────────┘
+```
 
-The Constitutive Layer provides the foundational mereological structure with bilateral propositions (verifier/falsifier pairs). The Causal Layer extends this foundation with temporal structure (a totally ordered abelian group) and a task relation constraining possible state transitions, enabling evaluation of truth relative to world-histories and times.
+The Constitutive Foundation and Core Extension form the required base. The Epistemic, Normative, and Spatial Extensions are modular plugins that can be combined in any subset. The Agential Extension requires at least one middle extension to be loaded.
+
+1. **Constitutive Foundation**: Hyperintensional semantics over a mereological state space
+2. **Core Extension**: Hyperintensional and intensional semantics over a task space
+3. **Epistemic Extension**: Extensions for belief, knowledge, and probability [DETAILS]
+4. **Normative Extension**: Extensions for obligation, permission, and value [DETAILS]
+5. **Spatial Extension**: Extensions for spatial reasoning [DETAILS]
+6. **Agential Extension**: Extensions for multi-agent reasoning [DETAILS]
+
+The Constitutive Foundation provides the foundational mereological structure with bilateral propositions (verifier/falsifier pairs). The Core Extension extends this foundation with temporal structure (a totally ordered abelian group) and a task relation constraining possible state transitions, enabling evaluation of truth relative to world-histories and times.
 
 ---
 
-## Constitutive Layer: Hyperintensional Semantics
+## Constitutive Foundation: Hyperintensional Semantics
 
-The Constitutive Layer provides the foundational semantic structure based on exact truthmaker semantics. Evaluation is hyperintensional, distinguishing propositions that agree on truth-value across all possible worlds but differ in their exact verification and falsification conditions.
+The Constitutive Foundation provides the foundational semantic structure based on exact truthmaker semantics. Evaluation is hyperintensional, distinguishing propositions that agree on truth-value across all possible worlds but differ in their exact verification and falsification conditions.
 
 ### Syntactic Primitives
 
-The Constitutive Layer interprets the following syntactic primitives:
+The Constitutive Foundation interprets the following syntactic primitives:
 - **Variables**: x, y, z, ... (ranging over states)
 - **Individual constants**: a, b, c, ... (0-place function symbols)
 - **n-place function symbols**: f, g, h, ...
@@ -51,6 +86,8 @@ A *constitutive frame* is a structure **F** = ⟨S, ⊑⟩ where:
 | **State Space** | A nonempty set S of states |
 | **Parthood** | A partial order ⊑ on S making ⟨S, ⊑⟩ a complete lattice |
 
+<!-- [FIX]: compatibility cannot be defined in this frame since possibility cannot be defined either. Mention that this frame is non-modal -->
+
 The lattice structure provides:
 - **Null state** (□): The bottom element (fusion of the empty set)
 - **Full state** (■): The top element (fusion of all states)
@@ -66,6 +103,8 @@ A *constitutive model* is a structure **M** = ⟨S, ⊑, I⟩ where:
 | **Frame** | ⟨S, ⊑⟩ is a constitutive frame |
 | **Interpretation** | I assigns meanings to non-logical vocabulary |
 
+<!-- [FIX]: it is important to require that for any function f in v_F or in f_F, that for every n states a_1, ..., a_n, that these states are all parts of f(a_1,...,a_n) but f(a_1,...,a_n) may have other parts besides -->
+
 The interpretation function I assigns:
 - **n-place function symbols** f → I(f) : Sⁿ → S (0-place = individual constants mapping to states)
 - **n-place predicates** F → ordered pairs ⟨v_F, f_F⟩ where:
@@ -73,7 +112,11 @@ The interpretation function I assigns:
   - f_F : set of functions Sⁿ → S (falsifier functions)
 - **Sentence letters** (0-place predicates) p → ordered pairs ⟨v_p, f_p⟩ of verifier and falsifier state sets
 
+<!-- [FIX]: explain the intuition briefly that for 1-place predicates, the v_F and f_F include functions which take an object (which is a state) as input, and return that object having a verifying property instance for the property in question, or having a falsifying property instance for the property in question. -->
+
 ### Variable Assignment
+
+<!-- [FIX]: I don't want to use 'a̅' for variable assignments, preferring a notation that will easily carry across between LaTeX, markdown, and Lean settings. Instead I would like to reserve 'v' so that 'v_1', 'v_2', etc., can be used for variable assignments -->
 
 A *variable assignment* a̅ is a function from variables to states: a̅ : Var → S
 
@@ -138,6 +181,8 @@ Where a̅[v/x] is the assignment that maps x to v and agrees with a̅ on all oth
 | M, a̅, s ⊩⁺ A ≡ B | iff s = □ and {t : M, a̅, t ⊩⁺ A} = {t : M, a̅, t ⊩⁺ B} and {t : M, a̅, t ⊩⁻ A} = {t : M, a̅, t ⊩⁻ B} |
 | M, a̅, s ⊩⁻ A ≡ B | iff s = □ and ({t : M, a̅, t ⊩⁺ A} ≠ {t : M, a̅, t ⊩⁺ B} or {t : M, a̅, t ⊩⁻ A} ≠ {t : M, a̅, t ⊩⁻ B}) |
 
+<!-- [FIX]: it is worth defining essence and ground as conjunctive and disjunctive part via identity, i.e.: A \essence B := A \wedge B \equiv B; A \ground B := A \vee B \equiv B. Also mention how negation distributes so that A \essence B iff \neg A \ground \neg B and similarly, A \ground B iff \neg A \essence \neg B, explaining briefly that the space of bilateral propositions forms a non-interlaced bilatice described in line 749 of /home/benjamin/Projects/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex which you should carefully research in order to improve this documentation where appropriate -->
+
 ### Bilateral Propositions
 
 A *bilateral proposition* is an ordered pair ⟨V, F⟩ where:
@@ -155,25 +200,36 @@ A *bilateral proposition* is an ordered pair ⟨V, F⟩ where:
 | **Disjunction** | ⟨V,F⟩ ∨ ⟨V',F'⟩ := ⟨V ⊕ V', F ⊗ F'⟩ |
 | **Negation** | ¬⟨V,F⟩ := ⟨F, V⟩ |
 
-### Logical Consequence (Constitutive)
+### Logical Consequence (Constitutive Foundation)
 
-Logical consequence at the Constitutive Layer is restricted to propositional identity sentences:
+Logical consequence at the Constitutive Foundation is restricted to propositional identity sentences:
 
 > Γ ⊨ A iff for any model M and assignment a̅: if M, a̅, □ ⊩⁺ B for all B ∈ Γ, then M, a̅, □ ⊩⁺ A
 
 That is, A is a consequence of Γ iff the null state verifies A in any model where it verifies all premises.
 
-[QUESTION: How exactly does evaluation transition from constitutive to causal semantics for non-identity sentences? The constitutive semantics cannot evaluate atomic sentences about contingent matters since world-states are not yet defined.] ANSWER: evaluation is entirely distinct for the two layers. The Constitutive Layer is an important foundation and worth defining a logic for propositional identity, but this is not yet a useful layer in and of itself. Nevertheless, the same theorems of the logic for the Constitutive Layer will still be valid in the Causal Layer, though the definition of logical consequence for the Causal Layer is distinct, quantifying over all world-histories and times in addition to all models and variable assignments.
+**Identity Sentences and Evaluation Overlap**: Identity sentences are formed from extensional (non-identity) sentences: A ≡ B where A and B are atomic sentences or built from ¬, ∧, ∨. The logical consequences holding between identity sentences are preserved by further extensions. However, the Constitutive Foundation lacks the semantic resources to evaluate non-identity sentences, which depend on contingent states of affairs rather than purely structural relations in state space. The Constitutive Foundation is nevertheless important for defining a logic of propositional identity. The same theorems valid at this level remain valid in the Core Extension, though the Core Extension's definition of logical consequence differs, quantifying over world-histories and times in addition to models and variable assignments.
 
 ---
 
-## Causal Layer: Intensional Semantics
+## Core Extension: Intensional Semantics
 
-The Causal Layer extends the Constitutive Layer with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. While the hyperintensional foundation remains (distinguishing propositions by their exact verifiers and falsifiers), this layer adds intensional evaluation relative to contextual parameters (world-history, time, variable assignment) to determine truth-values for all Causal Layer sentences.
+The Core Extension extends the Constitutive Foundation with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. While the hyperintensional foundation remains (distinguishing propositions by their exact verifiers and falsifiers), this extension adds intensional evaluation relative to contextual parameters (world-history, time, variable assignment) to determine truth-values for all Core Extension sentences.
 
-### Causal Frame
+### Syntactic Primitives
 
-A *causal frame* is a structure **F** = ⟨S, ⊑, D, ⇒⟩ where:
+The Core Extension interprets the following additional syntactic primitives beyond those of the Constitutive Foundation:
+- **Modal operators**: □ (necessity), ◇ (possibility)
+- **Temporal operators**: H (always past), G (always future), P (some past), F (some future)
+- **Extended temporal operators**: ◁ (since), ▷ (until)
+- **Counterfactual conditional**: □→ (would-counterfactual)
+- **Store/recall operators**: ↑ⁱ (store), ↓ⁱ (recall)
+
+A well-formed sentence at this extension includes all Constitutive Foundation sentences plus those built using these operators according to their arities.
+
+### Core Frame
+
+A *core frame* is a structure **F** = ⟨S, ⊑, D, ⇒⟩ where:
 
 | Component | Description |
 |-----------|-------------|
@@ -183,6 +239,8 @@ A *causal frame* is a structure **F** = ⟨S, ⊑, D, ⇒⟩ where:
 
 The task relation s ⇒_d t (read: "there is a task from s to t of duration d") satisfies:
 
+<!-- [FIX]: To assert the latter three constraints below, we need to define the possible states P and the maximal t-compatible parts of a state s first, and so it makes sense to move the definitions given below here -->
+
 | Constraint | Formulation |
 |------------|-------------|
 | **Compositionality** | If s ⇒_x t and t ⇒_y u, then s ⇒_{x+y} u |
@@ -191,6 +249,8 @@ The task relation s ⇒_d t (read: "there is a task from s to t of duration d") 
 | **Containment (L)** | If s ∈ P, d ⊑ s, and d ⇒_x r, then s ⇒_x t.r for some t ∈ S |
 | **Containment (R)** | If t ∈ P, r ⊑ t, and d ⇒_x r, then s.d ⇒_x t for some s ∈ S |
 | **Maximality** | If s ∈ S and t ∈ P, there is a maximal t-compatible part r ∈ s_t |
+
+<!-- [FIX]: I don't want '**Note**:' labels to be used, stating explanations in a clear and consistent manner throughout without extra labels. -->
 
 **Note**: The Containment constraints ensure that tasks between parts of possible states can be extended to tasks between the states themselves. The Maximality constraint ensures that for any state and possible state, there exists a maximal part compatible with that possible state.
 
@@ -214,15 +274,19 @@ A *world-history* over a causal frame F is a function τ : X → W where:
 
 The set of all world-histories over F is denoted H_F.
 
+<!-- [FIX]: use the definition given in \textbf{\ref{app:Containment}} in $\S\ref{app:WorldSpace}$ from /home/benjamin/Projects/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex which is provably equivalent. Also remove the 'Note' label below and similarly throughout. -->
+
 **Note**: World-histories assign world-states to times in a way that respects the task relation. The constraint ensures that consecutive world-states are connected by appropriate tasks.
 
-### Causal Model
+### Core Model
 
-A *causal model* is a structure **M** = ⟨S, ⊑, D, ⇒, I⟩ where:
-- ⟨S, ⊑, D, ⇒⟩ is a causal frame
-- I is an interpretation as in the Constitutive Layer
+A *core model* is a structure **M** = ⟨S, ⊑, D, ⇒, I⟩ where:
+- ⟨S, ⊑, D, ⇒⟩ is a core frame
+- I is an interpretation as in the Constitutive Foundation
 
 ### Truth Conditions
+
+<!-- [FIX]: change the name 'time vector' to 'temporal index' -->
 
 Truth is evaluated relative to a model M, world-history τ, time x ∈ D, variable assignment a̅, and time vector v⃗ = ⟨v₁, v₂, ...⟩:
 
@@ -233,6 +297,8 @@ Truth is evaluated relative to a model M, world-history τ, time x ∈ D, variab
 | M, τ, x, a̅, v⃗ ⊨ F(t₁,...,tₙ) | iff there is some f ∈ v_F where f(⟦t₁⟧^a̅_M, ..., ⟦tₙ⟧^a̅_M) ⊑ τ(x) |
 | M, τ, x, a̅, v⃗ ⊭ F(t₁,...,tₙ) | iff there is some f ∈ f_F where f(⟦t₁⟧^a̅_M, ..., ⟦tₙ⟧^a̅_M) ⊑ τ(x) |
 
+<!-- [FIX]: remove the 'Note' label below. -->
+
 **Note**: It is derivable that M, τ, x, a̅, v⃗ ⊨ A iff it is not the case that M, τ, x, a̅, v⃗ ⊭ A. This justifies using ⊨ alone for truth and ⊭ for falsehood.
 
 #### Lambda Abstraction
@@ -240,6 +306,8 @@ Truth is evaluated relative to a model M, world-history τ, time x ∈ D, variab
 | Operator | Truth Condition |
 |----------|-----------------|
 | **(λx.A)(t)** | M, τ, x, a̅, v⃗ ⊨ (λx.A)(t) iff M, τ, x, a̅[⟦t⟧^a̅_M/x], v⃗ ⊨ A |
+
+<!-- [FIX:] the semantics for the universal quantifier should be provided next, followed by an actuality predicate 'Act' which checks if a state is a part of the world-state to result from letting the evaluation world-history act on the evaluation time. Specify how 'Act' can be used to restrict the universal quantifier to actually existing objects, where the resulting actuality operators invalidate the barcan formulas, but the universal quantifiers do not. -->
 
 #### Extensional Connectives
 
@@ -302,6 +370,8 @@ Where:
 
 **Intuitive reading**: A counterfactual "if φ were the case, then C" is true at world τ and time x iff the consequent C is true in any world β at x where β(x) is the result of minimally changing τ(x) to make the antecedent φ true.
 
+<!-- [FIX]: avoid using this label below to maintain consistent formatting. Also, don't use '⊳' for imposition, using '→' instead -->
+
 **Imposition notation**: We write t ⊳_w w' ("imposing t on w yields w'") iff there exists maximal t-compatible part s ∈ w_t where s.t ⊑ w'.
 
 #### Store and Recall Operators (↑, ↓)
@@ -341,7 +411,7 @@ Different temporal structures yield different valid principles. The framework do
 | **Unbounded Past** | No earliest time | P⊤ |
 | **Unbounded Future** | No latest time | F⊤ |
 
-### Logical Consequence (Causal)
+### Logical Consequence (Core Extension)
 
 > Γ ⊨ A iff for any model M, world-history τ ∈ H_F, time x ∈ D, assignment a̅, and time vector v⃗: if M, τ, x, a̅, v⃗ ⊨ B for all B ∈ Γ, then M, τ, x, a̅, v⃗ ⊨ A
 
@@ -372,17 +442,17 @@ Different temporal structures yield different valid principles. The framework do
 
 ---
 
-## Epistemic Layer
+## Epistemic Extension
 
 [DETAILS]
 
-The Epistemic Layer extends the Causal Layer with structures for belief, knowledge, and probability.
+The Epistemic Extension extends the Core Extension with structures for belief, knowledge, and probability.
 
 ### Frame Extension
 
 [DETAILS]
 
-The epistemic frame extends the causal frame with a credence function assigning probabilities to state transitions.
+The epistemic frame extends the core frame with a credence function assigning probabilities to state transitions.
 
 [QUESTION: What is the exact structure of the credence function? Does it assign probabilities to individual state transitions or to sets of transitions?]
 
@@ -404,17 +474,17 @@ The epistemic frame extends the causal frame with a credence function assigning 
 
 ---
 
-## Normative Layer
+## Normative Extension
 
 [DETAILS]
 
-The Normative Layer extends the Epistemic Layer with structures for obligation, permission, and value.
+The Normative Extension extends the Core Extension with structures for obligation, permission, and value.
 
 ### Frame Extension
 
 [DETAILS]
 
-The normative frame extends the epistemic frame with value orderings over states.
+The normative frame extends the core frame with value orderings over states.
 
 [QUESTION: How are value orderings structured? Are they complete orderings or partial orderings? Are they agent-relative?]
 
@@ -436,17 +506,46 @@ The normative frame extends the epistemic frame with value orderings over states
 
 ---
 
-## Agential Layer
+## Spatial Extension
 
 [DETAILS]
 
-The Agential Layer extends the Normative Layer for multi-agent reasoning.
+The Spatial Extension extends the Core Extension with structures for spatial reasoning and location.
 
 ### Frame Extension
 
 [DETAILS]
 
-[QUESTION: What frame extensions are required for multi-agent reasoning? Does this layer add agent indices, or agent-relative accessibility relations?]
+The spatial frame extends the core frame with:
+- **Location space** L = set of spatial locations
+- **Spatial relations**: adjacency, containment, distance
+
+[QUESTION: What spatial primitives are required? Should locations be mereological (with parts) or set-theoretic?]
+
+### Operators
+
+| Operator | Intended Reading |
+|----------|------------------|
+| **Here(A)** | A holds at the current location |
+| **Somewhere(A)** | A holds at some location |
+| **Everywhere(A)** | A holds at all locations |
+| **Near(A)** | A holds at an adjacent location |
+
+[DETAILS: Full semantic clauses for spatial operators pending specification]
+
+---
+
+## Agential Extension
+
+[DETAILS]
+
+The Agential Extension requires at least one of the Epistemic, Normative, or Spatial Extensions to be loaded. It provides structures for multi-agent reasoning.
+
+### Frame Extension
+
+[DETAILS]
+
+[QUESTION: What frame extensions are required for multi-agent reasoning? Does this extension add agent indices, or agent-relative accessibility relations?]
 
 ### Multi-Agent Operators
 
@@ -464,6 +563,6 @@ The Agential Layer extends the Normative Layer for multi-agent reasoning.
 - Brast-McKie, B. "Counterfactual Worlds" (JPL) - Counterfactual conditional semantics
 
 ### Related Documentation
-- [LAYER_EXTENSIONS.md](LAYER_EXTENSIONS.md) - Layer architecture overview
+- [LAYER_EXTENSIONS.md](LAYER_EXTENSIONS.md) - Extension architecture overview
 - [GLOSSARY.md](../Reference/GLOSSARY.md) - Term definitions
 - [METHODOLOGY.md](../UserGuide/METHODOLOGY.md) - Philosophical methodology
