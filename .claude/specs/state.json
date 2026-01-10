@@ -18,12 +18,12 @@
     {
       "project_number": 350,
       "project_name": "fix_recursive_semantics_tags",
-      "status": "not_started",
+      "status": "researching",
       "language": "markdown",
       "priority": "high",
       "effort": "6-8 hours",
       "created": "2026-01-10T18:17:28Z",
-      "last_updated": "2026-01-10T18:17:28Z"
+      "last_updated": "2026-01-10T18:25:57Z"
     },
     {
       "project_number": 349,
@@ -562,11 +562,11 @@
       "project_name": "expand_testing_for_proof_search_automation_phase_5",
       "type": "feature",
       "phase": "not_started",
-      "status": "researched",
+      "status": "planned",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T08:34:20.462436Z",
-      "last_updated": "2026-01-10T18:19:48Z",
+      "last_updated": "2026-01-10T18:28:23Z",
       "effort": "8-12 hours",
       "description": "Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks."
     },

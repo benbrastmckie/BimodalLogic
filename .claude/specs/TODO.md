@@ -32,7 +32,8 @@ technical_debt:
 
 ### 350. Address all FIX tags in RECURSIVE_SEMANTICS.md systematically
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
+- **Started**: 2026-01-10
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
@@ -171,9 +172,10 @@ technical_debt:
 
 ### 319. Expand testing for proof search automation (Phase 5)
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2026-01-10
 - **Researched**: 2026-01-10
+- **Planned**: 2026-01-10
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -181,6 +183,9 @@ technical_debt:
 
 **Research Artifacts**:
   - Research Report: [.claude/specs/319_expand_testing_for_proof_search_automation_phase_5/reports/research-001.md]
+
+**Plan Artifacts**:
+  - Implementation Plan: [.claude/specs/319_expand_testing_for_proof_search_automation_phase_5/plans/implementation-001.md]
 
 **Description**: Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks.
 
