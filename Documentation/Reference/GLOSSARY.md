@@ -86,13 +86,14 @@ The Logos is organized into five semantic layers, each building upon the previou
 | `○→` | Causation | Productive causal relationships | Causal reasoning |
 | `↑ⁱ` | Store | Store current time in register i | Temporal reference |
 | `↓ⁱ` | Recall | Evaluate at stored time i | Temporal reference |
+| `⊳` | Imposition | "imposing t on w yields w'" (t ⊳_w w') | Counterfactual semantics |
 
 ## Extended Tense Operators (Causal Layer)
 
 | Symbol | Name | Definition | Domain |
 |--------|------|------------|--------|
-| `S` | Since | "A since B" (A has held since B was true) | Temporal reasoning |
-| `U` | Until | "A until B" (A holds until B becomes true) | Temporal reasoning |
+| `◁` | Since | "A since B" (A has held since B was true) | Temporal reasoning |
+| `▷` | Until | "A until B" (A holds until B becomes true) | Temporal reasoning |
 
 ## Epistemic Operators (Epistemic Layer)
 
@@ -123,6 +124,9 @@ The Logos is organized into five semantic layers, each building upon the previou
 | Term | Definition | Related Terms |
 |------|------------|---------------|
 | State Space | Complete lattice ⟨S, ⊑⟩ of states ordered by parthood | Constitutive frame |
+| Interpretation Function | I assigns meanings to non-logical vocabulary in a model | Constitutive model, Semantic structure |
+| Variable Assignment | Function a̅ from variables to states | Constitutive model |
+| Lambda Abstraction | λx.A binds variable x in formula A; (λx.A)(t) substitutes t for x | Higher-order semantics |
 | Parthood | Mereological relation ⊑ ordering states | State space |
 | Null State | Bottom element □ of the state lattice (fusion of empty set) | State space |
 | Full State | Top element ■ of the state lattice (fusion of all states) | State space |
@@ -137,7 +141,8 @@ The Logos is organized into five semantic layers, each building upon the previou
 
 | Term | Definition | Related Terms |
 |------|------------|---------------|
-| Task Relation | Three-place relation ⇒ constraining state transitions with nullity and compositionality | Causal frame |
+| Task Relation | Three-place relation ⇒ constraining state transitions with compositionality, containment, and maximality constraints | Causal frame |
+| Possible State | State s where s ⇒_0 s (state has a trivial task to itself) | Task relation, Causal frame |
 | World-state | Maximal possible state | Causal Layer |
 | World-history | Function τ from convex time set to world-states respecting task relation | Causal frame |
 | Temporal Order | Totally ordered abelian group D = ⟨D, +, ≤⟩ of times | Causal frame |
