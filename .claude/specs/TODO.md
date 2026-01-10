@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-09T12:00:00Z
-next_project_number: 351
+next_project_number: 352
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -162,6 +162,18 @@ See research-002.md for details on AI training data generation benefits.
 ---
 
 ## Medium Priority
+
+### 351. Review and fix skill context loading
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Check that the skills load the appropriate context for each, making any necessary changes without bloating the context for any skill. For instance, 'context: fork' in /home/benjamin/Projects/ProofChecker/.claude/skills/skill-lean-implementation/SKILL.md should load appropriate lean context files in /home/benjamin/Projects/ProofChecker/.claude/context/project/lean4/ instead.
+
+---
 
 ### 176. Enhance proof search with domain-specific heuristics and caching
 - **Effort**: 18 hours
