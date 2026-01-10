@@ -14,7 +14,7 @@ This plan creates a comprehensive test suite for the proof search automation sys
 ### Phase 1: Axiom Completeness Tests
 
 **Estimated effort**: 2 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Verify all 14 TM axiom schemata are correctly identified by `matches_axiom`

@@ -313,4 +313,301 @@ example : temporal_heuristic_bonus (Formula.box p) = 0 := rfl
   else
     IO.println s!"✗ Modal goal not prioritized: □p={modalScore} >= x={atomScore}"
 
+/-!
+## Axiom Completeness Tests (Task 319 Phase 1)
+
+Systematic verification that all 14 TM axiom schemata are correctly identified
+by `matches_axiom` and provable via the search tactics.
+-/
+
+-- Additional atom for testing variants
+abbrev s : Formula := .atom "s"
+
+/-! ### Propositional Axiom Completeness -/
+
+-- prop_k: (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
+#eval do
+  let variants := [
+    ((p.imp (q.imp r)).imp ((p.imp q).imp (p.imp r)), "p,q,r"),
+    ((q.imp (r.imp s)).imp ((q.imp r).imp (q.imp s)), "q,r,s"),
+    (((Formula.box p).imp (q.imp r)).imp (((Formula.box p).imp q).imp ((Formula.box p).imp r)), "□p,q,r")
+  ]
+  IO.println "=== prop_k Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ prop_k ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ prop_k ({desc}): matched={matched}, found={found}"
+
+-- prop_s: φ → (ψ → φ)
+#eval do
+  let variants := [
+    (p.imp (q.imp p), "p,q"),
+    (q.imp (r.imp q), "q,r"),
+    ((Formula.box p).imp (q.imp (Formula.box p)), "□p,q")
+  ]
+  IO.println "=== prop_s Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ prop_s ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ prop_s ({desc}): matched={matched}, found={found}"
+
+-- prop_exfalso: ⊥ → φ
+#eval do
+  let variants := [
+    (Formula.bot.imp p, "p"),
+    (Formula.bot.imp (Formula.box q), "□q"),
+    (Formula.bot.imp (p.imp q), "p→q")
+  ]
+  IO.println "=== prop_exfalso Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ prop_exfalso ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ prop_exfalso ({desc}): matched={matched}, found={found}"
+
+-- prop_peirce: ((φ → ψ) → φ) → φ
+#eval do
+  let variants := [
+    (((p.imp q).imp p).imp p, "p,q"),
+    (((q.imp r).imp q).imp q, "q,r"),
+    ((((Formula.box p).imp q).imp (Formula.box p)).imp (Formula.box p), "□p,q")
+  ]
+  IO.println "=== prop_peirce Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ prop_peirce ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ prop_peirce ({desc}): matched={matched}, found={found}"
+
+/-! ### Modal Axiom Completeness -/
+
+-- modal_t: □φ → φ
+#eval do
+  let variants := [
+    ((Formula.box p).imp p, "p"),
+    ((Formula.box q).imp q, "q"),
+    ((Formula.box (p.imp q)).imp (p.imp q), "p→q")
+  ]
+  IO.println "=== modal_t Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ modal_t ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ modal_t ({desc}): matched={matched}, found={found}"
+
+-- modal_4: □φ → □□φ
+#eval do
+  let variants := [
+    ((Formula.box p).imp (Formula.box (Formula.box p)), "p"),
+    ((Formula.box q).imp (Formula.box (Formula.box q)), "q"),
+    ((Formula.box (p.imp q)).imp (Formula.box (Formula.box (p.imp q))), "p→q")
+  ]
+  IO.println "=== modal_4 Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ modal_4 ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ modal_4 ({desc}): matched={matched}, found={found}"
+
+-- modal_b: φ → □◇φ
+#eval do
+  let variants := [
+    (p.imp (Formula.box p.diamond), "p"),
+    (q.imp (Formula.box q.diamond), "q"),
+    ((p.imp q).imp (Formula.box (p.imp q).diamond), "p→q")
+  ]
+  IO.println "=== modal_b Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ modal_b ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ modal_b ({desc}): matched={matched}, found={found}"
+
+-- modal_5: ◇□φ → □φ
+#eval do
+  let variants := [
+    ((Formula.box p).diamond.imp (Formula.box p), "p"),
+    ((Formula.box q).diamond.imp (Formula.box q), "q"),
+    ((Formula.box (p.imp q)).diamond.imp (Formula.box (p.imp q)), "p→q")
+  ]
+  IO.println "=== modal_5 Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ modal_5 ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ modal_5 ({desc}): matched={matched}, found={found}"
+
+-- modal_k: □(φ → ψ) → (□φ → □ψ)
+#eval do
+  let variants := [
+    ((Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q)), "p,q"),
+    ((Formula.box (q.imp r)).imp ((Formula.box q).imp (Formula.box r)), "q,r"),
+    ((Formula.box ((Formula.box p).imp q)).imp ((Formula.box (Formula.box p)).imp (Formula.box q)), "□p,q")
+  ]
+  IO.println "=== modal_k Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ modal_k ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ modal_k ({desc}): matched={matched}, found={found}"
+
+/-! ### Temporal Axiom Completeness -/
+
+-- temp_4: Gφ → GGφ
+#eval do
+  let variants := [
+    ((Formula.all_future p).imp (Formula.all_future (Formula.all_future p)), "p"),
+    ((Formula.all_future q).imp (Formula.all_future (Formula.all_future q)), "q"),
+    ((Formula.all_future (p.imp q)).imp (Formula.all_future (Formula.all_future (p.imp q))), "p→q")
+  ]
+  IO.println "=== temp_4 Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ temp_4 ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ temp_4 ({desc}): matched={matched}, found={found}"
+
+-- temp_a: φ → G(Pφ)
+#eval do
+  let variants := [
+    (p.imp (Formula.all_future (Formula.some_past p)), "p"),
+    (q.imp (Formula.all_future (Formula.some_past q)), "q"),
+    ((p.imp q).imp (Formula.all_future (Formula.some_past (p.imp q))), "p→q")
+  ]
+  IO.println "=== temp_a Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ temp_a ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ temp_a ({desc}): matched={matched}, found={found}"
+
+-- temp_l: △φ → G(Hφ)
+#eval do
+  let variants := [
+    ((Formula.always p).imp (Formula.all_future (Formula.all_past p)), "p"),
+    ((Formula.always q).imp (Formula.all_future (Formula.all_past q)), "q"),
+    ((Formula.always (p.imp q)).imp (Formula.all_future (Formula.all_past (p.imp q))), "p→q")
+  ]
+  IO.println "=== temp_l Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ temp_l ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ temp_l ({desc}): matched={matched}, found={found}"
+
+-- temp_k: G(φ → ψ) → (Gφ → Gψ)
+#eval do
+  let variants := [
+    ((Formula.all_future (p.imp q)).imp ((Formula.all_future p).imp (Formula.all_future q)), "p,q"),
+    ((Formula.all_future (q.imp r)).imp ((Formula.all_future q).imp (Formula.all_future r)), "q,r"),
+    ((Formula.all_future ((Formula.box p).imp q)).imp ((Formula.all_future (Formula.box p)).imp (Formula.all_future q)), "□p,q")
+  ]
+  IO.println "=== temp_k Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ temp_k ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ temp_k ({desc}): matched={matched}, found={found}"
+
+/-! ### Bimodal Axiom Completeness -/
+
+-- modal_future: □φ → □(Gφ)
+#eval do
+  let variants := [
+    ((Formula.box p).imp (Formula.box (Formula.all_future p)), "p"),
+    ((Formula.box q).imp (Formula.box (Formula.all_future q)), "q"),
+    ((Formula.box (p.imp q)).imp (Formula.box (Formula.all_future (p.imp q))), "p→q")
+  ]
+  IO.println "=== modal_future Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ modal_future ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ modal_future ({desc}): matched={matched}, found={found}"
+
+-- temp_future: □φ → G(□φ)
+#eval do
+  let variants := [
+    ((Formula.box p).imp (Formula.all_future (Formula.box p)), "p"),
+    ((Formula.box q).imp (Formula.all_future (Formula.box q)), "q"),
+    ((Formula.box (p.imp q)).imp (Formula.all_future (Formula.box (p.imp q))), "p→q")
+  ]
+  IO.println "=== temp_future Completeness ==="
+  for (formula, desc) in variants do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if matched && found then
+      IO.println s!"✓ temp_future ({desc}): matched={matched}, found={found}"
+    else
+      IO.println s!"✗ temp_future ({desc}): matched={matched}, found={found}"
+
+/-! ### Axiom Completeness Summary -/
+
+#eval do
+  IO.println "\n=== Axiom Completeness Summary (14 Axioms x 3 Variants = 42 Tests) ==="
+  let axioms : List (String × List Formula) := [
+    ("prop_k", [(p.imp (q.imp r)).imp ((p.imp q).imp (p.imp r)),
+                (q.imp (r.imp s)).imp ((q.imp r).imp (q.imp s)),
+                ((Formula.box p).imp (q.imp r)).imp (((Formula.box p).imp q).imp ((Formula.box p).imp r))]),
+    ("prop_s", [p.imp (q.imp p), q.imp (r.imp q), (Formula.box p).imp (q.imp (Formula.box p))]),
+    ("prop_exfalso", [Formula.bot.imp p, Formula.bot.imp (Formula.box q), Formula.bot.imp (p.imp q)]),
+    ("prop_peirce", [((p.imp q).imp p).imp p, ((q.imp r).imp q).imp q, (((Formula.box p).imp q).imp (Formula.box p)).imp (Formula.box p)]),
+    ("modal_t", [(Formula.box p).imp p, (Formula.box q).imp q, (Formula.box (p.imp q)).imp (p.imp q)]),
+    ("modal_4", [(Formula.box p).imp (Formula.box (Formula.box p)), (Formula.box q).imp (Formula.box (Formula.box q)), (Formula.box (p.imp q)).imp (Formula.box (Formula.box (p.imp q)))]),
+    ("modal_b", [p.imp (Formula.box p.diamond), q.imp (Formula.box q.diamond), (p.imp q).imp (Formula.box (p.imp q).diamond)]),
+    ("modal_5", [(Formula.box p).diamond.imp (Formula.box p), (Formula.box q).diamond.imp (Formula.box q), (Formula.box (p.imp q)).diamond.imp (Formula.box (p.imp q))]),
+    ("modal_k", [(Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q)), (Formula.box (q.imp r)).imp ((Formula.box q).imp (Formula.box r)), (Formula.box ((Formula.box p).imp q)).imp ((Formula.box (Formula.box p)).imp (Formula.box q))]),
+    ("temp_4", [(Formula.all_future p).imp (Formula.all_future (Formula.all_future p)), (Formula.all_future q).imp (Formula.all_future (Formula.all_future q)), (Formula.all_future (p.imp q)).imp (Formula.all_future (Formula.all_future (p.imp q)))]),
+    ("temp_a", [p.imp (Formula.all_future (Formula.some_past p)), q.imp (Formula.all_future (Formula.some_past q)), (p.imp q).imp (Formula.all_future (Formula.some_past (p.imp q)))]),
+    ("temp_l", [(Formula.always p).imp (Formula.all_future (Formula.all_past p)), (Formula.always q).imp (Formula.all_future (Formula.all_past q)), (Formula.always (p.imp q)).imp (Formula.all_future (Formula.all_past (p.imp q)))]),
+    ("temp_k", [(Formula.all_future (p.imp q)).imp ((Formula.all_future p).imp (Formula.all_future q)), (Formula.all_future (q.imp r)).imp ((Formula.all_future q).imp (Formula.all_future r)), (Formula.all_future ((Formula.box p).imp q)).imp ((Formula.all_future (Formula.box p)).imp (Formula.all_future q))]),
+    ("modal_future", [(Formula.box p).imp (Formula.box (Formula.all_future p)), (Formula.box q).imp (Formula.box (Formula.all_future q)), (Formula.box (p.imp q)).imp (Formula.box (Formula.all_future (p.imp q)))]),
+    ("temp_future", [(Formula.box p).imp (Formula.all_future (Formula.box p)), (Formula.box q).imp (Formula.all_future (Formula.box q)), (Formula.box (p.imp q)).imp (Formula.all_future (Formula.box (p.imp q)))])
+  ]
+  let mut passed := 0
+  let mut failed := 0
+  for (name, formulas) in axioms do
+    for formula in formulas do
+      let matched := matches_axiom formula
+      let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+      if matched && found then
+        passed := passed + 1
+      else
+        failed := failed + 1
+        IO.println s!"FAIL: {name}"
+  IO.println s!"\nPassed: {passed}/42"
+  IO.println s!"Failed: {failed}/42"
+  if failed == 0 then
+    IO.println "✓ All 14 axioms verified with 3 variants each"
+
 end LogosTest.Core.Automation
