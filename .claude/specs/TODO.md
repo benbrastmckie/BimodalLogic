@@ -56,7 +56,7 @@ technical_debt:
 
 ### 139. Draft Layer 1 counterfactual operator plan
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -75,7 +75,7 @@ technical_debt:
 
 ### 140. Draft Layer 2 epistemic operator plan
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
@@ -94,7 +94,7 @@ technical_debt:
 
 ### 141. Draft Layer 3 normative operator plan
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
