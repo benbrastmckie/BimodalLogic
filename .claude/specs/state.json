@@ -18,11 +18,11 @@
     {
       "project_number": 351,
       "project_name": "review_skill_context_loading",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-10T22:08:02Z",
-      "last_updated": "2026-01-10T22:08:02Z"
+      "last_updated": "2026-01-10T22:12:57Z"
     },
     {
       "project_number": 132,
@@ -503,13 +503,13 @@
       "phase": "planning_completed",
       "status": "planned",
       "priority": "medium",
-      "language": "general",
+      "language": "latex",
       "description": "Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ with a cleaned up structure that mirrors the Logos layers. The documentation should: (1) Create and import a subfile for each Logos layer, (2) Maintain the same formatting standards as the original LaTeX document, (3) Exclude problem sets, (4) Include standardized sections for each layer: Syntax extensions from previous layer, Semantic frames and models definitions, Proof system extensions from previous layer, Metalogical properties that have been established, (5) Compile definitions in a clear and concise way without proofs, (6) Provide minimal explanation, (7) Serve as a nicely formatted readable LaTeX reference for learning the Logos system without reading Lean code.",
       "effort": "4-6 hours",
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-07T00:00:00Z",
-      "last_updated": "2026-01-10T21:30:00Z",
+      "last_updated": "2026-01-10T22:00:00Z",
       "researched": "2026-01-08",
       "artifacts": [
         {
@@ -531,10 +531,15 @@
           "type": "plan",
           "path": ".claude/specs/334_latex_documentation_structure/plans/implementation-003.md",
           "summary": "Implementation plan based on RECURSIVE_SEMANTICS.md mapping with 6 phases"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/334_latex_documentation_structure/plans/implementation-004.md",
+          "summary": "Revised plan adding LaTeX context documentation phase for skill integration"
         }
       ],
       "planned": "2026-01-08",
-      "plan_version": "003"
+      "plan_version": "004"
     },
     {
       "project_number": 335,

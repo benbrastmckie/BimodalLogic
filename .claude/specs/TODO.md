@@ -31,12 +31,12 @@ technical_debt:
 ## High Priority
 
 ### 334. Create LaTeX documentation for Logos system mirroring layer structure
-- **Effort**: 8-10 hours
+- **Effort**: 10 hours
 - **Status**: [PLANNED]
 - **Researched**: 2026-01-10
 - **Planned**: 2026-01-10
 - **Priority**: Medium
-- **Language**: general
+- **Language**: latex
 - **Blocking**: None
 - **Dependencies**: None
 
@@ -45,7 +45,8 @@ technical_debt:
   - Research Report (Layer 1 Focus): [.claude/specs/334_latex_documentation_structure/reports/research-002.md]
   - Research Report (RECURSIVE_SEMANTICS.md Mapping): [.claude/specs/334_latex_documentation_structure/reports/research-003.md]
 
-**Implementation Plan** (v003): [.claude/specs/334_latex_documentation_structure/plans/implementation-003.md]
+**Implementation Plan** (v004): [.claude/specs/334_latex_documentation_structure/plans/implementation-004.md]
+  - Revision: Added Phase 0 for LaTeX context documentation and skill integration
 
 **Description**: Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ with a cleaned up structure that mirrors the Logos layers. The documentation should: (1) Create and import a subfile for each Logos layer, (2) Maintain the same formatting standards as the original LaTeX document, (3) Exclude problem sets, (4) Include standardized sections for each layer: Syntax extensions from previous layer, Semantic frames and models definitions, Proof system extensions from previous layer, Metalogical properties that have been established, (5) Compile definitions in a clear and concise way without proofs, (6) Provide minimal explanation, (7) Serve as a nicely formatted readable LaTeX reference for learning the Logos system without reading Lean code.
 
@@ -165,7 +166,7 @@ See research-002.md for details on AI training data generation benefits.
 
 ### 351. Review and fix skill context loading
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
