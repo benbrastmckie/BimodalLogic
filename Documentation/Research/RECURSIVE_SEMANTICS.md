@@ -218,44 +218,38 @@ A *causal model* is a structure **M** = ⟨S, ⊑, D, ⇒, I⟩ where:
 
 ### Truth Conditions
 
-[FIX]: the variable assignment should use 'a' instead of a greek letter to avoid confusion with the world-histories (or a 'a' symbol with a bar above if there is such a unicode character).
-
-[FIX]: the time need not be restricted to dom(τ)
-
-Truth is evaluated relative to a model M, world-history τ, time x ∈ dom(τ), and assignment σ:
+Truth is evaluated relative to a model M, world-history τ, time x ∈ D, variable assignment a̅, and time vector v⃗ = ⟨v₁, v₂, ...⟩:
 
 #### Atomic Sentences
 
-[FIX]: the variable assignment is missing below and it would be good to replace ⊭ with a backwards ⊨ if there is such a unicode character (otherwise use ⊨⁺ and ⊨⁻):
-
 | | Condition |
 |---|-----------|
-| M, τ, x ⊨ F(a₁,...,aₙ) | iff there exists s ⊑ τ(x) where s ⊩⁺ F(a₁,...,aₙ) |
-| M, τ, x ⊭ F(a₁,...,aₙ) | iff there exists s ⊑ τ(x) where s ⊩⁻ F(a₁,...,aₙ) |
+| M, τ, x, a̅, v⃗ ⊨ F(t₁,...,tₙ) | iff there is some f ∈ v_F where f(⟦t₁⟧^a̅_M, ..., ⟦tₙ⟧^a̅_M) ⊑ τ(x) |
+| M, τ, x, a̅, v⃗ ⊭ F(t₁,...,tₙ) | iff there is some f ∈ f_F where f(⟦t₁⟧^a̅_M, ..., ⟦tₙ⟧^a̅_M) ⊑ τ(x) |
 
-[FIX]: instead of using 's ⊩⁺ F(a₁,...,aₙ)' and 's ⊩⁻ F(a₁,...,aₙ)' which depends on defining ⊩⁺ and ⊩⁻, it would be better to use:
-  M, τ, x, a ⊨⁺ F(a₁,...,aₙ) | iff there is some f in |F|⁺ where f(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) ⊑ τ(x)
-  M, τ, x, a ⊨⁻ F(a₁,...,aₙ) iff there is some f in |F|⁻ where f(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) ⊑ τ(x)
+**Note**: It is derivable that M, τ, x, a̅, v⃗ ⊨ A iff it is not the case that M, τ, x, a̅, v⃗ ⊭ A. This justifies using ⊨ alone for truth and ⊭ for falsehood.
 
-[FIX]: note that it is derivable that M, τ, x, a ⊨⁺ A iff it is not the case that M, τ, x, a ⊨⁻ A, and similarly, that M, τ, x, a ⊨⁻ A iff it is not the case that M, τ, x, a ⊨⁺ A, justifying using ⊨ alone in place of ⊨⁺, and using ⊭ in place of ⊨⁻.
+#### Lambda Abstraction
 
-[FIX]: add the clause for lambda abstraction here.
+| Operator | Truth Condition |
+|----------|-----------------|
+| **(λx.A)(t)** | M, τ, x, a̅, v⃗ ⊨ (λx.A)(t) iff M, τ, x, a̅[⟦t⟧^a̅_M/x], v⃗ ⊨ A |
 
 #### Extensional Connectives
 
 | Operator | Truth Condition |
 |----------|-----------------|
-| **¬A** | M, τ, x ⊨ ¬A iff M, τ, x ⊭ A |
-| **A ∧ B** | M, τ, x ⊨ A ∧ B iff M, τ, x ⊨ A and M, τ, x ⊨ B |
-| **A ∨ B** | M, τ, x ⊨ A ∨ B iff M, τ, x ⊨ A or M, τ, x ⊨ B |
-| **A → B** | M, τ, x ⊨ A → B iff M, τ, x ⊭ A or M, τ, x ⊨ B |
+| **¬A** | M, τ, x, a̅, v⃗ ⊨ ¬A iff M, τ, x, a̅, v⃗ ⊭ A |
+| **A ∧ B** | M, τ, x, a̅, v⃗ ⊨ A ∧ B iff M, τ, x, a̅, v⃗ ⊨ A and M, τ, x, a̅, v⃗ ⊨ B |
+| **A ∨ B** | M, τ, x, a̅, v⃗ ⊨ A ∨ B iff M, τ, x, a̅, v⃗ ⊨ A or M, τ, x, a̅, v⃗ ⊨ B |
+| **A → B** | M, τ, x, a̅, v⃗ ⊨ A → B iff M, τ, x, a̅, v⃗ ⊭ A or M, τ, x, a̅, v⃗ ⊨ B |
 
 #### Modal Operators
 
 | Operator | Truth Condition | Reading |
 |----------|-----------------|---------|
-| **□A** | M, τ, x ⊨ □A iff M, σ, x ⊨ A for all σ ∈ H_F | "Necessarily A" |
-| **◇A** | M, τ, x ⊨ ◇A iff M, σ, x ⊨ A for some σ ∈ H_F | "Possibly A" |
+| **□A** | M, τ, x, a̅, v⃗ ⊨ □A iff M, σ, x, a̅, v⃗ ⊨ A for all σ ∈ H_F | "Necessarily A" |
+| **◇A** | M, τ, x, a̅, v⃗ ⊨ ◇A iff M, σ, x, a̅, v⃗ ⊨ A for some σ ∈ H_F | "Possibly A" |
 
 **Equivalence**: ◇A ≡ ¬□¬A
 
@@ -265,10 +259,10 @@ Truth is evaluated relative to a model M, world-history τ, time x ∈ dom(τ), 
 
 | Operator | Truth Condition | Reading |
 |----------|-----------------|---------|
-| **HA** | M, τ, x ⊨ HA iff M, τ, y ⊨ A for all y ∈ D where y < x | "It has always been that A" |
-| **GA** | M, τ, x ⊨ GA iff M, τ, y ⊨ A for all y ∈ D where y > x | "It will always be that A" |
-| **PA** | M, τ, x ⊨ PA iff M, τ, y ⊨ A for some y ∈ D where y < x | "It was the case that A" |
-| **FA** | M, τ, x ⊨ FA iff M, τ, y ⊨ A for some y ∈ D where y > x | "It will be the case that A" |
+| **HA** | M, τ, x, a̅, v⃗ ⊨ HA iff M, τ, y, a̅, v⃗ ⊨ A for all y ∈ D where y < x | "It has always been that A" |
+| **GA** | M, τ, x, a̅, v⃗ ⊨ GA iff M, τ, y, a̅, v⃗ ⊨ A for all y ∈ D where y > x | "It will always be that A" |
+| **PA** | M, τ, x, a̅, v⃗ ⊨ PA iff M, τ, y, a̅, v⃗ ⊨ A for some y ∈ D where y < x | "It was the case that A" |
+| **FA** | M, τ, x, a̅, v⃗ ⊨ FA iff M, τ, y, a̅, v⃗ ⊨ A for some y ∈ D where y > x | "It will be the case that A" |
 
 **Equivalences**:
 - PA ≡ ¬H¬A
@@ -280,14 +274,10 @@ Truth is evaluated relative to a model M, world-history τ, time x ∈ dom(τ), 
 
 #### Extended Tense Operators: Since and Until
 
-[FIX]: Use ▷ in place of U and the reverse of ▷ in place of S.
-
-[FIX]: Also, the variable assignments are missing below. Fix this throughout the Causal Layer.
-
 | Operator | Truth Condition |
 |----------|-----------------|
-| **A S B** (Since) | M, τ, x ⊨ A S B iff there exists z < x where M, τ, z ⊨ B and M, τ, y ⊨ A for all y where z < y < x |
-| **A U B** (Until) | M, τ, x ⊨ A U B iff there exists z > x where M, τ, z ⊨ B and M, τ, y ⊨ A for all y where x < y < z |
+| **A ◁ B** (Since) | M, τ, x, a̅, v⃗ ⊨ A ◁ B iff there exists z < x where M, τ, z, a̅, v⃗ ⊨ B and M, τ, y, a̅, v⃗ ⊨ A for all y where z < y < x |
+| **A ▷ B** (Until) | M, τ, x, a̅, v⃗ ⊨ A ▷ B iff there exists z > x where M, τ, z, a̅, v⃗ ⊨ B and M, τ, y, a̅, v⃗ ⊨ A for all y where x < y < z |
 
 **Reading**:
 - "A since B" means B was true at some past time, and A has been true ever since
@@ -297,29 +287,25 @@ Truth is evaluated relative to a model M, world-history τ, time x ∈ dom(τ), 
 
 **Mereological formulation**:
 
-> M, τ, x ⊨ φ □→ C iff for all t ∈ |φ|⁺ and β ∈ H_F: if s.t ⊑ β(x) for some maximal t-compatible part s ∈ τ(x)_t, then M, β, x ⊨ C
+> M, τ, x, a̅, v⃗ ⊨ φ □→ C iff for all t ∈ v_φ and β ∈ H_F: if s.t ⊑ β(x) for some maximal t-compatible part s ∈ τ(x)_t, then M, β, x, a̅, v⃗ ⊨ C
 
 Where:
-- |φ|⁺ is the set of exact verifiers for φ
+- v_φ is the set of exact verifiers for φ
 - τ(x)_t is the set of maximal t-compatible parts of τ(x)
 - s ∈ τ(x)_t is maximal iff s ⊑ τ(x), s ∘ t, and for all s' where s ⊑ s' ⊑ τ(x) and s' ∘ t, we have s' ⊑ s
 
 **Intuitive reading**: A counterfactual "if φ were the case, then C" is true at world τ and time x iff the consequent C is true in any world β at x where β(x) is the result of minimally changing τ(x) to make the antecedent φ true.
 
-[FIX]: use a right-arrow instead of ▷ for imposition to avoid conflict with the until operator above.
-
-**Imposition notation**: We write t ▷_w w' ("imposing t on w yields w'") iff there exists maximal t-compatible part s ∈ w_t where s.t ⊑ w'.
+**Imposition notation**: We write t ⊳_w w' ("imposing t on w yields w'") iff there exists maximal t-compatible part s ∈ w_t where s.t ⊑ w'.
 
 #### Store and Recall Operators (↑, ↓)
 
-[FIX]: include v⃗ among the contextual parameters throughout the Causal Layer
-
-For cross-temporal reference within counterfactual evaluation, the context is extended with a vector v⃗ = ⟨v₁, v₂, ...⟩ of stored times:
+For cross-temporal reference within counterfactual evaluation, the context includes a time vector v⃗ = ⟨v₁, v₂, ...⟩ of stored times:
 
 | Operator | Truth Condition | Effect |
 |----------|-----------------|--------|
-| **↑ⁱA** | M, τ, x, v⃗ ⊨ ↑ⁱA iff M, τ, x, v⃗[x/vᵢ] ⊨ A | Store: replaces vᵢ with current time x |
-| **↓ⁱA** | M, τ, x, v⃗ ⊨ ↓ⁱA iff M, τ, vᵢ, v⃗ ⊨ A | Recall: shifts evaluation to stored time vᵢ |
+| **↑ⁱA** | M, τ, x, a̅, v⃗ ⊨ ↑ⁱA iff M, τ, x, a̅, v⃗[x/vᵢ] ⊨ A | Store: replaces vᵢ with current time x |
+| **↓ⁱA** | M, τ, x, a̅, v⃗ ⊨ ↓ⁱA iff M, τ, vᵢ, a̅, v⃗ ⊨ A | Recall: shifts evaluation to stored time vᵢ |
 
 **Example** (tensed counterfactuals):
 - ↓¹(B □→ FH) - "If B had occurred at the stored time, then H would have occurred at some future time"
@@ -351,9 +337,7 @@ Different temporal structures yield different valid principles. The framework do
 
 ### Logical Consequence (Causal)
 
-[FIX]: use 'a' with a bar above it instead of σ consistently everywhere for variable assignments.
-
-> Γ ⊨ A iff for any model M, world-history τ ∈ H_F, time x ∈ dom(τ), and assignment σ: if M, τ, x, σ ⊨ B for all B ∈ Γ, then M, τ, x, σ ⊨ A
+> Γ ⊨ A iff for any model M, world-history τ ∈ H_F, time x ∈ D, assignment a̅, and time vector v⃗: if M, τ, x, a̅, v⃗ ⊨ B for all B ∈ Γ, then M, τ, x, a̅, v⃗ ⊨ A
 
 ### Counterfactual Logic Axiom Schemata
 
