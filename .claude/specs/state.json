@@ -18,12 +18,12 @@
     {
       "project_number": 349,
       "project_name": "fix_recursive_semantics_documentation",
-      "status": "planned",
+      "status": "implementing",
       "language": "markdown",
       "priority": "medium",
       "effort": "4-6 hours",
       "created": "2026-01-09T17:59:23Z",
-      "last_updated": "2026-01-09T18:15:00Z",
+      "last_updated": "2026-01-09T18:20:00Z",
       "plan_path": ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md",
       "plan_metadata": {
         "plan_version": 2,
@@ -33,7 +33,8 @@
         ".claude/specs/349_fix_recursive_semantics_documentation/reports/research-001.md",
         ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-001.md",
         ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md"
-      ]
+      ],
+      "implementing_started": "2026-01-09"
     },
     {
       "project_number": 132,

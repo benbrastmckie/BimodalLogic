@@ -209,9 +209,10 @@ technical_debt:
 
 ### 349. Address all [FIX] tags in RECURSIVE_SEMANTICS.md documentation
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-09
 - **Planned**: 2026-01-09
+- **Implementing**: 2026-01-09
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None

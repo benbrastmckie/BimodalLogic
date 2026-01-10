@@ -32,7 +32,7 @@ Systematically address all 25 [FIX] tags in RECURSIVE_SEMANTICS.md while maintai
 ### Phase 1: Constitutive Layer Variable Assignment and Clauses
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Standardize variable assignment notation (σ → a̅)
@@ -75,7 +75,7 @@ Systematically address all 25 [FIX] tags in RECURSIVE_SEMANTICS.md while maintai
 ### Phase 2: Constitutive Layer Semantic Clauses
 
 **Estimated effort**: 1 hour
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add model M and variable assignment to all verification/falsification clauses

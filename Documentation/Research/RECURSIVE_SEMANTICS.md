@@ -23,9 +23,18 @@ The Constitutive Layer provides the foundational mereological structure with bil
 
 ## Constitutive Layer: Hyperintensional Semantics
 
-[FIX]: specify what syntactic primitives will be interpreted in this layer including lambda abstraction, updating the GLOSSARY.md accordingly
-
 The Constitutive Layer provides the foundational semantic structure based on exact truthmaker semantics. Evaluation is hyperintensional, distinguishing propositions that agree on truth-value across all possible worlds but differ in their exact verification and falsification conditions.
+
+### Syntactic Primitives
+
+The Constitutive Layer interprets the following syntactic primitives:
+- **Variables**: x, y, z, ... (ranging over states)
+- **Individual constants**: a, b, c, ... (0-place function symbols)
+- **n-place function symbols**: f, g, h, ...
+- **n-place predicates**: F, G, H, ...
+- **Sentence letters**: p, q, r, ... (0-place predicates)
+- **Lambda abstraction**: λx.A (binding variable x in formula A)
+- **Logical connectives**: ¬, ∧, ∨, ⊤, ⊥, ≡
 
 ### Constitutive Frame
 
@@ -44,85 +53,84 @@ The lattice structure provides:
 
 ### Constitutive Model
 
-A *constitutive model* is a structure **M** = ⟨S, ⊑, I⟩ where: [FIX]: use '| |' for the interpretation function consistently rather than 'I'
+A *constitutive model* is a structure **M** = ⟨S, ⊑, I⟩ where:
 
 | Component | Description |
 |-----------|-------------|
 | **Frame** | ⟨S, ⊑⟩ is a constitutive frame |
 | **Interpretation** | I assigns meanings to non-logical vocabulary |
 
-The interpretation function I assigns: [FIX]: use '| |' instead of 'I'
-- **n-place function symbols** f → functions from Sⁿ to S (0-place = individual constants mapping to states)
-- **n-place predicates** F → ordered pairs ⟨v_F, f_F⟩ where: [FIX]: replace v_F and f_F with |F|⁺ and |F|⁻ where these are both sets of functions of the kind indicated for v_F and f_F below
-  - v_F : Sⁿ → S is the verifier function
-  - f_F : Sⁿ → S is the falsifier function
-- **Sentence letters** (0-place predicates) p → ordered pairs ⟨|p|⁺, |p|⁻⟩ of verifier and falsifier states
+The interpretation function I assigns:
+- **n-place function symbols** f → I(f) : Sⁿ → S (0-place = individual constants mapping to states)
+- **n-place predicates** F → ordered pairs ⟨v_F, f_F⟩ where:
+  - v_F : set of functions Sⁿ → S (verifier functions)
+  - f_F : set of functions Sⁿ → S (falsifier functions)
+- **Sentence letters** (0-place predicates) p → ordered pairs ⟨v_p, f_p⟩ of verifier and falsifier state sets
 
 ### Variable Assignment
 
-[FIX]: greek letters are used for world-histories; use 'a', 'b',... for variable assignments (preferable with a bar above them 'a', 'b',... will also work as they are if no unicode characters are available for 'a', 'b',... with a bar over them)
+A *variable assignment* a̅ is a function from variables to states: a̅ : Var → S
 
-A *variable assignment* σ is a function from variables to states: σ : Var → S
+**Note**: Greek letters (τ, α, β, ...) are reserved for world-histories. Latin letters with overlines (a̅, b̅, ...) denote variable assignments.
 
-The **extension** of a term relative to model M and assignment σ:
-- **Variable** x: ⟦x⟧^σ_M = σ(x)
-- **Function application** f(a₁,...,aₙ): ⟦f(a₁,...,aₙ)⟧^σ_M = I(f)(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) [FIX]: use '|f|' instead of 'I(f)'
+The **extension** of a term relative to model M and assignment a̅:
+- **Variable** x: ⟦x⟧^a̅_M = a̅(x)
+- **Function application** f(t₁,...,tₙ): ⟦f(t₁,...,tₙ)⟧^a̅_M = I(f)(⟦t₁⟧^a̅_M, ..., ⟦tₙ⟧^a̅_M)
 
 ### Verification and Falsification Clauses
 
-[FIX]: instead of '⊩⁻', it would be better to have '⊩' reversed if there is such a symbol, and then use '⊩' for verification by itself. If there is no reversed turnstile, then keep the verification and falsification symbols as they are.
-
-A state s **verifies** (s ⊩⁺ A) or **falsifies** (s ⊩⁻ A) a formula A relative to model M and assignment σ:
+A state s **verifies** (⊩⁺) or **falsifies** (⊩⁻) a formula A relative to model M and assignment a̅:
 
 #### Atomic Formulas
 
-[FIX]: it is important to include the model M and variable assignment a alongside the state where f is some verifying/falsifying function as follows:
-  M, a, s ⊩⁺ F(a₁,...,aₙ) iff there is some f in |F|⁺ where s = f(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M)
-  M, a, s ⊩⁻ F(a₁,...,aₙ) iff there is some f in |F|⁺ where s = f(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M)
+| | Condition |
+|---|-----------|
+| M, a̅, s ⊩⁺ F(t₁,...,tₙ) | iff there is some f ∈ v_F where s = f(⟦t₁⟧^a̅_M, ..., ⟦tₙ⟧^a̅_M) |
+| M, a̅, s ⊩⁻ F(t₁,...,tₙ) | iff there is some f ∈ f_F where s = f(⟦t₁⟧^a̅_M, ..., ⟦tₙ⟧^a̅_M) |
+
+#### Lambda Abstraction (λ)
 
 | | Condition |
 |---|-----------|
-| s ⊩⁺ F(a₁,...,aₙ) | iff s = v_F(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) |
-| s ⊩⁻ F(a₁,...,aₙ) | iff s = f_F(⟦a₁⟧^σ_M, ..., ⟦aₙ⟧^σ_M) |
+| M, a̅, s ⊩⁺ (λx.A)(t) | iff M, a̅[⟦t⟧^a̅_M/x], s ⊩⁺ A |
+| M, a̅, s ⊩⁻ (λx.A)(t) | iff M, a̅[⟦t⟧^a̅_M/x], s ⊩⁻ A |
 
-[FIX]: include semantic clauses for lambda abstraction
+Where a̅[v/x] is the assignment that maps x to v and agrees with a̅ on all other variables.
 
 #### Negation (¬)
 
-[FIX]: include the model M and variable assignment a in all of the semantic clauses below.
-
 | | Condition |
 |---|-----------|
-| s ⊩⁺ ¬A | iff s ⊩⁻ A |
-| s ⊩⁻ ¬A | iff s ⊩⁺ A |
+| M, a̅, s ⊩⁺ ¬A | iff M, a̅, s ⊩⁻ A |
+| M, a̅, s ⊩⁻ ¬A | iff M, a̅, s ⊩⁺ A |
 
 #### Conjunction (∧)
 
 | | Condition |
 |---|-----------|
-| s ⊩⁺ A ∧ B | iff s = t.u for some t, u where t ⊩⁺ A and u ⊩⁺ B |
-| s ⊩⁻ A ∧ B | iff s ⊩⁻ A, or s ⊩⁻ B, or s = t.u for some t, u where t ⊩⁻ A and u ⊩⁻ B |
+| M, a̅, s ⊩⁺ A ∧ B | iff s = t.u for some t, u where M, a̅, t ⊩⁺ A and M, a̅, u ⊩⁺ B |
+| M, a̅, s ⊩⁻ A ∧ B | iff M, a̅, s ⊩⁻ A, or M, a̅, s ⊩⁻ B, or s = t.u for some t, u where M, a̅, t ⊩⁻ A and M, a̅, u ⊩⁻ B |
 
 #### Disjunction (∨)
 
 | | Condition |
 |---|-----------|
-| s ⊩⁺ A ∨ B | iff s ⊩⁺ A, or s ⊩⁺ B, or s = t.u for some t, u where t ⊩⁺ A and u ⊩⁺ B |
-| s ⊩⁻ A ∨ B | iff s = t.u for some t, u where t ⊩⁻ A and u ⊩⁻ B |
+| M, a̅, s ⊩⁺ A ∨ B | iff M, a̅, s ⊩⁺ A, or M, a̅, s ⊩⁺ B, or s = t.u for some t, u where M, a̅, t ⊩⁺ A and M, a̅, u ⊩⁺ B |
+| M, a̅, s ⊩⁻ A ∨ B | iff s = t.u for some t, u where M, a̅, t ⊩⁻ A and M, a̅, u ⊩⁻ B |
 
 #### Top (⊤) and Bottom (⊥)
 
 | | Verification | Falsification |
 |---|-------------|---------------|
-| ⊤ | s ⊩⁺ ⊤ for all s ∈ S | s ⊩⁻ ⊤ iff s = ■ (full state) |
-| ⊥ | Never: s ⊮⁺ ⊥ for all s | s ⊩⁻ ⊥ iff s = □ (null state) |
+| ⊤ | M, a̅, s ⊩⁺ ⊤ for all s ∈ S | M, a̅, s ⊩⁻ ⊤ iff s = ■ (full state) |
+| ⊥ | Never: M, a̅, s ⊮⁺ ⊥ for all s | M, a̅, s ⊩⁻ ⊥ iff s = □ (null state) |
 
 #### Propositional Identity (≡)
 
 | | Condition |
 |---|-----------|
-| s ⊩⁺ A ≡ B | iff s = □ and {t : t ⊩⁺ A} = {t : t ⊩⁺ B} and {t : t ⊩⁻ A} = {t : t ⊩⁻ B} |
-| s ⊩⁻ A ≡ B | iff s = □ and ({t : t ⊩⁺ A} ≠ {t : t ⊩⁺ B} or {t : t ⊩⁻ A} ≠ {t : t ⊩⁻ B}) |
+| M, a̅, s ⊩⁺ A ≡ B | iff s = □ and {t : M, a̅, t ⊩⁺ A} = {t : M, a̅, t ⊩⁺ B} and {t : M, a̅, t ⊩⁻ A} = {t : M, a̅, t ⊩⁻ B} |
+| M, a̅, s ⊩⁻ A ≡ B | iff s = □ and ({t : M, a̅, t ⊩⁺ A} ≠ {t : M, a̅, t ⊩⁺ B} or {t : M, a̅, t ⊩⁻ A} ≠ {t : M, a̅, t ⊩⁻ B}) |
 
 ### Bilateral Propositions
 
@@ -145,7 +153,7 @@ A *bilateral proposition* is an ordered pair ⟨V, F⟩ where:
 
 Logical consequence at the Constitutive Layer is restricted to propositional identity sentences:
 
-> Γ ⊨ A iff for any model M and assignment σ: if M, σ, □ ⊩⁺ B for all B ∈ Γ, then M, σ, □ ⊩⁺ A
+> Γ ⊨ A iff for any model M and assignment a̅: if M, a̅, □ ⊩⁺ B for all B ∈ Γ, then M, a̅, □ ⊩⁺ A
 
 That is, A is a consequence of Γ iff the null state verifies A in any model where it verifies all premises.
 
