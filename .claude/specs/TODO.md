@@ -32,7 +32,7 @@ technical_debt:
 
 ### 334. Create LaTeX documentation for Logos system mirroring layer structure
 - **Effort**: 10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-10
 - **Planned**: 2026-01-10
 - **Priority**: Medium
@@ -165,12 +165,16 @@ See research-002.md for details on AI training data generation benefits.
 ## Medium Priority
 
 ### 351. Review and fix skill context loading
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-10
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
+
+**Research Artifacts**:
+  - Research Report: [.claude/specs/351_review_skill_context_loading/reports/research-001.md]
 
 **Description**: Check that the skills load the appropriate context for each, making any necessary changes without bloating the context for any skill. For instance, 'context: fork' in /home/benjamin/Projects/ProofChecker/.claude/skills/skill-lean-implementation/SKILL.md should load appropriate lean context files in /home/benjamin/Projects/ProofChecker/.claude/context/project/lean4/ instead.
 
