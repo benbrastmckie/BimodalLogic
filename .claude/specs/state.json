@@ -1,6 +1,6 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-10T14:00:00Z",
+  "_last_updated": "2026-01-10T23:37:22Z",
   "next_project_number": 353,
   "active_projects": [
     {
@@ -383,11 +383,13 @@
       "planning_completed": "2026-01-07",
       "plan_path": ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-001.md",
       "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 4,
-        "complexity": "medium",
+        "phases": 4,
+        "total_effort_hours": 1.75,
+        "complexity": "low",
         "research_integrated": true,
-        "plan_version": 1,
+        "plan_version": 2,
+        "plan_revised": "2026-01-10",
+        "revision_reason": "Verify plan compatibility with Claude Code migration",
         "reports_integrated": [
           {
             "path": "reports/research-001.md",
@@ -546,12 +548,12 @@
       "project_number": 352,
       "project_name": "rename_logos_core_to_bimodal",
       "type": "refactor",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "researching",
+      "status": "researching",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-10T14:00:00Z",
-      "last_updated": "2026-01-10T14:00:00Z",
+      "last_updated": "2026-01-10T23:37:22Z",
       "effort": "2-4 hours",
       "description": "Rename Logos/Core/ to Bimodal/ to establish the bimodal language, semantics, proof theory, and metalogical results as an independent project. This refactoring prepares the repository for the Logos extensions detailed in RECURSIVE_SEMANTICS.md and LAYER_EXTENSIONS.md. Focus on moving Core/ to Bimodal/ and ensuring everything builds correctly."
     }

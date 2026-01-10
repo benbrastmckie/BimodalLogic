@@ -32,7 +32,7 @@ technical_debt:
 
 ### 352. Rename Logos/Core/ to Bimodal/
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -44,7 +44,7 @@ technical_debt:
 
 ### 308. Final cleanup and comprehensive testing (5/5)
 - **Effort**: 30 minutes
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
@@ -270,10 +270,11 @@ Ensures Lean research tasks use MCP tools systematically and efficiently. Provid
 
 ### 323. Fix /todo command to run markdown formatter after completion
 
-- **Effort**: TBD
-- **Status**: [IMPLEMENTING]
+- **Effort**: 1.75 hours
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-05
 - **Planned**: 2026-01-07
+- **Revised**: 2026-01-10
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
@@ -283,7 +284,8 @@ Ensures Lean research tasks use MCP tools systematically and efficiently. Provid
   - Research Report: [.claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md]
 
 **Plan Artifacts**:
-  - Implementation Plan: [.claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-001.md]
+  - Implementation Plan: [.claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-002.md]
+**Plan Revision Notes** (v002, 2026-01-10): Verified compatibility with Claude Code migration. Simplified approach: extend todo_cleanup.py instead of creating separate script. Reduced from 4 hours to 1.75 hours.
 
 **Description**: Fix the /todo command to run the markdown formatter on TODO.md after completing its archival operations. This ensures TODO.md remains properly formatted after task archival.
 
