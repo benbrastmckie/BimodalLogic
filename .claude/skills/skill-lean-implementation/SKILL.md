@@ -2,7 +2,10 @@
 name: skill-lean-implementation
 description: Implement Lean 4 proofs and definitions using lean-lsp tools. Invoke for Lean-language implementation tasks.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(lake *), mcp__lean-lsp__lean_goal, mcp__lean-lsp__lean_diagnostic_messages, mcp__lean-lsp__lean_hover_info, mcp__lean-lsp__lean_completions, mcp__lean-lsp__lean_multi_attempt, mcp__lean-lsp__lean_local_search
-context: fork
+context:
+  - .claude/context/project/lean4/tools/mcp-tools-guide.md
+  - .claude/context/project/lean4/patterns/tactic-patterns.md
+  - .claude/context/project/lean4/standards/lean4-style-guide.md
 ---
 
 # Lean Implementation Skill

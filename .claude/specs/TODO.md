@@ -166,9 +166,10 @@ See research-002.md for details on AI training data generation benefits.
 
 ### 351. Review and fix skill context loading
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-10
 - **Planned**: 2026-01-10
+- **Started**: 2026-01-10
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None

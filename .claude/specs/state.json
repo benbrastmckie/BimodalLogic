@@ -18,11 +18,11 @@
     {
       "project_number": 351,
       "project_name": "review_skill_context_loading",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-10T22:08:02Z",
-      "last_updated": "2026-01-10T22:49:13Z",
+      "last_updated": "2026-01-10T22:52:28Z",
       "artifacts": [
         {
           "path": ".claude/specs/351_review_skill_context_loading/reports/research-001.md",

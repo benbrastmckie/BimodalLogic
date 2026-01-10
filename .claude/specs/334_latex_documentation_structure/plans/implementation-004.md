@@ -265,7 +265,7 @@ This plan creates LaTeX reference documentation for the Logos system while simul
 ### Phase 4: Core Extension Subfiles
 
 **Estimated effort**: 2.5 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Create 02-CoreExtension-Syntax.tex (syntactic primitives)
