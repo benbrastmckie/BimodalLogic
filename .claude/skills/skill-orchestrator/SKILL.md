@@ -2,7 +2,9 @@
 name: skill-orchestrator
 description: Route commands to appropriate workflows based on task language and status. Invoke when executing /task, /research, /plan, /implement commands.
 allowed-tools: Read, Glob, Grep, Task
-context: fork
+context:
+  - .claude/context/core/orchestration/routing.md
+  - .claude/context/core/orchestration/delegation.md
 ---
 
 # Orchestrator Skill
