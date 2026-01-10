@@ -81,6 +81,138 @@
         ],
         "description": "Revise LAYER_EXTENSIONS.md using FIX tags for new Logos layer organization (Constitutive, Causal, Epistemic, Normative, Agential). Update GLOSSARY.md to match. Create new RECURSIVE_SEMANTICS.md with full hyperintensional semantics for Constitutive Layer and intensional semantics for following layers. Use [DETAILS] and [QUESTION: ...] tags for uncertain content."
       }
-    ]
+    ],
+    {
+      "project_number": 350,
+      "project_name": "fix_recursive_semantics_tags",
+      "status": "completed",
+      "language": "markdown",
+      "priority": "high",
+      "effort": "6-8 hours",
+      "created": "2026-01-10T18:17:28Z",
+      "last_updated": "2026-01-10T19:30:00Z",
+      "artifacts": [
+        ".claude/specs/350_fix_recursive_semantics_tags/reports/research-001.md",
+        ".claude/specs/350_fix_recursive_semantics_tags/plans/implementation-001.md",
+        ".claude/specs/350_fix_recursive_semantics_tags/summaries/implementation-summary-20260110.md"
+      ],
+      "plan_path": ".claude/specs/350_fix_recursive_semantics_tags/plans/implementation-001.md",
+      "plan_metadata": {
+        "plan_version": 1
+      },
+      "implementing_started": "2026-01-10",
+      "completed": "2026-01-10"
+    },
+    {
+      "project_number": 349,
+      "project_name": "fix_recursive_semantics_documentation",
+      "status": "completed",
+      "language": "markdown",
+      "priority": "medium",
+      "effort": "4-6 hours",
+      "created": "2026-01-09T17:59:23Z",
+      "last_updated": "2026-01-09T18:35:00Z",
+      "plan_path": ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md",
+      "plan_metadata": {
+        "plan_version": 2,
+        "revision_reason": "Maintain ⟨S, ⊑, I⟩ notation instead of replacing with ⟨S, ⊑, | |⟩"
+      },
+      "artifacts": [
+        ".claude/specs/349_fix_recursive_semantics_documentation/reports/research-001.md",
+        ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-001.md",
+        ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md"
+      ],
+      "implementing_started": "2026-01-09",
+      "completed": "2026-01-09"
+    },
+    {
+      "project_number": 316,
+      "project_name": "implement_tactic_integration_for_modal_search_tactic_phase_2",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "completed",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-05T08:34:20.462436Z",
+      "last_updated": "2026-01-10T13:00:00.000000Z",
+      "effort": "8-12 hours",
+      "description": "Implement Phase 2 of task 260: Tactic Integration. Create modal_search tactic that constructs proofs in tactic mode, avoiding Prop vs Type issues. This phase is prioritized over Phase 1 as it may be easier than programmatic proof term construction and is more useful for end users (interactive proof development). Integrate with existing ProofSearch.lean infrastructure.",
+      "artifacts": [
+        ".claude/specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/reports/research-001.md",
+        ".claude/specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/plans/implementation-001.md",
+        ".claude/specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/summaries/implementation-summary-20260110.md"
+      ],
+      "completed": "2026-01-10"
+    },
+    {
+      "project_number": 317,
+      "project_name": "implement_bfs_variant_for_proof_search_completeness_phase_3",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T08:34:20.462436Z",
+      "last_updated": "2026-01-09",
+      "implementing_started": "2026-01-09",
+      "completed": "2026-01-09",
+      "effort": "10-15 hours",
+      "description": "Implement Phase 3 of task 260: BFS Variant. Add breadth-first search variant to ProofSearch.lean to ensure completeness guarantees. Current implementation uses bounded DFS which may miss proofs. BFS variant will explore search space level-by-level, guaranteeing shortest proofs are found first.",
+      "research_completed": "2026-01-07",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".claude/specs/317_bfs_variant_phase3/plans/implementation-001.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/317_bfs_variant_phase3/reports/research-001.md",
+          "summary": "Comprehensive 1403-line research report analyzing BFS implementation strategies, completeness guarantees, and integration approaches for Lean 4 proof search"
+        }
+      ],
+      "planning_completed": "2026-01-07",
+      "plan_version": "001"
+    },
+    {
+      "project_number": 318,
+      "project_name": "implement_advanced_heuristics_for_proof_search_performance_phase_4",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T08:34:20.462436Z",
+      "last_updated": "2026-01-09",
+      "implementing_started": "2026-01-09",
+      "completed": "2026-01-09",
+      "effort": "12-18 hours",
+      "description": "Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.",
+      "artifacts": [
+        ".claude/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md",
+        ".claude/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-20260108.md",
+        ".claude/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-phase2-20260108.md"
+      ],
+      "plan_path": ".claude/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 5,
+        "estimated_hours": 15,
+        "complexity": "medium"
+      }
+    },
+    {
+      "project_number": 319,
+      "project_name": "expand_testing_for_proof_search_automation_phase_5",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T08:34:20.462436Z",
+      "last_updated": "2026-01-10T19:30:00Z",
+      "completed": "2026-01-10T19:30:00Z",
+      "effort": "8-12 hours",
+      "description": "Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks.",
+      "implementation_summary": ".claude/specs/319_expand_testing_for_proof_search_automation_phase_5/summaries/implementation-summary-20260110.md"
+    }
   ]
 }
