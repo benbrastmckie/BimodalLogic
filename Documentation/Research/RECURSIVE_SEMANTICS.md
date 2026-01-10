@@ -248,9 +248,7 @@ The task relation s ⇒_d t (read: "there is a task from s to t of duration d") 
 | **Containment (R)** | If t ∈ P, r ⊑ t, and d ⇒_x r, then s.d ⇒_x t for some s ∈ S |
 | **Maximality** | If s ∈ S and t ∈ P, there is a maximal t-compatible part r ∈ s_t |
 
-<!-- [FIX]: I don't want '**Note**:' labels to be used, stating explanations in a clear and consistent manner throughout without extra labels. -->
-
-**Note**: The Containment constraints ensure that tasks between parts of possible states can be extended to tasks between the states themselves. The Maximality constraint ensures that for any state and possible state, there exists a maximal part compatible with that possible state.
+The Containment constraints ensure that tasks between parts of possible states can be extended to tasks between the states themselves. The Maximality constraint ensures that for any state and possible state, there exists a maximal part compatible with that possible state.
 
 ### State Modality Definitions
 
@@ -272,9 +270,7 @@ A *world-history* over a causal frame F is a function τ : X → W where:
 
 The set of all world-histories over F is denoted H_F.
 
-<!-- [FIX]: use the definition given in \textbf{\ref{app:Containment}} in $\S\ref{app:WorldSpace}$ from /home/benjamin/Projects/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex which is provably equivalent. Also remove the 'Note' label below and similarly throughout. -->
-
-**Note**: World-histories assign world-states to times in a way that respects the task relation. The constraint ensures that consecutive world-states are connected by appropriate tasks.
+World-histories assign world-states to times in a way that respects the task relation. The constraint ensures that consecutive world-states are connected by appropriate tasks. The set of maximal possible evolutions M_Z equals the set of world-histories H_Z (proven in Brast-McKie, "Counterfactual Worlds"), showing that world-histories can be characterized as maximal elements among possible evolutions under the pointwise parthood ordering.
 
 ### Core Model
 
@@ -293,9 +289,7 @@ Truth is evaluated relative to a model M, world-history τ, time x ∈ D, variab
 | M, τ, x, σ, i⃗ ⊨ F(t₁,...,tₙ) | iff there is some f ∈ v_F where f(⟦t₁⟧^σ_M, ..., ⟦tₙ⟧^σ_M) ⊑ τ(x) |
 | M, τ, x, σ, i⃗ ⊭ F(t₁,...,tₙ) | iff there is some f ∈ f_F where f(⟦t₁⟧^σ_M, ..., ⟦tₙ⟧^σ_M) ⊑ τ(x) |
 
-<!-- [FIX]: remove the 'Note' label below. -->
-
-**Note**: It is derivable that M, τ, x, σ, i⃗ ⊨ A iff it is not the case that M, τ, x, σ, i⃗ ⊭ A. This justifies using ⊨ alone for truth and ⊭ for falsehood.
+It is derivable that M, τ, x, σ, i⃗ ⊨ A iff it is not the case that M, τ, x, σ, i⃗ ⊭ A. This justifies using ⊨ alone for truth and ⊭ for falsehood.
 
 #### Lambda Abstraction
 
@@ -323,7 +317,7 @@ Truth is evaluated relative to a model M, world-history τ, time x ∈ D, variab
 
 **Equivalence**: ◇A ≡ ¬□¬A
 
-**Note**: Metaphysical necessity can also be defined via counterfactuals: □A := ⊤ □→ A. This yields an S5 modal logic.
+Metaphysical necessity can also be defined via counterfactuals: □A := ⊤ □→ A. This yields an S5 modal logic.
 
 #### Core Tense Operators
 
