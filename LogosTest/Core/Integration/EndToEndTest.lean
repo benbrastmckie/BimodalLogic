@@ -8,10 +8,10 @@ These tests verify the complete workflow from derivation to validity.
 
 namespace LogosTest.Core.Integration
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Semantics
-open Logos.Core.Metalogic
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Semantics
+open Bimodal.Metalogic
 
 /--
 Integration Test 1: Derive Modal T theorem.

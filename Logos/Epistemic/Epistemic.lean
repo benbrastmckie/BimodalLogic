@@ -16,6 +16,6 @@ See: Documentation/Research/LAYER_EXTENSIONS.md Section 2
 
 namespace Logos.Epistemic
   -- Layer 2 implementation to be added
-  -- Extension point: Formula type will embed Logos.Core.Syntax.Formula
+  -- Extension point: Formula type will embed Bimodal.Syntax.Formula
   -- Extension point: Semantics will use InformationState
 end Logos.Epistemic

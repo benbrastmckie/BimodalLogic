@@ -1,3 +1,9 @@
+import Bimodal.Syntax.Formula
+import Bimodal.Syntax.Context
+import Bimodal.Semantics.TaskFrame
+import Bimodal.Semantics.TaskModel
+import Plausible
+
 /-!
 # Property Test Generators
 
@@ -23,16 +29,10 @@ This module provides generators for property-based testing of Logos types.
 * [Property Testing Guide](../../../Documentation/Development/PROPERTY_TESTING_GUIDE.md)
 -/
 
-import Logos.Core.Syntax.Formula
-import Logos.Core.Syntax.Context
-import Logos.Core.Semantics.TaskFrame
-import Logos.Core.Semantics.TaskModel
-import Plausible
-
 namespace LogosTest.Property.Generators
 
-open Logos.Core.Syntax
-open Logos.Core.Semantics
+open Bimodal.Syntax
+open Bimodal.Semantics
 open Plausible
 
 /-! ## Formula Generators -/

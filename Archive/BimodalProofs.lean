@@ -1,6 +1,6 @@
-import Logos.Core.Theorems.Perpetuity
-import Logos.Core.ProofSystem.Derivation
-import Logos.Core.Automation.ProofSearch
+import Bimodal.Theorems.Perpetuity
+import Bimodal.ProofSystem.Derivation
+import Bimodal.Automation.ProofSearch
 
 /-!
 # Bimodal Proof Examples
@@ -37,10 +37,10 @@ This file demonstrates both available notation styles:
 
 namespace Archive.BimodalProofs
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Theorems.Perpetuity
-open Logos.Core.Automation (ProofSearch)
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Theorems.Perpetuity
+open Bimodal.Automation (ProofSearch)
 
 /-!
 ## P1: Necessary Implies Always

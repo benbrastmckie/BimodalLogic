@@ -1,6 +1,6 @@
-import Logos.Core.ProofSystem
-import Logos.Core.Semantics
-import Logos.Core.Metalogic
+import Bimodal.ProofSystem
+import Bimodal.Semantics
+import Bimodal.Metalogic
 import LogosTest.Core.Integration.Helpers
 
 /-!
@@ -35,10 +35,10 @@ Tests are organized by bimodal axiom:
 
 namespace LogosTest.Core.Integration
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Semantics
-open Logos.Core.Metalogic
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Semantics
+open Bimodal.Metalogic
 open LogosTest.Core.Integration.Helpers
 
 -- ============================================================

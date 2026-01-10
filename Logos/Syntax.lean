@@ -1,5 +1,5 @@
-import Logos.Core.Syntax.Formula
-import Logos.Core.Syntax.Context
+import Bimodal.Syntax.Formula
+import Bimodal.Syntax.Context
 
 /-!
 # Syntax Module
@@ -16,9 +16,9 @@ This module provides the syntax foundation for ProofChecker's bimodal logic TM.
 ## Usage
 
 ```lean
-import Logos.Core.Syntax
+import Bimodal.Syntax
 
-open Logos.Core.Syntax
+open Bimodal.Syntax
 
 -- Create formulas
 def p := Formula.atom "p"

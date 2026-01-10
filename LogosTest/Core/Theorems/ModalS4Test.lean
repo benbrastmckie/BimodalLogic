@@ -1,4 +1,4 @@
-import Logos.Core.Theorems.ModalS4
+import Bimodal.Theorems.ModalS4
 
 /-!
 # Modal S4 Theorems Tests
@@ -18,9 +18,9 @@ All tests are placeholders pending Phase 4 implementation.
 
 namespace LogosTest.Core.Theorems.ModalS4Test
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Theorems.ModalS4
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Theorems.ModalS4
 
 /-!
 ## Placeholder Tests for S4 Theorems

@@ -12,7 +12,7 @@ This module provides backwards compatibility by re-exporting Bimodal.
 Old imports:
 ```lean
 import Logos.Core
-import Logos.Core.Syntax.Formula
+import Bimodal.Syntax.Formula
 ```
 
 New imports:

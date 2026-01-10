@@ -1,7 +1,7 @@
-import Logos.Core.Automation
-import Logos.Core.ProofSystem
-import Logos.Core.Semantics
-import Logos.Core.Metalogic
+import Bimodal.Automation
+import Bimodal.ProofSystem
+import Bimodal.Semantics
+import Bimodal.Metalogic
 
 /-!
 # Automation and Proof System Integration Tests
@@ -41,11 +41,11 @@ Tests are organized by tactic:
 
 namespace LogosTest.Core.Integration
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Semantics
-open Logos.Core.Metalogic
-open Logos.Core.Automation
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Semantics
+open Bimodal.Metalogic
+open Bimodal.Automation
 
 -- ============================================================
 -- tm_auto Tactic Tests (Aesop-powered automation)

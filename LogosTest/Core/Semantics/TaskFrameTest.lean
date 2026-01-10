@@ -1,5 +1,5 @@
 import Mathlib.Algebra.Order.Group.Int
-import Logos.Core.Semantics.TaskFrame
+import Bimodal.Semantics.TaskFrame
 
 /-!
 # TaskFrame Tests
@@ -15,7 +15,7 @@ to specify the temporal type.
 
 namespace LogosTest.Core.Semantics
 
-open Logos.Core.Semantics
+open Bimodal.Semantics
 
 /-! ## trivial_frame Tests (using Int time) -/
 

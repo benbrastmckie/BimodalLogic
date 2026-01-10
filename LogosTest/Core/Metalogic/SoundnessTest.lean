@@ -1,5 +1,5 @@
-import Logos.Core.Metalogic.Soundness
-import Logos.Core.ProofSystem.Derivation
+import Bimodal.Metalogic.Soundness
+import Bimodal.ProofSystem.Derivation
 
 /-!
 # Soundness Tests
@@ -9,10 +9,10 @@ Tests for soundness theorem and axiom validity.
 
 namespace LogosTest.Core.Metalogic
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Semantics
-open Logos.Core.Metalogic
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Semantics
+open Bimodal.Metalogic
 
 -- ========================================
 -- Axiom Validity Tests

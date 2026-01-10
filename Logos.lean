@@ -1,5 +1,5 @@
--- Re-export public API
-import Logos.Core
+-- Re-export public API (Bimodal library is now the core implementation)
+import Bimodal
 
 /-!
 # Logos Library Root
@@ -23,12 +23,12 @@ Logos provides:
 
 The library is organized into the following submodules:
 
-- `Logos.Core.Syntax`: Formula types, parsing, DSL
-- `Logos.Core.ProofSystem`: Axioms, derivation trees (`DerivationTree : Type`), and inference rules
-- `Logos.Core.Semantics`: Task frame semantics
-- `Logos.Core.Metalogic`: Soundness and completeness proofs
-- `Logos.Core.Theorems`: Key theorems (perpetuity principles, etc.)
-- `Logos.Core.Automation`: Proof automation tactics
+- `Bimodal.Syntax`: Formula types, parsing, DSL
+- `Bimodal.ProofSystem`: Axioms, derivation trees (`DerivationTree : Type`), and inference rules
+- `Bimodal.Semantics`: Task frame semantics
+- `Bimodal.Metalogic`: Soundness and completeness proofs
+- `Bimodal.Theorems`: Key theorems (perpetuity principles, etc.)
+- `Bimodal.Automation`: Proof automation tactics
 
 ## Usage
 
@@ -39,8 +39,8 @@ import Logos
 
 Or import specific modules:
 ```lean
-import Logos.Core.Syntax.Formula
-import Logos.Core.ProofSystem.Axioms
+import Bimodal.Syntax.Formula
+import Bimodal.ProofSystem.Axioms
 ```
 -/
 

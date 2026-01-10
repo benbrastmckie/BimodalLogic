@@ -1,4 +1,4 @@
-import Logos.Core.Automation.Tactics
+import Bimodal.Automation.Tactics
 
 /-!
 # Simple Tests for Automation Tactics
@@ -8,7 +8,7 @@ Basic compilation tests to verify tactics type-check correctly.
 
 namespace LogosTest.Core.Automation.Simple
 
-open Logos.Core.Syntax ProofChecker.ProofSystem
+open Bimodal.Syntax ProofChecker.ProofSystem
 
 -- Test that apply_axiom macro expands correctly
 #check (@apply_axiom : Lean.ParserDescr)

@@ -1,5 +1,5 @@
-import Logos.Core.Theorems.Perpetuity
-import Logos.Core.Theorems.Combinators
+import Bimodal.Theorems.Perpetuity
+import Bimodal.Theorems.Combinators
 
 /-!
 # Perpetuity Principles Tests
@@ -19,10 +19,13 @@ with temporal operators (always/sometimes).
 
 namespace LogosTest.Core.Theorems.PerpetuityTest
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Theorems.Perpetuity
-open Logos.Core.Theorems.Combinators
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Theorems.Perpetuity
+open Bimodal.Theorems.Combinators
+
+-- Some perpetuity principles depend on noncomputable deduction_theorem
+noncomputable section
 
 /-!
 ## Helper Lemma Tests: Propositional Reasoning
@@ -340,5 +343,7 @@ example (p : Formula) : △p = p.always := rfl
 
 /-- Test: Triangle notation equivalence - ▽ = sometimes -/
 example (p : Formula) : ▽p = p.sometimes := rfl
+
+end
 
 end LogosTest.Core.Theorems.PerpetuityTest

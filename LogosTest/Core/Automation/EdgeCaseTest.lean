@@ -1,6 +1,6 @@
-import Logos.Core.Automation.ProofSearch
-import Logos.Core.Automation.Tactics
-import Logos.Core.ProofSystem
+import Bimodal.Automation.ProofSearch
+import Bimodal.Automation.Tactics
+import Bimodal.ProofSystem
 
 /-!
 # Edge Case Tests for Proof Search Automation (Task 319 Phase 2)
@@ -18,7 +18,7 @@ Systematic edge case testing for the proof search system covering:
 
 namespace LogosTest.Core.Automation.EdgeCase
 
-open Logos.Core.Syntax Logos.Core.Automation Logos.Core.ProofSystem
+open Bimodal.Syntax Bimodal.Automation Bimodal.ProofSystem
 
 -- Convenience abbreviations
 abbrev p : Formula := .atom "p"

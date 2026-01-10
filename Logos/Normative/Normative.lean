@@ -15,6 +15,6 @@ See: Documentation/Research/LAYER_EXTENSIONS.md Section 3
 
 namespace Logos.Normative
   -- Layer 3 implementation to be added
-  -- Extension point: Formula type will embed Logos.Core.Syntax.Formula
+  -- Extension point: Formula type will embed Bimodal.Syntax.Formula
   -- Extension point: Semantics will use IdealityOrdering
 end Logos.Normative

@@ -1,5 +1,5 @@
-import Logos.Core.ProofSystem.Derivation
-import Logos.Core.Theorems.GeneralizedNecessitation
+import Bimodal.ProofSystem.Derivation
+import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!
 # Derivation Test Suite
@@ -20,8 +20,11 @@ Tests for the DerivationTree relation and inference rules.
 
 namespace LogosTest.Core.ProofSystem
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+
+-- Some derivations depend on noncomputable deduction_theorem
+noncomputable section
 
 -- ============================================================
 -- Axiom Rule Tests
@@ -232,7 +235,7 @@ example (p : Formula) : [(Formula.atom "p").box] ⊢ (Formula.atom "p").box := b
     apply DerivationTree.assumption
     simp
   -- Apply generalized modal K
-  have d_gen := Logos.Core.Theorems.generalized_modal_k [Formula.atom "p"] (Formula.atom "p") d
+  have d_gen := Bimodal.Theorems.generalized_modal_k [Formula.atom "p"] (Formula.atom "p") d
   -- Result should be [□p] ⊢ □p
   simp at d_gen
   exact d_gen
@@ -245,9 +248,11 @@ example (p : Formula) : [(Formula.atom "p").all_future] ⊢ (Formula.atom "p").a
     apply DerivationTree.assumption
     simp
   -- Apply generalized temporal K
-  have d_gen := Logos.Core.Theorems.generalized_temporal_k [Formula.atom "p"] (Formula.atom "p") d
+  have d_gen := Bimodal.Theorems.generalized_temporal_k [Formula.atom "p"] (Formula.atom "p") d
   -- Result should be [Fp] ⊢ Fp
   simp at d_gen
   exact d_gen
+
+end
 
 end LogosTest.Core.ProofSystem

@@ -1,6 +1,6 @@
-import Logos.Core.ProofSystem.Derivation
-import Logos.Core.ProofSystem.Axioms
-import Logos.Core.Theorems.Perpetuity
+import Bimodal.ProofSystem.Derivation
+import Bimodal.ProofSystem.Axioms
+import Bimodal.Theorems.Perpetuity
 
 /-!
 # Modal Proof Strategies
@@ -48,9 +48,9 @@ Each example includes:
 
 namespace Archive.ModalProofStrategies
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Theorems.Perpetuity
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Theorems.Perpetuity
 
 /-!
 ## Strategy 1: Necessity Chains (Iterating M4)

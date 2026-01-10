@@ -1,3 +1,8 @@
+import Bimodal.Metalogic.Soundness
+import Bimodal.ProofSystem.Axioms
+import LogosTest.Core.Property.Generators
+import Plausible
+
 /-!
 # Soundness Property Tests
 
@@ -24,17 +29,13 @@ so we focus on testing axiom validity across many formula instances.
 * [Axioms.lean](../../../Logos/Core/ProofSystem/Axioms.lean)
 -/
 
-import Logos.Core.Metalogic.Soundness
-import Logos.Core.ProofSystem.Axioms
-import LogosTest.Core.Property.Generators
-import Plausible
 
 namespace LogosTest.Metalogic.SoundnessPropertyTest
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Metalogic
-open Logos.Core.Semantics
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Metalogic
+open Bimodal.Semantics
 open LogosTest.Property.Generators
 open Plausible
 

@@ -1,5 +1,5 @@
-import Logos.Core.Automation.ProofSearch
-import Logos.Core.ProofSystem
+import Bimodal.Automation.ProofSearch
+import Bimodal.ProofSystem
 
 /-!
 # Proof Search Benchmark Suite
@@ -28,7 +28,7 @@ Supports comparison of search strategies and tuning of heuristic weights.
 
 namespace LogosTest.Core.Automation.Benchmark
 
-open Logos.Core.Syntax Logos.Core.Automation Logos.Core.ProofSystem
+open Bimodal.Syntax Bimodal.Automation Bimodal.ProofSystem
 
 -- Convenience abbreviations
 abbrev p : Formula := .atom "p"

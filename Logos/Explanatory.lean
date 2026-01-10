@@ -15,6 +15,6 @@ See: Documentation/Research/LAYER_EXTENSIONS.md Section 1
 
 namespace Logos.Explanatory
   -- Layer 1 implementation to be added
-  -- Extension point: Formula type will embed Logos.Core.Syntax.Formula
+  -- Extension point: Formula type will embed Bimodal.Syntax.Formula
   -- Extension point: Semantics will use MaximalState instead of Point
 end Logos.Explanatory

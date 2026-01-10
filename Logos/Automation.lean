@@ -1,10 +1,10 @@
-import Logos.Core.ProofSystem
-import Logos.Core.Semantics
-import Logos.Core.Metalogic
+import Bimodal.ProofSystem
+import Bimodal.Semantics
+import Bimodal.Metalogic
 
 -- Module components (to be implemented with meta-programming)
--- import Logos.Core.Automation.Tactics
--- import Logos.Core.Automation.ProofSearch
+-- import Bimodal.Automation.Tactics
+-- import Bimodal.Automation.ProofSearch
 
 /-!
 # ProofChecker Automation Module
@@ -20,7 +20,7 @@ including custom tactics for modal and temporal reasoning and basic proof search
 ## Usage Example
 
 ```lean
-import Logos.Core.Automation
+import Bimodal.Automation
 
 example (p : Formula) : [p.box] ⊢ p.box.box := by
   sorry  -- Would use: modal_k_tactic

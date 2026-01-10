@@ -1,3 +1,7 @@
+import Bimodal.Syntax.Formula
+import LogosTest.Core.Property.Generators
+import Plausible
+
 /-!
 # Formula Property Tests
 
@@ -22,13 +26,10 @@ Generators defined in LogosTest.Property.Generators.
 * [Generators.lean](../Property/Generators.lean)
 -/
 
-import Logos.Core.Syntax.Formula
-import LogosTest.Core.Property.Generators
-import Plausible
 
 namespace LogosTest.Syntax.FormulaPropertyTest
 
-open Logos.Core.Syntax
+open Bimodal.Syntax
 open LogosTest.Property.Generators
 open Plausible
 

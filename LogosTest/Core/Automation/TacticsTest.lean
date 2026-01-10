@@ -1,6 +1,6 @@
-import Logos.Core.Automation.Tactics
-import Logos.Core.Automation.ProofSearch
-import Logos.Core.ProofSystem
+import Bimodal.Automation.Tactics
+import Bimodal.Automation.ProofSearch
+import Bimodal.ProofSystem
 
 /-!
 # Tests for Automation Tactics
@@ -50,7 +50,7 @@ Comprehensive test suite covering:
 
 namespace LogosTest.Core.Automation
 
-open Logos.Core.Syntax Logos.Core.ProofSystem Logos.Core.Automation
+open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Automation
 
 /-!
 ## Phase 4: apply_axiom and modal_t Tests
@@ -315,16 +315,16 @@ example (a b c d _ : Nat) : Nat := by
 Tests for generalized_modal_k, generalized_temporal_k, temporal_duality inference rules.
 
 NOTE: DerivationTree.modal_k and DerivationTree.temporal_k were removed in Task 44.
-The generalized rules are now in Logos.Core.Theorems.GeneralizedNecessitation.
+The generalized rules are now in Bimodal.Theorems.GeneralizedNecessitation.
 -/
 
-open Logos.Core.Theorems in
+open Bimodal.Theorems in
 /-- Test 51: generalized_modal_k rule derives □φ from φ (empty context) -/
 noncomputable example (h : DerivationTree [] (Formula.atom "p")) :
     DerivationTree (Context.map Formula.box []) (Formula.box (Formula.atom "p")) :=
   generalized_modal_k [] _ h
 
-open Logos.Core.Theorems in
+open Bimodal.Theorems in
 /-- Test 52: generalized_temporal_k rule derives Fφ from φ (empty context) -/
 noncomputable example (h : DerivationTree [] (Formula.atom "p")) :
     DerivationTree (Context.map Formula.all_future []) (Formula.all_future (Formula.atom "p")) :=
@@ -335,25 +335,25 @@ example (h : DerivationTree [] (Formula.all_past (Formula.atom "p"))) :
     DerivationTree [] (Formula.swap_temporal (Formula.all_past (Formula.atom "p"))) :=
   DerivationTree.temporal_duality _ h
 
-open Logos.Core.Theorems in
+open Bimodal.Theorems in
 /-- Test 54: generalized_modal_k with axiom derivation -/
 noncomputable example :
     DerivationTree (Context.map Formula.box []) (Formula.box (Formula.imp (Formula.box (Formula.atom "p")) (Formula.atom "p"))) :=
   generalized_modal_k [] _ (DerivationTree.axiom [] _ (Axiom.modal_t _))
 
-open Logos.Core.Theorems in
+open Bimodal.Theorems in
 /-- Test 55: generalized_temporal_k with axiom derivation -/
 noncomputable example :
     DerivationTree (Context.map Formula.all_future []) (Formula.all_future (Formula.imp (Formula.all_future (Formula.atom "p")) (Formula.all_future (Formula.all_future (Formula.atom "p"))))) :=
   generalized_temporal_k [] _ (DerivationTree.axiom [] _ (Axiom.temp_4 _))
 
-open Logos.Core.Theorems in
+open Bimodal.Theorems in
 /-- Test 56: generalized_modal_k with non-empty context -/
 noncomputable example (h : DerivationTree [Formula.atom "p"] (Formula.atom "p")) :
     DerivationTree (Context.map Formula.box [Formula.atom "p"]) (Formula.box (Formula.atom "p")) :=
   generalized_modal_k _ _ h
 
-open Logos.Core.Theorems in
+open Bimodal.Theorems in
 /-- Test 57: generalized_temporal_k with non-empty context -/
 noncomputable example (h : DerivationTree [Formula.atom "p"] (Formula.atom "p")) :
     DerivationTree (Context.map Formula.all_future [Formula.atom "p"]) (Formula.all_future (Formula.atom "p")) :=

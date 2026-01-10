@@ -1,6 +1,6 @@
-import Logos.Core.ProofSystem.Derivation
-import Logos.Core.ProofSystem.Axioms
-import Logos.Core.Automation.ProofSearch
+import Bimodal.ProofSystem.Derivation
+import Bimodal.ProofSystem.Axioms
+import Bimodal.Automation.ProofSearch
 
 /-!
 # Modal Logic Proof Examples
@@ -40,9 +40,9 @@ which is appropriate for metaphysical necessity (truth in all possible worlds).
 
 namespace Archive.ModalProofs
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Automation (ProofSearch)
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Automation (ProofSearch)
 
 /-!
 ## Axiom T: Reflexivity (`□φ → φ`)

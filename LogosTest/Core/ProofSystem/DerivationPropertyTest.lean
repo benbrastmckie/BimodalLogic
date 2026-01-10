@@ -1,3 +1,8 @@
+import Bimodal.ProofSystem.Derivation
+import Bimodal.ProofSystem.Axioms
+import LogosTest.Core.Property.Generators
+import Plausible
+
 /-!
 # Derivation Property Tests
 
@@ -26,15 +31,11 @@ structural properties that can be tested with arbitrary inputs.
 * [Axioms.lean](../../../Logos/Core/ProofSystem/Axioms.lean)
 -/
 
-import Logos.Core.ProofSystem.Derivation
-import Logos.Core.ProofSystem.Axioms
-import LogosTest.Core.Property.Generators
-import Plausible
 
 namespace LogosTest.ProofSystem.DerivationPropertyTest
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
+open Bimodal.Syntax
+open Bimodal.ProofSystem
 open LogosTest.Property.Generators
 open Plausible
 

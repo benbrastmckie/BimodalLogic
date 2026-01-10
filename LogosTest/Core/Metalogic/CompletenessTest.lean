@@ -23,12 +23,12 @@ proofs to be implemented.
 * Soundness Module: ProofChecker/Metalogic/Soundness.lean
 -/
 
-import Logos.Core.Metalogic.Completeness
-import Logos.Core.ProofSystem
+import Bimodal.Metalogic.Completeness
+import Bimodal.ProofSystem
 
 namespace LogosTest.Core.Metalogic
 
-open Logos.Core.Metalogic
+open Bimodal.Metalogic
 
 /-!
 ## Consistency Tests

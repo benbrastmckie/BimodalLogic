@@ -1,7 +1,7 @@
-import Logos.Core.ProofSystem.Derivation
-import Logos.Core.ProofSystem.Axioms
-import Logos.Core.Theorems.Perpetuity
-import Logos.Core.Syntax.Formula
+import Bimodal.ProofSystem.Derivation
+import Bimodal.ProofSystem.Axioms
+import Bimodal.Theorems.Perpetuity
+import Bimodal.Syntax.Formula
 
 /-!
 # Temporal Proof Strategies
@@ -53,9 +53,9 @@ Each example includes:
 
 namespace Archive.TemporalProofStrategies
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Theorems.Perpetuity
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Theorems.Perpetuity
 
 /-!
 ## Strategy 1: Future Iteration (Temporal 4 Axiom)

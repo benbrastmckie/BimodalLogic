@@ -1,6 +1,6 @@
 import Mathlib.Algebra.Order.Group.Int
-import Logos.Core.Semantics.Truth
-import Logos.Core.Semantics.TaskFrame
+import Bimodal.Semantics.Truth
+import Bimodal.Semantics.TaskFrame
 
 /-!
 # Truth Evaluation Tests
@@ -16,8 +16,8 @@ explicit `Int` annotations.
 
 namespace LogosTest.Core.Semantics
 
-open Logos.Core.Syntax
-open Logos.Core.Semantics
+open Bimodal.Syntax
+open Bimodal.Semantics
 
 -- Helper: use trivial frame for testing (with explicit Int time)
 def testFrame : TaskFrame Int := TaskFrame.trivial_frame

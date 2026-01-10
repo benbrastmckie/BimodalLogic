@@ -1,9 +1,9 @@
-import Logos.Core.Automation.ProofSearch
-import Logos.Core.ProofSystem
+import Bimodal.Automation.ProofSearch
+import Bimodal.ProofSystem
 
 namespace LogosTest.Core.Automation
 
-open Logos.Core.Syntax Logos.Core.Automation Logos.Core.ProofSystem
+open Bimodal.Syntax Bimodal.Automation Bimodal.ProofSystem
 
 abbrev p : Formula := .atom "p"
 abbrev q : Formula := .atom "q"

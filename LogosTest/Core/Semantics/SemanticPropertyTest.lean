@@ -1,3 +1,9 @@
+import Bimodal.Semantics.TaskFrame
+import Bimodal.Semantics.TaskModel
+import Bimodal.Semantics.Truth
+import LogosTest.Core.Property.Generators
+import Plausible
+
 /-!
 # Semantic Property Tests
 
@@ -22,16 +28,11 @@ valid frames.
 * [Truth.lean](../../../Logos/Core/Semantics/Truth.lean)
 -/
 
-import Logos.Core.Semantics.TaskFrame
-import Logos.Core.Semantics.TaskModel
-import Logos.Core.Semantics.Truth
-import LogosTest.Core.Property.Generators
-import Plausible
 
 namespace LogosTest.Semantics.SemanticPropertyTest
 
-open Logos.Core.Syntax
-open Logos.Core.Semantics
+open Bimodal.Syntax
+open Bimodal.Semantics
 open LogosTest.Property.Generators
 open Plausible
 

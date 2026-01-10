@@ -1,4 +1,4 @@
-import Logos.Core.Syntax.Formula
+import Bimodal.Syntax.Formula
 
 /-!
 # Formula Test Suite
@@ -18,7 +18,7 @@ Tests for the Formula inductive type and derived operators.
 
 namespace LogosTest.Core.Syntax
 
-open Logos.Core.Syntax
+open Bimodal.Syntax
 
 -- Test: Formula atom construction
 example : Formula.atom "p" = Formula.atom "p" := rfl

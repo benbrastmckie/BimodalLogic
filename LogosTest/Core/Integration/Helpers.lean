@@ -1,7 +1,7 @@
-import Logos.Core.Syntax
-import Logos.Core.ProofSystem
-import Logos.Core.Semantics
-import Logos.Core.Metalogic
+import Bimodal.Syntax
+import Bimodal.ProofSystem
+import Bimodal.Semantics
+import Bimodal.Metalogic
 
 /-!
 # Integration Test Helpers
@@ -36,10 +36,10 @@ have valid := verify_validity (ψ.imp φ) deriv
 
 namespace LogosTest.Core.Integration.Helpers
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Semantics
-open Logos.Core.Metalogic
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Semantics
+open Bimodal.Metalogic
 
 -- ============================================================
 -- Formula Builders

@@ -1,4 +1,4 @@
-import Logos.Core.Syntax.Context
+import Bimodal.Syntax.Context
 
 /-!
 # Context Test Suite
@@ -17,7 +17,7 @@ Tests for the Context type and helper functions.
 
 namespace LogosTest.Core.Syntax
 
-open Logos.Core.Syntax
+open Bimodal.Syntax
 
 -- Test: Empty context
 example : ([] : Context) = [] := rfl

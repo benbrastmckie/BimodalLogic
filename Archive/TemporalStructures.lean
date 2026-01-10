@@ -1,6 +1,6 @@
 import Mathlib.Algebra.Order.Group.Int
-import Logos.Core.Semantics.TaskFrame
-import Logos.Core.Semantics.WorldHistory
+import Bimodal.Semantics.TaskFrame
+import Bimodal.Semantics.WorldHistory
 
 /-!
 # Temporal Structures - Example Frame Instantiations
@@ -52,7 +52,7 @@ any type `T` that has a `LinearOrderedAddCommGroup` instance. This includes:
 
 namespace Archive
 
-open Logos.Core.Semantics
+open Bimodal.Semantics
 
 /-! ## Integer Time Examples (Standard) -/
 

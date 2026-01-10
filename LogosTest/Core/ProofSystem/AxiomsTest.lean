@@ -1,4 +1,4 @@
-import Logos.Core.ProofSystem.Axioms
+import Bimodal.ProofSystem.Axioms
 
 /-!
 # Axioms Test Suite
@@ -16,8 +16,8 @@ Tests for the TM axiom schemata.
 
 namespace LogosTest.Core.ProofSystem
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
+open Bimodal.Syntax
+open Bimodal.ProofSystem
 
 -- ============================================================
 -- Propositional K Axiom Tests: (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
@@ -208,7 +208,7 @@ example (A B : Formula) :
 -- Double Negation Elimination: Now Derived (not an axiom)
 -- ============================================================
 
--- Note: DNE is now derived from EFQ + Peirce (see Logos.Core.Theorems.Propositional.double_negation)
+-- Note: DNE is now derived from EFQ + Peirce (see Bimodal.Theorems.Propositional.double_negation)
 -- The following tests have been removed as DNE is no longer an axiom:
 -- - Double negation elimination on atom
 -- - Double negation elimination on box formula

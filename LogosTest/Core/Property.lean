@@ -1,3 +1,9 @@
+import LogosTest.Core.Property.Generators
+import LogosTest.Core.Syntax.FormulaPropertyTest
+import LogosTest.Core.ProofSystem.DerivationPropertyTest
+import LogosTest.Core.Semantics.SemanticPropertyTest
+import LogosTest.Core.Metalogic.SoundnessPropertyTest
+
 /-!
 # Property-Based Tests
 
@@ -42,12 +48,6 @@ Property tests are configured with:
 * [Plausible Framework](https://github.com/leanprover-community/plausible)
 * [Research Report](../../.opencode/specs/174_property_based_testing/reports/research-001.md)
 -/
-
-import LogosTest.Core.Property.Generators
-import LogosTest.Core.Syntax.FormulaPropertyTest
-import LogosTest.Core.ProofSystem.DerivationPropertyTest
-import LogosTest.Core.Semantics.SemanticPropertyTest
-import LogosTest.Core.Metalogic.SoundnessPropertyTest
 
 namespace LogosTest.Property
 

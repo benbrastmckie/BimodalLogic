@@ -1,8 +1,8 @@
-import Logos.Core.Semantics.TaskFrame
-import Logos.Core.Semantics.WorldHistory
-import Logos.Core.Semantics.TaskModel
-import Logos.Core.Semantics.Truth
-import Logos.Core.Semantics.Validity
+import Bimodal.Semantics.TaskFrame
+import Bimodal.Semantics.WorldHistory
+import Bimodal.Semantics.TaskModel
+import Bimodal.Semantics.Truth
+import Bimodal.Semantics.Validity
 
 /-!
 # Semantics - Task Frame Semantics for Bimodal Logic TM

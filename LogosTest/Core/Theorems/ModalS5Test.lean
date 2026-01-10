@@ -1,4 +1,4 @@
-import Logos.Core.Theorems.ModalS5
+import Bimodal.Theorems.ModalS5
 
 /-!
 # Modal S5 Theorems Tests
@@ -20,11 +20,11 @@ Each theorem has minimum 2 test cases (simple atomic, nested/complex).
 
 namespace LogosTest.Core.Theorems.ModalS5Test
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Theorems.Perpetuity
-open Logos.Core.Theorems.Propositional
-open Logos.Core.Theorems.ModalS5
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Theorems.Perpetuity
+open Bimodal.Theorems.Propositional
+open Bimodal.Theorems.ModalS5
 
 /-!
 ## T-Box-to-Diamond Tests (Task 30)

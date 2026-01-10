@@ -1,4 +1,4 @@
-import Logos.Core.Theorems.Propositional
+import Bimodal.Theorems.Propositional
 
 /-!
 # Propositional Theorems Tests
@@ -23,9 +23,9 @@ Each theorem has minimum 2 test cases (simple atomic, nested/complex).
 
 namespace LogosTest.Core.Theorems.PropositionalTest
 
-open Logos.Core.Syntax
-open Logos.Core.ProofSystem
-open Logos.Core.Theorems.Propositional
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Theorems.Propositional
 
 /-!
 ## Law of Excluded Middle Tests
