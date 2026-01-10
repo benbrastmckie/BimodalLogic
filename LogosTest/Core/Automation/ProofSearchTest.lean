@@ -30,6 +30,146 @@ example : matches_axiom ((Formula.box p).imp (Formula.all_future (Formula.box p)
 example : matches_axiom (Formula.imp (Formula.box p) q) = false := rfl
 example : matches_axiom (Formula.imp p q) = false := rfl
 
+/-!
+## Negative Tests (Task 319 Phase 3)
+
+Verify that non-derivable formulas are correctly rejected by the search.
+-/
+
+-- Additional negative axiom matching tests
+example : matches_axiom (Formula.box p) = false := rfl  -- Just □p, not an axiom
+example : matches_axiom p = false := rfl  -- Just atom, not an axiom
+example : matches_axiom ((p.imp q).imp r) = false := rfl  -- Random implication chain (not any standard axiom)
+example : matches_axiom (Formula.all_future p) = false := rfl  -- Just Gp
+example : matches_axiom (Formula.box (Formula.all_future p)) = false := rfl  -- □Gp
+
+-- Verify search correctly returns false for non-axiom formulas
+#eval do
+  IO.println "=== Negative Search Tests ==="
+
+  let nonAxioms := [
+    (p.imp q, "p → q (random implication)"),
+    (Formula.box p, "□p (just a box)"),
+    (Formula.all_future p, "Gp (just a future)"),
+    (p, "p (just an atom)"),
+    ((Formula.box p).imp q, "□p → q (not modal_t)"),
+    ((Formula.all_future p).imp q, "Gp → q (not temp_4)"),
+    (p.imp (Formula.box q), "p → □q (not modal_b)"),
+    ((p.imp q).imp (q.imp r), "(p→q) → (q→r) (not prop_k)")
+  ]
+
+  let mut passed := 0
+  let mut failed := 0
+  for (formula, desc) in nonAxioms do
+    let matched := matches_axiom formula
+    let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
+    if !matched && !found then
+      passed := passed + 1
+      IO.println s!"✓ {desc}: correctly rejected (matched={matched}, found={found})"
+    else
+      failed := failed + 1
+      IO.println s!"✗ {desc}: should be rejected (matched={matched}, found={found})"
+
+  IO.println s!"\nNegative tests: {passed} passed, {failed} failed"
+
+-- Visit limit enforcement tests
+#eval do
+  IO.println "=== Visit Limit Enforcement Tests ==="
+
+  -- Test that search terminates early with low visit limit
+  let formula := Formula.atom "x"  -- Non-derivable
+
+  let limits := [1, 3, 5, 10, 20]
+  let mut allWithinLimit := true
+
+  for limit in limits do
+    let (found, _, _, stats, visits) := iddfs_search [] formula 20 limit
+    let withinLimit := visits ≤ limit
+    if !withinLimit then
+      allWithinLimit := false
+      IO.println s!"✗ Limit {limit}: visits={visits} EXCEEDED"
+    else
+      IO.println s!"✓ Limit {limit}: visits={visits}, within limit"
+
+  if allWithinLimit then
+    IO.println "✓ All visit limit tests passed"
+  else
+    IO.println "✗ Some visit limit tests failed"
+
+-- Depth limit enforcement tests
+#eval do
+  IO.println "=== Depth Limit Enforcement Tests ==="
+
+  -- Modal T should be found at depth >= 1
+  let modalT := (Formula.box p).imp p
+
+  let results := [
+    (search [] modalT (.BoundedDFS 0) 100, 0),
+    (search [] modalT (.BoundedDFS 1) 100, 1),
+    (search [] modalT (.BoundedDFS 5) 100, 5)
+  ]
+
+  IO.println "Modal T (should be found at depth >= 1):"
+  for ((found, _, _, _, _), depth) in results do
+    if depth == 0 then
+      if !found then
+        IO.println s!"✓ Depth {depth}: not found (expected - axiom at depth 1)"
+      else
+        IO.println s!"? Depth {depth}: found={found}"
+    else
+      if found then
+        IO.println s!"✓ Depth {depth}: found={found}"
+      else
+        IO.println s!"✗ Depth {depth}: NOT found (should be found)"
+
+-- Context-sensitive negative tests
+#eval do
+  IO.println "=== Context-Sensitive Negative Tests ==="
+
+  -- Formula not in context and not an axiom
+  let (found1, _, _, _, _) := search [p, q] r (.IDDFS 5) 100
+  IO.println s!"[p, q] ⊢ r: found={found1} (expected: false)"
+
+  -- Formula that would need modus ponens (blocked by task 315)
+  let (found2, _, _, _, _) := search [p.imp q] q (.IDDFS 5) 100
+  IO.println s!"[p→q] ⊢ q: found={found2} (expected: false without p in context)"
+
+  -- Check results
+  if !found1 && !found2 then
+    IO.println "✓ Context-sensitive tests passed"
+  else
+    IO.println "⚠ Some context-sensitive tests may have unexpected results"
+
+-- Search stats verification
+#eval do
+  IO.println "=== Search Stats Verification ==="
+
+  -- Search for axiom should have minimal visits
+  let modalT := (Formula.box p).imp p
+  let (found, _, _, stats, visits) := search [] modalT (.IDDFS 10) 1000
+
+  IO.println s!"Modal T search: found={found}, visits={visits}"
+  IO.println s!"  Stats: visited={stats.visited}, hits={stats.hits}, misses={stats.misses}"
+
+  if found && visits == 1 then
+    IO.println "✓ Axiom found with minimal visits"
+  else if found then
+    IO.println "⚠ Axiom found but with more visits than expected"
+  else
+    IO.println "✗ Axiom NOT found"
+
+  -- Search for non-axiom should exhaust or hit limit
+  let nonAxiom := Formula.atom "x"
+  let (foundNA, _, _, statsNA, visitsNA) := iddfs_search [] nonAxiom 5 50
+
+  IO.println s!"\nNon-axiom search: found={foundNA}, visits={visitsNA}"
+  IO.println s!"  Stats: visited={statsNA.visited}"
+
+  if !foundNA then
+    IO.println "✓ Non-axiom correctly not found"
+  else
+    IO.println "✗ Non-axiom incorrectly found"
+
 /-- Heuristic scoring baseline cases. -/
 example : heuristic_score {} [] ((Formula.box p).imp p) = 0 := by decide
 example : heuristic_score {} [p] p = 1 := by decide
