@@ -171,36 +171,37 @@ technical_debt:
 
 ---
 
-### 218. Fix lean-lsp-mcp integration and opencode module import errors
-**Effort**: 0.75 hours
-**Status**: [IMPLEMENTING]
+### 218. Ensure lean-lsp-mcp Integration for Claude Code System
+**Effort**: 1.5 hours
+**Status**: [PLANNED]
 **Started**: 2025-12-28
 **Researched**: 2025-12-28
+**Revised**: 2026-01-10
 **Priority**: High
 **Blocking**: None
 **Dependencies**: 212 (completed)
-**Language**: python
+**Language**: meta
 **Research Artifacts**:
   - Main Report: [.claude/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md]
-**Research Findings** (2025-12-28): CRITICAL DISCOVERY: OpenCode has native MCP support via opencode.json configuration, NOT .mcp.json. Task 212's custom Python MCP client approach is architecturally incompatible - OpenCode agents use natural language tool instructions, not Python imports. The ModuleNotFoundError is a symptom of wrong architectural approach, not missing __init__.py files. Solution requires complete pivot from Python-based integration to configuration-based integration: (1) Create opencode.json with lean-lsp-mcp server configuration, (2) Update lean-implementation-agent.md to use natural language MCP tool instructions instead of Python imports, (3) Remove custom MCP client from task 212 (architecturally incompatible). Proper approach enables 15+ lean-lsp-mcp tools (compile, check-proof, search, etc.) via native OpenCode MCP bridge. Previous plan obsolete - new configuration-based approach estimated 1-2 hours.
+**Plan**: [.claude/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-005.md]
+**Plan Revision Notes** (v005, 2026-01-10): Migrated from OpenCode to Claude Code system. Previous plan (v004) was OpenCode-specific. Now verifying and documenting lean-lsp-mcp integration for Claude Code using `.mcp.json` config and `mcp__lean-lsp__*` tool calls.
 
 **Files Affected**:
-- opencode.json (new, MCP server configuration)
-- .claude/agent/subagents/lean-implementation-agent.md (update to use MCP tool instructions)
-- .claude/agent/subagents/lean-research-agent.md (update to use MCP tool instructions)
-- Documentation/UserGuide/MCP_INTEGRATION.md (new, user guide)
-- .claude/tool/mcp/client.py (mark deprecated, incompatible with OpenCode architecture)
+- .mcp.json (verify configuration)
+- .claude/skills/skill-lean-implementation/SKILL.md (verify MCP tool declarations)
+- .claude/skills/skill-lean-research/SKILL.md (verify MCP tool declarations)
+- .claude/context/project/lean4/tools/mcp-tools-guide.md (update to remove Python client references)
 
 **Description**:
-Research revealed that OpenCode has native MCP (Model Context Protocol) support that makes task 212's custom Python MCP client unnecessary and architecturally incompatible. OpenCode agents interact with MCP servers through natural language tool instructions, not Python imports. The proper integration approach uses opencode.json configuration to register MCP servers, making their tools automatically available to agents. This enables lean-implementation-agent to use lean-lsp-mcp's 15+ tools for real-time compilation checking, proof state inspection, and theorem search during Lean proof implementation.
+Task 218 originally addressed OpenCode MCP integration (v001-v004), but the project has migrated to Claude Code. This revision (v005) verifies lean-lsp-mcp tools work correctly with Claude Code's native MCP support via `.mcp.json` and the skill system's `mcp__lean-lsp__*` tool declarations. Focus is on verification and documentation rather than configuration changes.
 
 **Acceptance Criteria**:
-- [ ] opencode.json created with lean-lsp-mcp server configuration
-- [ ] lean-implementation-agent.md updated with MCP tool usage instructions
-- [ ] lean-research-agent.md updated with MCP tool usage instructions
-- [ ] MCP integration guide created in user documentation
-- [ ] Test Lean task implementation successfully uses lean-lsp-mcp tools
-- [ ] No Python import errors (using configuration-based approach)
+- [ ] .mcp.json verified correct for Claude Code
+- [ ] skill-lean-implementation has correct MCP tool declarations
+- [ ] skill-lean-research has correct MCP tool declarations
+- [ ] mcp-tools-guide.md updated for Claude Code patterns
+- [ ] MCP tools verified working (goal, diagnostics, search)
+- [ ] Rate limits documented for search tools
 - [ ] Selective tool enablement reduces context window usage
 
 **Impact**:
