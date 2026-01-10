@@ -214,38 +214,37 @@ CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client
 ---
 
 
-### 291. Fix lean-research-agent to delegate status updates to status-sync-manager instead of direct file manipulation
-- **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+### 291. Ensure Lean Research Skill Uses MCP Tools Correctly
+- **Effort**: 1 hour
+- **Status**: [PLANNED]
 - **Started**: 2026-01-04
 - **Researched**: 2026-01-04
+- **Revised**: 2026-01-10
 - **Priority**: High
-- **Language**: markdown
+- **Language**: meta
 - **Blocking**: None
-- **Dependencies**: Task 290 (researched)
+- **Dependencies**: Task 218 (completed)
 
 **Research Artifacts**:
   - Research Report: [.claude/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md]
+**Plan**: [.claude/specs/291_fix_lean_research_agent_delegate_status_updates/plans/implementation-002.md]
+**Plan Revision Notes** (v002, 2026-01-10): Migrated from OpenCode (.opencode/) to Claude Code (.claude/) agent system. Previous plan (v001) targeted OpenCode subagents which are no longer used. Revised to focus on skill-lean-research MCP tool usage patterns.
 
 **Description**:
-Fix lean-research-agent.md to use proper delegation pattern for status updates instead of direct file manipulation. The agent currently bypasses status-sync-manager and git-workflow-manager, causing status synchronization failures. Update step_6 to match researcher.md's delegation pattern, remove summary artifact requirement, and ensure atomic updates across TODO.md and state.json. See research report for detailed root cause analysis, fix strategy, and code examples.
+Ensure the Lean research skill uses MCP tools correctly for systematic and efficient Lean research. With the migration to Claude Code, the focus shifts from OpenCode subagent delegation to skill workflow documentation and MCP tool usage patterns. Task 218 fixed the MCP configuration; this task enhances the skill documentation with comprehensive workflow patterns, tool selection guidance, and rate limit management.
 
 **Files to Modify**:
-- `.claude/agent/subagents/lean-research-agent.md` - Update step_6 to delegate to status-sync-manager and git-workflow-manager
+- `.claude/skills/skill-lean-research/SKILL.md` - Enhance workflow documentation and tool usage patterns
 
 **Acceptance Criteria**:
-- [ ] lean-research-agent step_6 delegates to status-sync-manager (not direct file updates)
-- [ ] lean-research-agent step_6 delegates to git-workflow-manager (not manual git commands)
-- [ ] Summary artifact requirement removed (only research report created)
-- [ ] `/research` on Lean tasks updates status to `[RESEARCHED]` at start and end
-- [ ] Artifact link added to TODO.md (research report only)
-- [ ] state.json updated with artifact path
-- [ ] Git commit created automatically
-- [ ] Behavior matches researcher.md exactly
-- [ ] No regression in Lean research functionality
+- [ ] skill-lean-research has comprehensive workflow documentation
+- [ ] Tool selection matrix documented (when to use each search tool)
+- [ ] Rate limit management strategy documented
+- [ ] Common research patterns documented
+- [ ] MCP tools verified working for Lean research
 
 **Impact**:
-Fixes the root cause of status synchronization failures for Lean tasks. Ensures lean-research-agent uses the same atomic update pattern as researcher.md via status-sync-manager and git-workflow-manager delegation.
+Ensures Lean research tasks use MCP tools systematically and efficiently. Provides clear guidance on tool selection and rate limit management for optimal research workflow.
 
 ---
 
