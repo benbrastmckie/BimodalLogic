@@ -153,3 +153,41 @@ Fixed critical build errors in `Logos/Core/Automation/ProofSearch.lean` that wer
 - Task 260 cannot be marked as complete
 
 **Overall**: Partial success - unblocked build, but core enhancement (proof term construction) remains incomplete due to architectural constraints.
+
+---
+
+## Update: Phase 2 (Tactic Integration) Completed
+
+**Date**: 2026-01-10
+**Completed in**: Task 315 (commits ed89884-0a6d9e9), documented in Task 316
+
+### Phase 2 Implementation Summary
+
+Phase 2 (Tactic Integration) was successfully completed in Task 315, implementing:
+
+1. **`modal_search` tactic** - Bounded proof search for modal formulas
+2. **`temporal_search` tactic** - Temporal-optimized configuration
+3. **`propositional_search` tactic** - Propositional-only goals
+4. **`SearchConfig` structure** - Named parameters (depth, visitLimit, weights)
+5. **`searchProof`** - Recursive search with axiom/assumption/MP/modal-K/temporal-K strategies
+6. **28 test cases** - All passing
+
+### Files Modified
+
+- `Logos/Core/Automation/Tactics.lean` - Full tactic implementation (lines 950-1391)
+
+### Updated Status
+
+| Phase | Status | Notes |
+|-------|--------|-------|
+| Phase 1: Proof Term Construction | BLOCKED | Axiom Prop vs Type issue |
+| **Phase 2: Tactic Integration** | **COMPLETED** | Task 315/316 |
+| Phase 3: BFS Variant | Not started | Future work |
+| Phase 4: Advanced Heuristics | Partial | Heuristics defined but not integrated |
+| Phase 5: Expanded Testing | Partial | 28 tests exist |
+
+### Remaining Gaps (Optional Enhancements)
+
+1. `SearchConfig.visitLimit` defined but not used
+2. `SearchConfig` weight fields defined but not used for strategy ordering
+3. Search statistics not returned to user

@@ -13,6 +13,8 @@
 
 <!-- FIX: don't use alliteration such as 'Logos layered logic system' below or elsewhere -->
 
+<!-- FIX: it is important to explain how a frame provides semantic primitives that can be used to interpret a language, where to extend the expressive power of that language requires strategic extensions to the primitive semantic resources provided by a frame, including just the resources needed and nothing more so that the language and frame are in perfect step with each other -->
+
 This document provides the recursive semantics for the Logos layered logic system. The semantics proceeds through increasingly expressive layers, each extending the frame and evaluation mechanisms of the previous layer:
 
 1. **Constitutive Layer**: Hyperintensional semantics over a mereological state space
