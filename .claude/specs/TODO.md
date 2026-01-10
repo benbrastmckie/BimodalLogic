@@ -487,8 +487,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 ### 316. Implement tactic integration for modal_search tactic (Phase 2)
 - **Effort**: 8-12 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-08
+- **Planned**: 2026-01-10
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -498,6 +499,11 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 
 **Research Artifacts**:
   - Research Report: [.claude/specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/reports/research-001.md]
+
+**Plan Artifacts**:
+  - Implementation Plan: [.claude/specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/plans/implementation-001.md]
+
+**Note**: Implementation already completed in Task 315 (commits ed89884-0a6d9e9). Plan documents this and identifies minimal remaining work.
 
 ---
 
