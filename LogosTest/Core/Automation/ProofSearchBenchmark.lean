@@ -42,7 +42,32 @@ structure BenchmarkResult where
   visits : Nat
   hits : Nat
   misses : Nat
+  timeNs : Nat := 0  -- Wall-clock time in nanoseconds
   deriving Repr
+
+/-!
+## Timing Utilities (Task 319 Phase 4)
+
+Wall-clock timing for performance benchmarks.
+-/
+
+/-- Run an IO action and measure wall-clock time in nanoseconds. -/
+def timed (action : IO α) : IO (α × Nat) := do
+  let start ← IO.monoNanosNow
+  let result ← action
+  let stop ← IO.monoNanosNow
+  return (result, stop - start)
+
+/-- Format nanoseconds as human-readable string. -/
+def formatNanos (ns : Nat) : String :=
+  if ns < 1000 then
+    s!"{ns}ns"
+  else if ns < 1000000 then
+    s!"{ns / 1000}μs"
+  else if ns < 1000000000 then
+    s!"{ns / 1000000}ms"
+  else
+    s!"{ns / 1000000000}s"
 
 /-- Configuration for benchmark runs. -/
 structure BenchmarkConfig where
@@ -51,16 +76,24 @@ structure BenchmarkConfig where
   weights : HeuristicWeights := {}
   deriving Inhabited
 
-/-- Run a single benchmark with given configuration. -/
+/-- Run a single benchmark with given configuration (pure version). -/
 def runBenchmark (name : String) (ctx : Context) (goal : Formula)
     (config : BenchmarkConfig := {}) : BenchmarkResult :=
   let (found, _, _, stats, visits) :=
     search ctx goal (.IDDFS config.maxDepth) config.visitLimit config.weights
   { name, found, visits, hits := stats.hits, misses := stats.misses }
 
+/-- Run a single benchmark with timing (IO version). -/
+def runBenchmarkTimed (name : String) (ctx : Context) (goal : Formula)
+    (config : BenchmarkConfig := {}) : IO BenchmarkResult := do
+  let ((found, _, _, stats, visits), timeNs) ← timed (pure (
+    search ctx goal (.IDDFS config.maxDepth) config.visitLimit config.weights))
+  return { name, found, visits, hits := stats.hits, misses := stats.misses, timeNs }
+
 /-- Print benchmark result. -/
 def printResult (result : BenchmarkResult) : IO Unit :=
-  IO.println s!"{result.name}: found={result.found}, visits={result.visits}, hits={result.hits}"
+  let timeStr := if result.timeNs > 0 then s!", time={formatNanos result.timeNs}" else ""
+  IO.println s!"{result.name}: found={result.found}, visits={result.visits}, hits={result.hits}{timeStr}"
 
 /-!
 ## Modal Axiom Benchmarks
@@ -212,6 +245,91 @@ def summarizeBenchmarks (results : List BenchmarkResult) : IO Unit := do
   let visits := results.foldl (fun acc r => acc + r.visits) 0
   IO.println s!"\nSummary: {found}/{total} found, {visits} total visits"
 
+/-!
+## Timed Benchmark Suite (Task 319 Phase 4)
+
+Run benchmarks with wall-clock timing for performance baseline.
+-/
+
+/-- Run a benchmark list with timing. -/
+def runBenchmarksTimed (category : String) (benchmarks : List (String × Context × Formula))
+    (config : BenchmarkConfig := {}) : IO (List BenchmarkResult) := do
+  IO.println s!"=== {category} (Timed) ==="
+  let mut results := []
+  for (name, ctx, goal) in benchmarks do
+    let result ← runBenchmarkTimed name ctx goal config
+    printResult result
+    results := result :: results
+  return results.reverse
+
+/-- Run all benchmarks with timing and summary. -/
+def runAllBenchmarksTimed (config : BenchmarkConfig := {}) : IO Unit := do
+  IO.println "╔══════════════════════════════════════════════════╗"
+  IO.println "║     Proof Search Performance Benchmarks          ║"
+  IO.println "╚══════════════════════════════════════════════════╝\n"
+
+  let mut allResults := []
+
+  -- Run each category
+  let modalResults ← runBenchmarksTimed "Modal Axioms" modalBenchmarks config
+  allResults := allResults ++ modalResults
+  IO.println ""
+
+  let temporalResults ← runBenchmarksTimed "Temporal Axioms" temporalBenchmarks config
+  allResults := allResults ++ temporalResults
+  IO.println ""
+
+  let propResults ← runBenchmarksTimed "Propositional Axioms" propBenchmarks config
+  allResults := allResults ++ propResults
+  IO.println ""
+
+  let mixedResults ← runBenchmarksTimed "Mixed Modal-Temporal" mixedBenchmarks config
+  allResults := allResults ++ mixedResults
+  IO.println ""
+
+  let ctxResults ← runBenchmarksTimed "Context-Based" contextBenchmarks config
+  allResults := allResults ++ ctxResults
+
+  -- Summary with timing
+  IO.println "\n═══════════════════════════════════════════════════"
+  IO.println "                    SUMMARY"
+  IO.println "═══════════════════════════════════════════════════"
+  let found := allResults.filter (·.found) |>.length
+  let total := allResults.length
+  let visits := allResults.foldl (fun acc r => acc + r.visits) 0
+  let totalTimeNs := allResults.foldl (fun acc r => acc + r.timeNs) 0
+  let avgTimeNs := if total > 0 then totalTimeNs / total else 0
+  IO.println s!"Benchmarks: {found}/{total} found"
+  IO.println s!"Total visits: {visits}"
+  IO.println s!"Total time: {formatNanos totalTimeNs}"
+  IO.println s!"Average time per benchmark: {formatNanos avgTimeNs}"
+
+/-- Compare strategies with timing. -/
+def compareStrategiesTimed (benchmarks : List (String × Context × Formula)) : IO Unit := do
+  IO.println "=== Strategy Comparison (Timed) ==="
+
+  let strategies : List (String × SearchStrategy) := [
+    ("BoundedDFS-5", .BoundedDFS 5),
+    ("BoundedDFS-10", .BoundedDFS 10),
+    ("IDDFS-10", .IDDFS 10),
+    ("IDDFS-20", .IDDFS 20)
+  ]
+
+  for (stratName, strat) in strategies do
+    IO.println s!"\n--- {stratName} ---"
+    let mut totalVisits := 0
+    let mut totalFound := 0
+    let mut totalTimeNs := 0
+    for (name, ctx, goal) in benchmarks do
+      let (result, timeNs) ← timed (pure (search ctx goal strat 1000))
+      let (found, _, _, stats, visits) := result
+      totalVisits := totalVisits + visits
+      totalTimeNs := totalTimeNs + timeNs
+      if found then totalFound := totalFound + 1
+    IO.println s!"Found: {totalFound}/{benchmarks.length}"
+    IO.println s!"Total visits: {totalVisits}"
+    IO.println s!"Total time: {formatNanos totalTimeNs}"
+
 end LogosTest.Core.Automation.Benchmark
 
 /-!
@@ -229,3 +347,14 @@ end LogosTest.Core.Automation.Benchmark
     LogosTest.Core.Automation.Benchmark.propBenchmarks
   LogosTest.Core.Automation.Benchmark.compareWeights allBenchmarks
     LogosTest.Core.Automation.Benchmark.weightConfigs
+
+-- Run timed benchmarks (Task 319 Phase 4)
+#eval LogosTest.Core.Automation.Benchmark.runAllBenchmarksTimed
+
+-- Compare strategies with timing
+#eval do
+  let allBenchmarks :=
+    LogosTest.Core.Automation.Benchmark.modalBenchmarks ++
+    LogosTest.Core.Automation.Benchmark.temporalBenchmarks ++
+    LogosTest.Core.Automation.Benchmark.propBenchmarks
+  LogosTest.Core.Automation.Benchmark.compareStrategiesTimed allBenchmarks

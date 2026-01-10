@@ -32,7 +32,7 @@ technical_debt:
 
 ### 350. Address all FIX tags in RECURSIVE_SEMANTICS.md systematically
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-10
 - **Researched**: 2026-01-10
 - **Planned**: 2026-01-10

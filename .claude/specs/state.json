@@ -18,12 +18,12 @@
     {
       "project_number": 350,
       "project_name": "fix_recursive_semantics_tags",
-      "status": "planned",
+      "status": "implementing",
       "language": "markdown",
       "priority": "high",
       "effort": "6-8 hours",
       "created": "2026-01-10T18:17:28Z",
-      "last_updated": "2026-01-10T18:37:27Z",
+      "last_updated": "2026-01-10T18:41:35Z",
       "artifacts": [
         ".claude/specs/350_fix_recursive_semantics_tags/reports/research-001.md",
         ".claude/specs/350_fix_recursive_semantics_tags/plans/implementation-001.md"
@@ -31,7 +31,8 @@
       "plan_path": ".claude/specs/350_fix_recursive_semantics_tags/plans/implementation-001.md",
       "plan_metadata": {
         "plan_version": 1
-      }
+      },
+      "implementing_started": "2026-01-10"
     },
     {
       "project_number": 349,
