@@ -221,7 +221,8 @@ technical_debt:
   - Research Report: [.claude/specs/349_fix_recursive_semantics_documentation/reports/research-001.md]
 
 **Plan Artifacts**:
-  - Implementation Plan: [.claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-001.md]
+  - Implementation Plan (v1): [.claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-001.md]
+  - Implementation Plan (v2, current): [.claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md]
 
 - **Files Affected**:
   - Documentation/Research/RECURSIVE_SEMANTICS.md

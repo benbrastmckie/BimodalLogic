@@ -23,7 +23,17 @@
       "priority": "medium",
       "effort": "4-6 hours",
       "created": "2026-01-09T17:59:23Z",
-      "last_updated": "2026-01-09T18:07:43Z"
+      "last_updated": "2026-01-09T18:15:00Z",
+      "plan_path": ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md",
+      "plan_metadata": {
+        "plan_version": 2,
+        "revision_reason": "Maintain ⟨S, ⊑, I⟩ notation instead of replacing with ⟨S, ⊑, | |⟩"
+      },
+      "artifacts": [
+        ".claude/specs/349_fix_recursive_semantics_documentation/reports/research-001.md",
+        ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-001.md",
+        ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md"
+      ]
     },
     {
       "project_number": 132,
