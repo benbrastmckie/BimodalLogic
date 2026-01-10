@@ -31,16 +31,20 @@ technical_debt:
 ## High Priority
 
 ### 308. Final cleanup and comprehensive testing (5/5)
-- **Effort**: 15 minutes
-- **Status**: [RESEARCHED]
+- **Effort**: 30 minutes
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
 - **Researched**: 2026-01-10
+- **Planned**: 2026-01-10
 - **Research**: [.claude/specs/308_final_cleanup_and_comprehensive_testing/reports/research-001.md]
+- **Plan**: [.claude/specs/308_final_cleanup_and_comprehensive_testing/plans/implementation-001.md]
 
 **Description**: Complete final cleanup of any remaining cruft from files not reverted. Test all commands (/task, /meta, /todo, /review) comprehensively to ensure everything works correctly. Commit clean changes with proper documentation.
+
+**Plan Notes**: Research found no cruft to clean. Critical issue: state.json uses JSONL format instead of expected JSON structure. Plan focuses on format conversion and command testing.
 
 ---
 
