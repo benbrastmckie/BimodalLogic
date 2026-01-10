@@ -220,10 +220,11 @@ CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client
 
 ### 291. Ensure Lean Research Skill Uses MCP Tools Correctly
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-04
 - **Researched**: 2026-01-04
 - **Revised**: 2026-01-10
+- **Completed**: 2026-01-10
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
@@ -232,6 +233,7 @@ CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client
 **Research Artifacts**:
   - Research Report: [.claude/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md]
 **Plan**: [.claude/specs/291_fix_lean_research_agent_delegate_status_updates/plans/implementation-002.md]
+**Summary**: [.claude/specs/291_fix_lean_research_agent_delegate_status_updates/summaries/implementation-summary-20260110.md]
 **Plan Revision Notes** (v002, 2026-01-10): Migrated from OpenCode (.opencode/) to Claude Code (.claude/) agent system. Previous plan (v001) targeted OpenCode subagents which are no longer used. Revised to focus on skill-lean-research MCP tool usage patterns.
 
 **Description**:

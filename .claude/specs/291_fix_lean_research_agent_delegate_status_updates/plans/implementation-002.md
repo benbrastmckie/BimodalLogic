@@ -124,10 +124,10 @@ Task 218 (just completed) already addressed most configuration issues:
 
 ## Implementation Phases
 
-### Phase 1: Enhance Skill Documentation [IN PROGRESS]
+### Phase 1: Enhance Skill Documentation [COMPLETED]
 
 **Estimated Effort**: 30 minutes
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objective**: Add comprehensive workflow documentation to skill-lean-research.
 
@@ -168,10 +168,18 @@ Task 218 (just completed) already addressed most configuration issues:
 
 ---
 
-### Phase 2: Verify MCP Tool Functionality [NOT STARTED]
+### Phase 2: Verify MCP Tool Functionality [COMPLETED]
 
 **Estimated Effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
+
+**Verification Results**:
+- `lean_leansearch` - WORKS (tested with "reflexive relation")
+- `lean_loogle` - WORKS (tested with "Reflexive")
+- `lean_leanfinder` - WORKS (tested with "commutativity of addition")
+- `lean_local_search` - REQUIRES SESSION RESTART (cached old path from before task 218 fix)
+- `lean_hover_info` - REQUIRES SESSION RESTART (same reason)
+- Rate limits respected correctly
 
 **Objective**: Verify MCP tools work correctly for Lean research.
 
@@ -195,10 +203,12 @@ Task 218 (just completed) already addressed most configuration issues:
 
 ---
 
-### Phase 3: Update TODO.md Entry [NOT STARTED]
+### Phase 3: Update TODO.md Entry [COMPLETED]
 
 **Estimated Effort**: 10 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
+
+**Note**: This was already completed during /revise 291 command.
 
 **Objective**: Update task 291 to reflect revised scope.
 

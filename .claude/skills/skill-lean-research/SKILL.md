@@ -10,16 +10,192 @@ context:
 
 # Lean Research Skill
 
-Specialized research agent for Lean 4 theorem proving tasks.
+Specialized research for Lean 4 theorem proving tasks using MCP tools.
 
 ## Trigger Conditions
 
 This skill activates when:
 - Task language is "lean"
 - Research involves Mathlib, theorems, or proofs
-- Lean-specific tools are needed
+- Lean-specific MCP tools are needed
 
-## Research Tools
+---
+
+## Systematic Research Workflow
+
+### Step 1: Understand Task Requirements
+
+Before searching:
+1. Extract key mathematical concepts from task description
+2. Identify target theorem or definition type
+3. Note any known related theorems or patterns
+4. Determine if this is proof search, definition lookup, or tactic discovery
+
+### Step 2: Search Local Project First
+
+Always start local (no rate limits):
+```
+1. lean_local_search with key terms
+2. Grep for related code patterns
+3. Read relevant .lean files for context
+```
+
+**Why local first?**
+- No rate limit on lean_local_search
+- Project may already have relevant definitions
+- Understand existing patterns before searching externally
+
+### Step 3: Search Mathlib with Appropriate Tool
+
+Choose tool based on what you know (see Tool Selection Matrix below):
+```
+Know the concept? → lean_leansearch or lean_leanfinder
+Know the type pattern? → lean_loogle
+Have a goal to close? → lean_state_search
+Need simp hints? → lean_hammer_premise
+```
+
+### Step 4: Verify and Cross-Reference
+
+After finding candidates:
+```
+1. lean_local_search to verify name exists
+2. lean_hover_info for full type signature
+3. Check imports are available
+```
+
+### Step 5: Synthesize into Research Report
+
+Compile findings into actionable report:
+- List verified theorems with types
+- Provide proof sketch
+- Document required imports
+- Note potential challenges
+
+---
+
+## Tool Selection Matrix
+
+| I need to... | Use this tool | Rate limit |
+|--------------|---------------|------------|
+| Check if X exists locally | `lean_local_search` | None |
+| Find theorem by concept | `lean_leansearch` | 3/30s |
+| Find theorem by type pattern | `lean_loogle` | 3/30s |
+| Find Lean name for math concept | `lean_leanfinder` | 10/30s |
+| Find lemma to close goal | `lean_state_search` | 3/30s |
+| Get simp/aesop hints | `lean_hammer_premise` | 3/30s |
+| Get type signature | `lean_hover_info` | None |
+
+### Search Decision Tree
+
+```
+1. "Does X exist in this project?"
+   → lean_local_search (ALWAYS FIRST)
+
+2. "I need a theorem that says X"
+   → lean_leansearch (natural language)
+
+3. "Find theorem matching this type"
+   → lean_loogle (type pattern like "?a → ?b")
+
+4. "What's the Lean name for concept X?"
+   → lean_leanfinder (mathematical concept)
+
+5. "What closes this specific goal?"
+   → lean_state_search (at file:line:col)
+
+6. "What should I feed to simp?"
+   → lean_hammer_premise (at file:line:col)
+```
+
+### After Finding a Name
+
+Always verify before using:
+```
+1. lean_local_search → confirm it exists
+2. lean_hover_info → get full signature and docs
+```
+
+---
+
+## Rate Limit Management
+
+### Rate Limits by Tool
+
+| Tool | Limit | Strategy |
+|------|-------|----------|
+| `lean_leansearch` | 3 req/30s | Use for initial exploration |
+| `lean_loogle` | 3 req/30s | Use when type pattern is known |
+| `lean_leanfinder` | 10 req/30s | Preferred for concepts (higher limit) |
+| `lean_state_search` | 3 req/30s | Use only at specific goals |
+| `lean_hammer_premise` | 3 req/30s | Use only when automating |
+
+### Best Practices
+
+1. **Always search locally first** - `lean_local_search` has no rate limit
+2. **Prefer lean_leanfinder** - 10/30s vs 3/30s for conceptual queries
+3. **Batch similar queries** - think before searching
+4. **Cache found names** - note theorems for reuse
+5. **Use hover_info generously** - no rate limit for verification
+
+### Fallback Strategies
+
+If rate limited:
+- Wait 30 seconds before next search request
+- Use `lean_local_search` in the meantime
+- Use web search for Mathlib documentation
+- Read Mathlib source files directly
+
+---
+
+## Common Research Patterns
+
+### Pattern 1: Find Theorem by Name
+
+```
+Goal: Find "add_comm" or similar
+1. lean_local_search "add_comm" → check local
+2. lean_loogle "?a + ?b = ?b + ?a" → find by type
+3. lean_hover_info on result → get full signature
+```
+
+### Pattern 2: Find Theorem by Type
+
+```
+Goal: Find theorem with specific type signature
+1. lean_loogle "(?a → ?b) → List ?a → List ?b"
+2. Or: lean_loogle "_ * (_ ^ _)" for patterns
+3. Verify with lean_hover_info
+```
+
+### Pattern 3: Find Tactic for Goal
+
+```
+Goal: Close a specific proof goal
+1. lean_state_search at goal position
+2. Or: lean_hammer_premise for automation hints
+3. Try suggested lemmas with lean_multi_attempt
+```
+
+### Pattern 4: Explore Unfamiliar Area
+
+```
+Goal: Understand what's available in an area
+1. lean_leansearch with natural language
+2. lean_leanfinder for conceptual exploration
+3. Read returned theorem docs
+```
+
+---
+
+## Research Tools Reference
+
+### lean_local_search (No Rate Limit)
+Fast local declaration search. ALWAYS use first.
+```
+Query: "Frame"
+Returns: Local project declarations matching name
+```
 
 ### lean_leansearch (3 req/30s)
 Natural language → Mathlib theorems
@@ -32,67 +208,40 @@ Returns: Relevant theorem names and signatures
 Type pattern → Mathlib lemmas
 ```
 Query: "(?a → ?b) → List ?a → List ?b"
+Query: "_ * (_ ^ _)"
+Query: "Real.sin"
 Returns: Matching type signatures
 ```
 
 ### lean_leanfinder (10 req/30s)
-Semantic/conceptual search
+Semantic/conceptual search (preferred for concepts)
 ```
 Query: "commutativity of addition on natural numbers"
 Returns: Conceptually related theorems
 ```
 
-### lean_local_search
-Fast local declaration search
+### lean_state_search (3 req/30s)
+Find lemmas to close goal at position
 ```
-Query: "Frame"
-Returns: Local project declarations matching name
+Parameters: file_path, line, column
+Returns: Lemmas that could close the goal
 ```
 
-### lean_hover_info
+### lean_hammer_premise (3 req/30s)
+Get premises for simp/aesop automation
+```
+Parameters: file_path, line, column
+Returns: Lemma names for simp only [...] or aesop
+```
+
+### lean_hover_info (No Rate Limit)
 Get type signature and documentation
 ```
-Position: file:line:column
+Parameters: file_path, line, column (at START of identifier)
 Returns: Full type and docstring
 ```
 
-## Research Strategy
-
-### 1. Local First
-Always check local project first:
-```
-1. lean_local_search for existing definitions
-2. Grep for related code
-3. Read relevant .lean files
-```
-
-### 2. Mathlib Search
-Search Mathlib for relevant theorems:
-```
-1. lean_leansearch for natural language queries
-2. lean_loogle for type patterns
-3. lean_leanfinder for concepts
-```
-
-### 3. Verify Findings
-Confirm found theorems exist and are applicable:
-```
-1. lean_local_search to verify names
-2. lean_hover_info for full signatures
-```
-
-## Execution Flow
-
-```
-1. Receive task context (description, focus)
-2. Extract key concepts (theorems, types, properties)
-3. Search local project for related code
-4. Search Mathlib using appropriate tools
-5. Verify findings with hover_info
-6. Analyze proof patterns
-7. Create research report
-8. Return results
-```
+---
 
 ## Research Report Format
 
@@ -105,7 +254,7 @@ Confirm found theorems exist and are applicable:
 
 ## Summary
 
-{Overview of findings}
+{2-3 sentence overview of findings}
 
 ## Local Project Findings
 
@@ -151,8 +300,10 @@ theorem target_theorem : Statement := by
 
 ## References
 
-- {Mathlib doc links}
+- {Mathlib doc links if applicable}
 ```
+
+---
 
 ## Return Format
 
@@ -176,3 +327,22 @@ theorem target_theorem : Statement := by
   "proof_approach": "Description of recommended approach"
 }
 ```
+
+---
+
+## Error Handling
+
+### MCP Tool Errors
+
+If MCP tools return errors:
+1. Check if `LEAN_PROJECT_PATH` is correct in `.mcp.json`
+2. Verify lean-lsp-mcp server is running
+3. Fall back to web search for Mathlib docs
+4. Use `lake build` for local verification
+
+### Rate Limit Errors
+
+If rate limited:
+1. Wait 30 seconds
+2. Use non-rate-limited tools (`lean_local_search`, `lean_hover_info`)
+3. Batch remaining queries more efficiently
