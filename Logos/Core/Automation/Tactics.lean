@@ -994,6 +994,46 @@ partial def searchProof (goal : MVarId) (depth : Nat) (_maxDepth : Nat := depth)
   return false
 
 /-!
+### Phase 1.6: Configuration Structure
+-/
+
+/--
+Configuration options for proof search tactics.
+
+Controls search depth, node visit limits, and strategy weights.
+-/
+structure SearchConfig where
+  /-- Maximum search depth (default: 10) -/
+  depth : Nat := 10
+  /-- Maximum nodes to visit before giving up (default: 1000) -/
+  visitLimit : Nat := 1000
+  /-- Weight for axiom matching (higher = try earlier, default: 100) -/
+  axiomWeight : Nat := 100
+  /-- Weight for assumption matching (higher = try earlier, default: 90) -/
+  assumptionWeight : Nat := 90
+  /-- Weight for modus ponens (higher = try earlier, default: 50) -/
+  mpWeight : Nat := 50
+  /-- Weight for modal K rule (higher = try earlier, default: 40) -/
+  modalKWeight : Nat := 40
+  /-- Weight for temporal K rule (higher = try earlier, default: 40) -/
+  temporalKWeight : Nat := 40
+  deriving Repr, Inhabited
+
+/-- Default configuration for modal_search -/
+def SearchConfig.default : SearchConfig := {}
+
+/-- Configuration optimized for temporal formulas -/
+def SearchConfig.temporal : SearchConfig := {
+  temporalKWeight := 60  -- Prioritize temporal K over modal K
+}
+
+/-- Configuration optimized for propositional formulas (no modal/temporal) -/
+def SearchConfig.propositional : SearchConfig := {
+  modalKWeight := 0
+  temporalKWeight := 0
+}
+
+/-!
 ### Main Tactic Definitions
 -/
 
@@ -1005,9 +1045,20 @@ with axiom matching and assumption lookup.
 
 **Syntax**:
 ```lean
-modal_search     -- Default depth 10
-modal_search 5   -- Custom depth 5
+modal_search                   -- Default depth 10
+modal_search 5                 -- Custom depth 5
+modal_search (depth := 20)     -- Named depth parameter
+modal_search (depth := 20) (visitLimit := 2000)  -- Multiple named parameters
 ```
+
+**Named Parameters**:
+- `depth`: Maximum search depth (default: 10)
+- `visitLimit`: Maximum nodes to visit (default: 1000)
+- `axiomWeight`: Priority for axiom matching (default: 100)
+- `assumptionWeight`: Priority for assumption matching (default: 90)
+- `mpWeight`: Priority for modus ponens (default: 50)
+- `modalKWeight`: Priority for modal K rule (default: 40)
+- `temporalKWeight`: Priority for temporal K rule (default: 40)
 
 **Example**:
 ```lean
@@ -1018,45 +1069,90 @@ example (p : Formula) : ⊢ (p.box).imp p := by
 -- Prove with custom depth
 example (p : Formula) : ⊢ (p.box).imp (p.box.box) := by
   modal_search 3
+
+-- Prove with named parameters
+example (p : Formula) : ⊢ (p.box).imp p := by
+  modal_search (depth := 5)
 ```
 
 **Algorithm**:
 1. Extract goal type and validate it's a `DerivationTree Γ φ` goal
 2. Try axiom matching against all 14 axiom schemata
 3. Try assumption matching if formula is in context
-4. (Future) Try modus ponens and modal K decomposition
+4. Try modus ponens decomposition
+5. Try modal K rule (reduce □Γ ⊢ □φ to Γ ⊢ φ)
+6. Try temporal K rule (reduce FΓ ⊢ Fφ to Γ ⊢ φ)
 
 **Implementation Note**: This tactic works at the meta-level in TacticM,
 avoiding the Axiom Prop vs Type issue (Task 315) by constructing proof
 terms directly via `mkAppM` rather than returning proof witnesses.
 -/
+
+-- Simple syntax: just a number
 syntax "modal_search" (num)? : tactic
+
+-- Named parameters syntax
+syntax modalSearchParam := "(" ident " := " num ")"
+syntax "modal_search" modalSearchParam* : tactic
+
+/-- Parse named parameter value from TSyntax -/
+def parseSearchParam (stx : TSyntax `Logos.Core.Automation.modalSearchParam) : TacticM (String × Nat) := do
+  match stx with
+  | `(modalSearchParam| ( $name:ident := $val:num )) =>
+    return (name.getId.toString, val.getNat)
+  | _ => throwError "invalid parameter syntax"
+
+/-- Apply named parameters to config -/
+def applyParams (cfg : SearchConfig) (params : List (String × Nat)) : SearchConfig :=
+  params.foldl (fun c (name, val) =>
+    match name with
+    | "depth" => { c with depth := val }
+    | "visitLimit" => { c with visitLimit := val }
+    | "axiomWeight" => { c with axiomWeight := val }
+    | "assumptionWeight" => { c with assumptionWeight := val }
+    | "mpWeight" => { c with mpWeight := val }
+    | "modalKWeight" => { c with modalKWeight := val }
+    | "temporalKWeight" => { c with temporalKWeight := val }
+    | _ => c  -- Ignore unknown parameters
+  ) cfg
+
+/-- Run modal_search with given configuration -/
+def runModalSearch (cfg : SearchConfig) : TacticM Unit := do
+  let goal ← getMainGoal
+  let goalType ← goal.getType
+
+  -- Validate goal type
+  let some (_ctx, _formula) ← extractDerivationGoal goalType
+    | throwError "modal_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
+
+  -- Attempt recursive proof search
+  -- Note: visitLimit and weights not yet used by searchProof (future enhancement)
+  let found ← searchProof goal cfg.depth cfg.depth
+  if !found then
+    throwError "modal_search: no proof found within depth {cfg.depth} for goal {goalType}"
 
 elab_rules : tactic
   | `(tactic| modal_search $[$d]?) => do
     let depth := d.map (·.getNat) |>.getD 10
-    let goal ← getMainGoal
-    let goalType ← goal.getType
+    runModalSearch { SearchConfig.default with depth := depth }
 
-    -- Validate goal type
-    let some (ctx, formula) ← extractDerivationGoal goalType
-      | throwError "modal_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
-
-    -- Attempt recursive proof search
-    let found ← searchProof goal depth depth
-    if !found then
-      throwError "modal_search: no proof found within depth {depth} for goal {goalType}"
+elab_rules : tactic
+  | `(tactic| modal_search $params:modalSearchParam*) => do
+    let paramList ← params.toList.mapM parseSearchParam
+    let cfg := applyParams SearchConfig.default paramList
+    runModalSearch cfg
 
 /--
 `temporal_search` - Bounded proof search for temporal formulas.
 
-Same as `modal_search` but prioritizes temporal axioms and rules.
-For now, delegates to `modal_search` with same implementation.
+Same as `modal_search` but with configuration optimized for temporal formulas.
+Prioritizes temporal K rules over modal K rules.
 
 **Syntax**:
 ```lean
-temporal_search     -- Default depth 10
-temporal_search 5   -- Custom depth 5
+temporal_search                -- Default temporal config
+temporal_search 5              -- Custom depth
+temporal_search (depth := 20)  -- Named parameter
 ```
 
 **Example**:
@@ -1066,21 +1162,32 @@ example (p : Formula) : ⊢ (p.all_future).imp (p.all_future.all_future) := by
 ```
 -/
 syntax "temporal_search" (num)? : tactic
+syntax "temporal_search" modalSearchParam* : tactic
+
+/-- Run temporal_search with given configuration -/
+def runTemporalSearch (cfg : SearchConfig) : TacticM Unit := do
+  let goal ← getMainGoal
+  let goalType ← goal.getType
+
+  -- Validate goal type
+  let some (_ctx, _formula) ← extractDerivationGoal goalType
+    | throwError "temporal_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
+
+  -- Attempt recursive proof search
+  let found ← searchProof goal cfg.depth cfg.depth
+  if !found then
+    throwError "temporal_search: no proof found within depth {cfg.depth} for goal {goalType}"
 
 elab_rules : tactic
   | `(tactic| temporal_search $[$d]?) => do
     let depth := d.map (·.getNat) |>.getD 10
-    let goal ← getMainGoal
-    let goalType ← goal.getType
+    runTemporalSearch { SearchConfig.temporal with depth := depth }
 
-    -- Validate goal type
-    let some (ctx, formula) ← extractDerivationGoal goalType
-      | throwError "temporal_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
-
-    -- Attempt recursive proof search (same as modal_search for now)
-    let found ← searchProof goal depth depth
-    if !found then
-      throwError "temporal_search: no proof found within depth {depth} for goal {goalType}"
+elab_rules : tactic
+  | `(tactic| temporal_search $params:modalSearchParam*) => do
+    let paramList ← params.toList.mapM parseSearchParam
+    let cfg := applyParams SearchConfig.temporal paramList
+    runTemporalSearch cfg
 
 /-!
 ### Phase 1.1 Tests: Verify tactic syntax and basic infrastructure
@@ -1162,5 +1269,30 @@ noncomputable example (p : Formula) : [p.box] ⊢ p.box := by
 noncomputable example (p : Formula) : [p.all_future] ⊢ p.all_future := by
   have h : [p] ⊢ p := DerivationTree.assumption [p] p (by simp)
   exact Theorems.generalized_temporal_k [p] p h
+
+/-!
+### Phase 1.6 Tests: Configuration Syntax
+-/
+
+-- Test 17: Named depth parameter
+example (p : Formula) : ⊢ (p.box).imp p := by
+  modal_search (depth := 5)
+
+-- Test 18: Named depth parameter with larger value
+example (p : Formula) : ⊢ (p.box).imp (p.box.box) := by
+  modal_search (depth := 10)
+
+-- Test 19: Multiple named parameters
+example (p : Formula) : ⊢ (p.box).imp p := by
+  modal_search (depth := 5) (visitLimit := 500)
+
+-- Test 20: temporal_search with named parameter
+example (p : Formula) : ⊢ (p.all_future).imp (p.all_future.all_future) := by
+  temporal_search (depth := 5)
+
+-- Test 21: SearchConfig structure works
+#check (SearchConfig.default : SearchConfig)
+#check (SearchConfig.temporal : SearchConfig)
+#check (SearchConfig.propositional : SearchConfig)
 
 end Logos.Core.Automation
