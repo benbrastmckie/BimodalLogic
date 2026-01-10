@@ -3,6 +3,10 @@
     "allow": [
       "Bash(git:*)",
       "Bash(lake *)",
+      "Bash(pdflatex *)",
+      "Bash(latexmk *)",
+      "Bash(bibtex *)",
+      "Bash(biber *)",
       "Bash(cd *)",
       "Bash(ls *)",
       "Bash(mkdir *)",

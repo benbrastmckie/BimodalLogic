@@ -21,17 +21,17 @@ The following diagram shows the dependency structure among extensions:
 ┌─────────────────────────────────────────────────┐
 │           Constitutive Foundation               │
 │         (hyperintensional base layer)           │
-└─────────────────────┬───────────────────────────┘
-                      │ required
-                      ▼
+└───────────────────────┬─────────────────────────┘
+                        │ required
+                        ▼
 ┌─────────────────────────────────────────────────┐
 │              Core Extension                     │
 │    (modal, temporal, counterfactual operators)  │
-└─────────────────────┬───────────────────────────┘
-                      │
-        ┌─────────────┼─────────────┐
-        │ optional    │ optional    │ optional
-        ▼             ▼             ▼
+└───────────────────────┬─────────────────────────┘
+                        │
+       ┌────────────────┼────────────────┐
+       │ optional       │ optional       │ optional
+       ▼                ▼                ▼
 ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
 │  Epistemic   │ │  Normative   │ │   Spatial    │
 │  Extension   │ │  Extension   │ │  Extension   │

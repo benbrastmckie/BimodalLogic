@@ -35,6 +35,7 @@ Route to appropriate skill based on task language:
 | Language | Research Skill | Implementation Skill |
 |----------|---------------|---------------------|
 | lean | skill-lean-research | skill-lean-implementation |
+| latex | skill-researcher | skill-latex-implementation |
 | general | skill-researcher | skill-implementer |
 | meta | skill-researcher | skill-implementer |
 | markdown | skill-researcher | skill-implementer |

@@ -55,6 +55,7 @@ Tasks have a `Language` field that determines tool selection:
 | Language | Research Tools | Implementation Tools |
 |----------|----------------|---------------------|
 | `lean` | lean_leansearch, lean_loogle, lean_leanfinder | lean_goal, lean_diagnostic_messages, lean_hover_info |
+| `latex` | WebSearch, WebFetch, Read | Read, Write, Edit, Bash (pdflatex, latexmk) |
 | `general` | WebSearch, WebFetch, Read | Read, Write, Edit, Bash |
 | `meta` | Read, Grep, Glob | Write, Edit |
 
