@@ -1,6 +1,6 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-10T23:37:22Z",
+  "_last_updated": "2026-01-10T23:39:01Z",
   "next_project_number": 353,
   "active_projects": [
     {
@@ -553,14 +553,21 @@
       "project_number": 352,
       "project_name": "rename_logos_core_to_bimodal",
       "type": "refactor",
-      "phase": "researching",
-      "status": "researching",
+      "phase": "researched",
+      "status": "researched",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-10T14:00:00Z",
-      "last_updated": "2026-01-10T23:37:22Z",
+      "last_updated": "2026-01-10T23:39:01Z",
       "effort": "2-4 hours",
-      "description": "Rename Logos/Core/ to Bimodal/ to establish the bimodal language, semantics, proof theory, and metalogical results as an independent project. This refactoring prepares the repository for the Logos extensions detailed in RECURSIVE_SEMANTICS.md and LAYER_EXTENSIONS.md. Focus on moving Core/ to Bimodal/ and ensuring everything builds correctly."
+      "description": "Rename Logos/Core/ to Bimodal/ to establish the bimodal language, semantics, proof theory, and metalogical results as an independent project. This refactoring prepares the repository for the Logos extensions detailed in RECURSIVE_SEMANTICS.md and LAYER_EXTENSIONS.md. Focus on moving Core/ to Bimodal/ and ensuring everything builds correctly.",
+      "research_completed": "2026-01-10T23:39:01Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/352_rename_logos_core_to_bimodal/reports/research-001.md"
+        }
+      ]
     }
   ]
 }
