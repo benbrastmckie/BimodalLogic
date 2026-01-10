@@ -171,12 +171,16 @@ technical_debt:
 
 ### 319. Expand testing for proof search automation (Phase 5)
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-10
+- **Researched**: 2026-01-10
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+
+**Research Artifacts**:
+  - Research Report: [.claude/specs/319_expand_testing_for_proof_search_automation_phase_5/reports/research-001.md]
 
 **Description**: Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks.
 
