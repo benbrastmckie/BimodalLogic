@@ -8,7 +8,7 @@ Dedicated script for TODO.md maintenance that:
 - Updates state.json and archive/state.json
 - Moves project directories to archive
 
-Follows TODO.md file standards defined in .opencode/specs/TODO.md
+Follows TODO.md file standards defined in .claude/specs/TODO.md
 
 Usage:
     python3 .opencode/scripts/todo_cleanup.py [OPTIONS]
@@ -212,6 +212,97 @@ def fix_divider_stacking(lines: List[str]) -> List[str]:
         prev_type = line_type
     
     return result
+
+
+def format_markdown(content: str) -> str:
+    """
+    Apply comprehensive markdown formatting to TODO.md content.
+
+    Formatting rules:
+    1. Remove trailing whitespace from all lines
+    2. Normalize blank lines (max 2 consecutive)
+    3. Ensure blank line before/after headings (## and ###)
+    4. Ensure blank line before/after dividers (---)
+    5. Ensure single trailing newline at EOF
+    6. Preserve frontmatter (YAML between --- markers at start)
+    7. Preserve code blocks
+
+    Args:
+        content: Raw file content as string
+
+    Returns:
+        Formatted content string
+    """
+    lines = content.split('\n')
+    result = []
+
+    # State tracking
+    in_frontmatter = False
+    in_code_block = False
+    frontmatter_started = False
+    consecutive_blank = 0
+
+    for i, line in enumerate(lines):
+        # Track frontmatter (YAML between --- at start of file)
+        if i == 0 and line.strip() == '---':
+            in_frontmatter = True
+            frontmatter_started = True
+            result.append(line.rstrip())
+            continue
+
+        if in_frontmatter and line.strip() == '---':
+            in_frontmatter = False
+            result.append(line.rstrip())
+            continue
+
+        if in_frontmatter:
+            result.append(line.rstrip())
+            continue
+
+        # Track code blocks
+        if line.strip().startswith('```'):
+            in_code_block = not in_code_block
+            result.append(line.rstrip())
+            consecutive_blank = 0
+            continue
+
+        if in_code_block:
+            # Preserve code blocks as-is (except trailing whitespace)
+            result.append(line.rstrip())
+            continue
+
+        # Remove trailing whitespace
+        stripped = line.rstrip()
+
+        # Handle blank lines
+        if not stripped:
+            consecutive_blank += 1
+            # Max 2 consecutive blank lines
+            if consecutive_blank <= 2:
+                result.append('')
+            continue
+
+        # Non-blank line
+        is_heading = stripped.startswith('#')
+        is_divider = stripped == '---'
+
+        # Ensure blank line before headings/dividers (if not at start)
+        if (is_heading or is_divider) and result and result[-1] != '':
+            result.append('')
+
+        result.append(stripped)
+
+        # Ensure blank line after headings/dividers
+        if is_heading or is_divider:
+            consecutive_blank = 0  # Reset, but we'll add blank after
+        else:
+            consecutive_blank = 0
+
+    # Remove trailing blank lines, keep exactly one newline at EOF
+    while result and result[-1] == '':
+        result.pop()
+
+    return '\n'.join(result) + '\n'
 
 
 def validate_todo_format(lines: List[str]) -> List[ValidationError]:
@@ -487,7 +578,12 @@ def main():
         action='store_true',
         help="Fix divider stacking issues only (no archival)"
     )
-    
+    parser.add_argument(
+        '--format-only',
+        action='store_true',
+        help="Apply markdown formatting only (no archival)"
+    )
+
     args = parser.parse_args()
     
     # Determine project root
@@ -495,10 +591,10 @@ def main():
     project_root = script_dir.parent.parent
     
     # Define paths
-    todo_path = project_root / ".opencode" / "specs" / "TODO.md"
-    state_path = project_root / ".opencode" / "specs" / "state.json"
-    archive_state_path = project_root / ".opencode" / "specs" / "archive" / "state.json"
-    specs_dir = project_root / ".opencode" / "specs"
+    todo_path = project_root / ".claude" / "specs" / "TODO.md"
+    state_path = project_root / ".claude" / "specs" / "state.json"
+    archive_state_path = project_root / ".claude" / "specs" / "archive" / "state.json"
+    specs_dir = project_root / ".claude" / "specs"
     
     try:
         # Validate-only mode
@@ -527,16 +623,37 @@ def main():
                 print(f"Fixing dividers in {todo_path}...")
             lines = parse_todo_file(todo_path)
             fixed_lines = fix_divider_stacking(lines)
-            
+
+            # Also apply markdown formatting
+            content = '\n'.join(fixed_lines) + '\n'
+            formatted = format_markdown(content)
+
             if not args.dry_run:
                 with open(todo_path, 'w', encoding='utf-8') as f:
-                    f.write('\n'.join(fixed_lines))
-                    f.write('\n')
-                print(f"[PASS] Fixed dividers in {todo_path}")
+                    f.write(formatted)
+                print(f"[PASS] Fixed dividers and formatted {todo_path}")
             else:
-                print(f"[DRY RUN] Would fix dividers in {todo_path}")
+                print(f"[DRY RUN] Would fix dividers and format {todo_path}")
             return EXIT_SUCCESS
-        
+
+        # Format-only mode
+        if args.format_only:
+            if args.verbose:
+                print(f"Formatting {todo_path}...")
+
+            with open(todo_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+
+            formatted = format_markdown(content)
+
+            if not args.dry_run:
+                with open(todo_path, 'w', encoding='utf-8') as f:
+                    f.write(formatted)
+                print(f"[PASS] Formatted {todo_path}")
+            else:
+                print(f"[DRY RUN] Would format {todo_path}")
+            return EXIT_SUCCESS
+
         # Archive mode (default)
         result = archive_tasks(
             todo_path=todo_path,
@@ -546,7 +663,23 @@ def main():
             dry_run=args.dry_run,
             verbose=args.verbose
         )
-        
+
+        # Apply markdown formatting after archival
+        if not args.dry_run:
+            if args.verbose:
+                print("Applying markdown formatting...")
+            try:
+                with open(todo_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                formatted = format_markdown(content)
+                with open(todo_path, 'w', encoding='utf-8') as f:
+                    f.write(formatted)
+            except Exception as e:
+                # Non-fatal: log but don't abort
+                print(f"[WARN] Formatting failed (non-fatal): {e}")
+        else:
+            print("[DRY RUN] Would apply markdown formatting after archival")
+
         # Print summary
         print(f"\n[PASS] Archival {'simulation' if args.dry_run else 'complete'}")
         print(f"Tasks archived: {result.total_count}")

@@ -73,10 +73,10 @@ The script path is still `.opencode/scripts/todo_cleanup.py` (not yet migrated t
 
 ## Implementation Phases
 
-### Phase 1: Update Paths in todo_cleanup.py [IN PROGRESS]
+### Phase 1: Update Paths in todo_cleanup.py [COMPLETED]
 
 **Estimated Effort**: 15 minutes
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objective**: Update script to use `.claude/specs/` instead of `.opencode/specs/`
 
@@ -96,10 +96,10 @@ The script path is still `.opencode/scripts/todo_cleanup.py` (not yet migrated t
 
 ---
 
-### Phase 2: Add format_markdown() Function [NOT STARTED]
+### Phase 2: Add format_markdown() Function [COMPLETED]
 
 **Estimated Effort**: 45 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objective**: Add markdown formatting function to todo_cleanup.py
 
@@ -127,10 +127,10 @@ The script path is still `.opencode/scripts/todo_cleanup.py` (not yet migrated t
 
 ---
 
-### Phase 3: Integrate Formatting into Cleanup Flow [NOT STARTED]
+### Phase 3: Integrate Formatting into Cleanup Flow [COMPLETED]
 
 **Estimated Effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objective**: Call format_markdown() after archival operations
 
@@ -147,10 +147,10 @@ The script path is still `.opencode/scripts/todo_cleanup.py` (not yet migrated t
 
 ---
 
-### Phase 4: Test and Validate [NOT STARTED]
+### Phase 4: Test and Validate [COMPLETED]
 
 **Estimated Effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objective**: Verify formatting works correctly
 

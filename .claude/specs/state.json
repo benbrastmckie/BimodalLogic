@@ -370,23 +370,24 @@
       "project_number": 323,
       "project_name": "fix_/todo_command_to_run_markdown_formatter_after_completion",
       "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
+      "phase": "implementation_completed",
+      "status": "completed",
       "priority": "medium",
       "language": "meta",
       "description": "Fix the /todo command to run the markdown formatter on TODO.md after completing its archival operations. This ensures TODO.md remains properly formatted after task archival.",
-      "effort": "TBD",
+      "effort": "1.75 hours",
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T00:00:00Z",
-      "last_updated": "2026-01-07",
+      "last_updated": "2026-01-10",
       "research_completed": "2026-01-05",
       "artifacts": [
         ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md",
-        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-001.md"
+        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-002.md",
+        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/summaries/implementation-summary-20260110.md"
       ],
       "planning_completed": "2026-01-07",
-      "plan_path": ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-001.md",
+      "plan_path": ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-002.md",
       "plan_metadata": {
         "phases": 4,
         "total_effort_hours": 1.75,
@@ -402,7 +403,8 @@
             "integrated_date": "2026-01-05"
           }
         ]
-      }
+      },
+      "completed": "2026-01-10"
     },
     {
       "project_number": 335,
@@ -553,8 +555,8 @@
       "project_number": 352,
       "project_name": "rename_logos_core_to_bimodal",
       "type": "refactor",
-      "phase": "researched",
-      "status": "planned",
+      "phase": "implementing",
+      "status": "implementing",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-10T14:00:00Z",

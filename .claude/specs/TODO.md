@@ -32,7 +32,8 @@ technical_debt:
 
 ### 352. Rename Logos/Core/ to Bimodal/
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-10
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -164,7 +165,6 @@ technical_debt:
 ---
 
 
-
 ### 205. Implement Lean tool usage verification and monitoring system
 - **Effort**: 6-8 hours
 - **Status**: [REVISING]
@@ -273,14 +273,14 @@ Ensures Lean research tasks use MCP tools systematically and efficiently. Provid
 ---
 
 
-
 ### 323. Fix /todo command to run markdown formatter after completion
 
 - **Effort**: 1.75 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-05
 - **Planned**: 2026-01-07
 - **Revised**: 2026-01-10
+- **Completed**: 2026-01-10
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
@@ -291,9 +291,12 @@ Ensures Lean research tasks use MCP tools systematically and efficiently. Provid
 
 **Plan Artifacts**:
   - Implementation Plan: [.claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-002.md]
+  - Summary: [.claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/summaries/implementation-summary-20260110.md]
 **Plan Revision Notes** (v002, 2026-01-10): Verified compatibility with Claude Code migration. Simplified approach: extend todo_cleanup.py instead of creating separate script. Reduced from 4 hours to 1.75 hours.
 
 **Description**: Fix the /todo command to run the markdown formatter on TODO.md after completing its archival operations. This ensures TODO.md remains properly formatted after task archival.
+
+**Outcome**: Extended todo_cleanup.py with format_markdown() function. Added --format-only flag. Formatting now applied after archival and fix-dividers operations. Updated paths from .opencode/specs/ to .claude/specs/.
 
 ---
 
@@ -630,7 +633,6 @@ Ensures Lean research tasks use MCP tools systematically and efficiently. Provid
 ---
 
 
-
 ### 338. Update /task command to use status-sync-manager directly
 - **Effort**: 2-3 hours
 - **Status**: [NOT STARTED]
@@ -718,4 +720,3 @@ Ensures Lean research tasks use MCP tools systematically and efficiently. Provid
 - **Blocking**: None
 - **Dependencies**: 342, 343, 344
 - **Description**: Comprehensive testing of all workflow commands (/implement, /research, /plan, /revise) to verify postflight stages execute correctly. Test artifact creation and linking, status updates to completed markers, git commit creation, error handling and rollback, and defense-in-depth verification. Validate that Task 335 scenario (artifacts created but status not updated) is fixed. Create test report documenting all test cases, results, and any issues found.
-
