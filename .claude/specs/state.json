@@ -18,11 +18,11 @@
     {
       "project_number": 351,
       "project_name": "review_skill_context_loading",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-10T22:08:02Z",
-      "last_updated": "2026-01-10T22:52:28Z",
+      "last_updated": "2026-01-10T22:55:52Z",
       "artifacts": [
         {
           "path": ".claude/specs/351_review_skill_context_loading/reports/research-001.md",
@@ -31,9 +31,14 @@
         {
           "path": ".claude/specs/351_review_skill_context_loading/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/351_review_skill_context_loading/summaries/implementation-summary-20260110.md",
+          "type": "summary"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "completed": "2026-01-10T22:55:52Z"
     },
     {
       "project_number": 132,
@@ -118,42 +123,6 @@
       "created": "2026-01-05T01:22:38Z",
       "last_updated": "2026-01-05T01:22:38Z",
       "effort": "3 hours"
-    },
-    {
-      "project_number": 139,
-      "project_name": "draft_layer_1_counterfactual_operator_plan",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "low",
-      "language": "markdown",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T01:22:38Z",
-      "effort": "2 hours"
-    },
-    {
-      "project_number": 140,
-      "project_name": "draft_layer_2_epistemic_operator_plan",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "low",
-      "language": "markdown",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T01:22:38Z",
-      "effort": "2 hours"
-    },
-    {
-      "project_number": 141,
-      "project_name": "draft_layer_3_normative_operator_plan",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "low",
-      "language": "markdown",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T01:22:38Z",
-      "effort": "2 hours"
     },
     {
       "project_number": 175,

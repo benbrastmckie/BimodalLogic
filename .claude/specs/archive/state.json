@@ -5,6 +5,45 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 141,
+      "project_name": "draft_layer_3_normative_operator_plan",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "low",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2 hours",
+      "abandoned": "2026-01-10T22:55:53Z"
+    },
+    {
+      "project_number": 140,
+      "project_name": "draft_layer_2_epistemic_operator_plan",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "low",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2 hours",
+      "abandoned": "2026-01-10T22:55:53Z"
+    },
+    {
+      "project_number": 139,
+      "project_name": "draft_layer_1_counterfactual_operator_plan",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "low",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2 hours",
+      "abandoned": "2026-01-10T22:55:53Z"
+    },
+    {
       "project_number": 342,
       "project_name": "research_orchestrator_command_file_workflow_execution_mechanism",
       "type": "research",
