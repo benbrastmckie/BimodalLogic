@@ -27,12 +27,20 @@ This registry provides a high-level view of tactic implementation status across 
 | `bimodal_simp` | Simplify using MF/TF axioms | 📋 Planned | N/A |
 | `perpetuity` | Apply perpetuity principles P1-P6 | 📋 Planned | N/A |
 
-### Advanced Tactics
+### Advanced Tactics (Task 315)
 
 | Tactic | Purpose | Status | Location |
 |--------|---------|--------|----------|
-| `modal_search` | Bounded modal proof search | 🚧 Delegates to tm_auto (full implementation pending ProofSearch.lean fixes) | `Logos/Core/Automation/Tactics.lean` |
-| `temporal_search` | Bounded temporal proof search | 🚧 Delegates to tm_auto (full implementation pending ProofSearch.lean fixes) | `Logos/Core/Automation/Tactics.lean` |
+| `modal_search` | Bounded proof search for TM derivability goals | ✅ Complete (Task 315) | `Logos/Core/Automation/Tactics.lean` |
+| `temporal_search` | Proof search optimized for temporal formulas | ✅ Complete (Task 315) | `Logos/Core/Automation/Tactics.lean` |
+| `propositional_search` | Proof search for purely propositional formulas | ✅ Complete (Task 315) | `Logos/Core/Automation/Tactics.lean` |
+
+**Task 315 Implementation Notes**:
+- `modal_search`: General purpose bounded proof search with configurable depth
+- `temporal_search`: Uses SearchConfig.temporal (prioritizes temporal K rules)
+- `propositional_search`: Uses SearchConfig.propositional (disables modal/temporal K)
+- All tactics work at meta-level in TacticM, bypassing Axiom Prop vs Type issue
+- Supports named parameters: `(depth := n)`, `(visitLimit := n)`, weight parameters
 
 ## Layer 1 - Extended Modalities
 
@@ -120,14 +128,14 @@ This registry provides a high-level view of tactic implementation status across 
 
 ## Summary Statistics
 
-- **Total Tactics Planned**: 22
-- **Completed**: 12 (54.5%)
-- **In Progress**: 1 (4.5%)
-- **Planned**: 9 (41.0%)
+- **Total Tactics Planned**: 23
+- **Completed**: 15 (65.2%)
+- **In Progress**: 0 (0%)
+- **Planned**: 8 (34.8%)
 
 ### By Category
 - **Layer 0 Core**: 10/14 complete (71.4%)
-- **Layer 0 Advanced**: 2/2 complete (100%)
+- **Layer 0 Advanced**: 3/3 complete (100%) - Task 315 completed modal_search, temporal_search, propositional_search
 - **Layer 1 Extended**: 0/2 complete (0%)
 - **Simplification Lemmas**: 3/10 complete (30%)
 - **Syntax Macros**: 4/5 complete (80%)
@@ -135,6 +143,13 @@ This registry provides a high-level view of tactic implementation status across 
 ## Recent Changes
 
 *This section is automatically updated by the `/todo` command*
+
+### 2026-01-10
+- Task 315 Phase 1 Complete: Implemented modal_search, temporal_search, propositional_search tactics
+- All three tactics work at meta-level in TacticM, bypassing Axiom Prop vs Type issue
+- 134 tests in TacticsTest.lean (24 new tests for Task 315)
+- Configuration via SearchConfig structure with named parameters
+- Updated TACTIC_REGISTRY.md with new tactic status
 
 ### 2025-12-28
 - Codebase review completed (sess_1766969902_lx): Verified 10 complete tactics, 2 in progress (modal_search/temporal_search infrastructure ready)

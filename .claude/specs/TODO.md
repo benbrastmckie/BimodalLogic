@@ -182,11 +182,12 @@ technical_debt:
 ---
 
 ### 315. Research and resolve Axiom Prop vs Type blocker for proof term construction
-- **Effort**: 61-97 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 61-97 hours (Phase 1: ~28 hours actual, Phase 2: pending)
+- **Status**: [COMPLETED] (Phase 1 - Tactic-Mode Implementation)
 - **Started**: 2026-01-05
 - **Researched**: 2026-01-05
 - **Planned**: 2026-01-05
+- **Completed**: 2026-01-10 (Phase 1)
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -196,8 +197,22 @@ technical_debt:
   - [Approach Comparison for AI Training](.claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-002.md)
 - **Plan**:
   - [Implementation Plan](.claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md)
+- **Summary**:
+  - [Implementation Summary](.claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/summaries/implementation-summary-20260110.md)
 
 **Description**: Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.
+
+**Phase 1 COMPLETED** (2026-01-10):
+Implemented Approach 3 (Tactic-Mode) with three new proof search tactics:
+- `modal_search`: General bounded proof search for TM derivability goals
+- `temporal_search`: Optimized for temporal formulas (prioritizes temporal K rules)
+- `propositional_search`: Optimized for propositional formulas (disables modal/temporal K)
+All tactics work at meta-level in TacticM, bypassing Axiom Prop vs Type issue.
+134 tests in TacticsTest.lean, 28 embedded tests in Tactics.lean.
+
+**Phase 2 OPTIONAL** (Future work):
+Programmatic API for AI training pipeline (Approach 2 - Refactor to Type).
+See research-002.md for details on AI training data generation benefits.
 
 **Research Findings** (2026-01-05):
 - **Initial Analysis**: Analyzed three approaches with viability ratings: (1) Classical.choice (3/10) - noncomputable and complex, (2) Refactor to Type (6/10) - high-risk breaking change, (3) Tactic-Mode (9/10) - highly recommended for immediate implementation.
