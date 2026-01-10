@@ -163,9 +163,7 @@ That is, A is a consequence of Γ iff the null state verifies A in any model whe
 
 ## Causal Layer: Intensional Semantics
 
-[FIX]: the semantics is intensional insofar as it determines truth-values relative to the contextual parameters (this includes a world-history, time, variable assignment) but this is not instead of being hyperintensional since the hyperintensional semantics is still the foundation. Rather, the intensional layer sits on top of the hyperintensional foundation in order to assign truth-values to sentences given an adequate range of contextual parameters needed to determine the truth-values of all sentences of the Causal Layer.
-
-The Causal Layer extends the Constitutive Layer with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. Semantics at this layer is intensional rather than hyperintensional.
+The Causal Layer extends the Constitutive Layer with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. While the hyperintensional foundation remains (distinguishing propositions by their exact verifiers and falsifiers), this layer adds intensional evaluation relative to contextual parameters (world-history, time, variable assignment) to determine truth-values for all Causal Layer sentences.
 
 ### Causal Frame
 
@@ -179,26 +177,24 @@ A *causal frame* is a structure **F** = ⟨S, ⊑, D, ⇒⟩ where:
 
 The task relation s ⇒_d t (read: "there is a task from s to t of duration d") satisfies:
 
-[FIX]: the Nullity constraint should be removed and instead we will have the definition of the possible states as any state s where s ⇒_0 s
-
 | Constraint | Formulation |
 |------------|-------------|
-| **Nullity** | s ⇒_0 s for all possible states s |
 | **Compositionality** | If s ⇒_x t and t ⇒_y u, then s ⇒_{x+y} u |
 | **Parthood (Left)** | If d ⊑ s and s ⇒_x t, then d ⇒_x r for some r ⊑ t |
 | **Parthood (Right)** | If r ⊑ t and s ⇒_x t, then d ⇒_x r for some d ⊑ s |
+| **Containment (L)** | If s ∈ P, d ⊑ s, and d ⇒_x r, then s ⇒_x t.r for some t ∈ S |
+| **Containment (R)** | If t ∈ P, r ⊑ t, and d ⇒_x r, then s.d ⇒_x t for some s ∈ S |
+| **Maximality** | If s ∈ S and t ∈ P, there is a maximal t-compatible part r ∈ s_t |
 
-[FIX]: add the containment constraints from section sub:Containment in /home/benjamin/Projects/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex to the constraints above. Also add the Maximality constraint from sub:TaskSpace in the same paper.
+**Note**: The Containment constraints ensure that tasks between parts of possible states can be extended to tasks between the states themselves. The Maximality constraint ensures that for any state and possible state, there exists a maximal part compatible with that possible state.
 
 ### State Modality Definitions
 
-[FIX]: The possibility of a state s is defined directly as s ⇒_0 s. Fix 'Possible state' and 'Impossible state' accordingly.
-
 | Term | Definition |
 |------|------------|
+| **Possible state** | s ∈ P iff s ⇒_0 s (state has a trivial task to itself) |
+| **Impossible state** | s ∉ P iff ¬(s ⇒_0 s) |
 | **Connected** | s ~ t iff s ⇒_d t or t ⇒_d s for some d |
-| **Possible state** | s ∈ P iff s ~ t for some t (equivalently: s ⇒_0 s) |
-| **Impossible state** | s ∉ P iff s is not connected to any state |
 | **Compatible states** | s ∘ t iff s.t ∈ P |
 | **Maximal state** | s is maximal iff t ⊑ s for every compatible state t ∘ s |
 | **World-state** | w ∈ W iff w is a maximal possible state |
@@ -215,8 +211,6 @@ The set of all world-histories over F is denoted H_F.
 **Note**: World-histories assign world-states to times in a way that respects the task relation. The constraint ensures that consecutive world-states are connected by appropriate tasks.
 
 ### Causal Model
-
-[FIX]: Use '| |' instead of 'I' below:
 
 A *causal model* is a structure **M** = ⟨S, ⊑, D, ⇒, I⟩ where:
 - ⟨S, ⊑, D, ⇒⟩ is a causal frame
