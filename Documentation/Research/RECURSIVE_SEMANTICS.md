@@ -116,70 +116,68 @@ The interpretation function I assigns:
 
 ### Variable Assignment
 
-<!-- [FIX]: I don't want to use 'a̅' for variable assignments, preferring a notation that will easily carry across between LaTeX, markdown, and Lean settings. Instead I would like to reserve 'v' so that 'v_1', 'v_2', etc., can be used for variable assignments -->
+A *variable assignment* σ is a function from variables to states: σ : Var → S
 
-A *variable assignment* a̅ is a function from variables to states: a̅ : Var → S
+Greek letters (τ, α, β, ...) are reserved for world-histories. The letter σ (with subscripts σ₁, σ₂, ...) denotes variable assignments, chosen for compatibility across LaTeX, markdown, and Lean notation.
 
-**Note**: Greek letters (τ, α, β, ...) are reserved for world-histories. Latin letters with overlines (a̅, b̅, ...) denote variable assignments.
-
-The **extension** of a term relative to model M and assignment a̅:
-- **Variable** x: ⟦x⟧^a̅_M = a̅(x)
-- **Function application** f(t₁,...,tₙ): ⟦f(t₁,...,tₙ)⟧^a̅_M = I(f)(⟦t₁⟧^a̅_M, ..., ⟦tₙ⟧^a̅_M)
+The **extension** of a term relative to model M and assignment σ:
+- **Variable** x: ⟦x⟧^σ_M = σ(x)
+- **Function application** f(t₁,...,tₙ): ⟦f(t₁,...,tₙ)⟧^σ_M = I(f)(⟦t₁⟧^σ_M, ..., ⟦tₙ⟧^σ_M)
 
 ### Verification and Falsification Clauses
 
-A state s **verifies** (⊩⁺) or **falsifies** (⊩⁻) a formula A relative to model M and assignment a̅:
+A state s **verifies** (⊩⁺) or **falsifies** (⊩⁻) a formula A relative to model M and assignment σ:
 
 #### Atomic Formulas
 
 | | Condition |
 |---|-----------|
-| M, a̅, s ⊩⁺ F(t₁,...,tₙ) | iff there is some f ∈ v_F where s = f(⟦t₁⟧^a̅_M, ..., ⟦tₙ⟧^a̅_M) |
-| M, a̅, s ⊩⁻ F(t₁,...,tₙ) | iff there is some f ∈ f_F where s = f(⟦t₁⟧^a̅_M, ..., ⟦tₙ⟧^a̅_M) |
+| M, σ, s ⊩⁺ F(t₁,...,tₙ) | iff there is some f ∈ v_F where s = f(⟦t₁⟧^σ_M, ..., ⟦tₙ⟧^σ_M) |
+| M, σ, s ⊩⁻ F(t₁,...,tₙ) | iff there is some f ∈ f_F where s = f(⟦t₁⟧^σ_M, ..., ⟦tₙ⟧^σ_M) |
 
 #### Lambda Abstraction (λ)
 
 | | Condition |
 |---|-----------|
-| M, a̅, s ⊩⁺ (λx.A)(t) | iff M, a̅[⟦t⟧^a̅_M/x], s ⊩⁺ A |
-| M, a̅, s ⊩⁻ (λx.A)(t) | iff M, a̅[⟦t⟧^a̅_M/x], s ⊩⁻ A |
+| M, σ, s ⊩⁺ (λx.A)(t) | iff M, σ[⟦t⟧^σ_M/x], s ⊩⁺ A |
+| M, σ, s ⊩⁻ (λx.A)(t) | iff M, σ[⟦t⟧^σ_M/x], s ⊩⁻ A |
 
-Where a̅[v/x] is the assignment that maps x to v and agrees with a̅ on all other variables.
+Where σ[v/x] is the assignment that maps x to v and agrees with σ on all other variables.
 
 #### Negation (¬)
 
 | | Condition |
 |---|-----------|
-| M, a̅, s ⊩⁺ ¬A | iff M, a̅, s ⊩⁻ A |
-| M, a̅, s ⊩⁻ ¬A | iff M, a̅, s ⊩⁺ A |
+| M, σ, s ⊩⁺ ¬A | iff M, σ, s ⊩⁻ A |
+| M, σ, s ⊩⁻ ¬A | iff M, σ, s ⊩⁺ A |
 
 #### Conjunction (∧)
 
 | | Condition |
 |---|-----------|
-| M, a̅, s ⊩⁺ A ∧ B | iff s = t.u for some t, u where M, a̅, t ⊩⁺ A and M, a̅, u ⊩⁺ B |
-| M, a̅, s ⊩⁻ A ∧ B | iff M, a̅, s ⊩⁻ A, or M, a̅, s ⊩⁻ B, or s = t.u for some t, u where M, a̅, t ⊩⁻ A and M, a̅, u ⊩⁻ B |
+| M, σ, s ⊩⁺ A ∧ B | iff s = t.u for some t, u where M, σ, t ⊩⁺ A and M, σ, u ⊩⁺ B |
+| M, σ, s ⊩⁻ A ∧ B | iff M, σ, s ⊩⁻ A, or M, σ, s ⊩⁻ B, or s = t.u for some t, u where M, σ, t ⊩⁻ A and M, σ, u ⊩⁻ B |
 
 #### Disjunction (∨)
 
 | | Condition |
 |---|-----------|
-| M, a̅, s ⊩⁺ A ∨ B | iff M, a̅, s ⊩⁺ A, or M, a̅, s ⊩⁺ B, or s = t.u for some t, u where M, a̅, t ⊩⁺ A and M, a̅, u ⊩⁺ B |
-| M, a̅, s ⊩⁻ A ∨ B | iff s = t.u for some t, u where M, a̅, t ⊩⁻ A and M, a̅, u ⊩⁻ B |
+| M, σ, s ⊩⁺ A ∨ B | iff M, σ, s ⊩⁺ A, or M, σ, s ⊩⁺ B, or s = t.u for some t, u where M, σ, t ⊩⁺ A and M, σ, u ⊩⁺ B |
+| M, σ, s ⊩⁻ A ∨ B | iff s = t.u for some t, u where M, σ, t ⊩⁻ A and M, σ, u ⊩⁻ B |
 
 #### Top (⊤) and Bottom (⊥)
 
 | | Verification | Falsification |
 |---|-------------|---------------|
-| ⊤ | M, a̅, s ⊩⁺ ⊤ for all s ∈ S | M, a̅, s ⊩⁻ ⊤ iff s = ■ (full state) |
-| ⊥ | Never: M, a̅, s ⊮⁺ ⊥ for all s | M, a̅, s ⊩⁻ ⊥ iff s = □ (null state) |
+| ⊤ | M, σ, s ⊩⁺ ⊤ for all s ∈ S | M, σ, s ⊩⁻ ⊤ iff s = ■ (full state) |
+| ⊥ | Never: M, σ, s ⊮⁺ ⊥ for all s | M, σ, s ⊩⁻ ⊥ iff s = □ (null state) |
 
 #### Propositional Identity (≡)
 
 | | Condition |
 |---|-----------|
-| M, a̅, s ⊩⁺ A ≡ B | iff s = □ and {t : M, a̅, t ⊩⁺ A} = {t : M, a̅, t ⊩⁺ B} and {t : M, a̅, t ⊩⁻ A} = {t : M, a̅, t ⊩⁻ B} |
-| M, a̅, s ⊩⁻ A ≡ B | iff s = □ and ({t : M, a̅, t ⊩⁺ A} ≠ {t : M, a̅, t ⊩⁺ B} or {t : M, a̅, t ⊩⁻ A} ≠ {t : M, a̅, t ⊩⁻ B}) |
+| M, σ, s ⊩⁺ A ≡ B | iff s = □ and {t : M, σ, t ⊩⁺ A} = {t : M, σ, t ⊩⁺ B} and {t : M, σ, t ⊩⁻ A} = {t : M, σ, t ⊩⁻ B} |
+| M, σ, s ⊩⁻ A ≡ B | iff s = □ and ({t : M, σ, t ⊩⁺ A} ≠ {t : M, σ, t ⊩⁺ B} or {t : M, σ, t ⊩⁻ A} ≠ {t : M, σ, t ⊩⁻ B}) |
 
 <!-- [FIX]: it is worth defining essence and ground as conjunctive and disjunctive part via identity, i.e.: A \essence B := A \wedge B \equiv B; A \ground B := A \vee B \equiv B. Also mention how negation distributes so that A \essence B iff \neg A \ground \neg B and similarly, A \ground B iff \neg A \essence \neg B, explaining briefly that the space of bilateral propositions forms a non-interlaced bilatice described in line 749 of /home/benjamin/Projects/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex which you should carefully research in order to improve this documentation where appropriate -->
 
@@ -204,7 +202,7 @@ A *bilateral proposition* is an ordered pair ⟨V, F⟩ where:
 
 Logical consequence at the Constitutive Foundation is restricted to propositional identity sentences:
 
-> Γ ⊨ A iff for any model M and assignment a̅: if M, a̅, □ ⊩⁺ B for all B ∈ Γ, then M, a̅, □ ⊩⁺ A
+> Γ ⊨ A iff for any model M and assignment σ: if M, σ, □ ⊩⁺ B for all B ∈ Γ, then M, σ, □ ⊩⁺ A
 
 That is, A is a consequence of Γ iff the null state verifies A in any model where it verifies all premises.
 
@@ -286,26 +284,24 @@ A *core model* is a structure **M** = ⟨S, ⊑, D, ⇒, I⟩ where:
 
 ### Truth Conditions
 
-<!-- [FIX]: change the name 'time vector' to 'temporal index' -->
-
-Truth is evaluated relative to a model M, world-history τ, time x ∈ D, variable assignment a̅, and time vector v⃗ = ⟨v₁, v₂, ...⟩:
+Truth is evaluated relative to a model M, world-history τ, time x ∈ D, variable assignment σ, and temporal index i⃗ = ⟨i₁, i₂, ...⟩:
 
 #### Atomic Sentences
 
 | | Condition |
 |---|-----------|
-| M, τ, x, a̅, v⃗ ⊨ F(t₁,...,tₙ) | iff there is some f ∈ v_F where f(⟦t₁⟧^a̅_M, ..., ⟦tₙ⟧^a̅_M) ⊑ τ(x) |
-| M, τ, x, a̅, v⃗ ⊭ F(t₁,...,tₙ) | iff there is some f ∈ f_F where f(⟦t₁⟧^a̅_M, ..., ⟦tₙ⟧^a̅_M) ⊑ τ(x) |
+| M, τ, x, σ, i⃗ ⊨ F(t₁,...,tₙ) | iff there is some f ∈ v_F where f(⟦t₁⟧^σ_M, ..., ⟦tₙ⟧^σ_M) ⊑ τ(x) |
+| M, τ, x, σ, i⃗ ⊭ F(t₁,...,tₙ) | iff there is some f ∈ f_F where f(⟦t₁⟧^σ_M, ..., ⟦tₙ⟧^σ_M) ⊑ τ(x) |
 
 <!-- [FIX]: remove the 'Note' label below. -->
 
-**Note**: It is derivable that M, τ, x, a̅, v⃗ ⊨ A iff it is not the case that M, τ, x, a̅, v⃗ ⊭ A. This justifies using ⊨ alone for truth and ⊭ for falsehood.
+**Note**: It is derivable that M, τ, x, σ, i⃗ ⊨ A iff it is not the case that M, τ, x, σ, i⃗ ⊭ A. This justifies using ⊨ alone for truth and ⊭ for falsehood.
 
 #### Lambda Abstraction
 
 | Operator | Truth Condition |
 |----------|-----------------|
-| **(λx.A)(t)** | M, τ, x, a̅, v⃗ ⊨ (λx.A)(t) iff M, τ, x, a̅[⟦t⟧^a̅_M/x], v⃗ ⊨ A |
+| **(λx.A)(t)** | M, τ, x, σ, i⃗ ⊨ (λx.A)(t) iff M, τ, x, σ[⟦t⟧^σ_M/x], i⃗ ⊨ A |
 
 <!-- [FIX:] the semantics for the universal quantifier should be provided next, followed by an actuality predicate 'Act' which checks if a state is a part of the world-state to result from letting the evaluation world-history act on the evaluation time. Specify how 'Act' can be used to restrict the universal quantifier to actually existing objects, where the resulting actuality operators invalidate the barcan formulas, but the universal quantifiers do not. -->
 
@@ -313,17 +309,17 @@ Truth is evaluated relative to a model M, world-history τ, time x ∈ D, variab
 
 | Operator | Truth Condition |
 |----------|-----------------|
-| **¬A** | M, τ, x, a̅, v⃗ ⊨ ¬A iff M, τ, x, a̅, v⃗ ⊭ A |
-| **A ∧ B** | M, τ, x, a̅, v⃗ ⊨ A ∧ B iff M, τ, x, a̅, v⃗ ⊨ A and M, τ, x, a̅, v⃗ ⊨ B |
-| **A ∨ B** | M, τ, x, a̅, v⃗ ⊨ A ∨ B iff M, τ, x, a̅, v⃗ ⊨ A or M, τ, x, a̅, v⃗ ⊨ B |
-| **A → B** | M, τ, x, a̅, v⃗ ⊨ A → B iff M, τ, x, a̅, v⃗ ⊭ A or M, τ, x, a̅, v⃗ ⊨ B |
+| **¬A** | M, τ, x, σ, i⃗ ⊨ ¬A iff M, τ, x, σ, i⃗ ⊭ A |
+| **A ∧ B** | M, τ, x, σ, i⃗ ⊨ A ∧ B iff M, τ, x, σ, i⃗ ⊨ A and M, τ, x, σ, i⃗ ⊨ B |
+| **A ∨ B** | M, τ, x, σ, i⃗ ⊨ A ∨ B iff M, τ, x, σ, i⃗ ⊨ A or M, τ, x, σ, i⃗ ⊨ B |
+| **A → B** | M, τ, x, σ, i⃗ ⊨ A → B iff M, τ, x, σ, i⃗ ⊭ A or M, τ, x, σ, i⃗ ⊨ B |
 
 #### Modal Operators
 
 | Operator | Truth Condition | Reading |
 |----------|-----------------|---------|
-| **□A** | M, τ, x, a̅, v⃗ ⊨ □A iff M, σ, x, a̅, v⃗ ⊨ A for all σ ∈ H_F | "Necessarily A" |
-| **◇A** | M, τ, x, a̅, v⃗ ⊨ ◇A iff M, σ, x, a̅, v⃗ ⊨ A for some σ ∈ H_F | "Possibly A" |
+| **□A** | M, τ, x, σ, i⃗ ⊨ □A iff M, α, x, σ, i⃗ ⊨ A for all α ∈ H_F | "Necessarily A" |
+| **◇A** | M, τ, x, σ, i⃗ ⊨ ◇A iff M, α, x, σ, i⃗ ⊨ A for some α ∈ H_F | "Possibly A" |
 
 **Equivalence**: ◇A ≡ ¬□¬A
 
@@ -333,10 +329,10 @@ Truth is evaluated relative to a model M, world-history τ, time x ∈ D, variab
 
 | Operator | Truth Condition | Reading |
 |----------|-----------------|---------|
-| **HA** | M, τ, x, a̅, v⃗ ⊨ HA iff M, τ, y, a̅, v⃗ ⊨ A for all y ∈ D where y < x | "It has always been that A" |
-| **GA** | M, τ, x, a̅, v⃗ ⊨ GA iff M, τ, y, a̅, v⃗ ⊨ A for all y ∈ D where y > x | "It will always be that A" |
-| **PA** | M, τ, x, a̅, v⃗ ⊨ PA iff M, τ, y, a̅, v⃗ ⊨ A for some y ∈ D where y < x | "It was the case that A" |
-| **FA** | M, τ, x, a̅, v⃗ ⊨ FA iff M, τ, y, a̅, v⃗ ⊨ A for some y ∈ D where y > x | "It will be the case that A" |
+| **HA** | M, τ, x, σ, i⃗ ⊨ HA iff M, τ, y, σ, i⃗ ⊨ A for all y ∈ D where y < x | "It has always been that A" |
+| **GA** | M, τ, x, σ, i⃗ ⊨ GA iff M, τ, y, σ, i⃗ ⊨ A for all y ∈ D where y > x | "It will always be that A" |
+| **PA** | M, τ, x, σ, i⃗ ⊨ PA iff M, τ, y, σ, i⃗ ⊨ A for some y ∈ D where y < x | "It was the case that A" |
+| **FA** | M, τ, x, σ, i⃗ ⊨ FA iff M, τ, y, σ, i⃗ ⊨ A for some y ∈ D where y > x | "It will be the case that A" |
 
 **Equivalences**:
 - PA ≡ ¬H¬A
@@ -350,8 +346,8 @@ Truth is evaluated relative to a model M, world-history τ, time x ∈ D, variab
 
 | Operator | Truth Condition |
 |----------|-----------------|
-| **A ◁ B** (Since) | M, τ, x, a̅, v⃗ ⊨ A ◁ B iff there exists z < x where M, τ, z, a̅, v⃗ ⊨ B and M, τ, y, a̅, v⃗ ⊨ A for all y where z < y < x |
-| **A ▷ B** (Until) | M, τ, x, a̅, v⃗ ⊨ A ▷ B iff there exists z > x where M, τ, z, a̅, v⃗ ⊨ B and M, τ, y, a̅, v⃗ ⊨ A for all y where x < y < z |
+| **A ◁ B** (Since) | M, τ, x, σ, i⃗ ⊨ A ◁ B iff there exists z < x where M, τ, z, σ, i⃗ ⊨ B and M, τ, y, σ, i⃗ ⊨ A for all y where z < y < x |
+| **A ▷ B** (Until) | M, τ, x, σ, i⃗ ⊨ A ▷ B iff there exists z > x where M, τ, z, σ, i⃗ ⊨ B and M, τ, y, σ, i⃗ ⊨ A for all y where x < y < z |
 
 **Reading**:
 - "A since B" means B was true at some past time, and A has been true ever since
@@ -361,7 +357,7 @@ Truth is evaluated relative to a model M, world-history τ, time x ∈ D, variab
 
 **Mereological formulation**:
 
-> M, τ, x, a̅, v⃗ ⊨ φ □→ C iff for all t ∈ v_φ and β ∈ H_F: if s.t ⊑ β(x) for some maximal t-compatible part s ∈ τ(x)_t, then M, β, x, a̅, v⃗ ⊨ C
+> M, τ, x, σ, i⃗ ⊨ φ □→ C iff for all t ∈ v_φ and β ∈ H_F: if s.t ⊑ β(x) for some maximal t-compatible part s ∈ τ(x)_t, then M, β, x, σ, i⃗ ⊨ C
 
 Where:
 - v_φ is the set of exact verifiers for φ
@@ -370,18 +366,16 @@ Where:
 
 **Intuitive reading**: A counterfactual "if φ were the case, then C" is true at world τ and time x iff the consequent C is true in any world β at x where β(x) is the result of minimally changing τ(x) to make the antecedent φ true.
 
-<!-- [FIX]: avoid using this label below to maintain consistent formatting. Also, don't use '⊳' for imposition, using '→' instead -->
-
-**Imposition notation**: We write t ⊳_w w' ("imposing t on w yields w'") iff there exists maximal t-compatible part s ∈ w_t where s.t ⊑ w'.
+**Imposition**: We write t →_w w' ("imposing t on w yields w'") iff there exists maximal t-compatible part s ∈ w_t where s.t ⊑ w'.
 
 #### Store and Recall Operators (↑, ↓)
 
-For cross-temporal reference within counterfactual evaluation, the context includes a time vector v⃗ = ⟨v₁, v₂, ...⟩ of stored times:
+For cross-temporal reference within counterfactual evaluation, the context includes a temporal index i⃗ = ⟨i₁, i₂, ...⟩ of stored times:
 
 | Operator | Truth Condition | Effect |
 |----------|-----------------|--------|
-| **↑ⁱA** | M, τ, x, a̅, v⃗ ⊨ ↑ⁱA iff M, τ, x, a̅, v⃗[x/vᵢ] ⊨ A | Store: replaces vᵢ with current time x |
-| **↓ⁱA** | M, τ, x, a̅, v⃗ ⊨ ↓ⁱA iff M, τ, vᵢ, a̅, v⃗ ⊨ A | Recall: shifts evaluation to stored time vᵢ |
+| **↑ⁱA** | M, τ, x, σ, i⃗ ⊨ ↑ⁱA iff M, τ, x, σ, i⃗[x/iₖ] ⊨ A | Store: replaces iₖ with current time x |
+| **↓ⁱA** | M, τ, x, σ, i⃗ ⊨ ↓ⁱA iff M, τ, iₖ, σ, i⃗ ⊨ A | Recall: shifts evaluation to stored time iₖ |
 
 **Example** (tensed counterfactuals):
 - ↓¹(B □→ FH) - "If B had occurred at the stored time, then H would have occurred at some future time"
@@ -413,7 +407,7 @@ Different temporal structures yield different valid principles. The framework do
 
 ### Logical Consequence (Core Extension)
 
-> Γ ⊨ A iff for any model M, world-history τ ∈ H_F, time x ∈ D, assignment a̅, and time vector v⃗: if M, τ, x, a̅, v⃗ ⊨ B for all B ∈ Γ, then M, τ, x, a̅, v⃗ ⊨ A
+> Γ ⊨ A iff for any model M, world-history τ ∈ H_F, time x ∈ D, assignment σ, and temporal index i⃗: if M, τ, x, σ, i⃗ ⊨ B for all B ∈ Γ, then M, τ, x, σ, i⃗ ⊨ A
 
 ### Counterfactual Logic Axiom Schemata
 
