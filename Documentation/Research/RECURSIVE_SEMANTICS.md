@@ -9,7 +9,9 @@
 
 ## Introduction
 
-This document provides the formal recursive semantics for the Logos layered logic system. The semantics proceeds through increasingly expressive layers, each extending the frame and evaluation mechanisms of the previous layer:
+FIX: Instead of using 'Layer', I want to use 'Extension' throughout. Also, the 'Causal Extension' should be renamed 'Core Extension' and then the 'Epistemic Extension' and 'Normative Extension' should both have the 'Core Extension' as the only dependency, where the 'Agential Extension' should depend on the 'Epistemic Extension', 'Normative Extension', and an additional 'Spatial Extension' that I want to add, where these three are modular plugins that can combine to enrich the 'Agential Extension', but not all of these three middle layer extensions are required for the 'Agential Extension' to load.
+
+This document provides the recursive semantics for the Logos layered logic system. The semantics proceeds through increasingly expressive layers, each extending the frame and evaluation mechanisms of the previous layer:
 
 1. **Constitutive Layer**: Hyperintensional semantics over a mereological state space
 2. **Causal Layer**: Hyperintensional and intensional semantics over a task space

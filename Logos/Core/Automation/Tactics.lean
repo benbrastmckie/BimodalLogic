@@ -797,6 +797,149 @@ def tryModusPonens (goal : MVarId) (ctx formula : Expr) (searchFn : MVarId → N
   return false
 
 /-!
+### Modal K and Temporal K Integration (Phase 1.5)
+
+These functions detect when the goal and context have matching modal/temporal
+structure and apply the generalized K rules to reduce to simpler goals.
+-/
+
+/--
+Check if the context consists entirely of boxed formulas (□φ₁, □φ₂, ...).
+Returns `some [φ₁, φ₂, ...]` if so, `none` otherwise.
+-/
+def extractUnboxedContext (ctx : Expr) : MetaM (Option (List Expr)) := do
+  let ctxFormulas ← extractContextFormulas ctx
+  let mut unboxed : List Expr := []
+  for f in ctxFormulas do
+    match f with
+    | .app (.const ``Formula.box _) inner =>
+      unboxed := inner :: unboxed
+    | _ => return none  -- Not all formulas are boxed
+  return some unboxed.reverse
+
+/--
+Check if the context consists entirely of future formulas (Fφ₁, Fφ₂, ...).
+Returns `some [φ₁, φ₂, ...]` if so, `none` otherwise.
+-/
+def extractUnfuturedContext (ctx : Expr) : MetaM (Option (List Expr)) := do
+  let ctxFormulas ← extractContextFormulas ctx
+  let mut unfutured : List Expr := []
+  for f in ctxFormulas do
+    match f with
+    | .app (.const ``Formula.all_future _) inner =>
+      unfutured := inner :: unfutured
+    | _ => return none  -- Not all formulas are future
+  return some unfutured.reverse
+
+/--
+Build a List expression from a list of formula expressions.
+-/
+def buildContextExpr (formulas : List Expr) : MetaM Expr := do
+  let formulaType := mkConst ``Formula
+  let mut result ← mkAppM ``List.nil #[formulaType]
+  for f in formulas.reverse do
+    result ← mkAppM ``List.cons #[f, result]
+  return result
+
+/--
+Try to prove the goal using generalized modal K rule.
+
+Given a goal `□Γ ⊢ □φ` (where Γ = [□ψ₁, □ψ₂, ...] and formula = □χ),
+applies `generalized_modal_k` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
+
+**Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
+-/
+def tryModalK (goal : MVarId) (ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
+  -- Check if formula is □χ
+  let innerFormula ← match formula with
+    | .app (.const ``Formula.box _) inner => pure inner
+    | _ => return false  -- Goal formula is not boxed
+
+  -- Check if context is all boxed formulas
+  let some unboxedCtx ← extractUnboxedContext ctx
+    | return false  -- Context not all boxed
+
+  -- Build the unboxed context expression
+  let unboxedCtxExpr ← buildContextExpr unboxedCtx
+
+  let success ← observing? do
+    setGoals [goal]
+    -- Apply generalized_modal_k
+    -- generalized_modal_k : (Γ : Context) → (φ : Formula) →
+    --     (h : Γ ⊢ φ) → ((Context.map Formula.box Γ) ⊢ Formula.box φ)
+    -- We need to prove (Context.map Formula.box unboxedCtx) ⊢ Formula.box innerFormula
+    -- The goal should match this pattern
+
+    -- Create metavariable for the subgoal: unboxedCtx ⊢ innerFormula
+    let subgoalType ← mkAppM ``DerivationTree #[unboxedCtxExpr, innerFormula]
+    let subgoalMVar ← mkFreshExprMVar subgoalType
+
+    -- Build the proof: generalized_modal_k unboxedCtx innerFormula subgoalMVar
+    let proof ← mkAppM ``Theorems.generalized_modal_k #[unboxedCtxExpr, innerFormula, subgoalMVar]
+
+    -- Check that proof type matches goal type
+    -- The result type is: (Context.map Formula.box unboxedCtx) ⊢ Formula.box innerFormula
+    -- This should match ctx ⊢ formula
+    goal.assign proof
+
+    -- Now we need to prove the subgoal
+    let subgoal := subgoalMVar.mvarId!
+    let subSuccess ← searchFn subgoal (depth - 1)
+    if !subSuccess then
+      throwError "could not prove subgoal for modal K"
+
+    return ()
+
+  return success.isSome
+
+/--
+Try to prove the goal using generalized temporal K rule.
+
+Given a goal `FΓ ⊢ Fφ` (where Γ = [Fψ₁, Fψ₂, ...] and formula = Fχ),
+applies `generalized_temporal_k` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
+
+**Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
+-/
+def tryTemporalK (goal : MVarId) (ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
+  -- Check if formula is Fχ
+  let innerFormula ← match formula with
+    | .app (.const ``Formula.all_future _) inner => pure inner
+    | _ => return false  -- Goal formula is not a future formula
+
+  -- Check if context is all future formulas
+  let some unfuturedCtx ← extractUnfuturedContext ctx
+    | return false  -- Context not all future
+
+  -- Build the unfutured context expression
+  let unfuturedCtxExpr ← buildContextExpr unfuturedCtx
+
+  let success ← observing? do
+    setGoals [goal]
+    -- Apply generalized_temporal_k
+    -- generalized_temporal_k : (Γ : Context) → (φ : Formula) →
+    --     (h : Γ ⊢ φ) → ((Context.map Formula.all_future Γ) ⊢ Formula.all_future φ)
+
+    -- Create metavariable for the subgoal: unfuturedCtx ⊢ innerFormula
+    let subgoalType ← mkAppM ``DerivationTree #[unfuturedCtxExpr, innerFormula]
+    let subgoalMVar ← mkFreshExprMVar subgoalType
+
+    -- Build the proof: generalized_temporal_k unfuturedCtx innerFormula subgoalMVar
+    let proof ← mkAppM ``Theorems.generalized_temporal_k #[unfuturedCtxExpr, innerFormula, subgoalMVar]
+
+    -- Check that proof type matches goal type
+    goal.assign proof
+
+    -- Now we need to prove the subgoal
+    let subgoal := subgoalMVar.mvarId!
+    let subSuccess ← searchFn subgoal (depth - 1)
+    if !subSuccess then
+      throwError "could not prove subgoal for temporal K"
+
+    return ()
+
+  return success.isSome
+
+/-!
 ### Core Search Tactic Implementation
 -/
 
@@ -807,7 +950,8 @@ Recursive proof search implementation.
 1. Check if goal matches any axiom schema
 2. Check if goal is in assumptions
 3. Try modus ponens decomposition (backward chaining)
-4. (Future) Try modal K / temporal K rules
+4. Try modal K rule (reduce □Γ ⊢ □φ to Γ ⊢ φ)
+5. Try temporal K rule (reduce FΓ ⊢ Fφ to Γ ⊢ φ)
 
 **Parameters**:
 - `goal`: Current proof goal
@@ -837,8 +981,15 @@ partial def searchProof (goal : MVarId) (depth : Nat) (_maxDepth : Nat := depth)
     if ← tryModusPonens goal ctx formula searchProof depth then
       return true
 
-  -- Future strategies (to be implemented in Phase 1.5+):
-  -- - Modal K / Temporal K rules
+  -- Strategy 4: Try modal K rule (reduce □Γ ⊢ □φ to Γ ⊢ φ)
+  if depth > 1 then
+    if ← tryModalK goal ctx formula searchProof depth then
+      return true
+
+  -- Strategy 5: Try temporal K rule (reduce FΓ ⊢ Fφ to Γ ⊢ φ)
+  if depth > 1 then
+    if ← tryTemporalK goal ctx formula searchProof depth then
+      return true
 
   return false
 
@@ -978,5 +1129,38 @@ example (p q : Formula) : [p.imp q, p] ⊢ q := by
 -- p, p → q, q → r ⊢ r requires: MP(p, p→q) = q, then MP(q, q→r) = r
 example (p q r : Formula) : [p, p.imp q, q.imp r] ⊢ r := by
   modal_search 5
+
+/-!
+### Phase 1.5 Tests: Modal K and Temporal K Rules
+-/
+
+-- Test 11: Modal K - simple case: [□p] ⊢ □p
+-- Context is [□p], goal is □p, reduce to [p] ⊢ p
+example (p : Formula) : [p.box] ⊢ p.box := by
+  modal_search 3
+
+-- Test 12: Modal K with assumption: [□p, □q] ⊢ □p
+example (p q : Formula) : [p.box, q.box] ⊢ p.box := by
+  modal_search 3
+
+-- Test 13: Temporal K - simple case: [Fp] ⊢ Fp
+example (p : Formula) : [p.all_future] ⊢ p.all_future := by
+  modal_search 3
+
+-- Test 14: Temporal K with assumption: [Fp, Fq] ⊢ Fp
+example (p q : Formula) : [p.all_future, q.all_future] ⊢ p.all_future := by
+  modal_search 3
+
+-- Test 15: Manual verification that generalized_modal_k works as expected
+-- This is the underlying theorem the tactic uses
+-- Note: noncomputable because generalized_modal_k uses deduction_theorem
+noncomputable example (p : Formula) : [p.box] ⊢ p.box := by
+  have h : [p] ⊢ p := DerivationTree.assumption [p] p (by simp)
+  exact Theorems.generalized_modal_k [p] p h
+
+-- Test 16: Manual verification that generalized_temporal_k works as expected
+noncomputable example (p : Formula) : [p.all_future] ⊢ p.all_future := by
+  have h : [p] ⊢ p := DerivationTree.assumption [p] p (by simp)
+  exact Theorems.generalized_temporal_k [p] p h
 
 end Logos.Core.Automation
