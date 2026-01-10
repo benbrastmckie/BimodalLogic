@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-09T12:00:00Z
-next_project_number: 352
+next_project_number: 353
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -29,6 +29,18 @@ technical_debt:
 ---
 
 ## High Priority
+
+### 352. Rename Logos/Core/ to Bimodal/
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Rename Logos/Core/ to Bimodal/ to establish the bimodal language, semantics, proof theory, and metalogical results as an independent project. This refactoring prepares the repository for the Logos extensions detailed in RECURSIVE_SEMANTICS.md and LAYER_EXTENSIONS.md. Focus on moving Core/ to Bimodal/ and ensuring everything builds correctly.
+
+---
 
 ### 308. Final cleanup and comprehensive testing (5/5)
 - **Effort**: 30 minutes

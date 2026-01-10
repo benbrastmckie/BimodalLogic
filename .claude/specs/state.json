@@ -537,3 +537,16 @@
   "effort": "8-12 hours",
   "description": "Refactor the .claude/ agent system to use 'thin wrapper' commands that parse arguments and delegate to corresponding skills for execution, enabling skill reuse across commands and cleaner separation of concerns."
 }
+{
+  "project_number": 352,
+  "project_name": "rename_logos_core_to_bimodal",
+  "type": "refactor",
+  "phase": "not_started",
+  "status": "not_started",
+  "priority": "high",
+  "language": "lean",
+  "created": "2026-01-10T14:00:00Z",
+  "last_updated": "2026-01-10T14:00:00Z",
+  "effort": "2-4 hours",
+  "description": "Rename Logos/Core/ to Bimodal/ to establish the bimodal language, semantics, proof theory, and metalogical results as an independent project. This refactoring prepares the repository for the Logos extensions detailed in RECURSIVE_SEMANTICS.md and LAYER_EXTENSIONS.md. Focus on moving Core/ to Bimodal/ and ensuring everything builds correctly."
+}
