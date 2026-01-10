@@ -86,13 +86,12 @@ A *constitutive frame* is a structure **F** = ⟨S, ⊑⟩ where:
 | **State Space** | A nonempty set S of states |
 | **Parthood** | A partial order ⊑ on S making ⟨S, ⊑⟩ a complete lattice |
 
-<!-- [FIX]: compatibility cannot be defined in this frame since possibility cannot be defined either. Mention that this frame is non-modal -->
+The constitutive frame is non-modal: possibility and compatibility cannot be defined at this level since they require the task relation introduced in the Core Extension.
 
 The lattice structure provides:
 - **Null state** (□): The bottom element (fusion of the empty set)
 - **Full state** (■): The top element (fusion of all states)
 - **Fusion** (s.t): The least upper bound of s and t
-- **Compatibility** (s ∘ t): States s and t are compatible iff their fusion s.t is possible
 
 ### Constitutive Model
 
@@ -103,8 +102,6 @@ A *constitutive model* is a structure **M** = ⟨S, ⊑, I⟩ where:
 | **Frame** | ⟨S, ⊑⟩ is a constitutive frame |
 | **Interpretation** | I assigns meanings to non-logical vocabulary |
 
-<!-- [FIX]: it is important to require that for any function f in v_F or in f_F, that for every n states a_1, ..., a_n, that these states are all parts of f(a_1,...,a_n) but f(a_1,...,a_n) may have other parts besides -->
-
 The interpretation function I assigns:
 - **n-place function symbols** f → I(f) : Sⁿ → S (0-place = individual constants mapping to states)
 - **n-place predicates** F → ordered pairs ⟨v_F, f_F⟩ where:
@@ -112,7 +109,9 @@ The interpretation function I assigns:
   - f_F : set of functions Sⁿ → S (falsifier functions)
 - **Sentence letters** (0-place predicates) p → ordered pairs ⟨v_p, f_p⟩ of verifier and falsifier state sets
 
-<!-- [FIX]: explain the intuition briefly that for 1-place predicates, the v_F and f_F include functions which take an object (which is a state) as input, and return that object having a verifying property instance for the property in question, or having a falsifying property instance for the property in question. -->
+**Containment constraint**: For any function f in v_F or f_F and any n states a₁, ..., aₙ, these states are all parts of f(a₁,...,aₙ). However, f(a₁,...,aₙ) may have additional parts beyond the input states.
+
+**Predicate intuition**: For 1-place predicates, the functions in v_F and f_F take an object (which is itself a state) as input and return that object instantiating a verifying or falsifying property instance for the property in question.
 
 ### Variable Assignment
 
@@ -179,7 +178,23 @@ Where σ[v/x] is the assignment that maps x to v and agrees with σ on all other
 | M, σ, s ⊩⁺ A ≡ B | iff s = □ and {t : M, σ, t ⊩⁺ A} = {t : M, σ, t ⊩⁺ B} and {t : M, σ, t ⊩⁻ A} = {t : M, σ, t ⊩⁻ B} |
 | M, σ, s ⊩⁻ A ≡ B | iff s = □ and ({t : M, σ, t ⊩⁺ A} ≠ {t : M, σ, t ⊩⁺ B} or {t : M, σ, t ⊩⁻ A} ≠ {t : M, σ, t ⊩⁻ B}) |
 
-<!-- [FIX]: it is worth defining essence and ground as conjunctive and disjunctive part via identity, i.e.: A \essence B := A \wedge B \equiv B; A \ground B := A \vee B \equiv B. Also mention how negation distributes so that A \essence B iff \neg A \ground \neg B and similarly, A \ground B iff \neg A \essence \neg B, explaining briefly that the space of bilateral propositions forms a non-interlaced bilatice described in line 749 of /home/benjamin/Projects/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex which you should carefully research in order to improve this documentation where appropriate -->
+#### Essence and Ground
+
+These constitutive relations can be defined via propositional identity:
+
+| Relation | Definition | Reading |
+|----------|------------|---------|
+| **Essence** | A ⊑ B := A ∧ B ≡ B | "A is essential to B" (A is a conjunctive part of B) |
+| **Ground** | A ≤ B := A ∨ B ≡ B | "A grounds B" (A is a disjunctive part of B) |
+
+**Negation distribution**: These relations are interrelated through negation:
+- A ⊑ B iff ¬A ≤ ¬B
+- A ≤ B iff ¬A ⊑ ¬B
+
+**Bilattice structure**: The space of bilateral propositions forms a non-interlaced bilattice (Ginsberg 1988, Fitting 1989-2002) where:
+- ⟨P, ⊑⟩ and ⟨P, ≤⟩ are complete lattices
+- Negation exchanges the two orderings: X ≤ Y iff ¬X ⊑ ¬Y
+- Conjunction and disjunction are the least upper bounds with respect to ⊑ and ≤ respectively
 
 ### Bilateral Propositions
 
@@ -297,7 +312,25 @@ It is derivable that M, τ, x, σ, i⃗ ⊨ A iff it is not the case that M, τ,
 |----------|-----------------|
 | **(λx.A)(t)** | M, τ, x, σ, i⃗ ⊨ (λx.A)(t) iff M, τ, x, σ[⟦t⟧^σ_M/x], i⃗ ⊨ A |
 
-<!-- [FIX:] the semantics for the universal quantifier should be provided next, followed by an actuality predicate 'Act' which checks if a state is a part of the world-state to result from letting the evaluation world-history act on the evaluation time. Specify how 'Act' can be used to restrict the universal quantifier to actually existing objects, where the resulting actuality operators invalidate the barcan formulas, but the universal quantifiers do not. -->
+#### Universal Quantifier
+
+| Operator | Truth Condition |
+|----------|-----------------|
+| **∀y.A** | M, τ, x, σ, i⃗ ⊨ ∀y.A iff M, τ, x, σ[s/y], i⃗ ⊨ A for all s ∈ S |
+
+#### Actuality Predicate
+
+| Operator | Truth Condition |
+|----------|-----------------|
+| **Act(t)** | M, τ, x, σ, i⃗ ⊨ Act(t) iff ⟦t⟧^σ_M ⊑ τ(x) |
+
+The actuality predicate checks whether a state is part of the current world-state. Combined with the universal quantifier, this enables restricting quantification to actually existing objects:
+
+| Restricted Quantifier | Truth Condition |
+|----------------------|-----------------|
+| **∀y(Act(y) → A)** | True iff A holds for all states that are parts of τ(x) |
+
+**Barcan formulas**: The unrestricted universal quantifier validates the Barcan formulas (∀x□A → □∀xA and its converse), while the actuality-restricted quantifier does not. This allows modeling domains that vary across possible worlds.
 
 #### Extensional Connectives
 
