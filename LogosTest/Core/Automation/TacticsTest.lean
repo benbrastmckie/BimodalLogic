@@ -10,7 +10,7 @@ This module contains tests for the custom tactics defined in
 
 ## Test Coverage
 
-**Total Tests**: 134 (Tests 1-134)
+**Total Tests**: 150 (Tests 1-150)
 
 Comprehensive test suite covering:
 - Basic axiom application (apply_axiom, modal_t)
@@ -41,6 +41,7 @@ Comprehensive test suite covering:
 - **Phase 8 Tests (96-105)**: modal_search/temporal_search depth tests
 - **Phase 9 Tests (106-110)**: Integration and bimodal tests
 - **Phase 10 Tests (111-134)**: Task 315 tactic tests (modal_search, temporal_search, propositional_search)
+- **Integration Tests (135-150)**: Task 319 tactic combination and state tests
 
 ## References
 
@@ -803,5 +804,117 @@ example (p q : Formula) : [p, p.imp q] ⊢ q := by
 /-- Test 134: Same goal provable by propositional_search -/
 example (p q : Formula) : [p, p.imp q] ⊢ q := by
   propositional_search
+
+/-!
+## Integration Tests (Task 319 Phase 5)
+
+Tests combining automated tactics with manual proof steps and
+verifying tactic interaction patterns.
+
+**Tests**: 135-150 (16 integration tests)
+-/
+
+/-!
+### Tactic Combination Tests
+
+Tests that use multiple tactics in sequence.
+-/
+
+/-- Test 135: multiple tactics in same proof via exact -/
+example (p : Formula) : ([] ⊢ p.box.imp p) × ([] ⊢ p.all_future.imp p.all_future.all_future) :=
+  (by modal_search, by temporal_search)
+
+/-- Test 136: tactics with non-derivation goals -/
+example (p : Formula) : Nat × ([] ⊢ p.box.imp p) :=
+  (42, by modal_search)
+
+/-- Test 137: both subgoals automated -/
+example (p q : Formula) : ([] ⊢ p.box.imp p) × ([] ⊢ q.box.imp q) :=
+  (by modal_search, by modal_search)
+
+/-- Test 138: product of different axiom types -/
+example (p q : Formula) :
+    ([] ⊢ p.box.imp p) × ([] ⊢ p.imp (q.imp p)) :=
+  (by modal_search, by propositional_search)
+
+/-!
+### State Preservation Tests
+
+Tests verifying tactic behavior preserves proof state appropriately.
+-/
+
+/-- Test 139: successful search leaves no goals -/
+example (p : Formula) : [] ⊢ p.box.imp p := by
+  modal_search
+  -- No remaining goals
+
+/-- Test 140: independent product goals via Prod.mk -/
+example (p q : Formula) :
+    ([] ⊢ p.imp (q.imp p)) × ([] ⊢ q.imp (p.imp q)) :=
+  Prod.mk (by propositional_search) (by propositional_search)
+
+/-- Test 141: nested proof with inner tactic -/
+example (p : Formula) : [] ⊢ p.box.imp p := by
+  have h : [] ⊢ p.box.imp p := by modal_search
+  exact h
+
+/-!
+### Complex Context Tests
+
+Tests with rich contexts to verify tactic handling.
+-/
+
+/-- Test 142: large context simplification -/
+example (p q r s : Formula) :
+    [p, q, r, s, p.imp q, q.imp r, r.imp s] ⊢ p := by
+  modal_search 3
+
+/-- Test 143: context with modal formulas -/
+example (p q : Formula) :
+    [p.box, q.box, p.box.imp (q.box.imp (p.box.and q.box))] ⊢ p.box := by
+  modal_search 3
+
+/-- Test 144: context with temporal formulas -/
+example (p q : Formula) :
+    [p.all_future, q.all_future] ⊢ p.all_future := by
+  temporal_search 3
+
+/-!
+### Cross-Domain Tests
+
+Tests combining modal, temporal, and propositional reasoning.
+-/
+
+/-- Test 145: modal axiom in propositional context -/
+example (p : Formula) : [] ⊢ p.box.imp p := by
+  modal_search  -- Uses modal_t
+
+/-- Test 146: temporal axiom temp_a: p → G(Pp) -/
+example (p : Formula) : [] ⊢ p.imp p.some_past.all_future := by
+  temporal_search  -- Uses temp_a: φ → G(Pφ)
+
+/-- Test 147: any tactic finds assumption -/
+example (p : Formula) : [p] ⊢ p := by
+  -- All three tactics should find this
+  modal_search  -- Could also use temporal_search or propositional_search
+
+/-!
+### Stress Tests
+
+Tests with deeper search requirements.
+-/
+
+/-- Test 148: chain of modus ponens (depth 3) -/
+example (p q r : Formula) : [p, p.imp q, q.imp r] ⊢ r := by
+  propositional_search 5
+
+/-- Test 149: longer chain (depth 4) -/
+example (a b c d : Formula) : [a, a.imp b, b.imp c, c.imp d] ⊢ d := by
+  propositional_search 7
+
+/-- Test 150: complex nested implication -/
+example (p q : Formula) : [] ⊢ (p.imp (q.imp p)).imp ((p.imp q).imp (p.imp p)) := by
+  -- This requires prop_k applied to prop_s result
+  propositional_search 5
 
 end LogosTest.Core.Automation
