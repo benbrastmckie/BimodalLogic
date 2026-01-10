@@ -16,31 +16,6 @@
   },
   "active_projects": [
     {
-      "project_number": 351,
-      "project_name": "review_skill_context_loading",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-10T22:08:02Z",
-      "last_updated": "2026-01-10T22:55:52Z",
-      "artifacts": [
-        {
-          "path": ".claude/specs/351_review_skill_context_loading/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/351_review_skill_context_loading/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/351_review_skill_context_loading/summaries/implementation-summary-20260110.md",
-          "type": "summary"
-        }
-      ],
-      "plan_version": "001",
-      "completed": "2026-01-10T22:55:52Z"
-    },
-    {
       "project_number": 132,
       "project_name": "prove_lindenbaum_maximal_consistency_lemma_in_completeness.lean",
       "type": "feature",
@@ -257,7 +232,7 @@
       ],
       "started": "2026-01-05",
       "completed": "2026-01-05",
-      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom φ) from witness function."
+      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom \u03c6) from witness function."
     },
     {
       "project_number": 261,
@@ -377,71 +352,6 @@
       "last_updated": "2026-01-05T09:38:06Z"
     },
     {
-      "project_number": 315,
-      "project_name": "research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction",
-      "type": "feature",
-      "phase": "implementing",
-      "status": "completed",
-      "priority": "high",
-      "language": "lean",
-      "created": "2026-01-05T08:34:20.462436Z",
-      "last_updated": "2026-01-10T22:57:38Z",
-      "effort": "61-97 hours",
-      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
-      "started": "2026-01-05",
-      "researched": "2026-01-05",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-001.md",
-          "created": "2026-01-05T18:06:50Z",
-          "summary": "Comprehensive analysis of three approaches to resolve Axiom Prop vs Type blocker. Recommends Approach 3 (Tactic-Mode) with 9/10 viability rating."
-        },
-        {
-          "type": "research",
-          "path": ".claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-002.md",
-          "created": "2026-01-05T18:36:09Z",
-          "summary": "Comparative analysis of Approach 2 vs 3 for AI training data generation. Findings: (1) Approach 3 is Lean 4 standard, (2) Both approaches compatible (hybrid viable), (3) Approach 2 superior for AI training (5/5 vs 0/5). Recommends hybrid strategy: tactic first (28-44h), then programmatic API (33-53h)."
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md",
-          "created": "2026-01-05T19:00:00Z",
-          "summary": "Hybrid implementation plan: Phase 1 (Tactic Mode, 28-44h) + Phase 2 (Refactor to Type, 33-53h). Total 23 phases, 61-97 hours."
-        }
-      ],
-      "planned": "2026-01-05",
-      "plan_path": ".claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md",
-      "plan_metadata": {
-        "phases": 23,
-        "total_effort_hours": 79,
-        "complexity": "complex",
-        "research_integrated": true,
-        "language": "lean",
-        "proof_strategy": "Hybrid: Phase 1 (Tactic Mode) + Phase 2 (Refactor to Type)",
-        "mathlib_dependencies": [
-          "Lean.Elab.Tactic",
-          "Lean.Meta",
-          "Aesop"
-        ],
-        "plan_version": 1,
-        "reports_integrated": [
-          {
-            "path": "reports/research-001.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-01-05"
-          },
-          {
-            "path": "reports/research-002.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-01-05"
-          }
-        ]
-      },
-      "implementing_started": "2026-01-09",
-      "completed": "2026-01-10"
-    },
-    {
       "project_number": 323,
       "project_name": "fix_/todo_command_to_run_markdown_formatter_after_completion",
       "type": "feature",
@@ -476,52 +386,6 @@
           }
         ]
       }
-    },
-    {
-      "project_number": 334,
-      "project_name": "create_latex_documentation_for_logos_system_mirroring_layer_structure",
-      "type": "feature",
-      "phase": "planning_completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "latex",
-      "description": "Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ with a cleaned up structure that mirrors the Logos layers. The documentation should: (1) Create and import a subfile for each Logos layer, (2) Maintain the same formatting standards as the original LaTeX document, (3) Exclude problem sets, (4) Include standardized sections for each layer: Syntax extensions from previous layer, Semantic frames and models definitions, Proof system extensions from previous layer, Metalogical properties that have been established, (5) Compile definitions in a clear and concise way without proofs, (6) Provide minimal explanation, (7) Serve as a nicely formatted readable LaTeX reference for learning the Logos system without reading Lean code.",
-      "effort": "4-6 hours",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-07T00:00:00Z",
-      "last_updated": "2026-01-10T22:30:00Z",
-      "researched": "2026-01-08",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/334_latex_documentation_structure/reports/research-001.md",
-          "summary": "Comprehensive research report analyzing source LaTeX structure and designing target documentation structure"
-        },
-        {
-          "type": "research",
-          "path": ".claude/specs/334_latex_documentation_structure/reports/research-002.md",
-          "summary": "Supplemental research report focusing on Constitutive and Causal layers from LAYER_EXTENSIONS.md for future Layer 1 documentation"
-        },
-        {
-          "type": "research",
-          "path": ".claude/specs/334_latex_documentation_structure/reports/research-003.md",
-          "summary": "Systematic mapping from RECURSIVE_SEMANTICS.md to LaTeX documentation structure with Lean 4 refactoring considerations"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/334_latex_documentation_structure/plans/implementation-003.md",
-          "summary": "Implementation plan based on RECURSIVE_SEMANTICS.md mapping with 6 phases"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/334_latex_documentation_structure/plans/implementation-004.md",
-          "summary": "Revised plan adding LaTeX context documentation phase for skill integration"
-        }
-      ],
-      "planned": "2026-01-08",
-      "plan_version": "004",
-      "completed": "2026-01-10"
     },
     {
       "project_number": 335,
@@ -872,7 +736,7 @@
       "project_name": "resolve_is_valid_swap_involution_blocker",
       "type": "research",
       "completed": "2025-12-29",
-      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas → Soundness). Full soundness proof succeeds."
+      "summary": "Resolved is_valid_swap_involution blocker through architectural verification. Research proved the sorry in SoundnessLemmas.lean (temporal_duality case) is correct and architecturally necessary. No code changes needed - circular dependency correctly resolved at file level (SoundnessLemmas \u2192 Soundness). Full soundness proof succeeds."
     },
     {
       "project_number": 214,
@@ -907,7 +771,7 @@
       "started": "2025-12-26",
       "completed": "2025-12-29",
       "last_updated": "2025-12-29",
-      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 → 571 lines, +113 lines)",
+      "summary": "Improved MAINTENANCE.md documentation by adding missing registry references, creating comprehensive Backwards Compatibility Policy section, and enhancing cross-references (458 \u2192 571 lines, +113 lines)",
       "artifacts": [
         ".claude/specs/190_improve_maintenance_md_documentation/plans/implementation-002.md",
         ".claude/specs/190_improve_maintenance_md_documentation/summaries/implementation-summary-20251229.md",
@@ -1566,7 +1430,7 @@
         ".claude/specs/271_revise_meta_command_task_creation/reports/research-001.md",
         ".claude/specs/271_revise_meta_command_task_creation/plans/implementation-001.md"
       ],
-      "research_summary": "Comprehensive revision plan to align /meta command with research → plan → implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
+      "research_summary": "Comprehensive revision plan to align /meta command with research \u2192 plan \u2192 implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
       "estimated_hours": 13.0,
       "plan_created": "2026-01-03",
       "plan_path": ".claude/specs/271_revise_meta_command_task_creation/plans/implementation-001.md",
@@ -2986,7 +2850,7 @@
       "modified_files": [
         "Logos/Core/Semantics/Truth.lean"
       ],
-      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T φ.swap → is_valid T φ is semantically FALSE for arbitrary formulas. Counterexample: φ = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
+      "implementation_notes": "IMPOSSIBLE AS STATED. Task 213 research proved the theorem is_valid T \u03c6.swap \u2192 is_valid T \u03c6 is semantically FALSE for arbitrary formulas. Counterexample: \u03c6 = all_past(p), model where p is true in all future but false in some past. Code moved to SoundnessLemmas.lean by task 219. The sorry is architecturally correct and will remain.",
       "blocking_reason": "Theorem is semantically false for arbitrary formulas (proven by task 213). Not a type theory limitation but a fundamental logical impossibility. Task correctly marked impossible."
     },
     {
