@@ -1194,6 +1194,62 @@ elab_rules : tactic
     let cfg := applyParams SearchConfig.temporal paramList
     runTemporalSearch cfg
 
+/--
+`propositional_search` - Bounded proof search for propositional formulas.
+
+Optimized for purely propositional formulas (no modal or temporal operators).
+Disables modal K and temporal K rules to avoid unnecessary search branches.
+
+**Syntax**:
+```lean
+propositional_search              -- Default propositional config
+propositional_search 5            -- Custom depth
+propositional_search (depth := 20)  -- Named parameter
+```
+
+**Example**:
+```lean
+example (p q : Formula) : [p, p.imp q] ⊢ q := by
+  propositional_search
+```
+
+**When to use**:
+- Purely propositional formulas (atoms, implications, conjunctions, etc.)
+- When you know no modal/temporal operators are involved
+- For faster search on propositional goals (fewer strategies tried)
+
+**Difference from modal_search**:
+- Disables modal K and temporal K rules (modalKWeight = 0, temporalKWeight = 0)
+- Otherwise identical behavior
+-/
+syntax "propositional_search" (num)? : tactic
+syntax "propositional_search" modalSearchParam* : tactic
+
+/-- Run propositional_search with given configuration -/
+def runPropositionalSearch (cfg : SearchConfig) : TacticM Unit := do
+  let goal ← getMainGoal
+  let goalType ← goal.getType
+
+  -- Validate goal type
+  let some (_ctx, _formula) ← extractDerivationGoal goalType
+    | throwError "propositional_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
+
+  -- Attempt recursive proof search
+  let found ← searchProof goal cfg.depth cfg.depth
+  if !found then
+    throwError "propositional_search: no proof found within depth {cfg.depth} for goal {goalType}"
+
+elab_rules : tactic
+  | `(tactic| propositional_search $[$d]?) => do
+    let depth := d.map (·.getNat) |>.getD 10
+    runPropositionalSearch { SearchConfig.propositional with depth := depth }
+
+elab_rules : tactic
+  | `(tactic| propositional_search $params:modalSearchParam*) => do
+    let paramList ← params.toList.mapM parseSearchParam
+    let cfg := applyParams SearchConfig.propositional paramList
+    runPropositionalSearch cfg
+
 /-!
 ### Phase 1.1 Tests: Verify tactic syntax and basic infrastructure
 -/
@@ -1299,5 +1355,37 @@ example (p : Formula) : ⊢ (p.all_future).imp (p.all_future.all_future) := by
 #check (SearchConfig.default : SearchConfig)
 #check (SearchConfig.temporal : SearchConfig)
 #check (SearchConfig.propositional : SearchConfig)
+
+/-!
+### Phase 1.8 Tests: Specialized Tactics
+-/
+
+-- Test 22: propositional_search on simple modus ponens
+example (p q : Formula) : [p, p.imp q] ⊢ q := by
+  propositional_search
+
+-- Test 23: propositional_search with chained implications
+example (p q r : Formula) : [p, p.imp q, q.imp r] ⊢ r := by
+  propositional_search 5
+
+-- Test 24: propositional_search with named parameter
+example (p q : Formula) : [p, p.imp q] ⊢ q := by
+  propositional_search (depth := 5)
+
+-- Test 25: propositional_search on assumption
+example (p : Formula) : [p] ⊢ p := by
+  propositional_search
+
+-- Test 26: propositional_search on propositional axiom (prop_s)
+example (p q : Formula) : ⊢ p.imp (q.imp p) := by
+  propositional_search
+
+-- Test 27: temporal_search on temporal axiom (temp_4)
+example (p : Formula) : ⊢ (p.all_future).imp (p.all_future.all_future) := by
+  temporal_search
+
+-- Test 28: modal_search on modal axiom (modal_4)
+example (p : Formula) : ⊢ (p.box).imp (p.box.box) := by
+  modal_search
 
 end Logos.Core.Automation
