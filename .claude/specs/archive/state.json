@@ -5,6 +5,19 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 205,
+      "project_name": "implement_lean_tool_usage_verification_and_monitoring_system",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "6-8 hours",
+      "abandoned": "2026-01-10T23:46:25Z"
+    },
+    {
       "project_number": 351,
       "project_name": "review_skill_context_loading",
       "status": "completed",
@@ -40,7 +53,7 @@
       "created": "2026-01-05T08:34:20.462436Z",
       "last_updated": "2026-01-10T22:57:38Z",
       "effort": "61-97 hours",
-      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom \u03c6 is a Prop, not a Type, making it impossible to return Option (Axiom \u03c6) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
+      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
       "started": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
@@ -197,7 +210,7 @@
       "created": "2026-01-05T08:34:20.462436Z",
       "last_updated": "2026-01-10T22:57:38Z",
       "effort": "61-97 hours",
-      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom \u03c6 is a Prop, not a Type, making it impossible to return Option (Axiom \u03c6) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
+      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
       "started": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
@@ -426,7 +439,7 @@
       "plan_path": ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md",
       "plan_metadata": {
         "plan_version": 2,
-        "revision_reason": "Maintain \u27e8S, \u2291, I\u27e9 notation instead of replacing with \u27e8S, \u2291, | |\u27e9"
+        "revision_reason": "Maintain ⟨S, ⊑, I⟩ notation instead of replacing with ⟨S, ⊑, | |⟩"
       },
       "artifacts": [
         ".claude/specs/349_fix_recursive_semantics_documentation/reports/research-001.md",

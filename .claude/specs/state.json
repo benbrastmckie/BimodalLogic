@@ -148,18 +148,6 @@
       "effort": "9 hours"
     },
     {
-      "project_number": 205,
-      "project_name": "implement_lean_tool_usage_verification_and_monitoring_system",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "markdown",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T01:22:38Z",
-      "effort": "6-8 hours"
-    },
-    {
       "project_number": 218,
       "project_name": "fix_lean_lsp_mcp_integration_and_opencode_module_import_errors",
       "type": "feature",

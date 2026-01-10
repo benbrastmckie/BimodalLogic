@@ -15,7 +15,7 @@ The research identified ~32 Lean files in Logos/Core/ and ~96 files with `import
 
 ### Phase 1: Physical Move and lakefile Update
 
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Move `Logos/Core/` directory to `Bimodal/`
@@ -46,7 +46,7 @@ The research identified ~32 Lean files in Logos/Core/ and ~96 files with `import
 
 ### Phase 2: Namespace Migration
 
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Change all `namespace Logos.Core` to `namespace Bimodal`
