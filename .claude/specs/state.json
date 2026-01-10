@@ -2,7 +2,7 @@
   "_schema_version": "1.1.0",
   "_comment": "Main state tracking file for ProofChecker .opencode system. Auto-created with self-healing on 2025-12-27. Links to specialized state files for archives and maintenance.",
   "_last_updated": "2026-01-08T00:00:00Z",
-  "next_project_number": 350,
+  "next_project_number": 351,
   "project_numbering": {
     "min": 0,
     "max": 999,
@@ -15,6 +15,16 @@
     "_comment": "References to specialized state files. These files are auto-created if missing."
   },
   "active_projects": [
+    {
+      "project_number": 350,
+      "project_name": "fix_recursive_semantics_tags",
+      "status": "not_started",
+      "language": "markdown",
+      "priority": "high",
+      "effort": "6-8 hours",
+      "created": "2026-01-10T18:17:28Z",
+      "last_updated": "2026-01-10T18:17:28Z"
+    },
     {
       "project_number": 349,
       "project_name": "fix_recursive_semantics_documentation",
@@ -552,11 +562,11 @@
       "project_name": "expand_testing_for_proof_search_automation_phase_5",
       "type": "feature",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researching",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T08:34:20.462436Z",
-      "last_updated": "2026-01-05T08:34:20.462436Z",
+      "last_updated": "2026-01-10T14:39:46Z",
       "effort": "8-12 hours",
       "description": "Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks."
     },

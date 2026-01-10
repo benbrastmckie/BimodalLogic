@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-09T12:00:00Z
-next_project_number: 350
+next_project_number: 351
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -29,6 +29,18 @@ technical_debt:
 ---
 
 ## High Priority
+
+### 350. Address all FIX tags in RECURSIVE_SEMANTICS.md systematically
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Systematically address all 16+ FIX tags in Documentation/Research/RECURSIVE_SEMANTICS.md. Key changes include: (1) Rename "Layer" to "Extension" throughout with restructured dependency hierarchy (Constitutive Foundation → Core Extension → modular Epistemic/Normative/Spatial Extensions → Agential Extension), (2) Remove alliteration and "Note" labels, (3) Add frame/language correspondence explanation, (4) Add Spatial Extension and dependency diagram, (5) Fix constitutive frame as non-modal, (6) Change variable assignment notation from "a̅" to "v_1/v_2", (7) Define essence/ground via identity with bilattice reference, (8) Add Syntactic Primitives subsection for Core Extension, (9) Reorder definitions before constraints, (10) Rename "time vector" to "temporal index", (11) Add universal quantifier and actuality predicate semantics, (12) Use '→' instead of '⊳' for imposition, (13) Reference counterfactual_worlds.tex for equivalent definitions, (14) Update related documents (LAYER_EXTENSIONS.md, METHODOLOGY.md, GLOSSARY.md) for consistency.
+
+---
 
 ### 334. Create LaTeX documentation for Logos system mirroring layer structure
 - **Effort**: 4-6 hours
@@ -159,7 +171,8 @@ technical_debt:
 
 ### 319. Expand testing for proof search automation (Phase 5)
 - **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
+- **Started**: 2026-01-10
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
