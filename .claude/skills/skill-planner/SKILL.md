@@ -2,7 +2,9 @@
 name: skill-planner
 description: Create phased implementation plans from research findings. Invoke when a task needs an implementation plan.
 allowed-tools: Read, Write, Edit, Glob, Grep
-context: fork
+context:
+  - .claude/context/core/formats/plan-format.md
+  - .claude/context/core/workflows/task-breakdown.md
 ---
 
 # Planner Skill
