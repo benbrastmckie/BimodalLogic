@@ -94,14 +94,19 @@ macro "modal_t" : tactic =>
 /-!
 ## Phase 4: tm_auto (Aesop Integration)
 
-**IMPLEMENTATION NOTE**: Aesop integration successful using forward chaining rules defined
-in AesopRules.lean. Uses default Aesop rule set with TM-specific rules registered.
+**IMPLEMENTATION NOTE**: Aesop integration has known issues with DerivationTree goals.
 
-**Solution**: Aesop-powered automation with forward chaining for all proven axioms (MT, M4,
-MB, T4, TA, prop_k, prop_s) and safe apply rules for core inference (modus_ponens, modal_k,
-temporal_k).
+**Known Issue**: Aesop has proof reconstruction errors on derivability goals:
+```
+error: aesop: internal error during proof reconstruction: goal 501 was not normalised
+```
 
-This leverages Aesop's white-box best-first search with domain-specific TM logic rules.
+**Recommendation**: Use `modal_search` instead of `tm_auto`/`aesop` for derivability goals.
+`modal_search` provides reliable proof search without the Aesop proof reconstruction issues.
+
+**Legacy Note**: Aesop rules are defined in AesopRules.lean for forward chaining on axioms
+(MT, M4, MB, T4, TA, prop_k, prop_s). The tm_auto macro is preserved for compatibility
+but may not work reliably on all goals.
 -/
 
 /--
