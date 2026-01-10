@@ -17,6 +17,13 @@ lean_lib Logos where
     ⟨`autoImplicit, false⟩
   ]
 
+-- Bimodal library - standalone TM logic implementation
+lean_lib Bimodal where
+  leanOptions := #[
+    ⟨`pp.unicode.fun, true⟩,
+    ⟨`autoImplicit, false⟩
+  ]
+
 lean_lib LogosTest
 
 lean_lib Archive

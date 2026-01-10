@@ -1,6 +1,6 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-10T23:39:01Z",
+  "_last_updated": "2026-01-11T00:00:00Z",
   "next_project_number": 353,
   "active_projects": [
     {
@@ -148,19 +148,6 @@
       "effort": "9 hours"
     },
     {
-      "project_number": 218,
-      "project_name": "fix_lean_lsp_mcp_integration_and_opencode_module_import_errors",
-      "type": "feature",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-10T23:15:00Z",
-      "completed": "2026-01-10",
-      "effort": "0.75 hours"
-    },
-    {
       "project_number": 257,
       "project_name": "completeness_proofs",
       "type": "feature",
@@ -252,29 +239,6 @@
       "description": "After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary."
     },
     {
-      "project_number": 291,
-      "project_name": "fix_lean_research_agent_delegate_status_updates",
-      "type": "bugfix",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-04T17:19:31Z",
-      "last_updated": "2026-01-10T23:30:00Z",
-      "completed": "2026-01-10",
-      "estimated_hours": 1,
-      "started": "2026-01-04",
-      "research_completed": "2026-01-04",
-      "plan_version": "002",
-      "plan_revised": "2026-01-10",
-      "revision_reason": "Migrated from OpenCode to Claude Code system",
-      "artifacts": [
-        ".claude/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md",
-        ".claude/specs/291_fix_lean_research_agent_delegate_status_updates/plans/implementation-002.md",
-        ".claude/specs/291_fix_lean_research_agent_delegate_status_updates/summaries/implementation-summary-20260110.md"
-      ]
-    },
-    {
       "project_number": 296,
       "project_name": "create_sync_command_to_synchronize_todo_md_and_state_json",
       "type": "feature",
@@ -318,81 +282,6 @@
         "revision_reason": "User requested single task with detailed plan containing appropriate number of phases (not hardcoded), rather than multiple subtasks"
       },
       "plan_revised": "2026-01-05"
-    },
-    {
-      "project_number": 308,
-      "project_name": "final_cleanup_and_comprehensive_testing_5_5",
-      "type": "feature",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "general",
-      "description": "Complete final cleanup of any remaining cruft from files not reverted. Test all commands (/task, /meta, /todo, /review) comprehensively to ensure everything works correctly. Commit clean changes with proper documentation.",
-      "effort": "30 minutes",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-05T09:38:06Z",
-      "last_updated": "2026-01-10T23:38:38Z",
-      "started": "2026-01-10",
-      "researched": "2026-01-10",
-      "planning_completed": "2026-01-10",
-      "plan_version": "001",
-      "plan_path": ".claude/specs/308_final_cleanup_and_comprehensive_testing/plans/implementation-001.md",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/308_final_cleanup_and_comprehensive_testing/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/308_final_cleanup_and_comprehensive_testing/plans/implementation-001.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/308_final_cleanup_and_comprehensive_testing/summaries/implementation-summary-20260110.md"
-        }
-      ],
-      "completed": "2026-01-10"
-    },
-    {
-      "project_number": 323,
-      "project_name": "fix_/todo_command_to_run_markdown_formatter_after_completion",
-      "type": "feature",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "meta",
-      "description": "Fix the /todo command to run the markdown formatter on TODO.md after completing its archival operations. This ensures TODO.md remains properly formatted after task archival.",
-      "effort": "1.75 hours",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-05T00:00:00Z",
-      "last_updated": "2026-01-10",
-      "research_completed": "2026-01-05",
-      "artifacts": [
-        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md",
-        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-002.md",
-        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/summaries/implementation-summary-20260110.md"
-      ],
-      "planning_completed": "2026-01-07",
-      "plan_path": ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-002.md",
-      "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 1.75,
-        "complexity": "low",
-        "research_integrated": true,
-        "plan_version": 2,
-        "plan_revised": "2026-01-10",
-        "revision_reason": "Verify plan compatibility with Claude Code migration",
-        "reports_integrated": [
-          {
-            "path": "reports/research-001.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-01-05"
-          }
-        ]
-      },
-      "completed": "2026-01-10"
     },
     {
       "project_number": 335,
