@@ -32,8 +32,9 @@ technical_debt:
 
 ### 350. Address all FIX tags in RECURSIVE_SEMANTICS.md systematically
 - **Effort**: 6-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-10
+- **Completed**: 2026-01-10
 - **Researched**: 2026-01-10
 - **Planned**: 2026-01-10
 - **Priority**: High
@@ -46,6 +47,9 @@ technical_debt:
 
 **Plan Artifacts**:
   - Implementation Plan: [.claude/specs/350_fix_recursive_semantics_tags/plans/implementation-001.md]
+
+**Summary**:
+  - Implementation Summary: [.claude/specs/350_fix_recursive_semantics_tags/summaries/implementation-summary-20260110.md]
 
 **Description**: Systematically address all 16+ FIX tags in Documentation/Research/RECURSIVE_SEMANTICS.md. Key changes include: (1) Rename "Layer" to "Extension" throughout with restructured dependency hierarchy (Constitutive Foundation → Core Extension → modular Epistemic/Normative/Spatial Extensions → Agential Extension), (2) Remove alliteration and "Note" labels, (3) Add frame/language correspondence explanation, (4) Add Spatial Extension and dependency diagram, (5) Fix constitutive frame as non-modal, (6) Change variable assignment notation from "a̅" to "v_1/v_2", (7) Define essence/ground via identity with bilattice reference, (8) Add Syntactic Primitives subsection for Core Extension, (9) Reorder definitions before constraints, (10) Rename "time vector" to "temporal index", (11) Add universal quantifier and actuality predicate semantics, (12) Use '→' instead of '⊳' for imposition, (13) Reference counterfactual_worlds.tex for equivalent definitions, (14) Update related documents (LAYER_EXTENSIONS.md, METHODOLOGY.md, GLOSSARY.md) for consistency.
 
