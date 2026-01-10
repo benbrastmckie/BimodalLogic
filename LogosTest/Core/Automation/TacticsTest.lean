@@ -10,7 +10,7 @@ This module contains tests for the custom tactics defined in
 
 ## Test Coverage
 
-**Total Tests**: 77 (Tests 1-77)
+**Total Tests**: 134 (Tests 1-134)
 
 Comprehensive test suite covering:
 - Basic axiom application (apply_axiom, modal_t)
@@ -22,6 +22,7 @@ Comprehensive test suite covering:
 - ProofSearch function tests (bounded_search, heuristics, helpers)
 - Propositional depth tests (prop_k, prop_s chaining)
 - Aesop integration tests (complex TM proofs)
+- Task 315 modal_search, temporal_search, propositional_search tests
 
 ## Test Organization
 
@@ -37,6 +38,9 @@ Comprehensive test suite covering:
 - **Phase 5 Group 2 Tests (59-68)**: ProofSearch function tests
 - **Phase 5 Group 3 Tests (69-72)**: Propositional depth tests
 - **Phase 5 Group 4 Tests (73-77)**: Aesop integration tests
+- **Phase 8 Tests (96-105)**: modal_search/temporal_search depth tests
+- **Phase 9 Tests (106-110)**: Integration and bimodal tests
+- **Phase 10 Tests (111-134)**: Task 315 tactic tests (modal_search, temporal_search, propositional_search)
 
 ## References
 
@@ -307,43 +311,52 @@ example (a b c d _ : Nat) : Nat := by
 /-!
 ## Phase 5 Group 1: Inference Rule Tests
 
-Tests for modal_k, temporal_k, temporal_duality inference rules.
+Tests for generalized_modal_k, generalized_temporal_k, temporal_duality inference rules.
+
+NOTE: DerivationTree.modal_k and DerivationTree.temporal_k were removed in Task 44.
+The generalized rules are now in Logos.Core.Theorems.GeneralizedNecessitation.
 -/
 
-/-- Test 51: modal_k rule derives □φ from φ -/
-example (h : DerivationTree [] (Formula.atom "p")) :
+open Logos.Core.Theorems in
+/-- Test 51: generalized_modal_k rule derives □φ from φ (empty context) -/
+noncomputable example (h : DerivationTree [] (Formula.atom "p")) :
     DerivationTree (Context.map Formula.box []) (Formula.box (Formula.atom "p")) :=
-  DerivationTree.modal_k [] _ h
+  generalized_modal_k [] _ h
 
-/-- Test 52: temporal_k rule derives Fφ from φ -/
-example (h : DerivationTree [] (Formula.atom "p")) :
+open Logos.Core.Theorems in
+/-- Test 52: generalized_temporal_k rule derives Fφ from φ (empty context) -/
+noncomputable example (h : DerivationTree [] (Formula.atom "p")) :
     DerivationTree (Context.map Formula.all_future []) (Formula.all_future (Formula.atom "p")) :=
-  DerivationTree.temporal_k [] _ h
+  generalized_temporal_k [] _ h
 
 /-- Test 53: temporal_duality swaps past and future -/
 example (h : DerivationTree [] (Formula.all_past (Formula.atom "p"))) :
     DerivationTree [] (Formula.swap_temporal (Formula.all_past (Formula.atom "p"))) :=
   DerivationTree.temporal_duality _ h
 
-/-- Test 54: modal_k with axiom derivation -/
-example :
+open Logos.Core.Theorems in
+/-- Test 54: generalized_modal_k with axiom derivation -/
+noncomputable example :
     DerivationTree (Context.map Formula.box []) (Formula.box (Formula.imp (Formula.box (Formula.atom "p")) (Formula.atom "p"))) :=
-  DerivationTree.modal_k [] _ (DerivationTree.axiom [] _ (Axiom.modal_t _))
+  generalized_modal_k [] _ (DerivationTree.axiom [] _ (Axiom.modal_t _))
 
-/-- Test 55: temporal_k with axiom derivation -/
-example :
+open Logos.Core.Theorems in
+/-- Test 55: generalized_temporal_k with axiom derivation -/
+noncomputable example :
     DerivationTree (Context.map Formula.all_future []) (Formula.all_future (Formula.imp (Formula.all_future (Formula.atom "p")) (Formula.all_future (Formula.all_future (Formula.atom "p"))))) :=
-  DerivationTree.temporal_k [] _ (DerivationTree.axiom [] _ (Axiom.temp_4 _))
+  generalized_temporal_k [] _ (DerivationTree.axiom [] _ (Axiom.temp_4 _))
 
-/-- Test 56: modal_k with non-empty context -/
-example (h : DerivationTree [Formula.atom "p"] (Formula.atom "p")) :
+open Logos.Core.Theorems in
+/-- Test 56: generalized_modal_k with non-empty context -/
+noncomputable example (h : DerivationTree [Formula.atom "p"] (Formula.atom "p")) :
     DerivationTree (Context.map Formula.box [Formula.atom "p"]) (Formula.box (Formula.atom "p")) :=
-  DerivationTree.modal_k _ _ h
+  generalized_modal_k _ _ h
 
-/-- Test 57: temporal_k with non-empty context -/
-example (h : DerivationTree [Formula.atom "p"] (Formula.atom "p")) :
+open Logos.Core.Theorems in
+/-- Test 57: generalized_temporal_k with non-empty context -/
+noncomputable example (h : DerivationTree [Formula.atom "p"] (Formula.atom "p")) :
     DerivationTree (Context.map Formula.all_future [Formula.atom "p"]) (Formula.all_future (Formula.atom "p")) :=
-  DerivationTree.temporal_k _ _ h
+  generalized_temporal_k _ _ h
 
 /-- Test 58: temporal_duality with implication -/
 example (h : DerivationTree [] (Formula.all_past (Formula.imp (Formula.atom "p") (Formula.atom "q")))) :
@@ -665,5 +678,130 @@ example (p : Formula) : DerivationTree [] (p.box.imp p) := by
 example (p q : Formula) : DerivationTree [] (p.imp (q.imp p)) := by
   apply DerivationTree.axiom
   exact Axiom.prop_s _ _
+
+/-!
+## Phase 10: Task 315 Tactic Tests
+
+Tests for the new modal_search, temporal_search, and propositional_search tactics
+implemented as part of Task 315 (Axiom Prop vs Type blocker resolution).
+
+These tests verify that the tactics work correctly on various derivability goals.
+-/
+
+/-!
+### modal_search Tactic Tests
+-/
+
+/-- Test 111: modal_search on modal_t axiom -/
+example (p : Formula) : ⊢ p.box.imp p := by
+  modal_search
+
+/-- Test 112: modal_search on modal_4 axiom -/
+example (p : Formula) : ⊢ p.box.imp p.box.box := by
+  modal_search
+
+/-- Test 113: modal_search on simple assumption -/
+example (p : Formula) : [p] ⊢ p := by
+  modal_search
+
+/-- Test 114: modal_search on modus ponens -/
+example (p q : Formula) : [p, p.imp q] ⊢ q := by
+  modal_search
+
+/-- Test 115: modal_search on chained modus ponens -/
+example (p q r : Formula) : [p, p.imp q, q.imp r] ⊢ r := by
+  modal_search 5
+
+/-- Test 116: modal_search with depth parameter -/
+example (p : Formula) : ⊢ p.box.imp p := by
+  modal_search (depth := 5)
+
+/-- Test 117: modal_search on modal K reduction -/
+example (p : Formula) : [p.box] ⊢ p.box := by
+  modal_search 3
+
+/-- Test 118: modal_search on multiple boxed assumptions -/
+example (p q : Formula) : [p.box, q.box] ⊢ p.box := by
+  modal_search 3
+
+/-!
+### temporal_search Tactic Tests
+-/
+
+/-- Test 119: temporal_search on temp_4 axiom -/
+example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by
+  temporal_search
+
+/-- Test 120: temporal_search on simple assumption -/
+example (p : Formula) : [p] ⊢ p := by
+  temporal_search
+
+/-- Test 121: temporal_search with depth parameter -/
+example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by
+  temporal_search (depth := 5)
+
+/-- Test 122: temporal_search on temporal K reduction -/
+example (p : Formula) : [p.all_future] ⊢ p.all_future := by
+  temporal_search 3
+
+/-- Test 123: temporal_search on multiple future assumptions -/
+example (p q : Formula) : [p.all_future, q.all_future] ⊢ p.all_future := by
+  temporal_search 3
+
+/-!
+### propositional_search Tactic Tests
+-/
+
+/-- Test 124: propositional_search on simple assumption -/
+example (p : Formula) : [p] ⊢ p := by
+  propositional_search
+
+/-- Test 125: propositional_search on modus ponens -/
+example (p q : Formula) : [p, p.imp q] ⊢ q := by
+  propositional_search
+
+/-- Test 126: propositional_search on chained modus ponens -/
+example (p q r : Formula) : [p, p.imp q, q.imp r] ⊢ r := by
+  propositional_search 5
+
+/-- Test 127: propositional_search on prop_s axiom -/
+example (p q : Formula) : ⊢ p.imp (q.imp p) := by
+  propositional_search
+
+/-- Test 128: propositional_search with depth parameter -/
+example (p q : Formula) : [p, p.imp q] ⊢ q := by
+  propositional_search (depth := 5)
+
+/-!
+### Configuration Tests
+-/
+
+/-- Test 129: modal_search with multiple named parameters -/
+example (p : Formula) : ⊢ p.box.imp p := by
+  modal_search (depth := 5) (visitLimit := 500)
+
+/-- Test 130: temporal_search with visitLimit -/
+example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by
+  temporal_search (depth := 5) (visitLimit := 500)
+
+/-- Test 131: propositional_search with visitLimit -/
+example (p q : Formula) : [p, p.imp q] ⊢ q := by
+  propositional_search (depth := 5) (visitLimit := 500)
+
+/-!
+### Cross-Tactic Consistency Tests
+-/
+
+/-- Test 132: Same goal provable by modal_search -/
+example (p q : Formula) : [p, p.imp q] ⊢ q := by
+  modal_search
+
+/-- Test 133: Same goal provable by temporal_search -/
+example (p q : Formula) : [p, p.imp q] ⊢ q := by
+  temporal_search
+
+/-- Test 134: Same goal provable by propositional_search -/
+example (p q : Formula) : [p, p.imp q] ⊢ q := by
+  propositional_search
 
 end LogosTest.Core.Automation
