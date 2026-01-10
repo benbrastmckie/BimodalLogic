@@ -73,10 +73,10 @@ The script path is still `.opencode/scripts/todo_cleanup.py` (not yet migrated t
 
 ## Implementation Phases
 
-### Phase 1: Update Paths in todo_cleanup.py [NOT STARTED]
+### Phase 1: Update Paths in todo_cleanup.py [IN PROGRESS]
 
 **Estimated Effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objective**: Update script to use `.claude/specs/` instead of `.opencode/specs/`
 

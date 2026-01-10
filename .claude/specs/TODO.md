@@ -32,13 +32,15 @@ technical_debt:
 
 ### 352. Rename Logos/Core/ to Bimodal/
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
 - **Researched**: 2026-01-10
+- **Planned**: 2026-01-10
 - **Research**: [.claude/specs/352_rename_logos_core_to_bimodal/reports/research-001.md]
+- **Plan**: [.claude/specs/352_rename_logos_core_to_bimodal/plans/implementation-001.md]
 
 **Description**: Rename Logos/Core/ to Bimodal/ to establish the bimodal language, semantics, proof theory, and metalogical results as an independent project. This refactoring prepares the repository for the Logos extensions detailed in RECURSIVE_SEMANTICS.md and LAYER_EXTENSIONS.md. Focus on moving Core/ to Bimodal/ and ensuring everything builds correctly.
 
@@ -275,7 +277,7 @@ Ensures Lean research tasks use MCP tools systematically and efficiently. Provid
 ### 323. Fix /todo command to run markdown formatter after completion
 
 - **Effort**: 1.75 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-05
 - **Planned**: 2026-01-07
 - **Revised**: 2026-01-10
