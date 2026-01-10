@@ -6,11 +6,11 @@ repository_health:
   production_readiness: excellent
   last_assessed: 2026-01-05T02:00:00Z
 task_counts:
-  active: 49
-  completed: 67
+  active: 44
+  completed: 71
   in_progress: 2
-  not_started: 43
-  abandoned: 7
+  not_started: 39
+  abandoned: 8
   total: 124
 priority_distribution:
   high: 17
@@ -144,142 +144,6 @@ technical_debt:
 
 ---
 
-
-### 205. Implement Lean tool usage verification and monitoring system
-- **Effort**: 6-8 hours
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-01-10
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Files Affected**:
-  - .claude/command/research.md
-  - .claude/command/implement.md
-  - .claude/agent/subagents/lean-research-agent.md
-  - .claude/agent/subagents/lean-implementation-agent.md
-  - .claude/context/core/standards/lean-tool-verification.md (new)
-  - .claude/specs/monitoring/ (new directory structure)
-- **Description**: Design and implement a comprehensive monitoring and verification system to detect and validate that Lean-specific tools (lean-lsp-mcp, Loogle, LeanExplore, LeanSearch) are being correctly used by the appropriate commands and agents when processing Lean tasks. The system should provide visibility into tool usage patterns, detect routing errors, track tool availability issues, and identify opportunities for improvement. This includes creating verification methods, logging standards, monitoring dashboards, and automated health checks to ensure the system is working optimally.
-- **Acceptance Criteria**:
-  - [ ] Verification method identified for detecting lean-lsp-mcp usage in /implement command for Lean tasks
-  - [ ] Verification method identified for detecting Loogle usage in /research command for Lean tasks
-  - [ ] Automated tool availability checks implemented (binary existence, process health, API connectivity)
-  - [ ] Tool usage logging standardized in lean-research-agent and lean-implementation-agent return formats
-  - [ ] Monitoring dashboard or report created showing tool usage metrics per command execution
-  - [ ] Health check command or script created to verify routing is working correctly
-  - [ ] Documentation created explaining verification methods and monitoring approach
-  - [ ] Error detection implemented for cases where tools should be used but aren't (routing failures)
-  - [ ] Recommendations provided for system improvements based on monitoring data
-  - [ ] All verification methods tested with real command executions on Lean tasks
-- **Impact**: Provides visibility and confidence that the Lean tool integration is working correctly, enables early detection of routing or configuration issues, and identifies opportunities to improve the system's effectiveness with Lean-specific research and implementation workflows.
-
----
-
-### 218. Ensure lean-lsp-mcp Integration for Claude Code System
-**Effort**: 1.5 hours
-**Status**: [COMPLETED]
-**Started**: 2025-12-28
-**Researched**: 2025-12-28
-**Revised**: 2026-01-10
-**Completed**: 2026-01-10
-**Priority**: High
-**Blocking**: None
-**Dependencies**: 212 (completed)
-**Language**: meta
-**Research Artifacts**:
-  - Main Report: [.claude/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md]
-**Plan**: [.claude/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-005.md]
-**Summary**: [.claude/specs/218_fix_lean_lsp_mcp_integration/summaries/implementation-summary-20260110.md]
-**Plan Revision Notes** (v005, 2026-01-10): Migrated from OpenCode to Claude Code system. Previous plan (v004) was OpenCode-specific. Now verifying and documenting lean-lsp-mcp integration for Claude Code using `.mcp.json` config and `mcp__lean-lsp__*` tool calls.
-
-**Files Affected**:
-- .mcp.json (verify configuration)
-- .claude/skills/skill-lean-implementation/SKILL.md (verify MCP tool declarations)
-- .claude/skills/skill-lean-research/SKILL.md (verify MCP tool declarations)
-- .claude/context/project/lean4/tools/mcp-tools-guide.md (update to remove Python client references)
-
-**Description**:
-Task 218 originally addressed OpenCode MCP integration (v001-v004), but the project has migrated to Claude Code. This revision (v005) verifies lean-lsp-mcp tools work correctly with Claude Code's native MCP support via `.mcp.json` and the skill system's `mcp__lean-lsp__*` tool declarations. Focus is on verification and documentation rather than configuration changes.
-
-**Acceptance Criteria**:
-- [ ] .mcp.json verified correct for Claude Code
-- [ ] skill-lean-implementation has correct MCP tool declarations
-- [ ] skill-lean-research has correct MCP tool declarations
-- [ ] mcp-tools-guide.md updated for Claude Code patterns
-- [ ] MCP tools verified working (goal, diagnostics, search)
-- [ ] Rate limits documented for search tools
-- [ ] Selective tool enablement reduces context window usage
-
-**Impact**:
-CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client to proper OpenCode-native MCP integration. Enables lean-lsp-mcp tools for real-time Lean compilation checking, proof verification, and theorem search. Reduces context window usage by 2000-5000 tokens through selective per-agent tool enablement. Establishes foundation for additional MCP servers (Context7, Grep) to enhance Lean development workflow.
-
----
-
-
-### 291. Ensure Lean Research Skill Uses MCP Tools Correctly
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-04
-- **Researched**: 2026-01-04
-- **Revised**: 2026-01-10
-- **Completed**: 2026-01-10
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: Task 218 (completed)
-
-**Research Artifacts**:
-  - Research Report: [.claude/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md]
-**Plan**: [.claude/specs/291_fix_lean_research_agent_delegate_status_updates/plans/implementation-002.md]
-**Summary**: [.claude/specs/291_fix_lean_research_agent_delegate_status_updates/summaries/implementation-summary-20260110.md]
-**Plan Revision Notes** (v002, 2026-01-10): Migrated from OpenCode (.opencode/) to Claude Code (.claude/) agent system. Previous plan (v001) targeted OpenCode subagents which are no longer used. Revised to focus on skill-lean-research MCP tool usage patterns.
-
-**Description**:
-Ensure the Lean research skill uses MCP tools correctly for systematic and efficient Lean research. With the migration to Claude Code, the focus shifts from OpenCode subagent delegation to skill workflow documentation and MCP tool usage patterns. Task 218 fixed the MCP configuration; this task enhances the skill documentation with comprehensive workflow patterns, tool selection guidance, and rate limit management.
-
-**Files to Modify**:
-- `.claude/skills/skill-lean-research/SKILL.md` - Enhance workflow documentation and tool usage patterns
-
-**Acceptance Criteria**:
-- [ ] skill-lean-research has comprehensive workflow documentation
-- [ ] Tool selection matrix documented (when to use each search tool)
-- [ ] Rate limit management strategy documented
-- [ ] Common research patterns documented
-- [ ] MCP tools verified working for Lean research
-
-**Impact**:
-Ensures Lean research tasks use MCP tools systematically and efficiently. Provides clear guidance on tool selection and rate limit management for optimal research workflow.
-
----
-
-
-### 323. Fix /todo command to run markdown formatter after completion
-
-- **Effort**: 1.75 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-05
-- **Planned**: 2026-01-07
-- **Revised**: 2026-01-10
-- **Completed**: 2026-01-10
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Research Artifacts**:
-  - Research Report: [.claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md]
-
-**Plan Artifacts**:
-  - Implementation Plan: [.claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-002.md]
-  - Summary: [.claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/summaries/implementation-summary-20260110.md]
-**Plan Revision Notes** (v002, 2026-01-10): Verified compatibility with Claude Code migration. Simplified approach: extend todo_cleanup.py instead of creating separate script. Reduced from 4 hours to 1.75 hours.
-
-**Description**: Fix the /todo command to run the markdown formatter on TODO.md after completing its archival operations. This ensures TODO.md remains properly formatted after task archival.
-
-**Outcome**: Extended todo_cleanup.py with format_markdown() function. Added --format-only flag. Formatting now applied after archival and fix-dividers operations. Updated paths from .opencode/specs/ to .claude/specs/.
-
----
 
 ## Low Priority
 

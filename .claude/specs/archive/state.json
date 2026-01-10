@@ -1,9 +1,96 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-09T02:30:00Z",
+  "_last_updated": "2026-01-11T00:00:00Z",
   "archived_projects": [],
   "completed_projects": [
+    {
+      "project_number": 218,
+      "project_name": "fix_lean_lsp_mcp_integration_and_opencode_module_import_errors",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-10T23:15:00Z",
+      "completed": "2026-01-10",
+      "effort": "0.75 hours",
+      "archived": "2026-01-11T00:00:00Z"
+    },
+    {
+      "project_number": 291,
+      "project_name": "fix_lean_research_agent_delegate_status_updates",
+      "type": "bugfix",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-04T17:19:31Z",
+      "last_updated": "2026-01-10T23:30:00Z",
+      "completed": "2026-01-10",
+      "estimated_hours": 1,
+      "started": "2026-01-04",
+      "research_completed": "2026-01-04",
+      "plan_version": "002",
+      "plan_revised": "2026-01-10",
+      "artifacts": [
+        ".claude/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md",
+        ".claude/specs/291_fix_lean_research_agent_delegate_status_updates/plans/implementation-002.md",
+        ".claude/specs/291_fix_lean_research_agent_delegate_status_updates/summaries/implementation-summary-20260110.md"
+      ],
+      "archived": "2026-01-11T00:00:00Z"
+    },
+    {
+      "project_number": 308,
+      "project_name": "final_cleanup_and_comprehensive_testing_5_5",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "general",
+      "description": "Complete final cleanup of any remaining cruft from files not reverted. Test all commands (/task, /meta, /todo, /review) comprehensively to ensure everything works correctly. Commit clean changes with proper documentation.",
+      "effort": "30 minutes",
+      "created": "2026-01-05T09:38:06Z",
+      "last_updated": "2026-01-10T23:38:38Z",
+      "completed": "2026-01-10",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/308_final_cleanup_and_comprehensive_testing/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/308_final_cleanup_and_comprehensive_testing/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/308_final_cleanup_and_comprehensive_testing/summaries/implementation-summary-20260110.md"
+        }
+      ],
+      "archived": "2026-01-11T00:00:00Z"
+    },
+    {
+      "project_number": 323,
+      "project_name": "fix_/todo_command_to_run_markdown_formatter_after_completion",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Fix the /todo command to run the markdown formatter on TODO.md after completing its archival operations.",
+      "effort": "1.75 hours",
+      "created": "2026-01-05T00:00:00Z",
+      "last_updated": "2026-01-10",
+      "research_completed": "2026-01-05",
+      "completed": "2026-01-10",
+      "artifacts": [
+        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md",
+        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-002.md",
+        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/summaries/implementation-summary-20260110.md"
+      ],
+      "archived": "2026-01-11T00:00:00Z"
+    },
     {
       "project_number": 205,
       "project_name": "implement_lean_tool_usage_verification_and_monitoring_system",
