@@ -250,9 +250,22 @@ A *core frame* is a structure **F** = ⟨S, ⊑, D, ⇒⟩ where:
 | **Temporal Order** | D = ⟨D, +, ≤⟩ is a totally ordered abelian group |
 | **Task Relation** | ⇒ is a ternary relation on S × D × S satisfying constraints below |
 
-The task relation s ⇒_d t (read: "there is a task from s to t of duration d") satisfies:
+The task relation s ⇒_d t (read: "there is a task from s to t of duration d") satisfies constraints formulated in terms of state modality.
 
-<!-- [FIX]: To assert the latter three constraints below, we need to define the possible states P and the maximal t-compatible parts of a state s first, and so it makes sense to move the definitions given below here -->
+### State Modality Definitions
+
+| Term | Definition |
+|------|------------|
+| **Possible state** | s ∈ P iff s ⇒_0 s (state has a trivial task to itself) |
+| **Impossible state** | s ∉ P iff ¬(s ⇒_0 s) |
+| **Connected** | s ~ t iff s ⇒_d t or t ⇒_d s for some d |
+| **Compatible states** | s ∘ t iff s.t ∈ P |
+| **Maximal t-compatible part** | s ∈ r_t iff s ⊑ r, s ∘ t, and s' ⊑ s for all s' where s ⊑ s' ⊑ r and s' ∘ t |
+| **Maximal state** | s is maximal iff t ⊑ s for every compatible state t ∘ s |
+| **World-state** | w ∈ W iff w is a maximal possible state |
+| **Necessary state** | s ∈ N iff s ~ t implies s = t |
+
+### Task Relation Constraints
 
 | Constraint | Formulation |
 |------------|-------------|
@@ -264,18 +277,6 @@ The task relation s ⇒_d t (read: "there is a task from s to t of duration d") 
 | **Maximality** | If s ∈ S and t ∈ P, there is a maximal t-compatible part r ∈ s_t |
 
 The Containment constraints ensure that tasks between parts of possible states can be extended to tasks between the states themselves. The Maximality constraint ensures that for any state and possible state, there exists a maximal part compatible with that possible state.
-
-### State Modality Definitions
-
-| Term | Definition |
-|------|------------|
-| **Possible state** | s ∈ P iff s ⇒_0 s (state has a trivial task to itself) |
-| **Impossible state** | s ∉ P iff ¬(s ⇒_0 s) |
-| **Connected** | s ~ t iff s ⇒_d t or t ⇒_d s for some d |
-| **Compatible states** | s ∘ t iff s.t ∈ P |
-| **Maximal state** | s is maximal iff t ⊑ s for every compatible state t ∘ s |
-| **World-state** | w ∈ W iff w is a maximal possible state |
-| **Necessary state** | s ∈ N iff s ~ t implies s = t |
 
 ### World-History
 
