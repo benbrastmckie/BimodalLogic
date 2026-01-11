@@ -17,7 +17,7 @@ project-wide documentation in the root Documentation/ directory. This follows th
 ### Phase 1: Create Target Directory Structure
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Create Research/ directories in theory Documentation folders
@@ -41,7 +41,7 @@ project-wide documentation in the root Documentation/ directory. This follows th
 ### Phase 2: Move Logos-Specific Files
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Move 5 Logos-specific files to Logos/Documentation/

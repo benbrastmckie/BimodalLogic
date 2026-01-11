@@ -42,10 +42,12 @@ technical_debt:
 
 ### 375. Integrate latexmkrc into project LaTeX assets
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-11
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: latex
+- **Research**: [research-001.md](.claude/specs/375_integrate_latexmkrc_project_config/reports/research-001.md)
 
 **Description**: Building on task 373, integrate the global /home/benjamin/.config/latexmk/latexmkrc file into the general ProofChecker/LaTeX/ assets so as to standardize project building across multiple contributors to this project.
 
@@ -53,7 +55,8 @@ technical_debt:
 
 ### 374. Refactor project Documentation to theory-specific directories
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
 - **Priority**: Medium

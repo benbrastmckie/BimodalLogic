@@ -15,20 +15,20 @@
     {
       "project_number": 375,
       "project_name": "integrate_latexmkrc_project_config",
-      "status": "researching",
+      "status": "researched",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-11T17:02:16Z",
-      "last_updated": "2026-01-11T17:08:57Z"
+      "last_updated": "2026-01-11T17:11:49Z"
     },
     {
       "project_number": 374,
       "project_name": "refactor_project_documentation",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T16:36:37Z",
-      "last_updated": "2026-01-11T17:05:13Z"
+      "last_updated": "2026-01-11T17:11:35Z"
     },
     {
       "project_number": 373,
