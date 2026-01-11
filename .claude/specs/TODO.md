@@ -30,9 +30,11 @@ technical_debt:
 
 ### 374. Refactor project Documentation to theory-specific directories
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
+- **Research**: [research-001.md](.claude/specs/374_refactor_project_documentation/reports/research-001.md)
 
 **Description**: Tasks 360 and 372 created Bimodal/Documentation/ and Logos/Documentation/ directories. Remove project-specific documentation from ProofChecker/Documentation/ by EITHER moving information to the appropriate project Documentation/ directory (e.g., moving Documentation/Research/RECURSIVE_SEMANTICS.md into Logos/Documentation/Research/) OR removing documentation from ProofChecker/Documentation/ that is redundant with what is provided by the Documentation/ directories included in each theory.
 
@@ -53,27 +55,29 @@ technical_debt:
 
 ---
 
-### 176. Enhance proof search with domain-specific heuristics and caching
-- **Effort**: 18 hours
-- **Status**: [NOT STARTED]
+### 176. Enhance Bimodal proof search with success learning and best-first search
+- **Effort**: 12 hours
+- **Status**: [PLANNED]
+- **Started**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Plan**: [implementation-001.md](.claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/plans/implementation-001.md)
 - **Files Affected**:
-  - Logos/Core/Automation/ProofSearch.lean
-  - Logos/Core/Automation/ProofSearchHeuristics.lean (new)
-  - Logos/Core/Automation/ProofCache.lean (new)
-  - LogosTest/Core/Automation/ProofSearchHeuristicsTest.lean (new)
-- **Description**: Enhance ProofSearch.lean with modal-specific and temporal-specific heuristics, proof caching with hash-consing, and success pattern learning. Current heuristics are basic (Task 127 complete). Domain-specific optimizations will significantly improve proof search effectiveness.
+  - Bimodal/Automation/ProofSearch.lean (enhance)
+  - Bimodal/Automation/SuccessPatterns.lean (new)
+  - Bimodal/Automation/Benchmarks.lean (new)
+  - BimodalTest/Automation/ProofSearchBenchmarks.lean (new)
+- **Description**: Build on the existing Bimodal proof search infrastructure with success pattern learning, best-first search implementation, and comprehensive benchmarking. The core heuristics (modal/temporal bonuses, caching, IDDFS) are complete—this task adds the learning and optimization layer.
 - **Acceptance Criteria**:
-  - [ ] Modal-specific heuristics implemented (prefer S5 axioms for modal goals)
-  - [ ] Temporal-specific heuristics implemented (prefer temporal axioms for temporal goals)
-  - [ ] Proof caching with hash-consing implemented
-  - [ ] Success pattern learning implemented
-  - [ ] Heuristics tested and benchmarked
-  - [ ] Documentation for heuristic tuning added
-- **Impact**: Improves automation effectiveness by tailoring proof search to the structure of modal and temporal problems, reducing search time and increasing success rate.
+  - [ ] Success pattern learning implemented (record which axiom sequences succeed)
+  - [ ] Best-first search with priority queue implemented (SearchStrategy.BestFirst)
+  - [ ] Benchmarking suite created with representative formulas
+  - [ ] Performance comparison: IDDFS vs BestFirst documented
+  - [ ] Documentation for heuristic tuning added to module docstrings
+- **Impact**: Improves automation by learning from successful proofs and using priority-guided search, reducing search time for complex bimodal formulas.
 
 ---
 

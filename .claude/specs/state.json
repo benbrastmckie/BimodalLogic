@@ -6,11 +6,11 @@
     {
       "project_number": 374,
       "project_name": "refactor_project_documentation",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T16:36:37Z",
-      "last_updated": "2026-01-11T16:48:14Z"
+      "last_updated": "2026-01-11T16:52:34Z"
     },
     {
       "project_number": 373,
@@ -177,13 +177,22 @@
       "project_number": 176,
       "project_name": "enhance_proof_search_with_domain_specific_heuristics_and_caching",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "planned",
+      "status": "planned",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T01:22:38Z",
-      "effort": "18 hours"
+      "last_updated": "2026-01-11T22:00:00Z",
+      "effort": "12 hours",
+      "started": "2026-01-11",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/plans/implementation-001.md"
+        }
+      ],
+      "description": "Build on existing Bimodal proof search with success pattern learning, best-first search implementation, and benchmarking. Core heuristics (modal/temporal bonuses, caching, IDDFS) already complete."
     },
     {
       "project_number": 178,
