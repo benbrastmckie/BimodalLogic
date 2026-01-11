@@ -92,13 +92,15 @@ technical_debt:
 
 ### 176. Enhance Bimodal proof search with success learning and best-first search
 - **Effort**: 12 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-11
 - **Planned**: 2026-01-11
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [research-001.md](.claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/plans/implementation-001.md)
 - **Files Affected**:
   - Bimodal/Automation/ProofSearch.lean (enhance)

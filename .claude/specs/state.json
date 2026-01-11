@@ -202,11 +202,11 @@
       "project_name": "enhance_proof_search_with_domain_specific_heuristics_and_caching",
       "type": "feature",
       "phase": "planned",
-      "status": "planned",
+      "status": "researched",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T22:00:00Z",
+      "last_updated": "2026-01-11T23:30:00Z",
       "effort": "12 hours",
       "started": "2026-01-11",
       "plan_version": "001",
@@ -214,6 +214,10 @@
         {
           "type": "plan",
           "path": ".claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/plans/implementation-001.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/reports/research-001.md"
         }
       ],
       "description": "Build on existing Bimodal proof search with success pattern learning, best-first search implementation, and benchmarking. Core heuristics (modal/temporal bonuses, caching, IDDFS) already complete."
