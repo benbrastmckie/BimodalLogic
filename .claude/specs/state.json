@@ -1,8 +1,60 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T04:30:00Z",
-  "next_project_number": 364,
+  "next_project_number": 368,
   "active_projects": [
+    {
+      "project_number": 364,
+      "project_name": "update_sorry_registry_paths",
+      "status": "not_started",
+      "language": "markdown",
+      "priority": "medium",
+      "type": "documentation",
+      "effort": "30 minutes",
+      "description": "Update SORRY_REGISTRY.md to use correct Bimodal/ paths instead of deprecated Logos/Core/ paths. Update verification commands to match new directory structure.",
+      "created": "2026-01-11T02:22:16Z",
+      "last_updated": "2026-01-11T02:22:16Z",
+      "review_source": ".claude/specs/reviews/review-20260110.md"
+    },
+    {
+      "project_number": 365,
+      "project_name": "complete_bimodaltest_sorries",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "type": "testing",
+      "effort": "2-3 hours",
+      "description": "Complete sorry placeholders in BimodalTest files: CompletenessTest.lean (3), PerpetuityTest.lean (1), PropositionalTest.lean (1), ModalS4Test.lean. Either implement the tests or document as pending infrastructure.",
+      "created": "2026-01-11T02:22:16Z",
+      "last_updated": "2026-01-11T02:22:16Z",
+      "review_source": ".claude/specs/reviews/review-20260110.md"
+    },
+    {
+      "project_number": 366,
+      "project_name": "document_logos_legacy_reexports",
+      "status": "not_started",
+      "language": "markdown",
+      "priority": "low",
+      "type": "documentation",
+      "effort": "30 minutes",
+      "description": "Document in project README that Logos/ is a legacy re-export layer with stubs for planned extensions (Epistemic, Normative, Explanatory), and Bimodal/ contains the active implementation.",
+      "created": "2026-01-11T02:22:16Z",
+      "last_updated": "2026-01-11T02:22:16Z",
+      "review_source": ".claude/specs/reviews/review-20260110.md"
+    },
+    {
+      "project_number": 367,
+      "project_name": "complete_example_proofs",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "type": "enhancement",
+      "effort": "4-6 hours",
+      "description": "Complete pedagogical sorry placeholders in Bimodal/Examples/ files (~24 total). Prioritize high-value examples that demonstrate key proof techniques. Mark remaining as explicit exercises.",
+      "created": "2026-01-11T02:22:16Z",
+      "last_updated": "2026-01-11T02:22:16Z",
+      "review_source": ".claude/specs/reviews/review-20260110.md"
+    },
     {
       "project_number": 363,
       "project_name": "create_bimodal_latex_documentation",
@@ -13,12 +65,16 @@
       "effort": "2-4 hours",
       "description": "Create a Bimodal/LaTeX/ directory with contents similar to Logos/LaTeX/ but focusing on reporting exactly what has been implemented in the Bimodal/ theory.",
       "created": "2026-01-11T02:11:42Z",
-      "last_updated": "2026-01-11T02:15:11Z",
-      "research_completed": "2026-01-11T02:15:11Z",
+      "last_updated": "2026-01-11T02:21:55Z",
+      "research_completed": "2026-01-11T02:21:55Z",
       "artifacts": [
         {
           "type": "research",
           "path": ".claude/specs/363_create_bimodal_latex_documentation/reports/research-001.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/363_create_bimodal_latex_documentation/reports/research-002.md"
         }
       ]
     },
