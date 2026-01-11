@@ -1,43 +1,23 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-11T21:30:00Z",
+  "_last_updated": "2026-01-11T23:30:00Z",
   "next_project_number": 380,
   "active_projects": [
     {
       "project_number": 379,
       "project_name": "fix_logosreference_latex_warnings",
-      "status": "not_started",
+      "status": "researched",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-11T18:01:49Z",
-      "last_updated": "2026-01-11T18:01:49Z"
-    },
-    {
-      "project_number": 378,
-      "project_name": "refactor_documentation_structure",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "description": "Completely refactor Documentation/ to better distribute information between documents and gather documents into subdirectories, where each subdirectory has a README.md that follows the DIRECTORY_README_STANDARD.md and DOC_QUALITY_CHECKLIST.md. Merge NAVIGATION.md into Documentation/README.md. Avoid removing important content while reducing redundancy and improving consistency and organization using cross-linking with brief summaries.",
-      "created": "2026-01-11T17:31:13Z",
-      "last_updated": "2026-01-11T18:01:15Z",
-      "started": "2026-01-11",
+      "last_updated": "2026-01-11T23:45:00Z",
+      "researched": "2026-01-11",
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/378_refactor_documentation_structure/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/378_refactor_documentation_structure/plans/implementation-001.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/378_refactor_documentation_structure/summaries/implementation-summary-20260111.md"
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-001.md"
         }
-      ],
-      "plan_version": "001",
-      "completed": "2026-01-11"
+      ]
     },
     {
       "project_number": 377,
@@ -71,53 +51,6 @@
       "priority": "high",
       "created": "2026-01-11T17:06:06Z",
       "last_updated": "2026-01-11T17:49:25Z"
-    },
-    {
-      "project_number": 375,
-      "project_name": "integrate_latexmkrc_project_config",
-      "status": "completed",
-      "language": "latex",
-      "priority": "medium",
-      "created": "2026-01-11T17:02:16Z",
-      "last_updated": "2026-01-11T18:00:18Z",
-      "completed": "2026-01-11T18:00:18Z"
-    },
-    {
-      "project_number": 374,
-      "project_name": "refactor_project_documentation",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-11T16:36:37Z",
-      "last_updated": "2026-01-11T17:17:41Z",
-      "completed": "2026-01-11T17:17:41Z"
-    },
-    {
-      "project_number": 373,
-      "project_name": "create_shared_latex_assets_directory",
-      "status": "completed",
-      "language": "latex",
-      "priority": "medium",
-      "description": "Create a single ProofChecker/LaTeX/ directory to provide general purpose assets that can be imported and used by Logos/LaTeX/ and Bimodal/LaTeX/ as well as other theories included in the future, instead of maintaining similar latex standards separately.",
-      "created": "2026-01-11T16:30:08Z",
-      "last_updated": "2026-01-11T16:53:41Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/373_create_shared_latex_assets_directory/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/373_create_shared_latex_assets_directory/plans/implementation-001.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/373_create_shared_latex_assets_directory/summaries/implementation-summary-20260111.md"
-        }
-      ],
-      "plan_version": "001",
-      "started": "2026-01-11",
-      "completed": "2026-01-11T16:53:41Z"
     },
     {
       "project_number": 365,
@@ -257,36 +190,6 @@
       "created": "2026-01-05T01:22:38Z",
       "last_updated": "2026-01-05T01:22:38Z",
       "effort": "13 hours"
-    },
-    {
-      "project_number": 176,
-      "project_name": "enhance_proof_search_with_domain_specific_heuristics_and_caching",
-      "type": "feature",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "lean",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T23:00:00Z",
-      "effort": "12 hours",
-      "started": "2026-01-11",
-      "completed": "2026-01-11",
-      "plan_version": "001",
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": ".claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/plans/implementation-001.md"
-        },
-        {
-          "type": "research",
-          "path": ".claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/reports/research-001.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/summaries/implementation-summary-20260111.md"
-        }
-      ],
-      "description": "Build on existing Bimodal proof search with success pattern learning, best-first search implementation, and benchmarking. Core heuristics (modal/temporal bonuses, caching, IDDFS) already complete."
     },
     {
       "project_number": 178,
