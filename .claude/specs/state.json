@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T23:30:00Z",
-  "next_project_number": 385,
+  "next_project_number": 386,
   "active_projects": [
+    {
+      "project_number": 385,
+      "project_name": "refactor_meta_command_task_creation",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "description": "Refactor the /meta command to conduct careful analysis of the .claude/ agent system given the prompt, ask follow-up questions if additional clarity would improve understanding, and then produce an appropriate number of tasks (similar to /task --divide) with dependencies indicated. If /meta is run without a prompt, run in full interactive mode to interview the user until sufficient detail has been provided to create the appropriate number of tasks with dependencies.",
+      "created": "2026-01-11T19:39:55Z",
+      "last_updated": "2026-01-11T19:39:55Z"
+    },
     {
       "project_number": 384,
       "project_name": "fix_latex_package_path_warnings",
