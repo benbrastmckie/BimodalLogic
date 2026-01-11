@@ -2,6 +2,8 @@
 
 Project-wide research documents applicable to all theories in ProofChecker.
 
+**Audience**: Researchers, architects, contributors interested in design decisions
+
 > **Theory-Specific Research**: For research specific to each logic theory, see:
 > - [Logos/Documentation/Research/](../../Logos/Documentation/Research/) - Logos semantic architecture
 > - [Bimodal/Documentation/Research/](../../Bimodal/Documentation/Research/) - Proof search automation

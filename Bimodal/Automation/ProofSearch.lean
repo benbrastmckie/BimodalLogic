@@ -717,7 +717,7 @@ namespace PriorityQueue
 def empty : PriorityQueue := []
 
 /-- Check if queue is empty. -/
-def isEmpty (q : PriorityQueue) : Bool := q.isEmpty
+def isEmpty (q : PriorityQueue) : Bool := q.length == 0
 
 /-- Insert a node maintaining sorted order by f-score. -/
 def insert (q : PriorityQueue) (node : SearchNode) : PriorityQueue :=
@@ -770,11 +770,13 @@ def bestFirst_search (Γ : Context) (φ : Formula)
   let initNode : SearchNode := { context := Γ, goal := φ, cost := 0, heuristic := initHeuristic }
   let initQueue := PriorityQueue.insert PriorityQueue.empty initNode
 
-  -- Main search loop
+  -- Main search loop using fuel parameter for termination
   let rec searchLoop (queue : PriorityQueue) (cache : ProofCache) (visited : Visited)
-                     (stats : SearchStats) (expansions : Nat)
+                     (stats : SearchStats) (expansions : Nat) (fuel : Nat)
       : Bool × ProofCache × Visited × SearchStats × Nat :=
-    if expansions ≥ maxExpansions then
+    if fuel == 0 then
+      (false, cache, visited, {stats with prunedByLimit := stats.prunedByLimit + 1}, expansions)
+    else if expansions ≥ maxExpansions then
       (false, cache, visited, {stats with prunedByLimit := stats.prunedByLimit + 1}, expansions)
     else
       match queue.extractMin with
@@ -784,9 +786,9 @@ def bestFirst_search (Γ : Context) (φ : Formula)
       | some (node, queue') =>
           let key : CacheKey := (node.context, node.goal)
 
-          -- Skip if already visited
+          -- Skip if already visited (doesn't count as expansion)
           if visited.contains key then
-            searchLoop queue' cache visited stats expansions
+            searchLoop queue' cache visited stats expansions (fuel - 1)
           else
             let visited' := visited.insert key
             let stats' := {stats with visited := stats.visited + 1}
@@ -798,7 +800,7 @@ def bestFirst_search (Γ : Context) (φ : Formula)
                 (true, cache, visited', {stats' with hits := stats'.hits + 1}, expansions + 1)
             | some false =>
                 -- Cached failure, skip
-                searchLoop queue' cache visited' {stats' with hits := stats'.hits + 1} expansions
+                searchLoop queue' cache visited' {stats' with hits := stats'.hits + 1} expansions (fuel - 1)
             | none =>
                 let stats' := {stats' with misses := stats'.misses + 1}
 
@@ -838,13 +840,12 @@ def bestFirst_search (Γ : Context) (φ : Formula)
                   let queue'' := allSuccessors.foldl PriorityQueue.insert queue'
 
                   -- Continue search
-                  searchLoop queue'' (cache.insert key false) visited' stats' (expansions + 1)
-  termination_by maxExpansions - expansions
-  decreasing_by
-    all_goals simp_wf
-    all_goals omega
+                  searchLoop queue'' (cache.insert key false) visited' stats' (expansions + 1) (fuel - 1)
+  termination_by fuel
+  decreasing_by all_goals simp_wf; omega
 
-  searchLoop initQueue ProofCache.empty Visited.empty {} 0
+  -- Use maxExpansions * 10 as fuel (allows for skipped visited nodes)
+  searchLoop initQueue ProofCache.empty Visited.empty {} 0 (maxExpansions * 10)
 
 /-!
 ## Search Strategy Configuration
@@ -856,12 +857,12 @@ Search strategy configuration.
 **Variants**:
 - `BoundedDFS depth`: Depth-limited DFS (may miss proofs beyond depth)
 - `IDDFS maxDepth`: Iterative deepening DFS (complete and optimal)
-- `BestFirst maxDepth`: Best-first search with heuristics (future enhancement)
+- `BestFirst maxExpansions`: Priority queue search exploring by f-score
 -/
 inductive SearchStrategy where
   | BoundedDFS (depth : Nat)
   | IDDFS (maxDepth : Nat)
-  | BestFirst (maxDepth : Nat)  -- Future enhancement (task 318)
+  | BestFirst (maxExpansions : Nat)  -- Priority queue search (task 176)
   deriving Repr
 
 /--

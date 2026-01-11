@@ -5,6 +5,8 @@
 Architectural Decision Records (ADRs) documenting significant design decisions for the Logos
 project. ADRs capture the context, decision, and consequences of architectural choices.
 
+**Audience**: Architects, maintainers, contributors understanding design rationale
+
 ## What are ADRs?
 
 Architecture Decision Records document:

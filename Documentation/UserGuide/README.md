@@ -2,83 +2,58 @@
 
 [Back to Documentation](../README.md)
 
-User-facing documentation for working with ProofChecker, covering theoretical foundations,
-practical usage, and integration patterns.
+Project-wide user documentation for integrating ProofChecker with external tools and systems.
+
+**Audience**: Users integrating ProofChecker with external tools
 
 ## Theory-Specific Guides
 
-For theory-specific quick starts and guides, see:
+Most user documentation is theory-specific. See:
 
 | Theory | Quick Start | Additional Guides |
 |--------|-------------|-------------------|
-| **Bimodal** | [Quick Start](../../Bimodal/Documentation/UserGuide/QUICKSTART.md) | [Proof Patterns](../../Bimodal/Documentation/UserGuide/PROOF_PATTERNS.md) |
-| **Logos** | [Quick Start](../../Logos/Documentation/UserGuide/QUICKSTART.md) | [Current Status](../../Logos/Documentation/UserGuide/CURRENT_STATUS.md) |
+| **Bimodal** | [Quick Start](../../Bimodal/Documentation/UserGuide/QUICKSTART.md) | [Tutorial](../../Bimodal/Documentation/UserGuide/TUTORIAL.md), [Examples](../../Bimodal/Documentation/UserGuide/EXAMPLES.md), [Proof Patterns](../../Bimodal/Documentation/UserGuide/PROOF_PATTERNS.md) |
+| **Logos** | [Quick Start](../../Logos/Documentation/UserGuide/QUICKSTART.md) | [Methodology](../../Logos/Documentation/UserGuide/METHODOLOGY.md), [Current Status](../../Logos/Documentation/UserGuide/CURRENT_STATUS.md) |
 
-## Documentation Overview
+## Project-Wide Integration
 
-This directory contains guides for users of the ProofChecker library, organized by learning
-progression from introductory materials to advanced development topics.
-
-## Getting Started
-
-Essential reading for new users:
-
-| Document | Description |
-|----------|-------------|
-| [TUTORIAL.md](TUTORIAL.md) | Step-by-step getting started guide for beginners |
-| [EXAMPLES.md](EXAMPLES.md) | Usage examples and proof patterns demonstrating key concepts |
-
-## Core Concepts
-
-Theoretical foundations and system architecture:
-
-| Document | Description |
-|----------|-------------|
-| [METHODOLOGY.md](METHODOLOGY.md) | Philosophical foundations and Logos layer architecture |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | TM logic specification and system design |
-
-## Integration
-
-Connecting Logos with external tools and systems:
+This directory contains integration guides applicable across all theories:
 
 | Document | Description |
 |----------|-------------|
 | [INTEGRATION.md](INTEGRATION.md) | Model-checker integration and external tool connectivity |
 | [MCP_INTEGRATION.md](MCP_INTEGRATION.md) | MCP server integration (advanced users/developers) |
 
-## Advanced Development
+## Integration Overview
 
-Custom tactic development and advanced techniques:
+### Model-Checker Integration
 
-| Document | Description |
-|----------|-------------|
-| [TACTIC_DEVELOPMENT.md](TACTIC_DEVELOPMENT.md) | Guide for developing custom tactics |
+[INTEGRATION.md](INTEGRATION.md) covers:
+- Connecting ProofChecker with the Model-Checker for semantic verification
+- SMT-LIB export for external tool connectivity
+- Dual verification architecture for AI training
 
-## Recommended Reading Order
+### MCP Server Integration
 
-### For New Users
+[MCP_INTEGRATION.md](MCP_INTEGRATION.md) covers:
+- Setting up MCP servers for AI-assisted development
+- Lean LSP tools for proof development
+- Advanced workflow integration
 
-1. **[TUTORIAL.md](TUTORIAL.md)** - Start here for installation and basic concepts
-2. **[EXAMPLES.md](EXAMPLES.md)** - Learn by working through proof patterns
-3. **[ARCHITECTURE.md](ARCHITECTURE.md)** - Understand TM logic specification
+## Getting Started
 
-### For Researchers
+For tutorials and examples, see theory-specific UserGuide directories:
+- **Bimodal**: [Tutorial](../../Bimodal/Documentation/UserGuide/TUTORIAL.md), [Examples](../../Bimodal/Documentation/UserGuide/EXAMPLES.md)
+- **Logos**: [Quick Start](../../Logos/Documentation/UserGuide/QUICKSTART.md)
 
-1. **[METHODOLOGY.md](METHODOLOGY.md)** - Philosophical foundations
-2. **[ARCHITECTURE.md](ARCHITECTURE.md)** - Formal specification
-3. **[INTEGRATION.md](INTEGRATION.md)** - Semantic verification approach
-
-### For Developers
-
-1. **[EXAMPLES.md](EXAMPLES.md)** - Familiarize with proof patterns
-2. **[TACTIC_DEVELOPMENT.md](TACTIC_DEVELOPMENT.md)** - Custom tactic development
-3. **[MCP_INTEGRATION.md](MCP_INTEGRATION.md)** - AI-assisted development integration
+For advanced tactic development, see:
+- **Bimodal**: [Tactic Development](../../Bimodal/Documentation/UserGuide/TACTIC_DEVELOPMENT.md)
 
 ## Related Documentation
 
 - [Development Standards](../Development/) - Coding conventions and contribution guidelines
 - [Project Status](../ProjectInfo/) - Implementation status and registries
-- [Reference Materials](../Reference/) - Operators and terminology glossary
+- [Reference Materials](../Reference/) - APIs and terminology
 - [Installation Guide](../Installation/) - Setup instructions
 
 ---

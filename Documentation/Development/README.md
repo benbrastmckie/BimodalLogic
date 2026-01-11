@@ -5,6 +5,8 @@
 Developer standards, conventions, and contribution guides for the Logos project. These documents
 establish coding practices, quality standards, and workflow patterns for contributors.
 
+**Audience**: Developers, contributors, documentation authors
+
 ## Documentation Overview
 
 Development documentation is organized into categories for easy navigation. For TODO management

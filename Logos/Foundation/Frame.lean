@@ -192,8 +192,7 @@ Parthood characterization: s ⊑ t iff s ⊔ t = t
 -/
 theorem parthood_iff_fusion {s t : F.State} :
     F.parthood s t ↔ F.fusion s t = t := by
-  simp [parthood, fusion]
-  exact sup_eq_right
+  simp [parthood, fusion, sup_eq_right]
 
 /--
 Fusion gives the least upper bound with respect to parthood.
@@ -209,7 +208,7 @@ Fusion is the least element containing both parts.
 -/
 theorem fusion_least {s t u : F.State} :
     F.parthood s u → F.parthood t u → F.parthood (F.fusion s t) u := by
-  simp [parthood, fusion]
+  simp only [parthood, fusion]
   exact sup_le
 
 end BasicLemmas

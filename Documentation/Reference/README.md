@@ -4,50 +4,41 @@
 
 Quick reference materials for working with ProofChecker.
 
+**Audience**: All users looking up APIs, symbols, and terminology
+
 ## Theory-Specific References
 
-For theory-specific axioms and tactics, see:
+Most reference materials are theory-specific. See:
 
-| Theory | Axiom Reference | Additional References |
-|--------|-----------------|----------------------|
-| **Bimodal** | [Axiom Reference](../../Bimodal/Documentation/Reference/AXIOM_REFERENCE.md) | [Tactic Reference](../../Bimodal/Documentation/Reference/TACTIC_REFERENCE.md) |
-| **Logos** | [Axiom Reference](../../Logos/Documentation/Reference/AXIOM_REFERENCE.md) | [Extension Stubs](../../Logos/Documentation/Reference/EXTENSION_STUBS.md) |
+| Theory | Key References |
+|--------|----------------|
+| **Bimodal** | [Axioms](../../Bimodal/Documentation/Reference/AXIOM_REFERENCE.md), [Operators](../../Bimodal/Documentation/Reference/OPERATORS.md), [Tactics](../../Bimodal/Documentation/Reference/TACTIC_REFERENCE.md) |
+| **Logos** | [Axioms](../../Logos/Documentation/Reference/AXIOM_REFERENCE.md), [Glossary](../../Logos/Documentation/Reference/GLOSSARY.md), [Extension Stubs](../../Logos/Documentation/Reference/EXTENSION_STUBS.md) |
 
-## Reference Materials
+## Project-Wide Reference
 
 | Document | Description |
 |----------|-------------|
-| [API_REFERENCE.md](API_REFERENCE.md) | Logos API documentation (key types, functions, and modules) |
-| [GLOSSARY.md](GLOSSARY.md) | Terminology and key concepts with definitions |
-| [OPERATORS.md](OPERATORS.md) | Formal symbols reference (Unicode notation guide) |
+| [API_REFERENCE.md](API_REFERENCE.md) | Project-wide API documentation (key types, functions, and modules) |
 
 ## Quick Lookup
 
 ### Looking for a Symbol?
 
-See [OPERATORS.md](OPERATORS.md) for the complete formal symbols reference, including:
-- Modal operators (`Box`, `Diamond`)
-- Temporal operators (`Always`, `Eventually`, `Until`)
-- Propositional connectives
-- Unicode notation conventions
-
-### Looking for a Definition?
-
-See [GLOSSARY.md](GLOSSARY.md) for terminology mapping and key concepts:
-- Logic terminology (syntax, semantics, proof theory)
-- Lean 4 concepts
-- Project-specific terms
+See theory-specific operator references:
+- **Bimodal**: [Operators](../../Bimodal/Documentation/Reference/OPERATORS.md) - Modal, temporal, propositional operators
+- **Logos**: [Glossary](../../Logos/Documentation/Reference/GLOSSARY.md) - Key concepts and terminology
 
 ### Looking for API Details?
 
-See [API_REFERENCE.md](API_REFERENCE.md) for the Logos API:
+See [API_REFERENCE.md](API_REFERENCE.md) for the project-wide API:
 - Core types (Formula, Model, Frame)
 - Key functions and their signatures
 - Module organization
 
 ## Related Documentation
 
-- [User Guides](../UserGuide/) - Tutorials and examples
+- [User Guides](../UserGuide/) - Integration guides
 - [Development Standards](../Development/) - Coding conventions
 - [Implementation Status](../ProjectInfo/IMPLEMENTATION_STATUS.md) - Current capabilities
 

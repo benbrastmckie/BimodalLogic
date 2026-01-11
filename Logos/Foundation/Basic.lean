@@ -1,4 +1,5 @@
 import Logos.Foundation.Frame
+import Mathlib.Data.Set.Lattice
 
 /-!
 # Basic Mereological Lemmas for Constitutive Frames
@@ -18,41 +19,6 @@ namespace Logos.Foundation
 namespace ConstitutiveFrame
 
 variable {F : ConstitutiveFrame}
-
-section DistributiveLaws
-
-/--
-States have finite fusion (binary case).
--/
-theorem fusion_exists (s t : F.State) : ∃ u, u = F.fusion s t := ⟨_, rfl⟩
-
-/--
-Arbitrary fusion exists (supremum of any set of states).
--/
-noncomputable def sSup (S : Set F.State) : F.State := sSup S
-
-/--
-Arbitrary meet exists (infimum of any set of states).
--/
-noncomputable def sInf (S : Set F.State) : F.State := sInf S
-
-/--
-Fusion distributes over arbitrary supremum.
--/
-theorem fusion_sSup_left (s : F.State) (S : Set F.State) :
-    F.fusion s (sSup S) = ⨆ t ∈ S, F.fusion s t := by
-  simp only [fusion, sSup]
-  exact sup_iSup₂_eq_left
-
-/--
-Fusion distributes over arbitrary supremum (right).
--/
-theorem fusion_sSup_right (S : Set F.State) (t : F.State) :
-    F.fusion (sSup S) t = ⨆ s ∈ S, F.fusion s t := by
-  simp only [fusion, sSup]
-  exact sup_iSup₂_eq_right
-
-end DistributiveLaws
 
 section MereologicalProperties
 
@@ -100,13 +66,6 @@ This is the simplest possible frame.
 -/
 def trivial : ConstitutiveFrame where
   State := Unit
-
-/--
-The two-element frame (Bool with false < true).
-Useful for classical propositional logic.
--/
-def twoElement : ConstitutiveFrame where
-  State := Bool
 
 /--
 Power set frame over any type. States are sets, parthood is subset.
