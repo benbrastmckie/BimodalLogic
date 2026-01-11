@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T21:30:00Z",
-  "next_project_number": 375,
+  "next_project_number": 376,
   "active_projects": [
+    {
+      "project_number": 375,
+      "project_name": "integrate_latexmkrc_project_config",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-11T17:02:16Z",
+      "last_updated": "2026-01-11T17:02:16Z"
+    },
     {
       "project_number": 374,
       "project_name": "refactor_project_documentation",
