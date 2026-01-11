@@ -26,12 +26,19 @@
     {
       "project_number": 383,
       "project_name": "rename_core_to_explanatory",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "description": "Rename Logos/Core/ to Logos/Explanatory/ systematically. Core/ and Explanatory/ target the same theory and should be combined under the Explanatory/ name. Update all references in Logos/Documentation/ and Logos/LaTeX/LogosReference.tex without producing cruft or redundancy.",
       "created": "2026-01-11T18:49:04Z",
-      "last_updated": "2026-01-11T18:49:04Z"
+      "last_updated": "2026-01-11T18:54:42Z",
+      "researched": "2026-01-11",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/383_rename_core_to_explanatory/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 380,
@@ -66,6 +73,11 @@
           "type": "research",
           "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-002.md",
           "description": "Implementation findings - BibTeX/latexmk build directory issue"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-003.md",
+          "description": "Best practices for bst file discovery with build directory"
         }
       ]
     },
