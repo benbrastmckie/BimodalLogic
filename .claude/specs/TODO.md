@@ -30,11 +30,13 @@ technical_debt:
 
 ### 396. Fix LaTeX build missing style files
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-11
 - **Priority**: High
 - **Language**: latex
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [research-001.md](.claude/specs/396_fix_latex_build_missing_style_files/reports/research-001.md)
 
 **Description**: Fix LaTeX build errors in Theories/Logos/LaTeX/LogosReference.tex and Theories/Bimodal/LaTeX/BimodalReference.tex caused by missing style files:
 - `logos-notation.sty` not found (Logos)
