@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T21:30:00Z
-next_project_number: 377
+next_project_number: 378
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 377. Refactor Logos theory for recursive semantics
+- **Effort**: 8-16 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+
+**Description**: Completely refactor the Logos/ theory to be self-contained and align with the theoretical target presented in Logos/Documentation/Research/RECURSIVE_SEMANTICS.md. Currently Logos/ is little more than the remains from extracting the Bimodal/ theory and then re-exporting it to Logos/.
+
+---
 
 ### 376. Refactor repo for TheoryLib multi-theory structure
 - **Effort**: 4-8 hours

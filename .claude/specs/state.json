@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T21:30:00Z",
-  "next_project_number": 377,
+  "next_project_number": 378,
   "active_projects": [
+    {
+      "project_number": 377,
+      "project_name": "refactor_logos_theory_recursive_semantics",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "description": "Completely refactor the Logos/ theory to be self-contained and align with the theoretical target presented in Logos/Documentation/Research/RECURSIVE_SEMANTICS.md. Currently Logos/ is little more than the remains from extracting the Bimodal/ theory and then re-exporting it to Logos/.",
+      "created": "2026-01-11T17:25:18Z",
+      "last_updated": "2026-01-11T17:25:18Z"
+    },
     {
       "project_number": 376,
       "project_name": "refactor_repo_for_theorylib_multi_theory_structure",
