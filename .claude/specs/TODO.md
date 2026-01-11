@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-12T06:30:00Z
-next_project_number: 404
+last_updated: 2026-01-12T06:35:00Z
+next_project_number: 405
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -92,6 +92,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 404. Enhance /todo to archive orphaned specs directories
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+
+**Description**: Enhance /todo command to detect orphaned project directories in specs/ that are not tracked in TODO.md or state.json, and offer to move them to specs/archive/ while updating archive/state.json accordingly.
+
+---
 
 ### 403. Enforce directory naming convention
 - **Effort**: 2-3 hours
