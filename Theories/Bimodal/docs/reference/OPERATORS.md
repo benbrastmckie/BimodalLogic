@@ -1,6 +1,6 @@
 # Logical Operators Glossary
 
-**Navigation**: [Documentation](../) > [Architecture](../../UserGuide/ARCHITECTURE.md) > Glossary
+**Navigation**: [Documentation](../) > [Architecture](../../user-guide/ARCHITECTURE.md) > Glossary
 
 ## Purpose
 
@@ -356,10 +356,10 @@ Logos follows consistent naming conventions for variables across documentation a
 
 ## Related Documentation
 
-- [Architecture Guide](../../UserGuide/ARCHITECTURE.md) - Complete TM logic specification with formal semantics
+- [Architecture Guide](../../user-guide/ARCHITECTURE.md) - Complete TM logic specification with formal semantics
 - [LEAN Style Guide](../../Development/LEAN_STYLE_GUIDE.md) - Coding conventions and variable naming
-- [Tutorial](../../UserGuide/TUTORIAL.md) - Practical examples using these operators
-- [Examples](../../UserGuide/EXAMPLES.md) - Modal, temporal, and bimodal proof examples
+- [Tutorial](../../user-guide/TUTORIAL.md) - Practical examples using these operators
+- [Examples](../../user-guide/EXAMPLES.md) - Modal, temporal, and bimodal proof examples
 
 ---
 

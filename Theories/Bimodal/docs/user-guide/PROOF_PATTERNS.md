@@ -168,5 +168,5 @@ import Bimodal.Theorems.ModalS4        -- For S4-specific theorems
 ## See Also
 
 - [QUICKSTART.md](QUICKSTART.md) - Getting started
-- [AXIOM_REFERENCE.md](../Reference/AXIOM_REFERENCE.md) - Complete axiom list
+- [AXIOM_REFERENCE.md](../reference/AXIOM_REFERENCE.md) - Complete axiom list
 - [Examples](../../Examples/) - Full proof examples

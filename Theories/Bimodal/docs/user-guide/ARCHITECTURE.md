@@ -1241,7 +1241,7 @@ Logos implements the Logos formal language of thought. For philosophical foundat
 
 ### Implementation Status
 
-For detailed implementation status, see [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md).
+For detailed implementation status, see [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md).
 
 ### 8.1 Layer 0 (Core TM)
 
@@ -1249,18 +1249,18 @@ The current implementation provides Boolean, modal, and temporal operators with 
 
 ### 8.2 Layers 1-3 Extensions
 
-See [Research/layer-extensions.md](../Research/layer-extensions.md) for specifications of planned extensions:
+See [Research/layer-extensions.md](../research/layer-extensions.md) for specifications of planned extensions:
 - Layer 1 (Explanatory): Counterfactual, constitutive, causal operators
 - Layer 2 (Epistemic): Belief, probability, knowledge operators
 - Layer 3 (Normative): Obligation, permission, preference operators
 
 ### 8.3 Dual Verification Architecture
 
-See [Research/dual-verification.md](../Research/dual-verification.md) for RL training design combining proof-checker (syntactic verification) with model-checker (semantic verification).
+See [Research/dual-verification.md](../research/dual-verification.md) for RL training design combining proof-checker (syntactic verification) with model-checker (semantic verification).
 
 ### 8.4 Proof Library Architecture
 
-See [Research/proof-library-design.md](../Research/proof-library-design.md) for theorem caching and pattern matching design.
+See [Research/proof-library-design.md](../research/proof-library-design.md) for theorem caching and pattern matching design.
 
 ### 8.5 Operator Layer Alignment
 
@@ -1324,7 +1324,7 @@ The layered architecture provides clear development milestones:
 - Partial metalogic: Soundness (5/8 axioms proven), completeness infrastructure defined
 - **Delivers**: Verified reasoning for boolean, modal, and temporal logic
 
-For current implementation status, see [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md).
+For current implementation status, see [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md).
 
 **Layers 1-3 (Future Extensions)**:
 - Extended languages: Explanatory, epistemic, normative operators
@@ -1332,7 +1332,7 @@ For current implementation status, see [IMPLEMENTATION_STATUS.md](../ProjectInfo
 - Extended axioms: Layer-specific axiom schemata
 - **Goal**: Progressive addition following phased roadmap
 
-For extension specifications, see [Research/layer-extensions.md](../Research/layer-extensions.md).
+For extension specifications, see [Research/layer-extensions.md](../research/layer-extensions.md).
 
 **Benefits of Layered Approach**:
 1. **Conceptual Clarity**: Separate core system from advanced operators
@@ -1390,10 +1390,10 @@ This architecture provides a comprehensive foundation for developing a sophistic
 - [METHODOLOGY.md](METHODOLOGY.md) - Philosophical foundations
 - [Tutorial](TUTORIAL.md) - Getting started guide
 - [Examples](EXAMPLES.md) - Modal, temporal, and bimodal examples
-- [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) - Current progress
-- [Research/layer-extensions.md](../Research/layer-extensions.md) - Layers 1-3 specifications
-- [Research/dual-verification.md](../Research/dual-verification.md) - RL training architecture
-- [Research/proof-library-design.md](../Research/proof-library-design.md) - Theorem caching design
+- [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) - Current progress
+- [Research/layer-extensions.md](../research/layer-extensions.md) - Layers 1-3 specifications
+- [Research/dual-verification.md](../research/dual-verification.md) - RL training architecture
+- [Research/proof-library-design.md](../research/proof-library-design.md) - Theorem caching design
 - [LEAN Style Guide](../Development/LEAN_STYLE_GUIDE.md) - Coding conventions
 - [Module Organization](../Development/MODULE_ORGANIZATION.md) - Project structure
 - [Integration Guide](INTEGRATION.md) - Model-Checker integration

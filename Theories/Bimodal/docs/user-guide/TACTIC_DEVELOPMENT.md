@@ -1,6 +1,6 @@
 # Tactic Development Guide
 
-This guide provides comprehensive instructions for developing custom tactics for the Logos proof automation system. For a complete registry of all tactics and their implementation status, see [TACTIC_REGISTRY.md](../ProjectInfo/TACTIC_REGISTRY.md).
+This guide provides comprehensive instructions for developing custom tactics for the Logos proof automation system. For a complete registry of all tactics and their implementation status, see [TACTIC_REGISTRY.md](../project-info/TACTIC_REGISTRY.md).
 
 ## Table of Contents
 
@@ -783,4 +783,4 @@ throwError "tactic failed"
 - [Logos Architecture](ARCHITECTURE.md)
 - [METAPROGRAMMING_GUIDE.md](../Development/METAPROGRAMMING_GUIDE.md)
 - [TESTING_STANDARDS.md](../Development/TESTING_STANDARDS.md)
-- [TACTIC_REGISTRY.md](../ProjectInfo/TACTIC_REGISTRY.md)
+- [TACTIC_REGISTRY.md](../project-info/TACTIC_REGISTRY.md)

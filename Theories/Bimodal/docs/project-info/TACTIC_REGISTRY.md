@@ -4,7 +4,7 @@ This document tracks the status of all custom tactics developed for the Logos pr
 
 ## Overview
 
-This registry provides a high-level view of tactic implementation status across all system layers. For detailed guides on developing tactics, see [TACTIC_DEVELOPMENT.md](../UserGuide/TACTIC_DEVELOPMENT.md).
+This registry provides a high-level view of tactic implementation status across all system layers. For detailed guides on developing tactics, see [TACTIC_DEVELOPMENT.md](../user-guide/TACTIC_DEVELOPMENT.md).
 
 ## Layer 0 - Core TM (Temporal-Modal Logic)
 
@@ -167,7 +167,7 @@ This registry provides a high-level view of tactic implementation status across 
 
 ## See Also
 
-- [TACTIC_DEVELOPMENT.md](../UserGuide/TACTIC_DEVELOPMENT.md) - Guide for developing custom tactics
+- [TACTIC_DEVELOPMENT.md](../user-guide/TACTIC_DEVELOPMENT.md) - Guide for developing custom tactics
 - [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Overall project implementation status
 - [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Registry of unproven theorems
 - [Automation Documentation](../../Logos/Core/Automation/) - Source code for tactics

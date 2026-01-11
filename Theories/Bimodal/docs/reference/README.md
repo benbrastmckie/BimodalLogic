@@ -50,5 +50,5 @@ See [TACTIC_REFERENCE.md](TACTIC_REFERENCE.md) for usage details.
 ## Navigation
 
 - **Up**: [Bimodal Documentation](../)
-- **User Guide**: [UserGuide/](../UserGuide/)
-- **Project Info**: [ProjectInfo/](../ProjectInfo/)
+- **User Guide**: [UserGuide/](../user-guide/)
+- **Project Info**: [ProjectInfo/](../project-info/)

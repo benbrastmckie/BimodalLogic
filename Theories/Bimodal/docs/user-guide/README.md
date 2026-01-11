@@ -16,12 +16,12 @@ Documentation for users working with the Bimodal TM logic library.
 
 ## See Also
 
-- [Bimodal Axiom Reference](../Reference/AXIOM_REFERENCE.md) - Complete axiom schemas
+- [Bimodal Axiom Reference](../reference/AXIOM_REFERENCE.md) - Complete axiom schemas
 - [Project Tutorial](../../../docs/user-guide/TUTORIAL.md) - General tutorial
 - [Bimodal README](../../README.md) - Library overview
 
 ## Navigation
 
 - **Up**: [Bimodal Documentation](../)
-- **Reference**: [Reference/](../Reference/)
-- **Project Info**: [ProjectInfo/](../ProjectInfo/)
+- **Reference**: [Reference/](../reference/)
+- **Project Info**: [ProjectInfo/](../project-info/)

@@ -38,5 +38,5 @@ Project status and tracking for the Bimodal TM logic implementation.
 ## Navigation
 
 - **Up**: [Bimodal Documentation](../)
-- **User Guide**: [UserGuide/](../UserGuide/)
-- **Reference**: [Reference/](../Reference/)
+- **User Guide**: [UserGuide/](../user-guide/)
+- **Reference**: [Reference/](../reference/)

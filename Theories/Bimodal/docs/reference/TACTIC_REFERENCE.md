@@ -172,5 +172,5 @@ example (p : Formula) : ⊢ p.box.imp p := by
 ## See Also
 
 - [Axiom Reference](AXIOM_REFERENCE.md) - Axiom schemas used by tactics
-- [Proof Patterns](../UserGuide/PROOF_PATTERNS.md) - Manual proof strategies
+- [Proof Patterns](../user-guide/PROOF_PATTERNS.md) - Manual proof strategies
 - [Automation README](../../Automation/README.md) - Automation implementation

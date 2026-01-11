@@ -39,11 +39,11 @@ docs/user-guide/             → docs/user-guide/
 
 #### Theories/Bimodal non-Lean directories (6 directories)
 ```
-Theories/Bimodal/Documentation/                  → Theories/Bimodal/docs/
-Theories/Bimodal/Documentation/ProjectInfo/      → Theories/Bimodal/docs/project-info/
-Theories/Bimodal/Documentation/Reference/        → Theories/Bimodal/docs/reference/
-Theories/Bimodal/Documentation/Research/         → Theories/Bimodal/docs/research/
-Theories/Bimodal/Documentation/UserGuide/        → Theories/Bimodal/docs/user-guide/
+Theories/Bimodal/docs/                  → Theories/Bimodal/docs/
+Theories/Bimodal/docs/project-info/      → Theories/Bimodal/docs/project-info/
+Theories/Bimodal/docs/reference/        → Theories/Bimodal/docs/reference/
+Theories/Bimodal/docs/research/         → Theories/Bimodal/docs/research/
+Theories/Bimodal/docs/user-guide/        → Theories/Bimodal/docs/user-guide/
 Theories/Bimodal/LaTeX/                          → Theories/Bimodal/latex/
 ```
 
@@ -73,7 +73,7 @@ Theories/Logos/LaTeX/                            → Theories/Logos/latex/
 #### Internal References Within Violating Directories
 
 The `Documentation/` directories contain extensive internal cross-references:
-- `Theories/Bimodal/Documentation/` - 26 files with internal links
+- `Theories/Bimodal/docs/` - 26 files with internal links
 - `Theories/Logos/Documentation/` - 17 files with internal links
 - `docs/` subdirectories - need relative path updates
 
@@ -138,7 +138,7 @@ Systematic search and replace across the codebase.
 | Directory | Files Affected |
 |-----------|---------------|
 | `docs/` subdirectories | ~50 files |
-| `Theories/Bimodal/Documentation/` | 26 files |
+| `Theories/Bimodal/docs/` | 26 files |
 | `Theories/Logos/Documentation/` | 17 files |
 | `Theories/*/LaTeX/` | ~15 files |
 | References to update | ~100+ file edits |
