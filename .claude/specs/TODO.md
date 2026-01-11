@@ -257,13 +257,13 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 
 ---
 
-### 391. Rename Documentation/ to docs/
-- **Effort**: 1 hour
+### 391. Enforce directory naming convention for Lean projects
+- **Effort**: 2 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: general
 
-**Description**: Rename Documentation/ directory to docs/ to follow standard project conventions. The lowercase `docs/` is the standard convention across most software projects, including Lean 4 projects, for non-source directories. This aligns with keeping `scripts/` and `benchmarks/` lowercase while source directories like `Logos/` remain uppercase.
+**Description**: Enforce the directory naming convention that only directories containing Lean source code should be capitalized (e.g., `Logos/`, `Theories/`), while all other directories use lowercase (e.g., `docs/`, `scripts/`, `benchmarks/`). This includes: (1) Rename `Documentation/` to `docs/`, (2) Audit all directories for compliance, (3) Document this standard in project-level documentation (e.g., CONTRIBUTING.md or a new CONVENTIONS.md).
 
 ---
 

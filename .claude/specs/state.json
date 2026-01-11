@@ -16,12 +16,12 @@
     },
     {
       "project_number": 391,
-      "project_name": "rename_documentation_to_docs",
+      "project_name": "enforce_directory_naming_convention",
       "status": "not_started",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T20:42:13Z",
-      "last_updated": "2026-01-11T20:42:13Z"
+      "last_updated": "2026-01-11T20:56:31Z"
     },
     {
       "project_number": 381,
@@ -181,11 +181,11 @@
       "project_name": "complete_advanced_tutorial_sections_with_hands_on_exercises",
       "type": "feature",
       "phase": "planned",
-      "status": "researching",
+      "status": "researched",
       "priority": "medium",
       "language": "markdown",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T20:54:41Z",
+      "last_updated": "2026-01-11T20:56:32Z",
       "effort": "10 hours",
       "started": "2026-01-11",
       "plan_version": "001",
@@ -193,6 +193,10 @@
         {
           "type": "plan",
           "path": ".claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/plans/implementation-001.md"
+        },
+        {
+          "path": ".claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/reports/research-001.md",
+          "type": "research"
         }
       ],
       "description": "Create advanced Bimodal tutorial covering proof search tactics, custom tactic development, and metalogic with hands-on exercises."
