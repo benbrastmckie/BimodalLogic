@@ -53,14 +53,19 @@ technical_debt:
 
 ### 364. Update SORRY_REGISTRY.md paths
 - **Effort**: 30 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
+- **Started**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Review Source**: [.claude/specs/reviews/review-20260110.md]
+- **Summary**: [.claude/specs/364_update_sorry_registry_paths/summaries/implementation-summary-20260111.md]
 
 **Description**: Update SORRY_REGISTRY.md to use correct Bimodal/ paths instead of deprecated Logos/Core/ paths. Update verification commands to match new directory structure.
+
+**Outcome**: Updated all paths from Logos/Core/ to Bimodal/, fixed verification commands, updated related documentation links.
 
 ---
 
