@@ -6,11 +6,11 @@
     {
       "project_number": 376,
       "project_name": "refactor_repo_for_theorylib_multi_theory_structure",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-11T17:06:06Z",
-      "last_updated": "2026-01-11T17:12:24Z"
+      "last_updated": "2026-01-11T17:17:51Z"
     },
     {
       "project_number": 375,
@@ -24,11 +24,12 @@
     {
       "project_number": 374,
       "project_name": "refactor_project_documentation",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T16:36:37Z",
-      "last_updated": "2026-01-11T17:11:35Z"
+      "last_updated": "2026-01-11T17:17:41Z",
+      "completed": "2026-01-11T17:17:41Z"
     },
     {
       "project_number": 373,
