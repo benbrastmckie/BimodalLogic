@@ -40,11 +40,13 @@ technical_debt:
 
 ### 374. Refactor project Documentation to theory-specific directories
 - **Effort**: 2-4 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/374_refactor_project_documentation/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/374_refactor_project_documentation/plans/implementation-001.md)
 
 **Description**: Tasks 360 and 372 created Bimodal/Documentation/ and Logos/Documentation/ directories. Remove project-specific documentation from ProofChecker/Documentation/ by EITHER moving information to the appropriate project Documentation/ directory (e.g., moving Documentation/Research/RECURSIVE_SEMANTICS.md into Logos/Documentation/Research/) OR removing documentation from ProofChecker/Documentation/ that is redundant with what is provided by the Documentation/ directories included in each theory.
 
