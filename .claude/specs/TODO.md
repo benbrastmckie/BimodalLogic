@@ -84,9 +84,10 @@ technical_debt:
 
 ### 383. Rename Core/ to Explanatory/
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
+- **Research**: [research-001.md](.claude/specs/383_rename_core_to_explanatory/reports/research-001.md)
 
 **Description**: Rename Logos/Core/ to Logos/Explanatory/ systematically. Core/ and Explanatory/ target the same theory and should be combined under the Explanatory/ name. Update all references in Logos/Documentation/ and Logos/LaTeX/LogosReference.tex without producing cruft or redundancy.
 
@@ -179,26 +180,30 @@ technical_debt:
 ---
 
 ### 180. Add Bimodal test coverage metrics and reporting
-- **Effort**: 6 hours
+- **Effort**: 4.5 hours (revised from 6)
 - **Status**: [PLANNED]
 - **Started**: 2026-01-11
-- **Planned**: 2026-01-11
+- **Planned**: 2026-01-12 (revised)
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
-- **Plan**: [implementation-001.md](.claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](.claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-002.md)
+- **Previous Plan**: [implementation-001.md](.claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-001.md)
 - **Files Affected**:
-  - scripts/coverage-report.sh (new)
+  - scripts/ExtractDefinitions.lean (new - Lean-native definition extraction)
+  - scripts/coverage-analysis.sh (new - coverage mapping)
   - Bimodal/Documentation/ProjectInfo/TEST_COVERAGE.md (new)
-  - BimodalTest/README.md (enhance)
-- **Description**: Create test coverage measurement and reporting for Bimodal. BimodalTest/ has 30 test files with documented standards (85% target) but no tooling to measure actual coverage. Implement definition-level coverage tracking and sorry audit.
+  - BimodalTest/README.md (add link)
+- **Description**: Create definition-level coverage measurement for Bimodal. Task 179 completed benchmark infrastructure; this task fills the gap: tracking which Bimodal definitions have corresponding tests in BimodalTest/. Sorry audit reduced to 5 actual placeholders.
+- **Revision Summary**: Plan v002 accounts for Task 179 completion (benchmark scripts exist), reduced sorry count (5 vs ~20), and focuses on definition coverage tracking not performance.
 - **Acceptance Criteria**:
   - [x] Testing standards documented (EXISTS: BimodalTest/README.md)
-  - [ ] Definition-level coverage analysis script
-  - [ ] Sorry audit tracking across test files
-  - [ ] Coverage baseline documented in TEST_COVERAGE.md
-  - [ ] Module-by-module coverage breakdown
+  - [x] Benchmark infrastructure (EXISTS: Task 179 completed)
+  - [ ] Definition extraction script (Lean-native or grep fallback)
+  - [ ] Coverage mapping script with per-module breakdown
+  - [ ] Sorry audit section (5 placeholders categorized)
+  - [ ] TEST_COVERAGE.md with baseline numbers
 - **Impact**: Enables data-driven test improvement by tracking which definitions have tests and identifying sorry placeholders.
 
 ---
