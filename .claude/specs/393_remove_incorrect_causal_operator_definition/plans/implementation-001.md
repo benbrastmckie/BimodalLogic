@@ -14,7 +14,7 @@ Remove the incorrect Lewis (1973) counterfactual analysis implementation of the 
 ### Phase 1: Update Truth.lean semantic definition
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Replace incorrect causal operator semantics with `sorry` stub
@@ -67,7 +67,7 @@ Remove the incorrect Lewis (1973) counterfactual analysis implementation of the 
 ### Phase 2: Update Truth.lean module docstring
 
 **Estimated effort**: 5 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Remove the incorrect claim about counterfactual analysis in module docstring
@@ -101,7 +101,7 @@ Remove the incorrect Lewis (1973) counterfactual analysis implementation of the 
 ### Phase 3: Update Syntax.lean docstring
 
 **Estimated effort**: 5 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update the `causal` constructor docstring to indicate primitive status

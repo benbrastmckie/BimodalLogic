@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T12:00:00Z
-next_project_number: 397
+next_project_number: 398
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -74,9 +74,10 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 
 ### 393. Remove incorrect causal operator definition
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
+- **Started**: 2026-01-12
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 381
@@ -126,6 +127,18 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 ---
 
 ## Medium Priority
+
+### 397. Enhance /revise to update description when no plan exists
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Modify the /revise command to handle tasks without plans by updating the task description instead of erroring. When a task has status `not_started` or `researched` (no plan), and the user provides a revision reason, update the task description in both state.json and TODO.md, then git commit the change.
+
+---
 
 ### 381. Add causal semantics infrastructure
 - **Effort**: 2-3 hours
