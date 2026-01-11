@@ -117,8 +117,9 @@ technical_debt:
 
 ### 179. Extend Bimodal benchmarks with derivation, semantics, and CI integration
 - **Effort**: 7.75 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
+- **Completed**: 2026-01-12
 - **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
@@ -126,23 +127,23 @@ technical_debt:
 - **Dependencies**: None
 - **Research**: [research-001.md](.claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/reports/research-001.md)
 - **Plan**: [implementation-003.md](.claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-003.md)
-- **Files Affected**:
-  - BimodalTest/Automation/ProofSearchBenchmark.lean (enhance)
-  - BimodalTest/ProofSystem/DerivationBenchmark.lean (new)
-  - BimodalTest/Semantics/SemanticBenchmark.lean (new)
-  - Documentation/Development/BENCHMARKING_GUIDE.md (new)
-  - Documentation/Development/QUALITY_METRICS.md (update)
-  - Bimodal/Documentation/ProjectInfo/PERFORMANCE_TARGETS.md (new)
-  - scripts/run-benchmarks.sh (new)
-  - scripts/check-regression.sh (new)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/summaries/implementation-summary-20260112.md)
+- **Files Created**:
+  - BimodalTest/ProofSystem/DerivationBenchmark.lean (15 benchmarks)
+  - BimodalTest/Semantics/SemanticBenchmark.lean (16 benchmarks)
+  - Documentation/Development/BENCHMARKING_GUIDE.md
+  - Bimodal/Documentation/ProjectInfo/PERFORMANCE_TARGETS.md
+  - scripts/run-benchmarks.sh
+  - scripts/check-regression.sh
+  - benchmarks/baseline.json
 - **Description**: Extend the existing ProofSearchBenchmark.lean suite with derivation and semantic evaluation benchmarks. Add CI integration for performance regression testing. Add project-wide benchmarking documentation with cross-links to theory-specific targets. The proof search benchmark already exists and is comprehensive—this task adds the remaining components.
 - **Acceptance Criteria**:
   - [x] Benchmark suite for proof search created (EXISTS: ProofSearchBenchmark.lean)
-  - [ ] Benchmark suite for derivation tree construction created
-  - [ ] Benchmark suite for semantic evaluation created
-  - [ ] Project-wide BENCHMARKING_GUIDE.md created
-  - [ ] Performance targets documented in Bimodal/Documentation/
-  - [ ] CI script for running benchmarks and detecting regressions
+  - [x] Benchmark suite for derivation tree construction created
+  - [x] Benchmark suite for semantic evaluation created
+  - [x] Project-wide BENCHMARKING_GUIDE.md created
+  - [x] Performance targets documented in Bimodal/Documentation/
+  - [x] CI script for running benchmarks and detecting regressions
 - **Impact**: Ensures performance doesn't regress and provides data for optimization efforts. Completes benchmarking coverage beyond proof search.
 
 ---
