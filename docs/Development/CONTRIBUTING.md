@@ -115,7 +115,39 @@ Returns the number of operators plus atomic formulas.
 def complexity (φ : Formula) : Nat := ...
 ```
 
-## 3. Pull Request Process
+## 3. Directory Naming Convention
+
+This project follows Lean 4 ecosystem conventions for directory naming:
+
+### PascalCase (capitalized)
+
+Directories containing Lean source code use PascalCase. These names must match Lean's import path requirements:
+
+- `Logos/` - Main Lean source code
+- `Theories/` - Theory implementations (Bimodal, Logos)
+- `Tests/` - Test suites
+
+**Rationale**: Lean imports like `import Theories.Bimodal.Syntax` require directory names to match exactly.
+
+### lowercase
+
+All other directories use lowercase:
+
+- `docs/` - Project documentation
+- `scripts/` - Utility scripts
+- `benchmarks/` - Performance benchmarks
+- `latex/` - LaTeX resources and templates
+
+**Rationale**: Aligns with standard software project conventions and provides visual distinction between code and non-code directories.
+
+### Why This Matters
+
+1. **Lean compatibility**: Import paths must match directory structure exactly
+2. **Ecosystem alignment**: Follows Mathlib and other Lean 4 project conventions
+3. **GitHub Pages**: `docs/` is automatically served by GitHub Pages
+4. **Clarity**: Developers can quickly identify code vs. non-code directories
+
+## 4. Pull Request Process
 
 ### Branch Naming
 
@@ -198,7 +230,7 @@ Brief description of changes.
 6. Address review feedback
 7. Squash commits if requested
 
-## 4. Code Review Checklist
+## 5. Code Review Checklist
 
 Reviewers will check:
 
@@ -230,7 +262,7 @@ Reviewers will check:
 - [ ] Reasonable proof complexity
 - [ ] Build time not significantly increased
 
-## 5. Types of Contributions
+## 6. Types of Contributions
 
 ### Bug Fixes
 
@@ -268,7 +300,7 @@ Reviewers will check:
 - All tests must pass
 - Update documentation if APIs change
 
-## 6. Community Resources
+## 7. Community Resources
 
 ### Communication
 
@@ -323,14 +355,14 @@ Include:
 3. Alternatives considered
 4. Additional context
 
-## 7. Recognition
+## 8. Recognition
 
 Contributors are recognized in:
 - CONTRIBUTORS.md file
 - Release notes for significant contributions
 - Commit history
 
-## 8. Code of Conduct
+## 9. Code of Conduct
 
 - Be respectful and inclusive
 - Focus on constructive feedback
@@ -338,7 +370,7 @@ Contributors are recognized in:
 - Follow project guidelines
 - Report issues appropriately
 
-## 9. AI-Assisted Development
+## 10. AI-Assisted Development
 
 Logos includes an AI agent system that automates development workflows:
 

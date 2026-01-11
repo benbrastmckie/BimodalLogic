@@ -79,7 +79,7 @@ Enforce a consistent directory naming convention across the ProofChecker project
 ### Phase 3: Document the convention
 
 **Estimated effort**: 45 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Create or update project documentation with the naming convention

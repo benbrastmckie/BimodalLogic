@@ -428,6 +428,13 @@ lake test
 lake lint
 ```
 
+### Directory Convention
+
+- **PascalCase**: Lean source directories (`Logos/`, `Theories/`, `Tests/`)
+- **lowercase**: Non-code directories (`docs/`, `scripts/`, `benchmarks/`, `latex/`)
+
+See [Directory Naming Convention](docs/Development/CONTRIBUTING.md#3-directory-naming-convention) for details.
+
 ---
 
 ## Related Projects
