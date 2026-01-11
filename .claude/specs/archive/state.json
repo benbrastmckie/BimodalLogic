@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-11T00:00:00Z",
+  "_last_updated": "2026-01-11T04:30:00Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -624,6 +624,102 @@
       "effort": "8-12 hours",
       "description": "Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks.",
       "implementation_summary": ".claude/specs/319_expand_testing_for_proof_search_automation_phase_5/summaries/implementation-summary-20260110.md"
+    },
+    {
+      "project_number": 352,
+      "project_name": "rename_logos_core_to_bimodal",
+      "type": "refactor",
+      "status": "completed",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-10T14:00:00Z",
+      "last_updated": "2026-01-11T00:15:00Z",
+      "effort": "2-4 hours",
+      "description": "Rename Logos/Core/ to Bimodal/ to establish the bimodal language, semantics, proof theory, and metalogical results as an independent project.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 353,
+      "project_name": "move_logostest_core_to_bimodaltest",
+      "type": "refactor",
+      "status": "completed",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-11T00:00:19Z",
+      "last_updated": "2026-01-11T00:30:59Z",
+      "effort": "1-2 hours",
+      "description": "Move LogosTest/Core/ to BimodalTest/ to mirror the Bimodal library structure.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 354,
+      "project_name": "refactor_archive_directory",
+      "type": "refactor",
+      "status": "completed",
+      "priority": "medium",
+      "language": "general",
+      "created": "2026-01-11T00:03:52Z",
+      "last_updated": "2026-01-11T03:00:00Z",
+      "description": "Move examples from Archive/ to Bimodal/Examples/, remove Archive/ directory.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 356,
+      "project_name": "bimodal_directory_documentation",
+      "type": "documentation",
+      "status": "completed",
+      "priority": "medium",
+      "language": "general",
+      "created": "2026-01-11T00:43:33Z",
+      "last_updated": "2026-01-11T01:03:17Z",
+      "description": "Create systematic documentation for Bimodal/ and BimodalTest/.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 357,
+      "project_name": "fix_modals5_noncomputable_cascade",
+      "type": "bugfix",
+      "status": "completed",
+      "priority": "critical",
+      "language": "lean",
+      "created": "2026-01-10T12:00:00Z",
+      "last_updated": "2026-01-10T14:45:00Z",
+      "effort": "30 minutes",
+      "description": "Add noncomputable markers to definitions in ModalS5.lean.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 358,
+      "project_name": "fix_completenesstest_import_error",
+      "type": "bugfix",
+      "status": "completed",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-10T12:00:00Z",
+      "last_updated": "2026-01-11T01:19:57Z",
+      "effort": "5 minutes",
+      "description": "Move import statement from line 26 to beginning of file in BimodalTest/Metalogic/CompletenessTest.lean.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 359,
+      "project_name": "complete_temporal_duality_soundness",
+      "type": "feature",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-10T12:00:00Z",
+      "last_updated": "2026-01-10T18:00:00Z",
+      "effort": "1-2 hours",
+      "description": "Complete the temporal_duality case in SoundnessLemmas.lean to remove the last sorry from soundness proofs.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-10T12:00:00Z",
+  "_last_updated": "2026-01-11T04:30:00Z",
   "next_project_number": 362,
   "active_projects": [
     {
@@ -23,32 +23,6 @@
       ]
     },
     {
-      "project_number": 356,
-      "project_name": "bimodal_directory_documentation",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-11T00:43:33Z",
-      "last_updated": "2026-01-11T01:03:17Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/356_bimodal_directory_documentation/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/356_bimodal_directory_documentation/plans/implementation-001.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/356_bimodal_directory_documentation/summaries/implementation-summary-20260110.md"
-        }
-      ],
-      "plan_version": "001",
-      "started": "2026-01-10",
-      "completed": "2026-01-10"
-    },
-    {
       "project_number": 355,
       "project_name": "fix_bimodal_build_errors",
       "status": "researched",
@@ -68,44 +42,6 @@
         }
       ],
       "research_completed": "2026-01-11T00:49:35Z"
-    },
-    {
-      "project_number": 354,
-      "project_name": "refactor_archive_directory",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-11T00:03:52Z",
-      "last_updated": "2026-01-11T03:00:00Z",
-      "completed": "2026-01-10",
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": ".claude/specs/354_refactor_archive_directory/plans/implementation-001.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/354_refactor_archive_directory/summaries/implementation-summary-20260110.md"
-        }
-      ]
-    },
-    {
-      "project_number": 353,
-      "project_name": "move_logostest_core_to_bimodaltest",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "completed",
-      "priority": "high",
-      "language": "lean",
-      "created": "2026-01-11T00:00:19Z",
-      "last_updated": "2026-01-11T00:30:59Z",
-      "effort": "1-2 hours",
-      "description": "Move LogosTest/Core/ to BimodalTest/ to mirror the Bimodal library structure. Follow Lean 4 best practices (Mathlib pattern) with separate test directory. Update imports, lakefile, and namespace references.",
-      "dependencies": [
-        352
-      ],
-      "plan_version": "001",
-      "completed": "2026-01-10"
     },
     {
       "project_number": 132,
@@ -533,84 +469,6 @@
       "description": "Refactor the .claude/ agent system to use 'thin wrapper' commands that parse arguments and delegate to corresponding skills for execution, enabling skill reuse across commands and cleaner separation of concerns."
     },
     {
-      "project_number": 357,
-      "project_name": "fix_modals5_noncomputable_cascade",
-      "type": "bugfix",
-      "phase": "not_started",
-      "status": "completed",
-      "priority": "critical",
-      "language": "lean",
-      "created": "2026-01-10T12:00:00Z",
-      "last_updated": "2026-01-10T14:45:00Z",
-      "effort": "30 minutes",
-      "description": "Add noncomputable markers to definitions in ModalS5.lean that depend on noncomputable classical_merge and lce_imp from Propositional.lean. Cascading build errors affect 5 definitions.",
-      "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md",
-      "completed": "2026-01-10"
-    },
-    {
-      "project_number": 358,
-      "project_name": "fix_completenesstest_import_error",
-      "type": "bugfix",
-      "phase": "not_started",
-      "status": "completed",
-      "priority": "high",
-      "language": "lean",
-      "created": "2026-01-10T12:00:00Z",
-      "last_updated": "2026-01-11T01:19:57Z",
-      "effort": "5 minutes",
-      "description": "Move import statement from line 26 to beginning of file in BimodalTest/Metalogic/CompletenessTest.lean.",
-      "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/358_fix_completenesstest_import_error/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/358_fix_completenesstest_import_error/plans/implementation-001.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/358_fix_completenesstest_import_error/summaries/implementation-summary-20260110.md"
-        }
-      ],
-      "plan_version": "001",
-      "started": "2026-01-10",
-      "completed": "2026-01-10"
-    },
-    {
-      "project_number": 359,
-      "project_name": "complete_temporal_duality_soundness",
-      "type": "feature",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "lean",
-      "created": "2026-01-10T12:00:00Z",
-      "last_updated": "2026-01-10T18:00:00Z",
-      "effort": "1-2 hours",
-      "description": "Complete the temporal_duality case in SoundnessLemmas.lean (line 687) to remove the last sorry from soundness proofs.",
-      "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/359_complete_temporal_duality_soundness/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/359_complete_temporal_duality_soundness/plans/implementation-001.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/359_complete_temporal_duality_soundness/summaries/implementation-summary-20260110.md"
-        }
-      ],
-      "research_completed": "2026-01-10T15:00:00Z",
-      "plan_version": "001",
-      "started": "2026-01-10",
-      "completed": "2026-01-10"
-    },
-    {
       "project_number": 360,
       "project_name": "create_mvp_status_documentation",
       "type": "documentation",
@@ -623,36 +481,6 @@
       "effort": "30 minutes",
       "description": "Document known limitations of Bimodal MVP including incomplete completeness proof, modal 5 blocking dependency, and example sorries. Add Implementation Status sections to READMEs.",
       "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md"
-    },
-    {
-      "project_number": 352,
-      "project_name": "rename_logos_core_to_bimodal",
-      "type": "refactor",
-      "phase": "implementation_completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "lean",
-      "created": "2026-01-10T14:00:00Z",
-      "last_updated": "2026-01-11T00:15:00Z",
-      "effort": "2-4 hours",
-      "description": "Rename Logos/Core/ to Bimodal/ to establish the bimodal language, semantics, proof theory, and metalogical results as an independent project. This refactoring prepares the repository for the Logos extensions detailed in RECURSIVE_SEMANTICS.md and LAYER_EXTENSIONS.md. Focus on moving Core/ to Bimodal/ and ensuring everything builds correctly.",
-      "research_completed": "2026-01-10T23:39:01Z",
-      "completed": "2026-01-10",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/352_rename_logos_core_to_bimodal/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/352_rename_logos_core_to_bimodal/plans/implementation-001.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/352_rename_logos_core_to_bimodal/summaries/implementation-summary-20260110.md"
-        }
-      ],
-      "plan_version": "001"
     }
   ]
 }

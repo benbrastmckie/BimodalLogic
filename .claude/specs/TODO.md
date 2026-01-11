@@ -1,21 +1,21 @@
 ---
-last_updated: 2026-01-10T12:00:00Z
+last_updated: 2026-01-11T04:30:00Z
 next_project_number: 362
 repository_health:
   overall_score: 85
   production_readiness: needs-work
-  last_assessed: 2026-01-10T12:00:00Z
+  last_assessed: 2026-01-11T04:30:00Z
 task_counts:
-  active: 48
-  completed: 71
+  active: 41
+  completed: 78
   in_progress: 2
-  not_started: 43
+  not_started: 36
   abandoned: 8
   total: 128
 priority_distribution:
-  critical: 2
-  high: 18
-  medium: 24
+  critical: 0
+  high: 16
+  medium: 21
   low: 14
 technical_debt:
   sorry_count: 6
@@ -26,56 +26,7 @@ technical_debt:
 
 # TODO
 
-## Critical Priority
-
-### 357. Fix ModalS5.lean noncomputable cascade
-- **Effort**: 30 minutes
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-10
-- **Completed**: 2026-01-10
-- **Priority**: Critical
-- **Language**: lean
-- **Blocking**: 355 (build errors depend on this)
-- **Dependencies**: None
-- **Researched**: 2026-01-10
-- **Planned**: 2026-01-10
-- **Research**: [.claude/specs/357_fix_modals5_noncomputable_cascade/reports/research-001.md]
-- **Plan**: [.claude/specs/357_fix_modals5_noncomputable_cascade/plans/implementation-001.md]
-- **Summary**: [.claude/specs/357_fix_modals5_noncomputable_cascade/summaries/implementation-summary-20260110.md]
-- **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
-
-**Description**: Add `noncomputable` markers to definitions in ModalS5.lean that depend on noncomputable `classical_merge` and `lce_imp` from Propositional.lean. 5 definitions have cascading build errors:
-- Line 63: `classical_merge`
-- Line 203: `box_disj_intro`
-- Line 379: `box_iff_intro`
-- Line 514: `box_conj_iff`
-- Line 621: `diamond_disj_iff`
-
-**Outcome**: Added `noncomputable` keyword to all 5 definitions. Build succeeds.
-
----
-
 ## High Priority
-
-### 358. Fix CompletenessTest.lean import error
-- **Effort**: 5 minutes
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-10
-- **Completed**: 2026-01-10
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
-- **Research**: [.claude/specs/358_fix_completenesstest_import_error/reports/research-001.md]
-- **Plan**: [.claude/specs/358_fix_completenesstest_import_error/plans/implementation-001.md]
-- **Summary**: [.claude/specs/358_fix_completenesstest_import_error/summaries/implementation-summary-20260110.md]
-
-**Description**: Move import statement from line 26 to beginning of file in `BimodalTest/Metalogic/CompletenessTest.lean`. Error: "invalid 'import' command, it must be used in the beginning of the file".
-
-**Outcome**: Moved imports to beginning of file. No more import placement error.
-
----
 
 ### 355. Fix all Lean build errors for the Bimodal/ theory
 - **Effort**: 1-2 hours
@@ -88,48 +39,6 @@ technical_debt:
 - **Research**: [.claude/specs/355_fix_bimodal_build_errors/reports/research-001.md]
 
 **Description**: Fix all Lean build errors for the Bimodal/ theory. Some errors are indicated in the implementation summary for task 352 (.claude/specs/352_rename_logos_core_to_bimodal/summaries/implementation-summary-20260110.md).
-
----
-
-### 352. Rename Logos/Core/ to Bimodal/
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-10
-- **Completed**: 2026-01-10
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Researched**: 2026-01-10
-- **Planned**: 2026-01-10
-- **Research**: [.claude/specs/352_rename_logos_core_to_bimodal/reports/research-001.md]
-- **Plan**: [.claude/specs/352_rename_logos_core_to_bimodal/plans/implementation-001.md]
-- **Summary**: [.claude/specs/352_rename_logos_core_to_bimodal/summaries/implementation-summary-20260110.md]
-
-**Description**: Rename Logos/Core/ to Bimodal/ to establish the bimodal language, semantics, proof theory, and metalogical results as an independent project. This refactoring prepares the repository for the Logos extensions detailed in RECURSIVE_SEMANTICS.md and LAYER_EXTENSIONS.md. Focus on moving Core/ to Bimodal/ and ensuring everything builds correctly.
-
-**Outcome**: Successfully moved Logos/Core/ to Bimodal/, updated all 32 internal files with new namespace, updated 96+ external import references, added lean_lib Bimodal target, created backwards-compatible Logos/Core.lean re-export layer. Clean build succeeds.
-
----
-
-### 353. Move LogosTest/Core/ to BimodalTest/
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-10
-- **Completed**: 2026-01-10
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: 352
-- **Researched**: 2026-01-10
-- **Planned**: 2026-01-10
-- **Research**: [.claude/specs/353_move_logostest_core_to_bimodaltest/reports/research-001.md]
-- **Plan**: [.claude/specs/353_move_logostest_core_to_bimodaltest/plans/implementation-001.md]
-- **Summary**: [.claude/specs/353_move_logostest_core_to_bimodaltest/summaries/implementation-summary-20260110.md]
-
-**Description**: Move LogosTest/Core/ to BimodalTest/ to mirror the Bimodal library structure. Follow Lean 4 best practices (Mathlib pattern: Mathlib/ + MathlibTest/) with separate test directory. Update imports, lakefile (add `lean_lib BimodalTest`), and namespace references. Ensure test executable still works.
-
-**Outcome**: Successfully moved LogosTest/Core/ to BimodalTest/, updated all 30 files with new namespace, updated all internal and external imports, added lean_lib BimodalTest target. LogosTest now re-exports from BimodalTest for backwards compatibility. Library build succeeds.
 
 ---
 
@@ -147,35 +56,13 @@ technical_debt:
 
 ---
 
-### 359. Complete temporal_duality soundness case
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Researched**: 2026-01-10
-- **Planned**: 2026-01-10
-- **Started**: 2026-01-10
-- **Completed**: 2026-01-10
-- **Research**: [.claude/specs/359_complete_temporal_duality_soundness/reports/research-001.md]
-- **Plan**: [.claude/specs/359_complete_temporal_duality_soundness/plans/implementation-001.md]
-- **Summary**: [.claude/specs/359_complete_temporal_duality_soundness/summaries/implementation-summary-20260110.md]
-- **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
-
-**Description**: Complete the `temporal_duality` case in `Bimodal/Metalogic/SoundnessLemmas.lean:687` to remove the last `sorry` from soundness proofs. This completes the soundness theorem (12/12 axioms proven).
-
-**Outcome**: Successfully implemented combined theorem `derivable_implies_valid_and_swap_valid` that proves both soundness and swap validity simultaneously via mutual induction. Added 15 local axiom validity lemmas, derived `soundness_from_empty` and `derivable_implies_swap_valid`. All sorries removed from SoundnessLemmas.lean.
-
----
-
 ### 360. Create MVP status documentation
 - **Effort**: 30 minutes
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
-- **Dependencies**: 356
+- **Dependencies**: None
 - **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
 
 **Description**: Document known limitations of Bimodal MVP:
@@ -183,46 +70,6 @@ technical_debt:
 - Modal 5 theorem has blocking dependency
 - Example files contain pedagogical sorries
 Add Implementation Status sections to Bimodal/README.md and BimodalTest/README.md.
-
----
-
-### 356. Create systematic documentation for Bimodal/ and BimodalTest/
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-10
-- **Completed**: 2026-01-10
-- **Priority**: Medium
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: 352, 353
-- **Research**: [.claude/specs/356_bimodal_directory_documentation/reports/research-001.md]
-- **Plan**: [.claude/specs/356_bimodal_directory_documentation/plans/implementation-001.md]
-- **Summary**: [.claude/specs/356_bimodal_directory_documentation/summaries/implementation-summary-20260110.md]
-
-**Description**: Create systematic documentation for Bimodal/ and BimodalTest/ following /home/benjamin/Projects/ProofChecker/Documentation/Development/DIRECTORY_README_STANDARD.md
-
-**Outcome**: Created Bimodal/README.md (189 lines, Template D) and BimodalTest/README.md (206 lines, Template E). Fixed stale path reference in BimodalTest/Integration/README.md.
-
----
-
-### 354. Research and refactor Archive/ directory
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Completed**: 2026-01-10
-- **Priority**: Medium
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: 352, 353
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Research**: [.claude/specs/354_refactor_archive_directory/reports/research-001.md]
-- **Plan**: [.claude/specs/354_refactor_archive_directory/plans/implementation-001.md]
-- **Summary**: [.claude/specs/354_refactor_archive_directory/summaries/implementation-summary-20260110.md]
-
-**Description**: Move examples from Archive/ to Bimodal/Examples/, remove Archive/ directory, and establish pattern for future Logos layer examples.
-
-**Outcome**: Successfully moved 7 example files from Archive/ to Bimodal/Examples/, updated namespaces from Archive to Bimodal.Examples, updated Logos/Examples.lean to import Bimodal.Examples, removed Archive/ directory and lean_lib Archive from lakefile, preserved logos-original/ in .claude/archive/.
 
 ---
 
