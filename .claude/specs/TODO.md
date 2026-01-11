@@ -77,15 +77,17 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 
 ### 393. Remove incorrect causal operator definition
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Started**: 2026-01-12
+- **Completed**: 2026-01-12
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 381
 - **Research**: [research-001.md](.claude/specs/393_remove_incorrect_causal_operator_definition/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/393_remove_incorrect_causal_operator_definition/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/393_remove_incorrect_causal_operator_definition/summaries/implementation-summary-20260112.md)
 
 **Description**: Remove the incorrect definition of the causal operator (which was defined in terms of the counterfactual conditional) and leave behind a stub or comment for systematic future implementation of the correct semantics.
 
@@ -112,7 +114,7 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 - **Language**: markdown
 - **Parent**: Task 394
 
-**Description**: Port the causal semantics from sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos. Add closeness ordering, evolutions, subevolutions, causal context with background assumptions, and the three-condition truth clause for causation.
+**Description**: Port the causal semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos. Add closeness ordering, evolutions, subevolutions, causal context with background assumptions, and the three-condition truth clause for causation.
 
 ---
 
