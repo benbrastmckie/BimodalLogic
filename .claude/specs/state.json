@@ -6,16 +6,16 @@
     {
       "project_number": 389,
       "project_name": "standardize_nnn_number_format",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-11T20:22:45Z",
-      "last_updated": "2026-01-11T20:22:45Z"
+      "last_updated": "2026-01-11T20:25:30Z"
     },
     {
       "project_number": 388,
       "project_name": "fix_todo_command_directory_archiving",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "description": "Fix /todo command to move project directories (.claude/specs/{N}_{SLUG}/) to archive directory (.claude/specs/archive/{N}_{SLUG}/) when archiving completed/abandoned tasks. Currently the command updates state.json and archive/state.json correctly but fails to execute Step 5D which moves the directories.",
@@ -25,11 +25,11 @@
     {
       "project_number": 387,
       "project_name": "standardize_research_file_names",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T20:10:25Z",
-      "last_updated": "2026-01-11T20:19:50Z",
+      "last_updated": "2026-01-11T20:25:49Z",
       "artifacts": [
         {
           "path": ".claude/specs/387_standardize_research_file_names/reports/research-001.md",
@@ -38,9 +38,14 @@
         {
           "path": ".claude/specs/387_standardize_research_file_names/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/387_standardize_research_file_names/summaries/implementation-summary-20260111.md",
+          "type": "summary"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "completed": "2026-01-11T20:25:49Z"
     },
     {
       "project_number": 386,

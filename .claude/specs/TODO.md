@@ -30,7 +30,7 @@ technical_debt:
 
 ### 388. Fix /todo command directory archiving
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: meta
 
@@ -93,7 +93,7 @@ technical_debt:
 
 ### 389. Standardize {NNN} number format across documentation
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 
@@ -103,14 +103,16 @@ technical_debt:
 
 ### 387. Standardize Research/ file names and fix references
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/387_standardize_research_file_names/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/387_standardize_research_file_names/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/387_standardize_research_file_names/summaries/implementation-summary-20260111.md)
 
 **Description**: Improve and standardize file names in Documentation/Research/ to avoid redundancy (e.g., remove 'RESEARCH' from titles given the directory name). Rename files using consistent lowercase-hyphenated naming convention. Fix all references to these files throughout the repository to avoid broken links.
 
