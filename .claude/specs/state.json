@@ -236,10 +236,10 @@
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T23:30:00Z",
-      "effort": "8 hours",
+      "last_updated": "2026-01-11T23:45:00Z",
+      "effort": "7.75 hours",
       "started": "2026-01-11",
-      "plan_version": "002",
+      "plan_version": "003",
       "artifacts": [
         {
           "type": "plan",
@@ -252,6 +252,10 @@
         {
           "type": "plan",
           "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-002.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-003.md"
         }
       ],
       "description": "Extend existing Bimodal benchmarks with derivation, semantics, and CI integration. ProofSearchBenchmark.lean already complete."
