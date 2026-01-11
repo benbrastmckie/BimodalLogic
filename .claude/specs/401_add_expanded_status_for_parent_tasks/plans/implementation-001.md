@@ -14,7 +14,7 @@ Add the `[EXPANDED]` status marker for parent tasks that have been divided into 
 ### Phase 1: Update Primary Status Definition
 
 **Estimated effort**: 20 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add [EXPANDED] status marker definition to status-markers.md
