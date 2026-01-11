@@ -62,13 +62,15 @@ technical_debt:
 
 ### 372. Create Logos/Documentation/ and refactor root Documentation/
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
-- **Blocking**: None
+- **Blocking**: Task 360 Phase 5
 - **Dependencies**: None
 - **Research**: [research-001.md](.claude/specs/372_create_logos_documentation_and_refactor_root/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/372_create_logos_documentation_and_refactor_root/plans/implementation-001.md)
 
 **Description**: Create Logos/Documentation/ directory similar to Bimodal/Documentation/ to contain Logos-specific documentation, and refactor ProofChecker/Documentation/ to be theory agnostic.
 
