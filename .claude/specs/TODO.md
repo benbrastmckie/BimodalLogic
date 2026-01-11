@@ -52,7 +52,7 @@ technical_debt:
 - **Priority**: High
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/385_refactor_meta_command_task_creation/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/385_refactor_meta_command_task_creation/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](.claude/specs/385_refactor_meta_command_task_creation/plans/implementation-002.md)
 
 **Description**: Refactor the /meta command to conduct careful analysis of the .claude/ agent system given the prompt, ask follow-up questions if additional clarity would improve understanding, and then produce an appropriate number of tasks (similar to /task --divide) with dependencies indicated. If /meta is run without a prompt, run in full interactive mode to interview the user until sufficient detail has been provided to create the appropriate number of tasks with dependencies.
 

@@ -264,7 +264,7 @@ The refactor follows patterns from OpenAgents meta.md and the existing refactor 
 
 2. Show TODO.md entry format with dependencies:
    ```markdown
-   ### {N}. {Title}
+   ### {NNN}. {Title}
    - **Effort**: {estimate}
    - **Status**: [NOT STARTED]
    - **Priority**: {priority}
