@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T21:30:00Z
-next_project_number: 384
+next_project_number: 385
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -94,6 +94,16 @@ technical_debt:
 - **Plan**: [implementation-001.md](.claude/specs/383_rename_core_to_explanatory/plans/implementation-001.md)
 
 **Description**: Rename Logos/Core/ to Logos/Explanatory/ systematically. Core/ and Explanatory/ target the same theory and should be combined under the Explanatory/ name. Update all references in Logos/Documentation/ and Logos/LaTeX/LogosReference.tex without producing cruft or redundancy.
+
+---
+
+### 384. Fix LaTeX package path warnings in LogosReference.tex
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Fix LaTeX package path warnings in LogosReference.tex: warnings about logos-notation, notation-standards, and formatting packages. Also handle showhyphens command change and cross-reference warnings.
 
 ---
 
