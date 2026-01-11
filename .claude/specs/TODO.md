@@ -95,9 +95,11 @@ technical_debt:
 
 ### 405. Document LaTeX one-line-per-sentence convention
 - **Effort**: 1 hour
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: meta
+- **Research**: [research-001.md](.claude/specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md)
 
 **Description**: Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Create or update latex style guides and coding conventions.
 
@@ -154,7 +156,7 @@ technical_debt:
 
 ### 401. Add [EXPANDED] status for parent tasks
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
 - **Priority**: Medium

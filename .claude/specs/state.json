@@ -6,13 +6,19 @@
     {
       "project_number": 405,
       "project_name": "document_latex_one_line_per_sentence_convention",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "description": "Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Create or update latex style guides and coding conventions.",
       "effort": "1 hour",
       "created": "2026-01-11T22:25:49Z",
-      "last_updated": "2026-01-11T22:30:58Z"
+      "last_updated": "2026-01-11T22:33:22Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 406,
@@ -90,13 +96,13 @@
     {
       "project_number": 401,
       "project_name": "add_expanded_status_for_parent_tasks",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "description": "Add [EXPANDED] status for parent tasks after expand operation. Update state-management.md with expanded status value, modify task.md Expand Mode to set parent task status to expanded, and update task 394 to [EXPANDED] status in both state.json and TODO.md.",
       "effort": "1-2 hours",
       "created": "2026-01-11T22:10:38Z",
-      "last_updated": "2026-01-11T22:30:33Z",
+      "last_updated": "2026-01-11T22:32:52Z",
       "artifacts": [
         {
           "path": ".claude/specs/401_add_expanded_status_for_parent_tasks/reports/research-001.md",
