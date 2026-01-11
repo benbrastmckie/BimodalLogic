@@ -1,5 +1,7 @@
 import Logos.Foundation.Frame
 import Logos.Foundation.Basic
+import Logos.Foundation.Proposition
+import Logos.Foundation.Interpretation
 
 /-!
 # Logos Foundation - Constitutive Semantics Layer

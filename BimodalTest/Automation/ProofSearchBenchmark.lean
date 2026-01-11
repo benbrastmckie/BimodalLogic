@@ -312,7 +312,9 @@ def compareStrategiesTimed (benchmarks : List (String × Context × Formula)) : 
     ("BoundedDFS-5", .BoundedDFS 5),
     ("BoundedDFS-10", .BoundedDFS 10),
     ("IDDFS-10", .IDDFS 10),
-    ("IDDFS-20", .IDDFS 20)
+    ("IDDFS-20", .IDDFS 20),
+    ("BestFirst-1000", .BestFirst 1000),
+    ("BestFirst-10000", .BestFirst 10000)
   ]
 
   for (stratName, strat) in strategies do
@@ -320,15 +322,106 @@ def compareStrategiesTimed (benchmarks : List (String × Context × Formula)) : 
     let mut totalVisits := 0
     let mut totalFound := 0
     let mut totalTimeNs := 0
-    for (name, ctx, goal) in benchmarks do
+    for (_, ctx, goal) in benchmarks do
       let (result, timeNs) ← timed (pure (search ctx goal strat 1000))
-      let (found, _, _, stats, visits) := result
+      let (found, _, _, _, visits) := result
       totalVisits := totalVisits + visits
       totalTimeNs := totalTimeNs + timeNs
       if found then totalFound := totalFound + 1
     IO.println s!"Found: {totalFound}/{benchmarks.length}"
     IO.println s!"Total visits: {totalVisits}"
     IO.println s!"Total time: {formatNanos totalTimeNs}"
+
+/-!
+## Learning-Enabled Benchmarks (Task 176)
+
+Benchmarks that test pattern learning across multiple proof attempts.
+-/
+
+/-- Run benchmarks with pattern learning enabled. -/
+def runLearningBenchmarks (benchmarks : List (String × Context × Formula))
+    (config : BenchmarkConfig := {}) : IO Unit := do
+  IO.println "=== Pattern Learning Benchmarks ==="
+
+  -- First pass: no learning
+  IO.println "\n--- First Pass (No Learning) ---"
+  let mut db := PatternDatabase.empty
+  let mut firstPassVisits := 0
+  let mut firstPassFound := 0
+
+  for (name, ctx, goal) in benchmarks do
+    let result := search_with_learning ctx goal (.IDDFS config.maxDepth) config.visitLimit config.weights db true
+    if result.found then
+      firstPassFound := firstPassFound + 1
+      db := result.patternDb
+    firstPassVisits := firstPassVisits + result.visits
+    IO.println s!"{name}: found={result.found}, visits={result.visits}"
+
+  IO.println s!"\nFirst pass total: {firstPassFound}/{benchmarks.length} found, {firstPassVisits} visits"
+  IO.println s!"Patterns learned: {db.totalPatterns}"
+
+  -- Second pass: with learned patterns
+  IO.println "\n--- Second Pass (With Learning) ---"
+  let mut secondPassVisits := 0
+  let mut secondPassFound := 0
+
+  for (name, ctx, goal) in benchmarks do
+    let result := search_with_learning ctx goal (.IDDFS config.maxDepth) config.visitLimit config.weights db false
+    if result.found then secondPassFound := secondPassFound + 1
+    secondPassVisits := secondPassVisits + result.visits
+    IO.println s!"{name}: found={result.found}, visits={result.visits}"
+
+  IO.println s!"\nSecond pass total: {secondPassFound}/{benchmarks.length} found, {secondPassVisits} visits"
+
+  -- Report improvement
+  if firstPassVisits > 0 then
+    let improvement := (firstPassVisits - secondPassVisits) * 100 / firstPassVisits
+    IO.println s!"Visit reduction: {improvement}%"
+
+/-- Compare IDDFS vs BestFirst on various formula types. -/
+def compareIDDFSvsBestFirst (config : BenchmarkConfig := {}) : IO Unit := do
+  IO.println "=== IDDFS vs BestFirst Comparison ==="
+
+  let benchmarkCategories := [
+    ("Modal Axioms", modalBenchmarks),
+    ("Temporal Axioms", temporalBenchmarks),
+    ("Propositional Axioms", propBenchmarks),
+    ("Mixed Modal-Temporal", mixedBenchmarks),
+    ("Context-Based", contextBenchmarks)
+  ]
+
+  for (category, benchmarks) in benchmarkCategories do
+    IO.println s!"\n{category}:"
+
+    -- IDDFS results
+    let mut iddfsVisits := 0
+    let mut iddfsFound := 0
+    for (_, ctx, goal) in benchmarks do
+      let (found, _, _, _, visits) := search ctx goal (.IDDFS config.maxDepth) config.visitLimit config.weights
+      iddfsVisits := iddfsVisits + visits
+      if found then iddfsFound := iddfsFound + 1
+
+    -- BestFirst results
+    let mut bfVisits := 0
+    let mut bfFound := 0
+    for (_, ctx, goal) in benchmarks do
+      let (found, _, _, _, visits) := search ctx goal (.BestFirst config.visitLimit) config.visitLimit config.weights
+      bfVisits := bfVisits + visits
+      if found then bfFound := bfFound + 1
+
+    IO.println s!"  IDDFS:     {iddfsFound}/{benchmarks.length} found, {iddfsVisits} visits"
+    IO.println s!"  BestFirst: {bfFound}/{benchmarks.length} found, {bfVisits} visits"
+
+    -- Compare
+    if iddfsFound == bfFound && iddfsVisits > 0 && bfVisits > 0 then
+      if bfVisits < iddfsVisits then
+        let improvement := (iddfsVisits - bfVisits) * 100 / iddfsVisits
+        IO.println s!"  BestFirst: {improvement}% fewer visits"
+      else if bfVisits > iddfsVisits then
+        let overhead := (bfVisits - iddfsVisits) * 100 / iddfsVisits
+        IO.println s!"  IDDFS: {overhead}% fewer visits"
+      else
+        IO.println s!"  Equal visit count"
 
 end BimodalTest.Automation.Benchmark
 
@@ -351,10 +444,21 @@ end BimodalTest.Automation.Benchmark
 -- Run timed benchmarks (Task 319 Phase 4)
 #eval BimodalTest.Automation.Benchmark.runAllBenchmarksTimed
 
--- Compare strategies with timing
+-- Compare strategies with timing (includes BestFirst)
 #eval do
   let allBenchmarks :=
     BimodalTest.Automation.Benchmark.modalBenchmarks ++
     BimodalTest.Automation.Benchmark.temporalBenchmarks ++
     BimodalTest.Automation.Benchmark.propBenchmarks
   BimodalTest.Automation.Benchmark.compareStrategiesTimed allBenchmarks
+
+-- Run learning benchmarks (Task 176)
+#eval do
+  let allBenchmarks :=
+    BimodalTest.Automation.Benchmark.modalBenchmarks ++
+    BimodalTest.Automation.Benchmark.temporalBenchmarks ++
+    BimodalTest.Automation.Benchmark.propBenchmarks
+  BimodalTest.Automation.Benchmark.runLearningBenchmarks allBenchmarks
+
+-- Compare IDDFS vs BestFirst (Task 176)
+#eval BimodalTest.Automation.Benchmark.compareIDDFSvsBestFirst

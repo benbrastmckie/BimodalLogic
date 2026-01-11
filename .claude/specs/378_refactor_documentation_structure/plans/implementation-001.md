@@ -111,7 +111,12 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 ### Phase 3: Consolidate UserGuide/ and Reference/
 
 **Estimated effort**: 1.5 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
+
+**Decision**: Keep both directories with their current content:
+- UserGuide/ has legitimate project-wide integration docs (INTEGRATION.md, MCP_INTEGRATION.md)
+- Reference/ has project-wide API reference (API_REFERENCE.md)
+- Both READMEs updated in Phase 2 with proper theory-specific cross-links
 
 **Objectives**:
 1. Decide whether to keep or remove nearly-empty directories
@@ -148,7 +153,7 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 ### Phase 4: Clean Up Stale Files
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Delete files that are no longer relevant
@@ -172,7 +177,7 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 ### Phase 5: Final Quality Check
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Run verification checks from DOC_QUALITY_CHECKLIST.md
