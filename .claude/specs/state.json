@@ -6,11 +6,17 @@
     {
       "project_number": 389,
       "project_name": "standardize_nnn_number_format",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-11T20:22:45Z",
-      "last_updated": "2026-01-11T20:25:30Z"
+      "last_updated": "2026-01-11T20:26:41Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/389_standardize_nnn_number_format/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 388,

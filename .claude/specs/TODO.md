@@ -93,9 +93,12 @@ technical_debt:
 
 ### 389. Standardize {NNN} number format across documentation
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Started**: 2026-01-11
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: meta
+- **Research**: [research-001.md](.claude/specs/389_standardize_nnn_number_format/reports/research-001.md)
 
 **Description**: Systematically review and standardize all references to use {NNN} (3-digit padded format) consistently instead of {N}. Task 388 in TODO.md provides a characteristic example where {N} is used instead of {NNN}. Failing to use consistent padding has caused issues in the past. Audit all documentation, command files, rule files, and artifact format specifications to ensure uniform 3-digit padding for task and artifact numbering.
 
