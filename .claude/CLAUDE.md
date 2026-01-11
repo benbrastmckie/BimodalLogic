@@ -35,7 +35,7 @@ Tasks progress through these states:
 - `[RESEARCHING]` → `[RESEARCHED]` - Research phase
 - `[PLANNING]` → `[PLANNED]` - Planning phase
 - `[IMPLEMENTING]` → `[COMPLETED]` - Implementation phase
-- `[BLOCKED]`, `[ABANDONED]`, `[PARTIAL]` - Terminal/exception states
+- `[BLOCKED]`, `[ABANDONED]`, `[PARTIAL]`, `[EXPANDED]` - Terminal/exception states
 
 ### Task Artifact Paths
 ```

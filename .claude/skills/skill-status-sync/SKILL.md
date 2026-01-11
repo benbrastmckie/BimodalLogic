@@ -446,6 +446,7 @@ If any write fails:
 | Complete implement | implementing | completed | status, completed |
 | Block task | any | blocked | status, blocked_reason |
 | Abandon task | any | abandoned | status, abandoned |
+| Expand task | any (non-terminal) | expanded | status, subtasks |
 
 ---
 
