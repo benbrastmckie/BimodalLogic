@@ -62,7 +62,8 @@ technical_debt:
 
 ### 372. Create Logos/Documentation/ and refactor root Documentation/
 - **Effort**: 4-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
+- **Started**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
@@ -131,7 +132,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
-- **Dependencies**: None
+- **Dependencies**: 372 (Phase 5 blocked pending Logos/Documentation/ reorganization)
 - **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
 - **Plan**: [implementation-001.md](.claude/specs/360_create_mvp_status_documentation/plans/implementation-001.md)
 

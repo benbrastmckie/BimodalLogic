@@ -2,9 +2,39 @@
 
 Core library for TM bimodal logic (Tense and Modality) with task semantics.
 
+## About Bimodal Logic
+
+Bimodal is a **propositional intensional logic** implementing TM (Tense and Modality).
+
+| Aspect | Description |
+|--------|-------------|
+| **Type** | Propositional intensional logic |
+| **Semantic primitives** | World-states in a Kripke-style framework |
+| **Interpretation** | Sentence letters are interpreted by sets of world-states |
+| **Logical level** | Propositional (zeroth-order) |
+
+For comparison with the planned Logos hyperintensional logic (second-order with state
+primitives), see [THEORY_COMPARISON.md](../Documentation/Research/THEORY_COMPARISON.md).
+
 ## Purpose
 
-This directory contains the foundational implementation of bimodal logic TM, providing the syntax, proof system, semantics, metalogical results, and automation for temporal-modal reasoning. The library is designed as an independent, reusable component that can be imported by other projects.
+This directory contains the foundational implementation of bimodal logic TM, providing the
+syntax, proof system, semantics, metalogical results, and automation for temporal-modal
+reasoning. The library is designed as an independent, reusable component that can be
+imported by other projects.
+
+## Theory-Specific Documentation
+
+For Bimodal-specific guides and references, see [Documentation/](Documentation/README.md):
+
+| Document | Description |
+|----------|-------------|
+| [Quick Start](Documentation/UserGuide/QUICKSTART.md) | Get started with Bimodal proofs |
+| [Proof Patterns](Documentation/UserGuide/PROOF_PATTERNS.md) | Common proof strategies |
+| [Axiom Reference](Documentation/Reference/AXIOM_REFERENCE.md) | Complete axiom schemas |
+| [Tactic Reference](Documentation/Reference/TACTIC_REFERENCE.md) | Custom tactic usage |
+| [Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) | Module status |
+| [Known Limitations](Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) | MVP limitations |
 
 ## Submodules
 
@@ -123,7 +153,8 @@ The Bimodal library follows a layered architecture:
 - Automation: Core tactics implemented
 - ProofSearch: Infrastructure with build issues
 
-For detailed status, see [IMPLEMENTATION_STATUS.md](../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md).
+For detailed status, see [Bimodal Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md).
+For known limitations, see [Known Limitations](Documentation/ProjectInfo/KNOWN_LIMITATIONS.md).
 
 ## API Documentation
 
@@ -174,16 +205,27 @@ When working on Bimodal source code:
 
 ## Related Documentation
 
+### Theory-Specific (Bimodal)
+
+- [Bimodal Documentation](Documentation/README.md) - Theory-specific documentation hub
+- [Quick Start](Documentation/UserGuide/QUICKSTART.md) - Getting started with Bimodal
+- [Axiom Reference](Documentation/Reference/AXIOM_REFERENCE.md) - Complete axiom schemas
+- [Known Limitations](Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) - MVP limitations
+
+### Project-Wide
+
+- [Theory Comparison](../Documentation/Research/THEORY_COMPARISON.md) - Bimodal vs Logos
 - [LEAN Style Guide](../Documentation/Development/LEAN_STYLE_GUIDE.md) - Coding conventions
 - [Module Organization](../Documentation/Development/MODULE_ORGANIZATION.md) - Directory structure
 - [Testing Standards](../Documentation/Development/TESTING_STANDARDS.md) - Test requirements
 - [Architecture Guide](../Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
 - [Tutorial](../Documentation/UserGuide/TUTORIAL.md) - Getting started
-- [Implementation Status](../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Current status
+- [Implementation Status](../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Project status
 
 ## Navigation
 
 - **Up**: [Project Root](../)
+- **Theory Docs**: [Documentation/](Documentation/) - Bimodal-specific documentation
 - **Tests**: [BimodalTest/](../BimodalTest/)
-- **Documentation**: [Documentation/](../Documentation/)
+- **Project Docs**: [Documentation/](../Documentation/) - Project-wide documentation
 - **Examples**: [Examples/](Examples/)

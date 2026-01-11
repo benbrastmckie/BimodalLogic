@@ -187,8 +187,13 @@ Bimodal/Documentation/
 ---
 
 ### Phase 5: Update Project-Wide Documentation
-**Status**: [HOLD] (the Logos/Documentation/ must by developed first)
+**Status**: [BLOCKED]
+**Blocked by**: Task 372 (Logos/Documentation/ reorganization)
 **Estimated effort**: 45 minutes
+
+**Note**: This phase is on hold to avoid losing Logos-relevant content in Documentation/.
+Task 372 will move Logos-specific content to Logos/Documentation/ first, then this
+phase can update Documentation/ with cross-links to both theory-specific directories.
 
 **Objectives**:
 1. Ensure Documentation/ contains only cross-theory content
@@ -214,7 +219,7 @@ Bimodal/Documentation/
 ---
 
 ### Phase 6: Update Bimodal/README.md
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 **Estimated effort**: 30 minutes
 
 **Objectives**:
@@ -262,26 +267,27 @@ For Bimodal-specific documentation, see [Documentation/](Documentation/README.md
 
 ---
 
-### Phase 7: Quality Assurance
-**Status**: [NOT STARTED]
+### Phase 7: Quality Assurance (Bimodal Only)
+**Status**: [IN PROGRESS]
 **Estimated effort**: 30 minutes
 
+**Note**: This phase focuses on Bimodal/ and Bimodal/Documentation/ only.
+Documentation/ QA will be done after Task 372 completes.
+
 **Objectives**:
-1. Run DOC_QUALITY_CHECKLIST.md checks
-2. Verify cross-links work
+1. Run DOC_QUALITY_CHECKLIST.md checks on Bimodal/Documentation/
+2. Verify cross-links work within Bimodal/
 3. Verify formatting compliance
 
 **Steps**:
-1. Run consistency checks from DOC_QUALITY_CHECKLIST.md
-2. Verify all markdown links resolve
-3. Check 100-character line limits
-4. Check formal symbol backticks
-5. Fix any issues found
+1. Verify all markdown links in Bimodal/ resolve
+2. Check 100-character line limits in new files
+3. Check formal symbol backticks
+4. Fix any issues found
 
 **Verification**:
-- All DOC_QUALITY_CHECKLIST.md checks pass
-- No broken links
-- Formatting compliant
+- No broken links in Bimodal/
+- Formatting compliant in new documentation
 
 ---
 
