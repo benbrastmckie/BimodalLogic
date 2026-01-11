@@ -87,6 +87,41 @@ Collect orphaned directories in two categories:
 
 Store counts and lists for later use.
 
+### 2.6. Detect Misplaced Directories
+
+Scan for project directories in specs/ that ARE tracked in archive/state.json (meaning they should be in archive/ but aren't).
+
+**CRITICAL**: This is distinct from orphans - misplaced directories have correct state entries but are in the wrong location.
+
+```bash
+# Get misplaced directories (in specs/ but tracked in archive/state.json)
+misplaced_in_specs=()
+for dir in .claude/specs/[0-9]*_*/; do
+  [ -d "$dir" ] || continue
+  project_num=$(basename "$dir" | cut -d_ -f1)
+
+  # Skip if already identified as orphan (not tracked anywhere)
+  in_active=$(jq -r --arg n "$project_num" \
+    '.active_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
+    .claude/specs/state.json 2>/dev/null)
+
+  # Check if tracked in archive/state.json (should be in archive/)
+  in_archive=$(jq -r --arg n "$project_num" \
+    '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
+    .claude/specs/archive/state.json 2>/dev/null)
+
+  # If in archive state but not in active state, it's misplaced
+  if [ -z "$in_active" ] && [ -n "$in_archive" ]; then
+    misplaced_in_specs+=("$dir")
+  fi
+done
+```
+
+Collect misplaced directories:
+- `misplaced_in_specs[]` - Directories in specs/ that are tracked in archive/state.json (need physical move only, no state update)
+
+Store count for later reporting.
+
 ### 3. Prepare Archive List
 
 For each archivable task, collect:

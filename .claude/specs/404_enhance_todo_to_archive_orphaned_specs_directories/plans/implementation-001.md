@@ -19,7 +19,7 @@ This enhancement adds:
 
 ### Phase 1: Add Misplaced Directory Detection
 
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add Step 2.6 to detect directories in specs/ tracked in archive/state.json
