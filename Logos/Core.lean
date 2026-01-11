@@ -1,27 +1,44 @@
--- Backwards compatibility: re-export Bimodal as Logos.Core
-import Bimodal
+import Logos.Core.Frame
 
 /-!
-# Logos Core Layer (Backwards Compatibility)
+# Logos Core - Intensional Extension Layer
 
-**Note**: The core TM logic implementation has been moved to the `Bimodal` library.
-This module provides backwards compatibility by re-exporting Bimodal.
+This module exports the Core Extension for Logos, providing
+task-based intensional semantics with modal, temporal, and counterfactual operators.
 
-## Migration Guide
+## Overview
 
-Old imports:
+The Core Extension provides:
+- Temporal structure (totally ordered abelian group)
+- Task relation with mereological constraints
+- State modality concepts (possible, compatible, maximal, world-state)
+- World-history structures for temporal evaluation
+- (Upcoming) Modal, temporal, and counterfactual operators
+
+## Submodules
+
+- `Core.Frame`: Core frame with task relation and state modality
+- `Core.Syntax`: Core formula type (Phase 5)
+- `Core.Truth`: Truth evaluation (Phase 6)
+
+## Usage
+
 ```lean
 import Logos.Core
-import Bimodal.Syntax.Formula
+
+open Logos.Core
+
+-- Use state modality concepts
+variable {T : Type*} [LinearOrderedAddCommGroup T]
+variable {F : CoreFrame T}
+variable (s : F.State)
+
+#check CoreFrame.possible s      -- s ⇒_0 s
+#check CoreFrame.world_state s   -- maximal possible state
 ```
 
-New imports:
-```lean
-import Bimodal
-import Bimodal.Syntax.Formula
-```
+## References
 
-## See Also
-
-- `Bimodal` - The standalone bimodal TM logic library
+- Logos/Documentation/Research/RECURSIVE_SEMANTICS.md - Full specification
+- Logos/Documentation/Research/LAYER_EXTENSIONS.md - Extension architecture
 -/

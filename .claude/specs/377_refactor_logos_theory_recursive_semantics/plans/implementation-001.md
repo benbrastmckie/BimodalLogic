@@ -141,7 +141,7 @@ This plan is organized into 6 phases, progressing from foundational structures t
 ### Phase 4: Core Frame Extension (Task Relation)
 
 **Estimated effort**: 5-7 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Extend Constitutive Frame with temporal order and task relation
