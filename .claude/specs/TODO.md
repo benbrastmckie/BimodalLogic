@@ -1,21 +1,21 @@
 ---
-last_updated: 2026-01-11T06:30:00Z
-next_project_number: 374
+last_updated: 2026-01-11T21:30:00Z
+next_project_number: 375
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-01-11T06:30:00Z
+  last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 36
-  completed: 83
+  active: 29
+  completed: 90
   in_progress: 0
-  not_started: 32
+  not_started: 25
   abandoned: 8
   total: 128
 priority_distribution:
   critical: 0
-  high: 11
-  medium: 18
+  high: 9
+  medium: 14
   low: 14
 technical_debt:
   sorry_count: 19
@@ -28,37 +28,15 @@ technical_debt:
 
 ## High Priority
 
-### 370. Fix Bimodal LaTeX compilation errors
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: High
-- **Language**: latex
-- **Blocking**: None
-- **Dependencies**: None
+### 374. Refactor project Documentation to theory-specific directories
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
 
-**Description**: Fix LaTeX compilation errors in Bimodal/LaTeX/BimodalReference.tex including: command redefinition errors for \land, \lor, \frame in bimodal-notation.sty; undefined control sequences (\lneg, \poss, \somepast, \somefuture, \always, \sometimes); Unicode character errors; mismatched environment errors in 02-Semantics.tex.
+**Description**: Tasks 360 and 372 created Bimodal/Documentation/ and Logos/Documentation/ directories. Remove project-specific documentation from ProofChecker/Documentation/ by EITHER moving information to the appropriate project Documentation/ directory (e.g., moving Documentation/Research/RECURSIVE_SEMANTICS.md into Logos/Documentation/Research/) OR removing documentation from ProofChecker/Documentation/ that is redundant with what is provided by the Documentation/ directories included in each theory.
 
 ---
-
-### 369. Solve the blocking dependency in the Modal 5 theorem
-- **Effort**: 15 minutes
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-11
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [research-001.md](.claude/specs/369_solve_modal_5_blocking_dependency/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/369_solve_modal_5_blocking_dependency/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/369_solve_modal_5_blocking_dependency/summaries/implementation-summary-20260111.md)
-
-**Description**: Solve the blocking dependency in the Modal 5 theorem.
-
----
-
-## Medium Priority
 
 ### 373. Create shared LaTeX assets directory
 - **Effort**: 2-4 hours

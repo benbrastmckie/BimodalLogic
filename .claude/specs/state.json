@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-11T04:30:00Z",
-  "next_project_number": 374,
+  "_last_updated": "2026-01-11T21:30:00Z",
+  "next_project_number": 375,
   "active_projects": [
+    {
+      "project_number": 374,
+      "project_name": "refactor_project_documentation",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-11T16:36:37Z",
+      "last_updated": "2026-01-11T16:36:37Z"
+    },
     {
       "project_number": 373,
       "project_name": "create_shared_latex_assets_directory",
@@ -18,101 +27,6 @@
           "path": ".claude/specs/373_create_shared_latex_assets_directory/reports/research-001.md"
         }
       ]
-    },
-    {
-      "project_number": 372,
-      "project_name": "create_logos_documentation_and_refactor_root",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "description": "Create Logos/Documentation/ directory similar to Bimodal/Documentation/ to contain Logos-specific documentation, and refactor ProofChecker/Documentation/ to be theory agnostic.",
-      "created": "2026-01-11T15:33:52Z",
-      "last_updated": "2026-01-11T21:30:00Z",
-      "started": "2026-01-11",
-      "completed": "2026-01-11T21:30:00Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/372_create_logos_documentation_and_refactor_root/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/372_create_logos_documentation_and_refactor_root/plans/implementation-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/372_create_logos_documentation_and_refactor_root/plans/implementation-002.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/372_create_logos_documentation_and_refactor_root/summaries/implementation-summary-20260111.md"
-        }
-      ],
-      "plan_version": "002"
-    },
-    {
-      "project_number": 371,
-      "project_name": "refactor_latex_reference_manual_titles",
-      "status": "completed",
-      "language": "latex",
-      "priority": "medium",
-      "type": "enhancement",
-      "effort": "1 hour",
-      "description": "Refactor LaTeX title formatting in BimodalReference.tex and LogosReference.tex for professional academic manual appearance. BimodalReference: main title \"Reference Manual\", subtitle \"Bimodal Logic for Tense and Modality\", author Benjamin Brast-McKie with website link (www.benbrastmckie.com), reference to paper \"The Construction of Possible Worlds\" with PDF link. LogosReference: same format plus references to two published Springer papers.",
-      "created": "2026-01-11T15:21:50Z",
-      "last_updated": "2026-01-11T20:00:00Z",
-      "started": "2026-01-11",
-      "completed": "2026-01-11T20:00:00Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/371_refactor_latex_reference_manual_titles/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/371_refactor_latex_reference_manual_titles/plans/implementation-001.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/371_refactor_latex_reference_manual_titles/summaries/implementation-summary-20260111.md"
-        }
-      ],
-      "plan_version": "001"
-    },
-    {
-      "project_number": 370,
-      "project_name": "fix_bimodal_latex_compilation_errors",
-      "status": "completed",
-      "language": "latex",
-      "priority": "high",
-      "type": "bugfix",
-      "effort": "1-2 hours",
-      "description": "Fix LaTeX compilation errors in Bimodal/LaTeX/BimodalReference.tex including: command redefinition errors for \\land, \\lor, \\frame in bimodal-notation.sty; undefined control sequences (\\lneg, \\poss, \\somepast, \\somefuture, \\always, \\sometimes); Unicode character errors; mismatched environment errors in 02-Semantics.tex.",
-      "created": "2026-01-11T14:54:28Z",
-      "last_updated": "2026-01-11T14:59:28Z",
-      "started": "2026-01-11",
-      "completed": "2026-01-11T14:59:28Z"
-    },
-    {
-      "project_number": 369,
-      "project_name": "solve_modal_5_blocking_dependency",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-11T03:39:46Z",
-      "last_updated": "2026-01-11T03:55:08Z",
-      "completed": "2026-01-11T03:55:08Z"
-    },
-    {
-      "project_number": 368,
-      "project_name": "documentation_directory_reorganization",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-11T03:33:51Z",
-      "last_updated": "2026-01-11T15:00:00Z",
-      "started": "2026-01-11",
-      "completed": "2026-01-11T15:00:00Z"
     },
     {
       "project_number": 365,
@@ -152,44 +66,6 @@
       "created": "2026-01-11T02:22:16Z",
       "last_updated": "2026-01-11T02:22:16Z",
       "review_source": ".claude/specs/reviews/review-20260110.md"
-    },
-    {
-      "project_number": 363,
-      "project_name": "create_bimodal_latex_documentation",
-      "status": "completed",
-      "language": "latex",
-      "priority": "medium",
-      "type": "documentation",
-      "effort": "2-4 hours",
-      "description": "Create a Bimodal/LaTeX/ directory with contents similar to Logos/LaTeX/ but focusing on reporting exactly what has been implemented in the Bimodal/ theory.",
-      "created": "2026-01-11T02:11:42Z",
-      "last_updated": "2026-01-11T08:00:00Z",
-      "research_completed": "2026-01-11T02:21:55Z",
-      "completed": "2026-01-11T08:00:00Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/363_create_bimodal_latex_documentation/reports/research-001.md"
-        },
-        {
-          "type": "research",
-          "path": ".claude/specs/363_create_bimodal_latex_documentation/reports/research-002.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/363_create_bimodal_latex_documentation/plans/implementation-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/363_create_bimodal_latex_documentation/plans/implementation-002.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/363_create_bimodal_latex_documentation/summaries/implementation-summary-20260111.md"
-        }
-      ],
-      "plan_version": "002",
-      "started": "2026-01-11"
     },
     {
       "project_number": 132,
@@ -620,33 +496,6 @@
       "last_updated": "2026-01-09T02:30:00Z",
       "effort": "8-12 hours",
       "description": "Refactor the .claude/ agent system to use 'thin wrapper' commands that parse arguments and delegate to corresponding skills for execution, enabling skill reuse across commands and cleaner separation of concerns."
-    },
-    {
-      "project_number": 360,
-      "project_name": "bimodal_polish_and_documentation_system",
-      "type": "documentation",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "general",
-      "created": "2026-01-10T12:00:00Z",
-      "last_updated": "2026-01-11T21:30:00Z",
-      "effort": "4-6 hours",
-      "description": "Comprehensive Bimodal theory polish and documentation system: (1) Deprioritize completeness tasks, (2) Polish Bimodal tests and docs, (3) Create theory differentiation (Bimodal propositional intensional vs Logos second-order hyperintensional), (4) Create Bimodal/Documentation/ following DIRECTORY_README_STANDARD.md, (5) Cross-link with project-wide Documentation/.",
-      "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md",
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": ".claude/specs/360_create_mvp_status_documentation/plans/implementation-001.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/360_create_mvp_status_documentation/summaries/implementation-summary-20260111.md"
-        }
-      ],
-      "plan_version": "001",
-      "started": "2026-01-11",
-      "completed": "2026-01-11T21:30:00Z"
     }
   ]
 }
