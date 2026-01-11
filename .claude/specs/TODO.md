@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T05:30:00Z
-next_project_number: 363
+next_project_number: 364
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -50,6 +50,18 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 363. Create Bimodal LaTeX documentation
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Create a Bimodal/LaTeX/ directory with contents similar to Logos/LaTeX/ but focusing on reporting exactly what has been implemented in the Bimodal/ theory.
+
+---
 
 ### 362. Move LaTeX directory to Logos/LaTeX
 - **Effort**: 1-2 hours
