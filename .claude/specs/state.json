@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T12:00:00Z",
-  "next_project_number": 395,
+  "next_project_number": 396,
   "active_projects": [
     {
       "project_number": 394,
@@ -207,11 +207,11 @@
       "project_name": "complete_advanced_tutorial_sections_with_hands_on_exercises",
       "type": "feature",
       "phase": "planned",
-      "status": "researched",
+      "status": "abandoned",
       "priority": "medium",
       "language": "markdown",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T20:56:32Z",
+      "last_updated": "2026-01-11T21:10:49Z",
       "effort": "10 hours",
       "started": "2026-01-11",
       "plan_version": "001",
@@ -225,7 +225,8 @@
           "type": "research"
         }
       ],
-      "description": "Create advanced Bimodal tutorial covering proof search tactics, custom tactic development, and metalogic with hands-on exercises."
+      "description": "Create advanced Bimodal tutorial covering proof search tactics, custom tactic development, and metalogic with hands-on exercises.",
+      "abandoned_reason": "Superseded by existing documentation. ~80% of planned content already exists in TUTORIAL.md, TACTIC_DEVELOPMENT.md, EXAMPLES.md. New targeted task created for remaining gaps."
     },
     {
       "project_number": 257,
@@ -481,6 +482,18 @@
       "last_updated": "2026-01-09T02:30:00Z",
       "effort": "8-12 hours",
       "description": "Refactor the .claude/ agent system to use 'thin wrapper' commands that parse arguments and delegate to corresponding skills for execution, enabling skill reuse across commands and cleaner separation of concerns."
+    },
+    {
+      "project_number": 395,
+      "project_name": "create_bimodal_troubleshooting_and_exercise_solutions",
+      "status": "not_started",
+      "language": "markdown",
+      "priority": "medium",
+      "description": "Create TROUBLESHOOTING.md for Bimodal with import errors, type mismatches, proof search failures, and build issues. Add solutions with hints to existing exercises in EXAMPLES.md section 7.",
+      "effort": "3-4 hours",
+      "created": "2026-01-11T21:10:49Z",
+      "last_updated": "2026-01-11T21:10:49Z",
+      "supersedes": 178
     }
   ]
 }

@@ -203,28 +203,29 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 
 ### 178. Complete Bimodal advanced tutorial with exercises
 - **Effort**: 10 hours
-- **Status**: [RESEARCHED]
-- **Started**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Researched**: 2026-01-12
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
 - **Research**: [research-001.md](.claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/plans/implementation-001.md)
-- **Files Affected**:
-  - Bimodal/Documentation/UserGuide/ADVANCED_TUTORIAL.md (new)
-  - Bimodal/Documentation/UserGuide/EXERCISES.md (new)
-  - Bimodal/Documentation/UserGuide/TROUBLESHOOTING.md (new)
-- **Description**: Create advanced tutorial for Bimodal theory covering proof search automation, custom tactic development, and metalogic. Build on existing QUICKSTART.md and PROOF_PATTERNS.md with hands-on exercises and solutions. Include comprehensive troubleshooting guide.
-- **Acceptance Criteria**:
-  - [ ] Advanced tutorial section on Bimodal proof search tactics (modal_search, temporal_search)
-  - [ ] Advanced tutorial section on Bimodal custom tactic development
-  - [ ] Advanced tutorial section on metalogic (soundness, completeness framework)
-  - [ ] Hands-on exercises with solutions covering modal, temporal, and bimodal proofs
-  - [ ] Troubleshooting guide for common Bimodal errors
-- **Impact**: Improves onboarding by providing comprehensive learning path from basics to advanced Bimodal topics with practical exercises.
+- **Superseded by**: Task 395
+
+**Abandonment Reason**: Superseded by existing documentation. Research found ~80% of planned content already exists in TUTORIAL.md (433 lines), TACTIC_DEVELOPMENT.md (787 lines), EXAMPLES.md (587 lines), and ARCHITECTURE.md (1403 lines). Remaining gaps (TROUBLESHOOTING.md, exercise solutions) captured in new targeted Task 395.
+
+---
+
+### 395. Create Bimodal troubleshooting guide and exercise solutions
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Supersedes**: Task 178
+
+**Description**: Create TROUBLESHOOTING.md for Bimodal with import errors, type mismatches, proof search failures, and build issues. Add solutions with hints to existing exercises in EXAMPLES.md section 7.
+
+**Files Affected**:
+  - Theories/Bimodal/Documentation/UserGuide/TROUBLESHOOTING.md (new)
+  - Theories/Bimodal/Documentation/UserGuide/EXAMPLES.md (modify section 7)
 
 ---
 
