@@ -42,12 +42,12 @@
     {
       "project_number": 396,
       "project_name": "fix_latex_build_missing_style_files",
-      "status": "implementing",
+      "status": "completed",
       "language": "latex",
       "priority": "high",
       "description": "Fix LaTeX build errors in Theories/Logos/LaTeX/LogosReference.tex and Theories/Bimodal/LaTeX/BimodalReference.tex caused by missing style files (logos-notation.sty, notation-standards.sty, bimodal-notation.sty). Troubleshoot and provide elegant solution for style file paths.",
       "created": "2026-01-11T21:24:04Z",
-      "last_updated": "2026-01-11T21:43:08Z",
+      "last_updated": "2026-01-11T21:49:59Z",
       "artifacts": [
         {
           "type": "research",
@@ -56,10 +56,15 @@
         {
           "type": "plan",
           "path": ".claude/specs/396_fix_latex_build_missing_style_files/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/396_fix_latex_build_missing_style_files/summaries/implementation-summary-20260111.md"
         }
       ],
       "plan_version": "001",
-      "started": "2026-01-11"
+      "started": "2026-01-11",
+      "completed": "2026-01-11T21:48:00Z"
     },
     {
       "project_number": 394,
@@ -79,15 +84,16 @@
     {
       "project_number": 393,
       "project_name": "remove_incorrect_causal_operator_definition",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "description": "Remove the incorrect definition of the causal operator (which was defined in terms of the counterfactual conditional) and leave behind a stub or comment for systematic future implementation of the correct semantics.",
       "created": "2026-01-11T21:09:02Z",
-      "last_updated": "2026-01-12T01:30:00Z",
+      "last_updated": "2026-01-12T02:00:00Z",
       "parent_task": 381,
       "plan_version": "001",
       "implementing_started": "2026-01-12",
+      "completed": "2026-01-12T02:00:00Z",
       "artifacts": [
         {
           "type": "research",
@@ -96,6 +102,10 @@
         {
           "type": "plan",
           "path": ".claude/specs/393_remove_incorrect_causal_operator_definition/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/393_remove_incorrect_causal_operator_definition/summaries/implementation-summary-20260112.md"
         }
       ]
     },
