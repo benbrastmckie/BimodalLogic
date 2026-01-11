@@ -15,21 +15,21 @@ This directory contains shared LaTeX assets used across all theory-specific docu
 
 ### In Theory-Specific Documents
 
-Import shared assets using relative paths from theory LaTeX directories:
+The shared assets are available via TEXINPUTS configured in latexmkrc. Import packages by name:
 
 ```latex
-% In Bimodal/latex/BimodalReference.tex or Logos/latex/LogosReference.tex
-\usepackage{../../latex/formatting}
-\bibliographystyle{../../latex/bib_style}
+% In Theories/Bimodal/LaTeX/BimodalReference.tex or Theories/Logos/LaTeX/LogosReference.tex
+\usepackage{bimodal-notation}  % or logos-notation (from assets/)
+\usepackage{formatting}        % From shared latex/
 ```
 
 ### In Theory-Specific Notation Files
 
-Notation files should import the shared standards:
+Notation files should import the shared standards by name (TEXINPUTS resolves the path):
 
 ```latex
-% In Bimodal/latex/assets/bimodal-notation.sty
-\RequirePackage{../../latex/notation-standards}
+% In Theories/Bimodal/LaTeX/assets/bimodal-notation.sty
+\RequirePackage{notation-standards}
 ```
 
 ## notation-standards.sty
@@ -67,22 +67,27 @@ Provides consistent notation across all theories:
 
 When creating documentation for a new theory:
 
-1. Create `Theory/latex/` directory structure
-2. Create `Theory/latex/assets/theory-notation.sty`:
+1. Create `Theories/{Theory}/LaTeX/` directory structure with `assets/` subdirectory
+2. Create stub latexmkrc:
+   ```perl
+   # {Theory} LaTeX Build Configuration
+   do '../../../latex/latexmkrc';
+   ```
+3. Create `Theories/{Theory}/LaTeX/assets/theory-notation.sty`:
    ```latex
    \NeedsTeXFormat{LaTeX2e}
    \ProvidesPackage{theory-notation}[YYYY/MM/DD Theory Notation]
 
-   % Import shared standards
-   \RequirePackage{../../latex/notation-standards}
+   % Import shared standards (found via TEXINPUTS)
+   \RequirePackage{notation-standards}
 
    % Add theory-specific notation here
    \newcommand{\myoperator}{\diamond}
    ```
-3. Create main document importing shared formatting:
+4. Create main document importing packages by name:
    ```latex
-   \usepackage{assets/theory-notation}
-   \usepackage{../../latex/formatting}
+   \usepackage{theory-notation}  % From assets/
+   \usepackage{formatting}       % From shared latex/
    ```
 
 ## Build Configuration (latexmk)
@@ -94,9 +99,9 @@ This directory contains the shared `latexmkrc` configuration for consistent LaTe
 Theory directories use a "stub pattern" to load the central config:
 
 ```
-latex/latexmkrc                    # Central configuration (this directory)
-Bimodal/latex/latexmkrc            # Stub: do '../../latex/latexmkrc';
-Logos/latex/latexmkrc              # Stub: do '../../latex/latexmkrc';
+latex/latexmkrc                           # Central configuration (this directory)
+Theories/Bimodal/LaTeX/latexmkrc          # Stub: do '../../../latex/latexmkrc';
+Theories/Logos/LaTeX/latexmkrc            # Stub: do '../../../latex/latexmkrc';
 ```
 
 This provides a single source of truth while allowing latexmk to auto-discover the config in each directory.
@@ -114,6 +119,19 @@ The shared `latexmkrc` configures:
 | `$max_repeat` | 5 | Max compilation passes |
 | synctex | enabled | Editor synchronization |
 
+### Path Configuration
+
+The shared latexmkrc sets up TEXINPUTS so packages can be referenced by name:
+
+```perl
+# $source_dir/assets// enables theory-specific packages (e.g., logos-notation.sty)
+# $shared_latex_dir// enables shared packages (e.g., formatting.sty, notation-standards.sty)
+ensure_path('TEXINPUTS', "$source_dir/assets//");
+ensure_path('TEXINPUTS', "$shared_latex_dir//");
+```
+
+This eliminates the need for relative paths in `\usepackage` commands and avoids the "You have requested package X but the package provides Y" warning.
+
 ### Bibliography Path Configuration
 
 When using the `build/` output directory, BibTeX runs from inside the build directory, which breaks relative paths for `.bst` and `.bib` files. The shared latexmkrc solves this using latexmk's `ensure_path()` function:
@@ -123,7 +141,7 @@ ensure_path('BSTINPUTS', "$shared_latex_dir//");
 ensure_path('BIBINPUTS', "$source_dir//");
 ```
 
-This adds the shared LaTeX directory and theory source directory to BibTeX's search paths. The trailing `//` enables recursive subdirectory searching via Kpathsea. This approach integrates properly with latexmk's `$bibtex_fudge` mechanism which handles directory changes when running bibtex.
+This adds the shared LaTeX directory and theory source directory to BibTeX's search paths. The trailing `//` enables recursive subdirectory searching via Kpathsea.
 
 For more details on Kpathsea path searching, see [Overleaf's Kpathsea documentation](https://www.overleaf.com/learn/latex/Articles/An_introduction_to_Kpathsea_and_how_TeX_engines_search_for_files).
 
@@ -131,12 +149,12 @@ For more details on Kpathsea path searching, see [Overleaf's Kpathsea documentat
 
 Build a document:
 ```bash
-cd Bimodal/LaTeX
+cd Theories/Bimodal/LaTeX
 latexmk BimodalReference.tex
 # Output: build/BimodalReference.pdf
 ```
 
-Or use the build script:
+Or use the build script (if available):
 ```bash
 ./build.sh                # Build document
 ./build.sh --clean        # Remove auxiliary files
@@ -174,21 +192,22 @@ All auxiliary files (`*.aux`, `*.log`, `*.toc`, etc.) and the PDF are placed in 
 
 ```
 ProofChecker/
-├── latex/                          # This directory (shared assets)
-│   ├── latexmkrc                   # Shared build configuration
+├── latex/                              # This directory (shared assets)
+│   ├── latexmkrc                       # Shared build configuration
 │   ├── formatting.sty
 │   ├── bib_style.bst
 │   ├── notation-standards.sty
 │   └── README.md
-├── Bimodal/latex/
-│   ├── latexmkrc                   # Stub loading ../../latex/latexmkrc
-│   ├── build.sh                    # Build script using latexmk
-│   ├── assets/
-│   │   └── bimodal-notation.sty    # Imports notation-standards
-│   └── BimodalReference.tex        # Imports ../../latex/formatting
-└── Logos/latex/
-    ├── latexmkrc                   # Stub loading ../../latex/latexmkrc
-    ├── assets/
-    │   └── logos-notation.sty      # Imports notation-standards
-    └── LogosReference.tex          # Imports ../../latex/formatting
+└── Theories/
+    ├── Bimodal/LaTeX/
+    │   ├── latexmkrc                   # Stub: do '../../../latex/latexmkrc';
+    │   ├── build.sh                    # Build script using latexmk
+    │   ├── assets/
+    │   │   └── bimodal-notation.sty    # \RequirePackage{notation-standards}
+    │   └── BimodalReference.tex        # \usepackage{bimodal-notation}
+    └── Logos/LaTeX/
+        ├── latexmkrc                   # Stub: do '../../../latex/latexmkrc';
+        ├── assets/
+        │   └── logos-notation.sty      # \RequirePackage{notation-standards}
+        └── LogosReference.tex          # \usepackage{logos-notation}
 ```
