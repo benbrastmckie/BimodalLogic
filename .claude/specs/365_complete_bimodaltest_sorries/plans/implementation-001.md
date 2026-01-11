@@ -13,7 +13,7 @@ This task resolves 5 sorry placeholders across 3 BimodalTest files, plus fixes M
 
 ### Phase 1: Fix ModalS4.lean Compilation and Uncomment Tests
 
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Add `noncomputable` markers to fix compilation errors in ModalS4.lean
