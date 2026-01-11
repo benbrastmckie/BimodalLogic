@@ -194,7 +194,7 @@ Theories/Logos/docs/user-guide/    → Theories/Logos/docs/user-guide/
 ### Phase 5: Update remaining references and verify
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Find and update any remaining references to old directory names
