@@ -326,17 +326,23 @@
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T22:30:00Z",
-      "effort": "6 hours",
+      "last_updated": "2026-01-12T03:00:00Z",
+      "effort": "4.5 hours",
       "started": "2026-01-11",
-      "plan_version": "001",
+      "plan_version": "002",
+      "plan_revised": "2026-01-12",
       "artifacts": [
         {
           "type": "plan",
           "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-002.md",
+          "description": "Revised plan accounting for Task 179 completion and reduced sorry count"
         }
       ],
-      "description": "Create test coverage measurement and reporting for Bimodal. Definition-level coverage tracking and sorry audit."
+      "description": "Create definition-level coverage measurement for Bimodal. Task 179 completed benchmarks; this focuses on definition coverage tracking."
     },
     {
       "project_number": 257,
