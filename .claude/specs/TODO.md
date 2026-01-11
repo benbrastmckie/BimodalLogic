@@ -53,7 +53,8 @@ technical_debt:
 
 ### 362. Move LaTeX directory to Logos/LaTeX
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
@@ -71,9 +72,9 @@ technical_debt:
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
 - **Research**: [.claude/specs/361_create_installation_documentation/reports/research-001.md]
-- **Plan**: [.claude/specs/361_create_installation_documentation/plans/implementation-001.md]
+- **Plan**: [.claude/specs/361_create_installation_documentation/plans/implementation-002.md]
 
-**Description**: Create installation documentation similar to /home/benjamin/Projects/ModelChecker CLAUDE_CODE.md including dependencies (BASIC_INSTALLATION.md, GETTING_STARTED.md, GIT_GOING.md) so users can start with CLAUDE_CODE.md to systematically install everything for the ProofChecker project.
+**Description**: Create installation documentation similar to /home/benjamin/Projects/ModelChecker CLAUDE_CODE.md including dependencies (BASIC_INSTALLATION.md, GETTING_STARTED.md, USING_GIT.md) so users can start with CLAUDE_CODE.md to systematically install everything for the ProofChecker project.
 
 ---
 
