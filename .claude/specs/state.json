@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T04:30:00Z",
-  "next_project_number": 373,
+  "next_project_number": 374,
   "active_projects": [
+    {
+      "project_number": 373,
+      "project_name": "create_shared_latex_assets_directory",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Create a single ProofChecker/LaTeX/ directory to provide general purpose assets that can be imported and used by Logos/LaTeX/ and Bimodal/LaTeX/ as well as other theories included in the future, instead of maintaining similar latex standards separately.",
+      "created": "2026-01-11T16:30:08Z",
+      "last_updated": "2026-01-11T16:30:08Z"
+    },
     {
       "project_number": 372,
       "project_name": "create_logos_documentation_and_refactor_root",

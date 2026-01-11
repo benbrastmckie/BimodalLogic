@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T06:30:00Z
-next_project_number: 373
+next_project_number: 374
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -59,6 +59,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 373. Create shared LaTeX assets directory
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Create a single ProofChecker/LaTeX/ directory to provide general purpose assets that can be imported and used by Logos/LaTeX/ and Bimodal/LaTeX/ as well as other theories included in the future, instead of maintaining similar latex standards separately.
+
+---
 
 ### 372. Create Logos/Documentation/ and refactor root Documentation/
 - **Effort**: 4-8 hours
