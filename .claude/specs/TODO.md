@@ -30,14 +30,16 @@ technical_debt:
 
 ### 392. Enhance /todo command orphan tracking
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [research-001.md](.claude/specs/392_enhance_todo_command_orphan_tracking/reports/research-001.md)
 
 **Description**: Enhance /todo command to track orphaned directories in archive/state.json. Currently, orphaned directories (project directories not tracked in any state file) are moved to archive/ but NOT added to archive/state.json. This task modifies:
-1. Step 2.5 detection to check both state.json AND archive/state.json
+1. Step 2.5 detection to check both state.json AND archive/state.json (with flattened queries)
 2. Step 5.E to add orphan entries to archive/state.json when archiving (not just move directories)
 
 This ensures all project directories in specs/archive/ are accounted for by state files.
