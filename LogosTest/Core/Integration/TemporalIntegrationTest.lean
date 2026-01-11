@@ -63,10 +63,10 @@ example : True := by
   let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.temp_4 p)
   
   -- Verify soundness
-  have v : ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness [] φ d
   
   -- Verify semantic validity directly
-  have v_direct : ⊨ φ := temp_4_valid p
+  have v_direct : [] ⊨ φ := temp_4_valid p
   
   trivial
 
@@ -150,10 +150,10 @@ example : True := by
   let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.temp_a p)
   
   -- Verify soundness
-  have v : ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness [] φ d
   
   -- Verify semantic validity directly
-  have v_direct : ⊨ φ := temp_a_valid p
+  have v_direct : [] ⊨ φ := temp_a_valid p
   
   trivial
 
@@ -205,10 +205,10 @@ example : True := by
   let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.temp_l p)
   
   -- Verify soundness
-  have v : ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness [] φ d
   
   -- Verify semantic validity directly
-  have v_direct : ⊨ φ := temp_l_valid p
+  have v_direct : [] ⊨ φ := temp_l_valid p
   
   trivial
 
@@ -262,10 +262,10 @@ example : True := by
   let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.temp_k_dist p q)
   
   -- Verify soundness
-  have v : ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness [] φ d
   
   -- Verify semantic validity directly
-  have v_direct : ⊨ φ := temp_k_dist_valid p q
+  have v_direct : [] ⊨ φ := temp_k_dist_valid p q
   
   trivial
 
@@ -329,7 +329,7 @@ example : True := by
     DerivationTree.temporal_necessitation (p.imp p) d1
   
   -- Verify soundness
-  have v : ⊨ ((p.imp p).all_future) :=
+  have v : [] ⊨ ((p.imp p).all_future) :=
     soundness [] ((p.imp p).all_future) d2
   
   trivial
@@ -355,10 +355,10 @@ example : True := by
     DerivationTree.temporal_necessitation ((p.box.imp p).all_future) d2
   
   -- Verify soundness at each step
-  have v1 : ⊨ (p.box.imp p) := soundness [] (p.box.imp p) d1
-  have v2 : ⊨ ((p.box.imp p).all_future) :=
+  have v1 : [] ⊨ (p.box.imp p) := soundness [] (p.box.imp p) d1
+  have v2 : [] ⊨ ((p.box.imp p).all_future) :=
     soundness [] ((p.box.imp p).all_future) d2
-  have v3 : ⊨ (((p.box.imp p).all_future).all_future) :=
+  have v3 : [] ⊨ (((p.box.imp p).all_future).all_future) :=
     soundness [] (((p.box.imp p).all_future).all_future) d3
   
   trivial
@@ -388,7 +388,7 @@ example : True := by
     DerivationTree.temporal_duality _ d1
   
   -- Verify soundness
-  have v : ⊨ ((p.all_future.imp p.all_future.all_future).swap_temporal) :=
+  have v : [] ⊨ ((p.all_future.imp p.all_future.all_future).swap_temporal) :=
     soundness [] _ d2
   
   trivial
@@ -410,7 +410,7 @@ example : True := by
     DerivationTree.temporal_duality _ d1
   
   -- Verify soundness
-  have v : ⊨ ((p.imp (Formula.all_future p.sometime_past)).swap_temporal) :=
+  have v : [] ⊨ ((p.imp (Formula.all_future p.sometime_past)).swap_temporal) :=
     soundness [] _ d2
   
   trivial
@@ -440,9 +440,9 @@ example : True := by
     DerivationTree.axiom [] _ (Axiom.temp_l p)
   
   -- Verify both are sound
-  have v1 : ⊨ (p.imp (Formula.all_future p.sometime_past)) :=
+  have v1 : [] ⊨ (p.imp (Formula.all_future p.sometime_past)) :=
     soundness [] _ d1
-  have v2 : ⊨ (p.always.imp (Formula.all_future (Formula.all_past p))) :=
+  have v2 : [] ⊨ (p.always.imp (Formula.all_future (Formula.all_past p))) :=
     soundness [] _ d2
   
   trivial

@@ -166,9 +166,9 @@ example : True := by
     DerivationTree.axiom [] _ (Axiom.modal_t p)
   
   -- Verify all are sound
-  have v1 : ⊨ (p.box.box.box.imp p.box.box) := soundness [] _ d1
-  have v2 : ⊨ (p.box.box.imp p.box) := soundness [] _ d2
-  have v3 : ⊨ (p.box.imp p) := soundness [] _ d3
+  have v1 : [] ⊨ (p.box.box.box.imp p.box.box) := soundness [] _ d1
+  have v2 : [] ⊨ (p.box.box.imp p.box) := soundness [] _ d2
+  have v3 : [] ⊨ (p.box.imp p) := soundness [] _ d3
   
   trivial
 
@@ -264,12 +264,12 @@ example : True := by
     DerivationTree.axiom [] _ (Axiom.temp_4 p)
   
   -- Verify all are sound
-  have v1 : ⊨ (p.all_future.all_future.all_future.imp
+  have v1 : [] ⊨ (p.all_future.all_future.all_future.imp
                p.all_future.all_future.all_future.all_future) :=
     soundness [] _ d1
-  have v2 : ⊨ (p.all_future.all_future.imp p.all_future.all_future.all_future) :=
+  have v2 : [] ⊨ (p.all_future.all_future.imp p.all_future.all_future.all_future) :=
     soundness [] _ d2
-  have v3 : ⊨ (p.all_future.imp p.all_future.all_future) :=
+  have v3 : [] ⊨ (p.all_future.imp p.all_future.all_future) :=
     soundness [] _ d3
   
   trivial

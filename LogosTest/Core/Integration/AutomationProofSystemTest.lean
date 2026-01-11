@@ -299,7 +299,7 @@ Test 26: tm_auto produces sound derivations (Modal T).
 
 Automated proofs should be valid via soundness.
 -/
-example : ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) := by
+example : [] ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) := by
   have deriv : ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")) := by tm_auto
   exact soundness [] _ deriv
 
@@ -308,7 +308,7 @@ Test 27: tm_auto produces sound derivations (Modal 4).
 
 Automated proofs should be valid via soundness.
 -/
-example : ⊨ ((Formula.atom "p").box.imp (Formula.atom "p").box.box) := by
+example : [] ⊨ ((Formula.atom "p").box.imp (Formula.atom "p").box.box) := by
   have deriv : ⊢ ((Formula.atom "p").box.imp (Formula.atom "p").box.box) := by tm_auto
   exact soundness [] _ deriv
 
@@ -317,7 +317,7 @@ Test 28: tm_auto produces sound derivations (Temporal 4).
 
 Automated proofs should be valid via soundness.
 -/
-example : ⊨ ((Formula.atom "p").all_future.imp 
+example : [] ⊨ ((Formula.atom "p").all_future.imp 
              (Formula.atom "p").all_future.all_future) := by
   have deriv : ⊢ ((Formula.atom "p").all_future.imp 
                   (Formula.atom "p").all_future.all_future) := by tm_auto
@@ -337,7 +337,7 @@ Test 30: apply_axiom produces sound derivations.
 
 Axiom applications should be valid via soundness.
 -/
-example : ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) := by
+example : [] ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) := by
   have deriv : ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")) := by
     apply_axiom
     exact Axiom.modal_t (Formula.atom "p")
@@ -348,7 +348,7 @@ Test 31: modal_4_tactic produces sound derivations.
 
 Specific tactic applications should be valid via soundness.
 -/
-example (p : Formula) : ⊨ (p.box.imp p.box.box) := by
+example (p : Formula) : [] ⊨ (p.box.imp p.box.box) := by
   have deriv : ⊢ (p.box.imp p.box.box) := by modal_4_tactic
   exact soundness [] _ deriv
 
@@ -357,7 +357,7 @@ Test 32: modal_b_tactic produces sound derivations.
 
 Specific tactic applications should be valid via soundness.
 -/
-example (p : Formula) : ⊨ (p.imp p.diamond.box) := by
+example (p : Formula) : [] ⊨ (p.imp p.diamond.box) := by
   have deriv : ⊢ (p.imp p.diamond.box) := by modal_b_tactic
   exact soundness [] _ deriv
 
@@ -366,7 +366,7 @@ Test 33: temp_4_tactic produces sound derivations.
 
 Specific tactic applications should be valid via soundness.
 -/
-example (p : Formula) : ⊨ (p.all_future.imp p.all_future.all_future) := by
+example (p : Formula) : [] ⊨ (p.all_future.imp p.all_future.all_future) := by
   have deriv : ⊢ (p.all_future.imp p.all_future.all_future) := by temp_4_tactic
   exact soundness [] _ deriv
 
@@ -375,7 +375,7 @@ Test 34: temp_a_tactic produces sound derivations.
 
 Specific tactic applications should be valid via soundness.
 -/
-example (p : Formula) : ⊨ (p.imp (p.sometime_past.all_future)) := by
+example (p : Formula) : [] ⊨ (p.imp (p.sometime_past.all_future)) := by
   have deriv : ⊢ (p.imp (p.sometime_past.all_future)) := by temp_a_tactic
   exact soundness [] _ deriv
 
@@ -384,7 +384,7 @@ Test 35: Chained automation produces sound derivations.
 
 Multiple tactic applications should produce valid results.
 -/
-example : ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) := by
+example : [] ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) := by
   have deriv : ⊢ ((Formula.atom "p").box.imp (Formula.atom "p")) := by
     apply_axiom
     exact Axiom.modal_t (Formula.atom "p")
@@ -603,7 +603,7 @@ example : True := by
     soundness [] _ proof
   
   -- Step 3: Verify validity
-  have valid_direct : ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
+  have valid_direct : [] ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) :=
     modal_t_valid (Formula.atom "p")
   
   trivial
@@ -658,9 +658,9 @@ example : True := by
                (Formula.atom "r").all_future.all_future) := by tm_auto
   
   -- All should be valid
-  have v1 : ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) := soundness [] _ t1
-  have v2 : ⊨ ((Formula.atom "q").box.imp (Formula.atom "q").box.box) := soundness [] _ t2
-  have v3 : ⊨ ((Formula.atom "r").all_future.imp 
+  have v1 : [] ⊨ ((Formula.atom "p").box.imp (Formula.atom "p")) := soundness [] _ t1
+  have v2 : [] ⊨ ((Formula.atom "q").box.imp (Formula.atom "q").box.box) := soundness [] _ t2
+  have v3 : [] ⊨ ((Formula.atom "r").all_future.imp 
                (Formula.atom "r").all_future.all_future) := soundness [] _ t3
   
   trivial

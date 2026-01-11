@@ -60,10 +60,10 @@ example : True := by
   let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.modal_future p)
   
   -- Verify soundness
-  have v : ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness [] φ d
   
   -- Verify semantic validity directly
-  have v_direct : ⊨ φ := modal_future_valid p
+  have v_direct : [] ⊨ φ := modal_future_valid p
   
   trivial
 
@@ -183,10 +183,10 @@ example : True := by
   let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.temp_future p)
   
   -- Verify soundness
-  have v : ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness [] φ d
   
   -- Verify semantic validity directly
-  have v_direct : ⊨ φ := temp_future_valid p
+  have v_direct : [] ⊨ φ := temp_future_valid p
   
   trivial
 
@@ -351,9 +351,9 @@ example : True := by
     DerivationTree.temporal_necessitation ((p.box.imp p).box) d2
   
   -- Verify soundness at each step
-  have v1 : ⊨ (p.box.imp p) := soundness [] (p.box.imp p) d1
-  have v2 : ⊨ ((p.box.imp p).box) := soundness [] ((p.box.imp p).box) d2
-  have v3 : ⊨ (((p.box.imp p).box).all_future) :=
+  have v1 : [] ⊨ (p.box.imp p) := soundness [] (p.box.imp p) d1
+  have v2 : [] ⊨ ((p.box.imp p).box) := soundness [] ((p.box.imp p).box) d2
+  have v3 : [] ⊨ (((p.box.imp p).box).all_future) :=
     soundness [] (((p.box.imp p).box).all_future) d3
   
   trivial
@@ -382,7 +382,7 @@ example : True := by
     DerivationTree.axiom [] φ (Axiom.modal_k_dist p.all_future q.all_future)
   
   -- Verify soundness
-  have v : ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness [] φ d
   
   trivial
 
@@ -402,7 +402,7 @@ example : True := by
     DerivationTree.axiom [] φ (Axiom.temp_k_dist p.box q.box)
   
   -- Verify soundness
-  have v : ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness [] φ d
   
   trivial
 
@@ -465,7 +465,7 @@ example : True := by
   let d : ⊢ (p.box.imp (p.all_future.box)) :=
     DerivationTree.axiom [] _ (Axiom.modal_future p)
   
-  have v : ⊨ (p.box.imp (p.all_future.box)) :=
+  have v : [] ⊨ (p.box.imp (p.all_future.box)) :=
     soundness [] _ d
   
   -- Validity implies truth at all time-shifted models
@@ -485,7 +485,7 @@ example : True := by
   let d : ⊢ (p.box.imp (p.box.all_future)) :=
     DerivationTree.axiom [] _ (Axiom.temp_future p)
   
-  have v : ⊨ (p.box.imp (p.box.all_future)) :=
+  have v : [] ⊨ (p.box.imp (p.box.all_future)) :=
     soundness [] _ d
   
   -- Validity implies truth at all time-shifted models
