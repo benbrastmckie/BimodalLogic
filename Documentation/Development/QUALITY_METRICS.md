@@ -96,6 +96,22 @@ For each public definition, docstring should include:
 
 ## 4. Performance Benchmarks
 
+> **Full methodology**: See [BENCHMARKING_GUIDE.md](BENCHMARKING_GUIDE.md) for comprehensive
+> benchmarking standards, implementation patterns, and CI integration.
+
+### Benchmark Coverage
+
+| Operation | Required | Target |
+|-----------|----------|--------|
+| Proof search | Yes (if applicable) | All search strategies benchmarked |
+| Derivation construction | Yes | All inference rules benchmarked |
+| Semantic evaluation | Yes | All formula types benchmarked |
+
+### Regression Policy
+
+- Regressions >2x are blocking for merge
+- Theory-specific targets in each theory's PERFORMANCE_TARGETS.md
+
 ### Build Performance
 
 | Metric | Target | Action if Exceeded |
@@ -264,6 +280,7 @@ To request an exception:
 
 ## References
 
+- [Benchmarking Guide](BENCHMARKING_GUIDE.md)
 - [Testing Standards](TESTING_STANDARDS.md)
 - [LEAN Style Guide](LEAN_STYLE_GUIDE.md)
 - [Module Organization](MODULE_ORGANIZATION.md)

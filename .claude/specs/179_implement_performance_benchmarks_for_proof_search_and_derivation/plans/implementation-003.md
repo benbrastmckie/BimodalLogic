@@ -90,7 +90,7 @@ Extend the Bimodal benchmarking suite with derivation tree and semantic evaluati
 
 ### Phase 3a: Project-Wide Benchmarking Documentation
 
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 **Estimated effort**: 0.75 hours
 
 **NEW in v003**: Creates project-wide benchmarking guidance applicable to all theories.
@@ -200,7 +200,7 @@ For complete benchmarking methodology, see [BENCHMARKING_GUIDE.md](BENCHMARKING_
 
 ### Phase 3b: Theory-Specific Performance Targets
 
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 **Estimated effort**: 1 hour
 
 **Prerequisite**: Phase 1 and 2 must be complete (needs actual measurements).

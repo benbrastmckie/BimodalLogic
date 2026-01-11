@@ -28,6 +28,7 @@ Hands-on guides for specific development tasks:
 
 | Document | Description |
 |----------|-------------|
+| [BENCHMARKING_GUIDE.md](BENCHMARKING_GUIDE.md) | Performance benchmarking standards and CI integration |
 | [METAPROGRAMMING_GUIDE.md](METAPROGRAMMING_GUIDE.md) | Lean 4 metaprogramming fundamentals for tactics |
 | [PROPERTY_TESTING_GUIDE.md](PROPERTY_TESTING_GUIDE.md) | Property-based testing patterns and Plausible usage |
 | [NONCOMPUTABLE_GUIDE.md](NONCOMPUTABLE_GUIDE.md) | Handling noncomputable definitions and Classical logic |
