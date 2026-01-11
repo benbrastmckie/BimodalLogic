@@ -14,7 +14,7 @@ Add `noncomputable` keyword to 5 definitions in `Bimodal/Theorems/ModalS5.lean` 
 ### Phase 1: Add noncomputable markers
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add `noncomputable` keyword to all 5 affected definitions

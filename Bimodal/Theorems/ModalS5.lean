@@ -60,7 +60,7 @@ This requires either:
 **Workaround**: box_disj_intro can be reformulated without this lemma using
 direct modal reasoning patterns from existing infrastructure.
 -/
-def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp (((P.imp Formula.bot).imp Q).imp Q) := by
+noncomputable def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp (((P.imp Formula.bot).imp Q).imp Q) := by
   -- This is the same as Propositional.classical_merge since P.neg = P.imp Formula.bot
   exact Propositional.classical_merge P Q
 
@@ -200,7 +200,7 @@ Proof:
 2. From prop_s: B → (¬A → B), apply box_mono to get □B → □(¬A → B)
 3. Combine using disjunction structure (¬□A → □B) → □(¬A → B)
 -/
-def box_disj_intro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.or B).box) := by
+noncomputable def box_disj_intro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.or B).box) := by
   unfold Formula.or
 
   -- Goal: ⊢ (¬□A → □B) → □(¬A → B)
@@ -376,7 +376,7 @@ on both directions to get `(□A → □B) ∧ (□B → □A)`, which is `□A 
 
 **Dependencies**: box_mono, lce_imp, rce_imp, iff_intro from Propositional
 -/
-def box_iff_intro (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
+noncomputable def box_iff_intro (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
     ⊢ (A.box.imp B.box).and (B.box.imp A.box) := by
   -- h: (A → B) ∧ (B → A)
   -- Goal: (□A → □B) ∧ (□B → □A)
@@ -511,7 +511,7 @@ Box distributes over conjunction in both directions.
 - Forward direction □(A ∧ B) → (□A ∧ □B): Use box_mono on lce/rce from context, then pairing
 - Backward direction (□A ∧ □B) → □(A ∧ B): Use box_conj_intro from Perpetuity.lean
 -/
-def box_conj_iff (A B : Formula) : ⊢ iff (A.and B).box (A.box.and B.box) := by
+noncomputable def box_conj_iff (A B : Formula) : ⊢ iff (A.and B).box (A.box.and B.box) := by
   unfold iff
 
   -- We need to prove both directions:
@@ -618,7 +618,7 @@ Diamond distributes over disjunction in both directions (dual of box_conj_iff).
 
 **Dependencies**: Phase 1 De Morgan laws (now proven), box_conj_iff
 -/
-def diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.or B.diamond) := by
+noncomputable def diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.or B.diamond) := by
   -- The proof requires extensive formula manipulation with De Morgan laws.
   -- The key steps are:
   -- 1. ◇(A ∨ B) = ¬□¬(A ∨ B)
