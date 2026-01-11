@@ -30,13 +30,15 @@ technical_debt:
 
 ### 357. Fix ModalS5.lean noncomputable cascade
 - **Effort**: 30 minutes
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Critical
 - **Language**: lean
 - **Blocking**: 355 (build errors depend on this)
 - **Dependencies**: None
 - **Researched**: 2026-01-10
+- **Planned**: 2026-01-10
 - **Research**: [.claude/specs/357_fix_modals5_noncomputable_cascade/reports/research-001.md]
+- **Plan**: [.claude/specs/357_fix_modals5_noncomputable_cascade/plans/implementation-001.md]
 - **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
 
 **Description**: Add `noncomputable` markers to definitions in ModalS5.lean that depend on noncomputable `classical_merge` and `lce_imp` from Propositional.lean. 5 definitions have cascading build errors:
