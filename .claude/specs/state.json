@@ -45,11 +45,12 @@
     {
       "project_number": 391,
       "project_name": "enforce_directory_naming_convention",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T20:42:13Z",
-      "last_updated": "2026-01-11T21:12:04Z"
+      "last_updated": "2026-01-11T21:16:26Z",
+      "completed": "2026-01-11T21:16:26Z"
     },
     {
       "project_number": 381,
