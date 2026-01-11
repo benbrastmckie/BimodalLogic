@@ -45,6 +45,16 @@ Each example includes:
 - `⊢ φ` means `Derivable [] φ` (φ is a theorem)
 - `Γ ⊢ φ` means `Derivable Γ φ` (φ derivable from context Γ)
 
+## Exercises
+
+This module contains 5 exercises marked with `-- EXERCISE:` comments:
+
+1. **Temporal K distribution**: Lifting implications under G (line ~332)
+2. **Perpetuity preservation**: `△φ → G△φ` using conjunction rules (line ~406)
+3. **Perpetuity past direction**: `△φ → H△φ` using temporal duality (line ~421)
+4. **Future-past iteration**: `GGφ → Gφ` using T4 transitivity (line ~476)
+5. **Past-future commutation**: Advanced temporal reasoning (line ~525)
+
 ## References
 
 * [ModalProofStrategies.lean](ModalProofStrategies.lean) - S5 modal proof patterns

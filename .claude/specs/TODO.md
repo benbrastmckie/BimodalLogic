@@ -30,7 +30,8 @@ technical_debt:
 
 ### 385. Refactor /meta command to create tasks instead of direct implementation
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
+- **Started**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
 
@@ -94,7 +95,7 @@ technical_debt:
 
 ### 380. Document LaTeX standards in ProofChecker/Documentation/
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
@@ -136,10 +137,11 @@ technical_debt:
 
 ### 367. Complete example proofs
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
+- **Completed**: 2026-01-12
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -147,6 +149,7 @@ technical_debt:
 - **Review Source**: [.claude/specs/reviews/review-20260110.md]
 - **Research**: [research-001.md](.claude/specs/367_complete_example_proofs/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/367_complete_example_proofs/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/367_complete_example_proofs/summaries/implementation-summary-20260112.md)
 
 **Description**: Complete pedagogical sorry placeholders in Bimodal/Examples/ files (~24 total). Prioritize high-value examples that demonstrate key proof techniques. Mark remaining as explicit exercises.
 

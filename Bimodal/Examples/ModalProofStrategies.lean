@@ -41,6 +41,16 @@ Each example includes:
 - `⊢ φ` means `Derivable [] φ` (φ is a theorem)
 - `Γ ⊢ φ` means `Derivable Γ φ` (φ derivable from context Γ)
 
+## Exercises
+
+This module contains 5 exercises marked with `-- EXERCISE:` comments:
+
+1. **Possibility distribution**: Over disjunction using De Morgan laws (line ~190)
+2. **Curried modal MP**: Building `□φ → (□(φ → ψ) → □ψ)` (line ~237)
+3. **S5 characteristic**: `◇□φ → φ` using contraposition (line ~281)
+4. **S5 diamond iteration**: `◇◇φ → ◇φ` using M4 contraposition (line ~311)
+5. **Conjunction distribution**: Under □ using K distribution (line ~414)
+
 ## References
 
 * [ModalProofs.lean](ModalProofs.lean) - Basic modal axiom examples

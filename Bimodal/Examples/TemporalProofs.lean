@@ -48,6 +48,13 @@ The TM system has a duality between past and future operators:
 - `△φ` = always φ (at all times)
 - `▽φ` = sometimes φ (at some time)
 
+## Exercises
+
+This module contains 2 exercises marked with `-- EXERCISE:` comments:
+
+1. **Temporal K rule**: Using `generalized_temporal_k` (line ~169)
+2. **Future lifting**: Using temporal K rule (line ~183)
+
 ## References
 
 * [Axioms.lean](../ProofChecker/ProofSystem/Axioms.lean) - Temporal axiom definitions

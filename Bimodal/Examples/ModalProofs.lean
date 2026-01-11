@@ -33,6 +33,17 @@ which is appropriate for metaphysical necessity (truth in all possible worlds).
 - `φ.diamond` = `◇φ` (possibility - true in some possible world)
 - `◇φ` is defined as `¬□¬φ`
 
+## Exercises
+
+This module contains 5 exercises marked with `-- EXERCISE:` comments. Each exercise
+includes technique hints referencing the appropriate theorem modules:
+
+1. **Modal modus ponens**: Using `Axiom.modal_k_dist` (line ~153)
+2. **S5 characteristic**: Using S5 axioms T, 4, B and contraposition (line ~168)
+3. **Generalized modal K**: Using `generalized_modal_k` (line ~181)
+4. **Modal distribution**: Using conjunction elimination (line ~234)
+5. **Modal duality**: Using `dni` from Combinators (line ~241)
+
 ## References
 
 * [Axioms.lean](../ProofChecker/ProofSystem/Axioms.lean) - Modal axiom definitions

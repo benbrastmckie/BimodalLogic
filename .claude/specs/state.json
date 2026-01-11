@@ -6,12 +6,13 @@
     {
       "project_number": 385,
       "project_name": "refactor_meta_command_task_creation",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "description": "Refactor the /meta command to conduct careful analysis of the .claude/ agent system given the prompt, ask follow-up questions if additional clarity would improve understanding, and then produce an appropriate number of tasks (similar to /task --divide) with dependencies indicated. If /meta is run without a prompt, run in full interactive mode to interview the user until sufficient detail has been provided to create the appropriate number of tasks with dependencies.",
       "created": "2026-01-11T19:39:55Z",
-      "last_updated": "2026-01-11T19:39:55Z"
+      "last_updated": "2026-01-11T19:43:08Z",
+      "started": "2026-01-12"
     },
     {
       "project_number": 384,
@@ -112,15 +113,34 @@
     {
       "project_number": 367,
       "project_name": "complete_example_proofs",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "low",
       "type": "enhancement",
       "effort": "4-6 hours",
       "description": "Complete pedagogical sorry placeholders in Bimodal/Examples/ files (~24 total). Prioritize high-value examples that demonstrate key proof techniques. Mark remaining as explicit exercises.",
       "created": "2026-01-11T02:22:16Z",
-      "last_updated": "2026-01-11T11:31:11-08:00",
-      "review_source": ".claude/specs/reviews/review-20260110.md"
+      "last_updated": "2026-01-12T00:00:00Z",
+      "review_source": ".claude/specs/reviews/review-20260110.md",
+      "started": "2026-01-11",
+      "researched": "2026-01-11",
+      "planned": "2026-01-11",
+      "completed": "2026-01-12",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/367_complete_example_proofs/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/367_complete_example_proofs/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/367_complete_example_proofs/summaries/implementation-summary-20260112.md"
+        }
+      ]
     },
     {
       "project_number": 132,
