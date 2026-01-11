@@ -1,6 +1,6 @@
 ---
 description: Archive completed and abandoned tasks
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), TodoWrite
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(mv:*), Bash(mkdir:*), TodoWrite
 argument-hint: [--dry-run]
 model: claude-opus-4-5-20251101
 ---
@@ -68,26 +68,32 @@ Ensure .claude/specs/archive/ exists.
 Read or create .claude/specs/archive/state.json:
 ```json
 {
-  "archived_projects": []
+  "archived_projects": [],
+  "completed_projects": []
 }
 ```
 
-Move each task from active_projects to archived_projects.
+Move each task from state.json `active_projects` to archive/state.json `completed_projects` (for completed tasks) or `archived_projects` (for abandoned tasks).
 
 **B. Update state.json**
 
 Remove archived tasks from active_projects array.
-Update task_counts.
 
 **C. Update TODO.md**
 
 Remove archived task entries from main sections.
-Optionally add to archive section at bottom (collapsed).
 
-**D. Preserve Artifacts**
+**D. Move Project Directories to Archive**
 
-Task directories remain in .claude/specs/{N}_{SLUG}/
-(Don't move or delete - they're still valuable reference)
+For each archived task with a project directory:
+```bash
+# Move project directory to archive
+mv .claude/specs/{N}_{SLUG}/ .claude/specs/archive/{N}_{SLUG}/
+```
+
+This preserves artifacts while keeping the active .claude/specs/ directory clean.
+
+Note: If a directory doesn't exist for a task (e.g., tasks that were never researched/planned), skip the move step for that task.
 
 ### 6. Git Commit
 
@@ -108,17 +114,21 @@ Completed ({N}):
 Abandoned ({N}):
 - #{N3}: {title}
 
+Directories moved to archive: {N}
+- .claude/specs/{N1}_{SLUG1}/ → archive/
+- .claude/specs/{N2}_{SLUG2}/ → archive/
+
 Active tasks remaining: {N}
 - High priority: {N}
 - Medium priority: {N}
 - Low priority: {N}
 
-Archives: .claude/specs/archive/state.json
+Archives: .claude/specs/archive/
 ```
 
 ## Notes
 
-- Artifacts (plans, reports, summaries) are preserved
+- Artifacts (plans, reports, summaries) are preserved in archive/{N}_{SLUG}/
 - Tasks can be recovered with `/task --recover N`
 - Archive is append-only (for audit trail)
-- Run periodically to keep TODO.md manageable
+- Run periodically to keep TODO.md and .claude/specs/ manageable

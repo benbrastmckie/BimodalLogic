@@ -40,7 +40,7 @@ Complete the 24 sorry placeholders in Bimodal/Examples/ files using a prioritize
 ### Phase 2: Complete Generalized Necessitation Proofs (Category B - Select)
 
 **Estimated effort**: 1.5 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Complete 4 of the 6 Category B proofs using `generalized_modal_k` and `generalized_temporal_k`

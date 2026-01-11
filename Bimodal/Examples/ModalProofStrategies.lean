@@ -2,6 +2,7 @@ import Bimodal.ProofSystem.Derivation
 import Bimodal.ProofSystem.Axioms
 import Bimodal.Theorems.Perpetuity
 import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!
 # Modal Proof Strategies
@@ -53,6 +54,7 @@ open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Theorems.Perpetuity
 open Bimodal.Theorems.Combinators
+open Bimodal.Theorems
 
 /-!
 ## Strategy 1: Necessity Chains (Iterating M4)
@@ -216,17 +218,15 @@ example (φ ψ : Formula) (h1 : ⊢ φ.box) (h2 : ⊢ (φ.imp ψ).box) : ⊢ ψ.
   -- We have: ⊢ □φ and ⊢ □(φ → ψ)
   -- Goal: ⊢ □ψ
 
-  -- Strategy: First derive ψ from [φ, φ → ψ], then apply modal K
+  -- Use modal K distribution: □(φ → ψ) → (□φ → □ψ)
+  have k_dist : ⊢ (φ.imp ψ).box.imp (φ.box.imp ψ.box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ ψ)
 
-  -- Step 1: Derive ψ from [φ, φ → ψ] using modus ponens
-  have deriv_psi : [φ, φ.imp ψ] ⊢ ψ := by
-    apply DerivationTree.modus_ponens [φ, φ.imp ψ] φ ψ
-    · exact DerivationTree.assumption [φ, φ.imp ψ] (φ.imp ψ) (by simp)
-    · exact DerivationTree.assumption [φ, φ.imp ψ] φ (by simp)
+  -- Apply K distribution to h2: □(φ → ψ) gives □φ → □ψ
+  have h3 : ⊢ φ.box.imp ψ.box := mp h2 k_dist
 
-  -- Step 2: Apply generalized necessitation: [φ, φ → ψ] ⊢ ψ gives [□φ, □(φ → ψ)] ⊢ □ψ
-  -- TODO: Implement generalized necessitation helper (see Bimodal.Theorems.GeneralizedNecessitation)
-  sorry  -- Requires generalized necessitation lemma
+  -- Apply to h1: □φ gives □ψ
+  exact mp h1 h3
 
 /--
 Simplified modal modus ponens: Using `DerivationTree.modus_ponens` directly
@@ -394,22 +394,20 @@ Note: Full proof requires deriving implication from context membership, which
 requires additional infrastructure. Shown here as a pedagogical pattern.
 -/
 example (φ ψ : Formula) : ⊢ φ.box.imp (ψ.imp φ).box := by
-  -- Step 1: Get propositional S axiom
+  -- Step 1: Get propositional S axiom: φ → (ψ → φ)
   have prop_s : ⊢ φ.imp (ψ.imp φ) :=
     DerivationTree.axiom [] _ (Axiom.prop_s φ ψ)
 
-  -- Step 2: Derive [φ] ⊢ ψ → φ using prop_s and modus ponens
-  have deriv : [φ] ⊢ ψ.imp φ := by
-    apply DerivationTree.modus_ponens [φ] φ (ψ.imp φ)
-    · -- Need: [φ] ⊢ φ → (ψ → φ)
-      -- We have: ⊢ φ → (ψ → φ) from prop_s
-      -- Use weakening: if ⊢ A then [φ] ⊢ A (since [] ⊆ [φ])
-      exact DerivationTree.weakening [] [φ] (φ.imp (ψ.imp φ)) prop_s (by intro x h; simp at h)
-    · exact DerivationTree.assumption [φ] φ (by simp)
+  -- Step 2: Apply necessitation: ⊢ □(φ → (ψ → φ))
+  have box_prop_s : ⊢ (φ.imp (ψ.imp φ)).box :=
+    DerivationTree.necessitation _ prop_s
 
-  -- Step 3: Apply generalized necessitation to get [□φ] ⊢ □(ψ → φ)
-  -- TODO: Implement generalized necessitation helper (see Bimodal.Theorems.GeneralizedNecessitation)
-  sorry  -- Requires generalized necessitation lemma and deduction theorem
+  -- Step 3: Apply modal K distribution: □(φ → (ψ → φ)) → (□φ → □(ψ → φ))
+  have k_dist : ⊢ (φ.imp (ψ.imp φ)).box.imp (φ.box.imp (ψ.imp φ).box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ (ψ.imp φ))
+
+  -- Step 4: Apply modus ponens to get □φ → □(ψ → φ)
+  exact mp box_prop_s k_dist
 
 /--
 Distribution pattern: `□φ ∧ □ψ → □(φ ∧ ψ)` structure

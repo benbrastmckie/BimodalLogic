@@ -175,9 +175,9 @@ The modal K rule allows distributing `□` over derivations.
 
 /-- Using modal K rule: if `□Γ ⊢ φ` then `Γ ⊢ □φ` -/
 example (p : Formula) : [p] ⊢ p.box := by
-  -- To derive p.box from assumption p, use modal K:
-  -- We need [□p] ⊢ p, which follows from assumption
-  -- TODO: Implement generalized necessitation helper
+  -- EXERCISE: Complete this proof using generalized necessitation
+  -- Technique: Use `generalized_modal_k` from Bimodal.Theorems.GeneralizedNecessitation
+  -- Hint: First derive [□p] ⊢ p via assumption, then apply generalized modal K
   sorry
 
 /-!

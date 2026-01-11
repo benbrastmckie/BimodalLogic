@@ -132,6 +132,9 @@ Parse task ranges after --recover (e.g., "343-345", "337, 343"):
      echo "Error: Task $task_number not found in archive"
      exit 1
    fi
+
+   # Get project name for directory move
+   slug=$(echo "$task_data" | jq -r '.project_name')
    ```
 
    **Move to active_projects via jq**:
@@ -147,6 +150,13 @@ Parse task ranges after --recover (e.g., "343-345", "337, 343"):
      '.active_projects = [$task | .status = "not_started" | .last_updated = $ts] + .active_projects' \
      .claude/specs/state.json > /tmp/state.json && \
      mv /tmp/state.json .claude/specs/state.json
+   ```
+
+   **Move project directory from archive** (if it exists):
+   ```bash
+   if [ -d ".claude/specs/archive/${task_number}_${slug}" ]; then
+     mv ".claude/specs/archive/${task_number}_${slug}" ".claude/specs/${task_number}_${slug}"
+   fi
    ```
 
    **Update TODO.md**: Add recovered task entry under appropriate priority section
@@ -247,9 +257,15 @@ Parse task ranges:
      mv /tmp/state.json .claude/specs/state.json
    ```
 
-   **Update TODO.md**: Change status to [ABANDONED] via grep + Edit
+   **Update TODO.md**: Remove the task entry (abandoned tasks should not appear in TODO.md)
 
-   **Move task directory** (optional): `mv .claude/specs/{N}_{SLUG} .claude/specs/archive/`
+   **Move task directory to archive** (if it exists):
+   ```bash
+   slug=$(echo "$task_data" | jq -r '.project_name')
+   if [ -d ".claude/specs/${task_number}_${slug}" ]; then
+     mv ".claude/specs/${task_number}_${slug}" ".claude/specs/archive/${task_number}_${slug}"
+   fi
+   ```
 
 2. Git commit: "task: abandon tasks {ranges}"
 

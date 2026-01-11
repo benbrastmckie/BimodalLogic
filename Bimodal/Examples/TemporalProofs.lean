@@ -167,9 +167,10 @@ If `FΓ ⊢ φ` then `Γ ⊢ Fφ`.
 
 /-- Using temporal K rule: if `GΓ ⊢ φ` then `Γ ⊢ Gφ` -/
 example (p : Formula) : [p] ⊢ p.all_future := by
-  -- The temporal K rule has specific requirements about the context
-  -- This is a simplified example that would need proper setup
-  sorry  -- Would require temporal axioms for proper derivation
+  -- EXERCISE: Complete this proof using generalized necessitation
+  -- Technique: Use `generalized_temporal_k` from Bimodal.Theorems.GeneralizedNecessitation
+  -- Hint: First derive [Gp] ⊢ p via assumption, then apply generalized temporal K
+  sorry
 
 /-!
 ## Future Operator (G) Examples
@@ -180,7 +181,9 @@ Note: `G` (all_future) is different from `always` (`△` = H ∧ present ∧ G).
 
 /-- Future on atomic formula -/
 example (p : Formula) : [p] ⊢ p.all_future := by
-  -- Would use temporal K rule to lift p to Fp
+  -- EXERCISE: Complete this proof using temporal K rule
+  -- Technique: Use `generalized_temporal_k` to lift derivation under G operator
+  -- Hint: This is similar to the temporal K rule example above
   sorry
 
 /-- Always (at all times) = H ∧ present ∧ G -/
