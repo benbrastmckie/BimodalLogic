@@ -38,8 +38,8 @@ Scan for project directories not tracked in any state file.
 **CRITICAL**: This step MUST be executed to identify orphaned directories.
 
 ```bash
-# Get all project directories matching {N}_{SLUG} pattern
-orphaned_dirs=()
+# Get orphaned directories in specs/ (not tracked anywhere)
+orphaned_in_specs=()
 for dir in .claude/specs/[0-9]*_*/; do
   [ -d "$dir" ] || continue
   project_num=$(basename "$dir" | cut -d_ -f1)
@@ -49,24 +49,43 @@ for dir in .claude/specs/[0-9]*_*/; do
     '.active_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
     .claude/specs/state.json 2>/dev/null)
 
-  # Check if in archive/state.json completed_projects (with flatten for nested arrays)
+  # Check if in archive/state.json completed_projects
   in_archive=$(jq -r --arg n "$project_num" \
-    '.completed_projects | flatten | .[] | select(.project_number == ($n | tonumber)) | .project_number' \
+    '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
     .claude/specs/archive/state.json 2>/dev/null)
 
   # If not in either, it's an orphan
   if [ -z "$in_active" ] && [ -z "$in_archive" ]; then
-    orphaned_dirs+=("$dir")
+    orphaned_in_specs+=("$dir")
   fi
 done
+
+# Get orphaned directories in specs/archive/ (not tracked in archive/state.json)
+orphaned_in_archive=()
+for dir in .claude/specs/archive/[0-9]*_*/; do
+  [ -d "$dir" ] || continue
+  project_num=$(basename "$dir" | cut -d_ -f1)
+
+  # Check if in archive/state.json completed_projects
+  in_archive=$(jq -r --arg n "$project_num" \
+    '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
+    .claude/specs/archive/state.json 2>/dev/null)
+
+  # If not tracked, it's an orphan
+  if [ -z "$in_archive" ]; then
+    orphaned_in_archive+=("$dir")
+  fi
+done
+
+# Combined list for archival operations
+orphaned_dirs=("${orphaned_in_specs[@]}" "${orphaned_in_archive[@]}")
 ```
 
-Collect orphaned directories:
-- Full directory path
-- Project number (extracted from directory name)
-- Slug (extracted from directory name)
+Collect orphaned directories in two categories:
+- `orphaned_in_specs[]` - Directories in specs/ not tracked anywhere (will be moved to archive/)
+- `orphaned_in_archive[]` - Directories in archive/ not tracked in archive/state.json (already in archive/, need state entries)
 
-Store count and list for later use.
+Store counts and lists for later use.
 
 ### 3. Prepare Archive List
 
@@ -89,12 +108,16 @@ Completed:
 Abandoned:
 - #{N3}: {title} (abandoned {date})
 
-Orphaned directories (not tracked in any state file): {N}
+Orphaned directories in specs/ (will be moved to archive/): {N}
 - {N4}_{SLUG4}/
 - {N5}_{SLUG5}/
 
+Orphaned directories in archive/ (need state tracking): {N}
+- {N6}_{SLUG6}/
+- {N7}_{SLUG7}/
+
 Total tasks: {N}
-Total orphans: {N}
+Total orphans: {N} (specs: {N}, archive: {N})
 
 Run without --dry-run to archive.
 ```
@@ -111,8 +134,8 @@ AskUserQuestion:
   question: "Found {N} orphaned project directories not tracked in state files. What would you like to do?"
   header: "Orphans"
   options:
-    - label: "Archive all orphans"
-      description: "Move all {N} orphaned directories to archive/"
+    - label: "Track all orphans"
+      description: "Move specs/ orphans to archive/ and add state entries for all orphans"
     - label: "Skip orphans"
       description: "Only archive tracked completed/abandoned tasks"
     - label: "Review list first"
@@ -133,17 +156,17 @@ Orphaned directories:
 Then re-ask with only two options:
 ```
 AskUserQuestion:
-  question: "Archive these {N} orphaned directories?"
+  question: "Track these {N} orphaned directories in state files?"
   header: "Confirm"
   options:
-    - label: "Yes, archive all"
-      description: "Move all orphaned directories to archive/"
+    - label: "Yes, track all"
+      description: "Move specs/ orphans to archive/ and add state entries for all"
     - label: "No, skip orphans"
       description: "Only archive tracked completed/abandoned tasks"
   multiSelect: false
 ```
 
-**Store the user's decision** (archive_orphans = true/false) for use in Step 5.
+**Store the user's decision** (track_orphans = true/false) for use in Step 5.
 
 If no orphaned directories were found, skip this step and proceed.
 
