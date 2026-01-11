@@ -46,6 +46,14 @@ $max_repeat = 5;
 # 2 = Use biber for biblatex (modern bibliography)
 $bibtex_use = 2;
 
+# BSTINPUTS for finding .bst files when using build directory
+# Compute absolute path to LaTeX/ directory at config load time.
+# Theory stubs load this via `do '../../LaTeX/latexmkrc'`, so from
+# the theory's LaTeX/ directory, ../../LaTeX is the shared directory.
+use Cwd qw(abs_path);
+my $shared_latex_dir = abs_path('../../LaTeX');
+ensure_path('BSTINPUTS', $shared_latex_dir) if defined $shared_latex_dir;
+
 # Cleanup Rules
 # Files to remove with latexmk -c (clean)
 @generated_exts = qw(aux bbl bcf blg fdb_latexmk fls log nav out run.xml snm synctex.gz toc vrb);

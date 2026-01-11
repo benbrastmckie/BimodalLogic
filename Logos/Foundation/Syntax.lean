@@ -42,26 +42,26 @@ inductive Term where
   | const : String → Term
   /-- Function application: f(t₁, ..., tₙ) -/
   | app : String → List Term → Term
-  deriving Repr, DecidableEq, BEq
+  deriving Repr
 
 namespace Term
 
 /--
 Get all free variables in a term.
 -/
-def freeVars : Term → List String
+partial def freeVars : Term → List String
   | var x => [x]
   | const _ => []
-  | app _ ts => ts.bind freeVars
+  | app _ ts => ts.flatMap fun t => t.freeVars
 
 /--
 Substitute a term for a variable.
 -/
-def subst (t : Term) (x : String) (s : Term) : Term :=
+partial def subst (t : Term) (x : String) (s : Term) : Term :=
   match t with
   | var y => if y = x then s else var y
   | const c => const c
-  | app f ts => app f (ts.map (fun t => t.subst x s))
+  | app f ts => app f (ts.map fun t' => t'.subst x s)
 
 end Term
 
@@ -90,7 +90,7 @@ inductive ConstitutiveFormula where
   | ident : ConstitutiveFormula → ConstitutiveFormula → ConstitutiveFormula
   /-- Lambda abstraction applied to term: (λx.A)(t) -/
   | lambdaApp : String → ConstitutiveFormula → Term → ConstitutiveFormula
-  deriving Repr, DecidableEq, BEq
+  deriving Repr
 
 namespace ConstitutiveFormula
 
