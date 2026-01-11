@@ -95,14 +95,16 @@ technical_debt:
 
 ### 380. Document LaTeX standards in ProofChecker/Documentation/
 - **Effort**: 2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/380_document_latex_standards/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/380_document_latex_standards/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/380_document_latex_standards/summaries/implementation-summary-20260111.md)
 
 **Description**: Having implemented tasks 375, 378-379, and 384, make sure that the LaTeX standards are clearly and concisely documented in ProofChecker/Documentation/ as appropriate.
 
