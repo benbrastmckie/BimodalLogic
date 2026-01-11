@@ -41,13 +41,19 @@
     {
       "project_number": 398,
       "project_name": "port_causal_semantics_to_recursive_semantics_md",
-      "status": "researching",
+      "status": "researched",
       "language": "markdown",
       "priority": "high",
       "description": "Port the causal semantics from sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos. Add closeness ordering, evolutions, subevolutions, causal context with background assumptions, and the three-condition truth clause for causation.",
       "created": "2026-01-11T21:45:37Z",
-      "last_updated": "2026-01-11T22:10:03Z",
-      "parent_task": 394
+      "last_updated": "2026-01-11T22:11:45Z",
+      "parent_task": 394,
+      "artifacts": [
+        {
+          "path": ".claude/specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 399,
