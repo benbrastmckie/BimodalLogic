@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-09T12:00:00Z
-next_project_number: 354
+next_project_number: 355
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -64,6 +64,18 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 354. Research and refactor Archive/ directory
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: 352, 353
+
+**Description**: Research and refactor the Archive/ directory given the tasks 352-353 (Logos/Core/ to Bimodal/ migration) in progress. Provide a clear description of intent for the Archive/ directory structure and contents.
+
+---
 
 ### 176. Enhance proof search with domain-specific heuristics and caching
 - **Effort**: 18 hours
