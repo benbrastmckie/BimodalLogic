@@ -284,9 +284,10 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 
 ### 391. Enforce directory naming convention for Lean projects
 - **Effort**: 2 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
+- **Plan**: [implementation-001.md](.claude/specs/391_enforce_directory_naming_convention/plans/implementation-001.md)
 
 **Description**: Enforce the directory naming convention that only directories containing Lean source code should be capitalized (e.g., `Logos/`, `Theories/`), while all other directories use lowercase (e.g., `docs/`, `scripts/`, `benchmarks/`). This includes: (1) Rename `Documentation/` to `docs/`, (2) Audit all directories for compliance, (3) Document this standard in project-level documentation (e.g., CONTRIBUTING.md or a new CONVENTIONS.md).
 
