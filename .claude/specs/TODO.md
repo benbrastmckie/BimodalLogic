@@ -29,12 +29,13 @@ technical_debt:
 ## High Priority
 
 ### 369. Solve the blocking dependency in the Modal 5 theorem
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Effort**: 30 minutes
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [research-001.md](.claude/specs/369_solve_modal_5_blocking_dependency/reports/research-001.md)
 
 **Description**: Solve the blocking dependency in the Modal 5 theorem.
 
