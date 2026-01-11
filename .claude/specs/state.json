@@ -15,11 +15,11 @@
     {
       "project_number": 374,
       "project_name": "refactor_project_documentation",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T16:36:37Z",
-      "last_updated": "2026-01-11T16:52:34Z"
+      "last_updated": "2026-01-11T17:05:13Z"
     },
     {
       "project_number": 373,
@@ -212,13 +212,22 @@
       "project_number": 178,
       "project_name": "complete_advanced_tutorial_sections_with_hands_on_exercises",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "planned",
+      "status": "planned",
       "priority": "medium",
       "language": "markdown",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T01:22:38Z",
-      "effort": "13 hours"
+      "last_updated": "2026-01-11T22:10:00Z",
+      "effort": "10 hours",
+      "started": "2026-01-11",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/plans/implementation-001.md"
+        }
+      ],
+      "description": "Create advanced Bimodal tutorial covering proof search tactics, custom tactic development, and metalogic with hands-on exercises."
     },
     {
       "project_number": 179,

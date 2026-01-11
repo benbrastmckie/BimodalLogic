@@ -40,7 +40,7 @@ technical_debt:
 
 ### 374. Refactor project Documentation to theory-specific directories
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
@@ -93,26 +93,28 @@ technical_debt:
 
 ---
 
-### 178. Complete advanced tutorial sections with hands-on exercises
-- **Effort**: 13 hours
-- **Status**: [NOT STARTED]
+### 178. Complete Bimodal advanced tutorial with exercises
+- **Effort**: 10 hours
+- **Status**: [PLANNED]
+- **Started**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
-- **Dependencies**: 172
+- **Dependencies**: None
+- **Plan**: [implementation-001.md](.claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/plans/implementation-001.md)
 - **Files Affected**:
-  - Documentation/UserGuide/TUTORIAL.md
-  - Documentation/UserGuide/TUTORIAL_EXERCISES.md (new)
-  - Documentation/UserGuide/TROUBLESHOOTING.md (new)
-- **Description**: Enhance TUTORIAL.md with advanced sections on proof search automation, custom tactic development, and metalogic. Add hands-on exercises with solutions and a troubleshooting guide. Current tutorial is basic and lacks advanced topics.
+  - Bimodal/Documentation/UserGuide/ADVANCED_TUTORIAL.md (new)
+  - Bimodal/Documentation/UserGuide/EXERCISES.md (new)
+  - Bimodal/Documentation/UserGuide/TROUBLESHOOTING.md (new)
+- **Description**: Create advanced tutorial for Bimodal theory covering proof search automation, custom tactic development, and metalogic. Build on existing QUICKSTART.md and PROOF_PATTERNS.md with hands-on exercises and solutions. Include comprehensive troubleshooting guide.
 - **Acceptance Criteria**:
-  - [ ] Advanced tutorial section on proof search and automation added
-  - [ ] Advanced tutorial section on custom tactic development added
-  - [ ] Advanced tutorial section on metalogic and soundness added
-  - [ ] Hands-on exercises with solutions added
-  - [ ] Troubleshooting guide created
-  - [ ] Tutorial tested with new users for clarity
-- **Impact**: Improves onboarding by providing comprehensive learning path from basics to advanced topics with practical exercises.
+  - [ ] Advanced tutorial section on Bimodal proof search tactics (modal_search, temporal_search)
+  - [ ] Advanced tutorial section on Bimodal custom tactic development
+  - [ ] Advanced tutorial section on metalogic (soundness, completeness framework)
+  - [ ] Hands-on exercises with solutions covering modal, temporal, and bimodal proofs
+  - [ ] Troubleshooting guide for common Bimodal errors
+- **Impact**: Improves onboarding by providing comprehensive learning path from basics to advanced Bimodal topics with practical exercises.
 
 ---
 
