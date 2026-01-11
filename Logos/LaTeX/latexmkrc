@@ -1,4 +1,0 @@
-# Logos Theory LaTeX Build Configuration
-# Load shared ProofChecker configuration from central location
-# See LaTeX/README.md for documentation
-do '../../LaTeX/latexmkrc';

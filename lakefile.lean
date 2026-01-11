@@ -18,6 +18,8 @@ abbrev theoryLeanOptions : Array LeanOption := #[
 -- Logos library with linters enabled
 @[default_target]
 lean_lib Logos where
+  srcDir := "Theories"
+  roots := #[`Logos]
   leanOptions := theoryLeanOptions
 
 -- Bimodal library - standalone TM logic implementation
