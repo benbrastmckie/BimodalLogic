@@ -108,7 +108,7 @@ Modify the `/revise` command to handle tasks without plans (status `not_started`
 ### Phase 2: Test description update functionality
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Test /revise on a not_started task
@@ -167,12 +167,12 @@ Modify the `/revise` command to handle tasks without plans (status `not_started`
 
 ## Success Criteria
 
-- [ ] /revise on not_started task updates description (not error)
-- [ ] /revise on researched task updates description (not error)
-- [ ] Both state.json and TODO.md are updated atomically
-- [ ] Git commit created with correct message format
-- [ ] Original plan revision behavior unchanged for planned/implementing/partial/blocked tasks
-- [ ] Appropriate errors for completed/abandoned tasks
+- [x] /revise on not_started task updates description (not error)
+- [x] /revise on researched task updates description (not error)
+- [x] Both state.json and TODO.md are updated atomically
+- [x] Git commit created with correct message format
+- [x] Original plan revision behavior unchanged for planned/implementing/partial/blocked tasks
+- [x] Appropriate errors for completed/abandoned tasks
 
 ## Rollback Plan
 

@@ -1,5 +1,5 @@
 ---
-description: Create new version of implementation plan
+description: Create new version of implementation plan, or update task description if no plan exists
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), TodoWrite
 argument-hint: TASK_NUMBER [REASON]
 model: claude-opus-4-5-20251101
@@ -7,7 +7,7 @@ model: claude-opus-4-5-20251101
 
 # /revise Command
 
-Create a new version of an implementation plan, incorporating lessons learned.
+Create a new version of an implementation plan, or update task description if no plan exists.
 
 ## Arguments
 
