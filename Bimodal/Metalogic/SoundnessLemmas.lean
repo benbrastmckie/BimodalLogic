@@ -604,35 +604,245 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid T φ.swap_past
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
 
-/-! ## Main Theorem: Derivable Implies Swap Valid
+/-! ## Axiom Validity (Local)
 
-This is the culminating theorem of the derivation-indexed approach to temporal duality soundness.
-It proves that if a formula is derivable from the empty context, then its swapped version is valid.
+These lemmas prove validity of each axiom using the local `is_valid` definition.
+This is needed to prove the combined soundness+swap theorem without importing Soundness.lean.
+-/
 
-This theorem is used in `Soundness.lean` to complete the temporal_duality case of the
-soundness proof.
+/-- Propositional K axiom is locally valid. -/
+private theorem axiom_prop_k_valid (φ ψ χ : Formula) :
+    is_valid T ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h1 h2 h_phi
+  exact h1 h_phi (h2 h_phi)
+
+/-- Propositional S axiom is locally valid. -/
+private theorem axiom_prop_s_valid (φ ψ : Formula) :
+    is_valid T (φ.imp (ψ.imp φ)) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_phi _
+  exact h_phi
+
+/-- Modal T axiom is locally valid. -/
+private theorem axiom_modal_t_valid (φ : Formula) :
+    is_valid T (φ.box.imp φ) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_box
+  exact h_box τ ht
+
+/-- Modal 4 axiom is locally valid. -/
+private theorem axiom_modal_4_valid (φ : Formula) :
+    is_valid T ((φ.box).imp (φ.box.box)) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_box σ hs ρ hr
+  exact h_box ρ hr
+
+/-- Modal B axiom is locally valid. -/
+private theorem axiom_modal_b_valid (φ : Formula) :
+    is_valid T (φ.imp (φ.diamond.box)) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_phi σ hs h_box_neg
+  have h_neg_at_tau := h_box_neg τ ht
+  simp only [truth_at] at h_neg_at_tau
+  exact h_neg_at_tau h_phi
+
+/-- Modal 5 collapse axiom is locally valid. -/
+private theorem axiom_modal_5_collapse_valid (φ : Formula) :
+    is_valid T (φ.box.diamond.imp φ.box) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_diamond_box ρ hr
+  by_contra h_not_phi
+  apply h_diamond_box
+  intro σ hs h_box_at_sigma
+  have h_phi_at_rho := h_box_at_sigma ρ hr
+  exact h_not_phi h_phi_at_rho
+
+/-- Ex falso axiom is locally valid. -/
+private theorem axiom_ex_falso_valid (φ : Formula) :
+    is_valid T (Formula.bot.imp φ) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_bot
+  exfalso
+  exact h_bot
+
+/-- Peirce's law is locally valid. -/
+private theorem axiom_peirce_valid (φ ψ : Formula) :
+    is_valid T (((φ.imp ψ).imp φ).imp φ) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_peirce
+  by_cases h : truth_at M τ t ht φ
+  · exact h
+  · have h_imp : truth_at M τ t ht (φ.imp ψ) := by
+      simp only [truth_at]
+      intro h_phi
+      exfalso
+      exact h h_phi
+    exact h_peirce h_imp
+
+/-- Modal K distribution axiom is locally valid. -/
+private theorem axiom_modal_k_dist_valid (φ ψ : Formula) :
+    is_valid T ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_box_imp h_box_phi σ hs
+  have h_imp_at_σ := h_box_imp σ hs
+  have h_phi_at_σ := h_box_phi σ hs
+  simp only [truth_at] at h_imp_at_σ
+  exact h_imp_at_σ h_phi_at_σ
+
+/-- Temporal K distribution axiom is locally valid. -/
+private theorem axiom_temp_k_dist_valid (φ ψ : Formula) :
+    is_valid T ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_future_imp h_future_phi s hs hts
+  have h_imp_at_s := h_future_imp s hs hts
+  have h_phi_at_s := h_future_phi s hs hts
+  simp only [truth_at] at h_imp_at_s
+  exact h_imp_at_s h_phi_at_s
+
+/-- Temporal 4 axiom is locally valid. -/
+private theorem axiom_temp_4_valid (φ : Formula) :
+    is_valid T ((φ.all_future).imp (φ.all_future.all_future)) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_future s hs hts r hr hsr
+  have htr : t < r := lt_trans hts hsr
+  exact h_future r hr htr
+
+/-- Helper for temporal A axiom. -/
+private theorem axiom_temp_a_valid (φ : Formula) :
+    is_valid T (φ.imp (Formula.all_future φ.sometime_past)) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_phi s hs hts h_all_neg
+  have h_neg_at_t := h_all_neg t ht hts
+  simp only [truth_at] at h_neg_at_t
+  exact h_neg_at_t h_phi
+
+/-- Helper lemma for extracting conjunction from negated implication encoding. -/
+private theorem and_of_not_imp_not {P Q : Prop} (h : (P → Q → False) → False) : P ∧ Q :=
+  ⟨Classical.byContradiction (fun hP => h (fun p _ => hP p)),
+   Classical.byContradiction (fun hQ => h (fun _ q => hQ q))⟩
+
+/-- Temporal L axiom is locally valid. -/
+private theorem axiom_temp_l_valid (φ : Formula) :
+    is_valid T (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_always s hs hts r hr hrs
+  have h1 :
+    (∀ (u : T) (hu : τ.domain u), u < t → truth_at M τ u hu φ) ∧
+    ((truth_at M τ t ht φ →
+      (∀ (v : T) (hv : τ.domain v), t < v → truth_at M τ v hv φ) → False) → False) :=
+    and_of_not_imp_not h_always
+  obtain ⟨h_past, h_middle⟩ := h1
+  have h2 : truth_at M τ t ht φ ∧ (∀ (v : T) (hv : τ.domain v), t < v → truth_at M τ v hv φ) :=
+    and_of_not_imp_not h_middle
+  obtain ⟨h_now, h_future⟩ := h2
+  rcases lt_trichotomy r t with h_lt | h_eq | h_gt
+  · exact h_past r hr h_lt
+  · subst h_eq; exact h_now
+  · exact h_future r hr h_gt
+
+/-- Modal-Future axiom is locally valid. -/
+private theorem axiom_modal_future_valid (φ : Formula) :
+    is_valid T ((φ.box).imp ((φ.all_future).box)) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_box_phi σ hs s hs' hts
+  have h_shifted_domain : (WorldHistory.time_shift σ (s - t)).domain t := by
+    simp only [WorldHistory.time_shift]
+    have : t + (s - t) = s := add_sub_cancel t s
+    rw [this]
+    exact hs'
+  have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t)) h_shifted_domain
+  have h_preserve := TimeShift.time_shift_preserves_truth M σ t s h_shifted_domain hs' φ
+  exact h_preserve.mp h_phi_at_shifted
+
+/-- Temporal-Future axiom is locally valid. -/
+private theorem axiom_temp_future_valid (φ : Formula) :
+    is_valid T ((φ.box).imp ((φ.box).all_future)) := by
+  intro F M τ t ht
+  simp only [truth_at]
+  intro h_box_phi s hs hts σ hs'
+  have h_shifted_domain : (WorldHistory.time_shift σ (s - t)).domain t := by
+    simp only [WorldHistory.time_shift]
+    have : t + (s - t) = s := add_sub_cancel t s
+    rw [this]
+    exact hs'
+  have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t)) h_shifted_domain
+  have h_preserve := TimeShift.time_shift_preserves_truth M σ t s h_shifted_domain hs' φ
+  exact h_preserve.mp h_phi_at_shifted
+
+/-- All axioms are locally valid. -/
+private theorem axiom_locally_valid {φ : Formula} : Axiom φ → is_valid T φ := by
+  intro h_axiom
+  cases h_axiom with
+  | prop_k φ ψ χ => exact axiom_prop_k_valid φ ψ χ
+  | prop_s φ ψ => exact axiom_prop_s_valid φ ψ
+  | modal_t ψ => exact axiom_modal_t_valid ψ
+  | modal_4 ψ => exact axiom_modal_4_valid ψ
+  | modal_b ψ => exact axiom_modal_b_valid ψ
+  | modal_5_collapse ψ => exact axiom_modal_5_collapse_valid ψ
+  | ex_falso ψ => exact axiom_ex_falso_valid ψ
+  | peirce φ ψ => exact axiom_peirce_valid φ ψ
+  | modal_k_dist φ ψ => exact axiom_modal_k_dist_valid φ ψ
+  | temp_k_dist φ ψ => exact axiom_temp_k_dist_valid φ ψ
+  | temp_4 ψ => exact axiom_temp_4_valid ψ
+  | temp_a ψ => exact axiom_temp_a_valid ψ
+  | temp_l ψ => exact axiom_temp_l_valid ψ
+  | modal_future ψ => exact axiom_modal_future_valid ψ
+  | temp_future ψ => exact axiom_temp_future_valid ψ
+
+/-! ## Combined Theorem: Derivable Implies Valid AND Swap Valid
+
+This is the key theorem that resolves the circular dependency. By proving BOTH soundness
+and swap validity simultaneously via a single derivation induction, we can use the soundness
+part of the IH to complete the temporal_duality case for swap validity.
+
+**The temporal_duality case resolution**:
+- We have: `h_ψ' : DerivationTree [] ψ'`
+- IH gives: `is_valid T ψ' ∧ is_valid T ψ'.swap`
+- Goal: `is_valid T ψ'.swap ∧ is_valid T ψ'.swap.swap`
+- Part 1 (`is_valid T ψ'.swap`): directly from IH.2
+- Part 2 (`is_valid T ψ'.swap.swap`): by involution = `is_valid T ψ'`, from IH.1
 -/
 
 /--
-Main theorem: If a formula is derivable from empty context, then its swap is valid.
+Combined theorem: Derivability from empty context implies both validity and swap validity.
 
-This theorem proves temporal duality soundness via derivation induction rather than
-formula induction.
-The key insight is that we only need swap validity for derivable formulas, not all valid formulas.
+This theorem proves both properties together to resolve the circular dependency that
+prevented proving the temporal_duality case. The key insight is that the IH provides
+BOTH validity and swap validity, so we can use validity (IH.1) to complete the swap
+validity proof for temporal_duality.
 -/
-theorem derivable_implies_swap_valid :
-    ∀ {φ : Formula}, DerivationTree [] φ → is_valid T φ.swap_past_future := by
+theorem derivable_implies_valid_and_swap_valid :
+    ∀ {φ : Formula}, DerivationTree [] φ →
+      (is_valid T φ ∧ is_valid T φ.swap_past_future) := by
   intro φ h_deriv
   -- Proof by induction on the derivation structure
-  -- Note: We generalize to arbitrary contexts but only use the [] case
+  -- We generalize to arbitrary contexts but only use the [] case
   have h_general : ∀ (Γ : List Formula) (ψ : Formula),
-      DerivationTree Γ ψ → Γ = [] → is_valid T ψ.swap_past_future := by
+      DerivationTree Γ ψ → Γ = [] →
+        (is_valid T ψ ∧ is_valid T ψ.swap_past_future) := by
     intro Γ ψ h
     induction h with
     | «axiom» Γ' ψ' h_axiom =>
       intro h_eq
-      -- Γ' = [], axiom case doesn't depend on context
-      exact axiom_swap_valid ψ' h_axiom
+      -- Axiom case: both validity and swap validity hold
+      constructor
+      · exact axiom_locally_valid h_axiom
+      · exact axiom_swap_valid ψ' h_axiom
 
     | «assumption» Γ' ψ' h_mem =>
       intro h_eq
@@ -642,49 +852,58 @@ theorem derivable_implies_swap_valid :
 
     | modus_ponens Γ' ψ' χ' h_imp h_ψ' ih_imp ih_ψ' =>
       intro h_eq
-      -- Γ' = [], both premises are from []
-      exact mp_preserves_swap_valid ψ' χ' (ih_imp h_eq) (ih_ψ' h_eq)
+      -- Modus ponens: use IH for both properties
+      obtain ⟨h_imp_valid, h_imp_swap⟩ := ih_imp h_eq
+      obtain ⟨h_ψ_valid, h_ψ_swap⟩ := ih_ψ' h_eq
+      constructor
+      · -- Validity of χ'
+        intro F M τ t ht
+        have h1 := h_imp_valid F M τ t ht
+        have h2 := h_ψ_valid F M τ t ht
+        simp only [truth_at] at h1
+        exact h1 h2
+      · -- Swap validity of χ'
+        exact mp_preserves_swap_valid ψ' χ' h_imp_swap h_ψ_swap
 
     | necessitation ψ' h_ψ' ih =>
       intro h_eq
-      -- Necessitation: [] ⊢ ψ' implies [] ⊢ □ψ'
-      -- Need to show: is_valid (□ψ').swap = is_valid □(ψ'.swap)
-      -- By IH: is_valid ψ'.swap
-      -- Need: is_valid □(ψ'.swap)
-      exact modal_k_preserves_swap_valid ψ' (ih rfl)
+      -- Necessitation: use IH for both properties
+      obtain ⟨h_valid, h_swap⟩ := ih rfl
+      constructor
+      · -- Validity of □ψ'
+        intro F M τ t ht σ hs
+        exact h_valid F M σ t hs
+      · -- Swap validity of □ψ'
+        exact modal_k_preserves_swap_valid ψ' h_swap
 
     | temporal_necessitation ψ' h_ψ' ih =>
       intro h_eq
-      -- Temporal necessitation: [] ⊢ ψ' implies [] ⊢ Fψ'
-      -- Need to show: is_valid (Fψ').swap = is_valid P(ψ'.swap)
-      -- By IH: is_valid ψ'.swap
-      -- Need: is_valid P(ψ'.swap)
-      exact temporal_k_preserves_swap_valid ψ' (ih rfl)
+      -- Temporal necessitation: use IH for both properties
+      obtain ⟨h_valid, h_swap⟩ := ih rfl
+      constructor
+      · -- Validity of Fψ'
+        intro F M τ t ht s hs hts
+        exact h_valid F M τ s hs
+      · -- Swap validity of Fψ'
+        exact temporal_k_preserves_swap_valid ψ' h_swap
 
     | temporal_duality ψ' h_ψ' ih =>
       intro h_eq
-      -- Temporal duality: from Derivable [] ψ', conclude Derivable [] ψ'.swap
-      -- Goal: is_valid (ψ'.swap).swap
-      -- By involution: (ψ'.swap).swap = ψ', so goal is: is_valid ψ'
-      
-      -- NOTE: This case requires the soundness theorem to complete.
-      -- We have h_ψ' : DerivationTree [] ψ' and need is_valid T ψ'.
-      -- The soundness theorem states: DerivationTree [] φ → is_valid T φ.
-      -- However, soundness is proven in Soundness.lean, which imports this file.
-      -- Therefore, we cannot use soundness here without creating a circular dependency.
-      
-      -- The original proof attempted to use is_valid_swap_involution, which
-      -- claimed: is_valid T φ.swap → is_valid T φ. However, task 213 research
-      -- proved this theorem is UNPROVABLE (semantically false for arbitrary formulas).
-      
-      -- SOLUTION: This case will remain as sorry. The temporal_duality soundness
-      -- will be completed in Soundness.lean after the main soundness theorem is proven.
-      -- See task 213 for detailed analysis of why the direct approach fails.
-      
-      -- The IH gives us: is_valid T ψ'.swap (which we don't need)
-      -- We need: is_valid T ψ' (which requires soundness)
-      
-      sorry
+      -- KEY CASE: This is where the combined theorem approach pays off!
+      -- We have: h_ψ' : DerivationTree [] ψ'
+      -- IH gives: is_valid T ψ' ∧ is_valid T ψ'.swap
+      -- Goal: is_valid T ψ'.swap ∧ is_valid T ψ'.swap.swap
+      obtain ⟨h_valid, h_swap⟩ := ih rfl
+      constructor
+      · -- Validity of ψ'.swap: directly from IH.2
+        exact h_swap
+      · -- Swap validity of ψ'.swap, i.e., validity of ψ'.swap.swap
+        -- By involution: ψ'.swap.swap = ψ', so we need is_valid T ψ'
+        -- This comes from IH.1!
+        intro F M τ t ht
+        have h_truth := h_valid F M τ t ht
+        -- Use truth_at_swap_swap to rewrite the goal
+        exact (truth_at_swap_swap M τ t ht ψ').mpr h_truth
 
     | weakening Γ' Δ' ψ' h_ψ' h_subset ih =>
       intro h_eq
@@ -695,12 +914,34 @@ theorem derivable_implies_swap_valid :
         cases Γ' with
         | nil => rfl
         | cons head tail =>
-          -- Γ' = head :: tail, so Γ' ⊆ [] means head ∈ []
           have : head ∈ Δ' := h_subset (List.mem_cons_self head tail)
           rw [h_eq] at this
           exact False.elim (List.not_mem_nil head this)
       exact ih h_gamma_empty
 
   exact h_general [] φ h_deriv rfl
+
+/-! ## Derived Theorems
+
+These theorems extract the individual properties from the combined theorem.
+-/
+
+/--
+Soundness from empty context: derivability implies validity.
+Derived from the combined theorem.
+-/
+theorem soundness_from_empty :
+    ∀ {φ : Formula}, DerivationTree [] φ → is_valid T φ :=
+  fun h => (derivable_implies_valid_and_swap_valid h).1
+
+/--
+Main theorem: If a formula is derivable from empty context, then its swap is valid.
+Derived from the combined theorem.
+
+This replaces the previous sorry-containing version.
+-/
+theorem derivable_implies_swap_valid :
+    ∀ {φ : Formula}, DerivationTree [] φ → is_valid T φ.swap_past_future :=
+  fun h => (derivable_implies_valid_and_swap_valid h).2
 
 end Bimodal.Metalogic.SoundnessLemmas
