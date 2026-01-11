@@ -192,7 +192,7 @@ This plan is organized into 6 phases, progressing from foundational structures t
 ### Phase 5: Extended Formula Type and Core Operators
 
 **Estimated effort**: 6-8 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Define full formula type with all Core Extension operators

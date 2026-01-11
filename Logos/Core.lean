@@ -1,4 +1,5 @@
 import Logos.Core.Frame
+import Logos.Core.Syntax
 
 /-!
 # Logos Core - Intensional Extension Layer

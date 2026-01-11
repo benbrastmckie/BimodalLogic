@@ -53,8 +53,10 @@ $bibtex_use = 2;
 use Cwd qw(abs_path cwd);
 my $shared_latex_dir = abs_path('../../LaTeX');
 my $source_dir = cwd();  # The theory's LaTeX/ directory
-ensure_path('BSTINPUTS', $shared_latex_dir) if defined $shared_latex_dir;
-ensure_path('BIBINPUTS', $source_dir) if defined $source_dir;
+
+# Custom bibtex command that sets environment variables inline
+# This ensures the paths are available even when latexmk changes directories
+$bibtex = "BSTINPUTS='$shared_latex_dir:' BIBINPUTS='$source_dir:' bibtex %O %S";
 
 # Cleanup Rules
 # Files to remove with latexmk -c (clean)
