@@ -35,7 +35,7 @@ This file demonstrates both available notation styles:
 * [ARCHITECTURE.md](../docs/ARCHITECTURE.md) - TM logic specification
 -/
 
-namespace Archive.BimodalProofs
+namespace Bimodal.Examples.BimodalProofs
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -294,4 +294,4 @@ For more details on the perpetuity principles, see:
 - [Perpetuity.lean](../ProofChecker/Theorems/Perpetuity.lean)
 -/
 
-end Archive.BimodalProofs
+end Bimodal.Examples.BimodalProofs

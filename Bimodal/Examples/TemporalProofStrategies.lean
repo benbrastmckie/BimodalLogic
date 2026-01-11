@@ -51,7 +51,7 @@ Each example includes:
 * [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
 -/
 
-namespace Archive.TemporalProofStrategies
+namespace Bimodal.Examples.TemporalProofStrategies
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -644,4 +644,4 @@ This module demonstrated seven key proof strategies for linear temporal logic:
 - Interval temporal logic operators
 -/
 
-end Archive.TemporalProofStrategies
+end Bimodal.Examples.TemporalProofStrategies

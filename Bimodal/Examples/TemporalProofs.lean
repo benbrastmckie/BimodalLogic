@@ -54,7 +54,7 @@ The TM system has a duality between past and future operators:
 * [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
 -/
 
-namespace Archive.TemporalProofs
+namespace Bimodal.Examples.TemporalProofs
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -353,4 +353,4 @@ example : Nat :=
   let future_Γ := Automation.ProofSearch.future_context Γ
   future_Γ.length  -- Returns 3 (preserves length)
 
-end Archive.TemporalProofs
+end Bimodal.Examples.TemporalProofs

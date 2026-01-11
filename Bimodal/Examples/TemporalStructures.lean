@@ -50,7 +50,7 @@ any type `T` that has a `LinearOrderedAddCommGroup` instance. This includes:
 * JPL Paper app:TaskSemantics (def:frame, line 1835) - Temporal structure specification
 -/
 
-namespace Archive
+namespace Bimodal.Examples.TemporalStructures
 
 open Bimodal.Semantics
 
@@ -192,4 +192,4 @@ Generic histories have universal domains (polymorphic).
 theorem generic_domain_universal (T : Type*) [LinearOrderedAddCommGroup T] (t : T) :
     (genericTimeHistory T).domain t := trivial
 
-end Archive
+end Bimodal.Examples.TemporalStructures

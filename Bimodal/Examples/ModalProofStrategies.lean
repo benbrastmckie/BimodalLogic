@@ -46,7 +46,7 @@ Each example includes:
 * [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
 -/
 
-namespace Archive.ModalProofStrategies
+namespace Bimodal.Examples.ModalProofStrategies
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -507,4 +507,4 @@ This module demonstrated six key proof strategies for S5 modal logic:
 - Disjunction rules for possibility distribution
 -/
 
-end Archive.ModalProofStrategies
+end Bimodal.Examples.ModalProofStrategies

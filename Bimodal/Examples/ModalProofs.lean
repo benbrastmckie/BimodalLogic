@@ -38,7 +38,7 @@ which is appropriate for metaphysical necessity (truth in all possible worlds).
 * [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
 -/
 
-namespace Archive.ModalProofs
+namespace Bimodal.Examples.ModalProofs
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -343,4 +343,4 @@ example : Nat :=
   let boxed := Automation.ProofSearch.box_context Γ
   boxed.length  -- Returns 3 (same as Γ.length)
 
-end Archive.ModalProofs
+end Bimodal.Examples.ModalProofs

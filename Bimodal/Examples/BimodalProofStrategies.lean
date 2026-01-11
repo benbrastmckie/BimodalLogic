@@ -51,7 +51,7 @@ Each example includes:
 * [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
 -/
 
-namespace Archive.BimodalProofStrategies
+namespace Bimodal.Examples.BimodalProofStrategies
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -734,4 +734,4 @@ This module demonstrated four key proof strategies for TM bimodal logic:
 - Automated proof search for bimodal patterns
 -/
 
-end Archive.BimodalProofStrategies
+end Bimodal.Examples.BimodalProofStrategies
