@@ -52,7 +52,7 @@ Wall-clock timing for performance benchmarks.
 -/
 
 /-- Run an IO action and measure wall-clock time in nanoseconds. -/
-def timed (action : IO α) : IO (α × Nat) := do
+def timed {α : Type} (action : IO α) : IO (α × Nat) := do
   let start ← IO.monoNanosNow
   let result ← action
   let stop ← IO.monoNanosNow
