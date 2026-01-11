@@ -140,8 +140,9 @@ technical_debt:
 
 ### 176. Enhance Bimodal proof search with success learning and best-first search
 - **Effort**: 12 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Planned**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Priority**: Medium
@@ -150,18 +151,20 @@ technical_debt:
 - **Dependencies**: None
 - **Research**: [research-001.md](.claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/summaries/implementation-summary-20260111.md)
 - **Files Affected**:
-  - Bimodal/Automation/ProofSearch.lean (enhance)
+  - Bimodal/Automation/ProofSearch.lean (enhanced)
   - Bimodal/Automation/SuccessPatterns.lean (new)
-  - Bimodal/Automation/Benchmarks.lean (new)
-  - BimodalTest/Automation/ProofSearchBenchmarks.lean (new)
+  - BimodalTest/Automation/ProofSearchBenchmark.lean (enhanced)
+  - Bimodal/Automation.lean (updated imports)
+  - Documentation/Reference/API_REFERENCE.md (updated)
 - **Description**: Build on the existing Bimodal proof search infrastructure with success pattern learning, best-first search implementation, and comprehensive benchmarking. The core heuristics (modal/temporal bonuses, caching, IDDFS) are complete—this task adds the learning and optimization layer.
 - **Acceptance Criteria**:
-  - [ ] Success pattern learning implemented (record which axiom sequences succeed)
-  - [ ] Best-first search with priority queue implemented (SearchStrategy.BestFirst)
-  - [ ] Benchmarking suite created with representative formulas
-  - [ ] Performance comparison: IDDFS vs BestFirst documented
-  - [ ] Documentation for heuristic tuning added to module docstrings
+  - [x] Success pattern learning implemented (record which axiom sequences succeed)
+  - [x] Best-first search with priority queue implemented (SearchStrategy.BestFirst)
+  - [x] Benchmarking suite created with representative formulas
+  - [x] Performance comparison: IDDFS vs BestFirst documented
+  - [x] Documentation for heuristic tuning added to module docstrings
 - **Impact**: Improves automation by learning from successful proofs and using priority-guided search, reducing search time for complex bimodal formulas.
 
 ---

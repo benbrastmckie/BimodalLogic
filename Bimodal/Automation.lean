@@ -1,5 +1,6 @@
 import Bimodal.Automation.Tactics
 import Bimodal.Automation.ProofSearch
+import Bimodal.Automation.SuccessPatterns
 import Bimodal.Automation.AesopRules
 
 /-!
@@ -16,7 +17,15 @@ Aggregates all Automation components for the Core TM logic layer.
   - `apply_axiom`, `modal_t`: Basic axiom application tactics
   - `tm_auto`: Aesop-powered automation (has known issues, prefer modal_search)
   - `assumption_search`: Context assumption search
-- `ProofSearch`: Native proof search functions (bounded_search, search_with_heuristics, etc.)
+- `ProofSearch`: Native proof search functions with multiple strategies:
+  - `search`: Unified interface with IDDFS, BoundedDFS, or BestFirst
+  - `search_with_learning`: Pattern learning-enhanced search
+  - `bestFirst_search`: Priority queue-based best-first search
+  - `iddfs_search`: Iterative deepening with completeness guarantees
+- `SuccessPatterns`: Pattern learning for proof search optimization
+  - `PatternDatabase`: Records successful proof patterns
+  - `PatternKey`: Formula structural features for pattern matching
+  - `ProofStrategy`: Strategy types (Axiom, Assumption, ModusPonens, etc.)
 - `AesopRules`: Aesop rule set for TM logic automation
 
 ## Usage

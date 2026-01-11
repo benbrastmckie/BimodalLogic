@@ -1,7 +1,7 @@
 # Logos API Reference
 
-**Version**: 1.0.0  
-**Last Updated**: 2025-12-24  
+**Version**: 1.1.0
+**Last Updated**: 2026-01-11
 **Status**: Complete
 
 This document provides a centralized API reference for all Logos/Core modules, generated from inline docstrings.
@@ -365,54 +365,126 @@ example (h : p → q) : p → q := by
 
 ---
 
-### ProofSearch (`Logos.Core.Automation.ProofSearch`)
+### ProofSearch (`Bimodal.Automation.ProofSearch`)
 
-**Module**: `Logos/Core/Automation/ProofSearch.lean`
+**Module**: `Bimodal/Automation/ProofSearch.lean`
 
-Bounded proof search with heuristics and caching.
+Advanced proof search with multiple strategies, heuristics, caching, and pattern learning.
+
+#### Search Strategies
+
+| Strategy | Description | Best For |
+|----------|-------------|----------|
+| `IDDFS n` | Iterative deepening DFS, complete and optimal | Axiom goals, shallow proofs |
+| `BoundedDFS n` | Depth-limited DFS, fast but incomplete | Known-depth goals |
+| `BestFirst n` | Priority queue-based, heuristic-guided | Context-based goals, MP chains |
 
 #### Key Functions
 
-##### `bounded_search : Context → Formula → Nat → Bool`
+##### `search : Context → Formula → SearchStrategy → Nat → HeuristicWeights → SearchResult`
 
-Depth-limited search for derivations.
+Unified search interface with configurable strategy.
 
 **Parameters**:
 - `Γ`: Proof context (assumptions)
 - `φ`: Goal formula
-- `depth`: Maximum search depth
+- `strategy`: Search strategy (default: `.IDDFS 100`)
+- `visitLimit`: Maximum node visits (default: 10000)
+- `weights`: Heuristic weights for branch ordering
 
-**Returns**: `true` if derivation found, `false` otherwise
+**Returns**: `(found, cache, visited, stats, visits)`
+
+##### `search_with_learning : Context → Formula → SearchStrategy → PatternDatabase → LearningSearchResult`
+
+Search with pattern learning for repeated proofs.
+
+**Returns**: `LearningSearchResult` with updated `patternDb` for future searches.
+
+##### `bestFirst_search : Context → Formula → Nat → HeuristicWeights → PatternDatabase → SearchResult`
+
+Priority queue-based best-first search with pattern-aware heuristics.
 
 **Algorithm**:
-1. Check axioms and assumptions (depth 0)
-2. Try modus ponens with heuristic ordering
-3. Try modal/temporal K rules
-4. Return false if all strategies fail
+1. Initialize priority queue with goal node (f-score = 0 + h(goal))
+2. Extract minimum f-score node
+3. Expand by trying all strategies (axiom, assumption, MP, modal K, temporal K)
+4. Add child nodes with updated costs
+5. Repeat until goal proven or expansion limit reached
 
-**Complexity**: O(b^d) where b = branching factor, d = depth
+##### `batch_search_with_learning : List (String × Context × Formula) → PatternDatabase → LearningSearchResult`
 
-##### `search_with_heuristics : Context → Formula → Nat → Bool`
+Batch search that accumulates patterns across multiple goals.
 
-Heuristic-guided proof search prioritizing likely-successful branches.
+#### Heuristic Configuration
 
-##### `search_with_cache : ProofCache → Context → Formula → Nat → Bool`
+| Weight | Default | Effect |
+|--------|---------|--------|
+| `axiomWeight` | 0 | Priority for axiom matching |
+| `assumptionWeight` | 1 | Priority for context lookup |
+| `mpBase` | 3 | Base cost for modus ponens |
+| `modalKWeight` | 5 | Cost for modal K rule |
+| `temporalKWeight` | 5 | Cost for temporal K rule |
 
-Cached proof search using memoization for repeated subgoals.
+#### Benchmark Results (Task 176)
 
-#### Helper Functions
-
-| Function | Description |
-|----------|-------------|
-| `matches_axiom` | Check if formula matches axiom schema |
-| `find_implications_to` | Find implications with given consequent |
-| `box_context` | Transform context for modal K |
-| `future_context` | Transform context for temporal K |
-| `heuristic_score` | Compute branch priority score |
+| Category | IDDFS | BestFirst | Winner |
+|----------|-------|-----------|--------|
+| Modal axioms | 5/5 | 5/5 | Tie |
+| Temporal axioms | 3/3 | 3/3 | Tie |
+| Context-based | 1/3, 39 visits | 3/3, 6 visits | **BestFirst** |
 
 ---
 
-### AesopRules (`Logos.Core.Automation.AesopRules`)
+### SuccessPatterns (`Bimodal.Automation.SuccessPatterns`)
+
+**Module**: `Bimodal/Automation/SuccessPatterns.lean`
+
+Pattern learning for proof search optimization.
+
+#### Key Types
+
+##### `PatternKey`
+
+Formula structural features for pattern matching:
+- `modalDepth`: Nesting depth of modal operators
+- `temporalDepth`: Nesting depth of temporal operators
+- `impCount`: Number of implications
+- `complexity`: Total connective count
+- `topOperator`: Top-level operator category
+
+##### `ProofStrategy`
+
+Strategies tracked for learning:
+- `Axiom name`: Direct axiom match
+- `Assumption`: Context assumption
+- `ModusPonens`: Modus ponens application
+- `ModalK`: Modal K rule
+- `TemporalK`: Temporal K rule
+
+##### `PatternDatabase`
+
+Database of successful proof patterns with methods:
+- `recordSuccess φ info`: Record successful proof pattern
+- `queryPatterns φ`: Query for matching patterns
+- `heuristicBonus φ strategy`: Get priority boost from history
+- `suggestedDepth φ`: Get suggested depth from history
+
+#### Usage Example
+
+```lean
+-- Search with pattern learning
+let result := search_with_learning Γ φ (.IDDFS 100)
+let db' := result.patternDb  -- Updated pattern database
+
+-- Query patterns for hints
+match db'.queryPatterns φ with
+| some data => data.bestStrategy  -- Most successful strategy
+| none => none  -- No history for this pattern
+```
+
+---
+
+### AesopRules (`Bimodal.Automation.AesopRules`)
 
 **Module**: `Logos/Core/Automation/AesopRules.lean`
 
@@ -634,6 +706,12 @@ All Logos modules follow these documentation standards:
 ---
 
 ## Version History
+
+- **1.1.0** (2026-01-11): Task 176 - Enhanced proof search documentation
+  - Added `Bimodal.Automation.ProofSearch` with multiple strategies
+  - Added `Bimodal.Automation.SuccessPatterns` for pattern learning
+  - Updated search function signatures and benchmark results
+  - Added strategy selection guide and heuristic configuration
 
 - **1.0.0** (2025-12-24): Initial API reference generated from docstrings
   - Complete coverage of Logos/Core modules
