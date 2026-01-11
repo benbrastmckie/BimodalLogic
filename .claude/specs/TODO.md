@@ -54,12 +54,13 @@ technical_debt:
 
 ### 358. Fix CompletenessTest.lean import error
 - **Effort**: 5 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
 - **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
+- **Research**: [.claude/specs/358_fix_completenesstest_import_error/reports/research-001.md]
 
 **Description**: Move import statement from line 26 to beginning of file in `BimodalTest/Metalogic/CompletenessTest.lean`. Error: "invalid 'import' command, it must be used in the beginning of the file".
 

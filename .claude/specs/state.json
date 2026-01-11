@@ -518,11 +518,11 @@
       "project_name": "fix_modals5_noncomputable_cascade",
       "type": "bugfix",
       "phase": "not_started",
-      "status": "planned",
+      "status": "implementing",
       "priority": "critical",
       "language": "lean",
       "created": "2026-01-10T12:00:00Z",
-      "last_updated": "2026-01-10T14:00:00Z",
+      "last_updated": "2026-01-10T14:30:00Z",
       "effort": "30 minutes",
       "description": "Add noncomputable markers to definitions in ModalS5.lean that depend on noncomputable classical_merge and lce_imp from Propositional.lean. Cascading build errors affect 5 definitions.",
       "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md"
@@ -532,14 +532,20 @@
       "project_name": "fix_completenesstest_import_error",
       "type": "bugfix",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researched",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-10T12:00:00Z",
-      "last_updated": "2026-01-10T12:00:00Z",
+      "last_updated": "2026-01-11T01:09:15Z",
       "effort": "5 minutes",
       "description": "Move import statement from line 26 to beginning of file in BimodalTest/Metalogic/CompletenessTest.lean.",
-      "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md"
+      "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/358_fix_completenesstest_import_error/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 359,
