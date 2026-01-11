@@ -14,7 +14,7 @@ Enhance the `/todo` command to properly move project directories to the archive 
 ### Phase 1: Update Command Metadata and Add Orphan Detection Step
 
 **Estimated effort**: 20 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add `AskUserQuestion` to allowed-tools
@@ -57,7 +57,7 @@ Enhance the `/todo` command to properly move project directories to the archive 
 ### Phase 2: Add User Confirmation Flow for Orphans
 
 **Estimated effort**: 25 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Insert Step 4.5 for user confirmation when orphans are found
@@ -106,7 +106,7 @@ Enhance the `/todo` command to properly move project directories to the archive 
 ### Phase 3: Fix Directory Move Execution
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Make Step 5D more explicit with bash commands
@@ -173,7 +173,7 @@ Enhance the `/todo` command to properly move project directories to the archive 
 ### Phase 4: Update Output Reporting
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update Step 7 output to include directory move results
