@@ -81,9 +81,12 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/379_fix_logosreference_latex_warnings/reports/research-001.md)
+- **Implementation Findings**: [research-002.md](.claude/specs/379_fix_logosreference_latex_warnings/reports/research-002.md)
 - **Plan**: [implementation-001.md](.claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md)
 
 **Description**: Fix LaTeX warnings/errors in LogosReference.tex after task 375 implementation: "no \citation commands", "no style file" (bibtex), package warnings for logos-notation/notation-standards/formatting, and "Label(s) may have changed" cross-reference warnings.
+
+**Current State**: Phase 1 (formatting.sty fix) and Phase 2 (add `\nocite{*}`) completed. Phase 3 (verification) blocked by BibTeX/latexmk build directory interaction issue - see research-002.md for details and resolution options.
 
 ---
 
@@ -114,7 +117,7 @@ technical_debt:
 
 ### 179. Extend Bimodal benchmarks with derivation, semantics, and CI integration
 - **Effort**: 7.75 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-11
 - **Planned**: 2026-01-11
 - **Priority**: Medium

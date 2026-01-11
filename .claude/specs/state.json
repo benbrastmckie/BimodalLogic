@@ -31,6 +31,11 @@
         {
           "type": "plan",
           "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-002.md",
+          "description": "Implementation findings - BibTeX/latexmk build directory issue"
         }
       ]
     },
@@ -236,12 +241,12 @@
       "project_number": 179,
       "project_name": "implement_performance_benchmarks_for_proof_search_and_derivation",
       "type": "feature",
-      "phase": "planned",
-      "status": "planned",
+      "phase": "implementing",
+      "status": "implementing",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T23:45:00Z",
+      "last_updated": "2026-01-12T00:45:00Z",
       "effort": "7.75 hours",
       "started": "2026-01-11",
       "plan_version": "003",
