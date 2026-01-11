@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-09T12:00:00Z
-next_project_number: 356
+next_project_number: 357
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -85,6 +85,18 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 356. Create systematic documentation for Bimodal/ and BimodalTest/
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: 352, 353
+
+**Description**: Create systematic documentation for Bimodal/ and BimodalTest/ following /home/benjamin/Projects/ProofChecker/Documentation/Development/DIRECTORY_README_STANDARD.md
+
+---
 
 ### 354. Research and refactor Archive/ directory
 - **Effort**: 2-4 hours
