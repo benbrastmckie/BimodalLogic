@@ -28,13 +28,18 @@ lean_lib Bimodal where
   roots := #[`Bimodal]
   leanOptions := theoryLeanOptions
 
-lean_lib LogosTest
+lean_lib LogosTest where
+  srcDir := "Tests"
+  roots := #[`LogosTest]
 
 -- BimodalTest library - tests for Bimodal TM logic
 lean_lib BimodalTest where
+  srcDir := "Tests"
+  roots := #[`BimodalTest]
   leanOptions := theoryLeanOptions
 
 lean_exe test where
+  srcDir := "Tests"
   root := `LogosTest.Main
 
 -- Custom lint driver executable
