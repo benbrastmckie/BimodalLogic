@@ -27,7 +27,7 @@ The task relation s ⇒_d t represents "there is a task from s to t of duration 
 All constraints are formulated using state modality concepts.
 -/
 
-namespace Logos.Explanatory
+namespace Logos.SubTheories.Explanatory
 
 open Logos.Foundation
 
@@ -224,4 +224,4 @@ structure CoreModel (T : Type*) [LinearOrderedAddCommGroup T] where
   /-- The interpretation function (inherited from constitutive model) -/
   interp : Interpretation frame.toConstitutiveFrame
 
-end Logos.Explanatory
+end Logos.SubTheories.Explanatory

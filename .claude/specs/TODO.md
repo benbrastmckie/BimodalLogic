@@ -43,7 +43,7 @@ technical_debt:
 
 ### 376. Refactor repo for TheoryLib multi-theory structure
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-12

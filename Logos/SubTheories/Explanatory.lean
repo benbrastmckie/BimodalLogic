@@ -1,6 +1,6 @@
-import Logos.Explanatory.Frame
-import Logos.Explanatory.Syntax
-import Logos.Explanatory.Truth
+import Logos.SubTheories.Explanatory.Frame
+import Logos.SubTheories.Explanatory.Syntax
+import Logos.SubTheories.Explanatory.Truth
 
 /-!
 # Logos Explanatory Extension Layer
@@ -26,9 +26,9 @@ The Explanatory Extension provides:
 ## Usage
 
 ```lean
-import Logos.Explanatory
+import Logos.SubTheories.Explanatory
 
-open Logos.Explanatory
+open Logos.SubTheories.Explanatory
 
 -- Use state modality concepts
 variable {T : Type*} [LinearOrderedAddCommGroup T]

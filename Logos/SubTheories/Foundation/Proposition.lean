@@ -1,4 +1,4 @@
-import Logos.Foundation.Frame
+import Logos.SubTheories.Foundation.Frame
 import Mathlib.Data.Set.Lattice
 
 /-!
@@ -34,7 +34,7 @@ Operations on bilateral propositions follow the bilattice structure:
 - Sum is the join with respect to ≤ (ground ordering)
 -/
 
-namespace Logos.Foundation
+namespace Logos.SubTheories.Foundation
 
 /--
 Bilateral proposition in exact truthmaker semantics.
@@ -218,4 +218,4 @@ end Ordering
 
 end BilateralProp
 
-end Logos.Foundation
+end Logos.SubTheories.Foundation

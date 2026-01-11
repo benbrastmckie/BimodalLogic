@@ -25,7 +25,7 @@ Terms and formulas are parametric over the type of variable/constant/predicate
 names for flexibility. The standard instantiation uses String.
 -/
 
-namespace Logos.Foundation
+namespace Logos.SubTheories.Foundation
 
 /--
 Object-level terms in the constitutive language.
@@ -190,4 +190,4 @@ end Notation
 
 end ConstitutiveFormula
 
-end Logos.Foundation
+end Logos.SubTheories.Foundation

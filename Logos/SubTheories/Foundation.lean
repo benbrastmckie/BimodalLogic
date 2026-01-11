@@ -1,9 +1,9 @@
-import Logos.Foundation.Frame
-import Logos.Foundation.Basic
-import Logos.Foundation.Proposition
-import Logos.Foundation.Interpretation
-import Logos.Foundation.Syntax
-import Logos.Foundation.Semantics
+import Logos.SubTheories.Foundation.Frame
+import Logos.SubTheories.Foundation.Basic
+import Logos.SubTheories.Foundation.Proposition
+import Logos.SubTheories.Foundation.Interpretation
+import Logos.SubTheories.Foundation.Syntax
+import Logos.SubTheories.Foundation.Semantics
 
 /-!
 # Logos Foundation - Constitutive Semantics Layer
@@ -30,9 +30,9 @@ The Constitutive Foundation provides:
 ## Usage
 
 ```lean
-import Logos.Foundation
+import Logos.SubTheories.Foundation
 
-open Logos.Foundation
+open Logos.SubTheories.Foundation
 
 -- Create a frame instance
 def myFrame : ConstitutiveFrame := ConstitutiveFrame.powerSet Nat

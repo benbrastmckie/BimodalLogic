@@ -34,7 +34,7 @@ the required lattice structure. The frame is non-modal: possibility and
 compatibility require the task relation introduced in the Explanatory Extension.
 -/
 
-namespace Logos.Foundation
+namespace Logos.SubTheories.Foundation
 
 /--
 Constitutive Frame for exact truthmaker semantics.
@@ -215,4 +215,4 @@ end BasicLemmas
 
 end ConstitutiveFrame
 
-end Logos.Foundation
+end Logos.SubTheories.Foundation

@@ -86,11 +86,11 @@
     {
       "project_number": 376,
       "project_name": "refactor_repo_for_theorylib_multi_theory_structure",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-11T17:06:06Z",
-      "last_updated": "2026-01-11T19:47:15Z"
+      "last_updated": "2026-01-11T19:55:31Z"
     },
     {
       "project_number": 365,

@@ -14,8 +14,8 @@ This layer extends Core TM logic with epistemic operators:
 See: Documentation/Research/LAYER_EXTENSIONS.md Section 2
 -/
 
-namespace Logos.Epistemic
+namespace Logos.SubTheories.Epistemic
   -- Layer 2 implementation to be added
   -- Extension point: Formula type will embed Bimodal.Syntax.Formula
   -- Extension point: Semantics will use InformationState
-end Logos.Epistemic
+end Logos.SubTheories.Epistemic

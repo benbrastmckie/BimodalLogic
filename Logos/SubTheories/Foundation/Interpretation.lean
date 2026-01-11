@@ -1,5 +1,5 @@
-import Logos.Foundation.Frame
-import Logos.Foundation.Proposition
+import Logos.SubTheories.Foundation.Frame
+import Logos.SubTheories.Foundation.Proposition
 import Mathlib.Data.Fin.Tuple.Basic
 
 /-!
@@ -29,7 +29,7 @@ We use `Fin n → S` for n-ary functions over states, which is equivalent
 to `Sⁿ → S` in the paper notation.
 -/
 
-namespace Logos.Foundation
+namespace Logos.SubTheories.Foundation
 
 variable {F : ConstitutiveFrame}
 
@@ -183,4 +183,4 @@ def fusion (M : ConstitutiveModel) (s t : M.frame.State) : M.frame.State :=
 
 end ConstitutiveModel
 
-end Logos.Foundation
+end Logos.SubTheories.Foundation

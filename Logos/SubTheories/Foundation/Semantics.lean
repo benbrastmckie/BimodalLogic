@@ -1,7 +1,7 @@
-import Logos.Foundation.Frame
-import Logos.Foundation.Proposition
-import Logos.Foundation.Interpretation
-import Logos.Foundation.Syntax
+import Logos.SubTheories.Foundation.Frame
+import Logos.SubTheories.Foundation.Proposition
+import Logos.SubTheories.Foundation.Interpretation
+import Logos.SubTheories.Foundation.Syntax
 
 /-!
 # Verification and Falsification Semantics
@@ -28,7 +28,7 @@ structure. The key insight is that negation swaps verification and falsification
 while conjunction/disjunction interact with the mereological structure.
 -/
 
-namespace Logos.Foundation
+namespace Logos.SubTheories.Foundation
 
 variable {F : ConstitutiveFrame}
 
@@ -206,4 +206,4 @@ def content (M : ConstitutiveModel) (σ : VarAssignment M.frame)
 -- to bilateral proposition equivalence is deferred to avoid mutual recursion complexity
 -- in the current implementation.
 
-end Logos.Foundation
+end Logos.SubTheories.Foundation

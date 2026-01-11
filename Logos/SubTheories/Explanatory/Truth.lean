@@ -1,5 +1,5 @@
-import Logos.Explanatory.Frame
-import Logos.Explanatory.Syntax
+import Logos.SubTheories.Explanatory.Frame
+import Logos.SubTheories.Explanatory.Syntax
 import Logos.Foundation.Semantics
 
 /-!
@@ -26,10 +26,10 @@ Truth evaluation is defined recursively on formula structure. The counterfactual
 conditional uses a simplified mereological formulation from the paper.
 -/
 
-namespace Logos.Explanatory
+namespace Logos.SubTheories.Explanatory
 
 open Logos.Foundation
-open Logos.Explanatory.Formula
+open Logos.SubTheories.Explanatory.Formula
 
 variable {T : Type*} [LinearOrderedAddCommGroup T]
 
@@ -192,4 +192,4 @@ def entailsInModel (M : CoreModel T) (Γ : List Formula) (φ : Formula) : Prop :
 notation:50 M ", " τ ", " t ", " σ " ⊨ " φ => truthAt M τ t _ σ TemporalIndex.empty φ
 notation:50 M ", " τ ", " t ", " σ " ⊭ " φ => falsehoodAt M τ t _ σ TemporalIndex.empty φ
 
-end Logos.Explanatory
+end Logos.SubTheories.Explanatory

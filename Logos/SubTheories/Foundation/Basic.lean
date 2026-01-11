@@ -1,4 +1,4 @@
-import Logos.Foundation.Frame
+import Logos.SubTheories.Foundation.Frame
 import Mathlib.Data.Set.Lattice
 
 /-!
@@ -14,7 +14,7 @@ of constitutive frames, building on the core definitions in Frame.lean.
 - Properties needed for verification/falsification semantics
 -/
 
-namespace Logos.Foundation
+namespace Logos.SubTheories.Foundation
 
 namespace ConstitutiveFrame
 
@@ -78,4 +78,4 @@ end FrameInstances
 
 end ConstitutiveFrame
 
-end Logos.Foundation
+end Logos.SubTheories.Foundation
