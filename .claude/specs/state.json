@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T04:30:00Z",
-  "next_project_number": 368,
+  "next_project_number": 369,
   "active_projects": [
+    {
+      "project_number": 368,
+      "project_name": "documentation_directory_reorganization",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-11T03:33:51Z",
+      "last_updated": "2026-01-11T03:33:51Z"
+    },
     {
       "project_number": 365,
       "project_name": "complete_bimodaltest_sorries",

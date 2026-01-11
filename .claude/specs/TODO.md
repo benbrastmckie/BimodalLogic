@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T06:30:00Z
-next_project_number: 368
+next_project_number: 369
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -29,6 +29,18 @@ technical_debt:
 ## High Priority
 
 ## Medium Priority
+
+### 368. Refactor Documentation directory structure
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Refactor the Documentation/ directory and its subdirectories into a well-organized system of files, divided by natural types into subdirectories with a README.md in each subdirectory with summaries and links to the files or subdirectories in that directory as well as back links following the /home/benjamin/Projects/ProofChecker/Documentation/Development/DIRECTORY_README_STANDARD.md standard.
+
+---
 
 ### 363. Create Bimodal LaTeX documentation
 - **Effort**: 2-4 hours
