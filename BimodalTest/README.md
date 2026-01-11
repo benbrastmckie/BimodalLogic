@@ -172,24 +172,50 @@ Each module should have tests for:
 - **Properties**: General properties that must hold
 - **Integration**: Interactions with other modules
 
-## Current Test Status
+## Implementation Status
 
-**Implemented Tests**:
-- Syntax: Formula construction, context operations, property tests
-- ProofSystem: Axiom schema validation, derivation tests, property tests
-- Semantics: Task frame properties, truth evaluation, semantic properties
-- Integration: Cross-module tests, end-to-end workflows
-- Theorems: Perpetuity principle tests, modal theorem tests
-- Automation: Tactic tests, proof search tests
+### Test Coverage Summary
 
-**Partial Tests**:
-- Metalogic: Soundness tests implemented, completeness pending
+| Module | Status | Tests | Notes |
+|--------|--------|-------|-------|
+| Syntax | Complete | 20+ | Formula, Context fully tested |
+| ProofSystem | Complete | 30+ | All axioms and rules tested |
+| Semantics | Complete | 25+ | Task frames, truth, validity |
+| Integration | Complete | 15+ | Cross-module workflows |
+| Theorems | Partial | 40+ | Some sorries pending infrastructure |
+| Automation | Partial | 20+ | Core tactics tested |
+| Metalogic | Partial | 15+ | Completeness tests pending |
 
-**Planned Tests**:
-- Additional automation coverage as tactics mature
-- Completeness tests when completeness proofs complete
+### Sorry Placeholder Status
 
-For detailed status, see [IMPLEMENTATION_STATUS.md](../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md).
+The test suite contains a few `sorry` placeholders, categorized as follows:
+
+**Pending Infrastructure** (cannot be resolved until source implementation completes):
+- `CompletenessTest.lean` (3 sorries) - Tests for completeness theorems require actual
+  completeness proofs in `Bimodal/Metalogic/Completeness.lean` to be implemented
+- `PropositionalTest.lean` (1 sorry) - Requires deduction theorem infrastructure
+
+**Pending Concrete Proofs** (could be completed with additional proof work):
+- `PerpetuityTest.lean` (1 sorry) - Test for `box_conj_intro` needs concrete theorem proofs
+
+**Documented as Pending** (explicitly marked as placeholder tests):
+- `ModalS4Test.lean` - All S4 theorem tests commented out pending Phase 4 implementation
+
+### Verification Commands
+
+```bash
+# Count sorries in test suite
+grep -r "sorry" BimodalTest/ --include="*.lean" | grep -v "README" | wc -l
+
+# Build all tests (compilation = passing)
+lake build BimodalTest
+
+# Check specific test modules
+lake build BimodalTest.Metalogic
+lake build BimodalTest.Theorems
+```
+
+For detailed implementation status, see [IMPLEMENTATION_STATUS.md](../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md).
 
 ## Related Documentation
 

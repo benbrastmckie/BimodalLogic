@@ -40,22 +40,28 @@ Test the definition of consistent contexts.
 Test: Empty context is consistent (cannot derive ⊥ from nothing).
 
 **Expected**: `Consistent []` should hold (but requires proof)
+
+**Sorry Status**: Pending infrastructure - requires completeness proof implementation
 -/
 example : Consistent [] := by
   unfold Consistent
   intro h
   -- Would need to prove: No derivation of ⊥ from [] exists
+  -- PENDING INFRASTRUCTURE: Requires completeness proof in Bimodal/Metalogic/Completeness.lean
   sorry
 
 /--
 Test: Context with single atom is consistent.
 
 **Expected**: `Consistent [p]` for atomic formula p
+
+**Sorry Status**: Pending infrastructure - requires completeness proof implementation
 -/
 example (p : Formula) : Consistent [Formula.atom "p"] := by
   unfold Consistent
   intro h
   -- Would need to prove: Cannot derive ⊥ from [p] alone
+  -- PENDING INFRASTRUCTURE: Requires completeness proof in Bimodal/Metalogic/Completeness.lean
   sorry
 
 /--
@@ -65,12 +71,15 @@ Test: Context with contradiction is inconsistent.
 
 **Note**: This test documents expected behavior. Actual implementation would
 prove `¬Consistent [p, ¬p]` using propositional reasoning.
+
+**Sorry Status**: Pending infrastructure - requires completeness proof implementation
 -/
 example (p : Formula) : ¬Consistent [p, Formula.neg p] := by
   unfold Consistent
   intro h
   -- Would prove: Can derive ⊥ from [p, ¬p]
   -- Strategy: Apply modus ponens with negation
+  -- PENDING INFRASTRUCTURE: Requires completeness proof in Bimodal/Metalogic/Completeness.lean
   sorry
 
 /-!

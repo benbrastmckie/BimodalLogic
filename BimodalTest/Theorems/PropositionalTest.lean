@@ -177,7 +177,11 @@ example : [(Formula.atom "p").and ((Formula.atom "q").box)] ⊢ (Formula.atom "q
 example (A B : Formula) : ⊢ A.imp (A.neg.imp B) := raa A B
 example (A B : Formula) : ⊢ A.neg.imp (A.imp B) := efq A B
 
-/-- Test: Conjunction elimination combined with disjunction introduction -/
+/--
+Test: Conjunction elimination combined with disjunction introduction.
+
+**Sorry Status**: Pending infrastructure - requires additional deduction theorem helpers
+-/
 example : [(Formula.atom "p").and (Formula.atom "q")] ⊢
           (Formula.atom "p").or (Formula.atom "r") := by
   have h_p := lce (Formula.atom "p") (Formula.atom "q")
@@ -185,8 +189,8 @@ example : [(Formula.atom "p").and (Formula.atom "q")] ⊢
   -- We need to derive: [p ∧ q] ⊢ p ∨ r
   -- Use weakening to add context, then apply ldi
   -- Actually, ldi requires [p] ⊢ p ∨ r, so we need to show [p ∧ q] ⊢ p ∨ r
-  -- This requires additional context manipulation
-  sorry  -- This test requires deduction theorem infrastructure
+  -- PENDING INFRASTRUCTURE: Requires additional deduction theorem helpers for context manipulation
+  sorry
 
 /-- Test: LEM is theorem (not axiom) -/
 example (φ : Formula) : ⊢ φ.or φ.neg := lem φ
