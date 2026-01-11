@@ -51,14 +51,15 @@
     {
       "project_number": 404,
       "project_name": "enhance_todo_to_archive_orphaned_specs_directories",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "description": "Enhance /todo command to detect orphaned project directories in specs/ that are not tracked in TODO.md or state.json, and offer to move them to specs/archive/ while updating archive/state.json accordingly.",
       "effort": "1-2 hours",
       "created": "2026-01-11T22:20:12Z",
-      "last_updated": "2026-01-12T06:45:00Z",
+      "last_updated": "2026-01-12T06:50:00Z",
       "implementing_started": "2026-01-12T06:45:00Z",
+      "completed": "2026-01-12T06:50:00Z",
       "artifacts": [
         {
           "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/reports/research-001.md",
@@ -67,6 +68,10 @@
         {
           "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ],
       "plan_version": "001"

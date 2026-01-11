@@ -151,8 +151,13 @@ Orphaned directories in archive/ (need state tracking): {N}
 - {N6}_{SLUG6}/
 - {N7}_{SLUG7}/
 
+Misplaced directories in specs/ (tracked in archive/, will be moved): {N}
+- {N8}_{SLUG8}/
+- {N9}_{SLUG9}/
+
 Total tasks: {N}
 Total orphans: {N} (specs: {N}, archive: {N})
+Total misplaced: {N}
 
 Run without --dry-run to archive.
 ```
@@ -204,6 +209,27 @@ AskUserQuestion:
 **Store the user's decision** (track_orphans = true/false) for use in Step 5.
 
 If no orphaned directories were found, skip this step and proceed.
+
+### 4.6. Handle Misplaced Directories (if any found)
+
+If misplaced directories were detected in Step 2.6:
+
+**Use AskUserQuestion**:
+```
+AskUserQuestion:
+  question: "Found {N} misplaced directories in specs/ that should be in archive/ (already tracked in archive/state.json). Move them?"
+  header: "Misplaced"
+  options:
+    - label: "Move all"
+      description: "Move directories to archive/ (state already correct, no updates needed)"
+    - label: "Skip"
+      description: "Leave directories in current location"
+  multiSelect: false
+```
+
+**Store the user's decision** (move_misplaced = true/false) for use in Step 5F.
+
+If no misplaced directories were found, skip this step and proceed.
 
 ### 5. Archive Tasks
 
@@ -311,6 +337,34 @@ Track orphan operations for output reporting:
 - orphans_moved: count of directories moved from specs/ to archive/
 - orphans_tracked: count of state entries added to archive/state.json
 
+**F. Move Misplaced Directories (if approved in Step 4.6)**
+
+If user selected "Move all" (move_misplaced = true):
+
+```bash
+# Move misplaced directories from specs/ to archive/
+misplaced_moved=0
+for dir in "${misplaced_in_specs[@]}"; do
+  dir_name=$(basename "$dir")
+  dst=".claude/specs/archive/${dir_name}"
+
+  # Check if destination already exists
+  if [ -d "$dst" ]; then
+    echo "Warning: ${dir_name} already exists in archive/, skipping"
+    continue
+  fi
+
+  mv "$dir" "$dst"
+  echo "Moved misplaced: ${dir_name} -> archive/"
+  ((misplaced_moved++))
+done
+```
+
+**Note**: Unlike orphans, misplaced directories do NOT need state entries added - they are already correctly tracked in archive/state.json. Only the physical move is needed.
+
+Track misplaced operations for output reporting:
+- misplaced_moved: count of directories moved from specs/ to archive/
+
 ### 6. Git Commit
 
 ```bash
@@ -318,9 +372,16 @@ git add .claude/specs/
 git commit -m "todo: archive {N} completed tasks"
 ```
 
-Include orphan count in message if orphans were tracked:
+Include orphan and misplaced counts in message as applicable:
 ```bash
+# If orphans tracked and misplaced moved:
+git commit -m "todo: archive {N} tasks, track {M} orphans, move {P} misplaced directories"
+
+# If only orphans tracked:
 git commit -m "todo: archive {N} tasks and track {M} orphaned directories"
+
+# If only misplaced moved:
+git commit -m "todo: archive {N} tasks and move {P} misplaced directories"
 ```
 
 ### 7. Output
@@ -343,6 +404,10 @@ Orphaned directories tracked: {N}
 - {N4}_{SLUG4}/ (moved to archive/, state entry added)
 - {N5}_{SLUG5}/ (already in archive/, state entry added)
 
+Misplaced directories moved: {N}
+- {N8}_{SLUG8}/ (already tracked in archive/state.json)
+- {N9}_{SLUG9}/ (already tracked in archive/state.json)
+
 Skipped (no directory): {N}
 - Task #{N6}
 
@@ -356,6 +421,9 @@ Archives: .claude/specs/archive/
 
 If no orphans were tracked (either none found or user skipped):
 - Omit the "Orphaned directories tracked" section
+
+If no misplaced directories were moved (either none found or user skipped):
+- Omit the "Misplaced directories moved" section
 
 ## Notes
 
@@ -382,3 +450,34 @@ If no orphans were tracked (either none found or user skipped):
 - Orphaned directories with state entries can be inspected in archive/
 - Manual recovery is possible by moving directories and updating state files
 - Use `/task --recover N` only for tracked tasks (not orphans)
+
+### Misplaced Directories
+
+**Definition**: Directories in `specs/` that ARE tracked in `archive/state.json`.
+
+This indicates the directory was archived in state but never physically moved.
+
+**Directory Categories Summary**:
+
+| Category | Location | Tracked in state.json? | Tracked in archive/state.json? | Action |
+|----------|----------|------------------------|--------------------------------|--------|
+| Active | specs/ | Yes | No | Normal (no action) |
+| Orphaned in specs/ | specs/ | No | No | Move + add state entry |
+| Orphaned in archive/ | archive/ | No | No | Add state entry only |
+| Misplaced | specs/ | No | Yes | Move only (state correct) |
+| Archived | archive/ | No | Yes | Normal (no action) |
+
+**Misplaced Directories**:
+- Already have correct state entries in archive/state.json
+- Only need to be physically moved to specs/archive/
+- No state updates required
+
+**Causes of Misplaced Directories**:
+- Directory move failed silently during previous archival
+- Manual state edits without corresponding directory moves
+- System interrupted during archival process
+- /todo command Step 5D not executing consistently
+
+**Recovery**:
+- Use `/task --recover N` to recover misplaced directories (they have valid state entries)
+- After moving, the directory will be in the correct location matching its state
