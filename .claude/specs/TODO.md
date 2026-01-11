@@ -53,8 +53,9 @@ technical_debt:
 
 ### 353. Move LogosTest/Core/ to BimodalTest/
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-10
+- **Completed**: 2026-01-10
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -63,8 +64,11 @@ technical_debt:
 - **Planned**: 2026-01-10
 - **Research**: [.claude/specs/353_move_logostest_core_to_bimodaltest/reports/research-001.md]
 - **Plan**: [.claude/specs/353_move_logostest_core_to_bimodaltest/plans/implementation-001.md]
+- **Summary**: [.claude/specs/353_move_logostest_core_to_bimodaltest/summaries/implementation-summary-20260110.md]
 
 **Description**: Move LogosTest/Core/ to BimodalTest/ to mirror the Bimodal library structure. Follow Lean 4 best practices (Mathlib pattern: Mathlib/ + MathlibTest/) with separate test directory. Update imports, lakefile (add `lean_lib BimodalTest`), and namespace references. Ensure test executable still works.
+
+**Outcome**: Successfully moved LogosTest/Core/ to BimodalTest/, updated all 30 files with new namespace, updated all internal and external imports, added lean_lib BimodalTest target. LogosTest now re-exports from BimodalTest for backwards compatibility. Library build succeeds.
 
 ---
 
