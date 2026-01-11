@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-12T11:45:00Z
-next_project_number: 392
+last_updated: 2026-01-12T12:00:00Z
+next_project_number: 393
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,22 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 392. Enhance /todo command orphan tracking
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Enhance /todo command to track orphaned directories in archive/state.json. Currently, orphaned directories (project directories not tracked in any state file) are moved to archive/ but NOT added to archive/state.json. This task modifies:
+1. Step 2.5 detection to check both state.json AND archive/state.json
+2. Step 5.E to add orphan entries to archive/state.json when archiving (not just move directories)
+
+This ensures all project directories in specs/archive/ are accounted for by state files.
+
+---
 
 ### 175. Establish CI/CD pipeline with automated testing and linting
 - **Effort**: 13 hours
@@ -162,7 +178,7 @@ technical_debt:
 
 ### 178. Complete Bimodal advanced tutorial with exercises
 - **Effort**: 10 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHING]
 - **Started**: 2026-01-11
 - **Planned**: 2026-01-11
 - **Priority**: Medium
