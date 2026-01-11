@@ -1,8 +1,38 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T23:30:00Z",
-  "next_project_number": 381,
+  "next_project_number": 384,
   "active_projects": [
+    {
+      "project_number": 381,
+      "project_name": "add_causal_semantics_infrastructure",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Add infrastructure and comments for causal semantics in Logos theory. The causal operator was missing from RECURSIVE_SEMANTICS.md line 29 and has been fixed, but the Lean implementation needs appropriate stub definitions and TODO comments to enable future implementation of causation semantics.",
+      "created": "2026-01-11T18:49:04Z",
+      "last_updated": "2026-01-11T18:49:04Z"
+    },
+    {
+      "project_number": 382,
+      "project_name": "create_spatial_subtheory_stub",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Create Logos/Spatial/ subtheory stub following the pattern of other extension layers. Task 377 implemented Core but did not create the Spatial extension layer. Create minimal stub structure with appropriate documentation.",
+      "created": "2026-01-11T18:49:04Z",
+      "last_updated": "2026-01-11T18:49:04Z"
+    },
+    {
+      "project_number": 383,
+      "project_name": "rename_core_to_explanatory",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Rename Logos/Core/ to Logos/Explanatory/ systematically. Core/ and Explanatory/ target the same theory and should be combined under the Explanatory/ name. Update all references in Logos/Documentation/ and Logos/LaTeX/LogosReference.tex without producing cruft or redundancy.",
+      "created": "2026-01-11T18:49:04Z",
+      "last_updated": "2026-01-11T18:49:04Z"
+    },
     {
       "project_number": 380,
       "project_name": "document_latex_standards",

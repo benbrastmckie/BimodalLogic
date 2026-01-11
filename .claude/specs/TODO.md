@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T21:30:00Z
-next_project_number: 381
+next_project_number: 384
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -61,6 +61,36 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 381. Add causal semantics infrastructure
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+
+**Description**: Add infrastructure and comments for causal semantics in Logos theory. The causal operator was missing from RECURSIVE_SEMANTICS.md line 29 and has been fixed, but the Lean implementation needs appropriate stub definitions and TODO comments to enable future implementation of causation semantics.
+
+---
+
+### 382. Create Spatial/ subtheory stub
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+
+**Description**: Create Logos/Spatial/ subtheory stub following the pattern of other extension layers. Task 377 implemented Core but did not create the Spatial extension layer. Create minimal stub structure with appropriate documentation.
+
+---
+
+### 383. Rename Core/ to Explanatory/
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+
+**Description**: Rename Logos/Core/ to Logos/Explanatory/ systematically. Core/ and Explanatory/ target the same theory and should be combined under the Explanatory/ name. Update all references in Logos/Documentation/ and Logos/LaTeX/LogosReference.tex without producing cruft or redundancy.
+
+---
 
 ### 380. Document LaTeX standards in ProofChecker/Documentation/
 - **Effort**: 2 hours
