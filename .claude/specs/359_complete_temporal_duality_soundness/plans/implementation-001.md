@@ -16,7 +16,7 @@ Complete the `temporal_duality` case in `derivable_implies_swap_valid` (Soundnes
 ### Phase 1: Add Combined Theorem
 
 **Estimated effort**: 45 minutes
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Add the new combined theorem `derivable_implies_valid_and_swap_valid` in SoundnessLemmas.lean

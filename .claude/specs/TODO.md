@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-10T12:00:00Z
-next_project_number: 361
+next_project_number: 362
 repository_health:
   overall_score: 85
   production_readiness: needs-work
@@ -135,15 +135,26 @@ technical_debt:
 
 ## Medium Priority
 
+### 361. Create installation documentation
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Create installation documentation similar to /home/benjamin/Projects/ModelChecker CLAUDE_CODE.md including dependencies (BASIC_INSTALLATION.md, GETTING_STARTED.md, GIT_GOING.md) so users can start with CLAUDE_CODE.md to systematically install everything for the ProofChecker project.
+
+---
+
 ### 359. Complete temporal_duality soundness case
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
 - **Researched**: 2026-01-10
 - **Planned**: 2026-01-10
+- **Started**: 2026-01-10
 - **Research**: [.claude/specs/359_complete_temporal_duality_soundness/reports/research-001.md]
 - **Plan**: [.claude/specs/359_complete_temporal_duality_soundness/plans/implementation-001.md]
 - **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]

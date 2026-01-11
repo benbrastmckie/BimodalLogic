@@ -1,8 +1,20 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-10T12:00:00Z",
-  "next_project_number": 361,
+  "next_project_number": 362,
   "active_projects": [
+    {
+      "project_number": 361,
+      "project_name": "create_installation_documentation",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "type": "documentation",
+      "effort": "2-4 hours",
+      "description": "Create installation documentation similar to /home/benjamin/Projects/ModelChecker CLAUDE_CODE.md including dependencies (BASIC_INSTALLATION.md, GETTING_STARTED.md, GIT_GOING.md) so users can start with CLAUDE_CODE.md to systematically install everything for the ProofChecker project.",
+      "created": "2026-01-11T01:30:25Z",
+      "last_updated": "2026-01-11T01:30:25Z"
+    },
     {
       "project_number": 356,
       "project_name": "bimodal_directory_documentation",
@@ -563,12 +575,12 @@
       "project_number": 359,
       "project_name": "complete_temporal_duality_soundness",
       "type": "feature",
-      "phase": "planned",
-      "status": "planned",
+      "phase": "implementing",
+      "status": "implementing",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-10T12:00:00Z",
-      "last_updated": "2026-01-10T16:00:00Z",
+      "last_updated": "2026-01-10T16:30:00Z",
       "effort": "1-2 hours",
       "description": "Complete the temporal_duality case in SoundnessLemmas.lean (line 687) to remove the last sorry from soundness proofs.",
       "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md",
@@ -583,7 +595,8 @@
         }
       ],
       "research_completed": "2026-01-10T15:00:00Z",
-      "plan_version": "001"
+      "plan_version": "001",
+      "started": "2026-01-10"
     },
     {
       "project_number": 360,
