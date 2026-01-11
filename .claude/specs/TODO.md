@@ -30,7 +30,7 @@ technical_debt:
 
 ### 369. Solve the blocking dependency in the Modal 5 theorem
 - **Effort**: 30 minutes
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -54,7 +54,7 @@ technical_debt:
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
 - **Research**: [research-001.md](.claude/specs/368_documentation_directory_reorganization/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/368_documentation_directory_reorganization/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](.claude/specs/368_documentation_directory_reorganization/plans/implementation-002.md)
 
 **Description**: Refactor the Documentation/ directory and its subdirectories into a well-organized system of files, divided by natural types into subdirectories with a README.md in each subdirectory with summaries and links to the files or subdirectories in that directory as well as back links following the /home/benjamin/Projects/ProofChecker/Documentation/Development/DIRECTORY_README_STANDARD.md standard.
 
@@ -62,8 +62,9 @@ technical_debt:
 
 ### 363. Create Bimodal LaTeX documentation
 - **Effort**: 2-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: Medium
 - **Language**: latex
 - **Blocking**: None
@@ -72,6 +73,7 @@ technical_debt:
 - **Planned**: 2026-01-11 (revised)
 - **Research**: [research-001.md](.claude/specs/363_create_bimodal_latex_documentation/reports/research-001.md), [research-002.md](.claude/specs/363_create_bimodal_latex_documentation/reports/research-002.md)
 - **Plan**: [implementation-002.md](.claude/specs/363_create_bimodal_latex_documentation/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/363_create_bimodal_latex_documentation/summaries/implementation-summary-20260111.md)
 
 **Description**: Create a Bimodal/LaTeX/ directory with contents similar to Logos/LaTeX/ but focusing on reporting exactly what has been implemented in the Bimodal/ theory. Primarily definitions with occasional concise explanations. Semantics before proof theory. Note discrepancies with paper "The Construction of Possible Worlds" in summary.
 
