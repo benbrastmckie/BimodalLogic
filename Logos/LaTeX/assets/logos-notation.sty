@@ -6,6 +6,7 @@
 % Compatible with LaTeX, markdown, and Lean notation conventions
 %
 % Imports shared notation from ProofChecker/LaTeX/notation-standards.sty
+% (found via TEXINPUTS configured in latexmkrc)
 % ============================================================================
 
 \NeedsTeXFormat{LaTeX2e}
@@ -15,7 +16,7 @@
 % Import Shared Notation Standards
 % ============================================================================
 
-\RequirePackage{../../LaTeX/notation-standards}
+\RequirePackage{notation-standards}
 
 % Additional required packages for Logos-specific notation
 \RequirePackage{stmaryrd}  % for \llbracket, \rrbracket

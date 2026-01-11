@@ -41,7 +41,7 @@ This task resolves 5 sorry placeholders across 3 BimodalTest files, plus fixes M
 
 ### Phase 2: Resolve Impossible Test in PerpetuityTest.lean
 
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Convert the impossible test at line 69-76 to a parametric form with hypotheses
@@ -80,7 +80,7 @@ This task resolves 5 sorry placeholders across 3 BimodalTest files, plus fixes M
 
 ### Phase 3: Implement PropositionalTest.lean Proof (Line 193)
 
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Complete the proof that `[p ∧ q] ⊢ p ∨ r` using available combinators

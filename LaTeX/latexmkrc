@@ -54,13 +54,24 @@ use Cwd qw(abs_path cwd);
 my $shared_latex_dir = abs_path('../../LaTeX');
 my $source_dir = cwd();  # The theory's LaTeX/ directory
 
-# Use ensure_path() to add directories to BSTINPUTS and BIBINPUTS search paths
+# Use ensure_path() to add directories to search paths.
 # This integrates properly with latexmk's $bibtex_fudge mechanism which handles
 # directory changes when running bibtex from the build directory.
 # The trailing // enables recursive subdirectory searching via Kpathsea.
 # See: https://www.overleaf.com/learn/latex/Articles/An_introduction_to_Kpathsea_and_how_TeX_engines_search_for_files
+
+# BSTINPUTS and BIBINPUTS for finding .bst and .bib files
 ensure_path('BSTINPUTS', "$shared_latex_dir//");
 ensure_path('BIBINPUTS', "$source_dir//");
+
+# TEXINPUTS for custom .sty package files
+# $source_dir/assets// enables theory-specific packages (e.g., logos-notation.sty)
+# $shared_latex_dir// enables shared packages (e.g., formatting.sty, notation-standards.sty)
+# This allows packages to be referenced by base name (e.g., \usepackage{logos-notation})
+# instead of relative paths (e.g., \usepackage{assets/logos-notation}), eliminating
+# the "You have requested package X but the package provides Y" warnings.
+ensure_path('TEXINPUTS', "$source_dir/assets//");
+ensure_path('TEXINPUTS', "$shared_latex_dir//");
 
 # Cleanup Rules
 # Files to remove with latexmk -c (clean)

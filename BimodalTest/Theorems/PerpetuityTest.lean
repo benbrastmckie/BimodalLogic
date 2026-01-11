@@ -63,17 +63,13 @@ example (A B : Formula) (hA : ⊢ A.box) (hB : ⊢ B.box) : ⊢ (A.and B).box :=
 /--
 Test box_conj_intro with concrete formulas.
 
-**Sorry Status**: Requires concrete proofs - cannot derive `□p` or `□q` from empty context
-without additional assumptions. The type signature test above verifies the helper works.
+**Note**: Cannot derive `□p` or `□q` from empty context without additional assumptions.
+The parametric form below correctly demonstrates the helper's behavior by accepting
+boxed premises and showing they combine correctly.
 -/
-example : ⊢ ((Formula.atom "p").and (Formula.atom "q")).box := by
-  -- First get □p and □q from axiomatization (for testing purposes, we use modal 4 + T to manufacture them)
-  -- In practice, these would be premises
-  -- For this test, we'll show that the helper works with the right types
-  -- We need concrete proofs of ⊢ □p and ⊢ □q
-  -- Since we can't get these without assumptions, we'll make this an example with hypotheses
-  -- REQUIRES CONCRETE PROOFS: Cannot derive □p or □q from empty context
-  sorry
+example (hp : ⊢ (Formula.atom "p").box) (hq : ⊢ (Formula.atom "q").box) :
+    ⊢ ((Formula.atom "p").and (Formula.atom "q")).box :=
+  box_conj_intro hp hq
 
 /-- Test box_conj_intro_imp: implicational variant -/
 example (P A B : Formula) (hA : ⊢ P.imp A.box) (hB : ⊢ P.imp B.box) : ⊢ P.imp (A.and B).box :=

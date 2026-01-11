@@ -119,7 +119,7 @@ technical_debt:
 
 ### 367. Complete example proofs
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Priority**: Low
