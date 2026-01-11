@@ -100,7 +100,7 @@ technical_debt:
 
 ### 371. Refactor LaTeX reference manual titles
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: latex
 - **Blocking**: None
@@ -112,7 +112,8 @@ technical_debt:
 
 ### 360. Bimodal Theory Polish and Documentation System
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
@@ -290,11 +291,12 @@ technical_debt:
 ### 257. Completeness Proofs
 
  **Effort**: 70-90 hours
- **Status**: [IMPLEMENTING]
+ **Status**: [ON HOLD]
  **Priority**: Low
  **Language**: lean
  **Blocking**: Decidability
  **Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
+ **Note**: On hold pending Bimodal polish and documentation (Task 360)
 
 **Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.
 
@@ -438,11 +440,12 @@ technical_debt:
 
 ### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ON HOLD]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Note**: On hold pending Bimodal polish (Task 360)
 - **Files Affected**:
   - Logos/Core/Metalogic/Completeness.lean
 - **Description**: Formalize and prove the Lindenbaum maximal consistency lemma to eliminate the first axiom placeholder.
@@ -456,11 +459,12 @@ technical_debt:
 
 ### 133. Build canonical model constructors in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ON HOLD]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: 132
+- **Note**: On hold pending Bimodal polish (Task 360)
 - **Files Affected**:
   - Logos/Core/Metalogic/Completeness.lean
 - **Description**: Implement canonical model construction helpers and remove associated axiom stubs.
@@ -474,11 +478,12 @@ technical_debt:
 
 ### 134. Prove truth lemma structure in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ON HOLD]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: 133
+- **Note**: On hold pending Bimodal polish (Task 360)
 - **Files Affected**:
   - Logos/Core/Metalogic/Completeness.lean
 - **Description**: Prove the truth lemma for the canonical model, removing the corresponding axiom placeholder.
@@ -492,11 +497,12 @@ technical_debt:
 
 ### 135. Remove provable_iff_valid sorry in Completeness.lean
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ON HOLD]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: 132, 133, 134
+- **Note**: On hold pending Bimodal polish (Task 360)
 - **Files Affected**:
   - Logos/Core/Metalogic/Completeness.lean
 - **Description**: Complete the `provable_iff_valid` theorem using the proven canonical model and truth lemma to eliminate the remaining sorry.
