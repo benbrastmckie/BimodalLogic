@@ -84,7 +84,8 @@ technical_debt:
 
 ### 383. Rename Core/ to Explanatory/
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-11
 - **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
@@ -183,7 +184,7 @@ technical_debt:
 
 ### 180. Add Bimodal test coverage metrics and reporting
 - **Effort**: 4.5 hours (revised from 6)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-11
 - **Planned**: 2026-01-12 (revised)
 - **Priority**: Medium

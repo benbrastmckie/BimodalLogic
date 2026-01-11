@@ -41,7 +41,8 @@ Create definition-level coverage measurement for Bimodal by:
 
 ### Phase 1: Definition Extraction via Lean
 
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
+**Note**: Used grep-based approach (simpler fallback per plan) integrated into coverage-analysis.sh
 **Estimated effort**: 1.5 hours
 
 **Objectives**:
@@ -114,7 +115,8 @@ grep -rn "^def \|^theorem \|^lemma \|^inductive \|^structure \|^instance " Bimod
 
 ### Phase 2: Coverage Mapping Script
 
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
+**Note**: Integrated into coverage-analysis.sh with Phase 1
 **Estimated effort**: 1.5 hours
 
 **Objectives**:
@@ -189,7 +191,8 @@ done
 
 ### Phase 3: Sorry Audit Integration
 
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
+**Note**: Integrated into coverage-analysis.sh, scans for actual sorry lines (excludes comments)
 **Estimated effort**: 0.5 hours
 
 **Objectives**:

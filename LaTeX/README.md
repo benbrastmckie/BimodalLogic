@@ -114,6 +114,19 @@ The shared `latexmkrc` configures:
 | `$max_repeat` | 5 | Max compilation passes |
 | synctex | enabled | Editor synchronization |
 
+### Bibliography Path Configuration
+
+When using the `build/` output directory, BibTeX runs from inside the build directory, which breaks relative paths for `.bst` and `.bib` files. The shared latexmkrc solves this using latexmk's `ensure_path()` function:
+
+```perl
+ensure_path('BSTINPUTS', "$shared_latex_dir//");
+ensure_path('BIBINPUTS', "$source_dir//");
+```
+
+This adds the shared LaTeX directory and theory source directory to BibTeX's search paths. The trailing `//` enables recursive subdirectory searching via Kpathsea. This approach integrates properly with latexmk's `$bibtex_fudge` mechanism which handles directory changes when running bibtex.
+
+For more details on Kpathsea path searching, see [Overleaf's Kpathsea documentation](https://www.overleaf.com/learn/latex/Articles/An_introduction_to_Kpathsea_and_how_TeX_engines_search_for_files).
+
 ### Usage
 
 Build a document:

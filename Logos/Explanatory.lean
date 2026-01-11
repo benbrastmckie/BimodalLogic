@@ -1,34 +1,34 @@
-import Logos.Core.Frame
-import Logos.Core.Syntax
-import Logos.Core.Truth
+import Logos.Explanatory.Frame
+import Logos.Explanatory.Syntax
+import Logos.Explanatory.Truth
 
 /-!
-# Logos Core - Intensional Extension Layer
+# Logos Explanatory Extension Layer
 
-This module exports the Core Extension for Logos, providing
+This module exports the Explanatory Extension for Logos, providing
 task-based intensional semantics with modal, temporal, and counterfactual operators.
 
 ## Overview
 
-The Core Extension provides:
+The Explanatory Extension provides:
 - Temporal structure (totally ordered abelian group)
 - Task relation with mereological constraints
 - State modality concepts (possible, compatible, maximal, world-state)
 - World-history structures for temporal evaluation
-- (Upcoming) Modal, temporal, and counterfactual operators
+- Modal, temporal, and counterfactual operators
 
 ## Submodules
 
-- `Core.Frame`: Core frame with task relation and state modality
-- `Core.Syntax`: Core formula type (Phase 5)
-- `Core.Truth`: Truth evaluation (Phase 6)
+- `Explanatory.Frame`: Frame with task relation and state modality
+- `Explanatory.Syntax`: Formula type
+- `Explanatory.Truth`: Truth evaluation
 
 ## Usage
 
 ```lean
-import Logos.Core
+import Logos.Explanatory
 
-open Logos.Core
+open Logos.Explanatory
 
 -- Use state modality concepts
 variable {T : Type*} [LinearOrderedAddCommGroup T]

@@ -28,7 +28,7 @@ Formulas embed ConstitutiveFormula from the Foundation layer and add
 the modal, temporal, counterfactual, and indexed reference operators.
 -/
 
-namespace Logos.Core
+namespace Logos.Explanatory
 
 open Logos.Foundation
 
@@ -219,4 +219,4 @@ end Notation
 
 end Formula
 
-end Logos.Core
+end Logos.Explanatory

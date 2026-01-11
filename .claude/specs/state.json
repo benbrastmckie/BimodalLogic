@@ -59,7 +59,7 @@
     {
       "project_number": 379,
       "project_name": "fix_logosreference_latex_warnings",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-11T18:01:49Z",
