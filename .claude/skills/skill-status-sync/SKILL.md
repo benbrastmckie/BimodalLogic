@@ -156,6 +156,104 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   mv /tmp/state.json .claude/specs/state.json
 ```
 
+### TODO.md Artifact Linking (CRITICAL)
+
+**After adding artifacts to state.json, MUST also add links to TODO.md.**
+
+This is a two-step process:
+1. Add artifact to state.json (above)
+2. Add artifact link to TODO.md task entry (below)
+
+#### Artifact Link Formats
+
+| Type | Format in TODO.md |
+|------|-------------------|
+| research | `- **Research**: [research-{NNN}.md]({path})` |
+| plan | `- **Plan**: [implementation-{NNN}.md]({path})` |
+| summary | `- **Summary**: [implementation-summary-{DATE}.md]({path})` |
+
+#### Finding Insertion Point
+
+Artifact links go after the Language line and before the Description:
+
+```bash
+# Find task entry line
+task_line=$(grep -n "^### ${task_number}\." .claude/specs/TODO.md | cut -d: -f1)
+
+# Read the task section to find insertion point
+# Links go after **Language**: and before **Description** or empty line before description
+```
+
+#### Adding Research Link
+
+```bash
+# Check if Research link already exists
+if grep -A 20 "^### ${task_number}\." .claude/specs/TODO.md | grep -q "^\- \*\*Research\*\*:"; then
+  # Update existing link (for multiple research reports, update to latest)
+  # Use Edit tool to replace the line
+  echo "Research link exists, updating to: $artifact_path"
+else
+  # Insert new Research link after Language line
+  # Use Edit tool to add: - **Research**: [filename](path)
+  echo "Adding Research link: $artifact_path"
+fi
+```
+
+#### Adding Plan Link
+
+```bash
+# Check if Plan link already exists
+if grep -A 20 "^### ${task_number}\." .claude/specs/TODO.md | grep -q "^\- \*\*Plan\*\*:"; then
+  # Update existing link (for revised plans, update to latest version)
+  echo "Plan link exists, updating to: $artifact_path"
+else
+  # Insert new Plan link after Research link (or after Language if no Research)
+  echo "Adding Plan link: $artifact_path"
+fi
+```
+
+#### Adding Summary Link
+
+```bash
+# Check if Summary link already exists
+if grep -A 20 "^### ${task_number}\." .claude/specs/TODO.md | grep -q "^\- \*\*Summary\*\*:"; then
+  # Update existing link
+  echo "Summary link exists, updating to: $artifact_path"
+else
+  # Insert new Summary link after Plan link
+  echo "Adding Summary link: $artifact_path"
+fi
+```
+
+#### Link Insertion Using Edit Tool
+
+When adding artifact links, use the Edit tool to modify TODO.md:
+
+**For Research artifact (after Language line):**
+```
+old_string: "- **Language**: {lang}"
+new_string: "- **Language**: {lang}\n- **Research**: [{filename}]({path})"
+```
+
+**For Plan artifact (after Research or Language):**
+```
+old_string: "- **Research**: [{research_file}]({research_path})"
+new_string: "- **Research**: [{research_file}]({research_path})\n- **Plan**: [{filename}]({path})"
+```
+
+**For Summary artifact (after Plan):**
+```
+old_string: "- **Plan**: [{plan_file}]({plan_path})"
+new_string: "- **Plan**: [{plan_file}]({plan_path})\n- **Summary**: [{filename}]({path})"
+```
+
+#### Multiple Artifacts Policy
+
+When a task has multiple artifacts of the same type (e.g., research-001.md and research-002.md):
+- **Show the latest artifact** in TODO.md (single link per type)
+- State.json retains the full history in the artifacts array
+- On new artifact creation, update the existing link rather than adding multiple
+
 ### Task Creation
 
 ```bash

@@ -14,7 +14,7 @@ The skill-status-sync skill has logic for adding artifacts to state.json but lac
 ### Phase 1: Add TODO.md Artifact Linking to skill-status-sync
 
 **Estimated effort**: 1 hour
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add artifact linking patterns for TODO.md in skill-status-sync SKILL.md
