@@ -1,13 +1,13 @@
 ---
-last_updated: 2026-01-11T21:30:00Z
+last_updated: 2026-01-12T00:00:00Z
 next_project_number: 388
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 24
-  completed: 90
+  active: 22
+  completed: 92
   in_progress: 0
   not_started: 25
   abandoned: 8
@@ -30,7 +30,7 @@ technical_debt:
 
 ### 386. Fix command artifact linking in TODO.md
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
@@ -45,7 +45,7 @@ technical_debt:
 
 ### 385. Refactor /meta command to create tasks instead of direct implementation
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-12
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
@@ -330,9 +330,10 @@ technical_debt:
 
 ### 263. Refactor Context.lean
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-08
 - **Researched**: 2026-01-11
+- **Completed**: 2026-01-08
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: Task 264
@@ -341,8 +342,6 @@ technical_debt:
 - **Summary**: [implementation-summary-20260108.md](.claude/specs/263_refactor_context_lean/summaries/implementation-summary-20260108.md)
 
 **Description**: Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4.
-
-**Note**: Research reveals this task was already implemented on 2026-01-08 but status was not updated. The Context.lean file at `Theories/Bimodal/Syntax/Context.lean` (moved by Task 376) is fully refactored with 10+ theorems and comprehensive tests. Recommend marking as COMPLETED.
 
 **Files Affected** (Updated paths after Task 376):
 - `Theories/Bimodal/Syntax/Context.lean`
@@ -360,26 +359,28 @@ technical_debt:
 
 ### 264. Update Context References
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: Task 263
 
-**Plan Artifacts**:
-  - Implementation Plan: [.claude/specs/264_test_and_document_argument_passing/plans/implementation-001.md]
-
-**Files Affected**:
-- `Logos/Core/ProofSystem/Derivation.lean`
-- `Logos/Core/Metalogic/DeductionTheorem.lean`
-- Other files that import `Logos.Core.Syntax.Context`
-
 **Description**: After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary.
 
+**Note**: Completed as part of Task 376 (repo refactoring). All import paths were updated from `Logos.Core.Syntax.Context` to `Bimodal.Syntax.Context`. The build succeeds and all tests pass.
+
+**Files Affected** (Updated paths after Task 376):
+- `Theories/Bimodal/ProofSystem/Derivation.lean`
+- `Theories/Bimodal/Theorems/GeneralizedNecessitation.lean`
+- `Theories/Bimodal/Automation/AesopRules.lean`
+- `Theories/Bimodal/Semantics/Validity.lean`
+- `Theories/Logos/Syntax.lean` (re-exports from Bimodal)
+
 **Acceptance Criteria**:
-- [ ] All references to the `Context` module are updated.
-- [ ] The project builds successfully after the updates.
-- [ ] All tests pass after the updates.
+- [x] All references to the `Context` module are updated.
+- [x] The project builds successfully after the updates.
+- [x] All tests pass after the updates.
 
 **Impact**: Ensures that the entire codebase is compatible with the refactored `Context` module.
 
