@@ -28,23 +28,6 @@ technical_debt:
 
 ## High Priority
 
-### 377. Refactor Logos theory for recursive semantics
-- **Effort**: 8-16 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: High
-- **Language**: lean
-- **Research**: [research-001.md](.claude/specs/377_refactor_logos_theory_recursive_semantics/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/377_refactor_logos_theory_recursive_semantics/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/377_refactor_logos_theory_recursive_semantics/summaries/implementation-summary-20260111.md)
-
-**Description**: Completely refactor the Logos/ theory to be self-contained and align with the theoretical target presented in Logos/Documentation/Research/RECURSIVE_SEMANTICS.md. Currently Logos/ is little more than the remains from extracting the Bimodal/ theory and then re-exporting it to Logos/.
-
----
-
 ### 376. Refactor repo for TheoryLib multi-theory structure
 - **Effort**: 4-8 hours
 - **Status**: [PLANNED]
@@ -82,24 +65,10 @@ technical_debt:
 
 ---
 
-### 383. Rename Core/ to Explanatory/
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: lean
-- **Research**: [research-001.md](.claude/specs/383_rename_core_to_explanatory/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/383_rename_core_to_explanatory/plans/implementation-001.md)
-
-**Description**: Rename Logos/Core/ to Logos/Explanatory/ systematically. Core/ and Explanatory/ target the same theory and should be combined under the Explanatory/ name. Update all references in Logos/Documentation/ and Logos/LaTeX/LogosReference.tex without producing cruft or redundancy.
-
----
-
 ### 384. Fix LaTeX package path warnings in LogosReference.tex
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
+- **Started**: 2026-01-11
 - **Priority**: Medium
 - **Language**: latex
 
@@ -258,12 +227,14 @@ technical_debt:
 
 ### 365. Complete BimodalTest sorries
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
 - **Review Source**: [.claude/specs/reviews/review-20260110.md]
+- **Started**: 2026-01-11
+- **Research**: [research-001.md](.claude/specs/365_complete_bimodaltest_sorries/reports/research-001.md)
 
 **Description**: Complete sorry placeholders in BimodalTest files: CompletenessTest.lean (3), PerpetuityTest.lean (1), PropositionalTest.lean (1), ModalS4Test.lean. Either implement the tests or document as pending infrastructure.
 

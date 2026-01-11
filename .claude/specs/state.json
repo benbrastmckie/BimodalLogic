@@ -6,12 +6,13 @@
     {
       "project_number": 384,
       "project_name": "fix_latex_package_path_warnings",
-      "status": "not_started",
+      "status": "researching",
       "language": "latex",
       "priority": "medium",
       "description": "Fix LaTeX package path warnings in LogosReference.tex: warnings about logos-notation, notation-standards, and formatting packages. Also handle showhyphens command change and cross-reference warnings.",
       "created": "2026-01-11T19:11:13Z",
-      "last_updated": "2026-01-11T19:11:13Z"
+      "last_updated": "2026-01-11T19:13:35Z",
+      "started": "2026-01-11"
     },
     {
       "project_number": 381,
@@ -34,31 +35,6 @@
       "last_updated": "2026-01-11T18:49:04Z"
     },
     {
-      "project_number": 383,
-      "project_name": "rename_core_to_explanatory",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "description": "Rename Logos/Core/ to Logos/Explanatory/ systematically. Core/ and Explanatory/ target the same theory and should be combined under the Explanatory/ name. Update all references in Logos/Documentation/ and Logos/LaTeX/LogosReference.tex without producing cruft or redundancy.",
-      "created": "2026-01-11T18:49:04Z",
-      "last_updated": "2026-01-12T11:15:00Z",
-      "researched": "2026-01-11",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/383_rename_core_to_explanatory/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/383_rename_core_to_explanatory/plans/implementation-001.md"
-        }
-      ],
-      "planned": "2026-01-11",
-      "plan_version": "001",
-      "started": "2026-01-11",
-      "completed": "2026-01-12"
-    },
-    {
       "project_number": 380,
       "project_name": "document_latex_standards",
       "status": "not_started",
@@ -66,78 +42,6 @@
       "priority": "medium",
       "created": "2026-01-11T18:13:43Z",
       "last_updated": "2026-01-11T18:13:43Z"
-    },
-    {
-      "project_number": 379,
-      "project_name": "fix_logosreference_latex_warnings",
-      "status": "completed",
-      "language": "latex",
-      "priority": "medium",
-      "created": "2026-01-11T18:01:49Z",
-      "last_updated": "2026-01-12T04:00:00Z",
-      "researched": "2026-01-11",
-      "planned": "2026-01-11",
-      "plan_version": "002",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md"
-        },
-        {
-          "type": "research",
-          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-002.md",
-          "description": "Implementation findings - BibTeX/latexmk build directory issue"
-        },
-        {
-          "type": "research",
-          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-003.md",
-          "description": "Best practices for bst file discovery with build directory"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-002.md",
-          "description": "Revised plan using ensure_path() based on research-003 findings"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/379_fix_logosreference_latex_warnings/summaries/implementation-summary-20260112.md"
-        }
-      ],
-      "plan_revised": "2026-01-12",
-      "completed": "2026-01-12"
-    },
-    {
-      "project_number": 377,
-      "project_name": "refactor_logos_theory_recursive_semantics",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "description": "Completely refactor the Logos/ theory to be self-contained and align with the theoretical target presented in Logos/Documentation/Research/RECURSIVE_SEMANTICS.md. Currently Logos/ is little more than the remains from extracting the Bimodal/ theory and then re-exporting it to Logos/.",
-      "created": "2026-01-11T17:25:18Z",
-      "last_updated": "2026-01-12T00:30:00Z",
-      "started": "2026-01-11",
-      "researched": "2026-01-11",
-      "completed": "2026-01-11",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/plans/implementation-001.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/summaries/implementation-summary-20260111.md"
-        }
-      ],
-      "planned": "2026-01-11",
-      "plan_version": "001"
     },
     {
       "project_number": 376,
@@ -151,15 +55,21 @@
     {
       "project_number": 365,
       "project_name": "complete_bimodaltest_sorries",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "low",
       "type": "testing",
       "effort": "2-3 hours",
       "description": "Complete sorry placeholders in BimodalTest files: CompletenessTest.lean (3), PerpetuityTest.lean (1), PropositionalTest.lean (1), ModalS4Test.lean. Either implement the tests or document as pending infrastructure.",
       "created": "2026-01-11T02:22:16Z",
-      "last_updated": "2026-01-11T02:22:16Z",
-      "review_source": ".claude/specs/reviews/review-20260110.md"
+      "last_updated": "2026-01-11T19:16:43Z",
+      "review_source": ".claude/specs/reviews/review-20260110.md",
+      "artifacts": [
+        {
+          "path": ".claude/specs/365_complete_bimodaltest_sorries/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 366,
@@ -307,76 +217,6 @@
         }
       ],
       "description": "Create advanced Bimodal tutorial covering proof search tactics, custom tactic development, and metalogic with hands-on exercises."
-    },
-    {
-      "project_number": 179,
-      "project_name": "implement_performance_benchmarks_for_proof_search_and_derivation",
-      "type": "feature",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "lean",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T02:00:00Z",
-      "effort": "7.75 hours",
-      "started": "2026-01-11",
-      "completed": "2026-01-12",
-      "plan_version": "003",
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-001.md"
-        },
-        {
-          "type": "research",
-          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-002.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-003.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/summaries/implementation-summary-20260112.md"
-        }
-      ],
-      "description": "Extend existing Bimodal benchmarks with derivation, semantics, and CI integration. ProofSearchBenchmark.lean already complete."
-    },
-    {
-      "project_number": 180,
-      "project_name": "add_test_coverage_metrics_and_reporting",
-      "type": "feature",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "lean",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T03:45:00Z",
-      "effort": "4.5 hours",
-      "started": "2026-01-11",
-      "plan_version": "002",
-      "plan_revised": "2026-01-12",
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-002.md",
-          "description": "Revised plan accounting for Task 179 completion and reduced sorry count"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/summaries/implementation-summary-20260112.md"
-        }
-      ],
-      "description": "Create definition-level coverage measurement for Bimodal. Task 179 completed benchmarks; this focuses on definition coverage tracking.",
-      "completed": "2026-01-12"
     },
     {
       "project_number": 257,

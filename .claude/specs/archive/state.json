@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-11T23:30:00Z",
+  "_last_updated": "2026-01-12T11:30:00Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -850,6 +850,98 @@
       "last_updated": "2026-01-11T02:31:43Z",
       "completed": "2026-01-11",
       "archived": "2026-01-11T06:30:00Z"
+    },
+    {
+      "project_number": 377,
+      "project_name": "refactor_logos_theory_recursive_semantics",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "description": "Completely refactor the Logos/ theory to be self-contained and align with the theoretical target presented in Logos/Documentation/Research/RECURSIVE_SEMANTICS.md.",
+      "created": "2026-01-11T17:25:18Z",
+      "last_updated": "2026-01-12T00:30:00Z",
+      "started": "2026-01-11",
+      "completed": "2026-01-11",
+      "artifacts": [
+        {"type": "research", "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/reports/research-001.md"},
+        {"type": "plan", "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/plans/implementation-001.md"},
+        {"type": "summary", "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/summaries/implementation-summary-20260111.md"}
+      ],
+      "archived": "2026-01-12T11:30:00Z"
+    },
+    {
+      "project_number": 379,
+      "project_name": "fix_logosreference_latex_warnings",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Fix LaTeX warnings/errors in LogosReference.tex using latexmk's ensure_path() function for BSTINPUTS and BIBINPUTS search paths.",
+      "created": "2026-01-11T18:01:49Z",
+      "last_updated": "2026-01-12T04:00:00Z",
+      "completed": "2026-01-12",
+      "artifacts": [
+        {"type": "research", "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-001.md"},
+        {"type": "research", "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-002.md"},
+        {"type": "research", "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-003.md"},
+        {"type": "plan", "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md"},
+        {"type": "plan", "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-002.md"},
+        {"type": "summary", "path": ".claude/specs/379_fix_logosreference_latex_warnings/summaries/implementation-summary-20260112.md"}
+      ],
+      "archived": "2026-01-12T11:30:00Z"
+    },
+    {
+      "project_number": 383,
+      "project_name": "rename_core_to_explanatory",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Rename Logos/Core/ to Logos/Explanatory/ systematically with all namespace, documentation, and LaTeX updates.",
+      "created": "2026-01-11T18:49:04Z",
+      "last_updated": "2026-01-12T11:15:00Z",
+      "started": "2026-01-11",
+      "completed": "2026-01-12",
+      "artifacts": [
+        {"type": "research", "path": ".claude/specs/383_rename_core_to_explanatory/reports/research-001.md"},
+        {"type": "plan", "path": ".claude/specs/383_rename_core_to_explanatory/plans/implementation-001.md"}
+      ],
+      "archived": "2026-01-12T11:30:00Z"
+    },
+    {
+      "project_number": 179,
+      "project_name": "implement_performance_benchmarks_for_proof_search_and_derivation",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Extend existing Bimodal benchmarks with derivation, semantics, and CI integration.",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-12T02:00:00Z",
+      "started": "2026-01-11",
+      "completed": "2026-01-12",
+      "artifacts": [
+        {"type": "plan", "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-001.md"},
+        {"type": "research", "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/reports/research-001.md"},
+        {"type": "plan", "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-003.md"},
+        {"type": "summary", "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/summaries/implementation-summary-20260112.md"}
+      ],
+      "archived": "2026-01-12T11:30:00Z"
+    },
+    {
+      "project_number": 180,
+      "project_name": "add_test_coverage_metrics_and_reporting",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Create definition-level coverage measurement for Bimodal with coverage mapping script and TEST_COVERAGE.md.",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-12T03:45:00Z",
+      "started": "2026-01-11",
+      "completed": "2026-01-12",
+      "artifacts": [
+        {"type": "plan", "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-001.md"},
+        {"type": "plan", "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-002.md"},
+        {"type": "summary", "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/summaries/implementation-summary-20260112.md"}
+      ],
+      "archived": "2026-01-12T11:30:00Z"
     }
   ]
 }
