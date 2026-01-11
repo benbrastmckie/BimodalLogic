@@ -254,6 +254,74 @@ When a task has multiple artifacts of the same type (e.g., research-001.md and r
 - State.json retains the full history in the artifacts array
 - On new artifact creation, update the existing link rather than adding multiple
 
+---
+
+## Artifact Linking Verification (Defense in Depth)
+
+After any artifact operation, verify consistency between state.json and TODO.md.
+
+### Verify Artifact in state.json
+
+```bash
+# Check artifact exists in state.json artifacts array
+artifact_exists=$(jq -r --arg path "$artifact_path" \
+  '.active_projects[] | select(.project_number == '$task_number') |
+   .artifacts[]? | select(.path == $path) | .path' \
+  .claude/specs/state.json)
+
+if [ -z "$artifact_exists" ]; then
+  echo "WARNING: Artifact not found in state.json: $artifact_path"
+fi
+```
+
+### Verify Artifact Link in TODO.md
+
+```bash
+# Check artifact link exists in TODO.md task entry
+if ! grep -A 30 "^### ${task_number}\." .claude/specs/TODO.md | grep -q "$artifact_path"; then
+  echo "WARNING: Artifact not linked in TODO.md: $artifact_path"
+  echo "Task entry may need manual fix"
+fi
+```
+
+### Full Consistency Check
+
+```bash
+# For a given task, verify all artifacts in state.json are linked in TODO.md
+artifacts=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber)) |
+   .artifacts[]?.path' \
+  .claude/specs/state.json)
+
+for artifact in $artifacts; do
+  if ! grep -A 30 "^### ${task_number}\." .claude/specs/TODO.md | grep -q "$artifact"; then
+    echo "MISSING LINK: $artifact not linked in TODO.md for task $task_number"
+  fi
+done
+```
+
+### Verification Timing
+
+Run verification:
+1. **After artifact_add operation** - Immediate verification
+2. **After status_update with artifact** - Verify artifact was linked
+3. **On /task --sync** - Full consistency check across all tasks
+
+### Warning vs Error Behavior
+
+| Condition | Response |
+|-----------|----------|
+| Artifact missing from state.json | ERROR - data loss, halt operation |
+| Artifact link missing from TODO.md | WARNING - log and continue (cosmetic) |
+| Multiple verification failures | WARNING - suggest /task --sync |
+
+Artifact link failures in TODO.md are warnings (not errors) because:
+- The artifact file exists and is tracked in state.json (no data loss)
+- TODO.md is user-facing view that can be manually fixed
+- Blocking on cosmetic issues would frustrate users
+
+---
+
 ### Task Creation
 
 ```bash
