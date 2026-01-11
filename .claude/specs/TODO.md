@@ -70,12 +70,14 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 
 ### 393. Remove incorrect causal operator definition
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
+- **Planned**: 2026-01-12
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 381
 - **Research**: [research-001.md](.claude/specs/393_remove_incorrect_causal_operator_definition/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/393_remove_incorrect_causal_operator_definition/plans/implementation-001.md)
 
 **Description**: Remove the incorrect definition of the causal operator (which was defined in terms of the counterfactual conditional) and leave behind a stub or comment for systematic future implementation of the correct semantics.
 
