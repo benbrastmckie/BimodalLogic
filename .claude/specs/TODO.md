@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T12:00:00Z
-next_project_number: 393
+next_project_number: 395
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -30,7 +30,7 @@ technical_debt:
 
 ### 392. Enhance /todo command orphan tracking
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
@@ -41,6 +41,28 @@ technical_debt:
 2. Step 5.E to add orphan entries to archive/state.json when archiving (not just move directories)
 
 This ensures all project directories in specs/archive/ are accounted for by state files.
+
+---
+
+### 393. Remove incorrect causal operator definition
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Parent**: Task 381
+
+**Description**: Remove the incorrect definition of the causal operator (which was defined in terms of the counterfactual conditional) and leave behind a stub or comment for systematic future implementation of the correct semantics.
+
+---
+
+### 394. Research and port causal semantics from paper
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Parent**: Task 381
+
+**Description**: Research and port the correct causal operator semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to Logos/SubTheories/Explanation/Truth.lean. The causal operator is primitive (like the counterfactual conditional) and requires careful adaptation to the more sophisticated theory of time in Logos.
 
 ---
 
@@ -159,6 +181,7 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 - **Research**: [research-001.md](.claude/specs/381_add_causal_semantics_infrastructure/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/381_add_causal_semantics_infrastructure/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260112.md](.claude/specs/381_add_causal_semantics_infrastructure/summaries/implementation-summary-20260112.md)
+- **Subtasks**: 393, 394
 
 **Description**: Add infrastructure and comments for causal semantics in Logos theory. The causal operator was missing from RECURSIVE_SEMANTICS.md line 29 and has been fixed, but the Lean implementation needs appropriate stub definitions and TODO comments to enable future implementation of causation semantics.
 
@@ -261,7 +284,7 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 
 ### 391. Enforce directory naming convention for Lean projects
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: general
 
