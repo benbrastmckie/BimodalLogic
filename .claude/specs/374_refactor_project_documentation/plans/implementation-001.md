@@ -41,7 +41,7 @@ project-wide documentation in the root Documentation/ directory. This follows th
 ### Phase 2: Move Logos-Specific Files
 
 **Estimated effort**: 30 minutes
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Move 5 Logos-specific files to Logos/Documentation/
