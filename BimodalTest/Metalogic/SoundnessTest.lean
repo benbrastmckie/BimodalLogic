@@ -7,7 +7,7 @@ import Bimodal.ProofSystem.Derivation
 Tests for soundness theorem and axiom validity.
 -/
 
-namespace LogosTest.Core.Metalogic
+namespace BimodalTest.Metalogic
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -114,4 +114,4 @@ example (φ ψ : Formula) : [φ, ψ] ⊨ φ := by
   apply h_all
   constructor
 
-end LogosTest.Core.Metalogic
+end BimodalTest.Metalogic

@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.Soundness
 import Bimodal.ProofSystem.Axioms
-import LogosTest.Core.Property.Generators
+import BimodalTest.Property.Generators
 import Plausible
 
 /-!
@@ -30,13 +30,13 @@ so we focus on testing axiom validity across many formula instances.
 -/
 
 
-namespace LogosTest.Metalogic.SoundnessPropertyTest
+namespace BimodalTest.Metalogic.SoundnessPropertyTest
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Metalogic
 open Bimodal.Semantics
-open LogosTest.Property.Generators
+open BimodalTest.Property.Generators
 open Plausible
 
 /-! ## Axiom Validity Properties -/
@@ -330,4 +330,4 @@ def valid_implies_consequence (φ : Formula) (h : ⊨ φ) : [] ⊨ φ := by
   intro T _ F M τ t ht _
   exact h T F M τ t ht
 
-end LogosTest.Metalogic.SoundnessPropertyTest
+end BimodalTest.Metalogic.SoundnessPropertyTest

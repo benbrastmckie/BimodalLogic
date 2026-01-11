@@ -13,7 +13,7 @@ with `LinearOrderedAddCommGroup` constraint. Tests use explicit `Int` annotation
 to specify the temporal type.
 -/
 
-namespace LogosTest.Core.Semantics
+namespace BimodalTest.Semantics
 
 open Bimodal.Semantics
 
@@ -74,4 +74,4 @@ theorem compositionality_test_int :
     ((TaskFrame.trivial_frame (T := Int)).nullity ())
     ((TaskFrame.trivial_frame (T := Int)).nullity ())
 
-end LogosTest.Core.Semantics
+end BimodalTest.Semantics

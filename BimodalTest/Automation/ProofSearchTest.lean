@@ -1,7 +1,7 @@
 import Bimodal.Automation.ProofSearch
 import Bimodal.ProofSystem
 
-namespace LogosTest.Core.Automation
+namespace BimodalTest.Automation
 
 open Bimodal.Syntax Bimodal.Automation Bimodal.ProofSystem
 
@@ -750,4 +750,4 @@ abbrev s : Formula := .atom "s"
   if failed == 0 then
     IO.println "✓ All 14 axioms verified with 3 variants each"
 
-end LogosTest.Core.Automation
+end BimodalTest.Automation

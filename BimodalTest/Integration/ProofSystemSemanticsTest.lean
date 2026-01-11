@@ -37,7 +37,7 @@ Tests are organized by category:
 * [Validity.lean](../../../Logos/Core/Semantics/Validity.lean) - Semantic validity
 -/
 
-namespace LogosTest.Core.Integration
+namespace BimodalTest.Integration
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -569,4 +569,4 @@ example : [] ⊨ ((Formula.box (Formula.atom "p")).imp
 
 end AxiomSpecificSoundnessTests
 
-end LogosTest.Core.Integration
+end BimodalTest.Integration

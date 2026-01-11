@@ -18,7 +18,7 @@ Tests for modal S5 theorems derived in Hilbert-style proof calculus.
 Each theorem has minimum 2 test cases (simple atomic, nested/complex).
 -/
 
-namespace LogosTest.Core.Theorems.ModalS5Test
+namespace BimodalTest.Theorems.ModalS5Test
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -107,4 +107,4 @@ These tests are commented out pending Phase 3 biconditional infrastructure.
 -- /-- Test diamond_disj_iff type signature (pending) -/
 -- example (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.or B.diamond) := diamond_disj_iff A B
 
-end LogosTest.Core.Theorems.ModalS5Test
+end BimodalTest.Theorems.ModalS5Test

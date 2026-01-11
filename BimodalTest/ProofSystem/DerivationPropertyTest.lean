@@ -1,6 +1,6 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.ProofSystem.Axioms
-import LogosTest.Core.Property.Generators
+import BimodalTest.Property.Generators
 import Plausible
 
 /-!
@@ -32,11 +32,11 @@ structural properties that can be tested with arbitrary inputs.
 -/
 
 
-namespace LogosTest.ProofSystem.DerivationPropertyTest
+namespace BimodalTest.ProofSystem.DerivationPropertyTest
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
-open LogosTest.Property.Generators
+open BimodalTest.Property.Generators
 open Plausible
 
 /-! ## Reflexivity Properties -/
@@ -279,4 +279,4 @@ Test: Cons preserves subset (100 test cases).
   maxSize := 20
 }
 
-end LogosTest.ProofSystem.DerivationPropertyTest
+end BimodalTest.ProofSystem.DerivationPropertyTest

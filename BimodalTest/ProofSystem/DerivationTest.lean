@@ -18,7 +18,7 @@ Tests for the DerivationTree relation and inference rules.
 - Example derivations
 -/
 
-namespace LogosTest.Core.ProofSystem
+namespace BimodalTest.ProofSystem
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -255,4 +255,4 @@ example (p : Formula) : [(Formula.atom "p").all_future] ⊢ (Formula.atom "p").a
 
 end
 
-end LogosTest.Core.ProofSystem
+end BimodalTest.ProofSystem

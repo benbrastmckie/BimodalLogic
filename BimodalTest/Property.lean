@@ -1,8 +1,8 @@
-import LogosTest.Core.Property.Generators
-import LogosTest.Core.Syntax.FormulaPropertyTest
-import LogosTest.Core.ProofSystem.DerivationPropertyTest
-import LogosTest.Core.Semantics.SemanticPropertyTest
-import LogosTest.Core.Metalogic.SoundnessPropertyTest
+import BimodalTest.Property.Generators
+import BimodalTest.Syntax.FormulaPropertyTest
+import BimodalTest.ProofSystem.DerivationPropertyTest
+import BimodalTest.Semantics.SemanticPropertyTest
+import BimodalTest.Metalogic.SoundnessPropertyTest
 
 /-!
 # Property-Based Tests
@@ -26,13 +26,13 @@ test cases and verify that properties hold across a wide range of inputs.
 
 ```bash
 # Run all property tests
-lake env lean LogosTest/Core/Property.lean
+lake env lean BimodalTest/Property.lean
 
 # Run specific property test module
-lake env lean LogosTest/Core/Syntax/FormulaPropertyTest.lean
-lake env lean LogosTest/Core/ProofSystem/DerivationPropertyTest.lean
-lake env lean LogosTest/Core/Semantics/SemanticPropertyTest.lean
-lake env lean LogosTest/Core/Metalogic/SoundnessPropertyTest.lean
+lake env lean BimodalTest/Syntax/FormulaPropertyTest.lean
+lake env lean BimodalTest/ProofSystem/DerivationPropertyTest.lean
+lake env lean BimodalTest/Semantics/SemanticPropertyTest.lean
+lake env lean BimodalTest/Metalogic/SoundnessPropertyTest.lean
 ```
 
 ## Test Configuration
@@ -49,9 +49,9 @@ Property tests are configured with:
 * [Research Report](../../.opencode/specs/174_property_based_testing/reports/research-001.md)
 -/
 
-namespace LogosTest.Property
+namespace BimodalTest.Property
 
 -- Re-export generators for convenience
-open LogosTest.Property.Generators
+open BimodalTest.Property.Generators
 
-end LogosTest.Property
+end BimodalTest.Property

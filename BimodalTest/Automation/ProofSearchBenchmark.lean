@@ -26,7 +26,7 @@ Supports comparison of search strategies and tuning of heuristic weights.
 - **depth**: Depth at which proof was found (if any)
 -/
 
-namespace LogosTest.Core.Automation.Benchmark
+namespace BimodalTest.Automation.Benchmark
 
 open Bimodal.Syntax Bimodal.Automation Bimodal.ProofSystem
 
@@ -330,31 +330,31 @@ def compareStrategiesTimed (benchmarks : List (String × Context × Formula)) : 
     IO.println s!"Total visits: {totalVisits}"
     IO.println s!"Total time: {formatNanos totalTimeNs}"
 
-end LogosTest.Core.Automation.Benchmark
+end BimodalTest.Automation.Benchmark
 
 /-!
 ## Run Benchmarks
 -/
 
 -- Run all benchmarks with default configuration
-#eval LogosTest.Core.Automation.Benchmark.runAllBenchmarks
+#eval BimodalTest.Automation.Benchmark.runAllBenchmarks
 
 -- Compare weight configurations
 #eval do
   let allBenchmarks :=
-    LogosTest.Core.Automation.Benchmark.modalBenchmarks ++
-    LogosTest.Core.Automation.Benchmark.temporalBenchmarks ++
-    LogosTest.Core.Automation.Benchmark.propBenchmarks
-  LogosTest.Core.Automation.Benchmark.compareWeights allBenchmarks
-    LogosTest.Core.Automation.Benchmark.weightConfigs
+    BimodalTest.Automation.Benchmark.modalBenchmarks ++
+    BimodalTest.Automation.Benchmark.temporalBenchmarks ++
+    BimodalTest.Automation.Benchmark.propBenchmarks
+  BimodalTest.Automation.Benchmark.compareWeights allBenchmarks
+    BimodalTest.Automation.Benchmark.weightConfigs
 
 -- Run timed benchmarks (Task 319 Phase 4)
-#eval LogosTest.Core.Automation.Benchmark.runAllBenchmarksTimed
+#eval BimodalTest.Automation.Benchmark.runAllBenchmarksTimed
 
 -- Compare strategies with timing
 #eval do
   let allBenchmarks :=
-    LogosTest.Core.Automation.Benchmark.modalBenchmarks ++
-    LogosTest.Core.Automation.Benchmark.temporalBenchmarks ++
-    LogosTest.Core.Automation.Benchmark.propBenchmarks
-  LogosTest.Core.Automation.Benchmark.compareStrategiesTimed allBenchmarks
+    BimodalTest.Automation.Benchmark.modalBenchmarks ++
+    BimodalTest.Automation.Benchmark.temporalBenchmarks ++
+    BimodalTest.Automation.Benchmark.propBenchmarks
+  BimodalTest.Automation.Benchmark.compareStrategiesTimed allBenchmarks

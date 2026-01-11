@@ -17,7 +17,7 @@ with temporal operators (always/sometimes).
 - P6: `sometimes □φ → □always φ` (occurrent necessity perpetual)
 -/
 
-namespace LogosTest.Core.Theorems.PerpetuityTest
+namespace BimodalTest.Theorems.PerpetuityTest
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -346,4 +346,4 @@ example (p : Formula) : ▽p = p.sometimes := rfl
 
 end
 
-end LogosTest.Core.Theorems.PerpetuityTest
+end BimodalTest.Theorems.PerpetuityTest

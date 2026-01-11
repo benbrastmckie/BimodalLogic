@@ -1,7 +1,7 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic
-import LogosTest.Core.Integration.Helpers
+import BimodalTest.Integration.Helpers
 
 /-!
 # Complex Derivation Integration Tests
@@ -33,13 +33,13 @@ Tests are organized by complexity:
 * [Soundness.lean](../../../Logos/Core/Metalogic/Soundness.lean) - Soundness theorem
 -/
 
-namespace LogosTest.Core.Integration
+namespace BimodalTest.Integration
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Semantics
 open Bimodal.Metalogic
-open LogosTest.Core.Integration.Helpers
+open BimodalTest.Integration.Helpers
 
 -- ============================================================
 -- 5-Step Derivation Chains
@@ -414,4 +414,4 @@ example : True := by
 
 end ContextTransformations
 
-end LogosTest.Core.Integration
+end BimodalTest.Integration

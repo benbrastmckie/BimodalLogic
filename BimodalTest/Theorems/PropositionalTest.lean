@@ -21,7 +21,7 @@ Tests for propositional logic theorems derived in Hilbert-style proof calculus.
 Each theorem has minimum 2 test cases (simple atomic, nested/complex).
 -/
 
-namespace LogosTest.Core.Theorems.PropositionalTest
+namespace BimodalTest.Theorems.PropositionalTest
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -191,4 +191,4 @@ example : [(Formula.atom "p").and (Formula.atom "q")] ⊢
 /-- Test: LEM is theorem (not axiom) -/
 example (φ : Formula) : ⊢ φ.or φ.neg := lem φ
 
-end LogosTest.Core.Theorems.PropositionalTest
+end BimodalTest.Theorems.PropositionalTest

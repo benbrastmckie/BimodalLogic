@@ -14,7 +14,7 @@ type parameter `T` with `LinearOrderedAddCommGroup` constraint. Tests use
 explicit `Int` annotations.
 -/
 
-namespace LogosTest.Core.Semantics
+namespace BimodalTest.Semantics
 
 open Bimodal.Syntax
 open Bimodal.Semantics
@@ -63,4 +63,4 @@ theorem truth_at_int_example :
   unfold truth_at testModel testHistory WorldHistory.trivial
   simp
 
-end LogosTest.Core.Semantics
+end BimodalTest.Semantics

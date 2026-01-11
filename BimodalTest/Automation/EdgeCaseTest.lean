@@ -16,7 +16,7 @@ Systematic edge case testing for the proof search system covering:
 ## Test Count Target: 30+ edge case tests
 -/
 
-namespace LogosTest.Core.Automation.EdgeCase
+namespace BimodalTest.Automation.EdgeCase
 
 open Bimodal.Syntax Bimodal.Automation Bimodal.ProofSystem
 
@@ -320,4 +320,4 @@ Test with various atom names including longer names.
   IO.println "---"
   IO.println "Total: 44 edge case tests"
 
-end LogosTest.Core.Automation.EdgeCase
+end BimodalTest.Automation.EdgeCase

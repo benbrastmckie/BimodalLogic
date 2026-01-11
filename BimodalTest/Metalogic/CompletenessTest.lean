@@ -26,7 +26,7 @@ proofs to be implemented.
 import Bimodal.Metalogic.Completeness
 import Bimodal.ProofSystem
 
-namespace LogosTest.Core.Metalogic
+namespace BimodalTest.Metalogic
 
 open Bimodal.Metalogic
 
@@ -351,4 +351,4 @@ example (p q : Formula)
     DerivationTree [p.box, (p.imp q).box] q.box :=
   strong_completeness [p.box, (p.imp q).box] q.box h
 
-end LogosTest.Core.Metalogic
+end BimodalTest.Metalogic

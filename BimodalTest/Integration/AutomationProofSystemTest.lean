@@ -39,7 +39,7 @@ Tests are organized by tactic:
 * [Soundness.lean](../../../Logos/Core/Metalogic/Soundness.lean) - Soundness theorem
 -/
 
-namespace LogosTest.Core.Integration
+namespace BimodalTest.Integration
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -667,4 +667,4 @@ example : True := by
 
 end EndToEndAutomationTests
 
-end LogosTest.Core.Integration
+end BimodalTest.Integration

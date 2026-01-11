@@ -16,7 +16,7 @@ Tests for modal S4-specific theorems derived in Hilbert-style proof calculus.
 All tests are placeholders pending Phase 4 implementation.
 -/
 
-namespace LogosTest.Core.Theorems.ModalS4Test
+namespace BimodalTest.Theorems.ModalS4Test
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -72,4 +72,4 @@ This test verifies the module compiles correctly with all imports.
 /-- Test that the module compiles -/
 example : True := trivial
 
-end LogosTest.Core.Theorems.ModalS4Test
+end BimodalTest.Theorems.ModalS4Test

@@ -1,7 +1,7 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic
-import LogosTest.Core.Integration.Helpers
+import BimodalTest.Integration.Helpers
 
 /-!
 # Bimodal Integration Tests
@@ -33,13 +33,13 @@ Tests are organized by bimodal axiom:
 * [Truth.lean](../../../Logos/Core/Semantics/Truth.lean) - Bimodal semantics
 -/
 
-namespace LogosTest.Core.Integration
+namespace BimodalTest.Integration
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Semantics
 open Bimodal.Metalogic
-open LogosTest.Core.Integration.Helpers
+open BimodalTest.Integration.Helpers
 
 -- ============================================================
 -- Modal-Future Axiom Integration
@@ -495,4 +495,4 @@ example : True := by
 
 end TimeShiftPreservation
 
-end LogosTest.Core.Integration
+end BimodalTest.Integration

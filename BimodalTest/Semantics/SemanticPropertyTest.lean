@@ -1,7 +1,7 @@
 import Bimodal.Semantics.TaskFrame
 import Bimodal.Semantics.TaskModel
 import Bimodal.Semantics.Truth
-import LogosTest.Core.Property.Generators
+import BimodalTest.Property.Generators
 import Plausible
 
 /-!
@@ -29,11 +29,11 @@ valid frames.
 -/
 
 
-namespace LogosTest.Semantics.SemanticPropertyTest
+namespace BimodalTest.Semantics.SemanticPropertyTest
 
 open Bimodal.Syntax
 open Bimodal.Semantics
-open LogosTest.Property.Generators
+open BimodalTest.Property.Generators
 open Plausible
 
 /-! ## TaskFrame Properties -/
@@ -289,4 +289,4 @@ Test: Frame compositionality with increased test count (200 test cases).
   maxSize := 25
 }
 
-end LogosTest.Semantics.SemanticPropertyTest
+end BimodalTest.Semantics.SemanticPropertyTest

@@ -6,7 +6,7 @@ import Logos
 These tests verify the complete workflow from derivation to validity.
 -/
 
-namespace LogosTest.Core.Integration
+namespace BimodalTest.Integration
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -89,4 +89,4 @@ example (p q : Formula) : [p, q] ⊨ p := by
   let deriv' : [p, q] ⊢ p := DerivationTree.weakening [p] [p, q] p deriv h_sub
   exact soundness [p, q] p deriv'
 
-end LogosTest.Core.Integration
+end BimodalTest.Integration

@@ -18,9 +18,9 @@ Reusable helper functions and utilities for integration testing.
 ## Usage
 
 ```lean
-import LogosTest.Core.Integration.Helpers
+import BimodalTest.Integration.Helpers
 
-open LogosTest.Core.Integration.Helpers
+open BimodalTest.Integration.Helpers
 
 -- Build test formula
 let φ := mk_atom "p"
@@ -34,7 +34,7 @@ have valid := verify_validity (ψ.imp φ) deriv
 ```
 -/
 
-namespace LogosTest.Core.Integration.Helpers
+namespace BimodalTest.Integration.Helpers
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -146,4 +146,4 @@ def assert_valid (φ : Formula) : Prop :=
 def assert_sound (Γ : Context) (φ : Formula) (d : DerivationTree Γ φ) : Prop :=
   Γ ⊨ φ
 
-end LogosTest.Core.Integration.Helpers
+end BimodalTest.Integration.Helpers

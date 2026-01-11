@@ -14,7 +14,7 @@ Tests for the TM axiom schemata.
 - Axiom instantiation correctness
 -/
 
-namespace LogosTest.Core.ProofSystem
+namespace BimodalTest.ProofSystem
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -222,4 +222,4 @@ example (A B : Formula) :
 -- The following would NOT compile (correctly):
 -- example : Axiom (Formula.atom "p") := _ -- Error: not an axiom schema
 
-end LogosTest.Core.ProofSystem
+end BimodalTest.ProofSystem

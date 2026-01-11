@@ -15,7 +15,7 @@ Tests for the Context type and helper functions.
 - Structural theorems (map_length, map_comp, etc.)
 -/
 
-namespace LogosTest.Core.Syntax
+namespace BimodalTest.Syntax
 
 open Bimodal.Syntax
 
@@ -155,4 +155,4 @@ example (Γ : Context) :
   rw [Context.map_comp]
   exact Context.map_length _ Γ
 
-end LogosTest.Core.Syntax
+end BimodalTest.Syntax

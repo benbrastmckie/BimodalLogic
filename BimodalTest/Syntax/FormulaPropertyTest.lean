@@ -1,5 +1,5 @@
 import Bimodal.Syntax.Formula
-import LogosTest.Core.Property.Generators
+import BimodalTest.Property.Generators
 import Plausible
 
 /-!
@@ -18,7 +18,7 @@ Property-based tests for Formula transformations and invariants.
 ## Implementation Notes
 
 Uses Plausible framework with 100+ test cases per property.
-Generators defined in LogosTest.Property.Generators.
+Generators defined in BimodalTest.Property.Generators.
 
 ## References
 
@@ -27,10 +27,10 @@ Generators defined in LogosTest.Property.Generators.
 -/
 
 
-namespace LogosTest.Syntax.FormulaPropertyTest
+namespace BimodalTest.Syntax.FormulaPropertyTest
 
 open Bimodal.Syntax
-open LogosTest.Property.Generators
+open BimodalTest.Property.Generators
 open Plausible
 
 /-! ## Complexity Properties -/
@@ -391,4 +391,4 @@ Test: All-past complexity formula (100 test cases).
   maxSize := 50
 }
 
-end LogosTest.Syntax.FormulaPropertyTest
+end BimodalTest.Syntax.FormulaPropertyTest

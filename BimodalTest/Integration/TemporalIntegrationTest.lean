@@ -1,7 +1,7 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic
-import LogosTest.Core.Integration.Helpers
+import BimodalTest.Integration.Helpers
 
 /-!
 # Temporal Integration Tests
@@ -36,13 +36,13 @@ Tests are organized by temporal axiom:
 * [Soundness.lean](../../../Logos/Core/Metalogic/Soundness.lean) - Soundness theorem
 -/
 
-namespace LogosTest.Core.Integration
+namespace BimodalTest.Integration
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Semantics
 open Bimodal.Metalogic
-open LogosTest.Core.Integration.Helpers
+open BimodalTest.Integration.Helpers
 
 -- ============================================================
 -- Temporal 4 Axiom Integration
@@ -476,4 +476,4 @@ example : True := by
 
 end MixedPastFutureDerivations
 
-end LogosTest.Core.Integration
+end BimodalTest.Integration

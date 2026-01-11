@@ -16,7 +16,7 @@ Tests for the Formula inductive type and derived operators.
 - Temporal duality (swap_temporal)
 -/
 
-namespace LogosTest.Core.Syntax
+namespace BimodalTest.Syntax
 
 open Bimodal.Syntax
 
@@ -222,4 +222,4 @@ example : (p.all_future.box.imp q).modalDepth = 1 := rfl
 example : (p.all_future.box.imp q).temporalDepth = 1 := rfl
 example : (p.all_future.box.imp q).countImplications = 1 := rfl
 
-end LogosTest.Core.Syntax
+end BimodalTest.Syntax

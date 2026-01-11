@@ -29,7 +29,7 @@ This module provides generators for property-based testing of Logos types.
 * [Property Testing Guide](../../../Documentation/Development/PROPERTY_TESTING_GUIDE.md)
 -/
 
-namespace LogosTest.Property.Generators
+namespace BimodalTest.Property.Generators
 
 open Bimodal.Syntax
 open Bimodal.Semantics
@@ -253,4 +253,4 @@ partial def genPropFormula : Gen Formula := Gen.sized fun size =>
                   <*> Gen.resize subsize genPropFormula
     ]
 
-end LogosTest.Property.Generators
+end BimodalTest.Property.Generators

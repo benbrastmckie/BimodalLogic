@@ -48,7 +48,7 @@ Comprehensive test suite covering:
 * Tactics Module: ProofChecker/Automation/Tactics.lean
 -/
 
-namespace LogosTest.Core.Automation
+namespace BimodalTest.Automation
 
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Automation
 
@@ -917,4 +917,4 @@ example (p q : Formula) : [] ⊢ (p.imp (q.imp p)).imp ((p.imp q).imp (p.imp p))
   -- This requires prop_k applied to prop_s result
   propositional_search 5
 
-end LogosTest.Core.Automation
+end BimodalTest.Automation

@@ -6,7 +6,7 @@ import Bimodal.Automation.Tactics
 Basic compilation tests to verify tactics type-check correctly.
 -/
 
-namespace LogosTest.Core.Automation.Simple
+namespace BimodalTest.Automation.Simple
 
 open Bimodal.Syntax ProofChecker.ProofSystem
 
@@ -25,4 +25,4 @@ open Bimodal.Syntax ProofChecker.ProofSystem
 #check ProofChecker.Automation.extract_from_box
 #check ProofChecker.Automation.extract_from_future
 
-end LogosTest.Core.Automation.Simple
+end BimodalTest.Automation.Simple
