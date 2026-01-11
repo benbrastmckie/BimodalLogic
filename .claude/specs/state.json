@@ -6,23 +6,24 @@
     {
       "project_number": 373,
       "project_name": "create_shared_latex_assets_directory",
-      "status": "not_started",
+      "status": "researching",
       "language": "latex",
       "priority": "medium",
       "description": "Create a single ProofChecker/LaTeX/ directory to provide general purpose assets that can be imported and used by Logos/LaTeX/ and Bimodal/LaTeX/ as well as other theories included in the future, instead of maintaining similar latex standards separately.",
       "created": "2026-01-11T16:30:08Z",
-      "last_updated": "2026-01-11T16:30:08Z"
+      "last_updated": "2026-01-11T16:31:41Z"
     },
     {
       "project_number": 372,
       "project_name": "create_logos_documentation_and_refactor_root",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "description": "Create Logos/Documentation/ directory similar to Bimodal/Documentation/ to contain Logos-specific documentation, and refactor ProofChecker/Documentation/ to be theory agnostic.",
       "created": "2026-01-11T15:33:52Z",
-      "last_updated": "2026-01-11T20:10:00Z",
+      "last_updated": "2026-01-11T21:30:00Z",
       "started": "2026-01-11",
+      "completed": "2026-01-11T21:30:00Z",
       "artifacts": [
         {
           "type": "research",
@@ -35,6 +36,10 @@
         {
           "type": "plan",
           "path": ".claude/specs/372_create_logos_documentation_and_refactor_root/plans/implementation-002.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/372_create_logos_documentation_and_refactor_root/summaries/implementation-summary-20260111.md"
         }
       ],
       "plan_version": "002"
@@ -614,12 +619,12 @@
       "project_number": 360,
       "project_name": "bimodal_polish_and_documentation_system",
       "type": "documentation",
-      "phase": "partial",
-      "status": "partial",
+      "phase": "completed",
+      "status": "completed",
       "priority": "medium",
       "language": "general",
       "created": "2026-01-10T12:00:00Z",
-      "last_updated": "2026-01-11T19:30:00Z",
+      "last_updated": "2026-01-11T21:30:00Z",
       "effort": "4-6 hours",
       "description": "Comprehensive Bimodal theory polish and documentation system: (1) Deprioritize completeness tasks, (2) Polish Bimodal tests and docs, (3) Create theory differentiation (Bimodal propositional intensional vs Logos second-order hyperintensional), (4) Create Bimodal/Documentation/ following DIRECTORY_README_STANDARD.md, (5) Cross-link with project-wide Documentation/.",
       "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md",
@@ -634,13 +639,8 @@
         }
       ],
       "plan_version": "001",
-      "dependencies": [
-        372
-      ],
-      "dependency_note": "Phase 5 blocked pending Task 372 (Logos/Documentation/ reorganization)",
       "started": "2026-01-11",
-      "phases_completed": "1, 2, 3, 4, 6, 7",
-      "phases_blocked": "5"
+      "completed": "2026-01-11T21:30:00Z"
     }
   ]
 }

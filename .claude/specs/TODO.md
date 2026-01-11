@@ -62,7 +62,7 @@ technical_debt:
 
 ### 373. Create shared LaTeX assets directory
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: latex
 
@@ -72,16 +72,18 @@ technical_debt:
 
 ### 372. Create Logos/Documentation/ and refactor root Documentation/
 - **Effort**: 4-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11 (revised)
 - **Priority**: Medium
 - **Language**: general
-- **Blocking**: Task 360 Phase 5
+- **Blocking**: None
 - **Dependencies**: None
 - **Research**: [research-001.md](.claude/specs/372_create_logos_documentation_and_refactor_root/reports/research-001.md)
 - **Plan**: [implementation-002.md](.claude/specs/372_create_logos_documentation_and_refactor_root/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/372_create_logos_documentation_and_refactor_root/summaries/implementation-summary-20260111.md)
 
 **Description**: Create Logos/Documentation/ directory similar to Bimodal/Documentation/ to contain Logos-specific documentation, and refactor ProofChecker/Documentation/ to be theory agnostic. Ensure minimal overlap between theory-specific and project-wide documentation with natural cross-linking.
 
@@ -144,12 +146,13 @@ technical_debt:
 
 ### 360. Bimodal Theory Polish and Documentation System
 - **Effort**: 4-6 hours
-- **Status**: [PARTIAL]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
-- **Dependencies**: 372 (Phase 5 blocked pending Logos/Documentation/ reorganization)
+- **Dependencies**: None
 - **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
 - **Plan**: [implementation-001.md](.claude/specs/360_create_mvp_status_documentation/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260111.md](.claude/specs/360_create_mvp_status_documentation/summaries/implementation-summary-20260111.md)
@@ -161,12 +164,12 @@ technical_debt:
 4. Create Bimodal/Documentation/ following DIRECTORY_README_STANDARD.md
 5. Cross-link between project-wide Documentation/ and theory-specific Bimodal/Documentation/
 
-**Phases** (6/7 complete, 1 blocked):
+**Phases** (7/7 complete):
 - Phase 1: Deprioritize completeness tasks [COMPLETED]
 - Phase 2: Bimodal test improvements [COMPLETED]
 - Phase 3: Create theory comparison document [COMPLETED]
 - Phase 4: Create Bimodal/Documentation/ structure [COMPLETED]
-- Phase 5: Update project-wide Documentation/ [BLOCKED - awaiting Task 372]
+- Phase 5: Update project-wide Documentation/ [COMPLETED via Task 372]
 - Phase 6: Update Bimodal/README.md [COMPLETED]
 - Phase 7: Quality assurance [COMPLETED]
 
