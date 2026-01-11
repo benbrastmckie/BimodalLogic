@@ -194,12 +194,12 @@
     {
       "project_number": 381,
       "project_name": "add_causal_semantics_infrastructure",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "description": "Add infrastructure and comments for causal semantics in Logos theory. The causal operator was missing from RECURSIVE_SEMANTICS.md line 29 and has been fixed, but the Lean implementation needs appropriate stub definitions and TODO comments to enable future implementation of causation semantics.",
       "created": "2026-01-11T18:49:04Z",
-      "last_updated": "2026-01-12T01:05:00Z",
+      "last_updated": "2026-01-12T01:10:00Z",
       "artifacts": [
         {
           "path": ".claude/specs/381_add_causal_semantics_infrastructure/reports/research-001.md",
@@ -216,18 +216,23 @@
     {
       "project_number": 382,
       "project_name": "create_spatial_subtheory_stub",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "description": "Create Logos/Spatial/ subtheory stub following the pattern of other extension layers. Task 377 implemented Core but did not create the Spatial extension layer. Create minimal stub structure with appropriate documentation.",
       "created": "2026-01-11T18:49:04Z",
-      "last_updated": "2026-01-11T20:34:46Z",
+      "last_updated": "2026-01-11T20:39:47Z",
       "artifacts": [
         {
           "path": ".claude/specs/382_create_spatial_subtheory_stub/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/382_create_spatial_subtheory_stub/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 380,
