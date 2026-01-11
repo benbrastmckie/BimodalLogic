@@ -1,157 +1,443 @@
 ---
-description: Interactive system builder for agent architectures
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Task, TodoWrite, WebSearch
-argument-hint: [DOMAIN] | --analyze | --generate
+description: Interactive system builder that creates TASKS for agent architecture changes (never implements directly)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(jq:*), Bash(mkdir:*), Bash(sed:*), Task, TodoWrite, AskUserQuestion
+argument-hint: [PROMPT] | --analyze
 model: claude-opus-4-5-20251101
 ---
 
 # /meta Command
 
-Interactive system builder for creating agent architectures, commands, and skills.
+Interactive system builder that creates TASKS for .claude/ system changes. This command analyzes requirements, breaks them into discrete tasks, and creates task entries - it NEVER implements changes directly.
+
+## Constraints
+
+**FORBIDDEN** - This command MUST NOT:
+- Directly create commands, skills, rules, or context files
+- Directly modify CLAUDE.md or ARCHITECTURE.md
+- Implement any work without user confirmation
+- Write any files outside .claude/specs/
+
+**REQUIRED** - This command MUST:
+- Track all work via tasks in TODO.md + state.json
+- Require explicit user confirmation before creating any tasks
+- Create task directories for each task
+- Follow the staged workflow with checkpoints
 
 ## Arguments
 
 - No args: Start interactive interview
-- `DOMAIN` - Direct domain specification
-- `--analyze` - Analyze existing .claude/ structure
-- `--generate` - Generate from previous interview
+- `PROMPT` - Direct analysis of change request
+- `--analyze` - Analyze existing .claude/ structure (read-only)
 
-## Modes
+Note: --generate mode removed. Use /implement for task execution.
 
-### Interactive Mode (Default)
+## Interview Patterns
 
-Multi-stage interview process to design agent system.
+### Progressive Disclosure
+Start with broad questions, then drill into specifics based on responses.
 
-#### Stage 1: Domain Discovery
+### Adaptive Questioning
+Adjust question complexity based on user's technical level and domain familiarity.
 
+### Example-Driven
+Provide concrete examples for every question to guide user thinking.
+
+### Validation Checkpoints
+Summarize and confirm understanding after each phase before proceeding.
+
+---
+
+## With Prompt Mode
+
+When $ARGUMENTS contains a prompt (not a flag):
+
+### Abbreviated Flow
+
+Skip interview stages 1-2, proceed directly to analysis:
+
+1. **Stage 0**: DetectExistingSystem (always runs)
+2. **Stage 2.5**: DetectDomainType from prompt keywords
+3. **Stage 3-4**: Analyze prompt to identify tasks and estimate complexity
+4. **Stage 5**: Present task breakdown with confirmation (MANDATORY)
+5. **Stage 6-7**: Create tasks and summarize
+
+### Analysis Process
+
+1. **Parse prompt for keywords** indicating:
+   - Language: "lean", "proof", "theorem" → lean; "command", "skill", "agent" → meta; "latex", "document" → latex
+   - Scope: component names, file paths, feature areas
+   - Change type: "fix", "add", "refactor", "document"
+
+2. **Check for related existing tasks** via keyword matching in state.json
+
+3. **Propose task breakdown** based on analysis
+
+### Clarification (when needed)
+
+Use AskUserQuestion when:
+- Prompt is ambiguous (multiple interpretations)
+- Scope is unclear
+- Dependencies are uncertain
+
+Example:
 ```
-What domain will this system support?
-Examples: "API development", "data pipeline", "game engine", "ML workflow"
-
-Domain: {user_input}
-```
-
-#### Stage 2: Use Case Gathering
-
-```
-What are the main use cases?
-1. {use_case_1}
-2. {use_case_2}
-3. {use_case_3}
-(Enter blank line when done)
-```
-
-#### Stage 3: Workflow Analysis
-
-```
-For each use case, what's the typical workflow?
-
-Use case: {use_case_1}
-Steps:
-1. {step}
-2. {step}
-...
-```
-
-#### Stage 4: Tool Requirements
-
-```
-What tools/integrations are needed?
-- [ ] Web search
-- [ ] File operations
-- [ ] Git operations
-- [ ] External APIs
-- [ ] Build tools
-- [ ] Testing frameworks
-- [ ] Custom MCP servers
-
-Selected: {tools}
-```
-
-#### Stage 5: Complexity Assessment
-
-```
-System complexity:
-- Simple: 2-3 commands, 1-2 skills
-- Medium: 4-6 commands, 3-5 skills
-- Complex: 7+ commands, 6+ skills
-
-Assessment: {level}
+AskUserQuestion:
+  question: "Your request could be implemented as:"
+  options:
+    - "Single task: {description}"
+    - "Multiple tasks: {task1}, {task2}"
+    - "Let me explain more"
 ```
 
-#### Stage 6: Architecture Design
+---
 
-Based on interview, propose:
+## Interactive Mode (No Arguments)
 
-```
-Proposed Architecture:
+When $ARGUMENTS is empty, run full interview:
 
-Commands:
-1. /{command1} - {description}
-2. /{command2} - {description}
-...
+### Stage 0: DetectExistingSystem
 
-Skills:
-1. {skill1} - {when invoked}
-2. {skill2} - {when invoked}
-...
+**Action**: Analyze existing .claude/ structure and identify relevant context
 
-Rules:
-1. {rule1}.md - {scope}
-...
-
-Proceed with generation? (y/n)
+**Process**:
+```bash
+# Count existing components
+cmd_count=$(ls .claude/commands/*.md 2>/dev/null | wc -l)
+skill_count=$(find .claude/skills -name "SKILL.md" 2>/dev/null | wc -l)
+rule_count=$(ls .claude/rules/*.md 2>/dev/null | wc -l)
+active_tasks=$(jq '.active_projects | length' .claude/specs/state.json)
 ```
 
-#### Stage 7: Generation
+**Output** (when existing system detected):
+```
+## Existing .claude/ System Detected
 
-Generate files:
-- `.claude/commands/{command}.md` for each command
-- `.claude/skills/{skill}/SKILL.md` for each skill
-- `.claude/rules/{rule}.md` for each rule
-- Update `.claude/CLAUDE.md` with new patterns
+**Components**:
+- Commands: {NNN}
+- Skills: {NNN}
+- Rules: {NNN}
+- Active Tasks: {NNN}
 
-#### Stage 8: Validation
+**Related Existing Tasks** (if any match prompt keywords):
+- Task #{NNN}: {title} [{status}]
+```
 
-Verify generated files:
-- Check frontmatter is valid
-- Check tool references exist
-- Check no circular dependencies
+**Checkpoint**: Existing system analyzed
+- [ ] Component counts captured
+- [ ] Related tasks identified (if any)
 
-### Analyze Mode (--analyze)
+---
 
-Examine existing .claude/ structure:
+### Stage 1: InitiateInterview
+
+**Action**: Greet user and explain process
+
+**Output**:
+```
+## Building Your Task Plan
+
+I'll help you create structured tasks for your .claude/ system changes.
+
+**Process** (5-10 minutes):
+1. Understand what you want to accomplish
+2. Break down into discrete tasks
+3. Review and confirm task list
+4. Create tasks in TODO.md
+
+**What You'll Get**:
+- Task entries in TODO.md and state.json
+- Clear descriptions and priorities
+- Dependencies mapped between tasks
+- Ready for /research → /plan → /implement cycle
+
+Let's begin!
+```
+
+**Checkpoint**: User understands process and is ready
+
+---
+
+### Stage 2: GatherDomainInfo
+
+**Question 1**:
+- **Ask**: What do you want to accomplish with this change?
+- **Examples**:
+  - "Add a new command for X"
+  - "Fix a bug in the Y workflow"
+  - "Refactor Z for better performance"
+  - "Create documentation for W"
+- **Capture**: purpose, change_type
+
+**Question 2**:
+- **Ask**: What part of the .claude/ system is affected?
+- **Examples**:
+  - "A specific command (e.g., /task)"
+  - "A skill or agent"
+  - "Rules or context files"
+  - "Multiple components"
+- **Capture**: affected_components, scope
+
+**Checkpoint**: Domain and purpose clearly identified
+- [ ] Purpose is clear and specific
+- [ ] Affected components identified
+- [ ] Scope is bounded
+
+---
+
+### Stage 2.5: DetectDomainType
+
+**Action**: Classify language from keywords
+
+**Classification Logic**:
+- Keywords: "lean", "theorem", "proof", "lemma", "Mathlib" → language = "lean"
+- Keywords: "command", "skill", "agent", "meta", ".claude/" → language = "meta"
+- Keywords: "latex", "document", "pdf", "tex" → language = "latex"
+- Otherwise → language = "general"
+
+**Checkpoint**: Language classification determined
+
+---
+
+### Stage 3: IdentifyUseCases
+
+**Question 3**:
+- **Ask**: Can this be broken into smaller, independent tasks?
+- **Examples**:
+  - "Yes, there are 3 distinct steps: research, design, implement"
+  - "No, it's a single focused change"
+  - "Maybe - help me break it down"
+- **Capture**: task_count_estimate, breakdown_type
+
+**Question 4** (if breakdown_type != "single"):
+- **Ask**: What are the discrete tasks? List them in order of dependency.
+- **Examples**:
+  - "1. Add constraint section, 2. Update stage flow, 3. Add new output"
+  - "Research first, then plan, then implement"
+- **Capture**: task_list[], dependency_order[]
+
+**Checkpoint**: Tasks identified with dependencies
+- [ ] Task count determined ({NNN} tasks)
+- [ ] Dependencies mapped
+- [ ] Each task is discrete and actionable
+
+---
+
+### Stage 4: AssessComplexity
+
+**Question 5**:
+- **Ask**: For each task, what's the estimated effort?
+- **Options** (per task):
+  - Small: < 1 hour
+  - Medium: 1-3 hours
+  - Large: 3-6 hours
+  - Very Large: > 6 hours (consider splitting)
+- **Capture**: effort_estimates{}
+
+**Question 6**:
+- **Ask**: What priority should each task have?
+- **Options**: High, Medium, Low
+- **Guidance**: High = blocking other work or critical fix
+- **Capture**: priority_assignments{}
+
+**Checkpoint**: Complexity and priority assessed
+- [ ] Each task has effort estimate
+- [ ] Priorities assigned
+- [ ] No "Very Large" tasks without splitting
+
+---
+
+### Stage 5: ReviewAndConfirm
+
+**CRITICAL**: User MUST confirm before any task creation.
+
+**Present comprehensive summary**:
+```
+## Task Summary
+
+**Domain**: {domain}
+**Purpose**: {purpose}
+**Scope**: {affected_components}
+
+**Tasks to Create** ({NNN} total):
+
+| # | Title | Language | Priority | Effort | Dependencies |
+|---|-------|----------|----------|--------|--------------|
+| {NNN} | {title} | {lang} | {pri} | {hrs} | None |
+| {NNN} | {title} | {lang} | {pri} | {hrs} | #{NNN} |
+
+**Total Estimated Effort**: {sum} hours
+
+---
+
+Does this look correct?
+- ✅ **Proceed** - Create these tasks
+- 🔄 **Revise** - Adjust task breakdown
+- ❌ **Cancel** - Exit without creating tasks
+```
+
+**Use AskUserQuestion**:
+```
+AskUserQuestion:
+  question: "Proceed with creating these tasks?"
+  header: "Confirm"
+  options:
+    - label: "Yes, create tasks"
+      description: "Create {NNN} tasks in TODO.md and state.json"
+    - label: "Revise"
+      description: "Go back and adjust the task breakdown"
+    - label: "Cancel"
+      description: "Exit without creating any tasks"
+```
+
+**Checkpoint**: User has explicitly confirmed task creation
+- [ ] User selected "Proceed"
+- [ ] All tasks have required fields
+
+---
+
+### Stage 6: CreateTasks
+
+**Action**: Create task entries in TODO.md and state.json
+
+**Process** (for each task):
+
+```bash
+# 1. Get next task number (will become {NNN})
+next_num=$(jq -r '.next_project_number' .claude/specs/state.json)
+
+# 2. Create slug from title (lowercase, underscores, max 50 chars)
+slug=$(echo "{title}" | tr '[:upper:]' '[:lower:]' | tr ' ' '_' | tr -cd 'a-z0-9_' | cut -c1-50)
+
+# 3. Create task directory
+mkdir -p ".claude/specs/${next_num}_${slug}"
+
+# 4. Update state.json with dependencies
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  --arg desc "{description}" \
+  '.next_project_number = ({next_num} + 1) |
+   .active_projects = [{
+     "project_number": {next_num},
+     "project_name": "{slug}",
+     "status": "not_started",
+     "language": "{lang}",
+     "priority": "{pri}",
+     "description": $desc,
+     "dependencies": [{dep_numbers}],
+     "created": $ts,
+     "last_updated": $ts
+   }] + .active_projects' \
+  .claude/specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json .claude/specs/state.json
+
+# 5. Update TODO.md frontmatter
+sed -i "s/^next_project_number: [0-9]*/next_project_number: $((next_num + 1))/" \
+  .claude/specs/TODO.md
+
+# 6. Add entry to TODO.md under appropriate priority section
+```
+
+**TODO.md Entry Format**:
+```markdown
+### {NNN}. {Title}
+- **Effort**: {estimate}
+- **Status**: [NOT STARTED]
+- **Priority**: {priority}
+- **Language**: {language}
+- **Dependencies**: Task #{NNN}, Task #{NNN}
+
+**Description**: {description}
+
+---
+```
+
+**Git Commit**:
+```bash
+git add .claude/specs/
+git commit -m "meta: create {NNN} tasks for {domain}"
+```
+
+Note: {NNN} in commit message is the COUNT of tasks created.
+
+**Checkpoint**: Tasks created successfully
+- [ ] All task directories created
+- [ ] state.json updated with all tasks
+- [ ] TODO.md entries added
+- [ ] Git commit completed
+
+---
+
+### Stage 7: DeliverSummary
+
+**Output**:
+```
+## Tasks Created
+
+Created {NNN} task(s) for {domain}:
+
+**High Priority**:
+- Task #{NNN}: {title}
+  Path: .claude/specs/{NNN}_{slug}/
+
+**Medium Priority**:
+- Task #{NNN}: {title} (depends on #{NNN})
+  Path: .claude/specs/{NNN}_{slug}/
+
+**Low Priority**:
+- Task #{NNN}: {title}
+  Path: .claude/specs/{NNN}_{slug}/
+
+---
+
+**Next Steps**:
+1. Review tasks in TODO.md
+2. Run `/research {NNN}` to begin research on first task
+3. Progress through /research → /plan → /implement cycle
+
+**Suggested Order** (respecting dependencies):
+1. Task #{NNN} (no dependencies)
+2. Task #{NNN} (depends on #{NNN})
+```
+
+---
+
+## Analyze Mode (--analyze)
+
+Examine existing .claude/ structure (read-only):
 
 ```
 Current .claude/ Structure:
 
-Commands ({N}):
+Commands ({NNN}):
 - /{command1} - {description}
 - /{command2} - {description}
 
-Skills ({N}):
+Skills ({NNN}):
 - {skill1} - {description}
 - {skill2} - {description}
 
-Rules ({N}):
+Rules ({NNN}):
 - {rule1}.md - {paths}
 
-Settings:
-- Permissions: {N} allow, {N} deny
-- Hooks: {N} configured
+Active Tasks ({NNN}):
+- #{NNN}: {title} [{status}]
+- #{NNN}: {title} [{status}]
+
+Context Files:
+- core/: {NNN} files
+- project/: {NNN} files
 
 Recommendations:
-1. {suggestion}
-2. {suggestion}
+1. {suggestion based on analysis}
+2. {suggestion based on analysis}
 ```
 
-### Generate Mode (--generate)
+---
 
-Re-run generation from last interview session.
+## Appendix: Reference Templates
 
-## Generation Templates
+These templates are for reference only. Actual file creation happens during `/implement`, not `/meta`.
 
-### Command Template
+### Command Template Reference
 
 ```markdown
 ---
@@ -175,16 +461,12 @@ model: claude-opus-4-5-20251101
 
 {details}
 
-### 2. {Step}
-
-{details}
-
 ## Output
 
 {expected output format}
 ```
 
-### Skill Template
+### Skill Template Reference
 
 ```markdown
 ---
@@ -210,7 +492,7 @@ This skill activates when:
 {format}
 ```
 
-### Rule Template
+### Rule Template Reference
 
 ```markdown
 ---
@@ -222,28 +504,4 @@ paths: {glob pattern}
 ## {Section}
 
 {content}
-```
-
-## Output
-
-```
-Meta system builder complete.
-
-Generated:
-- {N} commands
-- {N} skills
-- {N} rules
-
-Files created:
-- .claude/commands/{...}.md
-- .claude/skills/{...}/SKILL.md
-- .claude/rules/{...}.md
-
-Updated:
-- .claude/CLAUDE.md
-
-Next steps:
-1. Review generated files
-2. Test commands: /{command1}, /{command2}
-3. Adjust as needed
 ```
