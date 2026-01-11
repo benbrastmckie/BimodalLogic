@@ -6,6 +6,7 @@ This directory contains shared LaTeX assets used across all theory-specific docu
 
 | File | Description |
 |------|-------------|
+| `latexmkrc` | Shared latexmk build configuration |
 | `formatting.sty` | Common document formatting: fonts, colors, hyperlinks, citations, headers, boxes |
 | `bib_style.bst` | Bibliography style for consistent citation formatting |
 | `notation-standards.sty` | Shared notation definitions used across all theories |
@@ -84,20 +85,96 @@ When creating documentation for a new theory:
    \usepackage{../../LaTeX/formatting}
    ```
 
+## Build Configuration (latexmk)
+
+This directory contains the shared `latexmkrc` configuration for consistent LaTeX builds across all theories.
+
+### How It Works
+
+Theory directories use a "stub pattern" to load the central config:
+
+```
+LaTeX/latexmkrc                    # Central configuration (this directory)
+Bimodal/LaTeX/latexmkrc            # Stub: do '../../LaTeX/latexmkrc';
+Logos/LaTeX/latexmkrc              # Stub: do '../../LaTeX/latexmkrc';
+```
+
+This provides a single source of truth while allowing latexmk to auto-discover the config in each directory.
+
+### Build Settings
+
+The shared `latexmkrc` configures:
+
+| Setting | Value | Purpose |
+|---------|-------|---------|
+| `$pdf_mode` | 5 | Use XeLaTeX for Unicode/modern fonts |
+| `$out_dir` | `build` | Output directory for PDF |
+| `$aux_dir` | `build` | Auxiliary files directory |
+| `$bibtex_use` | 2 | Use biber for biblatex |
+| `$max_repeat` | 5 | Max compilation passes |
+| synctex | enabled | Editor synchronization |
+
+### Usage
+
+Build a document:
+```bash
+cd Bimodal/LaTeX
+latexmk BimodalReference.tex
+# Output: build/BimodalReference.pdf
+```
+
+Or use the build script:
+```bash
+./build.sh                # Build document
+./build.sh --clean        # Remove auxiliary files
+./build.sh --full-clean   # Remove all build artifacts
+```
+
+Continuous compilation (auto-rebuild on changes):
+```bash
+latexmk -pvc BimodalReference.tex
+```
+
+### PDF Viewer Configuration
+
+The project config intentionally does **not** set `$pdf_previewer`, so your personal preference from `~/.latexmkrc` is used.
+
+To set your preferred viewer, add to `~/.latexmkrc`:
+
+```perl
+# Linux examples
+$pdf_previewer = 'sioyek %S';      # Sioyek
+$pdf_previewer = 'zathura %S';     # Zathura
+$pdf_previewer = 'evince %S';      # Evince
+$pdf_previewer = 'okular %S';      # Okular
+
+# macOS
+$pdf_previewer = 'open -a Skim';   # Skim
+$pdf_previewer = 'open -a Preview'; # Preview
+```
+
+### Build Directory
+
+All auxiliary files (`*.aux`, `*.log`, `*.toc`, etc.) and the PDF are placed in the `build/` subdirectory. This directory is gitignored project-wide.
+
 ## Directory Structure
 
 ```
 ProofChecker/
 ├── LaTeX/                          # This directory (shared assets)
+│   ├── latexmkrc                   # Shared build configuration
 │   ├── formatting.sty
 │   ├── bib_style.bst
 │   ├── notation-standards.sty
 │   └── README.md
 ├── Bimodal/LaTeX/
+│   ├── latexmkrc                   # Stub loading ../../LaTeX/latexmkrc
+│   ├── build.sh                    # Build script using latexmk
 │   ├── assets/
 │   │   └── bimodal-notation.sty    # Imports notation-standards
 │   └── BimodalReference.tex        # Imports ../../LaTeX/formatting
 └── Logos/LaTeX/
+    ├── latexmkrc                   # Stub loading ../../LaTeX/latexmkrc
     ├── assets/
     │   └── logos-notation.sty      # Imports notation-standards
     └── LogosReference.tex          # Imports ../../LaTeX/formatting

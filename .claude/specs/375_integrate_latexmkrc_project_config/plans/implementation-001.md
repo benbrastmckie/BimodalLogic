@@ -105,7 +105,7 @@ Integrate a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using t
 ### Phase 4: Update Documentation
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Document the latexmkrc configuration in `LaTeX/README.md`
