@@ -1,8 +1,20 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T04:30:00Z",
-  "next_project_number": 371,
+  "next_project_number": 372,
   "active_projects": [
+    {
+      "project_number": 371,
+      "project_name": "refactor_latex_reference_manual_titles",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "type": "enhancement",
+      "effort": "1 hour",
+      "description": "Refactor LaTeX title formatting in BimodalReference.tex and LogosReference.tex for professional academic manual appearance. BimodalReference: main title \"Reference Manual\", subtitle \"Bimodal Logic for Tense and Modality\", author Benjamin Brast-McKie with website link (www.benbrastmckie.com), reference to paper \"The Construction of Possible Worlds\" with PDF link. LogosReference: same format plus references to two published Springer papers.",
+      "created": "2026-01-11T15:21:50Z",
+      "last_updated": "2026-01-11T15:21:50Z"
+    },
     {
       "project_number": 370,
       "project_name": "fix_bimodal_latex_compilation_errors",

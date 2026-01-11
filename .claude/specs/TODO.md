@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T06:30:00Z
-next_project_number: 371
+next_project_number: 372
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -95,6 +95,18 @@ technical_debt:
 - **Summary**: [implementation-summary-20260111.md](.claude/specs/363_create_bimodal_latex_documentation/summaries/implementation-summary-20260111.md)
 
 **Description**: Create a Bimodal/LaTeX/ directory with contents similar to Logos/LaTeX/ but focusing on reporting exactly what has been implemented in the Bimodal/ theory. Primarily definitions with occasional concise explanations. Semantics before proof theory. Note discrepancies with paper "The Construction of Possible Worlds" in summary.
+
+---
+
+### 371. Refactor LaTeX reference manual titles
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Refactor LaTeX title formatting in BimodalReference.tex and LogosReference.tex for professional academic manual appearance. BimodalReference: main title "Reference Manual", subtitle "Bimodal Logic for Tense and Modality", author Benjamin Brast-McKie with website link (www.benbrastmckie.com), reference to paper "The Construction of Possible Worlds" with PDF link. LogosReference: same format plus references to two published Springer papers (s10992-025-09793-8 and s10992-021-09612-w).
 
 ---
 
