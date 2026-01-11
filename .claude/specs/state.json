@@ -1,8 +1,33 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T14:30:00Z",
-  "next_project_number": 401,
+  "next_project_number": 403,
   "active_projects": [
+    {
+      "project_number": 401,
+      "project_name": "add_expanded_status_for_parent_tasks",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Add [EXPANDED] status for parent tasks after expand operation. Update state-management.md with expanded status value, modify task.md Expand Mode to set parent task status to expanded, and update task 394 to [EXPANDED] status in both state.json and TODO.md.",
+      "effort": "1-2 hours",
+      "created": "2026-01-11T22:10:38Z",
+      "last_updated": "2026-01-11T22:10:38Z"
+    },
+    {
+      "project_number": 402,
+      "project_name": "rename_divide_flag_to_expand",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Rename --divide flag to --expand across .claude/ system for consistency. Update all references in CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, delegation.md, and routing.md. Keep /research --divide unchanged (different feature).",
+      "effort": "2-3 hours",
+      "created": "2026-01-11T22:10:38Z",
+      "last_updated": "2026-01-11T22:10:38Z",
+      "dependencies": [
+        401
+      ]
+    },
     {
       "project_number": 400,
       "project_name": "investigate_explanatory_truth_build_performance",
@@ -16,12 +41,12 @@
     {
       "project_number": 398,
       "project_name": "port_causal_semantics_to_recursive_semantics_md",
-      "status": "not_started",
+      "status": "researching",
       "language": "markdown",
       "priority": "high",
       "description": "Port the causal semantics from sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos. Add closeness ordering, evolutions, subevolutions, causal context with background assumptions, and the three-condition truth clause for causation.",
       "created": "2026-01-11T21:45:37Z",
-      "last_updated": "2026-01-11T21:45:37Z",
+      "last_updated": "2026-01-11T22:10:03Z",
       "parent_task": 394
     },
     {

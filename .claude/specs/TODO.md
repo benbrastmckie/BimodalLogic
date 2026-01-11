@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T14:30:00Z
-next_project_number: 401
+next_project_number: 403
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -44,12 +44,12 @@ technical_debt:
 
 ### 398. Port causal semantics to recursive-semantics.md
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: markdown
 - **Parent**: Task 394
 
-**Description**: Port the causal semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos. Add closeness ordering, evolutions, subevolutions, causal context with background assumptions, and the three-condition truth clause for causation.
+**Description**: Port the causal semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos. Carefully study the counterfactual semantics already included in the recursive-semantics.md in order to adapt existing resources rather than positing additional resources in order to construct the three-condition truth clause for causation.
 
 ---
 
@@ -91,6 +91,27 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 401. Add [EXPANDED] status for parent tasks
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+
+**Description**: Add [EXPANDED] status for parent tasks after expand operation. Update state-management.md with expanded status value, modify task.md Expand Mode to set parent task status to expanded, and update task 394 to [EXPANDED] status in both state.json and TODO.md.
+
+---
+
+### 402. Rename --divide flag to --expand
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Dependencies**: 401
+
+**Description**: Rename --divide flag to --expand across .claude/ system for consistency. Update all references in CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, delegation.md, and routing.md. Keep /research --divide unchanged (different feature).
+
+---
 
 ### 400. Investigate Explanatory/Truth.lean build performance
 - **Effort**: 2-3 hours
