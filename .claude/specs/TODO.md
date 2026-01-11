@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T06:30:00Z
-next_project_number: 369
+next_project_number: 370
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,18 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 369. Solve the blocking dependency in the Modal 5 theorem
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Solve the blocking dependency in the Modal 5 theorem.
+
+---
 
 ## Medium Priority
 

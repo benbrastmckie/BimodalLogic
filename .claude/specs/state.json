@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T04:30:00Z",
-  "next_project_number": 369,
+  "next_project_number": 370,
   "active_projects": [
+    {
+      "project_number": 369,
+      "project_name": "solve_modal_5_blocking_dependency",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-11T03:39:46Z",
+      "last_updated": "2026-01-11T03:39:46Z"
+    },
     {
       "project_number": 368,
       "project_name": "documentation_directory_reorganization",
