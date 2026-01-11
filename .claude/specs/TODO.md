@@ -127,9 +127,11 @@ technical_debt:
 
 ### 404. Enhance /todo to archive orphaned specs directories
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: meta
+- **Research**: [research-001.md](.claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/reports/research-001.md)
 
 **Description**: Enhance /todo command to detect orphaned project directories in specs/ that are not tracked in TODO.md or state.json, and offer to move them to specs/archive/ while updating archive/state.json accordingly.
 

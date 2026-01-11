@@ -153,7 +153,7 @@ Theories/Logos/docs/user-guide/    → Theories/Logos/docs/user-guide/
 ### Phase 4: Rename Theory LaTeX directories
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Remove orphaned `.claude/` directories inside LaTeX directories
