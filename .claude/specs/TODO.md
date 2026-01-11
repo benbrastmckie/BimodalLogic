@@ -1,20 +1,20 @@
 ---
-last_updated: 2026-01-12T00:00:00Z
-next_project_number: 388
+last_updated: 2026-01-12T00:40:00Z
+next_project_number: 389
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 22
+  active: 23
   completed: 92
   in_progress: 0
-  not_started: 25
+  not_started: 26
   abandoned: 8
-  total: 123
+  total: 124
 priority_distribution:
   critical: 0
-  high: 9
+  high: 10
   medium: 11
   low: 14
 technical_debt:
@@ -27,6 +27,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 388. Fix /todo command directory archiving
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+
+**Description**: Fix /todo command to move project directories (`.claude/specs/{N}_{SLUG}/`) to archive directory (`.claude/specs/archive/{N}_{SLUG}/`) when archiving completed/abandoned tasks. Currently the command updates state.json and archive/state.json correctly but fails to execute Step 5D which moves the directories.
+
+---
 
 ### 386. Fix command artifact linking in TODO.md
 - **Effort**: 2-3 hours
