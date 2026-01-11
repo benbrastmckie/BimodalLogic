@@ -563,12 +563,12 @@
       "project_number": 359,
       "project_name": "complete_temporal_duality_soundness",
       "type": "feature",
-      "phase": "planning",
-      "status": "planning",
+      "phase": "planned",
+      "status": "planned",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-10T12:00:00Z",
-      "last_updated": "2026-01-10T15:30:00Z",
+      "last_updated": "2026-01-10T16:00:00Z",
       "effort": "1-2 hours",
       "description": "Complete the temporal_duality case in SoundnessLemmas.lean (line 687) to remove the last sorry from soundness proofs.",
       "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md",
@@ -576,9 +576,14 @@
         {
           "type": "research",
           "path": ".claude/specs/359_complete_temporal_duality_soundness/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/359_complete_temporal_duality_soundness/plans/implementation-001.md"
         }
       ],
-      "research_completed": "2026-01-10T15:00:00Z"
+      "research_completed": "2026-01-10T15:00:00Z",
+      "plan_version": "001"
     },
     {
       "project_number": 360,

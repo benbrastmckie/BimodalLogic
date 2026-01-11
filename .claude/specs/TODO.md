@@ -137,13 +137,15 @@ technical_debt:
 
 ### 359. Complete temporal_duality soundness case
 - **Effort**: 1-2 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
 - **Researched**: 2026-01-10
+- **Planned**: 2026-01-10
 - **Research**: [.claude/specs/359_complete_temporal_duality_soundness/reports/research-001.md]
+- **Plan**: [.claude/specs/359_complete_temporal_duality_soundness/plans/implementation-001.md]
 - **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
 
 **Description**: Complete the `temporal_duality` case in `Bimodal/Metalogic/SoundnessLemmas.lean:687` to remove the last `sorry` from soundness proofs. This completes the soundness theorem (12/12 axioms proven).
