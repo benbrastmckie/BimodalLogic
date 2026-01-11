@@ -84,9 +84,10 @@ technical_debt:
 
 ### 383. Rename Core/ to Explanatory/
 - **Effort**: 3-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
 - **Planned**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/383_rename_core_to_explanatory/reports/research-001.md)

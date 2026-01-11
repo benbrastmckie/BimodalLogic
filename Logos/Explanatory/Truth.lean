@@ -3,9 +3,9 @@ import Logos.Explanatory.Syntax
 import Logos.Foundation.Semantics
 
 /-!
-# Truth Evaluation for Core Extension
+# Truth Evaluation for Explanatory Extension
 
-This module implements truth evaluation for Core Extension formulas
+This module implements truth evaluation for Explanatory Extension formulas
 relative to a model, world-history, time, variable assignment, and temporal index.
 
 ## Paper Specification Reference
@@ -81,7 +81,7 @@ partial def evalTermCore (M : CoreModel T) (σ : VarAssignment M.frame.toConstit
     M.interp.functionSymbol f ts.length (fun i => args (Fin.cast (by rfl) i))
 
 /--
-Truth evaluation for Core Extension formulas.
+Truth evaluation for Explanatory Extension formulas.
 
 M, τ, x, σ, i⃗ ⊨ A
 

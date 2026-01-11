@@ -3,13 +3,13 @@ import Logos.Foundation.Syntax
 /-!
 # Core Formula Syntax
 
-This module defines the formula syntax for the Core Extension layer.
+This module defines the formula syntax for the Explanatory Extension layer.
 These formulas are evaluated relative to world-histories and times.
 
 ## Paper Specification Reference
 
-**Core Extension Syntax (RECURSIVE_SEMANTICS.md)**:
-The Core Extension interprets these additional syntactic primitives:
+**Explanatory Extension Syntax (RECURSIVE_SEMANTICS.md)**:
+The Explanatory Extension interprets these additional syntactic primitives:
 - Modal operators: □ (necessity), ◇ (possibility)
 - Temporal operators: H (always past), G (always future), P (some past), F (some future)
 - Extended temporal operators: ◁ (since), ▷ (until)
@@ -19,7 +19,7 @@ The Core Extension interprets these additional syntactic primitives:
 
 ## Main Definitions
 
-- `Formula`: Full formula type with all Core Extension operators
+- `Formula`: Full formula type with all Explanatory Extension operators
 - Derived operators: ◇, P, F, ◇→, always (△), sometimes (▽)
 
 ## Implementation Notes
@@ -35,7 +35,7 @@ open Logos.Foundation
 /--
 Core formula syntax.
 
-Formulas in the Core Extension layer. These extend Constitutive Foundation
+Formulas in the Explanatory Extension layer. These extend Constitutive Foundation
 formulas with modal, temporal, counterfactual, and indexed operators.
 -/
 inductive Formula where

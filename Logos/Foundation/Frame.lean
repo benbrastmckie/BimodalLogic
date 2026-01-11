@@ -31,7 +31,7 @@ The lattice structure provides:
 
 This implementation uses Mathlib's `CompleteLattice` typeclass to provide
 the required lattice structure. The frame is non-modal: possibility and
-compatibility require the task relation introduced in the Core Extension.
+compatibility require the task relation introduced in the Explanatory Extension.
 -/
 
 namespace Logos.Foundation
