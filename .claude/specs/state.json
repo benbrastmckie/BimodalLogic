@@ -6,12 +6,18 @@
     {
       "project_number": 372,
       "project_name": "create_logos_documentation_and_refactor_root",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "description": "Create Logos/Documentation/ directory similar to Bimodal/Documentation/ to contain Logos-specific documentation, and refactor ProofChecker/Documentation/ to be theory agnostic.",
       "created": "2026-01-11T15:33:52Z",
-      "last_updated": "2026-01-11T18:00:00Z"
+      "last_updated": "2026-01-11T18:30:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/372_create_logos_documentation_and_refactor_root/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 371,
