@@ -533,11 +533,11 @@
       "project_name": "fix_completenesstest_import_error",
       "type": "bugfix",
       "phase": "not_started",
-      "status": "researched",
+      "status": "planned",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-10T12:00:00Z",
-      "last_updated": "2026-01-11T01:09:15Z",
+      "last_updated": "2026-01-11T01:11:04Z",
       "effort": "5 minutes",
       "description": "Move import statement from line 26 to beginning of file in BimodalTest/Metalogic/CompletenessTest.lean.",
       "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md",
@@ -545,8 +545,13 @@
         {
           "type": "research",
           "path": ".claude/specs/358_fix_completenesstest_import_error/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/358_fix_completenesstest_import_error/plans/implementation-001.md"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 359,
