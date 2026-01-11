@@ -6,19 +6,25 @@
     {
       "project_number": 386,
       "project_name": "fix_command_artifact_linking_in_todo_md",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "description": "Fix /research command (and audit other commands) to properly link new artifacts in TODO.md. The command adds artifacts to state.json but fails to add corresponding links in TODO.md entries. Audit /plan, /implement, and /revise commands for similar artifact linking failures.",
       "created": "2026-01-11T19:58:51Z",
-      "last_updated": "2026-01-11T20:03:29Z",
+      "last_updated": "2026-01-11T20:07:12Z",
       "researched": "2026-01-11",
       "artifacts": [
         {
           "type": "research",
           "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/plans/implementation-001.md"
         }
-      ]
+      ],
+      "planned": "2026-01-11",
+      "plan_version": "001"
     },
     {
       "project_number": 385,
@@ -367,11 +373,11 @@
       "project_name": "refactor_context.lean",
       "type": "feature",
       "phase": "implementing",
-      "status": "in_progress",
+      "status": "researching",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-08T00:00:00Z",
+      "last_updated": "2026-01-11T12:07:08-08:00",
       "effort": "2-4 hours",
       "description": "Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4.",
       "started": "2026-01-08"

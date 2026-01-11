@@ -30,12 +30,14 @@ technical_debt:
 
 ### 386. Fix command artifact linking in TODO.md
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Priority**: High
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/386_fix_command_artifact_linking_in_todo_md/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/386_fix_command_artifact_linking_in_todo_md/plans/implementation-001.md)
 
 **Description**: Fix /research command (and audit other commands) to properly link new artifacts in TODO.md. The command adds artifacts to state.json but fails to add corresponding links in TODO.md entries. Audit /plan, /implement, and /revise commands for similar artifact linking failures.
 
@@ -58,14 +60,16 @@ technical_debt:
 
 ### 376. Refactor repo for TheoryLib multi-theory structure
 - **Effort**: 4-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-12
+- **Completed**: 2026-01-12
 - **Priority**: High
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/reports/research-001.md)
 - **Plan**: [implementation-002.md](.claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/summaries/implementation-summary-20260112.md)
 
 **Description**: Create a ProofChecker/TheoryLib/ directory to contain all the various theories (Bimodal, Logos, and future theories) and their test directories following best practices for developing Lean 4 projects. The Bimodal/ theory has been extracted from Logos/ and Logos/ is being refactored to be stand-alone. Design the structure with the ultimate goal of abstracting common resources that can be imported by each theory.
 
