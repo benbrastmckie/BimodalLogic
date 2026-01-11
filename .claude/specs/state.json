@@ -232,11 +232,11 @@
       "project_name": "implement_performance_benchmarks_for_proof_search_and_derivation",
       "type": "feature",
       "phase": "planned",
-      "status": "planned",
+      "status": "researched",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T22:20:00Z",
+      "last_updated": "2026-01-11T23:15:00Z",
       "effort": "8 hours",
       "started": "2026-01-11",
       "plan_version": "001",
@@ -244,6 +244,10 @@
         {
           "type": "plan",
           "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-001.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/reports/research-001.md"
         }
       ],
       "description": "Extend existing Bimodal benchmarks with derivation, semantics, and CI integration. ProofSearchBenchmark.lean already complete."

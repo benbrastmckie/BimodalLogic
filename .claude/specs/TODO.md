@@ -72,7 +72,7 @@ technical_debt:
 
 ### 379. Fix LogosReference LaTeX warnings and errors
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
@@ -112,13 +112,14 @@ technical_debt:
 
 ### 179. Extend Bimodal benchmarks with derivation, semantics, and CI integration
 - **Effort**: 8 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-11
 - **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [research-001.md](.claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-001.md)
 - **Files Affected**:
   - BimodalTest/Automation/ProofSearchBenchmark.lean (enhance)
