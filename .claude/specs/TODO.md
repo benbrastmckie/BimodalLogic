@@ -32,11 +32,13 @@ technical_debt:
 
 ### 355. Fix all Lean build errors for the Bimodal/ theory
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: 352, 353
+- **Researched**: 2026-01-11
+- **Research**: [.claude/specs/355_fix_bimodal_build_errors/reports/research-001.md]
 
 **Description**: Fix all Lean build errors for the Bimodal/ theory. Some errors are indicated in the implementation summary for task 352 (.claude/specs/352_rename_logos_core_to_bimodal/summaries/implementation-summary-20260110.md).
 

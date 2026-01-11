@@ -6,25 +6,32 @@
     {
       "project_number": 356,
       "project_name": "bimodal_directory_documentation",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T00:43:33Z",
-      "last_updated": "2026-01-11T00:43:33Z"
+      "last_updated": "2026-01-11T00:48:32Z"
     },
     {
       "project_number": 355,
       "project_name": "fix_bimodal_build_errors",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-11T00:41:09Z",
-      "last_updated": "2026-01-11T00:41:09Z",
+      "last_updated": "2026-01-11T00:49:35Z",
       "description": "Fix all Lean build errors for the Bimodal/ theory. Some errors are indicated in the implementation summary for task 352 (rename_logos_core_to_bimodal).",
       "dependencies": [
         352,
         353
-      ]
+      ],
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/355_fix_bimodal_build_errors/reports/research-001.md"
+        }
+      ],
+      "research_completed": "2026-01-11T00:49:35Z"
     },
     {
       "project_number": 354,
