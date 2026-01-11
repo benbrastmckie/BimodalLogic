@@ -116,7 +116,7 @@ This task resolves 5 sorry placeholders across 3 BimodalTest files, plus fixes M
 
 ### Phase 4: Mark CompletenessTest.lean Consistency Tests as Infrastructure-Pending
 
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update documentation for consistency tests (lines 46-83) to clearly explain infrastructure requirements
@@ -154,7 +154,7 @@ This task resolves 5 sorry placeholders across 3 BimodalTest files, plus fixes M
 
 ### Phase 5: Final Verification and Build
 
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Verify all changes compile

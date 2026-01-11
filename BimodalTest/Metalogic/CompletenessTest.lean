@@ -164,7 +164,7 @@ Test: Canonical frame is a valid TaskFrame.
 
 **Verification**: `canonical_frame` has type `TaskFrame Int`
 -/
-example : TaskFrame Int := canonical_frame
+noncomputable example : TaskFrame Int := canonical_frame
 
 /--
 Test: Canonical model is a valid TaskModel.
@@ -297,6 +297,8 @@ example (φ : Formula) (h : valid φ) : Nonempty (DerivationTree [] φ) :=
 ## Integration Tests (Planned)
 
 These tests would verify the complete metalogic pipeline.
+
+**Note**: Uses `Nonempty` wrapper to match `provable_iff_valid` type.
 -/
 
 section IntegrationTests
@@ -308,17 +310,17 @@ Test: Soundness + Completeness gives equivalence for all formulas.
 
 **Property**: For any formula, provability and validity are equivalent
 -/
-example : DerivationTree [] p ↔ valid p :=
+example : Nonempty (DerivationTree [] p) ↔ valid p :=
   provable_iff_valid p
 
 /--
 Test: Derive theorem, verify validity via soundness, verify provability via completeness.
 
-**Round-trip**: ⊢ φ → ⊨ φ → ⊢ φ
+**Round-trip**: Nonempty (⊢ φ) → ⊨ φ → Nonempty (⊢ φ)
 -/
-example (h : DerivationTree [] p) : DerivationTree [] p := by
+example (h : Nonempty (DerivationTree [] p)) : Nonempty (DerivationTree [] p) := by
   have valid_p : valid p := (provable_iff_valid p).mp h
-  have provable_p : DerivationTree [] p := (provable_iff_valid p).mpr valid_p
+  have provable_p : Nonempty (DerivationTree [] p) := (provable_iff_valid p).mpr valid_p
   exact provable_p
 
 /--
@@ -327,7 +329,7 @@ Test: Completeness enables validity checking via proof search.
 **Application**: If we can determine validity semantically, completeness
 guarantees a proof exists.
 -/
-example (h : valid (p.box.imp p)) : DerivationTree [] (p.box.imp p) :=
+noncomputable example (h : valid (p.box.imp p)) : DerivationTree [] (p.box.imp p) :=
   weak_completeness (p.box.imp p) h
 
 end IntegrationTests
@@ -346,7 +348,7 @@ Example: Use completeness to find proof of valid formula.
 2. Apply weak completeness to get proof
 3. Use proof in further derivations
 -/
-example (p q : Formula) :
+noncomputable example (p q : Formula) :
     valid ((Formula.imp (p.box) (q.box)).box.imp (Formula.imp p q).box) →
     DerivationTree [] ((Formula.imp (p.box) (q.box)).box.imp (Formula.imp p q).box) :=
   fun h => weak_completeness _ h
@@ -359,7 +361,7 @@ Example: Use strong completeness with assumptions.
 2. Apply strong completeness to get `[□p, □(p → q)] ⊢ □q`
 3. Enables proof construction from semantic arguments
 -/
-example (p q : Formula)
+noncomputable example (p q : Formula)
     (h : semantic_consequence [p.box, (p.imp q).box] q.box) :
     DerivationTree [p.box, (p.imp q).box] q.box :=
   strong_completeness [p.box, (p.imp q).box] q.box h
