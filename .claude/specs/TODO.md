@@ -30,8 +30,9 @@ technical_debt:
 
 ### 370. Fix Bimodal LaTeX compilation errors
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: High
 - **Language**: latex
 - **Blocking**: None
