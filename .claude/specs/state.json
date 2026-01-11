@@ -6,20 +6,20 @@
     {
       "project_number": 369,
       "project_name": "solve_modal_5_blocking_dependency",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-11T03:39:46Z",
-      "last_updated": "2026-01-11T03:48:02Z"
+      "last_updated": "2026-01-11T03:48:59Z"
     },
     {
       "project_number": 368,
       "project_name": "documentation_directory_reorganization",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T03:33:51Z",
-      "last_updated": "2026-01-11T03:47:02Z"
+      "last_updated": "2026-01-11T03:49:21Z"
     },
     {
       "project_number": 365,

@@ -30,7 +30,7 @@ technical_debt:
 
 ### 369. Solve the blocking dependency in the Modal 5 theorem
 - **Effort**: 30 minutes
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -45,13 +45,15 @@ technical_debt:
 
 ### 368. Refactor Documentation directory structure
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
 - **Researched**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Research**: [research-001.md](.claude/specs/368_documentation_directory_reorganization/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/368_documentation_directory_reorganization/plans/implementation-001.md)
 
 **Description**: Refactor the Documentation/ directory and its subdirectories into a well-organized system of files, divided by natural types into subdirectories with a README.md in each subdirectory with summaries and links to the files or subdirectories in that directory as well as back links following the /home/benjamin/Projects/ProofChecker/Documentation/Development/DIRECTORY_README_STANDARD.md standard.
 
