@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T05:30:00Z
-next_project_number: 364
+next_project_number: 368
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -50,6 +50,19 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 364. Update SORRY_REGISTRY.md paths
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Review Source**: [.claude/specs/reviews/review-20260110.md]
+
+**Description**: Update SORRY_REGISTRY.md to use correct Bimodal/ paths instead of deprecated Logos/Core/ paths. Update verification commands to match new directory structure.
+
+---
 
 ### 363. Create Bimodal LaTeX documentation
 - **Effort**: 2-4 hours
@@ -215,6 +228,45 @@ Add Implementation Status sections to Bimodal/README.md and BimodalTest/README.m
 
 
 ## Low Priority
+
+### 367. Complete example proofs
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Review Source**: [.claude/specs/reviews/review-20260110.md]
+
+**Description**: Complete pedagogical sorry placeholders in Bimodal/Examples/ files (~24 total). Prioritize high-value examples that demonstrate key proof techniques. Mark remaining as explicit exercises.
+
+---
+
+### 366. Document Logos/ as legacy re-exports
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Review Source**: [.claude/specs/reviews/review-20260110.md]
+
+**Description**: Document in project README that Logos/ is a legacy re-export layer with stubs for planned extensions (Epistemic, Normative, Explanatory), and Bimodal/ contains the active implementation.
+
+---
+
+### 365. Complete BimodalTest sorries
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Review Source**: [.claude/specs/reviews/review-20260110.md]
+
+**Description**: Complete sorry placeholders in BimodalTest files: CompletenessTest.lean (3), PerpetuityTest.lean (1), PropositionalTest.lean (1), ModalS4Test.lean. Either implement the tests or document as pending infrastructure.
+
+---
 
 ### 346. Refactor commands to delegate to skills
 - **Effort**: 8-12 hours
