@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T06:30:00Z
-next_project_number: 370
+next_project_number: 371
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,18 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 370. Fix Bimodal LaTeX compilation errors
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: latex
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Fix LaTeX compilation errors in Bimodal/LaTeX/BimodalReference.tex including: command redefinition errors for \land, \lor, \frame in bimodal-notation.sty; undefined control sequences (\lneg, \poss, \somepast, \somefuture, \always, \sometimes); Unicode character errors; mismatched environment errors in 02-Semantics.tex.
+
+---
 
 ### 369. Solve the blocking dependency in the Modal 5 theorem
 - **Effort**: 15 minutes

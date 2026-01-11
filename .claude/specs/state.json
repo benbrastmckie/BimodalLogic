@@ -1,8 +1,20 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T04:30:00Z",
-  "next_project_number": 370,
+  "next_project_number": 371,
   "active_projects": [
+    {
+      "project_number": 370,
+      "project_name": "fix_bimodal_latex_compilation_errors",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "high",
+      "type": "bugfix",
+      "effort": "1-2 hours",
+      "description": "Fix LaTeX compilation errors in Bimodal/LaTeX/BimodalReference.tex including: command redefinition errors for \\land, \\lor, \\frame in bimodal-notation.sty; undefined control sequences (\\lneg, \\poss, \\somepast, \\somefuture, \\always, \\sometimes); Unicode character errors; mismatched environment errors in 02-Semantics.tex.",
+      "created": "2026-01-11T14:54:28Z",
+      "last_updated": "2026-01-11T14:54:28Z"
+    },
     {
       "project_number": 369,
       "project_name": "solve_modal_5_blocking_dependency",
