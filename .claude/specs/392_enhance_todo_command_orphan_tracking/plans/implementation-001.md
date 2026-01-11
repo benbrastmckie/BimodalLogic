@@ -72,7 +72,7 @@ Enhance the `/todo` command to properly track orphaned directories in `archive/s
 
 ### Phase 3: Enhance Step 2.5 Detection
 
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Scan both `specs/` and `specs/archive/` for orphaned directories

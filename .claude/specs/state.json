@@ -6,22 +6,28 @@
     {
       "project_number": 396,
       "project_name": "fix_latex_build_missing_style_files",
-      "status": "researching",
+      "status": "researched",
       "language": "latex",
       "priority": "high",
       "description": "Fix LaTeX build errors in Theories/Logos/LaTeX/LogosReference.tex and Theories/Bimodal/LaTeX/BimodalReference.tex caused by missing style files (logos-notation.sty, notation-standards.sty, bimodal-notation.sty). Troubleshoot and provide elegant solution for style file paths.",
       "created": "2026-01-11T21:24:04Z",
-      "last_updated": "2026-01-11T21:26:19Z"
+      "last_updated": "2026-01-11T21:28:38Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/396_fix_latex_build_missing_style_files/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 394,
       "project_name": "research_port_causal_semantics_from_paper",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Research and port the correct causal operator semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to Logos/SubTheories/Explanation/Truth.lean. The causal operator is primitive (like the counterfactual conditional) and requires careful adaptation to the more sophisticated theory of time in Logos.",
       "created": "2026-01-11T21:09:15Z",
-      "last_updated": "2026-01-12T12:30:00Z",
+      "last_updated": "2026-01-12T12:45:00Z",
       "parent_task": 381
     },
     {
