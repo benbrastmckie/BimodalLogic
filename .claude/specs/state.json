@@ -183,12 +183,18 @@
     {
       "project_number": 381,
       "project_name": "add_causal_semantics_infrastructure",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "description": "Add infrastructure and comments for causal semantics in Logos theory. The causal operator was missing from RECURSIVE_SEMANTICS.md line 29 and has been fixed, but the Lean implementation needs appropriate stub definitions and TODO comments to enable future implementation of causation semantics.",
       "created": "2026-01-11T18:49:04Z",
-      "last_updated": "2026-01-11T20:31:37Z"
+      "last_updated": "2026-01-11T20:33:15Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/381_add_causal_semantics_infrastructure/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 382,

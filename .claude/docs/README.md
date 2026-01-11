@@ -261,6 +261,17 @@ Tasks produce artifacts stored in `.claude/specs/{N}_{SLUG}/`:
 | Implementation Plan | `plans/implementation-{NNN}.md` | Phased plan |
 | Summary | `summaries/implementation-summary-{DATE}.md` | Completion summary |
 
+### Placeholder Conventions
+
+| Placeholder | Format | Usage |
+|-------------|--------|-------|
+| `{N}` | Unpadded | Task numbers, counts |
+| `{NNN}` | 3-digit padded | Artifact versions |
+| `{DATE}` | YYYYMMDD | Date stamps |
+| `{SLUG}` | snake_case | Task slug |
+
+See `.claude/rules/artifact-formats.md` for complete documentation.
+
 ---
 
 ## State Management

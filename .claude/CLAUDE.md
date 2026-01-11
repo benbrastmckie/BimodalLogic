@@ -39,7 +39,7 @@ Tasks progress through these states:
 
 ### Task Artifact Paths
 ```
-.claude/specs/{NUMBER}_{SLUG}/
+.claude/specs/{N}_{SLUG}/
 ├── reports/                    # Research artifacts
 │   └── research-{NNN}.md
 ├── plans/                      # Implementation plans
@@ -47,6 +47,8 @@ Tasks progress through these states:
 └── summaries/                  # Completion summaries
     └── implementation-summary-{DATE}.md
 ```
+
+**Note**: `{N}` = unpadded task number, `{NNN}` = 3-digit padded artifact version. See @.claude/rules/artifact-formats.md for full conventions.
 
 ### Language-Based Routing
 

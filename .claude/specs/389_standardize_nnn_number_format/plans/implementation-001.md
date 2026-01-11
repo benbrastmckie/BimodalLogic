@@ -82,7 +82,7 @@ The issue is not inconsistent usage, but lack of explicit documentation about th
 ### Phase 3: Update CLAUDE.md and README with Convention Reference
 
 **Estimated effort**: 20 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add brief placeholder convention reference to CLAUDE.md

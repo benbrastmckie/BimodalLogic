@@ -142,9 +142,12 @@ technical_debt:
 
 ### 381. Add causal semantics infrastructure
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2026-01-11
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
+- **Research**: [research-001.md](.claude/specs/381_add_causal_semantics_infrastructure/reports/research-001.md)
 
 **Description**: Add infrastructure and comments for causal semantics in Logos theory. The causal operator was missing from RECURSIVE_SEMANTICS.md line 29 and has been fixed, but the Lean implementation needs appropriate stub definitions and TODO comments to enable future implementation of causation semantics.
 
@@ -152,7 +155,7 @@ technical_debt:
 
 ### 382. Create Spatial/ subtheory stub
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 
