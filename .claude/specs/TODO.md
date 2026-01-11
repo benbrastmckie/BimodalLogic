@@ -67,7 +67,7 @@ technical_debt:
 
 ### 384. Fix LaTeX package path warnings in LogosReference.tex
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11

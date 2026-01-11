@@ -61,7 +61,7 @@ In S4, if A is possible and B is necessary, then A ∧ □B is possible.
 
 **Status**: Not started (pending Phase 2-3 completion)
 -/
-def s4_diamond_box_conj (A B : Formula) :
+noncomputable def s4_diamond_box_conj (A B : Formula) :
     ⊢ (A.diamond.and B.box).imp ((A.and B.box).diamond) := by
   -- Goal: (◇A ∧ □B) → ◇(A ∧ □B)
   --
@@ -307,7 +307,7 @@ In S5, diamond distributes over conjunction with nested diamond.
 
 **Status**: Not started
 -/
-def s5_diamond_conj_diamond (A B : Formula) :
+noncomputable def s5_diamond_conj_diamond (A B : Formula) :
     ⊢ iff ((A.and B.diamond).diamond) (A.diamond.and B.diamond) := by
   -- Goal: ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)
 
