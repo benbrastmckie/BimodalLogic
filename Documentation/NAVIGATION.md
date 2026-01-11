@@ -1,11 +1,22 @@
 # Documentation Navigation Guide
 
-This guide helps you find the right documentation for your needs across both project documentation and the AI system.
+This guide helps you find the right documentation for your needs.
 
-## Quick Links
+## Theory-Specific Documentation
+
+| Need | Bimodal | Logos |
+|------|---------|-------|
+| Quick start | [Bimodal Quick Start](../Bimodal/Documentation/UserGuide/QUICKSTART.md) | [Logos Quick Start](../Logos/Documentation/UserGuide/QUICKSTART.md) |
+| Axiom reference | [Bimodal Axioms](../Bimodal/Documentation/Reference/AXIOM_REFERENCE.md) | [Logos Axioms](../Logos/Documentation/Reference/AXIOM_REFERENCE.md) |
+| Implementation status | [Bimodal Status](../Bimodal/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) | [Logos Status](../Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) |
+| Known limitations | [Bimodal Limits](../Bimodal/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) | [Logos Limits](../Logos/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) |
+
+**Theory comparison**: [THEORY_COMPARISON.md](Research/THEORY_COMPARISON.md)
+
+## Project-Wide Quick Links
 
 ### Getting Started
-- **New to Logos?** → [Tutorial](UserGuide/TUTORIAL.md)
+- **New to ProofChecker?** → [Tutorial](UserGuide/TUTORIAL.md)
 - **Want to see examples?** → [Examples](UserGuide/EXAMPLES.md)
 - **Using AI assistance?** → [.opencode/README.md](../.opencode/README.md)
 - **Quick start with AI?** → [.opencode/QUICK-START.md](../.opencode/QUICK-START.md)

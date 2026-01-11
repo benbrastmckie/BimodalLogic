@@ -2,7 +2,16 @@
 
 [Back to Documentation](../README.md)
 
-Quick reference materials for working with the Logos formal verification system.
+Quick reference materials for working with ProofChecker.
+
+## Theory-Specific References
+
+For theory-specific axioms and tactics, see:
+
+| Theory | Axiom Reference | Additional References |
+|--------|-----------------|----------------------|
+| **Bimodal** | [Axiom Reference](../../Bimodal/Documentation/Reference/AXIOM_REFERENCE.md) | [Tactic Reference](../../Bimodal/Documentation/Reference/TACTIC_REFERENCE.md) |
+| **Logos** | [Axiom Reference](../../Logos/Documentation/Reference/AXIOM_REFERENCE.md) | [Extension Stubs](../../Logos/Documentation/Reference/EXTENSION_STUBS.md) |
 
 ## Reference Materials
 

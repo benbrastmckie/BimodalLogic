@@ -2,13 +2,22 @@
 
 [Back to Documentation](../README.md)
 
-User-facing documentation for working with the Logos formal verification system, covering
-theoretical foundations, practical usage, and integration patterns.
+User-facing documentation for working with ProofChecker, covering theoretical foundations,
+practical usage, and integration patterns.
+
+## Theory-Specific Guides
+
+For theory-specific quick starts and guides, see:
+
+| Theory | Quick Start | Additional Guides |
+|--------|-------------|-------------------|
+| **Bimodal** | [Quick Start](../../Bimodal/Documentation/UserGuide/QUICKSTART.md) | [Proof Patterns](../../Bimodal/Documentation/UserGuide/PROOF_PATTERNS.md) |
+| **Logos** | [Quick Start](../../Logos/Documentation/UserGuide/QUICKSTART.md) | [Current Status](../../Logos/Documentation/UserGuide/CURRENT_STATUS.md) |
 
 ## Documentation Overview
 
-This directory contains guides for users of the Logos library, organized by learning progression
-from introductory materials to advanced development topics.
+This directory contains guides for users of the ProofChecker library, organized by learning
+progression from introductory materials to advanced development topics.
 
 ## Getting Started
 

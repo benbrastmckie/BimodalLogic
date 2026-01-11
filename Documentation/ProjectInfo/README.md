@@ -2,9 +2,18 @@
 
 [Back to Documentation](../README.md)
 
-Project status tracking, feature registries, and workflow documentation for the Logos project.
+Project-wide status tracking, feature registries, and workflow documentation.
 This directory contains the "Five-Document Model" for maintaining project state and tracking
 technical debt.
+
+## Theory-Specific Status
+
+For theory-specific implementation status, see:
+
+| Theory | Status Documents |
+|--------|------------------|
+| **Bimodal** | [Implementation Status](../../Bimodal/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md), [Known Limitations](../../Bimodal/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) |
+| **Logos** | [Implementation Status](../../Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md), [Roadmap](../../Logos/Documentation/ProjectInfo/ROADMAP.md) |
 
 ## Documentation Overview
 

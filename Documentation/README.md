@@ -1,8 +1,29 @@
-# Logos Documentation
+# ProofChecker Documentation
 
-Comprehensive documentation hub for the Logos project.
+Project-wide documentation hub for the ProofChecker formal verification project.
 
-> **For AI-Assisted Development**: See [../.opencode/README.md](../.opencode/README.md) for the AI agent system that automates research, planning, implementation, and documentation workflows.
+> **For AI-Assisted Development**: See [../.opencode/README.md](../.opencode/README.md) for the
+> AI agent system that automates research, planning, implementation, and documentation workflows.
+
+## Theory-Specific Documentation
+
+For documentation specific to each logic theory, see:
+
+| Theory | Description | Documentation |
+|--------|-------------|---------------|
+| **Bimodal** | Propositional intensional logic (active) | [Bimodal/Documentation/](../Bimodal/Documentation/) |
+| **Logos** | Second-order hyperintensional (planned) | [Logos/Documentation/](../Logos/Documentation/) |
+
+For comparison between theories, see [Research/THEORY_COMPARISON.md](Research/THEORY_COMPARISON.md).
+
+## Project-Wide Documentation
+
+This directory contains documentation applicable to **all theories**:
+
+- **Development standards** - Apply to all Lean code
+- **Installation guides** - Project-wide setup
+- **Architecture decisions** - Cross-cutting concerns
+- **Research methodology** - Shared approaches
 
 ## Documentation Organization
 
