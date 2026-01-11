@@ -104,22 +104,13 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 phi) (persiste
 
 **Active Axiom Declarations**: None (0) - All axioms have been removed or converted to theorems
 
-### Bimodal/Theorems/ModalS5.lean (1 placeholder - documented invalid theorem)
+### Bimodal/Theorems/ModalS5.lean (0 placeholders - all resolved)
 
-- **ModalS5.lean:89** - `diamond_mono_imp` (fundamental limitation - NOT VALID)
-  - **Context**: Diamond monotonicity as object-level theorem
-  - **Goal**: `|- (phi -> psi) -> (diamond phi -> diamond psi)`
-  - **Status**: **DOCUMENTED AS INVALID** - intentional sorry to mark theorem that cannot be derived
-  - **Counter-model**: Documented at lines 70-84 (S5 with w0, w1: A everywhere, B only at w0)
-  - **Explanation**: Local truth of phi -> psi at one world doesn't guarantee modal relationships
-  - **Meta-level vs Object-level**: Diamond_mono works as META-RULE (if |- phi -> psi then |- diamond phi -> diamond psi) but NOT as object theorem
-  - **Resolution**: Cannot be derived - fundamental theoretical limitation (THIS IS EXPECTED)
-  - **Alternative**: Use `k_dist_diamond`: `box(A -> B) -> (diamond A -> diamond B)` (Plan 060)
-
-- **ModalS5.lean:96-99** - `diamond_mono_conditional` (depends on diamond_mono_imp)
-  - **Context**: Conditional form of diamond monotonicity
-  - **Status**: **DOCUMENTED AS INVALID** - depends on diamond_mono_imp
-  - **Alternative**: Use `k_dist_diamond` pattern instead (Plan 060)
+**REMOVED (Task 369, 2026-01-11)**: Invalid theorems deleted from codebase
+- `diamond_mono_imp` and `diamond_mono_conditional` were removed because they are semantically
+  INVALID in modal logic (cannot be proven). The counter-model documentation is preserved as
+  a comment block in ModalS5.lean (lines 67-87).
+- **Alternative**: Use `k_dist_diamond` (`□(A → B) → (◇A → ◇B)`) which IS valid and fully proven.
 
 **RESOLVED (Plan 060)**:
 - **diamond_disj_iff**: `|- diamond(A or B) <-> (diamond A or diamond B)` [COMPLETE] (resolved 2025-12-09 via duality chain approach)
@@ -197,7 +188,7 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 phi) (persiste
 - **Lines 217-218**: Documentation comments explaining required proofs for nullity and compositionality properties
 
 **Bimodal/Theorems/ModalS5.lean**:
-- **Line 93**: Documentation comment explaining diamond_mono_imp sorry
+- **Lines 67-87**: Documentation comment explaining why diamond monotonicity as object-level implication is invalid (counter-model preserved)
 
 **Bimodal/Theorems/Propositional.lean**:
 - **Lines 30, 497**: Documentation comments mentioning "sorry" in context descriptions
