@@ -84,7 +84,8 @@ This revised plan takes a two-phase approach:
 ### Phase 0.5: Evaluate MCP_INTEGRATION.md Location (Optional)
 
 **Estimated effort**: 10 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
+**Decision**: Keep in UserGuide/ - will note as "advanced users/developers" in README
 
 **Decision Point**: Should MCP_INTEGRATION.md move to Development/?
 
@@ -103,7 +104,7 @@ This revised plan takes a two-phase approach:
 ### Phase 1: Create UserGuide/README.md
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Create README.md following Template G pattern
