@@ -1,21 +1,21 @@
 ---
-last_updated: 2026-01-11T05:30:00Z
+last_updated: 2026-01-11T06:30:00Z
 next_project_number: 368
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-01-11T05:30:00Z
+  last_assessed: 2026-01-11T06:30:00Z
 task_counts:
-  active: 40
-  completed: 79
-  in_progress: 1
-  not_started: 35
+  active: 36
+  completed: 83
+  in_progress: 0
+  not_started: 32
   abandoned: 8
   total: 128
 priority_distribution:
   critical: 0
-  high: 15
-  medium: 21
+  high: 11
+  medium: 18
   low: 14
 technical_debt:
   sorry_count: 20
@@ -28,46 +28,7 @@ technical_debt:
 
 ## High Priority
 
-### 355. Fix all Lean build errors for the Bimodal/ theory
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: High
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: 352, 353
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Research**: [.claude/specs/355_fix_bimodal_build_errors/reports/research-001.md]
-- **Plan**: [.claude/specs/355_fix_bimodal_build_errors/plans/implementation-001.md]
-- **Summary**: [.claude/specs/355_fix_bimodal_build_errors/summaries/implementation-summary-20260111.md]
-
-**Description**: Fix all Lean build errors for the Bimodal/ theory. Some errors are indicated in the implementation summary for task 352 (.claude/specs/352_rename_logos_core_to_bimodal/summaries/implementation-summary-20260110.md).
-
-**Outcome**: Fixed ~150 build errors: replaced nonexistent `Derivable.*` with `DerivationTree.*`, added Combinators imports/opens, added `noncomputable` markers, disabled ProofSearch examples (Task 260 blocked). `lake build Bimodal` succeeds.
-
----
-
 ## Medium Priority
-
-### 364. Update SORRY_REGISTRY.md paths
-- **Effort**: 30 minutes
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Review Source**: [.claude/specs/reviews/review-20260110.md]
-- **Summary**: [.claude/specs/364_update_sorry_registry_paths/summaries/implementation-summary-20260111.md]
-
-**Description**: Update SORRY_REGISTRY.md to use correct Bimodal/ paths instead of deprecated Logos/Core/ paths. Update verification commands to match new directory structure.
-
-**Outcome**: Updated all paths from Logos/Core/ to Bimodal/, fixed verification commands, updated related documentation links.
-
----
 
 ### 363. Create Bimodal LaTeX documentation
 - **Effort**: 2-4 hours
@@ -82,42 +43,6 @@ technical_debt:
 - **Plan**: [implementation-001.md](.claude/specs/363_create_bimodal_latex_documentation/plans/implementation-001.md)
 
 **Description**: Create a Bimodal/LaTeX/ directory with contents similar to Logos/LaTeX/ but focusing on reporting exactly what has been implemented in the Bimodal/ theory. Follow JPL paper "The Perpetuity Calculus of Agency" sections sec:Construction, sub:Logic, app:TaskSemantics, sub:ProofTheory, and sub:Soundness.
-
----
-
-### 362. Move LaTeX directory to Logos/LaTeX
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: None
-- **Summary**: [.claude/specs/362_move_latex_to_logos/summaries/implementation-summary-20260111.md]
-
-**Description**: Move Documentation/LaTeX/ to Logos/LaTeX/, updating all references to avoid broken links.
-
-**Outcome**: Moved LaTeX documentation to Logos/LaTeX/ and updated all references in .claude/ and .opencode/ context files.
-
----
-
-### 361. Create installation documentation
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: general
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Research**: [.claude/specs/361_create_installation_documentation/reports/research-001.md]
-- **Plan**: [.claude/specs/361_create_installation_documentation/plans/implementation-002.md]
-- **Summary**: [.claude/specs/361_create_installation_documentation/summaries/implementation-summary-20260111.md]
-
-**Description**: Create installation documentation similar to /home/benjamin/Projects/ModelChecker CLAUDE_CODE.md including dependencies (BASIC_INSTALLATION.md, GETTING_STARTED.md, USING_GIT.md) so users can start with CLAUDE_CODE.md to systematically install everything for the ProofChecker project.
-
-**Outcome**: Created comprehensive installation documentation suite: CLAUDE_CODE.md (AI-assisted install), BASIC_INSTALLATION.md (manual install), GETTING_STARTED.md (terminal basics + VS Code + NeoVim), USING_GIT.md (Git/GitHub setup). Updated Documentation/README.md and root README.md with installation links.
 
 ---
 
