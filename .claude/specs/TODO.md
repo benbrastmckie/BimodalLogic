@@ -30,7 +30,7 @@ technical_debt:
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [EXPANDED]
 - **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: lean
@@ -129,7 +129,7 @@ technical_debt:
 
 ### 404. Enhance /todo to archive orphaned specs directories
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: Medium
@@ -172,10 +172,12 @@ technical_debt:
 
 ### 402. Rename --divide flag to --expand
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 401
+- **Research**: [research-001.md](.claude/specs/402_rename_divide_flag_to_expand/reports/research-001.md)
 
 **Description**: Rename --divide flag to --expand across .claude/ system for consistency. Update all references in CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, delegation.md, and routing.md. Keep /research --divide unchanged (different feature).
 

@@ -122,15 +122,21 @@
     {
       "project_number": 402,
       "project_name": "rename_divide_flag_to_expand",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "description": "Rename --divide flag to --expand across .claude/ system for consistency. Update all references in CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, delegation.md, and routing.md. Keep /research --divide unchanged (different feature).",
       "effort": "2-3 hours",
       "created": "2026-01-11T22:10:38Z",
-      "last_updated": "2026-01-11T22:34:08Z",
+      "last_updated": "2026-01-11T22:35:41Z",
       "dependencies": [
         401
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/402_rename_divide_flag_to_expand/reports/research-001.md",
+          "type": "research"
+        }
       ]
     },
     {
@@ -177,12 +183,12 @@
     {
       "project_number": 394,
       "project_name": "research_port_causal_semantics_from_paper",
-      "status": "researched",
+      "status": "expanded",
       "language": "lean",
       "priority": "high",
       "description": "Research and port the correct causal operator semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to Logos/SubTheories/Explanation/Truth.lean. The causal operator is primitive (like the counterfactual conditional) and requires careful adaptation to the more sophisticated theory of time in Logos.",
       "created": "2026-01-11T21:09:15Z",
-      "last_updated": "2026-01-11T21:45:37Z",
+      "last_updated": "2026-01-11T22:35:27Z",
       "parent_task": 381,
       "subtasks": [
         398,

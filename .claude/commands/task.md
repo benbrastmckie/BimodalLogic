@@ -185,17 +185,20 @@ Parse task number and optional prompt:
 
 3. **Create 2-5 subtasks** using the Create Task jq pattern for each
 
-4. **Update original task** to reference subtasks:
+4. **Update original task** to reference subtasks and set status to expanded:
    ```bash
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
      '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+       status: "expanded",
        subtasks: [list_of_subtask_numbers],
        last_updated: $ts
      }' .claude/specs/state.json > /tmp/state.json && \
      mv /tmp/state.json .claude/specs/state.json
    ```
 
-5. Git commit: "task {N}: divide into subtasks"
+   **Also update TODO.md**: Change task status to `[EXPANDED]`
+
+5. Git commit: "task {N}: expand into subtasks"
 
 ## Sync Mode (--sync)
 
