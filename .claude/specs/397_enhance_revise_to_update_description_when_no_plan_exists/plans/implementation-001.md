@@ -14,7 +14,7 @@ Modify the `/revise` command to handle tasks without plans (status `not_started`
 ### Phase 1: Modify /revise command validation and routing
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Restructure section 2 "Validate Status" to route based on status

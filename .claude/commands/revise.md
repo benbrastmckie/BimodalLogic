@@ -41,12 +41,73 @@ status=$(echo "$task_data" | jq -r '.status')
 project_name=$(echo "$task_data" | jq -r '.project_name')
 ```
 
-### 2. Validate Status
+### 2. Validate Status and Route
 
-Allowed: planned, implementing, partial, blocked
-- If not_started: Error "No plan to revise, use /plan first"
-- If completed: Error "Task completed, no revision needed"
-- If researched: Note "Consider /plan instead for initial plan"
+Check task status to determine behavior:
+
+**If status in [planned, implementing, partial, blocked]:**
+→ Continue to section 3 (Load Current Context) for plan revision
+
+**If status in [not_started, researched]:**
+→ Jump to section 2a (Description Update)
+
+**If status is completed:**
+→ Error "Task completed, no revision needed"
+
+**If status is abandoned:**
+→ Error "Task abandoned, use /task --recover first"
+
+### 2a. Description Update (for tasks without plans)
+
+When a task has no plan to revise, update the task description instead.
+
+**Read current description:**
+```bash
+old_description=$(echo "$task_data" | jq -r '.description // ""')
+```
+
+**Construct new description:**
+- If revision_reason is provided: Use it as the new description
+- If no revision_reason: Error "No revision reason provided. Usage: /revise N \"new description\""
+
+**Update state.json:**
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg desc "$new_description" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    description: $desc,
+    last_updated: $ts
+  }' .claude/specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json .claude/specs/state.json
+```
+
+**Update TODO.md:**
+Use Edit tool to replace the existing description:
+```
+old_string: "**Description**: {old_description}"
+new_string: "**Description**: {new_description}"
+```
+
+Note: For multi-line descriptions, include enough context to uniquely identify the description block.
+
+**Git commit:**
+```bash
+git add .claude/specs/
+git commit -m "task {N}: revise description
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+```
+
+**Output:**
+```
+Description updated for Task #{N}
+
+Previous: {old_description}
+New: {new_description}
+
+Status: [{current_status}]
+```
+
+**STOP** - Do not continue to plan revision sections.
 
 ### 3. Load Current Context
 
@@ -142,7 +203,9 @@ git add .claude/specs/
 git commit -m "task {N}: revise plan (v{NEW_VERSION})"
 ```
 
-### 8. Output
+### 8. Output (Plan Revision)
+
+This output applies to plan revisions (when task has existing plan):
 
 ```
 Plan revised for Task #{N}
