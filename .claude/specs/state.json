@@ -6,12 +6,12 @@
     {
       "project_number": 400,
       "project_name": "investigate_explanatory_truth_build_performance",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "description": "Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.",
       "created": "2026-01-11T21:55:51Z",
-      "last_updated": "2026-01-11T21:55:51Z"
+      "last_updated": "2026-01-11T22:03:18Z"
     },
     {
       "project_number": 398,
@@ -41,13 +41,15 @@
     {
       "project_number": 397,
       "project_name": "enhance_revise_to_update_description_when_no_plan_exists",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "description": "Modify the /revise command to handle tasks without plans by updating the task description instead of erroring. When a task has status not_started or researched (no plan), and the user provides a revision reason, update the task description in both state.json and TODO.md, then git commit the change.",
       "effort": "1-2 hours",
       "created": "2026-01-11T21:42:42Z",
-      "last_updated": "2026-01-11T22:35:00Z"
+      "last_updated": "2026-01-11T22:05:19Z",
+      "implementing_started": "2026-01-11T22:03:25Z",
+      "completed": "2026-01-11T22:05:19Z"
     },
     {
       "project_number": 394,

@@ -94,7 +94,7 @@ technical_debt:
 
 ### 400. Investigate Explanatory/Truth.lean build performance
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 
@@ -104,15 +104,17 @@ technical_debt:
 
 ### 397. Enhance /revise to update description when no plan exists
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [research-001.md](.claude/specs/397_enhance_revise_to_update_description_when_no_plan_exists/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/397_enhance_revise_to_update_description_when_no_plan_exists/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/397_enhance_revise_to_update_description_when_no_plan_exists/summaries/implementation-summary-20260112.md)
 
 **Description**: Modify the /revise command to handle tasks without plans by updating the task description instead of erroring. When a task has status `not_started` or `researched` (no plan), and the user provides a revision reason, update the task description in both state.json and TODO.md, then git commit the change.
 
