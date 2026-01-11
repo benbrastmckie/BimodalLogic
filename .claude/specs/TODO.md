@@ -1,17 +1,17 @@
 ---
-last_updated: 2026-01-11T20:36:00Z
-next_project_number: 391
+last_updated: 2026-01-12T11:45:00Z
+next_project_number: 392
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
   active: 25
-  completed: 57
-  in_progress: 0
+  completed: 70
+  in_progress: 2
   not_started: 15
   abandoned: 6
-  total: 88
+  total: 101
 priority_distribution:
   critical: 0
   high: 8
@@ -28,122 +28,108 @@ technical_debt:
 
 ## High Priority
 
-### 388. Fix /todo command directory archiving
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-12
+### 175. Establish CI/CD pipeline with automated testing and linting
+- **Effort**: 13 hours
+- **Status**: [NOT STARTED]
 - **Priority**: High
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/388_fix_todo_command_directory_archiving/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/388_fix_todo_command_directory_archiving/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/388_fix_todo_command_directory_archiving/summaries/implementation-summary-20260112.md)
-
-**Description**: Fix /todo command to move project directories (`.claude/specs/{N}_{SLUG}/`) to archive directory (`.claude/specs/archive/{N}_{SLUG}/`) when archiving completed/abandoned tasks. Currently the command updates state.json and archive/state.json correctly but fails to execute Step 5D which moves the directories.
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - .github/workflows/ci.yml (new)
+  - .github/workflows/lint.yml (new)
+  - .github/workflows/coverage.yml (new)
+  - Documentation/Development/CI_CD_PROCESS.md (new)
+- **Description**: Create GitHub Actions workflows for continuous integration and deployment. Currently all tests run manually. CI/CD pipeline should run tests, linting, style checks, coverage reporting, and documentation build checks automatically on every pull request and commit.
+- **Acceptance Criteria**:
+  - [ ] GitHub Actions workflow for tests created and passing
+  - [ ] Linting and style checks integrated into CI
+  - [ ] Coverage reporting integrated into CI
+  - [ ] Documentation build checks integrated into CI
+  - [ ] CI runs on all pull requests and commits to main
+  - [ ] CI failure blocks merge
+  - [ ] CI/CD process documented in CI_CD_PROCESS.md
+- **Impact**: Ensures code quality automatically, prevents regressions, and enables confident merging of pull requests. Essential for maintaining production-ready code.
 
 ---
 
-### 386. Fix command artifact linking in TODO.md
+### 335. Refactor /errors command and error-diagnostics-agent
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Plan Artifacts**:
+  - Implementation Plan: [.claude/specs/335_refactor_errors_command/plans/implementation-001.md]
+
+**Description**: Refactor the /errors command and error-diagnostics-agent subagent to follow modern .opencode standards. Simplify command file to <300 lines with 4-stage pattern, refactor subagent to use 8-stage workflow_execution, move all workflow logic from command to subagent, optimize context loading to Level 2, ensure standardized return format.
+
+---
+
+### 338. Update /task command to use status-sync-manager directly
 - **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-11
+- **Status**: [NOT STARTED]
 - **Priority**: High
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/386_fix_command_artifact_linking_in_todo_md/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/386_fix_command_artifact_linking_in_todo_md/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/386_fix_command_artifact_linking_in_todo_md/summaries/implementation-summary-20260111.md)
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
 
-**Description**: Fix /research command (and audit other commands) to properly link new artifacts in TODO.md. The command adds artifacts to state.json but fails to add corresponding links in TODO.md entries. Audit /plan, /implement, and /revise commands for similar artifact linking failures.
+**Plan**: [Implementation Plan](.claude/specs/338_update_task_command_to_use_status_sync_manager_directly/plans/implementation-001.md)
+
+**Description**: Update Stage 3 (CreateTasks) in /task command to delegate directly to status-sync-manager with operation: create_task instead of deprecated task-creator. Follow the pattern from /research and /implement commands (Stage 1.5 Preflight). Add validation gates to verify task creation succeeded. Test with multiple scenarios.
 
 ---
 
-### 385. Refactor /meta command to create tasks instead of direct implementation
+### 340. Add validation gates to all command files
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Plan**: [Implementation Plan](.claude/specs/340_add_validation_gates_to_all_command_files/plans/implementation-001.md)
+
+**Description**: Audit all command files in .claude/command/ to ensure they have proper validation gates that prevent architectural violations. Add pre-execution and post-execution validation following patterns from /research and /implement. Document validation gate patterns in .claude/context/core/standards/validation-gates.md.
+
+---
+
+### 343. Design command file workflow execution architecture
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: 342
+- **Description**: Design comprehensive architecture for orchestrator to execute command file workflow_execution stages. Define stage parsing mechanism, execution engine design, context passing between stages, error handling and rollback strategy, and integration with existing delegation system. Create detailed design document with sequence diagrams, data flow diagrams, and implementation specifications.
+
+---
+
+### 344. Implement orchestrator workflow execution engine
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: 342, 343
+- **Description**: Implement orchestrator workflow execution engine that parses command file workflow_execution stages and executes them in sequence. Implement stage parser, execution engine, context passing mechanism, error handling and rollback, and integration with existing delegation system. Ensure Stage 3.5 (Postflight) executes correctly for all workflow commands, including artifact extraction, validation, status updates via status-sync-manager, and git commits via git-workflow-manager.
+
+---
+
+### 345. Test and validate all workflow commands with postflight execution
 - **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-11
+- **Status**: [NOT STARTED]
 - **Priority**: High
 - **Language**: meta
-- **Research**: [research-001.md](.claude/specs/385_refactor_meta_command_task_creation/reports/research-001.md)
-- **Plan**: [implementation-002.md](.claude/specs/385_refactor_meta_command_task_creation/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/385_refactor_meta_command_task_creation/summaries/implementation-summary-20260111.md)
-
-**Description**: Refactor the /meta command to conduct careful analysis of the .claude/ agent system given the prompt, ask follow-up questions if additional clarity would improve understanding, and then produce an appropriate number of tasks (similar to /task --divide) with dependencies indicated. If /meta is run without a prompt, run in full interactive mode to interview the user until sufficient detail has been provided to create the appropriate number of tasks with dependencies.
-
----
-
-### 376. Refactor repo for TheoryLib multi-theory structure
-- **Effort**: 4-8 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: High
-- **Language**: lean
-- **Research**: [research-001.md](.claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/reports/research-001.md)
-- **Plan**: [implementation-002.md](.claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/summaries/implementation-summary-20260112.md)
-
-**Description**: Create a ProofChecker/TheoryLib/ directory to contain all the various theories (Bimodal, Logos, and future theories) and their test directories following best practices for developing Lean 4 projects. The Bimodal/ theory has been extracted from Logos/ and Logos/ is being refactored to be stand-alone. Design the structure with the ultimate goal of abstracting common resources that can be imported by each theory.
+- **Blocking**: None
+- **Dependencies**: 342, 343, 344
+- **Description**: Comprehensive testing of all workflow commands (/implement, /research, /plan, /revise) to verify postflight stages execute correctly. Test artifact creation and linking, status updates to completed markers, git commit creation, error handling and rollback, and defense-in-depth verification. Validate that Task 335 scenario (artifacts created but status not updated) is fixed. Create test report documenting all test cases, results, and any issues found.
 
 ---
 
 ## Medium Priority
-
-### 390. Research logos-original archive removal
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Researched**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/390_research_logos_original_archive_removal/reports/research-001.md)
-
-**Description**: Research whether `.claude/archive/logos-original/` can be removed or if the files contain important content not represented elsewhere that should be preserved.
-
----
-
-### 389. Standardize {NNN} number format across documentation
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/389_standardize_nnn_number_format/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/389_standardize_nnn_number_format/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/389_standardize_nnn_number_format/summaries/implementation-summary-20260111.md)
-
-**Description**: Systematically review and standardize all references to use {NNN} (3-digit padded format) consistently instead of {N}. Task 388 in TODO.md provides a characteristic example where {N} is used instead of {NNN}. Failing to use consistent padding has caused issues in the past. Audit all documentation, command files, rule files, and artifact format specifications to ensure uniform 3-digit padding for task and artifact numbering.
-
----
-
-### 387. Standardize Research/ file names and fix references
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/387_standardize_research_file_names/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/387_standardize_research_file_names/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/387_standardize_research_file_names/summaries/implementation-summary-20260111.md)
-
-**Description**: Improve and standardize file names in Documentation/Research/ to avoid redundancy (e.g., remove 'RESEARCH' from titles given the directory name). Rename files using consistent lowercase-hyphenated naming convention. Fix all references to these files throughout the repository to avoid broken links.
-
----
 
 ### 381. Add causal semantics infrastructure
 - **Effort**: 2-3 hours
@@ -172,40 +158,6 @@ technical_debt:
 
 ---
 
-### 384. Fix LaTeX package path warnings in LogosReference.tex
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](.claude/specs/384_fix_latex_package_path_warnings/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/384_fix_latex_package_path_warnings/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/384_fix_latex_package_path_warnings/summaries/implementation-summary-20260111.md)
-
-**Description**: Fix LaTeX package path warnings in LogosReference.tex: warnings about logos-notation, notation-standards, and formatting packages. Also handle showhyphens command change and cross-reference warnings.
-
----
-
-### 380. Document LaTeX standards in ProofChecker/Documentation/
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](.claude/specs/380_document_latex_standards/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/380_document_latex_standards/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/380_document_latex_standards/summaries/implementation-summary-20260111.md)
-
-**Description**: Having implemented tasks 375, 378-379, and 384, make sure that the LaTeX standards are clearly and concisely documented in ProofChecker/Documentation/ as appropriate.
-
----
-
 ### 178. Complete Bimodal advanced tutorial with exercises
 - **Effort**: 10 hours
 - **Status**: [PLANNED]
@@ -231,60 +183,95 @@ technical_debt:
 
 ---
 
-## Low Priority
-
-### 367. Complete example proofs
+### 296. Create /sync command to synchronize TODO.md and state.json
 - **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-12
-- **Priority**: Low
-- **Language**: lean
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
-- **Review Source**: [.claude/specs/reviews/review-20260110.md]
-- **Research**: [research-001.md](.claude/specs/367_complete_example_proofs/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/367_complete_example_proofs/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/367_complete_example_proofs/summaries/implementation-summary-20260112.md)
 
-**Description**: Complete pedagogical sorry placeholders in Bimodal/Examples/ files (~24 total). Prioritize high-value examples that demonstrate key proof techniques. Mark remaining as explicit exercises.
+**Description**: Create a /sync command that bidirectionally synchronizes .claude/specs/TODO.md and .claude/specs/state.json, ensuring both files contain identical task information with the most recent changes from either file. The command should detect discrepancies between the two files, intelligently resolve conflicts by preferring the most recently updated data, and perform atomic updates to both files using the existing status-sync-manager's two-phase commit protocol. This addresses the architectural requirement that state.json is the authoritative source for metadata reads while TODO.md serves as the user-facing view, with synchronization ensuring consistency between them.
 
 ---
 
-### 366. Document Logos/ as legacy re-exports
-- **Effort**: 30 minutes
-- **Status**: [ABANDONED]
-- **Priority**: Low
+### 306. Refactor /meta command to create tasks instead of direct implementation
+- **Effort**: 8 hours
+- **Status**: [PLANNED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+
+**Plan**: [implementation-003.md](.claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-003.md)
+
+**Description**: Refactor the /meta command to always create an appropriate number of tasks (similar to /task command) rather than directly implementing the work. Preserve the interview functionality to clarify requirements when needed, or run in full interactive mode when /meta is called with no arguments. The result should be task creation with dependencies indicated and plan artifacts stored in the appropriate artifact structure per artifact-management.md.
+
+---
+
+### 339. Remove deprecated task-creator subagent
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: Task 338
+
+**Plan**: [Implementation Plan](.claude/specs/339_remove_deprecated_task_creator_subagent/plans/implementation-001.md)
+
+**Description**: Remove .claude/agent/subagents/task-creator.md file since it's deprecated and no longer used. Update any documentation that references it. Verify no other commands depend on it.
+
+---
+
+### 341. Create deprecation policy and migration guide
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
-- **Review Source**: [.claude/specs/reviews/review-20260110.md]
-- **Abandoned**: 2026-01-11
 
-**Description**: Document in project README that Logos/ is a legacy re-export layer with stubs for planned extensions (Epistemic, Normative, Explanatory), and Bimodal/ contains the active implementation.
+**Plan**: [Implementation Plan](.claude/specs/341_create_deprecation_policy_and_migration_guide/plans/implementation-001.md)
+
+**Description**: Create .claude/context/core/standards/deprecation-policy.md documenting how to deprecate agents/commands safely. Include migration checklist: (1) Mark as deprecated with reason, (2) Update all callers, (3) Add deprecation warnings, (4) Remove after migration complete. Create migration guide for moving from deprecated agents to replacements.
 
 ---
 
-### 365. Complete BimodalTest sorries
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Low
+### 260. Proof Search
+- **Effort**: 40-60 hours
+- **Status**: [BLOCKED]
+- **Started**: 2026-01-05
+- **Priority**: Medium
 - **Language**: lean
-- **Blocking**: None
+- **Blocking**: Axiom refactor (Prop → Type) or Classical.choice research
 - **Dependencies**: None
-- **Review Source**: [.claude/specs/reviews/review-20260110.md]
-- **Started**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Research**: [research-001.md](.claude/specs/365_complete_bimodaltest_sorries/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/365_complete_bimodaltest_sorries/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/365_complete_bimodaltest_sorries/summaries/implementation-summary-20260111.md)
+- **Research**: [Research Report](.claude/specs/260_proof_search/reports/research-001.md)
+- **Plan**: [Implementation Plan](.claude/specs/260_proof_search/plans/implementation-001.md)
+- **Implementation**: [Implementation Summary](.claude/specs/260_proof_search/summaries/implementation-summary-20260105.md)
 
-**Description**: Complete sorry placeholders in BimodalTest files: CompletenessTest.lean (3), PerpetuityTest.lean (1), PropositionalTest.lean (1), ModalS4Test.lean. Either implement the tests or document as pending infrastructure.
+**Description**: Implement automated proof search for TM logic.
+
+**Blocking Reason**: Phase 1 (Proof Term Construction) blocked by `Axiom` being `Prop` instead of `Type`. Cannot return `Option (Axiom φ)` from witness function. Need either: (1) Axiom refactor to Type, (2) Classical.choice approach, or (3) pivot to Phase 2 (Tactic Integration).
+
+**Action Items**:
+1. Implement breadth-first proof search.
+2. Implement heuristic-guided search.
+
+**Files**:
+- `Logos/Core/Automation/ProofSearch.lean`
+
+**Acceptance Criteria**:
+- [ ] Breadth-first proof search implemented
+- [ ] Heuristic-guided search implemented
+- [ ] Tests added for proof search
+- [ ] Performance benchmarks created
+- [ ] Documentation updated
+
+**Impact**: Enables automated proof discovery for TM logic, reducing manual proof construction effort.
 
 ---
+
+## Low Priority
 
 ### 346. Refactor commands to delegate to skills
 - **Effort**: 8-12 hours
@@ -331,40 +318,6 @@ technical_debt:
 
 ---
 
-### 260. Proof Search
-- **Effort**: 40-60 hours
-- **Status**: [BLOCKED]
-- **Started**: 2026-01-05
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: Axiom refactor (Prop → Type) or Classical.choice research
-- **Dependencies**: None
-- **Research**: [Research Report](.claude/specs/260_proof_search/reports/research-001.md)
-- **Plan**: [Implementation Plan](.claude/specs/260_proof_search/plans/implementation-001.md)
-- **Implementation**: [Implementation Summary](.claude/specs/260_proof_search/summaries/implementation-summary-20260105.md)
-
-**Description**: Implement automated proof search for TM logic.
-
-**Blocking Reason**: Phase 1 (Proof Term Construction) blocked by `Axiom` being `Prop` instead of `Type`. Cannot return `Option (Axiom φ)` from witness function. Need either: (1) Axiom refactor to Type, (2) Classical.choice approach, or (3) pivot to Phase 2 (Tactic Integration).
-
-**Action Items**:
-1. Implement breadth-first proof search.
-2. Implement heuristic-guided search.
-
-**Files**:
-- `Logos/Core/Automation/ProofSearch.lean`
-
-**Acceptance Criteria**:
-- [ ] Breadth-first proof search implemented
-- [ ] Heuristic-guided search implemented
-- [ ] Tests added for proof search
-- [ ] Performance benchmarks created
-- [ ] Documentation updated
-
-**Impact**: Enables automated proof discovery for TM logic, reducing manual proof construction effort.
-
----
-
 ### 261. Decidability
 - **Effort**: 40-60 hours
 - **Status**: [NOT STARTED]
@@ -389,65 +342,6 @@ technical_debt:
 - [ ] Documentation updated
 
 **Impact**: Provides algorithmic decision procedures for TM logic validity and satisfiability.
-
----
-
-
-### 263. Refactor Context.lean
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-08
-- **Researched**: 2026-01-11
-- **Completed**: 2026-01-08
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: Task 264
-- **Dependencies**: None
-- **Research**: [research-001.md](.claude/specs/263_refactor_context_lean/reports/research-001.md)
-- **Summary**: [implementation-summary-20260108.md](.claude/specs/263_refactor_context_lean/summaries/implementation-summary-20260108.md)
-
-**Description**: Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4.
-
-**Files Affected** (Updated paths after Task 376):
-- `Theories/Bimodal/Syntax/Context.lean`
-- `Tests/BimodalTest/Syntax/ContextTest.lean`
-
-**Acceptance Criteria**:
-- [x] The `Context.lean` file is refactored for clarity and performance.
-- [x] All related tests in `ContextTest.lean` are updated and pass.
-- [x] The refactoring adheres to the LEAN 4 style guide.
-- [x] The public API of the `Context` module remains backward-compatible or changes are documented.
-
-**Impact**: Improves the maintainability and readability of a core component of the syntax package.
-
----
-
-### 264. Update Context References
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: Task 263
-
-**Description**: After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary.
-
-**Note**: Completed as part of Task 376 (repo refactoring). All import paths were updated from `Logos.Core.Syntax.Context` to `Bimodal.Syntax.Context`. The build succeeds and all tests pass.
-
-**Files Affected** (Updated paths after Task 376):
-- `Theories/Bimodal/ProofSystem/Derivation.lean`
-- `Theories/Bimodal/Theorems/GeneralizedNecessitation.lean`
-- `Theories/Bimodal/Automation/AesopRules.lean`
-- `Theories/Bimodal/Semantics/Validity.lean`
-- `Theories/Logos/Syntax.lean` (re-exports from Bimodal)
-
-**Acceptance Criteria**:
-- [x] All references to the `Context` module are updated.
-- [x] The project builds successfully after the updates.
-- [x] All tests pass after the updates.
-
-**Impact**: Ensures that the entire codebase is compatible with the refactored `Context` module.
 
 ---
 
@@ -581,134 +475,3 @@ technical_debt:
   - [ ] Tests cover satisfiable and unsatisfiable scenarios
   - [ ] No remaining placeholder axioms in the decision procedure path
 - **Impact**: Delivers an initial, test-backed decision procedure for TM logic.
-
----
-
-### 175. Establish CI/CD pipeline with automated testing and linting
-- **Effort**: 13 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Files Affected**:
-  - .github/workflows/ci.yml (new)
-  - .github/workflows/lint.yml (new)
-  - .github/workflows/coverage.yml (new)
-  - Documentation/Development/CI_CD_PROCESS.md (new)
-- **Description**: Create GitHub Actions workflows for continuous integration and deployment. Currently all tests run manually. CI/CD pipeline should run tests, linting, style checks, coverage reporting, and documentation build checks automatically on every pull request and commit.
-- **Acceptance Criteria**:
-  - [ ] GitHub Actions workflow for tests created and passing
-  - [ ] Linting and style checks integrated into CI
-  - [ ] Coverage reporting integrated into CI
-  - [ ] Documentation build checks integrated into CI
-  - [ ] CI runs on all pull requests and commits to main
-  - [ ] CI failure blocks merge
-  - [ ] CI/CD process documented in CI_CD_PROCESS.md
-- **Impact**: Ensures code quality automatically, prevents regressions, and enables confident merging of pull requests. Essential for maintaining production-ready code.
-
----
-
-### 335. Refactor /errors command and error-diagnostics-agent
-- **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: None
-
-**Plan Artifacts**:
-  - Implementation Plan: [.claude/specs/335_refactor_errors_command/plans/implementation-001.md]
-
-**Description**: Refactor the /errors command and error-diagnostics-agent subagent to follow modern .opencode standards. Simplify command file to <300 lines with 4-stage pattern, refactor subagent to use 8-stage workflow_execution, move all workflow logic from command to subagent, optimize context loading to Level 2, ensure standardized return format.
-
----
-
-
-### 338. Update /task command to use status-sync-manager directly
-- **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: None
-
-**Plan**: [Implementation Plan](.claude/specs/338_update_task_command_to_use_status_sync_manager_directly/plans/implementation-001.md)
-
-**Description**: Update Stage 3 (CreateTasks) in /task command to delegate directly to status-sync-manager with operation: create_task instead of deprecated task-creator. Follow the pattern from /research and /implement commands (Stage 1.5 Preflight). Add validation gates to verify task creation succeeded. Test with multiple scenarios.
-
----
-
-### 339. Remove deprecated task-creator subagent
-- **Effort**: 1 hour
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: Task 338
-
-**Plan**: [Implementation Plan](.claude/specs/339_remove_deprecated_task_creator_subagent/plans/implementation-001.md)
-
-**Description**: Remove .claude/agent/subagents/task-creator.md file since it's deprecated and no longer used. Update any documentation that references it. Verify no other commands depend on it.
-
----
-
-### 340. Add validation gates to all command files
-- **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: general
-- **Blocking**: None
-- **Dependencies**: None
-
-**Plan**: [Implementation Plan](.claude/specs/340_add_validation_gates_to_all_command_files/plans/implementation-001.md)
-
-**Description**: Audit all command files in .claude/command/ to ensure they have proper validation gates that prevent architectural violations. Add pre-execution and post-execution validation following patterns from /research and /implement. Document validation gate patterns in .claude/context/core/standards/validation-gates.md.
-
----
-
-### 341. Create deprecation policy and migration guide
-- **Effort**: 2 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-
-**Plan**: [Implementation Plan](.claude/specs/341_create_deprecation_policy_and_migration_guide/plans/implementation-001.md)
-
-**Description**: Create .claude/context/core/standards/deprecation-policy.md documenting how to deprecate agents/commands safely. Include migration checklist: (1) Mark as deprecated with reason, (2) Update all callers, (3) Add deprecation warnings, (4) Remove after migration complete. Create migration guide for moving from deprecated agents to replacements.
-
----
-
-
-### 343. Design command file workflow execution architecture
-- **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: 342
-- **Description**: Design comprehensive architecture for orchestrator to execute command file workflow_execution stages. Define stage parsing mechanism, execution engine design, context passing between stages, error handling and rollback strategy, and integration with existing delegation system. Create detailed design document with sequence diagrams, data flow diagrams, and implementation specifications.
-
----
-
-### 344. Implement orchestrator workflow execution engine
-- **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: 342, 343
-- **Description**: Implement orchestrator workflow execution engine that parses command file workflow_execution stages and executes them in sequence. Implement stage parser, execution engine, context passing mechanism, error handling and rollback, and integration with existing delegation system. Ensure Stage 3.5 (Postflight) executes correctly for all workflow commands, including artifact extraction, validation, status updates via status-sync-manager, and git commits via git-workflow-manager.
-
----
-
-### 345. Test and validate all workflow commands with postflight execution
-- **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: 342, 343, 344
-- **Description**: Comprehensive testing of all workflow commands (/implement, /research, /plan, /revise) to verify postflight stages execute correctly. Test artifact creation and linking, status updates to completed markers, git commit creation, error handling and rollback, and defense-in-depth verification. Validate that Task 335 scenario (artifacts created but status not updated) is fixed. Create test report documenting all test cases, results, and any issues found.
