@@ -17,7 +17,7 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 ### Phase 1: Merge NAVIGATION.md into README.md
 
 **Estimated effort**: 1.5 hours
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Create unified navigation hub following Template G

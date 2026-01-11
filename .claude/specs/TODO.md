@@ -30,7 +30,7 @@ technical_debt:
 
 ### 377. Refactor Logos theory for recursive semantics
 - **Effort**: 8-16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
@@ -62,7 +62,7 @@ technical_debt:
 
 ### 378. Refactor Documentation structure with directory standards
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
@@ -77,12 +77,14 @@ technical_debt:
 
 ### 375. Integrate latexmkrc into project LaTeX assets
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/375_integrate_latexmkrc_project_config/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/375_integrate_latexmkrc_project_config/plans/implementation-001.md)
 
 **Description**: Building on task 373, integrate the global /home/benjamin/.config/latexmk/latexmkrc file into the general ProofChecker/LaTeX/ assets so as to standardize project building across multiple contributors to this project.
 
