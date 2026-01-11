@@ -155,11 +155,13 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 
 ### 397. Enhance /revise to update description when no plan exists
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [research-001.md](.claude/specs/397_enhance_revise_to_update_description_when_no_plan_exists/reports/research-001.md)
 
 **Description**: Modify the /revise command to handle tasks without plans by updating the task description instead of erroring. When a task has status `not_started` or `researched` (no plan), and the user provides a revision reason, update the task description in both state.json and TODO.md, then git commit the change.
 

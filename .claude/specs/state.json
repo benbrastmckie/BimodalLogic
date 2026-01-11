@@ -31,13 +31,13 @@
     {
       "project_number": 397,
       "project_name": "enhance_revise_to_update_description_when_no_plan_exists",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "description": "Modify the /revise command to handle tasks without plans by updating the task description instead of erroring. When a task has status not_started or researched (no plan), and the user provides a revision reason, update the task description in both state.json and TODO.md, then git commit the change.",
       "effort": "1-2 hours",
       "created": "2026-01-11T21:42:42Z",
-      "last_updated": "2026-01-11T21:42:42Z"
+      "last_updated": "2026-01-11T22:15:00Z"
     },
     {
       "project_number": 396,
