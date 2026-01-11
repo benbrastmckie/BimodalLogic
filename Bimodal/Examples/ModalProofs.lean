@@ -1,6 +1,7 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.ProofSystem.Axioms
 import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.Propositional
 -- import Bimodal.Automation.ProofSearch  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
 
 /-!
@@ -44,6 +45,7 @@ namespace Bimodal.Examples.ModalProofs
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Theorems.Combinators
+open Bimodal.Theorems.Propositional
 -- open Bimodal.Automation (ProofSearch)  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
 
 /-!
@@ -187,10 +189,44 @@ Demonstrating modal operators on compound formulas.
 -/
 
 /-- Necessity distributes over implication (using modal axioms) -/
-example (p q : Formula) : ⊢ (p.box.and (p.imp q).box).imp q.box := by
-  -- Would use: □p ∧ □(p → q) → □q
-  -- This requires modal K axiom and propositional reasoning
-  sorry
+noncomputable example (p q : Formula) : ⊢ (p.box.and (p.imp q).box).imp q.box := by
+  -- Goal: □p ∧ □(p → q) → □q
+
+  -- Step 1: Get conjunction eliminations as implications
+  have left_elim : ⊢ (p.box.and (p.imp q).box).imp p.box :=
+    lce_imp p.box (p.imp q).box
+  have right_elim : ⊢ (p.box.and (p.imp q).box).imp (p.imp q).box :=
+    rce_imp p.box (p.imp q).box
+
+  -- Step 2: Modal K distribution: □(p → q) → (□p → □q)
+  have k_dist : ⊢ (p.imp q).box.imp (p.box.imp q.box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist p q)
+
+  -- Step 3: From □(p → q), derive □p → □q
+  -- We need: (□p ∧ □(p → q)) → (□p → □q)
+  -- Compose right_elim with k_dist
+  have step3 : ⊢ (p.box.and (p.imp q).box).imp (p.box.imp q.box) :=
+    imp_trans right_elim k_dist
+
+  -- Step 4: Combine to get final result
+  -- We have: (□p ∧ □(p → q)) → □p  (from left_elim)
+  -- We have: (□p ∧ □(p → q)) → (□p → □q)  (from step3)
+  -- We need: (□p ∧ □(p → q)) → □q
+  -- This is the S combinator pattern applied to our context
+
+  -- Use prop_k: (A → (B → C)) → ((A → B) → (A → C))
+  -- With A = (□p ∧ □(p → q)), B = □p, C = □q
+  have prop_k_inst : ⊢ ((p.box.and (p.imp q).box).imp (p.box.imp q.box)).imp
+                       (((p.box.and (p.imp q).box).imp p.box).imp
+                        ((p.box.and (p.imp q).box).imp q.box)) :=
+    DerivationTree.axiom [] _ (Axiom.prop_k (p.box.and (p.imp q).box) p.box q.box)
+
+  -- Apply modus ponens with step3 to get ((□p ∧ □(p → q)) → □p) → ((□p ∧ □(p → q)) → □q)
+  have step4 : ⊢ ((p.box.and (p.imp q).box).imp p.box).imp ((p.box.and (p.imp q).box).imp q.box) :=
+    mp step3 prop_k_inst
+
+  -- Apply modus ponens with left_elim to get final result
+  exact mp left_elim step4
 
 /-- Possibility of conjunction example -/
 example (p q : Formula) : ⊢ (p.and q).diamond.imp (p.diamond.or q.diamond) := by

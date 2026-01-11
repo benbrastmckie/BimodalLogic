@@ -171,11 +171,12 @@ example (φ : Formula) : ⊢ φ.box.imp φ.diamond := by
   have h3 : ⊢ φ.imp φ.diamond := imp_trans h1 h2
 
   -- Step 4: Lift to modal context (□φ → ◇φ)
-  -- We need to derive □φ → ◇φ from φ → ◇φ
-  -- This requires: [□φ] ⊢ φ (by MT), then apply φ → ◇φ, giving [□φ] ⊢ ◇φ
-  -- Then use modal K to get ⊢ □φ → ◇φ
-  -- For pedagogical simplicity, we show the pattern but note the gap
-  sorry  -- Requires modal K application + context management
+  -- We use MT axiom (□φ → φ) and compose with h3 (φ → ◇φ)
+  have mt : ⊢ φ.box.imp φ :=
+    DerivationTree.axiom [] _ (Axiom.modal_t φ)
+
+  -- Compose: □φ → φ → ◇φ, giving □φ → ◇φ
+  exact imp_trans mt h3
 
 /--
 Possibility distribution: `◇(φ ∨ ψ) → ◇φ ∨ ◇ψ` pattern
@@ -235,12 +236,11 @@ Simplified modal modus ponens: Using `DerivationTree.modus_ponens` directly
 This shows the streamlined version without explicit context management.
 -/
 example (φ ψ : Formula) : ⊢ φ.box.imp ((φ.imp ψ).box.imp ψ.box) := by
-  -- Goal: □φ → (□(φ → ψ) → □ψ)
-  -- This is the curried form of modal modus ponens
-
-  -- We'll build this using prop_k and modal reasoning
-  -- For pedagogical purposes, we show the pattern structure
-  sorry  -- Full proof requires currying propositional logic
+  -- EXERCISE: Complete this proof (curried modal modus ponens)
+  -- Technique: Use `Axiom.modal_k_dist` and `imp_trans` from Combinators
+  -- Hint: This is the curried form of □φ ∧ □(φ → ψ) → □ψ
+  --       Start with modal K: □(φ → ψ) → (□φ → □ψ), then curry
+  sorry
 
 /-!
 ## Strategy 4: S5 Characteristic Theorems
@@ -417,11 +417,11 @@ Note: Full proof requires the modal K axiom `□(A → B) → (□A → □B)` w
 is not currently in the system. Shown here for pedagogical illustration.
 -/
 example (φ ψ : Formula) : ⊢ (φ.box.and ψ.box).imp (φ.and ψ).box := by
-  -- This would require:
-  -- 1. Conjunction elimination: □φ ∧ □ψ → □φ and □φ ∧ □ψ → □ψ
-  -- 2. Modal K axiom: □(φ → ψ → φ ∧ ψ) combined with □φ and □ψ
-  -- 3. Deriving □(φ ∧ ψ) from these pieces
-  -- Shown here as a pattern for future implementation
+  -- EXERCISE: Complete this proof (conjunction distribution under □)
+  -- Technique: Use `lce_imp`, `rce_imp` from Propositional, and `Axiom.modal_k_dist`
+  -- Hint: 1. Extract □φ and □ψ from □φ ∧ □ψ using conjunction elimination
+  --       2. Derive ⊢ □(φ → ψ → φ ∧ ψ) using necessitation on conjunction intro
+  --       3. Apply modal K twice to distribute over the curried form
   sorry
 
 /-!
