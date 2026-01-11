@@ -1,6 +1,7 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.ProofSystem.Axioms
 import Bimodal.Theorems.Perpetuity
+import Bimodal.Theorems.Combinators
 import Bimodal.Syntax.Formula
 
 /-!
@@ -56,6 +57,7 @@ namespace Bimodal.Examples.TemporalProofStrategies
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Theorems.Perpetuity
+open Bimodal.Theorems.Combinators
 
 /-!
 ## Strategy 1: Future Iteration (Temporal 4 Axiom)
@@ -82,11 +84,11 @@ This demonstrates the basic pattern for chaining temporal axioms.
 example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future.all_future := by
   -- Step 1: First T4 application (Gφ → GGφ)
   have h1 : ⊢ φ.all_future.imp φ.all_future.all_future :=
-    Derivable.axiom [] _ (Axiom.temp_4 φ)
+    DerivationTree.axiom [] _ (Axiom.temp_4 φ)
 
   -- Step 2: Second T4 application (GGφ → GGGφ)
   have h2 : ⊢ φ.all_future.all_future.imp φ.all_future.all_future.all_future :=
-    Derivable.axiom [] _ (Axiom.temp_4 φ.all_future)
+    DerivationTree.axiom [] _ (Axiom.temp_4 φ.all_future)
 
   -- Step 3: Compose using transitivity (Gφ → GGφ → GGGφ)
   exact imp_trans h1 h2
@@ -101,11 +103,11 @@ This uses the same `imp_trans` pattern iteratively.
 example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future.all_future.all_future := by
   -- Build the chain step by step
   have h1 : ⊢ φ.all_future.imp φ.all_future.all_future :=
-    Derivable.axiom [] _ (Axiom.temp_4 φ)
+    DerivationTree.axiom [] _ (Axiom.temp_4 φ)
   have h2 : ⊢ φ.all_future.all_future.imp φ.all_future.all_future.all_future :=
-    Derivable.axiom [] _ (Axiom.temp_4 φ.all_future)
+    DerivationTree.axiom [] _ (Axiom.temp_4 φ.all_future)
   have h3 : ⊢ φ.all_future.all_future.all_future.imp φ.all_future.all_future.all_future.all_future :=
-    Derivable.axiom [] _ (Axiom.temp_4 φ.all_future.all_future)
+    DerivationTree.axiom [] _ (Axiom.temp_4 φ.all_future.all_future)
 
   -- Compose: Gφ → GGφ → GGGφ → GGGGφ
   exact imp_trans (imp_trans h1 h2) h3
@@ -120,8 +122,8 @@ using `imp_trans` instead of applying them step by step.
 example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future.all_future := by
   -- Compressed version of the future chain from above
   exact imp_trans
-    (Derivable.axiom [] _ (Axiom.temp_4 φ))
-    (Derivable.axiom [] _ (Axiom.temp_4 φ.all_future))
+    (DerivationTree.axiom [] _ (Axiom.temp_4 φ))
+    (DerivationTree.axiom [] _ (Axiom.temp_4 φ.all_future))
 
 /-!
 ## Strategy 2: Temporal Duality (Past/Future Symmetry)
@@ -129,7 +131,7 @@ example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future.all_futu
 The temporal duality rule states: if `⊢ φ` then `⊢ swap_temporal φ`.
 This allows deriving past theorems from future theorems and vice versa.
 
-**Key Technique**: Use `Derivable.temporal_duality` to transform entire proofs.
+**Key Technique**: Use `DerivationTree.temporal_duality` to transform entire proofs.
 
 **Semantic Intuition**: The task semantics has a symmetric structure where
 swapping past and future preserves validity. This is formalized by the
@@ -157,11 +159,11 @@ example (φ : Formula) : ⊢ φ.all_past.imp φ.all_past.all_past := by
 
   -- Step 2: Get T4 axiom for swap_temporal φ
   have h1 : ⊢ φ.swap_temporal.all_future.imp φ.swap_temporal.all_future.all_future :=
-    Derivable.axiom [] _ (Axiom.temp_4 φ.swap_temporal)
+    DerivationTree.axiom [] _ (Axiom.temp_4 φ.swap_temporal)
 
   -- Step 3: Apply temporal duality to swap G ↔ H
   have h2 : ⊢ (φ.swap_temporal.all_future.imp φ.swap_temporal.all_future.all_future).swap_temporal :=
-    Derivable.temporal_duality _ h1
+    DerivationTree.temporal_duality _ h1
 
   -- Step 4: Simplify using swap_temporal definition
   -- swap_temporal(G(swap_temporal φ) → GG(swap_temporal φ))
@@ -187,13 +189,13 @@ example (φ : Formula) : ⊢ φ.all_past.imp φ.all_past.all_past.all_past := by
   have future_chain : ⊢ φ.swap_temporal.all_future.imp
                          φ.swap_temporal.all_future.all_future.all_future :=
     imp_trans
-      (Derivable.axiom [] _ (Axiom.temp_4 φ.swap_temporal))
-      (Derivable.axiom [] _ (Axiom.temp_4 φ.swap_temporal.all_future))
+      (DerivationTree.axiom [] _ (Axiom.temp_4 φ.swap_temporal))
+      (DerivationTree.axiom [] _ (Axiom.temp_4 φ.swap_temporal.all_future))
 
   -- Step 3: Apply temporal duality
   have past_chain : ⊢ (φ.swap_temporal.all_future.imp
                         φ.swap_temporal.all_future.all_future.all_future).swap_temporal :=
-    Derivable.temporal_duality _ future_chain
+    DerivationTree.temporal_duality _ future_chain
 
   -- Step 4: Simplify to get Hφ → HHHφ using involution
   simp [Formula.swap_temporal] at past_chain
@@ -233,7 +235,7 @@ example : (∀ φ : Formula, ⊢ φ.all_future.imp φ.all_future.all_future) →
     h_all φ.swap_temporal
   -- Apply temporal duality
   have h_swap : ⊢ (φ.swap_temporal.all_future.imp φ.swap_temporal.all_future.all_future).swap_temporal :=
-    Derivable.temporal_duality _ h_future
+    DerivationTree.temporal_duality _ h_future
   -- Simplify to past version using involution
   simp [Formula.swap_temporal] at h_swap
   rw [φ_eq] at h_swap
@@ -311,7 +313,7 @@ remembered as past by all future times.
 there exists a time r < s where φ (namely r = t).
 -/
 example (φ : Formula) : ⊢ φ.imp φ.some_past.all_future := by
-  exact Derivable.axiom [] _ (Axiom.temp_a φ)
+  exact DerivationTree.axiom [] _ (Axiom.temp_a φ)
 
 /--
 Temporal A iteration: `φ → GG(PPφ)`
@@ -330,11 +332,11 @@ Note: Full proof requires temporal K rule application, shown here as a pattern.
 example (φ : Formula) : ⊢ φ.imp φ.some_past.some_past.all_future.all_future := by
   -- Step 1: Get TA for φ (φ → G(Pφ))
   have ta_1 : ⊢ φ.imp φ.some_past.all_future :=
-    Derivable.axiom [] _ (Axiom.temp_a φ)
+    DerivationTree.axiom [] _ (Axiom.temp_a φ)
 
   -- Step 2: Get TA for Pφ (Pφ → G(PPφ))
   have ta_2 : ⊢ φ.some_past.imp φ.some_past.some_past.all_future :=
-    Derivable.axiom [] _ (Axiom.temp_a φ.some_past)
+    DerivationTree.axiom [] _ (Axiom.temp_a φ.some_past)
 
   -- Step 3: We need to lift ta_2 under G to get G(Pφ) → GG(PPφ)
   -- This requires temporal K rule: if ⊢ A → B then ⊢ GA → GB
@@ -355,13 +357,13 @@ far in the future.
 example (φ : Formula) : ⊢ φ.imp φ.some_past.all_future.all_future.all_future := by
   -- Step 1: Get TA (φ → G(Pφ))
   have ta : ⊢ φ.imp φ.some_past.all_future :=
-    Derivable.axiom [] _ (Axiom.temp_a φ)
+    DerivationTree.axiom [] _ (Axiom.temp_a φ)
 
   -- Step 2: Get T4 for Pφ (G(Pφ) → GGG(Pφ))
   have t4_chain : ⊢ φ.some_past.all_future.imp φ.some_past.all_future.all_future.all_future :=
     imp_trans
-      (Derivable.axiom [] _ (Axiom.temp_4 φ.some_past))
-      (Derivable.axiom [] _ (Axiom.temp_4 φ.some_past.all_future))
+      (DerivationTree.axiom [] _ (Axiom.temp_4 φ.some_past))
+      (DerivationTree.axiom [] _ (Axiom.temp_4 φ.some_past.all_future))
 
   -- Step 3: Chain TA with T4 (φ → G(Pφ) → GGG(Pφ))
   exact imp_trans ta t4_chain
@@ -388,7 +390,7 @@ then from any future time t, φ holds at all times before t.
 **Semantic Reading**: If always φ, then for all s, for all t < s, we have φ at t.
 -/
 example (φ : Formula) : ⊢ φ.always.imp φ.all_past.all_future := by
-  exact Derivable.axiom [] _ (Axiom.temp_l φ)
+  exact DerivationTree.axiom [] _ (Axiom.temp_l φ)
 
 /--
 Always implies future-always: `△φ → G△φ`
@@ -447,7 +449,7 @@ then it holds at all times in the future of any future time.
 This is what allows T4 to be valid - the future never "runs out".
 -/
 example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future := by
-  exact Derivable.axiom [] _ (Axiom.temp_4 φ)
+  exact DerivationTree.axiom [] _ (Axiom.temp_4 φ)
 
 /--
 Linear time property: Present is in past of future
@@ -460,7 +462,7 @@ all future times by going backward.
 This is the connectedness property of linear time.
 -/
 example (φ : Formula) : ⊢ φ.imp φ.some_past.all_future := by
-  exact Derivable.axiom [] _ (Axiom.temp_a φ)
+  exact DerivationTree.axiom [] _ (Axiom.temp_a φ)
 
 /--
 Temporal transitivity demonstration: `G(Gφ) → Gφ`
@@ -496,33 +498,27 @@ together, using both T4 and temporal duality.
 use axioms and chain results.
 -/
 
-/--
-Symmetric temporal iteration: Both `Hφ → HHφ` and `Gφ → GGφ`
+/-- Future iteration: `Gφ → GGφ` (symmetric with past iteration below) -/
+example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future :=
+  DerivationTree.axiom [] _ (Axiom.temp_4 φ)
 
-**Proof Strategy**:
-We can prove both directions using T4 and temporal duality, showing the
-symmetric structure of temporal logic.
--/
-example (φ : Formula) : (⊢ φ.all_future.imp φ.all_future.all_future) ∧
-                         (⊢ φ.all_past.imp φ.all_past.all_past) := by
-  constructor
-  · -- Future direction: Direct T4 application
-    exact Derivable.axiom [] _ (Axiom.temp_4 φ)
-  · -- Past direction: T4 + temporal duality
-    -- Use involution
-    have φ_eq : φ = φ.swap_temporal.swap_temporal :=
-      (Formula.swap_temporal_involution φ).symm
-    -- Get T4 for swap_temporal φ
-    have h : ⊢ φ.swap_temporal.all_future.imp φ.swap_temporal.all_future.all_future :=
-      Derivable.axiom [] _ (Axiom.temp_4 φ.swap_temporal)
-    -- Apply duality
-    have h2 : ⊢ (φ.swap_temporal.all_future.imp φ.swap_temporal.all_future.all_future).swap_temporal :=
-      Derivable.temporal_duality _ h
-    -- Simplify using involution
-    simp [Formula.swap_temporal] at h2
-    rw [φ_eq] at h2
-    simp [Formula.swap_temporal_involution] at h2
-    exact h2
+/-- Past iteration: `Hφ → HHφ` (via T4 + temporal duality) -/
+example (φ : Formula) : ⊢ φ.all_past.imp φ.all_past.all_past := by
+  -- Past direction: T4 + temporal duality
+  -- Use involution
+  have φ_eq : φ = φ.swap_temporal.swap_temporal :=
+    (Formula.swap_temporal_involution φ).symm
+  -- Get T4 for swap_temporal φ
+  have h : ⊢ φ.swap_temporal.all_future.imp φ.swap_temporal.all_future.all_future :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 φ.swap_temporal)
+  -- Apply duality
+  have h2 : ⊢ (φ.swap_temporal.all_future.imp φ.swap_temporal.all_future.all_future).swap_temporal :=
+    DerivationTree.temporal_duality _ h
+  -- Simplify using involution
+  simp [Formula.swap_temporal] at h2
+  rw [φ_eq] at h2
+  simp [Formula.swap_temporal_involution] at h2
+  exact h2
 
 /--
 Past-Future composition: `H(Gφ) → G(Hφ)` pattern
@@ -559,7 +555,7 @@ times in the future of any future time. This demonstrates T4.
 -/
 example : ⊢ (Formula.atom "gravity_law").all_future.imp
              (Formula.atom "gravity_law").all_future.all_future := by
-  exact Derivable.axiom [] _ (Axiom.temp_4 (Formula.atom "gravity_law"))
+  exact DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.atom "gravity_law"))
 
 /--
 Example: Historical event remembered in future
@@ -569,7 +565,7 @@ a past time when it happened. This demonstrates TA.
 -/
 example : ⊢ (Formula.atom "moon_landing").imp
              (Formula.atom "moon_landing").some_past.all_future := by
-  exact Derivable.axiom [] _ (Axiom.temp_a (Formula.atom "moon_landing"))
+  exact DerivationTree.axiom [] _ (Axiom.temp_a (Formula.atom "moon_landing"))
 
 /--
 Example: Eternal truth is remembered
@@ -580,7 +576,7 @@ This demonstrates TL.
 -/
 example : ⊢ (Formula.atom "2+2=4").always.imp
              (Formula.atom "2+2=4").all_past.all_future := by
-  exact Derivable.axiom [] _ (Axiom.temp_l (Formula.atom "2+2=4"))
+  exact DerivationTree.axiom [] _ (Axiom.temp_l (Formula.atom "2+2=4"))
 
 /--
 Example: Past theorem from future theorem via duality
@@ -595,11 +591,11 @@ example : ⊢ (Formula.atom "conservation_law").all_past.imp
   -- Get T4 for swap_temporal φ
   have future_version : ⊢ φ.swap_temporal.all_future.imp
                            φ.swap_temporal.all_future.all_future :=
-    Derivable.axiom [] _ (Axiom.temp_4 φ.swap_temporal)
+    DerivationTree.axiom [] _ (Axiom.temp_4 φ.swap_temporal)
   -- Apply temporal duality
   have swapped : ⊢ (φ.swap_temporal.all_future.imp
                     φ.swap_temporal.all_future.all_future).swap_temporal :=
-    Derivable.temporal_duality _ future_version
+    DerivationTree.temporal_duality _ future_version
   -- Simplify: swap_temporal on atoms is identity, and swap_temporal swaps G ↔ H
   -- So this gives us exactly the past version
   simp only [Formula.swap_temporal] at swapped
@@ -620,8 +616,8 @@ This module demonstrated seven key proof strategies for linear temporal logic:
 
 **Key Techniques Used**:
 - `imp_trans` for chaining temporal implications
-- `Derivable.temporal_duality` for past/future transformation
-- `Derivable.axiom` for explicit T4, TA, TL application
+- `DerivationTree.temporal_duality` for past/future transformation
+- `DerivationTree.axiom` for explicit T4, TA, TL application
 - `simp [Formula.swap_temporal]` for simplifying duality transformations
 
 **Temporal Axioms Demonstrated**:

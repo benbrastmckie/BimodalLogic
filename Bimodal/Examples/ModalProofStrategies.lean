@@ -1,6 +1,7 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.ProofSystem.Axioms
 import Bimodal.Theorems.Perpetuity
+import Bimodal.Theorems.Combinators
 
 /-!
 # Modal Proof Strategies
@@ -51,6 +52,7 @@ namespace Bimodal.Examples.ModalProofStrategies
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Theorems.Perpetuity
+open Bimodal.Theorems.Combinators
 
 /-!
 ## Strategy 1: Necessity Chains (Iterating M4)
@@ -74,11 +76,11 @@ This demonstrates the basic pattern for chaining modal axioms.
 example (φ : Formula) : ⊢ φ.box.imp φ.box.box.box := by
   -- Step 1: First M4 application (□φ → □□φ)
   have h1 : ⊢ φ.box.imp φ.box.box :=
-    Derivable.axiom [] _ (Axiom.modal_4 φ)
+    DerivationTree.axiom [] _ (Axiom.modal_4 φ)
 
   -- Step 2: Second M4 application (□□φ → □□□φ)
   have h2 : ⊢ φ.box.box.imp φ.box.box.box :=
-    Derivable.axiom [] _ (Axiom.modal_4 φ.box)
+    DerivationTree.axiom [] _ (Axiom.modal_4 φ.box)
 
   -- Step 3: Compose using transitivity (□φ → □□φ → □□□φ)
   exact imp_trans h1 h2
@@ -93,11 +95,11 @@ This uses the same `imp_trans` pattern iteratively.
 example (φ : Formula) : ⊢ φ.box.imp φ.box.box.box.box := by
   -- Build the chain step by step
   have h1 : ⊢ φ.box.imp φ.box.box :=
-    Derivable.axiom [] _ (Axiom.modal_4 φ)
+    DerivationTree.axiom [] _ (Axiom.modal_4 φ)
   have h2 : ⊢ φ.box.box.imp φ.box.box.box :=
-    Derivable.axiom [] _ (Axiom.modal_4 φ.box)
+    DerivationTree.axiom [] _ (Axiom.modal_4 φ.box)
   have h3 : ⊢ φ.box.box.box.imp φ.box.box.box.box :=
-    Derivable.axiom [] _ (Axiom.modal_4 φ.box.box)
+    DerivationTree.axiom [] _ (Axiom.modal_4 φ.box.box)
 
   -- Compose: □φ → □□φ → □□□φ → □□□□φ
   exact imp_trans (imp_trans h1 h2) h3
@@ -116,11 +118,11 @@ This shows the inverse pattern to M4 iteration.
 example (φ : Formula) : ⊢ φ.box.box.box.imp φ.box := by
   -- Step 1: Apply MT to outermost box (□□□φ → □□φ)
   have h1 : ⊢ φ.box.box.box.imp φ.box.box :=
-    Derivable.axiom [] _ (Axiom.modal_t φ.box.box)
+    DerivationTree.axiom [] _ (Axiom.modal_t φ.box.box)
 
   -- Step 2: Apply MT to next box (□□φ → □φ)
   have h2 : ⊢ φ.box.box.imp φ.box :=
-    Derivable.axiom [] _ (Axiom.modal_t φ.box)
+    DerivationTree.axiom [] _ (Axiom.modal_t φ.box)
 
   -- Step 3: Chain the implications (□□□φ → □□φ → □φ)
   exact imp_trans h1 h2
@@ -157,11 +159,11 @@ Note: This demonstrates combining axioms with modal reasoning.
 example (φ : Formula) : ⊢ φ.box.imp φ.diamond := by
   -- Step 1: Get MB axiom (φ → □◇φ)
   have h1 : ⊢ φ.imp φ.diamond.box :=
-    Derivable.axiom [] _ (Axiom.modal_b φ)
+    DerivationTree.axiom [] _ (Axiom.modal_b φ)
 
   -- Step 2: Get MT axiom (□◇φ → ◇φ)
   have h2 : ⊢ φ.diamond.box.imp φ.diamond :=
-    Derivable.axiom [] _ (Axiom.modal_t φ.diamond)
+    DerivationTree.axiom [] _ (Axiom.modal_t φ.diamond)
 
   -- Step 3: Compose (φ → □◇φ → ◇φ)
   have h3 : ⊢ φ.imp φ.diamond := imp_trans h1 h2
@@ -196,7 +198,7 @@ The modal K rule states: if `[□Γ] ⊢ φ` then `Γ ⊢ □φ`.
 This is the key rule for distributing necessity over derivations.
 
 **Key Technique**: Build derivations in boxed context `[□φ, □ψ, ...]`, then
-use `Derivable.modal_k` to lift the conclusion to `□φ`.
+use the generalized necessitation lemma to lift the conclusion to `□φ`.
 -/
 
 /--
@@ -218,21 +220,16 @@ example (φ ψ : Formula) (h1 : ⊢ φ.box) (h2 : ⊢ (φ.imp ψ).box) : ⊢ ψ.
 
   -- Step 1: Derive ψ from [φ, φ → ψ] using modus ponens
   have deriv_psi : [φ, φ.imp ψ] ⊢ ψ := by
-    apply Derivable.modus_ponens [φ, φ.imp ψ] φ ψ
-    · exact Derivable.assumption [φ, φ.imp ψ] (φ.imp ψ) (by simp)
-    · exact Derivable.assumption [φ, φ.imp ψ] φ (by simp)
+    apply DerivationTree.modus_ponens [φ, φ.imp ψ] φ ψ
+    · exact DerivationTree.assumption [φ, φ.imp ψ] (φ.imp ψ) (by simp)
+    · exact DerivationTree.assumption [φ, φ.imp ψ] φ (by simp)
 
-  -- Step 2: Apply modal K: [φ, φ → ψ] ⊢ ψ gives [□φ, □(φ → ψ)] ⊢ □ψ
-  have boxed : [φ.box, (φ.imp ψ).box] ⊢ ψ.box :=
-    Derivable.modal_k [φ, φ.imp ψ] ψ deriv_psi
-
-  -- Step 3: Weaken from [□φ, □(φ → ψ)] to [] using given theorems
-  -- We need to eliminate assumptions by using h1 and h2
-  -- This requires a more complex derivation strategy
-  sorry  -- Requires assumption elimination via substitution
+  -- Step 2: Apply generalized necessitation: [φ, φ → ψ] ⊢ ψ gives [□φ, □(φ → ψ)] ⊢ □ψ
+  -- TODO: Implement generalized necessitation helper (see Bimodal.Theorems.GeneralizedNecessitation)
+  sorry  -- Requires generalized necessitation lemma
 
 /--
-Simplified modal modus ponens: Using `Derivable.modus_ponens` directly
+Simplified modal modus ponens: Using `DerivationTree.modus_ponens` directly
 
 **Strategy**: When hypotheses are theorems (empty context), the pattern is simpler.
 This shows the streamlined version without explicit context management.
@@ -264,7 +261,7 @@ from the current world.
 -/
 example (φ : Formula) : ⊢ φ.imp φ.diamond.box := by
   -- This is exactly the MB axiom
-  exact Derivable.axiom [] _ (Axiom.modal_b φ)
+  exact DerivationTree.axiom [] _ (Axiom.modal_b φ)
 
 /--
 S5 theorem: `◇□φ → φ` (possible necessity implies truth)
@@ -300,8 +297,8 @@ axioms step by step, pre-compose them using `imp_trans`.
 example (φ : Formula) : ⊢ φ.box.imp φ.box.box.box := by
   -- Compressed version of the necessity chain from Strategy 1
   exact imp_trans
-    (Derivable.axiom [] _ (Axiom.modal_4 φ))
-    (Derivable.axiom [] _ (Axiom.modal_4 φ.box))
+    (DerivationTree.axiom [] _ (Axiom.modal_4 φ))
+    (DerivationTree.axiom [] _ (Axiom.modal_4 φ.box))
 
 /--
 S5 idempotence of possibility: `◇◇φ → ◇φ`
@@ -370,9 +367,8 @@ example (φ : Formula) : ⊢ (φ.imp φ).box := by
   -- Step 1: Get identity
   have h : ⊢ φ.imp φ := identity φ
 
-  -- Step 2: Apply modal K with empty context
-  -- If ⊢ φ then ⊢ □φ (necessitation)
-  exact Derivable.modal_k [] (φ.imp φ) h
+  -- Step 2: Apply necessitation: If ⊢ φ then ⊢ □φ
+  exact DerivationTree.necessitation (φ.imp φ) h
 
 /-!
 ## Strategy 6: Combining Modal and Propositional Reasoning
@@ -400,30 +396,20 @@ requires additional infrastructure. Shown here as a pedagogical pattern.
 example (φ ψ : Formula) : ⊢ φ.box.imp (ψ.imp φ).box := by
   -- Step 1: Get propositional S axiom
   have prop_s : ⊢ φ.imp (ψ.imp φ) :=
-    Derivable.axiom [] _ (Axiom.prop_s φ ψ)
+    DerivationTree.axiom [] _ (Axiom.prop_s φ ψ)
 
   -- Step 2: Derive [φ] ⊢ ψ → φ using prop_s and modus ponens
   have deriv : [φ] ⊢ ψ.imp φ := by
-    apply Derivable.modus_ponens [φ] φ (ψ.imp φ)
+    apply DerivationTree.modus_ponens [φ] φ (ψ.imp φ)
     · -- Need: [φ] ⊢ φ → (ψ → φ)
       -- We have: ⊢ φ → (ψ → φ) from prop_s
       -- Use weakening: if ⊢ A then [φ] ⊢ A (since [] ⊆ [φ])
-      apply Derivable.weakening [] [φ] (φ.imp (ψ.imp φ))
-      · exact prop_s
-      · -- Prove [] ⊆ [φ]
-        intro x
-        intro h
-        simp at h
-    · exact Derivable.assumption [φ] φ (by simp)
+      exact DerivationTree.weakening [] [φ] (φ.imp (ψ.imp φ)) prop_s (by intro x h; simp at h)
+    · exact DerivationTree.assumption [φ] φ (by simp)
 
-  -- Step 3: Apply modal K to get [□φ] ⊢ □(ψ → φ)
-  have boxed : [φ.box] ⊢ (ψ.imp φ).box :=
-    Derivable.modal_k [φ] (ψ.imp φ) deriv
-
-  -- Step 4: Build the implication □φ → □(ψ → φ)
-  -- This requires deriving implication from context, which needs
-  -- the deduction theorem or similar infrastructure
-  sorry  -- Requires deduction theorem for implication introduction
+  -- Step 3: Apply generalized necessitation to get [□φ] ⊢ □(ψ → φ)
+  -- TODO: Implement generalized necessitation helper (see Bimodal.Theorems.GeneralizedNecessitation)
+  sorry  -- Requires generalized necessitation lemma and deduction theorem
 
 /--
 Distribution pattern: `□φ ∧ □ψ → □(φ ∧ ψ)` structure
@@ -454,7 +440,7 @@ Example: Mathematical necessity chain
 This demonstrates M4 with a concrete example.
 -/
 example : ⊢ (Formula.atom "2+2=4").box.imp (Formula.atom "2+2=4").box.box := by
-  exact Derivable.axiom [] _ (Axiom.modal_4 (Formula.atom "2+2=4"))
+  exact DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom "2+2=4"))
 
 /--
 Example: Logical truth is necessarily possible
@@ -464,7 +450,7 @@ This demonstrates MB with a concrete example.
 -/
 example : ⊢ (Formula.atom "law_of_identity").imp
     (Formula.atom "law_of_identity").diamond.box := by
-  exact Derivable.axiom [] _ (Axiom.modal_b (Formula.atom "law_of_identity"))
+  exact DerivationTree.axiom [] _ (Axiom.modal_b (Formula.atom "law_of_identity"))
 
 /--
 Example: Necessitation of theorems
@@ -475,7 +461,7 @@ This demonstrates the necessitation pattern.
 example : ⊢ ((Formula.atom "theorem").imp (Formula.atom "theorem")).box := by
   have h : ⊢ (Formula.atom "theorem").imp (Formula.atom "theorem") :=
     identity (Formula.atom "theorem")
-  exact Derivable.modal_k [] _ h
+  exact DerivationTree.necessitation _ h
 
 /-!
 ## Summary of Proof Strategies
@@ -492,9 +478,9 @@ This module demonstrated six key proof strategies for S5 modal logic:
 **Key Techniques Used**:
 - `imp_trans` for chaining implications
 - `identity` for self-reference
-- `Derivable.modal_k` for necessitation
-- `Derivable.axiom` for explicit axiom application
-- `Derivable.modus_ponens` for rule application
+- `DerivationTree.necessitation` for necessitation
+- `DerivationTree.axiom` for explicit axiom application
+- `DerivationTree.modus_ponens` for rule application
 
 **Helper Lemmas from Perpetuity.lean**:
 - `imp_trans`: Implication transitivity

@@ -1,6 +1,7 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.ProofSystem.Axioms
 import Bimodal.Theorems.Perpetuity
+import Bimodal.Theorems.Combinators
 import Bimodal.Syntax.Formula
 
 /-!
@@ -56,6 +57,7 @@ namespace Bimodal.Examples.BimodalProofStrategies
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Theorems.Perpetuity
+open Bimodal.Theorems.Combinators
 
 /-!
 ## Strategy 1: Perpetuity Principle Applications
@@ -125,7 +127,7 @@ Note: Full proof requires conjunction elimination infrastructure.
 example (φ : Formula) : ⊢ φ.box.imp φ := by
   -- Direct route: Use MT axiom
   -- Alternative route would be: P1 then extract central component of △φ
-  exact Derivable.axiom [] _ (Axiom.modal_t φ)
+  exact DerivationTree.axiom [] _ (Axiom.modal_t φ)
 
 /--
 P3 application: Necessity of perpetuity
@@ -164,7 +166,7 @@ This is `◇▽φ → △◇φ`, showing that possibility persists across time.
 This demonstrates the powerful pattern: temporal possibility implies perpetual
 modal possibility.
 -/
-example (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond.always := by
+noncomputable example (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond.always := by
   -- P5: ◇▽φ → △◇φ where △◇φ = H◇φ ∧ ◇φ ∧ G◇φ
   exact perpetuity_5 φ
 
@@ -177,7 +179,7 @@ This is `▽□φ → □△φ`, connecting temporal occurrence with modal perpe
 
 This demonstrates that necessity, once it occurs, must be perpetual.
 -/
-example (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box := by
+noncomputable example (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box := by
   -- P6: ▽□φ → □△φ
   exact perpetuity_6 φ
 
@@ -206,7 +208,7 @@ This demonstrates how necessity distributes into temporal operators.
 -/
 example (φ : Formula) : ⊢ φ.box.imp (φ.all_future.box) := by
   -- MF: □φ → □Gφ
-  exact Derivable.axiom [] _ (Axiom.modal_future φ)
+  exact DerivationTree.axiom [] _ (Axiom.modal_future φ)
 
 /--
 TF axiom application: Future of necessary truth
@@ -219,7 +221,7 @@ This demonstrates temporal persistence of necessity.
 -/
 example (φ : Formula) : ⊢ φ.box.imp (φ.box.all_future) := by
   -- TF: □φ → G□φ
-  exact Derivable.axiom [] _ (Axiom.temp_future φ)
+  exact DerivationTree.axiom [] _ (Axiom.temp_future φ)
 
 /--
 MF and TF combined: Both forms from necessity
@@ -237,9 +239,9 @@ Note: Full proof requires conjunction assembly infrastructure.
 example (φ : Formula) : ⊢ φ.box.imp ((φ.all_future.box).and (φ.box.all_future)) := by
   -- Get both MF and TF
   have mf : ⊢ φ.box.imp (φ.all_future.box) :=
-    Derivable.axiom [] _ (Axiom.modal_future φ)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ)
   have tf : ⊢ φ.box.imp (φ.box.all_future) :=
-    Derivable.axiom [] _ (Axiom.temp_future φ)
+    DerivationTree.axiom [] _ (Axiom.temp_future φ)
 
   -- Need to combine into conjunction: □φ → (□Gφ ∧ G□φ)
   -- This requires conjunction introduction from two implications
@@ -258,11 +260,11 @@ This demonstrates a common pattern: apply modal axiom, then "unbox" with MT.
 example (φ : Formula) : ⊢ φ.box.imp φ.all_future := by
   -- Step 1: MF gives □φ → □Gφ
   have mf : ⊢ φ.box.imp (φ.all_future.box) :=
-    Derivable.axiom [] _ (Axiom.modal_future φ)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ)
 
   -- Step 2: MT gives □Gφ → Gφ
   have mt : ⊢ (φ.all_future.box).imp φ.all_future :=
-    Derivable.axiom [] _ (Axiom.modal_t φ.all_future)
+    DerivationTree.axiom [] _ (Axiom.modal_t φ.all_future)
 
   -- Step 3: Chain via transitivity
   exact imp_trans mf mt
@@ -279,11 +281,11 @@ This demonstrates chaining temporal and modal axioms.
 example (φ : Formula) : ⊢ φ.box.imp (φ.box.all_future.all_future) := by
   -- Step 1: TF gives □φ → G□φ
   have tf : ⊢ φ.box.imp (φ.box.all_future) :=
-    Derivable.axiom [] _ (Axiom.temp_future φ)
+    DerivationTree.axiom [] _ (Axiom.temp_future φ)
 
   -- Step 2: T4 on □φ gives G□φ → GG□φ
   have t4 : ⊢ (φ.box.all_future).imp (φ.box.all_future.all_future) :=
-    Derivable.axiom [] _ (Axiom.temp_4 φ.box)
+    DerivationTree.axiom [] _ (Axiom.temp_4 φ.box)
 
   -- Step 3: Chain via transitivity
   exact imp_trans tf t4
@@ -304,11 +306,11 @@ This demonstrates the power of temporal duality for symmetry.
 example (φ : Formula) : ⊢ φ.box.imp (φ.box.all_past) := by
   -- Step 1: TF for swap_temporal φ
   have tf_swap : ⊢ φ.swap_temporal.box.imp (φ.swap_temporal.box.all_future) :=
-    Derivable.axiom [] _ (Axiom.temp_future φ.swap_temporal)
+    DerivationTree.axiom [] _ (Axiom.temp_future φ.swap_temporal)
 
   -- Step 2: Apply temporal duality
   have tf_dual : ⊢ (φ.swap_temporal.box.imp (φ.swap_temporal.box.all_future)).swap_temporal :=
-    Derivable.temporal_duality _ tf_swap
+    DerivationTree.temporal_duality _ tf_swap
 
   -- Step 3: Simplify using involution
   simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at tf_dual
@@ -341,11 +343,11 @@ Example: Chain `□φ → φ` (MT) with `φ → G(Pφ)` (TA) to get `□φ → G
 example (φ : Formula) : ⊢ φ.box.imp (φ.some_past.all_future) := by
   -- Step 1: MT gives □φ → φ
   have mt : ⊢ φ.box.imp φ :=
-    Derivable.axiom [] _ (Axiom.modal_t φ)
+    DerivationTree.axiom [] _ (Axiom.modal_t φ)
 
   -- Step 2: TA gives φ → G(Pφ)
   have ta : ⊢ φ.imp (φ.some_past.all_future) :=
-    Derivable.axiom [] _ (Axiom.temp_a φ)
+    DerivationTree.axiom [] _ (Axiom.temp_a φ)
 
   -- Step 3: Chain via imp_trans
   exact imp_trans mt ta
@@ -361,11 +363,11 @@ Example: From `□φ → □Gφ` (MF) and `□φ → G□φ` (TF), get `□φ �
 example (φ : Formula) : ⊢ φ.box.imp ((φ.all_future.box).and (φ.box.all_future)) := by
   -- Step 1: MF gives □φ → □Gφ
   have mf : ⊢ φ.box.imp (φ.all_future.box) :=
-    Derivable.axiom [] _ (Axiom.modal_future φ)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ)
 
   -- Step 2: TF gives □φ → G□φ
   have tf : ⊢ φ.box.imp (φ.box.all_future) :=
-    Derivable.axiom [] _ (Axiom.temp_future φ)
+    DerivationTree.axiom [] _ (Axiom.temp_future φ)
 
   -- Step 3: Combine using helper
   exact combine_imp_conj mf tf
@@ -408,9 +410,9 @@ This shows how to construct reusable component lemmas.
 example (φ : Formula) : ⊢ φ.box.imp φ.all_future := by
   -- Reproduce box_to_future construction
   have mf : ⊢ φ.box.imp (φ.all_future.box) :=
-    Derivable.axiom [] _ (Axiom.modal_future φ)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ)
   have mt : ⊢ (φ.all_future.box).imp φ.all_future :=
-    Derivable.axiom [] _ (Axiom.modal_t φ.all_future)
+    DerivationTree.axiom [] _ (Axiom.modal_t φ.all_future)
   exact imp_trans mf mt
 
 /--
@@ -429,7 +431,7 @@ example (φ : Formula) : ⊢ φ.box.imp φ.all_past := by
   have h1 : ⊢ φ.swap_temporal.box.imp φ.swap_temporal.all_future :=
     box_to_future φ.swap_temporal
   have h2 : ⊢ (φ.swap_temporal.box.imp φ.swap_temporal.all_future).swap_temporal :=
-    Derivable.temporal_duality _ h1
+    DerivationTree.temporal_duality _ h1
   simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at h2
   exact h2
 
@@ -462,11 +464,11 @@ Note: Full proof requires extending to all three time components.
 example (φ : Formula) : ⊢ φ.box.imp φ.diamond := by
   -- Step 1: MT gives □φ → φ
   have mt : ⊢ φ.box.imp φ :=
-    Derivable.axiom [] _ (Axiom.modal_t φ)
+    DerivationTree.axiom [] _ (Axiom.modal_t φ)
 
   -- Step 2: MB gives φ → □◇φ
   have mb : ⊢ φ.imp φ.diamond.box :=
-    Derivable.axiom [] _ (Axiom.modal_b φ)
+    DerivationTree.axiom [] _ (Axiom.modal_b φ)
 
   -- Step 3: Chain to get □φ → □◇φ
   have h1 : ⊢ φ.box.imp φ.diamond.box :=
@@ -474,7 +476,7 @@ example (φ : Formula) : ⊢ φ.box.imp φ.diamond := by
 
   -- Step 4: MT for ◇φ gives □◇φ → ◇φ
   have mt2 : ⊢ φ.diamond.box.imp φ.diamond :=
-    Derivable.axiom [] _ (Axiom.modal_t φ.diamond)
+    DerivationTree.axiom [] _ (Axiom.modal_t φ.diamond)
 
   -- Step 5: Final chain □φ → □◇φ → ◇φ
   exact imp_trans h1 mt2
@@ -495,15 +497,15 @@ This demonstrates nested axiom applications with iteration.
 example (φ : Formula) : ⊢ φ.box.imp (φ.all_future.all_future.all_future.box) := by
   -- Step 1: MF for φ gives □φ → □Gφ
   have h1 : ⊢ φ.box.imp (φ.all_future.box) :=
-    Derivable.axiom [] _ (Axiom.modal_future φ)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ)
 
   -- Step 2: MF for Gφ gives □Gφ → □(GGφ)
   have h2 : ⊢ (φ.all_future.box).imp (φ.all_future.all_future.box) :=
-    Derivable.axiom [] _ (Axiom.modal_future φ.all_future)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ.all_future)
 
   -- Step 3: MF for GGφ gives □(GGφ) → □(GGGφ)
   have h3 : ⊢ (φ.all_future.all_future.box).imp (φ.all_future.all_future.all_future.box) :=
-    Derivable.axiom [] _ (Axiom.modal_future φ.all_future.all_future)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ.all_future.all_future)
 
   -- Step 4: Chain all three: □φ → □Gφ → □(GGφ) → □(GGGφ)
   exact imp_trans (imp_trans h1 h2) h3
@@ -528,12 +530,12 @@ example (φ : Formula) : ⊢ φ.box.imp (φ.all_past.all_past.all_past.box) := b
 
   -- Build for swap_temporal φ
   have h1_swap : ⊢ φ.swap_temporal.box.imp (φ.swap_temporal.all_future.box) :=
-    Derivable.axiom [] _ (Axiom.modal_future φ.swap_temporal)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ.swap_temporal)
   have h2_swap : ⊢ (φ.swap_temporal.all_future.box).imp (φ.swap_temporal.all_future.all_future.box) :=
-    Derivable.axiom [] _ (Axiom.modal_future φ.swap_temporal.all_future)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ.swap_temporal.all_future)
   have h3_swap : ⊢ (φ.swap_temporal.all_future.all_future.box).imp
       (φ.swap_temporal.all_future.all_future.all_future.box) :=
-    Derivable.axiom [] _ (Axiom.modal_future φ.swap_temporal.all_future.all_future)
+    DerivationTree.axiom [] _ (Axiom.modal_future φ.swap_temporal.all_future.all_future)
 
   -- Chain them
   have h_future : ⊢ φ.swap_temporal.box.imp (φ.swap_temporal.all_future.all_future.all_future.box) :=
@@ -542,7 +544,7 @@ example (φ : Formula) : ⊢ φ.box.imp (φ.all_past.all_past.all_past.box) := b
   -- Apply temporal duality
   have h_dual : ⊢ (φ.swap_temporal.box.imp
       (φ.swap_temporal.all_future.all_future.all_future.box)).swap_temporal :=
-    Derivable.temporal_duality _ h_future
+    DerivationTree.temporal_duality _ h_future
 
   -- Simplify
   simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at h_dual
@@ -568,7 +570,7 @@ example (φ : Formula) : ⊢ φ.box.imp (φ.always.box.box) := by
 
   -- Step 2: M4 for □△φ gives □△φ → □□△φ
   have m4 : ⊢ (φ.always.box).imp (φ.always.box.box) :=
-    Derivable.axiom [] _ (Axiom.modal_4 φ.always)
+    DerivationTree.axiom [] _ (Axiom.modal_4 φ.always)
 
   -- Step 3: Chain via imp_trans
   exact imp_trans p3 m4
@@ -594,20 +596,20 @@ example (φ : Formula) : ⊢ φ.box.imp φ.always := by
     have h1 : ⊢ φ.swap_temporal.box.imp φ.swap_temporal.all_future :=
       box_to_future φ.swap_temporal
     have h2 : ⊢ (φ.swap_temporal.box.imp φ.swap_temporal.all_future).swap_temporal :=
-      Derivable.temporal_duality _ h1
+      DerivationTree.temporal_duality _ h1
     simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at h2
     exact h2
 
   -- Step 2: Build □φ → φ component (via MT)
   have h_present : ⊢ φ.box.imp φ :=
-    Derivable.axiom [] _ (Axiom.modal_t φ)
+    DerivationTree.axiom [] _ (Axiom.modal_t φ)
 
   -- Step 3: Build □φ → Gφ component (via box_to_future)
   have h_future : ⊢ φ.box.imp φ.all_future := by
     have mf : ⊢ φ.box.imp (φ.all_future.box) :=
-      Derivable.axiom [] _ (Axiom.modal_future φ)
+      DerivationTree.axiom [] _ (Axiom.modal_future φ)
     have mt : ⊢ (φ.all_future.box).imp φ.all_future :=
-      Derivable.axiom [] _ (Axiom.modal_t φ.all_future)
+      DerivationTree.axiom [] _ (Axiom.modal_t φ.all_future)
     exact imp_trans mf mt
 
   -- Step 4: Combine all three components using combine_imp_conj_3
@@ -703,7 +705,7 @@ This module demonstrated four key proof strategies for TM bimodal logic:
 - `Axiom.modal_future` (MF) and `Axiom.temp_future` (TF) for bimodal axioms
 - `imp_trans` for chaining (used 15+ times)
 - `combine_imp_conj` and `combine_imp_conj_3` for conjunction assembly
-- `Derivable.temporal_duality` for past/future symmetry (used 5 times)
+- `DerivationTree.temporal_duality` for past/future symmetry (used 5 times)
 - `Formula.swap_temporal_involution` for duality simplification
 
 **Helper Lemmas from Perpetuity.lean**:

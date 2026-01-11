@@ -1,6 +1,6 @@
 import Bimodal.Theorems.Perpetuity
 import Bimodal.ProofSystem.Derivation
-import Bimodal.Automation.ProofSearch
+-- import Bimodal.Automation.ProofSearch  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
 
 /-!
 # Bimodal Proof Examples
@@ -40,7 +40,7 @@ namespace Bimodal.Examples.BimodalProofs
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Theorems.Perpetuity
-open Bimodal.Automation (ProofSearch)
+-- open Bimodal.Automation (ProofSearch)  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
 
 /-!
 ## P1: Necessary Implies Always
@@ -121,16 +121,16 @@ If it's possible that φ happens sometime, then it's always possible.
 -/
 
 /-- P5 with dot notation: persistent possibility -/
-example (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond.always := perpetuity_5 φ
+noncomputable example (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond.always := perpetuity_5 φ
 
 /-- P5 with triangle notation: ◇▽φ → △◇φ -/
-example (φ : Formula) : ⊢ (▽φ).diamond.imp (△(φ.diamond)) := perpetuity_5 φ
+noncomputable example (φ : Formula) : ⊢ (▽φ).diamond.imp (△(φ.diamond)) := perpetuity_5 φ
 
 /-- P5 demonstrates complex modal-temporal nesting -/
-example (p : Formula) : ⊢ p.sometimes.diamond.imp p.diamond.always := perpetuity_5 _
+noncomputable example (p : Formula) : ⊢ p.sometimes.diamond.imp p.diamond.always := perpetuity_5 _
 
 /-- P5 with triangles shows symmetric structure: ◇▽ → △◇ -/
-example (p : Formula) : ⊢ (▽p).diamond.imp (△(p.diamond)) := perpetuity_5 _
+noncomputable example (p : Formula) : ⊢ (▽p).diamond.imp (△(p.diamond)) := perpetuity_5 _
 
 /-!
 ## P6: Occurrent Necessity is Perpetual
@@ -139,16 +139,16 @@ If necessity occurs at some future time, then it's always necessary.
 -/
 
 /-- P6 with dot notation: occurrent necessity perpetual -/
-example (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box := perpetuity_6 φ
+noncomputable example (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box := perpetuity_6 φ
 
 /-- P6 with triangle notation: ▽□φ → □△φ -/
-example (φ : Formula) : ⊢ (▽(φ.box)).imp (△φ).box := perpetuity_6 φ
+noncomputable example (φ : Formula) : ⊢ (▽(φ.box)).imp (△φ).box := perpetuity_6 φ
 
 /-- P6 applied to atomic formula -/
-example (p : Formula) : ⊢ p.box.sometimes.imp p.always.box := perpetuity_6 _
+noncomputable example (p : Formula) : ⊢ p.box.sometimes.imp p.always.box := perpetuity_6 _
 
 /-- P6 with triangle shows box-temporal interaction: ▽□ → □△ -/
-example (p : Formula) : ⊢ (▽(p.box)).imp (△p).box := perpetuity_6 _
+noncomputable example (p : Formula) : ⊢ (▽(p.box)).imp (△p).box := perpetuity_6 _
 
 /-!
 ## Notation Equivalence Examples
@@ -181,7 +181,7 @@ example (p : Formula) : ⊢ p.box.imp (△p).box := perpetuity_3 p
 example (p : Formula) : ⊢ (▽p).diamond.imp p.diamond := perpetuity_4 p
 
 /-- Mixed pattern 3: complex nesting -/
-example (p : Formula) : ⊢ (▽(p.box)).imp (△p).box := perpetuity_6 p
+noncomputable example (p : Formula) : ⊢ (▽(p.box)).imp (△p).box := perpetuity_6 p
 
 /-- Recommendation: Prefer prefix triangle notation for temporal, dot for modal -/
 example (p : Formula) : ⊢ p.box.imp (△p) := perpetuity_1 p
@@ -203,79 +203,14 @@ example (p : Formula) : ⊢ (▽p).diamond.imp p.diamond :=
 /-!
 ## Perpetuity Automation Examples
 
-These examples demonstrate automated discovery of perpetuity principles P1-P6
-using proof search. The search depth requirements for bimodal formulas are
-typically higher than pure modal or temporal formulas due to the interaction
-between modal and temporal operators.
+NOTE: The following ProofSearch examples are commented out pending completion of Task 260 (ProofSearch).
+These examples will demonstrate automated discovery of perpetuity principles P1-P6 using proof search.
+
+TODO: Re-enable when Task 260 (ProofSearch) is unblocked.
 -/
 
-/-- Automated discovery of P1: □φ → △φ -/
-example : Bool :=
-  let goal := (Formula.atom "p").box.imp (△(Formula.atom "p"))
-  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 10
-  found  -- Returns true, discovering P1 automatically
-
-/-- Automated discovery of P2: ▽φ → ◇φ -/
-example : Bool :=
-  let goal := (▽(Formula.atom "p")).imp (Formula.atom "p").diamond
-  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 10
-  found  -- Returns true, discovering P2 automatically
-
-/-- Automated discovery of P3: □φ → □△φ -/
-example : Bool :=
-  let goal := (Formula.atom "p").box.imp (△(Formula.atom "p")).box
-  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 12
-  found  -- Returns true, discovering P3 (requires higher depth for nesting)
-
-/-- Automated discovery of P4: ◇▽φ → ◇φ -/
-example : Bool :=
-  let goal := (▽(Formula.atom "p")).diamond.imp (Formula.atom "p").diamond
-  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 12
-  found  -- Returns true, discovering P4
-
-/-- Automated discovery of P5: ◇▽φ → △◇φ -/
-example : Bool :=
-  let goal := (▽(Formula.atom "p")).diamond.imp (△((Formula.atom "p").diamond))
-  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 15
-  found  -- Returns true, discovering P5 (complex nesting requires depth 15)
-
-/-- Automated discovery of P6: ▽□φ → □△φ -/
-example : Bool :=
-  let goal := (▽((Formula.atom "p").box)).imp (△(Formula.atom "p")).box
-  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 15
-  found  -- Returns true, discovering P6 (complex nesting requires depth 15)
-
-/-!
-## Combined Modal-Temporal Search
-
-These examples demonstrate proof search with both modal and temporal operators,
-showing how the search handles context transformations for both box_context
-and future_context.
--/
-
-/-- Search with both modal and temporal operators -/
-example : Bool :=
-  let goal := (Formula.atom "p").box.imp (Formula.atom "p").all_future.box
-  let (found, _, _, _, _) := Automation.ProofSearch.bounded_search [] goal 10
-  found  -- Searches through modal-temporal interaction axioms
-
-/-- Demonstrate interaction between box_context and future_context -/
-example : Nat × Nat :=
-  let Γ := [Formula.atom "p", Formula.atom "q"]
-  let boxed := Automation.ProofSearch.box_context Γ
-  let future := Automation.ProofSearch.future_context Γ
-  (boxed.length, future.length)  -- Both preserve context length (2, 2)
-
-/-- Bimodal search depth requirements comparison -/
-example : Nat × Nat × Nat :=
-  let modal_goal := (Formula.atom "p").box.imp (Formula.atom "p")
-  let temporal_goal := (Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future
-  let bimodal_goal := (Formula.atom "p").box.imp (△(Formula.atom "p"))
-  let (_, _, _, modal_stats, _) := Automation.ProofSearch.bounded_search [] modal_goal 5
-  let (_, _, _, temporal_stats, _) := Automation.ProofSearch.bounded_search [] temporal_goal 5
-  let (_, _, _, bimodal_stats, _) := Automation.ProofSearch.bounded_search [] bimodal_goal 10
-  (modal_stats.visited, temporal_stats.visited, bimodal_stats.visited)
-  -- Bimodal formulas typically visit more nodes due to operator interaction
+-- ProofSearch examples commented out - Task 260 is BLOCKED
+-- See: .claude/specs/260_proof_search/plans/implementation-001.md
 
 /-!
 ## Summary
@@ -286,9 +221,6 @@ This module demonstrates:
 3. Perpetuity principles P1-P6 with both notations
 4. Recommended usage: prefix triangle for temporal, dot for modal
 5. Notation equivalence proofs via `rfl`
-6. **NEW**: Automated discovery of perpetuity principles P1-P6
-7. **NEW**: Combined modal-temporal proof search
-8. **NEW**: Search depth requirements for bimodal formulas
 
 For more details on the perpetuity principles, see:
 - [Perpetuity.lean](../ProofChecker/Theorems/Perpetuity.lean)
