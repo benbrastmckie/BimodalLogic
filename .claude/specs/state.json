@@ -6,17 +6,22 @@
     {
       "project_number": 387,
       "project_name": "standardize_research_file_names",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T20:10:25Z",
-      "last_updated": "2026-01-11T20:14:43Z",
+      "last_updated": "2026-01-11T20:17:20Z",
       "artifacts": [
         {
           "path": ".claude/specs/387_standardize_research_file_names/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/387_standardize_research_file_names/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 386,

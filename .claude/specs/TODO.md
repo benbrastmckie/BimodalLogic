@@ -83,12 +83,14 @@ technical_debt:
 
 ### 387. Standardize Research/ file names and fix references
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/387_standardize_research_file_names/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/387_standardize_research_file_names/plans/implementation-001.md)
 
 **Description**: Improve and standardize file names in Documentation/Research/ to avoid redundancy (e.g., remove 'RESEARCH' from titles given the directory name). Rename files using consistent lowercase-hyphenated naming convention. Fix all references to these files throughout the repository to avoid broken links.
 
