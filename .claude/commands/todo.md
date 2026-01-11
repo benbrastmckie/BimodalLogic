@@ -49,9 +49,9 @@ for dir in .claude/specs/[0-9]*_*/; do
     '.active_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
     .claude/specs/state.json 2>/dev/null)
 
-  # Check if in archive/state.json completed_projects
+  # Check if in archive/state.json completed_projects (with flatten for nested arrays)
   in_archive=$(jq -r --arg n "$project_num" \
-    '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
+    '.completed_projects | flatten | .[] | select(.project_number == ($n | tonumber)) | .project_number' \
     .claude/specs/archive/state.json 2>/dev/null)
 
   # If not in either, it's an orphan

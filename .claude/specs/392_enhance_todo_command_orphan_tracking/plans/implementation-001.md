@@ -13,7 +13,7 @@ Enhance the `/todo` command to properly track orphaned directories in `archive/s
 
 ### Phase 1: Fix jq Query for Nested Arrays
 
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update Step 2.5 jq query to handle nested arrays in `archive/state.json`
