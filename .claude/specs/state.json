@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T04:30:00Z",
-  "next_project_number": 372,
+  "next_project_number": 373,
   "active_projects": [
+    {
+      "project_number": 372,
+      "project_name": "create_logos_documentation_and_refactor_root",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "description": "Create Logos/Documentation/ directory similar to Bimodal/Documentation/ to contain Logos-specific documentation, and refactor ProofChecker/Documentation/ to be theory agnostic.",
+      "created": "2026-01-11T15:33:52Z",
+      "last_updated": "2026-01-11T15:33:52Z"
+    },
     {
       "project_number": 371,
       "project_name": "refactor_latex_reference_manual_titles",

@@ -138,7 +138,7 @@ Brief comparison of the two logical systems implemented in ProofChecker.
 ---
 
 ### Phase 4: Create Bimodal/Documentation/ Structure
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 **Estimated effort**: 1 hour
 
 **Objectives**:
@@ -187,7 +187,7 @@ Bimodal/Documentation/
 ---
 
 ### Phase 5: Update Project-Wide Documentation
-**Status**: [NOT STARTED]
+**Status**: [HOLD] (the Logos/Documentation/ must by developed first)
 **Estimated effort**: 45 minutes
 
 **Objectives**:
