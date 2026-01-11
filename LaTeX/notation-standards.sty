@@ -1,0 +1,76 @@
+% ============================================================================
+% notation-standards.sty
+% Shared notation package for ProofChecker logic documentation
+%
+% This package provides standard notation used across all theory-specific
+% documentation (Logos, Bimodal, etc.). Theory-specific notation files
+% should import this package and add specialized notation.
+%
+% Usage in theory-specific notation files:
+%   \RequirePackage{../../LaTeX/notation-standards}
+% ============================================================================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{notation-standards}[2026/01/11 ProofChecker Shared Notation]
+
+% ============================================================================
+% Required Packages
+% ============================================================================
+
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{mathtools}  % For \coloneqq and enhanced math support
+
+% ============================================================================
+% Modal Operators
+% ============================================================================
+
+\newcommand{\nec}{\Box}                    % Necessity (box)
+\newcommand{\poss}{\Diamond}               % Possibility (diamond)
+
+% ============================================================================
+% Truth and Satisfaction Relations
+% ============================================================================
+
+\newcommand{\satisfies}{\models}           % Satisfaction relation
+\newcommand{\notsatisfies}{\not\models}    % Negated satisfaction
+
+% ============================================================================
+% Proof Theory
+% ============================================================================
+
+\newcommand{\proves}{\vdash}               % Derivability
+\newcommand{\context}{\Gamma}              % Proof context
+
+% ============================================================================
+% Meta-Variables
+% ============================================================================
+
+\newcommand{\metaphi}{\varphi}             % Formula meta-variable
+\newcommand{\metapsi}{\psi}                % Formula meta-variable
+\newcommand{\metachi}{\chi}                % Formula meta-variable
+
+% ============================================================================
+% Model Notation
+% ============================================================================
+
+\newcommand{\model}{\mathbf{M}}            % Model symbol
+
+% ============================================================================
+% Propositional Connectives (standard names)
+% ============================================================================
+
+\newcommand{\imp}{\to}                     % Implication
+\newcommand{\lneg}{\neg}                   % Negation
+\newcommand{\falsum}{\bot}                 % Falsity/bottom
+
+% ============================================================================
+% Lean Cross-Reference Commands
+% ============================================================================
+
+\newcommand{\leansrc}[1]{\texttt{#1}}      % Lean source reference (single arg)
+\newcommand{\leanref}[1]{\texttt{#1}}      % Lean reference
+
+% ============================================================================
+% End of Package
+% ============================================================================
