@@ -5,6 +5,7 @@ import Bimodal.Semantics
 import Bimodal.Metalogic
 import Bimodal.Theorems
 import Bimodal.Automation
+import Bimodal.Examples
 
 /-!
 # Bimodal - TM Logic Library
@@ -20,6 +21,7 @@ for bimodal logic TM (Tense and Modality).
 - `Bimodal.Metalogic`: Soundness and completeness theorems
 - `Bimodal.Theorems`: Perpetuity principles (P1-P6)
 - `Bimodal.Automation`: Proof tactics and automation
+- `Bimodal.Examples`: Pedagogical examples and proof strategies
 
 ## Usage
 
