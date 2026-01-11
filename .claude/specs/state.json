@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T23:30:00Z",
-  "next_project_number": 380,
+  "next_project_number": 381,
   "active_projects": [
+    {
+      "project_number": 380,
+      "project_name": "document_latex_standards",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-11T18:13:43Z",
+      "last_updated": "2026-01-11T18:13:43Z"
+    },
     {
       "project_number": 379,
       "project_name": "fix_logosreference_latex_warnings",
