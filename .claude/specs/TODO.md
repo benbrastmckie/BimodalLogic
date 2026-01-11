@@ -15,7 +15,7 @@ task_counts:
 priority_distribution:
   critical: 0
   high: 9
-  medium: 14
+  medium: 11
   low: 14
 technical_debt:
   sorry_count: 19
