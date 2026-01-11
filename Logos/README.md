@@ -1,10 +1,39 @@
-# Logos Source
+# Logos
 
-Main source directory for the Logos TM logic implementation.
+Re-export layer providing the Logos namespace for TM bimodal logic.
+
+## About Logos Logic
+
+Logos is a **planned second-order hyperintensional logic** that will extend beyond Bimodal.
+
+| Aspect | Description |
+|--------|-------------|
+| **Type** | Second-order hyperintensional logic (planned) |
+| **Current status** | Re-exports Bimodal TM logic |
+| **Semantic primitives** | States (more fine-grained than worlds) |
+| **Logical level** | Second-order with first and second-order variables |
+
+For comparison with Bimodal propositional logic, see
+[THEORY_COMPARISON.md](../Documentation/Research/THEORY_COMPARISON.md).
 
 ## Purpose
 
-This directory contains the core implementation of the bimodal logic TM (Tense and Modality) proof system with task semantics, including syntax, proof rules, semantic models, metalogical properties, and automation.
+This directory currently re-exports the Bimodal TM logic implementation under the Logos namespace.
+When Logos extensions are implemented, this will include epistemic, normative, and explanatory
+operators with state-based hyperintensional semantics.
+
+## Theory-Specific Documentation
+
+For Logos-specific guides and references, see [Documentation/](Documentation/README.md):
+
+| Document | Description |
+|----------|-------------|
+| [Quick Start](Documentation/UserGuide/QUICKSTART.md) | Getting started (redirects to Bimodal) |
+| [Current Status](Documentation/UserGuide/CURRENT_STATUS.md) | Logos development status |
+| [Axiom Reference](Documentation/Reference/AXIOM_REFERENCE.md) | Axioms (via Bimodal) |
+| [Extension Stubs](Documentation/Reference/EXTENSION_STUBS.md) | Planned extensions |
+| [Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) | Module status |
+| [Roadmap](Documentation/ProjectInfo/ROADMAP.md) | Development roadmap |
 
 ## Submodules
 
@@ -168,16 +197,27 @@ When working on Logos source code:
 
 ## Related Documentation
 
+### Theory-Specific (Logos)
+
+- [Logos Documentation](Documentation/README.md) - Theory-specific documentation hub
+- [Quick Start](Documentation/UserGuide/QUICKSTART.md) - Getting started with Logos
+- [Extension Stubs](Documentation/Reference/EXTENSION_STUBS.md) - Planned extensions
+- [Roadmap](Documentation/ProjectInfo/ROADMAP.md) - Development timeline
+
+### Project-Wide
+
+- [Theory Comparison](../Documentation/Research/THEORY_COMPARISON.md) - Bimodal vs Logos
 - [LEAN Style Guide](../Documentation/Development/LEAN_STYLE_GUIDE.md) - Coding conventions
 - [Module Organization](../Documentation/Development/MODULE_ORGANIZATION.md) - Directory structure
 - [Testing Standards](../Documentation/Development/TESTING_STANDARDS.md) - Test requirements
 - [Architecture Guide](../Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
 - [Tutorial](../Documentation/UserGuide/TUTORIAL.md) - Getting started
-- [Implementation Status](../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Current status
+- [Implementation Status](../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Project status
 
 ## Navigation
 
-- **Up**: [Logos Root](../)
+- **Up**: [Project Root](../)
+- **Theory Docs**: [Documentation/](Documentation/) - Logos-specific documentation
 - **Tests**: [LogosTest/](../LogosTest/)
-- **Documentation**: [Documentation/](../Documentation/)
+- **Project Docs**: [Documentation/](../Documentation/) - Project-wide documentation
 - **Examples**: [Archive/](../Archive/)
