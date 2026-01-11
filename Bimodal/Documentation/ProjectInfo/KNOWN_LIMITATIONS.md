@@ -172,4 +172,4 @@ If you encounter issues not listed here:
 ## See Also
 
 - [Implementation Status](IMPLEMENTATION_STATUS.md) - Detailed module status
-- [Project Known Limitations](../../../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations)
+- [Project Limitations](../../../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)

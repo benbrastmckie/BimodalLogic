@@ -61,13 +61,16 @@ Most-referenced documents:
 
 ## Relationship to Project Documentation
 
-| Topic | Bimodal-Specific | Project-Wide |
-|-------|------------------|--------------|
-| Getting started | [QUICKSTART.md](UserGuide/QUICKSTART.md) | [TUTORIAL.md](../../Documentation/UserGuide/TUTORIAL.md) |
-| Axioms | [AXIOM_REFERENCE.md](Reference/AXIOM_REFERENCE.md) | [OPERATORS.md](../../Documentation/Reference/OPERATORS.md) |
-| Status | [IMPLEMENTATION_STATUS.md](ProjectInfo/IMPLEMENTATION_STATUS.md) | [IMPLEMENTATION_STATUS.md](../../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) |
-| Style | — | [LEAN_STYLE_GUIDE.md](../../Documentation/Development/LEAN_STYLE_GUIDE.md) |
-| Testing | — | [TESTING_STANDARDS.md](../../Documentation/Development/TESTING_STANDARDS.md) |
+**Bimodal-Specific**:
+- [QUICKSTART](UserGuide/QUICKSTART.md) - Getting started with Bimodal
+- [AXIOM_REFERENCE](Reference/AXIOM_REFERENCE.md) - TM axiom schemas
+- [STATUS](ProjectInfo/IMPLEMENTATION_STATUS.md) - Module status
+
+**Project-Wide** (in [Documentation/](../../Documentation/)):
+- [TUTORIAL](../../Documentation/UserGuide/TUTORIAL.md) - General tutorial
+- [OPERATORS](../../Documentation/Reference/OPERATORS.md) - Operator reference
+- [STYLE_GUIDE](../../Documentation/Development/LEAN_STYLE_GUIDE.md) - Coding style
+- [TESTING](../../Documentation/Development/TESTING_STANDARDS.md) - Test standards
 
 ## Navigation
 
