@@ -55,13 +55,13 @@
     {
       "project_number": 392,
       "project_name": "enhance_todo_command_orphan_tracking",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "description": "Enhance /todo command to track orphaned directories in archive/state.json. Modify detection to check both state.json AND archive/state.json, and add orphan entries to archive/state.json when archiving (not just move directories). This ensures all project directories in specs/archive/ are accounted for by state files.",
       "effort": "2-3 hours",
       "created": "2026-01-12T12:00:00Z",
-      "last_updated": "2026-01-11T21:30:00Z",
+      "last_updated": "2026-01-11T21:45:00Z",
       "artifacts": [
         {
           "type": "research",
@@ -70,10 +70,15 @@
         {
           "type": "plan",
           "path": ".claude/specs/392_enhance_todo_command_orphan_tracking/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/392_enhance_todo_command_orphan_tracking/summaries/implementation-summary-20260111.md"
         }
       ],
       "plan_version": "001",
-      "implementing_started": "2026-01-11"
+      "implementing_started": "2026-01-11",
+      "completed": "2026-01-11T21:45:00Z"
     },
     {
       "project_number": 391,

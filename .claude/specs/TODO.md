@@ -49,16 +49,18 @@ Troubleshoot and provide an elegant, high-quality solution for style file paths.
 
 ### 392. Enhance /todo command orphan tracking
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-11
 - **Started**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [research-001.md](.claude/specs/392_enhance_todo_command_orphan_tracking/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/392_enhance_todo_command_orphan_tracking/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/392_enhance_todo_command_orphan_tracking/summaries/implementation-summary-20260111.md)
 
 **Description**: Enhance /todo command to track orphaned directories in archive/state.json. Currently, orphaned directories (project directories not tracked in any state file) are moved to archive/ but NOT added to archive/state.json. This task modifies:
 1. Step 2.5 detection to check both state.json AND archive/state.json (with flattened queries)
