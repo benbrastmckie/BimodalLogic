@@ -65,43 +65,26 @@ noncomputable def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp (((P.imp F
   exact Propositional.classical_merge P Q
 
 /-!
-## Helper Lemmas for Conditional Modal Reasoning
--/
+## Note on Diamond Monotonicity
 
-/--
-**BLOCKED**: Implication form of diamond monotonicity: `⊢ (φ → ψ) → (◇φ → ◇ψ)`.
+The theorem `(φ → ψ) → (◇φ → ◇ψ)` (diamond monotonicity as object-level implication)
+is **NOT VALID** in modal logic and cannot be derived.
 
-**IMPORTANT**: This theorem is NOT VALID in modal logic as an object-level implication!
-
-The meta-rule diamond_mono (if `⊢ φ → ψ` then `⊢ ◇φ → ◇ψ`) IS valid because it applies
-necessitation to pure theorems. However, the implication form `(φ → ψ) → (◇φ → ◇ψ)` is
-NOT valid because local truth of φ → ψ at one world doesn't guarantee modal relationships.
+**Why it fails**: The meta-rule diamond_mono (if `⊢ φ → ψ` then `⊢ ◇φ → ◇ψ`) IS valid
+because it applies necessitation to pure theorems. However, the implication form
+`(φ → ψ) → (◇φ → ◇ψ)` is NOT valid because local truth of φ → ψ at one world doesn't
+guarantee modal relationships across worlds.
 
 **Counter-model**: In S5 with worlds w0, w1 (full accessibility):
 - A true everywhere, B true only at w0
 - At w0: A → B is TRUE (both hold), □A is TRUE (A everywhere), □B is FALSE (B fails at w1)
 - So (A → B) → (□A → □B) = T → (T → F) = FALSE
+- The same countermodel applies to diamond via duality.
 
-The same countermodel applies to diamond via duality.
-
-**Consequence**: Phase 2 of Plan 059 is blocked. The `diamond_mono_conditional` lemma
-cannot be derived as originally planned. Alternative approaches for s4_diamond_box_conj
-must be found.
+**Valid Alternative**: Use `k_dist_diamond` below: `□(A → B) → (◇A → ◇B)`.
+This works because the implication A → B must be NECESSARY (hold at all worlds),
+not just locally true. See `k_dist_diamond` at line ~316 for the fully proven version.
 -/
-def diamond_mono_imp (φ ψ : Formula) : ⊢ (φ.imp ψ).imp (φ.diamond.imp ψ.diamond) := by
-  -- NOT DERIVABLE as object-level theorem - see docstring
-  -- This theorem is included with sorry to document the blocking dependency
-  sorry
-
-/--
-**BLOCKED**: Conditional Diamond Monotonicity - depends on diamond_mono_imp which is not derivable.
-
-See diamond_mono_imp documentation for why this is blocked.
--/
-def diamond_mono_conditional {θ φ ψ : Formula}
-    (h : ⊢ θ.imp (φ.imp ψ)) : ⊢ θ.imp (φ.diamond.imp ψ.diamond) := by
-  have dmi : ⊢ (φ.imp ψ).imp (φ.diamond.imp ψ.diamond) := diamond_mono_imp φ ψ
-  exact imp_trans h dmi
 
 /-!
 ## Phase 2: Modal S5 Theorems
