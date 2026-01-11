@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T12:00:00Z
-next_project_number: 398
+next_project_number: 400
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -30,9 +30,10 @@ technical_debt:
 
 ### 396. Fix LaTeX build missing style files
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
+- **Started**: 2026-01-11
 - **Priority**: High
 - **Language**: latex
 - **Blocking**: None
@@ -95,9 +96,33 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 381
+- **Subtasks**: 398, 399
 - **Research**: [research-001.md](.claude/specs/394_research_port_causal_semantics_from_paper/reports/research-001.md), [research-002.md](.claude/specs/394_research_port_causal_semantics_from_paper/reports/research-002.md)
 
 **Description**: Research and port the correct causal operator semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to recursive-semantics.md first, then to Lean. The causal operator is primitive (like the counterfactual conditional) and requires careful adaptation to the more sophisticated theory of time in Logos.
+
+---
+
+### 398. Port causal semantics to recursive-semantics.md
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: markdown
+- **Parent**: Task 394
+
+**Description**: Port the causal semantics from sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos. Add closeness ordering, evolutions, subevolutions, causal context with background assumptions, and the three-condition truth clause for causation.
+
+---
+
+### 399. Implement causal semantics in Lean
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Parent**: Task 394
+- **Dependencies**: 398
+
+**Description**: Implement the causal operator semantics in Lean based on the approved recursive-semantics.md specification. Extend CoreFrame with closeness ordering, define Evolution and ExpectedEvolution structures, implement CausalContext with background assumptions, and replace the current counterfactual-based definition in Truth.lean with the three-condition hyperintensional semantics.
 
 ---
 

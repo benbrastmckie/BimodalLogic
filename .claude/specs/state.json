@@ -1,8 +1,33 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T12:00:00Z",
-  "next_project_number": 398,
+  "next_project_number": 400,
   "active_projects": [
+    {
+      "project_number": 398,
+      "project_name": "port_causal_semantics_to_recursive_semantics_md",
+      "status": "not_started",
+      "language": "markdown",
+      "priority": "high",
+      "description": "Port the causal semantics from sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos. Add closeness ordering, evolutions, subevolutions, causal context with background assumptions, and the three-condition truth clause for causation.",
+      "created": "2026-01-11T21:45:37Z",
+      "last_updated": "2026-01-11T21:45:37Z",
+      "parent_task": 394
+    },
+    {
+      "project_number": 399,
+      "project_name": "implement_causal_semantics_in_lean",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "description": "Implement the causal operator semantics in Lean based on the approved recursive-semantics.md specification. Extend CoreFrame with closeness ordering, define Evolution and ExpectedEvolution structures, implement CausalContext with background assumptions, and replace the current counterfactual-based definition in Truth.lean with the three-condition hyperintensional semantics.",
+      "created": "2026-01-11T21:45:37Z",
+      "last_updated": "2026-01-11T21:45:37Z",
+      "parent_task": 394,
+      "dependencies": [
+        398
+      ]
+    },
     {
       "project_number": 397,
       "project_name": "enhance_revise_to_update_description_when_no_plan_exists",
@@ -44,8 +69,12 @@
       "priority": "high",
       "description": "Research and port the correct causal operator semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to Logos/SubTheories/Explanation/Truth.lean. The causal operator is primitive (like the counterfactual conditional) and requires careful adaptation to the more sophisticated theory of time in Logos.",
       "created": "2026-01-11T21:09:15Z",
-      "last_updated": "2026-01-12T12:45:00Z",
-      "parent_task": 381
+      "last_updated": "2026-01-11T21:45:37Z",
+      "parent_task": 381,
+      "subtasks": [
+        398,
+        399
+      ]
     },
     {
       "project_number": 393,
