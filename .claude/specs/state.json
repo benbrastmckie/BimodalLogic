@@ -1,29 +1,29 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-12T14:30:00Z",
+  "_last_updated": "2026-01-12T06:30:00Z",
   "next_project_number": 404,
   "active_projects": [
     {
       "project_number": 403,
       "project_name": "enforce_directory_naming_convention",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "priority": "medium",
       "description": "Research and enforce the naming convention that only directories containing Lean source code should be capitalized. Identify all exceptions like Theories/Bimodal/LaTeX/ and Theories/Logos/LaTeX/ that violate this convention, find all references that need updating, and systematically rename directories to lowercase.",
       "effort": "2-3 hours",
       "created": "2026-01-11T22:13:04Z",
-      "last_updated": "2026-01-11T22:13:04Z"
+      "last_updated": "2026-01-11T22:16:17Z"
     },
     {
       "project_number": 401,
       "project_name": "add_expanded_status_for_parent_tasks",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "description": "Add [EXPANDED] status for parent tasks after expand operation. Update state-management.md with expanded status value, modify task.md Expand Mode to set parent task status to expanded, and update task 394 to [EXPANDED] status in both state.json and TODO.md.",
       "effort": "1-2 hours",
       "created": "2026-01-11T22:10:38Z",
-      "last_updated": "2026-01-11T22:10:38Z"
+      "last_updated": "2026-01-11T22:15:28Z"
     },
     {
       "project_number": 402,
@@ -79,19 +79,6 @@
       "dependencies": [
         398
       ]
-    },
-    {
-      "project_number": 397,
-      "project_name": "enhance_revise_to_update_description_when_no_plan_exists",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "description": "Modify the /revise command to handle tasks without plans by updating the task description instead of erroring. When a task has status not_started or researched (no plan), and the user provides a revision reason, update the task description in both state.json and TODO.md, then git commit the change.",
-      "effort": "1-2 hours",
-      "created": "2026-01-11T21:42:42Z",
-      "last_updated": "2026-01-11T22:05:19Z",
-      "implementing_started": "2026-01-11T22:03:25Z",
-      "completed": "2026-01-11T22:05:19Z"
     },
     {
       "project_number": 394,

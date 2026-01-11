@@ -1,9 +1,37 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-12T14:30:00Z",
+  "_last_updated": "2026-01-12T06:30:00Z",
   "archived_projects": [],
   "completed_projects": [
+    {
+      "project_number": 397,
+      "project_name": "enhance_revise_to_update_description_when_no_plan_exists",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Modify the /revise command to handle tasks without plans by updating the task description instead of erroring. When a task has status not_started or researched (no plan), and the user provides a revision reason, update the task description in both state.json and TODO.md, then git commit the change.",
+      "effort": "1-2 hours",
+      "created": "2026-01-11T21:42:42Z",
+      "last_updated": "2026-01-11T22:05:19Z",
+      "implementing_started": "2026-01-11T22:03:25Z",
+      "completed": "2026-01-11T22:05:19Z",
+      "archived": "2026-01-12T06:30:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/archive/397_enhance_revise_to_update_description_when_no_plan_exists/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/archive/397_enhance_revise_to_update_description_when_no_plan_exists/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/archive/397_enhance_revise_to_update_description_when_no_plan_exists/summaries/implementation-summary-20260112.md"
+        }
+      ]
+    },
     {
       "project_number": 341,
       "project_name": "create_deprecation_policy_and_migration_guide",
@@ -1734,6 +1762,424 @@
       "description": "Create advanced Bimodal tutorial covering proof search tactics, custom tactic development, and metalogic with hands-on exercises.",
       "abandoned_reason": "Superseded by existing documentation. ~80% of planned content already exists in TUTORIAL.md, TACTIC_DEVELOPMENT.md, EXAMPLES.md. New targeted task created for remaining gaps.",
       "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 170,
+      "project_name": "improve_maintenance_report_system_and_documentation",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 170,
+      "project_name": "maintenance_report_improvements",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 173,
+      "project_name": "integration_tests",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 184,
+      "project_name": "truth_lean_build_error",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 189,
+      "project_name": "research_divide_flag",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 190,
+      "project_name": "improve_maintenance_md_documentation",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 190,
+      "project_name": "meta_system_optimization",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 193,
+      "project_name": "prove_is_valid_swap_involution",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 196,
+      "project_name": "complete_opencode_refactor",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 198,
+      "project_name": "command_argument_fix",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 202,
+      "project_name": "fix_verbose_artifact_output",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 209,
+      "project_name": "research_lean4_involution_techniques",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 211,
+      "project_name": "standardize_command_lifecycle_procedures",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 212,
+      "project_name": "research_lean_lsp_mcp_usage",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 213,
+      "project_name": "resolve_is_valid_swap_involution_blocker",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 214,
+      "project_name": "orchestrator_improvements",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 215,
+      "project_name": "fix_todo_task_removal",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 216,
+      "project_name": "improve_task_tracking_updates",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 219,
+      "project_name": "restructure_module_hierarchy",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 225,
+      "project_name": "codebase_review",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 227,
+      "project_name": "fix_systematic_status_sync_manager_failures",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 228,
+      "project_name": "fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 229,
+      "project_name": "review_and_optimize_orchestrator_command_integration_for_context_efficiency",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 230,
+      "project_name": "codebase_review",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 230,
+      "project_name": "fix_review_command_to_create_completed_task_entry_in_todomd_with_review_summary_link",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 231,
+      "project_name": "fix_systematic_command_stage_7_postflight_execution_failures",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 233,
+      "project_name": "research_and_fix_systematic_command_execution_failures_causing_incomplete_todomd_updates",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 234,
+      "project_name": "systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 235,
+      "project_name": "find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 279,
+      "project_name": "systematically_fix_metadata_lookup_to_use_state_json_instead_of_todo_md",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 284,
+      "project_name": "todo_auto_commit",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 314,
+      "project_name": "standardize_todo_md_task_entry_format_and_artifact_ordering",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 325,
+      "project_name": "create___recover_flag_for_task_command_to_unarchive_projects",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 326,
+      "project_name": "create___divide_flag_for_task_command_with_task_division_capability",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 328,
+      "project_name": "fix_task_command_to_only_create_task_entries_and_never_implement_directly",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 330,
+      "project_name": "create___sync_flag_for_task_command_to_synchronize_todo_md_and_state_json",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 332,
+      "project_name": "design_and_implement_comprehensive_task_command_enhancements",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 333,
+      "project_name": "fix_workflow_command_todomd_statejson_synchronization_failures",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": []
     }
   ]
 }

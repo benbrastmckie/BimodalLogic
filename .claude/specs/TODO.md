@@ -1,21 +1,21 @@
 ---
-last_updated: 2026-01-12T14:30:00Z
+last_updated: 2026-01-12T06:30:00Z
 next_project_number: 404
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 18
-  completed: 76
+  active: 17
+  completed: 77
   in_progress: 1
-  not_started: 12
+  not_started: 11
   abandoned: 7
   total: 101
 priority_distribution:
   critical: 0
   high: 4
-  medium: 4
+  medium: 3
   low: 10
 technical_debt:
   sorry_count: 19
@@ -95,7 +95,7 @@ technical_debt:
 
 ### 403. Enforce directory naming convention
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 
@@ -105,7 +105,7 @@ technical_debt:
 
 ### 401. Add [EXPANDED] status for parent tasks
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 
@@ -131,24 +131,6 @@ technical_debt:
 - **Language**: lean
 
 **Description**: Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.
-
----
-
-### 397. Enhance /revise to update description when no plan exists
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [research-001.md](.claude/specs/397_enhance_revise_to_update_description_when_no_plan_exists/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/397_enhance_revise_to_update_description_when_no_plan_exists/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/397_enhance_revise_to_update_description_when_no_plan_exists/summaries/implementation-summary-20260112.md)
-
-**Description**: Modify the /revise command to handle tasks without plans by updating the task description instead of erroring. When a task has status `not_started` or `researched` (no plan), and the user provides a revision reason, update the task description in both state.json and TODO.md, then git commit the change.
 
 ---
 
