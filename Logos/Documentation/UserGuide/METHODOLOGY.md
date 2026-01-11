@@ -6,7 +6,7 @@ _[Return to Project Overview](../../README.md)_
 
 Logos is a formal language of thought designed to enable verified AI reasoning through progressive operator extensibility. The language implements an extension architecture where operators build incrementally from foundational logic (Boolean, modal, temporal) through domain-specific reasoning capabilities (explanatory, epistemic, normative). This design enables AI systems to reason with precisely the expressive power required for each application without unnecessary complexity.
 
-**Core Principle**: "Any combination of extensions can be added to the Core Extension"
+**Core Principle**: "Any combination of extensions can be added to the Explanatory Extension"
 
 The complete Logos includes all three extensions, but applications can selectively load only needed operator families. A medical planning system might require Core + Explanatory operators, while a legal reasoning system might need Core + Epistemic operators, and a multi-agent coordination system might need all three extensions.
 
@@ -44,9 +44,9 @@ This contrasts sharply with natural language reasoning data, which is typically 
 
 ## Extension Architecture
 
-### Extension 0 (Core TM): Boolean, Modal, Temporal
+### Extension 0 (Explanatory TM): Boolean, Modal, Temporal
 
-The Core Extension provides foundational reasoning through Boolean connectives, modal operators (necessity/possibility), and temporal operators (past/future). This extension implements the bimodal logic TM with task semantics.
+The Explanatory Extension provides foundational reasoning through Boolean connectives, modal operators (necessity/possibility), and temporal operators (past/future). This extension implements the bimodal logic TM with task semantics.
 
 **Operators**:
 - Boolean: `¬`, `∧`, `∨`, `→`, `↔`, `⊥`, `⊤`
@@ -62,7 +62,7 @@ The Core Extension provides foundational reasoning through Boolean connectives, 
 
 ### Extension 1 (Explanatory): Counterfactual, Constitutive, Causal
 
-Extension 1 extends the Core Extension with operators for explanatory reasoning, enabling AI systems to understand and reason about counterfactual scenarios, constitutive relationships, and causal connections.
+Extension 1 extends the Explanatory Extension with operators for explanatory reasoning, enabling AI systems to understand and reason about counterfactual scenarios, constitutive relationships, and causal connections.
 
 **Operators**:
 - Counterfactual: `□→` (would), `◇→` (might)
@@ -75,7 +75,7 @@ Extension 1 extends the Core Extension with operators for explanatory reasoning,
 
 ### Extension 2 (Epistemic): Belief, Probability, Knowledge
 
-Extension 2 extends the Core Extension with operators for reasoning under uncertainty, enabling AI systems to represent and reason about beliefs, probabilities, and knowledge states.
+Extension 2 extends the Explanatory Extension with operators for reasoning under uncertainty, enabling AI systems to represent and reason about beliefs, probabilities, and knowledge states.
 
 **Operators**:
 - Belief: `B` (agent belief)
@@ -89,7 +89,7 @@ Extension 2 extends the Core Extension with operators for reasoning under uncert
 
 ### Extension 3 (Normative): Obligation, Permission, Preference
 
-Extension 3 extends the Core Extension with operators for ethical and cooperative reasoning, enabling AI systems to represent and reason about obligations, permissions, and preferences.
+Extension 3 extends the Explanatory Extension with operators for ethical and cooperative reasoning, enabling AI systems to represent and reason about obligations, permissions, and preferences.
 
 **Operators**:
 - Deontic: `O` (obligation), `P` (permission)
@@ -152,7 +152,7 @@ The semantic model theory underlying Logos enables not just **deductive reasonin
 - If the inference is valid, the proof-checker derives it with a machine-checkable proof (positive training signal)
 - If the inference is invalid, the model-checker refutes it with a counterexample (corrective training signal)
 
-**Current Focus**: The implemented Core Extension provides complete infrastructure for training deductive reasoning with modal and temporal operators.
+**Current Focus**: The implemented Explanatory Extension provides complete infrastructure for training deductive reasoning with modal and temporal operators.
 
 #### Abductive Reasoning
 
@@ -193,7 +193,7 @@ Training AI systems to reason in Logos—interpreted through semantic models wit
 
 ## Combination Principles
 
-**Any combination of extensions can be added to the Core Extension**:
+**Any combination of extensions can be added to the Explanatory Extension**:
 - Core only: Boolean, modal, temporal reasoning
 - Core + Extension 1: Adds explanatory reasoning
 - Core + Extension 2: Adds epistemic reasoning

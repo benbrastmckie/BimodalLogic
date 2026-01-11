@@ -219,11 +219,13 @@ For detailed implementation status, see [IMPLEMENTATION_STATUS.md](../Documentat
 
 ## Related Documentation
 
+- [Test Coverage Report](../Bimodal/Documentation/ProjectInfo/TEST_COVERAGE.md) - Definition coverage metrics
 - [Testing Standards](../Documentation/Development/TESTING_STANDARDS.md) - Detailed test requirements
 - [LEAN Style Guide](../Documentation/Development/LEAN_STYLE_GUIDE.md) - Code conventions
 - [Implementation Status](../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module status
 - [Property Testing Guide](Property/README.md) - Property-based testing patterns
 - [Integration Testing Guide](Integration/README.md) - Integration test patterns
+- [Performance Targets](../Bimodal/Documentation/ProjectInfo/PERFORMANCE_TARGETS.md) - Benchmark baselines
 
 ## Navigation
 

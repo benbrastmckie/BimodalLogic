@@ -9,16 +9,16 @@ Logos is organized into semantic extensions, each building upon the previous wit
 | Term | Definition | Related Terms |
 |------|------------|---------------|
 | Constitutive Foundation | Foundation with hyperintensional semantics over mereological state spaces | State space, Parthood, Bilateral proposition |
-| Core Extension | Intensional semantics with modal, temporal, and counterfactual operators | World-history, Task relation, TM logic |
+| Explanatory Extension | Intensional semantics with modal, temporal, and counterfactual operators | World-history, Task relation, TM logic |
 | Epistemic Extension | Extensions for belief, knowledge, and probability operators | Credence function, Epistemic modality |
 | Normative Extension | Extensions for obligation, permission, and preference operators | Value ordering, Deontic logic |
 | Spatial Extension | Extensions for spatial reasoning and location operators | Location space, Spatial relations |
 | Agential Extension | Extensions for multi-agent reasoning (requires middle extension) | Agent-relative accessibility |
-| TM logic | Bimodal logic combining Tense (temporal) and Modality (modal) operators | Core Extension |
+| TM logic | Bimodal logic combining Tense (temporal) and Modality (modal) operators | Explanatory Extension |
 | Progressive Extension | Methodology enabling incremental addition of operator extensions | Extension Architecture |
 | Semantic Progression | Each extension's frame includes all structure from previous extensions | Extension Architecture |
 
-## Boolean Operators (Constitutive Foundation/Core Extension)
+## Boolean Operators (Constitutive Foundation/Explanatory Extension)
 
 | Symbol | Name | Definition | Aliases |
 |--------|------|------------|---------|
@@ -30,7 +30,7 @@ Logos is organized into semantic extensions, each building upon the previous wit
 | `⊥` | Falsity | Logical constant false | bot, bottom |
 | `⊤` | Truth | Logical constant true | top |
 
-## Modal Operators (Core Extension)
+## Modal Operators (Explanatory Extension)
 
 | Symbol | Name | Definition | Aliases |
 |--------|------|------------|---------|
@@ -40,7 +40,7 @@ Logos is organized into semantic extensions, each building upon the previous wit
 
 **S5 Modal Logic**: Logos implements S5 axioms (MT, M4, MB) ensuring reflexivity, transitivity, and symmetry for modal accessibility relation.
 
-## Temporal Operators (Core Extension)
+## Temporal Operators (Explanatory Extension)
 
 | Symbol | Name | Function Name | Definition | Aliases |
 |--------|------|---------------|------------|---------|
@@ -61,7 +61,7 @@ Logos is organized into semantic extensions, each building upon the previous wit
 - `G φ` → `Formula.all_future φ` (universal future, primitive)
 - `F φ` → `some_future φ` (existential future, derived via `¬(all_future ¬φ)`)
 
-## Bimodal Interaction (Core Extension)
+## Bimodal Interaction (Explanatory Extension)
 
 | Term | Definition | Related Axioms |
 |------|------------|----------------|
@@ -78,7 +78,7 @@ Logos is organized into semantic extensions, each building upon the previous wit
 | `⊑` | Essence | "A is necessary for B" or "A is essential to B" | Constitutive reasoning |
 | `≼` | Relevance | "A is wholly relevant to B" | Constitutive reasoning |
 
-## Causal Operators (Core Extension)
+## Causal Operators (Explanatory Extension)
 
 | Symbol | Name | Definition | Domain |
 |--------|------|------------|--------|
@@ -89,7 +89,7 @@ Logos is organized into semantic extensions, each building upon the previous wit
 | `↓ⁱ` | Recall | Evaluate at stored time i | Temporal reference |
 | `→_w` | Imposition | "imposing t on w yields w'" (t →_w w') | Counterfactual semantics |
 
-## Extended Tense Operators (Core Extension)
+## Extended Tense Operators (Explanatory Extension)
 
 | Symbol | Name | Definition | Domain |
 |--------|------|------------|--------|
@@ -140,13 +140,13 @@ Logos is organized into semantic extensions, each building upon the previous wit
 | Bilateral Proposition | Ordered pair ⟨V, F⟩ of verifier and falsifier states | Hyperintensional semantics |
 | Hyperintensional Semantics | Semantics distinguishing propositions with same truth-value profile | Constitutive Foundation |
 
-## Core Extension Concepts
+## Explanatory Extension Concepts
 
 | Term | Definition | Related Terms |
 |------|------------|---------------|
 | Task Relation | Three-place relation ⇒ constraining state transitions with compositionality, containment, and maximality constraints | Causal frame |
 | Possible State | State s where s ⇒_0 s (state has a trivial task to itself) | Task relation, Causal frame |
-| World-state | Maximal possible state | Core Extension |
+| World-state | Maximal possible state | Explanatory Extension |
 | World-history | Function τ from convex time set to world-states respecting task relation | Causal frame |
 | Temporal Order | Totally ordered abelian group D = ⟨D, +, ≤⟩ of times | Causal frame |
 | Convex Time Set | Time interval without gaps | World-history |
@@ -187,7 +187,7 @@ Logos is organized into semantic extensions, each building upon the previous wit
 | P5 | `◇▽φ → △◇φ` | Persistent possibility |
 | P6 | `▽□φ → □△φ` | Occurrent necessity is perpetual |
 
-## Axioms (Core Extension)
+## Axioms (Explanatory Extension)
 
 | Name | Statement | Purpose |
 |------|-----------|---------|
