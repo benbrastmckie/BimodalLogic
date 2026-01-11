@@ -163,26 +163,28 @@ technical_debt:
 
 ---
 
-### 180. Add test coverage metrics and reporting
-- **Effort**: 9 hours
-- **Status**: [NOT STARTED]
+### 180. Add Bimodal test coverage metrics and reporting
+- **Effort**: 6 hours
+- **Status**: [PLANNED]
+- **Started**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Priority**: Medium
-- **Language**: markdown
+- **Language**: lean
 - **Blocking**: None
-- **Dependencies**: 175
+- **Dependencies**: None
+- **Plan**: [implementation-001.md](.claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-001.md)
 - **Files Affected**:
-  - .github/workflows/coverage.yml
-  - scripts/GenerateCoverage.lean (new)
-  - Documentation/Development/TEST_COVERAGE.md (new)
-- **Description**: Integrate test coverage measurement tool, generate coverage reports, add coverage reporting to CI, and create coverage improvement plan. TESTING_STANDARDS.md defines target of at least 85 percent but no measurement exists.
+  - scripts/coverage-report.sh (new)
+  - Bimodal/Documentation/ProjectInfo/TEST_COVERAGE.md (new)
+  - BimodalTest/README.md (enhance)
+- **Description**: Create test coverage measurement and reporting for Bimodal. BimodalTest/ has 30 test files with documented standards (85% target) but no tooling to measure actual coverage. Implement definition-level coverage tracking and sorry audit.
 - **Acceptance Criteria**:
-  - [ ] Coverage measurement tool integrated
-  - [ ] Coverage reports generated automatically
-  - [ ] Coverage reporting integrated into CI
-  - [ ] Coverage improvement plan created
-  - [ ] Coverage measurement process documented
-  - [ ] Current coverage baseline established
-- **Impact**: Enables data-driven test improvement by identifying untested code paths and tracking coverage over time.
+  - [x] Testing standards documented (EXISTS: BimodalTest/README.md)
+  - [ ] Definition-level coverage analysis script
+  - [ ] Sorry audit tracking across test files
+  - [ ] Coverage baseline documented in TEST_COVERAGE.md
+  - [ ] Module-by-module coverage breakdown
+- **Impact**: Enables data-driven test improvement by tracking which definitions have tests and identifying sorry placeholders.
 
 ---
 

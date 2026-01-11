@@ -263,13 +263,22 @@
       "project_number": 180,
       "project_name": "add_test_coverage_metrics_and_reporting",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "planned",
+      "status": "planned",
       "priority": "medium",
-      "language": "markdown",
+      "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T01:22:38Z",
-      "effort": "9 hours"
+      "last_updated": "2026-01-11T22:30:00Z",
+      "effort": "6 hours",
+      "started": "2026-01-11",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-001.md"
+        }
+      ],
+      "description": "Create test coverage measurement and reporting for Bimodal. Definition-level coverage tracking and sorry audit."
     },
     {
       "project_number": 257,
