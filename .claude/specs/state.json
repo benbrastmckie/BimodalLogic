@@ -6,32 +6,37 @@
     {
       "project_number": 390,
       "project_name": "research_logos_original_archive_removal",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "priority": "medium",
       "description": "Research whether .claude/archive/logos-original/ can be removed or if the files contain important content not represented elsewhere that should be preserved.",
       "created": "2026-01-11T20:27:46Z",
-      "last_updated": "2026-01-11T20:27:46Z"
+      "last_updated": "2026-01-11T20:29:01Z"
     },
     {
       "project_number": 389,
       "project_name": "standardize_nnn_number_format",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-11T20:22:45Z",
-      "last_updated": "2026-01-11T20:26:41Z",
+      "last_updated": "2026-01-11T20:29:04Z",
       "artifacts": [
         {
           "type": "research",
           "path": ".claude/specs/389_standardize_nnn_number_format/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/389_standardize_nnn_number_format/plans/implementation-001.md"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 388,
       "project_name": "fix_todo_command_directory_archiving",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "high",
       "description": "Fix /todo command to move project directories (.claude/specs/{N}_{SLUG}/) to archive directory (.claude/specs/archive/{N}_{SLUG}/) when archiving completed/abandoned tasks. Currently the command updates state.json and archive/state.json correctly but fails to execute Step 5D which moves the directories.",
