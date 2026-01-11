@@ -165,32 +165,6 @@
       "effort": "13 hours"
     },
     {
-      "project_number": 178,
-      "project_name": "complete_advanced_tutorial_sections_with_hands_on_exercises",
-      "type": "feature",
-      "phase": "planned",
-      "status": "abandoned",
-      "priority": "medium",
-      "language": "markdown",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T21:10:49Z",
-      "effort": "10 hours",
-      "started": "2026-01-11",
-      "plan_version": "001",
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": ".claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/plans/implementation-001.md"
-        },
-        {
-          "path": ".claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/reports/research-001.md",
-          "type": "research"
-        }
-      ],
-      "description": "Create advanced Bimodal tutorial covering proof search tactics, custom tactic development, and metalogic with hands-on exercises.",
-      "abandoned_reason": "Superseded by existing documentation. ~80% of planned content already exists in TUTORIAL.md, TACTIC_DEVELOPMENT.md, EXAMPLES.md. New targeted task created for remaining gaps."
-    },
-    {
       "project_number": 257,
       "project_name": "completeness_proofs",
       "type": "feature",

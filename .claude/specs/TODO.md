@@ -1,21 +1,21 @@
 ---
-last_updated: 2026-01-12T12:00:00Z
+last_updated: 2026-01-12T14:30:00Z
 next_project_number: 401
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 25
-  completed: 70
-  in_progress: 2
-  not_started: 15
-  abandoned: 6
+  active: 18
+  completed: 76
+  in_progress: 1
+  not_started: 12
+  abandoned: 7
   total: 101
 priority_distribution:
   critical: 0
-  high: 8
-  medium: 7
+  high: 4
+  medium: 4
   low: 10
 technical_debt:
   sorry_count: 19
@@ -27,71 +27,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 396. Fix LaTeX build missing style files
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Started**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: High
-- **Language**: latex
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [research-001.md](.claude/specs/396_fix_latex_build_missing_style_files/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/396_fix_latex_build_missing_style_files/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/396_fix_latex_build_missing_style_files/summaries/implementation-summary-20260111.md)
-
-**Description**: Fix LaTeX build errors in Theories/Logos/LaTeX/LogosReference.tex and Theories/Bimodal/LaTeX/BimodalReference.tex caused by missing style files:
-- `logos-notation.sty` not found (Logos)
-- `../../latex/notation-standards.sty` not found (Bimodal)
-- `assets/bimodal-notation.sty` not found (Bimodal)
-
-Troubleshoot and provide an elegant, high-quality solution for style file paths.
-
----
-
-### 392. Enhance /todo command orphan tracking
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-11
-- **Started**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: High
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [research-001.md](.claude/specs/392_enhance_todo_command_orphan_tracking/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/392_enhance_todo_command_orphan_tracking/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/392_enhance_todo_command_orphan_tracking/summaries/implementation-summary-20260111.md)
-
-**Description**: Enhance /todo command to track orphaned directories in archive/state.json. Currently, orphaned directories (project directories not tracked in any state file) are moved to archive/ but NOT added to archive/state.json. This task modifies:
-1. Step 2.5 detection to check both state.json AND archive/state.json (with flattened queries)
-2. Step 5.E to add orphan entries to archive/state.json when archiving (not just move directories)
-
-This ensures all project directories in specs/archive/ are accounted for by state files.
-
----
-
-### 393. Remove incorrect causal operator definition
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Started**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: High
-- **Language**: lean
-- **Parent**: Task 381
-- **Research**: [research-001.md](.claude/specs/393_remove_incorrect_causal_operator_definition/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/393_remove_incorrect_causal_operator_definition/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/393_remove_incorrect_causal_operator_definition/summaries/implementation-summary-20260112.md)
-
-**Description**: Remove the incorrect definition of the causal operator (which was defined in terms of the counterfactual conditional) and leave behind a stub or comment for systematic future implementation of the correct semantics.
-
----
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -183,51 +118,6 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 
 ---
 
-### 381. Add causal semantics infrastructure
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: lean
-- **Research**: [research-001.md](.claude/specs/381_add_causal_semantics_infrastructure/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/381_add_causal_semantics_infrastructure/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/381_add_causal_semantics_infrastructure/summaries/implementation-summary-20260112.md)
-- **Subtasks**: 393, 394
-
-**Description**: Add infrastructure and comments for causal semantics in Logos theory. The causal operator was missing from RECURSIVE_SEMANTICS.md line 29 and has been fixed, but the Lean implementation needs appropriate stub definitions and TODO comments to enable future implementation of causation semantics.
-
----
-
-### 382. Create Spatial/ subtheory stub
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: lean
-- **Research**: [research-001.md](.claude/specs/382_create_spatial_subtheory_stub/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/382_create_spatial_subtheory_stub/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/382_create_spatial_subtheory_stub/summaries/implementation-summary-20260112.md)
-
-**Description**: Create Logos/Spatial/ subtheory stub following the pattern of other extension layers. Task 377 implemented Core but did not create the Spatial extension layer. Create minimal stub structure with appropriate documentation.
-
----
-
-### 178. Complete Bimodal advanced tutorial with exercises
-- **Effort**: 10 hours
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-01-12
-- **Priority**: Medium
-- **Language**: markdown
-- **Research**: [research-001.md](.claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/reports/research-001.md)
-- **Superseded by**: Task 395
-
-**Abandonment Reason**: Superseded by existing documentation. Research found ~80% of planned content already exists in TUTORIAL.md (433 lines), TACTIC_DEVELOPMENT.md (787 lines), EXAMPLES.md (587 lines), and ARCHITECTURE.md (1403 lines). Remaining gaps (TROUBLESHOOTING.md, exercise solutions) captured in new targeted Task 395.
-
----
-
 ### 395. Create Bimodal troubleshooting guide and exercise solutions
 - **Effort**: 3-4 hours
 - **Status**: [NOT STARTED]
@@ -240,19 +130,6 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 **Files Affected**:
   - Theories/Bimodal/docs/UserGuide/TROUBLESHOOTING.md (new)
   - Theories/Bimodal/docs/UserGuide/EXAMPLES.md (modify section 7)
-
----
-
-### 391. Enforce directory naming convention for Lean projects
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: general
-- **Plan**: [implementation-001.md](.claude/specs/391_enforce_directory_naming_convention/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/391_enforce_directory_naming_convention/summaries/implementation-summary-20260112.md)
-
-**Description**: Enforce the directory naming convention that only directories containing Lean source code should be capitalized (e.g., `Logos/`, `Theories/`), while all other directories use lowercase (e.g., `docs/`, `scripts/`, `benchmarks/`). This includes: (1) Rename `Documentation/` to `docs/`, (2) Rename `LaTeX/` to `latex/`, (3) Document this standard in CONTRIBUTING.md and README.md.
 
 ---
 
