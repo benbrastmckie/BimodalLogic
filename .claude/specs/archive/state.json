@@ -1011,361 +1011,359 @@
       ],
       "archived": "2026-01-12T11:30:00Z"
     },
-    [
-      {
-        "project_number": 390,
-        "project_name": "research_logos_original_archive_removal",
-        "status": "completed",
-        "language": "general",
-        "priority": "medium",
-        "description": "Research whether .claude/archive/logos-original/ can be removed or if the files contain important content not represented elsewhere that should be preserved.",
-        "created": "2026-01-11T20:27:46Z",
-        "last_updated": "2026-01-11T20:35:02Z",
-        "artifacts": [
-          {
-            "type": "research",
-            "path": ".claude/specs/390_research_logos_original_archive_removal/reports/research-001.md"
-          }
-        ],
-        "completed": "2026-01-11",
-        "archived": "2026-01-12T11:45:00Z"
-      },
-      {
-        "project_number": 389,
-        "project_name": "standardize_nnn_number_format",
-        "status": "completed",
-        "language": "meta",
-        "priority": "medium",
-        "created": "2026-01-11T20:22:45Z",
-        "last_updated": "2026-01-11T20:34:11Z",
-        "artifacts": [
-          {
-            "type": "research",
-            "path": ".claude/specs/389_standardize_nnn_number_format/reports/research-001.md"
-          },
-          {
-            "type": "plan",
-            "path": ".claude/specs/389_standardize_nnn_number_format/plans/implementation-001.md"
-          },
-          {
-            "type": "summary",
-            "path": ".claude/specs/389_standardize_nnn_number_format/summaries/implementation-summary-20260111.md"
-          }
-        ],
-        "plan_version": "001",
-        "completed": "2026-01-11T20:34:11Z",
-        "archived": "2026-01-12T11:45:00Z"
-      },
-      {
-        "project_number": 388,
-        "project_name": "fix_todo_command_directory_archiving",
-        "status": "completed",
-        "language": "meta",
-        "priority": "high",
-        "description": "Fix /todo command to move project directories (.claude/specs/{N}_{SLUG}/) to archive directory (.claude/specs/archive/{N}_{SLUG}/) when archiving completed/abandoned tasks. Currently the command updates state.json and archive/state.json correctly but fails to execute Step 5D which moves the directories.",
-        "created": "2026-01-12T00:40:00Z",
-        "last_updated": "2026-01-12T00:55:00Z",
-        "artifacts": [
-          {
-            "type": "research",
-            "path": ".claude/specs/388_fix_todo_command_directory_archiving/reports/research-001.md"
-          },
-          {
-            "type": "plan",
-            "path": ".claude/specs/388_fix_todo_command_directory_archiving/plans/implementation-001.md"
-          },
-          {
-            "type": "summary",
-            "path": ".claude/specs/388_fix_todo_command_directory_archiving/summaries/implementation-summary-20260112.md"
-          }
-        ],
-        "plan_version": "001",
-        "completed": "2026-01-12",
-        "archived": "2026-01-12T11:45:00Z"
-      },
-      {
-        "project_number": 387,
-        "project_name": "standardize_research_file_names",
-        "status": "completed",
-        "language": "general",
-        "priority": "medium",
-        "created": "2026-01-11T20:10:25Z",
-        "last_updated": "2026-01-11T20:25:49Z",
-        "artifacts": [
-          {
-            "path": ".claude/specs/387_standardize_research_file_names/reports/research-001.md",
-            "type": "research"
-          },
-          {
-            "path": ".claude/specs/387_standardize_research_file_names/plans/implementation-001.md",
-            "type": "plan"
-          },
-          {
-            "path": ".claude/specs/387_standardize_research_file_names/summaries/implementation-summary-20260111.md",
-            "type": "summary"
-          }
-        ],
-        "plan_version": "001",
-        "completed": "2026-01-11T20:25:49Z",
-        "archived": "2026-01-12T11:45:00Z"
-      },
-      {
-        "project_number": 386,
-        "project_name": "fix_command_artifact_linking_in_todo_md",
-        "status": "completed",
-        "language": "meta",
-        "priority": "high",
-        "description": "Fix /research command (and audit other commands) to properly link new artifacts in TODO.md. The command adds artifacts to state.json but fails to add corresponding links in TODO.md entries. Audit /plan, /implement, and /revise commands for similar artifact linking failures.",
-        "created": "2026-01-11T19:58:51Z",
-        "last_updated": "2026-01-11T20:15:28Z",
-        "researched": "2026-01-11",
-        "artifacts": [
-          {
-            "type": "research",
-            "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/reports/research-001.md"
-          },
-          {
-            "type": "plan",
-            "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/plans/implementation-001.md"
-          },
-          {
-            "type": "summary",
-            "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/summaries/implementation-summary-20260111.md"
-          }
-        ],
-        "planned": "2026-01-11",
-        "plan_version": "001",
-        "completed": "2026-01-11",
-        "archived": "2026-01-12T11:45:00Z"
-      },
-      {
-        "project_number": 385,
-        "project_name": "refactor_meta_command_task_creation",
-        "status": "completed",
-        "language": "meta",
-        "priority": "high",
-        "description": "Refactor the /meta command to conduct careful analysis of the .claude/ agent system given the prompt, ask follow-up questions if additional clarity would improve understanding, and then produce an appropriate number of tasks (similar to /task --divide) with dependencies indicated. If /meta is run without a prompt, run in full interactive mode to interview the user until sufficient detail has been provided to create the appropriate number of tasks with dependencies.",
-        "created": "2026-01-11T19:39:55Z",
-        "last_updated": "2026-01-11T21:00:00Z",
-        "started": "2026-01-12",
-        "researched": "2026-01-12",
-        "artifacts": [
-          {
-            "type": "research",
-            "path": ".claude/specs/385_refactor_meta_command_task_creation/reports/research-001.md"
-          },
-          {
-            "type": "research",
-            "path": ".claude/specs/385_refactor_meta_command_task_creation/reports/research-002.md"
-          },
-          {
-            "type": "plan",
-            "path": ".claude/specs/385_refactor_meta_command_task_creation/plans/implementation-001.md"
-          },
-          {
-            "type": "plan",
-            "path": ".claude/specs/385_refactor_meta_command_task_creation/plans/implementation-002.md"
-          },
-          {
-            "type": "summary",
-            "path": ".claude/specs/385_refactor_meta_command_task_creation/summaries/implementation-summary-20260111.md"
-          }
-        ],
-        "planned": "2026-01-12",
-        "plan_version": 2,
-        "plan_revised": "2026-01-12",
-        "completed": "2026-01-11",
-        "archived": "2026-01-12T11:45:00Z"
-      },
-      {
-        "project_number": 384,
-        "project_name": "fix_latex_package_path_warnings",
-        "status": "completed",
-        "language": "latex",
-        "priority": "medium",
-        "description": "Fix LaTeX package path warnings in LogosReference.tex: warnings about logos-notation, notation-standards, and formatting packages. Also handle showhyphens command change and cross-reference warnings.",
-        "created": "2026-01-11T19:11:13Z",
-        "last_updated": "2026-01-11T19:25:08Z",
-        "started": "2026-01-11",
-        "researched": "2026-01-11",
-        "artifacts": [
-          {
-            "type": "research",
-            "path": ".claude/specs/384_fix_latex_package_path_warnings/reports/research-001.md"
-          },
-          {
-            "type": "plan",
-            "path": ".claude/specs/384_fix_latex_package_path_warnings/plans/implementation-001.md"
-          },
-          {
-            "type": "summary",
-            "path": ".claude/specs/384_fix_latex_package_path_warnings/summaries/implementation-summary-20260111.md"
-          }
-        ],
-        "planned": "2026-01-11",
-        "plan_version": "001",
-        "completed": "2026-01-11",
-        "archived": "2026-01-12T11:45:00Z"
-      },
-      {
-        "project_number": 380,
-        "project_name": "document_latex_standards",
-        "status": "completed",
-        "language": "latex",
-        "priority": "medium",
-        "created": "2026-01-11T18:13:43Z",
-        "last_updated": "2026-01-11T19:44:25Z",
-        "artifacts": [
-          {
-            "type": "research",
-            "path": ".claude/specs/380_document_latex_standards/reports/research-001.md"
-          },
-          {
-            "type": "plan",
-            "path": ".claude/specs/380_document_latex_standards/plans/implementation-001.md"
-          },
-          {
-            "type": "summary",
-            "path": ".claude/specs/380_document_latex_standards/summaries/implementation-summary-20260111.md"
-          }
-        ],
-        "archived": "2026-01-12T11:45:00Z"
-      },
-      {
-        "project_number": 376,
-        "project_name": "refactor_repo_for_theorylib_multi_theory_structure",
-        "status": "completed",
-        "language": "lean",
-        "priority": "high",
-        "created": "2026-01-11T17:06:06Z",
-        "last_updated": "2026-01-11T20:04:05Z",
-        "artifacts": [
-          {
-            "type": "research",
-            "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/reports/research-001.md"
-          },
-          {
-            "type": "plan",
-            "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/plans/implementation-002.md"
-          },
-          {
-            "type": "summary",
-            "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/summaries/implementation-summary-20260112.md"
-          }
-        ],
-        "archived": "2026-01-12T11:45:00Z"
-      },
-      {
-        "project_number": 365,
-        "project_name": "complete_bimodaltest_sorries",
-        "status": "completed",
-        "language": "lean",
-        "priority": "low",
-        "type": "testing",
-        "effort": "2-3 hours",
-        "description": "Complete sorry placeholders in BimodalTest files: CompletenessTest.lean (3), PerpetuityTest.lean (1), PropositionalTest.lean (1), ModalS4Test.lean. Either implement the tests or document as pending infrastructure.",
-        "created": "2026-01-11T02:22:16Z",
-        "last_updated": "2026-01-12T00:10:00Z",
-        "completed": "2026-01-11",
-        "review_source": ".claude/specs/reviews/review-20260110.md",
-        "plan_version": "001",
-        "artifacts": [
-          {
-            "path": ".claude/specs/365_complete_bimodaltest_sorries/reports/research-001.md",
-            "type": "research"
-          },
-          {
-            "path": ".claude/specs/365_complete_bimodaltest_sorries/plans/implementation-001.md",
-            "type": "plan"
-          },
-          {
-            "path": ".claude/specs/365_complete_bimodaltest_sorries/summaries/implementation-summary-20260111.md",
-            "type": "summary"
-          }
-        ],
-        "archived": "2026-01-12T11:45:00Z"
-      },
-      {
-        "project_number": 367,
-        "project_name": "complete_example_proofs",
-        "status": "completed",
-        "language": "lean",
-        "priority": "low",
-        "type": "enhancement",
-        "effort": "4-6 hours",
-        "description": "Complete pedagogical sorry placeholders in Bimodal/Examples/ files (~24 total). Prioritize high-value examples that demonstrate key proof techniques. Mark remaining as explicit exercises.",
-        "created": "2026-01-11T02:22:16Z",
-        "last_updated": "2026-01-12T00:00:00Z",
-        "review_source": ".claude/specs/reviews/review-20260110.md",
-        "started": "2026-01-11",
-        "researched": "2026-01-11",
-        "planned": "2026-01-11",
-        "completed": "2026-01-12",
-        "plan_version": "001",
-        "artifacts": [
-          {
-            "type": "research",
-            "path": ".claude/specs/367_complete_example_proofs/reports/research-001.md"
-          },
-          {
-            "type": "plan",
-            "path": ".claude/specs/367_complete_example_proofs/plans/implementation-001.md"
-          },
-          {
-            "type": "summary",
-            "path": ".claude/specs/367_complete_example_proofs/summaries/implementation-summary-20260112.md"
-          }
-        ],
-        "archived": "2026-01-12T11:45:00Z"
-      },
-      {
-        "project_number": 263,
-        "project_name": "refactor_context.lean",
-        "type": "feature",
-        "phase": "completed",
-        "status": "completed",
-        "priority": "medium",
-        "language": "lean",
-        "created": "2026-01-05T01:22:38Z",
-        "last_updated": "2026-01-11T20:13:17Z",
-        "effort": "2-4 hours",
-        "description": "Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4.",
-        "started": "2026-01-08",
-        "researched": "2026-01-11",
-        "artifacts": [
-          {
-            "type": "summary",
-            "path": ".claude/specs/263_refactor_context_lean/summaries/implementation-summary-20260108.md"
-          },
-          {
-            "type": "research",
-            "path": ".claude/specs/263_refactor_context_lean/reports/research-001.md"
-          }
-        ],
-        "completed": "2026-01-08",
-        "archived": "2026-01-12T11:45:00Z"
-      },
-      {
-        "project_number": 264,
-        "project_name": "update_context_references",
-        "type": "feature",
-        "phase": "completed",
-        "status": "completed",
-        "priority": "medium",
-        "language": "lean",
-        "created": "2026-01-05T01:22:38Z",
-        "last_updated": "2026-01-11T20:13:17Z",
-        "effort": "1-2 hours",
-        "description": "After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary.",
-        "completed": "2026-01-12",
-        "artifacts": [
-          {
-            "type": "note",
-            "path": "Completed as part of Task 376 refactoring"
-          }
-        ],
-        "archived": "2026-01-12T11:45:00Z"
-      }
-    ]
+    {
+      "project_number": 390,
+      "project_name": "research_logos_original_archive_removal",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "description": "Research whether .claude/archive/logos-original/ can be removed or if the files contain important content not represented elsewhere that should be preserved.",
+      "created": "2026-01-11T20:27:46Z",
+      "last_updated": "2026-01-11T20:35:02Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/390_research_logos_original_archive_removal/reports/research-001.md"
+        }
+      ],
+      "completed": "2026-01-11",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 389,
+      "project_name": "standardize_nnn_number_format",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-11T20:22:45Z",
+      "last_updated": "2026-01-11T20:34:11Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/389_standardize_nnn_number_format/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/389_standardize_nnn_number_format/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/389_standardize_nnn_number_format/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-11T20:34:11Z",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 388,
+      "project_name": "fix_todo_command_directory_archiving",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "description": "Fix /todo command to move project directories (.claude/specs/{N}_{SLUG}/) to archive directory (.claude/specs/archive/{N}_{SLUG}/) when archiving completed/abandoned tasks. Currently the command updates state.json and archive/state.json correctly but fails to execute Step 5D which moves the directories.",
+      "created": "2026-01-12T00:40:00Z",
+      "last_updated": "2026-01-12T00:55:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/388_fix_todo_command_directory_archiving/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/388_fix_todo_command_directory_archiving/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/388_fix_todo_command_directory_archiving/summaries/implementation-summary-20260112.md"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 387,
+      "project_name": "standardize_research_file_names",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-11T20:10:25Z",
+      "last_updated": "2026-01-11T20:25:49Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/387_standardize_research_file_names/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/387_standardize_research_file_names/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/387_standardize_research_file_names/summaries/implementation-summary-20260111.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-11T20:25:49Z",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 386,
+      "project_name": "fix_command_artifact_linking_in_todo_md",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "description": "Fix /research command (and audit other commands) to properly link new artifacts in TODO.md. The command adds artifacts to state.json but fails to add corresponding links in TODO.md entries. Audit /plan, /implement, and /revise commands for similar artifact linking failures.",
+      "created": "2026-01-11T19:58:51Z",
+      "last_updated": "2026-01-11T20:15:28Z",
+      "researched": "2026-01-11",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "planned": "2026-01-11",
+      "plan_version": "001",
+      "completed": "2026-01-11",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 385,
+      "project_name": "refactor_meta_command_task_creation",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "description": "Refactor the /meta command to conduct careful analysis of the .claude/ agent system given the prompt, ask follow-up questions if additional clarity would improve understanding, and then produce an appropriate number of tasks (similar to /task --divide) with dependencies indicated. If /meta is run without a prompt, run in full interactive mode to interview the user until sufficient detail has been provided to create the appropriate number of tasks with dependencies.",
+      "created": "2026-01-11T19:39:55Z",
+      "last_updated": "2026-01-11T21:00:00Z",
+      "started": "2026-01-12",
+      "researched": "2026-01-12",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/385_refactor_meta_command_task_creation/reports/research-001.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/385_refactor_meta_command_task_creation/reports/research-002.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/385_refactor_meta_command_task_creation/plans/implementation-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/385_refactor_meta_command_task_creation/plans/implementation-002.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/385_refactor_meta_command_task_creation/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "planned": "2026-01-12",
+      "plan_version": 2,
+      "plan_revised": "2026-01-12",
+      "completed": "2026-01-11",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 384,
+      "project_name": "fix_latex_package_path_warnings",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Fix LaTeX package path warnings in LogosReference.tex: warnings about logos-notation, notation-standards, and formatting packages. Also handle showhyphens command change and cross-reference warnings.",
+      "created": "2026-01-11T19:11:13Z",
+      "last_updated": "2026-01-11T19:25:08Z",
+      "started": "2026-01-11",
+      "researched": "2026-01-11",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/384_fix_latex_package_path_warnings/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/384_fix_latex_package_path_warnings/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/384_fix_latex_package_path_warnings/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "planned": "2026-01-11",
+      "plan_version": "001",
+      "completed": "2026-01-11",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 380,
+      "project_name": "document_latex_standards",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-11T18:13:43Z",
+      "last_updated": "2026-01-11T19:44:25Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/380_document_latex_standards/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/380_document_latex_standards/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/380_document_latex_standards/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 376,
+      "project_name": "refactor_repo_for_theorylib_multi_theory_structure",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-11T17:06:06Z",
+      "last_updated": "2026-01-11T20:04:05Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/plans/implementation-002.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/summaries/implementation-summary-20260112.md"
+        }
+      ],
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 365,
+      "project_name": "complete_bimodaltest_sorries",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "type": "testing",
+      "effort": "2-3 hours",
+      "description": "Complete sorry placeholders in BimodalTest files: CompletenessTest.lean (3), PerpetuityTest.lean (1), PropositionalTest.lean (1), ModalS4Test.lean. Either implement the tests or document as pending infrastructure.",
+      "created": "2026-01-11T02:22:16Z",
+      "last_updated": "2026-01-12T00:10:00Z",
+      "completed": "2026-01-11",
+      "review_source": ".claude/specs/reviews/review-20260110.md",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/365_complete_bimodaltest_sorries/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/365_complete_bimodaltest_sorries/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/365_complete_bimodaltest_sorries/summaries/implementation-summary-20260111.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 367,
+      "project_name": "complete_example_proofs",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "type": "enhancement",
+      "effort": "4-6 hours",
+      "description": "Complete pedagogical sorry placeholders in Bimodal/Examples/ files (~24 total). Prioritize high-value examples that demonstrate key proof techniques. Mark remaining as explicit exercises.",
+      "created": "2026-01-11T02:22:16Z",
+      "last_updated": "2026-01-12T00:00:00Z",
+      "review_source": ".claude/specs/reviews/review-20260110.md",
+      "started": "2026-01-11",
+      "researched": "2026-01-11",
+      "planned": "2026-01-11",
+      "completed": "2026-01-12",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/367_complete_example_proofs/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/367_complete_example_proofs/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/367_complete_example_proofs/summaries/implementation-summary-20260112.md"
+        }
+      ],
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 263,
+      "project_name": "refactor_context.lean",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-11T20:13:17Z",
+      "effort": "2-4 hours",
+      "description": "Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4.",
+      "started": "2026-01-08",
+      "researched": "2026-01-11",
+      "artifacts": [
+        {
+          "type": "summary",
+          "path": ".claude/specs/263_refactor_context_lean/summaries/implementation-summary-20260108.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/263_refactor_context_lean/reports/research-001.md"
+        }
+      ],
+      "completed": "2026-01-08",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 264,
+      "project_name": "update_context_references",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-11T20:13:17Z",
+      "effort": "1-2 hours",
+      "description": "After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary.",
+      "completed": "2026-01-12",
+      "artifacts": [
+        {
+          "type": "note",
+          "path": "Completed as part of Task 376 refactoring"
+        }
+      ],
+      "archived": "2026-01-12T11:45:00Z"
+    }
   ]
 }

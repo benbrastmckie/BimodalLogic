@@ -45,7 +45,7 @@ Enhance the `/todo` command to properly track orphaned directories in `archive/s
 
 ### Phase 2: Fix archive/state.json Schema
 
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Flatten the existing nested arrays in `archive/state.json`
