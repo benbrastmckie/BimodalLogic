@@ -1,7 +1,7 @@
-import LogosTest.Core.Integration.EndToEndTest
-import LogosTest.Core.Integration.ProofSystemSemanticsTest
-import LogosTest.Core.Integration.AutomationProofSystemTest
-import LogosTest.Core.Integration.Helpers
-import LogosTest.Core.Integration.ComplexDerivationTest
-import LogosTest.Core.Integration.TemporalIntegrationTest
-import LogosTest.Core.Integration.BimodalIntegrationTest
+import BimodalTest.Integration.EndToEndTest
+import BimodalTest.Integration.ProofSystemSemanticsTest
+import BimodalTest.Integration.AutomationProofSystemTest
+import BimodalTest.Integration.Helpers
+import BimodalTest.Integration.ComplexDerivationTest
+import BimodalTest.Integration.TemporalIntegrationTest
+import BimodalTest.Integration.BimodalIntegrationTest

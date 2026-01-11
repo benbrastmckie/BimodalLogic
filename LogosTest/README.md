@@ -1,12 +1,16 @@
 # LogosTest
 
-Comprehensive test suite for Logos, organized by module.
+Thin wrapper test suite that imports from BimodalTest for TM logic tests.
 
 ## Test Organization
 
-Tests are organized by the module they test:
+Tests for the Bimodal TM logic library are located in `BimodalTest/`, following the Mathlib pattern (Mathlib/ + MathlibTest/). This directory re-exports those tests for backwards compatibility with existing test infrastructure.
 
-- **Syntax/**: Formula construction, context operations, DSL tests (when implemented)
+### BimodalTest Structure
+
+The actual tests are in `BimodalTest/`:
+
+- **Syntax/**: Formula construction, context operations, DSL tests
   - FormulaTest.lean: Formula inductive type tests
   - ContextTest.lean: Proof context tests
 - **ProofSystem/**: Axiom schema and inference rule validation
@@ -14,19 +18,19 @@ Tests are organized by the module they test:
   - DerivationTest.lean: Derivability relation and inference rules
 - **Semantics/**: Task frame semantics, model construction, validity
   - TaskFrameTest.lean: Task frame structure tests
-  - TaskModelTest.lean: Model with valuation tests
   - TruthTest.lean: Truth evaluation tests
-  - ValidityTest.lean: Validity and consequence tests
 - **Integration/**: Cross-module integration tests
   - Tests that involve multiple modules working together
 - **Metalogic/**: Soundness, completeness, and decidability property tests
   - SoundnessTest.lean: Soundness property tests
-  - CompletenessTest.lean: Completeness property tests (when implemented)
+  - CompletenessTest.lean: Completeness property tests
 - **Theorems/**: Tests for perpetuity principles and key theorems
   - PerpetuityTest.lean: Perpetuity principles P1-P6 tests
-- **Automation/**: Tactic and proof search tests (when implemented)
+- **Automation/**: Tactic and proof search tests
   - TacticsTest.lean: Custom tactic tests
   - ProofSearchTest.lean: Automated proof search tests
+- **Property/**: Property-based tests using Plausible
+  - Generators.lean: Type generators for Formula, Context, TaskFrame
 
 ## Running Tests
 
@@ -34,40 +38,33 @@ Tests are organized by the module they test:
 
 ```bash
 # Run entire test suite
-lake test
+lake exe test
+
+# Build test libraries
+lake build BimodalTest
+lake build LogosTest
 
 # Expected output:
 # Running tests...
-# ✓ All tests passed
+# All tests passed
 ```
 
 ### Run Specific Module Tests
 
 ```bash
-# Test specific module
-lake test LogosTest.Syntax
-lake test LogosTest.ProofSystem
-lake test LogosTest.Semantics
-lake test LogosTest.Integration
-lake test LogosTest.Metalogic
-lake test LogosTest.Theorems
-lake test LogosTest.Automation
+# Test specific module via BimodalTest
+lake build BimodalTest.Syntax
+lake build BimodalTest.ProofSystem
+lake build BimodalTest.Semantics
+lake build BimodalTest.Integration
+lake build BimodalTest.Metalogic
+lake build BimodalTest.Theorems
+lake build BimodalTest.Automation
 
 # Test specific file
-lake env lean LogosTest/Syntax/FormulaTest.lean
-lake env lean LogosTest/ProofSystem/AxiomsTest.lean
+lake env lean BimodalTest/Syntax/FormulaTest.lean
+lake env lean BimodalTest/ProofSystem/AxiomsTest.lean
 ```
-
-### Interpreting Output
-
-- **✓ Green checkmarks**: Tests passed successfully
-- **✗ Red errors**: Tests failed with error messages and line numbers
-- **Test summary**: Shows pass/fail count at the end
-
-**Common test failure patterns**:
-- Type mismatch: Check that formula construction matches expected types
-- Derivability failure: Ensure axioms and rules are correctly applied
-- Validity failure: Check semantic model construction
 
 ### Running Tests in VS Code
 
@@ -80,22 +77,20 @@ lake env lean LogosTest/ProofSystem/AxiomsTest.lean
 
 ### File Placement
 
+For Bimodal TM logic tests, add files to `BimodalTest/`:
+
 **Unit tests** (testing single module in isolation):
-- Formula tests → `Syntax/FormulaTest.lean`
-- Axiom tests → `ProofSystem/AxiomsTest.lean`
-- Semantics tests → `Semantics/TruthTest.lean`
+- Formula tests -> `BimodalTest/Syntax/FormulaTest.lean`
+- Axiom tests -> `BimodalTest/ProofSystem/AxiomsTest.lean`
+- Semantics tests -> `BimodalTest/Semantics/TruthTest.lean`
 
 **Integration tests** (testing module interactions):
-- Place in `Integration/` directory
-- Name descriptively: `ProofSystemSemantics.lean`, `SyntaxProofSystem.lean`
+- Place in `BimodalTest/Integration/` directory
+- Name descriptively: `ProofSystemSemanticsTest.lean`, etc.
 
 **Property-based tests** (testing general properties):
-- Soundness tests → `Metalogic/SoundnessTest.lean`
-- Completeness tests → `Metalogic/CompletenessTest.lean`
-
-**Theorem tests** (testing specific theorems):
-- Perpetuity tests → `Theorems/PerpetuityTest.lean`
-- Other theorem tests → `Theorems/<TheoremName>Test.lean`
+- Soundness tests -> `BimodalTest/Metalogic/SoundnessTest.lean`
+- Completeness tests -> `BimodalTest/Metalogic/CompletenessTest.lean`
 
 ### Naming Conventions
 
@@ -105,29 +100,8 @@ lake env lean LogosTest/ProofSystem/AxiomsTest.lean
 **Tests**: `test_<feature>_<expected_behavior>`
 - Example: `test_imp_reflexivity`, `test_modal_t_valid`, `test_modus_ponens`
 
-**Modules**: `LogosTest.<Category>.<Module>Test`
-- Example: `LogosTest.Syntax.FormulaTest`
-
-### Test Categories
-
-1. **Unit Tests**: Test individual functions/definitions in isolation
-   - Formula construction correctness
-   - Axiom schema instantiation
-   - Truth evaluation for simple formulas
-
-2. **Integration Tests**: Test interactions between modules
-   - Derivability implies validity (soundness)
-   - Axioms + rules work together
-   - Syntax + semantics integration
-
-3. **Property-Based Tests**: Test general properties hold
-   - All axioms are valid
-   - All inference rules preserve validity
-   - Soundness: derivability implies validity
-
-4. **Regression Tests**: Test fixed bugs to prevent recurrence
-   - Add test when fixing a bug
-   - Ensures bug doesn't reappear
+**Modules**: `BimodalTest.<Category>.<Module>Test`
+- Example: `BimodalTest.Syntax.FormulaTest`
 
 ### Test Template
 
@@ -138,9 +112,9 @@ lake env lean LogosTest/ProofSystem/AxiomsTest.lean
 Tests for [module description].
 -/
 
-import Logos.[Module]
+import Bimodal.[Module]
 
-namespace LogosTest.[Module]Test
+namespace BimodalTest.[Module]Test
 
 -- Test helper functions (if needed)
 def test_helper : Type := sorry
@@ -151,12 +125,12 @@ example : test_feature_works := by
   sorry
 
 -- Property test example
-theorem test_property_holds : ∀ (x : Type), property x := by
+theorem test_property_holds : forall (x : Type), property x := by
   intro x
   -- Property proof
   sorry
 
-end LogosTest.[Module]Test
+end BimodalTest.[Module]Test
 ```
 
 ## Test Quality Standards
@@ -164,26 +138,19 @@ end LogosTest.[Module]Test
 ### Coverage Requirements
 
 See [TESTING_STANDARDS.md](../Documentation/Development/TESTING_STANDARDS.md) for detailed coverage targets:
-- **Overall**: ≥85% code coverage
-- **Metalogic**: ≥90% coverage (soundness/completeness critical)
-- **Automation**: ≥80% coverage (tactics and proof search)
-- **Error handling**: ≥75% coverage (error cases tested)
+- **Overall**: >=85% code coverage
+- **Metalogic**: >=90% coverage (soundness/completeness critical)
+- **Automation**: >=80% coverage (tactics and proof search)
+- **Error handling**: >=75% coverage (error cases tested)
 
 ### Test Completeness
 
 Each module should have tests for:
-- ✓ **Happy path**: Normal usage scenarios
-- ✓ **Edge cases**: Boundary conditions, empty inputs
-- ✓ **Error cases**: Invalid inputs, type mismatches
-- ✓ **Properties**: General properties that must hold
-- ✓ **Integration**: Interactions with other modules
-
-### Test Documentation
-
-Every test should have:
-- Module docstring explaining what is being tested
-- Comments explaining complex test setup
-- Clear assertion messages (when using custom assertions)
+- **Happy path**: Normal usage scenarios
+- **Edge cases**: Boundary conditions, empty inputs
+- **Error cases**: Invalid inputs, type mismatches
+- **Properties**: General properties that must hold
+- **Integration**: Interactions with other modules
 
 ## Current Test Status
 
@@ -203,88 +170,9 @@ Every test should have:
 
 For detailed status, see [IMPLEMENTATION_STATUS.md](../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md).
 
-## Performance Benchmarks
-
-Test suite performance targets:
-- **Full test suite**: <30 seconds
-- **Single module tests**: <5 seconds
-- **Individual test**: <1 second
-
-If tests exceed these benchmarks:
-1. Profile slow tests
-2. Optimize test setup
-3. Consider splitting large tests
-4. Report performance issues
-
-## Continuous Integration
-
-Tests run automatically on:
-- Every commit (local pre-commit hook)
-- Every pull request (GitHub Actions)
-- Every push to main branch
-
-CI requirements:
-- All tests must pass
-- No new lint warnings
-- Code coverage maintained
-
-## Debugging Test Failures
-
-### Common Issues
-
-**"Type mismatch" errors**:
-- Check formula construction syntax
-- Verify types match expected signatures
-- Use `#check` to inspect types
-
-**"Derivation failed" errors**:
-- Ensure axiom/rule correctly applied
-- Check premise list is correct
-- Verify formula matches axiom schema
-
-**"Validity check failed" errors**:
-- Inspect model construction
-- Check frame properties (nullity, compositionality)
-- Verify truth evaluation logic
-
-### Debugging Tools
-
-```lean
--- Type inspection
-#check my_formula
-#check my_derivation
-
--- Evaluate expressions
-#eval my_computation
-
--- Reduce terms
-#reduce my_expression
-
--- Print information
-#print my_definition
-```
-
-## Coverage Tools
-
-Check test coverage:
-
-```bash
-# Generate coverage report (if tooling available)
-lake coverage
-
-# View coverage by module
-lake coverage --by-module
-```
-
-Coverage reports show:
-- Lines executed by tests
-- Branches tested
-- Functions covered
-
 ## Related Documentation
 
 - [Testing Standards](../Documentation/Development/TESTING_STANDARDS.md) - Detailed test requirements
-- [Code Standards](../.claude/docs/reference/standards/code-standards.md) - TDD principles
 - [LEAN Style Guide](../Documentation/Development/LEAN_STYLE_GUIDE.md) - Code conventions
 - [Implementation Status](../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module status
 
@@ -292,5 +180,7 @@ Coverage reports show:
 
 - **Up**: [Logos Root](../)
 - **Source Code**: [Logos/](../Logos/)
+- **Bimodal Library**: [Bimodal/](../Bimodal/)
+- **Bimodal Tests**: [BimodalTest/](../BimodalTest/)
 - **Documentation**: [Documentation/](../Documentation/)
 - **Examples**: [Archive/](../Archive/)

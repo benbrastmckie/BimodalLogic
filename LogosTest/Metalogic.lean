@@ -1,1 +1,1 @@
-import LogosTest.Core.Metalogic.SoundnessTest
+import BimodalTest.Metalogic.SoundnessTest

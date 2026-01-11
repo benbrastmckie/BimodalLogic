@@ -1,5 +1,5 @@
 -- Re-export Theorems tests
-import LogosTest.Core.Theorems.PerpetuityTest
+import BimodalTest.Theorems.PerpetuityTest
 
 /-!
 # Theorems Test Module Root
@@ -8,11 +8,11 @@ This module re-exports all test submodules for the Theorems package.
 
 ## Submodules
 
-- `ProofCheckerTest.Theorems.PerpetuityTest`: Tests for P1-P6 perpetuity principles
+- `BimodalTest.Theorems.PerpetuityTest`: Tests for P1-P6 perpetuity principles
 -/
 
-namespace LogosTest.Core.Theorems
+namespace BimodalTest.Theorems
 
 -- Re-exported from submodules
 
-end LogosTest.Core.Theorems
+end BimodalTest.Theorems

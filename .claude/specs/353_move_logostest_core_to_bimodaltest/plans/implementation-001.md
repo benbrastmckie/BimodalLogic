@@ -81,7 +81,7 @@ Move the `LogosTest/Core/` directory to a new top-level `BimodalTest/` directory
 ### Phase 3: External Reference Updates
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update parent LogosTest/*.lean files to import from BimodalTest

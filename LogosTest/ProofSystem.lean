@@ -1,5 +1,5 @@
-import LogosTest.Core.ProofSystem.AxiomsTest
-import LogosTest.Core.ProofSystem.DerivationTest
+import BimodalTest.ProofSystem.AxiomsTest
+import BimodalTest.ProofSystem.DerivationTest
 
 /-!
 # ProofSystem Test Module
@@ -7,5 +7,5 @@ import LogosTest.Core.ProofSystem.DerivationTest
 Tests for the ProofSystem module (Axioms and Derivation).
 -/
 
-namespace LogosTest.Core.ProofSystem
-end LogosTest.Core.ProofSystem
+namespace BimodalTest.ProofSystem
+end BimodalTest.ProofSystem

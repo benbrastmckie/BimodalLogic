@@ -1,2 +1,2 @@
-import LogosTest.Core.Semantics.TaskFrameTest
-import LogosTest.Core.Semantics.TruthTest
+import BimodalTest.Semantics.TaskFrameTest
+import BimodalTest.Semantics.TruthTest
