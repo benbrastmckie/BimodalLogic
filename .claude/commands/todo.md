@@ -319,13 +319,31 @@ Active tasks remaining: {N}
 Archives: .claude/specs/archive/
 ```
 
-If no orphans were archived (either none found or user skipped):
-- Omit the "Orphaned directories archived" section
+If no orphans were tracked (either none found or user skipped):
+- Omit the "Orphaned directories tracked" section
 
 ## Notes
 
+### Task Archival
 - Artifacts (plans, reports, summaries) are preserved in archive/{N}_{SLUG}/
 - Tasks can be recovered with `/task --recover N`
-- **Orphaned directories** can be manually moved back but have no state.json entry to recover
 - Archive is append-only (for audit trail)
 - Run periodically to keep TODO.md and .claude/specs/ manageable
+
+### Orphan Tracking
+
+**Orphan Categories**:
+1. **Orphaned in specs/** - Directories in `.claude/specs/` not tracked in any state file
+   - Action: Move to archive/ AND add entry to archive/state.json
+2. **Orphaned in archive/** - Directories in `.claude/specs/archive/` not tracked in archive/state.json
+   - Action: Add entry to archive/state.json (no move needed)
+
+**orphan_archived Status**:
+- Orphaned directories receive status `"orphan_archived"` in archive/state.json
+- The `source` field is set to `"orphan_recovery"` to distinguish from normal archival
+- The `detected_artifacts` field lists any existing subdirectories (reports/, plans/, summaries/)
+
+**Recovery**:
+- Orphaned directories with state entries can be inspected in archive/
+- Manual recovery is possible by moving directories and updating state files
+- Use `/task --recover N` only for tracked tasks (not orphans)
