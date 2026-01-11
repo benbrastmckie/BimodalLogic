@@ -276,7 +276,7 @@ The current Truth.lean causal definition should be marked with a clear comment:
 ## References
 
 - Brast-McKie, B. (2025). "Counterfactual Worlds" - sn-article.tex
-- Current: Theories/Logos/Documentation/Research/recursive-semantics.md
+- Current: Theories/Logos/docs/research/recursive-semantics.md
 - Current: Theories/Logos/SubTheories/Explanatory/Truth.lean
 
 ## Next Steps

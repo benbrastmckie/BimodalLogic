@@ -49,11 +49,11 @@ Theories/Bimodal/LaTeX/                          → Theories/Bimodal/latex/
 
 #### Theories/Logos non-Lean directories (6 directories)
 ```
-Theories/Logos/Documentation/                    → Theories/Logos/docs/
-Theories/Logos/Documentation/ProjectInfo/        → Theories/Logos/docs/project-info/
-Theories/Logos/Documentation/Reference/          → Theories/Logos/docs/reference/
-Theories/Logos/Documentation/Research/           → Theories/Logos/docs/research/
-Theories/Logos/Documentation/UserGuide/          → Theories/Logos/docs/user-guide/
+Theories/Logos/docs/                    → Theories/Logos/docs/
+Theories/Logos/docs/project-info/        → Theories/Logos/docs/project-info/
+Theories/Logos/docs/reference/          → Theories/Logos/docs/reference/
+Theories/Logos/docs/research/           → Theories/Logos/docs/research/
+Theories/Logos/docs/user-guide/          → Theories/Logos/docs/user-guide/
 Theories/Logos/LaTeX/                            → Theories/Logos/latex/
 ```
 
@@ -74,7 +74,7 @@ Theories/Logos/LaTeX/                            → Theories/Logos/latex/
 
 The `Documentation/` directories contain extensive internal cross-references:
 - `Theories/Bimodal/docs/` - 26 files with internal links
-- `Theories/Logos/Documentation/` - 17 files with internal links
+- `Theories/Logos/docs/` - 17 files with internal links
 - `docs/` subdirectories - need relative path updates
 
 #### README Files Referencing Documentation Directories
@@ -139,7 +139,7 @@ Systematic search and replace across the codebase.
 |-----------|---------------|
 | `docs/` subdirectories | ~50 files |
 | `Theories/Bimodal/docs/` | 26 files |
-| `Theories/Logos/Documentation/` | 17 files |
+| `Theories/Logos/docs/` | 17 files |
 | `Theories/*/LaTeX/` | ~15 files |
 | References to update | ~100+ file edits |
 

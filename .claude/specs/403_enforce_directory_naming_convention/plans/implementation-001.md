@@ -107,20 +107,20 @@ Theories/Bimodal/docs/user-guide/    → Theories/Bimodal/docs/user-guide/
 ### Phase 3: Rename Theories/Logos/Documentation/ to docs/
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
-1. Rename `Theories/Logos/Documentation/` to `Theories/Logos/docs/`
+1. Rename `Theories/Logos/docs/` to `Theories/Logos/docs/`
 2. Rename internal subdirectories to lowercase with hyphens
 3. Update all internal cross-references (17 files)
 
 **Directories to rename**:
 ```
-Theories/Logos/Documentation/              → Theories/Logos/docs/
-Theories/Logos/Documentation/ProjectInfo/  → Theories/Logos/docs/project-info/
-Theories/Logos/Documentation/Reference/    → Theories/Logos/docs/reference/
-Theories/Logos/Documentation/Research/     → Theories/Logos/docs/research/
-Theories/Logos/Documentation/UserGuide/    → Theories/Logos/docs/user-guide/
+Theories/Logos/docs/              → Theories/Logos/docs/
+Theories/Logos/docs/project-info/  → Theories/Logos/docs/project-info/
+Theories/Logos/docs/reference/    → Theories/Logos/docs/reference/
+Theories/Logos/docs/research/     → Theories/Logos/docs/research/
+Theories/Logos/docs/user-guide/    → Theories/Logos/docs/user-guide/
 ```
 
 **Steps**:
