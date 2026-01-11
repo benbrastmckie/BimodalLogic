@@ -6,7 +6,17 @@ Comprehensive documentation hub for the Logos project.
 
 ## Documentation Organization
 
-Documentation is organized into six categories:
+Documentation is organized into seven categories:
+
+### Installation/
+
+Setup and configuration guides:
+
+- [README.md](Installation/README.md) - Installation overview and quick start
+- [CLAUDE_CODE.md](Installation/CLAUDE_CODE.md) - AI-assisted installation (recommended)
+- [BASIC_INSTALLATION.md](Installation/BASIC_INSTALLATION.md) - Manual installation
+- [GETTING_STARTED.md](Installation/GETTING_STARTED.md) - Terminal basics and editor setup
+- [USING_GIT.md](Installation/USING_GIT.md) - Git/GitHub configuration
 
 ### UserGuide/
 
@@ -84,7 +94,10 @@ Context-aware development system for automated workflows:
 
 ### For New Users
 
-- [Getting Started](UserGuide/TUTORIAL.md) - Begin here
+- [Installation](Installation/README.md) - Set up ProofChecker
+- [Claude Code Setup](Installation/CLAUDE_CODE.md) - AI-assisted installation (recommended)
+- [Getting Started](Installation/GETTING_STARTED.md) - Terminal and editor basics
+- [Tutorial](UserGuide/TUTORIAL.md) - Start writing proofs
 - [Architecture Overview](UserGuide/ARCHITECTURE.md) - Understand TM logic
 - [Usage Examples](UserGuide/EXAMPLES.md) - Learn by example
 

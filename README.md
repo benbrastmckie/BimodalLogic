@@ -268,23 +268,40 @@ The Logos architecture enables domain-specific operator combinations, demonstrat
 
 - LEAN 4 v4.14.0 or later
 - Lake (included with LEAN 4)
-- VS Code with lean4 extension (recommended)
+- Git for version control
+- ~5GB disk space (for Mathlib cache)
 
 ### Quick Start
 
-```bash
-# Clone repository
-git clone https://github.com/yourusername/Logos.git
-cd Logos
+**AI-Assisted (Recommended)**: Use [Claude Code](Documentation/Installation/CLAUDE_CODE.md) for automated installation
 
-# Build project
+**Manual Installation**:
+
+```bash
+# Install elan (Lean version manager)
+curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
+
+# Clone repository
+git clone https://github.com/benbrastmckie/ProofChecker.git
+cd ProofChecker
+
+# Build project (first build downloads Mathlib cache, ~30 minutes)
 lake build
 
 # Run tests
 lake test
 ```
 
-**For complete setup**: [Tutorial](Documentation/UserGuide/TUTORIAL.md)
+### Installation Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Claude Code](Documentation/Installation/CLAUDE_CODE.md) | AI-assisted installation (recommended) |
+| [Basic Installation](Documentation/Installation/BASIC_INSTALLATION.md) | Manual installation steps |
+| [Getting Started](Documentation/Installation/GETTING_STARTED.md) | Terminal basics, VS Code, NeoVim setup |
+| [Using Git](Documentation/Installation/USING_GIT.md) | Git/GitHub configuration |
+
+**For complete setup**: [Installation Overview](Documentation/Installation/README.md)
 
 ---
 
