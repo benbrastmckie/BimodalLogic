@@ -6,20 +6,20 @@
     {
       "project_number": 369,
       "project_name": "solve_modal_5_blocking_dependency",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-11T03:39:46Z",
-      "last_updated": "2026-01-11T03:39:46Z"
+      "last_updated": "2026-01-11T03:44:57Z"
     },
     {
       "project_number": 368,
       "project_name": "documentation_directory_reorganization",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T03:33:51Z",
-      "last_updated": "2026-01-11T03:33:51Z"
+      "last_updated": "2026-01-11T03:47:02Z"
     },
     {
       "project_number": 365,
@@ -63,14 +63,14 @@
     {
       "project_number": 363,
       "project_name": "create_bimodal_latex_documentation",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "priority": "medium",
       "type": "documentation",
       "effort": "2-4 hours",
       "description": "Create a Bimodal/LaTeX/ directory with contents similar to Logos/LaTeX/ but focusing on reporting exactly what has been implemented in the Bimodal/ theory.",
       "created": "2026-01-11T02:11:42Z",
-      "last_updated": "2026-01-11T06:45:00Z",
+      "last_updated": "2026-01-11T07:00:00Z",
       "research_completed": "2026-01-11T02:21:55Z",
       "artifacts": [
         {
@@ -90,7 +90,8 @@
           "path": ".claude/specs/363_create_bimodal_latex_documentation/plans/implementation-002.md"
         }
       ],
-      "plan_version": "002"
+      "plan_version": "002",
+      "started": "2026-01-11"
     },
     {
       "project_number": 132,

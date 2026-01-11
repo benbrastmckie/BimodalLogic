@@ -30,7 +30,7 @@ technical_debt:
 
 ### 369. Solve the blocking dependency in the Modal 5 theorem
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -44,11 +44,13 @@ technical_debt:
 
 ### 368. Refactor Documentation directory structure
 - **Effort**: 4-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
+- **Researched**: 2026-01-11
+- **Research**: [research-001.md](.claude/specs/368_documentation_directory_reorganization/reports/research-001.md)
 
 **Description**: Refactor the Documentation/ directory and its subdirectories into a well-organized system of files, divided by natural types into subdirectories with a README.md in each subdirectory with summaries and links to the files or subdirectories in that directory as well as back links following the /home/benjamin/Projects/ProofChecker/Documentation/Development/DIRECTORY_README_STANDARD.md standard.
 
@@ -56,7 +58,8 @@ technical_debt:
 
 ### 363. Create Bimodal LaTeX documentation
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-11
 - **Priority**: Medium
 - **Language**: latex
 - **Blocking**: None
