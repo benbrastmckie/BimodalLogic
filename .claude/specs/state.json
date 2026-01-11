@@ -6,12 +6,12 @@
     {
       "project_number": 384,
       "project_name": "fix_latex_package_path_warnings",
-      "status": "researched",
+      "status": "planning",
       "language": "latex",
       "priority": "medium",
       "description": "Fix LaTeX package path warnings in LogosReference.tex: warnings about logos-notation, notation-standards, and formatting packages. Also handle showhyphens command change and cross-reference warnings.",
       "created": "2026-01-11T19:11:13Z",
-      "last_updated": "2026-01-11T19:17:39Z",
+      "last_updated": "2026-01-11T19:20:32Z",
       "started": "2026-01-11",
       "researched": "2026-01-11",
       "artifacts": [
@@ -62,19 +62,24 @@
     {
       "project_number": 365,
       "project_name": "complete_bimodaltest_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "type": "testing",
       "effort": "2-3 hours",
       "description": "Complete sorry placeholders in BimodalTest files: CompletenessTest.lean (3), PerpetuityTest.lean (1), PropositionalTest.lean (1), ModalS4Test.lean. Either implement the tests or document as pending infrastructure.",
       "created": "2026-01-11T02:22:16Z",
-      "last_updated": "2026-01-11T19:16:43Z",
+      "last_updated": "2026-01-11T23:40:00Z",
       "review_source": ".claude/specs/reviews/review-20260110.md",
+      "plan_version": "001",
       "artifacts": [
         {
           "path": ".claude/specs/365_complete_bimodaltest_sorries/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/365_complete_bimodaltest_sorries/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
@@ -94,14 +99,14 @@
     {
       "project_number": 367,
       "project_name": "complete_example_proofs",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "low",
       "type": "enhancement",
       "effort": "4-6 hours",
       "description": "Complete pedagogical sorry placeholders in Bimodal/Examples/ files (~24 total). Prioritize high-value examples that demonstrate key proof techniques. Mark remaining as explicit exercises.",
       "created": "2026-01-11T02:22:16Z",
-      "last_updated": "2026-01-11T02:22:16Z",
+      "last_updated": "2026-01-11T11:19:50-08:00",
       "review_source": ".claude/specs/reviews/review-20260110.md"
     },
     {
