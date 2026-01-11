@@ -34,7 +34,7 @@
 
 % Custom packages
 \usepackage{assets/logos-notation}
-\usepackage{assets/formatting}
+\usepackage{../../LaTeX/formatting}
 
 % References (cleveref must be loaded after hyperref, which formatting.sty loads)
 \usepackage{cleveref}
@@ -82,15 +82,15 @@
 \vspace*{2cm}
 
 \HRule\\[0.4cm]
-{\Huge \bfseries Reference Manual}\\[0.2cm]
+{\Huge \bfseries Logos Reference Manual}\\[0.2cm]
 \HRule\\[1cm]
 
-{\LARGE\itshape Logos: A Logic for Verified and Interpreted AI Reasoning}\\[0.5cm]
+{\LARGE\itshape A Logic for Verified and Interpreted AI Reasoning}\\[1cm]
 
-{\large \today}\\[2cm]
 
-{\large Benjamin Brast-McKie}\\[0.3cm]
-\texttt{\href{https://www.benbrastmckie.com}{www.benbrastmckie.com}}
+{\large\itshape Benjamin Brast-McKie}\\[0.15cm]
+\texttt{\href{https://www.benbrastmckie.com}{www.benbrastmckie.com}}\\[0.15cm]
+{--- \today\ ---}\\[1cm]
 
 \vfill
 
@@ -102,6 +102,8 @@ Brast-McKie, \href{https://link.springer.com/article/10.1007/s10992-021-09612-w}
 \end{titlepage}
 \thispagestyle{empty}
 
+{
+
 \begin{abstract}
 \noindent
 This reference manual provides the formal specification of the Logos logic system.
@@ -111,7 +113,6 @@ conditionals. The semantics extends from a mereological state space foundation
 through increasingly expressive extensions.
 \end{abstract}
 
-{
 \pagestyle{empty}
 \tableofcontents
 \cleardoublepage
@@ -145,7 +146,7 @@ through increasingly expressive extensions.
 % Back Matter
 % ============================================================================
 
-\bibliographystyle{assets/bib_style}
+\bibliographystyle{../../LaTeX/bib_style}
 \bibliography{bibliography/LogosReferences}
 
 \end{document}
