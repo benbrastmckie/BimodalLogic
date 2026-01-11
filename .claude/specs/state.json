@@ -6,14 +6,15 @@
     {
       "project_number": 370,
       "project_name": "fix_bimodal_latex_compilation_errors",
-      "status": "not_started",
+      "status": "implementing",
       "language": "latex",
       "priority": "high",
       "type": "bugfix",
       "effort": "1-2 hours",
       "description": "Fix LaTeX compilation errors in Bimodal/LaTeX/BimodalReference.tex including: command redefinition errors for \\land, \\lor, \\frame in bimodal-notation.sty; undefined control sequences (\\lneg, \\poss, \\somepast, \\somefuture, \\always, \\sometimes); Unicode character errors; mismatched environment errors in 02-Semantics.tex.",
       "created": "2026-01-11T14:54:28Z",
-      "last_updated": "2026-01-11T14:54:28Z"
+      "last_updated": "2026-01-11T14:55:47Z",
+      "started": "2026-01-11"
     },
     {
       "project_number": 369,
@@ -28,12 +29,13 @@
     {
       "project_number": 368,
       "project_name": "documentation_directory_reorganization",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T03:33:51Z",
-      "last_updated": "2026-01-11T09:00:00Z",
-      "started": "2026-01-11"
+      "last_updated": "2026-01-11T15:00:00Z",
+      "started": "2026-01-11",
+      "completed": "2026-01-11T15:00:00Z"
     },
     {
       "project_number": 365,

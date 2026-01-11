@@ -30,7 +30,8 @@ technical_debt:
 
 ### 370. Fix Bimodal LaTeX compilation errors
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-11
 - **Priority**: High
 - **Language**: latex
 - **Blocking**: None
@@ -60,8 +61,9 @@ technical_debt:
 
 ### 368. Refactor Documentation directory structure
 - **Effort**: 4-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
@@ -70,6 +72,7 @@ technical_debt:
 - **Planned**: 2026-01-11
 - **Research**: [research-001.md](.claude/specs/368_documentation_directory_reorganization/reports/research-001.md)
 - **Plan**: [implementation-002.md](.claude/specs/368_documentation_directory_reorganization/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/368_documentation_directory_reorganization/summaries/implementation-summary-20260111.md)
 
 **Description**: Refactor the Documentation/ directory and its subdirectories into a well-organized system of files, divided by natural types into subdirectories with a README.md in each subdirectory with summaries and links to the files or subdirectories in that directory as well as back links following the /home/benjamin/Projects/ProofChecker/Documentation/Development/DIRECTORY_README_STANDARD.md standard.
 
