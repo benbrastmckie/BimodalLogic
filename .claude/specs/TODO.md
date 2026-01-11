@@ -30,7 +30,7 @@ technical_debt:
 
 ### 396. Fix LaTeX build missing style files
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: latex
 - **Blocking**: None
@@ -47,9 +47,10 @@ Troubleshoot and provide an elegant, high-quality solution for style file paths.
 
 ### 392. Enhance /todo command orphan tracking
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-11
+- **Started**: 2026-01-11
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
@@ -67,10 +68,12 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 
 ### 393. Remove incorrect causal operator definition
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 381
+- **Research**: [research-001.md](.claude/specs/393_remove_incorrect_causal_operator_definition/reports/research-001.md)
 
 **Description**: Remove the incorrect definition of the causal operator (which was defined in terms of the counterfactual conditional) and leave behind a stub or comment for systematic future implementation of the correct semantics.
 
@@ -78,7 +81,7 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 381
