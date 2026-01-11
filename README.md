@@ -57,7 +57,7 @@ Training AI systems to reason reliably requires both positive signals (valid inf
 
 By contrast, human reasoning data is limited, inconsistent, and prone to error, providing a poor training source. Beyond pattern matching, reasoning in the Logos provides proof receipts which ensure validity where the semantic theory for the Logos provide interpretability over explicit semantic models, offering scalable oversight for sophisticated forms of AI reasoning with an extensible set of operators.
 
-**See also**: [Dual Verification Research](Documentation/Research/DUAL_VERIFICATION.md) | [Integration Guide](Documentation/UserGuide/INTEGRATION.md) | [LogicNotes](https://github.com/benbrastmckie/LogicNotes)
+**See also**: [Dual Verification Research](Documentation/Research/dual-verification.md) | [Integration Guide](Documentation/UserGuide/INTEGRATION.md) | [LogicNotes](https://github.com/benbrastmckie/LogicNotes)
 
 ---
 
@@ -71,7 +71,7 @@ Constructing and evaluating plans amounts to identifying and ranking histories t
 
 In addition to tense, historical modal, and counterfactual operators, effective planning under natural conditions also requires constitutive operators for reasoning about constitution, causal operators for reasoning about causation, epistemic operators for reasoning about belief, likelihoods, and indicative conditionals, and normative operators for reasoning about imperatives and preferences. Accordingly both the proof theory and semantics for the Logos are implemented in layers in order to accommodate an extensible range of operators. The layer architecture enables applications to import precisely the operator combinations needed for a given domain without carrying unused overhead.
 
-**See also**: [Conceptual Engineering](Documentation/Research/CONCEPTUAL_ENGINEERING.md) | [Layer Extensions](Documentation/Research/LAYER_EXTENSIONS.md)
+**See also**: [Conceptual Engineering](Theories/Logos/Documentation/Research/conceptual-engineering.md) | [Layer Extensions](Theories/Logos/Documentation/Research/layer-extensions.md)
 
 ---
 
@@ -79,7 +79,7 @@ In addition to tense, historical modal, and counterfactual operators, effective 
 
 Logos implements a layered operator architecture supporting progressive extensibility. All layers share task semantics where possible worlds are functions from times to world-states constrained by task relations.
 
-**See also**: [Conceptual Engineering](Documentation/Research/CONCEPTUAL_ENGINEERING.md) for philosophical motivation | [Layer Extensions](Documentation/Research/LAYER_EXTENSIONS.md) for technical specifications
+**See also**: [Conceptual Engineering](Theories/Logos/Documentation/Research/conceptual-engineering.md) for philosophical motivation | [Layer Extensions](Theories/Logos/Documentation/Research/layer-extensions.md) for technical specifications
 
 | Layer              | Operators                                        | Status         |
 | ------------------ | ------------------------------------------------ | -------------- |
@@ -88,7 +88,7 @@ Logos implements a layered operator architecture supporting progressive extensib
 | **Epistemic**      | Belief, probability, indicative                  | Planned        |
 | **Normative**      | Deontic, agential, preferential                  | Planned        |
 
-**See also**: [Methodology](Documentation/UserGuide/METHODOLOGY.md) | [Layer Extensions](Documentation/Research/LAYER_EXTENSIONS.md)
+**See also**: [Methodology](Documentation/UserGuide/METHODOLOGY.md) | [Layer Extensions](Theories/Logos/Documentation/Research/layer-extensions.md)
 
 ---
 
@@ -174,7 +174,7 @@ Six theorems connecting modal and temporal operators:
 
 Logos's layered architecture enables incremental extension from core TM logic to explanatory, epistemic, and normative reasoning. Each extension provides independent value while building toward comprehensive AI reasoning capabilities.
 
-**See also**: [Methodology](Documentation/UserGuide/METHODOLOGY.md) | [Layer Extensions](Documentation/Research/LAYER_EXTENSIONS.md)
+**See also**: [Methodology](Documentation/UserGuide/METHODOLOGY.md) | [Layer Extensions](Theories/Logos/Documentation/Research/layer-extensions.md)
 
 ### 5. Implementation Status
 
@@ -226,7 +226,7 @@ The dual verification architecture creates comprehensive learning signals withou
 3. **Scalable Oversight**: Both tools scale with computation, enabling unlimited training data
 4. **Mathematical Certainty**: LEAN 4 proofs provide verifiable justifications, Z3 countermodels refute invalid claims
 
-**For training architecture details**: [Dual Verification Research](Documentation/Research/DUAL_VERIFICATION.md) | [Integration Guide](Documentation/UserGuide/INTEGRATION.md)
+**For training architecture details**: [Dual Verification Research](Documentation/Research/dual-verification.md) | [Integration Guide](Documentation/UserGuide/INTEGRATION.md)
 
 ---
 
@@ -258,7 +258,7 @@ The Logos architecture enables domain-specific operator combinations, demonstrat
 - **Epistemic**: Belief operators for modeling other agents' knowledge states
 - **Normative**: Deontic operators (`O`, `P`) for obligations and permissions in negotiation
 
-**See also**: [Methodology](Documentation/UserGuide/METHODOLOGY.md) | [Layer Extensions](Documentation/Research/LAYER_EXTENSIONS.md) | [Architecture Guide](Documentation/UserGuide/ARCHITECTURE.md)
+**See also**: [Methodology](Documentation/UserGuide/METHODOLOGY.md) | [Layer Extensions](Theories/Logos/Documentation/Research/layer-extensions.md) | [Architecture](Documentation/UserGuide/ARCHITECTURE.md)
 
 ---
 
@@ -348,10 +348,10 @@ Current status and tracking:
 Vision and planned architecture:
 
 - [Research Overview](Documentation/Research/README.md) - Research documentation index
-- [Dual Verification](Documentation/Research/DUAL_VERIFICATION.md) - RL training architecture
-- [Layer Extensions](Documentation/Research/LAYER_EXTENSIONS.md) - Layers 1-3 specifications
-- [Proof Library Design](Documentation/Research/PROOF_LIBRARY_DESIGN.md) - Theorem caching
-- [Conceptual Engineering](Documentation/Research/CONCEPTUAL_ENGINEERING.md) - Philosophical methodology
+- [Dual Verification](Documentation/Research/dual-verification.md) - RL training architecture
+- [Layer Extensions](Theories/Logos/Documentation/Research/layer-extensions.md) - Layers 1-3 specifications
+- [Proof Library Design](Documentation/Research/proof-library-design.md) - Theorem caching
+- [Conceptual Engineering](Theories/Logos/Documentation/Research/conceptual-engineering.md) - Philosophical methodology
 
 ### Reference
 

@@ -283,8 +283,8 @@ For current implementation progress on proof-checker and model-checker integrati
 
 - [METHODOLOGY.md](../UserGuide/METHODOLOGY.md) - Philosophical foundations
 - [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) - Layer 0 (Core TM) specification
-- [PROOF_LIBRARY_DESIGN.md](PROOF_LIBRARY_DESIGN.md) - Theorem caching architecture
-- [LAYER_EXTENSIONS.md](LAYER_EXTENSIONS.md) - Layers 1-3 specifications
+- [proof-library-design.md](proof-library-design.md) - Theorem caching architecture
+- [layer-extensions.md](layer-extensions.md) - Layers 1-3 specifications
 
 ---
 

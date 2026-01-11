@@ -1249,18 +1249,18 @@ The current implementation provides Boolean, modal, and temporal operators with 
 
 ### 8.2 Layers 1-3 Extensions
 
-See [Research/LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md) for specifications of planned extensions:
+See [Research/layer-extensions.md](../Research/layer-extensions.md) for specifications of planned extensions:
 - Layer 1 (Explanatory): Counterfactual, constitutive, causal operators
 - Layer 2 (Epistemic): Belief, probability, knowledge operators
 - Layer 3 (Normative): Obligation, permission, preference operators
 
 ### 8.3 Dual Verification Architecture
 
-See [Research/DUAL_VERIFICATION.md](../Research/DUAL_VERIFICATION.md) for RL training design combining proof-checker (syntactic verification) with model-checker (semantic verification).
+See [Research/dual-verification.md](../Research/dual-verification.md) for RL training design combining proof-checker (syntactic verification) with model-checker (semantic verification).
 
 ### 8.4 Proof Library Architecture
 
-See [Research/PROOF_LIBRARY_DESIGN.md](../Research/PROOF_LIBRARY_DESIGN.md) for theorem caching and pattern matching design.
+See [Research/proof-library-design.md](../Research/proof-library-design.md) for theorem caching and pattern matching design.
 
 ### 8.5 Operator Layer Alignment
 
@@ -1332,7 +1332,7 @@ For current implementation status, see [IMPLEMENTATION_STATUS.md](../ProjectInfo
 - Extended axioms: Layer-specific axiom schemata
 - **Goal**: Progressive addition following phased roadmap
 
-For extension specifications, see [Research/LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md).
+For extension specifications, see [Research/layer-extensions.md](../Research/layer-extensions.md).
 
 **Benefits of Layered Approach**:
 1. **Conceptual Clarity**: Separate core system from advanced operators
@@ -1391,9 +1391,9 @@ This architecture provides a comprehensive foundation for developing a sophistic
 - [Tutorial](TUTORIAL.md) - Getting started guide
 - [Examples](EXAMPLES.md) - Modal, temporal, and bimodal examples
 - [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md) - Current progress
-- [Research/LAYER_EXTENSIONS.md](../Research/LAYER_EXTENSIONS.md) - Layers 1-3 specifications
-- [Research/DUAL_VERIFICATION.md](../Research/DUAL_VERIFICATION.md) - RL training architecture
-- [Research/PROOF_LIBRARY_DESIGN.md](../Research/PROOF_LIBRARY_DESIGN.md) - Theorem caching design
+- [Research/layer-extensions.md](../Research/layer-extensions.md) - Layers 1-3 specifications
+- [Research/dual-verification.md](../Research/dual-verification.md) - RL training architecture
+- [Research/proof-library-design.md](../Research/proof-library-design.md) - Theorem caching design
 - [LEAN Style Guide](../Development/LEAN_STYLE_GUIDE.md) - Coding conventions
 - [Module Organization](../Development/MODULE_ORGANIZATION.md) - Project structure
 - [Integration Guide](INTEGRATION.md) - Model-Checker integration

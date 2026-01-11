@@ -263,8 +263,8 @@ Classical.propDecidable
 
 - [NONCOMPUTABLE_GUIDE.md](../Development/NONCOMPUTABLE_GUIDE.md) - Complete catalog and guidelines
 - [Task 192](../../.opencode/specs/192_fix_generalized_necessitation_termination/) - Fix noncomputable errors
-- [Noncomputable Research](../Research/noncomputable-research.md) - Comprehensive explanation
-- [Deduction Theorem Necessity](../Research/deduction-theorem-necessity-research.md) - Detailed analysis
+- [Noncomputable Research](../Research/noncomputable.md) - Comprehensive explanation
+- [Deduction Theorem Necessity](../Research/deduction-theorem-necessity.md) - Detailed analysis
 
 ### External References
 

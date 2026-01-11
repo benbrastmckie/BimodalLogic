@@ -84,8 +84,8 @@ For architectural rationale, see [ADR-001-Classical-Logic-Noncomputable.md](../A
 - Line 377: `Classical.propDecidable` in main theorem body
 
 **Research References**:
-- [noncomputable-research.md](../Research/noncomputable-research.md)
-- [deduction-theorem-necessity-research.md](../Research/deduction-theorem-necessity-research.md)
+- [noncomputable.md](../Research/noncomputable.md)
+- [deduction-theorem-necessity.md](../Research/deduction-theorem-necessity.md)
 
 ---
 
@@ -395,8 +395,8 @@ Fix by adding `noncomputable` keyword before `def`.
 
 - **Architecture Decision**: [ADR-001-Classical-Logic-Noncomputable.md](../Architecture/ADR-001-Classical-Logic-Noncomputable.md)
 - **Research Reports**:
-  - [Noncomputable Keyword Explanation](../Research/noncomputable-research.md)
-  - [Deduction Theorem Necessity Analysis](../Research/deduction-theorem-necessity-research.md)
+  - [Noncomputable Keyword Explanation](../Research/noncomputable.md)
+  - [Deduction Theorem Necessity Analysis](../Research/deduction-theorem-necessity.md)
 - **Style Guide**: [LEAN_STYLE_GUIDE.md](LEAN_STYLE_GUIDE.md) (see "Noncomputable Patterns" section)
 - **Task Tracker**: [Task 192 - Fix GeneralizedNecessitation Termination](../../TODO.md)
 

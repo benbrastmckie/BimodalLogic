@@ -479,7 +479,7 @@ For detailed usage examples and performance analysis, see:
 - `Archive/ModalProofs.lean` - Modal automation examples
 - `Archive/TemporalProofs.lean` - Temporal automation examples
 - `Archive/BimodalProofs.lean` - Perpetuity automation examples
-- `Documentation/Research/PROOF_SEARCH_AUTOMATION.md` - Research documentation
+- `Documentation/Research/proof-search-automation.md` - Research documentation
 
 ## 6. Working with Derivation Trees
 

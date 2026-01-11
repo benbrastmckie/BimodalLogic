@@ -8,21 +8,21 @@ Research and design documents for proof search automation and related features i
 
 ### Proof Search Automation
 
-#### MODAL_TEMPORAL_PROOF_SEARCH.md
+#### modal-temporal-proof-search.md
 
 Unified proof search architecture for modal and temporal logics. Covers tableau methods, sequent
 calculi, and specialized strategies for box/diamond and past/future operators.
 
 **Status**: Research complete
 
-#### PROOF_SEARCH_AUTOMATION.md
+#### proof-search-automation.md
 
 General proof search automation strategies including best-first search, priority queues, proof
 caching, and memoization techniques for modal and temporal proof systems.
 
 **Status**: Research complete
 
-#### temporal-logic-automation-research.md
+#### temporal-logic-automation.md
 
 Research on temporal logic proof automation techniques, including LTL proof methods, tableau-based
 decision procedures, and adaptation strategies for bimodal temporal logic.
@@ -31,7 +31,7 @@ decision procedures, and adaptation strategies for bimodal temporal logic.
 
 ### LeanSearch Integration
 
-#### LEANSEARCH_API_SPECIFICATION.md
+#### leansearch-api-specification.md
 
 API specification for LeanSearch integration, documenting REST API endpoints, query parameters,
 response formats, and integration strategies for proof search automation.
@@ -61,7 +61,7 @@ invalidation strategies and memory management.
 
 ## Related Documentation
 
-- [THEORY_COMPARISON.md](../../../Documentation/Research/THEORY_COMPARISON.md) - Comparison with Logos
+- [theory-comparison.md](../../../Documentation/Research/theory-comparison.md) - Comparison with Logos
 - [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) - TM logic specification
 - [TACTIC_REGISTRY.md](../ProjectInfo/TACTIC_REGISTRY.md) - Tactic implementation status
 

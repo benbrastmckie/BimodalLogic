@@ -5,27 +5,27 @@ Project-wide research documents applicable to all theories in ProofChecker.
 **Audience**: Researchers, architects, contributors interested in design decisions
 
 > **Theory-Specific Research**: For research specific to each logic theory, see:
-> - [Logos/Documentation/Research/](../../Logos/Documentation/Research/) - Logos semantic architecture
-> - [Bimodal/Documentation/Research/](../../Bimodal/Documentation/Research/) - Proof search automation
+> - [Logos/Documentation/Research/](../../Theories/Logos/Documentation/Research/) - Logos semantic architecture
+> - [Bimodal/Documentation/Research/](../../Theories/Bimodal/Documentation/Research/) - Proof search automation
 
 ## Project-Wide Research
 
 ### Theory Foundations
 
-#### THEORY_COMPARISON.md
+#### theory-comparison.md
 
 Comparison of the two logical systems in ProofChecker: **Bimodal** (propositional intensional logic
 with world-state primitives) and **Logos** (planned second-order hyperintensional logic with state
 primitives). Covers semantic frameworks, operators, and intended applications.
 
 **Status**: Complete
-**Related**: [Bimodal README](../../Bimodal/README.md), [Logos README](../../Logos/README.md)
+**Related**: [Bimodal README](../../Theories/Bimodal/README.md), [Logos README](../../Theories/Logos/README.md)
 
 ---
 
 ### Classical Logic and Noncomputability
 
-#### noncomputable-research.md
+#### noncomputable.md
 
 Comprehensive explanation of the `noncomputable` keyword in Lean 4, covering what it means, why
 definitions become noncomputable, and the relationship between classical logic and computability
@@ -34,7 +34,7 @@ in proof systems. Analyzes ProofChecker's use of classical axioms in metalogic t
 **Status**: Complete analysis (Task 192)
 **Related**: [ADR-001-Classical-Logic-Noncomputable.md](../Architecture/ADR-001-Classical-Logic-Noncomputable.md)
 
-#### deduction-theorem-necessity-research.md
+#### deduction-theorem-necessity.md
 
 Detailed analysis of whether the deduction theorem MUST be noncomputable in ProofChecker.
 Evaluates alternatives and concludes that classical logic with noncomputable definitions is
@@ -46,7 +46,7 @@ necessary, expected, and appropriate for Hilbert-style proof systems.
 
 ### AI Training Architecture
 
-#### DUAL_VERIFICATION.md
+#### dual-verification.md
 
 Training architecture using dual verification combining proof-checker (syntactic verification via
 LEAN) with model-checker (semantic verification via Z3). Describes how complementary verification
@@ -54,7 +54,7 @@ systems generate unlimited training data for reinforcement learning without huma
 
 **Status**: Research vision
 
-#### PROOF_LIBRARY_DESIGN.md
+#### proof-library-design.md
 
 Theorem caching and pattern matching design enabling computational scaling through cached
 verification patterns. Supports incremental learning from simple to complex theorems.
@@ -82,20 +82,20 @@ Research specific to individual theories has been moved to theory directories:
 
 ### Logos Research
 
-Located in [Logos/Documentation/Research/](../../Logos/Documentation/Research/):
+Located in [Logos/Documentation/Research/](../../Theories/Logos/Documentation/Research/):
 
-- **RECURSIVE_SEMANTICS.md** - Full Logos semantic specification
-- **LAYER_EXTENSIONS.md** - Extension architecture overview
-- **CONCEPTUAL_ENGINEERING.md** - Philosophical foundations
+- **recursive-semantics.md** - Full Logos semantic specification
+- **layer-extensions.md** - Extension architecture overview
+- **conceptual-engineering.md** - Philosophical foundations
 
 ### Bimodal Research
 
-Located in [Bimodal/Documentation/Research/](../../Bimodal/Documentation/Research/):
+Located in [Bimodal/Documentation/Research/](../../Theories/Bimodal/Documentation/Research/):
 
-- **MODAL_TEMPORAL_PROOF_SEARCH.md** - Proof search architecture
-- **PROOF_SEARCH_AUTOMATION.md** - Automation strategies
-- **temporal-logic-automation-research.md** - Temporal tactics
-- **LEANSEARCH_API_SPECIFICATION.md** - LeanSearch API
+- **modal-temporal-proof-search.md** - Proof search architecture
+- **proof-search-automation.md** - Automation strategies
+- **temporal-logic-automation.md** - Temporal tactics
+- **leansearch-api-specification.md** - LeanSearch API
 - **leansearch-best-first-search.md** - Best-first search
 - **leansearch-priority-queue.md** - Priority queue design
 - **leansearch-proof-caching-memoization.md** - Caching design
@@ -114,8 +114,8 @@ Located in [Bimodal/Documentation/Research/](../../Bimodal/Documentation/Researc
 ## Navigation
 
 - **Up**: [Documentation/](../README.md)
-- **Logos Research**: [Logos/Documentation/Research/](../../Logos/Documentation/Research/)
-- **Bimodal Research**: [Bimodal/Documentation/Research/](../../Bimodal/Documentation/Research/)
+- **Logos Research**: [Logos/Documentation/Research/](../../Theories/Logos/Documentation/Research/)
+- **Bimodal Research**: [Bimodal/Documentation/Research/](../../Theories/Bimodal/Documentation/Research/)
 
 ---
 

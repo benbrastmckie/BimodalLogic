@@ -23,7 +23,7 @@ For documentation specific to each logic theory, see:
 | Implementation status | [Status](../Bimodal/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) | [Status](../Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) |
 | Known limitations | [Limitations](../Bimodal/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) | [Limitations](../Logos/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) |
 
-**Theory comparison**: [Research/THEORY_COMPARISON.md](Research/THEORY_COMPARISON.md)
+**Theory comparison**: [Research/theory-comparison.md](Research/theory-comparison.md)
 
 ## Project-Wide Documentation
 
@@ -66,9 +66,9 @@ Project-wide user documentation:
 Project-wide research documents:
 
 - [README.md](Research/README.md) - Research documentation overview
-- [THEORY_COMPARISON.md](Research/THEORY_COMPARISON.md) - Comparison of Bimodal and Logos
-- [DUAL_VERIFICATION.md](Research/DUAL_VERIFICATION.md) - RL training architecture design
-- [PROOF_LIBRARY_DESIGN.md](Research/PROOF_LIBRARY_DESIGN.md) - Theorem caching design
+- [theory-comparison.md](Research/theory-comparison.md) - Comparison of Bimodal and Logos
+- [dual-verification.md](Research/dual-verification.md) - RL training architecture design
+- [proof-library-design.md](Research/proof-library-design.md) - Theorem caching design
 
 > **Theory-specific research**: See [Logos/Documentation/Research/](../Logos/Documentation/Research/)
 > and [Bimodal/Documentation/Research/](../Bimodal/Documentation/Research/).
@@ -174,9 +174,9 @@ Architectural Decision Records (ADRs):
 ### For Researchers
 
 1. [Research Overview](Research/README.md) - Research documentation index
-2. [Theory Comparison](Research/THEORY_COMPARISON.md) - Bimodal vs Logos
+2. [Theory Comparison](Research/theory-comparison.md) - Bimodal vs Logos
 3. [Logos Methodology](../Logos/Documentation/UserGuide/METHODOLOGY.md) - Philosophical foundations
-4. [Logos Semantics](../Logos/Documentation/Research/RECURSIVE_SEMANTICS.md) - Full specification
+4. [Logos Semantics](../Logos/Documentation/Research/recursive-semantics.md) - Full specification
 
 ### Quick Reference
 
@@ -189,7 +189,7 @@ Architectural Decision Records (ADRs):
 
 **Start with**:
 1. [Project README](../README.md) - Project overview and motivations
-2. [Theory Comparison](Research/THEORY_COMPARISON.md) - Bimodal vs Logos differences
+2. [Theory Comparison](Research/theory-comparison.md) - Bimodal vs Logos differences
 3. Theory-specific documentation:
    - Bimodal: [Architecture](../Bimodal/Documentation/UserGuide/ARCHITECTURE.md)
    - Logos: [Methodology](../Logos/Documentation/UserGuide/METHODOLOGY.md)
@@ -208,7 +208,7 @@ Architectural Decision Records (ADRs):
 **Start with**:
 1. [Integration Guide](UserGuide/INTEGRATION.md) - Model-Checker integration
 2. [MCP Integration](UserGuide/MCP_INTEGRATION.md) - MCP server integration
-3. [Dual Verification](Research/DUAL_VERIFICATION.md) - Training architecture
+3. [Dual Verification](Research/dual-verification.md) - Training architecture
 
 ### I want to contribute
 

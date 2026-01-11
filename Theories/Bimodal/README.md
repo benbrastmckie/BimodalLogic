@@ -14,7 +14,7 @@ Bimodal is a **propositional intensional logic** implementing TM (Tense and Moda
 | **Logical level** | Propositional (zeroth-order) |
 
 For comparison with the planned Logos hyperintensional logic (second-order with state
-primitives), see [THEORY_COMPARISON.md](../Documentation/Research/THEORY_COMPARISON.md).
+primitives), see [theory-comparison.md](../Documentation/Research/theory-comparison.md).
 
 ## Purpose
 
@@ -214,7 +214,7 @@ When working on Bimodal source code:
 
 ### Project-Wide
 
-- [Theory Comparison](../Documentation/Research/THEORY_COMPARISON.md) - Bimodal vs Logos
+- [Theory Comparison](../Documentation/Research/theory-comparison.md) - Bimodal vs Logos
 - [LEAN Style Guide](../Documentation/Development/LEAN_STYLE_GUIDE.md) - Coding conventions
 - [Module Organization](../Documentation/Development/MODULE_ORGANIZATION.md) - Directory structure
 - [Testing Standards](../Documentation/Development/TESTING_STANDARDS.md) - Test requirements

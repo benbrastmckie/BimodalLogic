@@ -14,7 +14,7 @@ Bimodal is a **propositional intensional logic** with:
 - **Logical level**: Propositional (zeroth-order)
 
 For comparison with the planned Logos hyperintensional logic, see
-[THEORY_COMPARISON.md](../../Documentation/Research/THEORY_COMPARISON.md).
+[theory-comparison.md](../../Documentation/Research/theory-comparison.md).
 
 ## Documentation Organization
 
@@ -50,10 +50,10 @@ Reference materials for Bimodal logic:
 Research and design documents for Bimodal proof automation:
 
 - [README.md](Research/README.md) - Research overview
-- [MODAL_TEMPORAL_PROOF_SEARCH.md](Research/MODAL_TEMPORAL_PROOF_SEARCH.md) - Proof search architecture
-- [PROOF_SEARCH_AUTOMATION.md](Research/PROOF_SEARCH_AUTOMATION.md) - Automation strategies
-- [temporal-logic-automation-research.md](Research/temporal-logic-automation-research.md) - Temporal tactics
-- [LEANSEARCH_API_SPECIFICATION.md](Research/LEANSEARCH_API_SPECIFICATION.md) - LeanSearch API
+- [modal-temporal-proof-search.md](Research/modal-temporal-proof-search.md) - Proof search architecture
+- [proof-search-automation.md](Research/proof-search-automation.md) - Automation strategies
+- [temporal-logic-automation.md](Research/temporal-logic-automation.md) - Temporal tactics
+- [leansearch-api-specification.md](Research/leansearch-api-specification.md) - LeanSearch API
 - [leansearch-best-first-search.md](Research/leansearch-best-first-search.md) - Best-first search
 - [leansearch-priority-queue.md](Research/leansearch-priority-queue.md) - Priority queue design
 - [leansearch-proof-caching-memoization.md](Research/leansearch-proof-caching-memoization.md) - Caching
@@ -105,4 +105,4 @@ Most-referenced documents:
 
 - **Up**: [Bimodal/](../)
 - **Project Documentation**: [Documentation/](../../Documentation/)
-- **Theory Comparison**: [THEORY_COMPARISON.md](../../Documentation/Research/THEORY_COMPARISON.md)
+- **Theory Comparison**: [theory-comparison.md](../../Documentation/Research/theory-comparison.md)

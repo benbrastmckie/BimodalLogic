@@ -451,5 +451,5 @@ The LEAN 4 metaprogramming system provides excellent tools for implementing thes
 
 ---
 
-**Report Path**: `/home/benjamin/Projects/ProofChecker/Documentation/Research/PROOF_SEARCH_AUTOMATION.md`  
+**Report Path**: `/home/benjamin/Projects/ProofChecker/Documentation/Research/proof-search-automation.md`  
 **Generated**: December 20, 2025
