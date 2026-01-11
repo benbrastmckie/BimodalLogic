@@ -111,8 +111,8 @@ technical_debt:
 ---
 
 ### 179. Extend Bimodal benchmarks with derivation, semantics, and CI integration
-- **Effort**: 8 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 7 hours
+- **Status**: [PLANNED]
 - **Started**: 2026-01-11
 - **Planned**: 2026-01-11
 - **Priority**: Medium
@@ -120,7 +120,7 @@ technical_debt:
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [research-001.md](.claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](.claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-002.md)
 - **Files Affected**:
   - BimodalTest/Automation/ProofSearchBenchmark.lean (enhance)
   - BimodalTest/ProofSystem/DerivationBenchmark.lean (new)
