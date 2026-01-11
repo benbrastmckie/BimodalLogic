@@ -30,14 +30,16 @@ technical_debt:
 
 ### 386. Fix command artifact linking in TODO.md
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: High
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/386_fix_command_artifact_linking_in_todo_md/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/386_fix_command_artifact_linking_in_todo_md/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/386_fix_command_artifact_linking_in_todo_md/summaries/implementation-summary-20260111.md)
 
 **Description**: Fix /research command (and audit other commands) to properly link new artifacts in TODO.md. The command adds artifacts to state.json but fails to add corresponding links in TODO.md entries. Audit /plan, /implement, and /revise commands for similar artifact linking failures.
 
