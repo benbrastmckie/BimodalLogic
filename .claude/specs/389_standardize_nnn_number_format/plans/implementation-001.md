@@ -18,7 +18,7 @@ The issue is not inconsistent usage, but lack of explicit documentation about th
 ### Phase 1: Add Placeholder Convention Documentation
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add explicit placeholder convention section to artifact-formats.md

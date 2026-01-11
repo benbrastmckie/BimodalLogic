@@ -4,6 +4,21 @@ paths: .claude/specs/**/*
 
 # Artifact Format Rules
 
+## Placeholder Conventions
+
+Placeholders in path templates and content follow these conventions:
+
+| Placeholder | Format | Usage | Examples |
+|-------------|--------|-------|----------|
+| `{N}` | Unpadded integer | Task numbers, counts | `389`, `task 389:`, `{N}_{SLUG}` |
+| `{NNN}` | 3-digit padded | Artifact versions | `001`, `research-001.md` |
+| `{P}` | Unpadded integer | Phase numbers | `1`, `phase 1:` |
+| `{DATE}` | YYYYMMDD | Date stamps in filenames | `20260111` |
+| `{ISO_DATE}` | YYYY-MM-DD | ISO dates in content | `2026-01-11` |
+| `{SLUG}` | snake_case | Task slug from title | `fix_bug_name` |
+
+**Key distinction**: Task numbers (`{N}`) are unpadded because they grow indefinitely. Artifact versions (`{NNN}`) are padded because they rarely exceed 999 per task.
+
 ## Research Reports
 
 **Location**: `.claude/specs/{N}_{SLUG}/reports/research-{NNN}.md`

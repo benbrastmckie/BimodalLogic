@@ -30,7 +30,7 @@ technical_debt:
 
 ### 388. Fix /todo command directory archiving
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: High
@@ -110,7 +110,7 @@ technical_debt:
 
 ### 389. Standardize {NNN} number format across documentation
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
