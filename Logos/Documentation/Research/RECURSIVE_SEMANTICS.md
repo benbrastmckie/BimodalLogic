@@ -25,7 +25,7 @@ The following diagram shows the dependency structure among extensions:
                         │ required
                         ▼
 ┌─────────────────────────────────────────────────┐
-│              Core Extension                     │
+│              Explanatory Extension                     │
 │    (modal, temporal, counterfactual, causal)    │
 └───────────────────────┬─────────────────────────┘
                         │
@@ -49,16 +49,16 @@ The following diagram shows the dependency structure among extensions:
 └─────────────────────────────────────────────────┘
 ```
 
-The Constitutive Foundation and Core Extension form the required base. The Epistemic, Normative, and Spatial Extensions are modular plugins that can be combined in any subset. The Agential Extension requires at least one middle extension to be loaded.
+The Constitutive Foundation and Explanatory Extension form the required base. The Epistemic, Normative, and Spatial Extensions are modular plugins that can be combined in any subset. The Agential Extension requires at least one middle extension to be loaded.
 
 1. **Constitutive Foundation**: Hyperintensional semantics over a mereological state space
-2. **Core Extension**: Hyperintensional and intensional semantics over a task space
+2. **Explanatory Extension**: Hyperintensional and intensional semantics over a task space
 3. **Epistemic Extension**: Extensions for belief, knowledge, and probability [DETAILS]
 4. **Normative Extension**: Extensions for obligation, permission, and value [DETAILS]
 5. **Spatial Extension**: Extensions for spatial reasoning [DETAILS]
 6. **Agential Extension**: Extensions for multi-agent reasoning [DETAILS]
 
-The Constitutive Foundation provides the foundational mereological structure with bilateral propositions (verifier/falsifier pairs). The Core Extension extends this foundation with temporal structure (a totally ordered abelian group) and a task relation constraining possible state transitions, enabling evaluation of truth relative to world-histories and times.
+The Constitutive Foundation provides the foundational mereological structure with bilateral propositions (verifier/falsifier pairs). The Explanatory Extension extends this foundation with temporal structure (a totally ordered abelian group) and a task relation constraining possible state transitions, enabling evaluation of truth relative to world-histories and times.
 
 ---
 
@@ -86,7 +86,7 @@ A *constitutive frame* is a structure **F** = ⟨S, ⊑⟩ where:
 | **State Space** | A nonempty set S of states |
 | **Parthood** | A partial order ⊑ on S making ⟨S, ⊑⟩ a complete lattice |
 
-The constitutive frame is non-modal: possibility and compatibility cannot be defined at this level since they require the task relation introduced in the Core Extension.
+The constitutive frame is non-modal: possibility and compatibility cannot be defined at this level since they require the task relation introduced in the Explanatory Extension.
 
 The lattice structure provides:
 - **Null state** (□): The bottom element (fusion of the empty set)
@@ -221,17 +221,17 @@ Logical consequence at the Constitutive Foundation is restricted to propositiona
 
 That is, A is a consequence of Γ iff the null state verifies A in any model where it verifies all premises.
 
-**Identity Sentences and Evaluation Overlap**: Identity sentences are formed from extensional (non-identity) sentences: A ≡ B where A and B are atomic sentences or built from ¬, ∧, ∨. The logical consequences holding between identity sentences are preserved by further extensions. However, the Constitutive Foundation lacks the semantic resources to evaluate non-identity sentences, which depend on contingent states of affairs rather than purely structural relations in state space. The Constitutive Foundation is nevertheless important for defining a logic of propositional identity. The same theorems valid at this level remain valid in the Core Extension, though the Core Extension's definition of logical consequence differs, quantifying over world-histories and times in addition to models and variable assignments.
+**Identity Sentences and Evaluation Overlap**: Identity sentences are formed from extensional (non-identity) sentences: A ≡ B where A and B are atomic sentences or built from ¬, ∧, ∨. The logical consequences holding between identity sentences are preserved by further extensions. However, the Constitutive Foundation lacks the semantic resources to evaluate non-identity sentences, which depend on contingent states of affairs rather than purely structural relations in state space. The Constitutive Foundation is nevertheless important for defining a logic of propositional identity. The same theorems valid at this level remain valid in the Explanatory Extension, though the Explanatory Extension's definition of logical consequence differs, quantifying over world-histories and times in addition to models and variable assignments.
 
 ---
 
-## Core Extension: Intensional Semantics
+## Explanatory Extension: Intensional Semantics
 
-The Core Extension extends the Constitutive Foundation with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. While the hyperintensional foundation remains (distinguishing propositions by their exact verifiers and falsifiers), this extension adds intensional evaluation relative to contextual parameters (world-history, time, variable assignment) to determine truth-values for all Core Extension sentences.
+The Explanatory Extension extends the Constitutive Foundation with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. While the hyperintensional foundation remains (distinguishing propositions by their exact verifiers and falsifiers), this extension adds intensional evaluation relative to contextual parameters (world-history, time, variable assignment) to determine truth-values for all Explanatory Extension sentences.
 
 ### Syntactic Primitives
 
-The Core Extension interprets the following additional syntactic primitives beyond those of the Constitutive Foundation:
+The Explanatory Extension interprets the following additional syntactic primitives beyond those of the Constitutive Foundation:
 - **Modal operators**: □ (necessity), ◇ (possibility)
 - **Temporal operators**: H (always past), G (always future), P (some past), F (some future)
 - **Extended temporal operators**: ◁ (since), ▷ (until)
@@ -433,7 +433,7 @@ Different temporal structures yield different valid principles. The framework do
 | **Unbounded Past** | No earliest time | P⊤ |
 | **Unbounded Future** | No latest time | F⊤ |
 
-### Logical Consequence (Core Extension)
+### Logical Consequence (Explanatory Extension)
 
 > Γ ⊨ A iff for any model M, world-history τ ∈ H_F, time x ∈ D, assignment σ, and temporal index i⃗: if M, τ, x, σ, i⃗ ⊨ B for all B ∈ Γ, then M, τ, x, σ, i⃗ ⊨ A
 
@@ -468,7 +468,7 @@ Different temporal structures yield different valid principles. The framework do
 
 [DETAILS]
 
-The Epistemic Extension extends the Core Extension with structures for belief, knowledge, and probability.
+The Epistemic Extension extends the Explanatory Extension with structures for belief, knowledge, and probability.
 
 ### Frame Extension
 
@@ -500,7 +500,7 @@ The epistemic frame extends the core frame with a credence function assigning pr
 
 [DETAILS]
 
-The Normative Extension extends the Core Extension with structures for obligation, permission, and value.
+The Normative Extension extends the Explanatory Extension with structures for obligation, permission, and value.
 
 ### Frame Extension
 
@@ -532,7 +532,7 @@ The normative frame extends the core frame with value orderings over states.
 
 [DETAILS]
 
-The Spatial Extension extends the Core Extension with structures for spatial reasoning and location.
+The Spatial Extension extends the Explanatory Extension with structures for spatial reasoning and location.
 
 ### Frame Extension
 

@@ -53,7 +53,7 @@ The tense operators provide the temporal structure (representing that success oc
 
 The semantic foundation for planning requires distinguishing two levels of analysis:
 
-**Semantic Level (World-Histories)**: In the formal semantics, a world-history is a complete function `w: T → S` from convex time subsets to world-states, respecting the task relation. This completeness enables recursive truth evaluation for tense operators. See [WorldHistory.lean](../../Logos/Core/Semantics/WorldHistory.lean) for formal specification.
+**Semantic Level (World-Histories)**: In the formal semantics, a world-history is a complete function `w: T → S` from convex time subsets to world-states, respecting the task relation. This completeness enables recursive truth evaluation for tense operators. See [Frame.lean](../../Logos/Explanatory/Frame.lean) for formal specification.
 
 **Pragmatic Level (Plan Specifications)**: Real-world plans do not specify complete
 world-histories. A plan like "launch product by Q4 2026" provides only **partial
@@ -75,11 +75,11 @@ Plan = {w : WorldHistory F |
 This set contains all physically possible complete temporal evolutions satisfying the
 plan's constraints.
 
-**Task Relation as Causal Constraint**: The task relation `F.task_rel : WorldState → T → WorldState → Prop` constrains accessible world-histories to physically achievable temporal evolutions, with nullity (identity task always achievable) and compositionality (sequential task composition). This ensures historical modal operators quantify over achievable plans, not arbitrary mathematical possibilities. See [TaskFrame.lean](../../Logos/Core/Semantics/TaskFrame.lean) for formal properties.
+**Task Relation as Causal Constraint**: The task relation `F.task_rel : WorldState → T → WorldState → Prop` constrains accessible world-histories to physically achievable temporal evolutions, with nullity (identity task always achievable) and compositionality (sequential task composition). This ensures historical modal operators quantify over achievable plans, not arbitrary mathematical possibilities. See [Frame.lean](../../Logos/Explanatory/Frame.lean) for formal properties.
 
 ### Truth Conditions for Tense Operators in Planning Contexts
 
-Tense operators quantify over times within a single world-history, representing temporal evolution under a fixed plan: `Gφ` (always in future), `Fφ` (sometime in future), `Hφ` (always in past), `Pφ` (sometime in past). These operators enable intra-world temporal quantification without introducing alternative worlds. For formal truth conditions, see [Truth.lean](../../Logos/Core/Semantics/Truth.lean) lines 110-123.
+Tense operators quantify over times within a single world-history, representing temporal evolution under a fixed plan: `Gφ` (always in future), `Fφ` (sometime in future), `Hφ` (always in past), `Pφ` (sometime in past). These operators enable intra-world temporal quantification without introducing alternative worlds. For formal truth conditions, see [Truth.lean](../../Logos/Explanatory/Truth.lean).
 
 **Inter-World Plan Comparison via Modal Operators**:
 
