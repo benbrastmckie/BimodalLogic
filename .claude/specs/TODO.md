@@ -180,13 +180,15 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 
 ### 178. Complete Bimodal advanced tutorial with exercises
 - **Effort**: 10 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-11
 - **Planned**: 2026-01-11
+- **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [research-001.md](.claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/plans/implementation-001.md)
 - **Files Affected**:
   - Bimodal/Documentation/UserGuide/ADVANCED_TUTORIAL.md (new)
