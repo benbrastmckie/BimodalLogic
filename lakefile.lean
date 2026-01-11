@@ -9,29 +9,28 @@ require mathlib from git
 require plausible from git
   "https://github.com/leanprover-community/plausible" @ "main"
 
+-- Common Lean options for all theory libraries
+abbrev theoryLeanOptions : Array LeanOption := #[
+  ⟨`pp.unicode.fun, true⟩,
+  ⟨`autoImplicit, false⟩
+]
+
 -- Logos library with linters enabled
 @[default_target]
 lean_lib Logos where
-  leanOptions := #[
-    ⟨`pp.unicode.fun, true⟩,
-    ⟨`autoImplicit, false⟩
-  ]
+  leanOptions := theoryLeanOptions
 
 -- Bimodal library - standalone TM logic implementation
 lean_lib Bimodal where
-  leanOptions := #[
-    ⟨`pp.unicode.fun, true⟩,
-    ⟨`autoImplicit, false⟩
-  ]
+  srcDir := "Theories"
+  roots := #[`Bimodal]
+  leanOptions := theoryLeanOptions
 
 lean_lib LogosTest
 
 -- BimodalTest library - tests for Bimodal TM logic
 lean_lib BimodalTest where
-  leanOptions := #[
-    ⟨`pp.unicode.fun, true⟩,
-    ⟨`autoImplicit, false⟩
-  ]
+  leanOptions := theoryLeanOptions
 
 lean_exe test where
   root := `LogosTest.Main

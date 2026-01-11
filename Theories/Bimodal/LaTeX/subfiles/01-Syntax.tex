@@ -1,0 +1,86 @@
+\documentclass[../BimodalReference.tex]{subfiles}
+\begin{document}
+
+\section{Syntax}
+
+\subsection{Formulas}
+
+Formulas are defined inductively with six primitive constructors.
+
+\begin{definition}[Formula]
+The type \texttt{Formula} is defined by:
+\begin{align*}
+  \varphi, \psi ::= \ & p                    && \text{(atomic proposition)} \\
+                    | \ & \falsum             && \text{(falsity)} \\
+                    | \ & \varphi \imp \psi   && \text{(implication)} \\
+                    | \ & \nec\varphi         && \text{(necessity)} \\
+                    | \ & \allpast\varphi     && \text{(always past)} \\
+                    | \ & \allfuture\varphi   && \text{(always future)}
+\end{align*}
+where $p$ ranges over propositional atoms (type \texttt{String}).
+\end{definition}
+
+\subsection{Notation}
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Symbol & Name & Lean & Type \\
+\midrule
+$p, q, r$ & Atom & \texttt{atom s} & \texttt{Formula} \\
+$\falsum$ & Falsity & \texttt{bot} & \texttt{Formula} \\
+$\varphi \imp \psi$ & Implication & \texttt{imp} & \texttt{Formula $\to$ Formula $\to$ Formula} \\
+$\nec\varphi$ & Necessity & \texttt{box} & \texttt{Formula $\to$ Formula} \\
+$\allpast\varphi$ & Always past & \texttt{all\_past} & \texttt{Formula $\to$ Formula} \\
+$\allfuture\varphi$ & Always future & \texttt{all\_future} & \texttt{Formula $\to$ Formula} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Derived Operators}
+
+The following operators are defined in terms of the primitives.
+
+\begin{definition}[Propositional]
+\begin{align*}
+  \lneg\varphi &\coloneqq \varphi \imp \falsum && \text{(negation)} \\
+  \varphi \land \psi &\coloneqq \lneg(\varphi \imp \lneg\psi) && \text{(conjunction)} \\
+  \varphi \lor \psi &\coloneqq \lneg\varphi \imp \psi && \text{(disjunction)}
+\end{align*}
+\end{definition}
+
+\begin{definition}[Modal]
+\begin{align*}
+  \poss\varphi &\coloneqq \lneg\nec\lneg\varphi && \text{(possibility)}
+\end{align*}
+\end{definition}
+
+\begin{definition}[Temporal]
+\begin{align*}
+  \somepast\varphi &\coloneqq \lneg\allpast\lneg\varphi && \text{(sometime past)} \\
+  \somefuture\varphi &\coloneqq \lneg\allfuture\lneg\varphi && \text{(sometime future)} \\
+  \always\varphi &\coloneqq \allpast\varphi \land \varphi \land \allfuture\varphi && \text{(always)} \\
+  \sometimes\varphi &\coloneqq \somepast\varphi \lor \varphi \lor \somefuture\varphi && \text{(sometimes)}
+\end{align*}
+\end{definition}
+
+\subsection{Temporal Duality}
+
+The \texttt{swap\_temporal} function exchanges past and future operators.
+
+\begin{definition}[Temporal Swap]
+\begin{align*}
+  \text{swap}(p) &= p \\
+  \text{swap}(\falsum) &= \falsum \\
+  \text{swap}(\varphi \imp \psi) &= \text{swap}(\varphi) \imp \text{swap}(\psi) \\
+  \text{swap}(\nec\varphi) &= \nec\text{swap}(\varphi) \\
+  \text{swap}(\allpast\varphi) &= \allfuture\text{swap}(\varphi) \\
+  \text{swap}(\allfuture\varphi) &= \allpast\text{swap}(\varphi)
+\end{align*}
+\end{definition}
+
+\begin{theorem}[Involution]
+$\text{swap}(\text{swap}(\varphi)) = \varphi$
+\end{theorem}
+
+\end{document}

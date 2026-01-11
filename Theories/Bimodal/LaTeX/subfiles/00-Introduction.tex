@@ -1,0 +1,38 @@
+\documentclass[../BimodalReference.tex]{subfiles}
+\begin{document}
+
+\section{Introduction}
+
+Bimodal TM is a logic combining S5 metaphysical necessity ($\nec$) with linear
+temporal operators for past ($\allpast$) and future ($\allfuture$). The logic
+provides a framework for reasoning about necessary truths across time, with
+applications to metaphysics, action theory, and formal philosophy.
+
+The semantics is based on \emph{task frames}, which extend Kripke frames with
+temporal structure. A task frame consists of world states connected by a
+\emph{task relation} indexed by temporal durations. World histories are
+temporal slices through a task frame, representing the unfolding of a world
+over time.
+
+\subsection*{Implementation Status}
+
+\begin{itemize}
+  \item \textbf{Syntax}: Complete (6 primitive constructors, derived operators)
+  \item \textbf{Semantics}: Complete (task frames, world histories, truth conditions)
+  \item \textbf{Proof System}: Complete (14 axiom schemata, 7 inference rules)
+  \item \textbf{Soundness}: Fully proven (all axioms valid, rules preserve validity)
+  \item \textbf{Completeness}: Infrastructure only (Lindenbaum lemma, canonical model axiomatized)
+\end{itemize}
+
+\subsection*{Source Code}
+
+The Lean 4 implementation is in the \texttt{Bimodal/} directory:
+\begin{itemize}
+  \item \texttt{Syntax/Formula.lean} -- Formula type and operators
+  \item \texttt{Semantics/} -- Task frames, world histories, truth conditions
+  \item \texttt{ProofSystem/} -- Axioms and derivation trees
+  \item \texttt{Metalogic/} -- Soundness and completeness
+  \item \texttt{Theorems/} -- Perpetuity principles and modal theorems
+\end{itemize}
+
+\end{document}

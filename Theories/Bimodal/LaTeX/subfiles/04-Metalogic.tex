@@ -1,0 +1,129 @@
+\documentclass[../BimodalReference.tex]{subfiles}
+\begin{document}
+
+\section{Metalogic}
+
+\subsection{Soundness}
+
+The soundness theorem establishes that derivability implies semantic validity.
+
+\begin{theorem}[Soundness]
+If $\context \proves \varphi$ then $\context \satisfies \varphi$.
+\end{theorem}
+
+The proof proceeds by induction on the derivation structure:
+\begin{itemize}
+  \item \textbf{Axioms}: Each of the 14 axiom schemata is proven valid
+  \item \textbf{Assumptions}: Assumed formulas are true by hypothesis
+  \item \textbf{Modus ponens}: Validity preserved under implication elimination
+  \item \textbf{Necessitation}: Valid formulas become necessarily valid
+  \item \textbf{Temporal necessitation}: Valid formulas become always-future valid
+  \item \textbf{Temporal duality}: Past-future swap preserves validity
+  \item \textbf{Weakening}: Adding premises preserves semantic consequence
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Axiom Validity & Lean Theorem & Technique \\
+\midrule
+\texttt{prop\_k\_valid} & Propositional K & Propositional reasoning \\
+\texttt{prop\_s\_valid} & Propositional S & Propositional reasoning \\
+\texttt{ex\_falso\_valid} & EFQ & Vacuous implication \\
+\texttt{peirce\_valid} & Peirce & Classical case analysis \\
+\texttt{modal\_t\_valid} & MT & Reflexivity of accessibility \\
+\texttt{modal\_4\_valid} & M4 & Transitivity of accessibility \\
+\texttt{modal\_b\_valid} & MB & Symmetry of accessibility \\
+\texttt{modal\_5\_collapse\_valid} & M5 & S5 equivalence structure \\
+\texttt{modal\_k\_dist\_valid} & MK & Distribution \\
+\texttt{temp\_k\_dist\_valid} & TK & Temporal distribution \\
+\texttt{temp\_4\_valid} & T4 & Transitivity of time \\
+\texttt{temp\_a\_valid} & TA & Temporal connectedness \\
+\texttt{temp\_l\_valid} & TL & Always implies recurrence \\
+\texttt{modal\_future\_valid} & MF & Time-shift invariance \\
+\texttt{temp\_future\_valid} & TF & Time-shift invariance \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The MF and TF axioms use time-shift invariance (via \texttt{WorldHistory.time\_shift})
+to relate truth at different times.
+
+\subsection{Deduction Theorem}
+
+\begin{theorem}[Deduction Theorem]
+If $A :: \context \proves B$ then $\context \proves A \imp B$.
+\end{theorem}
+
+The proof uses well-founded induction on derivation height, handling each rule:
+\begin{itemize}
+  \item \textbf{Axiom}: Use S axiom to weaken
+  \item \textbf{Assumption}: Identity if same, S axiom if different
+  \item \textbf{Modus ponens}: Use K axiom distribution
+  \item \textbf{Weakening}: Case analysis on assumption membership
+  \item \textbf{Modal/temporal rules}: Do not apply (require empty context)
+\end{itemize}
+
+\subsection{Consistency}
+
+\begin{definition}[Consistent]
+A context $\context$ is \textbf{consistent} if $\context \not\proves \falsum$.
+\end{definition}
+
+\begin{definition}[Maximal Consistent]
+A context $\context$ is \textbf{maximal consistent} if it is consistent and
+for all $\varphi \notin \context$, the context $\varphi :: \context$ is inconsistent.
+\end{definition}
+
+\subsection{Completeness Infrastructure}
+
+The completeness proof uses canonical model construction.
+
+\begin{lemma}[Lindenbaum]
+Every consistent context can be extended to a maximal consistent context.
+\end{lemma}
+
+\begin{definition}[Canonical Frame]
+The canonical frame has:
+\begin{itemize}
+  \item World states: Maximal consistent sets
+  \item Times: Integers ($\mathbb{Z}$)
+  \item Task relation: Defined via modal/temporal formula transfer
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Canonical Valuation]
+An atom $p$ is true at world $\Gamma$ iff $p \in \Gamma$.
+\end{definition}
+
+\begin{lemma}[Truth Lemma]
+In the canonical model, $\varphi \in \Gamma$ iff $\varphi$ is true at $\Gamma$.
+\end{lemma}
+
+\begin{theorem}[Weak Completeness (Axiomatized)]
+If $\valid{\varphi}$ then $\proves \varphi$.
+\end{theorem}
+
+\begin{theorem}[Strong Completeness (Axiomatized)]
+If $\context \satisfies \varphi$ then $\context \proves \varphi$.
+\end{theorem}
+
+\subsection{Implementation Status}
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Component & Status & Lean \\
+\midrule
+Soundness & Fully proven & \texttt{soundness} \\
+Deduction Theorem & Fully proven & \texttt{deduction\_theorem} \\
+Lindenbaum Lemma & Axiomatized & \texttt{lindenbaum} \\
+Canonical Frame & Axiomatized & \texttt{canonical\_frame} \\
+Truth Lemma & Axiomatized & \texttt{truth\_lemma} \\
+Weak Completeness & Axiomatized & \texttt{weak\_completeness} \\
+Strong Completeness & Axiomatized & \texttt{strong\_completeness} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}

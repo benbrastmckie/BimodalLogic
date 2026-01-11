@@ -1,0 +1,96 @@
+\documentclass[../BimodalReference.tex]{subfiles}
+\begin{document}
+
+\section{Notes}
+
+\subsection{Implementation Status}
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Component & Status & Notes \\
+\midrule
+Syntax & Complete & 6 primitives, derived operators \\
+Semantics & Complete & Task frames, world histories, truth \\
+Proof System & Complete & 14 axioms, 7 inference rules \\
+Soundness & Fully Proven & All 14 axioms valid, 7 rules sound \\
+Deduction Theorem & Fully Proven & Well-founded recursion on height \\
+Completeness & Infrastructure Only & Axiomatized (Lindenbaum, truth lemma) \\
+Perpetuity Principles & Fully Proven & P1-P6 all proven \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Discrepancy Notes}
+
+This section documents differences between the paper ``The Construction of Possible Worlds''
+and the Lean implementation.
+
+\subsubsection{Terminology}
+
+\begin{itemize}
+  \item The paper uses ``perpetuity principles'' for P1-P6; the Lean code uses the same terminology.
+  \item The paper's notation $\triangle$ and $\triangledown$ for ``always'' and ``sometimes''
+        is preserved in the Lean implementation as \texttt{always} and \texttt{sometimes}.
+\end{itemize}
+
+\subsubsection{Axiom Naming}
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Paper Name & Lean Name & Notes \\
+\midrule
+MT (Modal T) & \texttt{Axiom.modal\_t} & $\nec\varphi \imp \varphi$ \\
+M4 (Modal 4) & \texttt{Axiom.modal\_4} & $\nec\varphi \imp \nec\nec\varphi$ \\
+MB (Modal B) & \texttt{Axiom.modal\_b} & $\varphi \imp \nec\poss\varphi$ \\
+MK & \texttt{Axiom.modal\_k\_dist} & K distribution \\
+TK & \texttt{Axiom.temp\_k\_dist} & Temporal K distribution \\
+T4 & \texttt{Axiom.temp\_4} & Temporal transitivity \\
+TA & \texttt{Axiom.temp\_a} & Temporal connectedness \\
+TL & \texttt{Axiom.temp\_l} & Temporal introspection \\
+MF & \texttt{Axiom.modal\_future} & Modal-future interaction \\
+TF & \texttt{Axiom.temp\_future} & Temporal-future interaction \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{M5 Collapse Axiom}
+
+The implementation includes an explicit M5 collapse axiom (\texttt{Axiom.modal\_5\_collapse}):
+\[
+\poss\nec\varphi \imp \nec\varphi
+\]
+This is derivable from the other S5 axioms (MB + M4) but is included as a primitive
+for proof convenience in the S5 collapse theorem.
+
+\subsubsection{Temporal Type Generalization}
+
+The paper uses a fixed temporal type $T = \mathbb{Z}$ (integers). The implementation
+generalizes to any type $T$ with \texttt{LinearOrderedAddCommGroup} instance,
+allowing for integers, rationals, reals, or custom bounded time structures.
+
+\subsubsection{Completeness Status}
+
+The paper proves completeness via canonical model construction. The Lean implementation
+has the completeness infrastructure (Lindenbaum lemma statement, canonical frame types,
+truth lemma statement) but the core lemmas remain axiomatized. Estimated effort to
+complete: 70-90 hours of focused development.
+
+\subsection{Source Files}
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Directory & Contents \\
+\midrule
+\texttt{Bimodal/Syntax/} & Formula, Context, temporal swap \\
+\texttt{Bimodal/Semantics/} & TaskFrame, WorldHistory, Truth, Validity \\
+\texttt{Bimodal/ProofSystem/} & Axioms, Derivation \\
+\texttt{Bimodal/Metalogic/} & Soundness, DeductionTheorem, Completeness \\
+\texttt{Bimodal/Theorems/} & Perpetuity, ModalS5, Propositional, Combinators \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}

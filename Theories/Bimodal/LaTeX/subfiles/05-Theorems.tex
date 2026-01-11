@@ -1,0 +1,177 @@
+\documentclass[../BimodalReference.tex]{subfiles}
+\begin{document}
+
+\section{Theorems}
+
+\subsection{Perpetuity Principles}
+
+The perpetuity principles establish deep connections between modal necessity ($\nec$)
+and temporal operators ($\always$, $\sometimes$).
+
+\begin{theorem}[P1: Necessity Implies Always]
+$\proves \nec\varphi \imp \always\varphi$
+\end{theorem}
+
+\begin{theorem}[P2: Sometimes Implies Possible]
+$\proves \sometimes\varphi \imp \poss\varphi$
+\end{theorem}
+
+\begin{theorem}[P3: Necessity of Perpetuity]
+$\proves \nec\varphi \imp \nec\always\varphi$
+\end{theorem}
+
+\begin{theorem}[P4: Possibility of Occurrence]
+$\proves \poss\sometimes\varphi \imp \poss\varphi$
+\end{theorem}
+
+\begin{theorem}[P5: Persistent Possibility]
+$\proves \poss\sometimes\varphi \imp \always\poss\varphi$
+\end{theorem}
+
+\begin{theorem}[P6: Occurrent Necessity is Perpetual]
+$\proves \sometimes\nec\varphi \imp \nec\always\varphi$
+\end{theorem}
+
+All six perpetuity principles are fully proven in the Lean implementation.
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Principle & Lean Theorem & Key Lemmas \\
+\midrule
+P1 & \texttt{perpetuity\_1} & MF, TF, MT \\
+P2 & \texttt{perpetuity\_2} & Contraposition of P1 \\
+P3 & \texttt{perpetuity\_3} & P1, box\_mono \\
+P4 & \texttt{perpetuity\_4} & Contraposition \\
+P5 & \texttt{perpetuity\_5} & modal\_5, temporal K \\
+P6 & \texttt{perpetuity\_6} & P5, bridge lemmas \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Modal S5 Theorems}
+
+\begin{theorem}[T-Box-to-Diamond]
+$\proves \nec\varphi \imp \poss\varphi$
+\end{theorem}
+
+\begin{theorem}[Box Distributes Over Disjunction]
+$\proves (\nec\varphi \lor \nec\psi) \imp \nec(\varphi \lor \psi)$
+\end{theorem}
+
+\begin{theorem}[Box Preserves Contraposition]
+$\proves \nec(\varphi \imp \psi) \imp \nec(\lneg\psi \imp \lneg\varphi)$
+\end{theorem}
+
+\begin{theorem}[K Distribution for Diamond]
+$\proves \nec(\varphi \imp \psi) \imp (\poss\varphi \imp \poss\psi)$
+\end{theorem}
+
+\begin{theorem}[S5 Collapse]
+$\proves \poss\nec\varphi \leftrightarrow \nec\varphi$
+\end{theorem}
+
+\begin{theorem}[Box-Conjunction Biconditional]
+$\proves \nec(\varphi \land \psi) \leftrightarrow (\nec\varphi \land \nec\psi)$
+\end{theorem}
+
+\begin{theorem}[Diamond-Disjunction Biconditional]
+$\proves \poss(\varphi \lor \psi) \leftrightarrow (\poss\varphi \lor \poss\psi)$
+\end{theorem}
+
+\subsection{Modal S4 Properties}
+
+The following S4 properties are derived from the TM axiom system.
+
+\begin{theorem}[Modal 5]
+$\proves \poss\varphi \imp \nec\poss\varphi$
+\end{theorem}
+
+\begin{theorem}[Diamond 4]
+$\proves \poss\poss\varphi \imp \poss\varphi$
+\end{theorem}
+
+\begin{theorem}[Box Monotonicity]
+If $\proves \varphi \imp \psi$ then $\proves \nec\varphi \imp \nec\psi$.
+\end{theorem}
+
+\begin{theorem}[Diamond Monotonicity]
+If $\proves \varphi \imp \psi$ then $\proves \poss\varphi \imp \poss\psi$.
+\end{theorem}
+
+\subsection{Propositional Theorems}
+
+\begin{theorem}[Identity]
+$\proves \varphi \imp \varphi$
+\end{theorem}
+
+\begin{theorem}[Double Negation Introduction]
+$\proves \varphi \imp \lneg\lneg\varphi$
+\end{theorem}
+
+\begin{theorem}[Double Negation Elimination]
+$\proves \lneg\lneg\varphi \imp \varphi$
+\end{theorem}
+
+\begin{theorem}[Contraposition]
+If $\proves \varphi \imp \psi$ then $\proves \lneg\psi \imp \lneg\varphi$.
+\end{theorem}
+
+\begin{theorem}[De Morgan (Disjunction)]
+$\proves \lneg(\varphi \lor \psi) \leftrightarrow (\lneg\varphi \land \lneg\psi)$
+\end{theorem}
+
+\begin{theorem}[De Morgan (Conjunction)]
+$\proves \lneg(\varphi \land \psi) \leftrightarrow (\lneg\varphi \lor \lneg\psi)$
+\end{theorem}
+
+\subsection{Combinator Infrastructure}
+
+The combinator infrastructure provides Hilbert-style proof tools.
+
+\begin{theorem}[B Combinator]
+$\proves (B \imp C) \imp ((A \imp B) \imp (A \imp C))$
+\end{theorem}
+
+\begin{theorem}[Implication Transitivity]
+If $\proves A \imp B$ and $\proves B \imp C$ then $\proves A \imp C$.
+\end{theorem}
+
+\begin{theorem}[Pairing]
+$\proves A \imp (B \imp (A \land B))$
+\end{theorem}
+
+\begin{theorem}[Classical Merge]
+$\proves (P \imp Q) \imp ((\lneg P \imp Q) \imp Q)$
+\end{theorem}
+
+\subsection{Generalized Necessitation}
+
+\begin{theorem}[Generalized Modal Necessitation]
+If $\context \proves \varphi$ then $\nec\context \proves \nec\varphi$
+where $\nec\context = [\nec\psi \mid \psi \in \context]$.
+\end{theorem}
+
+\begin{theorem}[Generalized Temporal Necessitation]
+If $\context \proves \varphi$ then $\allfuture\context \proves \allfuture\varphi$
+where $\allfuture\context = [\allfuture\psi \mid \psi \in \context]$.
+\end{theorem}
+
+\subsection{Module Organization}
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Module & Contents \\
+\midrule
+\texttt{Perpetuity.lean} & P1-P6 principles \\
+\texttt{ModalS5.lean} & S5 characteristic theorems \\
+\texttt{ModalS4.lean} & S4 properties (modal\_5, diamond\_4) \\
+\texttt{Propositional.lean} & Classical propositional theorems \\
+\texttt{Combinators.lean} & B, I, S combinators, imp\_trans \\
+\texttt{GeneralizedNecessitation.lean} & Context-level necessitation \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}

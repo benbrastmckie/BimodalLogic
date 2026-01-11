@@ -1,0 +1,120 @@
+% ============================================================================
+% BimodalReference.tex
+% Bimodal TM Logic: A Reference Manual
+%
+% This document provides the formal specification of the Bimodal TM logic,
+% a bimodal logic combining S5 metaphysical modality with linear temporal
+% operators, as implemented in the Bimodal/ directory.
+% ============================================================================
+
+\documentclass[11pt]{article}
+
+% ============================================================================
+% Packages
+% ============================================================================
+
+% Mathematics
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+% Document structure
+\usepackage{subfiles}
+
+% Tables
+\usepackage{booktabs}
+\usepackage{array}
+
+% Lists
+\usepackage{enumitem}
+
+% Custom packages
+\usepackage{assets/bimodal-notation}
+\usepackage{../../LaTeX/formatting}
+
+% References
+\usepackage{cleveref}
+
+% ============================================================================
+% Theorem Environments
+% ============================================================================
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{axiom}[definition]{Axiom}
+
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+
+% ============================================================================
+% Document Info
+% ============================================================================
+
+% Custom horizontal rule command
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+% ============================================================================
+% Begin Document
+% ============================================================================
+
+\begin{document}
+
+% Custom title page
+\begin{titlepage}
+\begin{center}
+
+\vspace*{2cm}
+
+\HRule\\[0.4cm]
+{\Huge \bfseries Bimodal Reference Manual}\\[0.2cm]
+\HRule\\[1cm]
+
+{\LARGE\itshape A Logic for Tense and Modality}\\[1cm]
+
+
+{\large\itshape Benjamin Brast-McKie}\\[0.15cm]
+\texttt{\href{https://www.benbrastmckie.com}{www.benbrastmckie.com}}\\[0.15cm]
+{--- \today\ ---}\\[1cm]
+
+\vfill
+
+{\normalsize\bfseries Primary Reference:}\\[0.3cm]
+  \href{https://www.benbrastmckie.com/wp-content/uploads/2025/11/possible_worlds.pdf}{\textit{``The Construction of Possible Worlds''}}, Brast-McKie, (under review), 2025.\\[1cm]
+
+\end{center}
+\end{titlepage}
+\thispagestyle{empty}
+
+{
+
+\begin{abstract}
+\noindent
+This reference manual provides the formal specification of the Bimodal TM logic
+as implemented in the ProofChecker project. TM is a bimodal logic combining
+S5 metaphysical necessity with linear temporal operators for past and future.
+The soundness theorem is fully proven; completeness infrastructure is in place
+but the core lemmas remain axiomatized.
+\end{abstract}
+
+\pagestyle{empty}
+\tableofcontents
+\cleardoublepage
+}
+
+% ============================================================================
+% Content
+% ============================================================================
+
+\subfile{subfiles/00-Introduction}
+\subfile{subfiles/01-Syntax}
+\subfile{subfiles/02-Semantics}
+\subfile{subfiles/03-ProofTheory}
+\subfile{subfiles/04-Metalogic}
+\subfile{subfiles/05-Theorems}
+\subfile{subfiles/06-Notes}
+
+\end{document}

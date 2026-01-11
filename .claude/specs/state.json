@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T23:30:00Z",
-  "next_project_number": 386,
+  "next_project_number": 387,
   "active_projects": [
+    {
+      "project_number": 386,
+      "project_name": "fix_command_artifact_linking_in_todo_md",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "description": "Fix /research command (and audit other commands) to properly link new artifacts in TODO.md. The command adds artifacts to state.json but fails to add corresponding links in TODO.md entries. Audit /plan, /implement, and /revise commands for similar artifact linking failures.",
+      "created": "2026-01-11T19:58:51Z",
+      "last_updated": "2026-01-11T19:58:51Z"
+    },
     {
       "project_number": 385,
       "project_name": "refactor_meta_command_task_creation",
