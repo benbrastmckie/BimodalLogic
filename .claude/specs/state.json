@@ -6,14 +6,21 @@
     {
       "project_number": 363,
       "project_name": "create_bimodal_latex_documentation",
-      "status": "not_started",
+      "status": "researched",
       "language": "latex",
       "priority": "medium",
       "type": "documentation",
       "effort": "2-4 hours",
       "description": "Create a Bimodal/LaTeX/ directory with contents similar to Logos/LaTeX/ but focusing on reporting exactly what has been implemented in the Bimodal/ theory.",
       "created": "2026-01-11T02:11:42Z",
-      "last_updated": "2026-01-11T02:11:42Z"
+      "last_updated": "2026-01-11T02:15:11Z",
+      "research_completed": "2026-01-11T02:15:11Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/363_create_bimodal_latex_documentation/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 362,

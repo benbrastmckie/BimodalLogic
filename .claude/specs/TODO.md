@@ -53,11 +53,13 @@ technical_debt:
 
 ### 363. Create Bimodal LaTeX documentation
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: latex
 - **Blocking**: None
 - **Dependencies**: None
+- **Researched**: 2026-01-11
+- **Research**: [.claude/specs/363_create_bimodal_latex_documentation/reports/research-001.md]
 
 **Description**: Create a Bimodal/LaTeX/ directory with contents similar to Logos/LaTeX/ but focusing on reporting exactly what has been implemented in the Bimodal/ theory.
 
@@ -82,7 +84,8 @@ technical_debt:
 
 ### 361. Create installation documentation
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Researched**: 2026-01-11
