@@ -80,7 +80,7 @@ This task resolves 5 sorry placeholders across 3 BimodalTest files, plus fixes M
 
 ### Phase 3: Implement PropositionalTest.lean Proof (Line 193)
 
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Complete the proof that `[p ∧ q] ⊢ p ∨ r` using available combinators
@@ -116,7 +116,7 @@ This task resolves 5 sorry placeholders across 3 BimodalTest files, plus fixes M
 
 ### Phase 4: Mark CompletenessTest.lean Consistency Tests as Infrastructure-Pending
 
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Update documentation for consistency tests (lines 46-83) to clearly explain infrastructure requirements

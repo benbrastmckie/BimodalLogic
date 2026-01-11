@@ -123,20 +123,20 @@ example : [(Formula.atom "r").box] ⊢
 -/
 
 /-- Test RCP type signature: (Γ ⊢ ¬A → ¬B) → (Γ ⊢ B → A) -/
-example (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.imp A := rcp A B h
+example (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.imp A := rcp Γ A B h
 
 /-- Test RCP with empty context and atomic formulas -/
-example (A B : Formula) (h : ⊢ A.neg.imp B.neg) : ⊢ B.imp A := rcp A B h
+example (A B : Formula) (h : ⊢ A.neg.imp B.neg) : ⊢ B.imp A := rcp [] A B h
 
 /-- Test RCP with concrete formulas -/
 example (h : ⊢ (Formula.atom "p").neg.imp (Formula.atom "q").neg) :
         ⊢ (Formula.atom "q").imp (Formula.atom "p") :=
-  rcp (Formula.atom "p") (Formula.atom "q") h
+  rcp [] (Formula.atom "p") (Formula.atom "q") h
 
 /-- Test RCP with complex formulas -/
 example (h : ⊢ ((Formula.atom "p").box).neg.imp ((Formula.atom "q").diamond).neg) :
         ⊢ ((Formula.atom "q").diamond).imp ((Formula.atom "p").box) :=
-  rcp ((Formula.atom "p").box) ((Formula.atom "q").diamond) h
+  rcp [] ((Formula.atom "p").box) ((Formula.atom "q").diamond) h
 
 /-!
 ## Left Conjunction Elimination Tests
@@ -180,17 +180,37 @@ example (A B : Formula) : ⊢ A.neg.imp (A.imp B) := efq A B
 /--
 Test: Conjunction elimination combined with disjunction introduction.
 
-**Sorry Status**: Pending infrastructure - requires additional deduction theorem helpers
+Demonstrates composing context-based derivations using the deduction theorem.
+Strategy: Use deduction theorem to lift ldi to an implication, then apply modus ponens.
 -/
-example : [(Formula.atom "p").and (Formula.atom "q")] ⊢
+noncomputable example : [(Formula.atom "p").and (Formula.atom "q")] ⊢
           (Formula.atom "p").or (Formula.atom "r") := by
-  have h_p := lce (Formula.atom "p") (Formula.atom "q")
-  -- Now h_p : [p ∧ q] ⊢ p
-  -- We need to derive: [p ∧ q] ⊢ p ∨ r
-  -- Use weakening to add context, then apply ldi
-  -- Actually, ldi requires [p] ⊢ p ∨ r, so we need to show [p ∧ q] ⊢ p ∨ r
-  -- PENDING INFRASTRUCTURE: Requires additional deduction theorem helpers for context manipulation
-  sorry
+  -- Step 1: Get [p ∧ q] ⊢ p from lce
+  have h_p : [(Formula.atom "p").and (Formula.atom "q")] ⊢ (Formula.atom "p") :=
+    lce (Formula.atom "p") (Formula.atom "q")
+
+  -- Step 2: Get [p] ⊢ p ∨ r from ldi
+  have h_ldi : [Formula.atom "p"] ⊢ (Formula.atom "p").or (Formula.atom "r") :=
+    ldi (Formula.atom "p") (Formula.atom "r")
+
+  -- Step 3: Apply deduction theorem: [p] ⊢ p ∨ r implies ⊢ p → (p ∨ r)
+  have h_imp : [] ⊢ (Formula.atom "p").imp ((Formula.atom "p").or (Formula.atom "r")) :=
+    Bimodal.Metalogic.deduction_theorem [] (Formula.atom "p")
+      ((Formula.atom "p").or (Formula.atom "r")) h_ldi
+
+  -- Step 4: Weaken to the context [p ∧ q]
+  have h_imp_ctx : [(Formula.atom "p").and (Formula.atom "q")] ⊢
+      (Formula.atom "p").imp ((Formula.atom "p").or (Formula.atom "r")) :=
+    DerivationTree.weakening [] [(Formula.atom "p").and (Formula.atom "q")]
+      ((Formula.atom "p").imp ((Formula.atom "p").or (Formula.atom "r")))
+      h_imp (List.nil_subset _)
+
+  -- Step 5: Apply modus ponens: [p ∧ q] ⊢ p and [p ∧ q] ⊢ p → (p ∨ r) gives [p ∧ q] ⊢ p ∨ r
+  exact DerivationTree.modus_ponens
+    [(Formula.atom "p").and (Formula.atom "q")]
+    (Formula.atom "p")
+    ((Formula.atom "p").or (Formula.atom "r"))
+    h_imp_ctx h_p
 
 /-- Test: LEM is theorem (not axiom) -/
 example (φ : Formula) : ⊢ φ.or φ.neg := lem φ
