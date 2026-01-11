@@ -50,9 +50,10 @@ factor 10) because the deepest level dominates the search cost.
 Traditional depth-limited DFS. Faster for shallow proofs but may miss proofs
 beyond the depth limit. Not complete or optimal.
 
-### SearchStrategy.BestFirst (Future)
+### SearchStrategy.BestFirst
 
-Priority queue-based search with heuristics. Placeholder for task 318.
+Priority queue-based best-first search that explores nodes by f-score (cost + heuristic).
+Uses pattern-aware heuristics for intelligent branch ordering. Implemented in task 176.
 
 ## Design Pattern
 
@@ -678,6 +679,174 @@ def iddfs_search (Γ : Context) (φ : Formula) (maxDepth : Nat := 100)
   iterate 0 ProofCache.empty {} 0
 
 /-!
+## Best-First Search
+
+Priority queue-based search that explores promising branches first.
+-/
+
+/--
+Search node for best-first search, containing goal state and priority information.
+-/
+structure SearchNode where
+  /-- Current proof context. -/
+  context : Context
+  /-- Goal formula to prove. -/
+  goal : Formula
+  /-- Accumulated cost (path length). -/
+  cost : Nat
+  /-- Heuristic score (estimated remaining cost). -/
+  heuristic : Nat
+  /-- f-score = cost + heuristic (for priority ordering). -/
+  fscore : Nat := cost + heuristic
+  deriving Repr
+
+instance : Inhabited SearchNode :=
+  ⟨{ context := [], goal := .bot, cost := 0, heuristic := 0 }⟩
+
+/--
+Simple priority queue implemented as a sorted list (ascending by f-score).
+
+For proof search, a simple list-based implementation is sufficient since
+the queue rarely grows beyond a few hundred elements and insertion is O(n).
+-/
+abbrev PriorityQueue := List SearchNode
+
+namespace PriorityQueue
+
+/-- Empty priority queue. -/
+def empty : PriorityQueue := []
+
+/-- Check if queue is empty. -/
+def isEmpty (q : PriorityQueue) : Bool := q.isEmpty
+
+/-- Insert a node maintaining sorted order by f-score. -/
+def insert (q : PriorityQueue) (node : SearchNode) : PriorityQueue :=
+  let rec insertSorted : List SearchNode → List SearchNode
+    | [] => [node]
+    | h :: t =>
+        if node.fscore ≤ h.fscore then node :: h :: t
+        else h :: insertSorted t
+  insertSorted q
+
+/-- Extract the minimum f-score node. -/
+def extractMin (q : PriorityQueue) : Option (SearchNode × PriorityQueue) :=
+  match q with
+  | [] => none
+  | h :: t => some (h, t)
+
+/-- Get queue size. -/
+def size (q : PriorityQueue) : Nat := q.length
+
+end PriorityQueue
+
+/--
+Best-first search for proof derivation using priority queue.
+
+Explores nodes in order of f-score (cost + heuristic), where:
+- cost = number of inference steps taken
+- heuristic = estimated steps remaining (from advanced_heuristic_score)
+
+**Properties**:
+- Complete: Finds proof if one exists (within expansion limit)
+- Optimal with admissible heuristic: Finds shortest proof if h(n) ≤ h*(n)
+- Space: O(b^d) in worst case (stores frontier)
+
+**Parameters**:
+- `Γ`: Initial proof context
+- `φ`: Goal formula
+- `maxExpansions`: Maximum node expansions before giving up
+- `weights`: Heuristic weights for scoring
+- `patternDb`: Optional pattern database for learned hints
+
+**Returns**: Same format as other search functions for compatibility
+-/
+def bestFirst_search (Γ : Context) (φ : Formula)
+    (maxExpansions : Nat := 10000)
+    (weights : HeuristicWeights := {})
+    (patternDb : PatternDatabase := PatternDatabase.empty)
+    : Bool × ProofCache × Visited × SearchStats × Nat :=
+  -- Initialize with start node
+  let initHeuristic := pattern_aware_score weights Γ φ patternDb .ModusPonens
+  let initNode : SearchNode := { context := Γ, goal := φ, cost := 0, heuristic := initHeuristic }
+  let initQueue := PriorityQueue.insert PriorityQueue.empty initNode
+
+  -- Main search loop
+  let rec searchLoop (queue : PriorityQueue) (cache : ProofCache) (visited : Visited)
+                     (stats : SearchStats) (expansions : Nat)
+      : Bool × ProofCache × Visited × SearchStats × Nat :=
+    if expansions ≥ maxExpansions then
+      (false, cache, visited, {stats with prunedByLimit := stats.prunedByLimit + 1}, expansions)
+    else
+      match queue.extractMin with
+      | none =>
+          -- Queue empty, no proof found
+          (false, cache, visited, stats, expansions)
+      | some (node, queue') =>
+          let key : CacheKey := (node.context, node.goal)
+
+          -- Skip if already visited
+          if visited.contains key then
+            searchLoop queue' cache visited stats expansions
+          else
+            let visited' := visited.insert key
+            let stats' := {stats with visited := stats.visited + 1}
+
+            -- Check cache
+            match cache.find? key with
+            | some true =>
+                -- Cached success
+                (true, cache, visited', {stats' with hits := stats'.hits + 1}, expansions + 1)
+            | some false =>
+                -- Cached failure, skip
+                searchLoop queue' cache visited' {stats' with hits := stats'.hits + 1} expansions
+            | none =>
+                let stats' := {stats' with misses := stats'.misses + 1}
+
+                -- Check if goal matches axiom
+                if matches_axiom node.goal then
+                  (true, cache.insert key true, visited', stats', expansions + 1)
+                -- Check if goal is in context
+                else if node.context.contains node.goal then
+                  (true, cache.insert key true, visited', stats', expansions + 1)
+                else
+                  -- Expand node: generate successor nodes
+
+                  -- 1. Modus ponens: find implications (ψ → goal) and add ψ as subgoal
+                  let implications := find_implications_to node.context node.goal
+                  let mpNodes := implications.map fun ψ =>
+                    let h := pattern_aware_score weights node.context ψ patternDb .ModusPonens
+                    { context := node.context, goal := ψ, cost := node.cost + 1, heuristic := h : SearchNode }
+
+                  -- 2. Modal K rule: if goal is □ψ, add ψ with boxed context
+                  let modalNodes := match node.goal with
+                    | .box ψ =>
+                        let ctx' := box_context node.context
+                        let h := pattern_aware_score weights ctx' ψ patternDb .ModalK
+                        [{ context := ctx', goal := ψ, cost := node.cost + 1, heuristic := h }]
+                    | _ => []
+
+                  -- 3. Temporal K rule: if goal is Gψ, add ψ with future context
+                  let temporalNodes := match node.goal with
+                    | .all_future ψ =>
+                        let ctx' := future_context node.context
+                        let h := pattern_aware_score weights ctx' ψ patternDb .TemporalK
+                        [{ context := ctx', goal := ψ, cost := node.cost + 1, heuristic := h }]
+                    | _ => []
+
+                  -- Add all successor nodes to queue
+                  let allSuccessors := mpNodes ++ modalNodes ++ temporalNodes
+                  let queue'' := allSuccessors.foldl PriorityQueue.insert queue'
+
+                  -- Continue search
+                  searchLoop queue'' (cache.insert key false) visited' stats' (expansions + 1)
+  termination_by maxExpansions - expansions
+  decreasing_by
+    all_goals simp_wf
+    all_goals omega
+
+  searchLoop initQueue ProofCache.empty Visited.empty {} 0
+
+/-!
 ## Search Strategy Configuration
 -/
 
@@ -731,10 +900,9 @@ def search (Γ : Context) (φ : Formula)
       bounded_search Γ φ depth ProofCache.empty Visited.empty 0 visitLimit weights {}
   | .IDDFS maxDepth =>
       iddfs_search Γ φ maxDepth visitLimit weights
-  | .BestFirst _ =>
-      -- TODO: Implement best-first search (Phase 4 of task 260 / task 318)
-      -- For now, fall back to IDDFS
-      iddfs_search Γ φ 100 visitLimit weights
+  | .BestFirst maxExpansions =>
+      -- Best-first search with priority queue (task 176)
+      bestFirst_search Γ φ maxExpansions weights PatternDatabase.empty
 
 /--
 Heuristic-guided proof search prioritizing likely-successful branches.

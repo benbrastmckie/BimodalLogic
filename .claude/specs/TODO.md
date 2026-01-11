@@ -77,7 +77,7 @@ technical_debt:
 
 ### 375. Integrate latexmkrc into project LaTeX assets
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11

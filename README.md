@@ -357,13 +357,11 @@ Vision and planned architecture:
 
 Quick reference materials:
 
-- [Operators Glossary](Documentation/Reference/OPERATORS.md) - Formal symbols reference
-- [Terminology Glossary](Documentation/Reference/GLOSSARY.md) - Key concepts and definitions
-
 ### Documentation Navigation
 
 - [Documentation Hub](Documentation/README.md) - Complete documentation index
-- [Navigation Guide](Documentation/NAVIGATION.md) - Find documentation by use case
+- [Bimodal Operators](Bimodal/Documentation/Reference/OPERATORS.md) - Formal symbols reference
+- [Logos Glossary](Logos/Documentation/Reference/GLOSSARY.md) - Key concepts and definitions
 
 ---
 
