@@ -30,10 +30,12 @@ technical_debt:
 
 ### 385. Refactor /meta command to create tasks instead of direct implementation
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-12
+- **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
+- **Research**: [research-001.md](.claude/specs/385_refactor_meta_command_task_creation/reports/research-001.md)
 
 **Description**: Refactor the /meta command to conduct careful analysis of the .claude/ agent system given the prompt, ask follow-up questions if additional clarity would improve understanding, and then produce an appropriate number of tasks (similar to /task --divide) with dependencies indicated. If /meta is run without a prompt, run in full interactive mode to interview the user until sufficient detail has been provided to create the appropriate number of tasks with dependencies.
 
