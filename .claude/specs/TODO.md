@@ -107,20 +107,25 @@ technical_debt:
 ---
 
 ### 379. Fix LogosReference LaTeX warnings and errors
-- **Effort**: 1 hour
-- **Status**: [IMPLEMENTING]
+- **Effort**: 2 hours
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
+- **Plan Revised**: 2026-01-12
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/379_fix_logosreference_latex_warnings/reports/research-001.md)
 - **Implementation Findings**: [research-002.md](.claude/specs/379_fix_logosreference_latex_warnings/reports/research-002.md)
-- **Plan**: [implementation-001.md](.claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md)
+- **Best Practices Research**: [research-003.md](.claude/specs/379_fix_logosreference_latex_warnings/reports/research-003.md)
+- **Plan (v1)**: [implementation-001.md](.claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md)
+- **Plan (v2)**: [implementation-002.md](.claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/379_fix_logosreference_latex_warnings/summaries/implementation-summary-20260112.md)
 
 **Description**: Fix LaTeX warnings/errors in LogosReference.tex after task 375 implementation: "no \citation commands", "no style file" (bibtex), package warnings for logos-notation/notation-standards/formatting, and "Label(s) may have changed" cross-reference warnings.
 
-**Current State**: Phase 1 (formatting.sty fix) and Phase 2 (add `\nocite{*}`) completed. Phase 3 (verification) blocked by BibTeX/latexmk build directory interaction issue - see research-002.md for details and resolution options.
+**Resolution**: Used latexmk's `ensure_path()` function to add BSTINPUTS and BIBINPUTS search paths, which integrates properly with latexmk's `$bibtex_fudge` mechanism. The .bbl file now generates correctly with 46 lines of bibliography content.
 
 ---
 
