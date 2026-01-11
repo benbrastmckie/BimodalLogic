@@ -33,8 +33,6 @@ lean_lib BimodalTest where
     ⟨`autoImplicit, false⟩
   ]
 
-lean_lib Archive
-
 lean_exe test where
   root := `LogosTest.Main
 

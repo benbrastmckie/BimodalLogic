@@ -146,7 +146,7 @@ Move all pedagogical example files from `Archive/` to `Bimodal/Examples/`, estab
 ### Phase 5: Remove Archive/ Directory
 
 **Estimated effort**: 20 minutes
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Move `Archive/logos-original/` to `.claude/archive/logos-original/`
@@ -182,7 +182,7 @@ Move all pedagogical example files from `Archive/` to `Bimodal/Examples/`, estab
 ### Phase 6: Final Verification and Documentation
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Verify full build succeeds
