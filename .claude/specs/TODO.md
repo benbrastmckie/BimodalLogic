@@ -76,7 +76,8 @@ technical_debt:
 
 ### 354. Research and refactor Archive/ directory
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None

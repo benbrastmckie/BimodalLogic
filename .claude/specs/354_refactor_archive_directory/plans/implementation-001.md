@@ -14,7 +14,7 @@ Move all pedagogical example files from `Archive/` to `Bimodal/Examples/`, estab
 ### Phase 1: Create Bimodal/Examples/ Structure
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Create `Bimodal/Examples/` directory
@@ -37,7 +37,7 @@ Move all pedagogical example files from `Archive/` to `Bimodal/Examples/`, estab
 ### Phase 2: Move Example Files
 
 **Estimated effort**: 45 minutes
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Move 7 example `.lean` files from `Archive/` to `Bimodal/Examples/`
